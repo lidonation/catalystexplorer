@@ -13,13 +13,13 @@ else
     queue | q)
       php -d variables_order=EGPCS /var/www/artisan horizon
       ;;
-    scheduler | s)
-      while [ true ]
-      do
-        php /var/www/artisan schedule:run --verbose --no-interaction &
-        sleep 60
-      done
-      ;;
+    # scheduler | s)
+    #   while [ true ]
+    #   do
+    #     php /var/www/artisan schedule:run --verbose --no-interaction &
+    #     sleep 60
+    #   done
+    #   ;;
     app | a)
       if [ "$OCTANE_WATCH" = "true" ]; then
         # Enable watch mode for Octane
