@@ -20,345 +20,39 @@ export default function Welcome({
     return (
         <>
             <Head title="Welcome" />
-            <div className="bg-gray-50 text-black/50 dark:bg-black dark:text-white/50">
-                <img
-                    id="background"
-                    className="absolute -left-20 top-0 max-w-[877px]"
-                    src="https://laravel.com/assets/img/welcome/background.svg"
-                />
-                <div className="relative flex min-h-screen flex-col items-center justify-center selection:bg-[#FF2D20] selection:text-white">
-                    <div className="relative w-full max-w-2xl px-6 lg:max-w-7xl">
-                        <header className="grid grid-cols-2 items-center gap-2 py-10 lg:grid-cols-3">
-                            <div className="flex lg:col-start-2 lg:justify-center">
-                                <svg
-                                    className="h-12 w-auto text-white lg:h-16 lg:text-[#FF2D20]"
-                                    viewBox="0 0 62 65"
-                                    fill="none"
-                                    xmlns="http://www.w3.org/2000/svg"
-                                >
-                                    <path
-                                        d="M61.8548 14.6253C61.8778 14.7102 61.8895 14.7978 61.8897 14.8858V28.5615C61.8898 28.737 61.8434 28.9095 61.7554 29.0614C61.6675 29.2132 61.5409 29.3392 61.3887 29.4265L49.9104 36.0351V49.1337C49.9104 49.4902 49.7209 49.8192 49.4118 49.9987L25.4519 63.7916C25.3971 63.8227 25.3372 63.8427 25.2774 63.8639C25.255 63.8714 25.2338 63.8851 25.2101 63.8913C25.0426 63.9354 24.8666 63.9354 24.6991 63.8913C24.6716 63.8838 24.6467 63.8689 24.6205 63.8589C24.5657 63.8389 24.5084 63.8215 24.456 63.7916L0.501061 49.9987C0.348882 49.9113 0.222437 49.7853 0.134469 49.6334C0.0465019 49.4816 0.000120578 49.3092 0 49.1337L0 8.10652C0 8.01678 0.0124642 7.92953 0.0348998 7.84477C0.0423783 7.8161 0.0598282 7.78993 0.0697995 7.76126C0.0884958 7.70891 0.105946 7.65531 0.133367 7.6067C0.152063 7.5743 0.179485 7.54812 0.20192 7.51821C0.230588 7.47832 0.256763 7.43719 0.290416 7.40229C0.319084 7.37362 0.356476 7.35243 0.388883 7.32751C0.425029 7.29759 0.457436 7.26518 0.498568 7.2415L12.4779 0.345059C12.6296 0.257786 12.8015 0.211853 12.9765 0.211853C13.1515 0.211853 13.3234 0.257786 13.475 0.345059L25.4531 7.2415H25.4556C25.4955 7.26643 25.5292 7.29759 25.5653 7.32626C25.5977 7.35119 25.6339 7.37362 25.6625 7.40104C25.6974 7.43719 25.7224 7.47832 25.7523 7.51821C25.7735 7.54812 25.8021 7.5743 25.8196 7.6067C25.8483 7.65656 25.8645 7.70891 25.8844 7.76126C25.8944 7.78993 25.9118 7.8161 25.9193 7.84602C25.9423 7.93096 25.954 8.01853 25.9542 8.10652V33.7317L35.9355 27.9844V14.8846C35.9355 14.7973 35.948 14.7088 35.9704 14.6253C35.9792 14.5954 35.9954 14.5692 36.0053 14.5405C36.0253 14.4882 36.0427 14.4346 36.0702 14.386C36.0888 14.3536 36.1163 14.3274 36.1375 14.2975C36.1674 14.2576 36.1923 14.2165 36.2272 14.1816C36.2559 14.1529 36.292 14.1317 36.3244 14.1068C36.3618 14.0769 36.3942 14.0445 36.4341 14.0208L48.4147 7.12434C48.5663 7.03694 48.7383 6.99094 48.9133 6.99094C49.0883 6.99094 49.2602 7.03694 49.4118 7.12434L61.3899 14.0208C61.4323 14.0457 61.4647 14.0769 61.5021 14.1055C61.5333 14.1305 61.5694 14.1529 61.5981 14.1803C61.633 14.2165 61.6579 14.2576 61.6878 14.2975C61.7103 14.3274 61.7377 14.3536 61.7551 14.386C61.7838 14.4346 61.8 14.4882 61.8199 14.5405C61.8312 14.5692 61.8474 14.5954 61.8548 14.6253ZM59.893 27.9844V16.6121L55.7013 19.0252L49.9104 22.3593V33.7317L59.8942 27.9844H59.893ZM47.9149 48.5566V37.1768L42.2187 40.4299L25.953 49.7133V61.2003L47.9149 48.5566ZM1.99677 9.83281V48.5566L23.9562 61.199V49.7145L12.4841 43.2219L12.4804 43.2194L12.4754 43.2169C12.4368 43.1945 12.4044 43.1621 12.3682 43.1347C12.3371 43.1097 12.3009 43.0898 12.2735 43.0624L12.271 43.0586C12.2386 43.0275 12.2162 42.9888 12.1887 42.9539C12.1638 42.9203 12.1339 42.8916 12.114 42.8567L12.1127 42.853C12.0903 42.8156 12.0766 42.7707 12.0604 42.7283C12.0442 42.6909 12.023 42.656 12.013 42.6161C12.0005 42.5688 11.998 42.5177 11.9931 42.4691C11.9881 42.4317 11.9781 42.3943 11.9781 42.3569V15.5801L6.18848 12.2446L1.99677 9.83281ZM12.9777 2.36177L2.99764 8.10652L12.9752 13.8513L22.9541 8.10527L12.9752 2.36177H12.9777ZM18.1678 38.2138L23.9574 34.8809V9.83281L19.7657 12.2459L13.9749 15.5801V40.6281L18.1678 38.2138ZM48.9133 9.14105L38.9344 14.8858L48.9133 20.6305L58.8909 14.8846L48.9133 9.14105ZM47.9149 22.3593L42.124 19.0252L37.9323 16.6121V27.9844L43.7219 31.3174L47.9149 33.7317V22.3593ZM24.9533 47.987L39.59 39.631L46.9065 35.4555L36.9352 29.7145L25.4544 36.3242L14.9907 42.3482L24.9533 47.987Z"
-                                        fill="currentColor"
-                                    />
-                                </svg>
-                            </div>
-                            <nav className="-mx-3 flex flex-1 justify-end">
-                                {auth.user ? (
-                                    <Link
-                                        href={route('dashboard')}
-                                        className="rounded-md px-3 py-2 text-black ring-1 ring-transparent transition hover:text-black/70 focus:outline-none focus-visible:ring-[#FF2D20] dark:text-white dark:hover:text-white/80 dark:focus-visible:ring-white"
-                                    >
-                                        Dashboard
-                                    </Link>
-                                ) : (
-                                    <>
-                                        <Link
-                                            href={route('login')}
-                                            className="rounded-md px-3 py-2 text-black ring-1 ring-transparent transition hover:text-black/70 focus:outline-none focus-visible:ring-[#FF2D20] dark:text-white dark:hover:text-white/80 dark:focus-visible:ring-white"
-                                        >
-                                            Log in
-                                        </Link>
-                                        <Link
-                                            href={route('register')}
-                                            className="rounded-md px-3 py-2 text-black ring-1 ring-transparent transition hover:text-black/70 focus:outline-none focus-visible:ring-[#FF2D20] dark:text-white dark:hover:text-white/80 dark:focus-visible:ring-white"
-                                        >
-                                            Register
-                                        </Link>
-                                    </>
-                                )}
-                            </nav>
-                        </header>
-
-                        <main className="mt-6">
-                            <div className="grid gap-6 lg:grid-cols-2 lg:gap-8">
-                                <a
-                                    href="https://laravel.com/docs"
-                                    id="docs-card"
-                                    className="flex flex-col items-start gap-6 overflow-hidden rounded-lg bg-white p-6 shadow-[0px_14px_34px_0px_rgba(0,0,0,0.08)] ring-1 ring-white/[0.05] transition duration-300 hover:text-black/70 hover:ring-black/20 focus:outline-none focus-visible:ring-[#FF2D20] md:row-span-3 lg:p-10 lg:pb-10 dark:bg-zinc-900 dark:ring-zinc-800 dark:hover:text-white/70 dark:hover:ring-zinc-700 dark:focus-visible:ring-[#FF2D20]"
-                                >
-                                    <div
-                                        id="screenshot-container"
-                                        className="relative flex w-full flex-1 items-stretch"
-                                    >
-                                        <img
-                                            src="https://laravel.com/assets/img/welcome/docs-light.svg"
-                                            alt="Laravel documentation screenshot"
-                                            className="aspect-video h-full w-full flex-1 rounded-[10px] object-cover object-top drop-shadow-[0px_4px_34px_rgba(0,0,0,0.06)] dark:hidden"
-                                            onError={handleImageError}
-                                        />
-                                        <img
-                                            src="https://laravel.com/assets/img/welcome/docs-dark.svg"
-                                            alt="Laravel documentation screenshot"
-                                            className="hidden aspect-video h-full w-full flex-1 rounded-[10px] object-cover object-top drop-shadow-[0px_4px_34px_rgba(0,0,0,0.25)] dark:block"
-                                        />
-                                        <div className="absolute -bottom-16 -left-16 h-40 w-[calc(100%+8rem)] bg-gradient-to-b from-transparent via-white to-white dark:via-zinc-900 dark:to-zinc-900"></div>
-                                    </div>
-
-                                    <div className="relative flex items-center gap-6 lg:items-end">
-                                        <div
-                                            id="docs-card-content"
-                                            className="flex items-start gap-6 lg:flex-col"
-                                        >
-                                            <div className="flex size-12 shrink-0 items-center justify-center rounded-full bg-[#FF2D20]/10 sm:size-16">
-                                                <svg
-                                                    className="size-5 sm:size-6"
-                                                    xmlns="http://www.w3.org/2000/svg"
-                                                    fill="none"
-                                                    viewBox="0 0 24 24"
-                                                >
-                                                    <path
-                                                        fill="#FF2D20"
-                                                        d="M23 4a1 1 0 0 0-1.447-.894L12.224 7.77a.5.5 0 0 1-.448 0L2.447 3.106A1 1 0 0 0 1 4v13.382a1.99 1.99 0 0 0 1.105 1.79l9.448 4.728c.14.065.293.1.447.1.154-.005.306-.04.447-.105l9.453-4.724a1.99 1.99 0 0 0 1.1-1.789V4ZM3 6.023a.25.25 0 0 1 .362-.223l7.5 3.75a.251.251 0 0 1 .138.223v11.2a.25.25 0 0 1-.362.224l-7.5-3.75a.25.25 0 0 1-.138-.22V6.023Zm18 11.2a.25.25 0 0 1-.138.224l-7.5 3.75a.249.249 0 0 1-.329-.099.249.249 0 0 1-.033-.12V9.772a.251.251 0 0 1 .138-.224l7.5-3.75a.25.25 0 0 1 .362.224v11.2Z"
-                                                    />
-                                                    <path
-                                                        fill="#FF2D20"
-                                                        d="m3.55 1.893 8 4.048a1.008 1.008 0 0 0 .9 0l8-4.048a1 1 0 0 0-.9-1.785l-7.322 3.706a.506.506 0 0 1-.452 0L4.454.108a1 1 0 0 0-.9 1.785H3.55Z"
-                                                    />
-                                                </svg>
-                                            </div>
-
-                                            <div className="pt-3 sm:pt-5 lg:pt-0">
-                                                <h2 className="text-xl font-semibold text-black dark:text-white">
-                                                    Documentation
-                                                </h2>
-
-                                                <p className="mt-4 text-sm/relaxed">
-                                                    Laravel has wonderful
-                                                    documentation covering every
-                                                    aspect of the framework.
-                                                    Whether you are a newcomer
-                                                    or have prior experience
-                                                    with Laravel, we recommend
-                                                    reading our documentation
-                                                    from beginning to end.
-                                                </p>
-                                            </div>
-                                        </div>
-
-                                        <svg
-                                            className="size-6 shrink-0 stroke-[#FF2D20]"
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            fill="none"
-                                            viewBox="0 0 24 24"
-                                            strokeWidth="1.5"
-                                        >
-                                            <path
-                                                strokeLinecap="round"
-                                                strokeLinejoin="round"
-                                                d="M4.5 12h15m0 0l-6.75-6.75M19.5 12l-6.75 6.75"
-                                            />
-                                        </svg>
-                                    </div>
-                                </a>
-
-                                <a
-                                    href="https://laracasts.com"
-                                    className="flex items-start gap-4 rounded-lg bg-white p-6 shadow-[0px_14px_34px_0px_rgba(0,0,0,0.08)] ring-1 ring-white/[0.05] transition duration-300 hover:text-black/70 hover:ring-black/20 focus:outline-none focus-visible:ring-[#FF2D20] lg:pb-10 dark:bg-zinc-900 dark:ring-zinc-800 dark:hover:text-white/70 dark:hover:ring-zinc-700 dark:focus-visible:ring-[#FF2D20]"
-                                >
-                                    <div className="flex size-12 shrink-0 items-center justify-center rounded-full bg-[#FF2D20]/10 sm:size-16">
-                                        <svg
-                                            className="size-5 sm:size-6"
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            fill="none"
-                                            viewBox="0 0 24 24"
-                                        >
-                                            <g fill="#FF2D20">
-                                                <path d="M24 8.25a.5.5 0 0 0-.5-.5H.5a.5.5 0 0 0-.5.5v12a2.5 2.5 0 0 0 2.5 2.5h19a2.5 2.5 0 0 0 2.5-2.5v-12Zm-7.765 5.868a1.221 1.221 0 0 1 0 2.264l-6.626 2.776A1.153 1.153 0 0 1 8 18.123v-5.746a1.151 1.151 0 0 1 1.609-1.035l6.626 2.776ZM19.564 1.677a.25.25 0 0 0-.177-.427H15.6a.106.106 0 0 0-.072.03l-4.54 4.543a.25.25 0 0 0 .177.427h3.783c.027 0 .054-.01.073-.03l4.543-4.543ZM22.071 1.318a.047.047 0 0 0-.045.013l-4.492 4.492a.249.249 0 0 0 .038.385.25.25 0 0 0 .14.042h5.784a.5.5 0 0 0 .5-.5v-2a2.5 2.5 0 0 0-1.925-2.432ZM13.014 1.677a.25.25 0 0 0-.178-.427H9.101a.106.106 0 0 0-.073.03l-4.54 4.543a.25.25 0 0 0 .177.427H8.4a.106.106 0 0 0 .073-.03l4.54-4.543ZM6.513 1.677a.25.25 0 0 0-.177-.427H2.5A2.5 2.5 0 0 0 0 3.75v2a.5.5 0 0 0 .5.5h1.4a.106.106 0 0 0 .073-.03l4.54-4.543Z" />
-                                            </g>
-                                        </svg>
-                                    </div>
-
-                                    <div className="pt-3 sm:pt-5">
-                                        <h2 className="text-xl font-semibold text-black dark:text-white">
-                                            Laracasts
-                                        </h2>
-
-                                        <p className="mt-4 text-sm/relaxed">
-                                            Laracasts offers thousands of video
-                                            tutorials on Laravel, PHP, and
-                                            JavaScript development. Check them
-                                            out, see for yourself, and massively
-                                            level up your development skills in
-                                            the process.
-                                        </p>
-                                    </div>
-
-                                    <svg
-                                        className="size-6 shrink-0 self-center stroke-[#FF2D20]"
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        fill="none"
-                                        viewBox="0 0 24 24"
-                                        strokeWidth="1.5"
-                                    >
-                                        <path
-                                            strokeLinecap="round"
-                                            strokeLinejoin="round"
-                                            d="M4.5 12h15m0 0l-6.75-6.75M19.5 12l-6.75 6.75"
-                                        />
-                                    </svg>
-                                </a>
-
-                                <a
-                                    href="https://laravel-news.com"
-                                    className="flex items-start gap-4 rounded-lg bg-white p-6 shadow-[0px_14px_34px_0px_rgba(0,0,0,0.08)] ring-1 ring-white/[0.05] transition duration-300 hover:text-black/70 hover:ring-black/20 focus:outline-none focus-visible:ring-[#FF2D20] lg:pb-10 dark:bg-zinc-900 dark:ring-zinc-800 dark:hover:text-white/70 dark:hover:ring-zinc-700 dark:focus-visible:ring-[#FF2D20]"
-                                >
-                                    <div className="flex size-12 shrink-0 items-center justify-center rounded-full bg-[#FF2D20]/10 sm:size-16">
-                                        <svg
-                                            className="size-5 sm:size-6"
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            fill="none"
-                                            viewBox="0 0 24 24"
-                                        >
-                                            <g fill="#FF2D20">
-                                                <path d="M8.75 4.5H5.5c-.69 0-1.25.56-1.25 1.25v4.75c0 .69.56 1.25 1.25 1.25h3.25c.69 0 1.25-.56 1.25-1.25V5.75c0-.69-.56-1.25-1.25-1.25Z" />
-                                                <path d="M24 10a3 3 0 0 0-3-3h-2V2.5a2 2 0 0 0-2-2H2a2 2 0 0 0-2 2V20a3.5 3.5 0 0 0 3.5 3.5h17A3.5 3.5 0 0 0 24 20V10ZM3.5 21.5A1.5 1.5 0 0 1 2 20V3a.5.5 0 0 1 .5-.5h14a.5.5 0 0 1 .5.5v17c0 .295.037.588.11.874a.5.5 0 0 1-.484.625L3.5 21.5ZM22 20a1.5 1.5 0 1 1-3 0V9.5a.5.5 0 0 1 .5-.5H21a1 1 0 0 1 1 1v10Z" />
-                                                <path d="M12.751 6.047h2a.75.75 0 0 1 .75.75v.5a.75.75 0 0 1-.75.75h-2A.75.75 0 0 1 12 7.3v-.5a.75.75 0 0 1 .751-.753ZM12.751 10.047h2a.75.75 0 0 1 .75.75v.5a.75.75 0 0 1-.75.75h-2A.75.75 0 0 1 12 11.3v-.5a.75.75 0 0 1 .751-.753ZM4.751 14.047h10a.75.75 0 0 1 .75.75v.5a.75.75 0 0 1-.75.75h-10A.75.75 0 0 1 4 15.3v-.5a.75.75 0 0 1 .751-.753ZM4.75 18.047h7.5a.75.75 0 0 1 .75.75v.5a.75.75 0 0 1-.75.75h-7.5A.75.75 0 0 1 4 19.3v-.5a.75.75 0 0 1 .75-.753Z" />
-                                            </g>
-                                        </svg>
-                                    </div>
-
-                                    <div className="pt-3 sm:pt-5">
-                                        <h2 className="text-xl font-semibold text-black dark:text-white">
-                                            Laravel News
-                                        </h2>
-
-                                        <p className="mt-4 text-sm/relaxed">
-                                            Laravel News is a community driven
-                                            portal and newsletter aggregating
-                                            all of the latest and most important
-                                            news in the Laravel ecosystem,
-                                            including new package releases and
-                                            tutorials.
-                                        </p>
-                                    </div>
-
-                                    <svg
-                                        className="size-6 shrink-0 self-center stroke-[#FF2D20]"
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        fill="none"
-                                        viewBox="0 0 24 24"
-                                        strokeWidth="1.5"
-                                    >
-                                        <path
-                                            strokeLinecap="round"
-                                            strokeLinejoin="round"
-                                            d="M4.5 12h15m0 0l-6.75-6.75M19.5 12l-6.75 6.75"
-                                        />
-                                    </svg>
-                                </a>
-
-                                <div className="flex items-start gap-4 rounded-lg bg-white p-6 shadow-[0px_14px_34px_0px_rgba(0,0,0,0.08)] ring-1 ring-white/[0.05] lg:pb-10 dark:bg-zinc-900 dark:ring-zinc-800">
-                                    <div className="flex size-12 shrink-0 items-center justify-center rounded-full bg-[#FF2D20]/10 sm:size-16">
-                                        <svg
-                                            className="size-5 sm:size-6"
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            fill="none"
-                                            viewBox="0 0 24 24"
-                                        >
-                                            <g fill="#FF2D20">
-                                                <path d="M16.597 12.635a.247.247 0 0 0-.08-.237 2.234 2.234 0 0 1-.769-1.68c.001-.195.03-.39.084-.578a.25.25 0 0 0-.09-.267 8.8 8.8 0 0 0-4.826-1.66.25.25 0 0 0-.268.181 2.5 2.5 0 0 1-2.4 1.824.045.045 0 0 0-.045.037 12.255 12.255 0 0 0-.093 3.86.251.251 0 0 0 .208.214c2.22.366 4.367 1.08 6.362 2.118a.252.252 0 0 0 .32-.079 10.09 10.09 0 0 0 1.597-3.733ZM13.616 17.968a.25.25 0 0 0-.063-.407A19.697 19.697 0 0 0 8.91 15.98a.25.25 0 0 0-.287.325c.151.455.334.898.548 1.328.437.827.981 1.594 1.619 2.28a.249.249 0 0 0 .32.044 29.13 29.13 0 0 0 2.506-1.99ZM6.303 14.105a.25.25 0 0 0 .265-.274 13.048 13.048 0 0 1 .205-4.045.062.062 0 0 0-.022-.07 2.5 2.5 0 0 1-.777-.982.25.25 0 0 0-.271-.149 11 11 0 0 0-5.6 2.815.255.255 0 0 0-.075.163c-.008.135-.02.27-.02.406.002.8.084 1.598.246 2.381a.25.25 0 0 0 .303.193 19.924 19.924 0 0 1 5.746-.438ZM9.228 20.914a.25.25 0 0 0 .1-.393 11.53 11.53 0 0 1-1.5-2.22 12.238 12.238 0 0 1-.91-2.465.248.248 0 0 0-.22-.187 18.876 18.876 0 0 0-5.69.33.249.249 0 0 0-.179.336c.838 2.142 2.272 4 4.132 5.353a.254.254 0 0 0 .15.048c1.41-.01 2.807-.282 4.117-.802ZM18.93 12.957l-.005-.008a.25.25 0 0 0-.268-.082 2.21 2.21 0 0 1-.41.081.25.25 0 0 0-.217.2c-.582 2.66-2.127 5.35-5.75 7.843a.248.248 0 0 0-.09.299.25.25 0 0 0 .065.091 28.703 28.703 0 0 0 2.662 2.12.246.246 0 0 0 .209.037c2.579-.701 4.85-2.242 6.456-4.378a.25.25 0 0 0 .048-.189 13.51 13.51 0 0 0-2.7-6.014ZM5.702 7.058a.254.254 0 0 0 .2-.165A2.488 2.488 0 0 1 7.98 5.245a.093.093 0 0 0 .078-.062 19.734 19.734 0 0 1 3.055-4.74.25.25 0 0 0-.21-.41 12.009 12.009 0 0 0-10.4 8.558.25.25 0 0 0 .373.281 12.912 12.912 0 0 1 4.826-1.814ZM10.773 22.052a.25.25 0 0 0-.28-.046c-.758.356-1.55.635-2.365.833a.25.25 0 0 0-.022.48c1.252.43 2.568.65 3.893.65.1 0 .2 0 .3-.008a.25.25 0 0 0 .147-.444c-.526-.424-1.1-.917-1.673-1.465ZM18.744 8.436a.249.249 0 0 0 .15.228 2.246 2.246 0 0 1 1.352 2.054c0 .337-.08.67-.23.972a.25.25 0 0 0 .042.28l.007.009a15.016 15.016 0 0 1 2.52 4.6.25.25 0 0 0 .37.132.25.25 0 0 0 .096-.114c.623-1.464.944-3.039.945-4.63a12.005 12.005 0 0 0-5.78-10.258.25.25 0 0 0-.373.274c.547 2.109.85 4.274.901 6.453ZM9.61 5.38a.25.25 0 0 0 .08.31c.34.24.616.561.8.935a.25.25 0 0 0 .3.127.631.631 0 0 1 .206-.034c2.054.078 4.036.772 5.69 1.991a.251.251 0 0 0 .267.024c.046-.024.093-.047.141-.067a.25.25 0 0 0 .151-.23A29.98 29.98 0 0 0 15.957.764a.25.25 0 0 0-.16-.164 11.924 11.924 0 0 0-2.21-.518.252.252 0 0 0-.215.076A22.456 22.456 0 0 0 9.61 5.38Z" />
-                                            </g>
-                                        </svg>
-                                    </div>
-
-                                    <div className="pt-3 sm:pt-5">
-                                        <h2 className="text-xl font-semibold text-black dark:text-white">
-                                            Vibrant Ecosystem
-                                        </h2>
-
-                                        <p className="mt-4 text-sm/relaxed">
-                                            Laravel's robust library of
-                                            first-party tools and libraries,
-                                            such as{' '}
-                                            <a
-                                                href="https://forge.laravel.com"
-                                                className="rounded-sm underline hover:text-black focus:outline-none focus-visible:ring-1 focus-visible:ring-[#FF2D20] dark:hover:text-white dark:focus-visible:ring-[#FF2D20]"
-                                            >
-                                                Forge
-                                            </a>
-                                            ,{' '}
-                                            <a
-                                                href="https://vapor.laravel.com"
-                                                className="rounded-sm underline hover:text-black focus:outline-none focus-visible:ring-1 focus-visible:ring-[#FF2D20] dark:hover:text-white"
-                                            >
-                                                Vapor
-                                            </a>
-                                            ,{' '}
-                                            <a
-                                                href="https://nova.laravel.com"
-                                                className="rounded-sm underline hover:text-black focus:outline-none focus-visible:ring-1 focus-visible:ring-[#FF2D20] dark:hover:text-white"
-                                            >
-                                                Nova
-                                            </a>
-                                            ,{' '}
-                                            <a
-                                                href="https://envoyer.io"
-                                                className="rounded-sm underline hover:text-black focus:outline-none focus-visible:ring-1 focus-visible:ring-[#FF2D20] dark:hover:text-white"
-                                            >
-                                                Envoyer
-                                            </a>
-                                            , and{' '}
-                                            <a
-                                                href="https://herd.laravel.com"
-                                                className="rounded-sm underline hover:text-black focus:outline-none focus-visible:ring-1 focus-visible:ring-[#FF2D20] dark:hover:text-white"
-                                            >
-                                                Herd
-                                            </a>{' '}
-                                            help you take your projects to the
-                                            next level. Pair them with powerful
-                                            open source libraries like{' '}
-                                            <a
-                                                href="https://laravel.com/docs/billing"
-                                                className="rounded-sm underline hover:text-black focus:outline-none focus-visible:ring-1 focus-visible:ring-[#FF2D20] dark:hover:text-white"
-                                            >
-                                                Cashier
-                                            </a>
-                                            ,{' '}
-                                            <a
-                                                href="https://laravel.com/docs/dusk"
-                                                className="rounded-sm underline hover:text-black focus:outline-none focus-visible:ring-1 focus-visible:ring-[#FF2D20] dark:hover:text-white"
-                                            >
-                                                Dusk
-                                            </a>
-                                            ,{' '}
-                                            <a
-                                                href="https://laravel.com/docs/broadcasting"
-                                                className="rounded-sm underline hover:text-black focus:outline-none focus-visible:ring-1 focus-visible:ring-[#FF2D20] dark:hover:text-white"
-                                            >
-                                                Echo
-                                            </a>
-                                            ,{' '}
-                                            <a
-                                                href="https://laravel.com/docs/horizon"
-                                                className="rounded-sm underline hover:text-black focus:outline-none focus-visible:ring-1 focus-visible:ring-[#FF2D20] dark:hover:text-white"
-                                            >
-                                                Horizon
-                                            </a>
-                                            ,{' '}
-                                            <a
-                                                href="https://laravel.com/docs/sanctum"
-                                                className="rounded-sm underline hover:text-black focus:outline-none focus-visible:ring-1 focus-visible:ring-[#FF2D20] dark:hover:text-white"
-                                            >
-                                                Sanctum
-                                            </a>
-                                            ,{' '}
-                                            <a
-                                                href="https://laravel.com/docs/telescope"
-                                                className="rounded-sm underline hover:text-black focus:outline-none focus-visible:ring-1 focus-visible:ring-[#FF2D20] dark:hover:text-white"
-                                            >
-                                                Telescope
-                                            </a>
-                                            , and more.
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-                        </main>
-
-                        <footer className="py-16 text-center text-sm text-black dark:text-white/70">
-                            Laravel v{laravelVersion} (PHP v{phpVersion})
-                        </footer>
-                    </div>
+            <div className='h-screen bg-white flex items-center justify-center w-full'>
+                <div className='bg-[#112A3B] h-full w-full flex items-center justify-center'>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="522" height="80" viewBox="0 0 522 80" fill="none">
+                        <path fill-rule="evenodd" clip-rule="evenodd" d="M14.7821 34.4052C13.2947 33.6819 11.5389 33.0883 9.69855 32.9289C13.0601 26.0528 19.7077 18.0064 30.7298 15.1154C29.6184 16.0401 28.5508 17.0626 27.5271 18.1828C24.2001 21.8784 21.8929 26.1284 20.6055 30.933C19.9668 33.3167 19.6243 35.5179 19.5781 37.5366C18.1437 36.3637 16.5125 35.2466 14.7821 34.4052ZM47.218 50.1522C47.891 50.0945 48.5615 50.0174 49.2289 49.9225C57.9837 48.6785 66.2313 44.3679 72.403 40.5759C73.7199 39.7668 75.1507 39.5337 76.3453 39.5063C77.5533 39.4786 78.7697 39.656 79.8701 39.8915C80.6627 40.0612 81.4744 40.2799 82.2676 40.5172C78.8247 35.8869 73.9742 30.4411 68.112 25.6866C65.8716 23.8696 63.5107 22.1751 61.049 20.6714C61.0074 20.8739 60.959 21.0781 60.9038 21.2842C60.3088 23.5048 59.1716 25.407 57.4923 26.9909C55.8533 28.5856 54.0399 29.7008 52.0521 30.3366C50.0643 30.9723 48.3032 31.0847 46.769 30.6736C46.123 30.5005 45.6212 30.1929 45.2636 29.7509C44.9464 29.3197 44.8473 28.8821 44.9663 28.438C45.0096 28.2765 45.1661 28.0155 45.4358 27.655C47.2016 25.7481 48.2739 24.0881 48.6525 22.675C48.923 21.6656 48.8002 20.8322 48.284 20.1746C47.819 19.4874 47.0616 19.0032 46.0119 18.7219C44.2354 18.2459 42.4488 18.373 40.652 19.1032C38.866 19.7931 37.3003 20.953 35.9548 22.5831C34.6201 24.1727 33.6877 25.9568 33.1576 27.9351C32.3895 30.8017 32.7606 33.4543 34.2708 35.8928C35.8323 38.3018 38.5308 40.0202 42.3664 41.0479C44.5063 41.6213 46.586 41.854 48.6055 41.746C50.6654 41.6489 52.349 41.0181 53.6562 39.8538C53.9958 39.5554 54.3675 39.4602 54.7713 39.5684C55.2961 39.7091 55.6955 40.0757 55.9694 40.6684C56.2837 41.2719 55.4384 43.9699 53.6562 45.5061C50.2365 48.4537 48.8325 49.4049 47.218 50.1522ZM3.00484 41.9109C3.38131 42.0005 3.75804 42.028 4.12426 42C5.14128 42.074 6.18349 41.7223 6.96112 40.9446C7.86976 40.036 9.15871 39.7573 11.6019 40.9453C14.0333 42.1276 16.4693 44.3312 17.942 46.0444L18.0314 46.1483L18.1282 46.2452C28.3208 56.4378 39.7777 58.6109 50.252 57.1226C60.4874 55.6681 69.7453 50.7389 76.1432 46.8132C76.1896 46.8025 76.3042 46.7815 76.5119 46.7767C76.9406 46.7669 77.5471 46.8314 78.3479 47.0028C79.8193 47.3177 81.428 47.8703 83.1069 48.4471L83.107 48.4471L83.1124 48.449C83.2985 48.5129 83.4855 48.5771 83.6732 48.6414C84.5567 48.9436 85.495 49.2576 86.3384 49.4796C87.0481 49.6663 88.2341 49.947 89.4005 49.7983C90.0397 49.7169 91.0917 49.4561 91.981 48.5615C92.9477 47.5889 93.2094 46.3934 93.1935 45.4797C93.1681 44.0132 92.4307 42.6664 91.9037 41.7939C88.3594 35.9267 81.6091 27.2698 72.6929 20.0384C63.798 12.8243 52.3829 6.73943 39.5912 6.73943C13.9354 6.73943 2.72787 27.3622 0.308816 37.532C-0.155902 39.4857 1.05115 41.4462 3.00484 41.9109Z" fill="#3FACD1" />
+                        <path d="M503.424 43.857V14.9027H512.635L512.723 18.4817H512.841C513.525 17.2691 514.445 16.2619 515.598 15.4601C516.772 14.6582 518.092 14.2573 519.559 14.2573C520.048 14.2573 520.527 14.2964 520.996 14.3747C521.485 14.4529 521.818 14.5311 521.994 14.6093V22.0606C521.642 21.9433 521.231 21.8553 520.761 21.7966C520.312 21.7379 519.813 21.7086 519.265 21.7086C517.955 21.7086 516.723 22.1095 515.569 22.9114C514.415 23.7132 513.535 24.7497 512.929 26.0209V43.857H503.424Z" fill="white" />
+                        <path d="M471.827 29.8054V28.8666C471.827 24.3685 473.225 20.7798 476.022 18.1004C478.818 15.4015 482.485 14.0521 487.023 14.0521C491.54 14.0521 495.041 15.3331 497.525 17.8951C500.028 20.4571 501.28 23.9773 501.28 28.4559V31.3308H477.43V26.1677H492.156V25.7277C492.156 24.2805 491.716 23.0679 490.836 22.0901C489.956 21.1122 488.675 20.6233 486.993 20.6233C485.077 20.6233 483.62 21.3176 482.622 22.7061C481.644 24.0947 481.155 25.8842 481.155 28.0746V30.0694C481.155 32.5336 481.684 34.4697 482.74 35.8779C483.815 37.2664 485.38 37.9607 487.433 37.9607C488.9 37.9607 490.142 37.6282 491.159 36.9633C492.195 36.2983 493.017 35.4769 493.623 34.4991L500.928 37.5793C499.989 39.7306 498.395 41.4516 496.146 42.7424C493.917 44.0136 491.051 44.6492 487.551 44.6492C482.603 44.6492 478.74 43.3096 475.963 40.6302C473.206 37.9509 471.827 34.3426 471.827 29.8054Z" fill="white" />
+                        <path d="M453.959 43.857V14.9027H463.17L463.258 18.4817H463.376C464.06 17.2691 464.979 16.2619 466.133 15.4601C467.307 14.6582 468.627 14.2573 470.094 14.2573C470.582 14.2573 471.062 14.2964 471.531 14.3747C472.02 14.4529 472.352 14.5311 472.528 14.6093V22.0606C472.176 21.9433 471.766 21.8553 471.296 21.7966C470.846 21.7379 470.348 21.7086 469.8 21.7086C468.49 21.7086 467.258 22.1095 466.104 22.9114C464.95 23.7132 464.07 24.7497 463.464 26.0209V43.857H453.959Z" fill="white" />
+                        <path d="M420.25 29.8054V28.8666C420.25 24.3685 421.687 20.7798 424.562 18.1004C427.437 15.4015 431.222 14.0521 435.915 14.0521C440.609 14.0521 444.393 15.4015 447.268 18.1004C450.143 20.7798 451.581 24.3685 451.581 28.8666V29.8054C451.581 34.3231 450.143 37.9314 447.268 40.6302C444.393 43.3096 440.609 44.6492 435.915 44.6492C431.222 44.6492 427.437 43.3096 424.562 40.6302C421.687 37.9314 420.25 34.3231 420.25 29.8054ZM429.784 28.4559V30.1867C429.784 32.5923 430.312 34.4795 431.368 35.8485C432.424 37.198 433.94 37.8727 435.915 37.8727C437.91 37.8727 439.426 37.198 440.462 35.8485C441.518 34.4795 442.046 32.5923 442.046 30.1867V28.4559C442.046 26.07 441.509 24.212 440.433 22.8821C439.377 21.5523 437.871 20.8873 435.915 20.8873C433.96 20.8873 432.444 21.5523 431.368 22.8821C430.312 24.212 429.784 26.07 429.784 28.4559Z" fill="white" />
+                        <path d="M408.396 43.8569V0H417.813V43.8569H408.396Z" fill="white" />
+                        <path d="M375.861 56.2654V14.9021H384.808L384.926 18.305L385.043 18.2757C385.728 17.1218 386.842 16.1635 388.387 15.4008C389.932 14.6185 391.683 14.2273 393.638 14.2273C397.354 14.2273 400.337 15.5279 402.586 18.129C404.854 20.7301 405.989 24.2895 405.989 28.8072V29.7459C405.989 34.2245 404.854 37.7937 402.586 40.4534C400.317 43.1132 397.354 44.4431 393.697 44.4431C391.741 44.4431 390.04 44.1302 388.593 43.5044C387.165 42.859 386.031 41.9887 385.19 40.8935V56.2654H375.861ZM385.19 33.9409C385.6 34.9579 386.295 35.8477 387.273 36.6105C388.25 37.3732 389.414 37.7546 390.763 37.7546C392.7 37.7546 394.137 37.0701 395.076 35.7011C396.015 34.3321 396.484 32.4937 396.484 30.186V28.4551C396.484 26.1278 396.015 24.309 395.076 22.9987C394.137 21.6688 392.7 21.0039 390.763 21.0039C389.355 21.0039 388.182 21.3755 387.243 22.1186C386.304 22.8618 385.62 23.7321 385.19 24.7295V33.9409Z" fill="white" />
+                        <path d="M345.114 43.8571L356.203 27.0184L358.198 26.9304L365.737 14.9028H374.186L363.684 31.2721L361.484 31.3601L353.592 43.8571H345.114ZM345.76 14.9028H355.939L363.537 27.0477L364.124 27.1944L375.125 43.8571H364.945L356.937 31.0961L356.35 30.9787L345.76 14.9028Z" fill="white" />
+                        <path d="M316.686 29.8054V28.8666C316.686 24.3685 318.084 20.7798 320.881 18.1004C323.678 15.4015 327.345 14.0521 331.882 14.0521C336.4 14.0521 339.9 15.3331 342.384 17.8951C344.887 20.4571 346.139 23.9773 346.139 28.4559V31.3308H322.289V26.1677H337.016V25.7277C337.016 24.2805 336.576 23.0679 335.695 22.0901C334.815 21.1122 333.534 20.6233 331.853 20.6233C329.936 20.6233 328.479 21.3176 327.481 22.7061C326.504 24.0947 326.015 25.8842 326.015 28.0746V30.0694C326.015 32.5336 326.543 34.4697 327.599 35.8779C328.674 37.2664 330.239 37.9607 332.293 37.9607C333.759 37.9607 335.001 37.6282 336.018 36.9633C337.055 36.2983 337.876 35.4769 338.482 34.4991L345.787 37.5793C344.848 39.7306 343.254 41.4516 341.005 42.7424C338.776 44.0136 335.911 44.6492 332.41 44.6492C327.462 44.6492 323.599 43.3096 320.822 40.6302C318.065 37.9509 316.686 34.3426 316.686 29.8054Z" fill="white" />
+                        <path d="M284.94 21.6788V14.9023H304.419V21.6788H284.94ZM289.34 35.0266V17.2198L289.487 16.6037V6.77628H298.61V33.6478C298.61 35.3297 298.865 36.4444 299.373 36.992C299.882 37.5201 300.644 37.7841 301.661 37.7841C302.131 37.7841 302.59 37.745 303.04 37.6668C303.51 37.569 303.959 37.4419 304.39 37.2854V43.7686C303.881 43.9642 303.128 44.15 302.131 44.326C301.153 44.502 299.979 44.59 298.61 44.59C295.716 44.59 293.447 43.8273 291.805 42.3018C290.162 40.7764 289.34 38.3513 289.34 35.0266Z" fill="white" />
+                        <path d="M257.89 34.5871L266.544 34.6751V35.2031C266.544 36.5526 266.994 37.5207 267.894 38.1074C268.793 38.6745 270.006 38.9581 271.531 38.9581C273.057 38.9581 274.181 38.7039 274.905 38.1954C275.648 37.6673 276.02 36.9339 276.02 35.9952C276.02 35.076 275.57 34.3817 274.67 33.9124C273.79 33.4234 271.913 32.8954 269.038 32.3282C265.42 31.6242 262.78 30.529 261.117 29.0426C259.474 27.5563 258.653 25.5713 258.653 23.0875C258.653 20.2126 259.807 17.9929 262.115 16.4283C264.442 14.8442 267.639 14.0521 271.707 14.0521C275.697 14.0521 278.855 14.8735 281.183 16.5163C283.53 18.1395 284.703 20.4277 284.703 23.3809V23.8502H276.049V23.3222C276.049 22.1683 275.668 21.3078 274.905 20.7406C274.162 20.1735 273.047 19.8899 271.561 19.8899C270.172 19.8899 269.165 20.1148 268.539 20.5646C267.913 21.0144 267.6 21.6403 267.6 22.4421C267.6 23.2244 268.04 23.86 268.92 24.3489C269.82 24.8183 271.727 25.3366 274.641 25.9037C278.357 26.5882 281.065 27.6443 282.767 29.072C284.488 30.4996 285.348 32.4651 285.348 34.9685C285.348 38.0976 284.185 40.4933 281.857 42.1557C279.53 43.8181 276.137 44.6492 271.678 44.6492C267.317 44.6492 263.933 43.8181 261.528 42.1557C259.142 40.4738 257.929 38.0976 257.89 35.0271V34.5871Z" fill="white" />
+                        <path d="M229.461 56.0021L229.491 49.5482C230.077 49.7047 230.684 49.822 231.309 49.9002C231.955 49.9785 232.571 50.0176 233.158 50.0176C234.527 50.0176 235.7 49.5775 236.678 48.6975C237.656 47.8174 238.497 46.1942 239.201 43.8277H239.054L227.672 14.9028H236.942L242.574 31.1547C242.809 31.8001 242.985 32.377 243.102 32.8855C243.239 33.394 243.376 33.9123 243.513 34.4403H243.66C243.777 33.9123 243.904 33.394 244.041 32.8855C244.178 32.377 244.354 31.8001 244.569 31.1547L250.29 14.9028H258.65L246.945 46.0573C245.498 49.8709 243.806 52.5893 241.87 54.2126C239.934 55.8358 237.48 56.6474 234.507 56.6474C233.334 56.6474 232.356 56.5985 231.573 56.5008C230.811 56.403 230.107 56.2367 229.461 56.0021Z" fill="white" />
+                        <path d="M217.519 43.8569V0H226.936V43.8569H217.519Z" fill="white" />
+                        <path d="M184.749 35.4379C184.749 32.3674 185.952 30.001 188.357 28.3386C190.763 26.6567 193.882 25.8158 197.715 25.8158H204.169V24.085C204.169 22.7746 203.837 21.7479 203.172 21.0047C202.526 20.242 201.421 19.8606 199.857 19.8606C198.292 19.8606 197.148 20.1833 196.424 20.8287C195.72 21.4545 195.368 22.2759 195.368 23.2929V23.8503L186.48 23.821V23.2342C186.48 20.5354 187.741 18.345 190.264 16.663C192.806 14.9616 196.18 14.1108 200.385 14.1108C204.648 14.1108 207.904 14.9322 210.153 16.575C212.403 18.1983 213.527 20.77 213.527 24.2903V37.286C213.527 38.479 213.625 39.6133 213.82 40.689C214.036 41.7451 214.339 42.6545 214.73 43.4172V43.8572H205.518C205.245 43.3879 205.02 42.8109 204.844 42.1264C204.668 41.4224 204.541 40.7183 204.462 40.0143C203.837 41.129 202.692 42.1264 201.03 43.0065C199.368 43.8866 197.285 44.3266 194.782 44.3266C191.809 44.3266 189.394 43.5834 187.536 42.0971C185.678 40.6107 184.749 38.391 184.749 35.4379ZM194.078 34.6752C194.078 35.9268 194.43 36.9047 195.134 37.6087C195.857 38.2932 196.943 38.6355 198.39 38.6355C199.954 38.6355 201.304 38.1172 202.438 37.0807C203.592 36.0246 204.169 34.8023 204.169 33.4137V30.8909H199.945C197.95 30.8909 196.473 31.2038 195.515 31.8296C194.557 32.4359 194.078 33.3844 194.078 34.6752Z" fill="white" />
+                        <path d="M164.887 21.6789V14.9024H184.366V21.6789H164.887ZM169.287 35.0266V17.2199L169.434 16.6038V6.77637H178.557V33.6479C178.557 35.3298 178.812 36.4445 179.32 36.9921C179.829 37.5202 180.591 37.7842 181.608 37.7842C182.078 37.7842 182.537 37.7451 182.987 37.6669C183.456 37.5691 183.906 37.4419 184.336 37.2855V43.7687C183.828 43.9643 183.075 44.15 182.078 44.3261C181.1 44.5021 179.926 44.5901 178.557 44.5901C175.663 44.5901 173.394 43.8274 171.751 42.3019C170.109 40.7764 169.287 38.3514 169.287 35.0266Z" fill="white" />
+                        <path d="M135.108 35.4379C135.108 32.3674 136.311 30.001 138.717 28.3386C141.122 26.6567 144.242 25.8158 148.075 25.8158H154.529V24.085C154.529 22.7746 154.196 21.7479 153.531 21.0047C152.886 20.242 151.781 19.8606 150.216 19.8606C148.652 19.8606 147.508 20.1833 146.784 20.8287C146.08 21.4545 145.728 22.2759 145.728 23.2929V23.8503L136.839 23.821V23.2342C136.839 20.5354 138.101 18.345 140.623 16.663C143.166 14.9616 146.54 14.1108 150.744 14.1108C155.008 14.1108 158.264 14.9322 160.513 16.575C162.762 18.1983 163.887 20.77 163.887 24.2903V37.286C163.887 38.479 163.984 39.6133 164.18 40.689C164.395 41.7451 164.698 42.6545 165.089 43.4172V43.8572H155.878C155.604 43.3879 155.379 42.8109 155.203 42.1264C155.027 41.4224 154.9 40.7183 154.822 40.0143C154.196 41.129 153.052 42.1264 151.39 43.0065C149.727 43.8866 147.644 44.3266 145.141 44.3266C142.168 44.3266 139.753 43.5834 137.895 42.0971C136.037 40.6107 135.108 38.391 135.108 35.4379ZM144.437 34.6752C144.437 35.9268 144.789 36.9047 145.493 37.6087C146.217 38.2932 147.302 38.6355 148.749 38.6355C150.314 38.6355 151.663 38.1172 152.798 37.0807C153.952 36.0246 154.529 34.8023 154.529 33.4137V30.8909H150.304C148.309 30.8909 146.833 31.2038 145.875 31.8296C144.916 32.4359 144.437 33.3844 144.437 34.6752Z" fill="white" />
+                        <path d="M105.096 29.8054V28.8666C105.096 24.2707 106.474 20.6526 109.232 18.0124C112.009 15.3722 115.715 14.0521 120.35 14.0521C124.848 14.0521 128.3 15.0886 130.706 17.1617C133.111 19.2152 134.392 21.9141 134.549 25.2583L134.578 25.8451H125.484V25.493C125.484 24.0849 125.064 22.9506 124.223 22.0901C123.382 21.2296 122.14 20.7993 120.497 20.7993C118.58 20.7993 117.123 21.474 116.126 22.8235C115.128 24.1729 114.63 26.0504 114.63 28.4559V30.2161C114.63 32.5825 115.109 34.46 116.067 35.8485C117.045 37.2371 118.512 37.9314 120.468 37.9314C122.228 37.9314 123.499 37.4913 124.281 36.6113C125.083 35.7116 125.494 34.5969 125.513 33.267V32.915H134.578V33.4137C134.539 36.7188 133.287 39.4177 130.823 41.5103C128.378 43.6029 124.897 44.6492 120.38 44.6492C115.764 44.6492 112.058 43.3193 109.261 40.6596C106.484 37.9998 105.096 34.3817 105.096 29.8054Z" fill="white" />
+                        <path d="M508.091 79.8044V65.2669H511.316L518.817 74.7468H518.891V65.2669H521.993V79.8044H519.013L511.219 69.9336H511.194V79.8044H508.091Z" fill="#3FACD1" />
+                        <path d="M497.544 80C495.964 80 494.588 79.6905 493.415 79.0716C492.259 78.4363 491.355 77.5567 490.703 76.4328C490.068 75.3089 489.75 74.0058 489.75 72.5236C489.75 71.0251 490.076 69.722 490.728 68.6144C491.395 67.4905 492.316 66.619 493.488 66.0001C494.661 65.3811 496.013 65.0716 497.544 65.0716C499.124 65.0716 500.493 65.3892 501.649 66.0245C502.822 66.6435 503.726 67.5149 504.361 68.6388C505.013 69.7464 505.338 71.0495 505.338 72.548C505.338 74.0303 505.004 75.3334 504.337 76.4573C503.685 77.5649 502.773 78.4363 501.6 79.0716C500.444 79.6905 499.092 80 497.544 80ZM497.544 77.1169C498.456 77.1169 499.255 76.9459 499.939 76.6039C500.639 76.2618 501.177 75.7569 501.551 75.089C501.942 74.4049 502.138 73.5498 502.138 72.5236C502.138 71.4974 501.95 70.6504 501.576 69.9826C501.201 69.2985 500.664 68.7935 499.963 68.4678C499.279 68.1257 498.473 67.9547 497.544 67.9547C496.632 67.9547 495.826 68.1257 495.125 68.4678C494.441 68.7935 493.904 69.2985 493.513 69.9826C493.138 70.6667 492.951 71.5219 492.951 72.548C492.951 73.5579 493.138 74.4049 493.513 75.089C493.888 75.7731 494.417 76.2862 495.101 76.6283C495.801 76.9541 496.616 77.1169 497.544 77.1169Z" fill="#3FACD1" />
+                        <path d="M483.871 79.8042V65.2667H486.999V79.8042H483.871Z" fill="#3FACD1" />
+                        <path d="M473.3 79.8042V68.0032H468.169V65.2667H481.534V68.0032H476.427V79.8042H473.3Z" fill="#3FACD1" />
+                        <path d="M453.819 79.8042L459.658 65.2667H463.274L469.163 79.8042H465.767L461.491 68.5407H461.418L457.069 79.8042H453.819ZM457.679 77.0921V74.5023H465.229V77.0921H457.679Z" fill="#3FACD1" />
+                        <path d="M437.962 79.8042V65.2667H441.187L448.688 74.7466H448.761V65.2667H451.864V79.8042H448.883L441.089 69.9333H441.065V79.8042H437.962Z" fill="#3FACD1" />
+                        <path d="M427.415 80C425.835 80 424.459 79.6905 423.286 79.0716C422.129 78.4363 421.225 77.5567 420.574 76.4328C419.939 75.3089 419.621 74.0058 419.621 72.5236C419.621 71.0251 419.947 69.722 420.598 68.6144C421.266 67.4905 422.186 66.619 423.359 66.0001C424.532 65.3811 425.884 65.0716 427.415 65.0716C428.995 65.0716 430.363 65.3892 431.52 66.0245C432.693 66.6435 433.597 67.5149 434.232 68.6388C434.883 69.7464 435.209 71.0495 435.209 72.548C435.209 74.0303 434.875 75.3334 434.207 76.4573C433.556 77.5649 432.644 78.4363 431.471 79.0716C430.314 79.6905 428.962 80 427.415 80ZM427.415 77.1169C428.327 77.1169 429.125 76.9459 429.809 76.6039C430.51 76.2618 431.047 75.7569 431.422 75.089C431.813 74.4049 432.008 73.5498 432.008 72.5236C432.008 71.4974 431.821 70.6504 431.446 69.9826C431.072 69.2985 430.534 68.7935 429.834 68.4678C429.15 68.1257 428.344 67.9547 427.415 67.9547C426.503 67.9547 425.697 68.1257 424.996 68.4678C424.312 68.7935 423.775 69.2985 423.384 69.9826C423.009 70.6667 422.822 71.5219 422.822 72.548C422.822 73.5579 423.009 74.4049 423.384 75.089C423.758 75.7731 424.288 76.2862 424.972 76.6283C425.672 76.9541 426.487 77.1169 427.415 77.1169Z" fill="#3FACD1" />
+                        <path d="M403.698 79.8044V65.2669H409.44C411.052 65.2669 412.461 65.5438 413.666 66.0976C414.888 66.6515 415.833 67.4659 416.501 68.5409C417.185 69.616 417.527 70.9516 417.527 72.5479C417.527 74.0627 417.185 75.3658 416.501 76.4571C415.833 77.5321 414.88 78.3629 413.642 78.9492C412.404 79.5193 410.938 79.8044 409.244 79.8044H403.698ZM406.825 77.0679H409.342C410.433 77.0679 411.345 76.8969 412.078 76.5548C412.828 76.1965 413.39 75.6834 413.764 75.0156C414.139 74.3478 414.326 73.5252 414.326 72.5479C414.326 71.3588 414.106 70.4385 413.666 69.787C413.243 69.1192 412.657 68.6549 411.907 68.3943C411.158 68.1337 410.303 68.0034 409.342 68.0034H406.825V77.0679Z" fill="#3FACD1" />
+                        <path d="M397.158 79.8044V65.2669H400.286V79.8044H397.158Z" fill="#3FACD1" />
+                        <path d="M383.939 79.8042V65.2667H387.066V77.0677H394.958V79.8042H383.939Z" fill="#3FACD1" />
+                        <path d="M366.636 79.8044V74.9178L360.503 65.2669H364.29L368.175 71.6439H368.273L372.158 65.2669H375.823L369.763 74.8934V79.8044H366.636Z" fill="#3FACD1" />
+                        <path d="M346.929 79.8044V65.2669H354.332C355.88 65.2669 357.044 65.6416 357.826 66.3908C358.624 67.1238 359.023 68.0441 359.023 69.1517C359.023 69.8358 358.893 70.4467 358.632 70.9842C358.372 71.5217 357.916 71.9533 357.264 72.2791V72.3036C357.948 72.5153 358.51 72.8981 358.95 73.4519C359.406 74.0057 359.634 74.6572 359.634 75.4065C359.634 76.7259 359.194 77.7928 358.315 78.6072C357.435 79.4053 356.181 79.8044 354.552 79.8044H346.929ZM350.057 77.1657H354.186C354.821 77.1657 355.35 77.0435 355.774 76.7992C356.214 76.5386 356.433 76.0418 356.433 75.3088C356.433 74.7387 356.254 74.307 355.896 74.0138C355.538 73.7206 355.025 73.5741 354.357 73.5741H350.057V77.1657ZM350.057 71.1796H354.161C354.78 71.1796 355.253 71.0412 355.578 70.7643C355.904 70.4711 356.067 70.0476 356.067 69.4938C356.067 68.9726 355.896 68.5735 355.554 68.2966C355.212 68.0034 354.682 67.8568 353.966 67.8568H350.057V71.1796Z" fill="#3FACD1" />
+                    </svg>
                 </div>
             </div>
         </>

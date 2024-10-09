@@ -101,9 +101,9 @@ services:
                 - pg_isready
                 - '-q'
                 - '-d'
-                - '${DB_DATABASE}'
+                - 'explorerweb'
                 - '-U'
-                - '${DB_USERNAME}'
+                - 'catalystexplorer'
             retries: 3
             timeout: 5s
 
