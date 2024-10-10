@@ -27,6 +27,7 @@ services:
             XDG_CONFIG_HOME:  /var/www/caddy 
             XDG_DATA_HOME:  /var/www/caddy 
             OCTANE_WATCH: true
+            APP_SERVICE: catalystexplorer.com
         volumes:
             - ./application:/var/www:cached
         networks:
@@ -64,6 +65,7 @@ services:
             POSTGRESQL_WEB_PASSWORD: ASLJ023470AlserLFH
             MEDIA_DISK: public
             TELESCOPE_USE_DARK_THEME: "true"
+            APP_SERVICE: catalystexplorer.com
         build:
             context: ./docker
             args: {}
