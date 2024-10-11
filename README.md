@@ -46,10 +46,6 @@ The CatalystExplorer project is currently in active development.
 
 * [watch](#watch)
 
-* [docker-setup](#docker-setup)
-
-* [backend-setup](#backend-setup)
-
 * [backend-install](#backend-install)
 
 * [frontend-install](#frontend-install)
@@ -64,23 +60,10 @@ The CatalystExplorer project is currently in active development.
 * 
 * [test](#test)
 
-## dev
-`make dev`  
-Runs docker services in the background, 
-installs composer dependencies, and generates application key.
 
 ## watch
 `make watch`  
 Starts vite dev server and watches for changes.
-
-## docker-setup
-`make docker-setup`  
-Runs docker services in the background.
-
-## backend-setup
-`make backend-setup`  
-Installs laravel composer dependencies,
-and generates application key.
 
 ## backend-install
 `make backend-install`  
