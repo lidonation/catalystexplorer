@@ -1,9 +1,13 @@
+include application/.env
+
 sail := application/vendor/bin/sail
 
-$(eval $(shell sed 's/ *#.*$$//; s/^ *//; s/ *$$//; /^$$/d' application/.env | xargs))
+$(eval $(shell sed 's/ *#.*$$//; s/^ *//; s/ *$$//; /^$$/d' ./application/.env | xargs))
 
 .PHONY: init
 init:
+	cp application/.env.example application/.env
+
 	docker run --rm --interactive --tty \
 		--volume ${PWD}/application:/app \
 		--workdir /app \
@@ -16,8 +20,7 @@ init:
           composer install --ignore-platform-reqs
 
 	sudo chown -R $(id -u -n):$(id -g -n) ${PWD}/application/vendor
-	cp application/.env.example application/.env
-
+ 
 	make up
 	sleep 10
 	$(sail) artisan key:generate
