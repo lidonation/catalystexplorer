@@ -1,20 +1,28 @@
 include application/.env
+
 sail := application/vendor/bin/sail
 
-$(eval export $(shell sed -ne 's/ *#.*$$//; /./ s/=.*$$// p' application/.env))
+$(eval $(shell sed 's/ *#.*$$//; s/^ *//; s/ *$$//; /^$$/d' ./application/.env | xargs))
 
 .PHONY: init
 init:
+	cp application/.env.example application/.env
+
+	docker run --rm --interactive --tty \
+		--volume ${PWD}/application:/app \
+		--workdir /app \
+		--user root \
+		node:18-alpine yarn install --ignore-engine
+
+
 	docker run --rm --interactive --tty \
           --volume ${PWD}/application:/app \
           composer install --ignore-platform-reqs
 
 	sudo chown -R $(id -u -n):$(id -g -n) ${PWD}/application/vendor
-	cp application/.env.example application/.env
-
+ 
 	make up
-	sleep 20
-	make -j2 backend-install frontend-install
+	sleep 10
 	$(sail) artisan key:generate
 	make migrate
 
@@ -28,7 +36,11 @@ backend-install:
 .PHONY: frontend-install
 frontend-install:
 	make frontend-clean
-	$(sail) yarn install
+	docker run --rm --interactive --tty \
+		--volume ${PWD}/application:/app \
+		--workdir /app \
+		--user root \
+		node:18-alpine yarn install --ignore-engine
 
 .PHONY: restart
 restart:

@@ -32,48 +32,68 @@ The CatalystExplorer project is currently in active development.
 
 
 
-## Installation
-1. **Clone the Repository:**
-   ```bash
-   git clone https://github.com/your-organization/catalystexplorer.git
-   cd catalystexplorer
-   ```
+### Get up and running
+1) Clone this repository: `https://gitlab.lidonation.com/lidonation/www.catalystexplorer.com.git`    
+2) cd into the project directory: `cd www.catalystexplorer.com`  
+2) copy thr example.env to the .env file `cp application/.env.example application/.env`
+4) Run `make init` to install all frontend and backend dependencies and start the docker services.
+5) Run `make vite` to start the vite dev server and watch for changes.
+7) Navigate to `http://localhost` in your browser.         
 
-2. **Install Backend Dependencies:**
-   ```bash
-   composer install
-   ```
 
-3. **Install Frontend Dependencies:**
-   ```bash
-   yarn install
-   ```
+# Makefile Commands
+* [dev](#dev)
 
-4. **Configure Environment Variables:**
-   copy `.env.example` to `.env` and update the following variables:
+* [watch](#watch)
 
-   ```
-   DB_CONNECTION=pgsql
-   DB_HOST=127.0.0.1
-   DB_PORT=5432
-   DB_DATABASE=catalystexplorer
-   DB_USERNAME=your_postgres_user
-   DB_PASSWORD=your_postgres_password
-   ```
+* [backend-install](#backend-install)
 
-5. **Run Migrations and Seed Database:**
-   ```bash
-   php artisan migrate --seed
-   ```
+* [frontend-install](#frontend-install)
 
-6. **Start the Development Server:**
-   ```bash
-   php artisan serve
-   npm run dev
-   ```
+* [frontend-clean](#frontend-clean)
 
-7. **Access the Application:**
-   Open [http://localhost:8000](http://localhost:8000) in your browser.
+* [rm](#rm)
+ 
+* [down](#down)
+
+* [up](#up)
+* 
+* [test](#test)
+
+
+## watch
+`make watch`  
+Starts vite dev server and watches for changes.
+
+## backend-install
+`make backend-install`  
+Installs laravel composer dependencies.
+
+## frontend-install
+`make frontend-install`  
+Delete and reinstall node_modules.
+
+## frontend-clean
+`make frontend-clean`  
+Delete node_modules, lock files and yarn cache.
+
+## rm
+`make rm`  
+remove all docker containers and volumes.
+
+## down
+`make down`  
+shutdown all docker containers but keep volumes.
+
+## up
+`make up`  
+start docker containers.
+
+
+## test-backend
+`make test-backend`  
+Run pest php tests.
+
 
 ## Contributing
 We welcome contributions from the community! Please check out our [Contribution Guidelines](CONTRIBUTING.md) for more information.
