@@ -53,7 +53,6 @@ The CatalystExplorer project is currently in active development.
 * [rm](#rm)
 * [down](#down)
 * [up](#up)
-*
 * [test](#test)
 
 ## watch
