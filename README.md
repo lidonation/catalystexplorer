@@ -29,10 +29,10 @@ CatalystExplorer aims to make Project Catalyst data more accessible and actionab
 The CatalystExplorer project is currently in active development.
 
 **Badges:**
-![Build Status](https://img.shields.io/github/actions/workflow/status/lidonation/catalystexplorer/ci.yml?branch=main)
-![Test Coverage](https://img.shields.io/codecov/c/github/lidonation/catalystexplorer)
+![Build Status](https://img.shields.io/gitlab/pipeline-status/lidonation%2Fwww.catalystexplorer.com?gitlab_url=https%3A%2F%2Fgitlab.lidonation.com%2F&branch=main)
+![Test Coverage](https://img.shields.io/codecov/c/github/lidonation%2Fwww.catalystexplorer.com/main)
 ![License](https://img.shields.io/badge/license-Apache%202.0-blue)
-![GitHub issues](https://img.shields.io/github/issues/lidonation/catalystexplorer)
+![GitHub issues](https://img.shields.io/gitlab/issues/open/lidonation%2Fwww.catalystexplorer.com?gitlab_url=https%3A%2F%2Fgitlab.lidonation.com%2F&labelColor=orange&color=green)
 
 ### Get up and running
 
