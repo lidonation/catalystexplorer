@@ -29,10 +29,10 @@ CatalystExplorer aims to make Project Catalyst data more accessible and actionab
 The CatalystExplorer project is currently in active development.
 
 **Badges:**
-![Gitlab Pipeline Status](https://img.shields.io/gitlab/pipeline-status/lidonation%2Fwww.catalystexplorer.com?gitlab_url=https%3A%2F%2Fgitlab.lidonation.com%2F&branch=main&link=https%3A%2F%2Fgitlab.lidonation.com%2Flidonation%2Fwww.catalystexplorer.com%2F-%2Fpipelines)
+[![Gitlab Pipeline Status](https://img.shields.io/gitlab/pipeline-status/lidonation%2Fwww.catalystexplorer.com?gitlab_url=https%3A%2F%2Fgitlab.lidonation.com%2F&branch=main)](https://gitlab.lidonation.com/lidonation/www.catalystexplorer.com/-/pipelines)
 ![Test Coverage](https://img.shields.io/codecov/c/github/lidonation%2Fwww.catalystexplorer.com/main)
-![GitLab License](https://img.shields.io/gitlab/license/lidonation%2Fwww.catalystexplorer.com?gitlab_url=https%3A%2F%2Fgitlab.lidonation.com%2F&color=blue&link=https%3A%2F%2Fgitlab.lidonation.com%2Flidonation%2Fwww.catalystexplorer.com%2F-%2Fblob%2Fmain%2FLICENSE.md%3Fref_type%3Dheads)
-![GitLab Issues](https://img.shields.io/gitlab/issues/all/lidonation%2Fwww.catalystexplorer.com?gitlab_url=https%3A%2F%2Fgitlab.lidonation.com%2F&labelColor=orange&color=green&link=https%3A%2F%2Fgitlab.lidonation.com%2Flidonation%2Fwww.catalystexplorer.com%2F-%2Fissues)
+[![GitLab License](https://img.shields.io/gitlab/license/lidonation%2Fwww.catalystexplorer.com?gitlab_url=https%3A%2F%2Fgitlab.lidonation.com%2F&color=blue)](https://gitlab.lidonation.com/lidonation/www.catalystexplorer.com/-/blob/main/LICENSE.md?ref_type=heads)
+[![GitLab Issues](https://img.shields.io/gitlab/issues/all/lidonation%2Fwww.catalystexplorer.com?gitlab_url=https%3A%2F%2Fgitlab.lidonation.com%2F&labelColor=orange&color=green)](https://gitlab.lidonation.com/lidonation/www.catalystexplorer.com/-/issues)
 
 ### Get up and running
 
