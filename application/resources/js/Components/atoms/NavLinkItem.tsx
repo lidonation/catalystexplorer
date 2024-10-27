@@ -18,7 +18,7 @@ export default function NavLinkItem({
     return (
         <Link
             href={href}
-            className={`flex items-center gap-3 px-3 py-2 ${active ? 'bg-background-secondary rounded-md' : ''} ${className}`}
+            className={`flex items-center gap-3 px-3 py-1 ${active ? 'bg-background-secondary rounded-md' : ''} ${className}`}
         >
             {children}
             <p

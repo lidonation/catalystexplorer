@@ -16,6 +16,7 @@ export default function MenuIcon({
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
         >
+            <title>Menu Toggle Icon</title>
             <path
                 d="M3.5 12H15.5M3.5 6H21.5M3.5 18H21.5"
                 stroke={color}
