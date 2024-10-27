@@ -48,7 +48,7 @@ export default function AppLayout({ children }: { children: ReactNode }) {
             {/* Sidebar for larger screens */}
             <aside
                 className="hidden sm:fixed sm:inset-y-0 sm:z-30 sm:flex sm:w-72 sm:flex-col"
-                aria-label="Sidebar Navigation"
+                aria-label="sidebar navigation"
             >
                 <section className="flex grow flex-col gap-6 overflow-y-auto sm:pt-8">
                     <div className="flex h-6 shrink-0 items-center px-6">
@@ -73,7 +73,7 @@ export default function AppLayout({ children }: { children: ReactNode }) {
                             onClick={() => setSidebarOpen(!sidebarOpen)}
                             className="inline-flex items-center rounded px-1 text-sm hover:bg-gray-100"
                             aria-label={
-                                sidebarOpen ? 'Close sidebar' : 'Open sidebar'
+                                sidebarOpen ? 'close sidebar' : 'open sidebar'
                             }
                             aria-expanded={sidebarOpen}
                             aria-controls="mobile-navigation"
@@ -87,7 +87,7 @@ export default function AppLayout({ children }: { children: ReactNode }) {
                 <main
                     id="main-content"
                     className="bg-background-secondary sm:mt-2 sm:rounded-tl-4xl"
-                    aria-describedby="main-content-section"
+                    aria-describedby="main content section"
                 >
                     {children}
                 </main>

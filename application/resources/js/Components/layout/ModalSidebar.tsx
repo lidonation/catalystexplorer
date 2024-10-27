@@ -1,5 +1,5 @@
 import useEscapeKey from '@/Hooks/useEscapeKey';
-import { ReactNode, useState, useRef, useEffect } from 'react';
+import { ReactNode, useEffect, useRef, useState } from 'react';
 import CatalystLogo from '../atoms/CatalystLogo';
 import CloseIcon from '../svgs/CloseIcon';
 
@@ -25,9 +25,7 @@ function ModalSidebar({ isOpen = false, title, children }: ModalSidebarProps) {
     return (
         <aside
             role="dialog"
-            aria-labelledby="modal-sidebar-title"
             aria-modal="true"
-            tabIndex={-1}
             ref={sidebarRef}
             className={`${isSideBarOpen ? 'block' : 'hidden'} fixed inset-0 z-40`}
         >
@@ -40,7 +38,8 @@ function ModalSidebar({ isOpen = false, title, children }: ModalSidebarProps) {
 
             {/* Sidebar Modal */}
             <div
-                className="fixed right-0 top-0 z-50 h-full w-full bg-background-primary shadow-lg sm:w-96 focus:outline-none"
+                className="fixed right-0 top-0 z-50 h-full w-full bg-background-primary shadow-lg focus:outline-none sm:w-96"
+                aria-labelledby="modal sidebar"
                 tabIndex={0}
             >
                 <header className="flex items-center justify-between border-b border-gray-200 px-6 py-4">
@@ -53,7 +52,7 @@ function ModalSidebar({ isOpen = false, title, children }: ModalSidebarProps) {
                     <button
                         className="inline-flex items-center rounded p-2 text-sm hover:bg-gray-100"
                         onClick={() => setIsSideBarOpen(false)}
-                        aria-label="Close sidebar"
+                        aria-label="close sidebar"
                     >
                         <CloseIcon width={14} height={14} />
                     </button>
@@ -64,7 +63,7 @@ function ModalSidebar({ isOpen = false, title, children }: ModalSidebarProps) {
                         <CatalystLogo className="object-contain" />
                     </div>
                     <section
-                        aria-describedby="modal-sidebar-content"
+                        aria-describedby="modal sidebar content."
                         className="overflow-y-auto"
                     >
                         {children}
