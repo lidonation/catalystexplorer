@@ -25,6 +25,7 @@ function ModalSidebar({ isOpen = false, title, children }: ModalSidebarProps) {
     return (
         <aside
             role="dialog"
+            aria-labelledby="modal-sidebar-title"
             aria-modal="true"
             ref={sidebarRef}
             className={`${isSideBarOpen ? 'block' : 'hidden'} fixed inset-0 z-40`}
@@ -39,7 +40,6 @@ function ModalSidebar({ isOpen = false, title, children }: ModalSidebarProps) {
             {/* Sidebar Modal */}
             <div
                 className="fixed right-0 top-0 z-50 h-full w-full bg-background-primary shadow-lg focus:outline-none sm:w-96"
-                aria-labelledby="modal sidebar"
                 tabIndex={0}
             >
                 <header className="flex items-center justify-between border-b border-gray-200 px-6 py-4">
@@ -52,7 +52,7 @@ function ModalSidebar({ isOpen = false, title, children }: ModalSidebarProps) {
                     <button
                         className="inline-flex items-center rounded p-2 text-sm hover:bg-gray-100"
                         onClick={() => setIsSideBarOpen(false)}
-                        aria-label="close sidebar"
+                        aria-label="Close sidebar"
                     >
                         <CloseIcon width={14} height={14} />
                     </button>
@@ -62,12 +62,7 @@ function ModalSidebar({ isOpen = false, title, children }: ModalSidebarProps) {
                     <div className="mt-6 flex h-6 shrink-0 items-center justify-center px-6">
                         <CatalystLogo className="object-contain" />
                     </div>
-                    <section
-                        aria-describedby="modal sidebar content."
-                        className="overflow-y-auto"
-                    >
-                        {children}
-                    </section>
+                    <section className="overflow-y-auto">{children}</section>
                 </div>
             </div>
         </aside>

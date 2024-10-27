@@ -52,12 +52,17 @@ export default function ThemeSwitcher() {
     };
 
     return (
-        <fieldset className="border-background flex flex-col items-center gap-2 rounded border pb-2">
-            <legend className="text-content-primary">Change Theme Color</legend>
+        <fieldset
+            className="border-background flex flex-col items-center gap-2 rounded border pb-2"
+            aria-labelledby="theme-legend"
+        >
+            <legend id="theme-legend" className="text-content-primary">
+                Change Theme Color
+            </legend>
             <div
                 className="flex space-x-2"
                 role="group"
-                aria-label="Theme Options"
+                aria-label="Theme options"
             >
                 {(['light', 'dark', 'voltaire'] as const).map((mode) => (
                     <button

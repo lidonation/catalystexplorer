@@ -11,7 +11,7 @@ function AppNavigation() {
     return (
         <nav
             className="flex flex-col justify-between"
-            aria-label="sidebar navigation"
+            aria-label="Sidebar navigation"
         >
             <ul className="flex flex-1 flex-col space-y-2 px-4">
                 <li>

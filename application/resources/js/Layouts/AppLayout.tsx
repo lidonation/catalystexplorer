@@ -21,7 +21,7 @@ export default function AppLayout({ children }: { children: ReactNode }) {
                 open={sidebarOpen}
                 onClose={() => setSidebarOpen(false)}
                 className="relative z-30 sm:hidden"
-                aria-labelledby="mobile-navigation"
+                aria-label="Mobile sidebar navigation"
             >
                 <div className="fixed inset-0 top-16 flex">
                     <DialogPanel
@@ -30,7 +30,7 @@ export default function AppLayout({ children }: { children: ReactNode }) {
                     >
                         <aside
                             className="flex grow flex-col justify-between bg-background-primary px-4"
-                            aria-label="Mobile Navigation"
+                            aria-label="Mobile navigation"
                         >
                             <section>
                                 <AppNavigation />
@@ -73,7 +73,7 @@ export default function AppLayout({ children }: { children: ReactNode }) {
                             onClick={() => setSidebarOpen(!sidebarOpen)}
                             className="inline-flex items-center rounded px-1 text-sm hover:bg-gray-100"
                             aria-label={
-                                sidebarOpen ? 'close sidebar' : 'open sidebar'
+                                sidebarOpen ? 'Close sidebar' : 'Open sidebar'
                             }
                             aria-expanded={sidebarOpen}
                             aria-controls="mobile-navigation"
@@ -87,7 +87,6 @@ export default function AppLayout({ children }: { children: ReactNode }) {
                 <main
                     id="main-content"
                     className="bg-background-secondary sm:mt-2 sm:rounded-tl-4xl"
-                    aria-describedby="main content section"
                 >
                     {children}
                 </main>
