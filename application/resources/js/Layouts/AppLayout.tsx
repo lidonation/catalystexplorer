@@ -25,7 +25,7 @@ export default function AppLayout({ children }: { children: ReactNode }) {
                 open={sidebarOpen}
                 onClose={() => setSidebarOpen(false)}
                 className="relative z-30 sm:hidden"
-                aria-label="Mobile sidebar navigation"
+                aria-label={t('navigation.mobile.sidebar')}
             >
                 <div className="fixed inset-0 top-16 flex">
                     <DialogPanel
@@ -34,7 +34,7 @@ export default function AppLayout({ children }: { children: ReactNode }) {
                     >
                         <aside
                             className="flex grow flex-col justify-between bg-background-primary px-4"
-                            aria-label="Mobile navigation"
+                            aria-label={t('navigation.mobile.content')}
                         >
                             <section>
                                 <AppNavigation />
@@ -52,7 +52,7 @@ export default function AppLayout({ children }: { children: ReactNode }) {
             {/* Sidebar for larger screens */}
             <aside
                 className="hidden sm:fixed sm:inset-y-0 sm:z-30 sm:flex sm:w-72 sm:flex-col"
-                aria-label="sidebar navigation"
+                aria-label={t('navigation.desktop.sidebar')}
             >
                 <section className="flex grow flex-col gap-6 overflow-y-auto sm:pt-8">
                     <div className="flex h-6 shrink-0 items-center px-6">
@@ -75,7 +75,9 @@ export default function AppLayout({ children }: { children: ReactNode }) {
                         <Button
                             onClick={() => setSidebarOpen(!sidebarOpen)}
                             ariaLabel={
-                                sidebarOpen ? 'Close sidebar' : 'Open sidebar'
+                                sidebarOpen
+                                    ? t('navigation.sidebar.close')
+                                    : t('navigation.sidebar.open')
                             }
                             aria-expanded={sidebarOpen}
                             aria-controls="mobile-navigation"

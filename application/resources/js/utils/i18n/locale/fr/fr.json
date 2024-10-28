@@ -1,3 +1,97 @@
 {
-    "Welcome to React": "Bienvenue à React et react-i18next"
+    "app": {
+        "name": "Catalyst Explorer",
+        "contactEmail": "support@lidonation.com",
+        "appLogoAlt": "Logo de Catalyst Explore."
+    },
+    "navigation": {
+        "mobile": {
+            "sidebar": "Section de navigation de la barre latérale mobile",
+            "content": "Liens de navigation mobile"
+        },
+        "desktop": {
+            "sidebar": "Section de navigation de la barre latérale"
+        },
+        "sidebar": {
+            "open": "Ouvrir la barre latérale",
+            "close": "Fermer la barre latérale"
+        },
+        "links": {
+            "home": "Accueil",
+            "proposals": "Propositions",
+            "funds": "Fonds",
+            "people": "Personnes",
+            "charts": "Graphiques",
+            "jormungandr": "Jormungandr",
+            "activeFund": "Fonds Actif",
+            "bookmarks": "Mes Signets",
+            "votes": "Mes Votes",
+            "knowledgeBase": "Base de Connaissances",
+            "support": "Support"
+        }
+    },
+    "theme": {
+        "changeColor": "Changer la couleur du thème",
+        "options": "Options de thème",
+        "light": "Clair",
+        "dark": "Sombre",
+        "voltaire": "Voltaire",
+        "changeMode": "Passer au thème {{mode}}"
+    },
+    "icons": {
+        "titles": {
+            "barLine": "Icône de graphique en barres",
+            "bookmark": "Icône de signet",
+            "bucket": "Icône de seau",
+            "chart": "Icône de graphique",
+            "check": "Icône de vérification",
+            "close": "Icône de fermeture",
+            "darkMode": "Icône de mode sombre",
+            "folder": "Icône de dossier",
+            "home": "Icône d'accueil",
+            "lightMode": "Icône de mode clair",
+            "logOut": "Icône de déconnexion",
+            "mail": "Icône de courrier",
+            "menu": "Icône de menu",
+            "note": "Icône de note",
+            "notificationBox": "Icône de boîte de notification",
+            "people": "Icône de personnes",
+            "voltaireMode": "Icône de mode Voltaire"
+        }
+    },
+    "footer": {
+        "links": {
+            "proposals": "Propositions",
+            "allProposals": "Toutes les propositions",
+            "proposalReviews": "Évaluations des propositions",
+            "monthlyReports": "Rapports Mensuels",
+            "funds": "Fonds",
+
+            "people": "Personnes",
+            "proposers": "Proposeurs",
+            "groups": "Groupes",
+            "communities": "Communautés",
+            "dReps": "dReps",
+
+            "data": "Données",
+            "numbers": "Chiffres",
+            "ccv4Votes": "Votes CCV4",
+            "catalystAPI": "API Catalyst",
+            "proposalCSVs": "CSVs de propositions",
+
+            "social": "Social",
+            "twitter": "Twitter",
+            "linkedIn": "LinkedIn",
+            "facebook": "Facebook",
+            "github": "Github",
+
+            "legal": "Légal",
+            "terms": "Conditions Générales",
+            "privacy": "Confidentialité",
+            "cookies": "Cookies",
+            "licenses": "Licences",
+
+            "copyright": "© 2024 Explorateur Catalyst. Tous droits réservés."
+        }
+    }
 }

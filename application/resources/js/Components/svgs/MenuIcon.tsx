@@ -1,3 +1,5 @@
+import { useTranslation } from 'react-i18next';
+
 type MenuIconProps = {
     color?: string;
     width?: number;
@@ -8,6 +10,7 @@ export default function MenuIcon({
     width = 24,
     height = 24,
 }: MenuIconProps) {
+    const { t } = useTranslation();
     return (
         <svg
             width={width}
@@ -16,7 +19,7 @@ export default function MenuIcon({
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
         >
-            <title>Menu Toggle Icon</title>
+            <title> {t('icons.title.menu')}</title>
             <path
                 d="M3.5 12H15.5M3.5 6H21.5M3.5 18H21.5"
                 stroke={color}

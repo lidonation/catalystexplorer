@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import NavLinkItem from '../atoms/NavLinkItem';
 import BookMarkCheckIcon from '../svgs/BookMarkCheckIcon';
 import BucketIcon from '../svgs/BucketIcon';
@@ -5,25 +6,26 @@ import FolderIcon from '../svgs/FolderIcon';
 import MailIcon from '../svgs/MailIcon';
 
 function UserNavigation() {
+    const { t } = useTranslation();
     const navItems = [
         {
             href: '/bookmarks',
-            title: 'My Bookmarks',
+            title: t('navigation.links.bookmarks'),
             icon: <BookMarkCheckIcon className="text-content-tertiary" />,
         },
         {
             href: '/votes',
-            title: 'My Votes',
+            title: t('navigation.links.votes'),
             icon: <BucketIcon className="text-content-tertiary" />,
         },
         {
             href: '/knowledge-base',
-            title: 'Knowledge Base',
+            title: t('navigation.links.knowledgeBase'),
             icon: <FolderIcon className="text-content-tertiary" />,
         },
         {
             href: '/support',
-            title: 'Support',
+            title: t('navigation.links.support'),
             icon: <MailIcon className="text-content-tertiary" />,
         },
     ];

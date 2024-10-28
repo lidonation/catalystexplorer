@@ -1,5 +1,6 @@
 import useEscapeKey from '@/Hooks/useEscapeKey';
 import { ReactNode, useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import Button from '../atoms/Button';
 import CatalystLogo from '../atoms/CatalystLogo';
 import CloseIcon from '../svgs/CloseIcon';
@@ -13,6 +14,7 @@ type ModalSidebarProps = {
 function ModalSidebar({ isOpen = false, title, children }: ModalSidebarProps) {
     const [isSideBarOpen, setIsSideBarOpen] = useState(isOpen);
     const sidebarRef = useRef<HTMLDivElement | null>(null);
+    const { t } = useTranslation();
 
     useEscapeKey(() => setIsSideBarOpen(false));
 
@@ -36,7 +38,7 @@ function ModalSidebar({ isOpen = false, title, children }: ModalSidebarProps) {
             <div
                 className="fixed inset-0 bg-black bg-opacity-50"
                 onClick={() => setIsSideBarOpen(false)}
-                aria-label="Close sidebar"
+                aria-label={t('navigation.sidebar.close')}
                 aria-expanded={isSideBarOpen}
                 aria-controls="sidebar-modal"
             ></div>
@@ -55,7 +57,7 @@ function ModalSidebar({ isOpen = false, title, children }: ModalSidebarProps) {
                     </h2>
                     <Button
                         onClick={() => setIsSideBarOpen(!isSideBarOpen)}
-                        ariaLabel="Close sidebar"
+                        ariaLabel={t('navigation.sidebar.close')}
                         aria-expanded={isSideBarOpen}
                         aria-controls="sidebar-modal"
                         className="inline-flex items-center rounded px-2 py-1 text-sm hover:bg-gray-100"
