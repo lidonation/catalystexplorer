@@ -123,4 +123,4 @@ vite:
 
 .PHONY: watch
 watch:
-	$(compose) up -d && $(compose) npx vite
+	docker compose  up -d && $(sail) npx vite --force
