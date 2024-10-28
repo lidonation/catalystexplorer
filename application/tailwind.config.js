@@ -23,10 +23,13 @@ export default {
                     primary: 'var(--bg-primary-color)',
                     secondary: 'var(--bg-secondary-color)',
                 },
-                primary: 'var(--primary-color)',
                 content: {
                     primary: 'var(--content-primary-color)',
                     secondary: 'var(--content-secondary-color)',
+                    tertiary: 'var(--content-tertiary-color)',
+                },
+                primary: {
+                    100: '#2596BE',
                 },
             },
         },

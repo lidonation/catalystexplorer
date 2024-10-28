@@ -8,6 +8,7 @@ type NavLinkItemProps = {
     children: ReactNode;
     className?: string;
 };
+
 export default function NavLinkItem({
     active = false,
     children,
@@ -18,7 +19,10 @@ export default function NavLinkItem({
     return (
         <Link
             href={href}
-            className={`flex items-center gap-3 px-3 py-1 ${active ? 'bg-background-secondary rounded-md' : ''} ${className}`}
+            aria-current={active ? 'page' : undefined}
+            role="navigation"
+            className={`flex items-center gap-3 px-3 py-1 hover:bg-background-secondary ${active ? 'rounded-md bg-background-secondary' : ''} ${className}`}
+            prefetch
         >
             {children}
             <p

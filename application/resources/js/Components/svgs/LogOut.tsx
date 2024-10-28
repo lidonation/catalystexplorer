@@ -1,8 +1,10 @@
 type LogOutIconProps = {
+    className?: string;
     width?: number;
     height?: number;
 };
 export default function LogOutIcon({
+    className,
     width = 24,
     height = 24,
 }: LogOutIconProps) {
@@ -11,9 +13,9 @@ export default function LogOutIcon({
             width={width}
             height={height}
             viewBox="0 0 20 21"
-            className="text-content-primary"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
+            className={className}
         >
             <title>Log out Icon</title>
             <path

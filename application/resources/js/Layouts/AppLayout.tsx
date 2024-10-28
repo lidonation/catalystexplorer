@@ -1,3 +1,4 @@
+import Button from '@/Components/atoms/Button';
 import CatalystLogo from '@/Components/atoms/CatalystLogo';
 import AppNavigation from '@/Components/layout/AppNavigation';
 import Footer from '@/Components/layout/Footer';
@@ -9,15 +10,18 @@ import CloseIcon from '@/Components/svgs/CloseIcon';
 import MenuIcon from '@/Components/svgs/MenuIcon';
 import { Dialog, DialogPanel } from '@headlessui/react';
 import { ReactNode, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import MainLayout from './RootLayout';
 
 export default function AppLayout({ children }: { children: ReactNode }) {
     const [sidebarOpen, setSidebarOpen] = useState(false);
+    const { t } = useTranslation();
 
     return (
         <MainLayout>
             {/* Sidebar for small screens */}
             <Dialog
+                id="mobile-navigation"
                 open={sidebarOpen}
                 onClose={() => setSidebarOpen(false)}
                 className="relative z-30 sm:hidden"
@@ -68,18 +72,17 @@ export default function AppLayout({ children }: { children: ReactNode }) {
                 <header className="sticky top-0 z-30 border-b border-gray-200 bg-background-primary sm:hidden">
                     <div className="flex h-16 items-center justify-between px-4">
                         <CatalystLogo className="h-8" />
-                        <button
-                            type="button"
+                        <Button
                             onClick={() => setSidebarOpen(!sidebarOpen)}
-                            className="inline-flex items-center rounded px-1 text-sm hover:bg-gray-100"
-                            aria-label={
+                            ariaLabel={
                                 sidebarOpen ? 'Close sidebar' : 'Open sidebar'
                             }
                             aria-expanded={sidebarOpen}
                             aria-controls="mobile-navigation"
+                            className="inline-flex items-center rounded px-2 py-1 text-sm hover:bg-gray-100"
                         >
                             {sidebarOpen ? <CloseIcon /> : <MenuIcon />}
-                        </button>
+                        </Button>
                     </div>
                 </header>
 

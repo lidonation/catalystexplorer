@@ -1,4 +1,4 @@
-import LogOutIcon from "../svgs/LogOut";
+import LogOutIcon from '../svgs/LogOut';
 
 function UserDetails() {
     return (
@@ -6,11 +6,19 @@ function UserDetails() {
             <div className="flex gap-3">
                 <div className="h-9 w-9 rounded-full bg-gray-400"></div>
                 <div className="flex flex-col">
-                    <p className="text-sm text-content-primary">Catalyst Explorer</p>
-                    <p className="text-xs text-content-primary">support@lidonation.com</p>
+                    <p className="text-sm text-content-primary">
+                        Catalyst Explorer
+                    </p>
+                    <p className="text-xs text-content-primary">
+                        support@lidonation.com
+                    </p>
                 </div>
             </div>
-            <LogOutIcon width={20} height={20} />
+            <LogOutIcon
+                className="text-content-tertiary"
+                width={20}
+                height={20}
+            />
         </div>
     );
 }

@@ -1,5 +1,6 @@
 import useEscapeKey from '@/Hooks/useEscapeKey';
 import { ReactNode, useEffect, useRef, useState } from 'react';
+import Button from '../atoms/Button';
 import CatalystLogo from '../atoms/CatalystLogo';
 import CloseIcon from '../svgs/CloseIcon';
 
@@ -24,6 +25,7 @@ function ModalSidebar({ isOpen = false, title, children }: ModalSidebarProps) {
 
     return (
         <aside
+            id="sidebar-modal"
             role="dialog"
             aria-labelledby="modal-sidebar-title"
             aria-modal="true"
@@ -34,7 +36,9 @@ function ModalSidebar({ isOpen = false, title, children }: ModalSidebarProps) {
             <div
                 className="fixed inset-0 bg-black bg-opacity-50"
                 onClick={() => setIsSideBarOpen(false)}
-                aria-hidden="true"
+                aria-label="Close sidebar"
+                aria-expanded={isSideBarOpen}
+                aria-controls="sidebar-modal"
             ></div>
 
             {/* Sidebar Modal */}
@@ -49,13 +53,15 @@ function ModalSidebar({ isOpen = false, title, children }: ModalSidebarProps) {
                     >
                         {title}
                     </h2>
-                    <button
-                        className="inline-flex items-center rounded p-2 text-sm hover:bg-gray-100"
-                        onClick={() => setIsSideBarOpen(false)}
-                        aria-label="Close sidebar"
+                    <Button
+                        onClick={() => setIsSideBarOpen(!isSideBarOpen)}
+                        ariaLabel="Close sidebar"
+                        aria-expanded={isSideBarOpen}
+                        aria-controls="sidebar-modal"
+                        className="inline-flex items-center rounded px-2 py-1 text-sm hover:bg-gray-100"
                     >
-                        <CloseIcon width={14} height={14} />
-                    </button>
+                        <CloseIcon width={18} height={18} />
+                    </Button>
                 </header>
 
                 <div className="flex h-full flex-col gap-6 px-6">
