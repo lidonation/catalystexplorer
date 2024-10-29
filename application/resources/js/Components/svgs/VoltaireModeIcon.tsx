@@ -1,8 +1,11 @@
+import { useTranslation } from 'react-i18next';
+
 type VoltaireModeIconProps = {
     className?: string;
 };
 
 export default function VoltaireModeIcon({ className }: VoltaireModeIconProps) {
+    const { t } = useTranslation();
     return (
         <svg
             width="20"
@@ -13,7 +16,7 @@ export default function VoltaireModeIcon({ className }: VoltaireModeIconProps) {
             focusable="false"
             className={className}
         >
-            <title>Voltaire Mode Icon</title>
+            <title> {t('icons.title.voltaireMode')}</title>
             <path d="M12 2a10 10 0 0110 10 10 10 0 01-10 10A10 10 0 012 12 10 10 0 0112 2zm0 4a6 6 0 100 12 6 6 0 000-12z" />
         </svg>
     );
