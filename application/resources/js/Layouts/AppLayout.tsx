@@ -1,14 +1,12 @@
 import Button from '@/Components/atoms/Button';
 import CatalystLogo from '@/Components/atoms/CatalystLogo';
-import AppNavigation from '@/Components/layout/AppNavigation';
+import DesktopSidebar from '@/Components/layout/DesktopSidebar';
 import Footer from '@/Components/layout/Footer';
+import MobileNavigation from '@/Components/layout/MobileNavigation';
 import ModalSidebar from '@/Components/layout/ModalSidebar';
-import ThemeSwitcher from '@/Components/layout/ThemeSwitcher';
-import UserDetails from '@/Components/layout/UserDetails';
-import UserNavigation from '@/Components/layout/UserNavigation';
 import CloseIcon from '@/Components/svgs/CloseIcon';
 import MenuIcon from '@/Components/svgs/MenuIcon';
-import { Dialog, DialogPanel } from '@headlessui/react';
+import { Dialog } from '@headlessui/react';
 import { ReactNode, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import MainLayout from './RootLayout';
@@ -27,45 +25,11 @@ export default function AppLayout({ children }: { children: ReactNode }) {
                 className="relative z-30 sm:hidden"
                 aria-label={t('navigation.mobile.sidebar')}
             >
-                <div className="fixed inset-0 top-16 flex">
-                    <DialogPanel
-                        transition
-                        className="relative flex w-full flex-1 transform transition duration-300 ease-in-out data-[closed]:-translate-x-full"
-                    >
-                        <aside
-                            className="flex grow flex-col justify-between bg-background-primary px-4"
-                            aria-label={t('navigation.mobile.content')}
-                        >
-                            <section>
-                                <AppNavigation />
-                            </section>
-                            <section className="flex flex-col gap-6 px-4 pb-8">
-                                <ThemeSwitcher />
-                                <UserNavigation />
-                                <UserDetails />
-                            </section>
-                        </aside>
-                    </DialogPanel>
-                </div>
+                <MobileNavigation />
             </Dialog>
 
             {/* Sidebar for larger screens */}
-            <aside
-                className="hidden sm:fixed sm:inset-y-0 sm:z-30 sm:flex sm:w-72 sm:flex-col"
-                aria-label={t('navigation.desktop.sidebar')}
-            >
-                <section className="flex grow flex-col gap-6 overflow-y-auto sm:pt-8">
-                    <div className="flex h-6 shrink-0 items-center px-6">
-                        <CatalystLogo className="w-full" />
-                    </div>
-                    <AppNavigation />
-                </section>
-                <section className="flex flex-col gap-6 px-4 pb-8">
-                    <ThemeSwitcher />
-                    <UserNavigation />
-                    <UserDetails />
-                </section>
-            </aside>
+            <DesktopSidebar />
 
             <section className="sm:pl-72">
                 {/* Mobile header */}
