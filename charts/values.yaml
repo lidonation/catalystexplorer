@@ -1,0 +1,30 @@
+
+replicaCount: 1
+
+namespace: catalystexplorer-preview
+
+image:
+  repository: registry.lidonation.com/lidonation/www.catalystexplorer.com/web-app
+  tag: 'latest'
+  pullPolicy: IfNotPresent
+  pullSecret:  []
+
+services:
+  app:
+    replicaCount: 1
+    env: 'preview'
+    image:
+      repository: registry.lidonation.com/lidonation/www.catalystexplorer.com/web-app
+      tag: 'latest'
+      pullPolicy: IfNotPresent
+      pullSecret:  []
+    persistence:
+      size: 10Gi
+      storageClass: longhorn
+      accessMode: ReadWriteMany
+      subPath: "uploads"
+      mountPath: "/var/www/storage/app"
+  queue:
+    replicaCount: 4
+  meili:
+    MEILISEARCH_KEY: 

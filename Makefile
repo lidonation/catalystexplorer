@@ -111,7 +111,7 @@ status:
 
 .PHONY: test-backend
 test-backend:
-	$(compose) php ./vendor/bin/pest
+	$(sail) php ./vendor/bin/pest
 
 .PHONY: up
 up:
@@ -123,4 +123,4 @@ vite:
 
 .PHONY: watch
 watch:
-	$(compose) up -d && $(compose) npx vite
+	$(sail) up -d && $(sail) npx vite

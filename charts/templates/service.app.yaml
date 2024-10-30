@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: "{{ $.Chart.Name }}-app-service"
+  namespace: {{ .Values.namespace }}
+  labels:
+    service: "{{ $.Chart.Name }}-app"
+spec:
+  ports:
+    - port: 8000
+      name: app
+      targetPort: app
+      protocol: TCP
+  selector:
+    service: "{{ $.Chart.Name }}-app"

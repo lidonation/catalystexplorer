@@ -1,0 +1,23 @@
+{{- if eq .Values.services.app.env "production" -}}
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: wildcard-catalystexplorer-tls
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: "{{ $.Chart.Name }}"
+spec:
+  secretName: wildcard-catalystexplorer-tls
+  issuerRef:
+    group: cert-manager.io
+    kind: ClusterIssuer
+    name: letsencrypt-issuer
+  secretTemplate:
+    annotations:
+      reflector.v1.k8s.emberstack.com/reflection-allowed: "true"
+      reflector.v1.k8s.emberstack.com/reflection-allowed-namespaces: "catalystexplorer,catalystexplorer-preview"
+      reflector.v1.k8s.emberstack.com/reflection-auto-enabled: "true"
+      reflector.v1.k8s.emberstack.com/reflection-auto-namespaces: "catalystexplorer,catalystexplorer-preview"
+  dnsNames:
+    - "*.catalystexplorer.com"
+{{- end -}}
