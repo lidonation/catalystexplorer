@@ -75,42 +75,42 @@ yarn:
     expire_in: 2 days
 
 
-pest:
-  stage: test
-  image: docker:24.0.7-dind-alpine3.18
-  cache: {}
-  retry: 1
-  script:
-    - |
-      set -xev
+# pest:
+#   stage: test
+#   image: docker:24.0.7-dind-alpine3.18
+#   cache: {}
+#   retry: 1
+#   script:
+#     - |
+#       set -xev
 
-      docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
+#       docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
       
-  rules:
-    - if: '$CI_COMMIT_BRANCH != "main" && ($DEPLOY_WEBSITE == "True")'
-  dependencies:
-    - composer
-    - yarn
+#   rules:
+#     - if: '$CI_COMMIT_BRANCH != "main" && ($DEPLOY_WEBSITE == "True")'
+#   dependencies:
+#     - composer
+#     - yarn
 
-cypress:
-  stage: test
-  image: docker:24.0.7-dind-alpine3.18
-  cache: {}
-  retry: 1
-  script:
-    - |
-      set -xev
+# cypress:
+#   stage: test
+#   image: docker:24.0.7-dind-alpine3.18
+#   cache: {}
+#   retry: 1
+#   script:
+#     - |
+#       set -xev
 
-      docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
-  dependencies:
-    - composer
-    - yarn
-  artifacts:
-    when: on_failure
-    paths:
-      - ./application/tests/cypress/videos/**/*.mp4
-      - ./application/tests/cypress/screenshots/**/*.png
-    expire_in: 2 day
+#       docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
+#   dependencies:
+#     - composer
+#     - yarn
+#   artifacts:
+#     when: on_failure
+#     paths:
+#       - ./application/tests/cypress/videos/**/*.mp4
+#       - ./application/tests/cypress/screenshots/**/*.png
+#     expire_in: 2 day
 
 
 ########## Helper Scripts ############
