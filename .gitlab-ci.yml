@@ -44,8 +44,8 @@ composer:
     GIT_SUBMODULE_STRATEGY: normal
   script: |-
     set -vx
-    - export PATH=$PATH:/usr/local/bin
-    - composer install --no-scripts --no-dev -o -d ./application --ignore-platform-reqs
+    export PATH=$PATH:/usr/local/bin
+    composer install --no-scripts --no-dev -o -d ./application --ignore-platform-reqs
   artifacts:
     paths:
       - ./application/public/docs
