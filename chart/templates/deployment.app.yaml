@@ -24,7 +24,7 @@ spec:
         service: "{{ $.Chart.Name }}-app"
     spec:
       imagePullSecrets:
-        - name: {{ .Values.services.app.image.pullPolicy }}
+        - name: {{ .Values.services.app.image.pullSecret }}
       containers:
         - name: app
           image: "{{ .Values.services.app.image.repository }}:{{ .Values.services.app.image.tag }}"
