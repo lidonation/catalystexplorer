@@ -27,11 +27,11 @@ spec:
         - name: {{ .Values.services.app.image.pullPolicy }}
       containers:
         - name: queue
-            image: "{{ .Values.services.app.image.repository }}:{{ .Values.services.app.image.tag }}"
-            imagePullPolicy: {{ .Values.services.app.image.pullPolicy }}
-            command: ["/bin/bash", "-c"]
-            args:
-              - |
+          image: "{{ .Values.services.app.image.repository }}:{{ .Values.services.app.image.tag }}"
+          imagePullPolicy: {{ .Values.services.app.image.pullPolicy }}
+          command: ["/bin/bash", "-c"]
+          args:
+            - |
               #!/bin/bash
               set -xe
 
@@ -42,38 +42,38 @@ spec:
               php /var/www/artisan package:discover;
 
               php /var/www/artisan horizon
-            lifecycle:
-                preStop:
-                exec:
-                    command: ["php", "/var/www/artisan", "horizon:terminate"]
-            resources:
-                limits:
-                memory: 9216Mi
-                cpu: 5
-                requests:
-                cpu: 120m
-                memory: 1024Mi
-            envFrom:
-                - configMapRef:
-                    name: "{{ $.Chart.Name }}-configmap"
-                - secretRef:
-                    name: "{{ $.Chart.Name }}-secrets"
-            env:
-                - name: CONTAINER_ROLE
-                value: queue
-                - name: PHP_MEMORY_LIMIT
-                value: 8192M
-                - name: PHP_DISABLED_FUNCTION
-                value: "exec, passthru, proc_open, proc_close, shell_exec, show_source, symlink, system"
-            volumeMounts:
-                - name: "{{ .Values.namespace }}-web-storage-pv"
-                mountPath: {{ .Values.services.app.persistence.mountPath }}
-                subPath: "storage"
-                readOnly: false
-                - name: "{{ .Values.namespace }}-web-storage-pv"
-                mountPath: /data
-                subPath: data
-                readOnly: false
+          lifecycle:
+              preStop:
+              exec:
+                  command: ["php", "/var/www/artisan", "horizon:terminate"]
+          resources:
+              limits:
+              memory: 9216Mi
+              cpu: 5
+              requests:
+              cpu: 120m
+              memory: 1024Mi
+          envFrom:
+              - configMapRef:
+                  name: "{{ $.Chart.Name }}-configmap"
+              - secretRef:
+                  name: "{{ $.Chart.Name }}-secrets"
+          env:
+            - name: CONTAINER_ROLE
+              value: queue
+            - name: PHP_MEMORY_LIMIT
+              value: 8192M
+            - name: PHP_DISABLED_FUNCTION
+              value: "exec, passthru, proc_open, proc_close, shell_exec, show_source, symlink, system"
+          volumeMounts:
+            - name: "{{ .Values.namespace }}-web-storage-pv"
+              mountPath: {{ .Values.services.app.persistence.mountPath }}
+              subPath: "storage"
+              readOnly: false
+            - name: "{{ .Values.namespace }}-web-storage-pv"
+              mountPath: /data
+              subPath: data
+              readOnly: false
       volumes:
         - name: "{{ .Values.namespace }}-web-storage-pv"
           persistentVolumeClaim:
