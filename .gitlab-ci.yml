@@ -2,7 +2,7 @@ variables:
   AUTO_DEPLOY_IMAGE_VERSION: 'v2.104.0'
   CI_TEMPLATE_REGISTRY_HOST: registry.gitlab.com
   KUBE_CONTEXT: catalystexplorer
-  OCKER_HOST: tcp://docker:2375
+  DOCKER_HOST: tcp://docker:2375
   DOCKER_TLS_CERTDIR: ""
   DOCKER_DRIVER: overlay2
 
