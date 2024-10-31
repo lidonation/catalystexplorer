@@ -218,7 +218,7 @@ yarn:
 ######################################
 build_web:
   stage: build
-  image: docker:24.0.2
+  image: docker:24.0.2-git
   services:
     - name: docker:dind
       alias: docker
