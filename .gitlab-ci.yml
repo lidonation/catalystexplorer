@@ -224,6 +224,8 @@ yarn:
 build_web:
   stage: build
   image: docker:24.0.2-git
+  services:
+    - docker:dind
   artifacts:
     paths:
       - application/.env
@@ -233,7 +235,6 @@ build_web:
   retry: 0
   script:
     - |
-      echo "$ENV_FILE"
       cp "$ENV_FILE" application/.env
       docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
       echo "Building Dockerfile with tags $CI_APPLICATION_REPOSITORY/web-app:$CI_APPLICATION_TAG and $CI_APPLICATION_REPOSITORY/web-app:latest ..."
