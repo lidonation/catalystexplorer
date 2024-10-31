@@ -20,6 +20,7 @@ before_script:
     export CI_APPLICATION_REPOSITORY=$CI_REGISTRY_IMAGE
     export CI_APPLICATION_TAG=$APP_VERSION_AND_BUILD
 
+
 cache:
   key: ${CI_COMMIT_REF_SLUG}
   paths:
@@ -44,6 +45,8 @@ composer:
     GIT_SUBMODULE_STRATEGY: normal
   script: |-
     set -vx
+    echo "$ENV_FILE"
+    cp "$ENV_FILE" application/.env
     export PATH=$PATH:/usr/local/bin
     cd ./application
     composer install --no-scripts --no-dev --ignore-platform-reqs
@@ -232,13 +235,13 @@ build_web:
     - |
       echo "$ENV_FILE"
       cp "$ENV_FILE" application/.env
-      docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
-      echo "Building Dockerfile with tags $CI_APPLICATION_REPOSITORY/web-app:$CI_APPLICATION_TAG and $CI_APPLICATION_REPOSITORY/web-app:latest ..."
-      docker build --network host -f application/Dockerfile \
-        -t "$CI_APPLICATION_REPOSITORY/web-app:$CI_APPLICATION_TAG" \
-        -t "$CI_APPLICATION_REPOSITORY/web-app:latest" .
-      docker push "$CI_APPLICATION_REPOSITORY/web-app:$CI_APPLICATION_TAG"
-      docker push "$CI_APPLICATION_REPOSITORY/web-app:latest"
+      # docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
+      # echo "Building Dockerfile with tags $CI_APPLICATION_REPOSITORY/web-app:$CI_APPLICATION_TAG and $CI_APPLICATION_REPOSITORY/web-app:latest ..."
+      # docker build --network host -f application/Dockerfile \
+      #   -t "$CI_APPLICATION_REPOSITORY/web-app:$CI_APPLICATION_TAG" \
+      #   -t "$CI_APPLICATION_REPOSITORY/web-app:latest" .
+      # docker push "$CI_APPLICATION_REPOSITORY/web-app:$CI_APPLICATION_TAG"
+      # docker push "$CI_APPLICATION_REPOSITORY/web-app:latest"
   only:
     - branches
 
