@@ -13,7 +13,12 @@ stages:
   - mainnet
   - .post
 
-before_script:
+default:
+  services:
+    - name: docker:dind
+      alias: docker
+      command: ["--tls=false"]
+  before_script:
   - |
     export APP_VERSION=$(awk '/version/{gsub(/("|",)/,"",$2);print $2};' application/package.json)
     export APP_VERSION_AND_BUILD="${APP_VERSION}-${CI_PIPELINE_ID}"
@@ -219,13 +224,6 @@ yarn:
 build_web:
   stage: build
   image: docker:24.0.2-git
-  services:
-    - name: docker:dind
-      alias: docker
-      command: ["--tls=false"]
-  variables:
-    DOCKER_HOST: tcp://docker:2375
-    DOCKER_TLS_CERTDIR: ""
   artifacts:
     paths:
       - application/.env
@@ -238,9 +236,9 @@ build_web:
       cp "$ENV_FILE" application/.env
       docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
       echo "Building Dockerfile with tags $CI_APPLICATION_REPOSITORY/web-app:$CI_APPLICATION_TAG and $CI_APPLICATION_REPOSITORY/web-app:latest ..."
-      docker build --network host -f application/Dockerfile \
-        -t "$CI_APPLICATION_REPOSITORY/web-app:$CI_APPLICATION_TAG" \
-        -t "$CI_APPLICATION_REPOSITORY/web-app:latest" .
+      docker build --network host -f ./docker/Dockerfile \
+        -t "$CI_APPLICATION_REPOSITORY/webapp:$CI_APPLICATION_TAG" \
+        -t "$CI_APPLICATION_REPOSITORY/webapp:latest" .
       docker push "$CI_APPLICATION_REPOSITORY/web-app:$CI_APPLICATION_TAG"
       docker push "$CI_APPLICATION_REPOSITORY/web-app:latest"
   only:
