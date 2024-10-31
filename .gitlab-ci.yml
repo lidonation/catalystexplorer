@@ -235,13 +235,13 @@ build_web:
     - |
       echo "$ENV_FILE"
       cp "$ENV_FILE" application/.env
-      # docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
-      # echo "Building Dockerfile with tags $CI_APPLICATION_REPOSITORY/web-app:$CI_APPLICATION_TAG and $CI_APPLICATION_REPOSITORY/web-app:latest ..."
-      # docker build --network host -f application/Dockerfile \
-      #   -t "$CI_APPLICATION_REPOSITORY/web-app:$CI_APPLICATION_TAG" \
-      #   -t "$CI_APPLICATION_REPOSITORY/web-app:latest" .
-      # docker push "$CI_APPLICATION_REPOSITORY/web-app:$CI_APPLICATION_TAG"
-      # docker push "$CI_APPLICATION_REPOSITORY/web-app:latest"
+      docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
+      echo "Building Dockerfile with tags $CI_APPLICATION_REPOSITORY/web-app:$CI_APPLICATION_TAG and $CI_APPLICATION_REPOSITORY/web-app:latest ..."
+      docker build --network host -f application/Dockerfile \
+        -t "$CI_APPLICATION_REPOSITORY/web-app:$CI_APPLICATION_TAG" \
+        -t "$CI_APPLICATION_REPOSITORY/web-app:latest" .
+      docker push "$CI_APPLICATION_REPOSITORY/web-app:$CI_APPLICATION_TAG"
+      docker push "$CI_APPLICATION_REPOSITORY/web-app:latest"
   only:
     - branches
 
