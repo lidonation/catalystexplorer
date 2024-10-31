@@ -74,7 +74,7 @@ image-build:
 	--build-arg=GITHUB_PACKAGE_REGISTRY_TOKEN=${GITHUB_PACKAGE_REGISTRY_TOKEN} \
 	-f ./docker/Dockerfile.dev \
 	-t catalystexplorer \
-	application/.
+	./docker/.
 
 .PHONY: logs
 lint-backend:

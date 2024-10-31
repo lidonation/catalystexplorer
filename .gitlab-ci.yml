@@ -5,6 +5,10 @@ variables:
   DOCKER_HOST: tcp://docker:2375
   DOCKER_TLS_CERTDIR: ""
   DOCKER_DRIVER: overlay2
+  WEB_BASE_IMAGE_VER:
+    value: ""
+    description: "New tag for WEB base image,format {version}-{yyyy-mm-dd}. eg: ubuntu-22.04-2024-10-31"
+
 
 stages:
   - .pre
@@ -238,12 +242,37 @@ build_web:
       docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
       echo "Building Dockerfile with tags $CI_APPLICATION_REPOSITORY/web-app:$CI_APPLICATION_TAG and $CI_APPLICATION_REPOSITORY/web-app:latest ..."
       docker build --network host -f ./docker/Dockerfile \
-        -t "$CI_APPLICATION_REPOSITORY/webapp:$CI_APPLICATION_TAG" \
-        -t "$CI_APPLICATION_REPOSITORY/webapp:latest" ./docker
+        -t "$CI_APPLICATION_REPOSITORY/web-app:$CI_APPLICATION_TAG" \
+        -t "$CI_APPLICATION_REPOSITORY/web-app:latest" ./docker
       docker push "$CI_APPLICATION_REPOSITORY/web-app:$CI_APPLICATION_TAG"
       docker push "$CI_APPLICATION_REPOSITORY/web-app:latest"
   only:
     - branches
+
+build_web_base:
+    stage: .pre
+    image: docker:24.0.2-git
+    artifacts:
+      paths:
+        - application/.env
+      untracked: true
+      when: on_success
+      expire_in: "3 days"
+    retry: 0
+    script:
+      - |
+        cp "$ENV_FILE" application/.env
+        docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
+        echo "Building Dockerfile with tags $CI_APPLICATION_REPOSITORY/web-app-base:$WEB_BASE_IMAGE_VER and $CI_APPLICATION_REPOSITORY/web-app-base:latest ..."
+        docker build --network host -f ./docker/Dockerfile.base \
+          -t "$CI_APPLICATION_REPOSITORY/web-app-base:$WEB_BASE_IMAGE_VER" \
+          -t "$CI_APPLICATION_REPOSITORY/web-app-base:latest" .
+        docker push "$CI_APPLICATION_REPOSITORY/web-app-base:$WEB_BASE_IMAGE_VER"
+        docker push "$CI_APPLICATION_REPOSITORY/web-app-base:latest"
+    only:
+      - branches
+    rules:
+      - if: $WEB_BASE_IMAGE_VER 
 
 ######## Preview Deployments #########
 ######################################
