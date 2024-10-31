@@ -239,7 +239,7 @@ build_web:
       echo "Building Dockerfile with tags $CI_APPLICATION_REPOSITORY/web-app:$CI_APPLICATION_TAG and $CI_APPLICATION_REPOSITORY/web-app:latest ..."
       docker build --network host -f ./docker/Dockerfile \
         -t "$CI_APPLICATION_REPOSITORY/webapp:$CI_APPLICATION_TAG" \
-        -t "$CI_APPLICATION_REPOSITORY/webapp:latest" .
+        -t "$CI_APPLICATION_REPOSITORY/webapp:latest" ./docker
       docker push "$CI_APPLICATION_REPOSITORY/web-app:$CI_APPLICATION_TAG"
       docker push "$CI_APPLICATION_REPOSITORY/web-app:latest"
   only:
