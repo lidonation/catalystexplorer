@@ -269,8 +269,6 @@ build_web_base:
           -t "$CI_APPLICATION_REPOSITORY/web-app-base:latest" .
         docker push "$CI_APPLICATION_REPOSITORY/web-app-base:$WEB_BASE_IMAGE_VER"
         docker push "$CI_APPLICATION_REPOSITORY/web-app-base:latest"
-    only:
-      - branches
     rules:
       - if: $WEB_BASE_IMAGE_VER 
 
