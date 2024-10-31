@@ -7,8 +7,8 @@ variables:
 
 stages:
   - .pre
+  # - test
   - build
-  - test
   - preview
   - mainnet
   - .post
@@ -77,14 +77,14 @@ yarn:
 
 # pest:
 #   stage: test
-#   image: docker:24.0.7-dind-alpine3.18
+#   image: composer:2.7
 #   cache: {}
 #   retry: 1
 #   script:
 #     - |
 #       set -xev
 
-#       docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
+#       make test-backend
       
 #   rules:
 #     - if: '$CI_COMMIT_BRANCH != "main" && ($DEPLOY_WEBSITE == "True")'
@@ -249,9 +249,7 @@ db_preview:
   environment:
     name: preview
     url: https://$CI_PROJECT_PATH_SLUG.$AUTO_DEVOPS_DOMAIN
-  rules:
-    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH || $CI_COMMIT_BRANCH == 'main'
-      when: manual
+  when: manual
 
 redis_preview:
   <<: *redis_template
@@ -259,9 +257,7 @@ redis_preview:
   environment:
     name: preview
     url: https://$CI_PROJECT_PATH_SLUG.$AUTO_DEVOPS_DOMAIN
-  rules:
-    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH || $CI_COMMIT_BRANCH == 'main'
-      when: manual
+  when: manual
 
 app_preview:
   <<: *app_template
@@ -269,9 +265,7 @@ app_preview:
   environment:
     name: preview
     url: https://$CI_PROJECT_PATH_SLUG.$AUTO_DEVOPS_DOMAIN
-  rules:
-    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH || $CI_COMMIT_BRANCH == 'main'
-      when: manual
+  when: manual
 
 
 
