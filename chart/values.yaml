@@ -12,7 +12,7 @@ image:
 services:
   app:
     replicaCount: 1
-    env: 'preview'
+    env: 'production'
     image:
       repository: registry.lidonation.com/lidonation/www.catalystexplorer.com/web-app
       tag: 'latest'
