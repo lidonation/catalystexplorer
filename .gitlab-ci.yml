@@ -26,11 +26,6 @@ cache:
   paths:
     - ./node_modules
 
-services:
-  - name: docker:dind
-    alias: docker
-    command: ["--tls=false"]
-
 
 ########## Pre-Build jobs #########
 ###################################
@@ -223,9 +218,14 @@ yarn:
 ######################################
 build_web:
   stage: build
-  image: docker:24.0.2-git
+  image: docker:24.0.2
   services:
-    - docker:dind
+    - name: docker:dind
+      alias: docker
+      command: ["--tls=false"]
+  variables:
+    DOCKER_HOST: tcp://docker:2375
+    DOCKER_TLS_CERTDIR: ""
   artifacts:
     paths:
       - application/.env
