@@ -35,18 +35,9 @@ spec:
               #!/bin/bash
               set -xe
 
-              until $(nc -zv $DB_HOST 5432 &>/dev/null); do
+              until $(nc -zv $POSTGRESQL_WEB_DB_HOST 5432 &>/dev/null); do
                 sleep 2s
               done
-
-              # chown -R nginx:nginx /var/www;
-              # find ${APP_DIR} -type d -print0|xargs -0 chmod 755; find ${APP_DIR} -type f -print0|xargs -0 chmod 644;
-
-              if [ -d "/tmp/gcloud" ]; then
-                mkdir -p /gcloud
-                cp /tmp/gcloud/* /gcloud
-                find /gcloud -type d -print0|xargs -0 chmod 755; find /gcloud -type f -print0|xargs -0 chmod 644;
-              fi
 
               php artisan package:discover
 
@@ -60,8 +51,7 @@ spec:
 
               php artisan ln:generate-translations
 
-              #php-fpm --allow-to-run-as-root -y /etc/php-fpm/php-fpm.conf
-              php artisan octane:start --server=frankenphp --caddyfile=/etc//caddy/app.Caddyfile --port=8000 --workers=3 --max-requests=25 --host=0.0.0.0 --log-level=DEBUG
+              php artisan octane:start --server=frankenphp  --port=8000 --workers=3 --max-requests=25 --host=0.0.0.0 --log-level=DEBUG
           lifecycle:
             preStop:
               exec:
@@ -77,6 +67,14 @@ spec:
             - secretRef:
                 name: "{{ $.Chart.Name }}-secrets"
           env:
+            - name: POSTGRESQL_WEB_DB_HOST
+              value: "{{ .Values.services.app.POSTGRESQL_WEB_DB_HOST }}"
+            - name: PHP_MEMORY_LIMIT
+              value: 4096M
+            - name: REDIS_PASSWORD
+              value: "{{ .Values.services.redis.password }}"
+            - name: REDIS_HOST
+              value: "{{ .Values.service.redis.host }}"
             - name: CONTAINER_ROLE
               value: app
             - name: PHP_MEMORY_LIMIT
