@@ -65,7 +65,7 @@ spec:
               value: 4096M
             - name: REDIS_PASSWORD
               value: "{{ .Values.services.redis.password }}"
-             - name: REDIS_HOST
+            - name: REDIS_HOST
               value: "{{ .Values.services.redis.host }}"
             - name: CONTAINER_ROLE
               value: queue
