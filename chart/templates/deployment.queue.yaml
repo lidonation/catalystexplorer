@@ -35,8 +35,8 @@ spec:
               #!/bin/bash
               set -xe
 
-              until $(nc -zv $POSTGRESQL_WEB_DB_HOST 5432 &>/dev/null); do
-                  sleep 2s
+              until (echo > /dev/tcp/$POSTGRESQL_WEB_DB_HOST/5432) &>/dev/null; do
+                sleep 2s
               done
 
               php /var/www/artisan package:discover;
