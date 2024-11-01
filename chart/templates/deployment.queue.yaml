@@ -54,8 +54,6 @@ spec:
               cpu: 120m
               memory: 1024Mi
           envFrom:
-              - configMapRef:
-                  name: "{{ $.Chart.Name }}-configmap"
               - secretRef:
                   name: "{{ $.Chart.Name }}-secrets"
           env:

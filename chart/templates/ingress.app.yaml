@@ -1,4 +1,4 @@
-{{- if eq .Values.services.app.env "production" -}}
+{{- if eq .Values.services.app.environment "production" -}}
 apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
@@ -32,7 +32,7 @@ spec:
           namespace: {{ .Values.namespace }}
           port: 8000
 {{- end -}}
-{{- if ne .Values.services.app.env "production" -}}
+{{- if ne .Values.services.app.environment "production" -}}
 apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:

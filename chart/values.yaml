@@ -12,8 +12,8 @@ image:
 services:
   app:
     replicaCount: 1
-    env: 'production'
-    POSTGRESQL_WEB_DB_HOST: catalystexplorer-web-db-postgresql
+    environment: 'preview'
+    POSTGRESQL_WEB_DB_HOST: 
     image:
       repository: registry.lidonation.com/lidonation/www.catalystexplorer.com/web-app
       tag: latest
@@ -28,7 +28,7 @@ services:
   queue:
     replicaCount: 4
   meili:
-    MEILISEARCH_KEY:
+    MEILISEARCH_KEY: 
   redis:
     password: 
     host: redis-headless
