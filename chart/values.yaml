@@ -31,4 +31,4 @@ services:
     MEILISEARCH_KEY:
   redis:
     password: 
-    host: 
+    host: redis-headless
