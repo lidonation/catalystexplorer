@@ -158,6 +158,7 @@ yarn:
         --set namespace=${KUBE_NAMESPACE} \
         --namespace="$KUBE_NAMESPACE" \
         --create-namespace
+        
     - auto-deploy persist_environment_url
   environment:
     name: mainnet

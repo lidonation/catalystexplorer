@@ -35,7 +35,7 @@ spec:
               #!/bin/bash
               set -xe
 
-              until $(nc -zv $POSTGRESQL_WEB_DB_HOST 5432 &>/dev/null); do
+              until $(nc -zv $DB_HOST 5432 &>/dev/null); do
                   sleep 2s
               done
 
