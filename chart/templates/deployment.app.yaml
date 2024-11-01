@@ -74,7 +74,7 @@ spec:
             - name: REDIS_PASSWORD
               value: "{{ .Values.services.redis.password }}"
             - name: REDIS_HOST
-              value: "{{ .Values.service.redis.host }}"
+              value: "{{ .Values.services.redis.host }}"
             - name: CONTAINER_ROLE
               value: app
             - name: PHP_MEMORY_LIMIT
