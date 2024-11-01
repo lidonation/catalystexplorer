@@ -153,8 +153,8 @@ yarn:
         --atomic \
         --set image.repository=$CI_APPLICATION_REPOSITORY/web-app \
         --set image.tag=$CI_APPLICATION_TAG \
-        --set services.app.DB_HOST=$DB_HOST \
-        --set redis.password=$REDIS_PASSWORD \
+        --set services.app.POSTGRESQL_WEB_DB_HOST=$POSTGRESQL_WEB_DB_HOST \
+        --set services.redis.password=$REDIS_PASSWORD \
         --set namespace=${KUBE_NAMESPACE} \
         --namespace="$KUBE_NAMESPACE" \
         --create-namespace

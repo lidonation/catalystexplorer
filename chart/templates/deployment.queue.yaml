@@ -35,7 +35,7 @@ spec:
               #!/bin/bash
               set -xe
 
-              until $(nc -zv $DB_HOST 5432 &>/dev/null); do
+              until $(nc -zv $POSTGRESQL_WEB_DB_HOST 5432 &>/dev/null); do
                   sleep 2s
               done
 
@@ -59,6 +59,14 @@ spec:
               - secretRef:
                   name: "{{ $.Chart.Name }}-secrets"
           env:
+            - name: POSTGRESQL_WEB_DB_HOST
+              value: "{{ .Values.services.app.POSTGRESQL_WEB_DB_HOST }}"
+            - name: PHP_MEMORY_LIMIT
+              value: 4096M
+            - name: REDIS_PASSWORD
+              value: "{{ .Values.services.redis.password }}"
+             - name: REDIS_HOST
+              value: "{{ .Values.service.redis.host }}"
             - name: CONTAINER_ROLE
               value: queue
             - name: PHP_MEMORY_LIMIT
