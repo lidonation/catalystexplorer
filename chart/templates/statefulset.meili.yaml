@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: "{{ $.Chart.Name }}-meili"
+  namespace: {{ .Values.namespace }}
+spec:
+  selector:
+    matchLabels:
+      app: "{{ $.Chart.Name }}-meili"
+  serviceName: "{{ $.Chart.Name }}-meili-service"
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: "{{ $.Chart.Name }}-meili"
+    spec:
+      terminationGracePeriodSeconds: 10
+      volumes:
+        - name: "{{ $.Chart.Name }}-meili-pv"
+          persistentVolumeClaim:
+            claimName: "{{ .Values.namespace }}-meili-pvc"
+      containers:
+        - name: meilisearch
+          image: getmeili/meilisearch:v1.11.0
+          resources:
+            limits:
+              memory: 16384Mi
+              cpu: 4
+            requests:
+              cpu: 200m
+              memory: 2048Mi
+          envFrom:
+            - secretRef:
+                name: "{{ $.Chart.Name }}-meili-secret"
+          env:
+            - name: MEILI_ENV
+              value: "production"
+            - name: MEILI_LOG_LEVEL
+              value: 'WARN'
+            - name: MEILI_MAX_INDEXING_MEMORY
+              value: '8192Mb'
+            - name: MEILI_MAX_INDEXING_THREADS
+              value: '3'
+          ports:
+            - containerPort: 7700
+              name: meilisearch
+          volumeMounts:
+            - name: "{{ $.Chart.Name }}-meili-pv"
+              mountPath: /meili_data/data.ms
+              subPath: data.ms
+              readOnly: false
+      imagePullSecrets:
+        - name: {{ .Values.image.pullSecret }}

@@ -74,7 +74,7 @@ image-build:
 	--build-arg=GITHUB_PACKAGE_REGISTRY_TOKEN=${GITHUB_PACKAGE_REGISTRY_TOKEN} \
 	-f ./docker/Dockerfile.dev \
 	-t catalystexplorer \
-	application/.
+	./docker/.
 
 .PHONY: logs
 lint-backend:
@@ -111,7 +111,7 @@ status:
 
 .PHONY: test-backend
 test-backend:
-	$(compose) php ./vendor/bin/pest
+	$(sail) php ./vendor/bin/pest
 
 .PHONY: up
 up:
@@ -123,4 +123,4 @@ vite:
 
 .PHONY: watch
 watch:
-	docker compose  up -d && $(sail) npx vite --force
+	$(sail) up -d && $(sail) npx vite
