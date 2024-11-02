@@ -1,0 +1,128 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: "{{ $.Chart.Name }}-app"
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: "{{ $.Chart.Name }}"
+    service: "{{ $.Chart.Name }}-app"
+spec:
+  selector:
+    matchLabels:
+      app: "{{ $.Chart.Name }}"
+      service: "{{ $.Chart.Name }}-app"
+  replicas: {{ .Values.services.app.replicaCount }}
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+  template:
+    metadata:
+      labels:
+        app: "{{ $.Chart.Name }}"
+        service: "{{ $.Chart.Name }}-app"
+    spec:
+      imagePullSecrets:
+        - name: {{ .Values.services.app.image.pullSecret }}
+      containers:
+        - name: app
+          image: "{{ .Values.services.app.image.repository }}:{{ .Values.services.app.image.tag }}"
+          imagePullPolicy: {{ .Values.services.app.image.pullPolicy }}
+          command: ["/bin/bash", "-c"]
+          args:
+            - |
+              #!/bin/bash
+              set -xe
+
+              until (echo > /dev/tcp/$POSTGRESQL_WEB_DB_HOST/5432) &>/dev/null; do
+                sleep 2s
+              done
+
+              php artisan package:discover
+
+              php artisan view:clear
+              php artisan storage:link
+
+              php artisan migrate --force --isolated
+
+              php artisan route:clear;
+              php artisan event:cache;
+
+              php artisan octane:start --server=frankenphp  --port=8000 --workers=3 --max-requests=25 --host=0.0.0.0 --log-level=DEBUG
+          lifecycle:
+            preStop:
+              exec:
+                command: ["/bin/sleep","5"]
+          resources:
+            limits:
+              memory: 9216Mi
+              cpu: 5
+            requests:
+              cpu: 120m
+              memory: 1024Mi
+          envFrom:
+            - secretRef:
+                name: "{{ $.Chart.Name }}-secrets"
+          env:
+            - name: POSTGRESQL_WEB_DB_HOST
+              value: "{{ .Values.services.app.POSTGRESQL_WEB_DB_HOST }}"
+            - name: PHP_MEMORY_LIMIT
+              value: 4096M
+            - name: REDIS_PASSWORD
+              value: "{{ .Values.services.redis.password }}"
+            - name: REDIS_HOST
+              value: "{{ .Values.services.redis.host }}"
+            - name: CONTAINER_ROLE
+              value: app
+            - name: PHP_MEMORY_LIMIT
+              value: 8192M
+            - name: PHP_DISABLED_FUNCTION
+              value: "exec, passthru, proc_open, proc_close, shell_exec, show_source, symlink, system"
+          ports:
+            - name: app
+              containerPort: 8000
+              protocol: TCP
+          volumeMounts:
+            - name: "{{ .Values.namespace }}-web-storage-pv"
+              mountPath: {{ .Values.services.app.persistence.mountPath }}
+              subPath: "storage"
+              readOnly: false
+            - name: "{{ .Values.namespace }}-web-storage-pv"
+              mountPath: /data
+              subPath: data
+              readOnly: false
+            - mountPath: "/etc/web-certs"
+              name: ssl-certs
+              readOnly: true
+          readinessProbe:
+            tcpSocket:
+              port: 8000
+            initialDelaySeconds: 15
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 8000
+              scheme: HTTP
+            initialDelaySeconds: 15
+            periodSeconds: 10
+            timeoutSeconds: 2
+            successThreshold: 1
+            failureThreshold: 2
+        - name: sidecar
+          image: busybox:1.36
+          args:
+            - sleep
+            - "infinite"
+          volumeMounts:
+            - name: "{{ .Values.namespace }}-web-storage-pv"
+              mountPath: /persistent-volume
+              readOnly: false
+      volumes:
+        - name: "{{ .Values.namespace }}-web-storage-pv"
+          persistentVolumeClaim:
+            claimName: "{{ .Values.namespace }}-web-storage-pvc"
+        - name: ssl-certs
+          secret:
+            secretName: "wildcard-catalystexplorer-tls"

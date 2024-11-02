@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: "{{ $.Chart.Name }}-meili-service"
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: "{{ $.Chart.Name }}-meili"
+spec:
+  ports:
+    - port: 7700
+      name: meilisearch
+      protocol: TCP
+      targetPort: meilisearch
+  selector:
+    app: "{{ $.Chart.Name }}-meili"

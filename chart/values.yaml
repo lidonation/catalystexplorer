@@ -1,0 +1,34 @@
+
+replicaCount: 1
+
+namespace: catalystexplorer-preview
+
+image:
+  repository: registry.lidonation.com/lidonation/www.catalystexplorer.com/web-app
+  tag: 'latest'
+  pullPolicy: IfNotPresent
+  pullSecret:  gitlab-registry-catalystexplorer
+
+services:
+  app:
+    replicaCount: 1
+    environment: 'preview'
+    POSTGRESQL_WEB_DB_HOST: 
+    image:
+      repository: registry.lidonation.com/lidonation/www.catalystexplorer.com/web-app
+      tag: latest
+      pullPolicy: IfNotPresent
+      pullSecret:  gitlab-registry-catalystexplorer
+    persistence:
+      size: 10Gi
+      storageClass: longhorn
+      accessMode: ReadWriteMany
+      subPath: "uploads"
+      mountPath: "/var/www/storage/app"
+  queue:
+    replicaCount: 4
+  meili:
+    MEILISEARCH_KEY: 
+  redis:
+    password: 
+    host: redis-headless
