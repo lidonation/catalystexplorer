@@ -32,8 +32,7 @@ spec:
           namespace: {{ .Values.namespace }}
           port: 8000
 {{- end -}}
-
----
+{{- if eq .Values.services.app.environment "preview" -}}
 apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
@@ -65,3 +64,4 @@ spec:
           namespace: {{ .Values.namespace }}
           passHostHeader: true
           port: 8000
+{{- end -}}
