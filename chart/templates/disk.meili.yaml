@@ -6,7 +6,7 @@ metadata:
 spec:
   accessModes:
     - ReadWriteOnce
-  storageClassName: "longhorn"
+  storageClassName: {{.Values.services.meili.persistence.storageClass}}
   resources:
     requests:
-      storage: 80Gi
+      storage: {{.Values.services.meili.persistence.size}}
