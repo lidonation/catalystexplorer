@@ -1,4 +1,4 @@
-{{- if eq .Values.services.app.env "production" -}}
+{{- if eq .Values.services.app.environment "production" -}}
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
