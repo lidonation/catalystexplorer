@@ -742,6 +742,29 @@ e.g. `AccountActivatedMail` or `NewEventMail`
 * Pass only necessary props to components.
 * Avoid unnecessary re-renders by using React.memo and useCallback where appropriate.
 
+### Translation with i18n
+* i18n package enables use to translate the app in different languages.
+* Language files are stored in the i18n/locale folder(en, fr, sw, ...)
+* Usage.
+* Add the key value pairs in the language files.
+```js
+    {
+        "app" : {
+            "appLogoAlt": "All white Catalyst Explorer logo"
+        }
+    }
+```
+* Then access it in components.
+```js
+    import { useTranslation } from 'react-i18next';
+    
+    const { t } = useTranslation();
+    
+    <p>{t('app.appLogoAlt')}</p>
+```
+* Use camelCase for the keys that hold the translated strings.
+* All relevant strings should be translated.
+
 ## Database Conventions (PostgreSQL)
 
 ### Migrations

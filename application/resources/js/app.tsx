@@ -1,19 +1,26 @@
 import '../scss/app.scss';
 import './bootstrap';
+import './utils/i18n'
 
 import { createInertiaApp } from '@inertiajs/react';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { createRoot } from 'react-dom/client';
+import AppLayout from './Layouts/AppLayout';
 
 const appName = import.meta.env.VITE_APP_NAME || 'CatalystExplorer';
 
 createInertiaApp({
     title: (title) => `${title} - ${appName}`,
-    resolve: (name) =>
-        resolvePageComponent(
-            `./Pages/${name}.tsx`,
-            import.meta.glob('./Pages/**/*.tsx'),
-        ),
+    resolve: (name) => {
+        const page = resolvePageComponent(
+          `./Pages/${name}.tsx`,
+          import.meta.glob("./Pages/**/*.tsx")
+        );
+        page.then((module: any) => {
+          module.default.layout = module.default.layout || ((module:any) => <AppLayout children={module}/>);
+        });
+        return page;
+      },
     setup({ el, App, props }) {
         const root = createRoot(el);
 
