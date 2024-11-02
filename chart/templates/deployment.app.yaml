@@ -49,8 +49,6 @@ spec:
               php artisan route:clear;
               php artisan event:cache;
 
-              php artisan ln:generate-translations
-
               php artisan octane:start --server=frankenphp  --port=8000 --workers=3 --max-requests=25 --host=0.0.0.0 --log-level=DEBUG
           lifecycle:
             preStop:
