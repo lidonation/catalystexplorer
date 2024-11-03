@@ -14,13 +14,14 @@ services:
     replicaCount: 1
     environment: 'preview'
     POSTGRESQL_WEB_DB_HOST: 
+    storageClass: longhorn
     image:
       repository: registry.lidonation.com/lidonation/www.catalystexplorer.com/web-app
       tag: latest
       pullPolicy: IfNotPresent
       pullSecret:  gitlab-registry-catalystexplorer
     persistence:
-      size: 10Gi
+      size: 40Gi
       storageClass: longhorn
       accessMode: ReadWriteMany
       subPath: "uploads"
@@ -29,6 +30,10 @@ services:
     replicaCount: 4
   meili:
     MEILISEARCH_KEY: 
+    persistence:
+      size: 40Gi
+      storageClass: longhorn
   redis:
     password: 
     host: redis-headless
+    

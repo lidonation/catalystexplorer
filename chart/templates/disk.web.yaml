@@ -6,7 +6,7 @@ metadata:
 spec:
   accessModes:
     - ReadWriteMany
-  storageClassName: "longhorn"
+  storageClassName: {{.Values.services.app.persistence.storageClass}}
   resources:
     requests:
       storage: {{ .Values.services.app.persistence.size }}
