@@ -152,8 +152,8 @@ yarn:
         --timeout 300s \
         --wait \
         --atomic \
-        --set image.repository=$CI_APPLICATION_REPOSITORY/web-app \
-        --set image.tag=$CI_APPLICATION_TAG \
+        --set services.app.image.repository=$CI_APPLICATION_REPOSITORY/web-app \
+        --set services.app.image.tag=$CI_APPLICATION_TAG \
         --set services.app.POSTGRESQL_WEB_DB_HOST=$POSTGRESQL_WEB_DB_HOST \
         --set services.meili.MEILISEARCH_KEY=$MEILISEARCH_KEY \
         --set services.app.environment=$APP_ENV \
@@ -233,12 +233,6 @@ yarn:
 build_web:
   stage: build
   image: docker:24.0.2-git
-  artifacts:
-    paths:
-      - application/.env
-    untracked: true
-    when: on_success
-    expire_in: "3 days"
   retry: 0
   script:
     - |
@@ -256,12 +250,6 @@ build_web:
 build_web_base:
     stage: .pre
     image: docker:24.0.2-git
-    artifacts:
-      paths:
-        - application/.env
-      untracked: true
-      when: on_success
-      expire_in: "3 days"
     retry: 0
     script:
       - |
