@@ -135,7 +135,6 @@ yarn:
   - kubectl config use-context ${CI_TEMPLATE_REGISTRY_HOST} 
 
 .app: &app_template
-  stage: mainnet
   image: "${CI_TEMPLATE_REGISTRY_HOST}/gitlab-org/cluster-integration/auto-deploy-image:${AUTO_DEPLOY_IMAGE_VERSION}"
   retry: 0
   script:
@@ -145,6 +144,7 @@ yarn:
     - |
       DEPLOYMENT_NAME="www-catalystexplorer.$CI_ENVIRONMENT_SLUG"  
       cp $ENV_FILE ./chart/app_env
+      cat ./chart/app_env
 
       helm upgrade $DEPLOYMENT_NAME ./chart \
         --install \
@@ -236,7 +236,6 @@ build_web:
   retry: 0
   script:
     - |
-      cp "$ENV_FILE" application/.env
       docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
       echo "Building Dockerfile with tags $CI_APPLICATION_REPOSITORY/web-app:$CI_APPLICATION_TAG and $CI_APPLICATION_REPOSITORY/web-app:latest ..."
       docker build --network host -f ./docker/Dockerfile \
@@ -253,7 +252,6 @@ build_web_base:
     retry: 0
     script:
       - |
-        cp "$ENV_FILE" application/.env
         docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
         echo "Building Dockerfile with tags $CI_APPLICATION_REPOSITORY/web-app-base:$WEB_BASE_IMAGE_VER and $CI_APPLICATION_REPOSITORY/web-app-base:latest ..."
         docker build --network host -f ./docker/Dockerfile.base \
