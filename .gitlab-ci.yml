@@ -146,7 +146,8 @@ yarn:
       DEPLOYMENT_NAME="www-catalystexplorer.$CI_ENVIRONMENT_SLUG"  
       cp $ENV_FILE ./chart/app_env
 
-      helm upgrade $DEPLOYMENT_NAME ./chart --install \
+      helm upgrade $DEPLOYMENT_NAME ./chart \
+        --install \
         -f ./chart/values.yaml \
         --timeout 300s \
         --wait \
