@@ -142,8 +142,8 @@ yarn:
     - auto-deploy check_kube_domain    
     - auto-deploy download_chart
     - auto-deploy create_secret
-    - |      
-      DEPLOYMENT_NAME="www-catalystexplorer"      
+    - |
+      DEPLOYMENT_NAME="www-catalystexplorer.$CI_ENVIRONMENT_SLUG"  
       cp $ENV_FILE ./chart/app_env
 
       helm upgrade $DEPLOYMENT_NAME ./chart --install \
