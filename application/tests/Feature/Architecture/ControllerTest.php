@@ -1,6 +1,8 @@
 <?php
 
+use App\Http\Controllers as Controllers;
+
 arch()
-    ->expect('App\Http\Controllers')
+    ->expect(Controllers::class)
     ->toBeClasses()
     ->toHaveSuffix('Controller');

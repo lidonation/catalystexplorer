@@ -1,6 +1,7 @@
 <?php
-
+use App\Providers;
+use Illuminate\Support\ServiceProvider;
 arch()
-    ->expect('App\Providers')
+    ->expect(Providers::class)
     ->toBeClasses()
-    ->toExtend('Illuminate\Support\ServiceProvider');
+    ->toExtend(ServiceProvider::class);
