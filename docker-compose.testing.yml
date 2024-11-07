@@ -95,7 +95,6 @@ services:
           - POSTGRES_POSTGRES_PASSWORD=alj2340aaALJAF2341408AUUZLJK
       volumes:
           - 'test_catalystexplorer-db:/var/lib/postgresql/data'
-          # - './vendor/laravel/sail/database/pgsql/create-testing-database.sql:/docker-entrypoint-initdb.d/10-create-testing-database.sql'
       networks:
           - catalystexplorer-net_test
       healthcheck:
