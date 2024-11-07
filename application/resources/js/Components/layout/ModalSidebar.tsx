@@ -21,7 +21,9 @@ function ModalSidebar({ isOpen = false, title, children }: ModalSidebarProps) {
     // Focus trap for accessibility
     useEffect(() => {
         if (isSideBarOpen && sidebarRef.current) {
-            sidebarRef.current.focus();
+            if ("focus" in sidebarRef.current) {
+                sidebarRef.current.focus();
+            }
         }
     }, [isSideBarOpen]);
 

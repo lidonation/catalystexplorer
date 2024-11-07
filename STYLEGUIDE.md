@@ -698,6 +698,23 @@ Again to avoid naming collisions we'll suffix mailables with `Mail`, as they're 
 e.g. `AccountActivatedMail` or `NewEventMail`
 
 ### Models
+
+add ORM patten to STYLEGUIDE (Archictecture)
+
+migration (require)
+
+Repository (require)
+
+model (required)
+
+DTO (required)
+
+Policy (required)
+
+Observer (as needed)
+
+
+
 * Define $fillable or $guarded properties explicitly.
 * Use query scopes for reusable query logic.
 * Name relationships clearly (e.g., public function orders()).

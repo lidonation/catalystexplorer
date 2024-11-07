@@ -1,15 +1,13 @@
-import { PageProps } from '@/types';
-import { Head } from '@inertiajs/react';
+import {PageProps} from '@/types';
+import {Head} from '@inertiajs/react';
 
-export default function Welcome({
-    auth,
-    laravelVersion,
-    phpVersion,
-}: PageProps<{ laravelVersion: string; phpVersion: string }>) {
+export default function Welcome({}: PageProps<{ laravelVersion: string; phpVersion: string }>) {
     return (
         <>
-            <Head title="Welcome" />
-            <div className="flex h-screen w-full items-center justify-center"></div>
+            <Head title="Welcome"/>
+            <div className="flex h-screen w-full items-center justify-center">
+                Welcome
+            </div>
         </>
     );
 }

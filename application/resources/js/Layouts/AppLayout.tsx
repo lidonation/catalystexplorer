@@ -64,6 +64,7 @@ export default function AppLayout({ children }: { children: ReactNode }) {
                 <ModalSidebar title="Register" isOpen={false}>
                     <div className=""></div>
                 </ModalSidebar>
+
                 <Footer />
             </section>
         </MainLayout>

@@ -13,15 +13,15 @@ createInertiaApp({
     title: (title) => `${title} - ${appName}`,
     resolve: (name) => {
         const page = resolvePageComponent(
-          `./Pages/${name}.tsx`,
-          import.meta.glob("./Pages/**/*.tsx")
+            `./Pages/${name}.tsx`,
+            import.meta.glob("./Pages/**/*.tsx")
         );
         page.then((module: any) => {
-          module.default.layout = module.default.layout || ((module:any) => <AppLayout children={module}/>);
+            module.default.layout = module.default.layout || ((module: any) => <AppLayout children={module}/>);
         });
         return page;
-      },
-    setup({ el, App, props }) {
+    },
+    setup({el, App, props}) {
         const root = createRoot(el);
 
         root.render(<App {...props} />);
@@ -29,4 +29,4 @@ createInertiaApp({
     progress: {
         color: '#4B5563',
     },
-});
+}).then();
