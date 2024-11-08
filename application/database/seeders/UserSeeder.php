@@ -31,8 +31,7 @@ class UserSeeder extends Seeder
         User::factory(7)->create()->each(
             function (User $user) {
                 if ($imageLink = $this->getRandomImageLink()) {
-                    $user->addMediaFromUrl($imageLink)->addMediaCollection('avatars')
-                        ->withResponsiveImages();
+                    $user->addMediaFromUrl($imageLink)->toMediaCollection('avatars');
                 }
             }
         );
