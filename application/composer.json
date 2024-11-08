@@ -12,7 +12,11 @@
         "laravel/octane": "^2.5",
         "laravel/sanctum": "^4.0",
         "laravel/tinker": "^2.9",
+        "laravolt/avatar": "^6.0",
         "spatie/laravel-data": "^4.11",
+        "spatie/laravel-enum": "^3.1",
+        "spatie/laravel-medialibrary": "^11.9",
+        "spatie/laravel-permission": "^6.10",
         "spatie/laravel-typescript-transformer": "^2.5",
         "tightenco/ziggy": "^2.0"
     },

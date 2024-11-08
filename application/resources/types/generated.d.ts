@@ -1,11 +1,4 @@
 declare namespace App.DataTransferObjects {
-
-    export type UserData = {
-        id: number;
-        name: string;
-        email: string;
-    };
-    
     export type ProposalData = {
         id: number | null;
         user_id: number | null;
@@ -42,5 +35,11 @@ declare namespace App.DataTransferObjects {
         ranking_total?: number;
         quickpitch?: string;
         quickpitch_length?: number;
+    };
+    export type UserData = {
+        id: number;
+        name: string;
+        email: string;
+        profile_photo_url: string | null;
     };
 }

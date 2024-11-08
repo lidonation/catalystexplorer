@@ -13,6 +13,8 @@ class UserData extends Data
 
       public string $name,
       
-      public string $email
+      public string $email,
+
+      public ?string $profile_photo_url
     ) {}
 }

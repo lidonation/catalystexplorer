@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Enums;
 
-// a Laravel specific base class
 use Spatie\Enum\Laravel\Enum;
 
 /**
