@@ -21,7 +21,8 @@
         },
         "typeRoots": [
             "./node_modules/@types",
-            "resources/js/types"
+            "resources/js/types",
+            "resources/types"
         ],
     },
     "include": [
