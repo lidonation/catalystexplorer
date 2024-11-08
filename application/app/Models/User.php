@@ -4,13 +4,17 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use Spatie\MediaLibrary\HasMedia;
+use Illuminate\Auth\MustVerifyEmail;
+use Spatie\Permission\Traits\HasRoles;
+use Illuminate\Notifications\Notifiable;
+use Spatie\MediaLibrary\InteractsWithMedia;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
 
-class User extends Authenticatable
+class User extends Authenticatable implements HasMedia
 {
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, HasRoles, InteractsWithMedia, MustVerifyEmail;
 
     /**
      * The attributes that are mass assignable.
@@ -44,5 +48,14 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+
+    public function registerMediaCollections(): void
+    {
+        $gravaterLetters = md5(strtolower(trim($this?->email ?? $this->name)));
+
+        $this
+            ->useFallbackUrl("https://www.gravatar.com/avatar/{$gravaterLetters}?d=retro&r=r");
     }
 }

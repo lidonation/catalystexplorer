@@ -1,9 +1,10 @@
 import '../scss/app.scss';
 import './bootstrap';
-import './utils/i18n'
+import './utils/i18n';
 
 import { createInertiaApp } from '@inertiajs/react';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
+import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import AppLayout from './Layouts/AppLayout';
 
@@ -14,17 +15,23 @@ createInertiaApp({
     resolve: (name) => {
         const page = resolvePageComponent(
             `./Pages/${name}.tsx`,
-            import.meta.glob("./Pages/**/*.tsx")
+            import.meta.glob('./Pages/**/*.tsx'),
         );
         page.then((module: any) => {
-            module.default.layout = module.default.layout || ((module: any) => <AppLayout children={module}/>);
+            module.default.layout =
+                module.default.layout ||
+                ((module: any) => <AppLayout children={module} />);
         });
         return page;
     },
-    setup({el, App, props}) {
+    setup({ el, App, props }) {
         const root = createRoot(el);
 
-        root.render(<App {...props} />);
+        root.render(
+            <StrictMode>
+                <App {...props} />
+            </StrictMode>,
+        );
     },
     progress: {
         color: '#4B5563',
