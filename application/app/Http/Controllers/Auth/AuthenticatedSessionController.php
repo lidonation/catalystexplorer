@@ -8,6 +8,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use Laravolt\Avatar\Facade as Avatar;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -33,7 +34,14 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
+        $user = Auth::user();
+
+        $avatar = Avatar::create($user->name)->toBase64();
+
+        $request->session()->put('avatar', $avatar);
+
         return redirect()->intended(route('dashboard', absolute: false));
+
     }
 
     /**
