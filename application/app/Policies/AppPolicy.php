@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Policies;
 
 use App\Models\User;
@@ -13,11 +15,8 @@ class AppPolicy
 
     /**
      * Perform pre-authorization checks.
-     *
-     * @param  string  $ability
-     * @return void|bool
      */
-    public function before(User $user, $ability)
+    public function before(User $user, string $ability): bool
     {
         return $user->hasAnyRole([RoleEnum::admin()->value, RoleEnum::super_admin()->value]);
     }
@@ -32,8 +31,6 @@ class AppPolicy
 
     /**
      * Determine whether the user can view the model.
-     *
-     *
      * @throws \Exception
      */
     public function canView(User $user, $model): mixed
@@ -57,9 +54,7 @@ class AppPolicy
         return $user->hasAnyRole([RoleEnum::admin()->value, RoleEnum::super_admin()->value]) || $this->ownsModel($user, $model);
     }
 
-    /**
-     * Determine whether the user can update the model.
-     */
+    /** Determine whether the user can update the model.*/
     public function canUpdateAny(User $user): mixed
     {
         return $user->hasAnyRole([RoleEnum::admin()->value, RoleEnum::super_admin()->value]);
@@ -102,7 +97,7 @@ class AppPolicy
      */
     public function forceDelete(User $user, Model $model): mixed
     {
-        return $user->hasAnyRole([RoleEnum::super_admin()->value]);
+        return $user->hasAnyRole([RoleEnum::admin()->value, RoleEnum::super_admin()->value]);
     }
 
     /**
@@ -115,7 +110,7 @@ class AppPolicy
 
     protected function ownsModel(User $user, $model): bool
     {
-        if($model instanceof User){
+        if ($model instanceof User) {
             return $user->id === $model->id;
         }
 

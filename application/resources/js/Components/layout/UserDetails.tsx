@@ -5,7 +5,12 @@ import { route } from '../../../../vendor/tightenco/ziggy/src/js';
 import LogOutIcon from '../svgs/LogOut';
 import User = App.DataTransferObjects.UserData;
 
-const UserDetails: React.FC<User> = ({ user }) => {
+
+interface UserDetailsProps {
+    user: App.DataTransferObjects.UserData; 
+}
+
+const UserDetails: React.FC<UserDetailsProps> = ({user}) => {
     const { t } = useTranslation();
 
     const logout = () => {
@@ -26,7 +31,7 @@ const UserDetails: React.FC<User> = ({ user }) => {
                 <div className="size-9 rounded-full bg-gray-400">
                     {user?.name && user?.email ? (
                         <img
-                            src={user?.profile_photo_url}
+                            src={user.profile_photo_url}
                             alt="avatar"
                             className="size-9 rounded-full"
                         />
