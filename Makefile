@@ -123,4 +123,10 @@ vite:
 
 .PHONY: watch
 watch:
-	$(sail) up -d && $(sail) npx vite
+	docker compose  up -d && $(sail) npx vite --force
+
+.PHONY: test-backend
+test-backend:
+	docker-compose -f docker-compose.testing.yml up -d && \
+	docker-compose -f docker-compose.testing.yml exec catalystexplorer.com vendor/bin/pest && \
+ 	docker-compose -f docker-compose.testing.yml down --volumes
