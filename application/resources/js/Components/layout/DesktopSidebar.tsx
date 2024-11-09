@@ -5,6 +5,7 @@ import AppNavigation from './AppNavigation';
 import ThemeSwitcher from './ThemeSwitcher';
 import UserDetails from './UserDetails';
 import UserNavigation from './UserNavigation';
+import User = App.DataTransferObjects.UserData;
 
 
 function DesktopSidebar() {
@@ -25,7 +26,7 @@ function DesktopSidebar() {
             <section className="flex flex-col gap-6 px-4 pb-8">
                 <ThemeSwitcher />
                 <UserNavigation />
-                <UserDetails name={auth?.user?.name} email={auth?.user?.email} avatar={auth?.avatar}/>
+                <UserDetails user={auth?.user as User} />
             </section>
         </aside>
     );
