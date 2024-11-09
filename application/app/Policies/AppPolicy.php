@@ -81,7 +81,7 @@ class AppPolicy
      */
     public function canForceDelete(User $user, $model): bool
     {
-        return $user->hasAnyRole([RoleEnum::admin()->value, RoleEnum::super_admin()->value]) || $this->ownsModel($user, $model);
+        return $user->hasAnyRole([RoleEnum::super_admin()->value]);
     }
 
     /**
@@ -89,7 +89,7 @@ class AppPolicy
      */
     public function canForceDeleteAny(User $user): mixed
     {
-        return $user->hasAnyRole([RoleEnum::admin()->value, RoleEnum::super_admin()->value]);
+        return $user->hasAnyRole([RoleEnum::super_admin()->value]);
     }
 
     /**

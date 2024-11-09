@@ -16,7 +16,7 @@ class UserPolicy extends AppPolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user->hasAnyPermission([PermissionEnum::read_users()->value]) || $this->canViewAny($user);
+        return parent::canViewAny($user) || $user->hasAnyPermission([PermissionEnum::read_users()->value]);
     }
 
     /**
@@ -24,8 +24,7 @@ class UserPolicy extends AppPolicy
      */
     public function view(User $user, User $model): bool
     {
-        return $user->hasAnyPermission([PermissionEnum::read_users()->value]) ||
-            $this->canView($user, $model);
+        return parent::canView($user, $model) || $user->hasAnyPermission([PermissionEnum::read_users()->value]);
     }
 
     /**
@@ -33,7 +32,7 @@ class UserPolicy extends AppPolicy
      */
     public function create(User $user): bool
     {
-        return $user->hasAnyPermission([PermissionEnum::create_users()->value]) || $this->canCreate($user);
+        return parent::canCreate($user) || $user->hasAnyPermission([PermissionEnum::create_users()->value]);
     }
 
     /**
@@ -41,8 +40,7 @@ class UserPolicy extends AppPolicy
      */
     public function update(User $user, User $model): bool
     {
-        return $user->hasAnyPermission([PermissionEnum::update_users()->value]) ||
-            $this->canUpdateAny($user) || $this->ownsModel($user, $model);
+        return parent::canUpdate($user, $model) || $user->hasAnyPermission([PermissionEnum::update_users()->value]);
     }
 
     /**
@@ -50,8 +48,6 @@ class UserPolicy extends AppPolicy
      */
     public function delete(User $user, User $model): bool
     {
-        return $user->hasAnyPermission([PermissionEnum::delete_users()->value]) ||
-            $this->canDelete($user, $model);
+        return parent::canDelete($user, $model) || $user->hasAnyPermission([PermissionEnum::delete_users()->value]);
     }
-
 }
