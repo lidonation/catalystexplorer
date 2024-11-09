@@ -5,6 +5,7 @@ import ThemeSwitcher from './ThemeSwitcher';
 import UserDetails from './UserDetails';
 import UserNavigation from './UserNavigation';
 import { usePage } from '@inertiajs/react';
+import User = App.DataTransferObjects.UserData;
 
 function MobileNavigation() {
     const { t } = useTranslation();
@@ -26,7 +27,7 @@ function MobileNavigation() {
                     <section className="flex flex-col gap-6 px-4 pb-8">
                         <ThemeSwitcher />
                         <UserNavigation />
-                        <UserDetails name={auth?.user?.name} email={auth?.user?.email} avatar={auth?.avatar}/>
+                        <UserDetails user={auth.user as User} />
                     </section>
                 </aside>
             </DialogPanel>
