@@ -4,8 +4,9 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Casts\DateFormatCast;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
+use App\Models\Model;
 
 class IdeascaleProfile extends Model
 {
@@ -36,8 +37,11 @@ class IdeascaleProfile extends Model
 
     protected $hidden = [];
 
-    protected $casts = [
-        'created_at' => 'datetime',
-        'updated_at' => 'datetime',
-    ];
+    protected function casts(): array
+    {
+        return [
+            'created_at' => 'datetime:Y-m-d',
+            'updated_at' => 'datetime:Y-m-d'
+        ];
+    }
 }

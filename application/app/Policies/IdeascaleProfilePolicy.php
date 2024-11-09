@@ -4,18 +4,19 @@ declare(strict_types=1);
 
 namespace App\Policies;
 
+use App\Enums\PermissionEnum;
 use App\Models\IdeascaleProfile;
 use App\Models\User;
 use Illuminate\Auth\Access\Response;
 
-class IdeascaleProfilePolicy
+class IdeascaleProfilePolicy extends AppPolicy
 {
     /**
      * Determine whether the user can view any models.
      */
     public function viewAny(User $user): bool
     {
-        //
+        return $user->hasAnyPermission([PermissionEnum::read_links()->value]) || $this->canViewAny($user);
     }
 
     /**
@@ -23,7 +24,7 @@ class IdeascaleProfilePolicy
      */
     public function view(User $user, IdeascaleProfile $ideascaleProfile): bool
     {
-        //
+        return $user->hasAnyPermission([PermissionEnum::read_links()->value]) || $this->canView($user, $catalystUser);
     }
 
     /**
@@ -31,7 +32,7 @@ class IdeascaleProfilePolicy
      */
     public function create(User $user): bool
     {
-        //
+        return $user->hasAnyPermission([PermissionEnum::create_links()->value]) || $this->canCreate($user);
     }
 
     /**
@@ -39,7 +40,7 @@ class IdeascaleProfilePolicy
      */
     public function update(User $user, IdeascaleProfile $ideascaleProfile): bool
     {
-        //
+        return $user->hasAnyPermission([PermissionEnum::update_links()->value]) || $this->canUpdateAny($user);
     }
 
     /**
@@ -47,22 +48,6 @@ class IdeascaleProfilePolicy
      */
     public function delete(User $user, IdeascaleProfile $ideascaleProfile): bool
     {
-        //
-    }
-
-    /**
-     * Determine whether the user can restore the model.
-     */
-    public function restore(User $user, IdeascaleProfile $ideascaleProfile): bool
-    {
-        //
-    }
-
-    /**
-     * Determine whether the user can permanently delete the model.
-     */
-    public function forceDelete(User $user, IdeascaleProfile $ideascaleProfile): bool
-    {
-        //
+        return $user->hasAnyPermission([PermissionEnum::delete_links()->value]) || $this->canDeleteAny($user);
     }
 }
