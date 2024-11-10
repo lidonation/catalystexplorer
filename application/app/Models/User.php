@@ -57,7 +57,7 @@ class User extends Authenticatable implements HasMedia
     public function gravatar(): Attribute
     {
         return Attribute::make(
-            get: fn() => Avatar::create($this->email)->toGravatar()
+            get: fn() => Avatar::create($this->email ?? $this->name ?? 'default')->toGravatar()
         );
     }
 
@@ -86,5 +86,4 @@ class User extends Authenticatable implements HasMedia
             ->performOnCollections('profile')
             ->useFallbackUrl($this->gravatar);
     }
-
 }

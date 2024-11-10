@@ -1,10 +1,9 @@
-import { Link } from '@inertiajs/react';
+import { Link, router } from '@inertiajs/react';
 import axios from 'axios';
 import { useTranslation } from 'react-i18next';
 import { route } from '../../../../vendor/tightenco/ziggy/src/js';
 import LogOutIcon from '../svgs/LogOut';
-import User = App.DataTransferObjects.UserData;
-
+import UserAvatar from '../UserAvatar';
 
 interface UserDetailsProps {
     user: App.DataTransferObjects.UserData; 
@@ -17,8 +16,7 @@ const UserDetails: React.FC<UserDetailsProps> = ({user}) => {
         axios
             .post(route('logout'))
             .then((response) => {
-                console.log(response);
-                window.location.href = '/';
+                router.get('/')
             })
             .catch((error) => {
                 console.log(error);
@@ -30,11 +28,8 @@ const UserDetails: React.FC<UserDetailsProps> = ({user}) => {
             <div className="flex gap-3">
                 <div className="size-9 rounded-full bg-gray-400">
                     {user?.name && user?.email ? (
-                        <img
-                            src={user.profile_photo_url}
-                            alt="avatar"
-                            className="size-9 rounded-full"
-                        />
+                        <UserAvatar imageUrl={user.profile_photo_url} />
+         
                     ) : (
                         ''
                     )}
