@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Casts\DateFormatCast;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Models\Model;
 
 class IdeascaleProfile extends Model

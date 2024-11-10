@@ -16,7 +16,7 @@ class IdeascaleProfilePolicy extends AppPolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user->hasAnyPermission([PermissionEnum::read_links()->value]) || $this->canViewAny($user);
+        return parent::canView($user) || $user->hasAnyPermisssion([PermissionEnum::read_users()->value]);
     }
 
     /**
@@ -24,7 +24,7 @@ class IdeascaleProfilePolicy extends AppPolicy
      */
     public function view(User $user, IdeascaleProfile $ideascaleProfile): bool
     {
-        return $user->hasAnyPermission([PermissionEnum::read_links()->value]) || $this->canView($user, $catalystUser);
+        return parent::canView($user, $ideascaleProfile) || $user->hasAnyPermission([PermissionEnum::read_users()->value]);
     }
 
     /**
@@ -32,7 +32,7 @@ class IdeascaleProfilePolicy extends AppPolicy
      */
     public function create(User $user): bool
     {
-        return $user->hasAnyPermission([PermissionEnum::create_links()->value]) || $this->canCreate($user);
+        return parent::canCreate($user) || $user->hasAnyPermission([PermissionEnum::create_users()->value]);
     }
 
     /**
@@ -40,7 +40,7 @@ class IdeascaleProfilePolicy extends AppPolicy
      */
     public function update(User $user, IdeascaleProfile $ideascaleProfile): bool
     {
-        return $user->hasAnyPermission([PermissionEnum::update_links()->value]) || $this->canUpdateAny($user);
+        return parent::canUpdate($user, $ideascaleProfile) || $user->hasAnyPermission([PermissionEnum::update_users()->value]);
     }
 
     /**
@@ -48,6 +48,6 @@ class IdeascaleProfilePolicy extends AppPolicy
      */
     public function delete(User $user, IdeascaleProfile $ideascaleProfile): bool
     {
-        return $user->hasAnyPermission([PermissionEnum::delete_links()->value]) || $this->canDeleteAny($user);
+        return parent::canDelete($user, $ideascaleProfile) || $user->hasAnyPermission([PermissionEnum::delete_users()->value]);
     }
 }
