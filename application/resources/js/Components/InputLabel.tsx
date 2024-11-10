@@ -1,3 +1,4 @@
+import React from 'react';
 import { LabelHTMLAttributes } from 'react';
 
 export default function InputLabel({

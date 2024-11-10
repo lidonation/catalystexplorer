@@ -6,6 +6,7 @@ import ThemeSwitcher from './ThemeSwitcher';
 import UserDetails from './UserDetails';
 import UserNavigation from './UserNavigation';
 import User = App.DataTransferObjects.UserData;
+import React from 'react';
 
 
 function DesktopSidebar() {
