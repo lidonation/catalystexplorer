@@ -1,6 +1,5 @@
 import { Transition } from '@headlessui/react';
 import { InertiaLinkProps, Link } from '@inertiajs/react';
-import React from 'react';
 import {
     createContext,
     Dispatch,
@@ -115,7 +114,7 @@ const DropdownLink = ({
         <Link
             {...props}
             className={
-                'block w-full px-4 py-2 text-start text-sm leading-5 text-content-primary transition duration-150 ease-in-out hover:bg-background-secondary focus:outline-none  focus:bg-background-secondary ' +
+                'block w-full px-4 py-2 text-start text-sm leading-5 text-content-primary transition duration-150 ease-in-out hover:bg-background-secondary focus:bg-background-secondary focus:outline-none ' +
                 className
             }
         >

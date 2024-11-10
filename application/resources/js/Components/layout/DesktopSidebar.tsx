@@ -1,17 +1,15 @@
-import { useTranslation } from 'react-i18next';
 import { usePage } from '@inertiajs/react';
+import { useTranslation } from 'react-i18next';
 import CatalystLogo from '../atoms/CatalystLogo';
 import AppNavigation from './AppNavigation';
 import ThemeSwitcher from './ThemeSwitcher';
 import UserDetails from './UserDetails';
 import UserNavigation from './UserNavigation';
 import User = App.DataTransferObjects.UserData;
-import React from 'react';
-
 
 function DesktopSidebar() {
     const { t } = useTranslation();
-    const {auth} = usePage().props;
+    const { auth } = usePage().props;
 
     return (
         <aside
