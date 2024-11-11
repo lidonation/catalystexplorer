@@ -6,6 +6,7 @@
     "license": "MIT",
     "require": {
         "php": "^8.2",
+        "hammerstone/fast-paginate": "^1.1",
         "inertiajs/inertia-laravel": "2.x-dev",
         "laravel/framework": "^11.9",
         "laravel/horizon": "^5.29",
