@@ -27,6 +27,7 @@ export default {
                     primary: 'var(--content-primary-color)',
                     secondary: 'var(--content-secondary-color)',
                     tertiary: 'var(--content-tertiary-color)',
+                    hover: 'var(--content-hover-color)'
                 },
                 primary: {
                     100: '#2596BE',
