@@ -9,7 +9,7 @@ use Spatie\TypeScriptTransformer\Attributes\Optional as TypeScriptOptional;
 use Spatie\TypeScriptTransformer\Attributes\TypeScript;
 
 #[TypeScript]
-final class CatalystGroupDTO extends Data
+final class GroupDTO extends Data
 {
     public function __construct(
         public ?int $id,

@@ -4,15 +4,15 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use App\Models\CatalystGroup;
+use App\Models\Group;
 
-class CatalystGroupSeeder extends Seeder
+class GroupSeeder extends Seeder
 {
     /**
      * Run the database seeds.
      */
     public function run(): void
     {
-        CatalystGroup::factory()->count(10)->create();
+        Group::factory()->count(10)->create();
     }
 }

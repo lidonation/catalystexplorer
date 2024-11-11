@@ -2,16 +2,16 @@
 
 namespace Database\Factories;
 
-use App\Models\CatalystGroup;
+use App\Models\Group;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\CatalystGroup>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Group>
  */
-class CatalystGroupFactory extends Factory
+class GroupFactory extends Factory
 {
-    protected $model = CatalystGroup::class;
+    protected $model = Group::class;
 
     public function definition()
     {

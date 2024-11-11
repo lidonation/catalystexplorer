@@ -6,10 +6,10 @@ namespace App\Policies;
 
 use App\Models\User;
 use App\Enums\PermissionEnum;
-use App\Models\CatalystGroup;
+use App\Models\Group;
 use Illuminate\Auth\Access\Response;
 
-class CatalystGroupPolicy extends AppPolicy
+class GroupPolicy extends AppPolicy
 {
     /**
      * Determine whether the user can view any models.
@@ -22,9 +22,9 @@ class CatalystGroupPolicy extends AppPolicy
     /**
      * Determine whether the user can view the model.
      */
-    public function view(User $user, CatalystGroup $catalystGroup): bool
+    public function view(User $user, Group $group): bool
     {
-        return parent::canView($user, $catalystGroup) || $user->hasAnyPermission([PermissionEnum::read_users()->value]);
+        return parent::canView($user, $group) || $user->hasAnyPermission([PermissionEnum::read_users()->value]);
     }
 
     /**
@@ -38,16 +38,16 @@ class CatalystGroupPolicy extends AppPolicy
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, CatalystGroup $catalystGroup): bool
+    public function update(User $user, Group $group): bool
     {
-        return parent::canUpdate($user, $catalystGroup) || $user->hasAnyPermission([PermissionEnum::update_users()->value]);
+        return parent::canUpdate($user, $group) || $user->hasAnyPermission([PermissionEnum::update_users()->value]);
     }
 
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, CatalystGroup $catalystGroup): bool
+    public function delete(User $user, Group $group): bool
     {
-        return parent::canDelete($user, $catalystGroup) || $user->hasAnyPermission([PermissionEnum::delete_users()->value]);
+        return parent::canDelete($user, $group) || $user->hasAnyPermission([PermissionEnum::delete_users()->value]);
     }
 }

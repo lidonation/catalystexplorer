@@ -8,7 +8,7 @@ use App\Models\Model;
 use App\Casts\DateFormatCast;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class CatalystGroup extends Model
+class Group extends Model
 {
     use HasFactory;
 
