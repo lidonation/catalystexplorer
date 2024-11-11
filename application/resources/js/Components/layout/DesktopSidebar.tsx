@@ -1,15 +1,15 @@
-import { useTranslation } from 'react-i18next';
 import { usePage } from '@inertiajs/react';
+import { useTranslation } from 'react-i18next';
 import CatalystLogo from '../atoms/CatalystLogo';
 import AppNavigation from './AppNavigation';
 import ThemeSwitcher from './ThemeSwitcher';
 import UserDetails from './UserDetails';
 import UserNavigation from './UserNavigation';
-
+import User = App.DataTransferObjects.UserData;
 
 function DesktopSidebar() {
     const { t } = useTranslation();
-    const {auth} = usePage().props;
+    const { auth } = usePage().props;
 
     return (
         <aside
@@ -25,7 +25,7 @@ function DesktopSidebar() {
             <section className="flex flex-col gap-6 px-4 pb-8">
                 <ThemeSwitcher />
                 <UserNavigation />
-                <UserDetails name={auth?.user?.name} email={auth?.user?.email}/>
+                <UserDetails user={auth?.user as User} />
             </section>
         </aside>
     );
