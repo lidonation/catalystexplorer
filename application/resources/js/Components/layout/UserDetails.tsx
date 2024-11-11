@@ -5,7 +5,16 @@ import LogOutIcon from '../svgs/LogOut';
 import Avatar from '../Avatar';
 import { Link } from '@inertiajs/react';
 import axios from 'axios';
+import LogOutIcon from '../svgs/LogOut';
+import Avatar from '../Avatar';
+import { Link } from '@inertiajs/react';
+import axios from 'axios';
 import { route } from '../../../../vendor/tightenco/ziggy/src/js';
+import LogOutIcon from '../svgs/LogOut';
+import UserAvatar from '../UserAvatar';
+
+interface UserDetailsProps {
+    user: App.DataTransferObjects.UserData;
 
 
 
@@ -15,6 +24,7 @@ export interface UserDetailsProps {
 
 }
 
+const UserDetails: React.FC<UserDetailsProps> = ({user}) => {
 const UserDetails: React.FC<UserDetailsProps> = ({ name, email }) => {
     const { t } = useTranslation();
 
@@ -32,14 +42,7 @@ const UserDetails: React.FC<UserDetailsProps> = ({ name, email }) => {
     return (
         <div className="flex items-center justify-between">
             <div className="flex gap-3">
-                <div className="size-9 rounded-full bg-gray-400">
-                    {user ? (
-                        <UserAvatar imageUrl={user.profile_photo_url} />
-         
-                    ) : (
-                        ''
-                    )}
-                </div>
+                <Avatar/>
                 <div className="flex flex-col">
                     {user ? (
                         <Link
