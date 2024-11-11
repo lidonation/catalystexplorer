@@ -6,7 +6,6 @@ import ThemeSwitcher from './ThemeSwitcher';
 import UserDetails from './UserDetails';
 import UserNavigation from './UserNavigation';
 
-
 function DesktopSidebar() {
     const { t } = useTranslation();
     const {auth} = usePage().props;
