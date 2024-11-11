@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Database\Factories;
 
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class IdeascaleProfileFactory extends Factory
@@ -34,7 +35,7 @@ class IdeascaleProfileFactory extends Factory
             'linkedin' => $this->faker->userName,
             'discord' => $this->faker->userName,
             'ideascale' => $this->faker->word,
-            'claimed_by' => $this->faker->randomElement([null, $this->faker->numberBetween(1, 100)]),
+            'claimed_by' => User::factory(),
             'telegram' => $this->faker->userName,
             'title' => $this->faker->jobTitle,
         ];
