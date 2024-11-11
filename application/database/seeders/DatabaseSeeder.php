@@ -19,5 +19,11 @@ class DatabaseSeeder extends Seeder
             UserSeeder::class,
             ProposalSeeder::class,
         ]);
+
+        $this->call(
+            [
+                IdeascaleProfilesSeeder::class
+            ]
+        );
     }
 }
