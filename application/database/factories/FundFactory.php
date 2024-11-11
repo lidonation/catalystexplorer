@@ -1,11 +1,19 @@
 <?php
 
+
+namespace Database\Factories;
+
+use Illuminate\Database\Eloquent\Factories\Factory;
 use App\Models\Fund;
 use App\Models\User;
-use Illuminate\Database\Eloquent\Factories\Factory;
 
 class FundFactory extends Factory
 {
+
+/**
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Fund>
+ */
+
     protected $model = Fund::class;
 
     public function definition()
@@ -30,4 +38,3 @@ class FundFactory extends Factory
         ];
     }
 }
-

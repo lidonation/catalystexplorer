@@ -19,16 +19,16 @@ return new class extends Migration {
             $table->text('excerpt')->nullable();
             $table->text('comment_prompt')->nullable();
             $table->text('content')->nullable();
-            $table->double('amount', 15, 2)->default(0); // Adjust precision if needed
+            $table->double('amount', 15, 2)->default(0);
             $table->string('status', 255)->nullable();
             $table->timestamp('launched_at')->nullable();
-            $table->softDeletes('deleted_at'); // Soft deletes enabled with nullable timestamp
-            $table->timestamps(); // Creates 'created_at' and 'updated_at'
+            $table->softDeletes('deleted_at');
+            $table->timestamps();
             $table->foreignId('parent_id')->nullable()->constrained('funds')->onDelete('cascade');
             $table->timestamp('awarded_at')->nullable();
             $table->text('color')->nullable();
             $table->text('label')->nullable();
-            $table->string('currency', 3)->default('usd'); // 'currency' defaults to 'usd'
+            $table->string('currency', 3)->default('usd'); 
             $table->timestamp('assessment_started_at')->nullable();
         });
     }
