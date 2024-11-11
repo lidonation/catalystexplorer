@@ -22,21 +22,10 @@ function DesktopSidebar() {
                 </div>
                 <AppNavigation/>
             </section>
-            <section className="flex flex-col gap-6">
-                <div className="px-4">
-                    <div className="border-t border-border-primary pt-6">
-                        <UserNavigation/>
-                    </div>
-                </div>
-
-                <div className="flex flex-col gap-6 border-t border-border-primary pt-6">
-                    <div className="px-4">
-                        <UserDetails user={auth?.user as User}/>
-                    </div>
-                    <div className="py-4 px-4 bg-background-darker">
-                        <ThemeSwitcher/>
-                    </div>
-                </div>
+            <section className="flex flex-col gap-6 px-4 pb-8">
+                <ThemeSwitcher />
+                <UserNavigation />
+                <UserDetails name={auth?.user?.name} email={auth?.user?.email}/>
             </section>
         </aside>
     );

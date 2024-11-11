@@ -1,15 +1,21 @@
 import { Link, router } from '@inertiajs/react';
 import axios from 'axios';
 import { useTranslation } from 'react-i18next';
-import { route } from '../../../../vendor/tightenco/ziggy/src/js';
 import LogOutIcon from '../svgs/LogOut';
-import UserAvatar from '../UserAvatar';
+import Avatar from '../Avatar';
+import { Link } from '@inertiajs/react';
+import axios from 'axios';
+import { route } from '../../../../vendor/tightenco/ziggy/src/js';
 
-interface UserDetailsProps {
-    user: App.DataTransferObjects.UserData;
+
+
+export interface UserDetailsProps {
+    name: string,
+    email: string,
+
 }
 
-const UserDetails: React.FC<UserDetailsProps> = ({user}) => {
+const UserDetails: React.FC<UserDetailsProps> = ({ name, email }) => {
     const { t } = useTranslation();
 
     const logout = () => {
@@ -34,6 +40,7 @@ const UserDetails: React.FC<UserDetailsProps> = ({user}) => {
                         ''
                     )}
                 </div>
+                <Avatar/>
                 <div className="flex flex-col">
                     {user ? (
                         <Link
