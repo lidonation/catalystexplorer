@@ -28,6 +28,14 @@ export default forwardRef(function TextInput(
     }, [isFocused]);
 
     return (
-        <input {...props} type={type} className={className} ref={localRef} />
+        <input
+            {...props}
+            type={type}
+            className={
+                'bg-primary rounded-md border-content-primary shadow-sm focus:border-border-secondary text-content-primary' +
+                className
+            }
+            ref={localRef}
+        />
     );
 });

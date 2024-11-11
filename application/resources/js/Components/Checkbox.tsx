@@ -5,6 +5,13 @@ export default function Checkbox({
     ...props
 }: InputHTMLAttributes<HTMLInputElement>) {
     return (
-        <input {...props} type="checkbox" className={'rounded ' + className} />
+        <input
+            {...props}
+            type="checkbox"
+            className={
+                'rounded border-border-primary bg-background-primary text-content-accent shadow-sm ' +
+                className
+            }
+        />
     );
 }
