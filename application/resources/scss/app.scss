@@ -5,25 +5,58 @@
 :root {
     --bg-primary-color: #ffffff;
     --bg-secondary-color: #f8fbfb;
+    --bg-tertiary-color: #667085;
+    --bg-accent-color: #3FACD1;
+    --bg-error-primary-color: #dc2626;
+    --bg-error-secondary-color: #ef4444;
     --content-primary-color: #182230;
     --content-secondary-color: #000000;
+    --content-hover-color: #EFFAFC;
     --content-tertiary-color: #667085;
+    --content-accent-color: #3facd1;
+    --content-error-primary-color: #dc2626;
+    --content-error-secondary-color: #ef4444;
+    --content-success-color: #16a34a;
+    --border-primary-color: #182230;
+    --border-secondary-color: #3facd1;
 }
 
 [data-theme='dark'] {
     --bg-primary-color: #111928;
     --bg-secondary-color: #374151;
+    --bg-tertiary-color: #ffffff;
+    --bg-accent-color: #3facd1;
+    --bg-error-primary-color: #dc2626;
+    --bg-error-secondary-color: #ef4444;
     --content-primary-color: #ffffff;
+    --content-hover-color: #1f2d3d;
     --content-secondary-color: #000000;
     --content-tertiary-color: #667085;
+    --content-accent-color: #3facd1;
+    --content-error-primary-color: #dc2626;
+    --content-error-secondary-color: #ef4444;
+    --content-success-color: #4ade80;
+    --border-primary-color: #ffffff;
+    --border-secondary-color: #3facd1;
 }
 
 [data-theme='voltaire'] {
     --bg-primary-color: #2c2c2c;
     --bg-secondary-color: #b1e3f1;
+    --bg-tertiary-color: #ffffff;
+    --bg-accent-color: #3facd1;
+    --bg-error-primary-color: #dc2626;
+    --bg-error-secondary-color: #ef4444;
     --content-primary-color: #ffffff;
+    --content-hover-color: #1f2d3d;
     --content-secondary-color: #000000;
     --content-tertiary-color: #667085;
+    --content-accent-color: #3facd1;
+    --content-error-primary-color: #dc2626;
+    --content-error-secondary-color: #ef4444;
+    --content-success-color: #4ade80;
+    --border-primary-color: #b1e3f1;
+    --border-secondary-color: #3facd1;
 }
 
 @layer base {

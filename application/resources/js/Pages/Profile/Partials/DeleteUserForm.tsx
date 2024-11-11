@@ -70,11 +70,11 @@ export default function DeleteUserForm({
 
             <Modal show={confirmingUserDeletion} onClose={closeModal}>
                 <form onSubmit={deleteUser} className="p-6">
-                    <h2 className="text-lg font-medium text-gray-900 dark:text-gray-100">
+                    <h2 className="text-lg font-medium text-content-primary">
                         Are you sure you want to delete your account?
                     </h2>
 
-                    <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
+                    <p className="mt-1 text-sm text-content-tertiary">
                         Once your account is deleted, all of its resources and
                         data will be permanently deleted. Please enter your
                         password to confirm you would like to permanently delete
