@@ -7,7 +7,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class AssessmentReview extends Model
+class Review extends Model
 {
     use HasFactory;
 }

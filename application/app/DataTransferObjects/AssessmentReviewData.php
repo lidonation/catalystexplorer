@@ -9,13 +9,13 @@ use Spatie\TypeScriptTransformer\Attributes\Optional as TypeScriptOptional;
 use Spatie\TypeScriptTransformer\Attributes\TypeScript;
 
 #[TypeScript]
-final class AssessmentReviewData extends Data
+final class ReviewData extends Data
 {
     public function __construct(
         public ?int $id,
 
         #[TypeScriptOptional]
-        public ?int $assessor_id,
+        public ?int $reviewer_id,
 
         public int $excellent_count,
 
