@@ -1,13 +1,4 @@
 declare namespace App.DataTransferObjects {
-    export type AssessmentReviewData = {
-        id: number | null;
-        assessor_id?: number;
-        excellent_count: number;
-        good_count: number;
-        filtered_out_count: number;
-        flagged: boolean;
-        qa_rationale?: Array<any>;
-    };
     export type IdeascaleProfileData = {
         id: number | null;
         ideascaleId?: number;
@@ -61,6 +52,15 @@ declare namespace App.DataTransferObjects {
         ranking_total?: number;
         quickpitch?: string;
         quickpitch_length?: number;
+    };
+    export type ReviewModerationData = {
+        id: number | null;
+        reviewer_id?: number;
+        excellent_count: number;
+        good_count: number;
+        filtered_out_count: number;
+        flagged: boolean;
+        qa_rationale?: Array<any>;
     };
     export type UserData = {
         id: number;
