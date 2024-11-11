@@ -11,10 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('reviews', function (Blueprint $table) {
+        Schema::create('review_moderations', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
-            $table->foreignId('assessor_id');
+            $table->foreignId('reviewer_id');
             $table->integer('excellent_count')->default(0);
             $table->integer('good_count')->default(0);
             $table->integer('filtered_out_count')->default(0);
@@ -28,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('reviews');
+        Schema::dropIfExists('review_moderations');
     }
 };

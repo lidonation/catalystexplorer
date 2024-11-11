@@ -9,7 +9,7 @@ use App\Enums\RoleEnum;
 use App\Enums\PermissionEnum;
 use Illuminate\Auth\Access\Response;
 
-class ReviewPolicy extends AppPolicy
+class ReviewModerationPolicy extends AppPolicy
 {
     /**
      * Determine whether the user can view any models.
