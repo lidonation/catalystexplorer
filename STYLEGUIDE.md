@@ -27,8 +27,8 @@
 - [Testing Practices](#testing-practices)
 - [Deployment and Environment Configuration](#deployment-and-environment-configuration)
 
-
 ## General Principles
+
 * Consistency: Maintain consistent coding styles and conventions across the entire codebase.
 * Readability: Write clear and understandable code with meaningful names and comments where necessary.
 * Modularity: Keep code modular to promote reusability and ease of maintenance.
@@ -39,6 +39,7 @@
 ## Project Structure
 
 ### Laravel Directory Structure
+
 * app/: Core application code (Models, Controllers, Services).
 * resources/views/: Minimal Blade templates, primarily for initial page loads.
 * routes/: Define application routes (web.php, api.php).
@@ -46,6 +47,7 @@
 * public/: Public assets (images, scripts, styles).
 
 ### Inertia.js with SSR React Structure
+
 * resources/js/: All JavaScript and React code.
   * components/: Reusable React components.
   * layouts/: Layout components for different page structures.
@@ -180,7 +182,6 @@ $greeting = "Hi, I am {$name}.";
 $greeting = 'Hi, I am ' . $name . '.';
 ```
 
-
 ## Ternary operators
 
 Every portion of a ternary expression should be on its own line unless it's a really short expression.
@@ -228,7 +229,6 @@ if (! $goodCondition) {
 
 // do work
 ```
-
 
 ```php
 // Bad
@@ -278,11 +278,9 @@ else {
 }
 ```
 
-
 ### Compound ifs
 
 In general, separate `if` statements should be preferred over a compound condition. This makes debugging code easier.
-
 
 ```php
 // Good
@@ -307,8 +305,6 @@ if ($conditionA && $conditionB && $conditionC) {
   // do stuff
 }
 ```
-
-
 
 ## Comments
 
@@ -592,7 +588,6 @@ public function rules()
 }
 ```
 
-
 All custom validation rules must use snake_case:
 
 ```php
@@ -713,57 +708,65 @@ Policy (required)
 
 Observer (as needed)
 
-
-
 * Define $fillable or $guarded properties explicitly.
 * Use query scopes for reusable query logic.
 * Name relationships clearly (e.g., public function orders()).
 
 ### Middleware
+
 * Use middleware for cross-cutting concerns (authentication, logging).
 * Name middleware descriptively (e.g., EnsureUserIsAdmin).
 
 ## Inertia.js and React Standards
 
 ### Component Structure
+
 * Use function components with React Hooks.
 * Organize components logically within components/, layouts/, and pages/.
 * Keep components small and focused on a single responsibility.
 
 ### Naming Conventions
+
 * Components: PascalCase (e.g., UserProfile).
 * Props and State: camelCase (e.g., isLoading).
 * Hooks: Start custom hooks with use (e.g., useFetchData).
 
 ### State Management
+
 * @todo TBD contextapi or redux
 * Use useReducer for complex state logic.
 
 ### SSR Considerations
+
 * Ensure components are isomorphic when possible.
 * Avoid accessing browser-specific APIs during server-side rendering.
 * Handle hydration issues by matching server and client-rendered content.
 
 ### Styling
+
 * Use CSS Modules, Styled Components, or Tailwind CSS for styling.
 * Follow consistent naming conventions for CSS classes.
 * Avoid inline styles unless necessary.
 
 ### API Calls
+
 * Use Inertia’s methods for navigation and form submissions.
 * Handle API responses and errors gracefully.
 * Show loading indicators during asynchronous operations.
 
 ### Props and State Management
+
 * Use PropTypes or TypeScript interfaces for type checking.
 * Pass only necessary props to components.
 * Avoid unnecessary re-renders by using React.memo and useCallback where appropriate.
 
 ### Translation with i18n
+
 * i18n package enables use to translate the app in different languages.
 * Language files are stored in the i18n/locale folder(en, fr, sw, ...)
 * Usage.
 * Add the key value pairs in the language files.
+
 ```js
     {
         "app" : {
@@ -771,30 +774,36 @@ Observer (as needed)
         }
     }
 ```
+
 * Then access it in components.
+
 ```js
     import { useTranslation } from 'react-i18next';
-    
+  
     const { t } = useTranslation();
-    
+  
     <p>{t('app.appLogoAlt')}</p>
 ```
+
 * Use camelCase for the keys that hold the translated strings.
 * All relevant strings should be translated.
 
 ## Database Conventions (PostgreSQL)
 
 ### Migrations
+
 * Use descriptive names for migration files (e.g., 2023_01_01_000000_create_users_table.php).
 * Always write a down method to reverse migrations. Stub method with comment justification in lieu of omitting entirely.
 * Use appropriate data types and constraints.
 
 ### Schema Design
+
 * Use snake_case for table and column names.
 * Normalize data where appropriate but consider performance implications.
 * Define foreign keys and indexes explicitly.
 
 ### Eloquent Relationships
+
 * Define all relationships using Eloquent methods (hasOne, belongsToMany, etc.).
 * Use consistent naming for relationship methods.
 * Leverage eager loading to prevent N+1 query problems but be wary of eager loading on the model directly.
@@ -802,43 +811,51 @@ Observer (as needed)
 ## Caching and Queueing (Redis)
 
 ### Caching
+
 * Use Redis for caching frequently accessed data.
 * Implement cache invalidation strategies when data changes.
 * Use cache tags and keys that reflect the cached data’s purpose.
 
 ### Queueing
+
 * Use Redis as the queue driver for background jobs.
 * Name queues based on functionality (e.g., emails, notifications).
 * Handle failed jobs by implementing retries and logging.
 
 ### Session Management
+
 * Store sessions in Redis for scalability.
 * Configure session lifetimes appropriately.
 
 ## Testing Practices
 
 ### Backend Testing (PHPUnit)
+
 * Write unit tests for models, services, and controllers.
 * Use feature tests to simulate HTTP requests and responses.
 * Mock external services and dependencies.
 
 ### Frontend Testing (Jest, React Testing Library)
+
 * Write unit tests for React components.
 * Test user interactions and component rendering.
 * Avoid testing implementation details; focus on output and behavior.
 
 ### Code Coverage
+
 * Aim for comprehensive test coverage, focusing on critical code paths.
 * Do not compromise code readability for the sake of coverage percentages.
 
 ## Deployment and Environment Configuration
 
 ### Environment Variables
+
 * Use .env files for environment-specific settings.
 * Never commit .env files to version control unless it's encrypted
 * Access environment variables using Laravel’s env() helper only in config files. To access value in codebase, use laravel `config90` helper.
 
 ### Configuration Files
+
 * Keep all configuration in the config/ directory.
 * Use environment variables within config files for sensitive data.
 * Document any custom configuration options.

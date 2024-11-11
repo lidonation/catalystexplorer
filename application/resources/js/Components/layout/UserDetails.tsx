@@ -1,59 +1,74 @@
-import { useTranslation } from 'react-i18next';
-import LogOutIcon from '../svgs/LogOut';
-import { Link } from '@inertiajs/react';
+import { Link, router } from '@inertiajs/react';
 import axios from 'axios';
+import { useTranslation } from 'react-i18next';
 import { route } from '../../../../vendor/tightenco/ziggy/src/js';
+import LogOutIcon from '../svgs/LogOut';
+import UserAvatar from '../UserAvatar';
 
-
-export interface UserDetailsProps {
-    name: string,
-    email: string,
-    avatar: string
+interface UserDetailsProps {
+    user: App.DataTransferObjects.UserData; 
 }
 
-const UserDetails: React.FC<UserDetailsProps> = ({ name, email, avatar }) => {
+const UserDetails: React.FC<UserDetailsProps> = ({user}) => {
     const { t } = useTranslation();
 
     const logout = () => {
-        axios.post(route('logout')).then((response) => {
-            console.log(response)
-            window.location.href = '/'
-        }).catch((error) => {
-            console.log(error)
-        })
-    }
+        axios
+            .post(route('logout'))
+            .then((response) => {
+                router.get('/')
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+    };
 
     return (
         <div className="flex items-center justify-between border-t border-gray-200 pt-6">
             <div className="flex gap-3">
-                <div className="h-9 w-9 rounded-full bg-gray-400">
-                    {name && email ? <img src={avatar} alt='avatar' /> : ''}
+                <div className="size-9 rounded-full bg-gray-400">
+                    {user?.name && user?.email ? (
+                        <UserAvatar imageUrl={user.profile_photo_url} />
+         
+                    ) : (
+                        ''
+                    )}
                 </div>
                 <div className="flex flex-col">
-                    {name && email ? (
-                        <Link href='/dashboard' className="text-sm font-semibold text-content-primary">
-                            {name}
+                    {user?.name && user?.email ? (
+                        <Link
+                            href="/dashboard"
+                            className="text-sm font-semibold text-content-primary"
+                        >
+                            {user?.name}
                         </Link>
-                    ) : <p className="text-sm font-semibold text-content-primary">{t('app.name')}</p>}
+                    ) : (
+                        <p className="text-sm font-semibold text-content-primary">
+                            {t('app.name')}
+                        </p>
+                    )}
 
                     <p className="text-xs text-content-primary">
-                        {email || t('app.contactEmail')}
+                        {user?.email || t('app.contactEmail')}
                     </p>
-                    {name && email && (
-                        <Link href='/profile' className="text-xs font-semibold text-primary-100">
+                    {user?.name && user?.email && (
+                        <Link
+                            href="/profile"
+                            className="text-xs font-semibold text-primary-100"
+                        >
                             Edit profile
                         </Link>
                     )}
                 </div>
             </div>
             <LogOutIcon
-                className="text-content-tertiary cursor-pointer"
+                className="cursor-pointer text-content-tertiary"
                 width={20}
                 height={20}
-                onClick={()=>logout()}
+                onClick={() => logout()}
             />
         </div>
     );
-}
+};
 
 export default UserDetails;

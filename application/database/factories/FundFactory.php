@@ -12,17 +12,17 @@ class FundFactory extends Factory
     {
         return [
             'user_id' => fn () => User::inRandomOrder()->first()?->id,
-            'title' => $this->faker->sentence,
-            'meta_title' => $this->faker->sentence,
+            'title' => $this->faker->words(4, true),
+            'meta_title' => $this->faker->words(5, true),
             'slug' => $this->faker->slug,
-            'excerpt' => $this->faker->paragraph,
-            'comment_prompt' => $this->faker->text,
-            'content' => $this->faker->paragraphs(3, true),
-            'amount' => $this->faker->randomFloat(2, 0, 1000),
-            'status' => $this->faker->word,
-            'launched_at' => now(),
+            'excerpt' => $this->faker->sentences(rand(2, 5), true),
+            'comment_prompt' => $this->faker->sentences(rand(2, 3), true),
+            'content' => $this->faker->paragraphs(rand(5, 18), true),
+            'amount' => $this->faker->randomFloat(2, 5000),
+            'status' => $this->faker->randomElement(['launched', 'retired']),
+            'launched_at' => $this->faker->dateTimeBetween('-2 Years'),
             'parent_id' => null,
-            'awarded_at' => null,
+            'awarded_at' => $this->faker->dateTimeBetween('-1 Years'),
             'color' => $this->faker->colorName,
             'label' => $this->faker->word,
             'currency' => 'USD',
@@ -30,3 +30,4 @@ class FundFactory extends Factory
         ];
     }
 }
+

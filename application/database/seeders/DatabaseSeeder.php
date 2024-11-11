@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Seeders;
 
 use App\Models\User;
@@ -17,5 +19,11 @@ class DatabaseSeeder extends Seeder
             UserSeeder::class,
             ProposalSeeder::class,
         ]);
+
+        $this->call(
+            [
+                IdeascaleProfilesSeeder::class
+            ]
+        );
     }
 }
