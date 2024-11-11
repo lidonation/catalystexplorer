@@ -1,17 +1,19 @@
 import { useTranslation } from 'react-i18next';
 import LogOutIcon from '../svgs/LogOut';
+import Avatar from '../Avatar';
 import { Link } from '@inertiajs/react';
 import axios from 'axios';
 import { route } from '../../../../vendor/tightenco/ziggy/src/js';
 
 
+
 export interface UserDetailsProps {
     name: string,
     email: string,
-    avatar: string
+
 }
 
-const UserDetails: React.FC<UserDetailsProps> = ({ name, email, avatar }) => {
+const UserDetails: React.FC<UserDetailsProps> = ({ name, email }) => {
     const { t } = useTranslation();
 
     const logout = () => {
@@ -26,9 +28,7 @@ const UserDetails: React.FC<UserDetailsProps> = ({ name, email, avatar }) => {
     return (
         <div className="flex items-center justify-between border-t border-gray-200 pt-6">
             <div className="flex gap-3">
-                <div className="h-9 w-9 rounded-full bg-gray-400">
-                    {name && email ? <img src={avatar} alt='avatar' /> : ''}
-                </div>
+                <Avatar/>
                 <div className="flex flex-col">
                     {name && email ? (
                         <Link href='/dashboard' className="text-sm font-semibold text-content-primary">

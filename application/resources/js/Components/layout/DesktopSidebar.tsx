@@ -25,7 +25,7 @@ function DesktopSidebar() {
             <section className="flex flex-col gap-6 px-4 pb-8">
                 <ThemeSwitcher />
                 <UserNavigation />
-                <UserDetails name={auth?.user?.name} email={auth?.user?.email} avatar={auth?.avatar}/>
+                <UserDetails name={auth?.user?.name} email={auth?.user?.email}/>
             </section>
         </aside>
     );
