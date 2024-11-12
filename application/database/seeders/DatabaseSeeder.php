@@ -19,6 +19,7 @@ class DatabaseSeeder extends Seeder
             UserSeeder::class,
             ProposalSeeder::class,
             CommunitySeeder::class,
+            IdeascaleProfileSeeder::class,
         ]);
     }
 }
