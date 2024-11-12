@@ -6,7 +6,7 @@ import LogOutIcon from '../svgs/LogOut';
 import UserAvatar from '../UserAvatar';
 
 interface UserDetailsProps {
-    user: App.DataTransferObjects.UserData; 
+    user: App.DataTransferObjects.UserData;
 }
 
 const UserDetails: React.FC<UserDetailsProps> = ({user}) => {
@@ -24,12 +24,12 @@ const UserDetails: React.FC<UserDetailsProps> = ({user}) => {
     };
 
     return (
-        <div className="flex items-center justify-between border-t border-gray-200 pt-6">
+        <div className="flex items-center justify-between">
             <div className="flex gap-3">
                 <div className="size-9 rounded-full bg-gray-400">
                     {user?.name && user?.email ? (
                         <UserAvatar imageUrl={user.profile_photo_url} />
-         
+
                     ) : (
                         ''
                     )}

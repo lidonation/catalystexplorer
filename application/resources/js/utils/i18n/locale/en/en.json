@@ -31,7 +31,7 @@
         }
     },
     "theme": {
-        "changeColor": "Change Theme Color",
+        "theme": "Theme",
         "options": "Theme options",
         "light": "Light",
         "dark": "Dark",
