@@ -125,7 +125,7 @@ const SearchBar = () => {
                 <TextInput
                     placeholder={placeholder}
                     size={placeholder.length}
-                    className="rounded-lg shadow-none w-full pl-8 bg-background-primary text-content-primary border-0 focus:ring-0 focus:border-0"
+                    className="rounded-lg shadow-none w-full pl-10 bg-background-primary text-content-primary border-0 focus:ring-0 focus:border-0"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                 />
