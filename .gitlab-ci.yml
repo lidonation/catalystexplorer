@@ -91,7 +91,7 @@ pest:
  script:
    - |- 
      set -xev
-     cp .env.testing application/.env
+     cp application/.env.testing application/.env
      make test-backend
 
 #   rules:
