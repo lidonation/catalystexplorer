@@ -85,7 +85,7 @@ yarn:
 
 pest:
  stage: test
- image: composer:2.7
+ image: docker:24.0.2-git
  cache: {}
  retry: 1
  script:
