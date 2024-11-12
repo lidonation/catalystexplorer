@@ -5,21 +5,21 @@ declare(strict_types=1);
 namespace App\Repositories;
 
 use App\Scopes\LimitScope;
-use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-use Illuminate\Database\Eloquent\Collection;
+use App\Contract\RepositoryInterface;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 class Repository implements RepositoryInterface
 {
     protected $query;
 
-    // Constructor to bind model to repo
     public function __construct(protected Model $model)
     {
         $this->setModel($model);
     }
 
-    // Get all instances of model
     public function all(): array|Collection
     {
         if ($this->query) {
@@ -29,8 +29,7 @@ class Repository implements RepositoryInterface
         return $this->model->all();
     }
 
-    // Get all instances of model
-    public function count()
+    public function count(): int
     {
         if ($this->query) {
             return $this->query->count();
@@ -39,8 +38,7 @@ class Repository implements RepositoryInterface
         return $this->model->count();
     }
 
-    // get the record with the given id
-    public function find($idOrSlug, ...$params)
+    public function find(int|string $idOrSlug, ...$params): Model
     {
         if (is_int($idOrSlug)) {
             return $this->model->findOrFail($idOrSlug);
@@ -49,22 +47,19 @@ class Repository implements RepositoryInterface
         return $this->model->where('slug', '=', $idOrSlug)->first();
     }
 
-    // create a new record in the database
-    public function create(array $data)
+    public function create(array $data): Model
     {
         return $this->model->create($data);
     }
 
-    // update record in the database
-    public function update(array $data, $id)
+    public function update(array $data, $id): bool
     {
         $record = $this->model->find($id);
 
         return $record->update($data);
     }
 
-    // remove record from the database
-    public function delete($id)
+    public function delete($id): int
     {
         return $this->model->destroy($id);
     }
@@ -87,17 +82,15 @@ class Repository implements RepositoryInterface
         return $this->getQuery()?->fastPaginate($perPage);
     }
 
-    // Get the associated model
     public function getModel(): Model
     {
         return $this->model;
     }
 
-    // Set the associated model
     public function setModel($model): static
     {
         $this->model = $model;
-        $this->query = $this->getModel()::query();
+        $this->query = $this->model::query();
 
         return $this;
     }
@@ -109,13 +102,12 @@ class Repository implements RepositoryInterface
         return $this;
     }
 
-    public function getQuery()
+    public function getQuery(): Builder
     {
         return $this->query ?? $this->model::query();
     }
 
-    // Eager load database relationships
-    public function with($relations)
+    public function with($relations): Builder
     {
         return $this->model->with($relations);
     }

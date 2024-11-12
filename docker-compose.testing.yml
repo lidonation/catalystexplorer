@@ -1,0 +1,163 @@
+version: '3.8'
+
+services:
+  # app
+  catalystexplorer.com:
+    build:
+        context: './docker'
+        dockerfile: Dockerfile.dev
+        args:
+            WWWGROUP: "${WWWGROUP:-1000}"
+    image: catalystexplorer
+    container_name: catalystexplorer.com
+    env_file:
+        - ./application/.env.testing
+    extra_hosts:
+        - 'host.docker.internal:host-gateway'
+    ports:
+        - '${APP_PORT:-80}:8000'
+        - '${VITE_PORT:-5173}:${VITE_PORT:-5173}'
+    environment:
+        APP_ENV: testing
+        WWWUSER: '${WWWUSER:-1000}'
+        CONTAINER_ROLE: "app"
+        LARAVEL_SAIL: 1
+        XDEBUG_MODE: '${SAIL_XDEBUG_MODE:-off}'
+        XDEBUG_CONFIG: '${SAIL_XDEBUG_CONFIG:-client_host=host.docker.internal}'
+        IGNITION_LOCAL_SITES_PATH: '${PWD}'
+        SUPERVISOR_PHP_COMMAND: "/usr/bin/php -d variables_order=EGPCS /var/www/html/artisan octane:start --server=frankenphp --host=0.0.0.0 --admin-port=2019 --port=80" 
+        XDG_CONFIG_HOME:  /var/www/caddy 
+        XDG_DATA_HOME:  /var/www/caddy 
+        OCTANE_WATCH: 'true'
+    volumes:
+        - ./application:/var/www:cached
+    networks:
+        - catalystexplorer-net_test
+    depends_on:
+      - catalystexplorer.db
+      - catalystexplorer.search
+      - catalystexplorer.redis
+
+  catalystexplorer.queue:
+    image: catalystexplorer
+    container_name: catalystexplorer.queue
+    depends_on:
+        - catalystexplorer.db
+        - catalystexplorer.redis
+    env_file:
+        - ./application/.env.testing
+    environment:
+        APP_ENV: testing
+        APP_SETUP: "true"
+        PHP_OPCACHE_ENABLE: 0
+        PHP_OPCACHE_VALIDATE_TIMESTAMPS: 1
+        PHP_MEMORY_LIMIT: 2048M
+        CONTAINER_ROLE: "queue"
+        DB_CONNECTION: pgsql
+        POSTGRESQL_DB_SYNC_DB_HOST: postgres_dbsync
+        POSTGRESQL_DB_SYNC_PASSWORD: v8hlDV0yMAHHlIurYupj
+        MEILISEARCH_KEY: v8hlDV0yMAHHlIurYupj
+        MEILISEARCH_HOST: "http://catalystexplorer.search:7700"
+        POSTGRESQL_DB_SYNC_DB: cexplorer
+        POSTGRESQL_DB_SYNC_USER: postgres
+        XDG_CONFIG_HOME: /var/www
+        POSTGRESQL_WEB_DB_HOST: catalystexplorer.db
+        POSTGRESQL_WEB_DB: explorerweb
+        POSTGRESQL_WEB_USER: catalystexplorer
+        POSTGRESQL_WEB_PASSWORD: ASLJ023470AlserLFH
+        MEDIA_DISK: public
+        TELESCOPE_USE_DARK_THEME: "true"
+    build:
+        context: ./docker
+        args: {}
+        dockerfile: ./Dockerfile.dev
+    volumes:
+        - type: volume
+          source: test_node-ipc
+          target: /ipc
+          volume:
+            nocopy: true
+        - ./application:/var/www:cached
+    networks:
+        - catalystexplorer-net_test
+
+  # database
+  catalystexplorer.db:
+      image: 'postgres:15'
+      container_name: catalystexplorer.db
+      ports:
+          - '${FORWARD_DB_PORT:-5432}:5432'
+      environment:
+          - POSTGRES_LOGGING=true
+          - POSTGRES_DB=explorerweb
+          - POSTGRES_PASSWORD=ASLJ023470AlserLFH
+          - POSTGRES_USER=catalystexplorer
+          - POSTGRES_POSTGRES_PASSWORD=alj2340aaALJAF2341408AUUZLJK
+      volumes:
+          - 'test_catalystexplorer-db:/var/lib/postgresql/data'
+      networks:
+          - catalystexplorer-net_test
+      healthcheck:
+          test:
+              - CMD
+              - pg_isready
+              - '-q'
+              - '-d'
+              - 'explorerweb'
+              - '-U'
+              - 'catalystexplorer'
+          retries: 3
+          timeout: 5s
+
+  # meilisearch
+  catalystexplorer.search:
+      image: 'getmeili/meilisearch:latest'
+      container_name: catalystexplorer.search
+      ports:
+          - '${FORWARD_MEILISEARCH_PORT:-7700}:7700'
+      environment:
+          MEILI_NO_ANALYTICS: '${MEILISEARCH_NO_ANALYTICS:-false}'
+          MEILISEARCH_KEY: v8hlDV0yMAHHlIurYupj
+      volumes:
+          - 'test_catalystexplorer-search:/meili_data'
+      networks:
+          - catalystexplorer-net_test
+      healthcheck:
+          test:
+              - CMD
+              - wget
+              - '--no-verbose'
+              - '--spider'
+              - 'http://127.0.0.1:7700/health'
+          retries: 3
+          timeout: 5s
+
+  #redis
+  catalystexplorer.redis:
+      image: 'redis:alpine'
+      container_name: catalystexplorer.redis
+      ports:
+          - '${FORWARD_REDIS_PORT:-6379}:6379'
+      volumes:
+          - 'test_catalystexplorer-redis:/data'
+      networks:
+          - catalystexplorer-net_test
+      healthcheck:
+          test:
+              - CMD
+              - redis-cli
+              - ping
+          retries: 3
+          timeout: 5s
+
+networks:
+    catalystexplorer-net_test:
+        driver: bridge
+volumes:
+    test_catalystexplorer-db:
+        driver: local
+    test_catalystexplorer-search:
+        driver: local
+    test_catalystexplorer-redis:
+        driver: local
+    test_node-ipc:

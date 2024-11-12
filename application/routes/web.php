@@ -8,6 +8,9 @@ use Inertia\Inertia;
 Route::get('/', function () {
     return Inertia::render('Welcome', []);
 });
+Route::get('/s', function () {
+    return Inertia::render('SearchResults', []);
+});
 
 require __DIR__.'/auth.php';
 
