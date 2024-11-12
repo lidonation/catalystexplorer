@@ -3,38 +3,54 @@
 @tailwind utilities;
 
 :root {
-    --bg-primary-color: #ffffff;
-    --bg-primary-darker: #F9FbFb;
-    --bg-secondary-color: #f8fbfb;
-    --bg-tertiary-color: #667085;
+    --cx-primary: #2596BE;
+    --cx-secondary: #3facd1;
+    --cx-dark: #667085;
+    --cx-highlight: #667085;
+    --cx-accent: #3facd1;
+
+    --cx-content: #101828;
+    --cx-content-highlight: #667085;
+    --cx-content-dark: #667085;
+
+    --cx-background: #ffffff;
+    --cx-background-darker: #F9FbFb;
+    --cx-background-lighter: #f8fbfb;
+    --cx-background-highlight: #667085;
+
     --bg-accent-color: #3FACD1;
     --bg-error-primary-color: #dc2626;
     --bg-error-secondary-color: #ef4444;
     --content-primary-color: #182230;
-    --content-secondary-color: #000000;
     --content-hover-color: #EFFAFC;
-    --content-tertiary-color: #667085;
-    --content-accent-color: #3facd1;
     --content-error-primary-color: #dc2626;
     --content-error-secondary-color: #ef4444;
     --content-success-color: #16a34a;
     --border-primary-color: #182230;
-    --border-secondary-color: #3facd1;
 }
 
 [data-theme='dark'] {
-    --bg-primary-color: #111928;
-    --bg-primary-darker: #000000;
+    --cx-primary: #2596BE;
+    --cx-secondary: #000000;
+    --cx-highlight: #667085;
+    --cx-dark: #667085;
+    --cx-accent: #3facd1;
+
+    --cx-content: #FFFFFF;
+    --cx-content-highlight: #667085;
+    --cx-content-dark: #667085;
+
+
+    --cx-background: #101828;
+    --cx-background-darker: #000000;
+    --cx-background-lighter: #374151;
+    --cx-background-highlight: #ffffff;
+
     --bg-secondary-color: #374151;
-    --bg-tertiary-color: #ffffff;
     --bg-accent-color: #3facd1;
     --bg-error-primary-color: #dc2626;
     --bg-error-secondary-color: #ef4444;
-    --content-primary-color: #ffffff;
     --content-hover-color: #1f2d3d;
-    --content-secondary-color: #000000;
-    --content-tertiary-color: #667085;
-    --content-accent-color: #3facd1;
     --content-error-primary-color: #dc2626;
     --content-error-secondary-color: #ef4444;
     --content-success-color: #4ade80;
@@ -43,18 +59,25 @@
 }
 
 [data-theme='voltaire'] {
-    --bg-primary-color: #2c2c2c;
-    --bg-primary-darker: #111928;
-    --bg-secondary-color: #b1e3f1;
-    --bg-tertiary-color: #ffffff;
+    --cx-primary: #2596BE;
+    --cx-secondary: #000000;
+    --cx-highlight: #667085;
+    --cx-dark: #667085;
+    --cx-accent: #3facd1;
+
+    --cx-content: #FFFFFF;
+    --cx-content-highlight: #667085;
+    --cx-content-dark: #667085;
+
+    --cx-background: #2c2c2c;
+    --cx-background-darker: #111928;
+    --cx-background-lighter: #b1e3f1;
+    --cx-background-highlight: #ffffff;
+
     --bg-accent-color: #3facd1;
     --bg-error-primary-color: #dc2626;
     --bg-error-secondary-color: #ef4444;
-    --content-primary-color: #ffffff;
     --content-hover-color: #1f2d3d;
-    --content-secondary-color: #000000;
-    --content-tertiary-color: #667085;
-    --content-accent-color: #3facd1;
     --content-error-primary-color: #dc2626;
     --content-error-secondary-color: #ef4444;
     --content-success-color: #4ade80;
@@ -64,6 +87,6 @@
 
 @layer base {
     body {
-        @apply bg-background-primary transition-colors duration-300 ease-in-out;
+        @apply bg-background transition-colors duration-300 ease-in-out;
     }
 }

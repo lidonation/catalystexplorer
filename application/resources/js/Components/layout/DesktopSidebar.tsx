@@ -33,7 +33,7 @@ function DesktopSidebar() {
                     <div className="px-4">
                         <UserDetails user={auth?.user as User}/>
                     </div>
-                    <div className="py-4 px-4 bg-background-primary-darker">
+                    <div className="py-4 px-4 bg-background-darker">
                         <ThemeSwitcher/>
                     </div>
                 </div>

@@ -21,7 +21,7 @@ export default function ThemeSwitcher() {
             aria-labelledby="theme-legend"
         >
             <legend id="theme-legend"
-                    className="text-content-primary text-xs py-2 px-1.5 ml-2.5 sr-only">
+                    className="text-content text-xs py-2 px-1.5 ml-2.5 sr-only">
                 {t('theme.theme')}
             </legend>
             <div
@@ -35,7 +35,7 @@ export default function ThemeSwitcher() {
                         onClick={() => setTheme(mode)}
                         ariaLabel={t('theme.changeMode', { mode })}
                         aria-pressed={theme === mode}
-                        className={`inline-flex items-center flex-1 gap-1 rounded border bg-background-primary px-1 text-xs text-content-primary hover:bg-background-secondary ${theme === mode ? 'bg-background-secondary' : ''}`}
+                        className={`inline-flex items-center flex-1 gap-1 rounded border bg-background px-1 text-xs text-content hover:bg-background-lighter ${theme === mode ? 'bg-background-lighter' : ''}`}
                     >
                         <span aria-hidden={true}>
                             {icons[mode]}

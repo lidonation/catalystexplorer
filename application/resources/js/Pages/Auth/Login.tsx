@@ -81,7 +81,7 @@ export default function Login({
                                 setData('remember', e.target.checked)
                             }
                         />
-                        <span className="ms-2 text-sm text-content-tertiary">
+                        <span className="ms-2 text-sm text-dark">
                             Remember me
                         </span>
                     </label>
@@ -91,7 +91,7 @@ export default function Login({
                     {canResetPassword && (
                         <Link
                             href={route('password.request')}
-                            className="rounded-md text-sm text-content-tertiary underline hover:text-content-primary focus:outline-none focus:ring-2 focus:border-x-border-secondary focus:ring-offset"
+                            className="rounded-md text-sm text-dark underline hover:text-content focus:outline-none focus:ring-2 focus:border-x-border-secondary focus:ring-offset"
                         >
                             Forgot your password?
                         </Link>

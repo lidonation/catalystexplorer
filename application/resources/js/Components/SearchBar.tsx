@@ -50,7 +50,7 @@ const SearchVariants = ({ value, onChange }: { value: string[], onChange: (value
     };
 
     return (
-        <div className="relative text-content-primary">
+        <div className="relative text-content">
             <Listbox value={value} onChange={handleSelection} multiple>
                 <ListboxButton className="text-nowrap flex gap-3 items-center justify-center px-3">
                     {({ open }) => (
@@ -62,7 +62,7 @@ const SearchVariants = ({ value, onChange }: { value: string[], onChange: (value
                         </div>
                     )}
                 </ListboxButton>
-                <ListboxOptions className="bg-background-primary shadow-xl rounded-lg absolute left-0 w-max mt-5 z-50">
+                <ListboxOptions className="bg-background shadow-xl rounded-lg absolute left-0 w-max mt-5 z-50">
                     {variants.map((variant) => (
                         <ListboxOption key={variant} value={variant}>
                             {({ selected }) => (
@@ -73,7 +73,7 @@ const SearchVariants = ({ value, onChange }: { value: string[], onChange: (value
                                         checked={selected}
                                         value={variant}
                                         onChange={() => {}}
-                                        className='checked:bg-primary-100'
+                                        className='checked:bg-primary'
                                     />
                                 </div>
                             )}
@@ -116,7 +116,7 @@ const SearchBar = () => {
     };
 
     return (
-        <form onSubmit={handleSearch} className="flex items-center bg-background-primary rounded-lg">
+        <form onSubmit={handleSearch} className="flex items-center bg-background rounded-lg">
             <SearchVariants value={searchTerms} onChange={setSearchTerms} />
             <label className="flex items-center gap-2 pl-0 border-l border-border-primary relative">
                 <div className="absolute flex justify-center items-center left-0 h-full w-10">
@@ -125,7 +125,7 @@ const SearchBar = () => {
                 <TextInput
                     placeholder={placeholder}
                     size={placeholder.length}
-                    className="rounded-lg shadow-none w-full pl-10 bg-background-primary text-content-primary border-0 focus:ring-0 focus:border-0"
+                    className="rounded-lg shadow-none w-full pl-10 bg-background text-content border-0 focus:ring-0 focus:border-0"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                 />
