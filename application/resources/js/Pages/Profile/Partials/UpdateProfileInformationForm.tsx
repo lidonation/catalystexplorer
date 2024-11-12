@@ -32,11 +32,11 @@ export default function UpdateProfileInformation({
     return (
         <section className={className}>
             <header>
-                <h2 className="text-lg font-medium text-content-primary">
+                <h2 className="text-lg font-medium text-content">
                     Profile Information
                 </h2>
 
-                <p className="mt-1 text-sm text-content-primary">
+                <p className="mt-1 text-sm text-content">
                     Update your account's profile information and email address.
                 </p>
             </header>
@@ -76,13 +76,13 @@ export default function UpdateProfileInformation({
 
                 {mustVerifyEmail && user.email_verified_at === null && (
                     <div>
-                        <p className="mt-2 text-sm text-content-primary">
+                        <p className="mt-2 text-sm text-content">
                             Your email address is unverified.
                             <Link
                                 href={route('verification.send')}
                                 method="post"
                                 as="button"
-                                className="rounded-md text-sm text-content-primary underline hover:text-content-secondary focus:outline-none focus:ring-2 focus:border-border-secondary focus:ring-offset-2"
+                                className="rounded-md text-sm text-content underline hover:text-content-secondary focus:outline-none focus:ring-2 focus:border-border-secondary focus:ring-offset-2"
                             >
                                 Click here to re-send the verification email.
                             </Link>
@@ -107,7 +107,7 @@ export default function UpdateProfileInformation({
                         leave="transition ease-in-out"
                         leaveTo="opacity-0"
                     >
-                        <p className="text-sm text-content-tertiary">
+                        <p className="text-sm text-dark">
                             Saved.
                         </p>
                     </Transition>

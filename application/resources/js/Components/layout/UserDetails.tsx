@@ -6,7 +6,7 @@ import LogOutIcon from '../svgs/LogOut';
 import UserAvatar from '../UserAvatar';
 
 interface UserDetailsProps {
-    user: App.DataTransferObjects.UserData; 
+    user: App.DataTransferObjects.UserData;
 }
 
 const UserDetails: React.FC<UserDetailsProps> = ({user}) => {
@@ -24,12 +24,12 @@ const UserDetails: React.FC<UserDetailsProps> = ({user}) => {
     };
 
     return (
-        <div className="flex items-center justify-between border-t border-gray-200 pt-6">
+        <div className="flex items-center justify-between">
             <div className="flex gap-3">
                 <div className="size-9 rounded-full bg-gray-400">
                     {user?.name && user?.email ? (
                         <UserAvatar imageUrl={user.profile_photo_url} />
-         
+
                     ) : (
                         ''
                     )}
@@ -38,17 +38,17 @@ const UserDetails: React.FC<UserDetailsProps> = ({user}) => {
                     {user?.name && user?.email ? (
                         <Link
                             href="/dashboard"
-                            className="text-sm font-semibold text-content-primary"
+                            className="text-sm font-semibold text-content"
                         >
                             {user?.name}
                         </Link>
                     ) : (
-                        <p className="text-sm font-semibold text-content-primary">
+                        <p className="text-sm font-semibold text-content">
                             {t('app.name')}
                         </p>
                     )}
 
-                    <p className="text-xs text-content-primary">
+                    <p className="text-xs text-content">
                         {user?.email || t('app.contactEmail')}
                     </p>
                     {user?.name && user?.email && (
@@ -62,7 +62,7 @@ const UserDetails: React.FC<UserDetailsProps> = ({user}) => {
                 </div>
             </div>
             <LogOutIcon
-                className="cursor-pointer text-content-tertiary"
+                className="cursor-pointer text-dark"
                 width={20}
                 height={20}
                 onClick={() => logout()}

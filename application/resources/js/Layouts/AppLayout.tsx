@@ -33,7 +33,7 @@ export default function AppLayout({ children }: { children: ReactNode }) {
 
             <section className="sm:pl-72">
                 {/* Mobile header */}
-                <header className="sticky top-0 z-30 border-b border-gray-200 bg-background-primary sm:hidden">
+                <header className="sticky top-0 z-30 border-b border-gray-200 bg-background sm:hidden">
                     <div className="flex h-16 items-center justify-between px-4">
                         <CatalystLogo className="h-8" />
                         <Button
@@ -55,7 +55,7 @@ export default function AppLayout({ children }: { children: ReactNode }) {
                 {/* Main content */}
                 <main
                     id="main-content"
-                    className="bg-background-secondary sm:mt-2 sm:rounded-tl-4xl"
+                    className="bg-background-lighter sm:mt-2 sm:rounded-tl-4xl"
                 >
                     {children}
                 </main>

@@ -1,10 +1,10 @@
 <?php
-use App\Models as Models;
-use App\Models\BaseModel;
+
+use App\Models\Model;
 use App\Models\User;
 
 arch()
-    ->expect(Models::class)
+    ->expect('App\Models')
     ->toBeClasses()
-    ->toExtend(BaseModel::class)
+    ->toExtend(Model::class)
     ->ignoring(User::class);

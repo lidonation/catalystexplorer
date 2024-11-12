@@ -15,7 +15,7 @@ export default function LightModeIcon({ className }: LightModeIconProps) {
             stroke="currentColor"
             aria-hidden="true"
             focusable="false"
-            className={`size-6 ${className}`}
+            className={`size-4 ${className}`}
         >
             <title> {t('icons.title.lightMode')}</title>
             <path

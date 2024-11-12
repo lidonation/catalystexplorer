@@ -21,12 +21,12 @@ export default function NavLinkItem({
             href={href}
             aria-current={active ? 'page' : undefined}
             role="navigation"
-            className={`flex items-center gap-3 px-3 py-1 hover:bg-background-secondary ${active ? 'rounded-md bg-background-secondary' : ''} ${className}`}
+            className={`flex items-center gap-3 px-3 py-1 hover:bg-background-lighter ${active ? 'rounded-md bg-background-lighter' : ''} ${className}`}
             prefetch
         >
             {children}
             <p
-                className={`${active ? 'text-content-secondary' : 'text-content-primary'} text-lg font-medium`}
+                className={`${active ? 'text-content-secondary' : 'text-content'} text-lg font-medium`}
             >
                 {title}
             </p>
