@@ -12,55 +12,50 @@ class FundPolicy extends AppPolicy
     /**
      * Determine whether the user can view any models.
      *
-     *
      * @throws \Exception
      */
     public function viewAny(User $user): bool
     {
-        return $user->hasAnyPermission([PermissionEnum::read_funds()->value]) ||
-            $this->canViewAny($user);
+        return parent::canView($user) || $user->hasAnyPermission([PermissionEnum::read_funds()->value]);
     }
 
     /**
      * Determine whether the user can view the model.
      *
-     *
      * @throws \Exception
      */
-    public function view(User $user, Fund $fund): mixed
+    public function view(User $user, Fund $fund): bool
     {
-        return $user->hasAnyPermission([PermissionEnum::read_funds()->value]) ||
-            $this->canView($user, $fund);
+        return parent::canView($user, $fund) || $user->hasAnyPermission([PermissionEnum::read_funds()->value]);
     }
 
     /**
      * Determine whether the user can create models.
      *
-     *
      * @throws \Exception
      */
     public function create(User $user): bool
     {
-        return $user->hasAnyPermission([PermissionEnum::create_funds()->value]) || $this->canCreate($user);
+        return parent::canCreate($user) || $user->hasAnyPermission([PermissionEnum::create_funds()->value]);
     }
 
     /**
      * Determine whether the user can update the model.
      *
-     *
      * @throws \Exception
      */
-    public function update(User $user, Fund $fund): mixed
+    public function update(User $user, Fund $fund): bool
     {
-        return $user->hasAnyPermission([PermissionEnum::update_funds()->value]) ||
-            $this->canUpdate($user);
+        return parent::canUpdate($user, $fund) || $user->hasAnyPermission([PermissionEnum::update_funds()->value]);
     }
 
     /**
      * Determine whether the user can delete the model.
+     *
+     * @throws \Exception
      */
-    public function delete(User $user, Fund $fund): mixed
+    public function delete(User $user, Fund $fund): bool
     {
-        return $this->canDelete($user);
+        return parent::canDelete($user, $fund) || $user->hasAnyPermission([PermissionEnum::delete_funds()->value]);
     }
 }

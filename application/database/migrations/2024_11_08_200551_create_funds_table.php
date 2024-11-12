@@ -28,8 +28,8 @@ return new class extends Migration {
             $table->timestamp('awarded_at')->nullable();
             $table->text('color')->nullable();
             $table->text('label')->nullable();
-            $table->string('currency', 3)->default('usd'); 
-            $table->timestamp('assessment_started_at')->nullable();
+            $table->string('currency', 3)->default('usd');
+            $table->timestamp('review_started_at')->nullable();
         });
     }
 

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models;
 
 use App\Casts\DateFormatCast;
@@ -14,28 +16,7 @@ class Fund extends Model
         'launched_at' => DateFormatCast::class,
         'deleted_at' => DateFormatCast::class,
         'awarded_at' => DateFormatCast::class,
-        'assessment_started_at' =>DateFormatCast::class,
-    ];
-
-
-    protected $fillable = [
-        'user_id',
-        'title',
-        'meta_title',
-        'slug',
-        'excerpt',
-        'comment_prompt',
-        'content',
-        'amount',
-        'status',
-        'launched_at',
-        'deleted_at',
-        'parent_id',
-        'awarded_at',
-        'color',
-        'label',
-        'currency',
-        'assessment_started_at',
+        'review_started_at' =>DateFormatCast::class,
     ];
 
 }
