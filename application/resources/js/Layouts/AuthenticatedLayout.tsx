@@ -43,7 +43,7 @@ export default function Authenticated({
                                         <span className="inline-flex rounded-md">
                                             <button
                                                 type="button"
-                                                className="false inline-flex items-center rounded-md border border-transparent bg-background-secondary px-4 py-2 text-xs font-semibold uppercase tracking-widest text-white transition duration-150 ease-in-out hover:bg-gray-700 focus:bg-gray-700 focus:outline-none  focus:ring-offset-2 active:bg-gray-900 dark:bg-gray-200 dark:text-gray-800 dark:hover:bg-white dark:focus:bg-white dark:focus:ring-offset-gray-800 dark:active:bg-gray-300"
+                                                className="false inline-flex items-center rounded-md border border-transparent bg-background-secondary px-4 py-2 text-xs font-semibold uppercase tracking-widest text-content-secondary transition duration-150 ease-in-out hover:bg-background-secondary focus:bg-background-tertiary focus:outline-none  focus:ring-offset-2 active:bg-background-tertiary"
                                             >
                                                 {user.name}
 
@@ -88,7 +88,7 @@ export default function Authenticated({
                                         (previousState) => !previousState,
                                     )
                                 }
-                                className="inline-flex items-center justify-center rounded-md p-2 text-gray-400 transition duration-150 ease-in-out hover:bg-gray-100 hover:text-gray-500 focus:bg-gray-100 focus:text-gray-500 focus:outline-none dark:text-gray-500 dark:hover:bg-gray-900 dark:hover:text-gray-400 dark:focus:bg-gray-900 dark:focus:text-gray-400"
+                                className="inline-flex items-center justify-center rounded-md p-2 text-content-tertiary transition duration-150 ease-in-out hover:bg-background-secondary hover:text-content-secondary focus:bg-background-secondary focus:text-content-secondary focus:outline-none"
                             >
                                 <svg
                                     className="h-6 w-6"

@@ -1,3 +1,4 @@
+import SearchBar from '@/Components/SearchBar';
 import {PageProps} from '@/types';
 import {Head} from '@inertiajs/react';
 
@@ -6,7 +7,7 @@ export default function Welcome({}: PageProps<{ laravelVersion: string; phpVersi
         <>
             <Head title="Welcome"/>
             <div className="flex h-screen w-full items-center justify-center">
-                Welcome
+            <SearchBar />
             </div>
         </>
     );
