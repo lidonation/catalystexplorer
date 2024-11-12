@@ -1,6 +1,5 @@
 <?php
-use App;
 
 arch()
-    ->expect(App::class)
+    ->expect('App')
     ->not->toUse(['die', 'dd', 'dump']);
