@@ -18,13 +18,8 @@ class DatabaseSeeder extends Seeder
         $this->call([
             UserSeeder::class,
             ProposalSeeder::class,
-            RoleSeeder::class
+            RoleSeeder::class,
+            GroupSeeder::class,
         ]);
-
-        $this->call(
-            [
-                IdeascaleProfilesSeeder::class
-            ]
-        );
     }
 }
