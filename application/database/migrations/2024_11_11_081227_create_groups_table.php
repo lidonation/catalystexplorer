@@ -10,7 +10,7 @@ return new class extends Migration
     {
         Schema::create('groups', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('user_id')->nullable();
+            $table->foreignId('user_id')->nullable();
             $table->string('name', 255);
             $table->json('bio')->nullable();
             $table->timestamp('deleted_at')->nullable();
