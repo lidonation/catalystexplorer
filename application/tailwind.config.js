@@ -21,10 +21,11 @@ export default {
             colors: {
                 background: {
                     primary: 'var(--bg-primary-color)',
+                    'primary-darker': 'var(--bg-primary-darker)',
                     secondary: 'var(--bg-secondary-color)',
                     tertiary: 'var(--bg-tertiary-color)',
                     accent: 'var(--bg-accent-color)',
-                    'error-primary': 'var(--bg-error-primary-color)', 
+                    'error-primary': 'var(--bg-error-primary-color)',
                     'error-secondary': 'var(--bg-error-secondary-color)',
                 },
                 content: {

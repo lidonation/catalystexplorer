@@ -30,7 +30,7 @@ function UserNavigation() {
         },
     ];
     return (
-        <nav className="border-t border-gray-200 pt-6">
+        <nav className="">
             <ul className="flex flex-1 flex-col space-y-2">
                 {navItems.map(({ href, title, icon }) => (
                     <li key={href}>

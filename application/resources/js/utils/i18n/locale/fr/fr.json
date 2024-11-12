@@ -31,7 +31,7 @@
         }
     },
     "theme": {
-        "changeColor": "Changer la couleur du thème",
+        "theme": "Thème",
         "options": "Options de thème",
         "light": "Clair",
         "dark": "Sombre",

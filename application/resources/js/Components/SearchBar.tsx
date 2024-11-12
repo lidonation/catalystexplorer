@@ -105,7 +105,7 @@ const SearchBar = () => {
     const handleSearch = (event: React.FormEvent) => {
         event.preventDefault();
         const filters = searchTerms.filter(term => term !== 'all groups').join(',');
-        
+
         router.get('/s', {
             q: searchQuery,
             f: filters,
@@ -118,14 +118,14 @@ const SearchBar = () => {
     return (
         <form onSubmit={handleSearch} className="flex items-center bg-background-primary rounded-lg">
             <SearchVariants value={searchTerms} onChange={setSearchTerms} />
-            <label className="flex items-center gap-2 pl-2 border-l">
-                <div>
+            <label className="flex items-center gap-2 pl-0 border-l border-border-primary relative">
+                <div className="absolute flex justify-center items-center left-0 h-full w-10">
                     <SearchLensIcon width={16} />
                 </div>
                 <TextInput
                     placeholder={placeholder}
                     size={placeholder.length}
-                    className="border-none rounded-lg shadow-none w-full bg-background-primary text-content-primary"
+                    className="rounded-lg shadow-none w-full pl-10 bg-background-primary text-content-primary border-0 focus:ring-0 focus:border-0"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                 />
