@@ -62,7 +62,7 @@ const UserDetails: React.FC<UserDetailsProps> = ({user}) => {
                 </div>
             </div>
             <LogOutIcon
-                className="cursor-pointer text-dark"
+                className="cursor-pointer text-dark hover:text-content"
                 width={20}
                 height={20}
                 onClick={() => logout()}
