@@ -1,5 +1,5 @@
 import SearchBar from '@/Components/SearchBar';
-import PostCard from '@/Components/Postcard';
+import PostCard from '@/Components/PostCard';
 import { PageProps } from '@/types';
 import { Head } from '@inertiajs/react';
 
