@@ -32,15 +32,14 @@ const UserDetails: React.FC<UserDetailsProps> = ({ name, email }) => {
     return (
         <div className="flex items-center justify-between">
             <div className="flex gap-3">
-                <div className="size-9 rounded-full bg-background-highlight">
+                <div className="size-9 rounded-full bg-gray-400">
                     {user ? (
                         <UserAvatar imageUrl={user.profile_photo_url} />
-
+         
                     ) : (
                         ''
                     )}
                 </div>
-                <Avatar/>
                 <div className="flex flex-col">
                     {user ? (
                         <Link
