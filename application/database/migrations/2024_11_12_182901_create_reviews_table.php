@@ -23,7 +23,6 @@ return new class extends Migration
             $table->text('content');
             $table->enum('status', StatusEnum::toArray())->default(StatusEnum::pending()->value)->nullable;
             $table->timestamp('published_at')->nullable();
-            $table->char('type')->default('App\Models\Comment');
             $table->integer('ranking_total')->default(0);
             $table->integer('helpful_total')->default(0);
             $table->integer('not_helpful_total')->default(0);

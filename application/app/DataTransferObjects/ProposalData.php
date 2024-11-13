@@ -11,16 +11,24 @@ final class ProposalData extends Data
 {
     public function __construct(
         public ?int $id,
+
         public ?int $user_id,
+
         public ?int $campaign_id,
+
         public ?int $fund_id,
+
         public ?array $title,
+
         public string $slug,
+
         public ?string $website,
 
         #[TypeScriptOptional]
         public ?string $excerpt,
+
         public float $amount_requested,
+
         public ?float $amount_received,
 
         #[TypeScriptOptional]
@@ -45,7 +53,9 @@ final class ProposalData extends Data
         public ?string $funding_updated_at,
 
         public ?int $yes_votes_count,
+
         public ?int $no_votes_count,
+
         public ?int $abstain_votes_count,
 
         #[TypeScriptOptional]
