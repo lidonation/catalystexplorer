@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace App\Policies;
 
+use App\Models\ReviewModerationReviewer;
 use App\Models\User;
-use App\Enums\PermissionEnum;
-use App\Models\ReviewModeration;
+use Illuminate\Auth\Access\Response;
 
-class ReviewModerationPolicy extends AppPolicy
+class ReviewModerationReviewerPolicy extends AppPolicy
 {
     /**
      * Determine whether the user can view any models.
@@ -21,7 +21,7 @@ class ReviewModerationPolicy extends AppPolicy
     /**
      * Determine whether the user can view the model.
      */
-    public function view(User $user, ReviewModeration $model): bool
+    public function view(User $user, ReviewModerationReviewer $model): bool
     {
         return parent::canView($user, $model);
     }
@@ -37,7 +37,7 @@ class ReviewModerationPolicy extends AppPolicy
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, ReviewModeration $model): bool
+    public function update(User $user, ReviewModerationReviewer $model): bool
     {
         return parent::canUpdate($user, $model);
     }
@@ -45,7 +45,7 @@ class ReviewModerationPolicy extends AppPolicy
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, ReviewModeration $model): bool
+    public function delete(User $user, ReviewModerationReviewer $model): bool
     {
         return parent::canDelete($user, $model);
     }
