@@ -5,6 +5,13 @@ variables:
   DOCKER_HOST: tcp://docker:2375
   DOCKER_TLS_CERTDIR: ""
   DOCKER_DRIVER: overlay2
+  DEPLOY_WEBSITE:
+    value: "true"
+    description: "Build and deploy catalystexplorer.com"
+  DEPLOY_INFRA:
+    value: "false"
+    description: "Install infrastructure services (redis, meilisearch, postgresql)"
+
   WEB_BASE_IMAGE_VER:
     value: ""
     description: "New tag for WEB base image,format {version}-{yyyy-mm-dd}. eg: ubuntu-22.04-2024-10-31"
@@ -51,7 +58,11 @@ composer:
     cp "$ENV_FILE" application/.env
     export PATH=$PATH:/usr/local/bin
     cd ./application
-    composer install --no-scripts --no-dev --ignore-platform-reqs
+    if [[  $CI_COMMIT_BRANCH == 'main' ]]; then
+      composer install --no-scripts --no-dev --ignore-platform-reqs
+    else
+      composer install --no-scripts --ignore-platform-reqs
+    fi
   artifacts:
     paths:
       - ./application/public/docs
@@ -60,7 +71,7 @@ composer:
 
 yarn:
   stage: .pre
-  image: node:16.9.0
+  image: node:20.18.0
   services: []
   retry: 1
   needs:
@@ -77,25 +88,35 @@ yarn:
   artifacts:
     paths:
       - ./application/public
-    expire_in: 2 days
+    expire_in: 1 days
 
+
+########## Automated Testing jobs #########
+##############################========#####
 pest:
   stage: test
-  image: composer:2.7
-  cache: {}
+  image: docker:24.0.7-dind-alpine3.18
   retry: 1
+  artifacts:
+    paths:
+      - ./application/vendor
+    expire_in: 1 days
   script:
     - |-
       set -xev
       cp application/.env.testing application/.env
-      cd ./application
-      php artisan test
-
-#   rules:
-#     - if: '$CI_COMMIT_BRANCH != "main" && ($DEPLOY_WEBSITE == "True")'
-#   dependencies:
-#     - composer
-#     - yarn
+      docker-compose -f docker-compose.testing.yml up -d
+      sleep 5
+      docker logs catalystexplorer.com
+      docker-compose -f docker-compose.testing.yml exec -t catalystexplorer.com sh -c '
+       php artisan migrate:fresh --force && \
+       php artisan optimize:clear  && \
+       php artisan test --filter=arch'
+  rules:
+     - if: '$CI_COMMIT_BRANCH != "main" && ($DEPLOY_WEBSITE == "true")'
+  dependencies:
+     - composer
+     - yarn
 
 # cypress:
 #   stage: test
@@ -116,6 +137,7 @@ pest:
 #       - ./application/tests/cypress/videos/**/*.mp4
 #       - ./application/tests/cypress/screenshots/**/*.png
 #     expire_in: 2 day
+
 
 ########## Helper Scripts ############
 ######################################
