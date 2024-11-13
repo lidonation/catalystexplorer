@@ -51,10 +51,11 @@ export default {
                 'background-highlight': 'var(--cx-background-highlight)',
                 'background-lighter': 'var(--cx-background-lighter)',
                 'background-darker': 'var(--cx-background-darker)',
-                border: {
-                    primary: 'var(--cx-primary)',
-                    secondary: 'var(--border-secondary-color)'
-                }
+                border: 'var(--cx-border-color)',
+                // border: {
+                //     primary: 'var(--cx-primary)',
+                //     secondary: 'var(--border-secondary-color)'
+                // }
             },
         },
     },

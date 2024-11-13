@@ -8,25 +8,25 @@
     --cx-dark: #667085;
     --cx-highlight: #667085;
     --cx-accent:#165A72;
-    ;
 
     --cx-content: #101828;
     --cx-content-highlight: #667085;
     --cx-content-dark: #101828;
 
-    --cx-background: #ffffff;
-    --cx-background-darker: #F9FbFb;
-    --cx-background-lighter: #f8fbfb;
+    --cx-background: #FFFFFF;
+    --cx-background-darker: #F9FBFB;
+    --cx-background-lighter: #EFF0F2;
     --cx-background-highlight: #667085;
+    --cx-border-color: #667085;
 
     --bg-accent-color: #3FACD1;
-    --bg-error-primary-color: #dc2626;
-    --bg-error-secondary-color: #ef4444;
+    --bg-error-primary-color: #DC2626;
+    --bg-error-secondary-color: #EF4444;
     --content-primary-color: #182230;
     --content-hover-color: #EFFAFC;
-    --content-error-primary-color: #dc2626;
-    --content-error-secondary-color: #ef4444;
-    --content-success-color: #16a34a;
+    --content-error-primary-color: #DC2626;
+    --content-error-secondary-color: #EF4444;
+    --content-success-color: #16A34A;
     --border-primary-color: #182230;
 }
 
@@ -41,11 +41,12 @@
     --cx-content-highlight: #667085;
     --cx-content-dark: #FFFFFF;
 
-
     --cx-background: #101828;
     --cx-background-darker: #000000;
     --cx-background-lighter: #374151;
     --cx-background-highlight: #ffffff;
+
+    --cx-border-color: #667085;
 
     --bg-secondary-color: #374151;
     --bg-accent-color: #3facd1;
@@ -64,30 +65,38 @@
     --cx-secondary: #000000;
     --cx-highlight: #667085;
     --cx-dark: #667085;
-    --cx-accent: #1f2d3d;
+    --cx-accent: #1F2D3D;
 
     --cx-content: #FFFFFF;
     --cx-content-highlight: #667085;
     --cx-content-dark: #111928;
 
-    --cx-background: #2c2c2c;
+    --cx-background: #2C2C2C;
     --cx-background-darker: #111928;
-    --cx-background-lighter: #b1e3f1;
-    --cx-background-highlight: #ffffff;
+    --cx-background-lighter: #B1E3F1;
+    --cx-background-highlight: #FFFFFF;
+    --cx-border-color: #B1E3F1;
 
-    --bg-accent-color: #3facd1;
-    --bg-error-primary-color: #dc2626;
-    --bg-error-secondary-color: #ef4444;
-    --content-hover-color: #1f2d3d;
-    --content-error-primary-color: #dc2626;
-    --content-error-secondary-color: #ef4444;
-    --content-success-color: #4ade80;
-    --border-primary-color: #b1e3f1;
-    --border-secondary-color: #3facd1;
+    --bg-accent-color: #3FACD1;
+    --bg-error-primary-color: #DC2626;
+    --bg-error-secondary-color: #EF4444;
+    --content-hover-color: #1F2D3D;
+    --content-error-primary-color: #DC2626;
+    --content-error-secondary-color: #EF4444;
+    --content-success-color: #4ADE80;
 }
 
 @layer base {
     body {
         @apply bg-background transition-colors duration-300 ease-in-out;
+    }
+
+    .container{
+        @apply mx-auto px-8;
+    }
+
+    .title-1 {
+        @apply text-content font-bold;
+        font-size: 3.75rem;
     }
 }
