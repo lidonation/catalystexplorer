@@ -20,7 +20,9 @@ class DatabaseSeeder extends Seeder
             ProposalSeeder::class,
             PermissionSeeder::class,
             RoleSeeder::class,
+            IdeascaleProfilesSeeder::class,
             GroupSeeder::class,
+            CommunitySeeder::class,
             FundSeeder::class,
         ]);
     }

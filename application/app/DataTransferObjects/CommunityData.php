@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\DataTransferObjects;
 
@@ -7,40 +9,25 @@ use Spatie\TypeScriptTransformer\Attributes\Optional as TypeScriptOptional;
 use Spatie\TypeScriptTransformer\Attributes\TypeScript;
 
 #[TypeScript]
-final class GroupData extends Data
+final class CommunityData extends Data
 {
     public function __construct(
         public ?int $id,
 
         #[TypeScriptOptional]
+        public ?string $title,
+
+        #[TypeScriptOptional]
+        public ?string $content,
+
+        #[TypeScriptOptional]
         public ?int $user_id,
-
-        #[TypeScriptOptional]
-        public ?string $name,
-
-        #[TypeScriptOptional]
-        public ?array $bio,
-
-        #[TypeScriptOptional]
-        public ?string $slug,
 
         #[TypeScriptOptional]
         public ?string $status,
 
         #[TypeScriptOptional]
-        public ?string $meta_title,
-
-        #[TypeScriptOptional]
-        public ?string $website,
-
-        #[TypeScriptOptional]
-        public ?string $twitter,
-
-        #[TypeScriptOptional]
-        public ?string $discord,
-
-        #[TypeScriptOptional]
-        public ?string $github,
+        public ?string $slug,
 
         #[TypeScriptOptional]
         public ?string $created_at,
