@@ -5,9 +5,7 @@ declare(strict_types=1);
 namespace App\Policies;
 
 use App\Models\User;
-use App\Enums\RoleEnum;
 use App\Enums\PermissionEnum;
-use Illuminate\Auth\Access\Response;
 
 class UserPolicy extends AppPolicy
 {

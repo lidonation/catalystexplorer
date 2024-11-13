@@ -103,9 +103,9 @@ class AppPolicy
     /**
      * Determine whether the user can restore the model.
      */
-    public function restore(User $user, User $model): bool
+    public function canRestore(User $user, $model): bool
     {
-        return $user->hasRole([RoleEnum::admin()->value, RoleEnum::super_admin()->value]);
+        return $user->hasRole([RoleEnum::admin()->value, RoleEnum::super_admin()->value]) || $this->ownsModel($user, $model);
     }
 
     protected function ownsModel(User $user, $model): bool

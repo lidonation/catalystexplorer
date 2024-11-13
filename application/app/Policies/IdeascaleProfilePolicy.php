@@ -16,7 +16,7 @@ class IdeascaleProfilePolicy extends AppPolicy
      */
     public function viewAny(User $user): bool
     {
-        return parent::canView($user) || $user->hasAnyPermisssion([PermissionEnum::read_users()->value]);
+        return parent::canViewAny($user) || $user->hasAnyPermission([PermissionEnum::read_users()->value]);
     }
 
     /**
