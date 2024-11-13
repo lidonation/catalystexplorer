@@ -1,5 +1,5 @@
 variables:
-  AUTO_DEPLOY_IMAGE_VERSION: 'v2.104.0'
+  AUTO_DEPLOY_IMAGE_VERSION: "v2.104.0"
   CI_TEMPLATE_REGISTRY_HOST: registry.gitlab.com
   KUBE_CONTEXT: catalystexplorer
   DOCKER_HOST: tcp://docker:2375
@@ -8,7 +8,6 @@ variables:
   WEB_BASE_IMAGE_VER:
     value: ""
     description: "New tag for WEB base image,format {version}-{yyyy-mm-dd}. eg: ubuntu-22.04-2024-10-31"
-
 
 stages:
   - .pre
@@ -24,18 +23,16 @@ default:
       alias: docker
       command: ["--tls=false"]
   before_script:
-  - |
-    export APP_VERSION=$(awk '/version/{gsub(/("|",)/,"",$2);print $2};' application/package.json)
-    export APP_VERSION_AND_BUILD="${APP_VERSION}-${CI_PIPELINE_ID}"
-    export CI_APPLICATION_REPOSITORY=$CI_REGISTRY_IMAGE
-    export CI_APPLICATION_TAG=$APP_VERSION_AND_BUILD
-
+    - |
+      export APP_VERSION=$(awk '/version/{gsub(/("|",)/,"",$2);print $2};' application/package.json)
+      export APP_VERSION_AND_BUILD="${APP_VERSION}-${CI_PIPELINE_ID}"
+      export CI_APPLICATION_REPOSITORY=$CI_REGISTRY_IMAGE
+      export CI_APPLICATION_TAG=$APP_VERSION_AND_BUILD
 
 cache:
   key: ${CI_COMMIT_REF_SLUG}
   paths:
     - ./node_modules
-
 
 ########## Pre-Build jobs #########
 ###################################
@@ -82,16 +79,17 @@ yarn:
       - ./application/public
     expire_in: 2 days
 
-
 pest:
- stage: test
- image: composer:2.7
- cache: {}
- retry: 1
- script:
-   - |- 
-     set -xev
-     make test-backend
+  stage: test
+  image: composer:2.7
+  cache: {}
+  retry: 1
+  script:
+    - |-
+      set -xev
+      cp application/.env.testing application/.env
+      cd ./application
+      php artisan test
 
 #   rules:
 #     - if: '$CI_COMMIT_BRANCH != "main" && ($DEPLOY_WEBSITE == "True")'
@@ -119,7 +117,6 @@ pest:
 #       - ./application/tests/cypress/screenshots/**/*.png
 #     expire_in: 2 day
 
-
 ########## Helper Scripts ############
 ######################################
 .auto-deploy:
@@ -131,13 +128,13 @@ pest:
   - curl -LO https://dl.k8s.io/release/v1.25.9/bin/linux/amd64/kubectl && chmod +x kubectl && mv kubectl /usr/local/bin/kubectl
   - curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 && chmod 700 get_helm.sh && DESIRED_VERSION=v$HELM_VERSION ./get_helm.sh
   - kubectl config get-contexts
-  - kubectl config use-context ${CI_TEMPLATE_REGISTRY_HOST} 
+  - kubectl config use-context ${CI_TEMPLATE_REGISTRY_HOST}
 
 .app: &app_template
   image: "${CI_TEMPLATE_REGISTRY_HOST}/gitlab-org/cluster-integration/auto-deploy-image:${AUTO_DEPLOY_IMAGE_VERSION}"
   retry: 0
   script:
-    - auto-deploy check_kube_domain    
+    - auto-deploy check_kube_domain
     - auto-deploy download_chart
     - auto-deploy create_secret
     - |
@@ -160,7 +157,7 @@ pest:
         --set namespace=${KUBE_NAMESPACE} \
         --namespace="$KUBE_NAMESPACE" \
         --create-namespace
-        
+
     - auto-deploy persist_environment_url
   environment:
     name: mainnet
@@ -172,8 +169,8 @@ pest:
   stage: mainnet
   image: "${CI_TEMPLATE_REGISTRY_HOST}/gitlab-org/cluster-integration/auto-deploy-image:${AUTO_DEPLOY_IMAGE_VERSION}"
   retry: 0
-  script:    
-    - auto-deploy download_chart    
+  script:
+    - auto-deploy download_chart
     - |
       helm repo add bitnami https://charts.bitnami.com/bitnami
       helm repo update
@@ -200,11 +197,11 @@ pest:
   artifacts:
     paths: [environment_url.txt]
 
-.redis: &redis_template  
+.redis: &redis_template
   image: "${CI_TEMPLATE_REGISTRY_HOST}/gitlab-org/cluster-integration/auto-deploy-image:${AUTO_DEPLOY_IMAGE_VERSION}"
   retry: 0
-  script:    
-    - auto-deploy download_chart    
+  script:
+    - auto-deploy download_chart
     - |
       helm repo add bitnami https://charts.bitnami.com/bitnami
       helm repo update
@@ -226,7 +223,6 @@ pest:
   artifacts:
     paths: [environment_url.txt]
 
-
 ############ Build Jobs ##############
 ######################################
 build_web:
@@ -246,20 +242,20 @@ build_web:
     - branches
 
 build_web_base:
-    stage: .pre
-    image: docker:24.0.2-git
-    retry: 0
-    script:
-      - |
-        docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
-        echo "Building Dockerfile with tags $CI_APPLICATION_REPOSITORY/web-app-base:$WEB_BASE_IMAGE_VER and $CI_APPLICATION_REPOSITORY/web-app-base:latest ..."
-        docker build --network host -f ./docker/Dockerfile.base \
-          -t "$CI_APPLICATION_REPOSITORY/web-app-base:$WEB_BASE_IMAGE_VER" \
-          -t "$CI_APPLICATION_REPOSITORY/web-app-base:latest" .
-        docker push "$CI_APPLICATION_REPOSITORY/web-app-base:$WEB_BASE_IMAGE_VER"
-        docker push "$CI_APPLICATION_REPOSITORY/web-app-base:latest"
-    rules:
-      - if: $WEB_BASE_IMAGE_VER 
+  stage: .pre
+  image: docker:24.0.2-git
+  retry: 0
+  script:
+    - |
+      docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
+      echo "Building Dockerfile with tags $CI_APPLICATION_REPOSITORY/web-app-base:$WEB_BASE_IMAGE_VER and $CI_APPLICATION_REPOSITORY/web-app-base:latest ..."
+      docker build --network host -f ./docker/Dockerfile.base \
+        -t "$CI_APPLICATION_REPOSITORY/web-app-base:$WEB_BASE_IMAGE_VER" \
+        -t "$CI_APPLICATION_REPOSITORY/web-app-base:latest" .
+      docker push "$CI_APPLICATION_REPOSITORY/web-app-base:$WEB_BASE_IMAGE_VER"
+      docker push "$CI_APPLICATION_REPOSITORY/web-app-base:latest"
+  rules:
+    - if: $WEB_BASE_IMAGE_VER
 
 ######## Preview Deployments #########
 ######################################
@@ -286,8 +282,6 @@ app_preview:
     name: preview
     url: https://$CI_PROJECT_PATH_SLUG.$AUTO_DEVOPS_DOMAIN
   when: manual
-
-
 
 ######## Mainnet Deployments #########
 ######################################
@@ -325,4 +319,4 @@ app_mainnet:
     - job: app_preview
   rules:
     - if: $CI_COMMIT_BRANCH == 'main'
-      when: manual  
+      when: manual
