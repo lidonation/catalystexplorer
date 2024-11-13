@@ -10,7 +10,9 @@ export default function Welcome({ }: PageProps<{ laravelVersion: string; phpVers
             <Head title="Welcome" />
             <div className="flex flex-col h-screen w-full items-center justify-center">
                 <SearchBar />
-                <PostCard />
+                <div>
+                    <PostCard />
+                </div>
             </div>
         </>
     );

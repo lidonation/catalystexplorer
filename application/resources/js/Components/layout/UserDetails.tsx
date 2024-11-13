@@ -54,7 +54,7 @@ const UserDetails: React.FC<UserDetailsProps> = ({user}) => {
                     {user && (
                         <Link
                             href="/profile"
-                            className="text-xs font-semibold text-primary-100"
+                            className="text-xs font-semibold text-primary"
                         >
                             Edit profile
                         </Link>

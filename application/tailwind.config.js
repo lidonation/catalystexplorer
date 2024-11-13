@@ -38,6 +38,7 @@ export default {
                 //     'error-secondary' : 'var(--content-error-secondary-color)'
                 // },
                 content: 'var(--cx-content)',
+                'content-dark': 'var(--cx-content-dark)',
                 light: 'var(--cx-content)',
                 dark: 'var(--cx-dark)',
                 primary: 'var(--cx-primary)',
