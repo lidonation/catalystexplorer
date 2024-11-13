@@ -46,6 +46,7 @@ export default {
                 highlight: 'var(--cx-highlight)',
                 accent: 'var(--cx-accent)',
                 success: 'var(--content-success-color)',
+                hover: 'var(--content-hover-color)',
                 background: 'var(--cx-background)',
                 'background-highlight': 'var(--cx-background-highlight)',
                 'background-lighter': 'var(--cx-background-lighter)',
