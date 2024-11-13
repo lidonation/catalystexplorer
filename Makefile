@@ -111,7 +111,7 @@ status:
 
 .PHONY: test-backend
 test-backend:
-	$(sail) php ./vendor/bin/pest
+	$(sail) php ./vendor/bin/pest --group arch
 
 .PHONY: up
 up:

@@ -31,7 +31,7 @@
         }
     },
     "theme": {
-        "changeColor": "Change Theme Color",
+        "theme": "Theme",
         "options": "Theme options",
         "light": "Light",
         "dark": "Dark",
@@ -45,6 +45,8 @@
             "bucket": "Bucket Icon",
             "chart": "Chart Icon",
             "check": "Check Icon",
+            "chevron_up": "Chevron Up Icon",
+            "chevron_down": "Chevron Down Icon",
             "close": "close Icon",
             "darkMode": "Dark Mode Icon",
             "folder": "Folder Icon",
@@ -56,6 +58,7 @@
             "note": "Note Icon",
             "notificationBox": "Notification Box Icon",
             "people": "People Icon",
+            "search": "Search Icon",
             "voltaireMode": "Voltaire Mode Icon"
         }
     },

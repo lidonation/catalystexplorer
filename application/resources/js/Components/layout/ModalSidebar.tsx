@@ -47,13 +47,13 @@ function ModalSidebar({ isOpen = false, title, children }: ModalSidebarProps) {
 
             {/* Sidebar Modal */}
             <div
-                className="fixed right-0 top-0 z-50 h-full w-full bg-background-primary shadow-lg focus:outline-none sm:w-96"
+                className="fixed right-0 top-0 z-50 h-full w-full bg-background shadow-lg focus:outline-none sm:w-96"
                 tabIndex={0}
             >
                 <header className="flex items-center justify-between border-b border-gray-200 px-6 py-4">
                     <h2
                         id="modal-sidebar-title"
-                        className="text-lg font-semibold text-content-primary"
+                        className="text-lg font-semibold text-content"
                     >
                         {title}
                     </h2>

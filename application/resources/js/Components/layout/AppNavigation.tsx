@@ -14,7 +14,7 @@ function AppNavigation() {
         {
             href: '/',
             title: t('navigation.links.home'),
-            icon: <HomeIcon className="text-content-tertiary" />,
+            icon: <HomeIcon className="text-dark" />,
         },
         {
             href: '/proposals',
@@ -25,27 +25,27 @@ function AppNavigation() {
         {
             href: '/funds',
             title: t('navigation.links.funds'),
-            icon: <CheckIcon className="text-content-tertiary" />,
+            icon: <CheckIcon className="text-dark" />,
         },
         {
             href: '/people',
             title: t('navigation.links.people'),
-            icon: <PeopleIcon className="text-content-tertiary" />,
+            icon: <PeopleIcon className="text-dark" />,
         },
         {
             href: '/charts',
             title: t('navigation.links.charts'),
-            icon: <ChartIcon className="text-content-tertiary" />,
+            icon: <ChartIcon className="text-dark" />,
         },
         {
             href: '/jormungandr',
             title: t('navigation.links.jormungandr'),
-            icon: <BarLineIcon className="text-content-tertiary" />,
+            icon: <BarLineIcon className="text-dark" />,
         },
         {
             href: '/active-fund',
             title: t('navigation.links.activeFund'),
-            icon: <NotificationBoxIcon className="text-content-tertiary" />,
+            icon: <NotificationBoxIcon className="text-dark" />,
         },
     ];
 

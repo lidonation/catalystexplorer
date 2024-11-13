@@ -17,14 +17,15 @@ export default function ThemeSwitcher() {
 
     return (
         <fieldset
-            className="border-background flex flex-col items-center gap-2 rounded border pb-2"
+            className="flex flex-col items-center gap-2 rounded relative"
             aria-labelledby="theme-legend"
         >
-            <legend id="theme-legend" className="text-content-primary">
-                {t('theme.changeColor')}
+            <legend id="theme-legend"
+                    className="text-content text-xs py-2 px-1.5 ml-2.5 sr-only">
+                {t('theme.theme')}
             </legend>
             <div
-                className="flex space-x-2"
+                className="flex justify-between w-full gap-x-2.5"
                 role="group"
                 aria-label={t('theme.options')}
             >
@@ -34,10 +35,14 @@ export default function ThemeSwitcher() {
                         onClick={() => setTheme(mode)}
                         ariaLabel={t('theme.changeMode', { mode })}
                         aria-pressed={theme === mode}
-                        className={`inline-flex items-center gap-1 rounded border bg-background-primary px-1 text-sm text-content-primary hover:bg-background-secondary ${theme === mode ? 'bg-background-secondary' : ''}`}
+                        className={`inline-flex items-center flex-1 gap-1 rounded border bg-background px-1 text-xs text-content hover:bg-background-lighter ${theme === mode ? 'bg-background-lighter' : ''}`}
                     >
-                        {icons[mode]}
-                        <span>{t(`theme.${mode}`)}</span>
+                        <span aria-hidden={true}>
+                            {icons[mode]}
+                        </span>
+                        <span>
+                            {t(`theme.${mode}`)}
+                        </span>
                     </Button>
                 ))}
             </div>
