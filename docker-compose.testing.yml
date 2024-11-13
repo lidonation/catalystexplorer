@@ -10,6 +10,7 @@ services:
             WWWGROUP: "${WWWGROUP:-1000}"
     image: catalystexplorer
     container_name: catalystexplorer.com
+    tty: true
     env_file:
         - ./application/.env.testing
     extra_hosts:
