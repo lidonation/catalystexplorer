@@ -27,7 +27,7 @@ const UserDetails: React.FC<UserDetailsProps> = ({user}) => {
         <div className="flex items-center justify-between border-t border-gray-200 pt-6">
             <div className="flex gap-3">
                 <div className="size-9 rounded-full bg-gray-400">
-                    {user?.name && user?.email ? (
+                    {user ? (
                         <UserAvatar imageUrl={user.profile_photo_url} />
          
                     ) : (
@@ -35,7 +35,7 @@ const UserDetails: React.FC<UserDetailsProps> = ({user}) => {
                     )}
                 </div>
                 <div className="flex flex-col">
-                    {user?.name && user?.email ? (
+                    {user ? (
                         <Link
                             href="/dashboard"
                             className="text-sm font-semibold text-content-primary"
@@ -51,7 +51,7 @@ const UserDetails: React.FC<UserDetailsProps> = ({user}) => {
                     <p className="text-xs text-content-primary">
                         {user?.email || t('app.contactEmail')}
                     </p>
-                    {user?.name && user?.email && (
+                    {user && (
                         <Link
                             href="/profile"
                             className="text-xs font-semibold text-primary-100"
