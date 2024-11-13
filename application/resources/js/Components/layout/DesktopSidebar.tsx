@@ -24,12 +24,12 @@ function DesktopSidebar() {
             </section>
             <section className="flex flex-col gap-6">
                 <div className="px-4">
-                    <div className="border-t border-border-primary pt-6">
+                    <div className="border-t border-border pt-6">
                         <UserNavigation/>
                     </div>
                 </div>
 
-                <div className="flex flex-col gap-6 border-t border-border-primary pt-6">
+                <div className="flex flex-col gap-6 border-t border-border pt-6">
                     <div className="px-4">
                         <UserDetails user={auth?.user as User}/>
                     </div>

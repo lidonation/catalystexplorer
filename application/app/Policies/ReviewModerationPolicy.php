@@ -6,6 +6,7 @@ namespace App\Policies;
 
 use App\Models\User;
 use App\Enums\PermissionEnum;
+use App\Models\ReviewModeration;
 
 class ReviewModerationPolicy extends AppPolicy
 {
@@ -20,7 +21,7 @@ class ReviewModerationPolicy extends AppPolicy
     /**
      * Determine whether the user can view the model.
      */
-    public function view(User $user, User $model): bool
+    public function view(User $user, ReviewModeration $model): bool
     {
         return parent::canView($user, $model);
     }
@@ -36,7 +37,7 @@ class ReviewModerationPolicy extends AppPolicy
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, User $model): bool
+    public function update(User $user, ReviewModeration $model): bool
     {
         return parent::canUpdate($user, $model);
     }
@@ -44,7 +45,7 @@ class ReviewModerationPolicy extends AppPolicy
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, User $model): bool
+    public function delete(User $user, ReviewModeration $model): bool
     {
         return parent::canDelete($user, $model);
     }

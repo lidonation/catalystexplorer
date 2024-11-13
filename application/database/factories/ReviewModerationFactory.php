@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Database\Factories;
 
+use App\Models\Reviewer;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -19,7 +20,7 @@ class ReviewModerationFactory extends Factory
     public function definition(): array
     {
         return [
-            'reviewer_id' => 1,
+            'reviewer_id' => Reviewer::factory(),
             'excellent_count' => $this->faker->numberBetween(0,100),
             'good_count' => $this->faker->numberBetween(0, 100),
             'filtered_out_count' => $this->faker->numberBetween(0, 100),

@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('review_moderations', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
-            $table->foreignId('reviewer_id');
+            $table->foreignId('reviewer_id')->constrained('reviewers');
             $table->integer('excellent_count')->default(0);
             $table->integer('good_count')->default(0);
             $table->integer('filtered_out_count')->default(0);

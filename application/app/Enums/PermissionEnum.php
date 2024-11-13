@@ -9,6 +9,8 @@ use Spatie\Enum\Laravel\Enum;
 /**
  * @method static self create_communities()
  * @method static self create_groups()
+ * @method static self create_communities()
+ * @method static self create_groups()
  * @method static self create_ideascale_profiles()
  * @method static self create_events()
  * @method static self create_funds()
@@ -47,7 +49,7 @@ use Spatie\Enum\Laravel\Enum;
  * @method static self update_campaigns()
  * @method static self delete_communities()
  * @method static self delete_groups()
- * @method static self delete_users()
+ * @method static self delete_ideascale_profiles()
  * @method static self delete_admins()
  * @method static self delete_funds()
  * @method static self delete_permissions()

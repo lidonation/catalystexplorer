@@ -54,7 +54,7 @@ const UserDetails: React.FC<UserDetailsProps> = ({user}) => {
                     {user && (
                         <Link
                             href="/profile"
-                            className="text-xs font-semibold text-primary-100"
+                            className="text-xs font-semibold text-primary"
                         >
                             Edit profile
                         </Link>
@@ -62,7 +62,7 @@ const UserDetails: React.FC<UserDetailsProps> = ({user}) => {
                 </div>
             </div>
             <LogOutIcon
-                className="cursor-pointer text-dark"
+                className="cursor-pointer text-dark hover:text-hover"
                 width={20}
                 height={20}
                 onClick={() => logout()}

@@ -35,6 +35,7 @@ default:
       export APP_VERSION_AND_BUILD="${APP_VERSION}-${CI_PIPELINE_ID}"
       export CI_APPLICATION_REPOSITORY=$CI_REGISTRY_IMAGE
       export CI_APPLICATION_TAG=$APP_VERSION_AND_BUILD
+    
 
 cache:
   key: ${CI_COMMIT_REF_SLUG}
@@ -48,6 +49,8 @@ composer:
   image: composer:2.7
   services: []
   retry: 1
+  rules:
+    - if: '$DEPLOY_WEBSITE == "true"'
   dependencies:
     - yarn
   variables:
@@ -74,6 +77,8 @@ yarn:
   image: node:20.18.0
   services: []
   retry: 1
+  rules:
+    - if: '$DEPLOY_WEBSITE == "true"'
   needs:
     - composer
   before_script:
@@ -104,6 +109,9 @@ pest:
   script:
     - |-
       set -xev
+      if [[ -n $DOCKER_PASSWORD ]]; then
+        docker login -u="${DOCKER_USERNAME}" -p="${DOCKER_PASSWORD}"
+      fi
       cp application/.env.testing application/.env
       docker-compose -f docker-compose.testing.yml up -d
       sleep 5
@@ -254,6 +262,9 @@ build_web:
   script:
     - |
       docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
+      if [[ -n $DOCKER_PASSWORD ]]; then
+        docker login -u="${DOCKER_USERNAME}" -p="${DOCKER_PASSWORD}"
+      fi
       echo "Building Dockerfile with tags $CI_APPLICATION_REPOSITORY/web-app:$CI_APPLICATION_TAG and $CI_APPLICATION_REPOSITORY/web-app:latest ..."
       docker build --network host -f ./docker/Dockerfile \
         -t "$CI_APPLICATION_REPOSITORY/web-app:$CI_APPLICATION_TAG" \
@@ -270,6 +281,9 @@ build_web_base:
   script:
     - |
       docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
+      if [[ -n $DOCKER_PASSWORD ]]; then
+        docker login -u="${DOCKER_USERNAME}" -p="${DOCKER_PASSWORD}"
+      fi
       echo "Building Dockerfile with tags $CI_APPLICATION_REPOSITORY/web-app-base:$WEB_BASE_IMAGE_VER and $CI_APPLICATION_REPOSITORY/web-app-base:latest ..."
       docker build --network host -f ./docker/Dockerfile.base \
         -t "$CI_APPLICATION_REPOSITORY/web-app-base:$WEB_BASE_IMAGE_VER" \
