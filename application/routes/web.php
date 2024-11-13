@@ -2,7 +2,7 @@
 
 use App\Http\Controllers\ChartsController;
 use App\Http\Controllers\FundsController;
-use App\Http\Controllers\Jormungandr;
+use App\Http\Controllers\JormungandrController;
 use App\Http\Controllers\PeopleController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProposalsController;
@@ -27,7 +27,7 @@ Route::get('/people',[PeopleController::class, 'index'])
 Route::get('/charts',[ChartsController::class, 'index'])
     ->name('charts.index');
 
-Route::get('/jormungandr',[Jormungandr::class, 'index'])
+Route::get('/jormungandr',[JormungandrController::class, 'index'])
     ->name('jormungandr.index');
 
 Route::get('/s', function () {

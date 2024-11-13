@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
 
-class Jormungandr extends Controller
+class JormungandrController extends Controller
 {
     /**
      * Display the user's profile form.
