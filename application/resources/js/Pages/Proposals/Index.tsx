@@ -16,9 +16,9 @@ const Index = () => {
                 </div>
             </header>
 
-            <main className="flex flex-col h-screen w-full items-center justify-center">
+            <div className="flex flex-col h-screen w-full items-center justify-center">
                 <h1>Proposals</h1>
-            </main>
+            </div>
         </>
     );
 };

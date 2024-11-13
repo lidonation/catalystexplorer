@@ -89,6 +89,10 @@
 }
 
 @layer base {
+    * {
+        @apply text-content;
+    }
+
     body {
         @apply bg-background transition-colors duration-300 ease-in-out;
     }
@@ -100,5 +104,9 @@
     .title-1 {
         @apply text-content font-bold;
         font-size: 3.75rem;
+    }
+
+    main > header {
+        @apply pt-11;
     }
 }
