@@ -17,13 +17,11 @@ return new class extends Migration
             $table->string('title', 255);
             $table->text('content');
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
-            $table->string('status', 255);
+            $table->enum('status', ['draft', 'pending', 'accepted', 'available', 'claimed', 'completed', 'published']);
             $table->timestamps(0);
             $table->timestamp('deleted_at')->nullable();
             $table->string('slug', 255);
         });
-
-        DB::statement('ALTER TABLE communities ADD CONSTRAINT check_status CHECK (status IN (\'draft\', \'pending\', \'accepted\', \'available\', \'claimed\', \'completed\', \'published\'))');
     }
 
     /**
