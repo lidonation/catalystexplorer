@@ -92,7 +92,7 @@ pest:
    - |- 
      set -xev
      cp application/.env.testing application/.env
-     make test-backend
+     make artisan test
 
 #   rules:
 #     - if: '$CI_COMMIT_BRANCH != "main" && ($DEPLOY_WEBSITE == "True")'
