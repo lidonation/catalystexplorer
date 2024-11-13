@@ -47,7 +47,7 @@ final class FundData extends Data
         public string $currency,
 
         #[TypeScriptOptional, WithCast(DateTimeInterfaceCast::class, format: 'Y-m-d H:i:s')]
-        public ?\DateTime $assessment_started_at,
+        public ?\DateTime $review_started_at,
 
         #[TypeScriptOptional]
         public ?int $parent_id
