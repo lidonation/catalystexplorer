@@ -1,4 +1,20 @@
 declare namespace App.DataTransferObjects {
+    export type GroupData = {
+        id: number | null;
+        user_id?: number;
+        name?: string;
+        bio?: Array<any>;
+        slug?: string;
+        status?: string;
+        meta_title?: string;
+        website?: string;
+        twitter?: string;
+        discord?: string;
+        github?: string;
+        created_at?: string;
+        updated_at?: string;
+        deleted_at?: string;
+    };
     export type IdeascaleProfileData = {
         id: number | null;
         ideascaleId?: number;
@@ -52,6 +68,21 @@ declare namespace App.DataTransferObjects {
         ranking_total?: number;
         quickpitch?: string;
         quickpitch_length?: number;
+    };
+    export type ReviewData = {
+        id: number | null;
+        parent_id?: number;
+        user_id?: number;
+        model_id: number;
+        model_type: string;
+        title?: string;
+        content: string;
+        status: string | null;
+        published_at?: string;
+        type: string;
+        ranking_total: number;
+        helpful_total: number;
+        not_helpful_total: number;
     };
     export type ReviewModerationData = {
         id: number | null;
