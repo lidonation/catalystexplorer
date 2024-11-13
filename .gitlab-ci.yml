@@ -36,6 +36,7 @@ default:
       export CI_APPLICATION_REPOSITORY=$CI_REGISTRY_IMAGE
       export CI_APPLICATION_TAG=$APP_VERSION_AND_BUILD
 
+
 cache:
   key: ${CI_COMMIT_REF_SLUG}
   paths:
@@ -48,6 +49,8 @@ composer:
   image: composer:2.7
   services: []
   retry: 1
+  rules:
+    - if: '$DEPLOY_WEBSITE == "true"'
   dependencies:
     - yarn
   variables:
@@ -74,6 +77,8 @@ yarn:
   image: node:20.18.0
   services: []
   retry: 1
+  rules:
+    - if: '$DEPLOY_WEBSITE == "true"'
   needs:
     - composer
   before_script:
