@@ -8,3 +8,9 @@ arch()
     ->toBeClasses()
     ->toExtend(Model::class)
     ->ignoring(User::class);
+
+arch()
+    ->expect('App\Models')
+    ->toOnlyBeUsedIn('App\Repositories')
+    ->ignoring('App\Models');
+
