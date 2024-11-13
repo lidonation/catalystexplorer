@@ -27,7 +27,7 @@ class CampaignFactory extends Factory
             'slug' => fn(array $attributes) => Str::slug($attributes['title']),
             'excerpt' => $this->faker->optional()->text(200),
             'comment_prompt' => $this->faker->optional()->sentence(),
-            'content' => $this->faker->optional()->paragraphs(rand(3, 5), true),
+            'content' => $this->faker->optional()->paragraphs(3, true),
             'amount' => $this->faker->optional()->randomFloat(2, 500, 10000),
             'status' => $this->faker->optional()->randomElement([
                 'pending', 'unfunded', 'funded', 'complete', 'retired', 'startup', 'growth', 'expansion', 'matured'
