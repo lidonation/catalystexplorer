@@ -8,8 +8,10 @@ export default function Welcome({ }: PageProps<{ laravelVersion: string; phpVers
     return (
         <>
             <Head title="Welcome" />
-            <div className="flex flex-col h-screen w-full items-center justify-center">
-                <SearchBar />
+            
+            <div className="flex flex-col gap-8 h-screen w-full items-center justify-center">
+                <SearchBar autoFocus />
+
                 <div>
                     <PostCard />
                 </div>
