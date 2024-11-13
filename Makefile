@@ -109,10 +109,6 @@ sh:
 status:
 	docker compose ps
 
-.PHONY: test-backend
-test-backend:
-	$(sail) php ./vendor/bin/pest --group arch
-
 .PHONY: up
 up:
 	$(sail) up -d
@@ -128,5 +124,7 @@ watch:
 .PHONY: test-backend
 test-backend:
 	docker-compose -f docker-compose.testing.yml up -d && \
-	docker-compose -f docker-compose.testing.yml exec catalystexplorer.com vendor/bin/pest && \
+    sleep 3 && \
+	docker-compose -f docker-compose.testing.yml exec catalystexplorer.com vendor/bin/pest --group=arch && \
+	sleep 3 && \
  	docker-compose -f docker-compose.testing.yml down --volumes
