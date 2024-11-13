@@ -1,7 +1,6 @@
 <?php
 declare(strict_types=1);
 
-
 namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -28,13 +27,13 @@ class FundFactory extends Factory
             'meta_title' => $this->faker->words(5, true),
             'slug' => $this->faker->slug,
             'excerpt' => $this->faker->text(150),
-            'comment_prompt' => $this->faker->sentence(rand(8, 15)),
-            'content' => $this->faker->text(rand(150, 250)),     
-            'amount' => $this->faker->randomFloat(2, 5000),
+            'comment_prompt' => $this->faker->sentence($this->faker->numberBetween(8, 15)),
+            'content' => $this->faker->text($this->faker->numberBetween(150, 250)),
+            'amount' => $this->faker->randomFloat(2, 5000, 10000), // Add a max boundary
             'status' => $this->faker->randomElement(['launched', 'retired']),
-            'launched_at' => $this->faker->dateTimeBetween('-2 Years'),
+            'launched_at' => $this->faker->dateTimeBetween('-2 years', 'now'),
             'parent_id' => null,
-            'awarded_at' => $this->faker->dateTimeBetween('-1 Years'),
+            'awarded_at' => $this->faker->dateTimeBetween('-1 years', 'now'),
             'color' => $this->faker->hexColor,
             'label' => $this->faker->word,
             'currency' => 'USD',
@@ -42,4 +41,3 @@ class FundFactory extends Factory
         ];
     }
 }
-
