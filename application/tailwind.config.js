@@ -38,6 +38,7 @@ export default {
                 //     'error-secondary' : 'var(--content-error-secondary-color)'
                 // },
                 content: 'var(--cx-content)',
+                'content-dark': 'var(--cx-content-dark)',
                 light: 'var(--cx-content)',
                 dark: 'var(--cx-dark)',
                 primary: 'var(--cx-primary)',
@@ -45,6 +46,7 @@ export default {
                 highlight: 'var(--cx-highlight)',
                 accent: 'var(--cx-accent)',
                 success: 'var(--content-success-color)',
+                hover: 'var(--content-hover-color)',
                 background: 'var(--cx-background)',
                 'background-highlight': 'var(--cx-background-highlight)',
                 'background-lighter': 'var(--cx-background-lighter)',
