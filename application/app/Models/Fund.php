@@ -8,7 +8,7 @@ use App\Models\Model;
 use App\Casts\DateFormatCast;
 use App\Enums\CatalystCurrencies;
 
-class Fund extends Model 
+class Fund extends Model
 {
     protected $casts = [
         'launched_at' => DateFormatCast::class,
@@ -16,5 +16,4 @@ class Fund extends Model
         'awarded_at' => DateFormatCast::class,
         'currency' => CatalystCurrencies::class
     ];
-
 }
