@@ -129,14 +129,17 @@ const SearchBar = ({ autoFocus = false }: SearchBarProps) => {
     };
 
     return (
-        <form 
-            onSubmit={handleSearch} 
+        <form
+            onSubmit={handleSearch}
             className={`flex items-center bg-background rounded-lg transition-all duration-200 ${
                 isFocused ? 'ring-2 ring-primary border-primary ' : ''
             }`}
         >
             <SearchVariants value={searchTerms} onChange={setSearchTerms} />
-            <label className="flex items-center gap-2 pl-0 border-l border-border-primary relative">
+
+            <label className={`flex items-center gap-2 pl-0 border-l-2 relative
+                ${isFocused ? 'border-primary' : 'border-border'}
+            }`}>
                 <div className="absolute flex justify-center items-center left-0 h-full w-10">
                     <SearchLensIcon width={16} className='text-content' />
                 </div>
@@ -144,7 +147,7 @@ const SearchBar = ({ autoFocus = false }: SearchBarProps) => {
                     ref={inputRef}
                     placeholder={placeholder}
                     size={placeholder.length}
-                    className="rounded-lg shadow-none w-full pl-10 bg-background text-content border-0 focus:ring-0 focus:border-0"
+                    className="rounded-lg shadow-none w-full pl-10 bg-background text-content border-0 focus:border-primary focus:ring-0 focus:border-0"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     onFocus={() => setIsFocused(true)}

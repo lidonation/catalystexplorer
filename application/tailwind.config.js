@@ -23,7 +23,7 @@ export default {
                 //     default: 'var(--cx-background)',
                 //     'default-darker': 'var(--cx-background-darker)',
                 //     secondary: 'var(--bg-secondary-color)',
-                //     tertiary: 'var(--cx-background-highlight)',
+                //     tertiary: 'var(--cx-background-light)',
                 //     accent: 'var(--bg-accent-color)',
                 //     'error-primary': 'var(--bg-error-primary-color)',
                 //     'error-secondary': 'var(--bg-error-secondary-color)',
@@ -31,30 +31,32 @@ export default {
                 // content: {
                 //     primary: 'var(--cx-primary)',
                 //     secondary: 'var(--cx-secondary)',
-                //     tertiary: 'var(--cx-highlight)',
+                //     tertiary: 'var(--cx-light)',
                 //     accent: 'var(--cd-accent)',
                 //     success: 'var(--content-success-color)',
                 //     'error-primary': 'var(--content-error-primary-color)',
                 //     'error-secondary' : 'var(--content-error-secondary-color)'
                 // },
                 content: 'var(--cx-content)',
+                'content-light': 'var(--cx-content-light)',
                 'content-dark': 'var(--cx-content-dark)',
                 light: 'var(--cx-content)',
                 dark: 'var(--cx-dark)',
                 primary: 'var(--cx-primary)',
                 secondary: 'var(--cx-secondary)',
-                highlight: 'var(--cx-highlight)',
+                highlight: 'var(--cx-light)',
                 accent: 'var(--cx-accent)',
                 success: 'var(--content-success-color)',
                 hover: 'var(--content-hover-color)',
                 background: 'var(--cx-background)',
-                'background-highlight': 'var(--cx-background-highlight)',
+                'background-light': 'var(--cx-background-light)',
                 'background-lighter': 'var(--cx-background-lighter)',
                 'background-darker': 'var(--cx-background-darker)',
-                border: {
-                    primary: 'var(--cx-primary)',
-                    secondary: 'var(--border-secondary-color)'
-                }
+                border: 'var(--cx-border-color)',
+                // border: {
+                //     primary: 'var(--cx-primary)',
+                //     secondary: 'var(--border-secondary-color)'
+                // }
             },
         },
     },

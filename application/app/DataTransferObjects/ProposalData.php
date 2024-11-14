@@ -14,7 +14,7 @@ final class ProposalData extends Data
 
         public ?int $user_id,
 
-        public ?int $campaign_id,
+        public ?CampaignData $campaign,
 
         public ?int $fund_id,
 

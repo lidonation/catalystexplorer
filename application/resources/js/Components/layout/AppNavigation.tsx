@@ -51,7 +51,7 @@ function AppNavigation() {
 
     return (
         <nav className="flex flex-col justify-between">
-            <ul className="flex flex-1 flex-col space-y-2 px-4">
+            <ul className="flex flex-1 flex-col menu-gap-y px-4">
                 {navItems.map(({ href, title, icon, active }) => (
                     <li key={href}>
                         <NavLinkItem href={href} title={title} active={active}>

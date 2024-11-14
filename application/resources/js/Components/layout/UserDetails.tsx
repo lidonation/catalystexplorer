@@ -26,7 +26,7 @@ const UserDetails: React.FC<UserDetailsProps> = ({user}) => {
     return (
         <div className="flex items-center justify-between">
             <div className="flex gap-3">
-                <div className="size-9 rounded-full bg-background-highlight">
+                <div className="size-9 rounded-full bg-background-light">
                     {user ? (
                         <UserAvatar imageUrl={user.profile_photo_url} />
 
@@ -62,7 +62,7 @@ const UserDetails: React.FC<UserDetailsProps> = ({user}) => {
                 </div>
             </div>
             <LogOutIcon
-                className="cursor-pointer text-dark hover:text-content"
+                className="cursor-pointer text-dark hover:text-hover"
                 width={20}
                 height={20}
                 onClick={() => logout()}

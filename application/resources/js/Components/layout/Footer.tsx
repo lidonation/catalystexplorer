@@ -1,18 +1,19 @@
 import catalystWhiteLogo from '@/assets/images/catalyst-explorer-all-white-logo.png';
-import { useTranslation } from 'react-i18next';
+import {useTranslation} from 'react-i18next';
 
 export default function Footer() {
-    const { t } = useTranslation();
+    const {t} = useTranslation();
 
     return (
-        <footer className="flex min-h-96 w-full flex-col justify-between gap-16 rounded-t-xl bg-gradient-to-r from-[#1B2230] to-[#475467] pb-12 pt-16">
-            <section className="mx-auto max-w-7xl text-white">
+        <div
+            className="flex min-h-96 w-full flex-col justify-between gap-16 rounded-t-xl bg-gradient-to-r from-[var(--cx-background-gradient-1-dark)] to-[var(--cx-background-gradient-1-dark)] pb-12 pt-16">
+            <section className="text-content-light container">
                 <div className="grid grid-cols-2 gap-8 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
-                    <div className="flex min-w-24 flex-col gap-4">
-                        <h2 className="text-lg">
+                    <div className="flex min-w-24 flex-col title-gap-y">
+                        <h5 className="title-5">
                             {t('footer.links.proposals')}
-                        </h2>
-                        <ul className="flex flex-col gap-2">
+                        </h5>
+                        <ul className="flex flex-col menu-gap-y">
                             <li>
                                 <p>{t('footer.links.allProposals')}</p>
                             </li>
@@ -27,9 +28,11 @@ export default function Footer() {
                             </li>
                         </ul>
                     </div>
-                    <div className="flex min-w-24 flex-col gap-4">
-                        <h2 className="text-lg">{t('footer.links.people')}</h2>
-                        <ul className="flex flex-col gap-2">
+                    <div className="flex min-w-24 flex-col title-gap-y">
+                        <h5 className="title-5">
+                            {t('footer.links.people')}
+                        </h5>
+                        <ul className="flex flex-col menu-gap-y">
                             <li>
                                 <p>{t('footer.links.proposers')}</p>
                             </li>
@@ -44,9 +47,11 @@ export default function Footer() {
                             </li>
                         </ul>
                     </div>
-                    <div className="flex min-w-24 flex-col gap-4">
-                        <h2 className="text-lg">{t('footer.links.data')}</h2>
-                        <ul className="flex flex-col gap-2">
+                    <div className="flex min-w-24 flex-col title-gap-y">
+                        <h5 className="title-5">
+                            {t('footer.links.data')}
+                        </h5>
+                        <ul className="flex flex-col menu-gap-y">
                             <li>
                                 <p>{t('footer.links.numbers')}</p>
                             </li>
@@ -61,9 +66,11 @@ export default function Footer() {
                             </li>
                         </ul>
                     </div>
-                    <div className="flex min-w-24 flex-col gap-4">
-                        <h2 className="text-lg">{t('footer.links.social')}</h2>
-                        <ul className="flex flex-col gap-2">
+                    <div className="flex min-w-24 flex-col title-gap-y">
+                        <h5 className="title-5">
+                            {t('footer.links.social')}
+                        </h5>
+                        <ul className="flex flex-col menu-gap-y">
                             <li>
                                 <p>{t('footer.links.twitter')}</p>
                             </li>
@@ -78,9 +85,11 @@ export default function Footer() {
                             </li>
                         </ul>
                     </div>
-                    <div className="flex min-w-24 flex-col gap-4">
-                        <h2 className="text-lg">{t('footer.links.legal')}</h2>
-                        <ul className="flex flex-col gap-2">
+                    <div className="flex min-w-24 flex-col title-gap-y">
+                        <h5 className="title-5">
+                            {t('footer.links.legal')}
+                        </h5>
+                        <ul className="flex flex-col menu-gap-y">
                             <li>
                                 <p>{t('footer.links.terms')}</p>
                             </li>
@@ -97,9 +106,9 @@ export default function Footer() {
                     </div>
                 </div>
             </section>
-            <section className="px-8">
+            <section className="container">
                 <div className="flex justify-between border-t pt-8">
-                    <div className="px-6">
+                    <div className="">
                         <img
                             className="h-8"
                             src={catalystWhiteLogo}
@@ -111,6 +120,6 @@ export default function Footer() {
                     </p>
                 </div>
             </section>
-        </footer>
+        </div>
     );
 }

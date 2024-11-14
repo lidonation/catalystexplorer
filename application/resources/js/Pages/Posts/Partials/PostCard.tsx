@@ -1,5 +1,5 @@
-import ArrowTopRightIcon from "./svgs/TopRightArrowIcon";
-import thumbnail from '../assets/images/Thumbnail.png';
+import thumbnail from '../../../assets/images/Thumbnail.png';
+import ArrowTopRightIcon from "@/Components/svgs/TopRightArrowIcon";
 
 export default function PostCard() {
     return (
@@ -13,12 +13,12 @@ export default function PostCard() {
                 <p className="text-sm text-accent font-bold">20 Jan 2024</p>
             </div>
             <div className="w-full flex items-center justify-between mt-2">
-                <h2 className="text-2xl font-extrabold text-content-dark w-full">
+                <h2 className="text-2xl font-extrabold text-content w-full">
                     Project Proposer and Milestone Reviewer Perspectives
                 </h2>
-                <ArrowTopRightIcon className="text-content-dark cursor-pointer hover:text-highlight ml-4" />
+                <ArrowTopRightIcon className="text-content cursor-pointer hover:text-light ml-4" />
             </div>
-            <div className="w-full mt-2 mb-4 text-content-dark opacity-70">
+            <div className="w-full mt-2 mb-4 text-content opacity-70">
                 <p>Participating in Project Catalyst using the new Milestone Module</p>
             </div>
         </div>
