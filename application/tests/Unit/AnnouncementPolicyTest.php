@@ -29,7 +29,6 @@ class AnnouncementPolicyTest extends TestCase
     {
         $announcement = Announcement::factory()->create(['user_id' => $this->user->id]);
 
-        // Assume the parent::canView() allows this user to view this specific announcement
         $this->assertTrue($this->policy->view($this->user, $announcement));
     }
 
@@ -38,7 +37,6 @@ class AnnouncementPolicyTest extends TestCase
     {
         $announcement = Announcement::factory()->create(['user_id' => $this->user->id]);
 
-        // Assume the parent::canUpdate() allows the user to update their own announcement
         $this->assertTrue($this->policy->update($this->user, $announcement));
     }
 
@@ -48,7 +46,6 @@ class AnnouncementPolicyTest extends TestCase
         $anotherUser = User::factory()->create();
         $announcement = Announcement::factory()->create(['user_id' => $anotherUser->id]);
 
-        // Assume the parent::canUpdate() does not allow the user to update another user's announcement
         $this->assertFalse($this->policy->update($this->user, $announcement));
     }
 
@@ -57,7 +54,6 @@ class AnnouncementPolicyTest extends TestCase
     {
         $announcement = Announcement::factory()->create(['user_id' => $this->user->id]);
 
-        // Assume the parent::canDelete() allows the user to delete their own announcement
         $this->assertTrue($this->policy->delete($this->user, $announcement));
     }
 
@@ -68,7 +64,6 @@ class AnnouncementPolicyTest extends TestCase
         $anotherUser = User::factory()->create();
         $announcement = Announcement::factory()->create(['user_id' => $anotherUser->id]);
 
-        // Assume the parent::canDelete() does not allow the user to delete another user's announcement
         $this->assertFalse($this->policy->delete($this->user, $announcement));
     }
 }
