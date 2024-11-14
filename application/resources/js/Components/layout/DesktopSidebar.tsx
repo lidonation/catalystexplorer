@@ -7,13 +7,14 @@ import UserDetails from './UserDetails';
 import UserNavigation from './UserNavigation';
 import User = App.DataTransferObjects.UserData;
 
-function DesktopSidebar() {
+function DesktopSidebar(props: any) {
     const {t} = useTranslation();
     const {auth} = usePage().props;
-
+    const {...rest} = props;
     return (
         <aside
-            className="hidden sm:fixed sm:inset-y-0 sm:z-30 sm:flex sm:w-72 sm:flex-col"
+            {...rest}
+            className="justify-between flex flex-col h-full"
             aria-label={t('navigation.desktop.sidebar')}
         >
             <section className="flex grow flex-col gap-6 overflow-y-auto sm:pt-8">

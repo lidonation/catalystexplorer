@@ -6,17 +6,22 @@
     --cx-primary: #2596BE;
     --cx-secondary: #3facd1;
     --cx-dark: #667085;
-    --cx-highlight: #667085;
+    --cx-light: #667085;
     --cx-accent:#165A72;
 
     --cx-content: #101828;
-    --cx-content-highlight: #667085;
+    --cx-content-light: #EAECF0;
     --cx-content-dark: #101828;
 
     --cx-background: #FFFFFF;
     --cx-background-darker: #F9FBFB;
-    --cx-background-lighter: #EFF0F2;
-    --cx-background-highlight: #667085;
+    --cx-background-lighter: #EAECF0;
+    --cx-background-light: #667085;
+    --cx-background-gradient-1-light: #1B2230;
+    --cx-background-gradient-2-light: #475467;
+    --cx-background-gradient-1-dark: #1B2230;
+    --cx-background-gradient-2-dark: #475467;
+
     --cx-border-color: #667085;
 
     --bg-accent-color: #3FACD1;
@@ -33,18 +38,22 @@
 [data-theme='dark'] {
     --cx-primary: #2596BE;
     --cx-secondary: #000000;
-    --cx-highlight: #667085;
+    --cx-light: #667085;
     --cx-dark: #667085;
     --cx-accent: #8cdefa;
 
     --cx-content: #FFFFFF;
-    --cx-content-highlight: #667085;
+    --cx-content-light: #F2F2F2;
     --cx-content-dark: #FFFFFF;
 
     --cx-background: #101828;
     --cx-background-darker: #000000;
     --cx-background-lighter: #374151;
-    --cx-background-highlight: #ffffff;
+    --cx-background-light: #ffffff;
+    --cx-background-gradient-1-light: #1B2230;
+    --cx-background-gradient-2-light: #475467;
+    --cx-background-gradient-1-dark: #1B2230;
+    --cx-background-gradient-2-dark: #475467;
 
     --cx-border-color: #667085;
 
@@ -63,18 +72,20 @@
 [data-theme='voltaire'] {
     --cx-primary: #2596BE;
     --cx-secondary: #000000;
-    --cx-highlight: #667085;
+    --cx-light: #667085;
     --cx-dark: #667085;
     --cx-accent: #1F2D3D;
 
-    --cx-content: #FFFFFF;
-    --cx-content-highlight: #667085;
+    --cx-content: #101828;
+    --cx-content-light: #F2F2F2;
     --cx-content-dark: #111928;
 
-    --cx-background: #2C2C2C;
-    --cx-background-darker: #111928;
+    --cx-background: #E9EFFF;
+    --cx-background-darker: #0033AD;
+    --cx-background-gradient-1-dark: #0033AD;
+    --cx-background-gradient-2-dark: #0033AD;
     --cx-background-lighter: #B1E3F1;
-    --cx-background-highlight: #FFFFFF;
+    --cx-background-light: #FFFFFF;
     --cx-border-color: #B1E3F1;
 
     --bg-accent-color: #3facd1;
@@ -89,24 +100,65 @@
 }
 
 @layer base {
-    * {
-        @apply text-content;
-    }
+    //* {
+    //    @apply text-content;
+    //}
 
     body {
-        @apply bg-background transition-colors duration-300 ease-in-out;
+        @apply bg-background transition-colors duration-300 ease-in-out text-content;
     }
 
     .container{
         @apply mx-auto px-8;
     }
 
+    .content-gap {
+        @apply gap-6;
+    }
+
+    .menu-gap-x {
+        @apply gap-6;
+    }
+
+    .menu-gap-y {
+        @apply gap-2;
+    }
+
+    .title-gap-y {
+        @apply gap-3;
+    }
+
     .title-1 {
-        @apply text-content font-bold;
+        @apply font-bold;
         font-size: 3.75rem;
+    }
+
+    .title-2 {
+        @apply font-bold;
+        font-size: 3rem;
+    }
+
+    .title-3 {
+        @apply font-bold;
+        font-size: 2.25rem;
+    }
+
+    .title-4 {
+        @apply font-bold;
+        font-size: 1.875rem;
+    }
+
+    .title-5 {
+        @apply font-bold;
+        font-size: 1.5rem;
+    }
+
+    .section-margin {
+        @apply mt-8;
     }
 
     main > header {
         @apply pt-11;
     }
+
 }

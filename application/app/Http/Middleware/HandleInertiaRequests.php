@@ -6,6 +6,7 @@ namespace App\Http\Middleware;
 
 use App\DataTransferObjects\UserData;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\App;
 use Inertia\Middleware;
 
 class HandleInertiaRequests extends Middleware
@@ -36,6 +37,7 @@ class HandleInertiaRequests extends Middleware
             ...parent::share($request),
             'auth' => [
                 'user' => $request->user() ? UserData::from($request->user()) : null,
+                'isDownForMaintenance' => App::isDownForMaintenance(),
             ],
         ];
     }
