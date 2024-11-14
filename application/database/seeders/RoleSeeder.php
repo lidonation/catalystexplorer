@@ -16,7 +16,7 @@ class RoleSeeder extends Seeder
      */
     public function run(): void
     {
-        collect(array_keys(RoleEnum::toArray()))
+        collect(array_values(RoleEnum::toArray()))
             ->each(
                 fn($role) => Role::findOrCreate($role)
             );
