@@ -7,7 +7,9 @@
     --cx-secondary: #3facd1;
     --cx-dark: #667085;
     --cx-light: #667085;
-    --cx-accent:#165A72;
+    --cx-accent: #165A72;
+
+    --cx-blue-eye-color: #B1E2F0;
 
     --cx-blue-eye-color: #B1E2F0;
 
@@ -115,12 +117,11 @@
     //* {
     //    @apply text-content;
     //}
-
     body {
         @apply bg-background transition-colors duration-300 ease-in-out text-content;
     }
 
-    .container{
+    .container {
         @apply mx-auto px-8;
     }
 
