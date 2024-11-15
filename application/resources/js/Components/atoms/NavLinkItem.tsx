@@ -3,6 +3,8 @@ import { ReactNode } from 'react';
 
 type NavLinkItemProps = {
     active?: boolean;
+    prefetch?: boolean;
+    async?: boolean;
     href: string;
     title: string;
     children: ReactNode;
@@ -14,6 +16,8 @@ export default function NavLinkItem({
     href,
     title,
     className,
+    prefetch = false,
+    async = false,
     ...rest
 }: NavLinkItemProps) {
     return (

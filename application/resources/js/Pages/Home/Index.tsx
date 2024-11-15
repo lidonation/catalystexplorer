@@ -10,8 +10,6 @@ export default function Index({posts}: PageProps<{ posts: any; }>) {
         <>
             <Head title="Catalyst Explorer"/>
 
-
-
             <div className="relative flex flex-col gap-8 w-full justify-center">
                 <CatalystIntro/>
 
