@@ -38,23 +38,23 @@ const UserDetails: React.FC<UserDetailsProps> = ({user}) => {
                     {user ? (
                         <Link
                             href="/dashboard"
-                            className="text-sm font-semibold text-content"
+                            className="text-4 font-semibold text-content"
                         >
                             {user?.name}
                         </Link>
                     ) : (
-                        <p className="text-sm font-semibold text-content">
+                        <p className="text-4 font-semibold text-content">
                             {t('app.name')}
                         </p>
                     )}
 
-                    <p className="text-xs text-content">
+                    <p className="text-5 text-content">
                         {user?.email || t('app.contactEmail')}
                     </p>
                     {user && (
                         <Link
                             href="/profile"
-                            className="text-xs font-semibold text-primary"
+                            className="text-5 font-semibold text-primary"
                         >
                             Edit profile
                         </Link>

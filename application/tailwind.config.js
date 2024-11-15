@@ -64,6 +64,29 @@ export default {
                 //     secondary: 'var(--border-secondary-color)'
                 // }
             },
+            fontSize: {
+                'cx-display-xs': ['var(--cx-display-xs)', {
+                    fontWeight: 'var(--cx-display-weight)',
+                }],
+                'cx-display-sm': ['var(--cx-display-sm)', {
+                    fontWeight: 'var(--cx-display-weight)',
+                }],
+                'cx-display-md': ['var(--cx-display-md)', {
+                    fontWeight: 'var(--cx-display-weight)',
+                }],
+                'cx-display-lg': ['var(--cx-display-lg)', {
+                    fontWeight: 'var(--cx-display-weight)',
+                }],
+                'cx-display-xl': ['var(--cx-display-xl)', {
+                    fontWeight: 'var(--cx-display-weight)',
+                }],
+                'cx-display-2xl': ['var(--cx-display-2xl)', {
+                    fontWeight: 'var(--cx-display-weight)',
+                }],
+                md: ['1rem', {
+                    lineHeight: '1.5rem',
+                }]
+              }
         },
     },
 

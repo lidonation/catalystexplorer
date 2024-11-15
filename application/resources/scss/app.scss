@@ -40,6 +40,15 @@
     --content-error-secondary-color: #ef4444;
     --content-success-color: #16a34a;
     --border-primary-color: #182230;
+
+    --cx-display-xs: 1.5rem;
+    --cx-display-sm: 1.875rem;
+    --cx-display-md: 2rem;
+    --cx-display-lg: 2.25rem;
+    --cx-display-xl: 3rem;
+    --cx-display-2xl: 3.75rem;
+
+    --cx-display-weight: 700;
 }
 
 [data-theme='dark'] {
@@ -142,28 +151,47 @@
     }
 
     .title-1 {
-        @apply font-bold;
-        font-size: 3.75rem;
+        @apply text-cx-display-2xl;
     }
 
     .title-2 {
-        @apply font-bold;
-        font-size: 3rem;
+        @apply text-cx-display-xl;
     }
 
     .title-3 {
-        @apply font-bold;
-        font-size: 2.25rem;
+        @apply text-cx-display-lg;
     }
 
     .title-4 {
-        @apply font-bold;
-        font-size: 1.875rem;
+        @apply text-cx-display-md;
     }
 
     .title-5 {
-        @apply font-bold;
-        font-size: 1.5rem;
+        @apply text-cx-display-sm;
+    }
+
+    .title-6 {
+        @apply text-cx-display-xs;
+    }
+
+    .text-1 {
+        @apply text-xl
+    }
+
+    .text-2 {
+        @apply text-lg;
+    }
+
+    .text-3 {
+        @apply text-md;
+    }
+
+    .text-4 {
+        @apply text-sm;
+    }
+
+    .text-5 {
+        @apply text-xs;
     }
 
     .section-margin {
