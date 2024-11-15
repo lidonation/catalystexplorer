@@ -38,6 +38,7 @@ export default {
                 //     'error-secondary' : 'var(--content-error-secondary-color)'
                 // },
                 content: 'var(--cx-content)',
+                'content-highlight-intro': 'var(--cx-content-highlight)',
                 'content-light': 'var(--cx-content-light)',
                 'content-dark': 'var(--cx-content-dark)',
                 light: 'var(--cx-content)',
@@ -52,7 +53,12 @@ export default {
                 'background-light': 'var(--cx-background-light)',
                 'background-lighter': 'var(--cx-background-lighter)',
                 'background-darker': 'var(--cx-background-darker)',
+                'background-home-gradient-color-1':
+                    'var(--cx-intro-gradient-1)',
+                'background-home-gradient-color-2':
+                    'var(--cx-intro-gradient-2)',
                 border: 'var(--cx-border-color)',
+                'eye-logo': 'var(--cx-blue-eye-color)',
                 // border: {
                 //     primary: 'var(--cx-primary)',
                 //     secondary: 'var(--border-secondary-color)'

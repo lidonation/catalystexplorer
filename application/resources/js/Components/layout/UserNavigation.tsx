@@ -34,7 +34,7 @@ function UserNavigation() {
             <ul className="flex flex-1 flex-col menu-gap-y">
                 {navItems.map(({ href, title, icon }) => (
                     <li key={href}>
-                        <NavLinkItem href={href} title={title}>
+                        <NavLinkItem href={href} title={title} prefetch>
                             {icon}
                         </NavLinkItem>
                     </li>

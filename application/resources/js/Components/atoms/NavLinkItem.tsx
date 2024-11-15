@@ -3,6 +3,8 @@ import { ReactNode } from 'react';
 
 type NavLinkItemProps = {
     active?: boolean;
+    prefetch?: boolean;
+    async?: boolean;
     href: string;
     title: string;
     children: ReactNode;
@@ -10,24 +12,23 @@ type NavLinkItemProps = {
 };
 
 export default function NavLinkItem({
-    active = false,
     children,
     href,
     title,
     className,
+    prefetch = false,
+    async = false,
+    ...rest
 }: NavLinkItemProps) {
     return (
         <Link
+            {...rest}
             href={href}
-            aria-current={active ? 'page' : undefined}
             role="navigation"
-            className={`flex items-center gap-3 px-3 py-1 hover:bg-background-lighter ${active ? 'rounded-md bg-background-lighter' : ''} ${className}`}
-            prefetch
+            className={`flex items-center gap-3 px-3 py-1 hover:bg-background-lighter ${className}`}
         >
             {children}
-            <p
-                className={`${active ? 'text-content-secondary' : 'text-content'} text-2 font-medium`}
-            >
+            <p>
                 {title}
             </p>
         </Link>
