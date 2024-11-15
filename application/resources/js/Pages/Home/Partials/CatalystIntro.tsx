@@ -23,7 +23,7 @@ const CatalystIntro = () => {
                             height={50}
                         />
                         <div>
-                            <p className="text-center text-3xl text-white">
+                            <p className="text-center text-3xl text-content-light">
                                 {t('catalystIntro.title.normalText')}{' '}
                                 <span className="text-content-highlight-intro">
                                     {t('catalystIntro.title.highlightedText')}
@@ -31,7 +31,7 @@ const CatalystIntro = () => {
                             </p>
                         </div>
                         <div>
-                            <p className="text-center text-white">
+                            <p className="text-center text-content-light">
                                 {t('catalystIntro.subtitle')}
                             </p>
                         </div>
