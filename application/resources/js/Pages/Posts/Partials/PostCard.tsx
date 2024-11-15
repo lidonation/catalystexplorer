@@ -1,5 +1,5 @@
-import thumbnail from '../../../assets/images/Thumbnail.png';
 import ArrowTopRightIcon from "@/Components/svgs/TopRightArrowIcon";
+import thumbnail from '../../../assets/images/Thumbnail.png';
 
 export default function PostCard() {
     return (
@@ -8,9 +8,9 @@ export default function PostCard() {
                 <img className="object-cover w-full h-full rounded-lg" src={thumbnail} alt="thumbnail" />
             </div>
             <div className="flex mt-4 items-center">
-                <p className="text-sm text-accent font-bold">Olivia Rhye</p>
+                <p className="text-4 text-accent font-bold">Olivia Rhye</p>
                 <div className="w-1 h-1 bg-accent rounded-full ml-2 mr-2"></div>
-                <p className="text-sm text-accent font-bold">20 Jan 2024</p>
+                <p className="text-4 text-accent font-bold">20 Jan 2024</p>
             </div>
             <div className="w-full flex items-center justify-between mt-2">
                 <h2 className="text-2xl font-extrabold text-content w-full">

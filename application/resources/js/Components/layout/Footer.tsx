@@ -10,7 +10,7 @@ export default function Footer() {
             <section className="text-content-light container">
                 <div className="grid grid-cols-2 gap-8 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
                     <div className="flex min-w-24 flex-col title-gap-y">
-                        <h5 className="title-5">
+                        <h5 className="title-6">
                             {t('footer.links.proposals')}
                         </h5>
                         <ul className="flex flex-col menu-gap-y">
@@ -29,7 +29,7 @@ export default function Footer() {
                         </ul>
                     </div>
                     <div className="flex min-w-24 flex-col title-gap-y">
-                        <h5 className="title-5">
+                        <h5 className="title-6">
                             {t('footer.links.people')}
                         </h5>
                         <ul className="flex flex-col menu-gap-y">
@@ -48,7 +48,7 @@ export default function Footer() {
                         </ul>
                     </div>
                     <div className="flex min-w-24 flex-col title-gap-y">
-                        <h5 className="title-5">
+                        <h5 className="title-6">
                             {t('footer.links.data')}
                         </h5>
                         <ul className="flex flex-col menu-gap-y">
@@ -67,7 +67,7 @@ export default function Footer() {
                         </ul>
                     </div>
                     <div className="flex min-w-24 flex-col title-gap-y">
-                        <h5 className="title-5">
+                        <h5 className="title-6">
                             {t('footer.links.social')}
                         </h5>
                         <ul className="flex flex-col menu-gap-y">
@@ -86,7 +86,7 @@ export default function Footer() {
                         </ul>
                     </div>
                     <div className="flex min-w-24 flex-col title-gap-y">
-                        <h5 className="title-5">
+                        <h5 className="title-6">
                             {t('footer.links.legal')}
                         </h5>
                         <ul className="flex flex-col menu-gap-y">

@@ -26,7 +26,7 @@ export default function NavLinkItem({
         >
             {children}
             <p
-                className={`${active ? 'text-content-secondary' : 'text-content'} text-lg font-medium`}
+                className={`${active ? 'text-content-secondary' : 'text-content'} text-2 font-medium`}
             >
                 {title}
             </p>
