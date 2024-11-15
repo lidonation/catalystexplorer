@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Saloon\PaginationPlugin\Paginator;
 
 class Repository implements RepositoryInterface
 {
@@ -73,7 +74,7 @@ class Repository implements RepositoryInterface
         return $this;
     }
 
-    public function paginate($perPage = null): LengthAwarePaginator
+    public function paginate($perPage = null): LengthAwarePaginator|Paginator
     {
         $perPage = $perPage ?? config('app.limit_scope_limit]');
         $this->getModel()::withoutGlobalScopes([LimitScope::class]);

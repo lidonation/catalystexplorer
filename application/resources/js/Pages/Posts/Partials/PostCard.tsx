@@ -3,7 +3,7 @@ import ArrowTopRightIcon from "@/Components/svgs/TopRightArrowIcon";
 
 export default function PostCard() {
     return (
-        <div className="flex flex-col mt-4 w-full">
+        <div className="flex flex-col w-full">
             <div className="w-full h-auto">
                 <img className="object-cover w-full h-full rounded-lg" src={thumbnail} alt="thumbnail" />
             </div>
