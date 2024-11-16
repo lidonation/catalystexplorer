@@ -30,6 +30,27 @@
             "support": "Support"
         }
     },
+    "searchBar": {
+        "placeholder": "Search proposals, funds, people, articles & data",
+        "all_filters": "All Filters",
+        "variants": {
+            "all": "All Groups",
+            "proposals": "Proposals",
+            "people": "People",
+            "groups": "Groups",
+            "communities": "Communities",
+            "wallets": "Wallets",
+            "reviews": "Reviews",
+            "articles": "Articles"
+        }
+    },
+    "catalystIntro": {
+        "title": {
+            "normalText": "Project Catalyst",
+            "highlightedText": "elevates collaborative innovation"
+        },
+        "subtitle": "Catalyst drives Cardano's ecosystem growth by linking innovative ideas with funding, supported by community voting and the Cardano treasury."
+    },
     "theme": {
         "theme": "Theme",
         "options": "Theme options",
@@ -41,6 +62,7 @@
     "icons": {
         "titles": {
             "barLine": "Bar Line Chart Icon",
+            "blue_eye": "Blue Eye Icon",
             "bookmark": "Bookmark Check Icon",
             "bucket": "Bucket Icon",
             "chart": "Chart Icon",

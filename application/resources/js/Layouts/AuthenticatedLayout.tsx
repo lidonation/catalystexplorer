@@ -43,7 +43,7 @@ export default function Authenticated({
                                         <span className="inline-flex rounded-md">
                                             <button
                                                 type="button"
-                                                className="false inline-flex items-center rounded-md border border-transparent secondary px-4 py-2 text-xs font-semibold uppercase tracking-widest text-content-secondary transition duration-150 ease-in-out hover:bg-background-lighter focus:bg-background-tertiary focus:outline-none  focus:ring-offset-2 active:bg-background-tertiary"
+                                                className="false inline-flex items-center rounded-md border border-transparent secondary px-4 py-2 text-5 font-semibold uppercase tracking-widest text-content-secondary transition duration-150 ease-in-out hover:bg-background-lighter focus:bg-background-tertiary focus:outline-none  focus:ring-offset-2 active:bg-background-tertiary"
                                             >
                                                 {user.name}
 
@@ -144,7 +144,7 @@ export default function Authenticated({
                             <div className="text-base font-medium text-gray-800">
                                 {user.name}
                             </div>
-                            <div className="text-sm font-medium text-gray-500">
+                            <div className="text-4 font-medium text-gray-500">
                                 {user.email}
                             </div>
                         </div>
