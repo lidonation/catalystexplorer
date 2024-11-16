@@ -2,11 +2,13 @@
 
 namespace Database\Factories;
 
-use App\Enums\CatalystCurrencies;
-use App\Models\Proposal;
+use App\Models\Fund;
 use App\Models\User;
-use Illuminate\Database\Eloquent\Factories\Factory;
+use App\Models\Campaign;
+use App\Models\Proposal;
 use Illuminate\Support\Str;
+use App\Enums\CatalystCurrencies;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
 class ProposalFactory extends Factory
 {
@@ -21,8 +23,8 @@ class ProposalFactory extends Factory
     {
         return [
             'user_id' => User::factory(),
-            'campaign_id' => $this->faker->randomNumber(),
-            'fund_id' => $this->faker->randomNumber(),
+            'campaign_id' => Campaign::factory(),
+            'fund_id' => Fund::factory(),
             'title' => json_encode($this->faker->words(4, true)),
             'slug' => fn(array $attributes) => Str::slug($attributes['title']),
             'website' => $this->faker->url(),

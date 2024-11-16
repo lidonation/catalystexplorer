@@ -7,6 +7,7 @@ namespace App\Models;
 use App\Models\Model;
 use App\Casts\DateFormatCast;
 use App\Enums\CatalystCurrencies;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Fund extends Model
 {
@@ -16,4 +17,15 @@ class Fund extends Model
         'awarded_at' => DateFormatCast::class,
         'currency' => CatalystCurrencies::class
     ];
+
+
+    public function proposals(): HasMany
+    {
+        return $this->hasMany(Proposal::class, 'fund_id', 'id');
+    }
+
+    public function campaigns(): HasMany
+    {
+        return $this->hasMany(Campaign::class, 'fund_id', 'id');
+    }
 }

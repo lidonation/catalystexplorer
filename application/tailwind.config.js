@@ -46,6 +46,7 @@ export default {
                 secondary: 'var(--cx-secondary)',
                 highlight: 'var(--cx-light)',
                 accent: 'var(--cx-accent)',
+                'accent-secondary' : 'var(--cx-accent-secondary)',
                 success: 'var(--content-success-color)',
                 hover: 'var(--content-hover-color)',
                 background: 'var(--cx-background)',
