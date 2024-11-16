@@ -24,7 +24,8 @@ class DatabaseSeeder extends Seeder
             IdeascaleProfilesSeeder::class,
             GroupSeeder::class,
             CommunitySeeder::class,
-            ReviewSeeder::class
+            ReviewSeeder::class,
+            AnnouncementSeeder::class
         ]);
     }
 }
