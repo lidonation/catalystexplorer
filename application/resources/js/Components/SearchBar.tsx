@@ -1,3 +1,5 @@
+import useEnterKey from '@/Hooks/useEnterKey';
+import useEscapeKey from '@/Hooks/useEscapeKey';
 import {
     Listbox,
     ListboxButton,
@@ -5,43 +7,65 @@ import {
     ListboxOptions,
 } from '@headlessui/react';
 import { router } from '@inertiajs/react';
-import { useState, useRef, useEffect } from 'react';
+import { TFunction } from 'i18next';
+import { useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import Checkbox from './Checkbox';
 import TextInput from './TextInput';
-import SearchLensIcon from './svgs/SearchLensIcon';
 import ChevronDownIcon from './svgs/ChevronDownIcon';
-import useEscapeKey from '@/Hooks/useEscapeKey';
-import useEnterKey from '@/Hooks/useEnterKey';
+import SearchLensIcon from './svgs/SearchLensIcon';
 
-const variants = [
-    'all groups',
-    'proposals',
-    'people',
-    'groups',
-    'wallets',
-    'communities',
-    'reviews',
-    'articles',
-];
-
-const SearchVariants = ({ value, onChange }: { value: string[], onChange: (value: string[]) => void }) => {
+const SearchVariants = ({
+    value,
+    onChange,
+    translation,
+}: {
+    value: string[];
+    onChange: (value: string[]) => void;
+    translation: TFunction<'translation', undefined>;
+}) => {
+    const variants = [
+        translation('searchBar.variants.all'),
+        translation('searchBar.variants.proposals'),
+        translation('searchBar.variants.people'),
+        translation('searchBar.variants.groups'),
+        translation('searchBar.variants.communities'),
+        translation('searchBar.variants.wallets'),
+        translation('searchBar.variants.reviews'),
+        translation('searchBar.variants.articles'),
+    ];
     const handleSelection = (newValue: string[]) => {
-        if (newValue.includes('all groups') && !value.includes('all groups')) {
+        if (
+            newValue.includes(translation('searchBar.variants.all')) &&
+            !value.includes(translation('searchBar.variants.all'))
+        ) {
             onChange(variants);
             return;
         }
 
-        if (!newValue.includes('all groups') && value.includes('all groups')) {
+        if (
+            !newValue.includes(translation('searchBar.variants.all')) &&
+            value.includes(translation('searchBar.variants.all'))
+        ) {
             onChange([]);
             return;
         }
 
-        if (value.includes('all groups') && newValue.length < value.length) {
-            onChange(newValue.filter(item => item !== 'all groups'));
+        if (
+            value.includes(translation('searchBar.variants.all')) &&
+            newValue.length < value.length
+        ) {
+            onChange(
+                newValue.filter(
+                    (item) => item !== translation('searchBar.variants.all'),
+                ),
+            );
             return;
         }
-
-        if (newValue.length === variants.length - 1 && !newValue.includes('all groups')) {
+        if (
+            newValue.length === variants.length - 1 &&
+            !newValue.includes(translation('searchBar.variants.all'))
+        ) {
             onChange(variants);
             return;
         }
@@ -52,28 +76,32 @@ const SearchVariants = ({ value, onChange }: { value: string[], onChange: (value
     return (
         <div className="relative text-content">
             <Listbox value={value} onChange={handleSelection} multiple>
-                <ListboxButton className="text-nowrap flex gap-3 items-center justify-center px-3">
+                <ListboxButton className="flex items-center justify-center gap-3 text-nowrap px-3">
                     {({ open }) => (
-                        <div className='flex items-center gap-3'>
-                            All Filters
-                            <div className={`transform transition-transform duration-200 ${open ? 'rotate-180' : ''}`}>
+                        <div className="flex items-center gap-3">
+                            {translation('searchBar.all_filters')}
+                            <div
+                                className={`transform transition-transform duration-200 ${open ? 'rotate-180' : ''}`}
+                            >
                                 <ChevronDownIcon width={10} />
                             </div>
                         </div>
                     )}
                 </ListboxButton>
-                <ListboxOptions className="bg-background shadow-xl rounded-lg absolute left-0 w-max mt-5 z-50">
+                <ListboxOptions className="absolute left-0 z-50 mt-5 w-max rounded-lg bg-background shadow-xl">
                     {variants.map((variant) => (
                         <ListboxOption key={variant} value={variant}>
                             {({ selected }) => (
-                                <div className="flex items-center gap-2 px-3 py-2 hover:bg-hover hover:rounded-lg cursor-pointer justify-between">
-                                    <span className="capitalize">{variant}</span>
+                                <div className="flex cursor-pointer items-center justify-between gap-2 px-3 py-2 hover:rounded-lg hover:bg-hover">
+                                    <span className="capitalize">
+                                        {variant}
+                                    </span>
                                     <Checkbox
                                         id={variant}
                                         checked={selected}
                                         value={variant}
                                         onChange={() => {}}
-                                        className='checked:bg-primary'
+                                        className="checked:bg-primary"
                                     />
                                 </div>
                             )}
@@ -94,12 +122,12 @@ const SearchBar = ({ autoFocus = false }: SearchBarProps) => {
     const [searchQuery, setSearchQuery] = useState('');
     const [isFocused, setIsFocused] = useState(false);
     const inputRef = useRef<HTMLInputElement>(null);
-
+    const { t } = useTranslation();
     const escapeHandler = () => setSearchQuery('');
     const enterHandler = () => {
         const syntheticEvent = new Event('submit', {
             bubbles: true,
-            cancelable: true
+            cancelable: true,
         });
         handleSearch(syntheticEvent as unknown as React.FormEvent);
     };
@@ -113,41 +141,51 @@ const SearchBar = ({ autoFocus = false }: SearchBarProps) => {
         }
     }, [autoFocus]);
 
-    const placeholder = "Search proposals, funds, people, articles & data";
+    const placeholder = t('searchBar.placeholder');
 
     const handleSearch = (event: React.FormEvent) => {
         event.preventDefault();
-        const filters = searchTerms.filter(term => term !== 'all groups').join(',');
+        const filters = searchTerms
+            .filter((term) => term !== t('searchBar.variants.all'))
+            .join(',');
 
-        router.get('/s', {
-            q: searchQuery,
-            f: filters,
-        }, {
-            preserveState: true,
-            preserveScroll: true,
-        });
+        router.get(
+            '/s',
+            {
+                q: searchQuery,
+                f: filters,
+            },
+            {
+                preserveState: true,
+                preserveScroll: true,
+            },
+        );
     };
 
     return (
         <form
             onSubmit={handleSearch}
-            className={`flex items-center bg-background rounded-lg transition-all duration-200 ${
-                isFocused ? 'ring-2 ring-primary border-primary ' : ''
+            className={`flex items-center rounded-lg bg-background transition-all duration-200 ${
+                isFocused ? 'border-primary ring-2 ring-primary' : ''
             }`}
         >
-            <SearchVariants value={searchTerms} onChange={setSearchTerms} />
+            <SearchVariants
+                value={searchTerms}
+                onChange={setSearchTerms}
+                translation={t}
+            />
 
-            <label className={`flex items-center gap-2 pl-0 border-l-2 relative
-                ${isFocused ? 'border-primary' : 'border-border'}
-            }`}>
-                <div className="absolute flex justify-center items-center left-0 h-full w-10">
-                    <SearchLensIcon width={16} className='text-content' />
+            <label
+                className={`relative flex items-center gap-2 border-l-2 pl-0 ${isFocused ? 'border-primary' : 'border-border'} }`}
+            >
+                <div className="absolute left-0 flex h-full w-10 items-center justify-center">
+                    <SearchLensIcon width={16} className="text-content" />
                 </div>
                 <TextInput
                     ref={inputRef}
                     placeholder={placeholder}
                     size={placeholder.length}
-                    className="rounded-lg shadow-none w-full pl-10 bg-background text-content border-0 focus:border-primary focus:ring-0 focus:border-0"
+                    className="w-full rounded-lg border-0 bg-background pl-10 text-content shadow-none focus:border-0 focus:border-primary focus:ring-0"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     onFocus={() => setIsFocused(true)}

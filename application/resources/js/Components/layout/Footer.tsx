@@ -8,8 +8,8 @@ export default function Footer() {
         <div className="flex min-h-96 w-full flex-col justify-between gap-16 rounded-t-xl bg-gradient-to-r from-[var(--cx-background-gradient-1-dark)] to-[var(--cx-background-gradient-1-dark)] pb-12 pt-16">
             <section className="container text-content-light">
                 <div className="grid grid-cols-2 gap-8 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
-                    <div className="title-gap-y flex min-w-24 flex-col">
-                        <h5 className="title-5">
+                    <div className="flex min-w-24 flex-col title-gap-y">
+                        <h5 className="title-6">
                             {t('footer.links.proposals')}
                         </h5>
                         <ul className="menu-gap-y flex flex-col">
@@ -27,9 +27,11 @@ export default function Footer() {
                             </li>
                         </ul>
                     </div>
-                    <div className="title-gap-y flex min-w-24 flex-col">
-                        <h5 className="title-5">{t('footer.links.people')}</h5>
-                        <ul className="menu-gap-y flex flex-col">
+                    <div className="flex min-w-24 flex-col title-gap-y">
+                        <h5 className="title-6">
+                            {t('footer.links.people')}
+                        </h5>
+                        <ul className="flex flex-col menu-gap-y">
                             <li>
                                 <p>{t('footer.links.proposers')}</p>
                             </li>
@@ -44,9 +46,11 @@ export default function Footer() {
                             </li>
                         </ul>
                     </div>
-                    <div className="title-gap-y flex min-w-24 flex-col">
-                        <h5 className="title-5">{t('footer.links.data')}</h5>
-                        <ul className="menu-gap-y flex flex-col">
+                    <div className="flex min-w-24 flex-col title-gap-y">
+                        <h5 className="title-6">
+                            {t('footer.links.data')}
+                        </h5>
+                        <ul className="flex flex-col menu-gap-y">
                             <li>
                                 <p>{t('footer.links.numbers')}</p>
                             </li>
@@ -61,9 +65,11 @@ export default function Footer() {
                             </li>
                         </ul>
                     </div>
-                    <div className="title-gap-y flex min-w-24 flex-col">
-                        <h5 className="title-5">{t('footer.links.social')}</h5>
-                        <ul className="menu-gap-y flex flex-col">
+                    <div className="flex min-w-24 flex-col title-gap-y">
+                        <h5 className="title-6">
+                            {t('footer.links.social')}
+                        </h5>
+                        <ul className="flex flex-col menu-gap-y">
                             <li>
                                 <p>{t('footer.links.twitter')}</p>
                             </li>
@@ -78,9 +84,11 @@ export default function Footer() {
                             </li>
                         </ul>
                     </div>
-                    <div className="title-gap-y flex min-w-24 flex-col">
-                        <h5 className="title-5">{t('footer.links.legal')}</h5>
-                        <ul className="menu-gap-y flex flex-col">
+                    <div className="flex min-w-24 flex-col title-gap-y">
+                        <h5 className="title-6">
+                            {t('footer.links.legal')}
+                        </h5>
+                        <ul className="flex flex-col menu-gap-y">
                             <li>
                                 <p>{t('footer.links.terms')}</p>
                             </li>
