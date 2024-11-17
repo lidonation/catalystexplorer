@@ -30,7 +30,7 @@ return new class extends Migration
             $table->timestamp('deleted_at')->nullable();
             $table->string('color')->nullable();
             $table->string('label')->nullable();
-            $table->enum('currency', CatalystCurrencies::values());
+            $table->enum('currency', CatalystCurrencies::toArray());
             $table->timestamp('review_started_at')->nullable();
         });
     }

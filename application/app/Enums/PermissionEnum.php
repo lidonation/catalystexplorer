@@ -9,8 +9,6 @@ use Spatie\Enum\Laravel\Enum;
 /**
  * @method static self create_communities()
  * @method static self create_groups()
- * @method static self create_communities()
- * @method static self create_groups()
  * @method static self create_ideascale_profiles()
  * @method static self create_events()
  * @method static self create_funds()
