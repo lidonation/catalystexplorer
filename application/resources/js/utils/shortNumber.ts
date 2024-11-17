@@ -1,4 +1,4 @@
-export function shortNumber(value: number, digits = 0, locale: string = 'en-US') {
+export function shortNumber(value: number|null, digits = 0, locale: string = 'en-US') {
     // Nine Zeroes for Billions
     return Math.abs(Number(value)) >= 1.0e+9
 

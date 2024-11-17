@@ -6,37 +6,57 @@ interface Proposal extends Record<string, unknown> {
 
 export default function ProposalFundingPercentages({ proposal }: Proposal) {
     // Helper functions
-    const calculatePercentage = (numerator: number, denominator: number) =>
-        Math.ceil((numerator / denominator) * 100);
+    const calculatePercentage = (
+        numerator: number,
+        denominator: number,
+    ): number =>
+        denominator > 0 ? Math.ceil((numerator / denominator) * 100) : 0;
 
-    const formatCurrency = (amount: number, currencyCode: string) =>
-        currency(parseInt(amount.toString()), currencyCode);
+    const formatCurrency = (
+        amount: number | string | null | undefined,
+        currencyCode?: string,
+    ): string =>
+        currency(
+            amount ? parseInt(amount.toString()) : 0,
+            currencyCode || 'USD',
+        );
 
-    const getProgressBarColor = (percentage: number) => {
+    const getProgressBarColor = (percentage: number): string => {
         if (percentage >= 80) return 'bg-success';
         if (percentage >= 50) return 'bg-accent-secondary';
         return 'bg-primary';
     };
 
-    // Calculations
-    const amountRequested = formatCurrency(
-        parseInt(proposal.amount_requested),
-        proposal.currency,
-    );
+    // Extract proposal data safely
+    const amountRequested = proposal.amount_requested
+        ? proposal.amount_requested
+        : 0;
+    const amountReceived = proposal.amount_received
+        ? proposal.amount_received
+        : 0;
+    const campaignAmount = proposal.campaign?.amount
+        ? proposal.campaign.amount
+        : 0;
+    const currencyCode = proposal.currency || 'USD';
+    const campaignCurrency = proposal.campaign?.currency || 'USD';
 
-    const campaignBudget = formatCurrency(
-        parseInt(proposal.campaign?.amount),
-        proposal.campaign?.currency,
+    // Calculations
+    const formattedAmountRequested = formatCurrency(
+        amountRequested,
+        currencyCode,
+    );
+    const formattedCampaignBudget = formatCurrency(
+        campaignAmount,
+        campaignCurrency,
     );
 
     const campaignPercentage = calculatePercentage(
-        parseInt(proposal.amount_requested),
-        parseInt(proposal.campaign?.amount),
+        amountRequested,
+        campaignAmount,
     );
-
     const fundingPercentage = calculatePercentage(
-        parseInt(proposal.amount_received),
-        parseInt(proposal.amount_requested),
+        amountReceived,
+        amountRequested,
     );
 
     const progressBarColor = getProgressBarColor(fundingPercentage);
@@ -48,9 +68,9 @@ export default function ProposalFundingPercentages({ proposal }: Proposal) {
                 <span>Received</span>
                 <div>
                     <span className="text-lg font-semibold">
-                        {amountRequested}
+                        {formattedAmountRequested}
                     </span>
-                    <span className="text-sm text-highlight">{`/ ${campaignBudget} (${campaignPercentage}%)`}</span>
+                    <span className="text-sm text-highlight">{`/ ${formattedCampaignBudget} (${campaignPercentage}%)`}</span>
                 </div>
             </div>
             <div className="mt-2 h-3 w-full overflow-hidden rounded-full bg-content-light">

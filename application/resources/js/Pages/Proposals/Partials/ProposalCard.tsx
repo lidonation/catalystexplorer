@@ -23,8 +23,8 @@ export default function ProposalCard({ proposal }: PageProps<Proposal>) {
     const headerBGColor =
         gradientColors[proposal.status] || gradientColors.default;
 
-    const absatainVotes = shortNumber(proposal.abstain_votes_count) ?? '(N/A)';
-    const yesVotes = shortNumber(proposal.yes_votes_count) ?? '(N/A)';
+    const abstainVotes = shortNumber(proposal?.abstain_votes_count) ?? '(N/A)';
+    const yesVotes = shortNumber(proposal?.yes_votes_count) ?? '(N/A)';
 
     const [quickPitchView, setQuickPitchView] = useState(false);
 
@@ -177,7 +177,7 @@ export default function ProposalCard({ proposal }: PageProps<Proposal>) {
                         <span className="flex gap-2">
                             <span className="font-semibold">Abstain</span>
                             <span className="text-highlight">
-                                ({absatainVotes})
+                                ({abstainVotes})
                             </span>
                         </span>
                     </button>
