@@ -52,6 +52,9 @@ final class IdeascaleProfileData extends Data
         public ?string $telegram,
 
         #[TypeScriptOptional]
-        public ?string $title
+        public ?string $title,
+
+        #[TypeScriptOptional]
+        public ?string $profile_photo_url
     ) {}
 }
