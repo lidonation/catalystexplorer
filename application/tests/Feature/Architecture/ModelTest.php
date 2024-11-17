@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\IdeascaleProfile;
 use App\Models\Model;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -8,7 +9,7 @@ arch()
     ->expect('App\Models')
     ->toBeClasses()
     ->toExtend(Model::class)
-    ->ignoring(User::class);
+    ->ignoring(User::class, IdeascaleProfile::class);
 
 arch()
     ->expect('App\Models')
@@ -22,4 +23,3 @@ arch()
     ->expect('App\Models')
     ->toOnlyBeUsedIn('App\Repositories')
     ->ignoring('App\Models');
-
