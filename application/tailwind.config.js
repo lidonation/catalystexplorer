@@ -42,13 +42,16 @@ export default {
                 'content-light': 'var(--cx-content-light)',
                 'content-dark': 'var(--cx-content-dark)',
                 light: 'var(--cx-content)',
+                'light-persist': 'var(--bg-light-persist)',
                 dark: 'var(--cx-dark)',
                 primary: 'var(--cx-primary)',
                 secondary: 'var(--cx-secondary)',
                 highlight: 'var(--cx-light)',
                 accent: 'var(--cx-accent)',
-                'accent-secondary' : 'var(--cx-accent-secondary)',
-                success: 'var(--content-success-color)',
+                'dark-persist':'var(--content-primary-color)',
+                'accent-secondary': 'var(--cx-accent-secondary)',
+                success: 'var(--success-gradient-color-2)',
+                'success-light': 'var(--content-success-light)',
                 hover: 'var(--content-hover-color)',
                 background: 'var(--cx-background)',
                 'background-light': 'var(--cx-background-light)',
@@ -87,7 +90,7 @@ export default {
                 md: ['1rem', {
                     lineHeight: '1.5rem',
                 }]
-              }
+            }
         },
     },
 

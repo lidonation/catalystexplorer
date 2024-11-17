@@ -1,15 +1,14 @@
 import SearchBar from '@/Components/SearchBar';
 import BlueEyeIcon from '@/Components/svgs/BlueEyeIcon';
 import ConcentricCircles from '@/assets/images/bg-concentric-circles.png';
-import {useTranslation} from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 
 const CatalystIntro = () => {
-    const {t} = useTranslation();
+    const { t } = useTranslation();
     return (
-        <div
-            className="splash-wrapper sticky -top-56 bg-gradient-to-r from-background-home-gradient-color-1 to-background-home-gradient-color-2 md:rounded-tl-4xl">
+        <div className="splash-wrapper sticky -top-56 z-50 bg-gradient-to-r from-background-home-gradient-color-1 to-background-home-gradient-color-2 md:rounded-tl-4xl">
             <div
-                className="w-full pt-16 pb-4 flex flex-col gap-8"
+                className="flex w-full flex-col gap-8 pb-4 pt-16"
                 style={{
                     backgroundImage: `url(${ConcentricCircles})`,
                     backgroundPosition: 'top',
@@ -26,8 +25,8 @@ const CatalystIntro = () => {
                         <p className="text-center text-3xl text-content-light">
                             {t('catalystIntro.title.normalText')}{' '}
                             <span className="text-content-highlight-intro">
-                                    {t('catalystIntro.title.highlightedText')}
-                                </span>
+                                {t('catalystIntro.title.highlightedText')}
+                            </span>
                         </p>
                     </div>
                     <div>
@@ -37,12 +36,11 @@ const CatalystIntro = () => {
                     </div>
                 </section>
 
-                <section className='container sticky top-8 py-4 w-full md:px-64'>
-                    <div className=''>
-                        <SearchBar autoFocus/>
+                <section className="container sticky top-8 w-full py-4 md:px-64">
+                    <div className="">
+                        <SearchBar autoFocus />
                     </div>
                 </section>
-
             </div>
         </div>
     );
