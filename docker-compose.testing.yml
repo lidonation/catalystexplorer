@@ -8,7 +8,7 @@ services:
         dockerfile: ./docker/Dockerfile
         args:
             WWWGROUP: "${WWWGROUP:-1000}"
-    image: catalystexplorer
+    image: registry.lidonation.com/lidonation/www.catalystexplorer.com/web-app
     container_name: catalystexplorer.com
     tty: true
     env_file:
@@ -40,7 +40,7 @@ services:
       - catalystexplorer.redis
 
   catalystexplorer.queue:
-    image: catalystexplorer
+    image: registry.lidonation.com/lidonation/www.catalystexplorer.com/web-app
     container_name: catalystexplorer.queue
     depends_on:
         - catalystexplorer.db

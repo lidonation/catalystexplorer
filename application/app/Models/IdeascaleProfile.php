@@ -3,12 +3,16 @@
 namespace App\Models;
 
 use App\Models\User;
-use Laravolt\Avatar\Facade as Avatar;
 use App\Casts\DateFormatCast;
+use Spatie\MediaLibrary\HasMedia;
+use Laravolt\Avatar\Facade as Avatar;
+use Spatie\MediaLibrary\InteractsWithMedia;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 
-class IdeascaleProfile extends User 
+class IdeascaleProfile extends Model implements HasMedia
 {
+    use  InteractsWithMedia;
+
     protected $table = 'ideascale_profiles';
 
     protected $primaryKey = 'id';
