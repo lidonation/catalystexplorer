@@ -17,6 +17,6 @@ class UserData extends Data
 
     public string $profile_photo_url,
 
-    public string $email_verified_at
+    public ?string $email_verified_at = null
   ) {}
 }
