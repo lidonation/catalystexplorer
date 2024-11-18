@@ -7,7 +7,7 @@
     --cx-secondary: #3facd1;
     --cx-dark: #667085;
     --cx-light: #667085;
-    --cx-accent:#165A72;
+    --cx-accent: #165A72;
 
     --cx-content: #101828;
     --cx-content-light: #EAECF0;
@@ -17,8 +17,8 @@
     --cx-background-darker: #F9FBFB;
     --cx-background-lighter: #EAECF0;
     --cx-background-light: #667085;
-    --cx-background-gradient-1-light: #1B2230;
-    --cx-background-gradient-2-light: #475467;
+    --cx-background-gradient-1-light: #3facd1;
+    --cx-background-gradient-2-light: #2596BE;
     --cx-background-gradient-1-dark: #1B2230;
     --cx-background-gradient-2-dark: #475467;
 
@@ -50,8 +50,8 @@
     --cx-background-darker: #000000;
     --cx-background-lighter: #374151;
     --cx-background-light: #ffffff;
-    --cx-background-gradient-1-light: #1B2230;
-    --cx-background-gradient-2-light: #475467;
+    --cx-background-gradient-1-light: #2596BE;
+    --cx-background-gradient-2-light: #8cdefa;
     --cx-background-gradient-1-dark: #1B2230;
     --cx-background-gradient-2-dark: #475467;
 
@@ -108,7 +108,7 @@
         @apply bg-background transition-colors duration-300 ease-in-out text-content;
     }
 
-    .container{
+    .container {
         @apply mx-auto px-8;
     }
 
@@ -156,9 +156,4 @@
     .section-margin {
         @apply mt-8;
     }
-
-    main > header {
-        @apply pt-11;
     }
-
-}

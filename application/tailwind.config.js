@@ -46,17 +46,23 @@ export default {
                 secondary: 'var(--cx-secondary)',
                 highlight: 'var(--cx-light)',
                 accent: 'var(--cx-accent)',
+                error: 'var(--bg-error-primary-color)',
                 success: 'var(--content-success-color)',
                 hover: 'var(--content-hover-color)',
                 background: 'var(--cx-background)',
                 'background-light': 'var(--cx-background-light)',
                 'background-lighter': 'var(--cx-background-lighter)',
                 'background-darker': 'var(--cx-background-darker)',
+                'background-gradient-1-light': 'var(--cx-background-gradient-1-light)',
+                'background-gradient-2-light': 'var(--cx-background-gradient-2-light)',
                 border: 'var(--cx-border-color)',
                 // border: {
                 //     primary: 'var(--cx-primary)',
                 //     secondary: 'var(--border-secondary-color)'
                 // }
+            },
+            spacing: {
+                'content-gap': '1.5rem' 
             },
         },
     },
