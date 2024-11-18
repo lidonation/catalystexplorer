@@ -2,9 +2,8 @@
 
 namespace Database\Seeders;
 
-use App\Models\Review;
-use App\Models\User;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Log;
 
 class DatabaseSeeder extends Seeder
 {
@@ -13,7 +12,7 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        $this->call([
+        $seeders = [
             RoleSeeder::class,
             UserSeeder::class,
             CampaignSeeder::class,
@@ -25,6 +24,16 @@ class DatabaseSeeder extends Seeder
             ReviewSeeder::class,
             AnnouncementSeeder::class,
             MetricSeeder::class
-        ]);
+        ];
+
+        foreach ($seeders as $seeder) {
+            try {
+                $this->call($seeder);
+                $this->command->info("$seeder completed successfully.");
+            } catch (\Throwable $e) {
+                Log::error($e);
+                $this->command->error("Error running $seeder: " . $e->getMessage());
+            }
+        }
     }
 }

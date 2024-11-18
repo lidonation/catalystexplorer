@@ -12,28 +12,35 @@ use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
-Route::get('/', [HomeController::class, 'index'])
-    ->name('home');
+Route::localized(
+    function () {
+        Route::get('/', [HomeController::class, 'index'])
+            ->name('home');
 
-Route::get('/proposals',[ProposalsController::class, 'index'])
-    ->name('proposals.index');
+        Route::get('/proposals', [ProposalsController::class, 'index'])
+            ->name('proposals.index');
 
-Route::get('/funds',[FundsController::class, 'index'])
-    ->name('funds.index');
+        Route::get('/funds', [FundsController::class, 'index'])
+            ->name('funds.index');
 
 
-Route::get('/people',[PeopleController::class, 'index'])
-    ->name('people.index');
+        Route::get('/people', [PeopleController::class, 'index'])
+            ->name('people.index');
 
-Route::get('/charts',[ChartsController::class, 'index'])
-    ->name('charts.index');
+        Route::get('/charts', [ChartsController::class, 'index'])
+            ->name('charts.index');
 
-Route::get('/jormungandr',[JormungandrController::class, 'index'])
-    ->name('jormungandr.index');
+        Route::get('/jormungandr', [JormungandrController::class, 'index'])
+            ->name('jormungandr.index');
 
-Route::get('/s', [SearchController::class, 'index'])
-    ->name('search.index');
+        Route::get('/s', [SearchController::class, 'index'])
+            ->name('search.index');
+    }
+);
 
-require __DIR__.'/auth.php';
 
-require __DIR__.'/dashboard.php';
+require __DIR__ . '/auth.php';
+
+require __DIR__ . '/dashboard.php';
+
+Route::fallback(\CodeZero\LocalizedRoutes\Controllers\FallbackController::class);

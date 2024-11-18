@@ -2577,6 +2577,14 @@ keyv@^4.5.3:
   dependencies:
     json-buffer "3.0.1"
 
+laravel-react-i18n@^2.0.5:
+  version "2.0.5"
+  resolved "https://registry.yarnpkg.com/laravel-react-i18n/-/laravel-react-i18n-2.0.5.tgz#ef57ae18cd69f6a4a73755e811f79abc51e1fa22"
+  integrity sha512-o6dHjKJlY1gZZAJba4TVGJ/QHOCIeGoDWl8M+NczW+M4IJ4JhroaxkkiphGH/GMEWL3zJbOtDM3tk0GcXl1ydQ==
+  dependencies:
+    php-array-reader "^2.1.2"
+    react "^18.2.0"
+
 laravel-vite-plugin@^1.0:
   version "1.0.5"
   resolved "https://registry.yarnpkg.com/laravel-vite-plugin/-/laravel-vite-plugin-1.0.5.tgz#0d1881bf69d9d420a01f33db183adb82d9143362"
@@ -2648,6 +2656,11 @@ lru-cache@^5.1.1:
   integrity sha512-KpNARQA3Iwv+jTA0utUVVbrh+Jlrr1Fv0e56GGzAFOXN7dk/FviaDW8LHmK52DlcH4WP2n6gI8vN1aesBFgo9w==
   dependencies:
     yallist "^3.0.2"
+
+marked@^15.0.1:
+  version "15.0.1"
+  resolved "https://registry.yarnpkg.com/marked/-/marked-15.0.1.tgz#ed4a33b40b631623a1c3e68eb94663de740c5710"
+  integrity sha512-VnnE19XO2Vb2oZeH8quAepfrb6Aaz4OoY8yZQACfuy/5KVJ0GxYC0Qxzz/iuc+g5UF7H0HJ+QROfvH26XeBdDA==
 
 merge2@^1.3.0, merge2@^1.4.1:
   version "1.4.1"
@@ -2882,6 +2895,18 @@ path-type@^4.0.0:
   version "4.0.0"
   resolved "https://registry.yarnpkg.com/path-type/-/path-type-4.0.0.tgz#84ed01c0a7ba380afe09d90a8c180dcd9d03043b"
   integrity sha512-gDKb8aZMDeD/tZWs9P6+q0J9Mwkdl6xMV8TjnGP3qJVJ06bdMgkbBlLU8IdfOsIsFz2BW1rNVT3XuNEl8zPAvw==
+
+php-array-reader@^2.1.2:
+  version "2.1.2"
+  resolved "https://registry.yarnpkg.com/php-array-reader/-/php-array-reader-2.1.2.tgz#5a82f2ec8fe61834ef82be53f498a09f278fef19"
+  integrity sha512-bev2MQhNmxlGiAQwi41z7J242jAEopCs5bT515Er/d4uiFl1z09SWQcr1VnycRJ0EA9ARlm8zDBvM40/y+l9/Q==
+  dependencies:
+    php-parser "^3.1.5"
+
+php-parser@^3.1.5:
+  version "3.2.1"
+  resolved "https://registry.yarnpkg.com/php-parser/-/php-parser-3.2.1.tgz#960916dc03e4979a59435f9dd9eb03f2e86d8126"
+  integrity sha512-WT5AMqe39ZdqAxp9Yp7uR6e3clBWlT1dxHHs49GmnDx2d+975NEiLSVy2tRGLdSC9tgdQOLiN1Yz54g1d2cZDQ==
 
 picocolors@^1.0.0, picocolors@^1.0.1, picocolors@^1.1.0, picocolors@^1.1.1:
   version "1.1.1"

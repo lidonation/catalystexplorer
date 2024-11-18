@@ -1,28 +1,48 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace App\Models;
 
-use App\Casts\DateFormatCast;
-use App\Enums\CatalystCurrencies;
+use App\Models\Fund;
+use App\Models\Group;
+use App\Models\Model;
+use App\Models\Campaign;
+use App\Models\Community;
 use App\Traits\HasAuthor;
+use App\Casts\DateFormatCast;
 use App\Traits\HasTaxonomies;
+use Laravel\Scout\Searchable;
+use Illuminate\Support\Carbon;
+use App\Traits\HasTranslations;
+use App\Models\IdeascaleProfile;
+use App\Enums\CatalystCurrencies;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Artisan;
-use Laravel\Scout\Searchable;
 
 class Proposal extends Model
 {
-    use HasAuthor,
+    use HasTranslations, HasAuthor,
         Searchable,
         HasTaxonomies;
+    
+    public array $translatable = [
+        'title',
+        'meta_title',
+        'problem',
+        'solution',
+        'experience',
+        'content',
+    ];
+
+    public $translatableExcludedFromGeneration = [
+        'meta_title',
+    ];
+
 
     protected $guarded = ['user_id', 'created_at', 'funded_at'];
+
 
     public static function getFilterableAttributes(): array
     {
@@ -161,7 +181,7 @@ class Proposal extends Model
     public function currency(): Attribute
     {
         return Attribute::make(
-            get: fn ($currency) => $currency ?? $this->campaign?->currency ?? $this->fund?->currency ?? CatalystCurrencies::USD,
+            get: fn ($currency) => $currency ?? $this->campaign?->currency ?? $this->fund?->currency ?? CatalystCurrencies::USD()->value,
         );
     }
 
@@ -343,6 +363,7 @@ class Proposal extends Model
             'offchain_metas' => 'array',
             'opensource' => 'boolean',
             'updated_at' => DateFormatCast::class,
+            'meta_data'=> 'array'
         ];
     }
 }
