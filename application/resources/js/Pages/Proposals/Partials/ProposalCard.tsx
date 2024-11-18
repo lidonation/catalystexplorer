@@ -3,11 +3,11 @@ import { shortNumber } from '@/utils/shortNumber';
 import { useState } from 'react';
 import ProposalBookmark from './ProposalBookmark';
 import ProposalFundingPercentages from './ProposalFundingPercentages';
+import ProposalFundingStatus from './ProposalFundingStatus';
 import ProposalQuickpitch from './ProposalQuickpitch';
 import ProposalSolution from './ProposalSolution';
 import ProposalStatus from './ProposalStatus';
 import ProposalUsers from './ProposalUsers';
-import ProposalFundingStatus from './ProposalFundingStatus';
 
 interface Proposal extends Record<string, unknown> {
     proposal: App.DataTransferObjects.ProposalData;
@@ -29,45 +29,54 @@ export default function ProposalCard({ proposal }: PageProps<Proposal>) {
     const [quickPitchView, setQuickPitchView] = useState(false);
 
     return (
-        <article className="rounded-xl bg-background p-2 shadow-lg">
+        <article className="h-full rounded-xl bg-background p-2 shadow-lg">
             <header
-                className={`mb-2 rounded-xl bg-gradient-to-tr text-content-light ${headerBGColor}`}
+                className={`mb-2 min-h-40 rounded-xl bg-gradient-to-tr text-content-light ${headerBGColor}`}
             >
                 <div className="flex items-center justify-between p-4">
                     <ProposalStatus status={proposal.status} />
                     <ProposalBookmark />
                 </div>
-                <div className="mb-4 px-4">
+                <div className="mb-4 p-2 px-4">
                     <a
                         href="#"
                         className="text-2 font-medium leading-tight hover:text-primary"
                     >
-                        ACCO2 - The end of eco-fraud! An open-source blockchain
-                        and science-based framework for carbon accounting
-                        (ACCO2) in the steel industry.
+                        {proposal.title}
                     </a>
                 </div>
-                <nav
-                    className="flex bg-white bg-opacity-10 p-2 font-semibold text-content-light"
-                    aria-label="Related Platforms"
-                >
-                    <a
-                        href={proposal.ideascale_link}
-                        className="text-4 flex w-1/2 items-center justify-center border-r text-opacity-100"
-                        target="_blank"
-                        rel="noopener noreferrer"
+                {(proposal.ideascale_link ||
+                    proposal.projectcatalyst_io_link) && (
+                    <nav
+                        className="flex items-center justify-evenly rounded-b-xl bg-white bg-opacity-10 p-2 font-semibold text-content-light"
+                        aria-label="Related Platforms"
                     >
-                        Ideascale
-                    </a>
-                    <a
-                        href={proposal.projectcatalyst_io_link}
-                        className="text-4 flex w-1/2 items-center justify-center text-opacity-100"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                    >
-                        Projectcatalyst.io
-                    </a>
-                </nav>
+                        {proposal.ideascale_link && (
+                            <a
+                                href={proposal.ideascale_link}
+                                className="text-4 flex w-full items-center justify-center text-opacity-100"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                            >
+                                <span>Ideascale</span>
+                            </a>
+                        )}
+                        {proposal.ideascale_link &&
+                            proposal.projectcatalyst_io_link && (
+                                <div className="mx-2 h-3 border-r"></div>
+                            )}
+                        {proposal.projectcatalyst_io_link && (
+                            <a
+                                href={proposal.projectcatalyst_io_link}
+                                className="text-4 flex w-full items-center justify-center text-opacity-100"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                            >
+                                <span>Projectcatalyst.io</span>
+                            </a>
+                        )}
+                    </nav>
+                )}
             </header>
 
             <div className="p-2">
@@ -105,7 +114,7 @@ export default function ProposalCard({ proposal }: PageProps<Proposal>) {
                                 }
                             >
                                 <span>Quick Pitch</span>
-                                <span className="text-dark-persist rounded-full bg-content-light px-2 py-1 text-xs">
+                                <span className="rounded-full bg-content-light px-2 py-1 text-xs text-dark-persist">
                                     Not set
                                 </span>
                             </button>
@@ -115,14 +124,16 @@ export default function ProposalCard({ proposal }: PageProps<Proposal>) {
                 <section className="mt-6" aria-labelledby="funding-heading">
                     <div className="flex items-center gap-2">
                         <h3 className="font-semibold">Funding</h3>
-                        <ProposalFundingStatus funding_status={proposal.funding_status}/>
+                        <ProposalFundingStatus
+                            funding_status={proposal.funding_status}
+                        />
                     </div>
                     <ProposalFundingPercentages proposal={proposal} />
                 </section>
 
                 <div className="my-4 border-b"></div>
 
-                <div className="relative h-36">
+                <div className="relative mb-4 min-h-40">
                     {quickPitchView ? (
                         <ProposalQuickpitch />
                     ) : (
