@@ -1,8 +1,8 @@
 export default function ProposalCardLoading() {
     return (
-        <section className="propoals-wrapper">
+        <section className="proposals-wrapper">
             <div className="container overflow-auto py-8">
-                <h2 className="title-2">Proposals:</h2>
+                <h2 className="title-2">Proposals</h2>
             </div>
             <div className="content-gap container flex w-full flex-nowrap overflow-x-scroll">
                 {[1, 2, 3].map((proposal,index) => (

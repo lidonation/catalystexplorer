@@ -1,26 +1,66 @@
-import ArrowTopRightIcon from "@/Components/svgs/TopRightArrowIcon";
-import thumbnail from '../../../assets/images/Thumbnail.png';
+import ArrowTopRightIcon from '@/Components/svgs/TopRightArrowIcon';
+import { Post } from '@/types';
+import { useState } from 'react';
 
-export default function PostCard() {
+type PostCardProps = {
+    post: Post;
+};
+
+export default function PostCard({ post }: PostCardProps) {
+    const heroData = JSON.parse(post?.hero);
+    const thumbnail: string = heroData.responsive_images.thumbnail.base64svg;
+    const originalUrl: string = heroData.original_url;
+
+    const [imgSrc, setImgSrc] = useState(thumbnail);
+    const handleImageLoad = () => {
+        setImgSrc(originalUrl);
+    };
+
     return (
-        <div className="flex flex-col w-full">
-            <div className="w-full h-auto">
-                <img className="object-cover w-full h-full rounded-lg" src={thumbnail} alt="thumbnail" />
+        <article
+            className="flex w-full flex-col"
+            role="region"
+            aria-labelledby={`post-title-${post.id}`}
+        >
+            <div className="h-auto w-full">
+                <img
+                    className="aspect-video h-full w-full rounded-lg object-cover"
+                    src={imgSrc}
+                    loading="lazy"
+                    alt={`Thumbnail image for the post titled "${post?.title}"`}
+                    onLoad={imgSrc === thumbnail ? handleImageLoad : undefined}
+                />
             </div>
-            <div className="flex mt-4 items-center">
-                <p className="text-4 text-accent font-bold">Olivia Rhye</p>
-                <div className="w-1 h-1 bg-accent rounded-full ml-2 mr-2"></div>
-                <p className="text-4 text-accent font-bold">20 Jan 2024</p>
+            <div className="mt-4 flex items-center">
+                <p className="text-4 font-bold text-accent" aria-label={`Author: ${post?.author_name}`}>
+                    {post?.author_name}
+                </p>
+                <div className="ml-2 mr-2 h-1 w-1 rounded-full bg-accent" aria-hidden="true"></div>
+                <p className="text-4 font-bold text-accent" aria-label={`Published on: ${post?.published_at}`}>
+                    {post?.published_at}
+                </p>
             </div>
-            <div className="w-full flex items-center justify-between mt-2">
-                <h2 className="text-2xl font-extrabold text-content w-full">
-                    Project Proposer and Milestone Reviewer Perspectives
+            <a
+                href={post?.link}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-2 flex w-full items-center justify-between hover:underline"
+                aria-label={`Read the full post titled "${post?.title}"`}
+            >
+                <h2
+                    id={`post-title-${post.id}`}
+                    className="w-full text-2xl font-extrabold text-content"
+                >
+                    {post?.title}
                 </h2>
-                <ArrowTopRightIcon className="text-content cursor-pointer hover:text-light ml-4" />
+                <ArrowTopRightIcon
+                    className="ml-4 cursor-pointer text-content"
+                    aria-hidden="true"
+                />
+            </a>
+            <div className="mb-4 mt-2 w-full text-content opacity-70">
+                <p aria-label={`Subtitle: ${post?.subtitle}`}>{post?.subtitle}</p>
             </div>
-            <div className="w-full mt-2 mb-4 text-content opacity-70">
-                <p>Participating in Project Catalyst using the new Milestone Module</p>
-            </div>
-        </div>
-    )
+        </article>
+    );
 }
