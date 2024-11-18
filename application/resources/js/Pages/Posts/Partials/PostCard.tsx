@@ -32,11 +32,20 @@ export default function PostCard({ post }: PostCardProps) {
                 />
             </div>
             <div className="mt-4 flex items-center">
-                <p className="text-4 font-bold text-accent" aria-label={`Author: ${post?.author_name}`}>
+                <p
+                    className="text-4 font-bold text-accent"
+                    aria-label={`Author: ${post?.author_name}`}
+                >
                     {post?.author_name}
                 </p>
-                <div className="ml-2 mr-2 h-1 w-1 rounded-full bg-accent" aria-hidden="true"></div>
-                <p className="text-4 font-bold text-accent" aria-label={`Published on: ${post?.published_at}`}>
+                <div
+                    className="ml-2 mr-2 h-1 w-1 rounded-full bg-accent"
+                    aria-hidden="true"
+                ></div>
+                <p
+                    className="text-4 font-bold text-accent"
+                    aria-label={`Published on: ${post?.published_at}`}
+                >
                     {post?.published_at}
                 </p>
             </div>
@@ -44,22 +53,24 @@ export default function PostCard({ post }: PostCardProps) {
                 href={post?.link}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="mt-2 flex w-full items-center justify-between hover:underline"
+                className="group mt-2 flex w-full items-start justify-between"
                 aria-label={`Read the full post titled "${post?.title}"`}
             >
                 <h2
                     id={`post-title-${post.id}`}
-                    className="w-full text-2xl font-extrabold text-content"
+                    className="w-full text-2xl font-extrabold text-content group-hover:text-primary"
                 >
                     {post?.title}
                 </h2>
                 <ArrowTopRightIcon
-                    className="ml-4 cursor-pointer text-content"
+                    className="ml-4 cursor-pointer text-content group-hover:text-primary"
                     aria-hidden="true"
                 />
             </a>
             <div className="mb-4 mt-2 w-full text-content opacity-70">
-                <p aria-label={`Subtitle: ${post?.subtitle}`}>{post?.subtitle}</p>
+                <p aria-label={`Subtitle: ${post?.subtitle}`}>
+                    {post?.subtitle}
+                </p>
             </div>
         </article>
     );
