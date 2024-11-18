@@ -1,10 +1,9 @@
-import { Link,router,useForm } from "@inertiajs/react";
+import { Link, useForm } from "@inertiajs/react";
 import InputLabel from "../InputLabel";
 import TextInput from "../TextInput";
 import InputError from "../InputError";
 import PrimaryButton from "../PrimaryButton";
 import { FormEventHandler } from "react";
-import ModalSidebar from "../layout/ModalSidebar";
 
 export default function RegisterForm() {
     const { data, setData, post, processing, errors, reset } = useForm({
@@ -72,7 +71,7 @@ export default function RegisterForm() {
                     required
                 />
                 <span className="text-sm text-dark opacity-70">Must be 8 characters</span>
-                <InputError message={errors.password} className="mt-2" />
+                {errors.password && <InputError message={errors.password} className="mt-2" />}
             </div>
 
             <div>
