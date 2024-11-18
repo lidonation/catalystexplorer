@@ -20,8 +20,6 @@ export default function RegisterForm() {
         post(route('register'), {
             onFinish: () => reset('name','email','password', 'password_confirmation'),
         });
-
-        post(route('verification.send'))
     };
 
     return (
