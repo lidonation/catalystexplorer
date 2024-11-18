@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace Database\Seeders;
 
@@ -24,7 +22,9 @@ class DatabaseSeeder extends Seeder
             IdeascaleProfilesSeeder::class,
             GroupSeeder::class,
             CommunitySeeder::class,
-            ReviewSeeder::class
+            ReviewSeeder::class,
+            AnnouncementSeeder::class,
+            MetricSeeder::class
         ]);
     }
 }

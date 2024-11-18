@@ -1,40 +1,60 @@
-import SearchBar from '@/Components/SearchBar';
+import CatalystIntro from '@/Pages/Home/Partials/CatalystIntro';
+import PostCard from '@/Pages/Posts/Partials/PostCard';
 import { PageProps } from '@/types';
-import { Head } from '@inertiajs/react';
-import PostCard from "@/Pages/Posts/Partials/PostCard";
+import { Head, WhenVisible } from '@inertiajs/react';
+import ProposalCard from '../Proposals/Partials/ProposalCard';
+import ProposalCardLoading from '../Proposals/Partials/ProposalCardLoading';
 
+interface HomePageProps extends Record<string, unknown> {
+    posts: any;
+    proposals: App.DataTransferObjects.ProposalData[];
+}
 
-export default function Welcome({ }: PageProps<{ laravelVersion: string; phpVersion: string }>) {
+export default function Index({ posts, proposals }: PageProps<HomePageProps>) {
     return (
         <>
             <Head title="Catalyst Explorer" />
 
-            <div className="flex flex-col gap-8 w-full justify-center">
-                <section className='splash-wrapper  py-16'>
-                    <div className='container'>
-                        <SearchBar autoFocus/>
-                    </div>
-                </section>
+            <div className="relative flex w-full flex-col justify-center gap-8">
+                <CatalystIntro />
 
-                <section className='numbers-werapper py-16'>
+                <section className="numbers-werapper py-16"></section>
 
-                </section>
+                <WhenVisible
+                    fallback={<ProposalCardLoading/>}
+                    data="proposals"
+                >
+                    <section className="propoals-wrapper">
+                        <div className="max-h80 container overflow-auto py-8">
+                            <h2 className="title-2">Proposals:</h2>
+                        </div>
+                        <div className="content-gap container flex flex-nowrap overflow-x-scroll">
+                            {proposals &&
+                                proposals.map((proposal) => (
+                                    <ProposalCard
+                                        key={proposal.id}
+                                        proposal={proposal}
+                                    />
+                                ))}
+                        </div>
+                    </section>
+                </WhenVisible>
 
-                <section className='propoals-wrapper py-16'>
+                <section className="special-announcements-wrapper"></section>
 
-                </section>
-
-                <section className='special-announcements-wrapper'>
-
-                </section>
-
-                <section className='posts-wrapper'>
-                    <div className='flex content-gap flex-nowrap overflow-x-scroll container'>
-                        <PostCard/>
-                        <PostCard/>
-                        <PostCard/>
-                    </div>
-                </section>
+                <WhenVisible fallback="ProposalCardLoading" data="posts">
+                    <section className="posts-wrapper">
+                        <div className="max-h80 container overflow-auto py-8">
+                            <h2 className="title-2">Your data:</h2>
+                            {JSON.stringify(posts)}
+                        </div>
+                        <div className="content-gap container flex flex-nowrap overflow-x-scroll">
+                            <PostCard />
+                            <PostCard />
+                            <PostCard />
+                        </div>
+                    </section>
+                </WhenVisible>
             </div>
         </>
     );

@@ -74,7 +74,7 @@ composer:
 
 yarn:
   stage: .pre
-  image: node:20.18.0
+  image: node:20.18.0-alpine
   services: []
   retry: 1
   rules:

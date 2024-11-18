@@ -38,9 +38,11 @@ export default {
                 //     'error-secondary' : 'var(--content-error-secondary-color)'
                 // },
                 content: 'var(--cx-content)',
+                'content-highlight-intro': 'var(--cx-content-highlight)',
                 'content-light': 'var(--cx-content-light)',
                 'content-dark': 'var(--cx-content-dark)',
                 light: 'var(--cx-content)',
+                'light-persist': 'var(--bg-light-persist)',
                 dark: 'var(--cx-dark)',
                 primary: 'var(--cx-primary)',
                 secondary: 'var(--cx-secondary)',
@@ -56,6 +58,7 @@ export default {
                 'background-gradient-1-light': 'var(--cx-background-gradient-1-light)',
                 'background-gradient-2-light': 'var(--cx-background-gradient-2-light)',
                 border: 'var(--cx-border-color)',
+                'eye-logo': 'var(--cx-blue-eye-color)',
                 // border: {
                 //     primary: 'var(--cx-primary)',
                 //     secondary: 'var(--border-secondary-color)'

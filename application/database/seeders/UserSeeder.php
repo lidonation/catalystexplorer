@@ -11,6 +11,7 @@ use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\Hash;
 use Database\Seeders\Traits\GetImageLink;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use Faker\Generator;
 
 class UserSeeder extends Seeder
 {

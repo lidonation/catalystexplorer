@@ -3,8 +3,12 @@
 namespace App\DataTransferObjects;
 
 use Spatie\LaravelData\Data;
-use Spatie\TypeScriptTransformer\Attributes\Optional as TypeScriptOptional;
+use Spatie\LaravelData\DataCollection;
+use Spatie\LaravelData\Attributes\MapOutputName;
+use App\DataTransferObjects\IdeascaleProfileData;
+use Spatie\LaravelData\Attributes\DataCollectionOf;
 use Spatie\TypeScriptTransformer\Attributes\TypeScript;
+use Spatie\TypeScriptTransformer\Attributes\Optional as TypeScriptOptional;
 
 #[TypeScript]
 final class ProposalData extends Data
@@ -29,16 +33,14 @@ final class ProposalData extends Data
 
         public float $amount_requested,
 
-        public ?float $amount_received,
+        public float $amount_received,
 
         #[TypeScriptOptional]
         public ?string $definition_of_success,
 
-        #[TypeScriptOptional]
-        public ?string $status,
+        public string $status,
 
-        #[TypeScriptOptional]
-        public ?string $funding_status,
+        public string $funding_status,
 
         #[TypeScriptOptional]
         public ?array $meta_data,
@@ -71,22 +73,25 @@ final class ProposalData extends Data
         public ?string $ideascale_link,
 
         #[TypeScriptOptional]
+        public ?string $projectcatalyst_io_link,
+
+        #[TypeScriptOptional]
         public ?string $type,
 
         #[TypeScriptOptional]
-        public ?array $meta_title,
+        public ?string $meta_title,
 
         #[TypeScriptOptional]
-        public ?array $problem,
+        public ?string $problem,
 
         #[TypeScriptOptional]
-        public ?array $solution,
+        public ?string $solution,
 
         #[TypeScriptOptional]
-        public ?array $experience,
+        public ?string $experience,
 
         #[TypeScriptOptional]
-        public ?array $content,
+        public ?string $content,
 
         // Other attributes
         #[TypeScriptOptional]
@@ -101,6 +106,11 @@ final class ProposalData extends Data
         public ?string $quickpitch,
 
         #[TypeScriptOptional]
-        public ?int $quickpitch_length
+        public ?int $quickpitch_length,
+
+        #[MapOutputName('users')]
+        #[DataCollectionOf(IdeascaleProfileData::class)]
+        public ?DataCollection $users,
+
     ) {}
 }
