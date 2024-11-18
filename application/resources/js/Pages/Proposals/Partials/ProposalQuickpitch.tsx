@@ -1,31 +1,67 @@
-export default function ProposalQuickpitch() {
+import Plyr from "plyr-react";
+import "plyr-react/plyr.css";
+import { PageProps } from "@/types";
+
+interface ProposalQuickpitch extends Record<string, unknown> {
+    quickpitch?: string | null;
+}
+
+export default function ProposalQuickpitch({ quickpitch }: PageProps<ProposalQuickpitch>) {
+    // Extract video ID for different providers
+    const extractVideoId = (url?: string | null) => {
+        if (!url) return null;
+
+        if (url.includes('youtube.com')) {
+            const youtubeMatch = url.match(/(?:v=|youtu\.be\/)([\w-]+)/);
+            return youtubeMatch ? youtubeMatch[1] : null;
+        }
+
+        if (url.includes('vimeo.com')) {
+            const vimeoMatch = url.match(/\/(\d+)/);
+            return vimeoMatch ? vimeoMatch[1] : null;
+        }
+
+        return null;
+    }; 
+
+    // Determine provider based on the URL
+    const getProvider = (url?: string | null) => {
+        if (!url) return 'html5';
+        if (url.includes('youtube.com')) return 'youtube';
+        if (url.includes('vimeo.com')) return 'vimeo';
+        return 'html5';
+    };
+
+    const videoId = extractVideoId(quickpitch);
+    const provider = getProvider(quickpitch);
+
     return (
         <section aria-labelledby="video-heading" className="h-full">
             <h2 id="video-heading" className="sr-only">
                 Project Video
             </h2>
             <div className="relative h-full w-full overflow-hidden rounded-2xl bg-gradient-to-b from-blue-200 to-purple-200">
-                <button
-                    className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 transform"
-                    aria-label="Play proposal quickpitch video"
-                >
-                    <div className="flex items-center justify-center rounded-full bg-background backdrop-blur-sm">
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            strokeWidth={1.5}
-                            stroke="currentColor"
-                            className="ml-1 size-10 text-content-light"
-                        >
-                            <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.347a1.125 1.125 0 0 1 0 1.972l-11.54 6.347a1.125 1.125 0 0 1-1.667-.986V5.653Z"
-                            />
-                        </svg>
-                    </div>
-                </button>
+                {videoId && (
+                    <Plyr
+                        source={{
+                            type: "video", 
+                            sources: [
+                                {
+                                    src: videoId,
+                                    provider: provider
+                                }
+                            ]
+                        }}
+                        options={{
+                            controls: ['play-large', 'play', 'progress', 'current-time', 'mute', 'volume', 'fullscreen'],
+                            ratio: '16:9',
+                            hideControls: false,
+                            autoplay: false,
+                            invertTime: false,
+                            tooltips: { controls: true, seek: true },
+                        }}
+                    />
+                )}
             </div>
         </section>
     );
