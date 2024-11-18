@@ -31,7 +31,9 @@ function ModalSidebar({ isOpen = false, title, children, onClose }: ModalSidebar
             aria-labelledby="modal-sidebar-title"
             aria-modal="true"
             ref={sidebarRef}
-            className={`${isOpen ? 'block' : 'hidden'} fixed inset-0 z-40`}
+            className={`fixed inset-0 z-40 ${
+                isOpen ? 'block' : 'hidden'
+            } transition-transform duration-300 ease-out`}
         >
             {/* Background Overlay */}
             <div
