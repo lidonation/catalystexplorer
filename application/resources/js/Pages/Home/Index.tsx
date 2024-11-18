@@ -1,17 +1,19 @@
 import CatalystIntro from '@/Pages/Home/Partials/CatalystIntro';
 import PostCard from '@/Pages/Posts/Partials/PostCard';
-import { PageProps, Post } from '@/types';
+import { PageProps } from '@/types';
 import { Head, WhenVisible } from '@inertiajs/react';
 import PostListLoader from '../Posts/Partials/PostListLoader';
 import ProposalCard from '../Proposals/Partials/ProposalCard';
 import ProposalCardLoading from '../Proposals/Partials/ProposalCardLoading';
+import { useTranslation } from 'react-i18next';
 
 interface HomePageProps extends Record<string, unknown> {
-    posts: Post[];
+    posts: App.DataTransferObjects.PostData[];
     proposals: App.DataTransferObjects.ProposalData[];
 }
 
 export default function Index({ posts, proposals }: PageProps<HomePageProps>) {
+    const { t } = useTranslation();
     return (
         <>
             <Head title="Catalyst Explorer" />
@@ -45,14 +47,14 @@ export default function Index({ posts, proposals }: PageProps<HomePageProps>) {
 
                 <section className="posts-wrapper container flex flex-col gap-8">
                     <div>
-                        <h2 className="title-2">Catalysts Posts</h2>
-                        <p>Latest news and posts from our community</p>
+                        <h2 className="title-2">{t('posts.title')}</h2>
+                        <p>{t('posts.subtitle')}</p>
                     </div>
                     <WhenVisible fallback={<PostListLoader />} data="posts">
                         <ul className="content-gap scrollable snaps-scrollable">
                             {posts &&
-                                posts.map((post: Post) => (
-                                    <li key={post.id}>
+                                posts.map((post) => (
+                                    <li key={post?.id}>
                                         <PostCard post={post} />
                                     </li>
                                 ))}
