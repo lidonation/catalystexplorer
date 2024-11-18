@@ -27,6 +27,13 @@ export default function ProposalCard({ proposal }: PageProps<Proposal>) {
     const yesVotes = shortNumber(proposal?.yes_votes_count) ?? '(N/A)';
 
     const [quickPitchView, setQuickPitchView] = useState(false);
+    const hasQuickPitch = Boolean(proposal.quickpitch);
+
+    const handleQuickPitchClick = () => {
+        if (hasQuickPitch) {
+            setQuickPitchView(true);
+        }
+    }
 
     return (
         <article className="h-full rounded-xl bg-background p-2 shadow-lg">
@@ -103,20 +110,27 @@ export default function ProposalCard({ proposal }: PageProps<Proposal>) {
                         <li className="flex w-1/2 items-center justify-center">
                             <button
                                 type="button"
-                                onClick={() => setQuickPitchView(true)}
+                                onClick={handleQuickPitchClick}
+                                disabled={!hasQuickPitch}
                                 className={`flex items-center gap-1 pb-3 font-semibold ${
                                     quickPitchView
                                         ? 'border-b-2 border-primary text-primary'
-                                        : 'border-transparent text-content'
+                                        : 'border-transparent'
+                                } ${
+                                    !hasQuickPitch 
+                                        ? 'cursor-not-allowed opacity-60' 
+                                        : 'text-content hover:text-primary'
                                 }`}
                                 aria-current={
                                     quickPitchView ? 'page' : undefined
                                 }
                             >
                                 <span>Quick Pitch</span>
-                                <span className="rounded-full bg-content-light px-2 py-1 text-xs text-dark-persist">
-                                    Not set
-                                </span>
+                                {!hasQuickPitch && (
+                                    <span className="text-dark-persist rounded-full bg-content-light px-2 py-1 text-xs">
+                                        Not set
+                                    </span>
+                                )}
                             </button>
                         </li>
                     </ul>
@@ -135,7 +149,7 @@ export default function ProposalCard({ proposal }: PageProps<Proposal>) {
 
                 <div className="relative mb-4 min-h-40">
                     {quickPitchView ? (
-                        <ProposalQuickpitch />
+                        <ProposalQuickpitch quickpitch={proposal.quickpitch} />
                     ) : (
                         <ProposalSolution
                             solution={proposal.solution}
