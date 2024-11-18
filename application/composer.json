@@ -6,6 +6,7 @@
     "license": "MIT",
     "require": {
         "php": "^8.3",
+        "codezero/laravel-localized-routes": "^4.0",
         "hammerstone/fast-paginate": "^1.1",
         "http-interop/http-factory-guzzle": "^1.2",
         "inertiajs/inertia-laravel": "2.x-dev",
@@ -24,6 +25,7 @@
         "spatie/laravel-enum": "^3.1",
         "spatie/laravel-medialibrary": "^11.9",
         "spatie/laravel-permission": "^6.10",
+        "spatie/laravel-translatable": "^6.8",
         "spatie/laravel-typescript-transformer": "^2.5",
         "tightenco/ziggy": "^2.0"
     },
@@ -76,6 +78,7 @@
         "preferred-install": "dist",
         "sort-packages": true,
         "allow-plugins": {
+            "codezero/composer-preload-files": true,
             "pestphp/pest-plugin": true,
             "php-http/discovery": true
         }

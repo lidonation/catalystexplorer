@@ -40,6 +40,8 @@
         "@nivo/bar": "^0.88.0",
         "@nivo/core": "^0.88.0",
         "i18next": "^23.16.4",
+        "laravel-react-i18n": "^2.0.5",
+        "marked": "^15.0.1",
         "react-i18next": "^15.1.0",
         "tailwind-merge": "^2.5.4"
     },

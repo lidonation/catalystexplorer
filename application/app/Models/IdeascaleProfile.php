@@ -6,14 +6,13 @@ use App\Models\User;
 use App\Casts\DateFormatCast;
 use Spatie\MediaLibrary\HasMedia;
 use Laravolt\Avatar\Facade as Avatar;
+use Spatie\Translatable\HasTranslations;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 
 class IdeascaleProfile extends Model implements HasMedia
 {
-    use  InteractsWithMedia;
-
-    protected $table = 'ideascale_profiles';
+    use  InteractsWithMedia, HasTranslations;
 
     protected $primaryKey = 'id';
 
@@ -39,6 +38,10 @@ class IdeascaleProfile extends Model implements HasMedia
     protected $hidden = [];
 
     protected $appends = ['profile_photo_url'];
+
+    public array $translatable = [
+        'bio',
+    ];
 
     protected function casts(): array
     {
