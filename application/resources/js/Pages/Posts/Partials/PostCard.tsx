@@ -1,17 +1,17 @@
 import ArrowTopRightIcon from '@/Components/svgs/TopRightArrowIcon';
-import { Post } from '@/types';
 import { useState } from 'react';
 
 type PostCardProps = {
-    post: Post;
+    post: App.DataTransferObjects.PostData;
 };
 
 export default function PostCard({ post }: PostCardProps) {
     const heroData = JSON.parse(post?.hero);
-    const thumbnail: string = heroData.responsive_images.thumbnail.base64svg;
-    const originalUrl: string = heroData.original_url;
+    const thumbnail: string = heroData.responsive_images.thumbnail?.base64svg;
+    const originalUrl: string = heroData?.original_url;
 
     const [imgSrc, setImgSrc] = useState(thumbnail);
+    
     const handleImageLoad = () => {
         setImgSrc(originalUrl);
     };
@@ -20,14 +20,14 @@ export default function PostCard({ post }: PostCardProps) {
         <article
             className="flex w-full flex-col"
             role="region"
-            aria-labelledby={`post-title-${post.id}`}
+            aria-labelledby={`post-title-${post?.id}`}
         >
             <div className="h-auto w-full">
                 <img
                     className="aspect-video h-full w-full rounded-lg object-cover"
                     src={imgSrc}
                     loading="lazy"
-                    alt={`Thumbnail image for the post titled "${post?.title}"`}
+                    alt={heroData?.name}
                     onLoad={imgSrc === thumbnail ? handleImageLoad : undefined}
                 />
             </div>
@@ -57,7 +57,7 @@ export default function PostCard({ post }: PostCardProps) {
                 aria-label={`Read the full post titled "${post?.title}"`}
             >
                 <h2
-                    id={`post-title-${post.id}`}
+                    id={`post-title-${post?.id}`}
                     className="w-full text-2xl font-extrabold text-content group-hover:text-primary"
                 >
                     {post?.title}

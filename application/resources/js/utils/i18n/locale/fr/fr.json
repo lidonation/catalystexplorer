@@ -51,6 +51,10 @@
         },
         "subtitle": "Catalyst stimule la croissance de l'écosystème Cardano en reliant des idées innovantes à un financement, soutenu par un vote communautaire et le trésor Cardano."
     },
+    "posts": {
+        "title": "Articles des Catalysts",
+        "subtitle": "Dernières nouvelles et publications de notre communauté"
+    },
     "theme": {
         "theme": "Thème",
         "options": "Options de thème",

@@ -83,6 +83,33 @@ telegram?: string;
 title?: string;
 profile_photo_url?: string;
 };
+export type MetricData = {
+user_id: number | null;
+title: string;
+content?: string;
+status?: string;
+created_at?: string;
+updated_at?: string;
+color?: string;
+field?: string;
+type: string;
+query: string;
+count_by?: string;
+order?: number;
+};
+export type PostData = {
+id: number | null;
+title: string | null;
+subtitle: string | null;
+summary: string | null;
+hero: any;
+author_gravatar: string | null;
+author_name: string | null;
+link: string;
+read_time: string | null;
+type: string | null;
+published_at?: string;
+};
 export type ProposalData = {
 id: number | null;
 user_id: number | null;
