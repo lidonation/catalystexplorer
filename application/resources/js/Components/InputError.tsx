@@ -8,7 +8,7 @@ export default function InputError({
     return message ? (
         <p
             {...props}
-            className={'text-4 text-content-error-primary ' + className}
+            className={'text-sm text-error ' + className}
         >
             {message}
         </p>
