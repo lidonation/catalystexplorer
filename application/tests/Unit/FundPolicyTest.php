@@ -1,10 +1,8 @@
-<?php
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace tests\Unit;
 
 use App\Enums\PermissionEnum;
-use App\Models\Fund;
 use App\Models\User;
 use App\Policies\FundPolicy;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -12,7 +10,7 @@ use Tests\TestCase;
 use Database\Seeders\PermissionSeeder;
 use PHPUnit\Framework\Attributes\Test;
 
-class FundTest extends TestCase
+class FundPolicyTest extends TestCase
 {
     use RefreshDatabase;
 

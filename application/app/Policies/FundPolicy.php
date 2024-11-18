@@ -16,7 +16,7 @@ class FundPolicy extends AppPolicy
      */
     public function viewAny(User $user): bool
     {
-        return parent::canView($user) || $user->hasAnyPermission([PermissionEnum::read_funds()->value]);
+        return parent::canViewAny($user) || $user->hasAnyPermission([PermissionEnum::read_funds()->value]);
     }
 
     /**

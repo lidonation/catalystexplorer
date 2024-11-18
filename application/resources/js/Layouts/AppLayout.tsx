@@ -47,7 +47,7 @@ export default function AppLayout({ children }: { children: ReactNode }) {
                             }
                             aria-expanded={sidebarOpen}
                             aria-controls="mobile-navigation"
-                            className="inline-flex items-center rounded px-2 py-1 text-sm hover:bg-gray-100"
+                            className="inline-flex items-center rounded px-2 py-1 text-4 hover:bg-gray-100"
                         >
                             {sidebarOpen ? <CloseIcon /> : <MenuIcon />}
                         </Button>

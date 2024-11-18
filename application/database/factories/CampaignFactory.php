@@ -28,7 +28,7 @@ class CampaignFactory extends Factory
             'excerpt' => $this->faker->optional()->text(200),
             'comment_prompt' => $this->faker->optional()->sentence(),
             'content' => $this->faker->optional()->paragraphs(3, true),
-            'amount' => $this->faker->optional()->randomFloat(2, 500, 10000),
+            'amount' => $this->faker->numberBetween(50000000, 1000000000),
             'status' => $this->faker->optional()->randomElement([
                 'pending', 'unfunded', 'funded', 'complete', 'retired', 'startup', 'growth', 'expansion', 'matured'
             ]),
@@ -39,7 +39,7 @@ class CampaignFactory extends Factory
             'deleted_at' => $this->faker->optional()->dateTimeBetween('-1 year', 'now'),
             'color' => $this->faker->optional()->safeColorName(),
             'label' => $this->faker->optional()->word(),
-            'currency' => $this->faker->randomElement(CatalystCurrencies::values()),
+            'currency' => $this->faker->randomElement(CatalystCurrencies::toArray()),
             'review_started_at' => $this->faker->optional()->dateTimeBetween('-1 year', 'now'),
         ];
     }

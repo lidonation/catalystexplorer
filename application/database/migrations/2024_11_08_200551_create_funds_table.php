@@ -12,7 +12,8 @@ return new class extends Migration {
     {
         Schema::create('funds', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->nullable()->constrained()->onDelete('set null');
+            $table->foreignId('user_id')->nullable()->constrained()
+                ->nullOnDelete();
             $table->string('title', 150);
             $table->string('meta_title', 150);
             $table->string('slug', 150);

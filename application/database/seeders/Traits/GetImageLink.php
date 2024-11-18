@@ -4,12 +4,19 @@ declare(strict_types=1);
 
 namespace Database\Seeders\Traits;
 
+use Faker\Generator;
+use Illuminate\Container\Container;
+
+
 trait GetImageLink
 {
-    /** @throws \Exception */
-    public function getRandomImageLink(int $width = 640, int $height = 480): null|string
+
+
+    public function getRandomImageLink(): null|string
     {
-        $url = "https://picsum.photos/{$width}/{$height}";
+        $faker = $this->withFaker();
+        
+        $url = "https://i.pravatar.cc/300?img={$faker->numberBetween(1, 50)}";
 
         $headers = get_headers($url, true);
 
@@ -18,5 +25,15 @@ trait GetImageLink
         }
 
         return null;
+    }
+
+    /**
+     * Get a new Faker instance.
+     *
+     * @return \Faker\Generator
+     */
+    protected function withFaker()
+    {
+        return Container::getInstance()->make(Generator::class);
     }
 }

@@ -52,7 +52,7 @@ function ModalSidebar({ isOpen = false, title, children, onClose }: ModalSidebar
                 <header className="flex items-center justify-between border-b border-border-primary px-6 py-4">
                     <h2
                         id="modal-sidebar-title"
-                        className="text-lg font-semibold text-content"
+                        className="text-2 font-semibold text-content"
                     >
                         {title}
                     </h2>
@@ -61,7 +61,7 @@ function ModalSidebar({ isOpen = false, title, children, onClose }: ModalSidebar
                         ariaLabel={t('navigation.sidebar.close')}
                         aria-expanded={isOpen}
                         aria-controls="sidebar-modal"
-                        className="inline-flex items-center rounded px-2 py-1 text-sm hover:bg-dark"
+                        className="inline-flex items-center rounded px-2 py-1 text-4 hover:bg-gray-100"
                     >
                         <CloseIcon width={18} height={18} />
                     </Button>
