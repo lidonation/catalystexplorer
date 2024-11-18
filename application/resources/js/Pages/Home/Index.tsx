@@ -51,7 +51,7 @@ export default function Index({ posts, proposals, metrics, announcements, specia
                 </section>
 
                 <WhenVisible
-                    fallback={<ProposalCardLoading/>}
+                    fallback={<ProposalCardLoading />}
                     data="proposals"
                 >
                     <ProposalList proposals={proposals}/>
