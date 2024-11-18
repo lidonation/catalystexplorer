@@ -51,6 +51,10 @@
         },
         "subtitle": "Catalyst drives Cardano's ecosystem growth by linking innovative ideas with funding, supported by community voting and the Cardano treasury."
     },
+    "posts": {
+        "title": "Catalysts Posts",
+        "subtitle": "Latest news and posts from our community"
+    },
     "theme": {
         "theme": "Theme",
         "options": "Theme options",
