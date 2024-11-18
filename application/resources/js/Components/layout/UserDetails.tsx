@@ -70,11 +70,11 @@ const UserDetails: React.FC<UserDetailsProps> = ({ user }) => {
                     <div className='flex flex-col menu-gap-x'>
                         <div className='flex menu-gap-y px-3 py-1 hover:bg-background-lighter hover:text-content-secondary cursor-pointer' onClick={() => setIsModalOpen(true)}>
                             <RegisterUserIcon className='text-dark' />
-                            <p className='text-md font-medium'>Register</p>
+                            <p className='text-lg font-medium'>Register</p>
                         </div>
                         <div className='flex menu-gap-y px-3 py-1 hover:bg-background-lighter hover:text-content-secondary cursor-pointer'>
                             <LoginIcon className='text-dark' />
-                            <p className='text-md font-medium'>Login</p>
+                            <p className='text-lg font-medium'>Login</p>
                         </div>
                     </div>
                     <ModalSidebar
