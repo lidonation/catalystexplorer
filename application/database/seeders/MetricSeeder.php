@@ -1,8 +1,9 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Database\Seeders;
 
 use App\Models\Metric;
+use App\Models\User;
 use Illuminate\Database\Seeder;
 
 class MetricSeeder extends Seeder
@@ -12,6 +13,15 @@ class MetricSeeder extends Seeder
      */
     public function run(): void
     {
-        Metric::factory()->count(10)->create();
+        Metric::factory()
+            ->count(6)
+            ->recycle(User::factory()->create())
+            ->create();
+
+        Metric::factory()
+            ->count(6)
+            ->recycle(User::factory()->create())
+            ->homeMetric()
+            ->create();
     }
 }

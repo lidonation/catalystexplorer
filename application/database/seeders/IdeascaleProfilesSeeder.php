@@ -14,6 +14,7 @@ class IdeascaleProfilesSeeder extends Seeder
      */
     public function run()
     {
-        IdeascaleProfile::factory(10)->create();
+        IdeascaleProfile::factory(10)
+            ->create();
     }
 }

@@ -1,10 +1,9 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace Database\Seeders;
 
 use App\Models\Announcement;
+use App\Models\User;
 use Illuminate\Database\Seeder;
 
 class AnnouncementSeeder extends Seeder
@@ -14,6 +13,8 @@ class AnnouncementSeeder extends Seeder
      */
     public function run(): void
     {
-        Announcement::factory(10)->create();
+        Announcement::factory(10)
+            ->recycle(User::factory()->create())
+            ->create();
     }
 }

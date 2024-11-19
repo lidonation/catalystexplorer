@@ -1,12 +1,14 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Database\Factories;
 
+use App\Enums\StatusEnum;
+use App\Models\Community;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use App\Models\User;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Community>
+ * @extends Factory<Community>
  */
 class CommunityFactory extends Factory
 {
@@ -21,7 +23,7 @@ class CommunityFactory extends Factory
             'title' => $this->faker->sentence,
             'content' => $this->faker->paragraph,
             'user_id' => User::factory(),
-            'status' => $this->faker->randomElement(['draft', 'pending', 'accepted', 'available', 'claimed', 'completed', 'published']),
+            'status' => $this->faker->randomElement(StatusEnum::cases()),
             'created_at' => now(),
             'updated_at' => now(),
             'deleted_at' => null,
