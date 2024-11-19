@@ -33,7 +33,7 @@ function ModalSidebar({ isOpen = false, title, children, onClose }: ModalSidebar
             ref={sidebarRef}
             className={`fixed inset-0 z-40 ${
                 isOpen ? 'block' : 'hidden'
-            } transition-transform duration-300 ease-out`}
+            } transition-transform duration-300 ease-out absolute z-10`}
         >
             {/* Background Overlay */}
             <div
