@@ -14,11 +14,12 @@ class DatabaseSeeder extends Seeder
     {
         $seeders = [
             RoleSeeder::class,
-            UserSeeder::class,
-            CampaignSeeder::class,
-            ProposalSeeder::class,
             PermissionSeeder::class,
+            UserSeeder::class,
+            FundSeeder::class,
+            CampaignSeeder::class,
             IdeascaleProfilesSeeder::class,
+            ProposalSeeder::class,
             GroupSeeder::class,
             CommunitySeeder::class,
             ReviewSeeder::class,

@@ -3,12 +3,14 @@
 namespace Database\Factories;
 
 use App\Enums\CatalystCurrencies;
+use App\Models\Campaign;
+use App\Models\Fund;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Campaign>
+ * @extends Factory<Campaign>
  */
 class CampaignFactory extends Factory
 {
@@ -21,7 +23,7 @@ class CampaignFactory extends Factory
     {
         return [
             'user_id' => User::factory(),
-            'fund_id' => null,
+            'fund_id' => Fund::factory(),
             'title' => $this->faker->sentence(4),
             'meta_title' => $this->faker->sentence(5),
             'slug' => fn(array $attributes) => Str::slug($attributes['title']),
