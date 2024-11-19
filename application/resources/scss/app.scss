@@ -3,31 +3,259 @@
 @tailwind utilities;
 
 :root {
-    --bg-primary-color: #ffffff;
-    --bg-secondary-color: #f8fbfb;
+    --cx-primary: #2596be;
+    --cx-secondary: #3facd1;
+    --cx-dark: #667085;
+    --cx-light: #667085;
+    --cx-accent: #165a72;
+
+    --cx-blue-eye-color: #b1e2f0;
+
+    --cx-content: #101828;
+    --cx-content-highlight: #ccf4ff;
+    --cx-content-light: #eaecf0;
+    --cx-content-dark: #101828;
+    --cx-intro-gradient-1: #066384;
+    --cx-intro-gradient-2: #4fadce;
+
+    --cx-background: #ffffff;
+    --cx-background-darker: #f9fbfb;
+    --cx-background-lighter: #eaecf0;
+    --cx-background-light: #667085;
+    --cx-background-gradient-1-light: #1b2230;
+    --cx-background-gradient-2-light: #475467;
+    --cx-background-gradient-1-dark: #1b2230;
+    --cx-background-gradient-2-dark: #475467;
+
+    --cx-border-color: #667085;
+
+    --bg-accent-color: #3facd1;
+    --cx-accent-secondary: #a23b72;
+    --bg-error-primary-color: #dc2626;
+    --bg-error-secondary-color: #ef4444;
     --content-primary-color: #182230;
-    --content-secondary-color: #000000;
-    --content-tertiary-color: #667085;
+    --content-hover-color: #101828;
+    --content-error-primary-color: #dc2626;
+    --content-error-secondary-color: #ef4444;
+    --content-success-light: #e0ffef;
+    --success-gradient-color-2: #16b364;
+    --success-gradient-color-1: #0a4d2b;
+    --border-primary-color: #182230;
+    --bg-light-persist: #ffffff;
+
+    --cx-display-xs: 1.5rem;
+    --cx-display-sm: 1.875rem;
+    --cx-display-md: 2rem;
+    --cx-display-lg: 2.25rem;
+    --cx-display-xl: 3rem;
+    --cx-display-2xl: 3.75rem;
+
+    --cx-display-weight: 700;
 }
 
 [data-theme='dark'] {
-    --bg-primary-color: #111928;
+    --cx-primary: #2596be;
+    --cx-secondary: #000000;
+    --cx-light: #667085;
+    --cx-dark: #667085;
+    --cx-accent: #8cdefa;
+
+    --cx-blue-eye-color: #b1e2f0;
+
+    --cx-content: #ffffff;
+    --cx-content-highlight: #ccf4ff;
+    --cx-content-light: #f2f2f2;
+    --cx-content-dark: #ffffff;
+    --cx-intro-gradient-1: #066384;
+    --cx-intro-gradient-2: #4fadce;
+    --cx-background: #101828;
+    --cx-background-darker: #000000;
+    --cx-background-lighter: #374151;
+    --cx-background-light: #ffffff;
+    --cx-background-gradient-1-light: #1b2230;
+    --cx-background-gradient-2-light: #475467;
+    --cx-background-gradient-1-dark: #1b2230;
+    --cx-background-gradient-2-dark: #475467;
+
+    --cx-border-color: #667085;
     --bg-secondary-color: #374151;
-    --content-primary-color: #ffffff;
-    --content-secondary-color: #000000;
-    --content-tertiary-color: #667085;
+    --bg-accent-color: #3facd1;
+    --bg-error-primary-color: #dc2626;
+    --bg-error-secondary-color: #ef4444;
+    --content-hover-color: #ffffff;
+    --content-error-primary-color: #dc2626;
+    --content-error-secondary-color: #ef4444;
+    --content-success-color: #4ade80;
+    --border-primary-color: #667085;
+    --border-secondary-color: #3facd1;
 }
 
 [data-theme='voltaire'] {
-    --bg-primary-color: #2c2c2c;
-    --bg-secondary-color: #b1e3f1;
-    --content-primary-color: #ffffff;
-    --content-secondary-color: #000000;
-    --content-tertiary-color: #667085;
+    --cx-primary: #2596be;
+    --cx-secondary: #000000;
+    --cx-light: #667085;
+    --cx-dark: #667085;
+    --cx-accent: #1f2d3d;
+
+    --cx-blue-eye-color: #b1e2f0;
+
+    --cx-content: #101828;
+    --cx-content-highlight: #ccf4ff;
+    --cx-content-light: #f2f2f2;
+    --cx-content-dark: #111928;
+    --cx-intro-gradient-1: #0033ad;
+    --cx-intro-gradient-2: #4fadce;
+    --cx-background: #e9efff;
+    --cx-background-darker: #0033ad;
+    --cx-background-gradient-1-dark: #0033ad;
+    --cx-background-gradient-2-dark: #0033ad;
+    --cx-background-lighter: #b1e3f1;
+    --cx-background-light: #ffffff;
+    --cx-border-color: #b1e3f1;
+
+    --bg-accent-color: #3facd1;
+    --bg-error-primary-color: #dc2626;
+    --bg-error-secondary-color: #ef4444;
+    --content-hover-color: #ffffff;
+    --content-error-primary-color: #dc2626;
+    --content-error-secondary-color: #ef4444;
+    --content-success-color: #4ade80;
+    --border-primary-color: #b1e3f1;
+    --border-secondary-color: #3facd1;
 }
 
 @layer base {
+    *::-webkit-scrollbar {
+        width: 0.5rem;
+        height: 0.6rem;
+    }
+
+    *::-webkit-scrollbar-track {
+        background: var(--cx-background);
+        border-radius: 1rem;
+        -webkit-border-radius: 1rem;
+        -moz-border-radius: 1rem;
+        -ms-border-radius: 1rem;
+        -o-border-radius: 1rem;
+    }
+
+    *::-webkit-scrollbar-thumb {
+        background-color: var(--cx-background-light);
+        border-radius: 1rem;
+        -webkit-border-radius: 1rem;
+        -moz-border-radius: 1rem;
+        -ms-border-radius: 1rem;
+        -o-border-radius: 1rem;
+    }
+
+    *::-webkit-scrollbar-thumb:hover {
+        background-color: var(--bg-accent-color);
+    }
+
     body {
-        @apply bg-background-primary transition-colors duration-300 ease-in-out;
+        @apply bg-background text-content transition-colors duration-300 ease-in-out;
+    }
+
+    .container {
+        @apply mx-auto px-8;
+    }
+
+    .content-gap {
+        @apply gap-6;
+    }
+
+    .menu-gap-x {
+        @apply gap-6;
+    }
+
+    .menu-gap-y {
+        @apply gap-2;
+    }
+
+    .title-gap-y {
+        @apply gap-3;
+    }
+
+    .title-1 {
+        @apply text-cx-display-2xl;
+    }
+
+    .title-2 {
+        @apply text-cx-display-xl;
+    }
+
+    .title-3 {
+        @apply text-cx-display-lg;
+    }
+
+    .title-4 {
+        @apply text-cx-display-md;
+    }
+
+    .title-5 {
+        @apply text-cx-display-sm;
+    }
+
+    .title-6 {
+        @apply text-cx-display-xs;
+    }
+
+    .text-1 {
+        @apply text-xl;
+    }
+
+    .text-2 {
+        @apply text-lg;
+    }
+
+    .text-3 {
+        @apply text-md;
+    }
+
+    .text-4 {
+        @apply text-sm;
+    }
+
+    .text-5 {
+        @apply text-xs;
+    }
+
+    .section-margin {
+        @apply mt-8;
+    }
+
+    main > header {
+        @apply pt-11;
+    }
+
+    .scrollable {
+        display: grid;
+        grid-auto-flow: column;
+        overflow-x: auto;
+        grid-auto-columns: 66.67%;
+        overscroll-behavior-inline: contain;
+        will-change: scroll-position;
+        scroll-behavior: smooth;
+    }
+
+    @media (min-width: 1124px) {
+        .scrollable {
+            grid-auto-columns: 36%;
+        }
+    }
+
+    @media (min-width: 1536px) {
+        .scrollable {
+            grid-auto-columns: 30%;
+        }
+    }
+
+    .snaps-scrollable {
+        scroll-snap-type: inline mandatory;
+        scroll-padding-inline: 1.5rem;
+    }
+
+    .snaps-scrollable > * {
+        scroll-snap-align: start;
     }
 }

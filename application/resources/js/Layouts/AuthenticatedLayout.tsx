@@ -9,20 +9,20 @@ export default function Authenticated({
     header,
     children,
 }: PropsWithChildren<{ header?: ReactNode }>) {
-    const user = usePage().props.auth.user;
+    const user = usePage().props?.auth?.user;
 
     const [showingNavigationDropdown, setShowingNavigationDropdown] =
         useState(false);
 
     return (
         <div className="bg-gray-primary min-h-screen">
-            <nav className="border-b border-gray-100 bg-background-primary">
+            <nav className="border-b border-gray-100 bg-background">
                 <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                     <div className="flex h-16 justify-between">
                         <div className="flex">
                             <div className="flex shrink-0 items-center">
                                 <Link href="/">
-                                    <ApplicationLogo className="block h-9 w-auto fill-current text-content-primary" />
+                                    <ApplicationLogo className="block h-9 w-auto fill-current text-content" />
                                 </Link>
                             </div>
 
@@ -43,9 +43,9 @@ export default function Authenticated({
                                         <span className="inline-flex rounded-md">
                                             <button
                                                 type="button"
-                                                className="false inline-flex items-center rounded-md border border-transparent bg-background-secondary px-4 py-2 text-xs font-semibold uppercase tracking-widest text-white transition duration-150 ease-in-out hover:bg-gray-700 focus:bg-gray-700 focus:outline-none  focus:ring-offset-2 active:bg-gray-900 dark:bg-gray-200 dark:text-gray-800 dark:hover:bg-white dark:focus:bg-white dark:focus:ring-offset-gray-800 dark:active:bg-gray-300"
+                                                className="false inline-flex items-center rounded-md border border-transparent secondary px-4 py-2 text-5 font-semibold uppercase tracking-widest text-content-secondary transition duration-150 ease-in-out hover:bg-background-lighter focus:bg-background-tertiary focus:outline-none  focus:ring-offset-2 active:bg-background-tertiary"
                                             >
-                                                {user.name}
+                                                {user?.name}
 
                                                 <svg
                                                     className="-me-0.5 ms-2 h-4 w-4"
@@ -88,7 +88,7 @@ export default function Authenticated({
                                         (previousState) => !previousState,
                                     )
                                 }
-                                className="inline-flex items-center justify-center rounded-md p-2 text-gray-400 transition duration-150 ease-in-out hover:bg-gray-100 hover:text-gray-500 focus:bg-gray-100 focus:text-gray-500 focus:outline-none dark:text-gray-500 dark:hover:bg-gray-900 dark:hover:text-gray-400 dark:focus:bg-gray-900 dark:focus:text-gray-400"
+                                className="inline-flex items-center justify-center rounded-md p-2 text-dark transition duration-150 ease-in-out hover:bg-background-lighter hover:text-content-secondary focus:bg-background-lighter focus:text-content-secondary focus:outline-none"
                             >
                                 <svg
                                     className="h-6 w-6"
@@ -142,10 +142,10 @@ export default function Authenticated({
                     <div className="border-t border-gray-200 pb-1 pt-4">
                         <div className="px-4">
                             <div className="text-base font-medium text-gray-800">
-                                {user.name}
+                                {user?.name}
                             </div>
-                            <div className="text-sm font-medium text-gray-500">
-                                {user.email}
+                            <div className="text-4 font-medium text-gray-500">
+                                {user?.email}
                             </div>
                         </div>
 
@@ -166,7 +166,7 @@ export default function Authenticated({
             </nav>
 
             {header && (
-                <header className="bg-background-primary shadow">
+                <header className="bg-background shadow">
                     <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
                         {header}
                     </div>

@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace Database\Seeders;
 
@@ -11,6 +9,7 @@ use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\Hash;
 use Database\Seeders\Traits\GetImageLink;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use Faker\Generator;
 
 class UserSeeder extends Seeder
 {
@@ -21,12 +20,7 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
-        User::factory([
-            'name' => 'Explorer Dora',
-            'email' => 'admin@catalystexplorer.com',
-            'password' => Hash::make('ofnXIFbZ0JOuGBqx-'),
-        ])->hasAttached(Role::where('name', RoleEnum::super_admin())->first())
-            ->create();
+        $this->makeSuperAdmin();
 
         User::factory(7)->create()->each(
             function (User $user) {
@@ -35,5 +29,32 @@ class UserSeeder extends Seeder
                 }
             }
         );
+    }
+
+    /**
+     * Seeds super admin.
+     */
+    public function makeSuperAdmin(): void
+    {
+        $superUser = User::where('email', config('app.super_admin.email'))->first();
+
+        if (!!$superUser) {
+            return;
+        }
+
+        $superUserCred = collect(config('app.super_admin'))->map(function ($v, $k) {
+            if ($k == 'password') {
+                return Hash::make($v);
+            } else {
+                return $v;
+            }
+        });
+
+        $superUser = User::factory(state: $superUserCred->toArray())->hasAttached(Role::where('name', RoleEnum::super_admin())->first())
+            ->create();
+
+        if ($imageLink = $this->getRandomImageLink()) {
+            $superUser->addMediaFromUrl($imageLink)->toMediaCollection('profile');
+        }
     }
 }

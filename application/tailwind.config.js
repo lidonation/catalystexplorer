@@ -19,19 +19,78 @@ export default {
                 '4xl': '2.5rem',
             },
             colors: {
-                background: {
-                    primary: 'var(--bg-primary-color)',
-                    secondary: 'var(--bg-secondary-color)',
-                },
-                content: {
-                    primary: 'var(--content-primary-color)',
-                    secondary: 'var(--content-secondary-color)',
-                    tertiary: 'var(--content-tertiary-color)',
-                },
-                primary: {
-                    100: '#2596BE',
-                },
+                // background: {
+                //     default: 'var(--cx-background)',
+                //     'default-darker': 'var(--cx-background-darker)',
+                //     secondary: 'var(--bg-secondary-color)',
+                //     tertiary: 'var(--cx-background-light)',
+                //     accent: 'var(--bg-accent-color)',
+                //     'error-primary': 'var(--bg-error-primary-color)',
+                //     'error-secondary': 'var(--bg-error-secondary-color)',
+                // },
+                // content: {
+                //     primary: 'var(--cx-primary)',
+                //     secondary: 'var(--cx-secondary)',
+                //     tertiary: 'var(--cx-light)',
+                //     accent: 'var(--cd-accent)',
+                //     success: 'var(--content-success-color)',
+                //     'error-primary': 'var(--content-error-primary-color)',
+                //     'error-secondary' : 'var(--content-error-secondary-color)'
+                // },
+                content: 'var(--cx-content)',
+                'content-highlight-intro': 'var(--cx-content-highlight)',
+                'content-light': 'var(--cx-content-light)',
+                'content-dark': 'var(--cx-content-dark)',
+                light: 'var(--cx-content)',
+                'light-persist': 'var(--bg-light-persist)',
+                dark: 'var(--cx-dark)',
+                primary: 'var(--cx-primary)',
+                secondary: 'var(--cx-secondary)',
+                highlight: 'var(--cx-light)',
+                accent: 'var(--cx-accent)',
+                'dark-persist':'var(--content-primary-color)',
+                'accent-secondary': 'var(--cx-accent-secondary)',
+                success: 'var(--success-gradient-color-2)',
+                'success-light': 'var(--content-success-light)',
+                hover: 'var(--content-hover-color)',
+                background: 'var(--cx-background)',
+                'background-light': 'var(--cx-background-light)',
+                'background-lighter': 'var(--cx-background-lighter)',
+                'background-darker': 'var(--cx-background-darker)',
+                'background-home-gradient-color-1':
+                    'var(--cx-intro-gradient-1)',
+                'background-home-gradient-color-2':
+                    'var(--cx-intro-gradient-2)',
+                border: 'var(--cx-border-color)',
+                'eye-logo': 'var(--cx-blue-eye-color)',
+                // border: {
+                //     primary: 'var(--cx-primary)',
+                //     secondary: 'var(--border-secondary-color)'
+                // }
             },
+            fontSize: {
+                'cx-display-xs': ['var(--cx-display-xs)', {
+                    fontWeight: 'var(--cx-display-weight)',
+                }],
+                'cx-display-sm': ['var(--cx-display-sm)', {
+                    fontWeight: 'var(--cx-display-weight)',
+                }],
+                'cx-display-md': ['var(--cx-display-md)', {
+                    fontWeight: 'var(--cx-display-weight)',
+                }],
+                'cx-display-lg': ['var(--cx-display-lg)', {
+                    fontWeight: 'var(--cx-display-weight)',
+                }],
+                'cx-display-xl': ['var(--cx-display-xl)', {
+                    fontWeight: 'var(--cx-display-weight)',
+                }],
+                'cx-display-2xl': ['var(--cx-display-2xl)', {
+                    fontWeight: 'var(--cx-display-weight)',
+                }],
+                md: ['1rem', {
+                    lineHeight: '1.5rem',
+                }]
+            }
         },
     },
 

@@ -1,12 +1,9 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace Database\Seeders;
 
-use App\Models\User;
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Log;
 
 class DatabaseSeeder extends Seeder
 {
@@ -15,9 +12,29 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        $this->call([
+        $seeders = [
+            RoleSeeder::class,
+            PermissionSeeder::class,
             UserSeeder::class,
+            FundSeeder::class,
+            CampaignSeeder::class,
+            IdeascaleProfilesSeeder::class,
             ProposalSeeder::class,
-        ]);
+            GroupSeeder::class,
+            CommunitySeeder::class,
+            ReviewSeeder::class,
+            AnnouncementSeeder::class,
+            MetricSeeder::class
+        ];
+
+        foreach ($seeders as $seeder) {
+            try {
+                $this->call($seeder);
+                $this->command->info("$seeder completed successfully.");
+            } catch (\Throwable $e) {
+                Log::error($e);
+                $this->command->error("Error running $seeder: " . $e->getMessage());
+            }
+        }
     }
 }

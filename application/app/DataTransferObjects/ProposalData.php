@@ -1,39 +1,49 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\DataTransferObjects;
 
 use Spatie\LaravelData\Data;
-use Spatie\TypeScriptTransformer\Attributes\Optional as TypeScriptOptional;
+use Spatie\LaravelData\DataCollection;
+use Spatie\LaravelData\Attributes\MapOutputName;
+use App\DataTransferObjects\IdeascaleProfileData;
+use Spatie\LaravelData\Attributes\DataCollectionOf;
 use Spatie\TypeScriptTransformer\Attributes\TypeScript;
+use Spatie\TypeScriptTransformer\Attributes\Optional as TypeScriptOptional;
 
 #[TypeScript]
 final class ProposalData extends Data
 {
     public function __construct(
         public ?int $id,
+
         public ?int $user_id,
-        public ?int $campaign_id,
+
+        public ?CampaignData $campaign,
+
         public ?int $fund_id,
-        public ?array $title,
+
+        public ?string $title,
+
         public string $slug,
+
         public ?string $website,
 
         #[TypeScriptOptional]
         public ?string $excerpt,
+
         public float $amount_requested,
-        public ?float $amount_received,
+
+        public float $amount_received,
 
         #[TypeScriptOptional]
         public ?string $definition_of_success,
 
-        #[TypeScriptOptional]
-        public ?string $status,
+        public string $status,
 
-        #[TypeScriptOptional]
-        public ?string $funding_status,
+        public string $funding_status,
 
-        #[TypeScriptOptional]
-        public ?array $meta_data,
+//        #[TypeScriptOptional]
+//        public ?array $meta_data,
 
         #[TypeScriptOptional]
         public ?string $funded_at,
@@ -45,7 +55,9 @@ final class ProposalData extends Data
         public ?string $funding_updated_at,
 
         public ?int $yes_votes_count,
+
         public ?int $no_votes_count,
+
         public ?int $abstain_votes_count,
 
         #[TypeScriptOptional]
@@ -61,22 +73,25 @@ final class ProposalData extends Data
         public ?string $ideascale_link,
 
         #[TypeScriptOptional]
+        public ?string $projectcatalyst_io_link,
+
+        #[TypeScriptOptional]
         public ?string $type,
 
         #[TypeScriptOptional]
-        public ?array $meta_title,
+        public ?string $meta_title,
 
         #[TypeScriptOptional]
-        public ?array $problem,
+        public ?string $problem,
 
         #[TypeScriptOptional]
-        public ?array $solution,
+        public ?string $solution,
 
         #[TypeScriptOptional]
-        public ?array $experience,
+        public ?string $experience,
 
         #[TypeScriptOptional]
-        public ?array $content,
+        public ?string $content,
 
         // Other attributes
         #[TypeScriptOptional]
@@ -91,6 +106,11 @@ final class ProposalData extends Data
         public ?string $quickpitch,
 
         #[TypeScriptOptional]
-        public ?int $quickpitch_length
+        public ?int $quickpitch_length,
+
+        #[MapOutputName('users')]
+        #[DataCollectionOf(IdeascaleProfileData::class)]
+        public ?DataCollection $users,
+
     ) {}
 }

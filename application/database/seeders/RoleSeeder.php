@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace Database\Seeders;
 
@@ -16,7 +14,7 @@ class RoleSeeder extends Seeder
      */
     public function run(): void
     {
-        collect(array_keys(RoleEnum::toArray()))
+        collect(array_values(RoleEnum::toArray()))
             ->each(
                 fn($role) => Role::findOrCreate($role)
             );

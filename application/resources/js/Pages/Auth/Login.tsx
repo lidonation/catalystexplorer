@@ -33,7 +33,7 @@ export default function Login({
             <Head title="Log in" />
 
             {status && (
-                <div className="mb-4 text-sm font-medium text-green-600">
+                <div className="mb-4 text-4 font-medium text-green-600">
                     {status}
                 </div>
             )}
@@ -81,7 +81,7 @@ export default function Login({
                                 setData('remember', e.target.checked)
                             }
                         />
-                        <span className="ms-2 text-sm text-gray-600 dark:text-gray-400">
+                        <span className="ms-2 text-4 text-dark">
                             Remember me
                         </span>
                     </label>
@@ -91,7 +91,7 @@ export default function Login({
                     {canResetPassword && (
                         <Link
                             href={route('password.request')}
-                            className="rounded-md text-sm text-gray-600 underline hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:text-gray-400 dark:hover:text-gray-100 dark:focus:ring-offset-gray-800"
+                            className="rounded-md text-4 text-dark underline hover:text-content focus:outline-none focus:ring-2 focus:border-x-border-secondary focus:ring-offset"
                         >
                             Forgot your password?
                         </Link>

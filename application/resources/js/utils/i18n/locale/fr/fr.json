@@ -30,8 +30,44 @@
             "support": "Support"
         }
     },
+    "searchBar": {
+        "placeholder": "Rechercher des propositions, des fonds, des personnes, des articles et des données",
+        "all_filters": "Tous les filtres",
+        "variants": {
+            "all": "Tous les groupes",
+            "proposals": "Propositions",
+            "people": "Personnes",
+            "groups": "Groupes",
+            "communities": "Communautés",
+            "wallets": "Portefeuilles",
+            "reviews": "Évaluations",
+            "articles": "Articles"
+        }
+    },
+    "catalystIntro": {
+        "title": {
+            "normalText": "Projet Catalyst",
+            "highlightedText": "élève l'innovation collaborative"
+        },
+        "subtitle": "Catalyst stimule la croissance de l'écosystème Cardano en reliant des idées innovantes à un financement, soutenu par un vote communautaire et le trésor Cardano."
+    },
+    "proposalQuickpitch": {
+        "projectVideo": "Vidéo du projet",
+        "providedUrl": "URL fournie",
+        "errors": {
+            "noUrl": "Aucune URL vidéo fournie",
+            "invalidYoutubeFormat": "Le format du lien YouTube est incorrect",
+            "invalidVimeoFormat": "Le format du lien Vimeo est incorrect",
+            "invalidUrlFormat": "Format d'URL invalide",
+            "invalidUrl": "Format d'URL invalide"
+        }
+    },
+    "posts": {
+        "title": "Articles des Catalysts",
+        "subtitle": "Dernières nouvelles et publications de notre communauté"
+    },
     "theme": {
-        "changeColor": "Changer la couleur du thème",
+        "theme": "Thème",
         "options": "Options de thème",
         "light": "Clair",
         "dark": "Sombre",
@@ -41,11 +77,15 @@
     "icons": {
         "titles": {
             "barLine": "Icône de graphique en barres",
+            "blue_eye": "Icône d'œil bleu",
             "bookmark": "Icône de signet",
             "bucket": "Icône de seau",
             "chart": "Icône de graphique",
             "check": "Icône de vérification",
+            "chevron_up": "Icône de chevron vers le haut",
+            "chevron_down": "Icône de chevron vers le bas",
             "close": "Icône de fermeture",
+            "search": "Icône de recherche",
             "darkMode": "Icône de mode sombre",
             "folder": "Icône de dossier",
             "home": "Icône d'accueil",

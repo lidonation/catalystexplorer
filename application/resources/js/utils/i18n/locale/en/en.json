@@ -30,8 +30,44 @@
             "support": "Support"
         }
     },
+    "searchBar": {
+        "placeholder": "Search proposals, funds, people, articles & data",
+        "all_filters": "All Filters",
+        "variants": {
+            "all": "All Groups",
+            "proposals": "Proposals",
+            "people": "People",
+            "groups": "Groups",
+            "communities": "Communities",
+            "wallets": "Wallets",
+            "reviews": "Reviews",
+            "articles": "Articles"
+        }
+    },
+    "catalystIntro": {
+        "title": {
+            "normalText": "Project Catalyst",
+            "highlightedText": "elevates collaborative innovation"
+        },
+        "subtitle": "Catalyst drives Cardano's ecosystem growth by linking innovative ideas with funding, supported by community voting and the Cardano treasury."
+    },
+    "proposalQuickpitch": {
+        "projectVideo": "Project Video",
+        "providedUrl": "Provided URL",
+        "errors": {
+            "noUrl": "No video URL provided",
+            "invalidYoutubeFormat": "The YouTube link format is incorrect",
+            "invalidVimeoFormat": "The Vimeo link format is incorrect",
+            "invalidUrlFormat": "Invalid URL format",
+            "invalidUrl": "Invalid URL format"
+        }
+    },
+    "posts": {
+        "title": "Catalysts Posts",
+        "subtitle": "Latest news and posts from our community"
+    },
     "theme": {
-        "changeColor": "Change Theme Color",
+        "theme": "Theme",
         "options": "Theme options",
         "light": "Light",
         "dark": "Dark",
@@ -41,10 +77,13 @@
     "icons": {
         "titles": {
             "barLine": "Bar Line Chart Icon",
+            "blue_eye": "Blue Eye Icon",
             "bookmark": "Bookmark Check Icon",
             "bucket": "Bucket Icon",
             "chart": "Chart Icon",
             "check": "Check Icon",
+            "chevron_up": "Chevron Up Icon",
+            "chevron_down": "Chevron Down Icon",
             "close": "close Icon",
             "darkMode": "Dark Mode Icon",
             "folder": "Folder Icon",
@@ -56,6 +95,7 @@
             "note": "Note Icon",
             "notificationBox": "Notification Box Icon",
             "people": "People Icon",
+            "search": "Search Icon",
             "voltaireMode": "Voltaire Mode Icon"
         }
     },

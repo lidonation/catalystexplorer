@@ -29,11 +29,13 @@ export default function AppLayout({ children }: { children: ReactNode }) {
             </Dialog>
 
             {/* Sidebar for larger screens */}
-            <DesktopSidebar />
+            <div className='sm:z-30 sm:flex sm:w-72 bg-background hidden sm:fixed sm:inset-y-0 h-full'>
+                <DesktopSidebar />
+            </div>
 
-            <section className="sm:pl-72">
+            <section className="sm:ml-72 bg-background-lighter sm:mt-2 sm:rounded-tl-4xl">
                 {/* Mobile header */}
-                <header className="sticky top-0 z-30 border-b border-gray-200 bg-background-primary sm:hidden">
+                <header className="sticky top-0 z-30 border-b border-gray-200 bg-background sm:hidden">
                     <div className="flex h-16 items-center justify-between px-4">
                         <CatalystLogo className="h-8" />
                         <Button
@@ -45,7 +47,7 @@ export default function AppLayout({ children }: { children: ReactNode }) {
                             }
                             aria-expanded={sidebarOpen}
                             aria-controls="mobile-navigation"
-                            className="inline-flex items-center rounded px-2 py-1 text-sm hover:bg-gray-100"
+                            className="inline-flex items-center rounded px-2 py-1 text-4 hover:bg-gray-100"
                         >
                             {sidebarOpen ? <CloseIcon /> : <MenuIcon />}
                         </Button>
@@ -55,7 +57,7 @@ export default function AppLayout({ children }: { children: ReactNode }) {
                 {/* Main content */}
                 <main
                     id="main-content"
-                    className="bg-background-secondary sm:mt-2 sm:rounded-tl-4xl"
+                    className=""
                 >
                     {children}
                 </main>
@@ -65,7 +67,9 @@ export default function AppLayout({ children }: { children: ReactNode }) {
                     <div className=""></div>
                 </ModalSidebar>
 
-                <Footer />
+                <footer className="section-margin">
+                    <Footer />
+                </footer>
             </section>
         </MainLayout>
     );

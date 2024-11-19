@@ -15,12 +15,12 @@ export default function UpdateProfileInformation({
     status?: string;
     className?: string;
 }) {
-    const user = usePage().props.auth.user;
+    const user = usePage().props?.auth?.user;
 
     const { data, setData, patch, errors, processing, recentlySuccessful } =
         useForm({
-            name: user.name,
-            email: user.email,
+            name: user?.name,
+            email: user?.email,
         });
 
     const submit: FormEventHandler = (e) => {
@@ -32,11 +32,11 @@ export default function UpdateProfileInformation({
     return (
         <section className={className}>
             <header>
-                <h2 className="text-lg font-medium text-content-primary">
+                <h2 className="text-2 font-medium text-content">
                     Profile Information
                 </h2>
 
-                <p className="mt-1 text-sm text-content-primary">
+                <p className="mt-1 text-4 text-content">
                     Update your account's profile information and email address.
                 </p>
             </header>
@@ -74,22 +74,22 @@ export default function UpdateProfileInformation({
                     <InputError className="mt-2" message={errors.email} />
                 </div>
 
-                {mustVerifyEmail && user.email_verified_at === null && (
+                {mustVerifyEmail && user?.email_verified_at === null && (
                     <div>
-                        <p className="mt-2 text-sm text-content-primary">
+                        <p className="mt-2 text-4 text-content">
                             Your email address is unverified.
                             <Link
                                 href={route('verification.send')}
                                 method="post"
                                 as="button"
-                                className="rounded-md text-sm text-content-primary underline hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:text-gray-400 dark:hover:text-gray-100 dark:focus:ring-offset-gray-800"
+                                className="rounded-md text-4 text-content underline hover:text-content-secondary focus:outline-none focus:ring-2 focus:border-border-secondary focus:ring-offset-2"
                             >
                                 Click here to re-send the verification email.
                             </Link>
                         </p>
 
                         {status === 'verification-link-sent' && (
-                            <div className="mt-2 text-sm font-medium text-green-600 dark:text-green-400">
+                            <div className="mt-2 text-4 font-medium text-content-success">
                                 A new verification link has been sent to your
                                 email address.
                             </div>
@@ -107,7 +107,7 @@ export default function UpdateProfileInformation({
                         leave="transition ease-in-out"
                         leaveTo="opacity-0"
                     >
-                        <p className="text-sm text-gray-600 dark:text-gray-400">
+                        <p className="text-4 text-dark">
                             Saved.
                         </p>
                     </Transition>

@@ -1,13 +1,12 @@
-import { Link } from '@inertiajs/react';
+import { Link, router } from '@inertiajs/react';
 import axios from 'axios';
 import { useTranslation } from 'react-i18next';
 import { route } from '../../../../vendor/tightenco/ziggy/src/js';
 import LogOutIcon from '../svgs/LogOut';
-import User = App.DataTransferObjects.UserData;
-
+import UserAvatar from '../UserAvatar';
 
 interface UserDetailsProps {
-    user: App.DataTransferObjects.UserData; 
+    user: App.DataTransferObjects.UserData;
 }
 
 const UserDetails: React.FC<UserDetailsProps> = ({user}) => {
@@ -17,8 +16,7 @@ const UserDetails: React.FC<UserDetailsProps> = ({user}) => {
         axios
             .post(route('logout'))
             .then((response) => {
-                console.log(response);
-                window.location.href = '/';
+                router.get('/')
             })
             .catch((error) => {
                 console.log(error);
@@ -26,40 +24,37 @@ const UserDetails: React.FC<UserDetailsProps> = ({user}) => {
     };
 
     return (
-        <div className="flex items-center justify-between border-t border-gray-200 pt-6">
+        <div className="flex items-center justify-between">
             <div className="flex gap-3">
-                <div className="size-9 rounded-full bg-gray-400">
-                    {user?.name && user?.email ? (
-                        <img
-                            src={user.profile_photo_url}
-                            alt="avatar"
-                            className="size-9 rounded-full"
-                        />
+                <div className="size-9 rounded-full bg-background-light">
+                    {user ? (
+                        <UserAvatar imageUrl={user.profile_photo_url} />
+
                     ) : (
                         ''
                     )}
                 </div>
                 <div className="flex flex-col">
-                    {user?.name && user?.email ? (
+                    {user ? (
                         <Link
                             href="/dashboard"
-                            className="text-sm font-semibold text-content-primary"
+                            className="text-4 font-semibold text-content"
                         >
                             {user?.name}
                         </Link>
                     ) : (
-                        <p className="text-sm font-semibold text-content-primary">
+                        <p className="text-4 font-semibold text-content">
                             {t('app.name')}
                         </p>
                     )}
 
-                    <p className="text-xs text-content-primary">
+                    <p className="text-5 text-content">
                         {user?.email || t('app.contactEmail')}
                     </p>
-                    {user?.name && user?.email && (
+                    {user && (
                         <Link
                             href="/profile"
-                            className="text-xs font-semibold text-primary-100"
+                            className="text-5 font-semibold text-primary"
                         >
                             Edit profile
                         </Link>
@@ -67,7 +62,7 @@ const UserDetails: React.FC<UserDetailsProps> = ({user}) => {
                 </div>
             </div>
             <LogOutIcon
-                className="cursor-pointer text-content-tertiary"
+                className="cursor-pointer text-dark hover:text-hover"
                 width={20}
                 height={20}
                 onClick={() => logout()}

@@ -15,8 +15,5 @@ use Spatie\Enum\Laravel\Enum;
  */
 final class RoleEnum extends Enum
 {
-    protected static function values(): \Closure
-    {
-        return fn(string $name): string|int => str_replace('_', ' ', mb_strtolower($name));
-    }
+    use Traits\HasValues;
 }

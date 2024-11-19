@@ -6,17 +6,26 @@
     "license": "MIT",
     "require": {
         "php": "^8.3",
+        "codezero/laravel-localized-routes": "^4.0",
+        "hammerstone/fast-paginate": "^1.1",
+        "http-interop/http-factory-guzzle": "^1.2",
         "inertiajs/inertia-laravel": "2.x-dev",
         "laravel/framework": "^11.9",
         "laravel/horizon": "^5.29",
         "laravel/octane": "^2.5",
         "laravel/sanctum": "^4.0",
+        "laravel/scout": "^10.11",
         "laravel/tinker": "^2.9",
         "laravolt/avatar": "^6.0",
+        "meilisearch/meilisearch-php": "^1.11",
+        "saloonphp/laravel-plugin": "^3.0",
+        "saloonphp/pagination-plugin": "^2.0",
+        "saloonphp/saloon": "^3.0",
         "spatie/laravel-data": "^4.11",
         "spatie/laravel-enum": "^3.1",
         "spatie/laravel-medialibrary": "^11.9",
         "spatie/laravel-permission": "^6.10",
+        "spatie/laravel-translatable": "^6.8",
         "spatie/laravel-typescript-transformer": "^2.5",
         "tightenco/ziggy": "^2.0"
     },
@@ -69,6 +78,7 @@
         "preferred-install": "dist",
         "sort-packages": true,
         "allow-plugins": {
+            "codezero/composer-preload-files": true,
             "pestphp/pest-plugin": true,
             "php-http/discovery": true
         }
