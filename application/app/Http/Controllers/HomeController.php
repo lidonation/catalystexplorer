@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\DataTransferObjects\AnnouncementData;
 use App\DataTransferObjects\MetricData;
 use App\DataTransferObjects\ProposalData;
+use App\Repositories\AnnouncementRepository;
 use App\Repositories\MetricRepository;
 use App\Repositories\PostRepository;
 use App\Repositories\ProposalRepository;
@@ -15,7 +17,8 @@ class HomeController extends Controller
     public function index(
         PostRepository     $posts,
         ProposalRepository $proposals,
-        MetricRepository   $metrics
+        MetricRepository   $metrics,
+        AnnouncementRepository $announcements
     ): Response
     {
         $posts->setQuery([
@@ -40,6 +43,22 @@ class HomeController extends Controller
                     ->getQuery()
                     ->where('context', 'home')
                     ->orderByDesc('order')
+                    ->get())
+            ),
+            'announcements' => Inertia::optional(
+                fn() => AnnouncementData::collect($announcements
+                    ->limit(6)
+                    ->getQuery()
+                    ->where('context', '!=', 'home')
+                    ->latest('event_ends_at')
+                    ->get())
+            ),
+            'specialAnnouncements' => Inertia::optional(
+                fn() => AnnouncementData::collect($announcements
+                    ->limit(6)
+                    ->getQuery()
+                    ->where('context', 'special')
+                    ->latest('event_ends_at')
                     ->get())
             ),
         ]);

@@ -9,14 +9,17 @@ import { useTranslation } from 'react-i18next';
 import MetricData = App.DataTransferObjects.MetricData;
 import ProposalData = App.DataTransferObjects.ProposalData;
 import PostData = App.DataTransferObjects.PostData;
+import AnnouncementData = App.DataTransferObjects.AnnouncementData;
 
 interface HomePageProps extends Record<string, unknown> {
     posts: PostData[];
     proposals: ProposalData[];
     metrics: MetricData[];
+    announcements: AnnouncementData[];
+    specialAnnouncements: AnnouncementData[];
 }
 
-export default function Index({ posts, proposals, metrics }: PageProps<HomePageProps>) {
+export default function Index({ posts, proposals, metrics, announcements, specialAnnouncements }: PageProps<HomePageProps>) {
     const { t } = useTranslation();
     return (
         <>
@@ -25,7 +28,16 @@ export default function Index({ posts, proposals, metrics }: PageProps<HomePageP
             <div className="relative flex w-full flex-col justify-center gap-8">
                 <CatalystIntro />
 
-                <section className="annnouncements-wrapper py-16"></section>
+                <section className="annnouncements-wrapper py-16">
+                    <div className='container'>
+                        <div className=" overflow-auto py-8">
+                            <h2 className="title-2">Announcements Data</h2>
+                        </div>
+                        <WhenVisible fallback={<div>Loading...</div>} data="announcements">
+                            {JSON.stringify(announcements)}
+                        </WhenVisible>
+                    </div>
+                </section>
 
                 <section className="numbers-wrapper py-16">
                     <div className='container'>
@@ -58,14 +70,23 @@ export default function Index({ posts, proposals, metrics }: PageProps<HomePageP
                     </section>
                 </WhenVisible>
 
-                <section className="special-announcements-wrapper"></section>
+                <section className="special-announcements-wrapper">
+                    <div className='container'>
+                        <div className=" overflow-auto py-8">
+                            <h2 className="title-2">Special Announcements Data</h2>
+                        </div>
+                        <WhenVisible fallback={<div>Loading...</div>} data="specialAnnouncements">
+                            {JSON.stringify(specialAnnouncements)}
+                        </WhenVisible>
+                    </div>
+                </section>
 
                 <section className="posts-wrapper container flex flex-col gap-8">
                     <div>
                         <h2 className="title-2">{t('posts.title')}</h2>
                         <p>{t('posts.subtitle')}</p>
                     </div>
-                    <WhenVisible fallback={<PostListLoader />} data="posts">
+                    <WhenVisible fallback={<PostListLoader/>} data="posts">
                         <ul className="content-gap scrollable snaps-scrollable">
                             {posts &&
                                 posts.map((post) => (

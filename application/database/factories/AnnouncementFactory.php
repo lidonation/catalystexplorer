@@ -19,6 +19,7 @@ class AnnouncementFactory extends Factory
             'title' => $this->faker->sentence,
             'content' => $this->faker->paragraph,
             'label' => $this->faker->word,
+            'context' => $this->faker->randomElement(['home', null, 'proposal', 'special', null, null]),
             'event_starts_at' => $this->faker->dateTimeBetween('now', '+1 week'),
             'event_ends_at' => $this->faker->dateTimeBetween('+1 week', '+2 weeks'),
             'user_id' => User::factory(),
