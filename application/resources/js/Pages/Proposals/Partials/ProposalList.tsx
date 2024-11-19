@@ -1,7 +1,7 @@
 import React from "react";
 import ProposalCard from "@/Pages/Proposals/Partials/ProposalCard";
 import SecondaryButton from "@/Components/SecondaryButton";
-import { router, Link } from "@inertiajs/react";
+import { router } from "@inertiajs/react";
 import ProposalData = App.DataTransferObjects.ProposalData;
 
 interface ProposalProps {
