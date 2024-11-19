@@ -13,7 +13,7 @@ class AnnouncementFactory extends Factory
 {
     protected $model = Announcement::class;
 
-    public function definition()
+    public function definition(): array
     {
         return [
             'title' => $this->faker->sentence,

@@ -19,7 +19,7 @@ class IdeascaleProfileFactory extends Factory
      *
      * @return array
      */
-    public function definition()
+    public function definition(): array
     {
         return [
             'ideascale_id' => $this->faker->numberBetween(1, 1000),
