@@ -26,7 +26,7 @@ class Proposal extends Model
     use HasTranslations, HasAuthor,
         Searchable,
         HasTaxonomies;
-    
+
     public array $translatable = [
         'title',
         'meta_title',

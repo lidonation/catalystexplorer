@@ -8,7 +8,7 @@ use Inertia\Response;
 
 class SearchController extends Controller
 {
-    public function index(): Response
+    public function index(Request $request): Response
     {
         return Inertia::render('S/Index');
     }

@@ -34,7 +34,7 @@
         "placeholder": "Search proposals, funds, people, articles & data",
         "all_filters": "All Filters",
         "variants": {
-            "all": "All Groups",
+            "all": "All",
             "proposals": "Proposals",
             "people": "People",
             "groups": "Groups",

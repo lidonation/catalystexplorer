@@ -92,7 +92,7 @@ const SearchVariants = ({
                     {variants.map((variant) => (
                         <ListboxOption key={variant} value={variant}>
                             {({ selected }) => (
-                                <div className="flex cursor-pointer items-center justify-between gap-2 px-3 py-2 hover:rounded-lg hover:bg-hover">
+                                <div className="flex cursor-pointer items-center justify-between gap-2 px-3 py-2 hover:rounded-lg hover:bg-background-lighter">
                                     <span className="capitalize">
                                         {variant}
                                     </span>
@@ -147,19 +147,17 @@ const SearchBar = ({ autoFocus = false }: SearchBarProps) => {
         event.preventDefault();
         const filters = searchTerms
             .filter((term) => term !== t('searchBar.variants.all'))
-            .join(',');
+            .map((term) => term.toLowerCase())
+            .join('-');
 
-        router.get(
-            '/s',
-            {
-                q: searchQuery,
-                f: filters,
-            },
-            {
-                preserveState: true,
-                preserveScroll: true,
-            },
-        );
+        const queryParams: Record<string, string> = { q: searchQuery };
+
+        if (filters) queryParams.f = filters;
+
+        router.get('/s', queryParams, {
+            preserveState: true,
+            preserveScroll: true,
+        });
     };
 
     return (
