@@ -3,7 +3,6 @@ import PostCard from '@/Pages/Posts/Partials/PostCard';
 import { PageProps, Post } from '@/types';
 import { Head, WhenVisible } from '@inertiajs/react';
 import PostListLoader from '../Posts/Partials/PostListLoader';
-import ProposalCard from '../Proposals/Partials/ProposalCard';
 import ProposalList from '../Proposals/Partials/ProposalList';
 import ProposalCardLoading from '../Proposals/Partials/ProposalCardLoading';
 import { useTranslation } from 'react-i18next';
