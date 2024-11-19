@@ -1,8 +1,8 @@
 import { Link, useForm } from "@inertiajs/react";
-import InputLabel from "../InputLabel";
-import TextInput from "../TextInput";
-import InputError from "../InputError";
-import PrimaryButton from "../PrimaryButton";
+import InputLabel from "../../../Components/InputLabel";
+import TextInput from "../../../Components/TextInput";
+import InputError from "../../../Components/InputError";
+import PrimaryButton from "../../../Components/PrimaryButton";
 import { FormEventHandler } from "react";
 
 export default function RegisterForm() {
