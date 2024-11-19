@@ -61,7 +61,7 @@ function ModalSidebar({ isOpen = false, title, children, onClose }: ModalSidebar
                         ariaLabel={t('navigation.sidebar.close')}
                         aria-expanded={isOpen}
                         aria-controls="sidebar-modal"
-                        className="inline-flex items-center rounded px-2 py-1 text-4 hover:bg-gray-100"
+                        className="inline-flex items-center rounded px-2 py-1 text-4 hover:bg-dark"
                     >
                         <CloseIcon width={18} height={18} />
                     </Button>

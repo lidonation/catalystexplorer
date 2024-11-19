@@ -7,7 +7,7 @@
     --cx-secondary: #3facd1;
     --cx-dark: #667085;
     --cx-light: #667085;
-    --cx-accent: #165a72;
+    --cx-accent:  #165a72;
 
     --cx-blue-eye-color: #b1e2f0;
 
@@ -22,9 +22,6 @@
     --cx-background-darker: #f9fbfb;
     --cx-background-lighter: #eaecf0;
     --cx-background-light: #667085;
-    --cx-background-gradient-1-light: #1b2230;
-    --cx-background-gradient-2-light: #475467;
-    --cx-background-gradient-1-dark: #1b2230;
     --cx-background-gradient-1-light: #3facd1;
     --cx-background-gradient-2-light: #2596BE;
     --cx-background-gradient-1-dark: #1B2230;
@@ -226,9 +223,6 @@
     .section-margin {
         @apply mt-8;
     }
-
-    main > header {
-        @apply pt-11;
     }
 
     .scrollable {
@@ -261,4 +255,4 @@
     .snaps-scrollable > * {
         scroll-snap-align: start;
     }
-}
+
