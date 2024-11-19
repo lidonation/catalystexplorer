@@ -62,6 +62,11 @@
             "invalidUrl": "Format d'URL invalide"
         }
     },
+    "proposals": "Propositions",
+    "proposalList":{
+        "subtitle" : "Les votes des propositions doivent être soumis dans l'application officielle de vote Catalyst",
+        "buttonText": "See more proposals"
+    },
     "posts": {
         "title": "Articles des Catalysts",
         "subtitle": "Dernières nouvelles et publications de notre communauté"
