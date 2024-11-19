@@ -18,7 +18,7 @@ const ProposalList: React.FC<ProposalProps> = ({ proposals }) => {
         <section className="proposals-wrapper">
             <div className="container py-8 flex justify-between items-center">
                 <div>
-                    <h2 className="title-2">{t("proposals")}</h2>
+                    <h2 className="title-2">{t("proposalList.title")}</h2>
                     <p className="text-4 text-content-dark opacity-70">{t("proposalList.subtitle")}</p>
                 </div>
                 <div>
