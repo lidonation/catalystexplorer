@@ -13,7 +13,7 @@ class DiscussionFactory extends Factory
 {
     protected $model = Discussion::class;
 
-    public function definition()
+    public function definition(): array
     {
         // Dynamically choose a related model (e.g., Proposal, Fund)
         $relatedModel = $this->getRandomRelatedModel();
