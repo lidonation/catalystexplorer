@@ -62,6 +62,10 @@
             "invalidUrl": "Invalid URL format"
         }
     },
+    "proposalList":{
+       "title": "Proposals",
+       "subtitle" : "Proposal votes must be submitted in the official Catalyst Voting App"
+    },
     "posts": {
         "title": "Catalysts Posts",
         "subtitle": "Latest news and posts from our community"
