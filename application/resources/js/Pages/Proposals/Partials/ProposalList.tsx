@@ -23,7 +23,7 @@ const ProposalList: React.FC<ProposalProps> = ({ proposals }) => {
                 </div>
                 <div>
                     <SecondaryButton className="font-bold text-content-dark" onClick={navigate}>
-                        See more proposals
+                    {t("proposalList.buttonText")}
                     </SecondaryButton>
                 </div>
             </div>

@@ -102,7 +102,8 @@
     },
     "proposalList":{
        "title": "Proposals",
-       "subtitle" : "Proposal votes must be submitted in the official Catalyst Voting App"
+       "subtitle" : "Proposal votes must be submitted in the official Catalyst Voting App",
+       "buttonText": "See more proposals"
     },
     "posts": {
         "title": "Catalysts Posts",
