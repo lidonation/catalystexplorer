@@ -22,10 +22,10 @@ final class MetricData extends Data
         #[TypeScriptOptional]
         public ?string $status,
 
-        #[TypeScriptOptional, WithCast(DateTimeInterfaceCast::class, format: 'Y-m-d H:i:s')]
+        #[TypeScriptOptional, WithCast(DateTimeInterfaceCast::class, format: 'd/m/Y')]
         public ?\DateTime $created_at,
 
-        #[TypeScriptOptional, WithCast(DateTimeInterfaceCast::class, format: 'Y-m-d H:i:s')]
+        #[TypeScriptOptional, WithCast(DateTimeInterfaceCast::class, format: 'd/m/Y')]
         public ?\DateTime $updated_at,
 
         #[TypeScriptOptional]
@@ -40,6 +40,12 @@ final class MetricData extends Data
 
         #[TypeScriptOptional]
         public ?string $count_by,
+
+        #[TypeScriptOptional]
+        public ?array $chartData,
+
+        #[TypeScriptOptional]
+        public ?int $value,
 
         #[TypeScriptOptional]
         public ?int $order

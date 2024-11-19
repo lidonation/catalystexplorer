@@ -21,7 +21,7 @@ return new class extends Migration
             $table->string('model_type');
             $table->string('title')->nullable();
             $table->text('content');
-            $table->enum('status', StatusEnum::toArray())->default(StatusEnum::pending()->value)->nullable;
+            $table->enum('status', StatusEnum::toValues())->default(StatusEnum::pending()->value)->nullable;
             $table->timestamp('published_at')->nullable();
             $table->integer('ranking_total')->default(0);
             $table->integer('helpful_total')->default(0);
