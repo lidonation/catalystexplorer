@@ -8,22 +8,22 @@ use App\Models\Translation;
 use App\Models\User;
 use Illuminate\Auth\Access\Response;
 
-class TranslationPolicy
+class TranslationPolicy extends AppPolicy
 {
     /**
      * Determine whether the user can view any models.
      */
     public function viewAny(User $user): bool
     {
-        //
+        return parent::canViewAny($user);
     }
 
     /**
      * Determine whether the user can view the model.
      */
-    public function view(User $user, Translation $translation): bool
+    public function view(User $user, Translation $model): bool
     {
-        //
+        return parent::canView($user, $model);
     }
 
     /**
@@ -31,38 +31,22 @@ class TranslationPolicy
      */
     public function create(User $user): bool
     {
-        //
+        return parent::canCreate($user);
     }
 
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, Translation $translation): bool
+    public function update(User $user, Translation $model): bool
     {
-        //
+        return parent::canUpdate($user, $model);
     }
 
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, Translation $translation): bool
+    public function delete(User $user, Translation $model): bool
     {
-        //
-    }
-
-    /**
-     * Determine whether the user can restore the model.
-     */
-    public function restore(User $user, Translation $translation): bool
-    {
-        //
-    }
-
-    /**
-     * Determine whether the user can permanently delete the model.
-     */
-    public function forceDelete(User $user, Translation $translation): bool
-    {
-        //
+        return parent::canDelete($user, $model);
     }
 }

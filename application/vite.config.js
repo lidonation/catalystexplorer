@@ -11,6 +11,5 @@ export default defineConfig({
             refresh: true,
         }),
         react(),
-        i18n()
     ],
 });
