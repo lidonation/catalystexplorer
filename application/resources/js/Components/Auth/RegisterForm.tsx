@@ -100,7 +100,7 @@ export default function RegisterForm() {
                 </div>
 
             <div>
-                <PrimaryButton className="w-full h-10 flex items-center justify-center rounded-md" disabled={processing}>
+                <PrimaryButton className="w-full h-10 flex items-center justify-center rounded-md" disabled={processing} type="submit">
                     Get Started
                 </PrimaryButton>
             </div>

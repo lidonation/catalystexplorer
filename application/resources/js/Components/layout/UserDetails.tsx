@@ -40,17 +40,17 @@ const UserDetails: React.FC<UserDetailsProps> = ({ user }) => {
                         <div className="flex flex-col">
                             <Link
                                 href="/dashboard"
-                                className="text-sm font-semibold text-content"
+                                className="text-4 font-semibold text-content"
                             >
                                 {user?.name}
                             </Link>
 
-                            <p className="text-xs text-content">
+                            <p className="text-5 text-content">
                                 {user?.email}
                             </p>
                             <Link
                                 href="/profile"
-                                className="text-xs font-semibold text-primary"
+                                className="text-5 font-semibold text-primary"
                             >
                                 Edit profile
                             </Link>
@@ -70,11 +70,11 @@ const UserDetails: React.FC<UserDetailsProps> = ({ user }) => {
                     <div className='flex flex-col menu-gap-x'>
                         <div className='flex menu-gap-y px-3 py-1 hover:bg-background-lighter hover:text-content-secondary cursor-pointer' onClick={() => setIsModalOpen(true)}>
                             <RegisterUserIcon className='text-dark' />
-                            <p className='text-lg font-medium'>Register</p>
+                            <p className='text-2 font-medium'>Register</p>
                         </div>
                         <div className='flex menu-gap-y px-3 py-1 hover:bg-background-lighter hover:text-content-secondary cursor-pointer'>
                             <LoginIcon className='text-dark' />
-                            <p className='text-lg font-medium'>Login</p>
+                            <p className='text-2 font-medium'>Login</p>
                         </div>
                     </div>
                     <ModalSidebar
