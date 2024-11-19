@@ -2,6 +2,7 @@ import React from "react";
 import ProposalCard from "@/Pages/Proposals/Partials/ProposalCard";
 import SecondaryButton from "@/Components/SecondaryButton";
 import { router } from "@inertiajs/react";
+import { useTranslation } from "react-i18next";
 import ProposalData = App.DataTransferObjects.ProposalData;
 
 interface ProposalProps {
@@ -9,6 +10,7 @@ interface ProposalProps {
 }
 
 const ProposalList: React.FC<ProposalProps> = ({ proposals }) => {
+    const {t} = useTranslation();
     function navigate (){
        router.get('/proposals')
     }
@@ -16,8 +18,8 @@ const ProposalList: React.FC<ProposalProps> = ({ proposals }) => {
         <section className="proposals-wrapper">
             <div className="container py-8 flex justify-between items-center">
                 <div>
-                    <h2 className="title-2">Proposals</h2>
-                    <p className="text-4 text-content-dark opacity-70">Proposal votes must be submitted in the official Catalyst Voting App</p>
+                    <h2 className="title-2">{t("proposalList.title")}</h2>
+                    <p className="text-4 text-content-dark opacity-70">{t("proposalList.subtitle")}</p>
                 </div>
                 <div>
                     <SecondaryButton className="font-bold text-content-dark" onClick={navigate}>
