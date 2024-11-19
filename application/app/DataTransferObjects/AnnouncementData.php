@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace App\DTOs;
+namespace App\DataTransferObjects;
 
 use Spatie\LaravelData\Data;
 use Spatie\TypeScriptTransformer\Attributes\Optional as TypeScriptOptional;
@@ -15,6 +15,9 @@ class AnnouncementData extends Data
 
     #[TypeScriptOptional]
     public ?string $label = null;
+
+    #[TypeScriptOptional]
+    public ?string $context = null;
 
     #[TypeScriptOptional]
     public ?string $event_starts_at = null;
