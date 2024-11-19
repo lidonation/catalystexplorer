@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('title');
             $table->text('content');
             $table->string('label')->nullable();
+            $table->string('context')->nullable();
             $table->timestamps();
             $table->timestamp('event_starts_at')->nullable();
             $table->timestamp('event_ends_at')->nullable();
