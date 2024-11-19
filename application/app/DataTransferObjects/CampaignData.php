@@ -13,9 +13,6 @@ class CampaignData extends Data
     public int $id,
 
     #[TypeScriptOptional]
-    public UserData $user,
-
-    #[TypeScriptOptional]
     public int $fund_id,
 
     public string $title,
@@ -24,39 +21,24 @@ class CampaignData extends Data
 
     public string $slug,
     #[TypeScriptOptional]
-    public string $excerpt,
+    public ?string $excerpt,
 
     #[TypeScriptOptional]
-    public string $comment_prompt,
+    public ?string $comment_prompt,
 
     #[TypeScriptOptional]
-    public string $content,
+    public ?string $content,
 
     #[TypeScriptOptional]
     public float $amount,
-
-    #[TypeScriptOptional]
-    public string $status,
-
-    #[TypeScriptOptional]
-    public string $launched_at,
-
-    #[TypeScriptOptional]
-    public string $awarded_at,
 
     public string $created_at,
 
     public string $updated_at,
 
     #[TypeScriptOptional]
-    public string $color,
+    public ?string $label,
 
-    #[TypeScriptOptional]
-    public string $label,
-
-    public string $currency,
-
-    #[TypeScriptOptional]
-    public string $review_started_at
+    public ?string $currency
   ) {}
 }

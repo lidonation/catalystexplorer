@@ -22,7 +22,7 @@ final class ProposalData extends Data
 
         public ?int $fund_id,
 
-        public ?array $title,
+        public ?string $title,
 
         public string $slug,
 
@@ -42,8 +42,8 @@ final class ProposalData extends Data
 
         public string $funding_status,
 
-        #[TypeScriptOptional]
-        public ?array $meta_data,
+//        #[TypeScriptOptional]
+//        public ?array $meta_data,
 
         #[TypeScriptOptional]
         public ?string $funded_at,

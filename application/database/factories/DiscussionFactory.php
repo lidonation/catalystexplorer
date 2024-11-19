@@ -22,7 +22,7 @@ class DiscussionFactory extends Factory
             'user_id' => User::factory(),
             'model_id' => $relatedModel,
             'model_type' => get_class($relatedModel),
-            'status' => $this->faker->randomElement(StatusEnum::toArray()),
+            'status' => $this->faker->randomElement(StatusEnum::toValues()),
             'order' => $this->faker->numberBetween(1, 10),
             'content' => $this->faker->paragraph(),
             'comment_prompt' => $this->faker->sentence(),

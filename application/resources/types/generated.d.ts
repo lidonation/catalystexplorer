@@ -1,7 +1,6 @@
 declare namespace App.DataTransferObjects {
 export type CampaignData = {
 id: number;
-user?: App.DataTransferObjects.UserData;
 fund_id?: number;
 title: string;
 meta_title: string;
@@ -10,15 +9,10 @@ excerpt?: string;
 comment_prompt?: string;
 content?: string;
 amount?: number;
-status?: string;
-launched_at?: string;
-awarded_at?: string;
 created_at: string;
 updated_at: string;
-color?: string;
 label?: string;
-currency: string;
-review_started_at?: string;
+currency: string | null;
 };
 export type CommunityData = {
 id: number | null;
@@ -95,6 +89,8 @@ field?: string;
 type: string;
 query: string;
 count_by?: string;
+chartData?: Array<any>;
+value?: number;
 order?: number;
 };
 export type PostData = {
@@ -115,7 +111,7 @@ id: number | null;
 user_id: number | null;
 campaign: App.DataTransferObjects.CampaignData | null;
 fund_id: number | null;
-title: Array<any> | null;
+title: string | null;
 slug: string;
 website: string | null;
 excerpt?: string;
@@ -124,7 +120,6 @@ amount_received: number;
 definition_of_success?: string;
 status: string;
 funding_status: string;
-meta_data?: Array<any>;
 funded_at?: string;
 deleted_at?: string;
 funding_updated_at?: string;

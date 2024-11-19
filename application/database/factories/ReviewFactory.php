@@ -24,7 +24,7 @@ class ReviewFactory extends Factory
             'model_type' => Discussion::class,
             'title' => $this->faker->sentence(),
             'content' => $this->faker->paragraph(),
-            'status' => $this->faker->randomElement(StatusEnum::toArray()),
+            'status' => $this->faker->randomElement(StatusEnum::toValues()),
             'published_at' => $this->faker->optional()->dateTime(),
             'ranking_total' => $this->faker->numberBetween(0, 100),
             'helpful_total' => $this->faker->numberBetween(0, 100),
