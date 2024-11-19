@@ -7,6 +7,7 @@ use App\Enums\MetricQueryTypes;
 use App\Enums\MetricTypes;
 use App\Enums\StatusEnum;
 use App\Models\Metric;
+use App\Models\Proposal;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -24,11 +25,15 @@ class MetricFactory extends Factory
         return [
             'title' => $this->faker->sentence,
             'content' => $this->faker->sentence(8),
+            'color' => $this->faker->hexColor(),
+            'model' =>  $this->faker->randomElement([
+                Proposal::class
+            ]),
             'field' => $this->faker->randomElement(['id', 'amount_requested', 'id']),
-            'type' => $this->faker->randomElement(MetricTypes::toArray()),
-            'query' => $this->faker->randomElement(MetricQueryTypes::toArray()),
-            'count_by' => $this->faker->randomElement(MetricCountBy::toArray()),
-            'status' => $this->faker->randomElement(StatusEnum::toArray()),
+            'type' => $this->faker->randomElement(MetricTypes::toValues()),
+            'query' => $this->faker->randomElement(MetricQueryTypes::toValues()),
+            'count_by' => $this->faker->randomElement(MetricCountBy::toValues()),
+            'status' => $this->faker->randomElement(StatusEnum::toValues()),
             'order' => $this->faker->numberBetween(0, 20),
             'created_at' => $this->faker->dateTimeBetween('-2 years', 'now'),
         ];

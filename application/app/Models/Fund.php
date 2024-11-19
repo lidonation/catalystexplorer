@@ -22,7 +22,7 @@ class Fund extends Model
         'media',
     ];
 
-    protected $appends = ['link', 'hero_url', 'thumbnail_url'];
+    protected $appends = [];
 
     protected $guarded = [];
 

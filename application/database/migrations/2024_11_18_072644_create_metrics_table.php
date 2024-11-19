@@ -25,10 +25,12 @@ return new class extends Migration
             $table->text('content')->nullable();
             $table->text('field')->nullable();
             $table->text('context')->nullable();
-            $table->enum('type', MetricTypes::toArray());
-            $table->enum('query', MetricQueryTypes::toArray());
-            $table->enum('count_by', MetricCountBy::toArray())->nullable();
-            $table->enum('status', StatusEnum::toArray())->default(StatusEnum::draft());
+            $table->text('color')->nullable();
+            $table->text('model');
+            $table->enum('type', MetricTypes::toValues());
+            $table->enum('query', MetricQueryTypes::toValues());
+            $table->enum('count_by', MetricCountBy::toValues())->nullable();
+            $table->enum('status', StatusEnum::toValues())->default(StatusEnum::draft());
             $table->smallInteger('order')->default(0);
             $table->timestamps();
             $table->softDeletes();
