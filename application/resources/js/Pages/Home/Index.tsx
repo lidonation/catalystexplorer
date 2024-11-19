@@ -31,13 +31,13 @@ export default function Index({ posts, proposals }: PageProps<HomePageProps>) {
                         <div className="max-h80 container overflow-auto py-8">
                             <h2 className="title-2">Proposals</h2>
                         </div>
-                        <div className="mx-auto container grid max-w-7xl grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-3 2xl:max-w-full">
+                        <div className="container mx-auto grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-3 2xl:max-w-full">
                             {proposals &&
                                 proposals.map((proposal) => (
-                                        <ProposalCard
-                                            key={proposal.id}
-                                            proposal={proposal}
-                                        />
+                                    <ProposalCard
+                                        key={proposal.id}
+                                        proposal={proposal}
+                                    />
                                 ))}
                         </div>
                     </section>

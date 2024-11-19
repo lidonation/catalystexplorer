@@ -38,6 +38,7 @@ class HandleInertiaRequests extends Middleware
             'auth' => [
                 'user' => $request->user() ? UserData::from($request->user()) : null,
                 'isDownForMaintenance' => App::isDownForMaintenance(),
+                'locale' => app()->getLocale(),
             ],
         ];
     }
