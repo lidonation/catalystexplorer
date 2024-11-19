@@ -3,7 +3,7 @@ import PostCard from '@/Pages/Posts/Partials/PostCard';
 import { PageProps, Post } from '@/types';
 import { Head, WhenVisible } from '@inertiajs/react';
 import PostListLoader from '../Posts/Partials/PostListLoader';
-import ProposalCard from '../Proposals/Partials/ProposalCard';
+import ProposalList from '../Proposals/Partials/ProposalList';
 import ProposalCardLoading from '../Proposals/Partials/ProposalCardLoading';
 import { useTranslation } from 'react-i18next';
 import MetricData = App.DataTransferObjects.MetricData;
@@ -54,20 +54,7 @@ export default function Index({ posts, proposals, metrics, announcements, specia
                     fallback={<ProposalCardLoading/>}
                     data="proposals"
                 >
-                    <section className="proposals-wrapper">
-                        <div className="container py-8">
-                            <h2 className="title-2">Proposals</h2>
-                        </div>
-                        <div className="container mx-auto grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-3 2xl:max-w-full">
-                            {proposals &&
-                                proposals.map((proposal) => (
-                                    <ProposalCard
-                                        key={proposal.id}
-                                        proposal={proposal}
-                                    />
-                                ))}
-                        </div>
-                    </section>
+                    <ProposalList proposals={proposals}/>
                 </WhenVisible>
 
                 <section className="special-announcements-wrapper">
