@@ -51,6 +51,17 @@
         },
         "subtitle": "Catalyst drives Cardano's ecosystem growth by linking innovative ideas with funding, supported by community voting and the Cardano treasury."
     },
+    "proposalQuickpitch": {
+        "projectVideo": "Project Video",
+        "providedUrl": "Provided URL",
+        "errors": {
+            "noUrl": "No video URL provided",
+            "invalidYoutubeFormat": "The YouTube link format is incorrect",
+            "invalidVimeoFormat": "The Vimeo link format is incorrect",
+            "invalidUrlFormat": "Invalid URL format",
+            "invalidUrl": "Invalid URL format"
+        }
+    },
     "posts": {
         "title": "Catalysts Posts",
         "subtitle": "Latest news and posts from our community"
