@@ -14,7 +14,7 @@ export default function CatalystLogo({ className }: CatalystLogoProps) {
     const { t } = useTranslation();
 
     const updateLogoBasedOnTheme = (theme: string | null) => {
-        if (theme !== 'light') {
+        if (theme === 'dark') {
             setLogoSrc(catalystLogoLight);
         } else {
             setLogoSrc(catalystLogoDark);
