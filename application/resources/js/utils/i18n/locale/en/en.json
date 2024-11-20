@@ -30,6 +30,12 @@
             "support": "Support"
         }
     },
+    "registration":{
+        "buttonText": "Get started",
+        "alreadyRegistered": "Already registered?",
+        "login": "Login",
+        "passwordCharacters": "Must be 8 characters"
+    },
     "searchBar": {
         "placeholder": "Search proposals, funds, people, articles & data",
         "all_filters": "All Filters",
@@ -102,8 +108,15 @@
             "notificationBox": "Notification Box Icon",
             "people": "People Icon",
             "search": "Search Icon",
-            "voltaireMode": "Voltaire Mode Icon"
+            "voltaireMode": "Voltaire Mode Icon",
+            "register": "Register Icon",
+            "login": "Login Icon"
         }
+    },
+    "userDetails": {
+        "register" : "Register",
+        "login" : "Login",
+        "editProfile": "Edit profile"
     },
     "footer": {
         "links": {

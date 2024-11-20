@@ -50,6 +50,7 @@ export default {
                 accent: 'var(--cx-accent)',
                 'dark-persist':'var(--content-primary-color)',
                 'accent-secondary': 'var(--cx-accent-secondary)',
+                error: 'var(--bg-error-primary-color)',
                 success: 'var(--success-gradient-color-2)',
                 'success-light': 'var(--content-success-light)',
                 hover: 'var(--content-hover-color)',
@@ -61,6 +62,10 @@ export default {
                     'var(--cx-intro-gradient-1)',
                 'background-home-gradient-color-2':
                     'var(--cx-intro-gradient-2)',
+                    'background-button-gradient-color-1':
+                    'var(--cx-background-gradient-1-light)',
+                'background-button-gradient-color-2':
+                    'var(--cx-background-gradient-2-light)',
                 border: 'var(--cx-border-color)',
                 'eye-logo': 'var(--cx-blue-eye-color)',
                 // border: {
