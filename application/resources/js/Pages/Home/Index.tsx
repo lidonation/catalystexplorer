@@ -3,7 +3,7 @@ import PostCard from '@/Pages/Posts/Partials/PostCard';
 import { PageProps, Post } from '@/types';
 import { Head, WhenVisible } from '@inertiajs/react';
 import PostListLoader from '../Posts/Partials/PostListLoader';
-import ProposalList from '../Proposals/Partials/ProposalList';
+import ProposalCard from '../Proposals/Partials/ProposalCard';
 import ProposalCardLoading from '../Proposals/Partials/ProposalCardLoading';
 import { useTranslation } from 'react-i18next';
 import MetricData = App.DataTransferObjects.MetricData;
@@ -49,11 +49,46 @@ export default function Index({ posts, proposals, metrics, announcements, specia
                         </WhenVisible>
                     </div>
                 </section>
+                <section className="annnouncements-wrapper py-16">
+                    <div className='container'>
+                        <div className=" overflow-auto py-8">
+                            <h2 className="title-2">Announcements Data</h2>
+                        </div>
+                        <WhenVisible fallback={<div>Loading...</div>} data="announcements">
+                            {JSON.stringify(announcements)}
+                        </WhenVisible>
+                    </div>
+                </section>
+
+                <section className="numbers-wrapper py-16">
+                    <div className='container'>
+                        <div className=" overflow-auto py-8">
+                            <h2 className="title-2">Metrics Data</h2>
+                        </div>
+                        <WhenVisible fallback={<div>Loading...</div>} data="metrics">
+                            {JSON.stringify(metrics)}
+                        </WhenVisible>
+                    </div>
+                </section>
 
                 <WhenVisible
                     fallback={<ProposalCardLoading/>}
                     data="proposals"
                 >
+                    <section className="proposals-wrapper">
+                        <div className="container py-8">
+                            <h2 className="title-2">Proposals</h2>
+                        </div>
+                        <div className="container mx-auto grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-3 2xl:max-w-full">
+                            {proposals &&
+                                proposals.map((proposal) => (
+                                    <ProposalCard
+                                        key={proposal.id}
+                                        proposal={proposal}
+                                    />
+                                ))}
+                        </div>
+                    </section>
                     <ProposalList proposals={proposals}/>
                 </WhenVisible>
 
