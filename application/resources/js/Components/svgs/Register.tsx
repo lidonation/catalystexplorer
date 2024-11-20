@@ -24,7 +24,7 @@ export default function RegisterUserIcon({
             className={className}
             onClick={onClick}
         >
-            <title>{t('icons.title.registerUser')}</title>
+            <title>{t('icons.title.register')}</title>
             <circle
                 cx="10"
                 cy="7"
