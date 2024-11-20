@@ -13,38 +13,38 @@ function AppNavigation() {
     const navItems = [
         {
             href: '/',
-            title: t('navigation.links.home'),
+            title: t('home'),
             icon: <HomeIcon className="text-dark" />,
         },
         {
             href: '/proposals',
-            title: t('navigation.links.proposals'),
+            title: t('proposals'),
             icon: <NoteIcon className="text-primary-100" />,
             active: true,
         },
         {
             href: '/funds',
-            title: t('navigation.links.funds'),
+            title: t('funds'),
             icon: <CheckIcon className="text-dark" />,
         },
         {
             href: '/people',
-            title: t('navigation.links.people'),
+            title: t('people'),
             icon: <PeopleIcon className="text-dark" />,
         },
         {
             href: '/charts',
-            title: t('navigation.links.charts'),
+            title: t('charts'),
             icon: <ChartIcon className="text-dark" />,
         },
         {
             href: '/jormungandr',
-            title: t('navigation.links.jormungandr'),
+            title: t('jormungandr'),
             icon: <BarLineIcon className="text-dark" />,
         },
         {
             href: '/active-fund',
-            title: t('navigation.links.activeFund'),
+            title: t('activeFund'),
             icon: <NotificationBoxIcon className="text-dark" />,
         },
     ];

@@ -104,7 +104,7 @@ export default function RegisterForm() {
 
             <div>
                 <PrimaryButton className="w-full h-10 flex items-center justify-center rounded-md" disabled={processing} type="submit">
-                {t("registration.buttonText")}
+                {t("getStarted")}
                 </PrimaryButton>
             </div>
 
@@ -114,7 +114,7 @@ export default function RegisterForm() {
                     href={route('login')}
                     className="rounded-md text-primary font-bold hover:text-content focus:outline-none focus:ring-2 focus:ring-offset-2"
                 >
-                    {t("registration.login")}
+                    {t("login")}
                 </Link>
             </div>
         </form>

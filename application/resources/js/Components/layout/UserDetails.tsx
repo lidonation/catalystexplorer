@@ -72,11 +72,11 @@ const UserDetails: React.FC<UserDetailsProps> = ({ user }) => {
                         <ul className="flex flex-1 flex-col menu-gap-y">
                             <li className='flex items-center gap-3 px-3 py-1 hover:bg-background-lighter cursor-pointer' onClick={() => setIsModalOpen(true)}>
                                 <RegisterUserIcon className='text-dark' />
-                                <p className='text-3'>{t("userDetails.register")}</p>
+                                <p className='text-3'>{t("register")}</p>
                             </li>
                             <li className='flex items-center gap-3 px-3 py-1 hover:bg-background-lighter cursor-pointer'>
                                 <LoginIcon className='text-dark' />
-                                <p className='text-3'>{t("userDetails.login")}</p>
+                                <p className='text-3'>{t("login")}</p>
                             </li>
                         </ul>
                     </nav>

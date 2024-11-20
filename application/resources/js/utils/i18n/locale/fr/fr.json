@@ -1,4 +1,35 @@
 {
+    "activeFund": "Fonds Actif",
+    "articles": "Articles",
+    "bookmarks": "Mes Signets",
+    "communities": "Communautés",
+    "charts": "Graphiques",
+    "facebook": "Facebook",
+    "funds": "Fonds",
+    "getStarted": "Commencer",
+    "github": "Github",
+    "groups": "Groupes",
+    "home": "Accueil",
+    "jormungandr": "Jormungandr",
+    "knowledgeBase": "Base de Connaissances",
+    "linkedIn": "LinkedIn",
+    "login": "Se connecter",
+    "people": "Personnes",
+    "proposals": "Propositions",
+    "register": "Registre",
+    "reviews": "Évaluations",
+    "social": "Social",
+    "twitter": "Twitter",
+    "support": "Support",
+    "votes": "Mes Votes",
+    "wallets": "Portefeuilles",
+
+
+
+
+
+
+
     "app": {
         "name": "Catalyst Explorer",
         "contactEmail": "support@lidonation.com",
@@ -15,33 +46,13 @@
         "sidebar": {
             "open": "Ouvrir la barre latérale",
             "close": "Fermer la barre latérale"
-        },
-        "links": {
-            "home": "Accueil",
-            "proposals": "Propositions",
-            "funds": "Fonds",
-            "people": "Personnes",
-            "charts": "Graphiques",
-            "jormungandr": "Jormungandr",
-            "activeFund": "Fonds Actif",
-            "bookmarks": "Mes Signets",
-            "votes": "Mes Votes",
-            "knowledgeBase": "Base de Connaissances",
-            "support": "Support"
         }
     },
     "searchBar": {
         "placeholder": "Rechercher des propositions, des fonds, des personnes, des articles et des données",
         "all_filters": "Tous les filtres",
         "variants": {
-            "all": "Tous les groupes",
-            "proposals": "Propositions",
-            "people": "Personnes",
-            "groups": "Groupes",
-            "communities": "Communautés",
-            "wallets": "Portefeuilles",
-            "reviews": "Évaluations",
-            "articles": "Articles"
+            "all": "Tous les groupes"
         }
     },
     "catalystIntro": {
@@ -62,7 +73,6 @@
             "invalidUrl": "Format d'URL invalide"
         }
     },
-    "proposals": "Propositions",
     "proposalList":{
         "subtitle" : "Les votes des propositions doivent être soumis dans l'application officielle de vote Catalyst",
         "buttonText": "See more proposals"
@@ -124,11 +134,7 @@
             "catalystAPI": "API Catalyst",
             "proposalCSVs": "CSVs de propositions",
 
-            "social": "Social",
-            "twitter": "Twitter",
-            "linkedIn": "LinkedIn",
-            "facebook": "Facebook",
-            "github": "Github",
+
 
             "legal": "Légal",
             "terms": "Conditions Générales",
