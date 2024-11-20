@@ -50,6 +50,7 @@ export default {
                 accent: 'var(--cx-accent)',
                 'dark-persist':'var(--content-primary-color)',
                 'accent-secondary': 'var(--cx-accent-secondary)',
+                error: 'var(--bg-error-primary-color)',
                 success: 'var(--success-gradient-color-2)',
                 'success-light': 'var(--content-success-light)',
                 hover: 'var(--content-hover-color)',
