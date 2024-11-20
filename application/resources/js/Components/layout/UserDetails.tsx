@@ -8,7 +8,7 @@ import LoginIcon from '../svgs/Login';
 import RegisterUserIcon from '../svgs/Register';
 import UserAvatar from '../UserAvatar';
 import ModalSidebar from './ModalSidebar';
-import RegisterForm from '../Auth/RegisterForm';
+import RegisterForm from '@/Pages/Auth/Partials/RegisterForm';
 
 interface UserDetailsProps {
     user: App.DataTransferObjects.UserData;

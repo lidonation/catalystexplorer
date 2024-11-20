@@ -48,7 +48,6 @@ export default {
                 secondary: 'var(--cx-secondary)',
                 highlight: 'var(--cx-light)',
                 accent: 'var(--cx-accent)',
-                error: 'var(--bg-error-primary-color)',
                 'dark-persist':'var(--content-primary-color)',
                 'accent-secondary': 'var(--cx-accent-secondary)',
                 success: 'var(--success-gradient-color-2)',
@@ -58,8 +57,14 @@ export default {
                 'background-light': 'var(--cx-background-light)',
                 'background-lighter': 'var(--cx-background-lighter)',
                 'background-darker': 'var(--cx-background-darker)',
-                'background-gradient-1-light': 'var(--cx-background-gradient-1-light)',
-                'background-gradient-2-light': 'var(--cx-background-gradient-2-light)',
+                'background-home-gradient-color-1':
+                    'var(--cx-intro-gradient-1)',
+                'background-home-gradient-color-2':
+                    'var(--cx-intro-gradient-2)',
+                    'background-button-gradient-color-1':
+                    'var(--cx-background-gradient-1-light)',
+                'background-button-gradient-color-2':
+                    'var(--cx-background-gradient-2-light)',
                 border: 'var(--cx-border-color)',
                 'eye-logo': 'var(--cx-blue-eye-color)',
                 // border: {
@@ -89,10 +94,7 @@ export default {
                 md: ['1rem', {
                     lineHeight: '1.5rem',
                 }]
-            },
-            spacing: {
-                'content-gap': '1.5rem' 
-            },
+            }
         },
     },
 
