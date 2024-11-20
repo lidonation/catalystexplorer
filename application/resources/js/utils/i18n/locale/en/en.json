@@ -108,7 +108,9 @@
             "notificationBox": "Notification Box Icon",
             "people": "People Icon",
             "search": "Search Icon",
-            "voltaireMode": "Voltaire Mode Icon"
+            "voltaireMode": "Voltaire Mode Icon",
+            "register": "Register Icon",
+            "login": "Login Icon"
         }
     },
     "userDetails": {
