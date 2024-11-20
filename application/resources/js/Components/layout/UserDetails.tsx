@@ -52,7 +52,7 @@ const UserDetails: React.FC<UserDetailsProps> = ({ user }) => {
                                 href="/profile"
                                 className="text-5 font-semibold text-primary"
                             >
-                               { t("userDetails.editProfile")}
+                                {t("userDetails.editProfile")}
                             </Link>
                         </div>
                     </div>
@@ -67,16 +67,19 @@ const UserDetails: React.FC<UserDetailsProps> = ({ user }) => {
                 </div>
                 :
                 <>
-                    <div className='flex flex-col menu-gap-x'>
-                        <div className='flex menu-gap-y px-3 py-1 hover:bg-background-lighter hover:text-content-secondary cursor-pointer' onClick={() => setIsModalOpen(true)}>
-                            <RegisterUserIcon className='text-dark' />
-                            <p className='text-2 font-medium'>{ t("userDetails.register")}</p>
-                        </div>
-                        <div className='flex menu-gap-y px-3 py-1 hover:bg-background-lighter hover:text-content-secondary cursor-pointer'>
-                            <LoginIcon className='text-dark' />
-                            <p className='text-2 font-medium'>{ t("userDetails.login")}</p>
-                        </div>
-                    </div>
+
+                    <nav className="flex flex-col justify-between">
+                        <ul className="flex flex-1 flex-col menu-gap-y">
+                            <li className='flex items-center gap-3 px-3 py-1 hover:bg-background-lighter' onClick={() => setIsModalOpen(true)}>
+                                <RegisterUserIcon className='text-dark' />
+                                <p className='text-3'>{t("userDetails.register")}</p>
+                            </li>
+                            <li className='flex items-center gap-3 px-3 py-1 hover:bg-background-lighter'>
+                                <LoginIcon className='text-dark' />
+                                <p className='text-3'>{t("userDetails.login")}</p>
+                            </li>
+                        </ul>
+                    </nav>
                     <ModalSidebar
                         title="Register"
                         isOpen={isModalOpen}
