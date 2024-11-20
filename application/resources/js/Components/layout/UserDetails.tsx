@@ -52,7 +52,7 @@ const UserDetails: React.FC<UserDetailsProps> = ({ user }) => {
                                 href="/profile"
                                 className="text-5 font-semibold text-primary"
                             >
-                                Edit profile
+                               { t("userDetails.editProfile")}
                             </Link>
                         </div>
                     </div>
@@ -70,11 +70,11 @@ const UserDetails: React.FC<UserDetailsProps> = ({ user }) => {
                     <div className='flex flex-col menu-gap-x'>
                         <div className='flex menu-gap-y px-3 py-1 hover:bg-background-lighter hover:text-content-secondary cursor-pointer' onClick={() => setIsModalOpen(true)}>
                             <RegisterUserIcon className='text-dark' />
-                            <p className='text-2 font-medium'>Register</p>
+                            <p className='text-2 font-medium'>{ t("userDetails.register")}</p>
                         </div>
                         <div className='flex menu-gap-y px-3 py-1 hover:bg-background-lighter hover:text-content-secondary cursor-pointer'>
                             <LoginIcon className='text-dark' />
-                            <p className='text-2 font-medium'>Login</p>
+                            <p className='text-2 font-medium'>{ t("userDetails.login")}</p>
                         </div>
                     </div>
                     <ModalSidebar

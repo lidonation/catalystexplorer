@@ -105,6 +105,11 @@
             "voltaireMode": "Voltaire Mode Icon"
         }
     },
+    "userDetails": {
+        "register" : "Register",
+        "login" : "Login",
+        "editProfile": "Edit profile"
+    },
     "footer": {
         "links": {
             "proposals": "Proposals",
