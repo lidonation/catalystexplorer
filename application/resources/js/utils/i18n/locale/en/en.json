@@ -30,6 +30,12 @@
             "support": "Support"
         }
     },
+    "registration":{
+        "buttonText": "Get started",
+        "alreadyRegistered": "Already registered?",
+        "login": "Login",
+        "passwordCharacters": "Must be 8 characters"
+    },
     "searchBar": {
         "placeholder": "Search proposals, funds, people, articles & data",
         "all_filters": "All Filters",

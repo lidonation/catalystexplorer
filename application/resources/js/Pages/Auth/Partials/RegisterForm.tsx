@@ -3,6 +3,7 @@ import InputLabel from "../../../Components/InputLabel";
 import TextInput from "../../../Components/TextInput";
 import InputError from "../../../Components/InputError";
 import PrimaryButton from "../../../Components/PrimaryButton";
+import { useTranslation } from "react-i18next";
 import { FormEventHandler } from "react";
 
 export default function RegisterForm() {
@@ -20,6 +21,8 @@ export default function RegisterForm() {
             onFinish: () => reset('password', 'password_confirmation'),
         });
     };
+
+    const {t} = useTranslation();
 
     return (
         <form onSubmit={submit} className="flex flex-col content-gap">
@@ -70,7 +73,7 @@ export default function RegisterForm() {
                         onChange={(e) => setData('password', e.target.value)}
                         required
                     />
-                    <p className="text-4 text-dark mt-1">Must be 8 characters</p>
+                    <p className="text-4 text-dark mt-1">{t("registration.passwordCharacters")}</p>
                     <InputError message={errors.password} className="mt-2" />
                 </div>
 
@@ -101,17 +104,17 @@ export default function RegisterForm() {
 
             <div>
                 <PrimaryButton className="w-full h-10 flex items-center justify-center rounded-md" disabled={processing} type="submit">
-                    Get Started
+                {t("registration.buttonText")}
                 </PrimaryButton>
             </div>
 
             <div className="flex w-full items-center justify-center">
-                <span className="mr-2">Already registered?</span>
+                <span className="mr-2">{t("registration.alreadyRegistered")}</span>
                 <Link
                     href={route('login')}
                     className="rounded-md text-primary font-bold hover:text-content focus:outline-none focus:ring-2 focus:ring-offset-2"
                 >
-                    Login
+                    {t("registration.login")}
                 </Link>
             </div>
         </form>
