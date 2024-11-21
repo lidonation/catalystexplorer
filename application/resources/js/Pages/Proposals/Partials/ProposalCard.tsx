@@ -4,6 +4,7 @@ import ProposalFundingPercentages from './ProposalFundingPercentages';
 import ProposalFundingStatus from './ProposalFundingStatus';
 import ProposalQuickpitch from './ProposalQuickpitch';
 import ProposalSolution from './ProposalSolution';
+import { useTranslation } from 'react-i18next';
 import ProposalStatus from './ProposalStatus';
 import ProposalUsers from './ProposalUsers';
 import { PageProps } from '@/types';
@@ -15,6 +16,7 @@ interface Proposal extends Record<string, unknown> {
 }
 
 export default function ProposalCard({ proposal }: PageProps<Proposal>) {
+    const { t } = useTranslation();
     const gradientColors: Record<string, unknown> = {
         complete:
             'from-[var(--success-gradient-color-1)] to-[var(--success-gradient-color-2)]',
@@ -112,12 +114,12 @@ export default function ProposalCard({ proposal }: PageProps<Proposal>) {
                                 <ul className="flex justify-between">
                                     <li className="w-1/2">
                                         <button onClick={() => setQuickPitchView(false)} className={`w-full border-b-2 pb-3 font-semibold ${!quickPitchView ? 'border-primary text-primary' : 'border-transparent text-content'}`} aria-current={!quickPitchView ? 'page' : undefined}>
-                                            Details
+                                            {t("details")}
                                         </button>
                                     </li>
                                     <li className="flex w-1/2 items-center justify-center">
                                         <button type="button" onClick={handleQuickPitchClick} disabled={!hasQuickPitch} className={`flex items-center gap-1 pb-3 font-semibold ${quickPitchView ? 'border-b-2 border-primary text-primary' : 'border-transparent'} ${!hasQuickPitch ? 'cursor-not-allowed opacity-60' : 'text-content hover:text-primary'}`} aria-current={quickPitchView ? 'page' : undefined}>
-                                            <span>Quick Pitch</span>
+                                            <span>{t("proposals.quickPitch")}</span>
                                             {!hasQuickPitch && (<span className="text-dark-persist rounded-full bg-content-light px-2 py-1 text-xs">Not set</span>)}
                                         </button>
                                     </li>
@@ -127,7 +129,7 @@ export default function ProposalCard({ proposal }: PageProps<Proposal>) {
                             {/* Funding Section */}
                             <section className="mt-6" aria-labelledby="funding-heading">
                                 <div className="flex items-center gap-2">
-                                    <h3 className="font-semibold">Funding</h3>
+                                    <h3 className="font-semibold">{t("funding")}</h3>
                                     <ProposalFundingStatus funding_status={proposal.funding_status} />
                                 </div>
                                 <ProposalFundingPercentages proposal={proposal} />
@@ -171,7 +173,7 @@ export default function ProposalCard({ proposal }: PageProps<Proposal>) {
                         />
                     </svg>
                     <span className="flex gap-2">
-                        <span className="font-semibold">Yes</span>
+                        <span className="font-semibold">{t("yes")}</span>
                         <span className="text-highlight">({yesVotes})</span>
                     </span>
                 </button>
@@ -192,7 +194,7 @@ export default function ProposalCard({ proposal }: PageProps<Proposal>) {
                         />
                     </svg>
                     <span className="flex gap-2">
-                        <span className="font-semibold">Abstain</span>
+                        <span className="font-semibold">{t('abstain')}</span>
                         <span className="text-highlight">
                             ({abstainVotes})
                         </span>

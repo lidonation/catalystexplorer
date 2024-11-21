@@ -37,6 +37,10 @@
     "terms": "Conditions Générales",
     "votes": "Mes Votes",
     "wallets": "Portefeuilles",
+    "details": "Détails",
+    "teams": "Équipe",
+    "yes": "Oui",
+    "abstain": "Abstention",
     "app": {
         "name": "Catalyst Explorer",
         "contactEmail": "support@lidonation.com",
@@ -55,7 +59,7 @@
             "close": "Fermer la barre latérale"
         }
     },
-    "registration":{
+    "registration": {
         "alreadyRegistered": "Déjà inscrit?",
         "passwordCharacters": "Doit contenir 8 caractères"
     },
@@ -79,9 +83,12 @@
         "proposals": "Propositions",
         "projectVideo": "Vidéo du projet",
         "providedUrl": "URL fournie",
-        "listSubtitle" : "Les votes des propositions doivent être soumis dans l'application officielle de vote Catalyst.",
+        "listSubtitle": "Les votes des propositions doivent être soumis dans l'application officielle de vote Catalyst.",
         "pageSubtitle": "Rechercher des propositions et des défis par titre, contenu ou auteur et co-auteurs.",
         "seeMoreProposals": "Voir plus de propositions",
+        "quickPitch": "Présentation rapide",
+
+        "proposalReviews": "Examens de propositions",
         "errors": {
             "noUrl": "Aucune URL vidéo fournie",
             "invalidYoutubeFormat": "Le format du lien YouTube est incorrect",
@@ -127,5 +134,11 @@
             "voltaireMode": "Icône de mode Voltaire",
             "link": "Icône de lien"
         }
+    },
+    "users": {
+        "editProfile": "modifier le profil",
+        "viewProfile": "Afficher le profil complet",
+        "viewIdeascale": "Afficher et contacter l'utilisateur sur Ideascale",
+        "profile": "profil"
     }
 }
