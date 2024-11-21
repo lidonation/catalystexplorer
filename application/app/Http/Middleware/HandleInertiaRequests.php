@@ -35,6 +35,7 @@ class HandleInertiaRequests extends Middleware
     {
         return [
             ...parent::share($request),
+            'locale' => app()->getLocale(),
             'auth' => [
                 'user' => $request->user() ? UserData::from($request->user()) : null,
                 'isDownForMaintenance' => App::isDownForMaintenance(),
