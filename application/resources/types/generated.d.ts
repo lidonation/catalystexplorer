@@ -6,6 +6,7 @@ label?: string;
 event_starts_at?: string;
 event_ends_at?: string;
 cta?: Array<any>;
+context?:string
 user_id: number;
 };
 export type CampaignData = {

@@ -4,7 +4,6 @@
 
 :root {
     --cx-primary: #2596be;
-    --cx-primary: #2596be;
     --cx-secondary: #3facd1;
     --cx-dark: #667085;
     --cx-light: #667085;
@@ -14,6 +13,8 @@
 
     --cx-content: #101828;
     --cx-content-highlight: #ccf4ff;
+    --cx-content-gray-persist: #667085;
+    --cx-content-black-persist: #101828;
     --cx-content-light: #eaecf0;
     --cx-content-dark: #101828;
     --cx-intro-gradient-1: #066384;
@@ -29,6 +30,9 @@
     --cx-background-gradient-2-dark: #475467;
 
     --cx-border-color: #667085;
+    --cx-border-secondary-color:#D0D5DD;
+    
+    --cx--border-chip-color: #9AD8E9;
 
     --bg-accent-color: #3facd1;
     --cx-accent-secondary: #a23b72;

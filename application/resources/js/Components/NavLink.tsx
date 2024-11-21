@@ -5,7 +5,7 @@ export default function NavLink({
     className = '',
     children,
     ...props
-}: InertiaLinkProps & { active: boolean }) {
+}: InertiaLinkProps & { active?: boolean }) {
     return (
         <Link
             {...props}
