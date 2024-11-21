@@ -6,6 +6,7 @@ lang/php_*.json
 /public/storage
 /storage/*.key
 /vendor
+/application/bootstrap/ssr
 .env
 .env.backup
 .env.production
