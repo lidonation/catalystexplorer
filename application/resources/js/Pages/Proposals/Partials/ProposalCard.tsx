@@ -46,7 +46,7 @@ export default function ProposalCard({ proposal }: PageProps<Proposal>) {
     };
 
     return (
-        <article className="relative flex flex-col max-h-[80vh] h-full rounded-xl bg-background p-2 shadow-lg">
+        <article className="relative flex flex-col h-full rounded-xl bg-background p-2 shadow-lg">
             <header
                 className={`mb-2 flex-shrink-0 min-h-40 rounded-xl bg-gradient-to-tr text-content-light ${headerBGColor}`}
             >
