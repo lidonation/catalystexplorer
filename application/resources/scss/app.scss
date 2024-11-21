@@ -153,6 +153,10 @@
         background-color: var(--bg-accent-color);
     }
 
+    #main-content > header:first-child {
+        @apply py-6;
+    }
+
     body {
         @apply bg-background text-content transition-colors duration-300 ease-in-out;
     }

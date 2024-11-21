@@ -1,11 +1,19 @@
-import { Head } from '@inertiajs/react';
+import {Head, WhenVisible} from '@inertiajs/react';
 import {useTranslation} from "react-i18next";
+import {PageProps} from "@/types";
+import ProposalData = App.DataTransferObjects.ProposalData;
+import ProposalCardLoading from "@/Pages/Proposals/Partials/ProposalCardLoading";
+import ProposalResults from "@/Pages/Proposals/Partials/ProposalResults";
 
-const Index = () => {
-    const { t } = useTranslation();
+interface HomePageProps extends Record<string, unknown> {
+    proposals: ProposalData[];
+}
+
+export default function Index({proposals}: PageProps<HomePageProps>) {
+    const {t} = useTranslation();
     return (
         <>
-            <Head title="Proposals" />
+            <Head title="Proposals"/>
 
             <header>
                 <div className='container'>
@@ -18,11 +26,16 @@ const Index = () => {
                 </div>
             </header>
 
-            <div className="flex flex-col h-screen w-full items-center justify-center">
-                <h1>Proposals</h1>
+            <div className="flex flex-col w-full items-center justify-center">
+                <WhenVisible
+                    fallback={<ProposalCardLoading/>}
+                    data="proposals"
+                >
+                    <div className='container py-8'>
+                        <ProposalResults proposals={proposals}/>
+                    </div>
+                </WhenVisible>
             </div>
         </>
     );
-};
-
-export default Index;
+}
