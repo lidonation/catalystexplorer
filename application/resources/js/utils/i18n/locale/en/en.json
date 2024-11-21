@@ -13,6 +13,7 @@
     "dReps": "DReps",
     "facebook": "Facebook",
     "funds": "Funds",
+    "funding": "Funding",
     "getStarted": "Get started",
     "github": "Github",
     "groups": "Groups",
@@ -35,6 +36,11 @@
     "twitter": "Twitter",
     "votes": "My Votes",
     "wallets": "Wallets",
+    "details": "Details",
+    "teams": "Teams",
+    "yes": "Yes",
+    "abstain": "Abstain",
+    "notSet": "Not set",
     "app": {
         "name": "Catalyst Explorer",
         "contactEmail": "support@lidonation.com",
@@ -56,7 +62,7 @@
             "home": "Home"
         }
     },
-    "registration":{
+    "registration": {
         "alreadyRegistered": "Already registered?",
         "passwordCharacters": "Must be 8 characters"
     },
@@ -82,6 +88,7 @@
         "listSubtitle" : "Proposal votes must be submitted in the official Catalyst Voting App",
         "pageSubtitle": "Search proposals and challenges by title, content, or author and co-authors",
         "seeMoreProposals": "See more proposals",
+        "quickPitch": "Quick Pitch",
 
         "proposalReviews": "Proposal Reviews",
         "CSVs": "Proposal CSVs",
@@ -129,10 +136,14 @@
             "search": "Search Icon",
             "voltaireMode": "Voltaire Mode Icon",
             "register": "Register Icon",
-            "login": "Login Icon"
+            "login": "Login Icon",
+            "link": "Link Icon"
         }
     },
     "users": {
-        "editProfile": "Edit profile"
+        "editProfile": "Edit profile",
+        "viewProfile": "View Full Profile",
+        "viewIdeascale": "View & Contact user on Ideascale",
+        "profile": "profile"
     }
 }
