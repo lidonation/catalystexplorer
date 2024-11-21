@@ -7,46 +7,49 @@ import HomeIcon from '../svgs/HomeIcon';
 import NoteIcon from '../svgs/NoteIcon';
 import NotificationBoxIcon from '../svgs/NotificationBoxIcon';
 import PeopleIcon from '../svgs/PeopleIcon';
+import {useRoute} from "ziggy-js";
 
 function AppNavigation() {
+    const route = useRoute();
+
     const { t } = useTranslation();
     const navItems = [
         {
-            href: '/',
+            href: '/', // route('home'),
             title: t('home'),
             icon: <HomeIcon className="text-dark" />,
         },
-        {
-            href: '/proposals',
-            title: t('proposals.proposals'),
-            icon: <NoteIcon className="text-primary-100" />,
-            active: true,
-        },
-        {
-            href: '/funds',
-            title: t('funds'),
-            icon: <CheckIcon className="text-dark" />,
-        },
-        {
-            href: '/people',
-            title: t('people'),
-            icon: <PeopleIcon className="text-dark" />,
-        },
-        {
-            href: '/charts',
-            title: t('charts'),
-            icon: <ChartIcon className="text-dark" />,
-        },
-        {
-            href: '/jormungandr',
-            title: t('jormungandr'),
-            icon: <BarLineIcon className="text-dark" />,
-        },
-        {
-            href: '/active-fund',
-            title: t('activeFund'),
-            icon: <NotificationBoxIcon className="text-dark" />,
-        },
+        // {
+        //     href: route('proposal.index'),
+        //     title: t('proposals.proposals'),
+        //     icon: <NoteIcon className="text-primary-100" />,
+        //     active: true,
+        // },
+        // {
+        //     href: route('fund.index'),
+        //     title: t('funds'),
+        //     icon: <CheckIcon className="text-dark" />,
+        // },
+        // {
+        //     href: route('people.index'),
+        //     title: t('people'),
+        //     icon: <PeopleIcon className="text-dark" />,
+        // },
+        // {
+        //     href: route('charts.index'),
+        //     title: t('charts'),
+        //     icon: <ChartIcon className="text-dark" />,
+        // },
+        // {
+        //     href: route('jormungandr.index'),
+        //     title: t('jormungandr'),
+        //     icon: <BarLineIcon className="text-dark" />,
+        // },
+        // {
+        //     href: '/active-fund',
+        //     title: t('activeFund'),
+        //     icon: <NotificationBoxIcon className="text-dark" />,
+        // },
     ];
 
     return (

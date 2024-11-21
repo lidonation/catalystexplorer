@@ -4,7 +4,7 @@
     "version": "1.0.0",
     "scripts": {
         "dev": "vite",
-        "build": "tsc && vite build",
+        "build": "tsc && vite build && vite build --ssr",
         "lint": "eslint resources/js --ext .js,.jsx,.ts,.tsx --ignore-path .gitignore --fix"
     },
     "devDependencies": {
@@ -41,6 +41,7 @@
     "dependencies": {
         "@nivo/bar": "^0.88.0",
         "@nivo/core": "^0.88.0",
+        "@types/ziggy-js": "^1.8.0",
         "i18next": "^23.16.4",
         "laravel-react-i18n": "^2.0.5",
         "marked": "^15.0.1",

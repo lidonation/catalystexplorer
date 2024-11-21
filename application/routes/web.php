@@ -8,6 +8,7 @@ use App\Http\Controllers\PeopleController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProposalsController;
 use App\Http\Controllers\SearchController;
+use CodeZero\LocalizedRoutes\Controllers\FallbackController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -43,4 +44,4 @@ require __DIR__ . '/auth.php';
 
 require __DIR__ . '/dashboard.php';
 
-Route::fallback(\CodeZero\LocalizedRoutes\Controllers\FallbackController::class);
+Route::fallback(FallbackController::class);

@@ -1,0 +1,305 @@
+import { jsxs, jsx } from "react/jsx-runtime";
+import { useEffect, useState, useRef } from "react";
+import { u as useEscapeKey, T as TextInput } from "../ssr.js";
+import { Listbox, ListboxButton, ListboxOptions, ListboxOption } from "@headlessui/react";
+import { router } from "@inertiajs/react";
+import { useTranslation } from "react-i18next";
+import { C as Checkbox } from "./Checkbox-c-_HImKH.js";
+import { clsx } from "clsx";
+import { twMerge } from "tailwind-merge";
+import "i18next";
+import "ziggy-js";
+import "axios";
+import "qs";
+import "@inertiajs/react/server";
+import "react-dom/server";
+function useEnterKey(onEnter) {
+  useEffect(() => {
+    const handleKeyDown = (event) => {
+      if (event.key === "Enter") {
+        onEnter();
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [onEnter]);
+}
+function ChevronDownIcon({
+  className,
+  width = 14,
+  height = 8
+}) {
+  const { t } = useTranslation();
+  return /* @__PURE__ */ jsxs(
+    "svg",
+    {
+      width,
+      height,
+      viewBox: "0 0 14 8",
+      fill: "none",
+      xmlns: "http://www.w3.org/2000/svg",
+      className,
+      children: [
+        /* @__PURE__ */ jsxs("title", { children: [
+          " ",
+          t("icons.titles.chevron_down")
+        ] }),
+        /* @__PURE__ */ jsx(
+          "path",
+          {
+            d: "M1 1L7 7L13 1",
+            stroke: "currentColor",
+            strokeWidth: "2",
+            strokeLinecap: "round",
+            strokeLinejoin: "round"
+          }
+        )
+      ]
+    }
+  );
+}
+function cn(...inputs) {
+  return twMerge(clsx(inputs));
+}
+function SearchLensIcon({
+  className,
+  width = 24,
+  height = 24
+}) {
+  const { t } = useTranslation();
+  return /* @__PURE__ */ jsxs(
+    "svg",
+    {
+      width,
+      height,
+      viewBox: "0 0 18 17",
+      fill: "none",
+      xmlns: "http://www.w3.org/2000/svg",
+      className: cn(className),
+      children: [
+        /* @__PURE__ */ jsx("title", { children: t("icons.titles.search") }),
+        /* @__PURE__ */ jsx(
+          "path",
+          {
+            d: "M16.624 16L13.7074 13.0833M15.7907 8.08333C15.7907 11.9954 12.6194 15.1667 8.70736 15.1667C4.79534 15.1667 1.62402 11.9954 1.62402 8.08333C1.62402 4.17132 4.79534 1 8.70736 1C12.6194 1 15.7907 4.17132 15.7907 8.08333Z",
+            stroke: "currentColor",
+            strokeWidth: "1.66667",
+            strokeLinecap: "round",
+            strokeLinejoin: "round"
+          }
+        )
+      ]
+    }
+  );
+}
+const SearchVariants = ({
+  value,
+  onChange,
+  translation
+}) => {
+  const variants = [
+    translation("searchBar.variants.all"),
+    translation("proposals.proposals"),
+    translation("people"),
+    translation("groups"),
+    translation("communities"),
+    translation("wallets"),
+    translation("reviews"),
+    translation("articles")
+  ];
+  const handleSelection = (newValue) => {
+    if (newValue.includes(translation("searchBar.variants.all")) && !value.includes(translation("searchBar.variants.all"))) {
+      onChange(variants);
+      return;
+    }
+    if (!newValue.includes(translation("searchBar.variants.all")) && value.includes(translation("searchBar.variants.all"))) {
+      onChange([]);
+      return;
+    }
+    if (value.includes(translation("searchBar.variants.all")) && newValue.length < value.length) {
+      onChange(
+        newValue.filter(
+          (item) => item !== translation("searchBar.variants.all")
+        )
+      );
+      return;
+    }
+    if (newValue.length === variants.length - 1 && !newValue.includes(translation("searchBar.variants.all"))) {
+      onChange(variants);
+      return;
+    }
+    onChange(newValue);
+  };
+  return /* @__PURE__ */ jsx("div", { className: "relative text-content", children: /* @__PURE__ */ jsxs(Listbox, { value, onChange: handleSelection, multiple: true, children: [
+    /* @__PURE__ */ jsx(ListboxButton, { className: "flex items-center justify-center gap-3 text-nowrap px-3", children: ({ open }) => /* @__PURE__ */ jsxs("div", { className: "flex items-center gap-3", children: [
+      translation("searchBar.all_filters"),
+      /* @__PURE__ */ jsx(
+        "div",
+        {
+          className: `transform transition-transform duration-200 ${open ? "rotate-180" : ""}`,
+          children: /* @__PURE__ */ jsx(ChevronDownIcon, { width: 10 })
+        }
+      )
+    ] }) }),
+    /* @__PURE__ */ jsx(ListboxOptions, { className: "absolute left-0 z-50 mt-5 w-max rounded-lg bg-background shadow-xl", children: variants.map((variant) => /* @__PURE__ */ jsx(ListboxOption, { value: variant, children: ({ selected }) => /* @__PURE__ */ jsxs("div", { className: "flex cursor-pointer items-center justify-between gap-2 px-3 py-2 hover:rounded-lg hover:bg-hover", children: [
+      /* @__PURE__ */ jsx("span", { className: "capitalize", children: variant }),
+      /* @__PURE__ */ jsx(
+        Checkbox,
+        {
+          id: variant,
+          checked: selected,
+          value: variant,
+          onChange: () => {
+          },
+          className: "checked:bg-primary"
+        }
+      )
+    ] }) }, variant)) })
+  ] }) });
+};
+const SearchBar = ({ autoFocus = false }) => {
+  const [searchTerms, setSearchTerms] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [isFocused, setIsFocused] = useState(false);
+  const inputRef = useRef(null);
+  const { t } = useTranslation();
+  const escapeHandler = () => setSearchQuery("");
+  const enterHandler = () => {
+    const syntheticEvent = new Event("submit", {
+      bubbles: true,
+      cancelable: true
+    });
+    handleSearch(syntheticEvent);
+  };
+  useEscapeKey(escapeHandler);
+  useEnterKey(enterHandler);
+  useEffect(() => {
+    if (autoFocus && inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, [autoFocus]);
+  const placeholder = t("searchBar.placeholder");
+  const handleSearch = (event) => {
+    event.preventDefault();
+    const filters = searchTerms.filter((term) => term !== t("searchBar.variants.all")).join(",");
+    router.get(
+      "/s",
+      {
+        q: searchQuery,
+        f: filters
+      },
+      {
+        preserveState: true,
+        preserveScroll: true
+      }
+    );
+  };
+  return /* @__PURE__ */ jsxs(
+    "form",
+    {
+      onSubmit: handleSearch,
+      className: `flex items-center rounded-lg bg-background transition-all duration-200 ${isFocused ? "border-primary ring-2 ring-primary" : ""}`,
+      children: [
+        /* @__PURE__ */ jsx(
+          SearchVariants,
+          {
+            value: searchTerms,
+            onChange: setSearchTerms,
+            translation: t
+          }
+        ),
+        /* @__PURE__ */ jsxs(
+          "label",
+          {
+            className: `relative flex items-center gap-2 border-l-2 pl-0 ${isFocused ? "border-primary" : "border-border"} }`,
+            children: [
+              /* @__PURE__ */ jsx("div", { className: "absolute left-0 flex h-full w-10 items-center justify-center", children: /* @__PURE__ */ jsx(SearchLensIcon, { width: 16, className: "text-content" }) }),
+              /* @__PURE__ */ jsx(
+                TextInput,
+                {
+                  ref: inputRef,
+                  placeholder,
+                  size: placeholder.length,
+                  className: "w-full rounded-lg border-0 bg-background pl-10 text-content shadow-none focus:border-0 focus:border-primary focus:ring-0",
+                  value: searchQuery,
+                  onChange: (e) => setSearchQuery(e.target.value),
+                  onFocus: () => setIsFocused(true),
+                  onBlur: () => setIsFocused(false)
+                }
+              )
+            ]
+          }
+        )
+      ]
+    }
+  );
+};
+function BlueEyeIcon({
+  className,
+  width = 24,
+  height = 24
+}) {
+  const { t } = useTranslation();
+  return /* @__PURE__ */ jsxs(
+    "svg",
+    {
+      width,
+      height,
+      viewBox: "0 0 92 51",
+      fill: "none",
+      xmlns: "http://www.w3.org/2000/svg",
+      className,
+      children: [
+        /* @__PURE__ */ jsx("title", { children: t("icons.titles.blue_eye") }),
+        /* @__PURE__ */ jsx(
+          "path",
+          {
+            fillRule: "evenodd",
+            clipRule: "evenodd",
+            d: "M14.7106 27.727C13.2468 27.0152 11.5189 26.431 9.70768 26.2741C13.016 19.507 19.5582 11.5882 30.4057 8.74302C29.3117 9.65327 28.2609 10.6597 27.2532 11.7624C23.9789 15.3993 21.7083 19.582 20.4414 24.3104C19.8129 26.656 19.4758 28.822 19.4302 30.8085C18.0186 29.6543 16.4134 28.555 14.7106 27.727ZM46.6329 43.2243C47.295 43.1675 47.9546 43.0916 48.6111 42.9983C57.2271 41.774 65.3439 37.5318 71.4178 33.7999C72.7138 33.0036 74.1219 32.7742 75.2975 32.7472C76.4864 32.72 77.6836 32.8946 78.7665 33.1264C79.5465 33.2933 80.3454 33.5086 81.1259 33.7421C77.7377 29.1852 72.964 23.8258 67.1948 19.1467C64.9899 17.3585 62.6663 15.6908 60.2436 14.2109C60.2026 14.4104 60.155 14.6116 60.1006 14.8146C59.515 17 58.3959 18.872 56.7432 20.4308C55.1302 22.0002 53.3456 23.0978 51.3893 23.7234C49.4329 24.3491 47.6998 24.4596 46.1899 24.0551C45.5542 23.8847 45.0603 23.582 44.7084 23.147C44.3963 22.7227 44.2987 22.292 44.4158 21.8549C44.4584 21.696 44.6124 21.4391 44.8778 21.0844C46.6157 19.2077 47.671 17.5741 48.0436 16.1833C48.3098 15.19 48.1889 14.3697 47.6809 13.7226C47.2233 13.0463 46.4779 12.5698 45.4448 12.293C43.6965 11.8245 41.9382 11.9496 40.1699 12.6682C38.4123 13.3471 36.8714 14.4887 35.5472 16.0929C34.2337 17.6573 33.316 19.4131 32.7944 21.3601C32.0384 24.1812 32.4036 26.7917 33.8899 29.1916C35.4267 31.5623 38.0824 33.2535 41.8572 34.2649C43.9631 34.8292 46.0098 35.0582 47.9973 34.9519C50.0245 34.8563 51.6814 34.2356 52.9679 33.0898C53.3022 32.796 53.6679 32.7024 54.0653 32.8089C54.5818 32.9473 54.9749 33.3081 55.2445 33.8914C55.5538 34.4853 54.7219 37.1406 52.9679 38.6524C49.6033 41.5526 48.2214 42.4889 46.6329 43.2243ZM3.12011 35.1138C3.49062 35.2019 3.86137 35.2289 4.22179 35.2014C5.22267 35.2743 6.24836 34.9281 7.01366 34.1628C7.90789 33.2686 9.1764 32.9943 11.5808 34.1634C13.9737 35.327 16.3711 37.4957 17.8204 39.1817L17.9083 39.2839L18.0037 39.3793C28.0346 49.4102 39.3099 51.5489 49.618 50.0842C59.6911 48.6528 68.8022 43.8018 75.0986 39.9383C75.1443 39.9277 75.2571 39.9071 75.4615 39.9024C75.8834 39.8927 76.4803 39.9562 77.2684 40.1249C78.7165 40.4348 80.2996 40.9787 81.9519 41.5463L81.952 41.5463C82.1369 41.6098 82.3227 41.6736 82.5093 41.7375C83.3787 42.0349 84.3022 42.344 85.1322 42.5624C85.8306 42.7461 86.9978 43.0224 88.1457 42.8761C88.7748 42.7959 89.8101 42.5393 90.6853 41.6588C91.6367 40.7017 91.8942 39.5251 91.8786 38.6259C91.8536 37.1827 91.1279 35.8572 90.6092 34.9986C87.1212 29.2244 80.4779 20.7049 71.7031 13.5881C62.9492 6.48836 51.7151 0.5 39.1263 0.5C13.8773 0.5 2.84754 20.7958 0.466844 30.8043C0.00949574 32.727 1.1974 34.6564 3.12011 35.1138Z",
+            fill: "currentColor"
+          }
+        )
+      ]
+    }
+  );
+}
+const ConcentricCircles = "/build/assets/bg-concentric-circles-Ck3QTOTO.png";
+const CatalystIntro = () => {
+  const { t } = useTranslation();
+  return /* @__PURE__ */ jsx("div", { className: "splash-wrapper sticky -top-56 bg-gradient-to-r from-background-home-gradient-color-1 to-background-home-gradient-color-2 md:rounded-tl-4xl", children: /* @__PURE__ */ jsxs(
+    "div",
+    {
+      className: "flex w-full flex-col gap-8 pb-4 pt-16",
+      style: {
+        backgroundImage: `url(${ConcentricCircles})`,
+        backgroundPosition: "top",
+        backgroundRepeat: "no-repeat"
+      },
+      children: [
+        /* @__PURE__ */ jsxs("section", { className: "container flex flex-col items-center justify-center gap-3 md:px-56", children: [
+          /* @__PURE__ */ jsx(
+            BlueEyeIcon,
+            {
+              className: "text-eye-logo",
+              width: 90,
+              height: 50
+            }
+          ),
+          /* @__PURE__ */ jsx("div", { children: /* @__PURE__ */ jsxs("p", { className: "text-center text-3xl text-content-light", children: [
+            t("catalystIntro.title.normalText"),
+            " ",
+            /* @__PURE__ */ jsx("span", { className: "text-content-highlight-intro", children: t("catalystIntro.title.highlightedText") })
+          ] }) }),
+          /* @__PURE__ */ jsx("div", { children: /* @__PURE__ */ jsx("p", { className: "text-center text-content-light", children: t("catalystIntro.subtitle") }) })
+        ] }),
+        /* @__PURE__ */ jsx("section", { className: "container sticky top-8 w-full py-4 md:px-64", children: /* @__PURE__ */ jsx("div", { className: "", children: /* @__PURE__ */ jsx(SearchBar, { autoFocus: true }) }) })
+      ]
+    }
+  ) });
+};
+export {
+  CatalystIntro as default
+};
