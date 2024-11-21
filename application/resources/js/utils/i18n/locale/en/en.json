@@ -2,8 +2,14 @@
     "activeFund": "Active Fund",
     "articles": "Articles",
     "bookmarks": "My Bookmarks",
-    "communities": "Communities",
+    "catalystAPI": "Catalyst API",
+    "ccv4Votes": "CCV4 Votes",
     "charts": "Charts",
+    "communities": "Communities",
+    "cookies": "Cookies",
+    "copyright": "© 2024 Catalyst Explorer. All rights reserved.",
+    "data": "Data",
+    "dReps": "DReps",
     "facebook": "Facebook",
     "funds": "Funds",
     "getStarted": "Get started",
@@ -12,14 +18,19 @@
     "home": "Home",
     "jormungandr": "Jormungandr",
     "knowledgeBase": "Knowledge Base",
-    "linkedIn": "LinkedIn",
+    "legal": "Legal",
+    "licenses": "Licenses",
     "login": "Login",
-    "proposals": "Proposals",
+    "linkedIn": "LinkedIn",
+    "monthlyReports": "Monthly Reports",
+    "numbers": "Numbers",
     "people": "People",
+    "privacy": "Privacy",
     "reviews": "Reviews",
     "register": "Register",
-    "support": "Support",
     "social": "Social",
+    "support": "Support",
+    "terms": "Terms",
     "twitter": "Twitter",
     "votes": "My Votes",
     "wallets": "Wallets",
@@ -62,9 +73,17 @@
         },
         "subtitle": "Catalyst drives Cardano's ecosystem growth by linking innovative ideas with funding, supported by community voting and the Cardano treasury."
     },
-    "proposalQuickpitch": {
+    "proposals": {
+        "allProposals": "All proposals",
+        "proposals": "Proposals",
         "projectVideo": "Project Video",
         "providedUrl": "Provided URL",
+        "listSubtitle" : "Proposal votes must be submitted in the official Catalyst Voting App",
+        "pageSubtitle": "Search proposals and challenges by title, content, or author and co-authors",
+        "seeMoreProposals": "See more proposals",
+
+        "proposalReviews": "Proposal Reviews",
+        "CSVs": "Proposal CSVs",
         "errors": {
             "noUrl": "No video URL provided",
             "invalidYoutubeFormat": "The YouTube link format is incorrect",
@@ -72,11 +91,6 @@
             "invalidUrlFormat": "Invalid URL format",
             "invalidUrl": "Invalid URL format"
         }
-    },
-    "proposalList":{
-       "title": "Proposals",
-       "subtitle" : "Proposal votes must be submitted in the official Catalyst Voting App",
-       "buttonText": "See more proposals"
     },
     "posts": {
         "title": "Catalysts Posts",
@@ -117,33 +131,7 @@
             "login": "Login Icon"
         }
     },
-    "userDetails": {
+    "users": {
         "editProfile": "Edit profile"
-    },
-    "footer": {
-        "links": {
-            "proposals": "Proposals",
-            "allProposals": "All proposals",
-            "proposalReviews": "Proposal Reviews",
-            "monthlyReports": "Monthly Reports",
-
-            "dReps": "dReps",
-
-            "data": "Data",
-            "numbers": "Numbers",
-            "ccv4Votes": "CCV4 Votes",
-            "catalystAPI": "Catalyst API",
-            "proposalCSVs": "Proposal CSVs",
-
-
-
-            "legal": "Legal",
-            "terms": "Terms",
-            "privacy": "Privacy",
-            "cookies": "Cookies",
-            "licenses": "Licenses",
-
-            "copyright": "© 2024 Catalyst Explorer. All rights reserved."
-        }
     }
 }

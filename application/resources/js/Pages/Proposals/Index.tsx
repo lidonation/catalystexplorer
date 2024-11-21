@@ -1,17 +1,19 @@
 import { Head } from '@inertiajs/react';
+import {useTranslation} from "react-i18next";
 
 const Index = () => {
+    const { t } = useTranslation();
     return (
         <>
             <Head title="Proposals" />
 
             <header>
                 <div className='container'>
-                    <h1 className="title-1">Proposals</h1>
+                    <h1 className="title-1">{t('proposals.proposals')}</h1>
                 </div>
                 <div className='container'>
                     <p className="text-content">
-                        Search proposals and challenges by title, content, or author and co-authors
+                        {t('proposals.pageSubtitle')}
                     </p>
                 </div>
             </header>
