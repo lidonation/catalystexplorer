@@ -40,6 +40,7 @@
     "teams": "Teams",
     "yes": "Yes",
     "abstain": "Abstain",
+    "notSet": "Not set",
     "app": {
         "name": "Catalyst Explorer",
         "contactEmail": "support@lidonation.com",

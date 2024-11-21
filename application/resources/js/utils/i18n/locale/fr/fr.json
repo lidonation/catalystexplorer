@@ -41,6 +41,7 @@
     "teams": "Équipe",
     "yes": "Oui",
     "abstain": "Abstention",
+    "notSet": "Non défini",
     "app": {
         "name": "Catalyst Explorer",
         "contactEmail": "support@lidonation.com",

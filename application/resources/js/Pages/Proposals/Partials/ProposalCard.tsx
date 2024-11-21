@@ -120,7 +120,7 @@ export default function ProposalCard({ proposal }: PageProps<Proposal>) {
                                     <li className="flex w-1/2 items-center justify-center">
                                         <button type="button" onClick={handleQuickPitchClick} disabled={!hasQuickPitch} className={`flex items-center gap-1 pb-3 font-semibold ${quickPitchView ? 'border-b-2 border-primary text-primary' : 'border-transparent'} ${!hasQuickPitch ? 'cursor-not-allowed opacity-60' : 'text-content hover:text-primary'}`} aria-current={quickPitchView ? 'page' : undefined}>
                                             <span>{t("proposals.quickPitch")}</span>
-                                            {!hasQuickPitch && (<span className="text-dark-persist rounded-full bg-content-light px-2 py-1 text-xs">Not set</span>)}
+                                            {!hasQuickPitch && (<span className="text-dark-persist rounded-full bg-content-light px-2 py-1 text-xs">{t('notSet')}</span>)}
                                         </button>
                                     </li>
                                 </ul>
