@@ -111,8 +111,14 @@
             "note": "Icône de note",
             "notificationBox": "Icône de boîte de notification",
             "people": "Icône de personnes",
-            "voltaireMode": "Icône de mode Voltaire"
+            "voltaireMode": "Icône de mode Voltaire",
+            "link": "Icône de lien"
         }
+    },
+    "userDetails": {
+        "editProfile": "Modifier le profil",
+        "ideascaleInfo":"Voir et contacter l'utilisateur sur Ideascale",
+        "viewProfile": "Voir le profil complet"
     },
     "footer": {
         "links": {

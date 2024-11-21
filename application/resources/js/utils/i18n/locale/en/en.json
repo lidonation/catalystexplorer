@@ -44,7 +44,7 @@
             "home": "Home"
         }
     },
-    "registration":{
+    "registration": {
         "alreadyRegistered": "Already registered?",
         "passwordCharacters": "Must be 8 characters"
     },
@@ -73,10 +73,10 @@
             "invalidUrl": "Invalid URL format"
         }
     },
-    "proposalList":{
-       "title": "Proposals",
-       "subtitle" : "Proposal votes must be submitted in the official Catalyst Voting App",
-       "buttonText": "See more proposals"
+    "proposalList": {
+        "title": "Proposals",
+        "subtitle": "Proposal votes must be submitted in the official Catalyst Voting App",
+        "buttonText": "See more proposals"
     },
     "posts": {
         "title": "Catalysts Posts",
@@ -114,11 +114,14 @@
             "search": "Search Icon",
             "voltaireMode": "Voltaire Mode Icon",
             "register": "Register Icon",
-            "login": "Login Icon"
+            "login": "Login Icon",
+            "link": "Link Icon"
         }
     },
     "userDetails": {
-        "editProfile": "Edit profile"
+        "editProfile": "Edit profile",
+        "ideascaleInfo":"View & Contact user on Ideascale",
+        "viewProfile": "View Full Profile"
     },
     "footer": {
         "links": {
@@ -134,8 +137,6 @@
             "ccv4Votes": "CCV4 Votes",
             "catalystAPI": "Catalyst API",
             "proposalCSVs": "Proposal CSVs",
-
-
 
             "legal": "Legal",
             "terms": "Terms",
