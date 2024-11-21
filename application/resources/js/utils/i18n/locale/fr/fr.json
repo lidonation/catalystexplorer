@@ -2,8 +2,15 @@
     "activeFund": "Fonds Actif",
     "articles": "Articles",
     "bookmarks": "Mes Signets",
-    "communities": "Communautés",
+    "catalystAPI": "API Catalyst",
+    "ccv4Votes": "Votes CCV4",
     "charts": "Graphiques",
+    "comingSoon": "À venir",
+    "communities": "Communautés",
+    "cookies": "Cookies",
+    "copyright": "© 2024 Explorateur Catalyst. Tous droits réservés.",
+    "data": "Données",
+    "dReps": "DReps",
     "facebook": "Facebook",
     "funds": "Fonds",
     "getStarted": "Commencer",
@@ -12,24 +19,24 @@
     "home": "Accueil",
     "jormungandr": "Jormungandr",
     "knowledgeBase": "Base de Connaissances",
+    "legal": "Légal",
+    "licenses": "Licences",
     "linkedIn": "LinkedIn",
     "login": "Se connecter",
+    "monthlyReports": "Rapports Mensuels",
+    "numbers": "Chiffres",
     "people": "Personnes",
-    "proposals": "Propositions",
+    "privacy": "Confidentialité",
+    "proposalReviews": "Évaluations des propositions",
+    "proposers": "Proposeurs",
     "register": "Registre",
     "reviews": "Évaluations",
     "social": "Social",
     "twitter": "Twitter",
     "support": "Support",
+    "terms": "Conditions Générales",
     "votes": "Mes Votes",
     "wallets": "Portefeuilles",
-
-
-
-
-
-
-
     "app": {
         "name": "Catalyst Explorer",
         "contactEmail": "support@lidonation.com",
@@ -48,6 +55,10 @@
             "close": "Fermer la barre latérale"
         }
     },
+    "registration":{
+        "alreadyRegistered": "Déjà inscrit?",
+        "passwordCharacters": "Doit contenir 8 caractères"
+    },
     "searchBar": {
         "placeholder": "Rechercher des propositions, des fonds, des personnes, des articles et des données",
         "all_filters": "Tous les filtres",
@@ -62,9 +73,15 @@
         },
         "subtitle": "Catalyst stimule la croissance de l'écosystème Cardano en reliant des idées innovantes à un financement, soutenu par un vote communautaire et le trésor Cardano."
     },
-    "proposalQuickpitch": {
+    "proposals": {
+        "allProposals": "Toutes les propositions",
+        "CSVs": "CSVs de propositions",
+        "proposals": "Propositions",
         "projectVideo": "Vidéo du projet",
         "providedUrl": "URL fournie",
+        "listSubtitle" : "Les votes des propositions doivent être soumis dans l'application officielle de vote Catalyst.",
+        "pageSubtitle": "Rechercher des propositions et des défis par titre, contenu ou auteur et co-auteurs.",
+        "seeMoreProposals": "Voir plus de propositions",
         "errors": {
             "noUrl": "Aucune URL vidéo fournie",
             "invalidYoutubeFormat": "Le format du lien YouTube est incorrect",
@@ -72,10 +89,6 @@
             "invalidUrlFormat": "Format d'URL invalide",
             "invalidUrl": "Format d'URL invalide"
         }
-    },
-    "proposalList":{
-        "subtitle" : "Les votes des propositions doivent être soumis dans l'application officielle de vote Catalyst",
-        "buttonText": "See more proposals"
     },
     "posts": {
         "title": "Articles des Catalysts",
@@ -113,42 +126,6 @@
             "people": "Icône de personnes",
             "voltaireMode": "Icône de mode Voltaire",
             "link": "Icône de lien"
-        }
-    },
-    "userDetails": {
-        "editProfile": "Modifier le profil",
-        "ideascaleInfo":"Voir et contacter l'utilisateur sur Ideascale",
-        "viewProfile": "Voir le profil complet"
-    },
-    "footer": {
-        "links": {
-            "proposals": "Propositions",
-            "allProposals": "Toutes les propositions",
-            "proposalReviews": "Évaluations des propositions",
-            "monthlyReports": "Rapports Mensuels",
-            "funds": "Fonds",
-
-            "people": "Personnes",
-            "proposers": "Proposeurs",
-            "groups": "Groupes",
-            "communities": "Communautés",
-            "dReps": "dReps",
-
-            "data": "Données",
-            "numbers": "Chiffres",
-            "ccv4Votes": "Votes CCV4",
-            "catalystAPI": "API Catalyst",
-            "proposalCSVs": "CSVs de propositions",
-
-
-
-            "legal": "Légal",
-            "terms": "Conditions Générales",
-            "privacy": "Confidentialité",
-            "cookies": "Cookies",
-            "licenses": "Licences",
-
-            "copyright": "© 2024 Explorateur Catalyst. Tous droits réservés."
         }
     }
 }

@@ -26,7 +26,7 @@ const SearchVariants = ({
 }) => {
     const variants = [
         translation('searchBar.variants.all'),
-        translation('proposals'),
+        translation('proposals.proposals'),
         translation('people'),
         translation('groups'),
         translation('communities'),

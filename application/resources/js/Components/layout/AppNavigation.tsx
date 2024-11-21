@@ -18,7 +18,7 @@ function AppNavigation() {
         },
         {
             href: '/proposals',
-            title: t('proposals'),
+            title: t('proposals.proposals'),
             icon: <NoteIcon className="text-primary-100" />,
             active: true,
         },

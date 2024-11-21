@@ -52,7 +52,7 @@ const UserDetails: React.FC<UserDetailsProps> = ({ user }) => {
                                 href="/profile"
                                 className="text-5 font-semibold text-primary"
                             >
-                                {t("userDetails.editProfile")}
+                                {t("users.editProfile")}
                             </Link>
                         </div>
                     </div>

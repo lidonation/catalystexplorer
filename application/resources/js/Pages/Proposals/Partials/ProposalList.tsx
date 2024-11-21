@@ -18,12 +18,12 @@ const ProposalList: React.FC<ProposalProps> = ({ proposals }) => {
         <section className="proposals-wrapper">
             <div className="container py-8 flex justify-between items-center">
                 <div>
-                    <h2 className="title-2">{t("proposalList.title")}</h2>
-                    <p className="text-4 text-content-dark opacity-70">{t("proposalList.subtitle")}</p>
+                    <h2 className="title-2">{t("proposals.proposals")}</h2>
+                    <p className="text-4 text-content-dark opacity-70">{t("proposals.listSubtitle")}</p>
                 </div>
                 <div>
                     <SecondaryButton className="font-bold text-content-dark" onClick={navigate}>
-                    {t("proposalList.buttonText")}
+                    {t("proposals.seeMoreProposals")}
                     </SecondaryButton>
                 </div>
             </div>

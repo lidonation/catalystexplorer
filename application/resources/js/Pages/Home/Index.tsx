@@ -1,6 +1,6 @@
 import CatalystIntro from '@/Pages/Home/Partials/CatalystIntro';
 import PostCard from '@/Pages/Posts/Partials/PostCard';
-import { PageProps, Post } from '@/types';
+import { PageProps } from '@/types';
 import { Head, WhenVisible } from '@inertiajs/react';
 import PostListLoader from '../Posts/Partials/PostListLoader';
 import ProposalList from '../Proposals/Partials/ProposalList';
@@ -54,7 +54,7 @@ export default function Index({ posts, proposals, metrics, announcements, specia
                     fallback={<ProposalCardLoading/>}
                     data="proposals"
                 >
-                    <ProposalList proposals={proposals}/>
+                    <ProposalList proposals={proposals} />
                 </WhenVisible>
 
                 <section className="special-announcements-wrapper">
