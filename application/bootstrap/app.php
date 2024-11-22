@@ -19,7 +19,7 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
         $middleware->trustProxies(at: '*');
         if (app()->environment('production')) {
-            $middleware->trustHosts(at: config('app.hosts', '*'));
+            $middleware->trustHosts(at: getenv('APP_HOSTS') ?: '*');
         }
     })
     ->withExceptions(function (Exceptions $exceptions) {
