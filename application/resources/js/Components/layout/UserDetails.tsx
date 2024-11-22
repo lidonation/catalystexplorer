@@ -9,6 +9,7 @@ import RegisterUserIcon from '../svgs/Register';
 import UserAvatar from '../UserAvatar';
 import ModalSidebar from './ModalSidebar';
 import RegisterForm from '@/Pages/Auth/Partials/RegisterForm';
+import LoginForm from '@/Pages/Auth/Partials/LoginForm';
 
 interface UserDetailsProps {
     user: App.DataTransferObjects.UserData;
@@ -16,7 +17,8 @@ interface UserDetailsProps {
 
 const UserDetails: React.FC<UserDetailsProps> = ({ user }) => {
     const { t } = useTranslation();
-    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isRegisterModalOpen, setIsRegisterModalOpen] = useState(false);
+    const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
 
     const logout = () => {
         axios
@@ -70,22 +72,30 @@ const UserDetails: React.FC<UserDetailsProps> = ({ user }) => {
 
                     <nav className="flex flex-col justify-between">
                         <ul className="flex flex-1 flex-col menu-gap-y">
-                            <li className='flex items-center gap-3 px-3 py-1 hover:bg-background-lighter cursor-pointer' onClick={() => setIsModalOpen(true)}>
+                            <li className='flex items-center gap-3 px-3 py-1 hover:bg-background-lighter cursor-pointer' onClick={() => setIsRegisterModalOpen(true)}>
                                 <RegisterUserIcon className='text-dark' />
                                 <p className='text-3'>{t("register")}</p>
                             </li>
-                            <li className='flex items-center gap-3 px-3 py-1 hover:bg-background-lighter cursor-pointer'>
+                            <li className='flex items-center gap-3 px-3 py-1 hover:bg-background-lighter cursor-pointer'onClick={() => setIsLoginModalOpen(true)}>
                                 <LoginIcon className='text-dark' />
                                 <p className='text-3'>{t("login")}</p>
                             </li>
                         </ul>
                     </nav>
                     <ModalSidebar
-                        title="Register"
-                        isOpen={isModalOpen}
-                        onClose={() => setIsModalOpen(false)}
+                        title={t("register")}
+                        isOpen={isRegisterModalOpen}
+                        onClose={() => setIsRegisterModalOpen(false)}
                     >
                         <RegisterForm />
+                    </ModalSidebar>
+
+                    <ModalSidebar
+                        title={t("login")}
+                        isOpen={isLoginModalOpen}
+                        onClose={() => setIsLoginModalOpen(false)}
+                    >
+                        <LoginForm canResetPassword={true}/>
                     </ModalSidebar>
                 </>
             }

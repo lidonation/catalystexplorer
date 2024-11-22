@@ -3,8 +3,10 @@
     "articles": "Articles",
     "bookmarks": "My Bookmarks",
     "communities": "Communities",
+    "connectWallet": "Connect wallet",
     "charts": "Charts",
     "facebook": "Facebook",
+    "forgotPassword": "Forgot password",
     "funds": "Funds",
     "getStarted": "Get started",
     "github": "Github",
@@ -16,8 +18,11 @@
     "login": "Login",
     "proposals": "Proposals",
     "people": "People",
+    "rememberMe": "Remember me",
     "reviews": "Reviews",
     "register": "Register",
+    "signin": "Sign in",
+    "signup": "Sign up",
     "support": "Support",
     "social": "Social",
     "twitter": "Twitter",
@@ -46,7 +51,8 @@
     },
     "registration":{
         "alreadyRegistered": "Already registered?",
-        "passwordCharacters": "Must be 8 characters"
+        "passwordCharacters": "Must be 8 characters",
+        "noAccount": "Don’t have an account?"
     },
     "searchBar": {
         "placeholder": "Search proposals, funds, people, articles & data",
@@ -114,7 +120,8 @@
             "search": "Search Icon",
             "voltaireMode": "Voltaire Mode Icon",
             "register": "Register Icon",
-            "login": "Login Icon"
+            "login": "Login Icon",
+            "connect_wallet": "Connect wallet"
         }
     },
     "userDetails": {
