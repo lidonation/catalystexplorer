@@ -19,7 +19,7 @@ class ProposalSeeder extends Seeder
     {
         $fund = Fund::factory()->create();
 
-        Proposal::factory(state: ['fund_id' => $fund->id])->count(10)
+        Proposal::factory(state: ['fund_id' => $fund->id])->count(100)
             ->for(Campaign::factory(state: ['fund_id' => $fund->id]))
             ->has(IdeascaleProfile::factory($this->withFaker()->numberBetween(3,10)),'users')
             ->create();

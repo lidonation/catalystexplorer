@@ -146,6 +146,25 @@ pest:
 #       - ./application/tests/cypress/screenshots/**/*.png
 #     expire_in: 2 day
 
+cypress:
+  image: cypress/included:10.3.0
+  stage: test
+  needs:
+    - composer 
+    - yarn
+  script:
+    - cd application
+    - cp "$ENV_FILE" .env
+    - NODE_ENV=test yarn cypress run --browser chrome --headless
+  artifacts:
+    when: on_failure
+    expire_in: 2 days
+    paths:
+      - application/cypress/screenshots
+      - application/cypress/videos
+  rules:
+    - if: '$DEPLOY_WEBSITE == "true"'
+  allow_failure: true # allow failure to not block the pipeline for now
 
 ########## Helper Scripts ############
 ######################################

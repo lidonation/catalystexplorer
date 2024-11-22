@@ -26,13 +26,13 @@ const SearchVariants = ({
 }) => {
     const variants = [
         translation('searchBar.variants.all'),
-        translation('searchBar.variants.proposals'),
-        translation('searchBar.variants.people'),
-        translation('searchBar.variants.groups'),
-        translation('searchBar.variants.communities'),
-        translation('searchBar.variants.wallets'),
-        translation('searchBar.variants.reviews'),
-        translation('searchBar.variants.articles'),
+        translation('proposals.proposals'),
+        translation('people'),
+        translation('groups'),
+        translation('communities'),
+        translation('wallets'),
+        translation('reviews'),
+        translation('articles'),
     ];
     const handleSelection = (newValue: string[]) => {
         if (

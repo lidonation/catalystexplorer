@@ -33,7 +33,7 @@ export default function AppLayout({ children }: { children: ReactNode }) {
                 <DesktopSidebar />
             </div>
 
-            <section className="sm:ml-72 bg-background-lighter sm:mt-2 sm:rounded-tl-4xl">
+            <section className="sm:ml-72 bg-background-lighter sm:mt-4 sm:rounded-tl-4xl">
                 {/* Mobile header */}
                 <header className="sticky top-0 z-30 border-b border-gray-200 bg-background sm:hidden">
                     <div className="flex h-16 items-center justify-between px-4">
@@ -63,7 +63,7 @@ export default function AppLayout({ children }: { children: ReactNode }) {
                 </main>
 
                 {/* modal sidebar */}
-                <ModalSidebar title="Register" isOpen={false}>
+                <ModalSidebar title="Register" isOpen={false} onClose={() => setSidebarOpen(false)}>
                     <div className=""></div>
                 </ModalSidebar>
 

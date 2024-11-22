@@ -10,96 +10,96 @@ export default function Footer() {
                 <div className="grid grid-cols-2 gap-8 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
                     <div className="flex min-w-24 flex-col title-gap-y">
                         <h5 className="title-6">
-                            {t('footer.links.proposals')}
+                            {t('proposals.proposals')}
                         </h5>
                         <ul className="menu-gap-y flex flex-col">
                             <li>
-                                <p>{t('footer.links.allProposals')}</p>
+                                <p>{t('proposals.allProposals')}</p>
                             </li>
                             <li>
-                                <p>{t('footer.links.proposalReviews')}</p>
+                                <p>{t('proposalReviews')}</p>
                             </li>
                             <li>
-                                <p>{t('footer.links.monthlyReports')}</p>
+                                <p>{t('monthlyReports')}</p>
                             </li>
                             <li>
-                                <p>{t('footer.links.funds')}</p>
-                            </li>
-                        </ul>
-                    </div>
-                    <div className="flex min-w-24 flex-col title-gap-y">
-                        <h5 className="title-6">
-                            {t('footer.links.people')}
-                        </h5>
-                        <ul className="flex flex-col menu-gap-y">
-                            <li>
-                                <p>{t('footer.links.proposers')}</p>
-                            </li>
-                            <li>
-                                <p>{t('footer.links.groups')}</p>
-                            </li>
-                            <li>
-                                <p>{t('footer.links.communities')}</p>
-                            </li>
-                            <li>
-                                <p>{t('footer.links.dReps')}</p>
+                                <p>{t('funds')}</p>
                             </li>
                         </ul>
                     </div>
                     <div className="flex min-w-24 flex-col title-gap-y">
                         <h5 className="title-6">
-                            {t('footer.links.data')}
+                            {t('people')}
                         </h5>
                         <ul className="flex flex-col menu-gap-y">
                             <li>
-                                <p>{t('footer.links.numbers')}</p>
+                                <p>{t('proposers')}</p>
                             </li>
                             <li>
-                                <p>{t('footer.links.ccv4Votes')}</p>
+                                <p>{t('groups')}</p>
                             </li>
                             <li>
-                                <p>{t('footer.links.catalystAPI')}</p>
+                                <p>{t('communities')}</p>
                             </li>
                             <li>
-                                <p>{t('footer.links.proposalCSVs')}</p>
+                                <p>{t('dReps')}</p>
                             </li>
                         </ul>
                     </div>
                     <div className="flex min-w-24 flex-col title-gap-y">
                         <h5 className="title-6">
-                            {t('footer.links.social')}
+                            {t('data')}
                         </h5>
                         <ul className="flex flex-col menu-gap-y">
                             <li>
-                                <p>{t('footer.links.twitter')}</p>
+                                <p>{t('numbers')}</p>
                             </li>
                             <li>
-                                <p>{t('footer.links.linkedIn')}</p>
+                                <p>{t('ccv4Votes')}</p>
                             </li>
                             <li>
-                                <p>{t('footer.links.facebook')}</p>
+                                <p>{t('catalystAPI')}</p>
                             </li>
                             <li>
-                                <p>{t('footer.links.github')}</p>
+                                <p>{t('proposalCSVs')}</p>
                             </li>
                         </ul>
                     </div>
                     <div className="flex min-w-24 flex-col title-gap-y">
                         <h5 className="title-6">
-                            {t('footer.links.legal')}
+                            {t('social')}
                         </h5>
                         <ul className="flex flex-col menu-gap-y">
                             <li>
-                                <p>{t('footer.links.terms')}</p>
+                                <p>{t('twitter')}</p>
                             </li>
                             <li>
-                                <p>{t('footer.links.privacy')}</p>
+                                <p>{t('linkedIn')}</p>
                             </li>
                             <li>
-                                <p>{t('footer.links.cookies')}</p>
+                                <p>{t('facebook')}</p>
                             </li>
                             <li>
-                                <p>{t('footer.links.licenses')}</p>
+                                <p>{t('github')}</p>
+                            </li>
+                        </ul>
+                    </div>
+                    <div className="flex min-w-24 flex-col title-gap-y">
+                        <h5 className="title-6">
+                            {t('legal')}
+                        </h5>
+                        <ul className="flex flex-col menu-gap-y">
+                            <li>
+                                <p>{t('terms')}</p>
+                            </li>
+                            <li>
+                                <p>{t('privacy')}</p>
+                            </li>
+                            <li>
+                                <p>{t('cookies')}</p>
+                            </li>
+                            <li>
+                                <p>{t('licenses')}</p>
                             </li>
                         </ul>
                     </div>
@@ -115,7 +115,7 @@ export default function Footer() {
                         />
                     </div>
                     <p className="text-base font-normal text-gray-300">
-                        {t('footer.links.copyright')}
+                        {t('copyright')}
                     </p>
                 </div>
             </section>

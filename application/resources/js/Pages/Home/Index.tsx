@@ -1,15 +1,18 @@
 import CatalystIntro from '@/Pages/Home/Partials/CatalystIntro';
 import PostCard from '@/Pages/Posts/Partials/PostCard';
-import { PageProps, Post } from '@/types';
-import { Head, WhenVisible } from '@inertiajs/react';
+import {PageProps} from '@/types';
+import {Head, router, WhenVisible} from '@inertiajs/react';
 import PostListLoader from '../Posts/Partials/PostListLoader';
-import ProposalCard from '../Proposals/Partials/ProposalCard';
+import ProposalList from '../Proposals/Partials/ProposalList';
 import ProposalCardLoading from '../Proposals/Partials/ProposalCardLoading';
-import { useTranslation } from 'react-i18next';
+import {useTranslation} from 'react-i18next';
 import MetricData = App.DataTransferObjects.MetricData;
 import ProposalData = App.DataTransferObjects.ProposalData;
 import PostData = App.DataTransferObjects.PostData;
 import AnnouncementData = App.DataTransferObjects.AnnouncementData;
+import AnnouncementCarousel from './Partials/Announcement/AnnouncementCarousel';
+import SecondaryButton from "@/Components/SecondaryButton";
+import React from "react";
 
 interface HomePageProps extends Record<string, unknown> {
     posts: PostData[];
@@ -19,22 +22,29 @@ interface HomePageProps extends Record<string, unknown> {
     specialAnnouncements: AnnouncementData[];
 }
 
-export default function Index({ posts, proposals, metrics, announcements, specialAnnouncements }: PageProps<HomePageProps>) {
-    const { t } = useTranslation();
+export default function Index({
+                                  posts,
+                                  proposals,
+                                  metrics,
+                                  announcements,
+                                  specialAnnouncements
+                              }: PageProps<HomePageProps>) {
+    const {t} = useTranslation();
+
+    function navigate() {
+        router.get('/proposals')
+    }
     return (
         <>
-            <Head title="Catalyst Explorer" />
+            <Head title="Catalyst Explorer"/>
 
             <div className="relative flex w-full flex-col justify-center gap-8">
-                <CatalystIntro />
+                <CatalystIntro/>
 
-                <section className="annnouncements-wrapper py-16">
+                <section className="annnouncements-wrapper">
                     <div className='container'>
-                        <div className=" overflow-auto py-8">
-                            <h2 className="title-2">Announcements Data</h2>
-                        </div>
                         <WhenVisible fallback={<div>Loading...</div>} data="announcements">
-                            {JSON.stringify(announcements)}
+                            <AnnouncementCarousel announcements={announcements}/>
                         </WhenVisible>
                     </div>
                 </section>
@@ -50,25 +60,25 @@ export default function Index({ posts, proposals, metrics, announcements, specia
                     </div>
                 </section>
 
-                <WhenVisible
-                    fallback={<ProposalCardLoading/>}
-                    data="proposals"
-                >
-                    <section className="proposals-wrapper">
-                        <div className="container py-8">
-                            <h2 className="title-2">Proposals</h2>
+                <section className="container proposals-wrapper">
+                    <div className=" py-8 flex justify-between items-center">
+                        <div>
+                            <h2 className="title-2">{t("proposals.proposals")}</h2>
+                            <p className="text-4 text-content-dark opacity-70">{t("proposals.listSubtitle")}</p>
                         </div>
-                        <div className="container mx-auto grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-3 2xl:max-w-full">
-                            {proposals &&
-                                proposals.map((proposal) => (
-                                    <ProposalCard
-                                        key={proposal.id}
-                                        proposal={proposal}
-                                    />
-                                ))}
+                        <div>
+                            <SecondaryButton className="font-bold text-content-dark" onClick={navigate}>
+                                {t("proposals.seeMoreProposals")}
+                            </SecondaryButton>
                         </div>
-                    </section>
-                </WhenVisible>
+                    </div>
+                    <WhenVisible
+                        fallback={<ProposalCardLoading/>}
+                        data="proposals"
+                    >
+                        <ProposalList proposals={proposals}/>
+                    </WhenVisible>
+                </section>
 
                 <section className="special-announcements-wrapper">
                     <div className='container'>
@@ -91,7 +101,7 @@ export default function Index({ posts, proposals, metrics, announcements, specia
                             {posts &&
                                 posts.map((post) => (
                                     <li key={post?.id}>
-                                        <PostCard post={post} />
+                                        <PostCard post={post}/>
                                     </li>
                                 ))}
                         </ul>

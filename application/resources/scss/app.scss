@@ -7,12 +7,14 @@
     --cx-secondary: #3facd1;
     --cx-dark: #667085;
     --cx-light: #667085;
-    --cx-accent: #165a72;
+    --cx-accent:  #165a72;
 
     --cx-blue-eye-color: #b1e2f0;
 
     --cx-content: #101828;
     --cx-content-highlight: #ccf4ff;
+    --cx-content-gray-persist: #667085;
+    --cx-content-black-persist: #101828;
     --cx-content-light: #eaecf0;
     --cx-content-dark: #101828;
     --cx-intro-gradient-1: #066384;
@@ -22,12 +24,15 @@
     --cx-background-darker: #f9fbfb;
     --cx-background-lighter: #eaecf0;
     --cx-background-light: #667085;
-    --cx-background-gradient-1-light: #1b2230;
-    --cx-background-gradient-2-light: #475467;
-    --cx-background-gradient-1-dark: #1b2230;
+    --cx-background-gradient-1-light: #3facd1;
+    --cx-background-gradient-2-light: #2596BE;
+    --cx-background-gradient-1-dark: #1B2230;
     --cx-background-gradient-2-dark: #475467;
 
     --cx-border-color: #667085;
+    --cx-border-secondary-color:#D0D5DD;
+    
+    --cx--border-chip-color: #9AD8E9;
 
     --bg-accent-color: #3facd1;
     --cx-accent-secondary: #a23b72;
@@ -72,9 +77,9 @@
     --cx-background-darker: #000000;
     --cx-background-lighter: #374151;
     --cx-background-light: #ffffff;
-    --cx-background-gradient-1-light: #1b2230;
-    --cx-background-gradient-2-light: #475467;
-    --cx-background-gradient-1-dark: #1b2230;
+    --cx-background-gradient-1-light: #2596BE;
+    --cx-background-gradient-2-light: #8cdefa;
+    --cx-background-gradient-1-dark: #1B2230;
     --cx-background-gradient-2-dark: #475467;
 
     --cx-border-color: #667085;
@@ -152,6 +157,10 @@
         background-color: var(--bg-accent-color);
     }
 
+    #main-content > header:first-child {
+        @apply py-6;
+    }
+
     body {
         @apply bg-background text-content transition-colors duration-300 ease-in-out;
     }
@@ -223,9 +232,6 @@
     .section-margin {
         @apply mt-8;
     }
-
-    main > header {
-        @apply pt-11;
     }
 
     .scrollable {
@@ -258,4 +264,4 @@
     .snaps-scrollable > * {
         scroll-snap-align: start;
     }
-}
+

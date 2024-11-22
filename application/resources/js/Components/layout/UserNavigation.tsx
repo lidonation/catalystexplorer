@@ -10,22 +10,22 @@ function UserNavigation() {
     const navItems = [
         {
             href: '/bookmarks',
-            title: t('navigation.links.bookmarks'),
+            title: t('bookmarks'),
             icon: <BookMarkCheckIcon className="text-dark" />,
         },
         {
             href: '/votes',
-            title: t('navigation.links.votes'),
+            title: t('votes'),
             icon: <BucketIcon className="text-dark" />,
         },
         {
             href: '/knowledge-base',
-            title: t('navigation.links.knowledgeBase'),
+            title: t('knowledgeBase'),
             icon: <FolderIcon className="text-dark" />,
         },
         {
             href: '/support',
-            title: t('navigation.links.support'),
+            title: t('support'),
             icon: <MailIcon className="text-dark" />,
         },
     ];

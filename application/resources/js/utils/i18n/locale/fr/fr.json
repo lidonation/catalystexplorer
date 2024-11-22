@@ -1,4 +1,47 @@
 {
+    "activeFund": "Fonds Actif",
+    "articles": "Articles",
+    "bookmarks": "Mes Signets",
+    "catalystAPI": "API Catalyst",
+    "ccv4Votes": "Votes CCV4",
+    "charts": "Graphiques",
+    "comingSoon": "À venir",
+    "communities": "Communautés",
+    "cookies": "Cookies",
+    "copyright": "© 2024 Explorateur Catalyst. Tous droits réservés.",
+    "data": "Données",
+    "dReps": "DReps",
+    "facebook": "Facebook",
+    "funds": "Fonds",
+    "getStarted": "Commencer",
+    "github": "Github",
+    "groups": "Groupes",
+    "home": "Accueil",
+    "jormungandr": "Jormungandr",
+    "knowledgeBase": "Base de Connaissances",
+    "legal": "Légal",
+    "licenses": "Licences",
+    "linkedIn": "LinkedIn",
+    "login": "Se connecter",
+    "monthlyReports": "Rapports Mensuels",
+    "numbers": "Chiffres",
+    "people": "Personnes",
+    "privacy": "Confidentialité",
+    "proposalReviews": "Évaluations des propositions",
+    "proposers": "Proposeurs",
+    "register": "Registre",
+    "reviews": "Évaluations",
+    "social": "Social",
+    "twitter": "Twitter",
+    "support": "Support",
+    "terms": "Conditions Générales",
+    "votes": "Mes Votes",
+    "wallets": "Portefeuilles",
+    "details": "Détails",
+    "teams": "Équipe",
+    "yes": "Oui",
+    "abstain": "Abstention",
+    "notSet": "Non défini",
     "app": {
         "name": "Catalyst Explorer",
         "contactEmail": "support@lidonation.com",
@@ -15,33 +58,17 @@
         "sidebar": {
             "open": "Ouvrir la barre latérale",
             "close": "Fermer la barre latérale"
-        },
-        "links": {
-            "home": "Accueil",
-            "proposals": "Propositions",
-            "funds": "Fonds",
-            "people": "Personnes",
-            "charts": "Graphiques",
-            "jormungandr": "Jormungandr",
-            "activeFund": "Fonds Actif",
-            "bookmarks": "Mes Signets",
-            "votes": "Mes Votes",
-            "knowledgeBase": "Base de Connaissances",
-            "support": "Support"
         }
+    },
+    "registration": {
+        "alreadyRegistered": "Déjà inscrit?",
+        "passwordCharacters": "Doit contenir 8 caractères"
     },
     "searchBar": {
         "placeholder": "Rechercher des propositions, des fonds, des personnes, des articles et des données",
         "all_filters": "Tous les filtres",
         "variants": {
-            "all": "Tout",
-            "proposals": "Propositions",
-            "people": "Personnes",
-            "groups": "Groupes",
-            "communities": "Communautés",
-            "wallets": "Portefeuilles",
-            "reviews": "Évaluations",
-            "articles": "Articles"
+            "all": "Tous les groupes"
         }
     },
     "catalystIntro": {
@@ -51,9 +78,18 @@
         },
         "subtitle": "Catalyst stimule la croissance de l'écosystème Cardano en reliant des idées innovantes à un financement, soutenu par un vote communautaire et le trésor Cardano."
     },
-    "proposalQuickpitch": {
+    "proposals": {
+        "allProposals": "Toutes les propositions",
+        "CSVs": "CSVs de propositions",
+        "proposals": "Propositions",
         "projectVideo": "Vidéo du projet",
         "providedUrl": "URL fournie",
+        "listSubtitle": "Les votes des propositions doivent être soumis dans l'application officielle de vote Catalyst.",
+        "pageSubtitle": "Rechercher des propositions et des défis par titre, contenu ou auteur et co-auteurs.",
+        "seeMoreProposals": "Voir plus de propositions",
+        "quickPitch": "Présentation rapide",
+
+        "proposalReviews": "Examens de propositions",
         "errors": {
             "noUrl": "Aucune URL vidéo fournie",
             "invalidYoutubeFormat": "Le format du lien YouTube est incorrect",
@@ -96,42 +132,14 @@
             "note": "Icône de note",
             "notificationBox": "Icône de boîte de notification",
             "people": "Icône de personnes",
-            "voltaireMode": "Icône de mode Voltaire"
+            "voltaireMode": "Icône de mode Voltaire",
+            "link": "Icône de lien"
         }
     },
-    "footer": {
-        "links": {
-            "proposals": "Propositions",
-            "allProposals": "Toutes les propositions",
-            "proposalReviews": "Évaluations des propositions",
-            "monthlyReports": "Rapports Mensuels",
-            "funds": "Fonds",
-
-            "people": "Personnes",
-            "proposers": "Proposeurs",
-            "groups": "Groupes",
-            "communities": "Communautés",
-            "dReps": "dReps",
-
-            "data": "Données",
-            "numbers": "Chiffres",
-            "ccv4Votes": "Votes CCV4",
-            "catalystAPI": "API Catalyst",
-            "proposalCSVs": "CSVs de propositions",
-
-            "social": "Social",
-            "twitter": "Twitter",
-            "linkedIn": "LinkedIn",
-            "facebook": "Facebook",
-            "github": "Github",
-
-            "legal": "Légal",
-            "terms": "Conditions Générales",
-            "privacy": "Confidentialité",
-            "cookies": "Cookies",
-            "licenses": "Licences",
-
-            "copyright": "© 2024 Explorateur Catalyst. Tous droits réservés."
-        }
+    "users": {
+        "editProfile": "modifier le profil",
+        "viewProfile": "Afficher le profil complet",
+        "viewIdeascale": "Afficher et contacter l'utilisateur sur Ideascale",
+        "profile": "profil"
     }
 }
