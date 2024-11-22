@@ -17,8 +17,10 @@ return Application::configure(basePath: dirname(__DIR__))
             \CodeZero\LocalizedRoutes\Middleware\SetLocale::class,
             // \Illuminate\Routing\Middleware\SubstituteBindings::class,
         ]);
-
-        //
+        $middleware->trustProxies(at: '*');
+        if (app()->environment('production')) {
+            $middleware->trustHosts(at: config('app.hosts', '*'));
+        }
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //
