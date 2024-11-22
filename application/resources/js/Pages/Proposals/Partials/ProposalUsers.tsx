@@ -10,7 +10,7 @@ export default function ProposalUsers({ users,onUserClick }: PageProps<ProposalU
     const { t } = useTranslation();
 
     // Limit the users array to the first 5
-    const visibleUsers = users?.slice(0, 5) || [];
+    const visibleUsers = users?.slice(0, 5) || []; 
     const remainingCount = (users?.length || 0) - visibleUsers.length;
 
     return (
