@@ -1,7 +1,7 @@
 import CatalystIntro from '@/Pages/Home/Partials/CatalystIntro';
 import PostCard from '@/Pages/Posts/Partials/PostCard';
 import {PageProps} from '@/types';
-import {Head, WhenVisible} from '@inertiajs/react';
+import {Head, router, WhenVisible} from '@inertiajs/react';
 import PostListLoader from '../Posts/Partials/PostListLoader';
 import ProposalList from '../Proposals/Partials/ProposalList';
 import ProposalCardLoading from '../Proposals/Partials/ProposalCardLoading';
@@ -11,6 +11,8 @@ import ProposalData = App.DataTransferObjects.ProposalData;
 import PostData = App.DataTransferObjects.PostData;
 import AnnouncementData = App.DataTransferObjects.AnnouncementData;
 import AnnouncementCarousel from './Partials/Announcement/AnnouncementCarousel';
+import SecondaryButton from "@/Components/SecondaryButton";
+import React from "react";
 
 interface HomePageProps extends Record<string, unknown> {
     posts: PostData[];
@@ -28,6 +30,10 @@ export default function Index({
                                   specialAnnouncements
                               }: PageProps<HomePageProps>) {
     const {t} = useTranslation();
+
+    function navigate() {
+        router.get('/proposals')
+    }
     return (
         <>
             <Head title="Catalyst Explorer"/>
@@ -54,12 +60,25 @@ export default function Index({
                     </div>
                 </section>
 
-                <WhenVisible
-                    fallback={<ProposalCardLoading/>}
-                    data="proposals"
-                >
-                    <ProposalList proposals={proposals}/>
-                </WhenVisible>
+                <section className="container proposals-wrapper">
+                    <div className=" py-8 flex justify-between items-center">
+                        <div>
+                            <h2 className="title-2">{t("proposals.proposals")}</h2>
+                            <p className="text-4 text-content-dark opacity-70">{t("proposals.listSubtitle")}</p>
+                        </div>
+                        <div>
+                            <SecondaryButton className="font-bold text-content-dark" onClick={navigate}>
+                                {t("proposals.seeMoreProposals")}
+                            </SecondaryButton>
+                        </div>
+                    </div>
+                    <WhenVisible
+                        fallback={<ProposalCardLoading/>}
+                        data="proposals"
+                    >
+                        <ProposalList proposals={proposals}/>
+                    </WhenVisible>
+                </section>
 
                 <section className="special-announcements-wrapper">
                     <div className='container'>

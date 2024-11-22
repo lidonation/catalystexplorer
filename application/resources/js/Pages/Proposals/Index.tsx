@@ -13,12 +13,15 @@ export default function Index({proposals}: PageProps<HomePageProps>) {
     const {t} = useTranslation();
     return (
         <>
-            <Head title="Proposals"/>
+            <Head title="Proposals" />
 
             <header>
                 <div className='container'>
-                    <h1 className="title-1">{t('proposals.proposals')}</h1>
+                    <h1 className="title-1">
+                        {t('proposals.proposals')}
+                    </h1>
                 </div>
+
                 <div className='container'>
                     <p className="text-content">
                         {t('proposals.pageSubtitle')}
@@ -26,13 +29,13 @@ export default function Index({proposals}: PageProps<HomePageProps>) {
                 </div>
             </header>
 
-            <div className="flex flex-col w-full items-center justify-center">
+            <div className="w-full container proposals-wrapper">
                 <WhenVisible
                     fallback={<ProposalCardLoading/>}
                     data="proposals"
                 >
                     <div className='container py-8'>
-                        <ProposalResults proposals={proposals}/>
+                        <ProposalResults proposals={proposals} />
                     </div>
                 </WhenVisible>
             </div>
