@@ -1,6 +1,7 @@
 import React from "react";
 import ProposalCard from "@/Pages/Proposals/Partials/ProposalCard";
 import SecondaryButton from "@/Components/SecondaryButton";
+import SecondaryLink from "@/Components/SecondaryLink";
 import { router } from "@inertiajs/react";
 import { useTranslation } from "react-i18next";
 import ProposalData = App.DataTransferObjects.ProposalData;
@@ -11,9 +12,7 @@ interface ProposalProps {
 
 const ProposalList: React.FC<ProposalProps> = ({ proposals }) => {
     const {t} = useTranslation();
-    function navigate (){
-       router.get('/proposals')
-    }
+
     return (
         <section className="proposals-wrapper">
             <div className="container py-8 flex justify-between items-center">
@@ -22,9 +21,9 @@ const ProposalList: React.FC<ProposalProps> = ({ proposals }) => {
                     <p className="text-4 text-content-dark opacity-70">{t("proposalList.subtitle")}</p>
                 </div>
                 <div>
-                    <SecondaryButton className="font-bold text-content-dark" onClick={navigate}>
+                    <SecondaryLink className="font-bold text-content-dark" href="/proposals">
                     {t("proposalList.buttonText")}
-                    </SecondaryButton>
+                    </SecondaryLink>
                 </div>
             </div>
             <div className="container mx-auto grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-3 2xl:max-w-full">
