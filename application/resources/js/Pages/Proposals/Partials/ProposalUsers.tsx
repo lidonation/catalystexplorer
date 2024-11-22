@@ -10,8 +10,8 @@ export default function ProposalUsers({ users,onUserClick }: PageProps<ProposalU
     const { t } = useTranslation();
 
     // Limit the users array to the first 5
-    const visibleUsers = users?.slice(0, 5) || []; 
-    const remainingCount = (users?.length || 0) - visibleUsers.length;
+    const visibleUsers = users?.slice(0, 5);
+    const remainingCount = users?.length - visibleUsers?.length;
 
     return (
         <section
@@ -19,10 +19,10 @@ export default function ProposalUsers({ users,onUserClick }: PageProps<ProposalU
             aria-labelledby="team-heading"
         >
             <h3 id="team-heading" className="mb-2 font-medium">
-                {t('teams')}
+            {t('teams')}
             </h3>
             <ul className="cursor-pointer flex -space-x-2">
-                {visibleUsers.map((user) => (
+                {visibleUsers?.map((user) => (
                     <li key={user.id} onClick={() => onUserClick(user)}>
                         <UserAvatar
                             size="size-8"

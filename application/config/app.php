@@ -62,6 +62,10 @@ return [
 
     'frontend_url' => env('APP_URL', 'http://localhost'),
 
+    'asset_url' => env('APP_URL', 'http://localhost'),
+
+    'hosts' => env('APP_HOSTS', 'catalystexplorer.com'),
+
     /*
     |--------------------------------------------------------------------------
     | Application Timezone

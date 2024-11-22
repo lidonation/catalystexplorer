@@ -7,38 +7,39 @@ import HomeIcon from '../svgs/HomeIcon';
 import NoteIcon from '../svgs/NoteIcon';
 import NotificationBoxIcon from '../svgs/NotificationBoxIcon';
 import PeopleIcon from '../svgs/PeopleIcon';
+import {useLocalizedRoute} from "@/utils/localizedRoute";
 
 function AppNavigation() {
     const { t } = useTranslation();
     const navItems = [
         {
-            href: '/',
+            href: useLocalizedRoute('home'),
             title: t('home'),
             icon: <HomeIcon className="text-dark" />,
         },
         {
-            href: '/proposals',
+            href: useLocalizedRoute('proposals.index'),
             title: t('proposals.proposals'),
             icon: <NoteIcon className="text-primary-100" />,
             active: true,
         },
         {
-            href: '/funds',
+            href: useLocalizedRoute('funds.index'),
             title: t('funds'),
             icon: <CheckIcon className="text-dark" />,
         },
         {
-            href: '/people',
+            href: useLocalizedRoute('people.index'),
             title: t('people'),
             icon: <PeopleIcon className="text-dark" />,
         },
         {
-            href: '/charts',
+            href: useLocalizedRoute('charts.index'),
             title: t('charts'),
             icon: <ChartIcon className="text-dark" />,
         },
         {
-            href: '/jormungandr',
+            href: useLocalizedRoute('jormungandr.index'),
             title: t('jormungandr'),
             icon: <BarLineIcon className="text-dark" />,
         },

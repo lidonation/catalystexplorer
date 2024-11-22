@@ -1,15 +1,16 @@
 import CatalystIntro from '@/Pages/Home/Partials/CatalystIntro';
 import PostCard from '@/Pages/Posts/Partials/PostCard';
-import { PageProps } from '@/types';
-import { Head, WhenVisible } from '@inertiajs/react';
+import {PageProps} from '@/types';
+import {Head, WhenVisible} from '@inertiajs/react';
 import PostListLoader from '../Posts/Partials/PostListLoader';
 import ProposalList from '../Proposals/Partials/ProposalList';
 import ProposalCardLoading from '../Proposals/Partials/ProposalCardLoading';
-import { useTranslation } from 'react-i18next';
+import {useTranslation} from 'react-i18next';
 import MetricData = App.DataTransferObjects.MetricData;
 import ProposalData = App.DataTransferObjects.ProposalData;
 import PostData = App.DataTransferObjects.PostData;
 import AnnouncementData = App.DataTransferObjects.AnnouncementData;
+import AnnouncementCarousel from './Partials/Announcement/AnnouncementCarousel';
 
 interface HomePageProps extends Record<string, unknown> {
     posts: PostData[];
@@ -19,22 +20,25 @@ interface HomePageProps extends Record<string, unknown> {
     specialAnnouncements: AnnouncementData[];
 }
 
-export default function Index({ posts, proposals, metrics, announcements, specialAnnouncements }: PageProps<HomePageProps>) {
-    const { t } = useTranslation();
+export default function Index({
+                                  posts,
+                                  proposals,
+                                  metrics,
+                                  announcements,
+                                  specialAnnouncements
+                              }: PageProps<HomePageProps>) {
+    const {t} = useTranslation();
     return (
         <>
-            <Head title="Catalyst Explorer" />
+            <Head title="Catalyst Explorer"/>
 
             <div className="relative flex w-full flex-col justify-center gap-8">
-                <CatalystIntro />
+                <CatalystIntro/>
 
-                <section className="annnouncements-wrapper py-16">
+                <section className="annnouncements-wrapper">
                     <div className='container'>
-                        <div className=" overflow-auto py-8">
-                            <h2 className="title-2">Announcements Data</h2>
-                        </div>
                         <WhenVisible fallback={<div>Loading...</div>} data="announcements">
-                            {JSON.stringify(announcements)}
+                            <AnnouncementCarousel announcements={announcements}/>
                         </WhenVisible>
                     </div>
                 </section>
@@ -54,7 +58,7 @@ export default function Index({ posts, proposals, metrics, announcements, specia
                     fallback={<ProposalCardLoading/>}
                     data="proposals"
                 >
-                    <ProposalList proposals={proposals} />
+                    <ProposalList proposals={proposals}/>
                 </WhenVisible>
 
                 <section className="special-announcements-wrapper">
@@ -78,7 +82,7 @@ export default function Index({ posts, proposals, metrics, announcements, specia
                             {posts &&
                                 posts.map((post) => (
                                     <li key={post?.id}>
-                                        <PostCard post={post} />
+                                        <PostCard post={post}/>
                                     </li>
                                 ))}
                         </ul>
