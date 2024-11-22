@@ -64,7 +64,7 @@ return [
 
     'asset_url' => env('APP_URL', 'http://localhost'),
 
-    'hosts' => env('APP_HOSTS', ['catalystexplorer.com']),
+    'hosts' => env('APP_HOSTS', 'catalystexplorer.com'),
 
     /*
     |--------------------------------------------------------------------------

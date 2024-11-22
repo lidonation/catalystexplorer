@@ -1,7 +1,9 @@
-export default function ProposalCardLoading() {
+import {useTranslation} from "react-i18next";
+
+export default function ProposalResultsLoading() {
     return (
         <div
-            className="w-full grid max-w-7xl grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-3">
+            className="container mx-auto grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-3 2xl:max-w-full">
             {[1, 2, 3].map((proposal, index) => (
                 <div
                     key={index}

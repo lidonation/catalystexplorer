@@ -18,7 +18,6 @@ return Application::configure(basePath: dirname(__DIR__))
             // \Illuminate\Routing\Middleware\SubstituteBindings::class,
         ]);
         $middleware->trustProxies(at: '*');
-        $middleware->trustHosts(at: [getenv('APP_HOSTS') ?: '*']);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //
