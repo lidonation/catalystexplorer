@@ -1,41 +1,48 @@
-import {Head, WhenVisible} from '@inertiajs/react';
-import {useTranslation} from "react-i18next";
-import {PageProps} from "@/types";
+import  {RangePicker}  from '@/Components/RangePicker';
+import ProposalCardLoading from '@/Pages/Proposals/Partials/ProposalCardLoading';
+import ProposalResults from '@/Pages/Proposals/Partials/ProposalResults';
+import { PageProps } from '@/types';
+import { Head, WhenVisible } from '@inertiajs/react';
+import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import ProposalData = App.DataTransferObjects.ProposalData;
-import ProposalCardLoading from "@/Pages/Proposals/Partials/ProposalCardLoading";
-import ProposalResults from "@/Pages/Proposals/Partials/ProposalResults";
+import ProposalFilters from './Partials/ProposalFilters';
 
 interface HomePageProps extends Record<string, unknown> {
     proposals: ProposalData[];
 }
 
-export default function Index({proposals}: PageProps<HomePageProps>) {
-    const {t} = useTranslation();
+export default function Index({ proposals }: PageProps<HomePageProps>) {
+    const { t } = useTranslation();
     return (
         <>
-            <Head title="Proposals"/>
+            <Head title="Proposals" />
 
             <header>
-                <div className='container'>
+                <div className="container">
                     <h1 className="title-1">{t('proposals.proposals')}</h1>
                 </div>
-                <div className='container'>
+                <div className="container">
                     <p className="text-content">
                         {t('proposals.pageSubtitle')}
                     </p>
                 </div>
             </header>
 
-            <div className="flex flex-col w-full items-center justify-center">
+            <section className="container flex w-full flex-col items-center justify-center">
+            <ProposalFilters/>
+            </section>
+
+            <section className="flex w-full flex-col items-center justify-center">
                 <WhenVisible
-                    fallback={<ProposalCardLoading/>}
+                    fallback={<ProposalCardLoading />}
                     data="proposals"
                 >
-                    <div className='container py-8'>
-                        <ProposalResults proposals={proposals}/>
+                    <div className="container py-8">
+                        <ProposalResults proposals={proposals} />
                     </div>
                 </WhenVisible>
-            </div>
+            </section>
         </>
     );
 }
