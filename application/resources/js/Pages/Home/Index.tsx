@@ -12,7 +12,6 @@ import PostData = App.DataTransferObjects.PostData;
 import AnnouncementData = App.DataTransferObjects.AnnouncementData;
 import AnnouncementCarousel from './Partials/Announcement/AnnouncementCarousel';
 import SecondaryLink from '@/Components/SecondaryLink';
-import React from "react";
 
 interface HomePageProps extends Record<string, unknown> {
     posts: PostData[];
