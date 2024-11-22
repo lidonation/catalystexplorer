@@ -43,6 +43,8 @@ export default {
                 'content-dark': 'var(--cx-content-dark)',
                 light: 'var(--cx-content)',
                 'light-persist': 'var(--bg-light-persist)',
+                'gray-persist': 'var(--cx-content-gray-persist)',
+                'black-persist': 'var(--cx-content-black-persist)',
                 dark: 'var(--cx-dark)',
                 primary: 'var(--cx-primary)',
                 secondary: 'var(--cx-secondary)',
@@ -67,6 +69,8 @@ export default {
                 'background-button-gradient-color-2':
                     'var(--cx-background-gradient-2-light)',
                 border: 'var(--cx-border-color)',
+                'border-chip': 'var(--cx-border-chip-color)',
+                'border-secondary': 'var(--cx-border-secondary-color)',
                 'eye-logo': 'var(--cx-blue-eye-color)',
                 // border: {
                 //     primary: 'var(--cx-primary)',

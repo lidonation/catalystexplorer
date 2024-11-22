@@ -10,6 +10,7 @@ import MetricData = App.DataTransferObjects.MetricData;
 import ProposalData = App.DataTransferObjects.ProposalData;
 import PostData = App.DataTransferObjects.PostData;
 import AnnouncementData = App.DataTransferObjects.AnnouncementData;
+import AnnouncementCarousel from './Partials/Announcement/AnnouncementCarousel';
 
 interface HomePageProps extends Record<string, unknown> {
     posts: PostData[];
@@ -34,7 +35,7 @@ export default function Index({ posts, proposals, metrics, announcements, specia
                             <h2 className="title-2">Announcements Data</h2>
                         </div>
                         <WhenVisible fallback={<div>Loading...</div>} data="announcements">
-                            {JSON.stringify(announcements)}
+                        <AnnouncementCarousel announcements={announcements}/>
                         </WhenVisible>
                     </div>
                 </section>
