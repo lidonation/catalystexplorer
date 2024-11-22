@@ -34,7 +34,7 @@ export default function Index({proposals}: PageProps<HomePageProps>) {
                     fallback={<ProposalCardLoading/>}
                     data="proposals"
                 >
-                    <div className='container py-8'>
+                    <div className='py-4'>
                         <ProposalResults proposals={proposals} />
                     </div>
                 </WhenVisible>
