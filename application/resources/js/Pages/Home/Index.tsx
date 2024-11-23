@@ -11,8 +11,7 @@ import ProposalData = App.DataTransferObjects.ProposalData;
 import PostData = App.DataTransferObjects.PostData;
 import AnnouncementData = App.DataTransferObjects.AnnouncementData;
 import AnnouncementCarousel from './Partials/Announcement/AnnouncementCarousel';
-import SecondaryButton from "@/Components/SecondaryButton";
-import React from "react";
+import SecondaryLink from '@/Components/SecondaryLink';
 
 interface HomePageProps extends Record<string, unknown> {
     posts: PostData[];
@@ -67,9 +66,9 @@ export default function Index({
                             <p className="text-4 text-content-dark opacity-70">{t("proposals.listSubtitle")}</p>
                         </div>
                         <div>
-                            <SecondaryButton className="font-bold text-content-dark" onClick={navigate}>
+                            <SecondaryLink className="font-bold text-content-dark" href="/proposals">
                                 {t("proposals.seeMoreProposals")}
-                            </SecondaryButton>
+                            </SecondaryLink>
                         </div>
                     </div>
                     <WhenVisible
