@@ -15,7 +15,6 @@ export default function Index({ proposals }: PageProps<HomePageProps>) {
     return (
         <>
             <Head title="Proposals" />
-            <Head title="Proposals" />
 
             <header>
                 <div className="container">
