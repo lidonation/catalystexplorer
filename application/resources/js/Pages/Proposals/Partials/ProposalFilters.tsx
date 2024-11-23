@@ -5,7 +5,7 @@ export default function ProposalFilters() {
     const [range, setRange] = useState([20, 80]);
 
     return (
-        <div className="container w-full rounded-xl bg-background">
+        <div className="w-full rounded-xl bg-background p-4">
             <div className="w-96 pb-4 pt-6">
                 <RangePicker
                     value={range}
