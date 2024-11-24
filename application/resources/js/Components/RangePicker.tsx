@@ -4,11 +4,16 @@ import { cn } from '@/lib/utils';
 import * as SliderPrimitive from '@radix-ui/react-slider';
 import React from 'react';
 
+type RangePickerProps = {
+    context?: string;
+} & React.ComponentPropsWithoutRef<typeof SliderPrimitive.Root>;
+
 const RangePicker = React.forwardRef<
     React.ElementRef<typeof SliderPrimitive.Root>,
-    React.ComponentPropsWithoutRef<typeof SliderPrimitive.Root>
->(({ className, ...props }, ref) => (
-    <div>
+    RangePickerProps
+>(({ className, context = '', ...props }, ref) => (
+    <div className='flex flex-col'>
+        <span className="mb-4">{context}</span>
         <SliderPrimitive.Root
             ref={ref}
             className={cn(
@@ -25,7 +30,7 @@ const RangePicker = React.forwardRef<
                 (_, index) => (
                     <SliderPrimitive.Thumb
                         key={index}
-                        className="block h-5 w-5 rounded-full border-2 border-primary bg-background ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50"
+                        className="focus-visible:ring-ring block h-5 w-5 rounded-full border-2 border-primary bg-background ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50"
                     />
                 ),
             )}
