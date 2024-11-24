@@ -13,6 +13,11 @@ type SelectProps = {
     children: React.ReactNode;
 };
 
+type CustomChildProps = {
+    isMultiselect?: boolean;
+    selectedItems?: string[];
+};
+
 const Select: React.FC<SelectProps> = ({
     isMultiselect = false,
     selectedItems,
@@ -31,13 +36,12 @@ const Select: React.FC<SelectProps> = ({
 
     return (
         <SelectPrimitive.Root
-            value={isMultiselect ? selectedItems : selectedItems[0]}
             onValueChange={(value) => handleSelectChange(value)}
             {...props}
         >
             {React.Children.map(props.children, (child) => {
                 if (
-                    React.isValidElement(child) &&
+                    React.isValidElement<CustomChildProps>(child) &&
                     child.type === SelectContent
                 ) {
                     return React.cloneElement(child, {
@@ -57,12 +61,15 @@ const SelectValue = SelectPrimitive.Value;
 
 const SelectTrigger = React.forwardRef<
     React.ElementRef<typeof SelectPrimitive.Trigger>,
-    React.ComponentPropsWithoutRef<typeof SelectPrimitive.Trigger>
+    React.ComponentPropsWithoutRef<typeof SelectPrimitive.Trigger> & {
+        isMultiselect?: boolean;
+        selectedItems?: string[];
+    }
 >(({ className, children, ...props }, ref) => (
     <SelectPrimitive.Trigger
         ref={ref}
         className={cn(
-            'border-input placeholder:text-muted-foreground focus:ring-0 flex h-10 w-full items-center justify-between rounded-md border bg-background px-3 py-2 text-sm ring-offset-background focus:outline-none  disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1',
+            'border-input placeholder:text-muted-foreground flex h-10 w-full items-center justify-between rounded-md border bg-background px-3 py-2 text-sm ring-offset-background focus:outline-none focus:ring-0 disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1',
             className,
         )}
         {...props}
@@ -77,7 +84,10 @@ SelectTrigger.displayName = SelectPrimitive.Trigger.displayName;
 
 const SelectScrollUpButton = React.forwardRef<
     React.ElementRef<typeof SelectPrimitive.ScrollUpButton>,
-    React.ComponentPropsWithoutRef<typeof SelectPrimitive.ScrollUpButton>
+    React.ComponentPropsWithoutRef<typeof SelectPrimitive.ScrollUpButton> & {
+        isMultiselect?: boolean;
+        selectedItems?: string[];
+    }
 >(({ className, ...props }, ref) => (
     <SelectPrimitive.ScrollUpButton
         ref={ref}
@@ -94,7 +104,10 @@ SelectScrollUpButton.displayName = SelectPrimitive.ScrollUpButton.displayName;
 
 const SelectScrollDownButton = React.forwardRef<
     React.ElementRef<typeof SelectPrimitive.ScrollDownButton>,
-    React.ComponentPropsWithoutRef<typeof SelectPrimitive.ScrollDownButton>
+    React.ComponentPropsWithoutRef<typeof SelectPrimitive.ScrollDownButton> & {
+        isMultiselect?: boolean;
+        selectedItems?: string[];
+    }
 >(({ className, ...props }, ref) => (
     <SelectPrimitive.ScrollDownButton
         ref={ref}
@@ -112,14 +125,17 @@ SelectScrollDownButton.displayName =
 
 const SelectContent = React.forwardRef<
     React.ElementRef<typeof SelectPrimitive.Content>,
-    React.ComponentPropsWithoutRef<typeof SelectPrimitive.Content>
+    React.ComponentPropsWithoutRef<typeof SelectPrimitive.Content> & {
+        isMultiselect?: boolean;
+        selectedItems?: string[];
+    }
 >(
     (
         {
             className,
             children,
             position = 'popper',
-            ismultiselect = false,
+            isMultiselect = false,
             selectedItems,
             ...props
         },
@@ -147,11 +163,11 @@ const SelectContent = React.forwardRef<
                 >
                     {React.Children.map(children, (child) => {
                         if (
-                            React.isValidElement(child) &&
+                            React.isValidElement<CustomChildProps>(child) &&
                             child.type === SelectItem
                         ) {
                             return React.cloneElement(child, {
-                                ismultiselect,
+                                isMultiselect,
                                 selectedItems,
                             });
                         }
@@ -167,7 +183,10 @@ SelectContent.displayName = SelectPrimitive.Content.displayName;
 
 const SelectLabel = React.forwardRef<
     React.ElementRef<typeof SelectPrimitive.Label>,
-    React.ComponentPropsWithoutRef<typeof SelectPrimitive.Label>
+    React.ComponentPropsWithoutRef<typeof SelectPrimitive.Label> & {
+        isMultiselect?: boolean;
+        selectedItems?: string[];
+    }
 >(({ className, ...props }, ref) => (
     <SelectPrimitive.Label
         ref={ref}
@@ -180,44 +199,36 @@ SelectLabel.displayName = SelectPrimitive.Label.displayName;
 const SelectItem = React.forwardRef<
     React.ElementRef<typeof SelectPrimitive.Item>,
     React.ComponentPropsWithoutRef<typeof SelectPrimitive.Item> & {
-        ismultiselect?: boolean;
+        isMultiselect?: boolean;
         selectedItems?: string[];
     }
->(
-    (
-        {
-            className,
-            children,
-            ismultiselect, 
-            selectedItems, 
-            ...props
-        },
-        ref,
-    ) => {
-        const isSelected = selectedItems?.includes(props.value);
+>(({ className, children, isMultiselect, selectedItems, ...props }, ref) => {
+    const isSelected = selectedItems?.includes(props.value);
 
-        return (
-            <SelectPrimitive.Item
-                ref={ref}
-                className={cn(
-                    'relative flex w-full cursor-default select-none items-center rounded-sm py-1.5 pl-8 pr-2 text-sm outline-none focus:bg-background-lighter data-[disabled]:pointer-events-none data-[disabled]:opacity-50',
-                    className,
-                )}
-                {...props} // Pass only valid DOM props here
-            >
-                <span className="absolute left-2 flex h-3.5 w-3.5 items-center justify-center">
-                    {isSelected && <Check className="h-4 w-4" />}
-                </span>
-                <SelectPrimitive.ItemText>{children}</SelectPrimitive.ItemText>
-            </SelectPrimitive.Item>
-        );
-    },
-);
+    return (
+        <SelectPrimitive.Item
+            ref={ref}
+            className={cn(
+                'relative flex w-full cursor-default select-none items-center rounded-sm py-1.5 pl-8 pr-2 text-sm outline-none focus:bg-background-lighter data-[disabled]:pointer-events-none data-[disabled]:opacity-50',
+                className,
+            )}
+            {...props} // Pass only valid DOM props here
+        >
+            <span className="absolute left-2 flex h-3.5 w-3.5 items-center justify-center">
+                {isSelected && <Check className="h-4 w-4" />}
+            </span>
+            <SelectPrimitive.ItemText>{children}</SelectPrimitive.ItemText>
+        </SelectPrimitive.Item>
+    );
+});
 SelectItem.displayName = SelectPrimitive.Item.displayName;
 
 const SelectSeparator = React.forwardRef<
     React.ElementRef<typeof SelectPrimitive.Separator>,
-    React.ComponentPropsWithoutRef<typeof SelectPrimitive.Separator>
+    React.ComponentPropsWithoutRef<typeof SelectPrimitive.Separator> & {
+        isMultiselect?: boolean;
+        selectedItems?: string[];
+    }
 >(({ className, ...props }, ref) => (
     <SelectPrimitive.Separator
         ref={ref}

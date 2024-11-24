@@ -6,7 +6,7 @@ export default function ProposalFilters() {
     const [range, setRange] = useState([20, 80]);
     const [selectedFundingStatus, setSelectedFundingStatus] = useState<
         string[]
-    >([]);
+    >(['o']);
     const [selectedOpensourceStatus, setSelectedOpensourceStatus] = useState<
         string[]
     >([]);

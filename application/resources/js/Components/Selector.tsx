@@ -4,7 +4,7 @@ type SelectProps = {
     isMultiselect?: boolean;
     selectedItems: string[];
     setSelectedItems: (updatedItems: string[]) => void;
-    options: {};
+    options: Record<string, string>;
     context:string;
 };
 
