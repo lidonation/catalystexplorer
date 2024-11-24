@@ -55,7 +55,7 @@ export default function ProposalFilters() {
                         }}
                         setSelectedItems={setSelectedProjectStatus}
                         selectedItems={selectedProjectStatus}
-                        context={'Opensource'}
+                        context={'Project Status'}
                     />
                 </div>
             </div>
