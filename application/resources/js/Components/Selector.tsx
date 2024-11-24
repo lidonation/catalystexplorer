@@ -17,7 +17,7 @@ export default function Selector({
     ...props
 }: SelectProps) {
     return (
-        <div className="rounded-lg bg-background">
+        <div className="rounded-lg bg-background ">
             <Select
                 isMultiselect={isMultiselect}
                 selectedItems={selectedItems}
@@ -35,7 +35,7 @@ export default function Selector({
                 </SelectTrigger>
                 <SelectContent>
                     {Object.entries(options).map(([key, value]) => (
-                        <SelectItem value={key}>{value}</SelectItem>
+                        <SelectItem value={key} key={key}>{value}</SelectItem>
                     ))}
                 </SelectContent>
             </Select>
