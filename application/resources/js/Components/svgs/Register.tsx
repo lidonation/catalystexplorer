@@ -9,8 +9,8 @@ type RegisterUserIconProps = {
 
 export default function RegisterUserIcon({
     className,
-    width = 24,
-    height = 24,
+    width = 22,
+    height = 22,
     onClick
 }: RegisterUserIconProps) {
     const { t } = useTranslation();

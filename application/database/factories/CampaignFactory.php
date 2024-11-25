@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Database\Factories;
 
@@ -23,7 +23,7 @@ class CampaignFactory extends Factory
     {
         return [
             'user_id' => User::factory(),
-            'fund_id' => Fund::factory(),
+            'fund_id' => Fund::inRandomOrder()->first(),
             'title' => $this->faker->sentence(4),
             'meta_title' => $this->faker->sentence(5),
             'slug' => fn(array $attributes) => Str::slug($attributes['title']),

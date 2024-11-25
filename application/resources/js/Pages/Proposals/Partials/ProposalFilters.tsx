@@ -1,21 +1,17 @@
 import { RangePicker } from '@/Components/RangePicker';
 import Selector from '@/Components/Selector';
 import { useState } from 'react';
+import {ProposalSearchParams} from "../../../../types/proposal-search-params";
 
-export default function ProposalFilters() {
+export default function ProposalFilters({ filters } : { filters: ProposalSearchParams }) {
     const [range, setRange] = useState([20, 80]);
-    const [selectedFundingStatus, setSelectedFundingStatus] = useState<
-        string[]
-    >(['o']);
-    const [selectedOpensourceStatus, setSelectedOpensourceStatus] = useState<
-        string[]
-    >([]);
-    const [selectedProjectStatus, setSelectedProjectStatus] = useState<
-        string[]
-    >([]);
+    const [selectedFundingStatus, setSelectedFundingStatus] = useState<string[]>(['o']);
+    const [selectedOpensourceStatus, setSelectedOpensourceStatus] = useState<string[]>([]);
+    const [selectedProjectStatus, setSelectedProjectStatus] = useState<string[]>([]);
 
     return (
         <div className="w-full bg-background p-4">
+            <b>Filters Values:</b> {JSON.stringify(filters)} <br />
             <div className="grid grid-cols-1 gap-x-4 gap-y-3 rounded-xl md:grid-cols-2 lg:grid-cols-4">
                 <div className="pb-4 pt-6">
                     <Selector

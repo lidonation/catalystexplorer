@@ -16,11 +16,7 @@ final class ProposalData extends Data
     public function __construct(
         public ?int $id,
 
-        public ?int $user_id,
-
         public ?CampaignData $campaign,
-
-        public ?int $fund_id,
 
         public ?string $title,
 
@@ -65,9 +61,6 @@ final class ProposalData extends Data
 
         #[TypeScriptOptional]
         public ?string $social_excerpt,
-
-        #[TypeScriptOptional]
-        public ?int $team_id,
 
         #[TypeScriptOptional]
         public ?string $ideascale_link,

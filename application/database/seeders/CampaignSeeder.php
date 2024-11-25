@@ -17,7 +17,6 @@ class CampaignSeeder extends Seeder
     public function run(): void
     {
         Campaign::factory()
-            ->recycle(Fund::factory()->create())
             ->recycle(User::factory()->create())
             ->count(10)
             ->create();
