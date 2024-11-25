@@ -60,14 +60,14 @@ function ModalSidebar({ isOpen = false, title, children, onClose }: ModalSidebar
                         ariaLabel={t('navigation.sidebar.close')}
                         aria-expanded={isOpen}
                         aria-controls="sidebar-modal"
-                        className="inline-flex items-center rounded px-2 py-1 text-4 hover:bg-dark"
+                        className="hidden sm:block lg:inline-flex items-center rounded px-2 py-1 text-4 hover:bg-dark"
                     >
                         <CloseIcon width={18} height={18} />
                     </Button>
                 </header>
 
                 <div className="flex h-full flex-col gap-6 px-6">
-                    <div className="mt-6 flex h-6 shrink-0 items-center justify-center px-6">
+                    <div className="hidden sm:block mt-6 lg:flex h-6 shrink-0 items-center justify-center px-6">
                         <CatalystLogo className="object-contain" />
                     </div>
                     <section className="overflow-y-auto">{children}</section>

@@ -9,6 +9,8 @@ import RegisterUserIcon from '../svgs/Register';
 import UserAvatar from '../UserAvatar';
 import ModalSidebar from './ModalSidebar';
 import RegisterForm from '@/Pages/Auth/Partials/RegisterForm';
+import LoginForm from '@/Pages/Auth/Partials/LoginForm';
+
 
 interface UserDetailsProps {
     user: App.DataTransferObjects.UserData;
@@ -16,7 +18,7 @@ interface UserDetailsProps {
 
 const UserDetails: React.FC<UserDetailsProps> = ({ user }) => {
     const { t } = useTranslation();
-    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [activeModal, setActiveModal] = useState<"register" | "login" | null>(null);
 
     const logout = () => {
         axios
@@ -67,26 +69,29 @@ const UserDetails: React.FC<UserDetailsProps> = ({ user }) => {
                 </div>
                 :
                 <>
-
                     <nav className="flex flex-col justify-between">
                         <ul className="flex flex-1 flex-col menu-gap-y">
-                            <li className='flex items-center gap-3 px-3 py-1 hover:bg-background-lighter cursor-pointer' onClick={() => setIsModalOpen(true)}>
+                            <li className='flex items-center gap-3 px-3 py-1 hover:bg-background-lighter cursor-pointer' onClick={() => setActiveModal("register")}>
                                 <RegisterUserIcon className='text-dark' />
                                 <p className='text-3'>{t("register")}</p>
                             </li>
-                            <li className='flex items-center gap-3 px-3 py-1 hover:bg-background-lighter cursor-pointer'>
+                            <li className='flex items-center gap-3 px-3 py-1 hover:bg-background-lighter cursor-pointer' onClick={() => setActiveModal("login")}>
                                 <LoginIcon className='text-dark' />
                                 <p className='text-3'>{t("login")}</p>
                             </li>
                         </ul>
                     </nav>
-                    <ModalSidebar
-                        title="Register"
-                        isOpen={isModalOpen}
-                        onClose={() => setIsModalOpen(false)}
-                    >
-                        <RegisterForm />
-                    </ModalSidebar>
+
+                    {activeModal && (
+                        <ModalSidebar
+                            title={activeModal === "register" ? t("register") : t("login")}
+                            isOpen={!!activeModal}
+                            onClose={() => setActiveModal(null)}
+                        >
+                            {activeModal === "register" && <RegisterForm />}
+                            {activeModal === "login" && <LoginForm />}
+                        </ModalSidebar>
+                    )}
                 </>
             }
 
