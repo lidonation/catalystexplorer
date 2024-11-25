@@ -109,7 +109,7 @@ export default function RegisterForm() {
             </div>
 
             <div className="flex w-full items-center justify-center">
-                <span className="mr-2">{t("registration.alreadyRegistered")}</span>
+                <p className="mr-2">{t("registration.alreadyRegistered")}</p>
                 <Link
                     href={route('login')}
                     className="rounded-md text-primary font-bold hover:text-content focus:outline-none focus:ring-2 focus:ring-offset-2"
