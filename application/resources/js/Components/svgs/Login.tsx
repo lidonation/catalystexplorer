@@ -9,8 +9,8 @@ type LoginIconProps = {
 
 export default function LoginIcon({
     className,
-    width = 24,
-    height = 24,
+    width = 22,
+    height = 22,
     onClick
 }: LoginIconProps) {
     const { t } = useTranslation();

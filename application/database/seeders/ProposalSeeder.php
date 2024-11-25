@@ -3,7 +3,6 @@
 namespace Database\Seeders;
 
 use Database\Seeders\Traits\UseFaker;
-use App\Models\Fund;
 use App\Models\Campaign;
 use App\Models\Proposal;
 use Illuminate\Database\Seeder;
@@ -17,10 +16,8 @@ class ProposalSeeder extends Seeder
      */
     public function run(): void
     {
-        $fund = Fund::factory()->create();
-
-        Proposal::factory(state: ['fund_id' => $fund->id])->count(100)
-            ->for(Campaign::factory(state: ['fund_id' => $fund->id]))
+        Proposal::factory()->count(100)
+            ->recycle(Campaign::factory()->create())
             ->has(IdeascaleProfile::factory($this->withFaker()->numberBetween(3,10)),'users')
             ->create();
     }

@@ -1,8 +1,7 @@
 import { Link, router } from '@inertiajs/react';
-import { useState } from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
 import { useTranslation } from 'react-i18next';
-import { route } from '../../../../vendor/tightenco/ziggy/src/js';
 import LogOutIcon from '../svgs/LogOut';
 import LoginIcon from '../svgs/Login';
 import RegisterUserIcon from '../svgs/Register';
@@ -10,7 +9,7 @@ import UserAvatar from '../UserAvatar';
 import ModalSidebar from './ModalSidebar';
 import RegisterForm from '@/Pages/Auth/Partials/RegisterForm';
 import LoginForm from '@/Pages/Auth/Partials/LoginForm';
-
+import {useLocalizedRoute} from "@/utils/localizedRoute";
 
 interface UserDetailsProps {
     user: App.DataTransferObjects.UserData;
@@ -22,7 +21,7 @@ const UserDetails: React.FC<UserDetailsProps> = ({ user }) => {
 
     const logout = () => {
         axios
-            .post(route('logout'))
+            .post(useLocalizedRoute('logout'))
             .then((response) => {
                 router.get('/')
             })
@@ -41,7 +40,7 @@ const UserDetails: React.FC<UserDetailsProps> = ({ user }) => {
                         </div>
                         <div className="flex flex-col">
                             <Link
-                                href="/dashboard"
+                                href={useLocalizedRoute('dashboard')}
                                 className="text-4 font-semibold text-content"
                             >
                                 {user?.name}
@@ -51,7 +50,7 @@ const UserDetails: React.FC<UserDetailsProps> = ({ user }) => {
                                 {user?.email}
                             </p>
                             <Link
-                                href="/profile"
+                                href={useLocalizedRoute('profile.edit')}
                                 className="text-5 font-semibold text-primary"
                             >
                                 {t("users.editProfile")}
@@ -70,12 +69,12 @@ const UserDetails: React.FC<UserDetailsProps> = ({ user }) => {
                 :
                 <>
                     <nav className="flex flex-col justify-between">
-                        <ul className="flex flex-1 flex-col menu-gap-y">
-                            <li className='flex items-center gap-3 px-3 py-1 hover:bg-background-lighter cursor-pointer' onClick={() => setActiveModal("register")}>
+                        <ul className="flex flex-1 flex-row menu-gap-y">
+                            <li className='flex items-center gap-1 px-2 py-1 hover:bg-background-lighter cursor-pointer' onClick={() => setActiveModal("register")}>
                                 <RegisterUserIcon className='text-dark' />
                                 <p className='text-3'>{t("register")}</p>
                             </li>
-                            <li className='flex items-center gap-3 px-3 py-1 hover:bg-background-lighter cursor-pointer' onClick={() => setActiveModal("login")}>
+                            <li className='flex items-center gap-1 px-2 py-1 hover:bg-background-lighter cursor-pointer' onClick={() => setActiveModal("login")}>
                                 <LoginIcon className='text-dark' />
                                 <p className='text-3'>{t("login")}</p>
                             </li>

@@ -31,7 +31,7 @@
 
     --cx-border-color: #667085;
     --cx-border-secondary-color:#D0D5DD;
-    
+
     --cx--border-chip-color: #9AD8E9;
 
     --bg-accent-color: #3facd1;
@@ -174,7 +174,7 @@
     }
 
     .menu-gap-x {
-        @apply gap-6;
+        @apply gap-3;
     }
 
     .menu-gap-y {
@@ -235,13 +235,12 @@
     }
 
     .scrollable {
-        display: grid;
         grid-auto-flow: column;
-        overflow-x: auto;
         grid-auto-columns: 66.67%;
         overscroll-behavior-inline: contain;
         will-change: scroll-position;
         scroll-behavior: smooth;
+        @apply pb-5 grid overflow-x-auto;
     }
 
     @media (min-width: 1124px) {
