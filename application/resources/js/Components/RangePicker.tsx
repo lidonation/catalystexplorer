@@ -1,0 +1,46 @@
+'use client';
+
+import { cn } from '@/lib/utils';
+import * as SliderPrimitive from '@radix-ui/react-slider';
+import React from 'react';
+
+type RangePickerProps = {
+    context?: string;
+} & React.ComponentPropsWithoutRef<typeof SliderPrimitive.Root>;
+
+const RangePicker = React.forwardRef<
+    React.ElementRef<typeof SliderPrimitive.Root>,
+    RangePickerProps
+>(({ className, context = '', ...props }, ref) => (
+    <div className='flex flex-col'>
+        <span className="mb-4">{context}</span>
+        <SliderPrimitive.Root
+            ref={ref}
+            className={cn(
+                'relative flex w-full touch-none select-none items-center',
+                className,
+            )}
+            {...props}
+        >
+            <SliderPrimitive.Track className="relative h-2 w-full grow overflow-hidden rounded-full bg-content-light">
+                <SliderPrimitive.Range className="absolute h-full bg-primary" />
+            </SliderPrimitive.Track>
+            {/** Thumbs for range selection */}
+            {[...(props.value ?? props.defaultValue ?? [0, 100])].map(
+                (_, index) => (
+                    <SliderPrimitive.Thumb
+                        key={index}
+                        className="focus-visible:ring-ring block h-5 w-5 rounded-full border-2 border-primary bg-background ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50"
+                    />
+                ),
+            )}
+        </SliderPrimitive.Root>
+        <div className="mt-2 flex justify-between text-sm font-bold">
+            <strong>{props?.value?.[0]}</strong>
+            <strong>{props?.value?.[1]}</strong>
+        </div>
+    </div>
+));
+RangePicker.displayName = SliderPrimitive.Root.displayName;
+
+export { RangePicker };

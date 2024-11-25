@@ -47,7 +47,7 @@ const AnnouncementCard = ({ announcement }: AnnouncementCardProps) => {
     const firstLink = announcement.cta?.[0] || {};
 
     return (
-        <div className="flex flex-col gap-3 rounded-xl bg-light-persist px-3 py-4">
+        <div className="flex flex-col gap-3 rounded-xl bg-background px-3 py-4">
             <div className="flex items-center justify-between">
                 <AnnouncementCardChip label={announcement.label as any} />
                 <AnnouncmentCountdownChip
@@ -55,7 +55,9 @@ const AnnouncementCard = ({ announcement }: AnnouncementCardProps) => {
                     event_ends_at={announcement.event_ends_at!}
                 />
             </div>
-            <div className="text-base font-bold text-black-persist">{announcement.title}</div>
+            <div className="line-clamp-2 h-8 overflow-hidden text-base font-bold text-content">
+                {announcement.title}
+            </div>
             <div className="text-gray-persist">
                 {' '}
                 {generateContentPreview(announcement.content)}

@@ -62,7 +62,7 @@ const AnnouncementCountdownChip = ({
     }
 
     return (
-        <div className="shadow-xs inline-flex items-center text-nowrap rounded-md border border-border-secondary text-black-persist px-2 text-4">
+        <div className="shadow-xs inline-flex items-center text-nowrap rounded-md border border-border-secondary text-content px-2 text-4">
             {formatTimeRemaining(timeRemaining)}
         </div>
     );

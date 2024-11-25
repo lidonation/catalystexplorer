@@ -6,12 +6,14 @@
     "ccv4Votes": "CCV4 Votes",
     "charts": "Charts",
     "communities": "Communities",
+    "connectWallet": "Connect wallet",
     "comingSoon": "Coming Soon",
     "cookies": "Cookies",
     "copyright": "© 2024 Catalyst Explorer. All rights reserved.",
     "data": "Data",
     "dReps": "DReps",
     "facebook": "Facebook",
+    "forgotPassword": "Forgot password",
     "funds": "Funds",
     "funding": "Funding",
     "getStarted": "Get started",
@@ -27,9 +29,12 @@
     "monthlyReports": "Monthly Reports",
     "numbers": "Numbers",
     "people": "People",
+    "rememberMe": "Remember me",
     "privacy": "Privacy",
     "reviews": "Reviews",
     "register": "Register",
+    "signin": "Sign in",
+    "signup": "Sign up",
     "social": "Social",
     "support": "Support",
     "terms": "Terms",
@@ -64,7 +69,8 @@
     },
     "registration": {
         "alreadyRegistered": "Already registered?",
-        "passwordCharacters": "Must be 8 characters"
+        "passwordCharacters": "Must be 8 characters",
+        "noAccount": "Don’t have an account?"
     },
     "searchBar": {
         "placeholder": "Search proposals, funds, people, articles & data",
@@ -123,10 +129,12 @@
             "chevron_up": "Chevron Up Icon",
             "chevron_down": "Chevron Down Icon",
             "close": "close Icon",
+            "connect_wallet": "Connect wallet Icon",
             "darkMode": "Dark Mode Icon",
             "folder": "Folder Icon",
             "home": "Home Icon",
             "lightMode": "Light Mode Icon",
+            "login": "Login Icon",
             "logOut": "Logout Icon",
             "mail": "Mail Icon",
             "menu": "Menu Icon",
@@ -136,7 +144,6 @@
             "search": "Search Icon",
             "voltaireMode": "Voltaire Mode Icon",
             "register": "Register Icon",
-            "login": "Login Icon",
             "link": "Link Icon"
         }
     },
