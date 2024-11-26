@@ -14,5 +14,5 @@ use Spatie\Enum\Laravel\Enum;
  */
 final class MetricTypes extends Enum
 {
-    USE HasValues;
+    use HasValues;
 }

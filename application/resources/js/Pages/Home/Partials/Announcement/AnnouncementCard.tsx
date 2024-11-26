@@ -1,6 +1,6 @@
 import NavLink from '@/Components/NavLink';
 import AnnouncementCardChip from './Chips/AnnouncementCardChip';
-import AnnouncmentCountdownChip from './Chips/AnnouncementCountdownChip';
+import AnnouncementCountdownChip from './Chips/AnnouncementCountdownChip';
 import AnnouncementData = App.DataTransferObjects.AnnouncementData;
 
 type LinkObj = {
@@ -50,7 +50,7 @@ const AnnouncementCard = ({ announcement }: AnnouncementCardProps) => {
         <div className="flex flex-col gap-3 rounded-xl bg-background px-3 py-4">
             <div className="flex items-center justify-between">
                 <AnnouncementCardChip label={announcement.label as any} />
-                <AnnouncmentCountdownChip
+                <AnnouncementCountdownChip
                     event_starts_at={announcement.event_starts_at!}
                     event_ends_at={announcement.event_ends_at!}
                 />

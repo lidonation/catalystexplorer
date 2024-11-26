@@ -5,7 +5,9 @@ import {Head, router, WhenVisible} from '@inertiajs/react';
 import PostListLoader from '../Posts/Partials/PostListLoader';
 import ProposalList from '../Proposals/Partials/ProposalList';
 import ProposalCardLoading from '../Proposals/Partials/ProposalCardLoading';
-import {useTranslation} from 'react-i18next';
+import MetricCard from '../Metrics/Partials/MetricCard';
+import MetricCardLoading from '../Metrics/Partials/MetricCardLoading';
+import { useTranslation } from 'react-i18next';
 import MetricData = App.DataTransferObjects.MetricData;
 import ProposalData = App.DataTransferObjects.ProposalData;
 import PostData = App.DataTransferObjects.PostData;
@@ -38,23 +40,31 @@ export default function Index({
             <Head title="Catalyst Explorer"/>
 
             <div className="relative flex w-full flex-col justify-center gap-8">
-                <CatalystIntro/>
+                <CatalystIntro />
 
                 <section className="annnouncements-wrapper">
-                    <div className='container'>
+                    <div className='container rounded-xl'>
                         <WhenVisible fallback={<div>Loading...</div>} data="announcements">
                             <AnnouncementCarousel announcements={announcements}/>
                         </WhenVisible>
                     </div>
                 </section>
 
-                <section className="numbers-wrapper py-16">
+                <section className="numbers-wrapper">
                     <div className='container'>
-                        <div className=" overflow-auto py-8">
-                            <h2 className="title-2">Metrics Data</h2>
+                        <div>
+                            <h2 className="title-2">{t("numbers")}</h2>
+                            <p className="text-4 text-content-dark opacity-70">{t("proposals.listSubtitle")}</p>
                         </div>
-                        <WhenVisible fallback={<div>Loading...</div>} data="metrics">
-                            {JSON.stringify(metrics)}
+                        <WhenVisible fallback={<MetricCardLoading/>} data="metrics">
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
+                                {metrics && metrics.map((metric) => (
+                                    <MetricCard
+                                        key={metric.user_id}
+                                        metric={metric}
+                                    />
+                                ))}
+                            </div>
                         </WhenVisible>
                     </div>
                 </section>
