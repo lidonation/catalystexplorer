@@ -11,8 +11,8 @@ const MetricCard: React.FC<MetricCardProps> = ({ metric }) => {
     const { t } = useTranslation();
     const [isHovered, setIsHovered] = useState(false);
 
-    const chartData = typeof metric.chartData === 'string' 
-        ? JSON.parse(metric.chartData) 
+    const chartData = typeof metric.chartData === 'string'
+        ? JSON.parse(metric.chartData)
         : metric.chartData;
 
     const lineData = chartData?.data ? [{
@@ -39,7 +39,7 @@ const MetricCard: React.FC<MetricCardProps> = ({ metric }) => {
         }
         return num.toFixed(0);
     };
- 
+
     const calculateTrend = () => {
         if (lineData.length > 0 && lineData[0].data.length >= 2) {
             const data = lineData[0].data;
@@ -57,13 +57,13 @@ const MetricCard: React.FC<MetricCardProps> = ({ metric }) => {
     const trend = calculateTrend();
 
     const UpArrow = () => (
-        <svg 
-            xmlns="http://www.w3.org/2000/svg" 
-            width="16" 
-            height="16" 
-            viewBox="0 0 24 24" 
-            stroke="currentColor" 
-            strokeWidth="2"  
+        <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            strokeWidth="2"
             fill="none"
         >
             <g clipPath="url(#clip0_1076_36064)">
@@ -78,13 +78,13 @@ const MetricCard: React.FC<MetricCardProps> = ({ metric }) => {
     );
 
     const DownArrow = () => (
-        <svg 
-            xmlns="http://www.w3.org/2000/svg" 
-            width="16" 
-            height="16" 
-            viewBox="0 0 24 24" 
-            stroke="currentColor" 
-            strokeWidth="2" 
+        <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            strokeWidth="2"
             fill="none"
         >
             <g clipPath="url(#clip0_1076_36065)">
@@ -105,7 +105,7 @@ const MetricCard: React.FC<MetricCardProps> = ({ metric }) => {
                     {formatNumber(parseFloat(metric.value?.toString() || '0'))}
                 </span>
                 <h3 className="text-sm font-medium text-content-gray-persist max-w-[200px] truncate">
-                    {t('metric.totalProposals')}
+                    {metric.title}
                 </h3>
             </div>
 
