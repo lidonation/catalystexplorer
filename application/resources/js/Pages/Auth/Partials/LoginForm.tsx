@@ -115,7 +115,7 @@ export default function LoginForm() {
                 <div className="flex w-full items-center justify-center">
                     <p className="text-4 mr-2">{t("registration.noAccount")}</p>
                     <Link
-                        href={route('login')}
+                        href={route('register')}
                         className="text-4 text-primary font-bold hover:text-content focus:outline-none focus:ring-2 focus:ring-offset-2"
                     >
                         {t("signup")}
