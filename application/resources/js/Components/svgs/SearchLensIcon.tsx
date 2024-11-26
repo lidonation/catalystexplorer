@@ -1,4 +1,5 @@
-import { cn } from '@/utils/styleutils';
+
+import { cn } from '@/lib/utils';
 import { useTranslation } from 'react-i18next';
 
 type SearchLensIconProps = {
