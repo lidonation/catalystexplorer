@@ -60,7 +60,7 @@ export default function RegisterForm() {
                     required
                 />
 
-                <InputError message={errors.name} className="mt-2" />
+                <InputError message={errors?.name} className="mt-2" />
             </div>
 
             <div>
@@ -77,7 +77,7 @@ export default function RegisterForm() {
                     required
                 />
 
-                <InputError message={errors.email} className="mt-2" />
+                <InputError message={errors?.email} className="mt-2" />
             </div>
 
             <div>
@@ -94,7 +94,7 @@ export default function RegisterForm() {
                     required
                 />
                 <p className="text-4 text-dark mt-1">{t("registration.passwordCharacters")}</p>
-                <InputError message={errors.password} className="mt-2" />
+                <InputError message={errors?.password} className="mt-2" />
             </div>
 
             <div>
@@ -116,10 +116,7 @@ export default function RegisterForm() {
                     required
                 />
 
-                <InputError
-                    message={errors.password_confirmation}
-                    className="mt-2"
-                />
+                <InputError message={errors?.password_confirmation} className="mt-2" />
             </div>
 
             <div>
