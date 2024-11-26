@@ -8,7 +8,7 @@ use App\Models\IdeascaleProfile;
 
 class IdeascaleProfileRepository extends Repository
 {
-    public function __construct(IdeascaleProfile $model) 
+    public function __construct(IdeascaleProfile $model)
     {
         parent::__construct($model);
     }

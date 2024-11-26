@@ -10,6 +10,8 @@ use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Laravel\Scout\Builder as ScoutBuilder;
+use Meilisearch\Endpoints\Indexes;
 use Saloon\PaginationPlugin\Paginator;
 
 class Repository implements RepositoryInterface
@@ -47,6 +49,28 @@ class Repository implements RepositoryInterface
 
         return $this->model->where('slug', '=', $idOrSlug)->first();
     }
+
+    public function search(string $searchQuery, array $options = []): ScoutBuilder
+    {
+        return $this->model::search($searchQuery, function (Indexes $index, string $query, $defaultOptions) use ($options) {
+            $mergedOptions = array_merge($defaultOptions, $options);
+
+            return $index->search($query, $mergedOptions);
+        });
+    }
+
+    public function countSearchResults(string $searchQuery, array $options = []): int
+    {
+        return $this->model::search($searchQuery, function (Indexes $index, string $query, $defaultOptions) use ($options) {
+            $mergedOptions = array_merge($defaultOptions, $options, [
+                'limit' => 0,
+                'attributesToRetrieve' => [],
+            ]);
+
+            return $index->search($query, $mergedOptions)->getEstimatedTotalHits();
+        })->raw();
+    }
+
 
     public function create(array $data): Model
     {
