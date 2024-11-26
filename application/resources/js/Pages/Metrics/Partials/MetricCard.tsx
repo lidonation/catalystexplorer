@@ -24,6 +24,22 @@ const MetricCard: React.FC<MetricCardProps> = ({ metric }) => {
         }))
     }] : [];
 
+    const formatNumber = (num: number): string => {
+        if (Math.abs(num) >= 1_000_000_000_000) {
+            return (num / 1_000_000_000_000).toFixed(1) + 'T';
+        }
+        if (Math.abs(num) >= 1_000_000_000) {
+            return (num / 1_000_000_000).toFixed(1) + 'B';
+        }
+        if (Math.abs(num) >= 1_000_000) {
+            return (num / 1_000_000).toFixed(1) + 'M';
+        }
+        if (Math.abs(num) >= 1_000) {
+            return (num / 1_000).toFixed(1) + 'k';
+        }
+        return num.toFixed(0);
+    };
+
     const calculateTrend = () => {
         if (lineData.length > 0 && lineData[0].data.length >= 2) {
             const data = lineData[0].data;
@@ -83,10 +99,14 @@ const MetricCard: React.FC<MetricCardProps> = ({ metric }) => {
     );
 
     return (
-        <div className="bg-white border rounded-lg shadow-md flex flex-col h-full relative">
-            <div className="absolute top-6 left-12 bg-white shadow-md rounded-md px-4 py-2 z-10">
-                <span className="text-2xl font-bold">{metric.value?.toString() || '0'}</span>
-                <h3 className="text-sm font-medium">{metric.title}</h3>
+        <div className="bg-background rounded-lg shadow-md flex flex-col h-full relative">
+            <div className="absolute top-6 left-12 bg-background shadow-md rounded-md px-4 py-2">
+                <span className="text-2xl font-bold text-content">
+                    {formatNumber(parseFloat(metric.value?.toString() || '0'))}
+                </span>
+                <h3 className="text-sm font-medium text-content-gray-persist max-w-[200px] truncate">
+                    {metric.title}
+                </h3>
             </div>
 
             <div className="flex-grow flex flex-col justify-between mt-20">
@@ -104,12 +124,11 @@ const MetricCard: React.FC<MetricCardProps> = ({ metric }) => {
                                 xScale={{ type: 'point' }}
                                 yScale={{ type: 'linear', min: 'auto', max: 'auto' }}
                                 axisBottom={{
-                                    tickSize: 0,
-                                    tickPadding: 0,
-                                    legend: 'Funds',
-                                    legendOffset: 20,
-                                    legendPosition: 'middle',
-                                    format: () => '',
+                                    tickSize: 5,
+                                    tickPadding: 5,
+                                    legend: '',
+                                    legendOffset: 0,
+                                    format: (value) => value,
                                 }}
                                 axisLeft={{
                                     tickSize: 0,
@@ -123,29 +142,40 @@ const MetricCard: React.FC<MetricCardProps> = ({ metric }) => {
                                 enableGridY={false}
                                 colors={isHovered ? metric.color || '#8884d8' : '#d3d3d3'}
                                 pointSize={4}
-                                pointColor={{ theme: 'background' }}
+                                pointColor={{
+                                    from: 'color',
+                                    modifiers: [['brighter', 0.5]]
+                                }}
                                 pointBorderWidth={2}
                                 pointBorderColor={{ from: 'serieColor' }}
                                 useMesh={true}
+                                tooltipFormat={(value) => formatNumber(Number(value))}
                                 theme={{
                                     axis: {
                                         domain: {
                                             line: {
-                                                stroke: '#d3d3d3',
+                                                stroke: 'var(--cx-border-color)',
                                                 strokeWidth: 1,
                                             }
                                         },
                                         legend: {
                                             text: {
-                                                fill: '#a0a0a0',
+                                                fill: 'var(--cx-content-gray-persist)',
                                                 fontSize: 16
                                             }
                                         },
                                         ticks: {
                                             text: {
-                                                fill: '#a0a0a0',
+                                                fill: 'var(--cx-content-gray-persist)',
                                                 fontSize: 10
                                             }
+                                        }
+                                    },
+                                    tooltip: {
+                                        container: {
+                                            background: 'var(--cx-background)',
+                                            color: 'var(--cx-content)',
+                                            fontSize: 12,
                                         }
                                     }
                                 }}
@@ -167,11 +197,11 @@ const MetricCard: React.FC<MetricCardProps> = ({ metric }) => {
                             />
                         </div>
                         <div className="absolute top-4 right-10 flex items-center">
-                            <div className={`flex items-center ${trend.isPositive ? 'text-green-500' : 'text-red-500'}`}>
+                            <div className={`flex items-center ${trend.isPositive ? 'text-success' : 'text-error'}`}>
                                 {trend.isPositive ? <UpArrow /> : <DownArrow />}
                                 <span className="font-medium ml-1">{trend.value}%</span>
-                                <span className="text-gray-500 text-sm ml-2">{t('metric.vs')}</span>
                             </div>
+                                <span className="text-content-gray-persist text-sm ml-2">{t('metric.vs')}</span>
                         </div>
                     </>
                 )}
