@@ -9,7 +9,6 @@ import SecondaryButton from "@/Components/SecondaryButton";
 import ConnectWalletIcon from "@/Components/svgs/ConnectWalletIcon";
 import { useTranslation } from "react-i18next";
 import axios from "axios";
-import { useLocalizedRoute } from "@/utils/localizedRoute";
 
 interface FormErrors {
     email?: string;
