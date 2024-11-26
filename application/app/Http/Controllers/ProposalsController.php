@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\DataTransferObjects\ProposalData;
+use App\Enums\ProposalSearchParams;
 use App\Models\Proposal;
 use App\Repositories\ProposalRepository;
 use Illuminate\Contracts\Pagination\Paginator;
@@ -12,12 +13,16 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Fluent;
 use Inertia\Inertia;
 use Inertia\Response;
+use JetBrains\PhpStorm\ArrayShape;
 use Laravel\Scout\Builder;
-use Meilisearch\Endpoints\Indexes;
 
 class ProposalsController extends Controller
 {
     protected int $currentPage = 1;
+
+    protected int $limit = 36;
+
+    protected array $queryParams = [];
 
     /**
      * Display the user's profile form.
@@ -29,132 +34,42 @@ class ProposalsController extends Controller
 
     protected function getProps(Request $request): array
     {
-        $shouldRandomize = true;
+        $this->queryParams = $request->validate([
+            ProposalSearchParams::FUNDING_STATUS()->value => 'string|nullable',
+            ProposalSearchParams::OPENSOURCE_PROPOSALS()->value => 'bool|nullable',
+            ProposalSearchParams::PROJECT_STATUS()->value => 'string|nullable',
+            ProposalSearchParams::QUERY()->value => 'string|nullable',
+            ProposalSearchParams::QUICK_PITCHES()->value => 'bool|nullable',
+            ProposalSearchParams::TYPE()->value => 'string|nullable',
+
+        ]);
+
+        $shouldRandomize = empty($this->queryParams);
         $proposals = Inertia::optional(
-            fn() => ProposalData::collect(
-                $shouldRandomize ? $this->getRandomProposals() : $this->query()
-            )
+            fn() => $shouldRandomize ? $this->getRandomProposals() : $this->query()
         );
+
 
         return [
             'proposals' => $proposals,
-            'filters' => $request->all(
-                'search',
-                'status',
-                'category',
-                'sort',
-                'direction'
-            ),
+            'filters' => $this->queryParams,
         ];
     }
 
     protected function query($returnBuilder = false, $attrs = null, $filters = []): array|Builder
     {
-        $_options = [
-//            'filters' => array_merge([], $this->getUserFilters(), $filters),
+//        sleep(5);
+        $args = [
+            'filters' => $this->getUserFilters(),
         ];
-
-        $searchBuilder = Proposal::search(
-            '',
-//            $this->search,
-            function (Indexes $index, $query, $options) use ($_options, $attrs, $returnBuilder) {
-                if (count($_options['filters']) > 0) {
-                    $options['filter'] = implode(' AND ', $_options['filters']);
-                }
-
-                $options['attributesToRetrieve'] = $attrs ?? [
-                    'id',
-                    'amount_requested',
-                    'amount_received',
-                    'currency',
-                    'ca_rating',
-                    'alignment_score',
-                    'feasibility_score',
-                    'auditability_score',
-                    'ratings_count',
-                    'slug',
-                    'title',
-                    'funding_status',
-                    'groups.id',
-                    'groups.name',
-                    'communities.id',
-                    'communities.title',
-                    'communities.status',
-                    'communities.content',
-                    'communities.user_id',
-                    'ideascale_link',
-                    'projectcatalyst_io_link',
-                    'yes_votes_count',
-                    'no_votes_count',
-                    'abstain_votes_count',
-                    'opensource',
-                    'paid',
-                    'problem',
-                    'project_length',
-                    'quickpitch',
-                    'solution',
-                    'status',
-                    'website',
-                    'type',
-                    'ranking_total',
-                    'users.id',
-                    'users.name',
-                    'users.username',
-                    'users.ideascale_id',
-                    'users.media.original_url',
-                    'users.profile_photo_url',
-                    'fund.id',
-                    'fund.label',
-                    'fund.amount',
-                    'fund.status',
-                    'campaign.id',
-                    'campaign.label',
-                    'campaign.amount',
-                ];
-                $options['facets'] = [
-                    'tags',
-                    'tags.title',
-                    'funding_status',
-                    'status',
-                    'campaign',
-                    'fund',
-                    'opensource',
-                    'amount_requested_USD',
-                    'amount_requested_ADA',
-                    'amount_received_ADA',
-                    'amount_received_USD',
-                    'amount_awarded_ADA',
-                    'amount_awarded_USD',
-                    'completed_amount_paid_USD',
-                    'completed_amount_paid_ADA',
-                    'amount_requested',
-                    'project_length',
-                    'impact_proposal',
-                    'woman_proposal',
-                    'has_quick_pitch',
-                    'ideafest_proposal',
-                ];
-
-//                if ((bool) $this->sortBy && (bool) $this->sortOrder) {
-//                    $options['sort'] = ["$this->sortBy:$this->sortOrder"];
-//                }
-
-//                $options['offset'] = ! $returnBuilder ? (($this->currentPage ?? 1) - 1) * $this->limit : 0;
-//                $options['limit'] = $this->limit;
-
-                return $index->search($query, $options);
-            }
+        $proposals = app(ProposalRepository::class);
+        $builder = $proposals->search(
+            $this->queryParams[ProposalSearchParams::QUERY()->value] ?? '',
+            $args
         );
-
-        if ($returnBuilder) {
-            return $searchBuilder;
-        }
-        $response = new Fluent($searchBuilder->raw());
-
-//        $this->setCounts($response->facetDistribution, $response->facetStats);
-
+        $response = new Fluent($builder->raw());
         $pagination = new LengthAwarePaginator(
-            $response->hits,
+            ProposalData::collect($response->hits),
             $response->estimatedTotalHits,
             $response->limit,
             $this->currentPage,
@@ -169,6 +84,98 @@ class ProposalsController extends Controller
     protected function getRandomProposals(): Paginator|array|Collection
     {
         $proposals = app(ProposalRepository::class);
-        return ProposalData::collect($proposals->getQuery()->inRandomOrder()->limit(36)->get());
+        $pagination = new LengthAwarePaginator(
+            ProposalData::collect(
+                $proposals->getQuery()->inRandomOrder()->limit($this->limit)->get()
+            ),
+            Proposal::count(),
+            $this->limit,
+            $this->currentPage,
+            [
+                'pageName' => 'p',
+            ]
+        );
+
+        return $pagination->onEachSide(1)->toArray();
+    }
+
+    protected function getUserFilters(): array
+    {
+        $filters = [];
+
+        if (isset($this->queryParams[ProposalSearchParams::FUNDING_STATUS()->value])) {
+            $fundingStatuses = $this->queryParams[ProposalSearchParams::FUNDING_STATUS()->value];
+            $filters[] = "funding_status IN [{$fundingStatuses}]";
+        }
+
+        if (isset($this->queryParams[ProposalSearchParams::PROJECT_STATUS()->value])) {
+            $fundingStatuses = $this->queryParams[ProposalSearchParams::PROJECT_STATUS()->value];
+            $filters[] = "status = {$fundingStatuses}";
+        }
+
+        if (isset($this->queryParams[ProposalSearchParams::OPENSOURCE_PROPOSALS()->value])) {
+            $filters[] = 'opensource = ' . $this->queryParams[ProposalSearchParams::OPENSOURCE_PROPOSALS()->value];
+        }
+
+        if (isset($this->queryParams[ProposalSearchParams::TYPE()->value])) {
+            $filters[] = 'type = ' . $this->queryParams[ProposalSearchParams::TYPE()->value];
+        }
+
+        if (isset($this->queryParams[ProposalSearchParams::QUICK_PITCHES()->value])) {
+            $filters[] = 'quickpitch IS NOT NULL';
+        }
+
+        //        if ($this->projectLength->isNotEmpty()) {
+//            $filters[] = "(project_length  {$this->projectLength->first()} TO  {$this->projectLength->last()})";
+//        }
+//
+//        if ($this->fundingStatus === 'paid') {
+//            $filters[] = '(paid = 1)';
+//        }
+//
+//        if (count($this->proposalsFilter)) {
+//            $filters[] = 'id IN'.$this->proposalsFilter->toJson();
+//        }
+
+//        // filter by fund
+//        if ($this->fundsFilter->isNotEmpty()) {
+//            $filters[] = '('.$this->fundsFilter->map(fn ($f) => "fund.id = {$f}")->implode(' OR ').')';
+//        }
+//
+//        // filter by challenge
+//        if ($this->challengesFilter->isNotEmpty()) {
+//            $filters[] = '('.$this->challengesFilter->map(fn ($c) => "campaign.id = {$c}")->implode(' OR ').')';
+//        }
+//
+//        // filter by tags
+//        if ($this->tagsFilter->isNotEmpty()) {
+//            $filters[] = 'tags.id IN '.$this->tagsFilter->toJson();
+//        }
+//
+//        if ($this->categoriesFilter->isNotEmpty()) {
+//            $filters[] = 'categories.id IN '.$this->categoriesFilter->toJson();
+//        }
+//
+//        if ($this->peopleFilter->isNotEmpty()) {
+//            $filters[] = 'users.id IN '.$this->peopleFilter->toJson();
+//        }
+//
+//        if ($this->groupsFilter->isNotEmpty()) {
+//            $filters[] = 'groups.id IN '.$this->groupsFilter->toJson();
+//        }
+//
+//        // filter by communities
+//        if ($this->communitiesFilter->isNotEmpty()) {
+//            $filters[] = 'communities.id IN '.$this->communitiesFilter->toJson();
+//        }
+//
+//        // filter by budget range
+//        if ($this->budgets->isNotEmpty()) {
+//            $filters[] = "(amount_requested  {$this->budgets->first()} TO  {$this->budgets->last()})";
+//        }
+//
+
+
+        return $filters;
     }
 }

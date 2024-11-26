@@ -39,7 +39,7 @@ class ProposalFactory extends Factory
         return [
             'user_id' => User::factory(),
             'campaign_id' => Campaign::factory(),
-            'fund_id' => Fund::factory(),
+            'fund_id' => Fund::inRandomOrder()->first(),
             'title' => $this->faker->words($this->faker->numberBetween(4, 12), true),
             'slug' => fn(array $attributes) => Str::slug($attributes['title']),
             'website' => $this->faker->url(),
@@ -59,7 +59,7 @@ class ProposalFactory extends Factory
             'social_excerpt' => $this->faker->sentence(),
             'team_id' => $this->faker->optional()->randomNumber(),
             'ideascale_link' => $this->faker->optional()->url(),
-            'type' => $this->faker->randomElement(["proposal", "challenge"]),
+            'type' => $this->faker->randomElement(['proposal', 'challenge', 'proposal', 'proposal']),
             'meta_title' => $this->faker->words(5, true),
             'problem' => $this->faker->sentences(4, true),
             'solution' => $this->faker->sentences(4, true),

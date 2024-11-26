@@ -23,7 +23,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Proposal extends Model
 {
-    use HasTranslations, HasAuthor,
+    use HasTranslations,
+        HasAuthor,
         Searchable,
         HasTaxonomies;
 
@@ -40,9 +41,7 @@ class Proposal extends Model
         'meta_title',
     ];
 
-
     protected $guarded = ['user_id', 'created_at', 'funded_at'];
-
 
     public static function getFilterableAttributes(): array
     {
@@ -152,7 +151,7 @@ class Proposal extends Model
 
     public static function runCustomIndex(): void
     {
-        Artisan::call('cx:index App\\\\Models\\\\Proposal cx__proposals');
+        Artisan::call('cx:create-search-index App\\\\Models\\\\Proposal cx_proposals');
     }
 
     public function scopeFilter($query, array $filters)
@@ -182,6 +181,18 @@ class Proposal extends Model
     {
         return Attribute::make(
             get: fn ($currency) => $currency ?? $this->campaign?->currency ?? $this->fund?->currency ?? CatalystCurrencies::USD()->value,
+        );
+    }
+
+    public function quickPitchId(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => $this->quickpitch ? collect(
+                explode(
+                    '/',
+                    $this->quickpitch
+                )
+            )?->last() : null
         );
     }
 
@@ -268,7 +279,7 @@ class Proposal extends Model
             'project_length' => intval($this->meta_info?->project_length) ?? 0,
             'projectcatalyst_io_link' => $this->meta_info?->projectcatalyst_io_url ?? null,
 
-            'quickpitch' => $this->quick_pitch_id ?? null,
+            'quickpitch' => $this->quickpitch ?? null,
             'quickpitch_length' => $this->quickpitch_length ?? null,
 
             'ranking_total' => intval($this->ranking_total) ?? 0,

@@ -4,13 +4,15 @@ import { PageProps } from '@/types';
 import { Head, WhenVisible } from '@inertiajs/react';
 import { useTranslation } from 'react-i18next';
 import ProposalFilters from './Partials/ProposalFilters';
-import ProposalData = App.DataTransferObjects.ProposalData;
+import {PaginatedProposals} from "../../../types/paginated-proposals";
+import {ProposalSearchParams} from "../../../types/proposal-search-params";
 
 interface HomePageProps extends Record<string, unknown> {
-    proposals: ProposalData[];
+    proposals: PaginatedProposals;
+    filters: ProposalSearchParams;
 }
 
-export default function Index({ proposals }: PageProps<HomePageProps>) {
+export default function Index({ proposals, filters }: PageProps<HomePageProps>) {
     const { t } = useTranslation();
     return (
         <>
@@ -29,7 +31,7 @@ export default function Index({ proposals }: PageProps<HomePageProps>) {
             </header>
 
             <section className="container flex w-full flex-col items-center justify-center">
-                <ProposalFilters />
+                <ProposalFilters filters={filters} />
             </section>
 
             <section className="proposals-wrapper container w-full">
@@ -38,7 +40,7 @@ export default function Index({ proposals }: PageProps<HomePageProps>) {
                     data="proposals"
                 >
                     <div className="py-4">
-                        <ProposalResults proposals={proposals} />
+                        <ProposalResults proposals={proposals?.data} />
                     </div>
                 </WhenVisible>
             </section>
