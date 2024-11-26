@@ -50,7 +50,7 @@ class SearchController extends Controller
     private function getFilterList(Request $request): array
     {
         $filters = $request->input('f');
-        return $filters ? explode('-', $filters) : [];
+        return $filters ? explode(',', $filters) : [];
     }
 
     private function getResultsCounts(array $repositories, string $searchTerm, array $filterList, PostRepository $posts): array

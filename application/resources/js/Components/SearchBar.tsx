@@ -148,7 +148,7 @@ const SearchBar = ({ autoFocus = false }: SearchBarProps) => {
         const filters = searchTerms
             .filter((term) => term !== t('searchBar.variants.all'))
             .map((term) => term.toLowerCase())
-            .join('-');
+            .join(',');
 
         const queryParams: Record<string, string> = { q: searchQuery };
 
