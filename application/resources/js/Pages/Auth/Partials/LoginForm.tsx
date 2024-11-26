@@ -1,5 +1,5 @@
-import { FormEventHandler } from "react";
-import { useForm, Link } from "@inertiajs/react";
+import { FormEventHandler, useState } from "react";
+import { useForm, Link, router } from "@inertiajs/react";
 import InputLabel from "@/Components/InputLabel";
 import InputError from "@/Components/InputError";
 import TextInput from "@/Components/TextInput";
@@ -8,23 +8,37 @@ import PrimaryButton from "@/Components/PrimaryButton";
 import SecondaryButton from "@/Components/SecondaryButton";
 import ConnectWalletIcon from "@/Components/svgs/ConnectWalletIcon";
 import { useTranslation } from "react-i18next";
+import axios from "axios";
+import { useLocalizedRoute } from "@/utils/localizedRoute";
 
-
+interface FormErrors {
+    email?: string;
+    password?: string;
+}
 
 export default function LoginForm() {
-    const { data, setData, post, processing, errors, reset } = useForm({
+    const { data, setData, reset, processing } = useForm({
         email: '',
         password: '',
         remember: false,
     });
 
+    const [errors, setErrors] = useState<FormErrors>({});
+
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
 
-        post(route('login'), {
-            onFinish: () => reset('password'),
+        axios.post(route('login'), {
+            email: data.email,
+            password: data.password,
+        }).then((response) => {
+            reset('password');
+            router.get('dashboard');
+        }).catch((error) => {
+            setErrors(error?.response?.data?.errors)
         });
-    };
+    }
+
 
     const { t } = useTranslation();
     return (
@@ -44,7 +58,7 @@ export default function LoginForm() {
                         onChange={(e) => setData('email', e.target.value)}
                     />
 
-                    <InputError message={errors.email} className="mt-2" />
+                    <InputError message={errors?.email} className="mt-2" />
                 </div>
 
                 <div>
@@ -60,7 +74,7 @@ export default function LoginForm() {
                         onChange={(e) => setData('password', e.target.value)}
                     />
 
-                    <InputError message={errors.password} className="mt-2" />
+                    <InputError message={errors?.password} className="mt-2" />
                 </div>
 
                 <div className="flex justify-between">

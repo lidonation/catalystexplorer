@@ -4,6 +4,7 @@ import NavLink from '@/Components/NavLink';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink';
 import { Link, usePage } from '@inertiajs/react';
 import { PropsWithChildren, ReactNode, useState } from 'react';
+import { useLocalizedRoute } from '@/utils/localizedRoute';
 
 export default function Authenticated({
     header,
@@ -28,7 +29,7 @@ export default function Authenticated({
 
                             <div className="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                                 <NavLink
-                                    href={route('dashboard')}
+                                    href={useLocalizedRoute('dashboard')}
                                     active={route().current('dashboard')}
                                 >
                                     Dashboard
@@ -132,7 +133,7 @@ export default function Authenticated({
                 >
                     <div className="space-y-1 pb-3 pt-2">
                         <ResponsiveNavLink
-                            href={route('dashboard')}
+                            href={useLocalizedRoute('dashboard')}
                             active={route().current('dashboard')}
                         >
                             Dashboard
