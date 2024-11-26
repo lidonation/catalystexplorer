@@ -3,17 +3,6 @@ import { ResponsiveLine } from '@nivo/line';
 import { useTranslation } from 'react-i18next';
 import MetricData = App.DataTransferObjects.MetricData;
 
-// Utility function to format numbers
-const formatNumber = (num: number): string => {
-    if (Math.abs(num) >= 1_000_000) {
-        return (num / 1_000_000).toFixed(2) + 'M';
-    }
-    if (Math.abs(num) >= 1_000) {
-        return (num / 1_000).toFixed(2) + 'k';
-    }
-    return num.toFixed(2);
-};
-
 interface MetricCardProps {
     metric: MetricData;
 }
@@ -22,8 +11,8 @@ const MetricCard: React.FC<MetricCardProps> = ({ metric }) => {
     const { t } = useTranslation();
     const [isHovered, setIsHovered] = useState(false);
 
-    const chartData = typeof metric.chartData === 'string'
-        ? JSON.parse(metric.chartData)
+    const chartData = typeof metric.chartData === 'string' 
+        ? JSON.parse(metric.chartData) 
         : metric.chartData;
 
     const lineData = chartData?.data ? [{
@@ -68,13 +57,13 @@ const MetricCard: React.FC<MetricCardProps> = ({ metric }) => {
     const trend = calculateTrend();
 
     const UpArrow = () => (
-        <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="16"
-            height="16"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            strokeWidth="2"
+        <svg 
+            xmlns="http://www.w3.org/2000/svg" 
+            width="16" 
+            height="16" 
+            viewBox="0 0 24 24" 
+            stroke="currentColor" 
+            strokeWidth="2"  
             fill="none"
         >
             <g clipPath="url(#clip0_1076_36064)">
@@ -89,13 +78,13 @@ const MetricCard: React.FC<MetricCardProps> = ({ metric }) => {
     );
 
     const DownArrow = () => (
-        <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="16"
-            height="16"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            strokeWidth="2"
+        <svg 
+            xmlns="http://www.w3.org/2000/svg" 
+            width="16" 
+            height="16" 
+            viewBox="0 0 24 24" 
+            stroke="currentColor" 
+            strokeWidth="2" 
             fill="none"
         >
             <g clipPath="url(#clip0_1076_36065)">
