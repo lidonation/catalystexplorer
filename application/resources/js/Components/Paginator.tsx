@@ -66,28 +66,29 @@ const PaginationComponent: React.FC<PaginationComponentProps> = ({
                 {/* Page Numbers */}
                 <div className="flex items-center gap-6">
                     <PaginationContent className="list-none gap-8">
-                        {links.map((link, index) =>
-                            link.label.includes('&laquo;') ||
-                            link.label.includes('&raquo;') ? null : ( // Skip Previous/Next labels in links
-                                <PaginationItem key={index}>
-                                    {link.label === '...' ? (
-                                        <PaginationEllipsis />
-                                    ) : (
-                                        <PaginationLink
-                                            href={link.url || '#'}
-                                            isActive={link.active}
-                                            className={
-                                                link.active
-                                                    ? 'text-primary-secondary font-bold'
-                                                    : ''
-                                            }
-                                        >
-                                            {link.label}
-                                        </PaginationLink>
-                                    )}
-                                </PaginationItem>
-                            ),
-                        )}
+                        {links &&
+                            links.map((link, index) =>
+                                link.label.includes('&laquo;') ||
+                                link.label.includes('&raquo;') ? null : ( // Skip Previous/Next labels in links
+                                    <PaginationItem key={index}>
+                                        {link.label === '...' ? (
+                                            <PaginationEllipsis />
+                                        ) : (
+                                            <PaginationLink
+                                                href={link.url || '#'}
+                                                isActive={link.active}
+                                                className={
+                                                    link.active
+                                                        ? 'text-primary-secondary font-bold'
+                                                        : ''
+                                                }
+                                            >
+                                                {link.label}
+                                            </PaginationLink>
+                                        )}
+                                    </PaginationItem>
+                                ),
+                            )}
                     </PaginationContent>
                 </div>
                 {/* Next Button */}
