@@ -10,9 +10,11 @@ use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Schema;
 use Laravel\Scout\Builder as ScoutBuilder;
 use Meilisearch\Endpoints\Indexes;
 use Saloon\PaginationPlugin\Paginator;
+use Laravel\Scout\Searchable;
 
 class Repository implements RepositoryInterface
 {
@@ -50,25 +52,44 @@ class Repository implements RepositoryInterface
         return $this->model->where('slug', '=', $idOrSlug)->first();
     }
 
-    public function search(string $searchQuery, array $options = []): ScoutBuilder
+    /**
+     * The args is an associative array that can contain meilisearch options or a
+     * searchable key which is an array of fields to search on normal eloquent
+     */
+    public function search(string $term, array $args = []): ScoutBuilder | Builder
     {
-        return $this->model::search($searchQuery, function (Indexes $index, string $query, $defaultOptions) use ($options) {
-            $mergedOptions = array_merge($defaultOptions, $options);
+        if (in_array(Searchable::class, class_uses_recursive($this->model))) {
+            return $this->model::search($term, function (Indexes $index, string $query, $defaultOptions) use ($args) {
+                $mergedOptions = array_merge($defaultOptions, $args);
+                return $index->search($query, $mergedOptions);
+            });
+        }
 
-            return $index->search($query, $mergedOptions);
+        return $this->model::query()->where(function ($query) use ($term, $args) {
+            foreach ($args['searchable'] ?? $this->getDefaultSearchFields() as $attribute) {
+                $query->orWhere($attribute, 'LIKE', "%{$term}%");
+            }
         });
     }
 
-    public function countSearchResults(string $searchQuery, array $options = []): int
+    public function countSearchResults(string $term, array $args = []): int
     {
-        return $this->model::search($searchQuery, function (Indexes $index, string $query, $defaultOptions) use ($options) {
-            $mergedOptions = array_merge($defaultOptions, $options, [
-                'limit' => 0,
-                'attributesToRetrieve' => [],
-            ]);
+        if (in_array(Searchable::class, class_uses_recursive($this->model))) {
+            return $this->model::search($term, function (Indexes $index, string $query, $defaultOptions) use ($args) {
+                $mergedOptions = array_merge($defaultOptions, $args, [
+                    'limit' => 0,
+                    'attributesToRetrieve' => [],
+                ]);
 
-            return $index->search($query, $mergedOptions)->getEstimatedTotalHits();
-        })->raw();
+                return $index->search($query, $mergedOptions)->getEstimatedTotalHits();
+            })->raw();
+        }
+
+        return $this->model::query()->where(function ($query) use ($term, $args) {
+            foreach ($args['searchable'] ?? $this->getDefaultSearchFields() as $attribute) {
+                $query->orWhere($attribute, 'LIKE', "%{$term}%");
+            }
+        })->count();
     }
 
 
@@ -135,5 +156,14 @@ class Repository implements RepositoryInterface
     public function with($relations): Builder
     {
         return $this->model->with($relations);
+    }
+
+    protected function getDefaultSearchFields(): array
+    {
+        $possibleFields = ['title', 'name', 'content'];
+        return collect($possibleFields)
+            ->filter(fn($field) => Schema::hasColumn($this->model->getTable(), $field))
+            ->values()
+            ->toArray();
     }
 }

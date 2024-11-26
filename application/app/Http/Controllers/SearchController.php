@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\Repositories\CampaignRepository;
 use App\Repositories\CommunityRepository;
 use App\Repositories\GroupRepository;
 use App\Repositories\IdeascaleProfileRepository;
@@ -25,7 +26,7 @@ class SearchController extends Controller
         ReviewRepository $reviews,
         PostRepository $posts
     ): Response {
-        $searchQuery = $request->input('q');
+        $searchTerm = $request->input('q');
         $filterList = $this->getFilterList($request);
 
         $repositories = [
@@ -36,9 +37,9 @@ class SearchController extends Controller
             'reviews' => $reviews,
         ];
 
-        $counts = $this->getResultsCounts($repositories, $searchQuery, $filterList, $posts);
+        $counts = $this->getResultsCounts($repositories, $searchTerm, $filterList, $posts);
 
-        $searchData = $this->getSearchResults($repositories, $searchQuery, $filterList, $posts);
+        $searchData = $this->getSearchResults($repositories, $searchTerm, $filterList, $posts);
 
         return Inertia::render('S/Index', [
             ...$searchData,
@@ -52,34 +53,42 @@ class SearchController extends Controller
         return $filters ? explode('-', $filters) : [];
     }
 
-    private function getResultsCounts(array $repositories, string $searchQuery, array $filterList): array
+    private function getResultsCounts(array $repositories, string $searchTerm, array $filterList, PostRepository $posts): array
     {
         $counts = [];
         foreach ($repositories as $key => $repository) {
             if (empty($filterList) || in_array($key, $filterList)) {
-                $counts[$key] = $repository->countSearchResults($searchQuery);
+                $counts[$key] = $repository->countSearchResults($searchTerm);
             }
+        }
+
+        if (empty($filterList) || in_array('posts', $filterList)) {
+            $posts->setQuery([
+                'tags' => 'project-catalyst',
+                'search' => $searchTerm
+            ]);
+            $counts['posts'] = $posts->paginate(10)->collect()->count();
         }
         return $counts;
     }
 
-    private function getSearchResults(array $repositories, string $searchQuery, array $filterList, PostRepository $posts): array
+    private function getSearchResults(array $repositories, string $searchTerm, array $filterList, PostRepository $posts): array
     {
         $searchData = [];
 
         foreach ($repositories as $key => $repository) {
             if (empty($filterList) || in_array($key, $filterList)) {
                 $searchData[$key] = Inertia::optional(
-                    fn() => $repository->search($searchQuery)->raw()
+                    fn() => $repository->search($searchTerm)->raw()
                 );
             }
         }
 
         if (empty($filterList) || in_array('posts', $filterList)) {
-            $searchData['posts'] = Inertia::optional(function () use ($posts, $searchQuery) {
+            $searchData['posts'] = Inertia::optional(function () use ($posts, $searchTerm) {
                 $posts->setQuery([
                     'tags' => 'project-catalyst',
-                    'search' => $searchQuery
+                    'search' => $searchTerm
                 ]);
 
                 return $posts->paginate(10)->collect()->all();
