@@ -202,9 +202,9 @@ class Proposal extends Model
 
         $opensourceOptionDate = new Carbon('2023-06-01');
         $opensource = (bool) $this->opensource ? 1 : 0;
-        if ($this->fund?->launched_at && Carbon::make($this->fund?->launched_at)?->lessThan($opensourceOptionDate) && $opensource === 0) {
-            $opensource = null;
-        }
+        // if ($this->fund?->launched_at && Carbon::make($this->fund?->launched_at)?->lessThan($opensourceOptionDate) && $opensource === 0) {
+        //     $opensource = null;
+        // }
 
         $communities = $this->communities->map(function ($communities) {
             return [

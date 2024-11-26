@@ -5,7 +5,8 @@ type SelectProps = {
     selectedItems: string[];
     setSelectedItems: (updatedItems: string[]) => void;
     options: Record<string, string>;
-    context:string;
+    context: string;
+    basic: boolean;
 };
 
 export default function Selector({
@@ -14,10 +15,11 @@ export default function Selector({
     options = {},
     selectedItems = [],
     setSelectedItems,
+    basic = false,
     ...props
 }: SelectProps) {
     return (
-        <div className="rounded-lg bg-background ">
+        <div className="rounded-lg bg-background">
             <Select
                 isMultiselect={isMultiselect}
                 selectedItems={selectedItems}
@@ -26,7 +28,7 @@ export default function Selector({
                 <SelectTrigger className="">
                     <div className="flex items-center gap-2">
                         <span>{context}</span>
-                        {selectedItems.length > 0 && (
+                        {selectedItems.length > 0 && basic && (
                             <div className="flex size-5 items-center justify-center rounded-full bg-background-lighter">
                                 <span>{selectedItems.length}</span>
                             </div>
@@ -35,7 +37,9 @@ export default function Selector({
                 </SelectTrigger>
                 <SelectContent>
                     {Object.entries(options).map(([key, value]) => (
-                        <SelectItem value={key} key={key}>{value}</SelectItem>
+                        <SelectItem value={key} key={key}>
+                            {value}
+                        </SelectItem>
                     ))}
                 </SelectContent>
             </Select>

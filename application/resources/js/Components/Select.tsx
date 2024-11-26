@@ -1,7 +1,7 @@
 'use client';
 
 import * as SelectPrimitive from '@radix-ui/react-select';
-import { Check, ChevronDown, ChevronUp, X } from 'lucide-react';
+import { Check, ChevronDown, ChevronUp } from 'lucide-react';
 import * as React from 'react';
 
 import { cn } from '@/lib/utils';
@@ -11,6 +11,7 @@ type SelectProps = {
     selectedItems: string[];
     onChange: (updatedItems: string[]) => void;
     children: React.ReactNode;
+    basic: boolean;
 };
 
 type CustomChildProps = {
@@ -22,6 +23,7 @@ type CustomChildProps = {
 const Select: React.FC<SelectProps> = ({
     isMultiselect = false,
     selectedItems,
+    basic = false,
     onChange,
     ...props
 }) => {
@@ -32,11 +34,11 @@ const Select: React.FC<SelectProps> = ({
                 : [...selectedItems, value]
             : [value];
 
-        onChange(updatedItems); 
+        onChange(updatedItems);
     };
 
     const onClearSelection = () => {
-        onChange([]); 
+        onChange([]);
     };
 
     return (
@@ -153,7 +155,7 @@ const SelectContent = React.forwardRef<
             <SelectPrimitive.Content
                 ref={ref}
                 className={cn(
-                    'border text-popover-foreground data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 relative z-50 max-h-96 min-w-[8rem] overflow-hidden rounded-md bg-background',
+                    'text-popover-foreground data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 relative z-50 max-h-96 min-w-[8rem] overflow-hidden rounded-md border bg-background',
                     position === 'popper' &&
                         'data-[side=bottom]:translate-y-1 data-[side=left]:-translate-x-1 data-[side=right]:translate-x-1 data-[side=top]:-translate-y-1',
                     className,
@@ -161,11 +163,11 @@ const SelectContent = React.forwardRef<
                 position={position}
                 {...props}
             >
-                <div className="absolute right-2 top-0 ">
+                <div className="absolute right-2 top-0">
                     <button
                         type="button"
                         onClick={onClearSelection}
-                        className="text-muted-foreground hover:text-primary text-sm focus:outline-none"
+                        className="text-muted-foreground text-sm hover:text-primary focus:outline-none"
                     >
                         clear
                     </button>
@@ -230,7 +232,7 @@ const SelectItem = React.forwardRef<
                 'relative flex w-full cursor-default select-none items-center rounded-sm py-1.5 pl-8 pr-2 text-sm outline-none focus:bg-background-lighter data-[disabled]:pointer-events-none data-[disabled]:opacity-50',
                 className,
             )}
-            {...props} 
+            {...props}
         >
             <span className="absolute left-2 flex h-3.5 w-3.5 items-center justify-center">
                 {isSelected && <Check className="h-4 w-4" />}
