@@ -46,6 +46,7 @@
     "yes": "Yes",
     "abstain": "Abstain",
     "notSet": "Not set",
+    "loading": "Loading",
     "app": {
         "name": "Catalyst Explorer",
         "contactEmail": "support@lidonation.com",
@@ -148,7 +149,10 @@
             "search": "Search Icon",
             "voltaireMode": "Voltaire Mode Icon",
             "register": "Register Icon",
-            "link": "Link Icon"
+            "link": "Link Icon",
+            "listBullet": "List Bullet Icon",
+            "verticalColumn": "Vertical Column Icon",
+            "videoCamera": "Video Camera Icon"
         }
     },
     "users": {
