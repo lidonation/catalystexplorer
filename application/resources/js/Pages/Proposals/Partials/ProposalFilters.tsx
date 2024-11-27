@@ -7,46 +7,35 @@ import { ProposalSearchParams } from '../../../../types/proposal-search-params';
 
 export default function ProposalFilters({
     filters,
-    onSort,
 }: {
     filters: ProposalSearchParams;
     onSort: (sortBy: string) => void;
 }) {
     const { t } = useTranslation();
-    const [selectedSort, setSelectedSort] = useState('');
-
-    const handleSortChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        const sortBy = e.target.value;
-        setSelectedSort(sortBy);
-        onSort(sortBy);
-    };
-
     const [range, setRange] = useState([20, 80]);
-    const [selectedFundingStatus, setSelectedFundingStatus] = useState<
-        string[]
-    >(['o']);
-    const [selectedOpensourceStatus, setSelectedOpensourceStatus] = useState<
-        string[]
-    >([]);
-    const [selectedProjectStatus, setSelectedProjectStatus] = useState<
-        string[]
-    >([]);
+    const [selectedSort, setSelectedSort] = useState<string[]>([]);
+    const [selectedFundingStatus, setSelectedFundingStatus] = useState<string[]>(['o']);
+    const [selectedOpensourceStatus, setSelectedOpensourceStatus] = useState<string[]>([]);
+    const [selectedProjectStatus, setSelectedProjectStatus] = useState<string[]>([]);
     const [selected, setSelected] = useState<string[]>([]);
+
+    const sortingOptions = {
+        created_at_asc: t('proposals.options.oldToNew'),
+        created_at_desc: t('proposals.options.newToOld'),
+        budget_asc: t('proposals.options.lowToHigh'),
+        budget_desc: t('proposals.options.highToLow'),
+    };
 
     return (
         <>
             <div className="container mx-auto flex justify-end pb-4 pt-6 px-0">
-                <select
-                    value={selectedSort}
-                    onChange={handleSortChange}
-                    className="max-w-[250px] rounded-md border border-gray-300 bg-background"
-                >
-                    <option value="">{t('proposals.options.sort')}</option>
-                    <option value="created_at_asc">{t('proposals.options.oldToNew')}</option>
-                    <option value="created_at_desc">{t('proposals.options.newToOld')}</option>
-                    <option value="budget_asc">{t('proposals.options.lowToHigh')}</option>
-                    <option value="budget_desc">{t('proposals.options.highToLow')}</option>
-                </select>
+                <Selector
+                isMultiselect={false}
+                options={sortingOptions}
+                setSelectedItems={setSelectedSort}
+                selectedItems={selectedSort}
+                context={t('proposals.options.sort')}
+            />
             </div>
             <div className="w-full bg-background p-4">
                 <b>{t('proposals.options.filterValues')}:</b> {JSON.stringify(filters)} <br />
