@@ -17,6 +17,12 @@ interface HomePageProps extends Record<string, unknown> {
 
 export default function Index({ proposals, filters }: PageProps<HomePageProps>) {
     const { t } = useTranslation();
+    const [sortBy, setSortBy] = useState('');
+
+    const handleSort = (sortBy: string) => {
+        setSortBy(sortBy);
+        // Implement sorting logic here
+    };
 
     const [isHorizontal, setIsHorizontal] = useState(false);
 
@@ -42,7 +48,7 @@ export default function Index({ proposals, filters }: PageProps<HomePageProps>) 
             </header>
 
             <section className="container flex w-full flex-col items-center justify-center">
-                <ProposalFilters filters={filters} />
+                <ProposalFilters filters={filters} onSort={handleSort} />
             </section>
 
             <section className="container  items-end flex flex-col mt-4">

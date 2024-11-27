@@ -101,6 +101,28 @@
             "invalidVimeoFormat": "Le format du lien Vimeo est incorrect",
             "invalidUrlFormat": "Format d'URL invalide",
             "invalidUrl": "Format d'URL invalide"
+        },
+        "options": {
+            "sort":  "Trier par",
+            "oldToNew": "Du plus ancien au plus récent",
+            "newToOld": "Du plus récent au plus ancien", 
+            "lowToHigh": "Budget : Du plus bas au plus élevé",
+            "highToLow": "Budget : Du plus élevé au plus bas",
+            "fundingStatus": "Statut de financement",
+            "opensource": "Open source",
+            "opensourceProposals": "Propositions open source", 
+            "nonOpensourceProposals": "Propositions non open source",
+            "projectStatus": "Statut du projet",
+            "complete": "Terminé",
+            "inProgress": "En cours",
+            "unfunded": "Non financé",
+            "overBudget": "Dépassement budgétaire",
+            "notApproved": "Non approuvé",
+            "funded": "Financé",
+            "fullyPaid": "Totalement payé",
+            "selectStatus": "Sélectionner le statut",
+            "budget": "Budget",
+            "filterValues": "Filtres de valeurs"
         }
     },
     "posts": {
