@@ -2,7 +2,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger } from './Select';
 
 type SelectProps = {
     isMultiselect?: boolean;
-    selectedItems: string[];
+    selectedItems: string[]|string;
     setSelectedItems: (updatedItems: string[]) => void;
     options: Record<string, string>;
     context: string;
@@ -23,8 +23,7 @@ export default function Selector({
             <Select
                 isMultiselect={isMultiselect}
                 selectedItems={selectedItems}
-                onChange={setSelectedItems}
-            >
+                onChange={setSelectedItems}            >
                 <SelectTrigger className="">
                     <div className="flex items-center gap-2">
                         <span>{context}</span>

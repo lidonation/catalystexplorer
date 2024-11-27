@@ -8,7 +8,7 @@ import { cn } from '@/lib/utils';
 
 type SelectProps = {
     isMultiselect?: boolean;
-    selectedItems: string[];
+    selectedItems: string[] | string | number;
     onChange: (updatedItems: string[]) => void;
     children: React.ReactNode;
     basic: boolean;
