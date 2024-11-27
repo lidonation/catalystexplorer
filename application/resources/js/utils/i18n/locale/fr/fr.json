@@ -42,6 +42,7 @@
     "yes": "Oui",
     "abstain": "Abstention",
     "notSet": "Non défini",
+    "loading": "Chargement",
     "app": {
         "name": "Catalyst Explorer",
         "contactEmail": "support@lidonation.com",
@@ -137,7 +138,10 @@
             "notificationBox": "Icône de boîte de notification",
             "people": "Icône de personnes",
             "voltaireMode": "Icône de mode Voltaire",
-            "link": "Icône de lien"
+            "link": "Icône de lien",
+            "listBullet": "Icône de liste à puces",
+            "verticalColumn": "Icône de colonne verticale",
+            "videoCamera": "Icône de caméra vidéo"
         }
     },
     "users": {

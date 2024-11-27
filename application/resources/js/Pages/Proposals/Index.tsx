@@ -1,7 +1,10 @@
 import Paginator from '@/Components/Paginator';
-import ProposalCardLoading from '@/Pages/Proposals/Partials/ProposalCardLoading';
+import VerticalCardLoading from '@/Pages/Proposals/Partials/ProposalVerticalCardLoading';
+import HorizontaCardLoading from './Partials/ProposalHorizontalCardLoading';
+import CardLayoutSwitcher from './Partials/CardLayoutSwitcher';
 import ProposalResults from '@/Pages/Proposals/Partials/ProposalResults';
 import { PageProps } from '@/types';
+import { useState } from 'react';
 import { Head, WhenVisible } from '@inertiajs/react';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -9,6 +12,7 @@ import { PaginatedData } from '../../../types/paginated-data';
 import { ProposalSearchParams } from '../../../types/proposal-search-params';
 import ProposalFilters from './Partials/ProposalFilters';
 import ProposalData = App.DataTransferObjects.ProposalData;
+import { ProposalSearchParams } from '../../../types/proposal-search-params';
 
 interface HomePageProps extends Record<string, unknown> {
     proposals: PaginatedData<ProposalData[]>;
@@ -27,6 +31,14 @@ export default function Index({
     useEffect(() => {
         console.log({ perPage, currentPage });
     }, [currentPage, perPage]);
+
+
+    const [isHorizontal, setIsHorizontal] = useState(false);
+
+    const [quickPitchView, setQuickPitchView] = useState(false);
+
+    const setGlobalQuickPitchView = (value: boolean) => setQuickPitchView(value);
+
 
     return (
         <>
@@ -48,13 +60,33 @@ export default function Index({
                 <ProposalFilters filters={filters} />
             </section>
 
+            <section className="container  items-end flex flex-col mt-4">
+                <CardLayoutSwitcher
+                    isHorizontal={isHorizontal}
+                    quickPitchView={quickPitchView}
+                    setIsHorizontal={setIsHorizontal}
+                    setGlobalQuickPitchView={setGlobalQuickPitchView}
+                />
+            </section>
+
             <section className="proposals-wrapper container w-full">
                 <WhenVisible
-                    fallback={<ProposalCardLoading />}
+                    fallback={
+                        isHorizontal ? (
+                            <HorizontaCardLoading />
+                        ) : (
+                            <VerticalCardLoading />
+                        )
+                    }
                     data="proposals"
                 >
                     <div className="py-4">
-                        <ProposalResults proposals={proposals?.data} />
+                        <ProposalResults
+                            proposals={proposals?.data}
+                            isHorizontal={isHorizontal}
+                            quickPitchView={quickPitchView}
+                            setGlobalQuickPitchView={setGlobalQuickPitchView}
+                        />
                     </div>
                 </WhenVisible>
             </section>

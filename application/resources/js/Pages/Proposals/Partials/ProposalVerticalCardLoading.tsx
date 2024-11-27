@@ -1,4 +1,4 @@
-export default function ProposalCardLoading() {
+export default function ProposalVerticalCardLoading() {
     return (
         <div className="proposals-wrapper grid w-full grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-3 mt-4">
             {[1, 2, 3].map((proposal, index) => (
