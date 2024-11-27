@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\GroupController;
 use App\Http\Controllers\Api\CampaignController;
 use App\Http\Controllers\Api\TagController;
+use App\Http\Controllers\Api\CommunityController;
 
 Route::prefix('api')->group(function () {
     Route::get('/groups', [GroupController::class, 'groups'])->name('group');
@@ -15,5 +16,6 @@ Route::prefix('api')->group(function () {
     Route::get('/tags', [TagController::class, 'tags'])->name('tag');
     Route::get('/tags/{tag:id}', [TagController::class, 'tag']);
 
-
+    Route::get('/communities', [CommunityController::class, 'communities'])->name('community');
+    Route::get('/communities/{community:id}', [CommunityController::class, 'community']);
 });
