@@ -22,6 +22,12 @@ export default function Index({
     filters,
 }: PageProps<HomePageProps>) {
     const { t } = useTranslation();
+    const [sortBy, setSortBy] = useState('');
+
+    const handleSort = (sortBy: string) => {
+        setSortBy(sortBy);
+        // Implement sorting logic here
+    };
 
     const [perPage, setPerPage] = useState<number>(24);
     const [currentPage, setCurrentpage] = useState<number>(1);
@@ -55,7 +61,7 @@ export default function Index({
             </header>
 
             <section className="container flex w-full flex-col items-center justify-center">
-                <ProposalFilters filters={filters} />
+                <ProposalFilters filters={filters} onSort={handleSort} />
             </section>
 
             <section className="container  items-end flex flex-col mt-4">

@@ -2,13 +2,25 @@ import { RangePicker } from '@/Components/RangePicker';
 import { SearchSelect } from '@/Components/SearchSelect';
 import Selector from '@/Components/Selector';
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { ProposalSearchParams } from '../../../../types/proposal-search-params';
 
 export default function ProposalFilters({
     filters,
+    onSort,
 }: {
     filters: ProposalSearchParams;
+    onSort: (sortBy: string) => void;
 }) {
+    const { t } = useTranslation();
+    const [selectedSort, setSelectedSort] = useState('');
+
+    const handleSortChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        const sortBy = e.target.value;
+        setSelectedSort(sortBy);
+        onSort(sortBy);
+    };
+
     const [range, setRange] = useState([20, 80]);
     const [selectedFundingStatus, setSelectedFundingStatus] = useState<
         string[]
@@ -25,18 +37,18 @@ export default function ProposalFilters({
         <div className="w-full bg-background p-4">
             <b>Filters Values:</b> {JSON.stringify(filters)} <br />
             <div className="grid grid-cols-1 gap-x-4 gap-y-3 rounded-xl md:grid-cols-2 lg:grid-cols-4">
-                <div className="flex flex-col gap-2 pb-4 pt-6">
-                    <span>Funding Status</span>
+                <div className="pb-4 pt-6">
                     <Selector
                         isMultiselect={true}
-                        options={[
-                            { value: 'o', label: 'Over Budget' },
-                            { value: 'n', label: 'Not Approved' },
-                            { value: 'f', label: 'Funded' },
-                            { value: 'p', label: 'Fully Paid' },
-                        ]}
+                        options={{
+                            o: 'Over Budget',
+                            n: 'Not Approved',
+                            f: 'Funded',
+                            p: 'Fully Paid',
+                        }}
                         setSelectedItems={setSelectedFundingStatus}
                         selectedItems={selectedFundingStatus}
+                        context={'Funding Status'}
                     />
                 </div>
 
