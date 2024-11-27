@@ -1,39 +1,20 @@
-import {
-    Pagination,
-    PaginationContent,
-    PaginationEllipsis,
-    PaginationItem,
-    PaginationLink,
-    PaginationNext,
-    PaginationPrevious,
-} from '@/Components/Pagination';
+import { PaginationEllipsis, PaginationItem, PaginationNext, PaginationPrevious } from '@/Components/Pagination';
 import React from 'react';
+import { PaginatedData } from '../../types/paginated-data';
 import Selector from './Selector';
 
-type PaginationData = {
-    current_page: number;
-    first_page_url: string;
-    last_page: number;
-    last_page_url: string;
-    links: { url: string | null; label: string; active: boolean }[];
-    next_page_url: string | null;
-    prev_page_url: string | null;
-};
-
 type PaginationComponentProps = {
-    pagination: PaginationData;
-    perPage: string;
-    currentPage: string;
-    onChangePerPage: (updatedItems: string[]) => void;
-    onChangeCurrentPage: (updatedItems: string[]) => void;
+    pagination: PaginatedData<any>;
+    perPage: number;
+    setPerPage: (updatedItems: any) => void;
+    setCurrentPage: (updatedItems: any) => void;
 };
 
 const PaginationComponent: React.FC<PaginationComponentProps> = ({
     pagination,
-    currentPage,
     perPage,
-    onChangePerPage,
-    onChangeCurrentPage,
+    setPerPage,
+    setCurrentPage,
 }) => {
     const { current_page, links, prev_page_url, next_page_url } = pagination;
 
@@ -44,67 +25,79 @@ const PaginationComponent: React.FC<PaginationComponentProps> = ({
                     basic
                     context="Per Page"
                     selectedItems={perPage}
-                    setSelectedItems={onChangePerPage}
+                    setSelectedItems={setPerPage}
                     isMultiselect={false}
                     options={{ '0': '8', '1': '12', '2': '16', '3': '24' }}
                 />
             </div>
-            <Pagination className="flex items-center justify-between gap-4">
+            <div className="flex items-center justify-between gap-4">
                 {/* Previous Button */}
                 <div>
                     <PaginationItem className="list-none">
                         <PaginationPrevious
-                            href={prev_page_url || '#'}
+                            onClick={
+                                prev_page_url
+                                    ? () => setCurrentPage(current_page - 1)
+                                    : () => ''
+                            }
                             className={
                                 !prev_page_url
                                     ? 'pointer-events-none opacity-50'
                                     : ''
                             }
-                        />
+                        ></PaginationPrevious>
                     </PaginationItem>
                 </div>
                 {/* Page Numbers */}
                 <div className="flex items-center gap-6">
-                    <PaginationContent className="list-none gap-8">
+                    <ul className="list-none gap-8 flex">
                         {links &&
                             links.map((link, index) =>
                                 link.label.includes('&laquo;') ||
                                 link.label.includes('&raquo;') ? null : ( // Skip Previous/Next labels in links
-                                    <PaginationItem key={index}>
+                                    <PaginationItem key={index} className=''>
                                         {link.label === '...' ? (
                                             <PaginationEllipsis />
                                         ) : (
-                                            <PaginationLink
-                                                href={link.url || '#'}
-                                                isActive={link.active}
+                                            <button
+                                                onClick={() => setCurrentPage(link.label)}
+                                                aria-current={
+                                                    link.active
+                                                        ? 'page'
+                                                        : undefined
+                                                }
                                                 className={
                                                     link.active
-                                                        ? 'text-primary-secondary font-bold'
+                                                        ? 'font-bold text-primary'
                                                         : ''
                                                 }
                                             >
                                                 {link.label}
-                                            </PaginationLink>
+                                            </button>
                                         )}
                                     </PaginationItem>
                                 ),
                             )}
-                    </PaginationContent>
+                    </ul>
                 </div>
                 {/* Next Button */}
                 <div>
                     <PaginationItem className="list-none">
                         <PaginationNext
-                            href={next_page_url || '#'}
+                            onClick={
+                                next_page_url
+                                    ? () => setCurrentPage(current_page + 1)
+                                    : () => ''
+                            }
                             className={
                                 !next_page_url
                                     ? 'pointer-events-none opacity-50'
                                     : ''
                             }
-                        />
+                        ></PaginationNext>
                     </PaginationItem>
                 </div>
-            </Pagination>
+            </div>
         </div>
     );
 };

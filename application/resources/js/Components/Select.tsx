@@ -8,15 +8,15 @@ import { cn } from '@/lib/utils';
 
 type SelectProps = {
     isMultiselect?: boolean;
-    selectedItems: string[] | string | number;
-    onChange: (updatedItems: string[]) => void;
+    selectedItems: any;
+    onChange: (updatedItems: any) => void;
     children: React.ReactNode;
     basic: boolean;
 };
 
 type CustomChildProps = {
     isMultiselect?: boolean;
-    selectedItems?: string[];
+    selectedItems?: any;
     onClearSelection?: () => void;
 };
 
@@ -28,11 +28,18 @@ const Select: React.FC<SelectProps> = ({
     ...props
 }) => {
     const handleSelectChange = (value: string) => {
-        const updatedItems = isMultiselect
-            ? selectedItems.includes(value)
-                ? selectedItems.filter((item: string) => item !== value)
-                : [...selectedItems, value]
-            : [value];
+        let updatedItems: any;
+
+        if (!isMultiselect) {
+            onChange(updatedItems);
+            return;
+        }
+
+        if (selectedItems.includes(value)) {
+            updatedItems = selectedItems.filter((item: any) => item !== value);
+        } else {
+            updatedItems = [...selectedItems, value];
+        }
 
         onChange(updatedItems);
     };
@@ -51,9 +58,15 @@ const Select: React.FC<SelectProps> = ({
                     React.isValidElement<CustomChildProps>(child) &&
                     child.type === SelectContent
                 ) {
+                    const normalizedSelectedItems = Array.isArray(selectedItems)
+                        ? selectedItems
+                        : typeof selectedItems === 'string'
+                          ? [selectedItems]
+                          : undefined;
+
                     return React.cloneElement(child, {
                         isMultiselect,
-                        selectedItems,
+                        selectedItems: normalizedSelectedItems,
                         onClearSelection,
                     });
                 }

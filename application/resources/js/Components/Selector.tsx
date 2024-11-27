@@ -2,11 +2,11 @@ import { Select, SelectContent, SelectItem, SelectTrigger } from './Select';
 
 type SelectProps = {
     isMultiselect?: boolean;
-    selectedItems: string[]|string;
-    setSelectedItems: (updatedItems: string[]) => void;
+    selectedItems: any;
+    setSelectedItems: (updatedItems: any) => void;
     options: Record<string, string>;
     context: string;
-    basic: boolean;
+    basic?: boolean;
 };
 
 export default function Selector({
@@ -23,11 +23,11 @@ export default function Selector({
             <Select
                 isMultiselect={isMultiselect}
                 selectedItems={selectedItems}
-                onChange={setSelectedItems}            >
+                onChange={setSelectedItems}  basic={false}            >
                 <SelectTrigger className="">
                     <div className="flex items-center gap-2">
                         <span>{context}</span>
-                        {selectedItems.length > 0 && basic && (
+                        {selectedItems.length > 0 && !basic && (
                             <div className="flex size-5 items-center justify-center rounded-full bg-background-lighter">
                                 <span>{selectedItems.length}</span>
                             </div>

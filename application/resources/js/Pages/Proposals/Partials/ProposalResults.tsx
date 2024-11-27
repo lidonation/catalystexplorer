@@ -3,7 +3,7 @@ import ProposalCard from "@/Pages/Proposals/Partials/ProposalCard";
 import ProposalData = App.DataTransferObjects.ProposalData;
 
 interface ProposalProps {
-    proposals: ProposalData[]
+    proposals?: ProposalData[]
 }
 
 const ProposalResults: React.FC<ProposalProps> = ({proposals}) => {

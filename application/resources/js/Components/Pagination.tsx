@@ -7,7 +7,7 @@ const Pagination = ({ className, ...props }: React.ComponentProps<'nav'>) => (
     <nav
         role="navigation"
         aria-label="pagination"
-        className={cn('mx-auto flex w-full ', className)}
+        className={cn('mx-auto flex w-full', className)}
         {...props}
     />
 );
@@ -35,18 +35,21 @@ PaginationItem.displayName = 'PaginationItem';
 
 type PaginationLinkProps = {
     isActive?: boolean;
-} & React.ComponentProps<'a'>;
+    handleclick?: (update: React.MouseEvent<HTMLButtonElement>) => number;
+} & React.ComponentProps<'button'>;
 
 const PaginationLink = ({
     className,
     isActive,
+    handleclick,
     ...props
 }: PaginationLinkProps) => (
-    <a
+    <button
+        onClick={handleclick}
         aria-current={isActive ? 'page' : undefined}
-        className={cn(className, isActive?'text-primary':'')}
+        className={cn(className, isActive ? 'text-primary' : '')}
         {...props}
-    />
+    ></button>
 );
 PaginationLink.displayName = 'PaginationLink';
 
@@ -71,7 +74,7 @@ const PaginationNext = ({
 }: React.ComponentProps<typeof PaginationLink>) => (
     <PaginationLink
         aria-label="Go to next page"
-        className={cn('gap-1 items-center  flex pr-2.5', className)}
+        className={cn('flex items-center gap-1 pr-2.5', className)}
         {...props}
     >
         <span>Next</span>

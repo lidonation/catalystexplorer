@@ -1,16 +1,17 @@
+import Paginator from '@/Components/Paginator';
 import ProposalCardLoading from '@/Pages/Proposals/Partials/ProposalCardLoading';
 import ProposalResults from '@/Pages/Proposals/Partials/ProposalResults';
 import { PageProps } from '@/types';
 import { Head, WhenVisible } from '@inertiajs/react';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { PaginatedProposals } from '../../../types/paginated-proposals';
+import { PaginatedData } from '../../../types/paginated-data';
 import { ProposalSearchParams } from '../../../types/proposal-search-params';
 import ProposalFilters from './Partials/ProposalFilters';
-import Paginator from '@/Components/Paginator'
+import ProposalData = App.DataTransferObjects.ProposalData;
 
 interface HomePageProps extends Record<string, unknown> {
-    proposals: PaginatedProposals;
+    proposals: PaginatedData<ProposalData[]>;
     filters: ProposalSearchParams;
 }
 
@@ -19,13 +20,13 @@ export default function Index({
     filters,
 }: PageProps<HomePageProps>) {
     const { t } = useTranslation();
-    let paginationData = {};
+
+    const [perPage, setPerPage] = useState<number>(24);
+    const [currentPage, setCurrentpage] = useState<number>(1);
 
     useEffect(() => {
-        if (proposals) {
-            paginationData = Object.fromEntries(Object.entries(proposals).filter(([key])=>key!='data'));
-        }
-    }, [proposals]);
+        console.log({ perPage, currentPage });
+    }, [currentPage, perPage]);
 
     return (
         <>
@@ -59,7 +60,14 @@ export default function Index({
             </section>
 
             <section className="container w-full">
-                <Paginator pagination={paginationData} />
+                {proposals && (
+                    <Paginator
+                        perPage={perPage}
+                        pagination={proposals}
+                        setPerPage={setPerPage}
+                        setCurrentPage={setCurrentpage}
+                    />
+                )}
             </section>
         </>
     );

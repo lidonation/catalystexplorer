@@ -1,8 +1,7 @@
-import ProposalData = App.DataTransferObjects.ProposalData;
 
-export type PaginatedProposals = {
+export type PaginatedData<T> = {
     current_page: number;
-    data: ProposalData[];
+    data?: T;
     first_page_url: string;
     from: number;
     last_page: number;
