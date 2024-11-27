@@ -4,7 +4,6 @@ import HorizontaCardLoading from './Partials/ProposalHorizontalCardLoading';
 import CardLayoutSwitcher from './Partials/CardLayoutSwitcher';
 import ProposalResults from '@/Pages/Proposals/Partials/ProposalResults';
 import { PageProps } from '@/types';
-import { useState } from 'react';
 import { Head, WhenVisible } from '@inertiajs/react';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -12,7 +11,6 @@ import { PaginatedData } from '../../../types/paginated-data';
 import { ProposalSearchParams } from '../../../types/proposal-search-params';
 import ProposalFilters from './Partials/ProposalFilters';
 import ProposalData = App.DataTransferObjects.ProposalData;
-import { ProposalSearchParams } from '../../../types/proposal-search-params';
 
 interface HomePageProps extends Record<string, unknown> {
     proposals: PaginatedData<ProposalData[]>;
