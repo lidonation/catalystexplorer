@@ -7,6 +7,7 @@ use App\Casts\DateFormatCast;
 use Spatie\MediaLibrary\HasMedia;
 use Laravolt\Avatar\Facade as Avatar;
 use Spatie\Translatable\HasTranslations;
+use Illuminate\Database\Eloquent\Builder;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 
@@ -65,4 +66,21 @@ class IdeascaleProfile extends Model implements HasMedia
         );
     }
 
+    /**
+     * Scope to filter groups
+     */
+    public function scopeFilter(Builder $query, array $filters): Builder
+    {
+        $query->when($filters['search'] ?? null, function ($query, $search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('title', 'like', "%{$search}%")
+                ->orWhere('id', 'like', "%{$search}%")
+                ->orWhere('meta_title', 'like', "%{$search}%");
+            });
+        })->when($filters['ids'] ?? null, function ($query, $ids) {
+            $query->whereIn('id', is_array($ids) ? $ids : explode(',', $ids));
+        });
+
+        return $query;
+    }
 }
