@@ -1,10 +1,11 @@
 import CatalystIntro from '@/Pages/Home/Partials/CatalystIntro';
 import PostCard from '@/Pages/Posts/Partials/PostCard';
-import {PageProps} from '@/types';
-import {Head, router, WhenVisible} from '@inertiajs/react';
+import { PageProps } from '@/types';
+import { useState } from 'react';
+import { Head, router, WhenVisible } from '@inertiajs/react';
 import PostListLoader from '../Posts/Partials/PostListLoader';
 import ProposalList from '../Proposals/Partials/ProposalList';
-import ProposalCardLoading from '../Proposals/Partials/ProposalCardLoading';
+import VerticalCardLoading from '@/Pages/Proposals/Partials/ProposalVerticalCardLoading';
 import MetricCard from '../Metrics/Partials/MetricCard';
 import MetricCardLoading from '../Metrics/Partials/MetricCardLoading';
 import { useTranslation } from 'react-i18next';
@@ -24,28 +25,29 @@ interface HomePageProps extends Record<string, unknown> {
 }
 
 export default function Index({
-                                  posts,
-                                  proposals,
-                                  metrics,
-                                  announcements,
-                                  specialAnnouncements
-                              }: PageProps<HomePageProps>) {
-    const {t} = useTranslation();
+    posts,
+    proposals,
+    metrics,
+    announcements,
+    specialAnnouncements
+}: PageProps<HomePageProps>) {
+    const { t } = useTranslation();
+    const [isHorizontal, setIsHorizontal] = useState(false);
 
     function navigate() {
         router.get('/proposals')
     }
     return (
         <>
-            <Head title="Catalyst Explorer"/>
+            <Head title="Catalyst Explorer" />
 
             <div className="relative flex w-full flex-col justify-center gap-8">
                 <CatalystIntro />
 
                 <section className="annnouncements-wrapper">
                     <div className='container rounded-xl'>
-                        <WhenVisible fallback={<div>Loading...</div>} data="announcements">
-                            <AnnouncementCarousel announcements={announcements}/>
+                        <WhenVisible fallback={<div>{t("loading")}...</div>} data="announcements">
+                            <AnnouncementCarousel announcements={announcements} />
                         </WhenVisible>
                     </div>
                 </section>
@@ -56,7 +58,7 @@ export default function Index({
                             <h2 className="title-2">{t("numbers")}</h2>
                             <p className="text-4 text-content-dark opacity-70">{t("proposals.listSubtitle")}</p>
                         </div>
-                        <WhenVisible fallback={<MetricCardLoading/>} data="metrics">
+                        <WhenVisible fallback={<MetricCardLoading />} data="metrics">
                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
                                 {metrics && metrics.map((metric) => (
                                     <MetricCard
@@ -82,10 +84,13 @@ export default function Index({
                         </div>
                     </div>
                     <WhenVisible
-                        fallback={<ProposalCardLoading/>}
+                        fallback={<VerticalCardLoading />}
                         data="proposals"
                     >
-                        <ProposalList proposals={proposals}/>
+                        <ProposalList
+                            proposals={proposals}
+                            isHorizontal={isHorizontal}
+                        />
                     </WhenVisible>
                 </section>
 
@@ -105,12 +110,12 @@ export default function Index({
                         <h2 className="title-2">{t('posts.title')}</h2>
                         <p>{t('posts.subtitle')}</p>
                     </div>
-                    <WhenVisible fallback={<PostListLoader/>} data="posts">
+                    <WhenVisible fallback={<PostListLoader />} data="posts">
                         <ul className="content-gap scrollable snaps-scrollable">
                             {posts &&
                                 posts.map((post) => (
                                     <li key={post?.id}>
-                                        <PostCard post={post}/>
+                                        <PostCard post={post} />
                                     </li>
                                 ))}
                         </ul>

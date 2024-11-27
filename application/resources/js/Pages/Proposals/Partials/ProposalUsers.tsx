@@ -5,9 +5,10 @@ import { PageProps } from '@/types';
 interface ProposalUsers extends Record<string, unknown> {
     users: App.DataTransferObjects.IdeascaleProfileData[];
     onUserClick: (user: App.DataTransferObjects.IdeascaleProfileData) => void;
+    className?: string;
 }
 
-export default function ProposalUsers({ users,onUserClick }: PageProps<ProposalUsers>) {
+export default function ProposalUsers({ users,onUserClick, className }: PageProps<ProposalUsers>) {
     const { t } = useTranslation();
 
     // Limit the users array to the first 5
@@ -16,8 +17,8 @@ export default function ProposalUsers({ users,onUserClick }: PageProps<ProposalU
 
     return (
         <section
-            className="flex justify-between border-t pt-3"
-            aria-labelledby="team-heading"
+        className={`flex justify-between pt-3 ${className}`}
+        aria-labelledby="team-heading"
         >
             <h3 id="team-heading" className="mb-2 font-medium">
             {t('teams')}
