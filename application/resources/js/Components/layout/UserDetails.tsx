@@ -21,7 +21,7 @@ const UserDetails: React.FC<UserDetailsProps> = ({ user }) => {
 
     const logout = () => {
         axios
-            .post(useLocalizedRoute('logout'))
+            .post('logout')
             .then((response) => {
                 router.get('/')
             })
@@ -50,7 +50,7 @@ const UserDetails: React.FC<UserDetailsProps> = ({ user }) => {
                                 {user?.email}
                             </p>
                             <Link
-                                href={useLocalizedRoute('profile.edit')}
+                                href={route('profile.edit')}
                                 className="text-5 font-semibold text-primary"
                             >
                                 {t("users.editProfile")}
