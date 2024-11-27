@@ -25,49 +25,49 @@ export default function ProposalFilters({
         <div className="w-full bg-background p-4">
             <b>Filters Values:</b> {JSON.stringify(filters)} <br />
             <div className="grid grid-cols-1 gap-x-4 gap-y-3 rounded-xl md:grid-cols-2 lg:grid-cols-4">
-                <div className="pb-4 pt-6">
+                <div className="flex flex-col gap-2 pb-4 pt-6">
+                    <span>Funding Status</span>
                     <Selector
                         isMultiselect={true}
-                        options={{
-                            o: 'Over Budget',
-                            n: 'Not Approved',
-                            f: 'Funded',
-                            p: 'Fully Paid',
-                        }}
+                        options={[
+                            { value: 'o', label: 'Over Budget' },
+                            { value: 'n', label: 'Not Approved' },
+                            { value: 'f', label: 'Funded' },
+                            { value: 'p', label: 'Fully Paid' },
+                        ]}
                         setSelectedItems={setSelectedFundingStatus}
                         selectedItems={selectedFundingStatus}
-                        context={'Funding Status'}
                     />
                 </div>
 
-                <div className="pb-4 pt-6">
+                <div className="flex flex-col gap-2 pb-4 pt-6">
+                    <span>Opensource</span>
                     <Selector
                         isMultiselect={false}
-                        options={{
-                            1: 'Opensource Proposals',
-                            0: 'Non-OpenSource Proposals',
-                        }}
+                        options={[
+                            { value: '1', label: 'Opensource Proposals' },
+                            { value: '0', label: 'Non-OpenSource Proposals' },
+                        ]}
                         setSelectedItems={setSelectedOpensourceStatus}
                         selectedItems={selectedOpensourceStatus}
-                        context={'Opensource'}
                     />
                 </div>
 
-                <div className="pb-4 pt-6">
+                <div className="flex flex-col gap-2 pb-4 pt-6">
+                    <span>Project Status</span>
                     <Selector
                         isMultiselect={true}
-                        options={{
-                            c: 'Complete',
-                            i: 'In Progress',
-                            u: 'Unfunded',
-                        }}
+                        options={[
+                            { value: 'c', label: 'Complete' },
+                            { value: 'i', label: 'In Progress' },
+                            { value: 'u', label: 'Unfunded' },
+                        ]}
                         setSelectedItems={setSelectedProjectStatus}
                         selectedItems={selectedProjectStatus}
-                        context={'Project Status'}
                     />
                 </div>
                 <div className="flex flex-col gap-2 pb-4 pt-6">
-                    <span>Project Status</span>
+                    <span className="">Project Status</span>
                     <SearchSelect
                         options={[
                             { value: 'o', label: 'Over Budget' },
@@ -77,7 +77,7 @@ export default function ProposalFilters({
                         ]}
                         selected={selected}
                         onChange={setSelected}
-                        placeholder="Select status"
+                        placeholder="Select"
                         multiple={true}
                     />
                 </div>

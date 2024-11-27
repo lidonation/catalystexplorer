@@ -47,6 +47,11 @@
     "abstain": "Abstain",
     "notSet": "Not set",
     "loading": "Loading",
+    "link": "link",
+    "select": "select",
+    "selected": "selected",
+    "clear": "clear",
+    "selection": "selection",
     "app": {
         "name": "Catalyst Explorer",
         "contactEmail": "support@lidonation.com",
@@ -67,6 +72,13 @@
         "links": {
             "home": "Home"
         }
+    },
+    "pagination": {
+        "next": "Next",
+        "previous": "Previous",
+        "morePages": "More pages",
+        "goPreviousPage": "Go to previous page",
+        "goNextPage": "Go to next page"
     },
     "registration": {
         "alreadyRegistered": "Already registered?",
@@ -96,11 +108,10 @@
         "proposals": "Proposals",
         "projectVideo": "Project Video",
         "providedUrl": "Provided URL",
-        "listSubtitle" : "Proposal votes must be submitted in the official Catalyst Voting App",
+        "listSubtitle": "Proposal votes must be submitted in the official Catalyst Voting App",
         "pageSubtitle": "Search proposals and challenges by title, content, or author and co-authors",
         "seeMoreProposals": "See more proposals",
         "quickPitch": "Quick Pitch",
-
         "proposalReviews": "Proposal Reviews",
         "CSVs": "Proposal CSVs",
         "errors": {

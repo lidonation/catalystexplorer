@@ -9,6 +9,7 @@ type NavLinkItemProps = {
     title: string;
     children: ReactNode;
     className?: string;
+    ariaLabel?:string
 };
 
 export default function NavLinkItem({
@@ -18,12 +19,14 @@ export default function NavLinkItem({
     className,
     prefetch = false,
     async = false,
+    ariaLabel,
     ...rest
 }: NavLinkItemProps) {
     return (
         <Link
             {...rest}
             href={href}
+            aria-label={ariaLabel}
             role="navigation"
             className={`flex items-center gap-3 px-3 py-1 hover:bg-background-lighter ${className}`}
         >

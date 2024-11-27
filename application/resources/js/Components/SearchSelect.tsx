@@ -11,6 +11,7 @@ import {
 } from './Command';
 import { Popover, PopoverContent, PopoverTrigger } from './Popover';
 import { ScrollArea } from './ScrollArea';
+import { useTranslation } from 'react-i18next';
 
 export type SearchOption = {
     label: string;
@@ -36,6 +37,7 @@ export function SearchSelect({
 }: SearchSelectProps) {
     const [open, setOpen] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
+    const { t } = useTranslation();
 
     const filteredOptions = useMemo(() => {
         if (!searchQuery) return options;
@@ -86,9 +88,12 @@ export function SearchSelect({
                     className="border-input placeholder:text-muted-foreground flex h-9 w-full items-center justify-between rounded-md border bg-transparent px-3 py-2 text-sm shadow-sm ring-offset-background disabled:cursor-not-allowed disabled:opacity-50"
                 >
                     <span className="flex items-center gap-2">
-                        {selected.length > 0
-                            ? `${selected.length} selected`
-                            : placeholder}
+                        <span>{t('select') + ' '}</span>
+                        {selected.length > 0 && (
+                            <div className="flex size-5 items-center justify-center rounded-full bg-background-lighter">
+                                <span>{selected.length}</span>
+                            </div>
+                        )}
                     </span>
                     <ChevronDown className="h-4 w-4" />
                 </button>
@@ -99,7 +104,7 @@ export function SearchSelect({
             >
                 <Command shouldFilter={false}>
                     <div
-                        className="flex items-center border-b px-3"
+                        className="flex items-center justify-between border-b px-3"
                         cmdk-input-wrapper=""
                     >
                         <CommandInput

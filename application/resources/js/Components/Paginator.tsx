@@ -1,7 +1,13 @@
-import { PaginationEllipsis, PaginationItem, PaginationNext, PaginationPrevious } from '@/Components/Pagination';
+import {
+    PaginationEllipsis,
+    PaginationItem,
+    PaginationNext,
+    PaginationPrevious,
+} from '@/Components/Pagination';
 import React from 'react';
 import { PaginatedData } from '../../types/paginated-data';
 import Selector from './Selector';
+
 
 type PaginationComponentProps = {
     pagination: PaginatedData<any>;
@@ -20,14 +26,18 @@ const PaginationComponent: React.FC<PaginationComponentProps> = ({
 
     return (
         <div className="bt-12 mb-8 flex flex-col gap-8 border-t pt-12">
-            <div className="w-36">
+            <div className="w-40">
                 <Selector
-                    basic
                     context="Per Page"
                     selectedItems={perPage}
                     setSelectedItems={setPerPage}
                     isMultiselect={false}
-                    options={{ '0': '8', '1': '12', '2': '16', '3': '24' }}
+                    options={[
+                        { label: 'Per page 8', value: '8' },
+                        { label: 'Per page 12', value: '12' },
+                        { label: 'Per page 16', value: '16' },
+                        { label: 'Per page 24', value: '24' },
+                    ]}
                 />
             </div>
             <div className="flex items-center justify-between gap-4">
@@ -50,17 +60,19 @@ const PaginationComponent: React.FC<PaginationComponentProps> = ({
                 </div>
                 {/* Page Numbers */}
                 <div className="flex items-center gap-6">
-                    <ul className="list-none gap-8 flex">
+                    <ul className="lg:flex list-none gap-8 hidden">
                         {links &&
                             links.map((link, index) =>
                                 link.label.includes('&laquo;') ||
                                 link.label.includes('&raquo;') ? null : ( // Skip Previous/Next labels in links
-                                    <PaginationItem key={index} className=''>
+                                    <PaginationItem key={index} className="">
                                         {link.label === '...' ? (
                                             <PaginationEllipsis />
                                         ) : (
                                             <button
-                                                onClick={() => setCurrentPage(link.label)}
+                                                onClick={() =>
+                                                    setCurrentPage(link.label)
+                                                }
                                                 aria-current={
                                                     link.active
                                                         ? 'page'
