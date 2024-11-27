@@ -37,18 +37,30 @@ export default function ProposalFilters({
         <div className="w-full bg-background p-4">
             <b>Filters Values:</b> {JSON.stringify(filters)} <br />
             <div className="grid grid-cols-1 gap-x-4 gap-y-3 rounded-xl md:grid-cols-2 lg:grid-cols-4">
-                <div className="pb-4 pt-6">
+                <div className="flex flex-col gap-2 pb-4 pt-6">
+                    <span>Funding Status</span>
                     <Selector
                         isMultiselect={true}
-                        options={{
-                            o: 'Over Budget',
-                            n: 'Not Approved',
-                            f: 'Funded',
-                            p: 'Fully Paid',
-                        }}
+                        options={[
+                            {
+                                value: 'o',
+                                label: t('proposals.options.overBudget'),
+                            },
+                            {
+                                value: 'n',
+                                label: t('proposals.options.notApproved'),
+                            },
+                            {
+                                value: 'f',
+                                label: t('proposals.options.funded'),
+                            },
+                            {
+                                value: 'p',
+                                label: t('proposals.options.fullyPaid'),
+                            },
+                        ]}
                         setSelectedItems={setSelectedFundingStatus}
                         selectedItems={selectedFundingStatus}
-                        context={'Funding Status'}
                     />
                 </div>
 
@@ -57,8 +69,18 @@ export default function ProposalFilters({
                     <Selector
                         isMultiselect={false}
                         options={[
-                            { value: '1', label: 'Opensource Proposals' },
-                            { value: '0', label: 'Non-OpenSource Proposals' },
+                            {
+                                value: '1',
+                                label: t(
+                                    'proposals.options.opensourceProposals',
+                                ),
+                            },
+                            {
+                                value: '0',
+                                label: t(
+                                    'proposals.options.nonOpensourceProposals',
+                                ),
+                            },
                         ]}
                         setSelectedItems={setSelectedOpensourceStatus}
                         selectedItems={selectedOpensourceStatus}
@@ -70,9 +92,18 @@ export default function ProposalFilters({
                     <Selector
                         isMultiselect={true}
                         options={[
-                            { value: 'c', label: 'Complete' },
-                            { value: 'i', label: 'In Progress' },
-                            { value: 'u', label: 'Unfunded' },
+                            {
+                                value: 'c',
+                                label: t('proposals.options.complete'),
+                            },
+                            {
+                                value: 'i',
+                                label: t('proposals.options.inProgress'),
+                            },
+                            {
+                                value: 'u',
+                                label: t('proposals.options.unfunded'),
+                            },
                         ]}
                         setSelectedItems={setSelectedProjectStatus}
                         selectedItems={selectedProjectStatus}
@@ -82,10 +113,22 @@ export default function ProposalFilters({
                     <span className="">Project Status</span>
                     <SearchSelect
                         options={[
-                            { value: 'o', label: 'Over Budget' },
-                            { value: 'n', label: 'Not Approved' },
-                            { value: 'f', label: 'Funded' },
-                            { value: 'p', label: 'Fully Paid' },
+                            {
+                                value: 'o',
+                                label: t('proposals.options.overBudget'),
+                            },
+                            {
+                                value: 'n',
+                                label: t('proposals.options.notApproved'),
+                            },
+                            {
+                                value: 'f',
+                                label: t('proposals.options.funded'),
+                            },
+                            {
+                                value: 'p',
+                                label: t('proposals.options.fullyPaid'),
+                            },
                         ]}
                         selected={selected}
                         onChange={setSelected}
