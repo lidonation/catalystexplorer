@@ -12,14 +12,12 @@ type SelectProps = {
     selectedItems: any;
     onChange: (updatedItems: any) => void;
     children: React.ReactNode;
-    ariaLabel: string;
 };
 
 type CustomChildProps = {
     isMultiselect?: boolean;
     selectedItems?: any;
     onClearSelection?: () => void;
-    ariaLabel: string;
 };
 
 const Select: React.FC<SelectProps> = ({
@@ -86,12 +84,10 @@ const SelectTrigger = React.forwardRef<
     React.ComponentPropsWithoutRef<typeof SelectPrimitive.Trigger> & {
         isMultiselect?: boolean;
         selectedItems?: string[];
-        ariaLabel?: string;
     }
->(({ className, children, ariaLabel, ...props }, ref) => (
+>(({ className, children, ...props }, ref) => (
     <SelectPrimitive.Trigger
         ref={ref}
-        aria-label={ariaLabel}
         className={cn(
             'border-input placeholder:text-muted-foreground flex h-10 w-full items-center justify-between rounded-md border bg-background px-3 py-2 text-sm ring-offset-background focus:outline-none focus:ring-0 disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1',
             className,
