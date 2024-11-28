@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace App\Repositories;
 
-use App\Models\ReviewModeration;
+use App\Models\Review;
 
 class ReviewRepository extends Repository
 {
-    public function __construct(ReviewModeration $model)
+    public function __construct(Review $model)
     {
         parent::__construct($model);
     }

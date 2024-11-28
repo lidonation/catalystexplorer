@@ -8,9 +8,31 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Facades\Artisan;
+use Laravel\Scout\Searchable;
 
+class Review extends Model
+{
+    use Searchable;
 
-class Review extends Model {
+    public static function runCustomIndex(): void
+    {
+        Artisan::call('cx:index App\\\\Models\\\\Review cx__reviews');
+    }
+
+    public static function getSearchableAttributes(): array
+    {
+        return [
+            'id',
+            'title',
+            'content',
+        ];
+    }
+
+    public function toSearchableArray(): array
+    {
+        return $this->toArray();
+    }
 
     public function children(): Attribute
     {
