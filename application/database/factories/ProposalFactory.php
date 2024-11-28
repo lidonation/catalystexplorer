@@ -61,7 +61,7 @@ class ProposalFactory extends Factory
             'ideascale_link' => $this->faker->optional()->url(),
             'type' => $this->faker->randomElement(['proposal', 'challenge', 'proposal', 'proposal']),
             'meta_title' => $this->faker->words(5, true),
-            'problem' => $this->faker->sentences(4,true),
+            'problem' => $this->faker->sentences(4, true),
             'solution' => $this->faker->sentences(4, true),
             'experience' => $this->faker->sentences(4, true),
             'content' => $this->faker->paragraphs($this->faker->numberBetween(3, 15)),

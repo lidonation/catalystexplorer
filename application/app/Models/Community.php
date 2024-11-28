@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Builder;
 
 class Community extends Model
 {
+    use Searchable;
     protected function casts(): array
     {
         return [

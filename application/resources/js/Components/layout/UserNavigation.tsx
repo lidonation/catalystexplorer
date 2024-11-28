@@ -30,11 +30,16 @@ function UserNavigation() {
         },
     ];
     return (
-        <nav className="">
-            <ul className="flex flex-1 flex-col menu-gap-y">
+        <nav className="" role="menu">
+            <ul className="menu-gap-y flex flex-1 flex-col" role="menu">
                 {navItems.map(({ href, title, icon }) => (
                     <li key={href}>
-                        <NavLinkItem href={href} title={title} prefetch>
+                        <NavLinkItem
+                            ariaLabel={`${title}  ${t('link')}`}
+                            href={href}
+                            title={title}
+                            prefetch
+                        >
                             {icon}
                         </NavLinkItem>
                     </li>

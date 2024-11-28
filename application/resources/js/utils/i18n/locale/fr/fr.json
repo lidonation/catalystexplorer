@@ -43,6 +43,11 @@
     "abstain": "Abstention",
     "notSet": "Non défini",
     "loading": "Chargement",
+    "link":"lien",
+    "select":"Sélectionner",
+    "selected":"choisie",
+    "clear":"claire",
+    "selection":"sélection",
     "app": {
         "name": "Catalyst Explorer",
         "contactEmail": "support@lidonation.com",
@@ -64,6 +69,13 @@
     "registration": {
         "alreadyRegistered": "Déjà inscrit?",
         "passwordCharacters": "Doit contenir 8 caractères"
+    },
+    "pagination": {
+        "next": "Suivante",
+        "previous": "Précédente",
+        "morePages":"Plus de pages",
+        "goPreviousPage":"Aller à la page précédente",
+        "goNextPage": "Aller à la page suivante"
     },
     "searchBar": {
         "placeholder": "Rechercher des propositions, des fonds, des personnes, des articles et des données",
@@ -93,7 +105,6 @@
         "pageSubtitle": "Rechercher des propositions et des défis par titre, contenu ou auteur et co-auteurs.",
         "seeMoreProposals": "Voir plus de propositions",
         "quickPitch": "Présentation rapide",
-
         "proposalReviews": "Examens de propositions",
         "errors": {
             "noUrl": "Aucune URL vidéo fournie",
@@ -101,6 +112,28 @@
             "invalidVimeoFormat": "Le format du lien Vimeo est incorrect",
             "invalidUrlFormat": "Format d'URL invalide",
             "invalidUrl": "Format d'URL invalide"
+        },
+        "options": {
+            "sort":  "Trier par",
+            "oldToNew": "Du plus ancien au plus récent",
+            "newToOld": "Du plus récent au plus ancien", 
+            "lowToHigh": "Budget : Du plus bas au plus élevé",
+            "highToLow": "Budget : Du plus élevé au plus bas",
+            "fundingStatus": "Statut de financement",
+            "opensource": "Open source",
+            "opensourceProposals": "Propositions open source", 
+            "nonOpensourceProposals": "Propositions non open source",
+            "projectStatus": "Statut du projet",
+            "complete": "Terminé",
+            "inProgress": "En cours",
+            "unfunded": "Non financé",
+            "overBudget": "Dépassement budgétaire",
+            "notApproved": "Non approuvé",
+            "funded": "Financé",
+            "fullyPaid": "Totalement payé",
+            "selectStatus": "Sélectionner le statut",
+            "budget": "Budget",
+            "filterValues": "Filtres de valeurs"
         }
     },
     "posts": {

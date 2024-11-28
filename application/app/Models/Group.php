@@ -3,12 +3,14 @@
 namespace App\Models;
 
 use App\Casts\DateFormatCast;
+use Illuminate\Support\Facades\Artisan;
+use Laravel\Scout\Searchable;
 use Spatie\Translatable\HasTranslations;
 use Illuminate\Database\Eloquent\Builder;
 
 class Group extends Model
 {
-    use HasTranslations;
+    use HasTranslations, Searchable;
 
     public array $translatable = [
         'bio',
