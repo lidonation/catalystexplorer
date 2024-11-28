@@ -14,28 +14,34 @@ export default function ProposalFilters({
     const { t } = useTranslation();
     const [range, setRange] = useState([20, 80]);
     const [selectedSort, setSelectedSort] = useState<string[]>([]);
-    const [selectedFundingStatus, setSelectedFundingStatus] = useState<string[]>(['o']);
-    const [selectedOpensourceStatus, setSelectedOpensourceStatus] = useState<string[]>([]);
-    const [selectedProjectStatus, setSelectedProjectStatus] = useState<string[]>([]);
+    const [selectedFundingStatus, setSelectedFundingStatus] = useState<
+        string[]
+    >(['o']);
+    const [selectedOpensourceStatus, setSelectedOpensourceStatus] = useState<
+        string[]
+    >([]);
+    const [selectedProjectStatus, setSelectedProjectStatus] = useState<
+        string[]
+    >([]);
     const [selected, setSelected] = useState<string[]>([]);
 
-    const sortingOptions = {
-        created_at_asc: t('proposals.options.oldToNew'),
-        created_at_desc: t('proposals.options.newToOld'),
-        budget_asc: t('proposals.options.lowToHigh'),
-        budget_desc: t('proposals.options.highToLow'),
-    };
+    const sortingOptions = [
+        { value: 'created_at_asc', label: t('proposals.options.oldToNew') },
+        { value: 'created_at_desc', label: t('proposals.options.newToOld') },
+        { value: 'budget_asc', label: t('proposals.options.lowToHigh') },
+        { value: 'budget_desc', label: t('proposals.options.highToLow') },
+    ];
 
     return (
         <>
-            <div className="container mx-auto flex justify-end pb-4 pt-6 px-0">
+            <div className="container mx-auto flex justify-end px-0 pb-4 pt-6">
                 <Selector
-                isMultiselect={false}
-                options={sortingOptions}
-                setSelectedItems={setSelectedSort}
-                selectedItems={selectedSort}
-                context={t('proposals.options.sort')}
-            />
+                    isMultiselect={false}
+                    options={sortingOptions}
+                    setSelectedItems={setSelectedSort}
+                    selectedItems={selectedSort}
+                    context={t('proposals.options.sort')}
+                />
             </div>
             <div className="w-full bg-background p-4">
                 <b>{t('proposals.options.filterValues')}:</b>{' '}

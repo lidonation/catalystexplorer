@@ -12,7 +12,6 @@ type SelectProps = {
     selectedItems: any;
     onChange: (updatedItems: any) => void;
     children: React.ReactNode;
-    ariaLabel: string;
 };
 
 type CustomChildProps = {
@@ -24,7 +23,6 @@ type CustomChildProps = {
 const Select: React.FC<SelectProps> = ({
     isMultiselect = false,
     selectedItems,
-    ariaLabel,
     onChange,
     ...props
 }) => {
@@ -51,7 +49,6 @@ const Select: React.FC<SelectProps> = ({
 
     return (
         <SelectPrimitive.Root
-            aria-label={ariaLabel}
             onValueChange={(value) => handleSelectChange(value)}
             {...props}
         >

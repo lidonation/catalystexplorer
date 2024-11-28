@@ -77,6 +77,7 @@ export default function ProposalFundingPercentages({ proposal }: Proposal) {
                 <div
                     className={`h-full rounded-full ${progressBarColor}`}
                     role="progressbar"
+                    aria-label="funds recieved"
                     aria-valuenow={fundingPercentage}
                     aria-valuemin={0}
                     aria-valuemax={100}
