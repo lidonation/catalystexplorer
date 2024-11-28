@@ -14,7 +14,7 @@ class ProposalRepository extends Repository
         parent::__construct($model);
     }
 
-    public function search(string $term, $args = []): array|Builder
+    public function search(string $term, $args = []): Builder
     {
 
         return Proposal::search(
@@ -75,29 +75,29 @@ class ProposalRepository extends Repository
 //                    'campaign.label',
 //                    'campaign.amount',
                 ];
-                $options['facets'] = [
-                    'tags',
-                    'tags.title',
-                    'funding_status',
-                    'status',
-                    'campaign',
-                    'fund',
-                    'opensource',
-                    'amount_requested_USD',
-                    'amount_requested_ADA',
-                    'amount_received_ADA',
-                    'amount_received_USD',
-                    'amount_awarded_ADA',
-                    'amount_awarded_USD',
-                    'completed_amount_paid_USD',
-                    'completed_amount_paid_ADA',
-                    'amount_requested',
-                    'project_length',
-                    'impact_proposal',
-                    'woman_proposal',
-                    'has_quick_pitch',
-                    'ideafest_proposal',
-                ];
+                // $options['facets'] = [
+                //     'tags',
+                //     'tags.title',
+                //     'funding_status',
+                //     'status',
+                //     'campaign',
+                //     'fund',
+                //     'opensource',
+                //     'amount_requested_USD',
+                //     'amount_requested_ADA',
+                //     'amount_received_ADA',
+                //     'amount_received_USD',
+                //     'amount_awarded_ADA',
+                //     'amount_awarded_USD',
+                //     'completed_amount_paid_USD',
+                //     'completed_amount_paid_ADA',
+                //     'amount_requested',
+                //     'project_length',
+                //     'impact_proposal',
+                //     'woman_proposal',
+                //     'has_quick_pitch',
+                //     'ideafest_proposal',
+                // ];
 
 
 //                if ((bool) $this->sortBy && (bool) $this->sortOrder) {
