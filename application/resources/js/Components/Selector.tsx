@@ -1,32 +1,39 @@
+import { useTranslation } from 'react-i18next';
 import { Select, SelectContent, SelectItem, SelectTrigger } from './Select';
 
 type SelectProps = {
     isMultiselect?: boolean;
-    selectedItems: string[];
-    setSelectedItems: (updatedItems: string[]) => void;
-    options: Record<string, string>;
-    context:string;
+    selectedItems: any;
+    setSelectedItems: (updatedItems: any) => void;
+    options?: {
+        label: string;
+        value: string;
+    }[];
+    context?: string;
+    basic?: boolean;
 };
 
 export default function Selector({
     isMultiselect = false,
     context = '',
-    options = {},
+    options,
     selectedItems = [],
     setSelectedItems,
     ...props
 }: SelectProps) {
+    const { t } = useTranslation();
     return (
-        <div className="rounded-lg bg-background ">
+        <div className="rounded-lg bg-background">
             <Select
+                ariaLabel={t('select')+ t('option')}
                 isMultiselect={isMultiselect}
                 selectedItems={selectedItems}
                 onChange={setSelectedItems}
             >
                 <SelectTrigger className="">
                     <div className="flex items-center gap-2">
-                        <span>{context}</span>
-                        {selectedItems.length > 0 && (
+                        <span>{t('select') + ' ' + context}</span>
+                        {selectedItems.length > 0 && !context && (
                             <div className="flex size-5 items-center justify-center rounded-full bg-background-lighter">
                                 <span>{selectedItems.length}</span>
                             </div>
@@ -34,9 +41,12 @@ export default function Selector({
                     </div>
                 </SelectTrigger>
                 <SelectContent>
-                    {Object.entries(options).map(([key, value]) => (
-                        <SelectItem value={key} key={key}>{value}</SelectItem>
-                    ))}
+                    {Array.isArray(options) &&
+                        options?.map((option) => (
+                            <SelectItem key={option.value} value={option.value}>
+                                {option.label}
+                            </SelectItem>
+                        ))}
                 </SelectContent>
             </Select>
         </div>

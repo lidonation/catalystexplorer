@@ -2,7 +2,7 @@ import React from "react";
 import ProposalCard from "@/Pages/Proposals/Partials/ProposalCard";
 import ProposalData = App.DataTransferObjects.ProposalData;
 interface ProposalProps {
-    proposals: ProposalData[];
+    proposals?: ProposalData[];
     isHorizontal: boolean;
     quickPitchView: boolean;
     setGlobalQuickPitchView: (value: boolean) => void;

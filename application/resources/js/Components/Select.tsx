@@ -5,42 +5,53 @@ import { Check, ChevronDown, ChevronUp } from 'lucide-react';
 import * as React from 'react';
 
 import { cn } from '@/lib/utils';
+import { useTranslation } from 'react-i18next';
 
 type SelectProps = {
     isMultiselect?: boolean;
-    selectedItems: string[];
-    onChange: (updatedItems: string[]) => void;
+    selectedItems: any;
+    onChange: (updatedItems: any) => void;
     children: React.ReactNode;
+    ariaLabel: string;
 };
 
 type CustomChildProps = {
     isMultiselect?: boolean;
-    selectedItems?: string[];
+    selectedItems?: any;
     onClearSelection?: () => void;
 };
 
 const Select: React.FC<SelectProps> = ({
     isMultiselect = false,
     selectedItems,
+    ariaLabel,
     onChange,
     ...props
 }) => {
     const handleSelectChange = (value: string) => {
-        const updatedItems = isMultiselect
-            ? selectedItems.includes(value)
-                ? selectedItems.filter((item: string) => item !== value)
-                : [...selectedItems, value]
-            : [value];
+        let updatedItems: any;
 
-        onChange(updatedItems); 
+        if (!isMultiselect) {
+            onChange(value);
+            return;
+        }
+
+        if (selectedItems.includes(value)) {
+            updatedItems = selectedItems.filter((item: any) => item !== value);
+        } else {
+            updatedItems = [...selectedItems, value];
+        }
+
+        onChange(updatedItems);
     };
 
     const onClearSelection = () => {
-        onChange([]); 
+        onChange([]);
     };
 
     return (
         <SelectPrimitive.Root
+            aria-label={ariaLabel}
             onValueChange={(value) => handleSelectChange(value)}
             {...props}
         >
@@ -49,9 +60,15 @@ const Select: React.FC<SelectProps> = ({
                     React.isValidElement<CustomChildProps>(child) &&
                     child.type === SelectContent
                 ) {
+                    const normalizedSelectedItems = Array.isArray(selectedItems)
+                        ? selectedItems
+                        : typeof selectedItems === 'string'
+                          ? [selectedItems]
+                          : undefined;
+
                     return React.cloneElement(child, {
                         isMultiselect,
-                        selectedItems,
+                        selectedItems: normalizedSelectedItems,
                         onClearSelection,
                     });
                 }
@@ -148,54 +165,58 @@ const SelectContent = React.forwardRef<
             ...props
         },
         ref,
-    ) => (
-        <SelectPrimitive.Portal>
-            <SelectPrimitive.Content
-                ref={ref}
-                className={cn(
-                    'border text-popover-foreground data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 relative z-50 max-h-96 min-w-[8rem] overflow-hidden rounded-md bg-background',
-                    position === 'popper' &&
-                        'data-[side=bottom]:translate-y-1 data-[side=left]:-translate-x-1 data-[side=right]:translate-x-1 data-[side=top]:-translate-y-1',
-                    className,
-                )}
-                position={position}
-                {...props}
-            >
-                <div className="absolute right-2 top-0 ">
-                    <button
-                        type="button"
-                        onClick={onClearSelection}
-                        className="text-muted-foreground hover:text-primary text-sm focus:outline-none"
-                    >
-                        clear
-                    </button>
-                </div>
-
-                <SelectScrollUpButton />
-                <SelectPrimitive.Viewport
+    ) => {
+        const { t } = useTranslation();
+        return (
+            <SelectPrimitive.Portal>
+                <SelectPrimitive.Content
+                    ref={ref}
                     className={cn(
-                        'p-1',
+                        'text-popover-foreground data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 relative z-50 max-h-96 min-w-[8rem] overflow-hidden rounded-md border bg-background',
                         position === 'popper' &&
-                            'mt-6 h-[var(--radix-select-trigger-height)] w-full min-w-[var(--radix-select-trigger-width)]',
+                            'data-[side=bottom]:translate-y-1 data-[side=left]:-translate-x-1 data-[side=right]:translate-x-1 data-[side=top]:-translate-y-1',
+                        className,
                     )}
+                    position={position}
+                    {...props}
                 >
-                    {React.Children.map(children, (child) => {
-                        if (
-                            React.isValidElement<CustomChildProps>(child) &&
-                            child.type === SelectItem
-                        ) {
-                            return React.cloneElement(child, {
-                                isMultiselect,
-                                selectedItems,
-                            });
-                        }
-                        return child;
-                    })}
-                </SelectPrimitive.Viewport>
-                <SelectScrollDownButton />
-            </SelectPrimitive.Content>
-        </SelectPrimitive.Portal>
-    ),
+                    <div className="absolute right-2 top-0">
+                        <button
+                            aria-label={t('clear') + ' ' + t('selection')}
+                            type="button"
+                            onClick={onClearSelection}
+                            className="text-muted-foreground text-sm hover:text-primary focus:outline-none"
+                        >
+                            clear
+                        </button>
+                    </div>
+
+                    <SelectScrollUpButton />
+                    <SelectPrimitive.Viewport
+                        className={cn(
+                            'p-1',
+                            position === 'popper' &&
+                                'mt-6 h-[var(--radix-select-trigger-height)] w-full min-w-[var(--radix-select-trigger-width)]',
+                        )}
+                    >
+                        {React.Children.map(children, (child) => {
+                            if (
+                                React.isValidElement<CustomChildProps>(child) &&
+                                child.type === SelectItem
+                            ) {
+                                return React.cloneElement(child, {
+                                    isMultiselect,
+                                    selectedItems,
+                                });
+                            }
+                            return child;
+                        })}
+                    </SelectPrimitive.Viewport>
+                    <SelectScrollDownButton />
+                </SelectPrimitive.Content>
+            </SelectPrimitive.Portal>
+        );
+    },
 );
 SelectContent.displayName = SelectPrimitive.Content.displayName;
 
@@ -230,7 +251,7 @@ const SelectItem = React.forwardRef<
                 'relative flex w-full cursor-default select-none items-center rounded-sm py-1.5 pl-8 pr-2 text-sm outline-none focus:bg-background-lighter data-[disabled]:pointer-events-none data-[disabled]:opacity-50',
                 className,
             )}
-            {...props} 
+            {...props}
         >
             <span className="absolute left-2 flex h-3.5 w-3.5 items-center justify-center">
                 {isSelected && <Check className="h-4 w-4" />}

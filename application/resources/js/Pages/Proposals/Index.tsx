@@ -1,21 +1,26 @@
+import Paginator from '@/Components/Paginator';
 import VerticalCardLoading from '@/Pages/Proposals/Partials/ProposalVerticalCardLoading';
 import HorizontaCardLoading from './Partials/ProposalHorizontalCardLoading';
 import CardLayoutSwitcher from './Partials/CardLayoutSwitcher';
 import ProposalResults from '@/Pages/Proposals/Partials/ProposalResults';
 import { PageProps } from '@/types';
-import { useState } from 'react';
 import { Head, WhenVisible } from '@inertiajs/react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { PaginatedData } from '../../../types/paginated-data';
+import { ProposalSearchParams } from '../../../types/proposal-search-params';
 import ProposalFilters from './Partials/ProposalFilters';
-import { PaginatedProposals } from "../../../types/paginated-proposals";
-import { ProposalSearchParams } from "../../../types/proposal-search-params";
+import ProposalData = App.DataTransferObjects.ProposalData;
 
 interface HomePageProps extends Record<string, unknown> {
-    proposals: PaginatedProposals;
+    proposals: PaginatedData<ProposalData[]>;
     filters: ProposalSearchParams;
 }
 
-export default function Index({ proposals, filters }: PageProps<HomePageProps>) {
+export default function Index({
+    proposals,
+    filters,
+}: PageProps<HomePageProps>) {
     const { t } = useTranslation();
     const [sortBy, setSortBy] = useState('');
 
@@ -23,6 +28,14 @@ export default function Index({ proposals, filters }: PageProps<HomePageProps>) 
         setSortBy(sortBy);
         // Implement sorting logic here
     };
+
+    const [perPage, setPerPage] = useState<number>(24);
+    const [currentPage, setCurrentpage] = useState<number>(1);
+
+    useEffect(() => {
+        console.log({ perPage, currentPage });
+    }, [currentPage, perPage]);
+
 
     const [isHorizontal, setIsHorizontal] = useState(false);
 
@@ -80,6 +93,17 @@ export default function Index({ proposals, filters }: PageProps<HomePageProps>) 
                         />
                     </div>
                 </WhenVisible>
+            </section>
+
+            <section className="container w-full">
+                {proposals && (
+                    <Paginator
+                        perPage={perPage}
+                        pagination={proposals}
+                        setPerPage={setPerPage}
+                        setCurrentPage={setCurrentpage}
+                    />
+                )}
             </section>
         </>
     );
