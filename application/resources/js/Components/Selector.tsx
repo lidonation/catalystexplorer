@@ -25,12 +25,14 @@ export default function Selector({
     return (
         <div className="rounded-lg bg-background">
             <Select
-                ariaLabel={t('select')+ t('option')}
                 isMultiselect={isMultiselect}
                 selectedItems={selectedItems}
                 onChange={setSelectedItems}
             >
-                <SelectTrigger className="">
+                <SelectTrigger
+                    className=""
+                    aria-label={t('select') + ' ' + t('option')}
+                >
                     <div className="flex items-center gap-2">
                         <span>{t('select') + ' ' + context}</span>
                         {selectedItems.length > 0 && !context && (

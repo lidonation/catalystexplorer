@@ -51,12 +51,12 @@ function AppNavigation() {
     ];
 
     return (
-        <nav className="flex flex-col justify-between">
-            <ul className="menu-gap-y flex flex-1 flex-col px-4">
+        <nav className="flex flex-col justify-between" role="menu">
+            <ul className="menu-gap-y flex flex-1 flex-col px-4" role="menu">
                 {navItems.map(({ href, title, icon }) => (
                     <li key={href}>
                         <NavLinkItem
-                            ariaLabel={`${title } ${t('link')}`}
+                            ariaLabel={`${title} ${t('link')}`}
                             href={href}
                             title={title}
                             prefetch
