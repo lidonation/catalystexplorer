@@ -22,8 +22,8 @@ const MetricCardList: React.FC<MetricProps> = ({metrics, sortBy, sortOrder, colu
        }else{
          return isAsc ? dateA.getDate() - dateB.getDate() : dateB.getDate() - dateA.getDate()
        }
-
    })
+
 
    const columnClass = columns === MetricEnum.TWO_COLUMNS ? 'grid-cols-2' : 'grid-cols-3';
 
