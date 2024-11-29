@@ -66,8 +66,8 @@ export default function Index({
                     <WhenVisible fallback={<MetricCardLoading />} data="metrics">
                         <MetricCardList
                             metrics={metrics}
-                            sortBy={MetricEnum.ORDER}
-                            sortOrder={MetricEnum.DESCENDING}
+                            sortBy={MetricEnum.CREATED_AT}
+                            sortOrder={MetricEnum.ASCENDING}
                             columns={MetricEnum.TWO_COLUMNS} />
                     </WhenVisible>
                 </section>

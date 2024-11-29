@@ -20,7 +20,7 @@ const MetricCardList: React.FC<MetricProps> = ({metrics, sortBy, sortOrder, colu
        if(sortBy === MetricEnum.ORDER){
          return isAsc ? orderA - orderB : orderB - orderA
        }else{
-         return isAsc ? dateA.getDate() - dateB.getDate() : dateB.getDate() - dateA.getDate()
+         return isAsc ? dateA.getTime() - dateB.getTime() : dateB.getTime() - dateA.getTime()
        }
    })
 
@@ -30,8 +30,8 @@ const MetricCardList: React.FC<MetricProps> = ({metrics, sortBy, sortOrder, colu
    return(
       <ul className={`grid grid-cols-1 md:grid-cols-2 lg:${columnClass} gap-6 mt-8`}>
          {
-            sortedMetrics.map((metric)=>(
-                <li key={metric.user_id}>
+            sortedMetrics.map((metric, index)=>(
+                <li key={index}>
                     <MetricCard metric={metric}/>
                 </li>
             ))
