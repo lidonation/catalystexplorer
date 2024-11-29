@@ -36,6 +36,7 @@ export default function Index({
     const [isHorizontal, setIsHorizontal] = useState(false);
 
 
+
     return (
         <>
             <Head title="Catalyst Explorer" />
@@ -71,6 +72,7 @@ export default function Index({
                             columns={MetricEnum.TWO_COLUMNS} />
                     </WhenVisible>
                 </section>
+
 
                 <section className="container proposals-wrapper">
                     <div className=" py-8 flex justify-between items-center">
