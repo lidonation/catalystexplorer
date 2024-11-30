@@ -27,7 +27,7 @@ class Group extends Model
 
     public static function runCustomIndex(): void
     {
-        Artisan::call('cx:index App\\\\Models\\\\Group cx__groups');
+        Artisan::call('cx:create-search-index App\\\\Models\\\\Group cx_groups');
     }
 
     public static function getSearchableAttributes(): array

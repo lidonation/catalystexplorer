@@ -20,7 +20,7 @@ class Community extends Model
     }
     public static function runCustomIndex(): void
     {
-        Artisan::call('cx:index App\\\\Models\\\\Community cx__communities');
+        Artisan::call('cx:create-search-index App\\\\Models\\\\Community cx_communities');
     }
 
     public static function getSearchableAttributes(): array
