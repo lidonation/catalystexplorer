@@ -2,6 +2,7 @@ import { router } from '@inertiajs/react';
 import {
     createContext,
     ReactNode,
+    useCallback,
     useContext,
     useEffect,
     useRef,
@@ -33,7 +34,7 @@ export function FiltersProvider<K extends Record<string, any>>({
 
     console.log({ tyty: filters, defaultFilters });
 
-    const setFilters = <Key extends keyof K, S>(key: Key, value: S) => {
+    const setFilters = useCallback(<Key extends keyof K, S>(key: Key, value: S) => {
         setFiltersState((prev) => {
             if (prev[key] === value) return prev;
 
@@ -41,16 +42,16 @@ export function FiltersProvider<K extends Record<string, any>>({
                 ...prev,
                 [key]: value,
             };
-        });
-    };
+        })
+    },[]);
 
     const currentUrl = window.location.origin + window.location.pathname;
 
     useEffect(() => {
-        // if (isFirstLoad.current) {
-        //     isFirstLoad.current = false;
-        //     return;
-        // }
+        if (isFirstLoad.current) {
+            isFirstLoad.current = false;
+            return;
+        }
 
         const fetchData = async () => {
             router.get(currentUrl, filters, {
