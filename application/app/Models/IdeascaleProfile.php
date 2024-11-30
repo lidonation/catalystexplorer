@@ -73,19 +73,6 @@ class IdeascaleProfile extends Model implements HasMedia
         Artisan::call('cx:create-search-index App\\\\Models\\\\IdeascaleProfile cx_ideascale_profiles');
     }
 
-    public function scopeFilter($query, array $filters)
-    {
-        $query->when(
-            $filters['search'] ?? false,
-            fn(Builder $query, $search) => $query
-                ->whereAny(['username', 'name'], 'ILIKE', '%' . $search . '%')
-        );
-
-        $query->when(
-            $filters['ids'] ?? false,
-            fn(Builder $query, $ids) => $query->whereIn('id', is_array($ids) ? $ids : explode(',', $ids))
-        );
-    }
 
     public function toSearchableArray(): array
     {
