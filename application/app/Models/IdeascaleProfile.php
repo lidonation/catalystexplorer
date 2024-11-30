@@ -1,12 +1,8 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace App\Models;
 
-use App\Models\User;
 use App\Casts\DateFormatCast;
-use Illuminate\Database\Eloquent\Builder;
 use Spatie\MediaLibrary\HasMedia;
 use Laravolt\Avatar\Facade as Avatar;
 use Spatie\Translatable\HasTranslations;
@@ -74,7 +70,7 @@ class IdeascaleProfile extends Model implements HasMedia
 
     public static function runCustomIndex(): void
     {
-        Artisan::call('cx:index App\\\\Models\\\\IdeascaleProfile cx__ideascale_profiles');
+        Artisan::call('cx:create-search-index App\\\\Models\\\\IdeascaleProfile cx_ideascale_profiles');
     }
 
     public function scopeFilter($query, array $filters)

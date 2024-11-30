@@ -23,7 +23,11 @@ class Group extends Model
             'updated_at' => DateFormatCast::class,
         ];
     }
-
+    public static function runCustomIndex(): void
+    {
+        Artisan::call('cx:create-search-index App\\\\Models\\\\Group cx_groups');
+    }
+    
     /**
      * Scope to filter groups
      */

@@ -17,7 +17,7 @@ class Review extends Model
 
     public static function runCustomIndex(): void
     {
-        Artisan::call('cx:index App\\\\Models\\\\Review cx__reviews');
+        Artisan::call('cx:create-search-index App\\\\Models\\\\Review cx_reviews');
     }
 
     public static function getSearchableAttributes(): array

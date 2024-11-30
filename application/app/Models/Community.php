@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use App\Casts\DateFormatCast;
+use Laravel\Scout\Searchable;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Database\Eloquent\Builder;
 
 class Community extends Model
@@ -15,7 +17,11 @@ class Community extends Model
             'updated_at' => DateFormatCast::class,
         ];
     }
-
+    
+    public static function runCustomIndex(): void
+    {
+        Artisan::call('cx:create-search-index App\\\\Models\\\\Community cx_communities');
+    }
     /**
      * Scope to filter groups
      */
