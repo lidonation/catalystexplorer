@@ -16,17 +16,11 @@ class ProposalRepository extends Repository
 
     public function search(string $term, $args = []): Builder
     {
-
         return Proposal::search(
             $term,
             function (Indexes $index, $query, $options) use ($args) {
-                $filters = $args['filters'] ?? [];
-
-                if (count($filters) > 0) {
-                    $options['filter'] = implode(' AND ', $filters);
-                }
-
-                $options['attributesToRetrieve'] = $attrs ?? [
+                
+                $args['attributesToRetrieve'] = $attrs ?? [
                     'id',
                     'amount_requested',
                     'amount_received',
@@ -61,12 +55,12 @@ class ProposalRepository extends Repository
                     'website',
                     'type',
 //                    'ranking_total',
-//                    'users.id',
-//                    'users.name',
-//                    'users.username',
-//                    'users.ideascale_id',
-//                    'users.media.original_url',
-//                    'users.profile_photo_url',
+                   'users.id',
+                   'users.name',
+                   'users.username',
+                   'users.ideascale_id',
+                   'users.media.original_url',
+                   'users.profile_photo_url',
 //                    'fund.id',
 //                    'fund.label',
 //                    'fund.amount',
@@ -75,38 +69,38 @@ class ProposalRepository extends Repository
 //                    'campaign.label',
 //                    'campaign.amount',
                 ];
-                // $options['facets'] = [
-                //     'tags',
-                //     'tags.title',
-                //     'funding_status',
-                //     'status',
-                //     'campaign',
-                //     'fund',
-                //     'opensource',
-                //     'amount_requested_USD',
-                //     'amount_requested_ADA',
-                //     'amount_received_ADA',
-                //     'amount_received_USD',
-                //     'amount_awarded_ADA',
-                //     'amount_awarded_USD',
-                //     'completed_amount_paid_USD',
-                //     'completed_amount_paid_ADA',
-                //     'amount_requested',
-                //     'project_length',
-                //     'impact_proposal',
-                //     'woman_proposal',
-                //     'has_quick_pitch',
-                //     'ideafest_proposal',
-                // ];
+                $args['facets'] = [
+                    'tags',
+                    'tags.title',
+                    'funding_status',
+                    'status',
+                    'campaign',
+                    'fund',
+                    'opensource',
+                    'amount_requested_USD',
+                    'amount_requested_ADA',
+                    'amount_received_ADA',
+                    'amount_received_USD',
+                    'amount_awarded_ADA',
+                    'amount_awarded_USD',
+                    'completed_amount_paid_USD',
+                    'completed_amount_paid_ADA',
+                    'amount_requested',
+                    'project_length',
+                    'impact_proposal',
+                    'woman_proposal',
+                    'has_quick_pitch',
+                    'ideafest_proposal',
+                ];
 
-
+                
 //                if ((bool) $this->sortBy && (bool) $this->sortOrder) {
 //                    $options['sort'] = ["$this->sortBy:$this->sortOrder"];
 //                }
 
 //                $options['offset'] = ! $returnBuilder ? (($this->currentPage ?? 1) - 1) * $this->limit : 0;
 //                $options['limit'] = $this->limit;
-                return $index->search($query, $options);
+                return $index->search($query, $args);
             }
         );
     }

@@ -1,20 +1,23 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use App\DataTransferObjects\ProposalData;
-use App\Enums\ProposalSearchParams;
-use App\Models\Proposal;
-use App\Repositories\ProposalRepository;
-use Illuminate\Contracts\Pagination\Paginator;
-use Illuminate\Http\Request;
-use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Support\Collection;
-use Illuminate\Support\Fluent;
 use Inertia\Inertia;
 use Inertia\Response;
-use JetBrains\PhpStorm\ArrayShape;
+use App\Models\Proposal;
 use Laravel\Scout\Builder;
+use Illuminate\Http\Request;
+use Illuminate\Support\Fluent;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Stringable;
+use JetBrains\PhpStorm\ArrayShape;
+use App\Enums\ProposalSearchParams;
+use App\Repositories\ProposalRepository;
+use App\DataTransferObjects\ProposalData;
+use Illuminate\Contracts\Pagination\Paginator;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class ProposalsController extends Controller
 {
@@ -24,50 +27,105 @@ class ProposalsController extends Controller
 
     protected array $queryParams = [];
 
+    protected ?string $sortBy = 'created_at';
+
+    protected ?string $sortOrder = 'desc';
+
+    protected null|string|Stringable $search = null;
+
+    public array $tagsCount = [];
+
+    public array $fundsCount = [];
+
+    public array $cohortData = [];
+
+    public array $challengesCount = [];
+
+    public int $submittedProposals = 0;
+
+    public int $approvedProposals = 0;
+
+    public int $completedProposals = 0;
+
+    public int $sumBudgetsADA = 0;
+
+    public int $sumBudgetsUSD = 0;
+
+    public int $sumApprovedADA = 0;
+
+    public int $sumApprovedUSD = 0;
+
+    public int $sumDistributedADA = 0;
+
+    public int $sumDistributedUSD = 0;
+
+    public int $sumCompletedUSD = 0;
+
     /**
      * Display the user's profile form.
      */
     public function index(Request $request): Response
     {
-        return Inertia::render('Proposals/Index', $this->getProps($request));
+        $this->getProps($request);
+
+        $proposals = empty($this->queryParams) ? $this->getRandomProposals() : $this->query();
+  
+        if (
+            empty($this->queryParams[ProposalSearchParams::BUDGETS()->value]) ||
+            empty($this->queryParams[ProposalSearchParams::PROJECT_LENGTH()->value])
+        ) {
+            $this->queryParams[ProposalSearchParams::BUDGETS()->value] = [env('MIN_BUDGET', 1), env('MAX_BUDGET', 7000000)];
+            $this->queryParams[ProposalSearchParams::PROJECT_LENGTH()->value] = [env('MIN_LENGTH', 0), env('MAX_LENGTH', 12)];
+        }
+ 
+        return Inertia::render('Proposals/Index', [
+            'proposals' => $proposals,
+            'filters' => $this->queryParams,
+            'search' => $this->search,
+            'sort' => "{$this->sortBy}:{$this->sortOrder}",
+        ]);
     }
 
-    protected function getProps(Request $request): array
+    protected function getProps(Request $request): void
     {
+        // dd($request);
         $this->queryParams = $request->validate([
-            ProposalSearchParams::FUNDING_STATUS()->value => 'string|nullable',
+            ProposalSearchParams::FUNDING_STATUS()->value => 'array|nullable',
             ProposalSearchParams::OPENSOURCE_PROPOSALS()->value => 'bool|nullable',
-            ProposalSearchParams::PROJECT_STATUS()->value => 'string|nullable',
+            ProposalSearchParams::PROJECT_STATUS()->value => 'array|nullable',
             ProposalSearchParams::QUERY()->value => 'string|nullable',
             ProposalSearchParams::QUICK_PITCHES()->value => 'bool|nullable',
             ProposalSearchParams::TYPE()->value => 'string|nullable',
-
+            ProposalSearchParams::PAGE()->value => 'string|nullable',
+            ProposalSearchParams::LIMIT()->value => 'string|nullable',
+            ProposalSearchParams::SORT()->value => 'array|nullable',
+            ProposalSearchParams::BUDGETS()->value => 'array|nullable',
         ]);
 
-        $shouldRandomize = empty($this->queryParams);
-        $proposals = Inertia::optional(
-            fn() => $shouldRandomize ? $this->getRandomProposals() : $this->query()
-        );
 
-
-        return [
-            'proposals' => $proposals,
-            'filters' => $this->queryParams,
-        ];
     }
 
     protected function query($returnBuilder = false, $attrs = null, $filters = []): array|Builder
     {
-//        sleep(5);
+
         $args = [
-            'filters' => $this->getUserFilters(),
+            'filter' => $this->getUserFilters(),
         ];
+
+        if ((bool) $this->sortBy && (bool) $this->sortOrder) {
+            $args['sort'] = ["$this->sortBy:$this->sortOrder"];
+        }
+
+        // dd($args); 
         $proposals = app(ProposalRepository::class);
         $builder = $proposals->search(
             $this->queryParams[ProposalSearchParams::QUERY()->value] ?? '',
             $args
         );
         $response = new Fluent($builder->raw());
+
+        $this->setCounts($response->facetDistribution, $response->facetStats);
+
         $pagination = new LengthAwarePaginator(
             ProposalData::collect($response->hits),
             $response->estimatedTotalHits,
@@ -104,13 +162,13 @@ class ProposalsController extends Controller
         $filters = [];
 
         if (isset($this->queryParams[ProposalSearchParams::FUNDING_STATUS()->value])) {
-            $fundingStatuses = $this->queryParams[ProposalSearchParams::FUNDING_STATUS()->value];
+            $fundingStatuses = implode(',', $this->queryParams[ProposalSearchParams::FUNDING_STATUS()->value]);
             $filters[] = "funding_status IN [{$fundingStatuses}]";
         }
 
         if (isset($this->queryParams[ProposalSearchParams::PROJECT_STATUS()->value])) {
-            $fundingStatuses = $this->queryParams[ProposalSearchParams::PROJECT_STATUS()->value];
-            $filters[] = "status = {$fundingStatuses}";
+            $projectStatuses = implode($this->queryParams[ProposalSearchParams::PROJECT_STATUS()->value]);
+            $filters[] = "status IN [{$projectStatuses}]";
         }
 
         if (isset($this->queryParams[ProposalSearchParams::OPENSOURCE_PROPOSALS()->value])) {
@@ -125,57 +183,162 @@ class ProposalsController extends Controller
             $filters[] = 'quickpitch IS NOT NULL';
         }
 
+        // filter by budget range
+        if (!empty($this->queryParams[ProposalSearchParams::BUDGETS()->value])) {
+            $budgetRange = collect((object) $this->queryParams[ProposalSearchParams::BUDGETS()->value]);
+            $filters[] = "(amount_requested  {$budgetRange->first()} TO  {$budgetRange->last()})";
+        }
+
+        // dd($filters);
         //        if ($this->projectLength->isNotEmpty()) {
-//            $filters[] = "(project_length  {$this->projectLength->first()} TO  {$this->projectLength->last()})";
-//        }
-//
-//        if ($this->fundingStatus === 'paid') {
-//            $filters[] = '(paid = 1)';
-//        }
-//
-//        if (count($this->proposalsFilter)) {
-//            $filters[] = 'id IN'.$this->proposalsFilter->toJson();
-//        }
+        //            $filters[] = "(project_length  {$this->projectLength->first()} TO  {$this->projectLength->last()})";
+        //        }
+        //
+        //        if ($this->fundingStatus === 'paid') {
+        //            $filters[] = '(paid = 1)';
+        //        }
+        //
+        //        if (count($this->proposalsFilter)) {
+        //            $filters[] = 'id IN'.$this->proposalsFilter->toJson();
+        //        }
 
-//        // filter by fund
-//        if ($this->fundsFilter->isNotEmpty()) {
-//            $filters[] = '('.$this->fundsFilter->map(fn ($f) => "fund.id = {$f}")->implode(' OR ').')';
-//        }
-//
-//        // filter by challenge
-//        if ($this->challengesFilter->isNotEmpty()) {
-//            $filters[] = '('.$this->challengesFilter->map(fn ($c) => "campaign.id = {$c}")->implode(' OR ').')';
-//        }
-//
-//        // filter by tags
-//        if ($this->tagsFilter->isNotEmpty()) {
-//            $filters[] = 'tags.id IN '.$this->tagsFilter->toJson();
-//        }
-//
-//        if ($this->categoriesFilter->isNotEmpty()) {
-//            $filters[] = 'categories.id IN '.$this->categoriesFilter->toJson();
-//        }
-//
-//        if ($this->peopleFilter->isNotEmpty()) {
-//            $filters[] = 'users.id IN '.$this->peopleFilter->toJson();
-//        }
-//
-//        if ($this->groupsFilter->isNotEmpty()) {
-//            $filters[] = 'groups.id IN '.$this->groupsFilter->toJson();
-//        }
-//
-//        // filter by communities
-//        if ($this->communitiesFilter->isNotEmpty()) {
-//            $filters[] = 'communities.id IN '.$this->communitiesFilter->toJson();
-//        }
-//
-//        // filter by budget range
-//        if ($this->budgets->isNotEmpty()) {
-//            $filters[] = "(amount_requested  {$this->budgets->first()} TO  {$this->budgets->last()})";
-//        }
-//
-
+        //        // filter by fund
+        //        if ($this->fundsFilter->isNotEmpty()) {
+        //            $filters[] = '('.$this->fundsFilter->map(fn ($f) => "fund.id = {$f}")->implode(' OR ').')';
+        //        }
+        //
+        //        // filter by challenge
+        //        if ($this->challengesFilter->isNotEmpty()) {
+        //            $filters[] = '('.$this->challengesFilter->map(fn ($c) => "campaign.id = {$c}")->implode(' OR ').')';
+        //        }
+        //
+        //        // filter by tags
+        //        if ($this->tagsFilter->isNotEmpty()) {
+        //            $filters[] = 'tags.id IN '.$this->tagsFilter->toJson();
+        //        }
+        //
+        //        if ($this->categoriesFilter->isNotEmpty()) {
+        //            $filters[] = 'categories.id IN '.$this->categoriesFilter->toJson();
+        //        }
+        //
+        //        if ($this->peopleFilter->isNotEmpty()) {
+        //            $filters[] = 'users.id IN '.$this->peopleFilter->toJson();
+        //        }
+        //
+        //        if ($this->groupsFilter->isNotEmpty()) {
+        //            $filters[] = 'groups.id IN '.$this->groupsFilter->toJson();
+        //        }
+        //
+        //        // filter by communities
+        //        if ($this->communitiesFilter->isNotEmpty()) {
+        //            $filters[] = 'communities.id IN '.$this->communitiesFilter->toJson();
+        //        }
+        //
+        //
 
         return $filters;
+    }
+
+    public function setCounts($facets, $facetStats): void
+    {
+        if (isset($facets['amount_awarded_USD'])) {
+            foreach ($facets['amount_awarded_USD'] as $key => $value) {
+                $this->sumApprovedUSD += $key * $value;
+            }
+        }
+
+        if (isset($facets['amount_awarded_ADA'])) {
+            foreach ($facets['amount_awarded_ADA'] as $key => $value) {
+                $this->sumApprovedADA += $key * $value;
+            }
+        }
+
+        if (isset($facets['amount_received_ADA'])) {
+            foreach ($facets['amount_received_ADA'] as $key => $value) {
+                $this->sumDistributedADA += $key * $value;
+            }
+        }
+
+        if (isset($facets['amount_received_USD'])) {
+            foreach ($facets['amount_received_USD'] as $key => $value) {
+                $this->sumDistributedUSD += $key * $value;
+            }
+        }
+
+        if (isset($facets['amount_requested_ADA'])) {
+            foreach ($facets['amount_requested_ADA'] as $key => $value) {
+                $this->sumBudgetsADA += $key * $value;
+            }
+        }
+
+        if (isset($facets['amount_requested_USD'])) {
+            foreach ($facets['amount_requested_USD'] as $key => $value) {
+                $this->sumBudgetsUSD += $key * $value;
+            }
+        }
+
+        if (isset($facets['status']['complete'])) {
+            $this->completedProposals = $facets['status']['complete'];
+        }
+
+        if (isset($facets['status'])) {
+            foreach ($facets['status'] as $key => $value) {
+                $this->submittedProposals += $value;
+            }
+        }
+
+        if (isset($facets['funding_status']['funded'])) {
+            $this->approvedProposals = $facets['funding_status']['funded'];
+        }
+
+        if (isset($facets['funding_status']['leftover'])) {
+            $this->approvedProposals = $this->approvedProposals + $facets['funding_status']['leftover'];
+        }
+
+        if (isset($facets['campaign.title']) && count($facets['campaign.title'])) {
+            $this->challengesCount = $facets['campaign.title'];
+        }
+
+        if (isset($facets['tags.id']) && count($facets['tags.id'])) {
+            $this->tagsCount = $facets['tags.id'];
+        }
+
+        if (isset($facets['fund.label']) && count($facets['fund.label'])) {
+            $this->fundsCount = $facets['fund.label'];
+        }
+
+        // if (isset($facetStats['amount_requested'])) {
+        //     $this->budgets = collect(array_values($facetStats['amount_requested']));
+        // }
+
+        if (isset($facetStats['project_length'])) {
+            $this->queryParams[ProposalSearchParams::PROJECT_LENGTH()->value] = collect(array_values($facetStats['project_length']));
+        }
+
+        // if (isset($facetStats['amount_requested'])) {
+        //     $this->queryParams[ProposalSearchParams::MAX_BUDGET()->value] = $facetStats['amount_requested']['max'];
+        //     $this->queryParams[ProposalSearchParams::MIN_BUDGET()->value] = $facetStats['amount_requested']['min'];
+        //     $this->queryParams[ProposalSearchParams::BUDGETS()->value] = [$facetStats['amount_requested']['min'], $facetStats['amount_requested']['max']];
+        // }
+
+        if (isset($facets['woman_proposal'])) {
+            $this->cohortData['woman_proposal'] = $facets['woman_proposal'];
+        }
+
+        if (isset($facets['opensource'])) {
+            $this->cohortData['opensource'] = $facets['opensource'];
+        }
+
+        if (isset($facets['ideafest_proposal'])) {
+            $this->cohortData['ideafest_proposal'] = $facets['ideafest_proposal'];
+        }
+
+        if (isset($facets['has_quick_pitch'])) {
+            $this->cohortData['has_quick_pitch'] = $facets['has_quick_pitch'];
+        }
+
+        if (isset($facets['impact_proposal'])) {
+            $this->cohortData['impact_proposal'] = $facets['impact_proposal'];
+        }
     }
 }

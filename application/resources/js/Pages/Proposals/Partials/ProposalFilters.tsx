@@ -1,45 +1,33 @@
 import { RangePicker } from '@/Components/RangePicker';
 import { SearchSelect } from '@/Components/SearchSelect';
-import Selector from '@/Components/Selector';
+import Selector from '@/Components/Select';
+import { useFilterContext } from '@/Context/FiltersContext';
+import { ProposalParamsEnum } from '@/enums/proposal-search-params';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ProposalSearchParams } from '../../../../types/proposal-search-params';
 
-export default function ProposalFilters({
-    filters,
-}: {
-    filters: ProposalSearchParams;
-    onSort: (sortBy: string) => void;
-}) {
+export default function ProposalFilters() {
+    const { filters, setFilters } = useFilterContext<ProposalSearchParams>();
     const { t } = useTranslation();
-    const [range, setRange] = useState([20, 80]);
-    const [selectedSort, setSelectedSort] = useState<string[]>([]);
-    const [selectedFundingStatus, setSelectedFundingStatus] = useState<
-        string[]
-    >(['o']);
-    const [selectedOpensourceStatus, setSelectedOpensourceStatus] = useState<
-        string[]
-    >([]);
-    const [selectedProjectStatus, setSelectedProjectStatus] = useState<
-        string[]
-    >([]);
-    const [selected, setSelected] = useState<string[]>([]);
-
     const sortingOptions = [
-        { value: 'created_at_asc', label: t('proposals.options.oldToNew') },
-        { value: 'created_at_desc', label: t('proposals.options.newToOld') },
-        { value: 'budget_asc', label: t('proposals.options.lowToHigh') },
-        { value: 'budget_desc', label: t('proposals.options.highToLow') },
+        { value: 'created_at:asc', label: t('proposals.options.oldToNew') },
+        { value: 'created_at:desc', label: t('proposals.options.newToOld') },
+        { value: 'amount_requested:asc', label: t('proposals.options.lowToHigh') },
+        { value: 'amount_requested:desc', label: t('proposals.options.highToLow') },
     ];
 
+    
     return (
         <>
             <div className="container mx-auto flex justify-end px-0 pb-4 pt-6">
                 <Selector
                     isMultiselect={false}
                     options={sortingOptions}
-                    setSelectedItems={setSelectedSort}
-                    selectedItems={selectedSort}
+                    setSelectedItems={(value) =>
+                        setFilters(ProposalParamsEnum.SORTS, value)
+                    }
+                    selectedItems={filters[ProposalParamsEnum.SORTS]}
                     context={t('proposals.options.sort')}
                 />
             </div>
@@ -53,24 +41,31 @@ export default function ProposalFilters({
                             isMultiselect={true}
                             options={[
                                 {
-                                    value: 'o',
+                                    value: 'over_budget',
                                     label: t('proposals.options.overBudget'),
                                 },
                                 {
-                                    value: 'n',
+                                    value: 'not_approved',
                                     label: t('proposals.options.notApproved'),
                                 },
                                 {
-                                    value: 'f',
+                                    value: 'funded',
                                     label: t('proposals.options.funded'),
                                 },
                                 {
-                                    value: 'p',
+                                    value: 'fully_paid',
                                     label: t('proposals.options.fullyPaid'),
                                 },
                             ]}
-                            setSelectedItems={setSelectedFundingStatus}
-                            selectedItems={selectedFundingStatus}
+                            setSelectedItems={(value) =>
+                                setFilters(
+                                    ProposalParamsEnum.FUNDING_STATUS,
+                                    value,
+                                )
+                            }
+                            selectedItems={
+                                filters[ProposalParamsEnum.FUNDING_STATUS]
+                            }
                         />
                     </div>
 
@@ -92,8 +87,15 @@ export default function ProposalFilters({
                                     ),
                                 },
                             ]}
-                            setSelectedItems={setSelectedOpensourceStatus}
-                            selectedItems={selectedOpensourceStatus}
+                            setSelectedItems={(value) =>
+                                setFilters(
+                                    ProposalParamsEnum.OPENSOURCE_PROPOSALS,
+                                    value,
+                                )
+                            }
+                            selectedItems={
+                                filters[ProposalParamsEnum.OPENSOURCE_PROPOSALS]
+                            }
                         />
                     </div>
 
@@ -103,20 +105,27 @@ export default function ProposalFilters({
                             isMultiselect={true}
                             options={[
                                 {
-                                    value: 'c',
+                                    value: 'complete',
                                     label: t('proposals.options.complete'),
                                 },
                                 {
-                                    value: 'i',
+                                    value: 'in_progress',
                                     label: t('proposals.options.inProgress'),
                                 },
                                 {
-                                    value: 'u',
+                                    value: 'unfunded',
                                     label: t('proposals.options.unfunded'),
                                 },
                             ]}
-                            setSelectedItems={setSelectedProjectStatus}
-                            selectedItems={selectedProjectStatus}
+                            setSelectedItems={(value) =>
+                                setFilters(
+                                    ProposalParamsEnum.PROJECT_STATUS,
+                                    value,
+                                )
+                            }
+                            selectedItems={
+                                filters[ProposalParamsEnum.PROJECT_STATUS]
+                            }
                         />
                     </div>
                     <div className="flex flex-col gap-2 pb-4 pt-6">
@@ -124,24 +133,31 @@ export default function ProposalFilters({
                         <SearchSelect
                             options={[
                                 {
-                                    value: 'o',
+                                    value: 'over_budget',
                                     label: t('proposals.options.overBudget'),
                                 },
                                 {
-                                    value: 'n',
+                                    value: 'not_approved',
                                     label: t('proposals.options.notApproved'),
                                 },
                                 {
-                                    value: 'f',
+                                    value: 'funded',
                                     label: t('proposals.options.funded'),
                                 },
                                 {
-                                    value: 'p',
+                                    value: 'fully_paid',
                                     label: t('proposals.options.fullyPaid'),
                                 },
                             ]}
-                            selected={selected}
-                            onChange={setSelected}
+                            selected={
+                                filters[ProposalParamsEnum.FUNDING_STATUS]
+                            }
+                            onChange={(value) =>
+                                setFilters(
+                                    ProposalParamsEnum.FUNDING_STATUS,
+                                    value,
+                                )
+                            }
                             placeholder="Select"
                             multiple={true}
                         />
@@ -152,12 +168,19 @@ export default function ProposalFilters({
                     <div className="pb-4">
                         <RangePicker
                             context={'Budgets'}
-                            value={range}
-                            onValueChange={(newRange: []) => setRange(newRange)}
-                            max={100}
-                            min={10}
-                            step={1}
-                            defaultValue={[20, 80]}
+                            value={filters[ProposalParamsEnum.BUDGETS]}
+                            onValueChange={(value) =>
+                                setFilters<ProposalParamsEnum.BUDGETS>(
+                                    ProposalParamsEnum.BUDGETS,
+                                    value,
+                                )
+                            }
+                            max={filters[ProposalParamsEnum.MAX_BUDGET]}
+                            min={filters[ProposalParamsEnum.MIN_BUDGET]}
+                            defaultValue={[
+                                filters[ProposalParamsEnum.MIN_BUDGET],
+                                filters[ProposalParamsEnum.MAX_BUDGET],
+                            ]}
                         />
                     </div>
                 </div>

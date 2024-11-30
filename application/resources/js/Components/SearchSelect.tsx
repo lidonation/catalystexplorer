@@ -2,6 +2,7 @@
 import { cn } from '@/lib/utils';
 import { Check, ChevronDown } from 'lucide-react';
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
     Command,
     CommandEmpty,
@@ -11,7 +12,6 @@ import {
 } from './Command';
 import { Popover, PopoverContent, PopoverTrigger } from './Popover';
 import { ScrollArea } from './ScrollArea';
-import { useTranslation } from 'react-i18next';
 
 export type SearchOption = {
     label: string;
@@ -53,7 +53,7 @@ export function SearchSelect({
                 onChange(
                     selected.includes(value)
                         ? selected.filter((item) => item !== value)
-                        : [...selected, value],
+                        : [...(selected ?? []), value],
                 );
             } else {
                 onChange([value]);
@@ -90,7 +90,7 @@ export function SearchSelect({
                 >
                     <span className="flex items-center gap-2">
                         <span>{t('select') + ' '}</span>
-                        {selected.length > 0 && (
+                        {selected?.length > 0 && (
                             <div className="flex size-5 items-center justify-center rounded-full bg-background-lighter">
                                 <span>{selected.length}</span>
                             </div>
@@ -118,8 +118,9 @@ export function SearchSelect({
                             )}
                         />
                         <button
+                            aria-label={t('clear') + ' ' + t('select')}
                             onClick={handleClear}
-                            className="text-sm hover:text-primary focus:outline-none"
+                            className="hover:text-primary focus:outline-none"
                         >
                             clear
                         </button>
@@ -137,7 +138,7 @@ export function SearchSelect({
                                     <Check
                                         className={cn(
                                             'mr-2 h-4 w-4',
-                                            selected.includes(option.value)
+                                            selected?.includes(option.value)
                                                 ? 'opacity-100'
                                                 : 'opacity-0',
                                         )}

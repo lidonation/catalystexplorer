@@ -6,8 +6,7 @@ import {
 } from '@/Components/Pagination';
 import React from 'react';
 import { PaginatedData } from '../../types/paginated-data';
-import Selector from './Selector';
-
+import Selector from './Select';
 
 type PaginationComponentProps = {
     pagination: PaginatedData<any>;
@@ -60,7 +59,7 @@ const PaginationComponent: React.FC<PaginationComponentProps> = ({
                 </div>
                 {/* Page Numbers */}
                 <div className="flex items-center gap-6">
-                    <ul className="lg:flex list-none gap-8 hidden">
+                    <ul className="hidden list-none gap-8 lg:flex">
                         {links &&
                             links.map((link, index) =>
                                 link.label.includes('&laquo;') ||

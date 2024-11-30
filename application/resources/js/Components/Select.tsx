@@ -1,288 +1,126 @@
-'use client';
-
-import * as SelectPrimitive from '@radix-ui/react-select';
-import { Check, ChevronDown, ChevronUp } from 'lucide-react';
-import * as React from 'react';
-
-import { cn } from '@/lib/utils';
+import { Check, ChevronDown } from 'lucide-react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { Popover, PopoverContent, PopoverTrigger } from './Popover';
 
 type SelectProps = {
     isMultiselect?: boolean;
     selectedItems: any;
-    onChange: (updatedItems: any) => void;
-    children: React.ReactNode;
+    setSelectedItems: (updatedItems: any) => void;
+    options?: {
+        label: string;
+        value: string;
+    }[];
+    context?: string;
+    basic?: boolean;
 };
 
-type CustomChildProps = {
-    isMultiselect?: boolean;
-    selectedItems?: any;
-    onClearSelection?: () => void;
-};
-
-const Select: React.FC<SelectProps> = ({
+export default function Selector({
     isMultiselect = false,
-    selectedItems,
-    onChange,
+    context = '',
+    options,
+    selectedItems = [],
+    setSelectedItems,
     ...props
-}) => {
-    const handleSelectChange = (value: string) => {
+}: SelectProps) {
+    const [open, setOpen] = useState(false);
+
+    const { t } = useTranslation();
+
+    let currentOption = null;
+
+    let placeholder = isMultiselect ? `${t('select')} ` : `${t('select')} ${context}`;
+
+    if (!isMultiselect && selectedItems) {
+        currentOption = options?.find(
+            (option) => selectedItems == option.value,
+        );
+    }
+
+    const handleSelect = (value: string) => {
+        setOpen(true);
         let updatedItems: any;
 
         if (!isMultiselect) {
-            onChange(value);
+            setSelectedItems(value == selectedItems ? [] : value);
+
+            currentOption = options?.find((option) => value == option.value);
+            console.log({ currentOption });
+
             return;
         }
 
         if (selectedItems.includes(value)) {
             updatedItems = selectedItems.filter((item: any) => item !== value);
         } else {
-            updatedItems = [...selectedItems, value];
+            updatedItems = [...(selectedItems ?? []), value];
         }
 
-        onChange(updatedItems);
+        setSelectedItems(updatedItems);
     };
 
     const onClearSelection = () => {
-        onChange([]);
+        setSelectedItems([]);
     };
 
     return (
-        <SelectPrimitive.Root
-            onValueChange={(value) => handleSelectChange(value)}
-            {...props}
-        >
-            {React.Children.map(props.children, (child) => {
-                if (
-                    React.isValidElement<CustomChildProps>(child) &&
-                    child.type === SelectContent
-                ) {
-                    const normalizedSelectedItems = Array.isArray(selectedItems)
-                        ? selectedItems
-                        : typeof selectedItems === 'string'
-                          ? [selectedItems]
-                          : undefined;
-
-                    return React.cloneElement(child, {
-                        isMultiselect,
-                        selectedItems: normalizedSelectedItems,
-                        onClearSelection,
-                    });
-                }
-                return child;
-            })}
-        </SelectPrimitive.Root>
-    );
-};
-
-const SelectGroup = SelectPrimitive.Group;
-
-const SelectValue = SelectPrimitive.Value;
-
-const SelectTrigger = React.forwardRef<
-    React.ElementRef<typeof SelectPrimitive.Trigger>,
-    React.ComponentPropsWithoutRef<typeof SelectPrimitive.Trigger> & {
-        isMultiselect?: boolean;
-        selectedItems?: string[];
-    }
->(({ className, children, ...props }, ref) => (
-    <SelectPrimitive.Trigger
-        ref={ref}
-        className={cn(
-            'border-input placeholder:text-muted-foreground flex h-10 w-full items-center justify-between rounded-md border bg-background px-3 py-2 text-sm ring-offset-background focus:outline-none focus:ring-0 disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1',
-            className,
-        )}
-        {...props}
-    >
-        {children}
-        <SelectPrimitive.Icon asChild>
-            <ChevronDown className="h-4 w-4 opacity-50" />
-        </SelectPrimitive.Icon>
-    </SelectPrimitive.Trigger>
-));
-SelectTrigger.displayName = SelectPrimitive.Trigger.displayName;
-
-const SelectScrollUpButton = React.forwardRef<
-    React.ElementRef<typeof SelectPrimitive.ScrollUpButton>,
-    React.ComponentPropsWithoutRef<typeof SelectPrimitive.ScrollUpButton> & {
-        isMultiselect?: boolean;
-        selectedItems?: string[];
-    }
->(({ className, ...props }, ref) => (
-    <SelectPrimitive.ScrollUpButton
-        ref={ref}
-        className={cn(
-            'flex cursor-default items-center justify-center py-1',
-            className,
-        )}
-        {...props}
-    >
-        <ChevronUp className="h-4 w-4" />
-    </SelectPrimitive.ScrollUpButton>
-));
-SelectScrollUpButton.displayName = SelectPrimitive.ScrollUpButton.displayName;
-
-const SelectScrollDownButton = React.forwardRef<
-    React.ElementRef<typeof SelectPrimitive.ScrollDownButton>,
-    React.ComponentPropsWithoutRef<typeof SelectPrimitive.ScrollDownButton> & {
-        isMultiselect?: boolean;
-        selectedItems?: string[];
-    }
->(({ className, ...props }, ref) => (
-    <SelectPrimitive.ScrollDownButton
-        ref={ref}
-        className={cn(
-            'flex cursor-default items-center justify-center py-1',
-            className,
-        )}
-        {...props}
-    >
-        <ChevronDown className="h-4 w-4" />
-    </SelectPrimitive.ScrollDownButton>
-));
-SelectScrollDownButton.displayName =
-    SelectPrimitive.ScrollDownButton.displayName;
-
-const SelectContent = React.forwardRef<
-    React.ElementRef<typeof SelectPrimitive.Content>,
-    React.ComponentPropsWithoutRef<typeof SelectPrimitive.Content> & {
-        isMultiselect?: boolean;
-        selectedItems?: string[];
-        onClearSelection?: () => void;
-    }
->(
-    (
-        {
-            className,
-            children,
-            position = 'popper',
-            isMultiselect = false,
-            selectedItems,
-            onClearSelection = () => {},
-            ...props
-        },
-        ref,
-    ) => {
-        const { t } = useTranslation();
-        return (
-            <SelectPrimitive.Portal>
-                <SelectPrimitive.Content
-                    ref={ref}
-                    className={cn(
-                        'text-popover-foreground data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 relative z-50 max-h-96 min-w-[8rem] overflow-hidden rounded-md border bg-background',
-                        position === 'popper' &&
-                            'data-[side=bottom]:translate-y-1 data-[side=left]:-translate-x-1 data-[side=right]:translate-x-1 data-[side=top]:-translate-y-1',
-                        className,
-                    )}
-                    position={position}
-                    {...props}
-                >
-                    <div className="absolute right-2 top-0">
-                        <button
-                            aria-label={t('clear') + ' ' + t('selection')}
-                            type="button"
-                            onClick={onClearSelection}
-                            className="text-muted-foreground text-sm hover:text-primary focus:outline-none"
-                        >
-                            clear
-                        </button>
-                    </div>
-
-                    <SelectScrollUpButton />
-                    <SelectPrimitive.Viewport
-                        className={cn(
-                            'p-1',
-                            position === 'popper' &&
-                                'mt-6 h-[var(--radix-select-trigger-height)] w-full min-w-[var(--radix-select-trigger-width)]',
-                        )}
+        <div className="rounded-lg bg-background">
+            <Popover open={open} onOpenChange={setOpen}>
+                <PopoverTrigger asChild>
+                    <button
+                        role="combobox"
+                        aria-expanded={open}
+                        aria-label={t('select') + ' ' + t('option')}
+                        className="border-input placeholder:text-muted-foreground flex h-9 w-full items-center justify-between rounded-md border bg-transparent px-3 py-2 text-sm shadow-sm ring-offset-background disabled:cursor-not-allowed disabled:opacity-50"
                     >
-                        {React.Children.map(children, (child) => {
-                            if (
-                                React.isValidElement<CustomChildProps>(child) &&
-                                child.type === SelectItem
-                            ) {
-                                return React.cloneElement(child, {
-                                    isMultiselect,
-                                    selectedItems,
-                                });
-                            }
-                            return child;
-                        })}
-                    </SelectPrimitive.Viewport>
-                    <SelectScrollDownButton />
-                </SelectPrimitive.Content>
-            </SelectPrimitive.Portal>
-        );
-    },
-);
-SelectContent.displayName = SelectPrimitive.Content.displayName;
-
-const SelectLabel = React.forwardRef<
-    React.ElementRef<typeof SelectPrimitive.Label>,
-    React.ComponentPropsWithoutRef<typeof SelectPrimitive.Label> & {
-        isMultiselect?: boolean;
-        selectedItems?: string[];
-    }
->(({ className, ...props }, ref) => (
-    <SelectPrimitive.Label
-        ref={ref}
-        className={cn('py-1.5 pl-8 pr-2 text-sm font-semibold', className)}
-        {...props}
-    />
-));
-SelectLabel.displayName = SelectPrimitive.Label.displayName;
-
-const SelectItem = React.forwardRef<
-    React.ElementRef<typeof SelectPrimitive.Item>,
-    React.ComponentPropsWithoutRef<typeof SelectPrimitive.Item> & {
-        isMultiselect?: boolean;
-        selectedItems?: string[];
-    }
->(({ className, children, isMultiselect, selectedItems, ...props }, ref) => {
-    const isSelected = selectedItems?.includes(props.value);
-
-    return (
-        <SelectPrimitive.Item
-            ref={ref}
-            className={cn(
-                'relative flex w-full cursor-default select-none items-center rounded-sm py-1.5 pl-8 pr-2 text-sm outline-none focus:bg-background-lighter data-[disabled]:pointer-events-none data-[disabled]:opacity-50',
-                className,
-            )}
-            {...props}
-        >
-            <span className="absolute left-2 flex h-3.5 w-3.5 items-center justify-center">
-                {isSelected && <Check className="h-4 w-4" />}
-            </span>
-            <SelectPrimitive.ItemText>{children}</SelectPrimitive.ItemText>
-        </SelectPrimitive.Item>
+                        <span className="flex items-center gap-2">
+                            <span>
+                                {currentOption
+                                    ? currentOption.label
+                                    : placeholder}
+                            </span>
+                            {isMultiselect && selectedItems?.length > 0 && (
+                                <div className="flex size-5 items-center justify-center rounded-full bg-background-lighter">
+                                    <span>{selectedItems.length}</span>
+                                </div>
+                            )}
+                        </span>
+                        <ChevronDown className="h-4 w-4" />
+                    </button>
+                </PopoverTrigger>
+                <PopoverContent
+                    className="relative w-full min-w-[var(--radix-popover-trigger-width)] bg-background p-0"
+                    align="start"
+                >
+                    <div>
+                        <div className="flex justify-end">
+                            <button
+                                aria-label={t('clear') + ' ' + t('select')}
+                                onClick={onClearSelection}
+                                className="mr-2 hover:text-primary focus:outline-none"
+                            >
+                                clear
+                            </button>
+                        </div>
+                        {options?.map((option) => (
+                            <div
+                                key={option.value}
+                                onClick={() => handleSelect(option.value)}
+                                className="relative flex w-full cursor-default select-none items-center rounded-sm !bg-background py-1.5 pl-8 pr-2 text-sm outline-none hover:!bg-background-lighter focus:bg-background-lighter aria-selected:bg-background-lighter data-[disabled]:pointer-events-none data-[disabled]:opacity-50"
+                            >
+                                <span className="absolute left-2 flex h-3.5 w-3.5 items-center justify-center">
+                                    {(isMultiselect
+                                        ? selectedItems?.includes(option.value)
+                                        : selectedItems == option.value) && (
+                                        <Check className="h-4 w-4" />
+                                    )}
+                                </span>
+                                <span>{option.label}</span>
+                            </div>
+                        ))}
+                    </div>
+                </PopoverContent>
+            </Popover>
+        </div>
     );
-});
-SelectItem.displayName = SelectPrimitive.Item.displayName;
-
-const SelectSeparator = React.forwardRef<
-    React.ElementRef<typeof SelectPrimitive.Separator>,
-    React.ComponentPropsWithoutRef<typeof SelectPrimitive.Separator> & {
-        isMultiselect?: boolean;
-        selectedItems?: string[];
-    }
->(({ className, ...props }, ref) => (
-    <SelectPrimitive.Separator
-        ref={ref}
-        className={cn('bg-muted -mx-1 my-1 h-px', className)}
-        {...props}
-    />
-));
-SelectSeparator.displayName = SelectPrimitive.Separator.displayName;
-
-export {
-    Select,
-    SelectContent,
-    SelectGroup,
-    SelectItem,
-    SelectLabel,
-    SelectScrollDownButton,
-    SelectScrollUpButton,
-    SelectSeparator,
-    SelectTrigger,
-    SelectValue,
-};
+}
