@@ -69,15 +69,15 @@ class ProposalsController extends Controller
         $this->getProps($request);
 
         $proposals = empty($this->queryParams) ? $this->getRandomProposals() : $this->query();
-  
+
         if (
             empty($this->queryParams[ProposalSearchParams::BUDGETS()->value]) ||
             empty($this->queryParams[ProposalSearchParams::PROJECT_LENGTH()->value])
         ) {
-            $this->queryParams[ProposalSearchParams::BUDGETS()->value] = [env('MIN_BUDGET', 1), env('MAX_BUDGET', 7000000)];
-            $this->queryParams[ProposalSearchParams::PROJECT_LENGTH()->value] = [env('MIN_LENGTH', 0), env('MAX_LENGTH', 12)];
+            $this->queryParams[ProposalSearchParams::BUDGETS()->value] = [1,  7000000];
+            $this->queryParams[ProposalSearchParams::PROJECT_LENGTH()->value] = [0,  12];
         }
- 
+
         return Inertia::render('Proposals/Index', [
             'proposals' => $proposals,
             'filters' => $this->queryParams,
@@ -101,8 +101,6 @@ class ProposalsController extends Controller
             ProposalSearchParams::SORT()->value => 'array|nullable',
             ProposalSearchParams::BUDGETS()->value => 'array|nullable',
         ]);
-
-
     }
 
     protected function query($returnBuilder = false, $attrs = null, $filters = []): array|Builder
