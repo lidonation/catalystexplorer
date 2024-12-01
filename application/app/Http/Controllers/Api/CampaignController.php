@@ -6,11 +6,13 @@ use App\Http\Controllers\Controller;
 use App\Models\Campaign;
 use App\Http\Resources\CampaignResource;
 use Illuminate\Http\Request;
+use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Contracts\Routing\ResponseFactory;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Response;
 
 class CampaignController extends Controller
 {
-    use Traits\CampaignDefinition;
 
     public function campaign($campaignId): \Illuminate\Http\Response|CampaignResource|Application|ResponseFactory
     {
@@ -23,5 +25,23 @@ class CampaignController extends Controller
         } else {
             return new CampaignResource($campaign);
         }
+    }
+
+    public function campaigns(): Response|AnonymousResourceCollection|Application|ResponseFactory
+    {
+        $per_page = request('per_page', 24);
+
+        // per_page query doesn't exceed 60
+        if ($per_page > 60) {
+            return response([
+                'status_code' => 60,
+                'message' => 'query parameter \'per_page\' should not exceed 60'
+            ], 60);
+        }
+
+        $campaigns = Campaign::query()
+            ->filter(request(['search', 'ids']));
+
+        return CampaignResource::collection($campaigns->fastPaginate($per_page)->onEachSide(0));
     }
 }

@@ -7,12 +7,12 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Group;
 use App\Http\Resources\GroupResource;
-use Illuminate\Http\Request;
+use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Contracts\Routing\ResponseFactory;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Response;
-
 class GroupController extends Controller
 {
-    use Traits\GroupDefinition;
 
     public function group($groupId): \Illuminate\Http\Response|GroupResource|Application|ResponseFactory
     {
@@ -25,5 +25,23 @@ class GroupController extends Controller
         } else {
             return new GroupResource($group);
         }
+    }
+
+    public function groups(): Response|AnonymousResourceCollection|Application|ResponseFactory
+    {
+        $per_page = request('per_page', 24);
+
+        // per_page query doesn't exceed 60
+        if ($per_page > 60) {
+            return response([
+                'status_code' => 60,
+                'message' => 'query parameter \'per_page\' should not exceed 60'
+            ], 60);
+        }
+
+        $groups = Group::query()
+            ->filter(request(['search', 'ids']));
+
+        return GroupResource::collection($groups->fastPaginate($per_page)->onEachSide(0));
     }
 }

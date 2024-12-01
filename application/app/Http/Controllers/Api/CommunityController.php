@@ -5,12 +5,13 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Community;
 use App\Http\Resources\CommunityResource;
-use Illuminate\Http\Request;
+use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Contracts\Routing\ResponseFactory;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Response;
 
 class CommunityController extends Controller
 {
-    use Traits\CommunityDefinition;
 
     public function community($communityId): \Illuminate\Http\Response|CommunityResource|Application|ResponseFactory
     {
@@ -23,5 +24,23 @@ class CommunityController extends Controller
         } else {
             return new CommunityResource($community);
         }
+    }
+
+    public function communities(): Response|AnonymousResourceCollection|Application|ResponseFactory
+    {
+        $per_page = request('per_page', 24);
+
+        // per_page query doesn't exceed 60
+        if ($per_page > 60) {
+            return response([
+                'status_code' => 60,
+                'message' => 'query parameter \'per_page\' should not exceed 60'
+            ], 60);
+        }
+
+        $communities = Community::query()
+            ->filter(request(['search', 'ids']));
+
+        return CommunityResource::collection($communities->fastPaginate($per_page)->onEachSide(0));
     }
 }

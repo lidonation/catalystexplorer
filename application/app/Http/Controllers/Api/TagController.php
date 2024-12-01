@@ -5,12 +5,13 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Tag;
 use App\Http\Resources\TagResource;
-use Illuminate\Http\Request;
+use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Contracts\Routing\ResponseFactory;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Response;
 
 class TagController extends Controller
 {
-    use Traits\TagDefinition;
 
     public function tag($tagId): \Illuminate\Http\Response|TagResource|Application|ResponseFactory
     {
@@ -23,5 +24,23 @@ class TagController extends Controller
         } else {
             return new TagResource($tag);
         }
+    }
+
+    public function tags(): Response|AnonymousResourceCollection|Application|ResponseFactory
+    {
+        $per_page = request('per_page', 24);
+
+        // per_page query doesn't exceed 60
+        if ($per_page > 60) {
+            return response([
+                'status_code' => 60,
+                'message' => 'query parameter \'per_page\' should not exceed 60'
+            ], 60);
+        }
+
+        $tags = Tag::query()
+            ->filter(request(['search', 'ids']));
+
+        return TagResource::collection($tags->fastPaginate($per_page)->onEachSide(0));
     }
 }
