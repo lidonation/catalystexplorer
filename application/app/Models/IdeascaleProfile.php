@@ -3,10 +3,10 @@
 namespace App\Models;
 
 use App\Casts\DateFormatCast;
-use Illuminate\Database\Eloquent\Builder;
 use Spatie\MediaLibrary\HasMedia;
 use Laravolt\Avatar\Facade as Avatar;
 use Spatie\Translatable\HasTranslations;
+use Illuminate\Database\Eloquent\Builder;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -73,19 +73,6 @@ class IdeascaleProfile extends Model implements HasMedia
         Artisan::call('cx:create-search-index App\\\\Models\\\\IdeascaleProfile cx_ideascale_profiles');
     }
 
-    public function scopeFilter($query, array $filters)
-    {
-        $query->when(
-            $filters['search'] ?? false,
-            fn(Builder $query, $search) => $query
-                ->whereAny(['username', 'name'], 'ILIKE', '%' . $search . '%')
-        );
-
-        $query->when(
-            $filters['ids'] ?? false,
-            fn(Builder $query, $ids) => $query->whereIn('id', is_array($ids) ? $ids : explode(',', $ids))
-        );
-    }
 
     public function toSearchableArray(): array
     {
@@ -188,5 +175,23 @@ class IdeascaleProfile extends Model implements HasMedia
         return Attribute::make(
             get: fn() => count($this->getMedia('profile')) ? $this->getMedia('profile')[0]->getFullUrl() : $this->gravatar
         );
+    }
+
+    /**
+     * Scope to filter groups
+     */
+    public function scopeFilter(Builder $query, array $filters): Builder
+    {
+        $query->when($filters['search'] ?? null, function ($query, $search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('title', 'like', "%{$search}%")
+                ->orWhere('id', 'like', "%{$search}%")
+                ->orWhere('meta_title', 'like', "%{$search}%");
+            });
+        })->when($filters['ids'] ?? null, function ($query, $ids) {
+            $query->whereIn('id', is_array($ids) ? $ids : explode(',', $ids));
+        });
+
+        return $query;
     }
 }
