@@ -31,7 +31,7 @@ export default function ProposalFilters() {
                     context={t('proposals.options.sort')}
                 />
             </div>
-            <div className="w-full bg-background p-4">
+            <div className="w-full rounded-xl bg-background p-4">
                 <b>{t('proposals.options.filterValues')}:</b>{' '}
                 {JSON.stringify(filters)} <br />
                 <div className="grid grid-cols-1 gap-x-4 gap-y-3 rounded-xl md:grid-cols-2 lg:grid-cols-4">

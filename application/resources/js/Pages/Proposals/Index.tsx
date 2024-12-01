@@ -1,4 +1,5 @@
 import Paginator from '@/Components/Paginator';
+import { FiltersProvider } from '@/Context/FiltersContext';
 import ProposalResults from '@/Pages/Proposals/Partials/ProposalResults';
 import VerticalCardLoading from '@/Pages/Proposals/Partials/ProposalVerticalCardLoading';
 import { PageProps } from '@/types';
@@ -11,7 +12,6 @@ import CardLayoutSwitcher from './Partials/CardLayoutSwitcher';
 import ProposalFilters from './Partials/ProposalFilters';
 import HorizontaCardLoading from './Partials/ProposalHorizontalCardLoading';
 import ProposalData = App.DataTransferObjects.ProposalData;
-import { FiltersProvider } from '@/Context/FiltersContext';
 
 interface HomePageProps extends Record<string, unknown> {
     proposals: PaginatedData<ProposalData[]>;
@@ -22,14 +22,12 @@ export default function Index({
     proposals,
     filters,
 }: PageProps<HomePageProps>) {
-    
     const { t } = useTranslation();
 
     const [perPage, setPerPage] = useState<number>(24);
     const [currentPage, setCurrentpage] = useState<number>(1);
 
-    useEffect(() => {
-    }, [currentPage, perPage]);
+    useEffect(() => {}, [currentPage, perPage]);
 
     const [isHorizontal, setIsHorizontal] = useState(false);
 
@@ -39,7 +37,7 @@ export default function Index({
         setQuickPitchView(value);
 
     return (
-        <>
+        <FiltersProvider defaultFilters={filters}>
             <Head title="Proposals" />
 
             <header>
@@ -55,9 +53,7 @@ export default function Index({
             </header>
 
             <section className="container flex w-full flex-col items-center justify-center">
-                <FiltersProvider defaultFilters={filters}>
-                    <ProposalFilters />
-                </FiltersProvider>
+                <ProposalFilters />
             </section>
 
             <section className="container mt-4 flex flex-col items-end">
@@ -91,16 +87,15 @@ export default function Index({
                 </WhenVisible>
             </section>
 
-            <section className="container w-full">
+            <section className="w-full px-4 lg:container lg:px-0">
                 {proposals && (
                     <Paginator
-                        perPage={perPage}
                         pagination={proposals}
                         setPerPage={setPerPage}
                         setCurrentPage={setCurrentpage}
                     />
                 )}
             </section>
-        </>
+        </FiltersProvider>
     );
 }

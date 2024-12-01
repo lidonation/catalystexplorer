@@ -78,6 +78,7 @@ class ProposalsController extends Controller
             $this->queryParams[ProposalSearchParams::PROJECT_LENGTH()->value] = [0,  12];
         }
 
+
         return Inertia::render('Proposals/Index', [
             'proposals' => $proposals,
             'filters' => $this->queryParams,
@@ -88,7 +89,7 @@ class ProposalsController extends Controller
 
     protected function getProps(Request $request): void
     {
-        // dd($request);
+
         $this->queryParams = $request->validate([
             ProposalSearchParams::FUNDING_STATUS()->value => 'array|nullable',
             ProposalSearchParams::OPENSOURCE_PROPOSALS()->value => 'bool|nullable',
@@ -114,12 +115,24 @@ class ProposalsController extends Controller
             $args['sort'] = ["$this->sortBy:$this->sortOrder"];
         }
 
-        // dd($args); 
+        $page = isset($this->queryParams[ProposalSearchParams::PAGE()->value])
+            ? (int) $this->queryParams[ProposalSearchParams::PAGE()->value]
+            : 1;
+
+        $limit = isset($this->queryParams[ProposalSearchParams::LIMIT()->value])
+            ? (int) $this->queryParams[ProposalSearchParams::LIMIT()->value]
+            : 36;
+
+        $args['offset'] = ($page - 1) * $limit;
+        $args['limit'] = $limit;
+
         $proposals = app(ProposalRepository::class);
+
         $builder = $proposals->search(
             $this->queryParams[ProposalSearchParams::QUERY()->value] ?? '',
             $args
         );
+
         $response = new Fluent($builder->raw());
 
         $this->setCounts($response->facetDistribution, $response->facetStats);
@@ -127,13 +140,12 @@ class ProposalsController extends Controller
         $pagination = new LengthAwarePaginator(
             ProposalData::collect($response->hits),
             $response->estimatedTotalHits,
-            $response->limit,
-            $this->currentPage,
+            $limit,
+            $page,
             [
                 'pageName' => 'p',
             ]
         );
-
         return $pagination->onEachSide(1)->toArray();
     }
 

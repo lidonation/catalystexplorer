@@ -11,13 +11,13 @@ export type ProposalSearchParams = {
     [ProposalParamsEnum.FUNDS]: string;
     [ProposalParamsEnum.FUNDING_STATUS]: string[];
     [ProposalParamsEnum.GROUPS]: string;
-    [ProposalParamsEnum.LIMIT]: string;
+    [ProposalParamsEnum.LIMIT]: number;
     [ProposalParamsEnum.MAX_BUDGET]: number;
     [ProposalParamsEnum.MAX_PROJECT_LENGTH]: string;
     [ProposalParamsEnum.MIN_BUDGET]: number;
     [ProposalParamsEnum.MIN_PROJECT_LENGTH]: string;
     [ProposalParamsEnum.OPENSOURCE_PROPOSALS]: string;
-    [ProposalParamsEnum.PAGE]: string;
+    [ProposalParamsEnum.PAGE]: number;
     [ProposalParamsEnum.PEOPLE]: string;
     [ProposalParamsEnum.PROJECT_STATUS]: string[];
     [ProposalParamsEnum.QUERY]: string;
