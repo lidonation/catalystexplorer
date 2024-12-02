@@ -25,7 +25,12 @@ export default function ProposalFilters({
     >([]);
     const [selected, setSelected] = useState<string[]>([]);
 
-    const sortingOptions = [
+    type SortingOption = {
+        value: string;
+        label: string;
+    };
+
+    const sortingOptions: SortingOption[] = [
         { value: 'created_at_asc', label: t('proposals.options.oldToNew') },
         { value: 'created_at_desc', label: t('proposals.options.newToOld') },
         { value: 'budget_asc', label: t('proposals.options.lowToHigh') },
