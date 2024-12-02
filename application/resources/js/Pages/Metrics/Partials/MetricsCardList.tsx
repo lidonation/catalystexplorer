@@ -10,28 +10,28 @@ interface MetricProps {
 }
 
 const MetricCardList: React.FC<MetricProps> = ({ metrics, sortBy, sortOrder, columns }) => {
- const sortedMetrics = [...metrics].sort((a, b) => {
+
+  const sortedMetrics = [...metrics].sort((a, b) => {
     const isAsc = sortOrder === MetricEnum.ASCENDING;
-    
 
     let valueA = a[sortBy] ?? (typeof a[sortBy] === 'number' ? 0 : new Date(0));
     let valueB = b[sortBy] ?? (typeof b[sortBy] === 'number' ? 0 : new Date(0));
 
-    
+
     if (valueA instanceof Date) {
-        valueA = valueA.getTime();
+      valueA = valueA.getTime();
     } else if (typeof valueA !== 'number') {
-        valueA = Number(valueA);  
+      valueA = Number(valueA);
     }
 
     if (valueB instanceof Date) {
-        valueB = valueB.getTime();
+      valueB = valueB.getTime();
     } else if (typeof valueB !== 'number') {
-        valueB = Number(valueB);  
+      valueB = Number(valueB);
     }
 
     return isAsc ? valueA - valueB : valueB - valueA;
-});
+  });
 
 
   const columnClass = columns === MetricEnum.TWO_COLUMNS ? 'grid-cols-2' : 'grid-cols-3';

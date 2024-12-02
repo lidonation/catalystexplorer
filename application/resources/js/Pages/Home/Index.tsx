@@ -68,8 +68,8 @@ export default function Index({
                         <MetricCardList
                             metrics={metrics}
                             sortBy={MetricEnum.ORDER}
-                            sortOrder={MetricEnum.ASCENDING}
-                            columns={MetricEnum.TWO_COLUMNS} />
+                            sortOrder={MetricEnum.DESCENDING}
+                            columns={MetricEnum.THREE_COLUMNS} />
                     </WhenVisible>
                 </section>
 
