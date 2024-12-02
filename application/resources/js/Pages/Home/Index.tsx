@@ -6,9 +6,10 @@ import { Head, router, WhenVisible } from '@inertiajs/react';
 import PostListLoader from '../Posts/Partials/PostListLoader';
 import ProposalList from '../Proposals/Partials/ProposalList';
 import VerticalCardLoading from '@/Pages/Proposals/Partials/ProposalVerticalCardLoading';
-import MetricCard from '../Metrics/Partials/MetricCard';
+import MetricCardList from '../Metrics/Partials/MetricsCardList';
 import MetricCardLoading from '../Metrics/Partials/MetricCardLoading';
 import { useTranslation } from 'react-i18next';
+import { MetricEnum } from '@/enums/metrics-enums';
 import MetricData = App.DataTransferObjects.MetricData;
 import ProposalData = App.DataTransferObjects.ProposalData;
 import PostData = App.DataTransferObjects.PostData;
@@ -36,9 +37,8 @@ export default function Index({
     const { t } = useTranslation();
     const [isHorizontal, setIsHorizontal] = useState(false);
 
-    function navigate() {
-        router.get('/proposals')
-    }
+
+
     return (
         <>
             <Head title="Catalyst Explorer" />
@@ -54,24 +54,27 @@ export default function Index({
                     </div>
                 </section>
 
-                <section className="numbers-wrapper">
-                    <div className='container'>
+                <section className="container numbers-wrapper">
+                    <div className='flex justify-between items-center'>
                         <div>
-                            <h2 className="title-2">{t("numbers")}</h2>
-                            <p className="text-4 text-content-dark opacity-70">{t("proposals.listSubtitle")}</p>
+                            <h2 className="title-2">{t("metric.numbers")}</h2>
+                            <p className="text-4 text-content-dark opacity-70">{t("metric.subtitle")}</p>
                         </div>
-                        <WhenVisible fallback={<MetricCardLoading />} data="metrics">
-                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
-                                {metrics && metrics.map((metric) => (
-                                    <MetricCard
-                                        key={metric.user_id}
-                                        metric={metric}
-                                    />
-                                ))}
-                            </div>
-                        </WhenVisible>
+                        <div>
+                            <SecondaryLink className="font-bold text-content-dark" href="/charts">
+                                {t("metric.seeMore")}
+                            </SecondaryLink>
+                        </div>
                     </div>
+                    <WhenVisible fallback={<MetricCardLoading />} data="metrics">
+                        <MetricCardList
+                            metrics={metrics}
+                            sortBy={MetricEnum.ORDER}
+                            sortOrder={MetricEnum.DESCENDING}
+                            columns={MetricEnum.THREE_COLUMNS} />
+                    </WhenVisible>
                 </section>
+
 
                 <section className="container proposals-wrapper">
                     <div className=" py-8 flex justify-between items-center">
