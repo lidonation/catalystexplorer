@@ -3,18 +3,27 @@
 namespace Database\Seeders;
 
 use App\Models\Announcement;
-use App\Models\User;
 use Illuminate\Database\Seeder;
+use Database\Seeders\Traits\GetImageLink;
 
 class AnnouncementSeeder extends Seeder
 {
+    use GetImageLink;
+
     /**
      * Run the database seeds.
      */
     public function run(): void
     {
-        Announcement::factory(10)
-            ->recycle(User::factory()->create())
-            ->create();
+        $userIds = \App\Models\User::pluck('id');
+
+        Announcement::factory(20)->create()->each(function (Announcement $announcement) use ($userIds) {
+            $announcement->user_id = $userIds->random();
+            $announcement->save();
+
+            if ($imageLink = $this->getRandomImageLink()) {
+                $announcement->addMediaFromUrl($imageLink)->toMediaCollection('hero_image');
+            }
+        });
     }
 }

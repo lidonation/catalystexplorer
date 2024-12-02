@@ -1,12 +1,14 @@
 declare namespace App.DataTransferObjects {
 export type AnnouncementData = {
+id: number;
 title: string;
 content: string;
 label?: string;
 event_starts_at?: string;
 event_ends_at?: string;
 cta?: Array<any>;
-context?:string
+context?:string;
+hero_image_url?: string;
 user_id: number;
 };
 export type CampaignData = {

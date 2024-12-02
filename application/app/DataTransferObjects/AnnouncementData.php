@@ -9,6 +9,8 @@ use Spatie\TypeScriptTransformer\Attributes\TypeScript;
 #[TypeScript]
 class AnnouncementData extends Data
 {
+    public int $id;
+
     public string $title;
 
     public string $content;
@@ -29,4 +31,6 @@ class AnnouncementData extends Data
     public ?array $cta = null;
 
     public int $user_id;
+
+    public string $hero_image_url;
 }
