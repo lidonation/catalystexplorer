@@ -44,7 +44,7 @@ export default function LoginForm() {
         <>
             <form onSubmit={submit} className="flex flex-col content-gap">
                 <div>
-                    <InputLabel htmlFor="email" value="Email" />
+                    <InputLabel htmlFor="email" value={t("email")} />
 
                     <TextInput
                         id="email"
@@ -61,7 +61,7 @@ export default function LoginForm() {
                 </div>
 
                 <div>
-                    <InputLabel htmlFor="password" value="Password" />
+                    <InputLabel htmlFor="password" value={t("password")} />
 
                     <TextInput
                         id="password"
