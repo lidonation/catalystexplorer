@@ -11,7 +11,9 @@ import { ProposalSearchParams } from '../../../types/proposal-search-params';
 import CardLayoutSwitcher from './Partials/CardLayoutSwitcher';
 import ProposalFilters from './Partials/ProposalFilters';
 import HorizontaCardLoading from './Partials/ProposalHorizontalCardLoading';
+import FundsFilter from './Partials/FundsFilter';
 import ProposalData = App.DataTransferObjects.ProposalData;
+import FundsData = App.DataTransferObjects.FundData;
 
 interface HomePageProps extends Record<string, unknown> {
     proposals: PaginatedData<ProposalData[]>;
@@ -51,6 +53,12 @@ export default function Index({
                     </p>
                 </div>
             </header>
+
+
+            <section className="container flex w-full flex-row items-center justify-between space-x-4">
+                <FundsFilter fundsTitle='Fund 1' totalProposals={1000} />
+                <FundsFilter fundsTitle='Fund 2' totalProposals={1000} />
+            </section>
 
             <section className="container flex w-full flex-col items-center justify-center">
                 <ProposalFilters />

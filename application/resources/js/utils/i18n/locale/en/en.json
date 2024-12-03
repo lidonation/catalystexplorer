@@ -120,6 +120,7 @@
         "quickPitch": "Quick Pitch",
         "proposalReviews": "Proposal Reviews",
         "CSVs": "Proposal CSVs",
+        "totalProposals": "Total Proposals",
         "errors": {
             "noUrl": "No video URL provided",
             "invalidYoutubeFormat": "The YouTube link format is incorrect",
