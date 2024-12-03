@@ -6,12 +6,14 @@
     "ccv4Votes": "CCV4 Votes",
     "charts": "Charts",
     "communities": "Communities",
+    "confirmPassword": "Confirm Password",
     "connectWallet": "Connect wallet",
     "comingSoon": "Coming Soon",
     "cookies": "Cookies",
     "copyright": "© 2024 Catalyst Explorer. All rights reserved.",
     "data": "Data",
     "dReps": "DReps",
+    "email": "Email",
     "facebook": "Facebook",
     "forgotPassword": "Forgot password",
     "funds": "Funds",
@@ -28,6 +30,7 @@
     "linkedIn": "LinkedIn",
     "monthlyReports": "Monthly Reports",
     "numbers": "Numbers",
+    "password": "Password",
     "people": "People",
     "rememberMe": "Remember me",
     "privacy": "Privacy",
@@ -100,6 +103,9 @@
         "subtitle": "Catalyst drives Cardano's ecosystem growth by linking innovative ideas with funding, supported by community voting and the Cardano treasury."
     },
     "metric": {
+        "numbers": "Numbers",
+        "subtitle": "View projects charts and filter results based on funds",
+        "seeMore": "See more",
         "totalProposals": "Total Proposals",
         "vs": "vs last fund"
     },

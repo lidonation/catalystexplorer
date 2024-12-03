@@ -64,7 +64,7 @@ export default function RegisterForm() {
             </div>
 
             <div>
-                <InputLabel htmlFor="email" value="Email" />
+                <InputLabel htmlFor="email" value={t("email")} />
 
                 <TextInput
                     id="email"
@@ -81,7 +81,7 @@ export default function RegisterForm() {
             </div>
 
             <div>
-                <InputLabel htmlFor="password" value="Password" />
+                <InputLabel htmlFor="password" value={t("password")} />
 
                 <TextInput
                     id="password"
@@ -100,7 +100,7 @@ export default function RegisterForm() {
             <div>
                 <InputLabel
                     htmlFor="password_confirmation"
-                    value="Confirm Password"
+                    value={t("confirmPassword")}
                 />
 
                 <TextInput

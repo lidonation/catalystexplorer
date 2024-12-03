@@ -99,7 +99,7 @@ const MetricCard: React.FC<MetricCardProps> = ({ metric }) => {
     );
 
     return (
-        <div className="bg-background rounded-lg shadow-md flex flex-col h-full relative">
+        <div className="w-full bg-background rounded-lg shadow-md flex flex-col h-full relative">
             <div className="absolute top-6 left-12 bg-background shadow-md rounded-md px-4 py-2">
                 <span className="text-2xl font-bold text-content">
                     {formatNumber(parseFloat(metric.value?.toString() || '0'))}
