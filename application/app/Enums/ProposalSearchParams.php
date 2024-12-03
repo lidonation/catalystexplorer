@@ -30,7 +30,7 @@ use Spatie\Enum\Enum;
  * @method static self VIEW()
  * @method static self TAGS()
  * @method static self TYPE()
- * @method static self SORT()
+ * @method static self SORTS()
  */
 final class ProposalSearchParams extends Enum
 {

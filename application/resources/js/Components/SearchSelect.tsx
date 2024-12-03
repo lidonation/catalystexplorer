@@ -1,7 +1,8 @@
 'use client';
+import { useSearchOptions } from '@/Hooks/useSearchOptions';
 import { cn } from '@/lib/utils';
 import { Check, ChevronDown } from 'lucide-react';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
     Command,
@@ -14,41 +15,41 @@ import { Popover, PopoverContent, PopoverTrigger } from './Popover';
 import { ScrollArea } from './ScrollArea';
 
 export type SearchOption = {
-    label: string;
-    value: string;
+    label?: string;
+    id?: string;
 };
 
 type SearchSelectProps = {
-    options: SearchOption[];
-    selected: string[];
-    onChange: (selectedItems: string[]) => void;
+    selected: number[];
+    onChange: (selectedItems: number[]) => void;
     placeholder?: string;
     emptyText?: string;
     multiple?: boolean;
+    domain?: string;
 };
 
 export function SearchSelect({
-    options,
     selected,
     onChange,
     placeholder = 'Select',
     emptyText = 'No results found.',
     multiple = false,
+    domain,
 }: SearchSelectProps) {
     const [open, setOpen] = useState(false);
-    const [searchQuery, setSearchQuery] = useState('');
+    const { searchTerm, setSearchTerm, options } = useSearchOptions(domain);
+    // const [searchTerm, setSearchTerm] = useState('');
     const { t } = useTranslation();
 
-    const filteredOptions = useMemo(() => {
-        if (!searchQuery) return options;
-
-        return options.filter((option) =>
-            option.label.toLowerCase().includes(searchQuery.toLowerCase()),
-        );
-    }, [options, searchQuery]);
+    const filteredOptions = options.map((option) => {
+        return {
+            label: option?.name ?? option?.title ?? option?.label,
+            id: option.id,
+        };
+    });
 
     const handleSelect = useCallback(
-        (value: string) => {
+        (value: number) => {
             if (multiple) {
                 onChange(
                     selected.includes(value)
@@ -58,7 +59,7 @@ export function SearchSelect({
             } else {
                 onChange([value]);
                 setOpen(false);
-                setSearchQuery(''); // Clear search when item is selected
+                setSearchTerm(''); // Clear search when item is selected
             }
         },
         [multiple, onChange, selected],
@@ -66,8 +67,8 @@ export function SearchSelect({
     const handleClear = useCallback(
         (e: React.MouseEvent) => {
             e.stopPropagation();
-            onChange([]);
-            setSearchQuery('');
+            selected.length ? onChange([]) : '';
+            setSearchTerm('');
         },
         [onChange],
     );
@@ -75,7 +76,7 @@ export function SearchSelect({
     // Clear search when closing the popover
     useEffect(() => {
         if (!open) {
-            setSearchQuery('');
+            setSearchTerm('');
         }
     }, [open]);
 
@@ -110,8 +111,8 @@ export function SearchSelect({
                     >
                         <CommandInput
                             placeholder="Search..."
-                            value={searchQuery}
-                            onValueChange={setSearchQuery}
+                            value={searchTerm}
+                            onValueChange={setSearchTerm}
                             className={cn(
                                 'flex h-10 w-full rounded-md bg-transparent py-3 text-sm outline-none disabled:cursor-not-allowed disabled:opacity-50',
                                 '!border-none !ring-0 focus:!border-none focus:!ring-0',
@@ -128,24 +129,29 @@ export function SearchSelect({
                     <CommandEmpty>{emptyText}</CommandEmpty>
                     <CommandGroup>
                         <ScrollArea className="h-fit">
-                            {filteredOptions.map((option) => (
-                                <CommandItem
-                                    key={option.value}
-                                    value={option.value}
-                                    onSelect={() => handleSelect(option.value)}
-                                    className="cursor-pointer !bg-background hover:!bg-background-lighter aria-selected:bg-background-lighter"
-                                >
-                                    <Check
-                                        className={cn(
-                                            'mr-2 h-4 w-4',
-                                            selected?.includes(option.value)
-                                                ? 'opacity-100'
-                                                : 'opacity-0',
-                                        )}
-                                    />
-                                    {option.label}
-                                </CommandItem>
-                            ))}
+                            {options &&
+                                filteredOptions.map((option) => (
+                                    <CommandItem
+                                        key={option.id}
+                                        value={option.id}
+                                        onSelect={() =>
+                                            handleSelect(option.id.toString())
+                                        }
+                                        className="cursor-pointer !bg-background hover:!bg-background-lighter aria-selected:bg-background-lighter"
+                                    >
+                                        <Check
+                                            className={cn(
+                                                'mr-2 h-4 w-4',
+                                                selected?.includes(
+                                                    option.id.toString(),
+                                                )
+                                                    ? 'opacity-100'
+                                                    : 'opacity-0',
+                                            )}
+                                        />
+                                        {option.label}
+                                    </CommandItem>
+                                ))}
                         </ScrollArea>
                     </CommandGroup>
                 </Command>

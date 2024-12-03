@@ -13,13 +13,13 @@ class CampaignData extends Data
     public int $id,
 
     #[TypeScriptOptional]
-    public int $fund_id,
+    public ?int $fund_id,
 
-    public string $title,
+    public ?string $title,
 
-    public string $meta_title,
+    public ?string $meta_title,
 
-    public string $slug,
+    public ?string $slug,
     #[TypeScriptOptional]
     public ?string $excerpt,
 
@@ -30,11 +30,11 @@ class CampaignData extends Data
     public ?string $content,
 
     #[TypeScriptOptional]
-    public float $amount,
+    public ?float $amount,
 
-    public string $created_at,
+    public ?string $created_at,
 
-    public string $updated_at,
+    public ?string $updated_at,
 
     #[TypeScriptOptional]
     public ?string $label,

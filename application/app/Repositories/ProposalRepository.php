@@ -65,9 +65,9 @@ class ProposalRepository extends Repository
 //                    'fund.label',
 //                    'fund.amount',
 //                    'fund.status',
-//                    'campaign.id',
-//                    'campaign.label',
-//                    'campaign.amount',
+                   'campaign.id',
+                   'campaign.label',
+                   'campaign.amount',
                 ];
                 $args['facets'] = [
                     'tags',

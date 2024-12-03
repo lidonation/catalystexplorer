@@ -44,7 +44,7 @@ class ProposalFactory extends Factory
             'slug' => fn(array $attributes) => Str::slug($attributes['title']),
             'website' => $this->faker->url(),
             'excerpt' => $this->faker->text(200),
-            'amount_requested' => $this->faker->numberBetween(0, 1000000),
+            'amount_requested' => $this->faker->numberBetween(0, 10000000),
             'amount_received' => $this->faker->numberBetween(0, 1000000),
             'definition_of_success' => $this->faker->sentence(),
             'status' => $this->faker->randomElement(ProposalStatus::toValues()),
@@ -70,7 +70,10 @@ class ProposalFactory extends Factory
             'ranking_total' => $this->faker->numberBetween(0, 100),
             'quickpitch' => $this->faker->optional(0.3)->randomElement($quickpitchLinks),
             'quickpitch_length' => $this->faker->optional()->numberBetween(10, 255),
-            'abstain_votes_count' => $this->faker->numberBetween(0, 1000000),
+            'abstain_votes_count' => $this->faker->numberBetween(10000, 10000000),
+            'iog_hash' => $this->faker->numberBetween(1100, 1000000),
+            'project_length' => $this->faker->numberBetween(0, 12),
+            'vote_casts' => $this->faker->numberBetween(10000, 10000000),
         ];
     }
 }

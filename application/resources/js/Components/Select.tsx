@@ -60,7 +60,7 @@ export default function Selector({
     };
 
     const onClearSelection = () => {
-        setSelectedItems([]);
+        selectedItems.length ? setSelectedItems([]) : '';
     };
 
     return (

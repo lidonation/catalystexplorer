@@ -13,6 +13,7 @@ export enum ProposalParamsEnum {
     MAX_BUDGET = 'bmax',
     MAX_PROJECT_LENGTH = 'lmax',
     MIN_BUDGET = 'bmin',
+    PROJECT_LENGTH = 'pl',
     MIN_PROJECT_LENGTH = 'lmin',
     OPENSOURCE_PROPOSALS = 'op',
     PAGE = 'p',

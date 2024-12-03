@@ -70,15 +70,7 @@ class ProposalsController extends Controller
 
         $proposals = empty($this->queryParams) ? $this->getRandomProposals() : $this->query();
 
-        if (
-            empty($this->queryParams[ProposalSearchParams::BUDGETS()->value]) ||
-            empty($this->queryParams[ProposalSearchParams::PROJECT_LENGTH()->value])
-        ) {
-            $this->queryParams[ProposalSearchParams::BUDGETS()->value] = [1,  7000000];
-            $this->queryParams[ProposalSearchParams::PROJECT_LENGTH()->value] = [0,  12];
-        }
-
-
+        // dd();
         return Inertia::render('Proposals/Index', [
             'proposals' => $proposals,
             'filters' => $this->queryParams,
@@ -94,14 +86,50 @@ class ProposalsController extends Controller
             ProposalSearchParams::FUNDING_STATUS()->value => 'array|nullable',
             ProposalSearchParams::OPENSOURCE_PROPOSALS()->value => 'bool|nullable',
             ProposalSearchParams::PROJECT_STATUS()->value => 'array|nullable',
+            ProposalSearchParams::PROJECT_LENGTH()->value => 'array|nullable',
             ProposalSearchParams::QUERY()->value => 'string|nullable',
+            ProposalSearchParams::COHORT()->value => 'array|nullable',
             ProposalSearchParams::QUICK_PITCHES()->value => 'bool|nullable',
             ProposalSearchParams::TYPE()->value => 'string|nullable',
-            ProposalSearchParams::PAGE()->value => 'string|nullable',
-            ProposalSearchParams::LIMIT()->value => 'string|nullable',
-            ProposalSearchParams::SORT()->value => 'array|nullable',
+            ProposalSearchParams::PAGE()->value => 'int|nullable',
+            ProposalSearchParams::LIMIT()->value => 'int|nullable',
+            ProposalSearchParams::SORTS()->value => 'nullable',
             ProposalSearchParams::BUDGETS()->value => 'array|nullable',
+            ProposalSearchParams::MIN_BUDGET()->value => 'int|nullable',
+            ProposalSearchParams::MAX_BUDGET()->value => 'int|nullable',
+            ProposalSearchParams::MIN_PROJECT_LENGTH()->value => 'int|nullable',
+            ProposalSearchParams::MAX_PROJECT_LENGTH()->value => 'int|nullable',
+            ProposalSearchParams::CAMPAIGNS()->value => 'array|nullable',
+            ProposalSearchParams::TAGS()->value => 'array|nullable',
+            ProposalSearchParams::GROUPS()->value => 'array|nullable',
+            ProposalSearchParams::COMMUNITIES()->value => 'array|nullable',
+            ProposalSearchParams::PEOPLE()->value => 'array|nullable',
         ]);
+
+        // formart sort params for meili
+        if (!empty($this->queryParams[ProposalSearchParams::SORTS()->value])) {
+
+            $sort = collect(
+                explode(
+                    ':',
+                    $this->queryParams[ProposalSearchParams::SORTS()->value]
+                )
+            )->filter();
+
+            $this->sortBy = $sort->first();
+
+            $this->sortOrder = $sort->last();
+        }
+
+
+        // set defaults max and mins
+        $this->queryParams[ProposalSearchParams::MAX_BUDGET()->value] =  7000000;
+        $this->queryParams[ProposalSearchParams::MIN_BUDGET()->value] =  1;
+        $this->queryParams[ProposalSearchParams::MAX_PROJECT_LENGTH()->value] =  12;
+        $this->queryParams[ProposalSearchParams::MIN_PROJECT_LENGTH()->value] =  0;
+        if (empty($this->queryParams[ProposalSearchParams::BUDGETs()->value])) {
+            $this->queryParams[ProposalSearchParams::BUDGETs()->value] = [1, 7000000];
+        }
     }
 
     protected function query($returnBuilder = false, $attrs = null, $filters = []): array|Builder
@@ -177,7 +205,7 @@ class ProposalsController extends Controller
         }
 
         if (isset($this->queryParams[ProposalSearchParams::PROJECT_STATUS()->value])) {
-            $projectStatuses = implode($this->queryParams[ProposalSearchParams::PROJECT_STATUS()->value]);
+            $projectStatuses = implode(',', $this->queryParams[ProposalSearchParams::PROJECT_STATUS()->value]);
             $filters[] = "status IN [{$projectStatuses}]";
         }
 
@@ -199,10 +227,38 @@ class ProposalsController extends Controller
             $filters[] = "(amount_requested  {$budgetRange->first()} TO  {$budgetRange->last()})";
         }
 
-        // dd($filters);
-        //        if ($this->projectLength->isNotEmpty()) {
-        //            $filters[] = "(project_length  {$this->projectLength->first()} TO  {$this->projectLength->last()})";
-        //        }
+        // filter by challenge
+        if (!empty($this->queryParams[ProposalSearchParams::CAMPAIGNS()->value])) {
+            $campaignIds = ($this->queryParams[ProposalSearchParams::CAMPAIGNS()->value]);
+            $filters[] = '(' . implode(' OR ', array_map(fn($c) => "campaign.id = {$c}", $campaignIds)) . ')';
+        }
+
+        if (!empty($this->queryParams[ProposalSearchParams::TAGS()->value])) {
+            $tagIds = ($this->queryParams[ProposalSearchParams::TAGS()->value]);
+            $filters[] = '(' . implode(' OR ', array_map(fn($c) => "tags.id = {$c}", $tagIds)) . ')';
+        }
+
+        if (!empty($this->queryParams[ProposalSearchParams::PEOPLE()->value])) {
+            $peopleIds = implode(',', $this->queryParams[ProposalSearchParams::PEOPLE()->value]);
+            $filters[] = "users.id IN [{$peopleIds}]";
+        }
+
+        if (!empty($this->queryParams[ProposalSearchParams::GROUPS()->value])) {
+            $groupIds = implode(',', $this->queryParams[ProposalSearchParams::GROUPS()->value]);
+            $filters[] = "groups.id IN [{$groupIds}]";
+        }
+
+        if (!empty($this->queryParams[ProposalSearchParams::COMMUNITIES()->value])) {
+            $communityIds = implode(',', $this->queryParams[ProposalSearchParams::COMMUNITIES()->value]);
+            $filters[] = "communities.id IN [{$communityIds}]";
+        }
+
+        if (!empty($this->queryParams[ProposalSearchParams::PROJECT_LENGTH()->value])) {
+            $projectLength = collect((object) $this->queryParams[ProposalSearchParams::PROJECT_LENGTH()->value]);
+            $filters[] = "(project_length  {$projectLength->first()} TO  {$projectLength->last()})";
+        }
+
+
         //
         //        if ($this->fundingStatus === 'paid') {
         //            $filters[] = '(paid = 1)';
@@ -211,38 +267,17 @@ class ProposalsController extends Controller
         //        if (count($this->proposalsFilter)) {
         //            $filters[] = 'id IN'.$this->proposalsFilter->toJson();
         //        }
-
         //        // filter by fund
         //        if ($this->fundsFilter->isNotEmpty()) {
         //            $filters[] = '('.$this->fundsFilter->map(fn ($f) => "fund.id = {$f}")->implode(' OR ').')';
         //        }
         //
-        //        // filter by challenge
-        //        if ($this->challengesFilter->isNotEmpty()) {
-        //            $filters[] = '('.$this->challengesFilter->map(fn ($c) => "campaign.id = {$c}")->implode(' OR ').')';
-        //        }
-        //
-        //        // filter by tags
-        //        if ($this->tagsFilter->isNotEmpty()) {
-        //            $filters[] = 'tags.id IN '.$this->tagsFilter->toJson();
-        //        }
         //
         //        if ($this->categoriesFilter->isNotEmpty()) {
         //            $filters[] = 'categories.id IN '.$this->categoriesFilter->toJson();
         //        }
         //
-        //        if ($this->peopleFilter->isNotEmpty()) {
-        //            $filters[] = 'users.id IN '.$this->peopleFilter->toJson();
-        //        }
-        //
-        //        if ($this->groupsFilter->isNotEmpty()) {
-        //            $filters[] = 'groups.id IN '.$this->groupsFilter->toJson();
-        //        }
-        //
-        //        // filter by communities
-        //        if ($this->communitiesFilter->isNotEmpty()) {
-        //            $filters[] = 'communities.id IN '.$this->communitiesFilter->toJson();
-        //        }
+
         //
         //
 
@@ -321,9 +356,9 @@ class ProposalsController extends Controller
         //     $this->budgets = collect(array_values($facetStats['amount_requested']));
         // }
 
-        if (isset($facetStats['project_length'])) {
-            $this->queryParams[ProposalSearchParams::PROJECT_LENGTH()->value] = collect(array_values($facetStats['project_length']));
-        }
+        // if (isset($facetStats['project_length'])) {
+        //     $this->queryParams[ProposalSearchParams::PROJECT_LENGTH()->value] = collect(array_values($facetStats['project_length']));
+        // }
 
         // if (isset($facetStats['amount_requested'])) {
         //     $this->queryParams[ProposalSearchParams::MAX_BUDGET()->value] = $facetStats['amount_requested']['max'];

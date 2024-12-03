@@ -32,18 +32,19 @@ export function FiltersProvider<K extends Record<string, any>>({
         }
     }, [defaultFilters]);
 
-    console.log({ tyty: filters, defaultFilters });
+    const setFilters = useCallback(
+        <Key extends keyof K, S>(key: Key, value: S) => {
+            setFiltersState((prev) => {
+                if (prev[key] === value) return prev;
 
-    const setFilters = useCallback(<Key extends keyof K, S>(key: Key, value: S) => {
-        setFiltersState((prev) => {
-            if (prev[key] === value) return prev;
-
-            return {
-                ...prev,
-                [key]: value,
-            };
-        })
-    },[]);
+                return {
+                    ...prev,
+                    [key]: value,
+                };
+            });
+        },
+        [],
+    );
 
     const currentUrl = window.location.origin + window.location.pathname;
 
@@ -54,15 +55,25 @@ export function FiltersProvider<K extends Record<string, any>>({
         }
 
         const fetchData = async () => {
+            const previousFilters = JSON.stringify(filtersRef.current);
+            const currentFilters = JSON.stringify(filters);
+
+            if (previousFilters === currentFilters) {
+                return; 
+            }
+
+            filtersRef.current = filters;
             router.get(currentUrl, filters, {
                 preserveState: true,
                 preserveScroll: true,
             });
-            console.log('called');
         };
 
         fetchData();
     }, [filters]);
+
+    // Add a useRef to store the previous filters state
+    const filtersRef = useRef(filters);
 
     return (
         <FiltersContext.Provider value={{ filters, setFilters }}>
