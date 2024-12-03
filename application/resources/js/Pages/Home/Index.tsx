@@ -16,6 +16,8 @@ import PostData = App.DataTransferObjects.PostData;
 import AnnouncementData = App.DataTransferObjects.AnnouncementData;
 import AnnouncementCarousel from './Partials/Announcement/AnnouncementCarousel';
 import SecondaryLink from '@/Components/SecondaryLink';
+import SpecialAnnouncementCarousel from './Partials/Announcement/SpecialAnnouncementsCarousel';
+import SpecialAnnouncementLoading from './Partials/Announcement/SpecialAnnouncementLoading';
 
 interface HomePageProps extends Record<string, unknown> {
     posts: PostData[];
@@ -97,15 +99,12 @@ export default function Index({
                     </WhenVisible>
                 </section>
 
-                <section className="special-announcements-wrapper">
-                    <div className='container'>
-                        <div className=" overflow-auto py-8">
-                            <h2 className="title-2">Special Announcements Data</h2>
-                        </div>
-                        <WhenVisible fallback={<div>Loading...</div>} data="specialAnnouncements">
-                            {JSON.stringify(specialAnnouncements)}
-                        </WhenVisible>
-                    </div>
+                <section className="special-announcements-wrapper container">
+                    <WhenVisible fallback={<SpecialAnnouncementLoading />} data="specialAnnouncements">
+                        {specialAnnouncements && (
+                            <SpecialAnnouncementCarousel announcements={specialAnnouncements} />
+                        )}
+                    </WhenVisible>
                 </section>
 
                 <section className="posts-wrapper container flex flex-col gap-8">
