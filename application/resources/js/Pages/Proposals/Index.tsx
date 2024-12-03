@@ -1,15 +1,16 @@
 import Paginator from '@/Components/Paginator';
-import VerticalCardLoading from '@/Pages/Proposals/Partials/ProposalVerticalCardLoading';
-import HorizontaCardLoading from './Partials/ProposalHorizontalCardLoading';
-import CardLayoutSwitcher from './Partials/CardLayoutSwitcher';
+import { FiltersProvider } from '@/Context/FiltersContext';
 import ProposalResults from '@/Pages/Proposals/Partials/ProposalResults';
+import VerticalCardLoading from '@/Pages/Proposals/Partials/ProposalVerticalCardLoading';
 import { PageProps } from '@/types';
 import { Head, WhenVisible } from '@inertiajs/react';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { PaginatedData } from '../../../types/paginated-data';
 import { ProposalSearchParams } from '../../../types/proposal-search-params';
+import CardLayoutSwitcher from './Partials/CardLayoutSwitcher';
 import ProposalFilters from './Partials/ProposalFilters';
+import HorizontaCardLoading from './Partials/ProposalHorizontalCardLoading';
 import ProposalData = App.DataTransferObjects.ProposalData;
 
 interface HomePageProps extends Record<string, unknown> {
@@ -22,30 +23,21 @@ export default function Index({
     filters,
 }: PageProps<HomePageProps>) {
     const { t } = useTranslation();
-    const [sortBy, setSortBy] = useState('');
-
-    const handleSort = (sortBy: string) => {
-        setSortBy(sortBy);
-        // Implement sorting logic here
-    };
 
     const [perPage, setPerPage] = useState<number>(24);
     const [currentPage, setCurrentpage] = useState<number>(1);
 
-    useEffect(() => {
-        console.log({ perPage, currentPage });
-    }, [currentPage, perPage]);
-
+    useEffect(() => {}, [currentPage, perPage]);
 
     const [isHorizontal, setIsHorizontal] = useState(false);
 
     const [quickPitchView, setQuickPitchView] = useState(false);
 
-    const setGlobalQuickPitchView = (value: boolean) => setQuickPitchView(value);
-
+    const setGlobalQuickPitchView = (value: boolean) =>
+        setQuickPitchView(value);
 
     return (
-        <>
+        <FiltersProvider defaultFilters={filters}>
             <Head title="Proposals" />
 
             <header>
@@ -61,10 +53,10 @@ export default function Index({
             </header>
 
             <section className="container flex w-full flex-col items-center justify-center">
-                <ProposalFilters filters={filters} onSort={handleSort} />
+                <ProposalFilters />
             </section>
 
-            <section className="container  items-end flex flex-col mt-4">
+            <section className="container mt-4 flex flex-col items-end">
                 <CardLayoutSwitcher
                     isHorizontal={isHorizontal}
                     quickPitchView={quickPitchView}
@@ -95,16 +87,15 @@ export default function Index({
                 </WhenVisible>
             </section>
 
-            <section className="container w-full">
+            <section className="w-full px-4 lg:container lg:px-0">
                 {proposals && (
                     <Paginator
-                        perPage={perPage}
                         pagination={proposals}
                         setPerPage={setPerPage}
                         setCurrentPage={setCurrentpage}
                     />
                 )}
             </section>
-        </>
+        </FiltersProvider>
     );
 }

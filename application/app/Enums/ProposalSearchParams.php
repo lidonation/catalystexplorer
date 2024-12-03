@@ -20,6 +20,7 @@ use Spatie\Enum\Enum;
  * @method static self MAX_PROJECT_LENGTH()
  * @method static self MIN_BUDGET()
  * @method static self MIN_PROJECT_LENGTH()
+ * @method static self PROJECT_LENGTH()
  * @method static self OPENSOURCE_PROPOSALS()
  * @method static self PAGE()
  * @method static self PEOPLE()
@@ -29,6 +30,7 @@ use Spatie\Enum\Enum;
  * @method static self VIEW()
  * @method static self TAGS()
  * @method static self TYPE()
+ * @method static self SORTS()
  */
 final class ProposalSearchParams extends Enum
 {
@@ -60,6 +62,7 @@ final class ProposalSearchParams extends Enum
             'SORTS' => 'st',
             'TAGS' => 't',
             'TYPE' => 'pt',
+            'PROJECT_LENGTH'=>'pl'
         ];
     }
 }

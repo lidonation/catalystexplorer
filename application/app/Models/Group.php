@@ -35,9 +35,9 @@ class Group extends Model
     {
         $query->when($filters['search'] ?? null, function ($query, $search) {
             $query->where(function ($q) use ($search) {
-                $q->where('name', 'like', "%{$search}%")
+                $q->where('name', 'ilike', "%{$search}%")
                 ->orWhere('id', 'like', "%{$search}%")
-                ->orWhere('meta_title', 'like', "%{$search}%");
+                ->orWhere('meta_title', 'ilike', "%{$search}%");
             });
         })->when($filters['ids'] ?? null, function ($query, $ids) {
             $query->whereIn('id', is_array($ids) ? $ids : explode(',', $ids));

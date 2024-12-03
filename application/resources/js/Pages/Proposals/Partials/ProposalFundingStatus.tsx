@@ -15,8 +15,15 @@ export default function ProposalFundingStatus({ funding_status = 'pending' }) {
         bgColor = 'bg-eye-logo';
         textColor = 'text-primary';
         status = 'Funded';
+    } else if (funding_status === 'leftover') {
+        bgColor = 'bg-eye-logo';
+        textColor = 'text-primary';
+        status = 'Funded';
     }
-    if (funding_status === 'not_approved' || funding_status === 'leftover') {
+    if (
+        funding_status === 'not_approved' ||
+        funding_status === 'over_budget'
+    ) {
         bgColor = '';
         textColor = '';
         status = 'Not Funded';

@@ -43,11 +43,11 @@
     "abstain": "Abstention",
     "notSet": "Non défini",
     "loading": "Chargement",
-    "link":"lien",
-    "select":"Sélectionner",
-    "selected":"choisie",
-    "clear":"claire",
-    "selection":"sélection",
+    "link": "lien",
+    "select": "Sélectionner",
+    "selected": "choisie",
+    "clear": "claire",
+    "selection": "sélection",
     "app": {
         "name": "Catalyst Explorer",
         "contactEmail": "support@lidonation.com",
@@ -73,8 +73,8 @@
     "pagination": {
         "next": "Suivante",
         "previous": "Précédente",
-        "morePages":"Plus de pages",
-        "goPreviousPage":"Aller à la page précédente",
+        "morePages": "Plus de pages",
+        "goPreviousPage": "Aller à la page précédente",
         "goNextPage": "Aller à la page suivante"
     },
     "searchBar": {
@@ -96,7 +96,6 @@
         "vs": "vs. dernier fonds"
     },
     "proposals": {
-        "allProposals": "Toutes les propositions",
         "CSVs": "CSVs de propositions",
         "proposals": "Propositions",
         "projectVideo": "Vidéo du projet",
@@ -114,14 +113,14 @@
             "invalidUrl": "Format d'URL invalide"
         },
         "options": {
-            "sort":  "Trier par",
+            "sort": "Trier par",
             "oldToNew": "Du plus ancien au plus récent",
-            "newToOld": "Du plus récent au plus ancien", 
+            "newToOld": "Du plus récent au plus ancien",
             "lowToHigh": "Budget : Du plus bas au plus élevé",
             "highToLow": "Budget : Du plus élevé au plus bas",
             "fundingStatus": "Statut de financement",
             "opensource": "Open source",
-            "opensourceProposals": "Propositions open source", 
+            "opensourceProposals": "Propositions open source",
             "nonOpensourceProposals": "Propositions non open source",
             "projectStatus": "Statut du projet",
             "complete": "Terminé",
@@ -133,7 +132,12 @@
             "fullyPaid": "Totalement payé",
             "selectStatus": "Sélectionner le statut",
             "budget": "Budget",
-            "filterValues": "Filtres de valeurs"
+            "filterValues": "Filtres de valeurs",
+            "impactProposal": "Propositions d'impact",
+            "womenProposals": "Propositions de femmes",
+            "ideafestProposals": "Propositions les plus idéales",
+            "quickPitches": "Présentations rapides",
+            "allProposals": "Toutes les propositions"
         }
     },
     "posts": {

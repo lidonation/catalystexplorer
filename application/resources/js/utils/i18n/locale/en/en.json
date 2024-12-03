@@ -135,7 +135,7 @@
             "highToLow": "Budget: High to Low",
             "fundingStatus": "Funding Status",
             "opensource": "Opensource",
-            "opensourceProposals": "Opensource Proposals", 
+            "opensourceProposals": "Opensource Proposals",
             "nonOpensourceProposals": "Non-OpenSource Proposals",
             "projectStatus": "Project Status",
             "complete": "Complete",
@@ -147,7 +147,11 @@
             "fullyPaid": "Fully Paid",
             "selectStatus": "Select Status",
             "budget": "Budget",
-            "filterValues": "Filter Values"
+            "filterValues": "Filter Values",
+            "impactProposal": "Impact Proposals",
+            "womenProposals": "Women Proposals",
+            "ideafestProposals": "Ideafest Proposals",
+            "quickPitches": "Quick Pitches"
         }
     },
     "posts": {

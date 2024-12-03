@@ -184,9 +184,9 @@ class IdeascaleProfile extends Model implements HasMedia
     {
         $query->when($filters['search'] ?? null, function ($query, $search) {
             $query->where(function ($q) use ($search) {
-                $q->where('title', 'like', "%{$search}%")
+                $q->where('name', 'ilike', "%{$search}%")
                 ->orWhere('id', 'like', "%{$search}%")
-                ->orWhere('meta_title', 'like', "%{$search}%");
+                ->orWhere('username', 'ilike', "%{$search}%");
             });
         })->when($filters['ids'] ?? null, function ($query, $ids) {
             $query->whereIn('id', is_array($ids) ? $ids : explode(',', $ids));
