@@ -88,6 +88,7 @@ class Proposal extends Model
             'amount_awarded_USD',
             'completed_amount_paid_USD',
             'completed_amount_paid_ADA',
+            'campaign_id'
         ];
     }
 
@@ -276,8 +277,6 @@ class Proposal extends Model
             'over_budget' => $this->status === 'over_budget' ? 1 : 0,
 
             'paid' => ($this->amount_received > 0) && ($this->amount_received == $this->amount_requested ? 1 : 0),
-            'project_length' => intval($this->meta_info?->project_length) ?? 0,
-            'projectcatalyst_io_link' => $this->meta_info?->projectcatalyst_io_url ?? null,
 
             'quickpitch' => $this->quickpitch ?? null,
             'quickpitch_length' => $this->quickpitch_length ?? null,
@@ -301,8 +300,6 @@ class Proposal extends Model
                     'first_timer' => ($proposals?->map(fn ($p) => isset($p['fund']) ? $p['fund']['id'] : null)->unique()->count() === 1),
                 ];
             }),
-
-            'vote_casts' => intval($this->meta_info?->vote_casts) ?? 0,
 
             'woman_proposal' => $this->is_woman_proposal ? 1 : 0,
         ]);

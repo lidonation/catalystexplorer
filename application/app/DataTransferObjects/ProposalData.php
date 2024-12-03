@@ -90,7 +90,7 @@ final class ProposalData extends Data
         #[TypeScriptOptional]
         public ?string $currency,
 
-        public bool $opensource = false,
+        public ?bool $opensource = false,
 
         #[TypeScriptOptional]
         public ?int $ranking_total,
