@@ -2,25 +2,25 @@
 
 namespace App\Http\Controllers;
 
-use App\DataTransferObjects\AnnouncementData;
-use App\DataTransferObjects\MetricData;
-use App\DataTransferObjects\ProposalData;
-use App\Repositories\AnnouncementRepository;
-use App\Repositories\MetricRepository;
-use App\Repositories\PostRepository;
-use App\Repositories\ProposalRepository;
 use Inertia\Inertia;
 use Inertia\Response;
+use App\Models\Announcement;
+use App\Repositories\PostRepository;
+use App\Repositories\MetricRepository;
+use App\DataTransferObjects\MetricData;
+use App\Repositories\ProposalRepository;
+use App\DataTransferObjects\ProposalData;
+use App\Repositories\AnnouncementRepository;
+use App\DataTransferObjects\AnnouncementData;
 
 class HomeController extends Controller
 {
     public function index(
-        PostRepository     $posts,
+        PostRepository $posts,
         ProposalRepository $proposals,
-        MetricRepository   $metrics,
+        MetricRepository $metrics,
         AnnouncementRepository $announcements
-    ): Response
-    {
+    ): Response {
         $posts->setQuery([
             'tags' => 'project-catalyst'
         ]);
@@ -63,12 +63,24 @@ class HomeController extends Controller
                     ->get())
             ),
             'specialAnnouncements' => Inertia::optional(
-                fn() => AnnouncementData::collect($announcements
-                    ->limit(6)
-                    ->getQuery()
-                    ->where('context', 'special')
-                    ->latest('event_ends_at')
-                    ->get())
+                fn() => AnnouncementData::collect(
+                    Announcement::query()
+                        ->where('context', 'special')
+                        ->latest('event_ends_at')
+                        ->limit(6)
+                        ->get()
+                        ->map(fn($announcement) => [
+                            'id' => $announcement->id,
+                            'title' => $announcement->title,
+                            'content' => $announcement->content,
+                            'cta' => [
+                                'label' => $announcement->cta[0]['label'],
+                                'link' => $announcement->cta[0]['link'],
+                                'title' => $announcement->cta[0]['title'],
+                            ],
+                            'hero_image_url' => $announcement->heroPhotoUrl,
+                        ])
+                )
             ),
         ]);
     }
