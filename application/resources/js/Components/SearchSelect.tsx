@@ -20,8 +20,8 @@ export type SearchOption = {
 };
 
 type SearchSelectProps = {
-    selected: number[];
-    onChange: (selectedItems: number[]) => void;
+    selected: string[];
+    onChange: (selectedItems: string[]) => void;
     placeholder?: string;
     emptyText?: string;
     multiple?: boolean;
@@ -37,19 +37,26 @@ export function SearchSelect({
     domain,
 }: SearchSelectProps) {
     const [open, setOpen] = useState(false);
-    const { searchTerm, setSearchTerm, options } = useSearchOptions(domain);
-    // const [searchTerm, setSearchTerm] = useState('');
+    const { searchTerm, setSearchTerm, options } = useSearchOptions<any>(domain);
+    
     const { t } = useTranslation();
 
-    const filteredOptions = options.map((option) => {
-        return {
-            label: option?.name ?? option?.title ?? option?.label,
-            id: option.id,
-        };
-    });
+    const filteredOptions = options.map(
+        (option: {
+            name?: string;
+            title?: string;
+            label?: string;
+            id: number;
+        }) => {
+            return {
+                label: option?.name ?? option?.title ?? option?.label,
+                id: option.id,
+            };
+        },
+    );
 
     const handleSelect = useCallback(
-        (value: number) => {
+        (value: string) => {
             if (multiple) {
                 onChange(
                     selected.includes(value)
@@ -133,7 +140,7 @@ export function SearchSelect({
                                 filteredOptions.map((option) => (
                                     <CommandItem
                                         key={option.id}
-                                        value={option.id}
+                                        value={option.id.toString()}
                                         onSelect={() =>
                                             handleSelect(option.id.toString())
                                         }

@@ -38,7 +38,7 @@ export default function ProposalFilters() {
             </div>
             <div className="w-full rounded-xl bg-background p-4">
                 <b>{t('proposals.options.filterValues')}:</b>{' '}
-                {JSON.stringify(filters)} <br />
+                {JSON.stringify(filters)} <br /> <br />
                 <div className="grid grid-cols-2 gap-x-4 gap-y-3 rounded-xl md:grid-cols-2 lg:grid-cols-5">
                     <div className="col-span-1 flex flex-col gap-2 pb-4">
                         <span>Funding Status</span>
@@ -170,9 +170,7 @@ export default function ProposalFilters() {
                         <SearchSelect
                             key={'groups'}
                             domain={'groups'}
-                            selected={
-                                filters[ProposalParamsEnum.GROUPS] ?? []
-                            }
+                            selected={filters[ProposalParamsEnum.GROUPS] ?? []}
                             onChange={(value) =>
                                 setFilters(ProposalParamsEnum.GROUPS, value)
                             }
@@ -190,7 +188,10 @@ export default function ProposalFilters() {
                                 filters[ProposalParamsEnum.COMMUNITIES] ?? []
                             }
                             onChange={(value) =>
-                                setFilters(ProposalParamsEnum.COMMUNITIES, value)
+                                setFilters(
+                                    ProposalParamsEnum.COMMUNITIES,
+                                    value,
+                                )
                             }
                             placeholder="Select"
                             multiple={true}

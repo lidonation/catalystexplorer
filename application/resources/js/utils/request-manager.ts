@@ -1,20 +1,19 @@
 import axios, { AxiosRequestConfig, CancelTokenSource } from 'axios';
+import ApiPaginatedData from '../../types/api-paginated-data';
 
 class ApiRequestManager {
     currentCancelToken: CancelTokenSource | null = null;
 
-    async sendRequest(
+    async sendRequest<K>(
         method: 'get' | 'post' | 'patch' | 'delete',
         url: string,
         data = {},
         options: AxiosRequestConfig = {}
-    ) {
-        // Cancel the previous request if it exists
+    ): Promise<ApiPaginatedData<K>> {
         if (this.currentCancelToken) {
             this.currentCancelToken.cancel('Request canceled by new request.');
         }
 
-        // Create a new cancel token for the current request
         this.currentCancelToken = axios.CancelToken.source();
 
         try {
@@ -28,22 +27,25 @@ class ApiRequestManager {
             };
 
             const response = await axios(config);
+
             return response.data;
         } catch (error: any) {
+
             if (axios.isCancel(error)) {
                 console.log('Request canceled:', error.message);
             } else {
                 console.error('Request failed:', error);
-                throw error; 
             }
+            
+            throw error;
         } finally {
-            this.currentCancelToken = null; // Reset the cancel token
+            this.currentCancelToken = null;
         }
     }
 
     cancel() {
         if (this.currentCancelToken) {
-            this.currentCancelToken.cancel('Request canceled manually.');
+            this.currentCancelToken.cancel('Request canceled.');
             this.currentCancelToken = null;
         }
     }
