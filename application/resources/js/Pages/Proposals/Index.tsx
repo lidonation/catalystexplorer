@@ -56,8 +56,9 @@ export default function Index({
 
 
             <section className="container flex w-full flex-row items-center justify-between space-x-4">
-                <FundsFilter fundsTitle='Fund 1' totalProposals={1000} />
-                <FundsFilter fundsTitle='Fund 2' totalProposals={1000} />
+                <FundsFilter fundTitle='Fund 1' totalProposals={1000} />
+                <FundsFilter fundTitle='Fund 2' totalProposals={1000} />
+                <FundsFilter fundTitle='Fund 3' totalProposals={1000} />
             </section>
 
             <section className="container flex w-full flex-col items-center justify-center">
