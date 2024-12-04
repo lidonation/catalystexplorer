@@ -48,7 +48,7 @@ class Announcement extends Model implements HasMedia
         return Attribute::make(
             get: fn() => $this->getMedia('hero_image')->isNotEmpty()
             ? $this->getMedia('hero_image')[0]->getFullUrl()
-            : asset('favicon.ico')
+            : asset('storage/images/announcement.png')
         );
     }
 
