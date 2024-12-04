@@ -70,7 +70,7 @@ class ProposalsController extends Controller
 
         $proposals = empty($this->queryParams) ? $this->getRandomProposals() : $this->query();
 
-        // dd();
+
         return Inertia::render('Proposals/Index', [
             'proposals' => $proposals,
             'filters' => $this->queryParams,
@@ -165,7 +165,7 @@ class ProposalsController extends Controller
         $args['limit'] = $limit;
 
         $proposals = app(ProposalRepository::class);
-        // dd($args);
+        
         $builder = $proposals->search(
             $this->queryParams[ProposalSearchParams::QUERY()->value] ?? '',
             $args

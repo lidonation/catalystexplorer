@@ -50,6 +50,7 @@ export default function Selector({
         if (!isMultiselect) {
             setSelectedItems(value == selectedItems ? [] : value);
             currentOption = options?.find((option) => value == option.value);
+            setOpen(false);
             return;
         }
 

@@ -1,3 +1,4 @@
+import { ProposalParamsEnum } from '@/enums/proposal-search-params';
 import { router } from '@inertiajs/react';
 import {
     createContext,
@@ -55,20 +56,28 @@ export function FiltersProvider<K extends Record<string, any>>({
         }
 
         const fetchData = async () => {
-            const previousFilters = JSON.stringify(filtersRef.current);
-            const currentFilters = JSON.stringify(filters);
+            const previousFilters = filtersRef.current || {};
+            const changedKeys = Object.keys(filters).filter(
+                (key) => filters[key] !== previousFilters[key],
+            );
 
-            if (previousFilters === currentFilters) {
+            if (changedKeys.length === 0) {
                 return;
             }
 
-            filtersRef.current = filters;
+            filtersRef.current = { ...filters };
+
+            const paginationFiltered =
+                changedKeys.includes(ProposalParamsEnum.PAGE) ||
+                changedKeys.includes(ProposalParamsEnum.LIMIT);
+
+
             router.get(currentUrl, filters, {
                 preserveState: true,
-                preserveScroll: true,
+                preserveScroll: !paginationFiltered,
             });
         };
-
+        
         fetchData();
     }, [filters]);
 

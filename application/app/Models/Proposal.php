@@ -172,13 +172,13 @@ class Proposal extends Model
         );
 
         $query->when(
-            $filters['challenge_id'] ?? false,
-            fn(Builder $query, $challenge_id) => $query->where('campaign_id', $challenge_id)
+            $filters['campaign_id'] ?? false,
+            fn(Builder $query, $campaign_id) => $query->where('campaign_id', $campaign_id)
         );
 
         $query->when(
             $filters['fund_id'] ?? false,
-            fn(Builder $query, $fund_id) => $query->whereRelation('fund', 'id', '=', $fund_id)
+            fn(Builder $query, $fund_id) => $query->whereRelation('fund_id', '=', $fund_id)
         );
     }
 
@@ -201,7 +201,7 @@ class Proposal extends Model
         );
     }
 
-    public function IsImpactProposal(): Attribute
+    public function isImpactProposal(): Attribute
     {
         return Attribute::make(
             get: function () {
@@ -214,7 +214,7 @@ class Proposal extends Model
         );
     }
 
-    public function IsWomanProposal(): Attribute
+    public function isWomanProposal(): Attribute
     {
         return Attribute::make(
             get: function () {
@@ -227,7 +227,7 @@ class Proposal extends Model
         );
     }
 
-    public function IsIdeafestProposal(): Attribute
+    public function isIdeafestProposal(): Attribute
     {
         return Attribute::make(
             get: function () {
@@ -284,7 +284,7 @@ class Proposal extends Model
 
             'ca_rating' => intval($this->ratings_average) ?? 0.00,
             'campaign' => [
-                'id' => $this->campaign?->id,
+                'id' => $this->campaign_id,
                 'title' => $this->campaign?->title,
                 'amount' => $this->campaign?->amount ? intval($this->campaign?->amount) : null,
                 'label' => $this->campaign?->label,
@@ -300,7 +300,7 @@ class Proposal extends Model
             //            'feasibility_score' => $this->meta_info->feasibility_score ?? $this->getDiscussionRankingScore('Feasibility') ?? 0,
             'funded' => (bool) $this->funded_at ? 1 : 0,
             'fund' => [
-                'id' => $this->fund?->id,
+                'id' => $this->fund_id,
                 'title' => $this->fund?->title,
                 'amount' => $this->fund?->amount ? intval($this->fund?->amount) : null,
                 'label' => $this->fund?->label,

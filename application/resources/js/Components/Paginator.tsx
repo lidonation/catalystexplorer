@@ -25,12 +25,6 @@ const PaginationComponent: React.FC<PaginationComponentProps<any>> = ({
     const { filters, setFilters } = useFilterContext<ProposalSearchParams>();
 
     const setPagination = (key: keyof ProposalSearchParams, value: number) => {
-        setTimeout(() => {
-            window.scrollTo({
-                top: 0,
-                behavior: 'smooth',
-            });
-        }, 200);
         setFilters(key, value);
     };
 
