@@ -48,6 +48,11 @@
     "selected": "choisie",
     "clear": "claire",
     "selection": "sélection",
+    "link": "lien",
+    "select": "Sélectionner",
+    "selected": "choisie",
+    "clear": "claire",
+    "selection": "sélection",
     "app": {
         "name": "Catalyst Explorer",
         "contactEmail": "support@lidonation.com",

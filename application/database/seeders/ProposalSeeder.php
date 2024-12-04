@@ -2,14 +2,14 @@
 
 namespace Database\Seeders;
 
-use App\Models\Tag;
 use App\Models\Meta;
-use App\Models\Group;
 use App\Models\Campaign;
-use App\Models\Proposal;
 use App\Models\Community;
+use App\Models\Group;
+use App\Models\Proposal;
 use Illuminate\Database\Seeder;
 use App\Models\IdeascaleProfile;
+use App\Models\Tag;
 
 class ProposalSeeder extends Seeder
 {

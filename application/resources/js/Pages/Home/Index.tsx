@@ -2,7 +2,7 @@ import CatalystIntro from '@/Pages/Home/Partials/CatalystIntro';
 import PostCard from '@/Pages/Posts/Partials/PostCard';
 import { PageProps } from '@/types';
 import { useState } from 'react';
-import { Head, router, WhenVisible } from '@inertiajs/react';
+import { Head, WhenVisible } from '@inertiajs/react';
 import PostListLoader from '../Posts/Partials/PostListLoader';
 import ProposalList from '../Proposals/Partials/ProposalList';
 import VerticalCardLoading from '@/Pages/Proposals/Partials/ProposalVerticalCardLoading';

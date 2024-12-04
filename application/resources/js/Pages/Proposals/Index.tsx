@@ -1,6 +1,8 @@
 import Paginator from '@/Components/Paginator';
 import { FiltersProvider } from '@/Context/FiltersContext';
 import ProposalResults from '@/Pages/Proposals/Partials/ProposalResults';
+import { FiltersProvider } from '@/Context/FiltersContext';
+import ProposalResults from '@/Pages/Proposals/Partials/ProposalResults';
 import VerticalCardLoading from '@/Pages/Proposals/Partials/ProposalVerticalCardLoading';
 import { PageProps } from '@/types';
 import { Head, WhenVisible } from '@inertiajs/react';
@@ -65,7 +67,7 @@ export default function Index({
                 />
             </section>
 
-            <section className="proposals-wrapper container w-full">
+            <section className="proposals-wrapper container w-full mt-3">
                 <WhenVisible
                     fallback={
                         isHorizontal ? (

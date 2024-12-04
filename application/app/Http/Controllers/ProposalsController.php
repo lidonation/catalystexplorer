@@ -82,12 +82,17 @@ class ProposalsController extends Controller
     protected function getProps(Request $request): void
     {
 
+
         $this->queryParams = $request->validate([
+            ProposalSearchParams::FUNDING_STATUS()->value => 'array|nullable',
             ProposalSearchParams::FUNDING_STATUS()->value => 'array|nullable',
             ProposalSearchParams::OPENSOURCE_PROPOSALS()->value => 'bool|nullable',
             ProposalSearchParams::PROJECT_STATUS()->value => 'array|nullable',
             ProposalSearchParams::PROJECT_LENGTH()->value => 'array|nullable',
+            ProposalSearchParams::PROJECT_STATUS()->value => 'array|nullable',
+            ProposalSearchParams::PROJECT_LENGTH()->value => 'array|nullable',
             ProposalSearchParams::QUERY()->value => 'string|nullable',
+            ProposalSearchParams::COHORT()->value => 'array|nullable',
             ProposalSearchParams::COHORT()->value => 'array|nullable',
             ProposalSearchParams::QUICK_PITCHES()->value => 'bool|nullable',
             ProposalSearchParams::TYPE()->value => 'string|nullable',
