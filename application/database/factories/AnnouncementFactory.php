@@ -21,7 +21,7 @@ class AnnouncementFactory extends Factory
             'event_starts_at' => $this->faker->dateTimeBetween('now', '+1 week'),
             'event_ends_at' => $this->faker->dateTimeBetween('+1 week', '+2 weeks'),
             'user_id' => User::factory(),
-            'cta' => collect(range(1, rand(1, 2))) // Randomly generate 1 or 2 CTA items
+            'cta' => collect(range(1, $this->faker->numberBetween(1, 2)))
                 ->map(function () {
                     return [
                         'link' => $this->faker->url,
