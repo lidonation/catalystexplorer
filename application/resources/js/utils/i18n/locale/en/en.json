@@ -127,17 +127,27 @@
             "invalidUrlFormat": "Invalid URL format",
             "invalidUrl": "Invalid URL format"
         },
+        "filters":{
+            "fundingStatus": "Funding Status",
+            "opensource": "Opensource",
+            "projectStatus": "Project Status",
+            "tags":"Tags",
+            "campaigns":"Campaigns",
+            "communities": "Communities",
+            "communityCohort": "Community Cohort",
+            "proposers":"Proposers",
+            "groups": "Groups",
+            "budgets": "Budgets",
+            "projectLength": "Project Length (months)"
+        },
         "options": {
             "sort": "Sort by",
             "oldToNew": "Oldest to Newest",
             "newToOld": "Newest to Oldest",
             "lowToHigh": "Budget: Low to High",
             "highToLow": "Budget: High to Low",
-            "fundingStatus": "Funding Status",
-            "opensource": "Opensource",
             "opensourceProposals": "Opensource Proposals",
             "nonOpensourceProposals": "Non-OpenSource Proposals",
-            "projectStatus": "Project Status",
             "complete": "Complete",
             "inProgress": "In Progress",
             "unfunded": "Unfunded",
@@ -151,7 +161,9 @@
             "impactProposal": "Impact Proposals",
             "womenProposals": "Women Proposals",
             "ideafestProposals": "Ideafest Proposals",
-            "quickPitches": "Quick Pitches"
+            "quickPitches": "Quick Pitches",
+            "noResults":"No results found.",
+            "typeMore":"Try typing more characters"
         }
     },
     "posts": {
