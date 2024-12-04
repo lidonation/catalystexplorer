@@ -1,8 +1,6 @@
 import Paginator from '@/Components/Paginator';
 import { FiltersProvider } from '@/Context/FiltersContext';
 import ProposalResults from '@/Pages/Proposals/Partials/ProposalResults';
-import { FiltersProvider } from '@/Context/FiltersContext';
-import ProposalResults from '@/Pages/Proposals/Partials/ProposalResults';
 import VerticalCardLoading from '@/Pages/Proposals/Partials/ProposalVerticalCardLoading';
 import { PageProps } from '@/types';
 import { Head, WhenVisible } from '@inertiajs/react';
