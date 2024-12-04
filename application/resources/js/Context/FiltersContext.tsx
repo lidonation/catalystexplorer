@@ -59,7 +59,7 @@ export function FiltersProvider<K extends Record<string, any>>({
             const currentFilters = JSON.stringify(filters);
 
             if (previousFilters === currentFilters) {
-                return; 
+                return;
             }
 
             filtersRef.current = filters;
@@ -72,7 +72,6 @@ export function FiltersProvider<K extends Record<string, any>>({
         fetchData();
     }, [filters]);
 
-    // Add a useRef to store the previous filters state
     const filtersRef = useRef(filters);
 
     return (

@@ -123,13 +123,13 @@ class ProposalsController extends Controller
 
 
         // set defaults max and mins
-        $this->queryParams[ProposalSearchParams::MAX_BUDGET()->value] =  7000000;
+        $this->queryParams[ProposalSearchParams::MAX_BUDGET()->value] =  10000000;
         $this->queryParams[ProposalSearchParams::MIN_BUDGET()->value] =  1;
         $this->queryParams[ProposalSearchParams::MAX_PROJECT_LENGTH()->value] =  12;
         $this->queryParams[ProposalSearchParams::MIN_PROJECT_LENGTH()->value] =  0;
         
         if (empty($this->queryParams[ProposalSearchParams::BUDGETS()->value])) {
-            $this->queryParams[ProposalSearchParams::BUDGETS()->value] = [1, 7000000];
+            $this->queryParams[ProposalSearchParams::BUDGETS()->value] = [1, 10000000];
         }
 
         if (empty($this->queryParams[ProposalSearchParams::PROJECT_LENGTH()->value])) {
@@ -160,7 +160,7 @@ class ProposalsController extends Controller
         $args['limit'] = $limit;
 
         $proposals = app(ProposalRepository::class);
-
+        // dd($args);
         $builder = $proposals->search(
             $this->queryParams[ProposalSearchParams::QUERY()->value] ?? '',
             $args
@@ -207,6 +207,7 @@ class ProposalsController extends Controller
         if (isset($this->queryParams[ProposalSearchParams::FUNDING_STATUS()->value])) {
             $fundingStatuses = implode(',', $this->queryParams[ProposalSearchParams::FUNDING_STATUS()->value]);
             $filters[] = "funding_status IN [{$fundingStatuses}]";
+
         }
 
         if (isset($this->queryParams[ProposalSearchParams::PROJECT_STATUS()->value])) {
@@ -263,6 +264,11 @@ class ProposalsController extends Controller
             $filters[] = "(project_length  {$projectLength->first()} TO  {$projectLength->last()})";
         }
 
+        if (!empty($this->queryParams[ProposalSearchParams::COHORT()->value])) {
+            $cohortFilters = array_map(fn($cohort) => "{$cohort} = 1", $this->queryParams[ProposalSearchParams::COHORT()->value]);
+
+            $filters[] = '(' . implode(' OR ', $cohortFilters) . ')';
+        }
 
         //
         //        if ($this->fundingStatus === 'paid') {

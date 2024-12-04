@@ -1,7 +1,9 @@
-import { Check, ChevronDown } from 'lucide-react';
+import { cn } from '@/lib/utils';
+import { ChevronDown } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Popover, PopoverContent, PopoverTrigger } from './Popover';
+import Checkbox from './Checkbox';
 
 type SelectProps = {
     isMultiselect?: boolean;
@@ -13,6 +15,7 @@ type SelectProps = {
     }[];
     context?: string;
     basic?: boolean;
+    className?: string;
 };
 
 export default function Selector({
@@ -21,6 +24,7 @@ export default function Selector({
     options,
     selectedItems = [],
     setSelectedItems,
+    className,
     ...props
 }: SelectProps) {
     const [open, setOpen] = useState(false);
@@ -29,7 +33,9 @@ export default function Selector({
 
     let currentOption = null;
 
-    let placeholder = isMultiselect ? `${t('select')} ` : `${t('select')} ${context}`;
+    let placeholder = isMultiselect
+        ? `${t('select')} `
+        : `${t('select')} ${context}`;
 
     if (!isMultiselect && selectedItems) {
         currentOption = options?.find(
@@ -43,10 +49,7 @@ export default function Selector({
 
         if (!isMultiselect) {
             setSelectedItems(value == selectedItems ? [] : value);
-
             currentOption = options?.find((option) => value == option.value);
-            console.log({ currentOption });
-
             return;
         }
 
@@ -61,10 +64,11 @@ export default function Selector({
 
     const onClearSelection = () => {
         selectedItems.length ? setSelectedItems([]) : '';
+        setOpen(false);
     };
 
     return (
-        <div className="rounded-lg bg-background">
+        <div className={cn('rounded-lg bg-background', className)}>
             <Popover open={open} onOpenChange={setOpen}>
                 <PopoverTrigger asChild>
                     <button
@@ -73,8 +77,8 @@ export default function Selector({
                         aria-label={t('select') + ' ' + t('option')}
                         className="border-input placeholder:text-muted-foreground flex h-9 w-full items-center justify-between rounded-md border bg-transparent px-3 py-2 text-sm shadow-sm ring-offset-background disabled:cursor-not-allowed disabled:opacity-50"
                     >
-                        <span className="flex items-center gap-2">
-                            <span>
+                        <span className="flex items-center gap-2 overflow-hidden">
+                            <span className="overflow-clip text-nowrap text-sm">
                                 {currentOption
                                     ? currentOption.label
                                     : placeholder}
@@ -106,16 +110,23 @@ export default function Selector({
                             <div
                                 key={option.value}
                                 onClick={() => handleSelect(option.value)}
-                                className="relative flex w-full cursor-default select-none items-center rounded-sm !bg-background py-1.5 pl-8 pr-2 text-sm outline-none hover:!bg-background-lighter focus:bg-background-lighter aria-selected:bg-background-lighter data-[disabled]:pointer-events-none data-[disabled]:opacity-50"
+                                className="relative flex w-full cursor-default select-none items-center justify-between rounded-sm !bg-background px-3 py-1.5 text-sm outline-none hover:!bg-background-lighter focus:bg-background-lighter aria-selected:bg-background-lighter data-[disabled]:pointer-events-none data-[disabled]:opacity-50"
                             >
-                                <span className="absolute left-2 flex h-3.5 w-3.5 items-center justify-center">
-                                    {(isMultiselect
-                                        ? selectedItems?.includes(option.value)
-                                        : selectedItems == option.value) && (
-                                        <Check className="h-4 w-4" />
-                                    )}
-                                </span>
                                 <span>{option.label}</span>
+
+                                <Checkbox
+                                    id={option.value}
+                                    checked={
+                                        isMultiselect
+                                            ? selectedItems?.includes(
+                                                  option.value,
+                                              )
+                                            : selectedItems == option.value
+                                    }
+                                    value={option.value}
+                                    onChange={() => {}}
+                                    className="checked:focus:bg-primary mr-2 h-4 w-4 checked:bg-primary checked:hover:bg-primary focus:border-0 focus:ring-0"
+                                />
                             </div>
                         ))}
                     </div>
