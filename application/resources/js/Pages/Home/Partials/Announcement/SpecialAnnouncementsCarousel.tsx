@@ -1,5 +1,6 @@
 import SpecialAnnouncementCard from "./SpecialAnnouncementsCard";
-import AnnouncementData = App.DataTransferObjects.AnnouncementData; import {
+import AnnouncementData = App.DataTransferObjects.AnnouncementData;
+import {
     Carousel,
     CarouselContent,
     CarouselItem,
