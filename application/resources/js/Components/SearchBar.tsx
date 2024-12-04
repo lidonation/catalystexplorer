@@ -101,7 +101,7 @@ const SearchVariants = ({
                                         checked={selected}
                                         value={variant}
                                         onChange={() => {}}
-                                        className="checked:bg-primary"
+                                        className="mr-2 h-4 w-4 checked:bg-primary checked:hover:bg-primary focus:border-0 focus:ring-0 checked:focus:bg-primary"
                                     />
                                 </div>
                             )}

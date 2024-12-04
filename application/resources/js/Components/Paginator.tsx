@@ -13,8 +13,8 @@ import Selector from './Select';
 
 type PaginationComponentProps<T> = {
     pagination: PaginatedData<T>;
-    setPerPage?: (updatedItems: any) => void;
-    setCurrentPage?: (updatedItems: any) => void;
+    setPerPage?: (updatedItems: number) => void;
+    setCurrentPage?: (updatedItems: number) => void;
 };
 
 const PaginationComponent: React.FC<PaginationComponentProps<any>> = ({
@@ -23,6 +23,10 @@ const PaginationComponent: React.FC<PaginationComponentProps<any>> = ({
     setCurrentPage,
 }) => {
     const { filters, setFilters } = useFilterContext<ProposalSearchParams>();
+
+    const setPagination = (key: keyof ProposalSearchParams, value: number) => {
+        setFilters(key, value);
+    };
 
     const {
         current_page,
@@ -42,7 +46,7 @@ const PaginationComponent: React.FC<PaginationComponentProps<any>> = ({
                     context="Per Page"
                     selectedItems={per_page}
                     setSelectedItems={(value) =>
-                        setFilters(ProposalParamsEnum.LIMIT, value)
+                        setPagination(ProposalParamsEnum.LIMIT, value)
                     }
                     isMultiselect={false}
                     options={[
@@ -62,7 +66,7 @@ const PaginationComponent: React.FC<PaginationComponentProps<any>> = ({
                             onClick={
                                 prev_page_url
                                     ? () =>
-                                          setFilters(
+                                          setPagination(
                                               ProposalParamsEnum.PAGE,
                                               current_page - 1,
                                           )
@@ -89,7 +93,7 @@ const PaginationComponent: React.FC<PaginationComponentProps<any>> = ({
                                         ) : (
                                             <button
                                                 onClick={() =>
-                                                    setFilters(
+                                                    setPagination(
                                                         ProposalParamsEnum.PAGE,
                                                         link.label,
                                                     )
@@ -120,7 +124,7 @@ const PaginationComponent: React.FC<PaginationComponentProps<any>> = ({
                             onClick={
                                 next_page_url
                                     ? () =>
-                                          setFilters(
+                                          setPagination(
                                               ProposalParamsEnum.PAGE,
                                               current_page + 1,
                                           )
