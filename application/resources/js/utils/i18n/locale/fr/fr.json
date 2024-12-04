@@ -48,6 +48,11 @@
     "selected": "choisie",
     "clear": "claire",
     "selection": "sélection",
+    "link": "lien",
+    "select": "Sélectionner",
+    "selected": "choisie",
+    "clear": "claire",
+    "selection": "sélection",
     "app": {
         "name": "Catalyst Explorer",
         "contactEmail": "support@lidonation.com",
@@ -112,17 +117,27 @@
             "invalidUrlFormat": "Format d'URL invalide",
             "invalidUrl": "Format d'URL invalide"
         },
+        "filters": {
+            "fundingStatus": "Statut de financement",
+            "opensource": "Opensource",
+            "projectStatus": "Statut du projet",
+            "tags": "Balises",
+            "campaigns": "Campagnes",
+            "communities": "Communautés",
+            "communityCohort": "Cohorte communautaire",
+            "proposers": "Proposers",
+            "groups": "Groupes",
+            "budgets": "Budgets",
+            "projectLength": "Durée du projet (mois)"
+        },
         "options": {
             "sort": "Trier par",
             "oldToNew": "Du plus ancien au plus récent",
             "newToOld": "Du plus récent au plus ancien",
             "lowToHigh": "Budget : Du plus bas au plus élevé",
             "highToLow": "Budget : Du plus élevé au plus bas",
-            "fundingStatus": "Statut de financement",
-            "opensource": "Open source",
             "opensourceProposals": "Propositions open source",
             "nonOpensourceProposals": "Propositions non open source",
-            "projectStatus": "Statut du projet",
             "complete": "Terminé",
             "inProgress": "En cours",
             "unfunded": "Non financé",
@@ -137,7 +152,9 @@
             "womenProposals": "Propositions de femmes",
             "ideafestProposals": "Propositions les plus idéales",
             "quickPitches": "Présentations rapides",
-            "allProposals": "Toutes les propositions"
+            "allProposals": "Toutes les propositions",
+            "noResults": "Aucun résultat trouvé.",
+            "typeMore": "Essayez de saisir plus de caractères."
         }
     },
     "posts": {

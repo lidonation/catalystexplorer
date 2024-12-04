@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Database\Factories;
 
@@ -24,7 +26,7 @@ class IdeascaleProfileFactory extends Factory
         return [
             'ideascale_id' => $this->faker->numberBetween(1, 1000),
             'username' => $this->faker->userName,
-            'email' => $this->faker->unique()->safeEmail,
+            'email' => $this->faker->unique()->safeEmail . $this->faker->numberBetween(1, 1000),
             'name' => $this->faker->name,
             'bio' => $this->faker->text(200),
             'created_at' => now(),
