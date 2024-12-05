@@ -11,6 +11,7 @@ import { ProposalSearchParams } from '../../../types/proposal-search-params';
 import CardLayoutSwitcher from './Partials/CardLayoutSwitcher';
 import ProposalFilters from './Partials/ProposalFilters';
 import HorizontaCardLoading from './Partials/ProposalHorizontalCardLoading';
+import ProposalSearchControls from './Partials/ProposalSearchControls';
 import ProposalData = App.DataTransferObjects.ProposalData;
 
 interface HomePageProps extends Record<string, unknown> {
@@ -52,6 +53,10 @@ export default function Index({
                 </div>
             </header>
 
+            <section className="sticky top-0 z-50">
+                <ProposalSearchControls />
+            </section>
+
             <section className="container flex w-full flex-col items-center justify-center">
                 <ProposalFilters />
             </section>
@@ -65,7 +70,7 @@ export default function Index({
                 />
             </section>
 
-            <section className="proposals-wrapper container w-full mt-3">
+            <section className="proposals-wrapper container mt-3 w-full">
                 <WhenVisible
                     fallback={
                         isHorizontal ? (

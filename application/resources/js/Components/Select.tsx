@@ -69,14 +69,14 @@ export default function Selector({
     };
 
     return (
-        <div className={cn('rounded-lg bg-background', className)}>
+        <div className={cn('rounded-lg bg-background h-full', className)}>
             <Popover open={open} onOpenChange={setOpen}>
                 <PopoverTrigger asChild>
                     <button
                         role="combobox"
                         aria-expanded={open}
                         aria-label={t('select') + ' ' + t('option')}
-                        className="border-input placeholder:text-muted-foreground flex h-9 w-full items-center justify-between rounded-md border bg-transparent px-3 py-2 text-sm shadow-sm ring-offset-background disabled:cursor-not-allowed disabled:opacity-50"
+                        className="border-input placeholder:text-muted-foreground flex h-full w-full items-center justify-between rounded-md border bg-transparent px-3 py-2 text-sm shadow-sm ring-offset-background disabled:cursor-not-allowed disabled:opacity-50"
                     >
                         <span className="flex items-center gap-2 overflow-hidden">
                             <span className="overflow-clip text-nowrap text-sm">

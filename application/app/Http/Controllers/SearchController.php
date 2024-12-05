@@ -62,7 +62,7 @@ class SearchController extends Controller
             }
         }
 
-        if (empty($filterList) || in_array('posts', $filterList)) {
+        if (empty($filterList) || in_array('articles', $filterList)) {
             $posts->setQuery([
                 'tags' => 'project-catalyst',
                 'search' => $searchTerm
@@ -84,7 +84,7 @@ class SearchController extends Controller
             }
         }
 
-        if (empty($filterList) || in_array('posts', $filterList)) {
+        if (empty($filterList) || in_array('articles', $filterList)) {
             $searchData['posts'] = Inertia::optional(function () use ($posts, $searchTerm) {
                 $posts->setQuery([
                     'tags' => 'project-catalyst',
