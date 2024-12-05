@@ -71,29 +71,29 @@ class ProposalRepository extends Repository
                     'campaign.label',
                     'campaign.amount',
                 ];
-                // $args['facets'] = [
-                //     'tags',
-                //     'tags.title',
-                //     'funding_status',
-                //     'status',
-                //     'campaign',
-                //     'fund',
-                //     'opensource',
-                //     'amount_requested_USD',
-                //     'amount_requested_ADA',
-                //     'amount_received_ADA',
-                //     'amount_received_USD',
-                //     'amount_awarded_ADA',
-                //     'amount_awarded_USD',
-                //     'completed_amount_paid_USD',
-                //     'completed_amount_paid_ADA',
-                //     'amount_requested',
-                //     'project_length',
-                //     'impact_proposal',
-                //     'woman_proposal',
-                //     'has_quick_pitch',
-                //     'ideafest_proposal',
-                // ];
+                $args['facets'] = [
+                    'tags',
+                    'tags.title',
+                    'funding_status',
+                    'status',
+                    'campaign',
+                    'fund',
+                    'opensource',
+                    'amount_requested_USD',
+                    'amount_requested_ADA',
+                    'amount_received_ADA',
+                    'amount_received_USD',
+                    'amount_awarded_ADA',
+                    'amount_awarded_USD',
+                    'completed_amount_paid_USD',
+                    'completed_amount_paid_ADA',
+                    'amount_requested',
+                    'project_length',
+                    'impact_proposal',
+                    'woman_proposal',
+                    'has_quick_pitch',
+                    'ideafest_proposal',
+                ];
 
 
                 //                if ((bool) $this->sortBy && (bool) $this->sortOrder) {
@@ -102,7 +102,7 @@ class ProposalRepository extends Repository
 
                 //                $options['offset'] = ! $returnBuilder ? (($this->currentPage ?? 1) - 1) * $this->limit : 0;
                 //                $options['limit'] = $this->limit;
-                return $index->search($query, );
+                return $index->search($query, $args);
             }
         );
     }
