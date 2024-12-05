@@ -10,6 +10,7 @@ use App\Models\Proposal;
 use Laravel\Scout\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Fluent;
+use App\Jobs\SyncProposalImages;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Stringable;
 use JetBrains\PhpStorm\ArrayShape;
@@ -67,6 +68,8 @@ class ProposalsController extends Controller
     public function index(Request $request): Response
     {
         $this->getProps($request);
+
+        SyncProposalImages::dispatch();
 
         $proposals = empty($this->queryParams) ? $this->getRandomProposals() : $this->query();
 
