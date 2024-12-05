@@ -13,7 +13,6 @@ import ProposalFilters from './Partials/ProposalFilters';
 import HorizontaCardLoading from './Partials/ProposalHorizontalCardLoading';
 import FundsFilter from './Partials/FundsFilter';
 import ProposalData = App.DataTransferObjects.ProposalData;
-import FundsData = App.DataTransferObjects.FundData;
 
 interface HomePageProps extends Record<string, unknown> {
     proposals: PaginatedData<ProposalData[]>;
