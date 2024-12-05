@@ -115,6 +115,7 @@ pest:
       cp application/.env.testing application/.env
       docker-compose -f docker-compose.testing.yml up -d
       sleep 5
+      uname -m 
       docker logs catalystexplorer.com
       docker-compose -f docker-compose.testing.yml exec -t catalystexplorer.com sh -c '
        php artisan migrate:fresh --force && \
