@@ -102,7 +102,7 @@ export default function Selector({
                             <button
                                 aria-label={t('clear') + ' ' + t('select')}
                                 onClick={onClearSelection}
-                                className="mr-2 hover:text-primary focus:outline-none"
+                                className="px-3 hover:text-primary focus:outline-none"
                             >
                                 clear
                             </button>
@@ -126,7 +126,7 @@ export default function Selector({
                                     }
                                     value={option.value}
                                     onChange={() => {}}
-                                    className="checked:focus:bg-primary mr-2 h-4 w-4 checked:bg-primary checked:hover:bg-primary focus:border-0 focus:ring-0"
+                                    className="checked:focus:bg-primary h-4 w-4 checked:bg-primary checked:hover:bg-primary focus:border-0 focus:ring-0"
                                 />
                             </div>
                         ))}
