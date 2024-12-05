@@ -10,7 +10,7 @@ use Spatie\TypeScriptTransformer\Attributes\Optional as TypeScriptOptional;
 class CampaignData extends Data
 {
   public function __construct(
-    public int $id,
+    public ?int $id,
 
     #[TypeScriptOptional]
     public ?int $fund_id,
