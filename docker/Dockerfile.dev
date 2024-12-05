@@ -58,7 +58,10 @@ RUN apt-get update && apt-get upgrade -y \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* 
 
-
+# add FrankenPHP binary
+RUN RELEASE_URL="https://github.com/dunglas/frankenphp/releases/download/v$FRANKENPHP_VERSION/frankenphp-$FRANKENPHP_ARCH" && \
+    curl -L "$RELEASE_URL" -o /usr/local/bin/frankenphp && \
+    chmod +x /usr/local/bin/frankenphp
 
 RUN setcap "cap_net_bind_service=+ep" /usr/bin/php8.3
 
