@@ -60,6 +60,24 @@
         "contactEmail": "support@lidonation.com",
         "appLogoAlt": "Catalyst Explorer logo."
     },
+    "searchResults":{
+        "noResults": {
+            "title": "No results found",
+            "description": "Your search \"{{query}}\" did not match any results. Please try again."
+        },
+        "tabs": {
+            "proposals": "Proposals",
+            "posts": "Posts",
+            "people": "People",
+            "groups": "Groups",
+            "communities": "Communities",
+            "reviews": "Reviews"
+        },
+        "results":{
+            "title": "Search results for \"{{query}}\"",
+            "viewMore": "View more"
+        }
+    },
     "navigation": {
         "mobile": {
             "sidebar": "Mobile sidebar navigation section",
@@ -108,6 +126,9 @@
         "seeMore": "See more",
         "totalProposals": "Total Proposals",
         "vs": "vs last fund"
+    },
+    "announcements":{
+        "none": "No announcements available"
     },
     "proposals": {
         "allProposals": "All proposals",

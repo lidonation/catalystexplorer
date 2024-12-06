@@ -1,95 +1,79 @@
+import {
+    SearchResultCounts,
+    SearchResultData,
+    TabConfig,
+} from '@/types/search';
+import { TabGroup, TabPanel, TabPanels } from '@headlessui/react';
 import { Head, WhenVisible } from '@inertiajs/react';
+import { useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
+import DynamicSearchResults from './Partials/DynamicSearchResults';
+import ResultTabs from './Partials/ResultTabs';
+import SearchResultsLoading from './Partials/SearchResultsLoading';
 
-type SearchResultsProps = {
-    counts: any;
-    proposals: any;
-    people: any;
-    groups: any;
-    communities: any;
-    reviews: any;
-    posts: any;
-};
+interface SearchResultsProps extends SearchResultData {
+    counts: SearchResultCounts;
+}
 
-const SearchResults = ({
-    counts,
-    proposals,
-    people,
-    groups,
-    communities,
-    reviews,
-    posts,
-}: SearchResultsProps) => {
+export const TAB_CONFIG: TabConfig[] = [];
+
+const SearchResults = ({ counts, ...results }: SearchResultsProps) => {
     const search = window.location.search;
+    const { t } = useTranslation();
     const params = new URLSearchParams(search);
     const query = params.get('q');
     const filters = params.get('f');
+    const possibleFilters = filters
+        ? filters.split(',')
+        : Object.keys(t('searchResults.tabs', { returnObjects: true }));
+
+    useEffect(() => {
+        TAB_CONFIG.length = 0;
+        possibleFilters.forEach((filter) => {
+            TAB_CONFIG.push({
+                name: filter as keyof SearchResultData,
+                label:
+                    t(`searchResults.tabs.${filter}`).charAt(0).toUpperCase() +
+                    t(`searchResults.tabs.${filter}`).slice(1),
+            });
+        });
+    }, [filters]);
 
     return (
         <>
             <Head title="Search Results" />
-            <div className="container min-h-screen">
-                <div className="flex w-full flex-col items-center justify-center">
-                    <h1>Search Results</h1>
-                    <p>Query: {query}</p>
-                    <p>Filters: {filters}</p>
-                    <p>{JSON.stringify(counts)}</p>
-                </div>
-
+            <div className="container min-h-screen py-4">
                 <div className="flex w-full flex-col">
-                    <WhenVisible data="proposals" fallback="loading">
-                        <div className="flex flex-col gap-2">
-                            <span className="title-1 font-bold">Proposals</span>
-                            <div className="overflow-hidden break-words">
-                                {JSON.stringify(proposals)}
-                            </div>
-                        </div>
-                    </WhenVisible>
-
-                    <div className='h-screen w-full'>Testing WhenVisible</div>
-
-                    <WhenVisible data="people" fallback="loading...">
-                        <div className="mt-4 flex flex-col gap-2">
-                            <span className="title-1 font-bold">People</span>
-                            <div className="overflow-hidden break-words">
-                                {JSON.stringify(people)}
-                            </div>
-                        </div>
-                    </WhenVisible>
-                    <WhenVisible data="groups" fallback="loading...">
-                        <div className="mt-80 flex flex-col gap-2">
-                            <span className="title-1 font-bold">Groups</span>
-                            <div className="overflow-hidden break-words">
-                                {JSON.stringify(groups)}
-                            </div>
-                        </div>
-                    </WhenVisible>
-                    <WhenVisible data="communities" fallback="loading...">
-                        <div className="mt-80 flex flex-col gap-2">
-                            <span className="title-1 font-bold">
-                                Communities
-                            </span>
-                            <div className="overflow-hidden break-words">
-                                {JSON.stringify(communities)}
-                            </div>
-                        </div>
-                    </WhenVisible>
-                    <WhenVisible data="reviews" fallback="loading...">
-                        <div className="mt-80 flex flex-col gap-2">
-                            <span className="title-1 font-bold">Reviews</span>
-                            <div className="overflow-hidden break-words">
-                                {JSON.stringify(reviews)}
-                            </div>
-                        </div>
-                    </WhenVisible>
-                    <WhenVisible data="posts" fallback="loading...">
-                        <div className="mt-80 flex flex-col gap-2">
-                            <span className="title-1 font-bold">Posts</span>
-                            <div className="overflow-hidden break-words">
-                                {JSON.stringify(posts)}
-                            </div>
-                        </div>
-                    </WhenVisible>
+                    <h1 className="title-3">
+                        {t('searchResults.results.title', { query })}
+                    </h1>
                 </div>
+
+                <TabGroup>
+                    <ResultTabs counts={counts} tabConfig={TAB_CONFIG} />
+                    <TabPanels>
+                        {TAB_CONFIG.map((tab) => (
+                            <TabPanel key={tab.name}>
+                                <WhenVisible
+                                    data={tab.name}
+                                    fallback={
+                                        <SearchResultsLoading
+                                            type={tab.name}
+                                            count={5}
+                                        />
+                                    }
+                                >
+                                    <div className="flex flex-col gap-2">
+                                        <DynamicSearchResults
+                                            name={tab.name}
+                                            data={results[tab.name] as any}
+                                        />
+                                    </div>
+                                </WhenVisible>
+                            </TabPanel>
+                        ))}
+                    </TabPanels>
+                </TabGroup>
             </div>
         </>
     );

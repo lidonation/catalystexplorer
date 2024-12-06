@@ -48,15 +48,28 @@
     "selected": "choisie",
     "clear": "claire",
     "selection": "sélection",
-    "link": "lien",
-    "select": "Sélectionner",
-    "selected": "choisie",
-    "clear": "claire",
-    "selection": "sélection",
     "app": {
         "name": "Catalyst Explorer",
         "contactEmail": "support@lidonation.com",
         "appLogoAlt": "Logo de Catalyst Explore."
+    },
+    "searchResults": {
+        "noResults": {
+            "title": "Aucun résultat trouvé",
+            "description": "Votre recherche \"{{query}}\" n'a donné aucun résultat. Veuillez réessayer."
+        },
+        "tabs": {
+            "proposals": "Propositions",
+            "posts": "Publications",
+            "people": "Personnes",
+            "groups": "Groupes",
+            "communities": "Communautés",
+            "reviews": "Avis"
+        },
+        "results": {
+            "title": "Résultats de recherche pour \"{{query}}\"",
+            "viewMore": "Voir plus"
+        }
     },
     "navigation": {
         "mobile": {
@@ -99,6 +112,9 @@
     "metric": {
         "totalProposals": "Total des propositions",
         "vs": "vs. dernier fonds"
+    },
+    "announcements": {
+        "none": "Aucune annonce"
     },
     "proposals": {
         "CSVs": "CSVs de propositions",
