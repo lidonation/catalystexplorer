@@ -6,8 +6,8 @@ ARG WWWGROUP
 ARG NODE_VERSION=20
 ARG MYSQL_CLIENT="mysql-client"
 ARG POSTGRES_VERSION=15
-ARG FRANKENPHP_VERSION=1.2.5
-ARG FRANKENPHP_ARCH=linux-aarch64
+ARG FRANKENPHP_VERSION=1.3.3
+ARG FRANKENPHP_ARCH=linux-x86_64
 
 WORKDIR /var/www/html
 
@@ -45,6 +45,7 @@ RUN apt-get update && apt-get upgrade -y \
     && npm install -g npm \
     && npm install -g pnpm \
     && npm install -g bun \
+    && npm install -g svgo \
     && curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | gpg --dearmor | tee /etc/apt/keyrings/yarn.gpg >/dev/null \
     && echo "deb [signed-by=/etc/apt/keyrings/yarn.gpg] https://dl.yarnpkg.com/debian/ stable main" > /etc/apt/sources.list.d/yarn.list \
     && curl -sS https://www.postgresql.org/media/keys/ACCC4CF8.asc | gpg --dearmor | tee /etc/apt/keyrings/pgdg.gpg >/dev/null \
@@ -55,13 +56,13 @@ RUN apt-get update && apt-get upgrade -y \
     && apt-get install -y postgresql-client-$POSTGRES_VERSION \
     && apt-get -y autoremove \
     && apt-get clean \
-    && apt-get install -y netcat  \
-    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
-    && curl -L# "https://github.com/dunglas/frankenphp/releases/download/v${FRANKENPHP_VERSION}/frankenphp-${FRANKENPHP_ARCH}" -o /var/wwwfrankenphp \
-    && chmod +x /var/wwwfrankenphp \
-    && apt-get install jpegoptim optipng pngquant gifsicle libavif-bin\
-    && npm install -g svgo
+    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* 
     
+# add FrankenPHP binary
+RUN RELEASE_URL="https://github.com/dunglas/frankenphp/releases/download/v$FRANKENPHP_VERSION/frankenphp-$FRANKENPHP_ARCH" && \
+    curl -L "$RELEASE_URL" -o /usr/local/bin/frankenphp && \
+    chmod +x /usr/local/bin/frankenphp
+
 
 RUN setcap "cap_net_bind_service=+ep" /usr/bin/php8.3
 
