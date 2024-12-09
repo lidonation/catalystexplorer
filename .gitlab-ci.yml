@@ -307,7 +307,9 @@ build_web_base:
       docker login -u="${DOCKER_USERNAME}" -p="${DOCKER_PASSWORD}"
     fi
     echo "Building Dockerfile with tags $CI_APPLICATION_REPOSITORY/web-app-base:$WEB_BASE_IMAGE_VER and $CI_APPLICATION_REPOSITORY/web-app-base:latest ..."
-    echo "Setting up Docker Buildx for multi-arch build..." docker buildx create --use --name multiarch-builder docker buildx inspect multiarch-builder --bootstrap
+    echo "Setting up Docker Buildx for multi-arch build..." 
+    docker buildx create --use --name multiarch-builder 
+    docker buildx inspect multiarch-builder --bootstrap
 
     echo "Building and pushing Docker image for multiple architectures..." 
     docker buildx build --network host \ 
