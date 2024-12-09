@@ -110,15 +110,15 @@ pest:
     if [[ -n $DOCKER_PASSWORD ]]; then
       docker login -u="${DOCKER_USERNAME}" -p="${DOCKER_PASSWORD}"
     fi
-    # cp application/.env.testing application/.env
-    # docker-compose -f docker-compose.testing.yml up -d
-    # sleep 5
-    # docker-compose -f docker-compose.testing.yml exec -t catalystexplorer.com sh -c 'uname -m'
-    # docker logs catalystexplorer.com
-    # docker-compose -f docker-compose.testing.yml exec -t catalystexplorer.com sh -c '
-    #  php artisan migrate:fresh --force && \
-    #  php artisan optimize:clear  && \
-    #  php artisan test --filter=arch'
+    cp application/.env.testing application/.env
+    docker-compose -f docker-compose.testing.yml up -d
+    sleep 5
+    docker-compose -f docker-compose.testing.yml exec -t catalystexplorer.com sh -c 'uname -m'
+    docker logs catalystexplorer.com
+    docker-compose -f docker-compose.testing.yml exec -t catalystexplorer.com sh -c '
+     php artisan migrate:fresh --force && \
+     php artisan optimize:clear  && \
+     php artisan test --filter=arch'
   rules:
   - if: '$CI_COMMIT_BRANCH != "main" && ($DEPLOY_WEBSITE == "true")'
   dependencies:
