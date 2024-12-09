@@ -1,4 +1,5 @@
 import { RangePicker } from '@/Components/RangePicker';
+import SearchBar from '@/Components/SearchBar';
 import { SearchSelect } from '@/Components/SearchSelect';
 import Selector from '@/Components/Select';
 import { useFilterContext } from '@/Context/FiltersContext';
@@ -10,34 +11,9 @@ export default function ProposalFilters() {
     const { filters, setFilters } = useFilterContext<ProposalSearchParams>();
 
     const { t } = useTranslation();
-    const sortingOptions = [
-        { value: 'created_at:asc', label: t('proposals.options.oldToNew') },
-        { value: 'created_at:desc', label: t('proposals.options.newToOld') },
-        {
-            value: 'amount_requested:asc',
-            label: t('proposals.options.lowToHigh'),
-        },
-        {
-            value: 'amount_requested:desc',
-            label: t('proposals.options.highToLow'),
-        },
-    ];
-
     return (
         <>
-            <div className="container mx-auto flex justify-end px-0 pb-4 pt-6">
-                <Selector
-                    className="min-w-64"
-                    isMultiselect={false}
-                    options={sortingOptions}
-                    setSelectedItems={(value) =>
-                        setFilters(ProposalParamsEnum.SORTS, value)
-                    }
-                    selectedItems={filters[ProposalParamsEnum.SORTS]}
-                    context={t('proposals.options.sort')}
-                />
-            </div>
-            <div className="w-full rounded-xl bg-background p-4">
+            <div className="container w-full rounded-xl bg-background p-4">
                 <div className="grid grid-cols-2 gap-x-4 gap-y-3 rounded-xl md:grid-cols-2 lg:grid-cols-5">
                     <div className="col-span-1 flex flex-col gap-2 pb-4">
                         <span>{t('proposals.filters.fundingStatus')}</span>
