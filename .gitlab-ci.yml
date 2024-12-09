@@ -287,7 +287,7 @@ build_web:
     docker buildx inspect multiarch-builder --bootstrap
 
     docker buildx build --platform linux/amd64,linux/arm64,linux/arm64/v8 \
-    -f ./docker/Dockerfile.base \
+    -f ./docker/Dockerfile \
     -t "$CI_APPLICATION_REPOSITORY/web-app:$CI_APPLICATION_TAG" \
     -t "$CI_APPLICATION_REPOSITORY/web-app:latest" \
     --push .
