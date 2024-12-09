@@ -287,9 +287,9 @@ build_web:
     fi
 
     echo "Building Dockerfile with tags $CI_APPLICATION_REPOSITORY/web-app-base:$WEB_BASE_IMAGE_VER and $CI_APPLICATION_REPOSITORY/web-app-base:latest ..."
-    docker build --network host -f ./docker/Dockerfile \ 
-    -t "$CI_APPLICATION_REPOSITORY/web-app:$CI_APPLICATION_TAG" \ 
-    -t "$CI_APPLICATION_REPOSITORY/web-app:latest" . 
+    docker build --network host -f ./docker/Dockerfile \
+    -t "$CI_APPLICATION_REPOSITORY/web-app:$CI_APPLICATION_TAG" \
+    -t "$CI_APPLICATION_REPOSITORY/web-app:latest" .
     docker push "$CI_APPLICATION_REPOSITORY/web-app:$CI_APPLICATION_TAG" 
     docker push "$CI_APPLICATION_REPOSITORY/web-app:latest"
 
