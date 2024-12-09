@@ -11,15 +11,93 @@ function ProposalSearchControls() {
     const { t } = useTranslation();
 
     const sortingOptions = [
-        { value: 'created_at:asc', label: t('proposals.options.oldToNew') },
-        { value: 'created_at:desc', label: t('proposals.options.newToOld') },
         {
-            value: 'amount_requested:asc',
-            label: t('proposals.options.lowToHigh'),
+            label: t('proposals.options.votesCastLowToHigh'), // Votes Cast: Low to High
+            value: 'votes_cast:asc',
         },
         {
+            label: t('proposals.options.votesCastHighToLow'), // Votes Cast: High to Low
+            value: 'votes_cast:desc',
+        },
+        {
+            label: t('proposals.options.budgetHighToLow'), // Budget: High to Low
             value: 'amount_requested:desc',
-            label: t('proposals.options.highToLow'),
+        },
+        {
+            label: t('proposals.options.budgetLowToHigh'), // Budget: Low to High
+            value: 'amount_requested:asc',
+        },
+        {
+            label: t('proposals.options.communityRankingHighToLow'), // Community Ranking: High to Low
+            value: 'ranking_total:desc',
+        },
+        {
+            label: t('proposals.options.communityRankingLowToHigh'), // Community Ranking: Low to High
+            value: 'ranking_total:asc',
+        },
+        {
+            label: t('proposals.options.paymentsReceivedHighToLow'), // Payments Received: High to Low
+            value: 'amount_received:desc',
+        },
+        {
+            label: t('proposals.options.projectLengthHighToLow'), // Project Length: High to Low
+            value: 'project_length:desc',
+        },
+        {
+            label: t('proposals.options.projectLengthLowToHigh'), // Project Length: Low to High
+            value: 'project_length:asc',
+        },
+        {
+            label: t('proposals.options.paymentsReceivedLowToHigh'), // Payments Received: Low to High
+            value: 'amount_received:asc',
+        },
+        {
+            label: t('proposals.options.yesVotesHighToLow'), // Yes Votes: High to Low
+            value: 'yes_votes_count:desc',
+        },
+        {
+            label: t('proposals.options.yesVotesLowToHigh'), // Yes Votes: Low to High
+            value: 'yes_votes_count:asc',
+        },
+        {
+            label: t('proposals.options.noVotesLowToHigh'), // No Votes: Low to High
+            value: 'no_votes_count:asc',
+        },
+        {
+            label: t('proposals.options.noVotesHighToLow'), // No Votes: High to Low
+            value: 'no_votes_count:desc',
+        },
+        {
+            label: t('proposals.options.ratingHighToLow'), // Rating: High to Low
+            value: 'ca_rating:desc',
+        },
+        {
+            label: t('proposals.options.ratingLowToHigh'), // Rating: Low to High
+            value: 'ca_rating:asc',
+        },
+        {
+            label: t('proposals.options.impactAlignmentHighToLow'), // Impact Alignment: High to Low
+            value: 'alignment_score:desc',
+        },
+        {
+            label: t('proposals.options.impactAlignmentLowToHigh'), // Impact Alignment: Low to High
+            value: 'alignment_score:asc',
+        },
+        {
+            label: t('proposals.options.feasibilityHighToLow'), // Feasibility: High to Low
+            value: 'feasibility_score:desc',
+        },
+        {
+            label: t('proposals.options.feasibilityLowToHigh'), // Feasibility: Low to High
+            value: 'feasibility_score:asc',
+        },
+        {
+            label: t('proposals.options.valueForMoneyHighToLow'), // Value for money: High to Low
+            value: 'auditability_score:desc',
+        },
+        {
+            label: t('proposals.options.valueForMoneyLowToHigh'), // Value for money: Low to High
+            value: 'auditability_score:asc',
         },
     ];
 
@@ -36,14 +114,19 @@ function ProposalSearchControls() {
                 />
 
                 <Selector
-                    className="h-10 min-w-64"
                     isMultiselect={false}
-                    options={sortingOptions}
+                    selectedItems={filters[ProposalParamsEnum.SORTS]}
                     setSelectedItems={(value) =>
                         setFilters(ProposalParamsEnum.SORTS, value)
                     }
-                    selectedItems={filters[ProposalParamsEnum.SORTS]}
-                    context={t('proposals.options.sort')}
+                    options={sortingOptions}
+                    hideCheckbox={true}
+                    placeholder={t('proposals.options.sort')}
+                    className={
+                        filters[ProposalParamsEnum.SORTS] 
+                            ? "bg-background-lighter text-primary cursor-default" 
+                            : "hover:bg-background-lighter text-gray-500"
+                    }
                 />
             </div>
             <div className='text-center'>Active Filters goes here</div>
