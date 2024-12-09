@@ -16,6 +16,8 @@ type SelectProps = {
     context?: string;
     basic?: boolean;
     className?: string;
+    hideCheckbox?: boolean; // New prop to hide checkboxes
+    placeholder?: string;  // New prop for custom placeholder
 };
 
 export default function Selector({
@@ -25,6 +27,8 @@ export default function Selector({
     selectedItems = [],
     setSelectedItems,
     className,
+    hideCheckbox = false, // Default to false
+    placeholder = '',     // Default to empty string
     ...props
 }: SelectProps) {
     const [open, setOpen] = useState(false);
@@ -33,9 +37,11 @@ export default function Selector({
 
     let currentOption = null;
 
-    let placeholder = isMultiselect
+    // Use custom placeholder if provided, otherwise default logic
+    let defaultPlaceholder = isMultiselect
         ? `${t('select')} `
         : `${t('select')} ${context}`;
+    placeholder = placeholder || defaultPlaceholder;
 
     if (!isMultiselect && selectedItems) {
         currentOption = options?.find(
@@ -115,19 +121,22 @@ export default function Selector({
                             >
                                 <span>{option.label}</span>
 
-                                <Checkbox
-                                    id={option.value}
-                                    checked={
-                                        isMultiselect
-                                            ? selectedItems?.includes(
-                                                  option.value,
-                                              )
-                                            : selectedItems == option.value
-                                    }
-                                    value={option.value}
-                                    onChange={() => {}}
-                                    className="checked:focus:bg-primary h-4 w-4 checked:bg-primary checked:hover:bg-primary focus:border-0 focus:ring-0"
-                                />
+                                {/* Conditionally render the checkbox */}
+                                {!hideCheckbox && (
+                                    <Checkbox
+                                        id={option.value}
+                                        checked={
+                                            isMultiselect
+                                                ? selectedItems?.includes(
+                                                      option.value,
+                                                  )
+                                                : selectedItems == option.value
+                                        }
+                                        value={option.value}
+                                        onChange={() => {}}
+                                        className="checked:focus:bg-primary h-4 w-4 checked:bg-primary checked:hover:bg-primary focus:border-0 focus:ring-0"
+                                    />
+                                )}
                             </div>
                         ))}
                     </div>
