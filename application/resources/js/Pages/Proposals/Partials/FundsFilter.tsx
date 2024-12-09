@@ -1,11 +1,10 @@
 import Checkbox from "@/Components/Checkbox";
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
-// import FundData = App.DataTransferObjects.FundData;
 
 interface FundFiltersProps {
     fundTitle: string,
-    totalProposals: number
+    totalProposals: any
 }
 
 const FundsFilter: React.FC<FundFiltersProps> = ({ fundTitle, totalProposals }) => {
@@ -15,7 +14,7 @@ const FundsFilter: React.FC<FundFiltersProps> = ({ fundTitle, totalProposals }) 
     return (
         <div className={`w-full bg-background flex rounded-md shadow-sm ${active ? 'border-2 border-primary' : ''}` }>
             <div className="m-4">
-                <Checkbox checked={active} onChange={(e)=>{setActive(e.target.checked)}} />   
+                <Checkbox checked={active} onChange={(e)=>{setActive(e.target.checked)}}/>   
             </div>
             <div className="w-full m-4 ml-2">
                 <p className="font-medium mb-2">{fundTitle}</p>
