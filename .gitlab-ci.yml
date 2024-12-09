@@ -313,10 +313,11 @@ build_web_base:
     --platform linux/amd64,linux/arm64 \
     -f ./docker/Dockerfile.base \
     -t "$CI_APPLICATION_REPOSITORY/web-app-base:$CI_APPLICATION_TAG" \
-    -t "$CI_APPLICATION_REPOSITORY/web-app-base:latest" .
+    -t "$CI_APPLICATION_REPOSITORY/web-app-base:latest" \
+    --push .
 
-    docker push "$CI_APPLICATION_REPOSITORY/web-app-base:$CI_APPLICATION_TAG" 
-    docker push "$CI_APPLICATION_REPOSITORY/web-app-base:latest"
+    # docker push "$CI_APPLICATION_REPOSITORY/web-app-base:$CI_APPLICATION_TAG" 
+    # docker push "$CI_APPLICATION_REPOSITORY/web-app-base:latest"
 
   rules:
   - if: $WEB_BASE_IMAGE_VER
