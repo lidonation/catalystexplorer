@@ -17,11 +17,13 @@ import ProposalData = App.DataTransferObjects.ProposalData;
 
 interface HomePageProps extends Record<string, unknown> {
     proposals: PaginatedData<ProposalData[]>;
+    funds: any,
     filters: ProposalSearchParams;
 }
 
 export default function Index({
     proposals,
+    funds,
     filters,
 }: PageProps<HomePageProps>) {
     const { t } = useTranslation();
@@ -29,7 +31,7 @@ export default function Index({
     const [perPage, setPerPage] = useState<number>(24);
     const [currentPage, setCurrentpage] = useState<number>(1);
 
-    useEffect(() => {}, [currentPage, perPage]);
+    useEffect(() => { }, [currentPage, perPage]);
 
     const [isHorizontal, setIsHorizontal] = useState(false);
 
@@ -37,6 +39,10 @@ export default function Index({
 
     const setGlobalQuickPitchView = (value: boolean) =>
         setQuickPitchView(value);
+
+    const fundFilters = Object.entries(funds).map(([key, value]) => {
+        return { title: key, proposalCount: value };
+    })
 
     return (
         <FiltersProvider defaultFilters={filters}>
@@ -54,13 +60,17 @@ export default function Index({
                 </div>
             </header>
 
-            <section className="container flex w-full flex-row items-center justify-between space-x-4">
-                <FundsFilter fundTitle='Fund 1' totalProposals={1000} />
-                <FundsFilter fundTitle='Fund 2' totalProposals={1000} />
-            </section>
 
-            <section className="sticky top-0 z-50">
-                <ProposalSearchControls />
+            <section className="container w-full">
+                <ul className='w-full grid grid-flow-col gap-4 auto-cols-fr'>
+                    {
+                        fundFilters.map((fund, index) => (
+                            <li key={index}>
+                                <FundsFilter fundTitle={fund.title} totalProposals={fund.proposalCount} />
+                            </li>
+                        ))
+                    }
+                </ul>
             </section>
 
             <section className="container flex w-full flex-col items-center justify-center">
