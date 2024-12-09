@@ -282,15 +282,11 @@ build_web:
     echo "Logging in to Docker registry..."
     docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
 
-    # Set up Docker Buildx
-    docker buildx create --use --name multiarch-builder || true
-    docker buildx inspect multiarch-builder --bootstrap
-
-    docker buildx build --platform linux/amd64,linux/arm64,linux/arm64/v8 \
-    -f ./docker/Dockerfile \
+    docker build --network host -f ./docker/Dockerfile \
     -t "$CI_APPLICATION_REPOSITORY/web-app:$CI_APPLICATION_TAG" \
-    -t "$CI_APPLICATION_REPOSITORY/web-app:latest" \
-    --push .
+    -t "$CI_APPLICATION_REPOSITORY/web-app:latest" . 
+    docker push "$CI_APPLICATION_REPOSITORY/web-app:$CI_APPLICATION_TAG" 
+    docker push "$CI_APPLICATION_REPOSITORY/web-app:latest"
 
   only:
   - branches
