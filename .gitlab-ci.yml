@@ -309,8 +309,7 @@ build_web_base:
     docker buildx inspect multiarch-builder --bootstrap
 
     echo "Building and pushing Docker image for multiple architectures..." 
-    docker buildx build --network host \
-    --platform linux/amd64,linux/arm64 \
+    docker buildx build --platform linux/amd64,linux/arm64 \
     -f ./docker/Dockerfile.base \
     -t "$CI_APPLICATION_REPOSITORY/web-app-base:$CI_APPLICATION_TAG" \
     -t "$CI_APPLICATION_REPOSITORY/web-app-base:latest" \
