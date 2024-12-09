@@ -282,16 +282,13 @@ build_web:
     echo "Logging in to Docker registry..."
     docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
 
-    if [[ -n $DOCKER_PASSWORD ]]; then
-      docker login -u="${DOCKER_USERNAME}" -p="${DOCKER_PASSWORD}"
-    fi
+    echo "Building and pushing Docker image for multiple architectures..."
 
-    echo "Building Dockerfile with tags $CI_APPLICATION_REPOSITORY/web-app-base:$WEB_BASE_IMAGE_VER and $CI_APPLICATION_REPOSITORY/web-app-base:latest ..."
-    docker build --network host -f ./docker/Dockerfile \
+    docker buildx build --platform linux/amd64,linux/arm64,linux/arm64/v8 \
+    -f ./docker/Dockerfile.base \
     -t "$CI_APPLICATION_REPOSITORY/web-app:$CI_APPLICATION_TAG" \
-    -t "$CI_APPLICATION_REPOSITORY/web-app:latest" .
-    docker push "$CI_APPLICATION_REPOSITORY/web-app:$CI_APPLICATION_TAG" 
-    docker push "$CI_APPLICATION_REPOSITORY/web-app:latest"
+    -t "$CI_APPLICATION_REPOSITORY/web-app:latest" \
+    --push .
 
   only:
   - branches
@@ -302,21 +299,18 @@ build_web_base:
   retry: 0
   script:
   - |
+    docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY" 
+
+    echo "Building Dockerfile with tags $CI_APPLICATION_REPOSITORY/web-app-base:$WEB_BASE_IMAGE_VER and $CI_APPLICATION_REPOSITORY/web-app-base:latest ..." 
+
+    docker build --network host -f ./docker/Dockerfile.base \
+    -t "$CI_APPLICATION_REPOSITORY/web-app-base:$WEB_BASE_IMAGE_VER" \
+    -t "$CI_APPLICATION_REPOSITORY/web-app-base:latest" . 
+
+    docker push "$CI_APPLICATION_REPOSITORY/web-app-base:$WEB_BASE_IMAGE_VER" 
+    docker push "$CI_APPLICATION_REPOSITORY/web-app-base:latest"
+
     docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
-
-    echo "Building Dockerfile with tags $CI_APPLICATION_REPOSITORY/web-app-base:$WEB_BASE_IMAGE_VER and $CI_APPLICATION_REPOSITORY/web-app-base:latest ..."
-    docker buildx create --use --name multiarch-builder 
-    docker buildx inspect multiarch-builder --bootstrap
-
-    echo "Building and pushing Docker image for multiple architectures..." 
-    docker buildx build --platform linux/amd64,linux/arm64 \
-    -f ./docker/Dockerfile.base \
-    -t "$CI_APPLICATION_REPOSITORY/web-app-base:$CI_APPLICATION_TAG" \
-    -t "$CI_APPLICATION_REPOSITORY/web-app-base:latest" \
-    --push .
-
-    # docker push "$CI_APPLICATION_REPOSITORY/web-app-base:$CI_APPLICATION_TAG" 
-    # docker push "$CI_APPLICATION_REPOSITORY/web-app-base:latest"
 
   rules:
   - if: $WEB_BASE_IMAGE_VER
