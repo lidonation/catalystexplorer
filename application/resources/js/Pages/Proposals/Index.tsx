@@ -14,10 +14,6 @@ import HorizontaCardLoading from './Partials/ProposalHorizontalCardLoading';
 import FundsFilter from './Partials/FundsFilter';
 import ProposalData = App.DataTransferObjects.ProposalData;
 
-interface Fund {
-    title: string;
-    proposalCount: number;
-}
 interface HomePageProps extends Record<string, unknown> {
     proposals: PaginatedData<ProposalData[]>;
     funds: any,
