@@ -282,7 +282,9 @@ build_web:
     echo "Logging in to Docker registry..."
     docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
 
-    echo "Building and pushing Docker image for multiple architectures..."
+    # Set up Docker Buildx
+    docker buildx create --use --name multiarch-builder || true
+    docker buildx inspect multiarch-builder --bootstrap
 
     docker buildx build --platform linux/amd64,linux/arm64,linux/arm64/v8 \
     -f ./docker/Dockerfile.base \
