@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Jobs;
 
 use App\Models\Proposal;
@@ -8,119 +10,108 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\File;
+use Illuminate\Support\Str;
 
 class SyncProposalImages implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    public $tries = 2;
-    public $timeout = 60;
+    public function __construct(
+        private Proposal $proposal
+    ) {}
 
     public function handle()
     {
-        // Robust directory creation with full path and permissions
-        $storagePath = storage_path('app/public/proposals');
-        
+        if (!$this->proposal->ideascale_link) {
+            return;
+        }
+
         try {
-            // Use recursive directory creation with explicit permissions
-            if (!is_dir($storagePath)) {
-                mkdir($storagePath, 0777, true);
-                chmod($storagePath, 0777);
+            $imageUrl = $this->extractImageFromIdeascaleLink($this->proposal->ideascale_link);
+            
+            if ($imageUrl) {
+                $this->downloadAndAttachImage($imageUrl);
             }
         } catch (\Exception $e) {
-            Log::error("Failed to create directory: " . $e->getMessage());
-            return; // Exit the job if directory can't be created
-        }
-
-        $proposals = Proposal::whereNotNull('ideascale_link')->get();
-
-        foreach ($proposals as $proposal) {
-            $imageUrl = $proposal->ideascale_link;
-
-            // Validate URL more strictly
-            if (!$this->isValidUrl($imageUrl)) {
-                Log::warning("Invalid or unparseable URL for proposal: {$proposal->id} - {$imageUrl}");
-                continue;
-            }
-
-            try {
-                $response = Http::withOptions([
-                    'connect_timeout' => 10,   // Connection timeout
-                    'timeout' => 30,           // Total transfer timeout
-                    'verify' => false,         // Disable SSL verification
-                ])
-                ->withHeaders([
-                    'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
-                    'Accept' => 'image/*,*/*;q=0.8',
-                ])
-                ->get($imageUrl);
-
-                // Explicitly check content type
-                $contentType = strtolower($response->header('Content-Type', ''));
-                
-                // More lenient content type checking
-                if (strpos($contentType, 'image/') === false) {
-                    Log::warning("Non-image content for proposal {$proposal->id}: {$contentType}");
-                    continue;
-                }
-
-                if ($response->successful()) {
-                    $extension = $this->getImageExtension($contentType);
-                    $filename = Str::uuid() . '.' . $extension;
-                    $path = "proposals/{$filename}";
-
-                    // Save the image
-                    Storage::disk('public')->put($path, $response->body());
-
-                    // Update proposal with new image path
-                    $proposal->update([
-                        'ideascale_link' => $path,
-                    ]);
-
-                    Log::info("Successfully downloaded image for proposal {$proposal->id}: {$path}");
-                } else {
-                    Log::warning("Failed to download image for proposal {$proposal->id}: HTTP {$response->status()}");
-                }
-            } catch (\Exception $e) {
-                Log::error("Image download error for proposal {$proposal->id}: " . $e->getMessage());
-            }
+            Log::error('Proposal image sync failed', [
+                'proposal_id' => $this->proposal->id,
+                'ideascale_link' => $this->proposal->ideascale_link,
+                'error' => $e->getMessage()
+            ]);
         }
     }
 
-    /**
-     * Validate URL more comprehensively
-     */
-    private function isValidUrl($url): bool
+    public function extractImageFromIdeascaleLink(string $link): ?string
     {
-        return filter_var($url, FILTER_VALIDATE_URL) !== false 
-               && preg_match('/^https?:\/\//i', $url);
+        try {
+            // Fetch the HTML content
+            $response = Http::timeout(10)->get($link);
+            
+            if (!$response->successful()) {
+                Log::warning('Failed to fetch Ideascale link', [
+                    'link' => $link,
+                    'status' => $response->status()
+                ]);
+                return null;
+            }
+
+            $html = $response->body();
+
+            // More robust image extraction
+            if (preg_match('/<img[^>]+src="([^"]+)"[^>]*class="[^"]*proposal-image[^"]*"[^>]*>/i', $html, $matches)) {
+                $imageUrl = $matches[1];
+            } elseif (preg_match('/<img[^>]+src="([^"]+)"[^>]*>/i', $html, $matches)) {
+                $imageUrl = $matches[1];
+            } else {
+                Log::warning('No image found in Ideascale link', ['link' => $link]);
+                return null;
+            }
+
+            // Ensure it's a full URL
+            if (!Str::startsWith($imageUrl, ['http://', 'https://'])) {
+                $parsedLink = parse_url($link);
+                $baseUrl = $parsedLink['scheme'] . '://' . $parsedLink['host'];
+                $imageUrl = rtrim($baseUrl, '/') . '/' . ltrim($imageUrl, '/');
+            }
+
+            return $imageUrl;
+        } catch (\Exception $e) {
+            Log::warning('Error extracting image from Ideascale link', [
+                'link' => $link,
+                'error' => $e->getMessage()
+            ]);
+            return null;
+        }
     }
 
-    /**
-     * Get file extension from content type
-     */
-    private function getImageExtension($contentType): string
+    public function downloadAndAttachImage(string $imageUrl): void
     {
-        $typeToExtension = [
-            'image/jpeg' => 'jpg',
-            'image/png' => 'png',
-            'image/gif' => 'gif',
-            'image/webp' => 'webp',
-            'image/svg+xml' => 'svg',
-        ];
+        try {
+            // Generate a unique filename
+            $filename = Str::slug(Str::random(10)) . '_' . basename($imageUrl);
 
-        // Default to jpg if content type not recognized
-        foreach ($typeToExtension as $type => $ext) {
-            if (strpos($contentType, $type) !== false) {
-                return $ext;
-            }
+            // Download and attach the image
+            $this->proposal
+                ->addMediaFromUrl($imageUrl)
+                ->setFileName($filename)
+                ->withCustomProperties([
+                    'original_url' => $imageUrl,
+                    'source' => 'ideascale'
+                ])
+                ->toMediaCollection('hero_image');
+
+            Log::info('Image downloaded successfully', [
+                'proposal_id' => $this->proposal->id,
+                'image_url' => $imageUrl
+            ]);
+        } catch (\Exception $e) {
+            Log::warning('Failed to download Ideascale image', [
+                'url' => $imageUrl,
+                'proposal_id' => $this->proposal->id,
+                'error' => $e->getMessage()
+            ]);
         }
-
-        return 'jpg';
     }
 }
