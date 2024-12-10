@@ -11,15 +11,19 @@ import { ProposalSearchParams } from '../../../types/proposal-search-params';
 import CardLayoutSwitcher from './Partials/CardLayoutSwitcher';
 import ProposalFilters from './Partials/ProposalFilters';
 import HorizontaCardLoading from './Partials/ProposalHorizontalCardLoading';
+import FundsFilter from './Partials/FundsFilter';
+import ProposalSearchControls from './Partials/ProposalSearchControls';
 import ProposalData = App.DataTransferObjects.ProposalData;
 
 interface HomePageProps extends Record<string, unknown> {
     proposals: PaginatedData<ProposalData[]>;
+    funds: any,
     filters: ProposalSearchParams;
 }
 
 export default function Index({
     proposals,
+    funds,
     filters,
 }: PageProps<HomePageProps>) {
     const { t } = useTranslation();
@@ -27,7 +31,7 @@ export default function Index({
     const [perPage, setPerPage] = useState<number>(24);
     const [currentPage, setCurrentpage] = useState<number>(1);
 
-    useEffect(() => {}, [currentPage, perPage]);
+    useEffect(() => { }, [currentPage, perPage]);
 
     const [isHorizontal, setIsHorizontal] = useState(false);
 
@@ -35,6 +39,10 @@ export default function Index({
 
     const setGlobalQuickPitchView = (value: boolean) =>
         setQuickPitchView(value);
+
+    const fundFilters = Object.entries(funds).map(([key, value]) => {
+        return { title: key, proposalCount: value };
+    })
 
     return (
         <FiltersProvider defaultFilters={filters}>
@@ -52,6 +60,19 @@ export default function Index({
                 </div>
             </header>
 
+
+            <section className="container w-full">
+                <ul className='w-full grid grid-flow-col gap-4 auto-cols-fr'>
+                    {
+                        fundFilters.map((fund, index) => (
+                            <li key={index}>
+                                <FundsFilter fundTitle={fund.title} totalProposals={fund.proposalCount} />
+                            </li>
+                        ))
+                    }
+                </ul>
+            </section>
+
             <section className="container flex w-full flex-col items-center justify-center">
                 <ProposalFilters />
             </section>
@@ -65,7 +86,7 @@ export default function Index({
                 />
             </section>
 
-            <section className="proposals-wrapper container w-full mt-3">
+            <section className="proposals-wrapper container mt-3 w-full">
                 <WhenVisible
                     fallback={
                         isHorizontal ? (

@@ -69,11 +69,11 @@ class ProposalsController extends Controller
         $this->getProps($request);
 
         $proposals = empty($this->queryParams) ? $this->getRandomProposals() : $this->query();
-
-
+        
         return Inertia::render('Proposals/Index', [
             'proposals' => $proposals,
             'filters' => $this->queryParams,
+            'funds'=> $this->fundsCount,
             'search' => $this->search,
             'sort' => "{$this->sortBy}:{$this->sortOrder}",
         ]);
@@ -364,8 +364,8 @@ class ProposalsController extends Controller
             $this->tagsCount = $facets['tags.id'];
         }
 
-        if (isset($facets['fund.label']) && count($facets['fund.label'])) {
-            $this->fundsCount = $facets['fund.label'];
+        if (isset($facets['fund.title']) && count($facets['fund.title'])) {
+            $this->fundsCount = $facets['fund.title'];
         }
 
         // if (isset($facetStats['amount_requested'])) {
