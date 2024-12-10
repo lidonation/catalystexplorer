@@ -1,4 +1,5 @@
 import { RangePicker } from '@/Components/RangePicker';
+import SearchBar from '@/Components/SearchBar';
 import { SearchSelect } from '@/Components/SearchSelect';
 import Selector from '@/Components/Select';
 import { useFilterContext } from '@/Context/FiltersContext';
@@ -10,36 +11,12 @@ export default function ProposalFilters() {
     const { filters, setFilters } = useFilterContext<ProposalSearchParams>();
 
     const { t } = useTranslation();
-    const sortingOptions = [
-        { value: 'created_at:asc', label: t('proposals.options.oldToNew') },
-        { value: 'created_at:desc', label: t('proposals.options.newToOld') },
-        {
-            value: 'amount_requested:asc',
-            label: t('proposals.options.lowToHigh'),
-        },
-        {
-            value: 'amount_requested:desc',
-            label: t('proposals.options.highToLow'),
-        },
-    ];
-
     return (
         <>
-            <div className="container mx-auto flex justify-end px-0 pb-4 pt-6">
-                <Selector
-                    isMultiselect={false}
-                    options={sortingOptions}
-                    setSelectedItems={(value) =>
-                        setFilters(ProposalParamsEnum.SORTS, value)
-                    }
-                    selectedItems={filters[ProposalParamsEnum.SORTS]}
-                    context={t('proposals.options.sort')}
-                />
-            </div>
-            <div className="w-full rounded-xl bg-background p-4">
+            <div className="container w-full rounded-xl bg-background p-4">
                 <div className="grid grid-cols-2 gap-x-4 gap-y-3 rounded-xl md:grid-cols-2 lg:grid-cols-5">
                     <div className="col-span-1 flex flex-col gap-2 pb-4">
-                        <span>Funding Status</span>
+                        <span>{t('proposals.filters.fundingStatus')}</span>
                         <Selector
                             isMultiselect={true}
                             options={[
@@ -73,7 +50,7 @@ export default function ProposalFilters() {
                     </div>
 
                     <div className="col-span-1 flex flex-col gap-2 pb-4">
-                        <span>Opensource</span>
+                        <span>{t('proposals.filters.opensource')}</span>
                         <Selector
                             isMultiselect={false}
                             options={[
@@ -103,7 +80,7 @@ export default function ProposalFilters() {
                     </div>
 
                     <div className="col-span-1 flex flex-col gap-2 pb-4">
-                        <span>Project Status</span>
+                        <span>{t('proposals.filters.projectStatus')}</span>
                         <Selector
                             isMultiselect={true}
                             options={[
@@ -133,7 +110,7 @@ export default function ProposalFilters() {
                     </div>
 
                     <div className="col-span-1 flex flex-col gap-2 pb-4">
-                        <span className="">Tags</span>
+                        <span>{t('proposals.filters.tags')}</span>
                         <SearchSelect
                             key={'tags'}
                             domain={'tags'}
@@ -147,7 +124,7 @@ export default function ProposalFilters() {
                     </div>
 
                     <div className="col-span-2 flex flex-col gap-2 pb-4 lg:col-span-1">
-                        <span className="">Campaigns</span>
+                        <span>{t('proposals.filters.campaigns')}</span>
                         <SearchSelect
                             key={'campaigns'}
                             domain={'campaigns'}
@@ -164,7 +141,7 @@ export default function ProposalFilters() {
                 </div>
                 <div className="grid grid-cols-2 gap-x-4 gap-y-3 rounded-xl md:grid-cols-2 lg:grid-cols-4">
                     <div className="col-span-1 flex flex-col gap-2 pb-4">
-                        <span className="">Groups</span>
+                        <span>{t('proposals.filters.groups')}</span>
                         <SearchSelect
                             key={'groups'}
                             domain={'groups'}
@@ -178,7 +155,7 @@ export default function ProposalFilters() {
                     </div>
 
                     <div className="col-span-1 flex flex-col gap-2 pb-4">
-                        <span className="">Communities</span>
+                        <span>{t('proposals.filters.communities')}</span>
                         <SearchSelect
                             key={'communities'}
                             domain={'communities'}
@@ -197,32 +174,32 @@ export default function ProposalFilters() {
                     </div>
 
                     <div className="col-span-1 flex flex-col gap-2 pb-4">
-                        <span className="">Community Cohort</span>
+                        <span>{t('proposals.filters.communityCohort')}</span>
                         <Selector
                             isMultiselect={true}
                             options={[
                                 {
-                                    value: 'im',
+                                    value: 'impact_proposal',
                                     label: t(
                                         'proposals.options.impactProposal',
                                     ),
                                 },
                                 {
-                                    value: 'wo',
+                                    value: 'woman_proposal',
                                     label: t(
                                         'proposals.options.womenProposals',
                                     ),
                                 },
                                 {
-                                    value: 'id',
+                                    value: 'ideafest_proposal',
                                     label: t(
                                         'proposals.options.ideafestProposals',
                                     ),
                                 },
-                                {
-                                    value: 'qp',
-                                    label: t('proposals.options.quickPitches'),
-                                },
+                                // {
+                                //     value: 'has_quick_pitch',
+                                //     label: t('proposals.options.quickPitches'),
+                                // },
                             ]}
                             setSelectedItems={(value) =>
                                 setFilters(ProposalParamsEnum.COHORT, value)
@@ -232,7 +209,7 @@ export default function ProposalFilters() {
                     </div>
 
                     <div className="col-span-1 flex flex-col gap-2 pb-4">
-                        <span className="">Proposers</span>
+                        <span>{t('proposals.filters.proposers')}</span>
                         <SearchSelect
                             domain={'ideascale_profiles'}
                             selected={filters[ProposalParamsEnum.PEOPLE] ?? []}
@@ -249,7 +226,7 @@ export default function ProposalFilters() {
                     <div className="pb-4">
                         <RangePicker
                             key={'Budgets'}
-                            context={'Budgets'}
+                            context={t('proposals.filters.budgets')}
                             value={filters[ProposalParamsEnum.BUDGETS]}
                             onValueChange={(value) =>
                                 setFilters<ProposalParamsEnum.BUDGETS>(
@@ -266,7 +243,7 @@ export default function ProposalFilters() {
                     <div className="pb-4">
                         <RangePicker
                             key={'Project Length'}
-                            context={'Project Length (months)'}
+                            context={t('proposals.filters.projectLength')}
                             value={filters[ProposalParamsEnum.PROJECT_LENGTH]}
                             onValueChange={(value) =>
                                 setFilters<ProposalParamsEnum.PROJECT_LENGTH>(

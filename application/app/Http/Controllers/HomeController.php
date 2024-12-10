@@ -25,7 +25,7 @@ class HomeController extends Controller
             'tags' => 'project-catalyst'
         ]);
 
-//        dd(
+        //        dd(
 //            MetricData::collect($metrics
 //                ->limit(6)
 //                ->getQuery()
@@ -73,11 +73,11 @@ class HomeController extends Controller
                             'id' => $announcement->id,
                             'title' => $announcement->title,
                             'content' => $announcement->content,
-                            'cta' => [
-                                'label' => $announcement->cta[0]['label'],
-                                'link' => $announcement->cta[0]['link'],
-                                'title' => $announcement->cta[0]['title'],
-                            ],
+                            'cta' => collect($announcement->cta)->map(fn($ctaItem) => [
+                                'label' => $ctaItem['label'],
+                                'link' => $ctaItem['link'],
+                                'title' => $ctaItem['title'],
+                            ])->toArray(), // Converts Collection to an array
                             'hero_image_url' => $announcement->heroPhotoUrl,
                         ])
                 )

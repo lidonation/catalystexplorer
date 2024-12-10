@@ -36,6 +36,8 @@ export default function Index({
 }: PageProps<HomePageProps>) {
     const { t } = useTranslation();
     const [isHorizontal, setIsHorizontal] = useState(false);
+    const [activeIndex, setActiveIndex] = useState(0);
+    const [isTransitioning, setIsTransitioning] = useState(false);
 
 
 
@@ -102,7 +104,13 @@ export default function Index({
                 <section className="special-announcements-wrapper container">
                     <WhenVisible fallback={<SpecialAnnouncementLoading />} data="specialAnnouncements">
                         {specialAnnouncements && (
-                            <SpecialAnnouncementCarousel announcements={specialAnnouncements} />
+                            <SpecialAnnouncementCarousel
+                                announcements={specialAnnouncements}
+                                activeIndex={activeIndex}
+                                setActiveIndex={setActiveIndex}
+                                isTransitioning={isTransitioning}
+                                setIsTransitioning={setIsTransitioning}
+                            />
                         )}
                     </WhenVisible>
                 </section>

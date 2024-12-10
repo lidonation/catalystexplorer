@@ -1,9 +1,10 @@
 'use client';
 import { useSearchOptions } from '@/Hooks/useSearchOptions';
 import { cn } from '@/lib/utils';
-import { Check, ChevronDown } from 'lucide-react';
+import { ChevronDown } from 'lucide-react';
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import Checkbox from './Checkbox';
 import {
     Command,
     CommandEmpty,
@@ -37,8 +38,9 @@ export function SearchSelect({
     domain,
 }: SearchSelectProps) {
     const [open, setOpen] = useState(false);
-    const { searchTerm, setSearchTerm, options } = useSearchOptions<any>(domain);
-    
+    const { searchTerm, setSearchTerm, options } =
+        useSearchOptions<any>(domain);
+
     const { t } = useTranslation();
 
     const filteredOptions = options.map(
@@ -76,6 +78,7 @@ export function SearchSelect({
             e.stopPropagation();
             selected.length ? onChange([]) : '';
             setSearchTerm('');
+            setOpen(false);
         },
         [onChange],
     );
@@ -108,7 +111,7 @@ export function SearchSelect({
                 </button>
             </PopoverTrigger>
             <PopoverContent
-                className="w-full min-w-[var(--radix-popover-trigger-width)] bg-background p-0"
+                className="min-w-[var(--radix-popover-trigger-width)] bg-background p-0"
                 align="start"
             >
                 <Command shouldFilter={false}>
@@ -133,9 +136,15 @@ export function SearchSelect({
                             clear
                         </button>
                     </div>
-                    <CommandEmpty>{emptyText}</CommandEmpty>
+                    <CommandEmpty>
+                        {searchTerm.length > 1
+                            ? t('proposals.options.noResults')
+                            : t('proposals.options.typeMore')}
+                    </CommandEmpty>
                     <CommandGroup>
-                        <ScrollArea className="h-fit">
+                        <ScrollArea
+                            className={`max-h-64 min-h-24 lg:max-h-96 ${options.length > 10 ? 'overflow-scroll' : ''}`}
+                        >
                             {options &&
                                 filteredOptions.map((option) => (
                                     <CommandItem
@@ -144,19 +153,18 @@ export function SearchSelect({
                                         onSelect={() =>
                                             handleSelect(option.id.toString())
                                         }
-                                        className="cursor-pointer !bg-background hover:!bg-background-lighter aria-selected:bg-background-lighter"
+                                        className="flex cursor-pointer justify-between !bg-background hover:!bg-background-lighter aria-selected:bg-background-lighter"
                                     >
-                                        <Check
-                                            className={cn(
-                                                'mr-2 h-4 w-4',
-                                                selected?.includes(
-                                                    option.id.toString(),
-                                                )
-                                                    ? 'opacity-100'
-                                                    : 'opacity-0',
-                                            )}
-                                        />
                                         {option.label}
+                                        <Checkbox
+                                            id={option.id.toString()}
+                                            checked={selected?.includes(
+                                                option.id.toString(),
+                                            )}
+                                            value={option.id.toString()}
+                                            onChange={() => {}}
+                                            className="mr-2 h-4 w-4 checked:bg-primary checked:hover:bg-primary focus:border-0 focus:ring-0 checked:focus:bg-primary"
+                                        />
                                     </CommandItem>
                                 ))}
                         </ScrollArea>

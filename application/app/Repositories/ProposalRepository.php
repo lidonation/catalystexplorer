@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\Repositories;
 
@@ -19,7 +21,7 @@ class ProposalRepository extends Repository
         return Proposal::search(
             $term,
             function (Indexes $index, $query, $options) use ($args) {
-                
+
                 $args['attributesToRetrieve'] = $attrs ?? [
                     'id',
                     'amount_requested',
@@ -35,11 +37,11 @@ class ProposalRepository extends Repository
                     'funding_status',
                     'groups.id',
                     'groups.name',
-//                    'communities.id',
-//                    'communities.title',
-//                    'communities.status',
-//                    'communities.content',
-//                    'communities.user_id',
+                    'communities.id',
+                    'communities.title',
+                    'communities.status',
+                    'communities.content',
+                    'communities.user_id',
                     'ideascale_link',
                     'projectcatalyst_io_link',
                     'yes_votes_count',
@@ -54,20 +56,20 @@ class ProposalRepository extends Repository
                     'status',
                     'website',
                     'type',
-//                    'ranking_total',
-                   'users.id',
-                   'users.name',
-                   'users.username',
-                   'users.ideascale_id',
-                   'users.media.original_url',
-                   'users.profile_photo_url',
-//                    'fund.id',
-//                    'fund.label',
-//                    'fund.amount',
-//                    'fund.status',
-                   'campaign.id',
-                   'campaign.label',
-                   'campaign.amount',
+                    //                    'ranking_total',
+                    'users.id',
+                    'users.name',
+                    'users.username',
+                    'users.ideascale_id',
+                    'users.media.original_url',
+                    'users.profile_photo_url',
+                    'fund.id',
+                    'fund.label',
+                    'fund.amount',
+                    'fund.status',
+                    'campaign.id',
+                    'campaign.label',
+                    'campaign.amount',
                 ];
                 $args['facets'] = [
                     'tags',
@@ -93,13 +95,13 @@ class ProposalRepository extends Repository
                     'ideafest_proposal',
                 ];
 
-                
-//                if ((bool) $this->sortBy && (bool) $this->sortOrder) {
-//                    $options['sort'] = ["$this->sortBy:$this->sortOrder"];
-//                }
 
-//                $options['offset'] = ! $returnBuilder ? (($this->currentPage ?? 1) - 1) * $this->limit : 0;
-//                $options['limit'] = $this->limit;
+                //                if ((bool) $this->sortBy && (bool) $this->sortOrder) {
+                //                    $options['sort'] = ["$this->sortBy:$this->sortOrder"];
+                //                }
+
+                //                $options['offset'] = ! $returnBuilder ? (($this->currentPage ?? 1) - 1) * $this->limit : 0;
+                //                $options['limit'] = $this->limit;
                 return $index->search($query, $args);
             }
         );

@@ -53,6 +53,24 @@
         "contactEmail": "support@lidonation.com",
         "appLogoAlt": "Logo de Catalyst Explore."
     },
+    "searchResults": {
+        "noResults": {
+            "title": "Aucun résultat trouvé",
+            "description": "Votre recherche \"{{query}}\" n'a donné aucun résultat. Veuillez réessayer."
+        },
+        "tabs": {
+            "proposals": "Propositions",
+            "posts": "Publications",
+            "people": "Personnes",
+            "groups": "Groupes",
+            "communities": "Communautés",
+            "reviews": "Avis"
+        },
+        "results": {
+            "title": "Résultats de recherche pour \"{{query}}\"",
+            "viewMore": "Voir plus"
+        }
+    },
     "navigation": {
         "mobile": {
             "sidebar": "Section de navigation de la barre latérale mobile",
@@ -95,6 +113,9 @@
         "totalProposals": "Total des propositions",
         "vs": "vs. dernier fonds"
     },
+    "announcements": {
+        "none": "Aucune annonce"
+    },
     "proposals": {
         "CSVs": "CSVs de propositions",
         "proposals": "Propositions",
@@ -112,17 +133,27 @@
             "invalidUrlFormat": "Format d'URL invalide",
             "invalidUrl": "Format d'URL invalide"
         },
+        "filters": {
+            "fundingStatus": "Statut de financement",
+            "opensource": "Opensource",
+            "projectStatus": "Statut du projet",
+            "tags": "Balises",
+            "campaigns": "Campagnes",
+            "communities": "Communautés",
+            "communityCohort": "Cohorte communautaire",
+            "proposers": "Proposers",
+            "groups": "Groupes",
+            "budgets": "Budgets",
+            "projectLength": "Durée du projet (mois)"
+        },
         "options": {
             "sort": "Trier par",
             "oldToNew": "Du plus ancien au plus récent",
             "newToOld": "Du plus récent au plus ancien",
             "lowToHigh": "Budget : Du plus bas au plus élevé",
             "highToLow": "Budget : Du plus élevé au plus bas",
-            "fundingStatus": "Statut de financement",
-            "opensource": "Open source",
             "opensourceProposals": "Propositions open source",
             "nonOpensourceProposals": "Propositions non open source",
-            "projectStatus": "Statut du projet",
             "complete": "Terminé",
             "inProgress": "En cours",
             "unfunded": "Non financé",
@@ -137,7 +168,31 @@
             "womenProposals": "Propositions de femmes",
             "ideafestProposals": "Propositions les plus idéales",
             "quickPitches": "Présentations rapides",
-            "allProposals": "Toutes les propositions"
+            "allProposals": "Toutes les propositions",
+            "noResults": "Aucun résultat trouvé.",
+            "typeMore": "Essayez de saisir plus de caractères.",
+            "votesCastLowToHigh": "Votes exprimés : Du plus bas au plus haut",
+            "votesCastHighToLow": "Votes exprimés : Du plus haut au plus bas",
+            "budgetHighToLow": "Budget : Du plus élevé au plus bas",
+            "budgetLowToHigh": "Budget : Du plus bas au plus élevé",
+            "communityRankingHighToLow": "Classement communautaire : Du plus haut au plus bas",
+            "communityRankingLowToHigh": "Classement communautaire : Du plus bas au plus haut",
+            "paymentsReceivedHighToLow": "Paiements reçus : Du plus élevé au plus bas",
+            "projectLengthHighToLow": "Durée du projet : Du plus long au plus court",
+            "projectLengthLowToHigh": "Durée du projet : Du plus court au plus long",
+            "paymentsReceivedLowToHigh": "Paiements reçus : Du plus bas au plus élevé",
+            "yesVotesHighToLow": "Votes oui : Du plus haut au plus bas",
+            "yesVotesLowToHigh": "Votes oui : Du plus bas au plus haut",
+            "noVotesLowToHigh": "Votes non : Du plus bas au plus élevé",
+            "noVotesHighToLow": "Votes non : Du plus élevé au plus bas",
+            "ratingHighToLow": "Évaluation : Du plus élevé au plus bas",
+            "ratingLowToHigh": "Évaluation : Du plus bas au plus élevé",
+            "impactAlignmentHighToLow": "Alignement de l'impact : Du plus élevé au plus bas",
+            "impactAlignmentLowToHigh": "Alignement de l'impact : Du plus bas au plus élevé",
+            "feasibilityHighToLow": "Faisabilité : Du plus élevé au plus bas",
+            "feasibilityLowToHigh": "Faisabilité : Du plus bas au plus élevé",
+            "valueForMoneyHighToLow": "Valeur pour l'argent : Du plus élevé au plus bas",
+            "valueForMoneyLowToHigh": "Valeur pour l'argent : Du plus bas au plus élevé"
         }
     },
     "posts": {

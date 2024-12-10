@@ -2,6 +2,7 @@ import SearchBar from '@/Components/SearchBar';
 import BlueEyeIcon from '@/Components/svgs/BlueEyeIcon';
 import ConcentricCircles from '@/assets/images/bg-concentric-circles.png';
 import { useTranslation } from 'react-i18next';
+import GlobalSearch from './GlobalSearch';
 
 const CatalystIntro = () => {
     const { t } = useTranslation();
@@ -38,7 +39,7 @@ const CatalystIntro = () => {
 
                 <section className="container sticky top-8 w-full py-4 md:px-64">
                     <div className="">
-                        <SearchBar autoFocus />
+                        <GlobalSearch/>
                     </div>
                 </section>
             </div>
