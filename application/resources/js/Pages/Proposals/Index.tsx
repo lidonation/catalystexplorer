@@ -12,7 +12,6 @@ import CardLayoutSwitcher from './Partials/CardLayoutSwitcher';
 import ProposalFilters from './Partials/ProposalFilters';
 import HorizontaCardLoading from './Partials/ProposalHorizontalCardLoading';
 import FundsFilter from './Partials/FundsFilter';
-import ProposalSearchControls from './Partials/ProposalSearchControls';
 import ProposalData = App.DataTransferObjects.ProposalData;
 
 interface HomePageProps extends Record<string, unknown> {
@@ -44,6 +43,12 @@ export default function Index({
         return { title: key, proposalCount: value };
     })
 
+    const sortedFundFilters = fundFilters.sort((a, b) => {
+        const numA = parseInt(a.title.split(" ")[1], 10);
+        const numB = parseInt(b.title.split(" ")[1], 10);
+        return numB - numA;
+    });
+
     return (
         <FiltersProvider defaultFilters={filters}>
             <Head title="Proposals" />
@@ -62,9 +67,9 @@ export default function Index({
 
 
             <section className="container w-full">
-                <ul className='w-full grid grid-flow-col gap-4 auto-cols-fr'>
+                <ul className='content-gap scrollable snaps-scrollable'>
                     {
-                        fundFilters.map((fund, index) => (
+                        sortedFundFilters.map((fund, index) => (
                             <li key={index}>
                                 <FundsFilter fundTitle={fund.title} totalProposals={fund.proposalCount} />
                             </li>
