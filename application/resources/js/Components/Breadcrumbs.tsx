@@ -1,6 +1,7 @@
 import { Link } from '@inertiajs/react';
 import { ChevronRight, MoreHorizontal } from 'lucide-react';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import HomeIcon from './svgs/HomeIcon';
 
 interface BreadcrumbItem {
@@ -24,6 +25,7 @@ const Breadcrumbs = ({
     itemClassName = 'text-content hover:text-content-light transition-colors',
     activeClassName = 'text-content font-medium',
 }: BreadcrumbsProps) => {
+    const { t } = useTranslation();
     const displayItems =
         items.length > maxItems
             ? [
@@ -33,7 +35,10 @@ const Breadcrumbs = ({
               ]
             : items;
 
-    if (displayItems.length === 1 && displayItems[0].label === 'Home') {
+    if (
+        displayItems.length === 1 &&
+        displayItems[0].label === t('breadcrumbs.home')
+    ) {
         //don't display breadcrumbs if there is only one item and it's 'Home'
         return null;
     }
@@ -41,7 +46,7 @@ const Breadcrumbs = ({
     return (
         <nav
             aria-label="Breadcrumb"
-            className="flex items-center space-x-2 text-sm pt-5 pl-8"
+            className="flex items-center space-x-2 pl-8 pt-5 text-sm"
         >
             {displayItems.map((item, index) => {
                 const isLast = index === displayItems.length - 1;
@@ -63,7 +68,7 @@ const Breadcrumbs = ({
                             </span>
                         ) : (
                             <Link href={item.href} className={itemClassName}>
-                                {item.label.includes('Home') ? (
+                                {item.label.includes(t('breadcrumbs.home')) ? (
                                     <HomeIcon className="text-content" />
                                 ) : (
                                     item.label
@@ -78,6 +83,7 @@ const Breadcrumbs = ({
 };
 
 export const generateBreadcrumbs = (currentRoute: string, locale: string) => {
+    const { t } = useTranslation();
     const routeWithoutLocale = currentRoute.replace(
         new RegExp(`^/${locale}`),
         '',
@@ -85,7 +91,7 @@ export const generateBreadcrumbs = (currentRoute: string, locale: string) => {
     const segments = routeWithoutLocale.split('/').filter(Boolean);
     const breadcrumbs = [];
 
-    breadcrumbs.push({ label: 'Home', href: '/' });
+    breadcrumbs.push({ label: `${t('breadcrumbs.home')}`, href: '/' });
 
     let path = '';
     segments.forEach((segment) => {

@@ -66,7 +66,7 @@ export default function AppLayout({ children }: { children: ReactNode }) {
 
                 {/* modal sidebar */}
                 <ModalSidebar
-                    title="Register"
+                    title={t('register')}
                     isOpen={false}
                     onClose={() => setSidebarOpen(false)}
                 >
