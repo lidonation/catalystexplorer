@@ -67,7 +67,7 @@ export default function Index({
             </header>
 
 
-            <section className="container w-full">
+            <section className="container w-full py-8">
                 <ul className='content-gap scrollable snaps-scrollable'>
                     {
                         sortedFundFilters.map((fund, index) => (
