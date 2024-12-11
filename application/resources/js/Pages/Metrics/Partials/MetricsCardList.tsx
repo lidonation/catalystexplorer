@@ -17,7 +17,6 @@ const MetricCardList: React.FC<MetricProps> = ({ metrics, sortBy, sortOrder, col
     let valueA = a[sortBy] ?? (typeof a[sortBy] === 'number' ? 0 : new Date(0));
     let valueB = b[sortBy] ?? (typeof b[sortBy] === 'number' ? 0 : new Date(0));
 
-
     if (valueA instanceof Date) {
       valueA = valueA.getTime();
     } else if (typeof valueA !== 'number') {
@@ -33,11 +32,10 @@ const MetricCardList: React.FC<MetricProps> = ({ metrics, sortBy, sortOrder, col
     return isAsc ? valueA - valueB : valueB - valueA;
   });
 
-
   const columnClass = columns === MetricEnum.TWO_COLUMNS ? 'grid-cols-2' : 'grid-cols-3';
 
   return (
-    <ul className={`grid grid-cols-1 md:grid-cols-2 lg:${columnClass} gap-6 mt-8`}>
+    <ul className={`grid grid-cols-1 lg:grid-cols-2 xl:${columnClass} gap-6 mt-8`}>
       {
         sortedMetrics.map((metric, index) => (
           <li key={index}>

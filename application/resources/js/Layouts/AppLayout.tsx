@@ -26,20 +26,20 @@ export default function AppLayout({ children }: { children: ReactNode }) {
                 id="mobile-navigation"
                 open={sidebarOpen}
                 onClose={() => setSidebarOpen(false)}
-                className="relative z-30 sm:hidden"
+                className="relative z-30 lg:hidden"
                 aria-label={t('navigation.mobile.sidebar')}
             >
                 <MobileNavigation />
             </Dialog>
 
             {/* Sidebar for larger screens */}
-            <div className="hidden h-full bg-background sm:fixed sm:inset-y-0 sm:z-30 sm:flex sm:w-72">
+            <div className="hidden h-full bg-background lg:fixed lg:inset-y-0 lg:z-30 lg:flex lg:w-72">
                 <DesktopSidebar />
             </div>
 
-            <section className="bg-background-lighter sm:ml-72 sm:mt-4 sm:rounded-tl-4xl">
+            <section className="bg-background-lighter lg:ml-72 lg:mt-4 lg:rounded-tl-4xl">
                 {/* Mobile header */}
-                <header className="sticky top-0 z-30 border-b border-gray-200 bg-background sm:hidden">
+                <header className="sticky top-0 z-30 border-b border-gray-200 bg-background lg:hidden">
                     <div className="flex h-16 items-center justify-between px-4">
                         <CatalystLogo className="h-8" />
                         <Button
