@@ -251,7 +251,14 @@
             "link": "Link Icon",
             "listBullet": "List Bullet Icon",
             "verticalColumn": "Vertical Column Icon",
-            "videoCamera": "Video Camera Icon"
+            "videoCamera": "Video Camera Icon",
+            "playerPause": "Pause Icon",
+            "playerPlay": "Play Icon",
+            "playerRewindLeft": "Rewind Left Icon",
+            "playerRewindRight": "Rewind Right Icon",
+            "playerSkipBack": "Skip Back Icon",
+            "playerSkipForward": "Skip Forward Icon",
+            "playerStop": "Stop Icon"
         }
     },
     "users": {

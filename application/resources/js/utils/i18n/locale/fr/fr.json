@@ -233,7 +233,14 @@
             "link": "Icône de lien",
             "listBullet": "Icône de liste à puces",
             "verticalColumn": "Icône de colonne verticale",
-            "videoCamera": "Icône de caméra vidéo"
+            "videoCamera": "Icône de caméra vidéo",
+            "playerPause": "Pause de Icône",
+            "playerPlay": "Lecture de Icône",
+            "playerRewindLeft": "Icône de Rembobiner à gauche",
+            "playerRewindRight": "Icône de Rembobiner à droite",
+            "playerSkipBack": "Icône de Revenir en arrière",
+            "playerSkipForward": "Icône de Avancer",
+            "playerStop": "Icône de Arrêter"
         }
     },
     "users": {
