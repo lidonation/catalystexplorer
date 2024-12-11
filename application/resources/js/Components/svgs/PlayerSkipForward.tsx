@@ -25,7 +25,7 @@ export default function PlayerSkipForward({
             strokeLinecap="round"
             strokeLinejoin="round"
         >
-            <title>{t('icons.titles.PlayerSkipForward')}</title>
+            <title>{t('icons.titles.playerSkipForward')}</title>
             <path stroke="none" d="M0 0h24v24H0z" fill="none" />
             <path d="M4 5v14l12 -7z" />
             <line x1="20" y1="5" x2="20" y2="19" />
