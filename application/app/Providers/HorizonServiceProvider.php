@@ -31,9 +31,9 @@ class HorizonServiceProvider extends HorizonApplicationServiceProvider
     {
         Gate::define('viewHorizon', function ($user) {
             if ('preview' === config('app.env')) {
-                return;
+                return true;
             }
-            
+
             return in_array($user->email, [
                 config('app.super_admin.email'),
             ]);
