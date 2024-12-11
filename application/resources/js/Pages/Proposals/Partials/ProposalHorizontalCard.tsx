@@ -55,15 +55,12 @@ export default function ProposalHorizontalCard({
                                     <h3 className="font-semibold">
                                         {t('funding')}
                                     </h3>
-                                    <ProposalFundingStatus funding_status={proposal.funding_status}/>
+                                    <ProposalFundingStatus funding_status={proposal.funding_status} />
                                 </div>
                                 <ProposalFundingPercentages
                                     proposal={proposal}
                                 />
-                                <ProposalUsers
-                                    users={proposal.users}
-                                    onUserClick={handleUserClick}
-                                />
+
                             </section>
                             <div className="h-full min-h-40 w-[500px] overflow-auto">
                                 {quickPitchView ? (
@@ -80,13 +77,12 @@ export default function ProposalHorizontalCard({
                         </>
                     )}
                 </div>
-                {!quickPitchView && (
-                    <ProposalUsers
-                        users={proposal.users}
-                        onUserClick={handleUserClick}
-                        className="border-t"
-                    />
-                )}
+
+                <ProposalUsers
+                    users={proposal.users}
+                    onUserClick={handleUserClick}
+                    className="border-t"
+                />
                 <div className="mt-auto">
                     <ProposalCardFooter
                         yesVotes={`${yesVotes}`}
