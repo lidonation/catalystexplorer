@@ -1,5 +1,6 @@
 import Paginator from '@/Components/Paginator';
 import { FiltersProvider } from '@/Context/FiltersContext';
+import PlayerBar  from './Partials/PlayerBar';
 import ProposalResults from '@/Pages/Proposals/Partials/ProposalResults';
 import VerticalCardLoading from '@/Pages/Proposals/Partials/ProposalVerticalCardLoading';
 import { PageProps } from '@/types';
@@ -121,6 +122,9 @@ export default function Index({
                         setCurrentPage={setCurrentpage}
                     />
                 )}
+            </section>
+            <section className="sticky bottom-0 inset-x-0 mx-auto pb-4">
+                <PlayerBar />
             </section>
         </FiltersProvider>
     );
