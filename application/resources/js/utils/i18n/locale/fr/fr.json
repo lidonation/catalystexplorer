@@ -114,8 +114,13 @@
         "vs": "vs. dernier fonds"
     },
     "announcements": {
-        "none": "Aucune annonce"
+        "none": "Aucune annonce",
+        "timeRemaining": "Temps restant",
+        "remaining": "Restant"
     },
+    "breadcrumbs": {
+        "home": "Accueil"
+    },  
     "proposals": {
         "CSVs": "CSVs de propositions",
         "proposals": "Propositions",

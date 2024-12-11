@@ -94,6 +94,9 @@
             "home": "Home"
         }
     },
+    "breadcrumbs":{
+        "home": "Home"
+    },
     "pagination": {
         "next": "Next",
         "previous": "Previous",
@@ -128,7 +131,9 @@
         "vs": "vs last fund"
     },
     "announcements":{
-        "none": "No announcements available"
+        "none": "No announcements available",
+        "timeRemaining": "Time remaining",
+        "remaining" : "Remaining"
     },
     "proposals": {
         "allProposals": "All proposals",
