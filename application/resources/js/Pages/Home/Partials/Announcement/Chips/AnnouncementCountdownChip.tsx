@@ -6,6 +6,7 @@ import {
 } from '@/Components/Tooltip';
 import { useScreenDimension } from '@/Hooks/useScreenDimension';
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 interface AnnouncementCountdownChipProps {
     event_starts_at: string;
@@ -40,6 +41,7 @@ const AnnouncementCountdownChip = ({
 }: AnnouncementCountdownChipProps) => {
     const [timeRemaining, setTimeRemaining] = useState<number>(0);
     const { isMobile } = useScreenDimension();
+    const {t} =useTranslation();
 
     useEffect(() => {
         const calculateTimeRemaining = () => {
@@ -84,13 +86,15 @@ const AnnouncementCountdownChip = ({
                         <div
                             className="shadow-xs text-4 inline-flex items-center text-nowrap rounded-md border border-border-secondary px-2 text-content"
                             role="status"
-                            aria-label={`Time remaining: ${remainingTime}`}
+                            aria-label={`${t('announcements.timeRemaining')}: ${remainingTime}`}
                         >
                             {remainingTime}
                         </div>
                     </TooltipTrigger>
                     <TooltipContent side="bottom">
-                        <p>Time Remaining</p>
+                        <p>
+                            {t('announcements.timeRemaining')}
+                        </p>
                     </TooltipContent>
                 </Tooltip>
             </TooltipProvider>
@@ -99,7 +103,7 @@ const AnnouncementCountdownChip = ({
 
     return (
         <div className="shadow-xs text-4 inline-flex items-center text-nowrap rounded-md border border-border-secondary px-2 text-content">
-            {formatTimeRemaining(timeRemaining) + ' Remaining'}
+            {formatTimeRemaining(timeRemaining) + ` ${t('announcements.remaining')}`}
         </div>
     );
 };
