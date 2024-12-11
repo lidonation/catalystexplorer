@@ -20,7 +20,7 @@ export default function PlayerPause({
             height={height}
             fill="none"
         >
-            <title>{t('icons.titles.PlayerPause')}</title>
+            <title>{t('icons.titles.playerPause')}</title>
             <path d="m7 2h2c1.1045695 0 2 .8954305 2 2v16c0 1.1045695-.8954305 2-2 2h-2c-1.1045695 0-2-.8954305-2-2v-16c0-1.1045695.8954305-2 2-2zm8 0h2c1.1045695 0 2 .8954305 2 2v16c0 1.1045695-.8954305 2-2 2h-2c-1.1045695 0-2-.8954305-2-2v-16c0-1.1045695.8954305-2 2-2zm-8 2v16h2v-16zm8 0v16h2v-16z" fill="#2596BE"  fillRule="evenodd" />
         </svg>
 
