@@ -1282,8 +1282,6 @@ volumePermissions:
   ##
   image:
     registry: docker.io
-    repository: bitnami/bitnami-shell
-    tag: "11"
     pullPolicy: Always
     ## Optionally specify an array of imagePullSecrets.
     ## Secrets must be manually created in the namespace.
@@ -1327,9 +1325,6 @@ sysctl:
   ## @param sysctl.image.pullSecrets Bitnami Shell image pull secrets
   ##
   image:
-    registry: docker.io
-    repository: bitnami/bitnami-shell
-    tag: "11"
     pullPolicy: Always
     ## Optionally specify an array of imagePullSecrets.
     ## Secrets must be manually created in the namespace.
