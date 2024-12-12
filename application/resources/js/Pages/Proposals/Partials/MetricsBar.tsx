@@ -17,11 +17,11 @@ const SectionOne: React.FC<Pick<MetricsBarProps, 'submitted' | 'approved' | 'com
   completed,
 }) => (
   <div className="flex justify-between items-center text-sm md:text-base w-full">
-    <div className="flex flex-col items-center border-r border-gray-700 px-2 flex-grow">
-      <span className="font-semibold block text-gray-300">Submitted</span>
+    <div className="flex flex-col items-center border-r border-border px-2 flex-grow">
+      <span className="font-semibold block content-light">Submitted</span>
       <span>{submitted.toLocaleString()}</span>
     </div>
-    <div className="flex flex-col items-center border-r border-gray-700 px-2 flex-grow">
+    <div className="flex flex-col items-center border-r border-border px-2 flex-grow">
       <span className="font-semibold block text-primary">Approved</span>
       <span>{approved.toLocaleString()}</span>
     </div>
@@ -37,20 +37,20 @@ const SectionTwo: React.FC<Pick<
   'requestedUSD' | 'requestedNative' | 'awardedUSD' | 'awardedNative'
 >> = ({ requestedUSD, requestedNative, awardedUSD, awardedNative }) => (
   <div className="flex justify-between items-center text-sm md:text-base w-full">
-    <div className="flex flex-col items-center border-l border-r border-gray-700 px-2 flex-grow">
-      <span className="font-semibold block text-gray-400">$ Requested</span>
+    <div className="flex flex-col items-center border-l border-r border-border px-2 flex-grow">
+      <span className="font-semibold block text-highlight">$ Requested</span>
       <span>${requestedUSD.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
     </div>
-    <div className="flex flex-col items-center border-r border-gray-700 px-2 flex-grow">
-      <span className="font-semibold block text-gray-400">₳ Requested</span>
+    <div className="flex flex-col items-center border-r border-border px-2 flex-grow">
+      <span className="font-semibold block text-highlight">₳ Requested</span>
       <span>₳{requestedNative.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
     </div>
-    <div className="flex flex-col items-center border-r border-gray-700 px-2 flex-grow">
-      <span className="font-semibold block text-gray-400">$ Awarded</span>
+    <div className="flex flex-col items-center border-r border-border px-2 flex-grow">
+      <span className="font-semibold block text-highlight">$ Awarded</span>
       <span>${awardedUSD.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
     </div>
     <div className="flex flex-col items-center px-2 flex-grow">
-      <span className="font-semibold block text-gray-400">₳ Awarded</span>
+      <span className="font-semibold block text-highlight">₳ Awarded</span>
       <span>₳{awardedNative.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
     </div>
   </div>
@@ -66,7 +66,7 @@ export default function MetricsBar(props: MetricsBarProps) {
 
   return (
     <div
-      className={`sticky bottom-0 inset-x-0 mx-auto transition-all duration-300 bg-gray-800 text-white flex items-center justify-between py-2 px-4 rounded-xl shadow-lg border border-gray-700 overflow-hidden ${
+      className={`sticky bottom-0 inset-x-0 mx-auto transition-all duration-300 bg-bg-dark text-white flex items-center justify-between py-2 px-4 rounded-xl shadow-lg border border-gray-700 overflow-hidden ${
         isExpanded ? 'w-full' : 'w-auto'
       }`}
       onClick={toggleExpansion}
