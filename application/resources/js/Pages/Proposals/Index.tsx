@@ -1,6 +1,7 @@
 import Paginator from '@/Components/Paginator';
 import { FiltersProvider } from '@/Context/FiltersContext';
 import PlayerBar  from './Partials/PlayerBar';
+import MetricsBar from './Partials/MetricsBar';
 import ProposalResults from '@/Pages/Proposals/Partials/ProposalResults';
 import VerticalCardLoading from '@/Pages/Proposals/Partials/ProposalVerticalCardLoading';
 import { PageProps } from '@/types';
@@ -49,6 +50,17 @@ export default function Index({
         const numB = parseInt(b.title.split(" ")[1], 10);
         return numB - numA;
     });
+
+    const metricsData = {
+        submitted: 8113,
+        approved: 1908,
+        completed: 856,
+        requestedUSD: 205670,
+        requestedNative: 46705000,
+        awardedUSD: 38680,
+        awardedNative: 13955000,
+      };
+
 
     return (
         <FiltersProvider defaultFilters={filters}>
@@ -123,8 +135,17 @@ export default function Index({
                     />
                 )}
             </section>
-            <section className="sticky bottom-0 inset-x-0 mx-auto pb-4">
+
+            
+            <section className="sticky bottom-0 inset-x-0 mx-auto pb-4 flex justify-center items-center">
+                <div className='pr-2'>
+                <MetricsBar {...metricsData} />
+                </div>
+                <div>
                 <PlayerBar />
+                </div>
+            
+               
             </section>
         </FiltersProvider>
     );
