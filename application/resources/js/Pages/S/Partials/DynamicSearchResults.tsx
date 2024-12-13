@@ -5,7 +5,7 @@ import PostCard from '@/Pages/Posts/Partials/PostCard';
 import ProposalResults from '@/Pages/Proposals/Partials/ProposalResults';
 import { Button } from '@headlessui/react';
 import { TFunction } from 'i18next';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import AnnouncementData = App.DataTransferObjects.AnnouncementData;
@@ -26,7 +26,7 @@ interface SearchResultsData {
         | ReviewData[]
         | UserData[]
         | GroupData[];
-    posts: PostData[];
+    articles: PostData[];
     query: string;
     limit: number;
     offset: number;
@@ -38,7 +38,7 @@ interface DynamicSearchResultsProps {
     name: string;
     data: SearchResultsData;
 }
-const EmptyState = ({
+export const EmptyState = ({
     query,
     translation,
 }: {
@@ -71,25 +71,32 @@ const EmptyState = ({
     </div>
 );
 
-const DynamicSearchResults = ({ name, data }: DynamicSearchResultsProps) => {
+const DynamicSearchResults = ({
+    name,
+    data = {} as SearchResultsData,
+}: DynamicSearchResultsProps) => {
     const [isHorizontal] = useState(false);
     const { t } = useTranslation();
+    const [query, setQuery] = useState('');
     const search = window.location.search;
     const params = new URLSearchParams(search);
     const urlQuery = params.get('q') as string;
-    const query = data?.query ? data.query : urlQuery;
-    data.query = query;
     const [quickPitchView, setQuickPitchView] = useState(false);
     const setGlobalQuickPitchView = (value: boolean) =>
         setQuickPitchView(value);
 
+    useEffect(() => {
+        const query = data?.query ? data.query : urlQuery;
+        setQuery(query);
+    }, [query, urlQuery]);
+
     const isEmpty =
-        name.toLowerCase() === 'posts'
-            ? !data?.posts?.length
+        !data || name.toLowerCase() === 'articles'
+            ? !data?.articles?.length
             : !data?.hits?.length;
 
     if (isEmpty) {
-        return <EmptyState query={data.query} translation={t} />;
+        return <EmptyState query={query} translation={t} />;
     }
 
     const renderResults = (
@@ -106,7 +113,7 @@ const DynamicSearchResults = ({ name, data }: DynamicSearchResultsProps) => {
                             setGlobalQuickPitchView={setGlobalQuickPitchView}
                         />
                         <div className="flex w-full items-center justify-center">
-                            <NavLink href="/proposals">
+                            <NavLink href={`/proposals?q=${query}`}>
                                 <Button className="text-center">
                                     {translation(
                                         'searchResults.results.viewMore',
@@ -117,17 +124,87 @@ const DynamicSearchResults = ({ name, data }: DynamicSearchResultsProps) => {
                     </div>
                 );
             case 'people':
-                return 'Coming soon';
+                return (
+                    <div className="flex flex-col gap-4">
+                        <div>"Coming soon"</div>
+
+                        <div className="flex w-full items-center justify-center">
+                            <NavLink href={`/people?q=${query}`}>
+                                <Button className="text-center">
+                                    {translation(
+                                        'searchResults.results.viewMore',
+                                    )}
+                                </Button>
+                            </NavLink>
+                        </div>
+                    </div>
+                );
             case 'groups':
-                return 'Coming soon';
+                return (
+                    <div className="flex flex-col gap-4">
+                        <div>"Coming soon"</div>
+
+                        <div className="flex w-full items-center justify-center">
+                            <NavLink href={`/groups?q=${query}`}>
+                                <Button className="text-center">
+                                    {translation(
+                                        'searchResults.results.viewMore',
+                                    )}
+                                </Button>
+                            </NavLink>
+                        </div>
+                    </div>
+                );
             case 'communities':
-                return 'Coming soon';
+                return (
+                    <div className="flex flex-col gap-4">
+                        <div>"Coming soon"</div>
+
+                        <div className="flex w-full items-center justify-center">
+                            <NavLink href={`/communities?q=${query}`}>
+                                <Button className="text-center">
+                                    {translation(
+                                        'searchResults.results.viewMore',
+                                    )}
+                                </Button>
+                            </NavLink>
+                        </div>
+                    </div>
+                );
             case 'reviews':
-                return 'Coming soon';
-            case 'posts':
-                return data.posts.map((post) => (
-                    <PostCard key={post.id} post={post} />
-                ));
+                return (
+                    <div className="flex flex-col gap-4">
+                        <div>"Coming soon"</div>
+
+                        <div className="flex w-full items-center justify-center">
+                            <NavLink href={`/reviews?q=${query}`}>
+                                <Button className="text-center">
+                                    {translation(
+                                        'searchResults.results.viewMore',
+                                    )}
+                                </Button>
+                            </NavLink>
+                        </div>
+                    </div>
+                );
+            case 'articles':
+                return (
+                    <div className="flex flex-col gap-4">
+                        {data.articles.map((article) => (
+                            <PostCard key={article.id} post={article} />
+                        ))}
+
+                        <div className="flex w-full items-center justify-center">
+                            <NavLink href={`/posts?q=${query}`}>
+                                <Button className="text-center">
+                                    {translation(
+                                        'searchResults.results.viewMore',
+                                    )}
+                                </Button>
+                            </NavLink>
+                        </div>
+                    </div>
+                );
             default:
                 return null;
         }

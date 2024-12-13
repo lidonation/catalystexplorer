@@ -26,8 +26,8 @@ class SearchController extends Controller
         ReviewRepository $reviews,
         PostRepository $posts
     ): Response {
-        $searchTerm = $request->input('q');
-        $filterList = $this->getFilterList($request);
+        $searchTerm = $request->input(key: 'q');
+        $filterList = $this->getFilterList(request: $request);
 
         $repositories = [
             'proposals' => $proposals,
@@ -67,7 +67,7 @@ class SearchController extends Controller
                 'tags' => 'project-catalyst',
                 'search' => $searchTerm
             ]);
-            $counts['posts'] = $posts->paginate(10)->collect()->count();
+            $counts['articles'] = $posts->paginate(10)->collect()->count();
         }
         return $counts;
     }
@@ -85,7 +85,7 @@ class SearchController extends Controller
         }
 
         if (empty($filterList) || in_array('articles', $filterList)) {
-            $searchData['posts'] = Inertia::optional(function () use ($posts, $searchTerm) {
+            $searchData['articles'] = Inertia::optional(function () use ($posts, $searchTerm) {
                 $posts->setQuery([
                     'tags' => 'project-catalyst',
                     'search' => $searchTerm
