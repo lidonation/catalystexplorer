@@ -2,6 +2,7 @@ import Paginator from '@/Components/Paginator';
 import { FiltersProvider } from '@/Context/FiltersContext';
 import PlayerBar  from './Partials/PlayerBar';
 import MetricsBar from './Partials/MetricsBar';
+import PlayerBar from './Partials/PlayerBar';
 import ProposalResults from '@/Pages/Proposals/Partials/ProposalResults';
 import VerticalCardLoading from '@/Pages/Proposals/Partials/ProposalVerticalCardLoading';
 import { PageProps } from '@/types';
@@ -13,7 +14,6 @@ import { ProposalSearchParams } from '../../../types/proposal-search-params';
 import CardLayoutSwitcher from './Partials/CardLayoutSwitcher';
 import ProposalFilters from './Partials/ProposalFilters';
 import HorizontaCardLoading from './Partials/ProposalHorizontalCardLoading';
-import FundsFilter from './Partials/FundsFilter';
 import ProposalData = App.DataTransferObjects.ProposalData;
 
 interface HomePageProps extends Record<string, unknown> {
@@ -78,21 +78,8 @@ export default function Index({
                 </div>
             </header>
 
-
-            <section className="container w-full py-8">
-                <ul className='content-gap scrollable snaps-scrollable'>
-                    {
-                        sortedFundFilters.map((fund, index) => (
-                            <li key={index}>
-                                <FundsFilter fundTitle={fund.title} totalProposals={fund.proposalCount} />
-                            </li>
-                        ))
-                    }
-                </ul>
-            </section>
-
             <section className="container flex w-full flex-col items-center justify-center">
-                <ProposalFilters />
+                <ProposalFilters funds={funds}/>
             </section>
 
             <section className="container mt-4 flex flex-col items-end">

@@ -67,6 +67,8 @@ export default function Selector({
         }
 
         setSelectedItems(updatedItems);
+
+        console.log(value)
     };
 
     const onClearSelection = () => {
