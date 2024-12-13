@@ -1,13 +1,10 @@
-import { useState } from 'react';
 import { RangePicker } from '@/Components/RangePicker';
-import SearchBar from '@/Components/SearchBar';
 import { SearchSelect } from '@/Components/SearchSelect';
 import Selector from '@/Components/Select';
 import { useFilterContext } from '@/Context/FiltersContext';
 import { ProposalParamsEnum } from '@/enums/proposal-search-params';
 import { useTranslation } from 'react-i18next';
 import { ProposalSearchParams } from '../../../../types/proposal-search-params';
-import { useEffect } from 'react';
 import FundsFilter from './FundsFilter';
 import FundsData = App.DataTransferObjects.FundData
 

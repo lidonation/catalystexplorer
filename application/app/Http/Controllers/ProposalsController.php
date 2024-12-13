@@ -276,8 +276,6 @@ class ProposalsController extends Controller
             $filters[] = '(' . implode(' OR ', $funds) . ')';
         }
 
-        // dd(!empty($this->queryParams[ProposalSearchParams::COHORT()->value]));
-
 
         //
         //        if ($this->fundingStatus === 'paid') {
