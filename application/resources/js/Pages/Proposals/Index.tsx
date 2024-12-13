@@ -2,7 +2,6 @@ import Paginator from '@/Components/Paginator';
 import { FiltersProvider } from '@/Context/FiltersContext';
 import PlayerBar  from './Partials/PlayerBar';
 import MetricsBar from './Partials/MetricsBar';
-import PlayerBar from './Partials/PlayerBar';
 import ProposalResults from '@/Pages/Proposals/Partials/ProposalResults';
 import VerticalCardLoading from '@/Pages/Proposals/Partials/ProposalVerticalCardLoading';
 import { PageProps } from '@/types';
@@ -40,16 +39,6 @@ export default function Index({
 
     const setGlobalQuickPitchView = (value: boolean) =>
         setQuickPitchView(value);
-
-    const fundFilters = Object.entries(funds).map(([key, value]) => {
-        return { title: key, proposalCount: value };
-    })
-
-    const sortedFundFilters = fundFilters.sort((a, b) => {
-        const numA = parseInt(a.title.split(" ")[1], 10);
-        const numB = parseInt(b.title.split(" ")[1], 10);
-        return numB - numA;
-    });
 
     const metricsData = {
         submitted: 8113,

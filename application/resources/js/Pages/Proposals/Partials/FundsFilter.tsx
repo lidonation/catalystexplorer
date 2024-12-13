@@ -35,7 +35,7 @@ const FundsFilter: React.FC<FundFiltersProps> = ({
                 <Checkbox
                     id={fundTitle}
                     value={fundTitle}
-                    checked={selectedItems.includes(fundTitle)}
+                    checked={isActive}
                     onChange={handleCheckboxChange}
                 />
             </div>
