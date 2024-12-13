@@ -60,6 +60,7 @@ export default {
                 'background-light': 'var(--cx-background-light)',
                 'background-lighter': 'var(--cx-background-lighter)',
                 'background-darker': 'var(--cx-background-darker)',
+                'bg-dark': 'var(--cx-background-gradient-1-dark)',
                 'background-home-gradient-color-1':
                     'var(--cx-intro-gradient-1)',
                 'background-home-gradient-color-2':
@@ -72,6 +73,7 @@ export default {
                 'border-chip': 'var(--cx-border-chip-color)',
                 'border-secondary': 'var(--cx-border-secondary-color)',
                 'eye-logo': 'var(--cx-blue-eye-color)',
+                
                 // border: {
                 //     primary: 'var(--cx-primary)',
                 //     secondary: 'var(--border-secondary-color)'
