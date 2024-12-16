@@ -31,7 +31,6 @@
     "monthlyReports": "Monthly Reports",
     "numbers": "Numbers",
     "password": "Password",
-    "people": "People",
     "rememberMe": "Remember me",
     "privacy": "Privacy",
     "reviews": "Reviews",
@@ -214,6 +213,12 @@
             "valueForMoneyHighToLow": "Value for money: High to Low",
             "valueForMoneyLowToHigh": "Value for money: Low to High"
         }
+    },
+    "people" :{
+        "people" : "People",
+        "ownProposals": "Own Proposals",
+        "coProposals": "Co-Proposals"
+
     },
     "posts": {
         "title": "Catalysts Posts",

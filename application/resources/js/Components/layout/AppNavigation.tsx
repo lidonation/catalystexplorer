@@ -43,7 +43,7 @@ function AppNavigation() {
         },
         {
             href: useLocalizedRoute('people.index'),
-            title: t('people'),
+            title: t('people.people'),
             icon: (isActive: boolean) => <PeopleIcon className={isActive ? 'text-primary-100' : 'text-dark'} />,
         },
         {
