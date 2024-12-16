@@ -1,7 +1,6 @@
 import { Head } from '@inertiajs/react';
 import PeopleCard from './Partials/PeopleCard';
 import PeopleData = App.DataTransferObjects.IdeascaleProfileData;
-import { useEffect } from 'react';
 import { PageProps } from '@/types';
 
 interface PeoplePageProps extends Record<string, unknown>{
@@ -10,9 +9,6 @@ interface PeoplePageProps extends Record<string, unknown>{
 
 
 const Index = ({people}: PageProps<PeoplePageProps>) => {
-    useEffect(()=>{
-        console.log(people)
-    })
     return (
         <>
             <Head title="People"/>
