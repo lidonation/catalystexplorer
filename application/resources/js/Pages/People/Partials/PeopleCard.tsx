@@ -16,7 +16,7 @@ const PeopleCard: React.FC<PeopleProps> = ({
 }) => {
     const { t } = useTranslation();
     return (
-        <div className="w-full space-y-4 rounded-md bg-background p-4">
+        <div className="w-full space-y-4 rounded-md bg-background p-4 shadow-sm">
             <div className='w-full'>
             <div>
                 <UserAvatar imageUrl={profilePhotoUrl} size='size-12'/>
