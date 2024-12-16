@@ -81,7 +81,6 @@ export default function MetricsBar(props: MetricsBarProps) {
 
       {isExpanded && (
         <div className="hidden md:flex md:space-x-4 w-full mt-2">
-         
           <div className="flex-grow">
             <SectionTwo
               requestedUSD={props.requestedUSD}
