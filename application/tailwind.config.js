@@ -74,10 +74,11 @@ export default {
                 'border-secondary': 'var(--cx-border-secondary-color)',
                 'eye-logo': 'var(--cx-blue-eye-color)',
                 
-                // border: {
-                //     primary: 'var(--cx-primary)',
-                //     secondary: 'var(--border-secondary-color)'
-                // }
+                border: {
+                    primary: 'var(--cx-primary)',
+                    secondary: 'var(--border-secondary-color)',
+                    dark: 'var(--cx-dark)'
+                }
             },
             fontSize: {
                 'cx-display-xs': ['var(--cx-display-xs)', {
