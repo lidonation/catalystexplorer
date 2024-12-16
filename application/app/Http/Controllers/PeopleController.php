@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Model\IdeasScaleProfile;
 use App\Models\IdeascaleProfile;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
