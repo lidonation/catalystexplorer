@@ -5,9 +5,18 @@ import { useFilterContext } from '@/Context/FiltersContext';
 import { ProposalParamsEnum } from '@/enums/proposal-search-params';
 import { useTranslation } from 'react-i18next';
 import { ProposalSearchParams } from '../../../../types/proposal-search-params';
+import ActiveProposalFilters from './ActiveProposal';
 
 export default function ProposalFilters() {
     const { filters, setFilters } = useFilterContext<ProposalSearchParams>();
+    const initialFilters: string[] = [
+        "Fund 13",
+        "Fund 12",
+        "Over Budget",
+        "Budget: 1.5M → 6M",
+        "Community: Dummy",
+        "Groups: Leadno",
+      ];
 
     const { t } = useTranslation();
     const sortingOptions = [
@@ -23,9 +32,11 @@ export default function ProposalFilters() {
         },
     ];
 
+
     return (
         <>
             <div className="container mx-auto flex justify-end px-0 pb-4 pt-6">
+                <ActiveProposalFilters initialFilters={initialFilters}/>
                 <Selector
                     className="min-w-64"
                     isMultiselect={false}
@@ -288,3 +299,4 @@ export default function ProposalFilters() {
         </>
     );
 }
+
