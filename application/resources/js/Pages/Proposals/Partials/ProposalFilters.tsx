@@ -1,18 +1,49 @@
 import { RangePicker } from '@/Components/RangePicker';
-import SearchBar from '@/Components/SearchBar';
 import { SearchSelect } from '@/Components/SearchSelect';
 import Selector from '@/Components/Select';
 import { useFilterContext } from '@/Context/FiltersContext';
 import { ProposalParamsEnum } from '@/enums/proposal-search-params';
 import { useTranslation } from 'react-i18next';
 import { ProposalSearchParams } from '../../../../types/proposal-search-params';
+import FundsFilter from './FundsFilter';
+import FundsData = App.DataTransferObjects.FundData
 
-export default function ProposalFilters() {
+
+interface ProposalFilterProps {
+    funds: FundsData[]
+}
+const ProposalFilters: React.FC<ProposalFilterProps> = ({ funds }) => {
     const { filters, setFilters } = useFilterContext<ProposalSearchParams>();
+
+    const fundFilters = Object.entries(funds).map(([key, value]) => {
+        return { title: key, proposalCount: value };
+    })
+
+    const sortedFundFilters = fundFilters.sort((a, b) => {
+        const numA = parseInt(a.title.split(" ")[1], 10);
+        const numB = parseInt(b.title.split(" ")[1], 10);
+        return numB - numA;
+    });
+
 
     const { t } = useTranslation();
     return (
         <>
+            <div className="w-full py-8">
+                <ul className='content-gap scrollable snaps-scrollable'>
+                    {
+                        sortedFundFilters.map((fund, index) => (
+                            <li key={index}>
+                                <FundsFilter
+                                    fundTitle={fund.title}
+                                    totalProposals={fund.proposalCount}
+                                    setSelectedItems={(value) => setFilters(ProposalParamsEnum.FUNDS, value)} 
+                                    selectedItems={filters[ProposalParamsEnum.FUNDS]}/>
+                            </li>
+                        ))
+                    }
+                </ul>
+            </div>
             <div className="container w-full rounded-xl bg-background p-4">
                 <div className="grid grid-cols-2 gap-x-4 gap-y-3 rounded-xl md:grid-cols-2 lg:grid-cols-5">
                     <div className="col-span-1 flex flex-col gap-2 pb-4">
@@ -264,3 +295,5 @@ export default function ProposalFilters() {
         </>
     );
 }
+
+export default ProposalFilters;
