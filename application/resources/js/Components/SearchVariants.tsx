@@ -19,7 +19,7 @@ const SearchVariants = ({
     const variants = [
         t('searchBar.variants.all'),
         t('proposals.proposals'),
-        t('people'),
+        t('people.people'),
         t('groups'),
         t('communities'),
         t('wallets'),

@@ -31,7 +31,6 @@
     "monthlyReports": "Monthly Reports",
     "numbers": "Numbers",
     "password": "Password",
-    "people": "People",
     "rememberMe": "Remember me",
     "privacy": "Privacy",
     "reviews": "Reviews",
@@ -134,6 +133,14 @@
         "none": "No announcements available",
         "timeRemaining": "Time remaining",
         "remaining" : "Remaining"
+    },
+    "people": {
+        "people": "People",
+        "pageSubtitle":"Search proposals and challenges by title, content, or author and co-authors",
+        "limitFunds": "Limit to funds",
+        "projectStatus": "Project status",
+        "limitTags": "Limit to tags",
+        "fundingStatus":"Funding Status"
     },
     "proposals": {
         "allProposals": "All proposals",
