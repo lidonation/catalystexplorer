@@ -10,8 +10,7 @@ const FundingStatusToggle: React.FC<FundingStatusToggleProps> = ({ checked, onCh
 
     return (
         <div className="relative flex flex-col items-center">
-            {/* Left Vertical Border */}
-            <div className="absolute left-0 top-0 h-full w-px bg-gray-300"></div>
+            <div className="absolute left-0 top-0 h-full w-px bg-background"></div>
 
             <span className="text-sm font-medium mb-2">{t('people.fundingStatus')}</span>
 
@@ -22,7 +21,7 @@ const FundingStatusToggle: React.FC<FundingStatusToggleProps> = ({ checked, onCh
                     onChange={onChange}
                     className="sr-only peer"
                 />
-                <div className="w-12 h-6 bg-gray-300 rounded-full peer-checked:bg-primary transition-colors duration-300">
+                <div className="w-12 h-6 bg-background rounded-full peer-checked:bg-primary transition-colors duration-300 border">
                     <div
                         className={`w-6 h-6 bg-white rounded-full shadow absolute top-0 transition-transform duration-300 ${
                             checked ? 'translate-x-6' : 'translate-x-0'
@@ -31,8 +30,7 @@ const FundingStatusToggle: React.FC<FundingStatusToggleProps> = ({ checked, onCh
                 </div>
             </label>
 
-            {/* Right Vertical Border */}
-            <div className="absolute right-0 top-0 h-full w-px bg-gray-300"></div>
+            <div className="absolute right-0 top-0 h-full w-px bg-background"></div>
         </div>
     );
 };

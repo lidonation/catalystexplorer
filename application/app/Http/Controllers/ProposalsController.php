@@ -69,11 +69,11 @@ class ProposalsController extends Controller
         $this->getProps($request);
 
         $proposals = empty($this->queryParams) ? $this->getRandomProposals() : $this->query();
-        
+
         return Inertia::render('Proposals/Index', [
             'proposals' => $proposals,
             'filters' => $this->queryParams,
-            'funds'=> $this->fundsCount,
+            'funds' => $this->fundsCount,
             'search' => $this->search,
             'sort' => "{$this->sortBy}:{$this->sortOrder}",
         ]);
@@ -105,6 +105,7 @@ class ProposalsController extends Controller
             ProposalSearchParams::GROUPS()->value => 'array|nullable',
             ProposalSearchParams::COMMUNITIES()->value => 'array|nullable',
             ProposalSearchParams::PEOPLE()->value => 'array|nullable',
+            ProposalSearchParams::FUNDS()->value => 'array|nullable',
         ]);
 
         // formart sort params for meili
@@ -208,7 +209,6 @@ class ProposalsController extends Controller
         if (isset($this->queryParams[ProposalSearchParams::FUNDING_STATUS()->value])) {
             $fundingStatuses = implode(',', $this->queryParams[ProposalSearchParams::FUNDING_STATUS()->value]);
             $filters[] = "funding_status IN [{$fundingStatuses}]";
-
         }
 
         if (isset($this->queryParams[ProposalSearchParams::PROJECT_STATUS()->value])) {
@@ -270,6 +270,12 @@ class ProposalsController extends Controller
 
             $filters[] = '(' . implode(' OR ', $cohortFilters) . ')';
         }
+
+        if (!empty($this->queryParams[ProposalSearchParams::FUNDS()->value])) {
+            $funds = array_map(fn($fund) => "fund.title = '{$fund}'", $this->queryParams[ProposalSearchParams::FUNDS()->value]);
+            $filters[] = '(' . implode(' OR ', $funds) . ')';
+        }
+
 
         //
         //        if ($this->fundingStatus === 'paid') {
@@ -363,7 +369,6 @@ class ProposalsController extends Controller
         if (isset($facets['fund.title']) && count($facets['fund.title'])) {
             $this->fundsCount = $facets['fund.title'];
         }
-
         // if (isset($facetStats['amount_requested'])) {
         //     $this->budgets = collect(array_values($facetStats['amount_requested']));
         // }

@@ -59,7 +59,7 @@
         },
         "tabs": {
             "proposals": "Propositions",
-            "posts": "Publications",
+            "articles": "Articles",
             "people": "Personnes",
             "groups": "Groupes",
             "communities": "Communautés",
@@ -127,7 +127,8 @@
         "limitFunds": "Limite aux fonds",
         "projectStatus": "Statut du projet",
         "limitTags": "Limite aux balises",
-        "fundingStatus": "Statut du financement"
+        "fundingStatus": "Statut du financement",
+        "noPeopleFound": "Aucune personne trouvée"
     },
 
     "proposals": {

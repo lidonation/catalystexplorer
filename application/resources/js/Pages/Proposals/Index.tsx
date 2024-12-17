@@ -2,6 +2,7 @@ import Paginator from '@/Components/Paginator';
 import { FiltersProvider } from '@/Context/FiltersContext';
 import PlayerBar  from './Partials/PlayerBar';
 import MetricsBar from './Partials/MetricsBar';
+import { UIProvider } from '@/Context/SharedUIContext';
 import ProposalResults from '@/Pages/Proposals/Partials/ProposalResults';
 import VerticalCardLoading from '@/Pages/Proposals/Partials/ProposalVerticalCardLoading';
 import { PageProps } from '@/types';
@@ -13,7 +14,6 @@ import { ProposalSearchParams } from '../../../types/proposal-search-params';
 import CardLayoutSwitcher from './Partials/CardLayoutSwitcher';
 import ProposalFilters from './Partials/ProposalFilters';
 import HorizontaCardLoading from './Partials/ProposalHorizontalCardLoading';
-import FundsFilter from './Partials/FundsFilter';
 import ProposalData = App.DataTransferObjects.ProposalData;
 
 interface HomePageProps extends Record<string, unknown> {
@@ -40,16 +40,6 @@ export default function Index({
 
     const setGlobalQuickPitchView = (value: boolean) =>
         setQuickPitchView(value);
-
-    const fundFilters = Object.entries(funds).map(([key, value]) => {
-        return { title: key, proposalCount: value };
-    })
-
-    const sortedFundFilters = fundFilters.sort((a, b) => {
-        const numA = parseInt(a.title.split(" ")[1], 10);
-        const numB = parseInt(b.title.split(" ")[1], 10);
-        return numB - numA;
-    });
 
     const metricsData = {
         submitted: 8113,
@@ -78,21 +68,8 @@ export default function Index({
                 </div>
             </header>
 
-
-            <section className="container w-full py-8">
-                <ul className='content-gap scrollable snaps-scrollable'>
-                    {
-                        sortedFundFilters.map((fund, index) => (
-                            <li key={index}>
-                                <FundsFilter fundTitle={fund.title} totalProposals={fund.proposalCount} />
-                            </li>
-                        ))
-                    }
-                </ul>
-            </section>
-
             <section className="container flex w-full flex-col items-center justify-center">
-                <ProposalFilters />
+                <ProposalFilters funds={funds}/>
             </section>
 
             <section className="container mt-4 flex flex-col items-end">
@@ -137,6 +114,7 @@ export default function Index({
             </section>
 
             
+            <UIProvider>
             <section className="sticky bottom-0 inset-x-0 mx-auto pb-4 flex justify-center items-center">
                 <div className='pr-2'>
                 <MetricsBar {...metricsData} />
@@ -144,9 +122,12 @@ export default function Index({
                 <div>
                 <PlayerBar />
                 </div>
+                </section>
+            </UIProvider>
+            
             
                
-            </section>
+            
         </FiltersProvider>
     );
 }

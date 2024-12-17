@@ -66,7 +66,7 @@
         },
         "tabs": {
             "proposals": "Proposals",
-            "posts": "Posts",
+            "articles": "Articles",
             "people": "People",
             "groups": "Groups",
             "communities": "Communities",
@@ -133,14 +133,6 @@
         "none": "No announcements available",
         "timeRemaining": "Time remaining",
         "remaining" : "Remaining"
-    },
-    "people": {
-        "people": "People",
-        "pageSubtitle":"Search proposals and challenges by title, content, or author and co-authors",
-        "limitFunds": "Limit to funds",
-        "projectStatus": "Project status",
-        "limitTags": "Limit to tags",
-        "fundingStatus":"Funding Status"
     },
     "proposals": {
         "allProposals": "All proposals",
@@ -221,6 +213,17 @@
             "valueForMoneyHighToLow": "Value for money: High to Low",
             "valueForMoneyLowToHigh": "Value for money: Low to High"
         }
+    },
+    "people" :{
+        "people" : "People",
+        "ownProposals": "Own Proposals",
+        "coProposals": "Co-Proposals",
+        "pageSubtitle":"Search proposals and challenges by title, content, or author and co-authors",
+        "limitFunds": "Limit to funds",
+        "projectStatus": "Project status",
+        "limitTags": "Limit to tags",
+        "fundingStatus":"Funding Status",
+        "noPeopleFound":"No People Found"
     },
     "posts": {
         "title": "Catalysts Posts",
