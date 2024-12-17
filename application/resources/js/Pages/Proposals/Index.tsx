@@ -13,7 +13,6 @@ import { ProposalSearchParams } from '../../../types/proposal-search-params';
 import CardLayoutSwitcher from './Partials/CardLayoutSwitcher';
 import ProposalFilters from './Partials/ProposalFilters';
 import HorizontaCardLoading from './Partials/ProposalHorizontalCardLoading';
-import FundsFilter from './Partials/FundsFilter';
 import ProposalData = App.DataTransferObjects.ProposalData;
 
 interface HomePageProps extends Record<string, unknown> {
@@ -40,16 +39,6 @@ export default function Index({
 
     const setGlobalQuickPitchView = (value: boolean) =>
         setQuickPitchView(value);
-
-    const fundFilters = Object.entries(funds).map(([key, value]) => {
-        return { title: key, proposalCount: value };
-    })
-
-    const sortedFundFilters = fundFilters.sort((a, b) => {
-        const numA = parseInt(a.title.split(" ")[1], 10);
-        const numB = parseInt(b.title.split(" ")[1], 10);
-        return numB - numA;
-    });
 
     const metricsData = {
         submitted: 8113,
@@ -78,21 +67,8 @@ export default function Index({
                 </div>
             </header>
 
-
-            <section className="container w-full py-8">
-                <ul className='content-gap scrollable snaps-scrollable'>
-                    {
-                        sortedFundFilters.map((fund, index) => (
-                            <li key={index}>
-                                <FundsFilter fundTitle={fund.title} totalProposals={fund.proposalCount} />
-                            </li>
-                        ))
-                    }
-                </ul>
-            </section>
-
             <section className="container flex w-full flex-col items-center justify-center">
-                <ProposalFilters />
+                <ProposalFilters funds={funds}/>
             </section>
 
             <section className="container mt-4 flex flex-col items-end">
