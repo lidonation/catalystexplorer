@@ -5,6 +5,7 @@ use App\Http\Controllers\FundsController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\JormungandrController;
 use App\Http\Controllers\PeopleController;
+use App\Http\Controllers\VoterToolController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProposalsController;
 use App\Http\Controllers\SearchController;
@@ -32,6 +33,9 @@ Route::localized(
 
         Route::get('/jormungandr', [JormungandrController::class, 'index'])
             ->name('jormungandr.index');
+
+        Route::get('/voter-tool', [VoterToolController::class, 'index'])
+            ->name('voter-tool.index');
 
         Route::get('/s', [SearchController::class, 'index'])
             ->name('search.index');

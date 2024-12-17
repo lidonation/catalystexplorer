@@ -38,6 +38,8 @@ updated_at?: string;
 deleted_at?: string;
 };
 export type FundData = {
+media: boolean;
+hero_image_url?: string | undefined;
 user_id: number | null;
 title: string;
 meta_title: string;
@@ -54,6 +56,7 @@ label?: string;
 currency: string;
 review_started_at?: string;
 parent_id?: number;
+proposals_count: string;
 };
 export type GroupData = {
 id: number | null;

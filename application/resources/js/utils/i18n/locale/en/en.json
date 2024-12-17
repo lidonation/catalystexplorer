@@ -1,5 +1,6 @@
 {
     "activeFund": "Active Fund",
+    "appMessage": "All Votes must be submitted in the official Catalyst Voting App. This is a research & planning tool only!",
     "articles": "Articles",
     "bookmarks": "My Bookmarks",
     "catalystAPI": "Catalyst API",
@@ -164,6 +165,7 @@
             "proposers":"Proposers",
             "groups": "Groups",
             "budgets": "Budgets",
+            "budget": "Budget",
             "projectLength": "Project Length (months)"
         },
         "options": {
