@@ -48,6 +48,11 @@
     "selected": "choisie",
     "clear": "claire",
     "selection": "sélection",
+    "awarded": "Récompensé",
+    "requested": "Demandée",
+    "submitted": "Soumise",
+    "approved": "Approuvée",
+    "completed": "Complété",
     "app": {
         "name": "Catalyst Explorer",
         "contactEmail": "support@lidonation.com",
@@ -120,7 +125,7 @@
     },
     "breadcrumbs": {
         "home": "Accueil"
-    },  
+    },
     "proposals": {
         "CSVs": "CSVs de propositions",
         "proposals": "Propositions",

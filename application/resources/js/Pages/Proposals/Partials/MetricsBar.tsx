@@ -2,38 +2,41 @@ import { useUIContext } from '@/Context/SharedUIContext';
 import { ProposalMetrics } from '@/types/proposal-metrics';
 import { currency } from '@/utils/currency';
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 // SectionOne displays the first set of data in the MetricsBar
 const SectionOne: React.FC<
     Pick<ProposalMetrics, 'submitted' | 'approved' | 'completed'>
-> = ({ submitted, approved, completed }) => (
-    <div className="flex w-full items-center justify-between text-sm md:text-base">
-        {!!submitted && (
-            <div className="flex flex-grow flex-col items-center border-r border-dark px-2">
-                <span className="content-light block font-semibold">
-                    Submitted
-                </span>
-                <span>{submitted.toLocaleString()}</span>
-            </div>
-        )}
-        {!!approved && (
-            <div className="flex flex-grow flex-col items-center border-r border-dark px-2">
-                <span className="block font-semibold text-primary">
-                    Approved
-                </span>
-                <span>{approved.toLocaleString()}</span>
-            </div>
-        )}
-        {!!completed && (
-            <div className="flex flex-grow flex-col items-center px-2">
-                <span className="block font-semibold text-success">
-                    Completed
-                </span>
-                <span>{completed.toLocaleString()}</span>
-            </div>
-        )}
-    </div>
-);
+> = ({ submitted, approved, completed }) => {
+  const { t } = useTranslation();
+  return (
+      <div className="flex w-full items-center justify-between text-sm md:text-base">
+          {!!submitted && (
+              <div className="flex flex-grow flex-col items-center border-r border-dark px-2">
+                  <span className="content-light block font-semibold">
+                      {t('submitted')}
+                  </span>
+                  <span>{submitted.toLocaleString()}</span>
+              </div>
+          )}
+          {!!approved && (
+              <div className="flex flex-grow flex-col items-center border-r border-dark px-2">
+                  <span className="block font-semibold text-primary">
+                      {t('approved')}
+                  </span>
+                  <span>{approved.toLocaleString()}</span>
+              </div>
+          )}
+          {!!completed && (
+              <div className="flex flex-grow flex-col items-center px-2">
+                  <span className="block font-semibold text-success">
+                      {t('completed')}
+                  </span>
+                  <span>{completed.toLocaleString()}</span>
+              </div>
+          )}
+      </div>
+  );}
 
 // SectionTwo displays the second set of data in the MetricsBar
 const SectionTwo: React.FC<
@@ -41,66 +44,71 @@ const SectionTwo: React.FC<
         ProposalMetrics,
         'requestedUSD' | 'requestedADA' | 'awardedUSD' | 'awardedADA'
     >
-> = ({ requestedUSD, requestedADA, awardedUSD, awardedADA }) => (
-    <div className="flex w-full items-center justify-between text-sm md:text-base">
-        {!!requestedUSD && (
-            <div
-                className={
-                    'flex flex-grow flex-col items-center border-l border-dark px-2 ' +
-                    (requestedADA || awardedUSD || awardedADA ?  ' border-r' : '')
-                }
-            >
-                <span className="block text-nowrap font-semibold text-highlight">
-                    $ Requested
-                </span>
-                <span>{currency(requestedUSD)}</span>
-            </div>
-        )}
-        {!!requestedADA && (
-            <div
-                className={
-                    'flex flex-grow flex-col items-center border-dark px-2' +
-                    (!requestedUSD ? ' border-l' : '') +
-                    (awardedUSD || awardedADA ? ' border-r' : '')
-                }
-            >
-                <span className="block text-nowrap font-semibold text-highlight">
-                    ₳ Requested
-                </span>
-                <span>{currency(requestedADA, 'ADA')}</span>
-            </div>
-        )}
-        {!!awardedUSD && (
-            <div
-                className={
-                    'flex flex-grow flex-col items-center border-dark px-2' +
-                    (!requestedUSD || !requestedADA ? ' border-l' : '') +
-                    (!!awardedADA ? ' border-r' : '')
-                }
-            >
-                <span className="block text-nowrap font-semibold text-highlight">
-                    $ Awarded
-                </span>
-                <span>{currency(awardedUSD)}</span>
-            </div>
-        )}
-        {!!awardedADA && (
-            <div
-                className={
-                    'flex flex-grow flex-col items-center px-2' +
-                    (!requestedUSD || !requestedADA || !requestedUSD
-                        ? ' border-l'
-                        : '')
-                }
-            >
-                <span className="block text-nowrap font-semibold text-highlight">
-                    ₳ Awarded
-                </span>
-                <span>{currency(awardedADA, 'ADA')}</span>
-            </div>
-        )}
-    </div>
-);
+> = ({ requestedUSD, requestedADA, awardedUSD, awardedADA }) => {
+    const { t } = useTranslation();
+    return (
+        <div className="flex w-full items-center justify-between text-sm md:text-base">
+            {!!requestedUSD && (
+                <div
+                    className={
+                        'flex flex-grow flex-col items-center border-l border-dark px-2 ' +
+                        (requestedADA || awardedUSD || awardedADA
+                            ? ' border-r'
+                            : '')
+                    }
+                >
+                    <span className="block text-nowrap font-semibold text-highlight">
+                        $ {t('requested')}
+                    </span>
+                    <span>{currency(requestedUSD)}</span>
+                </div>
+            )}
+            {!!requestedADA && (
+                <div
+                    className={
+                        'flex flex-grow flex-col items-center border-dark px-2' +
+                        (!requestedUSD ? ' border-l' : '') +
+                        (awardedUSD || awardedADA ? ' border-r' : '')
+                    }
+                >
+                    <span className="block text-nowrap font-semibold text-highlight">
+                        ₳ {t('requested')}
+                    </span>
+                    <span>{currency(requestedADA, 'ADA')}</span>
+                </div>
+            )}
+            {!!awardedUSD && (
+                <div
+                    className={
+                        'flex flex-grow flex-col items-center border-dark px-2' +
+                        (!requestedUSD || !requestedADA ? ' border-l' : '') +
+                        (!!awardedADA ? ' border-r' : '')
+                    }
+                >
+                    <span className="block text-nowrap font-semibold text-highlight">
+                        $ {t('awarded')}
+                    </span>
+                    <span>{currency(awardedUSD)}</span>
+                </div>
+            )}
+            {!!awardedADA && (
+                <div
+                    className={
+                        'flex flex-grow flex-col items-center px-2' +
+                        (!requestedUSD || !requestedADA || !requestedUSD
+                            ? ' border-l'
+                            : '')
+                    }
+                >
+                    <span className="block text-nowrap font-semibold text-highlight">
+                        ₳ {t('awarded')}
+                    </span>
+                    <span>{currency(awardedADA, 'ADA')}</span>
+                </div>
+            )}
+        </div>
+    );
+};
 
 // MetricsBar Component that combines SectionOne and SectionTwo
 const MetricsBar: React.FC<ProposalMetrics> = (props) => {
