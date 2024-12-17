@@ -76,6 +76,15 @@ class ProposalsController extends Controller
             'funds' => $this->fundsCount,
             'search' => $this->search,
             'sort' => "{$this->sortBy}:{$this->sortOrder}",
+            'metrics' => [
+                'submitted' => $this->submittedProposals,
+                'approved' => $this->approvedProposals,
+                'completed' => $this->completedProposals,
+                'requestedUSD' => $this->sumBudgetsUSD,
+                'requestedADA' => $this->sumBudgetsADA,
+                'awardedUSD' => $this->sumDistributedUSD,
+                'awardedADA' => $this->sumDistributedADA,
+            ]
         ]);
     }
 
@@ -304,6 +313,7 @@ class ProposalsController extends Controller
 
     public function setCounts($facets, $facetStats): void
     {
+        
         if (isset($facets['amount_awarded_USD'])) {
             foreach ($facets['amount_awarded_USD'] as $key => $value) {
                 $this->sumApprovedUSD += $key * $value;
