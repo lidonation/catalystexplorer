@@ -2,6 +2,7 @@ import Paginator from '@/Components/Paginator';
 import { FiltersProvider } from '@/Context/FiltersContext';
 import PlayerBar  from './Partials/PlayerBar';
 import MetricsBar from './Partials/MetricsBar';
+import { UIProvider } from '@/Context/SharedUIContext';
 import ProposalResults from '@/Pages/Proposals/Partials/ProposalResults';
 import VerticalCardLoading from '@/Pages/Proposals/Partials/ProposalVerticalCardLoading';
 import { PageProps } from '@/types';
@@ -137,6 +138,7 @@ export default function Index({
             </section>
 
             
+            <UIProvider>
             <section className="sticky bottom-0 inset-x-0 mx-auto pb-4 flex justify-center items-center">
                 <div className='pr-2'>
                 <MetricsBar {...metricsData} />
@@ -144,9 +146,12 @@ export default function Index({
                 <div>
                 <PlayerBar />
                 </div>
+                </section>
+            </UIProvider>
+            
             
                
-            </section>
+            
         </FiltersProvider>
     );
 }
