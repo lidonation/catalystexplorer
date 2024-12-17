@@ -4,7 +4,7 @@ import {
     Carousel,
     CarouselContent,
     CarouselItem,
-} from "@/components/ui/carousel";
+} from "@/Components/ui/carousel";
 import { useEffect } from "react";
 
 interface AnnouncementCarouselProps {

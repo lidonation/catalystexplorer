@@ -15,7 +15,7 @@ import CommunityData = App.DataTransferObjects.CommunityData;
 import PostData = App.DataTransferObjects.PostData;
 import ProposalData = App.DataTransferObjects.ProposalData;
 import ReviewData = App.DataTransferObjects.ReviewData;
-import UserData = App.DataTransferObjects.UserData;
+import IdeascaleProfileData = App.DataTransferObjects.IdeascaleProfileData;
 import GroupData = App.DataTransferObjects.GroupData;
 
 interface SearchResultsData {
@@ -134,7 +134,7 @@ const DynamicSearchResults = ({
                                 {data.hits.map((user, index) => (
                                     <li key={index}>
                                         <IdeascaleProfileCard
-                                            ideascaleProfile={user}
+                                            ideascaleProfile={ user as IdeascaleProfileData}
                                         />
                                     </li>
                                 ))}
