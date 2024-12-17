@@ -68,7 +68,7 @@ export default function PeopleFilters() {
                     onChange={handleFundingStatusChange}
                 />
 
-                <div>
+                <div className="col-span-2 sm:col-span-2 lg:col-span-1">
                     <RangePicker
                         key="budgets"
                         context="Budgets"
