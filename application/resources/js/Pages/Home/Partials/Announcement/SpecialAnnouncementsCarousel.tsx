@@ -1,11 +1,11 @@
-import SpecialAnnouncementCard from "./SpecialAnnouncementsCard";
-import AnnouncementData = App.DataTransferObjects.AnnouncementData;
 import {
     Carousel,
     CarouselContent,
     CarouselItem,
-} from "@/Components/ui/carousel";
-import { useEffect } from "react";
+} from '@/Components/components/ui/carousel';
+import { useEffect } from 'react';
+import SpecialAnnouncementCard from './SpecialAnnouncementsCard';
+import AnnouncementData = App.DataTransferObjects.AnnouncementData;
 
 interface AnnouncementCarouselProps {
     announcements: AnnouncementData[];
@@ -22,7 +22,6 @@ const SpecialAnnouncementCarousel = ({
     isTransitioning,
     setIsTransitioning,
 }: AnnouncementCarouselProps) => {
-
     useEffect(() => {
         const interval = setInterval(handleNext, 5000);
         return () => clearInterval(interval);
@@ -33,7 +32,7 @@ const SpecialAnnouncementCarousel = ({
             setIsTransitioning(true);
             setTimeout(() => {
                 setActiveIndex((prevIndex) =>
-                    prevIndex === announcements.length - 1 ? 0 : prevIndex + 1
+                    prevIndex === announcements.length - 1 ? 0 : prevIndex + 1,
                 );
                 setIsTransitioning(false);
             }, 500);
@@ -51,27 +50,35 @@ const SpecialAnnouncementCarousel = ({
     };
 
     return (
-        <div className="w-full border-b border-t relative overflow-hidden">
+        <div className="relative w-full overflow-hidden border-b border-t">
             <Carousel role="region" aria-label="Announcement Carousel">
                 <CarouselContent
-                    className={`flex transition-transform duration-500 ${isTransitioning ? "ease-in-out" : ""}`}
+                    className={`flex transition-transform duration-500 ${isTransitioning ? 'ease-in-out' : ''}`}
                     style={{ transform: `translateX(-${activeIndex * 100}%)` }}
                 >
                     {announcements.map((announcement) => (
-                        <CarouselItem key={announcement.id} className="w-full flex-shrink-0">
-                            <SpecialAnnouncementCard announcement={announcement} />
+                        <CarouselItem
+                            key={announcement.id}
+                            className="w-full flex-shrink-0"
+                        >
+                            <SpecialAnnouncementCard
+                                announcement={announcement}
+                            />
                         </CarouselItem>
                     ))}
                 </CarouselContent>
             </Carousel>
 
-            <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2 mt-2">
+            <div className="absolute bottom-4 left-1/2 mt-2 flex -translate-x-1/2 transform space-x-2">
                 {announcements.map((_, index) => (
                     <button
                         key={index}
                         onClick={() => handleDotClick(index)}
-                        className={`w-3 h-3 sm:w-3 sm:h-3 rounded-full transition-all duration-300 ${activeIndex === index ? "bg-primary scale-100 sm:scale-110" : "bg-gray-300"
-                            }`}
+                        className={`h-3 w-3 rounded-full transition-all duration-300 sm:h-3 sm:w-3 ${
+                            activeIndex === index
+                                ? 'scale-100 bg-primary sm:scale-110'
+                                : 'bg-gray-300'
+                        }`}
                         aria-label={`Go to announcement ${index + 1}`}
                     ></button>
                 ))}
