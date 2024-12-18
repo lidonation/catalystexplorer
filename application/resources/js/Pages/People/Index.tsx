@@ -10,10 +10,9 @@ interface PeoplePageProps extends Record<string, unknown> {
     people: IdeascaleProfilesData[];
 }
 const Index = ({ people }: PageProps<PeoplePageProps>) => {
+    
     const { t } = useTranslation();
-    useEffect(()=>{
-        console.log('people', people);
-    })
+
     return (
         <>
             <Head title="People" />

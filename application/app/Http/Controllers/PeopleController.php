@@ -39,6 +39,6 @@ class PeopleController extends Controller
     public function getPeopleData()
     {
         $ideascaleProfile = app(IdeascaleProfileRepository::class);
-        return $ideascaleProfile->getQuery()->limit($this->limit)->get();
+        return $ideascaleProfile->getQuery()->inRandomOrder()->limit($this->limit)->get();
     }
 }
