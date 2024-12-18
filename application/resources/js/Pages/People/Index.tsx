@@ -34,8 +34,6 @@ const Index = ({ people }: PageProps<PeoplePageProps>) => {
                             </li>
                         ))}
                     </ul>
-                        ))}
-                    </ul>
                 </section>
             </div>
         </>
