@@ -12,7 +12,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Fluent;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Stringable;
-use JetBrains\PhpStorm\ArrayShape;
 use App\Enums\ProposalSearchParams;
 use App\Repositories\ProposalRepository;
 use App\DataTransferObjects\ProposalData;
