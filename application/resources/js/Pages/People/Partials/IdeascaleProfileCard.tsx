@@ -19,7 +19,7 @@ const IdeascaleProfileCard: React.FC<IdeascaleProfileProps> = ({
                         size="size-12"
                     />
                 </div>
-                <p className="text-2 mt-2 font-bold">
+                <p className="text-2 mt-2 font-bold md:truncate">
                     {ideascaleProfile?.name ?? ideascaleProfile?.username}
                 </p>
             </div>
