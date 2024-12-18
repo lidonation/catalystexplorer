@@ -1,6 +1,8 @@
 import { PageProps } from '@/types';
 import { Head } from '@inertiajs/react';
 import IdeascaleProfileCard from './Partials/IdeascaleProfileCard';
+import PeopleFilters from './Partials/PeopleFilters';
+import { useTranslation } from 'react-i18next';
 import PeopleData = App.DataTransferObjects.IdeascaleProfileData;
 
 interface PeoplePageProps extends Record<string, unknown> {
@@ -8,21 +10,20 @@ interface PeoplePageProps extends Record<string, unknown> {
 }
 
 const Index = ({ people }: PageProps<PeoplePageProps>) => {
+    const { t } = useTranslation();
     return (
         <>
             <Head title="People" />
+            <Head title="People" />
 
-            <header>
-                <div className="container">
-                    <h1 className="title-1">People</h1>
-                </div>
-                <div className="container">
-                    <p className="text-content">
-                        Search proposals and challenges by title, content, or
-                        author and co-authors
-                    </p>
-                </div>
+            <header className="container">
+                <h1 className="title-1">{t('people.people')}</h1>
+                <p className="text-content">{t('people.pageSubtitle')}</p>
             </header>
+
+            <section className="container flex w-full flex-col items-center justify-center py-8">
+                <PeopleFilters />
+            </section>
 
             <div className="flex w-full flex-col items-center">
                 <section className="container py-8">
@@ -31,6 +32,8 @@ const Index = ({ people }: PageProps<PeoplePageProps>) => {
                             <li key={index}>
                                 <IdeascaleProfileCard ideascaleProfile={user} />
                             </li>
+                        ))}
+                    </ul>
                         ))}
                     </ul>
                 </section>

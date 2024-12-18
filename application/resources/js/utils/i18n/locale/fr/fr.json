@@ -25,7 +25,6 @@
     "login": "Se connecter",
     "monthlyReports": "Rapports Mensuels",
     "numbers": "Chiffres",
-    "people": "Personnes",
     "privacy": "Confidentialité",
     "proposalReviews": "Évaluations des propositions",
     "proposers": "Proposeurs",
@@ -126,7 +125,19 @@
     "breadcrumbs": {
         "home": "Accueil"
     },
+
+    "people": {
+        "people": "Personnes",
+        "pageSubtitle": "Rechercher des propositions et des défis par titre, contenu ou auteur et co-auteurs",
+        "limitFunds": "Limite aux fonds",
+        "projectStatus": "Statut du projet",
+        "limitTags": "Limite aux balises",
+        "fundingStatus": "Statut du financement",
+        "noPeopleFound": "Aucune personne trouvée"
+    },
+
     "proposals": {
+        "allProposals": "Toutes les propositions",
         "CSVs": "CSVs de propositions",
         "proposals": "Propositions",
         "projectVideo": "Vidéo du projet",

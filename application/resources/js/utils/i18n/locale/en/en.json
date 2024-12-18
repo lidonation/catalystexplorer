@@ -222,8 +222,13 @@
     "people" :{
         "people" : "People",
         "ownProposals": "Own Proposals",
-        "coProposals": "Co-Proposals"
-
+        "coProposals": "Co-Proposals",
+        "pageSubtitle":"Search proposals and challenges by title, content, or author and co-authors",
+        "limitFunds": "Limit to funds",
+        "projectStatus": "Project status",
+        "limitTags": "Limit to tags",
+        "fundingStatus":"Funding Status",
+        "noPeopleFound":"No People Found"
     },
     "posts": {
         "title": "Catalysts Posts",
