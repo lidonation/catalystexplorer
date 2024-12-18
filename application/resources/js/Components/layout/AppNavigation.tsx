@@ -69,7 +69,7 @@ function AppNavigation() {
                 {navItems.map(({ href, title, icon }) => {
                     const normalizedHref = stripLanguagePrefix(href);
                     const isActive = normalizedUrl === normalizedHref;
-                    
+
                     return (
                         <li key={href}>
                             <NavLinkItem
