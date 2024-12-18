@@ -1,9 +1,9 @@
+import { PageProps } from '@/types';
 import { Head } from '@inertiajs/react';
-import PeopleCard from './Partials/PeopleCard';
+import IdeascaleProfileCard from './Partials/IdeascaleProfileCard';
 import PeopleFilters from './Partials/PeopleFilters';
 import { useTranslation } from 'react-i18next';
 import PeopleData = App.DataTransferObjects.IdeascaleProfileData;
-import { PageProps } from '@/types';
 
 interface PeoplePageProps extends Record<string, unknown> {
     people: PeopleData[];
@@ -13,6 +13,7 @@ const Index = ({ people }: PageProps<PeoplePageProps>) => {
     const { t } = useTranslation();
     return (
         <>
+            <Head title="People" />
             <Head title="People" />
 
             <header className="container">
@@ -24,17 +25,12 @@ const Index = ({ people }: PageProps<PeoplePageProps>) => {
                 <PeopleFilters />
             </section>
 
-            <div className="flex flex-col w-full items-center">
+            <div className="flex w-full flex-col items-center">
                 <section className="container py-8">
-                    <ul className="w-full grid grid-cols-1 lg:grid-cols-5 md:grid-cols-2 gap-4">
+                    <ul className="grid w-full grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-5">
                         {people.map((user, index) => (
                             <li key={index}>
-                                <PeopleCard
-                                    profilePhotoUrl={user.profile_photo_url}
-                                    name={user.name}
-                                    ownProposals={10}
-                                    coProposals={10}
-                                />
+                                <IdeascaleProfileCard ideascaleProfile={user} />
                             </li>
                         ))}
                     </ul>

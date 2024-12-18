@@ -54,6 +54,11 @@
     "selected": "Selected",
     "clear": "clear",
     "selection": "selection",
+    "awarded": "Awarded",
+    "requested": "Requested",
+    "submitted":"Submitted",
+    "approved": "Approved",
+    "completed": "Completed",
     "app": {
         "name": "Catalyst Explorer",
         "contactEmail": "support@lidonation.com",

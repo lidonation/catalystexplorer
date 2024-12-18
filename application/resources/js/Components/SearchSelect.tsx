@@ -163,7 +163,7 @@ export function SearchSelect({
                                             )}
                                             value={option.id.toString()}
                                             onChange={() => {}}
-                                            className="mr-2 h-4 w-4 checked:bg-primary checked:hover:bg-primary focus:border-0 focus:ring-0 checked:focus:bg-primary"
+                                            className="text-content-accent mr-2 h-4 w-4 bg-background shadow-sm checked:bg-primary checked:hover:bg-primary focus:border focus:border-primary focus:ring-primary checked:focus:bg-primary"
                                         />
                                     </CommandItem>
                                 ))}
