@@ -33,6 +33,7 @@ const FundsFilter: React.FC<FundFiltersProps> = ({
         >
             <div className="m-4">
                 <Checkbox
+                    className="text-content-accent focus:ring-primary focus:border-primary h-4 w-4 bg-background shadow-sm checked:bg-primary checked:hover:bg-primary focus:border checked:focus:bg-primary"
                     id={fundTitle}
                     value={fundTitle}
                     checked={isActive}

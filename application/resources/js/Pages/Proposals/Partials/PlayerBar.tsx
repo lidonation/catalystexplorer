@@ -23,7 +23,7 @@ const PlayerBar: React.FC = () => {
     <div
       className={`sticky bottom-0 inset-x-0 mx-auto transition-all duration-300 ${
         isPlayerBarExpanded ? 'w-full max-w-xl' : 'w-16'
-      } bg-bg-dark text-white flex items-center justify-between py-2 px-4 rounded-xl shadow-lg overflow-hidden`}
+      } bg-bg-dark text-white flex items-center justify-between py-3 px-4 rounded-xl shadow-lg overflow-hidden`}
       onClick={togglePlayerBar}
     >
       {/* Video Camera Icon for Collapsed State */}
@@ -37,28 +37,28 @@ const PlayerBar: React.FC = () => {
       {isPlayerBarExpanded && (
         <div className="flex items-center space-x-2 sm:space-x-3 w-full">
           <div className="flex items-center space-x-2 sm:space-x-3">
-            <button className="w-8 sm:w-10 h-8 sm:h-10 flex items-center justify-center background-button-gradient-color-2 hover:bg-dark rounded-md border border-dark">
+            <button className="w-8 sm:w-12 h-8 sm:h-12 flex items-center justify-center background-button-gradient-color-2 hover:bg-dark rounded-md border border-dark">
               <PlayerSkipBack />
             </button>
             <button
               onClick={() => {}}
-              className="w-8 sm:w-10 h-8 sm:h-10 flex items-center justify-center background-button-gradient-color-2 hover:bg-dark rounded-md border border-dark"
+              className="w-8 sm:w-12 h-8 sm:h-12 flex items-center justify-center background-button-gradient-color-2 hover:bg-dark rounded-md border border-dark"
             >
               <PlayerPause />
             </button>
-            <button className="w-8 sm:w-10 h-8 sm:h-10 flex items-center justify-center background-button-gradient-color-2 hover:bg-dark rounded-md border border-dark">
+            <button className="w-8 sm:w-12 h-8 sm:h-12 flex items-center justify-center background-button-gradient-color-2 hover:bg-dark rounded-md border border-dark">
               <PlayerStop />
             </button>
-            <button className="w-8 sm:w-10 h-8 sm:h-10 flex items-center justify-center background-button-gradient-color-2 hover:bg-dark rounded-md border border-dark">
+            <button className="w-8 sm:w-12 h-8 sm:h-12 flex items-center justify-center background-button-gradient-color-2 hover:bg-dark rounded-md border border-dark">
               <PlayerSkipForward />
             </button>
           </div>
 
           {/* Divider */}
-          <div className="w-px h-8 sm:h-10 bg-gray-600 mx-2 sm:mx-4" />
+          <div className="w-px h-8 sm:h-12 bg-gray-600 mx-2 sm:mx-4" />
 
           <div className="flex items-center space-x-2 sm:space-x-3">
-            <button className="w-8 sm:w-10 h-8 sm:h-10 flex items-center justify-center background-button-gradient-color-2 hover:bg-dark rounded-md border border-gray-600">
+            <button className="w-8 sm:w-12 h-8 sm:h-12 flex items-center justify-center background-button-gradient-color-2 hover:bg-dark rounded-md border border-gray-600">
               <PlayerRewindLeft />
             </button>
             <div className="text-xs sm:text-sm ">
@@ -66,12 +66,12 @@ const PlayerBar: React.FC = () => {
               <span className="mx-1">/</span>
               <span>5:00</span>
             </div>
-            <button className="w-8 sm:w-10 h-8 sm:h-10 flex items-center justify-center background-button-gradient-color-2 hover:bg-dark rounded-md border border-gray-600">
+            <button className="w-8 sm:w-12 h-8 sm:h-12 flex items-center justify-center background-button-gradient-color-2 hover:bg-dark rounded-md border border-gray-600">
               <PlayerRewindRight />
             </button>
             <button
               onClick={handleSpeedChange}
-              className="w-8 sm:w-10 h-8 sm:h-10 flex items-center justify-center background-button-gradient-color-2 hover:bg-dark rounded-md border border-gray-600 text-xs sm:text-sm"
+              className="w-8 sm:w-12 h-8 sm:h-12 flex items-center justify-center background-button-gradient-color-2 hover:bg-dark rounded-md border border-gray-600 text-xs sm:text-sm"
             >
               {playbackSpeed}x
             </button>

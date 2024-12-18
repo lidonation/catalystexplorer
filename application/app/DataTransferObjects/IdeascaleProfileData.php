@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\DataTransferObjects;
 
@@ -55,6 +57,25 @@ final class IdeascaleProfileData extends Data
         public ?string $title,
 
         #[TypeScriptOptional]
-        public ?string $profile_photo_url
+        public ?string $profile_photo_url,
+
+        #[TypeScriptOptional]
+        public ?int $co_proposals,
+
+        #[TypeScriptOptional]
+        public ?int $primary_proposal,
+
+        #[TypeScriptOptional]
+        public ?int $claimed_by,
+
+        #[TypeScriptOptional]
+        public ?int $completed_proposals_count,
+
+        #[TypeScriptOptional]
+        public ?int $funded_proposals_count,
+
+        #[TypeScriptOptional]
+        public ?int $proposals_count,
+
     ) {}
 }

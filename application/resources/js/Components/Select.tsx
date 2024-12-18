@@ -75,7 +75,7 @@ export default function Selector({
     };
 
     return (
-        <div className={cn('rounded-lg bg-background h-full', className)}>
+        <div className={cn('h-full rounded-lg bg-background', className)}>
             <Popover open={open} onOpenChange={setOpen}>
                 <PopoverTrigger asChild>
                     <button
@@ -134,7 +134,7 @@ export default function Selector({
                                         }
                                         value={option.value}
                                         onChange={() => {}}
-                                        className="checked:focus:bg-primary h-4 w-4 checked:bg-primary checked:hover:bg-primary focus:border-0 focus:ring-0"
+                                        className="text-content-accent h-4 w-4 bg-background shadow-sm checked:bg-primary checked:hover:bg-primary focus:border focus:border-primary focus:ring-primary checked:focus:bg-primary"
                                     />
                                 )}
                             </div>
