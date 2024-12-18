@@ -16,17 +16,14 @@ class PeopleController extends Controller
      */
     protected int $limit = 36;
 
-    public int $coProposalsCount = 0;
-
 
     public function index(Request $request): Response
     {
         $ideascaleProfiles = $this->getPeopleData();
-        $coProposalsCount = $this->coProposalsCount;
 
-        $ideascaleProfiles = $ideascaleProfiles->map(function ($ideascaleProfile) use ($coProposalsCount) {
+        $ideascaleProfiles = $ideascaleProfiles->map(function ($ideascaleProfile) {
             $ideascaleProfile->own_proposals_count = $ideascaleProfile->own_proposals->count();
-            $ideascaleProfile->co_proposals_count = $coProposalsCount;
+            $ideascaleProfile->co_proposals_count = $ideascaleProfile->co_proposals_count;
 
             return $ideascaleProfile;
         });
