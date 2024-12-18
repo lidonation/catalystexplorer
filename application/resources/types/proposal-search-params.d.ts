@@ -8,7 +8,7 @@ export type ProposalSearchParams = {
     [ProposalParamsEnum.CAMPAIGNS]: string[];
     [ProposalParamsEnum.COHORT]: string[];
     [ProposalParamsEnum.COMMUNITIES]: string[];
-    [ProposalParamsEnum.FUNDS]: string;
+    [ProposalParamsEnum.FUNDS]: string[];
     [ProposalParamsEnum.FUNDING_STATUS]: string[];
     [ProposalParamsEnum.GROUPS]: string[];
     [ProposalParamsEnum.LIMIT]: number;

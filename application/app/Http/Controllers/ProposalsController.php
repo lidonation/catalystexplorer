@@ -272,8 +272,8 @@ class ProposalsController extends Controller
         }
 
         if (!empty($this->queryParams[ProposalSearchParams::FUNDS()->value])) {
-            $funds = array_map(fn($fund) => "fund.title = '{$fund}'", $this->queryParams[ProposalSearchParams::FUNDS()->value]);
-            $filters[] = '(' . implode(' OR ', $funds) . ')';
+            $funds = implode("','", $this->queryParams[ProposalSearchParams::FUNDS()->value]);
+            $filters[] = "fund.title IN ['{$funds}']";
         }
 
 
