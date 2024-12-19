@@ -1,5 +1,6 @@
 {
     "activeFund": "Fonds Actif",
+    "appMessage": "Tous les votes doivent être soumis dans l'application officielle de vote Catalyst. Ceci n'est qu'un outil de recherche et de planification !",
     "articles": "Articles",
     "bookmarks": "Mes Signets",
     "catalystAPI": "API Catalyst",
@@ -24,6 +25,7 @@
     "linkedIn": "LinkedIn",
     "login": "Se connecter",
     "monthlyReports": "Rapports Mensuels",
+    "noImage": "Pas d'image",
     "numbers": "Chiffres",
     "privacy": "Confidentialité",
     "proposalReviews": "Évaluations des propositions",
@@ -165,6 +167,7 @@
             "proposers": "Proposers",
             "groups": "Groupes",
             "budgets": "Budgets",
+            "budget": "Budget",
             "projectLength": "Durée du projet (mois)"
         },
         "options": {

@@ -57,7 +57,7 @@ function AppNavigation() {
             icon: (isActive: boolean) => <BarLineIcon className={isActive ? 'text-primary-100' : 'text-dark'} />,
         },
         {
-            href: '/active-fund',
+            href: useLocalizedRoute('voter-tool.index'),
             title: t('activeFund'),
             icon: (isActive: boolean) => <NotificationBoxIcon className={isActive ? 'text-primary-100' : 'text-dark'} />,
         },
