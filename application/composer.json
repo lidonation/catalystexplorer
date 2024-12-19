@@ -9,7 +9,7 @@
         "codezero/laravel-localized-routes": "^4.0",
         "hammerstone/fast-paginate": "^1.1",
         "http-interop/http-factory-guzzle": "^1.2",
-        "inertiajs/inertia-laravel": "2.x-dev",
+        "inertiajs/inertia-laravel": "2.0",
         "laravel/framework": "^11.9",
         "laravel/horizon": "^5.29",
         "laravel/octane": "^2.5",
