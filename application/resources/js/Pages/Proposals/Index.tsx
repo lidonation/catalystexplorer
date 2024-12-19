@@ -17,7 +17,7 @@ import ProposalData = App.DataTransferObjects.ProposalData;
 
 interface HomePageProps extends Record<string, unknown> {
     proposals: PaginatedData<ProposalData[]>;
-    funds: any,
+    funds: any;
     filters: ProposalSearchParams;
 }
 
@@ -49,6 +49,10 @@ export default function Index({
         awardedUSD: 38680,
         awardedNative: 13955000,
       };
+
+      useEffect(()=>{
+        console.log('funds',funds)
+      })
 
 
     return (

@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\CampaignController;
 use App\Http\Controllers\Api\TagController;
 use App\Http\Controllers\Api\CommunityController;
 use App\Http\Controllers\Api\PeopleController;
+use App\Http\Controllers\ProposalsController;
 
 Route::prefix('api')->as('api.')->group(function () {
     Route::get('/groups', [GroupController::class, 'groups'])->name('groups');
@@ -22,4 +23,6 @@ Route::prefix('api')->as('api.')->group(function () {
 
     Route::get('/ideascale_profiles', [PeopleController::class, 'ideascale_profiles'])->name('ideascale_profiles');
     Route::get('/ideascale_profiles/{ideascale_profile:id}', [PeopleController::class, 'ideascale_profile'])->name('ideascale_profile');
+
+    Route::get('/fund_titles',  [ProposalsController::class, 'fund_titles'])->name('fund_titles');
 });

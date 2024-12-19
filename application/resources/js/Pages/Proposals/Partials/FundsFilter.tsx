@@ -1,73 +1,82 @@
 import Checkbox from '@/Components/Checkbox';
-import React, { ChangeEvent, useState } from 'react';
+import axios from 'axios';
+import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import FundsData = App.DataTransferObjects.FundData;
 
 interface FundFiltersProps {
     selectedItems: any;
+    proposalsCount: { [key: string]: number };
     setSelectedItems: (updatedItems: any) => void;
-    funds: FundsData[];
 }
 
 const FundsFilter: React.FC<FundFiltersProps> = ({
     selectedItems = [],
+    proposalsCount,
     setSelectedItems,
-    funds,
 }) => {
     const { t } = useTranslation();
-    const [isActive, setIsActive] = useState(false);
+    const [funds, setFunds] = useState<string[]>([]);
 
-    const handleCheckboxChange = (event: ChangeEvent<HTMLInputElement>) => {
-        const { value, checked } = event.target;
-
-        // Safeguard: ensure selectedItems is always an array
-        const currentItems = Array.isArray(selectedItems) ? selectedItems : [];
-
-        const updatedItems = checked
-            ? [...currentItems, value] // Add the value if checked
-            : currentItems.filter((item: string) => item !== value); // Remove the value if unchecked
-
-        setSelectedItems(updatedItems);
-
-        // Debugging log
-        console.log('Updated selectedItems:', updatedItems);
+    const fetchFunds = () => {
+        axios
+            .get(route('api.fund_titles'))
+            .then((response) => {
+                setFunds(response?.data);
+            })
+            .catch((error) => {
+                console.log(error);
+            });
     };
 
-    const fundFilters = Object.entries(funds).map(([key, value]) => {
-        return { title: key, proposalCount: value };
-    });
+    funds.sort((a, b) => {
+        const numA = parseInt(a.match(/\d+/)?.[0] ?? '0', 10);
+        const numB = parseInt(b.match(/\d+/)?.[0] ?? '0', 10);
 
-    const sortedFundFilters = fundFilters.sort((a, b) => {
-        const numA = parseInt(a.title.split(' ')[1], 10);
-        const numB = parseInt(b.title.split(' ')[1], 10);
         return numB - numA;
     });
+
+    useEffect(() => {
+        fetchFunds();
+    }, []);
+
+    const handleSelect = (value: string) => {
+        let updatedItems: any;
+
+        if (selectedItems.includes(value)) {
+            updatedItems = selectedItems.filter((item: any) => item !== value);
+        } else {
+            updatedItems = [...(selectedItems ?? []), value];
+        }
+
+        setSelectedItems(updatedItems);
+    };
 
     return (
         <div className="w-full py-8">
             <ul className="content-gap scrollable snaps-scrollable">
-                {sortedFundFilters.map((fund) => {
+                {funds.map((fund) => {
                     return (
                         <li
-                            className={`flex w-full rounded-md bg-background shadow-sm ${selectedItems.includes(fund.title) ? 'border-2 border-primary' : ''}`}
-                            key={fund.title}
+                            className={`flex w-full rounded-md bg-background shadow-sm ${selectedItems.includes(fund) ? 'border-2 border-primary' : ''}`}
+                            key={fund}
+                            onClick={() => handleSelect(fund)}
                         >
                             <div className="m-4">
                                 <Checkbox
-                                    id={fund.title}
-                                    value={fund.title}
-                                    checked={selectedItems.includes(fund.title)}
-                                    onChange={handleCheckboxChange}
+                                    id={fund}
+                                    value={fund}
+                                    checked={selectedItems.includes(fund)}
+                                    onChange={() => {}}
                                 />
                             </div>
                             <div className="m-4 ml-2 w-full">
-                                <p className="mb-2 font-medium">{fund.title}</p>
+                                <p className="mb-2 font-medium">{fund}</p>
                                 <div className="flex w-full justify-between">
                                     <p className="text-gray-persist">
                                         {t('proposals.totalProposals')}
                                     </p>
                                     <p className="font-bold">
-                                        {fund.proposalCount.toLocaleString()}
+                                        {proposalsCount[fund] || 0}
                                     </p>
                                 </div>
                             </div>

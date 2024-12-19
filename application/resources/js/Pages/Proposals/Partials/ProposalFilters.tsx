@@ -3,16 +3,16 @@ import { SearchSelect } from '@/Components/SearchSelect';
 import Selector from '@/Components/Select';
 import { useFilterContext } from '@/Context/FiltersContext';
 import { ProposalParamsEnum } from '@/enums/proposal-search-params';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { ProposalSearchParams } from '../../../../types/proposal-search-params';
 import FundsFilter from './FundsFilter';
-import FundsData = App.DataTransferObjects.FundData;
 
-interface ProposalFilterProps {
-    funds: FundsData[];
+interface ProposalFiltersProps {
+    funds: { [key: string]: number };
 }
 
-const ProposalFilters: React.FC<ProposalFilterProps> = ({ funds }) => {
+const ProposalFilters: React.FC<ProposalFiltersProps> = ({ funds }) => {
     const { filters, setFilters } = useFilterContext<ProposalSearchParams>();
     const { t } = useTranslation();
 
@@ -20,10 +20,12 @@ const ProposalFilters: React.FC<ProposalFilterProps> = ({ funds }) => {
         setFilters(ProposalParamsEnum.FUNDS, updatedItems);
     };
 
+    const proposalsCount = funds
+
     return (
         <>
             <FundsFilter
-                funds={funds}
+                proposalsCount={proposalsCount}
                 setSelectedItems={handleSetSelectedItems}
                 selectedItems={filters[ProposalParamsEnum.FUNDS] ?? []}
             />
@@ -35,13 +37,32 @@ const ProposalFilters: React.FC<ProposalFilterProps> = ({ funds }) => {
                         <Selector
                             isMultiselect={true}
                             options={[
-                                { value: 'over_budget', label: t('proposals.options.overBudget') },
-                                { value: 'not_approved', label: t('proposals.options.notApproved') },
-                                { value: 'funded', label: t('proposals.options.funded') },
-                                { value: 'fully_paid', label: t('proposals.options.fullyPaid') },
+                                {
+                                    value: 'over_budget',
+                                    label: t('proposals.options.overBudget'),
+                                },
+                                {
+                                    value: 'not_approved',
+                                    label: t('proposals.options.notApproved'),
+                                },
+                                {
+                                    value: 'funded',
+                                    label: t('proposals.options.funded'),
+                                },
+                                {
+                                    value: 'fully_paid',
+                                    label: t('proposals.options.fullyPaid'),
+                                },
                             ]}
-                            setSelectedItems={(value) => setFilters(ProposalParamsEnum.FUNDING_STATUS, value)}
-                            selectedItems={filters[ProposalParamsEnum.FUNDING_STATUS]}
+                            setSelectedItems={(value) =>
+                                setFilters(
+                                    ProposalParamsEnum.FUNDING_STATUS,
+                                    value,
+                                )
+                            }
+                            selectedItems={
+                                filters[ProposalParamsEnum.FUNDING_STATUS]
+                            }
                         />
                     </div>
 
@@ -50,11 +71,28 @@ const ProposalFilters: React.FC<ProposalFilterProps> = ({ funds }) => {
                         <Selector
                             isMultiselect={false}
                             options={[
-                                { value: '1', label: t('proposals.options.opensourceProposals') },
-                                { value: '0', label: t('proposals.options.nonOpensourceProposals') },
+                                {
+                                    value: '1',
+                                    label: t(
+                                        'proposals.options.opensourceProposals',
+                                    ),
+                                },
+                                {
+                                    value: '0',
+                                    label: t(
+                                        'proposals.options.nonOpensourceProposals',
+                                    ),
+                                },
                             ]}
-                            setSelectedItems={(value) => setFilters(ProposalParamsEnum.OPENSOURCE_PROPOSALS, value)}
-                            selectedItems={filters[ProposalParamsEnum.OPENSOURCE_PROPOSALS]}
+                            setSelectedItems={(value) =>
+                                setFilters(
+                                    ProposalParamsEnum.OPENSOURCE_PROPOSALS,
+                                    value,
+                                )
+                            }
+                            selectedItems={
+                                filters[ProposalParamsEnum.OPENSOURCE_PROPOSALS]
+                            }
                         />
                     </div>
 
@@ -63,12 +101,28 @@ const ProposalFilters: React.FC<ProposalFilterProps> = ({ funds }) => {
                         <Selector
                             isMultiselect={true}
                             options={[
-                                { value: 'complete', label: t('proposals.options.complete') },
-                                { value: 'in_progress', label: t('proposals.options.inProgress') },
-                                { value: 'unfunded', label: t('proposals.options.unfunded') },
+                                {
+                                    value: 'complete',
+                                    label: t('proposals.options.complete'),
+                                },
+                                {
+                                    value: 'in_progress',
+                                    label: t('proposals.options.inProgress'),
+                                },
+                                {
+                                    value: 'unfunded',
+                                    label: t('proposals.options.unfunded'),
+                                },
                             ]}
-                            setSelectedItems={(value) => setFilters(ProposalParamsEnum.PROJECT_STATUS, value)}
-                            selectedItems={filters[ProposalParamsEnum.PROJECT_STATUS]}
+                            setSelectedItems={(value) =>
+                                setFilters(
+                                    ProposalParamsEnum.PROJECT_STATUS,
+                                    value,
+                                )
+                            }
+                            selectedItems={
+                                filters[ProposalParamsEnum.PROJECT_STATUS]
+                            }
                         />
                     </div>
 
@@ -78,7 +132,9 @@ const ProposalFilters: React.FC<ProposalFilterProps> = ({ funds }) => {
                             key={'tags'}
                             domain={'tags'}
                             selected={filters[ProposalParamsEnum.TAGS] ?? []}
-                            onChange={(value) => setFilters(ProposalParamsEnum.TAGS, value)}
+                            onChange={(value) =>
+                                setFilters(ProposalParamsEnum.TAGS, value)
+                            }
                             placeholder="Select"
                             multiple={true}
                         />
@@ -89,8 +145,12 @@ const ProposalFilters: React.FC<ProposalFilterProps> = ({ funds }) => {
                         <SearchSelect
                             key={'campaigns'}
                             domain={'campaigns'}
-                            selected={filters[ProposalParamsEnum.CAMPAIGNS] ?? []}
-                            onChange={(value) => setFilters(ProposalParamsEnum.CAMPAIGNS, value)}
+                            selected={
+                                filters[ProposalParamsEnum.CAMPAIGNS] ?? []
+                            }
+                            onChange={(value) =>
+                                setFilters(ProposalParamsEnum.CAMPAIGNS, value)
+                            }
                             placeholder="Select"
                             multiple={true}
                         />
@@ -104,7 +164,9 @@ const ProposalFilters: React.FC<ProposalFilterProps> = ({ funds }) => {
                             key={'groups'}
                             domain={'groups'}
                             selected={filters[ProposalParamsEnum.GROUPS] ?? []}
-                            onChange={(value) => setFilters(ProposalParamsEnum.GROUPS, value)}
+                            onChange={(value) =>
+                                setFilters(ProposalParamsEnum.GROUPS, value)
+                            }
                             placeholder="Select"
                             multiple={true}
                         />
@@ -115,8 +177,15 @@ const ProposalFilters: React.FC<ProposalFilterProps> = ({ funds }) => {
                         <SearchSelect
                             key={'communities'}
                             domain={'communities'}
-                            selected={filters[ProposalParamsEnum.COMMUNITIES] ?? []}
-                            onChange={(value) => setFilters(ProposalParamsEnum.COMMUNITIES, value)}
+                            selected={
+                                filters[ProposalParamsEnum.COMMUNITIES] ?? []
+                            }
+                            onChange={(value) =>
+                                setFilters(
+                                    ProposalParamsEnum.COMMUNITIES,
+                                    value,
+                                )
+                            }
                             placeholder="Select"
                             multiple={true}
                         />
@@ -127,11 +196,28 @@ const ProposalFilters: React.FC<ProposalFilterProps> = ({ funds }) => {
                         <Selector
                             isMultiselect={true}
                             options={[
-                                { value: 'impact_proposal', label: t('proposals.options.impactProposal') },
-                                { value: 'woman_proposal', label: t('proposals.options.womenProposals') },
-                                { value: 'ideafest_proposal', label: t('proposals.options.ideafestProposals') },
+                                {
+                                    value: 'impact_proposal',
+                                    label: t(
+                                        'proposals.options.impactProposal',
+                                    ),
+                                },
+                                {
+                                    value: 'woman_proposal',
+                                    label: t(
+                                        'proposals.options.womenProposals',
+                                    ),
+                                },
+                                {
+                                    value: 'ideafest_proposal',
+                                    label: t(
+                                        'proposals.options.ideafestProposals',
+                                    ),
+                                },
                             ]}
-                            setSelectedItems={(value) => setFilters(ProposalParamsEnum.COHORT, value)}
+                            setSelectedItems={(value) =>
+                                setFilters(ProposalParamsEnum.COHORT, value)
+                            }
                             selectedItems={filters[ProposalParamsEnum.COHORT]}
                         />
                     </div>
@@ -141,7 +227,9 @@ const ProposalFilters: React.FC<ProposalFilterProps> = ({ funds }) => {
                         <SearchSelect
                             domain={'ideascale_profiles'}
                             selected={filters[ProposalParamsEnum.PEOPLE] ?? []}
-                            onChange={(value) => setFilters(ProposalParamsEnum.PEOPLE, value)}
+                            onChange={(value) =>
+                                setFilters(ProposalParamsEnum.PEOPLE, value)
+                            }
                             placeholder="Select"
                             multiple={true}
                         />
@@ -170,7 +258,10 @@ const ProposalFilters: React.FC<ProposalFilterProps> = ({ funds }) => {
                             context={t('proposals.filters.projectLength')}
                             value={filters[ProposalParamsEnum.PROJECT_LENGTH]}
                             onValueChange={(value) =>
-                                setFilters(ProposalParamsEnum.PROJECT_LENGTH, value)
+                                setFilters(
+                                    ProposalParamsEnum.PROJECT_LENGTH,
+                                    value,
+                                )
                             }
                             max={filters[ProposalParamsEnum.MAX_PROJECT_LENGTH]}
                             min={filters[ProposalParamsEnum.MIN_PROJECT_LENGTH]}
