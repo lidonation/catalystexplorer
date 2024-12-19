@@ -11,7 +11,7 @@ const IdeascaleProfileCard: React.FC<IdeascaleProfileProps> = ({
 }) => {
     const { t } = useTranslation();
     return (
-        <div className="w-full rounded-md bg-background p-4 shadow-sm">
+        <div className="w-full rounded-xl bg-background p-4 shadow-sm">
             <div className="mb-2 w-full">
                 <div>
                     <UserAvatar
