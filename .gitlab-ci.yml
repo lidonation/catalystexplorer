@@ -60,6 +60,7 @@ composer:
     cp "$ENV_FILE" application/.env
     export PATH=$PATH:/usr/local/bin
     cd ./application
+    composer config http-basic.nova.laravel.com "${NOVA_USERNAME}" "${NOVA_LICENSE_KEY}"
     if [[  $CI_COMMIT_BRANCH == 'main' ]]; then
       composer install --no-scripts --no-dev --ignore-platform-reqs
     else
