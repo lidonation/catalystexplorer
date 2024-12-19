@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
@@ -9,7 +7,7 @@ use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
 
-class PeopleController extends Controller
+class IdeascaleProfilesController extends Controller
 {
     /**
      * Display the user's profile form.
@@ -19,7 +17,7 @@ class PeopleController extends Controller
 
     public function index(Request $request): Response
     {
-        $ideascaleProfiles = $this->getPeopleData();
+        $ideascaleProfiles = $this->getIdeascaleProfilesData();
 
         $ideascaleProfiles = $ideascaleProfiles->map(function ($ideascaleProfile) {
             $ideascaleProfile->own_proposals_count = $ideascaleProfile->own_proposals->count();
@@ -28,12 +26,12 @@ class PeopleController extends Controller
             return $ideascaleProfile;
         });
 
-        return Inertia::render('People/Index', [
-            'people' => $ideascaleProfiles,
+        return Inertia::render('IdeascaleProfile/Index', [
+            'ideascaleProfiles' => $ideascaleProfiles,
         ]);
     }
 
-    public function getPeopleData()
+    public function getIdeascaleProfilesData()
     {
         $ideascaleProfile = app(IdeascaleProfileRepository::class);
         return $ideascaleProfile->getQuery()->inRandomOrder()->limit($this->limit)->get();

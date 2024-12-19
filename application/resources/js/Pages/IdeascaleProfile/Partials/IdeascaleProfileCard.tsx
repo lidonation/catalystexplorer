@@ -26,7 +26,7 @@ const IdeascaleProfileCard: React.FC<IdeascaleProfileProps> = ({
             <div className="border-t-2 border-border-secondary">
                 <div className="flex w-full justify-between pb-4 pt-2">
                     <p className="text-4 text-content opacity-70">
-                        {t('people.ownProposals')}
+                        {t('ideascaleProfiles.ownProposals')}
                     </p>
                     <p className="text-3 font-semibold">
                         {ideascaleProfile?.own_proposals_count ?? 0}
@@ -34,7 +34,7 @@ const IdeascaleProfileCard: React.FC<IdeascaleProfileProps> = ({
                 </div>
                 <div className="flex w-full justify-between">
                     <p className="text-4 text-content opacity-70">
-                        {t('people.coProposals')}
+                        {t('ideascaleProfiles.coProposals')}
                     </p>
                     <p className="text-3 font-semibold">
                         {ideascaleProfile?.co_proposals_count ?? 0}

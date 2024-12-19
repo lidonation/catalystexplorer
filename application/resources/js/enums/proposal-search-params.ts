@@ -17,7 +17,7 @@ export enum ProposalParamsEnum {
     MIN_PROJECT_LENGTH = 'lmin',
     OPENSOURCE_PROPOSALS = 'op',
     PAGE = 'p',
-    PEOPLE = 'pp',
+    IDEASCALE_PROFILES = 'ip',
     PROJECT_STATUS = 'ps',
     QUERY = 'q',
     QUICK_PITCHES = 'qp',

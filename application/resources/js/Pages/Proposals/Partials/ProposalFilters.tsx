@@ -226,9 +226,9 @@ const ProposalFilters: React.FC<ProposalFiltersProps> = ({ funds }) => {
                         <span>{t('proposals.filters.proposers')}</span>
                         <SearchSelect
                             domain={'ideascale_profiles'}
-                            selected={filters[ProposalParamsEnum.PEOPLE] ?? []}
+                            selected={filters[ProposalParamsEnum.IDEASCALE_PROFILES] ?? []}
                             onChange={(value) =>
-                                setFilters(ProposalParamsEnum.PEOPLE, value)
+                                setFilters(ProposalParamsEnum.IDEASCALE_PROFILES, value)
                             }
                             placeholder="Select"
                             multiple={true}

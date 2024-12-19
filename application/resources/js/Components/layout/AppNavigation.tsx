@@ -42,8 +42,8 @@ function AppNavigation() {
             icon: (isActive: boolean) => <CheckIcon className={isActive ? 'text-primary-100' : 'text-dark'} />,
         },
         {
-            href: useLocalizedRoute('people.index'),
-            title: t('people.people'),
+            href: useLocalizedRoute('ideascaleProfiles.index'),
+            title: t('ideascaleProfiles.ideascaleProfiles'),
             icon: (isActive: boolean) => <PeopleIcon className={isActive ? 'text-primary-100' : 'text-dark'} />,
         },
         {

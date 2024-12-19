@@ -5,7 +5,7 @@ use App\Http\Controllers\Api\GroupController;
 use App\Http\Controllers\Api\CampaignController;
 use App\Http\Controllers\Api\TagController;
 use App\Http\Controllers\Api\CommunityController;
-use App\Http\Controllers\Api\PeopleController;
+use App\Http\Controllers\Api\IdeascaleProfilesController;
 use App\Http\Controllers\ProposalsController;
 
 Route::prefix('api')->as('api.')->group(function () {
@@ -21,8 +21,8 @@ Route::prefix('api')->as('api.')->group(function () {
     Route::get('/communities', [CommunityController::class, 'communities'])->name('communities');
     Route::get('/communities/{community:id}', [CommunityController::class, 'community'])->name('community');
 
-    Route::get('/ideascale_profiles', [PeopleController::class, 'ideascale_profiles'])->name('ideascale_profiles');
-    Route::get('/ideascale_profiles/{ideascale_profile:id}', [PeopleController::class, 'ideascale_profile'])->name('ideascale_profile');
+    Route::get('/ideascale_profiles', [IdeascaleProfilesController::class, 'ideascale_profiles'])->name('ideascale_profiles');
+    Route::get('/ideascale_profiles/{ideascale_profile:id}', [IdeascaleProfilesController::class, 'ideascale_profile'])->name('ideascale_profile');
 
     Route::get('/fund_titles',  [ProposalsController::class, 'fund_titles'])->name('fund_titles');
 });

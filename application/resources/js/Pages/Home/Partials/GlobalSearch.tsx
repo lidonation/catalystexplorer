@@ -54,6 +54,7 @@ function GlobalSearch() {
             }`}
         >
             <SearchVariants value={searchFilters} onChange={setSearchFilters} />
+
             <SearchBar
                 handleSearch={handleSearch}
                 focusState={handleFocusState}

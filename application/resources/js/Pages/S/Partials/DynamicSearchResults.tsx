@@ -1,14 +1,12 @@
 import ConcentricCirclesCenter from '@/assets/images/bg-concentric-circles-center.png';
 import NavLink from '@/Components/NavLink';
 import FileTypeIcon from '@/Components/svgs/FileTypeIcon';
-import IdeascaleProfileCard from '@/Pages/People/Partials/IdeascaleProfileCard';
 import PostCard from '@/Pages/Posts/Partials/PostCard';
 import ProposalResults from '@/Pages/Proposals/Partials/ProposalResults';
 import { Button } from '@headlessui/react';
 import { TFunction } from 'i18next';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-
 import AnnouncementData = App.DataTransferObjects.AnnouncementData;
 import CampaignData = App.DataTransferObjects.CampaignData;
 import CommunityData = App.DataTransferObjects.CommunityData;
@@ -17,6 +15,7 @@ import ProposalData = App.DataTransferObjects.ProposalData;
 import ReviewData = App.DataTransferObjects.ReviewData;
 import IdeascaleProfileData = App.DataTransferObjects.IdeascaleProfileData;
 import GroupData = App.DataTransferObjects.GroupData;
+import IdeascaleProfileCard from "@/Pages/IdeascaleProfile/Partials/IdeascaleProfileCard";
 
 interface SearchResultsData {
     hits:
@@ -125,10 +124,10 @@ const DynamicSearchResults = ({
                         </div>
                     </div>
                 );
-            case 'people':
+            case 'ideascaleprofiles':
                 return (
                     <div className="flex w-full flex-col gap-4">
-                        <h1 className="title-1">{t('people')}</h1>
+                        <h1 className="title-1">{t('ideascaleProfiles.ideascaleProfiles')}</h1>
                         <section className="py-8">
                             <ul className="grid w-full grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-5">
                                 {data.hits.map((user, index) => (
@@ -144,7 +143,7 @@ const DynamicSearchResults = ({
                         </section>
 
                         <div className="flex w-full items-center justify-center">
-                            <NavLink href={`/people?q=${query}`}>
+                            <NavLink href={`/ideascale-profiles?q=${query}`}>
                                 <Button className="text-center">
                                     {translation(
                                         'searchResults.results.viewMore',

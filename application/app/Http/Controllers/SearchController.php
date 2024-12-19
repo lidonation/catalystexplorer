@@ -1,10 +1,7 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use App\Repositories\CampaignRepository;
 use App\Repositories\CommunityRepository;
 use App\Repositories\GroupRepository;
 use App\Repositories\IdeascaleProfileRepository;
@@ -20,7 +17,7 @@ class SearchController extends Controller
     public function index(
         Request $request,
         ProposalRepository $proposals,
-        IdeascaleProfileRepository $people,
+        IdeascaleProfileRepository $ideascaleProfiles,
         GroupRepository $groups,
         CommunityRepository $communities,
         ReviewRepository $reviews,
@@ -31,7 +28,7 @@ class SearchController extends Controller
 
         $repositories = [
             'proposals' => $proposals,
-            'people' => $people,
+            'ideascaleprofiles' => $ideascaleProfiles,
             'groups' => $groups,
             'communities' => $communities,
             'reviews' => $reviews,

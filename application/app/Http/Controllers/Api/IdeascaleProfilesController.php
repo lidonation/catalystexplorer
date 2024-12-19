@@ -4,16 +4,16 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\IdeascaleProfile;
-use App\Http\Resources\PeopleResource;
+use App\Http\Resources\IdeascaleProfileResource;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\Routing\ResponseFactory;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Response;
 
-class PeopleController extends Controller
+class IdeascaleProfilesController extends Controller
 {
 
-    public function ideascale_profile($ideascaleId): \Illuminate\Http\Response|PeopleResource|Application|ResponseFactory
+    public function ideascale_profile($ideascaleId): Response|IdeascaleProfileResource|Application|ResponseFactory
     {
         $ideascale = IdeascaleProfile::find($ideascaleId);
 
@@ -22,7 +22,7 @@ class PeopleController extends Controller
                 'errors' => 'Ideascale Profiles not found',
             ], Response::HTTP_NOT_FOUND);
         } else {
-            return new PeopleResource($ideascale);
+            return new IdeascaleProfileResource($ideascale);
         }
     }
 
@@ -41,6 +41,6 @@ class PeopleController extends Controller
         $ideascales = IdeascaleProfile::query()
             ->filter(request(['search', 'ids']));
 
-        return PeopleResource::collection($ideascales->fastPaginate($per_page)->onEachSide(0));
+        return IdeascaleProfileResource::collection($ideascales->fastPaginate($per_page)->onEachSide(0));
     }
 }

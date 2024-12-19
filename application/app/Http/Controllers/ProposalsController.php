@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
@@ -64,7 +62,7 @@ class ProposalsController extends Controller
     /**
      * Display the user's profile form.
      */
-    
+
     public function index(Request $request): Response
     {
         $this->getProps($request);
@@ -91,8 +89,6 @@ class ProposalsController extends Controller
 
     protected function getProps(Request $request): void
     {
-
-
         $this->queryParams = $request->validate([
             ProposalSearchParams::FUNDING_STATUS()->value => 'array|nullable',
             ProposalSearchParams::OPENSOURCE_PROPOSALS()->value => 'bool|nullable',
@@ -114,13 +110,12 @@ class ProposalsController extends Controller
             ProposalSearchParams::TAGS()->value => 'array|nullable',
             ProposalSearchParams::GROUPS()->value => 'array|nullable',
             ProposalSearchParams::COMMUNITIES()->value => 'array|nullable',
-            ProposalSearchParams::PEOPLE()->value => 'array|nullable',
+            ProposalSearchParams::IDEASCALE_PROFILES()->value => 'array|nullable',
             ProposalSearchParams::FUNDS()->value => 'array|nullable',
         ]);
 
-        // formart sort params for meili
+        // format sort params for meili
         if (!empty($this->queryParams[ProposalSearchParams::SORTS()->value])) {
-
             $sort = collect(
                 explode(
                     ':',
@@ -151,7 +146,6 @@ class ProposalsController extends Controller
 
     protected function query($returnBuilder = false, $attrs = null, $filters = []): array|Builder
     {
-
         $args = [
             'filter' => $this->getUserFilters(),
         ];
@@ -257,9 +251,9 @@ class ProposalsController extends Controller
             $filters[] = '(' . implode(' OR ', array_map(fn($c) => "tags.id = {$c}", $tagIds)) . ')';
         }
 
-        if (!empty($this->queryParams[ProposalSearchParams::PEOPLE()->value])) {
-            $peopleIds = implode(',', $this->queryParams[ProposalSearchParams::PEOPLE()->value]);
-            $filters[] = "users.id IN [{$peopleIds}]";
+        if (!empty($this->queryParams[ProposalSearchParams::IDEASCALE_PROFILES()->value])) {
+            $ideascaleProfileIds = implode(',', $this->queryParams[ProposalSearchParams::IDEASCALE_PROFILES()->value]);
+            $filters[] = "users.id IN [{$ideascaleProfileIds}]";
         }
 
         if (!empty($this->queryParams[ProposalSearchParams::GROUPS()->value])) {
@@ -316,7 +310,7 @@ class ProposalsController extends Controller
 
     public function setCounts($facets, $facetStats): void
     {
-        
+
         if (isset($facets['amount_awarded_USD'])) {
             foreach ($facets['amount_awarded_USD'] as $key => $value) {
                 $this->sumApprovedUSD += $key * $value;

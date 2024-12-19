@@ -7,6 +7,7 @@ import {
 import Checkbox from './Checkbox';
 import ChevronDownIcon from './svgs/ChevronDownIcon';
 import { useTranslation } from 'react-i18next';
+import {camelCase} from "@/utils/camelCase";
 
 const SearchVariants = ({
     value,
@@ -19,7 +20,7 @@ const SearchVariants = ({
     const variants = [
         t('searchBar.variants.all'),
         t('proposals.proposals'),
-        t('people.people'),
+        t('ideascaleProfiles.ideascaleProfiles'),
         t('groups'),
         t('communities'),
         t('wallets'),
@@ -82,7 +83,7 @@ const SearchVariants = ({
                 </ListboxButton>
                 <ListboxOptions className="absolute left-0 z-50 mt-5 w-max rounded-lg bg-background shadow-xl">
                     {variants.map((variant) => (
-                        <ListboxOption key={variant} value={variant}>
+                        <ListboxOption key={camelCase(variant)} value={camelCase(variant)}>
                             {({ selected }) => (
                                 <div className="flex cursor-pointer items-center justify-between gap-2 px-3 py-2 hover:rounded-lg hover:bg-background-lighter">
                                     <span className="capitalize">
@@ -91,7 +92,7 @@ const SearchVariants = ({
                                     <Checkbox
                                         id={variant}
                                         checked={selected}
-                                        value={variant}
+                                        value={camelCase(variant)}
                                         onChange={() => {}}
                                         className="text-content-accent h-4 w-4 bg-background shadow-sm checked:bg-primary checked:hover:bg-primary focus:border focus:border-primary focus:ring-primary checked:focus:bg-primary"
                                     />

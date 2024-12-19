@@ -12,7 +12,7 @@ const FundingStatusToggle: React.FC<FundingStatusToggleProps> = ({ checked, onCh
         <div className="relative flex flex-col items-center">
             <div className="absolute left-0 top-0 h-full w-px bg-background"></div>
 
-            <span className="text-sm font-medium mb-2">{t('people.fundingStatus')}</span>
+            <span className="text-sm font-medium mb-2">{t('ideascaleProfiles.fundingStatus')}</span>
 
             <label className="relative inline-flex cursor-pointer">
                 <input

@@ -23,7 +23,7 @@ use Spatie\Enum\Enum;
  * @method static self PROJECT_LENGTH()
  * @method static self OPENSOURCE_PROPOSALS()
  * @method static self PAGE()
- * @method static self PEOPLE()
+ * @method static self IDEASCALE_PROFILES()
  * @method static self PROJECT_STATUS()
  * @method static self QUERY()
  * @method static self QUICK_PITCHES()
@@ -54,7 +54,7 @@ final class ProposalSearchParams extends Enum
             'MIN_PROJECT_LENGTH' => 'lmin',
             'OPENSOURCE_PROPOSALS' => 'op',
             'PAGE' => 'p',
-            'PEOPLE' => 'pp',
+            'IDEASCALE_PROFILES' => 'ip',
             'PROJECT_STATUS' => 'ps',
             'QUERY' => 'q',
             'QUICK_PITCHES' => 'qp',

@@ -1,6 +1,6 @@
 export interface SearchResultCounts {
     proposals: number;
-    people: number;
+    ideascaleprofiles: number;
     groups: number;
     communities: number;
     reviews: number;
@@ -9,7 +9,7 @@ export interface SearchResultCounts {
 
 export interface SearchResultData {
     proposals: any[];
-    people: any[];
+    ideascaleprofiles: any[];
     groups: any[];
     communities: any[];
     reviews: any[];

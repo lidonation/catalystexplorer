@@ -39,8 +39,6 @@ export default function Index({
     const [activeIndex, setActiveIndex] = useState(0);
     const [isTransitioning, setIsTransitioning] = useState(false);
 
-
-
     return (
         <>
             <Head title="Catalyst Explorer" />

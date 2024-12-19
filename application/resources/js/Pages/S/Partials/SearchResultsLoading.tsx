@@ -11,21 +11,21 @@ const SearchResultsLoading = ({
     count = 3,
 }: SearchResultsLoadingProps) => {
     const { t } = useTranslation();
-    
+
     const getTranslatedType = (type: string) => {
         return t(`searchResults.tabs.${type.toLowerCase()}`);
     };
 
     const renderSkeletonItem = () => {
         const translatedType = getTranslatedType(type);
-        
+
         switch (type.toLowerCase()) {
             case 'proposals':
                 return <ProposalVerticalCardLoading />;
 
-            case 'people':
+            case 'ideascaleprofiles':
                 return (
-                    <div 
+                    <div
                         className="flex w-full animate-pulse items-center space-x-4 rounded-lg border p-4"
                         aria-label={`${translatedType} ${t('loading')}`}
                     >
@@ -41,7 +41,7 @@ const SearchResultsLoading = ({
             case 'communities':
             case 'groups':
                 return (
-                    <div 
+                    <div
                         className="w-full animate-pulse space-y-3 rounded-lg border p-4"
                         aria-label={`${translatedType} ${t('loading')}`}
                     >
@@ -59,7 +59,7 @@ const SearchResultsLoading = ({
 
             case 'reviews':
                 return (
-                    <div 
+                    <div
                         className="w-full animate-pulse space-y-3 rounded-lg border p-4"
                         aria-label={`${translatedType} ${t('loading')}`}
                     >
@@ -83,7 +83,7 @@ const SearchResultsLoading = ({
 
             default:
                 return (
-                    <div 
+                    <div
                         className="w-full animate-pulse space-y-3 rounded-lg border p-4"
                         aria-label={`${translatedType} ${t('loading')}`}
                     >

@@ -1,4 +1,3 @@
-import SearchBar from '@/Components/SearchBar';
 import BlueEyeIcon from '@/Components/svgs/BlueEyeIcon';
 import ConcentricCircles from '@/assets/images/bg-concentric-circles.png';
 import { useTranslation } from 'react-i18next';

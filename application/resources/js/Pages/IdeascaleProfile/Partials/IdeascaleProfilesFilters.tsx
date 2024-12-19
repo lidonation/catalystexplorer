@@ -5,7 +5,7 @@ import FundingStatusToggle from './FundingStatusToggle';
 import { SearchSelect } from '@/Components/SearchSelect';
 import { RangePicker } from '@/Components/RangePicker';
 
-export default function PeopleFilters() {
+export default function IdeascaleProfilesFilters() {
     const { t } = useTranslation();
 
     const filters = {
@@ -26,7 +26,7 @@ export default function PeopleFilters() {
         <div className="container w-full rounded-xl bg-background shadow-md p-4">
             <div className="grid grid-cols-2 gap-4 lg:grid-cols-5 lg:gap-8 items-center">
                 <div>
-                    <span className="text-sm font-medium mb-1 block">{t('people.limitFunds')}</span>
+                    <span className="text-sm font-medium mb-1 block">{t('ideascaleProfiles.limitFunds')}</span>
                     <SearchSelect
                         key="funds"
                         domain="funds"
@@ -38,7 +38,7 @@ export default function PeopleFilters() {
                 </div>
 
                 <div>
-                    <span className="text-sm font-medium mb-1 block">{t('people.projectStatus')}</span>
+                    <span className="text-sm font-medium mb-1 block">{t('ideascaleProfiles.projectStatus')}</span>
                     <Selector
                         isMultiselect={true}
                         options={[
@@ -52,7 +52,7 @@ export default function PeopleFilters() {
                 </div>
 
                 <div>
-                    <span className="text-sm font-medium mb-1 block">{t('people.limitTags')}</span>
+                    <span className="text-sm font-medium mb-1 block">{t('ideascaleProfiles.limitTags')}</span>
                     <SearchSelect
                         key="tags"
                         domain="tags"

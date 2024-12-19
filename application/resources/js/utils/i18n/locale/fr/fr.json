@@ -67,7 +67,7 @@
         "tabs": {
             "proposals": "Propositions",
             "articles": "Articles",
-            "people": "Personnes",
+            "ideascaleprofiles": "Ideascale Profils",
             "groups": "Groupes",
             "communities": "Communautés",
             "reviews": "Avis"
@@ -130,12 +130,13 @@
 
     "people": {
         "people": "Personnes",
+        "ideascaleProfiles" : "Ideascale Profils",
         "pageSubtitle": "Rechercher des propositions et des défis par titre, contenu ou auteur et co-auteurs",
         "limitFunds": "Limite aux fonds",
         "projectStatus": "Statut du projet",
         "limitTags": "Limite aux balises",
         "fundingStatus": "Statut du financement",
-        "noPeopleFound": "Aucune personne trouvée"
+        "noIdeascaleProfiles": "Aucune Ideascale Profils trouvée"
     },
 
     "proposals": {
