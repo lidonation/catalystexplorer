@@ -134,7 +134,9 @@ const DynamicSearchResults = ({
                                 {data.hits.map((user, index) => (
                                     <li key={index}>
                                         <IdeascaleProfileCard
-                                            ideascaleProfile={ user as IdeascaleProfileData}
+                                            ideascaleProfile={
+                                                user as IdeascaleProfileData
+                                            }
                                         />
                                     </li>
                                 ))}
@@ -155,7 +157,7 @@ const DynamicSearchResults = ({
             case 'groups':
                 return (
                     <div className="flex flex-col gap-4">
-                        <div>"Coming soon"</div>
+                        <div>{translation('comingSoon')}</div>
 
                         <div className="flex w-full items-center justify-center">
                             <NavLink href={`/groups?q=${query}`}>
@@ -171,7 +173,7 @@ const DynamicSearchResults = ({
             case 'communities':
                 return (
                     <div className="flex flex-col gap-4">
-                        <div>"Coming soon"</div>
+                        <div>{translation('comingSoon')}</div>
 
                         <div className="flex w-full items-center justify-center">
                             <NavLink href={`/communities?q=${query}`}>
@@ -187,7 +189,7 @@ const DynamicSearchResults = ({
             case 'reviews':
                 return (
                     <div className="flex flex-col gap-4">
-                        <div>"Coming soon"</div>
+                        <div>{translation('comingSoon')}</div>
 
                         <div className="flex w-full items-center justify-center">
                             <NavLink href={`/reviews?q=${query}`}>

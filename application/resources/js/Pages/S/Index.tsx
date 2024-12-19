@@ -54,39 +54,40 @@ const SearchResults = ({ counts, ...results }: SearchResultsProps) => {
     }, [filteredFilters]);
 
     useEffect(() => {
-        const options = {
-            root: null,
-            rootMargin: `-${HEADER_HEIGHT}px 0px -50% 0px`,
-            threshold: 0,
-        };
-
-        const observer = new IntersectionObserver((entries) => {
+        const handleScroll = () => {
             if (isScrolling) return;
 
-            entries.forEach((entry) => {
-                if (entry.isIntersecting) {
-                    const index = sectionRefs.current.findIndex(
-                        (ref) => ref === entry.target,
-                    );
-                    if (index !== -1) {
-                        setActiveTab(index);
-                    }
-                }
+            const scrollPosition = window.scrollY + HEADER_HEIGHT;
+
+            const activeSection = sectionRefs.current.findIndex((section) => {
+                if (!section) return false;
+
+                const rect = section.getBoundingClientRect();
+                const sectionTop = window.scrollY + rect.top;
+                const sectionBottom = sectionTop + rect.height;
+
+                return (
+                    scrollPosition >= sectionTop &&
+                    scrollPosition < sectionBottom
+                );
             });
-        }, options);
 
-        sectionRefs.current.forEach((section) => {
-            if (section) observer.observe(section);
-        });
+            if (activeSection !== -1 && activeSection !== activeTab) {
+                setActiveTab(activeSection);
+            }
+        };
 
-        return () => observer.disconnect();
-    }, [isScrolling]);
+        window.addEventListener('scroll', handleScroll);
+
+        return () => {
+            window.removeEventListener('scroll', handleScroll);
+        };
+    }, [isScrolling, activeTab]);
 
     const handleTabChange = (index: number) => {
         setIsScrolling(true);
         setActiveTab(index);
 
-        // Custom scroll calculation to position content below header
         const section = sectionRefs.current[index];
         if (section) {
             const sectionTop = section.getBoundingClientRect().top;
@@ -111,7 +112,7 @@ const SearchResults = ({ counts, ...results }: SearchResultsProps) => {
             </div>
         );
     }
-
+    
     return (
         <>
             <Head title="Search Results" />
