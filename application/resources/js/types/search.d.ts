@@ -4,7 +4,7 @@ export interface SearchResultCounts {
     groups: number;
     communities: number;
     reviews: number;
-    posts: number;
+    articles: number;
 }
 
 export interface SearchResultData {
@@ -13,7 +13,7 @@ export interface SearchResultData {
     groups: any[];
     communities: any[];
     reviews: any[];
-    posts: any[];
+    articles: any[];
 }
 
 export interface TabConfig {

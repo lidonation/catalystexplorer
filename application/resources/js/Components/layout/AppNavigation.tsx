@@ -43,7 +43,7 @@ function AppNavigation() {
         },
         {
             href: useLocalizedRoute('people.index'),
-            title: t('people'),
+            title: t('people.people'),
             icon: (isActive: boolean) => <PeopleIcon className={isActive ? 'text-primary-100' : 'text-dark'} />,
         },
         {
@@ -69,7 +69,7 @@ function AppNavigation() {
                 {navItems.map(({ href, title, icon }) => {
                     const normalizedHref = stripLanguagePrefix(href);
                     const isActive = normalizedUrl === normalizedHref;
-                    
+
                     return (
                         <li key={href}>
                             <NavLinkItem

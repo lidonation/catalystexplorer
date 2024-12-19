@@ -11,7 +11,7 @@ interface MetricProps {
 
 const MetricCardList: React.FC<MetricProps> = ({ metrics, sortBy, sortOrder, columns }) => {
 
-  const sortedMetrics = [...metrics].sort((a, b) => {
+  const sortedMetrics = metrics && [...metrics].sort((a, b) => {
     const isAsc = sortOrder === MetricEnum.ASCENDING;
 
     let valueA = a[sortBy] ?? (typeof a[sortBy] === 'number' ? 0 : new Date(0));

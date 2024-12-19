@@ -1,7 +1,6 @@
 import Paginator from '@/Components/Paginator';
 import { FiltersProvider } from '@/Context/FiltersContext';
-import PlayerBar  from './Partials/PlayerBar';
-import MetricsBar from './Partials/MetricsBar';
+import { UIProvider } from '@/Context/SharedUIContext';
 import ProposalResults from '@/Pages/Proposals/Partials/ProposalResults';
 import VerticalCardLoading from '@/Pages/Proposals/Partials/ProposalVerticalCardLoading';
 import { PageProps } from '@/types';
@@ -10,7 +9,10 @@ import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { PaginatedData } from '../../../types/paginated-data';
 import { ProposalSearchParams } from '../../../types/proposal-search-params';
+import { ProposalMetrics } from '@/types/proposal-metrics';
 import CardLayoutSwitcher from './Partials/CardLayoutSwitcher';
+import MetricsBar from './Partials/MetricsBar';
+import PlayerBar from './Partials/PlayerBar';
 import ProposalFilters from './Partials/ProposalFilters';
 import HorizontaCardLoading from './Partials/ProposalHorizontalCardLoading';
 import ProposalData = App.DataTransferObjects.ProposalData;
@@ -19,19 +21,22 @@ interface HomePageProps extends Record<string, unknown> {
     proposals: PaginatedData<ProposalData[]>;
     funds: any;
     filters: ProposalSearchParams;
+    metrics: ProposalMetrics;
 }
 
 export default function Index({
     proposals,
     funds,
     filters,
+    metrics,
 }: PageProps<HomePageProps>) {
     const { t } = useTranslation();
-
+    console.log({ metrics });
+    
     const [perPage, setPerPage] = useState<number>(24);
     const [currentPage, setCurrentpage] = useState<number>(1);
 
-    useEffect(() => { }, [currentPage, perPage]);
+    useEffect(() => {}, [currentPage, perPage]);
 
     const [isHorizontal, setIsHorizontal] = useState(false);
 
@@ -40,15 +45,6 @@ export default function Index({
     const setGlobalQuickPitchView = (value: boolean) =>
         setQuickPitchView(value);
 
-    const metricsData = {
-        submitted: 8113,
-        approved: 1908,
-        completed: 856,
-        requestedUSD: 205670,
-        requestedNative: 46705000,
-        awardedUSD: 38680,
-        awardedNative: 13955000,
-      };
 
     return (
         <FiltersProvider defaultFilters={filters}>
@@ -111,17 +107,16 @@ export default function Index({
                 )}
             </section>
 
-            
-            <section className="sticky bottom-0 inset-x-0 mx-auto pb-4 flex justify-center items-center">
-                <div className='pr-2'>
-                <MetricsBar {...metricsData} />
-                </div>
-                <div>
-                <PlayerBar />
-                </div>
-            
-               
-            </section>
+            <UIProvider>
+                <section className="sticky inset-x-0 bottom-0 mx-auto flex items-center justify-center pb-4">
+                    <div className="pr-2">
+                        <MetricsBar {...metrics} />
+                    </div>
+                    <div>
+                        <PlayerBar />
+                    </div>
+                </section>
+            </UIProvider>
         </FiltersProvider>
     );
 }

@@ -29,7 +29,7 @@ export default function Footer() {
                     </div>
                     <div className="flex min-w-24 flex-col title-gap-y">
                         <h5 className="title-6">
-                            {t('people')}
+                            {t('people.people')}
                         </h5>
                         <ul className="flex flex-col menu-gap-y">
                             <li>

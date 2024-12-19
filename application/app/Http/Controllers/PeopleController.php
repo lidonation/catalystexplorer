@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\IdeascaleProfile;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -13,6 +14,12 @@ class PeopleController extends Controller
      */
     public function index(Request $request): Response
     {
-        return Inertia::render('People/Index');
+        return Inertia::render('People/Index', [
+            'people' => $this->getPeopleData(),
+        ]);
+    }
+
+    public function getPeopleData(){
+        return IdeascaleProfile::take(10)->get();
     }
 }

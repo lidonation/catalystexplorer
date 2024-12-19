@@ -25,7 +25,6 @@
     "login": "Se connecter",
     "monthlyReports": "Rapports Mensuels",
     "numbers": "Chiffres",
-    "people": "Personnes",
     "privacy": "Confidentialité",
     "proposalReviews": "Évaluations des propositions",
     "proposers": "Proposeurs",
@@ -48,6 +47,11 @@
     "selected": "choisie",
     "clear": "claire",
     "selection": "sélection",
+    "awarded": "Récompensé",
+    "requested": "Demandée",
+    "submitted": "Soumise",
+    "approved": "Approuvée",
+    "completed": "Complété",
     "app": {
         "name": "Catalyst Explorer",
         "contactEmail": "support@lidonation.com",
@@ -60,7 +64,7 @@
         },
         "tabs": {
             "proposals": "Propositions",
-            "posts": "Publications",
+            "articles": "Articles",
             "people": "Personnes",
             "groups": "Groupes",
             "communities": "Communautés",
@@ -120,8 +124,20 @@
     },
     "breadcrumbs": {
         "home": "Accueil"
-    },  
+    },
+
+    "people": {
+        "people": "Personnes",
+        "pageSubtitle": "Rechercher des propositions et des défis par titre, contenu ou auteur et co-auteurs",
+        "limitFunds": "Limite aux fonds",
+        "projectStatus": "Statut du projet",
+        "limitTags": "Limite aux balises",
+        "fundingStatus": "Statut du financement",
+        "noPeopleFound": "Aucune personne trouvée"
+    },
+
     "proposals": {
+        "allProposals": "Toutes les propositions",
         "CSVs": "CSVs de propositions",
         "proposals": "Propositions",
         "projectVideo": "Vidéo du projet",

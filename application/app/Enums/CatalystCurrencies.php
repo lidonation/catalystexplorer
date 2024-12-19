@@ -10,5 +10,8 @@ use Spatie\Enum\Laravel\Enum;
  */
 final class CatalystCurrencies extends Enum
 {
-    use Traits\HasValues;
+    public static function values(): \Closure
+    {
+        return fn(string $name): string|int => $name;
+    }
 }

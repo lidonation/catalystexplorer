@@ -43,6 +43,7 @@ export default {
                 'content-dark': 'var(--cx-content-dark)',
                 light: 'var(--cx-content)',
                 'light-persist': 'var(--bg-light-persist)',
+                'light-gray-persist': 'var(--cx-content-light-gray-persist)',
                 'gray-persist': 'var(--cx-content-gray-persist)',
                 'black-persist': 'var(--cx-content-black-persist)',
                 dark: 'var(--cx-dark)',
@@ -74,10 +75,11 @@ export default {
                 'border-secondary': 'var(--cx-border-secondary-color)',
                 'eye-logo': 'var(--cx-blue-eye-color)',
                 
-                // border: {
-                //     primary: 'var(--cx-primary)',
-                //     secondary: 'var(--border-secondary-color)'
-                // }
+                border: {
+                    primary: 'var(--cx-primary)',
+                    secondary: 'var(--border-secondary-color)',
+                    dark: 'var(--cx-dark)'
+                }
             },
             fontSize: {
                 'cx-display-xs': ['var(--cx-display-xs)', {
