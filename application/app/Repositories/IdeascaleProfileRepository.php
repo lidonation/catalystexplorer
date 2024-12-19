@@ -46,20 +46,7 @@ class IdeascaleProfileRepository extends Repository
                     'co_proposals_count',
                     'proposals_total_amount_requested'
                 ];
-
-                $args['facets'] = [
-                    'username',
-                    'name',
-                    'ideascale',
-                    'title',
-                    'proposals',
-                    'proposals_completed',
-                    'proposals_approved',
-                    'amount_awaraded_ada',
-                    'amount_awaraded_usd',
-                    'co_proposals_count',
-                    'proposals_total_amount_requested'
-                ];
+                
                 return $index->search($query, $args);
             }
         );
