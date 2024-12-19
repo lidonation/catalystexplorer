@@ -50,11 +50,6 @@ export default function Index({
         awardedNative: 13955000,
       };
 
-      useEffect(()=>{
-        console.log('funds',funds)
-      })
-
-
     return (
         <FiltersProvider defaultFilters={filters}>
             <Head title="Proposals" />
