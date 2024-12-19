@@ -63,7 +63,7 @@ export default function Index({
             </header>
 
             <section className="container flex w-full flex-col items-center justify-center">
-                <ProposalFilters funds={funds} />
+                <ProposalFilters funds={funds}/>
             </section>
 
             <section className="container mt-4 flex flex-col items-end">
