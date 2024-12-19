@@ -1,3 +1,4 @@
+import React, { useState } from 'react';
 import { RangePicker } from '@/Components/RangePicker';
 import { SearchSelect } from '@/Components/SearchSelect';
 import Selector from '@/Components/Select';
@@ -5,18 +6,64 @@ import { useFilterContext } from '@/Context/FiltersContext';
 import { ProposalParamsEnum } from '@/enums/proposal-search-params';
 import { useTranslation } from 'react-i18next';
 import { ProposalSearchParams } from '../../../../types/proposal-search-params';
-import ActiveProposalFilters from './ActiveProposal';
+
+interface FiltersProps {
+    initialFilters: string[];
+    showFilters: boolean;
+    toggleFilters: () => void;
+    filters: string[];
+    removeFilter: (filterToRemove: string) => void;
+}
+
+export const ActiveProposalFilters: React.FC<FiltersProps> = ({
+        initialFilters,
+        showFilters,
+        toggleFilters,
+        filters,
+        removeFilter,
+    }) => {
+    const { t } = useTranslation();
+    return (
+        <div>
+            <div className="bg-background border rounded-md mr-4 flex items-center px-2 py-1 h-9">
+                <button
+                    onClick={toggleFilters}
+                    className="px-2 flex items-center"
+                    aria-expanded={showFilters}
+                >
+                    {t('proposals.filters.filters')}
+                    {filters.length > 0 && (
+                        <span className="ml-2 text-sm text-gray-400">
+                            ({filters.length})
+                        </span>
+                    )}
+                </button>
+            </div>
+        </div>
+    );
+};
 
 export default function ProposalFilters() {
     const { filters, setFilters } = useFilterContext<ProposalSearchParams>();
-    const initialFilters: string[] = [
-        "Fund 13",
-        "Fund 12",
-        "Over Budget",
-        "Budget: 1.5M → 6M",
-        "Community: Dummy",
-        "Groups: Leadno",
-      ];
+    const [showFilters, setShowFilters] = useState(false);
+    const [activeFilters, setActiveFilters] = useState<string[]>([
+        "Funding Status",
+        "Opensource Status",
+        "Project Status",
+        "Tags",
+        "Campaigns",
+        "Groups",
+        "Communities",
+        "Community Cohort",
+        "Prospers"
+    ]);
+    const toggleFilters = () => {
+        setShowFilters((prev) => !prev);
+    };
+
+    const removeFilter = (filterToRemove: string) => {
+        setActiveFilters((filters) => filters.filter((filter) => filter !== filterToRemove));
+    };
 
     const { t } = useTranslation();
     const sortingOptions = [
@@ -36,7 +83,13 @@ export default function ProposalFilters() {
     return (
         <>
             <div className="container mx-auto flex justify-end px-0 pb-4 pt-6">
-                <ActiveProposalFilters initialFilters={initialFilters}/>
+                <ActiveProposalFilters
+                    initialFilters={activeFilters}
+                    showFilters={showFilters}
+                    toggleFilters={toggleFilters}
+                    filters={activeFilters}
+                    removeFilter={removeFilter}
+                />
                 <Selector
                     className="min-w-64"
                     isMultiselect={false}
@@ -296,6 +349,25 @@ export default function ProposalFilters() {
                     </div>
                 </div>
             </div>
+            {showFilters && (
+                <div className="flex mt-2 flex-wrap" aria-label={t('proposals.filters.activeFilters')}>
+                    {activeFilters.map((filter, index) => (
+                        <div
+                            className="flex items-center h-9 justify-between border rounded-md bg-background px-2 py-1.5 text-sm whitespace-nowrap mr-2"
+                            key={index}
+                        >
+                            <p className="mr-1 whitespace-nowrap">{filter}</p>
+                            <button
+                                className="remove-button"
+                                onClick={() => removeFilter(filter)}
+                                aria-label={t('proposals.filters.removeFilter', { filter })}
+                            >
+                                ✕
+                            </button>
+                        </div>
+                    ))}
+                </div>
+            )}
         </>
     );
 }
