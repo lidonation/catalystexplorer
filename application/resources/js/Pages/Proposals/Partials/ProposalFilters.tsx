@@ -3,47 +3,33 @@ import { SearchSelect } from '@/Components/SearchSelect';
 import Selector from '@/Components/Select';
 import { useFilterContext } from '@/Context/FiltersContext';
 import { ProposalParamsEnum } from '@/enums/proposal-search-params';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { ProposalSearchParams } from '../../../../types/proposal-search-params';
 import FundsFilter from './FundsFilter';
-import FundsData = App.DataTransferObjects.FundData
 
-
-interface ProposalFilterProps {
-    funds: FundsData[]
+interface ProposalFiltersProps {
+    funds: { [key: string]: number };
 }
-const ProposalFilters: React.FC<ProposalFilterProps> = ({ funds }) => {
+
+const ProposalFilters: React.FC<ProposalFiltersProps> = ({ funds }) => {
     const { filters, setFilters } = useFilterContext<ProposalSearchParams>();
-
-    const fundFilters = Object.entries(funds).map(([key, value]) => {
-        return { title: key, proposalCount: value };
-    })
-
-    const sortedFundFilters = fundFilters.sort((a, b) => {
-        const numA = parseInt(a.title.split(" ")[1], 10);
-        const numB = parseInt(b.title.split(" ")[1], 10);
-        return numB - numA;
-    });
-
-
     const { t } = useTranslation();
+
+    const handleSetSelectedItems = (updatedItems: any[]) => {
+        setFilters(ProposalParamsEnum.FUNDS, updatedItems);
+    };
+
+    const proposalsCount = funds
+
     return (
         <>
-            <div className="w-full py-8">
-                <ul className='content-gap scrollable snaps-scrollable'>
-                    {
-                        sortedFundFilters.map((fund, index) => (
-                            <li key={index}>
-                                <FundsFilter
-                                    fundTitle={fund.title}
-                                    totalProposals={fund.proposalCount}
-                                    setSelectedItems={(value) => setFilters(ProposalParamsEnum.FUNDS, value)} 
-                                    selectedItems={filters[ProposalParamsEnum.FUNDS]}/>
-                            </li>
-                        ))
-                    }
-                </ul>
-            </div>
+            <FundsFilter
+                proposalsCount={proposalsCount}
+                setSelectedItems={handleSetSelectedItems}
+                selectedItems={filters[ProposalParamsEnum.FUNDS] ?? []}
+            />
+
             <div className="container w-full rounded-xl bg-background p-4">
                 <div className="grid grid-cols-2 gap-x-4 gap-y-3 rounded-xl md:grid-cols-2 lg:grid-cols-5">
                     <div className="col-span-1 flex flex-col gap-2 pb-4">
@@ -170,6 +156,7 @@ const ProposalFilters: React.FC<ProposalFilterProps> = ({ funds }) => {
                         />
                     </div>
                 </div>
+
                 <div className="grid grid-cols-2 gap-x-4 gap-y-3 rounded-xl md:grid-cols-2 lg:grid-cols-4">
                     <div className="col-span-1 flex flex-col gap-2 pb-4">
                         <span>{t('proposals.filters.groups')}</span>
@@ -227,10 +214,6 @@ const ProposalFilters: React.FC<ProposalFilterProps> = ({ funds }) => {
                                         'proposals.options.ideafestProposals',
                                     ),
                                 },
-                                // {
-                                //     value: 'has_quick_pitch',
-                                //     label: t('proposals.options.quickPitches'),
-                                // },
                             ]}
                             setSelectedItems={(value) =>
                                 setFilters(ProposalParamsEnum.COHORT, value)
@@ -252,6 +235,7 @@ const ProposalFilters: React.FC<ProposalFilterProps> = ({ funds }) => {
                         />
                     </div>
                 </div>
+
                 <div className="my-6 w-full border-b"></div>
                 <div className="grid grid-cols-1 gap-x-4 gap-y-3 rounded-xl lg:grid-cols-2">
                     <div className="pb-4">
@@ -260,10 +244,7 @@ const ProposalFilters: React.FC<ProposalFilterProps> = ({ funds }) => {
                             context={t('proposals.filters.budgets')}
                             value={filters[ProposalParamsEnum.BUDGETS]}
                             onValueChange={(value) =>
-                                setFilters<ProposalParamsEnum.BUDGETS>(
-                                    ProposalParamsEnum.BUDGETS,
-                                    value,
-                                )
+                                setFilters(ProposalParamsEnum.BUDGETS, value)
                             }
                             max={filters[ProposalParamsEnum.MAX_BUDGET]}
                             min={filters[ProposalParamsEnum.MIN_BUDGET]}
@@ -277,7 +258,7 @@ const ProposalFilters: React.FC<ProposalFilterProps> = ({ funds }) => {
                             context={t('proposals.filters.projectLength')}
                             value={filters[ProposalParamsEnum.PROJECT_LENGTH]}
                             onValueChange={(value) =>
-                                setFilters<ProposalParamsEnum.PROJECT_LENGTH>(
+                                setFilters(
                                     ProposalParamsEnum.PROJECT_LENGTH,
                                     value,
                                 )
@@ -294,6 +275,6 @@ const ProposalFilters: React.FC<ProposalFilterProps> = ({ funds }) => {
             </div>
         </>
     );
-}
+};
 
 export default ProposalFilters;

@@ -7,12 +7,12 @@ namespace App\Http\Controllers;
 use Inertia\Inertia;
 use Inertia\Response;
 use App\Models\Proposal;
+use App\Models\Fund;
 use Laravel\Scout\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Fluent;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Stringable;
-use JetBrains\PhpStorm\ArrayShape;
 use App\Enums\ProposalSearchParams;
 use App\Repositories\ProposalRepository;
 use App\DataTransferObjects\ProposalData;
@@ -64,6 +64,7 @@ class ProposalsController extends Controller
     /**
      * Display the user's profile form.
      */
+    
     public function index(Request $request): Response
     {
         $this->getProps($request);
@@ -208,8 +209,10 @@ class ProposalsController extends Controller
             ]
         );
 
+
         return $pagination->onEachSide(1)->toArray();
     }
+
 
     protected function getUserFilters(): array
     {
@@ -276,13 +279,12 @@ class ProposalsController extends Controller
 
         if (!empty($this->queryParams[ProposalSearchParams::COHORT()->value])) {
             $cohortFilters = array_map(fn($cohort) => "{$cohort} = 1", $this->queryParams[ProposalSearchParams::COHORT()->value]);
-
             $filters[] = '(' . implode(' OR ', $cohortFilters) . ')';
         }
 
         if (!empty($this->queryParams[ProposalSearchParams::FUNDS()->value])) {
-            $funds = array_map(fn($fund) => "fund.title = '{$fund}'", $this->queryParams[ProposalSearchParams::FUNDS()->value]);
-            $filters[] = '(' . implode(' OR ', $funds) . ')';
+            $funds = implode("','", $this->queryParams[ProposalSearchParams::FUNDS()->value]);
+            $filters[] = "fund.title IN ['{$funds}']";
         }
 
 
@@ -307,6 +309,7 @@ class ProposalsController extends Controller
 
         //
         //
+
 
         return $filters;
     }
@@ -413,4 +416,12 @@ class ProposalsController extends Controller
             $this->cohortData['impact_proposal'] = $facets['impact_proposal'];
         }
     }
+
+    public function fund_titles()
+    {
+        $fundTitles = Fund::pluck('title');
+        return response()->json($fundTitles);
+    }
+
+
 }
