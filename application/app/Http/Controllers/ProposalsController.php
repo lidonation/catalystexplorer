@@ -411,11 +411,10 @@ class ProposalsController extends Controller
         }
     }
 
-    public function fund_titles()
+    public function fundTitles()
     {
         $fundTitles = Fund::pluck('title');
         return response()->json($fundTitles);
     }
-
 
 }

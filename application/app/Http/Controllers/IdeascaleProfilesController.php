@@ -33,7 +33,7 @@ class IdeascaleProfilesController extends Controller
 
     public function getIdeascaleProfilesData()
     {
-        $ideascaleProfile = app(IdeascaleProfileRepository::class);
-        return $ideascaleProfile->getQuery()->inRandomOrder()->limit($this->limit)->get();
+        $ideascaleProfiles = app(IdeascaleProfileRepository::class);
+        return $ideascaleProfiles->getQuery()->inRandomOrder()->limit($this->limit)->get();
     }
 }
