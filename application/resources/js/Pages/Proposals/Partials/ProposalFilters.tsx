@@ -314,7 +314,7 @@ const ProposalFilters: React.FC<ProposalFiltersProps> = ({ funds }) => {
                                     setFilters(ProposalParamsEnum.FUNDING_STATUS, []);
                                     break;
                                 case 'Opensource Proposals':
-                                    setFilters(ProposalParamsEnum.OPENSOURCE_PROPOSALS, []);
+                                    setFilters(ProposalParamsEnum.OPENSOURCE_PROPOSALS, '');
                                     break;
                                 case 'Project Status':
                                     setFilters(ProposalParamsEnum.PROJECT_STATUS, []);
