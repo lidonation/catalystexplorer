@@ -1,3 +1,4 @@
+import IdeaScaleProfileLoader from '@/Pages/IdeascaleProfile/Partials/IdeaScaleProfileLoader';
 import ProposalVerticalCardLoading from '@/Pages/Proposals/Partials/ProposalVerticalCardLoading';
 import { useTranslation } from 'react-i18next';
 
@@ -25,16 +26,13 @@ const SearchResultsLoading = ({
 
             case 'ideascaleprofiles':
                 return (
-                    <div
-                        className="flex w-full animate-pulse items-center space-x-4 rounded-lg border p-4"
-                        aria-label={`${translatedType} ${t('loading')}`}
-                    >
-                        <div className="h-12 w-12 rounded-full bg-gray-persist" />
-                        <div className="flex-1 space-y-2">
-                            <div className="h-4 w-1/3 rounded bg-gray-persist" />
-                            <div className="h-3 w-1/2 rounded bg-gray-persist" />
-                        </div>
-                    </div>
+                    <ul className="grid w-full grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-5">
+                        {[...Array(count)].map((_, index) => (
+                            <li key={index}>
+                                <IdeaScaleProfileLoader />
+                            </li>
+                        ))}
+                    </ul>
                 );
 
             case 'articles':
