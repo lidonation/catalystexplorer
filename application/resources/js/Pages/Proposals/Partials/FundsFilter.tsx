@@ -19,7 +19,7 @@ const FundsFilter: React.FC<FundFiltersProps> = ({
 
     const fetchFunds = () => {
         axios
-            .get(route('api.fund_titles'))
+            .get(route('api.fundTitles'))
             .then((response) => {
                 setFunds(response?.data);
             })
@@ -57,9 +57,10 @@ const FundsFilter: React.FC<FundFiltersProps> = ({
                 {funds.map((fund) => {
                     return (
                         <li
-                            className={`flex w-full rounded-md bg-background shadow-sm ${selectedItems.includes(fund) ? 'border-2 border-primary' : ''}`}
+                            className={`flex w-full rounded-md bg-background cursor-pointer hover:border-2 border-primary shadow-sm ${selectedItems.includes(fund) ? 'border-2 border-primary' : ''}`}
                             key={fund}
                             onClick={() => handleSelect(fund)}
+                            aria-label={fund}
                         >
                             <div className="m-4">
                                 <Checkbox
