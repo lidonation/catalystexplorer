@@ -1,5 +1,6 @@
 {
     "activeFund": "Fonds Actif",
+    "appMessage": "Tous les votes doivent être soumis dans l'application officielle de vote Catalyst. Ceci n'est qu'un outil de recherche et de planification !",
     "articles": "Articles",
     "bookmarks": "Mes Signets",
     "catalystAPI": "API Catalyst",
@@ -24,8 +25,8 @@
     "linkedIn": "LinkedIn",
     "login": "Se connecter",
     "monthlyReports": "Rapports Mensuels",
+    "noImage": "Pas d'image",
     "numbers": "Chiffres",
-    "people": "Personnes",
     "privacy": "Confidentialité",
     "proposalReviews": "Évaluations des propositions",
     "proposers": "Proposeurs",
@@ -48,15 +49,33 @@
     "selected": "choisie",
     "clear": "claire",
     "selection": "sélection",
-    "link": "lien",
-    "select": "Sélectionner",
-    "selected": "choisie",
-    "clear": "claire",
-    "selection": "sélection",
+    "awarded": "Récompensé",
+    "requested": "Demandée",
+    "submitted": "Soumise",
+    "approved": "Approuvée",
+    "completed": "Complété",
     "app": {
         "name": "Catalyst Explorer",
         "contactEmail": "support@lidonation.com",
         "appLogoAlt": "Logo de Catalyst Explore."
+    },
+    "searchResults": {
+        "noResults": {
+            "title": "Aucun résultat trouvé",
+            "description": "Votre recherche \"{{query}}\" n'a donné aucun résultat. Veuillez réessayer."
+        },
+        "tabs": {
+            "proposals": "Propositions",
+            "articles": "Articles",
+            "ideascaleprofiles": "Ideascale Profils",
+            "groups": "Groupes",
+            "communities": "Communautés",
+            "reviews": "Avis"
+        },
+        "results": {
+            "title": "Résultats de recherche pour \"{{query}}\"",
+            "viewMore": "Voir plus"
+        }
     },
     "navigation": {
         "mobile": {
@@ -100,7 +119,28 @@
         "totalProposals": "Total des propositions",
         "vs": "vs. dernier fonds"
     },
+    "announcements": {
+        "none": "Aucune annonce",
+        "timeRemaining": "Temps restant",
+        "remaining": "Restant"
+    },
+    "breadcrumbs": {
+        "home": "Accueil"
+    },
+
+    "people": {
+        "people": "Personnes",
+        "ideascaleProfiles" : "Ideascale Profils",
+        "pageSubtitle": "Rechercher des propositions et des défis par titre, contenu ou auteur et co-auteurs",
+        "limitFunds": "Limite aux fonds",
+        "projectStatus": "Statut du projet",
+        "limitTags": "Limite aux balises",
+        "fundingStatus": "Statut du financement",
+        "noIdeascaleProfiles": "Aucune Ideascale Profils trouvée"
+    },
+
     "proposals": {
+        "allProposals": "Toutes les propositions",
         "CSVs": "CSVs de propositions",
         "proposals": "Propositions",
         "projectVideo": "Vidéo du projet",
@@ -128,6 +168,7 @@
             "proposers": "Proposers",
             "groups": "Groupes",
             "budgets": "Budgets",
+            "budget": "Budget",
             "projectLength": "Durée du projet (mois)"
         },
         "options": {
@@ -154,7 +195,29 @@
             "quickPitches": "Présentations rapides",
             "allProposals": "Toutes les propositions",
             "noResults": "Aucun résultat trouvé.",
-            "typeMore": "Essayez de saisir plus de caractères."
+            "typeMore": "Essayez de saisir plus de caractères.",
+            "votesCastLowToHigh": "Votes exprimés : Du plus bas au plus haut",
+            "votesCastHighToLow": "Votes exprimés : Du plus haut au plus bas",
+            "budgetHighToLow": "Budget : Du plus élevé au plus bas",
+            "budgetLowToHigh": "Budget : Du plus bas au plus élevé",
+            "communityRankingHighToLow": "Classement communautaire : Du plus haut au plus bas",
+            "communityRankingLowToHigh": "Classement communautaire : Du plus bas au plus haut",
+            "paymentsReceivedHighToLow": "Paiements reçus : Du plus élevé au plus bas",
+            "projectLengthHighToLow": "Durée du projet : Du plus long au plus court",
+            "projectLengthLowToHigh": "Durée du projet : Du plus court au plus long",
+            "paymentsReceivedLowToHigh": "Paiements reçus : Du plus bas au plus élevé",
+            "yesVotesHighToLow": "Votes oui : Du plus haut au plus bas",
+            "yesVotesLowToHigh": "Votes oui : Du plus bas au plus haut",
+            "noVotesLowToHigh": "Votes non : Du plus bas au plus élevé",
+            "noVotesHighToLow": "Votes non : Du plus élevé au plus bas",
+            "ratingHighToLow": "Évaluation : Du plus élevé au plus bas",
+            "ratingLowToHigh": "Évaluation : Du plus bas au plus élevé",
+            "impactAlignmentHighToLow": "Alignement de l'impact : Du plus élevé au plus bas",
+            "impactAlignmentLowToHigh": "Alignement de l'impact : Du plus bas au plus élevé",
+            "feasibilityHighToLow": "Faisabilité : Du plus élevé au plus bas",
+            "feasibilityLowToHigh": "Faisabilité : Du plus bas au plus élevé",
+            "valueForMoneyHighToLow": "Valeur pour l'argent : Du plus élevé au plus bas",
+            "valueForMoneyLowToHigh": "Valeur pour l'argent : Du plus bas au plus élevé"
         }
     },
     "posts": {
@@ -195,7 +258,14 @@
             "link": "Icône de lien",
             "listBullet": "Icône de liste à puces",
             "verticalColumn": "Icône de colonne verticale",
-            "videoCamera": "Icône de caméra vidéo"
+            "videoCamera": "Icône de caméra vidéo",
+            "playerPause": "Pause de Icône",
+            "playerPlay": "Lecture de Icône",
+            "playerRewindLeft": "Icône de Rembobiner à gauche",
+            "playerRewindRight": "Icône de Rembobiner à droite",
+            "playerSkipBack": "Icône de Revenir en arrière",
+            "playerSkipForward": "Icône de Avancer",
+            "playerStop": "Icône de Arrêter"
         }
     },
     "users": {

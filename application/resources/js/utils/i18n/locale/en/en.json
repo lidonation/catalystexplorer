@@ -1,5 +1,6 @@
 {
     "activeFund": "Active Fund",
+    "appMessage": "All Votes must be submitted in the official Catalyst Voting App. This is a research & planning tool only!",
     "articles": "Articles",
     "bookmarks": "My Bookmarks",
     "catalystAPI": "Catalyst API",
@@ -29,9 +30,9 @@
     "login": "Login",
     "linkedIn": "LinkedIn",
     "monthlyReports": "Monthly Reports",
+    "noImage": "No Image",
     "numbers": "Numbers",
     "password": "Password",
-    "people": "People",
     "rememberMe": "Remember me",
     "privacy": "Privacy",
     "reviews": "Reviews",
@@ -55,10 +56,33 @@
     "selected": "Selected",
     "clear": "clear",
     "selection": "selection",
+    "awarded": "Awarded",
+    "requested": "Requested",
+    "submitted":"Submitted",
+    "approved": "Approved",
+    "completed": "Completed",
     "app": {
         "name": "Catalyst Explorer",
         "contactEmail": "support@lidonation.com",
         "appLogoAlt": "Catalyst Explorer logo."
+    },
+    "searchResults":{
+        "noResults": {
+            "title": "No results found",
+            "description": "Your search \"{{query}}\" did not match any results. Please try again."
+        },
+        "tabs": {
+            "proposals": "Proposals",
+            "articles": "Articles",
+            "ideascaleprofiles": "Ideascale Profiles",
+            "groups": "Groups",
+            "communities": "Communities",
+            "reviews": "Reviews"
+        },
+        "results":{
+            "title": "Search results for \"{{query}}\"",
+            "viewMore": "View more"
+        }
     },
     "navigation": {
         "mobile": {
@@ -75,6 +99,9 @@
         "links": {
             "home": "Home"
         }
+    },
+    "breadcrumbs":{
+        "home": "Home"
     },
     "pagination": {
         "next": "Next",
@@ -109,6 +136,11 @@
         "totalProposals": "Total Proposals",
         "vs": "vs last fund"
     },
+    "announcements":{
+        "none": "No announcements available",
+        "timeRemaining": "Time remaining",
+        "remaining" : "Remaining"
+    },
     "proposals": {
         "allProposals": "All proposals",
         "proposals": "Proposals",
@@ -120,6 +152,7 @@
         "quickPitch": "Quick Pitch",
         "proposalReviews": "Proposal Reviews",
         "CSVs": "Proposal CSVs",
+        "totalProposals": "Total Proposals",
         "errors": {
             "noUrl": "No video URL provided",
             "invalidYoutubeFormat": "The YouTube link format is incorrect",
@@ -164,8 +197,42 @@
             "ideafestProposals": "Ideafest Proposals",
             "quickPitches": "Quick Pitches",
             "noResults":"No results found.",
-            "typeMore":"Try typing more characters"
+            "typeMore":"Try typing more characters",
+            "votesCastLowToHigh": "Votes Cast: Low to High",
+            "votesCastHighToLow": "Votes Cast: High to Low",
+            "budgetHighToLow": "Budget: High to Low",
+            "budgetLowToHigh": "Budget: Low to High",
+            "communityRankingHighToLow": "Community Ranking: High to Low",
+            "communityRankingLowToHigh": "Community Ranking: Low to High",
+            "paymentsReceivedHighToLow": "Payments Received: High to Low",
+            "projectLengthHighToLow": "Project Length: High to Low",
+            "projectLengthLowToHigh": "Project Length: Low to High",
+            "paymentsReceivedLowToHigh": "Payments Received: Low to High",
+            "yesVotesHighToLow": "Yes Votes: High to Low",
+            "yesVotesLowToHigh": "Yes Votes: Low to High",
+            "noVotesLowToHigh": "No Votes: Low to High",
+            "noVotesHighToLow": "No Votes: High to Low",
+            "ratingHighToLow": "Rating: High to Low",
+            "ratingLowToHigh": "Rating: Low to High",
+            "impactAlignmentHighToLow": "Impact Alignment: High to Low",
+            "impactAlignmentLowToHigh": "Impact Alignment: Low to High",
+            "feasibilityHighToLow": "Feasibility: High to Low",
+            "feasibilityLowToHigh": "Feasibility: Low to High",
+            "valueForMoneyHighToLow": "Value for money: High to Low",
+            "valueForMoneyLowToHigh": "Value for money: Low to High"
         }
+    },
+    "ideascaleProfiles" :{
+        "people" : "People",
+        "ideascaleProfiles" : "Ideascale Profiles",
+        "ownProposals": "Own Proposals",
+        "coProposals": "Co-Proposals",
+        "pageSubtitle":"Search proposals and challenges by title, content, or author and co-authors",
+        "limitFunds": "Limit to funds",
+        "projectStatus": "Project status",
+        "limitTags": "Limit to tags",
+        "fundingStatus":"Funding Status",
+        "noIdeascaleProfiles":"No Ideascale Profiles Found"
     },
     "posts": {
         "title": "Catalysts Posts",
@@ -202,6 +269,7 @@
             "note": "Note Icon",
             "notificationBox": "Notification Box Icon",
             "people": "People Icon",
+            "ideascaleProfile": "Ideascale Profile Icon",
             "search": "Search Icon",
             "voltaireMode": "Voltaire Mode Icon",
             "register": "Register Icon",

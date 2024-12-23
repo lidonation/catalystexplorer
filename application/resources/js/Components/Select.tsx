@@ -16,6 +16,8 @@ type SelectProps = {
     context?: string;
     basic?: boolean;
     className?: string;
+    hideCheckbox?: boolean; // New prop to hide checkboxes
+    placeholder?: string;  // New prop for custom placeholder
 };
 
 export default function Selector({
@@ -25,6 +27,8 @@ export default function Selector({
     selectedItems = [],
     setSelectedItems,
     className,
+    hideCheckbox = false, // Default to false
+    placeholder = '',     // Default to empty string
     ...props
 }: SelectProps) {
     const [open, setOpen] = useState(false);
@@ -33,9 +37,11 @@ export default function Selector({
 
     let currentOption = null;
 
-    let placeholder = isMultiselect
+    // Use custom placeholder if provided, otherwise default logic
+    let defaultPlaceholder = isMultiselect
         ? `${t('select')} `
         : `${t('select')} ${context}`;
+    placeholder = placeholder || defaultPlaceholder;
 
     if (!isMultiselect && selectedItems) {
         currentOption = options?.find(
@@ -69,14 +75,14 @@ export default function Selector({
     };
 
     return (
-        <div className={cn('rounded-lg bg-background', className)}>
+        <div className={cn('h-full rounded-lg bg-background', className)}>
             <Popover open={open} onOpenChange={setOpen}>
                 <PopoverTrigger asChild>
                     <button
                         role="combobox"
                         aria-expanded={open}
                         aria-label={t('select') + ' ' + t('option')}
-                        className="border-input placeholder:text-muted-foreground flex h-9 w-full items-center justify-between rounded-md border bg-transparent px-3 py-2 text-sm shadow-sm ring-offset-background disabled:cursor-not-allowed disabled:opacity-50"
+                        className="border-input placeholder:text-muted-foreground flex h-full w-full items-center justify-between rounded-md border bg-transparent px-3 py-2 text-sm shadow-sm ring-offset-background disabled:cursor-not-allowed disabled:opacity-50"
                     >
                         <span className="flex items-center gap-2 overflow-hidden">
                             <span className="overflow-clip text-nowrap text-sm">
@@ -102,7 +108,7 @@ export default function Selector({
                             <button
                                 aria-label={t('clear') + ' ' + t('select')}
                                 onClick={onClearSelection}
-                                className="mr-2 hover:text-primary focus:outline-none"
+                                className="px-3 hover:text-primary focus:outline-none"
                             >
                                 clear
                             </button>
@@ -115,19 +121,22 @@ export default function Selector({
                             >
                                 <span>{option.label}</span>
 
-                                <Checkbox
-                                    id={option.value}
-                                    checked={
-                                        isMultiselect
-                                            ? selectedItems?.includes(
-                                                  option.value,
-                                              )
-                                            : selectedItems == option.value
-                                    }
-                                    value={option.value}
-                                    onChange={() => {}}
-                                    className="checked:focus:bg-primary mr-2 h-4 w-4 checked:bg-primary checked:hover:bg-primary focus:border-0 focus:ring-0"
-                                />
+                                {/* Conditionally render the checkbox */}
+                                {!hideCheckbox && (
+                                    <Checkbox
+                                        id={option.value}
+                                        checked={
+                                            isMultiselect
+                                                ? selectedItems?.includes(
+                                                      option.value,
+                                                  )
+                                                : selectedItems == option.value
+                                        }
+                                        value={option.value}
+                                        onChange={() => {}}
+                                        className="text-content-accent h-4 w-4 bg-background shadow-sm checked:bg-primary checked:hover:bg-primary focus:border focus:border-primary focus:ring-primary checked:focus:bg-primary"
+                                    />
+                                )}
                             </div>
                         ))}
                     </div>

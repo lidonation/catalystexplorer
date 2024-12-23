@@ -29,7 +29,7 @@ final class ProposalData extends Data
 
         public float $amount_requested,
 
-        public float $amount_received,
+        public ?float $amount_received,
 
         #[TypeScriptOptional]
         public ?string $definition_of_success,

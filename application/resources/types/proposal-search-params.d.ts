@@ -8,7 +8,7 @@ export type ProposalSearchParams = {
     [ProposalParamsEnum.CAMPAIGNS]: string[];
     [ProposalParamsEnum.COHORT]: string[];
     [ProposalParamsEnum.COMMUNITIES]: string[];
-    [ProposalParamsEnum.FUNDS]: string;
+    [ProposalParamsEnum.FUNDS]: string[];
     [ProposalParamsEnum.FUNDING_STATUS]: string[];
     [ProposalParamsEnum.GROUPS]: string[];
     [ProposalParamsEnum.LIMIT]: number;
@@ -18,7 +18,7 @@ export type ProposalSearchParams = {
     [ProposalParamsEnum.MIN_PROJECT_LENGTH]: number;
     [ProposalParamsEnum.OPENSOURCE_PROPOSALS]: string;
     [ProposalParamsEnum.PAGE]: number;
-    [ProposalParamsEnum.PEOPLE]: string[];
+    [ProposalParamsEnum.IDEASCALE_PROFILES]: string[];
     [ProposalParamsEnum.PROJECT_STATUS]: string[];
     [ProposalParamsEnum.QUERY]: string;
     [ProposalParamsEnum.QUICK_PITCHES]: string;

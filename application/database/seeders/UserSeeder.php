@@ -8,8 +8,6 @@ use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\Hash;
 use Database\Seeders\Traits\GetImageLink;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
-use Faker\Generator;
 
 class UserSeeder extends Seeder
 {
@@ -50,7 +48,8 @@ class UserSeeder extends Seeder
             }
         });
 
-        $superUser = User::factory(state: $superUserCred->toArray())->hasAttached(Role::where('name', RoleEnum::super_admin())->first())
+        $superUser = User::factory(state: $superUserCred->toArray())
+            ->hasAttached(Role::where('name', RoleEnum::super_admin())->first())
             ->create();
 
         if ($imageLink = $this->getRandomImageLink()) {

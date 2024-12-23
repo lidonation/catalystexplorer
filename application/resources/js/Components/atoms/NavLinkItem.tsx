@@ -9,7 +9,7 @@ type NavLinkItemProps = {
     title: string;
     children: ReactNode;
     className?: string;
-    ariaLabel?:string
+    ariaLabel?: string;
 };
 
 export default function NavLinkItem({
@@ -17,6 +17,7 @@ export default function NavLinkItem({
     href,
     title,
     className,
+    active = false,
     prefetch = false,
     async = false,
     ariaLabel,
@@ -28,7 +29,7 @@ export default function NavLinkItem({
             href={href}
             aria-label={ariaLabel}
             role="menuitem"
-            className={`flex items-center gap-3 px-3 py-1 hover:bg-background-lighter ${className}`}
+            className={`flex items-center gap-3 px-3 py-1 hover:bg-background-lighter ${active ? 'text-primary-100' : 'text-dark'} ${className}`}
         >
             {children}
             <p>{title}</p>

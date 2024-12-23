@@ -4,6 +4,7 @@ import { SearchSelect } from '@/Components/SearchSelect';
 import Selector from '@/Components/Select';
 import { useFilterContext } from '@/Context/FiltersContext';
 import { ProposalParamsEnum } from '@/enums/proposal-search-params';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { ProposalSearchParams } from '../../../../types/proposal-search-params';
 import Filters from '@/Components/svgs/Filters';
@@ -47,7 +48,11 @@ const ActiveProposalFilters: React.FC<FiltersProps> = ({
     );
 };
 
-export default function ProposalFilters() {
+interface ProposalFiltersProps {
+    funds: { [key: string]: number };
+}
+
+const ProposalFilters: React.FC<ProposalFiltersProps> = ({ funds }) => {
     const { filters, setFilters } = useFilterContext<ProposalSearchParams>();
     const { t } = useTranslation();
     const [showFilters, setShowFilters] = useState(false);
@@ -333,4 +338,6 @@ export default function ProposalFilters() {
 
         </>
     );
-}
+};
+
+export default ProposalFilters;

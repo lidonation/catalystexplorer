@@ -1,10 +1,7 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use App\Repositories\CampaignRepository;
 use App\Repositories\CommunityRepository;
 use App\Repositories\GroupRepository;
 use App\Repositories\IdeascaleProfileRepository;
@@ -20,18 +17,18 @@ class SearchController extends Controller
     public function index(
         Request $request,
         ProposalRepository $proposals,
-        IdeascaleProfileRepository $people,
+        IdeascaleProfileRepository $ideascaleProfiles,
         GroupRepository $groups,
         CommunityRepository $communities,
         ReviewRepository $reviews,
         PostRepository $posts
     ): Response {
-        $searchTerm = $request->input('q');
-        $filterList = $this->getFilterList($request);
+        $searchTerm = $request->input(key: 'q');
+        $filterList = $this->getFilterList(request: $request);
 
         $repositories = [
             'proposals' => $proposals,
-            'people' => $people,
+            'ideascaleprofiles' => $ideascaleProfiles,
             'groups' => $groups,
             'communities' => $communities,
             'reviews' => $reviews,
@@ -62,12 +59,12 @@ class SearchController extends Controller
             }
         }
 
-        if (empty($filterList) || in_array('posts', $filterList)) {
+        if (empty($filterList) || in_array('articles', $filterList)) {
             $posts->setQuery([
                 'tags' => 'project-catalyst',
                 'search' => $searchTerm
             ]);
-            $counts['posts'] = $posts->paginate(10)->collect()->count();
+            $counts['articles'] = $posts->paginate(10)->collect()->count();
         }
         return $counts;
     }
@@ -84,8 +81,8 @@ class SearchController extends Controller
             }
         }
 
-        if (empty($filterList) || in_array('posts', $filterList)) {
-            $searchData['posts'] = Inertia::optional(function () use ($posts, $searchTerm) {
+        if (empty($filterList) || in_array('articles', $filterList)) {
+            $searchData['articles'] = Inertia::optional(function () use ($posts, $searchTerm) {
                 $posts->setQuery([
                     'tags' => 'project-catalyst',
                     'search' => $searchTerm
