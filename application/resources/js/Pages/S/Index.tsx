@@ -112,7 +112,6 @@ const SearchResults = ({ counts, ...results }: SearchResultsProps) => {
             setTimeout(() => {
                 const targetId = hash.replace('#', '');
                 const element = document.getElementById(targetId);
-                console.log(element);
                 if (element) {
                     element.scrollIntoView({ behavior: 'smooth' });
                     history.pushState(null, '', hash);
