@@ -6,6 +6,7 @@ import { useFilterContext } from '@/Context/FiltersContext';
 import { ProposalParamsEnum } from '@/enums/proposal-search-params';
 import { useTranslation } from 'react-i18next';
 import { ProposalSearchParams } from '../../../../types/proposal-search-params';
+import Filters from '@/Components/svgs/Filters';
 
 interface FiltersProps {
     initialFilters: string[];
@@ -27,11 +28,19 @@ const ActiveProposalFilters: React.FC<FiltersProps> = ({
     return (
         <div>
             <div className="bg-background border rounded-md mr-4 flex items-center px-2 py-1 h-9">
-                <button onClick={toggleFilters} className="px-2 flex items-center" aria-expanded={showFilters}>
-                    {t('proposals.filters.filters')}
+                <button onClick={toggleFilters} className="px-2 flex items-center justify-center" aria-expanded={showFilters}>
+                <Filters
+                        className="mt-2 text-white"
+                        width={16}
+                        height={16}
+                    />
+                    <span className="text-white font-medium">
+                        {t('proposals.filters.filters')}
+                    </span>
                     {filters.length > 0 && (
                         <span className="ml-2 text-sm text-gray-400">({filters.length})</span>
                     )}
+
                 </button>
             </div>
         </div>
@@ -42,17 +51,7 @@ export default function ProposalFilters() {
     const { filters, setFilters } = useFilterContext<ProposalSearchParams>();
     const { t } = useTranslation();
     const [showFilters, setShowFilters] = useState(false);
-    const [activeFilters, setActiveFilters] = useState<string[]>([
-        'Funding Status',
-        'Opensource Proposals',
-        'Project Status',
-        'Tags',
-        'Campaigns',
-        'Groups',
-        'Communities',
-        'Community Cohort',
-        'Proposers',
-    ]);
+    const [activeFilters, setActiveFilters] = useState<string[]>([]);
     const [showFilterOptions, setShowFilterOptions] = useState(false);
 
     const toggleFilters = () => {
@@ -288,30 +287,50 @@ export default function ProposalFilters() {
                 </div>
             )}
 
-    {showFilters && (
-                <div className="flex mt-2 flex-wrap" aria-label={t('proposals.filters.activeFilters')}>
-                    {activeFilters.map((filter, index) => {
-                        const [category, value] = filter.split(': ') || [];
-                        return (
-                            <div
-                                className="flex items-center h-9 justify-between border rounded-md bg-background px-2 py-1.5 text-sm whitespace-nowrap mr-2"
-                                key={index}
-                            >
-                                <p className="mr-1 whitespace-nowrap">{`${category} - ${
-                                    value || t('proposals.filters.unknownValue')
-                                }`}</p>
-                                <button
-                                    className="remove-button"
-                                    onClick={() => removeFilter(filter)}
-                                    aria-label={t('proposals.filters.removeFilter', { filter })}
-                                >
-                                    ✕
-                                </button>
-                            </div>
-                        );
-                    })}
+{showFilters && (
+    <div className="flex mt-2 flex-wrap" aria-label={t('proposals.filters.activeFilters')}>
+        {activeFilters.map((filter, index) => {
+            const [category, value] = filter.split(': ') || [];
+            return (
+                <div
+                    className="flex items-center h-9 justify-between border rounded-md bg-background px-2 py-1.5 text-sm whitespace-nowrap mr-2"
+                    key={index}
+                >
+                    <p className="mr-1 whitespace-nowrap">
+                        {`${category} - ${value}`}
+                    </p>
+                    <button
+                        className="remove-button"
+                        onClick={() => {
+                            removeFilter(filter);
+
+                            switch (category) {
+                                case 'Funding Status':
+                                    setFilters(ProposalParamsEnum.FUNDING_STATUS, []);
+                                    break;
+                                case 'Opensource Proposals':
+                                    setFilters(ProposalParamsEnum.OPENSOURCE_PROPOSALS, []);
+                                    break;
+                                case 'Project Status':
+                                    setFilters(ProposalParamsEnum.PROJECT_STATUS, []);
+                                    break;
+                                case 'Budgets':
+                                    setFilters(ProposalParamsEnum.BUDGETS, [0, 0]);
+                                    break;
+                                default:
+                                    console.warn(`Unknown filter category: ${category}`);
+                            }
+                        }}
+                        aria-label={t('proposals.filters.removeFilter', { filter })}
+                    >
+                        ✕
+                    </button>
                 </div>
-            )}
+            );
+        })}
+    </div>
+)}
+
         </>
     );
 }
