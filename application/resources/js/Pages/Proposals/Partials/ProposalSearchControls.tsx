@@ -111,6 +111,7 @@ function ProposalSearchControls() {
 
     const handleSearch = (search: string) => {
         setFilters(ProposalParamsEnum.QUERY, search);
+        setSearchQuery(search);
     };
     return (
         <div className="mx-auto flex w-full flex-col gap-4 bg-background-lighter pb-4 pt-6">
