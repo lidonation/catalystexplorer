@@ -1,21 +1,13 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace App\Models;
 
-use App\Models\Fund;
-use App\Models\Group;
-use App\Models\Model;
-use App\Models\Campaign;
-use App\Models\Community;
 use App\Traits\HasAuthor;
 use App\Casts\DateFormatCast;
 use App\Traits\HasTaxonomies;
 use Laravel\Scout\Searchable;
 use Illuminate\Support\Carbon;
 use App\Traits\HasTranslations;
-use App\Models\IdeascaleProfile;
 use App\Enums\CatalystCurrencies;
 use App\Traits\HasMetaData;
 use Illuminate\Support\Facades\Artisan;
