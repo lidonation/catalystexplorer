@@ -171,8 +171,8 @@
             "proposers":"Proposers",
             "groups": "Groups",
             "budgets": "Budgets",
-            "projectLength": "Project Length (months)",
-            "filters": "Filters"
+            "budget": "Budget",
+            "projectLength": "Project Length (months)"
         },
         "options": {
             "sort": "Sort by",
@@ -277,7 +277,13 @@
             "listBullet": "List Bullet Icon",
             "verticalColumn": "Vertical Column Icon",
             "videoCamera": "Video Camera Icon",
-            "filters" : "filters"
+            "playerPause": "Pause Icon",
+            "playerPlay": "Play Icon",
+            "playerRewindLeft": "Rewind Left Icon",
+            "playerRewindRight": "Rewind Right Icon",
+            "playerSkipBack": "Skip Back Icon",
+            "playerSkipForward": "Skip Forward Icon",
+            "playerStop": "Stop Icon"
         }
     },
     "users": {
@@ -287,4 +293,3 @@
         "profile": "profile"
     }
 }
-
