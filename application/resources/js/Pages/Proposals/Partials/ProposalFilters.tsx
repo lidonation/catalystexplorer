@@ -238,7 +238,7 @@ const ProposalFilters: React.FC<ProposalFiltersProps> = ({ funds }) => {
                             />
                         </div>
 
-                        <div className="col-span-1 flex flex-col gap-2 pb-4">
+                        {/* <div className="col-span-1 flex flex-col gap-2 pb-4">
                             <span>{t('proposals.filters.proposers')}</span>
                             <SearchSelect
                                 domain={'ideascale_profiles'}
@@ -250,7 +250,7 @@ const ProposalFilters: React.FC<ProposalFiltersProps> = ({ funds }) => {
                                 placeholder="Select"
                                 multiple={true}
                             />
-                        </div>
+                        </div> */}
                     </div>
 
                     <div className="my-6 w-full border-b"></div>
