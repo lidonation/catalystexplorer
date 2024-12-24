@@ -31,10 +31,9 @@ export default function Index({
     metrics,
 }: PageProps<HomePageProps>) {
     const { t } = useTranslation();
-    console.log({ metrics });
-    
+
     const [perPage, setPerPage] = useState<number>(24);
-    const [currentPage, setCurrentpage] = useState<number>(1);
+    const [currentPage, setCurrentPage] = useState<number>(1);
 
     useEffect(() => {}, [currentPage, perPage]);
 
@@ -102,7 +101,7 @@ export default function Index({
                     <Paginator
                         pagination={proposals}
                         setPerPage={setPerPage}
-                        setCurrentPage={setCurrentpage}
+                        setCurrentPage={setCurrentPage}
                     />
                 )}
             </section>

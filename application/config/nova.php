@@ -165,7 +165,7 @@ return [
     */
 
      'brand' => [
-//         'logo' => resource_path('/img/cx-nova-logo.svg'),
+         'logo' => resource_path('/img/cx-nova-logo.svg'),
 
          'colors' => [
              "400" => "37, 150,	190, 0.5",
