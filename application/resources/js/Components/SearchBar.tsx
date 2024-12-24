@@ -11,6 +11,7 @@ interface SearchBarProps {
     showRingOnFocus?: boolean;
     handleSearch: (search: string) => void;
     focusState?: (state: boolean) => void;
+    initialSearch?: string;
 }
 
 const SearchBar = ({
@@ -18,8 +19,9 @@ const SearchBar = ({
     showRingOnFocus = false,
     handleSearch,
     focusState,
+    initialSearch,
 }: SearchBarProps) => {
-    const [searchQuery, setSearchQuery] = useState('');
+    const [searchQuery, setSearchQuery] = useState(initialSearch);
     const inputRef = useRef<HTMLInputElement>(null);
     const { t } = useTranslation();
 

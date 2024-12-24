@@ -6,6 +6,7 @@ import { ProposalParamsEnum } from '@/enums/proposal-search-params';
 import { useTranslation } from 'react-i18next';
 import { ProposalSearchParams } from '../../../../types/proposal-search-params';
 import FundsFilter from './FundsFilter';
+import ProposalSearchControls from './ProposalSearchControls';
 
 interface ProposalFiltersProps {
     funds: { [key: string]: number };
@@ -28,6 +29,8 @@ const ProposalFilters: React.FC<ProposalFiltersProps> = ({ funds }) => {
                 setSelectedItems={handleSetSelectedItems}
                 selectedItems={filters[ProposalParamsEnum.FUNDS] ?? []}
             />
+
+            <ProposalSearchControls/>
 
             <div className="container w-full rounded-xl bg-background p-4">
                 <div className="grid grid-cols-2 gap-x-4 gap-y-3 rounded-xl md:grid-cols-2 lg:grid-cols-5">
