@@ -2,6 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
+html {
+    scroll-behavior: smooth !important;
+}
+
 :root {
     --cx-primary: #2596be;
     --cx-secondary: #3facd1;
