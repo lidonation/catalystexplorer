@@ -2,13 +2,17 @@ import SearchBar from '@/Components/SearchBar';
 import Selector from '@/Components/Select';
 import { useFilterContext } from '@/Context/FiltersContext';
 import { ProposalParamsEnum } from '@/enums/proposal-search-params';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ProposalSearchParams } from '../../../../types/proposal-search-params';
 
 function ProposalSearchControls() {
     const { filters, setFilters } = useFilterContext<ProposalSearchParams>();
-
     const { t } = useTranslation();
+
+    const queryParams = new URLSearchParams(window.location.search);
+    const initialSearchQuery = queryParams.get(ProposalParamsEnum.QUERY) || '';
+    const [searchQuery, setSearchQuery] = useState(initialSearchQuery);
 
     const sortingOptions = [
         {
@@ -101,16 +105,22 @@ function ProposalSearchControls() {
         },
     ];
 
+    useEffect(() => {
+        setSearchQuery(initialSearchQuery);
+    }, [initialSearchQuery]);
+
     const handleSearch = (search: string) => {
-        console.log('Search value:', search);
+        setFilters(ProposalParamsEnum.QUERY, search);
+        setSearchQuery(search);
     };
     return (
-        <div className="container flex flex-col gap-4 mx-auto bg-background-lighter pb-4 pt-6">
+        <div className="mx-auto flex w-full flex-col gap-4 bg-background-lighter pb-4 pt-6">
             <div className="flex items-center justify-end gap-2">
                 <SearchBar
                     handleSearch={handleSearch}
                     autoFocus
                     showRingOnFocus
+                    initialSearch={searchQuery}
                 />
 
                 <Selector
@@ -123,13 +133,13 @@ function ProposalSearchControls() {
                     hideCheckbox={true}
                     placeholder={t('proposals.options.sort')}
                     className={
-                        filters[ProposalParamsEnum.SORTS] 
-                            ? "bg-background-lighter text-primary cursor-default" 
-                            : "hover:bg-background-lighter text-gray-500"
+                        filters[ProposalParamsEnum.SORTS]
+                            ? 'cursor-default bg-background-lighter text-primary'
+                            : 'text-gray-500 hover:bg-background-lighter'
                     }
                 />
             </div>
-            <div className='text-center'>Active Filters goes here</div>
+            <div className="text-center">Active Filters goes here</div>
         </div>
     );
 }
