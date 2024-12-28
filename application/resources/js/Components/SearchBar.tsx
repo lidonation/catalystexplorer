@@ -11,6 +11,7 @@ interface SearchBarProps {
     showRingOnFocus?: boolean;
     handleSearch: (search: string) => void;
     focusState?: (state: boolean) => void;
+    initialSearch?: string;
 }
 
 const SearchBar = ({
@@ -18,12 +19,13 @@ const SearchBar = ({
     showRingOnFocus = false,
     handleSearch,
     focusState,
+    initialSearch,
 }: SearchBarProps) => {
-    const [searchQuery, setSearchQuery] = useState('');
+    const [searchQuery, setSearchQuery] = useState(initialSearch);
     const inputRef = useRef<HTMLInputElement>(null);
     const { t } = useTranslation();
 
-    useEscapeKey(() => setSearchQuery(''));
+    useEscapeKey(() => handleClear());
 
     useEffect(() => {
         if (autoFocus && inputRef.current) {
@@ -37,6 +39,11 @@ const SearchBar = ({
         const newValue = event.target.value;
         setSearchQuery(newValue);
         handleSearch(newValue);
+    };
+
+    const handleClear = () => {
+        setSearchQuery('');
+        handleSearch('');
     };
 
     return (
@@ -61,7 +68,7 @@ const SearchBar = ({
                     }}
                 />
                 <Button
-                    onClick={() => setSearchQuery('')}
+                    onClick={() => handleClear()}
                     ariaLabel={t('clear')}
                     className="absolute right-0 flex h-full w-10 cursor-pointer items-center justify-center hover:text-primary"
                 >
