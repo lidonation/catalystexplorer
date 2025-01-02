@@ -2,7 +2,7 @@ import React from 'react';
 import FundData = App.DataTransferObjects.FundData;
 import { useTranslation } from 'react-i18next';
 
-interface FundCardProps {
+interface CampainCardProps {
   fund: FundData & { media?: { original_url: string }[] };
 }
 
@@ -24,7 +24,7 @@ const formatCurrency = (amount: number | string | null | undefined): string => {
   return `${formattedAmount}`;
 };
 
-const FundCard: React.FC<FundCardProps> = ({ fund }) => {
+const CampaignCard: React.FC<CampainCardProps> = ({ fund }) => {
   const { t } = useTranslation();
 
   const heroImageUrl = fund.media?.[0]?.original_url || null;
@@ -67,4 +67,4 @@ const FundCard: React.FC<FundCardProps> = ({ fund }) => {
   );
 };
 
-export default FundCard;
+export default CampaignCard;

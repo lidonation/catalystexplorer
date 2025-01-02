@@ -1,7 +1,7 @@
 import { Head } from '@inertiajs/react';
 import { useTranslation } from 'react-i18next';
 import FundData = App.DataTransferObjects.FundData;
-import FundCard from './Partials/FundCard';
+import CampaignCard from './Partials/CampaignCard';
 
 interface FundProps {
     funds: FundData[] & { media?: { original_url: string }[] };
@@ -27,7 +27,7 @@ const Index: React.FC<FundProps> = ({ funds }) => {
 
             <div className="container mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {funds.map((fund) => (
-                <FundCard key={fund.user_id} fund={fund as FundData & { media?: { original_url: string }[] }} />
+                <CampaignCard key={fund.user_id} fund={fund as FundData & { media?: { original_url: string }[] }} />
             ))}
             </div>
         </>
