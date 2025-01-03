@@ -21,7 +21,6 @@ return new class extends Migration
             $table->foreignId('current_team_id')->nullable()->onDelete('set null');
             $table->text('profile_photo_path')->nullable();
             $table->timestamps();
-            $table->text('two_factor_recovery_codes')->nullable();
             $table->text('short_bio')->nullable();
             $table->text('bio')->nullable();
             $table->string('wallet_stake_address', 255)->nullable();
