@@ -18,7 +18,7 @@ return new class extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password', 255)->nullable();
             $table->rememberToken();
-            $table->foreignId('current_team_id')->nullable()->constrained()->onDelete('set null');
+            $table->foreignId('current_team_id')->nullable()->onDelete('set null');
             $table->text('profile_photo_path')->nullable();
             $table->timestamps();
             $table->text('two_factor_secret')->nullable();
