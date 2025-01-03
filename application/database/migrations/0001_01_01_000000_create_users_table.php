@@ -37,7 +37,7 @@ return new class extends Migration
             $table->text('twitter')->nullable();
             $table->text('active_pool_id')->nullable();
             $table->string('lang', 255)->default('en');
-            $table->foreignId('primary_account_id')->nullable()->constrained()->onDelete('set null');
+            $table->foreignId('primary_account_id')->nullable()->onDelete('set null');
             $table->boolean('super')->default(false);
             $table->string('avatar', 255)->nullable();
             $table->json('preferences')->nullable();
