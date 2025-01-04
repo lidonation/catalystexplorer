@@ -19,7 +19,6 @@ export default function ProposalCardHeader({
     const headerBGColor = gradientColors[proposal.status] || gradientColors.default;
 
     return (
-
         <header
             className={`rounded-xl bg-gradient-to-tr text-content-light w-full ${headerBGColor} flex flex-shrink flex-col ${isHorizontal ? ' h-full' : ''}`}
         >
@@ -73,6 +72,9 @@ export default function ProposalCardHeader({
                     >
                         {!userSelected ? proposal.title : null}
                     </a>
+                    <div className='flex flex-row justify-end italic'>
+                        <span>~ {proposal.fund?.title}</span>
+                    </div>
                 </div>
             </div>
 

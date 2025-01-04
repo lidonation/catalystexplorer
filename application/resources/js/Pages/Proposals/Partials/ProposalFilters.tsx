@@ -1,10 +1,10 @@
-import { RangePicker } from '@/Components/RangePicker';
-import { SearchSelect } from '@/Components/SearchSelect';
+import {RangePicker} from '@/Components/RangePicker';
+import {SearchSelect} from '@/Components/SearchSelect';
 import Selector from '@/Components/Select';
-import { useFilterContext } from '@/Context/FiltersContext';
-import { ProposalParamsEnum } from '@/enums/proposal-search-params';
-import { useTranslation } from 'react-i18next';
-import { ProposalSearchParams } from '../../../../types/proposal-search-params';
+import {useFilterContext} from '@/Context/FiltersContext';
+import {ProposalParamsEnum} from '@/enums/proposal-search-params';
+import {useTranslation} from 'react-i18next';
+import {ProposalSearchParams} from '../../../../types/proposal-search-params';
 import FundsFilter from './FundsFilter';
 import ProposalSearchControls from './ProposalSearchControls';
 
@@ -20,12 +20,10 @@ const ProposalFilters: React.FC<ProposalFiltersProps> = ({ funds }) => {
         setFilters(ProposalParamsEnum.FUNDS, updatedItems);
     };
 
-    const proposalsCount = funds
-
     return (
         <>
             <FundsFilter
-                proposalsCount={proposalsCount}
+                proposalsCount={funds}
                 setSelectedItems={handleSetSelectedItems}
                 selectedItems={filters[ProposalParamsEnum.FUNDS] ?? []}
             />

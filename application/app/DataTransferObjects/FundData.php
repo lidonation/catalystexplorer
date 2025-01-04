@@ -2,6 +2,7 @@
 
 namespace App\DataTransferObjects;
 
+use Illuminate\Support\Carbon;
 use Spatie\LaravelData\Data;
 use Spatie\LaravelData\Attributes\WithCast;
 use Spatie\LaravelData\Casts\DateTimeInterfaceCast;
@@ -32,11 +33,11 @@ final class FundData extends Data
         #[TypeScriptOptional]
         public ?string $status,
 
-        #[TypeScriptOptional, WithCast(DateTimeInterfaceCast::class, format: 'Y-m-d H:i:s')]
-        public ?\DateTime $launched_at,
+        #[TypeScriptOptional, WithCast(DateTimeInterfaceCast::class, format: 'Y-m-d')]
+        public ?string $launched_at,
 
-        #[TypeScriptOptional, WithCast(DateTimeInterfaceCast::class, format: 'Y-m-d H:i:s')]
-        public ?\DateTime $awarded_at,
+        #[TypeScriptOptional, WithCast(DateTimeInterfaceCast::class, format: 'Y-m-d')]
+        public ?string $awarded_at,
 
         #[TypeScriptOptional]
         public ?string $color,
@@ -46,8 +47,8 @@ final class FundData extends Data
 
         public string $currency,
 
-        #[TypeScriptOptional, WithCast(DateTimeInterfaceCast::class, format: 'Y-m-d H:i:s')]
-        public ?\DateTime $review_started_at,
+        #[TypeScriptOptional, WithCast(DateTimeInterfaceCast::class, format: 'Y-m-d')]
+        public ?string $review_started_at,
 
         #[TypeScriptOptional]
         public ?int $parent_id

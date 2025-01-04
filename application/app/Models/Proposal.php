@@ -33,7 +33,7 @@ class Proposal extends Model
         'content',
     ];
 
-    public $translatableExcludedFromGeneration = [
+    public array $translatableExcludedFromGeneration = [
         'meta_title',
     ];
 

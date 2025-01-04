@@ -27,6 +27,9 @@ final class ProposalData extends Data
         #[TypeScriptOptional]
         public ?string $excerpt,
 
+        #[TypeScriptOptional]
+        public $content,
+
         public float $amount_requested,
 
         public ?float $amount_received,
@@ -83,14 +86,9 @@ final class ProposalData extends Data
         #[TypeScriptOptional]
         public ?string $experience,
 
-        #[TypeScriptOptional]
-        public ?string $content,
-
         // Other attributes
         #[TypeScriptOptional]
         public ?string $currency,
-
-        public ?bool $opensource = false,
 
         #[TypeScriptOptional]
         public ?int $ranking_total,
@@ -105,5 +103,8 @@ final class ProposalData extends Data
         #[DataCollectionOf(IdeascaleProfileData::class)]
         public ?DataCollection $users,
 
+        public ?FundData $fund,
+
+        public ?bool $opensource = false
     ) {}
 }
