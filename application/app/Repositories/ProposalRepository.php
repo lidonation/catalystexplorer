@@ -65,6 +65,7 @@ class ProposalRepository extends Repository
                     'users.profile_photo_url',
                     'fund.id',
                     'fund.label',
+                    'fund.title',
                     'fund.amount',
                     'fund.status',
                     'campaign.id',

@@ -13,11 +13,19 @@ use Spatie\TypeScriptTransformer\Attributes\TypeScript;
 final class FundData extends Data
 {
     public function __construct(
-        public ?int $user_id,
 
+        public float $amount,
+        public string $label,
         public string $title,
-        public string $meta_title,
-        public string $slug,
+
+        #[TypeScriptOptional]
+        public ?string $meta_title,
+
+        #[TypeScriptOptional]
+        public ?string $slug,
+
+        #[TypeScriptOptional]
+        public ?int $user_id,
 
         #[TypeScriptOptional]
         public ?string $excerpt,
@@ -27,8 +35,6 @@ final class FundData extends Data
 
         #[TypeScriptOptional]
         public ?string $content,
-
-        public float $amount,
 
         #[TypeScriptOptional]
         public ?string $status,
@@ -43,9 +49,7 @@ final class FundData extends Data
         public ?string $color,
 
         #[TypeScriptOptional]
-        public ?string $label,
-
-        public string $currency,
+        public ?string $currency,
 
         #[TypeScriptOptional, WithCast(DateTimeInterfaceCast::class, format: 'Y-m-d')]
         public ?string $review_started_at,
