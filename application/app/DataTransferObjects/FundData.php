@@ -16,6 +16,7 @@ final class FundData extends Data
 
         public float $amount,
         public string $label,
+        public int $proposals_count,
         public string $title,
 
         #[TypeScriptOptional]
