@@ -104,6 +104,10 @@ final class ProposalData extends Data
 
         public ?FundData $fund,
 
-        public ?bool $opensource = false
+        public ?bool $opensource = false,
+        
+        #[TypeScriptOptional]
+        public ?string $link,
+
     ) {}
 }

@@ -39,6 +39,10 @@ class Proposal extends Model
 
     protected $guarded = ['user_id', 'created_at', 'funded_at'];
 
+    protected $appends = [
+        'link',
+    ];
+
     public static function getFilterableAttributes(): array
     {
         return [
@@ -232,6 +236,15 @@ class Proposal extends Model
         );
     }
 
+    public function link(): Attribute
+    {
+        return Attribute::make(
+            get: function () {
+                return "https://www.lidonation.com/en/proposals/{$this->slug}";
+            }
+        );
+    }
+
     /**
      * Get the value used to index the model.
      */
@@ -337,6 +350,7 @@ class Proposal extends Model
             }),
 
             'woman_proposal' => $this->is_woman_proposal ? 1 : 0,
+            'link' => $this->link,
         ]);
     }
 
