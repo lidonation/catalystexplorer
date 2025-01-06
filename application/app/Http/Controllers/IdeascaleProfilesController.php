@@ -51,6 +51,7 @@ class IdeascaleProfilesController extends Controller
     {
         $this->queryParams = $request->validate([
             ProposalSearchParams::QUERY()->value => 'string|nullable',
+            ProposalSearchParams::LIMIT()->value => 'int|nullable',
         ]);
     }
 
