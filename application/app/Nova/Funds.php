@@ -3,7 +3,6 @@
 namespace App\Nova;
 
 use App\Enums\CatalystCurrencies;
-use App\Enums\CatalystGlobals;
 use App\Models\Fund;
 use Illuminate\Http\Request;
 use Laravel\Nova\Actions\Action;
