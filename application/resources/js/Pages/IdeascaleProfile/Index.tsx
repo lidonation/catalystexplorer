@@ -1,19 +1,20 @@
 import { FiltersProvider } from '@/Context/FiltersContext';
 import { PageProps } from '@/types';
-import { Head } from '@inertiajs/react';
+import { Head, WhenVisible } from '@inertiajs/react';
 import { useTranslation } from 'react-i18next';
-import IdeascaleProfilesList from './Partials/IdeascaleProfileList';
-import IdeascaleProfilesFilters from './Partials/IdeascaleProfilesFilters';
 import { ProposalSearchParams } from '../../../types/proposal-search-params';
+import IdeascaleProfilesList from './Partials/IdeascaleProfileList';
+import IdeaScaleProfileLoader from './Partials/IdeaScaleProfileLoader';
+import IdeascaleProfilesFilters from './Partials/IdeascaleProfilesFilters';
 import IdeascaleProfilesData = App.DataTransferObjects.IdeascaleProfileData;
 
 interface IdeascaleProfilesPageProps extends Record<string, unknown> {
     ideascaleProfiles: IdeascaleProfilesData[];
-    filters: ProposalSearchParams
+    filters: ProposalSearchParams;
 }
 const Index = ({
     ideascaleProfiles,
-    filters
+    filters,
 }: PageProps<IdeascaleProfilesPageProps>) => {
     const { t } = useTranslation();
 
@@ -37,9 +38,11 @@ const Index = ({
 
                 <div className="flex w-full flex-col items-center">
                     <section className="container py-8">
-                        <IdeascaleProfilesList
-                            ideascaleProfiles={ideascaleProfiles}
-                        />
+                        <WhenVisible fallback={<IdeaScaleProfileLoader/>} data="ideascaleProfiles">
+                            <IdeascaleProfilesList
+                                ideascaleProfiles={ideascaleProfiles}
+                            />
+                        </WhenVisible>
                     </section>
                 </div>
             </FiltersProvider>
