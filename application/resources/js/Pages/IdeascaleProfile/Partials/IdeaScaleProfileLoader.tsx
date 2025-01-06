@@ -1,8 +1,9 @@
 
 const IdeaScaleProfileLoader = () => {
+  const ideascaleProfiles = Array.from({ length: 10 }, (_, index) => index + 1);
   return (
     <div className="grid w-full grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-5">
-      {[1,2,3].map((index)=> (
+      {ideascaleProfiles.map((index)=> (
         <div className="w-full rounded-xl bg-background p-4 shadow-sm" key={index}>
         <div className="mb-2 w-full">
           <div>
