@@ -7,7 +7,6 @@ namespace App\Http\Controllers;
 use App\Repositories\IdeascaleProfileRepository;
 use App\Enums\ProposalSearchParams;
 use Illuminate\Http\Request;
-use Laravel\Scout\Builder;
 use Inertia\Inertia;
 use Inertia\Response;
 
