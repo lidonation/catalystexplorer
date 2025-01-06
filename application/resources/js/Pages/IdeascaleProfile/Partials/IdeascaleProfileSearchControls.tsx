@@ -1,0 +1,40 @@
+import SearchBar from '@/Components/SearchBar';
+import Selector from '@/Components/Select';
+import { useFilterContext } from '@/Context/FiltersContext';
+import { ProposalParamsEnum } from '@/enums/proposal-search-params';
+import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { ProposalSearchParams } from '../../../../types/proposal-search-params';
+
+function IdeascaleProfilesSearchControls() {
+    const { filters, setFilters } = useFilterContext<ProposalSearchParams>();
+    const { t } = useTranslation();
+
+    const queryParams = new URLSearchParams(window.location.search);
+    const initialSearchQuery = queryParams.get(ProposalParamsEnum.QUERY) || '';
+    const [searchQuery, setSearchQuery] = useState(initialSearchQuery);
+
+    useEffect(() => {
+        setSearchQuery(initialSearchQuery);
+    }, [initialSearchQuery]);
+
+    const handleSearch = (search: string) => {
+        setFilters(ProposalParamsEnum.QUERY, search);
+        setSearchQuery(search);
+    };
+    
+    return (
+        <div className="mx-auto flex w-full flex-col gap-4 bg-background-lighter pb-4 pt-6">
+            <div className="flex items-center justify-end gap-2">
+                <SearchBar
+                    handleSearch={handleSearch}
+                    autoFocus
+                    showRingOnFocus
+                    initialSearch={searchQuery}
+                />
+            </div>
+        </div>
+    );
+}
+
+export default  IdeascaleProfilesSearchControls;
