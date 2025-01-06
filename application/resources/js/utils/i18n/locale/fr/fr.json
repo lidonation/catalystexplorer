@@ -24,6 +24,7 @@
     "licenses": "Licences",
     "linkedIn": "LinkedIn",
     "login": "Se connecter",
+    "filters": "Filtres",
     "monthlyReports": "Rapports Mensuels",
     "noImage": "Pas d'image",
     "numbers": "Chiffres",
@@ -128,15 +129,29 @@
         "home": "Accueil"
     },
 
-    "people": {
+    "ideascaleProfiles": {
         "people": "Personnes",
-        "ideascaleProfiles" : "Ideascale Profils",
+        "ideascaleProfiles": "Ideascale Profils",
         "pageSubtitle": "Rechercher des propositions et des défis par titre, contenu ou auteur et co-auteurs",
+        "ownProposals": "Propositions personnelles",
+        "coProposals": "Propositions co",
         "limitFunds": "Limite aux fonds",
         "projectStatus": "Statut du projet",
         "limitTags": "Limite aux balises",
         "fundingStatus": "Statut du financement",
-        "noIdeascaleProfiles": "Aucune Ideascale Profils trouvée"
+        "noIdeascaleProfiles": "Aucune Ideascale Profils trouvée",
+        "options": {
+            "alphabeticallyAsc": "Alphabétiquement A à Z",
+            "alphabeticallyDesc": "Alphabétiquement Z à A",
+            "awardedAdaLowToHigh": "ADA attribuée : Du plus bas au plus élevé",
+            "awardedAdaHighToLow": "ADA attribuée : Du plus élevé au plus bas",
+            "awardedUsdLowToHigh": "USD attribué : Du plus bas au plus élevé",
+            "awardedUsdHighToLow": "USD attribué : Du plus élevé au plus bas",
+            "primaryProposalCountLowToHigh": "Nombre de propositions principales : Du plus bas au plus élevé",
+            "primaryProposalCountHighToLow": "Nombre de propositions principales : Du plus élevé au plus bas",
+            "coProposalCountLowToHigh": "Nombre de propositions co : Du plus bas au plus élevé",
+            "coProposalCountHighToLow": "Nombre de propositions co : Du plus élevé au plus bas"
+        }
     },
 
     "proposals": {
@@ -246,6 +261,7 @@
             "search": "Icône de recherche",
             "darkMode": "Icône de mode sombre",
             "folder": "Icône de dossier",
+            "filter": "Icône de filtre",
             "home": "Icône d'accueil",
             "lightMode": "Icône de mode clair",
             "logOut": "Icône de déconnexion",

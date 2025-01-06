@@ -5,8 +5,8 @@ import { useTranslation } from 'react-i18next';
 import { ProposalSearchParams } from '../../../types/proposal-search-params';
 import IdeascaleProfilesList from './Partials/IdeascaleProfileList';
 import IdeaScaleProfileLoader from './Partials/IdeaScaleProfileLoader';
-import IdeascaleProfilesFilters from './Partials/IdeascaleProfilesFilters';
 import IdeascaleProfilesData = App.DataTransferObjects.IdeascaleProfileData;
+import IdeaScaleProfileToolbar from './Partials/IdeaScaleProfileToolbar';
 
 interface IdeascaleProfilesPageProps extends Record<string, unknown> {
     ideascaleProfiles: IdeascaleProfilesData[];
@@ -32,9 +32,9 @@ const Index = ({
                     </p>
                 </header>
 
-                <section className="container flex w-full flex-col items-center justify-center py-8">
-                    <IdeascaleProfilesFilters />
-                </section>
+            <section className="container flex w-full flex-col items-center justify-center py-8">
+                <IdeaScaleProfileToolbar />
+            </section>
 
                 <div className="flex w-full flex-col items-center">
                     <section className="container py-8">
