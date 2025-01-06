@@ -66,7 +66,7 @@ export default function ProposalCardHeader({
                 <div
                     className={`mb-4 p-2 px-4 leading-tight ${!isHorizontal ? "" : "flex items-center justify-center h-full w-full"}`}>
                     <a
-                        href="#"
+                        href={proposal.link}
                         className={`text-2 font-medium hover:text-primary  ${isHorizontal ? "text-center mb-4" : ""
                             }`}
                     >
