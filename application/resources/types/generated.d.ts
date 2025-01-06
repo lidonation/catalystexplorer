@@ -40,8 +40,8 @@ deleted_at?: string;
 export type FundData = {
 amount: number;
 label: string;
-proposals_count: number;
 title: string;
+proposals_count?: number;
 meta_title?: string;
 slug?: string;
 user_id?: number;
@@ -160,6 +160,7 @@ quickpitch_length?: number;
 users: any | null;
 fund: App.DataTransferObjects.FundData | null;
 opensource: boolean | null;
+link?: string;
 };
 export type ReviewData = {
 id: number | null;
