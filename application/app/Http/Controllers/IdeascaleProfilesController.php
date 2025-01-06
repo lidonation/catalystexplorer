@@ -26,6 +26,7 @@ class IdeascaleProfilesController extends Controller
         $this->getProps($request);
 
         $ideascaleProfiles = empty($this->queryParams) ? $this->getIdeascaleProfilesData() : $this->query();
+
         $ideascaleProfiles = $ideascaleProfiles->map(function ($ideascaleProfile) {
             $ideascaleProfile->own_proposals_count = $ideascaleProfile->own_proposals->count();
             $ideascaleProfile->co_proposals_count = $ideascaleProfile->co_proposals_count;
@@ -56,9 +57,16 @@ class IdeascaleProfilesController extends Controller
 
     protected function query($returnBuilder = false, $attrs = null, $filters = [])
     {
+        $limit = isset($this->queryParams[ProposalSearchParams::LIMIT()->value])
+            ? (int) $this->queryParams[ProposalSearchParams::LIMIT()->value]
+            : 40;
+
+        $args['limit'] = $limit;
+
         $ideascaleProfiles = app(IdeascaleProfileRepository::class);
         $builder = $ideascaleProfiles->search(
             $this->queryParams[ProposalSearchParams::QUERY()->value] ?? '',
+            $args
         );
 
         $response = $builder->get();
