@@ -58,7 +58,7 @@ class IdeascaleProfilesController extends Controller
     {
         $limit = isset($this->queryParams[ProposalSearchParams::LIMIT()->value])
             ? (int) $this->queryParams[ProposalSearchParams::LIMIT()->value]
-            : 40;
+            : $this->limit;
 
         $args['limit'] = $limit;
 
