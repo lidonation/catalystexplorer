@@ -9,6 +9,12 @@ init:
 	cp application/.env.example application/.env
 
 	docker run --rm --interactive --tty \
+		--volume ${PWD}:/app \
+		--workdir /app \
+		--user root \
+		node:18-alpine yarn install --ignore-engine
+
+	docker run --rm --interactive --tty \
 		--volume ${PWD}/application:/app \
 		--workdir /app \
 		--user root \
@@ -52,6 +58,14 @@ db-seed:
 .PHONY: down
 down:
 	$(sail) down
+
+.PHONY: devtools-install
+devtools-install:
+	docker run --rm --interactive --tty \
+		--volume ${PWD}:/app \
+		--workdir /app \
+		--user root \
+		node:18-alpine yarn install --ignore-engine
 
 .PHONY: frontend-install
 frontend-install:
