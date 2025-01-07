@@ -33,6 +33,7 @@
     "noImage": "No Image",
     "numbers": "Numbers",
     "password": "Password",
+    "filters": "Filters",
     "rememberMe": "Remember me",
     "privacy": "Privacy",
     "reviews": "Reviews",
@@ -233,7 +234,19 @@
         "projectStatus": "Project status",
         "limitTags": "Limit to tags",
         "fundingStatus":"Funding Status",
-        "noIdeascaleProfiles":"No Ideascale Profiles Found"
+        "noIdeascaleProfiles":"No Ideascale Profiles Found",
+        "options":{ 
+            "alphabeticallyAsc": "Alphabetically: A to Z",
+            "alphabeticallyDesc": "Alphabetically: Z to A",
+            "awardedAdaLowToHigh": "Amount Awarded ADA: Low to High",
+            "awardedAdaHighToLow": "Amount Awarded ADA: High to Low",
+            "awardedUsdLowToHigh": "Amount Awarded USD: Low to High",
+            "awardedUsdHighToLow": "Amount Awarded USD: High to Low",
+            "primaryProposalCountLowToHigh": "Primary Proposal Count: Low to High",
+            "primaryProposalCountHighToLow": "Primary Proposal Count: High to Low",
+            "coProposalCountLowToHigh": "Co-Proposal Count: Low to High",
+            "coProposalCountHighToLow": "Co-Proposal Count: High to Low"
+            }
     },
     "posts": {
         "title": "Catalysts Posts",
@@ -261,6 +274,7 @@
             "connect_wallet": "Connect wallet Icon",
             "darkMode": "Dark Mode Icon",
             "folder": "Folder Icon",
+            "filter": "Filter Icon",
             "home": "Home Icon",
             "lightMode": "Light Mode Icon",
             "login": "Login Icon",
