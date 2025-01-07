@@ -140,7 +140,10 @@ function ProposalSearchControls() {
                     }
                 />
             </div>
-            <ActiveFilters/>
+            <div className="container mx-auto flex justify-end px-0 pb-4 pt-6">
+                <ActiveFilters />
+            </div>
+
         </div>
     );
 }

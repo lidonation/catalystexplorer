@@ -37,23 +37,21 @@ export default function ActiveFilters() {
     const idFilters = ['t', 'cam', 'com', 'ip', 'g'];
     const booleanFilters = ['op'];
 
-    // let selectedFilters: any[] = [];
-
     useEffect(() => {
         const updatedFilters = Object.keys(filters).reduce(
             (acc: any, key: string) => {
                 if (statusFilters.includes(key)) {
-                    acc[labels[key]] = filters[key].map((item: string) =>
+                    acc[labels[key as keyof typeof labels]] = filters[key].map((item: string) =>
                         formatSnakeCaseToTitleCase(item),
                     );
                 } else if (rangeFilters.includes(key)) {
-                    acc[labels[key]] = filters[key];
+                    acc[labels[key as keyof typeof labels]] = filters[key];
                 } else if (booleanFilters.includes(key)) {
-                    acc[labels[key]] = !!parseInt(filters[key]);
+                    acc[labels[key as keyof typeof labels]] = !!parseInt(filters[key]);
                 } else if (idFilters.includes(key)) {
-                    // todo
+                    // Handle ID filters (optional)
                 } else {
-                    acc[labels[key]] = filters[key];
+                    acc[labels[key as keyof typeof labels]] = filters[key];
                 }
 
                 return acc;
@@ -64,21 +62,33 @@ export default function ActiveFilters() {
         setSelectedFilters(updatedFilters);
     }, [filters]);
 
-    console.log({ selectedFilters });
-
     const { t } = useTranslation();
+
+    const removeFilter = (key: string) => {
+        const newFilters = { ...filters };
+        delete newFilters[key];
+        setFilters(newFilters);
+    };
+
     return (
-        <div className="p-3">
+        <div className="p-3 flex flex-wrap">
             {Object.keys(selectedFilters).map((key) => (
-                <div className="bg-white p-2" key={key}>
-                    <div className="font-bold">{key}</div>{' '}
-                    {/* Display the key with optional styling */}
-                    <div>
+                <div
+                    className="bg-background border border-gray-400 rounded-md flex items-center px-2 py-1 mr-2 mb-2"
+                    key={key}
+                >
+                    <div className="font-bold mr-1">{key}:</div>
+                    <div className="mr-2">
                         {Array.isArray(selectedFilters[key])
                             ? selectedFilters[key].join(', ')
                             : selectedFilters[key]}
-                    </div>{' '}
-                    {/* Display the value */}
+                    </div>
+                    <button
+                        className="ml-auto text-red"
+                        onClick={() => removeFilter(key)}
+                    >
+                        X
+                    </button>
                 </div>
             ))}
         </div>
