@@ -4,15 +4,11 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use App\DataTransferObjects\IdeascaleProfileData;
 use App\Enums\IdeascaleProfileSearchParams;
 use App\Repositories\IdeascaleProfileRepository;
 use Illuminate\Http\Request;
-use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Support\Fluent;
 use Inertia\Inertia;
 use Inertia\Response;
-use Laravel\Scout\Builder;
 
 class IdeascaleProfilesController extends Controller
 {
@@ -21,14 +17,6 @@ class IdeascaleProfilesController extends Controller
     protected int $currentPage = 1;
 
     protected array $queryParams = [];
-
-    /**
-     * Display the user's profile form.
-     */
-    protected int $limit = 40;
-
-    protected array $queryParams = [];
-
 
     public function index(Request $request): Response
     {
@@ -39,6 +27,7 @@ class IdeascaleProfilesController extends Controller
         $ideascaleProfiles = $ideascaleProfiles->map(function ($ideascaleProfile) {
             $ideascaleProfile->own_proposals_count = $ideascaleProfile->own_proposals->count();
             $ideascaleProfile->co_proposals_count = $ideascaleProfile->co_proposals_count;
+
             return $ideascaleProfile;
         });
 
@@ -47,8 +36,6 @@ class IdeascaleProfilesController extends Controller
             'filters' => $this->queryParams,
         ]);
     }
-
-
 
     public function getIdeascaleProfilesData()
     {
