@@ -7,6 +7,7 @@ import {useTranslation} from 'react-i18next';
 import {ProposalSearchParams} from '../../../../types/proposal-search-params';
 import FundsFilter from './FundsFilter';
 import ProposalSearchControls from './ProposalSearchControls';
+import Filters from '@/Components/svgs/Filters';
 
 interface ProposalFiltersProps {
     funds: { [key: string]: number };
@@ -28,6 +29,7 @@ const ProposalFilters: React.FC<ProposalFiltersProps> = ({ funds }) => {
                 selectedItems={filters[ProposalParamsEnum.FUNDS] ?? []}
             />
 
+            <Filters />
             <ProposalSearchControls/>
 
             <div className="container w-full rounded-xl bg-background p-4">
