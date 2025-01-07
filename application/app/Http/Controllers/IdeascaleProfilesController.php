@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\Repositories\IdeascaleProfileRepository;
+use App\Enums\ProposalSearchParams;
+use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
 use Laravel\Scout\Builder;
@@ -22,11 +25,22 @@ class IdeascaleProfilesController extends Controller
     /**
      * Display the user's profile form.
      */
+    protected int $limit = 40;
+
+    protected array $queryParams = [];
+
+
     public function index(Request $request): Response
     {
         $this->getProps($request);
 
         $ideascaleProfiles = empty($this->queryParams) ? $this->getIdeascaleProfilesData() : $this->query();
+
+        $ideascaleProfiles = $ideascaleProfiles->map(function ($ideascaleProfile) {
+            $ideascaleProfile->own_proposals_count = $ideascaleProfile->own_proposals->count();
+            $ideascaleProfile->co_proposals_count = $ideascaleProfile->co_proposals_count;
+            return $ideascaleProfile;
+        });
 
         return Inertia::render('IdeascaleProfile/Index', [
             'ideascaleProfiles' => $ideascaleProfiles,
@@ -34,70 +48,42 @@ class IdeascaleProfilesController extends Controller
         ]);
     }
 
-    protected function getIdeascaleProfilesData(): array
+
+
+    public function getIdeascaleProfilesData()
     {
         $limit = (int) $this->limit;
         $page = (int) $this->currentPage;
 
         $ideascaleProfiles = app(IdeascaleProfileRepository::class);
 
-        $queryResults = $ideascaleProfiles->getQuery()
-            ->inRandomOrder()
-            ->limit($limit)
-            ->get();
-
-        return $this->paginate($queryResults, $ideascaleProfiles->getQuery()->count(), $page, $limit);
+        return $ideascaleProfiles->getQuery()->inRandomOrder()->limit($this->limit)->get();
     }
 
     protected function getProps(Request $request): void
     {
         $this->queryParams = $request->validate([
-            IdeascaleProfileSearchParams::QUERY()->value => 'string|nullable',
-            IdeascaleProfileSearchParams::PAGE()->value => 'int|nullable',
-            IdeascaleProfileSearchParams::LIMIT()->value => 'int|nullable',
+            ProposalSearchParams::QUERY()->value => 'string|nullable',
+            ProposalSearchParams::LIMIT()->value => 'int|nullable',
         ]);
     }
 
-    protected function query(): array|Builder
+    protected function query($returnBuilder = false, $attrs = null, $filters = [])
     {
-        $page = (int) ($this->queryParams[IdeascaleProfileSearchParams::PAGE()->value] ?? $this->currentPage);
-        $limit = (int) ($this->queryParams[IdeascaleProfileSearchParams::LIMIT()->value] ?? $this->limit);
+        $limit = isset($this->queryParams[ProposalSearchParams::LIMIT()->value])
+            ? (int) $this->queryParams[ProposalSearchParams::LIMIT()->value]
+            : $this->limit;
 
-        $args = [
-            'filter' => $this->getUserFilters(),
-            'offset' => ($page - 1) * $limit,
-            'limit' => $limit,
-        ];
+        $args['limit'] = $limit;
 
-        $proposals = app(IdeascaleProfileRepository::class);
-
-        $builder = $proposals->search(
-            $this->queryParams[IdeascaleProfileSearchParams::QUERY()->value] ?? '',
+        $ideascaleProfiles = app(IdeascaleProfileRepository::class);
+        $builder = $ideascaleProfiles->search(
+            $this->queryParams[ProposalSearchParams::QUERY()->value] ?? '',
             $args
         );
 
-        $response = new Fluent($builder->raw());
+        $response = $builder->get();
 
-        return $this->paginate(IdeascaleProfileData::collect($response->hits), $response->estimatedTotalHits, $page, $limit);
-    }
-
-    protected function paginate($items, $total, $page, $limit): array
-    {
-        $pagination = new LengthAwarePaginator(
-            $items,
-            $total,
-            $limit,
-            $page,
-            [
-                'pageName' => 'p',
-            ]
-        );
-
-        return $pagination->onEachSide(1)->toArray();
-    }
-
-    protected function getUserFilters(): array
-    {
-        return [];
+        return $response;
     }
 }
