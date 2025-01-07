@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Database\Seeders;
 
@@ -24,7 +26,7 @@ class DatabaseSeeder extends Seeder
             CommunitySeeder::class,
             ReviewSeeder::class,
             AnnouncementSeeder::class,
-            MetricSeeder::class
+            MetricSeeder::class,
         ];
 
         foreach ($seeders as $seeder) {
@@ -33,7 +35,7 @@ class DatabaseSeeder extends Seeder
                 $this->command->info("$seeder completed successfully.");
             } catch (\Throwable $e) {
                 Log::error($e);
-                $this->command->error("Error running $seeder: " . $e->getMessage());
+                $this->command->error("Error running $seeder: ".$e->getMessage());
             }
         }
     }

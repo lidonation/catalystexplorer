@@ -6,7 +6,6 @@ namespace App\Policies;
 
 use App\Models\Discussion;
 use App\Models\User;
-use Illuminate\Auth\Access\Response;
 
 class DiscussionPolicy extends AppPolicy
 {

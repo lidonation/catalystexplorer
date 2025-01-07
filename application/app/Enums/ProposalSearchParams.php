@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\Enums;
 
@@ -62,7 +64,7 @@ final class ProposalSearchParams extends Enum
             'SORTS' => 'st',
             'TAGS' => 't',
             'TYPE' => 'pt',
-            'PROJECT_LENGTH'=>'pl'
+            'PROJECT_LENGTH' => 'pl',
         ];
     }
 }

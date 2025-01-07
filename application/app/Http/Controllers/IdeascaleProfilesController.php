@@ -1,20 +1,25 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\DataTransferObjects\IdeascaleProfileData;
+use App\Enums\IdeascaleProfileSearchParams;
+use App\Repositories\IdeascaleProfileRepository;
+use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Fluent;
 use Inertia\Inertia;
 use Inertia\Response;
 use Laravel\Scout\Builder;
-use Illuminate\Http\Request;
-use Illuminate\Support\Fluent;
-use App\Enums\IdeascaleProfileSearchParams;
-use Illuminate\Pagination\LengthAwarePaginator;
-use App\Repositories\IdeascaleProfileRepository;
-use App\DataTransferObjects\IdeascaleProfileData;
+
 class IdeascaleProfilesController extends Controller
 {
     protected int $limit = 24;
+
     protected int $currentPage = 1;
+
     protected array $queryParams = [];
 
     /**
@@ -28,7 +33,7 @@ class IdeascaleProfilesController extends Controller
 
         return Inertia::render('IdeascaleProfile/Index', [
             'ideascaleProfiles' => $ideascaleProfiles,
-            'filters' => $this->queryParams
+            'filters' => $this->queryParams,
         ]);
     }
 

@@ -12,9 +12,9 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Schema;
 use Laravel\Scout\Builder as ScoutBuilder;
+use Laravel\Scout\Searchable;
 use Meilisearch\Endpoints\Indexes;
 use Saloon\PaginationPlugin\Paginator;
-use Laravel\Scout\Searchable;
 
 class Repository implements RepositoryInterface
 {
@@ -56,11 +56,12 @@ class Repository implements RepositoryInterface
      * The args is an associative array that can contain meilisearch options or a
      * searchable key which is an array of fields to search on normal eloquent
      */
-    public function search(string $term, array $args = []): ScoutBuilder | Builder
+    public function search(string $term, array $args = []): ScoutBuilder|Builder
     {
         if (in_array(Searchable::class, class_uses_recursive($this->model))) {
             return $this->model::search($term, function (Indexes $index, string $query, $defaultOptions) use ($args) {
                 $mergedOptions = array_merge($defaultOptions, $args);
+
                 return $index->search($query, $mergedOptions);
             });
         }
@@ -91,7 +92,6 @@ class Repository implements RepositoryInterface
             }
         })->count();
     }
-
 
     public function create(array $data): Model
     {
@@ -161,8 +161,9 @@ class Repository implements RepositoryInterface
     protected function getDefaultSearchFields(): array
     {
         $possibleFields = ['title', 'name', 'content'];
+
         return collect($possibleFields)
-            ->filter(fn($field) => Schema::hasColumn($this->model->getTable(), $field))
+            ->filter(fn ($field) => Schema::hasColumn($this->model->getTable(), $field))
             ->values()
             ->toArray();
     }

@@ -122,7 +122,7 @@ sh:
 
 .PHONY: commitlint
 commitlint:
-	npx commitlint --edit $1
+	npx --no -- commitlint --edit $1
 
 .PHONY: status
 status:

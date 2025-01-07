@@ -7,7 +7,6 @@ namespace App\Policies;
 use App\Enums\PermissionEnum;
 use App\Models\IdeascaleProfile;
 use App\Models\User;
-use Illuminate\Auth\Access\Response;
 
 class IdeascaleProfilePolicy extends AppPolicy
 {
