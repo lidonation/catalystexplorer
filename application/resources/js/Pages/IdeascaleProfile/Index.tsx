@@ -9,6 +9,7 @@ import IdeascaleProfilesData = App.DataTransferObjects.IdeascaleProfileData;
 import Paginator from '@/Components/Paginator';
 import { useState, useEffect } from 'react';
 import { PaginatedData } from '../../../types/paginated-data';
+import IdeaScaleProfileToolbar from "@/Pages/IdeascaleProfile/Partials/IdeaScaleProfileToolbar";
 
 interface IdeascaleProfilesPageProps extends Record<string, unknown> {
     ideascaleProfiles: PaginatedData<IdeascaleProfilesData[]>;
