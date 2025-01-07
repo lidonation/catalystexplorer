@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\Enums;
 
@@ -13,6 +15,6 @@ final class ProposalStatus extends Enum
 {
     public static function values(): \Closure
     {
-        return fn(string $name): string|int => $name;
+        return fn (string $name): string|int => $name;
     }
 }

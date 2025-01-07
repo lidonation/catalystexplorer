@@ -1,13 +1,13 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\DataTransferObjects;
 
 use Carbon\Carbon;
-use App\Enums\StatusEnum;
 use Spatie\LaravelData\Data;
-use Spatie\LaravelData\Attributes\Validation\In;
-use Spatie\TypeScriptTransformer\Attributes\TypeScript;
 use Spatie\TypeScriptTransformer\Attributes\Optional as TypeScriptOptional;
+use Spatie\TypeScriptTransformer\Attributes\TypeScript;
 
 #[TypeScript]
 class ReviewData extends Data

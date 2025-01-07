@@ -1,13 +1,15 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\DataTransferObjects;
 
+use Spatie\LaravelData\Attributes\DataCollectionOf;
+use Spatie\LaravelData\Attributes\MapOutputName;
 use Spatie\LaravelData\Data;
 use Spatie\LaravelData\DataCollection;
-use Spatie\LaravelData\Attributes\MapOutputName;
-use Spatie\LaravelData\Attributes\DataCollectionOf;
-use Spatie\TypeScriptTransformer\Attributes\TypeScript;
 use Spatie\TypeScriptTransformer\Attributes\Optional as TypeScriptOptional;
+use Spatie\TypeScriptTransformer\Attributes\TypeScript;
 
 #[TypeScript]
 final class ProposalData extends Data
@@ -40,8 +42,8 @@ final class ProposalData extends Data
 
         public string $funding_status,
 
-//        #[TypeScriptOptional]
-//        public ?array $meta_data,
+        //        #[TypeScriptOptional]
+        //        public ?array $meta_data,
 
         #[TypeScriptOptional]
         public ?string $funded_at,
@@ -104,8 +106,8 @@ final class ProposalData extends Data
 
         public ?FundData $fund,
 
-        public ?bool $opensource = false,
-        
+        public ?bool $opensource,
+
         #[TypeScriptOptional]
         public ?string $link,
 

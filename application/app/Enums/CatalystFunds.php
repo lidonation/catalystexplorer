@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\Enums;
 
@@ -36,7 +38,7 @@ final class CatalystFunds extends Enum
             'TEN' => 10,
             'ELEVEN' => 11,
             'TWELVE' => 12,
-            'THIRTEEN' => 13
+            'THIRTEEN' => 13,
         ];
     }
 }

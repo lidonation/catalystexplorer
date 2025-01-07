@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Database\Factories;
 
@@ -28,8 +30,8 @@ class MetricFactory extends Factory
             'user_id' => User::factory(),
             'content' => $this->faker->sentence(8),
             'color' => $this->faker->hexColor(),
-            'model' =>  $this->faker->randomElement([
-                Proposal::class
+            'model' => $this->faker->randomElement([
+                Proposal::class,
             ]),
             'field' => $this->faker->randomElement(['id', 'amount_requested', 'id']),
             'type' => $this->faker->randomElement(MetricTypes::cases()),
@@ -48,9 +50,9 @@ class MetricFactory extends Factory
     {
         return $this->state(function (array $attributes) {
             if ($attributes['model'] !== Proposal::class) {
-               return [
-                   'context' => null
-               ];
+                return [
+                    'context' => null,
+                ];
             }
 
             return [
@@ -58,7 +60,7 @@ class MetricFactory extends Factory
                 'type' => MetricTypes::TREND(),
                 'count_by' => MetricCountBy::FUND(),
                 'status' => StatusEnum::published(),
-                'query' => MetricQueryTypes::COUNT()
+                'query' => MetricQueryTypes::COUNT(),
             ];
         });
     }

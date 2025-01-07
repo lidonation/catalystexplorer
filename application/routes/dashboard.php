@@ -20,7 +20,6 @@ Route::localized(
                 })->name('bookmarks');
             })->middleware(['auth', 'verified']);
 
-
     }
 );
 Route::fallback(\CodeZero\LocalizedRoutes\Controllers\FallbackController::class);

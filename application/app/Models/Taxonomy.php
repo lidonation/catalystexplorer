@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\Models;
 
@@ -25,7 +27,7 @@ class Taxonomy extends Model implements HasMedia
     ];
 
     protected $fillable = [
-        'title'
+        'title',
     ];
 
     public function hero(): Attribute
@@ -41,7 +43,8 @@ class Taxonomy extends Model implements HasMedia
         );
     }
 
-    public  function thumbnailUrl(): Attribute {
+    public function thumbnailUrl(): Attribute
+    {
         return Attribute::make(
             get: function () {
                 if (isset($this->attributes['thumbnailUrl'])) {
@@ -79,10 +82,10 @@ class Taxonomy extends Model implements HasMedia
             $max = intval(static::whereTitle($title)->latest('id')->count());
 
             return "{$slug}-".preg_replace_callback(
-                    '/(\d+)$/',
-                    fn ($matches) => $matches[1] + 1,
-                    (string) $max
-                );
+                '/(\d+)$/',
+                fn ($matches) => $matches[1] + 1,
+                (string) $max
+            );
         }
 
         return $slug;
@@ -129,8 +132,6 @@ class Taxonomy extends Model implements HasMedia
 
     /**
      * The "booted" method of the model.
-     *
-     * @return void
      */
     protected static function booted(): void
     {
