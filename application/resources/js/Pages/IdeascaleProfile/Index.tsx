@@ -7,6 +7,10 @@ import IdeascaleProfilesList from './Partials/IdeascaleProfileList';
 import IdeaScaleProfileLoader from './Partials/IdeaScaleProfileLoader';
 import IdeascaleProfilesFilters from './Partials/IdeascaleProfilesFilters';
 import IdeascaleProfilesData = App.DataTransferObjects.IdeascaleProfileData;
+import Paginator from '@/Components/Paginator';
+import { useState, useEffect } from 'react';
+import { PaginatedData } from '../../../types/paginated-data';
+import IdeaScaleProfileToolbar from "@/Pages/IdeascaleProfile/Partials/IdeaScaleProfileToolbar";
 
 interface IdeascaleProfilesPageProps extends Record<string, unknown> {
     ideascaleProfiles: IdeascaleProfilesData[];
@@ -17,6 +21,8 @@ const Index = ({
     filters,
 }: PageProps<IdeascaleProfilesPageProps>) => {
     const { t } = useTranslation();
+    const [perPage, setPerPage] = useState<number>(24);
+    const [currentPage, setCurrentPage] = useState<number>(1);
 
     return (
         <>

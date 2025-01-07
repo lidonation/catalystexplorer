@@ -106,11 +106,11 @@ class Fund extends Model implements HasMedia
     {
         return [
             'meta_info' => 'array',
-            'updated_at' => DateFormatCast::class,
-            'created_at' => DateFormatCast::class,
-            'launched_at' => DateFormatCast::class,
-            'awarded_at' => DateFormatCast::class,
-            'assessment_started_at' => DateFormatCast::class,
+            'updated_at' => 'datetime:Y-m-d',
+            'created_at' => 'datetime:Y-m-d',
+            'launched_at' => 'datetime:Y-m-d',
+            'awarded_at' => 'datetime:Y-m-d',
+            'assessment_started_at' => 'datetime:Y-m-d',
             'amount' => 'integer',
         ];
     }

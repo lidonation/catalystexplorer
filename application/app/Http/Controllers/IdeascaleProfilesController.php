@@ -9,9 +9,19 @@ use App\Enums\ProposalSearchParams;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
-
+use Laravel\Scout\Builder;
+use Illuminate\Http\Request;
+use Illuminate\Support\Fluent;
+use App\Enums\IdeascaleProfileSearchParams;
+use Illuminate\Pagination\LengthAwarePaginator;
+use App\Repositories\IdeascaleProfileRepository;
+use App\DataTransferObjects\IdeascaleProfileData;
 class IdeascaleProfilesController extends Controller
 {
+    protected int $limit = 24;
+    protected int $currentPage = 1;
+    protected array $queryParams = [];
+
     /**
      * Display the user's profile form.
      */
@@ -42,6 +52,9 @@ class IdeascaleProfilesController extends Controller
 
     public function getIdeascaleProfilesData()
     {
+        $limit = (int) $this->limit;
+        $page = (int) $this->currentPage;
+
         $ideascaleProfiles = app(IdeascaleProfileRepository::class);
 
         return $ideascaleProfiles->getQuery()->inRandomOrder()->limit($this->limit)->get();

@@ -114,7 +114,7 @@ function ProposalSearchControls() {
         setSearchQuery(search);
     };
     return (
-        <div className="mx-auto flex w-full flex-col gap-4 bg-background-lighter pb-4 pt-6">
+        <div className="mx-auto flex w-full flex-col gap-4 bg-background-lighter pb-4 pt-6 sticky top-0 z-10">
             <div className="flex items-center justify-end gap-2">
                 <SearchBar
                     handleSearch={handleSearch}

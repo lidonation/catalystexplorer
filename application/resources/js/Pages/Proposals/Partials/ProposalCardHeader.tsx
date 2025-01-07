@@ -19,7 +19,6 @@ export default function ProposalCardHeader({
     const headerBGColor = gradientColors[proposal.status] || gradientColors.default;
 
     return (
-
         <header
             className={`rounded-xl bg-gradient-to-tr text-content-light w-full ${headerBGColor} flex flex-shrink flex-col ${isHorizontal ? ' h-full' : ''}`}
         >
@@ -67,12 +66,17 @@ export default function ProposalCardHeader({
                 <div
                     className={`mb-4 p-2 px-4 leading-tight ${!isHorizontal ? "" : "flex items-center justify-center h-full w-full"}`}>
                     <a
-                        href="#"
+                        href={proposal.link}
+                        target="_blank"
+                        rel="noopener noreferrer"
                         className={`text-2 font-medium hover:text-primary  ${isHorizontal ? "text-center mb-4" : ""
                             }`}
                     >
                         {!userSelected ? proposal.title : null}
                     </a>
+                    <div className='flex flex-row justify-end italic'>
+                        <span>~ {proposal.fund?.title}</span>
+                    </div>
                 </div>
             </div>
 

@@ -25,22 +25,13 @@ class HomeController extends Controller
             'tags' => 'project-catalyst'
         ]);
 
-        //        dd(
-//            MetricData::collect($metrics
-//                ->limit(6)
-//                ->getQuery()
-//                ->where('context', 'home')
-//                ->orderByDesc('order')
-//                ->get())->toArray()
-//        );
-
         return Inertia::render('Home/Index', [
             'posts' => Inertia::optional(
                 fn() => $posts->paginate(4)->setMaxPages(1)->collect()->all()
             ),
             'proposals' => Inertia::optional(
                 fn() => ProposalData::collect(
-                    $proposals->with(['users', 'campaign'])
+                    $proposals->with(['users', 'campaign', 'fund'])
                         ->limit(3)
                         ->inRandomOrder()
                         ->get()

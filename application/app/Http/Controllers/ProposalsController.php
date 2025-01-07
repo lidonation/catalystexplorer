@@ -203,7 +203,6 @@ class ProposalsController extends Controller
             ]
         );
 
-
         return $pagination->onEachSide(1)->toArray();
     }
 
