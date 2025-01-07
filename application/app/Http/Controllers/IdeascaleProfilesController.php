@@ -4,9 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use App\Repositories\IdeascaleProfileRepository;
 use App\Enums\ProposalSearchParams;
-use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
 use Laravel\Scout\Builder;
@@ -25,11 +23,6 @@ class IdeascaleProfilesController extends Controller
     /**
      * Display the user's profile form.
      */
-    protected int $limit = 40;
-
-    protected array $queryParams = [];
-
-
     public function index(Request $request): Response
     {
         $this->getProps($request);

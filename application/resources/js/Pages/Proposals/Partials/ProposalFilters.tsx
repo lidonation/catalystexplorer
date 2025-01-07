@@ -30,7 +30,7 @@ const ProposalFilters: React.FC<ProposalFiltersProps> = ({ funds }) => {
             />
 
             <Filters />
-            <ProposalSearchControls/>
+            <ProposalSearchControls />
 
             <div className="container w-full rounded-xl bg-background p-4">
                 <div className="grid grid-cols-2 gap-x-4 gap-y-3 rounded-xl md:grid-cols-2 lg:grid-cols-5">
@@ -227,10 +227,17 @@ const ProposalFilters: React.FC<ProposalFiltersProps> = ({ funds }) => {
                     <div className="col-span-1 flex flex-col gap-2 pb-4">
                         <span>{t('proposals.filters.proposers')}</span>
                         <SearchSelect
-                            domain={'ideascale_profiles'}
-                            selected={filters[ProposalParamsEnum.IDEASCALE_PROFILES] ?? []}
+                            domain={'ideascaleProfiles'}
+                            selected={
+                                filters[
+                                    ProposalParamsEnum.IDEASCALE_PROFILES
+                                ] ?? []
+                            }
                             onChange={(value) =>
-                                setFilters(ProposalParamsEnum.IDEASCALE_PROFILES, value)
+                                setFilters(
+                                    ProposalParamsEnum.IDEASCALE_PROFILES,
+                                    value,
+                                )
                             }
                             placeholder="Select"
                             multiple={true}

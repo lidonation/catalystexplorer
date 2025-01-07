@@ -13,7 +13,7 @@ use Illuminate\Http\Response;
 class IdeascaleProfilesController extends Controller
 {
 
-    public function ideascale_profile($ideascaleId): Response|IdeascaleProfileResource|Application|ResponseFactory
+    public function ideascaleProfile($ideascaleId): Response|IdeascaleProfileResource|Application|ResponseFactory
     {
         $ideascale = IdeascaleProfile::find($ideascaleId);
 
@@ -26,7 +26,7 @@ class IdeascaleProfilesController extends Controller
         }
     }
 
-    public function ideascale_profiles(): Response|AnonymousResourceCollection|Application|ResponseFactory
+    public function ideascaleProfiles(): Response|AnonymousResourceCollection|Application|ResponseFactory
     {
         $per_page = request('per_page', 24);
 

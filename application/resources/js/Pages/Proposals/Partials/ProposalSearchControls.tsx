@@ -5,6 +5,7 @@ import { ProposalParamsEnum } from '@/enums/proposal-search-params';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ProposalSearchParams } from '../../../../types/proposal-search-params';
+import ActiveFilters from './ActiveFilters';
 
 function ProposalSearchControls() {
     const { filters, setFilters } = useFilterContext<ProposalSearchParams>();
@@ -114,7 +115,7 @@ function ProposalSearchControls() {
         setSearchQuery(search);
     };
     return (
-        <div className="mx-auto flex w-full flex-col gap-4 bg-background-lighter pb-4 pt-6 sticky top-0 z-10">
+        <div className="sticky top-0 z-10 mx-auto flex w-full flex-col gap-4 bg-background-lighter pb-4 pt-6">
             <div className="flex items-center justify-end gap-2">
                 <SearchBar
                     handleSearch={handleSearch}
@@ -139,7 +140,7 @@ function ProposalSearchControls() {
                     }
                 />
             </div>
-            <div className="text-center">Active Filters goes here</div>
+            <ActiveFilters/>
         </div>
     );
 }
