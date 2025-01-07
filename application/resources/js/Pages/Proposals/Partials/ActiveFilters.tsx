@@ -5,7 +5,7 @@ import { ProposalSearchParams } from '../../../../types/proposal-search-params';
 
 export default function ActiveFilters() {
     const { filters, setFilters } = useFilterContext<ProposalSearchParams>();
-        const [selectedFilters, setSelectedFilters] = useState<any>({});
+    const [selectedFilters, setSelectedFilters] = useState<any>({});
 
     const labels = {
         b: 'Budgets',
@@ -34,7 +34,7 @@ export default function ActiveFilters() {
 
     const statusFilters = ['coh', 'fs', 'ps'];
     const rangeFilters = ['pl', 'b'];
-    // const idFilters = ['t', 'cam', 'com', 'ip', 'g'];
+    const idFilters = ['t', 'cam', 'com', 'ip', 'g'];
     const booleanFilters = ['op'];
 
     // let selectedFilters: any[] = [];
@@ -50,6 +50,10 @@ export default function ActiveFilters() {
                     acc[labels[key]] = filters[key];
                 } else if (booleanFilters.includes(key)) {
                     acc[labels[key]] = !!parseInt(filters[key]);
+                } else if (idFilters.includes(key)) {
+                    // todo
+                } else {
+                    acc[labels[key]] = filters[key];
                 }
 
                 return acc;
@@ -57,11 +61,10 @@ export default function ActiveFilters() {
             {},
         );
 
-        setSelectedFilters(updatedFilters)
+        setSelectedFilters(updatedFilters);
     }, [filters]);
 
     console.log({ selectedFilters });
-    
 
     const { t } = useTranslation();
     return (
@@ -71,7 +74,6 @@ export default function ActiveFilters() {
                     <div className="font-bold">{key}</div>{' '}
                     {/* Display the key with optional styling */}
                     <div>
-                        
                         {Array.isArray(selectedFilters[key])
                             ? selectedFilters[key].join(', ')
                             : selectedFilters[key]}
