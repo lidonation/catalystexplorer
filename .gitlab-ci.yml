@@ -17,6 +17,7 @@ variables:
     description: "New tag for WEB base image,format {version}-{yyyy-mm-dd}. eg: ubuntu-22.04-2024-10-31"
 
 stages:
+- lint
 - .pre
 - test
 - build
@@ -36,10 +37,14 @@ default:
     export CI_APPLICATION_REPOSITORY=$CI_REGISTRY_IMAGE
     export CI_APPLICATION_TAG=$APP_VERSION_AND_BUILD
 
+
 cache:
   key: ${CI_COMMIT_REF_SLUG}
   paths:
   - ./node_modules
+
+########## Lint #########
+###################################
 
 ########## Pre-Build jobs #########
 ###################################

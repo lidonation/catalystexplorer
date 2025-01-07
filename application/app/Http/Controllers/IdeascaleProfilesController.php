@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
@@ -55,6 +53,7 @@ class IdeascaleProfilesController extends Controller
             IdeascaleProfileSearchParams::QUERY()->value => 'string|nullable',
             IdeascaleProfileSearchParams::PAGE()->value => 'int|nullable',
             IdeascaleProfileSearchParams::LIMIT()->value => 'int|nullable',
+            IdeascaleProfileSearchParams::SORT()->value => 'string|nullable',
         ]);
     }
 
@@ -62,12 +61,17 @@ class IdeascaleProfilesController extends Controller
     {
         $page = (int) ($this->queryParams[IdeascaleProfileSearchParams::PAGE()->value] ?? $this->currentPage);
         $limit = (int) ($this->queryParams[IdeascaleProfileSearchParams::LIMIT()->value] ?? $this->limit);
+        $sort = ($this->queryParams[IdeascaleProfileSearchParams::SORT()->value] ?? null);
 
         $args = [
             'filter' => $this->getUserFilters(),
             'offset' => ($page - 1) * $limit,
             'limit' => $limit,
         ];
+
+        if ($sort) {
+            $args['sort'] = [$sort];
+        }
 
         $proposals = app(IdeascaleProfileRepository::class);
 

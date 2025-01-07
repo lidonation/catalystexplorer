@@ -25,6 +25,7 @@ init:
 	sleep 10
 	$(sail) artisan key:generate
 	make migrate
+	$(sail) yarn husky init
 
 .PHONY: artisan
 artisan:
