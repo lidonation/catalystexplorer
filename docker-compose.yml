@@ -152,30 +152,30 @@ services:
       retries: 3
       timeout: 5s
   
-  catalystexplorer.cypress.gui:
-    image: cypress/included:10.3.0
-    container_name: catalystexplorer.cypress.gui
-    depends_on:
-      - catalystexplorer.com
-    environment:
-      - CYPRESS_baseUrl=http://catalystexplorer.com:8000
-      - ELECTRON_NO_ATTACH_CONSOLE=true
-      - NODE_OPTIONS=--no-sandbox
-    volumes:
-      - ./application:/app
-    networks:
-      - catalystexplorer-net
+  # catalystexplorer.cypress.gui:
+  #   image: cypress/included:10.3.0
+  #   container_name: catalystexplorer.cypress.gui
+  #   depends_on:
+  #     - catalystexplorer.com
+  #   environment:
+  #     - CYPRESS_baseUrl=http://catalystexplorer.com:8000
+  #     - ELECTRON_NO_ATTACH_CONSOLE=true
+  #     - NODE_OPTIONS=--no-sandbox
+  #   volumes:
+  #     - ./application:/app
+  #   networks:
+  #     - catalystexplorer-net
   
-  catalystexplorer.cypress.headless:
-    image: cypress/included:10.3.0
-    container_name: catalystexplorer.cypress.headless
-    environment:
-      - CI=true
-      - CYPRESS_baseUrl=http://catalystexplorer.com:8000
-    volumes:
-      - ./application:/app
-    networks:
-      - catalystexplorer-net
+  # catalystexplorer.cypress.headless:
+  #   image: cypress/included:10.3.0
+  #   container_name: catalystexplorer.cypress.headless
+  #   environment:
+  #     - CI=true
+  #     - CYPRESS_baseUrl=http://catalystexplorer.com:8000
+  #   volumes:
+  #     - ./application:/app
+  #   networks:
+  #     - catalystexplorer-net
 
 networks:
   catalystexplorer-net:
@@ -187,4 +187,5 @@ volumes:
     driver: local
   catalystexplorer-redis:
     driver: local
+
   node-ipc:

@@ -44,7 +44,7 @@ class IdeascaleProfile extends Model implements HasMedia
     protected $appends = ['profile_photo_url'];
 
     public array $translatable = [
-        'bio',
+        // 'bio',
     ];
 
     protected function casts(): array
