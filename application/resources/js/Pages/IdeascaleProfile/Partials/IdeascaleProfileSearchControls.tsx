@@ -1,5 +1,4 @@
 import SearchBar from '@/Components/SearchBar';
-import Selector from '@/Components/Select';
 import { useFilterContext } from '@/Context/FiltersContext';
 import { ProposalParamsEnum } from '@/enums/proposal-search-params';
 import { useEffect, useState } from 'react';
