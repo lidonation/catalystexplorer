@@ -40,7 +40,7 @@ const PaginationComponent: React.FC<PaginationComponentProps<any>> = ({
     } = pagination;
 
     return (
-        <div className="flex w-full flex-col items-center  border-t pt-12 gap-8 container">
+        <div className="flex w-full flex-col items-center  border-t pt-8 gap-2 mb-3 container">
             <section className='flex w-full flex-row justify-center gap-2'>
                 <div className="flex items-start">
                     <Selector
@@ -83,7 +83,7 @@ const PaginationComponent: React.FC<PaginationComponentProps<any>> = ({
                     </div>
                     {/* Page Numbers */}
                     <div className='flex flex-col gap-1 justify-center'>
-                        <ul className="flex list-none items-center gap-3 text-sm lg:gap-8 lg:text-base">
+                        <ul className="flex list-none items-center gap-3 text-sm lg:gap-5 lg:text-base">
                             {links &&
                                 links.map((link, index) =>
                                     link.label.includes('&laquo;') ||

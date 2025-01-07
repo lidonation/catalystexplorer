@@ -4,9 +4,12 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\DataTransferObjects\IdeascaleProfileData;
 use App\Enums\IdeascaleProfileSearchParams;
 use App\Repositories\IdeascaleProfileRepository;
 use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Fluent;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -24,13 +27,6 @@ class IdeascaleProfilesController extends Controller
 
         $ideascaleProfiles = empty($this->queryParams) ? $this->getIdeascaleProfilesData() : $this->query();
 
-        $ideascaleProfiles = $ideascaleProfiles->map(function ($ideascaleProfile) {
-            $ideascaleProfile->own_proposals_count = $ideascaleProfile->own_proposals->count();
-            $ideascaleProfile->co_proposals_count = $ideascaleProfile->co_proposals_count;
-
-            return $ideascaleProfile;
-        });
-
         return Inertia::render('IdeascaleProfile/Index', [
             'ideascaleProfiles' => $ideascaleProfiles,
             'filters' => $this->queryParams,
@@ -44,7 +40,12 @@ class IdeascaleProfilesController extends Controller
 
         $ideascaleProfiles = app(IdeascaleProfileRepository::class);
 
-        return $ideascaleProfiles->getQuery()->inRandomOrder()->limit($this->limit)->get();
+        $queryResults = $ideascaleProfiles->getQuery()
+            ->inRandomOrder()
+            ->limit($limit)
+            ->get();
+
+        return $this->paginate($queryResults, $ideascaleProfiles->getQuery()->count(), $page, $limit);
     }
 
     protected function getProps(Request $request): void
@@ -63,7 +64,11 @@ class IdeascaleProfilesController extends Controller
         $limit = (int) ($this->queryParams[IdeascaleProfileSearchParams::LIMIT()->value] ?? $this->limit);
         $sort = ($this->queryParams[IdeascaleProfileSearchParams::SORT()->value] ?? null);
 
-        $args['limit'] = $limit;
+        $args = [
+            'filter' => $this->getUserFilters(),
+            'offset' => ($page - 1) * $limit,
+            'limit' => $limit,
+        ];
 
         if ($sort) {
             $args['sort'] = [$sort];
@@ -76,8 +81,28 @@ class IdeascaleProfilesController extends Controller
             $args
         );
 
-        $response = $builder->get();
+        $response = new Fluent($builder->raw());
 
-        return $response;
+        return $this->paginate(IdeascaleProfileData::collect($response->hits), $response->estimatedTotalHits, $page, $limit);
+    }
+
+    protected function paginate($items, $total, $page, $limit): array
+    {
+        $pagination = new LengthAwarePaginator(
+            $items,
+            $total,
+            $limit,
+            $page,
+            [
+                'pageName' => 'p',
+            ]
+        );
+
+        return $pagination->onEachSide(1)->toArray();
+    }
+
+    protected function getUserFilters(): array
+    {
+        return [];
     }
 }

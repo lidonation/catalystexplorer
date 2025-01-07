@@ -57,6 +57,15 @@ class IdeascaleProfile extends Model implements HasMedia
         ];
     }
 
+    public static function getSortableAttributes(): array
+    {
+        return [
+            'name',
+            'username',
+            'email',
+        ];
+    }
+
     public static function getSearchableAttributes(): array
     {
         return [
