@@ -6,7 +6,9 @@ import React, {
     useState,
 } from 'react';
 
-const PlayerContext = createContext(undefined);
+const PlayerContext = createContext({
+    
+});
 
 const LOCAL_STORAGE_KEY = 'playerState';
 
@@ -44,7 +46,7 @@ export const PlayerProvider = ({ children }: { children: React.ReactNode }) => {
     }, [playlist, currentTrackIndex, isPlaying, currentTime]);
 
     // Getters
-    const getCurrentTrack = () => playlist[currentTrackIndex] || null;
+    const getCurrentTrack = () => playlist[currentTrackIndex] ;
 
     // Setters
     const setPlaylistWithStart = (

@@ -100,7 +100,7 @@ export default function Selector({
                     </button>
                 </PopoverTrigger>
                 <PopoverContent
-                    className="relative w-full min-w-[var(--radix-popover-trigger-width)] bg-background p-0"
+                    className="relative w-full min-w-[var(--radix-popover-trigger-width)] bg-background p-1"
                     align="start"
                 >
                     <div>
