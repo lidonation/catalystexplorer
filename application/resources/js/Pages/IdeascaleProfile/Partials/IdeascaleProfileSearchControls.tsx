@@ -19,9 +19,19 @@ function IdeascaleProfilesSearchControls() {
     }, [initialSearchQuery]);
 
     const handleSearch = (search: string) => {
-        setFilters(ProposalParamsEnum.QUERY, search);
-        setSearchQuery(search);
+        setSearchQuery(search); 
+        const url = new URL(window.location.href);
+    
+        if (search.trim() === '') {
+            url.searchParams.delete(ProposalParamsEnum.QUERY);
+        } else {
+            setFilters(ProposalParamsEnum.QUERY, search);
+            url.searchParams.set(ProposalParamsEnum.QUERY, search);
+        }
+    
+        window.history.replaceState(null, '', url.toString());
     };
+    
     
     return (
         <div className="mx-auto flex w-full flex-col gap-4 bg-background-lighter pb-4 pt-6">
