@@ -4,33 +4,29 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use App\Repositories\IdeascaleProfileRepository;
-use App\Enums\ProposalSearchParams;
-use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
-
+use Laravel\Scout\Builder;
+use Illuminate\Http\Request;
+use Illuminate\Support\Fluent;
+use App\Enums\IdeascaleProfileSearchParams;
+use Illuminate\Pagination\LengthAwarePaginator;
+use App\Repositories\IdeascaleProfileRepository;
+use App\DataTransferObjects\IdeascaleProfileData;
 class IdeascaleProfilesController extends Controller
 {
+    protected int $limit = 24;
+    protected int $currentPage = 1;
+    protected array $queryParams = [];
+
     /**
      * Display the user's profile form.
      */
-    protected int $limit = 40;
-
-    protected array $queryParams = [];
-
-
     public function index(Request $request): Response
     {
         $this->getProps($request);
 
         $ideascaleProfiles = empty($this->queryParams) ? $this->getIdeascaleProfilesData() : $this->query();
-
-        $ideascaleProfiles = $ideascaleProfiles->map(function ($ideascaleProfile) {
-            $ideascaleProfile->own_proposals_count = $ideascaleProfile->own_proposals->count();
-            $ideascaleProfile->co_proposals_count = $ideascaleProfile->co_proposals_count;
-            return $ideascaleProfile;
-        });
 
         return Inertia::render('IdeascaleProfile/Index', [
             'ideascaleProfiles' => $ideascaleProfiles,
@@ -38,39 +34,70 @@ class IdeascaleProfilesController extends Controller
         ]);
     }
 
-
-
-    public function getIdeascaleProfilesData()
+    protected function getIdeascaleProfilesData(): array
     {
+        $limit = (int) $this->limit;
+        $page = (int) $this->currentPage;
+
         $ideascaleProfiles = app(IdeascaleProfileRepository::class);
 
-        return $ideascaleProfiles->getQuery()->inRandomOrder()->limit($this->limit)->get();
+        $queryResults = $ideascaleProfiles->getQuery()
+            ->inRandomOrder()
+            ->limit($limit)
+            ->get();
+
+        return $this->paginate($queryResults, $ideascaleProfiles->getQuery()->count(), $page, $limit);
     }
 
     protected function getProps(Request $request): void
     {
         $this->queryParams = $request->validate([
-            ProposalSearchParams::QUERY()->value => 'string|nullable',
-            ProposalSearchParams::LIMIT()->value => 'int|nullable',
+            IdeascaleProfileSearchParams::QUERY()->value => 'string|nullable',
+            IdeascaleProfileSearchParams::PAGE()->value => 'int|nullable',
+            IdeascaleProfileSearchParams::LIMIT()->value => 'int|nullable',
         ]);
     }
 
-    protected function query($returnBuilder = false, $attrs = null, $filters = [])
+    protected function query(): array|Builder
     {
-        $limit = isset($this->queryParams[ProposalSearchParams::LIMIT()->value])
-            ? (int) $this->queryParams[ProposalSearchParams::LIMIT()->value]
-            : $this->limit;
+        $page = (int) ($this->queryParams[IdeascaleProfileSearchParams::PAGE()->value] ?? $this->currentPage);
+        $limit = (int) ($this->queryParams[IdeascaleProfileSearchParams::LIMIT()->value] ?? $this->limit);
 
-        $args['limit'] = $limit;
+        $args = [
+            'filter' => $this->getUserFilters(),
+            'offset' => ($page - 1) * $limit,
+            'limit' => $limit,
+        ];
 
-        $ideascaleProfiles = app(IdeascaleProfileRepository::class);
-        $builder = $ideascaleProfiles->search(
-            $this->queryParams[ProposalSearchParams::QUERY()->value] ?? '',
+        $proposals = app(IdeascaleProfileRepository::class);
+
+        $builder = $proposals->search(
+            $this->queryParams[IdeascaleProfileSearchParams::QUERY()->value] ?? '',
             $args
         );
 
-        $response = $builder->get();
+        $response = new Fluent($builder->raw());
 
-        return $response;
+        return $this->paginate(IdeascaleProfileData::collect($response->hits), $response->estimatedTotalHits, $page, $limit);
+    }
+
+    protected function paginate($items, $total, $page, $limit): array
+    {
+        $pagination = new LengthAwarePaginator(
+            $items,
+            $total,
+            $limit,
+            $page,
+            [
+                'pageName' => 'p',
+            ]
+        );
+
+        return $pagination->onEachSide(1)->toArray();
+    }
+
+    protected function getUserFilters(): array
+    {
+        return [];
     }
 }
