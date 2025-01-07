@@ -106,6 +106,10 @@ rm:
 sh:
 	$(sail) shell $(filter-out $@,$(MAKECMDGOALS))
 
+.PHONY: commitlint
+commitlint:
+	npx commitlint --edit $1
+
 .PHONY: status
 status:
 	docker compose ps
