@@ -16,7 +16,6 @@ use App\Enums\ProposalSearchParams;
 use Laravel\Scout\Builder;
 use Illuminate\Support\Fluent;
 use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Support\Facades\Log;
 
 class IdeascaleProfilesController extends Controller
 {
@@ -29,10 +28,6 @@ class IdeascaleProfilesController extends Controller
     
     public function index(Request $request): Response
     {
-        Log::info('Received request with params:', [
-            'all_params' => $request->all()
-        ]);
-
         $this->getProps($request);
         $profiles = empty($this->queryParams) ? $this->getIdeascaleProfilesData() : $this->query();
 
@@ -120,19 +115,17 @@ class IdeascaleProfilesController extends Controller
             ProposalSearchParams::FUNDS()->value => 'array|nullable',
             ProposalSearchParams::PROJECT_STATUS()->value => 'array|nullable',
             ProposalSearchParams::TAGS()->value => 'array|nullable',
-            ProposalSearchParams::FUNDING_STATUS()->value => 'string|nullable', // Make sure this matches your enum value
+            ProposalSearchParams::FUNDING_STATUS()->value => 'string|nullable',
             ProposalSearchParams::BUDGETS()->value => 'array|nullable',
             ProposalSearchParams::PAGE()->value => 'int|nullable',
             ProposalSearchParams::LIMIT()->value => 'int|nullable',
         ]);
 
-        // Convert funding status to boolean explicitly
         if (isset($this->queryParams[ProposalSearchParams::FUNDING_STATUS()->value])) {
             $this->queryParams[ProposalSearchParams::FUNDING_STATUS()->value] = 
                 filter_var($this->queryParams[ProposalSearchParams::FUNDING_STATUS()->value], FILTER_VALIDATE_BOOLEAN);
         }
 
-        // Set default budget range if not provided
         if (empty($this->queryParams[ProposalSearchParams::BUDGETS()->value])) {
             $this->queryParams[ProposalSearchParams::BUDGETS()->value] = [1000, 10000000];
         }
@@ -141,16 +134,10 @@ class IdeascaleProfilesController extends Controller
     protected function query(): array
     {
         $filters = $this->getUserFilters();
-        // dd($profiles);
         
         $args = [
             'filter' => $this->getUserFilters(),
         ];
-
-        Log::info('Constructed search arguments:', [
-            'args' => $args,
-            'filters' => $filters
-        ]);
 
         $page = $this->queryParams[ProposalSearchParams::PAGE()->value] ?? 1;
         $limit = $this->queryParams[ProposalSearchParams::LIMIT()->value] ?? $this->limit;
@@ -160,14 +147,9 @@ class IdeascaleProfilesController extends Controller
 
         $profiles = app(IdeascaleProfileRepository::class);
         $builder = $profiles->search('', $args);
-        
-        Log::info('Raw search response:', [
-            'raw_response' => $builder->raw()
-        ]);
 
         $response = new Fluent($builder->raw());
 
-        // Paginate the results
         $pagination = new LengthAwarePaginator(
             $response->hits,
             $response->estimatedTotalHits,
@@ -215,11 +197,6 @@ class IdeascaleProfilesController extends Controller
                 $budgetRange = collect((object) $this->queryParams[ProposalSearchParams::BUDGETS()->value]);
                 $filters[] = "(proposals_total_amount_requested  {$budgetRange->first()} TO  {$budgetRange->last()})";
             }
-
-            Log::info('Generated filters:', [
-                'filters' => $filters,
-                'queryParams' => $this->queryParams
-            ]);
 
         } catch (\Exception $e) {
             Log::error('Error generating filters:', [

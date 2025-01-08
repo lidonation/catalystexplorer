@@ -14,15 +14,6 @@ export default function IdeascaleProfilesFilters() {
         setFilters(ProposalParamsEnum.FUNDING_STATUS, newFundingStatus ? '1' : '');
     };
 
-    const handleFilterChange = (paramName: ProposalParamsEnum, value: any) => {
-        console.log('Filter changed:', {
-            parameter: paramName,
-            value: value,
-            allFilters: {...filters, [paramName]: value}
-        });
-        setFilters(paramName, value);
-    };
-
     return (
         <div className="container w-full rounded-xl bg-background shadow-md p-4">
             <div className="grid grid-cols-2 gap-4 lg:grid-cols-5 lg:gap-8 items-center">
@@ -96,7 +87,7 @@ export default function IdeascaleProfilesFilters() {
                         key={'Budgets'}
                         context={t('proposals.filters.budgets')}
                         value={filters[ProposalParamsEnum.BUDGETS]}
-                        onValueChange={(value) =>
+                        onValueChange={(value: number[]) =>
                             setFilters(ProposalParamsEnum.BUDGETS, value)
                         }
                         max={filters[ProposalParamsEnum.MAX_BUDGET]}

@@ -23,7 +23,7 @@ export function useSearchOptions<T>(domain?: string) {
             );
 
             if (response) {
-                setOptions(response?.data);
+                setOptions(response?.data || response);
             }
         };
 
