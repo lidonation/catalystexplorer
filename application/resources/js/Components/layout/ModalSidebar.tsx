@@ -1,5 +1,5 @@
 import useEscapeKey from '@/Hooks/useEscapeKey';
-import { ReactNode, useEffect, useRef, useState } from 'react';
+import { ReactNode, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import Button from '../atoms/Button';
 import CatalystLogo from '../atoms/CatalystLogo';
@@ -9,23 +9,20 @@ type ModalSidebarProps = {
     isOpen?: boolean;
     title: string;
     children: ReactNode;
+    onClose: () => void;
 };
 
-function ModalSidebar({ isOpen = false, title, children }: ModalSidebarProps) {
-    const [isSideBarOpen, setIsSideBarOpen] = useState(isOpen);
+function ModalSidebar({ isOpen = false, title, children, onClose }: ModalSidebarProps) {
     const sidebarRef = useRef<HTMLDivElement | null>(null);
     const { t } = useTranslation();
 
-    useEscapeKey(() => setIsSideBarOpen(false));
+    useEscapeKey(() => onClose());
 
-    // Focus trap for accessibility
     useEffect(() => {
-        if (isSideBarOpen && sidebarRef.current) {
-            if ("focus" in sidebarRef.current) {
-                sidebarRef.current.focus();
-            }
+        if (isOpen && sidebarRef.current) {
+            sidebarRef.current.focus();
         }
-    }, [isSideBarOpen]);
+    }, [isOpen]);
 
     return (
         <aside
@@ -34,14 +31,15 @@ function ModalSidebar({ isOpen = false, title, children }: ModalSidebarProps) {
             aria-labelledby="modal-sidebar-title"
             aria-modal="true"
             ref={sidebarRef}
-            className={`${isSideBarOpen ? 'block' : 'hidden'} fixed inset-0 z-40`}
+            className={`fixed inset-0 z-40 ${isOpen ? 'block' : 'hidden'
+                }`}
         >
             {/* Background Overlay */}
             <div
-                className="fixed inset-0 bg-black bg-opacity-50"
-                onClick={() => setIsSideBarOpen(false)}
+                className="fixed inset-0 bg-dark opacity-50"
+                onClick={onClose}
                 aria-label={t('navigation.sidebar.close')}
-                aria-expanded={isSideBarOpen}
+                aria-expanded={isOpen}
                 aria-controls="sidebar-modal"
             ></div>
 
@@ -50,7 +48,7 @@ function ModalSidebar({ isOpen = false, title, children }: ModalSidebarProps) {
                 className="fixed right-0 top-0 z-50 h-full w-full bg-background shadow-lg focus:outline-none sm:w-96"
                 tabIndex={0}
             >
-                <header className="flex items-center justify-between border-b border-gray-200 px-6 py-4">
+                <header className="flex items-center justify-between border-b border-border-primary px-6 py-4">
                     <h2
                         id="modal-sidebar-title"
                         className="text-2 font-semibold text-content"
@@ -58,18 +56,18 @@ function ModalSidebar({ isOpen = false, title, children }: ModalSidebarProps) {
                         {title}
                     </h2>
                     <Button
-                        onClick={() => setIsSideBarOpen(!isSideBarOpen)}
+                        onClick={onClose}
                         ariaLabel={t('navigation.sidebar.close')}
-                        aria-expanded={isSideBarOpen}
+                        aria-expanded={isOpen}
                         aria-controls="sidebar-modal"
-                        className="inline-flex items-center rounded px-2 py-1 text-4 hover:bg-gray-100"
+                        className="hidden sm:block lg:inline-flex items-center rounded px-2 py-1 text-4 hover:bg-dark"
                     >
                         <CloseIcon width={18} height={18} />
                     </Button>
                 </header>
 
                 <div className="flex h-full flex-col gap-6 px-6">
-                    <div className="mt-6 flex h-6 shrink-0 items-center justify-center px-6">
+                    <div className="hidden sm:block mt-6 lg:flex h-6 shrink-0 items-center justify-center px-6">
                         <CatalystLogo className="object-contain" />
                     </div>
                     <section className="overflow-y-auto">{children}</section>

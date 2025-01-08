@@ -9,32 +9,37 @@ function UserNavigation() {
     const { t } = useTranslation();
     const navItems = [
         {
-            href: '/bookmarks',
-            title: t('navigation.links.bookmarks'),
+            href: '/my/bookmarks',
+            title: t('bookmarks'),
             icon: <BookMarkCheckIcon className="text-dark" />,
         },
         {
-            href: '/votes',
-            title: t('navigation.links.votes'),
+            href: '/my/votes',
+            title: t('votes'),
             icon: <BucketIcon className="text-dark" />,
         },
         {
             href: '/knowledge-base',
-            title: t('navigation.links.knowledgeBase'),
+            title: t('knowledgeBase'),
             icon: <FolderIcon className="text-dark" />,
         },
         {
             href: '/support',
-            title: t('navigation.links.support'),
+            title: t('support'),
             icon: <MailIcon className="text-dark" />,
         },
     ];
     return (
-        <nav className="">
-            <ul className="flex flex-1 flex-col menu-gap-y">
+        <nav className="" role="menu">
+            <ul className="menu-gap-y flex flex-1 flex-col" role="menu">
                 {navItems.map(({ href, title, icon }) => (
                     <li key={href}>
-                        <NavLinkItem href={href} title={title} prefetch>
+                        <NavLinkItem
+                            ariaLabel={`${title}  ${t('link')}`}
+                            href={href}
+                            title={title}
+                            prefetch
+                        >
                             {icon}
                         </NavLinkItem>
                     </li>

@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Database\Factories;
 
@@ -16,15 +18,13 @@ class IdeascaleProfileFactory extends Factory
 
     /**
      * Define the model's default state.
-     *
-     * @return array
      */
-    public function definition()
+    public function definition(): array
     {
         return [
             'ideascale_id' => $this->faker->numberBetween(1, 1000),
             'username' => $this->faker->userName,
-            'email' => $this->faker->unique()->safeEmail,
+            'email' => $this->faker->unique()->safeEmail.$this->faker->numberBetween(1, 1000),
             'name' => $this->faker->name,
             'bio' => $this->faker->text(200),
             'created_at' => now(),

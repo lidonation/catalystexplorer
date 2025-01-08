@@ -1,20 +1,27 @@
 import { Link, router } from '@inertiajs/react';
+import React, { useState } from 'react';
 import axios from 'axios';
 import { useTranslation } from 'react-i18next';
-import { route } from '../../../../vendor/tightenco/ziggy/src/js';
 import LogOutIcon from '../svgs/LogOut';
+import LoginIcon from '../svgs/Login';
+import RegisterUserIcon from '../svgs/Register';
 import UserAvatar from '../UserAvatar';
+import ModalSidebar from './ModalSidebar';
+import RegisterForm from '@/Pages/Auth/Partials/RegisterForm';
+import LoginForm from '@/Pages/Auth/Partials/LoginForm';
+import {useLocalizedRoute} from "@/utils/localizedRoute";
 
 interface UserDetailsProps {
     user: App.DataTransferObjects.UserData;
 }
 
-const UserDetails: React.FC<UserDetailsProps> = ({user}) => {
+const UserDetails: React.FC<UserDetailsProps> = ({ user }) => {
     const { t } = useTranslation();
+    const [activeModal, setActiveModal] = useState<"register" | "login" | null>(null);
 
     const logout = () => {
         axios
-            .post(route('logout'))
+            .post('logout')
             .then((response) => {
                 router.get('/')
             })
@@ -24,50 +31,70 @@ const UserDetails: React.FC<UserDetailsProps> = ({user}) => {
     };
 
     return (
-        <div className="flex items-center justify-between">
-            <div className="flex gap-3">
-                <div className="size-9 rounded-full bg-background-light">
-                    {user ? (
-                        <UserAvatar imageUrl={user.profile_photo_url} />
+        <>
+            {user ?
+                <div className="flex items-center justify-between">
+                    <div className="flex gap-3">
+                        <div className="size-9 rounded-full bg-background-light">
+                            <UserAvatar imageUrl={user.profile_photo_url} />
+                        </div>
+                        <div className="flex flex-col">
+                            <Link
+                                href={useLocalizedRoute('dashboard')}
+                                className="text-4 font-semibold text-content"
+                            >
+                                {user?.name}
+                            </Link>
 
-                    ) : (
-                        ''
-                    )}
+                            <p className="text-5 text-content">
+                                {user?.email}
+                            </p>
+                            <Link
+                                href={route('profile.edit')}
+                                className="text-5 font-semibold text-primary"
+                            >
+                                {t("users.editProfile")}
+                            </Link>
+                        </div>
+                    </div>
+                    <LogOutIcon
+                        className="cursor-pointer text-dark hover:text-hover"
+                        width={20}
+                        height={20}
+                        onClick={() => logout()}
+                    />
+                    <div>
+                    </div>
                 </div>
-                <div className="flex flex-col">
-                    {user ? (
-                        <Link
-                            href="/dashboard"
-                            className="text-4 font-semibold text-content"
-                        >
-                            {user?.name}
-                        </Link>
-                    ) : (
-                        <p className="text-4 font-semibold text-content">
-                            {t('app.name')}
-                        </p>
-                    )}
+                :
+                <>
+                    <nav className="flex flex-col justify-between">
+                        <ul className="flex flex-1 flex-row menu-gap-y">
+                            <li className='flex items-center gap-1 px-2 py-1 hover:bg-background-lighter cursor-pointer' onClick={() => setActiveModal("register")}>
+                                <RegisterUserIcon className='text-dark' />
+                                <p className='text-3'>{t("register")}</p>
+                            </li>
+                            <li className='flex items-center gap-1 px-2 py-1 hover:bg-background-lighter cursor-pointer' onClick={() => setActiveModal("login")}>
+                                <LoginIcon className='text-dark' />
+                                <p className='text-3'>{t("login")}</p>
+                            </li>
+                        </ul>
+                    </nav>
 
-                    <p className="text-5 text-content">
-                        {user?.email || t('app.contactEmail')}
-                    </p>
-                    {user && (
-                        <Link
-                            href="/profile"
-                            className="text-5 font-semibold text-primary"
+                    {activeModal && (
+                        <ModalSidebar
+                            title={activeModal === "register" ? t("register") : t("login")}
+                            isOpen={!!activeModal}
+                            onClose={() => setActiveModal(null)}
                         >
-                            Edit profile
-                        </Link>
+                            {activeModal === "register" && <RegisterForm />}
+                            {activeModal === "login" && <LoginForm />}
+                        </ModalSidebar>
                     )}
-                </div>
-            </div>
-            <LogOutIcon
-                className="cursor-pointer text-dark hover:text-hover"
-                width={20}
-                height={20}
-                onClick={() => logout()}
-            />
-        </div>
+                </>
+            }
+
+        </>
     );
 };
 

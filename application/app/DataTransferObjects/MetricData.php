@@ -1,10 +1,12 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\DataTransferObjects;
 
-use Spatie\LaravelData\Data;
 use Spatie\LaravelData\Attributes\WithCast;
 use Spatie\LaravelData\Casts\DateTimeInterfaceCast;
+use Spatie\LaravelData\Data;
 use Spatie\TypeScriptTransformer\Attributes\Optional as TypeScriptOptional;
 use Spatie\TypeScriptTransformer\Attributes\TypeScript;
 
@@ -22,10 +24,10 @@ final class MetricData extends Data
         #[TypeScriptOptional]
         public ?string $status,
 
-        #[TypeScriptOptional, WithCast(DateTimeInterfaceCast::class, format: 'd/m/Y')]
+        #[TypeScriptOptional, WithCast(DateTimeInterfaceCast::class, format: 'Y-m-d')]
         public ?\DateTime $created_at,
 
-        #[TypeScriptOptional, WithCast(DateTimeInterfaceCast::class, format: 'd/m/Y')]
+        #[TypeScriptOptional, WithCast(DateTimeInterfaceCast::class, format: 'Y-m-d')]
         public ?\DateTime $updated_at,
 
         #[TypeScriptOptional]

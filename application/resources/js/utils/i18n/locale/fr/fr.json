@@ -1,8 +1,82 @@
 {
+    "activeFund": "Fonds Actif",
+    "appMessage": "Tous les votes doivent être soumis dans l'application officielle de vote Catalyst. Ceci n'est qu'un outil de recherche et de planification !",
+    "articles": "Articles",
+    "bookmarks": "Mes Signets",
+    "catalystAPI": "API Catalyst",
+    "ccv4Votes": "Votes CCV4",
+    "charts": "Graphiques",
+    "comingSoon": "À venir",
+    "communities": "Communautés",
+    "cookies": "Cookies",
+    "copyright": "© 2024 Explorateur Catalyst. Tous droits réservés.",
+    "data": "Données",
+    "dReps": "DReps",
+    "facebook": "Facebook",
+    "funds": "Fonds",
+    "getStarted": "Commencer",
+    "github": "Github",
+    "groups": "Groupes",
+    "home": "Accueil",
+    "jormungandr": "Jormungandr",
+    "knowledgeBase": "Base de Connaissances",
+    "legal": "Légal",
+    "licenses": "Licences",
+    "linkedIn": "LinkedIn",
+    "login": "Se connecter",
+    "filters": "Filtres",
+    "monthlyReports": "Rapports Mensuels",
+    "noImage": "Pas d'image",
+    "numbers": "Chiffres",
+    "privacy": "Confidentialité",
+    "proposalReviews": "Évaluations des propositions",
+    "proposers": "Proposeurs",
+    "register": "Registre",
+    "reviews": "Évaluations",
+    "social": "Social",
+    "twitter": "Twitter",
+    "support": "Support",
+    "terms": "Conditions Générales",
+    "votes": "Mes Votes",
+    "wallets": "Portefeuilles",
+    "details": "Détails",
+    "teams": "Équipe",
+    "yes": "Oui",
+    "abstain": "Abstention",
+    "notSet": "Non défini",
+    "loading": "Chargement",
+    "link": "lien",
+    "select": "Sélectionner",
+    "selected": "choisie",
+    "clear": "claire",
+    "selection": "sélection",
+    "awarded": "Récompensé",
+    "requested": "Demandée",
+    "submitted": "Soumise",
+    "approved": "Approuvée",
+    "completed": "Complété",
     "app": {
         "name": "Catalyst Explorer",
         "contactEmail": "support@lidonation.com",
         "appLogoAlt": "Logo de Catalyst Explore."
+    },
+    "searchResults": {
+        "noResults": {
+            "title": "Aucun résultat trouvé",
+            "description": "Votre recherche \"{{query}}\" n'a donné aucun résultat. Veuillez réessayer."
+        },
+        "tabs": {
+            "proposals": "Propositions",
+            "articles": "Articles",
+            "ideascaleprofiles": "Ideascale Profils",
+            "groups": "Groupes",
+            "communities": "Communautés",
+            "reviews": "Avis"
+        },
+        "results": {
+            "title": "Résultats de recherche pour \"{{query}}\"",
+            "viewMore": "Voir plus"
+        }
     },
     "navigation": {
         "mobile": {
@@ -15,33 +89,24 @@
         "sidebar": {
             "open": "Ouvrir la barre latérale",
             "close": "Fermer la barre latérale"
-        },
-        "links": {
-            "home": "Accueil",
-            "proposals": "Propositions",
-            "funds": "Fonds",
-            "people": "Personnes",
-            "charts": "Graphiques",
-            "jormungandr": "Jormungandr",
-            "activeFund": "Fonds Actif",
-            "bookmarks": "Mes Signets",
-            "votes": "Mes Votes",
-            "knowledgeBase": "Base de Connaissances",
-            "support": "Support"
         }
+    },
+    "registration": {
+        "alreadyRegistered": "Déjà inscrit?",
+        "passwordCharacters": "Doit contenir 8 caractères"
+    },
+    "pagination": {
+        "next": "Suivante",
+        "previous": "Précédente",
+        "morePages": "Plus de pages",
+        "goPreviousPage": "Aller à la page précédente",
+        "goNextPage": "Aller à la page suivante"
     },
     "searchBar": {
         "placeholder": "Rechercher des propositions, des fonds, des personnes, des articles et des données",
         "all_filters": "Tous les filtres",
         "variants": {
-            "all": "Tous les groupes",
-            "proposals": "Propositions",
-            "people": "Personnes",
-            "groups": "Groupes",
-            "communities": "Communautés",
-            "wallets": "Portefeuilles",
-            "reviews": "Évaluations",
-            "articles": "Articles"
+            "all": "Tous les groupes"
         }
     },
     "catalystIntro": {
@@ -51,15 +116,123 @@
         },
         "subtitle": "Catalyst stimule la croissance de l'écosystème Cardano en reliant des idées innovantes à un financement, soutenu par un vote communautaire et le trésor Cardano."
     },
-    "proposalQuickpitch": {
+    "metric": {
+        "totalProposals": "Total des propositions",
+        "vs": "vs. dernier fonds"
+    },
+    "announcements": {
+        "none": "Aucune annonce",
+        "timeRemaining": "Temps restant",
+        "remaining": "Restant"
+    },
+    "breadcrumbs": {
+        "home": "Accueil"
+    },
+
+    "ideascaleProfiles": {
+        "people": "Personnes",
+        "ideascaleProfiles": "Ideascale Profils",
+        "pageSubtitle": "Rechercher des propositions et des défis par titre, contenu ou auteur et co-auteurs",
+        "ownProposals": "Propositions personnelles",
+        "coProposals": "Propositions co",
+        "limitFunds": "Limite aux fonds",
+        "projectStatus": "Statut du projet",
+        "limitTags": "Limite aux balises",
+        "fundingStatus": "Statut du financement",
+        "noIdeascaleProfiles": "Aucune Ideascale Profils trouvée",
+        "options": {
+            "alphabeticallyAsc": "Alphabétiquement A à Z",
+            "alphabeticallyDesc": "Alphabétiquement Z à A",
+            "awardedAdaLowToHigh": "ADA attribuée : Du plus bas au plus élevé",
+            "awardedAdaHighToLow": "ADA attribuée : Du plus élevé au plus bas",
+            "awardedUsdLowToHigh": "USD attribué : Du plus bas au plus élevé",
+            "awardedUsdHighToLow": "USD attribué : Du plus élevé au plus bas",
+            "primaryProposalCountLowToHigh": "Nombre de propositions principales : Du plus bas au plus élevé",
+            "primaryProposalCountHighToLow": "Nombre de propositions principales : Du plus élevé au plus bas",
+            "coProposalCountLowToHigh": "Nombre de propositions co : Du plus bas au plus élevé",
+            "coProposalCountHighToLow": "Nombre de propositions co : Du plus élevé au plus bas"
+        }
+    },
+
+    "proposals": {
+        "allProposals": "Toutes les propositions",
+        "CSVs": "CSVs de propositions",
+        "proposals": "Propositions",
         "projectVideo": "Vidéo du projet",
         "providedUrl": "URL fournie",
+        "listSubtitle": "Les votes des propositions doivent être soumis dans l'application officielle de vote Catalyst.",
+        "pageSubtitle": "Rechercher des propositions et des défis par titre, contenu ou auteur et co-auteurs.",
+        "seeMoreProposals": "Voir plus de propositions",
+        "quickPitch": "Présentation rapide",
+        "proposalReviews": "Examens de propositions",
         "errors": {
             "noUrl": "Aucune URL vidéo fournie",
             "invalidYoutubeFormat": "Le format du lien YouTube est incorrect",
             "invalidVimeoFormat": "Le format du lien Vimeo est incorrect",
             "invalidUrlFormat": "Format d'URL invalide",
             "invalidUrl": "Format d'URL invalide"
+        },
+        "filters": {
+            "fundingStatus": "Statut de financement",
+            "opensource": "Opensource",
+            "projectStatus": "Statut du projet",
+            "tags": "Balises",
+            "campaigns": "Campagnes",
+            "communities": "Communautés",
+            "communityCohort": "Cohorte communautaire",
+            "proposers": "Proposers",
+            "groups": "Groupes",
+            "budgets": "Budgets",
+            "budget": "Budget",
+            "projectLength": "Durée du projet (mois)"
+        },
+        "options": {
+            "sort": "Trier par",
+            "oldToNew": "Du plus ancien au plus récent",
+            "newToOld": "Du plus récent au plus ancien",
+            "lowToHigh": "Budget : Du plus bas au plus élevé",
+            "highToLow": "Budget : Du plus élevé au plus bas",
+            "opensourceProposals": "Propositions open source",
+            "nonOpensourceProposals": "Propositions non open source",
+            "complete": "Terminé",
+            "inProgress": "En cours",
+            "unfunded": "Non financé",
+            "overBudget": "Dépassement budgétaire",
+            "notApproved": "Non approuvé",
+            "funded": "Financé",
+            "fullyPaid": "Totalement payé",
+            "selectStatus": "Sélectionner le statut",
+            "budget": "Budget",
+            "filterValues": "Filtres de valeurs",
+            "impactProposal": "Propositions d'impact",
+            "womenProposals": "Propositions de femmes",
+            "ideafestProposals": "Propositions les plus idéales",
+            "quickPitches": "Présentations rapides",
+            "allProposals": "Toutes les propositions",
+            "noResults": "Aucun résultat trouvé.",
+            "typeMore": "Essayez de saisir plus de caractères.",
+            "votesCastLowToHigh": "Votes exprimés : Du plus bas au plus haut",
+            "votesCastHighToLow": "Votes exprimés : Du plus haut au plus bas",
+            "budgetHighToLow": "Budget : Du plus élevé au plus bas",
+            "budgetLowToHigh": "Budget : Du plus bas au plus élevé",
+            "communityRankingHighToLow": "Classement communautaire : Du plus haut au plus bas",
+            "communityRankingLowToHigh": "Classement communautaire : Du plus bas au plus haut",
+            "paymentsReceivedHighToLow": "Paiements reçus : Du plus élevé au plus bas",
+            "projectLengthHighToLow": "Durée du projet : Du plus long au plus court",
+            "projectLengthLowToHigh": "Durée du projet : Du plus court au plus long",
+            "paymentsReceivedLowToHigh": "Paiements reçus : Du plus bas au plus élevé",
+            "yesVotesHighToLow": "Votes oui : Du plus haut au plus bas",
+            "yesVotesLowToHigh": "Votes oui : Du plus bas au plus haut",
+            "noVotesLowToHigh": "Votes non : Du plus bas au plus élevé",
+            "noVotesHighToLow": "Votes non : Du plus élevé au plus bas",
+            "ratingHighToLow": "Évaluation : Du plus élevé au plus bas",
+            "ratingLowToHigh": "Évaluation : Du plus bas au plus élevé",
+            "impactAlignmentHighToLow": "Alignement de l'impact : Du plus élevé au plus bas",
+            "impactAlignmentLowToHigh": "Alignement de l'impact : Du plus bas au plus élevé",
+            "feasibilityHighToLow": "Faisabilité : Du plus élevé au plus bas",
+            "feasibilityLowToHigh": "Faisabilité : Du plus bas au plus élevé",
+            "valueForMoneyHighToLow": "Valeur pour l'argent : Du plus élevé au plus bas",
+            "valueForMoneyLowToHigh": "Valeur pour l'argent : Du plus bas au plus élevé"
         }
     },
     "posts": {
@@ -88,6 +261,7 @@
             "search": "Icône de recherche",
             "darkMode": "Icône de mode sombre",
             "folder": "Icône de dossier",
+            "filter": "Icône de filtre",
             "home": "Icône d'accueil",
             "lightMode": "Icône de mode clair",
             "logOut": "Icône de déconnexion",
@@ -96,42 +270,24 @@
             "note": "Icône de note",
             "notificationBox": "Icône de boîte de notification",
             "people": "Icône de personnes",
-            "voltaireMode": "Icône de mode Voltaire"
+            "voltaireMode": "Icône de mode Voltaire",
+            "link": "Icône de lien",
+            "listBullet": "Icône de liste à puces",
+            "verticalColumn": "Icône de colonne verticale",
+            "videoCamera": "Icône de caméra vidéo",
+            "playerPause": "Pause de Icône",
+            "playerPlay": "Lecture de Icône",
+            "playerRewindLeft": "Icône de Rembobiner à gauche",
+            "playerRewindRight": "Icône de Rembobiner à droite",
+            "playerSkipBack": "Icône de Revenir en arrière",
+            "playerSkipForward": "Icône de Avancer",
+            "playerStop": "Icône de Arrêter"
         }
     },
-    "footer": {
-        "links": {
-            "proposals": "Propositions",
-            "allProposals": "Toutes les propositions",
-            "proposalReviews": "Évaluations des propositions",
-            "monthlyReports": "Rapports Mensuels",
-            "funds": "Fonds",
-
-            "people": "Personnes",
-            "proposers": "Proposeurs",
-            "groups": "Groupes",
-            "communities": "Communautés",
-            "dReps": "dReps",
-
-            "data": "Données",
-            "numbers": "Chiffres",
-            "ccv4Votes": "Votes CCV4",
-            "catalystAPI": "API Catalyst",
-            "proposalCSVs": "CSVs de propositions",
-
-            "social": "Social",
-            "twitter": "Twitter",
-            "linkedIn": "LinkedIn",
-            "facebook": "Facebook",
-            "github": "Github",
-
-            "legal": "Légal",
-            "terms": "Conditions Générales",
-            "privacy": "Confidentialité",
-            "cookies": "Cookies",
-            "licenses": "Licences",
-
-            "copyright": "© 2024 Explorateur Catalyst. Tous droits réservés."
-        }
+    "users": {
+        "editProfile": "modifier le profil",
+        "viewProfile": "Afficher le profil complet",
+        "viewIdeascale": "Afficher et contacter l'utilisateur sur Ideascale",
+        "profile": "profil"
     }
 }

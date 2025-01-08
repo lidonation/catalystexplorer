@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\Enums;
 
@@ -16,5 +18,5 @@ use Spatie\Enum\Laravel\Enum;
  */
 final class MetricCountBy extends Enum
 {
-    USE HasValues;
+    use HasValues;
 }

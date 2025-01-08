@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Database\Seeders;
 
@@ -13,6 +15,6 @@ class ReviewerSeeder extends Seeder
     public function run(): void
     {
         Reviewer::factory(2)
-        ->create();
+            ->create();
     }
 }

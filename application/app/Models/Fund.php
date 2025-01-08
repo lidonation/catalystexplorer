@@ -1,19 +1,22 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\Models;
 
-use App\Enums\CatalystCurrencySymbols;
-use App\Casts\DateFormatCast;
 use App\Enums\CatalystCurrencies;
+use App\Enums\CatalystCurrencySymbols;
 use App\Models\Scopes\OrderByLaunchedDateScope;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Query\Builder;
+use Spatie\Image\Enums\CropPosition;
+use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
-class Fund extends Model
+class Fund extends Model implements HasMedia
 {
     use InteractsWithMedia,
         SoftDeletes;
@@ -33,7 +36,7 @@ class Fund extends Model
     public function currencySymbol(): Attribute
     {
         return Attribute::make(
-            get: fn() => match ($this->currency) {
+            get: fn () => match ($this->currency) {
                 CatalystCurrencies::ADA()->value => CatalystCurrencySymbols::ADA,
                 default => CatalystCurrencySymbols::USD
             }
@@ -43,7 +46,7 @@ class Fund extends Model
     public function label(): Attribute
     {
         return Attribute::make(
-            get: function() {
+            get: function () {
                 if (isset($this->attributes['label'])) {
                     return $this->attributes['label'];
                 }
@@ -79,7 +82,7 @@ class Fund extends Model
         return 'slug';
     }
 
-    public function registerMediaConversions(Media|null $media = null): void
+    public function registerMediaConversions(?Media $media = null): void
     {
         $this->addMediaConversion('thumbnail')
             ->width(640)
@@ -104,11 +107,11 @@ class Fund extends Model
     {
         return [
             'meta_info' => 'array',
-            'updated_at' => DateFormatCast::class,
-            'created_at' => DateFormatCast::class,
-            'launched_at' => DateFormatCast::class,
-            'awarded_at' => DateFormatCast::class,
-            'assessment_started_at' => DateFormatCast::class,
+            'updated_at' => 'datetime:Y-m-d',
+            'created_at' => 'datetime:Y-m-d',
+            'launched_at' => 'datetime:Y-m-d',
+            'awarded_at' => 'datetime:Y-m-d',
+            'assessment_started_at' => 'datetime:Y-m-d',
             'amount' => 'integer',
         ];
     }

@@ -9,6 +9,12 @@ init:
 	cp application/.env.example application/.env
 
 	docker run --rm --interactive --tty \
+		--volume ${PWD}:/app \
+		--workdir /app \
+		--user root \
+		node:18-alpine yarn install --ignore-engine
+
+	docker run --rm --interactive --tty \
 		--volume ${PWD}/application:/app \
 		--workdir /app \
 		--user root \
@@ -25,6 +31,7 @@ init:
 	sleep 10
 	$(sail) artisan key:generate
 	make migrate
+	$(sail) yarn husky init
 
 .PHONY: artisan
 artisan:
@@ -51,6 +58,16 @@ db-seed:
 .PHONY: down
 down:
 	$(sail) down
+
+.PHONY: devtools-install
+devtools-install:
+	docker run --rm --interactive --tty \
+		--volume ${PWD}:/app \
+		--workdir /app \
+		--user root \
+		node:18-alpine yarn install --ignore-engine
+		$(sail) up -d
+		npx husky init
 
 .PHONY: frontend-install
 frontend-install:
@@ -105,6 +122,10 @@ rm:
 sh:
 	$(sail) shell $(filter-out $@,$(MAKECMDGOALS))
 
+.PHONY: commitlint
+commitlint:
+	npx --no -- commitlint --edit $1
+
 .PHONY: status
 status:
 	docker compose ps
@@ -128,3 +149,41 @@ test-backend:
 	docker-compose -f docker-compose.testing.yml exec catalystexplorer.com vendor/bin/pest --group=arch && \
 	sleep 3 && \
  	docker-compose -f docker-compose.testing.yml down --volumes
+
+.PHONY: cypress-install
+cypress-install:
+	docker compose run --rm catalystexplorer.cypress.headless install
+
+.PHONY: cypress-run
+cypress-run:
+	docker compose run --rm catalystexplorer.cypress.headless run --project /app
+
+.PHONY: test-e2e
+test-e2e:
+	make watch & \
+	sleep 10 && \
+	make cypress-run
+
+.PHONY: cypress-open-linux
+cypress-open-linux:
+	docker compose run --rm \
+		-e DISPLAY=${DISPLAY} \
+		-v /tmp/.X11-unix:/tmp/.X11-unix \
+		catalystexplorer.cypress.gui open --project /app
+
+.PHONY: cypress-open-mac
+cypress-open-mac:
+	@echo "📱 Starting Cypress with Electron..."
+	cd application && ELECTRON_NO_ATTACH_CONSOLE=true yarn cypress open
+
+.PHONY: cypress-open-windows
+cypress-open-windows:
+	docker compose run --rm catalystexplorer.cypress.gui open --project /app --browser chrome
+
+.PHONY: cypress-clean
+cypress-clean:
+	@echo "🧹 Cleaning Cypress cache..."
+	rm -rf application/cypress/videos
+	rm -rf application/cypress/screenshots
+	rm -rf application/cypress/downloads
+	@echo "✨ Cypress cache cleaned"

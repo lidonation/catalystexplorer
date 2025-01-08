@@ -18,7 +18,7 @@ return [
     'super_admin' => [
         'name' => env('SUPER_ADMIN_NAME', 'Explorer Dora'),
         'email' => env('SUPER_ADMIN_EMAIL', 'admin@catalystexplorer.com'),
-        'password' => env('SUPER_ADMIN_PASSWORD', 'ofnXIFbZ0JOuGBqx-'),
+        'password' => env('SUPER_ADMIN_PASSWORD', 'ofnXIFbZ0JOuGBqx'),
     ],
 
     /*
@@ -61,6 +61,10 @@ return [
     'url' => env('APP_URL', 'http://localhost'),
 
     'frontend_url' => env('APP_URL', 'http://localhost'),
+
+    'asset_url' => env('APP_URL', 'http://localhost'),
+
+    'hosts' => env('APP_HOSTS', 'catalystexplorer.com'),
 
     /*
     |--------------------------------------------------------------------------

@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Database\Factories;
 
@@ -17,7 +19,7 @@ class ReviewerFactory extends Factory
     public function definition(): array
     {
         return [
-            "reviewer_id" => "z_assessor_{$this->faker->numberBetween(1, 1000)}"
+            'reviewer_id' => "z_assessor_{$this->faker->numberBetween(1, 1000)}",
         ];
     }
 }

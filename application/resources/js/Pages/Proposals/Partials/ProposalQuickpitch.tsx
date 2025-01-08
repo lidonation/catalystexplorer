@@ -26,10 +26,10 @@ export default function ProposalQuickpitch({ quickpitch }: PageProps<ProposalQui
 
     const processVideoUrl = (url?: string | null): VideoData => {
         if (!url) {
-            return { 
-                id: null, 
-                provider: 'html5', 
-                error: t('proposalQuickpitch.errors.noUrl') 
+            return {
+                id: null,
+                provider: 'html5',
+                error: t('proposals.errors.noUrl')
             };
         }
 
@@ -42,7 +42,7 @@ export default function ProposalQuickpitch({ quickpitch }: PageProps<ProposalQui
                     return {
                         id: null,
                         provider: 'youtube',
-                        error: t('proposalQuickpitch.errors.invalidYoutubeFormat')
+                        error: t('proposals.errors.invalidYoutubeFormat')
                     };
                 }
                 return { id: youtubeMatch[1], provider: 'youtube', error: null };
@@ -54,7 +54,7 @@ export default function ProposalQuickpitch({ quickpitch }: PageProps<ProposalQui
                     return {
                         id: null,
                         provider: 'vimeo',
-                        error: t('proposalQuickpitch.errors.invalidVimeoFormat')
+                        error: t('proposals.errors.invalidVimeoFormat')
                     };
                 }
                 return { id: vimeoMatch[1], provider: 'vimeo', error: null };
@@ -63,13 +63,13 @@ export default function ProposalQuickpitch({ quickpitch }: PageProps<ProposalQui
             return {
                 id: null,
                 provider: 'html5',
-                error: t('proposalQuickpitch.errors.invalidUrlFormat')
+                error: t('proposals.errors.invalidUrlFormat')
             };
         } catch (e) {
             return {
                 id: null,
                 provider: 'html5',
-                error: t('proposalQuickpitch.errors.invalidUrl')
+                error: t('proposals.errors.invalidUrl')
             };
         }
     };
@@ -82,7 +82,7 @@ export default function ProposalQuickpitch({ quickpitch }: PageProps<ProposalQui
     return (
         <section aria-labelledby="video-heading" className="h-full">
             <h2 id="video-heading" className="sr-only">
-                {t('proposalQuickpitch.projectVideo')}
+                {t('proposals.projectVideo')}
             </h2>
             <div className="relative h-full w-full overflow-hidden rounded-2xl">
                 {videoData.error ? (
@@ -93,7 +93,7 @@ export default function ProposalQuickpitch({ quickpitch }: PageProps<ProposalQui
                             </p>
                             {quickpitch && (
                                 <p className="text-sm break-all">
-                                    {t('proposalQuickpitch.providedUrl')}: {quickpitch}
+                                    {t('proposals.providedUrl')}: {quickpitch}
                                 </p>
                             )}
                         </div>

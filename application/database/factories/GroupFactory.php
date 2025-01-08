@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Database\Factories;
 
@@ -13,7 +15,7 @@ class GroupFactory extends Factory
 {
     protected $model = Group::class;
 
-    public function definition()
+    public function definition(): array
     {
         return [
             'user_id' => User::factory(),

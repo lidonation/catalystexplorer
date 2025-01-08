@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\Providers;
 
@@ -9,15 +11,13 @@ use Illuminate\Support\ServiceProvider;
 
 class AuthServiceProvider extends ServiceProvider
 {
-
     /**
      * Register services.
      */
     public function register(): void
     {
-       //
+        //
     }
-
 
     /**
      * Register any authentication / authorization services.
@@ -39,10 +39,10 @@ class AuthServiceProvider extends ServiceProvider
             ]);
         });
 
-//        Pulse::user(fn ($user) => [
-//            'name' => $user->name,
-//            'extra' => $user->email,
-//            'avatar' => $user->avatar_url,
-//        ]);
+        //        Pulse::user(fn ($user) => [
+        //            'name' => $user->name,
+        //            'extra' => $user->email,
+        //            'avatar' => $user->avatar_url,
+        //        ]);
     }
 }

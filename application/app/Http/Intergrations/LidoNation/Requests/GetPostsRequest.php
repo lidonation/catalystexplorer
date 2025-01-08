@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\Http\Intergrations\LidoNation\Requests;
 
@@ -11,7 +13,7 @@ use Saloon\PaginationPlugin\Contracts\Paginatable;
 use Saloon\Traits\Body\HasJsonBody;
 use Saloon\Traits\Request\HasConnector;
 
-class GetPostsRequest extends Request implements Paginatable, HasBody
+class GetPostsRequest extends Request implements HasBody, Paginatable
 {
     use HasConnector, HasJsonBody;
 

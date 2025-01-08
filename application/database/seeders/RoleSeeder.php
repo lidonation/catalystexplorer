@@ -1,11 +1,12 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Database\Seeders;
 
 use App\Enums\RoleEnum;
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Role;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
 class RoleSeeder extends Seeder
 {
@@ -14,9 +15,9 @@ class RoleSeeder extends Seeder
      */
     public function run(): void
     {
-        collect(array_values(RoleEnum::toArray()))
+        collect(array_values(RoleEnum::cases()))
             ->each(
-                fn($role) => Role::findOrCreate($role)
+                fn ($role) => Role::findOrCreate((string) $role)
             );
     }
 }

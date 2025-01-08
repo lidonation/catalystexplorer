@@ -35,7 +35,7 @@ services:
       - catalystexplorer-net
     depends_on:
       - catalystexplorer.db
-      - catalystexplorer.search
+      - catalystexplorer-search
       - catalystexplorer.redis
 
   catalystexplorer.queue:
@@ -53,7 +53,7 @@ services:
       DB_CONNECTION: pgsql
       MEDIA_DISK: public
       MEILISEARCH_KEY: v8hlDV0yMAHHlIurYupj
-      MEILISEARCH_HOST: "http://catalystexplorer.search:7700"
+      MEILISEARCH_HOST: "http://catalystexplorer-search:7700"
       PHP_OPCACHE_ENABLE: 0
       PHP_OPCACHE_VALIDATE_TIMESTAMPS: 1
       PHP_MEMORY_LIMIT: 2048M
@@ -111,9 +111,9 @@ services:
       timeout: 5s
 
   # meilisearch
-  catalystexplorer.search:
+  catalystexplorer-search:
     image: getmeili/meilisearch:v1.11.3
-    container_name: catalystexplorer.search
+    container_name: catalystexplorer-search
     ports:
       - '${FORWARD_MEILISEARCH_PORT:-7700}:7700'
     environment:
@@ -151,6 +151,32 @@ services:
         - ping
       retries: 3
       timeout: 5s
+  
+  catalystexplorer.cypress.gui:
+    image: cypress/included:10.3.0
+    container_name: catalystexplorer.cypress.gui
+    depends_on:
+      - catalystexplorer.com
+    environment:
+      - CYPRESS_baseUrl=http://catalystexplorer.com:8000
+      - ELECTRON_NO_ATTACH_CONSOLE=true
+      - NODE_OPTIONS=--no-sandbox
+    volumes:
+      - ./application:/app
+    networks:
+      - catalystexplorer-net
+  
+  catalystexplorer.cypress.headless:
+    image: cypress/included:10.3.0
+    container_name: catalystexplorer.cypress.headless
+    environment:
+      - CI=true
+      - CYPRESS_baseUrl=http://catalystexplorer.com:8000
+    volumes:
+      - ./application:/app
+    networks:
+      - catalystexplorer-net
+
 networks:
   catalystexplorer-net:
     driver: bridge

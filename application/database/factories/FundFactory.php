@@ -1,29 +1,26 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Database\Factories;
 
-use Illuminate\Database\Eloquent\Factories\Factory;
+use App\Enums\CatalystFunds;
 use App\Models\Fund;
 use App\Models\User;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
 class FundFactory extends Factory
 {
     /**
-     *
      * @var string
      */
     protected $model = Fund::class;
 
-    /**
-     *
-     * @return array
-     */
-    public function definition()
+    public function definition(): array
     {
         return [
             'user_id' => User::factory(),
-            'title' => $this->faker->words(4, true),
+            'title' => 'Fund '.$this->faker->randomElement(CatalystFunds::toValues()),
             'meta_title' => $this->faker->words(5, true),
             'slug' => $this->faker->slug,
             'excerpt' => $this->faker->text(150),

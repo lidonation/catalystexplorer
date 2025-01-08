@@ -1,32 +1,31 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\Models;
 
-use App\Models\Fund;
-use App\Models\Group;
-use App\Models\Model;
-use App\Models\Campaign;
-use App\Models\Community;
-use App\Traits\HasAuthor;
 use App\Casts\DateFormatCast;
-use App\Traits\HasTaxonomies;
-use Laravel\Scout\Searchable;
-use Illuminate\Support\Carbon;
-use App\Traits\HasTranslations;
-use App\Models\IdeascaleProfile;
 use App\Enums\CatalystCurrencies;
-use Illuminate\Support\Facades\Artisan;
+use App\Traits\HasAuthor;
+use App\Traits\HasMetaData;
+use App\Traits\HasTaxonomies;
+use App\Traits\HasTranslations;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Artisan;
+use Laravel\Scout\Searchable;
 
 class Proposal extends Model
 {
-    use HasTranslations, HasAuthor,
-        Searchable,
-        HasTaxonomies;
-    
+    use HasAuthor,
+        HasMetaData,
+        HasTaxonomies,
+        HasTranslations,
+        Searchable;
+
     public array $translatable = [
         'title',
         'meta_title',
@@ -36,13 +35,15 @@ class Proposal extends Model
         'content',
     ];
 
-    public $translatableExcludedFromGeneration = [
+    public array $translatableExcludedFromGeneration = [
         'meta_title',
     ];
 
-
     protected $guarded = ['user_id', 'created_at', 'funded_at'];
 
+    protected $appends = [
+        'link',
+    ];
 
     public static function getFilterableAttributes(): array
     {
@@ -89,6 +90,7 @@ class Proposal extends Model
             'amount_awarded_USD',
             'completed_amount_paid_USD',
             'completed_amount_paid_ADA',
+            'campaign_id',
         ];
     }
 
@@ -152,7 +154,7 @@ class Proposal extends Model
 
     public static function runCustomIndex(): void
     {
-        Artisan::call('cx:index App\\\\Models\\\\Proposal cx__proposals');
+        Artisan::call('cx:create-search-index App\\\\Models\\\\Proposal cx_proposals');
     }
 
     public function scopeFilter($query, array $filters)
@@ -168,13 +170,13 @@ class Proposal extends Model
         );
 
         $query->when(
-            $filters['challenge_id'] ?? false,
-            fn (Builder $query, $challenge_id) => $query->where('campaign_id', $challenge_id)
+            $filters['campaign_id'] ?? false,
+            fn (Builder $query, $campaign_id) => $query->where('campaign_id', $campaign_id)
         );
 
         $query->when(
             $filters['fund_id'] ?? false,
-            fn (Builder $query, $fund_id) => $query->whereRelation('fund', 'id', '=', $fund_id)
+            fn (Builder $query, $fund_id) => $query->whereRelation('fund_id', '=', $fund_id)
         );
     }
 
@@ -182,6 +184,66 @@ class Proposal extends Model
     {
         return Attribute::make(
             get: fn ($currency) => $currency ?? $this->campaign?->currency ?? $this->fund?->currency ?? CatalystCurrencies::USD()->value,
+        );
+    }
+
+    public function quickPitchId(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => $this->quickpitch ? collect(
+                explode(
+                    '/',
+                    $this->quickpitch
+                )
+            )?->last() : null
+        );
+    }
+
+    public function isImpactProposal(): Attribute
+    {
+        return Attribute::make(
+            get: function () {
+                if ($this->meta_info?->impact_proposal) {
+                    return boolval($this->meta_info?->impact_proposal);
+                }
+
+                return false;
+            }
+        );
+    }
+
+    public function isWomanProposal(): Attribute
+    {
+        return Attribute::make(
+            get: function () {
+                if ($this->meta_info?->woman_proposal) {
+                    return boolval($this->meta_info?->woman_proposal);
+                }
+
+                return false;
+            }
+        );
+    }
+
+    public function isIdeafestProposal(): Attribute
+    {
+        return Attribute::make(
+            get: function () {
+                if ($this->meta_info?->ideafest_proposal) {
+                    return boolval($this->meta_info?->ideafest_proposal);
+                }
+
+                return false;
+            }
+        );
+    }
+
+    public function link(): Attribute
+    {
+        return Attribute::make(
+            get: function () {
+                return "https://www.lidonation.com/en/proposals/{$this->slug}";
+            }
         );
     }
 
@@ -218,18 +280,18 @@ class Proposal extends Model
 
         return array_merge($array, [
             'abstain_votes_count' => $this->abstain_votes_count,
-//            'alignment_score' => $this->meta_info->alignment_score ?? $this->getDiscussionRankingScore('Impact Alignment') ?? 0,
+            //            'alignment_score' => $this->meta_info->alignment_score ?? $this->getDiscussionRankingScore('Impact Alignment') ?? 0,
             "amount_awarded_{$this->currency}" => (bool) $this->funded_at ? ($this->amount_requested ? intval($this->amount_requested) : 0) : null,
             "amount_received_{$this->currency}" => $this->amount_received ? intval($this->amount_received) : 0,
             'amount_received' => $this->amount_received ? intval($this->amount_received) : 0,
             "amount_requested_{$this->currency}" => $this->amount_requested ? intval($this->amount_requested) : 0,
             'amount_requested' => $this->amount_requested ? intval($this->amount_requested) : 0,
 
-//            'auditability_score' => $this->meta_info->auditability_score ?? $this->getDiscussionRankingScore('Value for money') ?? 0,
+            //            'auditability_score' => $this->meta_info->auditability_score ?? $this->getDiscussionRankingScore('Value for money') ?? 0,
 
             'ca_rating' => intval($this->ratings_average) ?? 0.00,
             'campaign' => [
-                'id' => $this->campaign?->id,
+                'id' => $this->campaign_id,
                 'title' => $this->campaign?->title,
                 'amount' => $this->campaign?->amount ? intval($this->campaign?->amount) : null,
                 'label' => $this->campaign?->label,
@@ -242,10 +304,10 @@ class Proposal extends Model
             'completed' => $this->status === 'complete' ? 1 : 0,
             'currency' => $this->currency,
 
-//            'feasibility_score' => $this->meta_info->feasibility_score ?? $this->getDiscussionRankingScore('Feasibility') ?? 0,
+            //            'feasibility_score' => $this->meta_info->feasibility_score ?? $this->getDiscussionRankingScore('Feasibility') ?? 0,
             'funded' => (bool) $this->funded_at ? 1 : 0,
             'fund' => [
-                'id' => $this->fund?->id,
+                'id' => $this->fund_id,
                 'title' => $this->fund?->title,
                 'amount' => $this->fund?->amount ? intval($this->fund?->amount) : null,
                 'label' => $this->fund?->label,
@@ -265,10 +327,8 @@ class Proposal extends Model
             'over_budget' => $this->status === 'over_budget' ? 1 : 0,
 
             'paid' => ($this->amount_received > 0) && ($this->amount_received == $this->amount_requested ? 1 : 0),
-            'project_length' => intval($this->meta_info?->project_length) ?? 0,
-            'projectcatalyst_io_link' => $this->meta_info?->projectcatalyst_io_url ?? null,
 
-            'quickpitch' => $this->quick_pitch_id ?? null,
+            'quickpitch' => $this->quickpitch ?? null,
             'quickpitch_length' => $this->quickpitch_length ?? null,
 
             'ranking_total' => intval($this->ranking_total) ?? 0,
@@ -291,9 +351,8 @@ class Proposal extends Model
                 ];
             }),
 
-            'vote_casts' => intval($this->meta_info?->vote_casts) ?? 0,
-
             'woman_proposal' => $this->is_woman_proposal ? 1 : 0,
+            'link' => $this->link,
         ]);
     }
 
@@ -340,7 +399,7 @@ class Proposal extends Model
 
     public function users(): BelongsToMany
     {
-        return $this->belongsToMany(IdeascaleProfile::class,'ideascale_profile_has_proposal', 'proposal_id', 'ideascale_profile_id');
+        return $this->belongsToMany(IdeascaleProfile::class, 'ideascale_profile_has_proposal', 'proposal_id', 'ideascale_profile_id');
     }
 
     /**
@@ -363,7 +422,7 @@ class Proposal extends Model
             'offchain_metas' => 'array',
             'opensource' => 'boolean',
             'updated_at' => DateFormatCast::class,
-            'meta_data'=> 'array'
+            'meta_data' => 'array',
         ];
     }
 }

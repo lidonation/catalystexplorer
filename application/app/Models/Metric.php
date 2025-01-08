@@ -1,7 +1,8 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\Models;
-
 
 use App\Casts\DateFormatCast;
 use App\Enums\MetricCountBy;
@@ -13,7 +14,6 @@ use Illuminate\Support\Facades\DB;
 
 class Metric extends Model
 {
-
     protected function casts(): array
     {
         return [
@@ -55,14 +55,14 @@ class Metric extends Model
                 $aggregate = $this->query?->value;
                 $field = $this->field;
 
-                if (!$modelInstance instanceof Proposal) {
+                if (! $modelInstance instanceof Proposal) {
                     return null;
                 }
 
                 $results = $builder->select('fund_id', DB::raw("{$aggregate}({$table}.{$field}) as {$aggregate}"))
-                    ->leftJoin('funds', fn($join) => $join->on('funds.id', '=', 'proposals.fund_id'))
+                    ->leftJoin('funds', fn ($join) => $join->on('funds.id', '=', 'proposals.fund_id'))
                     ->with([
-                        'fund' => fn($q) => $q->orderBy('launched_at', 'asc')
+                        'fund' => fn ($q) => $q->orderBy('launched_at', 'asc'),
                     ])
                     ->groupBy('fund_id', 'funds.launched_at')
                     ->orderBy('funds.launched_at', 'asc')
@@ -70,14 +70,14 @@ class Metric extends Model
                     ->map(function ($row) use ($aggregate) {
                         return [
                             'x' => $row->fund->title,
-                            'y' => $row->{$aggregate}
+                            'y' => $row->{$aggregate},
                         ];
                     });
 
                 return [
                     'id' => 'Proposals Count',
                     'color' => $this->color,
-                    'data' => $results
+                    'data' => $results,
                 ];
             }
         );

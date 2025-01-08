@@ -1,12 +1,12 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 use Spatie\LaravelData\Data;
 use Spatie\TypeScriptTransformer\Attributes\Optional as TypeScriptOptional;
 
-
 final class DiscussionData extends Data
 {
-
     public function __construct(
         #[TypeScriptOptional]
         public ?int $user_id,
@@ -22,7 +22,6 @@ final class DiscussionData extends Data
         public string $status,
 
         public int $order,
-
 
     ) {}
 }

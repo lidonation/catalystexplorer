@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\Enums;
 
@@ -10,5 +12,8 @@ use Spatie\Enum\Laravel\Enum;
  */
 final class CatalystCurrencies extends Enum
 {
-    use Traits\HasValues;
+    public static function values(): \Closure
+    {
+        return fn (string $name): string|int => $name;
+    }
 }

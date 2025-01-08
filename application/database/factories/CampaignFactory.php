@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Factories;
 
 use App\Enums\CatalystCurrencies;
@@ -23,16 +25,16 @@ class CampaignFactory extends Factory
     {
         return [
             'user_id' => User::factory(),
-            'fund_id' => Fund::factory(),
+            'fund_id' => Fund::inRandomOrder()->first(),
             'title' => $this->faker->sentence(4),
             'meta_title' => $this->faker->sentence(5),
-            'slug' => fn(array $attributes) => Str::slug($attributes['title']),
+            'slug' => fn (array $attributes) => Str::slug($attributes['title']),
             'excerpt' => $this->faker->optional()->text(200),
             'comment_prompt' => $this->faker->optional()->sentence(),
             'content' => $this->faker->optional()->paragraphs(3, true),
             'amount' => $this->faker->numberBetween(50000000, 1000000000),
             'status' => $this->faker->optional()->randomElement([
-                'pending', 'unfunded', 'funded', 'complete', 'retired', 'startup', 'growth', 'expansion', 'matured'
+                'pending', 'unfunded', 'funded', 'complete', 'retired', 'startup', 'growth', 'expansion', 'matured',
             ]),
             'launched_at' => $this->faker->optional()->dateTimeBetween('-2 years', 'now'),
             'awarded_at' => $this->faker->optional()->dateTimeBetween('-2 years', 'now'),

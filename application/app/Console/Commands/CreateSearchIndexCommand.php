@@ -1,7 +1,10 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\Console\Commands;
 
+use Exception;
 use Illuminate\Console\Command;
 use Laravel\Scout\EngineManager;
 
@@ -22,7 +25,7 @@ class CreateSearchIndexCommand extends Command
      *
      * @var string
      */
-    protected $description = 'Creat Search indexes.';
+    protected $description = 'Create Search indexes.';
 
     /**
      * Execute the console command.

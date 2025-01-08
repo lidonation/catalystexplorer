@@ -4,9 +4,8 @@ declare(strict_types=1);
 
 namespace App\Policies;
 
-use App\Models\User;
-use App\Enums\PermissionEnum;
 use App\Models\ReviewModeration;
+use App\Models\User;
 
 class ReviewModerationPolicy extends AppPolicy
 {
