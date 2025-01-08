@@ -22,7 +22,7 @@ const FundsBarChart: React.FC<FundsBarChartProps> = ({
     const { t } = useTranslation();
     const [filters, setFilters] = useState([]);
     return (
-        <div className="rounded-md bg-background lg:p-16 p-4 shadow-sm">
+        <div className="rounded-md bg-background p-4 shadow-sm lg:p-16">
             <div className="flex w-full justify-between">
                 <div>
                     <h6 className="text-2 lg:title-4 font-bold">
@@ -66,18 +66,21 @@ const FundsBarChart: React.FC<FundsBarChartProps> = ({
                 </div>
             </div>
             {/* flex justify-end gap-8 mt-4 */}
-            <div className='flex justify-end px-12 mt-4'>
+            <div className="mt-4 flex justify-end px-12">
                 <Selector
                     isMultiselect={true}
                     options={[
-                        { value: 'total_proposals', label: 'Total Proposals' },
+                        {
+                            value: t('funds.totalProposals'),
+                            label: 'Total Proposals',
+                        },
                         {
                             value: 'funded_proposals',
-                            label: 'Funded Proposals',
+                            label: t('funds.fundedProposals'),
                         },
                         {
                             value: 'completed_proposals',
-                            label: 'Completed Proposals',
+                            label: t('funds.completedProposals'),
                         },
                     ]}
                     setSelectedItems={setFilters}
@@ -89,9 +92,9 @@ const FundsBarChart: React.FC<FundsBarChartProps> = ({
                 <ResponsiveBar
                     data={funds}
                     keys={[
-                        'Total Proposals',
-                        'Funded Proposals',
-                        'Completed Proposals',
+                        t('funds.totalProposals'),
+                        t('funds.fundedProposals'),
+                        t('funds.completedProposals'),
                     ]}
                     indexBy="fund"
                     margin={{ top: 50, right: 50, bottom: 100, left: 60 }}
@@ -102,7 +105,7 @@ const FundsBarChart: React.FC<FundsBarChartProps> = ({
                         tickSize: 5,
                         tickPadding: 5,
                         tickRotation: window.innerWidth < 600 ? 45 : 0,
-                        legend: 'Fund',
+                        legend: t('funds.fund'),
                         legendPosition: 'middle',
                         legendOffset: window.innerWidth < 600 ? 60 : 40,
                     }}
@@ -110,7 +113,7 @@ const FundsBarChart: React.FC<FundsBarChartProps> = ({
                         tickSize: 5,
                         tickPadding: 5,
                         tickRotation: 0,
-                        legend: 'Total Proposals',
+                        legend: t('funds.totalProposals'),
                         legendPosition: 'middle',
                         legendOffset: -50,
                     }}
@@ -134,7 +137,7 @@ const FundsBarChart: React.FC<FundsBarChartProps> = ({
                             symbolShape: (props) => (
                                 <rect
                                     x={window.innerWidth < 600 ? 5 : -10}
-                                    y={window.innerWidth < 600 ? -6 : 2 }
+                                    y={window.innerWidth < 600 ? -6 : 2}
                                     rx={6}
                                     ry={6}
                                     width={window.innerWidth < 600 ? 10 : 30}
