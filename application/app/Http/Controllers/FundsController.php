@@ -7,10 +7,9 @@ namespace App\Http\Controllers;
 use App\Models\Fund;
 use Inertia\Inertia;
 use Inertia\Response;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Http\Request;
-use Illuminate\Support\Collection;
 use App\Repositories\FundRepository;
+
 class FundsController extends Controller
 {
 
