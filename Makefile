@@ -66,6 +66,8 @@ devtools-install:
 		--workdir /app \
 		--user root \
 		node:18-alpine yarn install --ignore-engine
+		$(sail) up -d
+		$(sail) npx husky init
 
 .PHONY: frontend-install
 frontend-install:
