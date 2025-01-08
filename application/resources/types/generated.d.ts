@@ -39,15 +39,15 @@ declare namespace App.DataTransferObjects {
     };
     export type FundData = {
         id: number;
-        hero_img_url: string;
         label: string;
         title: string;
-        totalAllocated: number;
-        totalBudget: number;
-        fundedProjects: number;
-        totalProjects: number;
-        percentageChange: string;
-        projectPercentageChange: number;
+        hero_img_url?: string;
+        totalAllocated?: number;
+        totalBudget?: number;
+        fundedProjects?: number;
+        totalProjects?: number;
+        percentageChange?: string;
+        projectPercentageChange?: number;
         proposals_count?: number;
         meta_title?: string;
         slug?: string;
