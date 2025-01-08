@@ -13,7 +13,6 @@
     "data": "Données",
     "dReps": "DReps",
     "facebook": "Facebook",
-    "funds": "Fonds",
     "getStarted": "Commencer",
     "github": "Github",
     "groups": "Groupes",
@@ -153,7 +152,13 @@
             "coProposalCountHighToLow": "Nombre de propositions co : Du plus élevé au plus bas"
         }
     },
-
+    "funds": {
+        "funds": "Fonds",
+        "pageSubtitle": "Rechercher des fonds par titre, contenu ou auteur et co-auteurs",
+        "totalAllocated": "Total alloué",
+        "lastFund": "dernier fonds",
+        "fundedProjects": "Projets financés"
+    },
     "proposals": {
         "allProposals": "Toutes les propositions",
         "CSVs": "CSVs de propositions",
@@ -281,7 +286,9 @@
             "playerRewindRight": "Icône de Rembobiner à droite",
             "playerSkipBack": "Icône de Revenir en arrière",
             "playerSkipForward": "Icône de Avancer",
-            "playerStop": "Icône de Arrêter"
+            "playerStop": "Icône de Arrêter",
+            "arrowTrendingUp": "Icône de flèche tendance à la hausse",
+            "arrowTrendingDown": "Icône de flèche tendance à la baisse"
         }
     },
     "users": {
