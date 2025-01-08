@@ -43,12 +43,6 @@ spec:
   # Rules originally copied from runbooks project, but applicable to all
   # semantic releases
   rules:
-    # Publishing only happens on gitlab.com, the tag
-    # will be created on gitlab.com, mirrored to ops,
-    # and the image will be built in both locations
-    - if: '$CI_API_V4_URL == "https://ops.gitlab.net/api/v4"'
-      when: never
-
     # Parent pipelines are used for testing, when COMMON_CI_TASKS_REF is set
     - if: '$CI_PIPELINE_SOURCE == "parent_pipeline" && $COMMON_CI_TASKS_REF'
 
@@ -95,3 +89,25 @@ semantic_release_check:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
       changes:
         - .releaserc.json
+
+sem-release:
+  stage: $[[ inputs.stage ]]
+  needs: []
+  image:
+    name: registry.gitlab.com/gitlab-com/gl-infra/common-ci-tasks-images/semantic-release:latest
+    entrypoint: [""]
+  variables:
+    GITLAB_URL: $CI_SERVER_URL
+  script:
+    - semantic-release
+  after_script: |
+    cat <<-EOD
+    ----------------------------------------------------------
+    Need help? Documentation on the semantic_release CI job can be found at:
+    https://gitlab.com/gitlab-com/gl-infra/common-ci-tasks/-/blob/main/semantic-release.md
+    EOD
+  rules:
+    # Don't run when the pipeline was triggered by a schedule
+    rules:
+      - if: '$CI_COMMIT_BRANCH =~ /^(develop|main|release\/\d+.\d+.\d+)$/'
+        when: always
