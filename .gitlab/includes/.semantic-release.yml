@@ -95,8 +95,3 @@ semantic_release_check:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
       changes:
         - .releaserc.json
-
-include:
-  - local: 'internal/semantic-release/variable.yml'
-    rules:
-      - if: '($SEMANTIC_RELEASE_GITLAB_TOKEN != null || $GITLAB_TOKEN != null)'

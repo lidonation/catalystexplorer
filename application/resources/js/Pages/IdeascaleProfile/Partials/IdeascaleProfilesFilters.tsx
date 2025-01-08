@@ -2,6 +2,12 @@ import { RangePicker } from '@/Components/RangePicker';
 import { useFilterContext } from '@/Context/FiltersContext';  // Import the custom hook
 import { ProposalParamsEnum } from '@/enums/proposal-search-params';
 import { ProposalSearchParams } from '../../../../types/proposal-search-params';
+import {useTranslation} from "react-i18next";
+import {useState} from "react";
+import Selector from "@/Components/Select";
+import {SearchSelect} from "@/Components/SearchSelect";
+import FundingStatusToggle from "@/Pages/IdeascaleProfile/Partials/FundingStatusToggle";
+import IdeascaleProfilesSearchControls from "@/Pages/IdeascaleProfile/Partials/IdeascaleProfileSearchControls";
 
 export default function IdeascaleProfilesFilters() {
     const { t } = useTranslation();
@@ -25,7 +31,7 @@ export default function IdeascaleProfilesFilters() {
                         selected={
                             filters[ProposalParamsEnum.FUNDS] ?? []
                         }
-                        onChange={(value) => 
+                        onChange={(value) =>
                             setFilters(ProposalParamsEnum.FUNDS, value)
                         }
                         placeholder="Select"
@@ -111,6 +117,6 @@ export default function IdeascaleProfilesFilters() {
             <div className='w-full'>
                 <IdeascaleProfilesSearchControls />
             </div>
-        </>
+        </div>
     );
 }
