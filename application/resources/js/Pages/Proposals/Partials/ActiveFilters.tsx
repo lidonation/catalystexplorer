@@ -65,11 +65,14 @@ export default function ActiveFilters() {
         } else {
             newFilters[key] = [];
         }
-        setFilters(newFilters);
+        setFilters(newFilters, 'remove');
     };
 
-    const handleClearFilter = () => setClearFilter(!clearFilter);
-
+    const handleClearFilter = (key: string) => {
+        const newFilters = { ...filters };
+        delete newFilters[key];
+        setFilters(newFilters, 'clear');
+    };
     return (
         <div className="pt-2 flex flex-wrap">
             {Object.entries(selectedFilters).map(([key, values]) => (
