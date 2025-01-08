@@ -71,10 +71,10 @@ export default function ActiveFilters() {
     };
 
     return (
-        <div className="p-3 flex flex-wrap">
+        <div className="p-2 flex flex-wrap">
             {Object.keys(selectedFilters).map((key) => (
                 <div
-                    className="bg-background border border-gray-400 rounded-md flex items-center px-2 py-1 mr-2 mb-2"
+                    className="bg-background border border-gray-400 rounded-md flex items-center px-2 py-1 mr-1 mb-2"
                     key={key}
                 >
                     <div className="font-bold mr-1">{key}:</div>
@@ -84,7 +84,7 @@ export default function ActiveFilters() {
                             : selectedFilters[key]}
                     </div>
                     <button
-                        className="ml-auto text-red"
+                        className="ml-auto"
                         onClick={() => removeFilter(key)}
                     >
                         X
