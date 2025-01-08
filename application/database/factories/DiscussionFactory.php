@@ -2,11 +2,10 @@
 
 namespace Database\Factories;
 
-use App\Models\User;
-use App\Models\Proposal;
 use App\Enums\StatusEnum;
 use App\Models\Discussion;
-use Illuminate\Support\Carbon;
+use App\Models\Proposal;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class DiscussionFactory extends Factory

@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Repositories;
 
-use App\Enums\ProposalSearchParams;
 use App\Models\Proposal;
 use Laravel\Scout\Builder;
 use Meilisearch\Endpoints\Indexes;
@@ -56,6 +55,7 @@ class ProposalRepository extends Repository
                     'status',
                     'website',
                     'type',
+                    'link',
                     //                    'ranking_total',
                     'users.id',
                     'users.name',
@@ -65,6 +65,7 @@ class ProposalRepository extends Repository
                     'users.profile_photo_url',
                     'fund.id',
                     'fund.label',
+                    'fund.title',
                     'fund.amount',
                     'fund.status',
                     'campaign.id',
@@ -94,7 +95,6 @@ class ProposalRepository extends Repository
                     'has_quick_pitch',
                     'ideafest_proposal',
                 ];
-
 
                 //                if ((bool) $this->sortBy && (bool) $this->sortOrder) {
                 //                    $options['sort'] = ["$this->sortBy:$this->sortOrder"];

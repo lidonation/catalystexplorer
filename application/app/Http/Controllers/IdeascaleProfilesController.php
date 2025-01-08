@@ -1,9 +1,15 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\DataTransferObjects\IdeascaleProfileData;
+use App\Enums\IdeascaleProfileSearchParams;
 use App\Repositories\IdeascaleProfileRepository;
 use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Fluent;
 use Inertia\Inertia;
 use Inertia\Response;
 use App\Enums\ProposalSearchParams;
@@ -41,7 +47,71 @@ class IdeascaleProfilesController extends Controller
         $limit = (int) $this->limit;
         $page = (int) $this->currentPage;
         $ideascaleProfiles = app(IdeascaleProfileRepository::class);
-        return $ideascaleProfiles->getQuery()->inRandomOrder()->limit($this->limit)->get();
+
+        $queryResults = $ideascaleProfiles->getQuery()
+            ->inRandomOrder()
+            ->limit($limit)
+            ->get();
+
+        return $this->paginate($queryResults, $ideascaleProfiles->getQuery()->count(), $page, $limit);
+    }
+
+    protected function getProps(Request $request): void
+    {
+        $this->queryParams = $request->validate([
+            IdeascaleProfileSearchParams::QUERY()->value => 'string|nullable',
+            IdeascaleProfileSearchParams::PAGE()->value => 'int|nullable',
+            IdeascaleProfileSearchParams::LIMIT()->value => 'int|nullable',
+            IdeascaleProfileSearchParams::SORT()->value => 'string|nullable',
+        ]);
+    }
+
+    protected function query($returnBuilder = false, $attrs = null, $filters = [])
+    {
+        $page = (int) ($this->queryParams[IdeascaleProfileSearchParams::PAGE()->value] ?? $this->currentPage);
+        $limit = (int) ($this->queryParams[IdeascaleProfileSearchParams::LIMIT()->value] ?? $this->limit);
+        $sort = ($this->queryParams[IdeascaleProfileSearchParams::SORT()->value] ?? null);
+
+        $args = [
+            'filter' => $this->getUserFilters(),
+            'offset' => ($page - 1) * $limit,
+            'limit' => $limit,
+        ];
+
+        if ($sort) {
+            $args['sort'] = [$sort];
+        }
+
+        $proposals = app(IdeascaleProfileRepository::class);
+
+        $builder = $proposals->search(
+            $this->queryParams[IdeascaleProfileSearchParams::QUERY()->value] ?? '',
+            $args
+        );
+
+        $response = new Fluent($builder->raw());
+
+        return $this->paginate(IdeascaleProfileData::collect($response->hits), $response->estimatedTotalHits, $page, $limit);
+    }
+
+    protected function paginate($items, $total, $page, $limit): array
+    {
+        $pagination = new LengthAwarePaginator(
+            $items,
+            $total,
+            $limit,
+            $page,
+            [
+                'pageName' => 'p',
+            ]
+        );
+
+        return $pagination->onEachSide(1)->toArray();
+    }
+
+    protected function getUserFilters(): array
+    {
+        return [];
     }
 
     protected function getProps(Request $request): void

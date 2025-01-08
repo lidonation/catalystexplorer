@@ -17,8 +17,8 @@ class MetaFactory extends Factory
     public function definition(): array
     {
         return [
-            "key" => $this->faker->word,
-            "content" => $this->faker->word
+            'key' => $this->faker->word,
+            'content' => $this->faker->word,
         ];
     }
 }

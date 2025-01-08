@@ -1,17 +1,19 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\DataTransferObjects\AnnouncementData;
+use App\DataTransferObjects\MetricData;
+use App\DataTransferObjects\ProposalData;
+use App\Models\Announcement;
+use App\Repositories\AnnouncementRepository;
+use App\Repositories\MetricRepository;
+use App\Repositories\PostRepository;
+use App\Repositories\ProposalRepository;
 use Inertia\Inertia;
 use Inertia\Response;
-use App\Models\Announcement;
-use App\Repositories\PostRepository;
-use App\Repositories\MetricRepository;
-use App\DataTransferObjects\MetricData;
-use App\Repositories\ProposalRepository;
-use App\DataTransferObjects\ProposalData;
-use App\Repositories\AnnouncementRepository;
-use App\DataTransferObjects\AnnouncementData;
 
 class HomeController extends Controller
 {
@@ -22,32 +24,23 @@ class HomeController extends Controller
         AnnouncementRepository $announcements
     ): Response {
         $posts->setQuery([
-            'tags' => 'project-catalyst'
+            'tags' => 'project-catalyst',
         ]);
-
-        //        dd(
-//            MetricData::collect($metrics
-//                ->limit(6)
-//                ->getQuery()
-//                ->where('context', 'home')
-//                ->orderByDesc('order')
-//                ->get())->toArray()
-//        );
 
         return Inertia::render('Home/Index', [
             'posts' => Inertia::optional(
-                fn() => $posts->paginate(4)->setMaxPages(1)->collect()->all()
+                fn () => $posts->paginate(4)->setMaxPages(1)->collect()->all()
             ),
             'proposals' => Inertia::optional(
-                fn() => ProposalData::collect(
-                    $proposals->with(['users', 'campaign'])
+                fn () => ProposalData::collect(
+                    $proposals->with(['users', 'campaign', 'fund'])
                         ->limit(3)
                         ->inRandomOrder()
                         ->get()
                 )
             ),
             'metrics' => Inertia::optional(
-                fn() => MetricData::collect($metrics
+                fn () => MetricData::collect($metrics
                     ->limit(6)
                     ->getQuery()
                     ->where('context', 'home')
@@ -55,7 +48,7 @@ class HomeController extends Controller
                     ->get())
             ),
             'announcements' => Inertia::optional(
-                fn() => AnnouncementData::collect($announcements
+                fn () => AnnouncementData::collect($announcements
                     ->limit(6)
                     ->getQuery()
                     ->where('context', '!=', 'home')
@@ -63,17 +56,17 @@ class HomeController extends Controller
                     ->get())
             ),
             'specialAnnouncements' => Inertia::optional(
-                fn() => AnnouncementData::collect(
+                fn () => AnnouncementData::collect(
                     Announcement::query()
                         ->where('context', 'special')
                         ->latest('event_ends_at')
                         ->limit(6)
                         ->get()
-                        ->map(fn($announcement) => [
+                        ->map(fn ($announcement) => [
                             'id' => $announcement->id,
                             'title' => $announcement->title,
                             'content' => $announcement->content,
-                            'cta' => collect($announcement->cta)->map(fn($ctaItem) => [
+                            'cta' => collect($announcement->cta)->map(fn ($ctaItem) => [
                                 'label' => $ctaItem['label'],
                                 'link' => $ctaItem['link'],
                                 'title' => $ctaItem['title'],

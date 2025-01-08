@@ -1,13 +1,15 @@
 import { FiltersProvider } from '@/Context/FiltersContext';
 import { PageProps } from '@/types';
-import { Head } from '@inertiajs/react';
-import IdeascaleProfilesList from './Partials/IdeascaleProfileList';
-import IdeascaleProfilesFilters from './Partials/IdeascaleProfilesFilters';
+import { Head, WhenVisible } from '@inertiajs/react';
 import { useTranslation } from 'react-i18next';
 import { useMemo } from 'react';
 import { ProposalParamsEnum } from '@/enums/proposal-search-params';
 import { ProposalSearchParams } from '../../../types/proposal-search-params';
 import IdeascaleProfilesData = App.DataTransferObjects.IdeascaleProfileData;
+import { useState } from 'react';
+import IdeaScaleProfileToolbar from "@/Pages/IdeascaleProfile/Partials/IdeaScaleProfileToolbar";
+import Paginator from "@/Components/Paginator";
+import {PaginatedData} from "../../../types/paginated-data";
 
 interface IdeascaleProfilesPageProps extends Record<string, unknown> {
     ideascaleProfiles: {
@@ -20,6 +22,8 @@ interface IdeascaleProfilesPageProps extends Record<string, unknown> {
 
 const Index = ({ ideascaleProfiles, filters }: PageProps<IdeascaleProfilesPageProps> ) => {
     const { t } = useTranslation();
+    const [perPage, setPerPage] = useState<number>(24);
+    const [currentPage, setCurrentPage] = useState<number>(1);
 
     const defaultFilters = useMemo(() => ({
         [ProposalParamsEnum.FUNDS]: [],
@@ -33,10 +37,14 @@ const Index = ({ ideascaleProfiles, filters }: PageProps<IdeascaleProfilesPagePr
         <FiltersProvider defaultFilters={filters}>
             <Head title="Ideascale Profiles" />
 
-            <header className="container">
-                <h1 className="title-1">{t('ideascaleProfiles.ideascaleProfiles')}</h1>
-                <p className="text-content">{t('ideascaleProfiles.pageSubtitle')}</p>
-            </header>
+                <header className="container">
+                    <h1 className="title-1">
+                        {t('ideascaleProfiles.ideascaleProfiles')}
+                    </h1>
+                    <p className="text-content">
+                        {t('ideascaleProfiles.pageSubtitle')}
+                    </p>
+                </header>
 
             <section className="container flex w-full flex-col items-center justify-center py-8">
                 <IdeascaleProfilesFilters />

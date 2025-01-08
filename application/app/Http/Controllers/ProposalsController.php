@@ -1,21 +1,23 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\DataTransferObjects\ProposalData;
+use App\Enums\ProposalSearchParams;
+use App\Models\Fund;
+use App\Models\Proposal;
+use App\Repositories\ProposalRepository;
+use Illuminate\Contracts\Pagination\Paginator;
+use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Fluent;
+use Illuminate\Support\Stringable;
 use Inertia\Inertia;
 use Inertia\Response;
-use App\Models\Proposal;
-use App\Models\Fund;
 use Laravel\Scout\Builder;
-use Illuminate\Http\Request;
-use Illuminate\Support\Fluent;
-use Illuminate\Support\Collection;
-use Illuminate\Support\Stringable;
-use App\Enums\ProposalSearchParams;
-use App\Repositories\ProposalRepository;
-use App\DataTransferObjects\ProposalData;
-use Illuminate\Contracts\Pagination\Paginator;
-use Illuminate\Pagination\LengthAwarePaginator;
 
 class ProposalsController extends Controller
 {
@@ -62,7 +64,6 @@ class ProposalsController extends Controller
     /**
      * Display the user's profile form.
      */
-
     public function index(Request $request): Response
     {
         $this->getProps($request);
@@ -83,7 +84,7 @@ class ProposalsController extends Controller
                 'requestedADA' => $this->sumBudgetsADA,
                 'awardedUSD' => $this->sumDistributedUSD,
                 'awardedADA' => $this->sumDistributedADA,
-            ]
+            ],
         ]);
     }
 
@@ -115,7 +116,7 @@ class ProposalsController extends Controller
         ]);
 
         // format sort params for meili
-        if (!empty($this->queryParams[ProposalSearchParams::SORTS()->value])) {
+        if (! empty($this->queryParams[ProposalSearchParams::SORTS()->value])) {
             $sort = collect(
                 explode(
                     ':',
@@ -128,12 +129,11 @@ class ProposalsController extends Controller
             $this->sortOrder = $sort->last();
         }
 
-
         // set defaults max and mins
-        $this->queryParams[ProposalSearchParams::MAX_BUDGET()->value] =  10000000;
-        $this->queryParams[ProposalSearchParams::MIN_BUDGET()->value] =  1;
-        $this->queryParams[ProposalSearchParams::MAX_PROJECT_LENGTH()->value] =  12;
-        $this->queryParams[ProposalSearchParams::MIN_PROJECT_LENGTH()->value] =  0;
+        $this->queryParams[ProposalSearchParams::MAX_BUDGET()->value] = 10000000;
+        $this->queryParams[ProposalSearchParams::MIN_BUDGET()->value] = 1;
+        $this->queryParams[ProposalSearchParams::MAX_PROJECT_LENGTH()->value] = 12;
+        $this->queryParams[ProposalSearchParams::MIN_PROJECT_LENGTH()->value] = 0;
 
         if (empty($this->queryParams[ProposalSearchParams::BUDGETS()->value])) {
             $this->queryParams[ProposalSearchParams::BUDGETS()->value] = [1, 10000000];
@@ -185,6 +185,7 @@ class ProposalsController extends Controller
                 'pageName' => 'p',
             ]
         );
+
         return $pagination->onEachSide(1)->toArray();
     }
 
@@ -203,10 +204,8 @@ class ProposalsController extends Controller
             ]
         );
 
-
         return $pagination->onEachSide(1)->toArray();
     }
-
 
     protected function getUserFilters(): array
     {
@@ -223,11 +222,11 @@ class ProposalsController extends Controller
         }
 
         if (isset($this->queryParams[ProposalSearchParams::OPENSOURCE_PROPOSALS()->value])) {
-            $filters[] = 'opensource = ' . $this->queryParams[ProposalSearchParams::OPENSOURCE_PROPOSALS()->value];
+            $filters[] = 'opensource = '.$this->queryParams[ProposalSearchParams::OPENSOURCE_PROPOSALS()->value];
         }
 
         if (isset($this->queryParams[ProposalSearchParams::TYPE()->value])) {
-            $filters[] = 'type = ' . $this->queryParams[ProposalSearchParams::TYPE()->value];
+            $filters[] = 'type = '.$this->queryParams[ProposalSearchParams::TYPE()->value];
         }
 
         if (isset($this->queryParams[ProposalSearchParams::QUICK_PITCHES()->value])) {
@@ -235,52 +234,51 @@ class ProposalsController extends Controller
         }
 
         // filter by budget range
-        if (!empty($this->queryParams[ProposalSearchParams::BUDGETS()->value])) {
+        if (! empty($this->queryParams[ProposalSearchParams::BUDGETS()->value])) {
             $budgetRange = collect((object) $this->queryParams[ProposalSearchParams::BUDGETS()->value]);
             $filters[] = "(amount_requested  {$budgetRange->first()} TO  {$budgetRange->last()})";
         }
 
         // filter by challenge
-        if (!empty($this->queryParams[ProposalSearchParams::CAMPAIGNS()->value])) {
+        if (! empty($this->queryParams[ProposalSearchParams::CAMPAIGNS()->value])) {
             $campaignIds = ($this->queryParams[ProposalSearchParams::CAMPAIGNS()->value]);
-            $filters[] = '(' . implode(' OR ', array_map(fn($c) => "campaign.id = {$c}", $campaignIds)) . ')';
+            $filters[] = '('.implode(' OR ', array_map(fn ($c) => "campaign.id = {$c}", $campaignIds)).')';
         }
 
-        if (!empty($this->queryParams[ProposalSearchParams::TAGS()->value])) {
+        if (! empty($this->queryParams[ProposalSearchParams::TAGS()->value])) {
             $tagIds = ($this->queryParams[ProposalSearchParams::TAGS()->value]);
-            $filters[] = '(' . implode(' OR ', array_map(fn($c) => "tags.id = {$c}", $tagIds)) . ')';
+            $filters[] = '('.implode(' OR ', array_map(fn ($c) => "tags.id = {$c}", $tagIds)).')';
         }
 
-        if (!empty($this->queryParams[ProposalSearchParams::IDEASCALE_PROFILES()->value])) {
+        if (! empty($this->queryParams[ProposalSearchParams::IDEASCALE_PROFILES()->value])) {
             $ideascaleProfileIds = implode(',', $this->queryParams[ProposalSearchParams::IDEASCALE_PROFILES()->value]);
             $filters[] = "users.id IN [{$ideascaleProfileIds}]";
         }
 
-        if (!empty($this->queryParams[ProposalSearchParams::GROUPS()->value])) {
+        if (! empty($this->queryParams[ProposalSearchParams::GROUPS()->value])) {
             $groupIds = implode(',', $this->queryParams[ProposalSearchParams::GROUPS()->value]);
             $filters[] = "groups.id IN [{$groupIds}]";
         }
 
-        if (!empty($this->queryParams[ProposalSearchParams::COMMUNITIES()->value])) {
+        if (! empty($this->queryParams[ProposalSearchParams::COMMUNITIES()->value])) {
             $communityIds = implode(',', $this->queryParams[ProposalSearchParams::COMMUNITIES()->value]);
             $filters[] = "communities.id IN [{$communityIds}]";
         }
 
-        if (!empty($this->queryParams[ProposalSearchParams::PROJECT_LENGTH()->value])) {
+        if (! empty($this->queryParams[ProposalSearchParams::PROJECT_LENGTH()->value])) {
             $projectLength = collect((object) $this->queryParams[ProposalSearchParams::PROJECT_LENGTH()->value]);
             $filters[] = "(project_length  {$projectLength->first()} TO  {$projectLength->last()})";
         }
 
-        if (!empty($this->queryParams[ProposalSearchParams::COHORT()->value])) {
-            $cohortFilters = array_map(fn($cohort) => "{$cohort} = 1", $this->queryParams[ProposalSearchParams::COHORT()->value]);
-            $filters[] = '(' . implode(' OR ', $cohortFilters) . ')';
+        if (! empty($this->queryParams[ProposalSearchParams::COHORT()->value])) {
+            $cohortFilters = array_map(fn ($cohort) => "{$cohort} = 1", $this->queryParams[ProposalSearchParams::COHORT()->value]);
+            $filters[] = '('.implode(' OR ', $cohortFilters).')';
         }
 
-        if (!empty($this->queryParams[ProposalSearchParams::FUNDS()->value])) {
+        if (! empty($this->queryParams[ProposalSearchParams::FUNDS()->value])) {
             $funds = implode("','", $this->queryParams[ProposalSearchParams::FUNDS()->value]);
             $filters[] = "fund.title IN ['{$funds}']";
         }
-
 
         //
         //        if ($this->fundingStatus === 'paid') {
@@ -303,7 +301,6 @@ class ProposalsController extends Controller
 
         //
         //
-
 
         return $filters;
     }
@@ -414,7 +411,7 @@ class ProposalsController extends Controller
     public function fundTitles()
     {
         $fundTitles = Fund::pluck('title');
+
         return response()->json($fundTitles);
     }
-
 }

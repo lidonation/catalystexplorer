@@ -5,15 +5,15 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Models\Group;
 use App\Http\Resources\GroupResource;
+use App\Models\Group;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\Routing\ResponseFactory;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Response;
+
 class GroupController extends Controller
 {
-
     public function group($groupId): \Illuminate\Http\Response|GroupResource|Application|ResponseFactory
     {
         $group = Group::find($groupId);
@@ -35,7 +35,7 @@ class GroupController extends Controller
         if ($per_page > 60) {
             return response([
                 'status_code' => 60,
-                'message' => 'query parameter \'per_page\' should not exceed 60'
+                'message' => 'query parameter \'per_page\' should not exceed 60',
             ], 60);
         }
 

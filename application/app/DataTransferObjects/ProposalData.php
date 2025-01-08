@@ -1,14 +1,15 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\DataTransferObjects;
 
+use Spatie\LaravelData\Attributes\DataCollectionOf;
+use Spatie\LaravelData\Attributes\MapOutputName;
 use Spatie\LaravelData\Data;
 use Spatie\LaravelData\DataCollection;
-use Spatie\LaravelData\Attributes\MapOutputName;
-use App\DataTransferObjects\IdeascaleProfileData;
-use Spatie\LaravelData\Attributes\DataCollectionOf;
-use Spatie\TypeScriptTransformer\Attributes\TypeScript;
 use Spatie\TypeScriptTransformer\Attributes\Optional as TypeScriptOptional;
+use Spatie\TypeScriptTransformer\Attributes\TypeScript;
 
 #[TypeScript]
 final class ProposalData extends Data
@@ -27,6 +28,9 @@ final class ProposalData extends Data
         #[TypeScriptOptional]
         public ?string $excerpt,
 
+        #[TypeScriptOptional]
+        public $content,
+
         public float $amount_requested,
 
         public ?float $amount_received,
@@ -38,8 +42,8 @@ final class ProposalData extends Data
 
         public string $funding_status,
 
-//        #[TypeScriptOptional]
-//        public ?array $meta_data,
+        //        #[TypeScriptOptional]
+        //        public ?array $meta_data,
 
         #[TypeScriptOptional]
         public ?string $funded_at,
@@ -83,14 +87,9 @@ final class ProposalData extends Data
         #[TypeScriptOptional]
         public ?string $experience,
 
-        #[TypeScriptOptional]
-        public ?string $content,
-
         // Other attributes
         #[TypeScriptOptional]
         public ?string $currency,
-
-        public ?bool $opensource = false,
 
         #[TypeScriptOptional]
         public ?int $ranking_total,
@@ -104,6 +103,13 @@ final class ProposalData extends Data
         #[MapOutputName('users')]
         #[DataCollectionOf(IdeascaleProfileData::class)]
         public ?DataCollection $users,
+
+        public ?FundData $fund,
+
+        public ?bool $opensource,
+
+        #[TypeScriptOptional]
+        public ?string $link,
 
     ) {}
 }

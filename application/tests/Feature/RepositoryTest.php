@@ -5,15 +5,15 @@ declare(strict_types=1);
 use App\Models\Proposal;
 use App\Models\User;
 use App\Repositories\Repository;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 uses(RefreshDatabase::class);
 
 beforeEach(function () {
     // Initialize repository with the User model
-    $this->repository = new Repository(new User());
+    $this->repository = new Repository(new User);
 });
 
 it('returns all records with all method', function () {
@@ -43,11 +43,11 @@ it('retrieves by id  with find method', function () {
 
 it('retrieves by id or slug with find method', function () {
 
-    $this->repository = new Repository(new Proposal());
+    $this->repository = new Repository(new Proposal);
 
     $proposal = Proposal::factory(state: [
         'title' => json_encode(['en' => 'Nice proposal']),
-        'slug' => 'nice-proposal'
+        'slug' => 'nice-proposal',
     ])->create();
 
     $foundById = $this->repository->find($proposal->id);

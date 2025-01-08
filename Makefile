@@ -9,6 +9,12 @@ init:
 	cp application/.env.example application/.env
 
 	docker run --rm --interactive --tty \
+		--volume ${PWD}:/app \
+		--workdir /app \
+		--user root \
+		node:18-alpine yarn install --ignore-engine
+
+	docker run --rm --interactive --tty \
 		--volume ${PWD}/application:/app \
 		--workdir /app \
 		--user root \
@@ -25,6 +31,7 @@ init:
 	sleep 10
 	$(sail) artisan key:generate
 	make migrate
+	$(sail) yarn husky init
 
 .PHONY: artisan
 artisan:
@@ -51,6 +58,16 @@ db-seed:
 .PHONY: down
 down:
 	$(sail) down
+
+.PHONY: devtools-install
+devtools-install:
+	docker run --rm --interactive --tty \
+		--volume ${PWD}:/app \
+		--workdir /app \
+		--user root \
+		node:18-alpine yarn install --ignore-engine
+		$(sail) up -d
+		npx husky init
 
 .PHONY: frontend-install
 frontend-install:
@@ -104,6 +121,10 @@ rm:
 .PHONY: sh
 sh:
 	$(sail) shell $(filter-out $@,$(MAKECMDGOALS))
+
+.PHONY: commitlint
+commitlint:
+	npx --no -- commitlint --edit $1
 
 .PHONY: status
 status:

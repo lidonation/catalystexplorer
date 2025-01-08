@@ -17,7 +17,7 @@ class PostRepository extends Repository
         parent::__construct($model);
     }
 
-    public function paginate($perPage = 4): LengthAwarePaginator | PagedPaginator
+    public function paginate($perPage = 4): LengthAwarePaginator|PagedPaginator
     {
         try {
             $connector = app(LidoNationConnector::class);
@@ -30,7 +30,7 @@ class PostRepository extends Repository
         } catch (\Exception $e) {
             report($e);
         }
+
         return new \Illuminate\Pagination\LengthAwarePaginator([], 0, $perPage);
     }
-
 }

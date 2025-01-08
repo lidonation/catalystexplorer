@@ -9,12 +9,12 @@ function UserNavigation() {
     const { t } = useTranslation();
     const navItems = [
         {
-            href: '/bookmarks',
+            href: '/my/bookmarks',
             title: t('bookmarks'),
             icon: <BookMarkCheckIcon className="text-dark" />,
         },
         {
-            href: '/votes',
+            href: '/my/votes',
             title: t('votes'),
             icon: <BucketIcon className="text-dark" />,
         },

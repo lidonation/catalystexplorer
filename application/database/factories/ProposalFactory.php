@@ -1,16 +1,18 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Database\Factories;
 
-use App\Models\Fund;
-use App\Models\User;
-use App\Models\Campaign;
-use App\Models\Proposal;
-use Illuminate\Support\Str;
-use App\Enums\ProposalStatus;
 use App\Enums\CatalystCurrencies;
 use App\Enums\ProposalFundingStatus;
+use App\Enums\ProposalStatus;
+use App\Models\Campaign;
+use App\Models\Fund;
+use App\Models\Proposal;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Str;
 
 class ProposalFactory extends Factory
 {
@@ -33,7 +35,7 @@ class ProposalFactory extends Factory
             'https://vimeo.com/259069001',
             'https://vimeo.com/675293691',
             'https://vimeo.com/254659271',
-            'https://vimeo.com/857039562'
+            'https://vimeo.com/857039562',
         ];
 
         return [
@@ -41,7 +43,7 @@ class ProposalFactory extends Factory
             'campaign_id' => Campaign::factory(),
             'fund_id' => Fund::inRandomOrder()->first(),
             'title' => $this->faker->words($this->faker->numberBetween(4, 12), true),
-            'slug' => fn(array $attributes) => Str::slug($attributes['title']),
+            'slug' => fn (array $attributes) => Str::slug($attributes['title']),
             'website' => $this->faker->url(),
             'excerpt' => $this->faker->text(200),
             'amount_requested' => $this->faker->numberBetween(0, 10000000),
@@ -49,7 +51,7 @@ class ProposalFactory extends Factory
             'definition_of_success' => $this->faker->sentence(),
             'status' => $this->faker->randomElement(ProposalStatus::toValues()),
             'funding_status' => $this->faker->randomElement(ProposalFundingStatus::toValues()),
-            'meta_data' => $this->faker->words(4,true),
+            'meta_data' => $this->faker->words(4, true),
             'funded_at' => $this->faker->optional()->dateTimeBetween('-2 years', 'now'),
             'deleted_at' => $this->faker->optional()->dateTimeBetween('-1 year', 'now'),
             'funding_updated_at' => $this->faker->optional()->date(),
