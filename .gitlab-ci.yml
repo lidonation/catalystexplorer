@@ -7,7 +7,7 @@ include:
 #    file: semantic-release.yml
     #inputs:
     #  stage: release
-    #  vault: access_tokens/${VAULT_SECRETS_PATH}/semantic-release/token@ci
+    #  p: access_tokens/${VAULT_SECRETS_PATH}/semantic-release/token@ci
 
 
 variables:
@@ -412,6 +412,7 @@ sem-release:
   variables:
     GITLAB_URL: $CI_SERVER_URL
   script:
+    - yarn install
     - npx semantic-release
   after_script: |
     cat <<-EOD
