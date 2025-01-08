@@ -420,5 +420,5 @@ sem-release:
     https://gitlab.com/gitlab-com/gl-infra/common-ci-tasks/-/blob/main/semantic-release.md
     EOD
   rules:
-    - if: '$CI_COMMIT_BRANCH =~ /^(develop|main|release\/\d+.\d+.\d+)$/'
+    - if: '$CI_COMMIT_BRANCH =~ /^(beta|main|release\/\d+.\d+.\d+)$/'
       when: always
