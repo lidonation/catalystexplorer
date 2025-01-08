@@ -414,6 +414,7 @@ sem-release:
   script: |-
     set -vx
     apk add make
+    cp application/.env.testing application/.env
     yarn install
     npx semantic-release
   after_script: |
@@ -424,4 +425,4 @@ sem-release:
     EOD
   rules:
     - if: '$CI_COMMIT_BRANCH =~ /^(beta|main|release\/\d+.\d+.\d+)$/'
-      when: always
+      when: on_success
