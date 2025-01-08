@@ -1,19 +1,36 @@
+import { FiltersProvider } from '@/Context/FiltersContext';
 import { PageProps } from '@/types';
 import { Head } from '@inertiajs/react';
 import IdeascaleProfilesList from './Partials/IdeascaleProfileList';
 import IdeascaleProfilesFilters from './Partials/IdeascaleProfilesFilters';
 import { useTranslation } from 'react-i18next';
+import { useMemo } from 'react';
+import { ProposalParamsEnum } from '@/enums/proposal-search-params';
+import { ProposalSearchParams } from '../../../types/proposal-search-params';
 import IdeascaleProfilesData = App.DataTransferObjects.IdeascaleProfileData;
 
 interface IdeascaleProfilesPageProps extends Record<string, unknown> {
-    ideascaleProfiles: IdeascaleProfilesData[];
+    ideascaleProfiles: {
+        data: IdeascaleProfilesData[];
+        current_page: number;
+        last_page: number;
+    };
+    filters: ProposalSearchParams;
 }
-const Index = ({ ideascaleProfiles }: PageProps<IdeascaleProfilesPageProps>) => {
 
+const Index = ({ ideascaleProfiles, filters }: PageProps<IdeascaleProfilesPageProps> ) => {
     const { t } = useTranslation();
 
+    const defaultFilters = useMemo(() => ({
+        [ProposalParamsEnum.FUNDS]: [],
+        [ProposalParamsEnum.PROJECT_STATUS]: [],
+        [ProposalParamsEnum.TAGS]: [],
+        [ProposalParamsEnum.FUNDING_STATUS]: false,
+        [ProposalParamsEnum.BUDGETS]: [1000, 10000000],
+    }), []);
+
     return (
-        <>
+        <FiltersProvider defaultFilters={filters}>
             <Head title="Ideascale Profiles" />
 
             <header className="container">
@@ -27,10 +44,10 @@ const Index = ({ ideascaleProfiles }: PageProps<IdeascaleProfilesPageProps>) => 
 
             <div className="flex w-full flex-col items-center">
                 <section className="container py-8">
-                  <IdeascaleProfilesList ideascaleProfiles={ideascaleProfiles}/>
+                    <IdeascaleProfilesList ideascaleProfiles={ideascaleProfiles.data} />
                 </section>
             </div>
-        </>
+        </FiltersProvider>
     );
 };
 

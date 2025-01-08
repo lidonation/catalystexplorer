@@ -21,8 +21,8 @@ Route::prefix('api')->as('api.')->group(function () {
     Route::get('/communities', [CommunityController::class, 'communities'])->name('communities');
     Route::get('/communities/{community:id}', [CommunityController::class, 'community'])->name('community');
 
-    Route::get('/ideascale-profiles', [IdeascaleProfilesController::class, 'ideascaleProfiles'])->name('ideascaleProfiles');
-    Route::get('/ideascale-profiles/{ideascale_profile:id}', [IdeascaleProfilesController::class, 'ideascaleProfile'])->name('ideascaleProfile');
+    Route::get('/ideascale-profiles', [IdeascaleProfilesController::class, 'ideascale_profiles'])->name('ideascaleProfiles');
+    Route::get('/ideascale-profiles/{ideascale_profile:id}', [IdeascaleProfilesController::class, 'ideascale_profile'])->name('ideascaleProfile');
 
     Route::get('/fund-titles',  [ProposalsController::class, 'fundTitles'])->name('fundTitles');
 });
