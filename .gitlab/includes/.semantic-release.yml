@@ -1,0 +1,107 @@
+# Will run semantic release versioning on a repository
+#
+# Note:
+# * Runs in the release stage
+spec:
+  inputs:
+    stage:
+      default: release
+    validate_stage:
+      default: validate
+    docker_hub_host:
+      default: docker.io
+---
+.semantic_release_base:
+  stage: $[[ inputs.stage ]]
+  image:
+    name: registry.gitlab.com/gitlab-com/gl-infra/common-ci-tasks-images/semantic-release:latest
+    entrypoint: [""]
+  variables:
+    GITLAB_URL: $CI_SERVER_URL
+  before_script:
+    - |
+      echo "Note: GitLab token secret configured via $SEMANTIC_RELEASE_AUTH_SOURCE"
+
+      if [[ -z "${SEMANTIC_RELEASE_GITLAB_TOKEN}" && -n "${GITLAB_TOKEN}" ]]; then
+        printf '\e[31;1m%s\e[0m\n' 'WARNING: GITLAB_TOKEN is deprecated -- use SEMANTIC_RELEASE_GITLAB_TOKEN instead'
+      fi
+      if [[ -n "${SEMANTIC_RELEASE_GITLAB_TOKEN}" ]]; then
+        export GITLAB_TOKEN="${SEMANTIC_RELEASE_GITLAB_TOKEN}"
+      fi
+    # Allow the semantic release job to fetch all the latest changes on the
+    # default branch before performing the semantic release.
+    # Required for delayed releases...
+    - git checkout "$CI_DEFAULT_BRANCH" && git pull && git fetch --tags
+  script:
+    - semantic-release
+  after_script: |
+    cat <<-EOD
+    ----------------------------------------------------------
+    Need help? Documentation on the semantic_release CI job can be found at:
+    https://gitlab.com/gitlab-com/gl-infra/common-ci-tasks/-/blob/main/semantic-release.md
+    EOD
+  # Rules originally copied from runbooks project, but applicable to all
+  # semantic releases
+  rules:
+    # Publishing only happens on gitlab.com, the tag
+    # will be created on gitlab.com, mirrored to ops,
+    # and the image will be built in both locations
+    - if: '$CI_API_V4_URL == "https://ops.gitlab.net/api/v4"'
+      when: never
+
+    # Parent pipelines are used for testing, when COMMON_CI_TASKS_REF is set
+    - if: '$CI_PIPELINE_SOURCE == "parent_pipeline" && $COMMON_CI_TASKS_REF'
+
+    # Don't run when the pipeline was triggered by another pipeline
+    - if: '$CI_PIPELINE_SOURCE == "pipeline"'
+      when: never
+
+    # Don't run when the pipeline was triggered by a schedule
+    - if: '$CI_PIPELINE_SOURCE == "schedule"'
+      when: never
+
+    # Don't run on tags
+    - if: '$CI_COMMIT_TAG != null'
+      when: never
+
+    - if: '($CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH) && ($CI_COMMIT_DESCRIPTION =~ /\[delay release\]/)'
+      when: delayed
+      start_in: 1 hour
+      exists:
+        - .releaserc.json
+
+    - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
+      exists:
+        - .releaserc.json
+
+semantic_release_check:
+  stage: $[[ inputs.validate_stage ]]
+  needs: []
+  image:
+    name: registry.gitlab.com/gitlab-com/gl-infra/common-ci-tasks-images/semantic-release:latest
+    entrypoint: [""]
+  variables:
+    GITLAB_URL: $CI_SERVER_URL
+  script:
+    - semantic-release --verify-conditions
+  after_script: |
+    cat <<-EOD
+    ----------------------------------------------------------
+    Need help? Documentation on the semantic_release CI job can be found at:
+    https://gitlab.com/gitlab-com/gl-infra/common-ci-tasks/-/blob/main/semantic-release.md
+    EOD
+  rules:
+    # Don't run when the pipeline was triggered by a schedule
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+      changes:
+        - .releaserc.json
+
+include:
+  - local: 'internal/semantic-release/variable.yml'
+    rules:
+      - if: '"$[[ inputs.vault | expand_vars ]]" == "" && ($SEMANTIC_RELEASE_GITLAB_TOKEN != null || $GITLAB_TOKEN != null)'
+  - local: 'internal/semantic-release/vault.yml'
+    rules:
+      - if: '"$[[ inputs.vault | expand_vars ]]" == "" && ($SEMANTIC_RELEASE_GITLAB_TOKEN == null && $GITLAB_TOKEN == null)'
+    inputs:
+      vault: "access_tokens/${VAULT_SECRETS_PATH}/semantic-release/token@ci"
