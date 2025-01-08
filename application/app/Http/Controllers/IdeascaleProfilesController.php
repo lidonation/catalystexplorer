@@ -4,14 +4,12 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use App\DataTransferObjects\IdeascaleProfileData;
 use App\Enums\IdeascaleProfileSearchParams;
 use App\Enums\ProposalSearchParams;
 use App\Repositories\IdeascaleProfileRepository;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Support\Fluent;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Fluent;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -52,16 +50,6 @@ class IdeascaleProfilesController extends Controller
         return $this->paginate($queryResults, $ideascaleProfiles->getQuery()->count(), $page, $limit);
     }
 
-    protected function getProps(Request $request): void
-    {
-        $this->queryParams = $request->validate([
-            IdeascaleProfileSearchParams::QUERY()->value => 'string|nullable',
-            IdeascaleProfileSearchParams::PAGE()->value => 'int|nullable',
-            IdeascaleProfileSearchParams::LIMIT()->value => 'int|nullable',
-            IdeascaleProfileSearchParams::SORT()->value => 'string|nullable',
-        ]);
-    }
-
     protected function query($returnBuilder = false, $attrs = null, $filters = [])
     {
         $page = (int) ($this->queryParams[IdeascaleProfileSearchParams::PAGE()->value] ?? $this->currentPage);
@@ -87,7 +75,17 @@ class IdeascaleProfilesController extends Controller
 
         $response = new Fluent($builder->raw());
 
-        return $this->paginate(IdeascaleProfileData::collect($response->hits), $response->estimatedTotalHits, $page, $limit);
+        $pagination = new LengthAwarePaginator(
+            $response->hits,
+            $response->estimatedTotalHits,
+            $limit,
+            $page,
+            [
+                'pageName' => 'p',
+            ]
+        );
+
+        return $pagination->onEachSide(1)->toArray();
     }
 
     protected function paginate($items, $total, $page, $limit): array
@@ -105,11 +103,6 @@ class IdeascaleProfilesController extends Controller
         return $pagination->onEachSide(1)->toArray();
     }
 
-    protected function getUserFilters(): array
-    {
-        return [];
-    }
-
     protected function getProps(Request $request): void
     {
         $this->queryParams = $request->validate([
@@ -120,6 +113,9 @@ class IdeascaleProfilesController extends Controller
             ProposalSearchParams::BUDGETS()->value => 'array|nullable',
             ProposalSearchParams::PAGE()->value => 'int|nullable',
             ProposalSearchParams::LIMIT()->value => 'int|nullable',
+
+            IdeascaleProfileSearchParams::QUERY()->value => 'string|nullable',
+            IdeascaleProfileSearchParams::SORT()->value => 'string|nullable',
         ]);
 
         if (isset($this->queryParams[ProposalSearchParams::FUNDING_STATUS()->value])) {
@@ -130,38 +126,6 @@ class IdeascaleProfilesController extends Controller
         if (empty($this->queryParams[ProposalSearchParams::BUDGETS()->value])) {
             $this->queryParams[ProposalSearchParams::BUDGETS()->value] = [1000, 10000000];
         }
-    }
-
-    protected function query(): array
-    {
-        $filters = $this->getUserFilters();
-
-        $args = [
-            'filter' => $this->getUserFilters(),
-        ];
-
-        $page = $this->queryParams[ProposalSearchParams::PAGE()->value] ?? 1;
-        $limit = $this->queryParams[ProposalSearchParams::LIMIT()->value] ?? $this->limit;
-
-        $args['offset'] = ($page - 1) * $limit;
-        $args['limit'] = $limit;
-
-        $profiles = app(IdeascaleProfileRepository::class);
-        $builder = $profiles->search('', $args);
-
-        $response = new Fluent($builder->raw());
-
-        $pagination = new LengthAwarePaginator(
-            $response->hits,
-            $response->estimatedTotalHits,
-            $limit,
-            $page,
-            [
-                'pageName' => 'p',
-            ]
-        );
-
-        return $pagination->onEachSide(1)->toArray();
     }
 
     protected function getUserFilters(): array
