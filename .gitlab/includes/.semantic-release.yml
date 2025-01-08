@@ -99,9 +99,4 @@ semantic_release_check:
 include:
   - local: 'internal/semantic-release/variable.yml'
     rules:
-      - if: '"$[[ inputs.vault | expand_vars ]]" == "" && ($SEMANTIC_RELEASE_GITLAB_TOKEN != null || $GITLAB_TOKEN != null)'
-  - local: 'internal/semantic-release/vault.yml'
-    rules:
-      - if: '"$[[ inputs.vault | expand_vars ]]" == "" && ($SEMANTIC_RELEASE_GITLAB_TOKEN == null && $GITLAB_TOKEN == null)'
-    inputs:
-      vault: "access_tokens/${VAULT_SECRETS_PATH}/semantic-release/token@ci"
+      - if: '($SEMANTIC_RELEASE_GITLAB_TOKEN != null || $GITLAB_TOKEN != null)'
