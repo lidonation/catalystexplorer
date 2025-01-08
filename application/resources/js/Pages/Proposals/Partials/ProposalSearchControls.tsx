@@ -14,96 +14,29 @@ function ProposalSearchControls() {
     const queryParams = new URLSearchParams(window.location.search);
     const initialSearchQuery = queryParams.get(ProposalParamsEnum.QUERY) || '';
     const [searchQuery, setSearchQuery] = useState(initialSearchQuery);
+    const [showFilters, setShowFilters] = useState(false);
 
     const sortingOptions = [
-        {
-            label: t('proposals.options.votesCastLowToHigh'), // Votes Cast: Low to High
-            value: 'votes_cast:asc',
-        },
-        {
-            label: t('proposals.options.votesCastHighToLow'), // Votes Cast: High to Low
-            value: 'votes_cast:desc',
-        },
-        {
-            label: t('proposals.options.budgetHighToLow'), // Budget: High to Low
-            value: 'amount_requested:desc',
-        },
-        {
-            label: t('proposals.options.budgetLowToHigh'), // Budget: Low to High
-            value: 'amount_requested:asc',
-        },
-        {
-            label: t('proposals.options.communityRankingHighToLow'), // Community Ranking: High to Low
-            value: 'ranking_total:desc',
-        },
-        {
-            label: t('proposals.options.communityRankingLowToHigh'), // Community Ranking: Low to High
-            value: 'ranking_total:asc',
-        },
-        {
-            label: t('proposals.options.paymentsReceivedHighToLow'), // Payments Received: High to Low
-            value: 'amount_received:desc',
-        },
-        {
-            label: t('proposals.options.projectLengthHighToLow'), // Project Length: High to Low
-            value: 'project_length:desc',
-        },
-        {
-            label: t('proposals.options.projectLengthLowToHigh'), // Project Length: Low to High
-            value: 'project_length:asc',
-        },
-        {
-            label: t('proposals.options.paymentsReceivedLowToHigh'), // Payments Received: Low to High
-            value: 'amount_received:asc',
-        },
-        {
-            label: t('proposals.options.yesVotesHighToLow'), // Yes Votes: High to Low
-            value: 'yes_votes_count:desc',
-        },
-        {
-            label: t('proposals.options.yesVotesLowToHigh'), // Yes Votes: Low to High
-            value: 'yes_votes_count:asc',
-        },
-        {
-            label: t('proposals.options.noVotesLowToHigh'), // No Votes: Low to High
-            value: 'no_votes_count:asc',
-        },
-        {
-            label: t('proposals.options.noVotesHighToLow'), // No Votes: High to Low
-            value: 'no_votes_count:desc',
-        },
-        {
-            label: t('proposals.options.ratingHighToLow'), // Rating: High to Low
-            value: 'ca_rating:desc',
-        },
-        {
-            label: t('proposals.options.ratingLowToHigh'), // Rating: Low to High
-            value: 'ca_rating:asc',
-        },
-        {
-            label: t('proposals.options.impactAlignmentHighToLow'), // Impact Alignment: High to Low
-            value: 'alignment_score:desc',
-        },
-        {
-            label: t('proposals.options.impactAlignmentLowToHigh'), // Impact Alignment: Low to High
-            value: 'alignment_score:asc',
-        },
-        {
-            label: t('proposals.options.feasibilityHighToLow'), // Feasibility: High to Low
-            value: 'feasibility_score:desc',
-        },
-        {
-            label: t('proposals.options.feasibilityLowToHigh'), // Feasibility: Low to High
-            value: 'feasibility_score:asc',
-        },
-        {
-            label: t('proposals.options.valueForMoneyHighToLow'), // Value for money: High to Low
-            value: 'auditability_score:desc',
-        },
-        {
-            label: t('proposals.options.valueForMoneyLowToHigh'), // Value for money: Low to High
-            value: 'auditability_score:asc',
-        },
+        { label: t('proposals.options.votesCastLowToHigh'), value: 'votes_cast:asc' },
+        { label: t('proposals.options.votesCastHighToLow'), value: 'votes_cast:desc' },
+        { label: t('proposals.options.budgetHighToLow'), value: 'amount_requested:desc' },
+        { label: t('proposals.options.budgetLowToHigh'), value: 'amount_requested:asc' },
+        { label: t('proposals.options.communityRankingHighToLow'), value: 'ranking_total:desc' },
+        { label: t('proposals.options.communityRankingLowToHigh'), value: 'ranking_total:asc' },
+        { label: t('proposals.options.paymentsReceivedHighToLow'), value: 'amount_received:desc' },
+        { label: t('proposals.options.paymentsReceivedLowToHigh'), value: 'amount_received:asc' },
+        { label: t('proposals.options.yesVotesHighToLow'), value: 'yes_votes_count:desc' },
+        { label: t('proposals.options.yesVotesLowToHigh'), value: 'yes_votes_count:asc' },
+        { label: t('proposals.options.noVotesHighToLow'), value: 'no_votes_count:desc' },
+        { label: t('proposals.options.noVotesLowToHigh'), value: 'no_votes_count:asc' },
+        { label: t('proposals.options.ratingHighToLow'), value: 'ca_rating:desc' },
+        { label: t('proposals.options.ratingLowToHigh'), value: 'ca_rating:asc' },
+        { label: t('proposals.options.impactAlignmentHighToLow'), value: 'alignment_score:desc' },
+        { label: t('proposals.options.impactAlignmentLowToHigh'), value: 'alignment_score:asc' },
+        { label: t('proposals.options.feasibilityHighToLow'), value: 'feasibility_score:desc' },
+        { label: t('proposals.options.feasibilityLowToHigh'), value: 'feasibility_score:asc' },
+        { label: t('proposals.options.valueForMoneyHighToLow'), value: 'auditability_score:desc' },
+        { label: t('proposals.options.valueForMoneyLowToHigh'), value: 'auditability_score:asc' },
     ];
 
     useEffect(() => {
@@ -114,6 +47,11 @@ function ProposalSearchControls() {
         setFilters(ProposalParamsEnum.QUERY, search);
         setSearchQuery(search);
     };
+
+    const toggleFilters = () => {
+        setShowFilters((prev) => !prev);
+    };
+
     return (
         <div className="sticky top-0 z-10 mx-auto flex w-full flex-col gap-4 bg-background-lighter pb-4 pt-6">
             <div className="flex items-center justify-end gap-2">
@@ -123,6 +61,17 @@ function ProposalSearchControls() {
                     showRingOnFocus
                     initialSearch={searchQuery}
                 />
+
+                <button
+                    onClick={toggleFilters}
+                    className="border-input placeholder:text-muted-foreground flex h-full items-center justify-between rounded-md border bg-background px-3 py-2 text-sm shadow-sm ring-offset-background disabled:cursor-not-allowed disabled:opacity-50"
+                    aria-expanded={showFilters}
+                >
+                    {t('proposals.filters.filters')}
+                    {filters.length > 0 && (
+                        <span className="ml-2 text-sm text-gray-400">({filters.length})</span>
+                    )}
+                </button>
 
                 <Selector
                     isMultiselect={false}
@@ -140,10 +89,12 @@ function ProposalSearchControls() {
                     }
                 />
             </div>
-            <div className="container mx-auto flex justify-end px-0 pb-4 pt-6">
-                <ActiveFilters />
-            </div>
 
+            {showFilters && (
+                <div className="container mx-auto flex justify-end px-0 pb-4 pt-6">
+                    <ActiveFilters />
+                </div>
+            )}
         </div>
     );
 }

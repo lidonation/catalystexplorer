@@ -29,8 +29,6 @@ const ProposalFilters: React.FC<ProposalFiltersProps> = ({ funds }) => {
                 selectedItems={filters[ProposalParamsEnum.FUNDS] ?? []}
             />
 
-            <Filters  />
-
             <ProposalSearchControls />
 
             <div className="container w-full rounded-xl bg-background p-4">
