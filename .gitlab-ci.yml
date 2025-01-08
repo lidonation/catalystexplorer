@@ -403,23 +403,23 @@ app_mainnet:
 
 ######## Semantic Releases #########
 ######################################
-#sem-release:
-#  stage: release
-#  needs: []
-#  image:
-#    name: registry.gitlab.com/gitlab-com/gl-infra/common-ci-tasks-images/semantic-release:latest
-#    entrypoint: [""]
-#  variables:
-#    GITLAB_URL: $CI_SERVER_URL
-#  script:
-#    - yarn install
-#    - npx semantic-release
-#  after_script: |
-#    cat <<-EOD
-#    ----------------------------------------------------------
-#    Need help? Documentation on the semantic_release CI job can be found at:
-#    https://gitlab.com/gitlab-com/gl-infra/common-ci-tasks/-/blob/main/semantic-release.md
-#    EOD
-#  rules:
-#    - if: '$CI_COMMIT_BRANCH =~ /^(beta|main|release\/\d+.\d+.\d+)$/'
-#      when: always
+sem-release:
+  stage: release
+  needs: []
+  image:
+    name: registry.gitlab.com/gitlab-com/gl-infra/common-ci-tasks-images/semantic-release:latest
+    entrypoint: [""]
+  variables:
+    GITLAB_URL: $CI_SERVER_URL
+  script:
+    - yarn install
+    - npx semantic-release
+  after_script: |
+    cat <<-EOD
+    ----------------------------------------------------------
+    Need help? Documentation on the semantic_release CI job can be found at:
+    https://gitlab.com/gitlab-com/gl-infra/common-ci-tasks/-/blob/main/semantic-release.md
+    EOD
+  rules:
+    - if: '$CI_COMMIT_BRANCH =~ /^(beta|main|release\/\d+.\d+.\d+)$/'
+      when: always
