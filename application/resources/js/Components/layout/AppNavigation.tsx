@@ -38,7 +38,7 @@ function AppNavigation() {
         },
         {
             href: useLocalizedRoute('funds.index'),
-            title: t('funds'),
+            title: t('funds.funds'),
             icon: (isActive: boolean) => <CheckIcon className={isActive ? 'text-primary-100' : 'text-dark'} />,
         },
         {
