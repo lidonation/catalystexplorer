@@ -28,4 +28,5 @@ export type ProposalSearchParams = {
     [ProposalParamsEnum.TAGS]: string[];
     [ProposalParamsEnum.TYPE]: string;
     [ProposalParamsEnum.PROJECT_LENGTH]: number[];
+    [key: string]: any; 
 };
