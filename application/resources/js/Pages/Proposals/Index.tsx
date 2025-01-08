@@ -41,9 +41,6 @@ export default function Index({
 
     const [quickPitchView, setQuickPitchView] = useState(false);
 
-    const setGlobalQuickPitchView = (value: boolean) =>
-        setQuickPitchView(value);
-
 
     return (
         <FiltersProvider defaultFilters={filters}>
@@ -62,7 +59,7 @@ export default function Index({
             </header>
 
             <section className="container flex w-full flex-col items-center justify-center">
-                <ProposalFilters funds={funds}/>
+                <ProposalFilters funds={funds} />
             </section>
 
             <section className="container mt-4 flex flex-col items-end">
@@ -70,7 +67,7 @@ export default function Index({
                     isHorizontal={isHorizontal}
                     quickPitchView={quickPitchView}
                     setIsHorizontal={setIsHorizontal}
-                    setGlobalQuickPitchView={setGlobalQuickPitchView}
+                    setGlobalQuickPitchView={setQuickPitchView}
                 />
             </section>
 
@@ -90,7 +87,7 @@ export default function Index({
                             proposals={proposals?.data}
                             isHorizontal={isHorizontal}
                             quickPitchView={quickPitchView}
-                            setGlobalQuickPitchView={setGlobalQuickPitchView}
+                            setGlobalQuickPitchView={setQuickPitchView}
                         />
                     </div>
                 </WhenVisible>

@@ -58,7 +58,7 @@ const FundsFilter: React.FC<FundFiltersProps> = ({
                     return (
                         <li
                             className={`flex w-full cursor-pointer rounded-md border-primary bg-background shadow-sm hover:border-2 ${selectedItems.includes(fund) ? 'border-2 border-primary' : ''}`}
-                            key={fund}
+                            key={fund + Math.random()}
                             onClick={() => handleSelect(fund)}
                             aria-label={fund}
                         >

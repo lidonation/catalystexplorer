@@ -4,6 +4,7 @@ import PlayerRewindRight from '@/Components/svgs/PlayerRewindRight';
 import PlayerSkipBack from '@/Components/svgs/PlayerSkipBack';
 import PlayerSkipForward from '@/Components/svgs/PlayerSkipForward';
 import PlayerStop from '@/Components/svgs/PlayerStop';
+import PlaylistIcon from '@/Components/svgs/PlaylistIcon';
 import VideoCameraIcon from '@/Components/svgs/VideoCameraIcon';
 import { useUIContext } from '@/Context/SharedUIContext';
 import Plyr from 'plyr-react';
@@ -18,16 +19,19 @@ const PlayerBar: React.FC = () => {
         const newSpeed = playbackSpeed === 2 ? 0.5 : playbackSpeed + 0.5;
         setPlaybackSpeed(newSpeed);
     };
+
     const plyrInstance = useRef(null);
 
-    useEffect(() => console.log({ plyrInstance }, [plyrInstance]));
+    useEffect(() => {
+        if (plyrInstance ) {
+        }
+    }, [plyrInstance]);
 
     return (
         <div
             className={`sticky inset-x-0 bottom-0 mx-auto transition-all duration-300 ${
-                isPlayerBarExpanded ? 'w-full max-w-xl' : 'w-16'
+                isPlayerBarExpanded ? 'w-full max-w-2xl' : 'w-16'
             } flex items-center justify-between overflow-hidden rounded-xl bg-bg-dark px-4 py-3 text-white shadow-lg`}
-            onClick={togglePlayerBar}
         >
             <div className="hidden">
                 <Plyr
@@ -62,7 +66,10 @@ const PlayerBar: React.FC = () => {
             </div>
             {/* Video Camera Icon for Collapsed State */}
             {!isPlayerBarExpanded && (
-                <button className="flex h-12 w-12 items-center justify-center">
+                <button
+                    onClick={togglePlayerBar}
+                    className="flex h-12 w-12 items-center justify-center"
+                >
                     <VideoCameraIcon />
                 </button>
             )}
@@ -75,12 +82,15 @@ const PlayerBar: React.FC = () => {
                             <PlayerSkipBack />
                         </button>
                         <button
-                            onClick={() => {}}
+                            onClick={togglePlayerBar}
                             className="background-button-gradient-color-2 flex h-8 w-8 items-center justify-center rounded-md border border-dark hover:bg-dark sm:h-12 sm:w-12"
                         >
                             <PlayerPause />
                         </button>
-                        <button className="background-button-gradient-color-2 flex h-8 w-8 items-center justify-center rounded-md border border-dark hover:bg-dark sm:h-12 sm:w-12">
+                        <button
+                            onClick={togglePlayerBar}
+                            className="background-button-gradient-color-2 flex h-8 w-8 items-center justify-center rounded-md border border-dark hover:bg-dark sm:h-12 sm:w-12"
+                        >
                             <PlayerStop />
                         </button>
                         <button className="background-button-gradient-color-2 flex h-8 w-8 items-center justify-center rounded-md border border-dark hover:bg-dark sm:h-12 sm:w-12">
@@ -108,6 +118,9 @@ const PlayerBar: React.FC = () => {
                             className="background-button-gradient-color-2 flex h-8 w-8 items-center justify-center rounded-md border border-gray-600 text-xs hover:bg-dark sm:h-12 sm:w-12 sm:text-sm"
                         >
                             {playbackSpeed}x
+                        </button>
+                        <button className="background-button-gradient-color-2 flex h-8 w-8 items-center justify-center rounded-md border border-gray-600 hover:bg-dark sm:h-12 sm:w-12">
+                            <PlaylistIcon />
                         </button>
                     </div>
                 </div>
