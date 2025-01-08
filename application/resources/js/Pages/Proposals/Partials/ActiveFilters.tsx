@@ -5,9 +5,10 @@ import { ProposalSearchParams } from '../../../../types/proposal-search-params';
 
 export default function ActiveFilters() {
     const { filters, setFilters } = useFilterContext<ProposalSearchParams>();
-    const [selectedFilters, setSelectedFilters] = useState<any>({});
+    const [selectedFilters, setSelectedFilters] = useState<Record<string, any>>({});
+    const [clearFilter, setClearFilter] = useState(true);
 
-    const labels = {
+    const labels: Record<string, string> = {
         b: 'Budgets',
         f: 'Funds',
         fs: 'Funding Status',
@@ -22,73 +23,79 @@ export default function ActiveFilters() {
         g: 'Groups',
     };
 
-    function formatSnakeCaseToTitleCase(input: string) {
-        return input
+    const formatSnakeCaseToTitleCase = (input: string) =>
+        input
             ?.split('_')
-            .map(
-                (word: string) =>
-                    word.charAt(0).toUpperCase() + word.slice(1).toLowerCase(),
-            )
+            .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
             .join(' ');
-    }
 
-    const statusFilters = ['coh', 'fs', 'ps'];
-    const rangeFilters = ['pl', 'b'];
-    const idFilters = ['t', 'cam', 'com', 'ip', 'g'];
-    const booleanFilters = ['op'];
+    const filterCategories = {
+        statusFilters: ['coh', 'fs', 'ps'],
+        rangeFilters: ['pl', 'b'],
+        idFilters: ['t', 'cam', 'com', 'ip', 'g'],
+        booleanFilters: ['op'],
+    };
 
     useEffect(() => {
-        const updatedFilters = Object.keys(filters).reduce(
-            (acc: any, key: string) => {
-                if (statusFilters.includes(key)) {
-                    acc[labels[key as keyof typeof labels]] = filters[key].map((item: string) =>
-                        formatSnakeCaseToTitleCase(item),
-                    );
-                } else if (rangeFilters.includes(key)) {
-                    acc[labels[key as keyof typeof labels]] = filters[key];
-                } else if (booleanFilters.includes(key)) {
-                    acc[labels[key as keyof typeof labels]] = !!parseInt(filters[key]);
-                } else if (idFilters.includes(key)) {
-                    // Handle ID filters (optional)
-                } else {
-                    acc[labels[key as keyof typeof labels]] = filters[key];
-                }
+        const updatedFilters = Object.entries(filters).reduce((acc, [key, value]) => {
+            const label = labels[key];
+            if (!label) return acc;
 
-                return acc;
-            },
-            {},
-        );
+            if (filterCategories.statusFilters.includes(key)) {
+                acc[label] = value.map(formatSnakeCaseToTitleCase);
+            } else if (filterCategories.rangeFilters.includes(key) || filterCategories.idFilters.includes(key)) {
+                acc[label] = Array.isArray(value) ? value.join(', ') : value;
+            } else if (filterCategories.booleanFilters.includes(key)) {
+                acc[label] = !!parseInt(value);
+            } else {
+                acc[label] = value;
+            }
+            return acc;
+        }, {});
 
         setSelectedFilters(updatedFilters);
     }, [filters]);
 
     const { t } = useTranslation();
 
-    const removeFilter = (key: string) => {
+    const removeFilter = (key: string, value?: string) => {
         const newFilters = { ...filters };
-        delete newFilters[key];
+        if (value) {
+            newFilters[key] = Array.isArray(newFilters[key]) ? newFilters[key].filter((item) => item !== value) : [];
+        } else {
+            newFilters[key] = [];
+        }
         setFilters(newFilters);
     };
 
+    const handleClearFilter = () => setClearFilter(!clearFilter);
+
     return (
-        <div className="p-2 flex flex-wrap">
-            {Object.keys(selectedFilters).map((key) => (
-                <div
-                    className="bg-background border border-gray-400 rounded-md flex items-center px-2 py-1 mr-1 mb-2"
-                    key={key}
-                >
+        <div className="pt-2 flex flex-wrap">
+            {Object.entries(selectedFilters).map(([key, values]) => (
+                <div className="bg-background border rounded-md flex items-center px-1 py-1 mr-1 mb-1" key={key}>
                     <div className="font-bold mr-1">{key}:</div>
-                    <div className="mr-2">
-                        {Array.isArray(selectedFilters[key])
-                            ? selectedFilters[key].join(', ')
-                            : selectedFilters[key]}
+                    <div className="mr-1">
+                        {Array.isArray(values) ? (
+                            values.map((value) =>
+                                clearFilter ? (
+                                    <div key={value} className="flex items-center">
+                                        <span>{value}</span>
+                                        <button className="ml-2" onClick={() => removeFilter(key, value)}>
+                                            X
+                                        </button>
+                                    </div>
+                                ) : null
+                            )
+                        ) : (
+                            values
+                        )}
                     </div>
-                    <button
-                        className="ml-auto"
-                        onClick={() => removeFilter(key)}
-                    >
-                        X
-                    </button>
+                    {!Array.isArray(values) && (
+                        <button className="ml-1" onClick={() => removeFilter(key)}>
+                            X
+                        </button>
+                    )}
                 </div>
             ))}
         </div>

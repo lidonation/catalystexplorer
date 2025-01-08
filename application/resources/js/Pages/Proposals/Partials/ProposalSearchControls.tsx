@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ProposalSearchParams } from '../../../../types/proposal-search-params';
 import ActiveFilters from './ActiveFilters';
+import Filters from '@/Components/svgs/Filters';
 
 function ProposalSearchControls() {
     const { filters, setFilters } = useFilterContext<ProposalSearchParams>();
@@ -64,12 +65,13 @@ function ProposalSearchControls() {
 
                 <button
                     onClick={toggleFilters}
-                    className="border-input placeholder:text-muted-foreground flex h-full items-center justify-between rounded-md border bg-background px-3 py-2 text-sm shadow-sm ring-offset-background disabled:cursor-not-allowed disabled:opacity-50"
+                    className="border-input placeholder:text-muted-foreground flex h-full items-center justify-between rounded-md border bg-background px-2 py-1 text-sm shadow-sm ring-offset-background disabled:cursor-not-allowed disabled:opacity-50"
                     aria-expanded={showFilters}
                 >
+                    <Filters className='text-white mt-2'/>
                     {t('proposals.filters.filters')}
                     {filters.length > 0 && (
-                        <span className="ml-2 text-sm text-gray-400">({filters.length})</span>
+                        <span className="ml-1 text-white">({filters.length})</span>
                     )}
                 </button>
 
