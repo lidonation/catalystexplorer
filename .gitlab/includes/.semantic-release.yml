@@ -107,7 +107,5 @@ sem-release:
     https://gitlab.com/gitlab-com/gl-infra/common-ci-tasks/-/blob/main/semantic-release.md
     EOD
   rules:
-    # Don't run when the pipeline was triggered by a schedule
-    rules:
-      - if: '$CI_COMMIT_BRANCH =~ /^(develop|main|release\/\d+.\d+.\d+)$/'
-        when: always
+    - if: '$CI_COMMIT_BRANCH =~ /^(develop|main|release\/\d+.\d+.\d+)$/'
+      when: always
