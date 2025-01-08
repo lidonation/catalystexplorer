@@ -405,15 +405,17 @@ app_mainnet:
 sem-release:
   stage: release
   needs:
-    - job: app_preview
+    - job: app_mainnet
   image:
     name: registry.gitlab.com/gitlab-com/gl-infra/common-ci-tasks-images/semantic-release:latest
     entrypoint: [""]
   variables:
     GITLAB_URL: $CI_SERVER_URL
-  script:
-    - yarn install
-    - npx semantic-release
+  script: |-
+    set -vx
+    apk add make
+    yarn install
+    npx semantic-release
   after_script: |
     cat <<-EOD
     ----------------------------------------------------------
