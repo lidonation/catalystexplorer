@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\Http\Intergrations\LidoNation;
 
@@ -8,9 +10,8 @@ use Saloon\Http\Response;
 use Saloon\PaginationPlugin\Contracts\HasPagination;
 use Saloon\PaginationPlugin\PagedPaginator;
 
-class  LidoNationConnector extends Connector implements HasPagination
+class LidoNationConnector extends Connector implements HasPagination
 {
-
     public function resolveBaseUrl(): string
     {
         return config('services.lido.api_base_url');

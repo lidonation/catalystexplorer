@@ -1,11 +1,13 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Database\Seeders;
 
-use App\Models\User;
 use App\Models\Announcement;
-use Illuminate\Database\Seeder;
+use App\Models\User;
 use Database\Seeders\Traits\GetImageLink;
+use Illuminate\Database\Seeder;
 
 class AnnouncementSeeder extends Seeder
 {

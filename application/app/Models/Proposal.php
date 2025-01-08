@@ -1,28 +1,30 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\Models;
 
-use App\Traits\HasAuthor;
 use App\Casts\DateFormatCast;
-use App\Traits\HasTaxonomies;
-use Laravel\Scout\Searchable;
-use Illuminate\Support\Carbon;
-use App\Traits\HasTranslations;
 use App\Enums\CatalystCurrencies;
+use App\Traits\HasAuthor;
 use App\Traits\HasMetaData;
-use Illuminate\Support\Facades\Artisan;
+use App\Traits\HasTaxonomies;
+use App\Traits\HasTranslations;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Artisan;
+use Laravel\Scout\Searchable;
 
 class Proposal extends Model
 {
-    use HasTranslations,
-        HasAuthor,
-        Searchable,
+    use HasAuthor,
+        HasMetaData,
         HasTaxonomies,
-        HasMetaData;
+        HasTranslations,
+        Searchable;
 
     public array $translatable = [
         'title',
@@ -88,7 +90,7 @@ class Proposal extends Model
             'amount_awarded_USD',
             'completed_amount_paid_USD',
             'completed_amount_paid_ADA',
-            'campaign_id'
+            'campaign_id',
         ];
     }
 
@@ -159,36 +161,36 @@ class Proposal extends Model
     {
         $query->when(
             $filters['search'] ?? false,
-            fn(Builder $query, $search) => $query->where('title', 'ILIKE', '%' . $search . '%')
+            fn (Builder $query, $search) => $query->where('title', 'ILIKE', '%'.$search.'%')
         );
 
         $query->when(
             $filters['user_id'] ?? false,
-            fn(Builder $query, $user_id) => $query->where('user_id', $user_id)
+            fn (Builder $query, $user_id) => $query->where('user_id', $user_id)
         );
 
         $query->when(
             $filters['campaign_id'] ?? false,
-            fn(Builder $query, $campaign_id) => $query->where('campaign_id', $campaign_id)
+            fn (Builder $query, $campaign_id) => $query->where('campaign_id', $campaign_id)
         );
 
         $query->when(
             $filters['fund_id'] ?? false,
-            fn(Builder $query, $fund_id) => $query->whereRelation('fund_id', '=', $fund_id)
+            fn (Builder $query, $fund_id) => $query->whereRelation('fund_id', '=', $fund_id)
         );
     }
 
     public function currency(): Attribute
     {
         return Attribute::make(
-            get: fn($currency) => $currency ?? $this->campaign?->currency ?? $this->fund?->currency ?? CatalystCurrencies::USD()->value,
+            get: fn ($currency) => $currency ?? $this->campaign?->currency ?? $this->fund?->currency ?? CatalystCurrencies::USD()->value,
         );
     }
 
     public function quickPitchId(): Attribute
     {
         return Attribute::make(
-            get: fn() => $this->quickpitch ? collect(
+            get: fn () => $this->quickpitch ? collect(
                 explode(
                     '/',
                     $this->quickpitch
@@ -335,7 +337,7 @@ class Proposal extends Model
             'tags' => $this->tags->toArray(),
 
             'users' => $this->team->map(function ($u) {
-                $proposals = $u->proposals?->map(fn($p) => $p->toArray());
+                $proposals = $u->proposals?->map(fn ($p) => $p->toArray());
 
                 return [
                     'id' => $u->id,
@@ -344,8 +346,8 @@ class Proposal extends Model
                     'name' => $u->name,
                     'bio' => $u->bio,
                     'profile_photo_url' => $u->media?->isNotEmpty() ? $u->thumbnail_url : $u->profile_photo_url,
-                    'proposals_completed' => $proposals?->filter(fn($p) => $p['status'] === 'complete')?->count() ?? 0,
-                    'first_timer' => ($proposals?->map(fn($p) => isset($p['fund']) ? $p['fund']['id'] : null)->unique()->count() === 1),
+                    'proposals_completed' => $proposals?->filter(fn ($p) => $p['status'] === 'complete')?->count() ?? 0,
+                    'first_timer' => ($proposals?->map(fn ($p) => isset($p['fund']) ? $p['fund']['id'] : null)->unique()->count() === 1),
                 ];
             }),
 
@@ -420,7 +422,7 @@ class Proposal extends Model
             'offchain_metas' => 'array',
             'opensource' => 'boolean',
             'updated_at' => DateFormatCast::class,
-            'meta_data' => 'array'
+            'meta_data' => 'array',
         ];
     }
 }

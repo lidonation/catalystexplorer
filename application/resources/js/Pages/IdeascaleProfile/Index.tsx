@@ -6,10 +6,10 @@ import { ProposalSearchParams } from '../../../types/proposal-search-params';
 import IdeascaleProfilesList from './Partials/IdeascaleProfileList';
 import IdeaScaleProfileLoader from './Partials/IdeaScaleProfileLoader';
 import IdeascaleProfilesData = App.DataTransferObjects.IdeascaleProfileData;
-import Paginator from '@/Components/Paginator';
-import { useState, useEffect } from 'react';
-import { PaginatedData } from '../../../types/paginated-data';
+import { useState } from 'react';
 import IdeaScaleProfileToolbar from "@/Pages/IdeascaleProfile/Partials/IdeaScaleProfileToolbar";
+import Paginator from "@/Components/Paginator";
+import {PaginatedData} from "../../../types/paginated-data";
 
 interface IdeascaleProfilesPageProps extends Record<string, unknown> {
     ideascaleProfiles: PaginatedData<IdeascaleProfilesData[]>;
@@ -26,7 +26,7 @@ const Index = ({
     return (
         <>
             <FiltersProvider defaultFilters={filters}>
-                <Head title="Ideascale Profiles" />
+                <Head title="Ideascale Profiles"/>
 
                 <header className="container">
                     <h1 className="title-1">
@@ -37,9 +37,9 @@ const Index = ({
                     </p>
                 </header>
 
-            <section className="container flex w-full flex-col items-center justify-center py-8">
-                <IdeaScaleProfileToolbar />
-            </section>
+                <section className="container flex w-full flex-col items-center justify-center py-8">
+                    <IdeaScaleProfileToolbar/>
+                </section>
 
                 <div className="flex w-full flex-col items-center">
                     <section className="container py-8">
@@ -50,13 +50,15 @@ const Index = ({
                         </WhenVisible>
                     </section>
                 </div>
+
                 <section className="w-full px-4 lg:container lg:px-0">
-                <Paginator
-                    pagination={ideascaleProfiles}
-                    setPerPage={setPerPage}
-                    setCurrentPage={setCurrentPage}
-                />
-            </section>
+                    <Paginator
+                        pagination={ideascaleProfiles}
+                        setPerPage={setPerPage}
+                        setCurrentPage={setCurrentPage}
+                    />
+                </section>
+
             </FiltersProvider>
         </>
     );

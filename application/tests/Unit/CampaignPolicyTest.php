@@ -7,16 +7,18 @@ use App\Models\Campaign;
 use App\Models\User;
 use App\Policies\CampaignPolicy;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\Test;
 use Spatie\Permission\Models\Permission;
 use Tests\TestCase;
-use PHPUnit\Framework\Attributes\Test;
 
 class CampaignPolicyTest extends TestCase
 {
     use RefreshDatabase;
 
     protected User $user;
+
     protected Campaign $campaign;
+
     protected CampaignPolicy $policy;
 
     protected function setUp(): void
@@ -31,7 +33,7 @@ class CampaignPolicyTest extends TestCase
         // Create fresh user and campaign for each test
         $this->user = User::factory()->create();
         $this->campaign = Campaign::factory()->create();
-        $this->policy = new CampaignPolicy();
+        $this->policy = new CampaignPolicy;
     }
 
     #[Test]

@@ -4,12 +4,10 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use App\Models\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class ReviewModerationReviewer extends Model
 {
-
     public $timestamps = false;
 
     public function reviewer(): BelongsTo
@@ -26,5 +24,4 @@ class ReviewModerationReviewer extends Model
     {
         return $this->belongsTo(ReviewModeration::class);
     }
-
 }

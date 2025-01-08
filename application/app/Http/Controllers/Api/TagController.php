@@ -1,10 +1,12 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Models\Tag;
 use App\Http\Resources\TagResource;
+use App\Models\Tag;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\Routing\ResponseFactory;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
@@ -12,7 +14,6 @@ use Illuminate\Http\Response;
 
 class TagController extends Controller
 {
-
     public function tag($tagId): \Illuminate\Http\Response|TagResource|Application|ResponseFactory
     {
         $tag = Tag::find($tagId);
@@ -34,7 +35,7 @@ class TagController extends Controller
         if ($per_page > 60) {
             return response([
                 'status_code' => 60,
-                'message' => 'query parameter \'per_page\' should not exceed 60'
+                'message' => 'query parameter \'per_page\' should not exceed 60',
             ], 60);
         }
 

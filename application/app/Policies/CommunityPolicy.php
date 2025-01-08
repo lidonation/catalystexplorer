@@ -4,10 +4,9 @@ declare(strict_types=1);
 
 namespace App\Policies;
 
-use App\Models\Community;
 use App\Enums\PermissionEnum;
+use App\Models\Community;
 use App\Models\User;
-use Illuminate\Auth\Access\Response;
 
 class CommunityPolicy extends AppPolicy
 {
