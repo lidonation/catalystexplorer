@@ -37,7 +37,7 @@ const FundCard: React.FC<FundCardProps> = ({
     const formattedProjectPercentageChange = `${projectPercentageChange > 0 ? "+" : ""}${projectPercentageChange}%`;
 
     return (
-        <div className="bg-background rounded-lg shadow-md p-3 sm:p-4 flex flex-row space-x-4 items-stretch w-full overflow-hidden">
+        <div className="bg-background rounded-lg shadow-md p-3 sm:p-4 flex flex-row space-x-6 items-stretch w-full overflow-hidden">
             {/* Image Section */}
             <div className="flex-none flex flex-col items-center sm:items-start space-y-2 sm:space-y-4">
                 {/* Title */}
