@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use App\DataTransferObjects\IdeascaleProfileData;
 use App\Enums\IdeascaleProfileSearchParams;
 use App\Enums\ProposalSearchParams;
 use App\Repositories\IdeascaleProfileRepository;

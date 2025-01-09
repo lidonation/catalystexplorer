@@ -17,7 +17,6 @@
     "email": "Email",
     "facebook": "Facebook",
     "forgotPassword": "Forgot password",
-    "funds": "Funds",
     "funding": "Funding",
     "getStarted": "Get started",
     "github": "Github",
@@ -59,7 +58,7 @@
     "selection": "selection",
     "awarded": "Awarded",
     "requested": "Requested",
-    "submitted":"Submitted",
+    "submitted": "Submitted",
     "approved": "Approved",
     "completed": "Completed",
     "app": {
@@ -67,7 +66,7 @@
         "contactEmail": "support@lidonation.com",
         "appLogoAlt": "Catalyst Explorer logo."
     },
-    "searchResults":{
+    "searchResults": {
         "noResults": {
             "title": "No results found",
             "description": "Your search \"{{query}}\" did not match any results. Please try again."
@@ -80,7 +79,7 @@
             "communities": "Communities",
             "reviews": "Reviews"
         },
-        "results":{
+        "results": {
             "title": "Search results for \"{{query}}\"",
             "viewMore": "View more"
         }
@@ -101,7 +100,7 @@
             "home": "Home"
         }
     },
-    "breadcrumbs":{
+    "breadcrumbs": {
         "home": "Home"
     },
     "pagination": {
@@ -137,10 +136,10 @@
         "totalProposals": "Total Proposals",
         "vs": "vs last fund"
     },
-    "announcements":{
+    "announcements": {
         "none": "No announcements available",
         "timeRemaining": "Time remaining",
-        "remaining" : "Remaining"
+        "remaining": "Remaining"
     },
     "proposals": {
         "allProposals": "All proposals",
@@ -161,15 +160,15 @@
             "invalidUrlFormat": "Invalid URL format",
             "invalidUrl": "Invalid URL format"
         },
-        "filters":{
+        "filters": {
             "fundingStatus": "Funding Status",
             "opensource": "Opensource",
             "projectStatus": "Project Status",
-            "tags":"Tags",
-            "campaigns":"Campaigns",
+            "tags": "Tags",
+            "campaigns": "Campaigns",
             "communities": "Communities",
             "communityCohort": "Community Cohort",
-            "proposers":"Proposers",
+            "proposers": "Proposers",
             "groups": "Groups",
             "budgets": "Budgets",
             "budget": "Budget",
@@ -197,8 +196,8 @@
             "womenProposals": "Women Proposals",
             "ideafestProposals": "Ideafest Proposals",
             "quickPitches": "Quick Pitches",
-            "noResults":"No results found.",
-            "typeMore":"Try typing more characters",
+            "noResults": "No results found.",
+            "typeMore": "Try typing more characters",
             "votesCastLowToHigh": "Votes Cast: Low to High",
             "votesCastHighToLow": "Votes Cast: High to Low",
             "budgetHighToLow": "Budget: High to Low",
@@ -223,18 +222,18 @@
             "valueForMoneyLowToHigh": "Value for money: Low to High"
         }
     },
-    "ideascaleProfiles" :{
-        "people" : "People",
-        "ideascaleProfiles" : "Ideascale Profiles",
+    "ideascaleProfiles": {
+        "people": "People",
+        "ideascaleProfiles": "Ideascale Profiles",
         "ownProposals": "Own Proposals",
         "coProposals": "Co-Proposals",
-        "pageSubtitle":"Search proposals and challenges by title, content, or author and co-authors",
+        "pageSubtitle": "Search proposals and challenges by title, content, or author and co-authors",
         "limitFunds": "Limit to funds",
         "projectStatus": "Project status",
         "limitTags": "Limit to tags",
-        "fundingStatus":"Funding Status",
-        "noIdeascaleProfiles":"No Ideascale Profiles Found",
-        "options":{ 
+        "fundingStatus": "Funding Status",
+        "noIdeascaleProfiles": "No Ideascale Profiles Found",
+        "options": {
             "alphabeticallyAsc": "Alphabetically: A to Z",
             "alphabeticallyDesc": "Alphabetically: Z to A",
             "awardedAdaLowToHigh": "Amount Awarded ADA: Low to High",
@@ -245,7 +244,19 @@
             "primaryProposalCountHighToLow": "Primary Proposal Count: High to Low",
             "coProposalCountLowToHigh": "Co-Proposal Count: Low to High",
             "coProposalCountHighToLow": "Co-Proposal Count: High to Low"
-            }
+        }
+    },
+    "funds": {
+        "funds": "Funds",
+        "fund": "Fund",
+        "subtitle": "Search proposals and challenges by title, content, or author and co-authors",
+        "fundRounds": "Fund Rounds",
+        "totalProposals": "Total Proposals",
+        "fundedProposals": "Funded Proposals",
+        "totalFundsRequested": "Total Funds Requested",
+        "totalFundsAllocated": "Total Funds Allocated",
+        "completedProposals" : "Completed Proposals",
+        "filter": "Filter"
     },
     "posts": {
         "title": "Catalysts Posts",
