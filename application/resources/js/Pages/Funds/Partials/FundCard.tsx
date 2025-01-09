@@ -2,9 +2,10 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import ArrowTrendingDown from "@/Components/svgs/ArrowTrendingDown";
 import ArrowTrendingUp from "@/Components/svgs/ArrowTrendingUp";
+import FundData = App.DataTransferObjects.FundData;
 
 interface FundCardProps {
-    fund: any;
+    fund: FundData;
     totalAllocated: number;
     totalBudget: number;
     fundedProjects: number;
