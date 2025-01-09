@@ -154,10 +154,19 @@
     },
     "funds": {
         "funds": "Fonds",
+        "fund": "Fonds",
         "pageSubtitle": "Rechercher des fonds par titre, contenu ou auteur et co-auteurs",
         "totalAllocated": "Total alloué",
         "lastFund": "dernier fonds",
-        "fundedProjects": "Projets financés"
+        "fundedProjects": "Projets financés",
+        "subtitle": "Rechercher des propositions et des défis par titre, contenu ou auteur et co-auteurs",
+        "fundRounds": "Nombre de tours de financement",
+        "totalProposals": "Total des propositions",
+        "fundedProposals": "Propositions financées",
+        "totalFundsRequested": "Total des fonds demandés",
+        "totalFundsAllocated": "Total des fonds alloués",
+        "completedProposals": "Propositions terminées",
+        "filter": "Filtrer"
     },
     "proposals": {
         "allProposals": "Toutes les propositions",

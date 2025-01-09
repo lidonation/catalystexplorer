@@ -16,8 +16,8 @@ class FundsController extends Controller
     public function index(Request $request): Response
     {
         $funds = Fund::with('proposals')->get()->map(function ($fund) {
-            $totalAllocated = $fund->proposals->sum('amount_received');
-            $totalBudget = $fund->proposals->sum('amount_requested');
+            $totalAllocated = (float) $fund->proposals->sum('amount_received');
+            $totalBudget = (float) $fund->proposals->sum('amount_requested');
             $fundedProjects = $fund->proposals->where('funding_status', 'funded')->count();
             $totalProjects = $fund->proposals->count();
 
@@ -41,10 +41,12 @@ class FundsController extends Controller
             return [
                 'id' => $fund->id,
                 'fund' => $fund->title,
-                'hero_img_url' => $fund->hero_img_url, 
+                'hero_img_url' => $fund->hero_img_url,
                 'Total Proposals' => $totalProjects,
                 'Funded Proposals' => $fundedProjects,
-                'Completed Proposals' => $fund->proposals->where('status', 'completed')->count(),
+                'fundedProjects' => $fundedProjects,
+                'totalProjects' => $totalProjects,
+                'Completed Proposals' => $fund->proposals->where('status', 'complete')->count(),
                 'totalAllocated' => $totalAllocated,
                 'totalBudget' => $totalBudget,
                 'percentageChange' => $percentageChange . '%',

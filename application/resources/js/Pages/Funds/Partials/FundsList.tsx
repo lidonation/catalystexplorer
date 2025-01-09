@@ -13,12 +13,12 @@ const FundsList: React.FC<FundsListProps> = ({ funds }) => {
                 <li key={index} className="h-full">
                     <FundCard
                         fund={fund}
-                        totalAllocated={fund.totalAllocated}
-                        totalBudget={fund.totalBudget}
-                        fundedProjects={fund.fundedProjects}
-                        totalProjects={fund.totalProjects}
-                        percentageChange={fund.percentageChange}
-                        projectPercentageChange={fund.projectPercentageChange}
+                        totalAllocated={fund.totalAllocated ?? 0}
+                        totalBudget={fund.totalBudget ?? 0}
+                        fundedProjects={fund.fundedProjects ?? 0}
+                        totalProjects={fund.totalProjects ?? 0}
+                        percentageChange={fund.percentageChange }  
+                        projectPercentageChange={fund.projectPercentageChange ?? 0}
                     />
                 </li>
             ))}
