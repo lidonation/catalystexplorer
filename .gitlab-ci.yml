@@ -422,7 +422,7 @@ sem-release:
     GITLAB_URL: $CI_SERVER_URL
   script: |-
     set -vx
-    apk add make curl php
+    apk add make curl php php82-phar
     cp application/.env.testing application/.env
     curl -o /opt/composer https://getcomposer.org/download/2.8.4/composer.phar
     yarn install
