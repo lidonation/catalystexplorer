@@ -345,7 +345,7 @@ db_preview:
     name: preview
     url: https://$CI_PROJECT_PATH_SLUG.$AUTO_DEVOPS_DOMAIN
   rules:
-    - if: ($DEPLOY_INFRA == "true")'
+    - if: '($DEPLOY_INFRA == "true")'
       when: manual
 
 redis_preview:
@@ -355,7 +355,7 @@ redis_preview:
     name: preview
     url: https://$CI_PROJECT_PATH_SLUG.$AUTO_DEVOPS_DOMAIN
   rules:
-    - if: ($DEPLOY_INFRA == "true")'
+    - if: '($DEPLOY_INFRA == "true")'
       when: manual
 
 app_preview:
@@ -378,7 +378,7 @@ db_mainnet:
   - job: db_preview
   rules:
   - if: $CI_COMMIT_BRANCH == 'main' &&
-      ($DEPLOY_INFRA == "true")'
+      '($DEPLOY_INFRA == "true")'
     when: manual
 
 redis_mainnet:
@@ -391,7 +391,7 @@ redis_mainnet:
   - job: redis_preview
   rules:
   - if: $CI_COMMIT_BRANCH == 'main' &&
-      ($DEPLOY_INFRA == "true")'
+      '($DEPLOY_INFRA == "true")'
     when: manual
 
 app_mainnet:
