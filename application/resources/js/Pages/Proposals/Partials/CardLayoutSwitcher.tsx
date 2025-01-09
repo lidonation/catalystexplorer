@@ -4,6 +4,12 @@ import VideoCameraIcon from '@/Components/svgs/VideoCameraIcon';
 import { useFilterContext } from '@/Context/FiltersContext';
 import { ProposalParamsEnum } from '@/enums/proposal-search-params';
 import { ProposalSearchParams } from '../../../../types/proposal-search-params';
+import ListBulletIcon from '@/Components/svgs/ListBulletIcon';
+import VerticalColumnIcon from '@/Components/svgs/VerticalColumnIcon';
+import VideoCameraIcon from '@/Components/svgs/VideoCameraIcon';
+import { useFilterContext } from '@/Context/FiltersContext';
+import { ProposalParamsEnum } from '@/enums/proposal-search-params';
+import { ProposalSearchParams } from '../../../../types/proposal-search-params';
 
 interface CardLayoutSwitcherProps {
     isHorizontal: boolean;
