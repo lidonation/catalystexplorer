@@ -44,22 +44,22 @@ final class FundData extends Data
         public ?string $hero_img_url,
 
         #[TypeScriptOptional]
-        public ?string $totalAllocated,
+        public ?int $totalAllocated,
 
         #[TypeScriptOptional]
-        public ?string $totalBudget,
+        public ?int $totalBudget,
 
         #[TypeScriptOptional]
-        public ?string $fundedProjects,
+        public ?int $fundedProjects,
 
         #[TypeScriptOptional]
-        public ?string $totalProjects,
+        public ?int $totalProjects,
 
         #[TypeScriptOptional]
-        public ?string $percentageChange,
+        public ?int $percentageChange,
 
         #[TypeScriptOptional]
-        public ?string $projectPercentageChange,
+        public ?int $projectPercentageChange,
 
         #[TypeScriptOptional]
         public ?string $status,
