@@ -41,6 +41,27 @@ final class FundData extends Data
         public ?string $content,
 
         #[TypeScriptOptional]
+        public ?string $hero_img_url,
+
+        #[TypeScriptOptional]
+        public ?int $totalAllocated,
+
+        #[TypeScriptOptional]
+        public ?int $totalBudget,
+
+        #[TypeScriptOptional]
+        public ?int $fundedProjects,
+
+        #[TypeScriptOptional]
+        public ?int $totalProjects,
+
+        #[TypeScriptOptional]
+        public ?int $percentageChange,
+
+        #[TypeScriptOptional]
+        public ?int $projectPercentageChange,
+
+        #[TypeScriptOptional]
         public ?string $status,
 
         #[TypeScriptOptional, WithCast(DateTimeInterfaceCast::class, format: 'Y-m-d')]
