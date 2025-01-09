@@ -73,4 +73,11 @@ class FundsController extends Controller
         ]);
     }
 
+    public function fund(Request $request, Fund $fund): Response
+    {
+        return Inertia::render('Funds/Fund', [
+            'fund' => $fund
+        ]);
+    }
+
 }
