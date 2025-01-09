@@ -42,12 +42,12 @@ const FundCard: React.FC<FundCardProps> = ({
             {/* Title and Image Section */}
             <div className="flex-none flex flex-col items-center sm:items-start space-y-4 w-full sm:w-1/2 flex-shrink-0 sm:flex-grow-0">
                 <h2 className="text-lg sm:text-xl font-bold text-center sm:text-left truncate">
-                    {fund.fund}
+                    {fund.title}
                 </h2>
                 <div className="w-24 h-24 sm:w-36 sm:h-36 rounded-full bg-gradient-to-r from-gray-100 to-gray-900 flex items-center justify-center overflow-hidden">
                     <img
                         src={fund.hero_img_url || "/default-hero-image.jpg"}
-                        alt={fund.fund || "Fund"}
+                        alt={fund.title || "Fund"}
                         className="rounded-full w-full h-full object-cover"
                     />
                 </div>

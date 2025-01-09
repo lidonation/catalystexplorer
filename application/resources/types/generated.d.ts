@@ -42,6 +42,7 @@ declare namespace App.DataTransferObjects {
         label: string;
         title: string;
         hero_img_url?: string;
+        amount?: number;
         totalAllocated?: number;
         totalBudget?: number;
         fundedProjects?: number;

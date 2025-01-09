@@ -40,6 +40,7 @@ class FundsController extends Controller
 
             return [
                 'id' => $fund->id,
+                'title' => $fund->title,
                 'fund' => $fund->title,
                 'hero_img_url' => $fund->hero_img_url,
                 'Total Proposals' => $totalProjects,
