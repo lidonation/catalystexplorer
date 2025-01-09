@@ -30,7 +30,7 @@ class AnnouncementData extends Data
     public ?string $event_ends_at = null;
 
     #[TypeScriptOptional]
-    public ?array $cta = null;
+    public ?object $cta = null;
 
     public int $user_id;
 
