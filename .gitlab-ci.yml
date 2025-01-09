@@ -422,11 +422,12 @@ sem-release:
     GITLAB_URL: $CI_SERVER_URL
   script: |-
     set -vx
-    apk add make
+    apk add make curl php
     cp application/.env.testing application/.env
-    curl -o /usr/local/bin/composer https://getcomposer.org/download/2.8.4/composer.phar
+    curl -o /opt/composer https://getcomposer.org/download/2.8.4/composer.phar
     yarn install
-    composer install --no-scripts --ignore-platform-reqs
+    chmod +x /opt/composer
+    /opt/composer install --no-scripts --ignore-platform-reqs
     npx semantic-release
   after_script: |
     cat <<-EOD

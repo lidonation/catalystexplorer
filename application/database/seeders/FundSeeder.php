@@ -4,9 +4,9 @@ namespace Database\Seeders;
 use Carbon\Carbon;
 use App\Models\Fund;
 use App\Models\User;
-use Illuminate\Database\Seeder;
 use Database\Seeders\Traits\GetImageLink;
 use Illuminate\Database\Eloquent\Factories\Sequence;
+use Illuminate\Database\Seeder;
 
 class FundSeeder extends Seeder
 {

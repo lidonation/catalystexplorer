@@ -1,6 +1,9 @@
 import { Head } from '@inertiajs/react';
+import {useTranslation} from "react-i18next";
 
 const Index = () => {
+    const { t } = useTranslation();
+
     return (
         <>
             <Head title="Jormungandr"/>
@@ -17,7 +20,7 @@ const Index = () => {
             </header>
 
             <div className="flex flex-col h-screen w-full items-center justify-center">
-                <h1>Coming Soon</h1>
+                <h1>{t('comingSoon')}</h1>
             </div>
         </>
     );

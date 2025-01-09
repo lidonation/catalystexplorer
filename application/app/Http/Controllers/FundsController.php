@@ -5,14 +5,13 @@ declare(strict_types=1);
 namespace App\Http\Controllers;
 
 use App\Models\Fund;
+use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
-use Illuminate\Http\Request;
 use App\Repositories\FundRepository;
 
 class FundsController extends Controller
 {
-
     public function index(Request $request): Response
     {
         $funds = Fund::with('proposals')->get()->map(function ($fund) {
@@ -50,7 +49,7 @@ class FundsController extends Controller
                 'Completed Proposals' => $fund->proposals->where('status', 'complete')->count(),
                 'totalAllocated' => $totalAllocated,
                 'totalBudget' => $totalBudget,
-                'percentageChange' => $percentageChange . '%',
+                'percentageChange' => $percentageChange.'%',
                 'projectPercentageChange' => $projectPercentageChange,
             ];
         });
@@ -67,9 +66,16 @@ class FundsController extends Controller
                 'fundRounds' => $fundRounds,
                 'totalProposals' => $totalProposals,
                 'fundedProposals' => $fundedProposals,
-                'totalFundsRequested' => number_format($totalFundsRequested, 2) . ' $',
-                'totalFundsAllocated' => number_format($totalFundsAllocated, 2) . ' $',
+                'totalFundsRequested' => number_format($totalFundsRequested, 2).' $',
+                'totalFundsAllocated' => number_format($totalFundsAllocated, 2).' $',
             ],
+        ]);
+    }
+
+    public function fund(Request $request, Fund $fund): Response
+    {
+        return Inertia::render('Funds/Fund', [
+            'fund' => $fund,
         ]);
     }
 
