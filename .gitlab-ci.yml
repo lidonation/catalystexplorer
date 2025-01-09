@@ -414,6 +414,7 @@ sem-release:
   stage: release
   needs:
     - job: app_mainnet
+    - job: composer
   image:
     name: registry.gitlab.com/gitlab-com/gl-infra/common-ci-tasks-images/semantic-release:latest
     entrypoint: [""]
