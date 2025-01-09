@@ -134,7 +134,7 @@ export default function Selector({
                                         }
                                         value={option.value}
                                         onChange={() => {}}
-                                        className="text-content-accent h-4 w-4 bg-background shadow-sm checked:bg-primary checked:hover:bg-primary focus:border focus:border-primary focus:ring-primary checked:focus:bg-primary"
+                                        className="ml-2 text-content-accent h-4 w-4 bg-background shadow-sm checked:bg-primary checked:hover:bg-primary focus:border focus:border-primary focus:ring-primary checked:focus:bg-primary"
                                     />
                                 )}
                             </div>
