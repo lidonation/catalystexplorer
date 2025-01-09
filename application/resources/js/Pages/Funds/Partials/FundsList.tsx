@@ -17,7 +17,7 @@ const FundsList: React.FC<FundsListProps> = ({ funds }) => {
                         totalBudget={fund.totalBudget ?? 0}
                         fundedProjects={fund.fundedProjects ?? 0}
                         totalProjects={fund.totalProjects ?? 0}
-                        percentageChange={fund.percentageChange }  
+                        percentageChange={String(fund.percentageChange ?? 0)} 
                         projectPercentageChange={fund.projectPercentageChange ?? 0}
                     />
                 </li>

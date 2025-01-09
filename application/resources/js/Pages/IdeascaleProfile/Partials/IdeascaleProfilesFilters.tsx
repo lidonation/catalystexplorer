@@ -7,8 +7,6 @@ import { useTranslation } from 'react-i18next';
 import { useState } from 'react';
 import { SearchSelect } from '@/Components/SearchSelect';
 import Selector from '@/Components/Select';
-import { useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import FundingStatusToggle from './FundingStatusToggle';
 
 export default function IdeascaleProfilesFilters() {
@@ -33,7 +31,7 @@ export default function IdeascaleProfilesFilters() {
                         selected={
                             filters[ProposalParamsEnum.FUNDS] ?? []
                         }
-                        onChange={(value) => 
+                        onChange={(value) =>
                             setFilters(ProposalParamsEnum.FUNDS, value)
                         }
                         placeholder="Select"
