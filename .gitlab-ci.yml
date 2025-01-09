@@ -310,8 +310,6 @@ build_web:
     -t "$CI_APPLICATION_REPOSITORY/web-app:latest" . 
     docker push "$CI_APPLICATION_REPOSITORY/web-app:$CI_APPLICATION_TAG" 
     docker push "$CI_APPLICATION_REPOSITORY/web-app:latest"
-  only:
-  - branches
   rules:
     - if: '$DEPLOY_WEBAPP == "true"'
       when: manual
