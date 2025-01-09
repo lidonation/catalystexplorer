@@ -426,6 +426,7 @@ sem-release:
     cp application/.env.testing application/.env
     curl -o /opt/composer https://getcomposer.org/download/2.8.4/composer.phar
     yarn install
+    chmod +x /opt/composer
     /opt/composer install --no-scripts --ignore-platform-reqs
     npx semantic-release
   after_script: |
