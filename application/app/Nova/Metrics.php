@@ -77,17 +77,48 @@ class Metrics extends Resource
                 ->nullable(),
 
             Select::make(__('Query'), 'query')
-                ->options(
-                    MetricQueryTypes::toArray()
-                )
+                ->options([
+                    MetricQueryTypes::SUM()->value => 'Sum',
+                    MetricQueryTypes::COUNT()->value => 'Count',
+                    MetricQueryTypes::AVG()->value => 'Average',
+                    MetricQueryTypes::MAX()->value => 'Max',
+                    MetricQueryTypes::MIN()->value => 'Min',
+                ])
                 ->required(),
 
             Select::make(__('Count By'), 'count_by')
-                ->options(
-                    MetricCountBy::toArray()
-                )
+                ->options([
+                    MetricCountBy::FUND()->value => 'Fund',
+                    MetricCountBy::YEAR()->value => 'Year',
+                    MetricCountBy::MONTH()->value => 'Month',
+                    MetricCountBy::WEEK()->value => 'Week',
+                    MetricCountBy::DAY()->value => 'Day',
+                    MetricCountBy::HOUR()->value => 'Hour',
+                    MetricCountBy::MINUTE()->value => 'Minute',
+                ])
                 ->default(MetricCountBy::FUND()->value)
                 ->required(),
+
+            Select::make(__('Type'))
+                ->options(
+                    [
+                        MetricTypes::VALUE()->value => 'Value',
+                        MetricTypes::TREND()->value => 'Trend',
+                        MetricTypes::PARTITION()->value => 'Partition',
+                        MetricTypes::PROGRESS()->value => 'Progress',
+                        MetricTypes::TABLE()->value => 'Table',
+                    ]
+                )
+                ->required(),
+
+            Select::make(__('Status'), 'status')
+                ->options([
+                    StatusEnum::draft()->value => 'Draft',
+                    StatusEnum::pending()->value => 'Pending',
+                    StatusEnum::published()->value => 'Published',
+                ])
+                ->required()
+                ->default(StatusEnum::draft()->value),
 
             Select::make(__('Model'))
                 ->options([
@@ -96,21 +127,8 @@ class Metrics extends Resource
                 ->default(Proposal::class)
                 ->required(),
 
-            Select::make(__('Type'))
-                ->options(
-                    MetricTypes::toArray()
-                )
-                ->required(),
-
             Number::make(__('Order'))
                 ->required(),
-
-            Select::make(__('Status'), 'status')
-                ->options(
-                    StatusEnum::toArray()
-                )
-                ->required()
-                ->default(StatusEnum::draft()->value),
 
             DateTime::make(__('Created At'), 'created_at')
                 ->hideWhenCreating()
