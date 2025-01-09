@@ -103,6 +103,11 @@ class Fund extends Model implements HasMedia
         $this->addMediaCollection('hero');
     }
 
+    public function getHeroImgUrlAttribute()
+    {
+        return $this->getFirstMediaUrl('hero') ?: null;
+    }
+
     protected function casts(): array
     {
         return [

@@ -19,14 +19,14 @@ When writing commit messages, please follow the [Conventional Commits](https://w
 ```<type>[optional scope]:<ticket-no> <description>```
 ie:
 ```bash
-git commit -m "feat(homepage): LN-1343 added quick pitches to homepage."
-git commit -m "fix(ideascale profiles): LN-1545 fixed bug in search bar."
-git commit -m 'docs(readme.md): LN-1448 Added documentation for community review score calculation.'
-git commit -m 'style(proposals page): LN-1640 Updated styling for search bar.'
-git commit -m 'refactor(global search): LN-1542 Refactored search bar component.'
-git commit -m 'perf(global search): LN-3343 Improved search bar performance.'
-git commit -m 'test(reviews): LN-1443 Added unit tests for search bar.'
-git commit -m 'chore(app): LN-2343 Updated dependencies.'
+git commit -m "feat(homepage): ln-1343 added quick pitches to homepage."
+git commit -m "fix(ideascale profiles): ln-1545 fixed bug in search bar."
+git commit -m 'docs(readme.md): ln-1448 Added documentation for community review score calculation.'
+git commit -m 'style(proposals page): ln-1640 Updated styling for search bar.'
+git commit -m 'refactor(global search): ln-1542 Refactored search bar component.'
+git commit -m 'perf(global search): ln-3343 Improved search bar performance.'
+git commit -m 'test(reviews): ln-1443 Added unit tests for search bar.'
+git commit -m 'chore(app): ln-2343 Updated dependencies.'
 ```
 
 ### 3. Implement and Test

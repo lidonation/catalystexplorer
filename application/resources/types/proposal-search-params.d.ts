@@ -1,6 +1,7 @@
 import { ProposalParamsEnum } from '@/enums/proposal-search-params';
 
 export type ProposalSearchParams = {
+    length: number;
     [ProposalParamsEnum.AWARDED_ADA]: string;
     [ProposalParamsEnum.AWARDED_USD]: string;
     [ProposalParamsEnum.BUDGETS]: number[];
@@ -9,7 +10,7 @@ export type ProposalSearchParams = {
     [ProposalParamsEnum.COHORT]: string[];
     [ProposalParamsEnum.COMMUNITIES]: string[];
     [ProposalParamsEnum.FUNDS]: string[];
-    [ProposalParamsEnum.FUNDING_STATUS]: string[];
+    [ProposalParamsEnum.FUNDING_STATUS]: (string[] | string);
     [ProposalParamsEnum.GROUPS]: string[];
     [ProposalParamsEnum.LIMIT]: number;
     [ProposalParamsEnum.MAX_BUDGET]: number;
@@ -27,4 +28,5 @@ export type ProposalSearchParams = {
     [ProposalParamsEnum.TAGS]: string[];
     [ProposalParamsEnum.TYPE]: string;
     [ProposalParamsEnum.PROJECT_LENGTH]: number[];
+    [key: string]: any; 
 };

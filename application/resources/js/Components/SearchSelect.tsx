@@ -43,16 +43,18 @@ export function SearchSelect({
 
     const { t } = useTranslation();
 
-    const filteredOptions = options.map(
-        (option: {
-            name?: string;
-            title?: string;
-            label?: string;
-            id: number;
-        }) => {
+    const filteredOptions = options.map((option) => {
+        // Handle when option is a string
+        if (typeof option === 'string') {
             return {
-                label: option?.name ?? option?.title ?? option?.label,
-                id: option.id,
+                label: option,
+                id: option
+            };
+        }        
+            // Handle when option is an object
+            return {
+                label: option?.name ?? option?.title ?? option?.label ?? 'Unknown',
+                id: option?.id?.toString() ?? option?.toString() ?? 'unknown-id',
             };
         },
     );
@@ -68,7 +70,7 @@ export function SearchSelect({
             } else {
                 onChange([value]);
                 setOpen(false);
-                setSearchTerm(''); // Clear search when item is selected
+                setSearchTerm('');
             }
         },
         [multiple, onChange, selected],

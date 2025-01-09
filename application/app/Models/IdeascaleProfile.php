@@ -74,7 +74,25 @@ class IdeascaleProfile extends Model implements HasMedia
             'username',
             'bio',
             'email',
+            'proposals_total_amount_requested',
+        ];
+    }
+
+    public static function getFilterableAttributes(): array
+    {
+        return [
+            'first_timer',
+            'proposals_completed',
+            'proposals_count',
+            'proposals.campaign',
+            'proposals.impact_proposal',
+            // 'proposals.fund',
+            'proposals.tags',
             'proposals',
+            'proposals_approved',
+            'proposals_total_amount_requested',
+            'proposals.is_co_proposer',
+            'proposals.is_primary_proposer',
         ];
     }
 
