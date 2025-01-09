@@ -17,7 +17,7 @@ variables:
   DOCKER_HOST: tcp://docker:2375
   DOCKER_TLS_CERTDIR: ""
   DOCKER_DRIVER: overlay2
-  DEPLOY_WEBSITE:
+  DEPLOY_WEBAPP:
     value: "true"
     description: "Build and deploy catalystexplorer.com"
   DEPLOY_INFRA:
@@ -66,7 +66,7 @@ composer:
   services: []
   retry: 1
   rules:
-  - if: '$DEPLOY_WEBSITE == "true"'
+  - if: '$DEPLOY_WEBAPP == "true"'
   dependencies:
   - yarn
   variables:
@@ -95,7 +95,7 @@ yarn:
   services: []
   retry: 1
   rules:
-  - if: '$DEPLOY_WEBSITE == "true"'
+  - if: '$DEPLOY_WEBAPP == "true"'
   needs:
   - composer
   before_script:
@@ -143,7 +143,7 @@ pest:
      php artisan optimize:clear  && \
      php artisan test --filter=arch'
   rules:
-  - if: '$CI_COMMIT_BRANCH != "main" && ($DEPLOY_WEBSITE == "true")'
+  - if: '$CI_COMMIT_BRANCH != "main" && ($DEPLOY_WEBAPP == "true")'
   dependencies:
   - composer
   - yarn
@@ -185,7 +185,7 @@ cypress:
     - application/cypress/screenshots
     - application/cypress/videos
   rules:
-  - if: '$DEPLOY_WEBSITE == "true"'
+  - if: '$DEPLOY_WEBAPP == "true"'
   allow_failure: true # allow failure to not block the pipeline for now
 
 ########## Helper Scripts ############
@@ -310,9 +310,11 @@ build_web:
     -t "$CI_APPLICATION_REPOSITORY/web-app:latest" . 
     docker push "$CI_APPLICATION_REPOSITORY/web-app:$CI_APPLICATION_TAG" 
     docker push "$CI_APPLICATION_REPOSITORY/web-app:latest"
-
   only:
   - branches
+  rules:
+    - if: '$DEPLOY_WEBAPP == "true"'
+      when: manual
 
 build_web_base:
   stage: .pre
@@ -364,7 +366,9 @@ app_preview:
   environment:
     name: preview
     url: https://$CI_PROJECT_PATH_SLUG.$AUTO_DEVOPS_DOMAIN
-  when: manual
+  rules:
+    - if: '$DEPLOY_WEBAPP == "true"'
+      when: manual
 
 ######## Mainnet Deployments #########
 ######################################
@@ -403,7 +407,7 @@ app_mainnet:
   needs:
   - job: app_preview
   rules:
-  - if: $CI_COMMIT_BRANCH == 'main'
+  - if: '$CI_COMMIT_BRANCH == "main" && ($DEPLOY_WEBAPP == "true")'
     when: manual
 
 ######## Semantic Releases #########
@@ -430,5 +434,5 @@ sem-release:
     https://gitlab.com/gitlab-com/gl-infra/common-ci-tasks/-/blob/main/semantic-release.md
     EOD
   rules:
-    - if: '$CI_COMMIT_BRANCH =~ /^(beta|main|release\/\d+.\d+.\d+)$/'
+    - if: '$CI_COMMIT_BRANCH =~ /^(beta|main|release\/\d+.\d+.\d+)$/ && ($DEPLOY_WEBAPP == "true")'
       when: on_success
