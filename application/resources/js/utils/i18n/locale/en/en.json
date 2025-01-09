@@ -141,6 +141,23 @@
         "timeRemaining": "Time remaining",
         "remaining": "Remaining"
     },
+    "funds": {
+        "funds": "Funds",
+        "fund": "Fund",
+        "pageSubtitle": "Search funds by title, content, or author and co-authors",
+        "totalAllocated": "Total Allocated",
+        "lastFund": "last fund",
+        "fundedProjects": "Funded Projects",
+        "subtitle": "Search proposals and challenges by title, content, or author and co-authors",
+        "fundRounds": "Fund Rounds",
+        "totalProposals": "Total Proposals",
+        "fundedProposals": "Funded Proposals",
+        "totalFundsRequested": "Total Funds Requested",
+        "totalFundsAllocated": "Total Funds Allocated",
+        "completedProposals" : "Completed Proposals",
+        "filter": "Filter"
+    },
+
     "proposals": {
         "allProposals": "All proposals",
         "proposals": "Proposals",
@@ -247,18 +264,6 @@
             "coProposalCountHighToLow": "Co-Proposal Count: High to Low"
         }
     },
-    "funds": {
-        "funds": "Funds",
-        "fund": "Fund",
-        "subtitle": "Search proposals and challenges by title, content, or author and co-authors",
-        "fundRounds": "Fund Rounds",
-        "totalProposals": "Total Proposals",
-        "fundedProposals": "Funded Proposals",
-        "totalFundsRequested": "Total Funds Requested",
-        "totalFundsAllocated": "Total Funds Allocated",
-        "completedProposals" : "Completed Proposals",
-        "filter": "Filter"
-    },
     "posts": {
         "title": "Catalysts Posts",
         "subtitle": "Latest news and posts from our community"
@@ -309,7 +314,9 @@
             "playerRewindRight": "Rewind Right Icon",
             "playerSkipBack": "Skip Back Icon",
             "playerSkipForward": "Skip Forward Icon",
-            "playerStop": "Stop Icon"
+            "playerStop": "Stop Icon",
+            "arrowTrendingUp": "Trending Up Icon",
+            "arrowTrendingDown": "Trending Down Icon"
         }
     },
     "users": {
