@@ -20,7 +20,7 @@ const AnnouncementCard = ({ announcement }: AnnouncementCardProps) => {
     };
 
     const navigateTo = (linkObj: LinkObj) => {
-        const isExternal = linkObj.link.startsWith('http');
+        const isExternal = linkObj.link?.startsWith('http');
         if (isExternal) {
             return (
                 <a
@@ -44,8 +44,6 @@ const AnnouncementCard = ({ announcement }: AnnouncementCardProps) => {
         );
     };
 
-    const firstLink = announcement.cta?.[0] || {};
-
     return (
         <div className="flex flex-col gap-3 rounded-xl bg-background px-3 py-4">
             <div className="flex items-center justify-between">
@@ -63,9 +61,9 @@ const AnnouncementCard = ({ announcement }: AnnouncementCardProps) => {
                 {generateContentPreview(announcement.content)}
             </div>
             <div>
-                {firstLink && (
+                {(
                     <div className="text-4 font-bold text-primary">
-                        {navigateTo(firstLink)}
+                        {navigateTo(announcement.cta as LinkObj)}
                     </div>
                 )}
             </div>

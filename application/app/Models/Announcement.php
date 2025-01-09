@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use App\Casts\DateFormatCast;
+use App\Observers\AnnouncementObserver;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Prunable;
@@ -13,6 +14,7 @@ use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
+#[ObservedBy([AnnouncementObserver::class])]
 class Announcement extends Model implements HasMedia
 {
     use InteractsWithMedia, Prunable;
@@ -30,9 +32,9 @@ class Announcement extends Model implements HasMedia
     protected function casts(): array
     {
         return [
-            'cta' => 'array',
-            'event_starts_at' => DateFormatCast::class,
-            'event_ends_at' => DateFormatCast::class,
+            'cta' => 'object',
+            'event_starts_at' => 'datetime:Y-m-d',
+            'event_ends_at' => 'datetime:Y-m-d',
         ];
     }
 

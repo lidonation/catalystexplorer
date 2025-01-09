@@ -18,15 +18,15 @@ class DatabaseSeeder extends Seeder
             RoleSeeder::class,
             PermissionSeeder::class,
             UserSeeder::class,
+            AnnouncementSeeder::class,
+            MetricSeeder::class,
+            IdeascaleProfilesSeeder::class,
             FundSeeder::class,
             CampaignSeeder::class,
-            IdeascaleProfilesSeeder::class,
             ProposalSeeder::class,
             GroupSeeder::class,
             CommunitySeeder::class,
             ReviewSeeder::class,
-            AnnouncementSeeder::class,
-            MetricSeeder::class,
         ];
 
         foreach ($seeders as $seeder) {
