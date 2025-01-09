@@ -143,10 +143,19 @@
     },
     "funds": {
         "funds": "Funds",
+        "fund": "Fund",
         "pageSubtitle": "Search funds by title, content, or author and co-authors",
         "totalAllocated": "Total Allocated",
         "lastFund": "last fund",
-        "fundedProjects": "Funded Projects"
+        "fundedProjects": "Funded Projects",
+        "subtitle": "Search proposals and challenges by title, content, or author and co-authors",
+        "fundRounds": "Fund Rounds",
+        "totalProposals": "Total Proposals",
+        "fundedProposals": "Funded Proposals",
+        "totalFundsRequested": "Total Funds Requested",
+        "totalFundsAllocated": "Total Funds Allocated",
+        "completedProposals" : "Completed Proposals",
+        "filter": "Filter"
     },
 
     "proposals": {

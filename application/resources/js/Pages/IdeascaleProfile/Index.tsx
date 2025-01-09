@@ -16,9 +16,9 @@ interface IdeascaleProfilesPageProps extends Record<string, unknown> {
     filters: ProposalSearchParams;
 }
 const Index = ({
-    ideascaleProfiles,
-    filters,
-}: PageProps<IdeascaleProfilesPageProps>) => {
+                   ideascaleProfiles,
+                   filters,
+               }: PageProps<IdeascaleProfilesPageProps>) => {
     const { t } = useTranslation();
     const [perPage, setPerPage] = useState<number>(24);
     const [currentPage, setCurrentPage] = useState<number>(1);

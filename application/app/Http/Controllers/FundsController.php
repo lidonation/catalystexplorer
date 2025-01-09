@@ -37,18 +37,37 @@ class FundsController extends Controller
             $projectPercentageChange = $previousFundedProjects > 0
                 ? round((($fundedProjects - $previousFundedProjects) / $previousFundedProjects) * 100, 2)
                 : 0;
+
             return [
                 'id' => $fund->id,
-                'title' => $fund->title,
-                'hero_img_url' => $fund->hero_img_url,
+                'fund' => $fund->title,
+                'hero_img_url' => $fund->hero_img_url, 
+                'Total Proposals' => $totalProjects,
+                'Funded Proposals' => $fundedProjects,
+                'Completed Proposals' => $fund->proposals->where('status', 'completed')->count(),
                 'totalAllocated' => $totalAllocated,
                 'totalBudget' => $totalBudget,
-                'fundedProjects' => $fundedProjects,
-                'totalProjects' => $totalProjects,
                 'percentageChange' => $percentageChange . '%',
                 'projectPercentageChange' => $projectPercentageChange,
             ];
         });
-        return Inertia::render('Funds/Index', ['funds' => $funds]);
+
+        $fundRounds = $funds->count();
+        $totalProposals = $funds->sum('Total Proposals');
+        $fundedProposals = $funds->sum('Funded Proposals');
+        $totalFundsRequested = $funds->sum('totalBudget');
+        $totalFundsAllocated = $funds->sum('totalAllocated');
+
+        return Inertia::render('Funds/Index', [
+            'funds' => $funds,
+            'chartSummary' => [
+                'fundRounds' => $fundRounds,
+                'totalProposals' => $totalProposals,
+                'fundedProposals' => $fundedProposals,
+                'totalFundsRequested' => number_format($totalFundsRequested, 2) . ' $',
+                'totalFundsAllocated' => number_format($totalFundsAllocated, 2) . ' $',
+            ],
+        ]);
     }
+
 }

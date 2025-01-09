@@ -1,12 +1,13 @@
 include:
   # Analyze commits to determine whether to cut a release
   # see https://gitlab.com/gitlab-com/gl-infra/common-ci-tasks/-/blob/main/semantic-release.md
-  - project: 'gitlab-com/gl-infra/common-ci-tasks'
-    ref: v2.49.0  # renovate:managed
-    file: semantic-release.yml
+#  - '.gitlab/includes/.semantic-release.yml'
+#  - project: 'gitlab-com/gl-infra/common-ci-tasks'
+#    ref: v2.49.0  # renovate:managed
+#    file: semantic-release.yml
     #inputs:
     #  stage: release
-    #  vault: access_tokens/${VAULT_SECRETS_PATH}/semantic-release/token@ci
+    #  p: access_tokens/${VAULT_SECRETS_PATH}/semantic-release/token@ci
 
 
 variables:
@@ -16,7 +17,7 @@ variables:
   DOCKER_HOST: tcp://docker:2375
   DOCKER_TLS_CERTDIR: ""
   DOCKER_DRIVER: overlay2
-  DEPLOY_WEBSITE:
+  DEPLOY_WEBAPP:
     value: "true"
     description: "Build and deploy catalystexplorer.com"
   DEPLOY_INFRA:
@@ -65,7 +66,7 @@ composer:
   services: []
   retry: 1
   rules:
-  - if: '$DEPLOY_WEBSITE == "true"'
+  - if: '$DEPLOY_WEBAPP == "true"'
   dependencies:
   - yarn
   variables:
@@ -94,7 +95,7 @@ yarn:
   services: []
   retry: 1
   rules:
-  - if: '$DEPLOY_WEBSITE == "true"'
+  - if: '$DEPLOY_WEBAPP == "true"'
   needs:
   - composer
   before_script:
@@ -142,7 +143,7 @@ pest:
      php artisan optimize:clear  && \
      php artisan test --filter=arch'
   rules:
-  - if: '$CI_COMMIT_BRANCH != "main" && ($DEPLOY_WEBSITE == "true")'
+  - if: '$CI_COMMIT_BRANCH != "main" && ($DEPLOY_WEBAPP == "true")'
   dependencies:
   - composer
   - yarn
@@ -184,7 +185,7 @@ cypress:
     - application/cypress/screenshots
     - application/cypress/videos
   rules:
-  - if: '$DEPLOY_WEBSITE == "true"'
+  - if: '$DEPLOY_WEBAPP == "true"'
   allow_failure: true # allow failure to not block the pipeline for now
 
 ########## Helper Scripts ############
@@ -309,9 +310,11 @@ build_web:
     -t "$CI_APPLICATION_REPOSITORY/web-app:latest" . 
     docker push "$CI_APPLICATION_REPOSITORY/web-app:$CI_APPLICATION_TAG" 
     docker push "$CI_APPLICATION_REPOSITORY/web-app:latest"
-
   only:
   - branches
+  rules:
+    - if: '$DEPLOY_WEBAPP == "true"'
+      when: manual
 
 build_web_base:
   stage: .pre
@@ -343,7 +346,9 @@ db_preview:
   environment:
     name: preview
     url: https://$CI_PROJECT_PATH_SLUG.$AUTO_DEVOPS_DOMAIN
-  when: manual
+  rules:
+    - if: '$DEPLOY_INFRA == "true"'
+      when: manual
 
 redis_preview:
   <<: *redis_template
@@ -351,7 +356,9 @@ redis_preview:
   environment:
     name: preview
     url: https://$CI_PROJECT_PATH_SLUG.$AUTO_DEVOPS_DOMAIN
-  when: manual
+  rules:
+    - if: '$DEPLOY_INFRA == "true"'
+      when: manual
 
 app_preview:
   <<: *app_template
@@ -359,7 +366,9 @@ app_preview:
   environment:
     name: preview
     url: https://$CI_PROJECT_PATH_SLUG.$AUTO_DEVOPS_DOMAIN
-  when: manual
+  rules:
+    - if: '$DEPLOY_WEBAPP == "true"'
+      when: manual
 
 ######## Mainnet Deployments #########
 ######################################
@@ -371,8 +380,9 @@ db_mainnet:
     url: https://$CI_PROJECT_PATH_SLUG.$AUTO_DEVOPS_DOMAIN
   needs:
   - job: db_preview
+    optional: true
   rules:
-  - if: $CI_COMMIT_BRANCH == 'main'
+  - if: '$CI_COMMIT_BRANCH == "main" && ($DEPLOY_INFRA == "true")'
     when: manual
 
 redis_mainnet:
@@ -383,8 +393,9 @@ redis_mainnet:
     url: https://$CI_PROJECT_PATH_SLUG.$AUTO_DEVOPS_DOMAIN
   needs:
   - job: redis_preview
+    optional: true
   rules:
-  - if: $CI_COMMIT_BRANCH == 'main'
+  - if: '$CI_COMMIT_BRANCH == "main" && ($DEPLOY_INFRA == "true")'
     when: manual
 
 app_mainnet:
@@ -396,5 +407,32 @@ app_mainnet:
   needs:
   - job: app_preview
   rules:
-  - if: $CI_COMMIT_BRANCH == 'main'
+  - if: '$CI_COMMIT_BRANCH == "main" && ($DEPLOY_WEBAPP == "true")'
     when: manual
+
+######## Semantic Releases #########
+######################################
+sem-release:
+  stage: release
+  needs:
+    - job: app_mainnet
+  image:
+    name: registry.gitlab.com/gitlab-com/gl-infra/common-ci-tasks-images/semantic-release:latest
+    entrypoint: [""]
+  variables:
+    GITLAB_URL: $CI_SERVER_URL
+  script: |-
+    set -vx
+    apk add make
+    cp application/.env.testing application/.env
+    yarn install
+    npx semantic-release
+  after_script: |
+    cat <<-EOD
+    ----------------------------------------------------------
+    Need help? Documentation on the semantic_release CI job can be found at:
+    https://gitlab.com/gitlab-com/gl-infra/common-ci-tasks/-/blob/main/semantic-release.md
+    EOD
+  rules:
+    - if: '$CI_COMMIT_BRANCH =~ /^(beta|main|release\/\d+.\d+.\d+)$/ && ($DEPLOY_WEBAPP == "true")'
+      when: on_success
