@@ -189,7 +189,8 @@
             "groups": "Groups",
             "budgets": "Budgets",
             "budget": "Budget",
-            "projectLength": "Project Length (months)"
+            "projectLength": "Project Length (months)",
+            "filters": "Filters"
         },
         "options": {
             "sort": "Sort by",

@@ -310,8 +310,6 @@ build_web:
     -t "$CI_APPLICATION_REPOSITORY/web-app:latest" . 
     docker push "$CI_APPLICATION_REPOSITORY/web-app:$CI_APPLICATION_TAG" 
     docker push "$CI_APPLICATION_REPOSITORY/web-app:latest"
-  only:
-  - branches
   rules:
     - if: '$DEPLOY_WEBAPP == "true"'
       when: manual
@@ -416,6 +414,7 @@ sem-release:
   stage: release
   needs:
     - job: app_mainnet
+    - job: composer
   image:
     name: registry.gitlab.com/gitlab-com/gl-infra/common-ci-tasks-images/semantic-release:latest
     entrypoint: [""]
@@ -425,7 +424,9 @@ sem-release:
     set -vx
     apk add make
     cp application/.env.testing application/.env
+    curl -o /usr/local/bin/composer https://getcomposer.org/download/2.8.4/composer.phar
     yarn install
+    composer install --no-scripts --ignore-platform-reqs
     npx semantic-release
   after_script: |
     cat <<-EOD
