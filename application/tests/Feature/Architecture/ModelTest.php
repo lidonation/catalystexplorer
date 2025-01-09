@@ -14,7 +14,7 @@ arch()
         User::class,
         IdeascaleProfile::class,
         ModelTag::class,
-        'App\Models\Scopes'
+        'App\Models\Scopes',
     ]);
 
 arch()
@@ -22,7 +22,7 @@ arch()
     ->not->toUseTrait(HasFactory::class)
     ->ignoring([
         User::class,
-        Model::class
+        Model::class,
     ]);
 
 arch()

@@ -1,10 +1,12 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\Policies;
 
-use App\Models\User;
-use App\Models\Model;
 use App\Enums\RoleEnum;
+use App\Models\Model;
+use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
 class AppPolicy
@@ -29,6 +31,7 @@ class AppPolicy
 
     /**
      * Determine whether the user can view the model.
+     *
      * @throws \Exception
      */
     public function canView(User $user, $model): mixed

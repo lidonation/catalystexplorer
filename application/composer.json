@@ -1,9 +1,9 @@
 {
-    "name": "laravel/laravel",
-    "type": "project",
-    "description": "The skeleton application for the Laravel framework.",
-    "keywords": ["laravel", "framework"],
-    "license": "MIT",
+    "name": "lidonation/catalystexplorer",
+    "type": "product",
+    "description": "Your friendly neighborhood spot for exploring and participating in cardano project catalyst ecosystem.",
+    "keywords": ["cardano", "project catalyst", "explorer", "laravel", "framework"],
+    "license": "Apache-2.0",
     "require": {
         "php": "^8.3",
         "codezero/laravel-localized-routes": "^4.0",

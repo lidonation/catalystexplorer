@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
@@ -47,6 +49,7 @@ class SearchController extends Controller
     private function getFilterList(Request $request): array
     {
         $filters = $request->input('f');
+
         return $filters ? explode(',', $filters) : [];
     }
 
@@ -62,10 +65,11 @@ class SearchController extends Controller
         if (empty($filterList) || in_array('articles', $filterList)) {
             $posts->setQuery([
                 'tags' => 'project-catalyst',
-                'search' => $searchTerm
+                'search' => $searchTerm,
             ]);
             $counts['articles'] = $posts->paginate(10)->collect()->count();
         }
+
         return $counts;
     }
 
@@ -76,7 +80,7 @@ class SearchController extends Controller
         foreach ($repositories as $key => $repository) {
             if (empty($filterList) || in_array($key, $filterList)) {
                 $searchData[$key] = Inertia::optional(
-                    fn() => $repository->search($searchTerm)->raw()
+                    fn () => $repository->search($searchTerm)->raw()
                 );
             }
         }
@@ -85,7 +89,7 @@ class SearchController extends Controller
             $searchData['articles'] = Inertia::optional(function () use ($posts, $searchTerm) {
                 $posts->setQuery([
                     'tags' => 'project-catalyst',
-                    'search' => $searchTerm
+                    'search' => $searchTerm,
                 ]);
 
                 return $posts->paginate(10)->collect()->all();

@@ -1,13 +1,15 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Database\Seeders;
 
-use App\Models\User;
 use App\Enums\RoleEnum;
-use Illuminate\Database\Seeder;
-use Spatie\Permission\Models\Role;
-use Illuminate\Support\Facades\Hash;
+use App\Models\User;
 use Database\Seeders\Traits\GetImageLink;
+use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
+use Spatie\Permission\Models\Role;
 
 class UserSeeder extends Seeder
 {
@@ -36,7 +38,7 @@ class UserSeeder extends Seeder
     {
         $superUser = User::where('email', config('app.super_admin.email'))->first();
 
-        if (!!$superUser) {
+        if ((bool) $superUser) {
             return;
         }
 

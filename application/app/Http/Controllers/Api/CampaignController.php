@@ -1,11 +1,12 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Models\Campaign;
 use App\Http\Resources\CampaignResource;
-use Illuminate\Http\Request;
+use App\Models\Campaign;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\Routing\ResponseFactory;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
@@ -13,7 +14,6 @@ use Illuminate\Http\Response;
 
 class CampaignController extends Controller
 {
-
     public function campaign($campaignId): \Illuminate\Http\Response|CampaignResource|Application|ResponseFactory
     {
         $campaign = Campaign::find($campaignId);
@@ -35,7 +35,7 @@ class CampaignController extends Controller
         if ($per_page > 60) {
             return response([
                 'status_code' => 60,
-                'message' => 'query parameter \'per_page\' should not exceed 60'
+                'message' => 'query parameter \'per_page\' should not exceed 60',
             ], 60);
         }
 

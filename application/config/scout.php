@@ -131,7 +131,7 @@ return [
     */
 
     'meilisearch' => [
-        'host' => env('MEILISEARCH_HOST', 'http://catalystexplorer.search:7700'),
+        'host' => env('MEILISEARCH_HOST', 'http://catalystexplorer-search:7700'),
         'key' => env('MEILISEARCH_KEY'),
         'index-settings' => [
             // 'users' => [

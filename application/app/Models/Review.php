@@ -1,13 +1,13 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\Models;
 
-use App\Models\Model;
-use App\Models\Discussion;
 use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Facades\Artisan;
 use Laravel\Scout\Searchable;
 
@@ -38,7 +38,7 @@ class Review extends Model
     {
         $children = $this->metas?->where('key', 'child_id')->pluck('content');
 
-        return Attribute::make(get: fn() => $children->isEmpty() ? null : self::fund($children));
+        return Attribute::make(get: fn () => $children->isEmpty() ? null : self::fund($children));
     }
 
     public function discussion(): BelongsTo
@@ -60,5 +60,4 @@ class Review extends Model
     {
         return $this->hasOne(ReviewModerationReviewer::class, 'review_id');
     }
-
 }

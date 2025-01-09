@@ -10,7 +10,7 @@ export type ProposalSearchParams = {
     [ProposalParamsEnum.COHORT]: string[];
     [ProposalParamsEnum.COMMUNITIES]: string[];
     [ProposalParamsEnum.FUNDS]: string[];
-    [ProposalParamsEnum.FUNDING_STATUS]: string[];
+    [ProposalParamsEnum.FUNDING_STATUS]: (string[] | string);
     [ProposalParamsEnum.GROUPS]: string[];
     [ProposalParamsEnum.LIMIT]: number;
     [ProposalParamsEnum.MAX_BUDGET]: number;

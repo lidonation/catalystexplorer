@@ -1,20 +1,21 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\Models;
 
-use App\Models\Model;
 use App\Casts\DateFormatCast;
-use Spatie\MediaLibrary\HasMedia;
-use Spatie\Image\Enums\CropPosition;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Prunable;
-use Spatie\MediaLibrary\InteractsWithMedia;
 use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\Prunable;
+use Spatie\Image\Enums\CropPosition;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class Announcement extends Model implements HasMedia
 {
-    use Prunable, InteractsWithMedia;
+    use InteractsWithMedia, Prunable;
 
     protected $fillable = [
         'title',
@@ -23,7 +24,7 @@ class Announcement extends Model implements HasMedia
         'event_starts_at',
         'event_ends_at',
         'user_id',
-        'cta'
+        'cta',
     ];
 
     protected function casts(): array
@@ -46,7 +47,7 @@ class Announcement extends Model implements HasMedia
     public function heroPhotoUrl(): Attribute
     {
         return Attribute::make(
-            get: fn() => $this->getMedia('hero_image')->isNotEmpty()
+            get: fn () => $this->getMedia('hero_image')->isNotEmpty()
             ? $this->getMedia('hero_image')[0]->getFullUrl()
             : asset('storage/images/announcement.png')
         );
@@ -74,4 +75,3 @@ class Announcement extends Model implements HasMedia
             ->performOnCollections('hero_image');
     }
 }
-

@@ -1,10 +1,11 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\Nova;
 
 use App\Enums\CatalystGlobals;
 use App\Models\Proposal;
-use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Laravel\Nova\Actions\Action;
 use Laravel\Nova\Card;
@@ -28,7 +29,6 @@ class Proposals extends Resource
     public static $tableStyle = 'tight';
 
     public static $with = ['fund'];
-
 
     /**
      * The model the resource corresponds to.
@@ -57,6 +57,7 @@ class Proposals extends Resource
      * Get the fields displayed by the resource.
      *
      * @return array<int, Field>
+     *
      * @throws HelperNotSupported
      */
     public function fields(NovaRequest $request): array

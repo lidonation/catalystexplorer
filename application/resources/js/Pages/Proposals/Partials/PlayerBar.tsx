@@ -5,7 +5,6 @@ import PlayerSkipForward from "@/Components/svgs/PlayerSkipForward";
 import PlayerRewindLeft from "@/Components/svgs/PlayerRewindLeft";
 import PlayerRewindRight from "@/Components/svgs/PlayerRewindRight";
 import PlayerStop from "@/Components/svgs/PlayerStop";
-import PlayerPlay from "@/Components/svgs/PlayerPlay";
 import VideoCameraIcon from "@/Components/svgs/VideoCameraIcon";
 import PlayerPause from "@/Components/svgs/PlayerPause";
 

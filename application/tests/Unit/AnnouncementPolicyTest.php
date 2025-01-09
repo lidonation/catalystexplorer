@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Tests\Unit;
 
@@ -7,7 +9,6 @@ use App\Models\User;
 use App\Policies\AnnouncementPolicy;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use PHPUnit\Framework\Attributes\Test;
-
 use Tests\TestCase;
 
 class AnnouncementPolicyTest extends TestCase
@@ -15,13 +16,14 @@ class AnnouncementPolicyTest extends TestCase
     use RefreshDatabase;
 
     protected User $user;
+
     protected AnnouncementPolicy $policy;
 
     protected function setUp(): void
     {
         parent::setUp();
         $this->user = User::factory()->create();
-        $this->policy = new AnnouncementPolicy();
+        $this->policy = new AnnouncementPolicy;
     }
 
     #[Test]
@@ -58,7 +60,6 @@ class AnnouncementPolicyTest extends TestCase
     }
 
     #[Test]
-
     public function user_cannot_delete_other_users_announcement()
     {
         $anotherUser = User::factory()->create();

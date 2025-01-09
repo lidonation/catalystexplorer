@@ -19,13 +19,13 @@ class IdeascaleProfileRepository extends Repository
     {
         return IdeascaleProfile::search(
             $term,
-            function(Indexes $index, $query ) use ($args){
+            function (Indexes $index, $query) use ($args) {
                 $args['attributesToRetrieve'] = $attrs ?? [
-                    'id', 
+                    'id',
                     'ideascale_id',
                     'username',
                     'email',
-                    'name', 
+                    'name',
                     'bio',
                     'created_at',
                     'updated_at',
@@ -44,9 +44,9 @@ class IdeascaleProfileRepository extends Repository
                     'amount_awaraded_ada',
                     'amount_awaraded_usd',
                     'co_proposals_count',
-                    'proposals_total_amount_requested'
+                    'proposals_total_amount_requested',
                 ];
-                
+
                 return $index->search($query, $args);
             }
         );

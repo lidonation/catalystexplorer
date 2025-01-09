@@ -1,10 +1,8 @@
 import { RangePicker } from '@/Components/RangePicker';
 import { SearchSelect } from '@/Components/SearchSelect';
 import Selector from '@/Components/Select';
-import { useFilterContext } from '@/Context/FiltersContext';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ProposalSearchParams } from '../../../../types/proposal-search-params';
 import FundingStatusToggle from './FundingStatusToggle';
 import IdeascaleProfilesSearchControls from './IdeascaleProfileSearchControls';
 
