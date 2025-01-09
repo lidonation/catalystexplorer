@@ -9,7 +9,7 @@ import ActiveFilters from './ActiveFilters';
 import Filters from '@/Components/svgs/Filters';
 
 function ProposalSearchControls() {
-    const { filters, setFilters } = useFilterContext<ProposalSearchParams>();
+    const { filters, setFilters } = useFilterContext();
     const { t } = useTranslation();
 
     const queryParams = new URLSearchParams(window.location.search);

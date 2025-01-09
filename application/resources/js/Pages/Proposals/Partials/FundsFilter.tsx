@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next';
 interface FundFiltersProps {
     selectedItems: any;
     proposalsCount: { [key: string]: number };
-    setSelectedItems: (updatedItems: any) => void;
+    setSelectedItems: (updatedItems: string[]) => void;
 }
 
 const FundsFilter: React.FC<FundFiltersProps> = ({

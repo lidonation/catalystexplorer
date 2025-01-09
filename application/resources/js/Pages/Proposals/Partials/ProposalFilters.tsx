@@ -1,24 +1,28 @@
-import {RangePicker} from '@/Components/RangePicker';
-import {SearchSelect} from '@/Components/SearchSelect';
+import { RangePicker } from '@/Components/RangePicker';
+import { SearchSelect } from '@/Components/SearchSelect';
 import Selector from '@/Components/Select';
-import {useFilterContext} from '@/Context/FiltersContext';
-import {ProposalParamsEnum} from '@/enums/proposal-search-params';
-import {useTranslation} from 'react-i18next';
-import {ProposalSearchParams} from '../../../../types/proposal-search-params';
+import { FilteredItem, useFilterContext } from '@/Context/FiltersContext';
+import { ProposalParamsEnum } from '@/enums/proposal-search-params';
+import { useTranslation } from 'react-i18next';
 import FundsFilter from './FundsFilter';
 import ProposalSearchControls from './ProposalSearchControls';
-import Filters from '@/Components/svgs/Filters';
 
 interface ProposalFiltersProps {
     funds: { [key: string]: number };
 }
 
 const ProposalFilters: React.FC<ProposalFiltersProps> = ({ funds }) => {
-    const { filters, setFilters } = useFilterContext<ProposalSearchParams>();
+    const {setFilters, getFilter } = useFilterContext();
     const { t } = useTranslation();
 
-    const handleSetSelectedItems = (updatedItems: any[]) => {
-        setFilters(ProposalParamsEnum.FUNDS, updatedItems);
+    const handleSetSelectedItems = (funds: string[]) => {
+        console.log(funds);
+        
+        setFilters({
+            label: 'Funds',
+            value: funds,
+            param: ProposalParamsEnum.FUNDS,
+        });
     };
 
     return (
@@ -26,7 +30,7 @@ const ProposalFilters: React.FC<ProposalFiltersProps> = ({ funds }) => {
             <FundsFilter
                 proposalsCount={funds}
                 setSelectedItems={handleSetSelectedItems}
-                selectedItems={filters[ProposalParamsEnum.FUNDS] ?? []}
+                selectedItems={getFilter(ProposalParamsEnum.FUNDS)}
             />
 
             <ProposalSearchControls />
@@ -56,14 +60,15 @@ const ProposalFilters: React.FC<ProposalFiltersProps> = ({ funds }) => {
                                 },
                             ]}
                             setSelectedItems={(value) =>
-                                setFilters(
-                                    ProposalParamsEnum.FUNDING_STATUS,
+                                setFilters({
+                                    label: t('proposals.filters.fundingStatus'),
                                     value,
-                                )
+                                    param: ProposalParamsEnum.FUNDING_STATUS,
+                                })
                             }
-                            selectedItems={
-                                filters[ProposalParamsEnum.FUNDING_STATUS]
-                            }
+                            selectedItems={getFilter(
+                                ProposalParamsEnum.FUNDING_STATUS,
+                            )}
                         />
                     </div>
 
@@ -86,14 +91,15 @@ const ProposalFilters: React.FC<ProposalFiltersProps> = ({ funds }) => {
                                 },
                             ]}
                             setSelectedItems={(value) =>
-                                setFilters(
-                                    ProposalParamsEnum.OPENSOURCE_PROPOSALS,
+                                setFilters({
+                                    label: t('proposals.filters.opensource'),
                                     value,
-                                )
+                                    param: ProposalParamsEnum.OPENSOURCE_PROPOSALS,
+                                })
                             }
-                            selectedItems={
-                                filters[ProposalParamsEnum.OPENSOURCE_PROPOSALS]
-                            }
+                            selectedItems={getFilter(
+                                ProposalParamsEnum.OPENSOURCE_PROPOSALS,
+                            )}
                         />
                     </div>
 
@@ -116,14 +122,15 @@ const ProposalFilters: React.FC<ProposalFiltersProps> = ({ funds }) => {
                                 },
                             ]}
                             setSelectedItems={(value) =>
-                                setFilters(
-                                    ProposalParamsEnum.PROJECT_STATUS,
+                                setFilters({
+                                    label: t('proposals.filters.projectStatus'),
                                     value,
-                                )
+                                    param: ProposalParamsEnum.PROJECT_STATUS,
+                                })
                             }
-                            selectedItems={
-                                filters[ProposalParamsEnum.PROJECT_STATUS]
-                            }
+                            selectedItems={getFilter(
+                                ProposalParamsEnum.PROJECT_STATUS,
+                            )}
                         />
                     </div>
 
@@ -132,9 +139,13 @@ const ProposalFilters: React.FC<ProposalFiltersProps> = ({ funds }) => {
                         <SearchSelect
                             key={'tags'}
                             domain={'tags'}
-                            selected={filters[ProposalParamsEnum.TAGS] ?? []}
+                            selected={getFilter(ProposalParamsEnum.TAGS) ?? []}
                             onChange={(value) =>
-                                setFilters(ProposalParamsEnum.TAGS, value)
+                                setFilters({
+                                    label: t('proposals.filters.tags'),
+                                    value,
+                                    param: ProposalParamsEnum.TAGS,
+                                })
                             }
                             placeholder="Select"
                             multiple={true}
@@ -147,10 +158,14 @@ const ProposalFilters: React.FC<ProposalFiltersProps> = ({ funds }) => {
                             key={'campaigns'}
                             domain={'campaigns'}
                             selected={
-                                filters[ProposalParamsEnum.CAMPAIGNS] ?? []
+                                getFilter(ProposalParamsEnum.CAMPAIGNS) ?? []
                             }
                             onChange={(value) =>
-                                setFilters(ProposalParamsEnum.CAMPAIGNS, value)
+                                setFilters({
+                                    label: t('proposals.filters.campaigns'),
+                                    value,
+                                    param: ProposalParamsEnum.CAMPAIGNS,
+                                })
                             }
                             placeholder="Select"
                             multiple={true}
@@ -164,9 +179,15 @@ const ProposalFilters: React.FC<ProposalFiltersProps> = ({ funds }) => {
                         <SearchSelect
                             key={'groups'}
                             domain={'groups'}
-                            selected={filters[ProposalParamsEnum.GROUPS] ?? []}
+                            selected={
+                                getFilter(ProposalParamsEnum.GROUPS) ?? []
+                            }
                             onChange={(value) =>
-                                setFilters(ProposalParamsEnum.GROUPS, value)
+                                setFilters({
+                                    label: t('proposals.filters.groups'),
+                                    value,
+                                    param: ProposalParamsEnum.GROUPS,
+                                })
                             }
                             placeholder="Select"
                             multiple={true}
@@ -179,13 +200,14 @@ const ProposalFilters: React.FC<ProposalFiltersProps> = ({ funds }) => {
                             key={'communities'}
                             domain={'communities'}
                             selected={
-                                filters[ProposalParamsEnum.COMMUNITIES] ?? []
+                                getFilter(ProposalParamsEnum.COMMUNITIES) ?? []
                             }
                             onChange={(value) =>
-                                setFilters(
-                                    ProposalParamsEnum.COMMUNITIES,
+                                setFilters({
+                                    label: t('proposals.filters.communities'),
                                     value,
-                                )
+                                    param: ProposalParamsEnum.COMMUNITIES,
+                                })
                             }
                             placeholder="Select"
                             multiple={true}
@@ -217,9 +239,15 @@ const ProposalFilters: React.FC<ProposalFiltersProps> = ({ funds }) => {
                                 },
                             ]}
                             setSelectedItems={(value) =>
-                                setFilters(ProposalParamsEnum.COHORT, value)
+                                setFilters({
+                                    label: t(
+                                        'proposals.filters.communityCohort',
+                                    ),
+                                    value,
+                                    param: ProposalParamsEnum.COHORT,
+                                })
                             }
-                            selectedItems={filters[ProposalParamsEnum.COHORT]}
+                            selectedItems={getFilter(ProposalParamsEnum.COHORT)}
                         />
                     </div>
 
@@ -228,15 +256,16 @@ const ProposalFilters: React.FC<ProposalFiltersProps> = ({ funds }) => {
                         <SearchSelect
                             domain={'ideascaleProfiles'}
                             selected={
-                                filters[
-                                    ProposalParamsEnum.IDEASCALE_PROFILES
-                                ] ?? []
+                                getFilter(
+                                    ProposalParamsEnum.IDEASCALE_PROFILES,
+                                ) ?? []
                             }
                             onChange={(value) =>
-                                setFilters(
-                                    ProposalParamsEnum.IDEASCALE_PROFILES,
+                                setFilters({
+                                    label: t('proposals.filters.proposers'),
                                     value,
-                                )
+                                    param: ProposalParamsEnum.IDEASCALE_PROFILES,
+                                })
                             }
                             placeholder="Select"
                             multiple={true}
@@ -250,13 +279,17 @@ const ProposalFilters: React.FC<ProposalFiltersProps> = ({ funds }) => {
                         <RangePicker
                             key={'Budgets'}
                             context={t('proposals.filters.budgets')}
-                            value={filters[ProposalParamsEnum.BUDGETS]}
+                            value={getFilter(ProposalParamsEnum.BUDGETS)}
                             onValueChange={(value) =>
-                                setFilters(ProposalParamsEnum.BUDGETS, value)
+                                setFilters({
+                                    label: t('proposals.filters.budgets'),
+                                    value,
+                                    param: ProposalParamsEnum.BUDGETS,
+                                })
                             }
-                            max={filters[ProposalParamsEnum.MAX_BUDGET]}
-                            min={filters[ProposalParamsEnum.MIN_BUDGET]}
-                            defaultValue={filters[ProposalParamsEnum.BUDGETS]}
+                            max={getFilter(ProposalParamsEnum.MAX_BUDGET)}
+                            min={getFilter(ProposalParamsEnum.MIN_BUDGET)}
+                            defaultValue={getFilter(ProposalParamsEnum.BUDGETS)}
                         />
                     </div>
 
@@ -264,18 +297,27 @@ const ProposalFilters: React.FC<ProposalFiltersProps> = ({ funds }) => {
                         <RangePicker
                             key={'Project Length'}
                             context={t('proposals.filters.projectLength')}
-                            value={filters[ProposalParamsEnum.PROJECT_LENGTH]}
+                            value={getFilter(ProposalParamsEnum.PROJECT_LENGTH)}
                             onValueChange={(value) =>
-                                setFilters(
-                                    ProposalParamsEnum.PROJECT_LENGTH,
+                                setFilters({
+                                    label: t('proposals.filters.projectLength'),
                                     value,
-                                )
+                                    param: ProposalParamsEnum.PROJECT_LENGTH,
+                                })
                             }
-                            max={filters[ProposalParamsEnum.MAX_PROJECT_LENGTH]}
-                            min={filters[ProposalParamsEnum.MIN_PROJECT_LENGTH]}
+                            max={getFilter(
+                                ProposalParamsEnum.MAX_PROJECT_LENGTH,
+                            )}
+                            min={getFilter(
+                                ProposalParamsEnum.MIN_PROJECT_LENGTH,
+                            )}
                             defaultValue={[
-                                filters[ProposalParamsEnum.MIN_PROJECT_LENGTH],
-                                filters[ProposalParamsEnum.MAX_PROJECT_LENGTH],
+                                getFilter(
+                                    ProposalParamsEnum.MIN_PROJECT_LENGTH,
+                                ),
+                                getFilter(
+                                    ProposalParamsEnum.MAX_PROJECT_LENGTH,
+                                ),
                             ]}
                         />
                     </div>
