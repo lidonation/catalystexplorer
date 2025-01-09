@@ -27,7 +27,7 @@ class IdeascaleProfilesController extends Controller
         }
     }
 
-    public function ideascale_profiles(): Response|AnonymousResourceCollection|Application|ResponseFactory
+    public function ideascaleProfiles(): Response|AnonymousResourceCollection|Application|ResponseFactory
     {
         $per_page = request('per_page', 24);
 

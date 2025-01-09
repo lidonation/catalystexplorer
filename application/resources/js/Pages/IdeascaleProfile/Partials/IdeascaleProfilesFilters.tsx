@@ -1,91 +1,108 @@
 import { RangePicker } from '@/Components/RangePicker';
+import { useFilterContext } from '@/Context/FiltersContext';  // Import the custom hook
+import { ProposalParamsEnum } from '@/enums/proposal-search-params';
+import { ProposalSearchParams } from '../../../../types/proposal-search-params';
+import IdeascaleProfilesSearchControls from './IdeascaleProfileSearchControls';
 import { SearchSelect } from '@/Components/SearchSelect';
 import Selector from '@/Components/Select';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import FundingStatusToggle from './FundingStatusToggle';
-import IdeascaleProfilesSearchControls from './IdeascaleProfileSearchControls';
 
 export default function IdeascaleProfilesFilters() {
     const { t } = useTranslation();
+    const { filters, setFilters } = useFilterContext<ProposalSearchParams>();
+    const [fundingStatus, setFundingStatus] = useState(filters[ProposalParamsEnum.FUNDING_STATUS] == '1' ?  true : false);
 
-    const ideascaleFilters = {
-        funds: [{ value: 'fund1', label: 'Fund 1' }],
-        project_status: [],
-        tags: [{ value: 'tag1', label: 'Tag 1' }],
+    const handleFundingStatusChange = () => {
+        const newFundingStatus = !fundingStatus;
+        setFundingStatus(newFundingStatus);
+        setFilters(ProposalParamsEnum.FUNDING_STATUS, newFundingStatus ? '1' : '');
     };
-
-    const handleFundingStatusChange = (): void => {
-        setFundingStatus(!fundingStatus);
-    };
-
-    const [fundingStatus, setFundingStatus] = useState(true);
-    const [budgetRange, setBudgetRange] = useState([1000, 50000]);
-    const [projectStatus, setProjectStatus] = useState([]);
 
     return (
-        <>
-            <div className="container w-full rounded-xl bg-background p-4 shadow-md">
-                <div className="grid grid-cols-2 items-center gap-4 lg:grid-cols-5 lg:gap-8">
-                    <div>
-                        <span className="mb-1 block text-sm font-medium">
-                            {t('ideascaleProfiles.limitFunds')}
-                        </span>
-                        <SearchSelect
-                            key="funds"
-                            domain="funds"
-                            selected={ideascaleFilters.funds.map(
-                                (fund) => fund.value,
-                            )}
-                            onChange={(value) =>
-                                console.log('Selected Funds:', value)
-                            }
-                            placeholder="Select"
-                            multiple={false}
-                        />
-                    </div>
+        <div className="container w-full rounded-xl bg-background shadow-md p-4">
+            <div className="grid grid-cols-2 gap-4 lg:grid-cols-5 lg:gap-8 items-center">
+                <div>
+                    <span className="text-sm font-medium mb-1 block">{t('ideascaleProfiles.limitFunds')}</span>
+                    <SearchSelect
+                        key={'fund-titles'}
+                        domain={'fundTitles'}
+                        selected={
+                            filters[ProposalParamsEnum.FUNDS] ?? []
+                        }
+                        onChange={(value) => 
+                            setFilters(ProposalParamsEnum.FUNDS, value)
+                        }
+                        placeholder="Select"
+                        multiple={false}
+                    />
+                </div>
 
-                    <div>
-                        <span className="mb-1 block text-sm font-medium">
-                            {t('ideascaleProfiles.projectStatus')}
-                        </span>
-                        <Selector
-                            isMultiselect={true}
-                            options={[
-                                { value: 'complete', label: 'Complete' },
-                                { value: 'in_progress', label: 'In Progress' },
-                                { value: 'unfunded', label: 'Unfunded' },
-                            ]}
-                            setSelectedItems={setProjectStatus}
-                            selectedItems={projectStatus}
-                        />
-                    </div>
+                <div>
+                    <span className="text-sm font-medium mb-1 block">{t('ideascaleProfiles.projectStatus')}</span>
+                    <Selector
+                        isMultiselect={true}
+                        options={[
+                            {
+                                value: 'complete',
+                                label: t('proposals.options.complete'),
+                            },
+                            {
+                                value: 'in_progress',
+                                label: t('proposals.options.inProgress'),
+                            },
+                            {
+                                value: 'unfunded',
+                                label: t('proposals.options.unfunded'),
+                            },
+                        ]}
+                        setSelectedItems={(value) =>
+                            setFilters(
+                                ProposalParamsEnum.PROJECT_STATUS,
+                                value,
+                            )
+                        }
+                        selectedItems={
+                            filters[ProposalParamsEnum.PROJECT_STATUS]
+                        }
+                    />
+                </div>
 
-                    <div>
-                        <span className="mb-1 block text-sm font-medium">
-                            {t('ideascaleProfiles.limitTags')}
-                        </span>
-                        <SearchSelect
-                            key="tags"
-                            domain="tags"
-                            selected={ideascaleFilters.tags.map(
-                                (tag) => tag.value,
-                            )}
-                            onChange={(value) =>
-                                console.log('Selected Tags:', value)
-                            }
-                            placeholder="Select Tags"
-                            multiple={true}
-                        />
-                    </div>
+                <div>
+                    <span className="text-sm font-medium mb-1 block">{t('ideascaleProfiles.limitTags')}</span>
+                    <SearchSelect
+                        key={'tags'}
+                        domain={'tags'}
+                        selected={filters[ProposalParamsEnum.TAGS] ?? []}
+                        onChange={(value) =>
+                            setFilters(ProposalParamsEnum.TAGS, value)
+                        }
+                        placeholder="Select"
+                        multiple={true}
+                    />
+                </div>
 
-                    <FundingStatusToggle
-                        checked={fundingStatus}
-                        onChange={handleFundingStatusChange}
+                <FundingStatusToggle
+                    checked={fundingStatus}
+                    onChange={handleFundingStatusChange}
+                />
+
+                <div className="col-span-2 sm:col-span-2 lg:col-span-1">
+                    <RangePicker
+                        key={'Budgets'}
+                        context={t('proposals.filters.budgets')}
+                        value={filters[ProposalParamsEnum.BUDGETS]}
+                        onValueChange={(value: number[]) =>
+                            setFilters(ProposalParamsEnum.BUDGETS, value)
+                        }
+                        max={filters[ProposalParamsEnum.MAX_BUDGET]}
+                        min={filters[ProposalParamsEnum.MIN_BUDGET]}
+                        defaultValue={filters[ProposalParamsEnum.BUDGETS]}
                     />
 
                     <div className="col-span-2 sm:col-span-2 lg:col-span-1">
-                        <RangePicker
+                        {/* <RangePicker
                             key="budgets"
                             context="Budgets"
                             value={budgetRange}
@@ -93,13 +110,13 @@ export default function IdeascaleProfilesFilters() {
                             max={10000000}
                             min={1000}
                             defaultValue={[1000, 10000000]}
-                        />
+                        /> */}
                     </div>
                 </div>
             </div>
             <div className='w-full'>
                 <IdeascaleProfilesSearchControls />
             </div>
-        </>
+        </div>
     );
 }
