@@ -11,7 +11,6 @@ interface FundsBarChartProps {
     totalFundsRequested: any;
     totalFundsAllocated: any;
 }
-
 const FundsBarChart: React.FC<FundsBarChartProps> = ({
     funds,
     fundRounds,
@@ -21,37 +20,26 @@ const FundsBarChart: React.FC<FundsBarChartProps> = ({
     totalFundsAllocated,
 }) => {
     const { t } = useTranslation();
-
-    const allKeys = [
-        { value: t('funds.totalProposals'), label: t('funds.totalProposals') },
-        { value: t('funds.fundedProposals'), label: t('funds.fundedProposals') },
-        { value: t('funds.completedProposals'), label: t('funds.completedProposals') },
-    ];
-
-    const [filters, setFilters] = useState<string[]>(allKeys.map(key => key.value));
-
-    const handleFilterChange = (selectedItems: string[]) => {
-        setFilters(selectedItems);
-    };
-
-    const activeKeys = filters.length > 0 ? filters : [];
-
+    const [filters, setFilters] = useState([]);
     return (
         <div className="rounded-md bg-background p-4 shadow-sm lg:p-16">
             <div className="flex w-full justify-between">
                 <div>
-                    <h6 className="text-2 lg:title-4 font-bold">{fundRounds}</h6>
+                    <h6 className="text-2 lg:title-4 font-bold">
+                        {fundRounds}
+                    </h6>
                     <p className="text-4 lg:text-3 font-bold text-content opacity-75">
                         {t('funds.fundRounds')}
                     </p>
                 </div>
                 <div>
-                    <h6 className="text-2 lg:title-4 font-bold">{totalProposals.toLocaleString()}</h6>
+                    <h6 className="text-2 lg:title-4 font-bold">
+                        {totalProposals.toLocaleString()}
+                    </h6>
                     <p className="text-4 lg:text-3 font-bold text-content opacity-75">
                         {t('funds.totalProposals')}
                     </p>
                 </div>
-
                 <div>
                     <h6 className="text-2 lg:title-4 font-bold">
                         {fundedProposals.toLocaleString()}
@@ -77,12 +65,25 @@ const FundsBarChart: React.FC<FundsBarChartProps> = ({
                     </p>
                 </div>
             </div>
-
+            {/* flex justify-end gap-8 mt-4 */}
             <div className="mt-4 flex justify-end px-12">
                 <Selector
                     isMultiselect={true}
-                    options={allKeys}
-                    setSelectedItems={handleFilterChange}
+                    options={[
+                        {
+                            value: t('funds.totalProposals'),
+                            label: 'Total Proposals',
+                        },
+                        {
+                            value: 'funded_proposals',
+                            label: t('funds.fundedProposals'),
+                        },
+                        {
+                            value: 'completed_proposals',
+                            label: t('funds.completedProposals'),
+                        },
+                    ]}
+                    setSelectedItems={setFilters}
                     selectedItems={filters}
                     placeholder={t('funds.filter')}
                 />
@@ -90,7 +91,11 @@ const FundsBarChart: React.FC<FundsBarChartProps> = ({
             <div style={{ height: '400px' }} className="w-full">
                 <ResponsiveBar
                     data={funds}
-                    keys={activeKeys}
+                    keys={[
+                        t('funds.totalProposals'),
+                        t('funds.fundedProposals'),
+                        t('funds.completedProposals'),
+                    ]}
                     indexBy="fund"
                     margin={{ top: 50, right: 50, bottom: 100, left: 60 }}
                     padding={0.3}
@@ -188,11 +193,15 @@ const FundsBarChart: React.FC<FundsBarChartProps> = ({
                                     {indexValue}
                                 </strong>
                             </p>
-                            {activeKeys.map((key) => (
-                                <p key={key}>
-                                    {`${key} : ${data[key] || 0}`}
-                                </p>
-                            ))}
+                            <p>
+                                {`${t('funds.totalProposals')} : ${data['Total Proposals']}`}
+                            </p>
+                            <p>
+                                {`${t('funds.fundedProposals')} : ${data['Funded Proposals']}`}
+                            </p>
+                            <p>
+                                {`${t('funds.completedProposals')} : ${data['Completed Proposals']}`}
+                            </p>
                         </div>
                     )}
                     animate={true}
