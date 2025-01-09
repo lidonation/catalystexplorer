@@ -4,18 +4,15 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use App\DataTransferObjects\IdeascaleProfileData;
 use App\Enums\IdeascaleProfileSearchParams;
+use App\Enums\ProposalSearchParams;
 use App\Repositories\IdeascaleProfileRepository;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Fluent;
 use Inertia\Inertia;
 use Inertia\Response;
-use App\Enums\ProposalSearchParams;
-use Laravel\Scout\Builder;
-use Illuminate\Support\Fluent;
-use Illuminate\Pagination\LengthAwarePaginator;
 
 class IdeascaleProfilesController extends Controller
 {
@@ -23,9 +20,11 @@ class IdeascaleProfilesController extends Controller
      * Display the user's profile form.
      */
     protected int $limit = 40;
+
     protected int $currentPage = 1;
+
     protected array $queryParams = [];
-    
+
     public function index(Request $request): Response
     {
         $this->getProps($request);
@@ -33,7 +32,7 @@ class IdeascaleProfilesController extends Controller
 
         return Inertia::render('IdeascaleProfile/Index', [
             'ideascaleProfiles' => $profiles,
-            'filters' => $this->queryParams
+            'filters' => $this->queryParams,
         ]);
     }
 
@@ -49,16 +48,6 @@ class IdeascaleProfilesController extends Controller
             ->get();
 
         return $this->paginate($queryResults, $ideascaleProfiles->getQuery()->count(), $page, $limit);
-    }
-
-    protected function getProps(Request $request): void
-    {
-        $this->queryParams = $request->validate([
-            IdeascaleProfileSearchParams::QUERY()->value => 'string|nullable',
-            IdeascaleProfileSearchParams::PAGE()->value => 'int|nullable',
-            IdeascaleProfileSearchParams::LIMIT()->value => 'int|nullable',
-            IdeascaleProfileSearchParams::SORT()->value => 'string|nullable',
-        ]);
     }
 
     protected function query($returnBuilder = false, $attrs = null, $filters = [])
@@ -86,7 +75,17 @@ class IdeascaleProfilesController extends Controller
 
         $response = new Fluent($builder->raw());
 
-        return $this->paginate(IdeascaleProfileData::collect($response->hits), $response->estimatedTotalHits, $page, $limit);
+        $pagination = new LengthAwarePaginator(
+            $response->hits,
+            $response->estimatedTotalHits,
+            $limit,
+            $page,
+            [
+                'pageName' => 'p',
+            ]
+        );
+
+        return $pagination->onEachSide(1)->toArray();
     }
 
     protected function paginate($items, $total, $page, $limit): array
@@ -104,11 +103,6 @@ class IdeascaleProfilesController extends Controller
         return $pagination->onEachSide(1)->toArray();
     }
 
-    protected function getUserFilters(): array
-    {
-        return [];
-    }
-
     protected function getProps(Request $request): void
     {
         $this->queryParams = $request->validate([
@@ -119,10 +113,13 @@ class IdeascaleProfilesController extends Controller
             ProposalSearchParams::BUDGETS()->value => 'array|nullable',
             ProposalSearchParams::PAGE()->value => 'int|nullable',
             ProposalSearchParams::LIMIT()->value => 'int|nullable',
+
+            IdeascaleProfileSearchParams::QUERY()->value => 'string|nullable',
+            IdeascaleProfileSearchParams::SORT()->value => 'string|nullable',
         ]);
 
         if (isset($this->queryParams[ProposalSearchParams::FUNDING_STATUS()->value])) {
-            $this->queryParams[ProposalSearchParams::FUNDING_STATUS()->value] = 
+            $this->queryParams[ProposalSearchParams::FUNDING_STATUS()->value] =
                 filter_var($this->queryParams[ProposalSearchParams::FUNDING_STATUS()->value], FILTER_VALIDATE_BOOLEAN);
         }
 
@@ -131,45 +128,13 @@ class IdeascaleProfilesController extends Controller
         }
     }
 
-    protected function query(): array
-    {
-        $filters = $this->getUserFilters();
-        
-        $args = [
-            'filter' => $this->getUserFilters(),
-        ];
-
-        $page = $this->queryParams[ProposalSearchParams::PAGE()->value] ?? 1;
-        $limit = $this->queryParams[ProposalSearchParams::LIMIT()->value] ?? $this->limit;
-
-        $args['offset'] = ($page - 1) * $limit;
-        $args['limit'] = $limit;
-
-        $profiles = app(IdeascaleProfileRepository::class);
-        $builder = $profiles->search('', $args);
-
-        $response = new Fluent($builder->raw());
-
-        $pagination = new LengthAwarePaginator(
-            $response->hits,
-            $response->estimatedTotalHits,
-            $limit,
-            $page,
-            [
-                'pageName' => 'p',
-            ]
-        );
-
-        return $pagination->onEachSide(1)->toArray();
-    }
-
     protected function getUserFilters(): array
     {
         $filters = [];
-        
+
         try {
             // Fund filter
-            if (!empty($this->queryParams[ProposalSearchParams::FUNDS()->value])) {
+            if (! empty($this->queryParams[ProposalSearchParams::FUNDS()->value])) {
                 $funds = implode("','", $this->queryParams[ProposalSearchParams::FUNDS()->value]);
                 $filters[] = "proposals.fund.title IN ['{$funds}']";
             }
@@ -181,9 +146,9 @@ class IdeascaleProfilesController extends Controller
             }
 
             // Tags filter
-            if (!empty($this->queryParams[ProposalSearchParams::TAGS()->value])) {
+            if (! empty($this->queryParams[ProposalSearchParams::TAGS()->value])) {
                 $tagIds = array_map('intval', $this->queryParams[ProposalSearchParams::TAGS()->value]);
-                $filters[] = '(' . implode(' OR ', array_map(fn($t) => "proposals.tags.id = {$t}", $tagIds)) . ')';
+                $filters[] = '('.implode(' OR ', array_map(fn ($t) => "proposals.tags.id = {$t}", $tagIds)).')';
             }
 
             // Funding status filter
@@ -193,7 +158,7 @@ class IdeascaleProfilesController extends Controller
             }
 
             // filter by budget range
-            if (!empty($this->queryParams[ProposalSearchParams::BUDGETS()->value])) {
+            if (! empty($this->queryParams[ProposalSearchParams::BUDGETS()->value])) {
                 $budgetRange = collect((object) $this->queryParams[ProposalSearchParams::BUDGETS()->value]);
                 $filters[] = "(proposals_total_amount_requested  {$budgetRange->first()} TO  {$budgetRange->last()})";
             }
@@ -201,7 +166,7 @@ class IdeascaleProfilesController extends Controller
         } catch (\Exception $e) {
             Log::error('Error generating filters:', [
                 'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString()
+                'trace' => $e->getTraceAsString(),
             ]);
         }
 
