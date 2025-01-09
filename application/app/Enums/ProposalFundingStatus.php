@@ -17,6 +17,6 @@ final class ProposalFundingStatus extends Enum
 {
     public static function values(): \Closure
     {
-        return fn(string $name): string|int => $name;
+        return fn (string $name): string|int => $name;
     }
 }

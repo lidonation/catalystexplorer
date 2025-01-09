@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Database\Factories;
 
@@ -19,11 +21,11 @@ class ReviewModerationFactory extends Factory
     {
         return [
             'reviewer_id' => Reviewer::factory(),
-            'excellent_count' => $this->faker->numberBetween(0,100),
+            'excellent_count' => $this->faker->numberBetween(0, 100),
             'good_count' => $this->faker->numberBetween(0, 100),
             'filtered_out_count' => $this->faker->numberBetween(0, 100),
-            'flagged' => $this->faker->randomElement([true,false]),
-            'qa_rationale' => json_encode(['en',$this->faker->sentences(500,true)])
+            'flagged' => $this->faker->randomElement([true, false]),
+            'qa_rationale' => json_encode(['en', $this->faker->sentences(500, true)]),
         ];
     }
 }

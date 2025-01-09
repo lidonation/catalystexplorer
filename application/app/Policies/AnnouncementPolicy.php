@@ -1,13 +1,14 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\Policies;
 
 use App\Models\Announcement;
 use App\Models\User;
 
-class AnnouncementPolicy  extends AppPolicy
+class AnnouncementPolicy extends AppPolicy
 {
-
     /**
      * Determine whether the user can view any models.
      */

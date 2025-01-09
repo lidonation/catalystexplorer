@@ -38,6 +38,6 @@ arch('Do not access session data in Async jobs')
         'Illuminate\Support\Facades\Auth',
         'Illuminate\Support\Facades\Session',
         'Illuminate\Http\Request',
-        'Illuminate\Support\Facades\Request'
+        'Illuminate\Support\Facades\Request',
     ])
     ->each->not->toBeUsedIn('App\Jobs');

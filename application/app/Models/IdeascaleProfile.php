@@ -1,22 +1,24 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\Models;
 
 use App\Casts\DateFormatCast;
-use Spatie\MediaLibrary\HasMedia;
-use Laravolt\Avatar\Facade as Avatar;
-use Spatie\Translatable\HasTranslations;
 use Illuminate\Database\Eloquent\Builder;
-use Spatie\MediaLibrary\InteractsWithMedia;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\Artisan;
 use Laravel\Scout\Searchable;
+use Laravolt\Avatar\Facade as Avatar;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
+use Spatie\Translatable\HasTranslations;
 
 class IdeascaleProfile extends Model implements HasMedia
 {
-    use  InteractsWithMedia, HasTranslations, Searchable;
+    use HasTranslations, InteractsWithMedia, Searchable;
 
     protected $primaryKey = 'id';
 
@@ -36,7 +38,7 @@ class IdeascaleProfile extends Model implements HasMedia
         'ideascale',
         'claimed_by',
         'telegram',
-        'title'
+        'title',
     ];
 
     protected $hidden = [];
@@ -44,14 +46,23 @@ class IdeascaleProfile extends Model implements HasMedia
     protected $appends = ['profile_photo_url'];
 
     public array $translatable = [
-        'bio',
+        // 'bio',
     ];
 
     protected function casts(): array
     {
         return [
             'created_at' => DateFormatCast::class,
-            'updated_at' => DateFormatCast::class
+            'updated_at' => DateFormatCast::class,
+        ];
+    }
+
+    public static function getSortableAttributes(): array
+    {
+        return [
+            'name',
+            'username',
+            'email',
         ];
     }
 
@@ -67,12 +78,10 @@ class IdeascaleProfile extends Model implements HasMedia
         ];
     }
 
-
     public static function runCustomIndex(): void
     {
         Artisan::call('cx:create-search-index App\\\\Models\\\\IdeascaleProfile cx_ideascale_profiles');
     }
-
 
     public function toSearchableArray(): array
     {
@@ -84,7 +93,7 @@ class IdeascaleProfile extends Model implements HasMedia
 
         return array_merge($array, [
             'proposals' => $proposals,
-            'proposals_completed' =>$this->completed_proposals ?? 0,
+            'proposals_completed' => $this->completed_proposals ?? 0,
             'first_timer' => ($proposals?->map(fn ($p) => ($p['fund_id']))->unique()->count() === 1),
             'proposals_approved' => $proposals->filter(fn ($p) => (bool) $p['funded_at'])?->count() ?? 0,
             'amount_awarded_ada' => $this->amount_awarded_ada,
@@ -162,18 +171,17 @@ class IdeascaleProfile extends Model implements HasMedia
         });
     }
 
-
     public function gravatar(): Attribute
     {
         return Attribute::make(
-            get: fn() => Avatar::create($this->username  ?? $this->name ?? 'default')->toGravatar()
+            get: fn () => Avatar::create($this->username ?? $this->name ?? 'default')->toGravatar()
         );
     }
 
     public function profilePhotoUrl(): Attribute
     {
         return Attribute::make(
-            get: fn() => count($this->getMedia('profile')) ? $this->getMedia('profile')[0]->getFullUrl() : $this->gravatar
+            get: fn () => count($this->getMedia('profile')) ? $this->getMedia('profile')[0]->getFullUrl() : $this->gravatar
         );
     }
 
@@ -185,8 +193,8 @@ class IdeascaleProfile extends Model implements HasMedia
         $query->when($filters['search'] ?? null, function ($query, $search) {
             $query->where(function ($q) use ($search) {
                 $q->where('name', 'ilike', "%{$search}%")
-                ->orWhere('id', 'like', "%{$search}%")
-                ->orWhere('username', 'ilike', "%{$search}%");
+                    ->orWhere('id', 'like', "%{$search}%")
+                    ->orWhere('username', 'ilike', "%{$search}%");
             });
         })->when($filters['ids'] ?? null, function ($query, $ids) {
             $query->whereIn('id', is_array($ids) ? $ids : explode(',', $ids));

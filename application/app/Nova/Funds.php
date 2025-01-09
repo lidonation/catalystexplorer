@@ -1,11 +1,11 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\Nova;
 
 use App\Enums\CatalystCurrencies;
-use App\Enums\CatalystGlobals;
 use App\Models\Fund;
-use Illuminate\Http\Request;
 use Laravel\Nova\Actions\Action;
 use Laravel\Nova\Card;
 use Laravel\Nova\Fields\DateTime;

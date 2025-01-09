@@ -9,8 +9,8 @@ namespace App\Traits;
 use App;
 use App\Enums\StatusEnum;
 use App\Models\Translation;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Facades\Auth;
 use Spatie\Translatable\HasTranslations as BaseHasTranslations;
 
 trait HasTranslations

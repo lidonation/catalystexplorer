@@ -51,6 +51,7 @@ export default {
                 secondary: 'var(--cx-secondary)',
                 highlight: 'var(--cx-light)',
                 accent: 'var(--cx-accent)',
+                'accent-blue': 'var(--bg-accent-color)',
                 'dark-persist':'var(--content-primary-color)',
                 'accent-secondary': 'var(--cx-accent-secondary)',
                 error: 'var(--bg-error-primary-color)',

@@ -1,16 +1,18 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Database\Factories;
 
-use App\Models\Fund;
-use App\Models\User;
-use App\Models\Campaign;
-use App\Models\Proposal;
-use Illuminate\Support\Str;
-use App\Enums\ProposalStatus;
 use App\Enums\CatalystCurrencies;
 use App\Enums\ProposalFundingStatus;
+use App\Enums\ProposalStatus;
+use App\Models\Campaign;
+use App\Models\Fund;
+use App\Models\Proposal;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Str;
 
 class ProposalFactory extends Factory
 {
@@ -24,16 +26,16 @@ class ProposalFactory extends Factory
     public function definition(): array
     {
         $quickpitchLinks = [
-            'https://www.youtube.com/watch?v=QoHxrFBM0fY&t=3s',
-            'https://www.youtube.com/watch?v=b3XkJ7BK6_s&pp=ygUKY2FyZGFubyBibA%3D%3D',
-            'https://www.youtube.com/watch?v=PP88xISbEDw&pp=ygUKY2FyZGFubyBibA%3D%3D',
-            'https://www.youtube.com/watch?v=bCFSh_FRlUM&pp=ygUKY2FyZGFubyBibA%3D%3D',
-            'https://www.youtube.com/watch?v=cz7_cBYRTng&pp=ygUKY2FyZGFubyBibA%3D%3D',
-            'https://www.youtube.com/watch?v=8lKBTVAxcqY&pp=ygUKY2FyZGFubyBibA%3D%3D',
+            'https://youtu.be/QoHxrFBM0fY',
+            'https://youtu.be/b3XkJ7BK6_s',
+            'https://youtu.be/PP88xISbEDw',
+            'https://youtu.be/bCFSh_FRlUM',
+            'https://youtu.be/cz7_cBYRTng',
+            'https://youtu.be/8lKBTVAxcqY',
             'https://vimeo.com/259069001',
             'https://vimeo.com/675293691',
             'https://vimeo.com/254659271',
-            'https://vimeo.com/857039562'
+            'https://vimeo.com/857039562',
         ];
 
         return [
@@ -41,7 +43,7 @@ class ProposalFactory extends Factory
             'campaign_id' => Campaign::factory(),
             'fund_id' => Fund::inRandomOrder()->first(),
             'title' => $this->faker->words($this->faker->numberBetween(4, 12), true),
-            'slug' => fn(array $attributes) => Str::slug($attributes['title']),
+            'slug' => fn (array $attributes) => Str::slug($attributes['title']),
             'website' => $this->faker->url(),
             'excerpt' => $this->faker->text(200),
             'amount_requested' => $this->faker->numberBetween(0, 10000000),
@@ -49,7 +51,7 @@ class ProposalFactory extends Factory
             'definition_of_success' => $this->faker->sentence(),
             'status' => $this->faker->randomElement(ProposalStatus::toValues()),
             'funding_status' => $this->faker->randomElement(ProposalFundingStatus::toValues()),
-            'meta_data' => $this->faker->words(4,true),
+            'meta_data' => $this->faker->words(4, true),
             'funded_at' => $this->faker->optional()->dateTimeBetween('-2 years', 'now'),
             'deleted_at' => $this->faker->optional()->dateTimeBetween('-1 year', 'now'),
             'funding_updated_at' => $this->faker->optional()->date(),

@@ -3,11 +3,11 @@
 use App\Http\Controllers\ChartsController;
 use App\Http\Controllers\FundsController;
 use App\Http\Controllers\HomeController;
-use App\Http\Controllers\JormungandrController;
 use App\Http\Controllers\IdeascaleProfilesController;
-use App\Http\Controllers\VoterToolController;
+use App\Http\Controllers\JormungandrController;
 use App\Http\Controllers\ProposalsController;
 use App\Http\Controllers\SearchController;
+use App\Http\Controllers\VoterToolController;
 use Illuminate\Support\Facades\Route;
 
 Route::localized(
@@ -38,11 +38,10 @@ Route::localized(
     }
 );
 
+require __DIR__.'/auth.php';
 
-require __DIR__ . '/auth.php';
+require __DIR__.'/dashboard.php';
 
-require __DIR__ . '/dashboard.php';
-
-require __DIR__ . '/api.php';
+require __DIR__.'/api.php';
 
 Route::fallback(\CodeZero\LocalizedRoutes\Controllers\FallbackController::class);

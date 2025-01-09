@@ -1,15 +1,17 @@
 import Paginator from '@/Components/Paginator';
 import { FiltersProvider } from '@/Context/FiltersContext';
+import { PlayerProvider } from '@/Context/PlayerContext';
 import { UIProvider } from '@/Context/SharedUIContext';
+import { ProposalParamsEnum } from '@/enums/proposal-search-params';
 import ProposalResults from '@/Pages/Proposals/Partials/ProposalResults';
 import VerticalCardLoading from '@/Pages/Proposals/Partials/ProposalVerticalCardLoading';
 import { PageProps } from '@/types';
+import { ProposalMetrics } from '@/types/proposal-metrics';
 import { Head, WhenVisible } from '@inertiajs/react';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { PaginatedData } from '../../../types/paginated-data';
 import { ProposalSearchParams } from '../../../types/proposal-search-params';
-import { ProposalMetrics } from '@/types/proposal-metrics';
 import CardLayoutSwitcher from './Partials/CardLayoutSwitcher';
 import MetricsBar from './Partials/MetricsBar';
 import PlayerBar from './Partials/PlayerBar';
@@ -39,11 +41,9 @@ export default function Index({
 
     const [isHorizontal, setIsHorizontal] = useState(false);
 
-    const [quickPitchView, setQuickPitchView] = useState(false);
-
-    const setGlobalQuickPitchView = (value: boolean) =>
-        setQuickPitchView(value);
-
+    const [quickPitchView, setQuickPitchView] = useState(
+        !!parseInt(filters[ProposalParamsEnum.QUICK_PITCHES]),
+    );
 
     return (
         <FiltersProvider defaultFilters={filters}>
@@ -62,7 +62,7 @@ export default function Index({
             </header>
 
             <section className="container flex w-full flex-col items-center justify-center">
-                <ProposalFilters funds={funds}/>
+                <ProposalFilters funds={funds} />
             </section>
 
             <section className="container mt-4 flex flex-col items-end">
@@ -70,7 +70,7 @@ export default function Index({
                     isHorizontal={isHorizontal}
                     quickPitchView={quickPitchView}
                     setIsHorizontal={setIsHorizontal}
-                    setGlobalQuickPitchView={setGlobalQuickPitchView}
+                    setGlobalQuickPitchView={setQuickPitchView}
                 />
             </section>
 
@@ -90,7 +90,7 @@ export default function Index({
                             proposals={proposals?.data}
                             isHorizontal={isHorizontal}
                             quickPitchView={quickPitchView}
-                            setGlobalQuickPitchView={setGlobalQuickPitchView}
+                            setGlobalQuickPitchView={setQuickPitchView}
                         />
                     </div>
                 </WhenVisible>
@@ -112,7 +112,13 @@ export default function Index({
                         <MetricsBar {...metrics} />
                     </div>
                     <div>
-                        <PlayerBar />
+                        <PlayerProvider>
+                            <PlayerBar
+                                proposals={
+                                    quickPitchView ? proposals.data : undefined
+                                }
+                            />
+                        </PlayerProvider>
                     </div>
                 </section>
             </UIProvider>

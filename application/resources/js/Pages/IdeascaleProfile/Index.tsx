@@ -1,35 +1,65 @@
+import { FiltersProvider } from '@/Context/FiltersContext';
 import { PageProps } from '@/types';
-import { Head } from '@inertiajs/react';
-import IdeascaleProfilesList from './Partials/IdeascaleProfileList';
-import IdeascaleProfilesFilters from './Partials/IdeascaleProfilesFilters';
+import { Head, WhenVisible } from '@inertiajs/react';
 import { useTranslation } from 'react-i18next';
+import { ProposalSearchParams } from '../../../types/proposal-search-params';
+import IdeascaleProfilesList from './Partials/IdeascaleProfileList';
+import IdeaScaleProfileLoader from './Partials/IdeaScaleProfileLoader';
 import IdeascaleProfilesData = App.DataTransferObjects.IdeascaleProfileData;
+import { useState } from 'react';
+import IdeaScaleProfileToolbar from "@/Pages/IdeascaleProfile/Partials/IdeaScaleProfileToolbar";
+import Paginator from "@/Components/Paginator";
+import {PaginatedData} from "../../../types/paginated-data";
 
 interface IdeascaleProfilesPageProps extends Record<string, unknown> {
-    ideascaleProfiles: IdeascaleProfilesData[];
+    ideascaleProfiles: PaginatedData<IdeascaleProfilesData[]>;
+    filters: ProposalSearchParams;
 }
-const Index = ({ ideascaleProfiles }: PageProps<IdeascaleProfilesPageProps>) => {
-
+const Index = ({
+    ideascaleProfiles,
+    filters,
+}: PageProps<IdeascaleProfilesPageProps>) => {
     const { t } = useTranslation();
+    const [perPage, setPerPage] = useState<number>(24);
+    const [currentPage, setCurrentPage] = useState<number>(1);
 
     return (
         <>
-            <Head title="Ideascale Profiles" />
+            <FiltersProvider defaultFilters={filters}>
+                <Head title="Ideascale Profiles"/>
 
-            <header className="container">
-                <h1 className="title-1">{t('ideascaleProfiles.ideascaleProfiles')}</h1>
-                <p className="text-content">{t('ideascaleProfiles.pageSubtitle')}</p>
-            </header>
+                <header className="container">
+                    <h1 className="title-1">
+                        {t('ideascaleProfiles.ideascaleProfiles')}
+                    </h1>
+                    <p className="text-content">
+                        {t('ideascaleProfiles.pageSubtitle')}
+                    </p>
+                </header>
 
-            <section className="container flex w-full flex-col items-center justify-center py-8">
-                <IdeascaleProfilesFilters />
-            </section>
-
-            <div className="flex w-full flex-col items-center">
-                <section className="container py-8">
-                  <IdeascaleProfilesList ideascaleProfiles={ideascaleProfiles}/>
+                <section className="container flex w-full flex-col items-center justify-center py-8">
+                    <IdeaScaleProfileToolbar/>
                 </section>
-            </div>
+
+                <div className="flex w-full flex-col items-center">
+                    <section className="container py-8">
+                        <WhenVisible fallback={<IdeaScaleProfileLoader/>} data="ideascaleProfiles">
+                            <IdeascaleProfilesList
+                                ideascaleProfiles={ideascaleProfiles.data || []}
+                            />
+                        </WhenVisible>
+                    </section>
+                </div>
+
+                <section className="w-full px-4 lg:container lg:px-0">
+                    <Paginator
+                        pagination={ideascaleProfiles}
+                        setPerPage={setPerPage}
+                        setCurrentPage={setCurrentPage}
+                    />
+                </section>
+
+            </FiltersProvider>
         </>
     );
 };

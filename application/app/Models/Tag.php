@@ -1,8 +1,9 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
@@ -10,7 +11,8 @@ class Tag extends Taxonomy
 {
     public $append = ['url'];
 
-    public function url(): Attribute {
+    public function url(): Attribute
+    {
         return Attribute::make(
             get: function () {
                 return url("tags/{$this->slug}");
@@ -37,9 +39,9 @@ class Tag extends Taxonomy
                     ->orWhere('meta_title', 'like', "%{$search}%");
             });
         })
-        ->when($filters['ids'] ?? null, function ($query, $ids) {
-            $query->whereIn('id', is_array($ids) ? $ids : explode(',', $ids));
-        });
+            ->when($filters['ids'] ?? null, function ($query, $ids) {
+                $query->whereIn('id', is_array($ids) ? $ids : explode(',', $ids));
+            });
 
         return $query;
     }

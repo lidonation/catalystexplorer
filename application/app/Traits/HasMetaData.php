@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace App\Traits;
 
-use App\Models\Meta;
-use Illuminate\Support\Fluent;
 use App\Interfaces\IHasMetaData;
+use App\Models\Meta;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Fluent;
 
 trait HasMetaData
 {
@@ -28,7 +28,7 @@ trait HasMetaData
 
                 return new Fluent(
                     $this->metas->map(
-                        fn($m) => [$m->key => $m->content]
+                        fn ($m) => [$m->key => $m->content]
                     )->collapse()
                 );
             }

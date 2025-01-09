@@ -1,17 +1,17 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Database\Factories;
 
-use App\Models\User;
-use App\Models\Review;
-use App\Models\Proposal;
 use App\Enums\StatusEnum;
 use App\Models\Discussion;
+use App\Models\Review;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class ReviewFactory extends Factory
 {
-
     public function definition(): array
     {
 
@@ -29,7 +29,6 @@ class ReviewFactory extends Factory
             'not_helpful_total' => $this->faker->numberBetween(0, 100),
         ];
     }
-
 
     /**
      * Indicate that the review is published.

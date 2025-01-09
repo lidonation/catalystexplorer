@@ -15,6 +15,19 @@ Create a feature branch for your changes:
 ```bash
 git checkout -b feature/your-feature-name
 ```
+When writing commit messages, please follow the [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) format:
+```<type>[optional scope]:<ticket-no> <description>```
+ie:
+```bash
+git commit -m "feat(homepage): LN-1343 added quick pitches to homepage."
+git commit -m "fix(ideascale profiles): LN-1545 fixed bug in search bar."
+git commit -m 'docs(readme.md): LN-1448 Added documentation for community review score calculation.'
+git commit -m 'style(proposals page): LN-1640 Updated styling for search bar.'
+git commit -m 'refactor(global search): LN-1542 Refactored search bar component.'
+git commit -m 'perf(global search): LN-3343 Improved search bar performance.'
+git commit -m 'test(reviews): LN-1443 Added unit tests for search bar.'
+git commit -m 'chore(app): LN-2343 Updated dependencies.'
+```
 
 ### 3. Implement and Test
 - Implement your changes with appropriate comments and documentation.
@@ -30,8 +43,7 @@ git checkout -b feature/your-feature-name
 - Make revisions if requested.
 
 ## Code Style
-- Follow the [PSR-12 Coding Standards](https://www.php-fig.org/psr/psr-12/) for PHP.
-- Use ESLint for JavaScript and adhere to React best practices.
+- See the [STYLEGUIDE](./STYLEGUIDE.md) for coding styles, required, and best practices.
 
 ## Reporting Issues
 If you find bugs or have feature requests, please open an issue in the [Issues section](https://gitlab.lidonation.com/lidonation/www.catalystexplorer.com/-/issues).
