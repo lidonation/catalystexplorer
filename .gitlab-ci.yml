@@ -416,13 +416,13 @@ sem-release:
     - job: app_mainnet
     - job: composer
   image:
-    name: registry.gitlab.com/gitlab-com/gl-infra/common-ci-tasks-images/semantic-release:latest
+    name: php:8.3-fpm-alpine3.20
     entrypoint: [""]
   variables:
     GITLAB_URL: $CI_SERVER_URL
   script: |-
     set -vx
-    apk add make curl php php82-phar
+    apk add make curl
     cp application/.env.testing application/.env
     curl -o /opt/composer https://getcomposer.org/download/2.8.4/composer.phar
     yarn install
