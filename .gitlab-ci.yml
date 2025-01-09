@@ -376,6 +376,7 @@ db_mainnet:
     url: https://$CI_PROJECT_PATH_SLUG.$AUTO_DEVOPS_DOMAIN
   needs:
   - job: db_preview
+    optional: true
   rules:
   - if: $CI_COMMIT_BRANCH == 'main' &&
       '($DEPLOY_INFRA == "true")'
@@ -389,6 +390,7 @@ redis_mainnet:
     url: https://$CI_PROJECT_PATH_SLUG.$AUTO_DEVOPS_DOMAIN
   needs:
   - job: redis_preview
+    optional: true
   rules:
   - if: $CI_COMMIT_BRANCH == 'main' &&
       '($DEPLOY_INFRA == "true")'
