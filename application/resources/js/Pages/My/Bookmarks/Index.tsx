@@ -1,10 +1,13 @@
 import { Head } from '@inertiajs/react';
 import BookmarkToolbar from './Partials/BookmarkToolbar';
+import BookmarkSearchControls from './Partials/BookmarkSearchControls';
+import { useTranslation } from 'react-i18next';
 
 const Index = () => {
+    const { t } = useTranslation();
     return (
         <>
-            <Head title="Jormungandr"/>
+            <Head title="My Bookmarks"/>
 
             <header>
                 <div className='container'>
@@ -12,8 +15,9 @@ const Index = () => {
                 </div>
                 <div className='container'>
                     <p className="text-content">
-                        All your bookmarked proposals, groups, ideascale profiles in one place.
+                        {t('bookmark')}
                         <BookmarkToolbar/>
+                        <BookmarkSearchControls/>
                     </p>
                 </div>
             </header>
