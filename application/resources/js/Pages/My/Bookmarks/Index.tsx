@@ -1,4 +1,5 @@
 import { Head } from '@inertiajs/react';
+import BookmarkToolbar from './Partials/BookmarkToolbar';
 
 const Index = () => {
     return (
@@ -12,6 +13,7 @@ const Index = () => {
                 <div className='container'>
                     <p className="text-content">
                         All your bookmarked proposals, groups, ideascale profiles in one place.
+                        <BookmarkToolbar/>
                     </p>
                 </div>
             </header>
