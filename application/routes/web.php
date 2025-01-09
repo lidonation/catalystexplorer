@@ -18,8 +18,13 @@ Route::localized(
         Route::get('/proposals', [ProposalsController::class, 'index'])
             ->name('proposals.index');
 
-        Route::get('/funds', [FundsController::class, 'index'])
-            ->name('funds.index');
+        Route::prefix('/funds')->as('funds.')->group(function () {
+            Route::get('/', [FundsController::class, 'index'])
+                ->name('index');
+
+            Route::get('/{fund:slug}', [FundsController::class, 'fund'])
+                ->name('fund');
+        });
 
         Route::get('/ideascale-profiles', [IdeascaleProfilesController::class, 'index'])
             ->name('ideascaleProfiles.index');
