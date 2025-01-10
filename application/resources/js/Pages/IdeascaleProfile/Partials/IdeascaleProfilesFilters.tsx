@@ -114,9 +114,6 @@ export default function IdeascaleProfilesFilters() {
                     </div>
                 </div>
             </div>
-            <div className='w-full'>
-                <IdeascaleProfilesSearchControls />
-            </div>
         </div>
     );
 }
