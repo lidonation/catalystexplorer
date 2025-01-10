@@ -73,7 +73,6 @@ const IdeaScaleProfileToolbar = () => {
                 <IdeascaleProfilesSearchControls />
             </div>
             <div className="flex flex-row items-center justify-between">
-                <div>{/* Placeholder for search bar */}</div>
                 <div className="flex flex-row gap-2">
                     <Button
                         className={`shadow-xs border-input flex flex-row items-center gap-2 rounded-lg border bg-background px-2 py-1 ${
