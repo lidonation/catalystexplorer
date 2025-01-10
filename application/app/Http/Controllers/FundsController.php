@@ -8,6 +8,7 @@ use App\Models\Fund;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
+use App\Repositories\FundRepository;
 
 class FundsController extends Controller
 {
@@ -65,8 +66,8 @@ class FundsController extends Controller
                 'fundRounds' => $fundRounds,
                 'totalProposals' => $totalProposals,
                 'fundedProposals' => $fundedProposals,
-                'totalFundsRequested' => number_format($totalFundsRequested, 2).' $',
-                'totalFundsAllocated' => number_format($totalFundsAllocated, 2).' $',
+                'totalFundsRequested' => $totalFundsRequested,
+                'totalFundsAllocated' => $totalFundsAllocated,
             ],
         ]);
     }
@@ -77,4 +78,5 @@ class FundsController extends Controller
             'fund' => $fund,
         ]);
     }
+
 }

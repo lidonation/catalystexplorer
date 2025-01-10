@@ -1,4 +1,5 @@
 import Selector from '@/Components/Select';
+import { currency } from '@/utils/currency';
 import { ResponsiveBar } from '@nivo/bar';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -24,11 +25,19 @@ const FundsBarChart: React.FC<FundsBarChartProps> = ({
 
     const allKeys = [
         { value: t('funds.totalProposals'), label: t('funds.totalProposals') },
-        { value: t('funds.fundedProposals'), label: t('funds.fundedProposals') },
-        { value: t('funds.completedProposals'), label: t('funds.completedProposals') },
+        {
+            value: t('funds.fundedProposals'),
+            label: t('funds.fundedProposals'),
+        },
+        {
+            value: t('funds.completedProposals'),
+            label: t('funds.completedProposals'),
+        },
     ];
 
-    const [filters, setFilters] = useState<string[]>(allKeys.map(key => key.value));
+    const [filters, setFilters] = useState<string[]>(
+        allKeys.map((key) => key.value),
+    );
 
     const handleFilterChange = (selectedItems: string[]) => {
         setFilters(selectedItems);
@@ -37,40 +46,44 @@ const FundsBarChart: React.FC<FundsBarChartProps> = ({
     const activeKeys = filters.length > 0 ? filters : [];
 
     return (
-        <div className="rounded-md bg-background p-4 shadow-sm lg:p-16">
-            <div className="flex w-full justify-between">
+        <div className="rounded-md bg-background p-8 shadow-sm lg:p-16">
+            <div className="grid w-full grid-cols-2 justify-between gap-4 lg:grid-cols-5">
                 <div>
-                    <h6 className="text-2 lg:title-4 font-bold">{fundRounds}</h6>
+                    <h6 className="text-2 lg:title-5 font-bold">
+                        {fundRounds}
+                    </h6>
                     <p className="text-4 lg:text-3 font-bold text-content opacity-75">
                         {t('funds.fundRounds')}
                     </p>
                 </div>
                 <div>
-                    <h6 className="text-2 lg:title-4 font-bold">{totalProposals.toLocaleString()}</h6>
+                    <h6 className="text-2 lg:title-5 font-bold">
+                        {totalProposals.toLocaleString()}
+                    </h6>
                     <p className="text-4 lg:text-3 font-bold text-content opacity-75">
                         {t('funds.totalProposals')}
                     </p>
                 </div>
 
                 <div>
-                    <h6 className="text-2 lg:title-4 font-bold">
+                    <h6 className="text-2 lg:title-5 font-bold">
                         {fundedProposals.toLocaleString()}
                     </h6>
-                    <p className="text-4 lg:text-2 font-bold text-content opacity-75">
+                    <p className="text-4 lg:text-3 font-bold text-content opacity-75">
                         {t('funds.fundedProposals')}
                     </p>
                 </div>
                 <div>
-                    <h6 className="text-2 lg:title-4 font-bold">
-                        {totalFundsRequested}
+                    <h6 className="text-2 lg:title-5 font-bold">
+                        {currency(totalFundsRequested, undefined, undefined, 2)}
                     </h6>
-                    <p className="text-4 lg:text-4 font-bold text-content opacity-75">
+                    <p className="text-4 lg:text-3 font-bold text-content opacity-75">
                         {t('funds.totalFundsRequested')}
                     </p>
                 </div>
                 <div>
-                    <h6 className="text-2 lg:title-4 font-bold">
-                        {totalFundsAllocated}
+                    <h6 className="text-2 lg:title-5 font-bold">
+                        {currency(totalFundsAllocated, undefined, undefined, 2)}
                     </h6>
                     <p className="text-4 lg:text-3 font-bold text-content opacity-75">
                         {t('funds.totalFundsAllocated')}
@@ -92,7 +105,12 @@ const FundsBarChart: React.FC<FundsBarChartProps> = ({
                     data={funds}
                     keys={activeKeys}
                     indexBy="fund"
-                    margin={{ top: 50, right: 50, bottom: 100, left: 60 }}
+                    margin={{
+                        top: 50,
+                        right: 50,
+                        bottom: window.innerWidth < 600 ? 200 : 100, // Increase bottom margin for gap
+                        left: 60,
+                    }}
                     padding={0.3}
                     valueScale={{ type: 'linear' }}
                     colors={['#4fadce', '#ee8434', '#16B364']}
@@ -119,20 +137,21 @@ const FundsBarChart: React.FC<FundsBarChartProps> = ({
                         {
                             dataFrom: 'keys',
                             anchor: 'bottom',
-                            direction: 'row',
+                            direction:
+                                window.innerWidth < 600 ? 'column' : 'row',
                             justify: false,
-                            translateX: 0,
-                            translateY: window.innerWidth < 600 ? 85 : 80,
-                            itemsSpacing: window.innerWidth < 600 ? 12 : 2,
-                            itemWidth: window.innerWidth < 600 ? 100 : 200,
-                            itemHeight: window.innerWidth < 600 ? 5 : 20,
+                            translateX: window.innerWidth < 600 ? -40 : 0,
+                            translateY: window.innerWidth < 600 ? 180 : 80,
+                            itemsSpacing: window.innerWidth < 600 ? 10 : 2,
+                            itemWidth: window.innerWidth < 600 ? 80 : 200,
+                            itemHeight: window.innerWidth < 600 ? 20 : 20,
                             itemDirection: 'left-to-right',
                             symbolSize: 20,
-                            symbolSpacing: window.innerWidth < 600 ? 0 : 5,
+                            symbolSpacing: window.innerWidth < 600 ? 10 : 5,
                             symbolShape: (props) => (
                                 <rect
                                     x={window.innerWidth < 600 ? 5 : -10}
-                                    y={window.innerWidth < 600 ? -6 : 2}
+                                    y={window.innerWidth < 600 ? 0 : 2}
                                     rx={6}
                                     ry={6}
                                     width={window.innerWidth < 600 ? 10 : 30}
@@ -177,7 +196,7 @@ const FundsBarChart: React.FC<FundsBarChartProps> = ({
                             text: {
                                 fill: 'var(--cx-content)',
                                 fontWeight: 'bold',
-                                fontSize: window.innerWidth < 600 ? 11 : 14,
+                                fontSize: window.innerWidth < 600 ? 12 : 14,
                             },
                         },
                     }}
@@ -189,9 +208,7 @@ const FundsBarChart: React.FC<FundsBarChartProps> = ({
                                 </strong>
                             </p>
                             {activeKeys.map((key) => (
-                                <p key={key}>
-                                    {`${key} : ${data[key] || 0}`}
-                                </p>
+                                <p key={key}>{`${key} : ${data[key] || 0}`}</p>
                             ))}
                         </div>
                     )}
