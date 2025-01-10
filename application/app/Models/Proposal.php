@@ -183,7 +183,7 @@ class Proposal extends Model
     public function currency(): Attribute
     {
         return Attribute::make(
-            get: fn ($currency) => $currency ?? $this->campaign?->currency ?? $this->fund?->currency ?? CatalystCurrencies::USD()->value,
+            get: fn ($currency) => $currency ?? $this->campaign?->currency ?? $this->fund?->currency ?? CatalystCurrencies::ADA()->value,
         );
     }
 
@@ -416,7 +416,7 @@ class Proposal extends Model
             'amount_received' => 'integer',
             'amount_requested' => 'integer',
             'created_at' => DateFormatCast::class,
-            'currency' => CatalystCurrencies::class,
+            'currency' => CatalystCurrencies::class.':nullable',
             'funded_at' => DateFormatCast::class,
             'funding_updated_at' => DateFormatCast::class,
             'offchain_metas' => 'array',
