@@ -1,97 +1,108 @@
+import ArrowTrendingDown from '@/Components/svgs/ArrowTrendingDown';
+import ArrowTrendingUp from '@/Components/svgs/ArrowTrendingUp';
+import { currency } from '@/utils/currency';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import ArrowTrendingDown from "@/Components/svgs/ArrowTrendingDown";
-import ArrowTrendingUp from "@/Components/svgs/ArrowTrendingUp";
 import FundData = App.DataTransferObjects.FundData;
 
 interface FundCardProps {
     fund: FundData;
-    totalAllocated: number;
-    totalBudget: number;
-    fundedProjects: number;
-    totalProjects: number;
-    percentageChange: string;
+    percentageChange: number;
     projectPercentageChange: number;
 }
 
-const formatAmount = (amount: number): string => {
-    if (amount >= 1000000) {
-        return (amount / 1000000).toFixed(2) + 'M';
-    } else if (amount >= 1000) {
-        return (amount / 1000).toFixed(2) + 'K';
-    }
-    return amount.toString();
-};
-
 const FundCard: React.FC<FundCardProps> = ({
     fund,
-    totalAllocated,
-    totalBudget,
-    fundedProjects,
-    totalProjects,
-    percentageChange = "0%",
-    projectPercentageChange = 0,
+    percentageChange,
+    projectPercentageChange,
 }) => {
+
     const { t } = useTranslation();
 
-    const isIncrease = !isNaN(parseFloat(percentageChange)) && parseFloat(percentageChange) > 0;
-    const formattedProjectPercentageChange = `${projectPercentageChange > 0 ? "+" : ""}${projectPercentageChange}%`;
-
     return (
-        <div className="bg-background rounded-lg shadow-md p-4 sm:p-6 flex flex-col sm:flex-row space-y-6 sm:space-y-0 sm:space-x-4 w-full">
-            {/* Title and Image Section */}
-            <div className="flex-none flex flex-col items-center sm:items-start space-y-4 w-full sm:w-1/2 flex-shrink-0 sm:flex-grow-0">
-                <h2 className="text-lg sm:text-xl font-bold text-center sm:text-left truncate">
+        <div className="flex w-full flex-row items-stretch space-x-6 overflow-hidden rounded-lg bg-background p-3 shadow-md sm:p-4">
+            {/* Image Section */}
+            <div className="flex flex-none flex-col items-center space-y-2 sm:items-start sm:space-y-4">
+                {/* Title */}
+                <h2 className="truncate text-center text-base font-bold sm:text-left sm:text-xl">
                     {fund.title}
                 </h2>
-                <div className="w-24 h-24 sm:w-36 sm:h-36 rounded-full bg-gradient-to-r from-gray-100 to-gray-900 flex items-center justify-center overflow-hidden">
+
+                {/* Responsive Image Section */}
+                <div className="flex h-24 w-24 items-center justify-center overflow-hidden rounded-full bg-gradient-to-r from-gray-100 to-gray-900 sm:h-32 sm:w-32 lg:h-36 lg:w-36">
                     <img
-                        src={fund.hero_img_url || "/default-hero-image.jpg"}
-                        alt={fund.title || "Fund"}
-                        className="rounded-full w-full h-full object-cover"
+                        src={fund.hero_img_url}
+                        alt={fund.title || 'Fund'}
+                        className="h-full w-full rounded-full object-cover"
                     />
                 </div>
             </div>
 
             {/* Details Section */}
-            <div className="flex-grow flex flex-col justify-between space-y-4 overflow-hidden w-full sm:w-1/2 flex-shrink-0">
-                <div className="w-full">
-                    <p className="text-sm truncate mt-6">{t('funds.totalAllocated')}</p>
+            <div className="flex flex-grow flex-col space-y-1 sm:space-y-2">
+                <div>
+                    <p className="mt-8 truncate text-xs sm:text-sm">
+                        {t('funds.totalAwarded')}
+                    </p>
                     <div className="flex items-baseline space-x-1">
-                        <span className="text-lg sm:text-xl font-bold">{formatAmount(totalAllocated)}</span>
-                        <span className="text-sm">/</span>
-                        <span className="text-md text-gray-500 truncate">{formatAmount(totalBudget)} ₳</span>
+                        <span className="truncate text-sm font-bold sm:text-base">
+                            {currency(
+                                fund?.amount_awarded ?? 0,
+                                fund?.currency,
+                                undefined,
+                                2,
+                            )}
+                        </span>
+                        <span className="text-xs sm:text-sm">/</span>
+                        <span className="truncate text-xs text-gray-500 sm:text-sm">
+                            {currency(
+                                fund?.amount_requested ?? 0,
+                                fund?.currency,
+                                undefined,
+                                2,
+                            )}
+                        </span>
                     </div>
-                    <div className="flex items-center mt-1">
-                        {isIncrease ? (
-                            <ArrowTrendingUp className="w-4 h-4 text-green-500" />
+                    <div className="mt-1 flex items-center">
+                        {percentageChange >= 0 ? (
+                            <ArrowTrendingUp className="h-3 w-3 text-green-500 sm:h-4 sm:w-4" />
                         ) : (
-                            <ArrowTrendingDown className="w-4 h-4 text-red-500" />
+                            <ArrowTrendingDown className="h-3 w-3 text-red-500 sm:h-4 sm:w-4" />
                         )}
-                        <span className="truncate ml-1">{percentageChange}</span>
-                        <span className="ml-1">vs {t('funds.lastFund')}</span>
+                        <span className="ml-1 truncate text-xs sm:text-sm">
+                            {`${Math.abs(percentageChange)}%`}
+                        </span>
+                        <span className="ml-1 truncate text-xs sm:text-sm">
+                            vs {t('funds.lastFund')}
+                        </span>
                     </div>
                 </div>
 
-                <div className="w-full">
-                    <p className="text-sm truncate">{t('funds.fundedProjects')}</p>
+                <div>
+                    <p className="mt-2 truncate text-xs sm:text-sm">
+                        {t('funds.fundedProjects')}
+                    </p>
                     <div className="flex items-baseline space-x-1">
-                        <span className="text-lg sm:text-xl font-bold">{fundedProjects}</span>
-                        <span className="text-sm">/</span>
-                        <span className="text-md text-gray-500 truncate">{totalProjects}</span>
-                    </div>
-                    <div className="flex items-center mt-1">
-                        {projectPercentageChange > 0 ? (
-                            <ArrowTrendingUp className="w-4 h-4 text-green-500" />
-                        ) : (
-                            <ArrowTrendingDown className="w-4 h-4 text-red-500" />
-                        )}
-                        <span
-                            className={`${projectPercentageChange > 0 ? "text-green-500" : "text-red-500"} truncate ml-1`}
-                        >
-                            {formattedProjectPercentageChange}
+                        <span className="truncate text-sm font-bold sm:text-base">
+                            {fund.funded_proposals_count}
                         </span>
-                        <span className="ml-1">vs {t('funds.lastFund')}</span>
+                        <span className="text-xs sm:text-sm">/</span>
+                        <span className="truncate text-xs text-gray-500 sm:text-sm">
+                            {fund.proposals_count}
+                        </span>
+                    </div>
+                    <div className="mt-1 flex items-center">
+                        {projectPercentageChange >= 0 ? (
+                            <ArrowTrendingUp className="h-3 w-3 text-green-500 sm:h-4 sm:w-4" />
+                        ) : (
+                            <ArrowTrendingDown className="h-3 w-3 text-red-500 sm:h-4 sm:w-4" />
+                        )}
+                        <span className="ml-1 truncate text-xs sm:text-sm">
+                            {`${Math.abs(projectPercentageChange)}%`}
+                        </span>
+                        <span className="ml-1 truncate text-xs sm:text-sm">
+                            vs {t('funds.lastFund')}
+                        </span>
                     </div>
                 </div>
             </div>

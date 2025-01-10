@@ -23,6 +23,18 @@ final class FundData extends Data
         public ?int $proposals_count,
 
         #[TypeScriptOptional]
+        public ?int $funded_proposals_count,
+
+        #[TypeScriptOptional]
+        public ?int $completed_proposals_count,
+
+        #[TypeScriptOptional]
+        public ?int $amount_requested,
+
+        #[TypeScriptOptional]
+        public ?int $amount_awarded,
+
+        #[TypeScriptOptional]
         public ?string $meta_title,
 
         #[TypeScriptOptional]
@@ -42,24 +54,6 @@ final class FundData extends Data
 
         #[TypeScriptOptional]
         public ?string $hero_img_url,
-
-        #[TypeScriptOptional]
-        public ?int $totalAllocated,
-
-        #[TypeScriptOptional]
-        public ?int $totalBudget,
-
-        #[TypeScriptOptional]
-        public ?int $fundedProjects,
-
-        #[TypeScriptOptional]
-        public ?int $totalProjects,
-
-        #[TypeScriptOptional]
-        public ?int $percentageChange,
-
-        #[TypeScriptOptional]
-        public ?int $projectPercentageChange,
 
         #[TypeScriptOptional]
         public ?string $status,
