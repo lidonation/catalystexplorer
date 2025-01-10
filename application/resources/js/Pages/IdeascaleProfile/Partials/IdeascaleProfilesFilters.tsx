@@ -2,7 +2,6 @@ import { RangePicker } from '@/Components/RangePicker';
 import { useFilterContext } from '@/Context/FiltersContext';  // Import the custom hook
 import { ProposalParamsEnum } from '@/enums/proposal-search-params';
 import { ProposalSearchParams } from '../../../../types/proposal-search-params';
-import IdeascaleProfilesSearchControls from './IdeascaleProfileSearchControls';
 import { SearchSelect } from '@/Components/SearchSelect';
 import Selector from '@/Components/Select';import { useTranslation } from 'react-i18next';
 import { useState } from 'react';
@@ -113,9 +112,6 @@ export default function IdeascaleProfilesFilters() {
                         /> */}
                     </div>
                 </div>
-            </div>
-            <div className='w-full'>
-                <IdeascaleProfilesSearchControls />
             </div>
         </div>
     );
