@@ -12,6 +12,7 @@ use Laravel\Nova\Card;
 use Laravel\Nova\Exceptions\HelperNotSupported;
 use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Fields\Field;
+use Laravel\Nova\Fields\HasMany;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Slug;
 use Laravel\Nova\Fields\Stack;
@@ -88,6 +89,8 @@ class Proposals extends Resource
             BelongsTo::make(__('Fund'), 'fund', Funds::class)
                 ->searchable()
                 ->filterable(),
+
+            HasMany::make('Metadata', 'metas', Metas::class),
         ];
     }
 

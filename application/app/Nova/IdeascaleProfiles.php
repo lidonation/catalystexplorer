@@ -5,7 +5,10 @@ declare(strict_types=1);
 namespace App\Nova;
 
 use App\Models\IdeascaleProfile;
+use Laravel\Nova\Fields\BelongsTo;
+use Laravel\Nova\Fields\HasMany;
 use Laravel\Nova\Fields\ID;
+use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Http\Requests\NovaRequest;
 
 class IdeascaleProfiles extends Resource
@@ -42,6 +45,50 @@ class IdeascaleProfiles extends Resource
     {
         return [
             ID::make()->sortable(),
+            Text::make('Name')
+                ->sortable()->withMeta(
+                    [
+                        'extraAttributes' => [
+                            'autocomplete' => 'off',
+                        ],
+                    ]
+                )
+                ->rules('max:255')
+                ->required(),
+
+            Text::make('username')
+                ->sortable()->withMeta(
+                    [
+                        'extraAttributes' => [
+                            'autocomplete' => 'off',
+                        ],
+                    ]
+                ),
+
+            Text::make('ideascale Id')
+                ->sortable()->withMeta(
+                    [
+                        'extraAttributes' => [
+                            'autocomplete' => 'off',
+                        ],
+                    ]
+                ),
+
+            Text::make('Email')
+                ->sortable()->nullable()->withMeta(
+                    [
+                        'extraAttributes' => [
+                            'autocomplete' => 'off',
+                        ],
+                    ]
+                )
+                ->required(),
+
+            BelongsTo::make(__('Claimed By'), 'claimed_by_user', User::class)
+                ->nullable()
+                ->searchable(),
+
+            HasMany::make('Metadata', 'metas', Metas::class),
         ];
     }
 
