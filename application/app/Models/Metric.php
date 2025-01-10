@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use App\Casts\DateFormatCast;
 use App\Enums\MetricCountBy;
 use App\Enums\MetricQueryTypes;
 use App\Enums\MetricTypes;
@@ -17,13 +16,13 @@ class Metric extends Model
     protected function casts(): array
     {
         return [
-            'count_by' => MetricCountBy::class,
-            'created_at' => DateFormatCast::class,
+            //            'count_by' => MetricCountBy::class,
+            'created_at' => 'datetime:Y-m-d',
             'order' => 'integer',
-            'query' => MetricQueryTypes::class,
-            'status' => StatusEnum::class,
-            'type' => MetricTypes::class,
-            'updated_at' => DateFormatCast::class,
+            //            'query' => MetricQueryTypes::class,
+            //            'status' => StatusEnum::class, #Not compatible with nova
+            //            'type' => MetricTypes::class,
+            'updated_at' => 'datetime:Y-m-d',
 
         ];
     }
@@ -35,7 +34,7 @@ class Metric extends Model
                 $modelInstance = new $this->model;
                 $table = $modelInstance->getTable();
                 $builder = call_user_func([$this->model, 'query']);
-                $aggregate = $this->query?->value;
+                $aggregate = $this->query;
                 $field = $this->field;
 
                 return $builder->select(DB::raw("{$aggregate}({$table}.{$field}) as {$aggregate}"))
@@ -52,7 +51,7 @@ class Metric extends Model
                 $modelInstance = new $this->model;
                 $table = $modelInstance->getTable();
                 $builder = call_user_func([$this->model, 'query']);
-                $aggregate = $this->query?->value;
+                $aggregate = $this->query;
                 $field = $this->field;
 
                 if (! $modelInstance instanceof Proposal) {

@@ -6,6 +6,7 @@ import { IdeaScaleSearchEnum } from '@/enums/ideascale-search-enums';
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { IdeaScaleSearchParams } from '../../../../types/ideascale-search-params';
+import IdeascaleProfilesSearchControls from './IdeascaleProfileSearchControls';
 import IdeascaleProfilesFilters from './IdeascaleProfilesFilters';
 
 const IdeaScaleProfileToolbar = () => {
@@ -67,14 +68,16 @@ const IdeaScaleProfileToolbar = () => {
     }, [toggleFilterVisibility]);
 
     return (
-        <div className="flex w-full flex-col gap-4">
-            <div className="flex flex-row items-center justify-between gap-2">
-                <div>{/* Placeholder for search bar */}</div>
+        <div className="flex w-full flex-col gap-2">
+            <div>
+                <IdeascaleProfilesSearchControls />
+            </div>
+            <div className="flex flex-row items-end justify-end">
                 <div className="flex flex-row gap-2">
                     <Button
-                        className={`shadow-xs border-input flex flex-row items-center gap-2 rounded-lg border bg-background px-2 py-1  ${
+                        className={`shadow-xs border-input flex flex-row items-center gap-2 rounded-lg border bg-background px-2 py-1 ${
                             toggleFilterVisibility
-                                ? 'border-accent-blue ring-1 ring-offset-background text-primary'
+                                ? 'border-accent-blue text-primary ring-1 ring-offset-background'
                                 : 'text-gray-500 hover:bg-background-lighter'
                         }`}
                         onClick={() =>
