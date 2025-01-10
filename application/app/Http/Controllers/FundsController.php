@@ -65,8 +65,8 @@ class FundsController extends Controller
                 'fundRounds' => $fundRounds,
                 'totalProposals' => $totalProposals,
                 'fundedProposals' => $fundedProposals,
-                'totalFundsRequested' => number_format($totalFundsRequested, 2).' $',
-                'totalFundsAllocated' => number_format($totalFundsAllocated, 2).' $',
+                'totalFundsRequested' => $totalFundsRequested,
+                'totalFundsAllocated' => $totalFundsAllocated,
             ],
         ]);
     }

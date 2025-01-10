@@ -75,6 +75,7 @@ export default {
                 'border-chip': 'var(--cx-border-chip-color)',
                 'border-secondary': 'var(--cx-border-secondary-color)',
                 'eye-logo': 'var(--cx-blue-eye-color)',
+                'primary-light': 'var(--cx-primary-light)',
                 
                 border: {
                     primary: 'var(--cx-primary)',
