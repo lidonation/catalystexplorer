@@ -37,7 +37,7 @@ const Index = ({
                     </p>
                 </header>
 
-                <section className="container flex w-full flex-col items-center justify-center py-8">
+                <section className="container flex w-full flex-col items-center justify-center">
                     <IdeaScaleProfileToolbar/>
                 </section>
 
