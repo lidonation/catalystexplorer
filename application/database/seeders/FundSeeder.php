@@ -1,9 +1,12 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Database\Seeders;
-use Carbon\Carbon;
+
 use App\Models\Fund;
 use App\Models\User;
+use Carbon\Carbon;
 use Database\Seeders\Traits\GetImageLink;
 use Illuminate\Database\Eloquent\Factories\Sequence;
 use Illuminate\Database\Seeder;
