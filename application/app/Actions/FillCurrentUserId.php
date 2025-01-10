@@ -16,6 +16,8 @@ class FillCurrentUserId
     public function handle(Model &$model): void
     {
         // Fill the current user id
-        $model->user_id = auth()->id();
+        if (auth()->check()) {
+            $model->user_id = auth()->id();
+        }
     }
 }

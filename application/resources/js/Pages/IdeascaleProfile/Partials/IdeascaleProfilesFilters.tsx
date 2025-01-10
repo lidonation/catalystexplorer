@@ -5,9 +5,9 @@ import { useFilterContext } from '@/Context/FiltersContext'; // Import the custo
 import { ProposalParamsEnum } from '@/enums/proposal-search-params';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import IdeascaleProfilesSearchControls from './IdeascaleProfileSearchControls';
 
 import FundingStatusToggle from './FundingStatusToggle';
+import IdeascaleProfilesSearchControls from './IdeascaleProfileSearchControls';
 
 export default function IdeascaleProfilesFilters() {
     const { t } = useTranslation();
@@ -137,9 +137,7 @@ export default function IdeascaleProfilesFilters() {
                     </div>
                 </div>
             </div>
-            <div className="w-full">
-                <IdeascaleProfilesSearchControls />
-            </div>
+
         </div>
     );
 }

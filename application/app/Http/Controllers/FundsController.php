@@ -8,6 +8,7 @@ use App\Models\Fund;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
+use App\Repositories\FundRepository;
 
 class FundsController extends Controller
 {
@@ -76,4 +77,5 @@ class FundsController extends Controller
             'fund' => $fund,
         ]);
     }
+
 }
