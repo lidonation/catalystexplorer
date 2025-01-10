@@ -1,8 +1,7 @@
 import { RangePicker } from '@/Components/RangePicker';
-import { useFilterContext } from '@/Context/FiltersContext';  // Import the custom hook
+import { useFilterContext } from '@/Context/FiltersContext';
 import { ProposalParamsEnum } from '@/enums/proposal-search-params';
 import { ProposalSearchParams } from '../../../../types/proposal-search-params';
-import IdeascaleProfilesSearchControls from './IdeascaleProfileSearchControls';
 import { SearchSelect } from '@/Components/SearchSelect';
 import Selector from '@/Components/Select';import { useTranslation } from 'react-i18next';
 import { useState } from 'react';
@@ -100,22 +99,7 @@ export default function IdeascaleProfilesFilters() {
                         min={filters[ProposalParamsEnum.MIN_BUDGET]}
                         defaultValue={filters[ProposalParamsEnum.BUDGETS]}
                     />
-
-                    <div className="col-span-2 sm:col-span-2 lg:col-span-1">
-                        {/* <RangePicker
-                            key="budgets"
-                            context="Budgets"
-                            value={budgetRange}
-                            onValueChange={setBudgetRange}
-                            max={10000000}
-                            min={1000}
-                            defaultValue={[1000, 10000000]}
-                        /> */}
-                    </div>
                 </div>
-            </div>
-            <div className='w-full'>
-                <IdeascaleProfilesSearchControls />
             </div>
         </div>
     );
