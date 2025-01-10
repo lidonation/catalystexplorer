@@ -12,7 +12,7 @@ function BookmarkSearchControls() {
     }
 
     return (
-        <div className="mx-auto flex w-full flex-col gap-4 bg-background-lighter pb-4 pt-6">
+        <div className="mx-auto flex w-full flex-col gap-4 bg-background-lighter pb-5 pt-5">
             <div className="flex items-center justify-end gap-2">
                 <SearchBar
                     handleSearch={handleSearch}

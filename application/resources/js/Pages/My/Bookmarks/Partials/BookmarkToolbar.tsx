@@ -1,10 +1,9 @@
 import Button from '@/Components/atoms/Button';
 import Selector from '@/Components/Select';
 import FilterLinesIcon from '@/Components/svgs/FilterLinesIcon';
-import { useFilterContext } from '@/Context/FiltersContext';
-import { IdeaScaleSearchEnum } from '@/enums/ideascale-search-enums';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import BookmarkSearchControls from './BookmarkSearchControls';
 
 
 const BookmarkToolbar = () => {
@@ -18,7 +17,9 @@ const BookmarkToolbar = () => {
     return (
         <div className="flex w-full flex-col gap-4">
             <div className="flex flex-row items-center justify-between gap-2">
-                <div>{/* Placeholder for search bar */}</div>
+                <div className='w-full'>
+                    <BookmarkSearchControls/>
+                </div>
                 <div className="flex flex-row gap-2">
                 <Button
                     className={`shadow-xs border-input flex flex-row items-center gap-2 rounded-lg border bg-background px-2 py-1  ${
