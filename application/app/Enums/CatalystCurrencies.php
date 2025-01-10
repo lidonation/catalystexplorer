@@ -15,7 +15,7 @@ final class CatalystCurrencies extends Enum
 {
     public static function values(): \Closure
     {
-        return fn (string $name): string|int => match ($name) {
+        return fn (string $name): string|int|null => match ($name) {
             'NO_CURRENCY' => null,
             default => $name
         };
