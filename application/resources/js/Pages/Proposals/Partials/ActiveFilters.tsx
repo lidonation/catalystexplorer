@@ -2,6 +2,8 @@ import { useFilterContext } from '@/Context/FiltersContext';
 import { useState } from 'react';
 
 function formatSnakeCaseToTitleCase(input: string) {
+    console.log({input});
+    
     if (!input) return;
     return input
         ?.split('_')
@@ -48,14 +50,17 @@ export default function ActiveFilters() {
     return (
         <div className="flex w-full flex-wrap pt-2">
             {filters.map(
-                (filter) => filter.label && <StatusFilters filter={filter} />,
+                (filter) =>
+                    filter.label &&
+                    statusFilters.includes(filter.param) &&
+                    filter.value.length && <StatusFilters filter={filter} />,
             )}
         </div>
     );
 }
 
 const StatusFilters = ({ filter }) => {
-    return (
+    return  (
         <div
             className="mb-1 mr-1 flex items-center rounded-lg border bg-background px-1 py-1"
             key={filter.label}

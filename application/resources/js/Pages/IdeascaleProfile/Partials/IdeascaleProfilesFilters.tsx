@@ -89,9 +89,13 @@ export default function IdeascaleProfilesFilters() {
                     <SearchSelect
                         key={'tags'}
                         domain={'tags'}
-                        selected={filters[ProposalParamsEnum.TAGS] ?? []}
+                        selected={getFilter(ProposalParamsEnum.TAGS) ?? []}
                         onChange={(value) =>
-                            setFilters(ProposalParamsEnum.TAGS, value)
+                            setFilters({
+                                label: t('proposals.filters.tags'),
+                                value,
+                                param: ProposalParamsEnum.TAGS,
+                            })
                         }
                         placeholder="Select"
                         multiple={true}
@@ -107,13 +111,17 @@ export default function IdeascaleProfilesFilters() {
                     <RangePicker
                         key={'Budgets'}
                         context={t('proposals.filters.budgets')}
-                        value={filters[ProposalParamsEnum.BUDGETS]}
-                        onValueChange={(value: number[]) =>
-                            setFilters(ProposalParamsEnum.BUDGETS, value)
+                        value={getFilter(ProposalParamsEnum.BUDGETS)}
+                        onValueChange={(value) =>
+                            setFilters({
+                                label: t('proposals.filters.budgets'),
+                                value,
+                                param: ProposalParamsEnum.BUDGETS,
+                            })
                         }
-                        max={filters[ProposalParamsEnum.MAX_BUDGET]}
-                        min={filters[ProposalParamsEnum.MIN_BUDGET]}
-                        defaultValue={filters[ProposalParamsEnum.BUDGETS]}
+                        max={getFilter(ProposalParamsEnum.MAX_BUDGET)}
+                        min={getFilter(ProposalParamsEnum.MIN_BUDGET)}
+                        defaultValue={getFilter(ProposalParamsEnum.BUDGETS)}
                     />
 
                     <div className="col-span-2 sm:col-span-2 lg:col-span-1">
