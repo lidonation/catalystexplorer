@@ -60,11 +60,6 @@ export function FiltersProvider({
 
     const isFirstLoad = useRef(true);
 
-    // useEffect(() => {
-    //     if (JSON.stringify(filters) !== JSON.stringify(initialFilters)) {
-    //         setFiltersState(initialFilters);
-    //     }
-    // }, [initialFilters]);
 
     const setFilters = useCallback((filter: FilteredItem) => {
         setFiltersState((prev: FilteredItem[]) => {

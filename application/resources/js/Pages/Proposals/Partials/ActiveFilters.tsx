@@ -2,6 +2,7 @@ import { useFilterContext } from '@/Context/FiltersContext';
 import { useState } from 'react';
 
 function formatSnakeCaseToTitleCase(input: string) {
+    if (!input) return;
     return input
         ?.split('_')
         .map(
@@ -75,7 +76,6 @@ const StatusFilters = ({ filter }) => {
         </div>
     );
 };
-
 
 const RangeFilters = (filter) => {};
 

@@ -1,38 +1,48 @@
 import { RangePicker } from '@/Components/RangePicker';
-import { useFilterContext } from '@/Context/FiltersContext';  // Import the custom hook
-import { ProposalParamsEnum } from '@/enums/proposal-search-params';
-import { ProposalSearchParams } from '../../../../types/proposal-search-params';
-import IdeascaleProfilesSearchControls from './IdeascaleProfileSearchControls';
 import { SearchSelect } from '@/Components/SearchSelect';
-import Selector from '@/Components/Select';import { useTranslation } from 'react-i18next';
+import Selector from '@/Components/Select';
+import { useFilterContext } from '@/Context/FiltersContext'; // Import the custom hook
+import { ProposalParamsEnum } from '@/enums/proposal-search-params';
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import IdeascaleProfilesSearchControls from './IdeascaleProfileSearchControls';
 
 import FundingStatusToggle from './FundingStatusToggle';
 
 export default function IdeascaleProfilesFilters() {
     const { t } = useTranslation();
-    const { filters, setFilters } = useFilterContext<ProposalSearchParams>();
-    const [fundingStatus, setFundingStatus] = useState(filters[ProposalParamsEnum.FUNDING_STATUS] == '1' ?  true : false);
+    const { filters, setFilters, getFilter } = useFilterContext();
+    const [fundingStatus, setFundingStatus] = useState(
+        getFilter(ProposalParamsEnum.FUNDING_STATUS) == '1' ? true : false,
+    );
 
     const handleFundingStatusChange = () => {
         const newFundingStatus = !fundingStatus;
         setFundingStatus(newFundingStatus);
-        setFilters(ProposalParamsEnum.FUNDING_STATUS, newFundingStatus ? '1' : '');
+        setFilters({
+            label: t('proposals.filters.fundingStatus'),
+            value: newFundingStatus ? '1' : '',
+            param: ProposalParamsEnum.FUNDING_STATUS,
+        });
     };
 
     return (
-        <div className="container w-full rounded-xl bg-background shadow-md p-4">
-            <div className="grid grid-cols-2 gap-4 lg:grid-cols-5 lg:gap-8 items-center">
+        <div className="container w-full rounded-xl bg-background p-4 shadow-md">
+            <div className="grid grid-cols-2 items-center gap-4 lg:grid-cols-5 lg:gap-8">
                 <div>
-                    <span className="text-sm font-medium mb-1 block">{t('ideascaleProfiles.limitFunds')}</span>
+                    <span className="mb-1 block text-sm font-medium">
+                        {t('ideascaleProfiles.limitFunds')}
+                    </span>
                     <SearchSelect
                         key={'fund-titles'}
                         domain={'fundTitles'}
-                        selected={
-                            filters[ProposalParamsEnum.FUNDS] ?? []
-                        }
+                        selected={getFilter(ProposalParamsEnum.FUNDS) ?? []}
                         onChange={(value) =>
-                            setFilters(ProposalParamsEnum.FUNDS, value)
+                            setFilters({
+                                label: t('ideascaleProfiles.limitFunds'),
+                                value,
+                                param: ProposalParamsEnum.FUNDS,
+                            })
                         }
                         placeholder="Select"
                         multiple={false}
@@ -40,7 +50,9 @@ export default function IdeascaleProfilesFilters() {
                 </div>
 
                 <div>
-                    <span className="text-sm font-medium mb-1 block">{t('ideascaleProfiles.projectStatus')}</span>
+                    <span className="mb-1 block text-sm font-medium">
+                        {t('ideascaleProfiles.projectStatus')}
+                    </span>
                     <Selector
                         isMultiselect={true}
                         options={[
@@ -58,19 +70,22 @@ export default function IdeascaleProfilesFilters() {
                             },
                         ]}
                         setSelectedItems={(value) =>
-                            setFilters(
-                                ProposalParamsEnum.PROJECT_STATUS,
+                            setFilters({
+                                label: t('proposals.filters.projectStatus'),
                                 value,
-                            )
+                                param: ProposalParamsEnum.PROJECT_STATUS,
+                            })
                         }
-                        selectedItems={
-                            filters[ProposalParamsEnum.PROJECT_STATUS]
-                        }
+                        selectedItems={getFilter(
+                            ProposalParamsEnum.PROJECT_STATUS,
+                        )}
                     />
                 </div>
 
                 <div>
-                    <span className="text-sm font-medium mb-1 block">{t('ideascaleProfiles.limitTags')}</span>
+                    <span className="mb-1 block text-sm font-medium">
+                        {t('ideascaleProfiles.limitTags')}
+                    </span>
                     <SearchSelect
                         key={'tags'}
                         domain={'tags'}
@@ -114,7 +129,7 @@ export default function IdeascaleProfilesFilters() {
                     </div>
                 </div>
             </div>
-            <div className='w-full'>
+            <div className="w-full">
                 <IdeascaleProfilesSearchControls />
             </div>
         </div>

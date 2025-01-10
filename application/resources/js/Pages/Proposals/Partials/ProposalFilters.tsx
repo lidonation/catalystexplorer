@@ -15,9 +15,7 @@ const ProposalFilters: React.FC<ProposalFiltersProps> = ({ funds }) => {
     const {setFilters, getFilter } = useFilterContext();
     const { t } = useTranslation();
 
-    const handleSetSelectedItems = (funds: string[]) => {
-        console.log(funds);
-        
+    const handleSetSelectedItems = (funds: string[]) => {        
         setFilters({
             label: 'Funds',
             value: funds,
