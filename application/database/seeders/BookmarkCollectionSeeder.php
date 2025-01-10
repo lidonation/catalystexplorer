@@ -20,7 +20,7 @@ class BookmarkCollectionSeeder extends Seeder
             ->create()
             ->each(function (BookmarkCollection $collection) {
                 BookmarkItem::factory()
-                    ->count(rand(5, 10))
+                    ->count(fake()->numberBetween(5, 10))
                     ->create([
                         'bookmark_collection_id' => $collection->id,
                         'user_id' => $collection->user_id,
