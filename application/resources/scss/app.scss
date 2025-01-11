@@ -9,6 +9,7 @@ html {
 
 :root {
     --cx-primary: #2596be;
+    --cx-primary-light: #EFFAFC;
     --cx-secondary: #3facd1;
     --cx-dark: #667085;
     --cx-light: #667085;
@@ -66,6 +67,7 @@ html {
 
 [data-theme='dark'] {
     --cx-primary: #2596be;
+    --cx-primary-light: #75b5c1;
     --cx-secondary: #000000;
     --cx-light: #667085;
     --cx-dark: #667085;
@@ -103,6 +105,7 @@ html {
 
 [data-theme='voltaire'] {
     --cx-primary: #2596be;
+    --cx-primary-light: #9cd3dc;
     --cx-secondary: #000000;
     --cx-light: #667085;
     --cx-dark: #667085;

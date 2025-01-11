@@ -1,5 +1,6 @@
 import Paginator from '@/Components/Paginator';
 import { FiltersProvider } from '@/Context/FiltersContext';
+import { ListProvider } from '@/Context/ListContext';
 import { PlayerProvider } from '@/Context/PlayerContext';
 import { UIProvider } from '@/Context/SharedUIContext';
 import { ProposalParamsEnum } from '@/enums/proposal-search-params';
@@ -13,10 +14,12 @@ import { useTranslation } from 'react-i18next';
 import { PaginatedData } from '../../../types/paginated-data';
 import { ProposalSearchParams } from '../../../types/proposal-search-params';
 import CardLayoutSwitcher from './Partials/CardLayoutSwitcher';
+import FundFiltersContainer from './Partials/FundFiltersContainer';
 import MetricsBar from './Partials/MetricsBar';
 import PlayerBar from './Partials/PlayerBar';
 import ProposalFilters from './Partials/ProposalFilters';
 import HorizontaCardLoading from './Partials/ProposalHorizontalCardLoading';
+import ProposalSearchControls from './Partials/ProposalSearchControls';
 import ProposalData = App.DataTransferObjects.ProposalData;
 
 interface HomePageProps extends Record<string, unknown> {
@@ -46,82 +49,92 @@ export default function Index({
     );
 
     return (
-        <FiltersProvider defaultFilters={filters}>
-            <Head title="Proposals" />
+        <ListProvider>
+            <FiltersProvider defaultFilters={filters}>
+                <Head title="Proposals" />
 
-            <header>
-                <div className="container">
-                    <h1 className="title-1">{t('proposals.proposals')}</h1>
-                </div>
-
-                <div className="container">
-                    <p className="text-content">
-                        {t('proposals.pageSubtitle')}
-                    </p>
-                </div>
-            </header>
-
-            <section className="container flex w-full flex-col items-center justify-center">
-                <ProposalFilters funds={funds} />
-            </section>
-
-            <section className="container mt-4 flex flex-col items-end">
-                <CardLayoutSwitcher
-                    isHorizontal={isHorizontal}
-                    quickPitchView={quickPitchView}
-                    setIsHorizontal={setIsHorizontal}
-                    setGlobalQuickPitchView={setQuickPitchView}
-                />
-            </section>
-
-            <section className="proposals-wrapper container mt-3 w-full">
-                <WhenVisible
-                    fallback={
-                        isHorizontal ? (
-                            <HorizontaCardLoading />
-                        ) : (
-                            <VerticalCardLoading />
-                        )
-                    }
-                    data="proposals"
-                >
-                    <div className="py-4">
-                        <ProposalResults
-                            proposals={proposals?.data}
-                            isHorizontal={isHorizontal}
-                            quickPitchView={quickPitchView}
-                            setGlobalQuickPitchView={setQuickPitchView}
-                        />
+                <header>
+                    <div className="container">
+                        <h1 className="title-1">{t('proposals.proposals')}</h1>
                     </div>
-                </WhenVisible>
-            </section>
 
-            <section className="w-full px-4 lg:container lg:px-0">
-                {proposals && (
-                    <Paginator
-                        pagination={proposals}
-                        setPerPage={setPerPage}
-                        setCurrentPage={setCurrentPage}
-                    />
-                )}
-            </section>
+                    <div className="container">
+                        <p className="text-content">
+                            {t('proposals.pageSubtitle')}
+                        </p>
+                    </div>
+                </header>
 
-            <UIProvider>
-                <section className="sticky inset-x-0 bottom-0 mx-auto flex items-center justify-center pb-4">
-                    <div className="pr-2">
-                        <MetricsBar {...metrics} />
-                    </div>
-                    <div>
-                        <PlayerProvider>
-                            <PlayerBar
-                                proposals={
-                                    quickPitchView ? proposals.data : undefined
-                                }
-                            />
-                        </PlayerProvider>
-                    </div>
+                <section className="container">
+                    <FundFiltersContainer funds={funds} />
                 </section>
-            </UIProvider>
-        </FiltersProvider>
+
+                <ProposalSearchControls />
+
+                <section className="container flex w-full flex-col items-center justify-center">
+                    <ProposalFilters funds={funds} />
+                </section>
+
+                <section className="container mt-4 flex flex-col items-end">
+                    <CardLayoutSwitcher
+                        isHorizontal={isHorizontal}
+                        quickPitchView={quickPitchView}
+                        setIsHorizontal={setIsHorizontal}
+                        setGlobalQuickPitchView={setQuickPitchView}
+                    />
+                </section>
+
+                <section className="proposals-wrapper container mt-3 w-full">
+                    <WhenVisible
+                        fallback={
+                            isHorizontal ? (
+                                <HorizontaCardLoading />
+                            ) : (
+                                <VerticalCardLoading />
+                            )
+                        }
+                        data="proposals"
+                    >
+                        <div className="py-4">
+                            <ProposalResults
+                                proposals={proposals?.data}
+                                isHorizontal={isHorizontal}
+                                quickPitchView={quickPitchView}
+                                setGlobalQuickPitchView={setQuickPitchView}
+                            />
+                        </div>
+                    </WhenVisible>
+                </section>
+
+                <section className="w-full px-4 lg:container lg:px-0">
+                    {proposals && (
+                        <Paginator
+                            pagination={proposals}
+                            setPerPage={setPerPage}
+                            setCurrentPage={setCurrentPage}
+                        />
+                    )}
+                </section>
+
+                <UIProvider>
+                    <section className="sticky inset-x-0 bottom-0 mx-auto flex items-center justify-center pb-4">
+                        <div className="pr-2">
+                            <MetricsBar {...metrics} />
+                        </div>
+                        <div>
+                            <PlayerProvider>
+                                <PlayerBar
+                                    proposals={
+                                        quickPitchView
+                                            ? proposals.data
+                                            : undefined
+                                    }
+                                />
+                            </PlayerProvider>
+                        </div>
+                    </section>
+                </UIProvider>
+            </FiltersProvider>
+        </ListProvider>
     );
 }

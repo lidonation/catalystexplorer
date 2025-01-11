@@ -1,10 +1,12 @@
 import SearchBar from '@/Components/SearchBar';
 import Selector from '@/Components/Select';
+import Filters from '@/Components/svgs/Filters';
 import { useFilterContext } from '@/Context/FiltersContext';
 import { ProposalParamsEnum } from '@/enums/proposal-search-params';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ProposalSearchParams } from '../../../../types/proposal-search-params';
+import ActiveFilters from './ActiveFilters';
 
 function ProposalSearchControls() {
     const { filters, setFilters } = useFilterContext<ProposalSearchParams>();
@@ -13,94 +15,87 @@ function ProposalSearchControls() {
     const queryParams = new URLSearchParams(window.location.search);
     const initialSearchQuery = queryParams.get(ProposalParamsEnum.QUERY) || '';
     const [searchQuery, setSearchQuery] = useState(initialSearchQuery);
+    const [showFilters, setShowFilters] = useState(false);
 
     const sortingOptions = [
         {
-            label: t('proposals.options.votesCastLowToHigh'), // Votes Cast: Low to High
+            label: t('proposals.options.votesCastLowToHigh'),
             value: 'votes_cast:asc',
         },
         {
-            label: t('proposals.options.votesCastHighToLow'), // Votes Cast: High to Low
+            label: t('proposals.options.votesCastHighToLow'),
             value: 'votes_cast:desc',
         },
         {
-            label: t('proposals.options.budgetHighToLow'), // Budget: High to Low
+            label: t('proposals.options.budgetHighToLow'),
             value: 'amount_requested:desc',
         },
         {
-            label: t('proposals.options.budgetLowToHigh'), // Budget: Low to High
+            label: t('proposals.options.budgetLowToHigh'),
             value: 'amount_requested:asc',
         },
         {
-            label: t('proposals.options.communityRankingHighToLow'), // Community Ranking: High to Low
+            label: t('proposals.options.communityRankingHighToLow'),
             value: 'ranking_total:desc',
         },
         {
-            label: t('proposals.options.communityRankingLowToHigh'), // Community Ranking: Low to High
+            label: t('proposals.options.communityRankingLowToHigh'),
             value: 'ranking_total:asc',
         },
         {
-            label: t('proposals.options.paymentsReceivedHighToLow'), // Payments Received: High to Low
+            label: t('proposals.options.paymentsReceivedHighToLow'),
             value: 'amount_received:desc',
         },
         {
-            label: t('proposals.options.projectLengthHighToLow'), // Project Length: High to Low
-            value: 'project_length:desc',
-        },
-        {
-            label: t('proposals.options.projectLengthLowToHigh'), // Project Length: Low to High
-            value: 'project_length:asc',
-        },
-        {
-            label: t('proposals.options.paymentsReceivedLowToHigh'), // Payments Received: Low to High
+            label: t('proposals.options.paymentsReceivedLowToHigh'),
             value: 'amount_received:asc',
         },
         {
-            label: t('proposals.options.yesVotesHighToLow'), // Yes Votes: High to Low
+            label: t('proposals.options.yesVotesHighToLow'),
             value: 'yes_votes_count:desc',
         },
         {
-            label: t('proposals.options.yesVotesLowToHigh'), // Yes Votes: Low to High
+            label: t('proposals.options.yesVotesLowToHigh'),
             value: 'yes_votes_count:asc',
         },
         {
-            label: t('proposals.options.noVotesLowToHigh'), // No Votes: Low to High
-            value: 'no_votes_count:asc',
-        },
-        {
-            label: t('proposals.options.noVotesHighToLow'), // No Votes: High to Low
+            label: t('proposals.options.noVotesHighToLow'),
             value: 'no_votes_count:desc',
         },
         {
-            label: t('proposals.options.ratingHighToLow'), // Rating: High to Low
+            label: t('proposals.options.noVotesLowToHigh'),
+            value: 'no_votes_count:asc',
+        },
+        {
+            label: t('proposals.options.ratingHighToLow'),
             value: 'ca_rating:desc',
         },
         {
-            label: t('proposals.options.ratingLowToHigh'), // Rating: Low to High
+            label: t('proposals.options.ratingLowToHigh'),
             value: 'ca_rating:asc',
         },
         {
-            label: t('proposals.options.impactAlignmentHighToLow'), // Impact Alignment: High to Low
+            label: t('proposals.options.impactAlignmentHighToLow'),
             value: 'alignment_score:desc',
         },
         {
-            label: t('proposals.options.impactAlignmentLowToHigh'), // Impact Alignment: Low to High
+            label: t('proposals.options.impactAlignmentLowToHigh'),
             value: 'alignment_score:asc',
         },
         {
-            label: t('proposals.options.feasibilityHighToLow'), // Feasibility: High to Low
+            label: t('proposals.options.feasibilityHighToLow'),
             value: 'feasibility_score:desc',
         },
         {
-            label: t('proposals.options.feasibilityLowToHigh'), // Feasibility: Low to High
+            label: t('proposals.options.feasibilityLowToHigh'),
             value: 'feasibility_score:asc',
         },
         {
-            label: t('proposals.options.valueForMoneyHighToLow'), // Value for money: High to Low
+            label: t('proposals.options.valueForMoneyHighToLow'),
             value: 'auditability_score:desc',
         },
         {
-            label: t('proposals.options.valueForMoneyLowToHigh'), // Value for money: Low to High
+            label: t('proposals.options.valueForMoneyLowToHigh'),
             value: 'auditability_score:asc',
         },
     ];
@@ -113,8 +108,13 @@ function ProposalSearchControls() {
         setFilters(ProposalParamsEnum.QUERY, search);
         setSearchQuery(search);
     };
+
+    const toggleFilters = () => {
+        setShowFilters((prev) => !prev);
+    };
+
     return (
-        <div className="mx-auto flex w-full flex-col gap-4 bg-background-lighter pb-4 pt-6 sticky top-0 z-10">
+        <div className="container sticky top-0 z-10 mx-auto flex w-full flex-col gap-4 bg-background-lighter pb-4 pt-6">
             <div className="flex items-center justify-end gap-2">
                 <SearchBar
                     handleSearch={handleSearch}
@@ -122,6 +122,20 @@ function ProposalSearchControls() {
                     showRingOnFocus
                     initialSearch={searchQuery}
                 />
+
+                <button
+                    onClick={toggleFilters}
+                    className="border-input placeholder:text-muted-foreground flex h-full items-center justify-between rounded-md border bg-background px-2 py-1 text-sm shadow-sm ring-offset-background disabled:cursor-not-allowed disabled:opacity-50"
+                    aria-expanded={showFilters}
+                >
+                    <Filters className="mt-2 text-white" />
+                    {t('proposals.filters.filters')}
+                    {filters.length > 0 && (
+                        <span className="ml-1 text-white">
+                            ({filters.length})
+                        </span>
+                    )}
+                </button>
 
                 <Selector
                     isMultiselect={false}
@@ -139,7 +153,12 @@ function ProposalSearchControls() {
                     }
                 />
             </div>
-            <div className="text-center">Active Filters goes here</div>
+
+            {showFilters && (
+                <div className="container mx-auto flex justify-end px-0 pb-4 pt-6">
+                    <ActiveFilters />
+                </div>
+            )}
         </div>
     );
 }

@@ -13,7 +13,6 @@
     "data": "Données",
     "dReps": "DReps",
     "facebook": "Facebook",
-    "funds": "Fonds",
     "getStarted": "Commencer",
     "github": "Github",
     "groups": "Groupes",
@@ -153,7 +152,22 @@
             "coProposalCountHighToLow": "Nombre de propositions co : Du plus élevé au plus bas"
         }
     },
-
+    "funds": {
+        "funds": "Fonds",
+        "fund": "Fonds",
+        "pageSubtitle": "Rechercher des fonds par titre, contenu ou auteur et co-auteurs",
+        "totalAllocated": "Total alloué",
+        "lastFund": "dernier fonds",
+        "fundedProjects": "Projets financés",
+        "subtitle": "Rechercher des propositions et des défis par titre, contenu ou auteur et co-auteurs",
+        "fundRounds": "Nombre de tours de financement",
+        "totalProposals": "Total des propositions",
+        "fundedProposals": "Propositions financées",
+        "totalFundsRequested": "Total des fonds demandés",
+        "totalFundsAllocated": "Total des fonds alloués",
+        "completedProposals": "Propositions terminées",
+        "filter": "Filtrer"
+    },
     "proposals": {
         "allProposals": "Toutes les propositions",
         "CSVs": "CSVs de propositions",
@@ -249,9 +263,12 @@
     },
     "icons": {
         "titles": {
+            "arrow_left": "Icône de flèche vers la gauche",
             "barLine": "Icône de graphique en barres",
             "blue_eye": "Icône d'œil bleu",
             "bookmark": "Icône de signet",
+            "bookmark_on": "Icône de signet activée",
+            "bookmark_off": "Icône de signet désactivée",
             "bucket": "Icône de seau",
             "chart": "Icône de graphique",
             "check": "Icône de vérification",
@@ -281,7 +298,9 @@
             "playerRewindRight": "Icône de Rembobiner à droite",
             "playerSkipBack": "Icône de Revenir en arrière",
             "playerSkipForward": "Icône de Avancer",
-            "playerStop": "Icône de Arrêter"
+            "playerStop": "Icône de Arrêter",
+            "arrowTrendingUp": "Icône de flèche tendance à la hausse",
+            "arrowTrendingDown": "Icône de flèche tendance à la baisse"
         }
     },
     "users": {

@@ -1,35 +1,17 @@
-import {RangePicker} from '@/Components/RangePicker';
-import {SearchSelect} from '@/Components/SearchSelect';
+import { RangePicker } from '@/Components/RangePicker';
+import { SearchSelect } from '@/Components/SearchSelect';
 import Selector from '@/Components/Select';
-import {useFilterContext} from '@/Context/FiltersContext';
-import {ProposalParamsEnum} from '@/enums/proposal-search-params';
-import {useTranslation} from 'react-i18next';
-import {ProposalSearchParams} from '../../../../types/proposal-search-params';
-import FundsFilter from './FundsFilter';
-import ProposalSearchControls from './ProposalSearchControls';
+import { useFilterContext } from '@/Context/FiltersContext';
+import { ProposalParamsEnum } from '@/enums/proposal-search-params';
+import { useTranslation } from 'react-i18next';
+import { ProposalSearchParams } from '../../../../types/proposal-search-params';
 
-interface ProposalFiltersProps {
-    funds: { [key: string]: number };
-}
-
-const ProposalFilters: React.FC<ProposalFiltersProps> = ({ funds }) => {
+const ProposalFilters: React.FC = () => {
     const { filters, setFilters } = useFilterContext<ProposalSearchParams>();
     const { t } = useTranslation();
 
-    const handleSetSelectedItems = (updatedItems: any[]) => {
-        setFilters(ProposalParamsEnum.FUNDS, updatedItems);
-    };
-
     return (
         <>
-            <FundsFilter
-                proposalsCount={funds}
-                setSelectedItems={handleSetSelectedItems}
-                selectedItems={filters[ProposalParamsEnum.FUNDS] ?? []}
-            />
-
-            <ProposalSearchControls/>
-
             <div className="container w-full rounded-xl bg-background p-4">
                 <div className="grid grid-cols-2 gap-x-4 gap-y-3 rounded-xl md:grid-cols-2 lg:grid-cols-5">
                     <div className="col-span-1 flex flex-col gap-2 pb-4">
@@ -225,10 +207,17 @@ const ProposalFilters: React.FC<ProposalFiltersProps> = ({ funds }) => {
                     <div className="col-span-1 flex flex-col gap-2 pb-4">
                         <span>{t('proposals.filters.proposers')}</span>
                         <SearchSelect
-                            domain={'ideascale_profiles'}
-                            selected={filters[ProposalParamsEnum.IDEASCALE_PROFILES] ?? []}
+                            domain={'ideascaleProfiles'}
+                            selected={
+                                filters[
+                                    ProposalParamsEnum.IDEASCALE_PROFILES
+                                ] ?? []
+                            }
                             onChange={(value) =>
-                                setFilters(ProposalParamsEnum.IDEASCALE_PROFILES, value)
+                                setFilters(
+                                    ProposalParamsEnum.IDEASCALE_PROFILES,
+                                    value,
+                                )
                             }
                             placeholder="Select"
                             multiple={true}

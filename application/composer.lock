@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "2b2239176e914eb6e20dbcc702e85049",
+    "content-hash": "5bdcc8bef5e375657e6b943c2316acc2",
     "packages": [
         {
             "name": "amphp/amp",
@@ -3426,17 +3426,17 @@
         },
         {
             "name": "laravel/nova",
-            "version": "5.0.5",
+            "version": "5.1.1",
             "source": {
                 "type": "git",
                 "url": "git@github.com:laravel/nova.git",
-                "reference": "d3fcdc4baf417f7c91799b13c55436dd34920866"
+                "reference": "389839de0281f79c4f1b9d230ef234184720c8d9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://nova.laravel.com/dist/laravel/nova/laravel-nova-d3fcdc4baf417f7c91799b13c55436dd34920866-zip-49c485.zip",
-                "reference": "d3fcdc4baf417f7c91799b13c55436dd34920866",
-                "shasum": "3675339402497e45cc74d30251f5898b3ba09273"
+                "url": "https://nova.laravel.com/dist/laravel/nova/laravel-nova-389839de0281f79c4f1b9d230ef234184720c8d9-zip-3d25c7.zip",
+                "reference": "389839de0281f79c4f1b9d230ef234184720c8d9",
+                "shasum": "5b212bb09193c56b086eade56db95c7c980cdab2"
             },
             "require": {
                 "brick/money": "^0.8|^0.9|^0.10",
@@ -3449,6 +3449,7 @@
                 "rap2hpoutre/fast-excel": "^5.4",
                 "spatie/once": "^3.0",
                 "symfony/console": "^6.4.14|^7.0.3",
+                "symfony/deprecation-contracts": "^2.5|^3.0",
                 "symfony/finder": "^6.4.13|^7.0.3",
                 "symfony/polyfill-intl-icu": "^1.31",
                 "symfony/polyfill-php83": "^1.31",
@@ -3473,6 +3474,9 @@
             },
             "type": "library",
             "extra": {
+                "branch-alias": {
+                    "dev-main": "5.x-dev"
+                },
                 "laravel": {
                     "providers": [
                         "Laravel\\Nova\\NovaCoreServiceProvider"
@@ -3586,9 +3590,9 @@
                 "laravel"
             ],
             "support": {
-                "source": "https://github.com/laravel/nova/tree/v5.0.5"
+                "source": "https://github.com/laravel/nova/tree/v5.1.1"
             },
-            "time": "2024-12-22T23:47:53+00:00"
+            "time": "2025-01-09T02:50:13+00:00"
         },
         {
             "name": "laravel/octane",
@@ -7014,6 +7018,60 @@
                 }
             ],
             "time": "2024-12-03T00:16:23+00:00"
+        },
+        {
+            "name": "simplesquid/nova-enum-field",
+            "version": "v1.0.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/simplesquid/nova-enum-field.git",
+                "reference": "a3bf350a41616d210b29cc083267da2c479d1093"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/simplesquid/nova-enum-field/zipball/a3bf350a41616d210b29cc083267da2c479d1093",
+                "reference": "a3bf350a41616d210b29cc083267da2c479d1093",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.1.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "SimpleSquid\\Nova\\Fields\\Enum\\FieldServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "SimpleSquid\\Nova\\Fields\\Enum\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Matthew Poulter",
+                    "email": "matthew.poulter@simplesquid.co.za",
+                    "role": "Developer"
+                }
+            ],
+            "description": "A Laravel Nova field for Enums extending on bensampo/laravel-enum.",
+            "keywords": [
+                "enum",
+                "field",
+                "laravel",
+                "nova"
+            ],
+            "support": {
+                "issues": "https://github.com/simplesquid/nova-enum-field/issues",
+                "source": "https://github.com/simplesquid/nova-enum-field/tree/v1.0.2"
+            },
+            "time": "2019-09-07T20:45:17+00:00"
         },
         {
             "name": "spatie/enum",
@@ -13763,12 +13821,12 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {},
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
         "php": "^8.3"
     },
-    "platform-dev": [],
+    "platform-dev": {},
     "plugin-api-version": "2.6.0"
 }

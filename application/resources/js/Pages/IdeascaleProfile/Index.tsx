@@ -16,9 +16,9 @@ interface IdeascaleProfilesPageProps extends Record<string, unknown> {
     filters: ProposalSearchParams;
 }
 const Index = ({
-    ideascaleProfiles,
-    filters,
-}: PageProps<IdeascaleProfilesPageProps>) => {
+                   ideascaleProfiles,
+                   filters,
+               }: PageProps<IdeascaleProfilesPageProps>) => {
     const { t } = useTranslation();
     const [perPage, setPerPage] = useState<number>(24);
     const [currentPage, setCurrentPage] = useState<number>(1);
@@ -37,7 +37,7 @@ const Index = ({
                     </p>
                 </header>
 
-                <section className="container flex w-full flex-col items-center justify-center py-8">
+                <section className="container flex w-full flex-col items-center justify-center">
                     <IdeaScaleProfileToolbar/>
                 </section>
 

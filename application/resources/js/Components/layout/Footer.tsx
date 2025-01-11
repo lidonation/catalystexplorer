@@ -23,7 +23,7 @@ export default function Footer() {
                                 <p>{t('monthlyReports')}</p>
                             </li>
                             <li>
-                                <p>{t('funds')}</p>
+                                <p>{t('funds.funds')}</p>
                             </li>
                         </ul>
                     </div>

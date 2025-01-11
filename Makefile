@@ -3,6 +3,7 @@ export
 
 sail := ./application/vendor/bin/sail
 compose := docker-compose exec -t catalystexplorer.com
+nodeVersion := 20
 
 .PHONY: init
 init:
@@ -18,13 +19,19 @@ init:
 		--volume ${PWD}:/app \
 		--workdir /app \
 		--user root \
-		node:18-alpine yarn install --ignore-engine
+		node:${nodeVersion}-alpine yarn install --ignore-engine
+
+	docker run --rm --interactive --tty \
+		--volume ${PWD}:/app \
+		--workdir /app \
+		--user root \
+		node:${nodeVersion}-alpine yarn install --ignore-engine
 
 	docker run --rm --interactive --tty \
 		--volume ${PWD}/application:/app \
 		--workdir /app \
 		--user root \
-		node:18-alpine yarn install --ignore-engine
+		node:${nodeVersion}-alpine yarn install --ignore-engine
 
 
 	docker run --rm --interactive --tty \
@@ -71,7 +78,7 @@ devtools-install:
 		--volume ${PWD}:/app \
 		--workdir /app \
 		--user root \
-		node:18-alpine yarn install --ignore-engine
+		node:${nodeVersion}-alpine yarn install --ignore-engine
 		$(sail) up -d
 		npx husky init
 
@@ -82,7 +89,7 @@ frontend-install:
 		--volume ${PWD}/application:/app \
 		--workdir /app \
 		--user root \
-		node:18-alpine yarn install --ignore-engine
+		node:${nodeVersion}-alpine yarn install --ignore-engine
 
 .PHONY: frontend-clean
 frontend-clean:
