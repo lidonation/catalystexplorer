@@ -45,7 +45,7 @@ export default function IdeascaleProfilesFilters() {
                             })
                         }
                         placeholder="Select"
-                        multiple={false}
+                        multiple={true}
                     />
                 </div>
 

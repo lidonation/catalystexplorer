@@ -1,3 +1,4 @@
+import { ProposalParamsEnum } from '@/enums/proposal-search-params';
 import { router } from '@inertiajs/react';
 import {
     createContext,
@@ -8,6 +9,7 @@ import {
     useRef,
     useState,
 } from 'react';
+import { ProposalSearchParams } from '../../types/proposal-search-params';
 
 export interface FilteredItem {
     param: string;
@@ -53,13 +55,12 @@ export function FiltersProvider({
     defaultFilters,
 }: {
     children: ReactNode;
-    defaultFilters: FilteredItem[];
+    defaultFilters: ProposalSearchParams;
 }) {
     const initialFilters = formatToFillters(defaultFilters);
     const [filters, setFiltersState] = useState<FilteredItem[]>(initialFilters);
 
     const isFirstLoad = useRef(true);
-
 
     const setFilters = useCallback((filter: FilteredItem) => {
         setFiltersState((prev: FilteredItem[]) => {
@@ -100,35 +101,31 @@ export function FiltersProvider({
 
         const fetchData = async () => {
             // todo
-            // const previousFilters = filtersRef.current || {};
-            //  const prevValue = prev.find((item) => item.label == filter.label);
+            const previousFilters = filtersRef.current || [];
 
-            //  if (prevValue?.value === filter.value) return prev;
+            const changedFilters = filters.filter((filter) => {
+                const previousFilter = previousFilters.find(
+                    (prev) => prev.param === filter.param,
+                );
 
-            // const changedFilter = filters.filter((filter)=>{
-            //     previousFilters.find
-            //     filter.value
+                return !previousFilter || previousFilter.value !== filter.value;
+            });
 
-            // });
+            const changedParams = changedFilters.map((filter) => filter.param);
 
-            // const changedKeys = Object.keys(filters).filter(
-            //     (key) => filters[key] !== previousFilters[key],
-            // );
-
-            // if (changedKeys.length === 0) {
-            //     return;
-            // }
+            if (changedParams.length === 0) {
+                return;
+            }
 
             filtersRef.current = filters;
 
-            // todo
-            // const paginationFiltered =
-            //     changedKeys.includes(ProposalParamsEnum.PAGE) ||
-            //     changedKeys.includes(ProposalParamsEnum.LIMIT);
+            const paginationFiltered =
+                changedParams.includes(ProposalParamsEnum.PAGE) ||
+                changedParams.includes(ProposalParamsEnum.LIMIT);
 
             router.get(currentUrl, formatToParams(), {
                 preserveState: true,
-                preserveScroll: false,
+                preserveScroll: !paginationFiltered,
             });
         };
 

@@ -32,11 +32,6 @@ export default function Index({
 }: PageProps<HomePageProps>) {
     const { t } = useTranslation();
 
-    const [perPage, setPerPage] = useState<number>(24);
-    const [currentPage, setCurrentPage] = useState<number>(1);
-
-    useEffect(() => {}, [currentPage, perPage]);
-
     const [isHorizontal, setIsHorizontal] = useState(false);
 
     const [quickPitchView, setQuickPitchView] = useState(false);
@@ -100,8 +95,6 @@ export default function Index({
                 {proposals && (
                     <Paginator
                         pagination={proposals}
-                        setPerPage={setPerPage}
-                        setCurrentPage={setCurrentPage}
                     />
                 )}
             </section>

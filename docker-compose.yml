@@ -7,8 +7,14 @@ services:
       dockerfile: Dockerfile.dev
       args:
         WWWGROUP: "${WWWGROUP:-1000}"
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+          cpus: "1.0"
     image: catalystexplorer
     container_name: catalystexplorer.com
+    restart: on-failure
     tty: true
     env_file:
       - ./application/.env
