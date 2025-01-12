@@ -214,6 +214,13 @@ cypress:
     DEPLOYMENT_NAME="www-catalystexplorer.$CI_ENVIRONMENT_SLUG"  
     cp $ENV_FILE ./chart/app_env
     cat ./chart/app_env
+    if [ "${CI_ENVIRONMENT_NAME}" == "mainnet" ]; then
+      export APP_REPLICAS="3"
+      export QUEUE_REPLICAS="2"
+    else
+      export APP_REPLICAS="1"
+      export QUEUE_REPLICAS="1"
+    fi
 
     helm upgrade $DEPLOYMENT_NAME ./chart \
       --install \
@@ -227,6 +234,8 @@ cypress:
       --set services.meili.MEILISEARCH_KEY=$MEILISEARCH_KEY \
       --set services.app.environment=$APP_ENV \
       --set services.redis.password=$REDIS_PASSWORD \
+      --set services.app.replicaCount=$APP_REPLICAS \
+      --set services.queue.replicaCount=$QUEUE_REPLICAS \
       --set namespace=${KUBE_NAMESPACE} \
       --namespace="$KUBE_NAMESPACE" \
       --create-namespace
@@ -417,7 +426,7 @@ sem-release:
     - job: app_mainnet
     - job: composer
   image:
-    name: php:8.3-fpm-alpine3.20
+    name: registry.lidonation.com/lidonation/www.catalystexplorer.com/web-app:latest
     entrypoint: [""]
   variables:
     GITLAB_URL: $CI_SERVER_URL
@@ -425,9 +434,7 @@ sem-release:
     set -vx
     apk add make curl
     cp application/.env.testing application/.env
-    curl -o /opt/composer https://getcomposer.org/download/2.8.4/composer.phar
     yarn install
-    chmod +x /opt/composer
     /opt/composer install --no-scripts --ignore-platform-reqs
     npx semantic-release
   after_script: |
