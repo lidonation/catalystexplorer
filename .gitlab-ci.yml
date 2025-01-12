@@ -333,7 +333,7 @@ build_web_base:
 
     docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
   rules:
-  - if: '$DEPLOY_WEBAPP == "true"'
+  - if: '$WEB_BASE_IMAGE_VER == "true"'
 
 ######## Preview Deployments #########
 ######################################
