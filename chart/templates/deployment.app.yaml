@@ -48,8 +48,9 @@ spec:
 
               php artisan route:clear;
               php artisan event:cache;
+              php artisan optimize
 
-              php artisan octane:start --server=frankenphp  --port=8000 --workers=3 --max-requests=25 --host=0.0.0.0 --log-level=DEBUG
+              php artisan octane:start --server=frankenphp  --port=8000 --workers=3 --max-requests=25 --host=0.0.0.0 --admin-port=2019 --log-level=DEBUG --caddyfile=/etc/caddy/Caddyfile
           lifecycle:
             preStop:
               exec:
@@ -75,6 +76,8 @@ spec:
               value: app
             - name: PHP_MEMORY_LIMIT
               value: 8192M
+            - name: PHP_OPCACHE_ENABLE
+              value: 1
             - name: PHP_DISABLED_FUNCTION
               value: "exec, passthru, proc_open, proc_close, shell_exec, show_source, symlink, system"
           ports:
@@ -99,15 +102,16 @@ spec:
             initialDelaySeconds: 15
             periodSeconds: 10
           livenessProbe:
-            httpGet:
-              path: /
-              port: 8000
-              scheme: HTTP
-            initialDelaySeconds: 15
-            periodSeconds: 10
+            exec:
+              command:
+                - php
+                - artisan
+                - octane:status
+            initialDelaySeconds: 5
+            periodSeconds: 2
             timeoutSeconds: 2
             successThreshold: 1
-            failureThreshold: 2
+            failureThreshold: 5
         - name: sidecar
           image: busybox:1.36
           args:

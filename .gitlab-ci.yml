@@ -76,12 +76,14 @@ composer:
     echo "$ENV_FILE"
     cp "$ENV_FILE" application/.env
     export PATH=$PATH:/usr/local/bin
+    export COMPOSER_MAX_PARALLEL_HTTP=24
+    export COMPOSER_FUND=0
     cd ./application
     composer config http-basic.nova.laravel.com "${NOVA_USERNAME}" "${NOVA_LICENSE_KEY}"
     if [[  $CI_COMMIT_BRANCH == 'main' ]]; then
-      composer install --no-scripts --no-dev --ignore-platform-reqs
+      composer install --no-scripts --no-dev --classmap-authoritative --no-interaction --no-ansi --ignore-platform-reqs
     else
-      composer install --no-scripts --ignore-platform-reqs
+      composer install --no-scripts --ignore-platform-reqs --classmap-authoritative --no-interaction --no-ansi
     fi
   artifacts:
     paths:
