@@ -332,7 +332,6 @@ build_web_base:
     docker push "$CI_APPLICATION_REPOSITORY/web-app-base:latest"
 
     docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
-
   rules:
   - if: $WEB_BASE_IMAGE_VER
 
