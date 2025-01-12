@@ -11,7 +11,7 @@ spec:
     matchLabels:
       app: "{{ $.Chart.Name }}"
       service: "{{ $.Chart.Name }}-queue"
-  replicas: {{ .Values.services.app.replicaCount }}
+  replicas: {{ .Values.services.queue.replicaCount }}
   strategy:
     type: RollingUpdate
     rollingUpdate:

@@ -10,6 +10,7 @@ services:
     image: catalystexplorer
     container_name: catalystexplorer.com
     tty: true
+    restart: unless-stopped
     env_file:
       - ./application/.env
     extra_hosts:
@@ -22,7 +23,6 @@ services:
       IGNITION_LOCAL_SITES_PATH: '${PWD}'
       LARAVEL_SAIL: 1
       OCTANE_WATCH: true
-      SUPERVISOR_PHP_COMMAND: "/usr/bin/php -d variables_order=EGPCS /var/www/html/artisan octane:frankenphp --host=0.0.0.0 --admin-port=2019 --port=8000"
       WWWGROUP: '${WWWUSER:-1000}'
       WWWUSER: '${WWWUSER:-1000}'
       XDEBUG_MODE: '${SAIL_XDEBUG_MODE:-off}'
