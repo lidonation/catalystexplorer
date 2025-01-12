@@ -23,10 +23,13 @@ class FundsController extends Controller
                 ->orderBy('launched_at', 'desc')
                 ->first();
 
-            $previousProposals = $previousFund ? $previousFund->proposals : collect();
+            $previousProposals = $previousFund?->proposals ?? collect([]);
+            dd($previousProposals);
 
-            $previousTotalAllocated = $previousProposals->where('funding_status', 'funded')->sum('amount_received');
-            $previousFundedProjects = $previousProposals->where('funding_status', 'funded')->count();
+            $previousTotalAllocated = $previousProposals->where('funding_status', 'funded')
+                ->sum('amount_received');
+            $previousFundedProjects = $previousProposals->where('funding_status', 'funded')
+                ->count();
 
             $percentageChange = $previousTotalAllocated > 0
                 ? round((($totalAllocated - $previousTotalAllocated) / $previousTotalAllocated) * 100, 2)
