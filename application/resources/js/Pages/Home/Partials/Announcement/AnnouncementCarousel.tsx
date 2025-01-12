@@ -6,7 +6,7 @@ interface AnnouncementCarouselProps {
 const AnnouncementCarousel = ({ announcements }: AnnouncementCarouselProps) => {
     return (
         <div className="flex gap-3 rounded-xl scrollable">
-            {announcements && announcements.length > 0 ? (
+            {announcements && announcements.length > 0 && (
                 announcements.map((announcement, index) => {
                     return (
                         <div key={index}>
@@ -14,8 +14,6 @@ const AnnouncementCarousel = ({ announcements }: AnnouncementCarouselProps) => {
                         </div>
                     );
                 })
-            ) : (
-                <div>No announcements</div>
             )}
         </div>
     );
