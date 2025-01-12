@@ -77,7 +77,7 @@ spec:
             - name: PHP_MEMORY_LIMIT
               value: 8192M
             - name: PHP_OPCACHE_ENABLE
-              value: 1
+              value: "1"
             - name: PHP_DISABLED_FUNCTION
               value: "exec, passthru, proc_open, proc_close, shell_exec, show_source, symlink, system"
           ports:
