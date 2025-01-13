@@ -104,7 +104,7 @@ const MetricCard: React.FC<MetricCardProps> = ({ metric }) => {
                                 pointSize={4}
                                 pointColor={{
                                     from: 'color',
-                                    modifiers: [['brighter', 0.5]]
+                                    modifiers: [['brighter', 1.5]]
                                 }}
                                 pointBorderWidth={2}
                                 pointBorderColor={{ from: 'serieColor' }}
@@ -112,27 +112,33 @@ const MetricCard: React.FC<MetricCardProps> = ({ metric }) => {
                                 tooltipFormat={(value) => formatNumber(Number(value))}
                                 tooltip={({ point }) => (
                                     <div className="relative bg-dark text-white p-4 rounded-lg shadow-lg">
-    <div className="max-w-sm">
-        <h3 className="text-lg font-semibold">{point.data.xFormatted}</h3>
-        <p className="mt-2 text-sm flex items-center">
-            <span className="truncate flex-shrink">{metric.title}</span>:
-            <span className="font-bold">{point.data.yFormatted}</span>
-        </p>
-        <div className="mt-2 flex items-center">
-            <span className={`${trend.isPositive ? 'text-green-500' : 'text-red-500'} flex items-center`}>
-                {trend.isPositive ? <ArrowTrendingUp /> : <ArrowTrendingDown />}
-                <span className="ml-1 font-medium">{trend.value}%</span>
-            </span>
-            <span className="ml-1">{t('metric.vs')}</span>
-        </div>
-    </div>
-    <div
-        className="absolute bottom-0 left-1/2 h-0 w-0 -translate-x-1/2 translate-y-full border-l-[10px] border-r-[10px] border-t-[10px] border-l-transparent border-r-transparent border-t-dark"
-    ></div>
-</div>
-
+                                        <div className="max-w-sm">
+                                            <h3 className="text-lg font-semibold">{point.data.xFormatted}</h3>
+                                            <p className="mt-2 text-sm flex items-center">
+                                                <span className="truncate flex-shrink">{metric.title}</span>:
+                                                <span className="font-bold">{point.data.yFormatted}</span>
+                                            </p>
+                                            <div className="mt-2 flex items-center">
+                                                <span className={`${trend.isPositive ? 'text-green-500' : 'text-red-500'} flex items-center`}>
+                                                    {trend.isPositive ? <ArrowTrendingUp /> : <ArrowTrendingDown />}
+                                                    <span className="ml-1 font-medium">{trend.value}%</span>
+                                                </span>
+                                                <span className="ml-1">{t('metric.vs')}</span>
+                                            </div>
+                                        </div>
+                                        <div
+                                            className="absolute bottom-0 left-1/2 h-0 w-0 -translate-x-1/2 translate-y-full border-l-[10px] border-r-[10px] border-t-[10px] border-l-transparent border-r-transparent border-t-dark"
+                                        ></div>
+                                    </div>
                                 )}
                                 theme={{
+                                    grid: {
+                                        line: {
+                                            stroke: 'var(--cx-content-gray-persist)',
+                                            strokeWidth: 1,
+                                            strokeOpacity: 0.1,
+                                        },
+                                    },
                                     axis: {
                                         domain: {
                                             line: {
