@@ -29,7 +29,7 @@ class Fund extends Model implements HasMedia
 
     protected $appends = [
         'amount_received',
-        'amount_requested'
+        'amount_requested',
     ];
 
     protected $guarded = [];
@@ -37,7 +37,7 @@ class Fund extends Model implements HasMedia
     protected $withCount = [
         'proposals',
         'fundedProposals',
-        'completedProposals'
+        'completedProposals',
     ];
 
     public function currencySymbol(): Attribute
