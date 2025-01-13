@@ -425,7 +425,7 @@ sem-release:
     export NODE_OPTIONS=--max-old-space-size=8192
     cp application/.env.testing application/.env
     cd ./application
-    yarn install --ignore-engines
+    npm install
     /opt/composer install --no-scripts --ignore-platform-reqs
     npx semantic-release
   after_script: |
