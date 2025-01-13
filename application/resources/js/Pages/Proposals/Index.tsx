@@ -1,8 +1,7 @@
 import Paginator from '@/Components/Paginator';
 import { FiltersProvider } from '@/Context/FiltersContext';
 import { ListProvider } from '@/Context/ListContext';
-import { PlayerProvider } from '@/Context/PlayerContext';
-import { UIProvider } from '@/Context/SharedUIContext';
+import { usePlayer } from '@/Context/PlayerContext';
 import { ProposalParamsEnum } from '@/enums/proposal-search-params';
 import ProposalResults from '@/Pages/Proposals/Partials/ProposalResults';
 import VerticalCardLoading from '@/Pages/Proposals/Partials/ProposalVerticalCardLoading';
@@ -15,8 +14,6 @@ import { PaginatedData } from '../../../types/paginated-data';
 import { ProposalSearchParams } from '../../../types/proposal-search-params';
 import CardLayoutSwitcher from './Partials/CardLayoutSwitcher';
 import FundFiltersContainer from './Partials/FundFiltersContainer';
-import MetricsBar from './Partials/MetricsBar';
-import PlayerBar from './Partials/PlayerBar';
 import ProposalFilters from './Partials/ProposalFilters';
 import HorizontaCardLoading from './Partials/ProposalHorizontalCardLoading';
 import ProposalSearchControls from './Partials/ProposalSearchControls';
@@ -39,14 +36,19 @@ export default function Index({
 
     const [perPage, setPerPage] = useState<number>(24);
     const [currentPage, setCurrentPage] = useState<number>(1);
-
-    useEffect(() => {}, [currentPage, perPage]);
+    const { createProposalPlaylist } = usePlayer();
 
     const [isHorizontal, setIsHorizontal] = useState(false);
 
     const [quickPitchView, setQuickPitchView] = useState(
         !!parseInt(filters[ProposalParamsEnum.QUICK_PITCHES]),
     );
+
+    useEffect(() => {
+        if (proposals && proposals.data?.length && quickPitchView) {
+            createProposalPlaylist(proposals?.data);
+        }
+    }, [proposals]);
 
     return (
         <ListProvider>
@@ -72,7 +74,7 @@ export default function Index({
                 <ProposalSearchControls />
 
                 <section className="container flex w-full flex-col items-center justify-center">
-                    <ProposalFilters funds={funds} />
+                    <ProposalFilters />
                 </section>
 
                 <section className="container mt-4 flex flex-col items-end">
@@ -115,25 +117,6 @@ export default function Index({
                         />
                     )}
                 </section>
-
-                <UIProvider>
-                    <section className="sticky inset-x-0 bottom-0 mx-auto flex items-center justify-center pb-4">
-                        <div className="pr-2">
-                            <MetricsBar {...metrics} />
-                        </div>
-                        <div>
-                            <PlayerProvider>
-                                <PlayerBar
-                                    proposals={
-                                        quickPitchView
-                                            ? proposals.data
-                                            : undefined
-                                    }
-                                />
-                            </PlayerProvider>
-                        </div>
-                    </section>
-                </UIProvider>
             </FiltersProvider>
         </ListProvider>
     );

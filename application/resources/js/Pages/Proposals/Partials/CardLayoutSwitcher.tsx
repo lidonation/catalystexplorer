@@ -4,12 +4,6 @@ import VideoCameraIcon from '@/Components/svgs/VideoCameraIcon';
 import { useFilterContext } from '@/Context/FiltersContext';
 import { ProposalParamsEnum } from '@/enums/proposal-search-params';
 import { ProposalSearchParams } from '../../../../types/proposal-search-params';
-import ListBulletIcon from '@/Components/svgs/ListBulletIcon';
-import VerticalColumnIcon from '@/Components/svgs/VerticalColumnIcon';
-import VideoCameraIcon from '@/Components/svgs/VideoCameraIcon';
-import { useFilterContext } from '@/Context/FiltersContext';
-import { ProposalParamsEnum } from '@/enums/proposal-search-params';
-import { ProposalSearchParams } from '../../../../types/proposal-search-params';
 
 interface CardLayoutSwitcherProps {
     isHorizontal: boolean;
@@ -25,7 +19,7 @@ export default function CardLayoutSwitcher({
     setGlobalQuickPitchView,
 }: CardLayoutSwitcherProps) {
     const { filters, setFilters } = useFilterContext<ProposalSearchParams>();
-    
+
     const setQuickpitch = (value: boolean) => {
         setGlobalQuickPitchView(value);
         setFilters(ProposalParamsEnum.QUICK_PITCHES, value ? '1' : '');

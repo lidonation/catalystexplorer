@@ -6,6 +6,8 @@ import React, {
     useRef,
     useState,
 } from 'react';
+import ProposalData = App.DataTransferObjects.ProposalData;
+
 
 export interface Playlist {
     title: string | null;
@@ -28,10 +30,12 @@ interface PlayerContextType {
     seekForward: (time: number) => void;
     seekBack: (time: number) => void;
     changeSpeed: (speed: number) => void;
+    setIsPlaying: React.Dispatch<React.SetStateAction<boolean>>;
     playbackSpeed: number;
     loading: boolean;
     currentTime: string;
     duration: string;
+    createProposalPlaylist: (proposals?:ProposalData[]) => void;
 }
 
 const PlayerContext = createContext<PlayerContextType | undefined>(undefined);
@@ -58,7 +62,6 @@ export const PlayerProvider = ({ children }: { children: React.ReactNode }) => {
             ? playlist[currentTrackIndex]
             : null;
 
-    // Initialize Plyr instance once the playlist is loaded and video container is available
     useEffect(() => {
         console.log({ k: plyrInstanceRef.current });
         if (
@@ -115,10 +118,10 @@ export const PlayerProvider = ({ children }: { children: React.ReactNode }) => {
         }
     }, [currentTrack]);
 
-    useEffect(
-        () => console.log({ ghjk: plyrInstanceRef.current }),
-        [plyrInstanceRef.current],
-    );
+    // useEffect(
+    //     () => console.log({ ghjk: plyrInstanceRef.current }),
+    //     [plyrInstanceRef.current],
+    // );
 
     // Update current time and duration every second
     useEffect(() => {
@@ -141,9 +144,11 @@ export const PlayerProvider = ({ children }: { children: React.ReactNode }) => {
     const stopCurrentTrack = () => {
         plyrInstanceRef.current?.stop();
         setIsPlaying(false);
-        setPlaylist([]);
+        setPlaylist(undefined);
         plyrInstanceRef.current?.destroy();
         plyrInstanceRef.current = null;
+        setCurrentTime('0:00');
+        setDuration('0:00');
     };
 
     const nextTrack = () => {
@@ -193,6 +198,21 @@ export const PlayerProvider = ({ children }: { children: React.ReactNode }) => {
         setPlaybackSpeed(speed);
     };
 
+    const createProposalPlaylist = (proposals?: ProposalData[]) => {
+        const regex = /[a-zA-Z]/g;
+        const playlist = proposals
+            ?.filter((item) => item.quickpitch)
+            .map((item): Playlist => {
+                const { title, quickpitch, id } = item;
+                const provider = quickpitch?.match(regex)
+                    ? 'youtube'
+                    : 'vimeo';
+                return { title, quickpitch, provider, id };
+            });
+
+        setPlaylist(playlist);
+    };
+
     return (
         <PlayerContext.Provider
             value={{
@@ -200,6 +220,7 @@ export const PlayerProvider = ({ children }: { children: React.ReactNode }) => {
                 setPlaylist,
                 currentTrackIndex,
                 setCurrentTrackIndex,
+                setIsPlaying,
                 isPlaying,
                 playCurrentTrack,
                 pauseCurrentTrack,
@@ -213,12 +234,11 @@ export const PlayerProvider = ({ children }: { children: React.ReactNode }) => {
                 loading,
                 currentTime,
                 duration,
+                createProposalPlaylist,
+
             }}
         >
-            <div
-                className={`player-wrapper clip-rect(0_0_0_0) absolute m-[-1px] h-[1px] w-[1px] overflow-hidden border-0 p-0`}
-            >
-                {/* Render video only after the playlist is loaded */}
+            <div className="player-wrapper clip-rect(0_0_0_0) absolute m-[-1px] h-[1px] w-[1px] overflow-hidden border-0 p-0">
                 <video
                     ref={playerContainerRef}
                     className="plyr"

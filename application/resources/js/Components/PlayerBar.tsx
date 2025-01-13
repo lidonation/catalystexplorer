@@ -9,21 +9,14 @@ import PlayerSkipForward from '@/Components/svgs/PlayerSkipForward';
 import PlayerStop from '@/Components/svgs/PlayerStop';
 import PlaylistIcon from '@/Components/svgs/PlaylistIcon';
 import VideoCameraIcon from '@/Components/svgs/VideoCameraIcon';
-import { useFilterContext } from '@/Context/FiltersContext';
-import { Playlist, usePlayer } from '@/Context/PlayerContext';
+import { usePlayer } from '@/Context/PlayerContext';
 import { useUIContext } from '@/Context/SharedUIContext';
-import { PageProps } from '@/types';
 import 'plyr-react/plyr.css';
 import { useEffect } from 'react';
-import ProposalData = App.DataTransferObjects.ProposalData;
+import PlaylistAnimation from './Playlist';
 
-interface PlayerBarProps extends Record<string, unknown> {
-    proposals?: ProposalData[];
-}
-
-const PlayerBar = ({ proposals }: PageProps<PlayerBarProps>) => {
-    const { isPlayerBarExpanded, togglePlayerBar } = useUIContext();
-    const { filters } = useFilterContext();
+const PlayerBar = () => {
+    const { isPlayerBarExpanded, setIsPlayerBarExpanded } = useUIContext();
 
     const {
         playlist,
@@ -42,20 +35,24 @@ const PlayerBar = ({ proposals }: PageProps<PlayerBarProps>) => {
         playbackSpeed,
         currentTime,
         duration,
+        setIsPlaying,
         loading,
     } = usePlayer();
 
     const handlePlayPause = () => {
+        console.log({ isPlaying });
+
         if (isPlaying) {
             pauseCurrentTrack();
         } else {
             playCurrentTrack();
+            setIsPlaying(true);
         }
     };
 
     const handleStop = () => {
         stopCurrentTrack();
-        togglePlayerBar();
+        setIsPlayerBarExpanded(false);
     };
 
     const speedOptions = [
@@ -81,24 +78,22 @@ const PlayerBar = ({ proposals }: PageProps<PlayerBarProps>) => {
         },
     ];
 
-    const createPlaylist = () => {
-        const regex = /[a-zA-Z]/g;
-        const playlist = proposals
-            ?.filter((item) => item.quickpitch)
-            .map((item): Playlist => {
-                const { title, quickpitch, id } = item;
-                const provider = quickpitch?.match(regex) ? 'youtube' : 'vimeo';
-                return { title, quickpitch, provider, id };
-            });
+    const handleKeydown = (event: KeyboardEvent) => {
+        console.log({ th: event.code == 'Space' });
 
-        setPlaylist(playlist);
+        if (event.code == 'Space') {
+            event.preventDefault();
+            handlePlayPause();
+        }
     };
 
     useEffect(() => {
-        if (proposals) {
-            createPlaylist();
-        }
-    }, [proposals]);
+        window.addEventListener('keydown', handleKeydown);
+
+        return () => {
+            window.removeEventListener('keydown', handleKeydown);
+        };
+    }, []);
 
     return (
         <div className="flex flex-col items-center">
@@ -114,7 +109,7 @@ const PlayerBar = ({ proposals }: PageProps<PlayerBarProps>) => {
                 {!isPlayerBarExpanded && (
                     <button
                         disabled={loading}
-                        onClick={togglePlayerBar}
+                        onClick={() => setIsPlayerBarExpanded(true)}
                         className="flex h-12 w-12 items-center justify-center"
                     >
                         <VideoCameraIcon />
@@ -125,28 +120,28 @@ const PlayerBar = ({ proposals }: PageProps<PlayerBarProps>) => {
                     <div className="flex w-full items-center space-x-2 sm:space-x-3">
                         <div className="flex items-center space-x-2 sm:space-x-3">
                             <button
-                                disabled={loading}
+                                disabled={loading || !playlist}
                                 onClick={prevTrack}
                                 className="background-button-gradient-color-2 flex h-8 w-8 items-center justify-center rounded-md border border-dark hover:bg-dark sm:h-12 sm:w-12"
                             >
                                 <PlayerSkipBack />
                             </button>
                             <button
-                                disabled={loading}
+                                disabled={loading || !playlist}
                                 onClick={handlePlayPause}
                                 className="background-button-gradient-color-2 flex h-8 w-8 items-center justify-center rounded-md border border-dark hover:bg-dark sm:h-12 sm:w-12"
                             >
                                 {isPlaying ? <PlayerPause /> : <PlayerPlay />}
                             </button>
                             <button
-                                disabled={loading}
+                                disabled={loading || !playlist}
                                 onClick={handleStop}
                                 className="background-button-gradient-color-2 flex h-8 w-8 items-center justify-center rounded-md border border-dark hover:bg-dark sm:h-12 sm:w-12"
                             >
                                 <PlayerStop />
                             </button>
                             <button
-                                disabled={loading}
+                                disabled={loading || !playlist}
                                 onClick={nextTrack}
                                 className="background-button-gradient-color-2 flex h-8 w-8 items-center justify-center rounded-md border border-dark hover:bg-dark sm:h-12 sm:w-12"
                             >
@@ -157,19 +152,19 @@ const PlayerBar = ({ proposals }: PageProps<PlayerBarProps>) => {
                         <div className="mx-2 h-8 w-px bg-gray-600 sm:mx-4 sm:h-12" />
                         <div className="flex items-center space-x-2 sm:space-x-3">
                             <button
-                                disabled={loading}
+                                disabled={loading || !playlist}
                                 onClick={() => seekBack(10)}
                                 className="background-button-gradient-color-2 flex h-8 w-8 items-center justify-center rounded-md border border-gray-600 hover:bg-dark sm:h-12 sm:w-12"
                             >
                                 <PlayerRewindLeft />
                             </button>
-                            <div className="text-xs sm:text-sm flex justify-center w-20">
+                            <div className="flex w-20 justify-center text-xs sm:text-sm">
                                 <span>{currentTime}</span>
                                 <span className="mx-1">/</span>
                                 <span>{duration}</span>
                             </div>
                             <button
-                                disabled={loading}
+                                disabled={loading || !playlist}
                                 onClick={() => seekForward(10)}
                                 className="background-button-gradient-color-2 flex h-8 w-8 items-center justify-center rounded-md border border-gray-600 hover:bg-dark sm:h-12 sm:w-12"
                             >
@@ -179,7 +174,7 @@ const PlayerBar = ({ proposals }: PageProps<PlayerBarProps>) => {
                                 <Popover>
                                     <PopoverTrigger asChild>
                                         <button
-                                            disabled={loading}
+                                            disabled={loading || !playlist}
                                             className="background-button-gradient-color-2 flex h-8 w-8 items-center justify-center rounded-md border border-gray-600 text-xs hover:bg-dark sm:h-12 sm:w-12 sm:text-sm"
                                         >
                                             {playbackSpeed}x
@@ -216,13 +211,20 @@ const PlayerBar = ({ proposals }: PageProps<PlayerBarProps>) => {
                                     </PopoverContent>
                                 </Popover>
                             </div>
-                            <div className="relative">
-                                <button
-                                    disabled={loading}
-                                    className="background-button-gradient-color-2 flex h-8 w-8 items-center justify-center rounded-md border border-gray-600 hover:bg-dark sm:h-12 sm:w-12"
-                                >
-                                    <PlaylistIcon />
-                                </button>
+                            <div>
+                                <Popover>
+                                    <PopoverTrigger asChild>
+                                        <button
+                                            disabled={loading || !playlist}
+                                            className="background-button-gradient-color-2 flex h-8 w-8 items-center justify-center rounded-md border border-gray-600 hover:bg-dark sm:h-12 sm:w-12"
+                                        >
+                                            <PlaylistIcon />
+                                        </button>
+                                    </PopoverTrigger>
+                                    <PopoverContent className="relative max-h-96 w-auto max-w-md overflow-scroll border border-gray-600 bg-bg-dark">
+                                        <PlaylistAnimation />
+                                    </PopoverContent>
+                                </Popover>
                             </div>
                         </div>
                     </div>
