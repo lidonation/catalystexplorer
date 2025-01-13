@@ -27,12 +27,17 @@ class Fund extends Model implements HasMedia
         'media',
     ];
 
-    protected $appends = [];
+    protected $appends = [
+        'amount_received',
+        'amount_requested'
+    ];
 
     protected $guarded = [];
 
     protected $withCount = [
         'proposals',
+        'fundedProposals',
+        'completedProposals'
     ];
 
     public function currencySymbol(): Attribute
@@ -72,6 +77,34 @@ class Fund extends Model implements HasMedia
     public function proposals(): HasMany
     {
         return $this->hasMany(Proposal::class, 'fund_id', 'id');
+    }
+
+    public function fundedProposals(): HasMany
+    {
+        return $this->hasMany(Proposal::class)->where('funding_status', 'funded');
+    }
+
+    public function completedProposals(): HasMany
+    {
+        return $this->hasMany(Proposal::class)->where('status', 'complete');
+    }
+
+    public function amountReceived(): Attribute
+    {
+        return Attribute::make(
+            get: function () {
+                return $this->proposals()->sum('amount_received');
+            }
+        );
+    }
+
+    public function amountRequested(): Attribute
+    {
+        return Attribute::make(
+            get: function () {
+                return $this->proposals()->sum('amount_requested');
+            }
+        );
     }
 
     public function campaigns(): HasMany

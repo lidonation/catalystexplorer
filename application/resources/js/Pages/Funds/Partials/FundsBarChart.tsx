@@ -8,8 +8,8 @@ interface FundsBarChartProps {
     fundRounds: number;
     totalProposals: number;
     fundedProposals: number;
-    totalFundsRequested: any;
-    totalFundsAllocated: any;
+    totalFundsRequested: number;
+    totalFundsAllocated: number;
 }
 
 const FundsBarChart: React.FC<FundsBarChartProps> = ({
