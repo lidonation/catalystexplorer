@@ -7,6 +7,7 @@ namespace App\Models;
 use App\Enums\CatalystCurrencies;
 use App\Enums\CatalystCurrencySymbols;
 use App\Models\Scopes\OrderByLaunchedDateScope;
+use App\Traits\HasMetaData;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -18,7 +19,8 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class Fund extends Model implements HasMedia
 {
-    use InteractsWithMedia,
+    use HasMetaData,
+        InteractsWithMedia,
         SoftDeletes;
 
     protected $with = [
