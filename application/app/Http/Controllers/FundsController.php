@@ -8,52 +8,23 @@ use App\Models\Fund;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
+use App\Repositories\FundRepository;
+use App\DataTransferObjects\FundData;
 
 class FundsController extends Controller
 {
-    public function index(Request $request): Response
+
+    public function index(Request $request, FundRepository $fundRepository): Response
     {
-        $funds = Fund::withCount('proposals')->get()->map(function ($fund) {
-            $totalAllocated = 452032;
-            $fundedProjects = 185;
-            $previousTotalAllocated = 46.8;
-            $previousFundedProjects = 322;
-
-            $percentageChange = $previousTotalAllocated > 0
-                ? round((($totalAllocated - $previousTotalAllocated) / $previousTotalAllocated) * 100, 2)
-                : 0;
-
-            $projectPercentageChange = $previousFundedProjects > 0
-                ? round((($fundedProjects - $previousFundedProjects) / $previousFundedProjects) * 100, 2)
-                : 0;
-
-            return [
-                'id' => $fund->id,
-                'title' => $fund->title,
-                'fund' => $fund->title,
-                'hero_img_url' => $fund->hero_img_url,
-                'Total Proposals' => $fund->proposals_count,
-                'Funded Proposals' => $fundedProjects,
-                'fundedProjects' => $fundedProjects,
-                'totalProjects' => 1202,
-                'Completed Proposals' => 101, // $fund->proposals->where('status', 'complete')->count(),
-                'totalAllocated' => $totalAllocated,
-                'totalBudget' => 1732844,
-                'percentageChange' => $percentageChange.'%',
-                'projectPercentageChange' => $projectPercentageChange,
-            ];
-        });
-
-        $fundRounds = $funds->count();
-        $totalProposals = $funds->sum('Total Proposals');
-        $fundedProposals = $funds->sum('Funded Proposals');
-        $totalFundsRequested = $funds->sum('totalBudget');
-        $totalFundsAllocated = $funds->sum('totalAllocated');
+        $funds = FundData::collect($fundRepository->getQuery()->get());
+        $totalProposals = $funds->sum('proposals_count');
+        $fundedProposals = $funds->sum('funded_proposals_count');
+        $totalFundsRequested = $funds->sum('amount_requested');
+        $totalFundsAllocated = $funds->sum('amount_received');
 
         return Inertia::render('Funds/Index', [
             'funds' => $funds,
             'chartSummary' => [
-                'fundRounds' => $fundRounds,
                 'totalProposals' => $totalProposals,
                 'fundedProposals' => $fundedProposals,
                 'totalFundsRequested' => $totalFundsRequested,
@@ -68,4 +39,6 @@ class FundsController extends Controller
             'fund' => $fund,
         ]);
     }
+
+
 }
