@@ -2,7 +2,7 @@
 set -e
 
 if [ $# -gt 0 ]; then
-    exec gosu $WWWUSER "$@"
+    exec "$@"
 else
   case "$CONTAINER_ROLE" in
     queue | q)
