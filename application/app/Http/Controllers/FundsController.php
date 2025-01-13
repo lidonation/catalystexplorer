@@ -4,16 +4,15 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\DataTransferObjects\FundData;
 use App\Models\Fund;
+use App\Repositories\FundRepository;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
-use App\Repositories\FundRepository;
-use App\DataTransferObjects\FundData;
 
 class FundsController extends Controller
 {
-
     public function index(Request $request, FundRepository $fundRepository): Response
     {
         $funds = FundData::collect($fundRepository->getQuery()->get());
@@ -39,6 +38,4 @@ class FundsController extends Controller
             'fund' => $fund,
         ]);
     }
-
-
 }
