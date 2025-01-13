@@ -30,13 +30,13 @@ init:
  
 	make up
 	sleep 10
-	$(sail) artisan key:generate
+	$(compose) artisan key:generate
 	make migrate
-	$(sail) yarn husky init
+	$(compose) yarn husky init
 
 .PHONY: artisan
 artisan:
-	$(sail) artisan $(filter-out $@,$(MAKECMDGOALS))
+	$(compose) artisan $(filter-out $@,$(MAKECMDGOALS))
 
 .PHONY: backend-install
 backend-install:
@@ -46,7 +46,7 @@ backend-install:
 
 .PHONY: build
 build:
-	$(sail) npx vite build
+	$(compose) npx vite build
 
 .PHONY: db-setup
 db-setup:
@@ -88,7 +88,7 @@ frontend-clean:
 image-build:
 	docker build \
 	--build-arg=WWWGROUP=1000 \
-	--build-arg=WWWUSER=$UID \
+	--build-arg=WWWUSER=1000 \
 	--build-arg=GITHUB_PACKAGE_REGISTRY_TOKEN=${GITHUB_PACKAGE_REGISTRY_TOKEN} \
 	-f ./docker/Dockerfile.dev \
 	-t catalystexplorer \
@@ -133,7 +133,7 @@ status:
 
 .PHONY: up
 up:
-	$(sail) up -d
+	$(sail) up -d --remove-orphans
 
 .PHONY: vite
 vite:
@@ -141,7 +141,7 @@ vite:
 
 .PHONY: watch
 watch:
-	docker compose  up -d && $(sail) npx vite --force
+	docker compose  up -d --remove-orphans&& $(sail) npx vite --force
 
 .PHONY: test-backend
 test-backend:
