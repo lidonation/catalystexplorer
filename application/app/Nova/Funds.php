@@ -80,6 +80,8 @@ class Funds extends Resource
             Number::make('Amount')
                 ->required(),
 
+            HasMany::make('Metadata', 'metas', Metas::class),
+
             HasMany::make('Proposals', 'proposals', Proposals::class),
         ];
     }

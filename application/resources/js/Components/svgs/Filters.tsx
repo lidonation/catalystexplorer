@@ -21,7 +21,7 @@ export default function Filters({
             className={className}
         >
             <title>{t('icons.title.filters')}</title>
-            <path d="M3.375 6.5H13.375M0.875 1.5H15.875M5.875 11.5H10.875" stroke="#344054" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M3.375 6.5H13.375M0.875 1.5H15.875M5.875 11.5H10.875" stroke="#344054" strokeWidth="1.66667" strokeLinecap="round" strokeLinejoin="round"/>
         </svg>
     );
 }

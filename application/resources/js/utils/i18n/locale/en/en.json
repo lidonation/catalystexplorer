@@ -278,9 +278,12 @@
     },
     "icons": {
         "titles": {
+            "arrow_left": "Arrow Left Icon",
             "barLine": "Bar Line Chart Icon",
             "blue_eye": "Blue Eye Icon",
             "bookmark": "Bookmark Check Icon",
+            "bookmark_on": "Bookmark On Icon",
+            "bookmark_off": "Bookmark Off Icon",
             "bucket": "Bucket Icon",
             "chart": "Chart Icon",
             "check": "Check Icon",

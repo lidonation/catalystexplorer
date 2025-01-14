@@ -40,7 +40,7 @@ const UserDetails: React.FC<UserDetailsProps> = ({ user }) => {
                         </div>
                         <div className="flex flex-col">
                             <Link
-                                href={useLocalizedRoute('dashboard')}
+                                href={useLocalizedRoute('my.dashboard')}
                                 className="text-4 font-semibold text-content"
                             >
                                 {user?.name}

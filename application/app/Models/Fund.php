@@ -9,6 +9,7 @@ use App\Enums\CatalystCurrencySymbols;
 use App\Enums\ProposalFundingStatus;
 use App\Enums\ProposalStatus;
 use App\Models\Scopes\OrderByLaunchedDateScope;
+use App\Traits\HasMetaData;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -20,7 +21,8 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class Fund extends Model implements HasMedia
 {
-    use InteractsWithMedia,
+    use HasMetaData,
+        InteractsWithMedia,
         SoftDeletes;
 
     protected $with = [
@@ -43,7 +45,7 @@ class Fund extends Model implements HasMedia
     public function currencySymbol(): Attribute
     {
         return Attribute::make(
-            get: fn() => match ($this->currency) {
+            get: fn () => match ($this->currency) {
                 CatalystCurrencies::ADA()->value => CatalystCurrencySymbols::ADA,
                 default => CatalystCurrencySymbols::USD
             }
@@ -67,7 +69,7 @@ class Fund extends Model implements HasMedia
     {
         $query->when(
             $filters['search'] ?? false,
-            fn(Builder $query, $search) => $query->where('title', 'ILIKE', '%' . $search . '%')
+            fn (Builder $query, $search) => $query->where('title', 'ILIKE', '%'.$search.'%')
         )->when(
             $filters['status'] ?? false,
             fn(Builder $query, $status) => $query->where('status', $status)

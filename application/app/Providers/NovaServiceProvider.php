@@ -6,6 +6,7 @@ namespace App\Providers;
 
 use App\Enums\RoleEnum;
 use App\Models\User;
+use App\Nova\Dashboards\Main;
 use Illuminate\Support\Facades\Gate;
 use Laravel\Fortify\Features;
 use Laravel\Nova\Dashboard;
@@ -58,7 +59,7 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
     protected function gate(): void
     {
         Gate::define('viewNova', function (User $user) {
-            return $user->hasRole([
+            return $user->hasAnyRole([
                 RoleEnum::super_admin()->value,
                 RoleEnum::admin()->value,
                 RoleEnum::editor()->value,
@@ -74,7 +75,7 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
     protected function dashboards(): array
     {
         return [
-            new \App\Nova\Dashboards\Main,
+            new Main,
         ];
     }
 
