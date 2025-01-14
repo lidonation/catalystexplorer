@@ -2,8 +2,10 @@ import ApplicationLogo from '@/Components/ApplicationLogo';
 import Dropdown from '@/Components/Dropdown';
 import NavLink from '@/Components/NavLink';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink';
+import { useLocalizedRoute } from '@/utils/localizedRoute';
 import { Link, usePage } from '@inertiajs/react';
 import { PropsWithChildren, ReactNode, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 export default function Authenticated({
     header,
@@ -13,6 +15,8 @@ export default function Authenticated({
 
     const [showingNavigationDropdown, setShowingNavigationDropdown] =
         useState(false);
+
+    const { t } = useTranslation();
 
     return (
         <div className="bg-gray-primary min-h-screen">
@@ -28,10 +32,10 @@ export default function Authenticated({
 
                             <div className="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                                 <NavLink
-                                    href={route('my.dashboard')}
+                                    href={useLocalizedRoute('my.dashboard')}
                                     active={route().current('my.dashboard')}
                                 >
-                                    Dashboard
+                                    {t('dashboard')}
                                 </NavLink>
                             </div>
                         </div>
@@ -43,7 +47,7 @@ export default function Authenticated({
                                         <span className="inline-flex rounded-md">
                                             <button
                                                 type="button"
-                                                className="false inline-flex items-center rounded-md border border-transparent secondary px-4 py-2 text-5 font-semibold uppercase tracking-widest text-content-secondary transition duration-150 ease-in-out hover:bg-background-lighter focus:bg-background-tertiary focus:outline-none  focus:ring-offset-2 active:bg-background-tertiary"
+                                                className="false secondary text-5 text-content-secondary focus:bg-background-tertiary active:bg-background-tertiary inline-flex items-center rounded-md border border-transparent px-4 py-2 font-semibold uppercase tracking-widest transition duration-150 ease-in-out hover:bg-background-lighter focus:outline-none focus:ring-offset-2"
                                             >
                                                 {user?.name}
 
@@ -67,14 +71,14 @@ export default function Authenticated({
                                         <Dropdown.Link
                                             href={route('profile.edit')}
                                         >
-                                            Profile
+                                            {t('profile')}
                                         </Dropdown.Link>
                                         <Dropdown.Link
                                             href={route('logout')}
                                             method="post"
                                             as="button"
                                         >
-                                            Log Out
+                                            {t('logOut')}
                                         </Dropdown.Link>
                                     </Dropdown.Content>
                                 </Dropdown>
@@ -88,7 +92,7 @@ export default function Authenticated({
                                         (previousState) => !previousState,
                                     )
                                 }
-                                className="inline-flex items-center justify-center rounded-md p-2 text-dark transition duration-150 ease-in-out hover:bg-background-lighter hover:text-content-secondary focus:bg-background-lighter focus:text-content-secondary focus:outline-none"
+                                className="hover:text-content-secondary focus:text-content-secondary inline-flex items-center justify-center rounded-md p-2 text-dark transition duration-150 ease-in-out hover:bg-background-lighter focus:bg-background-lighter focus:outline-none"
                             >
                                 <svg
                                     className="h-6 w-6"
@@ -132,10 +136,10 @@ export default function Authenticated({
                 >
                     <div className="space-y-1 pb-3 pt-2">
                         <ResponsiveNavLink
-                            href={route('my.dashboard')}
+                            href={useLocalizedRoute('my.dashboard')}
                             active={route().current('my.dashboard')}
                         >
-                            Dashboard
+                            {t('dashboard')}
                         </ResponsiveNavLink>
                     </div>
 
@@ -151,14 +155,14 @@ export default function Authenticated({
 
                         <div className="mt-3 space-y-1">
                             <ResponsiveNavLink href={route('profile.edit')}>
-                                Profile
+                                {t('profile')}
                             </ResponsiveNavLink>
                             <ResponsiveNavLink
                                 method="post"
                                 href={route('logout')}
                                 as="button"
                             >
-                                Log Out
+                                {t('logOut')}
                             </ResponsiveNavLink>
                         </div>
                     </div>
