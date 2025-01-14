@@ -1,6 +1,8 @@
+import { usePlayer } from '@/Context/PlayerContext';
 import { useUIContext } from '@/Context/SharedUIContext';
 import { ProposalMetrics } from '@/types/proposal-metrics';
 import { currency } from '@/utils/currency';
+import { usePage } from '@inertiajs/react';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -115,33 +117,38 @@ const SectionTwo: React.FC<
 const MetricsBar: React.FC<ProposalMetrics | undefined> = (props) => {
     const { isPlayerBarExpanded } = useUIContext(); // Access the context to manage player bar state
     const [isExpanded, setIsExpanded] = useState(true);
+    const { metrics } = usePlayer();
+    const onProposals = (usePage().component) == 'Proposals/Index'; 
 
     return (
-        <div
-            className={`sticky inset-x-0 bottom-0 mx-auto flex items-center justify-between overflow-hidden rounded-xl bg-bg-dark px-4 py-3 text-white shadow-lg transition-all duration-300 ${
-                isExpanded && !isPlayerBarExpanded ? 'w-full' : 'w-auto'
-            }`}
-        >
-            <div className="flex w-full items-center justify-between">
-                <SectionOne
-                    submitted={props?.submitted}
-                    approved={props?.approved}
-                    completed={props?.completed}
-                />
-            </div>
-            {isExpanded && !isPlayerBarExpanded && (
-                <div className="hidden w-full items-center md:flex md:space-x-4">
-                    <div className="flex-grow items-center transition-all duration-300">
-                        <SectionTwo
-                            requestedUSD={props?.requestedUSD}
-                            requestedADA={props?.requestedADA}
-                            awardedUSD={props?.awardedUSD}
-                            awardedADA={props?.awardedADA}
-                        />
-                    </div>
+        metrics &&
+        onProposals && (
+            <div
+                className={`sticky inset-x-0 bottom-0 mx-auto flex items-center justify-between overflow-hidden rounded-xl bg-bg-dark px-4 py-3 text-white shadow-lg transition-all duration-300 ${
+                    isExpanded && !isPlayerBarExpanded ? 'w-full' : 'w-auto'
+                }`}
+            >
+                <div className="flex w-full items-center justify-between">
+                    <SectionOne
+                        submitted={metrics?.submitted}
+                        approved={metrics?.approved}
+                        completed={metrics?.completed}
+                    />
                 </div>
-            )}
-        </div>
+                {isExpanded && !isPlayerBarExpanded && (
+                    <div className="hidden w-full items-center md:flex md:space-x-4">
+                        <div className="flex-grow items-center transition-all duration-300">
+                            <SectionTwo
+                                requestedUSD={metrics?.requestedUSD}
+                                requestedADA={metrics?.requestedADA}
+                                awardedUSD={metrics?.awardedUSD}
+                                awardedADA={metrics?.awardedADA}
+                            />
+                        </div>
+                    </div>
+                )}
+            </div>
+        )
     );
 };
 

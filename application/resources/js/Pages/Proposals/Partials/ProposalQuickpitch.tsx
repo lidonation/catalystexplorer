@@ -1,7 +1,7 @@
 import { PageProps } from '@/types';
 import Plyr from 'plyr-react';
 import 'plyr-react/plyr.css';
-import { useEffect, useState } from 'react';
+import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
 interface ProposalQuickpitch extends Record<string, unknown> {
@@ -20,73 +20,17 @@ export default function ProposalQuickpitch({
     quickpitch,
 }: PageProps<ProposalQuickpitch>) {
     const { t } = useTranslation();
-    const [videoData, setVideoData] = useState<VideoData>({
-        id: null,
-        provider: 'html5',
-        error: null,
-    });
 
-    const processVideoUrl = (url?: string | null): VideoData => {        
-        if (!url) {
+    // Memoize the video data to avoid recalculating it on every render
+    const videoData = useMemo<VideoData>(() => {
+        if (quickpitch) {
             return {
-                id: null,
-                provider: 'html5',
-                error: t('proposals.errors.noUrl'),
+                id: quickpitch,
+                provider: 'youtube',
+                error: null,
             };
         }
-
-        try {
-            new URL(url);
-
-            if (url.includes('youtube.com') || url.includes('youtu.be')) {
-                const youtubeMatch = url.match(/[a-zA-Z]/g);
-                console.log({ youtubeMatch });
-                if (!youtubeMatch) {
-                    return {
-                        id: null,
-                        provider: 'youtube',
-                        error: t('proposals.errors.invalidYoutubeFormat'),
-                    };
-                }
-                return {
-                    id: youtubeMatch[1],
-                    provider: 'youtube',
-                    error: null,
-                };
-            }
-
-            if (url.includes('vimeo.com')) {
-                const vimeoMatch = url.match(/[a-zA-Z]/g);
-                console.log({ vimeoMatch });
-                if (!vimeoMatch) {
-                    return {
-                        id: null,
-                        provider: 'vimeo',
-                        error: t('proposals.errors.invalidVimeoFormat'),
-                    };
-                }
-                return { id: vimeoMatch[1], provider: 'vimeo', error: null };
-            }
-
-            return {
-                id: null,
-                provider: 'html5',
-                error: t('proposals.errors.invalidUrlFormat'),
-            };
-        } catch (e) {
-            console.log({e});
-            
-            return {
-                id: null,
-                provider: 'html5',
-                error: t('proposals.errors.invalidUrl'),
-            };
-        }
-    };
-
-    useEffect(() => {        
-        const result = processVideoUrl(quickpitch);
-        setVideoData(result);
+        return { id: null, provider: 'html5', error: null };
     }, [quickpitch]);
 
     return (

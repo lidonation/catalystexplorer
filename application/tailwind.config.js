@@ -12,6 +12,15 @@ export default {
 
     theme: {
         extend: {
+            animation: {
+                'waveform': 'waveform 1s ease-in-out infinite',
+            },
+            keyframes: {
+                waveform: {
+                    '0%, 100%': { height: '20%' },
+                    '50%': { height: '60%' },
+                },
+            },
             fontFamily: {
                 sans: ['Figtree', ...defaultTheme.fontFamily.sans],
             },
@@ -48,6 +57,7 @@ export default {
                 'black-persist': 'var(--cx-content-black-persist)',
                 dark: 'var(--cx-dark)',
                 primary: 'var(--cx-primary)',
+                'primary-dark': 'var(--cx-primary-dark)',
                 secondary: 'var(--cx-secondary)',
                 highlight: 'var(--cx-light)',
                 accent: 'var(--cx-accent)',

@@ -5,16 +5,16 @@ import DesktopSidebar from '@/Components/layout/DesktopSidebar';
 import Footer from '@/Components/layout/Footer';
 import MobileNavigation from '@/Components/layout/MobileNavigation';
 import ModalSidebar from '@/Components/layout/ModalSidebar';
+import PlayerBar from '@/Components/PlayerBar';
 import CloseIcon from '@/Components/svgs/CloseIcon';
 import MenuIcon from '@/Components/svgs/MenuIcon';
 import { PlayerProvider } from '@/Context/PlayerContext';
+import { UIProvider } from '@/Context/SharedUIContext';
 import { Dialog } from '@headlessui/react';
 import { usePage } from '@inertiajs/react';
 import { ReactNode, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import MainLayout from './RootLayout';
-import { UIProvider } from '@/Context/SharedUIContext';
-import PlayerBar from '@/Components/PlayerBar';
 import MetricsBar from '@/Pages/Proposals/Partials/MetricsBar';
 
 export default function AppLayout({ children }: { children: ReactNode }) {
@@ -67,10 +67,11 @@ export default function AppLayout({ children }: { children: ReactNode }) {
                     <Breadcrumbs items={breadcrumbItems} />
                     <PlayerProvider>
                         {children}
+
                         <UIProvider>
-                            <section className="sticky inset-x-0 bottom-0 mx-auto flex items-center justify-center pb-4">
-                                <div className="pr-2">
-                                    {/* <MetricsBar {...metrics} /> */}
+                            <section className="sticky inset-x-0 bottom-0 mx-auto flex items-center justify-center gap-2 pb-4">
+                                <div className="">
+                                    <MetricsBar  />
                                 </div>
                                 <div>
                                     <PlayerBar />

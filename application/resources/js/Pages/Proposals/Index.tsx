@@ -36,7 +36,7 @@ export default function Index({
 
     const [perPage, setPerPage] = useState<number>(24);
     const [currentPage, setCurrentPage] = useState<number>(1);
-    const { createProposalPlaylist } = usePlayer();
+    const { createProposalPlaylist, setMetrics } = usePlayer();
 
     const [isHorizontal, setIsHorizontal] = useState(false);
 
@@ -49,6 +49,16 @@ export default function Index({
             createProposalPlaylist(proposals?.data);
         }
     }, [proposals]);
+
+    useEffect(() => {
+        if (metrics) {
+            setMetrics(metrics);
+        }
+
+       return () => {
+            setMetrics(undefined);
+        };
+    }, [metrics]);
 
     return (
         <ListProvider>

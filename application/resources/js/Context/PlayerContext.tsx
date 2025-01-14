@@ -1,3 +1,4 @@
+import { ProposalMetrics } from '@/types/proposal-metrics';
 import Plyr from 'plyr';
 import React, {
     createContext,
@@ -7,7 +8,6 @@ import React, {
     useState,
 } from 'react';
 import ProposalData = App.DataTransferObjects.ProposalData;
-
 
 export interface Playlist {
     title: string | null;
@@ -35,7 +35,13 @@ interface PlayerContextType {
     loading: boolean;
     currentTime: string;
     duration: string;
-    createProposalPlaylist: (proposals?:ProposalData[]) => void;
+    createProposalPlaylist: (proposals?: ProposalData[]) => void;
+    metrics?: ProposalMetrics;
+    setMetrics: React.Dispatch<
+        React.SetStateAction<ProposalMetrics | undefined>
+    >;
+    progress: number;
+    setProgress: React.Dispatch<React.SetStateAction<number>>;
 }
 
 const PlayerContext = createContext<PlayerContextType | undefined>(undefined);
@@ -56,6 +62,11 @@ export const PlayerProvider = ({ children }: { children: React.ReactNode }) => {
     const [duration, setDuration] = useState('0:00');
     const plyrInstanceRef = useRef<Plyr | null>(null);
     const playerContainerRef = useRef<HTMLVideoElement | null>(null);
+    const [metrics, setMetrics] = useState<ProposalMetrics | undefined>(
+        undefined,
+    );
+    const [progress, setProgress] = useState(0);
+    const [initialLoad, setInitialLoad] = useState(true);
 
     const currentTrack =
         playlist && playlist[currentTrackIndex]
@@ -96,6 +107,12 @@ export const PlayerProvider = ({ children }: { children: React.ReactNode }) => {
                 if (isPlaying) plyrInstanceRef.current?.play();
             });
         }
+
+        const timeout = setTimeout(() => setInitialLoad(false), 1000);
+
+        return () => {
+            clearTimeout(timeout);
+        };
     }, [plyrInstanceRef, playlist]);
 
     // Update video source whenever the track changes
@@ -118,17 +135,13 @@ export const PlayerProvider = ({ children }: { children: React.ReactNode }) => {
         }
     }, [currentTrack]);
 
-    // useEffect(
-    //     () => console.log({ ghjk: plyrInstanceRef.current }),
-    //     [plyrInstanceRef.current],
-    // );
-
     // Update current time and duration every second
     useEffect(() => {
         const interval = setInterval(() => {
             if (plyrInstanceRef.current) {
                 setCurrentTime(formatTime(plyrInstanceRef.current.currentTime));
                 setDuration(formatTime(plyrInstanceRef.current.duration));
+                setPlaybackSpeed(plyrInstanceRef.current.speed);
             }
         }, 1000);
 
@@ -204,14 +217,31 @@ export const PlayerProvider = ({ children }: { children: React.ReactNode }) => {
             ?.filter((item) => item.quickpitch)
             .map((item): Playlist => {
                 const { title, quickpitch, id } = item;
-                const provider = quickpitch?.match(regex)
-                    ? 'youtube'
-                    : 'vimeo';
+                const provider = quickpitch?.match(regex) ? 'youtube' : 'vimeo';
                 return { title, quickpitch, provider, id };
             });
 
         setPlaylist(playlist);
     };
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+            if (plyrInstanceRef.current) {
+                const current = plyrInstanceRef.current.currentTime;
+                const total = plyrInstanceRef.current.duration;
+                setCurrentTime(formatTime(current));
+                setDuration(formatTime(total));
+
+                if (total > 0) {
+                    setProgress((current / total) * 100); // Calculate progress as percentage
+                } else {
+                    setProgress(0);
+                }
+            }
+        }, 1000);
+
+        return () => clearInterval(interval);
+    }, []);
 
     return (
         <PlayerContext.Provider
@@ -235,7 +265,10 @@ export const PlayerProvider = ({ children }: { children: React.ReactNode }) => {
                 currentTime,
                 duration,
                 createProposalPlaylist,
-
+                metrics,
+                setMetrics,
+                progress,
+                setProgress,
             }}
         >
             <div className="player-wrapper clip-rect(0_0_0_0) absolute m-[-1px] h-[1px] w-[1px] overflow-hidden border-0 p-0">

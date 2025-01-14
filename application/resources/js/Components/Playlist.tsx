@@ -1,7 +1,7 @@
 'use client';
 
 import { usePlayer } from '@/Context/PlayerContext';
-import { motion } from 'framer-motion';
+import { useEffect, useRef } from 'react';
 
 function WaveformBars() {
     const bars = Array.from({ length: 3 }, (_, i) => ({
@@ -10,24 +10,14 @@ function WaveformBars() {
     }));
 
     return (
-        <div className="size-12 flex h-full items-center space-x-[2px]">
+        <div className="z-10 flex size-8 items-center space-x-[2px]">
             {bars.map((bar) => (
-                <motion.div
+                <div
                     key={bar.id}
-                    className="w-[3px] rounded-lg bg-white"
-                    initial={{ height: `${bar.initialHeight}%` }}
-                    animate={{
-                        height: [
-                            `${bar.initialHeight}%`,
-                            `${bar.initialHeight + 30}%`,
-                            `${bar.initialHeight}%`,
-                        ],
-                    }}
-                    transition={{
-                        duration: 8000,
-                        repeat: Infinity,
-                        repeatType: 'reverse',
-                        ease: 'easeInOut',
+                    className="animate-waveform w-[3px] rounded-full bg-white"
+                    style={{
+                        height: `${bar.initialHeight}%`,
+                        animationDelay: `${bar.id * 0.2}s`,
                     }}
                 />
             ))}
@@ -36,6 +26,7 @@ function WaveformBars() {
 }
 
 export default function PlaylistAnimation() {
+    const progressRef = useRef<HTMLDivElement>(null);
     const {
         currentTrackIndex,
         isPlaying,
@@ -43,6 +34,7 @@ export default function PlaylistAnimation() {
         playCurrentTrack,
         playlist,
         duration,
+        progress,
     } = usePlayer();
 
     const handlePlayPause = () => {
@@ -53,48 +45,56 @@ export default function PlaylistAnimation() {
         }
     };
 
+    useEffect(() => {
+        if (progressRef.current) {
+            progressRef.current.style.width = `${progress}%`;
+        }
+    }, [progress]);
+
     return (
-        <div className="mx-auto w-full  bg-[#1B2230] ">
-            <div >
-                <ul className="space-y-3 flex flex-col">
+        <div className="relative">
+            <div className="space-y-6">
+                <div className="flex items-center justify-between">
+                    <h2 className="text-2xl font-bold text-white">
+                        Now Playing
+                    </h2>
+                    {/* <button
+                        onClick={handlePlayPause}
+                        className="inline-flex h-10 items-center justify-center rounded-lg bg-blue-500 px-4 text-sm font-medium text-white transition-colors hover:bg-blue-600"
+                    >
+                        {isPlaying ? (
+                            <Pause className="mr-2 h-4 w-4" />
+                        ) : (
+                            <Play className="mr-2 h-4 w-4" />
+                        )}
+                        {isPlaying ? 'Pause' : 'Play'}
+                    </button> */}
+                </div>
+
+                <ul className="space-y-3">
                     {playlist &&
                         playlist.map((track, index) => {
                             const isCurrentTrack = index === currentTrackIndex;
                             return (
-                                <li
-                                    className=""
-                                    key={index}
-                                    onClick={() =>
-                                        isCurrentTrack && handlePlayPause()
-                                    }
-                                >
+                                <li key={track.title}>
                                     <div
-                                        className={`rounded-lg py-3 ${
+                                        className={`relative flex rounded-lg p-2 ${
                                             isCurrentTrack
-                                                ? 'bg-blue-500'
+                                                ? 'bg-primary'
                                                 : 'bg-gray-800 transition-colors hover:bg-gray-700'
                                         }`}
                                     >
                                         {isCurrentTrack && (
-                                            <motion.div
-                                                className="bg-blue-600/50"
-                                                initial={{ width: '0%' }}
-                                                animate={{
-                                                    width: isPlaying
-                                                        ? '100%'
-                                                        : '0%',
-                                                }}
-                                                transition={{
-                                                    duration: duration,
-                                                    ease: 'linear',
-                                                    repeat: Infinity,
-                                                }}
+                                            <div
+                                                ref={progressRef}
+                                                className="bg-primary-dark absolute inset-0 rounded-lg transition-all duration-100 ease-linear"
+                                                style={{ width: '0%' }}
                                             />
                                         )}
-                                        <div className="flex items-center justify-between truncate px-6">
+                                        <div className="flex items-center justify-between px-6 w-full">
                                             <div className="z-10 mr-4 flex-grow">
                                                 <h4
-                                                    className={`mb-1 truncate text-base font-semibold ${
+                                                    className={`..." mb-1 truncate text-base font-semibold ${
                                                         isCurrentTrack
                                                             ? 'text-white'
                                                             : 'text-gray-200'
@@ -102,28 +102,23 @@ export default function PlaylistAnimation() {
                                                 >
                                                     {track.title}
                                                 </h4>
-                                                {/* <p
-                                                    className={`truncate text-sm ${
-                                                        isCurrentTrack
-                                                            ? 'text-white/80'
-                                                            : 'text-gray-400'
-                                                    }`}
-                                                >
-                                                    {track.artist}
-                                                </p> */}
                                             </div>
-                                            <div className='relative'>
-                                                {isCurrentTrack && isPlaying && (
-                                                    <WaveformBars />
-                                                )}
-                                                {isCurrentTrack && (
+                                            {isCurrentTrack && (
+                                                <div className="flex items-center gap-2">
+                                                    {isPlaying && (
+                                                        <WaveformBars />
+                                                    )}
                                                     <span
-                                                        className={`z-10 whitespace-nowrap text-sm font-medium text-white`}
+                                                        className={`z-10 whitespace-nowrap text-sm font-medium ${
+                                                            isCurrentTrack
+                                                                ? 'text-white/90'
+                                                                : 'text-gray-400'
+                                                        }`}
                                                     >
                                                         {duration}
                                                     </span>
-                                                )}
-                                            </div>
+                                                </div>
+                                            )}
                                         </div>
                                     </div>
                                 </li>
