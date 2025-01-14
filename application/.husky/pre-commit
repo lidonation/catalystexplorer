@@ -1,1 +1,1 @@
-make commitlint
+yarn test

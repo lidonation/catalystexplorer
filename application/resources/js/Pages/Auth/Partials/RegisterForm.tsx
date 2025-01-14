@@ -1,4 +1,4 @@
-import { Link, router, useForm } from "@inertiajs/react";
+import { Link, router, useForm} from "@inertiajs/react";
 import InputLabel from "../../../Components/InputLabel";
 import TextInput from "../../../Components/TextInput";
 import InputError from "../../../Components/InputError";
@@ -16,7 +16,7 @@ interface FormErrors {
 
 
 export default function RegisterForm() {
-    const { data, setData, processing, reset } = useForm({
+    const { data, setData, processing, post, reset } = useForm({
         name: '',
         email: '',
         password: '',
@@ -28,16 +28,9 @@ export default function RegisterForm() {
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
 
-        axios.post(route('register'), {
-            name: data.name,
-            email: data.email,
-            password: data.password,
-            password_confirmation: data.password_confirmation
-        }).then((response) => {
-            reset('password', 'password_confirmation')
-            router.get('dashboard')
-        }).catch((error) => {
-            setErrors(error?.response?.data?.errors)
+        post(route('register'), {
+            onFinish: () => reset('password', 'password_confirmation'),
+            onSuccess: () => router.visit(route('my.dashboard')),
         })
     };
 
