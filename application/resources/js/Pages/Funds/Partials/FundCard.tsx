@@ -1,7 +1,7 @@
 import ArrowTrendingDown from '@/Components/svgs/ArrowTrendingDown';
 import ArrowTrendingUp from '@/Components/svgs/ArrowTrendingUp';
 import { currency } from '@/utils/currency';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
 import FundData = App.DataTransferObjects.FundData;
 
@@ -16,14 +16,8 @@ const FundCard: React.FC<FundCardProps> = ({
     percentageChange,
     projectPercentageChange,
 }) => {
-    const [isIncrease, setIsIncrease] = useState(false);
-    const { t } = useTranslation();
 
-    useEffect(() => {
-        if (percentageChange > 0 || projectPercentageChange > 0) {
-            setIsIncrease(true);
-        }
-    });
+    const { t } = useTranslation();
 
     return (
         <div className="flex w-full flex-row items-stretch space-x-6 overflow-hidden rounded-lg bg-background p-3 shadow-md sm:p-4">
@@ -48,13 +42,13 @@ const FundCard: React.FC<FundCardProps> = ({
             <div className="flex flex-grow flex-col space-y-1 sm:space-y-2">
                 <div>
                     <p className="mt-8 truncate text-xs sm:text-sm">
-                        {t('funds.totalAllocated')}
+                        {t('funds.totalAwarded')}
                     </p>
                     <div className="flex items-baseline space-x-1">
                         <span className="truncate text-sm font-bold sm:text-base">
                             {currency(
-                                fund?.amount_received ?? 0,
-                                undefined,
+                                fund?.amount_awarded ?? 0,
+                                fund?.currency,
                                 undefined,
                                 2,
                             )}
@@ -63,20 +57,20 @@ const FundCard: React.FC<FundCardProps> = ({
                         <span className="truncate text-xs text-gray-500 sm:text-sm">
                             {currency(
                                 fund?.amount_requested ?? 0,
-                                undefined,
+                                fund?.currency,
                                 undefined,
                                 2,
                             )}
                         </span>
                     </div>
                     <div className="mt-1 flex items-center">
-                        {isIncrease ? (
+                        {percentageChange >= 0 ? (
                             <ArrowTrendingUp className="h-3 w-3 text-green-500 sm:h-4 sm:w-4" />
                         ) : (
                             <ArrowTrendingDown className="h-3 w-3 text-red-500 sm:h-4 sm:w-4" />
                         )}
                         <span className="ml-1 truncate text-xs sm:text-sm">
-                            {`${percentageChange}%`}
+                            {`${Math.abs(percentageChange)}%`}
                         </span>
                         <span className="ml-1 truncate text-xs sm:text-sm">
                             vs {t('funds.lastFund')}
@@ -98,13 +92,13 @@ const FundCard: React.FC<FundCardProps> = ({
                         </span>
                     </div>
                     <div className="mt-1 flex items-center">
-                        {projectPercentageChange > 0 ? (
+                        {projectPercentageChange >= 0 ? (
                             <ArrowTrendingUp className="h-3 w-3 text-green-500 sm:h-4 sm:w-4" />
                         ) : (
                             <ArrowTrendingDown className="h-3 w-3 text-red-500 sm:h-4 sm:w-4" />
                         )}
                         <span className="ml-1 truncate text-xs sm:text-sm">
-                            {`${projectPercentageChange}%`}
+                            {`${Math.abs(projectPercentageChange)}%`}
                         </span>
                         <span className="ml-1 truncate text-xs sm:text-sm">
                             vs {t('funds.lastFund')}

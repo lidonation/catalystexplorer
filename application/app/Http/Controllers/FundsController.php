@@ -10,24 +10,28 @@ use App\Repositories\FundRepository;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
+use App\Repositories\FundRepository;
+use App\DataTransferObjects\FundData;
+use App\Enums\CatalystCurrencies;
 
 class FundsController extends Controller
 {
+
     public function index(Request $request, FundRepository $fundRepository): Response
     {
         $funds = FundData::collect($fundRepository->getQuery()->get());
         $totalProposals = $funds->sum('proposals_count');
         $fundedProposals = $funds->sum('funded_proposals_count');
-        $totalFundsRequested = $funds->sum('amount_requested');
-        $totalFundsAllocated = $funds->sum('amount_received');
+        $totalFundsAwardedADA = $funds->where('currency', CatalystCurrencies::ADA()->value)->sum('amount_awarded');
+        $totalFundsAwardedUSD = $funds->where('currency', CatalystCurrencies::USD()->value)->sum('amount_awarded');
 
         return Inertia::render('Funds/Index', [
             'funds' => $funds,
             'chartSummary' => [
                 'totalProposals' => $totalProposals,
                 'fundedProposals' => $fundedProposals,
-                'totalFundsRequested' => $totalFundsRequested,
-                'totalFundsAllocated' => $totalFundsAllocated,
+                'totalFundsAwardedAda' => $totalFundsAwardedADA,
+                'totalFundsAwardedUsd' => $totalFundsAwardedUSD,
             ],
         ]);
     }
@@ -38,4 +42,6 @@ class FundsController extends Controller
             'fund' => $fund,
         ]);
     }
+
+
 }
