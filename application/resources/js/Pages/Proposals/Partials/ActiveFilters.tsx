@@ -35,7 +35,7 @@ type LabelKeys = keyof typeof labels;
 export default function ActiveFilters() {
     const [clearFilter, setClearFilter] = useState(true);
     const { filters } = useFilterContext();
-    const statusFilters = ['coh', 'fs', 'ps'];
+    const statusFilters = ['coh', 'fs', 'ps','f'];
     const rangeFilters = ['pl', 'b'];
     const idFilters = ['t', 'cam', 'com', 'ip', 'g'];
     const booleanFilters = ['op'];

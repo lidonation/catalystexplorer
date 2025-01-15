@@ -62,38 +62,37 @@ const FundsFilter: React.FC<FundFiltersProps> = ({
     return (
         <div className="w-full py-8">
             <ul className="content-gap scrollable snaps-scrollable">
-                {funds.map((fund) => (
-                    <li
-                        className={`flex w-full cursor-pointer rounded-md border-primary bg-background shadow-sm hover:border-2 ${
-                            selectedItems.includes(fund)
-                                ? 'border-2 border-primary'
-                                : ''
-                        }`}
-                        key={fund} 
-                        onClick={() => handleSelect(fund)}
-                        aria-label={fund}
-                    >
-                        <div className="m-4">
-                            <Checkbox
-                                id={fund}
-                                value={fund}
-                                checked={selectedItems.includes(fund)}
-                                onChange={() => {}}
-                            />
-                        </div>
-                        <div className="m-4 ml-2 w-full">
-                            <p className="mb-2 font-medium">{fund}</p>
-                            <div className="flex w-full justify-between">
-                                <p className="text-gray-persist">
-                                    {t('proposals.totalProposals')}
-                                </p>
-                                <p className="font-bold">
-                                    {proposalsCount[fund] || 0}
-                                </p>
+                {funds.map((fund) => {
+                    return (
+                        <li
+                            className={`flex w-full cursor-pointer rounded-md border-primary bg-background shadow-sm hover:border-2 ${selectedItems.includes(fund) ? 'border-2 border-primary' : ''}`}
+                            key={fund + Math.random()}
+                            onClick={() => handleSelect(fund)}
+                            aria-label={fund}
+                        >
+                            <div className="m-4">
+                                <Checkbox
+                                    id={fund}
+                                    value={fund}
+                                    checked={selectedItems.includes(fund)}
+                                    onChange={() => {}}
+                                    className="text-content-accent mr-2 h-4 w-4 bg-background shadow-sm checked:bg-primary checked:hover:bg-primary focus:border focus:border-primary focus:ring-primary checked:focus:bg-primary"
+                                />
                             </div>
-                        </div>
-                    </li>
-                ))}
+                            <div className="m-4 ml-2 w-full">
+                                <p className="mb-2 font-medium">{fund}</p>
+                                <div className="flex w-full justify-between">
+                                    <p className="text-gray-persist">
+                                        {t('proposals.totalProposals')}
+                                    </p>
+                                    <p className="font-bold">
+                                        {proposalsCount[fund] || 0}
+                                    </p>
+                                </div>
+                            </div>
+                        </li>
+                    );
+                })}
             </ul>
         </div>
     );

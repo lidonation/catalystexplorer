@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next';
 import { ProposalSearchParams } from '../../../../types/proposal-search-params';
 
 function IdeascaleProfilesSearchControls() {
-    const { filters, setFilters } = useFilterContext<ProposalSearchParams>();
+    const { filters, setFilters } = useFilterContext();
     const { t } = useTranslation();
 
     const queryParams = new URLSearchParams(window.location.search);
@@ -24,7 +24,7 @@ function IdeascaleProfilesSearchControls() {
         if (search.trim() === '') {
             url.searchParams.delete(ProposalParamsEnum.QUERY);
         } else {
-            setFilters(ProposalParamsEnum.QUERY, search);
+            setFilters({param:ProposalParamsEnum.QUERY, value:search,label:'Search'});
             url.searchParams.set(ProposalParamsEnum.QUERY, search);
         }
     

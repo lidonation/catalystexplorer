@@ -26,12 +26,12 @@ class ProposalFactory extends Factory
     public function definition(): array
     {
         $quickpitchLinks = [
-            'https://www.youtube.com/watch?v=QoHxrFBM0fY&t=3s',
-            'https://www.youtube.com/watch?v=b3XkJ7BK6_s&pp=ygUKY2FyZGFubyBibA%3D%3D',
-            'https://www.youtube.com/watch?v=PP88xISbEDw&pp=ygUKY2FyZGFubyBibA%3D%3D',
-            'https://www.youtube.com/watch?v=bCFSh_FRlUM&pp=ygUKY2FyZGFubyBibA%3D%3D',
-            'https://www.youtube.com/watch?v=cz7_cBYRTng&pp=ygUKY2FyZGFubyBibA%3D%3D',
-            'https://www.youtube.com/watch?v=8lKBTVAxcqY&pp=ygUKY2FyZGFubyBibA%3D%3D',
+            'https://youtu.be/QoHxrFBM0fY',
+            'https://youtu.be/b3XkJ7BK6_s',
+            'https://youtu.be/PP88xISbEDw',
+            'https://youtu.be/bCFSh_FRlUM',
+            'https://youtu.be/cz7_cBYRTng',
+            'https://youtu.be/8lKBTVAxcqY',
             'https://vimeo.com/259069001',
             'https://vimeo.com/675293691',
             'https://vimeo.com/254659271',

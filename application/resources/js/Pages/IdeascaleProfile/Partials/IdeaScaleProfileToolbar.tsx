@@ -11,7 +11,7 @@ import IdeascaleProfilesFilters from './IdeascaleProfilesFilters';
 
 const IdeaScaleProfileToolbar = () => {
     const [toggleFilterVisibility, setToggleFilterVisibility] = useState(false);
-    const { filters, setFilters } = useFilterContext<IdeaScaleSearchParams>();
+    const { getFilter, setFilters } = useFilterContext();
     const filterRef = useRef(null) as any;
     const { t } = useTranslation();
     const [contentHeight, setContentHeight] = useState(0);
@@ -84,20 +84,24 @@ const IdeaScaleProfileToolbar = () => {
                             setToggleFilterVisibility(!toggleFilterVisibility)
                         }
                     >
-                        <FilterLinesIcon width={16} />
+                        <FilterLinesIcon className={'size-6'} />
                         <span>{t('filters')}</span>
                     </Button>
                     <Selector
                         isMultiselect={false}
-                        selectedItems={filters[IdeaScaleSearchEnum.SORTS]}
+                        selectedItems={getFilter(IdeaScaleSearchEnum.SORTS)}
                         setSelectedItems={(value) =>
-                            setFilters(IdeaScaleSearchEnum.SORTS, value)
+                            setFilters({
+                                param: IdeaScaleSearchEnum.SORTS,
+                                value,
+                                label: t('proposals.options.sort'),
+                            })
                         }
                         options={sortingOptions}
                         hideCheckbox={true}
                         placeholder={t('proposals.options.sort')}
                         className={
-                            filters[IdeaScaleSearchEnum.SORTS]
+                            getFilter(IdeaScaleSearchEnum.SORTS)
                                 ? 'cursor-default bg-background-lighter text-primary'
                                 : 'text-gray-500 hover:bg-background-lighter'
                         }

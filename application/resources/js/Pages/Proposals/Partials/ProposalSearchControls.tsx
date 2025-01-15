@@ -1,6 +1,7 @@
+import Button from '@/Components/atoms/Button';
 import SearchBar from '@/Components/SearchBar';
 import Selector from '@/Components/Select';
-import Filters from '@/Components/svgs/Filters';
+import FilterLinesIcon from '@/Components/svgs/FilterLinesIcon';
 import { useFilterContext } from '@/Context/FiltersContext';
 import { ProposalParamsEnum } from '@/enums/proposal-search-params';
 import { useEffect, useState } from 'react';
@@ -125,8 +126,19 @@ function ProposalSearchControls() {
                     showRingOnFocus
                     initialSearch={searchQuery}
                 />
+                <Button
+                    className={`shadow-xs border-input flex flex-row items-center gap-2 rounded-lg border bg-background px-3 py-1.5 ${
+                        showFilters
+                            ? 'border-accent-blue text-primary ring-1 ring-offset-background'
+                            : 'text-gray-500 hover:bg-background-lighter'
+                    }`}
+                    onClick={() => toggleFilters()}
+                >
+                    <FilterLinesIcon className={'size-6'} />
+                    <span>{t('filters')}</span>
+                </Button>
 
-                <button
+                {/* <button
                     onClick={toggleFilters}
                     className="border-input placeholder:text-muted-foreground flex h-full items-center justify-between rounded-md border bg-background px-2 py-1 text-sm shadow-sm ring-offset-background disabled:cursor-not-allowed disabled:opacity-50"
                     aria-expanded={showFilters}
@@ -138,7 +150,7 @@ function ProposalSearchControls() {
                             ({filters.length})
                         </span>
                     )}
-                </button>
+                </button> */}
 
                 <Selector
                     isMultiselect={false}
