@@ -7,6 +7,8 @@ export function currency(value: number, currency: string = 'USD', locale: string
     switch (currency) {
         case 'ADA':
             return shortNumber(value, maximumFractionDigits, locale) + ' ₳';
+        case 'NO_CURRENCY':
+            return value;
         default:
             const formatter = new Intl.NumberFormat(locale, {
                 style: 'currency',
