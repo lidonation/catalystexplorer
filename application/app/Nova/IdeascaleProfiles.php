@@ -84,7 +84,7 @@ class IdeascaleProfiles extends Resource
                 )
                 ->required(),
 
-            BelongsTo::make(__('Claimed By'), 'claimed_by_user', User::class)
+            BelongsTo::make(__('Claimed By'), 'claimed_by_user', Users::class)
                 ->nullable()
                 ->searchable(),
 
