@@ -1,7 +1,8 @@
 import Paginator from '@/Components/Paginator';
 import { FiltersProvider } from '@/Context/FiltersContext';
 import { ListProvider } from '@/Context/ListContext';
-import { UIProvider } from '@/Context/SharedUIContext';
+import { usePlayer } from '@/Context/PlayerContext';
+import { ProposalParamsEnum } from '@/enums/proposal-search-params';
 import ProposalResults from '@/Pages/Proposals/Partials/ProposalResults';
 import VerticalCardLoading from '@/Pages/Proposals/Partials/ProposalVerticalCardLoading';
 import { PageProps } from '@/types';
@@ -12,13 +13,12 @@ import { useTranslation } from 'react-i18next';
 import { PaginatedData } from '../../../types/paginated-data';
 import { ProposalSearchParams } from '../../../types/proposal-search-params';
 import CardLayoutSwitcher from './Partials/CardLayoutSwitcher';
-import MetricsBar from './Partials/MetricsBar';
-import PlayerBar from './Partials/PlayerBar';
+import FundFiltersContainer from './Partials/FundFiltersContainer';
 import ProposalFilters from './Partials/ProposalFilters';
 import HorizontaCardLoading from './Partials/ProposalHorizontalCardLoading';
-import ProposalData = App.DataTransferObjects.ProposalData;
-import FundFiltersContainer from './Partials/FundFiltersContainer';
 import ProposalSearchControls from './Partials/ProposalSearchControls';
+import ProposalData = App.DataTransferObjects.ProposalData;
+import { useMetrics } from '@/Context/MetricsContext';
 
 interface HomePageProps extends Record<string, unknown> {
     proposals: PaginatedData<ProposalData[]>;
@@ -37,15 +37,32 @@ export default function Index({
 
     const [perPage, setPerPage] = useState<number>(24);
     const [currentPage, setCurrentPage] = useState<number>(1);
-
-    useEffect(() => {}, [currentPage, perPage]);
+    const { createProposalPlaylist } = usePlayer();
+    const { setMetrics } = useMetrics();
 
     const [isHorizontal, setIsHorizontal] = useState(false);
 
-    const [quickPitchView, setQuickPitchView] = useState(false);
+    const [quickPitchView, setQuickPitchView] = useState(
+        !!parseInt(filters[ProposalParamsEnum.QUICK_PITCHES]),
+    );
 
-    const setGlobalQuickPitchView = (value: boolean) =>
-        setQuickPitchView(value);
+    useEffect(() => {
+        if (proposals && proposals.data?.length && quickPitchView) {
+            createProposalPlaylist(proposals?.data);
+        }
+    }, [proposals, quickPitchView]);
+
+    useEffect(() => {
+        if (metrics) {
+            console.log({metrics});
+            
+            setMetrics(metrics);
+        }
+
+       return () => {
+            setMetrics(undefined);
+        };
+    }, [metrics]);
 
     return (
         <ListProvider>
@@ -57,29 +74,29 @@ export default function Index({
                         <h1 className="title-1">{t('proposals.proposals')}</h1>
                     </div>
 
-                <div className="container">
-                    <p className="text-content">
-                        {t('proposals.pageSubtitle')}
-                    </p>
-                </div>
-            </header>
+                    <div className="container">
+                        <p className="text-content">
+                            {t('proposals.pageSubtitle')}
+                        </p>
+                    </div>
+                </header>
 
-            <section className="container">
-                <FundFiltersContainer funds={funds}/>
-            </section>
+                <section className="container">
+                    <FundFiltersContainer funds={funds} />
+                </section>
 
-            <ProposalSearchControls/>
+                <ProposalSearchControls />
 
-            <section className="container flex w-full flex-col items-center justify-center">
-                <ProposalFilters/>
-            </section>
+                <section className="container flex w-full flex-col items-center justify-center">
+                    <ProposalFilters />
+                </section>
 
                 <section className="container mt-4 flex flex-col items-end">
                     <CardLayoutSwitcher
                         isHorizontal={isHorizontal}
                         quickPitchView={quickPitchView}
                         setIsHorizontal={setIsHorizontal}
-                        setGlobalQuickPitchView={setGlobalQuickPitchView}
+                        setGlobalQuickPitchView={setQuickPitchView}
                     />
                 </section>
 
@@ -99,9 +116,7 @@ export default function Index({
                                 proposals={proposals?.data}
                                 isHorizontal={isHorizontal}
                                 quickPitchView={quickPitchView}
-                                setGlobalQuickPitchView={
-                                    setGlobalQuickPitchView
-                                }
+                                setGlobalQuickPitchView={setQuickPitchView}
                             />
                         </div>
                     </WhenVisible>
@@ -116,17 +131,6 @@ export default function Index({
                         />
                     )}
                 </section>
-
-                <UIProvider>
-                    <section className="sticky inset-x-0 bottom-0 mx-auto flex items-center justify-center pb-4">
-                        <div className="pr-2">
-                            <MetricsBar {...metrics} />
-                        </div>
-                        <div>
-                            <PlayerBar />
-                        </div>
-                    </section>
-                </UIProvider>
             </FiltersProvider>
         </ListProvider>
     );
