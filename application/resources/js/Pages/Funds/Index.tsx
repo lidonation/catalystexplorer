@@ -55,8 +55,8 @@ export default function Index({
                             fundRounds={funds.length}
                             totalProposals={chartSummary.totalProposals}
                             fundedProposals={chartSummary.fundedProposals}
-                            totalFundsRequested={chartSummary.totalFundsRequested}
-                            totalFundsAllocated={chartSummary.totalFundsAllocated}
+                            totalFundsRequested={chartSummary.totalFundsAwardedAda}
+                            totalFundsAllocated={chartSummary.totalFundsAwardedUsd}
                         />
                     </WhenVisible>
                 </section>
