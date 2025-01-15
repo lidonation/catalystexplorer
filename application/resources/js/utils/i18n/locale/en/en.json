@@ -153,8 +153,8 @@
         "fundRounds": "Fund Rounds",
         "totalProposals": "Total Proposals",
         "fundedProposals": "Funded Proposals",
-        "totalFundsAwardedAda": "Total Funds Awarded ADA",
-        "totalFundsAwardedUsd": "Total Funds Awarded USD",
+        "totalFundsAwardedAda": "Total Awarded ADA",
+        "totalFundsAwardedUsd": "Total Awarded USD",
         "completedProposals" : "Completed Proposals",
         "filter": "Filter"
     },

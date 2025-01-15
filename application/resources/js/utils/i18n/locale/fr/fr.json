@@ -166,6 +166,8 @@
         "fundedProposals": "Propositions financées",
         "totalFundsRequested": "Total des fonds demandés",
         "totalFundsAllocated": "Total des fonds alloués",
+        "totalFundsAwardedAda": "Total accordées ADA",
+        "totalFundsAwardedUsd": "Total accordées USD",
         "completedProposals": "Propositions terminées",
         "filter": "Filtrer"
     },
