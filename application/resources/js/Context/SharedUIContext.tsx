@@ -1,52 +1,65 @@
-import React, { createContext, useContext, useState, ReactNode } from 'react';
+import React, {
+    createContext,
+    Dispatch,
+    ReactNode,
+    SetStateAction,
+    useContext,
+    useEffect,
+    useState,
+} from 'react';
+import { usePlayer } from './PlayerContext';
 
 // Define types for the context values
 interface UIContextType {
-  isPlayerBarExpanded: boolean;
-  isMetricsBarExpanded: boolean;
-  togglePlayerBar: () => void;
-  toggleMetricsBar: () => void;
+    isPlayerBarExpanded: boolean;
+    isMetricsBarExpanded: boolean;
+    setIsPlayerBarExpanded: Dispatch<SetStateAction<boolean>>;
+    setIsMetricsBarExpanded: Dispatch<SetStateAction<boolean>>;
 }
+
+const noop: Dispatch<SetStateAction<boolean>> = () => {};
 
 // Create context with default values
 const UIContext = createContext<UIContextType>({
-  isPlayerBarExpanded: false,
-  isMetricsBarExpanded: false,
-  togglePlayerBar: () => {},
-  toggleMetricsBar: () => {},
+    isPlayerBarExpanded: false,
+    isMetricsBarExpanded: false,
+    setIsPlayerBarExpanded: () => noop,
+    setIsMetricsBarExpanded: () => noop,
 });
 
 // Provider
 export const UIProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [isPlayerBarExpanded, setIsPlayerBarExpanded] = useState(false);
-  const [isMetricsBarExpanded, setIsMetricsBarExpanded] = useState(false);
+    const { isPlaying } = usePlayer();
+    const [isPlayerBarExpanded, setIsPlayerBarExpanded] = useState(isPlaying);
+    const [isMetricsBarExpanded, setIsMetricsBarExpanded] = useState(false);
 
-  const togglePlayerBar = () => {
-    setIsPlayerBarExpanded((prev) => !prev);
-    if (isMetricsBarExpanded) {
-      setIsMetricsBarExpanded(false); // Collapse the Metrics Bar when Player Bar is expanded
-    }
-  };
+    useEffect(() => {
+        if (isMetricsBarExpanded) {
+            setIsPlayerBarExpanded(false);
+        }
+        if (isPlayerBarExpanded) {
+            setIsMetricsBarExpanded(false);
+        }
+    }, [isMetricsBarExpanded, isPlayerBarExpanded]);
 
-  const toggleMetricsBar = () => {
-    setIsMetricsBarExpanded((prev) => !prev);
-    if (isPlayerBarExpanded) {
-      setIsPlayerBarExpanded(false); // Collapse the Player Bar when Metrics Bar is expanded
-    }
-  };
+    useEffect(() => {
+        if (isPlaying) {
+            setIsPlayerBarExpanded(true);
+        }
+    }, [isPlaying]);
 
-  return (
-    <UIContext.Provider
-      value={{
-        isPlayerBarExpanded,
-        isMetricsBarExpanded,
-        togglePlayerBar,
-        toggleMetricsBar,
-      }}
-    >
-      {children}
-    </UIContext.Provider>
-  );
+    return (
+        <UIContext.Provider
+            value={{
+                isPlayerBarExpanded,
+                isMetricsBarExpanded,
+                setIsPlayerBarExpanded,
+                setIsMetricsBarExpanded,
+            }}
+        >
+            {children}
+        </UIContext.Provider>
+    );
 };
 
 // Hook to use the UI context

@@ -66,11 +66,7 @@ class HomeController extends Controller
                             'id' => $announcement->id,
                             'title' => $announcement->title,
                             'content' => $announcement->content,
-                            'cta' => collect($announcement->cta)->map(fn ($ctaItem) => [
-                                'label' => $ctaItem['label'],
-                                'link' => $ctaItem['link'],
-                                'title' => $ctaItem['title'],
-                            ])->toArray(), // Converts Collection to an array
+                            'cta' => $announcement->cta,
                             'hero_image_url' => $announcement->heroPhotoUrl,
                         ])
                 )

@@ -113,6 +113,7 @@ class ProposalsController extends Controller
             ProposalSearchParams::COMMUNITIES()->value => 'array|nullable',
             ProposalSearchParams::IDEASCALE_PROFILES()->value => 'array|nullable',
             ProposalSearchParams::FUNDS()->value => 'array|nullable',
+            ProposalSearchParams::QUICK_PITCHES()->value => 'string|nullable',
         ]);
 
         // format sort params for meili
