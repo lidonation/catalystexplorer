@@ -29,10 +29,10 @@ final class FundData extends Data
         public ?int $completed_proposals_count,
 
         #[TypeScriptOptional]
-        public ?int $amount_received,
+        public ?int $amount_requested,
 
         #[TypeScriptOptional]
-        public ?int $amount_requested,
+        public ?int $amount_awarded,
 
         #[TypeScriptOptional]
         public ?string $meta_title,
