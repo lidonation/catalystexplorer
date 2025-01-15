@@ -14,7 +14,6 @@ services:
           cpus: "1.0"
     image: catalystexplorer
     container_name: catalystexplorer.com
-    restart: on-failure
     tty: true
     restart: unless-stopped
     env_file:

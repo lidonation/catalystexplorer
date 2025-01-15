@@ -16,74 +16,84 @@ const FundsFilter: React.FC<FundFiltersProps> = ({
 }) => {
     const { t } = useTranslation();
     const [funds, setFunds] = useState<string[]>([]);
-
-    const fetchFunds = () => {
-        axios
-            .get(route('api.fundTitles'))
-            .then((response) => {
-                setFunds(response?.data);
-            })
-            .catch((error) => {
-                console.log(error);
-            });
-    };
-
-    funds.sort((a, b) => {
-        const numA = parseInt(a.match(/\d+/)?.[0] ?? '0', 10);
-        const numB = parseInt(b.match(/\d+/)?.[0] ?? '0', 10);
-
-        return numB - numA;
-    });
+    const [isFetching, setIsFetching] = useState(false);
 
     useEffect(() => {
-        fetchFunds();
+        // Check if funds are already cached in localStorage to prevent refetching
+        const cachedFunds = localStorage.getItem('funds');
+        if (cachedFunds) {
+            setFunds(JSON.parse(cachedFunds));
+        } else {
+            fetchFunds();
+        }
     }, []);
 
-    const handleSelect = (value: string) => {
-        let updatedItems: any;
-
-        if (selectedItems.includes(value)) {
-            updatedItems = selectedItems.filter((item: any) => item !== value);
-        } else {
-            updatedItems = [...(selectedItems ?? []), value];
+    const fetchFunds = async () => {
+        try {
+            setIsFetching(true);
+            const response = await axios.get(route('api.fundTitles'));
+            const fetchedFunds = response?.data || [];
+            const sortedFunds = fetchedFunds.sort((a: string, b: string) => {
+                const numA = parseInt(a.match(/\d+/)?.[0] ?? '0', 10);
+                const numB = parseInt(b.match(/\d+/)?.[0] ?? '0', 10);
+                return numB - numA;
+            });
+            setFunds(sortedFunds);
+            // Cache funds locally
+            localStorage.setItem('funds', JSON.stringify(sortedFunds));
+        } catch (error) {
+            console.error('Failed to fetch funds:', error);
+        } finally {
+            setIsFetching(false);
         }
+    };
 
+    const handleSelect = (value: string) => {
+        const updatedItems = selectedItems.includes(value)
+            ? selectedItems.filter((item: string) => item !== value)
+            : [...(selectedItems ?? []), value];
         setSelectedItems(updatedItems);
     };
+
+    if (isFetching) {
+        return <div>{t('loading')}</div>;
+    }
 
     return (
         <div className="w-full py-8">
             <ul className="content-gap scrollable snaps-scrollable">
-                {funds.map((fund) => {
-                    return (
-                        <li
-                            className={`flex w-full cursor-pointer rounded-md border-primary bg-background shadow-sm hover:border-2 ${selectedItems.includes(fund) ? 'border-2 border-primary' : ''}`}
-                            key={fund + Math.random()}
-                            onClick={() => handleSelect(fund)}
-                            aria-label={fund}
-                        >
-                            <div className="m-4">
-                                <Checkbox
-                                    id={fund}
-                                    value={fund}
-                                    checked={selectedItems.includes(fund)}
-                                    onChange={() => {}}
-                                />
+                {funds.map((fund) => (
+                    <li
+                        className={`flex w-full cursor-pointer rounded-md border-primary bg-background shadow-sm hover:border-2 ${
+                            selectedItems.includes(fund)
+                                ? 'border-2 border-primary'
+                                : ''
+                        }`}
+                        key={fund} 
+                        onClick={() => handleSelect(fund)}
+                        aria-label={fund}
+                    >
+                        <div className="m-4">
+                            <Checkbox
+                                id={fund}
+                                value={fund}
+                                checked={selectedItems.includes(fund)}
+                                onChange={() => {}}
+                            />
+                        </div>
+                        <div className="m-4 ml-2 w-full">
+                            <p className="mb-2 font-medium">{fund}</p>
+                            <div className="flex w-full justify-between">
+                                <p className="text-gray-persist">
+                                    {t('proposals.totalProposals')}
+                                </p>
+                                <p className="font-bold">
+                                    {proposalsCount[fund] || 0}
+                                </p>
                             </div>
-                            <div className="m-4 ml-2 w-full">
-                                <p className="mb-2 font-medium">{fund}</p>
-                                <div className="flex w-full justify-between">
-                                    <p className="text-gray-persist">
-                                        {t('proposals.totalProposals')}
-                                    </p>
-                                    <p className="font-bold">
-                                        {proposalsCount[fund] || 0}
-                                    </p>
-                                </div>
-                            </div>
-                        </li>
-                    );
-                })}
+                        </div>
+                    </li>
+                ))}
             </ul>
         </div>
     );

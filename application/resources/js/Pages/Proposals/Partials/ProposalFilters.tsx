@@ -1,39 +1,21 @@
 import { RangePicker } from '@/Components/RangePicker';
 import { SearchSelect } from '@/Components/SearchSelect';
 import Selector from '@/Components/Select';
-import { FilteredItem, useFilterContext } from '@/Context/FiltersContext';
+import { useFilterContext } from '@/Context/FiltersContext';
 import { ProposalParamsEnum } from '@/enums/proposal-search-params';
 import { useTranslation } from 'react-i18next';
-import FundsFilter from './FundsFilter';
-import ProposalSearchControls from './ProposalSearchControls';
 
 interface ProposalFiltersProps {
     funds: { [key: string]: number };
 }
 
 const ProposalFilters: React.FC<ProposalFiltersProps> = ({ funds }) => {
-    const {setFilters, getFilter } = useFilterContext();
+    const { setFilters, getFilter } = useFilterContext();
     const { t } = useTranslation();
-
-    const handleSetSelectedItems = (funds: string[]) => {        
-        setFilters({
-            label: 'Funds',
-            value: funds,
-            param: ProposalParamsEnum.FUNDS,
-        });
-    };
 
     return (
         <>
-            <FundsFilter
-                proposalsCount={funds}
-                setSelectedItems={handleSetSelectedItems}
-                selectedItems={getFilter(ProposalParamsEnum.FUNDS)}
-            />
-
-            <ProposalSearchControls />
-
-            <div className="container w-full rounded-xl bg-background p-4">
+            <div className="w-full rounded-xl bg-background p-4">
                 <div className="grid grid-cols-2 gap-x-4 gap-y-3 rounded-xl md:grid-cols-2 lg:grid-cols-5">
                     <div className="col-span-1 flex flex-col gap-2 pb-4">
                         <span>{t('proposals.filters.fundingStatus')}</span>
@@ -287,7 +269,14 @@ const ProposalFilters: React.FC<ProposalFiltersProps> = ({ funds }) => {
                             }
                             max={getFilter(ProposalParamsEnum.MAX_BUDGET)}
                             min={getFilter(ProposalParamsEnum.MIN_BUDGET)}
-                            defaultValue={getFilter(ProposalParamsEnum.BUDGETS)}
+                            defaultValue={[
+                                getFilter(
+                                    ProposalParamsEnum.MIN_BUDGET,
+                                ),
+                                getFilter(
+                                    ProposalParamsEnum.MAX_BUDGET,
+                                ),
+                            ]}
                         />
                     </div>
 
@@ -295,7 +284,18 @@ const ProposalFilters: React.FC<ProposalFiltersProps> = ({ funds }) => {
                         <RangePicker
                             key={'Project Length'}
                             context={t('proposals.filters.projectLength')}
-                            value={getFilter(ProposalParamsEnum.PROJECT_LENGTH)}
+                            value={
+                                getFilter(
+                                    ProposalParamsEnum.PROJECT_LENGTH,
+                                ) ?? [
+                                    getFilter(
+                                        ProposalParamsEnum.MIN_PROJECT_LENGTH,
+                                    ),
+                                    getFilter(
+                                        ProposalParamsEnum.MAX_PROJECT_LENGTH,
+                                    ),
+                                ]
+                            }
                             onValueChange={(value) =>
                                 setFilters({
                                     label: t('proposals.filters.projectLength'),

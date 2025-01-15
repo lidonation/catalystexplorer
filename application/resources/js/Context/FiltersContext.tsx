@@ -38,14 +38,17 @@ const labels = {
     g: 'Groups',
 };
 
-const formatToFillters = (paramObj: { [x: string]: any }): FilteredItem[] => {
-    return Object.keys(paramObj).map(
-        (param): FilteredItem => ({
-            param: param,
-            label: labels[param],
-            value: paramObj[param],
-        }),
-    );
+type LabelKeys = keyof typeof labels;
+
+const formatToFilters = (paramObj: Record<LabelKeys, any>): FilteredItem[] => {
+    return Object.keys(paramObj).map((param) => {
+        const typedParam = param as LabelKeys; 
+        return {
+            param: typedParam,
+            label: labels[typedParam], 
+            value: paramObj[typedParam],
+        };
+    });
 };
 
 const FiltersContext = createContext<FilterContextType | undefined>(undefined);
@@ -57,7 +60,7 @@ export function FiltersProvider({
     children: ReactNode;
     defaultFilters: ProposalSearchParams;
 }) {
-    const initialFilters = formatToFillters(defaultFilters);
+    const initialFilters = formatToFilters(defaultFilters);
     const [filters, setFiltersState] = useState<FilteredItem[]>(initialFilters);
 
     const isFirstLoad = useRef(true);
@@ -65,8 +68,6 @@ export function FiltersProvider({
     const setFilters = useCallback((filter: FilteredItem) => {
         setFiltersState((prev: FilteredItem[]) => {
             const prevValue = prev.find((item) => item.param === filter.param);
-
-            console.log({ prevValue, filter });
 
             // If the new filter value matches the previous value, return the same state
             if (prevValue?.value === filter.value) {

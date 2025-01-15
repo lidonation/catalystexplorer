@@ -1,9 +1,10 @@
-import { useFilterContext } from '@/Context/FiltersContext';
-import { useState } from 'react';
+import { FilteredItem, useFilterContext } from '@/Context/FiltersContext';
+import { ProposalParamsEnum } from '@/enums/proposal-search-params';
+import { useSearchOptions } from '@/Hooks/useSearchOptions';
+import { shortNumber } from '@/utils/shortNumber';
+import React, { useState } from 'react';
 
 function formatSnakeCaseToTitleCase(input: string) {
-    console.log({input});
-    
     if (!input) return;
     return input
         ?.split('_')
@@ -13,54 +14,79 @@ function formatSnakeCaseToTitleCase(input: string) {
         )
         .join(' ');
 }
+
+const labels = {
+    b: 'Budgets',
+    f: 'Funds',
+    fs: 'Funding Status',
+    pl: 'Project Length',
+    ps: 'Project Status',
+    op: 'Opensource',
+    t: 'tags',
+    cam: 'campaigns',
+    coh: 'cohort',
+    com: 'communities',
+    ip: 'Ideascale Profiles',
+    g: 'groups',
+};
+
+type LabelKeys = keyof typeof labels;
+
 export default function ActiveFilters() {
-    const { filters, setFilters } = useFilterContext();
-    const [selectedFilters, setSelectedFilters] = useState<any>({});
     const [clearFilter, setClearFilter] = useState(true);
-
-    const labels = {
-        b: 'Budgets',
-        f: 'Funds',
-        fs: 'Funding Status',
-        pl: 'Project Length',
-        ps: 'Project Status',
-        op: 'Opensource',
-        t: 'Tags',
-        cam: 'Campaign',
-        coh: 'Cohort',
-        com: 'Communities',
-        ip: 'Ideascale Profiles',
-        g: 'Groups',
-    };
-
+    const { filters } = useFilterContext();
     const statusFilters = ['coh', 'fs', 'ps'];
     const rangeFilters = ['pl', 'b'];
     const idFilters = ['t', 'cam', 'com', 'ip', 'g'];
     const booleanFilters = ['op'];
-
-    const removeFilter = (key: string, value?: string) => {
-        // const filterKey = getKey(key);
-        // setSelectedFilters(newFilters);
-    };
 
     const handleClearFilter = () => {
         setClearFilter(!clearFilter);
     };
 
     return (
-        <div className="flex w-full flex-wrap pt-2">
-            {filters.map(
-                (filter) =>
-                    filter.label &&
+        <div className="flex w-full flex-wrap gap-3  transition-all duration-300">
+            {filters.map((filter) => {
+                if (!filter.label) {
+                    return;
+                }
+                if (
                     statusFilters.includes(filter.param) &&
-                    filter.value.length && <StatusFilters filter={filter} />,
-            )}
+                    filter.value.length
+                ) {
+                    return <StatusFilters filter={filter} />;
+                }
+
+                if (booleanFilters.includes(filter.param)) {
+                    return <BooleanFilters filter={filter} />;
+                }
+
+                if (rangeFilters.includes(filter.param)) {
+                    return <RangeFilters filter={filter} />;
+                }
+
+                if (idFilters.includes(filter.param) && filter.value.length) {
+                    return <IDFilters filter={filter} />;
+                }
+            })}
         </div>
     );
 }
 
-const StatusFilters = ({ filter }) => {
-    return  (
+const StatusFilters = ({ filter }: { filter: FilteredItem }) => {
+    const { setFilters } = useFilterContext();
+    const removeFilter = (value?: string) => {
+        const newVal = filter.value.filter(
+            (val: string | undefined) => val != value,
+        );
+        setFilters({
+            param: filter.param,
+            value: newVal,
+            label: filter.label,
+        });
+    };
+
+    return (
         <div
             className="mb-1 mr-1 flex items-center rounded-lg border bg-background px-1 py-1"
             key={filter.label}
@@ -72,7 +98,10 @@ const StatusFilters = ({ filter }) => {
                     <div key={value} className="flex items-center">
                         {' '}
                         <span>{formatSnakeCaseToTitleCase(value)}</span>
-                        <button className="ml-2" onClick={() => null}>
+                        <button
+                            className="ml-2"
+                            onClick={() => removeFilter(value)}
+                        >
                             X{' '}
                         </button>{' '}
                     </div>
@@ -82,8 +111,121 @@ const StatusFilters = ({ filter }) => {
     );
 };
 
-const RangeFilters = (filter) => {};
+const RangeFilters = ({ filter }: { filter: FilteredItem }) => {
+    const { setFilters, getFilter } = useFilterContext();
 
-const BooleanFilters = (filter) => {};
+    const removeFilter = () => {
+        if (filter.param == ProposalParamsEnum.PROJECT_LENGTH) {
+            setFilters({
+                param: filter.param,
+                value: [
+                    getFilter(ProposalParamsEnum.MIN_PROJECT_LENGTH),
+                    getFilter(ProposalParamsEnum.MAX_PROJECT_LENGTH),
+                ],
+                label: filter.label,
+            });
+        } else if (filter.param == ProposalParamsEnum.BUDGETS) {
+            setFilters({
+                param: filter.param,
+                value: [
+                    getFilter(ProposalParamsEnum.MIN_BUDGET),
+                    getFilter(ProposalParamsEnum.MAX_BUDGET),
+                ],
+                label: filter.label,
+            });
+        }
+    };
 
-const IDFilters = () => {};
+    return (
+        <div
+            className="mb-1 mr-1 flex items-center rounded-lg border bg-background px-1 py-1"
+            key={filter.label}
+        >
+            <div className="mr-1">{filter.label}</div>
+            <div>{`${filter.value[0]} to ${shortNumber(filter.value[1])} `}</div>
+            <button className="ml-2" onClick={() => removeFilter()}>
+                X{' '}
+            </button>
+        </div>
+    );
+};
+
+const BooleanFilters = ({ filter }: { filter: FilteredItem }) => {
+    const { setFilters } = useFilterContext();
+    const removeFilter = (value?: string) => {
+        setFilters({
+            param: filter.param,
+            value: null,
+            label: undefined,
+        });
+    };
+    return (
+        <div
+            className="mb-1 mr-1 flex items-center rounded-lg border bg-background px-1 py-1"
+            key={filter.label}
+        >
+            <div className="mr-1">{filter.label}</div>
+            <button className="ml-2" onClick={() => removeFilter()}>
+                X{' '}
+            </button>
+        </div>
+    );
+};
+
+const IDFilters = React.memo(({ filter }: { filter: FilteredItem }) => {
+    let domain = labels?.[filter.param as LabelKeys];
+
+    if (filter.param === 'ip') {
+        domain = 'ideascale-profiles';
+    }
+
+    const { setIDs, options } = useSearchOptions<any>(domain);
+
+    React.useEffect(() => {
+        setIDs(filter.value);
+    }, [setIDs, filter.value]);
+
+    const { setFilters } = useFilterContext();
+
+    const removeFilter = (value?: string) => {
+        const newVal = filter.value.filter(
+            (val: string | undefined) => val != value,
+        );
+        setFilters({
+            param: filter.param,
+            value: newVal,
+            label: filter.label,
+        });
+    };
+
+    return (
+        <div
+            className="mb-1 mr-1 flex items-center rounded-lg border bg-background px-1 py-1"
+            key={filter.label}
+        >
+            <div className="mr-1 font-bold">{filter.label}:</div>
+            <div className="mr-1 flex items-center gap-2">
+                {' '}
+                {options &&
+                    options.map((option) => (
+                        <div key={option.label} className="flex items-center">
+                            {' '}
+                            <span>
+                                {formatSnakeCaseToTitleCase(
+                                    option?.name ??
+                                        option?.title ??
+                                        option?.label,
+                                )}
+                            </span>
+                            <button
+                                className="ml-2"
+                                onClick={() => removeFilter(option.id)}
+                            >
+                                X{' '}
+                            </button>{' '}
+                        </div>
+                    ))}
+            </div>
+        </div>
+    );
+});

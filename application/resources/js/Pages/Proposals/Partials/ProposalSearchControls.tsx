@@ -5,11 +5,10 @@ import { useFilterContext } from '@/Context/FiltersContext';
 import { ProposalParamsEnum } from '@/enums/proposal-search-params';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ProposalSearchParams } from '../../../../types/proposal-search-params';
 import ActiveFilters from './ActiveFilters';
 
 function ProposalSearchControls() {
-    const { filters, setFilters } = useFilterContext();
+    const { getFilter, setFilters, filters } = useFilterContext();
     const { t } = useTranslation();
 
     const queryParams = new URLSearchParams(window.location.search);
@@ -105,7 +104,11 @@ function ProposalSearchControls() {
     }, [initialSearchQuery]);
 
     const handleSearch = (search: string) => {
-        setFilters(ProposalParamsEnum.QUERY, search);
+        setFilters({
+            param: ProposalParamsEnum.QUERY,
+            value: search,
+            label: 'Search',
+        });
         setSearchQuery(search);
     };
 
@@ -139,15 +142,19 @@ function ProposalSearchControls() {
 
                 <Selector
                     isMultiselect={false}
-                    selectedItems={filters[ProposalParamsEnum.SORTS]}
+                    selectedItems={getFilter(ProposalParamsEnum.SORTS)}
                     setSelectedItems={(value) =>
-                        setFilters(ProposalParamsEnum.SORTS, value)
+                        setFilters({
+                            param: ProposalParamsEnum.SORTS,
+                            value,
+                            label: 'Sorts',
+                        })
                     }
                     options={sortingOptions}
                     hideCheckbox={true}
                     placeholder={t('proposals.options.sort')}
                     className={
-                        filters[ProposalParamsEnum.SORTS]
+                        getFilter(ProposalParamsEnum.SORTS)
                             ? 'cursor-default bg-background-lighter text-primary'
                             : 'text-gray-500 hover:bg-background-lighter'
                     }
@@ -155,7 +162,7 @@ function ProposalSearchControls() {
             </div>
 
             {showFilters && (
-                <div className="container mx-auto flex justify-end px-0 pb-4 pt-6">
+                <div className="container mx-auto flex justify-start px-0 py-2">
                     <ActiveFilters />
                 </div>
             )}
