@@ -5,19 +5,25 @@ import DesktopSidebar from '@/Components/layout/DesktopSidebar';
 import Footer from '@/Components/layout/Footer';
 import MobileNavigation from '@/Components/layout/MobileNavigation';
 import ModalSidebar from '@/Components/layout/ModalSidebar';
+import PlayerBar from '@/Components/PlayerBar';
 import CloseIcon from '@/Components/svgs/CloseIcon';
 import MenuIcon from '@/Components/svgs/MenuIcon';
+import { MetricsProvider } from '@/Context/MetricsContext';
+import { PlayerProvider } from '@/Context/PlayerContext';
+import { UIProvider } from '@/Context/SharedUIContext';
+import MetricsBar from '@/Pages/Proposals/Partials/MetricsBar';
 import { Dialog } from '@headlessui/react';
 import { usePage } from '@inertiajs/react';
-import { ReactNode, useState } from 'react';
+import { ReactNode, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import MainLayout from './RootLayout';
 
 export default function AppLayout({ children }: { children: ReactNode }) {
     const [sidebarOpen, setSidebarOpen] = useState(false);
     const { t } = useTranslation();
-    const { url,  props } = usePage();
+    const { url, props } = usePage();
     const breadcrumbItems = generateBreadcrumbs(url, props['locale'] as string);
+    const memoizedChildren = useMemo(() => children, [children]);
 
     return (
         <MainLayout>
@@ -59,9 +65,23 @@ export default function AppLayout({ children }: { children: ReactNode }) {
                 </header>
 
                 {/* Main content */}
-                <main id="main-content" >
+                <main id="main-content">
                     <Breadcrumbs items={breadcrumbItems} />
-                    {children}
+                    <PlayerProvider>
+                        <MetricsProvider>
+                            {memoizedChildren}
+                            <UIProvider>
+                                <section className="sticky inset-x-0 bottom-0 mx-auto flex items-center justify-center gap-2 pb-4">
+                                    <div className="">
+                                        <MetricsBar />
+                                    </div>
+                                    <div>
+                                        <PlayerBar />
+                                    </div>
+                                </section>
+                            </UIProvider>
+                        </MetricsProvider>
+                    </PlayerProvider>
                 </main>
 
                 {/* modal sidebar */}

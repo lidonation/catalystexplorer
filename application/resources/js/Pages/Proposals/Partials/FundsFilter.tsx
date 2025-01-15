@@ -68,6 +68,7 @@ const FundsFilter: React.FC<FundFiltersProps> = ({
                                     value={fund}
                                     checked={selectedItems.includes(fund)}
                                     onChange={() => {}}
+                                    className="text-content-accent mr-2 h-4 w-4 bg-background shadow-sm checked:bg-primary checked:hover:bg-primary focus:border focus:border-primary focus:ring-primary checked:focus:bg-primary"
                                 />
                             </div>
                             <div className="m-4 ml-2 w-full">

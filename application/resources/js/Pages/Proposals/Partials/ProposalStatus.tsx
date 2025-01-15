@@ -14,7 +14,7 @@ export default function ProposalStatus({
     } else if (status === 'in_progress') {
         statusColor = 'bg-primary';
         projectStatus = 'In progress';
-    } else if (!['funded', 'leftover'].includes(funding_status)) {
+    } else if (status === 'unfunded') {
         statusColor = 'bg-accent-secondary';
         projectStatus = 'Unfunded';
     }

@@ -13,6 +13,18 @@ init:
 		--volume ${PWD}:/app \
 		--workdir /app \
 		--user root \
+		node:18-alpine yarn install --ignore-engine
+
+	docker run --rm --interactive --tty \
+		--volume ${PWD}:/app \
+		--workdir /app \
+		--user root \
+		node:${nodeVersion}-alpine yarn install --ignore-engine
+
+	docker run --rm --interactive --tty \
+		--volume ${PWD}:/app \
+		--workdir /app \
+		--user root \
 		node:${nodeVersion}-alpine yarn install --ignore-engine
 
 	docker run --rm --interactive --tty \
