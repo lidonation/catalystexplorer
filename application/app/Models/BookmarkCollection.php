@@ -8,12 +8,14 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Models\Proposal;
+use App\Models\BookmarkItem;
 
 class BookmarkCollection extends Model
 {
     use HasFactory, SoftDeletes;
 
-    protected $hidden = ['id'];
+    // protected $hidden = [];
 
     protected $withCount = [
         'items',
@@ -27,5 +29,11 @@ class BookmarkCollection extends Model
     public function items(): HasMany
     {
         return $this->hasMany(BookmarkItem::class);
+    }
+
+    public function proposals(): HasMany
+    {
+        return $this->hasMany(BookmarkItem::class)
+            ->where('model_type', Proposal::class);
     }
 }
