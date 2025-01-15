@@ -35,6 +35,7 @@ export default function PlaylistAnimation() {
         playlist,
         duration,
         progress,
+        setCurrentTrackIndex,
     } = usePlayer();
 
     const handlePlayPause = () => {
@@ -58,17 +59,6 @@ export default function PlaylistAnimation() {
                     <h2 className="text-2xl font-bold text-white">
                         Now Playing
                     </h2>
-                    {/* <button
-                        onClick={handlePlayPause}
-                        className="inline-flex h-10 items-center justify-center rounded-lg bg-blue-500 px-4 text-sm font-medium text-white transition-colors hover:bg-blue-600"
-                    >
-                        {isPlaying ? (
-                            <Pause className="mr-2 h-4 w-4" />
-                        ) : (
-                            <Play className="mr-2 h-4 w-4" />
-                        )}
-                        {isPlaying ? 'Pause' : 'Play'}
-                    </button> */}
                 </div>
 
                 <ul className="space-y-3">
@@ -76,7 +66,15 @@ export default function PlaylistAnimation() {
                         playlist.map((track, index) => {
                             const isCurrentTrack = index === currentTrackIndex;
                             return (
-                                <li key={track.title}>
+                                <li
+                                    key={track.title}
+                                    className={
+                                        !isCurrentTrack
+                                            ? 'hover:cursor-pointer'
+                                            : ''
+                                    }
+                                    onClick={() => setCurrentTrackIndex(index)}
+                                >
                                     <div
                                         className={`relative flex rounded-lg p-2 ${
                                             isCurrentTrack
@@ -91,7 +89,7 @@ export default function PlaylistAnimation() {
                                                 style={{ width: '0%' }}
                                             />
                                         )}
-                                        <div className="flex items-center justify-between px-6 w-full">
+                                        <div className="flex w-full items-center justify-between px-6">
                                             <div className="z-10 mr-4 flex-grow">
                                                 <h4
                                                     className={`..." mb-1 truncate text-base font-semibold ${

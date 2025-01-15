@@ -108,7 +108,6 @@ const PlayerBar = () => {
                     {/* Video Camera Icon for Collapsed State */}
                     {!isPlayerBarExpanded && (
                         <button
-                            disabled={loading || !playlist}
                             onClick={() => setIsPlayerBarExpanded(true)}
                             className="flex h-12 w-12 items-center justify-center"
                         >

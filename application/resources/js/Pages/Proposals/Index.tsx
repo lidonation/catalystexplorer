@@ -8,7 +8,7 @@ import VerticalCardLoading from '@/Pages/Proposals/Partials/ProposalVerticalCard
 import { PageProps } from '@/types';
 import { ProposalMetrics } from '@/types/proposal-metrics';
 import { Head, WhenVisible } from '@inertiajs/react';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { PaginatedData } from '../../../types/paginated-data';
 import { ProposalSearchParams } from '../../../types/proposal-search-params';
@@ -18,6 +18,7 @@ import ProposalFilters from './Partials/ProposalFilters';
 import HorizontaCardLoading from './Partials/ProposalHorizontalCardLoading';
 import ProposalSearchControls from './Partials/ProposalSearchControls';
 import ProposalData = App.DataTransferObjects.ProposalData;
+import { useMetrics } from '@/Context/MetricsContext';
 
 interface HomePageProps extends Record<string, unknown> {
     proposals: PaginatedData<ProposalData[]>;
@@ -36,7 +37,8 @@ export default function Index({
 
     const [perPage, setPerPage] = useState<number>(24);
     const [currentPage, setCurrentPage] = useState<number>(1);
-    const { createProposalPlaylist, setMetrics } = usePlayer();
+    const { createProposalPlaylist } = usePlayer();
+    const { setMetrics } = useMetrics();
 
     const [isHorizontal, setIsHorizontal] = useState(false);
 
@@ -44,57 +46,28 @@ export default function Index({
         !!parseInt(filters[ProposalParamsEnum.QUICK_PITCHES]),
     );
 
-    // Memoized quick pitch state
-    const memoizedQuickPitchView = useMemo(
-        () => quickPitchView,
-        [quickPitchView],
-    );
-
     useEffect(() => {
-        if (proposals?.data?.length && quickPitchView) {
-            createProposalPlaylist(proposals.data);
+        if (proposals && proposals.data?.length && quickPitchView) {
+            createProposalPlaylist(proposals?.data);
         }
-    }, [proposals, quickPitchView, createProposalPlaylist]);
+    }, [proposals, quickPitchView]);
 
     useEffect(() => {
         if (metrics) {
+            console.log({metrics});
+            
             setMetrics(metrics);
         }
 
-        return () => {
+       return () => {
             setMetrics(undefined);
         };
-    }, [metrics, setMetrics]);
-
-    const handleSetPerPage = useCallback(
-        (value: number) => setPerPage(value),
-        [],
-    );
-    const handleSetCurrentPage = useCallback(
-        (value: number) => setCurrentPage(value),
-        [],
-    );
-    const handleSetQuickPitchView = useCallback(
-        (value: boolean) => setQuickPitchView(value),
-        [],
-    );
-
-    const paginatorMemo = useMemo(
-        () =>
-            proposals && (
-                <Paginator
-                    pagination={proposals}
-                    setPerPage={handleSetPerPage}
-                    setCurrentPage={handleSetCurrentPage}
-                />
-            ),
-        [proposals, handleSetPerPage, handleSetCurrentPage],
-    );
+    }, [metrics]);
 
     return (
         <ListProvider>
             <FiltersProvider defaultFilters={filters}>
-                <Head title={t('proposals.proposals')} />
+                <Head title="Proposals" />
 
                 <header>
                     <div className="container">
@@ -121,9 +94,9 @@ export default function Index({
                 <section className="container mt-4 flex flex-col items-end">
                     <CardLayoutSwitcher
                         isHorizontal={isHorizontal}
-                        quickPitchView={memoizedQuickPitchView}
+                        quickPitchView={quickPitchView}
                         setIsHorizontal={setIsHorizontal}
-                        setGlobalQuickPitchView={handleSetQuickPitchView}
+                        setGlobalQuickPitchView={setQuickPitchView}
                     />
                 </section>
 
@@ -142,17 +115,21 @@ export default function Index({
                             <ProposalResults
                                 proposals={proposals?.data}
                                 isHorizontal={isHorizontal}
-                                quickPitchView={memoizedQuickPitchView}
-                                setGlobalQuickPitchView={
-                                    handleSetQuickPitchView
-                                }
+                                quickPitchView={quickPitchView}
+                                setGlobalQuickPitchView={setQuickPitchView}
                             />
                         </div>
                     </WhenVisible>
                 </section>
 
                 <section className="w-full px-4 lg:container lg:px-0">
-                    {paginatorMemo}
+                    {proposals && (
+                        <Paginator
+                            pagination={proposals}
+                            setPerPage={setPerPage}
+                            setCurrentPage={setCurrentPage}
+                        />
+                    )}
                 </section>
             </FiltersProvider>
         </ListProvider>

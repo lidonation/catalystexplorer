@@ -3,6 +3,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import ProposalHorizontalCard from './ProposalHorizontalCard';
 import ProposalVerticalCard from './ProposalVerticalCard';
+import React from 'react';
 
 type ProposalCardProps = {
     proposal: App.DataTransferObjects.ProposalData;
@@ -11,90 +12,94 @@ type ProposalCardProps = {
     setGlobalQuickPitchView?: (value: boolean) => void;
 };
 
-export default function ProposalCard({
-    proposal,
-    isHorizontal,
-    globalQuickPitchView,
-    setGlobalQuickPitchView,
-}: ProposalCardProps) {
-    const { t } = useTranslation();
+const ProposalCard = React.memo(
+    ({
+        proposal,
+        isHorizontal,
+        globalQuickPitchView,
+        setGlobalQuickPitchView,
+    }: ProposalCardProps) => {
+        const { t } = useTranslation();
 
-    const [userSelected, setUserSelected] =
-        useState<App.DataTransferObjects.IdeascaleProfileData | null>(null);
+        const [userSelected, setUserSelected] =
+            useState<App.DataTransferObjects.IdeascaleProfileData | null>(null);
 
-    const hasQuickPitch = useMemo(
-        () => Boolean(proposal.quickpitch),
-        [proposal.quickpitch],
-    );
+        const hasQuickPitch = useMemo(
+            () => Boolean(proposal.quickpitch),
+            [proposal.quickpitch],
+        );
 
-    const handleUserClick = useCallback(
-        (user: App.DataTransferObjects.IdeascaleProfileData) =>
-            setUserSelected(user),
-        [],
-    );
+        const handleUserClick = useCallback(
+            (user: App.DataTransferObjects.IdeascaleProfileData) =>
+                setUserSelected(user),
+            [],
+        );
 
-    const noSelectedUser = useCallback(() => setUserSelected(null), []);
+        const noSelectedUser = useCallback(() => setUserSelected(null), []);
 
-    const abstainVotes = useMemo(
-        () => shortNumber(proposal?.abstain_votes_count) ?? '(N/A)',
-        [proposal?.abstain_votes_count],
-    );
+        const abstainVotes = useMemo(
+            () => shortNumber(proposal?.abstain_votes_count) ?? '(N/A)',
+            [proposal?.abstain_votes_count],
+        );
 
-    const yesVotes = useMemo(
-        () => shortNumber(proposal?.yes_votes_count) ?? '(N/A)',
-        [proposal?.yes_votes_count],
-    );
+        const yesVotes = useMemo(
+            () => shortNumber(proposal?.yes_votes_count) ?? '(N/A)',
+            [proposal?.yes_votes_count],
+        );
 
-    const [localQuickPitchView, setLocalQuickPitchView] = useState(false);
+        const [localQuickPitchView, setLocalQuickPitchView] = useState(false);
 
-    // Sync local state with global state if the proposal has a quick pitch
-    useEffect(() => {
-        if (hasQuickPitch) {
-            setLocalQuickPitchView(globalQuickPitchView);
-        }
-    }, [globalQuickPitchView, hasQuickPitch]);
-
-    const toggleLocalQuickPitchView = useCallback(
-        (enable: boolean) => {
+        // Sync local state with global state if the proposal has a quick pitch
+        useEffect(() => {
             if (hasQuickPitch) {
-                setLocalQuickPitchView(enable);
+                setLocalQuickPitchView(globalQuickPitchView);
             }
-        },
-        [hasQuickPitch],
-    );
+        }, [globalQuickPitchView, hasQuickPitch]);
 
-    const layoutProps = useMemo(
-        () => ({
-            proposal,
-            userSelected,
-            noSelectedUser,
-            handleUserClick,
-            quickPitchView: localQuickPitchView,
-            toggleLocalQuickPitchView,
-            isHorizontal,
-            t,
-            hasQuickPitch,
-            yesVotes,
-            abstainVotes,
-        }),
-        [
-            proposal,
-            userSelected,
-            noSelectedUser,
-            handleUserClick,
-            localQuickPitchView,
-            toggleLocalQuickPitchView,
-            isHorizontal,
-            t,
-            hasQuickPitch,
-            yesVotes,
-            abstainVotes,
-        ],
-    );
+        const toggleLocalQuickPitchView = useCallback(
+            (enable: boolean) => {
+                if (hasQuickPitch) {
+                    setLocalQuickPitchView(enable);
+                }
+            },
+            [hasQuickPitch],
+        );
 
-    return isHorizontal ? (
-        <ProposalHorizontalCard {...layoutProps} />
-    ) : (
-        <ProposalVerticalCard {...layoutProps} />
-    );
-}
+        const layoutProps = useMemo(
+            () => ({
+                proposal,
+                userSelected,
+                noSelectedUser,
+                handleUserClick,
+                quickPitchView: localQuickPitchView,
+                toggleLocalQuickPitchView,
+                isHorizontal,
+                t,
+                hasQuickPitch,
+                yesVotes,
+                abstainVotes,
+            }),
+            [
+                proposal,
+                userSelected,
+                noSelectedUser,
+                handleUserClick,
+                localQuickPitchView,
+                toggleLocalQuickPitchView,
+                isHorizontal,
+                t,
+                hasQuickPitch,
+                yesVotes,
+                abstainVotes,
+            ],
+        );
+
+        return isHorizontal ? (
+            <ProposalHorizontalCard {...layoutProps} />
+        ) : (
+            <ProposalVerticalCard {...layoutProps} />
+        );
+    },
+);
+
+export default ProposalCard;

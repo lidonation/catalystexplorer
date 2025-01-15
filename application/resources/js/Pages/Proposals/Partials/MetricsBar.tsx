@@ -1,3 +1,4 @@
+import { useMetrics } from '@/Context/MetricsContext';
 import { usePlayer } from '@/Context/PlayerContext';
 import { useUIContext } from '@/Context/SharedUIContext';
 import { ProposalMetrics } from '@/types/proposal-metrics';
@@ -117,7 +118,7 @@ const SectionTwo: React.FC<
 const MetricsBar: React.FC<ProposalMetrics | undefined> = (props) => {
     const { isPlayerBarExpanded } = useUIContext(); // Access the context to manage player bar state
     const [isExpanded, setIsExpanded] = useState(true);
-    const { metrics } = usePlayer();
+    const { metrics } = useMetrics();
     const onProposals = (usePage().component) == 'Proposals/Index'; 
 
     return (

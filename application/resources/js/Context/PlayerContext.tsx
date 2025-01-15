@@ -36,10 +36,6 @@ interface PlayerContextType {
     currentTime: string;
     duration: string;
     createProposalPlaylist: (proposals?: ProposalData[]) => void;
-    metrics?: ProposalMetrics;
-    setMetrics: React.Dispatch<
-        React.SetStateAction<ProposalMetrics | undefined>
-    >;
     progress: number;
     setProgress: React.Dispatch<React.SetStateAction<number>>;
 }
@@ -62,9 +58,6 @@ export const PlayerProvider = ({ children }: { children: React.ReactNode }) => {
     const [duration, setDuration] = useState('0:00');
     const plyrInstanceRef = useRef<Plyr | null>(null);
     const playerContainerRef = useRef<HTMLVideoElement | null>(null);
-    const [metrics, setMetrics] = useState<ProposalMetrics | undefined>(
-        undefined,
-    );
     const [progress, setProgress] = useState(0);
     const [initialLoad, setInitialLoad] = useState(true);
 
@@ -74,7 +67,6 @@ export const PlayerProvider = ({ children }: { children: React.ReactNode }) => {
             : null;
 
     useEffect(() => {
-        console.log({ k: plyrInstanceRef.current });
         if (
             playlist &&
             playlist.length > 0 &&
@@ -92,7 +84,7 @@ export const PlayerProvider = ({ children }: { children: React.ReactNode }) => {
                     'fullscreen',
                 ],
                 settings: ['speed'],
-                autoplay: true,
+                // autoplay: true,
                 speed: {
                     selected: playbackSpeed,
                     options: [0.5, 1, 1.5, 2],
@@ -114,6 +106,24 @@ export const PlayerProvider = ({ children }: { children: React.ReactNode }) => {
             clearTimeout(timeout);
         };
     }, [plyrInstanceRef, playlist]);
+
+    useEffect(() => {
+        if (plyrInstanceRef.current && playlist && playlist.length > 0) {
+            const firstTrack = playlist[0];
+            if (firstTrack && firstTrack.quickpitch) {
+                setLoading(true);
+                plyrInstanceRef.current.source = {
+                    type: 'video',
+                    sources: [
+                        {
+                            src: firstTrack.quickpitch,
+                            provider: firstTrack.provider,
+                        },
+                    ],
+                };
+            }
+        }
+    }, [playlist]);
 
     // Update video source whenever the track changes
     useEffect(() => {
@@ -155,18 +165,22 @@ export const PlayerProvider = ({ children }: { children: React.ReactNode }) => {
     const pauseCurrentTrack = () => plyrInstanceRef.current?.pause();
 
     const stopCurrentTrack = () => {
-        plyrInstanceRef.current?.stop();
-        setIsPlaying(false);
-        setPlaylist(undefined);
-        plyrInstanceRef.current?.destroy();
-        plyrInstanceRef.current = null;
-        setCurrentTime('0:00');
-        setDuration('0:00');
+          if (plyrInstanceRef.current) {
+              plyrInstanceRef.current.stop();
+              plyrInstanceRef.current.source = { type: 'video', sources:[] }; 
+          }
+          setIsPlaying(false);
+          setPlaylist(undefined);
+          setCurrentTrackIndex(0);
+          setCurrentTime('0:00');
+          setDuration('0:00');
+          setProgress(0);
     };
 
     const nextTrack = () => {
-        if (playlist) {
+        if (playlist && plyrInstanceRef.current) {
             setIsPlaying(false);
+            plyrInstanceRef.current.autoplay = true;
             const nextIndex =
                 currentTrackIndex < playlist.length - 1
                     ? currentTrackIndex + 1
@@ -179,8 +193,9 @@ export const PlayerProvider = ({ children }: { children: React.ReactNode }) => {
     };
 
     const prevTrack = () => {
-        if (playlist) {
+        if (playlist && plyrInstanceRef.current) {
             setIsPlaying(false);
+            plyrInstanceRef.current.autoplay = true;
             const prevIndex =
                 currentTrackIndex > 0
                     ? currentTrackIndex - 1
@@ -243,6 +258,7 @@ export const PlayerProvider = ({ children }: { children: React.ReactNode }) => {
         return () => clearInterval(interval);
     }, []);
 
+    
     return (
         <PlayerContext.Provider
             value={{
@@ -265,8 +281,6 @@ export const PlayerProvider = ({ children }: { children: React.ReactNode }) => {
                 currentTime,
                 duration,
                 createProposalPlaylist,
-                metrics,
-                setMetrics,
                 progress,
                 setProgress,
             }}
