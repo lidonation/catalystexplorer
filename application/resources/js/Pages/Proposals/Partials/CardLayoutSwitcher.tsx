@@ -27,7 +27,7 @@ export default function CardLayoutSwitcher({
                 >
                     <VerticalColumnIcon />
                 </button>
-                
+
                 <button
                     onClick={() => setIsHorizontal(true)}
                     className={`flex-1 flex justify-center items-center p-2 ${isHorizontal
@@ -51,5 +51,3 @@ export default function CardLayoutSwitcher({
         </div>
     );
 }
-
-
