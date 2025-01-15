@@ -8,6 +8,7 @@ use App\Enums\BookmarkStatus;
 use App\Enums\BookmarkVisibility;
 use App\Enums\CommentsAllowance;
 use Laravel\Nova\Fields\BelongsTo;
+use Laravel\Nova\Fields\Color;
 use Laravel\Nova\Fields\HasMany;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Select;
@@ -38,6 +39,7 @@ class BookmarkCollections extends Resource
      */
     public static $search = [
         'id',
+        'title',
     ];
 
     /**
@@ -50,7 +52,7 @@ class BookmarkCollections extends Resource
         return [
             ID::make()->sortable(),
 
-            Text::make('Title')
+            Text::make(__('Title'), 'title')
                 ->sortable()
                 ->rules('required', 'max:255'),
 
@@ -58,10 +60,10 @@ class BookmarkCollections extends Resource
                 ->alwaysShow()
                 ->rules('nullable'),
 
-            Text::make('Color')
+            Color::make(__('Color'))
                 ->sortable()
                 ->rules('required', 'max:255'),
-            Select::make('Allow Comments')
+            Select::make(__('Allow Comments'), 'allow-comments')
                 ->options([
                     CommentsAllowance::NO()->value => CommentsAllowance::NO()->value,
                     CommentsAllowance::ME()->value => CommentsAllowance::ME()->value,
@@ -71,7 +73,7 @@ class BookmarkCollections extends Resource
                 ->rules('nullable')
                 ->sortable(),
 
-            Select::make('Visibility')
+            Select::make(__('Visibility'), 'visibility')
                 ->options([
                     BookmarkVisibility::PUBLIC()->value => BookmarkVisibility::PUBLIC()->value,
                     BookmarkVisibility::UNLISTED()->value => BookmarkVisibility::UNLISTED()->value,
@@ -81,7 +83,7 @@ class BookmarkCollections extends Resource
                 ->rules('required')
                 ->sortable(),
 
-            Select::make('Status')
+            Select::make(__('Status'), 'status')
                 ->options([
                     BookmarkStatus::DRAFT()->value => BookmarkStatus::DRAFT()->value,
                     BookmarkStatus::PUBLISHED()->value => BookmarkStatus::PUBLISHED()->value,
@@ -91,17 +93,17 @@ class BookmarkCollections extends Resource
                 ->rules('required')
                 ->sortable(),
 
-            BelongsTo::make('User', 'user', Users::class)
+            BelongsTo::make(__('User'), 'user', Users::class)
                 ->sortable()
                 ->searchable()
                 ->rules('required'),
 
-            Text::make('Type')
+            Text::make(__('Type'), 'type')
                 ->default(BookmarkCollections::class)
                 ->rules('required', 'max:255')
                 ->sortable(),
 
-            HasMany::make('Items', 'items', BookmarkItems::class)
+            HasMany::make(__('Items'), 'items', BookmarkItems::class)
                 ->sortable(),
         ];
     }
