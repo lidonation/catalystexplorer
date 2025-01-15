@@ -31,7 +31,7 @@ class Fund extends Model implements HasMedia
 
     protected $appends = [
         'amount_requested',
-        'amount_awarded'
+        'amount_awarded',
     ];
 
     protected $guarded = [];
@@ -39,7 +39,7 @@ class Fund extends Model implements HasMedia
     protected $withCount = [
         'proposals',
         'fundedProposals',
-        'completedProposals'
+        'completedProposals',
     ];
 
     public function currencySymbol(): Attribute
@@ -72,7 +72,7 @@ class Fund extends Model implements HasMedia
             fn (Builder $query, $search) => $query->where('title', 'ILIKE', '%'.$search.'%')
         )->when(
             $filters['status'] ?? false,
-            fn(Builder $query, $status) => $query->where('status', $status)
+            fn (Builder $query, $status) => $query->where('status', $status)
         );
     }
 
@@ -85,7 +85,7 @@ class Fund extends Model implements HasMedia
     {
         return $this->hasMany(Proposal::class)->whereIn('funding_status', [
             ProposalFundingStatus::funded()->value,
-            ProposalFundingStatus::leftover()->value
+            ProposalFundingStatus::leftover()->value,
         ]);
     }
 
@@ -109,7 +109,7 @@ class Fund extends Model implements HasMedia
             get: function () {
                 return $this->proposals()->whereIn('funding_status', [
                     ProposalFundingStatus::funded()->value,
-                    ProposalFundingStatus::leftover()->value
+                    ProposalFundingStatus::leftover()->value,
                 ])->sum('amount_requested');
             }
         );
