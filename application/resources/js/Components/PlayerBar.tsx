@@ -183,7 +183,7 @@ const PlayerBar = () => {
                                                 {playbackSpeed}x
                                             </button>
                                         </PopoverTrigger>
-                                        <PopoverContent className="w-auto border border-gray-600 bg-bg-dark p-0">
+                                        <PopoverContent className="mb-4 w-auto border border-gray-600 bg-bg-dark p-0">
                                             <div className="p-1">
                                                 {speedOptions?.map((option) => (
                                                     <div
@@ -226,7 +226,7 @@ const PlayerBar = () => {
                                                 <PlaylistIcon />
                                             </button>
                                         </PopoverTrigger>
-                                        <PopoverContent className="max-h-96 min-w-96 overflow-y-auto border border-gray-600 bg-bg-dark">
+                                        <PopoverContent className="mb-4 max-h-96 min-w-96 overflow-y-auto border border-gray-600 bg-bg-dark">
                                             <PlaylistAnimation />
                                         </PopoverContent>
                                     </Popover>
