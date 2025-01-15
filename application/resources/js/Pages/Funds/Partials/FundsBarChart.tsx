@@ -9,8 +9,8 @@ interface FundsBarChartProps {
     fundRounds: number;
     totalProposals: number;
     fundedProposals: number;
-    totalFundsRequested: any;
-    totalFundsAllocated: any;
+    totalFundsRequested: number;
+    totalFundsAllocated: number;
 }
 
 const FundsBarChart: React.FC<FundsBarChartProps> = ({
@@ -75,18 +75,18 @@ const FundsBarChart: React.FC<FundsBarChartProps> = ({
                 </div>
                 <div>
                     <h6 className="text-2 lg:title-5 font-bold">
-                        {currency(totalFundsRequested, undefined, undefined, 2)}
+                        {currency(totalFundsRequested, 'ADA', undefined, 2)}
                     </h6>
                     <p className="text-4 lg:text-3 font-bold text-content opacity-75">
-                        {t('funds.totalFundsRequested')}
+                        {t('funds.totalFundsAwardedAda')}
                     </p>
                 </div>
                 <div>
                     <h6 className="text-2 lg:title-5 font-bold">
-                        {currency(totalFundsAllocated, undefined, undefined, 2)}
+                        {currency(totalFundsAllocated, 'USD', undefined, 2)}
                     </h6>
                     <p className="text-4 lg:text-3 font-bold text-content opacity-75">
-                        {t('funds.totalFundsAllocated')}
+                        {t('funds.totalFundsAwardedUsd')}
                     </p>
                 </div>
             </div>

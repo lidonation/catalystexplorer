@@ -354,7 +354,7 @@ class Proposal extends Model
             'woman_proposal' => $this->is_woman_proposal ? 1 : 0,
             'link' => $this->link,
 
-            'alignment_score' => $this->meta_info->alignment_score ?? 0, //$this->getDiscussionRankingScore('Impact Alignment') ?? 0,
+            'alignment_score' => $this->meta_info->alignment_score ?? 0, // $this->getDiscussionRankingScore('Impact Alignment') ?? 0,
             'feasibility_score' => $this->meta_info->feasibility_score ?? 0, // $this->getDiscussionRankingScore('Feasibility') ?? 0,
             'auditability_score' => $this->meta_info->auditability_score ?? 0, // $this->getDiscussionRankingScore('Value for money') ?? 0,
             'projectcatalyst_io_link' => $this->meta_info?->projectcatalyst_io_url ?? null,

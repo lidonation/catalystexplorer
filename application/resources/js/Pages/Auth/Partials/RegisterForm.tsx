@@ -35,7 +35,7 @@ export default function RegisterForm() {
             password_confirmation: data.password_confirmation
         }).then((response) => {
             reset('password', 'password_confirmation')
-            router.get('dashboard')
+            router.get('my.dashboard')
         }).catch((error) => {
             setErrors(error?.response?.data?.errors)
         })
