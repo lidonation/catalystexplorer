@@ -4,23 +4,23 @@ declare(strict_types=1);
 
 namespace App\Nova;
 
-use App\Models\BookmarkItem;
-use Laravel\Nova\Fields\BelongsTo;
+use App\Enums\LogicalOperators;
+use App\Enums\Operators;
+use App\Models\Rule;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\MorphTo;
-use Laravel\Nova\Fields\Number;
+use Laravel\Nova\Fields\Select;
 use Laravel\Nova\Fields\Text;
-use Laravel\Nova\Fields\Textarea;
 use Laravel\Nova\Http\Requests\NovaRequest;
 
-class BookmarkItems extends Resource
+class Rules extends Resource
 {
     /**
      * The model the resource corresponds to.
      *
-     * @var class-string<BookmarkItem>
+     * @var class-string<Rule>
      */
-    public static $model = BookmarkItem::class;
+    public static $model = Rule::class;
 
     /**
      * The single value that should be used to represent the resource when being displayed.
@@ -37,7 +37,8 @@ class BookmarkItems extends Resource
     public static $search = [
         'id',
         'title',
-        'content',
+        'Operator',
+        'logical_operator',
     ];
 
     /**
@@ -52,34 +53,43 @@ class BookmarkItems extends Resource
 
             Text::make(__('Title'), 'title')
                 ->sortable()
-                ->rules('nullable', 'max:255'),
+                ->rules('required', 'max:255'),
 
-            Textarea::make(__('Content'), 'content')
-                ->alwaysShow()
-                ->rules('nullable'),
-
-            BelongsTo::make(__('User'), 'user', Users::class)
+            Text::make(__('Subject'), 'subject')
                 ->sortable()
+                ->rules('required', 'max:255')
+                ->help('Column or field to consider for the rule(in snake_case format).'),
+
+            Select::make(__('Operator'), 'operator')
+                ->options([
+                    Operators::EQUALS_TO()->value => Operators::EQUALS_TO()->value,
+                    Operators::NOT_EQUALS_TO()->value => Operators::NOT_EQUALS_TO()->value,
+                    Operators::GREATER_THAN()->value => Operators::GREATER_THAN()->value,
+                    Operators::LESS_THAN()->value => Operators::LESS_THAN()->value,
+                    Operators::GREATER_THAN_OR_EQUALS_TO()->value => Operators::GREATER_THAN_OR_EQUALS_TO()->value,
+                    Operators::LESS_THAN_OR_EQUALS_TO()->value => Operators::LESS_THAN_OR_EQUALS_TO()->value,
+                    Operators::IS_NULL()->value => Operators::IS_NULL()->value,
+                    Operators::IS_NOT_NULL()->value => Operators::IS_NOT_NULL()->value,
+                ])
                 ->rules('required'),
 
-            BelongsTo::make(__('Bookmark Collection'), 'collection', BookmarkCollections::class)
-                ->nullable()
-                ->rules('nullable'),
+            Text::make(__('Predicate'), 'predicate')
+                ->rules('max:255')
+                ->help('Value to compare against the subject.'),
+
+            Select::make(__('Logical Operator'), 'logical_operator')
+                ->options([
+                    LogicalOperators::AND()->value => LogicalOperators::AND()->value,
+                    LogicalOperators::OR()->value => LogicalOperators::OR()->value,
+                ])
+                ->rules('required'),
 
             MorphTo::make(__('Model'), 'model')
                 ->types([
-                    Proposals::class,
-                    IdeascaleProfiles::class,
-                    Groups::class,
-                    Reviews::class,
-                    BookmarkCollections::class,
+                    Metrics::class,
                 ])
                 ->sortable()
                 ->rules('required'),
-
-            Number::make(__('Action'), 'action')
-                ->sortable()
-                ->rules('nullable', 'integer'),
         ];
     }
 

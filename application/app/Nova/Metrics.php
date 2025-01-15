@@ -17,6 +17,7 @@ use Laravel\Nova\Fields\DateTime;
 use Laravel\Nova\Fields\Field;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Markdown;
+use Laravel\Nova\Fields\MorphMany;
 use Laravel\Nova\Fields\Number;
 use Laravel\Nova\Fields\Select;
 use Laravel\Nova\Fields\Text;
@@ -69,11 +70,13 @@ class Metrics extends Resource
                 ->sortable()
                 ->required(),
 
-            Text::make(__('Field')),
+            Text::make(__('Field'))
+                ->help('Column or field to consider for the metric(in snake_case format).'),
 
             Color::make(__('Color')),
 
             Text::make(__('Context'))
+                ->sortable()
                 ->nullable(),
 
             Select::make(__('Query'), 'query')
@@ -137,6 +140,8 @@ class Metrics extends Resource
 
             Markdown::make(__('Content'))
                 ->required(),
+
+            MorphMany::make(__('Rules'), 'rules', Rules::class),
         ];
     }
 

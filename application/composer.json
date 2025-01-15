@@ -2,7 +2,13 @@
     "name": "lidonation/catalystexplorer",
     "type": "product",
     "description": "Your friendly neighborhood spot for exploring and participating in cardano project catalyst ecosystem.",
-    "keywords": ["cardano", "project catalyst", "explorer", "laravel", "framework"],
+    "keywords": [
+        "cardano",
+        "project catalyst",
+        "explorer",
+        "laravel",
+        "framework"
+    ],
     "license": "Apache-2.0",
     "require": {
         "php": "^8.3",
@@ -22,6 +28,8 @@
         "saloonphp/laravel-plugin": "^3.0",
         "saloonphp/pagination-plugin": "^2.0",
         "saloonphp/saloon": "^3.0",
+        "simplesquid/nova-enum-field": "^1.0",
+        "spatie/laravel-comments": "^2.1",
         "spatie/laravel-data": "^4.11",
         "spatie/laravel-enum": "^3.1",
         "spatie/laravel-medialibrary": "^11.9",
@@ -90,6 +98,10 @@
         "nova": {
             "type": "composer",
             "url": "https://nova.laravel.com"
+        },
+        "spatie/laravel-comments": {
+            "type": "composer",
+            "url": "https://satis.spatie.be"
         }
     }
 }

@@ -142,6 +142,23 @@
         "timeRemaining": "Time remaining",
         "remaining" : "Remaining"
     },
+    "funds": {
+        "funds": "Funds",
+        "fund": "Fund",
+        "pageSubtitle": "Search funds by title, content, or author and co-authors",
+        "totalAwarded": "Total Awarded",
+        "lastFund": "last fund",
+        "fundedProjects": "Funded Projects",
+        "subtitle": "Search proposals and challenges by title, content, or author and co-authors",
+        "fundRounds": "Fund Rounds",
+        "totalProposals": "Total Proposals",
+        "fundedProposals": "Funded Proposals",
+        "totalFundsAwardedAda": "Total Awarded ADA",
+        "totalFundsAwardedUsd": "Total Awarded USD",
+        "completedProposals" : "Completed Proposals",
+        "filter": "Filter"
+    },
+
     "proposals": {
         "allProposals": "All proposals",
         "proposals": "Proposals",

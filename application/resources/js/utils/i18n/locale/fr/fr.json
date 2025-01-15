@@ -153,7 +153,24 @@
             "coProposalCountHighToLow": "Nombre de propositions co : Du plus élevé au plus bas"
         }
     },
-
+    "funds": {
+        "funds": "Fonds",
+        "fund": "Fonds",
+        "pageSubtitle": "Rechercher des fonds par titre, contenu ou auteur et co-auteurs",
+        "totalAllocated": "Total alloué",
+        "lastFund": "dernier fonds",
+        "fundedProjects": "Projets financés",
+        "subtitle": "Rechercher des propositions et des défis par titre, contenu ou auteur et co-auteurs",
+        "fundRounds": "Nombre de tours de financement",
+        "totalProposals": "Total des propositions",
+        "fundedProposals": "Propositions financées",
+        "totalFundsRequested": "Total des fonds demandés",
+        "totalFundsAllocated": "Total des fonds alloués",
+        "totalFundsAwardedAda": "Total accordées ADA",
+        "totalFundsAwardedUsd": "Total accordées USD",
+        "completedProposals": "Propositions terminées",
+        "filter": "Filtrer"
+    },
     "proposals": {
         "allProposals": "Toutes les propositions",
         "CSVs": "CSVs de propositions",

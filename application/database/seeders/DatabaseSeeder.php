@@ -25,8 +25,9 @@ class DatabaseSeeder extends Seeder
             GroupSeeder::class,
             CommunitySeeder::class,
             ReviewSeeder::class,
-            AnnouncementSeeder::class,
-            MetricSeeder::class,
+            BookmarkItemSeeder::class,
+            BookmarkCollectionSeeder::class,
+            RuleSeeder::class,
         ];
 
         foreach ($seeders as $seeder) {

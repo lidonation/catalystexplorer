@@ -94,7 +94,6 @@ frontend-install:
 .PHONY: frontend-clean
 frontend-clean:
 	rm -rf application/node_modules 2>/dev/null || true
-	$(compose) yarn cache clean
 
 .PHONY: image-build
 image-build:
@@ -153,7 +152,7 @@ vite:
 
 .PHONY: watch
 watch:
-	docker compose  up -d --remove-orphans&& $(sail) npx vite --force
+	docker compose  up -d --remove-orphans && $(sail) npx vite --force
 
 .PHONY: test-backend
 test-backend:
