@@ -68,7 +68,7 @@ export function SearchSelect({
             } else {
                 onChange([value]);
                 setOpen(false);
-                setSearchTerm(''); // Clear search when item is selected
+                setSearchTerm('');
             }
         },
         [multiple, onChange, selected],

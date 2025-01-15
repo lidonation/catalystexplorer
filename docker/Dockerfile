@@ -1,4 +1,4 @@
-FROM registry.lidonation.com/lidonation/www.catalystexplorer.com/web-app-base:ubuntu-22.04-2024-12-9
+FROM registry.lidonation.com/lidonation/www.catalystexplorer.com/web-app-base:22.04-2025-01-13
 
 COPY /application /var/www/
 

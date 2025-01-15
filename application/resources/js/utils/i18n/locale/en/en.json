@@ -234,7 +234,7 @@
         "limitTags": "Limit to tags",
         "fundingStatus":"Funding Status",
         "noIdeascaleProfiles":"No Ideascale Profiles Found",
-        "options":{ 
+        "options":{
             "alphabeticallyAsc": "Alphabetically: A to Z",
             "alphabeticallyDesc": "Alphabetically: Z to A",
             "awardedAdaLowToHigh": "Amount Awarded ADA: Low to High",
