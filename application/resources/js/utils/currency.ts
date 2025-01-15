@@ -17,7 +17,5 @@ export function currency(value: number, currency: string = 'USD', locale: string
                 maximumFractionDigits
             });
             return formatter.format(value);
-        default:
-            return shortNumber(value, maximumFractionDigits, locale).toString();
     }
 }
