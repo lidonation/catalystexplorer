@@ -1,15 +1,3 @@
-include:
-  # Analyze commits to determine whether to cut a release
-  # see https://gitlab.com/gitlab-com/gl-infra/common-ci-tasks/-/blob/main/semantic-release.md
-#  - '.gitlab/includes/.semantic-release.yml'
-#  - project: 'gitlab-com/gl-infra/common-ci-tasks'
-#    ref: v2.49.0  # renovate:managed
-#    file: semantic-release.yml
-    #inputs:
-    #  stage: release
-    #  p: access_tokens/${VAULT_SECRETS_PATH}/semantic-release/token@ci
-
-
 variables:
   AUTO_DEPLOY_IMAGE_VERSION: "v2.104.0"
   CI_TEMPLATE_REGISTRY_HOST: registry.gitlab.com
@@ -50,6 +38,7 @@ default:
     export CI_APPLICATION_TAG=$APP_VERSION_AND_BUILD
 
 
+
 cache:
   key: ${CI_COMMIT_REF_SLUG}
   paths:
@@ -76,12 +65,14 @@ composer:
     echo "$ENV_FILE"
     cp "$ENV_FILE" application/.env
     export PATH=$PATH:/usr/local/bin
+    export COMPOSER_MAX_PARALLEL_HTTP=24
+    export COMPOSER_FUND=0
     cd ./application
     composer config http-basic.nova.laravel.com "${NOVA_USERNAME}" "${NOVA_LICENSE_KEY}"
     if [[  $CI_COMMIT_BRANCH == 'main' ]]; then
-      composer install --no-scripts --no-dev --ignore-platform-reqs
+      composer install --no-scripts --no-dev --classmap-authoritative --no-interaction --no-ansi --ignore-platform-reqs
     else
-      composer install --no-scripts --ignore-platform-reqs
+      composer install --no-scripts --ignore-platform-reqs --classmap-authoritative --no-interaction --no-ansi
     fi
   artifacts:
     paths:
@@ -212,6 +203,13 @@ cypress:
     DEPLOYMENT_NAME="www-catalystexplorer.$CI_ENVIRONMENT_SLUG"  
     cp $ENV_FILE ./chart/app_env
     cat ./chart/app_env
+    if [ "${CI_ENVIRONMENT_NAME}" == "mainnet" ]; then
+      export APP_REPLICAS="3"
+      export QUEUE_REPLICAS="2"
+    else
+      export APP_REPLICAS="1"
+      export QUEUE_REPLICAS="1"
+    fi
 
     helm upgrade $DEPLOYMENT_NAME ./chart \
       --install \
@@ -225,6 +223,8 @@ cypress:
       --set services.meili.MEILISEARCH_KEY=$MEILISEARCH_KEY \
       --set services.app.environment=$APP_ENV \
       --set services.redis.password=$REDIS_PASSWORD \
+      --set services.app.replicaCount=$APP_REPLICAS \
+      --set services.queue.replicaCount=$QUEUE_REPLICAS \
       --set namespace=${KUBE_NAMESPACE} \
       --namespace="$KUBE_NAMESPACE" \
       --create-namespace
@@ -326,13 +326,12 @@ build_web_base:
 
     docker build --network host -f ./docker/Dockerfile.base \
     -t "$CI_APPLICATION_REPOSITORY/web-app-base:$WEB_BASE_IMAGE_VER" \
-    -t "$CI_APPLICATION_REPOSITORY/web-app-base:latest" . 
+    -t "$CI_APPLICATION_REPOSITORY/web-app-base:latest" ./docker/. 
 
     docker push "$CI_APPLICATION_REPOSITORY/web-app-base:$WEB_BASE_IMAGE_VER" 
     docker push "$CI_APPLICATION_REPOSITORY/web-app-base:latest"
 
     docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
-
   rules:
   - if: $WEB_BASE_IMAGE_VER
 
@@ -416,17 +415,17 @@ sem-release:
     - job: app_mainnet
     - job: composer
   image:
-    name: php:8.3-fpm-alpine3.20
+    name: registry.lidonation.com/lidonation/www.catalystexplorer.com/web-app:latest
     entrypoint: [""]
   variables:
     GITLAB_URL: $CI_SERVER_URL
   script: |-
     set -vx
-    apk add make curl
+    export PATH=$PATH:/usr/local/bin
+    export NODE_OPTIONS=--max-old-space-size=8192
     cp application/.env.testing application/.env
-    curl -o /opt/composer https://getcomposer.org/download/2.8.4/composer.phar
-    yarn install
-    chmod +x /opt/composer
+    cd ./application
+    npm install
     /opt/composer install --no-scripts --ignore-platform-reqs
     npx semantic-release
   after_script: |

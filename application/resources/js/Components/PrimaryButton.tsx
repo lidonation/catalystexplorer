@@ -1,22 +1,35 @@
 import { ButtonHTMLAttributes } from 'react';
+import LoadingSpinner from './svgs/LoadingSpinner';
+
+interface PrimaryButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+    className?: string;
+    disabled?: boolean;
+    loading?: boolean;
+}
 
 export default function PrimaryButton({
     className = '',
     disabled,
+    loading = false,
     children,
     ...props
-}: ButtonHTMLAttributes<HTMLButtonElement>) {
+}: PrimaryButtonProps) {
     return (
         <button
             {...props}
-            className={
-                `inline-flex items-center rounded-md bg-gradient-to-t from-background-button-gradient-color-1 to-background-button-gradient-color-2 shadow-md px-4 py-2 text-4 font-semibold uppercase tracking-widest text-content-light transition duration-150 ease-in-out hover:bg-background-tertiary hover:text-content-secondary focus:outline-none focus:ring-2 focus:bg-background-accent focus:ring-offset-2 active:bg-background-tertiary active:text-content-secondary  ${
-                    disabled && 'opacity-25'
-                } ` + className
-            }
-            disabled={disabled}
+            className={`text-4 hover:bg-background-tertiary hover:text-content-secondary focus:bg-background-accent active:bg-background-tertiary active:text-content-secondary inline-flex items-center justify-center rounded-md bg-gradient-to-t from-background-button-gradient-color-1 to-background-button-gradient-color-2 px-4 py-2 font-semibold uppercase tracking-widest text-content-light shadow-md transition duration-150 ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2 ${disabled || loading ? 'cursor-not-allowed opacity-25' : ''} ${className} `}
+            disabled={disabled || loading}
         >
-            {children}
+            <span
+                className={`inline-flex items-center gap-2 ${loading ? 'invisible' : 'visible'}`}
+            >
+                {children}
+            </span>
+            {loading && (
+                <span className="absolute">
+                    <LoadingSpinner />
+                </span>
+            )}
         </button>
     );
 }

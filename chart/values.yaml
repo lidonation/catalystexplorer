@@ -27,7 +27,7 @@ services:
       subPath: "uploads"
       mountPath: "/var/www/storage/app"
   queue:
-    replicaCount: 4
+    replicaCount: 1
   meili:
     MEILISEARCH_KEY: 
     persistence:

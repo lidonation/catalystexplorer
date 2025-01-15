@@ -1,37 +1,21 @@
-#!/usr/bin/env bash
-
-if [ ! -d /.composer ]; then
-    mkdir /.composer
-fi
-
-chmod -R ugo+rw /.composer
+#!/usr/bin/env sh
+set -e
 
 if [ $# -gt 0 ]; then
-    exec gosu $WWWUSER "$@"
+    exec "$@"
 else
   case "$CONTAINER_ROLE" in
     queue | q)
       php -d variables_order=EGPCS /var/www/artisan horizon
       ;;
-    # scheduler | s)
-    #   while [ true ]
-    #   do
-    #     php /var/www/artisan schedule:run --verbose --no-interaction &
-    #     sleep 60
-    #   done
-    #   ;;
     app | a)
       if [ "$OCTANE_WATCH" = "true" ]; then
         # Enable watch mode for Octane
-        php -d variables_order=EGPCS /var/www/artisan octane:frankenphp --workers=3 --max-requests=50 --watch
+        php /var/www/artisan octane:frankenphp --workers=1 --max-requests=50 --host=0.0.0.0 --port=8000 --admin-port=2019 --caddyfile=/etc/caddy/Caddyfile --watch
       else
         # Run without watch mode
-        php -d variables_order=EGPCS /var/www/artisan octane:frankenphp --workers=2 --max-requests=50
+        php /var/www/artisan octane:frankenphp --workers=2 --max-requests=50 --host=0.0.0.0 --port=8000 --admin-port=2019 --caddyfile=/etc/caddy/Caddyfile
       fi
-      ;;
-    dev | d)
-      mkdir -p /var/run/supervisor
-      exec /usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.dev.conf
       ;;
     *)
       echo 'this container has no role... it is a sitting duck doing nothing!'
