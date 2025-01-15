@@ -1,6 +1,9 @@
-import VideoCameraIcon from "@/Components/svgs/VideoCameraIcon";
-import VerticalColumnIcon from "@/Components/svgs/VerticalColumnIcon";
-import ListBulletIcon from "@/Components/svgs/ListBulletIcon";
+import ListBulletIcon from '@/Components/svgs/ListBulletIcon';
+import VerticalColumnIcon from '@/Components/svgs/VerticalColumnIcon';
+import VideoCameraIcon from '@/Components/svgs/VideoCameraIcon';
+import { useFilterContext } from '@/Context/FiltersContext';
+import { ProposalParamsEnum } from '@/enums/proposal-search-params';
+import { ProposalSearchParams } from '../../../../types/proposal-search-params';
 
 interface CardLayoutSwitcherProps {
     isHorizontal: boolean;
@@ -15,35 +18,50 @@ export default function CardLayoutSwitcher({
     setIsHorizontal,
     setGlobalQuickPitchView,
 }: CardLayoutSwitcherProps) {
+    const { filters, setFilters } = useFilterContext<ProposalSearchParams>();
+
+    const setQuickpitch = (value: boolean) => {
+        setGlobalQuickPitchView(value);
+        setFilters(ProposalParamsEnum.QUICK_PITCHES, value ? '1' : '');
+    };
+
+    const setHorizontal = (value: boolean) => {
+        setIsHorizontal(value);
+        // setQuickpitch(false);
+    };
+
     return (
         <div className="relative">
-            <div className="flex border-[2px] border-gray-300 rounded-lg overflow-hidden bg-background shadow-md z-">
+            <div className="z- flex overflow-hidden rounded-lg border-[2px] border-gray-300 bg-background shadow-md">
                 <button
-                    onClick={() => setIsHorizontal(false)}
-                    className={`flex-1 flex justify-center items-center p-2  ${!isHorizontal
-                        ? "bg-background-lighter text-primary cursor-default"
-                        : "hover:bg-background-lighter text-gray-500"
-                        } border-r-[2px] border-gray-300`}
+                    onClick={() => setHorizontal(false)}
+                    className={`flex flex-1 items-center justify-center p-2 ${
+                        !isHorizontal
+                            ? 'cursor-default bg-background-lighter text-primary'
+                            : 'text-gray-500 hover:bg-background-lighter'
+                    } border-r-[2px] border-gray-300`}
                 >
                     <VerticalColumnIcon />
                 </button>
-                
+
                 <button
-                    onClick={() => setIsHorizontal(true)}
-                    className={`flex-1 flex justify-center items-center p-2 ${isHorizontal
-                        ? "bg-background-lighter text-primary cursor-default"
-                        : "hover:bg-background-lighter text-gray-500"
-                        } border-r-[2px] border-gray-300`}
+                    onClick={() => setHorizontal(true)}
+                    className={`flex flex-1 items-center justify-center p-2 ${
+                        isHorizontal
+                            ? 'cursor-default bg-background-lighter text-primary'
+                            : 'text-gray-500 hover:bg-background-lighter'
+                    } border-r-[2px] border-gray-300`}
                 >
                     <ListBulletIcon />
                 </button>
 
                 <button
-                    onClick={() => setGlobalQuickPitchView(true)}
-                    className={`flex-1 flex justify-center items-center p-2 ${quickPitchView ?
-                        "bg-background-lighter text-primary cursor-default"
-                        : "hover:bg-background-lighter text-gray-500"
-                        }`}
+                    onClick={() => setQuickpitch(!quickPitchView)}
+                    className={`flex flex-1 items-center justify-center p-2 ${
+                        quickPitchView
+                            ? 'cursor-default bg-background-lighter text-primary'
+                            : 'text-gray-500 hover:bg-background-lighter'
+                    }`}
                 >
                     <VideoCameraIcon />
                 </button>
@@ -51,5 +69,3 @@ export default function CardLayoutSwitcher({
         </div>
     );
 }
-
-
