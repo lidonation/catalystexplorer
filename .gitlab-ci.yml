@@ -69,7 +69,7 @@ composer:
     export COMPOSER_FUND=0
     cd ./application
     composer config http-basic.nova.laravel.com "${NOVA_USERNAME}" "${NOVA_LICENSE_KEY}"
-    composer config http-basic.satis.spatie.be "${SPATIE_AUTH_USERNAME}" "${NOVA_LICENSE_KEY}"
+    composer config http-basic.satis.spatie.be "${SPATIE_AUTH_USERNAME}" "${SPATIE_AUTH_PASSWORD}"
     if [[  $CI_COMMIT_BRANCH == 'main' ]]; then
       composer install --no-scripts --no-dev --classmap-authoritative --no-interaction --no-ansi --ignore-platform-reqs
     else
