@@ -17,18 +17,20 @@ use Inertia\Inertia;
 use Inertia\Response;
 use Illuminate\Support\Fluent;
 use Illuminate\Support\Facades\Gate;
-use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Str;
 
 class MyBookmarksController extends Controller
 {
-    protected array $bookmarkableTypes = [
-        'proposals' => 'App\Models\Proposal',
-        'ideascale_profiles' => 'App\Models\IdeascaleProfile',
-        'groups' => 'App\Models\Group',
-        'reviews' => 'App\Models\Review',
-        'articles' => 'App\Models\Article',
-        'lists' => 'App\Models\BookmarkCollection',
-    ];
+    protected function getBookmarkableTypes(): array
+    {
+        return [
+            'proposals' => Proposal::class,
+            'ideascale_profiles' => IdeascaleProfile::class,
+            'groups' => Group::class,
+            'reviews' => Review::class,
+            'lists' => BookmarkCollection::class,
+        ];
+    }
 
     public function index(Request $request): Response
     {
@@ -57,7 +59,8 @@ class MyBookmarksController extends Controller
             ->with('model')
             ->firstOrFail();
 
-        $bookmarkType = array_search($bookmark->model_type, $this->bookmarkableTypes) ?: 'unknown';
+        $bookmarkableTypes = $this->getBookmarkableTypes();
+        $bookmarkType = array_search($bookmark->model_type, $bookmarkableTypes) ?: 'unknown';
 
         $links = [
             [
@@ -80,14 +83,13 @@ class MyBookmarksController extends Controller
         DB::beginTransaction();
         try {
             $modelTable = $request->get('model_type');
-            $modelType = match ($request->get('model_type')) {
-                'proposals' => Proposal::class,
-                'ideascale_profiles' => IdeascaleProfile::class,
-                'groups' => Group::class,
-                'reviews' => Review::class,
-                'lists' => BookmarkCollection::class,
-                default => throw new \Exception('Unsupported model type provided'),
-            };
+            $bookmarkableTypes = $this->getBookmarkableTypes();
+            
+            if (!isset($bookmarkableTypes[$modelTable])) {
+                throw new \Exception('Unsupported model type provided');
+            }
+            
+            $modelType = $bookmarkableTypes[$modelTable];
 
             $data = new Fluent($request->validate([
                 'model_id' => "required|exists:{$modelTable},id",
@@ -131,7 +133,7 @@ class MyBookmarksController extends Controller
             $item->user_id = Auth::id();
             $item->bookmark_collection_id = $collection->raw_id;
             $item->model_id = $data->model_id;
-            $item->model_type = $data->model_type ?? $modelType;
+            $item->model_type = $modelType;
             $item->content = $data->content;
             $item->save();
 
@@ -184,13 +186,14 @@ class MyBookmarksController extends Controller
         try {
             $userId = Auth::id();
             $modelType = $request->input('model_type');
+            $bookmarkableTypes = $this->getBookmarkableTypes();
 
-            if (!array_key_exists($modelType, $this->bookmarkableTypes)) {
+            if (!array_key_exists($modelType, $bookmarkableTypes)) {
                 throw new \Exception("Invalid or unsupported model type: {$modelType}");
             }
 
             $bookmarkItems = BookmarkItem::where('user_id', $userId)
-                ->where('model_type', $this->bookmarkableTypes[$modelType])
+                ->where('model_type', $bookmarkableTypes[$modelType])
                 ->with(['model', 'collection'])
                 ->get();
 
@@ -213,12 +216,13 @@ class MyBookmarksController extends Controller
             $userId = Auth::id();
             $modelId = $request->input('model_id');
             $modelTypeKey = $request->input('model_type');
+            $bookmarkableTypes = $this->getBookmarkableTypes();
 
-            if (!array_key_exists($modelTypeKey, $this->bookmarkableTypes)) {
+            if (!array_key_exists($modelTypeKey, $bookmarkableTypes)) {
                 throw new \Exception("Invalid or unsupported model type: {$modelTypeKey}");
             }
 
-            $modelType = $this->bookmarkableTypes[$modelTypeKey];
+            $modelType = $bookmarkableTypes[$modelTypeKey];
 
             $item = BookmarkItem::where('bookmark_items.model_id', $modelId)
                 ->where('bookmark_items.model_type', $modelType)
