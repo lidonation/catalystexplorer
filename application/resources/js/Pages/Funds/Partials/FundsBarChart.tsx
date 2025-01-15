@@ -61,19 +61,19 @@ const FundsBarChart: React.FC<FundsBarChartProps> = ({
                     </p>
                 </div>
                 <div>
-                    <h6 className="text-2 lg:title-4 font-bold">
-                        {totalFundsRequested}
+                    <h6 className="text-2 lg:title-5 font-bold">
+                        {currency(totalFundsRequested, 'ADA', undefined, 2)}
                     </h6>
-                    <p className="text-4 lg:text-4 font-bold text-content opacity-75">
-                        {t('funds.totalFundsRequested')}
+                    <p className="text-4 lg:text-3 font-bold text-content opacity-75">
+                        {t('funds.totalFundsAwardedAda')}
                     </p>
                 </div>
                 <div>
-                    <h6 className="text-2 lg:title-4 font-bold">
-                        {totalFundsAllocated}
+                    <h6 className="text-2 lg:title-5 font-bold">
+                        {currency(totalFundsAllocated, 'USD', undefined, 2)}
                     </h6>
                     <p className="text-4 lg:text-3 font-bold text-content opacity-75">
-                        {t('funds.totalFundsAllocated')}
+                        {t('funds.totalFundsAwardedUsd')}
                     </p>
                 </div>
             </div>
