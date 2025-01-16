@@ -7,7 +7,7 @@ import { ProposalSearchParams } from '../../../types/proposal-search-params';
 import CampaignList from '../Campaign/Partials/CampaignList';
 import MetricCardLoading from '../Metrics/Partials/MetricCardLoading';
 import MetricCardList from '../Metrics/Partials/MetricsCardList';
-import FundSortBy from './Partials/FundSortBy';
+import FundSortBy from './Partials/FundsSortBy';
 import FundData = App.DataTransferObjects.FundData;
 import MetricData = App.DataTransferObjects.MetricData;
 import CampaignData = App.DataTransferObjects.CampaignData;

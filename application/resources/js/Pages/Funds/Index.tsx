@@ -6,7 +6,6 @@ import FundCardLoader from './Partials/FundCardLoader';
 import FundsList from './Partials/FundsList';
 import { PageProps } from '@/types';
 import FundData = App.DataTransferObjects.FundData;
-import { useEffect } from 'react';
 
 interface HomePageProps extends Record<string, unknown> {
     funds: FundData[];
@@ -28,13 +27,8 @@ export default function Index({
     .sort((a, b) => {
         const numA = parseInt(a.fund.replace(/\D/g, ''), 10);
         const numB = parseInt(b.fund.replace(/\D/g, ''), 10);
-        return numB - numA;  // Descending order
+        return numB - numA;  
     });
-
-    useEffect(()=>{
-        console.log('funds', funds)
-    })
-
 
     return (
         <>
