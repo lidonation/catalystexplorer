@@ -159,7 +159,7 @@
         "totalFundsAwardedUsd": "Total Funds Awarded USD",
         "completedProposals": "Completed Proposals",
         "sortBy": "Sort By",
-        "filter": "Filters",
+        "filter": "Filter",
         "options": {
             "lowToHigh": "Budget: Low to High",
             "highToLow": "Budget: High to Low",
