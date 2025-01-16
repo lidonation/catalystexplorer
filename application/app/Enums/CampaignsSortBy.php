@@ -9,8 +9,6 @@ use Spatie\Enum\Laravel\Enum;
 /**
  * @method static self AMOUNT()
  * @method static self PROPOSALSCOUNT()
- * @method static self DESC()
- * @method static self ASC()
  */
 final class CampaignsSortBy extends Enum
 {
@@ -19,8 +17,6 @@ final class CampaignsSortBy extends Enum
         return [
             'AMOUNT' => 'amount',
             'PROPOSALSCOUNT' => 'proposals_count',
-            'DESC' => 'desc',
-            'ASC' => 'asc',
         ];
     }
 }
