@@ -1,113 +1,283 @@
-import { useFilterContext } from '@/Context/FiltersContext';
-import { useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import { ProposalSearchParams } from '../../../../types/proposal-search-params';
+import { FilteredItem, useFilterContext } from '@/Context/FiltersContext';
+import { ProposalParamsEnum } from '@/enums/proposal-search-params';
+import { useSearchOptions } from '@/Hooks/useSearchOptions';
+import { shortNumber } from '@/utils/shortNumber';
+import React, { useState } from 'react';
 
-export default function ActiveFilters() {
-    const { filters, setFilters } = useFilterContext<ProposalSearchParams>();
-    const [selectedFilters, setSelectedFilters] = useState<any>({});
-    const [clearFilter, setClearFilter] = useState(true)
+function formatSnakeCaseToTitleCase(input: string) {
+    if (!input) return;
+    return input
+        ?.split('_')
+        .map(
+            (word: string) =>
+                word.charAt(0).toUpperCase() + word.slice(1).toLowerCase(),
+        )
+        .join(' ');
+}
 
-    const labels = {
-        b: 'Budgets',
-        f: 'Funds',
-        fs: 'Funding Status',
-        pl: 'Project Length',
-        ps: 'Project Status',
-        op: 'Opensource',
-        t: 'Tags',
-        cam: 'Campaign',
-        coh: 'Cohort',
-        com: 'Communities',
-        ip: 'Ideascale Profiles',
-        g: 'Groups',
-    };
+const labels = {
+    b: 'Budgets',
+    f: 'Funds',
+    fs: 'Funding Status',
+    pl: 'Project Length',
+    ps: 'Project Status',
+    op: 'Opensource',
+    t: 'tags',
+    cam: 'campaigns',
+    coh: 'cohort',
+    com: 'communities',
+    ip: 'Ideascale Profiles',
+    g: 'groups',
+};
 
-    function formatSnakeCaseToTitleCase(input: string) {
-        return input
-            ?.split('_')
-            .map(
-                (word: string) =>
-                    word.charAt(0).toUpperCase() + word.slice(1).toLowerCase(),
-            )
-            .join(' ');
-    }
+type LabelKeys = keyof typeof labels;
 
-    const statusFilters = ['coh', 'fs', 'ps'];
+export default function ActiveFilters({
+    sortOptions,
+}: {
+    sortOptions?: {
+        label: string;
+        value: string;
+    }[];
+}) {
+    const [clearFilter, setClearFilter] = useState(true);
+    const { filters } = useFilterContext();
+    const statusFilters = ['coh', 'fs', 'ps', 'f'];
     const rangeFilters = ['pl', 'b'];
+    const sortFilters = ['st'];
     const idFilters = ['t', 'cam', 'com', 'ip', 'g'];
     const booleanFilters = ['op'];
 
-    useEffect(() => {
-        const updatedFilters = Object.keys(filters).reduce(
-            (acc: any, key: string) => {
-                if (statusFilters.includes(key)) {
-                    acc[labels[key as keyof typeof labels]] = filters[key].map((item: string) =>
-                        formatSnakeCaseToTitleCase(item),
-                    );
-                } else if (rangeFilters.includes(key)) {
-                    acc[labels[key as keyof typeof labels]] = filters[key as keyof typeof labels];
-                } else if (booleanFilters.includes(key)) {
-                    acc[labels[key as keyof typeof labels]] = !!parseInt(filters[key]);
-                } else if (idFilters.includes(key)) {
-                    // I have tried to add the parameters for idFilters...
-                    acc[labels[key as keyof typeof labels]] = filters[key]?.join(', ') ?? filters[key];
-                } else {
-                    acc[labels[key as keyof typeof labels]] = filters[key];
-                }
-
-                return acc;
-            },
-            {},
-        );
-
-        setSelectedFilters(updatedFilters);
-    }, [filters]);
-
-    const { t } = useTranslation();
-
-
-
-    const removeFilter = (key: string, value?: string) => {
-        const newFilters = { ...filters };
-        if (value && Array.isArray(newFilters[key])) {
-            newFilters[key] = newFilters[key].filter((item: string) => item !== value);
-            if (newFilters[key].length === 0) {
-                newFilters[key] = [];
-            }
-        } else {
-            newFilters[key] = [];
-        }
-        setSelectedFilters(newFilters);
-    };
-
     const handleClearFilter = () => {
         setClearFilter(!clearFilter);
-    }
+    };
 
     return (
-        <div className="pt-2 flex flex-wrap">
-            {Object.keys(selectedFilters).map((key) => (
-                <div
-                    className="bg-background border rounded-md flex items-center px-1 py-1 mr-1 mb-1"
-                    key={key}
-                >
-                    <div className="font-bold mr-1">{key}:</div>
-                    <div className="mr-1"> {Array.isArray(selectedFilters[key]) ? selectedFilters[key].map((value: string) => clearFilter ?
-                        (<div key={value} className="flex items-center"> <span>{value}</span>
-                            <button className="ml-2" onClick={() => removeFilter(key, value)} >
-                                X </button> </div>) : null) : selectedFilters[key]} </div>
-                    {!Array.isArray(selectedFilters[key]) && (
-                        <button
-                            className="ml-1"
-                            onClick={() => removeFilter(key)}
-                        >
-                            X
-                        </button>
-                    )}
-                </div>
-            ))}
+        <div className="flex w-full flex-wrap gap-3 transition-all duration-300">
+            {filters.map((filter) => {
+                if (!filter.label) {
+                    return;
+                }
+                if (
+                    statusFilters.includes(filter.param) &&
+                    filter.value.length
+                ) {
+                    return <StatusFilters filter={filter} />;
+                }
 
+                if (booleanFilters.includes(filter.param)) {
+                    return <BooleanFilters filter={filter} />;
+                }
+
+                if (rangeFilters.includes(filter.param)) {
+                    return <RangeFilters filter={filter} />;
+                }
+
+                if (sortFilters.includes(filter.param)) {
+                    return (
+                        <SortFilters
+                            sortOptions={sortOptions}
+                            filter={filter}
+                        />
+                    );
+                }
+
+                if (idFilters.includes(filter.param) && filter.value.length) {
+                    return <IDFilters filter={filter} />;
+                }
+            })}
         </div>
     );
 }
+
+const StatusFilters = ({ filter }: { filter: FilteredItem }) => {
+    const { setFilters } = useFilterContext();
+    const removeFilter = (value?: string) => {
+        const newVal = filter.value.filter(
+            (val: string | undefined) => val != value,
+        );
+        setFilters({
+            param: filter.param,
+            value: newVal,
+            label: filter.label,
+        });
+    };
+
+    return (
+        <div
+            className="mb-1 mr-1 flex items-center rounded-lg border bg-background px-1 py-1"
+            key={filter.label}
+        >
+            <div className="mr-1 font-bold">{filter.label}:</div>
+            <div className="mr-1 flex items-center gap-2">
+                {' '}
+                {filter.value.map((value: string) => (
+                    <div key={value} className="flex items-center">
+                        {' '}
+                        <span>{formatSnakeCaseToTitleCase(value)}</span>
+                        <button
+                            className="ml-2"
+                            onClick={() => removeFilter(value)}
+                        >
+                            X{' '}
+                        </button>{' '}
+                    </div>
+                ))}
+            </div>
+        </div>
+    );
+};
+
+const RangeFilters = ({ filter }: { filter: FilteredItem }) => {
+    const { setFilters, getFilter } = useFilterContext();
+
+    const removeFilter = () => {
+        if (filter.param == ProposalParamsEnum.PROJECT_LENGTH) {
+            setFilters({
+                param: filter.param,
+                value: [
+                    getFilter(ProposalParamsEnum.MIN_PROJECT_LENGTH),
+                    getFilter(ProposalParamsEnum.MAX_PROJECT_LENGTH),
+                ],
+                label: filter.label,
+            });
+        } else if (filter.param == ProposalParamsEnum.BUDGETS) {
+            setFilters({
+                param: filter.param,
+                value: [
+                    getFilter(ProposalParamsEnum.MIN_BUDGET),
+                    getFilter(ProposalParamsEnum.MAX_BUDGET),
+                ],
+                label: filter.label,
+            });
+        }
+    };
+
+    return (
+        <div
+            className="mb-1 mr-1 flex items-center rounded-lg border bg-background px-1 py-1"
+            key={filter.label}
+        >
+            <div className="mr-1">{filter.label}</div>
+            <div>{`${filter.value[0]} to ${shortNumber(filter.value[1])} `}</div>
+            <button className="ml-2" onClick={() => removeFilter()}>
+                X{' '}
+            </button>
+        </div>
+    );
+};
+
+const BooleanFilters = ({ filter }: { filter: FilteredItem }) => {
+    const { setFilters } = useFilterContext();
+    const removeFilter = (value?: string) => {
+        setFilters({
+            param: filter.param,
+            value: null,
+            label: undefined,
+        });
+    };
+    return (
+        <div
+            className="mb-1 mr-1 flex items-center rounded-lg border bg-background px-1 py-1"
+            key={filter.label}
+        >
+            <div className="mr-1">{filter.label}</div>
+            <button className="ml-2" onClick={() => removeFilter()}>
+                X{' '}
+            </button>
+        </div>
+    );
+};
+
+const SortFilters = ({
+    filter,
+    sortOptions,
+}: {
+    filter: FilteredItem;
+    sortOptions?: {
+        label: string;
+        value: string;
+    }[];
+}) => {
+    const { setFilters } = useFilterContext();
+
+    const sort = sortOptions?.find((sort) => sort.value == filter.value);
+
+    const removeFilter = (value?: string) => {
+        setFilters({
+            param: filter.param,
+            value: null,
+            label: undefined,
+        });
+    };
+
+    return (
+        <div
+            className="mb-1 mr-1 flex items-center rounded-lg border bg-background px-1 py-1"
+            key={filter.label}
+        >
+            <div className="mr-1">{sort?.label}</div>
+            <button className="ml-2" onClick={() => removeFilter()}>
+                X{' '}
+            </button>
+        </div>
+    );
+};
+
+const IDFilters = React.memo(({ filter }: { filter: FilteredItem }) => {
+    let domain = labels?.[filter.param as LabelKeys];
+
+    if (filter.param === 'ip') {
+        domain = 'ideascale-profiles';
+    }
+
+    const { setIDs, options } = useSearchOptions<any>(domain);
+
+    React.useEffect(() => {
+        setIDs(filter.value);
+    }, [setIDs, filter.value]);
+
+    const { setFilters } = useFilterContext();
+
+    const removeFilter = (value?: string) => {
+        const newVal = filter.value.filter(
+            (val: string | undefined) => val != value,
+        );
+        setFilters({
+            param: filter.param,
+            value: newVal,
+            label: filter.label,
+        });
+    };
+
+    return (
+        <div
+            className="mb-1 mr-1 flex items-center rounded-lg border bg-background px-1 py-1"
+            key={filter.label}
+        >
+            <div className="mr-1 font-bold">{filter.label}:</div>
+            <div className="mr-1 flex items-center gap-2">
+                {' '}
+                {options &&
+                    options.map((option) => (
+                        <div key={option.label} className="flex items-center">
+                            {' '}
+                            <span>
+                                {formatSnakeCaseToTitleCase(
+                                    option?.name ??
+                                        option?.title ??
+                                        option?.label,
+                                )}
+                            </span>
+                            <button
+                                className="ml-2"
+                                onClick={() => removeFilter(option.id)}
+                            >
+                                X{' '}
+                            </button>{' '}
+                        </div>
+                    ))}
+            </div>
+        </div>
+    );
+});
