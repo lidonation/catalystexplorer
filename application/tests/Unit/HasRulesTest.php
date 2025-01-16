@@ -13,7 +13,7 @@ it('applies AND rules correctly', function () {
 
     $mockQuery->method('__call')
         ->willReturnCallback(function ($method, $args) use ($mockQuery) {
-            if (($method === 'whereNull' || $method === 'whereNotNull') && $args[0] === 'funded_at') {
+            if (($method === 'whereNull' || $method === 'whereNotNull') && $args[0] === 'proposals.funded_at') {
                 return $mockQuery;
             }
             throw new \Exception("Unexpected method call: $method");
@@ -21,7 +21,7 @@ it('applies AND rules correctly', function () {
 
     $mockQuery->expects($this->once())
         ->method('where')
-        ->with('amount', '>', 1000)
+        ->with('proposals.amount', '>', 1000)
         ->willReturn($mockQuery);
 
     $mockBuilder->expects($this->once())
@@ -47,8 +47,7 @@ it('applies AND rules correctly', function () {
             'predicate' => 1000,
         ],
     ]);
-
-    $metric->applyRules($mockBuilder, $rules);
+    $metric->applyRules($mockBuilder, $rules, 'proposals');
 });
 
 it('applies OR rules correctly', function () {
@@ -57,7 +56,7 @@ it('applies OR rules correctly', function () {
 
     $mockQuery->method('__call')
         ->willReturnCallback(function ($method, $args) use ($mockQuery) {
-            if (($method === 'whereNull' || $method === 'whereNotNull') && $args[0] === 'funded_at') {
+            if (($method === 'whereNull' || $method === 'whereNotNull') && $args[0] === 'proposals.funded_at') {
                 return $mockQuery;
             }
             throw new \Exception("Unexpected method call: $method");
@@ -65,7 +64,7 @@ it('applies OR rules correctly', function () {
 
     $mockQuery->expects($this->once())
         ->method('where')
-        ->with('amount', '=', 500)
+        ->with('proposals.amount', '=', 500)
         ->willReturn($mockQuery);
 
     $mockBuilder->expects($this->once())
@@ -92,7 +91,7 @@ it('applies OR rules correctly', function () {
         ],
     ]);
 
-    $metric->applyRules($mockBuilder, $rules);
+    $metric->applyRules($mockBuilder, $rules, 'proposals');
 });
 
 it('applies multiple AND and OR rules correctly', function () {
@@ -102,7 +101,7 @@ it('applies multiple AND and OR rules correctly', function () {
 
     $mockAndQuery->method('__call')
         ->willReturnCallback(function ($method, $args) use ($mockAndQuery) {
-            if (($method === 'whereNull' || $method === 'whereNotNull') && $args[0] === 'funded_at') {
+            if (($method === 'whereNull' || $method === 'whereNotNull') && $args[0] === 'proposals.funded_at') {
                 return $mockAndQuery;
             }
             throw new \Exception("Unexpected method call: $method");
@@ -110,7 +109,7 @@ it('applies multiple AND and OR rules correctly', function () {
 
     $mockAndQuery->expects($this->once())
         ->method('where')
-        ->with('amount', '>', 1000)
+        ->with('proposals.amount', '>', 1000)
         ->willReturn($mockAndQuery);
 
     $mockOrQuery->expects($this->exactly(2))
@@ -118,8 +117,8 @@ it('applies multiple AND and OR rules correctly', function () {
         ->willReturnCallback(function ($field, $operator, $value) use ($mockOrQuery) {
             static $callCount = 0;
             $expectations = [
-                ['status', '=', 'approved'],
-                ['type', '=', 'urgent'],
+                ['proposals.status', '=', 'approved'],
+                ['proposals.type', '=', 'urgent'],
             ];
 
             if ($field === $expectations[$callCount][0] &&
@@ -176,7 +175,7 @@ it('applies multiple AND and OR rules correctly', function () {
         ],
     ]);
 
-    $metric->applyRules($mockBuilder, $rules);
+    $metric->applyRules($mockBuilder, $rules, 'proposals');
 });
 
 it('handles empty rules gracefully', function () {
@@ -188,5 +187,5 @@ it('handles empty rules gracefully', function () {
     $metric = new Metric;
     $rules = collect();
 
-    $metric->applyRules($mockBuilder, $rules);
+    $metric->applyRules($mockBuilder, $rules, 'proposals');
 });
