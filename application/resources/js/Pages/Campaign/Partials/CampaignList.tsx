@@ -13,7 +13,7 @@ const CampaignList: React.FC<CampaignProps> = ({
     fund
 }) => {
     return (
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3 w-full">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 w-full gap-6">
             {campaigns &&
                 campaigns?.map((campaign) => (
                     <CampaignCard key={campaign?.id} fund={fund} campaign={campaign}/>
