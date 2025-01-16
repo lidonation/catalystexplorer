@@ -10,6 +10,7 @@ use App\Enums\CatalystCurrencies;
 use App\Models\Fund;
 use App\Repositories\FundRepository;
 use App\Repositories\MetricRepository;
+use App\Enums\ProposalSearchParams;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -39,16 +40,39 @@ class FundsController extends Controller
 
     public function fund(Request $request, Fund $fund, MetricRepository $metrics): Response
     {
+        $this->getProps($request);
+    
+        $sortParam = $this->queryParams[ProposalSearchParams::SORTS()->value] ?? null;
+    
+        if ($sortParam) {
+            list($sortField, $sortDirection) = explode(':', $sortParam);
+            $sortDirection = $sortDirection === 'asc' ? 'asc' : 'desc';
+        } else {
+            $sortField = 'amount'; 
+            $sortDirection = 'desc'; 
+        }
+    
+        // Initialize the query only once
+        $query = $fund->campaigns();
+    
+        if ($sortField === 'amount') {
+            $query->orderBy('amount', $sortDirection);
+        } elseif ($sortField === 'proposals_count') {
+            $query->orderBy('proposals_count', $sortDirection);
+        }
+    
         return Inertia::render('Funds/Fund', [
             'fund' => $fund,
-            'filters' => $this->queryParams,
             'metrics' => MetricData::collect($metrics->limit(6)->getQuery()->where('context', 'fund')
                 ->orderByDesc('order')->get()),
-            'campaigns' => $fund->campaigns()->orderByDesc('amount')->get(),
+            'campaigns' => $query->get(), // Use the already initialized query
+            'filters' => $this->queryParams
         ]);
     }
+    
 
-    protected function getProps(Request $request): void {
+    protected function getProps(Request $request): void
+    {
         $this->queryParams = $request->validate([
             ProposalSearchParams::SORTS()->value => 'nullable'
         ]);
