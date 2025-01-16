@@ -76,7 +76,7 @@ class Metric extends Model
                     ->get()
                     ->map(function ($row) use ($aggregate) {
                         return [
-                            'x' => $row->fund->title,
+                            'x' => $row->fund?->title,
                             'y' => $row->{$aggregate},
                         ];
                     });
