@@ -16,6 +16,8 @@ use Inertia\Response;
 
 class FundsController extends Controller
 {
+    protected array $queryParams = [];
+
     public function index(Request $request, FundRepository $fundRepository): Response
     {
         $funds = FundData::collect($fundRepository->getQuery()->get());
@@ -39,9 +41,16 @@ class FundsController extends Controller
     {
         return Inertia::render('Funds/Fund', [
             'fund' => $fund,
+            'filters' => $this->queryParams,
             'metrics' => MetricData::collect($metrics->limit(6)->getQuery()->where('context', 'fund')
                 ->orderByDesc('order')->get()),
             'campaigns' => $fund->campaigns()->orderByDesc('amount')->get(),
+        ]);
+    }
+
+    protected function getProps(Request $request): void {
+        $this->queryParams = $request->validate([
+            ProposalSearchParams::SORTS()->value => 'nullable'
         ]);
     }
 }
