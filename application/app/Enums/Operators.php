@@ -15,6 +15,8 @@ use Spatie\Enum\Laravel\Enum;
  * @method static self LESS_THAN_OR_EQUALS_TO()
  * @method static self IS_NULL()
  * @method static self IS_NOT_NULL()
+ * @method static self IN()
+ * @method static self NOT_IN()
  */
 final class Operators extends Enum
 {
@@ -29,6 +31,8 @@ final class Operators extends Enum
             'LESS_THAN_OR_EQUALS_TO' => '<=',
             'IS_NULL' => 'IS NULL',
             'IS_NOT_NULL' => 'IS NOT NULL',
+            'IN' => 'IN',
+            'NOT_IN' => 'NOT IN',
         ];
     }
 }

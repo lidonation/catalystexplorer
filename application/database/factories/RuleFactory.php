@@ -21,11 +21,21 @@ class RuleFactory extends Factory
      */
     public function definition(): array
     {
+        $validPredicates = [
+            'id' => [1, 2, 3, 4, 5],
+            'amount_requested' => [10, 20, 30, 50, 100],
+            'status' => ['pending', 'approved', 'rejected'],
+        ];
+
+        $subject = $this->faker->randomElement(array_keys($validPredicates));
+
+        $predicate = $this->faker->randomElement($validPredicates[$subject]);
+
         return [
             'title' => $this->faker->sentence,
-            'subject' => $this->faker->randomElement(['id', 'amount_requested', 'status']),
+            'subject' => $subject,
             'operator' => $this->faker->randomElement(Operators::toValues()),
-            'predicate' => $this->faker->word,
+            'predicate' => $predicate,
             'logical_operator' => $this->faker->randomElement(LogicalOperators::toValues()),
             'model_id' => Metric::factory(),
             'model_type' => Metric::class,
