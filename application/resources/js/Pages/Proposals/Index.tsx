@@ -9,7 +9,7 @@ import VerticalCardLoading from '@/Pages/Proposals/Partials/ProposalVerticalCard
 import { PageProps } from '@/types';
 import { ProposalMetrics } from '@/types/proposal-metrics';
 import { Head, WhenVisible } from '@inertiajs/react';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { PaginatedData } from '../../../types/paginated-data';
 import { ProposalSearchParams } from '../../../types/proposal-search-params';
@@ -39,6 +39,7 @@ export default function Index({
     const { setMetrics } = useMetrics();
 
     const [isHorizontal, setIsHorizontal] = useState(false);
+    const [showFilters, setShowFilters] = useState(false);
 
     const [quickPitchView, setQuickPitchView] = useState(
         !!parseInt(filters[ProposalParamsEnum.QUICK_PITCHES]),
@@ -59,6 +60,7 @@ export default function Index({
             setMetrics(undefined);
         };
     }, [metrics]);
+
 
     return (
         <ListProvider>
@@ -81,10 +83,14 @@ export default function Index({
                     <FundFiltersContainer funds={funds} />
                 </section>
 
-                <ProposalSearchControls />
+                <ProposalSearchControls onFiltersToggle={setShowFilters} />
 
-                <section className="container flex w-full flex-col items-center justify-center">
-                    <ProposalFilters funds={{}} />
+                <section
+                    className={`container flex w-full flex-col items-center justify-center overflow-hidden transition-[max-height] duration-500 ease-in-out ${
+                        showFilters ? 'max-h-[500px]' : 'max-h-0'
+                    }`}
+                >
+                    <ProposalFilters />
                 </section>
 
                 <section className="container mt-4 flex flex-col items-end">

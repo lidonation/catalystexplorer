@@ -123,9 +123,12 @@ class IdeascaleProfilesController extends Controller
                 filter_var($this->queryParams[ProposalSearchParams::FUNDING_STATUS()->value], FILTER_VALIDATE_BOOLEAN);
         }
 
-        if (empty($this->queryParams[ProposalSearchParams::BUDGETS()->value])) {
-            $this->queryParams[ProposalSearchParams::BUDGETS()->value] = [1000, 10000000];
+        if (!empty($this->queryParams)) {
+            $this->queryParams[ProposalSearchParams::BUDGETS()->value] = [1, 10000000];
         }
+
+        $this->queryParams[ProposalSearchParams::MAX_BUDGET()->value] = 10000000;
+        $this->queryParams[ProposalSearchParams::MIN_BUDGET()->value] = 1;
     }
 
     protected function getUserFilters(): array

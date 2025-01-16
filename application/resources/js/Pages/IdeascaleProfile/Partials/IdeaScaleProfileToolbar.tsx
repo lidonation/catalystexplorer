@@ -3,18 +3,17 @@ import Selector from '@/Components/Select';
 import FilterLinesIcon from '@/Components/svgs/FilterLinesIcon';
 import { useFilterContext } from '@/Context/FiltersContext';
 import { IdeaScaleSearchEnum } from '@/enums/ideascale-search-enums';
-import { useEffect, useRef, useState } from 'react';
+import ActiveFilters from '@/Pages/Proposals/Partials/ActiveFilters';
+import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { IdeaScaleSearchParams } from '../../../../types/ideascale-search-params';
 import IdeascaleProfilesSearchControls from './IdeascaleProfileSearchControls';
 import IdeascaleProfilesFilters from './IdeascaleProfilesFilters';
 
 const IdeaScaleProfileToolbar = () => {
     const [toggleFilterVisibility, setToggleFilterVisibility] = useState(false);
-    const { getFilter, setFilters } = useFilterContext();
-    const filterRef = useRef(null) as any;
+    const { getFilter, setFilters, filters } = useFilterContext();
     const { t } = useTranslation();
-    const [contentHeight, setContentHeight] = useState(0);
+    const filtersCount = filters.filter((filter) => filter.label).length;
 
     const sortingOptions = [
         {
@@ -59,14 +58,6 @@ const IdeaScaleProfileToolbar = () => {
         },
     ];
 
-    useEffect(() => {
-        if (filterRef.current) {
-            setContentHeight(
-                toggleFilterVisibility ? filterRef.current.scrollHeight : 0,
-            );
-        }
-    }, [toggleFilterVisibility]);
-
     return (
         <div className="flex w-full flex-col gap-2">
             <div>
@@ -86,6 +77,7 @@ const IdeaScaleProfileToolbar = () => {
                     >
                         <FilterLinesIcon className={'size-6'} />
                         <span>{t('filters')}</span>
+                        <span>({filtersCount})</span>
                     </Button>
                     <Selector
                         isMultiselect={false}
@@ -108,10 +100,13 @@ const IdeaScaleProfileToolbar = () => {
                     />
                 </div>
             </div>
+
+            <div className="container mx-auto flex justify-start px-0 py-2">
+                <ActiveFilters />
+            </div>
+
             <div
-                ref={filterRef}
-                className="overflow-hidden transition-all duration-300 ease-in-out"
-                style={{ height: `${contentHeight}px` }}
+                className={`${toggleFilterVisibility ? 'max-h-[500px]' : 'max-h-0'} overflow-hidden transition-[max-height] duration-500 ease-in-out`}
             >
                 <IdeascaleProfilesFilters />
             </div>

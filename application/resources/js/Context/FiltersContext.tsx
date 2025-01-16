@@ -42,10 +42,10 @@ type LabelKeys = keyof typeof labels;
 
 const formatToFilters = (paramObj: Record<LabelKeys, any>): FilteredItem[] => {
     return Object.keys(paramObj).map((param) => {
-        const typedParam = param as LabelKeys; 
+        const typedParam = param as LabelKeys;
         return {
             param: typedParam,
-            label: labels[typedParam], 
+            label: labels[typedParam],
             value: paramObj[typedParam],
         };
     });
@@ -61,6 +61,7 @@ export function FiltersProvider({
     defaultFilters: ProposalSearchParams;
 }) {
     const initialFilters = formatToFilters(defaultFilters);
+    console.log({ defaultFilters, initialFilters });
     const [filters, setFiltersState] = useState<FilteredItem[]>(initialFilters);
 
     const isFirstLoad = useRef(true);

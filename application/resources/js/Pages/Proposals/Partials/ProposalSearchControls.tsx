@@ -4,11 +4,15 @@ import Selector from '@/Components/Select';
 import FilterLinesIcon from '@/Components/svgs/FilterLinesIcon';
 import { useFilterContext } from '@/Context/FiltersContext';
 import { ProposalParamsEnum } from '@/enums/proposal-search-params';
-import { useEffect, useState } from 'react';
+import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import ActiveFilters from './ActiveFilters';
 
-function ProposalSearchControls() {
+function ProposalSearchControls({
+    onFiltersToggle,
+}: {
+    onFiltersToggle: Dispatch<SetStateAction<boolean>>;
+}) {
     const { getFilter, setFilters, filters } = useFilterContext();
     const { t } = useTranslation();
 
@@ -115,7 +119,10 @@ function ProposalSearchControls() {
 
     const toggleFilters = () => {
         setShowFilters((prev) => !prev);
+        onFiltersToggle(showFilters);
     };
+
+    const filtersCount = filters.filter((filter) => filter.label).length;
 
     return (
         <div className="container sticky top-0 z-10 mx-auto flex w-full flex-col gap-4 bg-background-lighter pb-4 pt-6">
@@ -136,6 +143,7 @@ function ProposalSearchControls() {
                 >
                     <FilterLinesIcon className={'size-6'} />
                     <span>{t('filters')}</span>
+                    <span>({filtersCount})</span>
                 </Button>
 
                 {/* <button
@@ -173,11 +181,9 @@ function ProposalSearchControls() {
                 />
             </div>
 
-            {showFilters && (
-                <div className="container mx-auto flex justify-start px-0 py-2">
-                    <ActiveFilters />
-                </div>
-            )}
+            <div className="container mx-auto flex justify-start px-0 py-2">
+                <ActiveFilters />
+            </div>
         </div>
     );
 }

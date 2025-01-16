@@ -5,11 +5,8 @@ import { useFilterContext } from '@/Context/FiltersContext';
 import { ProposalParamsEnum } from '@/enums/proposal-search-params';
 import { useTranslation } from 'react-i18next';
 
-interface ProposalFiltersProps {
-    funds: { [key: string]: number };
-}
 
-const ProposalFilters: React.FC<ProposalFiltersProps> = ({ funds }) => {
+const ProposalFilters = () => {
     const { setFilters, getFilter } = useFilterContext();
     const { t } = useTranslation();
 

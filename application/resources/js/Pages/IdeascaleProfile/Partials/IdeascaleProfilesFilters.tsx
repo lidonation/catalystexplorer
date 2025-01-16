@@ -121,7 +121,10 @@ export default function IdeascaleProfilesFilters() {
                         }
                         max={getFilter(ProposalParamsEnum.MAX_BUDGET)}
                         min={getFilter(ProposalParamsEnum.MIN_BUDGET)}
-                        defaultValue={getFilter(ProposalParamsEnum.BUDGETS)}
+                        defaultValue={[
+                            getFilter(ProposalParamsEnum.MIN_BUDGET),
+                            getFilter(ProposalParamsEnum.MAX_BUDGET),
+                        ]}
                     />
 
                     <div className="col-span-2 sm:col-span-2 lg:col-span-1">
@@ -137,7 +140,6 @@ export default function IdeascaleProfilesFilters() {
                     </div>
                 </div>
             </div>
-
         </div>
     );
 }
