@@ -2,7 +2,7 @@ include ./application/.env
 export
 
 sail := ./application/vendor/bin/sail
-compose := docker-compose exec -t catalystexplorer.com
+compose := docker-compose exec catalystexplorer.com
 nodeVersion := 20
 
 .PHONY: init
@@ -58,7 +58,11 @@ backend-install:
 
 .PHONY: build
 build:
-	$(compose) npx vite build
+	$(compose) yarn build
+
+.PHONY: tsc
+tsc:
+	$(compose) yarn tsc
 
 .PHONY: db-setup
 db-setup:
