@@ -13,6 +13,10 @@ class Campaign extends Model
 {
     use SoftDeletes;
 
+    protected $withCount = [
+        'proposals',
+    ];
+
     public function fund(): BelongsTo
     {
         return $this->belongsTo(Fund::class, 'fund_id', 'id');

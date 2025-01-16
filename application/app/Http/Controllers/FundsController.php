@@ -5,9 +5,11 @@ declare(strict_types=1);
 namespace App\Http\Controllers;
 
 use App\DataTransferObjects\FundData;
+use App\DataTransferObjects\MetricData;
 use App\Enums\CatalystCurrencies;
 use App\Models\Fund;
 use App\Repositories\FundRepository;
+use App\Repositories\MetricRepository;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -33,10 +35,13 @@ class FundsController extends Controller
         ]);
     }
 
-    public function fund(Request $request, Fund $fund): Response
+    public function fund(Request $request, Fund $fund, MetricRepository $metrics): Response
     {
         return Inertia::render('Funds/Fund', [
             'fund' => $fund,
+            'metrics' => MetricData::collect($metrics->limit(6)->getQuery()->where('context', 'fund')
+                ->orderByDesc('order')->get()),
+            'campaigns' => $fund->campaigns()->orderByDesc('amount')->get(),
         ]);
     }
 }

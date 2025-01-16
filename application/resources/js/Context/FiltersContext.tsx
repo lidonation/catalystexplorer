@@ -71,7 +71,6 @@ export function FiltersProvider<K extends Record<string, any>>({
                 changedKeys.includes(ProposalParamsEnum.PAGE) ||
                 changedKeys.includes(ProposalParamsEnum.LIMIT);
 
-
             router.get(currentUrl, filters, {
                 preserveState: true,
                 preserveScroll: !paginationFiltered,
