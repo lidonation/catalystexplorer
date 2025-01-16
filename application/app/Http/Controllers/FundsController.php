@@ -41,30 +41,34 @@ class FundsController extends Controller
     }
 
     public function fund(Request $request, Fund $fund, MetricRepository $metrics): Response
-    {
-        $this->getProps($request);
+{
+    $this->getProps($request);
 
-        $sortParam = $this->queryParams[ProposalSearchParams::SORTS()->value] ?? null;;
-        if ($sortParam) {
-            list($sortField, $sortDirection) = explode(':', $sortParam);
-        } 
+    $sortParam = $this->queryParams[ProposalSearchParams::SORTS()->value] ?? null;
+    $sortField = '';
+    $sortDirection = ''; 
 
-        $query = $fund->campaigns();
-
-        if ($sortField === CampaignsSortBy::AMOUNT()->value) {
-            $query->orderBy(CampaignsSortBy::AMOUNT()->value, $sortDirection);
-        } elseif ($sortField === CampaignsSortBy::PROPOSALSCOUNT()->value) {
-            $query->orderBy(CampaignsSortBy::PROPOSALSCOUNT()->value, $sortDirection);
-        }
-
-        return Inertia::render('Funds/Fund', [
-            'fund' => $fund,
-            'metrics' => MetricData::collect($metrics->limit(6)->getQuery()->where('context', 'fund')
-                ->orderByDesc('order')->get()),
-            'campaigns' => $query->get(),
-            'filters' => $this->queryParams
-        ]);
+    if ($sortParam) {
+        list($sortField, $sortDirection) = explode(':', $sortParam);
     }
+
+    $query = $fund->campaigns();
+
+    if ($sortField === CampaignsSortBy::AMOUNT()->value) {
+        $query->orderBy(CampaignsSortBy::AMOUNT()->value, $sortDirection);
+    } elseif ($sortField === CampaignsSortBy::PROPOSALSCOUNT()->value) {
+        $query->orderBy(CampaignsSortBy::PROPOSALSCOUNT()->value, $sortDirection);
+    }
+
+    return Inertia::render('Funds/Fund', [
+        'fund' => $fund,
+        'metrics' => MetricData::collect($metrics->limit(6)->getQuery()->where('context', 'fund')
+            ->orderByDesc('order')->get()),
+        'campaigns' => $query->get(),
+        'filters' => $this->queryParams
+    ]);
+}
+
 
 
     protected function getProps(Request $request): void
