@@ -62,7 +62,7 @@ build:
 
 .PHONY: tsc
 tsc:
-	$(compose) yarn tsc
+	$(compose) npx tsc
 
 .PHONY: db-setup
 db-setup:
