@@ -1,6 +1,6 @@
 export function shortNumber(value?: number|null, digits = 0) {
     if (!value) {
-        return 0;
+        return '0';
     }
     if (typeof value == 'string') {
         value = parseFloat(value);
