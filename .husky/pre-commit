@@ -1,4 +1,4 @@
 make lint-backend
 git add -A
 make commitlint
-docker-compose exec -T catalystexplorer.com yarn tsc
+make tsc

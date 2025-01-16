@@ -2,7 +2,7 @@ include ./application/.env
 export
 
 sail := ./application/vendor/bin/sail
-compose := docker-compose exec catalystexplorer.com
+compose := docker-compose exec -T catalystexplorer.com
 nodeVersion := 20
 
 .PHONY: init
