@@ -4,6 +4,7 @@ import Selector from '@/Components/Select';
 import FilterLinesIcon from '@/Components/svgs/FilterLinesIcon';
 import { useFilterContext } from '@/Context/FiltersContext';
 import { ProposalParamsEnum } from '@/enums/proposal-search-params';
+import ProposalSortingOptions from '@/lib/ProposalSortOptions';
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import ActiveFilters from './ActiveFilters';
@@ -20,89 +21,6 @@ function ProposalSearchControls({
     const initialSearchQuery = queryParams.get(ProposalParamsEnum.QUERY) || '';
     const [searchQuery, setSearchQuery] = useState(initialSearchQuery);
     const [showFilters, setShowFilters] = useState(false);
-
-    const sortingOptions = [
-        {
-            label: t('proposals.options.votesCastLowToHigh'),
-            value: 'votes_cast:asc',
-        },
-        {
-            label: t('proposals.options.votesCastHighToLow'),
-            value: 'votes_cast:desc',
-        },
-        {
-            label: t('proposals.options.budgetHighToLow'),
-            value: 'amount_requested:desc',
-        },
-        {
-            label: t('proposals.options.budgetLowToHigh'),
-            value: 'amount_requested:asc',
-        },
-        {
-            label: t('proposals.options.communityRankingHighToLow'),
-            value: 'ranking_total:desc',
-        },
-        {
-            label: t('proposals.options.communityRankingLowToHigh'),
-            value: 'ranking_total:asc',
-        },
-        {
-            label: t('proposals.options.paymentsReceivedHighToLow'),
-            value: 'amount_received:desc',
-        },
-        {
-            label: t('proposals.options.paymentsReceivedLowToHigh'),
-            value: 'amount_received:asc',
-        },
-        {
-            label: t('proposals.options.yesVotesHighToLow'),
-            value: 'yes_votes_count:desc',
-        },
-        {
-            label: t('proposals.options.yesVotesLowToHigh'),
-            value: 'yes_votes_count:asc',
-        },
-        {
-            label: t('proposals.options.noVotesHighToLow'),
-            value: 'no_votes_count:desc',
-        },
-        {
-            label: t('proposals.options.noVotesLowToHigh'),
-            value: 'no_votes_count:asc',
-        },
-        {
-            label: t('proposals.options.ratingHighToLow'),
-            value: 'ca_rating:desc',
-        },
-        {
-            label: t('proposals.options.ratingLowToHigh'),
-            value: 'ca_rating:asc',
-        },
-        {
-            label: t('proposals.options.impactAlignmentHighToLow'),
-            value: 'alignment_score:desc',
-        },
-        {
-            label: t('proposals.options.impactAlignmentLowToHigh'),
-            value: 'alignment_score:asc',
-        },
-        {
-            label: t('proposals.options.feasibilityHighToLow'),
-            value: 'feasibility_score:desc',
-        },
-        {
-            label: t('proposals.options.feasibilityLowToHigh'),
-            value: 'feasibility_score:asc',
-        },
-        {
-            label: t('proposals.options.valueForMoneyHighToLow'),
-            value: 'auditability_score:desc',
-        },
-        {
-            label: t('proposals.options.valueForMoneyLowToHigh'),
-            value: 'auditability_score:asc',
-        },
-    ];
 
     useEffect(() => {
         setSearchQuery(initialSearchQuery);
@@ -146,20 +64,6 @@ function ProposalSearchControls({
                     <span>({filtersCount})</span>
                 </Button>
 
-                {/* <button
-                    onClick={toggleFilters}
-                    className="border-input placeholder:text-muted-foreground flex h-full items-center justify-between rounded-md border bg-background px-2 py-1 text-sm shadow-sm ring-offset-background disabled:cursor-not-allowed disabled:opacity-50"
-                    aria-expanded={showFilters}
-                >
-                    <Filters className="mt-2 text-white" />
-                    {t('proposals.filters.filters')}
-                    {filters.length > 0 && (
-                        <span className="ml-1 text-white">
-                            ({filters.length})
-                        </span>
-                    )}
-                </button> */}
-
                 <Selector
                     isMultiselect={false}
                     selectedItems={getFilter(ProposalParamsEnum.SORTS)}
@@ -170,7 +74,7 @@ function ProposalSearchControls({
                             label: 'Sorts',
                         })
                     }
-                    options={sortingOptions}
+                    options={ProposalSortingOptions()}
                     hideCheckbox={true}
                     placeholder={t('proposals.options.sort')}
                     className={
@@ -182,7 +86,7 @@ function ProposalSearchControls({
             </div>
 
             <div className="container mx-auto flex justify-start px-0 py-2">
-                <ActiveFilters />
+                <ActiveFilters sortOptions={ProposalSortingOptions()} />
             </div>
         </div>
     );

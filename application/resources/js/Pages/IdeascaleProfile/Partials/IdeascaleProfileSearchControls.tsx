@@ -3,7 +3,6 @@ import { useFilterContext } from '@/Context/FiltersContext';
 import { ProposalParamsEnum } from '@/enums/proposal-search-params';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ProposalSearchParams } from '../../../../types/proposal-search-params';
 
 function IdeascaleProfilesSearchControls() {
     const { filters, setFilters } = useFilterContext();
@@ -18,20 +17,23 @@ function IdeascaleProfilesSearchControls() {
     }, [initialSearchQuery]);
 
     const handleSearch = (search: string) => {
-        setSearchQuery(search); 
+        setSearchQuery(search);
         const url = new URL(window.location.href);
-    
+
         if (search.trim() === '') {
             url.searchParams.delete(ProposalParamsEnum.QUERY);
         } else {
-            setFilters({param:ProposalParamsEnum.QUERY, value:search,label:'Search'});
+            setFilters({
+                param: ProposalParamsEnum.QUERY,
+                value: search,
+                label: 'Search',
+            });
             url.searchParams.set(ProposalParamsEnum.QUERY, search);
         }
-    
+
         window.history.replaceState(null, '', url.toString());
     };
-    
-    
+
     return (
         <div className="mx-auto flex w-full flex-col gap-4 bg-background-lighter pb-4 pt-6">
             <div className="flex items-center justify-end gap-2">
@@ -46,4 +48,4 @@ function IdeascaleProfilesSearchControls() {
     );
 }
 
-export default  IdeascaleProfilesSearchControls;
+export default IdeascaleProfilesSearchControls;

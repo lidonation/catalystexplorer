@@ -32,11 +32,19 @@ const labels = {
 
 type LabelKeys = keyof typeof labels;
 
-export default function ActiveFilters() {
+export default function ActiveFilters({
+    sortOptions,
+}: {
+    sortOptions?: {
+        label: string;
+        value: string;
+    }[];
+}) {
     const [clearFilter, setClearFilter] = useState(true);
     const { filters } = useFilterContext();
-    const statusFilters = ['coh', 'fs', 'ps','f'];
+    const statusFilters = ['coh', 'fs', 'ps', 'f'];
     const rangeFilters = ['pl', 'b'];
+    const sortFilters = ['st'];
     const idFilters = ['t', 'cam', 'com', 'ip', 'g'];
     const booleanFilters = ['op'];
 
@@ -45,7 +53,7 @@ export default function ActiveFilters() {
     };
 
     return (
-        <div className="flex w-full flex-wrap gap-3  transition-all duration-300">
+        <div className="flex w-full flex-wrap gap-3 transition-all duration-300">
             {filters.map((filter) => {
                 if (!filter.label) {
                     return;
@@ -63,6 +71,15 @@ export default function ActiveFilters() {
 
                 if (rangeFilters.includes(filter.param)) {
                     return <RangeFilters filter={filter} />;
+                }
+
+                if (sortFilters.includes(filter.param)) {
+                    return (
+                        <SortFilters
+                            sortOptions={sortOptions}
+                            filter={filter}
+                        />
+                    );
                 }
 
                 if (idFilters.includes(filter.param) && filter.value.length) {
@@ -165,6 +182,41 @@ const BooleanFilters = ({ filter }: { filter: FilteredItem }) => {
             key={filter.label}
         >
             <div className="mr-1">{filter.label}</div>
+            <button className="ml-2" onClick={() => removeFilter()}>
+                X{' '}
+            </button>
+        </div>
+    );
+};
+
+const SortFilters = ({
+    filter,
+    sortOptions,
+}: {
+    filter: FilteredItem;
+    sortOptions?: {
+        label: string;
+        value: string;
+    }[];
+}) => {
+    const { setFilters } = useFilterContext();
+
+    const sort = sortOptions?.find((sort) => sort.value == filter.value);
+
+    const removeFilter = (value?: string) => {
+        setFilters({
+            param: filter.param,
+            value: null,
+            label: undefined,
+        });
+    };
+
+    return (
+        <div
+            className="mb-1 mr-1 flex items-center rounded-lg border bg-background px-1 py-1"
+            key={filter.label}
+        >
+            <div className="mr-1">{sort?.label}</div>
             <button className="ml-2" onClick={() => removeFilter()}>
                 X{' '}
             </button>

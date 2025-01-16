@@ -5,15 +5,15 @@ import { useFilterContext } from '@/Context/FiltersContext'; // Import the custo
 import { ProposalParamsEnum } from '@/enums/proposal-search-params';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-
 import FundingStatusToggle from './FundingStatusToggle';
-import IdeascaleProfilesSearchControls from './IdeascaleProfileSearchControls';
 
 export default function IdeascaleProfilesFilters() {
     const { t } = useTranslation();
     const { filters, setFilters, getFilter } = useFilterContext();
     const [fundingStatus, setFundingStatus] = useState(
-        getFilter(ProposalParamsEnum.FUNDING_STATUS) == '1' ? true : false,
+        getFilter(ProposalParamsEnum.FUNDING_STATUS)?.[0] == 'funded'
+            ? true
+            : false,
     );
 
     const handleFundingStatusChange = () => {
@@ -21,7 +21,7 @@ export default function IdeascaleProfilesFilters() {
         setFundingStatus(newFundingStatus);
         setFilters({
             label: t('proposals.filters.fundingStatus'),
-            value: newFundingStatus ? '1' : '',
+            value: newFundingStatus ? ['funded'] : ['unfunded'],
             param: ProposalParamsEnum.FUNDING_STATUS,
         });
     };
