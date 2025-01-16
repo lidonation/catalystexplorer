@@ -39,6 +39,8 @@ class Proposal extends Model
         'meta_title',
     ];
 
+    public int $maxValuesPerFacet = 10000;
+
     protected $guarded = ['user_id', 'created_at', 'funded_at'];
 
     protected $appends = [

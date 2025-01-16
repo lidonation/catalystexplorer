@@ -58,7 +58,7 @@ class Rules extends Resource
             Text::make(__('Subject'), 'subject')
                 ->sortable()
                 ->rules('required', 'max:255')
-                ->help('Column or field to consider for the rule(in snake_case format).'),
+                ->help('Column to consider for the rule prefixed by table(optional) eg currency OR proposals.currency (in snake_case format).'),
 
             Select::make(__('Operator'), 'operator')
                 ->options([
@@ -70,6 +70,8 @@ class Rules extends Resource
                     Operators::LESS_THAN_OR_EQUALS_TO()->value => Operators::LESS_THAN_OR_EQUALS_TO()->value,
                     Operators::IS_NULL()->value => Operators::IS_NULL()->value,
                     Operators::IS_NOT_NULL()->value => Operators::IS_NOT_NULL()->value,
+                    Operators::IN()->value => Operators::IN()->value,
+                    Operators::NOT_IN()->value => Operators::NOT_IN()->value,
                 ])
                 ->rules('required'),
 

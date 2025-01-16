@@ -41,8 +41,8 @@ class Metric extends Model
                 $aggregate = $this->query;
                 $field = $this->field;
 
-                if ($this->rules && $this->rules->isNotEmpty()) {
-                    $builder = $this->applyRules($builder, $this->rules);
+                if ($this->rules?->isNotEmpty()) {
+                    $builder = $this->applyRules($builder, $this->rules, $table);
                 }
 
                 return $builder->select(DB::raw("{$aggregate}({$table}.{$field}) as {$aggregate}"))
@@ -66,6 +66,9 @@ class Metric extends Model
                     return null;
                 }
 
+                if ($this->rules?->isNotEmpty()) {
+                    $builder = $this->applyRules($builder, $this->rules, $table);
+                }
                 $results = $builder->select('fund_id', DB::raw("{$aggregate}({$table}.{$field}) as {$aggregate}"))
                     ->leftJoin('funds', fn ($join) => $join->on('funds.id', '=', 'proposals.fund_id'))
                     ->with([
@@ -76,7 +79,7 @@ class Metric extends Model
                     ->get()
                     ->map(function ($row) use ($aggregate) {
                         return [
-                            'x' => $row->fund->title,
+                            'x' => $row->fund?->title,
                             'y' => $row->{$aggregate},
                         ];
                     });
