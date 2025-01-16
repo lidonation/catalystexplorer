@@ -123,7 +123,7 @@ class IdeascaleProfilesController extends Controller
                 filter_var($this->queryParams[ProposalSearchParams::FUNDING_STATUS()->value], FILTER_VALIDATE_BOOLEAN);
         }
 
-        if (!empty($this->queryParams)) {
+        if (! empty($this->queryParams)) {
             $this->queryParams[ProposalSearchParams::BUDGETS()->value] = [1, 10000000];
         }
 

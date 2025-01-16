@@ -131,7 +131,7 @@ class ProposalsController extends Controller
         }
 
         // set defaults max and mins
-        if (!empty($this->queryParams)) {
+        if (! empty($this->queryParams)) {
             $this->queryParams[ProposalSearchParams::BUDGETS()->value] = [1, 10000000];
             $this->queryParams[ProposalSearchParams::PROJECT_LENGTH()->value] = [0, 12];
         }
@@ -151,7 +151,6 @@ class ProposalsController extends Controller
         if ((bool) $this->sortBy && (bool) $this->sortOrder) {
             $args['sort'] = ["$this->sortBy:$this->sortOrder"];
         }
-
 
         $page = isset($this->queryParams[ProposalSearchParams::PAGE()->value])
             ? (int) $this->queryParams[ProposalSearchParams::PAGE()->value]
@@ -221,11 +220,11 @@ class ProposalsController extends Controller
         }
 
         if (isset($this->queryParams[ProposalSearchParams::OPENSOURCE_PROPOSALS()->value])) {
-            $filters[] = 'opensource = ' . $this->queryParams[ProposalSearchParams::OPENSOURCE_PROPOSALS()->value];
+            $filters[] = 'opensource = '.$this->queryParams[ProposalSearchParams::OPENSOURCE_PROPOSALS()->value];
         }
 
         if (isset($this->queryParams[ProposalSearchParams::TYPE()->value])) {
-            $filters[] = 'type = ' . $this->queryParams[ProposalSearchParams::TYPE()->value];
+            $filters[] = 'type = '.$this->queryParams[ProposalSearchParams::TYPE()->value];
         }
 
         if (isset($this->queryParams[ProposalSearchParams::QUICK_PITCHES()->value])) {
@@ -241,12 +240,12 @@ class ProposalsController extends Controller
         // filter by challenge
         if (! empty($this->queryParams[ProposalSearchParams::CAMPAIGNS()->value])) {
             $campaignIds = ($this->queryParams[ProposalSearchParams::CAMPAIGNS()->value]);
-            $filters[] = '(' . implode(' OR ', array_map(fn($c) => "campaign.id = {$c}", $campaignIds)) . ')';
+            $filters[] = '('.implode(' OR ', array_map(fn ($c) => "campaign.id = {$c}", $campaignIds)).')';
         }
 
         if (! empty($this->queryParams[ProposalSearchParams::TAGS()->value])) {
             $tagIds = ($this->queryParams[ProposalSearchParams::TAGS()->value]);
-            $filters[] = '(' . implode(' OR ', array_map(fn($c) => "tags.id = {$c}", $tagIds)) . ')';
+            $filters[] = '('.implode(' OR ', array_map(fn ($c) => "tags.id = {$c}", $tagIds)).')';
         }
 
         if (! empty($this->queryParams[ProposalSearchParams::IDEASCALE_PROFILES()->value])) {
@@ -270,8 +269,8 @@ class ProposalsController extends Controller
         }
 
         if (! empty($this->queryParams[ProposalSearchParams::COHORT()->value])) {
-            $cohortFilters = array_map(fn($cohort) => "{$cohort} = 1", $this->queryParams[ProposalSearchParams::COHORT()->value]);
-            $filters[] = '(' . implode(' OR ', $cohortFilters) . ')';
+            $cohortFilters = array_map(fn ($cohort) => "{$cohort} = 1", $this->queryParams[ProposalSearchParams::COHORT()->value]);
+            $filters[] = '('.implode(' OR ', $cohortFilters).')';
         }
 
         if (! empty($this->queryParams[ProposalSearchParams::FUNDS()->value])) {
