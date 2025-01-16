@@ -52,7 +52,6 @@ class FundsController extends Controller
             $sortDirection = 'desc'; 
         }
     
-        // Initialize the query only once
         $query = $fund->campaigns();
     
         if ($sortField === 'amount') {
@@ -65,7 +64,7 @@ class FundsController extends Controller
             'fund' => $fund,
             'metrics' => MetricData::collect($metrics->limit(6)->getQuery()->where('context', 'fund')
                 ->orderByDesc('order')->get()),
-            'campaigns' => $query->get(), // Use the already initialized query
+            'campaigns' => $query->get(), 
             'filters' => $this->queryParams
         ]);
     }
