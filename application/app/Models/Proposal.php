@@ -39,6 +39,8 @@ class Proposal extends Model
         'meta_title',
     ];
 
+    public int $maxValuesPerFacet = 10000;
+
     protected $guarded = ['user_id', 'created_at', 'funded_at'];
 
     protected $appends = [
@@ -328,7 +330,7 @@ class Proposal extends Model
 
             'paid' => ($this->amount_received > 0) && ($this->amount_received == $this->amount_requested ? 1 : 0),
 
-            'quickpitch' => $this->quickpitch ?? null,
+            'quickpitch' => $this->quick_pitch_id ?? null,
             'quickpitch_length' => $this->quickpitch_length ?? null,
 
             'ranking_total' => intval($this->ranking_total) ?? 0,
