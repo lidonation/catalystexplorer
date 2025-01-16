@@ -57,7 +57,7 @@ export default function ProposalCardHeader({
                         </div>
                     ) : (
                         <>
-                            <ProposalStatus status={proposal.status} />
+                            <ProposalStatus status={proposal.status} funding_status={proposal.funding_status} />
                             <ProposalBookmark />
                         </>
                     )}

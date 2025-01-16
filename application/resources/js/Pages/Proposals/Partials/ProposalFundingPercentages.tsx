@@ -19,7 +19,7 @@ export default function ProposalFundingPercentages({ proposal }: Proposal) {
         currency(
             amount ? parseInt(amount.toString()) : 0,
             currencyCode || 'USD',
-        );
+        ) as string;
 
     const getProgressBarColor = (percentage: number): string => {
         if (percentage >= 80) return 'bg-success';

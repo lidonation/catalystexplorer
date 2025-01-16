@@ -8,24 +8,19 @@ import { useFilterContext } from '@/Context/FiltersContext';
 import { ProposalParamsEnum } from '@/enums/proposal-search-params';
 import React from 'react';
 import { PaginatedData } from '../../types/paginated-data';
-import { ProposalSearchParams } from '../../types/proposal-search-params';
 import Selector from './Select';
 
 type PaginationComponentProps<T> = {
     pagination: PaginatedData<T>;
-    setPerPage?: (updatedItems: number) => void;
-    setCurrentPage?: (updatedItems: number) => void;
 };
 
 const PaginationComponent: React.FC<PaginationComponentProps<any>> = ({
     pagination,
-    setPerPage,
-    setCurrentPage,
 }) => {
-    const { filters, setFilters } = useFilterContext<ProposalSearchParams>();
+    const { setFilters } = useFilterContext();
 
-    const setPagination = (key: keyof ProposalSearchParams, value: number) => {
-        setFilters(key, value);
+    const setPagination = (param: string, value: number, label: string) => {
+        setFilters({ param, value, label });
     };
 
     const {
@@ -40,14 +35,18 @@ const PaginationComponent: React.FC<PaginationComponentProps<any>> = ({
     } = pagination;
 
     return (
-        <div className="flex w-full flex-col items-center  border-t pt-8 gap-2 mb-3 container">
-            <section className='flex w-full flex-row justify-center gap-2'>
+        <div className="container mb-3 flex w-full flex-col items-center gap-2 border-t pt-8">
+            <section className="flex w-full flex-row justify-center gap-2">
                 <div className="flex items-start">
                     <Selector
                         context="Per Page"
                         selectedItems={per_page}
                         setSelectedItems={(value) =>
-                            setPagination(ProposalParamsEnum.LIMIT, value)
+                            setPagination(
+                                ProposalParamsEnum.LIMIT,
+                                value,
+                                'Per Page',
+                            )
                         }
                         isMultiselect={false}
                         options={[
@@ -59,7 +58,7 @@ const PaginationComponent: React.FC<PaginationComponentProps<any>> = ({
                         ]}
                     />
                 </div>
-                <div className="flex mx-auto items-center justify-center gap-4">
+                <div className="mx-auto flex items-center justify-center gap-4">
                     {/* Previous Button */}
                     <div>
                         <PaginationItem className="list-none">
@@ -70,6 +69,7 @@ const PaginationComponent: React.FC<PaginationComponentProps<any>> = ({
                                               setPagination(
                                                   ProposalParamsEnum.PAGE,
                                                   current_page - 1,
+                                                  'Current Page',
                                               )
                                         : () => ''
                                 }
@@ -82,21 +82,25 @@ const PaginationComponent: React.FC<PaginationComponentProps<any>> = ({
                         </PaginationItem>
                     </div>
                     {/* Page Numbers */}
-                    <div className='flex flex-col gap-1 justify-center'>
+                    <div className="flex flex-col justify-center gap-1">
                         <ul className="flex list-none items-center gap-3 text-sm lg:gap-5 lg:text-base">
                             {links &&
                                 links.map((link, index) =>
                                     link.label.includes('&laquo;') ||
                                     link.label.includes('&raquo;') ? null : (
-                                        <PaginationItem key={index} className="">
+                                        <PaginationItem
+                                            key={index}
+                                            className=""
+                                        >
                                             {link.label === '...' ? (
-                                                <PaginationEllipsis/>
+                                                <PaginationEllipsis />
                                             ) : (
                                                 <button
                                                     onClick={() =>
                                                         setPagination(
                                                             ProposalParamsEnum.PAGE,
                                                             link.label,
+                                                            'Current Page',
                                                         )
                                                     }
                                                     aria-current={
@@ -128,6 +132,7 @@ const PaginationComponent: React.FC<PaginationComponentProps<any>> = ({
                                               setPagination(
                                                   ProposalParamsEnum.PAGE,
                                                   current_page + 1,
+                                                  'Current Page',
                                               )
                                         : () => ''
                                 }

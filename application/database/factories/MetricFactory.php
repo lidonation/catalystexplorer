@@ -33,7 +33,7 @@ class MetricFactory extends Factory
             'model' => $this->faker->randomElement([
                 Proposal::class,
             ]),
-            'field' => $this->faker->randomElement(['id', 'amount_requested', 'id']),
+            'field' => $this->faker->randomElement(['id', 'amount_requested']),
             'type' => $this->faker->randomElement(MetricTypes::cases()),
             'query' => $this->faker->randomElement(MetricQueryTypes::cases()),
             'count_by' => $this->faker->randomElement(MetricCountBy::cases()),
