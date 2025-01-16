@@ -22,8 +22,6 @@ const Index = ({
     filters,
 }: PageProps<IdeascaleProfilesPageProps>) => {
     const { t } = useTranslation();
-    const [perPage, setPerPage] = useState<number>(24);
-    const [currentPage, setCurrentPage] = useState<number>(1);
 
     return (
         <>
@@ -59,8 +57,6 @@ const Index = ({
                 <section className="w-full px-4 lg:container lg:px-0">
                     <Paginator
                         pagination={ideascaleProfiles}
-                        setPerPage={setPerPage}
-                        setCurrentPage={setCurrentPage}
                     />
                 </section>
             </FiltersProvider>

@@ -2,7 +2,7 @@ import axios, { AxiosRequestConfig, CancelTokenSource } from 'axios';
 import ApiPaginatedData from '../../types/api-paginated-data';
 
 class ApiRequestManager {
-    currentCancelToken: CancelTokenSource | null = null;
+    currentRequest: { url: string; cancelToken: CancelTokenSource } | null = null;
 
     async sendRequest<K>(
         method: 'get' | 'post' | 'patch' | 'delete',
@@ -10,11 +10,14 @@ class ApiRequestManager {
         data = {},
         options: AxiosRequestConfig = {}
     ): Promise<ApiPaginatedData<K>> {
-        if (this.currentCancelToken) {
-            this.currentCancelToken.cancel('Request canceled by new request.');
+        // Cancel only if the URL is the same
+        if (this.currentRequest && this.currentRequest.url === url) {
+            this.currentRequest.cancelToken.cancel('Request canceled by a new request to the same URL.');
         }
 
-        this.currentCancelToken = axios.CancelToken.source();
+        // Create a new CancelToken and track the current request
+        const cancelTokenSource = axios.CancelToken.source();
+        this.currentRequest = { url, cancelToken: cancelTokenSource };
 
         try {
             const config: AxiosRequestConfig = {
@@ -22,7 +25,7 @@ class ApiRequestManager {
                 url,
                 data: method !== 'get' ? data : undefined,
                 params: method === 'get' ? data : undefined,
-                cancelToken: this.currentCancelToken.token,
+                cancelToken: cancelTokenSource.token,
                 ...options,
             };
 
@@ -30,23 +33,26 @@ class ApiRequestManager {
 
             return response.data;
         } catch (error: any) {
-
             if (axios.isCancel(error)) {
                 console.log('Request canceled:', error.message);
             } else {
                 console.error('Request failed:', error);
             }
-            
+
             throw error;
         } finally {
-            this.currentCancelToken = null;
+            // Clear the current request after it completes
+            if (this.currentRequest?.url === url) {
+                this.currentRequest = null;
+            }
         }
     }
 
-    cancel() {
-        if (this.currentCancelToken) {
-            this.currentCancelToken.cancel('Request canceled.');
-            this.currentCancelToken = null;
+    cancel(url?: string) {
+        // Cancel only if the URL matches, or cancel all if no URL is provided
+        if (this.currentRequest && (!url || this.currentRequest.url === url)) {
+            this.currentRequest.cancelToken.cancel('Request canceled.');
+            this.currentRequest = null;
         }
     }
 }
