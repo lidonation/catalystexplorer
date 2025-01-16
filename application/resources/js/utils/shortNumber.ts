@@ -1,16 +1,22 @@
-export function shortNumber(value: number|null, digits = 0, locale: string = 'en-US') {
-    // Nine Zeroes for Billions
-    return Math.abs(Number(value)) >= 1.0e+9
+export function shortNumber(value?: number|null, digits = 0) {
+    if (!value) {
+        return '0';
+    }
+    if (typeof value == 'string') {
+        value = parseFloat(value);
+    }
+    if (Math.abs(value) >= 1_000_000_000_000) {
+        return (value / 1_000_000_000_000).toFixed(digits) + 'T';
+    }
+    if (Math.abs(value) >= 1_000_000_000) {
+        return (value / 1_000_000_000).toFixed(digits) + 'B';
+    }
+    if (Math.abs(value) >= 1_000_000) {
+        return (value / 1_000_000).toFixed(digits) + 'M';
+    }
+    if (Math.abs(value) >= 1_000) {
+        return (value / 1_000).toFixed(digits) + 'k';
+    }
 
-        ? (Math.abs(Number(value)) / 1.0e+9).toFixed(digits) + "B"
-        // Six Zeroes for Millions
-        : Math.abs(Number(value)) >= 1.0e+6
-
-            ? (Math.abs(Number(value)) / 1.0e+6).toFixed(digits) + "M"
-            // Three Zeroes for Thousands
-            : Math.abs(Number(value)) >= 1.0e+3
-
-                ? (Math.abs(Number(value)) / 1.0e+3).toFixed(digits) + "K"
-
-                : Math.abs(Number(value));
+    return value.toFixed(0);
 }

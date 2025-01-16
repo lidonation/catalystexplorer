@@ -131,18 +131,15 @@ class ProposalsController extends Controller
         }
 
         // set defaults max and mins
+        if (! empty($this->queryParams)) {
+            $this->queryParams[ProposalSearchParams::BUDGETS()->value] = [1, 10000000];
+            $this->queryParams[ProposalSearchParams::PROJECT_LENGTH()->value] = [0, 12];
+        }
+
         $this->queryParams[ProposalSearchParams::MAX_BUDGET()->value] = 10000000;
         $this->queryParams[ProposalSearchParams::MIN_BUDGET()->value] = 1;
         $this->queryParams[ProposalSearchParams::MAX_PROJECT_LENGTH()->value] = 12;
         $this->queryParams[ProposalSearchParams::MIN_PROJECT_LENGTH()->value] = 0;
-
-        if (empty($this->queryParams[ProposalSearchParams::BUDGETS()->value])) {
-            $this->queryParams[ProposalSearchParams::BUDGETS()->value] = [1, 10000000];
-        }
-
-        if (empty($this->queryParams[ProposalSearchParams::PROJECT_LENGTH()->value])) {
-            $this->queryParams[ProposalSearchParams::PROJECT_LENGTH()->value] = [0, 12];
-        }
     }
 
     protected function query($returnBuilder = false, $attrs = null, $filters = []): array|Builder

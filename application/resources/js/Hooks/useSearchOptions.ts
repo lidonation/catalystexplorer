@@ -4,11 +4,13 @@ import ApiPaginatedData from '../../types/api-paginated-data';
 
 export function useSearchOptions<T>(domain?: string) {
     const [searchTerm, setSearchTerm] = useState('');
+    const [ids, setIDs] = useState([]);
     const [options, setOptions] = useState<T[]>([]);
 
     const resolvePromise = async <T>(promise: Promise<T>): Promise<T | null> => {
         try {
             const response = await promise;
+            
             return response;
         } catch (error) {
             console.error('Error resolving promise:', error);
@@ -17,9 +19,10 @@ export function useSearchOptions<T>(domain?: string) {
     };
 
     useEffect(() => {
+
         const fetchData = async () => {
             const response = await resolvePromise<ApiPaginatedData<T>>(
-                requestManager.sendRequest('get', route(`api.${domain}`, { search: searchTerm }))
+                requestManager.sendRequest('get', route(`api.${domain}`, { search: searchTerm, ids }))
             );
 
             if (response) {
@@ -27,10 +30,12 @@ export function useSearchOptions<T>(domain?: string) {
             }
         };
 
-        if (searchTerm.length > 1) {
+        if (searchTerm.length || ids.length) {
             fetchData();
         }
-    }, [domain, searchTerm]);
 
-    return { searchTerm, setSearchTerm, options };
+
+    }, [domain, searchTerm, ids]);
+
+    return { searchTerm, setSearchTerm, options, ids, setIDs };
 }
