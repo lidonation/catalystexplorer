@@ -24,6 +24,8 @@ class IdeascaleProfile extends Model implements HasMedia
 
     public $incrementing = true;
 
+    public int $maxValuesPerFacet = 8000;
+
     protected $fillable = [
         'ideascale_id',
         'username',
