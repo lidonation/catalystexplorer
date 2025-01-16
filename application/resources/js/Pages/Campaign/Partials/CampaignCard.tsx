@@ -41,7 +41,7 @@ const CampaignCard: React.FC<CampainCardProps> = ({ fund, campaign }) => {
         </p>
         <div className="flex gap-2">
           <p className="bg-background text-content rounded-md border pr-2 pl-2">
-            {t('proposals.proposals')}: {campaign?.proposals_count}
+            {t('proposals.proposals')}: {campaign?.proposals_count ?? 0}
           </p>
           <p className="bg-background text-content rounded-md border pr-2 pl-2">
             {t('proposals.filters.budget')}: {currency(campaign?.amount ?? 0, campaign?.currency?.toUpperCase() ?? 'USD', undefined, 2 )}
