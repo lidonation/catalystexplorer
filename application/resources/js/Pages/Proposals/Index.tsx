@@ -1,6 +1,7 @@
 import Paginator from '@/Components/Paginator';
 import { FiltersProvider } from '@/Context/FiltersContext';
 import { ListProvider } from '@/Context/ListContext';
+import { useMetrics } from '@/Context/MetricsContext';
 import { usePlayer } from '@/Context/PlayerContext';
 import { ProposalParamsEnum } from '@/enums/proposal-search-params';
 import ProposalResults from '@/Pages/Proposals/Partials/ProposalResults';
@@ -8,7 +9,7 @@ import VerticalCardLoading from '@/Pages/Proposals/Partials/ProposalVerticalCard
 import { PageProps } from '@/types';
 import { ProposalMetrics } from '@/types/proposal-metrics';
 import { Head, WhenVisible } from '@inertiajs/react';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { PaginatedData } from '../../../types/paginated-data';
 import { ProposalSearchParams } from '../../../types/proposal-search-params';
@@ -18,7 +19,6 @@ import ProposalFilters from './Partials/ProposalFilters';
 import HorizontaCardLoading from './Partials/ProposalHorizontalCardLoading';
 import ProposalSearchControls from './Partials/ProposalSearchControls';
 import ProposalData = App.DataTransferObjects.ProposalData;
-import { useMetrics } from '@/Context/MetricsContext';
 
 interface HomePageProps extends Record<string, unknown> {
     proposals: PaginatedData<ProposalData[]>;
@@ -35,12 +35,11 @@ export default function Index({
 }: PageProps<HomePageProps>) {
     const { t } = useTranslation();
 
-    const [perPage, setPerPage] = useState<number>(24);
-    const [currentPage, setCurrentPage] = useState<number>(1);
     const { createProposalPlaylist } = usePlayer();
     const { setMetrics } = useMetrics();
 
     const [isHorizontal, setIsHorizontal] = useState(false);
+    const [showFilters, setShowFilters] = useState(false);
 
     const [quickPitchView, setQuickPitchView] = useState(
         !!parseInt(filters[ProposalParamsEnum.QUICK_PITCHES]),
@@ -54,15 +53,14 @@ export default function Index({
 
     useEffect(() => {
         if (metrics) {
-            console.log({metrics});
-            
             setMetrics(metrics);
         }
 
-       return () => {
+        return () => {
             setMetrics(undefined);
         };
     }, [metrics]);
+
 
     return (
         <ListProvider>
@@ -85,9 +83,13 @@ export default function Index({
                     <FundFiltersContainer funds={funds} />
                 </section>
 
-                <ProposalSearchControls />
+                <ProposalSearchControls onFiltersToggle={setShowFilters} />
 
-                <section className="container flex w-full flex-col items-center justify-center">
+                <section
+                    className={`container flex w-full flex-col items-center justify-center overflow-hidden transition-[max-height] duration-500 ease-in-out ${
+                        showFilters ? 'max-h-[500px]' : 'max-h-0'
+                    }`}
+                >
                     <ProposalFilters />
                 </section>
 
@@ -123,13 +125,7 @@ export default function Index({
                 </section>
 
                 <section className="w-full px-4 lg:container lg:px-0">
-                    {proposals && (
-                        <Paginator
-                            pagination={proposals}
-                            setPerPage={setPerPage}
-                            setCurrentPage={setCurrentPage}
-                        />
-                    )}
+                    {proposals && <Paginator pagination={proposals} />}
                 </section>
             </FiltersProvider>
         </ListProvider>
