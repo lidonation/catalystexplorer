@@ -28,21 +28,16 @@ const MetricCard: React.FC<MetricCardProps> = ({ metric }) => {
     }] : [];
 
 
-    const calculateTrend = () => {
-        if (lineData.length > 0 && lineData[0].data.length >= 2) {
-            const data = lineData[0].data;
-            const lastValue = data[data.length - 1].y;
-            const previousValue = data[data.length - 2].y;
-            const percentageChange = ((lastValue - previousValue) / previousValue) * 100;
+    const calculateTrend = (currentValue: number, previousValue: number) => {
+        if (previousValue !== 0) {
+            const percentageChange = ((currentValue - previousValue) / previousValue) * 100;
             return {
                 value: Math.abs(percentageChange).toFixed(0),
-                isPositive: percentageChange >= 0
+                isPositive: percentageChange >= 0,
             };
         }
         return { value: '0', isPositive: true };
     };
-
-    const trend = calculateTrend();
 
     return (
         <div className="relative flex h-full w-full flex-col rounded-lg bg-background shadow-md">
@@ -108,42 +103,43 @@ const MetricCard: React.FC<MetricCardProps> = ({ metric }) => {
                                 tooltipFormat={(value) =>
                                     shortNumber(Number(value))
                                 }
-                                tooltip={({ point }) => (
-                                    <div className="relative rounded-lg bg-dark p-4 text-white shadow-lg">
-                                        <div className="max-w-sm">
-                                            <h3 className="text-lg font-semibold">
-                                                {point.data.xFormatted}
-                                            </h3>
-                                            <p className="mt-2 flex items-center text-sm">
-                                                <span className="flex-shrink truncate">
-                                                    {metric.title}
-                                                </span>
-                                                :
-                                                <span className="font-bold">
-                                                    {point.data.yFormatted}
-                                                </span>
-                                            </p>
-                                            <div className="mt-2 flex items-center">
-                                                <span
-                                                    className={`${trend.isPositive ? 'text-green-500' : 'text-red-500'} flex items-center`}
-                                                >
-                                                    {trend.isPositive ? (
-                                                        <ArrowTrendingUp />
-                                                    ) : (
-                                                        <ArrowTrendingDown />
-                                                    )}
-                                                    <span className="ml-1 font-medium">
-                                                        {trend.value}%
+                                tooltip={({ point }) => {
+                                    const currentIndex = point.index;
+                                    const currentData = lineData[0].data[currentIndex];
+                                    const previousData = lineData[0].data[currentIndex - 1];
+                                    const trend = previousData
+                                        ? calculateTrend(currentData.y, previousData.y)
+                                        : { value: '0', isPositive: true };
+
+                                    return (
+                                        <div className="relative rounded-lg bg-dark p-4 text-white shadow-lg">
+                                            <div className="max-w-sm">
+                                                <h3 className="text-lg font-semibold">{point.data.xFormatted}</h3>
+                                                <p className="mt-2 flex items-center text-sm">
+                                                    <span className="flex-shrink truncate">{metric.title}</span>:
+                                                    <span className="font-bold">{point.data.yFormatted}</span>
+                                                </p>
+                                                <div className="mt-2 flex items-center">
+                                                    <span
+                                                        className={
+                                                            trend.isPositive ? 'text-green-500' : 'text-red-500'
+                                                        }
+                                                        style={{ display: 'flex', alignItems: 'center' }}
+                                                    >
+                                                        {trend.isPositive ? (
+                                                            <ArrowTrendingUp />
+                                                        ) : (
+                                                            <ArrowTrendingDown />
+                                                        )}
+                                                        <span className="ml-1 font-medium">{trend.value}%</span>
                                                     </span>
-                                                </span>
-                                                <span className="ml-1">
-                                                    {t('metric.vs')}
-                                                </span>
+                                                    <span className="ml-1">{t('metric.vs')}</span>
+                                                </div>
                                             </div>
+                                            <div className="absolute bottom-0 left-1/2 h-0 w-0 -translate-x-1/2 translate-y-full border-l-[10px] border-r-[10px] border-t-[10px] border-l-transparent border-r-transparent border-t-dark"></div>
                                         </div>
-                                        <div className="absolute bottom-0 left-1/2 h-0 w-0 -translate-x-1/2 translate-y-full border-l-[10px] border-r-[10px] border-t-[10px] border-l-transparent border-r-transparent border-t-dark"></div>
-                                    </div>
-                                )}
+                                    );
+                                }}
                                 theme={{
                                     grid: {
                                         line: {
