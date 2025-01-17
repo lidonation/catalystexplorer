@@ -67,9 +67,6 @@ class FundsController extends Controller
         ]);
     }
 
-
-
-
     protected function getProps(Request $request): void
     {
         $this->queryParams = $request->validate([
