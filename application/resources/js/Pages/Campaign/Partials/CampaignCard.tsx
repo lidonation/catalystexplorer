@@ -5,7 +5,7 @@ import { currency } from '@/utils/currency';
 import { useTranslation } from 'react-i18next';
 
 interface CampainCardProps {
-  fund: FundData & { media?: { original_url: string }[] };
+  fund: FundData;
   campaign: CampaignData
 }
 
