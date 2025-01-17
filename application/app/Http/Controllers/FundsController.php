@@ -55,15 +55,20 @@ class FundsController extends Controller
         return Inertia::render('Funds/Fund', [
             'fund' => $fund,
             'filters' => $this->queryParams,
-            'metrics' => MetricData::collect($metrics
-                ->limit(6)
-                ->getQuery()
-                ->where('context', 'fund')
-                ->orderByDesc('order')
-                ->get()),
-            'campaigns' => $campaigns,
+            'metrics' => Inertia::optional(
+                fn() => MetricData::collect($metrics
+                    ->limit(6)
+                    ->getQuery()
+                    ->where('context', 'fund')
+                    ->orderByDesc('order')
+                    ->get())
+            ),
+            'campaigns' => Inertia::optional(fn()=> CampaignData::collect($campaigns)),
         ]);
     }
+
+
+
 
     protected function getProps(Request $request): void
     {
@@ -72,8 +77,7 @@ class FundsController extends Controller
         ]);
     }
 
-    public function getCampaigns()
-    {
+    public function getCampaigns() {
         $sortParam = $this->queryParams[ProposalSearchParams::SORTS()->value] ?? null;
         $sortField = null;
         $sortDirection = null;
