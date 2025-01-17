@@ -117,7 +117,7 @@
     },
     "metric": {
         "totalProposals": "Total des propositions",
-        "vs": "vs. dernier fonds"
+        "vs": "vs. fonds précédent"
     },
     "announcements": {
         "none": "Aucune annonce",
