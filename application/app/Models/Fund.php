@@ -6,6 +6,8 @@ namespace App\Models;
 
 use App\Enums\CatalystCurrencies;
 use App\Enums\CatalystCurrencySymbols;
+use App\Enums\ProposalFundingStatus;
+use App\Enums\ProposalStatus;
 use App\Models\Scopes\OrderByLaunchedDateScope;
 use App\Traits\HasMetaData;
 use Illuminate\Database\Eloquent\Casts\Attribute;
@@ -28,8 +30,8 @@ class Fund extends Model implements HasMedia
     ];
 
     protected $appends = [
-        'amount_received',
         'amount_requested',
+        'amount_awarded',
     ];
 
     protected $guarded = [];
@@ -81,21 +83,15 @@ class Fund extends Model implements HasMedia
 
     public function fundedProposals(): HasMany
     {
-        return $this->hasMany(Proposal::class)->where('funding_status', 'funded');
+        return $this->hasMany(Proposal::class)->whereIn('funding_status', [
+            ProposalFundingStatus::funded()->value,
+            ProposalFundingStatus::leftover()->value,
+        ]);
     }
 
     public function completedProposals(): HasMany
     {
-        return $this->hasMany(Proposal::class)->where('status', 'complete');
-    }
-
-    public function amountReceived(): Attribute
-    {
-        return Attribute::make(
-            get: function () {
-                return $this->proposals()->sum('amount_received');
-            }
-        );
+        return $this->hasMany(Proposal::class)->where('status', ProposalStatus::complete()->value);
     }
 
     public function amountRequested(): Attribute
@@ -103,6 +99,18 @@ class Fund extends Model implements HasMedia
         return Attribute::make(
             get: function () {
                 return $this->proposals()->sum('amount_requested');
+            }
+        );
+    }
+
+    public function amountAwarded(): Attribute
+    {
+        return Attribute::make(
+            get: function () {
+                return $this->proposals()->whereIn('funding_status', [
+                    ProposalFundingStatus::funded()->value,
+                    ProposalFundingStatus::leftover()->value,
+                ])->sum('amount_requested');
             }
         );
     }

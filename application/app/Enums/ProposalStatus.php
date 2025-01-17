@@ -10,6 +10,7 @@ use Spatie\Enum\Laravel\Enum;
  * @method static self pending()
  * @method static self complete()
  * @method static self in_progress()
+ * @method static self unfunded()
  */
 final class ProposalStatus extends Enum
 {

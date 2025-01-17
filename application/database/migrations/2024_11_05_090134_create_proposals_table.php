@@ -45,7 +45,7 @@ return new class extends Migration
             $table->json('content')->nullable();
             $table->text('currency', CatalystCurrencies::values())
                 ->nullable();
-            $table->boolean('opensource')->default(false);
+            $table->boolean('opensource')->nullable();
             $table->integer('ranking_total')->default(0);
             $table->string('quickpitch', 255)->nullable();
             $table->integer('quickpitch_length')->nullable();

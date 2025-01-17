@@ -36,6 +36,8 @@ class BookmarkItems extends Resource
      */
     public static $search = [
         'id',
+        'title',
+        'content',
     ];
 
     /**

@@ -32,7 +32,7 @@ export default function LoginForm() {
             password: data.password,
         }).then((response) => {
             reset('password');
-            router.get('my.dashboard');
+            router.get('my/dashboard');
         }).catch((error) => {
             setErrors(error?.response?.data?.errors)
         });

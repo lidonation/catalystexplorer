@@ -2,8 +2,8 @@ import { cn } from '@/lib/utils';
 import { ChevronDown } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Popover, PopoverContent, PopoverTrigger } from './Popover';
 import Checkbox from './Checkbox';
+import { Popover, PopoverContent, PopoverTrigger } from './Popover';
 
 type SelectProps = {
     isMultiselect?: boolean;
@@ -13,11 +13,12 @@ type SelectProps = {
         label: string;
         value: string;
     }[];
+    bgColor?: string;
     context?: string;
     basic?: boolean;
     className?: string;
     hideCheckbox?: boolean; // New prop to hide checkboxes
-    placeholder?: string;  // New prop for custom placeholder
+    placeholder?: string; // New prop for custom placeholder
 };
 
 export default function Selector({
@@ -27,8 +28,9 @@ export default function Selector({
     selectedItems = [],
     setSelectedItems,
     className,
+    bgColor = 'bg-background',
     hideCheckbox = false, // Default to false
-    placeholder = '',     // Default to empty string
+    placeholder = '', // Default to empty string
     ...props
 }: SelectProps) {
     const [open, setOpen] = useState(false);
@@ -75,7 +77,7 @@ export default function Selector({
     };
 
     return (
-        <div className={cn('h-full rounded-lg bg-background', className)}>
+        <div className={cn('h-full rounded-lg', className + bgColor)}>
             <Popover open={open} onOpenChange={setOpen}>
                 <PopoverTrigger asChild>
                     <button
@@ -100,7 +102,7 @@ export default function Selector({
                     </button>
                 </PopoverTrigger>
                 <PopoverContent
-                    className="relative w-full min-w-[var(--radix-popover-trigger-width)] bg-background p-0"
+                    className="relative w-full min-w-[var(--radix-popover-trigger-width)] bg-background p-1"
                     align="start"
                 >
                     <div>

@@ -109,7 +109,7 @@ class IdeascaleProfilesController extends Controller
             ProposalSearchParams::FUNDS()->value => 'array|nullable',
             ProposalSearchParams::PROJECT_STATUS()->value => 'array|nullable',
             ProposalSearchParams::TAGS()->value => 'array|nullable',
-            ProposalSearchParams::FUNDING_STATUS()->value => 'string|nullable',
+            ProposalSearchParams::FUNDING_STATUS()->value => 'array|nullable',
             ProposalSearchParams::BUDGETS()->value => 'array|nullable',
             ProposalSearchParams::PAGE()->value => 'int|nullable',
             ProposalSearchParams::LIMIT()->value => 'int|nullable',
@@ -118,14 +118,12 @@ class IdeascaleProfilesController extends Controller
             IdeascaleProfileSearchParams::SORT()->value => 'string|nullable',
         ]);
 
-        if (isset($this->queryParams[ProposalSearchParams::FUNDING_STATUS()->value])) {
-            $this->queryParams[ProposalSearchParams::FUNDING_STATUS()->value] =
-                filter_var($this->queryParams[ProposalSearchParams::FUNDING_STATUS()->value], FILTER_VALIDATE_BOOLEAN);
+        if (! empty($this->queryParams)) {
+            $this->queryParams[ProposalSearchParams::BUDGETS()->value] = [1, 10000000];
         }
 
-        if (empty($this->queryParams[ProposalSearchParams::BUDGETS()->value])) {
-            $this->queryParams[ProposalSearchParams::BUDGETS()->value] = [1000, 10000000];
-        }
+        $this->queryParams[ProposalSearchParams::MAX_BUDGET()->value] = 10000000;
+        $this->queryParams[ProposalSearchParams::MIN_BUDGET()->value] = 1;
     }
 
     protected function getUserFilters(): array
@@ -153,7 +151,7 @@ class IdeascaleProfilesController extends Controller
 
             // Funding status filter
             if (isset($this->queryParams[ProposalSearchParams::FUNDING_STATUS()->value])) {
-                $fundingStatus = $this->queryParams[ProposalSearchParams::FUNDING_STATUS()->value] ? 'funded' : 'unfunded';
+                $fundingStatus = implode(',', $this->queryParams[ProposalSearchParams::FUNDING_STATUS()->value]);
                 $filters[] = "proposals.funding_status = '{$fundingStatus}'";
             }
 
@@ -162,7 +160,6 @@ class IdeascaleProfilesController extends Controller
                 $budgetRange = collect((object) $this->queryParams[ProposalSearchParams::BUDGETS()->value]);
                 $filters[] = "(proposals_total_amount_requested  {$budgetRange->first()} TO  {$budgetRange->last()})";
             }
-
         } catch (\Exception $e) {
             Log::error('Error generating filters:', [
                 'error' => $e->getMessage(),

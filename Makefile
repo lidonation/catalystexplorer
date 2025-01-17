@@ -2,12 +2,24 @@ include ./application/.env
 export
 
 sail := ./application/vendor/bin/sail
-compose := docker-compose exec -t catalystexplorer.com
+compose := docker-compose exec -T catalystexplorer.com
 nodeVersion := 20
 
 .PHONY: init
 init:
 	cp application/.env.example application/.env
+
+	docker run --rm --interactive --tty \
+		--volume ${PWD}:/app \
+		--workdir /app \
+		--user root \
+		node:18-alpine yarn install --ignore-engine
+
+	docker run --rm --interactive --tty \
+		--volume ${PWD}:/app \
+		--workdir /app \
+		--user root \
+		node:${nodeVersion}-alpine yarn install --ignore-engine
 
 	docker run --rm --interactive --tty \
 		--volume ${PWD}:/app \
@@ -46,7 +58,11 @@ backend-install:
 
 .PHONY: build
 build:
-	$(compose) npx vite build
+	$(compose) yarn build
+
+.PHONY: tsc
+tsc:
+	$(compose) npx tsc
 
 .PHONY: db-setup
 db-setup:
@@ -82,7 +98,6 @@ frontend-install:
 .PHONY: frontend-clean
 frontend-clean:
 	rm -rf application/node_modules 2>/dev/null || true
-	$(compose) yarn cache clean
 
 .PHONY: image-build
 image-build:
@@ -141,7 +156,7 @@ vite:
 
 .PHONY: watch
 watch:
-	docker compose  up -d --remove-orphans&& $(sail) npx vite --force
+	docker compose  up -d --remove-orphans && $(sail) npx vite --force
 
 .PHONY: test-backend
 test-backend:

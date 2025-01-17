@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import MetricData = App.DataTransferObjects.MetricData;
 import ArrowTrendingDown from '@/Components/svgs/ArrowTrendingDown';
 import ArrowTrendingUp from '@/Components/svgs/ArrowTrendingUp';
+import { shortNumber } from '@/utils/shortNumber';
 
 interface MetricCardProps {
     metric: MetricData;
@@ -26,21 +27,6 @@ const MetricCard: React.FC<MetricCardProps> = ({ metric }) => {
         }))
     }] : [];
 
-    const formatNumber = (num: number): string => {
-        if (Math.abs(num) >= 1_000_000_000_000) {
-            return (num / 1_000_000_000_000).toFixed(1) + 'T';
-        }
-        if (Math.abs(num) >= 1_000_000_000) {
-            return (num / 1_000_000_000).toFixed(1) + 'B';
-        }
-        if (Math.abs(num) >= 1_000_000) {
-            return (num / 1_000_000).toFixed(1) + 'M';
-        }
-        if (Math.abs(num) >= 1_000) {
-            return (num / 1_000).toFixed(1) + 'k';
-        }
-        return num.toFixed(0);
-    };
 
     const calculateTrend = () => {
         if (lineData.length > 0 && lineData[0].data.length >= 2) {
@@ -59,30 +45,40 @@ const MetricCard: React.FC<MetricCardProps> = ({ metric }) => {
     const trend = calculateTrend();
 
     return (
-        <div className="w-full bg-background rounded-lg shadow-md flex flex-col h-full relative">
-            <div className="absolute top-6 left-12 bg-background shadow-md rounded-md px-4 py-2">
+        <div className="relative flex h-full w-full flex-col rounded-lg bg-background shadow-md">
+            <div className="absolute left-12 top-6 rounded-md bg-background px-4 py-2 shadow-md">
                 <span className="text-2xl font-bold text-content">
-                    {formatNumber(parseFloat(metric.value?.toString() || '0'))}
+                    {shortNumber(metric.value ?? 0)}
                 </span>
-                <h3 className="text-sm font-medium text-content-gray-persist max-w-[200px] truncate">
+                <h3 className="text-content-gray-persist max-w-[200px] truncate text-sm font-medium">
                     {metric.title}
                 </h3>
             </div>
 
-            <div className="flex-grow flex flex-col justify-between mt-20">
+            <div className="mt-20 flex flex-grow flex-col justify-between">
                 {lineData.length > 0 && (
                     <>
                         <div
-                            className="w-full h-40"
+                            className="h-40 w-full"
                             onMouseEnter={() => setIsHovered(true)}
                             onMouseLeave={() => setIsHovered(false)}
                         >
                             <ResponsiveLine
                                 data={lineData}
                                 curve="cardinal"
-                                margin={{ top: 10, right: 30, bottom: 40, left: 50 }}
+                                margin={{
+                                    top: 10,
+                                    right: 30,
+                                    bottom: 40,
+                                    left: 50,
+                                }}
                                 xScale={{ type: 'point' }}
-                                yScale={{ type: 'linear', min: 'auto', max: 'auto', clamp: true }}
+                                yScale={{
+                                    type: 'linear',
+                                    min: 'auto',
+                                    max: 'auto',
+                                    clamp: true,
+                                }}
                                 axisBottom={{
                                     tickSize: 5,
                                     tickPadding: 5,
@@ -104,31 +100,48 @@ const MetricCard: React.FC<MetricCardProps> = ({ metric }) => {
                                 pointSize={4}
                                 pointColor={{
                                     from: 'color',
-                                    modifiers: [['brighter', 1.5]]
+                                    modifiers: [['brighter', 1.5]],
                                 }}
                                 pointBorderWidth={2}
                                 pointBorderColor={{ from: 'serieColor' }}
                                 useMesh={true}
-                                tooltipFormat={(value) => formatNumber(Number(value))}
+                                tooltipFormat={(value) =>
+                                    shortNumber(Number(value))
+                                }
                                 tooltip={({ point }) => (
-                                    <div className="relative bg-dark text-white p-4 rounded-lg shadow-lg">
+                                    <div className="relative rounded-lg bg-dark p-4 text-white shadow-lg">
                                         <div className="max-w-sm">
-                                            <h3 className="text-lg font-semibold">{point.data.xFormatted}</h3>
-                                            <p className="mt-2 text-sm flex items-center">
-                                                <span className="truncate flex-shrink">{metric.title}</span>:
-                                                <span className="font-bold">{point.data.yFormatted}</span>
+                                            <h3 className="text-lg font-semibold">
+                                                {point.data.xFormatted}
+                                            </h3>
+                                            <p className="mt-2 flex items-center text-sm">
+                                                <span className="flex-shrink truncate">
+                                                    {metric.title}
+                                                </span>
+                                                :
+                                                <span className="font-bold">
+                                                    {point.data.yFormatted}
+                                                </span>
                                             </p>
                                             <div className="mt-2 flex items-center">
-                                                <span className={`${trend.isPositive ? 'text-green-500' : 'text-red-500'} flex items-center`}>
-                                                    {trend.isPositive ? <ArrowTrendingUp /> : <ArrowTrendingDown />}
-                                                    <span className="ml-1 font-medium">{trend.value}%</span>
+                                                <span
+                                                    className={`${trend.isPositive ? 'text-green-500' : 'text-red-500'} flex items-center`}
+                                                >
+                                                    {trend.isPositive ? (
+                                                        <ArrowTrendingUp />
+                                                    ) : (
+                                                        <ArrowTrendingDown />
+                                                    )}
+                                                    <span className="ml-1 font-medium">
+                                                        {trend.value}%
+                                                    </span>
                                                 </span>
-                                                <span className="ml-1">{t('metric.vs')}</span>
+                                                <span className="ml-1">
+                                                    {t('metric.vs')}
+                                                </span>
                                             </div>
                                         </div>
-                                        <div
-                                            className="absolute bottom-0 left-1/2 h-0 w-0 -translate-x-1/2 translate-y-full border-l-[10px] border-r-[10px] border-t-[10px] border-l-transparent border-r-transparent border-t-dark"
-                                        ></div>
+                                        <div className="absolute bottom-0 left-1/2 h-0 w-0 -translate-x-1/2 translate-y-full border-l-[10px] border-r-[10px] border-t-[10px] border-l-transparent border-r-transparent border-t-dark"></div>
                                     </div>
                                 )}
                                 theme={{
@@ -144,28 +157,28 @@ const MetricCard: React.FC<MetricCardProps> = ({ metric }) => {
                                             line: {
                                                 stroke: 'var(--cx-border-color)',
                                                 strokeWidth: 1,
-                                            }
+                                            },
                                         },
                                         legend: {
                                             text: {
                                                 fill: 'var(--cx-content-gray-persist)',
-                                                fontSize: 16
-                                            }
+                                                fontSize: 16,
+                                            },
                                         },
                                         ticks: {
                                             text: {
                                                 fill: 'var(--cx-content-gray-persist)',
-                                                fontSize: 10
-                                            }
-                                        }
+                                                fontSize: 10,
+                                            },
+                                        },
                                     },
                                     tooltip: {
                                         container: {
                                             background: 'var(--cx-background)',
                                             color: 'var(--cx-content)',
                                             fontSize: 12,
-                                        }
-                                    }
+                                        },
+                                    },
                                 }}
                                 enableArea={true}
                                 areaOpacity={0.8}
@@ -176,10 +189,18 @@ const MetricCard: React.FC<MetricCardProps> = ({ metric }) => {
                                         id: 'gradient',
                                         type: 'linearGradient',
                                         colors: [
-                                            { offset: 0, color: 'inherit', opacity: 1.0 },
-                                            { offset: 1, color: 'inherit', opacity: 0.2 }
-                                        ]
-                                    }
+                                            {
+                                                offset: 0,
+                                                color: 'inherit',
+                                                opacity: 1.0,
+                                            },
+                                            {
+                                                offset: 1,
+                                                color: 'inherit',
+                                                opacity: 0.2,
+                                            },
+                                        ],
+                                    },
                                 ]}
                                 fill={[{ match: '*', id: 'gradient' }]}
                             />
