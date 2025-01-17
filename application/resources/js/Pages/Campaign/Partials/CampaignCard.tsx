@@ -16,7 +16,7 @@ const CampaignCard: React.FC<CampainCardProps> = ({ fund, campaign }) => {
 
   return (
     <div>
-      <div className="h-60 bg-gray-200 rounded-lg overflow-hidden">
+      <div className="h-60 bg-content-light rounded-lg overflow-hidden">
         {heroImageUrl ? (
           <img
             src={heroImageUrl}
@@ -24,7 +24,7 @@ const CampaignCard: React.FC<CampainCardProps> = ({ fund, campaign }) => {
             className="h-full w-full object-cover"
           />
         ) : (
-          <div className="flex items-center justify-center h-full text-gray-500">
+          <div className="flex items-center justify-center h-full text-gray-persist">
             {t('noImage')}
           </div>
         )}
