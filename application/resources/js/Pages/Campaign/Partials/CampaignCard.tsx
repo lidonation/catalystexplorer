@@ -12,7 +12,7 @@ interface CampainCardProps {
 const CampaignCard: React.FC<CampainCardProps> = ({ fund, campaign }) => {
   const { t } = useTranslation();
 
-  const heroImageUrl = fund.media?.[0]?.original_url || null;
+  const heroImageUrl = fund?.hero_img_url;
 
   return (
     <div>
