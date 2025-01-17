@@ -11,6 +11,7 @@ import FundSortBy from './Partials/FundsSortBy';
 import FundData = App.DataTransferObjects.FundData;
 import MetricData = App.DataTransferObjects.MetricData;
 import CampaignData = App.DataTransferObjects.CampaignData;
+import CampaignLoader from '../Campaign/Partials/CampaignLoader';
 
 interface FundPageProps extends Record<string, unknown> {
     fund: FundData;
@@ -81,7 +82,9 @@ export default function Fund({
                             <FundSortBy />
                         </div>
                         <div className="mt-4">
-                            <CampaignList campaigns={campaigns} fund={fund} />
+                           <WhenVisible fallback={<CampaignLoader/>} data="campaigns">
+                           <CampaignList campaigns={campaigns} fund={fund} />
+                           </WhenVisible>
                         </div>
                     </section>
                 </div>
