@@ -53,7 +53,7 @@ export default function Fund({
 
                     <section className="container py-8">
                         <h4 className="title-4">{fund.title}</h4>
-                        <p className="text-gray-persist">
+                        <p className="text-content opacity-70">
                             {t('funds.singleFundSubtitle')}
                         </p>
                         <WhenVisible
