@@ -33,6 +33,11 @@ export default function FundSortBy() {
                 }
                 hideCheckbox={true}
                 placeholder={t('funds.sortBy')}
+                className={`bg-background ${
+                    getFilter(ProposalParamsEnum.SORTS)
+                        ? 'cursor-default bg-background text-primary'
+                        : 'text-gray-500 hover:bg-background-lighter'
+                }`}
             />
         </div>
     );
