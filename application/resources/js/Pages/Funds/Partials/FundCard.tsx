@@ -1,6 +1,8 @@
 import ArrowTrendingDown from '@/Components/svgs/ArrowTrendingDown';
 import ArrowTrendingUp from '@/Components/svgs/ArrowTrendingUp';
 import { currency } from '@/utils/currency';
+import { useLocalizedRoute } from '@/utils/localizedRoute';
+import { Link } from '@inertiajs/react';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import FundData = App.DataTransferObjects.FundData;
@@ -16,20 +18,23 @@ const FundCard: React.FC<FundCardProps> = ({
     percentageChange,
     projectPercentageChange,
 }) => {
-
     const { t } = useTranslation();
 
     return (
-        <div className="flex w-full flex-row items-stretch space-x-6 overflow-hidden rounded-lg bg-background p-3 shadow-md sm:p-4">
+        <div className="flex w-full transform flex-row items-stretch space-x-6 overflow-hidden rounded-lg bg-background p-3 shadow-md sm:p-4">
             {/* Image Section */}
             <div className="flex flex-none flex-col items-center space-y-2 sm:items-start sm:space-y-4">
                 {/* Title */}
-                <h2 className="truncate text-center text-base font-bold sm:text-left sm:text-xl">
+                <Link
+                    href={useLocalizedRoute('funds.fund', { slug: fund.slug })}
+                    className="truncate text-center text-base font-bold sm:text-left sm:text-xl hover:text-primary"
+                >
                     {fund.title}
-                </h2>
-
+                </Link>
                 {/* Responsive Image Section */}
-                <div className="flex h-24 w-24 items-center justify-center overflow-hidden rounded-full bg-gradient-to-r from-gray-100 to-gray-900 sm:h-32 sm:w-32 lg:h-36 lg:w-36">
+                <div
+                    className="flex h-24 w-24 items-center justify-center overflow-hidden rounded-full bg-gradient-to-r from-gray-100 to-gray-900 sm:h-32 sm:w-32 lg:h-36 lg:w-36"
+                >
                     <img
                         src={fund.hero_img_url}
                         alt={fund.title || 'Fund'}
@@ -70,7 +75,7 @@ const FundCard: React.FC<FundCardProps> = ({
                             <ArrowTrendingDown className="h-3 w-3 text-red-500 sm:h-4 sm:w-4" />
                         )}
                         <span className="ml-1 truncate text-xs sm:text-sm">
-                            {`${Math.abs(percentageChange)}%`}
+                            {`${Math.abs(percentageChange ?? 0)}%`}
                         </span>
                         <span className="ml-1 truncate text-xs sm:text-sm">
                             vs {t('funds.lastFund')}
@@ -84,11 +89,11 @@ const FundCard: React.FC<FundCardProps> = ({
                     </p>
                     <div className="flex items-baseline space-x-1">
                         <span className="truncate text-sm font-bold sm:text-base">
-                            {fund.funded_proposals_count}
+                            {fund.funded_proposals_count ?? 0}
                         </span>
                         <span className="text-xs sm:text-sm">/</span>
                         <span className="truncate text-xs text-gray-500 sm:text-sm">
-                            {fund.proposals_count}
+                            {fund.proposals_count ?? 0}
                         </span>
                     </div>
                     <div className="mt-1 flex items-center">
@@ -98,7 +103,7 @@ const FundCard: React.FC<FundCardProps> = ({
                             <ArrowTrendingDown className="h-3 w-3 text-red-500 sm:h-4 sm:w-4" />
                         )}
                         <span className="ml-1 truncate text-xs sm:text-sm">
-                            {`${Math.abs(projectPercentageChange)}%`}
+                            {`${Math.abs(projectPercentageChange ?? 0)}%`}
                         </span>
                         <span className="ml-1 truncate text-xs sm:text-sm">
                             vs {t('funds.lastFund')}
