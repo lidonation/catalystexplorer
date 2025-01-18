@@ -25,6 +25,7 @@ created_at: string | null;
 updated_at: string | null;
 label?: string;
 currency: string | null;
+proposals_count: number;
 };
 export type CommunityData = {
 id: number | null;

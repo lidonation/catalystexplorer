@@ -134,7 +134,7 @@
         "subtitle": "View projects charts and filter results based on funds",
         "seeMore": "See more",
         "totalProposals": "Total Proposals",
-        "vs": "vs last fund"
+        "vs": "vs previous fund"
     },
     "announcements": {
         "none": "No announcements available",
@@ -145,6 +145,9 @@
         "funds": "Funds",
         "fund": "Fund",
         "pageSubtitle": "Search funds by title, content, or author and co-authors",
+        "singleFundSubtitle": "Dive into the total milestones, comparing completed, in-progress, and to be completed milestones across the entire funding eco-system.",
+        "browseByCampaign": "Browse by campaign",
+        "browseByCampaignSubtitle": "The community was asked to provide solutions to these campaigns",
         "totalAwarded": "Total Awarded",
         "lastFund": "last fund",
         "fundedProjects": "Funded Projects",
@@ -152,10 +155,17 @@
         "fundRounds": "Fund Rounds",
         "totalProposals": "Total Proposals",
         "fundedProposals": "Funded Proposals",
-        "totalFundsAwardedAda": "Total Awarded ADA",
-        "totalFundsAwardedUsd": "Total Awarded USD",
-        "completedProposals" : "Completed Proposals",
-        "filter": "Filter"
+        "totalFundsAwardedAda": "Total Funds Awarded ADA",
+        "totalFundsAwardedUsd": "Total Funds Awarded USD",
+        "completedProposals": "Completed Proposals",
+        "sortBy": "Sort By",
+        "filter": "Filter",
+        "options": {
+            "lowToHigh": "Budget: Low to High",
+            "highToLow": "Budget: High to Low",
+            "proposalCountsLowToHigh": "Proposal count: Low to High",
+            "proposalCountsHighToLow": "Proposal count: High to Low"
+        }
     },
 
     "proposals": {

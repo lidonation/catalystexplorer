@@ -20,14 +20,13 @@ class Metric extends Model
     protected function casts(): array
     {
         return [
-            //            'count_by' => MetricCountBy::class,
+            'count_by' => MetricCountBy::class.':nullable',
             'created_at' => 'datetime:Y-m-d',
             'order' => 'integer',
-            //            'query' => MetricQueryTypes::class,
-            //            'status' => StatusEnum::class, #Not compatible with nova
-            //            'type' => MetricTypes::class,
+            'query' => MetricQueryTypes::class.':nullable',
+            'status' => StatusEnum::class.':nullable',
+            'type' => MetricTypes::class.':nullable',
             'updated_at' => 'datetime:Y-m-d',
-
         ];
     }
 

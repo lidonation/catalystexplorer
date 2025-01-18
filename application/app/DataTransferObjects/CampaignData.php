@@ -41,6 +41,8 @@ class CampaignData extends Data
         #[TypeScriptOptional]
         public ?string $label,
 
-        public ?string $currency
+        public ?string $currency,
+
+        public ?int $proposals_count
     ) {}
 }
