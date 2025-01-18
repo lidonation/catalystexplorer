@@ -14,6 +14,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Artisan;
 use Laravel\Scout\Searchable;
@@ -24,7 +25,8 @@ class Proposal extends Model
         HasMetaData,
         HasTaxonomies,
         HasTranslations,
-        Searchable;
+        Searchable,
+        SoftDeletes;
 
     public array $translatable = [
         'title',
@@ -39,7 +41,7 @@ class Proposal extends Model
         'meta_title',
     ];
 
-    public int $maxValuesPerFacet = 10000;
+    public int $maxValuesPerFacet = 12000;
 
     protected $guarded = ['user_id', 'created_at', 'funded_at'];
 

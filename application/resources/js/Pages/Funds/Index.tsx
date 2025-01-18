@@ -27,9 +27,8 @@ export default function Index({
     .sort((a, b) => {
         const numA = parseInt(a.fund.replace(/\D/g, ''), 10);
         const numB = parseInt(b.fund.replace(/\D/g, ''), 10);
-        return numB - numA;  // Descending order
+        return numB - numA;  
     });
-
 
     return (
         <>
