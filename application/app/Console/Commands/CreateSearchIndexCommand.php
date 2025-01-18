@@ -57,9 +57,9 @@ class CreateSearchIndexCommand extends Command
 
             $client = app(EngineManager::class)->driver('meilisearch');
 
-            $client->index($name)->updatePagination(['maxTotalHits' => 100000]);
+            $client->index($name)->updatePagination(['maxTotalHits' => 120000]);
             $client->index($name)->updateFaceting([
-                'maxValuesPerFacet' => (new $model)->maxValuesPerFacet ?? 100,
+                'maxValuesPerFacet' => (new $model)->maxValuesPerFacet ?? 1000,
             ]);
 
             if (method_exists($model, 'getRankingRules')) {
