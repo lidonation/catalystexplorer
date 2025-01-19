@@ -3,255 +3,149 @@
 namespace App\Http\Controllers\My;
 
 use App\Http\Controllers\Controller;
-use App\Http\Resources\BookmarkCollectionResource;
+use App\Enums\BookmarkableType;
+use App\DataTransferObjects\BookmarkCollectionData;
+use App\DataTransferObjects\BookmarkItemData;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use App\Models\BookmarkItem;
 use App\Models\BookmarkCollection;
-use App\Models\Group;
-use App\Models\IdeascaleProfile;
-use App\Models\Review;
-use App\Models\Proposal;
 use Inertia\Inertia;
-use Inertia\Response;
+use Inertia\Response as InertiaResponse;
 use Illuminate\Support\Fluent;
-use Illuminate\Support\Facades\Gate;
-use Illuminate\Support\Str;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 
 class MyBookmarksController extends Controller
 {
+    use AuthorizesRequests;
+    
+    protected int $defaultLimit = 36;
+    protected int $defaultPage = 1;
+    
     protected function getBookmarkableTypes(): array
     {
-        return [
-            'proposals' => Proposal::class,
-            'ideascale_profiles' => IdeascaleProfile::class,
-            'groups' => Group::class,
-            'reviews' => Review::class,
-            'lists' => BookmarkCollection::class,
-        ];
+        return BookmarkableType::toArray();
     }
 
-    public function index(Request $request): Response
+    public function index(Request $request): InertiaResponse
     {
-        $collections = BookmarkCollection::where('user_id', Auth::id())->whereNotNull('user_id')
+        $this->authorize('viewAny', BookmarkCollection::class);
+        
+        $page = (int) $request->input('page', $this->defaultPage);
+        $limit = (int) $request->input('limit', $this->defaultLimit);
+        
+        $query = BookmarkCollection::where('user_id', Auth::id())
+            ->whereNotNull('user_id')
             ->withCount(['items']);
-    
-        $hashes = $request->get('hashes', false);
-    
-        if ($hashes) {
-            $collections = $collections->whereHashIn($hashes);
-        }
-    
-        $collections = $collections->get(['id', 'title', 'items.id']);
+
+        $total = $query->count();
+        
+        $collections = $query->offset(($page - 1) * $limit)
+            ->limit($limit)
+            ->get(['id', 'title', 'items.id'])
+            ->map(fn ($collection) => BookmarkCollectionData::from($collection));
+
+        $paginator = new LengthAwarePaginator(
+            $collections,
+            $total,
+            $limit,
+            $page,
+            ['pageName' => 'page']
+        );
     
         return Inertia::render('My/Bookmarks/Index', [
-            'collections' => $collections
+            'collections' => $paginator->onEachSide(1)->toArray()
         ]);
     }
 
-    public function show(Request $request, string $id): Response
+    public function show(BookmarkItem $bookmarkItem): InertiaResponse|JsonResponse
     {
-        $user = Auth::user();
+        if ($bookmarkItem->user_id !== Auth::id()) {
+            return response()->json([], SymfonyResponse::HTTP_NOT_FOUND);
+        }
 
-        $bookmark = BookmarkItem::where('user_id', $user->id)
-            ->where('id', $id)
-            ->with('model')
-            ->firstOrFail();
-
-        $bookmarkableTypes = $this->getBookmarkableTypes();
-        $bookmarkType = array_search($bookmark->model_type, $bookmarkableTypes) ?: 'unknown';
-
-        $links = [
-            [
-                'type' => $bookmarkType,
-                'count' => BookmarkItem::where('user_id', $user->id)
-                    ->where('model_type', $bookmark->model_type)
-                    ->count()
-            ]
-        ];
+        $this->authorize('view', $bookmarkItem);
 
         return Inertia::render('My/Bookmarks/Partials/Show', [
-            'bookmark' => $bookmark,
-            'bookmarkType' => $bookmarkType,
-            'links' => $links,
+            'bookmark' => BookmarkItemData::from($bookmarkItem),
         ]);
     }
 
-    public function createItem(Request $request): Response
+    public function createItem(Request $request): JsonResponse|InertiaResponse
     {
-        DB::beginTransaction();
+        $this->authorize('create', BookmarkItem::class);
+
         try {
-            $modelTable = $request->get('model_type');
-            $bookmarkableTypes = $this->getBookmarkableTypes();
+            $validated = $request->validate([
+                'model_type' => ['required', 'string'],
+                'model_id' => ['required', 'integer'],
+                'collection.title' => ['required', 'string', 'min:5']
+            ]);
+
+            $bookmarkableType = BookmarkableType::tryFrom($validated['model_type']);
             
-            if (!isset($bookmarkableTypes[$modelTable])) {
-                throw new \Exception('Unsupported model type provided');
+            if (!$bookmarkableType) {
+                return response()->json([
+                    'errors' => ['model_type' => ['Invalid model type']]
+                ], SymfonyResponse::HTTP_UNPROCESSABLE_ENTITY);
             }
+
+            $modelType = $bookmarkableType->getModelClass();
             
-            $modelType = $bookmarkableTypes[$modelTable];
+            // Verify model exists
+            $modelExists = DB::table($validated['model_type'])
+                ->where('id', $validated['model_id'])
+                ->exists();
 
-            $data = new Fluent($request->validate([
-                'model_id' => "required|exists:{$modelTable},id",
-                'parent_id' => "nullable|bail|hashed_exists:{$modelTable},id",
-                'content' => 'nullable|bail|string',
-                'link' => 'nullable|bail|active_url',
-                'collection.hash' => 'nullable|bail',
-                'collection.title' => 'required_without:collection.hash|min:5',
-            ]));
-
-            $collection = null;
-            if (isset($data->collection['hash'])) {
-                $collection = BookmarkCollection::byHash($data->collection['hash']) ?? DraftBallot::byHash($data->collection['hash']);
+            if (!$modelExists) {
+                return response()->json([
+                    'errors' => ['Model not found']
+                ], SymfonyResponse::HTTP_UNPROCESSABLE_ENTITY);
             }
 
-            if (! $collection instanceof BookmarkCollection && ! $collection instanceof DraftBallot) {
-                $collection = new BookmarkCollection;
-                $collection->title = $data->collection['title'] ?? null;
-                $collection->content = $data->collection['content'] ?? null;
-                $collection->visibility = 'unlisted';
-                $collection->status = 'published';
-                $collection->user_id = Auth::id();
-                $collection->color = '#'.str_pad(dechex(mt_rand(0, 0xFFFFFF)), 6, '0', STR_PAD_LEFT);
-                $collection->save();
-            } elseif ($collection instanceof DraftBallot && $modelTable === 'proposals') {
-                $proposal = Proposal::find($data->model_id);
-                $fund = $proposal->fund->parent ?? $proposal->fund;
-                $activeFund = Fund::find($collection->fund_id);
+            DB::beginTransaction();
 
-                $proposalFundMatched = $fund->id == $activeFund->id ? true : false;
+            $collection = BookmarkCollection::create([
+                'user_id' => Auth::id(),
+                'title' => $validated['collection']['title']
+            ]);
 
-                if (! $proposalFundMatched) {
-                    throw new \Exception('Proposal is not in '.$activeFund->title);
-                }
+            $itemData = new BookmarkItemData(
+                id: null,
+                user_id: Auth::id(),
+                bookmark_collection_id: $collection->id,
+                model_id: $validated['model_id'],
+                model_type: $modelType,
+                content: null
+            );
 
-                $collection->fund_id = $fund->id;
-                $collection->save();
-            }
-
-            $item = new BookmarkItem;
-            $item->user_id = Auth::id();
-            $item->bookmark_collection_id = $collection->raw_id;
-            $item->model_id = $data->model_id;
-            $item->model_type = $modelType;
-            $item->content = $data->content;
-            $item->save();
+            BookmarkItem::create($itemData->toArray());
 
             DB::commit();
 
-            $collection->refresh();
-            $collection->load(['items']);
-
-            return Inertia::render('My/Bookmarks/Index', [
-                'bookmarkCollection' => new BookmarkCollectionResource($collection),
-                'message' => 'Bookmark created successfully'
-            ]);
+            return response()->json(['message' => 'Bookmark created successfully']);
 
         } catch (\Exception $e) {
             DB::rollback();
-            report($e->getMessage());
-
-            return Inertia::render('My/Bookmarks/Index', [
-                'errors' => ['Failed to create bookmark: ' . $e->getMessage()]
-            ]);
-        }
-    }
-
-    public function view(Request $request, BookmarkCollection $bookmarkCollection): Response
-    {
-        return Inertia::render('BookmarkCollection')->with([
-            'bookmarkCollection' => new BookmarkCollectionResource($bookmarkCollection),
-        ]);
-    }
-
-    public function getCollectionsOfProposal(Request $request): Response
-    {
-        $userId = Auth::id();
-        $proposalId = $request->input('model_id');
-
-        $collections = BookmarkItem::where('bookmark_items.model_id', $proposalId)
-            ->join('bookmark_collections', 'bookmark_items.bookmark_collection_id', '=', 'bookmark_collections.id')
-            ->where('bookmark_collections.user_id', $userId)
-            ->select('bookmark_collections.*')
-            ->get();
-
-        return Inertia::render('My/Bookmarks/Index', [
-            'collections' => $collections,
-            'proposalId' => $proposalId
-        ]);
-    }
-
-    public function getBookmarksByType(Request $request): Response
-    {
-        try {
-            $userId = Auth::id();
-            $modelType = $request->input('model_type');
-            $bookmarkableTypes = $this->getBookmarkableTypes();
-
-            if (!array_key_exists($modelType, $bookmarkableTypes)) {
-                throw new \Exception("Invalid or unsupported model type: {$modelType}");
-            }
-
-            $bookmarkItems = BookmarkItem::where('user_id', $userId)
-                ->where('model_type', $bookmarkableTypes[$modelType])
-                ->with(['model', 'collection'])
-                ->get();
-
-            return Inertia::render('My/Bookmarks/Index', [
-                'bookmarkItems' => $bookmarkItems,
-                'modelType' => $modelType
-            ]);
-        } catch (\Exception $e) {
             report($e);
-            
-            return Inertia::render('My/Bookmarks/Index', [
-                'errors' => [$e->getMessage()]
-            ]);
+
+            return response()->json([
+                'errors' => ['Failed to create bookmark']
+            ], SymfonyResponse::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 
-    public function deleteFromCollection(Request $request): Response
-    {
-        try {
-            $userId = Auth::id();
-            $modelId = $request->input('model_id');
-            $modelTypeKey = $request->input('model_type');
-            $bookmarkableTypes = $this->getBookmarkableTypes();
-
-            if (!array_key_exists($modelTypeKey, $bookmarkableTypes)) {
-                throw new \Exception("Invalid or unsupported model type: {$modelTypeKey}");
-            }
-
-            $modelType = $bookmarkableTypes[$modelTypeKey];
-
-            $item = BookmarkItem::where('bookmark_items.model_id', $modelId)
-                ->where('bookmark_items.model_type', $modelType)
-                ->join('bookmark_collections', 'bookmark_items.bookmark_collection_id', '=', 'bookmark_collections.id')
-                ->where('bookmark_collections.user_id', $userId)
-                ->select('bookmark_items.*')
-                ->firstOrFail();
-
-            $collection = $item->collection;
-            $item->delete();
-
-            return Inertia::render('My/Bookmarks/Partials/Show', [
-                'bookmarkCollection' => new BookmarkCollectionResource($collection),
-                'message' => 'Bookmark removed successfully'
-            ]);
-
-        } catch (\Exception $e) {
-            return Inertia::render('My/Bookmarks/Partials/Show', [
-                'errors' => ['Failed to remove bookmark: ' . $e->getMessage()]
-            ]);
-        }
-    }
-
-    public function deleteCollection(Request $request): Response
+    public function deleteCollection(Request $request): JsonResponse
     {
         $data = $request->validate([
-            'bookmark_collection_id' => 'required|integer|exists:bookmark_collections,id',
-            'bookmark_ids' => 'required|array',
-            'bookmark_ids.*' => 'required|integer|exists:bookmark_items,id',
+            'bookmark_collection_id' => ['required', 'integer', 'exists:bookmark_collections,id'],
+            'bookmark_ids' => ['required', 'array'],
+            'bookmark_ids.*' => ['required', 'integer', 'exists:bookmark_items,id'],
         ]);
 
         try {
@@ -260,30 +154,76 @@ class MyBookmarksController extends Controller
             $collection = BookmarkCollection::findOrFail($data['bookmark_collection_id']);
             
             if ($collection->user_id !== Auth::id()) {
-                throw new \Exception('Unauthorized to modify this collection');
+                return response()->json([
+                    'message' => 'Unauthorized'
+                ], SymfonyResponse::HTTP_FORBIDDEN);
             }
 
-            BookmarkItem::whereIn('id', $data['bookmark_ids'])
+            $this->authorize('delete', $collection);
+
+            // Verify all bookmarks belong to user and collection
+            $bookmarks = BookmarkItem::whereIn('id', $data['bookmark_ids'])
                 ->where('bookmark_collection_id', $data['bookmark_collection_id'])
                 ->where('user_id', Auth::id())
-                ->delete();
+                ->get();
+
+            if ($bookmarks->count() !== count($data['bookmark_ids'])) {
+                return response()->json([
+                    'errors' => ['Invalid bookmark selection']
+                ], SymfonyResponse::HTTP_UNPROCESSABLE_ENTITY);
+            }
+
+            $bookmarks->each->delete();
+            $collection->delete();
 
             DB::commit();
 
-            $collection->refresh();
-            $collection->load(['items']);
-
-            return Inertia::render('BookmarkCollection', [
-                'bookmarkCollection' => new BookmarkCollectionResource($collection),
-                'message' => 'Bookmarks deleted successfully'
-            ]);
+            return response()->json(['message' => 'Collection deleted successfully']);
 
         } catch (\Exception $e) {
             DB::rollBack();
             
-            return Inertia::render('BookmarkCollection', [
-                'bookmarkCollection' => new BookmarkCollectionResource($collection),
-                'errors' => ['Failed to delete bookmarks: ' . $e->getMessage()]
+            return response()->json([
+                'errors' => ['Failed to delete bookmarks']
+            ], SymfonyResponse::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    public function view(BookmarkCollection $bookmarkCollection): InertiaResponse|JsonResponse
+    {
+        if ($bookmarkCollection->user_id !== Auth::id()) {
+            return response()->json([
+                'message' => 'Unauthorized'
+            ], SymfonyResponse::HTTP_FORBIDDEN);
+        }
+
+        $this->authorize('view', $bookmarkCollection);
+
+        return Inertia::render('BookmarkCollection', [
+            'bookmarkCollection' => BookmarkCollectionData::from($bookmarkCollection)
+        ]);
+    }
+
+    public function getBookmarksByType(Request $request, string $type): InertiaResponse
+    {
+        $this->authorize('viewAny', BookmarkItem::class);
+
+        try {
+            $modelType = BookmarkableType::from($type)->getModelClass();
+            
+            $bookmarkItems = BookmarkItem::where('user_id', Auth::id())
+                ->where('model_type', $modelType)
+                ->paginate($this->defaultLimit);
+
+            return Inertia::render('My/Bookmarks/Index', [
+                'bookmarkItems' => $bookmarkItems->onEachSide(1)->toArray()
+            ]);
+
+        } catch (\Exception $e) {
+            report($e);
+            
+            return Inertia::render('My/Bookmarks/Index', [
+                'errors' => ['Invalid bookmark type']
             ]);
         }
     }

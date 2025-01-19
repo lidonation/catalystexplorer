@@ -15,10 +15,14 @@ class BookmarkCollection extends Model
 {
     use HasFactory, SoftDeletes;
 
-    // protected $hidden = [];
+    protected $hidden = ['id'];
 
     protected $withCount = [
         'items',
+    ];
+
+    protected $fillable = [
+        'user_id',
     ];
 
     public function user(): BelongsTo

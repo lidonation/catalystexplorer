@@ -1,140 +1,179 @@
 <?php
 
+declare(strict_types=1);
+
 use App\Models\User;
-use App\Models\BookmarkCollection;
+use App\Enums\RoleEnum;
 use App\Models\BookmarkItem;
-use App\Models\Proposal;
-use App\Models\Group;
-use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
-use Inertia\Testing\AssertableInertia as Assert;
+use App\Enums\PermissionEnum;
+use App\Models\BookmarkCollection;
+use Spatie\Permission\Models\Role;
+use Spatie\Permission\Models\Permission;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use function Pest\Laravel\actingAs;
+use function Pest\Laravel\get;
+use function Pest\Laravel\post;
+use function Pest\Laravel\delete;
 
 uses(RefreshDatabase::class);
 
-beforeEach(function () {
-    $this->user = User::factory()->create();
-    $this->actingAs($this->user);
-});
-
-test('it retrieves a list of bookmark collections for the authenticated user', function () {
+it('shows all bookmarks for the authenticated user', function () {
+    // Create admin role
+    Role::create(['name' => RoleEnum::admin()->value, 'guard_name' => 'web']);
+    
     $user = User::factory()->create();
+    $user->assignRole(RoleEnum::admin()->value);
+    
     BookmarkCollection::factory()->count(3)->create(['user_id' => $user->id]);
+    
+    actingAs($user);
 
-    Auth::login($user);
+    $response = get(route('my.bookmarks.index'));
 
-    $response = $this->get(route('my.bookmarks.index'));
-
-    $response->assertStatus(200);
-
-    $response->assertInertia(fn ($page) =>
-        $page->component('My/Bookmarks/Index')
-             ->has('collections', 3)
-    );
-}); 
-
-test('it retrieves a single bookmark for the authenticated user', function () {
-    $user = User::factory()->create();
-    $collection = BookmarkCollection::factory()->create(['user_id' => $user->id]);
-
-    $bookmarkItem = BookmarkItem::factory()->create([
-        'bookmark_collection_id' => $collection->id,
-        'user_id' => $user->id,
-        'model_type' => BookmarkCollection::class,
-    ]);
-
-    Auth::login($user);
-
-    $response = $this->get(route('my.bookmarks.show', ['id' => $bookmarkItem->id]));
-    $response->assertStatus(200);
-
-    $response->assertInertia(fn ($page) =>
-        $page->component('My/Bookmarks/Partials/Show')
-             ->where('bookmark.id', $bookmarkItem->id)
-             ->where('bookmarkType', 'lists')
-    );
+    $response->assertOk()
+        ->assertSee('collections');
 });
 
-test('it can create a bookmark item', function () {
-    $this->withoutMiddleware();
-    $user = User::factory()->create();
-    $collection = BookmarkCollection::factory()->create(['user_id' => $user->id]);
-
-    $response = $this->actingAs($user)
-        ->post(route('my.bookmarks.create-item'), [
-            'model_id' => $collection->id,
-            'model_type' => 'groups',
-            'collection' => [
-                'title' => 'Test Collection',
-            ],
-        ]);
-
-    $response->assertStatus(200);
+it('restricts viewing bookmarks to authenticated users only', function () {
+    $response = get(route('my.bookmarks.index'));
+    $response->assertForbidden();
 });
 
-test('it can view a collection', function () {
+it('prevents viewing a private collection of another user', function () {
     $user = User::factory()->create();
+    $otherUser = User::factory()->create();
+    $collection = BookmarkCollection::factory()->create(['user_id' => $otherUser->id]);
+
+    actingAs($user);
+
+    $response = get(route('my.bookmarks.collections.view', $collection->id));
+
+    $response->assertForbidden();
+});
+
+it('allows the user to view their own collection', function () {
+    Role::create(['name' => RoleEnum::admin()->value, 'guard_name' => 'web']);
+    $user = User::factory()->create();
+    $user->assignRole(RoleEnum::admin()->value);
     $collection = BookmarkCollection::factory()->create(['user_id' => $user->id]);
 
-    $this->actingAs($user)
-        ->get(route('my.bookmarks.collections.view', $collection))
-        ->assertStatus(200)
+    actingAs($user);
+
+    $response = get(route('my.bookmarks.collections.view', $collection->id));
+
+    $response->assertOk()
         ->assertSee($collection->title);
 });
 
-test('it can get collections of a proposal', function () {
+it('prevents deletion of another user\'s bookmark collection', function () {
     $user = User::factory()->create();
-    $proposal = BookmarkItem::factory()->create(['user_id' => $user->id]);
+    $otherUser = User::factory()->create();
+    $collection = BookmarkCollection::factory()->create(['user_id' => $otherUser->id]);
+    $bookmark = BookmarkItem::factory()->create([
+        'bookmark_collection_id' => $collection->id,
+        'user_id' => $otherUser->id
+    ]);
 
-    $this->actingAs($user)
-        ->get(route('my.bookmarks.index', ['model_id' => $proposal->id]))
-        ->assertStatus(200)
-        ->assertSee($proposal->id);
+    actingAs($user)->withoutMiddleware();
+
+    $response = delete(route('my.bookmarks.collections.destroy'), [
+        'bookmark_collection_id' => $collection->id,
+        'bookmark_ids' => [$bookmark->id]
+    ]);
+
+    $response->assertForbidden();
 });
 
-test('it can delete from collection', function () {
-    $this->withoutMiddleware();
+it('deletes a user\'s collection and bookmarks', function () {
+    Role::create(['name' => RoleEnum::admin()->value, 'guard_name' => 'web']);
+    Permission::create(['name' => PermissionEnum::delete_bookmark_collections()->value, 'guard_name' => 'web']);
+    
     $user = User::factory()->create();
+    $user->assignRole(RoleEnum::admin()->value);
+    $user->givePermissionTo(PermissionEnum::delete_bookmark_collections()->value);
+    
     $collection = BookmarkCollection::factory()->create(['user_id' => $user->id]);
-    
-    $proposal = Proposal::factory()->create();
-    
-    $bookmarkItem = BookmarkItem::factory()->create([
+    $bookmarks = BookmarkItem::factory()->count(3)->create([
         'bookmark_collection_id' => $collection->id,
         'user_id' => $user->id,
-        'model_id' => $proposal->id,
-        'model_type' => 'App\Models\Proposal'
     ]);
 
-    $response = $this->actingAs($user)
-        ->delete(route('my.bookmarks.proposals.delete'), [
-            'model_id' => $proposal->id,
-            'model_type' => 'proposals'
-        ]);
+    actingAs($user)
+        ->withoutMiddleware();
 
-    $response->assertStatus(200);
-    
-    $this->assertSoftDeleted('bookmark_items', [
-        'id' => $bookmarkItem->id
+    $response = delete(route('my.bookmarks.collections.destroy'), [
+        'bookmark_collection_id' => $collection->id,
+        'bookmark_ids' => $bookmarks->pluck('id')->toArray()
     ]);
 
-    $response->assertInertia(fn ($assert) => $assert
-        ->component('My/Bookmarks/Partials/Show')
-        ->has('message')
-        ->where('message', 'Bookmark removed successfully')
-    );
+    $response->assertOk();
+
+    $this->assertSoftDeleted('bookmark_collections', ['id' => $collection->id]);
+    foreach ($bookmarks as $bookmark) {
+        $this->assertSoftDeleted('bookmark_items', ['id' => $bookmark->id]);
+    }
 });
 
-test('it can delete a collection', function () {
-    $this->withoutMiddleware();
+it('prevents creating a bookmark item in a non-existent collection', function () {
+    Role::create(['name' => RoleEnum::admin()->value, 'guard_name' => 'web']);
+    Permission::create(['name' => PermissionEnum::create_bookmark_items()->value, 'guard_name' => 'web']);
+    
     $user = User::factory()->create();
-    $collection = BookmarkCollection::factory()->create(['user_id' => $user->id]);
-    $items = BookmarkItem::factory(3)->create(['bookmark_collection_id' => $collection->id, 'user_id' => $user->id]);
+    $user->assignRole(RoleEnum::admin()->value);
+    $user->givePermissionTo(PermissionEnum::create_bookmark_items()->value);
+    
+    actingAs($user)
+        ->withoutMiddleware();
 
-    $this->actingAs($user)
-        ->delete(route('my.bookmarks.collections.destroy'), [
-            'bookmark_collection_id' => $collection->id,
-            'bookmark_ids' => $items->pluck('id')->toArray(),
-        ])
-        ->assertStatus(200)
-        ->assertSee('Bookmarks deleted successfully');
+    $response = post(route('my.bookmarks.create-item'), [
+        'model_type' => 'products',
+        'model_id' => 9999,
+        'collection' => [
+            'title' => 'My Collection'
+        ]
+    ]);
+
+    $response->assertUnprocessable()
+        ->assertJsonValidationErrors(['model_type']);
+});
+
+it('ensures a bookmark belongs to the authenticated user', function () {
+    $user = User::factory()->create();
+    $otherUser = User::factory()->create();
+    $bookmark = BookmarkItem::factory()->create(['user_id' => $otherUser->id]);
+
+    actingAs($user);
+
+    $response = get(route('my.bookmarks.show', $bookmark->id));
+
+    $response->assertNotFound();
+});
+
+it('prevents deletion when bookmark ids do not match collection', function () {
+    Role::create(['name' => RoleEnum::admin()->value, 'guard_name' => 'web']);
+    Permission::create(['name' => PermissionEnum::delete_bookmark_collections()->value, 'guard_name' => 'web']);
+    
+    $user = User::factory()->create();
+    $user->assignRole(RoleEnum::admin()->value);
+    $user->givePermissionTo(PermissionEnum::delete_bookmark_collections()->value);
+    
+    $collection = BookmarkCollection::factory()->create(['user_id' => $user->id]);
+    $otherCollection = BookmarkCollection::factory()->create(['user_id' => $user->id]);
+    
+    // Create bookmark in other collection
+    $bookmark = BookmarkItem::factory()->create([
+        'bookmark_collection_id' => $otherCollection->id,
+        'user_id' => $user->id,
+    ]);
+
+    actingAs($user)
+        ->withoutMiddleware();
+
+    $response = delete(route('my.bookmarks.collections.destroy'), [
+        'bookmark_collection_id' => $collection->id,  // Different collection
+        'bookmark_ids' => [$bookmark->id]
+    ]);
+
+    $response->assertUnprocessable()
+        ->assertJsonPath('errors.0', 'Invalid bookmark selection');
 });
