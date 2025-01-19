@@ -189,6 +189,11 @@ class IdeascaleProfile extends Model implements HasMedia
         });
     }
 
+    public function monthly_reports(): HasMany
+    {
+        return $this->hasMany(MonthlyReport::class);
+    }
+
     public function gravatar(): Attribute
     {
         return Attribute::make(
