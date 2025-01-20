@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('title');
             $table->text('content');
             $table->text('status');
-            $table->foreignIdFor(IdeascaleProfile::class)->constrained()->onDelete('cascade'); 
+            $table->foreignIdFor(IdeascaleProfile::class)->constrained()->onDelete('cascade');
             $table->timestamps();
             $table->softDeletes();
         });

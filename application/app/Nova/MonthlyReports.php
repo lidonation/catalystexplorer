@@ -47,10 +47,10 @@ class MonthlyReports extends Resource
     {
         return [
             ID::make()->sortable(),
-            
+
             Text::make(__('Title'), 'title')
-            ->sortable()
-            ->rules('required', 'max:255'),
+                ->sortable()
+                ->rules('required', 'max:255'),
 
             Markdown::make(__('Content'), 'content')
                 ->alwaysShow()
@@ -59,7 +59,7 @@ class MonthlyReports extends Resource
             Select::make(__('Status'), 'status')
                 ->options([
                     MonthlyReportStatus::DRAFT()->value => MonthlyReportStatus::DRAFT()->value,
-                    MonthlyReportStatus::PUBLISHED()->value => MonthlyReportStatus::PUBLISHED()->value
+                    MonthlyReportStatus::PUBLISHED()->value => MonthlyReportStatus::PUBLISHED()->value,
                 ])
                 ->default(MonthlyReportStatus::DRAFT()->value)
                 ->rules('required')
@@ -111,6 +111,4 @@ class MonthlyReports extends Resource
     {
         return [];
     }
-
-    
 }

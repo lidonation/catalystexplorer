@@ -5,13 +5,13 @@ declare(strict_types=1);
 namespace App\Providers;
 
 use App\Enums\RoleEnum;
-use App\Models\User;
-use App\Models\BookmarkItem;
 use App\Models\BookmarkCollection;
-use App\Policies\BookmarkItemPolicy;
+use App\Models\BookmarkItem;
+use App\Models\User;
 use App\Policies\BookmarkCollectionPolicy;
-use Illuminate\Support\Facades\Gate;
+use App\Policies\BookmarkItemPolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
+use Illuminate\Support\Facades\Gate;
 
 class AuthServiceProvider extends ServiceProvider
 {

@@ -39,6 +39,11 @@ RUN ln -snf /usr/share/zoneinfo/${TZ} /etc/localtime \
 RUN apt-get update; \
     apt-get upgrade -yqq; \
     apt-get install -yqq --no-install-recommends --show-progress \
+    jpegoptim \
+    optipng \
+    pngquant \
+    gifsicle \
+    libavif-bin \
     apt-utils \
     curl \
     wget \
@@ -76,7 +81,7 @@ RUN apt-get update; \
     && apt-get install -y nodejs \
     && curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | gpg --dearmor | tee /etc/apt/keyrings/yarn.gpg >/dev/null \
     && apt-get update \
-    && apt-get install -y yarn \
+    && npm install -g svgo yarn \
     && apt-get -y autoremove \
     && apt-get clean \
     && docker-php-source delete \
