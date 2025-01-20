@@ -4,27 +4,28 @@ import BookMarkCheckIcon from '../svgs/BookMarkCheckIcon';
 import BucketIcon from '../svgs/BucketIcon';
 import FolderIcon from '../svgs/FolderIcon';
 import MailIcon from '../svgs/MailIcon';
+import { useLocalizedRoute } from "@/utils/localizedRoute";
 
 function UserNavigation() {
     const { t } = useTranslation();
     const navItems = [
         {
-            href: '/my/bookmarks',
+            href: useLocalizedRoute('my.bookmarks'),
             title: t('bookmarks'),
             icon: <BookMarkCheckIcon className="text-dark" />,
         },
         {
-            href: '/my/votes',
+            href: useLocalizedRoute('my.votes'),
             title: t('votes'),
             icon: <BucketIcon className="text-dark" />,
         },
         {
-            href: '/knowledge-base',
+            href: useLocalizedRoute('knowledge.base'),
             title: t('knowledgeBase'),
             icon: <FolderIcon className="text-dark" />,
         },
         {
-            href: '/support',
+            href: useLocalizedRoute('support'),
             title: t('support'),
             icon: <MailIcon className="text-dark" />,
         },

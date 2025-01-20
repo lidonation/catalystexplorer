@@ -40,6 +40,28 @@ Route::localized(
 
         Route::get('/s', [SearchController::class, 'index'])
             ->name('search.index');
+
+        // Explicit 404 page route
+        Route::get('/errors/404', function() {
+            return inertia('Errors/404');
+        })->name('errors.404');
+
+        // Routes that will show the 404 page
+        Route::get('/my/bookmarks', function() {
+            return inertia('Errors/404');
+        })->name('my.bookmarks');
+
+        Route::get('/my/votes', function() {
+            return inertia('Errors/404');
+        })->name('my.votes');
+
+        Route::get('/knowledge-base', function() {
+            return inertia('Errors/404');
+        })->name('knowledge.base');
+
+        Route::get('/support', function() {
+            return inertia('Errors/404');
+        })->name('support');
     }
 );
 
