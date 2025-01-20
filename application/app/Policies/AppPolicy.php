@@ -26,7 +26,7 @@ class AppPolicy
      */
     public function canViewAny(User $user): mixed
     {
-        return $user->hasAnyRole([RoleEnum::admin()->value, RoleEnum::super_admin()->value]);
+        return $user->hasAnyRole([RoleEnum::admin()->value, RoleEnum::super_admin()->value]) || $this->ownsModel($user, $model);
     }
 
     /**
@@ -44,7 +44,7 @@ class AppPolicy
      */
     public function canCreate(User $user): bool
     {
-        return $user->hasAnyRole([RoleEnum::admin()->value, RoleEnum::super_admin()->value]);
+        return $user->hasAnyRole([RoleEnum::admin()->value, RoleEnum::super_admin()->value]) || $this->ownsModel($user, $model);
     }
 
     /**
