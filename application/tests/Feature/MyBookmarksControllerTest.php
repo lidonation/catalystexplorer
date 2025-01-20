@@ -2,30 +2,31 @@
 
 declare(strict_types=1);
 
-use App\Models\User;
-use App\Enums\RoleEnum;
-use App\Models\BookmarkItem;
 use App\Enums\PermissionEnum;
+use App\Enums\RoleEnum;
 use App\Models\BookmarkCollection;
-use Spatie\Permission\Models\Role;
-use Spatie\Permission\Models\Permission;
+use App\Models\BookmarkItem;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Models\Role;
+
 use function Pest\Laravel\actingAs;
+use function Pest\Laravel\delete;
 use function Pest\Laravel\get;
 use function Pest\Laravel\post;
-use function Pest\Laravel\delete;
 
 uses(RefreshDatabase::class);
 
 it('shows all bookmarks for the authenticated user', function () {
     // Create admin role
     Role::create(['name' => RoleEnum::admin()->value, 'guard_name' => 'web']);
-    
+
     $user = User::factory()->create();
     $user->assignRole(RoleEnum::admin()->value);
-    
+
     BookmarkCollection::factory()->count(3)->create(['user_id' => $user->id]);
-    
+
     actingAs($user);
 
     $response = get(route('my.bookmarks.index'));
@@ -71,14 +72,14 @@ it('prevents deletion of another user\'s bookmark collection', function () {
     $collection = BookmarkCollection::factory()->create(['user_id' => $otherUser->id]);
     $bookmark = BookmarkItem::factory()->create([
         'bookmark_collection_id' => $collection->id,
-        'user_id' => $otherUser->id
+        'user_id' => $otherUser->id,
     ]);
 
     actingAs($user)->withoutMiddleware();
 
     $response = delete(route('my.bookmarks.collections.destroy'), [
         'bookmark_collection_id' => $collection->id,
-        'bookmark_ids' => [$bookmark->id]
+        'bookmark_ids' => [$bookmark->id],
     ]);
 
     $response->assertForbidden();
@@ -87,11 +88,11 @@ it('prevents deletion of another user\'s bookmark collection', function () {
 it('deletes a user\'s collection and bookmarks', function () {
     Role::create(['name' => RoleEnum::admin()->value, 'guard_name' => 'web']);
     Permission::create(['name' => PermissionEnum::delete_bookmark_collections()->value, 'guard_name' => 'web']);
-    
+
     $user = User::factory()->create();
     $user->assignRole(RoleEnum::admin()->value);
     $user->givePermissionTo(PermissionEnum::delete_bookmark_collections()->value);
-    
+
     $collection = BookmarkCollection::factory()->create(['user_id' => $user->id]);
     $bookmarks = BookmarkItem::factory()->count(3)->create([
         'bookmark_collection_id' => $collection->id,
@@ -103,7 +104,7 @@ it('deletes a user\'s collection and bookmarks', function () {
 
     $response = delete(route('my.bookmarks.collections.destroy'), [
         'bookmark_collection_id' => $collection->id,
-        'bookmark_ids' => $bookmarks->pluck('id')->toArray()
+        'bookmark_ids' => $bookmarks->pluck('id')->toArray(),
     ]);
 
     $response->assertOk();
@@ -117,11 +118,11 @@ it('deletes a user\'s collection and bookmarks', function () {
 it('prevents creating a bookmark item in a non-existent collection', function () {
     Role::create(['name' => RoleEnum::admin()->value, 'guard_name' => 'web']);
     Permission::create(['name' => PermissionEnum::create_bookmark_items()->value, 'guard_name' => 'web']);
-    
+
     $user = User::factory()->create();
     $user->assignRole(RoleEnum::admin()->value);
     $user->givePermissionTo(PermissionEnum::create_bookmark_items()->value);
-    
+
     actingAs($user)
         ->withoutMiddleware();
 
@@ -129,8 +130,8 @@ it('prevents creating a bookmark item in a non-existent collection', function ()
         'model_type' => 'products',
         'model_id' => 9999,
         'collection' => [
-            'title' => 'My Collection'
-        ]
+            'title' => 'My Collection',
+        ],
     ]);
 
     $response->assertUnprocessable()
@@ -152,14 +153,14 @@ it('ensures a bookmark belongs to the authenticated user', function () {
 it('prevents deletion when bookmark ids do not match collection', function () {
     Role::create(['name' => RoleEnum::admin()->value, 'guard_name' => 'web']);
     Permission::create(['name' => PermissionEnum::delete_bookmark_collections()->value, 'guard_name' => 'web']);
-    
+
     $user = User::factory()->create();
     $user->assignRole(RoleEnum::admin()->value);
     $user->givePermissionTo(PermissionEnum::delete_bookmark_collections()->value);
-    
+
     $collection = BookmarkCollection::factory()->create(['user_id' => $user->id]);
     $otherCollection = BookmarkCollection::factory()->create(['user_id' => $user->id]);
-    
+
     // Create bookmark in other collection
     $bookmark = BookmarkItem::factory()->create([
         'bookmark_collection_id' => $otherCollection->id,
@@ -171,7 +172,7 @@ it('prevents deletion when bookmark ids do not match collection', function () {
 
     $response = delete(route('my.bookmarks.collections.destroy'), [
         'bookmark_collection_id' => $collection->id,  // Different collection
-        'bookmark_ids' => [$bookmark->id]
+        'bookmark_ids' => [$bookmark->id],
     ]);
 
     $response->assertUnprocessable()

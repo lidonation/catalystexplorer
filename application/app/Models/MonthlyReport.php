@@ -5,12 +5,11 @@ declare(strict_types=1);
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Laravel\Scout\Searchable;
 use Illuminate\Support\Facades\Artisan;
+use Laravel\Scout\Searchable;
 
 class MonthlyReport extends Model
 {
-    
     use Searchable;
 
     public static function runCustomIndex(): void

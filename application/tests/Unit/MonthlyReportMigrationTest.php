@@ -2,7 +2,6 @@
 
 namespace Tests\Unit;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Schema;
 use Tests\TestCase;
 
@@ -22,7 +21,7 @@ class MonthlyReportMigrationTest extends TestCase
         $this->artisan('migrate');
 
         $this->assertTrue(Schema::hasColumns('monthly_reports', [
-            'id', 'title', 'content', 'status', 'ideascale_profile_id', 'created_at', 'updated_at', 'deleted_at'
+            'id', 'title', 'content', 'status', 'ideascale_profile_id', 'created_at', 'updated_at', 'deleted_at',
         ]));
     }
 }

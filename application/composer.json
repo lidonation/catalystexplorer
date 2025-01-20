@@ -94,14 +94,14 @@
     },
     "minimum-stability": "stable",
     "prefer-stable": true,
-    "repositories": {
-        "nova": {
+    "repositories": [
+        {
             "type": "composer",
             "url": "https://nova.laravel.com"
         },
-        "spatie/laravel-comments": {
+        {
             "type": "composer",
             "url": "https://satis.spatie.be"
         }
-    }
+    ]
 }

@@ -1,7 +1,7 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\My\MyBookmarksController;
+use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
 Route::localized(
