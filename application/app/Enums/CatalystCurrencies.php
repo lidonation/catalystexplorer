@@ -17,6 +17,7 @@ final class CatalystCurrencies extends Enum
     {
         return ['ADA', 'USD'];
     }
+
     public static function values(): \Closure
     {
         return fn (string $name): string|int|null => match ($name) {
