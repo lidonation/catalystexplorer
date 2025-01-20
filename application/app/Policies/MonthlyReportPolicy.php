@@ -1,6 +1,7 @@
 <?php
 
 
+
 namespace App\Policies;
 
 use App\Enums\PermissionEnum;
