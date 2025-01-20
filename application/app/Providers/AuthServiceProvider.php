@@ -6,8 +6,12 @@ namespace App\Providers;
 
 use App\Enums\RoleEnum;
 use App\Models\User;
+use App\Models\BookmarkItem;
+use App\Models\BookmarkCollection;
+use App\Policies\BookmarkItemPolicy;
+use App\Policies\BookmarkCollectionPolicy;
 use Illuminate\Support\Facades\Gate;
-use Illuminate\Support\ServiceProvider;
+use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -18,6 +22,11 @@ class AuthServiceProvider extends ServiceProvider
     {
         //
     }
+
+    protected $policies = [
+        BookmarkItem::class => BookmarkItemPolicy::class,
+        BookmarkCollection::class => BookmarkCollectionPolicy::class,
+    ];
 
     /**
      * Register any authentication / authorization services.
