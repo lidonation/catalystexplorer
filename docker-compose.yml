@@ -7,9 +7,15 @@ services:
       dockerfile: Dockerfile.dev
       args:
         WWWGROUP: "${WWWGROUP:-1000}"
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+          cpus: "1.0"
     image: catalystexplorer
     container_name: catalystexplorer.com
     tty: true
+    restart: unless-stopped
     env_file:
       - ./application/.env
     extra_hosts:
@@ -21,8 +27,8 @@ services:
       CONTAINER_ROLE: "app"
       IGNITION_LOCAL_SITES_PATH: '${PWD}'
       LARAVEL_SAIL: 1
+      NODE_OPTIONS: "--max-old-space-size=8096"
       OCTANE_WATCH: true
-      SUPERVISOR_PHP_COMMAND: "/usr/bin/php -d variables_order=EGPCS /var/www/html/artisan octane:frankenphp --host=0.0.0.0 --admin-port=2019 --port=8000"
       WWWGROUP: '${WWWUSER:-1000}'
       WWWUSER: '${WWWUSER:-1000}'
       XDEBUG_MODE: '${SAIL_XDEBUG_MODE:-off}'

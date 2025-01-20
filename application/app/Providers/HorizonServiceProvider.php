@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Providers;
 
+use App\Enums\RoleEnum;
 use Illuminate\Support\Facades\Gate;
 use Laravel\Horizon\HorizonApplicationServiceProvider;
 
@@ -33,8 +34,10 @@ class HorizonServiceProvider extends HorizonApplicationServiceProvider
                 return true;
             }
 
-            return in_array($user?->email, [
-                config('app.super_admin.email'),
+            return $user->hasAnyRole([
+                RoleEnum::super_admin()->value,
+                RoleEnum::admin()->value,
+                RoleEnum::editor()->value,
             ]);
         });
     }

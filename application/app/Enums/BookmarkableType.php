@@ -1,12 +1,14 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\Enums;
 
-use App\Models\Proposal;
-use App\Models\IdeascaleProfile;
-use App\Models\Group;
-use App\Models\Review;
 use App\Models\BookmarkCollection;
+use App\Models\Group;
+use App\Models\IdeascaleProfile;
+use App\Models\Proposal;
+use App\Models\Review;
 
 enum BookmarkableType: string
 {
@@ -21,7 +23,7 @@ enum BookmarkableType: string
      */
     public function getModelClass(): string
     {
-        return match($this) {
+        return match ($this) {
             self::PROPOSALS => Proposal::class,
             self::IDEASCALE_PROFILES => IdeascaleProfile::class,
             self::GROUPS => Group::class,
@@ -32,13 +34,14 @@ enum BookmarkableType: string
 
     /**
      * Get all bookmarkable types as an associative array
-     * 
+     *
      * @return array<string, string>
      */
     public static function toArray(): array
     {
         return array_reduce(self::cases(), function ($carry, self $type) {
             $carry[$type->value] = $type->getModelClass();
+
             return $carry;
         }, []);
     }

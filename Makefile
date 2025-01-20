@@ -2,7 +2,8 @@ include ./application/.env
 export
 
 sail := ./application/vendor/bin/sail
-compose := docker-compose exec -t catalystexplorer.com
+compose := docker-compose exec -T catalystexplorer.com
+nodeVersion := 20
 
 .PHONY: init
 init:
@@ -15,10 +16,22 @@ init:
 		node:18-alpine yarn install --ignore-engine
 
 	docker run --rm --interactive --tty \
+		--volume ${PWD}:/app \
+		--workdir /app \
+		--user root \
+		node:${nodeVersion}-alpine yarn install --ignore-engine
+
+	docker run --rm --interactive --tty \
+		--volume ${PWD}:/app \
+		--workdir /app \
+		--user root \
+		node:${nodeVersion}-alpine yarn install --ignore-engine
+
+	docker run --rm --interactive --tty \
 		--volume ${PWD}/application:/app \
 		--workdir /app \
 		--user root \
-		node:18-alpine yarn install --ignore-engine
+		node:${nodeVersion}-alpine yarn install --ignore-engine
 
 
 	docker run --rm --interactive --tty \
@@ -29,13 +42,13 @@ init:
  
 	make up
 	sleep 10
-	$(sail) artisan key:generate
+	$(compose) artisan key:generate
 	make migrate
-	$(sail) yarn husky init
+	$(compose) yarn husky init
 
 .PHONY: artisan
 artisan:
-	$(sail) artisan $(filter-out $@,$(MAKECMDGOALS))
+	$(compose) artisan $(filter-out $@,$(MAKECMDGOALS))
 
 .PHONY: backend-install
 backend-install:
@@ -45,7 +58,11 @@ backend-install:
 
 .PHONY: build
 build:
-	$(sail) npx vite build
+	$(compose) yarn build
+
+.PHONY: tsc
+tsc:
+	$(compose)  npx tsc
 
 .PHONY: db-setup
 db-setup:
@@ -65,7 +82,7 @@ devtools-install:
 		--volume ${PWD}:/app \
 		--workdir /app \
 		--user root \
-		node:18-alpine yarn install --ignore-engine
+		node:${nodeVersion}-alpine yarn install --ignore-engine
 		$(sail) up -d
 		npx husky init
 
@@ -76,18 +93,17 @@ frontend-install:
 		--volume ${PWD}/application:/app \
 		--workdir /app \
 		--user root \
-		node:18-alpine yarn install --ignore-engine
+		node:${nodeVersion}-alpine yarn install --ignore-engine
 
 .PHONY: frontend-clean
 frontend-clean:
 	rm -rf application/node_modules 2>/dev/null || true
-	$(compose) yarn cache clean
 
 .PHONY: image-build
 image-build:
 	docker build \
 	--build-arg=WWWGROUP=1000 \
-	--build-arg=WWWUSER=$UID \
+	--build-arg=WWWUSER=1000 \
 	--build-arg=GITHUB_PACKAGE_REGISTRY_TOKEN=${GITHUB_PACKAGE_REGISTRY_TOKEN} \
 	-f ./docker/Dockerfile.dev \
 	-t catalystexplorer \
@@ -132,15 +148,15 @@ status:
 
 .PHONY: up
 up:
-	$(sail) up -d
+	$(sail) up -d --remove-orphans
 
 .PHONY: vite
 vite:
-	$(sail) npx vite
+	$(sail) npx vite --force
 
 .PHONY: watch
 watch:
-	docker compose  up -d && $(sail) npx vite --force
+	docker compose  up -d --remove-orphans && $(sail) npx vite --force
 
 .PHONY: test-backend
 test-backend:

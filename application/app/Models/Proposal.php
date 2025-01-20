@@ -14,6 +14,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Artisan;
 use Laravel\Scout\Searchable;
@@ -24,7 +25,8 @@ class Proposal extends Model
         HasMetaData,
         HasTaxonomies,
         HasTranslations,
-        Searchable;
+        Searchable,
+        SoftDeletes;
 
     public array $translatable = [
         'title',
@@ -38,6 +40,8 @@ class Proposal extends Model
     public array $translatableExcludedFromGeneration = [
         'meta_title',
     ];
+
+    public int $maxValuesPerFacet = 12000;
 
     protected $guarded = ['user_id', 'created_at', 'funded_at'];
 
@@ -183,7 +187,7 @@ class Proposal extends Model
     public function currency(): Attribute
     {
         return Attribute::make(
-            get: fn ($currency) => $currency ?? $this->campaign?->currency ?? $this->fund?->currency ?? CatalystCurrencies::USD()->value,
+            get: fn ($currency) => $currency ?? $this->campaign?->currency ?? $this->fund?->currency ?? CatalystCurrencies::ADA()->value,
         );
     }
 
@@ -328,7 +332,7 @@ class Proposal extends Model
 
             'paid' => ($this->amount_received > 0) && ($this->amount_received == $this->amount_requested ? 1 : 0),
 
-            'quickpitch' => $this->quickpitch ?? null,
+            'quickpitch' => $this->quick_pitch_id ?? null,
             'quickpitch_length' => $this->quickpitch_length ?? null,
 
             'ranking_total' => intval($this->ranking_total) ?? 0,
@@ -353,6 +357,13 @@ class Proposal extends Model
 
             'woman_proposal' => $this->is_woman_proposal ? 1 : 0,
             'link' => $this->link,
+
+            'alignment_score' => $this->meta_info->alignment_score ?? 0, // $this->getDiscussionRankingScore('Impact Alignment') ?? 0,
+            'feasibility_score' => $this->meta_info->feasibility_score ?? 0, // $this->getDiscussionRankingScore('Feasibility') ?? 0,
+            'auditability_score' => $this->meta_info->auditability_score ?? 0, // $this->getDiscussionRankingScore('Value for money') ?? 0,
+            'projectcatalyst_io_link' => $this->meta_info?->projectcatalyst_io_url ?? null,
+            'project_length' => intval($this->meta_info->project_length) ?? 0,
+            'vote_casts' => intval($this->meta_info->vote_casts) ?? 0,
         ]);
     }
 
@@ -416,7 +427,7 @@ class Proposal extends Model
             'amount_received' => 'integer',
             'amount_requested' => 'integer',
             'created_at' => DateFormatCast::class,
-            'currency' => CatalystCurrencies::class,
+            'currency' => CatalystCurrencies::class.':nullable',
             'funded_at' => DateFormatCast::class,
             'funding_updated_at' => DateFormatCast::class,
             'offchain_metas' => 'array',

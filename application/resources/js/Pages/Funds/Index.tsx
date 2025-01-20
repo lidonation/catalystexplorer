@@ -13,9 +13,22 @@ interface HomePageProps extends Record<string, unknown> {
 
 export default function Index({
     funds,
-    chartSummary,
+    chartSummary
 }: PageProps<HomePageProps & { chartSummary: any }>) {
     const { t } = useTranslation();
+
+    const chartData = funds
+    .map(fund => ({
+        fund: fund.title,
+        "Total Proposals": fund.proposals_count,
+        "Funded Proposals": fund.funded_proposals_count,
+        "Completed Proposals": fund.completed_proposals_count
+    }))
+    .sort((a, b) => {
+        const numA = parseInt(a.fund.replace(/\D/g, ''), 10);
+        const numB = parseInt(b.fund.replace(/\D/g, ''), 10);
+        return numB - numA;  
+    });
 
     return (
         <>
@@ -37,12 +50,12 @@ export default function Index({
                         data="funds"
                     >
                         <FundsBarChart
-                            funds={funds}
-                            fundRounds={chartSummary.fundRounds}
+                            funds={chartData}
+                            fundRounds={funds.length}
                             totalProposals={chartSummary.totalProposals}
                             fundedProposals={chartSummary.fundedProposals}
-                            totalFundsRequested={chartSummary.totalFundsRequested}
-                            totalFundsAllocated={chartSummary.totalFundsAllocated}
+                            totalFundsRequested={chartSummary.totalFundsAwardedAda}
+                            totalFundsAllocated={chartSummary.totalFundsAwardedUsd}
                         />
                     </WhenVisible>
                 </section>

@@ -17,6 +17,7 @@ use Laravel\Nova\Fields\DateTime;
 use Laravel\Nova\Fields\Field;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Markdown;
+use Laravel\Nova\Fields\MorphMany;
 use Laravel\Nova\Fields\Number;
 use Laravel\Nova\Fields\Select;
 use Laravel\Nova\Fields\Text;
@@ -69,11 +70,14 @@ class Metrics extends Resource
                 ->sortable()
                 ->required(),
 
-            Text::make(__('Field')),
+            Text::make(__('Field'))
+                ->help('Column or field to consider for the metric(in snake_case format).'),
 
             Color::make(__('Color')),
 
             Text::make(__('Context'))
+                ->filterable()
+                ->sortable()
                 ->nullable(),
 
             Select::make(__('Query'), 'query')
@@ -108,7 +112,7 @@ class Metrics extends Resource
                         MetricTypes::PROGRESS()->value => 'Progress',
                         MetricTypes::TABLE()->value => 'Table',
                     ]
-                )
+                )->filterable()
                 ->required(),
 
             Select::make(__('Status'), 'status')
@@ -116,7 +120,7 @@ class Metrics extends Resource
                     StatusEnum::draft()->value => 'Draft',
                     StatusEnum::pending()->value => 'Pending',
                     StatusEnum::published()->value => 'Published',
-                ])
+                ])->filterable()
                 ->required()
                 ->default(StatusEnum::draft()->value),
 
@@ -124,6 +128,7 @@ class Metrics extends Resource
                 ->options([
                     Proposal::class => 'Proposal',
                 ])
+                ->filterable()
                 ->default(Proposal::class)
                 ->required(),
 
@@ -137,6 +142,8 @@ class Metrics extends Resource
 
             Markdown::make(__('Content'))
                 ->required(),
+
+            MorphMany::make(__('Rules'), 'rules', Rules::class),
         ];
     }
 

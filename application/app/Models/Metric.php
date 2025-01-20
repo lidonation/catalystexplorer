@@ -8,22 +8,25 @@ use App\Enums\MetricCountBy;
 use App\Enums\MetricQueryTypes;
 use App\Enums\MetricTypes;
 use App\Enums\StatusEnum;
+use App\Traits\HasRules;
 use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Support\Facades\DB;
 
 class Metric extends Model
 {
+    use HasRules;
+
     protected function casts(): array
     {
         return [
-            //            'count_by' => MetricCountBy::class,
+            'count_by' => MetricCountBy::class.':nullable',
             'created_at' => 'datetime:Y-m-d',
             'order' => 'integer',
-            //            'query' => MetricQueryTypes::class,
-            //            'status' => StatusEnum::class, #Not compatible with nova
-            //            'type' => MetricTypes::class,
+            'query' => MetricQueryTypes::class.':nullable',
+            'status' => StatusEnum::class.':nullable',
+            'type' => MetricTypes::class.':nullable',
             'updated_at' => 'datetime:Y-m-d',
-
         ];
     }
 
@@ -36,6 +39,10 @@ class Metric extends Model
                 $builder = call_user_func([$this->model, 'query']);
                 $aggregate = $this->query;
                 $field = $this->field;
+
+                if ($this->rules?->isNotEmpty()) {
+                    $builder = $this->applyRules($builder, $this->rules, $table);
+                }
 
                 return $builder->select(DB::raw("{$aggregate}({$table}.{$field}) as {$aggregate}"))
                     ->value("{$aggregate}");
@@ -58,6 +65,9 @@ class Metric extends Model
                     return null;
                 }
 
+                if ($this->rules?->isNotEmpty()) {
+                    $builder = $this->applyRules($builder, $this->rules, $table);
+                }
                 $results = $builder->select('fund_id', DB::raw("{$aggregate}({$table}.{$field}) as {$aggregate}"))
                     ->leftJoin('funds', fn ($join) => $join->on('funds.id', '=', 'proposals.fund_id'))
                     ->with([
@@ -68,7 +78,7 @@ class Metric extends Model
                     ->get()
                     ->map(function ($row) use ($aggregate) {
                         return [
-                            'x' => $row->fund->title,
+                            'x' => $row->fund?->title,
                             'y' => $row->{$aggregate},
                         ];
                     });
@@ -80,5 +90,10 @@ class Metric extends Model
                 ];
             }
         );
+    }
+
+    public function rules(): MorphMany
+    {
+        return $this->morphMany(Rule::class, 'model');
     }
 }

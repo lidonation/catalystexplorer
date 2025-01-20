@@ -24,6 +24,8 @@ class IdeascaleProfile extends Model implements HasMedia
 
     public $incrementing = true;
 
+    public int $maxValuesPerFacet = 8000;
+
     protected $fillable = [
         'ideascale_id',
         'username',
@@ -46,7 +48,7 @@ class IdeascaleProfile extends Model implements HasMedia
     protected $appends = ['profile_photo_url'];
 
     public array $translatable = [
-        'bio',
+        // 'bio',
     ];
 
     protected function casts(): array
@@ -187,6 +189,11 @@ class IdeascaleProfile extends Model implements HasMedia
 
             return $this->proposals()->whereNotIn('proposals.id', $ownProposalIds)->count();
         });
+    }
+
+    public function monthly_reports(): HasMany
+    {
+        return $this->hasMany(MonthlyReport::class);
     }
 
     public function gravatar(): Attribute
