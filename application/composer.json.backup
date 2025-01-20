@@ -1,0 +1,107 @@
+{
+    "name": "lidonation/catalystexplorer",
+    "type": "product",
+    "description": "Your friendly neighborhood spot for exploring and participating in cardano project catalyst ecosystem.",
+    "keywords": [
+        "cardano",
+        "project catalyst",
+        "explorer",
+        "laravel",
+        "framework"
+    ],
+    "license": "Apache-2.0",
+    "require": {
+        "php": "^8.3",
+        "codezero/laravel-localized-routes": "^4.0",
+        "hammerstone/fast-paginate": "^1.1",
+        "http-interop/http-factory-guzzle": "^1.2",
+        "inertiajs/inertia-laravel": "2.0",
+        "laravel/framework": "^11.9",
+        "laravel/horizon": "^5.29",
+        "laravel/nova": "^5.0",
+        "laravel/octane": "^2.5",
+        "laravel/sanctum": "^4.0",
+        "laravel/scout": "^10.11",
+        "laravel/tinker": "^2.9",
+        "laravolt/avatar": "^6.0",
+        "meilisearch/meilisearch-php": "^1.11",
+        "saloonphp/laravel-plugin": "^3.0",
+        "saloonphp/pagination-plugin": "^2.0",
+        "saloonphp/saloon": "^3.0",
+        "simplesquid/nova-enum-field": "^1.0",
+        "spatie/laravel-comments": "^2.1",
+        "spatie/laravel-data": "^4.11",
+        "spatie/laravel-enum": "^3.1",
+        "spatie/laravel-medialibrary": "^11.9",
+        "spatie/laravel-permission": "^6.10",
+        "spatie/laravel-translatable": "^6.8",
+        "spatie/laravel-typescript-transformer": "^2.5",
+        "tightenco/ziggy": "^2.0"
+    },
+    "require-dev": {
+        "fakerphp/faker": "^1.23",
+        "laravel/breeze": "^2.2",
+        "laravel/pint": "^1.13",
+        "laravel/sail": "^1.26",
+        "mockery/mockery": "^1.6",
+        "nunomaduro/collision": "^8.0",
+        "pestphp/pest": "^3.4",
+        "pestphp/pest-plugin-laravel": "^3.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "App\\": "app/",
+            "Database\\Factories\\": "database/factories/",
+            "Database\\Seeders\\": "database/seeders/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
+        }
+    },
+    "scripts": {
+        "post-autoload-dump": [
+            "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
+            "@php artisan package:discover --ansi"
+        ],
+        "post-update-cmd": [
+            "@php artisan vendor:publish --tag=laravel-assets --ansi --force"
+        ],
+        "post-root-package-install": [
+            "@php -r \"file_exists('.env') || copy('.env.example', '.env');\""
+        ],
+        "post-create-project-cmd": [
+            "@php artisan key:generate --ansi",
+            "@php -r \"file_exists('database/database.sqlite') || touch('database/database.sqlite');\"",
+            "@php artisan migrate --graceful --ansi"
+        ]
+    },
+    "extra": {
+        "laravel": {
+            "dont-discover": []
+        }
+    },
+    "config": {
+        "optimize-autoloader": true,
+        "preferred-install": "dist",
+        "sort-packages": true,
+        "allow-plugins": {
+            "codezero/composer-preload-files": true,
+            "pestphp/pest-plugin": true,
+            "php-http/discovery": true
+        }
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true,
+    "repositories": {
+        "nova": {
+            "type": "composer",
+            "url": "https://nova.laravel.com"
+        },
+        "spatie/laravel-comments": {
+            "type": "composer",
+            "url": "https://satis.spatie.be"
+        }
+    }
+}

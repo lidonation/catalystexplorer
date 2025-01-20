@@ -25,7 +25,7 @@ const ResultTabs = ({
         setActiveTab(tab);
     };
     return (
-        <div className="text-content-lighter flex flex-row items-center gap-6 border-b border-b-light-gray-persist">
+        <div className="sticky top-0 z-50 bg-white/80 backdrop-blur-md backdrop-saturate-150 text-content-lighter flex flex-row items-center gap-6 border-b border-b-light-gray-persist">
             {tabConfig.map((tab) => (
                 <a
                     key={tab.name}
