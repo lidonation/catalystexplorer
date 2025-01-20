@@ -71,19 +71,19 @@ class User extends Authenticatable implements HasMedia
     public function registerMediaConversions(?Media $media = null): void
     {
         $this->addMediaConversion('thumbnail')
+            ->useFallbackUrl($this->gravatar)
             ->width(150)
             ->height(150)
             ->withResponsiveImages()
             ->crop(150, 150, CropPosition::Top)
-            ->performOnCollections('profile')
-            ->useFallbackUrl($this->gravatar);
+            ->performOnCollections('profile');
 
         $this->addMediaConversion('large')
+            ->useFallbackUrl($this->gravatar)
             ->width(1080)
             ->height(1350)
             ->crop(1080, 1350, CropPosition::Top)
             ->withResponsiveImages()
-            ->performOnCollections('profile')
-            ->useFallbackUrl($this->gravatar);
+            ->performOnCollections('profile');
     }
 }

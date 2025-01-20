@@ -77,11 +77,11 @@ function ProposalSearchControls({
                     options={ProposalSortingOptions()}
                     hideCheckbox={true}
                     placeholder={t('proposals.options.sort')}
-                    className={
+                    className={`bg-background ${
                         getFilter(ProposalParamsEnum.SORTS)
                             ? 'cursor-default bg-background-lighter text-primary'
                             : 'text-gray-500 hover:bg-background-lighter'
-                    }
+                    }`}
                 />
             </div>
 
