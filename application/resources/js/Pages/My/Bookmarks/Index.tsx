@@ -1,4 +1,5 @@
 import { Head } from '@inertiajs/react';
+import BookmarkNavigation from './Partials/BookmarkNavigation';
 import BookmarkToolbar from './Partials/BookmarkToolbar';
 import { useTranslation } from 'react-i18next';
 
@@ -15,6 +16,7 @@ const Index = () => {
                 <div className='container'>
                     <p className="text-content">
                         {t('bookmark')}
+                        <BookmarkNavigation />
                         <BookmarkToolbar/>
                     </p>
                 </div>
