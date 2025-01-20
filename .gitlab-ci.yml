@@ -428,6 +428,8 @@ sem-release:
     cd ./application
     yarn install
     composer install --no-scripts --ignore-platform-reqs
+    git config --global --add safe.directory /builds/lidonation/www.catalystexplorer.com
+    cd ../
     npx semantic-release
   after_script: |
     cat <<-EOD
