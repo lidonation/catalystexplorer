@@ -76,6 +76,7 @@ class Metrics extends Resource
             Color::make(__('Color')),
 
             Text::make(__('Context'))
+                ->filterable()
                 ->sortable()
                 ->nullable(),
 
@@ -111,7 +112,7 @@ class Metrics extends Resource
                         MetricTypes::PROGRESS()->value => 'Progress',
                         MetricTypes::TABLE()->value => 'Table',
                     ]
-                )
+                )->filterable()
                 ->required(),
 
             Select::make(__('Status'), 'status')
@@ -119,7 +120,7 @@ class Metrics extends Resource
                     StatusEnum::draft()->value => 'Draft',
                     StatusEnum::pending()->value => 'Pending',
                     StatusEnum::published()->value => 'Published',
-                ])
+                ])->filterable()
                 ->required()
                 ->default(StatusEnum::draft()->value),
 
@@ -127,6 +128,7 @@ class Metrics extends Resource
                 ->options([
                     Proposal::class => 'Proposal',
                 ])
+                ->filterable()
                 ->default(Proposal::class)
                 ->required(),
 

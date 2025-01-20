@@ -152,7 +152,7 @@ up:
 
 .PHONY: vite
 vite:
-	$(sail) npx vite
+	$(sail) npx vite --force
 
 .PHONY: watch
 watch:

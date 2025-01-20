@@ -18,6 +18,10 @@ class BookmarkCollection extends Model
         'items',
     ];
 
+    protected $fillable = [
+        'user_id',
+    ];
+
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
@@ -26,5 +30,11 @@ class BookmarkCollection extends Model
     public function items(): HasMany
     {
         return $this->hasMany(BookmarkItem::class);
+    }
+
+    public function proposals(): HasMany
+    {
+        return $this->hasMany(BookmarkItem::class)
+            ->where('model_type', Proposal::class);
     }
 }
