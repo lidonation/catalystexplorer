@@ -12,6 +12,7 @@ class DiscussionController extends Controller
     public function index()
     {
         $discussions = Discussion::paginate(10);
+
         return response()->json($discussions);
     }
 
@@ -32,7 +33,6 @@ class DiscussionController extends Controller
     {
         return response()->json($discussion);
     }
-
 
     public function update(Request $request, Discussion $discussion)
     {

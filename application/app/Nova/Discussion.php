@@ -4,21 +4,23 @@ declare(strict_types=1);
 
 namespace App\Nova;
 
+use App\Enums\StatusEnum;
 use App\Models\Discussion as DiscussionModel;
 use App\Models\User;
-use App\Enums\StatusEnum;
-use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\BelongsTo;
-use Laravel\Nova\Fields\Text;
-use Laravel\Nova\Fields\Select;
-use Laravel\Nova\Fields\Number;
 use Laravel\Nova\Fields\DateTime;
+use Laravel\Nova\Fields\ID;
+use Laravel\Nova\Fields\Number;
+use Laravel\Nova\Fields\Select;
+use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Http\Requests\NovaRequest;
 
 class Discussion extends Resource
 {
     public static $model = DiscussionModel::class;
+
     public static $title = 'id';
+
     public static $search = ['id'];
 
     public function fields(NovaRequest $request): array
