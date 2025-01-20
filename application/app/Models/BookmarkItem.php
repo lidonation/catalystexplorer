@@ -18,12 +18,6 @@ class BookmarkItem extends Model
         'model_id',
     ];
 
-    protected $fillable = [
-        'user_id',
-        'model_type',
-        'model_id',
-    ];
-
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
