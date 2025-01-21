@@ -45,6 +45,16 @@ const FundsBarChart: React.FC<FundsBarChartProps> = ({
 
     const activeKeys = filters.length > 0 ? filters : [];
 
+    const colorMap = {
+        [t('funds.totalProposals')]: '#4fadce',
+        [t('funds.fundedProposals')]: '#ee8434',
+        [t('funds.completedProposals')]: '#16B364',
+    };
+
+    const getColors = () => {
+        return filters.map((filter) => colorMap[filter]);
+    };
+
     return (
         <div className="rounded-md bg-background p-8 shadow-sm lg:p-16">
             <div className="grid w-full grid-cols-2 justify-between gap-4 lg:grid-cols-5">
@@ -113,7 +123,7 @@ const FundsBarChart: React.FC<FundsBarChartProps> = ({
                     }}
                     padding={0.3}
                     valueScale={{ type: 'linear' }}
-                    colors={['#4fadce', '#ee8434', '#16B364']}
+                    colors={getColors()}
                     axisBottom={{
                         tickSize: 5,
                         tickPadding: 5,
