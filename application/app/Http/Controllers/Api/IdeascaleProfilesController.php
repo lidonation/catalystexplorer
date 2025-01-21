@@ -4,13 +4,14 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Api;
 
+use Illuminate\Http\Response;
+use App\Models\IdeascaleProfile;
+use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\IdeascaleProfileResource;
-use App\Models\IdeascaleProfile;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\Routing\ResponseFactory;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
-use Illuminate\Http\Response;
 
 class IdeascaleProfilesController extends Controller
 {
@@ -44,4 +45,32 @@ class IdeascaleProfilesController extends Controller
 
         return IdeascaleProfileResource::collection($ideascales->fastPaginate($per_page)->onEachSide(0));
     }
+
+    public function connectionsData(IdeascaleProfile $profile): JsonResponse
+    {
+        $nodes = $profile->connectedGroupsAndUsers()->map(function ($item) {
+            return [
+                'id' => $item->id,
+                'name' => $item->name ?? 'Unnamed',
+                'color' => $item instanceof IdeascaleProfile ? 'rgb(97, 205, 187)' : 'rgb(232, 193, 160)',
+                'profilePhotoUrl' => $item->profilePhotoUrl,
+                'size' => 24,
+                'height' => 1,
+            ];
+        });
+
+        $links = $profile->connections()->get()->map(function ($connection) {
+            return [
+                'source' => $connection->previous_model_id,
+                'target' => $connection->next_model_id,
+                'distance' => 100,
+            ];
+        });
+
+        return response()->json([
+            'nodes' => $nodes->toArray(),
+            'links' => $links->toArray(),
+        ]);
+    }
+
 }

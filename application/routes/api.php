@@ -25,4 +25,6 @@ Route::prefix('api')->as('api.')->group(function () {
     Route::get('/ideascale-profiles/{ideascale_profile:id}', [IdeascaleProfilesController::class, 'ideascale_profile'])->name('ideascaleProfile');
 
     Route::get('/fund-titles', [ProposalsController::class, 'fundTitles'])->name('fundTitles');
+
+    Route::get('/ideascale-profile/{profile}/connections', [IdeascaleProfilesController::class, 'connectionsData'])->name('connections');
 });
