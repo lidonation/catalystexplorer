@@ -41,7 +41,7 @@ class HomeController extends Controller
             ),
             'metrics' => Inertia::optional(
                 fn () => MetricData::collect($metrics
-                    ->limit(6)
+                    ->limit(env('METRIC_CARD_LIMIT',6))
                     ->getQuery()
                     ->where('context', 'home')
                     ->orderByDesc('order')
