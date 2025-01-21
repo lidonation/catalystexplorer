@@ -26,6 +26,7 @@ class AuthServiceProvider extends ServiceProvider
     protected $policies = [
         BookmarkItem::class => BookmarkItemPolicy::class,
         BookmarkCollection::class => BookmarkCollectionPolicy::class,
+        Link::class => LinkPolicy::class,
     ];
 
     /**
