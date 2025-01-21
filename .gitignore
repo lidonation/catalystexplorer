@@ -1,3 +1,11 @@
 .idea
 .DS_Store
-/node_modules/
+# Laravel cache and storage
+application/cache/
+application/storage/
+application/bootstrap/cache/
+application/.htaccess
+application/composer.json.backup
+
+# Node modules
+node_modules/

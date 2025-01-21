@@ -12,7 +12,6 @@ use Laravel\Nova\Fields\DateTime;
 use Laravel\Nova\Fields\Field;
 use Laravel\Nova\Fields\HasMany;
 use Laravel\Nova\Fields\ID;
-use Laravel\Nova\Fields\Image;
 use Laravel\Nova\Fields\Number;
 use Laravel\Nova\Fields\Select;
 use Laravel\Nova\Fields\Slug;
@@ -74,11 +73,6 @@ class Funds extends Resource
                 CatalystCurrencies::USD()->value => CatalystCurrencies::USD()->value,
                 CatalystCurrencies::ADA()->value => CatalystCurrencies::ADA()->value,
             ])->default(fn () => CatalystCurrencies::ADA()->value)->sortable(),
-
-            Image::make('Image')
-                ->disk('public')
-                ->path('funds')
-                ->sortable(),
 
             DateTime::make('Launched At')
                 ->sortable(),

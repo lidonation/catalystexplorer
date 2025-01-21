@@ -24,7 +24,6 @@ use Spatie\Enum\Laravel\Enum;
  * @method static self create_campaigns()
  * @method static self create_bookmark_items()
  * @method static self create_bookmark_collections()
- * @method static self create_monthly_reports()
  * @method static self read_communities()
  * @method static self read_groups()
  * @method static self read_ideascale_profiles()
@@ -40,7 +39,6 @@ use Spatie\Enum\Laravel\Enum;
  * @method static self read_campaigns()
  * @method static self read_bookmark_items()
  * @method static self read_bookmark_collections()
- * @method static self read_monthly_reports()
  * @method static self update_communities()
  * @method static self update_groups()
  * @method static self update_ideascale_profiles()
@@ -56,7 +54,6 @@ use Spatie\Enum\Laravel\Enum;
  * @method static self update_campaigns()
  * @method static self update_bookmark_items()
  * @method static self update_bookmark_collections()
- * @method static self update_monthly_reports()
  * @method static self delete_communities()
  * @method static self delete_groups()
  * @method static self delete_ideascale_profiles()
@@ -73,11 +70,9 @@ use Spatie\Enum\Laravel\Enum;
  * @method static self delete_campaigns()
  * @method static self delete_bookmark_items()
  * @method static self delete_bookmark_collections()
- * @method static self delete_monthly_reports()
  * @method static self restore_campaigns()
  * @method static self restore_bookmark_items()
  * @method static self restore_bookmark_collections()
- * @method static self restore_monthly_reports()
  */
 final class PermissionEnum extends Enum
 {

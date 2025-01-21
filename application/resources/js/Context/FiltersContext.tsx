@@ -61,6 +61,7 @@ export function FiltersProvider({
     defaultFilters: ProposalSearchParams;
 }) {
     const initialFilters = formatToFilters(defaultFilters);
+    console.log({ defaultFilters, initialFilters });
     const [filters, setFiltersState] = useState<FilteredItem[]>(initialFilters);
 
     const isFirstLoad = useRef(true);
@@ -126,11 +127,11 @@ export function FiltersProvider({
 
             router.get(currentUrl, formatToParams(), {
                 preserveState: true,
-                preserveScroll: !paginationFiltered
+                preserveScroll: !paginationFiltered,
             });
         };
 
-        fetchData().then();
+        fetchData();
     }, [filters]);
 
     const formatToParams = () => {

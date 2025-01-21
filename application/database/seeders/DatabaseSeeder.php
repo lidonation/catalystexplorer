@@ -30,8 +30,6 @@ class DatabaseSeeder extends Seeder
             BookmarkItemSeeder::class,
             BookmarkCollectionSeeder::class,
             RuleSeeder::class,
-            MonthlyReportSeeder::class,
-            DiscussionSeeder::class,
         ];
 
         foreach ($seeders as $seeder) {

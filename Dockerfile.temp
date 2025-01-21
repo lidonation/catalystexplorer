@@ -1,0 +1,4 @@
+FROM catalystexplorer
+WORKDIR /var/www/application
+COPY application/composer.json application/composer.lock ./
+RUN composer install

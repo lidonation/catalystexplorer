@@ -5,14 +5,13 @@ import { Head, WhenVisible } from '@inertiajs/react';
 import { useTranslation } from 'react-i18next';
 import { ProposalSearchParams } from '../../../types/proposal-search-params';
 import CampaignList from '../Campaign/Partials/CampaignList';
-import CampaignLoader from '../Campaign/Partials/CampaignLoader';
 import MetricCardLoading from '../Metrics/Partials/MetricCardLoading';
 import MetricCardList from '../Metrics/Partials/MetricsCardList';
 import FundSortBy from './Partials/FundsSortBy';
-import HeroSection from './Partials/HeroSection';
 import FundData = App.DataTransferObjects.FundData;
 import MetricData = App.DataTransferObjects.MetricData;
 import CampaignData = App.DataTransferObjects.CampaignData;
+import CampaignLoader from '../Campaign/Partials/CampaignLoader';
 
 interface FundPageProps extends Record<string, unknown> {
     fund: FundData;
@@ -31,9 +30,6 @@ export default function Fund({
     return (
         <>
             <Head title={fund.title} />
-            <div className="m-8 min-h-screen">
-                <HeroSection fund={fund} />
-            </div>
 
             <FiltersProvider defaultFilters={filters}>
                 <div className="relative flex w-full flex-col justify-center gap-8">
@@ -86,15 +82,9 @@ export default function Fund({
                             <FundSortBy />
                         </div>
                         <div className="mt-4">
-                            <WhenVisible
-                                fallback={<CampaignLoader />}
-                                data="campaigns"
-                            >
-                                <CampaignList
-                                    campaigns={campaigns}
-                                    fund={fund}
-                                />
-                            </WhenVisible>
+                           <WhenVisible fallback={<CampaignLoader/>} data="campaigns">
+                           <CampaignList campaigns={campaigns} fund={fund} />
+                           </WhenVisible>
                         </div>
                     </section>
                 </div>

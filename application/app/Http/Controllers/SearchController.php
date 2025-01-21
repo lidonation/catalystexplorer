@@ -53,8 +53,12 @@ class SearchController extends Controller
         return $filters ? explode(',', $filters) : [];
     }
 
-    private function getResultsCounts(array $repositories, string $searchTerm, array $filterList, PostRepository $posts): array
+    private function getResultsCounts(array $repositories, ?string $searchTerm, array $filterList, PostRepository $posts): array
     {
+        if (!$searchTerm) {
+            return array_fill_keys(array_keys($repositories), 0);
+        }
+
         $counts = [];
         foreach ($repositories as $key => $repository) {
             if (empty($filterList) || in_array($key, $filterList)) {

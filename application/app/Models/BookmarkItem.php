@@ -12,12 +12,6 @@ class BookmarkItem extends Model
 {
     use HasModel, SoftDeletes;
 
-    protected $fillable = [
-        'user_id',
-        'model_type',
-        'model_id',
-    ];
-
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);

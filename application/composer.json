@@ -17,7 +17,7 @@
         "http-interop/http-factory-guzzle": "^1.2",
         "inertiajs/inertia-laravel": "2.0",
         "laravel/framework": "^11.9",
-        "laravel/horizon": "^5.29",
+        "laravel/horizon": "^5.30",
         "laravel/nova": "^5.0",
         "laravel/octane": "^2.5",
         "laravel/sanctum": "^4.0",
@@ -94,14 +94,14 @@
     },
     "minimum-stability": "stable",
     "prefer-stable": true,
-    "repositories": [
-        {
+    "repositories": {
+        "nova": {
             "type": "composer",
             "url": "https://nova.laravel.com"
         },
-        {
+        "spatie/laravel-comments": {
             "type": "composer",
             "url": "https://satis.spatie.be"
         }
-    ]
+    }
 }

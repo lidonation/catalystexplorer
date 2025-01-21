@@ -2,7 +2,7 @@ include ./application/.env
 export
 
 sail := ./application/vendor/bin/sail
-compose := docker-compose exec -T catalystexplorer.com
+compose := docker-compose exec -t -w /var/www catalystexplorer.com
 nodeVersion := 20
 
 .PHONY: init
@@ -13,25 +13,13 @@ init:
 		--volume ${PWD}:/app \
 		--workdir /app \
 		--user root \
-		node:18-alpine yarn install --ignore-engine
-
-	docker run --rm --interactive --tty \
-		--volume ${PWD}:/app \
-		--workdir /app \
-		--user root \
-		node:${nodeVersion}-alpine yarn install --ignore-engine
-
-	docker run --rm --interactive --tty \
-		--volume ${PWD}:/app \
-		--workdir /app \
-		--user root \
-		node:${nodeVersion}-alpine yarn install --ignore-engine
+		node:${nodeVersion}-alpine yarn install --ignore-engines
 
 	docker run --rm --interactive --tty \
 		--volume ${PWD}/application:/app \
 		--workdir /app \
 		--user root \
-		node:${nodeVersion}-alpine yarn install --ignore-engine
+		node:${nodeVersion}-alpine yarn install --ignore-engines
 
 
 	docker run --rm --interactive --tty \
@@ -39,16 +27,26 @@ init:
           composer install --ignore-platform-reqs
 
 	sudo chown -R $(id -u -n):$(id -g -n) ${PWD}/application/vendor
+	sudo chown -R $(id -u -n):$(id -g -n) ${PWD}/application/.env
+	sudo chmod 666 ${PWD}/application/.env
  
 	make up
 	sleep 10
-	$(compose) artisan key:generate
+	sudo chown -R $(id -u -n):$(id -g -n) ${PWD}/application/bootstrap/cache
+	sudo chown -R $(id -u -n):$(id -g -n) ${PWD}/application/storage
+	sudo chmod -R 777 ${PWD}/application/bootstrap/cache
+	sudo chmod -R 777 ${PWD}/application/storage
+	$(compose) php artisan key:generate
 	make migrate
 	$(compose) yarn husky init
 
 .PHONY: artisan
 artisan:
-	$(compose) artisan $(filter-out $@,$(MAKECMDGOALS))
+	sudo chown -R $(id -u -n):$(id -g -n) ${PWD}/application/bootstrap/cache
+	sudo chown -R $(id -u -n):$(id -g -n) ${PWD}/application/storage
+	sudo chmod -R 777 ${PWD}/application/bootstrap/cache
+	sudo chmod -R 777 ${PWD}/application/storage
+	$(compose) php artisan $(filter-out $@,$(MAKECMDGOALS))
 
 .PHONY: backend-install
 backend-install:
@@ -58,19 +56,15 @@ backend-install:
 
 .PHONY: build
 build:
-	$(compose) yarn build
-
-.PHONY: tsc
-tsc:
-	$(compose)  npx tsc
+	$(compose) npx vite build
 
 .PHONY: db-setup
 db-setup:
-	$(sail) artisan migrate:fresh --seed
+	$(sail) php artisan migrate:fresh --seed
 
 .PHONY: db-seed
 db-seed:
-	$(sail) artisan db:seed
+	$(sail) php artisan db:seed
 
 .PHONY: down
 down:
@@ -82,7 +76,7 @@ devtools-install:
 		--volume ${PWD}:/app \
 		--workdir /app \
 		--user root \
-		node:${nodeVersion}-alpine yarn install --ignore-engine
+		node:${nodeVersion}-alpine yarn install --ignore-engines
 		$(sail) up -d
 		npx husky init
 
@@ -93,11 +87,12 @@ frontend-install:
 		--volume ${PWD}/application:/app \
 		--workdir /app \
 		--user root \
-		node:${nodeVersion}-alpine yarn install --ignore-engine
+		node:${nodeVersion}-alpine yarn install --ignore-engines
 
 .PHONY: frontend-clean
 frontend-clean:
 	rm -rf application/node_modules 2>/dev/null || true
+	$(compose) yarn cache clean
 
 .PHONY: image-build
 image-build:
@@ -152,11 +147,11 @@ up:
 
 .PHONY: vite
 vite:
-	$(sail) npx vite --force
+	$(sail) npx vite
 
 .PHONY: watch
 watch:
-	docker compose  up -d --remove-orphans && $(sail) npx vite --force
+	docker compose  up -d --remove-orphans&& $(sail) npx vite --force
 
 .PHONY: test-backend
 test-backend:

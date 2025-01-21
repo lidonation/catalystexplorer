@@ -131,8 +131,7 @@ const SearchResults = ({ counts, ...results }: SearchResultsProps) => {
     return (
         <>
             <Head title="Search Results" />
-            <div className="min-h-screen">
-                <div className="sticky top-0 z-50 backdrop-blur-md">
+            <div className="sticky top-0 z-50 bg-white/80 backdrop-blur-md backdrop-saturate-150">
                     <div className="container px-4 py-4">
                         <div className="mb-4 flex w-full flex-col">
                             <h1 className="title-3">
@@ -147,34 +146,6 @@ const SearchResults = ({ counts, ...results }: SearchResultsProps) => {
                         />
                     </div>
                 </div>
-
-                <div className="container flex flex-col gap-16 scroll-smooth py-8">
-                    {TAB_CONFIG.map((tab) => (
-                        <section
-                            key={tab.name}
-                            className="min-h-screen scroll-mt-[120px]"
-                            id={`section-${tab.name}`}
-                        >
-                            <WhenVisible
-                                data={tab.name}
-                                fallback={
-                                    <SearchResultsLoading
-                                        type={tab.name}
-                                        count={5}
-                                    />
-                                }
-                            >
-                                <div className="flex flex-col gap-2">
-                                    <DynamicSearchResults
-                                        name={tab.name}
-                                        data={results[tab.name] as any}
-                                    />
-                                </div>
-                            </WhenVisible>
-                        </section>
-                    ))}
-                </div>
-            </div>
         </>
     );
 };
