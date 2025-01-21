@@ -55,7 +55,7 @@ class FundsController extends Controller
             'filters' => $this->queryParams,
             'metrics' => Inertia::optional(
                 fn () => MetricData::collect($metrics
-                    ->limit(env('METRIC_CARD_LIMIT', 6))
+                    ->limit(6)
                     ->getQuery()
                     ->where('context', 'fund')
                     ->orderByDesc('order')
