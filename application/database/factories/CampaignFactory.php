@@ -43,7 +43,7 @@ class CampaignFactory extends Factory
             'deleted_at' => $this->faker->optional()->dateTimeBetween('-1 year', 'now'),
             'color' => $this->faker->optional()->safeColorName(),
             'label' => $this->faker->optional()->word(),
-            'currency' => $this->faker->randomElement(CatalystCurrencies::toValues()),
+            'currency' => $this->faker->randomElement(array_merge(CatalystCurrencies::toValues(), [null])),
             'review_started_at' => $this->faker->optional()->dateTimeBetween('-1 year', 'now'),
         ];
     }

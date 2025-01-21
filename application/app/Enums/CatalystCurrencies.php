@@ -13,6 +13,11 @@ use Spatie\Enum\Laravel\Enum;
  */
 final class CatalystCurrencies extends Enum
 {
+    public static function toValues(): array
+    {
+        return ['ADA', 'USD'];
+    }
+
     public static function values(): \Closure
     {
         return fn (string $name): string|int|null => match ($name) {
