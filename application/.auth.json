@@ -1,0 +1,24 @@
+{
+    "http-basic": {
+        "nova.laravel.com": {
+            "username": "hello@lidonation.com",
+            "password": "dCR1z0vaxGhTzpTpkofvyrdCSXnktxd4V0cHPKzEXjDjldWvXZ"
+        },
+        "satis.spatie.be": {
+            "username": "hello@lidonation.com",
+            "password": "rL3Wv4rVwr6T5o0w2UmJhM3UJFUrvVReLKMntgpz4u4TO3Q27KxePRjbmK7xRXcL"
+        },
+        "composer.fluxui.dev": {
+            "username": "hello@lidonation.com",
+            "password": "ee460e50-0165-45a6-9848-075c85e45b2f"
+        }
+    },
+    "bitbucket-oauth": {},
+    "github-oauth": {
+        "github.com": "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"
+    },
+    "gitlab-oauth": {},
+    "gitlab-token": {
+        "git.raddcreative.io": "c_XgZegDiYXLtUWzb8ye"
+    }
+}
