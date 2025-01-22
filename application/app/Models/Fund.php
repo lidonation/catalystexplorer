@@ -32,7 +32,6 @@ class Fund extends Model implements HasMedia
     protected $appends = [
         'amount_requested',
         'amount_awarded',
-        'thumbnail_img_url',
         'banner_img_url',
     ];
 
@@ -129,13 +128,13 @@ class Fund extends Model implements HasMedia
 
     public function registerMediaConversions(?Media $media = null): void
     {
-        $this->addMediaConversion('thumbnail')
+        $this->addMediaConversion('thumbnails')
             ->width(180)
             ->height(180)
             ->withResponsiveImages()
             ->crop(180, 180, CropPosition::Top)
-            ->performOnCollections('thumbnails');
-        $this->addMediaConversion('banner')
+            ->performOnCollections('hero');
+        $this->addMediaConversion('banners')
             ->width(1500)
             ->height(500)
             ->crop(2048, 2048, CropPosition::Top)
@@ -145,7 +144,7 @@ class Fund extends Model implements HasMedia
 
     public function registerMediaCollections(): void
     {
-        $this->addMediaCollection('thumbnails')
+        $this->addMediaCollection('hero')
             ->singleFile()
             ->useDisk('public');
         $this->addMediaCollection('banners')
@@ -153,13 +152,14 @@ class Fund extends Model implements HasMedia
             ->useDisk('public');
     }
 
-   public function getThumbnailImageUrlAttribute(): ?string
+    public function getHeroImgUrlAttribute(): ?string
+    {
+        return $this->getFirstMediaUrl('hero') ?: null;
+    }
+
+    public function getBannerImageUrlAttribute(): ?string
    {
-       return $this->getFirstMediaUrl('thumbnails', 'thumbnail') ?: null;
-   }
-   public function getBannerImageUrlAttribute(): ?string
-   {
-       return $this->getFirstMediaUrl('banners', 'banner') ?: null;
+       return $this->getFirstMediaUrl('banners') ?: null;
    }
 
     protected function casts(): array

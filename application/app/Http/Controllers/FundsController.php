@@ -52,8 +52,6 @@ class FundsController extends Controller
 
         return Inertia::render('Funds/Fund', [
             'fund' => $fund,
-            'thumbnailImageUrl' => $fund->thumbnail_img_url,
-            'bannerImageUrl' => $fund->banner_img_url,
             'filters' => $this->queryParams,
             'metrics' => Inertia::optional(
                 fn () => MetricData::collect($metrics

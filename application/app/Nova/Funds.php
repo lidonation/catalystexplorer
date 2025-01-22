@@ -77,17 +77,11 @@ class Funds extends Resource
 
             Image::make('Thumbnail', 'thumbnail')
                 ->disk('public')
-                ->path('funds/thumbnails')
-                ->prunable()
-                ->prunable()
-                ->nullable()
-                ->rules('nullable', 'image', 'max:2048'),
+                ->path('funds/hero'),
 
             Image::make('Banner', 'banner')
                 ->disk('public')
-                ->path('funds/banners')
-                ->prunable()
-                ->rules('nullable', 'image', 'max:2048'),
+                ->path('funds/banners'),
 
             DateTime::make('Launched At')
                 ->sortable(),
