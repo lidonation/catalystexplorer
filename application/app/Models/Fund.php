@@ -32,6 +32,7 @@ class Fund extends Model implements HasMedia
     protected $appends = [
         'amount_requested',
         'amount_awarded',
+        'banner_img_url',
     ];
 
     protected $guarded = [];
@@ -127,29 +128,43 @@ class Fund extends Model implements HasMedia
 
     public function registerMediaConversions(?Media $media = null): void
     {
-        $this->addMediaConversion('thumbnail')
-            ->width(640)
-            ->height(420)
+        $this->addMediaConversion('thumbnails')
+            ->width(180)
+            ->height(180)
             ->withResponsiveImages()
-            ->crop(512, 512, CropPosition::Top)
+            ->crop(180, 180, CropPosition::Top)
             ->performOnCollections('hero');
-        $this->addMediaConversion('large')
-            ->width(2400)
-            ->height(1600)
+        $this->addMediaConversion('banners')
+            ->width(1500)
+            ->height(500)
             ->crop(2048, 2048, CropPosition::Top)
             ->withResponsiveImages()
-            ->performOnCollections('hero');
+            ->performOnCollections('banners');
     }
 
     public function registerMediaCollections(): void
     {
-        $this->addMediaCollection('hero');
+        $this->addMediaCollection('hero')
+            ->singleFile()
+            ->useDisk('public');
+        $this->addMediaCollection('banners')
+            ->singleFile()
+            ->useDisk('public');
     }
 
-    public function getHeroImgUrlAttribute()
+    public function heroImageUrl(): Attribute
     {
-        return $this->getFirstMediaUrl('hero') ?: null;
+        return Attribute::make(
+            get: fn() =>$this->getFirstMediaUrl('hero')
+        );
     }
+
+    public function bannerImageUrl(): Attribute
+   {
+       return Attribute::make(
+           get: fn () => $this->getFirstMediaUrl('banners')
+       );
+   }
 
     protected function casts(): array
     {

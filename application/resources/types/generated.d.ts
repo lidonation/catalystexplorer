@@ -54,6 +54,7 @@ excerpt?: string;
 comment_prompt?: string;
 content?: string;
 hero_img_url?: string;
+banner_image_url?: string;
 status?: string;
 launched_at?: string;
 awarded_at?: string;
