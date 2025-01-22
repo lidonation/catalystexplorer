@@ -162,7 +162,7 @@ class Fund extends Model implements HasMedia
     public function bannerImage(): Attribute
    {
        return Attribute::make(
-           get: fn () => $this->getFirstMediaUrl('banner')
+           get: fn () => $this->getFirstMediaUrl('banners')
        );
    }
 
