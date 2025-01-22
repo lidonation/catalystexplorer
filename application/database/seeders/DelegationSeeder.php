@@ -4,7 +4,6 @@ namespace Database\Seeders;
 
 use App\Models\Delegation;
 use App\Models\Registration;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class DelegationSeeder extends Seeder
