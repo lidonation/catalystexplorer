@@ -75,10 +75,13 @@ class Funds extends Resource
                 CatalystCurrencies::ADA()->value => CatalystCurrencies::ADA()->value,
             ])->default(fn () => CatalystCurrencies::ADA()->value)->sortable(),
 
-            Image::make('Image')
+            Image::make('Thumbnail', 'thumbnail')
                 ->disk('public')
-                ->path('funds')
-                ->sortable(),
+                ->path('funds/hero'),
+
+            Image::make('Banner', 'banner')
+                ->disk('public')
+                ->path('funds/banners'),
 
             DateTime::make('Launched At')
                 ->sortable(),
