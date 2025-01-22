@@ -152,14 +152,18 @@ class Fund extends Model implements HasMedia
             ->useDisk('public');
     }
 
-    public function getHeroImgUrlAttribute(): ?string
+    public function heroImageUrl(): Attribute
     {
-        return $this->getFirstMediaUrl('hero') ?: null;
+        return Attribute::make(
+            get: fn() =>$this->getFirstMediaUrl('hero')
+        );
     }
 
-    public function getBannerImageUrlAttribute(): ?string
+    public function bannerImage(): Attribute
    {
-       return $this->getFirstMediaUrl('banners') ?: null;
+       return Attribute::make(
+           get: fn () => $this->getFirstMediaUrl('banner')
+       );
    }
 
     protected function casts(): array
