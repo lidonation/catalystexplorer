@@ -1,2 +1,58 @@
 *
 !.gitignore
+
+# Ignore all files and folders starting with . (dot)
+!.*
+
+# Ignore all files and folders starting with _ (underscore)
+!_*
+
+# Ignore all files and folders starting with ~ (tilde)
+!~*
+
+# Ignore all files and folders named .git
+!.git       
+
+# Ignore all files and folders named .gitignore
+!.gitignore 
+
+# Ignore all files and folders named .DS_Store
+!.DS_Store  
+
+# Ignore all files and folders named node_modules
+!node_modules   
+
+# Ignore all files and folders named vendor
+!vendor
+
+# Ignore all files and folders named storage
+!storage
+
+# Ignore all files and folders named logs
+!logs   
+
+# Ignore all files and folders named bootstrap
+!bootstrap
+
+# Ignore all files and folders named public
+!public
+
+# Ignore all files and folders named resources
+!resources
+
+# Ignore all files and folders named config
+!config
+
+# Ignore all files and folders named database
+!database
+
+# Ignore all files and folders named app
+!app
+
+# Ignore all files and folders named routes
+!routes
+
+# Ignore all files and folders named tests
+!tests
+
+# Ignore all files and folders named tests

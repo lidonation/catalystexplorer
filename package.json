@@ -2,21 +2,10 @@
   "private": true,
   "type": "module",
   "version": "1.0.0",
-  "scripts": {
-    "commitlint": "commitlint --edit",
-    "prepare": "husky"
-  },
-  "devDependencies": {
-    "@commitlint/cli": "^19.6.1",
-    "@commitlint/config-conventional": "^19.6.0",
-    "@semantic-release/changelog": "^6.0.3",
-    "@semantic-release/git": "^10.0.1",
-    "@semantic-release/gitlab": "^13.2.3",
-    "conventional-changelog-conventionalcommits": "^8.0.0",
-    "husky": "^9.1.7",
-    "semantic-release": "^24.2.1"
-  },
   "dependencies": {
     "@nivo/bar": "^0.88.0"
+  },
+  "devDependencies": {
+    "husky": "^9.1.7"
   }
 }
