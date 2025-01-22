@@ -12,7 +12,6 @@ use App\Repositories\AnnouncementRepository;
 use App\Repositories\MetricRepository;
 use App\Repositories\PostRepository;
 use App\Repositories\ProposalRepository;
-use Illuminate\Support\Facades\Config;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -40,7 +39,14 @@ class HomeController extends Controller
                         ->get()
                 )
             ),
-            'metrics' => Inertia::optional(fn () => $this->getHomeMetrics($metrics)),
+            'metrics' => Inertia::optional(
+                fn () => MetricData::collect($metrics
+                    ->limit(6)
+                    ->getQuery()
+                    ->where('context', 'home')
+                    ->orderByDesc('order')
+                    ->get())
+            ),
             'announcements' => Inertia::optional(
                 fn () => AnnouncementData::collect($announcements
                     ->limit(6)
@@ -66,19 +72,5 @@ class HomeController extends Controller
                 )
             ),
         ]);
-    }
-
-    private function getHomeMetrics(MetricRepository $metrics)
-    {
-        // Retrieve the default metric limit from the configuration
-        $defaultLimit = Config::get('app.metric_card.default_limit', 5);
-
-        return MetricData::collect(
-            $metrics->limit($defaultLimit)
-                ->getQuery()
-                ->where('context', 'home')
-                ->orderByDesc('order')
-                ->get()
-        );
     }
 }

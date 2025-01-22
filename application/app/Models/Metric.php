@@ -11,6 +11,7 @@ use App\Enums\StatusEnum;
 use App\Traits\HasRules;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
 
 class Metric extends Model
@@ -54,7 +55,7 @@ class Metric extends Model
     {
         return Attribute::make(
             get: function () {
-                // fetch aggregate series
+                // Fetch aggregate series
                 $modelInstance = new $this->model;
                 $table = $modelInstance->getTable();
                 $builder = call_user_func([$this->model, 'query']);
@@ -68,21 +69,26 @@ class Metric extends Model
                 if ($this->rules?->isNotEmpty()) {
                     $builder = $this->applyRules($builder, $this->rules, $table);
                 }
+
+                // Retrieve the default limit from the configuration or default to 5
+                $defaultLimit = Config::get('app.metric_card.default_limit', 5);
+
                 $results = $builder->select('fund_id', DB::raw("{$aggregate}({$table}.{$field}) as {$aggregate}"))
                     ->leftJoin('funds', fn ($join) => $join->on('funds.id', '=', 'proposals.fund_id'))
                     ->with([
                         'fund' => fn ($q) => $q->orderBy('launched_at', 'asc'),
                     ])
                     ->groupBy('fund_id', 'funds.launched_at')
-                    ->orderBy('funds.launched_at', 'asc')
+                    ->orderByDesc('funds.launched_at') 
+                    ->limit($defaultLimit) // Limit to the default number
                     ->get()
                     ->map(function ($row) use ($aggregate) {
                         return [
                             'x' => $row->fund?->title,
                             'y' => $row->{$aggregate},
                         ];
+                        
                     });
-
                 return [
                     'id' => 'Proposals Count',
                     'color' => $this->color,
