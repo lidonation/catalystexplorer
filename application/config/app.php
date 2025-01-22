@@ -20,11 +20,11 @@ return [
         'email' => env('SUPER_ADMIN_EMAIL', 'admin@catalystexplorer.com'),
         'password' => env('SUPER_ADMIN_PASSWORD', 'ofnXIFbZ0JOuGBqx'),
     ],
- 
+
     'metric_card' => [
         'default_limit' => env('METRIC_CARD_DEFAULT_LIMIT', 5),
     ],
-    
+
     /*
     |--------------------------------------------------------------------------
     | Application Environment

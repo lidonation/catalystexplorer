@@ -11,7 +11,6 @@ use App\Enums\StatusEnum;
 use App\Traits\HasRules;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
-use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
 
 class Metric extends Model
@@ -70,29 +69,27 @@ class Metric extends Model
                     $builder = $this->applyRules($builder, $this->rules, $table);
                 }
 
-                // Retrieve the default limit from the configuration or default to 5
-                $defaultLimit = Config::get('app.metric_card.default_limit', 5);
-
                 $results = $builder->select('fund_id', DB::raw("{$aggregate}({$table}.{$field}) as {$aggregate}"))
                     ->leftJoin('funds', fn ($join) => $join->on('funds.id', '=', 'proposals.fund_id'))
                     ->with([
-                        'fund' => fn ($q) => $q->orderBy('launched_at', 'asc'),
+                        'fund' => fn ($q) => $q->orderBy('launched_at', 'desc'),
                     ])
                     ->groupBy('fund_id', 'funds.launched_at')
-                    ->orderByDesc('funds.launched_at') 
-                    ->limit($defaultLimit) // Limit to the default number
+                    ->orderByDesc('funds.launched_at')
+                    ->limit(config('app.metric_card.default_limit', 5))
                     ->get()
                     ->map(function ($row) use ($aggregate) {
                         return [
                             'x' => $row->fund?->title,
                             'y' => $row->{$aggregate},
                         ];
-                        
+
                     });
+
                 return [
                     'id' => 'Proposals Count',
                     'color' => $this->color,
-                    'data' => $results,
+                    'data' => $results->reverse()->values(),
                 ];
             }
         );
