@@ -2,7 +2,6 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use App\Models\Link;
 
@@ -14,9 +13,19 @@ class LinkSeeder extends Seeder
     public function run()
     {
         Link::create([
-            'uri' => 'https:://www.google.com',
+            'type' => 'external',
+            'link' => 'https://www.google.com',
+            'label' => 'Google',
+            'title' => 'Google Search',
+            'status' => 'published',
+            'order' => 1,
+            'valid' => true,
+            'uri' => 'https://www.google.com',
             'model_id' => 1,
             'model_type' => 'App\Models\Link',
         ]);
+
+        Link::factory(55)->create();
     }
 }
+
