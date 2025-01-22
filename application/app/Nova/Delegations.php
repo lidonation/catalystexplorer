@@ -1,10 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Nova;
 
 use App\Models\Delegation;
 use App\Nova\Resource;
-use Laravel\Nova\Actions\ExportAsCsv;
 use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Fields\DateTime;
 use Laravel\Nova\Fields\ID;
@@ -92,8 +93,6 @@ class Delegations extends Resource
      */
     public function actions(NovaRequest $request): array
     {
-        return [
-            ExportAsCsv::make()->nameable(),
-        ];
+        return [];
     }
 }
