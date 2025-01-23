@@ -15,6 +15,7 @@ export default function IdeascaleProfilesFilters() {
             ? true
             : false,
     );
+    const budgetRange = [0, 10000000];
 
     const handleFundingStatusChange = () => {
         const newFundingStatus = !fundingStatus;
@@ -111,7 +112,11 @@ export default function IdeascaleProfilesFilters() {
                     <RangePicker
                         key={'Budgets'}
                         context={t('proposals.filters.budgets')}
-                        value={getFilter(ProposalParamsEnum.BUDGETS)}
+                        value={
+                            getFilter(ProposalParamsEnum.BUDGETS)?.length == 0
+                                ? budgetRange
+                                : getFilter(ProposalParamsEnum.BUDGETS)
+                        }
                         onValueChange={(value) =>
                             setFilters({
                                 label: t('proposals.filters.budgets'),
@@ -119,12 +124,9 @@ export default function IdeascaleProfilesFilters() {
                                 param: ProposalParamsEnum.BUDGETS,
                             })
                         }
-                        max={getFilter(ProposalParamsEnum.MAX_BUDGET)}
-                        min={getFilter(ProposalParamsEnum.MIN_BUDGET)}
-                        defaultValue={[
-                            getFilter(ProposalParamsEnum.MIN_BUDGET),
-                            getFilter(ProposalParamsEnum.MAX_BUDGET),
-                        ]}
+                        max={budgetRange[1]}
+                        min={budgetRange[0]}
+                        defaultValue={budgetRange}
                     />
 
                     <div className="col-span-2 sm:col-span-2 lg:col-span-1">

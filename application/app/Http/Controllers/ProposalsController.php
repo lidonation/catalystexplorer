@@ -135,11 +135,6 @@ class ProposalsController extends Controller
             $this->queryParams[ProposalSearchParams::BUDGETS()->value] = [1, 10000000];
             $this->queryParams[ProposalSearchParams::PROJECT_LENGTH()->value] = [0, 12];
         }
-
-        $this->queryParams[ProposalSearchParams::MAX_BUDGET()->value] = 10000000;
-        $this->queryParams[ProposalSearchParams::MIN_BUDGET()->value] = 1;
-        $this->queryParams[ProposalSearchParams::MAX_PROJECT_LENGTH()->value] = 12;
-        $this->queryParams[ProposalSearchParams::MIN_PROJECT_LENGTH()->value] = 0;
     }
 
     protected function query($returnBuilder = false, $attrs = null, $filters = []): array|Builder

@@ -69,7 +69,10 @@ export default function ActiveFilters({
                     return <BooleanFilters filter={filter} />;
                 }
 
-                if (rangeFilters.includes(filter.param)) {
+                if (
+                    rangeFilters.includes(filter.param) &&
+                    filter.value.length
+                ) {
                     return <RangeFilters filter={filter} />;
                 }
 
@@ -135,19 +138,13 @@ const RangeFilters = ({ filter }: { filter: FilteredItem }) => {
         if (filter.param == ProposalParamsEnum.PROJECT_LENGTH) {
             setFilters({
                 param: filter.param,
-                value: [
-                    getFilter(ProposalParamsEnum.MIN_PROJECT_LENGTH),
-                    getFilter(ProposalParamsEnum.MAX_PROJECT_LENGTH),
-                ],
+                value: [],
                 label: filter.label,
             });
         } else if (filter.param == ProposalParamsEnum.BUDGETS) {
             setFilters({
                 param: filter.param,
-                value: [
-                    getFilter(ProposalParamsEnum.MIN_BUDGET),
-                    getFilter(ProposalParamsEnum.MAX_BUDGET),
-                ],
+                value: [],
                 label: filter.label,
             });
         }

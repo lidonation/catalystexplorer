@@ -3,18 +3,20 @@ import Selector from '@/Components/Select';
 import FilterLinesIcon from '@/Components/svgs/FilterLinesIcon';
 import { useFilterContext } from '@/Context/FiltersContext';
 import { IdeaScaleSearchEnum } from '@/enums/ideascale-search-enums';
+import IdeascaleSortingOptions from '@/lib/IdeascaleSortOptions';
 import ActiveFilters from '@/Pages/Proposals/Partials/ActiveFilters';
-import { useRef, useState } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import IdeascaleProfilesSearchControls from './IdeascaleProfileSearchControls';
 import IdeascaleProfilesFilters from './IdeascaleProfilesFilters';
-import IdeascaleSortingOptions from '@/lib/IdeascaleSortOptions';
 
 const IdeaScaleProfileToolbar = () => {
     const [toggleFilterVisibility, setToggleFilterVisibility] = useState(false);
     const { getFilter, setFilters, filters } = useFilterContext();
     const { t } = useTranslation();
-    const filtersCount = filters.filter((filter) => filter.label).length;
+    const filtersCount = filters.filter(
+        (filter) => filter.value.length > 0,
+    ).length;
 
     return (
         <div className="flex w-full flex-col gap-2">
