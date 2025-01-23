@@ -40,10 +40,12 @@ function ProposalSearchControls({
         onFiltersToggle(showFilters);
     };
 
-    const filtersCount = filters.filter((filter) => filter.label).length;
+    const filtersCount = filters.filter(
+        (filter) => filter.param !== ProposalParamsEnum.PAGE && filter.value.length > 0,
+    ).length;
 
     return (
-        <div className="container sticky top-0 z-10 mx-auto flex w-full flex-col gap-4 bg-background-lighter pb-4 pt-6">
+        <div className="container sticky top-0 z-10 mx-auto flex w-full flex-col gap-4 pb-4 pt-6 backdrop-blur-md">
             <div className="flex items-center justify-end gap-2">
                 <SearchBar
                     handleSearch={handleSearch}

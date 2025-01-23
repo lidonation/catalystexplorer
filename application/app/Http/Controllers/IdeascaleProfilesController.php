@@ -28,7 +28,7 @@ class IdeascaleProfilesController extends Controller
     public function index(Request $request): Response
     {
         $this->getProps($request);
-        $profiles = empty($this->queryParams) ? $this->getIdeascaleProfilesData() : $this->query();
+        $profiles = $this->query();
 
         return Inertia::render('IdeascaleProfile/Index', [
             'ideascaleProfiles' => $profiles,
@@ -117,13 +117,6 @@ class IdeascaleProfilesController extends Controller
             IdeascaleProfileSearchParams::QUERY()->value => 'string|nullable',
             IdeascaleProfileSearchParams::SORT()->value => 'string|nullable',
         ]);
-
-        if (! empty($this->queryParams)) {
-            $this->queryParams[ProposalSearchParams::BUDGETS()->value] = [1, 10000000];
-        }
-
-        $this->queryParams[ProposalSearchParams::MAX_BUDGET()->value] = 10000000;
-        $this->queryParams[ProposalSearchParams::MIN_BUDGET()->value] = 1;
     }
 
     protected function getUserFilters(): array

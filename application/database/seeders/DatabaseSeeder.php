@@ -31,6 +31,8 @@ class DatabaseSeeder extends Seeder
             BookmarkCollectionSeeder::class,
             RuleSeeder::class,
             MonthlyReportSeeder::class,
+            RegistrationSeeder::class,
+            DelegationSeeder::class,
             DiscussionSeeder::class,
         ];
 
