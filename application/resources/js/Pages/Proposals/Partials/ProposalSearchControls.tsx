@@ -41,7 +41,7 @@ function ProposalSearchControls({
     };
 
     const filtersCount = filters.filter(
-        (filter) => filter.value.length > 0,
+        (filter) => filter.param !== ProposalParamsEnum.PAGE && filter.value.length > 0,
     ).length;
 
     return (

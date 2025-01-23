@@ -68,7 +68,7 @@ class ProposalsController extends Controller
     {
         $this->getProps($request);
 
-        $proposals = empty($this->queryParams) ? $this->getRandomProposals() : $this->query();
+        $proposals = $this->query();
 
         return Inertia::render('Proposals/Index', [
             'proposals' => $proposals,
@@ -128,12 +128,6 @@ class ProposalsController extends Controller
             $this->sortBy = $sort->first();
 
             $this->sortOrder = $sort->last();
-        }
-
-        // set defaults max and mins
-        if (! empty($this->queryParams)) {
-            $this->queryParams[ProposalSearchParams::BUDGETS()->value] = [1, 10000000];
-            $this->queryParams[ProposalSearchParams::PROJECT_LENGTH()->value] = [0, 12];
         }
     }
 
