@@ -5,10 +5,11 @@ import { useFilterContext } from '@/Context/FiltersContext';
 import { ProposalParamsEnum } from '@/enums/proposal-search-params';
 import { useTranslation } from 'react-i18next';
 
-
 const ProposalFilters = () => {
     const { setFilters, getFilter } = useFilterContext();
     const { t } = useTranslation();
+    const budgetRange = [0, 10000000];
+    const projectLengthRange = [0, 12];
 
     return (
         <>
@@ -256,7 +257,12 @@ const ProposalFilters = () => {
                         <RangePicker
                             key={'Budgets'}
                             context={t('proposals.filters.budgets')}
-                            value={getFilter(ProposalParamsEnum.BUDGETS)}
+                            value={
+                                getFilter(ProposalParamsEnum.BUDGETS)?.length ==
+                                0
+                                    ? budgetRange
+                                    : getFilter(ProposalParamsEnum.BUDGETS)
+                            }
                             onValueChange={(value) =>
                                 setFilters({
                                     label: t('proposals.filters.budgets'),
@@ -264,16 +270,9 @@ const ProposalFilters = () => {
                                     param: ProposalParamsEnum.BUDGETS,
                                 })
                             }
-                            max={getFilter(ProposalParamsEnum.MAX_BUDGET)}
-                            min={getFilter(ProposalParamsEnum.MIN_BUDGET)}
-                            defaultValue={[
-                                getFilter(
-                                    ProposalParamsEnum.MIN_BUDGET,
-                                ),
-                                getFilter(
-                                    ProposalParamsEnum.MAX_BUDGET,
-                                ),
-                            ]}
+                            max={budgetRange[1]}
+                            min={budgetRange[0]}
+                            defaultValue={budgetRange}
                         />
                     </div>
 
@@ -282,16 +281,12 @@ const ProposalFilters = () => {
                             key={'Project Length'}
                             context={t('proposals.filters.projectLength')}
                             value={
-                                getFilter(
-                                    ProposalParamsEnum.PROJECT_LENGTH,
-                                ) ?? [
-                                    getFilter(
-                                        ProposalParamsEnum.MIN_PROJECT_LENGTH,
-                                    ),
-                                    getFilter(
-                                        ProposalParamsEnum.MAX_PROJECT_LENGTH,
-                                    ),
-                                ]
+                                getFilter(ProposalParamsEnum.PROJECT_LENGTH)
+                                    ?.length == 0
+                                    ? projectLengthRange
+                                    : getFilter(
+                                          ProposalParamsEnum.PROJECT_LENGTH,
+                                      )
                             }
                             onValueChange={(value) =>
                                 setFilters({
@@ -300,20 +295,9 @@ const ProposalFilters = () => {
                                     param: ProposalParamsEnum.PROJECT_LENGTH,
                                 })
                             }
-                            max={getFilter(
-                                ProposalParamsEnum.MAX_PROJECT_LENGTH,
-                            )}
-                            min={getFilter(
-                                ProposalParamsEnum.MIN_PROJECT_LENGTH,
-                            )}
-                            defaultValue={[
-                                getFilter(
-                                    ProposalParamsEnum.MIN_PROJECT_LENGTH,
-                                ),
-                                getFilter(
-                                    ProposalParamsEnum.MAX_PROJECT_LENGTH,
-                                ),
-                            ]}
+                            max={projectLengthRange[1]}
+                            min={projectLengthRange[0]}
+                            defaultValue={projectLengthRange}
                         />
                     </div>
                 </div>

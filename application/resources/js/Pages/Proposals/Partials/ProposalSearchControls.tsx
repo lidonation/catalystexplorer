@@ -40,7 +40,9 @@ function ProposalSearchControls({
         onFiltersToggle(showFilters);
     };
 
-    const filtersCount = filters.filter((filter) => filter.label).length;
+    const filtersCount = filters.filter(
+        (filter) => filter.value.length > 0,
+    ).length;
 
     return (
         <div className="container sticky top-0 z-10 mx-auto flex w-full flex-col gap-4 bg-background-lighter pb-4 pt-6">

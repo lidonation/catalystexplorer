@@ -121,9 +121,6 @@ class IdeascaleProfilesController extends Controller
         if (! empty($this->queryParams)) {
             $this->queryParams[ProposalSearchParams::BUDGETS()->value] = [1, 10000000];
         }
-
-        $this->queryParams[ProposalSearchParams::MAX_BUDGET()->value] = 10000000;
-        $this->queryParams[ProposalSearchParams::MIN_BUDGET()->value] = 1;
     }
 
     protected function getUserFilters(): array
