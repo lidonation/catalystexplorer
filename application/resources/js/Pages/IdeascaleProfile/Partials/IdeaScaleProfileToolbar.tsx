@@ -3,6 +3,7 @@ import Selector from '@/Components/Select';
 import FilterLinesIcon from '@/Components/svgs/FilterLinesIcon';
 import { useFilterContext } from '@/Context/FiltersContext';
 import { IdeaScaleSearchEnum } from '@/enums/ideascale-search-enums';
+import { ProposalParamsEnum } from '@/enums/proposal-search-params';
 import IdeascaleSortingOptions from '@/lib/IdeascaleSortOptions';
 import ActiveFilters from '@/Pages/Proposals/Partials/ActiveFilters';
 import { useState } from 'react';
@@ -15,7 +16,8 @@ const IdeaScaleProfileToolbar = () => {
     const { getFilter, setFilters, filters } = useFilterContext();
     const { t } = useTranslation();
     const filtersCount = filters.filter(
-        (filter) => filter.value.length > 0,
+        (filter) =>
+            filter.param !== ProposalParamsEnum.PAGE && filter.value.length > 0,
     ).length;
 
     return (
