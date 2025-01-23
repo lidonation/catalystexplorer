@@ -20,7 +20,7 @@ yarn-error.log
 /.idea
 /.vscode
 /.zed
-.auth.json
+auth.json
 **/caddy/**
 frankenphp
 frankenphp-worker.php
