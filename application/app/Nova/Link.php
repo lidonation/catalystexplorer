@@ -9,6 +9,8 @@ use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Http\Requests\NovaRequest;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Fields\MorphTo;
+use Laravel\Nova\Fields\Boolean;
+use Laravel\Nova\Fields\Select;
 
 class Link extends Resource
 {
@@ -35,6 +37,8 @@ class Link extends Resource
         'id',
         'link',
         'title',
+        'label',
+        'status'
     ];
 
     /**
@@ -45,7 +49,19 @@ class Link extends Resource
     public function fields(NovaRequest $request): array
     {
         return [
-            ID::make()->sortable(),
+            ID::make(__('ID'), 'id')->sortable(),
+            Text::make(__('Link'), 'link')->help('http URL link')->rules('required', 'uri'),
+            Text::make(__('Label'), 'label')
+                ->help('What is the link of (google doc, website, youtube video, etc)? '),
+            Text::make(__('Title'), 'title'),
+            Select::make(__('Status'), 'status')
+                ->options([
+                    'published' => 'Published',
+                    'draft' => 'Draft',
+                    'pending' => 'Pending',
+                    'ready' => 'Ready',
+                    'scheduled' => 'Scheduled',
+                ])->default('published')->sortable(),
         ];
     }
 
