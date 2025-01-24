@@ -44,57 +44,39 @@ class MyBookmarksController extends Controller
         $page = (int) $request->input('page', $this->defaultPage);
         $limit = (int) $request->input('limit', $this->defaultLimit);
 
+        $bookmarkTypes = [
+            Proposal::class => 'proposals',
+            IdeascaleProfile::class => 'people', 
+            Review::class => 'reviews',
+            Group::class => 'groups'
+        ];
+
+        $bookmarks = BookmarkItem::where('user_id', Auth::id())
+            ->whereIn('model_type', array_keys($bookmarkTypes))
+            ->with('model')
+            ->get()
+            ->groupBy('model_type')
+            ->map(function ($items, $type) use ($limit, $bookmarkTypes) {
+                $collection = $items->pluck('model');
+                return [
+                    'data' => $collection,
+                    'count' => $collection->count(),
+                    'key' => $bookmarkTypes[$type]
+                ];
+            });
+
         $counts = [];
-        foreach (BookmarkableType::cases() as $bookmarkType) {
-            $counts[$bookmarkType->value] = BookmarkItem::where('user_id', Auth::id())
-                ->where('model_type', $bookmarkType->getModelClass())
-                ->count();
+        $result = [
+            'counts' => [],
+            'activeType' => null
+        ];
+        
+        foreach ($bookmarkTypes as $type => $key) {
+            $result['counts'][$key] = $bookmarks[$type]['count'] ?? 0;
+            $result[$key] = $bookmarks[$type]['data'] ?? collect();
         }
 
-        $queryProposals = BookmarkItem::where('user_id', Auth::id())
-            ->where('model_type', Proposal::class)
-            ->whereNotNull('user_id')
-            ->with(['model']);
-        $proposals = $queryProposals->paginate($limit)->map(function($queryProposals) {
-            return $queryProposals->model;
-        });
-        $proposals->count = $queryProposals->count();
-
-        $queryPeople = BookmarkItem::where('user_id', Auth::id())
-            ->where('model_type', IdeascaleProfile::class)
-            ->whereNotNull('user_id')
-            ->with(['model']);
-        $people = $queryPeople->paginate($limit)->map(function($queryPeople) {
-            return $queryPeople->model;
-        });
-        $people->count = $queryPeople->count();
-
-        $queryReviews = BookmarkItem::where('user_id', Auth::id())
-            ->where('model_type', Review::class)
-            ->whereNotNull('user_id')
-            ->with(['model']);
-        $reviews = $queryReviews->paginate($limit)->map(function($queryReviews) {
-            return $queryReviews->model;
-        });
-        $reviews->count = $queryReviews->count();
-        
-        $queryGroups = BookmarkItem::where('user_id', Auth::id())
-        ->where('model_type', Group::class)
-        ->whereNotNull('user_id')
-        ->with(['model']);
-        $groups = $queryGroups->paginate($limit)->map(function($queryGroups) {
-            return $queryGroups->model;
-        });
-        $groups->count = $queryGroups->count();
-
-        return Inertia::render('My/Bookmarks/Index', [
-            'proposals' => $proposals,
-            'people' => $people,
-            'reviews' => $reviews,
-            'groups' => $groups,
-            'counts' => $counts,
-            'activeType' => null
-        ]);
+        return Inertia::render('My/Bookmarks/Index', $result);
     }
 
     public function show(BookmarkItem $bookmarkItem): InertiaResponse|JsonResponse
