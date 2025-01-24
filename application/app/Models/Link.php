@@ -5,9 +5,15 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Models;
+use Spatie\Transalable\HasTranslations;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Artisan;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 class Link extends Model
 {
+    use HasFactory, HasTranslations;
 
     public array $translatable = [
         'title',
@@ -19,11 +25,14 @@ class Link extends Model
      *
      * @var array
      */
-    protected $fillable = ['link', 'status', 'label', 'title', 'valid'];
+    protected $fillable = ['type', 'link', 'label', 'title', 'status', 'order', 'valid'];
 
     public static function runCustomIndex(): void
     {
-        Artisan::call('ln:index App\\\\Models\\\\Link ln__links');
+        Artisan::call('ln:index',[
+            'model' => 'App\\Models\\Link',
+            'table' => 'ln__links',
+        ]);
     }
 
     public function model(): MorphTo
