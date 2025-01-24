@@ -15,6 +15,16 @@ class LinkSeeder extends Seeder
      */
     public function run(): void
     {
+        Link::create([
+            'type' => 'type1',
+            'link' => 'https://www.google.com',
+            'label' => 'Google',
+            'title' => 'Search Engine',
+            'status' => 'published',
+            'order' => 1,
+            'valid' => true,
+        ]);
+        
         Link::factory(55)
             ->create();
     }
