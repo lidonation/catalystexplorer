@@ -18,7 +18,7 @@ class GroupFactory extends Factory
     public function definition(): array
     {
         return [
-            'user_id' => User::factory(),
+            'user_id' => User::inRandomOrder()->first()?->id,
             'name' => $this->faker->company,
             'bio' => json_encode(['about' => $this->faker->paragraph]),
             'deleted_at' => null,

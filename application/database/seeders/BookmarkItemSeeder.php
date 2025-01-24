@@ -16,7 +16,7 @@ class BookmarkItemSeeder extends Seeder
     public function run(): void
     {
         BookmarkItem::factory()
-            ->recycle(User::factory()->create())
+//            ->recycle(User::factory()->create())
             ->count(20)
             ->create();
     }

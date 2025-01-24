@@ -5,21 +5,21 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Casts\DateFormatCast;
-use Laravel\Scout\Searchable;
 use App\Traits\HasConnections;
-use Spatie\MediaLibrary\HasMedia;
-use Laravolt\Avatar\Facade as Avatar;
-use Illuminate\Support\Facades\Artisan;
-use Spatie\Translatable\HasTranslations;
 use Illuminate\Database\Eloquent\Builder;
-use Spatie\MediaLibrary\InteractsWithMedia;
 use Illuminate\Database\Eloquent\Casts\Attribute;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Facades\Artisan;
+use Laravel\Scout\Searchable;
+use Laravolt\Avatar\Facade as Avatar;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
+use Spatie\Translatable\HasTranslations;
 
 class IdeascaleProfile extends Model implements HasMedia
 {
-    use HasTranslations, InteractsWithMedia, Searchable, HasConnections;
+    use HasConnections, HasTranslations, InteractsWithMedia, Searchable;
 
     protected $primaryKey = 'id';
 

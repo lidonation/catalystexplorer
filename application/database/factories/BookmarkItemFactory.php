@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Database\Factories;
 
 use App\Models\BookmarkCollection;
+use App\Models\BookmarkItem;
 use App\Models\Group;
 use App\Models\IdeascaleProfile;
 use App\Models\Proposal;
@@ -13,7 +14,7 @@ use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\BookmarkItem>
+ * @extends Factory<BookmarkItem>
  */
 class BookmarkItemFactory extends Factory
 {
@@ -35,9 +36,9 @@ class BookmarkItemFactory extends Factory
         $bookmarkableType = $this->faker->randomElement($bookmarkableModels);
 
         return [
-            'user_id' => User::factory(),
+            'user_id' => User::inRandomOrder()->first()?->id,
             'bookmark_collection_id' => null,
-            'model_id' => $bookmarkableType::factory(),
+            'model_id' => $bookmarkableType::inRandomOrder()?->first()?->id,
             'model_type' => $bookmarkableType,
             'title' => $this->faker->sentence(),
             'content' => $this->faker->paragraph(),

@@ -1,10 +1,12 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\Traits;
 
 use App\Models\Connection;
-use App\Models\IdeascaleProfile;
 use App\Models\Group;
+use App\Models\IdeascaleProfile;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Support\Collection;

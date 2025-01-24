@@ -30,7 +30,6 @@ class CreateCatalystConnectionsTable extends Migration
     }
 
     /**
-     *
      * Drops the custom sequence 'connections_id_seq' and the 'connections' table.
      *
      * @return void

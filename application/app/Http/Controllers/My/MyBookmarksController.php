@@ -10,14 +10,13 @@ use App\Enums\BookmarkableType;
 use App\Http\Controllers\Controller;
 use App\Models\BookmarkCollection;
 use App\Models\BookmarkItem;
-use App\Models\Proposal;
-use App\Models\IdeascaleProfile;
-use App\Models\Review;
 use App\Models\Group;
+use App\Models\IdeascaleProfile;
+use App\Models\Proposal;
+use App\Models\Review;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
@@ -46,9 +45,9 @@ class MyBookmarksController extends Controller
 
         $bookmarkTypes = [
             Proposal::class => 'proposals',
-            IdeascaleProfile::class => 'people', 
+            IdeascaleProfile::class => 'people',
             Review::class => 'reviews',
-            Group::class => 'groups'
+            Group::class => 'groups',
         ];
 
         $bookmarks = BookmarkItem::where('user_id', Auth::id())
@@ -56,21 +55,22 @@ class MyBookmarksController extends Controller
             ->with('model')
             ->get()
             ->groupBy('model_type')
-            ->map(function ($items, $type) use ($limit, $bookmarkTypes) {
+            ->map(function ($items, $type) use ($bookmarkTypes) {
                 $collection = $items->pluck('model');
+
                 return [
                     'data' => $collection,
                     'count' => $collection->count(),
-                    'key' => $bookmarkTypes[$type]
+                    'key' => $bookmarkTypes[$type],
                 ];
             });
 
         $counts = [];
         $result = [
             'counts' => [],
-            'activeType' => null
+            'activeType' => null,
         ];
-        
+
         foreach ($bookmarkTypes as $type => $key) {
             $result['counts'][$key] = $bookmarks[$type]['count'] ?? 0;
             $result[$key] = $bookmarks[$type]['data'] ?? collect();

@@ -4,15 +4,14 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Api;
 
-use App\Models\IdeascaleProfile;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
-use Symfony\Component\HttpFoundation\Response;
 use App\Http\Resources\IdeascaleProfileResource;
+use App\Models\IdeascaleProfile;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\Routing\ResponseFactory;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Symfony\Component\HttpFoundation\Response;
 
 class IdeascaleProfilesController extends Controller
 {
@@ -49,14 +48,14 @@ class IdeascaleProfilesController extends Controller
 
     public function connections(IdeascaleProfile $profile): JsonResponse
     {
-        if (!$profile) {
+        if (! $profile) {
             return response()->json([
                 'errors' => 'Profile not found',
             ], Response::HTTP_NOT_FOUND);
         }
 
         $nodes = $profile->connectedGroupsAndUsers()
-            ->map(fn($item) => [
+            ->map(fn ($item) => [
                 'id' => $item->id,
                 'name' => $item->name ?? 'Unnamed',
                 'color' => $item instanceof IdeascaleProfile ? 'rgb(97, 205, 187)' : 'rgb(232, 193, 160)',
@@ -65,7 +64,7 @@ class IdeascaleProfilesController extends Controller
                 'height' => 1,
             ]);
 
-        $links = $profile->connections()->get()->map(fn($connection) => [
+        $links = $profile->connections()->get()->map(fn ($connection) => [
             'source' => $connection->previous_model_id,
             'target' => $connection->next_model_id,
             'distance' => 100,
@@ -84,5 +83,4 @@ class IdeascaleProfilesController extends Controller
             'links' => $links->toArray(),
         ]);
     }
-
 }

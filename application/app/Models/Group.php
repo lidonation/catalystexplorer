@@ -5,18 +5,18 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Casts\DateFormatCast;
-use Laravel\Scout\Searchable;
-use Spatie\MediaLibrary\HasMedia;
-use Laravolt\Avatar\Facade as Avatar;
-use Illuminate\Support\Facades\Artisan;
-use Spatie\Translatable\HasTranslations;
 use Illuminate\Database\Eloquent\Builder;
-use Spatie\MediaLibrary\InteractsWithMedia;
 use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Support\Facades\Artisan;
+use Laravel\Scout\Searchable;
+use Laravolt\Avatar\Facade as Avatar;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
+use Spatie\Translatable\HasTranslations;
 
 class Group extends Model implements HasMedia
 {
-    use HasTranslations, Searchable, InteractsWithMedia;
+    use HasTranslations, InteractsWithMedia, Searchable;
 
     public array $translatable = [
         'bio',
@@ -56,14 +56,14 @@ class Group extends Model implements HasMedia
     public function gravatar(): Attribute
     {
         return Attribute::make(
-            get: fn() => Avatar::create($this->name ?? 'default')->toGravatar()
+            get: fn () => Avatar::create($this->name ?? 'default')->toGravatar()
         );
     }
 
     public function profilePhotoUrl(): Attribute
     {
         return Attribute::make(
-            get: fn() => count($this->getMedia('group')) ? $this->getMedia('group')[0]->getFullUrl() : $this->gravatar
+            get: fn () => count($this->getMedia('group')) ? $this->getMedia('group')[0]->getFullUrl() : $this->gravatar
         );
     }
 
@@ -71,6 +71,4 @@ class Group extends Model implements HasMedia
     {
         $this->addMediaCollection('group')->useDisk('public');
     }
-
-
 }

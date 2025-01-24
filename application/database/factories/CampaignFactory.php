@@ -24,7 +24,7 @@ class CampaignFactory extends Factory
     public function definition(): array
     {
         return [
-            'user_id' => User::factory(),
+            'user_id' => User::inRandomOrder()->first()?->id,
             'fund_id' => Fund::inRandomOrder()->first(),
             'title' => $this->faker->sentence(4),
             'meta_title' => $this->faker->sentence(5),

@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\IdeascaleProfilesController;
 use App\Http\Controllers\Api\TagController;
 use App\Http\Controllers\ProposalsController;
 use Illuminate\Support\Facades\Route;
+
 Route::prefix('api')->as('api.')->group(function () {
     Route::get('/groups', [GroupController::class, 'groups'])->name('groups');
     Route::get('/groups/{group:id}', [GroupController::class, 'group'])->name('group');

@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\Jobs;
 
@@ -33,7 +35,7 @@ class PopulateConnections implements ShouldQueue
      * Process the given proposal by creating connections between users, groups,
      * and user-group combinations associated with the proposal.
      *
-     * @param Proposal $proposal The proposal being processed.
+     * @param  Proposal  $proposal  The proposal being processed.
      */
     private function processProposal(Proposal $proposal): void
     {
@@ -53,7 +55,7 @@ class PopulateConnections implements ShouldQueue
      * - Skip creating a connection if the user IDs are the same.
      * - For valid pairs, create a connection between them if one does not already exist.
      *
-     * @param \Illuminate\Support\Collection $users The collection of users.
+     * @param  \Illuminate\Support\Collection  $users  The collection of users.
      */
     private function establishUserConnections($users): void
     {
@@ -65,13 +67,14 @@ class PopulateConnections implements ShouldQueue
             }
         }
     }
+
     /**
      * Establish connections between all groups.
      * - Iterate over all groups in pairs.
      * - Skip creating a connection if the group IDs are the same.
      * - For valid pairs, create a connection between them if one does not already exist.
      *
-     * @param \Illuminate\Support\Collection $groups The collection of groups.
+     * @param  \Illuminate\Support\Collection  $groups  The collection of groups.
      */
     private function establishGroupConnections($groups): void
     {
@@ -89,8 +92,8 @@ class PopulateConnections implements ShouldQueue
      * - Iterate over every user and group combination.
      * - Create a connection from the user to the group and vice versa if none exist.
      *
-     * @param \Illuminate\Support\Collection $users The collection of users.
-     * @param \Illuminate\Support\Collection $groups The collection of groups.
+     * @param  \Illuminate\Support\Collection  $users  The collection of users.
+     * @param  \Illuminate\Support\Collection  $groups  The collection of groups.
      */
     private function establishUserGroupConnections($users, $groups): void
     {
@@ -110,8 +113,8 @@ class PopulateConnections implements ShouldQueue
      * - Check if a backward connection already exists (modelB -> modelA).
      * - If not, create the backward connection.
      *
-     * @param mixed $modelA The first model in the connection (user or group).
-     * @param mixed $modelB The second model in the connection (user or group).
+     * @param  mixed  $modelA  The first model in the connection (user or group).
+     * @param  mixed  $modelB  The second model in the connection (user or group).
      */
     private function createConnection($modelA, $modelB): void
     {
@@ -125,7 +128,7 @@ class PopulateConnections implements ShouldQueue
             'next_model_id' => $modelB->id,
         ])->exists();
 
-        if (!$existingForwardConnection) {
+        if (! $existingForwardConnection) {
             Connection::create([
                 'previous_model_type' => $modelAType,
                 'previous_model_id' => $modelA->id,
@@ -141,7 +144,7 @@ class PopulateConnections implements ShouldQueue
             'next_model_id' => $modelA->id,
         ])->exists();
 
-        if (!$existingBackwardsConnection) {
+        if (! $existingBackwardsConnection) {
             Connection::create([
                 'previous_model_type' => $modelBType,
                 'previous_model_id' => $modelB->id,
