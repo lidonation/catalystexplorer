@@ -31,6 +31,7 @@ use Spatie\Enum\Laravel\Enum;
  * @method static self read_funds()
  * @method static self read_media()
  * @method static self read_metrics()
+ * @method static self read_links()
  * @method static self read_permissions()
  * @method static self read_proposals()
  * @method static self read_ratings()
@@ -48,6 +49,7 @@ use Spatie\Enum\Laravel\Enum;
  * @method static self update_funds()
  * @method static self update_media()
  * @method static self update_metrics()
+ * @method static self update_links()
  * @method static self update_proposals()
  * @method static self update_ratings()
  * @method static self update_reviews()
@@ -63,6 +65,7 @@ use Spatie\Enum\Laravel\Enum;
  * @method static self delete_admins()
  * @method static self delete_funds()
  * @method static self delete_metrics()
+ * @method static self delete_links()
  * @method static self delete_permissions()
  * @method static self delete_proposals()
  * @method static self delete_ratings()
@@ -74,10 +77,12 @@ use Spatie\Enum\Laravel\Enum;
  * @method static self delete_bookmark_items()
  * @method static self delete_bookmark_collections()
  * @method static self delete_monthly_reports()
+ * @method static self force_delete_links()
  * @method static self restore_campaigns()
  * @method static self restore_bookmark_items()
  * @method static self restore_bookmark_collections()
  * @method static self restore_monthly_reports()
+ * @method static self restore_links()
  */
 final class PermissionEnum extends Enum
 {

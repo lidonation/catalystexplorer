@@ -15,7 +15,7 @@ class LinkPolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user->hasAnyPermission([PermissionEnum::read_metrics()->value]);
+        return $user->hasAnyPermission([PermissionEnum::read_links()->value]);
     }
 
     /**
@@ -23,7 +23,7 @@ class LinkPolicy
      */
     public function view(User $user, Link $link): bool
     {
-        return $user->hasAnyPermission([PermissionEnum::read_metrics()->value]);
+        return $user->hasAnyPermission([PermissionEnum::read_links()->value]);
     }
 
     /**
@@ -31,7 +31,7 @@ class LinkPolicy
      */
     public function create(User $user): bool
     {
-        return $user->hasAnyPermission([PermissionEnum::create_metrics()->value]);
+        return $user->hasAnyPermission([PermissionEnum::create_links()->value]);
     }
 
     /**
@@ -39,7 +39,7 @@ class LinkPolicy
      */
     public function update(User $user, Link $link): bool
     {
-        return $user->hasAnyPermission([PermissionEnum::update_metrics()->value]);
+        return $user->hasAnyPermission([PermissionEnum::update_links()->value]);
     }
 
     /**
@@ -47,7 +47,7 @@ class LinkPolicy
      */
     public function delete(User $user, Link $link): bool
     {
-        return $user->hasAnyPermission([PermissionEnum::delete_metrics()->value]);
+        return $user->hasAnyPermission([PermissionEnum::delete_links()->value]);
     }
 
     /**
@@ -55,7 +55,7 @@ class LinkPolicy
      */
     public function restore(User $user, Link $link): bool
     {
-        return $user->hasAnyPermission([PermissionEnum::restore_metrics()->value]);
+        return $user->hasAnyPermission([PermissionEnum::restore_links()->value]);
     }
 
     /**
@@ -63,6 +63,6 @@ class LinkPolicy
      */
     public function forceDelete(User $user, Link $link): bool
     {
-        return $user->hasAnyPermission([PermissionEnum::force_delete_metrics()->value]);
+        return $user->hasAnyPermission([PermissionEnum::force_delete_links()->value]);
     }
 }
