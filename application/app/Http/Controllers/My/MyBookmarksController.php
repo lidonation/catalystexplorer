@@ -10,6 +10,10 @@ use App\Enums\BookmarkableType;
 use App\Http\Controllers\Controller;
 use App\Models\BookmarkCollection;
 use App\Models\BookmarkItem;
+use App\Models\Proposal;
+use App\Models\IdeascaleProfile;
+use App\Models\Review;
+use App\Models\Group;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -40,27 +44,56 @@ class MyBookmarksController extends Controller
         $page = (int) $request->input('page', $this->defaultPage);
         $limit = (int) $request->input('limit', $this->defaultLimit);
 
-        $query = BookmarkCollection::where('user_id', Auth::id())
+        $counts = [];
+        foreach (BookmarkableType::cases() as $bookmarkType) {
+            $counts[$bookmarkType->value] = BookmarkItem::where('user_id', Auth::id())
+                ->where('model_type', $bookmarkType->getModelClass())
+                ->count();
+        }
+
+        $queryProposals = BookmarkItem::where('user_id', Auth::id())
+            ->where('model_type', Proposal::class)
             ->whereNotNull('user_id')
-            ->withCount(['items']);
+            ->with(['model']);
+        $proposals = $queryProposals->paginate($limit)->map(function($queryProposals) {
+            return $queryProposals->model;
+        });
+        $proposals->count = $queryProposals->count();
 
-        $total = $query->count();
+        $queryPeople = BookmarkItem::where('user_id', Auth::id())
+            ->where('model_type', IdeascaleProfile::class)
+            ->whereNotNull('user_id')
+            ->with(['model']);
+        $people = $queryPeople->paginate($limit)->map(function($queryPeople) {
+            return $queryPeople->model;
+        });
+        $people->count = $queryPeople->count();
 
-        $collections = $query->offset(($page - 1) * $limit)
-            ->limit($limit)
-            ->get(['id', 'title', 'items.id'])
-            ->map(fn ($collection) => BookmarkCollectionData::from($collection));
-
-        $paginator = new LengthAwarePaginator(
-            $collections,
-            $total,
-            $limit,
-            $page,
-            ['pageName' => 'page']
-        );
+        $queryReviews = BookmarkItem::where('user_id', Auth::id())
+            ->where('model_type', Review::class)
+            ->whereNotNull('user_id')
+            ->with(['model']);
+        $reviews = $queryReviews->paginate($limit)->map(function($queryReviews) {
+            return $queryReviews->model;
+        });
+        $reviews->count = $queryReviews->count();
+        
+        $queryGroups = BookmarkItem::where('user_id', Auth::id())
+        ->where('model_type', Group::class)
+        ->whereNotNull('user_id')
+        ->with(['model']);
+        $groups = $queryGroups->paginate($limit)->map(function($queryGroups) {
+            return $queryGroups->model;
+        });
+        $groups->count = $queryGroups->count();
 
         return Inertia::render('My/Bookmarks/Index', [
-            'collections' => $paginator->onEachSide(1)->toArray(),
+            'proposals' => $proposals,
+            'people' => $people,
+            'reviews' => $reviews,
+            'groups' => $groups,
+            'counts' => $counts,
+            'activeType' => null
         ]);
     }
 
@@ -203,29 +236,5 @@ class MyBookmarksController extends Controller
         return Inertia::render('BookmarkCollection', [
             'bookmarkCollection' => BookmarkCollectionData::from($bookmarkCollection),
         ]);
-    }
-
-    public function getBookmarksByType(Request $request, string $type): InertiaResponse
-    {
-        $this->authorize('viewAny', BookmarkItem::class);
-
-        try {
-            $modelType = BookmarkableType::from($type)->getModelClass();
-
-            $bookmarkItems = BookmarkItem::where('user_id', Auth::id())
-                ->where('model_type', $modelType)
-                ->paginate($this->defaultLimit);
-
-            return Inertia::render('My/Bookmarks/Index', [
-                'bookmarkItems' => $bookmarkItems->onEachSide(1)->toArray(),
-            ]);
-
-        } catch (\Exception $e) {
-            report($e);
-
-            return Inertia::render('My/Bookmarks/Index', [
-                'errors' => ['Invalid bookmark type'],
-            ]);
-        }
     }
 }

@@ -1,24 +1,32 @@
 import React from "react";
 
-const BookmarkNavigation = () => {
+interface BookmarkNavigationProps {
+    counts: Record<string, number>;
+    activeType: string | null;
+    onTypeChange: (type: string) => void;
+}
+
+const BookmarkNavigation: React.FC<BookmarkNavigationProps> = ({ 
+    counts, 
+    activeType, 
+    onTypeChange 
+}) => {
     const sections = [
-        { name: 'Proposals', count: 30, isActive: true },
-        { name: 'People', count: 13, isActive: false },
-        { name: 'Groups', count: 28, isActive: false },
-        { name: 'Communities', count: 16, isActive: false },
-        { name: 'Reviews', count: 64, isActive: false },
-        { name: 'Articles', count: 5, isActive: false }
+        { name: 'Proposals', type: 'proposals', count: counts?.proposals || 0 },
+        { name: 'People', type: 'people', count: counts?.ideascale_profiles || 0 },
+        { name: 'Groups', type: 'groups', count: counts?.groups || 0 },
+        { name: 'Reviews', type: 'reviews', count: counts?.reviews || 0 }
     ];
 
     return (
         <nav className="border-b border-gray-200">
             <div className="flex space-x-8">
-                {sections.map(({ name, count, isActive }) => (
-                    <a
-                        key={name}
-                        href="#"
+                {sections.map(({ name, type, count }) => (
+                    <button
+                        key={type}
+                        onClick={() => onTypeChange(type)}
                         className={`flex items-center px-1 py-4 text-sm font-medium border-b-2 ${
-                        isActive
+                        activeType === type
                             ? 'border-primary text-primary'
                             : 'border-transparent text-content hover:text-purple-600 hover:border-purple-600'
                         }`}
@@ -26,14 +34,14 @@ const BookmarkNavigation = () => {
                         {name}
                         <span
                         className={`ml-2 rounded-full px-2.5 py-0.5 text-xs ${
-                            isActive
+                            activeType === type
                             ? 'bg-blue-100 border-primary text-primary'
                             : 'bg-background text-content'
                         }`}
                         >
                         {count}
                         </span>
-                    </a>
+                    </button>
                 ))}
             </div>
         </nav>
