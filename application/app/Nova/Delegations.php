@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Nova;
 
 use App\Models\Delegation;
-use App\Nova\Resource;
 use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Fields\DateTime;
 use Laravel\Nova\Fields\ID;
@@ -54,7 +53,7 @@ class Delegations extends Resource
             Text::make('Cat Onchain Id', 'cat_onchain_id'),
             DateTime::make('Created At', 'created_at')->sortable(),
 
-            BelongsTo::make(__('Registration'), 'registration', Registrations::class)
+            BelongsTo::make(__('Registration'), 'registration', Registrations::class),
         ];
     }
 

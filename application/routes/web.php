@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ChartsController;
+use App\Http\Controllers\CompletetProjectNftsController;
 use App\Http\Controllers\FundsController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\IdeascaleProfilesController;
@@ -31,6 +32,9 @@ Route::localized(
 
         Route::get('/charts', [ChartsController::class, 'index'])
             ->name('charts.index');
+
+        Route::get('/completed-project-nfts', [CompletetProjectNftsController::class, 'index'])
+            ->name('completedProjectsNfts.index');
 
         Route::get('/jormungandr', [JormungandrController::class, 'index'])
             ->name('jormungandr.index');
