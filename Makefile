@@ -162,9 +162,14 @@ watch:
 test-backend:
 	docker-compose -f docker-compose.testing.yml up -d && \
     sleep 3 && \
-	docker-compose -f docker-compose.testing.yml exec catalystexplorer.com vendor/bin/pest --group=arch && \
+	docker-compose -f docker-compose.testing.yml exec -T catalystexplorer.com vendor/bin/pest --group=arch && \
 	sleep 3 && \
  	docker-compose -f docker-compose.testing.yml down --volumes
+
+.PHONY: test-arch
+test-arch:
+	make test-backend && \
+	make up 
 
 .PHONY: cypress-install
 cypress-install:

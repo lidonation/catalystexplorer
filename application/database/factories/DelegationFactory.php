@@ -20,4 +20,3 @@ class DelegationFactory extends Factory
         ];
     }
 }
-

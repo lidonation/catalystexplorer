@@ -39,8 +39,8 @@ class ProposalFactory extends Factory
         ];
 
         return [
-            'user_id' => User::factory(),
-            'campaign_id' => Campaign::factory(),
+            'user_id' => User::inRandomOrder()->first()?->id,
+            'campaign_id' => Campaign::inRandomOrder()->first(),
             'fund_id' => Fund::inRandomOrder()->first(),
             'title' => $this->faker->words($this->faker->numberBetween(4, 12), true),
             'slug' => fn (array $attributes) => Str::slug($attributes['title']),

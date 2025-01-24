@@ -5,11 +5,12 @@ declare(strict_types=1);
 namespace Tests\Unit;
 
 use Illuminate\Support\Facades\Schema;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class MonthlyReportMigrationTest extends TestCase
 {
-    /** @test */
+    #[Test]
     public function it_creates_the_monthly_reports_table()
     {
         $this->artisan('migrate');
@@ -17,7 +18,7 @@ class MonthlyReportMigrationTest extends TestCase
         $this->assertTrue(Schema::hasTable('monthly_reports'));
     }
 
-    /** @test */
+    #[Test]
     public function it_has_expected_columns_in_monthly_reports_table()
     {
         $this->artisan('migrate');

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Casts\DateFormatCast;
+use App\Traits\HasConnections;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -18,7 +19,7 @@ use Spatie\Translatable\HasTranslations;
 
 class IdeascaleProfile extends Model implements HasMedia
 {
-    use HasTranslations, InteractsWithMedia, Searchable;
+    use HasConnections, HasTranslations, InteractsWithMedia, Searchable;
 
     protected $primaryKey = 'id';
 

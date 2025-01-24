@@ -1,11 +1,11 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Policies;
 
 use App\Models\Registration;
 use App\Models\User;
-use Illuminate\Auth\Access\Response;
 
 class RegistrationPolicy
 {

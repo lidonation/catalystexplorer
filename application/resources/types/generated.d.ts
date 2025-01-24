@@ -11,6 +11,37 @@ cta?: object;
 user_id: number;
 hero_image_url: string;
 };
+export type BookmarkCollectionData = {
+id: number;
+user_id: number;
+parent_id: number | null;
+title: string;
+content: string;
+color: string;
+allow_comments: string;
+visibility: string;
+status: string;
+type: string;
+type_id: number;
+type_type: string | null;
+created_at: string | null;
+updated_at: string | null;
+deleted_at: string | null;
+};
+export interface BookmarkItemData {
+id: number;
+user_id: number;
+bookmark_collection_id: number | null;
+model_id: number;
+model_type: string;
+title: string;
+content: string;
+action: number | null;
+created_at: string | null;
+updated_at: string | null;
+deleted_at: string | null;
+bookmarkable: ProposalData | IdeascaleProfileData | GroupData | ReviewData | CommunityData;
+}
 export type CampaignData = {
 id: number | null;
 fund_id?: number;
@@ -54,7 +85,6 @@ excerpt?: string;
 comment_prompt?: string;
 content?: string;
 hero_img_url?: string;
-banner_image_url?: string;
 status?: string;
 launched_at?: string;
 awarded_at?: string;
