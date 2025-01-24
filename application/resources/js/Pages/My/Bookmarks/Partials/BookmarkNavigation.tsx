@@ -4,23 +4,25 @@ interface BookmarkNavigationProps {
     counts: Record<string, number>;
     activeType: string | null;
     onTypeChange: (type: string) => void;
+    isSticky?: boolean;
 }
 
 const BookmarkNavigation: React.FC<BookmarkNavigationProps> = ({ 
     counts, 
     activeType, 
-    onTypeChange 
+    onTypeChange,
+    isSticky = false
 }) => {
     const sections = [
         { name: 'Proposals', type: 'proposals', count: counts?.proposals || 0 },
-        { name: 'People', type: 'people', count: counts?.ideascale_profiles || 0 },
+        { name: 'People', type: 'people', count: counts?.people || 0 },
         { name: 'Groups', type: 'groups', count: counts?.groups || 0 },
         { name: 'Reviews', type: 'reviews', count: counts?.reviews || 0 }
     ];
 
     return (
-        <nav className="border-b border-gray-200">
-            <div className="flex space-x-8">
+        <nav className={`border-b border-gray-200 ${isSticky ? 'fixed top-0 left-0 right-0 z-10 bg-background' : ''}`}>
+            <div className="container flex space-x-8">
                 {sections.map(({ name, type, count }) => (
                     <button
                         key={type}

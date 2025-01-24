@@ -41,7 +41,6 @@ const BookmarkToolbar = () => {
                     options={sortingOptions}
                     hideCheckbox={true}
                     placeholder={t('proposals.options.sort')}
-                    // className={filters}
                 />
                 </div>
             </div>
