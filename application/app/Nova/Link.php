@@ -11,6 +11,7 @@ use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Fields\MorphTo;
 use Laravel\Nova\Fields\Boolean;
 use Laravel\Nova\Fields\Select;
+use App\Enums\StatusEnum;
 
 class Link extends Resource
 {
@@ -26,7 +27,7 @@ class Link extends Resource
      *
      * @var string
      */
-    public static $title = 'link';
+    public static $title = 'title';
 
     /**
      * The columns that should be searched.
@@ -61,6 +62,7 @@ class Link extends Resource
                     'pending' => 'Pending',
                     'ready' => 'Ready',
                     'scheduled' => 'Scheduled',
+                    StatusEnum::published()->value => 'Published',
                 ])->default('published')->sortable(),
         ];
     }

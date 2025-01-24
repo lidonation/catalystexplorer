@@ -3,6 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use App\Enums\StatusEnums;
 
 return new class extends Migration
 {
@@ -17,7 +18,7 @@ return new class extends Migration
             $table->text('link');
             $table->string('label')->nullable();
             $table->text('title')->nullable();
-            $table->string('status')->default('published');
+            $table->enum('status', StatusEnum::toArray())->default(StatusEnums::published()->value);
             $table->integer('order')->default(0);
             $table->boolean('valid')->default(true);
             $table->softDeletes();
