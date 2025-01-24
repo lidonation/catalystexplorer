@@ -90,7 +90,7 @@ return [
      * If the view does not exist, a normal 404 will be thrown.
      * You need to register the fallback route for this to work.
      */
-    '404_view' => 'errors.404',
+    '404_view' => null,
 
     /**
      * The custom route action where we will set the locale of the routes

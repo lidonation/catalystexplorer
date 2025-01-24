@@ -9,6 +9,11 @@ use App\Http\Controllers\ProposalsController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\VoterToolController;
 use Illuminate\Support\Facades\Route;
+use Inertia\Inertia;
+
+Route::get('/404', function() {
+    return Inertia::render('Error/404');
+})->name('error.404');
 
 Route::localized(
     function () {
@@ -49,4 +54,7 @@ require __DIR__.'/dashboard.php';
 
 require __DIR__.'/api.php';
 
-Route::fallback(\CodeZero\LocalizedRoutes\Controllers\FallbackController::class);
+// This needs to be the last route
+Route::fallback(function () {
+    return Inertia::render('Error/404');
+});

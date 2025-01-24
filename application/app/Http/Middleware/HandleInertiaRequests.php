@@ -8,6 +8,7 @@ use App\DataTransferObjects\UserData;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
 use Inertia\Middleware;
+use Symfony\Component\HttpFoundation\Response;
 
 class HandleInertiaRequests extends Middleware
 {
@@ -42,5 +43,17 @@ class HandleInertiaRequests extends Middleware
                 'locale' => app()->getLocale(),
             ],
         ];
+    }
+
+    /**
+     * Handle all 404 errors to redirect to 404 page.
+     */
+    public function render($request, $response)
+    {
+        if (!$request->header('X-Inertia') && $response instanceof Response && $response->getStatusCode() === 404) {
+            return redirect()->route('error.404');
+        }
+
+        return parent::render($request, $response);
     }
 }

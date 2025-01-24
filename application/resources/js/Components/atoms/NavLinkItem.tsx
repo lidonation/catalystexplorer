@@ -10,6 +10,7 @@ type NavLinkItemProps = {
     children: ReactNode;
     className?: string;
     ariaLabel?: string;
+    onClick?: (e: React.MouseEvent) => void;
 };
 
 export default function NavLinkItem({
@@ -21,6 +22,7 @@ export default function NavLinkItem({
     prefetch = false,
     async = false,
     ariaLabel,
+    onClick,
     ...rest
 }: NavLinkItemProps) {
     return (
@@ -30,6 +32,7 @@ export default function NavLinkItem({
             aria-label={ariaLabel}
             role="menuitem"
             className={`flex items-center gap-3 px-3 py-1 hover:bg-background-lighter ${active ? 'text-primary-100' : 'text-dark'} ${className}`}
+            onClick={onClick}
         >
             {children}
             <p>{title}</p>

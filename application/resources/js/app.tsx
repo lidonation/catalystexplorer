@@ -18,9 +18,11 @@ createInertiaApp({
             import.meta.glob('./Pages/**/*.tsx'),
         );
         page.then((module: any) => {
-            module.default.layout =
-                module.default.layout ||
-                ((module: any) => <AppLayout children={module} />);
+            if (name !== 'Error/404') {
+                module.default.layout =
+                    module.default.layout ||
+                    ((module: any) => <AppLayout children={module} />);
+            }
         });
         return page;
     },
