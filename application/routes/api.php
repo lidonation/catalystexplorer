@@ -7,7 +7,6 @@ use App\Http\Controllers\Api\IdeascaleProfilesController;
 use App\Http\Controllers\Api\TagController;
 use App\Http\Controllers\ProposalsController;
 use Illuminate\Support\Facades\Route;
-
 Route::prefix('api')->as('api.')->group(function () {
     Route::get('/groups', [GroupController::class, 'groups'])->name('groups');
     Route::get('/groups/{group:id}', [GroupController::class, 'group'])->name('group');
@@ -21,8 +20,11 @@ Route::prefix('api')->as('api.')->group(function () {
     Route::get('/communities', [CommunityController::class, 'communities'])->name('communities');
     Route::get('/communities/{community:id}', [CommunityController::class, 'community'])->name('community');
 
-    Route::get('/ideascale-profiles', [IdeascaleProfilesController::class, 'ideascale_profiles'])->name('ideascaleProfiles');
-    Route::get('/ideascale-profiles/{ideascale_profile:id}', [IdeascaleProfilesController::class, 'ideascale_profile'])->name('ideascaleProfile');
+    Route::prefix('ideascale-profiles')->as('ideascaleProfiles.')->group(function () {
+        Route::get('/', [IdeascaleProfilesController::class, 'ideascaleProfiles'])->name('index');
+        Route::get('/{ideascale_profile:id}', [IdeascaleProfilesController::class, 'ideascale_profile'])->name('show');
+        Route::get('/{profile}/connections', [IdeascaleProfilesController::class, 'connections'])->name('connections');
+    });
 
     Route::get('/fund-titles', [ProposalsController::class, 'fundTitles'])->name('fundTitles');
 });
