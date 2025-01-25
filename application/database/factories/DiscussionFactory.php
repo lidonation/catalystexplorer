@@ -18,7 +18,7 @@ class DiscussionFactory extends Factory
         $relatedModel = $this->getRandomRelatedModel();
 
         return [
-            'user_id' => User::factory(),
+            'user_id' => User::inRandomOrder()->first()?->id,
             'model_id' => $relatedModel,
             'model_type' => get_class($relatedModel),
             'status' => $this->faker->randomElement(StatusEnum::toValues()),
@@ -38,6 +38,6 @@ class DiscussionFactory extends Factory
 
         $modelClass = $this->faker->randomElement($models);
 
-        return $modelClass::factory()->create();
+        return $modelClass::inRandomOrder()->first();
     }
 }

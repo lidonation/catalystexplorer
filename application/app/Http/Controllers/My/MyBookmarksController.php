@@ -10,10 +10,13 @@ use App\Enums\BookmarkableType;
 use App\Http\Controllers\Controller;
 use App\Models\BookmarkCollection;
 use App\Models\BookmarkItem;
+use App\Models\Group;
+use App\Models\IdeascaleProfile;
+use App\Models\Proposal;
+use App\Models\Review;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
@@ -40,28 +43,40 @@ class MyBookmarksController extends Controller
         $page = (int) $request->input('page', $this->defaultPage);
         $limit = (int) $request->input('limit', $this->defaultLimit);
 
-        $query = BookmarkCollection::where('user_id', Auth::id())
-            ->whereNotNull('user_id')
-            ->withCount(['items']);
+        $bookmarkTypes = [
+            Proposal::class => 'proposals',
+            IdeascaleProfile::class => 'people',
+            Review::class => 'reviews',
+            Group::class => 'groups',
+        ];
 
-        $total = $query->count();
+        $bookmarks = BookmarkItem::where('user_id', Auth::id())
+            ->whereIn('model_type', array_keys($bookmarkTypes))
+            ->with('model')
+            ->get()
+            ->groupBy('model_type')
+            ->map(function ($items, $type) use ($bookmarkTypes) {
+                $collection = $items->pluck('model');
 
-        $collections = $query->offset(($page - 1) * $limit)
-            ->limit($limit)
-            ->get(['id', 'title', 'items.id'])
-            ->map(fn ($collection) => BookmarkCollectionData::from($collection));
+                return [
+                    'data' => $collection,
+                    'count' => $collection->count(),
+                    'key' => $bookmarkTypes[$type],
+                ];
+            });
 
-        $paginator = new LengthAwarePaginator(
-            $collections,
-            $total,
-            $limit,
-            $page,
-            ['pageName' => 'page']
-        );
+        $counts = [];
+        $result = [
+            'counts' => [],
+            'activeType' => null,
+        ];
 
-        return Inertia::render('My/Bookmarks/Index', [
-            'collections' => $paginator->onEachSide(1)->toArray(),
-        ]);
+        foreach ($bookmarkTypes as $type => $key) {
+            $result['counts'][$key] = $bookmarks[$type]['count'] ?? 0;
+            $result[$key] = $bookmarks[$type]['data'] ?? collect();
+        }
+
+        return Inertia::render('My/Bookmarks/Index', $result);
     }
 
     public function show(BookmarkItem $bookmarkItem): InertiaResponse|JsonResponse
@@ -203,29 +218,5 @@ class MyBookmarksController extends Controller
         return Inertia::render('BookmarkCollection', [
             'bookmarkCollection' => BookmarkCollectionData::from($bookmarkCollection),
         ]);
-    }
-
-    public function getBookmarksByType(Request $request, string $type): InertiaResponse
-    {
-        $this->authorize('viewAny', BookmarkItem::class);
-
-        try {
-            $modelType = BookmarkableType::from($type)->getModelClass();
-
-            $bookmarkItems = BookmarkItem::where('user_id', Auth::id())
-                ->where('model_type', $modelType)
-                ->paginate($this->defaultLimit);
-
-            return Inertia::render('My/Bookmarks/Index', [
-                'bookmarkItems' => $bookmarkItems->onEachSide(1)->toArray(),
-            ]);
-
-        } catch (\Exception $e) {
-            report($e);
-
-            return Inertia::render('My/Bookmarks/Index', [
-                'errors' => ['Invalid bookmark type'],
-            ]);
-        }
     }
 }

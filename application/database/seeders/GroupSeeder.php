@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Database\Seeders;
 
 use App\Models\Group;
-use App\Models\User;
 use Illuminate\Database\Seeder;
 
 class GroupSeeder extends Seeder
@@ -17,7 +16,6 @@ class GroupSeeder extends Seeder
     {
         Group::factory()
             ->count(10)
-            ->recycle(User::factory()->create())
             ->create();
     }
 }

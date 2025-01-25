@@ -1,10 +1,10 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Nova;
 
 use App\Models\Registration;
-use App\Nova\Resource;
 use Laravel\Nova\Fields\DateTime;
 use Laravel\Nova\Fields\HasMany;
 use Laravel\Nova\Fields\ID;
@@ -14,7 +14,6 @@ use Laravel\Nova\Http\Requests\NovaRequest;
 
 class Registrations extends Resource
 {
-
     /**
      * The model the resource corresponds to.
      *

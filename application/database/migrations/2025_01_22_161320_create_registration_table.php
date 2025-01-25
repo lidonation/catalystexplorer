@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->text('tx');
             $table->text('stake_pub');
-            $table->text('stake_key'); 
+            $table->text('stake_key');
             $table->timestamps();
         });
     }
