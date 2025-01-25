@@ -23,7 +23,8 @@ class LinkPolicy extends AppPolicy
      */
     public function view(User $user, Link $link): bool
     {
-        return $user->hasAnyPermission([PermissionEnum::read_links()->value]);
+        return parent::canView($user, $link) || $user->hasAnyPermission([PermissionEnum::read_links()->value]);
+
     }
 
     /**
@@ -31,7 +32,7 @@ class LinkPolicy extends AppPolicy
      */
     public function create(User $user): bool
     {
-        return $user->hasAnyPermission([PermissionEnum::create_links()->value]);
+        return parent::canCreate($user) || $user->hasAnyPermission([PermissionEnum::create_links()->value]);
     }
 
     /**
@@ -39,7 +40,7 @@ class LinkPolicy extends AppPolicy
      */
     public function update(User $user, Link $link): bool
     {
-        return $user->hasAnyPermission([PermissionEnum::update_links()->value]);
+        return parent::canView($user, $link) || $user->hasAnyPermission([PermissionEnum::update_links()->value]);
     }
 
     /**
@@ -47,7 +48,7 @@ class LinkPolicy extends AppPolicy
      */
     public function delete(User $user, Link $link): bool
     {
-        return $user->hasAnyPermission([PermissionEnum::delete_links()->value]);
+        return parent::canDelete($user, $link) || $user->hasAnyPermission([PermissionEnum::delete_links()->value]);
     }
 
     /**
@@ -55,7 +56,7 @@ class LinkPolicy extends AppPolicy
      */
     public function restore(User $user, Link $link): bool
     {
-        return $user->hasAnyPermission([PermissionEnum::restore_links()->value]);
+        return parent::canRestore($user, $link) || $user->hasAnyPermission([PermissionEnum::restore_links()->value]);
     }
 
 }
