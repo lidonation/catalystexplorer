@@ -310,5 +310,11 @@
         "viewProfile": "Afficher le profil complet",
         "viewIdeascale": "Afficher et contacter l'utilisateur sur Ideascale",
         "profile": "profil"
+    },
+    "error": {
+        "404Title": "404 - Page non trouvée",
+        "telescopeAlt": "Illustration télescope 404",
+        "notFound": "Désolé, nous n'avons pas trouvé ce que vous cherchez.",
+        "findWayBack": "Retrouvons votre chemin !"
     }
 }

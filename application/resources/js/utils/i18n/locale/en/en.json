@@ -11,7 +11,7 @@
     "connectWallet": "Connect wallet",
     "comingSoon": "Coming Soon",
     "cookies": "Cookies",
-    "copyright": "© 2024 Catalyst Explorer. All rights reserved.",
+    "copyright": " 2024 Catalyst Explorer. All rights reserved.",
     "data": "Data",
     "dReps": "DReps",
     "email": "Email",
@@ -98,7 +98,11 @@
         },
         "links": {
             "home": "Home"
-        }
+        },
+        "dashboard": "Dashboard",
+        "proposals": "Proposals",
+        "funds": "Funds",
+        "knowledgebase": "Knowledgebase"
     },
     "breadcrumbs": {
         "home": "Home"
@@ -167,7 +171,6 @@
             "proposalCountsHighToLow": "Proposal count: High to Low"
         }
     },
-
     "proposals": {
         "allProposals": "All proposals",
         "proposals": "Proposals",
@@ -337,5 +340,11 @@
         "viewProfile": "View Full Profile",
         "viewIdeascale": "View & Contact user on Ideascale",
         "profile": "profile"
+    },
+    "error": {
+        "404Title": "404 - Page Not Found",
+        "telescopeAlt": "404 Telescope Illustration",
+        "notFound": "Sorry, we couldn't find what you're looking for.",
+        "findWayBack": "Let's find your way back!"
     }
 }

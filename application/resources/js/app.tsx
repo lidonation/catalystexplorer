@@ -17,6 +17,7 @@ createInertiaApp({
             `./Pages/${name}.tsx`,
             import.meta.glob('./Pages/**/*.tsx'),
         );
+    //setting up the default layout for all pages except the 404 page
         page.then((module: any) => {
             if (name !== 'Error/404') {
                 module.default.layout =

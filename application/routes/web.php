@@ -10,10 +10,13 @@ use App\Http\Controllers\SearchController;
 use App\Http\Controllers\VoterToolController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use Illuminate\Http\Request;
 
-Route::get('/404', function() {
-    return Inertia::render('Error/404');
-})->name('error.404');
+// Root redirect - must be before localized routes
+Route::get('/', function (Request $request) {
+    $locale = $request->getPreferredLanguage(config('localized-routes.supported_locales')) ?? 'en';
+    return redirect()->to('/' . $locale);
+});
 
 Route::localized(
     function () {
@@ -48,13 +51,11 @@ Route::localized(
     }
 );
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';
+require __DIR__ . '/dashboard.php';
+require __DIR__ . '/api.php';
 
-require __DIR__.'/dashboard.php';
-
-require __DIR__.'/api.php';
-
-// This needs to be the last route
+// Catch-all 404 route
 Route::fallback(function () {
     return Inertia::render('Error/404');
 });
