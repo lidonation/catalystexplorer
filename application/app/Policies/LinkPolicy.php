@@ -8,14 +8,14 @@ use App\Models\Link;
 use App\Models\User;
 use App\Enums\PermissionEnum;
 
-class LinkPolicy
+class LinkPolicy extends AppPolicy
 {
     /**
      * Determine whether the user can view any models.
      */
     public function viewAny(User $user): bool
     {
-        return $user->hasAnyPermission([PermissionEnum::read_links()->value]);
+        return parent::canViewAny($user) || $user->hasAnyPermission([PermissionEnum::read_links()->value]);
     }
 
     /**
@@ -58,11 +58,4 @@ class LinkPolicy
         return $user->hasAnyPermission([PermissionEnum::restore_links()->value]);
     }
 
-    /**
-     * Determine whether the user can permanently delete the model.
-     */
-    public function forceDelete(User $user, Link $link): bool
-    {
-        return $user->hasAnyPermission([PermissionEnum::force_delete_links()->value]);
-    }
 }

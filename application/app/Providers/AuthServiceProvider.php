@@ -8,8 +8,10 @@ use App\Enums\RoleEnum;
 use App\Models\BookmarkCollection;
 use App\Models\BookmarkItem;
 use App\Models\User;
+use App\Models\Link;
 use App\Policies\BookmarkCollectionPolicy;
 use App\Policies\BookmarkItemPolicy;
+use App\Policies\LinkPolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Gate;
 
