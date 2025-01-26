@@ -28,7 +28,7 @@ services:
       IGNITION_LOCAL_SITES_PATH: '${PWD}'
       LARAVEL_SAIL: 1
       NODE_OPTIONS: "--max-old-space-size=8096"
-      OCTANE_WATCH: true
+      OCTANE_WATCH: "true"
       WWWGROUP: '${WWWUSER:-1000}'
       WWWUSER: '${WWWUSER:-1000}'
       XDEBUG_MODE: '${SAIL_XDEBUG_MODE:-off}'
