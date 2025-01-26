@@ -1,5 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Head, WhenVisible } from '@inertiajs/react';
+import { FiltersProvider } from '@/Context/FiltersContext';
+import { ProposalParamsEnum } from '@/enums/proposal-search-params';
 import BookmarkNavigation from './Partials/BookmarkNavigation';
 import BookmarkToolbar from './Partials/BookmarkToolbar';
 import { useTranslation } from 'react-i18next';
@@ -13,13 +15,19 @@ interface IndexProps {
   groups: any[];
   reviews: any[];
   counts: Record<string, number>;
+  filters?: any; // Add this to match the props passed from the backend
 }
 
-const Index: React.FC<IndexProps> = ({ proposals, people, reviews, groups, counts }) => {
+const Index: React.FC<IndexProps> = ({ 
+  proposals, 
+  people, 
+  reviews, 
+  groups, 
+  counts, 
+  filters = URLSearchParams
+}) => {
   const { t } = useTranslation();
   const [activeType, setActiveType] = useState<string | null>('proposals');
-  const [isNavSticky, setIsNavSticky] = useState(false);
-  const navigationRef = useRef<HTMLDivElement>(null);
   const headerRef = useRef<HTMLDivElement>(null);
 
   const sectionsRef = useRef<Record<string, HTMLDivElement | null>>({
@@ -34,15 +42,17 @@ const Index: React.FC<IndexProps> = ({ proposals, people, reviews, groups, count
     people: 'people',
     groups: 'groups',
     reviews: 'reviews'
+  };  
+
+  const defaultFilters = {
+    [ProposalParamsEnum.QUERY]: '',
+    [ProposalParamsEnum.PAGE]: 1,
+    [ProposalParamsEnum.LIMIT]: 10,
+    ...filters
   };
 
   useEffect(() => {
     const handleScroll = () => {
-      if (!headerRef.current) return;
-
-      const headerBottom = headerRef.current.getBoundingClientRect().bottom;
-      setIsNavSticky(headerBottom <= 0);
-
       const scrollPosition = window.scrollY + window.innerHeight / 2;
 
       const currentSection = Object.entries(sectionsRef.current).find(([, ref]) => {
@@ -56,15 +66,13 @@ const Index: React.FC<IndexProps> = ({ proposals, people, reviews, groups, count
       if (currentSection) {
         const [sectionKey] = currentSection;
         const type = sectionTypes[sectionKey as keyof typeof sectionTypes];
-        if (type !== activeType) {
-          setActiveType(type);
-        }
+        setActiveType(type);
       }
     };
 
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
-  }, [activeType]);
+  }, []);
 
   const scrollToSection = (type: string) => {
     const sectionKey = Object.keys(sectionTypes).find(key => sectionTypes[key as keyof typeof sectionTypes] === type);
@@ -74,26 +82,28 @@ const Index: React.FC<IndexProps> = ({ proposals, people, reviews, groups, count
   };
 
   return (
+    <FiltersProvider defaultFilters={defaultFilters}>
     <>
       <Head title="My Bookmarks"/>
 
-      <header ref={headerRef}>
-        <div className='container'>
-          <h1 className="title-1">{t('My Bookmarks')}</h1>
-        </div>
-        <div className='container'>
-          {t('bookmark')}
-          <div ref={navigationRef}>
-            <BookmarkNavigation 
+      <div ref={headerRef} className="container">
+        <h1 className="title-1">{t('My Bookmarks')}</h1>
+      </div>
+
+      <div className="container sticky top-0 z-10 mx-auto flex w-full flex-col gap-4 pb-4 pt-6 backdrop-blur-md">
+        <div className="items-center gap-2">
+          <BookmarkNavigation 
               counts={counts} 
               activeType={activeType} 
               onTypeChange={scrollToSection}
-              isSticky={isNavSticky}
-            />
-          </div>
+              proposals={proposals}
+              people={people}
+              groups={groups}
+              reviews={reviews}
+          />
           <BookmarkToolbar/>
         </div>
-      </header>
+      </div>
 
       <main className="container mt-6">
         <div 
@@ -163,6 +173,7 @@ const Index: React.FC<IndexProps> = ({ proposals, people, reviews, groups, count
         </div>
       </main>
     </>
+    </FiltersProvider>
   );
 };
 

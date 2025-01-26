@@ -1,4 +1,6 @@
 import React from 'react';
+import { useFilterContext } from '@/Context/FiltersContext';
+import { ProposalParamsEnum } from '@/enums/proposal-search-params';
 import ProposalCard from '@/Pages/Proposals/Partials/ProposalCard';
 import IdeascaleProfileCard from '@/Pages/IdeascaleProfile/Partials/IdeascaleProfileCard';
 
@@ -17,32 +19,64 @@ const BookmarksList: React.FC<BookmarksListProps> = ({
     reviews = [], 
     activeType 
 }) => {
+    const { getFilter } = useFilterContext();
+    const searchQuery = getFilter(ProposalParamsEnum.QUERY) || '';
+
+    const filterItems = (items: any[]) => {
+        if (!searchQuery) return items;
+
+        return items.filter(item => {
+            if (!item) return false;
+
+            const searchableFields = {
+                'proposals': ['title', 'description', 'challenge'],
+                'people': ['name', 'email'],
+                'groups': ['name', 'description'],
+                'reviews': ['title', 'content']
+            };
+
+            const fields = searchableFields[activeType as keyof typeof searchableFields] || [];
+            
+            return fields.some(field => 
+                item[field]?.toLowerCase().includes(searchQuery.toLowerCase())
+            );
+        });
+    };
+
     const renderItems = () => {
+        let filteredItems: any[] = [];
+
         switch (activeType) {
             case 'proposals':
-                return proposals.filter(p => p).map((proposal, index) => (
-                    <ProposalCard 
-                        key={`proposal-${index}`} 
-                        proposal={proposal}
-                        isHorizontal={false}
-                        globalQuickPitchView={false}
-                    />
+                filteredItems = filterItems(proposals.filter(p => p != null));
+                return filteredItems.map((proposal, index) => (
+                    proposal && (
+                        <ProposalCard 
+                            key={`proposal-${index}`} 
+                            proposal={proposal}
+                            isHorizontal={false}
+                            globalQuickPitchView={false}
+                        />
+                    )
                 ));
             case 'people':
-                return people.map((profile, index) => (
+                filteredItems = filterItems(people);
+                return filteredItems.map((profile, index) => (
                     <IdeascaleProfileCard 
                         key={`profile-${index}`} 
-                        ideascaleProfile={profile} 
+                        ideascaleProfile={profile}
                     />
                 ));
             case 'groups':
-                return groups.map((group, index) => (
+                filteredItems = filterItems(groups);
+                return filteredItems.map((group, index) => (
                     <div key={`group-${index}`} className="bg-background p-4 rounded-xl">
                         {group.name}
                     </div>
                 ));
             case 'reviews':
-                return reviews.map((review, index) => (
+                filteredItems = filterItems(reviews);
+                return filteredItems.map((review, index) => (
                     <div key={`review-${index}`} className="bg-background p-4 rounded-xl">
                         {review.title}
                     </div>
