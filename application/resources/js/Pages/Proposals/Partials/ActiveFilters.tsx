@@ -62,23 +62,26 @@ export default function ActiveFilters({
                     statusFilters.includes(filter.param) &&
                     filter.value.length
                 ) {
-                    return <StatusFilters filter={filter} />;
+                    return <StatusFilters key={filter.param} filter={filter} />;
                 }
 
                 if (booleanFilters.includes(filter.param)) {
-                    return <BooleanFilters filter={filter} />;
+                    return (
+                        <BooleanFilters key={filter.param} filter={filter} />
+                    );
                 }
 
                 if (
                     rangeFilters.includes(filter.param) &&
                     filter.value.length
                 ) {
-                    return <RangeFilters filter={filter} />;
+                    return <RangeFilters key={filter.param} filter={filter} />;
                 }
 
                 if (sortFilters.includes(filter.param)) {
                     return (
                         <SortFilters
+                            key={filter.param}
                             sortOptions={sortOptions}
                             filter={filter}
                         />
@@ -86,7 +89,7 @@ export default function ActiveFilters({
                 }
 
                 if (idFilters.includes(filter.param) && filter.value.length) {
-                    return <IDFilters filter={filter} />;
+                    return <IDFilters key={filter.param} filter={filter} />;
                 }
             })}
         </div>
