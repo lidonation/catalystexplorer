@@ -205,6 +205,34 @@ class MyBookmarksController extends Controller
         }
     }
 
+    public function deleteItem(Request $request): JsonResponse
+    {
+        $data = $request->validate([
+            'bookmark_item_id' => ['required', 'integer', 'exists:bookmark_items,id'],
+        ]);
+
+        try {
+            $bookmarkItem = BookmarkItem::findOrFail($data['bookmark_item_id']);
+
+            if ($bookmarkItem->user_id !== Auth::id()) {
+                return response()->json([
+                    'message' => 'Unauthorized',
+                ], SymfonyResponse::HTTP_FORBIDDEN);
+            }
+
+            $this->authorize('delete', $bookmarkItem);
+
+            $bookmarkItem->delete();
+
+            return response()->json(['message' => 'Bookmark item deleted successfully']);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'errors' => ['Failed to delete bookmark item'],
+            ], SymfonyResponse::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }    
+
     public function view(BookmarkCollection $bookmarkCollection): InertiaResponse|JsonResponse
     {
         if ($bookmarkCollection->user_id !== Auth::id()) {
