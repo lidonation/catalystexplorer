@@ -331,7 +331,11 @@
             "playerSkipForward": "Skip Forward Icon",
             "playerStop": "Stop Icon",
             "arrowTrendingUp": "Trending Up Icon",
-            "arrowTrendingDown": "Trending Down Icon"
+            "arrowTrendingDown": "Trending Down Icon",
+            "file" : "File Icon",
+            "ada": "Ada Icon",
+            "usd": "USD Icon"
+
         }
     },
     "users": {
@@ -343,6 +347,12 @@
     "completedProjectNfts": {
         "title": "Completed Project NFTs",
         "subtitle": "Completed Project Catalyst project teams are invited to mint a celebratory NFT to mark your achievement and share it with the world!",
-        "nowMinting": "Now minting"
+        "nowMinting": "Now minting",
+        "communityFunded": "Community Members Funded",
+        "projectsCompleted":  "Projects Completed",
+        "usdDistributed":  "USD Distributed",
+        "adaDistributed":  "Ada Distributed",
+        "description": "Each NFT is unique, with design elements inspired by your project’s title and theme! Read the artist’s statement here: ",
+        "artistStatement": "Project Completion NFTs for Project Catalyst"
     }
 }
