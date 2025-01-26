@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace App\Nova;
 
-use App\Models\Group;
 use App\Models\Connection;
-use Laravel\Nova\Fields\ID;
-use Laravel\Nova\Fields\Select;
+use App\Models\Group;
 use App\Models\IdeascaleProfile;
 use Laravel\Nova\Fields\BelongsTo;
+use Laravel\Nova\Fields\ID;
+use Laravel\Nova\Fields\Select;
 use Laravel\Nova\Http\Requests\NovaRequest;
 
 class Connections extends Resource

@@ -103,7 +103,6 @@ export function FiltersProvider({
         }
 
         const fetchData = async () => {
-            // todo
             const previousFilters = filtersRef.current || [];
 
             const changedFilters = filters.filter((filter) => {

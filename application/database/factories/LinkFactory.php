@@ -2,9 +2,9 @@
 
 namespace Database\Factories;
 
-use Illuminate\Database\Eloquent\Factories\Factory;
-use App\Models\Link;
 use App\Enums\StatusEnum;
+use App\Models\Link;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Link>
@@ -16,7 +16,6 @@ class LinkFactory extends Factory
      *
      * @return array<string, mixed>
      */
-
     protected $model = Link::class;
 
     public function definition(): array
