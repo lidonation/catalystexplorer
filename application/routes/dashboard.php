@@ -23,7 +23,7 @@ Route::localized(
                         Route::post('/create-item', [MyBookmarksController::class, 'createItem'])->name('create-item');
                         Route::get('/collections/{bookmarkCollection}', [MyBookmarksController::class, 'view'])->name('collections.view');
                         Route::delete('/collections', [MyBookmarksController::class, 'deleteCollection'])->name('collections.destroy');
-                        Route::delete('/proposals', [MyBookmarksController::class, 'deleteFromCollection'])->name('proposals.delete');
+                        Route::delete('/{id}', [MyBookmarksController::class, 'deleteItem'])->name('delete');
                     });
             });
     }
