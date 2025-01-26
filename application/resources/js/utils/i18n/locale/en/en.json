@@ -15,6 +15,7 @@
     "data": "Data",
     "dReps": "DReps",
     "email": "Email",
+    "emailAddress": "Email Address",
     "facebook": "Facebook",
     "forgotPassword": "Forgot password",
     "funding": "Funding",
@@ -61,6 +62,7 @@
     "submitted": "Submitted",
     "approved": "Approved",
     "completed": "Completed",
+    "loginPrompt": "Login to get started",
     "app": {
         "name": "Catalyst Explorer",
         "contactEmail": "support@lidonation.com",
@@ -337,5 +339,10 @@
         "viewProfile": "View Full Profile",
         "viewIdeascale": "View & Contact user on Ideascale",
         "profile": "profile"
+    },
+    "completedProjectNfts": {
+        "title": "Completed Project NFTs",
+        "subtitle": "Completed Project Catalyst project teams are invited to mint a celebratory NFT to mark your achievement and share it with the world!",
+        "nowMinting": "Now minting"
     }
 }
