@@ -1,49 +1,94 @@
 import React from "react";
+import { Link } from "@inertiajs/react";
+import { useFilterContext } from "@/Context/FiltersContext";
+import { ProposalParamsEnum } from "@/enums/proposal-search-params";
 
 interface BookmarkNavigationProps {
     counts: Record<string, number>;
     activeType: string | null;
     onTypeChange: (type: string) => void;
+    proposals?: any[];
+    people?: any[];
+    groups?: any[];
+    reviews?: any[];
     isSticky?: boolean;
 }
 
-const BookmarkNavigation: React.FC<BookmarkNavigationProps> = ({ 
-    counts, 
+const BookmarkNavigation: React.FC<BookmarkNavigationProps> = ({
     activeType, 
     onTypeChange,
+    proposals = [],
+    people = [],
+    groups = [],
+    reviews = [],
     isSticky = false
 }) => {
-    const sections = [
-        { name: 'Proposals', type: 'proposals', count: counts?.proposals || 0 },
-        { name: 'People', type: 'people', count: counts?.people || 0 },
-        { name: 'Groups', type: 'groups', count: counts?.groups || 0 },
-        { name: 'Reviews', type: 'reviews', count: counts?.reviews || 0 }
+    const { getFilter } = useFilterContext();
+    const searchQuery = getFilter(ProposalParamsEnum.QUERY) || '';
+
+    const filterItems = (items: any[], fields: string[]) => {
+        if (!searchQuery) return items;
+
+        return items.filter(item => {
+            if (!item) return false;
+            return fields.some(field => 
+                item[field]?.toLowerCase().includes(searchQuery.toLowerCase())
+            );
+        });
+    };
+
+    const modelTypes = [
+        { 
+            name: 'Proposals', 
+            type: 'proposals', 
+            count: filterItems(proposals, ['title', 'description', 'challenge']).length 
+        },
+        { 
+            name: 'People', 
+            type: 'people', 
+            count: filterItems(people, ['name', 'email']).length 
+        },
+        { 
+            name: 'Groups', 
+            type: 'groups', 
+            count: filterItems(groups, ['name', 'description']).length 
+        },
+        { 
+            name: 'Reviews', 
+            type: 'reviews', 
+            count: filterItems(reviews, ['title', 'content']).length 
+        }
     ];
+
+    const handleTabClick = (type: string) => {
+        onTypeChange(type);
+    };
 
     return (
         <nav className={`border-b border-gray-200 ${isSticky ? 'fixed top-0 left-0 right-0 z-10 bg-background' : ''}`}>
             <div className="container flex space-x-8">
-                {sections.map(({ name, type, count }) => (
-                    <button
+                {modelTypes.map(({ name, type, count }) => (
+                    <Link
+                        href={`#${type}`}
                         key={type}
-                        onClick={() => onTypeChange(type)}
-                        className={`flex items-center px-1 py-4 text-sm font-medium border-b-2 ${
-                        activeType === type
-                            ? 'border-primary text-primary'
-                            : 'border-transparent text-content hover:text-purple-600 hover:border-purple-600'
+                        onClick={() => handleTabClick(type)}
+                        preserveState
+                        preserveScroll
+                        className={`group flex items-center gap-2 py-2 outline-none transition-colors hover:text-content-dark ${
+                        activeType === type &&
+                        '-mb-px border-b-2 border-b-primary text-primary'
                         }`}
                     >
                         {name}
                         <span
-                        className={`ml-2 rounded-full px-2.5 py-0.5 text-xs ${
-                            activeType === type
-                            ? 'bg-blue-100 border-primary text-primary'
-                            : 'bg-background text-content'
+                        className={`flex min-w-[2em] items-center justify-center rounded-full border px-2 py-0.5 text-sm transition-all ${
+                            activeType === type &&
+                            'border-primary bg-blue-50'
                         }`}
                         >
                         {count}
                         </span>
-                    </button>
+                    </Link>
                 ))}
             </div>
         </nav>
