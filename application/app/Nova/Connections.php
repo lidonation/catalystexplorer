@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace App\Nova;
 
+use App\Models\Group;
 use App\Models\Connection;
-use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Select;
+use App\Models\IdeascaleProfile;
+use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Http\Requests\NovaRequest;
 
 class Connections extends Resource
@@ -47,25 +49,25 @@ class Connections extends Resource
 
             Select::make('Previous Model Type')
                 ->options([
-                    'IdeascaleProfile' => 'Catalyst User',
-                    'Group' => 'Group',
+                    IdeascaleProfile::class => 'Catalyst User',
+                    Group::class => 'Group',
                 ])
                 ->sortable()
                 ->required(),
 
-            BelongsTo::make('Previous Model', 'previousModel', IdeascaleProfiles::class)
+            BelongsTo::make('Previous Model', 'previous', IdeascaleProfiles::class)
                 ->searchable()
                 ->nullable(),
 
             Select::make('Next Model Type')
                 ->options([
-                    'IdeascaleProfile' => 'Catalyst User',
-                    'Group' => 'Group',
+                    IdeascaleProfile::class => 'Catalyst User',
+                    Group::class => 'Group',
                 ])
                 ->sortable()
                 ->required(),
 
-            BelongsTo::make('Next Model', 'nextModel', IdeascaleProfiles::class)
+            BelongsTo::make('Next Model', 'next', IdeascaleProfiles::class)
                 ->searchable()
                 ->nullable(),
         ];

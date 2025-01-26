@@ -56,9 +56,11 @@ const FiltersContext = createContext<FilterContextType | undefined>(undefined);
 export function FiltersProvider({
     children,
     defaultFilters,
+    routerOptions = {},
 }: {
     children: ReactNode;
     defaultFilters: ProposalSearchParams;
+    routerOptions?: Record<string, any>;
 }) {
     const initialFilters = formatToFilters(defaultFilters);
     const [filters, setFiltersState] = useState<FilteredItem[]>(initialFilters);
@@ -124,14 +126,19 @@ export function FiltersProvider({
                 changedParams.includes(ProposalParamsEnum.PAGE) ||
                 changedParams.includes(ProposalParamsEnum.LIMIT);
 
-            router.get(currentUrl, formatToParams(), {
-                preserveState: true,
-                preserveScroll: !paginationFiltered
-            });
+            router.get(
+                currentUrl,
+                formatToParams(),
+                {
+                    preserveState: true,
+                    preserveScroll: !paginationFiltered,
+                    ...routerOptions,
+                }
+            );
         };
 
         fetchData().then();
-    }, [filters]);
+    }, [filters, routerOptions]);
 
     const formatToParams = () => {
         return filters.reduce<Record<string, any>>((acc, item) => {
