@@ -4,9 +4,8 @@ declare(strict_types=1);
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
-use Illuminate\Database\Seeder;
 use App\Models\Link;
+use Illuminate\Database\Seeder;
 
 class LinkSeeder extends Seeder
 {
@@ -24,9 +23,8 @@ class LinkSeeder extends Seeder
             'order' => 1,
             'valid' => true,
         ]);
-        
+
         Link::factory(55)
             ->create();
     }
 }
-

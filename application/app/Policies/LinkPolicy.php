@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App\Policies;
 
+use App\Enums\PermissionEnum;
 use App\Models\Link;
 use App\Models\User;
-use App\Enums\PermissionEnum;
 
 class LinkPolicy extends AppPolicy
 {
@@ -58,5 +58,4 @@ class LinkPolicy extends AppPolicy
     {
         return parent::canRestore($user, $link) || $user->hasAnyPermission([PermissionEnum::restore_links()->value]);
     }
-
 }

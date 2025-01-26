@@ -4,10 +4,9 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use App\Models;
 // use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Artisan;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Illuminate\Support\Facades\Artisan;
 
 class Link extends Model
 {
@@ -25,7 +24,7 @@ class Link extends Model
 
     public static function runCustomIndex(): void
     {
-        Artisan::call('ln:index',[
+        Artisan::call('ln:index', [
             'model' => 'App\\Models\\Link',
             'table' => 'ln__links',
         ]);

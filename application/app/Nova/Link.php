@@ -4,14 +4,11 @@ declare(strict_types=1);
 
 namespace App\Nova;
 
-use Illuminate\Http\Request;
-use Laravel\Nova\Fields\ID;
-use Laravel\Nova\Http\Requests\NovaRequest;
-use Laravel\Nova\Fields\Text;
-use Laravel\Nova\Fields\MorphTo;
-use Laravel\Nova\Fields\Boolean;
-use Laravel\Nova\Fields\Select;
 use App\Enums\StatusEnum;
+use Laravel\Nova\Fields\ID;
+use Laravel\Nova\Fields\Select;
+use Laravel\Nova\Fields\Text;
+use Laravel\Nova\Http\Requests\NovaRequest;
 
 class Link extends Resource
 {
@@ -39,7 +36,7 @@ class Link extends Resource
         'link',
         'title',
         'label',
-        'status'
+        'status',
     ];
 
     /**
