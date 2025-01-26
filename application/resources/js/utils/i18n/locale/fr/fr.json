@@ -15,6 +15,7 @@
     "facebook": "Facebook",
     "getStarted": "Commencer",
     "github": "Github",
+    "emailAddress": "Adresse e-mail",
     "groups": "Groupes",
     "home": "Accueil",
     "jormungandr": "Jormungandr",
@@ -54,6 +55,7 @@
     "submitted": "Soumise",
     "approved": "Approuvée",
     "completed": "Complété",
+    "loginPrompt": "Connectez-vous pour commencer",
     "app": {
         "name": "Catalyst Explorer",
         "contactEmail": "support@lidonation.com",
@@ -310,5 +312,10 @@
         "viewProfile": "Afficher le profil complet",
         "viewIdeascale": "Afficher et contacter l'utilisateur sur Ideascale",
         "profile": "profil"
+    },
+    "completedProjectNfts": {
+        "title": "Projets NFT terminés",
+        "subtitle": "Projets terminés",
+        "nowMinting": "En cours de frappe"
     }
 }
