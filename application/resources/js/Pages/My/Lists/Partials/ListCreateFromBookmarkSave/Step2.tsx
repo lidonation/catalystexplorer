@@ -3,36 +3,32 @@ import ArrowLeftIcon from '@/Components/svgs/ArrowLeft';
 import CustomSwitch from '@/Components/Switch';
 import TextInput from '@/Components/TextInput';
 import { useList } from '@/Context/ListContext';
+import { useForm } from '@inertiajs/react';
 import { useState } from 'react';
 import { TransitionListPageProps } from '../../../../../../types/general';
 
 const BookmarkPage2 = ({ onNavigate }: TransitionListPageProps) => {
     const { addList, isAddingList } = useList();
     const [error, setError] = useState<Error | null>(null);
-    const [formState, setFormState] = useState({
+    const { data, setData, reset, processing } = useForm({
         name: '',
         description: '',
         isPublic: false,
     });
-    const [checked, setChecked] = useState(false);
 
     const handleSubmit = async () => {
         try {
-            if (!formState.name || !formState.description) {
+            if (!data.name || !data.description) {
                 setError(new Error('Please fill in all fields'));
                 return;
             }
             await addList({
-                name: formState.name,
-                description: formState.description,
-                isPublic: checked,
+                name: data.name,
+                description: data.description,
+                isPublic: data.isPublic,
             });
             //clear form
-            setFormState({
-                name: '',
-                description: '',
-                isPublic: false,
-            });
+            reset();
             setError(null);
             onNavigate?.(2);
         } catch (error) {
@@ -56,31 +52,21 @@ const BookmarkPage2 = ({ onNavigate }: TransitionListPageProps) => {
                         type="text"
                         placeholder="Create new list"
                         className="w-full border p-2 text-sm"
-                        value={formState.name}
-                        onChange={(e) =>
-                            setFormState((prevState) => ({
-                                ...prevState,
-                                name: e.target.value,
-                            }))
-                        }
+                        value={data.name}
+                        onChange={(e) => setData('name', e.target.value)}
                     />
                     <textarea
                         placeholder="Add description"
                         className="w-full rounded-md border border-border-primary border-opacity-40 bg-background p-2 text-sm text-content shadow-sm focus:border-primary"
-                        value={formState.description}
-                        onChange={(e) =>
-                            setFormState((prevState) => ({
-                                ...prevState,
-                                description: e.target.value,
-                            }))
-                        }
+                        value={data.description}
+                        onChange={(e) => setData('description', e.target.value)}
                     />
                 </div>
 
                 <div>
                     <CustomSwitch
-                        checked={checked}
-                        onCheckedChange={setChecked}
+                        checked={data.isPublic}
+                        onCheckedChange={(value) => setData('isPublic', value)}
                         label="Make public?"
                         labelShouldPrecede
                         className="w-full"

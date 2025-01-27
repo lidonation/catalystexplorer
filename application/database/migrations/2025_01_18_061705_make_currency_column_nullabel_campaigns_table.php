@@ -13,8 +13,8 @@ return new class extends Migration
         Schema::table('campaigns', function (Blueprint $table) {
             $table->string('currency', 255)->nullable()->change();
 
-            DB::statement('ALTER TABLE campaigns DROP CONSTRAINT campaigns_currency_check');
-            DB::statement("ALTER TABLE campaigns ADD CONSTRAINT campaigns_currency_check CHECK (currency IS NULL OR currency IN ('ADA', 'USD'))");
+            // DB::statement('ALTER TABLE campaigns DROP CONSTRAINT campaigns_currency_check');
+            // DB::statement("ALTER TABLE campaigns ADD CONSTRAINT campaigns_currency_check CHECK (currency IS NULL OR currency IN ('ADA', 'USD'))");
 
         });
     }

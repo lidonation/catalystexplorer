@@ -10,7 +10,7 @@ const BookmarkPage3 = ({ onNavigate }: TransitionListPageProps) => {
     }
     
     return (
-        <div className=" space-y-2">
+        <div className="space-y-2">
             <div className="bg-primary-light">
                 <button
                     onClick={() => onNavigate?.(0)}

@@ -13,24 +13,6 @@ init:
 		--volume ${PWD}:/app \
 		--workdir /app \
 		--user root \
-		node:20-alpine yarn install --ignore-engine
-
-	docker run --rm --interactive --tty \
-		--volume ${PWD}:/app \
-		--workdir /app \
-		--user root \
-		node:${nodeVersion}-alpine yarn install --ignore-engine
-
-	docker run --rm --interactive --tty \
-		--volume ${PWD}:/app \
-		--workdir /app \
-		--user root \
-		node:${nodeVersion}-alpine yarn install --ignore-engine
-
-	docker run --rm --interactive --tty \
-		--volume ${PWD}/application:/app \
-		--workdir /app \
-		--user root \
 		node:${nodeVersion}-alpine yarn install --ignore-engine
 
 
@@ -42,7 +24,7 @@ init:
  
 	make up
 	sleep 10
-	$(compose) artisan key:generate
+	$(compose) php artisan key:generate
 	make migrate
 	$(compose) yarn husky init
 
