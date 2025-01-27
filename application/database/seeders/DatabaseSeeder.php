@@ -34,6 +34,7 @@ class DatabaseSeeder extends Seeder
             RegistrationSeeder::class,
             DelegationSeeder::class,
             DiscussionSeeder::class,
+            VoterSeeder::class,
         ];
 
         foreach ($seeders as $seeder) {
