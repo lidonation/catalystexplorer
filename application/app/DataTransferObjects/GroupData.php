@@ -21,7 +21,7 @@ final class GroupData extends Data
         public ?string $name,
 
         #[TypeScriptOptional]
-        public ?array $bio,
+        public mixed $bio,
 
         #[TypeScriptOptional]
         public ?string $slug,

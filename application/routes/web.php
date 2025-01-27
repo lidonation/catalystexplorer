@@ -3,6 +3,7 @@
 use App\Http\Controllers\ChartsController;
 use App\Http\Controllers\CompletetProjectNftsController;
 use App\Http\Controllers\FundsController;
+use App\Http\Controllers\GroupsController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\IdeascaleProfilesController;
 use App\Http\Controllers\JormungandrController;
@@ -25,6 +26,14 @@ Route::localized(
 
             Route::get('/{fund:slug}', [FundsController::class, 'fund'])
                 ->name('fund');
+        });
+
+        Route::prefix('/groups')->as('groups.')->group(function () {
+            Route::get('/', [GroupsController::class, 'index'])
+                ->name('index');
+
+            Route::get('/{group:slug}', [GroupsController::class, 'group'])
+                ->name('group');
         });
 
         Route::get('/ideascale-profiles', [IdeascaleProfilesController::class, 'index'])

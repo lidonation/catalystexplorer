@@ -25,6 +25,7 @@ class Group extends Model implements HasMedia
     protected function casts(): array
     {
         return [
+            'bio' => 'array', 
             'created_at' => DateFormatCast::class,
             'updated_at' => DateFormatCast::class,
         ];
