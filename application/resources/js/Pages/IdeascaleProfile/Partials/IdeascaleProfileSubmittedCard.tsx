@@ -9,10 +9,10 @@ const IdeascaleProfileSubmittedCard: React.FC = () => {
   return (
     <div className="max-w-md mx-auto p-8 text-center bg-background rounded-lg shadow-lg">
       <div className="space-y-6">
-        <button className="text-primary 0 flex items-center mb-6">
+        <a href="#" className="text-primary 0 flex items-center mb-6">
           <BackArrow />
           {t('back')}
-        </button>
+        </a>
 
         <h1 className="text-2xl font-black mb-8">{t('verificationTitle')}</h1>
 
@@ -29,9 +29,9 @@ const IdeascaleProfileSubmittedCard: React.FC = () => {
           {t('verificationInstructions')}
         </p>
 
-        <button className="w-full bg-primary text-white py-3 px-4 rounded-md transition-colors">
+        <a href="#" className="w-full inline-block bg-primary text-white py-3 px-4 rounded-md transition-colors text-center">
           {t('goToIdeascale')}
-        </button>
+        </a>
       </div>
     </div>
   );
