@@ -304,7 +304,10 @@
             "playerSkipForward": "Icône de Avancer",
             "playerStop": "Icône de Arrêter",
             "arrowTrendingUp": "Icône de flèche tendance à la hausse",
-            "arrowTrendingDown": "Icône de flèche tendance à la baisse"
+            "arrowTrendingDown": "Icône de flèche tendance à la baisse",
+            "file": "Icône de fichier",
+            "ada": "Icône Ada",
+            "usd": "Icône USD"
         }
     },
     "users": {
@@ -316,6 +319,12 @@
     "completedProjectNfts": {
         "title": "Projets NFT terminés",
         "subtitle": "Projets terminés",
-        "nowMinting": "En cours de frappe"
+        "nowMinting": "En cours de frappe",
+        "communityFunded": "Membres de la communauté financés",
+        "projectsCompleted": "Projets terminés",
+        "usdDistributed": "USD distribué",
+        "adaDistributed": "Ada distribué",
+        "description": "Chaque NFT est unique, avec des éléments de conception inspirés du titre et du thème de votre projet ! Lisez la déclaration de l'artiste ici : ",
+        "artistStatement": "NFT de fin de projet pour Project Catalyst"
     }
 }
