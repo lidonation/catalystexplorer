@@ -1,5 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Head, WhenVisible } from '@inertiajs/react';
+import { FiltersProvider } from '@/Context/FiltersContext';
+import { ProposalParamsEnum } from '@/enums/proposal-search-params';
 import BookmarkNavigation from './Partials/BookmarkNavigation';
 import BookmarkToolbar from './Partials/BookmarkToolbar';
 import { useTranslation } from 'react-i18next';
@@ -13,13 +15,19 @@ interface IndexProps {
   groups: any[];
   reviews: any[];
   counts: Record<string, number>;
+  filters?: any;
 }
 
-const Index: React.FC<IndexProps> = ({ proposals, people, reviews, groups, counts }) => {
+const Index: React.FC<IndexProps> = ({ 
+  proposals, 
+  people, 
+  reviews, 
+  groups, 
+  counts, 
+  filters = URLSearchParams
+}) => {
   const { t } = useTranslation();
   const [activeType, setActiveType] = useState<string | null>('proposals');
-  const [isNavSticky, setIsNavSticky] = useState(false);
-  const navigationRef = useRef<HTMLDivElement>(null);
   const headerRef = useRef<HTMLDivElement>(null);
 
   const sectionsRef = useRef<Record<string, HTMLDivElement | null>>({
@@ -34,15 +42,34 @@ const Index: React.FC<IndexProps> = ({ proposals, people, reviews, groups, count
     people: 'people',
     groups: 'groups',
     reviews: 'reviews'
+  };  
+
+  const defaultFilters = {
+    [ProposalParamsEnum.QUERY]: '',
+    [ProposalParamsEnum.PAGE]: 1,
+    [ProposalParamsEnum.LIMIT]: 10,
+    ...filters
   };
+
+  const hasBookmarks = 
+    proposals.length > 0 || 
+    people.length > 0 || 
+    groups.length > 0 || 
+    reviews.length > 0;
+
+  const renderEmptyState = () => (
+    <div className="flex flex-col items-center justify-center min-h-[50vh] text-center px-4">
+      <h2 className="text-2xl font-bold text-gray-600 mb-4">
+        {t('noBookmarks')}
+      </h2>
+      <p className="text-gray-500 max-w-md">
+        {t('noBookmarksYet')}
+      </p>
+    </div>
+  );
 
   useEffect(() => {
     const handleScroll = () => {
-      if (!headerRef.current) return;
-
-      const headerBottom = headerRef.current.getBoundingClientRect().bottom;
-      setIsNavSticky(headerBottom <= 0);
-
       const scrollPosition = window.scrollY + window.innerHeight / 2;
 
       const currentSection = Object.entries(sectionsRef.current).find(([, ref]) => {
@@ -56,15 +83,13 @@ const Index: React.FC<IndexProps> = ({ proposals, people, reviews, groups, count
       if (currentSection) {
         const [sectionKey] = currentSection;
         const type = sectionTypes[sectionKey as keyof typeof sectionTypes];
-        if (type !== activeType) {
-          setActiveType(type);
-        }
+        setActiveType(type);
       }
     };
 
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
-  }, [activeType]);
+  }, []);
 
   const scrollToSection = (type: string) => {
     const sectionKey = Object.keys(sectionTypes).find(key => sectionTypes[key as keyof typeof sectionTypes] === type);
@@ -74,95 +99,107 @@ const Index: React.FC<IndexProps> = ({ proposals, people, reviews, groups, count
   };
 
   return (
+    <FiltersProvider defaultFilters={defaultFilters}>
     <>
       <Head title="My Bookmarks"/>
 
-      <header ref={headerRef}>
-        <div className='container'>
-          <h1 className="title-1">{t('My Bookmarks')}</h1>
-        </div>
-        <div className='container'>
+      <div ref={headerRef} className="px-8 py-4">
+        <h1 className="title-1">{t('My Bookmarks')}</h1>
+        <p>
           {t('bookmark')}
-          <div ref={navigationRef}>
-            <BookmarkNavigation 
-              counts={counts} 
-              activeType={activeType} 
-              onTypeChange={scrollToSection}
-              isSticky={isNavSticky}
-            />
+        </p>
+      </div>
+
+      {!hasBookmarks ? (
+        renderEmptyState()
+      ) : (
+        <>
+          <div className="px-8 py-4 sticky top-0 z-10 mx-auto flex w-full flex-col gap-4 pb-4 pt-6 backdrop-blur-md">
+            <div className="items-center gap-2">
+              <BookmarkNavigation 
+                  counts={counts} 
+                  activeType={activeType} 
+                  onTypeChange={scrollToSection}
+                  proposals={proposals}
+                  people={people}
+                  groups={groups}
+                  reviews={reviews}
+              />
+              <BookmarkToolbar/>
+            </div>
           </div>
-          <BookmarkToolbar/>
-        </div>
-      </header>
 
-      <main className="container mt-6">
-        <div 
-          ref={(el) => sectionsRef.current.proposals = el} 
-          className="mb-12"
-        >
-          <h2 className="text-2xl font-bold mb-4">{t('Proposals')}</h2>
-          <WhenVisible
-            fallback={<ProposalVerticalCardLoading />}
-            data="proposals"
-          >
-            <BookmarksList 
-              proposals={proposals}
-              people={[]}
-              groups={[]}
-              reviews={[]}
-              activeType="proposals"
-            />
-          </WhenVisible>
-        </div>
+          <main className="flex w-full flex-col justify-center px-8 py-4 mt-6">
+            <div 
+              ref={(el) => sectionsRef.current.proposals = el} 
+              className="mb-12"
+            >
+              <h2 className="text-2xl font-bold mb-4">{t('Proposals')}</h2>
+              <WhenVisible
+                fallback={<ProposalVerticalCardLoading />}
+                data="proposals"
+              >
+                <BookmarksList 
+                  proposals={proposals}
+                  people={[]}
+                  groups={[]}
+                  reviews={[]}
+                  activeType="proposals"
+                />
+              </WhenVisible>
+            </div>
 
-        <div 
-          ref={(el) => sectionsRef.current.people = el} 
-          className="mb-12"
-        >
-          <h2 className="text-2xl font-bold mb-4">{t('People')}</h2>
-          <WhenVisible
-            fallback={<IdeaScaleProfileLoader />}
-            data="people"
-          >
-            <BookmarksList 
-              proposals={[]}
-              people={people}
-              groups={[]}
-              reviews={[]}
-              activeType="people"
-            />
-          </WhenVisible>
-        </div>
+            <div 
+              ref={(el) => sectionsRef.current.people = el} 
+              className="mb-12"
+            >
+              <h2 className="text-2xl font-bold mb-4">{t('People')}</h2>
+              <WhenVisible
+                fallback={<IdeaScaleProfileLoader />}
+                data="people"
+              >
+                <BookmarksList 
+                  proposals={[]}
+                  people={people}
+                  groups={[]}
+                  reviews={[]}
+                  activeType="people"
+                />
+              </WhenVisible>
+            </div>
 
-        <div 
-          ref={(el) => sectionsRef.current.groups = el} 
-          className="mb-12"
-        >
-          <h2 className="text-2xl font-bold mb-4">{t('Groups')}</h2>
-          <BookmarksList 
-            proposals={[]}
-            people={[]}
-            groups={groups}
-            reviews={[]}
-            activeType="groups"
-          />
-        </div>
+            <div 
+              ref={(el) => sectionsRef.current.groups = el} 
+              className="mb-12"
+            >
+              <h2 className="text-2xl font-bold mb-4">{t('Groups')}</h2>
+              <BookmarksList 
+                proposals={[]}
+                people={[]}
+                groups={groups}
+                reviews={[]}
+                activeType="groups"
+              />
+            </div>
 
-        <div 
-          ref={(el) => sectionsRef.current.reviews = el} 
-          className="mb-12"
-        >
-          <h2 className="text-2xl font-bold mb-4">{t('Reviews')}</h2>
-          <BookmarksList 
-            proposals={[]}
-            people={[]}
-            groups={[]}
-            reviews={reviews}
-            activeType="reviews"
-          />
-        </div>
-      </main>
+            <div 
+              ref={(el) => sectionsRef.current.reviews = el} 
+              className="mb-12"
+            >
+              <h2 className="text-2xl font-bold mb-4">{t('Reviews')}</h2>
+              <BookmarksList 
+                proposals={[]}
+                people={[]}
+                groups={[]}
+                reviews={reviews}
+                activeType="reviews"
+              />
+            </div>
+          </main>
+        </>
+      )}
     </>
+    </FiltersProvider>
   );
 };
 

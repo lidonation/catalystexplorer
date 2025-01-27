@@ -1,9 +1,9 @@
-import {FiltersProvider} from '@/Context/FiltersContext';
-import {MetricEnum} from '@/enums/metrics-enums';
-import {PageProps} from '@/types';
-import {Head, WhenVisible} from '@inertiajs/react';
-import {useTranslation} from 'react-i18next';
-import {ProposalSearchParams} from '../../../types/proposal-search-params';
+import { FiltersProvider } from '@/Context/FiltersContext';
+import { MetricEnum } from '@/enums/metrics-enums';
+import { PageProps } from '@/types';
+import { Head, WhenVisible } from '@inertiajs/react';
+import { useTranslation } from 'react-i18next';
+import { ProposalSearchParams } from '../../../types/proposal-search-params';
 import CampaignList from '../Campaign/Partials/CampaignList';
 import CampaignLoader from '../Campaign/Partials/CampaignLoader';
 import MetricCardLoading from '../Metrics/Partials/MetricCardLoading';
@@ -22,20 +22,20 @@ interface FundPageProps extends Record<string, unknown> {
 }
 
 export default function Fund({
-                                 fund,
-                                 metrics,
-                                 campaigns,
-                                 filters,
-                             }: PageProps<FundPageProps>) {
-    const {t} = useTranslation();
+    fund,
+    metrics,
+    campaigns,
+    filters,
+}: PageProps<FundPageProps>) {
+    const { t } = useTranslation();
 
     return (
         <>
-            <Head title={fund.title}/>
+            <Head title={fund.title} />
 
             <div className="relative flex w-full flex-col justify-center gap-8">
                 {/* Hero Image */}
-                <HeroSection fund={fund}/>
+                <HeroSection fund={fund} />
 
                 <section className="container py-8">
                     <h4 className="title-4">{fund.title}</h4>
@@ -43,7 +43,7 @@ export default function Fund({
                         {t('funds.singleFundSubtitle')}
                     </p>
                     <WhenVisible
-                        fallback={<MetricCardLoading/>}
+                        fallback={<MetricCardLoading />}
                         data="metrics"
                     >
                         <MetricCardList
@@ -55,7 +55,7 @@ export default function Fund({
                     </WhenVisible>
                 </section>
 
-                <FiltersProvider defaultFilters={filters}>
+                <FiltersProvider defaultFilters={filters} routerOptions={{only:['campaigns']}}>
                     <section className="container py-8">
                         <div className="flex w-full justify-between">
                             <div>
@@ -66,11 +66,11 @@ export default function Fund({
                                     {t('funds.browseByCampaignSubtitle')}
                                 </p>
                             </div>
-                            <FundSortBy/>
+                            <FundSortBy />
                         </div>
                         <div className="mt-4">
                             <WhenVisible
-                                fallback={<CampaignLoader/>}
+                                fallback={<CampaignLoader />}
                                 data="campaigns"
                             >
                                 <CampaignList

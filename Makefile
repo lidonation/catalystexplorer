@@ -7,13 +7,13 @@ nodeVersion := 20
 
 .PHONY: init
 init:
-	cp application/.env.example application/.env
+	cp ./application/.env.example ./application/.env
 
 	docker run --rm --interactive --tty \
 		--volume ${PWD}:/app \
 		--workdir /app \
 		--user root \
-		node:18-alpine yarn install --ignore-engine
+		node:20-alpine yarn install --ignore-engine
 
 	docker run --rm --interactive --tty \
 		--volume ${PWD}:/app \

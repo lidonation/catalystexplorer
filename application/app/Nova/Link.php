@@ -4,37 +4,39 @@ declare(strict_types=1);
 
 namespace App\Nova;
 
-use App\Models\Connection;
-use App\Models\Group;
-use App\Models\IdeascaleProfile;
-use Laravel\Nova\Fields\BelongsTo;
+use App\Enums\StatusEnum;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Select;
+use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Http\Requests\NovaRequest;
 
-class Connections extends Resource
+class Link extends Resource
 {
     /**
      * The model the resource corresponds to.
      *
-     * @var class-string<Connection>
+     * @var class-string<\App\Models\Link>
      */
-    public static $model = Connection::class;
+    public static $model = \App\Models\Link::class;
 
     /**
      * The single value that should be used to represent the resource when being displayed.
      *
      * @var string
      */
-    public static $title = 'id';
+    public static $title = 'title';
 
     /**
      * The columns that should be searched.
      *
-     * @var array<int, string>
+     * @var array
      */
     public static $search = [
         'id',
+        'link',
+        'title',
+        'label',
+        'status',
     ];
 
     /**
@@ -45,31 +47,20 @@ class Connections extends Resource
     public function fields(NovaRequest $request): array
     {
         return [
-            ID::make()->sortable(),
-
-            Select::make('Previous Model Type')
+            ID::make(__('ID'), 'id')->sortable(),
+            Text::make(__('Link'), 'link')->help('http URL link')->rules('required', 'uri'),
+            Text::make(__('Label'), 'label')
+                ->help('What is the link of (google doc, website, youtube video, etc)? '),
+            Text::make(__('Title'), 'title'),
+            Select::make(__('Status'), 'status')
                 ->options([
-                    IdeascaleProfile::class => 'Catalyst User',
-                    Group::class => 'Group',
-                ])
-                ->sortable()
-                ->required(),
-
-            BelongsTo::make('Previous Model', 'previous', IdeascaleProfiles::class)
-                ->searchable()
-                ->nullable(),
-
-            Select::make('Next Model Type')
-                ->options([
-                    IdeascaleProfile::class => 'Catalyst User',
-                    Group::class => 'Group',
-                ])
-                ->sortable()
-                ->required(),
-
-            BelongsTo::make('Next Model', 'next', IdeascaleProfiles::class)
-                ->searchable()
-                ->nullable(),
+                    'published' => 'Published',
+                    'draft' => 'Draft',
+                    'pending' => 'Pending',
+                    'ready' => 'Ready',
+                    'scheduled' => 'Scheduled',
+                    StatusEnum::published()->value => 'Published',
+                ])->default('published')->sortable(),
         ];
     }
 
