@@ -8,7 +8,6 @@ import UsdIcon from "@/Components/svgs/UsdIcon";
 import AdaIcon from "@/Components/svgs/AdaIcon";
 import StatisticCard from "./Partials/StatisticCard";
 
-
 const Index = () => {
     const { t } = useTranslation();
 
@@ -21,21 +20,25 @@ const Index = () => {
         {
             value: "1064",
             description: t("completedProjectNfts.projectsCompleted"),
-            icon: <FileIcon /> },
+            icon: <FileIcon />
+        },
         {
             value: "$35.37M",
             description: t("completedProjectNfts.usdDistributed"),
-            icon:  <UsdIcon />,},
+            icon: <UsdIcon />
+        },
         {
             value: "84.96M ₳",
             description: t("completedProjectNfts.adaDistributed"),
-            icon: <AdaIcon />,},
+            icon: <AdaIcon />
+        },
     ];
 
     return (
         <>
             <Head title="Charts" />
 
+            {/* Header Section */}
             <header className="py-12">
                 <div className="container mx-auto px-4 sm:px-6">
                     <h1 className="text-4xl font-bold mb-4">{t("completedProjectNfts.title")}</h1>
@@ -55,8 +58,8 @@ const Index = () => {
             </div>
 
             {/* Statistics Section */}
-            <section className="container mx-auto px-4 py-12 md:w-11/12">
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 w-full">
+            <section className="container mx-auto px-4 sm:px-6 py-12">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                     {statistics.map((stat, index) => (
                         <StatisticCard
                             key={index}
