@@ -64,6 +64,12 @@
     "approved": "Approuvée",
     "completed": "Complété",
     "loginPrompt": "Connectez-vous pour commencer",
+    "back": "Retour",
+    "verificationTitle": "Vérifions votre identité !",
+    "verificationCodeLabel": "Code de vérification",
+    "verificationCode": "CODE$:",
+    "verificationInstructions": "Pour vérifier que vous êtes le propriétaire de ce profil, envoyez un message personnel à Lido Nation sur Ideascale et incluez le code ci-dessus.",
+    "goToIdeascale": "Aller sur Ideascale",
     "app": {
         "name": "Catalyst Explorer",
         "contactEmail": "support@lidonation.com",
