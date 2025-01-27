@@ -83,7 +83,7 @@ const FundsFilter: React.FC<FundFiltersProps> = ({
                                 <p className="mb-2 font-medium">{fund}</p>
                                 <div className="flex w-full justify-between">
                                     <p className="text-gray-persist">
-                                        {t('proposals.totalProposals')}
+                                        {t('metric.totalProposals')}
                                     </p>
                                     <p className="font-bold">
                                         {proposalsCount[fund] || 0}
