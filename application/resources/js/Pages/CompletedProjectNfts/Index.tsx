@@ -54,6 +54,14 @@ const Index = () => {
                 </div>
             </div>
 
+            {/* Proposals Search Bar */}
+            {/* <CompletedNftsProposalSearchBar
+                autoFocus={true}
+                showRingOnFocus={true}
+                handleSearch={(query) => console.log(query)}
+                focusState={(isFocused) => console.log(isFocused)}
+            /> */}
+
             {/* Statistics Section */}
             <section className="container mx-auto px-4 py-12 md:w-11/12">
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 w-full">
