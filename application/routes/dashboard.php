@@ -19,11 +19,13 @@ Route::localized(
                 Route::prefix('bookmarks')->as('bookmarks.')
                     ->group(function () {
                         Route::get('/', [MyBookmarksController::class, 'index'])->name('index');
+                        Route::post('/', [MyBookmarksController::class, 'create'])->name('create');
+                        Route::delete('/', [MyBookmarksController::class, 'delete'])->name('delete');
+
                         Route::get('/{id}', [MyBookmarksController::class, 'show'])->name('show');
-                        Route::post('/create-item', [MyBookmarksController::class, 'createItem'])->name('create-item');
                         Route::get('/collections/{bookmarkCollection}', [MyBookmarksController::class, 'view'])->name('collections.view');
                         Route::delete('/collections', [MyBookmarksController::class, 'deleteCollection'])->name('collections.destroy');
-                        Route::delete('/{id}', [MyBookmarksController::class, 'deleteItem'])->name('delete');
+                        Route::delete('/collections', [MyBookmarksController::class, 'deleteFromCollection'])->name('collections.delete');
                     });
             });
     }

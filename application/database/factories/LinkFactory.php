@@ -7,7 +7,7 @@ use App\Models\Link;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Link>
+ * @extends Factory<Link>
  */
 class LinkFactory extends Factory
 {

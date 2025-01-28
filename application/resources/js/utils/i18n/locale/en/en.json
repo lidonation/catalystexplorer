@@ -367,6 +367,10 @@
         "usdDistributed":  "USD Distributed",
         "adaDistributed":  "Ada Distributed",
         "description": "Each NFT is unique, with design elements inspired by your project’s title and theme! Read the artist’s statement here: ",
-        "artistStatement": "Project Completion NFTs for Project Catalyst"
+        "artistStatement": "Project Completion NFTs for Project Catalyst",
+        "proposalsSearchBar": {
+            "placeHolder": "Search for proposal"
+        }
+        
     }
 }

@@ -18,12 +18,12 @@ class VoterSeeder extends Seeder
         Voter::factory(3)
             ->has(
                 Registration::factory()
-                        ->count(3)
-                        ->state(function (array $attributes, Voter $voter) {
-                            return ['stake_pub' => $voter->stake_pub];
-                        })
+                    ->count(3)
+                    ->state(function (array $attributes, Voter $voter) {
+                        return ['stake_pub' => $voter->stake_pub];
+                    })
             )->create();
-    
+
         // for each voter create history with one as a casted
         Voter::all()->each(function ($voter) {
             VoterHistory::factory(5)->create([
