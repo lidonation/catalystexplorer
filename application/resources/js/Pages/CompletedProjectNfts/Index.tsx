@@ -1,5 +1,5 @@
-import { Head } from "@inertiajs/react";
-import { useTranslation } from "react-i18next";
+import {Head} from "@inertiajs/react";
+import {useTranslation} from "react-i18next";
 import CompletionNftImage from "@/assets/images/project-completion-nfts.jpg";
 import LoginForm from "@/Components/LoginForm";
 import PeopleIcon from "@/Components/svgs/PeopleIcon";
@@ -10,34 +10,34 @@ import StatisticCard from "./Partials/StatisticCard";
 import CompletedNftsProposalSearchBar from "@/Pages/CompletedProjectNfts/Partials/CompletedNftsProposalSearchBar";
 
 const Index = () => {
-    const { t } = useTranslation();
+    const {t} = useTranslation();
 
     const statistics = [
         {
             value: "1436",
             description: t("completedProjectNfts.communityFunded"),
-            icon: <PeopleIcon stroke="#3FACD1" />
+            icon: <PeopleIcon stroke="#3FACD1"/>
         },
         {
             value: "1064",
             description: t("completedProjectNfts.projectsCompleted"),
-            icon: <FileIcon />
+            icon: <FileIcon/>
         },
         {
             value: "$35.37M",
             description: t("completedProjectNfts.usdDistributed"),
-            icon: <UsdIcon />
+            icon: <UsdIcon/>
         },
         {
             value: "84.96M ₳",
             description: t("completedProjectNfts.adaDistributed"),
-            icon: <AdaIcon />
+            icon: <AdaIcon/>
         },
     ];
 
     return (
         <>
-            <Head title="Charts" />
+            <Head title="Charts"/>
 
             {/* Header Section */}
             <header className="py-12">
@@ -59,12 +59,14 @@ const Index = () => {
             </div>
 
             {/* Proposals Search Bar */}
-            { <CompletedNftsProposalSearchBar
-                autoFocus={true}
-                showRingOnFocus={true}
-                handleSearch={(query) => console.log(query)}
-                focusState={(isFocused) => console.log(isFocused)}
-            />}
+            <div className='container'>
+                <CompletedNftsProposalSearchBar
+                    autoFocus={true}
+                    showRingOnFocus={true}
+                    handleSearch={(query) => console.log(query)}
+                    focusState={(isFocused) => console.log(isFocused)}
+                />
+            </div>
 
             {/* Statistics Section */}
             <section className="container mx-auto px-4 sm:px-6 py-12">
@@ -89,7 +91,7 @@ const Index = () => {
                 </div>
             </section>
 
-            <LoginForm title={`${t("completedProjectNfts.nowMinting")}: ${t("funds.funds")} 2-12`} />
+            <LoginForm title={`${t("completedProjectNfts.nowMinting")}: ${t("funds.funds")} 2-12`}/>
         </>
     );
 };
