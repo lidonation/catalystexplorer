@@ -2,36 +2,42 @@ import PrimaryButton from '@/Components/PrimaryButton';
 import ArrowLeftIcon from '@/Components/svgs/ArrowLeft';
 import CustomSwitch from '@/Components/Switch';
 import TextInput from '@/Components/TextInput';
-import { useList } from '@/Context/ListContext';
 import { useForm } from '@inertiajs/react';
 import { useState } from 'react';
 import { TransitionListPageProps } from '../../../../../../types/general';
+import { useList } from '@/Context/ExtendedListContext';
 
 const BookmarkPage2 = ({ onNavigate }: TransitionListPageProps) => {
     const { addList, isAddingList } = useList();
     const [error, setError] = useState<Error | null>(null);
-    const { data, setData, reset, processing } = useForm({
-        name: '',
-        description: '',
-        isPublic: false,
+    const { data, setData, reset } = useForm({
+        title: '',
+        content: '',
+        visibility: 'private' as 'private' | 'public',
     });
 
     const handleSubmit = async () => {
         try {
-            if (!data.name || !data.description) {
+            if (!data.title) {
                 setError(new Error('Please fill in all fields'));
                 return;
             }
+            console.log(data.title.trim().length)
+            if (data.title.trim().length < 5) {
+                setError(new Error('Title must be at least 5 characters'));
+                return;
+            }
             await addList({
-                name: data.name,
-                description: data.description,
-                isPublic: data.isPublic,
+                title: data.title,
+                content: data.content || null,
+                visibility: data.visibility,
             });
             //clear form
             reset();
             setError(null);
             onNavigate?.(2);
         } catch (error) {
+            console.error(error);
             setError(new Error('Failed to create list'));
         }
     };
@@ -52,21 +58,21 @@ const BookmarkPage2 = ({ onNavigate }: TransitionListPageProps) => {
                         type="text"
                         placeholder="Create new list"
                         className="w-full border p-2 text-sm"
-                        value={data.name}
-                        onChange={(e) => setData('name', e.target.value)}
+                        value={data.title}
+                        onChange={(e) => setData('title', e.target.value)}
                     />
                     <textarea
                         placeholder="Add description"
                         className="w-full rounded-md border border-border-primary border-opacity-40 bg-background p-2 text-sm text-content shadow-sm focus:border-primary"
-                        value={data.description}
-                        onChange={(e) => setData('description', e.target.value)}
+                        value={data.content}
+                        onChange={(e) => setData('content', e.target.value)}
                     />
                 </div>
 
                 <div>
                     <CustomSwitch
-                        checked={data.isPublic}
-                        onCheckedChange={(value) => setData('isPublic', value)}
+                        checked={data.visibility === 'public'}
+                        onCheckedChange={(value) => setData('visibility', value ? 'public' : 'private')}
                         label="Make public?"
                         labelShouldPrecede
                         className="w-full"

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\DataTransferObjects;
 
 use Spatie\LaravelData\Data;
+use Spatie\LaravelData\Attributes\Validation\Nullable;
 use Spatie\TypeScriptTransformer\Attributes\Optional as TypeScriptOptional;
 use Spatie\TypeScriptTransformer\Attributes\TypeScript;
 
@@ -18,6 +19,7 @@ final class BookmarkItemData extends Data
         public ?int $user_id,
 
         #[TypeScriptOptional]
+        #[Nullable]
         public ?int $bookmark_collection_id,
 
         #[TypeScriptOptional]

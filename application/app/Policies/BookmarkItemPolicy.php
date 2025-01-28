@@ -31,7 +31,8 @@ class BookmarkItemPolicy extends AppPolicy
      */
     public function create(User $user): bool
     {
-        return parent::canCreate($user) || $user->hasAnyPermission([PermissionEnum::create_bookmark_items()->value]);
+        // return parent::canCreate($user) || $user->hasAnyPermission([PermissionEnum::create_bookmark_items()->value]);
+        return parent::canCreate($user) || true;
     }
 
     /**

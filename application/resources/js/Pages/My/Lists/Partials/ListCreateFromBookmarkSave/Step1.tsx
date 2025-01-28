@@ -1,18 +1,20 @@
 import Checkbox from '@/Components/Checkbox';
 import PrimaryButton from '@/Components/PrimaryButton';
-import { useList } from '@/Context/ListContext';
+import { useList } from '@/Context/ExtendedListContext';
 import { List, PlusIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { TransitionListPageProps } from '../../../../../../types/general';
 
 interface BookmarkPage1Props extends TransitionListPageProps {
     isBookmarked?: boolean;
+    isProcessing?: boolean;
     handleRemoveBookmark?: () => void;
     onNavigate?: (pageIndex: number) => void;
 }
 
 const BookmarkPage1 = ({
     onNavigate,
+    isProcessing,
     isBookmarked,
     handleRemoveBookmark,
 }: BookmarkPage1Props) => {
@@ -29,7 +31,7 @@ const BookmarkPage1 = ({
     const checkboxValues = [
         { label: 'Add to List', value: 'addAll' },
         ...lists.map((list) => ({
-            label: list.name,
+            label: list.title,
             value: list.id,
         })),
     ];
@@ -90,7 +92,7 @@ const BookmarkPage1 = ({
                     </span>
                     <button
                         className="font-semibold text-error"
-                        disabled={!isBookmarked}
+                        disabled={!isBookmarked || isProcessing}
                         onClick={handleRemoveBookmark}
                     >
                         Remove

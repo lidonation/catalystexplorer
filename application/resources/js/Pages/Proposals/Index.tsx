@@ -1,6 +1,6 @@
 import Paginator from '@/Components/Paginator';
 import { FiltersProvider } from '@/Context/FiltersContext';
-import { ListProvider } from '@/Context/ListContext';
+import { ListProvider } from '@/Context/ExtendedListContext';
 import { useMetrics } from '@/Context/MetricsContext';
 import { usePlayer } from '@/Context/PlayerContext';
 import { ProposalParamsEnum } from '@/enums/proposal-search-params';

@@ -3,10 +3,10 @@ export interface TransitionListPageProps {
 }
 export interface List {
     id: string;
-    name: string;
-    description?: string;
+    title: string;
+    content?: string | null;
     createdAt: string;
-    isPublic?: boolean;
+    visibility?: 'public' | 'private';
 }
 
 export interface ListContextState {

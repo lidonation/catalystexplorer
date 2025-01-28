@@ -38,7 +38,7 @@ class MyBookmarksController extends Controller
 
     public function index(Request $request): InertiaResponse
     {
-        // $this->authorize('viewAny', BookmarkCollection::class);
+        $this->authorize('viewAny', BookmarkCollection::class);
 
         $page = (int) $request->input('page', $this->defaultPage);
         $limit = (int) $request->input('limit', $this->defaultLimit);
@@ -92,67 +92,99 @@ class MyBookmarksController extends Controller
         ]);
     }
 
-    public function createItem(Request $request): JsonResponse|InertiaResponse
+    public function create(Request $request): JsonResponse|InertiaResponse
     {
-        $this->authorize('create', BookmarkItem::class);
+        // $this->authorize('create', BookmarkItem::class);
 
         try {
+            if ($request && $request['entity'] === 'bookmark') {
+                //skipping bookmark creation. A bit faulty
+                return response()->json(['message' => 'Bookmark entity validated'])
+                    ->header('X-Inertia', 'true')
+                    ->header('Vary', 'Accept');
+            }
+
             $validated = $request->validate([
-                'model_type' => ['required', 'string'],
-                'model_id' => ['required', 'integer'],
+                // 'model_type' => ['required', 'string'],
+                // 'model_id' => ['required', 'integer'],
                 'collection.title' => ['required', 'string', 'min:5'],
+                'collection.content' => ['string'],
+                'collection.visibility' => ['required', 'string'],
             ]);
 
-            $bookmarkableType = BookmarkableType::tryFrom($validated['model_type']);
+            // $bookmarkableType = BookmarkableType::tryFrom($validated['model_type']);
 
-            if (! $bookmarkableType) {
-                return response()->json([
-                    'errors' => ['model_type' => ['Invalid model type']],
-                ], SymfonyResponse::HTTP_UNPROCESSABLE_ENTITY);
-            }
+            // if (!$bookmarkableType) {
+            //     return response()->json([
+            //         'errors' => ['model_type' => ['Invalid model type']],
+            //     ], SymfonyResponse::HTTP_UNPROCESSABLE_ENTITY);
+            // }
 
-            $modelType = $bookmarkableType->getModelClass();
+            // $modelType = $bookmarkableType->getModelClass();
 
-            // Verify model exists
-            $modelExists = DB::table($validated['model_type'])
-                ->where('id', $validated['model_id'])
-                ->exists();
+            // // Verify model exists
+            // $modelExists = DB::table($validated['model_type'])
+            //     ->where('id', $validated['model_id'])
+            //     ->exists();
 
-            if (! $modelExists) {
-                return response()->json([
-                    'errors' => ['Model not found'],
-                ], SymfonyResponse::HTTP_UNPROCESSABLE_ENTITY);
-            }
+            // if (!$modelExists) {
+            //     return response()->json([
+            //         'errors' => ['Model not found'],
+            //     ], SymfonyResponse::HTTP_UNPROCESSABLE_ENTITY);
+            // }
 
             DB::beginTransaction();
+            
 
+            dd($validated);
+           
             $collection = BookmarkCollection::create([
                 'user_id' => Auth::id(),
                 'title' => $validated['collection']['title'],
+                'content' => $validated['collection']['content'],
+                'visibility' => $validated['collection']['visibility']
             ]);
+            // $itemData->bookmark_collection_id = $collection->id;
 
-            $itemData = new BookmarkItemData(
-                id: null,
-                user_id: Auth::id(),
-                bookmark_collection_id: $collection->id,
-                model_id: $validated['model_id'],
-                model_type: $modelType,
-                content: null
-            );
 
-            BookmarkItem::create($itemData->toArray());
+            // $itemData = new BookmarkItemData(
+            //     id: null,
+            //     user_id: Auth::id(),
+            //     model_id: $validated['model_id'],
+            //     model_type: $modelType,
+            //     bookmark_collection_id: null,
+            //     title: null,
+            //     content: null
+            // );
+
+
+
+            // BookmarkItem::create($itemData->toArray());
+
+
 
             DB::commit();
 
-            return response()->json(['message' => 'Bookmark created successfully']);
+            // return response()->json(['message' => 'Bookmark created successfully']);
+            return response()->json([
+                'message' => 'List created successfully',
+                'collection' => $collection->id
+            ])
+                ->header('X-Inertia', 'true')
+                ->header('Vary', 'Accept');
 
         } catch (\Exception $e) {
             DB::rollback();
             report($e);
 
-            return response()->json([
-                'errors' => ['Failed to create bookmark'],
-            ], SymfonyResponse::HTTP_INTERNAL_SERVER_ERROR);
+            dd($e);
+
+            // return response()->json([
+            //     'errors' => ['Failed to create bookmark'],
+            // ], SymfonyResponse::HTTP_INTERNAL_SERVER_ERROR);
+            return response()->json(['errors' => ['Operation failed']], SymfonyResponse::HTTP_INTERNAL_SERVER_ERROR)
+                ->header('X-Inertia', 'true')
+                ->header('Vary', 'Accept');
         }
     }
 
@@ -231,7 +263,7 @@ class MyBookmarksController extends Controller
                 'errors' => ['Failed to delete bookmark item'],
             ], SymfonyResponse::HTTP_INTERNAL_SERVER_ERROR);
         }
-    }    
+    }
 
     public function view(BookmarkCollection $bookmarkCollection): InertiaResponse|JsonResponse
     {
