@@ -4,12 +4,16 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-// use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\MorphTo;
+use App\Traits\HasModel;
+use Illuminate\Database\Eloquent\Concerns\HasTimestamps;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Artisan;
+use Laravel\Scout\Searchable;
 
 class Link extends Model
 {
+    use HasModel, HasTimestamps, Searchable, SoftDeletes;
+
     public array $translatable = [
         'title',
         'label',
@@ -24,14 +28,9 @@ class Link extends Model
 
     public static function runCustomIndex(): void
     {
-        Artisan::call('ln:index', [
-            'model' => 'App\\Models\\Link',
-            'table' => 'ln__links',
+        Artisan::call('cx:create-search-index', [
+            'model' => Link::class,
+            'name' => 'cx_links',
         ]);
-    }
-
-    public function model(): MorphTo
-    {
-        return $this->morphTo('model_link', 'model_type', 'model_id');
     }
 }

@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Policies;
 
-use App\Models\VoterHistory;
 use App\Models\User;
+use App\Models\VoterHistory;
 
 class VoterHistoryPolicy
 {

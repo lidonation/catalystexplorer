@@ -7,6 +7,7 @@ import FileIcon from "@/Components/svgs/FileIcon";
 import UsdIcon from "@/Components/svgs/UsdIcon";
 import AdaIcon from "@/Components/svgs/AdaIcon";
 import StatisticCard from "./Partials/StatisticCard";
+import CompletedNftsProposalSearchBar from "@/Pages/CompletedProjectNfts/Partials/CompletedNftsProposalSearchBar";
 
 const Index = () => {
     const { t } = useTranslation();
@@ -58,12 +59,12 @@ const Index = () => {
             </div>
 
             {/* Proposals Search Bar */}
-            {/* <CompletedNftsProposalSearchBar
+            { <CompletedNftsProposalSearchBar
                 autoFocus={true}
                 showRingOnFocus={true}
                 handleSearch={(query) => console.log(query)}
                 focusState={(isFocused) => console.log(isFocused)}
-            /> */}
+            />}
 
             {/* Statistics Section */}
             <section className="container mx-auto px-4 sm:px-6 py-12">

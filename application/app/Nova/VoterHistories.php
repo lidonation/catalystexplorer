@@ -4,9 +4,7 @@ declare(strict_types=1);
 
 namespace App\Nova;
 
-use App\Models\Voter;
 use App\Models\VoterHistory;
-use Laravel\Nova\Fields\HasMany;
 use Laravel\Nova\Fields\DateTime;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Number;

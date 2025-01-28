@@ -15,7 +15,6 @@ class VoterHistory extends Model
 
     public $table = 'voter_history';
 
-
     public function voter(): HasOne
     {
         return $this->hasOne(Voter::class, 'cat_id', 'caster');
