@@ -2,6 +2,7 @@ import SearchBar from "@/Components/SearchBar";
 import { ProposalParamsEnum } from "@/enums/proposal-search-params";
 import { useFilterContext } from "@/Context/FiltersContext";
 import { useState, useEffect } from "react";
+import { router } from '@inertiajs/react';
 
 function BookmarkSearchControls() {
     const { setFilters } = useFilterContext();
@@ -15,12 +16,31 @@ function BookmarkSearchControls() {
     }, [initialSearchQuery]);
 
     const handleSearch = (search: string) => {
-        setFilters({
-            param: ProposalParamsEnum.QUERY,
-            value: search,
-            label: 'Search',
-        });
-        setSearchQuery(search);
+        if (search) {
+            setFilters({
+                param: ProposalParamsEnum.QUERY,
+                value: search,
+                label: 'Search',
+            });
+            setSearchQuery(search);
+            
+            router.get(window.location.pathname, { 
+                [ProposalParamsEnum.QUERY]: search 
+            }, { 
+                preserveState: true 
+            });
+        } else {
+            setFilters({
+                param: ProposalParamsEnum.QUERY,
+                value: '',
+                label: 'Search',
+            });
+            setSearchQuery('');
+            
+            router.get(window.location.pathname, {}, { 
+                preserveState: true 
+            });
+        }
     };
 
     return (

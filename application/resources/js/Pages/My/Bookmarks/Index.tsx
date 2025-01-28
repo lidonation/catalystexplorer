@@ -15,7 +15,7 @@ interface IndexProps {
   groups: any[];
   reviews: any[];
   counts: Record<string, number>;
-  filters?: any; // Add this to match the props passed from the backend
+  filters?: any;
 }
 
 const Index: React.FC<IndexProps> = ({ 
@@ -50,6 +50,23 @@ const Index: React.FC<IndexProps> = ({
     [ProposalParamsEnum.LIMIT]: 10,
     ...filters
   };
+
+  const hasBookmarks = 
+    proposals.length > 0 || 
+    people.length > 0 || 
+    groups.length > 0 || 
+    reviews.length > 0;
+
+  const renderEmptyState = () => (
+    <div className="flex flex-col items-center justify-center min-h-[50vh] text-center px-4">
+      <h2 className="text-2xl font-bold text-gray-600 mb-4">
+        {t('noBookmarks')}
+      </h2>
+      <p className="text-gray-500 max-w-md">
+        {t('noBookmarksYet')}
+      </p>
+    </div>
+  );
 
   useEffect(() => {
     const handleScroll = () => {
@@ -86,92 +103,101 @@ const Index: React.FC<IndexProps> = ({
     <>
       <Head title="My Bookmarks"/>
 
-      <div ref={headerRef} className="container">
+      <div ref={headerRef} className="px-8 py-4">
         <h1 className="title-1">{t('My Bookmarks')}</h1>
+        <p>
+          {t('bookmark')}
+        </p>
       </div>
 
-      <div className="container sticky top-0 z-10 mx-auto flex w-full flex-col gap-4 pb-4 pt-6 backdrop-blur-md">
-        <div className="items-center gap-2">
-          <BookmarkNavigation 
-              counts={counts} 
-              activeType={activeType} 
-              onTypeChange={scrollToSection}
-              proposals={proposals}
-              people={people}
-              groups={groups}
-              reviews={reviews}
-          />
-          <BookmarkToolbar/>
-        </div>
-      </div>
+      {!hasBookmarks ? (
+        renderEmptyState()
+      ) : (
+        <>
+          <div className="px-8 py-4 sticky top-0 z-10 mx-auto flex w-full flex-col gap-4 pb-4 pt-6 backdrop-blur-md">
+            <div className="items-center gap-2">
+              <BookmarkNavigation 
+                  counts={counts} 
+                  activeType={activeType} 
+                  onTypeChange={scrollToSection}
+                  proposals={proposals}
+                  people={people}
+                  groups={groups}
+                  reviews={reviews}
+              />
+              <BookmarkToolbar/>
+            </div>
+          </div>
 
-      <main className="container mt-6">
-        <div 
-          ref={(el) => sectionsRef.current.proposals = el} 
-          className="mb-12"
-        >
-          <h2 className="text-2xl font-bold mb-4">{t('Proposals')}</h2>
-          <WhenVisible
-            fallback={<ProposalVerticalCardLoading />}
-            data="proposals"
-          >
-            <BookmarksList 
-              proposals={proposals}
-              people={[]}
-              groups={[]}
-              reviews={[]}
-              activeType="proposals"
-            />
-          </WhenVisible>
-        </div>
+          <main className="flex w-full flex-col justify-center px-8 py-4 mt-6">
+            <div 
+              ref={(el) => sectionsRef.current.proposals = el} 
+              className="mb-12"
+            >
+              <h2 className="text-2xl font-bold mb-4">{t('Proposals')}</h2>
+              <WhenVisible
+                fallback={<ProposalVerticalCardLoading />}
+                data="proposals"
+              >
+                <BookmarksList 
+                  proposals={proposals}
+                  people={[]}
+                  groups={[]}
+                  reviews={[]}
+                  activeType="proposals"
+                />
+              </WhenVisible>
+            </div>
 
-        <div 
-          ref={(el) => sectionsRef.current.people = el} 
-          className="mb-12"
-        >
-          <h2 className="text-2xl font-bold mb-4">{t('People')}</h2>
-          <WhenVisible
-            fallback={<IdeaScaleProfileLoader />}
-            data="people"
-          >
-            <BookmarksList 
-              proposals={[]}
-              people={people}
-              groups={[]}
-              reviews={[]}
-              activeType="people"
-            />
-          </WhenVisible>
-        </div>
+            <div 
+              ref={(el) => sectionsRef.current.people = el} 
+              className="mb-12"
+            >
+              <h2 className="text-2xl font-bold mb-4">{t('People')}</h2>
+              <WhenVisible
+                fallback={<IdeaScaleProfileLoader />}
+                data="people"
+              >
+                <BookmarksList 
+                  proposals={[]}
+                  people={people}
+                  groups={[]}
+                  reviews={[]}
+                  activeType="people"
+                />
+              </WhenVisible>
+            </div>
 
-        <div 
-          ref={(el) => sectionsRef.current.groups = el} 
-          className="mb-12"
-        >
-          <h2 className="text-2xl font-bold mb-4">{t('Groups')}</h2>
-          <BookmarksList 
-            proposals={[]}
-            people={[]}
-            groups={groups}
-            reviews={[]}
-            activeType="groups"
-          />
-        </div>
+            <div 
+              ref={(el) => sectionsRef.current.groups = el} 
+              className="mb-12"
+            >
+              <h2 className="text-2xl font-bold mb-4">{t('Groups')}</h2>
+              <BookmarksList 
+                proposals={[]}
+                people={[]}
+                groups={groups}
+                reviews={[]}
+                activeType="groups"
+              />
+            </div>
 
-        <div 
-          ref={(el) => sectionsRef.current.reviews = el} 
-          className="mb-12"
-        >
-          <h2 className="text-2xl font-bold mb-4">{t('Reviews')}</h2>
-          <BookmarksList 
-            proposals={[]}
-            people={[]}
-            groups={[]}
-            reviews={reviews}
-            activeType="reviews"
-          />
-        </div>
-      </main>
+            <div 
+              ref={(el) => sectionsRef.current.reviews = el} 
+              className="mb-12"
+            >
+              <h2 className="text-2xl font-bold mb-4">{t('Reviews')}</h2>
+              <BookmarksList 
+                proposals={[]}
+                people={[]}
+                groups={[]}
+                reviews={reviews}
+                activeType="reviews"
+              />
+            </div>
+          </main>
+        </>
+      )}
     </>
     </FiltersProvider>
   );

@@ -66,7 +66,7 @@ const BookmarkNavigation: React.FC<BookmarkNavigationProps> = ({
 
     return (
         <nav className={`border-b border-gray-200 ${isSticky ? 'fixed top-0 left-0 right-0 z-10 bg-background' : ''}`}>
-            <div className="container flex space-x-8">
+            <div className="flex space-x-8">
                 {modelTypes.map(({ name, type, count }) => (
                     <Link
                         href={`#${type}`}
