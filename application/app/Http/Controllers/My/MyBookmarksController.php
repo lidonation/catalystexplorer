@@ -92,7 +92,7 @@ class MyBookmarksController extends Controller
         ]);
     }
 
-    public function create(Request $request): JsonResponse|InertiaResponse
+    public function createItem(Request $request): JsonResponse|InertiaResponse
     {
         $this->authorize('create', BookmarkItem::class);
 
