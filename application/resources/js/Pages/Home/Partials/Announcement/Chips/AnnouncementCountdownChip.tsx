@@ -84,7 +84,7 @@ const AnnouncementCountdownChip = ({
                 <Tooltip >
                     <TooltipTrigger asChild>
                         <div
-                            className="shadow-xs text-4 inline-flex items-center text-nowrap rounded-md border border-border-secondary px-2 text-content"
+                            className="shadow-2xs text-4 inline-flex items-center text-nowrap rounded-md border border-border-secondary px-2 text-content"
                             role="status"
                             aria-label={`${t('announcements.timeRemaining')}: ${remainingTime}`}
                         >
@@ -102,7 +102,7 @@ const AnnouncementCountdownChip = ({
     }
 
     return (
-        <div className="shadow-xs text-4 inline-flex items-center text-nowrap rounded-md border border-border-secondary px-2 text-content">
+        <div className="shadow-2xs text-4 inline-flex items-center text-nowrap rounded-md border border-border-secondary px-2 text-content">
             {formatTimeRemaining(timeRemaining) + ` ${t('announcements.remaining')}`}
         </div>
     );

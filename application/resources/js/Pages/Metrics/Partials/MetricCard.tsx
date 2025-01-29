@@ -50,7 +50,7 @@ const MetricCard: React.FC<MetricCardProps> = ({ metric }) => {
                 </h3>
             </div>
 
-            <div className="mt-20 flex flex-grow flex-col justify-between">
+            <div className="mt-20 flex grow flex-col justify-between">
                 {lineData.length > 0 && (
                     <>
                         <div
@@ -116,7 +116,7 @@ const MetricCard: React.FC<MetricCardProps> = ({ metric }) => {
                                             <div className="max-w-sm">
                                                 <h3 className="text-lg font-semibold">{point.data.xFormatted}</h3>
                                                 <p className="mt-2 flex items-center text-sm">
-                                                    <span className="flex-shrink truncate">{metric.title}</span>:
+                                                    <span className="shrink truncate">{metric.title}</span>:
                                                     <span className="font-bold">{point.data.yFormatted}</span>
                                                 </p>
                                                 <div className="mt-2 flex items-center">

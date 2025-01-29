@@ -1,142 +1,162 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@use "tailwindcss" as *; /* Import Tailwind */
+
+//@use 'tailwindcss/base';       /* Reference base styles */
+//@use 'tailwindcss/components'; /* Reference component styles */
+@use 'tailwindcss/utilities';
+@config "../../tailwind.config.js";
 
 
-html {
-    scroll-behavior: smooth !important;
-}
+@layer utilities {
+    html {
+        scroll-behavior: smooth !important;
+    }
 
-:root {
-    --cx-primary: #2596be;
-    --cx-primary-dark: #057ba6c5;
-    --cx-primary-light: #EFFAFC;
-    --cx-secondary: #3facd1;
-    --cx-dark: #667085;
-    --cx-light: #667085;
-    --cx-accent: #165a72;
+    :root {
+        --cx-primary: #2596be;        --cx-primary-dark: #057ba6c5;
+        --cx-primary-light: #EFFAFC;
+        --cx-secondary: #3facd1;
+        --cx-dark: #667085;
+        --cx-light: #667085;
+        --cx-accent: #165a72;
 
-    --cx-blue-eye-color: #b1e2f0;
+        --cx-blue-eye-color: #b1e2f0;
 
-    --cx-content: #101828;
-    --cx-content-highlight: #ccf4ff;
-    --cx-content-gray-persist: #667085;
-    --cx-content-light-gray-persist: #EAECF0;
-    --cx-content-black-persist: #101828;
-    --cx-content-light: #eaecf0;
-    --cx-content-dark: #101828;
-    --cx-intro-gradient-1: #066384;
-    --cx-intro-gradient-2: #4fadce;
+        --cx-content: #101828;
+        --cx-content-highlight: #ccf4ff;
+        --cx-content-gray-persist: #667085;
+        --cx-content-light-gray-persist: #EAECF0;
+        --cx-content-black-persist: #101828;
+        --cx-content-light: #eaecf0;
+        --cx-content-dark: #101828;
+        --cx-intro-gradient-1: #066384;
+        --cx-intro-gradient-2: #4fadce;
 
-    --cx-background: #FFFFFF;
-    --cx-background-darker: #F9FAFB;
-    --cx-background-lighter: #F0F1F4;
-    --cx-background-light: #667085;
-    --cx-background-gradient-1-light: #3facd1;
-    --cx-background-gradient-2-light: #2596BE;
-    --cx-background-gradient-1-dark: #1B2230;
-    --cx-background-gradient-2-dark: #475467;
+        --cx-background: #FFFFFF;
+        --cx-background-darker: #F9FAFB;
+        --cx-background-lighter: #F0F1F4;
+        --cx-background-light: #667085;
+        --cx-background-gradient-1-light: #3facd1;
+        --cx-background-gradient-2-light: #2596BE;
+        --cx-background-gradient-1-dark: #1B2230;
+        --cx-background-gradient-2-dark: #475467;
 
-    --cx-border-color: #667085;
-    --cx-border-secondary-color: #D0D5DD;
+        --cx-border-color: #667085;
+        --cx-border-secondary-color: #D0D5DD;
 
-    --cx--border-chip-color: #9AD8E9;
+        --cx--border-chip-color: #9AD8E9;
 
-    --bg-accent-color: #3facd1;
-    --cx-accent-secondary: #a23b72;
-    --bg-error-primary-color: #dc2626;
-    --bg-error-secondary-color: #ef4444;
-    --content-primary-color: #182230;
-    --content-hover-color: #101828;
-    --content-error-primary-color: #dc2626;
-    --content-error-secondary-color: #ef4444;
-    --content-success-light: #e0ffef;
-    --success-gradient-color-2: #16b364;
-    --success-gradient-color-1: #0a4d2b;
-    --border-primary-color: #182230;
-    --bg-light-persist: #ffffff;
+        --bg-accent-color: #3facd1;
+        --cx-accent-secondary: #a23b72;
+        --bg-error-primary-color: #dc2626;
+        --bg-error-secondary-color: #ef4444;
+        --content-primary-color: #182230;
+        --content-hover-color: #101828;
+        --content-error-primary-color: #dc2626;
+        --content-error-secondary-color: #ef4444;
+        --content-success-light: #e0ffef;
+        --success-gradient-color-2: #16b364;
+        --success-gradient-color-1: #0a4d2b;
+        --border-primary-color: #182230;
+        --bg-light-persist: #ffffff;
 
-    --cx-display-xs: 1.5rem;
-    --cx-display-sm: 1.875rem;
-    --cx-display-md: 2rem;
-    --cx-display-lg: 2.25rem;
-    --cx-display-xl: 3rem;
-    --cx-display-2xl: 3.75rem;
+        --cx-display-xs: 1.5rem;
+        --cx-display-sm: 1.875rem;
+        --cx-display-md: 2rem;
+        --cx-display-lg: 2.25rem;
+        --cx-display-xl: 3rem;
+        --cx-display-2xl: 3.75rem;
 
-    --cx-display-weight: 700;
-}
+        --cx-display-weight: 700;
+    }
 
-[data-theme='dark'] {
-    --cx-primary: #2596be;
-    --cx-primary-light: #75b5c1;
-    --cx-secondary: #000000;
-    --cx-light: #667085;
-    --cx-dark: #667085;
-    --cx-accent: #8cdefa;
+    [data-theme='dark'] {
+        --cx-primary: #2596be;
+        --cx-primary-light: #75b5c1;
+        --cx-secondary: #000000;
+        --cx-light: #667085;
+        --cx-dark: #667085;
+        --cx-accent: #8cdefa;
 
-    --cx-blue-eye-color: #b1e2f0;
+        --cx-blue-eye-color: #b1e2f0;
 
-    --cx-content: #ffffff;
-    --cx-content-highlight: #ccf4ff;
-    --cx-content-light: #f2f2f2;
-    --cx-content-dark: #ffffff;
-    --cx-intro-gradient-1: #066384;
-    --cx-intro-gradient-2: #4fadce;
-    --cx-background: #101828;
-    --cx-background-darker: #000000;
-    --cx-background-lighter: #374151;
-    --cx-background-light: #ffffff;
-    --cx-background-gradient-1-light: #2596BE;
-    --cx-background-gradient-2-light: #8cdefa;
-    --cx-background-gradient-1-dark: #1B2230;
-    --cx-background-gradient-2-dark: #475467;
+        --cx-content: #ffffff;
+        --cx-content-highlight: #ccf4ff;
+        --cx-content-light: #f2f2f2;
+        --cx-content-dark: #ffffff;
+        --cx-intro-gradient-1: #066384;
+        --cx-intro-gradient-2: #4fadce;
+        --cx-background: #101828;
+        --cx-background-darker: #000000;
+        --cx-background-lighter: #374151;
+        --cx-background-light: #ffffff;
+        --cx-background-gradient-1-light: #2596BE;
+        --cx-background-gradient-2-light: #8cdefa;
+        --cx-background-gradient-1-dark: #1B2230;
+        --cx-background-gradient-2-dark: #475467;
 
-    --cx-border-color: #667085;
-    --bg-secondary-color: #374151;
-    --bg-accent-color: #3facd1;
-    --bg-error-primary-color: #dc2626;
-    --bg-error-secondary-color: #ef4444;
-    --content-hover-color: #ffffff;
-    --content-error-primary-color: #dc2626;
-    --content-error-secondary-color: #ef4444;
-    --content-success-color: #4ade80;
-    --border-primary-color: #667085;
-    --border-secondary-color: #3facd1;
-}
+        --cx-border-color: #667085;
+        --bg-secondary-color: #374151;
+        --bg-accent-color: #3facd1;
+        --bg-error-primary-color: #dc2626;
+        --bg-error-secondary-color: #ef4444;
+        --content-hover-color: #ffffff;
+        --content-error-primary-color: #dc2626;
+        --content-error-secondary-color: #ef4444;
+        --content-success-color: #4ade80;
+        --border-primary-color: #667085;
+        --border-secondary-color: #3facd1;
+    }
 
-[data-theme='voltaire'] {
-    --cx-primary: #2596be;
-    --cx-primary-light: #9cd3dc;
-    --cx-secondary: #000000;
-    --cx-light: #667085;
-    --cx-dark: #667085;
-    --cx-accent: #1f2d3d;
+    [data-theme='voltaire'] {
+        --cx-primary: #2596be;
+        --cx-primary-light: #9cd3dc;
+        --cx-secondary: #000000;
+        --cx-light: #667085;
+        --cx-dark: #667085;
+        --cx-accent: #1f2d3d;
 
-    --cx-blue-eye-color: #b1e2f0;
+        --cx-blue-eye-color: #b1e2f0;
 
-    --cx-content: #101828;
-    --cx-content-highlight: #ccf4ff;
-    --cx-content-light: #f2f2f2;
-    --cx-content-dark: #111928;
-    --cx-intro-gradient-1: #0033ad;
-    --cx-intro-gradient-2: #4fadce;
-    --cx-background: #e9efff;
-    --cx-background-darker: #0033ad;
-    --cx-background-gradient-1-dark: #0033ad;
-    --cx-background-gradient-2-dark: #0033ad;
-    --cx-background-lighter: #b1e3f1;
-    --cx-background-light: #ffffff;
-    --cx-border-color: #2596be;
+        --cx-content: #101828;
+        --cx-content-highlight: #ccf4ff;
+        --cx-content-light: #f2f2f2;
+        --cx-content-dark: #111928;
+        --cx-intro-gradient-1: #0033ad;
+        --cx-intro-gradient-2: #4fadce;
+        --cx-background: #e9efff;
+        --cx-background-darker: #0033ad;
+        --cx-background-gradient-1-dark: #0033ad;
+        --cx-background-gradient-2-dark: #0033ad;
+        --cx-background-lighter: #b1e3f1;
+        --cx-background-light: #ffffff;
+        --cx-border-color: #2596be;
 
-    --bg-accent-color: #3facd1;
-    --bg-error-primary-color: #dc2626;
-    --bg-error-secondary-color: #ef4444;
-    --content-hover-color: #ffffff;
-    --content-error-primary-color: #dc2626;
-    --content-error-secondary-color: #ef4444;
-    --content-success-color: #4ade80;
-    --border-primary-color: #b1e3f1;
-    --border-secondary-color: #3facd1;
+        --bg-accent-color: #3facd1;
+        --bg-error-primary-color: #dc2626;
+        --bg-error-secondary-color: #ef4444;
+        --content-hover-color: #ffffff;
+        --content-error-primary-color: #dc2626;
+        --content-error-secondary-color: #ef4444;
+        --content-success-color: #4ade80;
+        --border-primary-color: #b1e3f1;
+        --border-secondary-color: #3facd1;
+    }
+    .bg-background {
+        background-color: var(--cx-background);
+    }
+
+    .text-content {
+        color: var(--cx-content);
+    }
+
+    .text-primary {
+        color: var(--cx-primary);
+    }
+
+    // Example of custom Tailwind utilities
+    .text-accent {
+        color: var(--cx-accent);
+    }
 }
 
 @layer base {

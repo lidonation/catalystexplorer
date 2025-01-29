@@ -32,7 +32,7 @@ export default function ProposalHorizontalCard({
                 />
             </div>
 
-            <div className="flex flex-grow flex-col space-y-4 overflow-hidden">
+            <div className="flex grow flex-col space-y-4 overflow-hidden">
                 {!userSelected && (
                     <ProposalCardNav
                         quickPitchView={quickPitchView}

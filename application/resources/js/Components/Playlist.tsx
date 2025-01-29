@@ -90,7 +90,7 @@ export default function PlaylistAnimation() {
                                             />
                                         )}
                                         <div className="flex w-full items-center justify-between px-6">
-                                            <div className="z-10 mr-4 flex-grow">
+                                            <div className="z-10 mr-4 grow">
                                                 <h4
                                                     className={`..." mb-1 truncate text-base font-semibold ${
                                                         isCurrentTrack

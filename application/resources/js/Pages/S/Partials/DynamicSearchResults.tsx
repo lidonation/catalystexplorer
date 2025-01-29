@@ -54,7 +54,7 @@ export const EmptyState = ({
                 backgroundRepeat: 'no-repeat',
             }}
         >
-            <div className="flex h-[104px] w-[104px] items-center justify-center rounded-full bg-gradient-to-b from-gray-50 to-gray-100">
+            <div className="flex h-[104px] w-[104px] items-center justify-center rounded-full bg-linear-to-b from-gray-50 to-gray-100">
                 <FileTypeIcon />
             </div>
             <div className="flex flex-col items-center gap-2">

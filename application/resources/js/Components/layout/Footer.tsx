@@ -5,7 +5,7 @@ export default function Footer() {
     const { t } = useTranslation();
 
     return (
-        <div className="flex min-h-96 w-full flex-col justify-between gap-16 rounded-t-xl bg-gradient-to-r from-[var(--cx-background-gradient-1-dark)] to-[var(--cx-background-gradient-1-dark)] pb-12 pt-16">
+        <div className="flex min-h-96 w-full flex-col justify-between gap-16 rounded-t-xl bg-linear-to-r from-[var(--cx-background-gradient-1-dark)] to-[var(--cx-background-gradient-1-dark)] pb-12 pt-16">
             <section className="container text-content-light">
                 <div className="grid grid-cols-2 gap-8 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
                     <div className="flex min-w-24 flex-col title-gap-y">

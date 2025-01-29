@@ -15,7 +15,7 @@ const SectionOne: React.FC<
     return (
         <div className="flex w-full items-center justify-between text-sm md:text-base">
             {!!submitted && (
-                <div className="flex flex-grow flex-col items-center border-r border-dark px-2">
+                <div className="flex grow flex-col items-center border-r border-dark px-2">
                     <span className="content-light block font-semibold">
                         {t('submitted')}
                     </span>
@@ -23,7 +23,7 @@ const SectionOne: React.FC<
                 </div>
             )}
             {!!approved && (
-                <div className="flex flex-grow flex-col items-center border-r border-dark px-2">
+                <div className="flex grow flex-col items-center border-r border-dark px-2">
                     <span className="block font-semibold text-primary">
                         {t('approved')}
                     </span>
@@ -31,7 +31,7 @@ const SectionOne: React.FC<
                 </div>
             )}
             {!!completed && (
-                <div className="flex flex-grow flex-col items-center px-2">
+                <div className="flex grow flex-col items-center px-2">
                     <span className="block font-semibold text-success">
                         {t('completed')}
                     </span>
@@ -55,7 +55,7 @@ const SectionTwo: React.FC<
             {!!requestedUSD && (
                 <div
                     className={
-                        'flex flex-grow flex-col items-center border-l border-dark px-2 ' +
+                        'flex grow flex-col items-center border-l border-dark px-2 ' +
                         (requestedADA || awardedUSD || awardedADA
                             ? ' border-r'
                             : '')
@@ -70,7 +70,7 @@ const SectionTwo: React.FC<
             {!!requestedADA && (
                 <div
                     className={
-                        'flex flex-grow flex-col items-center border-dark px-2' +
+                        'flex grow flex-col items-center border-dark px-2' +
                         (!requestedUSD ? ' border-l' : '') +
                         (awardedUSD || awardedADA ? ' border-r' : '')
                     }
@@ -84,7 +84,7 @@ const SectionTwo: React.FC<
             {!!awardedUSD && (
                 <div
                     className={
-                        'flex flex-grow flex-col items-center border-dark px-2' +
+                        'flex grow flex-col items-center border-dark px-2' +
                         (!requestedUSD || !requestedADA ? ' border-l' : '') +
                         (!!awardedADA ? ' border-r' : '')
                     }
@@ -98,7 +98,7 @@ const SectionTwo: React.FC<
             {!!awardedADA && (
                 <div
                     className={
-                        'flex flex-grow flex-col items-center px-2' +
+                        'flex grow flex-col items-center px-2' +
                         (!requestedUSD || !requestedADA || !requestedUSD
                             ? ' border-l'
                             : '')
@@ -138,7 +138,7 @@ const MetricsBar: React.FC<ProposalMetrics | undefined> = (props) => {
                 </div>
                 {isExpanded && !isPlayerBarExpanded && (
                     <div className="hidden w-full items-center md:flex md:space-x-4">
-                        <div className="flex-grow items-center transition-all duration-300">
+                        <div className="grow items-center transition-all duration-300">
                             <SectionTwo
                                 requestedUSD={metrics?.requestedUSD}
                                 requestedADA={metrics?.requestedADA}

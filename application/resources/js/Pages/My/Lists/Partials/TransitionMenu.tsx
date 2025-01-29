@@ -53,7 +53,7 @@ const TransitionDropdown = ({
                                 {pages.map((page, index) => (
                                     <div
                                         key={index}
-                                        className="w-full flex-shrink-0"
+                                        className="w-full shrink-0"
                                         style={{ width }}
                                     >
                                         {React.cloneElement(page, {

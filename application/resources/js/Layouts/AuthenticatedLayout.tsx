@@ -47,7 +47,7 @@ export default function Authenticated({
                                         <span className="inline-flex rounded-md">
                                             <button
                                                 type="button"
-                                                className="false secondary text-5 text-content-secondary focus:bg-background-tertiary active:bg-background-tertiary inline-flex items-center rounded-md border border-transparent px-4 py-2 font-semibold uppercase tracking-widest transition duration-150 ease-in-out hover:bg-background-lighter focus:outline-none focus:ring-offset-2"
+                                                className="false secondary text-5 text-content-secondary focus:bg-background-tertiary active:bg-background-tertiary inline-flex items-center rounded-md border border-transparent px-4 py-2 font-semibold uppercase tracking-widest transition duration-150 ease-in-out hover:bg-background-lighter focus:outline-hidden focus:ring-offset-2"
                                             >
                                                 {user?.name}
 
@@ -92,7 +92,7 @@ export default function Authenticated({
                                         (previousState) => !previousState,
                                     )
                                 }
-                                className="hover:text-content-secondary focus:text-content-secondary inline-flex items-center justify-center rounded-md p-2 text-dark transition duration-150 ease-in-out hover:bg-background-lighter focus:bg-background-lighter focus:outline-none"
+                                className="hover:text-content-secondary focus:text-content-secondary inline-flex items-center justify-center rounded-md p-2 text-dark transition duration-150 ease-in-out hover:bg-background-lighter focus:bg-background-lighter focus:outline-hidden"
                             >
                                 <svg
                                     className="h-6 w-6"
@@ -170,7 +170,7 @@ export default function Authenticated({
             </nav>
 
             {header && (
-                <header className="bg-background shadow">
+                <header className="bg-background shadow-sm">
                     <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
                         {header}
                     </div>

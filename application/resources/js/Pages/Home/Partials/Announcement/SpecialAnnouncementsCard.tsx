@@ -39,7 +39,7 @@ const SpecialAnnouncementCard = ({ announcement }: any) => {
             </div>
 
             {/* Image Section */}
-            <div className="flex-shrink-0 w-full h-auto lg:w-[40%] mt-6 lg:mt-0 lg:ml-8">
+            <div className="shrink-0 w-full h-auto lg:w-[40%] mt-6 lg:mt-0 lg:ml-8">
                 <img
                     src={announcement.hero_image_url}
                     alt={`${announcement.title} Hero Image`}
