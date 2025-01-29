@@ -1,5 +1,7 @@
 <?php
 
+use App\Models\Group;
+
 return [
 
     /*
@@ -134,9 +136,10 @@ return [
         'host' => env('MEILISEARCH_HOST', 'http://catalystexplorer-search:7700'),
         'key' => env('MEILISEARCH_KEY'),
         'index-settings' => [
-            // 'users' => [
-            //     'filterableAttributes'=> ['id', 'name', 'email'],
-            // ],
+            Group::class => [
+                'filterableAttributes'=> ['id', 'ideascale_profiles', 'tags', 'proposals', 'proposals_approved', 'proposals_completed', 'amount_awarded_usd', 'amount_awarded_ada'],
+                'sortableAttributes' => [ 'name', 'id', 'website', 'proposals_approved', 'proposals_completed', 'amount_awarded_ada', 'amount_awarded_usd', 'amount_requested',],
+            ],
         ],
     ],
 
