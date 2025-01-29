@@ -82,7 +82,7 @@ export default function LoginForm() {
                             name="remember"
                             checked={data.remember}
                             onChange={(e) =>
-                                setData('remember', e.target.checked)
+                                setData('remember', e.target.checked as false)
                             }
                         />
                         <p className="ms-2 text-4 text-dark">
@@ -92,7 +92,7 @@ export default function LoginForm() {
                     <div>
                         <Link
                             href={route('password.request')}
-                            className="text-4 text-primary font-bold hover:text-content focus:outline-none focus:ring-2 focus:border-x-border-secondary focus:ring-offset"
+                            className="text-4 text-primary font-bold hover:text-content focus:outline-hidden focus:ring-2 focus:border-x-border-secondary focus:ring-offset"
                         >
                             {t("forgotPassword")}
                         </Link>
@@ -115,7 +115,7 @@ export default function LoginForm() {
                     <p className="text-4 mr-2">{t("registration.noAccount")}</p>
                     <Link
                         href={route('register')}
-                        className="text-4 text-primary font-bold hover:text-content focus:outline-none focus:ring-2 focus:ring-offset-2"
+                        className="text-4 text-primary font-bold hover:text-content focus:outline-hidden focus:ring-2 focus:ring-offset-2"
                     >
                         {t("signup")}
                     </Link>

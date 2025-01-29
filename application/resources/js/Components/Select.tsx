@@ -84,7 +84,7 @@ export default function Selector({
                         role="combobox"
                         aria-expanded={open}
                         aria-label={t('select') + ' ' + t('option')}
-                        className="border-input placeholder:text-muted-foreground flex h-full w-full items-center justify-between rounded-md border bg-transparent px-3 py-2 text-sm shadow-sm ring-offset-background disabled:cursor-not-allowed disabled:opacity-50"
+                        className="border-input placeholder:text-muted-foreground flex h-full w-full items-center justify-between rounded-md border bg-transparent px-3 py-2 text-sm shadow-xs ring-offset-background disabled:cursor-not-allowed disabled:opacity-50"
                     >
                         <span className="flex items-center gap-2 overflow-hidden">
                             <span className="overflow-clip text-nowrap text-sm">
@@ -110,7 +110,7 @@ export default function Selector({
                             <button
                                 aria-label={t('clear') + ' ' + t('select')}
                                 onClick={onClearSelection}
-                                className="px-3 hover:text-primary focus:outline-none"
+                                className="px-3 hover:text-primary focus:outline-hidden"
                             >
                                 clear
                             </button>
@@ -119,7 +119,7 @@ export default function Selector({
                             <div
                                 key={option.value}
                                 onClick={() => handleSelect(option.value)}
-                                className="relative flex w-full cursor-default select-none items-center justify-between rounded-sm !bg-background px-3 py-1.5 text-sm outline-none hover:!bg-background-lighter focus:bg-background-lighter aria-selected:bg-background-lighter data-[disabled]:pointer-events-none data-[disabled]:opacity-50"
+                                className="relative flex w-full cursor-default select-none items-center justify-between rounded-xs bg-background! px-3 py-1.5 text-sm outline-hidden hover:bg-background-lighter! focus:bg-background-lighter aria-selected:bg-background-lighter data-disabled:pointer-events-none data-disabled:opacity-50"
                             >
                                 <span>{option.label}</span>
 
@@ -136,7 +136,7 @@ export default function Selector({
                                         }
                                         value={option.value}
                                         onChange={() => {}}
-                                        className="ml-2 text-content-accent h-4 w-4 bg-background shadow-sm checked:bg-primary checked:hover:bg-primary focus:border focus:border-primary focus:ring-primary checked:focus:bg-primary"
+                                        className="ml-2 text-content-accent h-4 w-4 bg-background shadow-xs checked:bg-primary checked:hover:bg-primary focus:border focus:border-primary focus:ring-primary checked:focus:bg-primary"
                                     />
                                 )}
                             </div>

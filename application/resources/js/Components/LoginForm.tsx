@@ -74,7 +74,7 @@ export default function LoginForm({ title }: LoginFormProps) {
 
                     <div className="mb-4 flex items-center justify-between">
                         <div className="flex items-center gap-2">
-                            <Checkbox id="remember-me" className="h-4 w-4 rounded text-primary" />
+                            <Checkbox id="remember-me" className="h-4 w-4 rounded-sm text-primary" />
                             <label htmlFor="remember-me" className="text-sm">
                                 {t('rememberMe')}
                             </label>

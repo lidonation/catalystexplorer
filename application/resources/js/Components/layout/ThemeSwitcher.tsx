@@ -17,7 +17,7 @@ export default function ThemeSwitcher() {
 
     return (
         <fieldset
-            className="flex flex-col items-center gap-2 rounded relative"
+            className="flex flex-col items-center gap-2 rounded-sm relative"
             aria-labelledby="theme-legend"
         >
             <legend id="theme-legend"
@@ -35,7 +35,7 @@ export default function ThemeSwitcher() {
                         onClick={() => setTheme(mode)}
                         ariaLabel={t('theme.changeMode', { mode })}
                         aria-pressed={theme === mode}
-                        className={`inline-flex items-center flex-1 gap-1 rounded border bg-background px-1 text-5 text-content hover:bg-background-lighter ${theme === mode ? 'bg-background-lighter' : ''}`}
+                        className={`inline-flex items-center flex-1 gap-1 rounded-sm border bg-background px-1 text-5 text-content hover:bg-background-lighter ${theme === mode ? 'bg-background-lighter' : ''}`}
                     >
                         <span aria-hidden={true}>
                             {icons[mode]}

@@ -10,16 +10,16 @@ export default function MetricCardLoading() {
                         >
                             <div className="animate-pulse">
                                 <div className="absolute top-4 left-10 bg-background shadow-md rounded-md px-4 py-2 z-10">
-                                    <div className="h-8 w-24 bg-slate-200 rounded mb-2"></div>
-                                    <div className="h-4 w-32 bg-slate-200 rounded"></div>
+                                    <div className="h-8 w-24 bg-slate-200 rounded-sm mb-2"></div>
+                                    <div className="h-4 w-32 bg-slate-200 rounded-sm"></div>
                                 </div>
 
                                 <div className="bg-background absolute top-4 right-10 flex items-center">
-                                    <div className="h-6 w-20 bg-slate-200 rounded"></div>
+                                    <div className="h-6 w-20 bg-slate-200 rounded-sm"></div>
                                 </div>
 
                                 <div className="bg-background mt-16 px-4">
-                                    <div className="h-24 bg-slate-200 rounded"></div>
+                                    <div className="h-24 bg-slate-200 rounded-sm"></div>
                                 </div>
                             </div>
                         </div>

@@ -44,13 +44,13 @@ const SearchResultsLoading = ({
                         aria-label={`${translatedType} ${t('loading')}`}
                     >
                         <div className="flex items-center space-x-3">
-                            <div className="h-10 w-10 rounded bg-gray-persist" />
-                            <div className="h-4 w-1/3 rounded bg-gray-persist" />
+                            <div className="h-10 w-10 rounded-sm bg-gray-persist" />
+                            <div className="h-4 w-1/3 rounded-sm bg-gray-persist" />
                         </div>
-                        <div className="h-3 w-2/3 rounded bg-gray-persist" />
+                        <div className="h-3 w-2/3 rounded-sm bg-gray-persist" />
                         <div className="flex space-x-2">
-                            <div className="h-3 w-16 rounded bg-gray-persist" />
-                            <div className="h-3 w-16 rounded bg-gray-persist" />
+                            <div className="h-3 w-16 rounded-sm bg-gray-persist" />
+                            <div className="h-3 w-16 rounded-sm bg-gray-persist" />
                         </div>
                     </div>
                 );
@@ -62,19 +62,19 @@ const SearchResultsLoading = ({
                         aria-label={`${translatedType} ${t('loading')}`}
                     >
                         <div className="flex items-center justify-between">
-                            <div className="h-4 w-1/4 rounded bg-gray-persist" />
+                            <div className="h-4 w-1/4 rounded-sm bg-gray-persist" />
                             <div className="flex space-x-1">
                                 {[...Array(5)].map((_, i) => (
                                     <div
                                         key={i}
-                                        className="h-4 w-4 rounded bg-gray-persist"
+                                        className="h-4 w-4 rounded-sm bg-gray-persist"
                                     />
                                 ))}
                             </div>
                         </div>
                         <div className="space-y-2">
-                            <div className="h-4 w-full rounded bg-gray-persist" />
-                            <div className="h-4 w-2/3 rounded bg-gray-persist" />
+                            <div className="h-4 w-full rounded-sm bg-gray-persist" />
+                            <div className="h-4 w-2/3 rounded-sm bg-gray-persist" />
                         </div>
                     </div>
                 );
@@ -85,9 +85,9 @@ const SearchResultsLoading = ({
                         className="w-full animate-pulse space-y-3 rounded-lg border p-4"
                         aria-label={`${translatedType} ${t('loading')}`}
                     >
-                        <div className="h-4 w-1/3 rounded bg-gray-persist" />
-                        <div className="h-4 w-full rounded bg-gray-persist" />
-                        <div className="h-4 w-2/3 rounded bg-gray-persist" />
+                        <div className="h-4 w-1/3 rounded-sm bg-gray-persist" />
+                        <div className="h-4 w-full rounded-sm bg-gray-persist" />
+                        <div className="h-4 w-2/3 rounded-sm bg-gray-persist" />
                     </div>
                 );
         }

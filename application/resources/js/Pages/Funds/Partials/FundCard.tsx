@@ -33,7 +33,7 @@ const FundCard: React.FC<FundCardProps> = ({
                 </Link>
                 {/* Responsive Image Section */}
                 <div
-                    className="flex h-24 w-24 items-center justify-center overflow-hidden rounded-full bg-gradient-to-r from-gray-100 to-gray-900 sm:h-32 sm:w-32 lg:h-36 lg:w-36"
+                    className="flex h-24 w-24 items-center justify-center overflow-hidden rounded-full bg-linear-to-r from-gray-100 to-gray-900 sm:h-32 sm:w-32 lg:h-36 lg:w-36"
                 >
                     <img
                         src={fund.hero_img_url}
@@ -44,7 +44,7 @@ const FundCard: React.FC<FundCardProps> = ({
             </div>
 
             {/* Details Section */}
-            <div className="flex flex-grow flex-col space-y-1 sm:space-y-2">
+            <div className="flex grow flex-col space-y-1 sm:space-y-2">
                 <div>
                     <p className="mt-8 truncate text-xs sm:text-sm">
                         {t('funds.totalAwarded')}

@@ -45,7 +45,7 @@ function ModalSidebar({ isOpen = false, title, children, onClose }: ModalSidebar
 
             {/* Sidebar Modal */}
             <div
-                className="fixed right-0 top-0 z-50 h-full w-full bg-background shadow-lg focus:outline-none sm:w-96"
+                className="fixed right-0 top-0 z-50 h-full w-full bg-background shadow-lg focus:outline-hidden sm:w-96"
                 tabIndex={0}
             >
                 <header className="flex items-center justify-between border-b border-border-primary px-6 py-4">
@@ -60,7 +60,7 @@ function ModalSidebar({ isOpen = false, title, children, onClose }: ModalSidebar
                         ariaLabel={t('navigation.sidebar.close')}
                         aria-expanded={isOpen}
                         aria-controls="sidebar-modal"
-                        className="hidden sm:block lg:inline-flex items-center rounded px-2 py-1 text-4 hover:bg-dark"
+                        className="hidden sm:block lg:inline-flex items-center rounded-sm px-2 py-1 text-4 hover:bg-dark"
                     >
                         <CloseIcon width={18} height={18} />
                     </Button>

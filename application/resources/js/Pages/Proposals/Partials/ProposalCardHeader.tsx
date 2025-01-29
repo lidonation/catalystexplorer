@@ -21,15 +21,15 @@ export default function ProposalCardHeader({
 
     return (
         <header
-            className={`rounded-xl bg-gradient-to-tr text-content-light w-full ${headerBGColor} flex flex-shrink flex-col ${isHorizontal ? ' h-full' : ''}`}
+            className={`rounded-xl bg-linear-to-tr text-content-light w-full ${headerBGColor} flex shrink flex-col ${isHorizontal ? ' h-full' : ''}`}
         >
             {/* Top Section */}
-            <div className="flex-grow">
+            <div className="grow">
                 <div className="relative flex items-center justify-between p-4">
                     {userSelected ? (
                         <div>
                             <button
-                                className="absolute top-4 right-4 bg-gray-600/50 text-white hover:bg-gray-500/70 focus:outline-none rounded-lg p-2 transition duration-200 ease-in-out"
+                                className="absolute top-4 right-4 bg-gray-600/50 text-white hover:bg-gray-500/70 focus:outline-hidden rounded-lg p-2 transition duration-200 ease-in-out"
                                 onClick={noSelectedUser}
                             >
                                 <svg

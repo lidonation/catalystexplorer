@@ -74,7 +74,7 @@ const BookmarkNavigation: React.FC<BookmarkNavigationProps> = ({
                         onClick={() => handleTabClick(type)}
                         preserveState
                         preserveScroll
-                        className={`group flex items-center gap-2 py-2 outline-none transition-colors hover:text-content-dark ${
+                        className={`group flex items-center gap-2 py-2 outline-hidden transition-colors hover:text-content-dark ${
                         activeType === type &&
                         '-mb-px border-b-2 border-b-primary text-primary'
                         }`}

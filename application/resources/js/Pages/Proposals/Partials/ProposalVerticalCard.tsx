@@ -32,7 +32,7 @@ export default function ProposalVerticalCard({
                 />
             </div>
 
-            <div className="flex-grow overflow-auto p-2">
+            <div className="grow overflow-auto p-2">
                 {userSelected ? (
                     <UserQuickView user={userSelected} />
                 ) : (
