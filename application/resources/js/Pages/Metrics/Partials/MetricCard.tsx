@@ -18,7 +18,6 @@ const MetricCard: React.FC<MetricCardProps> = ({ metric }) => {
         ? JSON.parse(metric.chartData)
         : metric.chartData;
 
-    console.log(chartData);
     const lineData = chartData?.data ? [{
         id: chartData.id || 'Data',
         color: metric.color,

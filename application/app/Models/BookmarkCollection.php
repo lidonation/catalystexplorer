@@ -20,6 +20,9 @@ class BookmarkCollection extends Model
 
     protected $fillable = [
         'user_id',
+        'title',
+        'content',
+        'visibility',
     ];
 
     public function user(): BelongsTo

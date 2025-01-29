@@ -1,5 +1,6 @@
 import ProposalStatus from './ProposalStatus';
 import ProposalBookmark from './ProposalBookmark';
+import {ListProvider} from "@/Context/ListContext";
 
 export default function ProposalCardHeader({
     proposal,
@@ -58,7 +59,10 @@ export default function ProposalCardHeader({
                     ) : (
                         <>
                             <ProposalStatus status={proposal.status} funding_status={proposal.funding_status} />
-                            <ProposalBookmark />
+
+                            <ListProvider>
+                                <ProposalBookmark />
+                            </ListProvider>
                         </>
                     )}
                 </div>
