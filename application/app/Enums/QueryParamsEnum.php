@@ -20,7 +20,7 @@ enum QueryParamsEnum: string
 
     const AWARDED_USD = 'au';
 
-    const PEOPLE = 'pp';
+    const IDEASCALE_PROFILE = 'ip';
 
     const TAGS = 'ts';
 

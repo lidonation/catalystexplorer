@@ -22,7 +22,7 @@ interface HomePageProps extends Record<string, unknown> {
         awardedAda: [];
         funds: [];
         tags: [];
-        people: [];
+        ideascaleProfile: [];
     };
     filterCounts: {
         tagsCount: [];
