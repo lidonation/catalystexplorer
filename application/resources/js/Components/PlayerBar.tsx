@@ -195,7 +195,7 @@ const PlayerBar = () => {
                                                                 ),
                                                             )
                                                         }
-                                                        className="relative flex w-full select-none items-center justify-between gap-2 rounded-sm !bg-bg-dark p-1 text-sm outline-none hover:cursor-pointer hover:!bg-background-lighter focus:bg-background-lighter aria-selected:bg-background-lighter data-[disabled]:pointer-events-none data-[disabled]:opacity-50"
+                                                        className="relative flex w-full select-none items-center justify-between gap-2 rounded-xs bg-bg-dark! p-1 text-sm outline-hidden hover:cursor-pointer hover:bg-background-lighter! focus:bg-background-lighter aria-selected:bg-background-lighter data-disabled:pointer-events-none data-disabled:opacity-50"
                                                     >
                                                         <span>
                                                             {option.label}
@@ -208,7 +208,7 @@ const PlayerBar = () => {
                                                             }
                                                             value={option.value}
                                                             onChange={() => {}}
-                                                            className="text-content-accent h-4 w-4 bg-bg-dark shadow-sm checked:bg-primary checked:hover:bg-primary focus:border focus:border-primary focus:ring-primary checked:focus:bg-primary"
+                                                            className="text-content-accent h-4 w-4 bg-bg-dark shadow-xs checked:bg-primary checked:hover:bg-primary focus:border focus:border-primary focus:ring-primary checked:focus:bg-primary"
                                                         />
                                                     </div>
                                                 ))}

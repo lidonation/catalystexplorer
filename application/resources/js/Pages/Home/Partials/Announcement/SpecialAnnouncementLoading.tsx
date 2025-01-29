@@ -19,7 +19,7 @@ const SpecialAnnouncementLoading = () => {
             </div>
 
             {/* Skeleton for Image Section */}
-            <div className="flex-shrink-0 w-full lg:w-[40%] mt-6 lg:mt-0 lg:ml-8">
+            <div className="shrink-0 w-full lg:w-[40%] mt-6 lg:mt-0 lg:ml-8">
                 <div className="w-full h-[500px] bg-background rounded-lg"></div>
             </div>
         </div>

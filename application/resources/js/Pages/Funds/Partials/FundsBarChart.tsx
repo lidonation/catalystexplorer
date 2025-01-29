@@ -56,7 +56,7 @@ const FundsBarChart: React.FC<FundsBarChartProps> = ({
     };
 
     return (
-        <div className="rounded-md bg-background p-8 shadow-sm lg:p-16">
+        <div className="rounded-md bg-background p-8 shadow-xs lg:p-16">
             <div className="grid w-full grid-cols-2 justify-between gap-4 lg:grid-cols-5">
                 <div>
                     <h6 className="text-2 lg:title-5 font-bold">
@@ -211,7 +211,7 @@ const FundsBarChart: React.FC<FundsBarChartProps> = ({
                         },
                     }}
                     tooltip={({ indexValue, data }) => (
-                        <div className="rounded-sm bg-dark p-4 text-content-light">
+                        <div className="rounded-xs bg-dark p-4 text-content-light">
                             <p>
                                 <strong className="mb-1 block">
                                     {indexValue}
