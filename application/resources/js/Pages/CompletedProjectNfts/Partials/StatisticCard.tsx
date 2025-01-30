@@ -5,16 +5,16 @@ interface StatisticCardProps {
 }
 
 const StatisticCard: React.FC<StatisticCardProps> = ({ value, description, icon }) => (
-    <div className="bg-background shadow-sm rounded-lg p-4 sm:p-6 flex items-center justify-start gap-4">
+    <div className="bg-background flex items-center justify-start gap-4 rounded-lg p-4 shadow-sm sm:p-6">
         {/* Icon Container */}
-        <div className="h-12 w-12 rounded-full shrink-0 flex items-center justify-center">
+        <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full">
             {icon}
         </div>
 
         {/* Text Container */}
         <div className="flex flex-col justify-center gap-2">
             <p className="text-lg font-bold">{value}</p>
-            <div className="text-lg leading-5 min-h-[2rem] flex items-start">
+            <div className="flex min-h-[2rem] items-start text-lg leading-5">
                 <p>{description}</p>
             </div>
         </div>

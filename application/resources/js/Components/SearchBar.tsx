@@ -57,7 +57,7 @@ const SearchBar = ({
                     ref={inputRef}
                     placeholder={placeholder}
                     size={placeholder.length}
-                    className={`w-full rounded-lg border-0 bg-background pl-10 text-content shadow-none focus:border-0 focus:border-primary ${showRingOnFocus ? 'focus:ring-2 focus:ring-primary' : 'focus:ring-0'}`}
+                    className={`bg-background text-content focus:border-primary w-full rounded-lg border-0 pl-10 shadow-none focus:border-0 ${showRingOnFocus ? 'focus:ring-primary focus:ring-2' : 'focus:ring-0'}`}
                     value={searchQuery}
                     onChange={handleChange}
                     onFocus={() => {
@@ -70,7 +70,7 @@ const SearchBar = ({
                 <Button
                     onClick={() => handleClear()}
                     ariaLabel={t('clear')}
-                    className="absolute right-0 flex h-full w-10 cursor-pointer items-center justify-center hover:text-primary"
+                    className="hover:text-primary absolute right-0 flex h-full w-10 cursor-pointer items-center justify-center"
                 >
                     <CloseIcon width={16} />
                 </Button>

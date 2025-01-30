@@ -12,7 +12,7 @@ export default function Edit({
     return (
         <AuthenticatedLayout
             header={
-                <h2 className="text-1 font-semibold leading-tight text-content">
+                <h2 className="text-1 text-content leading-tight font-semibold">
                     Profile
                 </h2>
             }

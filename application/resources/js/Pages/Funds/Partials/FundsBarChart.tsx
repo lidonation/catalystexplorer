@@ -56,13 +56,13 @@ const FundsBarChart: React.FC<FundsBarChartProps> = ({
     };
 
     return (
-        <div className="rounded-md bg-background p-8 shadow-xs lg:p-16">
+        <div className="bg-background rounded-md p-8 shadow-xs lg:p-16">
             <div className="grid w-full grid-cols-2 justify-between gap-4 lg:grid-cols-5">
                 <div>
                     <h6 className="text-2 lg:title-5 font-bold">
                         {fundRounds}
                     </h6>
-                    <p className="text-4 lg:text-3 font-bold text-content opacity-75">
+                    <p className="text-4 lg:text-3 text-content font-bold opacity-75">
                         {t('funds.fundRounds')}
                     </p>
                 </div>
@@ -70,7 +70,7 @@ const FundsBarChart: React.FC<FundsBarChartProps> = ({
                     <h6 className="text-2 lg:title-5 font-bold">
                         {totalProposals.toLocaleString()}
                     </h6>
-                    <p className="text-4 lg:text-3 font-bold text-content opacity-75">
+                    <p className="text-4 lg:text-3 text-content font-bold opacity-75">
                         {t('funds.totalProposals')}
                     </p>
                 </div>
@@ -79,7 +79,7 @@ const FundsBarChart: React.FC<FundsBarChartProps> = ({
                     <h6 className="text-2 lg:title-5 font-bold">
                         {fundedProposals.toLocaleString()}
                     </h6>
-                    <p className="text-4 lg:text-3 font-bold text-content opacity-75">
+                    <p className="text-4 lg:text-3 text-content font-bold opacity-75">
                         {t('funds.fundedProposals')}
                     </p>
                 </div>
@@ -87,7 +87,7 @@ const FundsBarChart: React.FC<FundsBarChartProps> = ({
                     <h6 className="text-2 lg:title-5 font-bold">
                         {currency(totalFundsRequested, 'ADA', undefined, 2)}
                     </h6>
-                    <p className="text-4 lg:text-3 font-bold text-content opacity-75">
+                    <p className="text-4 lg:text-3 text-content font-bold opacity-75">
                         {t('funds.totalFundsAwardedAda')}
                     </p>
                 </div>
@@ -211,7 +211,7 @@ const FundsBarChart: React.FC<FundsBarChartProps> = ({
                         },
                     }}
                     tooltip={({ indexValue, data }) => (
-                        <div className="rounded-xs bg-dark p-4 text-content-light">
+                        <div className="bg-dark text-content-light rounded-xs p-4">
                             <p>
                                 <strong className="mb-1 block">
                                     {indexValue}

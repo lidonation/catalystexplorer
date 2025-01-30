@@ -35,7 +35,7 @@ function IdeascaleProfilesSearchControls() {
     };
 
     return (
-        <div className="mx-auto flex w-full flex-col gap-4 bg-background-lighter pb-4 pt-6">
+        <div className="bg-background-lighter mx-auto flex w-full flex-col gap-4 pt-6 pb-4">
             <div className="flex items-center justify-end gap-2">
                 <SearchBar
                     handleSearch={handleSearch}

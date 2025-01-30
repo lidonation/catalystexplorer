@@ -17,7 +17,7 @@ export default function BookmarkOnIcon({
     return (
         <div className="relative inline-block">
             {count > 0 && (
-                <div className="absolute left-0 top-0 transform -translate-x-1/2 -translate-y-1/2 bg-primary text-white rounded-full px-2 py-0.5 text-xs font-bold">
+                <div className="bg-primary absolute top-0 left-0 -translate-x-1/2 -translate-y-1/2 transform rounded-full px-2 py-0.5 text-xs font-bold text-white">
                     {count}
                 </div>
             )}

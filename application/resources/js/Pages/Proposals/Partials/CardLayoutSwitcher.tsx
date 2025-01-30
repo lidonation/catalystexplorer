@@ -35,13 +35,13 @@ export default function CardLayoutSwitcher({
 
     return (
         <div className="relative">
-            <div className="z- flex overflow-hidden rounded-lg border-[2px] border-gray-300 bg-background shadow-md">
+            <div className="z- bg-background flex overflow-hidden rounded-lg border-[2px] border-gray-300 shadow-md">
                 <button
                     onClick={() => setHorizontal(false)}
                     className={`flex flex-1 items-center justify-center p-2 ${
                         !isHorizontal
-                            ? 'cursor-default bg-background-lighter text-primary'
-                            : 'text-gray-500 hover:bg-background-lighter'
+                            ? 'bg-background-lighter text-primary cursor-default'
+                            : 'hover:bg-background-lighter text-gray-500'
                     } border-r-[2px] border-gray-300`}
                 >
                     <VerticalColumnIcon />
@@ -51,8 +51,8 @@ export default function CardLayoutSwitcher({
                     onClick={() => setHorizontal(true)}
                     className={`flex flex-1 items-center justify-center p-2 ${
                         isHorizontal
-                            ? 'cursor-default bg-background-lighter text-primary'
-                            : 'text-gray-500 hover:bg-background-lighter'
+                            ? 'bg-background-lighter text-primary cursor-default'
+                            : 'hover:bg-background-lighter text-gray-500'
                     } border-r-[2px] border-gray-300`}
                 >
                     <ListBulletIcon />
@@ -62,8 +62,8 @@ export default function CardLayoutSwitcher({
                     onClick={() => setQuickpitch(!quickPitchView)}
                     className={`flex flex-1 items-center justify-center p-2 ${
                         quickPitchView
-                            ? 'cursor-default bg-background-lighter text-primary'
-                            : 'text-gray-500 hover:bg-background-lighter'
+                            ? 'bg-background-lighter text-primary cursor-default'
+                            : 'hover:bg-background-lighter text-gray-500'
                     }`}
                 >
                     <VideoCameraIcon />

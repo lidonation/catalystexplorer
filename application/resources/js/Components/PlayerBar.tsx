@@ -103,7 +103,7 @@ const PlayerBar = () => {
                 <div
                     className={`sticky inset-x-0 bottom-0 mx-auto transition-all duration-300 ${
                         isPlayerBarExpanded ? 'w-full max-w-2xl' : 'w-16'
-                    } flex items-center justify-between overflow-hidden rounded-xl bg-bg-dark px-4 py-3 text-white shadow-lg`}
+                    } bg-bg-dark flex items-center justify-between overflow-hidden rounded-xl px-4 py-3 text-white shadow-lg`}
                 >
                     {/* Video Camera Icon for Collapsed State */}
                     {!isPlayerBarExpanded && (
@@ -121,14 +121,14 @@ const PlayerBar = () => {
                                 <button
                                     disabled={loading || !playlist}
                                     onClick={prevTrack}
-                                    className="background-button-gradient-color-2 flex h-8 w-8 items-center justify-center rounded-md border border-dark hover:bg-dark sm:h-12 sm:w-12"
+                                    className="background-button-gradient-color-2 border-dark hover:bg-dark flex h-8 w-8 items-center justify-center rounded-md border sm:h-12 sm:w-12"
                                 >
                                     <PlayerSkipBack />
                                 </button>
                                 <button
                                     disabled={loading || !playlist}
                                     onClick={handlePlayPause}
-                                    className="background-button-gradient-color-2 flex h-8 w-8 items-center justify-center rounded-md border border-dark hover:bg-dark sm:h-12 sm:w-12"
+                                    className="background-button-gradient-color-2 border-dark hover:bg-dark flex h-8 w-8 items-center justify-center rounded-md border sm:h-12 sm:w-12"
                                 >
                                     {isPlaying ? (
                                         <PlayerPause />
@@ -139,14 +139,14 @@ const PlayerBar = () => {
                                 <button
                                     disabled={loading || !playlist}
                                     onClick={handleStop}
-                                    className="background-button-gradient-color-2 flex h-8 w-8 items-center justify-center rounded-md border border-dark hover:bg-dark sm:h-12 sm:w-12"
+                                    className="background-button-gradient-color-2 border-dark hover:bg-dark flex h-8 w-8 items-center justify-center rounded-md border sm:h-12 sm:w-12"
                                 >
                                     <PlayerStop />
                                 </button>
                                 <button
                                     disabled={loading || !playlist}
                                     onClick={nextTrack}
-                                    className="background-button-gradient-color-2 flex h-8 w-8 items-center justify-center rounded-md border border-dark hover:bg-dark sm:h-12 sm:w-12"
+                                    className="background-button-gradient-color-2 border-dark hover:bg-dark flex h-8 w-8 items-center justify-center rounded-md border sm:h-12 sm:w-12"
                                 >
                                     <PlayerSkipForward />
                                 </button>
@@ -157,7 +157,7 @@ const PlayerBar = () => {
                                 <button
                                     disabled={loading || !playlist}
                                     onClick={() => seekBack(10)}
-                                    className="background-button-gradient-color-2 flex h-8 w-8 items-center justify-center rounded-md border border-gray-600 hover:bg-dark sm:h-12 sm:w-12"
+                                    className="background-button-gradient-color-2 hover:bg-dark flex h-8 w-8 items-center justify-center rounded-md border border-gray-600 sm:h-12 sm:w-12"
                                 >
                                     <PlayerRewindLeft />
                                 </button>
@@ -169,7 +169,7 @@ const PlayerBar = () => {
                                 <button
                                     disabled={loading || !playlist}
                                     onClick={() => seekForward(10)}
-                                    className="background-button-gradient-color-2 flex h-8 w-8 items-center justify-center rounded-md border border-gray-600 hover:bg-dark sm:h-12 sm:w-12"
+                                    className="background-button-gradient-color-2 hover:bg-dark flex h-8 w-8 items-center justify-center rounded-md border border-gray-600 sm:h-12 sm:w-12"
                                 >
                                     <PlayerRewindRight />
                                 </button>
@@ -178,12 +178,12 @@ const PlayerBar = () => {
                                         <PopoverTrigger asChild>
                                             <button
                                                 disabled={loading || !playlist}
-                                                className="background-button-gradient-color-2 flex h-8 w-8 items-center justify-center rounded-md border border-gray-600 text-xs hover:bg-dark sm:h-12 sm:w-12 sm:text-sm"
+                                                className="background-button-gradient-color-2 hover:bg-dark flex h-8 w-8 items-center justify-center rounded-md border border-gray-600 text-xs sm:h-12 sm:w-12 sm:text-sm"
                                             >
                                                 {playbackSpeed}x
                                             </button>
                                         </PopoverTrigger>
-                                        <PopoverContent className="mb-4 w-auto border border-gray-600 bg-bg-dark p-0">
+                                        <PopoverContent className="bg-bg-dark mb-4 w-auto border border-gray-600 p-0">
                                             <div className="p-1">
                                                 {speedOptions?.map((option) => (
                                                     <div
@@ -195,7 +195,7 @@ const PlayerBar = () => {
                                                                 ),
                                                             )
                                                         }
-                                                        className="relative flex w-full select-none items-center justify-between gap-2 rounded-xs bg-bg-dark! p-1 text-sm outline-hidden hover:cursor-pointer hover:bg-background-lighter! focus:bg-background-lighter aria-selected:bg-background-lighter data-disabled:pointer-events-none data-disabled:opacity-50"
+                                                        className="bg-bg-dark! hover:bg-background-lighter! focus:bg-background-lighter aria-selected:bg-background-lighter relative flex w-full items-center justify-between gap-2 rounded-xs p-1 text-sm outline-hidden select-none hover:cursor-pointer data-disabled:pointer-events-none data-disabled:opacity-50"
                                                     >
                                                         <span>
                                                             {option.label}
@@ -208,7 +208,7 @@ const PlayerBar = () => {
                                                             }
                                                             value={option.value}
                                                             onChange={() => {}}
-                                                            className="text-content-accent h-4 w-4 bg-bg-dark shadow-xs checked:bg-primary checked:hover:bg-primary focus:border focus:border-primary focus:ring-primary checked:focus:bg-primary"
+                                                            className="text-content-accent bg-bg-dark checked:bg-primary checked:hover:bg-primary focus:border-primary focus:ring-primary checked:focus:bg-primary h-4 w-4 shadow-xs focus:border"
                                                         />
                                                     </div>
                                                 ))}
@@ -221,12 +221,12 @@ const PlayerBar = () => {
                                         <PopoverTrigger asChild>
                                             <button
                                                 disabled={loading || !playlist}
-                                                className="background-button-gradient-color-2 flex h-8 w-8 items-center justify-center rounded-md border border-gray-600 hover:bg-dark sm:h-12 sm:w-12"
+                                                className="background-button-gradient-color-2 hover:bg-dark flex h-8 w-8 items-center justify-center rounded-md border border-gray-600 sm:h-12 sm:w-12"
                                             >
                                                 <PlaylistIcon />
                                             </button>
                                         </PopoverTrigger>
-                                        <PopoverContent className="mb-4 max-h-96 min-w-96 overflow-y-auto border border-gray-600 bg-bg-dark">
+                                        <PopoverContent className="bg-bg-dark mb-4 max-h-96 min-w-96 overflow-y-auto border border-gray-600">
                                             <PlaylistAnimation />
                                         </PopoverContent>
                                     </Popover>

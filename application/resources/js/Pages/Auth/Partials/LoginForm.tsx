@@ -1,14 +1,14 @@
-import { FormEventHandler, useState } from "react";
-import { useForm, Link, router } from "@inertiajs/react";
-import InputLabel from "@/Components/InputLabel";
-import InputError from "@/Components/InputError";
-import TextInput from "@/Components/TextInput";
-import Checkbox from "@/Components/Checkbox";
-import PrimaryButton from "@/Components/PrimaryButton";
-import SecondaryButton from "@/Components/SecondaryButton";
-import ConnectWalletIcon from "@/Components/svgs/ConnectWalletIcon";
-import { useTranslation } from "react-i18next";
-import axios from "axios";
+import Checkbox from '@/Components/Checkbox';
+import InputError from '@/Components/InputError';
+import InputLabel from '@/Components/InputLabel';
+import PrimaryButton from '@/Components/PrimaryButton';
+import SecondaryButton from '@/Components/SecondaryButton';
+import ConnectWalletIcon from '@/Components/svgs/ConnectWalletIcon';
+import TextInput from '@/Components/TextInput';
+import { Link, router, useForm } from '@inertiajs/react';
+import axios from 'axios';
+import { FormEventHandler, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 interface FormErrors {
     email?: string;
@@ -27,24 +27,26 @@ export default function LoginForm() {
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
 
-        axios.post(route('login'), {
-            email: data.email,
-            password: data.password,
-        }).then((response) => {
-            reset('password');
-            router.get('my/dashboard');
-        }).catch((error) => {
-            setErrors(error?.response?.data?.errors)
-        });
-    }
-
+        axios
+            .post(route('login'), {
+                email: data.email,
+                password: data.password,
+            })
+            .then((response) => {
+                reset('password');
+                router.get('my/dashboard');
+            })
+            .catch((error) => {
+                setErrors(error?.response?.data?.errors);
+            });
+    };
 
     const { t } = useTranslation();
     return (
         <>
-            <form onSubmit={submit} className="flex flex-col content-gap">
+            <form onSubmit={submit} className="content-gap flex flex-col">
                 <div>
-                    <InputLabel htmlFor="email" value={t("email")} />
+                    <InputLabel htmlFor="email" value={t('email')} />
 
                     <TextInput
                         id="email"
@@ -85,14 +87,14 @@ export default function LoginForm() {
                                 setData('remember', e.target.checked as false)
                             }
                         />
-                        <p className="ms-2 text-4 text-dark">
-                            {t("rememberMe")}
+                        <p className="text-4 text-dark ms-2">
+                            {t('rememberMe')}
                         </p>
                     </div>
                     <div>
                         <Link
                             href={route('password.request')}
-                            className="text-4 text-primary font-bold hover:text-content focus:outline-hidden focus:ring-2 focus:border-x-border-secondary focus:ring-offset"
+                            className="text-4 text-primary hover:text-content focus:border-x-border-secondary focus:ring-offset font-bold focus:ring-2 focus:outline-hidden"
                         >
                             {t("forgotPassword")}
                         </Link>
@@ -100,27 +102,36 @@ export default function LoginForm() {
                 </div>
 
                 <div>
-                    <PrimaryButton className="w-full h-10 flex items-center justify-center rounded-md" disabled={processing} type="submit">
-                        {t("signin")}
+                    <PrimaryButton
+                        className="flex h-10 w-full items-center justify-center rounded-md"
+                        disabled={processing}
+                        type="submit"
+                    >
+                        {t('signin')}
                     </PrimaryButton>
                 </div>
 
                 <div>
-                    <SecondaryButton className="w-full h-10 flex items-center justify-center rounded-md" icon={<ConnectWalletIcon />} iconPosition="left" type="submit">
-                        {t("connectWallet")}
+                    <SecondaryButton
+                        className="flex h-10 w-full items-center justify-center rounded-md"
+                        icon={<ConnectWalletIcon />}
+                        iconPosition="left"
+                        type="submit"
+                    >
+                        {t('connectWallet')}
                     </SecondaryButton>
                 </div>
 
                 <div className="flex w-full items-center justify-center">
-                    <p className="text-4 mr-2">{t("registration.noAccount")}</p>
+                    <p className="text-4 mr-2">{t('registration.noAccount')}</p>
                     <Link
                         href={route('register')}
-                        className="text-4 text-primary font-bold hover:text-content focus:outline-hidden focus:ring-2 focus:ring-offset-2"
+                        className="text-4 text-primary hover:text-content font-bold focus:ring-2 focus:ring-offset-2 focus:outline-hidden"
                     >
                         {t("signup")}
                     </Link>
                 </div>
             </form>
         </>
-    )
+    );
 }

@@ -107,7 +107,7 @@ export default function PlaylistAnimation() {
                                                         <WaveformBars />
                                                     )}
                                                     <span
-                                                        className={`z-10 whitespace-nowrap text-sm font-medium ${
+                                                        className={`z-10 text-sm font-medium whitespace-nowrap ${
                                                             isCurrentTrack
                                                                 ? 'text-white/90'
                                                                 : 'text-gray-400'

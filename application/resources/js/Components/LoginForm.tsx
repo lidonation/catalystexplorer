@@ -18,7 +18,7 @@ export default function LoginForm({ title }: LoginFormProps) {
 
     return (
         <div className="flex items-center justify-center py-12">
-            <div className="mx-4 w-full max-w-md rounded-2xl bg-background p-6 shadow-md sm:mx-0 sm:p-8">
+            <div className="bg-background mx-4 w-full max-w-md rounded-2xl p-6 shadow-md sm:mx-0 sm:p-8">
                 {/* Conditionally render the title only if it's provided */}
                 {title && (
                   <h2 className="text-center text-2xl font-bold sm:text-3xl">
@@ -30,9 +30,9 @@ export default function LoginForm({ title }: LoginFormProps) {
                     <p className="text-xs sm:text-sm">{t('loginPrompt')}</p>
                 </div>
 
-                <div className="flex justify-center mt-4">
+                <div className="mt-4 flex justify-center">
                     <SecondaryButton
-                        className="hover:bg-background-lighter flex gap-2 py-1.5 px-4 text-sm sm:text-base rounded-md"
+                        className="hover:bg-background-lighter flex gap-2 rounded-md px-4 py-1.5 text-sm sm:text-base"
                         icon={<ConnectWalletIcon className="bg-background"/>}
                         iconPosition="left"
                         type="submit"
@@ -89,7 +89,7 @@ export default function LoginForm({ title }: LoginFormProps) {
                     </PrimaryButton>
                 </form>
 
-                <p className="mt-4 text-center text-xs text-dark sm:text-sm">
+                <p className="text-dark mt-4 text-center text-xs sm:text-sm">
                     {t('registration.noAccount')}{' '}
                     <Link href="#" className="font-medium text-primary hover:underline">
                         {t('signup')}

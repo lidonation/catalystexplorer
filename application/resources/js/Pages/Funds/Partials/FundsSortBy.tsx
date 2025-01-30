@@ -19,7 +19,7 @@ export default function FundSortBy() {
         },
     ];
     return (
-        <div className="ml-4 mt-4 flex justify-end pb-1 lg:pb-8">
+        <div className="mt-4 ml-4 flex justify-end pb-1 lg:pb-8">
             <Selector
                 isMultiselect={false}
                 options={sortingOptions}
@@ -35,8 +35,8 @@ export default function FundSortBy() {
                 placeholder={t('funds.sortBy')}
                 className={`bg-background ${
                     getFilter(ProposalParamsEnum.SORTS)
-                        ? 'cursor-default bg-background text-primary'
-                        : 'text-gray-500 hover:bg-background-lighter'
+                        ? 'bg-background text-primary cursor-default'
+                        : 'hover:bg-background-lighter text-gray-500'
                 }`}
             />
         </div>

@@ -81,8 +81,8 @@ const Index = () => {
                     ))}
                 </div>
 
-                <div className="max-w-3xl mx-auto mt-8">
-                    <p className="text-sm text-center">
+                <div className="mx-auto mt-8 max-w-3xl">
+                    <p className="text-center text-sm">
                         {t("completedProjectNfts.description")}{" "}
                         <a href="/hello-its-nashon" className="underline ml-1">
                             {t("completedProjectNfts.artistStatement")}

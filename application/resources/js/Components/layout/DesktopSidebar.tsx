@@ -14,7 +14,7 @@ function DesktopSidebar(props: any) {
     return (
         <aside
             {...rest}
-            className="justify-between flex flex-col h-full"
+            className="flex h-full flex-col justify-between"
             aria-label={t('navigation.desktop.sidebar')}
         >
             <section className="flex grow flex-col gap-6 overflow-y-auto sm:pt-8">
@@ -25,16 +25,16 @@ function DesktopSidebar(props: any) {
             </section>
             <section className="flex flex-col gap-6">
                 <div className="px-4">
-                    <div className="border-t border-border pt-6">
+                    <div className="border-border border-t pt-6">
                         <UserNavigation/>
                     </div>
                 </div>
 
-                <div className="flex flex-col gap-6 border-t border-border pt-6">
+                <div className="border-border flex flex-col gap-6 border-t pt-6">
                     <div className="px-4">
                         <UserDetails user={auth?.user as User}/>
                     </div>
-                    <div className="py-4 px-4 bg-background-darker">
+                    <div className="bg-background-darker px-4 py-4">
                         <ThemeSwitcher/>
                     </div>
                 </div>
