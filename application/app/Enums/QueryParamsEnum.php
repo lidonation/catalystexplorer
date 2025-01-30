@@ -26,4 +26,3 @@ enum QueryParamsEnum: string
 
     const FUNDS = 'fs';
 }
-    

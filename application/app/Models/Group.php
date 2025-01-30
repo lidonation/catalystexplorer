@@ -7,8 +7,8 @@ namespace App\Models;
 use App\Casts\DateFormatCast;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
-use Illuminate\Support\Facades\Artisan;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Support\Facades\Artisan;
 use Laravel\Scout\Searchable;
 use Laravolt\Avatar\Facade as Avatar;
 use Spatie\MediaLibrary\HasMedia;
@@ -61,7 +61,7 @@ class Group extends Model implements HasMedia
             'name',
             'proposals',
             'ideascale_profiles',
-            'tags'
+            'tags',
         ];
     }
 
@@ -148,7 +148,7 @@ class Group extends Model implements HasMedia
             'ideascale_profiles' => $this->ideascale_profiles->map(fn ($m) => $m->toArray()),
             'tags' => $this->tags->map(fn ($m) => $m->toArray()),
         ]);
-        
+
     }
 
     public function tags(): Attribute
@@ -187,6 +187,4 @@ class Group extends Model implements HasMedia
             },
         );
     }
-
-    
 }

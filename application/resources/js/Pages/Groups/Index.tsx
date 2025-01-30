@@ -2,7 +2,7 @@ import { Head } from '@inertiajs/react';
 import { useTranslation } from 'react-i18next';
 import GroupData = App.DataTransferObjects.GroupData;
 
-interface HomePageProps extends Record<string, unknown> {
+interface GroupsPageProps extends Record<string, unknown> {
     groups: {
         links: [];
         total: number;
@@ -30,7 +30,7 @@ interface HomePageProps extends Record<string, unknown> {
     };
 }
 
-const Index: React.FC<HomePageProps> = ({ groups }) => {
+const Index: React.FC<GroupsPageProps> = ({ groups }) => {
     const { t } = useTranslation();
 
     return (

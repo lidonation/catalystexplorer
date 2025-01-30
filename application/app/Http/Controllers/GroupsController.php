@@ -4,10 +4,9 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use App\Models\Group;
 use App\DataTransferObjects\GroupData;
 use App\Enums\QueryParamsEnum;
-use App\Http\Controllers\Controller;
+use App\Models\Group;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
@@ -71,7 +70,7 @@ class GroupsController extends Controller
             'filterCounts' => [
                 'tagsCount' => $this->tagsCount,
                 'fundsCount' => $this->fundsCount,
-            ]
+            ],
         ];
 
         return Inertia::render('Groups/Index', $props);
@@ -80,7 +79,7 @@ class GroupsController extends Controller
     public function group(Request $request, Group $group): Response
     {
         return Inertia::render('Groups/Group', [
-            'group' => GroupData::from($group)
+            'group' => GroupData::from($group),
         ]);
     }
 
@@ -90,7 +89,6 @@ class GroupsController extends Controller
         $this->currentPage = (int) $request->input(QueryParamsEnum::PAGE, 1);
         $this->search = $request->input('s', null);
         $this->search = $request->input(QueryParamsEnum::SEARCH, null);
-
 
         $sort = collect(explode(':', $request->input(QueryParamsEnum::SORTS, '')))->filter();
         if ($sort->isEmpty()) {
