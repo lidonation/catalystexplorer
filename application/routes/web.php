@@ -45,6 +45,9 @@ Route::localized(
         Route::get('/completed-project-nfts', [CompletetProjectNftsController::class, 'index'])
             ->name('completedProjectsNfts.index');
 
+        Route::get('/completed-project-nfts/{proposal:id}', [CompletetProjectNftsController::class, 'show'])
+            ->name('completedProjectsNfts.show');
+
         Route::get('/jormungandr', [JormungandrController::class, 'index'])
             ->name('jormungandr.index');
 
