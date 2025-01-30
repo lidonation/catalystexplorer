@@ -54,7 +54,7 @@ export default function Index({
                     </div>
                 </section>
 
-                <section className="container numbers-wrapper">
+                <section className="numbers-wrapper container">
                     <div className='flex justify-between items-center'>
                         <div>
                             <h2 className="title-2">{t("metric.numbers")}</h2>
@@ -77,7 +77,7 @@ export default function Index({
 
 
                 <section className="container proposals-wrapper">
-                    <div className=" py-8 flex justify-between items-center">
+                    <div className="flex items-center justify-between py-8">
                         <div>
                             <h2 className="title-2">{t("proposals.proposals")}</h2>
                             <p className="text-4 text-content-dark opacity-70">{t("proposals.listSubtitle")}</p>

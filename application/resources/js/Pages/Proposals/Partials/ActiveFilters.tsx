@@ -111,7 +111,7 @@ const StatusFilters = ({ filter }: { filter: FilteredItem }) => {
 
     return (
         <div
-            className="mb-1 mr-1 flex items-center rounded-lg border bg-background px-1 py-1"
+            className="bg-background mr-1 mb-1 flex items-center rounded-lg border px-1 py-1"
             key={filter.label}
         >
             <div className="mr-1 font-bold">{filter.label}:</div>
@@ -155,7 +155,7 @@ const RangeFilters = ({ filter }: { filter: FilteredItem }) => {
 
     return (
         <div
-            className="mb-1 mr-1 flex items-center rounded-lg border bg-background px-1 py-1"
+            className="bg-background mr-1 mb-1 flex items-center rounded-lg border px-1 py-1"
             key={filter.label}
         >
             <div className="mr-1">{filter.label}</div>
@@ -178,7 +178,7 @@ const BooleanFilters = ({ filter }: { filter: FilteredItem }) => {
     };
     return (
         <div
-            className="mb-1 mr-1 flex items-center rounded-lg border bg-background px-1 py-1"
+            className="bg-background mr-1 mb-1 flex items-center rounded-lg border px-1 py-1"
             key={filter.label}
         >
             <div className="mr-1">{filter.label}</div>
@@ -213,7 +213,7 @@ const SortFilters = ({
 
     return (
         <div
-            className="mb-1 mr-1 flex items-center rounded-lg border bg-background px-1 py-1"
+            className="bg-background mr-1 mb-1 flex items-center rounded-lg border px-1 py-1"
             key={filter.label}
         >
             <div className="mr-1">{sort?.label}</div>
@@ -252,7 +252,7 @@ const IDFilters = React.memo(({ filter }: { filter: FilteredItem }) => {
 
     return (
         <div
-            className="mb-1 mr-1 flex items-center rounded-lg border bg-background px-1 py-1"
+            className="bg-background mr-1 mb-1 flex items-center rounded-lg border px-1 py-1"
             key={filter.label}
         >
             <div className="mr-1 font-bold">{filter.label}:</div>

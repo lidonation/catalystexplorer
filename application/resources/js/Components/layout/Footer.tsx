@@ -5,13 +5,11 @@ export default function Footer() {
     const { t } = useTranslation();
 
     return (
-        <div className="flex min-h-96 w-full flex-col justify-between gap-16 rounded-t-xl bg-linear-to-r from-[var(--cx-background-gradient-1-dark)] to-[var(--cx-background-gradient-1-dark)] pb-12 pt-16">
-            <section className="container text-content-light">
+        <div className="flex min-h-96 w-full flex-col justify-between gap-16 rounded-t-xl bg-linear-to-r from-[var(--cx-background-gradient-1-dark)] to-[var(--cx-background-gradient-1-dark)] pt-16 pb-12">
+            <section className="text-content-light container">
                 <div className="grid grid-cols-2 gap-8 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
-                    <div className="flex min-w-24 flex-col title-gap-y">
-                        <h5 className="title-6">
-                            {t('proposals.proposals')}
-                        </h5>
+                    <div className="title-gap-y flex min-w-24 flex-col">
+                        <h5 className="title-6">{t('proposals.proposals')}</h5>
                         <ul className="menu-gap-y flex flex-col">
                             <li>
                                 <p>{t('proposals.allProposals')}</p>
@@ -27,11 +25,11 @@ export default function Footer() {
                             </li>
                         </ul>
                     </div>
-                    <div className="flex min-w-24 flex-col title-gap-y">
+                    <div className="title-gap-y flex min-w-24 flex-col">
                         <h5 className="title-6">
                             {t('ideascaleProfiles.ideascaleProfiles')}
                         </h5>
-                        <ul className="flex flex-col menu-gap-y">
+                        <ul className="menu-gap-y flex flex-col">
                             <li>
                                 <p>{t('proposers')}</p>
                             </li>
@@ -46,11 +44,9 @@ export default function Footer() {
                             </li>
                         </ul>
                     </div>
-                    <div className="flex min-w-24 flex-col title-gap-y">
-                        <h5 className="title-6">
-                            {t('data')}
-                        </h5>
-                        <ul className="flex flex-col menu-gap-y">
+                    <div className="title-gap-y flex min-w-24 flex-col">
+                        <h5 className="title-6">{t('data')}</h5>
+                        <ul className="menu-gap-y flex flex-col">
                             <li>
                                 <p>{t('numbers')}</p>
                             </li>
@@ -65,11 +61,9 @@ export default function Footer() {
                             </li>
                         </ul>
                     </div>
-                    <div className="flex min-w-24 flex-col title-gap-y">
-                        <h5 className="title-6">
-                            {t('social')}
-                        </h5>
-                        <ul className="flex flex-col menu-gap-y">
+                    <div className="title-gap-y flex min-w-24 flex-col">
+                        <h5 className="title-6">{t('social')}</h5>
+                        <ul className="menu-gap-y flex flex-col">
                             <li>
                                 <p>{t('twitter')}</p>
                             </li>
@@ -84,11 +78,9 @@ export default function Footer() {
                             </li>
                         </ul>
                     </div>
-                    <div className="flex min-w-24 flex-col title-gap-y">
-                        <h5 className="title-6">
-                            {t('legal')}
-                        </h5>
-                        <ul className="flex flex-col menu-gap-y">
+                    <div className="title-gap-y flex min-w-24 flex-col">
+                        <h5 className="title-6">{t('legal')}</h5>
+                        <ul className="menu-gap-y flex flex-col">
                             <li>
                                 <p>{t('terms')}</p>
                             </li>

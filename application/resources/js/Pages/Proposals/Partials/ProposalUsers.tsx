@@ -23,7 +23,7 @@ export default function ProposalUsers({ users,onUserClick, className }: PageProp
             <h3 id="team-heading" className="mb-2 font-medium">
             {t('teams')}
             </h3>
-            <ul className="cursor-pointer flex -space-x-2">
+            <ul className="flex cursor-pointer -space-x-2">
                 {visibleUsers?.map((user) => (
                     <li key={user.id} onClick={() => onUserClick(user)}>
                         <UserAvatar
@@ -35,7 +35,7 @@ export default function ProposalUsers({ users,onUserClick, className }: PageProp
 
                 {remainingCount > 0 && (
                     <li>
-                        <div className="flex h-8 w-8 items-center justify-center rounded-full border-2 border-white bg-content-light text-sm text-gray-600">
+                        <div className="bg-content-light flex h-8 w-8 items-center justify-center rounded-full border-2 border-white text-sm text-gray-600">
                             {`+${remainingCount}`}
                         </div>
                     </li>

@@ -41,11 +41,12 @@ function ProposalSearchControls({
     };
 
     const filtersCount = filters.filter(
-        (filter) => filter.param !== ProposalParamsEnum.PAGE && filter.value.length > 0,
+        (filter) =>
+            filter.param !== ProposalParamsEnum.PAGE && filter.value.length > 0,
     ).length;
 
     return (
-        <div className="container sticky top-0 z-10 mx-auto flex w-full flex-col gap-4 pb-4 pt-6 backdrop-blur-md">
+        <div className="sticky top-0 z-10 container mx-auto flex w-full flex-col gap-4 pt-6 pb-4 backdrop-blur-md">
             <div className="flex items-center justify-end gap-2">
                 <SearchBar
                     handleSearch={handleSearch}
@@ -54,10 +55,10 @@ function ProposalSearchControls({
                     initialSearch={searchQuery}
                 />
                 <Button
-                    className={`shadow-xs border-input flex flex-row items-center gap-2 rounded-lg border bg-background px-3 py-1.5 ${
+                    className={`border-input bg-background flex flex-row items-center gap-2 rounded-lg border px-3 py-1.5 shadow-xs ${
                         showFilters
-                            ? 'border-accent-blue text-primary ring-1 ring-offset-background'
-                            : 'text-gray-500 hover:bg-background-lighter'
+                            ? 'border-accent-blue text-primary ring-offset-background ring-1'
+                            : 'hover:bg-background-lighter text-gray-500'
                     }`}
                     onClick={() => toggleFilters()}
                 >
@@ -81,8 +82,8 @@ function ProposalSearchControls({
                     placeholder={t('proposals.options.sort')}
                     className={`bg-background ${
                         getFilter(ProposalParamsEnum.SORTS)
-                            ? 'cursor-default bg-background-lighter text-primary'
-                            : 'text-gray-500 hover:bg-background-lighter'
+                            ? 'bg-background-lighter text-primary cursor-default'
+                            : 'hover:bg-background-lighter text-gray-500'
                     }`}
                 />
             </div>

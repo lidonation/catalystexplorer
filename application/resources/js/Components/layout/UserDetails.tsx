@@ -35,13 +35,13 @@ const UserDetails: React.FC<UserDetailsProps> = ({ user }) => {
             {user ?
                 <div className="flex items-center justify-between">
                     <div className="flex gap-3">
-                        <div className="size-9 rounded-full bg-background-light">
+                        <div className="bg-background-light size-9 rounded-full">
                             <UserAvatar imageUrl={user.profile_photo_url} />
                         </div>
                         <div className="flex flex-col">
                             <Link
                                 href={useLocalizedRoute('my.dashboard')}
-                                className="text-4 font-semibold text-content"
+                                className="text-4 text-content font-semibold"
                             >
                                 {user?.name}
                             </Link>
@@ -51,14 +51,14 @@ const UserDetails: React.FC<UserDetailsProps> = ({ user }) => {
                             </p>
                             <Link
                                 href={route('profile.edit')}
-                                className="text-5 font-semibold text-primary"
+                                className="text-5 text-primary font-semibold"
                             >
                                 {t("users.editProfile")}
                             </Link>
                         </div>
                     </div>
                     <LogOutIcon
-                        className="cursor-pointer text-dark hover:text-hover"
+                        className="text-dark hover:text-hover cursor-pointer"
                         width={20}
                         height={20}
                         onClick={() => logout()}
@@ -69,14 +69,14 @@ const UserDetails: React.FC<UserDetailsProps> = ({ user }) => {
                 :
                 <>
                     <nav className="flex flex-col justify-between">
-                        <ul className="flex flex-1 flex-row menu-gap-y">
+                        <ul className="menu-gap-y flex flex-1 flex-row">
                             <li className='flex items-center gap-1 px-2 py-1 hover:bg-background-lighter cursor-pointer' onClick={() => setActiveModal("register")}>
-                                <RegisterUserIcon className='text-dark' />
-                                <p className='text-3'>{t("register")}</p>
+                                <RegisterUserIcon className="text-dark" />
+                                <p className="text-3">{t('register')}</p>
                             </li>
                             <li className='flex items-center gap-1 px-2 py-1 hover:bg-background-lighter cursor-pointer' onClick={() => setActiveModal("login")}>
-                                <LoginIcon className='text-dark' />
-                                <p className='text-3'>{t("login")}</p>
+                                <LoginIcon className="text-dark" />
+                                <p className="text-3">{t('login')}</p>
                             </li>
                         </ul>
                     </nav>

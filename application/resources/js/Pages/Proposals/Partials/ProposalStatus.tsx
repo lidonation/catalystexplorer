@@ -20,7 +20,7 @@ export default function ProposalStatus({
     }
 
     return (
-        <span className="inline-flex items-center gap-2 rounded-full bg-background px-2 py-1 text-sm text-content">
+        <span className="bg-background text-content inline-flex items-center gap-2 rounded-full px-2 py-1 text-sm">
             <span className={`size-2 rounded-full ${statusColor}`}></span>
             {projectStatus}
         </span>

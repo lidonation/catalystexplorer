@@ -32,11 +32,11 @@ export default function UpdateProfileInformation({
     return (
         <section className={className}>
             <header>
-                <h2 className="text-2 font-medium text-content">
+                <h2 className="text-2 text-content font-medium">
                     Profile Information
                 </h2>
 
-                <p className="mt-1 text-4 text-content">
+                <p className="text-4 text-content mt-1">
                     Update your account's profile information and email address.
                 </p>
             </header>
@@ -76,20 +76,20 @@ export default function UpdateProfileInformation({
 
                 {mustVerifyEmail && user?.email_verified_at === null && (
                     <div>
-                        <p className="mt-2 text-4 text-content">
+                        <p className="text-4 text-content mt-2">
                             Your email address is unverified.
                             <Link
                                 href={route('verification.send')}
                                 method="post"
                                 as="button"
-                                className="rounded-md text-4 text-content underline hover:text-content-secondary focus:outline-hidden focus:ring-2 focus:border-border-secondary focus:ring-offset-2"
+                                className="text-4 text-content hover:text-content-secondary focus:border-border-secondary rounded-md underline focus:ring-2 focus:ring-offset-2 focus:outline-hidden"
                             >
                                 Click here to re-send the verification email.
                             </Link>
                         </p>
 
                         {status === 'verification-link-sent' && (
-                            <div className="mt-2 text-4 font-medium text-content-success">
+                            <div className="text-4 text-content-success mt-2 font-medium">
                                 A new verification link has been sent to your
                                 email address.
                             </div>

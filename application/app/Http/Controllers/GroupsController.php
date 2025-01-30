@@ -39,7 +39,7 @@ class GroupsController extends Controller
 
     public $tagsFilter;
 
-    public $peopleFilter;
+    public $ideascaleProfileFilter;
 
     protected Builder $searchBuilder;
 
@@ -65,7 +65,7 @@ class GroupsController extends Controller
                 'awardedAda' => $this->awardedAdaFilter->isNotEmpty() ? $this->awardedAdaFilter->toArray() : [0, 7000000],
                 'funds' => $this->fundsFilter->toArray(),
                 'tags' => $this->tagsFilter->toArray(),
-                'people' => $this->peopleFilter->toArray(),
+                'ideascaleProfile' => $this->ideascaleProfileFilter->toArray(),
             ],
             'filterCounts' => [
                 'tagsCount' => $this->tagsCount,
@@ -109,7 +109,7 @@ class GroupsController extends Controller
         $this->awardedAdaFilter = $request->collect(QueryParamsEnum::AWARDED_ADA);
         $this->fundsFilter = $request->collect(QueryParamsEnum::FUNDS)->map(fn ($n) => intval($n));
         $this->tagsFilter = $request->collect(QueryParamsEnum::TAGS)->map(fn ($n) => intval($n));
-        $this->peopleFilter = $request->collect(QueryParamsEnum::PEOPLE)->map(fn ($n) => intval($n));
+        $this->ideascaleProfileFilter = $request->collect(QueryParamsEnum::IDEASCALE_PROFILE)->map(fn ($n) => intval($n));
     }
 
     public function query($returnBuilder = false, $attrs = null, $filters = [])
@@ -202,8 +202,8 @@ class GroupsController extends Controller
             $_options[] = 'tags.id IN '.$this->tagsFilter->toJson();
         }
 
-        if ($this->peopleFilter->isNotEmpty()) {
-            $_options[] = 'members.id IN '.$this->peopleFilter->toJson();
+        if ($this->ideascaleProfileFilter->isNotEmpty()) {
+            $_options[] = 'ideascale_profiles.id IN '.$this->ideascaleProfileFilter->toJson();
         }
 
         return $_options;

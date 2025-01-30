@@ -29,7 +29,7 @@ export default function NavLinkItem({
             href={href}
             aria-label={ariaLabel}
             role="menuitem"
-            className={`flex items-center gap-3 px-3 py-1 hover:bg-background-lighter ${active ? 'text-primary-100' : 'text-dark'} ${className}`}
+            className={`hover:bg-background-lighter flex items-center gap-3 px-3 py-1 ${active ? 'text-primary-100' : 'text-dark'} ${className}`}
         >
             {children}
             <p>{title}</p>

@@ -32,7 +32,7 @@ export default function ProposalSolution({
             aria-labelledby="solution-preview"
         >
             <header className="solution-header flex justify-between">
-                <h2 id="solution-heading" className="font-medium text-content">
+                <h2 id="solution-heading" className="text-content font-medium">
                     Solution
                 </h2>
                 <nav aria-label="Go to proposal">
@@ -46,7 +46,7 @@ export default function ProposalSolution({
                 </nav>
             </header>
 
-            <article className="solution-content mt-4 text-content">
+            <article className="solution-content text-content mt-4">
                 <p>{truncatedSolution}</p>
             </article>
         </section>
