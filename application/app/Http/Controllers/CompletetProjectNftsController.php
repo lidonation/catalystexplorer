@@ -7,6 +7,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
+use App\Models\Proposal;
 
 class CompletetProjectNftsController extends Controller
 {
@@ -16,5 +17,10 @@ class CompletetProjectNftsController extends Controller
     public function index(Request $request): Response
     {
         return Inertia::render('CompletedProjectNfts/Index');
+    }
+
+    public function show(Request $request, Proposal $proposal): Response
+    {
+        return Inertia::render('CompletedProjectNfts/Partials/Show');
     }
 }
