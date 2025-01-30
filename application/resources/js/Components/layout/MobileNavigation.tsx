@@ -18,7 +18,7 @@ function MobileNavigation() {
                 className="relative flex w-full flex-1 transform transition duration-300 ease-in-out data-closed:-translate-x-full"
             >
                 <aside
-                    className="flex grow flex-col justify-between bg-background px-4"
+                    className="bg-background flex grow flex-col justify-between px-4"
                     aria-label={t('navigation.mobile.content')}
                 >
                     <section>

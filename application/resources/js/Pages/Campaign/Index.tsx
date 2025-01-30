@@ -27,7 +27,7 @@ const Index: React.FC<FundProps> = ({ fund, campaigns }) => {
             </div>
             </header>
 
-            <div className="container mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="container mt-8 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
             {campaigns.map((campaign) => (
                 <CampaignCard campaign={campaign} key={fund?.user_id} fund={fund} />
             ))}

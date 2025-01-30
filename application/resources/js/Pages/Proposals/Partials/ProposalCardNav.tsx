@@ -32,7 +32,7 @@ export default function ProposalCardNav({
                     >
                         <span>{t('proposals.quickPitch')}</span>
                         {!hasQuickPitch && (
-                            <span className="text-dark-persist rounded-full bg-content-light px-2 py-1 text-xs">
+                            <span className="text-dark-persist bg-content-light rounded-full px-2 py-1 text-xs">
                                 {t('notSet')}
                             </span>
                         )}

@@ -28,7 +28,7 @@ export default function IdeascaleProfilesFilters() {
     };
 
     return (
-        <div className="container w-full rounded-xl bg-background p-4 shadow-md">
+        <div className="bg-background container w-full rounded-xl p-4 shadow-md">
             <div className="grid grid-cols-2 items-center gap-4 lg:grid-cols-5 lg:gap-8">
                 <div>
                     <span className="mb-1 block text-sm font-medium">

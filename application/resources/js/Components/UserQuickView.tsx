@@ -11,7 +11,7 @@ const UserQuickView: React.FC<ProposalUserQuickViewProps> = ({ user }) => {
 
     return (
 
-        <div className="p-4 space-y-4">
+        <div className="space-y-4 p-4">
             {/* Lido Profile Section */}
             <div className="flex items-start space-x-2">
                 <LinkIcon />
@@ -21,7 +21,7 @@ const UserQuickView: React.FC<ProposalUserQuickViewProps> = ({ user }) => {
                         href={`https://www.lidonation.com/en/project-catalyst/users/${user.username}`}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="block text-primary text-sm font-bold"
+                        className="text-primary block text-sm font-bold"
                     >
                         {t('users.viewProfile')}
                     </a>
@@ -34,7 +34,7 @@ const UserQuickView: React.FC<ProposalUserQuickViewProps> = ({ user }) => {
                 <img
                     src={IdeaScaleLogo}
                     alt="IdeaScale Logo"
-                    className="w-6 h-6 mt-0.5 rounded-full"
+                    className="mt-0.5 h-6 w-6 rounded-full"
                 />
                 <div>
                     <span className="block font-medium">Ideascale {t('users.profile')}</span>
@@ -42,7 +42,7 @@ const UserQuickView: React.FC<ProposalUserQuickViewProps> = ({ user }) => {
                         href={`https://cardano.ideascale.com/c/profile/${user.ideascaleId}`}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="block text-primary text-sm font-bold"
+                        className="text-primary block text-sm font-bold"
                     >
                         {t('users.viewIdeascale')}
                     </a>

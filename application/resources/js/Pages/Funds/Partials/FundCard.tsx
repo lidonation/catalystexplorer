@@ -21,13 +21,13 @@ const FundCard: React.FC<FundCardProps> = ({
     const { t } = useTranslation();
 
     return (
-        <div className="flex w-full transform flex-row items-stretch space-x-6 overflow-hidden rounded-lg bg-background p-3 shadow-md sm:p-4">
+        <div className="bg-background flex w-full transform flex-row items-stretch space-x-6 overflow-hidden rounded-lg p-3 shadow-md sm:p-4">
             {/* Image Section */}
             <div className="flex flex-none flex-col items-center space-y-2 sm:items-start sm:space-y-4">
                 {/* Title */}
                 <Link
                     href={useLocalizedRoute('funds.fund', { slug: fund.slug })}
-                    className="truncate text-center text-base font-bold sm:text-left sm:text-xl hover:text-primary"
+                    className="hover:text-primary truncate text-center text-base font-bold sm:text-left sm:text-xl"
                 >
                     {fund.title}
                 </Link>

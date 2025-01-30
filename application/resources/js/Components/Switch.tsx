@@ -59,7 +59,7 @@ const CustomSwitch = ({
             </Switch.Root>
             {label && (
                 <label
-                    className={`text-sm t ${disabled ? 'text-gray-400' : 'text-content'}`}
+                    className={`t text-sm ${disabled ? 'text-gray-400' : 'text-content'}`}
                 >
                     {label}
                 </label>

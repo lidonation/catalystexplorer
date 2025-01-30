@@ -110,7 +110,7 @@ const PaginationComponent: React.FC<PaginationComponentProps<any>> = ({
                                                     }
                                                     className={
                                                         link.active
-                                                            ? 'font-bold text-primary'
+                                                            ? 'text-primary font-bold'
                                                             : ''
                                                     }
                                                 >

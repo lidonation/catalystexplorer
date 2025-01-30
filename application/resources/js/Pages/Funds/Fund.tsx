@@ -62,7 +62,7 @@ export default function Fund({
                                 <h5 className="title-4">
                                     {t('funds.browseByCampaign')}
                                 </h5>
-                                <p className="pb-4 text-gray-persist">
+                                <p className="text-gray-persist pb-4">
                                     {t('funds.browseByCampaignSubtitle')}
                                 </p>
                             </div>
