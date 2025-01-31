@@ -362,8 +362,8 @@
             "arrowTrendingDown": "Trending Down Icon",
             "file" : "File Icon",
             "ada": "Ada Icon",
-            "usd": "USD Icon"
-
+            "usd": "USD Icon",
+            "tick": "Tick Icon"
         }
     },
     "users": {
@@ -384,7 +384,7 @@
         "artistStatement": "Project Completion NFTs for Project Catalyst",
         "proposalsSearchBar": {
             "placeHolder": "Search for proposal"
-        }
-        
+        },
+        "step": "Step" 
     }
 }
