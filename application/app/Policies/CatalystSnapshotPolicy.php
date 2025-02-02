@@ -4,10 +4,9 @@ declare(strict_types=1);
 
 namespace App\Policies;
 
+use App\Enums\PermissionEnum;
 use App\Models\CatalystSnapshot;
 use App\Models\User;
-use Illuminate\Auth\Access\Response;
-use App\Enums\PermissionEnum;
 
 class CatalystSnapshotPolicy extends AppPolicy
 {

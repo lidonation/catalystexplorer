@@ -30,24 +30,12 @@ class IdeascaleProfilesController extends Controller
         $this->getProps($request);
         $profiles = $this->query();
 
+        dd($profiles);
+
         return Inertia::render('IdeascaleProfile/Index', [
             'ideascaleProfiles' => $profiles,
             'filters' => $this->queryParams,
         ]);
-    }
-
-    public function getIdeascaleProfilesData()
-    {
-        $limit = (int) $this->limit;
-        $page = (int) $this->currentPage;
-        $ideascaleProfiles = app(IdeascaleProfileRepository::class);
-
-        $queryResults = $ideascaleProfiles->getQuery()
-            ->inRandomOrder()
-            ->limit($limit)
-            ->get();
-
-        return $this->paginate($queryResults, $ideascaleProfiles->getQuery()->count(), $page, $limit);
     }
 
     protected function query($returnBuilder = false, $attrs = null, $filters = [])
@@ -60,6 +48,15 @@ class IdeascaleProfilesController extends Controller
             'filter' => $this->getUserFilters(),
             'offset' => ($page - 1) * $limit,
             'limit' => $limit,
+            'attributesToRetrieve' => $attrs ?? [
+                'id',
+                'name',
+                'profile_photo_url',
+                'first_timer',
+                'proposals_approved',
+                'co_proposals_count',
+                'proposals_total_amount_requested',
+            ],
         ];
 
         if ($sort) {

@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Database\Factories;
 
 use App\Models\CatalystSnapshot;
-use Illuminate\Database\Eloquent\Factories\Factory;
 use App\Models\CatalystVotingPower;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\CatalystVotingPower>

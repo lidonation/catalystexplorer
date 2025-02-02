@@ -5,15 +5,14 @@ declare(strict_types=1);
 namespace Database\Seeders;
 
 use App\Models\CatalystSnapshot;
-use Illuminate\Database\Seeder;
 use App\Models\CatalystVotingPower;
+use Illuminate\Database\Seeder;
 
 class CatalystVotingPowerSeeder extends Seeder
 {
     /**
      * Run the database seeds.
      */
-
     public function run(): void
     {
         $snapshot = CatalystSnapshot::create([

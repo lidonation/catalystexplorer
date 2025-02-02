@@ -1,6 +1,5 @@
 <?php
 
-use Inertia\Inertia;
 use App\Http\Controllers\ChartsController;
 use App\Http\Controllers\CompletetProjectNftsController;
 use App\Http\Controllers\FundsController;
@@ -12,6 +11,7 @@ use App\Http\Controllers\ProposalsController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\VoterToolController;
 use Illuminate\Support\Facades\Route;
+use Inertia\Inertia;
 
 Route::localized(
     function () {

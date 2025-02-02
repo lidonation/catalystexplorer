@@ -4,11 +4,10 @@ declare(strict_types=1);
 
 namespace App\Policies;
 
-use App\Models\CatalystVotingPower;
-use App\Models\User;
-use Illuminate\Auth\Access\Response;
 use App\Enums\PermissionEnum;
+use App\Models\CatalystVotingPower;
 use App\Models\Model;
+use App\Models\User;
 
 class CatalystVotingPowerPolicy extends AppPolicy
 {
