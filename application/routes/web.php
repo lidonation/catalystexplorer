@@ -1,5 +1,6 @@
 <?php
 
+use Inertia\Inertia;
 use App\Http\Controllers\ChartsController;
 use App\Http\Controllers\CompletetProjectNftsController;
 use App\Http\Controllers\FundsController;
@@ -58,6 +59,10 @@ Route::localized(
             ->name('search.index');
     }
 );
+
+Route::get('/map', function () {
+    return Inertia::render('Map');
+});
 
 require __DIR__.'/auth.php';
 
