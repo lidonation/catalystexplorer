@@ -13,6 +13,9 @@ return [
     | a conventional file to locate the various service credentials.
     |
     */
+    'fathom' => [
+        'site_id' => env('FATHOM_SITE_ID', null),
+    ],
 
     'postmark' => [
         'token' => env('POSTMARK_TOKEN'),
