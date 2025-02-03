@@ -30,8 +30,6 @@ class IdeascaleProfilesController extends Controller
         $this->getProps($request);
         $profiles = $this->query();
 
-        //        dd($profiles);
-
         return Inertia::render('IdeascaleProfile/Index', [
             'ideascaleProfiles' => $profiles,
             'filters' => $this->queryParams,
@@ -53,8 +51,15 @@ class IdeascaleProfilesController extends Controller
                 'name',
                 'profile_photo_url',
                 'first_timer',
-                'proposals_approved',
-                'co_proposals_count',
+                'completed_proposals_count',
+                'funded_proposals_count',
+                'unfunded_proposals_count',
+                'proposals_count',
+                'collaborating_proposals_count',
+                'own_proposals_count',
+                'amount_awarded_ada',
+                'amount_awarded_usd',
+                'proposals_funded',
                 'proposals_total_amount_requested',
             ],
         ];

@@ -181,7 +181,7 @@ class GroupsController extends Controller
         $_options = [];
 
         if ((bool) $this->fundedProposalsFilter) {
-            $_options[] = 'proposals_approved > 0';
+            $_options[] = 'proposals_funded > 0';
         }
 
         if ($this->awardedUsdFilter->isNotEmpty()) {
