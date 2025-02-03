@@ -4,26 +4,33 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\DataTransferObjects\ReviewData;
+use App\Enums\QueryParamsEnum;
+use App\Models\Review;
+use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Fluent;
 use Inertia\Inertia;
 use Inertia\Response;
-use App\Models\Review;
 use Laravel\Scout\Builder;
-use Illuminate\Http\Request;
-use App\Enums\QueryParamsEnum;
-use Illuminate\Support\Fluent;
 use Meilisearch\Endpoints\Indexes;
-use App\DataTransferObjects\ReviewData;
-use Illuminate\Pagination\LengthAwarePaginator;
 
 class ReviewsController extends Controller
 {
     protected int $currentPage;
+
     protected int $perPage = 24;
+
     protected ?string $sortBy = null;
+
     protected ?string $sortOrder = null;
+
     protected ?string $search = null;
+
     protected array $filters = [];
+
     protected int $limit;
+
     protected Builder $searchBuilder;
 
     public function index(Request $request): Response
@@ -44,7 +51,7 @@ class ReviewsController extends Controller
     }
 
     public function review(Request $request, Review $review): Response
-    {        
+    {
         return Inertia::render('Reviews/Partials/Review', [
             'review' => ReviewData::from([
                 ...$review->toArray(),
@@ -54,29 +61,9 @@ class ReviewsController extends Controller
                 'type' => $review->type ?? 'default',
                 'ranking_total' => $review->ranking_total ?? 0,
                 'helpful_total' => $review->helpful_total ?? 0,
-                'not_helpful_total' => $review->not_helpful_total ?? 0
+                'not_helpful_total' => $review->not_helpful_total ?? 0,
             ]),
         ]);
-    }
-
-    protected function setFilters(Request $request): void
-    {
-        $this->limit = (int) $request->input(QueryParamsEnum::PER_PAGE, 24);
-        $this->currentPage = (int) $request->input(QueryParamsEnum::PAGE, 1);
-        // $this->search = $request->input('s', null);
-        $this->search = $request->input(QueryParamsEnum::SEARCH, null);
-        
-        $sort = collect(explode(':', $request->input(QueryParamsEnum::SORTS, '')))->filter();
-        if ($sort->isEmpty()) {
-            $sort = collect(explode(':', collect([
-                'title:asc',
-                'title:desc',
-                'status:desc',
-                'status:asc',
-            ])->random()));
-        }
-        $this->sortBy = $sort->first();
-        $this->sortOrder = $sort->last();
     }
 
     public function query($returnBuilder = false, $attrs = null, $filters = [])
@@ -128,6 +115,25 @@ class ReviewsController extends Controller
         );
 
         return $pagination->onEachSide(1)->toArray();
+    }
+
+    protected function setFilters(Request $request): void
+    {
+        $this->limit = (int) $request->input(QueryParamsEnum::PER_PAGE, 24);
+        $this->currentPage = (int) $request->input(QueryParamsEnum::PAGE, 1);
+        $this->search = $request->input(QueryParamsEnum::SEARCH, null);
+
+        $sort = collect(explode(':', $request->input(QueryParamsEnum::SORTS, '')))->filter();
+        if ($sort->isEmpty()) {
+            $sort = collect(explode(':', collect([
+                'title:asc',
+                'title:desc',
+                'status:desc',
+                'status:asc',
+            ])->random()));
+        }
+        $this->sortBy = $sort->first();
+        $this->sortOrder = $sort->last();
     }
 
     protected function getUserFilters(): array
