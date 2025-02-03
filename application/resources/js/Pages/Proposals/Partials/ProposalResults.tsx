@@ -1,4 +1,4 @@
-import ProposalMiniCard from '@/Pages/Groups/Partials/ProposalMiniCard';
+import ProposalMiniCard from '@/Pages/Proposals/Partials/ProposalMiniCard';
 import ProposalCard from '@/Pages/Proposals/Partials/ProposalCard';
 import React from 'react';
 import ProposalData = App.DataTransferObjects.ProposalData;

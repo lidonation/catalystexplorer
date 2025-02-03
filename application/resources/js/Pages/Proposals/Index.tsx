@@ -92,6 +92,7 @@ export default function Index({
                 >
                     <ProposalFilters />
                 </section>
+                
 
                 <section className="proposals-wrapper container mt-3 w-full">
                     <WhenVisible
