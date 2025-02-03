@@ -20,27 +20,6 @@ class Review extends Model
         Artisan::call('cx:create-search-index App\\\\Models\\\\Review cx_reviews');
     }
 
-    public static function getSearchableAttributes(): array
-    {
-        return [
-            'id',
-            'title',
-            'content',
-        ];
-    }
-
-    public function toSearchableArray(): array
-    {
-        return $this->toArray();
-    }
-
-    public function children(): Attribute
-    {
-        $children = $this->metas?->where('key', 'child_id')->pluck('content');
-
-        return Attribute::make(get: fn () => $children->isEmpty() ? null : self::fund($children));
-    }
-
     public function discussion(): BelongsTo
     {
         return $this->belongsTo(Discussion::class, 'model_id')->where('model_type', Discussion::class);
@@ -59,5 +38,60 @@ class Review extends Model
     public function review_moderation_reviewer(): HasOne
     {
         return $this->hasOne(ReviewModerationReviewer::class, 'review_id');
+    }
+    
+    public function children(): Attribute
+    {
+        $children = $this->metas?->where('key', 'child_id')->pluck('content');
+    
+        return Attribute::make(get: fn () => $children->isEmpty() ? null : self::fund($children));
+    }
+    
+
+    public static function getFilterableAttributes(): array
+    {
+        return [
+            'id',
+            'title',
+            'content',
+            'status',
+            'model_id',
+            'model_type',
+        ];
+    }
+
+    public static function getSearchableAttributes(): array
+    {
+        return [
+            'id',
+            'title',
+            'content',
+            'status',
+        ];
+    }
+
+    public static function getSortableAttributes(): array
+    {
+        return [
+            'id',
+            'title',
+            'status',
+            'created_at',
+        ];
+    }
+
+
+    public function toSearchableArray(): array
+    {
+        $this->load(['model', 'discussion', 'parent']);
+
+        $array = $this->toArray();
+
+        return array_merge($array, [
+            'model' => $this->model?->toArray(),
+            'discussion' => $this->discussion?->toArray(),
+            'parent' => $this->parent?->toArray(),
+            'children' => $this->children,
+        ]);
     }
 }
