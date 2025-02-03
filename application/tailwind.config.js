@@ -8,6 +8,7 @@ export default {
         './storage/framework/views/*.php',
         './resources/views/**/*.blade.php',
         './resources/js/**/*.tsx',
+        './resources/scss/*.scss',
     ],
 
     theme: {
@@ -86,7 +87,7 @@ export default {
                 'border-secondary': 'var(--cx-border-secondary-color)',
                 'eye-logo': 'var(--cx-blue-eye-color)',
                 'primary-light': 'var(--cx-primary-light)',
-                
+
                 border: {
                     primary: 'var(--cx-primary)',
                     secondary: 'var(--border-secondary-color)',
@@ -121,3 +122,4 @@ export default {
 
     plugins: [forms],
 };
+

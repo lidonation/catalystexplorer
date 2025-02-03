@@ -7,7 +7,7 @@ nodeVersion := 20
 
 .PHONY: init
 init:
-	cp application/.env.example application/.env
+	cp ./application/.env.example ./application/.env
 
 	docker run --rm --interactive --tty \
 		--volume ${PWD}:/app \

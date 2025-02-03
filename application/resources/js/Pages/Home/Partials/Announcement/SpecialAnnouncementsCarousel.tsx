@@ -59,7 +59,7 @@ const SpecialAnnouncementCarousel = ({
                     {announcements.map((announcement) => (
                         <CarouselItem
                             key={announcement.id}
-                            className="w-full flex-shrink-0"
+                            className="w-full shrink-0"
                         >
                             <SpecialAnnouncementCard
                                 announcement={announcement}

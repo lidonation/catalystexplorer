@@ -36,7 +36,7 @@ function ModalSidebar({ isOpen = false, title, children, onClose }: ModalSidebar
         >
             {/* Background Overlay */}
             <div
-                className="fixed inset-0 bg-dark opacity-50"
+                className="bg-dark fixed inset-0 opacity-50"
                 onClick={onClose}
                 aria-label={t('navigation.sidebar.close')}
                 aria-expanded={isOpen}
@@ -45,13 +45,13 @@ function ModalSidebar({ isOpen = false, title, children, onClose }: ModalSidebar
 
             {/* Sidebar Modal */}
             <div
-                className="fixed right-0 top-0 z-50 h-full w-full bg-background shadow-lg focus:outline-none sm:w-96"
+                className="bg-background fixed top-0 right-0 z-50 h-full w-full shadow-lg focus:outline-hidden sm:w-96"
                 tabIndex={0}
             >
-                <header className="flex items-center justify-between border-b border-border-primary px-6 py-4">
+                <header className="border-border-primary flex items-center justify-between border-b px-6 py-4">
                     <h2
                         id="modal-sidebar-title"
-                        className="text-2 font-semibold text-content"
+                        className="text-2 text-content font-semibold"
                     >
                         {title}
                     </h2>
@@ -60,14 +60,14 @@ function ModalSidebar({ isOpen = false, title, children, onClose }: ModalSidebar
                         ariaLabel={t('navigation.sidebar.close')}
                         aria-expanded={isOpen}
                         aria-controls="sidebar-modal"
-                        className="hidden sm:block lg:inline-flex items-center rounded px-2 py-1 text-4 hover:bg-dark"
+                        className="text-4 hover:bg-dark hidden items-center rounded-sm px-2 py-1 sm:block lg:inline-flex"
                     >
                         <CloseIcon width={18} height={18} />
                     </Button>
                 </header>
 
                 <div className="flex h-full flex-col gap-6 px-6">
-                    <div className="hidden sm:block mt-6 lg:flex h-6 shrink-0 items-center justify-center px-6">
+                    <div className="mt-6 hidden h-6 shrink-0 items-center justify-center px-6 sm:block lg:flex">
                         <CatalystLogo className="object-contain" />
                     </div>
                     <section className="overflow-y-auto">{children}</section>

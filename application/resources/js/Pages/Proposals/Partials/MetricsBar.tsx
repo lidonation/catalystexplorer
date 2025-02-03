@@ -15,7 +15,7 @@ const SectionOne: React.FC<
     return (
         <div className="flex w-full items-center justify-between text-sm md:text-base">
             {!!submitted && (
-                <div className="flex flex-grow flex-col items-center border-r border-dark px-2">
+                <div className="border-dark flex grow flex-col items-center border-r px-2">
                     <span className="content-light block font-semibold">
                         {t('submitted')}
                     </span>
@@ -23,16 +23,16 @@ const SectionOne: React.FC<
                 </div>
             )}
             {!!approved && (
-                <div className="flex flex-grow flex-col items-center border-r border-dark px-2">
-                    <span className="block font-semibold text-primary">
+                <div className="border-dark flex grow flex-col items-center border-r px-2">
+                    <span className="text-primary block font-semibold">
                         {t('approved')}
                     </span>
                     <span>{approved.toLocaleString()}</span>
                 </div>
             )}
             {!!completed && (
-                <div className="flex flex-grow flex-col items-center px-2">
-                    <span className="block font-semibold text-success">
+                <div className="flex grow flex-col items-center px-2">
+                    <span className="text-success block font-semibold">
                         {t('completed')}
                     </span>
                     <span>{completed.toLocaleString()}</span>
@@ -55,13 +55,13 @@ const SectionTwo: React.FC<
             {!!requestedUSD && (
                 <div
                     className={
-                        'flex flex-grow flex-col items-center border-l border-dark px-2 ' +
+                        'border-dark flex grow flex-col items-center border-l px-2 ' +
                         (requestedADA || awardedUSD || awardedADA
                             ? ' border-r'
                             : '')
                     }
                 >
-                    <span className="block text-nowrap font-semibold text-highlight">
+                    <span className="text-highlight block font-semibold text-nowrap">
                         $ {t('requested')}
                     </span>
                     <span>{currency(requestedUSD)}</span>
@@ -70,12 +70,12 @@ const SectionTwo: React.FC<
             {!!requestedADA && (
                 <div
                     className={
-                        'flex flex-grow flex-col items-center border-dark px-2' +
+                        'border-dark flex grow flex-col items-center px-2' +
                         (!requestedUSD ? ' border-l' : '') +
                         (awardedUSD || awardedADA ? ' border-r' : '')
                     }
                 >
-                    <span className="block text-nowrap font-semibold text-highlight">
+                    <span className="text-highlight block font-semibold text-nowrap">
                         ₳ {t('requested')}
                     </span>
                     <span>{currency(requestedADA, 'ADA')}</span>
@@ -84,12 +84,12 @@ const SectionTwo: React.FC<
             {!!awardedUSD && (
                 <div
                     className={
-                        'flex flex-grow flex-col items-center border-dark px-2' +
+                        'border-dark flex grow flex-col items-center px-2' +
                         (!requestedUSD || !requestedADA ? ' border-l' : '') +
                         (!!awardedADA ? ' border-r' : '')
                     }
                 >
-                    <span className="block text-nowrap font-semibold text-highlight">
+                    <span className="text-highlight block font-semibold text-nowrap">
                         $ {t('awarded')}
                     </span>
                     <span>{currency(awardedUSD)}</span>
@@ -98,13 +98,13 @@ const SectionTwo: React.FC<
             {!!awardedADA && (
                 <div
                     className={
-                        'flex flex-grow flex-col items-center px-2' +
+                        'flex grow flex-col items-center px-2' +
                         (!requestedUSD || !requestedADA || !requestedUSD
                             ? ' border-l'
                             : '')
                     }
                 >
-                    <span className="block text-nowrap font-semibold text-highlight">
+                    <span className="text-highlight block font-semibold text-nowrap">
                         ₳ {t('awarded')}
                     </span>
                     <span>{currency(awardedADA, 'ADA')}</span>
@@ -119,13 +119,13 @@ const MetricsBar: React.FC<ProposalMetrics | undefined> = (props) => {
     const { isPlayerBarExpanded } = useUIContext(); // Access the context to manage player bar state
     const [isExpanded, setIsExpanded] = useState(true);
     const { metrics } = useMetrics();
-    const onProposals = (usePage().component) == 'Proposals/Index'; 
+    const onProposals = (usePage().component) == 'Proposals/Index';
 
     return (
         metrics &&
         onProposals && (
             <div
-                className={`sticky inset-x-0 bottom-0 mx-auto flex items-center justify-between overflow-hidden rounded-xl bg-bg-dark px-4 py-3 text-white shadow-lg transition-all duration-300 ${
+                className={`bg-bg-dark sticky inset-x-0 bottom-0 mx-auto flex items-center justify-between overflow-hidden rounded-xl px-4 py-3 text-white shadow-lg transition-all duration-300 ${
                     isExpanded && !isPlayerBarExpanded ? 'w-full' : 'w-auto'
                 }`}
             >
@@ -138,7 +138,7 @@ const MetricsBar: React.FC<ProposalMetrics | undefined> = (props) => {
                 </div>
                 {isExpanded && !isPlayerBarExpanded && (
                     <div className="hidden w-full items-center md:flex md:space-x-4">
-                        <div className="flex-grow items-center transition-all duration-300">
+                        <div className="grow items-center transition-all duration-300">
                             <SectionTwo
                                 requestedUSD={metrics?.requestedUSD}
                                 requestedADA={metrics?.requestedADA}

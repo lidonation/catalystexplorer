@@ -1,5 +1,6 @@
-import React from "react";
-import ProposalCard from "@/Pages/Proposals/Partials/ProposalCard";
+import ProposalMiniCard from '@/Pages/Proposals/Partials/ProposalMiniCard';
+import ProposalCard from '@/Pages/Proposals/Partials/ProposalCard';
+import React from 'react';
 import ProposalData = App.DataTransferObjects.ProposalData;
 interface ProposalProps {
     proposals?: ProposalData[];
@@ -8,30 +9,41 @@ interface ProposalProps {
     setGlobalQuickPitchView: (value: boolean) => void;
 }
 
-
 const ProposalResults: React.FC<ProposalProps> = ({
     proposals,
     isHorizontal,
     setGlobalQuickPitchView,
-    quickPitchView
+    quickPitchView,
 }) => {
     return (
-        <div
-            className={`grid gap-3 ${isHorizontal
-                    ? 'grid-cols-1'
-                    : 'grid-cols-1 md:grid-cols-2 xl:grid-cols-3'
+        <div>
+            {/* <div className="grid w-full grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-3">
+                {proposals &&
+                    proposals.map((proposal) => (
+                        <ProposalMiniCard
+                            proposal={proposal}
+                            isHorizontal={false}
+                        />
+                    ))}
+            </div> */}
+            <div
+                className={`grid gap-3 ${
+                    isHorizontal
+                        ? 'grid-cols-1'
+                        : 'grid-cols-1 md:grid-cols-2 xl:grid-cols-3'
                 }`}
-        >
-            {proposals &&
-                proposals?.map((proposal) => (
-                    <ProposalCard
-                        key={proposal.id}
-                        proposal={proposal}
-                        isHorizontal={isHorizontal}
-                        globalQuickPitchView={quickPitchView}
-                        setGlobalQuickPitchView={setGlobalQuickPitchView}
-                    />
-                ))}
+            >
+                {proposals &&
+                    proposals?.map((proposal) => (
+                        <ProposalCard
+                            key={proposal.id}
+                            proposal={proposal}
+                            isHorizontal={isHorizontal}
+                            globalQuickPitchView={quickPitchView}
+                            setGlobalQuickPitchView={setGlobalQuickPitchView}
+                        />
+                    ))}
+            </div>
         </div>
     );
 };

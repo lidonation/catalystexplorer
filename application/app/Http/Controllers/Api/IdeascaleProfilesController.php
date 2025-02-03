@@ -40,10 +40,10 @@ class IdeascaleProfilesController extends Controller
             ], 60);
         }
 
-        $ideascales = IdeascaleProfile::query()
+        $ideascaleProfiles = IdeascaleProfile::query()
             ->filter(request(['search', 'ids']));
 
-        return IdeascaleProfileResource::collection($ideascales->fastPaginate($per_page)->onEachSide(0));
+        return IdeascaleProfileResource::collection($ideascaleProfiles->fastPaginate($per_page)->onEachSide(0));
     }
 
     public function connections(IdeascaleProfile $profile): JsonResponse

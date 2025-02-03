@@ -20,13 +20,13 @@ export default function Authenticated({
 
     return (
         <div className="bg-gray-primary min-h-screen">
-            <nav className="border-b border-gray-100 bg-background">
+            <nav className="bg-background border-b border-gray-100">
                 <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                     <div className="flex h-16 justify-between">
                         <div className="flex">
                             <div className="flex shrink-0 items-center">
                                 <Link href="/">
-                                    <ApplicationLogo className="block h-9 w-auto fill-current text-content" />
+                                    <ApplicationLogo className="text-content block h-9 w-auto fill-current" />
                                 </Link>
                             </div>
 
@@ -47,12 +47,12 @@ export default function Authenticated({
                                         <span className="inline-flex rounded-md">
                                             <button
                                                 type="button"
-                                                className="false secondary text-5 text-content-secondary focus:bg-background-tertiary active:bg-background-tertiary inline-flex items-center rounded-md border border-transparent px-4 py-2 font-semibold uppercase tracking-widest transition duration-150 ease-in-out hover:bg-background-lighter focus:outline-none focus:ring-offset-2"
+                                                className="false secondary text-5 text-content-secondary focus:bg-background-tertiary active:bg-background-tertiary hover:bg-background-lighter inline-flex items-center rounded-md border border-transparent px-4 py-2 font-semibold tracking-widest uppercase transition duration-150 ease-in-out focus:ring-offset-2 focus:outline-hidden"
                                             >
                                                 {user?.name}
 
                                                 <svg
-                                                    className="-me-0.5 ms-2 h-4 w-4"
+                                                    className="ms-2 -me-0.5 h-4 w-4"
                                                     xmlns="http://www.w3.org/2000/svg"
                                                     viewBox="0 0 20 20"
                                                     fill="currentColor"
@@ -92,7 +92,7 @@ export default function Authenticated({
                                         (previousState) => !previousState,
                                     )
                                 }
-                                className="hover:text-content-secondary focus:text-content-secondary inline-flex items-center justify-center rounded-md p-2 text-dark transition duration-150 ease-in-out hover:bg-background-lighter focus:bg-background-lighter focus:outline-none"
+                                className="hover:text-content-secondary focus:text-content-secondary text-dark hover:bg-background-lighter focus:bg-background-lighter inline-flex items-center justify-center rounded-md p-2 transition duration-150 ease-in-out focus:outline-hidden"
                             >
                                 <svg
                                     className="h-6 w-6"
@@ -134,7 +134,7 @@ export default function Authenticated({
                         ' sm:hidden'
                     }
                 >
-                    <div className="space-y-1 pb-3 pt-2">
+                    <div className="space-y-1 pt-2 pb-3">
                         <ResponsiveNavLink
                             href={useLocalizedRoute('my.dashboard')}
                             active={route().current('my.dashboard')}
@@ -143,7 +143,7 @@ export default function Authenticated({
                         </ResponsiveNavLink>
                     </div>
 
-                    <div className="border-t border-gray-200 pb-1 pt-4">
+                    <div className="border-t border-gray-200 pt-4 pb-1">
                         <div className="px-4">
                             <div className="text-base font-medium text-gray-800">
                                 {user?.name}
@@ -170,7 +170,7 @@ export default function Authenticated({
             </nav>
 
             {header && (
-                <header className="bg-background shadow">
+                <header className="bg-background shadow-sm">
                     <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
                         {header}
                     </div>

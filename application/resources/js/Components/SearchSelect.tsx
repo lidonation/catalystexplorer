@@ -50,7 +50,7 @@ export function SearchSelect({
                 label: option,
                 id: option
             };
-        }        
+        }
             // Handle when option is an object
             return {
                 label: option?.name ?? option?.title ?? option?.label ?? 'Unknown',
@@ -99,12 +99,12 @@ export function SearchSelect({
                     role="combobox"
                     aria-expanded={open}
                     aria-label={t('select') + ' ' + t('option')}
-                    className="border-input placeholder:text-muted-foreground flex h-9 w-full items-center justify-between rounded-md border bg-transparent px-3 py-2 text-sm shadow-sm ring-offset-background disabled:cursor-not-allowed disabled:opacity-50"
+                    className="border-input placeholder:text-muted-foreground ring-offset-background flex h-9 w-full items-center justify-between rounded-md border bg-transparent px-3 py-2 text-sm shadow-xs disabled:cursor-not-allowed disabled:opacity-50"
                 >
                     <span className="flex items-center gap-2">
                         <span>{t('select') + ' '}</span>
                         {selected?.length > 0 && (
-                            <div className="flex size-5 items-center justify-center rounded-full bg-background-lighter">
+                            <div className="bg-background-lighter flex size-5 items-center justify-center rounded-full">
                                 <span>{selected.length}</span>
                             </div>
                         )}
@@ -113,7 +113,7 @@ export function SearchSelect({
                 </button>
             </PopoverTrigger>
             <PopoverContent
-                className="min-w-[var(--radix-popover-trigger-width)] bg-background p-0"
+                className="bg-background min-w-[var(--radix-popover-trigger-width)] p-0"
                 align="start"
             >
                 <Command shouldFilter={false}>
@@ -126,14 +126,14 @@ export function SearchSelect({
                             value={searchTerm}
                             onValueChange={setSearchTerm}
                             className={cn(
-                                'flex h-10 w-full rounded-md bg-transparent py-3 text-sm outline-none disabled:cursor-not-allowed disabled:opacity-50',
-                                '!border-none !ring-0 focus:!border-none focus:!ring-0',
+                                'flex h-10 w-full rounded-md bg-transparent py-3 text-sm outline-hidden disabled:cursor-not-allowed disabled:opacity-50',
+                                'border-none! ring-0! focus:border-none! focus:ring-0!',
                             )}
                         />
                         <button
                             aria-label={t('clear') + ' ' + t('select')}
                             onClick={handleClear}
-                            className="hover:text-primary focus:outline-none"
+                            className="hover:text-primary focus:outline-hidden"
                         >
                             clear
                         </button>
@@ -155,7 +155,7 @@ export function SearchSelect({
                                         onSelect={() =>
                                             handleSelect(option.id.toString())
                                         }
-                                        className="flex cursor-pointer justify-between !bg-background hover:!bg-background-lighter aria-selected:bg-background-lighter"
+                                        className="bg-background! hover:bg-background-lighter! aria-selected:bg-background-lighter flex cursor-pointer justify-between"
                                     >
                                         {option.label}
                                         <Checkbox
@@ -165,7 +165,7 @@ export function SearchSelect({
                                             )}
                                             value={option.id.toString()}
                                             onChange={() => {}}
-                                            className="text-content-accent mr-2 h-4 w-4 bg-background shadow-sm checked:bg-primary checked:hover:bg-primary focus:border focus:border-primary focus:ring-primary checked:focus:bg-primary"
+                                            className="text-content-accent bg-background checked:bg-primary checked:hover:bg-primary focus:border-primary focus:ring-primary checked:focus:bg-primary mr-2 h-4 w-4 shadow-xs focus:border"
                                         />
                                     </CommandItem>
                                 ))}

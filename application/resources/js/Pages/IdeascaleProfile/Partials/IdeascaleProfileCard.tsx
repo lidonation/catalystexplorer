@@ -11,7 +11,7 @@ const IdeascaleProfileCard: React.FC<IdeascaleProfileProps> = ({
 }) => {
     const { t } = useTranslation();
     return (
-        <div className="w-full rounded-xl bg-background p-4 shadow-sm">
+        <div className="bg-background w-full rounded-xl p-4 shadow-xs">
             <div className="mb-2 w-full">
                 <div>
                     <UserAvatar
@@ -23,8 +23,8 @@ const IdeascaleProfileCard: React.FC<IdeascaleProfileProps> = ({
                     {ideascaleProfile?.name ?? ideascaleProfile?.username}
                 </p>
             </div>
-            <div className="border-t-2 border-border-secondary">
-                <div className="flex w-full justify-between pb-4 pt-2">
+            <div className="border-border-secondary border-t-2">
+                <div className="flex w-full justify-between pt-2 pb-4">
                     <p className="text-4 text-content opacity-70">
                         {t('ideascaleProfiles.ownProposals')}
                     </p>

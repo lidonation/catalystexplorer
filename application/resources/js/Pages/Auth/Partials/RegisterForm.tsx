@@ -38,7 +38,7 @@ export default function RegisterForm() {
     const { t } = useTranslation();
 
     return (
-        <form onSubmit={submit} className="flex flex-col content-gap">
+        <form onSubmit={submit} className="content-gap flex flex-col">
             <div>
                 <InputLabel htmlFor="name" value="Name" />
 
@@ -122,7 +122,7 @@ export default function RegisterForm() {
                 <p className="mr-2">{t("registration.alreadyRegistered")}</p>
                 <Link
                     href={route('login')}
-                    className="rounded-md text-primary font-bold hover:text-content focus:outline-none focus:ring-2 focus:ring-offset-2"
+                    className="text-primary hover:text-content rounded-md font-bold focus:ring-2 focus:ring-offset-2 focus:outline-hidden"
                 >
                     {t("login")}
                 </Link>

@@ -2,37 +2,40 @@ import { ResponsiveBar } from "@nivo/bar";
 
 export default function FundsBarChartLoading() {
     return (
-        <div className="rounded-md bg-background p-8 shadow-sm lg:p-16">
+        <div className="bg-background rounded-md p-8 shadow-xs lg:p-16">
             {/* Numbers skeleton */}
             <div className="grid w-full grid-cols-2 justify-between gap-4 lg:grid-cols-5">
                 <div>
-                    <div className="lg:w-15 h-4 w-8 animate-pulse rounded-sm bg-dark opacity-30 lg:h-8" />
-                    <div className="mt-2 h-8 w-8 animate-pulse rounded-sm bg-dark opacity-30 lg:h-4 lg:w-20" />
+                    <div className="bg-dark h-4 w-8 animate-pulse rounded-xs opacity-30 lg:h-8 lg:w-15" />
+                    <div className="bg-dark mt-2 h-8 w-8 animate-pulse rounded-xs opacity-30 lg:h-4 lg:w-20" />
                 </div>
                 <div>
-                    <div className="lg:w-15 h-4 w-10 animate-pulse rounded-sm bg-dark opacity-30 lg:h-8" />
-                    <div className="mt-2 h-8 w-12 animate-pulse rounded-sm bg-dark opacity-30 lg:h-4 lg:w-20" />
+                    <div className="bg-dark h-4 w-10 animate-pulse rounded-xs opacity-30 lg:h-8 lg:w-15" />
+                    <div className="bg-dark mt-2 h-8 w-12 animate-pulse rounded-xs opacity-30 lg:h-4 lg:w-20" />
                 </div>
                 <div>
-                    <div className="lg:w-15 h-4 w-10 animate-pulse rounded-sm bg-dark opacity-30 lg:h-8" />
-                    <div className="mt-2 h-8 w-12 animate-pulse rounded-sm bg-dark opacity-30 lg:h-4 lg:w-20" />
+                    <div className="bg-dark h-4 w-10 animate-pulse rounded-xs opacity-30 lg:h-8 lg:w-15" />
+                    <div className="bg-dark mt-2 h-8 w-12 animate-pulse rounded-xs opacity-30 lg:h-4 lg:w-20" />
                 </div>
                 <div>
-                    <div className="lg:w-15 h-4 w-12 animate-pulse rounded-sm bg-dark opacity-30 lg:h-8" />
-                    <div className="mt-2 h-8 w-12 animate-pulse rounded-sm bg-dark opacity-30 lg:h-4 lg:w-20" />
+                    <div className="bg-dark h-4 w-12 animate-pulse rounded-xs opacity-30 lg:h-8 lg:w-15" />
+                    <div className="bg-dark mt-2 h-8 w-12 animate-pulse rounded-xs opacity-30 lg:h-4 lg:w-20" />
                 </div>
                 <div>
-                    <div className="lg:w-15 h-4 w-12 animate-pulse rounded-sm bg-dark opacity-30 lg:h-8" />
-                    <div className="mt-2 h-8 w-12 animate-pulse rounded-sm bg-dark opacity-30 lg:h-4 lg:w-20" />
+                    <div className="bg-dark h-4 w-12 animate-pulse rounded-xs opacity-30 lg:h-8 lg:w-15" />
+                    <div className="bg-dark mt-2 h-8 w-12 animate-pulse rounded-xs opacity-30 lg:h-4 lg:w-20" />
                 </div>
             </div>
             {/* Selector skeleton */}
-            <div className="mt-4 flex justify-end px-12 sm:mb:4">
-                <div className="w-15 h-8 w-12 animate-pulse rounded-sm bg-dark opacity-30" />
+            <div className="sm:mb:4 mt-4 flex justify-end px-12">
+                <div className="bg-dark h-8 w-12 w-15 animate-pulse rounded-xs opacity-30" />
             </div>
 
             {/* Bar chart skeleton */}
-            <div style={{ height: '400px' }} className="w-full bg-dark rounded-md opacity-30">
+            <div
+                style={{ height: '400px' }}
+                className="bg-dark w-full rounded-md opacity-30"
+            >
                 <ResponsiveBar
                     data={[]}
                     keys={[]}

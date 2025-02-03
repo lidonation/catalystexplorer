@@ -67,9 +67,9 @@ const SearchVariants = ({
     };
 
     return (
-        <div className="relative text-content">
+        <div className="text-content relative">
             <Listbox value={value} onChange={handleSelection} multiple>
-                <ListboxButton className="flex items-center justify-center gap-3 text-nowrap px-3">
+                <ListboxButton className="flex items-center justify-center gap-3 px-3 text-nowrap">
                     {({ open }) => (
                         <div className="flex items-center gap-3">
                             {t('searchBar.all_filters')}
@@ -81,11 +81,11 @@ const SearchVariants = ({
                         </div>
                     )}
                 </ListboxButton>
-                <ListboxOptions className="absolute left-0 z-50 mt-5 w-max rounded-lg bg-background shadow-xl">
+                <ListboxOptions className="bg-background absolute left-0 z-50 mt-5 w-max rounded-lg shadow-xl">
                     {variants.map((variant) => (
                         <ListboxOption key={camelCase(variant)} value={camelCase(variant)}>
                             {({ selected }) => (
-                                <div className="flex cursor-pointer items-center justify-between gap-2 px-3 py-2 hover:rounded-lg hover:bg-background-lighter">
+                                <div className="hover:bg-background-lighter flex cursor-pointer items-center justify-between gap-2 px-3 py-2 hover:rounded-lg">
                                     <span className="capitalize">
                                         {variant}
                                     </span>
@@ -94,7 +94,7 @@ const SearchVariants = ({
                                         checked={selected}
                                         value={camelCase(variant)}
                                         onChange={() => {}}
-                                        className="text-content-accent h-4 w-4 bg-background shadow-sm checked:bg-primary checked:hover:bg-primary focus:border focus:border-primary focus:ring-primary checked:focus:bg-primary"
+                                        className="text-content-accent bg-background checked:bg-primary checked:hover:bg-primary focus:border-primary focus:ring-primary checked:focus:bg-primary h-4 w-4 shadow-xs focus:border"
                                     />
                                 </div>
                             )}

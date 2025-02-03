@@ -66,7 +66,7 @@ const BookmarkNavigation: React.FC<BookmarkNavigationProps> = ({
 
     return (
         <nav className={`border-b border-gray-200 ${isSticky ? 'fixed top-0 left-0 right-0 z-10 bg-background' : ''}`}>
-            <div className="container flex space-x-8">
+            <div className="flex space-x-8">
                 {modelTypes.map(({ name, type, count }) => (
                     <Link
                         href={`#${type}`}
@@ -74,7 +74,7 @@ const BookmarkNavigation: React.FC<BookmarkNavigationProps> = ({
                         onClick={() => handleTabClick(type)}
                         preserveState
                         preserveScroll
-                        className={`group flex items-center gap-2 py-2 outline-none transition-colors hover:text-content-dark ${
+                        className={`group flex items-center gap-2 py-2 outline-hidden transition-colors hover:text-content-dark ${
                         activeType === type &&
                         '-mb-px border-b-2 border-b-primary text-primary'
                         }`}

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Casts\DateFormatCast;
+use App\Enums\ProposalStatus;
 use App\Traits\HasConnections;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
@@ -52,20 +53,21 @@ class IdeascaleProfile extends Model implements HasMedia
         // 'bio',
     ];
 
-    protected function casts(): array
-    {
-        return [
-            'created_at' => DateFormatCast::class,
-            'updated_at' => DateFormatCast::class,
-        ];
-    }
-
     public static function getSortableAttributes(): array
     {
         return [
             'name',
             'username',
             'email',
+
+            'completed_proposals_count',
+            'funded_proposals_count',
+            'unfunded_proposals_count',
+            'in_progress_proposals_count',
+            'outstanding_proposals_count',
+            'own_proposals_count',
+            'collaborating_proposals_count',
+            'proposals_count',
         ];
     }
 
@@ -84,18 +86,27 @@ class IdeascaleProfile extends Model implements HasMedia
     public static function getFilterableAttributes(): array
     {
         return [
-            'first_timer',
-            'proposals_completed',
+            'completed_proposals_count',
+            'funded_proposals_count',
+            'unfunded_proposals_count',
+            'in_progress_proposals_count',
+            'outstanding_proposals_count',
+            'own_proposals_count',
+            'collaborating_proposals_count',
             'proposals_count',
+
+            'first_timer',
             'proposals.campaign',
             'proposals.impact_proposal',
             // 'proposals.fund',
             'proposals.tags',
             'proposals',
-            'proposals_approved',
             'proposals_total_amount_requested',
             'proposals.is_co_proposer',
             'proposals.is_primary_proposer',
+
+            'amount_awarded_ada',
+            'amount_awarded_usd',
         ];
     }
 
@@ -104,31 +115,12 @@ class IdeascaleProfile extends Model implements HasMedia
         Artisan::call('cx:create-search-index App\\\\Models\\\\IdeascaleProfile cx_ideascale_profiles');
     }
 
-    public function toSearchableArray(): array
-    {
-        $array = $this->toArray();
-        $proposals = $this->proposals->map(fn ($p) => array_merge($p->toArray(), [
-            'is_co_proposer' => $p->user_id !== $this->id,
-            'is_primary_proposer' => $p->user_id == $this->id,
-        ]));
-
-        return array_merge($array, [
-            'proposals' => $proposals,
-            'proposals_completed' => $this->completed_proposals ?? 0,
-            'first_timer' => ($proposals?->map(fn ($p) => ($p['fund_id']))->unique()->count() === 1),
-            'proposals_approved' => $proposals->filter(fn ($p) => (bool) $p['funded_at'])?->count() ?? 0,
-            'amount_awarded_ada' => $this->amount_awarded_ada,
-            'amount_awarded_usd' => intval($this->amount_awarded_usd),
-            'co_proposals_count' => intval($this->co_proposals_count),
-            'proposals_total_amount_requested' => intval($proposals->filter(fn ($p) => (bool) $p['amount_requested'])?->sum('amount_requested')) ?? 0,
-        ]);
-    }
-
     public function amountAwardedAda(): Attribute
     {
         return Attribute::make(
             get: function () {
-                return $this->proposals()->whereNotNull('funded_at')
+                return $this->proposals()
+                    ->whereNotNull('funded_at')
                     ->sum('amount_requested');
             },
         );
@@ -142,59 +134,6 @@ class IdeascaleProfile extends Model implements HasMedia
                     ->sum('amount_requested');
             },
         );
-    }
-
-    public function proposals(): BelongsToMany
-    {
-        return $this->belongsToMany(Proposal::class, 'ideascale_profile_has_proposal', 'ideascale_profile_id', 'proposal_id')
-            ->where('type', 'proposal');
-    }
-
-    public function completed_proposals(): BelongsToMany
-    {
-        return $this->belongsToMany(Proposal::class, 'ideascale_profile_has_proposal', 'ideascale_profile_id', 'proposal_id')
-            ->where(['type' => 'proposal', 'status' => 'complete']);
-    }
-
-    public function funded_proposals(): BelongsToMany
-    {
-        return $this->belongsToMany(Proposal::class, 'ideascale_profile_has_proposal', 'ideascale_profile_id', 'proposal_id')
-            ->where('type', 'proposal')
-            ->whereNotNull('funded_at');
-    }
-
-    public function in_progress_proposals(): BelongsToMany
-    {
-        return $this->belongsToMany(Proposal::class, 'ideascale_profile_has_proposal', 'ideascale_profile_id', 'proposal_id')
-            ->where(['type' => 'proposal', 'status' => 'in_progress']);
-    }
-
-    public function outstanding_proposals(): BelongsToMany
-    {
-        return $this->belongsToMany(Proposal::class, 'ideascale_profile_has_proposal', 'ideascale_profile_id', 'proposal_id')
-            ->where('type', 'proposal')
-            ->whereNotNull('funded_at')
-            ->where('status', '!=', 'complete');
-    }
-
-    public function own_proposals(): HasMany
-    {
-        return $this->hasMany(Proposal::class, 'user_id', 'id')
-            ->where('type', 'proposal');
-    }
-
-    public function coProposalsCount(): Attribute
-    {
-        return Attribute::make(get: function () {
-            $ownProposalIds = $this->own_proposals->pluck('id');
-
-            return $this->proposals()->whereNotIn('proposals.id', $ownProposalIds)->count();
-        });
-    }
-
-    public function monthly_reports(): HasMany
-    {
-        return $this->hasMany(MonthlyReport::class);
     }
 
     public function gravatar(): Attribute
@@ -227,5 +166,124 @@ class IdeascaleProfile extends Model implements HasMedia
         });
 
         return $query;
+    }
+
+    public function completed_proposals(): BelongsToMany
+    {
+        return $this->belongsToMany(
+            Proposal::class,
+            'ideascale_profile_has_proposal',
+            'ideascale_profile_id',
+            'proposal_id'
+        )->where(['type' => 'proposal', 'status' => ProposalStatus::complete()->value]);
+    }
+
+    public function funded_proposals(): BelongsToMany
+    {
+        return $this->belongsToMany(Proposal::class, 'ideascale_profile_has_proposal', 'ideascale_profile_id', 'proposal_id')
+            ->where('type', 'proposal')
+            ->whereNotNull('funded_at');
+    }
+
+    public function unfunded_proposals(): BelongsToMany
+    {
+        return $this->belongsToMany(
+            Proposal::class,
+            'ideascale_profile_has_proposal',
+            'ideascale_profile_id',
+            'proposal_id'
+        )
+            ->where('type', 'proposal')
+            ->whereNull('funded_at');
+    }
+
+    public function in_progress_proposals(): BelongsToMany
+    {
+        return $this->belongsToMany(Proposal::class, 'ideascale_profile_has_proposal', 'ideascale_profile_id', 'proposal_id')
+            ->where(['type' => 'proposal', 'status' => 'in_progress']);
+    }
+
+    public function monthly_reports(): HasMany
+    {
+        return $this->hasMany(MonthlyReport::class);
+    }
+
+    public function outstanding_proposals(): BelongsToMany
+    {
+        return $this->belongsToMany(Proposal::class, 'ideascale_profile_has_proposal', 'ideascale_profile_id', 'proposal_id')
+            ->where('type', 'proposal')
+            ->whereNotNull('funded_at')
+            ->where('status', '!=', 'complete');
+    }
+
+    public function own_proposals(): HasMany
+    {
+        return $this->hasMany(Proposal::class, 'user_id', 'id')
+            ->where('type', 'proposal');
+    }
+
+    public function collaborating_proposals(): BelongsToMany
+    {
+        return $this->belongsToMany(Proposal::class, 'ideascale_profile_has_proposal', 'ideascale_profile_id', 'proposal_id')
+            ->where('type', 'proposal')
+            ->whereIn('proposal_id', function ($q) {
+                $q->select('proposal_id')
+                    ->from('ideascale_profile_has_proposal')
+                    ->where('ideascale_profile_id', $this->id);
+            })->where('type', 'proposal')
+            ->where('user_id', '!=', $this->id);
+    }
+
+    public function proposals(): BelongsToMany
+    {
+        return $this->belongsToMany(
+            Proposal::class,
+            'ideascale_profile_has_proposal',
+            'ideascale_profile_id',
+            'proposal_id'
+        )->where('type', 'proposal');
+    }
+
+    public function toSearchableArray(): array
+    {
+        $this->load('proposals');
+        $this->loadCount([
+            'completed_proposals',
+            'funded_proposals',
+            'unfunded_proposals',
+            'in_progress_proposals',
+            'outstanding_proposals',
+            'own_proposals',
+            'collaborating_proposals',
+            'proposals',
+        ]);
+
+        $array = $this->toArray();
+
+        return array_merge($array, [
+            //            'proposals' => $proposals,
+            'completed_proposals_count' => $this->completed_proposals_count,
+            'funded_proposals_count' => $this->funded_proposals_count,
+            'unfunded_proposals_count' => $this->unfunded_proposals_count,
+            'in_progress_proposals_count' => $this->in_progress_proposals_count,
+            'outstanding_proposals_count' => $this->outstanding_proposals_count,
+            'own_proposals_count' => $this->own_proposals_count,
+            'collaborating_proposals_count' => $this->collaborating_proposals_count,
+            'proposals_count' => $this->proposals_count,
+
+            'first_timer' => null,
+
+            //            'first_timer' => ($proposals?->map(fn ($p) => ($p['fund_id']))->unique()->count() === 1),
+            'amount_awarded_ada' => $this->amount_awarded_ada,
+            'amount_awarded_usd' => intval($this->amount_awarded_usd),
+        ]);
+    }
+
+    protected function casts(): array
+    {
+        return [
+            'created_at' => DateFormatCast::class,
+            'updated_at' => DateFormatCast::class,
+        ];
     }
 }

@@ -22,7 +22,7 @@ export default function ProposalHorizontalCard({
     abstainVotes,
 }: any) {
     return (
-        <article className="relative flex max-h-screen min-h-[400px] flex-col space-y-4 overflow-auto rounded-xl bg-background p-4 shadow-lg md:flex-row md:space-x-4 md:space-y-0">
+        <article className="bg-background relative flex max-h-screen min-h-[400px] flex-col space-y-4 overflow-auto rounded-xl p-4 shadow-lg md:flex-row md:space-y-0 md:space-x-4">
             <div className="flex h-auto w-[500px] flex-col items-start overflow-hidden rounded-xl">
                 <ProposalCardHeader
                     proposal={proposal}
@@ -32,7 +32,7 @@ export default function ProposalHorizontalCard({
                 />
             </div>
 
-            <div className="flex flex-grow flex-col space-y-4 overflow-hidden">
+            <div className="flex grow flex-col space-y-4 overflow-hidden">
                 {!userSelected && (
                     <ProposalCardNav
                         quickPitchView={quickPitchView}
@@ -42,7 +42,7 @@ export default function ProposalHorizontalCard({
                     />
                 )}
 
-                <div className="flex h-full flex-col space-y-4 md:flex-row md:space-x-6 md:space-y-0">
+                <div className="flex h-full flex-col space-y-4 md:flex-row md:space-y-0 md:space-x-6">
                     {userSelected ? (
                         <UserQuickView user={userSelected} />
                     ) : (

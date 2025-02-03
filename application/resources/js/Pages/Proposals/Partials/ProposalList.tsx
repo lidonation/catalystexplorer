@@ -12,7 +12,7 @@ const ProposalList: React.FC<ProposalProps> = ({
     isHorizontal,
 }) => {
     return (
-        <div className="grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-3 w-full">
+        <div className="grid w-full grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-3">
             {proposals &&
                 proposals?.map((proposal) => (
                     <ProposalCard

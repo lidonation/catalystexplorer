@@ -40,9 +40,6 @@ class MyBookmarksController extends Controller
     {
         $this->authorize('viewAny', BookmarkCollection::class);
 
-        $page = (int) $request->input('page', $this->defaultPage);
-        $limit = (int) $request->input('limit', $this->defaultLimit);
-
         $bookmarkTypes = [
             Proposal::class => 'proposals',
             IdeascaleProfile::class => 'people',
@@ -65,7 +62,6 @@ class MyBookmarksController extends Controller
                 ];
             });
 
-        $counts = [];
         $result = [
             'counts' => [],
             'activeType' => null,
@@ -92,7 +88,7 @@ class MyBookmarksController extends Controller
         ]);
     }
 
-    public function createItem(Request $request): JsonResponse|InertiaResponse
+    public function create(Request $request): JsonResponse|InertiaResponse
     {
         $this->authorize('create', BookmarkItem::class);
 
@@ -145,7 +141,6 @@ class MyBookmarksController extends Controller
             DB::commit();
 
             return response()->json(['message' => 'Bookmark created successfully']);
-
         } catch (\Exception $e) {
             DB::rollback();
             report($e);
@@ -154,6 +149,45 @@ class MyBookmarksController extends Controller
                 'errors' => ['Failed to create bookmark'],
             ], SymfonyResponse::HTTP_INTERNAL_SERVER_ERROR);
         }
+    }
+
+    public function collectionIndex(Request $request): InertiaResponse
+    {
+        return Inertia::render('My/Lists/Index', []);
+    }
+
+    public function showCollection(BookmarkCollection $bookmarkCollection): InertiaResponse|JsonResponse
+    {
+        $this->authorize('view', $bookmarkCollection);
+
+        return Inertia::render('BookmarkCollection', [
+            'bookmarkCollection' => BookmarkCollectionData::from($bookmarkCollection),
+        ]);
+    }
+
+    public function createCollection(Request $request): JsonResponse|InertiaResponse
+    {
+        $this->authorize('create', BookmarkCollection::class);
+
+        $data = $request->validate([
+            'title' => ['required', 'string', 'min:5'],
+            'content' => ['nullable', 'string', 'min:10'],
+            'visibility' => ['nullable', 'string', 'min:10'],
+        ]);
+
+        $collection = BookmarkCollection::create([
+            'user_id' => Auth::id(),
+            'title' => $data['title'],
+            'content' => $data['content'],
+            'visibility' => $data['visibility'],
+        ]);
+
+        return response()->json(
+            [
+                'message' => 'Collection created successfully',
+                'collection' => $collection,
+            ]
+        );
     }
 
     public function deleteCollection(Request $request): JsonResponse
@@ -195,7 +229,6 @@ class MyBookmarksController extends Controller
             DB::commit();
 
             return response()->json(['message' => 'Collection deleted successfully']);
-
         } catch (\Exception $e) {
             DB::rollBack();
 
@@ -203,20 +236,5 @@ class MyBookmarksController extends Controller
                 'errors' => ['Failed to delete bookmarks'],
             ], SymfonyResponse::HTTP_INTERNAL_SERVER_ERROR);
         }
-    }
-
-    public function view(BookmarkCollection $bookmarkCollection): InertiaResponse|JsonResponse
-    {
-        if ($bookmarkCollection->user_id !== Auth::id()) {
-            return response()->json([
-                'message' => 'Unauthorized',
-            ], SymfonyResponse::HTTP_FORBIDDEN);
-        }
-
-        $this->authorize('view', $bookmarkCollection);
-
-        return Inertia::render('BookmarkCollection', [
-            'bookmarkCollection' => BookmarkCollectionData::from($bookmarkCollection),
-        ]);
     }
 }

@@ -93,7 +93,7 @@ const Content = ({
                 >
                     <div
                         className={
-                            `rounded-md ring-1 ring-black ring-opacity-5 ` +
+                            `ring-opacity-5 rounded-md ring-1 ring-black ` +
                             contentClasses
                         }
                     >
@@ -114,7 +114,7 @@ const DropdownLink = ({
         <Link
             {...props}
             className={
-                'block w-full px-4 py-2 text-start text-4 leading-5 text-content transition duration-150 ease-in-out hover:bg-background-lighter focus:bg-background-lighter focus:outline-none ' +
+                'text-4 text-content hover:bg-background-lighter focus:bg-background-lighter block w-full px-4 py-2 text-start leading-5 transition duration-150 ease-in-out focus:outline-hidden ' +
                 className
             }
         >

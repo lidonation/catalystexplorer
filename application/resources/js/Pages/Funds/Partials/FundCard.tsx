@@ -21,19 +21,19 @@ const FundCard: React.FC<FundCardProps> = ({
     const { t } = useTranslation();
 
     return (
-        <div className="flex w-full transform flex-row items-stretch space-x-6 overflow-hidden rounded-lg bg-background p-3 shadow-md sm:p-4">
+        <div className="bg-background flex w-full transform flex-row items-stretch space-x-6 overflow-hidden rounded-lg p-3 shadow-md sm:p-4">
             {/* Image Section */}
             <div className="flex flex-none flex-col items-center space-y-2 sm:items-start sm:space-y-4">
                 {/* Title */}
                 <Link
                     href={useLocalizedRoute('funds.fund', { slug: fund.slug })}
-                    className="truncate text-center text-base font-bold sm:text-left sm:text-xl hover:text-primary"
+                    className="hover:text-primary truncate text-center text-base font-bold sm:text-left sm:text-xl"
                 >
                     {fund.title}
                 </Link>
                 {/* Responsive Image Section */}
                 <div
-                    className="flex h-24 w-24 items-center justify-center overflow-hidden rounded-full bg-gradient-to-r from-gray-100 to-gray-900 sm:h-32 sm:w-32 lg:h-36 lg:w-36"
+                    className="flex h-24 w-24 items-center justify-center overflow-hidden rounded-full bg-linear-to-r from-gray-100 to-gray-900 sm:h-32 sm:w-32 lg:h-36 lg:w-36"
                 >
                     <img
                         src={fund.hero_img_url}
@@ -44,7 +44,7 @@ const FundCard: React.FC<FundCardProps> = ({
             </div>
 
             {/* Details Section */}
-            <div className="flex flex-grow flex-col space-y-1 sm:space-y-2">
+            <div className="flex grow flex-col space-y-1 sm:space-y-2">
                 <div>
                     <p className="mt-8 truncate text-xs sm:text-sm">
                         {t('funds.totalAwarded')}

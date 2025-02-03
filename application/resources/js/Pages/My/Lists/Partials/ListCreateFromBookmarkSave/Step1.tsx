@@ -57,9 +57,9 @@ const BookmarkPage1 = ({
             {[1, 2, 3].map((item) => (
                 <div
                     key={item}
-                    className="flex items-center justify-between py-1"
+                    className="flex items-center justify-between py-1 gap-2"
                 >
-                    <div className="h-4 w-32 rounded bg-gray-200"></div>
+                    <div className="h-4 w-full rounded bg-gray-200"></div>
                     <div className="h-4 w-4 rounded bg-gray-200"></div>
                 </div>
             ))}

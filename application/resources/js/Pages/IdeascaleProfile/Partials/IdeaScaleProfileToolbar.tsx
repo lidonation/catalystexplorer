@@ -28,10 +28,10 @@ const IdeaScaleProfileToolbar = () => {
             <div className="flex flex-row items-end justify-end">
                 <div className="flex flex-row gap-2">
                     <Button
-                        className={`shadow-xs border-input flex flex-row items-center gap-2 rounded-lg border bg-background px-2 py-1 ${
+                        className={`border-input bg-background flex flex-row items-center gap-2 rounded-lg border px-2 py-1 shadow-xs ${
                             toggleFilterVisibility
-                                ? 'border-accent-blue text-primary ring-1 ring-offset-background'
-                                : 'text-gray-500 hover:bg-background-lighter'
+                                ? 'border-accent-blue text-primary ring-offset-background ring-1'
+                                : 'hover:bg-background-lighter text-gray-500'
                         }`}
                         onClick={() =>
                             setToggleFilterVisibility(!toggleFilterVisibility)
@@ -56,8 +56,8 @@ const IdeaScaleProfileToolbar = () => {
                         placeholder={t('proposals.options.sort')}
                         className={
                             getFilter(IdeaScaleSearchEnum.SORTS)
-                                ? 'cursor-default bg-background-lighter text-primary'
-                                : 'text-gray-500 hover:bg-background-lighter'
+                                ? 'bg-background-lighter text-primary cursor-default'
+                                : 'hover:bg-background-lighter text-gray-500'
                         }
                     />
                 </div>

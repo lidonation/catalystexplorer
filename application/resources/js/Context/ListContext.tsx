@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState } from 'react';
 import { List, ListContextState } from '../../types/general';
+import {router} from "@inertiajs/react";
 
 interface ListContextValue extends ListContextState {
     fetchLists: () => Promise<void>;
@@ -50,22 +51,12 @@ export function ListProvider({ children }: { children: React.ReactNode }) {
         }
     };
 
-    const addList = async (listData: Omit<List, 'id' | 'createdAt'>) => {
-        const newList = {
-            ...listData,
-            id: Math.random().toString(36).substr(2, 9),
-            createdAt: new Date().toISOString(),
-        };
+    const createList = async (listData: Omit<List, 'id' | 'createdAt'>) => {
         setState((prev) => ({ ...prev, isAddingList: true, error: null }));
 
         try {
             await new Promise((resolve) => setTimeout(resolve, 1000));
-            setState((prev) => ({
-                ...prev,
-                lists: [...prev.lists, newList],
-                isAddingList: false,
-                latestAddedList: newList,
-            }));
+            router.post(route('my.bookmarks.collections.create'), listData);
         } catch (error) {
             setState((prev) => ({
                 ...prev,
@@ -78,7 +69,7 @@ export function ListProvider({ children }: { children: React.ReactNode }) {
     const value = {
         ...state,
         fetchLists,
-        addList,
+        addList: createList,
     };
 
     return (

@@ -6,7 +6,7 @@ import GlobalSearch from './GlobalSearch';
 const CatalystIntro = () => {
     const { t } = useTranslation();
     return (
-        <div className="splash-wrapper sticky -top-64 z-10 bg-gradient-to-r from-background-home-gradient-color-1 to-background-home-gradient-color-2 md:rounded-tl-4xl">
+        <div className="splash-wrapper sticky -top-64 z-10 bg-linear-to-r from-background-home-gradient-color-1 to-background-home-gradient-color-2 md:rounded-tl-4xl">
             <div
                 className="flex w-full flex-col gap-8 pb-4 pt-16"
                 style={{

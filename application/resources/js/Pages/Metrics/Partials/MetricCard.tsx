@@ -18,7 +18,6 @@ const MetricCard: React.FC<MetricCardProps> = ({ metric }) => {
         ? JSON.parse(metric.chartData)
         : metric.chartData;
 
-    console.log(chartData);
     const lineData = chartData?.data ? [{
         id: chartData.id || 'Data',
         color: metric.color,
@@ -41,9 +40,9 @@ const MetricCard: React.FC<MetricCardProps> = ({ metric }) => {
     };
 
     return (
-        <div className="relative flex h-full w-full flex-col rounded-lg bg-background shadow-md">
-            <div className="absolute left-12 top-6 rounded-md bg-background px-4 py-2 shadow-md">
-                <span className="text-2xl font-bold text-content">
+        <div className="bg-background relative flex h-full w-full flex-col rounded-lg shadow-md">
+            <div className="bg-background absolute top-6 left-12 rounded-md px-4 py-2 shadow-md">
+                <span className="text-content text-2xl font-bold">
                     {shortNumber(metric.value ?? 0)}
                 </span>
                 <h3 className="text-content-gray-persist max-w-[200px] truncate text-sm font-medium">
@@ -51,7 +50,7 @@ const MetricCard: React.FC<MetricCardProps> = ({ metric }) => {
                 </h3>
             </div>
 
-            <div className="mt-20 flex flex-grow flex-col justify-between">
+            <div className="mt-20 flex grow flex-col justify-between">
                 {lineData.length > 0 && (
                     <>
                         <div
@@ -113,11 +112,11 @@ const MetricCard: React.FC<MetricCardProps> = ({ metric }) => {
                                         : { value: '0', isPositive: true };
 
                                     return (
-                                        <div className="relative rounded-lg bg-dark p-4 text-white shadow-lg">
+                                        <div className="bg-dark relative rounded-lg p-4 text-white shadow-lg">
                                             <div className="max-w-sm">
                                                 <h3 className="text-lg font-semibold">{point.data.xFormatted}</h3>
                                                 <p className="mt-2 flex items-center text-sm">
-                                                    <span className="flex-shrink truncate">{metric.title}</span>:
+                                                    <span className="shrink truncate">{metric.title}</span>:
                                                     <span className="font-bold">{point.data.yFormatted}</span>
                                                 </p>
                                                 <div className="mt-2 flex items-center">
@@ -137,7 +136,7 @@ const MetricCard: React.FC<MetricCardProps> = ({ metric }) => {
                                                     <span className="ml-1">{t('metric.vs')}</span>
                                                 </div>
                                             </div>
-                                            <div className="absolute bottom-0 left-1/2 h-0 w-0 -translate-x-1/2 translate-y-full border-l-[10px] border-r-[10px] border-t-[10px] border-l-transparent border-r-transparent border-t-dark"></div>
+                                            <div className="border-t-dark absolute bottom-0 left-1/2 h-0 w-0 -translate-x-1/2 translate-y-full border-t-[10px] border-r-[10px] border-l-[10px] border-r-transparent border-l-transparent"></div>
                                         </div>
                                     );
                                 }}

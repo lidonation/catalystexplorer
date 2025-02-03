@@ -17,7 +17,7 @@ export default function PrimaryButton({
     return (
         <button
             {...props}
-            className={`text-4 hover:bg-background-tertiary hover:text-content-secondary focus:bg-background-accent active:bg-background-tertiary active:text-content-secondary inline-flex items-center justify-center rounded-md bg-gradient-to-t from-background-button-gradient-color-1 to-background-button-gradient-color-2 px-4 py-2 font-semibold uppercase tracking-widest text-content-light shadow-md transition duration-150 ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2 ${disabled || loading ? 'cursor-not-allowed opacity-25' : ''} ${className} `}
+            className={`text-4 hover:bg-background-tertiary hover:text-content-secondary focus:bg-background-accent active:bg-background-tertiary active:text-content-secondary from-background-button-gradient-color-1 to-background-button-gradient-color-2 text-content-light inline-flex items-center justify-center rounded-md bg-linear-to-t px-4 py-2 font-semibold tracking-widest uppercase shadow-md transition duration-150 ease-in-out focus:ring-2 focus:ring-offset-2 focus:outline-hidden ${disabled || loading ? 'cursor-not-allowed opacity-25' : ''} ${className} `}
             disabled={disabled || loading}
         >
             <span

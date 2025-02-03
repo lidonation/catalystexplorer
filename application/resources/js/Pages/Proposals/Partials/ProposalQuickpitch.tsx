@@ -44,7 +44,7 @@ export default function ProposalQuickpitch({
                         <div className="max-w-lg text-center">
                             <p className="mb-2">{videoData.error}</p>
                             {quickpitch && (
-                                <p className="break-all text-sm">
+                                <p className="text-sm break-all">
                                     {t('proposals.providedUrl')}: {quickpitch}
                                 </p>
                             )}

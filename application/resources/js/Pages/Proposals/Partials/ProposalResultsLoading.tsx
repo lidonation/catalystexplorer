@@ -7,21 +7,21 @@ export default function ProposalResultsLoading() {
             {[1, 2, 3].map((proposal, index) => (
                 <div
                     key={index}
-                    className="min-h-96 w-full rounded-xl bg-background p-4 shadow-lg"
+                    className="bg-background min-h-96 w-full rounded-xl p-4 shadow-lg"
                 >
                     <div className="h-full animate-pulse space-y-4">
                         <div className="h-36 rounded-xl bg-slate-700"></div>
                         <div className="space-y-2">
-                            <div className="h-4 w-3/4 rounded bg-background-light"></div>
-                            <div className="h-4 rounded bg-background-light"></div>
-                            <div className="h-4 w-5/6 rounded bg-background-light"></div>
+                            <div className="bg-background-light h-4 w-3/4 rounded-sm"></div>
+                            <div className="bg-background-light h-4 rounded-sm"></div>
+                            <div className="bg-background-light h-4 w-5/6 rounded-sm"></div>
                         </div>
                         <div className="flex justify-between">
-                            <div className="h-4 w-24 rounded bg-background-light"></div>
+                            <div className="bg-background-light h-4 w-24 rounded-sm"></div>
                             <div className="flex -space-x-2">
-                                <div className="h-8 w-8 rounded-full bg-background-light"></div>
-                                <div className="h-8 w-8 rounded-full bg-background-light"></div>
-                                <div className="h-8 w-8 rounded-full bg-background-light"></div>
+                                <div className="bg-background-light h-8 w-8 rounded-full"></div>
+                                <div className="bg-background-light h-8 w-8 rounded-full"></div>
+                                <div className="bg-background-light h-8 w-8 rounded-full"></div>
                             </div>
                         </div>
                     </div>

@@ -70,10 +70,10 @@ export default function ProposalFundingPercentages({ proposal }: Proposal) {
                     <span className="text-lg font-semibold">
                         {formattedAmountRequested}
                     </span>
-                    <span className="text-sm text-highlight">{`/ ${formattedCampaignBudget} (${campaignPercentage}%)`}</span>
+                    <span className="text-highlight text-sm">{`/ ${formattedCampaignBudget} (${campaignPercentage}%)`}</span>
                 </div>
             </div>
-            <div className="mt-2 h-3 w-full overflow-hidden rounded-full bg-content-light">
+            <div className="bg-content-light mt-2 h-3 w-full overflow-hidden rounded-full">
                 <div
                     className={`h-full rounded-full ${progressBarColor}`}
                     role="progressbar"

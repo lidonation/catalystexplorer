@@ -2,4 +2,3 @@ make lint-backend
 git add -A
 make commitlint
 make tsc
-make test-arch

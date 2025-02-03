@@ -12,6 +12,7 @@ use App\Traits\HasTaxonomies;
 use App\Traits\HasTranslations;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\Concerns\HasTimestamps;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -24,6 +25,7 @@ class Proposal extends Model
     use HasAuthor,
         HasMetaData,
         HasTaxonomies,
+        HasTimestamps,
         HasTranslations,
         Searchable,
         SoftDeletes;
@@ -158,7 +160,10 @@ class Proposal extends Model
 
     public static function runCustomIndex(): void
     {
-        Artisan::call('cx:create-search-index App\\\\Models\\\\Proposal cx_proposals');
+        Artisan::call('cx:create-search-index', [
+            'model' => Proposal::class,
+            'name' => 'cx_proposals',
+        ]);
     }
 
     public function scopeFilter($query, array $filters)

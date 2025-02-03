@@ -7,10 +7,13 @@ namespace App\Providers;
 use App\Enums\RoleEnum;
 use App\Models\BookmarkCollection;
 use App\Models\BookmarkItem;
+use App\Models\CatalystSnapshot;
+use App\Models\CatalystVotingPower;
 use App\Models\Link;
 use App\Models\User;
 use App\Policies\BookmarkCollectionPolicy;
 use App\Policies\BookmarkItemPolicy;
+use App\Policies\CatalystSnapshotPolicy;
 use App\Policies\LinkPolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Gate;
@@ -29,6 +32,8 @@ class AuthServiceProvider extends ServiceProvider
         BookmarkItem::class => BookmarkItemPolicy::class,
         BookmarkCollection::class => BookmarkCollectionPolicy::class,
         Link::class => LinkPolicy::class,
+        CatalystSnapshot::class => CatalystSnapshotPolicy::class,
+        CatalystVotingPower::class => CatalystVotingPower::class,
     ];
 
     /**

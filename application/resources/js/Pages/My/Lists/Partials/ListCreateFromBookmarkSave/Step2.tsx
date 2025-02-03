@@ -66,7 +66,7 @@ const BookmarkPage2 = ({ onNavigate }: TransitionListPageProps) => {
                     />
                     <textarea
                         placeholder="Add description"
-                        className="w-full rounded-md border border-border-primary border-opacity-40 bg-background p-2 text-sm text-content shadow-sm focus:border-primary"
+                        className="w-full rounded-md border border-border-primary border-opacity-40 bg-background p-2 text-sm text-content shadow-xs focus:border-primary"
                         value={formState.description}
                         onChange={(e) =>
                             setFormState((prevState) => ({

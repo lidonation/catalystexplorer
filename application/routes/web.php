@@ -3,13 +3,16 @@
 use App\Http\Controllers\ChartsController;
 use App\Http\Controllers\CompletetProjectNftsController;
 use App\Http\Controllers\FundsController;
+use App\Http\Controllers\GroupsController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\IdeascaleProfilesController;
+use App\Http\Controllers\ReviewsController;
 use App\Http\Controllers\JormungandrController;
 use App\Http\Controllers\ProposalsController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\VoterToolController;
 use Illuminate\Support\Facades\Route;
+use Inertia\Inertia;
 
 Route::localized(
     function () {
@@ -27,14 +30,32 @@ Route::localized(
                 ->name('fund');
         });
 
+        Route::prefix('/groups')->as('groups.')->group(function () {
+            Route::get('/', [GroupsController::class, 'index'])
+                ->name('index');
+
+            Route::get('/{group:slug}', [GroupsController::class, 'group'])
+                ->name('group');
+        });
+
         Route::get('/ideascale-profiles', [IdeascaleProfilesController::class, 'index'])
             ->name('ideascaleProfiles.index');
+
+        Route::prefix('/reviews')->as('reviews.')->group(function () {
+            Route::get('/', [ReviewsController::class, 'index'])
+                ->name('index');
+            Route::get('/{id}', [ReviewsController::class, 'review'])
+                ->name('review');
+        });
 
         Route::get('/charts', [ChartsController::class, 'index'])
             ->name('charts.index');
 
         Route::get('/completed-project-nfts', [CompletetProjectNftsController::class, 'index'])
             ->name('completedProjectsNfts.index');
+
+        Route::get('/completed-project-nfts/{proposal:id}', [CompletetProjectNftsController::class, 'show'])
+            ->name('completedProjectsNfts.show');
 
         Route::get('/jormungandr', [JormungandrController::class, 'index'])
             ->name('jormungandr.index');
@@ -46,6 +67,10 @@ Route::localized(
             ->name('search.index');
     }
 );
+
+Route::get('/map', function () {
+    return Inertia::render('Map');
+});
 
 require __DIR__.'/auth.php';
 

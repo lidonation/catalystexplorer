@@ -4,27 +4,27 @@ declare(strict_types=1);
 
 namespace App\Nova;
 
-use App\Enums\StatusEnum;
+use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Fields\ID;
-use Laravel\Nova\Fields\Select;
+use Laravel\Nova\Fields\Number;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Http\Requests\NovaRequest;
 
-class Link extends Resource
+class CatalystVotingPowers extends Resource
 {
     /**
      * The model the resource corresponds to.
      *
-     * @var class-string<\App\Models\Link>
+     * @var class-string<\App\Models\CatalystVotingPower>
      */
-    public static $model = \App\Models\Link::class;
+    public static $model = \App\Models\CatalystVotingPower::class;
 
     /**
      * The single value that should be used to represent the resource when being displayed.
      *
      * @var string
      */
-    public static $title = 'title';
+    public static $title = 'id';
 
     /**
      * The columns that should be searched.
@@ -33,10 +33,6 @@ class Link extends Resource
      */
     public static $search = [
         'id',
-        'link',
-        'title',
-        'label',
-        'status',
     ];
 
     /**
@@ -47,20 +43,10 @@ class Link extends Resource
     public function fields(NovaRequest $request): array
     {
         return [
-            ID::make(__('ID'), 'id')->sortable(),
-            Text::make(__('Link'), 'link')->help('http URL link')->rules('required', 'uri'),
-            Text::make(__('Label'), 'label')
-                ->help('What is the link of (google doc, website, youtube video, etc)? '),
-            Text::make(__('Title'), 'title'),
-            Select::make(__('Status'), 'status')
-                ->options([
-                    'published' => 'Published',
-                    'draft' => 'Draft',
-                    'pending' => 'Pending',
-                    'ready' => 'Ready',
-                    'scheduled' => 'Scheduled',
-                    StatusEnum::published()->value => 'Published',
-                ])->default('published')->sortable(),
+            ID::make()->sortable(),
+            Text::make('Delegate'),
+            BelongsTo::make('Snapshot', 'snapshot', CatalystSnapshot::class),
+            Number::make('Voting Power')->step(0.00000001),
         ];
     }
 

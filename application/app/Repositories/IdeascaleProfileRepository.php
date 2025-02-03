@@ -20,32 +20,37 @@ class IdeascaleProfileRepository extends Repository
         return IdeascaleProfile::search(
             $term,
             function (Indexes $index, $query) use ($args) {
-                $args['attributesToRetrieve'] = $attrs ?? [
-                    'id',
-                    'ideascale_id',
-                    'username',
-                    'email',
-                    'name',
-                    'bio',
-                    'created_at',
-                    'updated_at',
-                    'twitter',
-                    'linkedin',
-                    'discord',
-                    'ideascale',
-                    'claimed_by',
-                    'telegram',
-                    'title',
-                    'profile_photo_url',
-                    'proposals',
-                    'proposals_completed',
-                    'first_timer',
-                    'proposals_approved',
-                    'amount_awaraded_ada',
-                    'amount_awaraded_usd',
-                    'co_proposals_count',
-                    'proposals_total_amount_requested',
-                ];
+                $args = array_merge(
+                    [
+                        'attributesToRetrieve' => [
+                            'id',
+                            'ideascale_id',
+                            'username',
+                            'email',
+                            'name',
+                            'bio',
+                            'created_at',
+                            'updated_at',
+                            'twitter',
+                            'linkedin',
+                            'discord',
+                            'ideascale',
+                            'claimed_by',
+                            'telegram',
+                            'title',
+                            'profile_photo_url',
+                            'proposals',
+                            'proposals_completed',
+                            'first_timer',
+                            'proposals_funded',
+                            'amount_awaraded_ada',
+                            'amount_awaraded_usd',
+                            'co_proposals_count',
+                            'proposals_total_amount_requested',
+                        ],
+                    ],
+                    $args
+                );
 
                 return $index->search($query, $args);
             }

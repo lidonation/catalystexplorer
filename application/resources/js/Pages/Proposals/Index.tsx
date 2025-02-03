@@ -92,15 +92,7 @@ export default function Index({
                 >
                     <ProposalFilters />
                 </section>
-
-                <section className="container mt-4 flex flex-col items-end">
-                    <CardLayoutSwitcher
-                        isHorizontal={isHorizontal}
-                        quickPitchView={quickPitchView}
-                        setIsHorizontal={setIsHorizontal}
-                        setGlobalQuickPitchView={setQuickPitchView}
-                    />
-                </section>
+                
 
                 <section className="proposals-wrapper container mt-3 w-full">
                     <WhenVisible

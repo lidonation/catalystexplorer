@@ -65,7 +65,7 @@ const FundsFilter: React.FC<FundFiltersProps> = ({
                 {funds.map((fund) => {
                     return (
                         <li
-                            className={`flex w-full cursor-pointer rounded-md border-primary bg-background shadow-sm hover:border-2 ${selectedItems.includes(fund) ? 'border-2 border-primary' : ''}`}
+                            className={`flex w-full cursor-pointer rounded-md border-primary bg-background shadow-xs hover:border-2 ${selectedItems.includes(fund) ? 'border-2 border-primary' : ''}`}
                             key={fund + Math.random()}
                             onClick={() => handleSelect(fund)}
                             aria-label={fund}
@@ -76,14 +76,14 @@ const FundsFilter: React.FC<FundFiltersProps> = ({
                                     value={fund}
                                     checked={selectedItems.includes(fund)}
                                     onChange={() => {}}
-                                    className="text-content-accent mr-2 h-4 w-4 bg-background shadow-sm checked:bg-primary checked:hover:bg-primary focus:border focus:border-primary focus:ring-primary checked:focus:bg-primary"
+                                    className="text-content-accent mr-2 h-4 w-4 bg-background shadow-xs checked:bg-primary checked:hover:bg-primary focus:border focus:border-primary focus:ring-primary checked:focus:bg-primary"
                                 />
                             </div>
                             <div className="m-4 ml-2 w-full">
                                 <p className="mb-2 font-medium">{fund}</p>
                                 <div className="flex w-full justify-between">
                                     <p className="text-gray-persist">
-                                        {t('proposals.totalProposals')}
+                                        {t('metric.totalProposals')}
                                     </p>
                                     <p className="font-bold">
                                         {proposalsCount[fund] || 0}
