@@ -6,6 +6,7 @@ use App\Http\Controllers\FundsController;
 use App\Http\Controllers\GroupsController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\IdeascaleProfilesController;
+use App\Http\Controllers\ReviewsController;
 use App\Http\Controllers\JormungandrController;
 use App\Http\Controllers\ProposalsController;
 use App\Http\Controllers\SearchController;
@@ -39,6 +40,13 @@ Route::localized(
 
         Route::get('/ideascale-profiles', [IdeascaleProfilesController::class, 'index'])
             ->name('ideascaleProfiles.index');
+
+        Route::prefix('/reviews')->as('reviews.')->group(function () {
+            Route::get('/', [ReviewsController::class, 'index'])
+                ->name('index');
+            Route::get('/{id}', [ReviewsController::class, 'review'])
+                ->name('review');
+        });
 
         Route::get('/charts', [ChartsController::class, 'index'])
             ->name('charts.index');
