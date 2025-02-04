@@ -318,7 +318,7 @@
     },
     "icons": {
         "titles": {
-            "arrow_curved": "Arrow Curved Icon",
+            "arrowCurved": "Arrow Curved Icon",
             "arrow_left": "Arrow Left Icon",
             "barLine": "Bar Line Chart Icon",
             "blue_eye": "Blue Eye Icon",
