@@ -6,6 +6,7 @@ import VideoCameraIcon from '@/Components/svgs/VideoCameraIcon';
 import { useFilterContext } from '@/Context/FiltersContext';
 import { ProposalParamsEnum } from '@/enums/proposal-search-params';
 import Button from '@/Components/atoms/Button';
+import Button from '@/Components/atoms/Button';
 
 interface CardLayoutSwitcherProps {
     isHorizontal: boolean;
