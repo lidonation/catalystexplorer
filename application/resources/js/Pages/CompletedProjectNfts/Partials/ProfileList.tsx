@@ -11,7 +11,7 @@ interface Profile {
 interface ProfileListProps {
     profiles: Profile[];
     onSelectProfile: (name: string) => void;
-    selectedProfile: string;
+    selectedProfile: any;
 }
 
 const ProfileList: React.FC<ProfileListProps> = ({ profiles, onSelectProfile, selectedProfile }) => {

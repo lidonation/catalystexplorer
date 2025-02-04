@@ -17,7 +17,7 @@ interface Profile {
 
 interface ClaimProfileFormProps {
     profile: Profile;
-    onClaim: (profile: Profile) => void;
+    onClaim: any;
 }
 
 const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, setData: any, data: any) => {

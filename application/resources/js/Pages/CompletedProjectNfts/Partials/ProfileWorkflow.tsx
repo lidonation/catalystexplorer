@@ -124,7 +124,7 @@ const ProfileWorkflow: React.FC<ProfileWorkflowProps> = ({ user }) => {
     const { t } = useTranslation();
 
     const [showClaimProfile, setShowClaimProfile] = useState(false);
-    const [selectedProfile, setSelectedProfile] = useState<Profile | null>(null); // Use Profile object, not just string
+    const [selectedProfile, setSelectedProfile] = useState<Profile | any>(null); // Use Profile object, not just string
     const [claimedProfiles, setClaimedProfiles] = useState(initialClaimedProfiles);
     const [allProfiles, setAllProfiles] = useState(initialAllProfiles);
     const [formProfile, setFormProfile] = useState<string | null>(null);
