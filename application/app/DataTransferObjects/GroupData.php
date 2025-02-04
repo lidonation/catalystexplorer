@@ -4,9 +4,7 @@ declare(strict_types=1);
 
 namespace App\DataTransferObjects;
 
-use Spatie\LaravelData\Attributes\DataCollectionOf;
 use Spatie\LaravelData\Data;
-use Spatie\LaravelData\DataCollection;
 use Spatie\TypeScriptTransformer\Attributes\Optional as TypeScriptOptional;
 use Spatie\TypeScriptTransformer\Attributes\TypeScript;
 
@@ -23,7 +21,7 @@ final class GroupData extends Data
         public ?string $name,
 
         #[TypeScriptOptional]
-        public $bio,
+        public ?string $bio,
 
         #[TypeScriptOptional]
         public ?string $slug,
@@ -53,9 +51,6 @@ final class GroupData extends Data
         public ?string $updated_at,
 
         #[TypeScriptOptional]
-        public ?string $deleted_at,
-
-        #[DataCollectionOf(ProposalData::class)]
-        public ?DataCollection $proposals,
+        public ?string $deleted_at
     ) {}
 }
