@@ -318,6 +318,7 @@
     },
     "icons": {
         "titles": {
+            "arrow_curved": "Arrow Curved Icon",
             "arrow_left": "Arrow Left Icon",
             "barLine": "Bar Line Chart Icon",
             "blue_eye": "Blue Eye Icon",
@@ -325,6 +326,7 @@
             "bookmark_on": "Bookmark On Icon",
             "bookmark_off": "Bookmark Off Icon",
             "bucket": "Bucket Icon",
+            "cardSwitch": "Card Switch Icon",
             "chart": "Chart Icon",
             "check": "Check Icon",
             "chevron_up": "Chevron Up Icon",
@@ -340,6 +342,7 @@
             "logOut": "Logout Icon",
             "mail": "Mail Icon",
             "menu": "Menu Icon",
+            "miniCardSwitch": "Mini Card Switch Icon",
             "note": "Note Icon",
             "notificationBox": "Notification Box Icon",
             "people": "People Icon",
