@@ -1,9 +1,6 @@
 import ArrowCurvedIcon from '@/Components/svgs/ArrowCurved';
 import CardSwitchIcon from '@/Components/svgs/CardSwitchIcon';
-import ArrowCurvedIcon from '@/Components/svgs/ArrowCurved';
-import CardSwitchIcon from '@/Components/svgs/CardSwitchIcon';
 import ListBulletIcon from '@/Components/svgs/ListBulletIcon';
-import MiniCardSwitchIcon from '@/Components/svgs/MiniCardSwitchIcon';
 import MiniCardSwitchIcon from '@/Components/svgs/MiniCardSwitchIcon';
 import VideoCameraIcon from '@/Components/svgs/VideoCameraIcon';
 import { useFilterContext } from '@/Context/FiltersContext';
@@ -14,9 +11,7 @@ interface CardLayoutSwitcherProps {
     isHorizontal: boolean;
     quickPitchView: boolean;
     isMini: boolean;
-    isMini: boolean;
     setIsHorizontal: (value: boolean) => void;
-    setIsMini: (value: boolean) => void;
     setIsMini: (value: boolean) => void;
     setGlobalQuickPitchView: (value: boolean) => void;
 }
@@ -25,9 +20,7 @@ export default function CardLayoutSwitcher({
     isHorizontal,
     quickPitchView,
     isMini,
-    isMini,
     setIsHorizontal,
-    setIsMini,
     setIsMini,
     setGlobalQuickPitchView,
 }: CardLayoutSwitcherProps) {
@@ -51,10 +44,6 @@ export default function CardLayoutSwitcher({
         setIsMini(value);
     };
 
-    const setMini = (value: boolean) => {
-        setIsMini(value);
-    };
-
     return (
         <div className="relative">
             <div className="z- bg-background flex overflow-hidden rounded-lg border-[2px] border-gray-300 shadow-m">
@@ -66,7 +55,7 @@ export default function CardLayoutSwitcher({
                             setQuickpitch(false)
                         }
                     }}
-                    className={`flex flex-1 items-center justify-center w-[50px] h-[40px] ${
+                    className={`flex flex-1 items-center justify-center w-[60px] h-[50px] ${
                         !isHorizontal || isMini
                             ? 'bg-background-lighter text-primary'
                             : 'hover:bg-background-lighter text-gray-500 cursor-pointer'
@@ -122,10 +111,8 @@ export default function CardLayoutSwitcher({
                         setHorizontal(true)
                         setIsMini(false)
                     }}
-                    className={`flex flex-1 items-center justify-center w-[50px] h-[40px] ${
+                    className={`flex flex-1 items-center justify-center w-[60px] h-[50px] ${
                         isHorizontal
-                            ? 'bg-background-lighter text-primary'
-                            : 'hover:bg-background-lighter text-gray-500 cursor-pointer'
                             ? 'bg-background-lighter text-primary'
                             : 'hover:bg-background-lighter text-gray-500 cursor-pointer'
                     } border-r-[2px] border-gray-300`}
@@ -138,10 +125,8 @@ export default function CardLayoutSwitcher({
                         setQuickpitch(!quickPitchView)
                         setIsMini(false)
                     }}
-                    className={`flex flex-1 items-center justify-center w-[50px] h-[40px] ${
+                    className={`flex flex-1 items-center justify-center w-[60px] h-[50px] ${
                         quickPitchView
-                            ? 'bg-background-lighter text-primary'
-                            : 'hover:bg-background-lighter text-gray-500 cursor-pointer'
                             ? 'bg-background-lighter text-primary'
                             : 'hover:bg-background-lighter text-gray-500 cursor-pointer'
                     }`}
