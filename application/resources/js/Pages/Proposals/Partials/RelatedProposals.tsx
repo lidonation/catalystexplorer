@@ -19,11 +19,11 @@ const RelatedProposals: React.FC<RelatedProposalsProps> = ({ proposals, groupId 
     const visibleProposals = proposals.data.slice(0, showViewMore ? MAX_VISIBLE_PROPOSALS - 1 : MAX_VISIBLE_PROPOSALS);
 
     return (
-        <WhenVisible 
+        <WhenVisible
             fallback={<ProposalMiniCardLoader />}
             data="proposals"
         >
-            <div className="proposals-wrapper mt-4 grid w-full grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-3">
+            <div className="proposals-wrapper mt-4 grid w-full grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
                 {visibleProposals.map((proposal) => (
                     <ProposalCardMini
                         key={proposal.id}
@@ -31,7 +31,7 @@ const RelatedProposals: React.FC<RelatedProposalsProps> = ({ proposals, groupId 
                         isHorizontal={false}
                     />
                 ))}
-                
+
                 {showViewMore && (
                     <Link
                         href={`/proposals${groupId ? `?g%5B0%5D=${groupId}` : ''}`}
