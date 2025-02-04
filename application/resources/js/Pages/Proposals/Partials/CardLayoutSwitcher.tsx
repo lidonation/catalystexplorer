@@ -5,7 +5,7 @@ import MiniCardSwitchIcon from '@/Components/svgs/MiniCardSwitchIcon';
 import VideoCameraIcon from '@/Components/svgs/VideoCameraIcon';
 import { useFilterContext } from '@/Context/FiltersContext';
 import { ProposalParamsEnum } from '@/enums/proposal-search-params';
-import { Button } from '@headlessui/react';
+import Button from '@/Components/atoms/Button';
 
 interface CardLayoutSwitcherProps {
     isHorizontal: boolean;
