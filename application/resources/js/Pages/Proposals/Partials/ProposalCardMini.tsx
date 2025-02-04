@@ -6,14 +6,14 @@ import { useTranslation } from 'react-i18next';
 import Proposal = App.DataTransferObjects.ProposalData;
 import ProposalUsersMini from './ProposalUsersMini';
 
-interface ProposalMiniCardProps {
+interface ProposalCardMiniProps {
     proposal: Proposal;
     isHorizontal: boolean;
 }
-export default function ProposalMiniCard({
+export default function ProposalCardMini({
     proposal,
     isHorizontal
-}: ProposalMiniCardProps) {
+}: ProposalCardMiniProps) {
     const { t } = useTranslation();
 
     const [userSelected, setUserSelected] =
@@ -27,7 +27,7 @@ export default function ProposalMiniCard({
 
     const noSelectedUser = useCallback(() => setUserSelected(null), []);
     return (
-        <article className="bg-background relative flex h-full flex-col rounded-xl p-4 shadow-lg">
+        <article className="bg-background relative flex h-full flex-col rounded-xl p-2 shadow-lg">
             <div className="flex h-auto w-full flex-col items-start overflow-hidden rounded-xl">
                 <ProposalCardHeader
                     proposal={proposal}
