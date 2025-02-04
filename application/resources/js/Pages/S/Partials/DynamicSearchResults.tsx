@@ -76,6 +76,7 @@ const DynamicSearchResults = ({
     data = {} as SearchResultsData,
 }: DynamicSearchResultsProps) => {
     const [isHorizontal] = useState(false);
+    const [isMini] = useState(false);
     const { t } = useTranslation();
     const [query, setQuery] = useState('');
     const search = window.location.search;
@@ -110,6 +111,7 @@ const DynamicSearchResults = ({
                         <ProposalResults
                             proposals={data.hits as ProposalData[]}
                             isHorizontal={isHorizontal}
+                            isMini={isMini}
                             quickPitchView={quickPitchView}
                             setGlobalQuickPitchView={setGlobalQuickPitchView}
                         />
