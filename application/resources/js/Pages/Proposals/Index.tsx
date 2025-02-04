@@ -94,7 +94,7 @@ export default function Index({
                     <ProposalFilters />
                 </section>
 
-                <section className="container mt-4 flex flex-col items-end">
+                <section className="container flex flex-col items-end">
                     <CardLayoutSwitcher
                         isHorizontal={isHorizontal}
                         quickPitchView={quickPitchView}
