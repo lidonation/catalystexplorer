@@ -26,19 +26,20 @@ final class CatalystFunds extends Enum
     protected static function values(): array
     {
         return [
+            'ZERO' => 0,
             'ONE' => 1,
-            'TWO' => 2,
-            'THREE' => 3,
-            'FOUR' => 4,
-            'FIVE' => 5,
-            'SIX' => 6,
-            'SEVEN' => 7,
-            'EIGHT' => 8,
-            'NINE' => 9,
-            'TEN' => 10,
-            'ELEVEN' => 11,
-            'TWELVE' => 12,
-            'THIRTEEN' => 13,
+            'TWO' => 95,
+            'THREE' => 91,
+            'FOUR' => 84,
+            'FIVE' => 32,
+            'SIX' => 21,
+            'SEVEN' => 58,
+            'EIGHT' => 61,
+            'NINE' => 97,
+            'TEN' => 113,
+            'ELEVEN' => 129,
+            'TWELVE' => 139,
+            'THIRTEEN' => 146,
         ];
     }
 }
