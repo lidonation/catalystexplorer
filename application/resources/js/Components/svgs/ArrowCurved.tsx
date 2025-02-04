@@ -24,16 +24,16 @@ export default function ArrowCurvedIcon({
             <path
                 d="M5.66675 4.33594L3.66675 6.33594L1.66675 4.33594"
                 stroke="currentColor"
-                stroke-width="1.2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
+                strokeWidth="1.2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
             />
             <path
                 d="M3.66675 6.33333V3C3.66675 2.46957 3.45603 1.96086 3.08096 1.58579C2.70589 1.21071 2.19718 1 1.66675 1H1.00008"
                 stroke="currentColor"
-                stroke-width="1.2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
+                strokeWidth="1.2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
             />
         </svg>
     );

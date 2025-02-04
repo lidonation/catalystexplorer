@@ -1,6 +1,7 @@
 import ProposalCard from '@/Pages/Proposals/Partials/ProposalCard';
-import ProposalMiniCard from '@/Pages/Proposals/Partials/ProposalMiniCard';
+import { AnimatePresence, motion } from 'framer-motion';
 import React from 'react';
+import ProposalCardMini from './ProposalCardMini';
 import ProposalData = App.DataTransferObjects.ProposalData;
 interface ProposalProps {
     proposals?: ProposalData[];
@@ -22,29 +23,37 @@ const ProposalResults: React.FC<ProposalProps> = ({
             className={`grid gap-3 ${
                 isHorizontal
                     ? 'grid-cols-1'
-                    : 'grid-cols-1 md:grid-cols-2 xl:grid-cols-3'
+                    : `${isMini ? 'grid-cols-2 md:grid-cols-3 xl:grid-cols-4' : 'grid-cols-1 md:grid-cols-2 xl:grid-cols-3'}`
             }`}
         >
-            {proposals &&
-                proposals.map((proposal) => (
-                    <div key={proposal.id}>
-                        {isMini ? (
-                            <ProposalMiniCard
-                                proposal={proposal}
-                                isHorizontal={false}
-                            />
-                        ) : (
-                            <ProposalCard
-                                proposal={proposal}
-                                isHorizontal={isHorizontal}
-                                globalQuickPitchView={quickPitchView}
-                                setGlobalQuickPitchView={
-                                    setGlobalQuickPitchView
-                                }
-                            />
-                        )}
-                    </div>
-                ))}
+            <AnimatePresence>
+                {proposals &&
+                    proposals?.map((proposal) => (
+                        <motion.div
+                            key={`${proposal.id}-${isMini ? 'mini' : 'full'}`} 
+                            initial={{ opacity: 0, scale: 0.9 }} 
+                            animate={{ opacity: 1, scale: 1 }} 
+                            exit={{ opacity: 0, scale: 0.9 }} 
+                            transition={{ duration: 0.4, ease: 'easeIn' }} 
+                        >
+                            {isMini ? (
+                                <ProposalCardMini
+                                    proposal={proposal}
+                                    isHorizontal={false}
+                                />
+                            ) : (
+                                <ProposalCard
+                                    proposal={proposal}
+                                    isHorizontal={isHorizontal}
+                                    globalQuickPitchView={quickPitchView}
+                                    setGlobalQuickPitchView={
+                                        setGlobalQuickPitchView
+                                    }
+                                />
+                            )}
+                        </motion.div>
+                    ))}
+            </AnimatePresence>
         </div>
     );
 };
