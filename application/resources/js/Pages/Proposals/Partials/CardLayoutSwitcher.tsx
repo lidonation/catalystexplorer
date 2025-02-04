@@ -49,12 +49,14 @@ export default function CardLayoutSwitcher({
                 <button
                     onClick={() => {
                         setHorizontal(false);
-                        setMini(!isMini);
+                        if(isHorizontal === false){
+                            setMini(!isMini);
+                        }
                     }}
                     className={`flex flex-1 items-center justify-center p-2 ${
                         !isHorizontal || isMini
-                            ? 'bg-background-lighter text-primary cursor-pointer'
-                            : 'hover:bg-background-lighter text-gray-500'
+                            ? 'bg-background-lighter text-primary'
+                            : 'hover:bg-background-lighter text-gray-500 cursor-pointer'
                     } border-r-[2px] border-gray-300`}
                 >
                     <div className="relative flex items-center">
@@ -103,11 +105,14 @@ export default function CardLayoutSwitcher({
                 </button>
 
                 <button
-                    onClick={() => setHorizontal(true)}
+                    onClick={() => {
+                        setHorizontal(true)
+                        setIsMini(false)
+                    }}
                     className={`flex flex-1 items-center justify-center p-2 ${
                         isHorizontal
-                            ? 'bg-background-lighter text-primary cursor-pointer'
-                            : 'hover:bg-background-lighter text-gray-500'
+                            ? 'bg-background-lighter text-primary'
+                            : 'hover:bg-background-lighter text-gray-500 cursor-pointer'
                     } border-r-[2px] border-gray-300`}
                 >
                     <ListBulletIcon />
@@ -117,8 +122,8 @@ export default function CardLayoutSwitcher({
                     onClick={() => setQuickpitch(!quickPitchView)}
                     className={`flex flex-1 items-center justify-center p-2 ${
                         quickPitchView
-                            ? 'bg-background-lighter text-primary cursor-pointer'
-                            : 'hover:bg-background-lighter text-gray-500'
+                            ? 'bg-background-lighter text-primary'
+                            : 'hover:bg-background-lighter text-gray-500 cursor-pointer'
                     }`}
                 >
                     <VideoCameraIcon />
