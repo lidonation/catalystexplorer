@@ -51,6 +51,7 @@ export default function CardLayoutSwitcher({
                         setHorizontal(false);
                         if(isHorizontal === false){
                             setMini(!isMini);
+                            setQuickpitch(false)
                         }
                     }}
                     className={`flex flex-1 items-center justify-center p-2 ${
@@ -119,7 +120,10 @@ export default function CardLayoutSwitcher({
                 </button>
 
                 <button
-                    onClick={() => setQuickpitch(!quickPitchView)}
+                    onClick={() => {
+                        setQuickpitch(!quickPitchView)
+                        setIsMini(false)
+                    }}
                     className={`flex flex-1 items-center justify-center p-2 ${
                         quickPitchView
                             ? 'bg-background-lighter text-primary'
