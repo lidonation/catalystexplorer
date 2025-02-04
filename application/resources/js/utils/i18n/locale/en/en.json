@@ -364,7 +364,7 @@
             "playerStop": "Stop Icon",
             "arrowTrendingUp": "Trending Up Icon",
             "arrowTrendingDown": "Trending Down Icon",
-            "file" : "File Icon",
+            "file": "File Icon",
             "ada": "Ada Icon",
             "usd": "USD Icon",
             "tick": "Tick Icon"
@@ -381,14 +381,55 @@
         "subtitle": "Completed Project Catalyst project teams are invited to mint a celebratory NFT to mark your achievement and share it with the world!",
         "nowMinting": "Now minting",
         "communityFunded": "Community Members Funded",
-        "projectsCompleted":  "Projects Completed",
-        "usdDistributed":  "USD Distributed",
-        "adaDistributed":  "Ada Distributed",
+        "projectsCompleted": "Projects Completed",
+        "usdDistributed": "USD Distributed",
+        "adaDistributed": "Ada Distributed",
         "description": "Each NFT is unique, with design elements inspired by your project’s title and theme! Read the artist’s statement here: ",
         "artistStatement": "Project Completion NFTs for Project Catalyst",
         "proposalsSearchBar": {
             "placeHolder": "Search for proposal"
         },
-        "step": "Step" 
+        "step": "Step",
+        "claimProfile": "Claim another profile"
+    },
+    "profileWorkflow": {
+        "sectionTitle": {
+            "start": "To get started, please select one of your claimed profiles below",
+            "selectProposal": "Select one of your completed proposals to start minting",
+            "claimProfile": "Claim another profile"
+        },
+        "myProfiles": "My Profiles",
+        "back": "Back",
+        "selectProposal": "Select your completed proposal",
+        "name": "Name",
+        "email": "Email",
+        "bio": "Bio",
+        "ideascaleProfile": "Ideascale Profile",
+        "twitter": "Twitter",
+        "discord": "Discord",
+        "linkedIn": "LinkedIn",
+        "profileLink": "(Profile link)",
+        "twitterHandle": "(@handle)",
+        "discordUsername": "(Username)",
+        "claimProfile": "Claim Profile",
+        "processing": "Processing...",
+        "nowMinting": "Now Minting",
+        "fundsRange": "Funds 2 - 12",
+        "loggedInAs": "Logged in as",
+        "proposalsCount": "{{count}} Proposals",
+        "unavailable": "Unavailable",
+        "noProfilesAvailable": "No profiles available.",
+        "findCatalystUser": "Find a catalyst user",
+        "available": "Available",
+        "noProposalsAvailable": "No proposals found for this profile.",
+        "budget": "Budget",
+        "previous": "Previous",
+        "next": "Next",
+        "fund": "Fund",
+        "campaign": "Campaign",
+        "verificationTitle": "Let's get you verified!",
+        "verificationCode": "Verification Code",
+        "verificationInstructions": "To verify your ownership of this profile, please send a personal message to Lido Nation on Ideascale and include the code above.",
+        "goToIdeascale": "Go to Ideascale"
     }
 }
