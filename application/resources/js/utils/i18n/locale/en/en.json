@@ -423,6 +423,8 @@
         "available": "Available",
         "noProposalsAvailable": "No proposals found for this profile.",
         "budget": "Budget",
+        "previous": "Previous",
+        "next": "Next",
         "fund": "Fund",
         "campaign": "Campaign",
         "verificationTitle": "Let's get you verified!",

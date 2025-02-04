@@ -1,4 +1,5 @@
 import { useTranslation } from "react-i18next";
+import { useState } from "react";
 
 interface Proposal {
     title: string;
@@ -13,6 +14,19 @@ interface ProposalListProps {
 
 const ProposalList: React.FC<ProposalListProps> = ({ proposals }) => {
     const { t } = useTranslation();
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 5;
+    const totalPages = Math.ceil(proposals.length / itemsPerPage);
+    const currentProposals = proposals.slice(
+        (currentPage - 1) * itemsPerPage,
+        currentPage * itemsPerPage
+    );
+
+    const handlePageChange = (newPage: number) => {
+        if (newPage >= 1 && newPage <= totalPages) {
+            setCurrentPage(newPage);
+        }
+    };
 
     if (!Array.isArray(proposals) || proposals.length === 0) {
         return (
@@ -24,7 +38,7 @@ const ProposalList: React.FC<ProposalListProps> = ({ proposals }) => {
 
     return (
         <div className="mt-4 space-y-3">
-            {proposals.map((proposal, index) => (
+            {currentProposals.map((proposal, index) => (
                 <div key={index} className="p-4 border border-gray-200 rounded-lg shadow-sm">
                     <h4 className="font-bold">{proposal.title}</h4>
                     <p className="text-sm">
@@ -34,6 +48,28 @@ const ProposalList: React.FC<ProposalListProps> = ({ proposals }) => {
                     </p>
                 </div>
             ))}
+
+            {/* Pagination */}
+            <div className="flex items-center justify-between mt-6">
+                <button
+                    onClick={() => handlePageChange(currentPage - 1)}
+                    disabled={currentPage === 1}
+                    className="flex items-center disabled:opacity-50"
+                >
+                    ← <span className="ml-1">{t("profileWorkflow.previous")}</span>
+                </button>
+                <span className="px-4 py-2 text-sm font-medium rounded-full bg-primary-light ">
+                    {currentPage}
+                </span>
+
+                <button
+                    onClick={() => handlePageChange(currentPage + 1)}
+                    disabled={currentPage === totalPages}
+                    className="flex items-center disabled:opacity-50"
+                >
+                    <span className="mr-1">{t("profileWorkflow.next")}</span> →
+                </button>
+            </div>
         </div>
     );
 };

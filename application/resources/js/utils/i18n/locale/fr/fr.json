@@ -373,6 +373,8 @@
         "name": "Nom",
         "email": "E-mail",
         "bio": "Bio",
+        "previous":"Précédente",
+        "next":"Suivante",
         "ideascaleProfile": "Profil Ideascale",
         "twitter": "Twitter",
         "discord": "Discord",
