@@ -7,8 +7,8 @@ type DollarIconProps = {
 };
 export default function UsdIcon({
     className,
-    width = 24,
-    height = 24,
+    width = 32,
+    height = 32,
 }: DollarIconProps) {
     const { t } = useTranslation();
     return (
