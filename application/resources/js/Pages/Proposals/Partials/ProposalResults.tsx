@@ -8,6 +8,7 @@ interface ProposalProps {
     isHorizontal: boolean;
     quickPitchView: boolean;
     isMini: boolean;
+    isMini: boolean;
     setGlobalQuickPitchView: (value: boolean) => void;
 }
 
@@ -16,6 +17,7 @@ const ProposalResults: React.FC<ProposalProps> = ({
     isHorizontal,
     setGlobalQuickPitchView,
     quickPitchView,
+    isMini,
     isMini,
 }) => {
     return (

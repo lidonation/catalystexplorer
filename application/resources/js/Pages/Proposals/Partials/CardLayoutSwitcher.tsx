@@ -1,6 +1,9 @@
 import ArrowCurvedIcon from '@/Components/svgs/ArrowCurved';
 import CardSwitchIcon from '@/Components/svgs/CardSwitchIcon';
+import ArrowCurvedIcon from '@/Components/svgs/ArrowCurved';
+import CardSwitchIcon from '@/Components/svgs/CardSwitchIcon';
 import ListBulletIcon from '@/Components/svgs/ListBulletIcon';
+import MiniCardSwitchIcon from '@/Components/svgs/MiniCardSwitchIcon';
 import MiniCardSwitchIcon from '@/Components/svgs/MiniCardSwitchIcon';
 import VideoCameraIcon from '@/Components/svgs/VideoCameraIcon';
 import { useFilterContext } from '@/Context/FiltersContext';
@@ -11,7 +14,9 @@ interface CardLayoutSwitcherProps {
     isHorizontal: boolean;
     quickPitchView: boolean;
     isMini: boolean;
+    isMini: boolean;
     setIsHorizontal: (value: boolean) => void;
+    setIsMini: (value: boolean) => void;
     setIsMini: (value: boolean) => void;
     setGlobalQuickPitchView: (value: boolean) => void;
 }
@@ -20,7 +25,9 @@ export default function CardLayoutSwitcher({
     isHorizontal,
     quickPitchView,
     isMini,
+    isMini,
     setIsHorizontal,
+    setIsMini,
     setIsMini,
     setGlobalQuickPitchView,
 }: CardLayoutSwitcherProps) {
@@ -38,6 +45,10 @@ export default function CardLayoutSwitcher({
     const setHorizontal = (value: boolean) => {
         setIsHorizontal(value);
         // setQuickpitch(false);
+    };
+
+    const setMini = (value: boolean) => {
+        setIsMini(value);
     };
 
     const setMini = (value: boolean) => {
@@ -115,6 +126,8 @@ export default function CardLayoutSwitcher({
                         isHorizontal
                             ? 'bg-background-lighter text-primary'
                             : 'hover:bg-background-lighter text-gray-500 cursor-pointer'
+                            ? 'bg-background-lighter text-primary'
+                            : 'hover:bg-background-lighter text-gray-500 cursor-pointer'
                     } border-r-[2px] border-gray-300`}
                 >
                     <ListBulletIcon />
@@ -127,6 +140,8 @@ export default function CardLayoutSwitcher({
                     }}
                     className={`flex flex-1 items-center justify-center w-[50px] h-[40px] ${
                         quickPitchView
+                            ? 'bg-background-lighter text-primary'
+                            : 'hover:bg-background-lighter text-gray-500 cursor-pointer'
                             ? 'bg-background-lighter text-primary'
                             : 'hover:bg-background-lighter text-gray-500 cursor-pointer'
                     }`}
