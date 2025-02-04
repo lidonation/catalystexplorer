@@ -82,7 +82,7 @@ class GroupsController extends Controller
     {
         return Inertia::render('Groups/Group', [
             'group' => GroupData::from($group),
-            'proposals' => ProposalData::collect($group->proposals()->paginate()),
+            'proposals' => ProposalData::collect($group->proposals()->with('users')->paginate()),
         ]);
     }
 
