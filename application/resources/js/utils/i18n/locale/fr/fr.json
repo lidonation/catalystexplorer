@@ -296,6 +296,7 @@
     },
     "icons": {
         "titles": {
+            "arrowCurved": "Icône incurvée de flèche",
             "arrow_left": "Icône de flèche vers la gauche",
             "barLine": "Icône de graphique en barres",
             "blue_eye": "Icône d'œil bleu",
@@ -303,6 +304,7 @@
             "bookmark_on": "Icône de signet activée",
             "bookmark_off": "Icône de signet désactivée",
             "bucket": "Icône de seau",
+            "cardSwitch": "Icône de commutateur de carte",
             "chart": "Icône de graphique",
             "check": "Icône de vérification",
             "chevron_up": "Icône de chevron vers le haut",
@@ -317,6 +319,7 @@
             "logOut": "Icône de déconnexion",
             "mail": "Icône de courrier",
             "menu": "Icône de menu",
+            "miniCardSwitch": "Icône de commutateur de mini-carte",
             "note": "Icône de note",
             "notificationBox": "Icône de boîte de notification",
             "people": "Icône de personnes",

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link, WhenVisible } from '@inertiajs/react';
 import { useTranslation } from 'react-i18next';
-import ProposalMiniCard from './ProposalMiniCard';
+import ProposalCardMini from './ProposalCardMini';
 import ProposalMiniCardLoader from './ProposalMiniCardLoader';
 
 interface RelatedProposalsProps {
@@ -25,7 +25,7 @@ const RelatedProposals: React.FC<RelatedProposalsProps> = ({ proposals, groupId 
         >
             <div className="proposals-wrapper mt-4 grid w-full grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-3">
                 {visibleProposals.map((proposal) => (
-                    <ProposalMiniCard
+                    <ProposalCardMini
                         key={proposal.id}
                         proposal={proposal}
                         isHorizontal={false}

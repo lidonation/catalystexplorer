@@ -1,6 +1,6 @@
 import { Head } from '@inertiajs/react';
 import { useTranslation } from 'react-i18next';
-import RelatedProposals from './Partials/RelatedProposals';
+import RelatedProposals from '../Proposals/Partials/RelatedProposals';
 import GroupData = App.DataTransferObjects.GroupData;
 import ProposalData = App.DataTransferObjects.ProposalData;
 import ReviewHorizontalCard from '../Campaign/Partials/ReviewHorizontalCard';
