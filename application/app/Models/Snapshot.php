@@ -7,7 +7,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 
-class CatalystSnapshot extends Model
+class Snapshot extends Model
 {
     public $timestamps = false;
 
@@ -25,6 +25,6 @@ class CatalystSnapshot extends Model
 
     public function votingPowers(): HasMany
     {
-        return $this->hasMany(CatalystVotingPower::class, 'snapshot_id', 'id');
+        return $this->hasMany(VotingPower::class, 'snapshot_id', 'id');
     }
 }

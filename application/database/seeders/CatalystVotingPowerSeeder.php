@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Database\Seeders;
 
-use App\Models\CatalystSnapshot;
-use App\Models\CatalystVotingPower;
+use App\Models\Snapshot;
+use App\Models\VotingPower;
 use Illuminate\Database\Seeder;
 
 class CatalystVotingPowerSeeder extends Seeder
@@ -15,14 +15,14 @@ class CatalystVotingPowerSeeder extends Seeder
      */
     public function run(): void
     {
-        $snapshot = CatalystSnapshot::create([
+        $snapshot = Snapshot::create([
             'snapshot_name' => 'Snapshot 1',
             'model_type' => 'SomeModel',
             'model_id' => 1,
         ]);
 
-        CatalystVotingPower::create([
-            'catalyst_snapshot_id' => $snapshot->id,
+        VotingPower::create([
+            'snapshot_id' => $snapshot->id,
             'delegate' => 'Delegate 1',
             'voting_power' => 100.25,
             'voter_id' => 1,

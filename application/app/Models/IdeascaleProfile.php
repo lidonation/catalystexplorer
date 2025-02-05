@@ -59,7 +59,8 @@ class IdeascaleProfile extends Model implements HasMedia
             'name',
             'username',
             'email',
-
+            'amount_awarded_ada',
+            'amount_awarded_usd',
             'completed_proposals_count',
             'funded_proposals_count',
             'unfunded_proposals_count',

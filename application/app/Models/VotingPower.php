@@ -6,13 +6,13 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class CatalystVotingPower extends Model
+class VotingPower extends Model
 {
-    protected $fillable = ['catalyst_snapshot_id', 'delegate', 'voting_power', 'voter_id', 'consumed', 'votes_cast'];
+    protected $fillable = ['snapshot_id', 'delegate', 'voting_power', 'voter_id', 'consumed', 'votes_cast'];
 
     public function snapshot()
     {
-        return $this->belongsTo(CatalystSnapshot::class, 'catalyst_snapshot_id');
+        return $this->belongsTo(Snapshot::class, 'snapshot_id');
     }
 
     public function voter(): BelongsTo
