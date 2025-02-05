@@ -59,7 +59,7 @@ export default function Index({
         {
             value: '1436',
             description: t('completedProjectNfts.communityFunded'),
-            icon: <PeopleIcon stroke="#3FACD1" />,
+            icon: <PeopleIcon stroke="#3FACD1" width={32} height={32} />,
         },
         {
             value: '1064',
