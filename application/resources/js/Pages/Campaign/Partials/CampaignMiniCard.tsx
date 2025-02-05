@@ -4,12 +4,12 @@ import CampaignData = App.DataTransferObjects.CampaignData;
 import { currency } from '@/utils/currency';
 import { useTranslation } from 'react-i18next';
 
-interface CampainMiniCardProps {
+interface CampaignMiniCardProps {
   fund: FundData;
   campaign: CampaignData
 }
 
-const CampaignMiniCard: React.FC<CampainMiniCardProps> = ({ fund, campaign }) => {
+const CampaignMiniCard: React.FC<CampaignMiniCardProps> = ({ fund, campaign }) => {
   const { t } = useTranslation();
 
   const heroImageUrl = fund?.hero_img_url;
@@ -24,8 +24,8 @@ const CampaignMiniCard: React.FC<CampainMiniCardProps> = ({ fund, campaign }) =>
             className="h-full w-full object-cover"
           />
         ) : (
-          <div className="flex items-center justify-center h-full text-gray-persist">
-            {t('noImage')}
+          <div className="flex bg-primary items-center justify-center h-full">
+            <span className="text-lg text-content-light">{t('developers')}</span>
           </div>
         )}
       </div>
