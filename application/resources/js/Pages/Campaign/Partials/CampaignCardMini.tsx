@@ -9,7 +9,7 @@ interface CampaignCardMiniProps {
   campaign: CampaignData
 }
 
-const CampaignMiniCard: React.FC<CampaignCardMiniProps> = ({ fund, campaign }) => {
+const CampaignCardMini: React.FC<CampaignCardMiniProps> = ({ fund, campaign }) => {
   const { t } = useTranslation();
 
   const heroImageUrl = fund?.hero_img_url;
