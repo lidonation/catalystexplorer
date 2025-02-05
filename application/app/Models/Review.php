@@ -15,38 +15,12 @@ class Review extends Model
 {
     use Searchable;
 
-    public static function runCustomIndex(): void
-    {
-        Artisan::call('cx:create-search-index App\\\\Models\\\\Review cx_reviews');
-    }
-
-    public function discussion(): BelongsTo
-    {
-        return $this->belongsTo(Discussion::class, 'model_id')->where('model_type', Discussion::class);
-    }
-
-    public function parent(): BelongsTo
-    {
-        return $this->belongsTo(self::class, 'parent_id');
-    }
-
-    public function model(): MorphTo
-    {
-        return $this->morphTo('model', 'model_type', 'model_id');
-    }
-
-    public function review_moderation_reviewer(): HasOne
-    {
-        return $this->hasOne(ReviewModerationReviewer::class, 'review_id');
-    }
-    
     public function children(): Attribute
     {
         $children = $this->metas?->where('key', 'child_id')->pluck('content');
-    
+
         return Attribute::make(get: fn () => $children->isEmpty() ? null : self::fund($children));
     }
-    
 
     public static function getFilterableAttributes(): array
     {
@@ -80,6 +54,30 @@ class Review extends Model
         ];
     }
 
+    public static function runCustomIndex(): void
+    {
+        Artisan::call('cx:create-search-index App\\\\Models\\\\Review cx_reviews');
+    }
+
+    public function discussion(): BelongsTo
+    {
+        return $this->belongsTo(Discussion::class, 'model_id')->where('model_type', Discussion::class);
+    }
+
+    public function parent(): BelongsTo
+    {
+        return $this->belongsTo(self::class, 'parent_id');
+    }
+
+    public function model(): MorphTo
+    {
+        return $this->morphTo('model', 'model_type', 'model_id');
+    }
+
+    public function review_moderation_reviewer(): HasOne
+    {
+        return $this->hasOne(ReviewModerationReviewer::class, 'review_id');
+    }
 
     public function toSearchableArray(): array
     {

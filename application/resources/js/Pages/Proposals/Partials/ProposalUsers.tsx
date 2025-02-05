@@ -17,10 +17,10 @@ export default function ProposalUsers({ users,onUserClick, className }: PageProp
 
     return (
         <section
-        className={`flex justify-between pt-3 ${className}`}
+        className={`flex justify-between pt-3 items-center ${className}`}
         aria-labelledby="team-heading"
         >
-            <h3 id="team-heading" className="mb-2 font-medium">
+            <h3 id="team-heading" className="font-medium">
             {t('teams')}
             </h3>
             <ul className="flex cursor-pointer -space-x-2">

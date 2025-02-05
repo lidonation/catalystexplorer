@@ -30,7 +30,7 @@ class HorizonServiceProvider extends HorizonApplicationServiceProvider
     protected function gate(): void
     {
         Gate::define('viewHorizon', function ($user = null) {
-            if (config('app.env') === 'preview') {
+            if (in_array(config('app.env'), ['local', 'preview'], true)) {
                 return true;
             }
 

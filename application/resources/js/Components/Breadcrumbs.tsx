@@ -46,7 +46,7 @@ const Breadcrumbs = ({
     return (
         <nav
             aria-label="Breadcrumb"
-            className="flex items-center space-x-2 pl-8 pt-5 text-sm"
+            className="container flex items-center space-x-2 pl-8 pt-5 text-sm"
         >
             {displayItems.map((item, index) => {
                 const isLast = index === displayItems.length - 1;

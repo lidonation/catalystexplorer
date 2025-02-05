@@ -15,6 +15,11 @@
         @viteReactRefresh
         @vite(['resources/js/app.tsx', "resources/js/Pages/{$page['component']}.tsx"])
         @inertiaHead
+
+        @if(config('services.fathom.site_id'))
+        <script src="https://cdn.usefathom.com/script.js" data-site="{{ config('services.fathom.site_id') }}" defer></script>
+        @endif
+
     </head>
     <body class="font-sans antialiased"
     >

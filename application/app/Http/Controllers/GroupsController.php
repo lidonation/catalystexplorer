@@ -5,8 +5,10 @@ declare(strict_types=1);
 namespace App\Http\Controllers;
 
 use App\DataTransferObjects\GroupData;
+use App\DataTransferObjects\ProposalData;
 use App\Enums\QueryParamsEnum;
 use App\Models\Group;
+use App\Repositories\GroupRepository;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
@@ -76,10 +78,11 @@ class GroupsController extends Controller
         return Inertia::render('Groups/Index', $props);
     }
 
-    public function group(Request $request, Group $group): Response
+    public function group(Request $request, Group $group, GroupRepository $groupRepository): Response
     {
         return Inertia::render('Groups/Group', [
             'group' => GroupData::from($group),
+            'proposals' => ProposalData::collect($group->proposals()->with(['users', 'fund'])->paginate()),
         ]);
     }
 
