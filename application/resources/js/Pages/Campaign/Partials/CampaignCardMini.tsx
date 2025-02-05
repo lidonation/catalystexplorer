@@ -4,12 +4,12 @@ import CampaignData = App.DataTransferObjects.CampaignData;
 import { currency } from '@/utils/currency';
 import { useTranslation } from 'react-i18next';
 
-interface CampaignMiniCardProps {
+interface CampaignCardMiniProps {
   fund: FundData;
   campaign: CampaignData
 }
 
-const CampaignMiniCard: React.FC<CampaignMiniCardProps> = ({ fund, campaign }) => {
+const CampaignMiniCard: React.FC<CampaignCardMiniProps> = ({ fund, campaign }) => {
   const { t } = useTranslation();
 
   const heroImageUrl = fund?.hero_img_url;
@@ -54,4 +54,4 @@ const CampaignMiniCard: React.FC<CampaignMiniCardProps> = ({ fund, campaign }) =
 
 
 
-export default CampaignMiniCard;
+export default CampaignCardMini;
