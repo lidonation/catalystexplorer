@@ -47,10 +47,10 @@ export default function ProposalVerticalCard({
                                 t={t}
                             />
                             <section
-                                className="mt-6"
+                                className="mt-3"
                                 aria-labelledby="funding-heading"
                             >
-                                <div className="flex gap-2">
+                                <div className="flex gap-2 my-1">
                                     <h3 className="font-semibold">
                                         {t('funding')}
                                     </h3>
@@ -60,8 +60,8 @@ export default function ProposalVerticalCard({
                                 </div>
                                 <ProposalFundingPercentages proposal={proposal}/>
                             </section>
-                            <div className="my-4 border-b"></div>
-                            <div className="relative min-h-36">
+                            {/*<div className="my-3 border-b"></div>*/}
+                            <div className="relative min-h-36 mt-4">
                                 {quickPitchView ? (
                                     <ProposalQuickpitch
                                         quickpitch={proposal.quickpitch}
