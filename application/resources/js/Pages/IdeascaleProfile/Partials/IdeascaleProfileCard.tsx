@@ -1,7 +1,7 @@
 import UserAvatar from '@/Components/UserAvatar';
 import { useTranslation } from 'react-i18next';
+import SegmentedBar from './SegmentedProgressBar';
 import IdeascaleProfileData = App.DataTransferObjects.IdeascaleProfileData;
-
 interface IdeascaleProfileProps {
     ideascaleProfile: IdeascaleProfileData;
 }
@@ -23,23 +23,23 @@ const IdeascaleProfileCard: React.FC<IdeascaleProfileProps> = ({
                     {ideascaleProfile?.name ?? ideascaleProfile?.username}
                 </p>
             </div>
-            <div className="border-border-secondary border-t-2">
-                <div className="flex w-full justify-between pt-2 pb-4">
-                    <p className="text-4 text-content opacity-70">
-                        {t('ideascaleProfiles.ownProposals')}
-                    </p>
-                    <p className="text-3 font-semibold">
-                        {ideascaleProfile?.own_proposals_count ?? 0}
-                    </p>
+            <div className="border-border-secondary border-t">
+                <div className="flex w-full justify-between pt-4 pb-4">
+                    <SegmentedBar
+                        IdeascaleProfileData={ideascaleProfile}
+                        CompletedProposalsColor="bg-success"
+                        FundedProposalsColor="bg-warning"
+                        UnfundedProposalsColor="bg-primary"
+                    />
                 </div>
-                <div className="flex w-full justify-between">
-                    <p className="text-4 text-content opacity-70">
-                        {t('ideascaleProfiles.coProposals')}
-                    </p>
-                    <p className="text-3 font-semibold">
-                        {ideascaleProfile?.co_proposals_count ?? 0}
-                    </p>
-                </div>
+            </div>
+            <div className="border-border-secondary mt-4 inline-flex items-center rounded-lg border border-2 px-4 py-2">
+                <p className="text-3 text-content">
+                    {t('proposals.totalProposals')}:
+                </p>
+                <p className="text-3 text-content ml-1 font-bold">
+                    {ideascaleProfile?.proposals_count ?? 0}
+                </p>
             </div>
         </div>
     );
