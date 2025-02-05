@@ -128,6 +128,8 @@ title?: string;
 profile_photo_url?: string;
 co_proposals_count?: number;
 own_proposals_count?: number;
+collaborating_proposals_count?: number;
+unfunded_proposals_count?: number;
 claimed_by?: number;
 completed_proposals_count?: number;
 funded_proposals_count?: number;

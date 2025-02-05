@@ -68,6 +68,7 @@ export default {
                 error: 'var(--bg-error-primary-color)',
                 success: 'var(--success-gradient-color-2)',
                 'success-light': 'var(--content-success-light)',
+                warning: 'var(--bg-warning-primary-color)',
                 hover: 'var(--content-hover-color)',
                 background: 'var(--cx-background)',
                 'background-light': 'var(--cx-background-light)',
@@ -92,7 +93,9 @@ export default {
                     primary: 'var(--cx-primary)',
                     secondary: 'var(--border-secondary-color)',
                     dark: 'var(--cx-dark)'
-                }
+                },
+
+                tooltip: 'var(--cx-tooltip-background)',
             },
             fontSize: {
                 'cx-display-xs': ['var(--cx-display-xs)', {
