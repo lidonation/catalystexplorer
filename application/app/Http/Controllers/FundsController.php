@@ -21,8 +21,6 @@ class FundsController extends Controller
 {
     protected array $queryParams = [];
 
-    public $fund;
-
     public function index(Request $request, FundRepository $fundRepository): Response
     {
         $funds = FundData::collect($fundRepository->getQuery()->get());
@@ -46,9 +44,7 @@ class FundsController extends Controller
     {
         $this->getProps($request);
 
-        $this->fund = $fund;
-
-        $campaigns = $this->getCampaigns();
+        $campaigns = $this->getCampaigns($fund);
 
         return Inertia::render('Funds/Fund', [
             'fund' => $fund,
@@ -72,7 +68,7 @@ class FundsController extends Controller
         ]);
     }
 
-    public function getCampaigns()
+    public function getCampaigns(Fund $fund)
     {
         $sortParam = $this->queryParams[ProposalSearchParams::SORTS()->value] ?? null;
         $sortField = null;
@@ -82,7 +78,11 @@ class FundsController extends Controller
             [$sortField, $sortDirection] = explode(':', $sortParam);
         }
 
-        $query = $this->fund->campaigns();
+        $query = $fund->campaigns()->withCount([
+            'completed_proposals',
+            'unfunded_proposals',
+            'funded_proposals',
+        ]);
 
         if ($sortField && $sortDirection && in_array($sortDirection, ['asc', 'desc'])) {
             if ($sortField === CampaignsSortBy::AMOUNT()->value) {

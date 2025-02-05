@@ -4,28 +4,26 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Enums\ProposalStatus;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
 
-class Campaign extends Model
+class Campaign extends Model implements HasMedia
 {
-    use SoftDeletes;
+    use InteractsWithMedia,
+        SoftDeletes;
 
     protected $withCount = [
         'proposals',
     ];
 
-    public function fund(): BelongsTo
-    {
-        return $this->belongsTo(Fund::class, 'fund_id', 'id');
-    }
-
-    public function proposals(): HasMany
-    {
-        return $this->hasMany(Proposal::class, 'campaign_id', 'id');
-    }
+    protected $with = [
+        'media',
+    ];
 
     /**
      * Scope to filter groups
@@ -43,5 +41,37 @@ class Campaign extends Model
         });
 
         return $query;
+    }
+
+    public function fund(): BelongsTo
+    {
+        return $this->belongsTo(Fund::class, 'fund_id', 'id');
+    }
+
+    public function proposals(): HasMany
+    {
+        return $this->hasMany(Proposal::class, 'campaign_id', 'id');
+    }
+
+    public function completed_proposals(): HasMany
+    {
+        return $this->proposals()->where([
+            'type' => 'proposal',
+            'status' => ProposalStatus::complete()->value,
+        ]);
+    }
+
+    public function funded_proposals(): HasMany
+    {
+        return $this->proposals()
+            ->where(['type' => 'proposal'])
+            ->whereNotNull('funded_at');
+    }
+
+    public function unfunded_proposals(): HasMany
+    {
+        return $this->proposals()
+            ->where(['type' => 'proposal'])
+            ->whereNull('funded_at');
     }
 }

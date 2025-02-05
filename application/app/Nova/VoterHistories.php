@@ -56,7 +56,7 @@ class VoterHistories extends Resource
             Text::make('Time', 'time'),
             Number::make('Proposal', 'weight'),
             Number::make('Choice', 'choice'),
-            Number::make('Catalyst Snapshot Id', 'catalyst_snapshot_id'),
+            Number::make('Catalyst Snapshot Id', 'snapshot_id'),
             DateTime::make('Created At', 'created_at')->sortable(),
             DateTime::make('Updated At', 'updated_at')->sortable(),
             DateTime::make('Deleted At', 'deleted_at')->sortable(),
