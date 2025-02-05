@@ -33,9 +33,6 @@ const Group: React.FC<GroupPageProps> = ({ group, proposals }) => {
                     proposals={proposals}
                     groupId={group.id ?? undefined}
                 />
-                <div className='mt-4'>
-                    <ReviewHorizontalCard/>
-                </div>
             </section>
         </>
     );
