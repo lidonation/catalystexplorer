@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import RelatedProposals from './Partials/RelatedProposals';
 import GroupData = App.DataTransferObjects.GroupData;
 import ProposalData = App.DataTransferObjects.ProposalData;
+import ReviewHorizontalCard from '../Campaign/Partials/ReviewHorizontalCard';
 
 interface GroupPageProps extends Record<string, unknown> {
     group: GroupData;
@@ -32,6 +33,9 @@ const Group: React.FC<GroupPageProps> = ({ group, proposals }) => {
                     proposals={proposals}
                     groupId={group.id ?? undefined}
                 />
+                <div className='mt-4'>
+                    <ReviewHorizontalCard/>
+                </div>
             </section>
         </>
     );
