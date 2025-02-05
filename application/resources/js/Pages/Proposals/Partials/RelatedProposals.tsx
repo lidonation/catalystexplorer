@@ -8,15 +8,22 @@ interface RelatedProposalsProps {
     proposals: {
         data: Array<App.DataTransferObjects.ProposalData>;
         total: number;
+        per_page?: number;
     };
     groupId?: number;
+    maxVisibleProposals?: number;
 }
 
-const RelatedProposals: React.FC<RelatedProposalsProps> = ({ proposals, groupId }) => {
+const RelatedProposals: React.FC<RelatedProposalsProps> = ({ 
+    proposals, 
+    groupId,
+    maxVisibleProposals: maxVisiblePropsProp 
+}) => {
     const { t } = useTranslation();
-    const MAX_VISIBLE_PROPOSALS = 12;
-    const showViewMore = proposals.total > MAX_VISIBLE_PROPOSALS;
-    const visibleProposals = proposals.data.slice(0, showViewMore ? MAX_VISIBLE_PROPOSALS - 1 : MAX_VISIBLE_PROPOSALS);
+    
+    const maxVisibleItems = maxVisiblePropsProp ?? proposals.per_page ?? 12;
+    const showViewMore = proposals.total > maxVisibleItems;
+    const visibleProposals = proposals.data.slice(0, showViewMore ? maxVisibleItems - 1 : maxVisibleItems);
 
     return (
         <WhenVisible
@@ -35,12 +42,12 @@ const RelatedProposals: React.FC<RelatedProposalsProps> = ({ proposals, groupId 
                 {showViewMore && (
                     <Link
                         href={`/proposals${groupId ? `?g%5B0%5D=${groupId}` : ''}`}
-                        className="bg-background min-h-96 flex h-full flex-col items-center justify-center rounded-xl p-4 shadow-lg transition-transform hover:scale-105"
+                        className="bg-background min-h-96 flex h-full flex-col items-center justify-center rounded-xl p-4 shadow-lg transition-transform hover:scale-95"
                     >
                         <div className="flex flex-col items-center gap-4">
                             <div className="text-center">
                                 <p className="text-sm text-gray-600">{t('seeAll')}</p>
-                                <p className="text-xl font-semibold">{proposals.total - (MAX_VISIBLE_PROPOSALS - 1)}</p>
+                                <p className="text-xl font-semibold">{proposals.total - (maxVisibleItems - 1)}</p>
                                 <p className="text-sm text-gray-600">{t('proposals.proposals')}</p>
                             </div>
                         </div>

@@ -92,6 +92,10 @@
     "verificationCode": "CODE$:",
     "verificationInstructions": "To verify your ownership of this profile, please send a personal message to Lido Nation on Ideascale and include the code above.",
     "goToIdeascale": "Go to Ideascale",
+    "error404": {
+        "mainText": "Sorry, we couldn't find what you're looking for",
+        "subText": "Let's Find Your Way Back!"
+    },
     "app": {
         "name": "Catalyst Explorer",
         "contactEmail": "support@lidonation.com",
@@ -291,6 +295,8 @@
         "projectStatus": "Project status",
         "limitTags": "Limit to tags",
         "fundingStatus": "Funding Status",
+        "proposer": "Proposer",
+        "collaborator": "Collaborator",
         "noIdeascaleProfiles": "No Ideascale Profiles Found",
         "options": {
             "alphabeticallyAsc": "Alphabetically: A to Z",

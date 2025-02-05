@@ -63,7 +63,7 @@ export default function ProposalFundingPercentages({ proposal }: Proposal) {
 
     // Component Rendering
     return (
-        <div className="mt-4">
+        <div>
             <div className="flex items-baseline justify-between gap-2">
                 <span>Received</span>
                 <div>
