@@ -55,11 +55,11 @@ export default function CardLayoutSwitcher({
                             setQuickpitch(false)
                         }
                     }}
-                    className={`flex flex-1 items-center justify-center w-[60px] h-[50px] ${
-                        !isHorizontal || isMini
-                            ? 'bg-background-lighter text-primary'
-                            : 'hover:bg-background-lighter text-gray-500 cursor-pointer'
-                    } border-r-[2px] border-gray-300`}
+                    className={`flex flex-1 items-center justify-center w-[60px] h-[50px]${
+                        !isHorizontal
+                            ? 'bg-background-lighter text-primary cursor-pointer'
+                            : ' text-gray-500 cursor-pointer'
+                    } border-r-[2px] border-gray-300 hover:bg-background-lighter`}
                 >
                     <div className="relative flex items-center">
                         <div
