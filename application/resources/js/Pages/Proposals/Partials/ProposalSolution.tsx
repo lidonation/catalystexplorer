@@ -1,4 +1,5 @@
 import { PageProps } from '@/types';
+import Markdown from "marked-react";
 
 interface ProposalSolution extends Record<string, unknown> {
     solution?: string;
@@ -23,8 +24,6 @@ export default function ProposalSolution({
     slug,
 }: PageProps<ProposalSolution>) {
     const text: string | null = solution.length ? solution : problem;
-    const wordLimit = 200;
-    const truncatedSolution = truncateText(text, wordLimit);
 
     return (
         <section
@@ -37,8 +36,8 @@ export default function ProposalSolution({
                 </h2>
             </header>
 
-            <div className="solution-content text-content pb-1">
-                <p>{truncatedSolution}</p>
+            <div className="solution-content text-content pb-1 line-clamp-5">
+                <Markdown>{text}</Markdown>
             </div>
         </section>
     );
