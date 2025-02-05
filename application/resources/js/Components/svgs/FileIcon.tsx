@@ -12,13 +12,6 @@ export default function FileIcon({
 }: FileIconProps) {
     const { t } = useTranslation();
     return (
-        // <svg  fill="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" className={`${className}`}>
-        //     <title> {t('icons.title.file')}</title>
-        //     <path fill="var(--cx-primary, currentColor)" d="M334.627,16H48V496H472V153.373ZM440,166.627V168H320V48h1.373ZM80,464V48H288V200H440V464Z" stroke="#3FACD1" stroke-width="32" className="cx-primary" />
-        // </svg>
-
-
-
         <svg
             width={width}
             height={height}
