@@ -1,8 +1,8 @@
 import ProposalCardHeader from '@/Pages/Proposals/Partials/ProposalCardHeader';
 import ProposalFundingPercentages from '@/Pages/Proposals/Partials/ProposalFundingPercentages';
 import ProposalFundingStatus from '@/Pages/Proposals/Partials/ProposalFundingStatus';
-import {useCallback, useState} from 'react';
-import {useTranslation} from 'react-i18next';
+import { useCallback, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import Proposal = App.DataTransferObjects.ProposalData;
 import ProposalUsersMini from './ProposalUsersMini';
 
@@ -10,12 +10,11 @@ interface ProposalCardMiniProps {
     proposal: Proposal;
     isHorizontal: boolean;
 }
-
 export default function ProposalCardMini({
-                                             proposal,
-                                             isHorizontal
-                                         }: ProposalCardMiniProps) {
-    const {t} = useTranslation();
+    proposal,
+    isHorizontal
+}: ProposalCardMiniProps) {
+    const { t } = useTranslation();
 
     const [userSelected, setUserSelected] =
         useState<App.DataTransferObjects.IdeascaleProfileData | null>(null);
