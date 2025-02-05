@@ -293,3 +293,7 @@
 .snaps-scrollable>* {
     scroll-snap-align: start;
 }
+
+.proposal-card .proposal-solution img {
+    @apply hidden;
+}

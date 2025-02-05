@@ -1,4 +1,5 @@
 import { PageProps } from '@/types';
+import Markdown from "marked-react";
 
 interface ProposalSolution extends Record<string, unknown> {
     solution?: string;
@@ -6,13 +7,13 @@ interface ProposalSolution extends Record<string, unknown> {
     slug?: string;
 }
 
-function truncateText(text: string | null, wordLimit: number): string {
+function truncateText(text: string | null, limit: number): string {
     if (!text) {
         return '';
     }
     const words = text.split(' ');
-    if (words.length > wordLimit) {
-        return words.slice(0, wordLimit).join(' ') + '...';
+    if (text.length > limit) {
+        return text.slice(0, limit) + '...';
     }
     return text;
 }
@@ -23,8 +24,6 @@ export default function ProposalSolution({
     slug,
 }: PageProps<ProposalSolution>) {
     const text: string | null = solution.length ? solution : problem;
-    const wordLimit = 15;
-    const truncatedSolution = truncateText(text, wordLimit);
 
     return (
         <section
@@ -35,20 +34,11 @@ export default function ProposalSolution({
                 <h2 id="solution-heading" className="text-content font-medium">
                     Solution
                 </h2>
-                <nav aria-label="Go to proposal">
-                    <a
-                        href={`proposals/${slug}`}
-                        target="_blank"
-                        className="text-primary hover:underline"
-                    >
-                        See more
-                    </a>
-                </nav>
             </header>
 
-            <article className="solution-content text-content mt-4">
-                <p>{truncatedSolution}</p>
-            </article>
+            <div className="solution-content text-content pb-1 line-clamp-5">
+                <Markdown>{text}</Markdown>
+            </div>
         </section>
     );
 }
