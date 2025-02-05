@@ -46,7 +46,7 @@ export default function AppLayout({ children }: { children: ReactNode }) {
             <section className="bg-background-lighter lg:mt-4 lg:ml-72 lg:rounded-tl-4xl">
                 {/* Mobile header */}
                 <header className="bg-background sticky top-0 z-30 border-b border-gray-200 lg:hidden">
-                    <div className="flex h-16 items-center justify-between px-4">
+                    <div className="flex container h-16 items-center justify-between px-4">
                         <CatalystLogo className="h-8" />
                         <Button
                             onClick={() => setSidebarOpen(!sidebarOpen)}
