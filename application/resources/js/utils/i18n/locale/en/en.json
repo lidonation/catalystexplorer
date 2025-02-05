@@ -290,6 +290,8 @@
         "projectStatus": "Project status",
         "limitTags": "Limit to tags",
         "fundingStatus": "Funding Status",
+        "proposer": "Proposer",
+        "collaborator": "Collaborator",
         "noIdeascaleProfiles": "No Ideascale Profiles Found",
         "options": {
             "alphabeticallyAsc": "Alphabetically: A to Z",
