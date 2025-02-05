@@ -22,7 +22,7 @@ export default function ProposalHorizontalCard({
     abstainVotes,
 }: any) {
     return (
-        <article className="bg-background relative flex max-h-screen min-h-[400px] flex-col space-y-4 overflow-auto rounded-xl p-4 shadow-lg md:flex-row md:space-y-0 md:space-x-4">
+        <article className="bg-background relative flex max-h-screen min-h-[400px] flex-col space-y-4 overflow-auto rounded-xl p-4 shadow-lg md:flex-row md:space-y-0 md:space-x-4 proposal-card proposal-card-horizontal">
             <div className="flex h-auto w-[500px] flex-col items-start overflow-hidden rounded-xl">
                 <ProposalCardHeader
                     proposal={proposal}
