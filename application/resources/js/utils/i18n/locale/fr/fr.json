@@ -85,6 +85,10 @@
     "verificationCode": "CODE$:",
     "verificationInstructions": "Pour vérifier que vous êtes le propriétaire de ce profil, envoyez un message personnel à Lido Nation sur Ideascale et incluez le code ci-dessus.",
     "goToIdeascale": "Aller sur Ideascale",
+    "error404": {
+        "mainText": "Désolé, nous n'avons pas trouvé ce que vous cherchez",
+        "subText": "Retrouvons votre chemin du retour!"
+    },
     "app": {
         "name": "Catalyst Explorer",
         "contactEmail": "support@lidonation.com",
@@ -376,8 +380,8 @@
         "name": "Nom",
         "email": "E-mail",
         "bio": "Bio",
-        "previous":"Précédente",
-        "next":"Suivante",
+        "previous": "Précédente",
+        "next": "Suivante",
         "ideascaleProfile": "Profil Ideascale",
         "twitter": "Twitter",
         "discord": "Discord",
