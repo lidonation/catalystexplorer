@@ -30,7 +30,7 @@ const SegmentedBar: React.FC<SegmentedBarProps> = ({  IdeascaleProfileData,Compl
         if (total === 0) {
           width = "33.33%"; // Distribute evenly if all values are zero
         } else {
-          width = value === 0 ? "4px" : (value / total) * 100 + "%";
+          width = (value / total) * 100 + "%";
         }
         return (
           <div
