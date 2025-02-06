@@ -20,7 +20,7 @@ return new class extends Migration
             $table->text('raw_fragment');
             $table->bigInteger('proposal');
             $table->integer('choice');
-            $table->bigInteger('catalyst_snapshot_id')->nullable();
+            $table->bigInteger('snapshot_id')->nullable();
             $table->timestamps(0);
             $table->softDeletesTz('deleted_at', 0);
         });

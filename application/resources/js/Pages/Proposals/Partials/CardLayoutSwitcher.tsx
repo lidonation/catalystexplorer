@@ -5,6 +5,7 @@ import MiniCardSwitchIcon from '@/Components/svgs/MiniCardSwitchIcon';
 import VideoCameraIcon from '@/Components/svgs/VideoCameraIcon';
 import { useFilterContext } from '@/Context/FiltersContext';
 import { ProposalParamsEnum } from '@/enums/proposal-search-params';
+import Button from '@/Components/atoms/Button';
 
 interface CardLayoutSwitcherProps {
     isHorizontal: boolean;
@@ -45,8 +46,8 @@ export default function CardLayoutSwitcher({
 
     return (
         <div className="relative">
-            <div className="z- bg-background flex overflow-hidden rounded-lg border-[2px] border-gray-300 shadow-md">
-                <button
+            <div className="z- bg-background flex overflow-hidden rounded-lg border-[2px] border-gray-300 shadow-m">
+                <Button
                     onClick={() => {
                         setHorizontal(false);
                         if(isHorizontal === false){
@@ -54,84 +55,84 @@ export default function CardLayoutSwitcher({
                             setQuickpitch(false)
                         }
                     }}
-                    className={`flex flex-1 items-center justify-center p-2 ${
-                        !isHorizontal || isMini
-                            ? 'bg-background-lighter text-primary'
-                            : 'hover:bg-background-lighter text-gray-500 cursor-pointer'
-                    } border-r-[2px] border-gray-300`}
+                    className={`flex flex-1 items-center justify-center w-[60px] h-[50px]${
+                        !isHorizontal
+                            ? 'bg-background-lighter text-primary cursor-pointer'
+                            : ' text-gray-500 cursor-pointer'
+                    } border-r-[2px] border-gray-300 hover:bg-background-lighter`}
                 >
                     <div className="relative flex items-center">
                         <div
                             className={`relative transition-all duration-500 ease-in-out ${
                                 isMini
-                                    ? '-translate-y-4 translate-x-1'
-                                    : '-translate-x-1 -translate-y- pl-2'
+                                    ? '-translate-y-2 translate-x-2 pr-2 pl-1'
+                                    : '-translate-x-1 translate-y-1 pl-4'
                             }`}
                         >
-                            <CardSwitchIcon
+                            <MiniCardSwitchIcon
                                 className={`transition-opacity duration-500 ease-in-out ${
                                     isMini ? 'opacity-0' : 'opacity-100'
                                 }`}
                             />
-                            <MiniCardSwitchIcon
+                            <CardSwitchIcon
                                 className={`transition-opacity duration-500 ease-in-out ${
                                     isMini ? 'opacity-100' : 'opacity-0'
                                 }`}
                             />
                         </div>
 
-                        <div className="relative -translate-y-2">
+                        <div className={`relative ${isMini? 'translate-y-1 translate-x-1 pb-1' : '-translate-y-1 -translate-x-2'}`}>
                             <ArrowCurvedIcon />
                         </div>
 
                         <div
                             className={`relative transition-all duration-500 ease-in-out ${
                                 isMini
-                                    ? '-translate-x-1 -translate-y-1 pt-1'
-                                    : '-translate-x-1 translate-y-4'
+                                    ? 'translate-x-1 -translate-y-1 pt-2 pr-2 '
+                                    : '-translate-x-2 translate-y-4 pb-2'
                             }`}
                         >
-                            <MiniCardSwitchIcon
+                            <CardSwitchIcon
                                 className={`transition-opacity duration-500 ease-in-out ${
                                     !isMini ? 'opacity-100' : 'opacity-0'
                                 }`}
                             />
-                            <CardSwitchIcon
+                            <MiniCardSwitchIcon
                                 className={`transition-opacity duration-500 ease-in-out ${
                                     !isMini ? 'opacity-0' : 'opacity-100'
                                 }`}
                             />
                         </div>
                     </div>
-                </button>
+                </Button>
 
-                <button
+                <Button
                     onClick={() => {
                         setHorizontal(true)
                         setIsMini(false)
                     }}
-                    className={`flex flex-1 items-center justify-center p-2 ${
+                    className={`flex flex-1 items-center justify-center w-[60px] h-[50px] ${
                         isHorizontal
                             ? 'bg-background-lighter text-primary'
                             : 'hover:bg-background-lighter text-gray-500 cursor-pointer'
                     } border-r-[2px] border-gray-300`}
                 >
                     <ListBulletIcon />
-                </button>
+                </Button>
 
-                <button
+                <Button
                     onClick={() => {
                         setQuickpitch(!quickPitchView)
                         setIsMini(false)
                     }}
-                    className={`flex flex-1 items-center justify-center p-2 ${
+                    className={`flex flex-1 items-center justify-center w-[60px] h-[50px] ${
                         quickPitchView
                             ? 'bg-background-lighter text-primary'
                             : 'hover:bg-background-lighter text-gray-500 cursor-pointer'
                     }`}
                 >
                     <VideoCameraIcon />
-                </button>
+                </Button>
             </div>
         </div>
     );

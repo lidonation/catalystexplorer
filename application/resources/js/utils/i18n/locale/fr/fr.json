@@ -59,6 +59,7 @@
     "social": "Social",
     "twitter": "Twitter",
     "support": "Support",
+    "seeAll": "Voir Tout",
     "terms": "Conditions Générales",
     "votes": "Mes Votes",
     "wallets": "Portefeuilles",
@@ -85,6 +86,10 @@
     "verificationCode": "CODE$:",
     "verificationInstructions": "Pour vérifier que vous êtes le propriétaire de ce profil, envoyez un message personnel à Lido Nation sur Ideascale et incluez le code ci-dessus.",
     "goToIdeascale": "Aller sur Ideascale",
+    "error404": {
+        "mainText": "Désolé, nous n'avons pas trouvé ce que vous cherchez",
+        "subText": "Retrouvons votre chemin du retour!"
+    },
     "app": {
         "name": "Catalyst Explorer",
         "contactEmail": "support@lidonation.com",
@@ -296,6 +301,7 @@
     },
     "icons": {
         "titles": {
+            "arrowCurved": "Icône incurvée de flèche",
             "arrow_left": "Icône de flèche vers la gauche",
             "barLine": "Icône de graphique en barres",
             "blue_eye": "Icône d'œil bleu",
@@ -303,6 +309,7 @@
             "bookmark_on": "Icône de signet activée",
             "bookmark_off": "Icône de signet désactivée",
             "bucket": "Icône de seau",
+            "cardSwitch": "Icône de commutateur de carte",
             "chart": "Icône de graphique",
             "check": "Icône de vérification",
             "chevron_up": "Icône de chevron vers le haut",
@@ -317,6 +324,7 @@
             "logOut": "Icône de déconnexion",
             "mail": "Icône de courrier",
             "menu": "Icône de menu",
+            "miniCardSwitch": "Icône de commutateur de mini-carte",
             "note": "Icône de note",
             "notificationBox": "Icône de boîte de notification",
             "people": "Icône de personnes",
@@ -346,14 +354,59 @@
         "profile": "profil"
     },
     "completedProjectNfts": {
-        "title": "Projets NFT terminés",
-        "subtitle": "Projets terminés",
-        "nowMinting": "En cours de frappe",
-        "communityFunded": "Membres de la communauté financés",
+        "title": "NFT de projets terminés",
+        "subtitle": "Les équipes de projets Project Catalyst terminées sont invitées à créer un NFT de célébration pour marquer votre réussite et le partager avec le monde !",
+        "nowMinting": "En cours de création",
+        "communityFunded": "Financement par les membres de la communauté",
         "projectsCompleted": "Projets terminés",
-        "usdDistributed": "USD distribué",
-        "adaDistributed": "Ada distribué",
+        "usdDistributed": "USD Distributed",
+        "adaDistributed": "Ada Distributed",
         "description": "Chaque NFT est unique, avec des éléments de conception inspirés du titre et du thème de votre projet ! Lisez la déclaration de l'artiste ici : ",
-        "artistStatement": "NFT de fin de projet pour Project Catalyst"
+        "artistStatement": "NFT de fin de projet pour Project Catalyst",
+        "proposalsSearchBar": {
+            "placeHolder": "Rechercher une proposition"
+        },
+        "step": "Étape",
+        "claimProfile": "Réclamer un autre profil"
+    },
+    "profileWorkflow": {
+        "sectionTitle": {
+            "start": "Pour commencer, veuillez sélectionner l'un de vos profils revendiqués ci-dessous",
+            "selectProposal": "Sélectionnez l'une de vos propositions terminées pour commencer à créer",
+            "claimProfile": "Réclamez un autre profil"
+        },
+        "myProfiles": "Mes profils",
+        "back": "Retour",
+        "selectProposal": "Sélectionnez votre proposition terminée",
+        "name": "Nom",
+        "email": "E-mail",
+        "bio": "Bio",
+        "previous": "Précédente",
+        "next": "Suivante",
+        "ideascaleProfile": "Profil Ideascale",
+        "twitter": "Twitter",
+        "discord": "Discord",
+        "linkedIn": "LinkedIn",
+        "profileLink": "(Lien du profil)",
+        "twitterHandle": "(@handle)",
+        "discordUsername": "(Nom d'utilisateur)",
+        "claimProfile": "Réclamer un profil",
+        "processing": "Traitement en cours...",
+        "nowMinting": "Now Minting",
+        "fundsRange": "Fonds 2 - 12",
+        "loggedInAs": "Connecté en tant que",
+        "proposalsCount": "{{count}} Propositions",
+        "unavailable": "Indisponible",
+        "noProfilesAvailable": "Aucun profil disponible.",
+        "findCatalystUser": "Trouver un utilisateur de Catalyst",
+        "available": "Disponible",
+        "noProposalsAvailable": "Aucune proposition trouvée pour ce profil.",
+        "budget": "Budget",
+        "fund": "Fonds",
+        "campaign": "Campagne",
+        "verificationTitle": "Laissez-vous vérifier !",
+        "verificationCode": "Code de vérification",
+        "verificationInstructions": "Pour vérifier que vous êtes le propriétaire de ce profil, veuillez envoyer un message personnel à Lido Nation sur Ideascale et inclure le code ci-dessus.",
+        "goToIdeascale": "Accéder à Ideascale"
     }
 }

@@ -6,14 +6,14 @@ import { useTranslation } from 'react-i18next';
 import Proposal = App.DataTransferObjects.ProposalData;
 import ProposalUsersMini from './ProposalUsersMini';
 
-interface ProposalMiniCardProps {
+interface ProposalCardMiniProps {
     proposal: Proposal;
     isHorizontal: boolean;
 }
-export default function ProposalMiniCard({
+export default function ProposalCardMini({
     proposal,
     isHorizontal
-}: ProposalMiniCardProps) {
+}: ProposalCardMiniProps) {
     const { t } = useTranslation();
 
     const [userSelected, setUserSelected] =
@@ -27,30 +27,32 @@ export default function ProposalMiniCard({
 
     const noSelectedUser = useCallback(() => setUserSelected(null), []);
     return (
-        <article className="bg-background relative flex h-full flex-col rounded-xl p-4 shadow-lg">
-            <div className="flex h-auto w-full flex-col items-start overflow-hidden rounded-xl">
+        <article className="bg-background relative flex h-full flex-col justify-between rounded-xl p-2 shadow-lg">
+            <section className="flex h-auto w-full flex-col items-start overflow-hidden rounded-xl">
                 <ProposalCardHeader
                     proposal={proposal}
                     userSelected={userSelected}
                     noSelectedUser={noSelectedUser}
                     isHorizontal={isHorizontal}
                 />
-            </div>
-            <div className="mt-6" aria-labelledby="funding-heading">
-                <div className="flex gap-2">
-                    <h3 className="font-semibold">{t('funding')}</h3>
-                    <ProposalFundingStatus
-                        funding_status={proposal.funding_status}
+            </section>
+            <section>
+                <div className="mt-4" aria-labelledby="funding-heading">
+                    <div className="flex gap-2">
+                        <h3 className="font-semibold">{t('funding')}</h3>
+                        <ProposalFundingStatus
+                            funding_status={proposal.funding_status}
+                        />
+                    </div>
+                    <ProposalFundingPercentages proposal={proposal}/>
+                </div>
+                <div className="border-t mt-3 border-t-dark/30">
+                    <ProposalUsersMini
+                        users={proposal.users}
+                        onUserClick={handleUserClick}
                     />
                 </div>
-                <ProposalFundingPercentages proposal={proposal} />
-            </div>
-            <div className="border-t mt-4 border-t-dark/30">
-                <ProposalUsersMini
-                    users={proposal.users}
-                    onUserClick={handleUserClick}
-                />
-            </div>
+            </section>
         </article>
     );
 }

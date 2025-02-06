@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Database\Factories;
 
-use App\Models\CatalystSnapshot;
-use App\Models\CatalystVotingPower;
+use App\Models\Snapshot;
+use App\Models\VotingPower;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\CatalystVotingPower>
+ * @extends Factory<VotingPower>
  */
 class CatalystVotingPowerFactory extends Factory
 {
@@ -18,12 +18,12 @@ class CatalystVotingPowerFactory extends Factory
      *
      * @return array<string, mixed>
      */
-    protected $model = CatalystVotingPower::class;
+    protected $model = VotingPower::class;
 
     public function definition(): array
     {
         return [
-            'snapshot_id' => CatalystSnapshot::factory(),
+            'snapshot_id' => Snapshot::factory(),
             'delegate' => $this->faker->unique()->hexColor(),
             'voting_power' => $this->faker->randomFloat(2, 1, 1000),
         ];
