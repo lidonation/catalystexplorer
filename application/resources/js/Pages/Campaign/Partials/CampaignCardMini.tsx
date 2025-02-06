@@ -4,6 +4,7 @@ import CampaignData = App.DataTransferObjects.CampaignData;
 import { currency } from '@/utils/currency';
 import { useTranslation } from 'react-i18next';
 import SegmentedBar from '@/Pages/IdeascaleProfile/Partials/SegmentedProgressBar';
+import IdeascaleProfileData = App.DataTransferObjects.IdeascaleProfileData;
 
 interface CampaignCardMiniProps {
   fund: FundData;
@@ -12,7 +13,9 @@ interface CampaignCardMiniProps {
 
 const CampaignCardMini: React.FC<CampaignCardMiniProps> = ({ fund, campaign }) => {
   const { t } = useTranslation();
-  
+  console.log(fund);
+  const rawData : unknown = fund;
+  const fundData :IdeascaleProfileData = rawData as IdeascaleProfileData;
 
   const heroImageUrl = fund?.hero_img_url;
 
@@ -40,6 +43,7 @@ const CampaignCardMini: React.FC<CampaignCardMiniProps> = ({ fund, campaign }) =
         </h3>
         <div className="flex w-full justify-between pt-4 pb-4">
                     <SegmentedBar
+                        IdeascaleProfileData = {fundData}
                         CompletedProposalsColor="bg-success"
                         FundedProposalsColor="bg-warning"
                         UnfundedProposalsColor="bg-primary"
