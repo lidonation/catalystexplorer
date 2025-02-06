@@ -67,7 +67,9 @@ export default function ProposalCardHeader({
                             />
 
                             <ListProvider>
-                                <ProposalBookmark />
+                                <ProposalBookmark
+                                    proposalId={proposal.id ?? undefined}
+                                />
                             </ListProvider>
                         </>
                     )}

@@ -19,6 +19,8 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Response;
 use Inertia\Inertia;
 use Inertia\Response as InertiaResponse;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
@@ -83,8 +85,86 @@ class MyBookmarksController extends Controller
 
         $this->authorize('view', $bookmarkItem);
 
-        return Inertia::render('My/Bookmarks/Partials/Show', [
+        return
+            Inertia::render('My/Bookmarks/Partials/Show', [
             'bookmark' => BookmarkItemData::from($bookmarkItem),
+        ]);
+    }
+    public function store(Request $request, $proposalId): JsonResponse
+    {
+        try {
+            $bookmarkableType = BookmarkableType::tryFrom('Proposal'); // Assuming type is always 'Proposal'
+            if (!$bookmarkableType) {
+                return response()->json(['errors' => 'Model not found'], 422);
+            }
+
+            $modelType = $bookmarkableType->getModelClass();
+            $modelExists = $modelType::find($proposalId);
+            if (!$modelExists) {
+                return response()->json(['errors' => ['model_type' => ['Invalid model type']]], 422);
+            }
+
+            DB::beginTransaction();
+            Log::info('Creating bookmark', ['user_id' => Auth::id(), 'model_id' => $proposalId]);
+
+            $bookmarkItem = BookmarkItem::create([
+                'user_id' => Auth::id(),
+                'model_type' => $modelType,
+                'model_id' => $proposalId,
+            ]);
+
+            Log::info('Bookmark created', ['bookmark' => $bookmarkItem]);
+            DB::commit();
+
+            return response()->json([
+                'message' => 'Bookmark created successfully',
+                'bookmarkItem' => $bookmarkItem,
+            ]);
+        } catch (\Exception $e) {
+            DB::rollback();
+            report($e);
+            return response()->json(['errors' => ['Failed to create bookmark']], 500);
+        }
+    }
+
+    public function delete(Request $request, $id): JsonResponse
+    {
+        try {
+            $bookmarkItem = BookmarkItem::findOrFail($id);
+
+            if ($bookmarkItem->user_id !== Auth::id()) {
+                return response::json([
+                    'errors' => 'Unauthorized action' ], 403);
+            }
+
+            $bookmarkItem->delete();
+
+            return Response::json([
+                'message' => 'Bookmark deleted successfully',
+            ]);
+        } catch (\Exception $e) {
+            report($e);
+
+            return response()->json([
+                'message' => 'Not deleted',
+            ]);
+        }
+    }
+
+    public function status($id): JsonResponse
+    {
+        $bookmarkItem = BookmarkItem::where('user_id', Auth::id())
+            ->where('model_type', 'Proposal')
+            ->where('model_id', $id)
+            ->first();
+        if ($bookmarkItem) {
+            return response()->json(['isBookmarked' => true, 'id' => $bookmarkItem->id]);
+        }
+        return response()->json([
+            'isBookmarked' => false,
+            'id' => null,
+            'user' => Auth::id(),
+            'model_id' => $id
         ]);
     }
 
