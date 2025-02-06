@@ -13,7 +13,6 @@ interface CampaignCardMiniProps {
 
 const CampaignCardMini: React.FC<CampaignCardMiniProps> = ({ fund, campaign }) => {
   const { t } = useTranslation();
-  console.log(fund);
   const rawData : unknown = fund;
   const fundData :IdeascaleProfileData = rawData as IdeascaleProfileData;
 
