@@ -21,10 +21,11 @@ const FundsFilter: React.FC<FundFiltersProps> = ({
     useEffect(() => {
         // Check if funds are already cached in localStorage to prevent refetching
         const cachedFunds = localStorage.getItem('funds');
-        if (cachedFunds) {
+        if (cachedFunds?.length === 0) {
             setFunds(JSON.parse(cachedFunds));
         } else {
             fetchFunds();
+            console.log("!cached")
         }
     }, []);
 
@@ -41,12 +42,18 @@ const FundsFilter: React.FC<FundFiltersProps> = ({
             setFunds(sortedFunds);
             // Cache funds locally
             localStorage.setItem('funds', JSON.stringify(sortedFunds));
+            console.log("cached2", JSON.parse(sortedFunds))
         } catch (error) {
             console.error('Failed to fetch funds:', error);
         } finally {
             setIsFetching(false);
         }
     };
+
+
+    useEffect(()=>{
+        console.log('funds1', funds)
+    }, [funds])
 
     const handleSelect = (value: string) => {
         const updatedItems = selectedItems.includes(value)

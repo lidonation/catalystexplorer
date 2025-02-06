@@ -1,10 +1,12 @@
 import { FiltersProvider } from '@/Context/FiltersContext';
 import { ListProvider } from '@/Context/ListContext';
 import { Head } from '@inertiajs/react';
-import { useEffect } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ProposalSearchParams } from '../../../types/proposal-search-params';
 import FundFiltersContainer from '../Proposals/Partials/FundFiltersContainer';
+import ProposalSearchControls from '../Proposals/Partials/ProposalSearchControls';
+import GroupFilters from './Partials/GroupFilters';
 import GroupData = App.DataTransferObjects.GroupData;
 
 interface GroupsPageProps extends Record<string, unknown> {
@@ -29,21 +31,16 @@ const Index: React.FC<GroupsPageProps> = ({
     filters,
     filterCounts,
 }) => {
+    const [showFilters, setShowFilters] = useState(false);
     const { t } = useTranslation();
 
-    useEffect(() => {
-        console.log('funds', filters);
-    });
-    const funds1 ={
-        "Fund 32": 61,
-        "Fund 58": 97,
-        "Fund 84": 61,
-        "Fund 95": 42
-    }
     return (
         <>
             <ListProvider>
-                <FiltersProvider defaultFilters={filters} routerOptions={{ only: ['groups'] }}>
+                <FiltersProvider
+                    defaultFilters={filters}
+                    routerOptions={{ only: ['groups'] }}
+                >
                     <Head title="Groups" />
 
                     <header>
@@ -58,8 +55,18 @@ const Index: React.FC<GroupsPageProps> = ({
                         </div>
                     </header>
 
-                    <section className="container bg-green-200">
-                        <FundFiltersContainer funds={funds1} />
+                    <section className="container">
+                        <FundFiltersContainer funds={filterCounts.fundsCount} />
+                    </section>
+
+                    <ProposalSearchControls onFiltersToggle={setShowFilters} />
+
+                    <section
+                        className={`container flex w-full flex-col items-center justify-center overflow-hidden transition-[max-height] duration-500 ease-in-out ${
+                            showFilters ? 'max-h-[500px]' : 'max-h-0'
+                        }`}
+                    >
+                        <GroupFilters />
                     </section>
                 </FiltersProvider>
             </ListProvider>

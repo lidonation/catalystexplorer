@@ -23,6 +23,11 @@ class Group extends Model implements HasMedia
         'bio',
     ];
 
+    protected $withCount = [
+        'proposals',
+    ];
+
+
     protected function casts(): array
     {
         return [

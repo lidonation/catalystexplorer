@@ -108,6 +108,7 @@ github?: string;
 created_at?: string;
 updated_at?: string;
 deleted_at?: string;
+proposals_count?: number;
 };
 export type IdeascaleProfileData = {
 id: number | null;

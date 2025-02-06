@@ -234,7 +234,11 @@
             "budgets": "Budgets",
             "budget": "Budget",
             "projectLength": "Project Length (months)",
-            "filters": "Filters"
+            "filters": "Filters",
+            "ideascaleProfiles": "Ideascale Profiles",
+            "numberOfProposals": "Number of Proposals",
+            "awardedAda": "Awarded (ADA)",
+            "awardedUsd": "Awarded (USD)"
         },
         "options": {
             "sort": "Sort by",

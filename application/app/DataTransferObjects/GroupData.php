@@ -51,6 +51,9 @@ final class GroupData extends Data
         public ?string $updated_at,
 
         #[TypeScriptOptional]
-        public ?string $deleted_at
+        public ?string $deleted_at,
+
+        #[TypeScriptOptional]
+        public ?int $proposals_count,
     ) {}
 }
