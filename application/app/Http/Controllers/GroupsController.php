@@ -6,7 +6,7 @@ namespace App\Http\Controllers;
 
 use App\DataTransferObjects\GroupData;
 use App\DataTransferObjects\ProposalData;
-use App\Enums\QueryParamsEnum;
+use App\Enums\ProposalSearchParams;
 use App\Models\Group;
 use App\Repositories\GroupRepository;
 use Illuminate\Http\Request;
@@ -24,6 +24,8 @@ class GroupsController extends Controller
     protected int $currentPage;
 
     protected int $limit = 24;
+
+    protected array $queryParams = [];
 
     protected null|string|Stringable $search = null;
 
@@ -49,26 +51,20 @@ class GroupsController extends Controller
 
     public array $fundsCount = [];
 
+
+
     public function index(Request $request): Response
     {
-        $this->setFilters($request);
-
+        $this->getProps($request);
+        
+        $groups = $this->query();
         $props = [
-            'groups' => $this->query(),
+            'groups' => Inertia::optional(
+                fn () => $groups
+            ),
             'search' => $this->search,
             'sort' => "{$this->sortBy}:{$this->sortOrder}",
-            'currPage' => $this->currentPage,
-            'perPage' => $this->limit,
-            'filters' => [
-                'currentPage' => $this->currentPage,
-                'perPage' => $this->limit,
-                'funded' => $this->fundedProposalsFilter,
-                'awardedUsd' => $this->awardedUsdFilter->isNotEmpty() ? $this->awardedUsdFilter->toArray() : [0, 7000000],
-                'awardedAda' => $this->awardedAdaFilter->isNotEmpty() ? $this->awardedAdaFilter->toArray() : [0, 7000000],
-                'funds' => $this->fundsFilter->toArray(),
-                'tags' => $this->tagsFilter->toArray(),
-                'ideascaleProfile' => $this->ideascaleProfileFilter->toArray(),
-            ],
+            'filters' => $this->queryParams,
             'filterCounts' => [
                 'tagsCount' => $this->tagsCount,
                 'fundsCount' => $this->fundsCount,
@@ -86,34 +82,65 @@ class GroupsController extends Controller
         ]);
     }
 
-    protected function setFilters(Request $request)
+    protected function getProps(Request $request): void
     {
-        $this->limit = (int) $request->input(QueryParamsEnum::PER_PAGE, 24);
-        $this->currentPage = (int) $request->input(QueryParamsEnum::PAGE, 1);
-        $this->search = $request->input('s', null);
-        $this->search = $request->input(QueryParamsEnum::SEARCH, null);
+        $this->queryParams = $request->validate([
+            ProposalSearchParams::FUNDED_PROPOSALS()->value => 'array|nullable',
+            ProposalSearchParams::QUERY()->value => 'string|nullable',
+            ProposalSearchParams::COHORT()->value => 'array|nullable',
+            ProposalSearchParams::PAGE()->value => 'int|nullable',
+            ProposalSearchParams::LIMIT()->value => 'int|nullable',
+            ProposalSearchParams::SORTS()->value => 'nullable',
+            ProposalSearchParams::CAMPAIGNS()->value => 'array|nullable',
+            ProposalSearchParams::TAGS()->value => 'array|nullable',
+            ProposalSearchParams::COMMUNITIES()->value => 'array|nullable',
+            ProposalSearchParams::IDEASCALE_PROFILES()->value => 'array|nullable',
+            ProposalSearchParams::FUNDS()->value => 'array|nullable',
+        ]);
 
-        $sort = collect(explode(':', $request->input(QueryParamsEnum::SORTS, '')))->filter();
-        if ($sort->isEmpty()) {
-            $sort = collect(explode(':', collect([
-                'name:asc',
-                'name:desc',
-                'amount_awarded_ada:desc',
-                'amount_awarded_ada:asc',
-                'amount_awarded_usd:desc',
-                'amount_awarded_usd:asc',
-            ])->random()));
+        // format sort params for meili
+        if (! empty($this->queryParams[ProposalSearchParams::SORTS()->value])) {
+            $sort = collect(
+                explode(
+                    ':',
+                    $this->queryParams[ProposalSearchParams::SORTS()->value]
+                )
+            )->filter();
+
+            $this->sortBy = $sort->first();
+
+            $this->sortOrder = $sort->last();
         }
-
-        $this->sortBy = $sort->first();
-        $this->sortOrder = $sort->last();
-        $this->fundedProposalsFilter = (bool) $request->input(QueryParamsEnum::FUNDED_PROPOSALS, false);
-        $this->awardedUsdFilter = $request->collect(QueryParamsEnum::AWARDED_USD);
-        $this->awardedAdaFilter = $request->collect(QueryParamsEnum::AWARDED_ADA);
-        $this->fundsFilter = $request->collect(QueryParamsEnum::FUNDS)->map(fn ($n) => intval($n));
-        $this->tagsFilter = $request->collect(QueryParamsEnum::TAGS)->map(fn ($n) => intval($n));
-        $this->ideascaleProfileFilter = $request->collect(QueryParamsEnum::IDEASCALE_PROFILE)->map(fn ($n) => intval($n));
     }
+
+    // protected function setFilters(Request $request)
+    // {
+    //     $this->limit = (int) $request->input(ProposalSearchParams::LIMIT, 24);
+    //     $this->currentPage = (int) $request->input(ProposalSearchParams::PAGE, 1);
+    //     $this->search = $request->input('s', null);
+    //     $this->search = $request->input(ProposalSearchParams::QUERY, null);
+
+    //     $sort = collect(explode(':', $request->input(ProposalSearchParams::SORTS, '')))->filter();
+    //     if ($sort->isEmpty()) {
+    //         $sort = collect(explode(':', collect([
+    //             'name:asc',
+    //             'name:desc',
+    //             'amount_awarded_ada:desc',
+    //             'amount_awarded_ada:asc',
+    //             'amount_awarded_usd:desc',
+    //             'amount_awarded_usd:asc',
+    //         ])->random()));
+    //     }
+
+    //     $this->sortBy = $sort->first();
+    //     $this->sortOrder = $sort->last();
+    //     $this->fundedProposalsFilter = (bool) $request->input(ProposalSearchParams::FUNDED_PROPOSALS, false);
+    //     $this->awardedUsdFilter = $request->collect(ProposalSearchParams::AWARDED_USD);
+    //     $this->awardedAdaFilter = $request->collect(ProposalSearchParams::AWARDED_ADA);
+    //     $this->fundsFilter = $request->collect(ProposalSearchParams::FUNDS)->map(fn($n) => intval($n));
+    //     $this->tagsFilter = $request->collect(ProposalSearchParams::TAGS)->map(fn($n) => intval($n));
+    //     $this->ideascaleProfileFilter = $request->collect(ProposalSearchParams::IDEASCALE_PROFILES)->map(fn($n) => intval($n));
+    // }
 
     public function query($returnBuilder = false, $attrs = null, $filters = [])
     {
@@ -121,10 +148,13 @@ class GroupsController extends Controller
             'filters' => array_merge([], $this->getUserFilters(), $filters),
         ];
 
+        $page = (int) ($this->queryParams[ProposalSearchParams::PAGE()->value] ?? 1);
+        $limit = (int) ($this->queryParams[ProposalSearchParams::LIMIT()->value] ?? 36);
+
         $this->searchBuilder = Group::search(
             $this->search,
-            function (Indexes $index, $query, $options) use ($_options, $attrs) {
-                if (count($_options['filters']) > 0) {
+            function (Indexes $index, $query, $options) use ($_options, $attrs, $page, $limit) {
+                if (!empty($_options['filters'])) {
                     $options['filter'] = implode(' AND ', $_options['filters']);
                 }
 
@@ -144,18 +174,20 @@ class GroupsController extends Controller
                 ];
                 $options['facets'] = [
                     'tags.id',
-                    'proposals.campaign.fund.title',
+                    'proposals.fund.title',
                 ];
 
-                if ((bool) $this->sortBy && (bool) $this->sortOrder) {
+                if ($this->sortBy && $this->sortOrder) {
                     $options['sort'] = ["$this->sortBy:$this->sortOrder"];
                 }
-                $options['offset'] = (($this->currentPage ?? 1) - 1) * $this->limit;
-                $options['limit'] = $this->limit;
+
+                $options['offset'] = ($page - 1) * $limit;
+                $options['limit'] = $limit;
 
                 return $index->search($query, $options);
             }
         );
+
 
         if ($returnBuilder) {
             return $this->searchBuilder;
@@ -163,17 +195,19 @@ class GroupsController extends Controller
 
         $response = new Fluent($this->searchBuilder->raw());
 
+
         $this->setCounts($response->facetDistribution, $response->facetStats);
 
         $pagination = new LengthAwarePaginator(
-            $response->hits,
+            GroupData::collect($response->hits),
             $response->estimatedTotalHits,
-            $response->limit,
-            $this->currentPage,
+            $limit,
+            $page,
             [
                 'pageName' => 'p',
             ]
         );
+
 
         return $pagination->onEachSide(1)->toArray();
     }
@@ -181,35 +215,62 @@ class GroupsController extends Controller
     #[ArrayShape(['filters' => 'array'])]
     protected function getUserFilters(): array
     {
-        $_options = [];
+
+
+        $filters = [];
+
 
         if ((bool) $this->fundedProposalsFilter) {
             $_options[] = 'proposals_funded > 0';
         }
 
-        if ($this->awardedUsdFilter->isNotEmpty()) {
-            $_options[] = "(amount_awarded_usd  {$this->awardedUsdFilter->first()} TO  {$this->awardedUsdFilter->last()})";
+        // Fund filter
+        if (! empty($this->queryParams[ProposalSearchParams::FUNDS()->value])) {
+            $funds = implode("','", $this->queryParams[ProposalSearchParams::FUNDS()->value]);
+            $filters[] = "proposals.fund.title IN ['{$funds}']";
         }
 
-        if ($this->awardedAdaFilter->isNotEmpty()) {
-            $_options[] = "(amount_awarded_ada  {$this->awardedAdaFilter->first()} TO  {$this->awardedAdaFilter->last()})";
+        if (! empty($this->queryParams[ProposalSearchParams::FUNDED_PROPOSALS()->value])) {
+            $fundedProposals = implode("','", $this->queryParams[ProposalSearchParams::FUNDED_PROPOSALS()->value]);
+            $filters[] = "funded_proposals IN ['{$fundedProposals}']";
         }
 
-        // filter by fund
-        if ($this->fundsFilter->isNotEmpty()) {
-            $_options[] = 'proposals.campaign.fund_id IN '.$this->fundsFilter->toJson();
+        if (! empty($this->queryParams[ProposalSearchParams::AWARDED_USD()->value])) {
+            $awardedUsd = collect((object) $this->queryParams[ProposalSearchParams::AWARDED_USD()->value]);
+            $filters[] = "(awarded_usd  {$awardedUsd->first()} TO  {$awardedUsd->last()})";
         }
 
-        //  filter by tags
-        if ($this->tagsFilter->isNotEmpty()) {
-            $_options[] = 'tags.id IN '.$this->tagsFilter->toJson();
+        if (! empty($this->queryParams[ProposalSearchParams::AWARDED_ADA()->value])) {
+            $awardedAda = collect((object) $this->queryParams[ProposalSearchParams::AWARDED_ADA()->value]);
+            $filters[] = "(awarded_ada  {$awardedAda->first()} TO  {$awardedAda->last()})";
         }
 
-        if ($this->ideascaleProfileFilter->isNotEmpty()) {
-            $_options[] = 'ideascale_profiles.id IN '.$this->ideascaleProfileFilter->toJson();
+        if (! empty($this->queryParams[ProposalSearchParams::CAMPAIGNS()->value])) {
+            $campaignIds = ($this->queryParams[ProposalSearchParams::CAMPAIGNS()->value]);
+            $filters[] = '(' . implode(' OR ', array_map(fn($c) => "campaign.id = {$c}", $campaignIds)) . ')';
         }
 
-        return $_options;
+        if (! empty($this->queryParams[ProposalSearchParams::TAGS()->value])) {
+            $tagIds = ($this->queryParams[ProposalSearchParams::TAGS()->value]);
+            $filters[] = '(' . implode(' OR ', array_map(fn($c) => "tags.id = {$c}", $tagIds)) . ')';
+        }
+
+        if (! empty($this->queryParams[ProposalSearchParams::IDEASCALE_PROFILES()->value])) {
+            $ideascaleProfileIds = implode(',', $this->queryParams[ProposalSearchParams::IDEASCALE_PROFILES()->value]);
+            $filters[] = "users.id IN [{$ideascaleProfileIds}]";
+        }
+
+        if (! empty($this->queryParams[ProposalSearchParams::COMMUNITIES()->value])) {
+            $communityIds = implode(',', $this->queryParams[ProposalSearchParams::COMMUNITIES()->value]);
+            $filters[] = "communities.id IN [{$communityIds}]";
+        }
+
+        if (! empty($this->queryParams[ProposalSearchParams::COHORT()->value])) {
+            $cohortFilters = array_map(fn($cohort) => "{$cohort} = 1", $this->queryParams[ProposalSearchParams::COHORT()->value]);
+            $filters[] = '(' . implode(' OR ', $cohortFilters) . ')';
+        }
+
+        return $filters;
     }
 
     public function setCounts($facets, $facetStats)
@@ -219,8 +280,8 @@ class GroupsController extends Controller
             $this->tagsCount = $facets['tags.id'];
         }
 
-        if (isset($facets['proposals.campaign.fund.title']) && count($facets['proposals.campaign.fund.title'])) {
-            $this->fundsCount = $facets['proposals.campaign.fund.title'];
+        if (isset($facets['proposals.fund.title']) && count($facets['proposals.fund.title'])) {
+            $this->fundsCount = $facets['proposals.fund.title'];
         }
     }
 }

@@ -1,5 +1,10 @@
+import { FiltersProvider } from '@/Context/FiltersContext';
+import { ListProvider } from '@/Context/ListContext';
 import { Head } from '@inertiajs/react';
+import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
+import { ProposalSearchParams } from '../../../types/proposal-search-params';
+import FundFiltersContainer from '../Proposals/Partials/FundFiltersContainer';
 import GroupData = App.DataTransferObjects.GroupData;
 
 interface GroupsPageProps extends Record<string, unknown> {
@@ -12,43 +17,52 @@ interface GroupsPageProps extends Record<string, unknown> {
     };
     search?: string | null;
     sort?: string;
-    currPage?: number;
-    perPage?: number;
-    filters: {
-        currentPage?: number;
-        perPage?: number;
-        funded: boolean;
-        awardedUsd: [];
-        awardedAda: [];
-        funds: [];
-        tags: [];
-        ideascaleProfile: [];
-    };
+    filters: ProposalSearchParams;
     filterCounts: {
         tagsCount: [];
-        fundsCount: [];
+        fundsCount: { [key: string]: number };
     };
 }
 
-const Index: React.FC<GroupsPageProps> = ({ groups }) => {
+const Index: React.FC<GroupsPageProps> = ({
+    groups,
+    filters,
+    filterCounts,
+}) => {
     const { t } = useTranslation();
 
+    useEffect(() => {
+        console.log('funds', filters);
+    });
+    const funds1 ={
+        "Fund 32": 61,
+        "Fund 58": 97,
+        "Fund 84": 61,
+        "Fund 95": 42
+    }
     return (
         <>
-            <Head title="Groups" />
+            <ListProvider>
+                <FiltersProvider defaultFilters={filters} routerOptions={{ only: ['groups'] }}>
+                    <Head title="Groups" />
 
-            <header>
-                <div className="container">
-                    <h1 className="title-1">{t('groups')}</h1>
-                </div>
-                <div className="container">
-                    <p className="text-content">{t('groupsList')}</p>
-                </div>
-            </header>
+                    <header>
+                        <div className="container">
+                            <h1 className="title-1">{t('groups.title')}</h1>
+                        </div>
 
-            <div className="flex h-screen w-full flex-col items-center justify-center">
-                <h1>{t('comingSoon')}</h1>
-            </div>
+                        <div className="container">
+                            <p className="text-content">
+                                {t('groups.subtitle')}
+                            </p>
+                        </div>
+                    </header>
+
+                    <section className="container bg-green-200">
+                        <FundFiltersContainer funds={funds1} />
+                    </section>
+                </FiltersProvider>
+            </ListProvider>
         </>
     );
 };

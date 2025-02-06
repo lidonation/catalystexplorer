@@ -15,6 +15,7 @@ use Spatie\Enum\Enum;
  * @method static self COHORT()
  * @method static self COMMUNITIES()
  * @method static self FUNDS()
+ * @method static self FUNDED_PROPOSALS()
  * @method static self FUNDING_STATUS()
  * @method static self GROUPS()
  * @method static self LIMIT()
@@ -47,6 +48,7 @@ final class ProposalSearchParams extends Enum
             'COHORT' => 'coh',
             'COMMUNITIES' => 'com',
             'FUNDS' => 'f',
+            'FUNDED_PROPOSALS' => 'fp',
             'FUNDING_STATUS' => 'fs',
             'GROUPS' => 'g',
             'LIMIT' => 'l',

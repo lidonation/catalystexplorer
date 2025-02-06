@@ -121,7 +121,7 @@ class Group extends Model implements HasMedia
      */
     public function proposals(): BelongsToMany
     {
-        return $this->belongsToMany(Proposal::class, 'group_has_proposal', 'group_id', 'proposal_id', 'id', 'id', 'proposals');
+        return $this->belongsToMany(Proposal::class, 'group_has_proposal', 'group_id', 'proposal_id', 'id', 'id', 'proposals')->with('fund');
     }
 
     public function ideascale_profiles(): BelongsToMany

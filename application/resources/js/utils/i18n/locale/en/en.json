@@ -25,7 +25,6 @@
     "funding": "Funding",
     "getStarted": "Get started",
     "github": "Github",
-    "groups": "Groups",
     "home": "Home",
     "jormungandr": "Jormungandr",
     "knowledgeBase": "Knowledge Base",
@@ -310,6 +309,11 @@
             "coProposalCountLowToHigh": "Co-Proposal Count: Low to High",
             "coProposalCountHighToLow": "Co-Proposal Count: High to Low"
         }
+    },
+    "groups":{
+        "groups": "Groups",
+        "title": "Catalyst Groups",
+        "subtitle": "Diverse, independent, and together inspiring the highest level of human collaboration"
     },
     "posts": {
         "title": "Catalysts Posts",
