@@ -24,7 +24,7 @@ export default function ProposalBookmark({
                 );
                 setIsBookmarked(response.data.isBookmarked);
                 setBookmarkId(response.data.id || null);
-            } catch (error) {
+            } catch (error: any) {
                 if (error.response && error.response.status === 404) {
                     setIsBookmarked(false);
                 } else {
@@ -64,13 +64,12 @@ export default function ProposalBookmark({
             console.error('Error removing bookmark: ', error);
         }
     };
-    const handleBookmarkClick = async (event) => {
-        event.stopPropagation();
+    const handleBookmarkClick = async () => {
         console.log('Bookmark button clicked');
         if (isBookmarked) {
             await removeBookmark();
         } else {
-            // console.log('Creating bookmark...');
+            console.log('Creating bookmark...');
             await createBookmark();
         }
     };
@@ -88,6 +87,7 @@ export default function ProposalBookmark({
         if (open && !isBookmarked) {
             setIsBookmarked(true);
             setIsOpen(true);
+            handleBookmarkClick();
         } else {
             setIsOpen(open);
         }
@@ -99,7 +99,8 @@ export default function ProposalBookmark({
                 <button
                     className="rounded-full p-1.5"
                     aria-label="bookmark-proposal"
-                    onClick={handleBookmarkClick}
+                   
+                    
 
                     // onClick={(event) => {
                         // event.stopPropagation();
