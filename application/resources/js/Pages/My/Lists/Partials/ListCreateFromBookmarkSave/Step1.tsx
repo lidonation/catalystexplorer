@@ -57,7 +57,7 @@ const BookmarkPage1 = ({
             {[1, 2, 3].map((item) => (
                 <div
                     key={item}
-                    className="flex items-center justify-between py-1 gap-2"
+                    className="flex items-center justify-between gap-2 py-1"
                 >
                     <div className="h-4 w-full rounded bg-gray-200"></div>
                     <div className="h-4 w-4 rounded bg-gray-200"></div>
@@ -81,15 +81,12 @@ const BookmarkPage1 = ({
     return (
         <div className="space-y-1">
             <div className="bg-primary-light">
-                <p className="px-3 py-2 font-bold text-content">Add Bookmark</p>
+                <p className="text-content px-3 py-2 font-bold">Bookmarks</p>
             </div>
             <section className="flex flex-col gap-3 px-3">
                 <div className="flex flex-col gap-1">
-                    <span className="text-sm font-light italic">
-                        Successfully added to your bookmarks!
-                    </span>
                     <button
-                        className="font-semibold text-error"
+                        className="text-error font-semibold"
                         disabled={!isBookmarked}
                         onClick={handleRemoveBookmark}
                     >
