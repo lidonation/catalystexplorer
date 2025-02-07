@@ -57,10 +57,31 @@ final class GroupData extends Data
         public ?string $deleted_at,
 
         #[TypeScriptOptional]
+        public ?float $amount_awarded_ada,
+
+        #[TypeScriptOptional]
+        public ?float $amount_awarded_usd,
+
+        #[TypeScriptOptional]
+        public ?float $amount_requested_ada,
+
+        #[TypeScriptOptional]
+        public ?float $amount_requested_usd,
+
+        #[TypeScriptOptional]
+        public ?float $amount_distributed_ada,
+
+        #[TypeScriptOptional]
+        public ?float $amount_distributed_usd,
+
+        #[TypeScriptOptional]
         public ?int $proposals_count,
 
         #[TypeScriptOptional]
         public ?int $funded_proposals_count,
+
+        #[TypeScriptOptional]
+        public ?int $unfunded_proposals_count,
 
         #[TypeScriptOptional]
         public ?int $completed_proposals_count,

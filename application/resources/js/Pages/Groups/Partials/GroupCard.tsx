@@ -19,6 +19,30 @@ const CampaignCard: React.FC<GroupCardProps> = ({ group }) => {
           {group?.bio}
         </p>
 
+          <div className='flex flex-col gap-2'>
+              <div>
+                  Total Requested (Ada + USD) <br/>
+                  {group?.amount_requested_usd} + {group?.amount_requested_ada}
+              </div>
+
+              <div>
+                  Completed / Funded / Unfunded
+                  <br/>
+                  {group?.completed_proposals_count} / {group?.funded_proposals_count} / {group?.unfunded_proposals_count},
+              </div>
+
+              <div>
+                  Received VS Awarded Ada <br />
+              {group?.amount_distributed_ada} / {group?.amount_awarded_ada}
+              </div>
+
+              <div>
+                  Received VS Awarded USD <br />
+              {group?.amount_distributed_usd} / {group?.amount_awarded_usd}
+              </div>
+
+          </div>
+
         <div className="flex gap-2">
           <p className="bg-background text-content rounded-md border pr-2 pl-2">
             {t('proposals.proposals')}: {group?.proposals_count ?? 0}

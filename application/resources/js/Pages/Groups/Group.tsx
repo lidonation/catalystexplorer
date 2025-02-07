@@ -30,8 +30,8 @@ const Group: React.FC<GroupPageProps> = ({ group, proposals }) => {
                 </div>
             </header>
 
-            <section className="container my-8 flex flex-col gap-16">
-                <div className='max-w-md'>
+            <section className="container my-8 flex flex-row gap-4">
+                <div className='max-w-sm'>
                     <GroupCard group={group}  />
                 </div>
 
