@@ -36,20 +36,6 @@ class IdeascaleProfilesController extends Controller
         ]);
     }
 
-    public function getIdeascaleProfilesData()
-    {
-        $limit = (int) $this->limit;
-        $page = (int) $this->currentPage;
-        $ideascaleProfiles = app(IdeascaleProfileRepository::class);
-
-        $queryResults = $ideascaleProfiles->getQuery()
-            ->inRandomOrder()
-            ->limit($limit)
-            ->get();
-
-        return $this->paginate($queryResults, $ideascaleProfiles->getQuery()->count(), $page, $limit);
-    }
-
     protected function query($returnBuilder = false, $attrs = null, $filters = [])
     {
         $page = (int) ($this->queryParams[IdeascaleProfileSearchParams::PAGE()->value] ?? $this->currentPage);
@@ -60,6 +46,22 @@ class IdeascaleProfilesController extends Controller
             'filter' => $this->getUserFilters(),
             'offset' => ($page - 1) * $limit,
             'limit' => $limit,
+            'attributesToRetrieve' => $attrs ?? [
+                'id',
+                'name',
+                'profile_photo_url',
+                'first_timer',
+                'completed_proposals_count',
+                'funded_proposals_count',
+                'unfunded_proposals_count',
+                'proposals_count',
+                'collaborating_proposals_count',
+                'own_proposals_count',
+                'amount_awarded_ada',
+                'amount_awarded_usd',
+                'proposals_funded',
+                'proposals_total_amount_requested',
+            ],
         ];
 
         if ($sort) {

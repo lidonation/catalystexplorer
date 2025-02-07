@@ -10,13 +10,15 @@ interface SearchBarProps {
     handleSearch: (search: string) => void;
     focusState?: (state: boolean) => void;
     initialSearch?: string;
+    className?: string;
 }
 
-const CompletedNftsProposalSearchBar = ({
+const ProposalSearchBar = ({
     autoFocus = false,
     showRingOnFocus = false,
     handleSearch,
     focusState,
+    className = '',
     initialSearch,
 }: SearchBarProps) => {
     const [searchQuery, setSearchQuery] = useState(initialSearch);
@@ -47,9 +49,9 @@ const CompletedNftsProposalSearchBar = ({
     };
 
     return (
-        <div className="w-full">
-            <label className="relative flex w-full items-center gap-2 pl-0">
-                <div className="absolute left-0 flex h-full w-10 items-center justify-center">
+        <div className={`w-full ${className}`}>
+            <label className="relative flex items-center w-full gap-2 pl-0">
+                <div className="absolute left-0 flex items-center justify-center w-10 h-full">
                     <SearchLensIcon width={16} className="text-dark" />
                 </div>
 
@@ -72,4 +74,4 @@ const CompletedNftsProposalSearchBar = ({
     );
 };
 
-export default CompletedNftsProposalSearchBar;
+export default ProposalSearchBar;

@@ -79,19 +79,7 @@ const ProposalCard = React.memo(
                 yesVotes,
                 abstainVotes,
             }),
-            [
-                proposal,
-                userSelected,
-                noSelectedUser,
-                handleUserClick,
-                localQuickPitchView,
-                toggleLocalQuickPitchView,
-                isHorizontal,
-                t,
-                hasQuickPitch,
-                yesVotes,
-                abstainVotes,
-            ],
+            [proposal, userSelected, noSelectedUser, handleUserClick, localQuickPitchView, isHorizontal, t, hasQuickPitch, yesVotes, abstainVotes],
         );
 
         return isHorizontal ? (

@@ -18,6 +18,7 @@ interface UserDetailsProps {
 const UserDetails: React.FC<UserDetailsProps> = ({ user }) => {
     const { t } = useTranslation();
     const [activeModal, setActiveModal] = useState<"register" | "login" | null>(null);
+    const dashboardRoute = useLocalizedRoute('my.dashboard'); 
 
     const logout = () => {
         axios
@@ -40,8 +41,8 @@ const UserDetails: React.FC<UserDetailsProps> = ({ user }) => {
                         </div>
                         <div className="flex flex-col">
                             <Link
-                                href={useLocalizedRoute('my.dashboard')}
-                                className="text-4 text-content font-semibold"
+                                href={dashboardRoute}
+                                className="text-4 font-semibold text-content"
                             >
                                 {user?.name}
                             </Link>

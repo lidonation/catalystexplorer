@@ -20,17 +20,10 @@ export default function useBookmark({ modelType, itemId }: UseBookmarkProps) {
             const response = await axios.get(
                 `/en/my/bookmarks/${modelType}/${itemId}/status`,
             );
-            console.log('Response ', response.data);
             setIsBookmarked(response.data.isBookmarked);
             setBookmarkId(response.data.id || null);
-        } catch (error: any) {
-            if (error.response?.status === 400) {
-                console.error('Invalid model type:', modelType);
-            } else if (error.response?.status === 404) {
-                setIsBookmarked(false);
-            } else {
-                console.error('Error fetching bookmark status', error);
-            }
+        } catch (error) {
+            console.error('Error fetching bookmark status', error);
         }
     };
 

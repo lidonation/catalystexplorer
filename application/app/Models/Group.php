@@ -48,7 +48,7 @@ class Group extends Model implements HasMedia
             'tags.id',
             'tags',
             'proposals',
-            'proposals_approved',
+            'proposals_funded',
             'proposals_completed',
             'amount_awarded_ada',
             'amount_awarded_usd',
@@ -71,7 +71,7 @@ class Group extends Model implements HasMedia
             'name',
             'id',
             'website',
-            'proposals_approved',
+            'proposals_funded',
             'proposals_completed',
             'amount_awarded_ada',
             'amount_awarded_usd',
@@ -140,7 +140,7 @@ class Group extends Model implements HasMedia
 
         return array_merge($array, [
             'proposals_completed' => $proposals->filter(fn ($p) => $p['status'] === 'complete')?->count() ?? 0,
-            'proposals_approved' => $proposals->filter(fn ($p) => (bool) $p['funded_at'])?->count() ?? 0,
+            'proposals_funded' => $proposals->filter(fn ($p) => (bool) $p['funded_at'])?->count() ?? 0,
             'amount_received' => intval($this->proposals()->whereNotNull('funded_at')->sum('amount_received')),
             'amount_awarded_ada' => intval($this->amount_awarded_ada),
             'amount_awarded_usd' => intval($this->amount_awarded_usd),

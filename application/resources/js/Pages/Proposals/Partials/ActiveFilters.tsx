@@ -53,7 +53,7 @@ export default function ActiveFilters({
     };
 
     return (
-        <div className="flex w-full flex-wrap gap-3 transition-all duration-300">
+        <div className="flex w-full flex-wrap gap-3 transition-all duration-300 text-sm">
             {filters.map((filter) => {
                 if (!filter.label) {
                     return;
@@ -111,7 +111,7 @@ const StatusFilters = ({ filter }: { filter: FilteredItem }) => {
 
     return (
         <div
-            className="bg-background mr-1 mb-1 flex items-center rounded-lg border px-1 py-1"
+            className="bg-background mr-1 flex items-center rounded-lg border px-1 py-1"
             key={filter.label}
         >
             <div className="mr-1 font-bold">{filter.label}:</div>
@@ -155,7 +155,7 @@ const RangeFilters = ({ filter }: { filter: FilteredItem }) => {
 
     return (
         <div
-            className="bg-background mr-1 mb-1 flex items-center rounded-lg border px-1 py-1"
+            className="bg-background mr-1 flex items-center rounded-lg border px-1 py-1"
             key={filter.label}
         >
             <div className="mr-1">{filter.label}</div>
@@ -178,7 +178,7 @@ const BooleanFilters = ({ filter }: { filter: FilteredItem }) => {
     };
     return (
         <div
-            className="bg-background mr-1 mb-1 flex items-center rounded-lg border px-1 py-1"
+            className="bg-background mr-1 flex items-center rounded-lg border px-1 py-1"
             key={filter.label}
         >
             <div className="mr-1">{filter.label}</div>
@@ -213,7 +213,7 @@ const SortFilters = ({
 
     return (
         <div
-            className="bg-background mr-1 mb-1 flex items-center rounded-lg border px-1 py-1"
+            className="bg-background mr-1 flex items-center rounded-lg border px-1 py-1"
             key={filter.label}
         >
             <div className="mr-1">{sort?.label}</div>
@@ -252,7 +252,7 @@ const IDFilters = React.memo(({ filter }: { filter: FilteredItem }) => {
 
     return (
         <div
-            className="bg-background mr-1 mb-1 flex items-center rounded-lg border px-1 py-1"
+            className="bg-background mr-1 flex items-center rounded-lg border px-1 py-1"
             key={filter.label}
         >
             <div className="mr-1 font-bold">{filter.label}:</div>

@@ -39,6 +39,7 @@ export default function Index({
     const { setMetrics } = useMetrics();
 
     const [isHorizontal, setIsHorizontal] = useState(false);
+    const [isMini, setIsMini] = useState(false)
     const [showFilters, setShowFilters] = useState(false);
 
     const [quickPitchView, setQuickPitchView] = useState(
@@ -93,10 +94,12 @@ export default function Index({
                     <ProposalFilters />
                 </section>
 
-                <section className="container mt-4 flex flex-col items-end">
+                <section className="container flex flex-col items-end">
                     <CardLayoutSwitcher
                         isHorizontal={isHorizontal}
                         quickPitchView={quickPitchView}
+                        isMini={isMini}
+                        setIsMini={setIsMini}
                         setIsHorizontal={setIsHorizontal}
                         setGlobalQuickPitchView={setQuickPitchView}
                     />
@@ -119,6 +122,7 @@ export default function Index({
                                 isHorizontal={isHorizontal}
                                 quickPitchView={quickPitchView}
                                 setGlobalQuickPitchView={setQuickPitchView}
+                                isMini={isMini}
                             />
                         </div>
                     </WhenVisible>

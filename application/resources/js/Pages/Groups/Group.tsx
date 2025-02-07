@@ -1,30 +1,38 @@
 import { Head } from '@inertiajs/react';
 import { useTranslation } from 'react-i18next';
+import RelatedProposals from '../Proposals/Partials/RelatedProposals';
 import GroupData = App.DataTransferObjects.GroupData;
+import ProposalData = App.DataTransferObjects.ProposalData;
 
 interface GroupPageProps extends Record<string, unknown> {
     group: GroupData;
+    proposals: {
+        data: ProposalData[];
+        total: number;
+    };
 }
 
-const Group: React.FC<GroupPageProps> = ({ group }) => {
+const Group: React.FC<GroupPageProps> = ({ group, proposals }) => {
     const { t } = useTranslation();
 
     return (
         <>
-            <Head title="Group" />
+            <Head title={`${group.name} - Group`} />
 
             <header>
                 <div className="container">
-                    <h1 className="title-1">{t('Groups')}</h1>
+                    <h1 className="title-1">{group.name}</h1>
                 </div>
                 <div className="container">
-                    <p className="text-content">{group.name}</p>
                 </div>
             </header>
 
-            <div className="flex h-screen w-full flex-col items-center justify-center">
-                <h1>{t('comingSoon')}</h1>
-            </div>
+            <section className="container my-8">                
+                <RelatedProposals 
+                    proposals={proposals}
+                    groupId={group.id ?? undefined}
+                />
+            </section>
         </>
     );
 };

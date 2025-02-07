@@ -15,9 +15,23 @@ class Review extends Model
 {
     use Searchable;
 
-    public static function runCustomIndex(): void
+    public function children(): Attribute
     {
-        Artisan::call('cx:create-search-index App\\\\Models\\\\Review cx_reviews');
+        $children = $this->metas?->where('key', 'child_id')->pluck('content');
+
+        return Attribute::make(get: fn () => $children->isEmpty() ? null : self::fund($children));
+    }
+
+    public static function getFilterableAttributes(): array
+    {
+        return [
+            'id',
+            'title',
+            'content',
+            'status',
+            'model_id',
+            'model_type',
+        ];
     }
 
     public static function getSearchableAttributes(): array
@@ -26,19 +40,23 @@ class Review extends Model
             'id',
             'title',
             'content',
+            'status',
         ];
     }
 
-    public function toSearchableArray(): array
+    public static function getSortableAttributes(): array
     {
-        return $this->toArray();
+        return [
+            'id',
+            'title',
+            'status',
+            'created_at',
+        ];
     }
 
-    public function children(): Attribute
+    public static function runCustomIndex(): void
     {
-        $children = $this->metas?->where('key', 'child_id')->pluck('content');
-
-        return Attribute::make(get: fn () => $children->isEmpty() ? null : self::fund($children));
+        Artisan::call('cx:create-search-index App\\\\Models\\\\Review cx_reviews');
     }
 
     public function discussion(): BelongsTo
@@ -59,5 +77,19 @@ class Review extends Model
     public function review_moderation_reviewer(): HasOne
     {
         return $this->hasOne(ReviewModerationReviewer::class, 'review_id');
+    }
+
+    public function toSearchableArray(): array
+    {
+        $this->load(['model', 'discussion', 'parent']);
+
+        $array = $this->toArray();
+
+        return array_merge($array, [
+            'model' => $this->model?->toArray(),
+            'discussion' => $this->discussion?->toArray(),
+            'parent' => $this->parent?->toArray(),
+            'children' => $this->children,
+        ]);
     }
 }

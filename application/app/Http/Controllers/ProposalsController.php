@@ -214,9 +214,7 @@ class ProposalsController extends Controller
             $filters[] = 'opensource = '.$this->queryParams[ProposalSearchParams::OPENSOURCE_PROPOSALS()->value];
         }
 
-        if (isset($this->queryParams[ProposalSearchParams::TYPE()->value])) {
-            $filters[] = 'type = '.$this->queryParams[ProposalSearchParams::TYPE()->value];
-        }
+        $filters[] = 'type='.($this->queryParams[ProposalSearchParams::TYPE()->value] ?? 'proposal');
 
         if (isset($this->queryParams[ProposalSearchParams::QUICK_PITCHES()->value])) {
             $filters[] = 'quickpitch IS NOT NULL';

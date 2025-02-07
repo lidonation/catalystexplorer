@@ -2,9 +2,8 @@ import UserAvatar from '@/Components/UserAvatar';
 import { ListProvider } from '@/Context/ListContext';
 import BookmarkButton from '@/Pages/My/Bookmarks/Partials/BookmarkButton';
 import { useTranslation } from 'react-i18next';
-
+import SegmentedBar from './SegmentedProgressBar';
 import IdeascaleProfileData = App.DataTransferObjects.IdeascaleProfileData;
-
 interface IdeascaleProfileProps {
     ideascaleProfile: IdeascaleProfileData;
 }
@@ -13,7 +12,6 @@ const IdeascaleProfileCard: React.FC<IdeascaleProfileProps> = ({
     ideascaleProfile,
 }) => {
     const { t } = useTranslation();
-
     return (
         <div className="bg-background w-full overflow-hidden rounded-xl p-3 shadow-xs sm:p-4">
             <div className="relative w-full">
@@ -41,26 +39,26 @@ const IdeascaleProfileCard: React.FC<IdeascaleProfileProps> = ({
                         </p>
                     </div>
                 </div>
+            </div>
 
-                {/* Stats section */}
-                <div className="border-border-secondary mt-4 border-t-2 pt-4">
-                    <div className="mb-4 grid grid-cols-2 gap-2">
-                        <p className="text-4 text-content truncate opacity-70">
-                            {t('ideascaleProfiles.ownProposals')}
-                        </p>
-                        <p className="text-3 text-right font-semibold">
-                            {ideascaleProfile?.own_proposals_count ?? 0}
-                        </p>
-                    </div>
-                    <div className="grid grid-cols-2 gap-2">
-                        <p className="text-4 text-content truncate opacity-70">
-                            {t('ideascaleProfiles.coProposals')}
-                        </p>
-                        <p className="text-3 text-right font-semibold">
-                            {ideascaleProfile?.co_proposals_count ?? 0}
-                        </p>
-                    </div>
+            {/* Stats section */}
+            <div className="border-border-secondary border-t">
+                <div className="flex w-full justify-between pt-4 pb-4">
+                    <SegmentedBar
+                        IdeascaleProfileData={ideascaleProfile}
+                        CompletedProposalsColor="bg-success"
+                        FundedProposalsColor="bg-warning"
+                        UnfundedProposalsColor="bg-primary"
+                    />
                 </div>
+            </div>
+            <div className="border-border-secondary mt-4 inline-flex items-center rounded-lg border border-2 px-4 py-2">
+                <p className="text-3 text-content">
+                    {t('proposals.totalProposals')}:
+                </p>
+                <p className="text-3 text-content ml-1 font-bold">
+                    {ideascaleProfile?.proposals_count ?? 0}
+                </p>
             </div>
         </div>
     );

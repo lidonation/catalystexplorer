@@ -7,8 +7,8 @@ type AdaIconProps = {
 };
 export default function AdaIcon({
     className,
-    width = 24,
-    height = 24,
+    width = 32,
+    height = 32,
 }: AdaIconProps) {
     const { t } = useTranslation();
     return (

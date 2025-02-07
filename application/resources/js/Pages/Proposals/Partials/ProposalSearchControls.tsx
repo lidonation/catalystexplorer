@@ -46,7 +46,7 @@ function ProposalSearchControls({
     ).length;
 
     return (
-        <div className="sticky top-0 z-10 container mx-auto flex w-full flex-col gap-4 pt-6 pb-4 backdrop-blur-md">
+        <div className="sticky top-0 z-10 container mx-auto flex w-full flex-col gap-3 py-3 backdrop-blur-md">
             <div className="flex items-center justify-end gap-2">
                 <SearchBar
                     handleSearch={handleSearch}
@@ -88,7 +88,7 @@ function ProposalSearchControls({
                 />
             </div>
 
-            <div className="container mx-auto flex justify-start px-0 py-2">
+            <div className="container mx-auto flex justify-start px-0">
                 <ActiveFilters sortOptions={ProposalSortingOptions()} />
             </div>
         </div>

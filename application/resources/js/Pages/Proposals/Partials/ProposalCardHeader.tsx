@@ -28,7 +28,7 @@ export default function ProposalCardHeader({
         >
             {/* Top Section */}
             <div className="grow">
-                <div className="relative flex items-center justify-between p-4">
+                <div className="relative flex items-center justify-between px-4 py-3">
                     {userSelected ? (
                         <div>
                             <button
@@ -79,19 +79,19 @@ export default function ProposalCardHeader({
                 </div>
                 {/* Card Content */}
                 <div
-                    className={`mb-4 p-2 px-4 leading-tight ${!isHorizontal ? '' : 'flex h-full w-full items-center justify-center'}`}
+                    className={`p-2 px-4 leading-tight min-h-20 ${!isHorizontal ? '' : 'flex h-full w-full items-center justify-center'}`}
                 >
                     <a
                         href={proposal.link}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className={`text-2 hover:text-primary font-medium ${
+                        className={`hover:text-primary font-medium ${
                             isHorizontal ? 'mb-4 text-center' : ''
                         }`}
                     >
                         {!userSelected ? proposal.title : null}
                     </a>
-                    <div className="flex flex-row justify-end italic">
+                    <div className="flex flex-row justify-end italic py-0.5">
                         <span>~ {proposal.fund?.title}</span>
                     </div>
                 </div>

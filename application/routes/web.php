@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CampaignsController;
 use App\Http\Controllers\ChartsController;
 use App\Http\Controllers\CompletetProjectNftsController;
 use App\Http\Controllers\FundsController;
@@ -8,9 +9,11 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\IdeascaleProfilesController;
 use App\Http\Controllers\JormungandrController;
 use App\Http\Controllers\ProposalsController;
+use App\Http\Controllers\ReviewsController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\VoterToolController;
 use Illuminate\Support\Facades\Route;
+use Inertia\Inertia;
 
 Route::localized(
     function () {
@@ -24,8 +27,15 @@ Route::localized(
             Route::get('/', [FundsController::class, 'index'])
                 ->name('index');
 
-            Route::get('/{fund:slug}', [FundsController::class, 'fund'])
-                ->name('fund');
+            Route::prefix('/{fund:slug}')->as('fund.')->group(function () {
+                Route::get('/', [FundsController::class, 'fund'])
+                    ->name('show');
+
+                Route::prefix('/campaigns')->as('campaigns.')->group(function () {
+                    Route::get('/{campaign:slug}', [CampaignsController::class, 'show'])
+                        ->name('campaign.show');
+                });
+            });
         });
 
         Route::prefix('/groups')->as('groups.')->group(function () {
@@ -39,11 +49,21 @@ Route::localized(
         Route::get('/ideascale-profiles', [IdeascaleProfilesController::class, 'index'])
             ->name('ideascaleProfiles.index');
 
+        Route::prefix('/reviews')->as('reviews.')->group(function () {
+            Route::get('/', [ReviewsController::class, 'index'])
+                ->name('index');
+            Route::get('/{id}', [ReviewsController::class, 'review'])
+                ->name('review');
+        });
+
         Route::get('/charts', [ChartsController::class, 'index'])
             ->name('charts.index');
 
         Route::get('/completed-project-nfts', [CompletetProjectNftsController::class, 'index'])
             ->name('completedProjectsNfts.index');
+
+        Route::get('/completed-project-nfts/{proposal:id}', [CompletetProjectNftsController::class, 'show'])
+            ->name('completedProjectsNfts.show');
 
         Route::get('/jormungandr', [JormungandrController::class, 'index'])
             ->name('jormungandr.index');
@@ -55,6 +75,10 @@ Route::localized(
             ->name('search.index');
     }
 );
+
+Route::get('/map', function () {
+    return Inertia::render('Map');
+});
 
 require __DIR__.'/auth.php';
 
