@@ -156,7 +156,10 @@ class MyBookmarksController extends Controller
     public function status(string $modelType, int $id): JsonResponse
     {
         if (!BookmarkableType::isValid($modelType)) {
-            return response()->json(['error' => 'Invalid model type'], 400);
+            return response()->json([
+                'error' => 'Invalid model type',
+                'modelType' => $modelType
+                ]);
         }
 
         $modelClass = BookmarkableType::toArray()[$modelType];
@@ -174,9 +177,6 @@ class MyBookmarksController extends Controller
             return response()->json([
                 'isBookmarked' => true,
                 'id' => $bookmarkItem->id,
-                'model_id' => $id,
-                'modelType' => $modelClass,
-                'modelType2' => $modelName
 
             ]);
         }
@@ -184,10 +184,6 @@ class MyBookmarksController extends Controller
         return response()->json([
             'isBookmarked' => false,
             'id' => null,
-            'user' => Auth::id(),
-            'model_id' => $id,
-            'modelType' => $modelClass,
-            'modelType2' => $modelName
         ]);
     }
 

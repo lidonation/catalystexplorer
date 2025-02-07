@@ -20,6 +20,7 @@ export default function useBookmark({ modelType, itemId }: UseBookmarkProps) {
             const response = await axios.get(
                 `/en/my/bookmarks/${modelType}/${itemId}/status`,
             );
+            console.log('Response ', response.data);
             setIsBookmarked(response.data.isBookmarked);
             setBookmarkId(response.data.id || null);
         } catch (error: any) {
@@ -43,8 +44,8 @@ export default function useBookmark({ modelType, itemId }: UseBookmarkProps) {
                 setBookmarkId(response.data.bookmarkItem.id);
                 setIsOpen(true);
                 toast.success('Bookmark created successfully!', {
-                    className:
-                        'toastify-toast toastify-toast--success rounded-full px-2 py-1 text-xs',
+                    className: 'bg-gray-800 text-white',
+                    toastId: 'bookmark-created',
                 });
             }
         } catch (error) {
@@ -59,8 +60,8 @@ export default function useBookmark({ modelType, itemId }: UseBookmarkProps) {
                 setIsBookmarked(false);
                 setIsOpen(false);
                 toast.success('Bookmark removed successfully!', {
-                    className:
-                        'toastify-toast toastify-toast--success rounded-full px-2 py-1 text-xs',
+                    className: 'bg-gray-800 text-white',
+                    toastId: 'bookmark-remove-error',
                 });
             }
         } catch (error) {

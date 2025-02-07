@@ -53,7 +53,7 @@ export default function BookmarkButton({
                 </button>
             }
             pages={pages}
-            side="left"
+            side="right"
             align="start"
             alignOffset={40}
             width="240px"
