@@ -90,40 +90,42 @@ class MyBookmarksController extends Controller
             'bookmark' => BookmarkItemData::from($bookmarkItem),
         ]);
     }
-    public function store(Request $request, $proposalId): JsonResponse
+    public function store(Request $request, string $modelType, int $modelId): JsonResponse
     {
         try {
-            $bookmarkableType = BookmarkableType::tryFrom('Proposal'); // Assuming type is always 'Proposal'
-            if (!$bookmarkableType) {
-                return response()->json(['errors' => 'Model not found'], 422);
+            if (!BookmarkableType::isValid($modelType)) {
+                return response()->json(['errors' => 'Invalid model types'], 422);
             }
 
-            $modelType = $bookmarkableType->getModelClass();
-            $modelExists = $modelType::find($proposalId);
-            if (!$modelExists) {
-                return response()->json(['errors' => ['model_type' => ['Invalid model type']]], 422);
-            }
+            $bookmarkableType = BookmarkableType::from($modelType);
+            $modelClass = $bookmarkableType->getModelClass();
+            $modelType = class_basename($modelClass);
 
             DB::beginTransaction();
-            Log::info('Creating bookmark', ['user_id' => Auth::id(), 'model_id' => $proposalId]);
-
             $bookmarkItem = BookmarkItem::create([
                 'user_id' => Auth::id(),
                 'model_type' => $modelType,
-                'model_id' => $proposalId,
+                'model_id' => $modelId,
+            ]);
+            Log::info('Bookmark created', [
+                'user_id' => Auth::id(),
+                'model_id' => $modelId,
+                'model_type' => $modelType,
             ]);
 
-            Log::info('Bookmark created', ['bookmark' => $bookmarkItem]);
             DB::commit();
 
             return response()->json([
                 'message' => 'Bookmark created successfully',
+                'modeltype' => $modelType,
                 'bookmarkItem' => $bookmarkItem,
             ]);
         } catch (\Exception $e) {
             DB::rollback();
-            report($e);
-            return response()->json(['errors' => ['Failed to create bookmark']], 500);
+            Log::error('Error creating bookmark', ['error' => $e->getMessage()]);
+            return response()->json([
+                'errors' => 'Failed to create bookmark',
+                'err ' => $e]);
         }
     }
 
@@ -139,7 +141,7 @@ class MyBookmarksController extends Controller
 
             $bookmarkItem->delete();
 
-            return Response::json([
+            return response::json([
                 'message' => 'Bookmark deleted successfully',
             ]);
         } catch (\Exception $e) {
@@ -151,20 +153,41 @@ class MyBookmarksController extends Controller
         }
     }
 
-    public function status($id): JsonResponse
+    public function status(string $modelType, int $id): JsonResponse
     {
-        $bookmarkItem = BookmarkItem::where('user_id', Auth::id())
-            ->where('model_type', 'Proposal')
-            ->where('model_id', $id)
-            ->first();
-        if ($bookmarkItem) {
-            return response()->json(['isBookmarked' => true, 'id' => $bookmarkItem->id]);
+        if (!BookmarkableType::isValid($modelType)) {
+            return response()->json(['error' => 'Invalid model type'], 400);
         }
+
+        $modelClass = BookmarkableType::toArray()[$modelType];
+        $modelName = class_basename($modelClass);
+
+        $bookmarkItem = BookmarkItem::where('user_id', Auth::id())
+            ->where('model_id', $id)
+            ->where(function ($query) use ($modelClass, $modelName) {
+                $query->where('model_type', $modelClass)
+                    ->orWhere('model_type', $modelName);
+            })
+            ->first();
+
+        if ($bookmarkItem) {
+            return response()->json([
+                'isBookmarked' => true,
+                'id' => $bookmarkItem->id,
+                'model_id' => $id,
+                'modelType' => $modelClass,
+                'modelType2' => $modelName
+
+            ]);
+        }
+
         return response()->json([
             'isBookmarked' => false,
             'id' => null,
             'user' => Auth::id(),
-            'model_id' => $id
+            'model_id' => $id,
+            'modelType' => $modelClass,
+            'modelType2' => $modelName
         ]);
     }
 

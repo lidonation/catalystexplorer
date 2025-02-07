@@ -1,5 +1,5 @@
 import { ListProvider } from '@/Context/ListContext';
-import ProposalBookmark from './ProposalBookmark';
+import BookmarkButton from '@/Pages/My/Bookmarks/Partials/BookmarkButton';
 import ProposalStatus from './ProposalStatus';
 
 export default function ProposalCardHeader({
@@ -67,9 +67,12 @@ export default function ProposalCardHeader({
                             />
 
                             <ListProvider>
-                                <ProposalBookmark
-                                    proposalId={proposal.id ?? undefined}
-                                />
+                                {proposal.id && (
+                                    <BookmarkButton
+                                        modelType="proposals"
+                                        itemId={proposal.id}
+                                    />
+                                )}
                             </ListProvider>
                         </>
                     )}

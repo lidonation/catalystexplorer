@@ -85,9 +85,6 @@ const BookmarkPage1 = ({
             </div>
             <section className="flex flex-col gap-3 px-3">
                 <div className="flex flex-col gap-1">
-                    {/*<span className="text-sm font-light italic">*/}
-                    {/*    Successfully added to your bookmarks!*/}
-                    {/*</span>*/}
                     <button
                         className="text-error font-semibold"
                         disabled={!isBookmarked}
