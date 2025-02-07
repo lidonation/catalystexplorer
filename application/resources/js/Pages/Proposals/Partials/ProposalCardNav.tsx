@@ -16,8 +16,11 @@ export default function ProposalCardNav({
                     <button
                         type="button"
                         onClick={() => toggleLocalQuickPitchView(false)}
-                        className={`w-full border-b-2 pb-3 font-semibold ${!quickPitchView ? 'border-primary text-primary' : 'border-transparent text-content'
-                            }`}
+                        className={`w-full border-b-2 pb-3 font-semibold ${
+                            !quickPitchView
+                                ? 'border-primary text-primary'
+                                : 'text-content border-transparent'
+                        }`}
                     >
                         {t('details')}
                     </button>
@@ -27,8 +30,11 @@ export default function ProposalCardNav({
                         type="button"
                         onClick={() => toggleLocalQuickPitchView(true)}
                         disabled={!hasQuickPitch}
-                        className={`flex items-center gap-1 pb-3 font-semibold ${quickPitchView ? 'border-b-2 border-primary text-primary' : 'border-transparent'
-                            } ${!hasQuickPitch ? 'cursor-not-allowed opacity-60' : 'text-content hover:text-primary'}`}
+                        className={`flex items-center gap-1 pb-3 font-semibold ${
+                            quickPitchView
+                                ? 'border-primary text-primary border-b-2'
+                                : 'border-transparent'
+                        } ${!hasQuickPitch ? 'cursor-not-allowed opacity-60' : 'text-content hover:text-primary'}`}
                     >
                         <span>{t('proposals.quickPitch')}</span>
                         {!hasQuickPitch && (
@@ -41,4 +47,4 @@ export default function ProposalCardNav({
             </ul>
         </nav>
     );
-};
+}
