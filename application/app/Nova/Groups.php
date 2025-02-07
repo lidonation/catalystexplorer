@@ -4,8 +4,14 @@ declare(strict_types=1);
 
 namespace App\Nova;
 
+use App\Enums\StatusEnum;
 use App\Models\Group;
+use Laravel\Nova\Fields\BelongsTo;
+use Laravel\Nova\Fields\HasMany;
 use Laravel\Nova\Fields\ID;
+use Laravel\Nova\Fields\Select;
+use Laravel\Nova\Fields\Text;
+use Laravel\Nova\Fields\Textarea;
 use Laravel\Nova\Http\Requests\NovaRequest;
 
 class Groups extends Resource
@@ -42,6 +48,26 @@ class Groups extends Resource
     {
         return [
             ID::make()->sortable(),
+
+            BelongsTo::make('Owner', 'owner', IdeascaleProfiles::class),
+
+            Text::make(__('Name'))
+                ->sortable()
+                ->required(),
+
+            Text::make(__('Slug'))->sortable(),
+
+            Select::make('Status', 'status')
+                ->options(StatusEnum::toValues())
+                ->default(StatusEnum::draft())
+                ->sortable(),
+
+            Textarea::make(__('Bio'))
+                ->sortable()
+                ->required(),
+
+            HasMany::make('Proposals', 'proposals', Proposals::class),
+
         ];
     }
 

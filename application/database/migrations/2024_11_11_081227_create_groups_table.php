@@ -22,6 +22,10 @@ return new class extends Migration
             $table->string('twitter', 255)->nullable();
             $table->string('discord', 255)->nullable();
             $table->string('github', 255)->nullable();
+            $table->float('long')->nullable();
+            $table->float('lat')->nullable();
+            $table->text('city')->nullable();
+            $table->text('country')->nullable();
         });
     }
 

@@ -7,6 +7,7 @@ namespace App\Models;
 use App\Casts\DateFormatCast;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Facades\Artisan;
 use Laravel\Scout\Searchable;
@@ -186,5 +187,10 @@ class Group extends Model implements HasMedia
                     })->sum('amount_requested');
             },
         );
+    }
+
+    public function owner(): BelongsTo
+    {
+        return $this->belongsTo(IdeascaleProfile::class, 'user_id');
     }
 }

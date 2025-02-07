@@ -87,13 +87,14 @@ class MyBookmarksController extends Controller
 
         return
             Inertia::render('My/Bookmarks/Partials/Show', [
-            'bookmark' => BookmarkItemData::from($bookmarkItem),
-        ]);
+                'bookmark' => BookmarkItemData::from($bookmarkItem),
+            ]);
     }
+
     public function store(Request $request, string $modelType, int $modelId): JsonResponse
     {
         try {
-            if (!BookmarkableType::isValid($modelType)) {
+            if (! BookmarkableType::isValid($modelType)) {
                 return response()->json(['errors' => 'Invalid model types'], 422);
             }
 
@@ -123,6 +124,7 @@ class MyBookmarksController extends Controller
         } catch (\Exception $e) {
             DB::rollback();
             Log::error('Error creating bookmark', ['error' => $e->getMessage()]);
+
             return response()->json([
                 'errors' => 'Failed to create bookmark',
                 'err ' => $e]);
@@ -136,7 +138,7 @@ class MyBookmarksController extends Controller
 
             if ($bookmarkItem->user_id !== Auth::id()) {
                 return response::json([
-                    'errors' => 'Unauthorized action' ], 403);
+                    'errors' => 'Unauthorized action'], 403);
             }
 
             $bookmarkItem->delete();
@@ -155,11 +157,11 @@ class MyBookmarksController extends Controller
 
     public function status(string $modelType, int $id): JsonResponse
     {
-        if (!BookmarkableType::isValid($modelType)) {
+        if (! BookmarkableType::isValid($modelType)) {
             return response()->json([
                 'error' => 'Invalid model type',
-                'modelType' => $modelType
-                ]);
+                'modelType' => $modelType,
+            ]);
         }
 
         $modelClass = BookmarkableType::toArray()[$modelType];
