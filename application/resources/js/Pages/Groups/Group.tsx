@@ -5,6 +5,7 @@ import GroupData = App.DataTransferObjects.GroupData;
 import ProposalData = App.DataTransferObjects.ProposalData;
 import ReviewHorizontalCard from '../Reviews/Partials/ReviewHorizontalCard';
 import ReviewHorizontalCardLoader from '../Reviews/Partials/ReviewHorizontalCardLoader';
+import GroupCard from "@/Pages/Groups/Partials/GroupCard";
 
 interface GroupPageProps extends Record<string, unknown> {
     group: GroupData;
@@ -29,8 +30,12 @@ const Group: React.FC<GroupPageProps> = ({ group, proposals }) => {
                 </div>
             </header>
 
-            <section className="container my-8">                
-                <RelatedProposals 
+            <section className="container my-8 flex flex-col gap-16">
+                <div className='max-w-md'>
+                    <GroupCard group={group}  />
+                </div>
+
+                <RelatedProposals
                     proposals={proposals}
                     groupId={group.id ?? undefined}
                 />

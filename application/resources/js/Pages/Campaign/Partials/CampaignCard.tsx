@@ -6,12 +6,12 @@ import { useTranslation } from 'react-i18next';
 import {Link} from "@inertiajs/react";
 import {useLocalizedRoute} from "@/utils/localizedRoute";
 
-interface CampainCardProps {
+interface CampaignCardProps {
   fund: FundData;
   campaign: CampaignData
 }
 
-const CampaignCard: React.FC<CampainCardProps> = ({ fund, campaign }) => {
+const CampaignCard: React.FC<CampaignCardProps> = ({ fund, campaign }) => {
   const { t } = useTranslation();
 
   const heroImageUrl = fund?.hero_img_url;

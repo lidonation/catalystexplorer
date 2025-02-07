@@ -1,6 +1,6 @@
 import Button from '@/Components/atoms/Button';
 import SearchBar from '@/Components/SearchBar';
-import Selector from '@/Components/Select';
+import Selector from '@/Components/atoms/Selector';
 import FilterLinesIcon from '@/Components/svgs/FilterLinesIcon';
 import { useFilterContext } from '@/Context/FiltersContext';
 import { ProposalParamsEnum } from '@/enums/proposal-search-params';
