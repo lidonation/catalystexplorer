@@ -160,7 +160,8 @@ const SearchResults = ({ counts, ...results }: SearchResultsProps) => {
                                 fallback={
                                     <SearchResultsLoading
                                         type={tab.name}
-                                        count={5}
+                                        count={counts[tab.name as keyof SearchResultCounts] || 0}
+                                        // count={5}
                                     />
                                 }
                             >
