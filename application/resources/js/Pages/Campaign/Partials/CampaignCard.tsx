@@ -3,6 +3,8 @@ import FundData = App.DataTransferObjects.FundData;
 import CampaignData = App.DataTransferObjects.CampaignData;
 import { currency } from '@/utils/currency';
 import { useTranslation } from 'react-i18next';
+import {Link} from "@inertiajs/react";
+import {useLocalizedRoute} from "@/utils/localizedRoute";
 
 interface CampainCardProps {
   fund: FundData;
@@ -24,14 +26,14 @@ const CampaignCard: React.FC<CampainCardProps> = ({ fund, campaign }) => {
             className="h-full w-full object-cover"
           />
         ) : (
-          <div className="flex items-center justify-center h-full text-gray-persist">
-            {t('noImage')}
+          <div className="flex items-center justify-center h-full text-gray-persist bg-primary">
+            {campaign?.label}
           </div>
         )}
       </div>
       <div className="pt-6">
         <h3 className="text-lg font-semibold mb-2 flex items-center justify-between">
-            {campaign?.title}
+            <Link href={useLocalizedRoute('funds.fund.campaigns.campaign.show', {fund: fund.slug, campaign: campaign.slug})}>{campaign?.title}</Link>
             <svg width="34" height="34" version="1.1" viewBox="0 0 1200 1200" xmlns="http://www.w3.org/2000/svg">
                 <path d="m400 350c0-27.613 22.387-50 50-50h400c27.613 0 50 22.387 50 50v400c0 27.613-22.387 50-50 50s-50-22.387-50-50v-279.29l-414.64 414.64c-19.527 19.523-51.184 19.523-70.711 0-19.527-19.527-19.527-51.184 0-70.711l414.64-414.64h-279.29c-27.613 0-50-22.387-50-50z"/>
             </svg>

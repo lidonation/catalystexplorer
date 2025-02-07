@@ -41,8 +41,28 @@ class CampaignData extends Data
         #[TypeScriptOptional]
         public ?string $label,
 
+        #[TypeScriptOptional]
+        public ?string $total_requested,
+
+        #[TypeScriptOptional]
+        public ?string $total_awarded,
+
+        #[TypeScriptOptional]
+        public ?string $total_distributed,
+
+        #[TypeScriptOptional]
         public ?string $currency,
 
-        public ?int $proposals_count
+        #[TypeScriptOptional]
+        public ?int $proposals_count,
+
+        #[TypeScriptOptional]
+        public ?int $completed_proposals_count,
+
+        #[TypeScriptOptional]
+        public ?int $unfunded_proposals,
+
+        #[TypeScriptOptional]
+        public ?int $funded_proposals,
     ) {}
 }

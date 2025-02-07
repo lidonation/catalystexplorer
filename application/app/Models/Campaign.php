@@ -6,6 +6,7 @@ namespace App\Models;
 
 use App\Enums\ProposalStatus;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -17,6 +18,15 @@ class Campaign extends Model implements HasMedia
     use InteractsWithMedia,
         SoftDeletes;
 
+    protected $hidden = [
+        'id',
+        'user_id',
+        'fund_id',
+        'created_at',
+        'updated_at',
+        'deleted_at',
+    ];
+
     protected $withCount = [
         'proposals',
     ];
@@ -24,6 +34,34 @@ class Campaign extends Model implements HasMedia
     protected $with = [
         'media',
     ];
+
+    public function label(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => $this->label ?? $this->title
+        );
+    }
+
+    public function totalRequested(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => $this->proposals()->sum('amount_requested')
+        );
+    }
+
+    public function totalAwarded(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => $this->funded_proposals()->sum('amount_requested')
+        );
+    }
+
+    public function totalDistributed(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => $this->funded_proposals()->sum('amount_received')
+        );
+    }
 
     /**
      * Scope to filter groups
