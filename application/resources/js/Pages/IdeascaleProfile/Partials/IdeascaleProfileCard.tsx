@@ -4,6 +4,7 @@ import BookmarkButton from '@/Pages/My/Bookmarks/Partials/BookmarkButton';
 import { useTranslation } from 'react-i18next';
 import SegmentedBar from './SegmentedProgressBar';
 import IdeascaleProfileData = App.DataTransferObjects.IdeascaleProfileData;
+import Card from "@/Components/Card";
 interface IdeascaleProfileProps {
     ideascaleProfile: IdeascaleProfileData;
 }
@@ -13,7 +14,7 @@ const IdeascaleProfileCard: React.FC<IdeascaleProfileProps> = ({
 }) => {
     const { t } = useTranslation();
     return (
-        <div className="bg-background w-full overflow-hidden rounded-xl p-3 shadow-xs sm:p-4">
+        <Card>
             <div className="relative w-full">
                 <div className="mb-3 flex justify-end">
                     <ListProvider>
@@ -60,7 +61,7 @@ const IdeascaleProfileCard: React.FC<IdeascaleProfileProps> = ({
                     {ideascaleProfile?.proposals_count ?? 0}
                 </p>
             </div>
-        </div>
+        </Card>
     );
 };
 

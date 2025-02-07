@@ -1,8 +1,8 @@
 import { Link, router, useForm } from "@inertiajs/react";
 import InputLabel from "../../../Components/InputLabel";
-import TextInput from "../../../Components/TextInput";
+import TextInput from "../../../Components/atoms/TextInput";
 import InputError from "../../../Components/InputError";
-import PrimaryButton from "../../../Components/PrimaryButton";
+import PrimaryButton from "../../../Components/atoms/PrimaryButton";
 import { useTranslation } from "react-i18next";
 import { FormEventHandler, useState } from "react";
 import axios from "axios";

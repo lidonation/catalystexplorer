@@ -1,7 +1,7 @@
-import PrimaryButton from '@/Components/PrimaryButton';
+import PrimaryButton from '@/Components/atoms/PrimaryButton';
 import ArrowLeftIcon from '@/Components/svgs/ArrowLeft';
-import CustomSwitch from '@/Components/Switch';
-import TextInput from '@/Components/TextInput';
+import CustomSwitch from '@/Components/atoms/Switch';
+import TextInput from '@/Components/atoms/TextInput';
 import { useList } from '@/Context/ListContext';
 import { useState } from 'react';
 import { TransitionListPageProps } from '../../../../../../types/general';

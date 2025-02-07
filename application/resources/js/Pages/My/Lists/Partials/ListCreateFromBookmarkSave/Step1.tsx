@@ -1,5 +1,5 @@
-import Checkbox from '@/Components/Checkbox';
-import PrimaryButton from '@/Components/PrimaryButton';
+import Checkbox from '@/Components/atoms/Checkbox';
+import PrimaryButton from '@/Components/atoms/PrimaryButton';
 import { useList } from '@/Context/ListContext';
 import { List, PlusIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';

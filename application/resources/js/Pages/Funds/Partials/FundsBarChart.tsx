@@ -1,4 +1,4 @@
-import Selector from '@/Components/Select';
+import Selector from '@/Components/atoms/Selector';
 import { currency } from '@/utils/currency';
 import { ResponsiveBar } from '@nivo/bar';
 import React, { useState } from 'react';
