@@ -19,6 +19,9 @@ class Campaign extends Model implements HasMedia
 
     protected $withCount = [
         'proposals',
+        'funded_proposals',
+        'unfunded_proposals',
+        'completed_proposals',
     ];
 
     protected $with = [

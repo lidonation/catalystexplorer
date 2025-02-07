@@ -57,6 +57,10 @@ updated_at: string | null;
 label?: string;
 currency: string | null;
 proposals_count: number;
+funded_proposals_count?: number;
+unfunded_proposals_count?: number;
+completed_proposals_count?: number;
+
 };
 export type CommunityData = {
 id: number | null;
