@@ -26,7 +26,7 @@ const SegmentedBar: React.FC<SegmentedBarProps> = ({
         UnfundedProposalsColor,
     ];
 
-    if (completed - funded === 0 && completed !== 0) {
+    if (completed - funded === 0 && completed !== 0 && funded !== 0) {
         values = [completed];
         colors = [CompletedProposalsColor];
     }
@@ -50,7 +50,6 @@ const SegmentedBar: React.FC<SegmentedBarProps> = ({
                 ></div>
             ) : (
                 values.map((value, index) => {
-                    if (value === 0) return null;
                     const width =
                         total === 0 ? '33.33%' : `${(value / total) * 100}%`;
                     return (
