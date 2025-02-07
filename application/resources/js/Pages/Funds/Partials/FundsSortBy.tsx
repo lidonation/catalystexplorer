@@ -1,4 +1,4 @@
-import Selector from '@/Components/Select';
+import Selector from '@/Components/atoms/Selector';
 import { useFilterContext } from '@/Context/FiltersContext';
 import { ProposalParamsEnum } from '@/enums/proposal-search-params';
 import { useTranslation } from 'react-i18next';

@@ -80,9 +80,24 @@ class GroupsController extends Controller
 
     public function group(Request $request, Group $group, GroupRepository $groupRepository): Response
     {
+        $group->load('proposals')
+            ->loadCount([
+                'proposals',
+                'funded_proposals',
+                'unfunded_proposals',
+                'completed_proposals',
+            ])->append([
+                'amount_awarded_ada',
+                'amount_awarded_usd',
+                'amount_requested_ada',
+                'amount_requested_usd',
+                'amount_distributed_ada',
+                'amount_distributed_usd',
+            ]);
+
         return Inertia::render('Groups/Group', [
             'group' => GroupData::from($group),
-            'proposals' => ProposalData::collect($group->proposals()->with(['users', 'fund'])->paginate()),
+            'proposals' => ProposalData::collect($group->proposals()->with(['users', 'fund'])->paginate(5)),
         ]);
     }
 

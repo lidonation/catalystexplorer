@@ -62,14 +62,18 @@ class Funds extends Resource
     {
         return [
             ID::make()->sortable(),
+
             Text::make(__('Title'))
                 ->sortable()
                 ->required(),
+
             Text::make(__('Slug'))->sortable(),
+
             Stack::make('Details', [
                 Text::make(__('Title'), 'title'),
                 Slug::make(__('Summary'), 'summary'),
             ])->readonly(),
+
             Select::make(__('Currency'), 'currency')->options([
                 CatalystCurrencies::USD()->value => CatalystCurrencies::USD()->value,
                 CatalystCurrencies::ADA()->value => CatalystCurrencies::ADA()->value,

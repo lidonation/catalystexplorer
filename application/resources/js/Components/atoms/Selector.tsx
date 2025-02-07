@@ -3,7 +3,7 @@ import { ChevronDown } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import Checkbox from './Checkbox';
-import { Popover, PopoverContent, PopoverTrigger } from './Popover';
+import { Popover, PopoverContent, PopoverTrigger } from '@/Components/Popover';
 
 type SelectProps = {
     isMultiselect?: boolean;

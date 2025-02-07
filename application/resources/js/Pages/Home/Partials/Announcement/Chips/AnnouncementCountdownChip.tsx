@@ -3,7 +3,7 @@ import {
     TooltipContent,
     TooltipProvider,
     TooltipTrigger,
-} from '@/Components/Tooltip';
+} from '@/Components/atoms/Tooltip';
 import { useScreenDimension } from '@/Hooks/useScreenDimension';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';

@@ -1,5 +1,5 @@
 import { ButtonHTMLAttributes } from 'react';
-import LoadingSpinner from './svgs/LoadingSpinner';
+import LoadingSpinner from "@/Components/svgs/LoadingSpinner";
 
 interface PrimaryButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
     className?: string;

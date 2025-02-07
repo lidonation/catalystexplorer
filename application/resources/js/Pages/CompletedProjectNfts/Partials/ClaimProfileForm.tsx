@@ -1,6 +1,6 @@
 import InputError from '@/Components/InputError';
-import PrimaryButton from '@/Components/PrimaryButton';
-import TextInput from '@/Components/TextInput';
+import PrimaryButton from '@/Components/atoms/PrimaryButton';
+import TextInput from '@/Components/atoms/TextInput';
 import { useForm } from '@inertiajs/react';
 import { useTranslation } from 'react-i18next';
 
