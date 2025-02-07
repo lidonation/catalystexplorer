@@ -19,7 +19,7 @@ class VoterHistoryFactory extends Factory
             'raw_fragment' => $this->faker->text,
             'proposal' => $this->faker->randomNumber(),
             'choice' => $this->faker->numberBetween(1, 10),
-            'catalyst_snapshot_id' => $this->faker->optional()->randomNumber(),
+            'snapshot_id' => $this->faker->optional()->randomNumber(),
         ];
     }
 }

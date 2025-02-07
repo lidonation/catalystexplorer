@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('catalyst_snapshots', function (Blueprint $table) {
+        Schema::create('snapshots', function (Blueprint $table) {
             $table->id();
             $table->string('snapshot_name');
             $table->string('model_type');
@@ -27,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('catalyst_snapshots');
+        Schema::dropIfExists('snapshots');
     }
 };

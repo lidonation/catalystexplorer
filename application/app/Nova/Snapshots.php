@@ -4,20 +4,21 @@ declare(strict_types=1);
 
 namespace App\Nova;
 
-use Laravel\Nova\Fields\BelongsTo;
+use App\Models\Snapshot;
+use Laravel\Nova\Fields\DateTime;
+use Laravel\Nova\Fields\HasMany;
 use Laravel\Nova\Fields\ID;
-use Laravel\Nova\Fields\Number;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Http\Requests\NovaRequest;
 
-class CatalystVotingPowers extends Resource
+class Snapshots extends Resource
 {
     /**
      * The model the resource corresponds to.
      *
-     * @var class-string<\App\Models\CatalystVotingPower>
+     * @var class-string<Snapshot>
      */
-    public static $model = \App\Models\CatalystVotingPower::class;
+    public static $model = Snapshot::class;
 
     /**
      * The single value that should be used to represent the resource when being displayed.
@@ -44,9 +45,9 @@ class CatalystVotingPowers extends Resource
     {
         return [
             ID::make()->sortable(),
-            Text::make('Delegate'),
-            BelongsTo::make('Snapshot', 'snapshot', CatalystSnapshot::class),
-            Number::make('Voting Power')->step(0.00000001),
+            Text::make('Snapshot Name'),
+            DateTime::make('Snapshot Date'),
+            HasMany::make('Voting Powers', 'votingPowers', VotingPowers::class),
         ];
     }
 

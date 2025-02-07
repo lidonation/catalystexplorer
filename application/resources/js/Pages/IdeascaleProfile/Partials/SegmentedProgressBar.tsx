@@ -39,6 +39,7 @@ const SegmentedBar: React.FC<SegmentedBarProps> = ({
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
+<<<<<<< HEAD
       {nonZeroValues.length === 1 ? (
         // Render only one full-width bar if only one value is non-zero
         <div
@@ -57,6 +58,23 @@ const SegmentedBar: React.FC<SegmentedBarProps> = ({
           );
         })
       )}
+=======
+      {values.map((value, index) => {
+        let width;
+        if (total === 0) {
+          width = "33.33%"; // Distribute evenly if all values are zero
+        } else {
+          width = (value / total) * 100 + "%";
+        }
+        return (
+          <div
+            key={index}
+            className={`${colors[index]} h-2 rounded-md ${index !== 0 ? "ml-1" : ""}`}
+            style={{ width }}
+          ></div>
+        );
+      })}
+>>>>>>> dev
       {isHovered && (
         <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2">
           <TooltipHoverComponent
