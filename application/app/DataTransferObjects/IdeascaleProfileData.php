@@ -44,6 +44,10 @@ final class IdeascaleProfileData extends Data
         #[TypeScriptOptional]
         public ?string $profile_photo_url,
         #[TypeScriptOptional]
+        public ?int $amount_awarded_usd,
+        #[TypeScriptOptional]
+        public ?int $amount_awarded_ada,
+        #[TypeScriptOptional]
         public ?int $co_proposals_count,
         #[TypeScriptOptional]
         public ?int $own_proposals_count,
@@ -54,6 +58,10 @@ final class IdeascaleProfileData extends Data
         #[TypeScriptOptional]
         public ?int $funded_proposals_count,
         #[TypeScriptOptional]
+        public ?int $unfunded_proposals_count,
+        #[TypeScriptOptional]
         public ?int $proposals_count,
+        #[TypeScriptOptional]
+        public ?int $collaborating_proposals_count,
     ) {}
 }
