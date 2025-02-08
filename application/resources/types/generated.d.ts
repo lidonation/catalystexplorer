@@ -113,6 +113,18 @@ github?: string;
 created_at?: string;
 updated_at?: string;
 deleted_at?: string;
+hero_img_url?: string;
+amount_requested_usd?: number;
+amount_requested_ada?: number;
+completed_proposals_count?: number;
+funded_proposals_count?: number;
+unfunded_proposals_count?: number;
+amount_distributed_ada?: number;
+amount_distributed_usd?: number;
+amount_awarded_ada?: number;
+amount_awarded_usd?: number;
+proposals_count?: number;
+
 };
 export type IdeascaleProfileData = {
 id: number | null;
