@@ -317,7 +317,9 @@
     "groups":{
         "groups": "Groups",
         "title": "Catalyst Groups",
-        "subtitle": "Diverse, independent, and together inspiring the highest level of human collaboration"
+        "subtitle": "Diverse, independent, and together inspiring the highest level of human collaboration",
+        "fundedProposals": "Funded Proposals",
+        "received": "Received"
     },
     "posts": {
         "title": "Catalysts Posts",
@@ -366,6 +368,7 @@
             "voltaireMode": "Voltaire Mode Icon",
             "register": "Register Icon",
             "link": "Link Icon",
+            "linkedIn": "LinkedIn",
             "listBullet": "List Bullet Icon",
             "verticalColumn": "Vertical Column Icon",
             "videoCamera": "Video Camera Icon",
@@ -381,7 +384,8 @@
             "file": "File Icon",
             "ada": "Ada Icon",
             "usd": "USD Icon",
-            "tick": "Tick Icon"
+            "tick": "Tick Icon",
+            "x": "X"
         }
     },
     "users": {

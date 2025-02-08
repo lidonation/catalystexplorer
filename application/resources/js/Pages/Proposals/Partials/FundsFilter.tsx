@@ -50,11 +50,6 @@ const FundsFilter: React.FC<FundFiltersProps> = ({
         }
     };
 
-
-    useEffect(()=>{
-        console.log('funds1', funds)
-    }, [funds])
-
     const handleSelect = (value: string) => {
         const updatedItems = selectedItems.includes(value)
             ? selectedItems.filter((item: string) => item !== value)

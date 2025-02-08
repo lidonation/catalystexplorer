@@ -51,23 +51,25 @@ class GroupsController extends Controller
 
     public array $fundsCount = [];
 
+    public int $proposalsCount;
+
 
 
     public function index(Request $request): Response
     {
         $this->getProps($request);
-        
+
         $groups = $this->query();
+        
         $props = [
-            'groups' => Inertia::optional(
-                fn () => $groups
-            ),
+            'groups' => $groups,
             'search' => $this->search,
             'sort' => "{$this->sortBy}:{$this->sortOrder}",
             'filters' => $this->queryParams,
             'filterCounts' => [
                 'tagsCount' => $this->tagsCount,
                 'fundsCount' => $this->fundsCount,
+                'proposalsCount'=> array_sum($this->fundsCount),
             ],
         ];
 
@@ -85,7 +87,8 @@ class GroupsController extends Controller
     protected function getProps(Request $request): void
     {
         $this->queryParams = $request->validate([
-            ProposalSearchParams::FUNDED_PROPOSALS()->value => 'array|nullable',
+            ProposalSearchParams::FUNDING_STATUS()->value => 'array|nullable',
+            ProposalSearchParams::PROJECT_STATUS()->value => 'array|nullable',
             ProposalSearchParams::QUERY()->value => 'string|nullable',
             ProposalSearchParams::COHORT()->value => 'array|nullable',
             ProposalSearchParams::PAGE()->value => 'int|nullable',
@@ -96,6 +99,10 @@ class GroupsController extends Controller
             ProposalSearchParams::COMMUNITIES()->value => 'array|nullable',
             ProposalSearchParams::IDEASCALE_PROFILES()->value => 'array|nullable',
             ProposalSearchParams::FUNDS()->value => 'array|nullable',
+            ProposalSearchParams::PROPOSALS()->value => 'array|nullable',
+            ProposalSearchParams::MIN_PROPOSALS()->value => 'int|nullable',
+            ProposalSearchParams::MAX_PROPOSALS()->value => 'int|nullable',
+            ProposalSearchParams::AWARDED_ADA()->value => 'int|nullable',
         ]);
 
         // format sort params for meili
@@ -113,88 +120,36 @@ class GroupsController extends Controller
         }
     }
 
-    // protected function setFilters(Request $request)
-    // {
-    //     $this->limit = (int) $request->input(ProposalSearchParams::LIMIT, 24);
-    //     $this->currentPage = (int) $request->input(ProposalSearchParams::PAGE, 1);
-    //     $this->search = $request->input('s', null);
-    //     $this->search = $request->input(ProposalSearchParams::QUERY, null);
-
-    //     $sort = collect(explode(':', $request->input(ProposalSearchParams::SORTS, '')))->filter();
-    //     if ($sort->isEmpty()) {
-    //         $sort = collect(explode(':', collect([
-    //             'name:asc',
-    //             'name:desc',
-    //             'amount_awarded_ada:desc',
-    //             'amount_awarded_ada:asc',
-    //             'amount_awarded_usd:desc',
-    //             'amount_awarded_usd:asc',
-    //         ])->random()));
-    //     }
-
-    //     $this->sortBy = $sort->first();
-    //     $this->sortOrder = $sort->last();
-    //     $this->fundedProposalsFilter = (bool) $request->input(ProposalSearchParams::FUNDED_PROPOSALS, false);
-    //     $this->awardedUsdFilter = $request->collect(ProposalSearchParams::AWARDED_USD);
-    //     $this->awardedAdaFilter = $request->collect(ProposalSearchParams::AWARDED_ADA);
-    //     $this->fundsFilter = $request->collect(ProposalSearchParams::FUNDS)->map(fn($n) => intval($n));
-    //     $this->tagsFilter = $request->collect(ProposalSearchParams::TAGS)->map(fn($n) => intval($n));
-    //     $this->ideascaleProfileFilter = $request->collect(ProposalSearchParams::IDEASCALE_PROFILES)->map(fn($n) => intval($n));
-    // }
-
     public function query($returnBuilder = false, $attrs = null, $filters = [])
     {
-        $_options = [
-            'filters' => array_merge([], $this->getUserFilters(), $filters),
+
+        $args = [
+            'filter' => $this->getUserFilters(),
         ];
 
-        $page = (int) ($this->queryParams[ProposalSearchParams::PAGE()->value] ?? 1);
-        $limit = (int) ($this->queryParams[ProposalSearchParams::LIMIT()->value] ?? 36);
+        if ((bool) $this->sortBy && (bool) $this->sortOrder) {
+            $args['sort'] = ["$this->sortBy:$this->sortOrder"];
+        }
+       
+        $page = isset($this->queryParams[ProposalSearchParams::PAGE()->value])
+            ? (int) $this->queryParams[ProposalSearchParams::PAGE()->value]
+            : 1;
 
-        $this->searchBuilder = Group::search(
-            $this->search,
-            function (Indexes $index, $query, $options) use ($_options, $attrs, $page, $limit) {
-                if (!empty($_options['filters'])) {
-                    $options['filter'] = implode(' AND ', $_options['filters']);
-                }
+        $limit = isset($this->queryParams[ProposalSearchParams::LIMIT()->value])
+            ? (int) $this->queryParams[ProposalSearchParams::LIMIT()->value]
+            : 36;
 
-                $options['attributesToRetrieve'] = $attrs ?? [
-                    'id',
-                    'name',
-                    'discord',
-                    'twitter',
-                    'website',
-                    'github',
-                    'link',
-                    'amount_received',
-                    'thumbnail_url',
-                    'amount_awarded_ada',
-                    'amount_awarded_usd',
-                    'gravatar',
-                ];
-                $options['facets'] = [
-                    'tags.id',
-                    'proposals.fund.title',
-                ];
+        $args['offset'] = ($page - 1) * $limit;
+        $args['limit'] = $limit;
 
-                if ($this->sortBy && $this->sortOrder) {
-                    $options['sort'] = ["$this->sortBy:$this->sortOrder"];
-                }
+        $proposals = app(GroupRepository::class);
 
-                $options['offset'] = ($page - 1) * $limit;
-                $options['limit'] = $limit;
-
-                return $index->search($query, $options);
-            }
+        $builder = $proposals->search(
+            $this->queryParams[ProposalSearchParams::QUERY()->value] ?? '',
+            $args
         );
 
-
-        if ($returnBuilder) {
-            return $this->searchBuilder;
-        }
-
-        $response = new Fluent($this->searchBuilder->raw());
-
+        $response = new Fluent($builder->raw());
 
         $this->setCounts($response->facetDistribution, $response->facetStats);
 
@@ -206,13 +161,12 @@ class GroupsController extends Controller
             [
                 'pageName' => 'p',
             ]
-        );
-
+            );
 
         return $pagination->onEachSide(1)->toArray();
     }
 
-    #[ArrayShape(['filters' => 'array'])]
+    // #[ArrayShape(['filters' => 'array'])]
     protected function getUserFilters(): array
     {
 
@@ -224,15 +178,19 @@ class GroupsController extends Controller
             $_options[] = 'proposals_funded > 0';
         }
 
-        // Fund filter
         if (! empty($this->queryParams[ProposalSearchParams::FUNDS()->value])) {
             $funds = implode("','", $this->queryParams[ProposalSearchParams::FUNDS()->value]);
             $filters[] = "proposals.fund.title IN ['{$funds}']";
         }
 
-        if (! empty($this->queryParams[ProposalSearchParams::FUNDED_PROPOSALS()->value])) {
-            $fundedProposals = implode("','", $this->queryParams[ProposalSearchParams::FUNDED_PROPOSALS()->value]);
-            $filters[] = "funded_proposals IN ['{$fundedProposals}']";
+        if (isset($this->queryParams[ProposalSearchParams::FUNDING_STATUS()->value])) {
+            $fundingStatuses = implode(',', $this->queryParams[ProposalSearchParams::FUNDING_STATUS()->value]);
+            $filters[] = "proposals.funding_status IN [{$fundingStatuses}]";
+        }
+
+        if (isset($this->queryParams[ProposalSearchParams::PROJECT_STATUS()->value])) {
+            $projectStatuses = implode(',', $this->queryParams[ProposalSearchParams::PROJECT_STATUS()->value]);
+            $filters[] = "proposals.status IN [{$projectStatuses}]";
         }
 
         if (! empty($this->queryParams[ProposalSearchParams::AWARDED_USD()->value])) {
@@ -245,9 +203,14 @@ class GroupsController extends Controller
             $filters[] = "(awarded_ada  {$awardedAda->first()} TO  {$awardedAda->last()})";
         }
 
+        if (! empty($this->queryParams[ProposalSearchParams::PROPOSALS()->value])) {
+            $proposalsCount = collect((object) $this->queryParams[ProposalSearchParams::PROPOSALS()->value]);
+            $filters[] = "(proposals_count {$proposalsCount->first()} TO  {$proposalsCount->last()})";
+        }
+
         if (! empty($this->queryParams[ProposalSearchParams::CAMPAIGNS()->value])) {
             $campaignIds = ($this->queryParams[ProposalSearchParams::CAMPAIGNS()->value]);
-            $filters[] = '(' . implode(' OR ', array_map(fn($c) => "campaign.id = {$c}", $campaignIds)) . ')';
+            $filters[] = '(' . implode(' OR ', array_map(fn($c) => "proposals.campaign.id = {$c}", $campaignIds)) . ')';
         }
 
         if (! empty($this->queryParams[ProposalSearchParams::TAGS()->value])) {
@@ -262,13 +225,14 @@ class GroupsController extends Controller
 
         if (! empty($this->queryParams[ProposalSearchParams::COMMUNITIES()->value])) {
             $communityIds = implode(',', $this->queryParams[ProposalSearchParams::COMMUNITIES()->value]);
-            $filters[] = "communities.id IN [{$communityIds}]";
+            $filters[] = "proposals.communities.id IN [{$communityIds}]";
         }
 
-        if (! empty($this->queryParams[ProposalSearchParams::COHORT()->value])) {
-            $cohortFilters = array_map(fn($cohort) => "{$cohort} = 1", $this->queryParams[ProposalSearchParams::COHORT()->value]);
-            $filters[] = '(' . implode(' OR ', $cohortFilters) . ')';
-        }
+        // if (! empty($this->queryParams[ProposalSearchParams::COHORT()->value])) {
+
+        //     $cohortFilters = array_map(fn($cohort) => "{$cohort} = 1", $this->queryParams[ProposalSearchParams::COHORT()->value]);
+        //     $filters[] = '(' . implode(' OR ', $cohortFilters) . ')';
+        // }
 
         return $filters;
     }
@@ -282,6 +246,10 @@ class GroupsController extends Controller
 
         if (isset($facets['proposals.fund.title']) && count($facets['proposals.fund.title'])) {
             $this->fundsCount = $facets['proposals.fund.title'];
+        }
+
+        if (isset($facets['proposals']) && count($facets['proposals'])) {
+            $this->proposalsCount = $facets['proposals'];
         }
     }
 }

@@ -109,6 +109,13 @@ created_at?: string;
 updated_at?: string;
 deleted_at?: string;
 proposals_count?: number;
+proposals_funded?: number;
+profile_photo_url: string;
+amount_awarded_ada: number;
+amount_awarded_usd: number;
+amount_distributed_usd: number;
+amount_distributed_ada: number;
+ideascale_profiles: Array<any>;
 };
 export type IdeascaleProfileData = {
 id: number | null;

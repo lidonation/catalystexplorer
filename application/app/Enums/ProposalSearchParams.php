@@ -21,10 +21,13 @@ use Spatie\Enum\Enum;
  * @method static self LIMIT()
  * @method static self MAX_BUDGET()
  * @method static self MAX_PROJECT_LENGTH()
+ * @method static self MAX_PROPOSALS()
  * @method static self MIN_BUDGET()
+ * @method static self MIN_PROPOSALS()
  * @method static self MIN_PROJECT_LENGTH()
  * @method static self PROJECT_LENGTH()
  * @method static self OPENSOURCE_PROPOSALS()
+ * @method static self PROPOSALS()
  * @method static self PAGE()
  * @method static self IDEASCALE_PROFILES()
  * @method static self PROJECT_STATUS()
@@ -54,9 +57,12 @@ final class ProposalSearchParams extends Enum
             'LIMIT' => 'l',
             'MAX_BUDGET' => 'bmax',
             'MAX_PROJECT_LENGTH' => 'lmax',
+            'MAX_PROPOSALS' => 'pmax',
             'MIN_BUDGET' => 'bmin',
             'MIN_PROJECT_LENGTH' => 'lmin',
+            'MIN_PROPOSALS' => 'pmin',
             'OPENSOURCE_PROPOSALS' => 'op',
+            'PROPOSALS' => 'pr',
             'PAGE' => 'p',
             'IDEASCALE_PROFILES' => 'ip',
             'PROJECT_STATUS' => 'ps',

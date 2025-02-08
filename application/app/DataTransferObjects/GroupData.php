@@ -24,6 +24,9 @@ final class GroupData extends Data
         public ?string $bio,
 
         #[TypeScriptOptional]
+        public ?string $profile_photo_url,
+
+        #[TypeScriptOptional]
         public ?string $slug,
 
         #[TypeScriptOptional]
@@ -55,5 +58,27 @@ final class GroupData extends Data
 
         #[TypeScriptOptional]
         public ?int $proposals_count,
+
+        #[TypeScriptOptional]
+        public ?int $proposals_funded,
+
+        #[TypeScriptOptional]
+        public ?array $proposals,
+
+        #[TypeScriptOptional]
+        public ?float $amount_awarded_ada,
+
+        #[TypeScriptOptional]
+        public ?float $amount_awarded_usd,
+
+        #[TypeScriptOptional]
+        public ?float $amount_distributed_ada,
+
+        #[TypeScriptOptional]
+        public ?float $amount_distributed_usd,
+
+        #[TypeScriptOptional]
+        public ?array $ideascale_profiles,
+
     ) {}
 }

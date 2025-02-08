@@ -5,11 +5,15 @@ import { useFilterContext } from '@/Context/FiltersContext';
 import { ProposalParamsEnum } from '@/enums/proposal-search-params';
 import { useTranslation } from 'react-i18next';
 
-const GroupFilters = () => {
+interface GroupFilterProps{
+    proposalsCount: number
+}
+const GroupFilters = ({proposalsCount}: GroupFilterProps) => {
     const { setFilters, getFilter } = useFilterContext();
     const { t } = useTranslation();
-    const budgetRange = [0, 10000000];
-    const projectLengthRange = [0, 12];
+    const proposalRange = [0, 500];
+    const adaRange = [0, 10000000];
+    const usdRange = [0, 1000000]
 
     return (
         <>
@@ -124,7 +128,7 @@ const GroupFilters = () => {
                     <div className="col-span-1 flex flex-col gap-2 pb-4">
                         <span>{t('proposals.filters.ideascaleProfiles')}</span>
                         <SearchSelect
-                            key={'ideascaleProfiles'}
+                            key={'ideascale-profiles'}
                             domain={'ideascaleProfiles'}
                             selected={
                                 getFilter(ProposalParamsEnum.IDEASCALE_PROFILES) ?? []
@@ -209,68 +213,68 @@ const GroupFilters = () => {
                             value={
                                 getFilter(ProposalParamsEnum.PROPOSALS)?.length ==
                                 0
-                                    ? budgetRange
+                                    ? proposalRange
                                     : getFilter(ProposalParamsEnum.PROPOSALS)
                             }
                             onValueChange={(value) =>
                                 setFilters({
-                                    label: t('proposals.filters.budgets'),
+                                    label: t('proposals.filters.numberOfProposals'),
                                     value,
-                                    param: ProposalParamsEnum.BUDGETS,
+                                    param: ProposalParamsEnum.PROPOSALS,
                                 })
                             }
-                            max={budgetRange[1]}
-                            min={budgetRange[0]}
-                            defaultValue={budgetRange}
+                            max={proposalRange[1]}
+                            min={proposalRange[0]}
+                            defaultValue={proposalRange}
                         />
                     </div>
 
                     <div className="pb-4">
                         <RangePicker
-                            key={'Project Length'}
-                            context={t('proposals.filters.projectLength')}
+                            key={'Awarded Ada'}
+                            context={t('proposals.filters.awardedAda')}
                             value={
-                                getFilter(ProposalParamsEnum.PROJECT_LENGTH)
+                                getFilter(ProposalParamsEnum.AWARDED_ADA)
                                     ?.length == 0
-                                    ? projectLengthRange
+                                    ? adaRange
                                     : getFilter(
-                                          ProposalParamsEnum.PROJECT_LENGTH,
+                                          ProposalParamsEnum.AWARDED_ADA,
                                       )
                             }
                             onValueChange={(value) =>
                                 setFilters({
-                                    label: t('proposals.filters.projectLength'),
+                                    label: t('proposals.filters.awardedAda'),
                                     value,
-                                    param: ProposalParamsEnum.PROJECT_LENGTH,
+                                    param: ProposalParamsEnum.AWARDED_ADA,
                                 })
                             }
-                            max={projectLengthRange[1]}
-                            min={projectLengthRange[0]}
-                            defaultValue={projectLengthRange}
+                            max={adaRange[1]}
+                            min={adaRange[0]}
+                            defaultValue={adaRange}
                         />
                     </div>
                     <div className="pb-4">
                         <RangePicker
-                            key={'Project Length'}
-                            context={t('proposals.filters.projectLength')}
+                            key={'Awarded USD'}
+                            context={t('proposals.filters.awardedUsd')}
                             value={
-                                getFilter(ProposalParamsEnum.PROJECT_LENGTH)
+                                getFilter(ProposalParamsEnum.AWARDED_USD)
                                     ?.length == 0
-                                    ? projectLengthRange
+                                    ? usdRange
                                     : getFilter(
-                                          ProposalParamsEnum.PROJECT_LENGTH,
+                                          ProposalParamsEnum.AWARDED_USD,
                                       )
                             }
                             onValueChange={(value) =>
                                 setFilters({
-                                    label: t('proposals.filters.projectLength'),
+                                    label: t('proposals.filters.awardedUsd'),
                                     value,
-                                    param: ProposalParamsEnum.PROJECT_LENGTH,
+                                    param: ProposalParamsEnum.AWARDED_USD,
                                 })
                             }
-                            max={projectLengthRange[1]}
-                            min={projectLengthRange[0]}
-                            defaultValue={projectLengthRange}
+                            max={usdRange[1]}
+                            min={usdRange[0]}
+                            defaultValue={usdRange}
                         />
                     </div>
                 </div>
