@@ -156,7 +156,7 @@ export type LocationData = {
 id: number | null;
 country: string;
 city: string;
-region?: number;
+region?: string;
 street?: string;
 address_1?: string;
 address_2?: string;
