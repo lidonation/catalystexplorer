@@ -155,6 +155,17 @@ unfunded_proposals_count?: number;
 proposals_count?: number;
 collaborating_proposals_count?: number;
 };
+export type LocationData = {
+id: number | null;
+country: string;
+city: string;
+region?: number;
+street?: string;
+address_1?: string;
+address_2?: string;
+lat?: number;
+long?: number;
+};
 export type MetricData = {
 user_id: number | null;
 title: string;
@@ -225,16 +236,16 @@ export type ReviewData = {
 id: number | null;
 parent_id?: number;
 user_id?: number;
-model_id: number;
-model_type: string;
+model_id: number | null;
+model_type: string | null;
 title?: string;
 content: string;
 status: string | null;
 published_at?: string;
-type: string;
-ranking_total: number;
-helpful_total: number;
-not_helpful_total: number;
+type: string | null;
+ranking_total: number | null;
+helpful_total: number | null;
+not_helpful_total: number | null;
 };
 export type ReviewModerationData = {
 id: number | null;

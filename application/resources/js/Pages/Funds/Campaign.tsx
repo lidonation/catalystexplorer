@@ -33,7 +33,7 @@ export default function Fund({
                 </section>
                 <section className='container py-8'>
                     <WhenVisible data='proposals' fallback={<div>Loading Proposals...</div>}>
-                        <div>{JSON.stringify(proposals?.data || proposals?.items)}</div>
+                        <div>{JSON.stringify(proposals?.data)}</div>
                     </WhenVisible>
                 </section>
             </div>
