@@ -7,6 +7,7 @@ namespace App\Nova;
 use App\Enums\StatusEnum;
 use App\Models\Group;
 use Laravel\Nova\Fields\BelongsTo;
+use Laravel\Nova\Fields\BelongsToMany;
 use Laravel\Nova\Fields\HasMany;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Select;
@@ -28,7 +29,7 @@ class Groups extends Resource
      *
      * @var string
      */
-    public static $title = 'id';
+    public static $title = 'name';
 
     /**
      * The columns that should be searched.
@@ -37,6 +38,8 @@ class Groups extends Resource
      */
     public static $search = [
         'id',
+        'name',
+        'email',
     ];
 
     /**
@@ -67,6 +70,19 @@ class Groups extends Resource
                 ->required(),
 
             HasMany::make('Proposals', 'proposals', Proposals::class),
+
+            BelongsToMany::make('Ideascale Profiles', 'ideascale_profiles', IdeascaleProfiles::class)
+                ->searchable(),
+
+            BelongsToMany::make('Locations', 'locations', Locations::class)
+                ->searchable()->fields(function () {
+                    return [
+                        Text::make(__('Model'), 'model_type')
+                            ->default(function (NovaRequest $request) {
+                                return $request->model()::class;
+                            }),
+                    ];
+                }),
 
         ];
     }

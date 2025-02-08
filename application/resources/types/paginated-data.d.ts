@@ -2,7 +2,6 @@
 export type PaginatedData<T> = {
     current_page: number;
     data?: T;
-    items?: T;
     first_page_url: string;
     from: number;
     last_page: number;

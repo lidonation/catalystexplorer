@@ -3,13 +3,11 @@ import { Link, WhenVisible } from '@inertiajs/react';
 import { useTranslation } from 'react-i18next';
 import ProposalCardMini from './ProposalCardMini';
 import ProposalMiniCardLoader from './ProposalMiniCardLoader';
+import {PaginatedData} from "../../../../types/paginated-data";
+import ProposalData = App.DataTransferObjects.ProposalData;
 
 interface RelatedProposalsProps extends HTMLAttributes<HTMLDivElement> {
-    proposals: {
-        data: Array<App.DataTransferObjects.ProposalData>;
-        total: number;
-        per_page?: number;
-    };
+    proposals: PaginatedData<ProposalData[]>;
     groupId?: number;
     maxVisibleProposals?: number;
 }
@@ -17,14 +15,12 @@ interface RelatedProposalsProps extends HTMLAttributes<HTMLDivElement> {
 const RelatedProposals: React.FC<RelatedProposalsProps> = ({
     proposals,
     groupId,
-    maxVisibleProposals: maxVisiblePropsProp,
     ...props
 }) => {
     const { t } = useTranslation();
 
-    const maxVisibleItems = maxVisiblePropsProp ?? proposals.per_page ?? 12;
-    const showViewMore = proposals.total > maxVisibleItems;
-    const visibleProposals = proposals.data.slice(0, maxVisibleItems);
+    const showViewMore = proposals.total > proposals.per_page;
+
 
     return (
         <WhenVisible
@@ -32,13 +28,13 @@ const RelatedProposals: React.FC<RelatedProposalsProps> = ({
             data="proposals"
         >
             <div {...props}>
-                {visibleProposals.map((proposal) => (
+                {typeof proposals.data !== 'undefined' && (proposals.data.map((proposal) => (
                     <ProposalCardMini
                         key={proposal.id}
                         proposal={proposal}
                         isHorizontal={false}
                     />
-                ))}
+                )))}
 
                 {showViewMore && (
                     <Link
@@ -48,7 +44,7 @@ const RelatedProposals: React.FC<RelatedProposalsProps> = ({
                         <div className="flex flex-col items-center gap-4">
                             <div className="text-center">
                                 <p className="text-sm text-gray-600">{t('seeAll')}</p>
-                                <p className="text-xl font-semibold">{proposals.total - (maxVisibleItems - 1)}</p>
+                                <p className="text-xl font-semibold">{proposals.total - (proposals.per_page - 1)}</p>
                                 <p className="text-sm text-gray-600">{t('proposals.proposals')}</p>
                             </div>
                         </div>
