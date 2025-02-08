@@ -24,8 +24,14 @@ Route::localized(
                             ->name('create');
                         Route::delete('/', [MyBookmarksController::class, 'delete'])
                             ->name('delete');
-                        Route::get('/{id}', [MyBookmarksController::class, 'show'])
+                        Route::get('/show', [MyBookmarksController::class, 'show'])
                             ->name('show');
+                        Route::post('/{modelType}/{modelId}', [MyBookmarksController::class, 'store'])
+                            ->name('store');
+                        Route::delete('/{id}', [MyBookmarksController::class, 'delete'])
+                            ->name('remove');
+                        Route::get('/{modelType}/{modelId}/status', [MyBookmarksController::class, 'status'])
+                            ->name('status');
 
                         Route::prefix('/collections')->as('collections.')
                             ->group(function () {

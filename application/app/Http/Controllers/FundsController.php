@@ -45,6 +45,11 @@ class FundsController extends Controller
         $this->getProps($request);
 
         $campaigns = $this->getCampaigns($fund);
+        $campaigns->append([
+            'total_requested',
+            'total_awarded',
+            'total_distributed',
+        ]);
 
         return Inertia::render('Funds/Fund', [
             'fund' => $fund,
@@ -78,11 +83,13 @@ class FundsController extends Controller
             [$sortField, $sortDirection] = explode(':', $sortParam);
         }
 
-        $query = $fund->campaigns()->withCount([
-            'completed_proposals',
-            'unfunded_proposals',
-            'funded_proposals',
-        ]);
+        $query = $fund->campaigns()
+//            ->with(['proposals', 'funded_proposals'])
+            ->withCount([
+                'completed_proposals',
+                'unfunded_proposals',
+                'funded_proposals',
+            ]);
 
         if ($sortField && $sortDirection && in_array($sortDirection, ['asc', 'desc'])) {
             if ($sortField === CampaignsSortBy::AMOUNT()->value) {

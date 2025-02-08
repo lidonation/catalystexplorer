@@ -5,8 +5,12 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Casts\DateFormatCast;
+use App\Enums\CatalystCurrencySymbols;
+use App\Enums\ProposalStatus;
+use App\Traits\HasLocations;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Facades\Artisan;
 use Laravel\Scout\Searchable;
@@ -17,7 +21,7 @@ use Spatie\Translatable\HasTranslations;
 
 class Group extends Model implements HasMedia
 {
-    use HasTranslations, InteractsWithMedia, Searchable;
+    use HasLocations, HasTranslations, InteractsWithMedia, Searchable;
 
     public array $translatable = [
         'bio',
@@ -111,9 +115,89 @@ class Group extends Model implements HasMedia
         );
     }
 
-    public function registerMediaCollections(): void
+    public function amountRequestedAda(): Attribute
     {
-        $this->addMediaCollection('group')->useDisk('public');
+        return Attribute::make(
+            get: function () {
+                return $this->proposals()
+                    ->whereHas('fund', function ($q) {
+                        $q->where('currency', CatalystCurrencySymbols::ADA->name);
+                    })->sum('amount_requested');
+            },
+        );
+    }
+
+    public function amountRequestedUsd(): Attribute
+    {
+        return Attribute::make(
+            get: function () {
+                return $this->proposals()
+                    ->whereHas('fund', function ($q) {
+                        $q->where('currency', CatalystCurrencySymbols::USD->name);
+                    })->sum('amount_requested');
+            },
+        );
+    }
+
+    public function amountAwardedAda(): Attribute
+    {
+        return Attribute::make(
+            get: function () {
+                return $this->funded_proposals()
+                    ->whereHas('fund', function ($q) {
+                        $q->where('currency', CatalystCurrencySymbols::ADA->name);
+                    })->sum('amount_requested');
+            },
+        );
+    }
+
+    public function amountAwardedUsd(): Attribute
+    {
+        return Attribute::make(
+            get: function () {
+                return $this->funded_proposals()
+                    ->whereHas('fund', function ($q) {
+                        $q->where('currency', CatalystCurrencySymbols::USD->name);
+                    })->sum('amount_requested');
+            },
+        );
+    }
+
+    public function amountDistributedAda(): Attribute
+    {
+        return Attribute::make(
+            get: function () {
+                return $this->funded_proposals()
+                    ->whereHas('fund', function ($q) {
+                        $q->where('currency', CatalystCurrencySymbols::ADA->name);
+                    })->sum('amount_received');
+            },
+        );
+    }
+
+    public function amountDistributedUsd(): Attribute
+    {
+        return Attribute::make(
+            get: function () {
+                return $this->funded_proposals()
+                    ->whereHas('fund', function ($q) {
+                        $q->where('currency', CatalystCurrencySymbols::USD->name);
+                    })->sum('amount_received');
+            },
+        );
+    }
+
+    public function tags(): Attribute
+    {
+        return Attribute::make(
+            get: function () {
+                return Tag::with('proposals')
+                    ->whereHas('proposals', function ($q) {
+                        $q->whereIn('model_id', $this->proposals->pluck('id'));
+                    })
+                    ->get();
+            },
+        );
     }
 
     /**
@@ -124,9 +208,41 @@ class Group extends Model implements HasMedia
         return $this->belongsToMany(Proposal::class, 'group_has_proposal', 'group_id', 'proposal_id', 'id', 'id', 'proposals');
     }
 
+    public function completed_proposals(): BelongsToMany
+    {
+        return $this->proposals()->where([
+            'type' => 'proposal',
+            'status' => ProposalStatus::complete()->value,
+        ]);
+    }
+
+    public function funded_proposals(): BelongsToMany
+    {
+        return $this->proposals()
+            ->where(['type' => 'proposal'])
+            ->whereNotNull('funded_at');
+    }
+
+    public function unfunded_proposals(): BelongsToMany
+    {
+        return $this->proposals()
+            ->where(['type' => 'proposal'])
+            ->whereNull('funded_at');
+    }
+
     public function ideascale_profiles(): BelongsToMany
     {
         return $this->belongsToMany(IdeascaleProfile::class, 'group_has_ideascale_profile', 'group_id', 'ideascale_profile_id');
+    }
+
+    public function owner(): BelongsTo
+    {
+        return $this->belongsTo(IdeascaleProfile::class, 'user_id');
+    }
+
+    public function registerMediaCollections(): void
+    {
+        $this->addMediaCollection('group')->useDisk('public');
     }
 
     /**
@@ -149,42 +265,5 @@ class Group extends Model implements HasMedia
             'tags' => $this->tags->map(fn ($m) => $m->toArray()),
         ]);
 
-    }
-
-    public function tags(): Attribute
-    {
-        return Attribute::make(
-            get: function () {
-                return Tag::with('proposals')
-                    ->whereHas('proposals', function ($q) {
-                        $q->whereIn('model_id', $this->proposals->pluck('id'));
-                    })
-                    ->get();
-            },
-        );
-    }
-
-    public function amountAwardedAda(): Attribute
-    {
-        return Attribute::make(
-            get: function () {
-                return $this->proposals()->whereNotNull('funded_at')
-                    ->whereHas('fund', function ($q) {
-                        $q->where('currency', 'ADA');
-                    })->sum('amount_requested');
-            },
-        );
-    }
-
-    public function amountAwardedUsd(): Attribute
-    {
-        return Attribute::make(
-            get: function () {
-                return $this->proposals()->whereNotNull('funded_at')
-                    ->whereHas('fund', function ($q) {
-                        $q->where('currency', 'USD');
-                    })->sum('amount_requested');
-            },
-        );
     }
 }

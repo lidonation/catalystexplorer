@@ -5,9 +5,13 @@ declare(strict_types=1);
 namespace App\Http\Controllers;
 
 use App\DataTransferObjects\GroupData;
+use App\DataTransferObjects\IdeascaleProfileData;
+use App\DataTransferObjects\LocationData;
 use App\DataTransferObjects\ProposalData;
+use App\DataTransferObjects\ReviewData;
 use App\Enums\QueryParamsEnum;
 use App\Models\Group;
+use App\Models\Review;
 use App\Repositories\GroupRepository;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -16,6 +20,7 @@ use Illuminate\Support\Fluent;
 use Illuminate\Support\Stringable;
 use Inertia\Inertia;
 use Inertia\Response;
+use JetBrains\PhpStorm\ArrayShape;
 use Laravel\Scout\Builder;
 use Meilisearch\Endpoints\Indexes;
 
@@ -80,9 +85,51 @@ class GroupsController extends Controller
 
     public function group(Request $request, Group $group, GroupRepository $groupRepository): Response
     {
+        $group->load('proposals')
+            ->loadCount([
+                'proposals',
+                'funded_proposals',
+                'unfunded_proposals',
+                'completed_proposals',
+            ])->append([
+                'amount_awarded_ada',
+                'amount_awarded_usd',
+                'amount_requested_ada',
+                'amount_requested_usd',
+                'amount_distributed_ada',
+                'amount_distributed_usd',
+            ]);
+
         return Inertia::render('Groups/Group', [
             'group' => GroupData::from($group),
-            'proposals' => ProposalData::collect($group->proposals()->with(['users', 'fund'])->paginate()),
+            'proposals' => Inertia::optional(
+                fn () => to_length_aware_paginator(
+                    ProposalData::collect(
+                        $group->proposals()->with(['users', 'fund'])->paginate(5)
+                    )
+                )
+            ),
+            'ideascaleProfiles' => Inertia::optional(
+                fn () => to_length_aware_paginator(
+                    IdeascaleProfileData::collect(
+                        $group->ideascale_profiles()->with([])->paginate(12)
+                    )
+                )
+            ),
+            'reviews' => Inertia::optional(
+                fn () => to_length_aware_paginator(
+                    ReviewData::collect(
+                        Review::query()->paginate(8)
+                    )
+                )
+            ),
+            'locations' => Inertia::optional(
+                fn () => to_length_aware_paginator(
+                    LocationData::collect(
+                        $group->locations()->with([])->paginate(12)
+                    )
+                )
+            ),
         ]);
     }
 

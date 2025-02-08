@@ -4,7 +4,7 @@ import { cn } from '@/lib/utils';
 import { ChevronDown } from 'lucide-react';
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import Checkbox from './Checkbox';
+import Checkbox from '@/Components/atoms/Checkbox';
 import {
     Command,
     CommandEmpty,

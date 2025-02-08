@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CampaignsController;
 use App\Http\Controllers\ChartsController;
 use App\Http\Controllers\CompletetProjectNftsController;
 use App\Http\Controllers\FundsController;
@@ -26,8 +27,15 @@ Route::localized(
             Route::get('/', [FundsController::class, 'index'])
                 ->name('index');
 
-            Route::get('/{fund:slug}', [FundsController::class, 'fund'])
-                ->name('fund');
+            Route::prefix('/{fund:slug}')->as('fund.')->group(function () {
+                Route::get('/', [FundsController::class, 'fund'])
+                    ->name('show');
+
+                Route::prefix('/campaigns')->as('campaigns.')->group(function () {
+                    Route::get('/{campaign:slug}', [CampaignsController::class, 'show'])
+                        ->name('campaign.show');
+                });
+            });
         });
 
         Route::prefix('/groups')->as('groups.')->group(function () {

@@ -11,16 +11,10 @@ export default function BookmarkOnIcon({
     className,
     width = 25,
     height = 24,
-    count = 6,
 }: BookmarkOnIconProps) {
     const { t } = useTranslation();
     return (
         <div className="relative inline-block">
-            {count > 0 && (
-                <div className="bg-primary absolute top-0 left-0 -translate-x-1/2 -translate-y-1/2 transform rounded-full px-2 py-0.5 text-xs font-bold text-white">
-                    {count}
-                </div>
-            )}
             <svg
                 width={width}
                 height={height}

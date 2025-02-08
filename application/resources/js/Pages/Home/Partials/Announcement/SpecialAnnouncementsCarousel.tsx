@@ -2,7 +2,7 @@ import {
     Carousel,
     CarouselContent,
     CarouselItem,
-} from '@/Components/carousel';
+} from '@/Components/Carousel';
 import { useEffect } from 'react';
 import SpecialAnnouncementCard from './SpecialAnnouncementsCard';
 import AnnouncementData = App.DataTransferObjects.AnnouncementData;

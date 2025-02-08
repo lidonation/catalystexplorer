@@ -1,4 +1,4 @@
-import Checkbox from '@/Components/Checkbox';
+import Checkbox from '@/Components/atoms/Checkbox';
 import { Popover, PopoverContent, PopoverTrigger } from '@/Components/Popover';
 import PlayerPause from '@/Components/svgs/PlayerPause';
 import PlayerPlay from '@/Components/svgs/PlayerPlay';

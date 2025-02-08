@@ -72,6 +72,7 @@
     "react-i18next": "^15.1.0",
     "react-map-gl": "^7.1.9",
     "react-refresh": "^0.14.2",
+    "react-toastify": "^11.0.3",
     "tailwind-merge": "^2.5.4",
     "tailwindcss-animate": "^1.0.7",
     "ziggy-js": "^2.4.1"

@@ -41,8 +41,19 @@ class CampaignData extends Data
         #[TypeScriptOptional]
         public ?string $label,
 
+        #[TypeScriptOptional]
+        public ?string $total_requested,
+
+        #[TypeScriptOptional]
+        public ?string $total_awarded,
+
+        #[TypeScriptOptional]
+        public ?string $total_distributed,
+
+        #[TypeScriptOptional]
         public ?string $currency,
 
+<<<<<<< HEAD
         public ?int $proposals_count,
 
         public ?int $unfunded_proposals_count,
@@ -50,5 +61,18 @@ class CampaignData extends Data
         public ?int $funded_proposals_count,
         
         public ?int $completed_proposals_count
+=======
+        #[TypeScriptOptional]
+        public ?int $proposals_count,
+
+        #[TypeScriptOptional]
+        public ?int $completed_proposals_count,
+
+        #[TypeScriptOptional]
+        public ?int $unfunded_proposals,
+
+        #[TypeScriptOptional]
+        public ?int $funded_proposals,
+>>>>>>> ef37c41f0da86cfc949d25ab279ac5e2131bb6b8
     ) {}
 }
