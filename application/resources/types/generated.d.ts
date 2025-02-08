@@ -152,6 +152,17 @@ completed_proposals_count?: number;
 funded_proposals_count?: number;
 proposals_count?: number;
 };
+export type LocationData = {
+id: number | null;
+country: string;
+city: string;
+region?: number;
+street?: string;
+address_1?: string;
+address_2?: string;
+lat?: number;
+long?: number;
+};
 export type MetricData = {
 user_id: number | null;
 title: string;
