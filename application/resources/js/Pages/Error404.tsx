@@ -9,8 +9,9 @@ export default function Error404() {
     return (
         <div className="bg-background-dark flex h-screen flex-col items-center justify-center gap-4">
             <Head title="404 Not Found" />
+            <h1 className="text-content title-1">404</h1>
             <Error404Icon />
-            <p className="mt-4 flex flex-col items-center gap-2 text-sm text-gray-600 md:text-xl">
+            <p className="text-content mt-4 flex flex-col items-center gap-2 text-sm md:text-xl">
                 <span>{t('error404.mainText')}</span>
                 <span>{t('error404.subText')}</span>
             </p>
@@ -18,25 +19,25 @@ export default function Error404() {
                 <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
                     <Link
                         href={useLocalizedRoute('home')}
-                        className="bg-primary mt-6 rounded bg-blue-600 px-8 py-4 text-center text-white hover:opacity-75"
+                        className="bg-primary text-content mt-6 rounded px-8 py-4 text-center hover:opacity-75"
                     >
                         {t('Dashboard')}
                     </Link>
                     <Link
                         href={useLocalizedRoute('proposals.index')}
-                        className="bg-primary mt-6 rounded bg-blue-600 px-8 py-4 text-center text-white hover:opacity-75"
+                        className="bg-primary text-content mt-6 rounded px-8 py-4 text-center hover:opacity-75"
                     >
                         {t('proposals.proposals')}
                     </Link>
                     <Link
                         href={useLocalizedRoute('funds.index')}
-                        className="bg-primary mt-6 rounded bg-blue-600 px-8 py-4 text-center text-white hover:opacity-75"
+                        className="bg-primary text-content mt-6 rounded px-8 py-4 text-center hover:opacity-75"
                     >
                         {t('funds.funds')}
                     </Link>
                     <Link
                         href={'/'}
-                        className="bg-primary mt-6 rounded bg-blue-600 px-8 py-4 text-center text-white hover:opacity-75"
+                        className="bg-primary text-content mt-6 rounded px-8 py-4 text-center hover:opacity-75"
                     >
                         {t('knowledgeBase')}
                     </Link>
