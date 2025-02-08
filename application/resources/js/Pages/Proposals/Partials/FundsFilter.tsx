@@ -1,4 +1,4 @@
-import Checkbox from '@/Components/Checkbox';
+import Checkbox from '@/Components/atoms/Checkbox';
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';

@@ -4,10 +4,11 @@ import {
     ListboxOption,
     ListboxOptions,
 } from '@headlessui/react';
-import Checkbox from './Checkbox';
 import ChevronDownIcon from './svgs/ChevronDownIcon';
 import { useTranslation } from 'react-i18next';
 import {camelCase} from "@/utils/camelCase";
+import Checkbox from '@/Components/atoms/Checkbox';
+
 
 const SearchVariants = ({
     value,

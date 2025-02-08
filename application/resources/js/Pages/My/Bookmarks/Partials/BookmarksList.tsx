@@ -13,12 +13,12 @@ interface BookmarksListProps {
     activeType: string | null;
 }
 
-const BookmarksList: React.FC<BookmarksListProps> = ({ 
-    proposals = [], 
-    people = [], 
-    groups = [], 
-    reviews = [], 
-    activeType 
+const BookmarksList: React.FC<BookmarksListProps> = ({
+    proposals = [],
+    people = [],
+    groups = [],
+    reviews = [],
+    activeType
 }) => {
     const { t } = useTranslation();
     const { getFilter } = useFilterContext();
@@ -38,8 +38,8 @@ const BookmarksList: React.FC<BookmarksListProps> = ({
             };
 
             const fields = searchableFields[activeType as keyof typeof searchableFields] || [];
-            
-            return fields.some(field => 
+
+            return fields.some(field =>
                 item[field]?.toLowerCase().includes(searchQuery.toLowerCase())
             );
         });
@@ -51,11 +51,11 @@ const BookmarksList: React.FC<BookmarksListProps> = ({
         switch (activeType) {
             case 'proposals':
                 filteredItems = filterItems(proposals.filter(p => p != null));
-                return filteredItems.length > 0 
+                return filteredItems.length > 0
                     ? filteredItems.map((proposal, index) => (
                         proposal && (
-                            <ProposalCard 
-                                key={`proposal-${index}`} 
+                            <ProposalCard
+                                key={`proposal-${index}`}
                                 proposal={proposal}
                                 isHorizontal={false}
                                 globalQuickPitchView={false}
@@ -67,8 +67,8 @@ const BookmarksList: React.FC<BookmarksListProps> = ({
                 filteredItems = filterItems(people);
                 return filteredItems.length > 0
                     ? filteredItems.map((profile, index) => (
-                        <IdeascaleProfileCard 
-                            key={`profile-${index}`} 
+                        <IdeascaleProfileCard
+                            key={`profile-${index}`}
                             ideascaleProfile={profile}
                         />
                     ))
@@ -78,7 +78,7 @@ const BookmarksList: React.FC<BookmarksListProps> = ({
                 return filteredItems.length > 0
                     ? filteredItems.map((group, index) => (
                         <div key={`group-${index}`} className="bg-background p-4 rounded-xl">
-                            {group.name}
+                            {group?.name}
                         </div>
                     ))
                     : renderEmptyState();
@@ -120,8 +120,8 @@ const BookmarksList: React.FC<BookmarksListProps> = ({
 
     return (
         <div className={`grid grid-cols-1 md:grid-cols-2 ${
-            activeType === 'proposals' 
-                ? 'lg:grid-cols-3' 
+            activeType === 'proposals'
+                ? 'lg:grid-cols-3'
                 : 'lg:grid-cols-5'
         } gap-4`}>
             {renderItems()}

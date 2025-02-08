@@ -7,8 +7,11 @@ namespace App\Models;
 use App\Casts\DateFormatCast;
 use App\Enums\CatalystCurrencySymbols;
 use App\Enums\ProposalStatus;
+use App\Traits\HasConnections;
+use App\Traits\HasLocations;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Log;
@@ -20,7 +23,7 @@ use Spatie\Translatable\HasTranslations;
 
 class Group extends Model implements HasMedia
 {
-    use HasTranslations, InteractsWithMedia, Searchable;
+    use HasConnections, HasLocations, HasTranslations, InteractsWithMedia, Searchable;
 
     public array $translatable = [
         'bio',
@@ -122,53 +125,37 @@ class Group extends Model implements HasMedia
         );
     }
 
-    public function registerMediaCollections(): void
+    public function amountRequestedAda(): Attribute
     {
-        $this->addMediaCollection('group')->useDisk('public');
+        return Attribute::make(
+            get: function () {
+                return $this->proposals()
+                    ->whereHas('fund', function ($q) {
+                        $q->where('currency', CatalystCurrencySymbols::ADA->name);
+                    })->sum('amount_requested');
+            },
+        );
     }
 
-    /**
-     * The roles that belong to the user.
-     */
-    public function proposals(): BelongsToMany
+    public function amountRequestedUsd(): Attribute
     {
-        return $this->belongsToMany(Proposal::class, 'group_has_proposal', 'group_id', 'proposal_id', 'id', 'id', 'proposals')->with('fund', 'communities');
-    }
-
-    public function completed_proposals(): BelongsToMany
-    {
-        return $this->proposals()->where([
-            'type' => 'proposal',
-            'status' => ProposalStatus::complete()->value,
-        ]);
-    }
-
-    public function funded_proposals(): BelongsToMany
-    {
-        return $this->proposals()
-            ->where(['type' => 'proposal'])
-            ->whereNotNull('funded_at');
-    }
-
-    public function unfunded_proposals(): BelongsToMany
-    {
-        return $this->proposals()
-            ->where(['type' => 'proposal'])
-            ->whereNull('funded_at');
-    }
-
-    public function ideascale_profiles(): BelongsToMany
-    {
-        return $this->belongsToMany(IdeascaleProfile::class, 'group_has_ideascale_profile', 'group_id', 'ideascale_profile_id');
+        return Attribute::make(
+            get: function () {
+                return $this->proposals()
+                    ->whereHas('fund', function ($q) {
+                        $q->where('currency', CatalystCurrencySymbols::USD->name);
+                    })->sum('amount_requested');
+            },
+        );
     }
 
     public function amountAwardedAda(): Attribute
     {
         return Attribute::make(
             get: function () {
-                return $this->proposals()->whereNotNull('funded_at')
+                return $this->funded_proposals()
                     ->whereHas('fund', function ($q) {
-                        $q->where('currency', 'ADA');
+                        $q->where('currency', CatalystCurrencySymbols::ADA->name);
                     })->sum('amount_requested');
             },
         );
@@ -178,9 +165,9 @@ class Group extends Model implements HasMedia
     {
         return Attribute::make(
             get: function () {
-                return $this->proposals()->whereNotNull('funded_at')
+                return $this->funded_proposals()
                     ->whereHas('fund', function ($q) {
-                        $q->where('currency', 'USD');
+                        $q->where('currency', CatalystCurrencySymbols::USD->name);
                     })->sum('amount_requested');
             },
         );
@@ -210,7 +197,6 @@ class Group extends Model implements HasMedia
         );
     }
 
-
     public function tags(): Attribute
     {
         return Attribute::make(
@@ -225,23 +211,69 @@ class Group extends Model implements HasMedia
     }
 
     /**
+     * The roles that belong to the user.
+     */
+    public function proposals(): BelongsToMany
+    {
+        return $this->belongsToMany(Proposal::class, 'group_has_proposal', 'group_id', 'proposal_id', 'id', 'id', 'proposals');
+    }
+
+    public function completed_proposals(): BelongsToMany
+    {
+        return $this->proposals()->where([
+            'type' => 'proposal',
+            'status' => ProposalStatus::complete()->value,
+        ]);
+    }
+
+    public function funded_proposals(): BelongsToMany
+    {
+        return $this->proposals()
+            ->where(['type' => 'proposal'])
+            ->whereNotNull('funded_at');
+    }
+
+    public function unfunded_proposals(): BelongsToMany
+    {
+        return $this->proposals()
+            ->where(['type' => 'proposal'])
+            ->whereNull('funded_at');
+    }
+
+    public function ideascale_profiles(): BelongsToMany
+    {
+        return $this->belongsToMany(IdeascaleProfile::class, 'group_has_ideascale_profile', 'group_id', 'ideascale_profile_id');
+    }
+
+    public function owner(): BelongsTo
+    {
+        return $this->belongsTo(IdeascaleProfile::class, 'user_id');
+    }
+
+    public function registerMediaCollections(): void
+    {
+        $this->addMediaCollection('group')->useDisk('public');
+    }
+
+    /**
      * Get the index able data array for the model.
      */
     public function toSearchableArray(): array
     {
         $this->load(['media']);
         $array = $this->toArray();
-        $proposals = $this->proposals->map(fn($p) => $p->toArray());
+        $proposals = $this->proposals->map(fn ($p) => $p->toArray());
 
         return array_merge($array, [
-            'proposals_completed' => $proposals->filter(fn($p) => $p['status'] === 'complete')?->count() ?? 0,
-            'proposals_funded' => $proposals->filter(fn($p) => (bool) $p['funded_at'])?->count() ?? 0,
+            'proposals_completed' => $proposals->filter(fn ($p) => $p['status'] === 'complete')?->count() ?? 0,
+            'proposals_funded' => $proposals->filter(fn ($p) => (bool) $p['funded_at'])?->count() ?? 0,
             'amount_received' => intval($this->proposals()->whereNotNull('funded_at')->sum('amount_received')),
             'amount_awarded_ada' => intval($this->amount_awarded_ada),
             'amount_awarded_usd' => intval($this->amount_awarded_usd),
             'proposals' => $this->proposals,
-            'ideascale_profiles' => $this->ideascale_profiles->map(fn($m) => $m->toArray()),
-            'tags' => $this->tags->map(fn($m) => $m->toArray()),
+            'ideascale_profiles' => $this->ideascale_profiles->map(fn ($m) => $m->toArray()),
+            'tags' => $this->tags->map(fn ($m) => $m->toArray()),
         ]);
+
     }
 }

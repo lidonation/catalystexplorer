@@ -39,8 +39,8 @@ class Fund extends Model implements HasMedia
 
     protected $withCount = [
         'proposals',
-        'fundedProposals',
-        'completedProposals',
+        'funded_proposals',
+        'completed_proposals',
     ];
 
     public function currencySymbol(): Attribute
@@ -66,35 +66,6 @@ class Fund extends Model implements HasMedia
         );
     }
 
-    public function scopeFilter($query, array $filters)
-    {
-        $query->when(
-            $filters['search'] ?? false,
-            fn (Builder $query, $search) => $query->where('title', 'ILIKE', '%'.$search.'%')
-        )->when(
-            $filters['status'] ?? false,
-            fn (Builder $query, $status) => $query->where('status', $status)
-        );
-    }
-
-    public function proposals(): HasMany
-    {
-        return $this->hasMany(Proposal::class, 'fund_id', 'id');
-    }
-
-    public function fundedProposals(): HasMany
-    {
-        return $this->hasMany(Proposal::class)->whereIn('funding_status', [
-            ProposalFundingStatus::funded()->value,
-            ProposalFundingStatus::leftover()->value,
-        ]);
-    }
-
-    public function completedProposals(): HasMany
-    {
-        return $this->hasMany(Proposal::class)->where('status', ProposalStatus::complete()->value);
-    }
-
     public function amountRequested(): Attribute
     {
         return Attribute::make(
@@ -114,6 +85,35 @@ class Fund extends Model implements HasMedia
                 ])->sum('amount_requested');
             }
         );
+    }
+
+    public function scopeFilter($query, array $filters)
+    {
+        $query->when(
+            $filters['search'] ?? false,
+            fn (Builder $query, $search) => $query->where('title', 'ILIKE', '%'.$search.'%')
+        )->when(
+            $filters['status'] ?? false,
+            fn (Builder $query, $status) => $query->where('status', $status)
+        );
+    }
+
+    public function proposals(): HasMany
+    {
+        return $this->hasMany(Proposal::class, 'fund_id', 'id');
+    }
+
+    public function funded_proposals(): HasMany
+    {
+        return $this->hasMany(Proposal::class)->whereIn('funding_status', [
+            ProposalFundingStatus::funded()->value,
+            ProposalFundingStatus::leftover()->value,
+        ]);
+    }
+
+    public function completed_proposals(): HasMany
+    {
+        return $this->hasMany(Proposal::class)->where('status', ProposalStatus::complete()->value);
     }
 
     public function campaigns(): HasMany

@@ -6,6 +6,7 @@ namespace App\Nova;
 
 use App\Models\IdeascaleProfile;
 use Laravel\Nova\Fields\BelongsTo;
+use Laravel\Nova\Fields\Field;
 use Laravel\Nova\Fields\HasMany;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Text;
@@ -25,7 +26,7 @@ class IdeascaleProfiles extends Resource
      *
      * @var string
      */
-    public static $title = 'id';
+    public static $title = 'name';
 
     /**
      * The columns that should be searched.
@@ -34,17 +35,19 @@ class IdeascaleProfiles extends Resource
      */
     public static $search = [
         'id',
+        'name',
     ];
 
     /**
      * Get the fields displayed by the resource.
      *
-     * @return array<int, \Laravel\Nova\Fields\Field>
+     * @return array<int, Field>
      */
     public function fields(NovaRequest $request): array
     {
         return [
             ID::make()->sortable(),
+
             Text::make('Name')
                 ->sortable()->withMeta(
                     [
@@ -84,7 +87,7 @@ class IdeascaleProfiles extends Resource
                 )
                 ->required(),
 
-            BelongsTo::make(__('Claimed By'), 'claimed_by_user', Users::class)
+            BelongsTo::make(__('Claimed By'), 'claimed_by', Users::class)
                 ->nullable()
                 ->searchable(),
 
