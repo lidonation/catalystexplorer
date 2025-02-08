@@ -8,16 +8,18 @@ import {PaginatedData} from "../../../types/paginated-data";
 import IdeascaleProfileData = App.DataTransferObjects.IdeascaleProfileData;
 import ReviewData = App.DataTransferObjects.ReviewData;
 import LocationData = App.DataTransferObjects.LocationData;
+import ConnectionData = App.DataTransferObjects.ConnectionData;
 
 interface GroupPageProps extends Record<string, unknown> {
     group: GroupData;
     proposals: PaginatedData<ProposalData[]>;
+    connections: ConnectionData[];
     ideascaleProfiles: PaginatedData<IdeascaleProfileData[]>;
     reviews: PaginatedData<ReviewData[]>;
     locations: PaginatedData<LocationData[]>;
 }
 
-const Group: React.FC<GroupPageProps> = ({group, proposals, ideascaleProfiles, reviews, locations}) => {
+const Group: React.FC<GroupPageProps> = ({group, proposals, connections, ideascaleProfiles, reviews, locations}) => {
     const {t} = useTranslation();
 
     return (
@@ -47,7 +49,17 @@ const Group: React.FC<GroupPageProps> = ({group, proposals, ideascaleProfiles, r
                     </WhenVisible>
 
                     <section>
-                        <h2>Connections</h2>
+                        <WhenVisible data='connections' fallback={<div>Loading Connections</div>}>
+                            <div className='w-full overflow-auto'>
+                                <h1>Connections</h1>
+
+                                {typeof connections !== 'undefined' && (
+                                    <div className='max-w-lg'>
+                                        {JSON.stringify(connections)}
+                                    </div>
+                                )}
+                            </div>
+                        </WhenVisible>
                     </section>
 
                     <section>

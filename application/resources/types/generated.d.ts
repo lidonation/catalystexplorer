@@ -74,6 +74,10 @@ created_at?: string;
 updated_at?: string;
 deleted_at?: string;
 };
+export type ConnectionData = {
+id: number | null;
+name: string;
+};
 export type FundData = {
 amount: number;
 label: string;
@@ -159,7 +163,7 @@ export type LocationData = {
 id: number | null;
 country: string;
 city: string;
-region?: number;
+region?: string;
 street?: string;
 address_1?: string;
 address_2?: string;
