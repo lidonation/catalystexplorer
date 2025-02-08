@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\DataTransferObjects\ConnectionData;
 use App\DataTransferObjects\GroupData;
 use App\DataTransferObjects\IdeascaleProfileData;
 use App\DataTransferObjects\LocationData;
@@ -98,6 +99,7 @@ class GroupsController extends Controller
                 'amount_requested_usd',
                 'amount_distributed_ada',
                 'amount_distributed_usd',
+                'connected_items',
             ]);
 
         return Inertia::render('Groups/Group', [
@@ -128,6 +130,11 @@ class GroupsController extends Controller
                     LocationData::collect(
                         $group->locations()->with([])->paginate(12)
                     )
+                )
+            ),
+            'connections' => Inertia::optional(
+                fn () => ConnectionData::collect(
+                    $group->connected_items
                 )
             ),
         ]);

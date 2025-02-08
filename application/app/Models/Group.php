@@ -7,6 +7,7 @@ namespace App\Models;
 use App\Casts\DateFormatCast;
 use App\Enums\CatalystCurrencySymbols;
 use App\Enums\ProposalStatus;
+use App\Traits\HasConnections;
 use App\Traits\HasLocations;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
@@ -21,7 +22,7 @@ use Spatie\Translatable\HasTranslations;
 
 class Group extends Model implements HasMedia
 {
-    use HasLocations, HasTranslations, InteractsWithMedia, Searchable;
+    use HasConnections, HasLocations, HasTranslations, InteractsWithMedia, Searchable;
 
     public array $translatable = [
         'bio',
