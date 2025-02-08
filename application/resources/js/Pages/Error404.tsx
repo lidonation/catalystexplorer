@@ -7,7 +7,7 @@ export default function Error404() {
     const { t } = useTranslation();
 
     return (
-        <div className="flex h-screen flex-col items-center justify-center gap-4 bg-gray-100">
+        <div className="bg-background-dark flex h-screen flex-col items-center justify-center gap-4">
             <Head title="404 Not Found" />
             <Error404Icon />
             <p className="mt-4 flex flex-col items-center gap-2 text-sm text-gray-600 md:text-xl">
