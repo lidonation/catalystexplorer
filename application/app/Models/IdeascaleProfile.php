@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Casts\DateFormatCast;
+use App\Casts\HashId;
 use App\Enums\ProposalStatus;
 use App\Traits\HasConnections;
 use App\Traits\HasMetaData;
@@ -290,6 +291,7 @@ class IdeascaleProfile extends Model implements HasMedia
     protected function casts(): array
     {
         return [
+            'id' => HashId::class,
             'created_at' => DateFormatCast::class,
             'updated_at' => DateFormatCast::class,
         ];

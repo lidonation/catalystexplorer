@@ -1,17 +1,17 @@
 <?php
 
-use App\Http\Controllers\CampaignsController;
-use App\Http\Controllers\ChartsController;
-use App\Http\Controllers\CompletetProjectNftsController;
-use App\Http\Controllers\FundsController;
-use App\Http\Controllers\GroupsController;
-use App\Http\Controllers\HomeController;
-use App\Http\Controllers\IdeascaleProfilesController;
-use App\Http\Controllers\JormungandrController;
-use App\Http\Controllers\ProposalsController;
-use App\Http\Controllers\ReviewsController;
-use App\Http\Controllers\SearchController;
-use App\Http\Controllers\VoterToolController;
+use App\Interfaces\Http\Controllers\CampaignsController;
+use App\Interfaces\Http\Controllers\ChartsController;
+use App\Interfaces\Http\Controllers\CompletetProjectNftsController;
+use App\Interfaces\Http\Controllers\FundsController;
+use App\Interfaces\Http\Controllers\GroupsController;
+use App\Interfaces\Http\Controllers\HomeController;
+use App\Interfaces\Http\Controllers\IdeascaleProfilesController;
+use App\Interfaces\Http\Controllers\JormungandrController;
+use App\Interfaces\Http\Controllers\ProposalsController;
+use App\Interfaces\Http\Controllers\ReviewsController;
+use App\Interfaces\Http\Controllers\SearchController;
+use App\Interfaces\Http\Controllers\VoterToolController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
