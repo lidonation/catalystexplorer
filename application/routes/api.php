@@ -5,6 +5,7 @@ use App\Interfaces\Http\Controllers\Api\CommunityController;
 use App\Interfaces\Http\Controllers\Api\GroupController;
 use App\Interfaces\Http\Controllers\Api\IdeascaleProfilesController;
 use App\Interfaces\Http\Controllers\Api\TagController;
+use App\Interfaces\Http\Controllers\My\MyBookmarksController;
 use App\Interfaces\Http\Controllers\ProposalsController;
 use Illuminate\Support\Facades\Route;
 
@@ -20,6 +21,16 @@ Route::prefix('api')->as('api.')->group(function () {
 
     Route::get('/communities', [CommunityController::class, 'communities'])->name('communities');
     Route::get('/communities/{community:id}', [CommunityController::class, 'community'])->name('community');
+
+    Route::prefix('bookmarks')->as('bookmarks.')
+        ->group(function () {;
+            Route::post('/{modelType}/{modelId}', [MyBookmarksController::class, 'store'])
+                ->name('store');
+            Route::delete('/{id}', [MyBookmarksController::class, 'delete'])
+                ->name('remove');
+            Route::get('/{modelType}/{modelId}/status', [MyBookmarksController::class, 'status'])
+                ->name('status');
+        });
 
     Route::prefix('ideascale-profiles')->as('ideascaleProfiles.')->group(function () {
         Route::get('/', [IdeascaleProfilesController::class, 'ideascaleProfiles'])->name('index');
