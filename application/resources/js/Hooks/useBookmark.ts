@@ -1,7 +1,6 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
-import {Ziggy} from "@/ziggy";
 
 interface UseBookmarkProps {
     modelType: string;
