@@ -23,7 +23,7 @@ Route::prefix('api')->as('api.')->group(function () {
     Route::get('/communities/{community:id}', [CommunityController::class, 'community'])->name('community');
 
     Route::prefix('bookmarks')->as('bookmarks.')
-        ->group(function () {;
+        ->group(function () {
             Route::post('/{modelType}/{modelId}', [MyBookmarksController::class, 'store'])
                 ->name('store');
             Route::delete('/{id}', [MyBookmarksController::class, 'delete'])

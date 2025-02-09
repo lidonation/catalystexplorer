@@ -46,8 +46,13 @@ Route::localized(
                 ->name('group');
         });
 
-        Route::get('/ideascale-profiles', [IdeascaleProfilesController::class, 'index'])
-            ->name('ideascaleProfiles.index');
+        Route::prefix('/ideascale-profiles')->as('ideascaleProfiles.')->group(function () {
+            Route::get('/', [IdeascaleProfilesController::class, 'index'])
+                ->name('index');
+
+            Route::get('/{ideascaleProfile:id}', [IdeascaleProfilesController::class, 'show'])
+                ->name('show');
+        });
 
         Route::prefix('/reviews')->as('reviews.')->group(function () {
             Route::get('/', [ReviewsController::class, 'index'])
