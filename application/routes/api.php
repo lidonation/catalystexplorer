@@ -5,6 +5,7 @@ use App\Interfaces\Http\Controllers\Api\CommunityController;
 use App\Interfaces\Http\Controllers\Api\GroupController;
 use App\Interfaces\Http\Controllers\Api\IdeascaleProfilesController;
 use App\Interfaces\Http\Controllers\Api\TagController;
+use App\Interfaces\Http\Controllers\My\MyBookmarksController;
 use App\Interfaces\Http\Controllers\ProposalsController;
 use Illuminate\Support\Facades\Route;
 
