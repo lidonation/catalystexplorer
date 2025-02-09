@@ -94,5 +94,11 @@ final class GroupData extends Data
 
         #[TypeScriptOptional]
         public ?int $amount_awarded,
+
+        #[TypeScriptOptional]
+        public ?int $proposals_funded,
+
+        #[TypeScriptOptional]
+        public ?array $ideascale_profiles,
     ) {}
 }

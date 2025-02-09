@@ -315,12 +315,19 @@
             "coProposalCountHighToLow": "Co-Proposal Count: High to Low"
         }
     },
-    "groups":{
+    "groups": {
         "groups": "Groups",
         "title": "Catalyst Groups",
         "subtitle": "Diverse, independent, and together inspiring the highest level of human collaboration",
         "fundedProposals": "Funded Proposals",
-        "received": "Received"
+        "received": "Received",
+        "totalRequested": "Total Requested",
+        "totalProposals": "Total Proposals",
+        "completed": "Completed",
+        "funded": "Funded",
+        "unfunded": "Unfunded",
+        "awardedVsRequested": "Awarded vs Requested",
+        "receivedVsAwarded": "Received vs Awarded"
     },
     "posts": {
         "title": "Catalysts Posts",

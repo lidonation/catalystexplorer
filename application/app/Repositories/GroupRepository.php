@@ -36,10 +36,15 @@ class GroupRepository extends Repository
                             'amount_awarded_usd',
                             'gravatar',
                             'proposals_count',
+                            'completed_proposals_count',
+                            'funded_proposals_count',
+                            'unfunded_proposals_count',
                             'proposals_funded',
                             'profile_photo_url',
                             'amount_distributed_ada',
                             'amount_distributed_usd',
+                            'amount_requested_usd',
+                            'amount_requested_ada',
                             'ideascale_profiles'
                         ],
                         'facets' => [

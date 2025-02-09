@@ -1,6 +1,6 @@
 import { RangePicker } from '@/Components/RangePicker';
 import { SearchSelect } from '@/Components/SearchSelect';
-import Selector from '@/Components/Select';
+import Selector from '@/Components/atoms/Selector';
 import { useFilterContext } from '@/Context/FiltersContext';
 import { ProposalParamsEnum } from '@/enums/proposal-search-params';
 import { useTranslation } from 'react-i18next';
@@ -171,19 +171,19 @@ const GroupFilters = ({proposalsCount}: GroupFilterProps) => {
                             isMultiselect={true}
                             options={[
                                 {
-                                    value: 'impact_proposal',
+                                    value: 'proposals_impact',
                                     label: t(
                                         'proposals.options.impactProposal',
                                     ),
                                 },
                                 {
-                                    value: 'woman_proposal',
+                                    value: 'proposals_woman',
                                     label: t(
                                         'proposals.options.womenProposals',
                                     ),
                                 },
                                 {
-                                    value: 'ideafest_proposal',
+                                    value: 'proposals_ideafest',
                                     label: t(
                                         'proposals.options.ideafestProposals',
                                     ),

@@ -11,6 +11,7 @@ use App\DataTransferObjects\LocationData;
 use App\DataTransferObjects\ProposalData;
 use App\DataTransferObjects\ReviewData;
 use App\Enums\ProposalSearchParams;
+use App\Models\Fund;
 use App\Models\Group;
 use App\Models\Review;
 use App\Repositories\GroupRepository;
@@ -66,7 +67,7 @@ class GroupsController extends Controller
         $this->getProps($request);
 
         $groups = $this->query();
-        
+
         $props = [
             'groups' => $groups,
             'search' => $this->search,
@@ -75,7 +76,6 @@ class GroupsController extends Controller
             'filterCounts' => [
                 'tagsCount' => $this->tagsCount,
                 'fundsCount' => $this->fundsCount,
-                'proposalsCount'=> array_sum($this->fundsCount),
             ],
         ];
 
@@ -103,35 +103,35 @@ class GroupsController extends Controller
         return Inertia::render('Groups/Group', [
             'group' => GroupData::from($group),
             'proposals' => Inertia::optional(
-                fn () => to_length_aware_paginator(
+                fn() => to_length_aware_paginator(
                     ProposalData::collect(
                         $group->proposals()->with(['users', 'fund'])->paginate(5)
                     )
                 )
             ),
             'ideascaleProfiles' => Inertia::optional(
-                fn () => to_length_aware_paginator(
+                fn() => to_length_aware_paginator(
                     IdeascaleProfileData::collect(
                         $group->ideascale_profiles()->with([])->paginate(12)
                     )
                 )
             ),
             'reviews' => Inertia::optional(
-                fn () => to_length_aware_paginator(
+                fn() => to_length_aware_paginator(
                     ReviewData::collect(
                         Review::query()->paginate(8)
                     )
                 )
             ),
             'locations' => Inertia::optional(
-                fn () => to_length_aware_paginator(
+                fn() => to_length_aware_paginator(
                     LocationData::collect(
                         $group->locations()->with([])->paginate(12)
                     )
                 )
             ),
             'connections' => Inertia::optional(
-                fn () => ConnectionData::collect(
+                fn() => ConnectionData::collect(
                     $group->connected_items
                 )
             ),
@@ -184,7 +184,7 @@ class GroupsController extends Controller
         if ((bool) $this->sortBy && (bool) $this->sortOrder) {
             $args['sort'] = ["$this->sortBy:$this->sortOrder"];
         }
-       
+
         $page = isset($this->queryParams[ProposalSearchParams::PAGE()->value])
             ? (int) $this->queryParams[ProposalSearchParams::PAGE()->value]
             : 1;
@@ -215,7 +215,7 @@ class GroupsController extends Controller
             [
                 'pageName' => 'p',
             ]
-            );
+        );
 
         return $pagination->onEachSide(1)->toArray();
     }
@@ -226,11 +226,6 @@ class GroupsController extends Controller
 
 
         $filters = [];
-
-
-        if ((bool) $this->fundedProposalsFilter) {
-            $_options[] = 'proposals_funded > 0';
-        }
 
         if (! empty($this->queryParams[ProposalSearchParams::FUNDS()->value])) {
             $funds = implode("','", $this->queryParams[ProposalSearchParams::FUNDS()->value]);
@@ -282,11 +277,10 @@ class GroupsController extends Controller
             $filters[] = "proposals.communities.id IN [{$communityIds}]";
         }
 
-        // if (! empty($this->queryParams[ProposalSearchParams::COHORT()->value])) {
-
-        //     $cohortFilters = array_map(fn($cohort) => "{$cohort} = 1", $this->queryParams[ProposalSearchParams::COHORT()->value]);
-        //     $filters[] = '(' . implode(' OR ', $cohortFilters) . ')';
-        // }
+        if (! empty($this->queryParams[ProposalSearchParams::COHORT()->value])) {
+            $cohortFilters = array_map(fn ($cohort) => "{$cohort} > 0", $this->queryParams[ProposalSearchParams::COHORT()->value]);
+            $filters[] = '('.implode(' OR ', $cohortFilters).')';
+        }
 
         return $filters;
     }
@@ -301,9 +295,12 @@ class GroupsController extends Controller
         if (isset($facets['proposals.fund.title']) && count($facets['proposals.fund.title'])) {
             $this->fundsCount = $facets['proposals.fund.title'];
         }
+    }
 
-        if (isset($facets['proposals']) && count($facets['proposals'])) {
-            $this->proposalsCount = $facets['proposals'];
-        }
+    public function getFundsWithProposalsCount()
+    {
+        return Fund::withCount('proposals')->get()->mapWithKeys(function ($fund) {
+            return [$fund->title => $fund->proposals_count];
+        });
     }
 }

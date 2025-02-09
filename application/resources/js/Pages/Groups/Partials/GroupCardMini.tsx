@@ -1,9 +1,10 @@
 import UserAvatar from '@/Components/UserAvatar';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import GroupFundingPercentages from './GroupFundingPercentage';
+import GroupFundingPercentages from './GroupFundingPercentageMini';
 import GroupUsers from './GroupUsers';
 import GroupData = App.DataTransferObjects.GroupData;
+import GroupFundingPercentagesMini from './GroupFundingPercentageMini';
 
 interface GroupCardMiniProps {
     group: GroupData;
@@ -33,11 +34,11 @@ const GroupCardMini: React.FC<GroupCardMiniProps> = ({ group }) => {
             </div>
 
             <div>
-                <GroupFundingPercentages group={group} />
+                <GroupFundingPercentagesMini group={group} />
             </div>
 
             <div>
-                <GroupUsers users={group?.ideascale_profiles} />
+                <GroupUsers users={group?.ideascale_profiles ?? []} />
             </div>
         </div>
     );

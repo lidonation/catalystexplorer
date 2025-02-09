@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\CommunityController;
 use App\Http\Controllers\Api\GroupController;
 use App\Http\Controllers\Api\IdeascaleProfilesController;
 use App\Http\Controllers\Api\TagController;
+use App\Http\Controllers\GroupsController;
 use App\Http\Controllers\ProposalsController;
 use Illuminate\Support\Facades\Route;
 
@@ -28,4 +29,6 @@ Route::prefix('api')->as('api.')->group(function () {
     });
 
     Route::get('/fund-titles', [ProposalsController::class, 'fundTitles'])->name('fundTitles');
+
+    Route::get('/fund-counts', [GroupsController::class, 'fundCounts'])->name('fundCounts');
 });

@@ -40,9 +40,7 @@ const FundsFilter: React.FC<FundFiltersProps> = ({
                 return numB - numA;
             });
             setFunds(sortedFunds);
-            // Cache funds locally
             localStorage.setItem('funds', JSON.stringify(sortedFunds));
-            console.log("cached2", JSON.parse(sortedFunds))
         } catch (error) {
             console.error('Failed to fetch funds:', error);
         } finally {

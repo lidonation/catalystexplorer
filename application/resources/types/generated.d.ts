@@ -118,6 +118,7 @@ github?: string;
 created_at?: string;
 updated_at?: string;
 deleted_at?: string;
+profile_photo_url: string;
 amount_awarded_ada?: number;
 amount_awarded_usd?: number;
 amount_requested_ada?: number;
@@ -130,6 +131,8 @@ unfunded_proposals_count?: number;
 completed_proposals_count?: number;
 amount_requested?: number;
 amount_awarded?: number;
+ideascale_profiles?:App.DataTransferObjects.IdeascaleProfileData[] | null;
+proposals_funded?: number;
 };
 export type IdeascaleProfileData = {
 id: number | null;
