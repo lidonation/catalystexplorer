@@ -1,18 +1,22 @@
 import UserAvatar from '@/Components/UserAvatar';
-import { ListProvider } from '@/Context/ListContext';
+import {ListProvider} from '@/Context/ListContext';
 import BookmarkButton from '@/Pages/My/Bookmarks/Partials/BookmarkButton';
-import { useTranslation } from 'react-i18next';
+import {useTranslation} from 'react-i18next';
 import SegmentedBar from './SegmentedProgressBar';
 import IdeascaleProfileData = App.DataTransferObjects.IdeascaleProfileData;
 import Card from "@/Components/Card";
+import React from "react";
+import {Link} from "@inertiajs/react";
+import {useLocalizedRoute} from "@/utils/localizedRoute";
+
 interface IdeascaleProfileProps {
     ideascaleProfile: IdeascaleProfileData;
 }
 
 const IdeascaleProfileCard: React.FC<IdeascaleProfileProps> = ({
-    ideascaleProfile,
-}) => {
-    const { t } = useTranslation();
+                                                                   ideascaleProfile,
+                                                               }) => {
+    const {t} = useTranslation();
     return (
         <Card>
             <div className="relative w-full">
@@ -26,7 +30,7 @@ const IdeascaleProfileCard: React.FC<IdeascaleProfileProps> = ({
                 </div>
 
                 {/* Profile info section */}
-                <div className="flex items-start space-x-3">
+                <div className="flex gap-x-3 items-center mb-3">
                     <div className="flex-shrink-0">
                         <UserAvatar
                             imageUrl={ideascaleProfile?.profile_photo_url}
@@ -35,8 +39,10 @@ const IdeascaleProfileCard: React.FC<IdeascaleProfileProps> = ({
                     </div>
                     <div className="min-w-0 flex-1">
                         <p className="text-2 font-bold break-words">
-                            {ideascaleProfile?.name ??
-                                ideascaleProfile?.username}
+                            <Link href={useLocalizedRoute('ideascaleProfiles.show', {id: ideascaleProfile?.id})}>
+                                {ideascaleProfile?.name ??
+                                    ideascaleProfile?.username}
+                            </Link>
                         </p>
                     </div>
                 </div>

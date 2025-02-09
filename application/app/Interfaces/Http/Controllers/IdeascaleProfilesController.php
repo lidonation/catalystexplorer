@@ -38,6 +38,11 @@ class IdeascaleProfilesController extends Controller
         ]);
     }
 
+    public function show(Request $request, IdeascaleProfile $ideascaleProfile): Response
+    {
+        return Inertia::render('IdeascaleProfile/IdeascaleProfile', compact('ideascaleProfile'));
+    }
+
     protected function query($returnBuilder = false, $attrs = null, $filters = [])
     {
         $page = (int) ($this->queryParams[IdeascaleProfileSearchParams::PAGE()->value] ?? $this->currentPage);

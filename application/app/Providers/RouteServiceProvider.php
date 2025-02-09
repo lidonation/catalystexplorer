@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace App\Providers;
 
+use App\Models\IdeascaleProfile;
 use App\Services\HashIdService;
 use Exception;
+use Illuminate\Routing\Router;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 
@@ -25,9 +27,15 @@ class RouteServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        Route::bind('id', function ($hashId) {
+        Route::bind('ideascaleProfile', function ($hashId) {
             try {
-                return (new HashIdService)->decode($hashId);
+                $locale = app()->getLocale();
+                $model = match (Route::currentRouteName()) {
+                    "{$locale}.ideascaleProfiles.show" => IdeascaleProfile::class,
+                    default => null,
+                };
+
+                return (new HashIdService(new $model))->decode($hashId);
             } catch (Exception $e) {
                 abort(404, 'No item found with this id!');
             }
@@ -37,8 +45,5 @@ class RouteServiceProvider extends ServiceProvider
     /**
      * Bootstrap services.
      */
-    public function boot(): void
-    {
-        //
-    }
+    public function boot(Router $router): void {}
 }

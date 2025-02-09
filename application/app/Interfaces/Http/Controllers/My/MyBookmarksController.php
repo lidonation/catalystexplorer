@@ -14,6 +14,7 @@ use App\Models\Group;
 use App\Models\IdeascaleProfile;
 use App\Models\Proposal;
 use App\Models\Review;
+use App\Services\HashIdService;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -155,7 +156,7 @@ class MyBookmarksController extends Controller
         }
     }
 
-    public function status(string $modelType, int $id): JsonResponse
+    public function status(string $modelType, string $hash): JsonResponse
     {
         if (! BookmarkableType::isValid($modelType)) {
             return response()->json([
@@ -166,6 +167,8 @@ class MyBookmarksController extends Controller
 
         $modelClass = BookmarkableType::toArray()[$modelType];
         $modelName = class_basename($modelClass);
+        $id = app(HashIdService::class, ['model' => new $modelClass])
+            ->decode($hash);
 
         $bookmarkItem = BookmarkItem::where('user_id', Auth::id())
             ->where('model_id', $id)

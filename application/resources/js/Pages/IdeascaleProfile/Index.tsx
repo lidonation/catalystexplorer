@@ -1,14 +1,11 @@
 import Paginator from '@/Components/Paginator';
 import { FiltersProvider } from '@/Context/FiltersContext';
-import { UIProvider } from '@/Context/SharedUIContext';
 import IdeaScaleProfileToolbar from '@/Pages/IdeascaleProfile/Partials/IdeaScaleProfileToolbar';
 import { PageProps } from '@/types';
 import { Head, WhenVisible } from '@inertiajs/react';
-import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { PaginatedData } from '../../../types/paginated-data';
 import { ProposalSearchParams } from '../../../types/proposal-search-params';
-import PlayerBar from '../../Components/PlayerBar';
 import IdeascaleProfilesList from './Partials/IdeascaleProfileList';
 import IdeaScaleProfileLoader from './Partials/IdeaScaleProfileLoader';
 import IdeascaleProfilesData = App.DataTransferObjects.IdeascaleProfileData;
