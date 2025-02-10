@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Providers;
 
 use App\Models\IdeascaleProfile;
+use App\Models\Proposal;
 use App\Services\HashIdService;
 use Exception;
 use Illuminate\Routing\Router;
@@ -27,6 +28,23 @@ class RouteServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
+        Route::bind('id', function ($hashId) {
+            try {
+                $paths = collect(explode('/', request()->path()));
+                $hashIndex = $paths->search($hashId);
+
+                $model = match ($paths->get($hashIndex - 1)) {
+                    'ideascale-profiles' => IdeascaleProfile::class,
+                    'proposals' => Proposal::class,
+                    default => null,
+                };
+
+                return (new HashIdService(new $model))->decode($hashId);
+            } catch (Exception $e) {
+                abort(404, 'No item found with this id!');
+            }
+        });
+
         Route::bind('ideascaleProfile', function ($hashId) {
             try {
                 $locale = app()->getLocale();

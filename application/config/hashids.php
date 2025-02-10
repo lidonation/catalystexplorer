@@ -23,5 +23,10 @@ return [
             'length' => 11,
             'alphabet' => 'acdefghijklmnopqrstuvwxyz0123456789',
         ],
+        \App\Models\Proposal::class => [
+            'salt' => \App\Models\Proposal::class.env('APP_KEY'),
+            'length' => 11,
+            'alphabet' => 'abdefghijklmnopqrstuvwxyz0123456789',
+        ],
     ],
 ];

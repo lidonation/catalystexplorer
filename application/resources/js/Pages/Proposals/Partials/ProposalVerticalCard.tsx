@@ -10,18 +10,18 @@ import ProposalFundingStatus from './ProposalFundingStatus';
 import Title from '@/Components/atoms/Title';
 
 export default function ProposalVerticalCard({
-                                                 proposal,
-                                                 userSelected,
-                                                 noSelectedUser,
-                                                 handleUserClick,
-                                                 quickPitchView,
-                                                 toggleLocalQuickPitchView,
-                                                 isHorizontal,
-                                                 t,
-                                                 hasQuickPitch,
-                                                 yesVotes,
-                                                 abstainVotes,
-                                             }: any) {
+     proposal,
+     userSelected,
+     noSelectedUser,
+     handleUserClick,
+     quickPitchView,
+     toggleLocalQuickPitchView,
+     isHorizontal,
+     t,
+     hasQuickPitch,
+     yesVotes,
+     abstainVotes,
+ }: any) {
     return (
         <article className="bg-background relative flex h-full flex-col rounded-xl justify-between p-2 shadow-lg proposal-card proposal-card-vertical">
             <section className="flex h-auto w-full flex-col items-start overflow-hidden">

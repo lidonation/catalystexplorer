@@ -24,17 +24,17 @@ Route::prefix('api')->as('api.')->group(function () {
 
     Route::prefix('bookmarks')->as('bookmarks.')
         ->group(function () {
-            Route::post('/{modelType}/{modelId}', [MyBookmarksController::class, 'store'])
+            Route::post('/{modelType}/{id}', [MyBookmarksController::class, 'store'])
                 ->name('store');
             Route::delete('/{id}', [MyBookmarksController::class, 'delete'])
                 ->name('remove');
-            Route::get('/{modelType}/{modelId}/status', [MyBookmarksController::class, 'status'])
+            Route::get('/{modelType}/{id}/status', [MyBookmarksController::class, 'status'])
                 ->name('status');
         });
 
     Route::prefix('ideascale-profiles')->as('ideascaleProfiles.')->group(function () {
         Route::get('/', [IdeascaleProfilesController::class, 'ideascaleProfiles'])->name('index');
-        Route::get('/{ideascale_profile:id}', [IdeascaleProfilesController::class, 'ideascale_profile'])->name('show');
+        Route::get('/{ideascaleProfile:id}', [IdeascaleProfilesController::class, 'ideascale_profile'])->name('show');
         Route::get('/{profile}/connections', [IdeascaleProfilesController::class, 'connections'])->name('connections');
     });
 

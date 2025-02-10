@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Interfaces\Http\Controllers;
 
+use App\Actions\TransformIdsToHashes;
 use App\DataTransferObjects\ProposalData;
 use App\Enums\ProposalSearchParams;
 use App\Models\Fund;
@@ -162,11 +163,16 @@ class ProposalsController extends Controller
         );
 
         $response = new Fluent($builder->raw());
-
+        $items = collect($response->hits);
         $this->setCounts($response->facetDistribution, $response->facetStats);
 
         $pagination = new LengthAwarePaginator(
-            ProposalData::collect($response->hits),
+            ProposalData::collect(
+                (new TransformIdsToHashes)(
+                    collection: $items,
+                    model: new Proposal
+                )->toArray()
+            ),
             $response->estimatedTotalHits,
             $limit,
             $page,
