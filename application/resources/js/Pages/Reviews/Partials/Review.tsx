@@ -1,7 +1,8 @@
-import { Head } from '@inertiajs/react';
+import { Head, WhenVisible } from '@inertiajs/react';
 import { useTranslation } from 'react-i18next';
 import ReviewData = App.DataTransferObjects.ReviewData;
-import Title from '@/Components/atoms/Title';
+import ReviewHorizontalCard from '@/Pages/Reviews/Partials/ReviewHorizontalCard';
+import ReviewHorizontalCardLoader from './ReviewHorizontalCardLoader';
 
 interface ReviewPageProps extends Record<string, unknown> {
     review: ReviewData;
@@ -23,8 +24,14 @@ const Review: React.FC<ReviewPageProps> = ({ review }) => {
                 </div>
             </header>
 
-            <div className="flex h-screen w-full flex-col items-center justify-center">
-                <Title level='2'>{t('comingSoon')}</Title>
+            <div className="flex h-full w-full flex-col items-center justify-center">
+                <WhenVisible
+                        fallback={<ReviewHorizontalCardLoader/>}
+                        data="review"
+                    >
+                        <ReviewHorizontalCard/>
+                    </WhenVisible>
+                <h1>{t('comingSoon')}</h1>
             </div>
         </>
     );
