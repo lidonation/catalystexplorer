@@ -9,6 +9,7 @@ import { ProposalSearchParams } from '../../../types/proposal-search-params';
 import IdeascaleProfilesList from './Partials/IdeascaleProfileList';
 import IdeaScaleProfileLoader from './Partials/IdeaScaleProfileLoader';
 import IdeascaleProfilesData = App.DataTransferObjects.IdeascaleProfileData;
+import Title from '@/Components/atoms/Title';
 
 interface IdeascaleProfilesPageProps extends Record<string, unknown> {
     ideascaleProfiles: PaginatedData<IdeascaleProfilesData[]>;
@@ -26,9 +27,9 @@ const Index = ({
                 <Head title="Ideascale Profiles" />
 
                 <header className="container">
-                    <h1 className="title-1">
+                    <Title>
                         {t('ideascaleProfiles.ideascaleProfiles')}
-                    </h1>
+                    </Title>
                     <p className="text-content">
                         {t('ideascaleProfiles.pageSubtitle')}
                     </p>

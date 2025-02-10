@@ -5,6 +5,7 @@ import { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import Proposal = App.DataTransferObjects.ProposalData;
 import ProposalUsersMini from './ProposalUsersMini';
+import Title from '@/Components/atoms/Title';
 
 interface ProposalCardMiniProps {
     proposal: Proposal;
@@ -39,7 +40,7 @@ export default function ProposalCardMini({
             <section>
                 <div className="mt-4" aria-labelledby="funding-heading">
                     <div className="flex gap-2">
-                        <h3 className="font-semibold">{t('funding')}</h3>
+                        <Title level='3' className="font-semibold">{t('funding')}</Title>
                         <ProposalFundingStatus
                             funding_status={proposal.funding_status}
                         />

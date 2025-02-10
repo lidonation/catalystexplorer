@@ -2,6 +2,7 @@
 
 import { usePlayer } from '@/Context/PlayerContext';
 import { useEffect, useRef } from 'react';
+import Title from './atoms/Title';
 
 function WaveformBars() {
     const bars = Array.from({ length: 3 }, (_, i) => ({
@@ -56,9 +57,9 @@ export default function PlaylistAnimation() {
         <div className="relative">
             <div className="space-y-6">
                 <div className="flex items-center justify-between">
-                    <h2 className="text-2xl font-bold text-white">
+                    <Title className="text-2xl font-bold text-white">
                         Now Playing
-                    </h2>
+                    </Title>
                 </div>
 
                 <ul className="space-y-3">

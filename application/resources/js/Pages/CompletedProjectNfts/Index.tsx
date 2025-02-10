@@ -15,6 +15,7 @@ import ProposalData = App.DataTransferObjects.ProposalData;
 import { ProposalSearchParams } from '../../../types/proposal-search-params';
 import { FiltersProvider } from '@/Context/FiltersContext';
 import ProfileWorkflow from "./Partials/ProfileWorkflow";
+import Title from '@/Components/atoms/Title';
 
 
 interface CompletedProjectNftsPageProps extends Record<string, unknown> {
@@ -85,9 +86,9 @@ export default function Index({
             {/* Header Section */}
             <header className="py-12">
                 <div className="container px-4 mx-auto sm:px-6">
-                    <h1 className="mb-4 text-3xl font-bold md:text-4xl">
+                    <Title className="mb-4 text-3xl md:text-4xl">
                         {t("completedProjectNfts.title")}
-                    </h1>
+                    </Title>
                     <p className="text-base md:text-lg">
                         {t("completedProjectNfts.subtitle")}
                     </p>

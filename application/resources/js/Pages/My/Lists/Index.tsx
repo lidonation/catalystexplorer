@@ -1,3 +1,4 @@
+import Title from '@/Components/atoms/Title';
 import { Head } from '@inertiajs/react';
 
 const Index = () => {
@@ -7,7 +8,7 @@ const Index = () => {
 
             <header>
                 <div className='container'>
-                    <h1 className="title-1">My Lists</h1>
+                    <Title level='1'>My Lists</Title>
                 </div>
                 <div className='container'>
                     <p className="text-content">
@@ -17,7 +18,7 @@ const Index = () => {
             </header>
 
             <div className="flex h-screen w-full flex-col items-center justify-center">
-                <h1>Coming Soon</h1>
+                <Title level='2'>Coming Soon</Title>
             </div>
         </>
     );

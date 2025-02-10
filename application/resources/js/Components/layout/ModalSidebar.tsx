@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import Button from '../atoms/Button';
 import CatalystLogo from '../atoms/CatalystLogo';
 import CloseIcon from '../svgs/CloseIcon';
+import Title from '../atoms/Title';
 
 type ModalSidebarProps = {
     isOpen?: boolean;
@@ -49,12 +50,12 @@ function ModalSidebar({ isOpen = false, title, children, onClose }: ModalSidebar
                 tabIndex={0}
             >
                 <header className="border-border-primary flex items-center justify-between border-b px-6 py-4">
-                    <h2
+                    <Title
                         id="modal-sidebar-title"
                         className="text-2 text-content font-semibold"
                     >
                         {title}
-                    </h2>
+                    </Title>
                     <Button
                         onClick={onClose}
                         ariaLabel={t('navigation.sidebar.close')}

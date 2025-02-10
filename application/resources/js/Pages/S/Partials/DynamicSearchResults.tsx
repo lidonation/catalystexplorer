@@ -16,6 +16,7 @@ import ReviewData = App.DataTransferObjects.ReviewData;
 import IdeascaleProfileData = App.DataTransferObjects.IdeascaleProfileData;
 import GroupData = App.DataTransferObjects.GroupData;
 import IdeascaleProfileCard from "@/Pages/IdeascaleProfile/Partials/IdeascaleProfileCard";
+import Title from '@/Components/atoms/Title';
 
 interface SearchResultsData {
     hits:
@@ -107,7 +108,7 @@ const DynamicSearchResults = ({
             case 'proposals':
                 return (
                     <div className="flex flex-col gap-4">
-                        <h1 className="title-1">{t('proposals.proposals')}</h1>
+                        <Title level='2'>{t('proposals.proposals')}</Title>
                         <ProposalResults
                             proposals={data.hits as ProposalData[]}
                             isHorizontal={isHorizontal}
@@ -129,7 +130,7 @@ const DynamicSearchResults = ({
             case 'ideascaleprofiles':
                 return (
                     <div className="flex w-full flex-col gap-4">
-                        <h1 className="title-1">{t('ideascaleProfiles.ideascaleProfiles')}</h1>
+                        <Title>{t('ideascaleProfiles.ideascaleProfiles')}</Title>
                         <section className="py-8">
                             <ul className="grid w-full grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-5">
                                 {data.hits.map((user, index) => (

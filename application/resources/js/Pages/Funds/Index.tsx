@@ -6,6 +6,7 @@ import FundCardLoader from './Partials/FundCardLoader';
 import FundsList from './Partials/FundsList';
 import { PageProps } from '@/types';
 import FundData = App.DataTransferObjects.FundData;
+import Title from '@/Components/atoms/Title';
 
 interface HomePageProps extends Record<string, unknown> {
     funds: FundData[];
@@ -36,7 +37,7 @@ export default function Index({
 
             <header>
                 <div className="container">
-                    <h1 className="title-1">{t('funds.funds')}</h1>
+                    <Title>{t('funds.funds')}</Title>
                 </div>
                 <div className="container">
                     <p className="text-content">{t('funds.subtitle')}</p>
