@@ -44,6 +44,9 @@ Route::localized(
 
             Route::get('/{group:slug}', [GroupsController::class, 'group'])
                 ->name('group');
+
+            Route::get('/{id}', [GroupsController::class, 'show'])
+                ->name('group.show');
         });
 
         Route::get('/ideascale-profiles', [IdeascaleProfilesController::class, 'index'])
@@ -61,6 +64,9 @@ Route::localized(
 
         Route::get('/completed-project-nfts', [CompletetProjectNftsController::class, 'index'])
             ->name('completedProjectsNfts.index');
+
+        Route::get('/completed-project-nfts/{proposal:id}', [CompletetProjectNftsController::class, 'show'])
+            ->name('completedProjectsNfts.show');
 
         Route::get('/completed-project-nfts/{proposal:id}', [CompletetProjectNftsController::class, 'show'])
             ->name('completedProjectsNfts.show');

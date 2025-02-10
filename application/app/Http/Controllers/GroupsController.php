@@ -7,7 +7,9 @@ namespace App\Http\Controllers;
 use App\DataTransferObjects\GroupData;
 use App\DataTransferObjects\ProposalData;
 use App\Enums\QueryParamsEnum;
+use App\Models\Connection;
 use App\Models\Group;
+use App\Models\IdeascaleProfile;
 use App\Repositories\GroupRepository;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -84,6 +86,130 @@ class GroupsController extends Controller
             'group' => GroupData::from($group),
             'proposals' => ProposalData::collect($group->proposals()->with(['users', 'fund'])->paginate()),
         ]);
+    }
+
+    public function show($id, Request $request)
+    {
+        $graphData = $this->getGraphData($id);
+
+        return Inertia::render('Groups/Graph', [
+            'graphData' => $graphData,
+        ]);
+    }
+
+    private function getGraphData(string $groupId): array
+    {
+
+        $rootGroup = Group::findOrFail($groupId);
+
+        $nodes = new Collection;
+        $links = new Collection;
+
+        $nodes->push($this->formatGroupNode($rootGroup));
+
+        // Fetch direct group connections of the root group
+        $directGroupConnections = $this->getDirectGroupConnections($rootGroup);
+
+        // Add direct group connections to nodes and links
+        foreach ($directGroupConnections as $group) {
+            $nodes->push($this->formatGroupNode($group));
+            $links->push($this->formatGroupLink($rootGroup, $group));
+        }
+
+        // Fetch and add Ideascale Profiles for each group (including the root group)
+        $allGroups = $directGroupConnections->push($rootGroup);
+        foreach ($allGroups as $group) {
+            $profiles = $this->getGroupProfiles($group);
+            foreach ($profiles as $profile) {
+                $nodes->push($this->formatProfileNode($profile));
+                $links->push($this->formatProfileLink($group, $profile));
+            }
+        }
+
+        return [
+            'nodes' => $nodes->unique('id')->values(),
+            'links' => $links->unique(function ($link) {
+                return $link['source'].'-'.$link['target'];
+            })->values(),
+        ];
+    }
+
+    private function formatGroupNode(Group $group): array
+    {
+        return [
+            'id' => 'group-'.$group->id,
+            'type' => 'group',
+            'name' => $group->name,
+            'photo' => null,
+        ];
+    }
+
+    private function formatProfileNode(IdeascaleProfile $profile): array
+    {
+        return [
+            'id' => 'profile-'.$profile->id,
+            'type' => 'profile',
+            'name' => $profile->name,
+            'photo' => $profile->profile_photo_url,
+        ];
+    }
+
+    private function formatGroupLink(Group $source, Group $target): array
+    {
+        return [
+            'source' => 'group-'.$source->id,
+            'target' => 'group-'.$target->id,
+        ];
+    }
+
+    private function formatProfileLink(Group $group, IdeascaleProfile $profile): array
+    {
+        return [
+            'source' => 'group-'.$group->id,
+            'target' => 'profile-'.$profile->id,
+        ];
+    }
+
+    private function getDirectGroupConnections(Group $group): Collection
+    {
+        // Fetch next group connections
+        $nextGroupIds = Connection::where('previous_model_type', Group::class)
+            ->where('previous_model_id', $group->id)
+            ->where('next_model_type', Group::class)
+            ->pluck('next_model_id');
+
+        // Fetch previous group connections
+        $previousGroupIds = Connection::where('next_model_type', Group::class)
+            ->where('next_model_id', $group->id)
+            ->where('previous_model_type', Group::class)
+            ->pluck('previous_model_id');
+
+        // Fetch and merge groups
+        $nextGroups = Group::whereIn('id', $nextGroupIds)->get();
+        $previousGroups = Group::whereIn('id', values: $previousGroupIds)->get();
+
+        return $nextGroups->merge($previousGroups)->unique('id');
+    }
+
+    private function getGroupProfiles(Group $group): Collection
+    {
+        // Fetch profile IDs where the group is the source (Group -> Profile)
+        $profileIdsAsSource = Connection::where('previous_model_type', Group::class)
+            ->where('previous_model_id', $group->id)
+            ->where('next_model_type', IdeascaleProfile::class)
+            ->pluck('next_model_id');
+
+        // Fetch profile IDs where the group is the target (Profile -> Group)
+        $profileIdsAsTarget = Connection::where('next_model_type', Group::class)
+            ->where('next_model_id', $group->id)
+            ->where('previous_model_type', IdeascaleProfile::class)
+            ->pluck('previous_model_id');
+
+        // Merge and deduplicate profile IDs
+        $profileIds = $profileIdsAsSource->merge($profileIdsAsTarget)->unique();
+
+        // Fetch profiles using the retrieved IDs
+        return IdeascaleProfile::whereIn('id', values: $profileIds)->get();
     }
 
     protected function setFilters(Request $request)
