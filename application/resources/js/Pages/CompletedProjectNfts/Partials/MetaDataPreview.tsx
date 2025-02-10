@@ -1,4 +1,5 @@
 import IdeascaleLogo from "@/assets/images/ideascale-logo.png";
+import Title from "@/Components/atoms/Title";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 
@@ -12,7 +13,7 @@ const MetaDataPreview = () => {
   return (
     <div className="bg-background rounded-lg p-6">
       <div className="flex justify-between items-center mb-6 border-b border-l-content pb-4">
-        <h2 className="text-xl font-semibold">{t('metaTitle')}</h2>
+        <Title level="2" className="text-xl font-semibold">{t('metaTitle')}</Title>
         <div className="flex items-center gap-2">
           <button className="bg-emerald-500 text-content-light px-4 py-2 rounded-md hover:bg-emerald-600">
             {t('mintNFT')}
@@ -28,7 +29,7 @@ const MetaDataPreview = () => {
             <img src={IdeascaleLogo} alt="Preston Odep" className="w-full h-full object-cover" />
           </div>
           <div className="ml-5">
-            <h3 className="font-medium">{metadata.name}</h3>
+            <Title level="3" className="font-medium">{metadata.name}</Title>
             <p className="text-sm text-gray-500">{metadata.role}</p>
           </div>
         </div>

@@ -1,3 +1,4 @@
+import Title from '@/Components/atoms/Title';
 import { Head } from '@inertiajs/react';
 import { useTranslation } from 'react-i18next';
 
@@ -14,7 +15,7 @@ const Index: React.FC<ActiveFundsProp> = ({ search }) => {
 
             <header>
                 <div className="container">
-                    <h1 className="title-1">{t('activeFund')}</h1>
+                    <Title level='1'>{t('activeFund')}</Title>
                 </div>
                 <div className="container">
                     <p className="text-content">{t('activeFund')}</p>
@@ -22,7 +23,7 @@ const Index: React.FC<ActiveFundsProp> = ({ search }) => {
             </header>
 
             <div className="flex h-screen w-full flex-col items-center justify-center">
-                <h1>{t('comingSoon')}</h1>
+                <Title level='2'>{t('comingSoon')}</Title>
             </div>
         </>
     );

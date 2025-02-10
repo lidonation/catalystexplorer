@@ -1,3 +1,5 @@
+import Title from "@/Components/atoms/Title";
+
 interface CtaItem {
     label: string;
     link: string;
@@ -7,7 +9,7 @@ const SpecialAnnouncementCard = ({ announcement }: any) => {
     return (
         <div className="flex flex-col lg:flex-row items-center p-6 w-full">
             <div className="flex flex-col flex-1 lg:mr-12 text-center lg:text-left">
-                <h2 className="title-2 font-bold mb-4">{announcement.title}</h2>
+                <Title className="font-bold mb-4">{announcement.title}</Title>
 
                 <p className="mb-6 leading-relaxed">{announcement.content}</p>
 

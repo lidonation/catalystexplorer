@@ -1,3 +1,4 @@
+import Title from '@/Components/atoms/Title';
 import { PageProps } from '@/types';
 import Plyr from 'plyr-react';
 import 'plyr-react/plyr.css';
@@ -35,9 +36,9 @@ export default function ProposalQuickpitch({
 
     return (
         <section aria-labelledby="video-heading" className="h-full">
-            <h2 id="video-heading" className="sr-only">
+            <Title level='2' id="video-heading" className="sr-only">
                 {t('proposals.projectVideo')}
-            </h2>
+            </Title>
             <div className="relative h-full w-full overflow-hidden rounded-2xl">
                 {videoData.error ? (
                     <div className="flex h-full items-center justify-center p-4">

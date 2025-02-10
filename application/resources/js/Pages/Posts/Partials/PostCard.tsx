@@ -1,3 +1,4 @@
+import Title from '@/Components/atoms/Title';
 import ArrowTopRightIcon from '@/Components/svgs/TopRightArrowIcon';
 import { useState } from 'react';
 
@@ -56,12 +57,13 @@ export default function PostCard({ post }: PostCardProps) {
                 className="group mt-2 flex w-full items-start justify-between"
                 aria-label={`Read the full post titled "${post?.title}"`}
             >
-                <h2
+                <Title
+                    level='3'
                     id={`post-title-${post?.id}`}
                     className="w-full text-2xl font-extrabold text-content group-hover:text-primary"
                 >
                     {post?.title}
-                </h2>
+                </Title>
                 <ArrowTopRightIcon
                     className="ml-4 cursor-pointer text-content group-hover:text-primary"
                     aria-hidden="true"

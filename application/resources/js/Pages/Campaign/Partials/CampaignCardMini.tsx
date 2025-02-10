@@ -4,6 +4,7 @@ import CampaignData = App.DataTransferObjects.CampaignData;
 import { currency } from '@/utils/currency';
 import { useTranslation } from 'react-i18next';
 import SegmentedCampaignBar from './SegmentedCampaignBar';
+import Title from '@/Components/atoms/Title';
 
 interface CampaignCardMiniProps {
   fund: FundData;
@@ -31,9 +32,9 @@ const CampaignCardMini: React.FC<CampaignCardMiniProps> = ({ fund, campaign }) =
         )}
       </div>
       <div className="pt-6">
-        <h3 className="text-lg font-semibold mb-2 flex items-center justify-between">
+        <Title level="3" className="text-lg font-semibold mb-2 flex items-center justify-between">
             {campaign?.title}
-        </h3>
+        </Title>
         <div className="flex w-full justify-between pt-4 pb-4">
                     <SegmentedCampaignBar
                         CampaignData = {campaign}

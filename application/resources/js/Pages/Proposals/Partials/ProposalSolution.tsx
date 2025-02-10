@@ -1,3 +1,4 @@
+import Title from '@/Components/atoms/Title';
 import { PageProps } from '@/types';
 import Markdown from "marked-react";
 
@@ -31,9 +32,9 @@ export default function ProposalSolution({
             aria-labelledby="solution-preview"
         >
             <header className="solution-header flex justify-between">
-                <h2 id="solution-heading" className="text-content font-medium">
+                <Title level='2' id="solution-heading" className="text-content font-medium">
                     Solution
-                </h2>
+                </Title>
             </header>
 
             <div className="solution-content text-content pb-1 line-clamp-5">
