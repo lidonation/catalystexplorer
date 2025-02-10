@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace App\Interfaces\Http\Controllers;
 
+use App\Actions\TransformIdsToHashes;
 use App\Enums\IdeascaleProfileSearchParams;
 use App\Enums\ProposalSearchParams;
 use App\Models\IdeascaleProfile;
 use App\Repositories\IdeascaleProfileRepository;
-use App\Services\HashIdService;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Log;
@@ -84,14 +84,12 @@ class IdeascaleProfilesController extends Controller
 
         $response = new Fluent($builder->raw());
 
+        $items = collect($response->hits);
         $pagination = new LengthAwarePaginator(
-            collect($response->hits)
-                ->map(function ($array) {
-                    $array['id'] = app(HashIdService::class, ['model' => new IdeascaleProfile])
-                        ->encode($array['id']);
-
-                    return $array;
-                })->toArray(),
+            (new TransformIdsToHashes)(
+                collection: $items,
+                model: new IdeascaleProfile
+            )->toArray(),
             $response->estimatedTotalHits,
             $limit,
             $page,

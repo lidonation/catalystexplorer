@@ -14,7 +14,6 @@ use App\Models\Group;
 use App\Models\IdeascaleProfile;
 use App\Models\Proposal;
 use App\Models\Review;
-use App\Services\HashIdService;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -106,20 +105,14 @@ class MyBookmarksController extends Controller
             DB::beginTransaction();
             $bookmarkItem = BookmarkItem::create([
                 'user_id' => Auth::id(),
-                'model_type' => $modelType,
+                'model_type' => $modelClass,
                 'model_id' => $modelId,
             ]);
-            Log::info('Bookmark created', [
-                'user_id' => Auth::id(),
-                'model_id' => $modelId,
-                'model_type' => $modelType,
-            ]);
-
             DB::commit();
 
             return response()->json([
                 'message' => 'Bookmark created successfully',
-                'modeltype' => $modelType,
+                'modelType' => $modelType,
                 'bookmarkItem' => $bookmarkItem,
             ]);
         } catch (\Exception $e) {
@@ -156,7 +149,7 @@ class MyBookmarksController extends Controller
         }
     }
 
-    public function status(string $modelType, string $hash): JsonResponse
+    public function status(string $modelType, int $modelId): JsonResponse
     {
         if (! BookmarkableType::isValid($modelType)) {
             return response()->json([
@@ -167,11 +160,9 @@ class MyBookmarksController extends Controller
 
         $modelClass = BookmarkableType::toArray()[$modelType];
         $modelName = class_basename($modelClass);
-        $id = app(HashIdService::class, ['model' => new $modelClass])
-            ->decode($hash);
 
         $bookmarkItem = BookmarkItem::where('user_id', Auth::id())
-            ->where('model_id', $id)
+            ->where('model_id', $modelId)
             ->where(function ($query) use ($modelClass, $modelName) {
                 $query->where('model_type', $modelClass)
                     ->orWhere('model_type', $modelName);

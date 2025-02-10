@@ -13,12 +13,12 @@ export default function useBookmark({ modelType, itemId }: UseBookmarkProps) {
     const [isOpen, setIsOpen] = useState(false);
 
     useEffect(() => {
-        fetchBookmarkStatus();
+        fetchBookmarkStatus().then();
     }, [modelType, itemId]);
     const fetchBookmarkStatus = async () => {
         try {
             const response = await axios.get(
-                route('api.bookmarks.status', { modelType, modelId: itemId }),
+                route('api.bookmarks.status', { modelType, id: itemId }),
             );
             setIsBookmarked(response.data.isBookmarked);
             setBookmarkId(response.data.id || null);
@@ -30,7 +30,7 @@ export default function useBookmark({ modelType, itemId }: UseBookmarkProps) {
     const createBookmark = async () => {
         try {
             const response = await axios.post(
-                route('api.bookmarks.store', { modelType, modelId: itemId }),
+                route('api.bookmarks.store', { modelType, id: itemId }),
             );
             if (response.data.bookmarkItem) {
                 setIsBookmarked(true);
