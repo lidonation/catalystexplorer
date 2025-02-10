@@ -26,7 +26,7 @@ class CreateIdeascaleProfilesTable extends Migration
             $table->string('linkedin')->nullable();
             $table->string('discord')->nullable();
             $table->string('ideascale')->nullable();
-            $table->foreignId('claimed_by')
+            $table->foreignId('claimed_by_id')
                 ->nullable()
                 ->constrained('users');
             $table->string('telegram')->nullable();

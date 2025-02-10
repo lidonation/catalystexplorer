@@ -1,6 +1,6 @@
 import { RangePicker } from '@/Components/RangePicker';
 import { SearchSelect } from '@/Components/SearchSelect';
-import Selector from '@/Components/Select';
+import Selector from '@/Components/atoms/Selector';
 import { useFilterContext } from '@/Context/FiltersContext'; // Import the custom hook
 import { ProposalParamsEnum } from '@/enums/proposal-search-params';
 import { useState } from 'react';

@@ -18,6 +18,7 @@ import AnnouncementCarousel from './Partials/Announcement/AnnouncementCarousel';
 import SecondaryLink from '@/Components/SecondaryLink';
 import SpecialAnnouncementCarousel from './Partials/Announcement/SpecialAnnouncementsCarousel';
 import SpecialAnnouncementLoading from './Partials/Announcement/SpecialAnnouncementLoading';
+import Title from '@/Components/atoms/Title';
 
 interface HomePageProps extends Record<string, unknown> {
     posts: PostData[];
@@ -57,7 +58,7 @@ export default function Index({
                 <section className="numbers-wrapper container">
                     <div className='flex justify-between items-center'>
                         <div>
-                            <h2 className="title-2">{t("metric.numbers")}</h2>
+                            <Title level='2'>{t("metric.numbers")}</Title>
                             <p className="text-4 text-content-dark opacity-70">{t("metric.subtitle")}</p>
                         </div>
                         <div>
@@ -79,7 +80,7 @@ export default function Index({
                 <section className="container proposals-wrapper">
                     <div className="flex items-center justify-between py-8">
                         <div>
-                            <h2 className="title-2">{t("proposals.proposals")}</h2>
+                            <Title level='2'>{t("proposals.proposals")}</Title>
                             <p className="text-4 text-content-dark opacity-70">{t("proposals.listSubtitle")}</p>
                         </div>
                         <div>
@@ -115,7 +116,7 @@ export default function Index({
 
                 <section className="posts-wrapper container flex flex-col gap-8">
                     <div>
-                        <h2 className="title-2">{t('posts.title')}</h2>
+                        <Title level='2'>{t('posts.title')}</Title>
                         <p>{t('posts.subtitle')}</p>
                     </div>
                     <WhenVisible fallback={<PostListLoader />} data="posts">

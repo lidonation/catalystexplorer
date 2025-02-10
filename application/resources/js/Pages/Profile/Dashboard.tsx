@@ -1,3 +1,4 @@
+import Title from '@/Components/atoms/Title';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head } from '@inertiajs/react';
 
@@ -5,9 +6,9 @@ export default function Dashboard() {
     return (
         <AuthenticatedLayout
             header={
-                <h2 className="text-1 text-content leading-tight font-semibold">
+                <Title level='2' className="text-1 text-content leading-tight font-semibold">
                     Dashboard
-                </h2>
+                </Title>
             }
         >
             <Head title="Dashboard" />

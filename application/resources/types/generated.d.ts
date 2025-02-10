@@ -1,3 +1,4 @@
+Generated.d.ts
 declare namespace App.DataTransferObjects {
 export type AnnouncementData = {
 id: number;
@@ -57,6 +58,10 @@ updated_at: string | null;
 label?: string;
 currency: string | null;
 proposals_count: number;
+funded_proposals_count?: number;
+unfunded_proposals_count?: number;
+completed_proposals_count?: number;
+
 };
 export type CommunityData = {
 id: number | null;
@@ -68,6 +73,10 @@ slug?: string;
 created_at?: string;
 updated_at?: string;
 deleted_at?: string;
+};
+export type ConnectionData = {
+id: number | null;
+name: string;
 };
 export type FundData = {
 amount: number;
@@ -108,6 +117,18 @@ github?: string;
 created_at?: string;
 updated_at?: string;
 deleted_at?: string;
+hero_img_url?: string;
+amount_requested_usd?: number;
+amount_requested_ada?: number;
+completed_proposals_count?: number;
+funded_proposals_count?: number;
+unfunded_proposals_count?: number;
+amount_distributed_ada?: number;
+amount_distributed_usd?: number;
+amount_awarded_ada?: number;
+amount_awarded_usd?: number;
+proposals_count?: number;
+
 };
 export type IdeascaleProfileData = {
 id: number | null;
@@ -134,6 +155,17 @@ claimed_by?: number;
 completed_proposals_count?: number;
 funded_proposals_count?: number;
 proposals_count?: number;
+};
+export type LocationData = {
+id: number | null;
+country: string;
+city: string;
+region?: string;
+street?: string;
+address_1?: string;
+address_2?: string;
+lat?: number;
+long?: number;
 };
 export type MetricData = {
 user_id: number | null;
@@ -233,3 +265,4 @@ profile_photo_url: string;
 email_verified_at: string | null;
 };
 }
+

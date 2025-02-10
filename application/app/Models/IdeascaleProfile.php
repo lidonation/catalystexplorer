@@ -5,10 +5,13 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Casts\DateFormatCast;
+use App\Casts\HashId;
 use App\Enums\ProposalStatus;
 use App\Traits\HasConnections;
+use App\Traits\HasMetaData;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\Artisan;
@@ -20,7 +23,7 @@ use Spatie\Translatable\HasTranslations;
 
 class IdeascaleProfile extends Model implements HasMedia
 {
-    use HasConnections, HasTranslations, InteractsWithMedia, Searchable;
+    use HasConnections, HasMetaData, HasTranslations, InteractsWithMedia, Searchable;
 
     protected $primaryKey = 'id';
 
@@ -245,6 +248,11 @@ class IdeascaleProfile extends Model implements HasMedia
         )->where('type', 'proposal');
     }
 
+    public function claimed_by(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'claimed_by_id', 'id');
+    }
+
     public function toSearchableArray(): array
     {
         $this->load('proposals');
@@ -283,6 +291,7 @@ class IdeascaleProfile extends Model implements HasMedia
     protected function casts(): array
     {
         return [
+            'id' => HashId::class,
             'created_at' => DateFormatCast::class,
             'updated_at' => DateFormatCast::class,
         ];

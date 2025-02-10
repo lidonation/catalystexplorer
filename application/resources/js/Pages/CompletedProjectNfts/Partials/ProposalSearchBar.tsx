@@ -1,4 +1,4 @@
-import TextInput from '@/Components/TextInput';
+import TextInput from '@/Components/atoms/TextInput';
 import SearchLensIcon from '@/Components/svgs/SearchLensIcon';
 import useEscapeKey from '@/Hooks/useEscapeKey';
 import { useEffect, useRef, useState } from 'react';

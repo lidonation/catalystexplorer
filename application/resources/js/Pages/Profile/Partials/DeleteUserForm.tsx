@@ -2,8 +2,9 @@ import DangerButton from '@/Components/DangerButton';
 import InputError from '@/Components/InputError';
 import InputLabel from '@/Components/InputLabel';
 import Modal from '@/Components/Modal';
-import SecondaryButton from '@/Components/SecondaryButton';
-import TextInput from '@/Components/TextInput';
+import SecondaryButton from '@/Components/atoms/SecondaryButton';
+import TextInput from '@/Components/atoms/TextInput';
+import Title from '@/Components/atoms/Title';
 import { useForm } from '@inertiajs/react';
 import { FormEventHandler, useRef, useState } from 'react';
 
@@ -52,9 +53,9 @@ export default function DeleteUserForm({
     return (
         <section className={`space-y-6 ${className}`}>
             <header>
-                <h2 className="text-2 text-content font-medium">
+                <Title level='2' className="text-2 text-content font-medium">
                     Delete Account
-                </h2>
+                </Title>
 
                 <p className="text-4 text-content mt-1">
                     Once your account is deleted, all of its resources and data
@@ -70,9 +71,9 @@ export default function DeleteUserForm({
 
             <Modal show={confirmingUserDeletion} onClose={closeModal}>
                 <form onSubmit={deleteUser} className="p-6">
-                    <h2 className="text-2 text-content font-medium">
+                    <Title level='3' className="text-2 text-content font-medium">
                         Are you sure you want to delete your account?
-                    </h2>
+                    </Title>
 
                     <p className="text-4 text-dark mt-1">
                         Once your account is deleted, all of its resources and

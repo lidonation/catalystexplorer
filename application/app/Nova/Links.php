@@ -6,15 +6,11 @@ namespace App\Nova;
 
 use App\Enums\StatusEnum;
 use App\Models\Link;
-use Laravel\Nova\Actions\Action;
-use Laravel\Nova\Card;
 use Laravel\Nova\Fields\Field;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Select;
 use Laravel\Nova\Fields\Text;
-use Laravel\Nova\Filters\Filter;
 use Laravel\Nova\Http\Requests\NovaRequest;
-use Laravel\Nova\Lenses\Lens;
 
 class Links extends Resource
 {
@@ -68,45 +64,5 @@ class Links extends Resource
                     StatusEnum::published()->value => 'Published',
                 ])->default('published')->sortable(),
         ];
-    }
-
-    /**
-     * Get the cards available for the resource.
-     *
-     * @return array<int, Card>
-     */
-    public function cards(NovaRequest $request): array
-    {
-        return [];
-    }
-
-    /**
-     * Get the filters available for the resource.
-     *
-     * @return array<int, Filter>
-     */
-    public function filters(NovaRequest $request): array
-    {
-        return [];
-    }
-
-    /**
-     * Get the lenses available for the resource.
-     *
-     * @return array<int, Lens>
-     */
-    public function lenses(NovaRequest $request): array
-    {
-        return [];
-    }
-
-    /**
-     * Get the actions available for the resource.
-     *
-     * @return array<int, Action>
-     */
-    public function actions(NovaRequest $request): array
-    {
-        return [];
     }
 }

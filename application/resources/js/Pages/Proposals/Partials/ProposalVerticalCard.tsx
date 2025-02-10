@@ -7,20 +7,21 @@ import ProposalCardFooter from './ProposalCardFooter';
 import ProposalUsers from './ProposalUsers';
 import UserQuickView from '@/Components/UserQuickView';
 import ProposalFundingStatus from './ProposalFundingStatus';
+import Title from '@/Components/atoms/Title';
 
 export default function ProposalVerticalCard({
-                                                 proposal,
-                                                 userSelected,
-                                                 noSelectedUser,
-                                                 handleUserClick,
-                                                 quickPitchView,
-                                                 toggleLocalQuickPitchView,
-                                                 isHorizontal,
-                                                 t,
-                                                 hasQuickPitch,
-                                                 yesVotes,
-                                                 abstainVotes,
-                                             }: any) {
+     proposal,
+     userSelected,
+     noSelectedUser,
+     handleUserClick,
+     quickPitchView,
+     toggleLocalQuickPitchView,
+     isHorizontal,
+     t,
+     hasQuickPitch,
+     yesVotes,
+     abstainVotes,
+ }: any) {
     return (
         <article className="bg-background relative flex h-full flex-col rounded-xl justify-between p-2 shadow-lg proposal-card proposal-card-vertical">
             <section className="flex h-auto w-full flex-col items-start overflow-hidden">
@@ -51,9 +52,9 @@ export default function ProposalVerticalCard({
                                 aria-labelledby="funding-heading"
                             >
                                 <div className="flex gap-2 my-1">
-                                    <h3 className="font-semibold">
+                                    <Title level='3' className="font-semibold">
                                         {t('funding')}
-                                    </h3>
+                                    </Title>
                                     <ProposalFundingStatus
                                         funding_status={proposal.funding_status}
                                     />

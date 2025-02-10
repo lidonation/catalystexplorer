@@ -83,7 +83,7 @@ const BookmarksList: React.FC<BookmarksListProps> = ({
                 return filteredItems.length > 0
                     ? filteredItems.map((group, index) => (
                         <div key={`group-${index}`} className="bg-background p-4 rounded-xl">
-                            {group.name}
+                            {group?.name}
                         </div>
                     ))
                     : renderNotFound("groups");

@@ -16,9 +16,10 @@ import { ProposalSearchParams } from '../../../types/proposal-search-params';
 import CardLayoutSwitcher from './Partials/CardLayoutSwitcher';
 import FundFiltersContainer from './Partials/FundFiltersContainer';
 import ProposalFilters from './Partials/ProposalFilters';
-import HorizontaCardLoading from './Partials/ProposalHorizontalCardLoading';
+import ProposalHorizontalCardLoading from './Partials/ProposalHorizontalCardLoading';
 import ProposalSearchControls from './Partials/ProposalSearchControls';
 import ProposalData = App.DataTransferObjects.ProposalData;
+import Title from '@/Components/atoms/Title';
 
 interface HomePageProps extends Record<string, unknown> {
     proposals: PaginatedData<ProposalData[]>;
@@ -70,7 +71,7 @@ export default function Index({
 
                 <header>
                     <div className="container">
-                        <h1 className="title-1">{t('proposals.proposals')}</h1>
+                        <Title level='1'>{t('proposals.proposals')}</Title>
                     </div>
 
                     <div className="container">
@@ -109,7 +110,7 @@ export default function Index({
                     <WhenVisible
                         fallback={
                             isHorizontal ? (
-                                <HorizontaCardLoading />
+                                <ProposalHorizontalCardLoading />
                             ) : (
                                 <VerticalCardLoading />
                             )

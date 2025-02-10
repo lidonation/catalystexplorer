@@ -1,5 +1,5 @@
 import Button from '@/Components/atoms/Button';
-import Selector from '@/Components/Select';
+import Selector from '@/Components/atoms/Selector';
 import FilterLinesIcon from '@/Components/svgs/FilterLinesIcon';
 import { useFilterContext } from '@/Context/FiltersContext';
 import { IdeaScaleSearchEnum } from '@/enums/ideascale-search-enums';

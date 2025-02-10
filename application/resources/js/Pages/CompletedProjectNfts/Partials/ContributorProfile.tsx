@@ -1,4 +1,5 @@
 import IdeascaleLogo from "@/assets/images/ideascale-logo.png";
+import Title from "@/Components/atoms/Title";
 import { useTranslation } from "react-i18next";
 
 const ContributorProfile = () => {
@@ -31,7 +32,7 @@ const ContributorProfile = () => {
               className="w-20 h-20 rounded-full object-cover"
             />
             <div>
-              <h2 className="text-xl font-semibold">{mainContributor.name}</h2>
+              <Title level="2" className="font-semibold">{mainContributor.name}</Title>
               <p className="text-gray-500">{mainContributor.organization}</p>
               <div className="flex gap-2 mt-2">
                 <a href="#" className="hover:opacity-80">
@@ -63,7 +64,7 @@ const ContributorProfile = () => {
       </div>
 
       <div>
-        <h3 className="font-semibold mb-4">{t('otherContributors')}</h3>
+        <Title level="3" className="font-semibold mb-4">{t('otherContributors')}</Title>
         <div className="space-y-4 border-t border-gray-200 pb-4">
           {otherContributors.map((contributor, index) => (
             <div key={index} className="flex items-center gap-3 pt-5">

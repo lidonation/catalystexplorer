@@ -8,6 +8,7 @@ import { useTranslation } from 'react-i18next';
 import BookmarksList from './Partials/BookmarksList';
 import ProposalVerticalCardLoading from '@/Pages/Proposals/Partials/ProposalVerticalCardLoading';
 import IdeaScaleProfileLoader from '@/Pages/IdeascaleProfile/Partials/IdeaScaleProfileLoader';
+import Title from '@/Components/atoms/Title';
 
 interface IndexProps {
   proposals: any[];
@@ -59,9 +60,9 @@ const Index: React.FC<IndexProps> = ({
 
   const renderEmptyState = () => (
     <div className="flex flex-col items-center justify-center min-h-[50vh] text-center px-4">
-      <h2 className="text-2xl font-bold text-gray-600 mb-4">
+      <Title className="text-2xl font-bold text-gray-600 mb-4">
         {t('noBookmarks')}
-      </h2>
+      </Title>
       <p className="text-gray-500 max-w-md">
         {t('noBookmarksYet')}
       </p>
@@ -104,7 +105,7 @@ const Index: React.FC<IndexProps> = ({
       <Head title="My Bookmarks"/>
 
       <div ref={headerRef} className="px-8 py-4">
-        <h1 className="title-1">{t('My Bookmarks')}</h1>
+        <Title level='1'>{t('My Bookmarks')}</Title>
         <p>
           {t('bookmark')}
         </p>
@@ -134,7 +135,7 @@ const Index: React.FC<IndexProps> = ({
               ref={(el) => sectionsRef.current.proposals = el} 
               className="mb-12"
             >
-              <h2 className="text-2xl font-bold mb-4">{t('Proposals')}</h2>
+              <Title level='2' className="text-2xl font-bold mb-4">{t('Proposals')}</Title>
               <WhenVisible
                 fallback={<ProposalVerticalCardLoading />}
                 data="proposals"
@@ -153,7 +154,7 @@ const Index: React.FC<IndexProps> = ({
               ref={(el) => sectionsRef.current.people = el} 
               className="mb-12"
             >
-              <h2 className="text-2xl font-bold mb-4">{t('People')}</h2>
+              <Title level='2' className="text-2xl font-bold mb-4">{t('People')}</Title>
               <WhenVisible
                 fallback={<IdeaScaleProfileLoader />}
                 data="people"
@@ -172,7 +173,7 @@ const Index: React.FC<IndexProps> = ({
               ref={(el) => sectionsRef.current.groups = el} 
               className="mb-12"
             >
-              <h2 className="text-2xl font-bold mb-4">{t('Groups')}</h2>
+              <Title level='2' className="text-2xl font-bold mb-4">{t('Groups')}</Title>
               <BookmarksList 
                 proposals={[]}
                 people={[]}
@@ -186,7 +187,7 @@ const Index: React.FC<IndexProps> = ({
               ref={(el) => sectionsRef.current.reviews = el} 
               className="mb-12"
             >
-              <h2 className="text-2xl font-bold mb-4">{t('Reviews')}</h2>
+              <Title level='2' className="text-2xl font-bold mb-4">{t('Reviews')}</Title>
               <BookmarksList 
                 proposals={[]}
                 people={[]}

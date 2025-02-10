@@ -8,7 +8,8 @@ import { useFilterContext } from '@/Context/FiltersContext';
 import { ProposalParamsEnum } from '@/enums/proposal-search-params';
 import React from 'react';
 import { PaginatedData } from '../../types/paginated-data';
-import Selector from './Select';
+import Selector from "@/Components/atoms/Selector";
+
 
 type PaginationComponentProps<T> = {
     pagination: PaginatedData<T>;
