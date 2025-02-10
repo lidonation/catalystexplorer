@@ -163,11 +163,9 @@ class MyBookmarksController extends Controller
 
         $bookmarkItem = BookmarkItem::where('user_id', Auth::id())
             ->where('model_id', $modelId)
-            ->where(function ($query) use ($modelClass, $modelName) {
-                $query->where('model_type', $modelClass)
-                    ->orWhere('model_type', $modelName);
-            })
-            ->first();
+            ->where(fn ($query) => $query->where('model_type', $modelClass)
+                ->orWhere('model_type', $modelName)
+            )->first();
 
         if ($bookmarkItem) {
             return response()->json([

@@ -22,7 +22,7 @@ Route::prefix('api')->as('api.')->group(function () {
     Route::get('/communities', [CommunityController::class, 'communities'])->name('communities');
     Route::get('/communities/{community:id}', [CommunityController::class, 'community'])->name('community');
 
-    Route::prefix('bookmarks')->as('bookmarks.')
+    Route::prefix('bookmark-items')->as('bookmarks.')
         ->group(function () {
             Route::post('/{modelType}/{id}', [MyBookmarksController::class, 'store'])
                 ->name('store');
