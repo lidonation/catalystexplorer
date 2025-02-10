@@ -7,6 +7,7 @@ namespace App\Casts;
 use App\Services\HashIdService;
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Route;
 
 class HashId implements CastsAttributes
 {
@@ -17,6 +18,10 @@ class HashId implements CastsAttributes
      */
     public function get(Model $model, string $key, mixed $value, array $attributes): mixed
     {
+        if (str_contains(Route::currentRouteName(), 'nova.')) {
+            return $value;
+        }
+
         return (new HashIdService($model))->encode($value);
     }
 
@@ -27,6 +32,10 @@ class HashId implements CastsAttributes
      */
     public function set(Model $model, string $key, mixed $value, array $attributes): mixed
     {
+        if (str_contains(Route::currentRouteName(), 'nova.')) {
+            return $value;
+        }
+
         return (new HashIdService($model))->decode($value);
     }
 }

@@ -8,6 +8,7 @@ use App\Enums\StatusEnum;
 use App\Models\Group;
 use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Fields\BelongsToMany;
+use Laravel\Nova\Fields\Field;
 use Laravel\Nova\Fields\HasMany;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Select;
@@ -45,14 +46,12 @@ class Groups extends Resource
     /**
      * Get the fields displayed by the resource.
      *
-     * @return array<int, \Laravel\Nova\Fields\Field>
+     * @return array<int, Field>
      */
     public function fields(NovaRequest $request): array
     {
         return [
             ID::make()->sortable(),
-
-            BelongsTo::make('Owner', 'owner', IdeascaleProfiles::class),
 
             Text::make(__('Name'))
                 ->sortable()
@@ -64,6 +63,8 @@ class Groups extends Resource
                 ->options(StatusEnum::toValues())
                 ->default(StatusEnum::draft())
                 ->sortable(),
+
+            BelongsTo::make('Owner', 'owner', IdeascaleProfiles::class),
 
             Textarea::make(__('Bio'))
                 ->sortable()
