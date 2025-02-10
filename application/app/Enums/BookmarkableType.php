@@ -13,7 +13,7 @@ use App\Models\Review;
 enum BookmarkableType: string
 {
     case PROPOSALS = 'proposals';
-    case IDEASCALE_PROFILES = 'ideascale_profiles';
+    case IDEASCALE_PROFILES = 'ideascale-profiles';
     case GROUPS = 'groups';
     case REVIEWS = 'reviews';
     case LISTS = 'lists';

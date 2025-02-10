@@ -16,7 +16,7 @@ import { ProposalSearchParams } from '../../../types/proposal-search-params';
 import CardLayoutSwitcher from './Partials/CardLayoutSwitcher';
 import FundFiltersContainer from './Partials/FundFiltersContainer';
 import ProposalFilters from './Partials/ProposalFilters';
-import HorizontaCardLoading from './Partials/ProposalHorizontalCardLoading';
+import ProposalHorizontalCardLoading from './Partials/ProposalHorizontalCardLoading';
 import ProposalSearchControls from './Partials/ProposalSearchControls';
 import ProposalData = App.DataTransferObjects.ProposalData;
 import Title from '@/Components/atoms/Title';
@@ -110,7 +110,7 @@ export default function Index({
                     <WhenVisible
                         fallback={
                             isHorizontal ? (
-                                <HorizontaCardLoading />
+                                <ProposalHorizontalCardLoading />
                             ) : (
                                 <VerticalCardLoading />
                             )
