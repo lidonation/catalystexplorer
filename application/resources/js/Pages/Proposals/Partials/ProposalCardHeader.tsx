@@ -79,7 +79,7 @@ export default function ProposalCardHeader({
                 </div>
                 {/* Card Content */}
                 <div
-                    className={`p-2 px-4 leading-tight min-h-20 ${!isHorizontal ? '' : 'flex h-full w-full items-center justify-center'}`}
+                    className={`min-h-20 p-2 px-4 leading-tight ${!isHorizontal ? '' : 'flex h-full w-full items-center justify-center'}`}
                 >
                     <a
                         href={proposal.link}
@@ -91,7 +91,7 @@ export default function ProposalCardHeader({
                     >
                         {!userSelected ? proposal.title : null}
                     </a>
-                    <div className="flex flex-row justify-end italic py-0.5">
+                    <div className="flex flex-row justify-end py-0.5 italic">
                         <span>~ {proposal.fund?.title}</span>
                     </div>
                 </div>
