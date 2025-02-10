@@ -7,6 +7,7 @@ import ProposalCardFooter from './ProposalCardFooter';
 import ProposalUsers from './ProposalUsers';
 import UserQuickView from '@/Components/UserQuickView';
 import ProposalFundingStatus from './ProposalFundingStatus';
+import Title from '@/Components/atoms/Title';
 
 export default function ProposalHorizontalCard({
     proposal,
@@ -52,9 +53,9 @@ export default function ProposalHorizontalCard({
                                 aria-labelledby="funding-heading"
                             >
                                 <div className='flex gap-2'>
-                                    <h3 className="font-semibold">
+                                    <Title level='3' className="font-semibold">
                                         {t('funding')}
-                                    </h3>
+                                    </Title>
                                     <ProposalFundingStatus funding_status={proposal.funding_status} />
                                 </div>
                                 <ProposalFundingPercentages

@@ -17,7 +17,7 @@ const Review: React.FC<ReviewPageProps> = ({ review }) => {
 
             <header>
                 <div className="container">
-                    <h1 className="title-1">{t('reviews')}</h1>
+                    <Title level='1'>{t('reviews')}</Title>
                 </div>
                 <div className="container">
                     <p className="text-content">{review.title}</p>

@@ -2,6 +2,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { BackArrow } from '@/Components/svgs/BackArrow';
 import { VerificationBadge } from '@/Components/svgs/VerificationBadge';
+import Title from '@/Components/atoms/Title';
 
 const IdeascaleProfileSubmittedCard: React.FC = () => {
   const { t } = useTranslation();
@@ -14,7 +15,7 @@ const IdeascaleProfileSubmittedCard: React.FC = () => {
           {t('back')}
         </a>
 
-        <h1 className="text-2xl font-black mb-8">{t('verificationTitle')}</h1>
+        <Title className="text-2xl font-black mb-8">{t('verificationTitle')}</Title>
 
         <div className="flex justify-center mb-8">
           <VerificationBadge />
