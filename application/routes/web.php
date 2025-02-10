@@ -44,8 +44,9 @@ Route::localized(
         Route::prefix('/reviews')->as('reviews.')->group(function () {
             Route::get('/', [ReviewsController::class, 'index'])
                 ->name('index');
-            Route::get('/{id}', [ReviewsController::class, 'review'])
-                ->name('review');
+            Route::get('/{review}', [ReviewsController::class, 'review'])
+                ->name('review')
+                ->where('review', '[0-9]+');
         });
 
         Route::get('/charts', [ChartsController::class, 'index'])

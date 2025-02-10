@@ -1,9 +1,10 @@
-import { Head } from '@inertiajs/react';
+import { Head, WhenVisible } from '@inertiajs/react';
 import { useTranslation } from 'react-i18next';
 import RelatedProposals from '../Proposals/Partials/RelatedProposals';
 import GroupData = App.DataTransferObjects.GroupData;
 import ProposalData = App.DataTransferObjects.ProposalData;
-import ReviewHorizontalCard from '../Campaign/Partials/ReviewHorizontalCard';
+import ReviewHorizontalCard from '../Reviews/Partials/ReviewHorizontalCard';
+import ReviewHorizontalCardLoader from '../Reviews/Partials/ReviewHorizontalCardLoader';
 
 interface GroupPageProps extends Record<string, unknown> {
     group: GroupData;
@@ -33,6 +34,14 @@ const Group: React.FC<GroupPageProps> = ({ group, proposals }) => {
                     proposals={proposals}
                     groupId={group.id ?? undefined}
                 />
+                <div className='mt-4'>
+                    <WhenVisible
+                        fallback={<ReviewHorizontalCardLoader/>}
+                        data="review"
+                    >
+                        <ReviewHorizontalCard/>
+                    </WhenVisible>
+                </div>
             </section>
         </>
     );
