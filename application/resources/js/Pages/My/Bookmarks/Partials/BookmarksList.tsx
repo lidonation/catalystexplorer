@@ -14,12 +14,12 @@ interface BookmarksListProps {
     activeType: string | null;
 }
 
-const BookmarksList: React.FC<BookmarksListProps> = ({
-    proposals = [],
-    people = [],
-    groups = [],
-    reviews = [],
-    activeType
+const BookmarksList: React.FC<BookmarksListProps> = ({ 
+    proposals = [], 
+    people = [], 
+    groups = [], 
+    reviews = [], 
+    activeType 
 }) => {
     const { t } = useTranslation();
     const { getFilter } = useFilterContext();

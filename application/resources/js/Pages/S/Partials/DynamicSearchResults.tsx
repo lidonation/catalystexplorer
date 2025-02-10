@@ -17,6 +17,7 @@ import ProposalData = App.DataTransferObjects.ProposalData;
 import ReviewData = App.DataTransferObjects.ReviewData;
 import IdeascaleProfileData = App.DataTransferObjects.IdeascaleProfileData;
 import GroupData = App.DataTransferObjects.GroupData;
+import Title from '@/Components/atoms/Title';
 
 interface SearchResultsData {
     hits:
