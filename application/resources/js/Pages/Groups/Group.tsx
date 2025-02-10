@@ -11,6 +11,8 @@ import IdeascaleProfileData = App.DataTransferObjects.IdeascaleProfileData;
 import ReviewData = App.DataTransferObjects.ReviewData;
 import LocationData = App.DataTransferObjects.LocationData;
 import ConnectionData = App.DataTransferObjects.ConnectionData;
+import ReviewHorizontalCard from '../Reviews/Partials/ReviewHorizontalCard';
+import ReviewHorizontalCardLoader from '../Reviews/Partials/ReviewHorizontalCardLoader';
 
 interface GroupPageProps extends Record<string, unknown> {
     group: GroupData;
