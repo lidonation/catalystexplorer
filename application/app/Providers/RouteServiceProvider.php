@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Providers;
 
+use App\Models\BookmarkCollection;
 use App\Models\BookmarkItem;
 use App\Models\IdeascaleProfile;
 use App\Models\Proposal;
@@ -35,6 +36,7 @@ class RouteServiceProvider extends ServiceProvider
                 $hashIndex = $paths->search($hashId);
 
                 $model = match ($paths->get($hashIndex - 1)) {
+                    'bookmark-collections' => BookmarkCollection::class,
                     'bookmark-items' => BookmarkItem::class,
                     'ideascale-profiles' => IdeascaleProfile::class,
                     'proposals' => Proposal::class,
