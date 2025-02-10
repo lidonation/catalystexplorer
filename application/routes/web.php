@@ -45,7 +45,7 @@ Route::localized(
             Route::get('/{group:slug}', [GroupsController::class, 'group'])
                 ->name('group');
 
-            Route::get('/{id}', [GroupsController::class, 'show'])
+            Route::get('/{group:id}', [GroupsController::class, 'show'])
                 ->name('group.show');
         });
 

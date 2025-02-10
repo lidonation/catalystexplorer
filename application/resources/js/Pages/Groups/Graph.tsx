@@ -1,32 +1,33 @@
-import { PageProps } from '@/types';
-import { useEffect, useRef } from 'react';
-import ForceGraph from 'react-force-graph-2d';
+import { useState, useRef, useEffect } from 'react';
+import ForceGraph, { NodeObject } from 'react-force-graph-2d';
 
-type Node = {
+interface CustomNode extends NodeObject {
   id: string;
   type: 'group' | 'profile';
   name: string;
   photo?: string;
   val?: number;
-};
+}
 
-type Link = {
+
+interface Link {
   source: string;
   target: string;
-};
+}
 
-type GraphData = {
-  nodes: Node[];
+interface GraphData {
+  nodes: CustomNode[];
   links: Link[];
-};
+}
 
-interface IdeascaleProfilesPageProps extends Record<string, unknown> {
+interface GraphProps {
   graphData: GraphData;
 }
 
-const Graph = ({ graphData }: PageProps<IdeascaleProfilesPageProps>) => {
+const Graph = ({ graphData }: GraphProps) => {
   const fgRef = useRef<any>();
   const imageCache = useRef<Map<string, HTMLImageElement>>(new Map());
+  const [hoveredNode, setHoveredNode] = useState<CustomNode | null>(null);
 
   useEffect(() => {
     const cache = new Map<string, HTMLImageElement>();
@@ -46,7 +47,7 @@ const Graph = ({ graphData }: PageProps<IdeascaleProfilesPageProps>) => {
 
   const groupNodeVal = 27;
   const minProfileNodeVal = 5;
-  const maxProfileNodeVal = 20; 
+  const maxProfileNodeVal = 20;
 
   const getRandomSize = (min: number, max: number) => {
     return Math.random() * (max - min) + min;
@@ -71,34 +72,46 @@ const Graph = ({ graphData }: PageProps<IdeascaleProfilesPageProps>) => {
         graphData={updatedGraphData}
         nodeLabel="name"
         nodeRelSize={4}
+        onNodeHover={(node) => {
+          setHoveredNode(node as CustomNode);
+        }}
+        linkWidth={(link) => {
+          return link.source === hoveredNode || link.target === hoveredNode ? 2 : 1;
+        }}
+        linkColor={(link) => {
+          return link.source === hoveredNode || link.target === hoveredNode
+            ? 'var(--cx-primary)' // Tailwind CSS variable
+            : 'var(--cx-secondary)'; // Tailwind CSS variable
+        }}
         nodeCanvasObject={(node, ctx, globalScale) => {
-          const radius = Math.cbrt(node.val || 1) * 4;
-          const img = imageCache.current.get(node.photo!);
+          const customNode = node as CustomNode;
+          const radius = Math.cbrt(customNode.val || 1) * 4;
+          const img = imageCache.current.get(customNode.photo!);
 
           if (img) {
             ctx.save();
             ctx.beginPath();
-            ctx.arc(node.x!, node.y!, radius, 0, 2 * Math.PI);
+            ctx.arc(customNode.x!, customNode.y!, radius, 0, 2 * Math.PI);
             ctx.closePath();
             ctx.clip();
             ctx.drawImage(
               img,
-              node.x! - radius,
-              node.y! - radius,
+              customNode.x! - radius,
+              customNode.y! - radius,
               radius * 2,
               radius * 2
             );
             ctx.restore();
           } else {
             ctx.beginPath();
-            ctx.arc(node.x!, node.y!, radius, 0, 2 * Math.PI);
+            ctx.arc(customNode.x!, customNode.y!, radius, 0, 2 * Math.PI);
             ctx.fillStyle = 'blue';
             ctx.fill();
           }
-          
-          if (node.type === 'group') {
+
+          if (customNode.type === 'group') {
             ctx.beginPath();
-            ctx.arc(node.x!, node.y!, radius, 0, 2 * Math.PI);
+            ctx.arc(customNode.x!, customNode.y!, radius, 0, 2 * Math.PI);
             ctx.lineWidth = 2;
             ctx.strokeStyle = 'green';
             ctx.stroke();
