@@ -81,12 +81,15 @@ const BookmarkPage1 = ({
     return (
         <div className="space-y-1">
             <div className="bg-primary-light">
-                <p className="text-content px-3 py-2 font-bold">Bookmarks</p>
+                <p className="text-content px-3 py-2 font-bold">Add Bookmark</p>
             </div>
             <section className="flex flex-col gap-3 px-3">
                 <div className="flex flex-col gap-1">
+                    <span className="text-sm font-light italic">
+                        Successfully added to your bookmarks!
+                    </span>
                     <button
-                        className="text-error font-semibold"
+                        className="text-error cursor-pointer font-semibold"
                         disabled={!isBookmarked}
                         onClick={handleRemoveBookmark}
                     >
