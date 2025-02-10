@@ -1,21 +1,15 @@
 import { Star } from 'lucide-react';
 
 const Rating = ({
-  rating = 3.25,
+  rating = 3.5,
 }) => {
   const renderStars = () => {
+    const fullStars = Math.floor(rating);
+    const hasHalfStar = (rating % 1) >= 0.5;
+
     return Array(5).fill(0).map((_, index) => {
-      const fraction = rating - index;
-      const fillPercentage = Math.max(0, Math.min(1, fraction)) * 100;
-      
-      // Map percentage to closest Tailwind width class
-      const getWidthClass = (percentage: number) => {
-        if (percentage <= 0) return 'w-0';
-        if (percentage <= 25) return 'w-1/4';
-        if (percentage <= 50) return 'w-1/2';
-        if (percentage <= 75) return 'w-3/4';
-        return 'w-full';
-      };
+      const isFullStar = index < fullStars;
+      const isHalfStar = !isFullStar && hasHalfStar && index === fullStars;
       
       return (
         <div key={index} className="relative">
@@ -26,9 +20,11 @@ const Rating = ({
           />
           
           {/* Filled overlay */}
-          {fillPercentage > 0 && (
+          {(isFullStar || isHalfStar) && (
             <div 
-              className={`absolute inset-0 overflow-hidden ${getWidthClass(fillPercentage)}`}
+              className={`absolute inset-0 overflow-hidden ${
+                isHalfStar ? 'w-1/2' : 'w-full'
+              }`}
             >
               <Star
                 size={14}
