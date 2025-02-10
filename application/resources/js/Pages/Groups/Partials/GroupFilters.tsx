@@ -128,8 +128,8 @@ const GroupFilters = ({proposalsCount}: GroupFilterProps) => {
                     <div className="col-span-1 flex flex-col gap-2 pb-4">
                         <span>{t('proposals.filters.ideascaleProfiles')}</span>
                         <SearchSelect
-                            key={'ideascale-profiles'}
-                            domain={'ideascaleProfiles'}
+                            key={'ideascale_profiles'}
+                            domain={'ideascaleProfiles.index'}
                             selected={
                                 getFilter(ProposalParamsEnum.IDEASCALE_PROFILES) ?? []
                             }

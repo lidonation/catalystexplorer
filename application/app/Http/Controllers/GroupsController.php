@@ -227,10 +227,15 @@ class GroupsController extends Controller
 
         $filters = [];
 
-        if (! empty($this->queryParams[ProposalSearchParams::FUNDS()->value])) {
-            $funds = implode("','", $this->queryParams[ProposalSearchParams::FUNDS()->value]);
-            $filters[] = "proposals.fund.title IN ['{$funds}']";
+        if (!empty($this->queryParams[ProposalSearchParams::FUNDS()->value])) {
+            $fundsArray = $this->queryParams[ProposalSearchParams::FUNDS()->value];
+            if (is_array($fundsArray)) {
+                // Properly format the filter for Meilisearch
+                $funds = implode('" OR proposals.fund.title = "', $fundsArray);
+                $filters[] = "proposals.fund.title = \"$funds\"";
+            }
         }
+        
 
         if (isset($this->queryParams[ProposalSearchParams::FUNDING_STATUS()->value])) {
             $fundingStatuses = implode(',', $this->queryParams[ProposalSearchParams::FUNDING_STATUS()->value]);
@@ -269,7 +274,7 @@ class GroupsController extends Controller
 
         if (! empty($this->queryParams[ProposalSearchParams::IDEASCALE_PROFILES()->value])) {
             $ideascaleProfileIds = implode(',', $this->queryParams[ProposalSearchParams::IDEASCALE_PROFILES()->value]);
-            $filters[] = "users.id IN [{$ideascaleProfileIds}]";
+            $filters[] = "ideascale_profiles.id IN [{$ideascaleProfileIds}]";
         }
 
         if (! empty($this->queryParams[ProposalSearchParams::COMMUNITIES()->value])) {
@@ -278,8 +283,8 @@ class GroupsController extends Controller
         }
 
         if (! empty($this->queryParams[ProposalSearchParams::COHORT()->value])) {
-            $cohortFilters = array_map(fn ($cohort) => "{$cohort} > 0", $this->queryParams[ProposalSearchParams::COHORT()->value]);
-            $filters[] = '('.implode(' OR ', $cohortFilters).')';
+            $cohortFilters = array_map(fn($cohort) => "{$cohort} > 0", $this->queryParams[ProposalSearchParams::COHORT()->value]);
+            $filters[] = '(' . implode(' OR ', $cohortFilters) . ')';
         }
 
         return $filters;

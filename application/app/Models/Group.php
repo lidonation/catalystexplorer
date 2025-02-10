@@ -77,7 +77,8 @@ class Group extends Model implements HasMedia
             'proposals_count',
             'proposals_ideafest',
             'proposals_woman',
-            'proposals_impact'
+            'proposals_impact',
+            'ideascale_profiles.id'
         ];
     }
 
@@ -267,6 +268,8 @@ class Group extends Model implements HasMedia
         $this->addMediaCollection('group')->useDisk('public');
     }
 
+    
+
     /**
      * Get the index able data array for the model.
      */
@@ -282,7 +285,7 @@ class Group extends Model implements HasMedia
             'amount_received' => intval($this->proposals()->whereNotNull('funded_at')->sum('amount_received')),
             'proposals_ideafest' => $proposals->filter(fn($p) => isset($p['is_ideafest_proposal']) && $p['is_ideafest_proposal'] === true)->count() ?? 0,
             'proposals_woman' => $proposals->filter(fn($p) => isset($p['is_woman_proposal']) && $p['is_woman_proposal'] === true)->count() ?? 0,
-            'proposals_impact' => $proposals->filter(fn($p) => isset($p['is_impact_proposal']) && $p['is_impact_proposal'] === true)->count() ?? 0,
+            'proposals_impact' => $proposals->filter(fn($p) => isset($p['is_impact_proposal']) && $p['is_impact_proposal'] === true)->count() ?? 0, 
             'amount_awarded_ada' => intval($this->amount_awarded_ada),
             'amount_awarded_usd' => intval($this->amount_awarded_usd),
             'proposals' => $this->proposals,

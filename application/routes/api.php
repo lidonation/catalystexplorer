@@ -30,5 +30,5 @@ Route::prefix('api')->as('api.')->group(function () {
 
     Route::get('/fund-titles', [ProposalsController::class, 'fundTitles'])->name('fundTitles');
 
-    Route::get('/fund-counts', [GroupsController::class, 'fundCounts'])->name('fundCounts');
+    Route::get('/fund-counts', [GroupsController::class, 'getFundsWithProposalsCount'])->name('fundCounts');
 });

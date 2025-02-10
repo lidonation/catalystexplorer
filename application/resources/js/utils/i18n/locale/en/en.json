@@ -327,7 +327,14 @@
         "funded": "Funded",
         "unfunded": "Unfunded",
         "awardedVsRequested": "Awarded vs Requested",
-        "receivedVsAwarded": "Received vs Awarded"
+        "receivedVsAwarded": "Received vs Awarded",
+        "options":{
+            "alphabetically": "Alphabetically: A to Z",
+            "amountAwardedAdaDesc": "Amount Awarded ADA: High to Low",
+            "amountAwardedAdaAsc": "Amount Awarded ADA: Low to High",
+            "amountAwardedUsdDesc": "Amount Awarded USD: High to Low",
+            "amountAwardedUsdAsc": "Amount Awarded USD: Low to High"
+        }
     },
     "posts": {
         "title": "Catalysts Posts",
