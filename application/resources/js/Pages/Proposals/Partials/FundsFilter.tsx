@@ -25,7 +25,6 @@ const FundsFilter: React.FC<FundFiltersProps> = ({
             setFunds(JSON.parse(cachedFunds));
         } else {
             fetchFunds();
-            console.log("!cached")
         }
     }, []);
 

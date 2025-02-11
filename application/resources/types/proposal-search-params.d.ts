@@ -2,9 +2,8 @@ import { ProposalParamsEnum } from '@/enums/proposal-search-params';
 
 export type ProposalSearchParams = {
     length: number;
-    [ProposalParamsEnum.AWARDED_ADA]: string;
-    [ProposalParamsEnum.AWARDED_USD]: string;
-    [ProposalParamsEnum.AWARDED_ADA_RANGE]: number[]
+    [ProposalParamsEnum.AWARDED_ADA]: number[];
+    [ProposalParamsEnum.AWARDED_USD]: number[];
     [ProposalParamsEnum.BUDGETS]: number[];
     [ProposalParamsEnum.CATEGORIES]: string;
     [ProposalParamsEnum.CAMPAIGNS]: string[];

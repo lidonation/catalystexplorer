@@ -16,25 +16,14 @@ import axios from 'axios';
 
 interface GroupsPageProps extends Record<string, unknown> {
     groups: PaginatedData<GroupData[]>;
-    search?: string | null;
-    sort?: string;
     filters: ProposalSearchParams;
-    fundsType: { [key: string]: number };
-    filterCounts: {
-        tagsCount: [];
-        fundsCount: { [key: string]: number };
-        proposalsCount: number;
-        awardedAda: number
-    };
 }
 
 type FundsType = Record<string, number>;
 
 const Index: React.FC<GroupsPageProps> = ({
     groups,
-    filters,
-    filterCounts,
-    fundsType
+    filters
 }) => {
     const [showFilters, setShowFilters] = useState(false);
     const { t } = useTranslation();
@@ -65,10 +54,7 @@ const Index: React.FC<GroupsPageProps> = ({
 
             <header>
                 <div className="container">
-                    <Title level='1'>{t('groups')}</Title>
-                </div>
-                <div className="container">
-                    <p className="text-content">{t('groupsList')}</p>
+                    <Title level='1'>{t('groups.title')}</Title>
                 </div>
             </header>
 

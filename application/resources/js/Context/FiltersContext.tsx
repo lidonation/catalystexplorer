@@ -124,7 +124,6 @@ export function FiltersProvider({
             const paginationFiltered =
                 changedParams.includes(ProposalParamsEnum.PAGE) ||
                 changedParams.includes(ProposalParamsEnum.LIMIT);
-               console.log('test', formatToParams());
             router.get(
                 currentUrl,
                 formatToParams(),
