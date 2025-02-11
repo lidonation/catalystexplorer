@@ -28,6 +28,9 @@ const labels = {
     com: 'communities',
     ip: 'Ideascale Profiles',
     g: 'groups',
+    aa: 'Amount Awarded ADA',
+    au: 'Amount Awarded USD',
+    pr: 'Number of Proposals',
 };
 
 type LabelKeys = keyof typeof labels;
@@ -43,17 +46,13 @@ export default function ActiveFilters({
     const [clearFilter, setClearFilter] = useState(true);
     const { filters } = useFilterContext();
     const statusFilters = ['coh', 'fs', 'ps', 'f'];
-    const rangeFilters = ['pl', 'b'];
+    const rangeFilters = ['pl', 'b', 'aa', 'au', 'pr'];
     const sortFilters = ['st'];
     const idFilters = ['t', 'cam', 'com', 'ip', 'g'];
     const booleanFilters = ['op'];
 
-    const handleClearFilter = () => {
-        setClearFilter(!clearFilter);
-    };
-
     return (
-        <div className="flex w-full flex-wrap gap-3 transition-all duration-300 text-sm">
+        <div className="flex w-full flex-wrap gap-3 text-sm transition-all duration-300">
             {filters.map((filter) => {
                 if (!filter.label) {
                     return;
@@ -145,6 +144,24 @@ const RangeFilters = ({ filter }: { filter: FilteredItem }) => {
                 label: filter.label,
             });
         } else if (filter.param == ProposalParamsEnum.BUDGETS) {
+            setFilters({
+                param: filter.param,
+                value: [],
+                label: filter.label,
+            });
+        } else if (filter.param == ProposalParamsEnum.AWARDED_ADA) {
+            setFilters({
+                param: filter.param,
+                value: [],
+                label: filter.label,
+            });
+        } else if (filter.param == ProposalParamsEnum.AWARDED_USD) {
+            setFilters({
+                param: filter.param,
+                value: [],
+                label: filter.label,
+            });
+        }else if (filter.param == ProposalParamsEnum.PROPOSALS) {
             setFilters({
                 param: filter.param,
                 value: [],

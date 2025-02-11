@@ -50,6 +50,9 @@ class Proposal extends Model
 
     protected $appends = [
         'link',
+        'is_ideafest_proposal',
+        'is_woman_proposal', 
+        'is_impact_proposal'
     ];
 
     public static function getFilterableAttributes(): array
