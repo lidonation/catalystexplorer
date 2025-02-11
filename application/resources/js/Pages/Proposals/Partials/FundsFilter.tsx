@@ -21,7 +21,7 @@ const FundsFilter: React.FC<FundFiltersProps> = ({
     useEffect(() => {
         // Check if funds are already cached in localStorage to prevent refetching
         const cachedFunds = localStorage.getItem('funds');
-        if (cachedFunds) {
+        if (cachedFunds?.length === 0) {
             setFunds(JSON.parse(cachedFunds));
         } else {
             fetchFunds();
@@ -39,7 +39,6 @@ const FundsFilter: React.FC<FundFiltersProps> = ({
                 return numB - numA;
             });
             setFunds(sortedFunds);
-            // Cache funds locally
             localStorage.setItem('funds', JSON.stringify(sortedFunds));
         } catch (error) {
             console.error('Failed to fetch funds:', error);

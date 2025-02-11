@@ -25,7 +25,6 @@
     "funding": "Funding",
     "getStarted": "Get started",
     "github": "Github",
-    "groups": "Groups",
     "home": "Home",
     "jormungandr": "Jormungandr",
     "knowledgeBase": "Knowledge Base",
@@ -239,7 +238,11 @@
             "budgets": "Budgets",
             "budget": "Budget",
             "projectLength": "Project Length (months)",
-            "filters": "Filters"
+            "filters": "Filters",
+            "ideascaleProfiles": "Ideascale Profiles",
+            "numberOfProposals": "Number of Proposals",
+            "awardedAda": "Awarded (ADA)",
+            "awardedUsd": "Awarded (USD)"
         },
         "options": {
             "sort": "Sort by",
@@ -315,6 +318,27 @@
             "coProposalCountHighToLow": "Co-Proposal Count: High to Low"
         }
     },
+    "groups": {
+        "groups": "Groups",
+        "title": "Catalyst Groups",
+        "subtitle": "Diverse, independent, and together inspiring the highest level of human collaboration",
+        "fundedProposals": "Funded Proposals",
+        "received": "Received",
+        "totalRequested": "Total Requested",
+        "totalProposals": "Total Proposals",
+        "completed": "Completed",
+        "funded": "Funded",
+        "unfunded": "Unfunded",
+        "awardedVsRequested": "Awarded vs Requested",
+        "receivedVsAwarded": "Received vs Awarded",
+        "options":{
+            "alphabetically": "Alphabetically: A to Z",
+            "amountAwardedAdaDesc": "Amount Awarded ADA: High to Low",
+            "amountAwardedAdaAsc": "Amount Awarded ADA: Low to High",
+            "amountAwardedUsdDesc": "Amount Awarded USD: High to Low",
+            "amountAwardedUsdAsc": "Amount Awarded USD: Low to High"
+        }
+    },
     "posts": {
         "title": "Catalysts Posts",
         "subtitle": "Latest news and posts from our community"
@@ -345,8 +369,10 @@
             "close": "close Icon",
             "connect_wallet": "Connect wallet Icon",
             "darkMode": "Dark Mode Icon",
+            "discord": "Discord",
             "folder": "Folder Icon",
             "filter": "Filter Icon",
+            "github": "Github",
             "home": "Home Icon",
             "lightMode": "Light Mode Icon",
             "login": "Login Icon",
@@ -362,6 +388,7 @@
             "voltaireMode": "Voltaire Mode Icon",
             "register": "Register Icon",
             "link": "Link Icon",
+            "linkedIn": "LinkedIn",
             "listBullet": "List Bullet Icon",
             "verticalColumn": "Vertical Column Icon",
             "videoCamera": "Video Camera Icon",
@@ -377,7 +404,9 @@
             "file": "File Icon",
             "ada": "Ada Icon",
             "usd": "USD Icon",
-            "tick": "Tick Icon"
+            "tick": "Tick Icon",
+            "x": "X",
+            "web": "Web"
         }
     },
     "users": {
