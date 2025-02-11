@@ -5,14 +5,13 @@ declare(strict_types=1);
 namespace App\Providers;
 
 use App\Models\BookmarkCollection;
-use App\Models\BookmarkItem;
 use App\Models\IdeascaleProfile;
-use App\Models\Proposal;
 use App\Services\HashIdService;
 use Exception;
 use Illuminate\Routing\Router;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Str;
 
 class RouteServiceProvider extends ServiceProvider
 {
@@ -35,12 +34,11 @@ class RouteServiceProvider extends ServiceProvider
                 $paths = collect(explode('/', request()->path()));
                 $hashIndex = $paths->search($hashId);
 
-                $model = match ($paths->get($hashIndex - 1)) {
+                $collection = $paths->get($hashIndex - 1);
+                $model = Str::of($collection)->singular()->studly()->value();
+                $model = match ($collection) {
                     'bookmark-collections' => BookmarkCollection::class,
-                    'bookmark-items' => BookmarkItem::class,
-                    'ideascale-profiles' => IdeascaleProfile::class,
-                    'proposals' => Proposal::class,
-                    default => null,
+                    default => "App\Models\{$model}",
                 };
 
                 return (new HashIdService(new $model))->decode($hashId);
