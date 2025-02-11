@@ -154,24 +154,6 @@ class IdeascaleProfile extends Model implements HasMedia
         );
     }
 
-    /**
-     * Scope to filter groups
-     */
-    public function scopeFilter(Builder $query, array $filters): Builder
-    {
-        $query->when($filters['search'] ?? null, function ($query, $search) {
-            $query->where(function ($q) use ($search) {
-                $q->where('name', 'ilike', "%{$search}%")
-                    ->orWhere('id', 'like', "%{$search}%")
-                    ->orWhere('username', 'ilike', "%{$search}%");
-            });
-        })->when($filters['ids'] ?? null, function ($query, $ids) {
-            $query->whereIn('id', is_array($ids) ? $ids : explode(',', $ids));
-        });
-
-        return $query;
-    }
-
     public function completed_proposals(): BelongsToMany
     {
         return $this->belongsToMany(
@@ -251,6 +233,24 @@ class IdeascaleProfile extends Model implements HasMedia
     public function claimed_by(): BelongsTo
     {
         return $this->belongsTo(User::class, 'claimed_by_id', 'id');
+    }
+
+    /**
+     * Scope to filter groups
+     */
+    public function scopeFilter(Builder $query, array $filters): Builder
+    {
+        $query->when($filters['search'] ?? null, function ($query, $search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'ilike', "%{$search}%")
+                    ->orWhere('id', 'like', "%{$search}%")
+                    ->orWhere('username', 'ilike', "%{$search}%");
+            });
+        })->when($filters['ids'] ?? null, function ($query, $ids) {
+            $query->whereIn('id', is_array($ids) ? $ids : explode(',', $ids));
+        });
+
+        return $query;
     }
 
     public function toSearchableArray(): array

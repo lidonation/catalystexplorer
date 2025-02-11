@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Relations\MorphTo;
+
 class Connection extends Model
 {
     protected $fillable = [
@@ -16,7 +18,7 @@ class Connection extends Model
     /**
      * Get the previous model.
      */
-    public function previous()
+    public function previous(): MorphTo
     {
         return $this->morphTo(null, 'previous_model_type', 'previous_model_id');
     }
@@ -24,7 +26,7 @@ class Connection extends Model
     /**
      * Get the next model.
      */
-    public function next()
+    public function next(): MorphTo
     {
         return $this->morphTo(null, 'next_model_type', 'next_model_id');
     }
