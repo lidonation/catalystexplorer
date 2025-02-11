@@ -12,9 +12,9 @@ const PercentageProgressBar: React.FC<PercentageProgressBarPageProps> = ({
     return (
         <div className="w-full">
             {/* Progress Bar */}
-            <div className="bg-background h-4 w-full overflow-hidden">
+            <div className="bg-background h-4 w-full overflow-hidden rounded-md">
                 <div
-                    className="bg-primary h-4 transition-all duration-500 ease-in-out"
+                    className="bg-primary h-4 rounded-md transition-all duration-500 ease-in-out"
                     style={{ width: `${percentage}%` }}
                 ></div>
             </div>
