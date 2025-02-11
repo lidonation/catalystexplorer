@@ -1,17 +1,17 @@
 <?php
 
-use App\Http\Controllers\CampaignsController;
-use App\Http\Controllers\ChartsController;
-use App\Http\Controllers\CompletetProjectNftsController;
-use App\Http\Controllers\FundsController;
-use App\Http\Controllers\GroupsController;
-use App\Http\Controllers\HomeController;
-use App\Http\Controllers\IdeascaleProfilesController;
-use App\Http\Controllers\JormungandrController;
-use App\Http\Controllers\ProposalsController;
-use App\Http\Controllers\ReviewsController;
-use App\Http\Controllers\SearchController;
-use App\Http\Controllers\VoterToolController;
+use App\Interfaces\Http\Controllers\CampaignsController;
+use App\Interfaces\Http\Controllers\ChartsController;
+use App\Interfaces\Http\Controllers\CompletetProjectNftsController;
+use App\Interfaces\Http\Controllers\FundsController;
+use App\Interfaces\Http\Controllers\GroupsController;
+use App\Interfaces\Http\Controllers\HomeController;
+use App\Interfaces\Http\Controllers\IdeascaleProfilesController;
+use App\Interfaces\Http\Controllers\JormungandrController;
+use App\Interfaces\Http\Controllers\ProposalsController;
+use App\Interfaces\Http\Controllers\ReviewsController;
+use App\Interfaces\Http\Controllers\SearchController;
+use App\Interfaces\Http\Controllers\VoterToolController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -46,14 +46,20 @@ Route::localized(
                 ->name('group');
         });
 
-        Route::get('/ideascale-profiles', [IdeascaleProfilesController::class, 'index'])
-            ->name('ideascaleProfiles.index');
+        Route::prefix('/ideascale-profiles')->as('ideascaleProfiles.')->group(function () {
+            Route::get('/', [IdeascaleProfilesController::class, 'index'])
+                ->name('index');
+
+            Route::get('/{ideascaleProfile:id}', [IdeascaleProfilesController::class, 'show'])
+                ->name('show');
+        });
 
         Route::prefix('/reviews')->as('reviews.')->group(function () {
             Route::get('/', [ReviewsController::class, 'index'])
                 ->name('index');
-            Route::get('/{id}', [ReviewsController::class, 'review'])
-                ->name('review');
+            Route::get('/{review}', [ReviewsController::class, 'review'])
+                ->name('review')
+                ->where('review', '[0-9]+');
         });
 
         Route::get('/charts', [ChartsController::class, 'index'])

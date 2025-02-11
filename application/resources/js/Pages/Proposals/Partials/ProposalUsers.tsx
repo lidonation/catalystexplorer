@@ -1,6 +1,7 @@
 import UserAvatar from '@/Components/UserAvatar';
 import { useTranslation } from 'react-i18next';
 import { PageProps } from '@/types';
+import Title from '@/Components/atoms/Title';
 
 interface ProposalUsers extends Record<string, unknown> {
     users: App.DataTransferObjects.IdeascaleProfileData[];
@@ -20,9 +21,9 @@ export default function ProposalUsers({ users,onUserClick, className }: PageProp
         className={`flex justify-between pt-3 items-center ${className}`}
         aria-labelledby="team-heading"
         >
-            <h3 id="team-heading" className="font-medium">
+            <Title level='3' id="team-heading" className="font-medium">
             {t('teams')}
-            </h3>
+            </Title>
             <ul className="flex cursor-pointer -space-x-2">
                 {visibleUsers?.map((user) => (
                     <li key={user.id} onClick={() => onUserClick(user)}>

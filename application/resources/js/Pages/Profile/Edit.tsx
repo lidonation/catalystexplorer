@@ -4,6 +4,7 @@ import { Head } from '@inertiajs/react';
 import DeleteUserForm from './Partials/DeleteUserForm';
 import UpdatePasswordForm from './Partials/UpdatePasswordForm';
 import UpdateProfileInformationForm from './Partials/UpdateProfileInformationForm';
+import Title from '@/Components/atoms/Title';
 
 export default function Edit({
     mustVerifyEmail,
@@ -12,9 +13,9 @@ export default function Edit({
     return (
         <AuthenticatedLayout
             header={
-                <h2 className="text-1 text-content leading-tight font-semibold">
+                <Title level='2' className="text-1 text-content leading-tight font-semibold">
                     Profile
-                </h2>
+                </Title>
             }
         >
             <Head title="Profile" />

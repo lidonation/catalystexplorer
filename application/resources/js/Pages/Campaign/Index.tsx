@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import CampaignCard from './Partials/CampaignCard';
 import FundData = App.DataTransferObjects.FundData;
 import CampaignData = App.DataTransferObjects.CampaignData
+import Title from '@/Components/atoms/Title';
 
 interface FundProps {
     fund: FundData;
@@ -18,7 +19,7 @@ const Index: React.FC<FundProps> = ({ fund, campaigns }) => {
 
             <header>
             <div className="container">
-                <h1 className="title-1">{t('activeFund')}</h1>
+                <Title level='1'>{t('activeFund')}</Title>
             </div>
             <div className="container">
                 <p className="text-content">

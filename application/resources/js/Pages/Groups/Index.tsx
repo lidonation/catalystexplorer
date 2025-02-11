@@ -9,6 +9,7 @@ import GroupFilters from './Partials/GroupFilters';
 import { PaginatedData } from '../../../types/paginated-data';
 import Paginator from '@/Components/Paginator';
 import GroupData = App.DataTransferObjects.GroupData;
+import Title from '@/Components/atoms/Title';
 import GroupList from './Partials/GroupList';
 import GroupSearchControls from './Partials/GroupSearchControls';
 import axios from 'axios';
@@ -62,17 +63,14 @@ const Index: React.FC<GroupsPageProps> = ({
                 >
                     <Head title="Groups" />
 
-                    <header>
-                        <div className="container">
-                            <h1 className="title-1">{t('groups.title')}</h1>
-                        </div>
-
-                        <div className="container">
-                            <p className="text-content">
-                                {t('groups.subtitle')}
-                            </p>
-                        </div>
-                    </header>
+            <header>
+                <div className="container">
+                    <Title level='1'>{t('groups')}</Title>
+                </div>
+                <div className="container">
+                    <p className="text-content">{t('groupsList')}</p>
+                </div>
+            </header>
 
                     <section className="container">
                         <FundFiltersContainer funds={funds} />

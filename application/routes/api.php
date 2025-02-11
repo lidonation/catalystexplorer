@@ -1,12 +1,12 @@
 <?php
 
-use App\Http\Controllers\Api\CampaignController;
-use App\Http\Controllers\Api\CommunityController;
-use App\Http\Controllers\Api\GroupController;
-use App\Http\Controllers\Api\IdeascaleProfilesController;
-use App\Http\Controllers\Api\TagController;
-use App\Http\Controllers\GroupsController;
-use App\Http\Controllers\ProposalsController;
+use App\Interfaces\Http\Controllers\Api\CampaignController;
+use App\Interfaces\Http\Controllers\Api\CommunityController;
+use App\Interfaces\Http\Controllers\Api\GroupController;
+use App\Interfaces\Http\Controllers\Api\IdeascaleProfilesController;
+use App\Interfaces\Http\Controllers\Api\TagController;
+use App\Interfaces\Http\Controllers\My\MyBookmarksController;
+use App\Interfaces\Http\Controllers\ProposalsController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('api')->as('api.')->group(function () {
@@ -22,9 +22,19 @@ Route::prefix('api')->as('api.')->group(function () {
     Route::get('/communities', [CommunityController::class, 'communities'])->name('communities');
     Route::get('/communities/{community:id}', [CommunityController::class, 'community'])->name('community');
 
+    Route::prefix('bookmark-items')->as('bookmarks.')
+        ->group(function () {
+            Route::post('/{modelType}/{id}', [MyBookmarksController::class, 'store'])
+                ->name('store');
+            Route::delete('/{id}', [MyBookmarksController::class, 'delete'])
+                ->name('remove');
+            Route::get('/{modelType}/{id}/status', [MyBookmarksController::class, 'status'])
+                ->name('status');
+        });
+
     Route::prefix('ideascale-profiles')->as('ideascaleProfiles.')->group(function () {
         Route::get('/', [IdeascaleProfilesController::class, 'ideascaleProfiles'])->name('index');
-        Route::get('/{ideascale_profile:id}', [IdeascaleProfilesController::class, 'ideascale_profile'])->name('show');
+        Route::get('/{ideascaleProfile:id}', [IdeascaleProfilesController::class, 'ideascale_profile'])->name('show');
         Route::get('/{profile}/connections', [IdeascaleProfilesController::class, 'connections'])->name('connections');
     });
 

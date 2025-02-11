@@ -1,3 +1,4 @@
+import Title from '@/Components/atoms/Title';
 import { Head } from '@inertiajs/react';
 import {useTranslation} from "react-i18next";
 
@@ -10,7 +11,7 @@ const Index = () => {
 
             <header>
                 <div className='container'>
-                    <h1 className="title-1">Jormungandr</h1>
+                    <Title level='1'>Jormungandr</Title>
                 </div>
                 <div className='container'>
                     <p className="text-content">
@@ -20,7 +21,7 @@ const Index = () => {
             </header>
 
             <div className="flex flex-col h-screen w-full items-center justify-center">
-                <h1>{t('comingSoon')}</h1>
+                <Title level='2'>{t('comingSoon')}</Title>
             </div>
         </>
     );

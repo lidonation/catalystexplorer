@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Casts\DateFormatCast;
+use App\Casts\HashId;
 use App\Enums\CatalystCurrencies;
 use App\Traits\HasAuthor;
 use App\Traits\HasMetaData;
@@ -432,6 +433,7 @@ class Proposal extends Model
     protected function casts(): array
     {
         return [
+            'id' => HashId::class,
             'amount_received' => 'integer',
             'amount_requested' => 'integer',
             'created_at' => DateFormatCast::class,
