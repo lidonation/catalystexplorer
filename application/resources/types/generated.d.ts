@@ -1,4 +1,3 @@
-Generated.d.ts
 declare namespace App.DataTransferObjects {
 export type AnnouncementData = {
 id: number;
@@ -13,36 +12,35 @@ user_id: number;
 hero_image_url: string;
 };
 export type BookmarkCollectionData = {
-id: number;
-user_id: number;
-parent_id: number | null;
-title: string;
-content: string;
-color: string;
-allow_comments: string;
-visibility: string;
-status: string;
-type: string;
-type_id: number;
-type_type: string | null;
-created_at: string | null;
-updated_at: string | null;
-deleted_at: string | null;
+id: number | null;
+user_id?: number;
+parent_id?: number;
+title?: string;
+content?: string;
+color?: string;
+allow_comments?: string;
+visibility?: string;
+status?: string;
+type?: string;
+type_id?: number;
+type_type?: string;
+created_at?: string;
+updated_at?: string;
+deleted_at?: string;
 };
-export interface BookmarkItemData {
-id: number;
-user_id: number;
-bookmark_collection_id: number | null;
-model_id: number;
-model_type: string;
-title: string;
-content: string;
-action: number | null;
-created_at: string | null;
-updated_at: string | null;
-deleted_at: string | null;
-bookmarkable: ProposalData | IdeascaleProfileData | GroupData | ReviewData | CommunityData;
-}
+export type BookmarkItemData = {
+id: number | null;
+user_id?: number;
+bookmark_collection_id?: number;
+model_id?: number;
+model_type?: string;
+title?: string;
+content?: string;
+action?: number;
+created_at?: string;
+updated_at?: string;
+deleted_at?: string;
+};
 export type CampaignData = {
 id: number | null;
 fund_id?: number;
@@ -56,12 +54,13 @@ amount?: number;
 created_at: string | null;
 updated_at: string | null;
 label?: string;
-currency: string | null;
-proposals_count: number;
-funded_proposals_count?: number;
-unfunded_proposals_count?: number;
-completed_proposals_count?: number;
-
+currency: string;
+proposals_count: number | null;
+unfunded_proposals_count: number | null;
+funded_proposals_count: number | null;
+completed_proposals_count: number | null;
+totalAwarded: number;
+totalDistributed: number;
 };
 export type CommunityData = {
 id: number | null;
@@ -106,7 +105,8 @@ export type GroupData = {
 id: number | null;
 user_id?: number;
 name?: string;
-bio?: Array<any>;
+hero_img_url?: string;
+bio?: string;
 slug?: string;
 status?: string;
 meta_title?: string;
@@ -117,21 +117,21 @@ github?: string;
 created_at?: string;
 updated_at?: string;
 deleted_at?: string;
-hero_img_url?: string;
-amount_requested_usd?: number;
-amount_requested_ada?: number;
-completed_proposals_count?: number;
-funded_proposals_count?: number;
-unfunded_proposals_count?: number;
-amount_distributed_ada?: number;
-amount_distributed_usd?: number;
 amount_awarded_ada?: number;
 amount_awarded_usd?: number;
+amount_requested_ada?: number;
+amount_requested_usd?: number;
+amount_distributed_ada?: number;
+amount_distributed_usd?: number;
 proposals_count?: number;
-
+funded_proposals_count?: number;
+unfunded_proposals_count?: number;
+completed_proposals_count?: number;
+amount_requested?: number;
+amount_awarded?: number;
 };
 export type IdeascaleProfileData = {
-id: number | null;
+id: string | null;
 ideascaleId?: number;
 username?: string;
 email?: string;
@@ -147,14 +147,16 @@ claimedBy?: number;
 telegram?: string;
 title?: string;
 profile_photo_url?: string;
+amount_awarded_usd?: number;
+amount_awarded_ada?: number;
 co_proposals_count?: number;
 own_proposals_count?: number;
-collaborating_proposals_count?: number;
-unfunded_proposals_count?: number;
 claimed_by?: number;
 completed_proposals_count?: number;
 funded_proposals_count?: number;
+unfunded_proposals_count?: number;
 proposals_count?: number;
+collaborating_proposals_count?: number;
 };
 export type LocationData = {
 id: number | null;
@@ -197,7 +199,7 @@ type: string | null;
 published_at?: string;
 };
 export type ProposalData = {
-id: number | null;
+id: string | null;
 campaign: App.DataTransferObjects.CampaignData | null;
 title: string | null;
 slug: string;
@@ -237,16 +239,16 @@ export type ReviewData = {
 id: number | null;
 parent_id?: number;
 user_id?: number;
-model_id: number;
-model_type: string;
+model_id: number | null;
+model_type: string | null;
 title?: string;
 content: string;
 status: string | null;
 published_at?: string;
-type: string;
-ranking_total: number;
-helpful_total: number;
-not_helpful_total: number;
+type: string | null;
+ranking_total: number | null;
+helpful_total: number | null;
+not_helpful_total: number | null;
 };
 export type ReviewModerationData = {
 id: number | null;
@@ -258,11 +260,10 @@ flagged: boolean;
 qa_rationale?: Array<any>;
 };
 export type UserData = {
-id: number;
+id: string;
 name: string;
 email: string;
 profile_photo_url: string;
 email_verified_at: string | null;
 };
 }
-
