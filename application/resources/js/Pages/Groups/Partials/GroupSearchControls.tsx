@@ -56,7 +56,7 @@ function GroupSearchControls({
                     initialSearch={searchQuery}
                 />
                 <Button
-                    className={`border-input bg-background flex flex-row items-center gap-2 rounded-lg border px-3 py-1.5 shadow-xs ${
+                    className={`border-input bg-background flex flex-row items-center gap-2 rounded-lg border px-3 py-1.5 shadow-xs cursor-pointer ${
                         showFilters
                             ? 'border-accent-blue text-primary ring-offset-background ring-1'
                             : 'hover:bg-background-lighter text-gray-500'

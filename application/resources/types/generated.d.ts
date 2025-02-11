@@ -115,6 +115,7 @@ website?: string;
 twitter?: string;
 discord?: string;
 github?: string;
+linkedin?:string;
 created_at?: string;
 updated_at?: string;
 deleted_at?: string;

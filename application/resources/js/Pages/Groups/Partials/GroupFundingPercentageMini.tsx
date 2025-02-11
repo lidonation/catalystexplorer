@@ -5,7 +5,9 @@ interface GroupFundingPercentagesProps extends Record<string, unknown> {
     group: App.DataTransferObjects.GroupData;
 }
 
-export default function GroupFundingPercentagesMini({ group }: GroupFundingPercentagesProps) {
+export default function GroupFundingPercentagesMini({
+    group,
+}: GroupFundingPercentagesProps) {
     const { t } = useTranslation();
     const calculatePercentage = (
         numerator: number,
@@ -21,7 +23,7 @@ export default function GroupFundingPercentagesMini({ group }: GroupFundingPerce
                 <div className="flex items-baseline justify-between gap-2">
                     <div className="bg-content-light mt-2 h-2 w-full overflow-hidden rounded-full">
                         <div
-                            className={`bg-primary h-full rounded-full`}
+                            className={`bg-eye-logo h-full rounded-full`}
                             role="progressbar"
                             aria-label="funds recieved"
                             aria-valuenow={calculatePercentage(
@@ -37,7 +39,7 @@ export default function GroupFundingPercentagesMini({ group }: GroupFundingPerce
                     </div>
                 </div>
                 <div className="mt-2 flex justify-between">
-                    {(group?.amount_distributed_usd  ?? 0)<= 0 && (
+                    {(group?.amount_distributed_usd ?? 0) <= 0 && (
                         <p>{t('groups.received')}</p>
                     )}
                     <div>
@@ -46,14 +48,16 @@ export default function GroupFundingPercentagesMini({ group }: GroupFundingPerce
                                 {currency(
                                     group?.amount_distributed_ada ?? 0,
                                     'ADA',
+                                    undefined,
+                                    2,
                                 )}
                             </span>
-                            <span className="text-highlight text-sm">{`/ ${group?.amount_awarded_ada ?? 0} (${calculatePercentage(group?.amount_distributed_ada ?? 0, group?.amount_awarded_ada ?? 0)}%)`}</span>
+                            <span className="text-highlight text-sm">{`/ ${currency(group?.amount_awarded_ada ?? 0, 'ADA', undefined, 2) ?? 0} (${calculatePercentage(group?.amount_distributed_ada ?? 0, group?.amount_awarded_ada ?? 0)}%)`}</span>
                         </div>
                     </div>
                 </div>
             </div>
-            {(group?.amount_distributed_usd ?? 0)  > 0 && (
+            {(group?.amount_distributed_usd ?? 0) > 0 && (
                 <div>
                     <div className="flex items-baseline justify-between gap-2">
                         <div className="bg-content-light mt-2 h-2 w-full overflow-hidden rounded-full">
@@ -79,9 +83,11 @@ export default function GroupFundingPercentagesMini({ group }: GroupFundingPerce
                                 {currency(
                                     group?.amount_distributed_usd ?? 0,
                                     'USD',
+                                    undefined,
+                                    2
                                 )}
                             </span>
-                            <span className="text-highlight text-sm">{`/ ${currency(group?.amount_awarded_usd ?? 0, 'USD')} (${calculatePercentage(group?.amount_distributed_usd ?? 0, group?.amount_awarded_usd ?? 0)}%)`}</span>
+                            <span className="text-highlight text-sm">{`/ ${currency(group?.amount_awarded_usd ?? 0, 'USD', undefined, 2)} (${calculatePercentage(group?.amount_distributed_usd ?? 0, group?.amount_awarded_usd ?? 0)}%)`}</span>
                         </div>
                     </div>
                 </div>

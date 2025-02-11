@@ -19,9 +19,13 @@ use Spatie\Enum\Enum;
  * @method static self FUNDING_STATUS()
  * @method static self GROUPS()
  * @method static self LIMIT()
+ * @method static self MAX_AWARDED_ADA()
+ * @method static self MAX_AWARDED_USD()
  * @method static self MAX_BUDGET()
  * @method static self MAX_PROJECT_LENGTH()
  * @method static self MAX_PROPOSALS()
+ * @method static self MIN_AWARDED_ADA()
+ * @method static self MIN_AWARDED_USD()
  * @method static self MIN_BUDGET()
  * @method static self MIN_PROPOSALS()
  * @method static self MIN_PROJECT_LENGTH()
@@ -55,9 +59,13 @@ final class ProposalSearchParams extends Enum
             'FUNDING_STATUS' => 'fs',
             'GROUPS' => 'g',
             'LIMIT' => 'l',
+            'MAX_AWARDED_ADA'=> 'aamax',
+            'MAX_AWARDED_USD'=> 'aumax',
             'MAX_BUDGET' => 'bmax',
             'MAX_PROJECT_LENGTH' => 'lmax',
             'MAX_PROPOSALS' => 'pmax',
+            'MIN_AWARDED_ADA'=> 'aamin',
+            'MIN_AWARDED_USD'=> 'aumin',
             'MIN_BUDGET' => 'bmin',
             'MIN_PROJECT_LENGTH' => 'lmin',
             'MIN_PROPOSALS' => 'pmin',

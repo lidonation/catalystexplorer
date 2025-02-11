@@ -53,10 +53,6 @@ const Index: React.FC<GroupsPageProps> = ({
         
       }, []);
 
-      useEffect(()=>{
-        console.log('funds', funds)
-      })
-
     return (
         <>
             <ListProvider>
@@ -89,7 +85,7 @@ const Index: React.FC<GroupsPageProps> = ({
                             showFilters ? 'max-h-[500px]' : 'max-h-0'
                         }`}
                     >
-                        <GroupFilters proposalsCount={filterCounts.proposalsCount}/>
+                        <GroupFilters/>
                     </section>
 
                     <section className="container py-8">

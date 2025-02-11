@@ -366,8 +366,10 @@
             "close": "close Icon",
             "connect_wallet": "Connect wallet Icon",
             "darkMode": "Dark Mode Icon",
+            "discord": "Discord",
             "folder": "Folder Icon",
             "filter": "Filter Icon",
+            "github": "Github",
             "home": "Home Icon",
             "lightMode": "Light Mode Icon",
             "login": "Login Icon",
@@ -400,7 +402,8 @@
             "ada": "Ada Icon",
             "usd": "USD Icon",
             "tick": "Tick Icon",
-            "x": "X"
+            "x": "X",
+            "web": "Web"
         }
     },
     "users": {

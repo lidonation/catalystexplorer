@@ -4,6 +4,7 @@ export type ProposalSearchParams = {
     length: number;
     [ProposalParamsEnum.AWARDED_ADA]: string;
     [ProposalParamsEnum.AWARDED_USD]: string;
+    [ProposalParamsEnum.AWARDED_ADA_RANGE]: number[]
     [ProposalParamsEnum.BUDGETS]: number[];
     [ProposalParamsEnum.CATEGORIES]: string;
     [ProposalParamsEnum.CAMPAIGNS]: string[];

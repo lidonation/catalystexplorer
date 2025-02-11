@@ -13,16 +13,16 @@ const GroupList: React.FC<GroupListProps> = ({
     return (
         <>
             <ul className="grid w-full grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-                {/* {groups?.map((group, index) => (
+                {groups?.map((group, index) => (
                     <li key={index}>
                         <GroupCardMini group={group}/>
                     </li>
-                ))} */}
-                 {groups?.map((group, index) => (
+                ))}
+                 {/* {groups?.map((group, index) => (
                     <li key={index}>
                         <GroupCardFull group={group}/>
                     </li>
-                ))}
+                ))} */}
             </ul>
         </>
     );

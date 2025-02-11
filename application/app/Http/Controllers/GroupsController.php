@@ -154,9 +154,8 @@ class GroupsController extends Controller
             ProposalSearchParams::IDEASCALE_PROFILES()->value => 'array|nullable',
             ProposalSearchParams::FUNDS()->value => 'array|nullable',
             ProposalSearchParams::PROPOSALS()->value => 'array|nullable',
-            ProposalSearchParams::MIN_PROPOSALS()->value => 'int|nullable',
-            ProposalSearchParams::MAX_PROPOSALS()->value => 'int|nullable',
-            ProposalSearchParams::AWARDED_ADA()->value => 'int|nullable',
+            ProposalSearchParams::AWARDED_ADA()->value => 'array|nullable',
+            ProposalSearchParams::AWARDED_USD()->value => 'array|nullable',     
         ]);
 
         // format sort params for meili
@@ -227,13 +226,9 @@ class GroupsController extends Controller
 
         $filters = [];
 
-        if (!empty($this->queryParams[ProposalSearchParams::FUNDS()->value])) {
-            $fundsArray = $this->queryParams[ProposalSearchParams::FUNDS()->value];
-            if (is_array($fundsArray)) {
-                // Properly format the filter for Meilisearch
-                $funds = implode('" OR proposals.fund.title = "', $fundsArray);
-                $filters[] = "proposals.fund.title = \"$funds\"";
-            }
+        if (! empty($this->queryParams[ProposalSearchParams::FUNDS()->value])) {
+            $funds = implode("','", $this->queryParams[ProposalSearchParams::FUNDS()->value]);
+            $filters[] = "proposals.fund.title IN ['{$funds}']";
         }
         
 
@@ -249,12 +244,12 @@ class GroupsController extends Controller
 
         if (! empty($this->queryParams[ProposalSearchParams::AWARDED_USD()->value])) {
             $awardedUsd = collect((object) $this->queryParams[ProposalSearchParams::AWARDED_USD()->value]);
-            $filters[] = "(awarded_usd  {$awardedUsd->first()} TO  {$awardedUsd->last()})";
+            $filters[] = "(amount_awarded_usd  {$awardedUsd->first()} TO  {$awardedUsd->last()})";
         }
 
         if (! empty($this->queryParams[ProposalSearchParams::AWARDED_ADA()->value])) {
             $awardedAda = collect((object) $this->queryParams[ProposalSearchParams::AWARDED_ADA()->value]);
-            $filters[] = "(awarded_ada  {$awardedAda->first()} TO  {$awardedAda->last()})";
+            $filters[] = "(amount_awarded_ada  {$awardedAda->first()} TO  {$awardedAda->last()})";
         }
 
         if (! empty($this->queryParams[ProposalSearchParams::PROPOSALS()->value])) {

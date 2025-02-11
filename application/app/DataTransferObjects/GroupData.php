@@ -51,6 +51,9 @@ final class GroupData extends Data
         public ?string $github,
 
         #[TypeScriptOptional]
+        public ?string $linkedin,
+
+        #[TypeScriptOptional]
         public ?string $created_at,
 
         #[TypeScriptOptional]

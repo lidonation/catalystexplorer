@@ -5,15 +5,12 @@ import { useFilterContext } from '@/Context/FiltersContext';
 import { ProposalParamsEnum } from '@/enums/proposal-search-params';
 import { useTranslation } from 'react-i18next';
 
-interface GroupFilterProps{
-    proposalsCount: number
-}
-const GroupFilters = ({proposalsCount}: GroupFilterProps) => {
+const GroupFilters = () => {
     const { setFilters, getFilter } = useFilterContext();
     const { t } = useTranslation();
     const proposalRange = [0, 500];
     const adaRange = [0, 10000000];
-    const usdRange = [0, 1000000]
+    const usdRange = [0, 1000000];
 
     return (
         <>
@@ -131,11 +128,15 @@ const GroupFilters = ({proposalsCount}: GroupFilterProps) => {
                             key={'ideascale_profiles'}
                             domain={'ideascaleProfiles.index'}
                             selected={
-                                getFilter(ProposalParamsEnum.IDEASCALE_PROFILES) ?? []
+                                getFilter(
+                                    ProposalParamsEnum.IDEASCALE_PROFILES,
+                                ) ?? []
                             }
                             onChange={(value) =>
                                 setFilters({
-                                    label: t('proposals.filters.ideascaleProfiles'),
+                                    label: t(
+                                        'proposals.filters.ideascaleProfiles',
+                                    ),
                                     value,
                                     param: ProposalParamsEnum.IDEASCALE_PROFILES,
                                 })
@@ -201,7 +202,6 @@ const GroupFilters = ({proposalsCount}: GroupFilterProps) => {
                             selectedItems={getFilter(ProposalParamsEnum.COHORT)}
                         />
                     </div>
-
                 </div>
 
                 <div className="my-6 w-full border-b"></div>
@@ -211,14 +211,16 @@ const GroupFilters = ({proposalsCount}: GroupFilterProps) => {
                             key={'numberOfProposals'}
                             context={t('proposals.filters.numberOfProposals')}
                             value={
-                                getFilter(ProposalParamsEnum.PROPOSALS)?.length ==
-                                0
+                                getFilter(ProposalParamsEnum.PROPOSALS)
+                                    ?.length == 0
                                     ? proposalRange
                                     : getFilter(ProposalParamsEnum.PROPOSALS)
                             }
                             onValueChange={(value) =>
                                 setFilters({
-                                    label: t('proposals.filters.numberOfProposals'),
+                                    label: t(
+                                        'proposals.filters.numberOfProposals',
+                                    ),
                                     value,
                                     param: ProposalParamsEnum.PROPOSALS,
                                 })
@@ -231,23 +233,16 @@ const GroupFilters = ({proposalsCount}: GroupFilterProps) => {
 
                     <div className="pb-4">
                         <RangePicker
-                            key={'Awarded Ada'}
+                            key={'awardedAda'}
                             context={t('proposals.filters.awardedAda')}
-                            value={
-                                getFilter(ProposalParamsEnum.AWARDED_ADA)
-                                    ?.length == 0
-                                    ? adaRange
-                                    : getFilter(
-                                          ProposalParamsEnum.AWARDED_ADA,
-                                      )
-                            }
-                            onValueChange={(value) =>
+                            value={getFilter(ProposalParamsEnum.AWARDED_ADA)}
+                            onValueChange={(value) => {
                                 setFilters({
                                     label: t('proposals.filters.awardedAda'),
                                     value,
                                     param: ProposalParamsEnum.AWARDED_ADA,
-                                })
-                            }
+                                });
+                            }}
                             max={adaRange[1]}
                             min={adaRange[0]}
                             defaultValue={adaRange}
@@ -255,15 +250,13 @@ const GroupFilters = ({proposalsCount}: GroupFilterProps) => {
                     </div>
                     <div className="pb-4">
                         <RangePicker
-                            key={'Awarded USD'}
+                            key={'awarded_usd'}
                             context={t('proposals.filters.awardedUsd')}
                             value={
                                 getFilter(ProposalParamsEnum.AWARDED_USD)
                                     ?.length == 0
                                     ? usdRange
-                                    : getFilter(
-                                          ProposalParamsEnum.AWARDED_USD,
-                                      )
+                                    : getFilter(ProposalParamsEnum.AWARDED_USD)
                             }
                             onValueChange={(value) =>
                                 setFilters({
