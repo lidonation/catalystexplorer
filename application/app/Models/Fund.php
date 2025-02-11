@@ -30,17 +30,15 @@ class Fund extends Model implements HasMedia
     ];
 
     protected $appends = [
-        'amount_requested',
-        'amount_awarded',
         'banner_img_url',
     ];
 
     protected $guarded = [];
 
     protected $withCount = [
-        'proposals',
-        'funded_proposals',
-        'completed_proposals',
+        //        'proposals',
+        //        'funded_proposals',
+        //        'completed_proposals',
     ];
 
     public function currencySymbol(): Attribute

@@ -24,7 +24,7 @@ const IdeascaleProfileCard: React.FC<IdeascaleProfileProps> = ({
                     <ListProvider>
                         <BookmarkButton
                             modelType="ideascale-profiles"
-                            itemId={ideascaleProfile?.id ?? 0}
+                            itemId={ideascaleProfile?.id ?? '0'}
                         />
                     </ListProvider>
                 </div>

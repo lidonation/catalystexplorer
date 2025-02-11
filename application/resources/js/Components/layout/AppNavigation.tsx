@@ -57,7 +57,7 @@ function AppNavigation() {
         },
         {
             href: useLocalizedRoute('groups.index'),
-            title: t('groups'),
+            title: t('groups.groups'),
             icon: (isActive: boolean) => (
                 <CheckIcon
                     className={isActive ? 'text-primary-100' : 'text-dark'}

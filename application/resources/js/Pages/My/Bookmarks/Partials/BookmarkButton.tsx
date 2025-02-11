@@ -8,7 +8,7 @@ import TransitionMenu from '@/Pages/My/Lists/Partials/TransitionMenu';
 
 interface BookmarkButtonProps {
     modelType: string;
-    itemId: number;
+    itemId: string;
 }
 
 export default function BookmarkButton({
