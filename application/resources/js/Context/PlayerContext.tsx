@@ -233,7 +233,7 @@ export const PlayerProvider = ({ children }: { children: React.ReactNode }) => {
             .map((item): Playlist => {
                 const { title, quickpitch, id } = item;
                 const provider = quickpitch?.match(regex) ? 'youtube' : 'vimeo';
-                return { title, quickpitch, provider, id };
+                return { title, quickpitch, provider, id: id ? Number(id) : null };
             });
 
         setPlaylist(playlist);

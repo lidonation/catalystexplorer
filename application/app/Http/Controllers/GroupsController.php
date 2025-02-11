@@ -22,45 +22,22 @@ use Illuminate\Support\Fluent;
 use Illuminate\Support\Stringable;
 use Inertia\Inertia;
 use Inertia\Response;
-use JetBrains\PhpStorm\ArrayShape;
 use Laravel\Scout\Builder;
-use Meilisearch\Endpoints\Indexes;
 
 class GroupsController extends Controller
 {
-    protected int $currentPage;
-
+    
     protected int $limit = 24;
 
     protected array $queryParams = [];
 
-    protected null|string|Stringable $search = null;
-
-    protected ?string $sortBy = 'name';
+    protected ?string $sortBy;
 
     protected ?string $sortOrder = 'desc';
-
-    protected ?bool $fundedProposalsFilter = false;
-
-    protected Collection $awardedUsdFilter;
-
-    protected Collection $awardedAdaFilter;
-
-    public $fundsFilter;
-
-    public $tagsFilter;
-
-    public $ideascaleProfileFilter;
 
     protected Builder $searchBuilder;
 
     public array $tagsCount = [];
-
-    public array $fundsCount = [];
-
-    public int $proposalsCount;
-
-
 
     public function index(Request $request): Response
     {
@@ -70,12 +47,9 @@ class GroupsController extends Controller
 
         $props = [
             'groups' => $groups,
-            'search' => $this->search,
-            'sort' => "{$this->sortBy}:{$this->sortOrder}",
             'filters' => $this->queryParams,
             'filterCounts' => [
-                'tagsCount' => $this->tagsCount,
-                'fundsCount' => $this->fundsCount,
+                'tagsCount' => $this->tagsCount
             ],
         ];
 
@@ -109,7 +83,6 @@ class GroupsController extends Controller
                     )
                 )
             ),
-            //            'ideascaleProfiles' => [],
             'ideascaleProfiles' => Inertia::optional(
                 fn() => to_length_aware_paginator(
                     IdeascaleProfileData::collect(
@@ -131,7 +104,6 @@ class GroupsController extends Controller
                     )
                 )
             ),
-            //            'connections' => [],
             'connections' => Inertia::optional(
                 fn() => ConnectionData::collect(
                     $group->connected_items
@@ -294,9 +266,6 @@ class GroupsController extends Controller
             $this->tagsCount = $facets['tags.id'];
         }
 
-        if (isset($facets['proposals.fund.title']) && count($facets['proposals.fund.title'])) {
-            $this->fundsCount = $facets['proposals.fund.title'];
-        }
     }
 
     public function getFundsWithProposalsCount()

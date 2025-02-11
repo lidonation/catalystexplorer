@@ -15,6 +15,7 @@ function FundFiltersContainer({ funds }: FundFiltersContainerProps) {
             label: 'Funds',
         });
     };
+
     return (
         <FundsFilter
             proposalsCount={funds}
