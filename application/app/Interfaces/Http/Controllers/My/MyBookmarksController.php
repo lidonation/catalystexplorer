@@ -149,7 +149,7 @@ class MyBookmarksController extends Controller
         }
     }
 
-    public function status(string $modelType, int $modelId): JsonResponse
+    public function status(string $modelType, string $modelId): JsonResponse
     {
         if (! BookmarkableType::isValid($modelType)) {
             return response()->json([

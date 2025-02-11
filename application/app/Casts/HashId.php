@@ -18,7 +18,11 @@ class HashId implements CastsAttributes
      */
     public function get(Model $model, string $key, mixed $value, array $attributes): mixed
     {
-        if (str_contains(Route::currentRouteName(), 'nova.')) {
+        if (app()->runningInConsole()) {
+            return $value;
+        }
+
+        if (Route::currentRouteName() != null && str_contains(Route::currentRouteName(), 'nova.')) {
             return $value;
         }
 
@@ -32,7 +36,11 @@ class HashId implements CastsAttributes
      */
     public function set(Model $model, string $key, mixed $value, array $attributes): mixed
     {
-        if (str_contains(Route::currentRouteName(), 'nova.')) {
+        if (app()->runningInConsole()) {
+            return $value;
+        }
+
+        if (Route::currentRouteName() != null && str_contains(Route::currentRouteName(), 'nova.')) {
             return $value;
         }
 

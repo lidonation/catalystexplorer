@@ -23,7 +23,7 @@ class GroupRepository extends Repository
                 $args = array_merge(
                     [
                         'attributesToRetrieve' => [
-                            'id',
+                            'slug',
                             'name',
                             'discord',
                             'twitter',
@@ -45,12 +45,12 @@ class GroupRepository extends Repository
                             'amount_distributed_usd',
                             'amount_requested_usd',
                             'amount_requested_ada',
-                            'ideascale_profiles'
+                            'ideascale_profiles',
                         ],
                         'facets' => [
                             'tags.id',
                             'proposals.fund.title',
-                        ]
+                        ],
                     ],
                     $args
                 );
