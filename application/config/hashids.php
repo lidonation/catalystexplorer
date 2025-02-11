@@ -33,5 +33,10 @@ return [
             'length' => 11,
             'alphabet' => 'abcefghijklmnopqrstuvwxyz0123456789',
         ],
+        \App\Models\User::class => [
+            'salt' => \App\Models\User::class.env('APP_KEY'),
+            'length' => 11,
+            'alphabet' => 'abcdfghijklmnopqrstuvwxyz0123456789',
+        ],
     ],
 ];
