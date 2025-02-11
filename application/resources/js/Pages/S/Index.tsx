@@ -7,8 +7,8 @@ import { Head, WhenVisible } from '@inertiajs/react';
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import DynamicSearchResults, {
-    EmptyState,
 } from './Partials/DynamicSearchResults';
+import RecordsNotFound from '@/Layouts/RecordsNotFound';
 import ResultTabs from './Partials/ResultTabs';
 import SearchResultsLoading from './Partials/SearchResultsLoading';
 import Title from '@/Components/atoms/Title';
@@ -124,7 +124,8 @@ const SearchResults = ({ counts, ...results }: SearchResultsProps) => {
     if (TAB_CONFIG.length === 0) {
         return (
             <div className="container py-8">
-                <EmptyState query={query as string} translation={t} />
+                <RecordsNotFound context="search" />
+                {/* <EmptyState query={query as string} translation={t} /> */}
             </div>
         );
     }
