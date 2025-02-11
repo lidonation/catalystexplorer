@@ -3,7 +3,7 @@ import SegmentedBar from '@/Components/SegmentedBar';
 import { currency } from '@/utils/currency';
 import { useLocalizedRoute } from '@/utils/localizedRoute';
 import { Link } from '@inertiajs/react';
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Segments } from '../../../../types/segments';
 import DistributedVsAwarded from './DistributedVsAwarded';
@@ -47,11 +47,6 @@ const CampaignCard: React.FC<CampaignCardProps> = ({ fund, campaign }) => {
         }
         return input; // Return original if format is incorrect
     };
-
-    useEffect(() => {
-        console.log(fund);
-    }, [campaign]);
-
     return (
         <div>
             <div className="bg-content-light h-60 overflow-hidden rounded-lg">
