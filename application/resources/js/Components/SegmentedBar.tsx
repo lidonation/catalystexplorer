@@ -11,7 +11,7 @@ const SegmentedBar: React.FC<SegmentedProgressBarProps> = ({ segments }) => {
     const [isHovered, setIsHovered] = useState(false);
     return (
         <div
-            className="relative flex h-3 w-full rounded-md border border-gray-300 bg-gray-200"
+            className="relative flex h-3 w-full gap-1"
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
         >
@@ -20,7 +20,7 @@ const SegmentedBar: React.FC<SegmentedProgressBarProps> = ({ segments }) => {
                 return (
                     <div
                         key={index}
-                        className={`h-full ${segment.color}`}
+                        className={`h-full rounded-md ${segment.color}`}
                         style={{
                             width: `${width}%`,
                             height: '100%',
