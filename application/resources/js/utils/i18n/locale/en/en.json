@@ -97,6 +97,9 @@
         "mainText": "Sorry, we couldn't find what you're looking for",
         "subText": "Let's Find Your Way Back!"
     },
+    "recordsNotFound": {
+        "message": "This is all we know"
+    },
     "app": {
         "name": "Catalyst Explorer",
         "contactEmail": "support@lidonation.com",
