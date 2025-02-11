@@ -71,7 +71,7 @@ export default function ProposalCardHeader({
                                 {proposal.id && (
                                     <BookmarkButton
                                         modelType="proposals"
-                                        itemId={proposal.id}
+                                        itemId={Number(proposal.id)}
                                     />
                                 )}
                             </ListProvider>
