@@ -95,7 +95,7 @@ export default function Index({
                     <ProposalFilters />
                 </section>
 
-                <section className="container flex flex-col items-end">
+                <section className="container flex flex-col items-end pt-2 pb-1">
                     <CardLayoutSwitcher
                         isHorizontal={isHorizontal}
                         quickPitchView={quickPitchView}
@@ -106,7 +106,7 @@ export default function Index({
                     />
                 </section>
 
-                <section className="proposals-wrapper container mt-3 w-full">
+                <section className="proposals-wrapper container mt-3 w-full pb-8">
                     <WhenVisible
                         fallback={
                             isHorizontal ? (
