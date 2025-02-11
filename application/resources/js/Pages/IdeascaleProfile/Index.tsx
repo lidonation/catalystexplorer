@@ -40,7 +40,7 @@ const Index = ({
                 </section>
 
                 <div className="flex w-full flex-col items-center">
-                    <section className="container py-8">
+                    <section className="container py-2 pb-10">
                         <WhenVisible
                             fallback={<IdeaScaleProfileLoader />}
                             data="ideascaleProfiles"
