@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Services;
 
 use App\Models\Model;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 use Sqids\Sqids;
 
 class HashIdService
@@ -12,7 +13,7 @@ class HashIdService
     public Sqids $hashIds;
 
     public function __construct(
-        Model $model
+        Model|Authenticatable $model
     ) {
         $connections = config('hashids.connections');
         $alphabet = $connections[$model::class]['alphabet'];

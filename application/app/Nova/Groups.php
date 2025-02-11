@@ -64,7 +64,7 @@ class Groups extends Resource
                 ->default(StatusEnum::draft())
                 ->sortable(),
 
-            BelongsTo::make('Owner', 'owner', IdeascaleProfiles::class),
+            BelongsTo::make('Owner', 'owner', IdeascaleProfiles::class)->searchable(),
 
             Textarea::make(__('Bio'))
                 ->sortable()
