@@ -2,6 +2,8 @@ import { Head } from '@inertiajs/react';
 import { useTranslation } from 'react-i18next';
 import ReviewData = App.DataTransferObjects.ReviewData;
 import React from 'react';
+import Title from '@/Components/atoms/Title';
+import AggregatedReviewsSummary from "@/Components/AggregatedReviewsSummary";
 
 interface ReviewsPageProps extends Record<string, unknown> {
     reviews: {
@@ -22,12 +24,17 @@ const Index: React.FC<ReviewsPageProps> = ({ reviews}) => {
 
             <header>
                 <div className="container">
-                    <h1 className="title-1">{t('reviews')}</h1>
+                    <Title level='1'>{t('reviews')}</Title>
                 </div>
             </header>
 
             <div className="flex h-screen w-full flex-col items-center justify-center">
-                <h1>{t('comingSoon')}</h1>
+                <section>
+                    <Title level='2'>{t('comingSoon')}</Title>
+                </section>
+                <section>
+                    <AggregatedReviewsSummary reviews={[]} />
+                </section>
             </div>
         </>
     );

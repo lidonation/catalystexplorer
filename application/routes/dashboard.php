@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\My\MyBookmarksController;
+use App\Interfaces\Http\Controllers\My\MyBookmarksController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -26,13 +26,6 @@ Route::localized(
                             ->name('delete');
                         Route::get('/show', [MyBookmarksController::class, 'show'])
                             ->name('show');
-                        Route::post('/{modelType}/{modelId}', [MyBookmarksController::class, 'store'])
-                            ->name('store');
-                        Route::delete('/{id}', [MyBookmarksController::class, 'delete'])
-                            ->name('remove');
-                        Route::get('/{modelType}/{modelId}/status', [MyBookmarksController::class, 'status'])
-                            ->name('status');
-
                         Route::prefix('/collections')->as('collections.')
                             ->group(function () {
                                 Route::get('/', [MyBookmarksController::class, 'collectionIndex'])

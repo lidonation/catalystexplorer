@@ -5,4 +5,5 @@ return [
     App\Providers\AuthServiceProvider::class,
     App\Providers\HorizonServiceProvider::class,
     App\Providers\NovaServiceProvider::class,
+    App\Providers\RouteServiceProvider::class,
 ];

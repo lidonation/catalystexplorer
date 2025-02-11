@@ -3,6 +3,7 @@ import { useFilterContext } from '@/Context/FiltersContext';
 import { ProposalParamsEnum } from '@/enums/proposal-search-params';
 import ProposalCard from '@/Pages/Proposals/Partials/ProposalCard';
 import IdeascaleProfileCard from '@/Pages/IdeascaleProfile/Partials/IdeascaleProfileCard';
+import RecordsNotFound from '@/Layouts/RecordsNotFound';
 import { useTranslation } from 'react-i18next';
 
 interface BookmarksListProps {
@@ -13,12 +14,12 @@ interface BookmarksListProps {
     activeType: string | null;
 }
 
-const BookmarksList: React.FC<BookmarksListProps> = ({
-    proposals = [],
-    people = [],
-    groups = [],
-    reviews = [],
-    activeType
+const BookmarksList: React.FC<BookmarksListProps> = ({ 
+    proposals = [], 
+    people = [], 
+    groups = [], 
+    reviews = [], 
+    activeType 
 }) => {
     const { t } = useTranslation();
     const { getFilter } = useFilterContext();
@@ -26,28 +27,32 @@ const BookmarksList: React.FC<BookmarksListProps> = ({
 
     const filterItems = (items: any[]) => {
         if (!searchQuery) return items;
-
         return items.filter(item => {
             if (!item) return false;
-
             const searchableFields = {
                 'proposals': ['title', 'description', 'challenge'],
                 'people': ['name', 'email'],
                 'groups': ['name', 'description'],
                 'reviews': ['title', 'content']
             };
-
             const fields = searchableFields[activeType as keyof typeof searchableFields] || [];
-
             return fields.some(field =>
                 item[field]?.toLowerCase().includes(searchQuery.toLowerCase())
             );
         });
     };
 
+    const renderNotFound = (context: string) => (
+        <div className="col-span-full flex justify-center items-center min-h-[200px]">
+            <RecordsNotFound
+                // context={context}
+                searchTerm={searchQuery}
+            />
+        </div>
+    );
+
     const renderItems = () => {
         let filteredItems: any[] = [];
-
         switch (activeType) {
             case 'proposals':
                 filteredItems = filterItems(proposals.filter(p => p != null));
@@ -62,7 +67,7 @@ const BookmarksList: React.FC<BookmarksListProps> = ({
                             />
                         )
                     ))
-                    : renderEmptyState();
+                    : renderNotFound("proposals");
             case 'people':
                 filteredItems = filterItems(people);
                 return filteredItems.length > 0
@@ -72,7 +77,7 @@ const BookmarksList: React.FC<BookmarksListProps> = ({
                             ideascaleProfile={profile}
                         />
                     ))
-                    : renderEmptyState();
+                    : renderNotFound("profiles");
             case 'groups':
                 filteredItems = filterItems(groups);
                 return filteredItems.length > 0
@@ -81,7 +86,7 @@ const BookmarksList: React.FC<BookmarksListProps> = ({
                             {group?.name}
                         </div>
                     ))
-                    : renderEmptyState();
+                    : renderNotFound("groups");
             case 'reviews':
                 filteredItems = filterItems(reviews);
                 return filteredItems.length > 0
@@ -90,32 +95,10 @@ const BookmarksList: React.FC<BookmarksListProps> = ({
                             {review.title}
                         </div>
                     ))
-                    : renderEmptyState();
+                    : renderNotFound("reviews");
             default:
                 return null;
         }
-    };
-
-    const renderEmptyState = () => {
-        const emptyStateMessages = {
-            'proposals': t('noProposalBookmarks'),
-            'people': t('noPeopleBookmarks'),
-            'groups': t('noGroupBookmarks'),
-            'reviews': t('noReviewBookmarks')
-        };
-
-        const message = emptyStateMessages[activeType as keyof typeof emptyStateMessages] || t('No bookmarks found');
-
-        return (
-            <div className="col-span-full flex flex-col items-center justify-center py-12 text-center">
-                <p className="text-xl font-semibold text-gray-600">{message}</p>
-                {searchQuery && (
-                    <p className="text-sm text-gray-500 mt-2">
-                        {t('searchQuery')}
-                    </p>
-                )}
-            </div>
-        );
     };
 
     return (

@@ -1,6 +1,7 @@
 import { Head } from '@inertiajs/react';
 import { useTranslation } from 'react-i18next';
 import GroupData = App.DataTransferObjects.GroupData;
+import Title from '@/Components/atoms/Title';
 
 interface GroupsPageProps extends Record<string, unknown> {
     groups: {
@@ -39,7 +40,7 @@ const Index: React.FC<GroupsPageProps> = ({ groups }) => {
 
             <header>
                 <div className="container">
-                    <h1 className="title-1">{t('groups')}</h1>
+                    <Title level='1'>{t('groups')}</Title>
                 </div>
                 <div className="container">
                     <p className="text-content">{t('groupsList')}</p>
@@ -47,7 +48,7 @@ const Index: React.FC<GroupsPageProps> = ({ groups }) => {
             </header>
 
             <div className="flex h-screen w-full flex-col items-center justify-center">
-                <h1>{t('comingSoon')}</h1>
+                <Title level='2'>{t('comingSoon')}</Title>
             </div>
         </>
     );

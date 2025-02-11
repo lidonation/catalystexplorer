@@ -13,12 +13,12 @@ export default function useBookmark({ modelType, itemId }: UseBookmarkProps) {
     const [isOpen, setIsOpen] = useState(false);
 
     useEffect(() => {
-        fetchBookmarkStatus();
+        fetchBookmarkStatus().then();
     }, [modelType, itemId]);
     const fetchBookmarkStatus = async () => {
         try {
             const response = await axios.get(
-                `/en/my/bookmarks/${modelType}/${itemId}/status`,
+                route('api.bookmarks.status', { modelType, id: itemId }),
             );
             setIsBookmarked(response.data.isBookmarked);
             setBookmarkId(response.data.id || null);
@@ -30,7 +30,7 @@ export default function useBookmark({ modelType, itemId }: UseBookmarkProps) {
     const createBookmark = async () => {
         try {
             const response = await axios.post(
-                `/en/my/bookmarks/${modelType}/${itemId}`,
+                route('api.bookmarks.store', { modelType, id: itemId }),
             );
             if (response.data.bookmarkItem) {
                 setIsBookmarked(true);
@@ -49,7 +49,11 @@ export default function useBookmark({ modelType, itemId }: UseBookmarkProps) {
     const removeBookmark = async () => {
         try {
             if (bookmarkId) {
-                await axios.delete(`/en/my/bookmarks/${bookmarkId}`);
+                await axios.delete(
+                    route('api.bookmarks.remove', {
+                        id: bookmarkId,
+                    }),
+                );
                 setIsBookmarked(false);
                 setIsOpen(false);
                 toast.success('Bookmark removed successfully!', {

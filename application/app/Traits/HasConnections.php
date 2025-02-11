@@ -7,12 +7,29 @@ namespace App\Traits;
 use App\Models\Connection;
 use App\Models\Group;
 use App\Models\IdeascaleProfile;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
-use Illuminate\Support\Collection;
 
 trait HasConnections
 {
+    public function connectedItems(): Attribute
+    {
+        return Attribute::make(
+            get: function () {
+                $currentModelCollection = collect([$this]);
+
+                $connectedUsers = $this->connected_users()->get();
+                $connectedGroups = $this->connected_groups()->get();
+
+                $connections = $connectedUsers->merge($connectedGroups);
+
+                return $currentModelCollection->merge($connections);
+            },
+        );
+
+    }
+
     public function connections(): MorphMany
     {
         return $this->morphMany(Connection::class, 'previous_model', 'previous_model_type', 'previous_model_id');
@@ -46,17 +63,5 @@ trait HasConnections
             ['connections.next_model_type', Group::class],
             ['connections.previous_model_type', get_class($this)],
         ]);
-    }
-
-    public function connectedGroupsAndUsers(): Collection
-    {
-        $currentModelCollection = collect([$this]);
-
-        $connectedUsers = $this->connected_users()->get();
-        $connectedGroups = $this->connected_groups()->get();
-
-        $connections = $connectedUsers->merge($connectedGroups);
-
-        return $currentModelCollection->merge($connections);
     }
 }
