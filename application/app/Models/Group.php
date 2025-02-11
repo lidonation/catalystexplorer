@@ -7,12 +7,14 @@ namespace App\Models;
 use App\Casts\DateFormatCast;
 use App\Enums\CatalystCurrencySymbols;
 use App\Enums\ProposalStatus;
+use App\Traits\HasConnections;
 use App\Traits\HasLocations;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Log;
 use Laravel\Scout\Searchable;
 use Laravolt\Avatar\Facade as Avatar;
 use Spatie\MediaLibrary\HasMedia;
@@ -21,10 +23,25 @@ use Spatie\Translatable\HasTranslations;
 
 class Group extends Model implements HasMedia
 {
-    use HasLocations, HasTranslations, InteractsWithMedia, Searchable;
+    use HasConnections, HasLocations, HasTranslations, InteractsWithMedia, Searchable;
 
     public array $translatable = [
         'bio',
+    ];
+
+    protected $withCount = [
+        'proposals',
+        'completed_proposals',
+        'funded_proposals',
+        'unfunded_proposals'
+    ];
+
+    protected $appends = [
+        'profile_photo_url', 
+        'amount_distributed_usd', 
+        'amount_distributed_ada', 
+        'amount_requested_ada', 
+        'amount_requested_usd'
     ];
 
     protected function casts(): array
@@ -51,11 +68,17 @@ class Group extends Model implements HasMedia
             'ideascale_profiles',
             'tags.id',
             'tags',
-            'proposals',
+            'proposals.fund.title',
+            'proposals.status',
             'proposals_funded',
             'proposals_completed',
             'amount_awarded_ada',
             'amount_awarded_usd',
+            'proposals_count',
+            'proposals_ideafest',
+            'proposals_woman',
+            'proposals_impact',
+            'ideascale_profiles.id'
         ];
     }
 
@@ -104,14 +127,14 @@ class Group extends Model implements HasMedia
     public function gravatar(): Attribute
     {
         return Attribute::make(
-            get: fn () => Avatar::create($this->name ?? 'default')->toGravatar()
+            get: fn() => Avatar::create($this->name ?? 'default')->toGravatar()
         );
     }
 
     public function profilePhotoUrl(): Attribute
     {
         return Attribute::make(
-            get: fn () => count($this->getMedia('group')) ? $this->getMedia('group')[0]->getFullUrl() : $this->gravatar
+            get: fn() => count($this->getMedia('group')) ? $this->getMedia('group')[0]->getFullUrl() : $this->gravatar
         );
     }
 
@@ -205,7 +228,7 @@ class Group extends Model implements HasMedia
      */
     public function proposals(): BelongsToMany
     {
-        return $this->belongsToMany(Proposal::class, 'group_has_proposal', 'group_id', 'proposal_id', 'id', 'id', 'proposals');
+        return $this->belongsToMany(Proposal::class, 'group_has_proposal', 'group_id', 'proposal_id', 'id', 'id', 'proposals')->with('fund', 'communities');
     }
 
     public function completed_proposals(): BelongsToMany
@@ -245,6 +268,8 @@ class Group extends Model implements HasMedia
         $this->addMediaCollection('group')->useDisk('public');
     }
 
+    
+
     /**
      * Get the index able data array for the model.
      */
@@ -252,18 +277,20 @@ class Group extends Model implements HasMedia
     {
         $this->load(['media']);
         $array = $this->toArray();
-        $proposals = $this->proposals->map(fn ($p) => $p->toArray());
+        $proposals = $this->proposals->map(fn($p) => $p->toArray());
 
         return array_merge($array, [
-            'proposals_completed' => $proposals->filter(fn ($p) => $p['status'] === 'complete')?->count() ?? 0,
-            'proposals_funded' => $proposals->filter(fn ($p) => (bool) $p['funded_at'])?->count() ?? 0,
+            'proposals_completed' => $proposals->filter(fn($p) => $p['status'] === 'complete')?->count() ?? 0,
+            'proposals_funded' => $proposals->filter(fn($p) => (bool) $p['funded_at'])?->count() ?? 0,
             'amount_received' => intval($this->proposals()->whereNotNull('funded_at')->sum('amount_received')),
+            'proposals_ideafest' => $proposals->filter(fn($p) => isset($p['is_ideafest_proposal']) && $p['is_ideafest_proposal'] === true)->count() ?? 0,
+            'proposals_woman' => $proposals->filter(fn($p) => isset($p['is_woman_proposal']) && $p['is_woman_proposal'] === true)->count() ?? 0,
+            'proposals_impact' => $proposals->filter(fn($p) => isset($p['is_impact_proposal']) && $p['is_impact_proposal'] === true)->count() ?? 0, 
             'amount_awarded_ada' => intval($this->amount_awarded_ada),
             'amount_awarded_usd' => intval($this->amount_awarded_usd),
             'proposals' => $this->proposals,
-            'ideascale_profiles' => $this->ideascale_profiles->map(fn ($m) => $m->toArray()),
-            'tags' => $this->tags->map(fn ($m) => $m->toArray()),
+            'ideascale_profiles' => $this->ideascale_profiles->map(fn($m) => $m->toArray()),
+            'tags' => $this->tags->map(fn($m) => $m->toArray()),
         ]);
-
     }
 }

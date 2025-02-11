@@ -45,8 +45,8 @@ export default function BookmarkButton({
         <TransitionMenu
             trigger={
                 <button
-                    className="rounded-full p-1.5"
-                    aria-label={`bookmark-${modelType}-${itemId}`}
+                    className="cursor-pointer rounded-full p-1.5"
+                    aria-label={`bookmark-${modelType}`}
                     onClick={toggleBookmark}
                 >
                     {isBookmarked ? <BookmarkOnIcon /> : <BookmarkOffIcon />}

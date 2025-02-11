@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import React, { useEffect } from 'react';
 import FundData = App.DataTransferObjects.FundData;
 import CampaignData = App.DataTransferObjects.CampaignData;
 import { currency } from '@/utils/currency';
@@ -11,6 +12,7 @@ interface CampaignCardMiniProps {
 }
 
 const CampaignCardMini: React.FC<CampaignCardMiniProps> = ({ fund, campaign }) => {
+  const { t } = useTranslation();fund
   const { t } = useTranslation();fund
 
   const heroImageUrl = fund?.hero_img_url;
@@ -27,6 +29,8 @@ const CampaignCardMini: React.FC<CampaignCardMiniProps> = ({ fund, campaign }) =
         ) : (
           <div className="flex bg-primary items-center justify-center h-full">
             <span className="text-lg text-content-light">{t('developers')}</span>
+          <div className="flex bg-primary items-center justify-center h-full">
+            <span className="text-lg text-content-light">{t('developers')}</span>
           </div>
         )}
       </div>
@@ -35,6 +39,13 @@ const CampaignCardMini: React.FC<CampaignCardMiniProps> = ({ fund, campaign }) =
             {campaign?.title}
         </h3>
         <div className="flex w-full justify-between pt-4 pb-4">
+                    <SegmentedCampaignBar
+                        CampaignData = {campaign}
+                        CompletedProposalsColor="bg-success"
+                        FundedProposalsColor="bg-warning"
+                        UnfundedProposalsColor="bg-primary"
+                    />
+                </div>
                     <SegmentedCampaignBar
                         CampaignData = {campaign}
                         CompletedProposalsColor="bg-success"
@@ -54,5 +65,8 @@ const CampaignCardMini: React.FC<CampaignCardMiniProps> = ({ fund, campaign }) =
 
 
 
+
+
 export default CampaignCardMini;
+
 

@@ -14,6 +14,7 @@
         "php": "^8.3",
         "codezero/laravel-localized-routes": "^4.0",
         "hammerstone/fast-paginate": "^1.1",
+        "hashids/hashids": "^5.0",
         "http-interop/http-factory-guzzle": "^1.2",
         "inertiajs/inertia-laravel": "2.0",
         "laravel/framework": "^11.9",
@@ -36,6 +37,7 @@
         "spatie/laravel-permission": "^6.10",
         "spatie/laravel-translatable": "^6.8",
         "spatie/laravel-typescript-transformer": "^2.5",
+        "sqids/sqids": "^0.5.0",
         "tightenco/ziggy": "^2.0"
     },
     "require-dev": {

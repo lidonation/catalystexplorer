@@ -27,7 +27,7 @@ function MobileNavigation() {
                     <section className="flex flex-col gap-6 px-4 pb-8">
                         <ThemeSwitcher />
                         <UserNavigation />
-                        <UserDetails user={auth?.user as User} />
+                        <UserDetails user={auth?.user as unknown as User} />
                     </section>
                 </aside>
             </DialogPanel>

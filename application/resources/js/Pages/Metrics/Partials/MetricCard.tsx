@@ -5,6 +5,7 @@ import MetricData = App.DataTransferObjects.MetricData;
 import ArrowTrendingDown from '@/Components/svgs/ArrowTrendingDown';
 import ArrowTrendingUp from '@/Components/svgs/ArrowTrendingUp';
 import { shortNumber } from '@/utils/shortNumber';
+import Title from '@/Components/atoms/Title';
 
 interface MetricCardProps {
     metric: MetricData;
@@ -45,9 +46,9 @@ const MetricCard: React.FC<MetricCardProps> = ({ metric }) => {
                 <span className="text-content text-2xl font-bold">
                     {shortNumber(metric.value ?? 0)}
                 </span>
-                <h3 className="text-content-gray-persist max-w-[200px] truncate text-sm font-medium">
+                <Title level='3' className="text-content-gray-persist max-w-[200px] truncate text-sm font-medium">
                     {metric.title}
-                </h3>
+                </Title>
             </div>
 
             <div className="mt-20 flex grow flex-col justify-between">
@@ -114,7 +115,7 @@ const MetricCard: React.FC<MetricCardProps> = ({ metric }) => {
                                     return (
                                         <div className="bg-dark relative rounded-lg p-4 text-white shadow-lg">
                                             <div className="max-w-sm">
-                                                <h3 className="text-lg font-semibold">{point.data.xFormatted}</h3>
+                                                <Title level='3' className="text-lg font-semibold">{point.data.xFormatted}</Title>
                                                 <p className="mt-2 flex items-center text-sm">
                                                     <span className="shrink truncate">{metric.title}</span>:
                                                     <span className="font-bold">{point.data.yFormatted}</span>

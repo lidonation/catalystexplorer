@@ -8,16 +8,21 @@ import {PaginatedData} from "../../../types/paginated-data";
 import IdeascaleProfileData = App.DataTransferObjects.IdeascaleProfileData;
 import ReviewData = App.DataTransferObjects.ReviewData;
 import LocationData = App.DataTransferObjects.LocationData;
+import ConnectionData = App.DataTransferObjects.ConnectionData;
+import Title from '@/Components/atoms/Title';
+import AggregatedReviewsSummary from "@/Components/AggregatedReviewsSummary";
+import React from "react";
 
 interface GroupPageProps extends Record<string, unknown> {
     group: GroupData;
     proposals: PaginatedData<ProposalData[]>;
+    connections: ConnectionData[];
     ideascaleProfiles: PaginatedData<IdeascaleProfileData[]>;
     reviews: PaginatedData<ReviewData[]>;
     locations: PaginatedData<LocationData[]>;
 }
 
-const Group: React.FC<GroupPageProps> = ({group, proposals, ideascaleProfiles, reviews, locations}) => {
+const Group: React.FC<GroupPageProps> = ({group, proposals, connections, ideascaleProfiles, reviews, locations}) => {
     const {t} = useTranslation();
 
     return (
@@ -26,7 +31,7 @@ const Group: React.FC<GroupPageProps> = ({group, proposals, ideascaleProfiles, r
 
             <header>
                 <div className="container">
-                    <h1 className="title-1">{group.name}</h1>
+                    <Title>{group.name}</Title>
                 </div>
                 <div className="container">
                 </div>
@@ -47,13 +52,23 @@ const Group: React.FC<GroupPageProps> = ({group, proposals, ideascaleProfiles, r
                     </WhenVisible>
 
                     <section>
-                        <h2>Connections</h2>
+                        <WhenVisible data='connections' fallback={<div>Loading Connections</div>}>
+                            <div className='w-full overflow-auto'>
+                                <Title level='2'>Connections</Title>
+
+                                {typeof connections !== 'undefined' && (
+                                    <div className='max-w-lg'>
+                                        {JSON.stringify(connections)}
+                                    </div>
+                                )}
+                            </div>
+                        </WhenVisible>
                     </section>
 
                     <section>
                         <WhenVisible data='ideascaleProfiles' fallback={<div>Loading Ideascale Profiles</div>}>
                             <div className='w-full overflow-auto'>
-                                <h1>Ideascale Profiles</h1>
+                                <Title level='2'>Ideascale Profiles</Title>
 
                                 {typeof ideascaleProfiles?.data !== 'undefined' && (
                                     <div className='max-w-lg'>
@@ -67,7 +82,10 @@ const Group: React.FC<GroupPageProps> = ({group, proposals, ideascaleProfiles, r
                     <section>
                         <WhenVisible data='reviews' fallback={<div>Loading Reviews</div>}>
                             <div className='w-full overflow-auto'>
-                                <h1>Reviews</h1>
+                                <Title level='2'>Reviews</Title>
+                                <div>
+                                    <AggregatedReviewsSummary reviews={[]} />
+                                </div>
 
                                 {typeof reviews?.data !== 'undefined' && (
                                     <div className='max-w-lg'>
@@ -81,7 +99,7 @@ const Group: React.FC<GroupPageProps> = ({group, proposals, ideascaleProfiles, r
                     <section>
                         <WhenVisible data='locations' fallback={<div>Loading Locations</div>}>
                             <div className='w-full overflow-auto'>
-                                <h1>Locations</h1>
+                                <Title level='2'>Locations</Title>
 
                                 {typeof locations?.data !== 'undefined' && (
                                     <div className='max-w-lg'>

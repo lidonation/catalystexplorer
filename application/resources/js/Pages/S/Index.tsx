@@ -7,10 +7,11 @@ import { Head, WhenVisible } from '@inertiajs/react';
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import DynamicSearchResults, {
-    EmptyState,
 } from './Partials/DynamicSearchResults';
+import RecordsNotFound from '@/Layouts/RecordsNotFound';
 import ResultTabs from './Partials/ResultTabs';
 import SearchResultsLoading from './Partials/SearchResultsLoading';
+import Title from '@/Components/atoms/Title';
 
 interface SearchResultsProps extends SearchResultData {
     counts: SearchResultCounts;
@@ -123,7 +124,8 @@ const SearchResults = ({ counts, ...results }: SearchResultsProps) => {
     if (TAB_CONFIG.length === 0) {
         return (
             <div className="container py-8">
-                <EmptyState query={query as string} translation={t} />
+                <RecordsNotFound context="search" />
+                {/* <EmptyState query={query as string} translation={t} /> */}
             </div>
         );
     }
@@ -135,9 +137,9 @@ const SearchResults = ({ counts, ...results }: SearchResultsProps) => {
                 <div className="sticky top-0 z-50 backdrop-blur-md">
                     <div className="container px-4 py-4">
                         <div className="mb-4 flex w-full flex-col">
-                            <h1 className="title-3">
+                            <Title level='3'>
                                 {t('searchResults.results.title', { query })}
-                            </h1>
+                            </Title>
                         </div>
                         <ResultTabs
                             counts={counts}

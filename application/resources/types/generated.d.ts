@@ -74,6 +74,10 @@ created_at?: string;
 updated_at?: string;
 deleted_at?: string;
 };
+export type ConnectionData = {
+id: number | null;
+name: string;
+};
 export type FundData = {
 amount: number;
 label: string;
@@ -110,6 +114,7 @@ website?: string;
 twitter?: string;
 discord?: string;
 github?: string;
+linkedin?:string;
 created_at?: string;
 updated_at?: string;
 deleted_at?: string;
@@ -127,7 +132,7 @@ proposals_count?: number;
 
 };
 export type IdeascaleProfileData = {
-id: number | null;
+id: string | null;
 ideascaleId?: number;
 username?: string;
 email?: string;
@@ -156,6 +161,7 @@ export type LocationData = {
 id: number | null;
 country: string;
 city: string;
+region?: string;
 region?: string;
 street?: string;
 address_1?: string;
@@ -193,7 +199,7 @@ type: string | null;
 published_at?: string;
 };
 export type ProposalData = {
-id: number | null;
+id: string | null;
 campaign: App.DataTransferObjects.CampaignData | null;
 title: string | null;
 slug: string;
@@ -254,11 +260,12 @@ flagged: boolean;
 qa_rationale?: Array<any>;
 };
 export type UserData = {
-id: number;
+id: string;
 name: string;
 email: string;
 profile_photo_url: string;
 email_verified_at: string | null;
+
 };
 }
 

@@ -2,6 +2,7 @@ import { Copy } from 'lucide-react';
 import CompletedNftImage from "@/assets/images/completed-nft.png";
 import { useTranslation } from 'react-i18next';
 import { useState } from 'react';
+import Title from '@/Components/atoms/Title';
 
 const BlockchainData = () => {
   const { t } = useTranslation();
@@ -18,7 +19,7 @@ const BlockchainData = () => {
         className="w-full rounded-lg mb-8"
       />
       
-      <h2 className="text-lg font-semibold mb-6">{t('blockchainData')}</h2>
+      <Title level='1' className="font-semibold mb-6">{t('blockchainData')}</Title>
       
       <div className="space-y-6">
         <div className="grid grid-cols-[auto,24px,1fr] md:grid-cols-[160px,24px,1fr] items-start gap-x-2">

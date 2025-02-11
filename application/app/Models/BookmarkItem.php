@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Casts\HashId;
 use App\Traits\HasModel;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
@@ -32,5 +33,13 @@ class BookmarkItem extends Model
     public function model(): MorphTo
     {
         return $this->morphTo();
+    }
+
+    public function casts(): array
+    {
+        return [
+            'id' => HashId::class,
+        ];
+
     }
 }
