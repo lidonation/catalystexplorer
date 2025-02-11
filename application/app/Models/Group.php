@@ -14,7 +14,6 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Facades\Artisan;
-use Illuminate\Support\Facades\Log;
 use Laravel\Scout\Searchable;
 use Laravolt\Avatar\Facade as Avatar;
 use Spatie\MediaLibrary\HasMedia;
@@ -29,31 +28,9 @@ class Group extends Model implements HasMedia
         'bio',
     ];
 
-    protected $withCount = [
-        'proposals',
-        'completed_proposals',
-        'funded_proposals',
-        'unfunded_proposals'
-    ];
-
     protected $appends = [
-        'profile_photo_url', 
-        'amount_distributed_usd', 
-        'amount_distributed_ada', 
-        'amount_requested_ada', 
-        'amount_requested_usd'
+        'profile_photo_url',
     ];
-
-    protected function casts(): array
-    {
-        return [
-            'created_at' => DateFormatCast::class,
-            'updated_at' => DateFormatCast::class,
-            'amount_requested' => 'integer',
-            'amount_awarded_ada' => 'integer',
-            'amount_awarded_usd' => 'integer',
-        ];
-    }
 
     public static function runCustomIndex(): void
     {
@@ -78,7 +55,7 @@ class Group extends Model implements HasMedia
             'proposals_ideafest',
             'proposals_woman',
             'proposals_impact',
-            'ideascale_profiles.id'
+            'ideascale_profiles.id',
         ];
     }
 
@@ -127,14 +104,14 @@ class Group extends Model implements HasMedia
     public function gravatar(): Attribute
     {
         return Attribute::make(
-            get: fn() => Avatar::create($this->name ?? 'default')->toGravatar()
+            get: fn () => Avatar::create($this->name ?? 'default')->toGravatar()
         );
     }
 
     public function profilePhotoUrl(): Attribute
     {
         return Attribute::make(
-            get: fn() => count($this->getMedia('group')) ? $this->getMedia('group')[0]->getFullUrl() : $this->gravatar
+            get: fn () => count($this->getMedia('group')) ? $this->getMedia('group')[0]->getFullUrl() : $this->gravatar
         );
     }
 
@@ -268,8 +245,6 @@ class Group extends Model implements HasMedia
         $this->addMediaCollection('group')->useDisk('public');
     }
 
-    
-
     /**
      * Get the index able data array for the model.
      */
@@ -277,20 +252,31 @@ class Group extends Model implements HasMedia
     {
         $this->load(['media']);
         $array = $this->toArray();
-        $proposals = $this->proposals->map(fn($p) => $p->toArray());
+        $proposals = $this->proposals->map(fn ($p) => $p->toArray());
 
         return array_merge($array, [
-            'proposals_completed' => $proposals->filter(fn($p) => $p['status'] === 'complete')?->count() ?? 0,
-            'proposals_funded' => $proposals->filter(fn($p) => (bool) $p['funded_at'])?->count() ?? 0,
+            'proposals_completed' => $proposals->filter(fn ($p) => $p['status'] === 'complete')?->count() ?? 0,
+            'proposals_funded' => $proposals->filter(fn ($p) => (bool) $p['funded_at'])?->count() ?? 0,
             'amount_received' => intval($this->proposals()->whereNotNull('funded_at')->sum('amount_received')),
-            'proposals_ideafest' => $proposals->filter(fn($p) => isset($p['is_ideafest_proposal']) && $p['is_ideafest_proposal'] === true)->count() ?? 0,
-            'proposals_woman' => $proposals->filter(fn($p) => isset($p['is_woman_proposal']) && $p['is_woman_proposal'] === true)->count() ?? 0,
-            'proposals_impact' => $proposals->filter(fn($p) => isset($p['is_impact_proposal']) && $p['is_impact_proposal'] === true)->count() ?? 0, 
+            'proposals_ideafest' => $proposals->filter(fn ($p) => isset($p['is_ideafest_proposal']) && $p['is_ideafest_proposal'] === true)->count() ?? 0,
+            'proposals_woman' => $proposals->filter(fn ($p) => isset($p['is_woman_proposal']) && $p['is_woman_proposal'] === true)->count() ?? 0,
+            'proposals_impact' => $proposals->filter(fn ($p) => isset($p['is_impact_proposal']) && $p['is_impact_proposal'] === true)->count() ?? 0,
             'amount_awarded_ada' => intval($this->amount_awarded_ada),
             'amount_awarded_usd' => intval($this->amount_awarded_usd),
             'proposals' => $this->proposals,
-            'ideascale_profiles' => $this->ideascale_profiles->map(fn($m) => $m->toArray()),
-            'tags' => $this->tags->map(fn($m) => $m->toArray()),
+            'ideascale_profiles' => $this->ideascale_profiles->map(fn ($m) => $m->toArray()),
+            'tags' => $this->tags->map(fn ($m) => $m->toArray()),
         ]);
+    }
+
+    protected function casts(): array
+    {
+        return [
+            'created_at' => DateFormatCast::class,
+            'updated_at' => DateFormatCast::class,
+            'amount_requested' => 'integer',
+            'amount_awarded_ada' => 'integer',
+            'amount_awarded_usd' => 'integer',
+        ];
     }
 }

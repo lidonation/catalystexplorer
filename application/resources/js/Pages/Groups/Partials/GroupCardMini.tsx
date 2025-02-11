@@ -5,6 +5,9 @@ import { useTranslation } from 'react-i18next';
 import GroupFundingPercentagesMini from './GroupFundingPercentageMini';
 import GroupUsers from './GroupUsers';
 import GroupData = App.DataTransferObjects.GroupData;
+import {Link} from "@inertiajs/react";
+import {useLocalizedRoute} from "@/utils/localizedRoute";
+import Title from "@/Components/atoms/Title";
 
 interface GroupCardMiniProps {
     group: GroupData;
@@ -13,22 +16,28 @@ interface GroupCardMiniProps {
 const GroupCardMini: React.FC<GroupCardMiniProps> = ({ group }) => {
     const { t } = useTranslation();
 
-    return (
+    return group && (
         <Card>
             <div className="flex w-full flex-col items-center gap-4">
                 <div className="bg-background-light flex-shrink-0 rounded-full">
                     <UserAvatar imageUrl={group?.profile_photo_url} size="30" />
                 </div>
 
-                <p className="text-lg font-bold">{group?.name}</p>
+                <Link href={useLocalizedRoute('groups.group', {group: group?.slug})}
+                      className="w-full flex justify-center">
+                    <Title level="5">
+                        {group?.name}
+                    </Title>
+
+                </Link>
             </div>
             <div>
                 <div className="text-primary bg-eye-logo mt-2 flex w-[60px] items-center justify-center rounded-md border p-1">
-                    <p className="text-3 font-bold">
+                    <div className="text-3 font-bold">
                         {group?.proposals_funded}
-                    </p>
-                    <p>/</p>
-                    <p className="text-xs">{group?.proposals_count}</p>
+                    </div>
+                    <div>/</div>
+                    <div className="text-xs">{group?.proposals_count}</div>
                 </div>
                 <p className="mt-2">{t('groups.fundedProposals')}</p>
             </div>

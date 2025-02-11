@@ -36,9 +36,15 @@ class RouteServiceProvider extends ServiceProvider
 
                 $collection = $paths->get($hashIndex - 1);
                 $model = Str::of($collection)->singular()->studly()->value();
+                $class = "App\Models\\{$model}";
+
+                if (! class_exists($class)) {
+                    return $hashId;
+                }
+
                 $model = match ($collection) {
                     'bookmark-collections' => BookmarkCollection::class,
-                    default => "App\Models\{$model}",
+                    default => $class,
                 };
 
                 return (new HashIdService(new $model))->decode($hashId);
