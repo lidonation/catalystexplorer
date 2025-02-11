@@ -10,6 +10,8 @@ import ReviewData = App.DataTransferObjects.ReviewData;
 import LocationData = App.DataTransferObjects.LocationData;
 import ConnectionData = App.DataTransferObjects.ConnectionData;
 import Title from '@/Components/atoms/Title';
+import AggregatedReviewsSummary from "@/Components/AggregatedReviewsSummary";
+import React from "react";
 
 interface GroupPageProps extends Record<string, unknown> {
     group: GroupData;
@@ -81,6 +83,9 @@ const Group: React.FC<GroupPageProps> = ({group, proposals, connections, ideasca
                         <WhenVisible data='reviews' fallback={<div>Loading Reviews</div>}>
                             <div className='w-full overflow-auto'>
                                 <Title level='2'>Reviews</Title>
+                                <div>
+                                    <AggregatedReviewsSummary reviews={[]} />
+                                </div>
 
                                 {typeof reviews?.data !== 'undefined' && (
                                     <div className='max-w-lg'>

@@ -111,6 +111,7 @@ class GroupsController extends Controller
                     )
                 )
             ),
+            //            'ideascaleProfiles' => [],
             'ideascaleProfiles' => Inertia::optional(
                 fn () => to_length_aware_paginator(
                     IdeascaleProfileData::collect(
@@ -132,6 +133,7 @@ class GroupsController extends Controller
                     )
                 )
             ),
+            //            'connections' => [],
             'connections' => Inertia::optional(
                 fn () => ConnectionData::collect(
                     $group->connected_items
