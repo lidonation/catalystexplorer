@@ -21,7 +21,7 @@ export default function ProposalUsers({ users,onUserClick, className }: PageProp
         className={`flex justify-between pt-3 items-center ${className}`}
         aria-labelledby="team-heading"
         >
-            <Title level='3' id="team-heading" className="font-medium">
+            <Title level='5' id="team-heading">
             {t('teams')}
             </Title>
             <ul className="flex cursor-pointer -space-x-2">
