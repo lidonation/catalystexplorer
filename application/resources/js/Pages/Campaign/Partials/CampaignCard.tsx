@@ -111,7 +111,7 @@ const CampaignCard: React.FC<CampaignCardProps> = ({ fund, campaign }) => {
                     <DistributedVsAwarded
                         distributed={campaign.totalDistributed}
                         awarded={campaign.totalAwarded}
-                        currency={campaign?.currency ?? ''}
+                        currency={campaign.currency}
                     />
                 </div>
             </div>
