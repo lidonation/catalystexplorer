@@ -12,7 +12,7 @@ use Spatie\TypeScriptTransformer\Attributes\TypeScript;
 final class IdeascaleProfileData extends Data
 {
     public function __construct(
-        public ?string $id,
+        public ?string $hash,
 
         #[TypeScriptOptional]
         public ?int $ideascaleId,

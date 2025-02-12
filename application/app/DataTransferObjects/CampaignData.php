@@ -12,7 +12,7 @@ use Spatie\TypeScriptTransformer\Attributes\TypeScript;
 class CampaignData extends Data
 {
     public function __construct(
-        public ?int $id,
+        public ?string $hash,
 
         #[TypeScriptOptional]
         public ?int $fund_id,
@@ -41,7 +41,7 @@ class CampaignData extends Data
         #[TypeScriptOptional]
         public ?string $label,
 
-        public string $currency,
+        public ?string $currency,
 
         public ?int $proposals_count,
 
@@ -51,8 +51,8 @@ class CampaignData extends Data
 
         public ?int $completed_proposals_count,
 
-        public float $totalAwarded,
+        public ?float $totalAwarded,
 
-        public float $totalDistributed,
+        public ?float $totalDistributed,
     ) {}
 }

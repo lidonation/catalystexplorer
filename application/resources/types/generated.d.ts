@@ -74,7 +74,7 @@ updated_at?: string;
 deleted_at?: string;
 };
 export type ConnectionData = {
-id: number | null;
+hash: string | null;
 name: string;
 };
 export type FundData = {
@@ -107,6 +107,7 @@ user_id?: number;
 name?: string;
 hero_img_url?: string;
 bio?: string;
+profile_photo_url?: string;
 slug?: string;
 status?: string;
 meta_title?: string;
@@ -114,11 +115,10 @@ website?: string;
 twitter?: string;
 discord?: string;
 github?: string;
-linkedin?:string;
+linkedin?: string;
 created_at?: string;
 updated_at?: string;
 deleted_at?: string;
-profile_photo_url: string;
 amount_awarded_ada?: number;
 amount_awarded_usd?: number;
 amount_requested_ada?: number;
@@ -131,11 +131,11 @@ unfunded_proposals_count?: number;
 completed_proposals_count?: number;
 amount_requested?: number;
 amount_awarded?: number;
-ideascale_profiles?:App.DataTransferObjects.IdeascaleProfileData[] | null;
 proposals_funded?: number;
+ideascale_profiles?: Array<any>;
 };
 export type IdeascaleProfileData = {
-id: string | null;
+hash: string | null;
 ideascaleId?: number;
 username?: string;
 email?: string;
@@ -163,7 +163,7 @@ proposals_count?: number;
 collaborating_proposals_count?: number;
 };
 export type LocationData = {
-id: number | null;
+hash: string | null;
 country: string;
 city: string;
 region?: string;
@@ -203,7 +203,7 @@ type: string | null;
 published_at?: string;
 };
 export type ProposalData = {
-id: string | null;
+hash: string | null;
 campaign: App.DataTransferObjects.CampaignData | null;
 title: string | null;
 slug: string;
@@ -240,7 +240,7 @@ opensource: boolean | null;
 link?: string;
 };
 export type ReviewData = {
-id: number | null;
+hash: string | null;
 parent_id?: number;
 user_id?: number;
 model_id: number | null;
@@ -269,6 +269,5 @@ name: string;
 email: string;
 profile_photo_url: string;
 email_verified_at: string | null;
-
 };
 }

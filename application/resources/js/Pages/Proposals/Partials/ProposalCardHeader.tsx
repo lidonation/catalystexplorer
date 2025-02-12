@@ -68,10 +68,10 @@ export default function ProposalCardHeader({
                             />
 
                             <ListProvider>
-                                {proposal.id && (
+                                {proposal.hash && (
                                     <BookmarkButton
                                         modelType="proposals"
-                                        itemId={proposal.id}
+                                        itemId={proposal.hash}
                                     />
                                 )}
                             </ListProvider>

@@ -24,7 +24,7 @@ const IdeascaleProfileCard: React.FC<IdeascaleProfileProps> = ({
                     <ListProvider>
                         <BookmarkButton
                             modelType="ideascale-profiles"
-                            itemId={ideascaleProfile?.id ?? '0'}
+                            itemId={ideascaleProfile?.hash ?? '0'}
                         />
                     </ListProvider>
                 </div>
@@ -39,7 +39,7 @@ const IdeascaleProfileCard: React.FC<IdeascaleProfileProps> = ({
                     </div>
                     <div className="min-w-0 flex-1">
                         <p className="text-2 font-bold break-words">
-                            <Link href={useLocalizedRoute('ideascaleProfiles.show', {id: ideascaleProfile?.id})}>
+                            <Link href={useLocalizedRoute('ideascaleProfiles.show', {id: ideascaleProfile?.hash})}>
                                 {ideascaleProfile?.name ??
                                     ideascaleProfile?.username}
                             </Link>

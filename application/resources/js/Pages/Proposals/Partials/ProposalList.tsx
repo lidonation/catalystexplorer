@@ -16,7 +16,7 @@ const ProposalList: React.FC<ProposalProps> = ({
             {proposals &&
                 proposals?.map((proposal) => (
                     <ProposalCard
-                        key={proposal.id}
+                        key={proposal.hash}
                         proposal={proposal}
                         isHorizontal={isHorizontal}
                         globalQuickPitchView={false}

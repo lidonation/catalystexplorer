@@ -4,17 +4,16 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use App\Casts\HashId;
 use App\Traits\HasModel;
 
 class Location extends Model
 {
     use HasModel;
 
+    protected $hidden = ['id', 'pivot.location_id'];
+
     public function casts(): array
     {
-        return [
-            'id' => HashId::class,
-        ];
+        return [];
     }
 }
