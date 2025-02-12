@@ -29,7 +29,7 @@ export default function IdeascaleProfileUsers({
     };
 
     return (
-        <section className={`flex pt-3`} aria-labelledby="team-heading">
+        <section className={`flex`} aria-labelledby="team-heading">
             <ul className="flex cursor-pointer -space-x-2">
                 {visibleUsers?.map((user) => (
                     <li key={user.id} onClick={() => onUserClick(user)}>

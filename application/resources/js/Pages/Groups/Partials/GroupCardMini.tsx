@@ -1,6 +1,5 @@
 import Title from '@/Components/atoms/Title';
 import Card from '@/Components/Card';
-import UserAvatar from '@/Components/UserAvatar';
 import IdeascaleProfileUsers from '@/Pages/IdeascaleProfile/Partials/IdeascaleProfileUsersComponent';
 import { useLocalizedRoute } from '@/utils/localizedRoute';
 import { Link } from '@inertiajs/react';
@@ -26,15 +25,21 @@ const GroupCardMini: React.FC<GroupCardMiniProps> = ({ group }) => {
         [],
     );
 
+    const noAwardedFunds =
+        !group?.amount_awarded_ada && !group?.amount_awarded_usd;
+    const allAwardedFunds =
+        group?.amount_awarded_ada && group?.amount_awarded_usd;
+
     return (
         group && (
             <Card>
-                <div className="flex w-full flex-col items-center gap-4">
+                <div className="flex h-full w-full flex-col items-center gap-4">
                     <div className="bg-background-light flex-shrink-0 rounded-full">
-                        <UserAvatar
+                        {/* <UserAvatar
                             imageUrl={group?.profile_photo_url}
                             size="30"
-                        />
+                        /> */}
+                        <div className="bg-dark size-30 rounded-full" />
                     </div>
 
                     <Link
@@ -58,12 +63,29 @@ const GroupCardMini: React.FC<GroupCardMiniProps> = ({ group }) => {
                 </div>
 
                 <div>
-                    <GroupFundingPercentages
-                        amount_ada={group?.amount_distributed_ada ?? 0}
-                        total_ada={group?.amount_awarded_ada ?? 0}
-                        amount_usd={group?.amount_distributed_usd ?? 0}
-                        total_usd={group?.amount_awarded_usd ?? 0}
-                    />
+                    <div
+                        className={`grid ${noAwardedFunds || allAwardedFunds ? 'grid-cols-2' : 'grid-cols-1'} mt-4 gap-2`}
+                    >
+                        {(group?.amount_awarded_ada || noAwardedFunds) && (
+                            <GroupFundingPercentages
+                                amount={group?.amount_distributed_ada ?? 0}
+                                total={group?.amount_awarded_ada ?? 0}
+                                primaryBackgroundColor="bg-content-light"
+                                secondaryBackgroundColor="bg-primary"
+                                amount_currency="ADA"
+                            />
+                        )}
+                        {(group?.amount_awarded_usd || noAwardedFunds) && (
+                            <GroupFundingPercentages
+                                amount={group?.amount_distributed_usd ?? 0}
+                                total={group?.amount_awarded_usd ?? 0}
+                                primaryBackgroundColor="bg-content-light"
+                                secondaryBackgroundColor="bg-primary-dark"
+                                amount_currency="USD"
+                            />
+                        )}
+                    </div>
+                    <p>{t('groups.received')}</p>
                 </div>
 
                 <div className="border-content-light mt-2 flex items-center justify-between border-t pt-3">

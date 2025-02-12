@@ -23,8 +23,7 @@ export default function GroupSocials({ group }: GroupSocials) {
     };
 
     return (
-        <section
-            className={`border-content-light mt-2 flex items-center justify-between border-t pt-3`}
+        <div
             aria-labelledby="group-socials"
         >
             <div className="text-content flex justify-between gap-1">
@@ -75,6 +74,6 @@ export default function GroupSocials({ group }: GroupSocials) {
                     </a>
                 )}
             </div>
-        </section>
+        </div>
     );
 }
