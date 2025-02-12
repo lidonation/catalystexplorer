@@ -249,7 +249,7 @@ const ProfileWorkflow: React.FC<ProfileWorkflowProps> = ({ user }) => {
                         </p>
 
                         <ProposalList
-                            proposals={initialProposals.filter((p) => p.profileName === selectedProfile?.name)}
+                            proposals={[]}
                         />
                     </>
                 )}

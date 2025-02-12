@@ -16,8 +16,12 @@ final class FundData extends Data
     public function __construct(
 
         public float $amount,
+
         public string $label,
+
         public string $title,
+
+        public ?string $hash,
 
         #[TypeScriptOptional]
         public ?int $proposals_count,

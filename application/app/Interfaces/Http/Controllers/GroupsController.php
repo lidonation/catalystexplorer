@@ -81,7 +81,7 @@ class GroupsController extends Controller
 
     public function group(Request $request, Group $group, GroupRepository $groupRepository): Response
     {
-        $group->load('proposals')
+        $group->load(['proposals'])
             ->loadCount([
                 'proposals',
                 'funded_proposals',
@@ -106,36 +106,32 @@ class GroupsController extends Controller
                     )
                 )
             ),
-            'ideascaleProfiles' => [],
-            //            'ideascaleProfiles' => Inertia::optional(
-            //                fn() => to_length_aware_paginator(
-            //                    IdeascaleProfileData::collect(
-            //                        $group->ideascale_profiles()->with([])->paginate(12)
-            //                    )
-            //                )
-            //            ),
-            'reviews' => [],
-            //            'reviews' => Inertia::optional(
-            //                fn() => to_length_aware_paginator(
-            //                    ReviewData::collect(
-            //                        Review::query()->paginate(8)
-            //                    )
-            //                )
-            //            ),
-            'locations' => [],
-            //            'locations' => Inertia::optional(
-            //                fn() => to_length_aware_paginator(
-            //                    LocationData::collect(
-            //                        $group->locations()->with([])->paginate(12)
-            //                    )
-            //                )
-            //            ),
-            'connections' => [],
-            //            'connections' => Inertia::optional(
-            //                fn() => ConnectionData::collect(
-            //                    $group->connected_items
-            //                )
-            //            ),
+            'ideascaleProfiles' => Inertia::optional(
+                fn () => to_length_aware_paginator(
+                    IdeascaleProfileData::collect(
+                        $group->ideascale_profiles()->with([])->paginate(12)
+                    )
+                )
+            ),
+            'reviews' => Inertia::optional(
+                fn () => to_length_aware_paginator(
+                    ReviewData::collect(
+                        Review::query()->paginate(8)
+                    )
+                )
+            ),
+            'locations' => Inertia::optional(
+                fn () => to_length_aware_paginator(
+                    LocationData::collect(
+                        $group->locations()->paginate(12)
+                    )
+                )
+            ),
+            'connections' => Inertia::optional(
+                fn () => ConnectionData::collect(
+                    $group->connected_items ?? []
+                )
+            ),
         ]);
     }
 

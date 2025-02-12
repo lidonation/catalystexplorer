@@ -26,7 +26,7 @@ export default function ProposalUsers({ users,onUserClick, className }: PageProp
             </Title>
             <ul className="flex cursor-pointer -space-x-2">
                 {visibleUsers?.map((user) => (
-                    <li key={user.id} onClick={() => onUserClick(user)}>
+                    <li key={user.hash} onClick={() => onUserClick(user)}>
                         <UserAvatar
                             size="size-8"
                             imageUrl={user.profile_photo_url}

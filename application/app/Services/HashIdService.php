@@ -16,7 +16,11 @@ class HashIdService
         Model|Authenticatable $model
     ) {
         $connections = config('hashids.connections');
-        $alphabet = $connections[$model::class]['alphabet'];
+        if (isset($connections[$model::class])) {
+            $alphabet = $connections[$model::class]['alphabet'];
+        } else {
+            $alphabet = $connections['default']['alphabet'];
+        }
         $this->hashIds = new Sqids(
             $alphabet,
             10
