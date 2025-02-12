@@ -59,6 +59,8 @@ proposals_count: number | null;
 unfunded_proposals_count: number | null;
 funded_proposals_count: number | null;
 completed_proposals_count: number | null;
+totalAwarded: number;
+totalDistributed: number;
 };
 export type CommunityData = {
 id: number | null;
