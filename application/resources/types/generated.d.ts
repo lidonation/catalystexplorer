@@ -44,6 +44,9 @@ deleted_at: string | null;
 bookmarkable: ProposalData | IdeascaleProfileData | GroupData | ReviewData | CommunityData;
 }
 export type CampaignData = {
+unfundedProposals: number;
+fundedProposals: number;
+completedProposals: number;
 id: number | null;
 fund_id?: number;
 title: string | null;
