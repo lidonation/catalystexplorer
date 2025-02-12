@@ -123,6 +123,7 @@ name?: string;
 hero_img_url?: string;
 bio?: string;
 profile_photo_url?: string;
+profile_photo_url?: string;
 slug?: string;
 status?: string;
 meta_title?: string;
@@ -147,8 +148,7 @@ proposals_completed?: number;
 amount_requested?: number;
 amount_awarded?: number;
 proposals_funded?: number;
-reviews?: number;
-ideascale_profiles?: App.DataTransferObjects.IdeascaleProfileData[];
+ideascale_profiles?: Array<any>;
 };
 export type IdeascaleProfileData = {
 hash: string | null;
