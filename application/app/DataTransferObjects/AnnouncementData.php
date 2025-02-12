@@ -11,7 +11,7 @@ use Spatie\TypeScriptTransformer\Attributes\TypeScript;
 #[TypeScript]
 class AnnouncementData extends Data
 {
-    public int $id;
+    public string $hash;
 
     public string $title;
 

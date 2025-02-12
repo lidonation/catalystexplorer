@@ -12,7 +12,7 @@ use Spatie\TypeScriptTransformer\Attributes\TypeScript;
 final class BookmarkItemData extends Data
 {
     public function __construct(
-        public ?int $id,
+        public ?string $hash,
 
         #[TypeScriptOptional]
         public ?int $user_id,

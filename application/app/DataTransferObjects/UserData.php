@@ -11,7 +11,7 @@ use Spatie\TypeScriptTransformer\Attributes\TypeScript;
 class UserData extends Data
 {
     public function __construct(
-        public string $id,
+        public string $hash,
 
         public string $name,
 
