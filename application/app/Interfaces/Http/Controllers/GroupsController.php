@@ -24,7 +24,6 @@ use Inertia\Inertia;
 use Inertia\Response;
 use JetBrains\PhpStorm\ArrayShape;
 use Laravel\Scout\Builder;
-use Meilisearch\Endpoints\Indexes;
 
 class GroupsController extends Controller
 {
@@ -59,8 +58,6 @@ class GroupsController extends Controller
     public array $fundsCount = [];
 
     public int $proposalsCount;
-
-
 
     public function index(Request $request): Response
     {
@@ -103,40 +100,42 @@ class GroupsController extends Controller
         return Inertia::render('Groups/Group', [
             'group' => GroupData::from($group),
             'proposals' => Inertia::optional(
-                fn() => to_length_aware_paginator(
+                fn () => to_length_aware_paginator(
                     ProposalData::collect(
                         $group->proposals()->with(['users', 'fund'])->paginate(5)
                     )
                 )
             ),
-            //            'ideascaleProfiles' => [],
-            'ideascaleProfiles' => Inertia::optional(
-                fn() => to_length_aware_paginator(
-                    IdeascaleProfileData::collect(
-                        $group->ideascale_profiles()->with([])->paginate(12)
-                    )
-                )
-            ),
-            'reviews' => Inertia::optional(
-                fn() => to_length_aware_paginator(
-                    ReviewData::collect(
-                        Review::query()->paginate(8)
-                    )
-                )
-            ),
-            'locations' => Inertia::optional(
-                fn() => to_length_aware_paginator(
-                    LocationData::collect(
-                        $group->locations()->with([])->paginate(12)
-                    )
-                )
-            ),
-            //            'connections' => [],
-            'connections' => Inertia::optional(
-                fn() => ConnectionData::collect(
-                    $group->connected_items
-                )
-            ),
+            'ideascaleProfiles' => [],
+            //            'ideascaleProfiles' => Inertia::optional(
+            //                fn() => to_length_aware_paginator(
+            //                    IdeascaleProfileData::collect(
+            //                        $group->ideascale_profiles()->with([])->paginate(12)
+            //                    )
+            //                )
+            //            ),
+            'reviews' => [],
+            //            'reviews' => Inertia::optional(
+            //                fn() => to_length_aware_paginator(
+            //                    ReviewData::collect(
+            //                        Review::query()->paginate(8)
+            //                    )
+            //                )
+            //            ),
+            'locations' => [],
+            //            'locations' => Inertia::optional(
+            //                fn() => to_length_aware_paginator(
+            //                    LocationData::collect(
+            //                        $group->locations()->with([])->paginate(12)
+            //                    )
+            //                )
+            //            ),
+            'connections' => [],
+            //            'connections' => Inertia::optional(
+            //                fn() => ConnectionData::collect(
+            //                    $group->connected_items
+            //                )
+            //            ),
         ]);
     }
 
@@ -157,7 +156,7 @@ class GroupsController extends Controller
             ProposalSearchParams::FUNDS()->value => 'array|nullable',
             ProposalSearchParams::PROPOSALS()->value => 'array|nullable',
             ProposalSearchParams::AWARDED_ADA()->value => 'array|nullable',
-            ProposalSearchParams::AWARDED_USD()->value => 'array|nullable',     
+            ProposalSearchParams::AWARDED_USD()->value => 'array|nullable',
         ]);
 
         // format sort params for meili
@@ -177,7 +176,6 @@ class GroupsController extends Controller
 
     public function query($returnBuilder = false, $attrs = null, $filters = [])
     {
-
         $args = [
             'filter' => $this->getUserFilters(),
         ];
@@ -224,15 +222,12 @@ class GroupsController extends Controller
     // #[ArrayShape(['filters' => 'array'])]
     protected function getUserFilters(): array
     {
-
-
         $filters = [];
 
         if (! empty($this->queryParams[ProposalSearchParams::FUNDS()->value])) {
             $funds = implode("','", $this->queryParams[ProposalSearchParams::FUNDS()->value]);
             $filters[] = "proposals.fund.title IN ['{$funds}']";
         }
-        
 
         if (isset($this->queryParams[ProposalSearchParams::FUNDING_STATUS()->value])) {
             $fundingStatuses = implode(',', $this->queryParams[ProposalSearchParams::FUNDING_STATUS()->value]);
@@ -261,12 +256,12 @@ class GroupsController extends Controller
 
         if (! empty($this->queryParams[ProposalSearchParams::CAMPAIGNS()->value])) {
             $campaignIds = ($this->queryParams[ProposalSearchParams::CAMPAIGNS()->value]);
-            $filters[] = '(' . implode(' OR ', array_map(fn($c) => "proposals.campaign.id = {$c}", $campaignIds)) . ')';
+            $filters[] = '('.implode(' OR ', array_map(fn ($c) => "proposals.campaign.id = {$c}", $campaignIds)).')';
         }
 
         if (! empty($this->queryParams[ProposalSearchParams::TAGS()->value])) {
             $tagIds = ($this->queryParams[ProposalSearchParams::TAGS()->value]);
-            $filters[] = '(' . implode(' OR ', array_map(fn($c) => "tags.id = {$c}", $tagIds)) . ')';
+            $filters[] = '('.implode(' OR ', array_map(fn ($c) => "tags.id = {$c}", $tagIds)).')';
         }
 
         if (! empty($this->queryParams[ProposalSearchParams::IDEASCALE_PROFILES()->value])) {
@@ -280,8 +275,8 @@ class GroupsController extends Controller
         }
 
         if (! empty($this->queryParams[ProposalSearchParams::COHORT()->value])) {
-            $cohortFilters = array_map(fn($cohort) => "{$cohort} > 0", $this->queryParams[ProposalSearchParams::COHORT()->value]);
-            $filters[] = '(' . implode(' OR ', $cohortFilters) . ')';
+            $cohortFilters = array_map(fn ($cohort) => "{$cohort} > 0", $this->queryParams[ProposalSearchParams::COHORT()->value]);
+            $filters[] = '('.implode(' OR ', $cohortFilters).')';
         }
 
         return $filters;
@@ -289,7 +284,6 @@ class GroupsController extends Controller
 
     public function setCounts($facets, $facetStats)
     {
-
         if (isset($facets['tags.id']) && count($facets['tags.id'])) {
             $this->tagsCount = $facets['tags.id'];
         }

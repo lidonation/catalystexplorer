@@ -26,7 +26,7 @@ const DistributedVsAwarded: React.FC<DistributedVsAwardedPageProps> = ({
     }, [currency]);
 
     return (
-        <div className="flex w-full flex-col gap-2">
+        <div className="flex w-full flex-col gap-4">
             <PercentageProgressBar value={distributed} total={awarded} />
             <div className="flex items-center gap-2">
                 <span className="text-content text-2xl font-bold">

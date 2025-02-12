@@ -4,12 +4,12 @@ import { toast } from 'react-toastify';
 
 interface UseBookmarkProps {
     modelType: string;
-    itemId: number;
+    itemId: string;
 }
 
 export default function useBookmark({ modelType, itemId }: UseBookmarkProps) {
     const [isBookmarked, setIsBookmarked] = useState(false);
-    const [bookmarkId, setBookmarkId] = useState<number | null>(null);
+    const [bookmarkId, setBookmarkId] = useState<string | null>(null);
     const [isOpen, setIsOpen] = useState(false);
 
     useEffect(() => {
