@@ -1,7 +1,8 @@
 import InputError from '@/Components/InputError';
 import InputLabel from '@/Components/InputLabel';
-import PrimaryButton from '@/Components/PrimaryButton';
-import TextInput from '@/Components/TextInput';
+import PrimaryButton from '@/Components/atoms/PrimaryButton';
+import TextInput from '@/Components/atoms/TextInput';
+import Title from '@/Components/atoms/Title';
 import { Transition } from '@headlessui/react';
 import { Link, useForm, usePage } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
@@ -32,9 +33,9 @@ export default function UpdateProfileInformation({
     return (
         <section className={className}>
             <header>
-                <h2 className="text-2 text-content font-medium">
+                <Title level='2' className="text-2 text-content font-medium">
                     Profile Information
-                </h2>
+                </Title>
 
                 <p className="text-4 text-content mt-1">
                     Update your account's profile information and email address.

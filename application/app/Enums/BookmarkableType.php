@@ -12,8 +12,9 @@ use App\Models\Review;
 
 enum BookmarkableType: string
 {
+    case BOOKMARK_COLLECTIONS = 'bookmark-collections';
     case PROPOSALS = 'proposals';
-    case IDEASCALE_PROFILES = 'ideascale_profiles';
+    case IDEASCALE_PROFILES = 'ideascale-profiles';
     case GROUPS = 'groups';
     case REVIEWS = 'reviews';
     case LISTS = 'lists';
@@ -28,7 +29,7 @@ enum BookmarkableType: string
             self::IDEASCALE_PROFILES => IdeascaleProfile::class,
             self::GROUPS => Group::class,
             self::REVIEWS => Review::class,
-            self::LISTS => BookmarkCollection::class,
+            self::LISTS, self::BOOKMARK_COLLECTIONS => BookmarkCollection::class,
         };
     }
 

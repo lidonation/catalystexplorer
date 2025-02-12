@@ -1,14 +1,16 @@
-import Checkbox from '@/Components/Checkbox';
+import Checkbox from '@/Components/atoms/Checkbox';
 import InputError from '@/Components/InputError';
 import InputLabel from '@/Components/InputLabel';
-import PrimaryButton from '@/Components/PrimaryButton';
-import SecondaryButton from '@/Components/SecondaryButton';
+import PrimaryButton from '@/Components/atoms/PrimaryButton';
+import SecondaryButton from '@/Components/atoms/SecondaryButton';
 import ConnectWalletIcon from '@/Components/svgs/ConnectWalletIcon';
-import TextInput from '@/Components/TextInput';
 import { Link, router, useForm } from '@inertiajs/react';
 import axios from 'axios';
 import { FormEventHandler, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import TextInput from "@/Components/atoms/TextInput";
+import Title from './atoms/Title';
+
 interface LoginFormProps {
     title?: string;
 }
@@ -51,9 +53,9 @@ export default function LoginForm({ title }: LoginFormProps) {
             <div className="bg-background mx-4 w-full max-w-md rounded-2xl p-6 shadow-md sm:mx-0 sm:p-8">
                 {/* Conditionally render the title only if it's provided */}
                 {title && (
-                    <h2 className="text-center text-2xl font-bold sm:text-3xl">
+                    <Title level='2' className="text-center text-2xl sm:text-3xl">
                         {title}
-                    </h2>
+                    </Title>
                 )}
 
                 <div className="mt-2 text-center">

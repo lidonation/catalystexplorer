@@ -5,10 +5,13 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Casts\DateFormatCast;
+use App\Casts\HashId;
 use App\Enums\ProposalStatus;
 use App\Traits\HasConnections;
+use App\Traits\HasMetaData;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\Artisan;
@@ -20,13 +23,16 @@ use Spatie\Translatable\HasTranslations;
 
 class IdeascaleProfile extends Model implements HasMedia
 {
-    use HasConnections, HasTranslations, InteractsWithMedia, Searchable;
-
-    protected $primaryKey = 'id';
-
-    public $incrementing = true;
+    use HasConnections, HasMetaData, HasTranslations, InteractsWithMedia, Searchable;
 
     public int $maxValuesPerFacet = 8000;
+
+    /**
+     * The attributes that should be hidden for serialization.
+     *
+     * @var array<string>
+     */
+    protected $hidden = ['id'];
 
     protected $fillable = [
         'ideascale_id',
@@ -45,9 +51,7 @@ class IdeascaleProfile extends Model implements HasMedia
         'title',
     ];
 
-    protected $hidden = [];
-
-    protected $appends = ['profile_photo_url'];
+    protected $appends = ['profile_photo_url', 'hash'];
 
     public array $translatable = [
         // 'bio',
@@ -151,24 +155,6 @@ class IdeascaleProfile extends Model implements HasMedia
         );
     }
 
-    /**
-     * Scope to filter groups
-     */
-    public function scopeFilter(Builder $query, array $filters): Builder
-    {
-        $query->when($filters['search'] ?? null, function ($query, $search) {
-            $query->where(function ($q) use ($search) {
-                $q->where('name', 'ilike', "%{$search}%")
-                    ->orWhere('id', 'like', "%{$search}%")
-                    ->orWhere('username', 'ilike', "%{$search}%");
-            });
-        })->when($filters['ids'] ?? null, function ($query, $ids) {
-            $query->whereIn('id', is_array($ids) ? $ids : explode(',', $ids));
-        });
-
-        return $query;
-    }
-
     public function completed_proposals(): BelongsToMany
     {
         return $this->belongsToMany(
@@ -245,6 +231,29 @@ class IdeascaleProfile extends Model implements HasMedia
         )->where('type', 'proposal');
     }
 
+    public function claimed_by(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'claimed_by_id', 'id');
+    }
+
+    /**
+     * Scope to filter groups
+     */
+    public function scopeFilter(Builder $query, array $filters): Builder
+    {
+        $query->when($filters['search'] ?? null, function ($query, $search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'ilike', "%{$search}%")
+                    ->orWhere('id', 'like', "%{$search}%")
+                    ->orWhere('username', 'ilike', "%{$search}%");
+            });
+        })->when($filters['ids'] ?? null, function ($query, $ids) {
+            $query->whereIn('id', is_array($ids) ? $ids : explode(',', $ids));
+        });
+
+        return $query;
+    }
+
     public function toSearchableArray(): array
     {
         $this->load('proposals');
@@ -283,6 +292,8 @@ class IdeascaleProfile extends Model implements HasMedia
     protected function casts(): array
     {
         return [
+            //            'id' => HashId::class,
+            'claimed_by_id' => HashId::class,
             'created_at' => DateFormatCast::class,
             'updated_at' => DateFormatCast::class,
         ];

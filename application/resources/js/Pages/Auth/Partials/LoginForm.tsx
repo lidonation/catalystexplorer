@@ -1,10 +1,10 @@
-import Checkbox from '@/Components/Checkbox';
+import Checkbox from '@/Components/atoms/Checkbox';
 import InputError from '@/Components/InputError';
 import InputLabel from '@/Components/InputLabel';
-import PrimaryButton from '@/Components/PrimaryButton';
-import SecondaryButton from '@/Components/SecondaryButton';
+import PrimaryButton from '@/Components/atoms/PrimaryButton';
+import SecondaryButton from '@/Components/atoms/SecondaryButton';
 import ConnectWalletIcon from '@/Components/svgs/ConnectWalletIcon';
-import TextInput from '@/Components/TextInput';
+import TextInput from '@/Components/atoms/TextInput';
 import { Link, router, useForm } from '@inertiajs/react';
 import axios from 'axios';
 import { FormEventHandler, useState } from 'react';

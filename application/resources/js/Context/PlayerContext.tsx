@@ -1,4 +1,3 @@
-import { ProposalMetrics } from '@/types/proposal-metrics';
 import Plyr from 'plyr';
 import React, {
     createContext,
@@ -13,7 +12,7 @@ export interface Playlist {
     title: string | null;
     quickpitch?: string;
     provider?: Plyr.Provider;
-    id: number | null;
+    hash: string | null;
 }
 
 interface PlayerContextType {
@@ -167,7 +166,7 @@ export const PlayerProvider = ({ children }: { children: React.ReactNode }) => {
     const stopCurrentTrack = () => {
           if (plyrInstanceRef.current) {
               plyrInstanceRef.current.stop();
-              plyrInstanceRef.current.source = { type: 'video', sources:[] }; 
+              plyrInstanceRef.current.source = { type: 'video', sources:[] };
           }
           setIsPlaying(false);
           setPlaylist(undefined);
@@ -231,9 +230,9 @@ export const PlayerProvider = ({ children }: { children: React.ReactNode }) => {
         const playlist = proposals
             ?.filter((item) => item.quickpitch)
             .map((item): Playlist => {
-                const { title, quickpitch, id } = item;
+                const { title, quickpitch, hash } = item;
                 const provider = quickpitch?.match(regex) ? 'youtube' : 'vimeo';
-                return { title, quickpitch, provider, id };
+                return { title, quickpitch, provider, hash: hash ? hash : null };
             });
 
         setPlaylist(playlist);
@@ -258,7 +257,7 @@ export const PlayerProvider = ({ children }: { children: React.ReactNode }) => {
         return () => clearInterval(interval);
     }, []);
 
-    
+
     return (
         <PlayerContext.Provider
             value={{

@@ -26,7 +26,7 @@ const FundCard: React.FC<FundCardProps> = ({
             <div className="flex flex-none flex-col items-center space-y-2 sm:items-start sm:space-y-4">
                 {/* Title */}
                 <Link
-                    href={useLocalizedRoute('funds.fund', { slug: fund.slug })}
+                    href={useLocalizedRoute('funds.fund.show', { slug: fund.slug })}
                     className="hover:text-primary truncate text-center text-base font-bold sm:text-left sm:text-xl"
                 >
                     {fund.title}

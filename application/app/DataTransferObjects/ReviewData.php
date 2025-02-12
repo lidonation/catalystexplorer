@@ -13,7 +13,7 @@ use Spatie\TypeScriptTransformer\Attributes\TypeScript;
 class ReviewData extends Data
 {
     public function __construct(
-        public ?int $id,
+        public ?string $hash,
 
         #[TypeScriptOptional]
         public ?int $parent_id,
@@ -21,12 +21,12 @@ class ReviewData extends Data
         #[TypeScriptOptional]
         public ?int $user_id,
 
-        public int $model_id,
+        public ?int $model_id,
 
-        public string $model_type,
+        public ?string $model_type,
 
         #[TypeScriptOptional]
-        public ?string $title,
+        public string $title,
 
         public string $content,
 
@@ -35,12 +35,12 @@ class ReviewData extends Data
         #[TypeScriptOptional]
         public ?Carbon $published_at,
 
-        public string $type,
+        public ?string $type,
 
-        public int $ranking_total,
+        public ?int $ranking_total,
 
-        public int $helpful_total,
+        public ?int $helpful_total,
 
-        public int $not_helpful_total,
+        public ?int $not_helpful_total,
     ) {}
 }

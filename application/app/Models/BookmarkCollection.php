@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Casts\HashId;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -11,8 +12,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class BookmarkCollection extends Model
 {
     use SoftDeletes;
-
-    protected $hidden = ['id'];
 
     protected $withCount = [
         'items',
@@ -39,5 +38,12 @@ class BookmarkCollection extends Model
     {
         return $this->hasMany(BookmarkItem::class)
             ->where('model_type', Proposal::class);
+    }
+
+    public function casts(): array
+    {
+        return [
+            'id' => HashId::class,
+        ];
     }
 }

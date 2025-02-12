@@ -65,15 +65,18 @@ class Proposals extends Resource
     {
         return [
             ID::make()->sortable(),
+
             Stack::make('Details', [
                 Text::make(__('Title'), 'title')->displayUsing(fn ($name) => Str::limit($name, CatalystGlobals::PROPOSALS_SLUG_MAX_LENGTH()->value)
                 ),
                 Slug::make(__('Slug'), 'slug')->displayUsing(fn ($name) => Str::limit($name, CatalystGlobals::PROPOSALS_SLUG_MAX_LENGTH()->value)
                 ),
             ]),
+
             Text::make('View Proposal', function () {
                 return '<a style="color: #578ae4" href="'.$this->link.'" target="_blank">View</a>';
             })->asHtml()->hideWhenCreating()->hideWhenUpdating(),
+
             Text::make(__('Title'), 'title')
 //                ->translatable()
                 ->required()

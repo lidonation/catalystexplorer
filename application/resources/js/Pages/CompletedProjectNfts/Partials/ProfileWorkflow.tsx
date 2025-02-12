@@ -8,6 +8,7 @@ import ProfileList from "./ProfileList";
 import VerificationCard from "./VerificationCard";
 import { useTranslation } from 'react-i18next';
 import PageHeader from "./PageHeader";
+import Title from "@/Components/atoms/Title";
 
 const initialClaimedProfiles: Profile[] = [
     {
@@ -170,7 +171,7 @@ const ProfileWorkflow: React.FC<ProfileWorkflowProps> = ({ user }) => {
                     />
                 ) : !selectedProfile && !showClaimProfile ? (
                     <>
-                        <h3 className="font-semibold">{t('profileWorkflow.myProfiles')}</h3>
+                        <Title level="3" className="font-semibold">{t('profileWorkflow.myProfiles')}</Title>
                         <div className="my-2 border-t border-gray-300"></div>
                         <ProfileList
                             profiles={claimedProfiles}
@@ -248,7 +249,7 @@ const ProfileWorkflow: React.FC<ProfileWorkflowProps> = ({ user }) => {
                         </p>
 
                         <ProposalList
-                            proposals={initialProposals.filter((p) => p.profileName === selectedProfile?.name)}
+                            proposals={[]}
                         />
                     </>
                 )}

@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Casts\HashId;
+use App\Traits\HasHashId;
 use Illuminate\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -18,7 +20,7 @@ use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable implements HasMedia
 {
-    use HasFactory, HasRoles, InteractsWithMedia, MustVerifyEmail, Notifiable;
+    use HasFactory, HasHashId, HasRoles, InteractsWithMedia, MustVerifyEmail, Notifiable;
 
     /**
      * The attributes that are mass assignable.
@@ -37,6 +39,7 @@ class User extends Authenticatable implements HasMedia
      * @var array<int, string>
      */
     protected $hidden = [
+        'id',
         'password',
         'remember_token',
     ];
@@ -51,6 +54,7 @@ class User extends Authenticatable implements HasMedia
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'id' => HashId::class,
         ];
     }
 

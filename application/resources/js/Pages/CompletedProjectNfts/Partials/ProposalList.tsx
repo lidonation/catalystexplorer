@@ -1,15 +1,9 @@
 import { useTranslation } from "react-i18next";
 import { useState } from "react";
-
-interface Proposal {
-    title: string;
-    budget: number;
-    fund: string;
-    campaign: string;
-}
+import ProposalData = App.DataTransferObjects.ProposalData;
 
 interface ProposalListProps {
-    proposals: Proposal[];
+    proposals: ProposalData[];
 }
 
 const ProposalList: React.FC<ProposalListProps> = ({ proposals }) => {
@@ -39,12 +33,12 @@ const ProposalList: React.FC<ProposalListProps> = ({ proposals }) => {
     return (
         <div className="mt-4 space-y-3">
             {currentProposals.map((proposal, index) => (
-                <div key={index} className="p-4 border border-gray-200 rounded-lg shadow-sm">
+                <div key={proposal.hash} className="p-4 border border-gray-200 rounded-lg shadow-sm">
                     <h4 className="font-bold">{proposal.title}</h4>
                     <p className="text-sm">
-                        <strong>{t("profileWorkflow.budget")}:</strong> <span className="text-green-600"> {proposal.budget} ₳ &nbsp; </span>
-                        <strong>{t("profileWorkflow.fund")}:</strong> <span className="text-primary"> {proposal.fund} &nbsp; </span>
-                        <strong>{t("profileWorkflow.campaign")}:</strong> <span> {proposal.campaign} </span>
+                        <strong>{t("profileWorkflow.budget")}:</strong> <span className="text-green-600"> {proposal.amount_requested} {proposal.currency} &nbsp; </span>
+                        <strong>{t("profileWorkflow.fund")}:</strong> <span className="text-primary"> {proposal.fund?.label} &nbsp; </span>
+                        <strong>{t("profileWorkflow.campaign")}:</strong> <span> {proposal.campaign?.label} </span>
                     </p>
                 </div>
             ))}

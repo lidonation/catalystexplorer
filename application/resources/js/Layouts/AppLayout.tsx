@@ -16,6 +16,9 @@ import { Dialog } from '@headlessui/react';
 import { usePage } from '@inertiajs/react';
 import { ReactNode, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import MainLayout from './RootLayout';
 
 export default function AppLayout({ children }: { children: ReactNode }) {
@@ -97,6 +100,17 @@ export default function AppLayout({ children }: { children: ReactNode }) {
                     <Footer />
                 </footer>
             </section>
+            <ToastContainer
+                position="top-right"
+                autoClose={5000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+            />
         </MainLayout>
     );
 }

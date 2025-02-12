@@ -2,7 +2,6 @@ import React from "react";
 import CampaignCard from "./CampaignCard";
 import CampaignData = App.DataTransferObjects.CampaignData;
 import FundData = App.DataTransferObjects.FundData;
-import CampaignCardMini from "./CampaignCardMini";
 
 interface CampaignProps {
     campaigns: CampaignData[]
@@ -17,7 +16,7 @@ const CampaignList: React.FC<CampaignProps> = ({
         <div className="grid w-full grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
             {campaigns &&
                 campaigns?.map((campaign) => (
-                    <CampaignCardMini key={campaign?.id} fund={fund} campaign={campaign}/>
+                    <CampaignCard key={campaign?.id} fund={fund} campaign={campaign}/>
                 ))}
 
         </div>

@@ -1,6 +1,7 @@
 import { ListProvider } from '@/Context/ListContext';
-import ProposalBookmark from './ProposalBookmark';
+import BookmarkButton from '@/Pages/My/Bookmarks/Partials/BookmarkButton';
 import ProposalStatus from './ProposalStatus';
+import Title from '@/Components/atoms/Title';
 
 export default function ProposalCardHeader({
     proposal,
@@ -56,7 +57,7 @@ export default function ProposalCardHeader({
                                     alt={`${userSelected?.name}'s profile`}
                                     className="relative inline-block h-10 w-10 rounded-full ring-2 ring-white"
                                 />
-                                <h2>{userSelected?.name}</h2>
+                                <Title level='3'>{userSelected?.name}</Title>
                             </div>
                         </div>
                     ) : (
@@ -67,14 +68,19 @@ export default function ProposalCardHeader({
                             />
 
                             <ListProvider>
-                                <ProposalBookmark />
+                                {proposal.hash && (
+                                    <BookmarkButton
+                                        modelType="proposals"
+                                        itemId={proposal.hash}
+                                    />
+                                )}
                             </ListProvider>
                         </>
                     )}
                 </div>
                 {/* Card Content */}
                 <div
-                    className={`p-2 px-4 leading-tight min-h-20 ${!isHorizontal ? '' : 'flex h-full w-full items-center justify-center'}`}
+                    className={`min-h-20 p-2 px-4 leading-tight ${!isHorizontal ? '' : 'flex h-full w-full items-center justify-center'}`}
                 >
                     <a
                         href={proposal.link}
@@ -86,7 +92,7 @@ export default function ProposalCardHeader({
                     >
                         {!userSelected ? proposal.title : null}
                     </a>
-                    <div className="flex flex-row justify-end italic py-0.5">
+                    <div className="flex flex-row justify-end py-0.5 italic">
                         <span>~ {proposal.fund?.title}</span>
                     </div>
                 </div>

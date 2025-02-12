@@ -1,10 +1,10 @@
 import useEscapeKey from '@/Hooks/useEscapeKey';
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import TextInput from './TextInput';
 import Button from './atoms/Button';
 import CloseIcon from './svgs/CloseIcon';
 import SearchLensIcon from './svgs/SearchLensIcon';
+import TextInput from "@/Components/atoms/TextInput";
 
 interface SearchBarProps {
     autoFocus?: boolean;

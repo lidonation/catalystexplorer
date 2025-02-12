@@ -1,5 +1,6 @@
 import { useTranslation } from "react-i18next";
 import Check from "@/Components/svgs/Check";
+import Title from "@/Components/atoms/Title";
 
 interface VerificationCardProps {
     verificationCode: string;
@@ -18,7 +19,7 @@ const VerificationCard: React.FC<VerificationCardProps> = ({ verificationCode, o
                 &larr; {t("profileWorkflow.back")}
             </button>
 
-            <h2 className="text-lg font-semibold text-center">{t("profileWorkflow.verificationTitle")}</h2>
+            <Title level="2" className="text-lg font-semibold text-center">{t("profileWorkflow.verificationTitle")}</Title>
             <div className="flex justify-center mt-1">
                 <Check width={72} height={72} />
             </div>

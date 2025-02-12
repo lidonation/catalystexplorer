@@ -1,7 +1,8 @@
 import InputError from '@/Components/InputError';
 import InputLabel from '@/Components/InputLabel';
-import PrimaryButton from '@/Components/PrimaryButton';
-import TextInput from '@/Components/TextInput';
+import PrimaryButton from '@/Components/atoms/PrimaryButton';
+import TextInput from '@/Components/atoms/TextInput';
+import Title from '@/Components/atoms/Title';
 import { Transition } from '@headlessui/react';
 import { useForm } from '@inertiajs/react';
 import { FormEventHandler, useRef } from 'react';
@@ -51,9 +52,9 @@ export default function UpdatePasswordForm({
     return (
         <section className={className}>
             <header>
-                <h2 className="text-2 text-content font-medium">
+                <Title level='2' className="text-2 text-content font-medium">
                     Update Password
-                </h2>
+                </Title>
 
                 <p className="text-4 text-content mt-1">
                     Ensure your account is using a long, random password to stay
