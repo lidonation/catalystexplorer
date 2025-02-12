@@ -10,7 +10,6 @@ import React from 'react';
 import { PaginatedData } from '../../types/paginated-data';
 import { cn } from '@/lib/utils';
 
-
 type PaginationComponentProps<T> = {
     pagination: PaginatedData<T>;
 };
