@@ -1,9 +1,10 @@
+import { CatalystConnectionsEnum } from '@/enums/catalyst-connections-enums';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import ForceGraph2D from 'react-force-graph-2d';
 
 export type Node = {
     id: string;
-    type: 'group' | 'profile';
+    type: string;
     name: string;
     photo?: string;
     val?: number;
@@ -24,7 +25,7 @@ export type GraphData = {
 interface GraphComponentProps {
     data: GraphData;
     rootGroupId: string;
-    rootProfileId: string;
+    rootProfileId?: string;
     nodeSize?: {
         group?: number;
         profile?: { min: number; max: number };
@@ -96,7 +97,8 @@ const CatalystConnectionsGraph = ({
             },
             colors: {
                 node: colors?.node ?? '--cx-primary',
-                groupNode: colors?.groupNodeBorder ?? '--success-gradient-color-2',
+                groupNode:
+                    colors?.groupNodeBorder ?? '--success-gradient-color-2',
                 link: colors?.link ?? '--cx-primary',
                 linkHover: colors?.linkHover ?? '--cx-accent',
             },
@@ -129,7 +131,11 @@ const CatalystConnectionsGraph = ({
                 if (node) {
                     const nodePosition = { x: node.x || 0, y: node.y || 0 };
                     fgRef.current.zoom(4, 1000);
-                    fgRef.current.centerAt(nodePosition.x, nodePosition.y, 1000);
+                    fgRef.current.centerAt(
+                        nodePosition.x,
+                        nodePosition.y,
+                        1000,
+                    );
                 }
             }, 2000);
             return () => clearTimeout(timer);
@@ -143,7 +149,7 @@ const CatalystConnectionsGraph = ({
     const nodeCanvasObject = useCallback(
         (node: any, ctx: CanvasRenderingContext2D) => {
             let radius;
-            if (node.type === 'group') {
+            if (node.type === CatalystConnectionsEnum.GROUP) {
                 radius = config.nodeSize.group;
             } else {
                 if (!nodeSizes.current.has(node.id)) {
@@ -179,7 +185,7 @@ const CatalystConnectionsGraph = ({
                 ctx.fill();
             }
 
-            if (node.type === 'group') {
+            if (node.type === CatalystConnectionsEnum.GROUP) {
                 ctx.beginPath();
                 ctx.arc(node.x!, node.y!, radius, 0, 2 * Math.PI);
                 ctx.lineWidth = 1;
@@ -207,14 +213,17 @@ const CatalystConnectionsGraph = ({
                 hoveredNodeId !== null &&
                 (sourceNode.id === hoveredNodeId ||
                     targetNode.id === hoveredNodeId);
-            const isNodeFocused = [sourceNode.id, targetNode.id].includes(focusedNodeId);
+            const isNodeFocused = [sourceNode.id, targetNode.id].includes(
+                focusedNodeId,
+            );
 
-            ctx.strokeStyle = isHovered || isNodeFocused
-                ? getColor(config.colors.linkHover)
-                : getColor(config.colors.link);
+            ctx.strokeStyle =
+                isHovered || isNodeFocused
+                    ? getColor(config.colors.linkHover)
+                    : getColor(config.colors.link);
 
             const lineWidth =
-                sourceNode.type === 'group'
+                sourceNode.type === CatalystConnectionsEnum.GROUP
                     ? sourceNode.id === rootGroupId
                         ? 1
                         : 0.3
@@ -230,33 +239,31 @@ const CatalystConnectionsGraph = ({
     );
 
     return (
-        <div className="bg-background h-screen w-full">
+        <div className="bg-background max-w-lg">
             <ForceGraph2D
-            ref={fgRef}
-            graphData={data}
-            nodeLabel="name"
-            nodeRelSize={4}
-            onBackgroundClick={
-              ()=>{
-                fgRef.current.zoomToFit(400, 0)
-                setFocusedNodeId(null)
-              }
-               
-            }
-            onNodeClick={(node) => {
-                fgRef.current.zoomToFit(400, 0);
-                
-                if (focusedNodeId !== node.id) {
-                    onNodeClick?.(node);
-                    handleNodeClick(node);
-                } 
-            }}
-            onNodeHover={(node) => {
-                setHoveredNodeId(node?.id || null);
-                onNodeHover?.(node || null);
-            }}
-            nodeCanvasObject={nodeCanvasObject}
-            linkCanvasObject={linkCanvasObject}
+                width={window.innerWidth}
+                ref={fgRef}
+                graphData={data}
+                nodeLabel="name"
+                nodeRelSize={4}
+                onBackgroundClick={() => {
+                    fgRef.current.zoomToFit(100, 0);
+                    setFocusedNodeId(null);
+                }}
+                onNodeClick={(node) => {
+                    fgRef.current.zoomToFit(400, 0);
+
+                    if (focusedNodeId !== node.id) {
+                        onNodeClick?.(node);
+                        handleNodeClick(node);
+                    }
+                }}
+                onNodeHover={(node) => {
+                    setHoveredNodeId(node?.id || null);
+                    onNodeHover?.(node || null);
+                }}
+                nodeCanvasObject={nodeCanvasObject}
+                linkCanvasObject={linkCanvasObject}
             />
         </div>
     );

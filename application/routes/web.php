@@ -44,9 +44,6 @@ Route::localized(
 
             Route::get('/{group:slug}', [GroupsController::class, 'group'])
                 ->name('group');
-
-            Route::get('/{group:id}', [GroupsController::class, 'show'])
-                ->name('group.show');
         });
 
         Route::prefix('/ideascale-profiles')->as('ideascaleProfiles.')->group(function () {
