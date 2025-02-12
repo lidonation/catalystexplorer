@@ -9,6 +9,9 @@ final class DiscussionData extends Data
 {
     public function __construct(
         #[TypeScriptOptional]
+        public ?int $hash,
+
+        #[TypeScriptOptional]
         public ?int $user_id,
 
         public int $model_id,

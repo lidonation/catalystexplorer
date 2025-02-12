@@ -12,7 +12,7 @@ use Spatie\TypeScriptTransformer\Attributes\TypeScript;
 final class CommunityData extends Data
 {
     public function __construct(
-        public ?int $id,
+        public ?string $hash,
 
         #[TypeScriptOptional]
         public ?string $title,
