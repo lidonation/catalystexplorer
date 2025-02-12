@@ -37,6 +37,24 @@ const IdeascaleProfileCard: React.FC<IdeascaleProfileProps> = ({
         },
     ] as Segments[];
 
+    const segments = [
+        {
+            label: 'Completed',
+            color: 'bg-success',
+            value: ideascaleProfile.completed_proposals_count,
+        },
+        {
+            label: 'Funded',
+            color: 'bg-warning',
+            value: ideascaleProfile.funded_proposals_count,
+        },
+        {
+            label: 'Submitted',
+            color: 'bg-primary',
+            value: ideascaleProfile.proposals_count,
+        },
+    ] as Segments[];
+
     return (
         <Card>
             <div className="relative w-full h-full mb-2">
