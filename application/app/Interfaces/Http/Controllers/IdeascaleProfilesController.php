@@ -95,25 +95,11 @@ class IdeascaleProfilesController extends Controller
             $page,
             [
                 'pageName' => 'p',
+                'onEachSide' => 0,
             ]
         );
 
-        return $pagination->onEachSide(1)->toArray();
-    }
-
-    protected function paginate($items, $total, $page, $limit): array
-    {
-        $pagination = new LengthAwarePaginator(
-            $items,
-            $total,
-            $limit,
-            $page,
-            [
-                'pageName' => 'p',
-            ]
-        );
-
-        return $pagination->onEachSide(1)->toArray();
+        return $pagination->toArray();
     }
 
     protected function getProps(Request $request): void
