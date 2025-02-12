@@ -1,6 +1,5 @@
 import { t } from 'i18next';
 import React, { useState } from 'react';
-import IdeascaleProfileData = App.DataTransferObjects.IdeascaleProfileData;
 import GroupData = App.DataTransferObjects.GroupData;
 
 interface SegmentedBarProps {

@@ -57,14 +57,16 @@ const CampaignCard: React.FC<CampaignCardProps> = ({ fund, campaign }) => {
                         className="h-full w-full object-cover"
                     />
                 ) : (
-                    <div className="text-gray-persist bg-primary flex h-full items-center justify-center">
-                        {campaign?.label}
+                    <div className="text-content bg-primary flex h-full items-center px-4 justify-center">
+                        <Title level='4'>{campaign?.label}</Title>
                     </div>
                 )}
             </div>
+
             <div className="mt-4">
                 <SegmentedBar segments={segments} />
             </div>
+
             <div className="pt-6">
                 <Title
                     level="3"
@@ -88,9 +90,11 @@ const CampaignCard: React.FC<CampaignCardProps> = ({ fund, campaign }) => {
                         <path d="m400 350c0-27.613 22.387-50 50-50h400c27.613 0 50 22.387 50 50v400c0 27.613-22.387 50-50 50s-50-22.387-50-50v-279.29l-414.64 414.64c-19.527 19.523-51.184 19.523-70.711 0-19.527-19.527-19.527-51.184 0-70.711l414.64-414.64h-279.29c-27.613 0-50-22.387-50-50z" />
                     </svg>
                 </Title>
+
                 <p className="text-content-dark mb-4 line-clamp-3 opacity-80">
                     {campaign?.excerpt}
                 </p>
+
                 <div className="flex gap-2">
                     <p className="bg-background text-content rounded-md border pr-2 pl-2">
                         {t('proposals.filters.budget')}:{' '}
@@ -102,11 +106,12 @@ const CampaignCard: React.FC<CampaignCardProps> = ({ fund, campaign }) => {
                         )}
                     </p>
                 </div>
+
                 <div className="mt-8">
                     <DistributedVsAwarded
-                        distributed={campaign.totalDistributed}
-                        awarded={campaign.totalAwarded}
-                        currency={campaign.currency}
+                        distributed={campaign.totalDistributed ?? 0}
+                        awarded={campaign.totalAwarded ?? 0}
+                        currency={campaign.currency ?? 'Ada'}
                     />
                 </div>
             </div>
