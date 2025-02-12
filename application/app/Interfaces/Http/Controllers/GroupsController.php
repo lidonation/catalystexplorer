@@ -129,7 +129,7 @@ class GroupsController extends Controller
             ),
             'connections' => Inertia::optional(
                 fn () => ConnectionData::collect(
-                    $group->connected_items
+                    $group->connected_items ?? []
                 )
             ),
         ]);
