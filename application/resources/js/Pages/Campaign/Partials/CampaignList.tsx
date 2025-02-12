@@ -2,7 +2,6 @@ import React from "react";
 import CampaignCard from "./CampaignCard";
 import CampaignData = App.DataTransferObjects.CampaignData;
 import FundData = App.DataTransferObjects.FundData;
-import CampaignCardMini from "./CampaignCardMini";
 
 interface CampaignProps {
     campaigns: CampaignData[]
