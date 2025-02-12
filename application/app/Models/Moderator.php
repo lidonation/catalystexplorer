@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Models\Model;
 use App\Traits\HasMetaData;
-use Illuminate\Database\Eloquent\Model;
 use App\Models\CatalystExplorer\Moderation;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\HasMany;
