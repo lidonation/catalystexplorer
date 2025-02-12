@@ -5,7 +5,7 @@ import CampaignData = App.DataTransferObjects.CampaignData;
 import { useTranslation } from 'react-i18next';
 import SegmentedBar from '@/Components/SegmentedBar'
 import Title from '@/Components/atoms/Title';
-import SegmentedBarToolTipHover from '@/Components/SegmentedBarToolTipHover';
+import { Segments } from '../../../../types/segments';
 
 interface CampaignCardMiniProps {
   fund: FundData;
@@ -16,6 +16,23 @@ const CampaignCardMini: React.FC<CampaignCardMiniProps> = ({ fund, campaign }) =
   const { t } = useTranslation();
 
   const heroImageUrl = fund?.hero_img_url;
+   const segments = [
+          {
+              label: 'Completed',
+              color: 'bg-success',
+              value: campaign.completed_proposals_count,
+          },
+          {
+              label: 'Funded',
+              color: 'bg-warning',
+              value: campaign.funded_proposals_count,
+          },
+          {
+              label: 'Submitted',
+              color: 'bg-primary',
+              value: campaign.proposals_count,
+          },
+      ] as Segments[];
 
   return (
     <div>
@@ -37,24 +54,9 @@ const CampaignCardMini: React.FC<CampaignCardMiniProps> = ({ fund, campaign }) =
           {campaign?.title}
         </Title>
 
-        <div className="flex w-full justify-between pt-4 pb-4">
-          <SegmentedBarToolTipHover
-            segments={[
-              {
-                value: campaign.completedProposals, color: 'bg-success',
-                label: ''
-              },
-              {
-                value: campaign.fundedProposals, color: 'bg-warning',
-                label: ''
-              },
-              {
-                value: campaign.unfundedProposals, color: 'bg-primary',
-                label: ''
-              },
-            ]}
-          />
-        </div>
+        <div className="mt-4">
+                <SegmentedBar segments={segments} />
+          </div>
         <div className="flex gap-2">
           <p className="bg-background text-content rounded-md border px-2">
             {t('proposals.filters.budget')}: {currency(campaign?.amount ?? 0, campaign?.currency?.toUpperCase() ?? 'USD', undefined, 2)}
