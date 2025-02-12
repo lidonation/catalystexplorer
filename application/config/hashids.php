@@ -13,6 +13,11 @@ return [
     */
 
     'connections' => [
+        'default' => [
+            'salt' => env('APP_KEY'),
+            'length' => 11,
+            'alphabet' => 'abcdefghijklmnopqrstuvwxyz0123456789',
+        ],
         \App\Models\BookmarkCollection::class => [
             'salt' => \App\Models\BookmarkCollection::class.env('APP_KEY'),
             'length' => 11,
