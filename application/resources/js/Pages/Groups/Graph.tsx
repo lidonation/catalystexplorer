@@ -1,125 +1,94 @@
-import { useState, useRef, useEffect } from 'react';
-import ForceGraph, { NodeObject } from 'react-force-graph-2d';
+import { PageProps } from '@/types';
+import GraphComponent from './Partials/CatalystConnectionsGraph';
+import { router } from '@inertiajs/react';
+import { useCallback, useMemo, useState } from 'react';
 
-interface CustomNode extends NodeObject {
-  id: string;
-  type: 'group' | 'profile';
-  name: string;
-  photo?: string;
-  val?: number;
+export interface Node {
+    id: string;
+    type: 'group' | 'profile';
+    name: string;
+    photo?: string;
+    val?: number;
+    x?: number;
+    y?: number;
 }
 
-
-interface Link {
-  source: string;
-  target: string;
+export interface Link {
+    source: string | Node;
+    target: string | Node;
 }
 
-interface GraphData {
-  nodes: CustomNode[];
-  links: Link[];
+export interface GraphData {
+    nodes: Node[];
+    links: Link[];
 }
 
-interface GraphProps {
-  graphData: GraphData;
-}
+interface GraphProps extends PageProps<{
+    graphData: GraphData;
+    rootGroupId: string;
+    rootProfileId: string;
+}> {}
 
-const Graph = ({ graphData }: GraphProps) => {
-  const fgRef = useRef<any>();
-  const imageCache = useRef<Map<string, HTMLImageElement>>(new Map());
-  const [hoveredNode, setHoveredNode] = useState<CustomNode | null>(null);
 
-  useEffect(() => {
-    const cache = new Map<string, HTMLImageElement>();
-    imageCache.current = cache;
+const NODE_SIZES = {
+    group: 15,
+    profile: { min: 5, max: 10 },
+} as const;
 
-    graphData.nodes.forEach((node) => {
-      if (node.photo && !cache.has(node.photo)) {
-        const img = new Image();
-        img.src = node.photo;
-        img.onload = () => {
-          cache.set(node.photo!, img);
-          fgRef.current?.refresh();
-        };
-      }
-    });
-  }, [graphData]);
+const FORCE_CONFIG = {
+    linkDistance: 25,
+    chargeStrength: -500,
+} as const;
 
-  const groupNodeVal = 27;
-  const minProfileNodeVal = 5;
-  const maxProfileNodeVal = 20;
+const COLORS = {
+    node: '--cx-primary',
+    groupNodeBorder: '--success-gradient-color-2',
+    link: '--cx-primary',
+} as const;
 
-  const getRandomSize = (min: number, max: number) => {
-    return Math.random() * (max - min) + min;
-  };
+const Graph: React.FC<GraphProps> = ({ graphData, rootGroupId, rootProfileId }) => {
+    const [selectedProfileIds] = useState<Set<string>>(new Set());
+    const [selectedGroupIds] = useState<Set<string>>(new Set());
 
-  const updatedGraphData = {
-    ...graphData,
-    nodes: graphData.nodes.map((node) => ({
-      ...node,
-      val: node.type === 'group' ? groupNodeVal : getRandomSize(minProfileNodeVal, maxProfileNodeVal),
-    })),
-  };
+    const currentUrl = useMemo(() => window.location.href, []);
 
-  useEffect(() => {
-    fgRef.current.d3Force('link').distance(50);
-  }, []);
+    const handleNodeClick = useCallback(async (node: Node) => {
+        try {
+            const id = node.id.replace(`${node.type}-`, '');
+            const targetSet = node.type === 'group' ? selectedGroupIds : selectedProfileIds;
 
-  return (
-    <div className="h-screen w-full bg-gray-100">
-      <ForceGraph
-        ref={fgRef}
-        graphData={updatedGraphData}
-        nodeLabel="name"
-        nodeRelSize={4}
-        onNodeHover={(node) => {
-          setHoveredNode(node as CustomNode);
-        }}
-        linkWidth={(link) => {
-          return link.source === hoveredNode || link.target === hoveredNode ? 2 : 1;
-        }}
-        linkColor={(link) => {
-          return link.source === hoveredNode || link.target === hoveredNode
-            ? 'var(--cx-primary)' // Tailwind CSS variable
-            : 'var(--cx-secondary)'; // Tailwind CSS variable
-        }}
-        nodeCanvasObject={(node, ctx, globalScale) => {
-          const customNode = node as CustomNode;
-          const radius = Math.cbrt(customNode.val || 1) * 4;
-          const img = imageCache.current.get(customNode.photo!);
+            if (targetSet.has(id)) {
+                targetSet.delete(id);
+            } else {
+                targetSet.add(id);
+            }
 
-          if (img) {
-            ctx.save();
-            ctx.beginPath();
-            ctx.arc(customNode.x!, customNode.y!, radius, 0, 2 * Math.PI);
-            ctx.closePath();
-            ctx.clip();
-            ctx.drawImage(
-              img,
-              customNode.x! - radius,
-              customNode.y! - radius,
-              radius * 2,
-              radius * 2
-            );
-            ctx.restore();
-          } else {
-            ctx.beginPath();
-            ctx.arc(customNode.x!, customNode.y!, radius, 0, 2 * Math.PI);
-            ctx.fillStyle = 'blue';
-            ctx.fill();
-          }
+            await router.visit(currentUrl, {
+                method: 'get',
+                data: {
+                    profileIds: Array.from(selectedProfileIds),
+                    groupIds: Array.from(selectedGroupIds),
+                },
+                preserveState: true,
+            });
+        } catch (error) {
+            console.error('Failed to update node:', error);
+        }
+    }, [currentUrl, selectedProfileIds, selectedGroupIds]);
 
-          if (customNode.type === 'group') {
-            ctx.beginPath();
-            ctx.arc(customNode.x!, customNode.y!, radius, 0, 2 * Math.PI);
-            ctx.lineWidth = 2;
-            ctx.strokeStyle = 'green';
-            ctx.stroke();
-          }
-        }}
-      />
-    </div>
-  );
+    return (
+        <div className="bg-background w-full">
+            <GraphComponent
+                data={graphData}
+                nodeSize={NODE_SIZES}
+                forces={FORCE_CONFIG}
+                colors={COLORS}
+                onNodeClick={handleNodeClick}
+                rootGroupId={rootGroupId}
+                rootProfileId={rootProfileId}
+            />
+        </div>
+    );
 };
 
 export default Graph;
