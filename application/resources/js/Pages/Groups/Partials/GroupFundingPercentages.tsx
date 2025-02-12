@@ -1,12 +1,19 @@
 import { currency } from '@/utils/currency';
 import { useTranslation } from 'react-i18next';
+import PercentageProgressBar from '../../../Components/PercentageProgressBar';
 
 interface GroupFundingPercentagesProps extends Record<string, unknown> {
-    group: App.DataTransferObjects.GroupData;
+    amount_ada: number;
+    amount_usd: number;
+    total_ada: number;
+    total_usd: number;
 }
 
 export default function GroupFundingPercentages({
-    group,
+    amount_ada,
+    amount_usd,
+    total_ada,
+    total_usd,
 }: GroupFundingPercentagesProps) {
     const { t } = useTranslation();
     const calculatePercentage = (
@@ -17,149 +24,58 @@ export default function GroupFundingPercentages({
 
     return (
         <div>
-            {/* First progrss bar */}
-            <div className="border-content-light grid grid-cols-2 gap-2 border-b pt-4 pb-4">
+            <div className="grid grid-cols-2 gap-2">
                 <div>
-                    <div className="flex items-baseline justify-between gap-2">
-                        <div className="bg-content-light mt-2 h-2 w-full overflow-hidden rounded-full">
-                            <div
-                                className={`bg-eye-logo h-full rounded-full`}
-                                role="progressbar"
-                                aria-label="funds recieved"
-                                aria-valuenow={calculatePercentage(
-                                    group?.amount_awarded_ada ?? 0,
-                                    group?.amount_requested_ada ?? 0,
-                                )}
-                                aria-valuemin={0}
-                                aria-valuemax={100}
-                                style={{
-                                    width: `${calculatePercentage(group?.amount_awarded_ada ?? 0, group?.amount_requested_ada ?? 0)}%`,
-                                }}
-                            ></div>
-                        </div>
+                    <div className="mt-2 h-2 w-full overflow-hidden rounded-full">
+                        <PercentageProgressBar
+                            value={amount_ada ?? 0}
+                            total={total_ada ?? 0}
+                            primaryBackgroundColor={'bg-content-light'}
+                            secondaryBackgroudColor={'bg-eye-logo'}
+                        />
                     </div>
                     <div className="mt-2 flex justify-between">
                         <div>
                             <div>
                                 <span className="text-lg font-semibold">
                                     {currency(
-                                        group?.amount_awarded_ada ?? 0,
+                                        amount_ada ?? 0,
                                         'ADA',
+                                        undefined,
+                                        2,
                                     )}
                                 </span>
-                                <span className="text-highlight text-sm">{`/ ${group?.amount_requested_ada ?? 0} (${calculatePercentage(group?.amount_awarded_ada ?? 0, group?.amount_requested_ada ?? 0)}%)`}</span>
+                                <span className="text-highlight text-sm">{`/ ${currency(total_ada ?? 0, 'ADA', undefined, 2)} (${calculatePercentage(amount_ada ?? 0, total_ada ?? 0)}%)`}</span>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div>
-                    <div className="flex items-baseline justify-between gap-2">
-                        <div className="bg-content-light mt-2 h-2 w-full overflow-hidden rounded-full">
-                            <div
-                                className={`bg-primary h-full rounded-full`}
-                                role="progressbar"
-                                aria-label="funds recieved"
-                                aria-valuenow={calculatePercentage(
-                                    group?.amount_awarded_usd ?? 0,
-                                    group?.amount_requested_usd ?? 0,
-                                )}
-                                aria-valuemin={0}
-                                aria-valuemax={100}
-                                style={{
-                                    width: `${calculatePercentage(group?.amount_awarded_usd ?? 0, group?.amount_requested_usd ?? 0)}%`,
-                                }}
-                            ></div>
-                        </div>
-                    </div>
-                    <div className="mt-2 flex justify-between">
-                        <div>
-                            <span className="text-lg font-semibold">
-                                {currency(
-                                    group?.amount_awarded_usd ?? 0,
-                                    'USD',
-                                )}
-                            </span>
-                            <span className="text-highlight text-sm">{`/ ${currency(group?.amount_requested_usd ?? 0, 'USD')} (${calculatePercentage(group?.amount_awarded_usd ?? 0, group?.amount_requested_usd ?? 0)}%)`}</span>
-                        </div>
-                    </div>
-                </div>
-                <p className="text-3 text-gray-persist">
-                    {t('groups.awardedVsRequested')}
-                </p>
-            </div>
 
-            {/* Second Progress Bar */}
-            <div className="border-content-light grid grid-cols-2 gap-2 border-b pt-4 pb-4">
                 <div>
-                    <div className="flex items-baseline justify-between gap-2">
-                        <div className="bg-content-light mt-2 h-2 w-full overflow-hidden rounded-full">
-                            <div
-                                className={`bg-eye-logo h-full rounded-full`}
-                                role="progressbar"
-                                aria-label="funds recieved"
-                                aria-valuenow={calculatePercentage(
-                                    group?.amount_distributed_ada ?? 0,
-                                    group?.amount_awarded_ada ?? 0,
-                                )}
-                                aria-valuemin={0}
-                                aria-valuemax={100}
-                                style={{
-                                    width: `${calculatePercentage(group?.amount_distributed_ada ?? 0, group?.amount_awarded_ada ?? 0)}%`,
-                                }}
-                            ></div>
-                        </div>
+                    <div className="mt-2 h-2 w-full overflow-hidden rounded-full">
+                        <PercentageProgressBar
+                            value={amount_usd ?? 0}
+                            total={total_usd ?? 0}
+                            primaryBackgroundColor={'bg-content-light'}
+                            secondaryBackgroudColor={'bg-primary'}
+                        />
                     </div>
                     <div className="mt-2 flex justify-between">
-                        {(group?.amount_distributed_usd ?? 0) <= 0 && (
-                            <p>{t('groups.received')}</p>
-                        )}
                         <div>
                             <div>
                                 <span className="text-lg font-semibold">
                                     {currency(
-                                        group?.amount_distributed_ada ?? 0,
-                                        'ADA',
+                                        amount_usd ?? 0,
+                                        'USD',
+                                        undefined,
+                                        2,
                                     )}
                                 </span>
-                                <span className="text-highlight text-sm">{`/ ${group?.amount_awarded_ada ?? 0} (${calculatePercentage(group?.amount_distributed_ada ?? 0, group?.amount_awarded_ada ?? 0)}%)`}</span>
+                                <span className="text-highlight text-sm">{`/ ${currency(total_usd ?? 0, 'USD', undefined, 2)} (${calculatePercentage(amount_usd ?? 0, total_usd ?? 0)}%)`}</span>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div>
-                    <div className="flex items-baseline justify-between gap-2">
-                        <div className="bg-content-light mt-2 h-2 w-full overflow-hidden rounded-full">
-                            <div
-                                className={`bg-primary h-full rounded-full`}
-                                role="progressbar"
-                                aria-label="funds recieved"
-                                aria-valuenow={calculatePercentage(
-                                    group?.amount_distributed_usd ?? 0,
-                                    group?.amount_awarded_usd ?? 0,
-                                )}
-                                aria-valuemin={0}
-                                aria-valuemax={100}
-                                style={{
-                                    width: `${calculatePercentage(group?.amount_distributed_usd ?? 0, group?.amount_awarded_usd ?? 0)}%`,
-                                }}
-                            ></div>
-                        </div>
-                    </div>
-                    <div className="mt-2 flex justify-between">
-                        <div>
-                            <span className="text-lg font-semibold">
-                                {currency(
-                                    group?.amount_distributed_usd ?? 0,
-                                    'USD',
-                                )}
-                            </span>
-                            <span className="text-highlight text-sm">{`/ ${currency(group?.amount_awarded_usd ?? 0, 'USD')} (${calculatePercentage(group?.amount_distributed_usd ?? 0, group?.amount_awarded_usd ?? 0)}%)`}</span>
-                        </div>
-                    </div>
-                </div>
-                <p className="text-3 text-gray-persist">
-                    {t('groups.receivedVsAwarded')}
-                </p>
             </div>
         </div>
     );

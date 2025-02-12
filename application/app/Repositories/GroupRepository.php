@@ -50,6 +50,8 @@ class GroupRepository extends Repository
                         'facets' => [
                             'tags.id',
                             'proposals.fund.title',
+                            'amount_awarded_ada',
+                            'amount_awarded_usd'
                         ],
                     ],
                     $args

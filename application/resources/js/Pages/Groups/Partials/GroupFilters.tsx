@@ -5,12 +5,18 @@ import { useFilterContext } from '@/Context/FiltersContext';
 import { ProposalParamsEnum } from '@/enums/proposal-search-params';
 import { useTranslation } from 'react-i18next';
 
-const GroupFilters = () => {
+interface GroupFiltersProps{
+    proposalsCount: number;
+    totalAwardedAda: number;
+    totalAwardedUsd: number;
+}
+
+const GroupFilters = ({proposalsCount, totalAwardedAda, totalAwardedUsd}:GroupFiltersProps) => {
     const { setFilters, getFilter } = useFilterContext();
     const { t } = useTranslation();
-    const proposalRange = [0, 500];
-    const adaRange = [0, 10000000];
-    const usdRange = [0, 1000000];
+    const proposalRange = [0, proposalsCount];
+    const adaRange = [0, totalAwardedAda];
+    const usdRange = [0, totalAwardedUsd];
 
     return (
         <>

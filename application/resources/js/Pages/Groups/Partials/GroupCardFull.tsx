@@ -3,9 +3,9 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import GroupFundingPercentages from './GroupFundingPercentages';
 import GroupHeroSection from './GroupHeroSection';
-import GroupUsers from './GroupUsers';
+import SegmentedBar from '@/Components/SegmentedBar';
+import { Segments } from '../../../../types/segments';
 import GroupData = App.DataTransferObjects.GroupData;
-import SegmentedBar from './SegmentedBar';
 
 interface GroupCardFullProps {
     group: GroupData;
@@ -14,14 +14,32 @@ interface GroupCardFullProps {
 const GroupCardFull: React.FC<GroupCardFullProps> = ({ group }) => {
     const { t } = useTranslation();
 
+    const segments = [
+            {
+                label: 'Completed',
+                color: 'bg-success',
+                value: group?.completed_proposals_count,
+            },
+            {
+                label: 'Funded',
+                color: 'bg-warning',
+                value: group?.funded_proposals_count,
+            },
+            {
+                label: 'Unfunded',
+                color: 'bg-primary',
+                value: group?.unfunded_proposals_count,
+            },
+        ] as Segments[];
+
     return (
-        <div className="bg-background flex w-full flex-col rounded-lg shadow-md">
+        <div className="bg-background flex w-full h-full flex-col rounded-lg shadow-md">
             <GroupHeroSection group={group} />
             <div className="mt-4 p-3">
                 <div className="flex w-full flex-col items-center gap-4">
                     <p className="text-lg font-bold">{group?.name}</p>
                 </div>
-                <div className='flex justify-between mt-4'>
+                <div className="mt-4 flex justify-between">
                     <div>
                         <div className="flex gap-2">
                             <p className="text-1 font-bold">
@@ -44,18 +62,41 @@ const GroupCardFull: React.FC<GroupCardFullProps> = ({ group }) => {
                         </p>
                     </div>
                     <div>
-                        <p className="text-1 font-bold">{group?.proposals_count}</p>
-                        <p className="text-3 text-gray-persist">{t('groups.totalProposals')}</p>
+                        <p className="text-1 font-bold">
+                            {group?.proposals_count}
+                        </p>
+                        <p className="text-3 text-gray-persist">
+                            {t('groups.totalProposals')}
+                        </p>
                     </div>
                 </div>
 
-                <div className='mt-4 border-t border-b border-content-light pt-4 pb-4'>
-                    <SegmentedBar group={group} completedProposalsColor='bg-success' fundedProposalsColor='bg-warning' unfundedProposalsColor='bg-primary'/>
+                <div className="border-content-light mt-4 border-t border-b pt-4 pb-4">
+                   <SegmentedBar segments={segments} />
                 </div>
 
-                <div>
-                    {/* <GroupFundingPercentages group={group} /> */}
-                    <GroupFundingPercentages group={group}/>
+                <div className='border-content-light border-b pt-4 pb-4'>
+                    <GroupFundingPercentages
+                        amount_ada={group?.amount_awarded_ada ?? 0}
+                        total_ada={group?.amount_requested_ada ?? 0}
+                        amount_usd={group?.amount_awarded_usd ?? 0}
+                        total_usd={group?.amount_requested_usd ?? 0}
+                    />
+                    <p className="text-3 text-gray-persist">
+                        {t('groups.awardedVsRequested')}
+                    </p>
+                </div>
+
+                <div className='border-content-light border-b pt-4 pb-4'>
+                    <GroupFundingPercentages
+                        amount_ada={group?.amount_distributed_ada ?? 0}
+                        total_ada={group?.amount_awarded_ada ?? 0}
+                        amount_usd={group?.amount_distributed_usd ?? 0}
+                        total_usd={group?.amount_awarded_usd ?? 0}
+                    />
+                    <p className="text-3 text-gray-persist">
+                        {t('groups.receivedVsAwarded')}
+                    </p>
                 </div>
             </div>
         </div>
