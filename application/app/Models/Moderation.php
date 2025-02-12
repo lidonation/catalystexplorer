@@ -5,16 +5,16 @@ declare(strict_types=1);
 namespace App\Models\CatalystExplorer;
 
 use App\Models\Model;
-use App\Models\Review;
-use App\Models\Proposal;
 use App\Models\Moderator;
+use App\Models\Proposal;
+use App\Models\Review;
 use App\Traits\HasMetaData;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Moderation extends Model
 {
-    use SoftDeletes, HasMetaData;
+    use HasMetaData, SoftDeletes;
 
     public function moderator(): BelongsTo
     {

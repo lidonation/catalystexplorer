@@ -16,7 +16,7 @@ const CampaignList: React.FC<CampaignProps> = ({
         <div className="grid w-full grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
             {campaigns &&
                 campaigns?.map((campaign) => (
-                    <CampaignCard key={campaign?.id} fund={fund} campaign={campaign}/>
+                    <CampaignCard key={campaign?.hash} fund={fund} campaign={campaign}/>
                 ))}
 
         </div>
