@@ -39,6 +39,7 @@ services:
       - ./application:/var/www:cached
     networks:
       - catalystexplorer-net
+      - shared-network
     depends_on:
       - catalystexplorer.db
       - catalystexplorer-search
@@ -104,6 +105,7 @@ services:
       # - './vendor/laravel/sail/database/pgsql/create-testing-database.sql:/docker-entrypoint-initdb.d/10-create-testing-database.sql'
     networks:
       - catalystexplorer-net
+      - shared-network
     healthcheck:
       test:
         - CMD
@@ -185,6 +187,9 @@ services:
 
 networks:
   catalystexplorer-net:
+    driver: bridge
+  shared-network:
+    name: shared-network
     driver: bridge
 volumes:
   catalystexplorer-db:
