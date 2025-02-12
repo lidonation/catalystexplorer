@@ -29,27 +29,11 @@ class RouteServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        Route::bind('id', function ($hashId) {
+        Route::bind('hash', function ($hashId) {
             try {
-                $paths = collect(explode('/', request()->path()));
-                $hashIndex = $paths->search($hashId);
-
-                $collection = $paths->get($hashIndex - 1);
-                $model = Str::of($collection)->singular()->studly()->value();
-                $class = "App\Models\\{$model}";
-
-                if (! class_exists($class)) {
-                    return $hashId;
-                }
-
-                $model = match ($collection) {
-                    'bookmark-collections' => BookmarkCollection::class,
-                    default => $class,
-                };
-
-                return (new HashIdService(new $model))->decode($hashId);
+                return $this->decodeHash($hashId);
             } catch (Exception $e) {
-                abort(404, 'No item found with this id!');
+                abort(404, 'No item found for this hash!');
             }
         });
 
@@ -63,7 +47,7 @@ class RouteServiceProvider extends ServiceProvider
 
                 return (new HashIdService(new $model))->decode($hashId);
             } catch (Exception $e) {
-                abort(404, 'No item found with this id!');
+                abort(404, 'No item found for this hash!');
             }
         });
     }
@@ -72,4 +56,25 @@ class RouteServiceProvider extends ServiceProvider
      * Bootstrap services.
      */
     public function boot(Router $router): void {}
+
+    protected function decodeHash(string $hashId): int|string
+    {
+        $paths = collect(explode('/', request()->path()));
+        $hashIndex = $paths->search($hashId);
+
+        $collection = $paths->get($hashIndex - 1);
+        $model = Str::of($collection)->singular()->studly()->value();
+        $class = "App\Models\\{$model}";
+
+        if (! class_exists($class)) {
+            return $hashId;
+        }
+
+        $model = match ($collection) {
+            'bookmark-collections' => BookmarkCollection::class,
+            default => $class,
+        };
+
+        return (new HashIdService(new $model))->decode($hashId);
+    }
 }

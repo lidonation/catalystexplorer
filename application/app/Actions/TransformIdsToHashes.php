@@ -19,7 +19,7 @@ class TransformIdsToHashes
     {
         return $collection
             ->map(function ($array) use ($model) {
-                $array['id'] = app(HashIdService::class, compact('model'))
+                $array['hash'] = app(HashIdService::class, compact('model'))
                     ->encode($array['id']);
 
                 return $array;

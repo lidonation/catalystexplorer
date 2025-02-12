@@ -30,7 +30,7 @@ const RelatedProposals: React.FC<RelatedProposalsProps> = ({
             <div {...props}>
                 {typeof proposals.data !== 'undefined' && (proposals.data.map((proposal) => (
                     <ProposalCardMini
-                        key={proposal.id}
+                        key={proposal.hash}
                         proposal={proposal}
                         isHorizontal={false}
                     />

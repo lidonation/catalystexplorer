@@ -25,11 +25,11 @@ Route::prefix('api')->as('api.')->group(function () {
 
     Route::prefix('bookmark-items')->as('bookmarks.')
         ->group(function () {
-            Route::post('/{modelType}/{id}', [MyBookmarksController::class, 'store'])
+            Route::post('/{modelType}/{hash}', [MyBookmarksController::class, 'store'])
                 ->name('store');
-            Route::delete('/{id}', [MyBookmarksController::class, 'delete'])
+            Route::delete('/{hash}', [MyBookmarksController::class, 'delete'])
                 ->name('remove');
-            Route::get('/{modelType}/{id}/status', [MyBookmarksController::class, 'status'])
+            Route::get('/{modelType}/{hash}/status', [MyBookmarksController::class, 'status'])
                 ->name('status');
         });
 

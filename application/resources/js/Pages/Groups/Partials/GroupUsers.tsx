@@ -43,7 +43,7 @@ export default function GroupUsers({ group, users }: GroupUsers) {
         >
             <ul className="flex cursor-pointer -space-x-2">
                 {visibleUsers?.map((user) => (
-                    <li key={user.id}>
+                    <li key={user.hash}>
                         <UserAvatar
                             size="size-8"
                             imageUrl={user.profile_photo_url}

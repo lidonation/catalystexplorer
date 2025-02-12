@@ -25,11 +25,14 @@ class IdeascaleProfile extends Model implements HasMedia
 {
     use HasConnections, HasMetaData, HasTranslations, InteractsWithMedia, Searchable;
 
-    protected $primaryKey = 'id';
-
-    public $incrementing = true;
-
     public int $maxValuesPerFacet = 8000;
+
+    /**
+     * The attributes that should be hidden for serialization.
+     *
+     * @var array<string>
+     */
+    protected $hidden = ['id'];
 
     protected $fillable = [
         'ideascale_id',
@@ -48,9 +51,7 @@ class IdeascaleProfile extends Model implements HasMedia
         'title',
     ];
 
-    protected $hidden = [];
-
-    protected $appends = ['profile_photo_url'];
+    protected $appends = ['profile_photo_url', 'hash'];
 
     public array $translatable = [
         // 'bio',
@@ -291,7 +292,8 @@ class IdeascaleProfile extends Model implements HasMedia
     protected function casts(): array
     {
         return [
-            'id' => HashId::class,
+            //            'id' => HashId::class,
+            'claimed_by_id' => HashId::class,
             'created_at' => DateFormatCast::class,
             'updated_at' => DateFormatCast::class,
         ];

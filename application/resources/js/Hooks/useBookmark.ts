@@ -18,7 +18,7 @@ export default function useBookmark({ modelType, itemId }: UseBookmarkProps) {
     const fetchBookmarkStatus = async () => {
         try {
             const response = await axios.get(
-                route('api.bookmarks.status', { modelType, id: itemId }),
+                route('api.bookmarks.status', { modelType, hash: itemId }),
             );
             setIsBookmarked(response.data.isBookmarked);
             setBookmarkId(response.data.id || null);
@@ -30,7 +30,7 @@ export default function useBookmark({ modelType, itemId }: UseBookmarkProps) {
     const createBookmark = async () => {
         try {
             const response = await axios.post(
-                route('api.bookmarks.store', { modelType, id: itemId }),
+                route('api.bookmarks.store', { modelType, hash: itemId }),
             );
             if (response.data.bookmarkItem) {
                 setIsBookmarked(true);
@@ -51,7 +51,7 @@ export default function useBookmark({ modelType, itemId }: UseBookmarkProps) {
             if (bookmarkId) {
                 await axios.delete(
                     route('api.bookmarks.remove', {
-                        id: bookmarkId,
+                        hash: bookmarkId,
                     }),
                 );
                 setIsBookmarked(false);
