@@ -1,6 +1,7 @@
 import { CatalystConnectionsEnum } from '@/enums/catalyst-connections-enums';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import ForceGraph2D from 'react-force-graph-2d';
+import ConnectionData = App.DataTransferObjects.ConnectionData;
 
 export type Node = {
     id: string;
@@ -12,20 +13,8 @@ export type Node = {
     y?: number;
 };
 
-export type Link = {
-    source: string | Node;
-    target: string | Node;
-};
-
-export type GraphData = {
-    nodes: Node[];
-    links: Link[];
-};
-
 interface GraphComponentProps {
-    data: GraphData;
-    rootGroupId: string;
-    rootProfileId?: string;
+    data: ConnectionData;
     nodeSize?: {
         group?: number;
         profile?: { min: number; max: number };
@@ -46,8 +35,6 @@ interface GraphComponentProps {
 
 const CatalystConnectionsGraph = ({
     data,
-    rootGroupId,
-    rootProfileId,
     nodeSize = { group: 50, profile: { min: 5, max: 20 } },
     forces = { linkDistance: 50, chargeStrength: -300 },
     colors = {
@@ -62,8 +49,10 @@ const CatalystConnectionsGraph = ({
     const fgRef = useRef<any>(null);
     const imageCache = useRef<Map<string, HTMLImageElement>>(new Map());
     const [hoveredNodeId, setHoveredNodeId] = useState<string | null>(null);
+    const containerRef = useRef<HTMLDivElement>(null);
     const nodeSizes = useRef<Map<string, number>>(new Map());
     const [focusedNodeId, setFocusedNodeId] = useState(null);
+    const [dimensions, setDimensions] = useState({ width: 800, height: 600 });
 
     const loadImages = useCallback(() => {
         const cache = new Map<string, HTMLImageElement>();
@@ -130,7 +119,7 @@ const CatalystConnectionsGraph = ({
                 const node = data.nodes.find((n) => n.id === focusedNodeId);
                 if (node) {
                     const nodePosition = { x: node.x || 0, y: node.y || 0 };
-                    fgRef.current.zoom(4, 1000);
+                    fgRef.current.zoom(2, 1000);
                     fgRef.current.centerAt(
                         nodePosition.x,
                         nodePosition.y,
@@ -145,6 +134,22 @@ const CatalystConnectionsGraph = ({
     const handleNodeClick = useCallback((node: any) => {
         setFocusedNodeId(node.id);
     }, []);
+
+    useEffect(() => {
+        const updateSize = () => {
+          if (containerRef.current) {
+            setDimensions({
+              width: containerRef.current.clientWidth,
+              height: containerRef.current.clientHeight,
+            });
+          }
+        };
+    
+        updateSize(); 
+    
+        window.addEventListener("resize", updateSize);
+        return () => window.removeEventListener("resize", updateSize);
+      }, []);
 
     const nodeCanvasObject = useCallback(
         (node: any, ctx: CanvasRenderingContext2D) => {
@@ -224,7 +229,7 @@ const CatalystConnectionsGraph = ({
 
             const lineWidth =
                 sourceNode.type === CatalystConnectionsEnum.GROUP
-                    ? sourceNode.id === rootGroupId
+                    ? sourceNode.id === data.rootGroupId
                         ? 1
                         : 0.3
                     : 0.3;
@@ -235,19 +240,20 @@ const CatalystConnectionsGraph = ({
             ctx.lineTo(targetNode.x!, targetNode.y!);
             ctx.stroke();
         },
-        [config.colors, getColor, hoveredNodeId, rootGroupId],
+        [config.colors, getColor, hoveredNodeId, data.rootGroupId],
     );
 
     return (
-        <div className="bg-background max-w-lg">
+        <div className="bg-background w-full">
             <ForceGraph2D
-                width={window.innerWidth}
+                width={dimensions.width}
+                height={dimensions.height}
                 ref={fgRef}
                 graphData={data}
                 nodeLabel="name"
                 nodeRelSize={4}
                 onBackgroundClick={() => {
-                    fgRef.current.zoomToFit(100, 0);
+                    /* fgRef.current.zoomToFit(100, 0); */
                     setFocusedNodeId(null);
                 }}
                 onNodeClick={(node) => {

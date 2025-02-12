@@ -16,6 +16,7 @@ use App\Models\Fund;
 use App\Models\Group;
 use App\Models\IdeascaleProfile;
 use App\Models\Review;
+use App\Nova\Connections;
 use App\Repositories\GroupRepository;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -102,35 +103,38 @@ class GroupsController extends Controller
         $connections = $this->getConnectionsData($request, $group->id, $group->hash);
 
         return Inertia::render('Groups/Group', [
-            'group' => GroupData::from($group),
-            'proposals' => Inertia::optional(
-                fn () => to_length_aware_paginator(
+            'group' =>/*  GroupData::from($group) */[],
+            'proposals' => []/* Inertia::optional(
+                 fn () => to_length_aware_paginator(
                     ProposalData::collect(
                         $group->proposals()->with(['users', 'fund'])->paginate(5)
                     )
-                )
-            ),
-            'ideascaleProfiles' => Inertia::optional(
-                fn () => to_length_aware_paginator(
+                ) 
+               
+            ) */,
+            'ideascaleProfiles' => [] /* Inertia::optional(
+            /*     fn () => to_length_aware_paginator(
                     IdeascaleProfileData::collect(
                         $group->ideascale_profiles()->with([])->paginate(12)
                     )
-                )
-            ),
-            'reviews' => Inertia::optional(
-                fn () => to_length_aware_paginator(
+                ) 
+               
+            ) */,
+            'reviews' => [] /* Inertia::optional(
+               fn () => to_length_aware_paginator(
                     ReviewData::collect(
                         Review::query()->paginate(8)
                     )
-                )
-            ),
-            'locations' => Inertia::optional(
+                ) 
+            )*/ ,
+            'locations' => [] /* Inertia::optional(
                 fn () => to_length_aware_paginator(
                     LocationData::collect(
                         $group->locations()->paginate(12)
                     )
-                )
-            ),
+                ) 
+               
+            ) */,
             'connections' => Inertia::optional(
                 fn () => $connections
             ),

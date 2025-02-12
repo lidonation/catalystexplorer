@@ -1,17 +1,12 @@
 import { CatalystConnectionsEnum } from '@/enums/catalyst-connections-enums';
-import { PageProps } from '@/types';
 import axios from 'axios';
 import { useState } from 'react';
-import GraphComponent, { Node } from './Partials/CatalystConnectionsGraph';
+import CatalystConnectionsGraph, { Node } from './CatalystConnectionsGraph';
 import ConnectionData = App.DataTransferObjects.ConnectionData;
 
-interface GraphProps
-    extends PageProps<{
-        graphData: ConnectionData;
-        rootGroupId: string;
-        rootGroupHash: string;
-        rootProfileId?: string;
-    }> {}
+interface GraphProps {
+    graphData: ConnectionData;
+}
 
 const NODE_SIZES = {
     group: 15,
@@ -29,12 +24,7 @@ const COLORS = {
     link: '--cx-primary',
 } as const;
 
-const Graph: React.FC<GraphProps> = ({
-    graphData,
-    rootGroupId,
-    rootGroupHash,
-    rootProfileId,
-}) => {
+const Graph: React.FC<GraphProps> = ({ graphData }) => {
     const [selectedProfileIds] = useState<Set<string>>(new Set());
     const [selectedGroupIds] = useState<Set<string>>(new Set());
     const [currentData, setCurrentData] = useState<ConnectionData>(graphData);
@@ -54,7 +44,7 @@ const Graph: React.FC<GraphProps> = ({
             }
 
             const response = await axios.get<ConnectionData>(
-                route('api.connections', { hash: rootGroupHash }),
+                route('api.connections', { hash: graphData.rootGroupHash }),
                 {
                     params: {
                         profileIds: Array.from(selectedProfileIds),
@@ -72,14 +62,13 @@ const Graph: React.FC<GraphProps> = ({
     };
 
     return (
-        <div className="bg-background max-w-lg">
-            <GraphComponent
+        <div className="bg-background w-full">
+            <CatalystConnectionsGraph
                 data={currentData}
                 nodeSize={NODE_SIZES}
                 forces={FORCE_CONFIG}
                 colors={COLORS}
                 onNodeClick={handleNodeClick}
-                rootGroupId={rootGroupId}
             />
         </div>
     );

@@ -12,7 +12,8 @@ import ConnectionData = App.DataTransferObjects.ConnectionData;
 import Title from '@/Components/atoms/Title';
 import AggregatedReviewsSummary from "@/Components/AggregatedReviewsSummary";
 import React from "react";
-import Graph from './Graph';
+import Graph from './Partials/Graph';
+
 
 interface GroupPageProps extends Record<string, unknown> {
     group: GroupData;
@@ -59,8 +60,8 @@ const Group: React.FC<GroupPageProps> = ({group, proposals, connections, ideasca
                                 <Title level='2'>Connections</Title>
 
                                 {typeof connections !== 'undefined' && (
-                                    <div className='max-w-lg'>
-                                       <Graph graphData={connections} rootGroupId={connections.rootGroupId} rootGroupHash={connections.rootGroupHash}/>
+                                    <div className='w-full'>
+                                       <Graph graphData={connections}/>
                                     </div>
                                 )}
                             </div>
