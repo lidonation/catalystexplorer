@@ -1,6 +1,6 @@
 declare namespace App.DataTransferObjects {
 export type AnnouncementData = {
-id: number;
+hash: string;
 title: string;
 content: string;
 label?: string;
@@ -12,7 +12,7 @@ user_id: number;
 hero_image_url: string;
 };
 export type BookmarkCollectionData = {
-id: number | null;
+hash: string | null;
 user_id?: number;
 parent_id?: number;
 title?: string;
@@ -29,7 +29,7 @@ updated_at?: string;
 deleted_at?: string;
 };
 export type BookmarkItemData = {
-id: number | null;
+hash: string | null;
 user_id?: number;
 bookmark_collection_id?: number;
 model_id?: number;
@@ -42,7 +42,7 @@ updated_at?: string;
 deleted_at?: string;
 };
 export type CampaignData = {
-id: number | null;
+hash: string | null;
 fund_id?: number;
 title: string | null;
 meta_title: string | null;
@@ -54,16 +54,16 @@ amount?: number;
 created_at: string | null;
 updated_at: string | null;
 label?: string;
-currency: string;
+currency: string | null;
 proposals_count: number | null;
 unfunded_proposals_count: number | null;
 funded_proposals_count: number | null;
 completed_proposals_count: number | null;
-totalAwarded: number;
-totalDistributed: number;
+totalAwarded: number | null;
+totalDistributed: number | null;
 };
 export type CommunityData = {
-id: number | null;
+hash: string | null;
 title?: string;
 content?: string;
 user_id?: number;
@@ -95,6 +95,7 @@ export type FundData = {
 amount: number;
 label: string;
 title: string;
+hash: string | null;
 proposals_count?: number;
 funded_proposals_count?: number;
 completed_proposals_count?: number;
@@ -116,7 +117,7 @@ review_started_at?: string;
 parent_id?: number;
 };
 export type GroupData = {
-id: number | null;
+hash: string | null;
 user_id?: number;
 name?: string;
 hero_img_url?: string;
@@ -188,6 +189,7 @@ lat?: number;
 long?: number;
 };
 export type MetricData = {
+hash: string | null;
 user_id: number | null;
 title: string;
 content?: string;
@@ -269,7 +271,7 @@ helpful_total: number | null;
 not_helpful_total: number | null;
 };
 export type ReviewModerationData = {
-id: number | null;
+hash: string | null;
 reviewer_id?: number;
 excellent_count: number;
 good_count: number;
@@ -278,7 +280,7 @@ flagged: boolean;
 qa_rationale?: Array<any>;
 };
 export type UserData = {
-id: string;
+hash: string;
 name: string;
 email: string;
 profile_photo_url: string;

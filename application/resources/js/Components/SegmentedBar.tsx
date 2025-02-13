@@ -9,26 +9,36 @@ interface SegmentedProgressBarProps {
 const SegmentedBar: React.FC<SegmentedProgressBarProps> = ({ segments }) => {
     const total: number = segments.reduce((acc, seg) => acc + seg.value, 0);
     const [isHovered, setIsHovered] = useState(false);
+
+    const nonZeroValues = segments.filter((segments) => segments.value > 0);
+    const singleNonZeroIndex = segments.findIndex((segments) => segments.value > 0);
+
     return (
         <div
-            className="relative flex h-3 w-full gap-1"
+            className="relative flex h-2 w-full gap-1"
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
         >
-            {segments.map((segment, index) => {
-                const width = (segment.value / total) * 100;
-                return (
-                    <div
-                        key={index}
-                        className={`h-full rounded-md ${segment.color}`}
-                        style={{
-                            width: `${width}%`,
-                            height: '100%',
-                            backgroundColor: segment.color,
-                        }}
-                    />
-                );
-            })}
+            {nonZeroValues.length === 1 ? (
+                // Render only one full-width bar if only one value is non-zero
+                <div
+                    className={`${segments[singleNonZeroIndex]?.color} h-2 w-full rounded-md`}
+                ></div>
+            ) : (
+                nonZeroValues.map((segment, index) => {
+                    const width =
+                        total === 0
+                            ? '33.33%'
+                            : `${(segment.value / total) * 100}%`;
+                    return (
+                        <div
+                            key={index}
+                            className={`${segment.color} h-2 rounded-md ${index !== 0 ? 'ml-1' : ''}`}
+                            style={{ width }}
+                        ></div>
+                    );
+                })
+            )}
             {isHovered && (
                 <div className="absolute bottom-full left-1/2 z-100 mb-2 -translate-x-1/2 transform">
                     <SegmentedBarToolTipHover segments={segments} />

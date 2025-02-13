@@ -49,7 +49,7 @@ const Group: React.FC<GroupPageProps> = ({group, proposals, connections, ideasca
                     <WhenVisible data="proposals" fallback={<div>Loading Proposals...</div>}>
                         <RelatedProposals
                             proposals={proposals}
-                            groupId={group.id ?? undefined}
+                            groupId={group.hash ?? undefined}
                             className='proposals-wrapper w-full grid grid-cols-1 gap-3 lg:grid-cols-2 xl:grid-cols-3'
                         />
                     </WhenVisible>
