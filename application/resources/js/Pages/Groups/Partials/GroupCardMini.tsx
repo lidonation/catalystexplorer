@@ -45,7 +45,7 @@ const GroupCardMini: React.FC<GroupCardMiniProps> = ({ group }) => {
                         <Title level="5">{group?.name}</Title>
                     </Link>
                 </div>
-                <div className='w-full flex justify-between items-center'>
+                <div className="flex w-full items-center justify-between">
                     <div>
                         <div className="text-primary bg-eye-logo mt-2 flex w-[60px] items-center justify-center rounded-md border p-1">
                             <div className="text-3 font-bold">
@@ -56,12 +56,16 @@ const GroupCardMini: React.FC<GroupCardMiniProps> = ({ group }) => {
                                 {group?.proposals_count ?? 0}
                             </div>
                         </div>
-                        <p className="mt-2  text-gray-persist">{t('groups.fundedProposals')}</p>
+                        <p className="text-gray-persist mt-2">
+                            {t('groups.fundedProposals')}
+                        </p>
                     </div>
 
                     <div>
-                        <p className="text-1 font-bold">{group?.reviews ?? 0}</p>
-                        <p className="text-3  mt-2 text-gray-persist">
+                        <p className="text-1 font-bold">
+                            {group?.reviews ?? 0}
+                        </p>
+                        <p className="text-3 text-gray-persist mt-2">
                             {t('groups.reviews')}
                         </p>
                     </div>
@@ -90,20 +94,19 @@ const GroupCardMini: React.FC<GroupCardMiniProps> = ({ group }) => {
                             />
                         )}
                     </div>
-                    <p className='text-gray-persist'>{t('groups.received')}</p>
+                    <p className="text-gray-persist">{t('groups.received')}</p>
                 </div>
 
                 <div className="border-content-light mt-2 flex items-center justify-between border-t pt-3">
-                    {
-                        IdeascaleProfileUsers ? (
-                            <IdeascaleProfileUsers
-                        users={group?.ideascale_profiles || []}
-                        onUserClick={handleUserClick}
-                    />
-                        ) : (
-                            <p>{t('groups.noMembers')}</p>
-                        )
-                    }
+                    {group?.ideascale_profiles &&
+                    group?.ideascale_profiles.length > 0 ? (
+                        <IdeascaleProfileUsers
+                            users={group?.ideascale_profiles || []}
+                            onUserClick={handleUserClick}
+                        />
+                    ) : (
+                        <p>{t('groups.noMembers')}</p>
+                    )}
                     <GroupSocials group={group} />
                 </div>
             </Card>
