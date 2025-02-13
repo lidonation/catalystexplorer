@@ -22,7 +22,7 @@ const CampaignCard: React.FC<GroupCardProps> = ({ group }) => {
           <div className='flex flex-col gap-2'>
               <div>
                   Total Requested (Ada + USD) <br/>
-                  {group?.amount_requested_usd} + {group?.amount_requested_ada}
+                  {group?.amount_requested_ada} + {group?.amount_requested_usd}
               </div>
 
               <div>

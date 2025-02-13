@@ -19,7 +19,7 @@ function Title({
         content = (
             <h1
                 {...props}
-                className={`title-1 ${className}`}
+                className={`title-3 ${className}`}
             >
                 {children}
             </h1>
@@ -28,7 +28,7 @@ function Title({
         content = (<h2
             id={id}
             {...props}
-            className={`title-2 ${className}`}
+            className={`text-3xl ${className}`}
         >
             {children}
         </h2>)
@@ -36,7 +36,7 @@ function Title({
         content = (<h2
             id={id}
             {...props}
-            className={`title-3 ${className}`}
+            className={`text-2xl ${className}`}
         >
             {children}
         </h2>)
