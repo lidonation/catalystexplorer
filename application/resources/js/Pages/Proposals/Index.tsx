@@ -9,10 +9,10 @@ import VerticalCardLoading from '@/Pages/Proposals/Partials/ProposalVerticalCard
 import { PageProps } from '@/types';
 import { ProposalMetrics } from '@/types/proposal-metrics';
 import { Head, WhenVisible } from '@inertiajs/react';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { PaginatedData } from '../../../types/paginated-data';
-import { ProposalSearchParams } from '../../../types/proposal-search-params';
+import { SearchParams } from '../../../types/search-params';
 import CardLayoutSwitcher from './Partials/CardLayoutSwitcher';
 import FundFiltersContainer from './Partials/FundFiltersContainer';
 import ProposalFilters from './Partials/ProposalFilters';
@@ -24,7 +24,7 @@ import Title from '@/Components/atoms/Title';
 interface HomePageProps extends Record<string, unknown> {
     proposals: PaginatedData<ProposalData[]>;
     funds: any;
-    filters: ProposalSearchParams;
+    filters: SearchParams;
     metrics: ProposalMetrics;
 }
 

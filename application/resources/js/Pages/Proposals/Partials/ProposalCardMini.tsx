@@ -4,8 +4,8 @@ import ProposalFundingStatus from '@/Pages/Proposals/Partials/ProposalFundingSta
 import { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import Proposal = App.DataTransferObjects.ProposalData;
-import ProposalUsersMini from './ProposalUsersMini';
 import Title from '@/Components/atoms/Title';
+import IdeascaleProfileUsers from '@/Pages/IdeascaleProfile/Partials/IdeascaleProfileUsersComponent';
 
 interface ProposalCardMiniProps {
     proposal: Proposal;
@@ -48,7 +48,7 @@ export default function ProposalCardMini({
                     <ProposalFundingPercentages proposal={proposal}/>
                 </div>
                 <div className="border-t mt-3 border-t-dark/30">
-                    <ProposalUsersMini
+                    <IdeascaleProfileUsers
                         users={proposal.users}
                         onUserClick={handleUserClick}
                     />

@@ -12,11 +12,13 @@ import ConnectionData = App.DataTransferObjects.ConnectionData;
 import Title from '@/Components/atoms/Title';
 import AggregatedReviewsSummary from "@/Components/AggregatedReviewsSummary";
 import React from "react";
+import Graph from './Partials/Graph';
+
 
 interface GroupPageProps extends Record<string, unknown> {
     group: GroupData;
     proposals: PaginatedData<ProposalData[]>;
-    connections: ConnectionData[];
+    connections: ConnectionData;
     ideascaleProfiles: PaginatedData<IdeascaleProfileData[]>;
     reviews: PaginatedData<ReviewData[]>;
     locations: PaginatedData<LocationData[]>;
@@ -24,6 +26,7 @@ interface GroupPageProps extends Record<string, unknown> {
 
 const Group: React.FC<GroupPageProps> = ({group, proposals, connections, ideascaleProfiles, reviews, locations}) => {
     const {t} = useTranslation();
+
 
     return (
         <>
@@ -46,19 +49,19 @@ const Group: React.FC<GroupPageProps> = ({group, proposals, connections, ideasca
                     <WhenVisible data="proposals" fallback={<div>Loading Proposals...</div>}>
                         <RelatedProposals
                             proposals={proposals}
-                            groupId={group.id ?? undefined}
+                            groupId={group.hash ?? undefined}
                             className='proposals-wrapper w-full grid grid-cols-1 gap-3 lg:grid-cols-2 xl:grid-cols-3'
                         />
                     </WhenVisible>
 
                     <section>
                         <WhenVisible data='connections' fallback={<div>Loading Connections</div>}>
-                            <div className='w-full overflow-auto'>
+                            <div className='w-full'>
                                 <Title level='2'>Connections</Title>
 
                                 {typeof connections !== 'undefined' && (
-                                    <div className='max-w-lg'>
-                                        {JSON.stringify(connections)}
+                                    <div className='w-full'>
+                                       <Graph graphData={connections}/>
                                     </div>
                                 )}
                             </div>

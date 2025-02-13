@@ -40,6 +40,21 @@ class IdeascaleProfilesController extends Controller
 
     public function show(Request $request, IdeascaleProfile $ideascaleProfile): Response
     {
+        $ideascaleProfile
+            ->loadCount([
+                'completed_proposals',
+                'funded_proposals',
+                'unfunded_proposals',
+                'proposals',
+            ])->append([
+                'amount_distributed_ada',
+                'amount_distributed_usd',
+                'amount_awarded_ada',
+                'amount_awarded_usd',
+                'amount_requested_ada',
+                'amount_requested_usd',
+            ]);
+
         return Inertia::render('IdeascaleProfile/IdeascaleProfile', compact('ideascaleProfile'));
     }
 
@@ -95,25 +110,11 @@ class IdeascaleProfilesController extends Controller
             $page,
             [
                 'pageName' => 'p',
+                'onEachSide' => 0,
             ]
         );
 
-        return $pagination->onEachSide(1)->toArray();
-    }
-
-    protected function paginate($items, $total, $page, $limit): array
-    {
-        $pagination = new LengthAwarePaginator(
-            $items,
-            $total,
-            $limit,
-            $page,
-            [
-                'pageName' => 'p',
-            ]
-        );
-
-        return $pagination->onEachSide(1)->toArray();
+        return $pagination->toArray();
     }
 
     protected function getProps(Request $request): void

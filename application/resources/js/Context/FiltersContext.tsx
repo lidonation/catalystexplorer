@@ -9,7 +9,7 @@ import {
     useRef,
     useState,
 } from 'react';
-import { ProposalSearchParams } from '../../types/proposal-search-params';
+import { SearchParams } from '../../types/search-params';
 
 export interface FilteredItem {
     param: string;
@@ -59,7 +59,7 @@ export function FiltersProvider({
     routerOptions = {},
 }: {
     children: ReactNode;
-    defaultFilters: ProposalSearchParams;
+    defaultFilters: SearchParams;
     routerOptions?: Record<string, any>;
 }) {
     const initialFilters = formatToFilters(defaultFilters);

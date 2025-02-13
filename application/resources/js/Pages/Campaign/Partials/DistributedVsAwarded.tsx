@@ -1,3 +1,4 @@
+import Title from '@/Components/atoms/Title';
 import PercentageProgressBar from '@/Components/PercentageProgressBar';
 import { shortNumber } from '@/utils/shortNumber';
 import { useEffect, useState } from 'react';
@@ -27,7 +28,7 @@ const DistributedVsAwarded: React.FC<DistributedVsAwardedPageProps> = ({
 
     return (
         <div className="flex w-full flex-col gap-4">
-            <PercentageProgressBar value={distributed} total={awarded} />
+            <PercentageProgressBar value={distributed} total={awarded} primaryBackgroundColor={'bg-background'} secondaryBackgroudColor={'bg-primary'}/>
             <div className="flex items-center gap-2">
                 <span className="text-content text-2xl font-bold">
                     {currSymbol}
@@ -38,9 +39,9 @@ const DistributedVsAwarded: React.FC<DistributedVsAwardedPageProps> = ({
                     {shortNumber(awarded)}({percentage ? percentage : 0}%)
                 </span>
             </div>
-            <div className="text-content text-2xl">
+            <Title level='6'>
                 {t('Distributed vs Awarded')}
-            </div>
+            </Title>
         </div>
     );
 };

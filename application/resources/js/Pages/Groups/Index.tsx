@@ -1,29 +1,36 @@
+import Paginator from '@/Components/Paginator';
+import Title from '@/Components/atoms/Title';
 import { FiltersProvider } from '@/Context/FiltersContext';
 import { ListProvider } from '@/Context/ListContext';
-import { Head } from '@inertiajs/react';
+import { Head, WhenVisible } from '@inertiajs/react';
+import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ProposalSearchParams } from '../../../types/proposal-search-params';
-import FundFiltersContainer from '../Proposals/Partials/FundFiltersContainer';
-import GroupFilters from './Partials/GroupFilters';
 import { PaginatedData } from '../../../types/paginated-data';
-import Paginator from '@/Components/Paginator';
-import GroupData = App.DataTransferObjects.GroupData;
-import Title from '@/Components/atoms/Title';
+import { SearchParams } from '../../../types/search-params';
+import FundFiltersContainer from '../Proposals/Partials/FundFiltersContainer';
+import GroupCardLoader from './Partials/GroupCardMiniLoader';
+import GroupFilters from './Partials/GroupFilters';
 import GroupList from './Partials/GroupList';
 import GroupSearchControls from './Partials/GroupSearchControls';
-import axios from 'axios';
+import GroupData = App.DataTransferObjects.GroupData;
 
 interface GroupsPageProps extends Record<string, unknown> {
     groups: PaginatedData<GroupData[]>;
-    filters: ProposalSearchParams;
+    filters: SearchParams;
+    filterCounts: {
+        proposalsCount: number;
+        totalAwardedAda: number;
+        totalAwardedUsd: number;
+    };
 }
 
 type FundsType = Record<string, number>;
 
 const Index: React.FC<GroupsPageProps> = ({
     groups,
-    filters
+    filters,
+    filterCounts,
 }) => {
     const [showFilters, setShowFilters] = useState(false);
     const { t } = useTranslation();
@@ -31,17 +38,16 @@ const Index: React.FC<GroupsPageProps> = ({
 
     useEffect(() => {
         const fetchFunds = async () => {
-          try {
-            const response = await axios.get(route('api.fundCounts'));
-            setFunds(response.data);
-          } catch (err) {
-            console.log(err)
-          }
+            try {
+                const response = await axios.get(route('api.fundCounts'));
+                setFunds(response.data);
+            } catch (err) {
+                console.log(err);
+            }
         };
-    
+
         fetchFunds();
-        
-      }, []);
+    }, []);
 
     return (
         <>
@@ -52,11 +58,11 @@ const Index: React.FC<GroupsPageProps> = ({
                 >
                     <Head title="Groups" />
 
-            <header>
-                <div className="container">
-                    <Title level='1'>{t('groups.title')}</Title>
-                </div>
-            </header>
+                    <header>
+                        <div className="container">
+                            <Title level="1">{t('groups.title')}</Title>
+                        </div>
+                    </header>
 
                     <section className="container">
                         <FundFiltersContainer funds={funds} />
@@ -69,17 +75,25 @@ const Index: React.FC<GroupsPageProps> = ({
                             showFilters ? 'max-h-[500px]' : 'max-h-0'
                         }`}
                     >
-                        <GroupFilters/>
+                        <GroupFilters
+                            proposalsCount={filterCounts.proposalsCount}
+                            totalAwardedAda={filterCounts.totalAwardedAda}
+                            totalAwardedUsd={filterCounts.totalAwardedUsd}
+                        />
                     </section>
 
                     <section className="container py-8">
-                        <GroupList groups={groups?.data || []} />
+                        <WhenVisible
+                            fallback={<GroupCardLoader />}
+                            data="groups"
+                        >
+                            <GroupList groups={groups?.data || []} />
+                        </WhenVisible>
                     </section>
 
                     <section className="w-full px-4 lg:container lg:px-0">
-                    {groups && <Paginator pagination={groups} />}
-                </section>
-
+                        {groups && <Paginator pagination={groups} />}
+                    </section>
                 </FiltersProvider>
             </ListProvider>
         </>

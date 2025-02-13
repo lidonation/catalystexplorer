@@ -8,7 +8,7 @@ import ProposalData = App.DataTransferObjects.ProposalData;
 
 interface RelatedProposalsProps extends HTMLAttributes<HTMLDivElement> {
     proposals: PaginatedData<ProposalData[]>;
-    groupId?: number;
+    groupId?: string;
     maxVisibleProposals?: number;
 }
 

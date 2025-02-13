@@ -10,7 +10,7 @@ services:
     deploy:
       resources:
         limits:
-          memory: 512M
+          memory: ${DOCKER_COMPOSE_MEMORY_LIMIT:-1024M}
           cpus: "1.0"
     image: catalystexplorer
     container_name: catalystexplorer.com
@@ -27,7 +27,7 @@ services:
       CONTAINER_ROLE: "app"
       IGNITION_LOCAL_SITES_PATH: '${PWD}'
       LARAVEL_SAIL: 1
-      NODE_OPTIONS: "--max-old-space-size=8096"
+      NODE_OPTIONS: "${NODE_OPTIONS:---max-old-space-size=8096}"
       OCTANE_WATCH: '${OCTANE_WATCH:-true}'
       WWWGROUP: '${WWWUSER:-1000}'
       WWWUSER: '${WWWUSER:-1000}'
@@ -39,6 +39,7 @@ services:
       - ./application:/var/www:cached
     networks:
       - catalystexplorer-net
+      - shared-network
     depends_on:
       - catalystexplorer.db
       - catalystexplorer-search
@@ -104,6 +105,7 @@ services:
       # - './vendor/laravel/sail/database/pgsql/create-testing-database.sql:/docker-entrypoint-initdb.d/10-create-testing-database.sql'
     networks:
       - catalystexplorer-net
+      - shared-network
     healthcheck:
       test:
         - CMD
@@ -185,6 +187,9 @@ services:
 
 networks:
   catalystexplorer-net:
+    driver: bridge
+  shared-network:
+    name: shared-network
     driver: bridge
 volumes:
   catalystexplorer-db:

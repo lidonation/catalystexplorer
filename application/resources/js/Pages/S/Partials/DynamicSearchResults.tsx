@@ -3,7 +3,7 @@ import RecordsNotFound from '@/Layouts/RecordsNotFound';
 import FileTypeIcon from '@/Components/svgs/FileTypeIcon';
 import PostCard from '@/Pages/Posts/Partials/PostCard';
 import ProposalResults from '@/Pages/Proposals/Partials/ProposalResults';
-import IdeascaleProfileCard from "@/Pages/IdeascaleProfile/Partials/IdeascaleProfileCard";
+import IdeascaleProfileCardMini from "@/Pages/IdeascaleProfile/Partials/IdeascaleProfileCardMini";
 import { Button } from '@headlessui/react';
 import { TFunction } from 'i18next';
 import { useEffect, useState } from 'react';
@@ -53,7 +53,7 @@ const DynamicSearchResults = ({
     const params = new URLSearchParams(search);
     const urlQuery = params.get('q') as string;
     const [quickPitchView, setQuickPitchView] = useState(false);
-    
+
     const setGlobalQuickPitchView = (value: boolean) =>
         setQuickPitchView(value);
 
@@ -105,7 +105,7 @@ const DynamicSearchResults = ({
                             <ul className="grid w-full grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-5">
                                 {data.hits.map((user, index) => (
                                     <li key={index}>
-                                        <IdeascaleProfileCard
+                                        <IdeascaleProfileCardMini
                                             ideascaleProfile={
                                                 user as IdeascaleProfileData
                                             }

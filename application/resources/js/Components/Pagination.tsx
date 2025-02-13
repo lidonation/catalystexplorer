@@ -1,4 +1,4 @@
-import { ChevronLeft, ChevronRight, MoreHorizontal } from 'lucide-react';
+import { ArrowLeft, ChevronRight, MoreHorizontal } from 'lucide-react';
 import * as React from 'react';
 
 import { cn } from '@/lib/utils';
@@ -65,7 +65,7 @@ const PaginationPrevious = ({
             className={cn('flex items-center gap-1 pl-2.5', className)}
             {...props}
         >
-            <ChevronLeft className="h-4 w-4" />
+            <ArrowLeft className="h-4 w-4" />
             <span>{t('pagination.previous')}</span>
         </PaginationLink>
     );
