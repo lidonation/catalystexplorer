@@ -6,8 +6,8 @@ namespace App\Models;
 
 use App\Models\CatalystExplorer\Moderation;
 use App\Traits\HasMetaData;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Reviewer extends Model
 {
@@ -22,5 +22,4 @@ class Reviewer extends Model
     {
         return $this->hasMany(Moderation::class, 'reviewer_id');
     }
-
 }

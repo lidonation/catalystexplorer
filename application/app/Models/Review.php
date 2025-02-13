@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use Laravel\Scout\Searchable;
-use Illuminate\Support\Facades\Artisan;
 use Illuminate\Database\Eloquent\Casts\Attribute;
-use Illuminate\Database\Eloquent\Relations\HasOne;
-use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasOneThrough;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Illuminate\Support\Facades\Artisan;
+use Laravel\Scout\Searchable;
 
 class Review extends Model
 {
@@ -68,9 +68,8 @@ class Review extends Model
     public function proposal(): HasOneThrough
     {
         return $this->hasOneThrough(Proposal::class, Discussion::class, 'id', 'id', 'model_id', 'model_id')
-        ->where('discussions.model_type', Proposal::class);
+            ->where('discussions.model_type', Proposal::class);
     }
-
 
     public function parent(): BelongsTo
     {
