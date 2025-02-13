@@ -240,7 +240,7 @@ const CatalystConnectionsGraph = ({
             ctx.lineTo(targetNode.x!, targetNode.y!);
             ctx.stroke();
         },
-        [config.colors, getColor, hoveredNodeId, data.rootGroupId],
+        [config.colors, getColor, hoveredNodeId, focusedNodeId, data.rootGroupId],
     );
 
     return (
