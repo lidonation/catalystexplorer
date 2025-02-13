@@ -57,7 +57,11 @@ class GroupsController extends Controller
 
     public array $fundsCount = [];
 
-    public int $proposalsCount;
+    public int $proposalsCount = 0;
+
+    public array $totalAwardedAda = [];
+
+    public array $totalAwardedUsd = [];
 
     public function index(Request $request): Response
     {
@@ -71,8 +75,9 @@ class GroupsController extends Controller
             'sort' => "{$this->sortBy}:{$this->sortOrder}",
             'filters' => $this->queryParams,
             'filterCounts' => [
-                'tagsCount' => $this->tagsCount,
-                'fundsCount' => $this->fundsCount,
+                'proposalsCount' => array_sum($this->fundsCount),
+                'totalAwardedAda' => array_sum($this->totalAwardedAda),
+                'totalAwardedUsd' => array_sum($this->totalAwardedUsd)
             ],
         ];
 
@@ -100,7 +105,7 @@ class GroupsController extends Controller
         return Inertia::render('Groups/Group', [
             'group' => GroupData::from($group),
             'proposals' => Inertia::optional(
-                fn () => to_length_aware_paginator(
+                fn() => to_length_aware_paginator(
                     ProposalData::collect(
                         $group->proposals()->with(['users', 'fund'])->paginate(5)
                     )
@@ -191,9 +196,9 @@ class GroupsController extends Controller
         $args['offset'] = ($page - 1) * $limit;
         $args['limit'] = $limit;
 
-        $proposals = app(GroupRepository::class);
+        $groups = app(GroupRepository::class);
 
-        $builder = $proposals->search(
+        $builder = $groups->search(
             $this->queryParams[ProposalSearchParams::QUERY()->value] ?? '',
             $args
         );
@@ -252,12 +257,12 @@ class GroupsController extends Controller
 
         if (! empty($this->queryParams[ProposalSearchParams::CAMPAIGNS()->value])) {
             $campaignIds = ($this->queryParams[ProposalSearchParams::CAMPAIGNS()->value]);
-            $filters[] = '('.implode(' OR ', array_map(fn ($c) => "proposals.campaign.id = {$c}", $campaignIds)).')';
+            $filters[] = '(' . implode(' OR ', array_map(fn($c) => "proposals.campaign.id = {$c}", $campaignIds)) . ')';
         }
 
         if (! empty($this->queryParams[ProposalSearchParams::TAGS()->value])) {
             $tagIds = ($this->queryParams[ProposalSearchParams::TAGS()->value]);
-            $filters[] = '('.implode(' OR ', array_map(fn ($c) => "tags.id = {$c}", $tagIds)).')';
+            $filters[] = '(' . implode(' OR ', array_map(fn($c) => "tags.id = {$c}", $tagIds)) . ')';
         }
 
         if (! empty($this->queryParams[ProposalSearchParams::IDEASCALE_PROFILES()->value])) {
@@ -271,8 +276,8 @@ class GroupsController extends Controller
         }
 
         if (! empty($this->queryParams[ProposalSearchParams::COHORT()->value])) {
-            $cohortFilters = array_map(fn ($cohort) => "{$cohort} > 0", $this->queryParams[ProposalSearchParams::COHORT()->value]);
-            $filters[] = '('.implode(' OR ', $cohortFilters).')';
+            $cohortFilters = array_map(fn($cohort) => "{$cohort} > 0", $this->queryParams[ProposalSearchParams::COHORT()->value]);
+            $filters[] = '(' . implode(' OR ', $cohortFilters) . ')';
         }
 
         return $filters;
@@ -280,12 +285,21 @@ class GroupsController extends Controller
 
     public function setCounts($facets, $facetStats)
     {
+
         if (isset($facets['tags.id']) && count($facets['tags.id'])) {
             $this->tagsCount = $facets['tags.id'];
         }
 
         if (isset($facets['proposals.fund.title']) && count($facets['proposals.fund.title'])) {
             $this->fundsCount = $facets['proposals.fund.title'];
+        }
+
+        if (isset($facets['amount_awarded_ada']) && count($facets['amount_awarded_ada'])) {
+            $this->totalAwardedAda = array_keys($facets['amount_awarded_ada']);
+        }
+
+        if (isset($facets['amount_awarded_usd']) && count($facets['amount_awarded_usd'])) {
+            $this->totalAwardedUsd = array_keys($facets['amount_awarded_usd']);
         }
     }
 

@@ -1,6 +1,6 @@
 import { ProposalParamsEnum } from '@/enums/proposal-search-params';
 
-export type ProposalSearchParams = {
+export type SearchParams = {
     length: number;
     [ProposalParamsEnum.AWARDED_ADA]: number[];
     [ProposalParamsEnum.AWARDED_USD]: number[];

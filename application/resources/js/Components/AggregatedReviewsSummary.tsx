@@ -69,6 +69,8 @@ const AggregatedReviewsSummary: React.FC<AggregatedReviewsSummaryPageProps> = ({
                                     >
                                         <div className="w-5/6">
                                             <ProgressBar
+                                                primaryBackgroundColor='bg-background'
+                                                secondaryBackgroudColor='bg-primary'
                                                 value={count}
                                                 total={reviews.length}
                                             />

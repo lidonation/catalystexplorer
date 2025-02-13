@@ -12,8 +12,9 @@
     }
 
     :root {
-        --cx-primary: #2596be;        --cx-primary-dark: #057ba6c5;
+        --cx-primary: #2596be;    
         --cx-primary-light: #EFFAFC;
+        --cx-primary-dark: #165A72;
         --cx-secondary: #3facd1;
         --cx-dark: #667085;
         --cx-light: #667085;
@@ -74,6 +75,7 @@
     [data-theme='dark'] {
         --cx-primary: #2596be;
         --cx-primary-light: #75b5c1;
+        --cx-primary-dark: #165A72;
         --cx-secondary: #000000;
         --cx-light: #667085;
         --cx-dark: #667085;
@@ -114,6 +116,7 @@
     [data-theme='voltaire'] {
         --cx-primary: #2596be;
         --cx-primary-light: #9cd3dc;
+        --cx-primary-dark: #165A72;
         --cx-secondary: #000000;
         --cx-light: #667085;
         --cx-dark: #667085;

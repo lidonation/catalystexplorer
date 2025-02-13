@@ -12,7 +12,7 @@ import StepTracker from './Partials/StepTracker';
 import { PaginatedData } from '../../../types/paginated-data';
 import { PageProps } from '@/types';
 import ProposalData = App.DataTransferObjects.ProposalData;
-import { ProposalSearchParams } from '../../../types/proposal-search-params';
+import { SearchParams } from '../../../types/search-params';
 import { FiltersProvider } from '@/Context/FiltersContext';
 import ProfileWorkflow from "./Partials/ProfileWorkflow";
 import Title from '@/Components/atoms/Title';
@@ -20,7 +20,7 @@ import Title from '@/Components/atoms/Title';
 
 interface CompletedProjectNftsPageProps extends Record<string, unknown> {
     proposals: PaginatedData<ProposalData[]>;
-    filters: ProposalSearchParams;
+    filters: SearchParams;
 }
 
 export default function Index({
