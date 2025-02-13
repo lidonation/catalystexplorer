@@ -75,9 +75,9 @@ class GroupsController extends Controller
             'sort' => "{$this->sortBy}:{$this->sortOrder}",
             'filters' => $this->queryParams,
             'filterCounts' => [
-                'proposalsCount' => array_sum($this->fundsCount),
-                'totalAwardedAda' => array_sum($this->totalAwardedAda),
-                'totalAwardedUsd' => array_sum($this->totalAwardedUsd)
+                'proposalsCount' => round(max($this->fundsCount), -1),
+                'totalAwardedAda' => max($this->totalAwardedAda),
+                'totalAwardedUsd' => max($this->totalAwardedUsd)
             ],
         ];
 
