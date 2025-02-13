@@ -9,13 +9,13 @@ import {Link} from "@inertiajs/react";
 import {useLocalizedRoute} from "@/utils/localizedRoute";
 import SegmentedBar from '@/Components/SegmentedBar';
 import {Segments} from '../../../../types/segments';
-import Title from "@/Components/atoms/Title";
+import {Tooltip, TooltipContent, TooltipProvider} from "@/Components/atoms/Tooltip";
 
 interface IdeascaleProfileProps {
     ideascaleProfile: IdeascaleProfileData;
 }
 
-const IdeascaleProfileCard: React.FC<IdeascaleProfileProps> = ({
+const IdeascaleProfileCardMini: React.FC<IdeascaleProfileProps> = ({
                                                                    ideascaleProfile,
                                                                }) => {
     const {t} = useTranslation();
@@ -59,16 +59,22 @@ const IdeascaleProfileCard: React.FC<IdeascaleProfileProps> = ({
                     </div>
                     <div className="min-w-0 flex-1">
                         <div className="text-2 font-bold break-words">
-                            <Title level='1'>
-                                <Link className='line-clamp-2'
-                                      href={useLocalizedRoute('ideascaleProfiles.show', {id: ideascaleProfile?.hash})}>
-                                    {ideascaleProfile?.name ??
-                                        ideascaleProfile?.username}
-                                </Link>
-                            </Title>
+                            <TooltipProvider>
+                                <Tooltip>
+                                    <Link className='line-clamp-2'
+                                          href={useLocalizedRoute('ideascaleProfiles.show', {id: ideascaleProfile?.hash})}>
+                                        {ideascaleProfile?.name ??
+                                            ideascaleProfile?.username}
+                                    </Link>
+                                    <TooltipContent side="bottom">
+                                        <p>
+                                            {ideascaleProfile?.username}
+                                        </p>
+                                    </TooltipContent>
+                                </Tooltip>
+                            </TooltipProvider>
                         </div>
                     </div>
-                    <div>{ideascaleProfile.bio}</div>
                 </div>
             </div>
 
@@ -79,27 +85,17 @@ const IdeascaleProfileCard: React.FC<IdeascaleProfileProps> = ({
                     </div>
                 </div>
 
-                <div className='flex flex-col gap-2'>
-                    <div>
-                        Total Requested (Ada + USD) <br/>
-                        {ideascaleProfile?.amount_requested_ada} + {ideascaleProfile?.amount_requested_usd}
-                    </div>
-
-                    <div>
-                        Received VS Awarded Ada <br/>
-                        {ideascaleProfile?.amount_distributed_ada} / {ideascaleProfile?.amount_awarded_ada}
-                    </div>
-
-                    <div>
-                        Received VS Awarded USD <br/>
-                        {ideascaleProfile?.amount_distributed_usd} / {ideascaleProfile?.amount_awarded_usd}
-                    </div>
-
+                <div className="border-border-secondary inline-flex items-center rounded-lg border px-2.5 py-1">
+                    <p className="text-3 text-content">
+                        {t('proposals.totalProposals')}:
+                    </p>
+                    <p className="text-3 text-content ml-1 font-bold">
+                        {ideascaleProfile?.proposals_count ?? 0}
+                    </p>
                 </div>
-
             </div>
         </Card>
     );
 };
 
-export default IdeascaleProfileCard;
+export default IdeascaleProfileCardMini;

@@ -7,7 +7,8 @@ interface SegmentedProgressBarProps {
 }
 
 const SegmentedBar: React.FC<SegmentedProgressBarProps> = ({ segments }) => {
-    const total: number = segments.reduce((acc, seg) => acc + seg.value, 0);
+    const total: number = segments.filter((seg) => (typeof  seg.value !== "undefined") )
+        .reduce((acc, seg) => acc + seg.value, 0);
     const [isHovered, setIsHovered] = useState(false);
 
     const nonZeroValues = segments.filter((segments) => segments.value > 0);

@@ -40,6 +40,21 @@ class IdeascaleProfilesController extends Controller
 
     public function show(Request $request, IdeascaleProfile $ideascaleProfile): Response
     {
+        $ideascaleProfile
+            ->loadCount([
+                'completed_proposals',
+                'funded_proposals',
+                'unfunded_proposals',
+                'proposals',
+            ])->append([
+                'amount_distributed_ada',
+                'amount_distributed_usd',
+                'amount_awarded_ada',
+                'amount_awarded_usd',
+                'amount_requested_ada',
+                'amount_requested_usd',
+            ]);
+
         return Inertia::render('IdeascaleProfile/IdeascaleProfile', compact('ideascaleProfile'));
     }
 
