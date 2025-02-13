@@ -8,7 +8,7 @@ import ProposalData = App.DataTransferObjects.ProposalData;
 
 interface RelatedProposalsProps extends HTMLAttributes<HTMLDivElement> {
     proposals: PaginatedData<ProposalData[]>;
-    groupId?: number;
+    groupId?: string;
     maxVisibleProposals?: number;
 }
 
@@ -30,7 +30,7 @@ const RelatedProposals: React.FC<RelatedProposalsProps> = ({
             <div {...props}>
                 {typeof proposals.data !== 'undefined' && (proposals.data.map((proposal) => (
                     <ProposalCardMini
-                        key={proposal.id}
+                        key={proposal.hash}
                         proposal={proposal}
                         isHorizontal={false}
                     />

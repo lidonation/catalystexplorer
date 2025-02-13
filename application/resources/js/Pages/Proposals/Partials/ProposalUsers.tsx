@@ -1,35 +1,29 @@
 import UserAvatar from '@/Components/UserAvatar';
-import { PageProps } from '@/types';
-import { useLocalizedRoute } from '@/utils/localizedRoute';
 import { useTranslation } from 'react-i18next';
+import { PageProps } from '@/types';
+import Title from '@/Components/atoms/Title';
 
-interface IdeascaleProfileUsers extends Record<string, unknown> {
+interface ProposalUsers extends Record<string, unknown> {
     users: App.DataTransferObjects.IdeascaleProfileData[];
     onUserClick: (user: App.DataTransferObjects.IdeascaleProfileData) => void;
     className?: string;
 }
 
-export default function IdeascaleProfileUsers({
-    users,
-    onUserClick,
-}: PageProps<IdeascaleProfileUsers>) {
+export default function ProposalUsers({ users,onUserClick, className }: PageProps<ProposalUsers>) {
     const { t } = useTranslation();
 
     // Limit the users array to the first 5
     const visibleUsers = users?.slice(0, 5);
     const remainingCount = users?.length - visibleUsers?.length;
 
-    const baseRoute = useLocalizedRoute('ideascaleProfiles.index');
-
-    const handleGenerateLink = () => {
-        const userQuery = users.map((user) => user.name).join(',');
-        const finalLink = `${baseRoute}?q=${encodeURIComponent(userQuery)}`;
-
-        window.location.href = finalLink;
-    };
-
     return (
-        <section className={`flex`} aria-labelledby="team-heading">
+        <section
+        className={`flex justify-between pt-3 items-center ${className}`}
+        aria-labelledby="team-heading"
+        >
+            <Title level='5' id="team-heading">
+            {t('teams')}
+            </Title>
             <ul className="flex cursor-pointer -space-x-2">
                 {visibleUsers?.map((user) => (
                     <li key={user.hash} onClick={() => onUserClick(user)}>
@@ -42,7 +36,7 @@ export default function IdeascaleProfileUsers({
 
                 {remainingCount > 0 && (
                     <li>
-                        <div className="bg-content-light flex h-8 w-8 items-center justify-center rounded-full border-2 border-white text-sm text-gray-600" onClick={handleGenerateLink}>
+                        <div className="bg-content-light flex h-8 w-8 items-center justify-center rounded-full border-2 border-white text-sm text-gray-600">
                             {`+${remainingCount}`}
                         </div>
                     </li>

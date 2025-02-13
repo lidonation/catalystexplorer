@@ -50,6 +50,7 @@ class Proposal extends Model
 
     protected $appends = [
         'link',
+        'hash',
     ];
 
     public static function getFilterableAttributes(): array
@@ -430,7 +431,7 @@ class Proposal extends Model
     protected function casts(): array
     {
         return [
-            'id' => HashId::class,
+            //            'id' => HashId::class,
             'amount_received' => 'integer',
             'amount_requested' => 'integer',
             'created_at' => DateFormatCast::class,

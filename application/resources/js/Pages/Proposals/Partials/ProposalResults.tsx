@@ -30,7 +30,7 @@ const ProposalResults: React.FC<ProposalProps> = ({
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.4, ease: 'easeIn' }}
             >
-                <RecordsNotFound 
+                <RecordsNotFound
                     context="proposals"
                     searchTerm={searchTerm}
                 />
@@ -49,7 +49,7 @@ const ProposalResults: React.FC<ProposalProps> = ({
             <AnimatePresence>
                 {proposals.map((proposal) => (
                     <motion.div
-                        key={`${proposal.id}-${isMini ? 'mini' : 'full'}`}
+                        key={`${proposal.hash}-${isMini ? 'mini' : 'full'}`}
                         initial={{ opacity: 0, scale: 0.9 }}
                         animate={{ opacity: 1, scale: 1 }}
                         exit={{ opacity: 0, scale: 0.9 }}

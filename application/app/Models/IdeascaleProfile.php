@@ -6,6 +6,7 @@ namespace App\Models;
 
 use App\Casts\DateFormatCast;
 use App\Casts\HashId;
+use App\Enums\CatalystCurrencySymbols;
 use App\Enums\ProposalStatus;
 use App\Traits\HasConnections;
 use App\Traits\HasMetaData;
@@ -25,11 +26,14 @@ class IdeascaleProfile extends Model implements HasMedia
 {
     use HasConnections, HasMetaData, HasTranslations, InteractsWithMedia, Searchable;
 
-    protected $primaryKey = 'id';
-
-    public $incrementing = true;
-
     public int $maxValuesPerFacet = 8000;
+
+    /**
+     * The attributes that should be hidden for serialization.
+     *
+     * @var array<string>
+     */
+    protected $hidden = ['id'];
 
     protected $fillable = [
         'ideascale_id',
@@ -48,9 +52,7 @@ class IdeascaleProfile extends Model implements HasMedia
         'title',
     ];
 
-    protected $hidden = [];
-
-    protected $appends = ['profile_photo_url'];
+    protected $appends = ['profile_photo_url', 'hash'];
 
     public array $translatable = [
         // 'bio',
@@ -119,11 +121,34 @@ class IdeascaleProfile extends Model implements HasMedia
         Artisan::call('cx:create-search-index App\\\\Models\\\\IdeascaleProfile cx_ideascale_profiles');
     }
 
+    public function amountRequestedAda(): Attribute
+    {
+        return Attribute::make(
+            get: function () {
+                return $this->proposals()
+                    ->whereHas('fund', fn ($q) => $q->where('currency', CatalystCurrencySymbols::ADA->name))
+                    ->sum('amount_requested');
+            },
+        );
+    }
+
+    public function amountRequestedUsd(): Attribute
+    {
+        return Attribute::make(
+            get: function () {
+                return $this->proposals()
+                    ->whereHas('fund', fn ($q) => $q->where('currency', CatalystCurrencySymbols::USD->name))
+                    ->sum('amount_requested');
+            },
+        );
+    }
+
     public function amountAwardedAda(): Attribute
     {
         return Attribute::make(
             get: function () {
                 return $this->proposals()
+                    ->whereHas('fund', fn ($q) => $q->where('currency', CatalystCurrencySymbols::ADA->name))
                     ->whereNotNull('funded_at')
                     ->sum('amount_requested');
             },
@@ -134,8 +159,34 @@ class IdeascaleProfile extends Model implements HasMedia
     {
         return Attribute::make(
             get: function () {
-                return $this->proposals()->whereNotNull('funded_at')
+                return $this->proposals()
+                    ->whereHas('fund', fn ($q) => $q->where('currency', CatalystCurrencySymbols::USD->name))
+                    ->whereNotNull('funded_at')
                     ->sum('amount_requested');
+            },
+        );
+    }
+
+    public function amountDistributedAda(): Attribute
+    {
+        return Attribute::make(
+            get: function () {
+                return $this->proposals()
+                    ->whereHas('fund', fn ($q) => $q->where('currency', CatalystCurrencySymbols::ADA->name))
+                    ->whereNotNull('funded_at')
+                    ->sum('amount_received');
+            },
+        );
+    }
+
+    public function amountDistributedUsd(): Attribute
+    {
+        return Attribute::make(
+            get: function () {
+                return $this->proposals()
+                    ->whereHas('fund', fn ($q) => $q->where('currency', CatalystCurrencySymbols::USD->name))
+                    ->whereNotNull('funded_at')
+                    ->sum('amount_received');
             },
         );
     }
@@ -156,36 +207,27 @@ class IdeascaleProfile extends Model implements HasMedia
 
     public function completed_proposals(): BelongsToMany
     {
-        return $this->belongsToMany(
-            Proposal::class,
-            'ideascale_profile_has_proposal',
-            'ideascale_profile_id',
-            'proposal_id'
-        )->where(['type' => 'proposal', 'status' => ProposalStatus::complete()->value]);
+        return $this->proposals()
+            ->where(['type' => 'proposal', 'status' => ProposalStatus::complete()->value]);
     }
 
     public function funded_proposals(): BelongsToMany
     {
-        return $this->belongsToMany(Proposal::class, 'ideascale_profile_has_proposal', 'ideascale_profile_id', 'proposal_id')
+        return $this->proposals()
             ->where('type', 'proposal')
             ->whereNotNull('funded_at');
     }
 
     public function unfunded_proposals(): BelongsToMany
     {
-        return $this->belongsToMany(
-            Proposal::class,
-            'ideascale_profile_has_proposal',
-            'ideascale_profile_id',
-            'proposal_id'
-        )
+        return $this->proposals()
             ->where('type', 'proposal')
             ->whereNull('funded_at');
     }
 
     public function in_progress_proposals(): BelongsToMany
     {
-        return $this->belongsToMany(Proposal::class, 'ideascale_profile_has_proposal', 'ideascale_profile_id', 'proposal_id')
+        return $this->proposals()
             ->where(['type' => 'proposal', 'status' => 'in_progress']);
     }
 
@@ -196,7 +238,7 @@ class IdeascaleProfile extends Model implements HasMedia
 
     public function outstanding_proposals(): BelongsToMany
     {
-        return $this->belongsToMany(Proposal::class, 'ideascale_profile_has_proposal', 'ideascale_profile_id', 'proposal_id')
+        return $this->proposals()
             ->where('type', 'proposal')
             ->whereNotNull('funded_at')
             ->where('status', '!=', 'complete');
@@ -210,7 +252,7 @@ class IdeascaleProfile extends Model implements HasMedia
 
     public function collaborating_proposals(): BelongsToMany
     {
-        return $this->belongsToMany(Proposal::class, 'ideascale_profile_has_proposal', 'ideascale_profile_id', 'proposal_id')
+        return $this->proposals()
             ->where('type', 'proposal')
             ->whereIn('proposal_id', function ($q) {
                 $q->select('proposal_id')
@@ -291,7 +333,8 @@ class IdeascaleProfile extends Model implements HasMedia
     protected function casts(): array
     {
         return [
-            'id' => HashId::class,
+            //            'id' => HashId::class,
+            'claimed_by_id' => HashId::class,
             'created_at' => DateFormatCast::class,
             'updated_at' => DateFormatCast::class,
         ];

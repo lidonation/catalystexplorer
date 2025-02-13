@@ -1,6 +1,6 @@
 declare namespace App.DataTransferObjects {
 export type AnnouncementData = {
-id: number;
+hash: string;
 title: string;
 content: string;
 label?: string;
@@ -12,7 +12,7 @@ user_id: number;
 hero_image_url: string;
 };
 export type BookmarkCollectionData = {
-id: number | null;
+hash: string | null;
 user_id?: number;
 parent_id?: number;
 title?: string;
@@ -29,7 +29,7 @@ updated_at?: string;
 deleted_at?: string;
 };
 export type BookmarkItemData = {
-id: number | null;
+hash: string | null;
 user_id?: number;
 bookmark_collection_id?: number;
 model_id?: number;
@@ -42,7 +42,7 @@ updated_at?: string;
 deleted_at?: string;
 };
 export type CampaignData = {
-id: number | null;
+hash: string | null;
 fund_id?: number;
 title: string | null;
 meta_title: string | null;
@@ -54,16 +54,16 @@ amount?: number;
 created_at: string | null;
 updated_at: string | null;
 label?: string;
-currency: string;
+currency: string | null;
 proposals_count: number | null;
 unfunded_proposals_count: number | null;
 funded_proposals_count: number | null;
 completed_proposals_count: number | null;
-totalAwarded: number;
-totalDistributed: number;
+totalAwarded: number | null;
+totalDistributed: number | null;
 };
 export type CommunityData = {
-id: number | null;
+hash: string | null;
 title?: string;
 content?: string;
 user_id?: number;
@@ -74,13 +74,14 @@ updated_at?: string;
 deleted_at?: string;
 };
 export type ConnectionData = {
-id: number | null;
+hash: string | null;
 name: string;
 };
 export type FundData = {
 amount: number;
 label: string;
 title: string;
+hash: string | null;
 proposals_count?: number;
 funded_proposals_count?: number;
 completed_proposals_count?: number;
@@ -102,11 +103,12 @@ review_started_at?: string;
 parent_id?: number;
 };
 export type GroupData = {
-id: number | null;
+hash: string | null;
 user_id?: number;
 name?: string;
 hero_img_url?: string;
 bio?: string;
+profile_photo_url?: string;
 slug?: string;
 status?: string;
 meta_title?: string;
@@ -114,11 +116,10 @@ website?: string;
 twitter?: string;
 discord?: string;
 github?: string;
-linkedin?:string;
+linkedin?: string;
 created_at?: string;
 updated_at?: string;
 deleted_at?: string;
-profile_photo_url: string;
 amount_awarded_ada?: number;
 amount_awarded_usd?: number;
 amount_requested_ada?: number;
@@ -131,12 +132,11 @@ proposals_unfunded?: number;
 proposals_completed?: number;
 amount_requested?: number;
 amount_awarded?: number;
-ideascale_profiles?:App.DataTransferObjects.IdeascaleProfileData[] | null;
 proposals_funded?: number;
 reviews?: number
 };
 export type IdeascaleProfileData = {
-id: string | null;
+hash: string | null;
 ideascaleId?: number;
 username?: string;
 email?: string;
@@ -154,6 +154,10 @@ title?: string;
 profile_photo_url?: string;
 amount_awarded_usd?: number;
 amount_awarded_ada?: number;
+amount_requested_ada?: number;
+amount_requested_usd?: number;
+amount_distributed_ada?: number;
+amount_distributed_usd?: number;
 co_proposals_count?: number;
 own_proposals_count?: number;
 claimed_by?: number;
@@ -164,7 +168,7 @@ proposals_count?: number;
 collaborating_proposals_count?: number;
 };
 export type LocationData = {
-id: number | null;
+hash: string | null;
 country: string;
 city: string;
 region?: string;
@@ -175,6 +179,7 @@ lat?: number;
 long?: number;
 };
 export type MetricData = {
+hash: string | null;
 user_id: number | null;
 title: string;
 content?: string;
@@ -204,7 +209,7 @@ type: string | null;
 published_at?: string;
 };
 export type ProposalData = {
-id: string | null;
+hash: string | null;
 campaign: App.DataTransferObjects.CampaignData | null;
 title: string | null;
 slug: string;
@@ -241,7 +246,7 @@ opensource: boolean | null;
 link?: string;
 };
 export type ReviewData = {
-id: number | null;
+hash: string | null;
 parent_id?: number;
 user_id?: number;
 model_id: number | null;
@@ -256,7 +261,7 @@ helpful_total: number | null;
 not_helpful_total: number | null;
 };
 export type ReviewModerationData = {
-id: number | null;
+hash: string | null;
 reviewer_id?: number;
 excellent_count: number;
 good_count: number;
@@ -265,11 +270,10 @@ flagged: boolean;
 qa_rationale?: Array<any>;
 };
 export type UserData = {
-id: string;
+hash: string;
 name: string;
 email: string;
 profile_photo_url: string;
 email_verified_at: string | null;
-
 };
 }

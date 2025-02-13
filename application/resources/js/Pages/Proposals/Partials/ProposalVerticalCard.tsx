@@ -51,8 +51,8 @@ export default function ProposalVerticalCard({
                                 className="mt-3"
                                 aria-labelledby="funding-heading"
                             >
-                                <div className="my-1 flex gap-2">
-                                    <Title level="3" className="font-semibold">
+                                <div className="flex gap-2 my-1">
+                                    <Title level='4' className="font-semibold">
                                         {t('funding')}
                                     </Title>
                                     <ProposalFundingStatus
