@@ -331,6 +331,8 @@
         "unfunded": "Unfunded",
         "awardedVsRequested": "Awarded vs Requested",
         "receivedVsAwarded": "Received vs Awarded",
+        "reviews": "Reviews",
+        "noMembers": "This group has no members",
         "options":{
             "alphabetically": "Alphabetically: A to Z",
             "amountAwardedAdaDesc": "Amount Awarded ADA: High to Low",

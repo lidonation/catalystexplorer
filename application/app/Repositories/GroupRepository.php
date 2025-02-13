@@ -39,17 +39,23 @@ class GroupRepository extends Repository
                             'completed_proposals_count',
                             'funded_proposals_count',
                             'unfunded_proposals_count',
+                            'proposals_completed',
                             'proposals_funded',
+                            'proposals_unfunded',
                             'profile_photo_url',
                             'amount_distributed_ada',
                             'amount_distributed_usd',
                             'amount_requested_usd',
                             'amount_requested_ada',
                             'ideascale_profiles',
+                            'reviews',
+
                         ],
                         'facets' => [
                             'tags.id',
                             'proposals.fund.title',
+                            'amount_awarded_ada',
+                            'amount_awarded_usd'
                         ],
                     ],
                     $args

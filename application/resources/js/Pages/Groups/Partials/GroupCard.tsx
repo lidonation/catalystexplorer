@@ -28,7 +28,7 @@ const CampaignCard: React.FC<GroupCardProps> = ({ group }) => {
               <div>
                   Completed / Funded / Unfunded
                   <br/>
-                  {group?.completed_proposals_count} / {group?.funded_proposals_count} / {group?.unfunded_proposals_count},
+                  {group?.proposals_completed} / {group?.proposals_funded} / {group?.proposals_unfunded},
               </div>
 
               <div>

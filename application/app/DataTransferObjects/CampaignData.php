@@ -54,5 +54,6 @@ class CampaignData extends Data
         public ?float $totalAwarded,
 
         public ?float $totalDistributed,
+
     ) {}
 }

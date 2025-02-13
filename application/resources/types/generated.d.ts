@@ -141,13 +141,14 @@ amount_requested_usd?: number;
 amount_distributed_ada?: number;
 amount_distributed_usd?: number;
 proposals_count?: number;
-funded_proposals_count?: number;
-unfunded_proposals_count?: number;
-completed_proposals_count?: number;
+proposals_funded?: number;
+proposals_unfunded?: number;
+proposals_completed?: number;
 amount_requested?: number;
 amount_awarded?: number;
 proposals_funded?: number;
-ideascale_profiles?: Array<any>;
+reviews?: number;
+ideascale_profiles?: App.DataTransferObjects.IdeascaleProfileData[];
 };
 export type IdeascaleProfileData = {
 hash: string | null;
