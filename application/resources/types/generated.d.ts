@@ -74,8 +74,22 @@ updated_at?: string;
 deleted_at?: string;
 };
 export type ConnectionData = {
-hash: string | null;
-name: string;
+    nodes: {
+        id: string;
+        type: string;
+        name: string;
+        hash?: string;
+        photo?: string;
+        val?: number;
+        x?: number;
+        y?: number;
+    }[];
+    links: {
+        source: string;
+        target: string;
+    }[];
+    rootGroupId:string;
+    rootGroupHash:string;
 };
 export type FundData = {
 amount: number;

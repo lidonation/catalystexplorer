@@ -4,15 +4,18 @@ declare(strict_types=1);
 
 namespace App\Interfaces\Http\Controllers;
 
-use App\DataTransferObjects\ConnectionData;
 use App\DataTransferObjects\GroupData;
 use App\DataTransferObjects\IdeascaleProfileData;
 use App\DataTransferObjects\LocationData;
 use App\DataTransferObjects\ProposalData;
 use App\DataTransferObjects\ReviewData;
+use App\Enums\CatalystConnectionLinkType;
+use App\Enums\CatalystConnectionNodeType;
+use App\Enums\CatalystConnectionParams;
 use App\Enums\ProposalSearchParams;
 use App\Models\Fund;
 use App\Models\Group;
+use App\Models\IdeascaleProfile;
 use App\Models\Review;
 use App\Repositories\GroupRepository;
 use Illuminate\Http\Request;
@@ -97,6 +100,8 @@ class GroupsController extends Controller
                 'connected_items',
             ]);
 
+        $connections = $this->getConnectionsData($request, $group->id, $group->hash);
+
         return Inertia::render('Groups/Group', [
             'group' => GroupData::from($group),
             'proposals' => Inertia::optional(
@@ -105,6 +110,7 @@ class GroupsController extends Controller
                         $group->proposals()->with(['users', 'fund'])->paginate(5)
                     )
                 )
+
             ),
             'ideascaleProfiles' => Inertia::optional(
                 fn () => to_length_aware_paginator(
@@ -112,6 +118,7 @@ class GroupsController extends Controller
                         $group->ideascale_profiles()->with([])->paginate(12)
                     )
                 )
+
             ),
             'reviews' => Inertia::optional(
                 fn () => to_length_aware_paginator(
@@ -126,13 +133,116 @@ class GroupsController extends Controller
                         $group->locations()->paginate(12)
                     )
                 )
+
             ),
             'connections' => Inertia::optional(
-                fn () => ConnectionData::collect(
-                    $group->connected_items ?? []
-                )
+                fn () => $connections
             ),
         ]);
+    }
+
+    public function getConnectionsData(Request $request, int $groupId, ?string $hash = null): array
+    {
+        $rootGroup = Group::find($groupId);
+        $profileIds = (array) $request->query(CatalystConnectionParams::IDEASCALEPROFILE()->value, []);
+        $groupIds = (array) $request->query(CatalystConnectionParams::GROUP()->value, []);
+
+        $allGroupIds = array_merge([$groupId], $groupIds);
+        $allProfileIds = $profileIds;
+
+        $groups = Group::with(['connected_groups', 'connected_users'])
+            ->whereIn('id', $allGroupIds)
+            ->get();
+
+        $profiles = IdeascaleProfile::with(['connected_groups', 'connected_users'])
+            ->whereIn('id', $allProfileIds)
+            ->get();
+
+        $nodes = collect();
+        $links = collect();
+
+        foreach ($groups as $group) {
+            $nodes->push($this->formatNodeOrLink(CatalystConnectionNodeType::GROUP()->value, $group));
+
+            foreach ($group->connected_groups as $connectedGroup) {
+                $nodes->push($this->formatNodeOrLink(CatalystConnectionNodeType::GROUP()->value, $connectedGroup));
+                $links->push($this->formatNodeOrLink(CatalystConnectionLinkType::GROUP()->value, $connectedGroup, $group));
+            }
+
+            foreach ($group->connected_users as $profile) {
+                $nodes->push($this->formatNodeOrLink(CatalystConnectionNodeType::PROFILE()->value, $profile));
+                $links->push($this->formatNodeOrLink(CatalystConnectionLinkType::PROFILE()->value, $profile, $group));
+            }
+        }
+
+        foreach ($profiles as $profile) {
+            $nodes->push($this->formatNodeOrLink(CatalystConnectionNodeType::PROFILE()->value, $profile));
+
+            foreach ($profile->connected_groups as $group) {
+                $nodes->push($this->formatNodeOrLink(CatalystConnectionNodeType::GROUP()->value, $group));
+                $links->push($this->formatNodeOrLink(CatalystConnectionLinkType::PROFILE()->value, $profile, $group));
+            }
+
+            foreach ($profile->connected_users as $connectedProfile) {
+                if ($connectedProfile->id !== $profile->id) {
+                    $nodes->push($this->formatNodeOrLink(CatalystConnectionNodeType::PROFILE()->value, $connectedProfile));
+                    $links->push($this->formatNodeOrLink(CatalystConnectionLinkType::PROFILE()->value, $connectedProfile, $profile));
+                }
+            }
+        }
+
+        $result = [
+            'nodes' => $nodes->unique('id')->values()->all(),
+            'links' => $links->unique(fn ($link) => $link['source'].'-'.$link['target'])->values()->all(),
+        ];
+
+        $result['rootGroupId'] = $groupId;
+        $result['rootGroupHash'] = $rootGroup->hash;
+
+        return $result;
+    }
+
+    private function formatNodeOrLink(string $type, $entity, $source = null): array
+    {
+        if ($type === CatalystConnectionNodeType::GROUP()->value) {
+            return [
+                'id' => $entity->id,
+                'type' => 'group',
+                'name' => $entity->name,
+                'photo' => $entity->profile_photo_url,
+                'hash' => $entity->hash,
+            ];
+        }
+
+        if ($type === CatalystConnectionNodeType::PROFILE()->value) {
+            return [
+                'id' => $entity->id,
+                'type' => 'profile',
+                'name' => $entity->name,
+                'photo' => $entity->profile_photo_url,
+                'hash' => $entity->hash,
+            ];
+        }
+
+        if ($type === CatalystConnectionLinkType::GROUP()->value) {
+            $sourceId = $source instanceof Group ? $source->id : $source->id;
+
+            return [
+                'source' => $sourceId,
+                'target' => $entity->id,
+            ];
+        }
+
+        if ($type === CatalystConnectionLinkType::PROFILE()->value) {
+            $sourceId = $source instanceof Group ? $source->id : $source->id;
+
+            return [
+                'source' => $sourceId,
+                'target' => $entity->id,
+            ];
+        }
+
+        throw new \InvalidArgumentException("Invalid type provided: {$type}");
     }
 
     protected function getProps(Request $request): void
