@@ -12,6 +12,6 @@ interface ImageProps {
         aria-label="User avatar"
       />
     ) : (
-      <div className={`bg-dark ${size} rounded-full h-36 w-36`} />
+      <div className={`bg-dark/50 ${size} rounded-full h-36 w-36`} />
     );
   }
