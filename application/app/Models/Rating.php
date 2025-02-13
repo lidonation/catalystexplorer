@@ -4,15 +4,12 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use DateTime;
-use App\Models\Model;
 use App\Traits\HasMetaData;
-use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Database\Eloquent\Relations\MorphTo;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use DateTime;
 use Illuminate\Database\Eloquent\Concerns\HasTimestamps;
-
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Rating extends Model
 {

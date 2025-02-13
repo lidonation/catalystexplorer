@@ -99,15 +99,15 @@ const GroupCardMini: React.FC<GroupCardMiniProps> = ({ group }) => {
 
                 <div className="border-content-light mt-2 flex items-center justify-between border-t pt-3">
                     {group?.ideascale_profiles &&
-                    group?.ideascale_profiles.length > 0 ? (
+                    group?.ideascale_profiles.length > 0 && (
                         <IdeascaleProfileUsers
                             users={group?.ideascale_profiles || []}
                             onUserClick={handleUserClick}
                         />
-                    ) : (
-                        <p>{t('groups.noMembers')}</p>
                     )}
-                    <GroupSocials group={group} />
+                    <div className='ml-auto'>
+                        <GroupSocials group={group} />
+                    </div>
                 </div>
             </Card>
         )
