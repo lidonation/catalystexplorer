@@ -16,9 +16,7 @@ use Illuminate\Database\Eloquent\Concerns\HasTimestamps;
 
 class Rating extends Model
 {
-    /** @use HasFactory<\Database\Factories\RatingFactory> */
-    use HasFactory,
-        HasMetaData,
+    use HasMetaData,
         HasTimestamps,
         SoftDeletes;
 
