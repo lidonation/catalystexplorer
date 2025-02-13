@@ -90,7 +90,7 @@ const GroupCardMini: React.FC<GroupCardMiniProps> = ({ group }) => {
                             />
                         )}
                     </div>
-                    <p>{t('groups.received')}</p>
+                    <p className='text-gray-persist'>{t('groups.received')}</p>
                 </div>
 
                 <div className="border-content-light mt-2 flex items-center justify-between border-t pt-3">
