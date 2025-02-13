@@ -1,4 +1,4 @@
-import { CatalystConnectionsEnum } from '@/enums/catalyst-connections-enums';
+import { CatalystConnectionParamsEnum, CatalystConnectionsEnum } from '@/enums/catalyst-connections-enums';
 import axios from 'axios';
 import { useState } from 'react';
 import CatalystConnectionsGraph, { Node } from './CatalystConnectionsGraph';
@@ -47,8 +47,8 @@ const Graph: React.FC<GraphProps> = ({ graphData }) => {
                 route('api.connections', { hash: graphData.rootGroupHash }),
                 {
                     params: {
-                        profileIds: Array.from(selectedProfileIds),
-                        groupIds: Array.from(selectedGroupIds),
+                        [CatalystConnectionParamsEnum.IDEASCALEPROFILE]: Array.from(selectedProfileIds),
+                        [CatalystConnectionParamsEnum.GROUP]: Array.from(selectedGroupIds),
                     },
                 },
             );
