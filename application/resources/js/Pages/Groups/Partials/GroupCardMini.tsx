@@ -49,18 +49,18 @@ const GroupCardMini: React.FC<GroupCardMiniProps> = ({ group }) => {
                     <div>
                         <div className="text-primary bg-eye-logo mt-2 flex w-[60px] items-center justify-center rounded-md border p-1">
                             <div className="text-3 font-bold">
-                                {group?.proposals_funded}
+                                {group?.proposals_funded ?? 0}
                             </div>
                             <div>/</div>
                             <div className="text-xs">
-                                {group?.proposals_count}
+                                {group?.proposals_count ?? 0}
                             </div>
                         </div>
                         <p className="mt-2  text-gray-persist">{t('groups.fundedProposals')}</p>
                     </div>
 
                     <div>
-                        <p className="text-1 font-bold">{group?.reviews}</p>
+                        <p className="text-1 font-bold">{group?.reviews ?? 0}</p>
                         <p className="text-3  mt-2 text-gray-persist">
                             {t('groups.reviews')}
                         </p>
@@ -94,10 +94,16 @@ const GroupCardMini: React.FC<GroupCardMiniProps> = ({ group }) => {
                 </div>
 
                 <div className="border-content-light mt-2 flex items-center justify-between border-t pt-3">
-                    <IdeascaleProfileUsers
+                    {
+                        IdeascaleProfileUsers ? (
+                            <IdeascaleProfileUsers
                         users={group?.ideascale_profiles || []}
                         onUserClick={handleUserClick}
                     />
+                        ) : (
+                            <p>{t('groups.noMembers')}</p>
+                        )
+                    }
                     <GroupSocials group={group} />
                 </div>
             </Card>

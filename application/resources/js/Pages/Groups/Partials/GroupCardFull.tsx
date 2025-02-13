@@ -73,7 +73,7 @@ const GroupCardFull: React.FC<GroupCardFullProps> = ({ group }) => {
                     </div>
                     <div>
                         <p className="text-1 font-bold">
-                            {group?.proposals_count}
+                            {group?.proposals_count ?? 0}
                         </p>
                         <p className="text-3 text-gray-persist">
                             {t('groups.totalProposals')}
