@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Route;
 Route::prefix('api')->as('api.')->group(function () {
     Route::get('/groups', [GroupController::class, 'groups'])->name('groups');
     Route::get('/groups/{group:id}', [GroupController::class, 'group'])->name('group');
+    Route::get('/groups/{hash}/connections', [GroupsController::class, 'getConnectionsData'])->name('connections');
 
     Route::get('/campaigns', [CampaignController::class, 'campaigns'])->name('campaigns');
     Route::get('/campaigns/{campaign:id}', [CampaignController::class, 'campaign'])->name('campaign');
