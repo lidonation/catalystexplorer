@@ -1,5 +1,6 @@
 import Title from '@/Components/atoms/Title';
 import Card from '@/Components/Card';
+import Image from '@/Components/Image';
 import IdeascaleProfileUsers from '@/Pages/IdeascaleProfile/Partials/IdeascaleProfileUsersComponent';
 import { useLocalizedRoute } from '@/utils/localizedRoute';
 import { Link } from '@inertiajs/react';
@@ -34,14 +35,7 @@ const GroupCardMini: React.FC<GroupCardMiniProps> = ({ group }) => {
         group && (
             <Card>
                 <div className="flex h-full w-full flex-col items-center gap-4">
-                    <div className="bg-background-light flex-shrink-0 rounded-full">
-                        {/* <UserAvatar
-                            imageUrl={group?.profile_photo_url}
-                            size="30"
-                        /> */}
-                        <div className="bg-dark size-30 rounded-full" />
-                    </div>
-
+                    <Image size="30" imageUrl={group?.profile_photo_url} />
                     <Link
                         href={useLocalizedRoute('groups.group', {
                             group: group?.slug,
@@ -51,15 +45,26 @@ const GroupCardMini: React.FC<GroupCardMiniProps> = ({ group }) => {
                         <Title level="5">{group?.name}</Title>
                     </Link>
                 </div>
-                <div>
-                    <div className="text-primary bg-eye-logo mt-2 flex w-[60px] items-center justify-center rounded-md border p-1">
-                        <div className="text-3 font-bold">
-                            {group?.proposals_funded}
+                <div className='w-full flex justify-between items-center'>
+                    <div>
+                        <div className="text-primary bg-eye-logo mt-2 flex w-[60px] items-center justify-center rounded-md border p-1">
+                            <div className="text-3 font-bold">
+                                {group?.proposals_funded}
+                            </div>
+                            <div>/</div>
+                            <div className="text-xs">
+                                {group?.proposals_count}
+                            </div>
                         </div>
-                        <div>/</div>
-                        <div className="text-xs">{group?.proposals_count}</div>
+                        <p className="mt-2  text-gray-persist">{t('groups.fundedProposals')}</p>
                     </div>
-                    <p className="mt-2">{t('groups.fundedProposals')}</p>
+
+                    <div>
+                        <p className="text-1 font-bold">{group?.reviews}</p>
+                        <p className="text-3  mt-2 text-gray-persist">
+                            {t('groups.reviews')}
+                        </p>
+                    </div>
                 </div>
 
                 <div>

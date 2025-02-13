@@ -84,12 +84,6 @@ final class GroupData extends Data
         public ?int $proposals_count,
 
         #[TypeScriptOptional]
-        public ?int $funded_proposals_count,
-
-        #[TypeScriptOptional]
-        public ?int $unfunded_proposals_count,
-
-        #[TypeScriptOptional]
         public ?int $completed_proposals_count,
 
         #[TypeScriptOptional]
@@ -102,6 +96,15 @@ final class GroupData extends Data
         public ?int $proposals_funded,
 
         #[TypeScriptOptional]
+        public ?int $proposals_unfunded,
+
+        #[TypeScriptOptional]
+        public ?int $proposals_completed,
+
+        #[TypeScriptOptional]
         public ?array $ideascale_profiles,
+
+        #[TypeScriptOptional]
+        public ?int $reviews
     ) {}
 }

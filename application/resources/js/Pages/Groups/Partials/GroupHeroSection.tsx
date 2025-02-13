@@ -1,4 +1,4 @@
-import UserAvatar from '@/Components/UserAvatar';
+import Image from '@/Components/Image';
 import GroupData = App.DataTransferObjects.GroupData;
 
 interface HeroSectionProps extends Record<string, unknown> {
@@ -14,13 +14,9 @@ const GroupHeroSection: React.FC<HeroSectionProps> = ({ group }) => {
                 className="h-full w-full object-cover"
             />
 
-            {group?.profile_photo_url ? (
-                <div className="border-background-lighter absolute bottom-[-25px] left-1/2 -translate-x-1/2 transform rounded-full border-4">
-                    <UserAvatar imageUrl={group?.profile_photo_url} size="30" />
-                </div>
-            ) : (
-                <div className="border-background-lighter bg-eye-logo absolute bottom-[-25px] left-1/2 z-99 size-30 -translate-x-1/2 transform rounded-full border-4"></div>
-            )}
+            <div className="border-background-lighter absolute bottom-[-25px] left-1/2 -translate-x-1/2 transform rounded-full border-4">
+                <Image size="30" imageUrl={group?.profile_photo_url} />
+            </div>
         </div>
     );
 };

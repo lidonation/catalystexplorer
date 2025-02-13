@@ -18,17 +18,17 @@ const GroupCardFull: React.FC<GroupCardFullProps> = ({ group }) => {
         {
             label: 'Completed',
             color: 'bg-success',
-            value: group?.completed_proposals_count,
+            value: group?.proposals_completed,
         },
         {
             label: 'Funded',
             color: 'bg-warning',
-            value: group?.funded_proposals_count,
+            value: group?.proposals_funded,
         },
         {
             label: 'Unfunded',
             color: 'bg-primary',
-            value: group?.unfunded_proposals_count,
+            value: group?.proposals_unfunded,
         },
     ] as Segments[];
 
@@ -140,18 +140,6 @@ const GroupCardFull: React.FC<GroupCardFullProps> = ({ group }) => {
                         </p>
                     </div>
                 </div>
-
-                {/* <div className="border-content-light border-b pt-4 pb-4">
-                    <GroupFundingPercentages
-                        amount_ada={group?.amount_distributed_ada ?? 0}
-                        total_ada={group?.amount_awarded_ada ?? 0}
-                        amount_usd={group?.amount_distributed_usd ?? 0}
-                        total_usd={group?.amount_awarded_usd ?? 0}
-                    />
-                    <p className="text-3 text-gray-persist">
-                        {t('groups.receivedVsAwarded')}
-                    </p>
-                </div> */}
             </div>
         </div>
     );

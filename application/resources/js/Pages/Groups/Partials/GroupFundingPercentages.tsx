@@ -44,32 +44,6 @@ export default function GroupFundingPercentages({
                         <span>{`(${calculatePercentage(amount ?? 0, total ?? 0)}%)`}</span>
                     </div>
                 </div>
-
-                {/* <div>
-                    <div className="mt-2 h-2 w-full overflow-hidden rounded-full">
-                        <PercentageProgressBar
-                            value={amount_usd ?? 0}
-                            total={total_usd ?? 0}
-                            primaryBackgroundColor={'bg-content-light'}
-                            secondaryBackgroudColor={'bg-primary'}
-                        />
-                    </div>
-                    <div className="mt-2 flex justify-between">
-                        <div>
-                            <div>
-                                <span className="text-lg font-semibold">
-                                    {currency(
-                                        amount_usd ?? 0,
-                                        'USD',
-                                        undefined,
-                                        2,
-                                    )}
-                                </span>
-                                <span className="text-highlight text-sm">{`/ ${currency(total_usd ?? 0, 'USD', undefined, 2)} (${calculatePercentage(amount_usd ?? 0, total_usd ?? 0)}%)`}</span>
-                            </div>
-                        </div>
-                    </div>
-                </div> */}
             </div>
         </div>
     );
