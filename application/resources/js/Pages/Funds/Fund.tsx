@@ -3,7 +3,7 @@ import { MetricEnum } from '@/enums/metrics-enums';
 import { PageProps } from '@/types';
 import { Head, WhenVisible } from '@inertiajs/react';
 import { useTranslation } from 'react-i18next';
-import { ProposalSearchParams } from '../../../types/proposal-search-params';
+import { SearchParams } from '../../../types/search-params';
 import CampaignList from '../Campaign/Partials/CampaignList';
 import CampaignLoader from '../Campaign/Partials/CampaignLoader';
 import MetricCardLoading from '../Metrics/Partials/MetricCardLoading';
@@ -18,7 +18,7 @@ interface FundPageProps extends Record<string, unknown> {
     fund: FundData;
     metrics: MetricData[];
     campaigns: CampaignData[];
-    filters: ProposalSearchParams;
+    filters: SearchParams;
 }
 
 export default function Fund({

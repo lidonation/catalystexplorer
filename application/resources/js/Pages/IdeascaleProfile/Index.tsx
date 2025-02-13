@@ -5,7 +5,7 @@ import { PageProps } from '@/types';
 import { Head, WhenVisible } from '@inertiajs/react';
 import { useTranslation } from 'react-i18next';
 import { PaginatedData } from '../../../types/paginated-data';
-import { ProposalSearchParams } from '../../../types/proposal-search-params';
+import { SearchParams } from '../../../types/search-params';
 import IdeascaleProfilesList from './Partials/IdeascaleProfileList';
 import IdeaScaleProfileLoader from './Partials/IdeaScaleProfileLoader';
 import IdeascaleProfilesData = App.DataTransferObjects.IdeascaleProfileData;
@@ -13,7 +13,7 @@ import Title from '@/Components/atoms/Title';
 
 interface IdeascaleProfilesPageProps extends Record<string, unknown> {
     ideascaleProfiles: PaginatedData<IdeascaleProfilesData[]>;
-    filters: ProposalSearchParams;
+    filters: SearchParams;
 }
 const Index = ({
     ideascaleProfiles,

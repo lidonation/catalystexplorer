@@ -1,13 +1,13 @@
+import Title from '@/Components/atoms/Title';
+import UserQuickView from '@/Components/UserQuickView';
+import IdeascaleProfileUsers from '@/Pages/IdeascaleProfile/Partials/IdeascaleProfileUsersComponent';
+import ProposalCardFooter from './ProposalCardFooter';
 import ProposalCardHeader from './ProposalCardHeader';
 import ProposalCardNav from './ProposalCardNav';
+import ProposalFundingPercentages from './ProposalFundingPercentages';
+import ProposalFundingStatus from './ProposalFundingStatus';
 import ProposalQuickpitch from './ProposalQuickpitch';
 import ProposalSolution from './ProposalSolution';
-import ProposalFundingPercentages from './ProposalFundingPercentages';
-import ProposalCardFooter from './ProposalCardFooter';
-import ProposalUsers from './ProposalUsers';
-import UserQuickView from '@/Components/UserQuickView';
-import ProposalFundingStatus from './ProposalFundingStatus';
-import Title from '@/Components/atoms/Title';
 
 export default function ProposalHorizontalCard({
     proposal,
@@ -23,7 +23,7 @@ export default function ProposalHorizontalCard({
     abstainVotes,
 }: any) {
     return (
-        <article className="bg-background relative flex max-h-screen min-h-[400px] flex-col space-y-4 overflow-auto rounded-xl p-4 shadow-lg md:flex-row md:space-y-0 md:space-x-4 proposal-card proposal-card-horizontal">
+        <article className="bg-background proposal-card proposal-card-horizontal relative flex max-h-screen min-h-[400px] flex-col space-y-4 overflow-auto rounded-xl p-4 shadow-lg md:flex-row md:space-y-0 md:space-x-4">
             <div className="flex h-auto w-[500px] flex-col items-start overflow-hidden rounded-xl">
                 <ProposalCardHeader
                     proposal={proposal}
@@ -52,16 +52,17 @@ export default function ProposalHorizontalCard({
                                 className="h-full w-full overflow-auto md:w-1/2"
                                 aria-labelledby="funding-heading"
                             >
-                                <div className='flex gap-2'>
-                                    <Title level='3' className="font-semibold">
+                                <div className="flex gap-2">
+                                    <Title level="3" className="font-semibold">
                                         {t('funding')}
                                     </Title>
-                                    <ProposalFundingStatus funding_status={proposal.funding_status} />
+                                    <ProposalFundingStatus
+                                        funding_status={proposal.funding_status}
+                                    />
                                 </div>
                                 <ProposalFundingPercentages
                                     proposal={proposal}
                                 />
-
                             </section>
                             <div className="h-full min-h-40 w-[500px] overflow-auto">
                                 {quickPitchView ? (
@@ -79,11 +80,19 @@ export default function ProposalHorizontalCard({
                     )}
                 </div>
 
-                <ProposalUsers
-                    users={proposal.users}
-                    onUserClick={handleUserClick}
-                    className="border-t"
-                />
+                <div
+                    className={`flex items-center justify-between pt-3`}
+                    aria-labelledby="team-heading"
+                >
+                    <Title level="4" id="team-heading" className="font-medium">
+                        {t('teams')}
+                    </Title>
+                    <IdeascaleProfileUsers
+                        users={proposal?.users}
+                        onUserClick={handleUserClick}
+                    />
+                </div>
+
                 <div className="mt-auto">
                     <ProposalCardFooter
                         yesVotes={`${yesVotes}`}

@@ -1,29 +1,29 @@
+import Title from '@/Components/atoms/Title';
+import UserQuickView from '@/Components/UserQuickView';
+import ProposalCardFooter from './ProposalCardFooter';
 import ProposalCardHeader from './ProposalCardHeader';
 import ProposalCardNav from './ProposalCardNav';
+import ProposalFundingPercentages from './ProposalFundingPercentages';
+import ProposalFundingStatus from './ProposalFundingStatus';
 import ProposalQuickpitch from './ProposalQuickpitch';
 import ProposalSolution from './ProposalSolution';
-import ProposalFundingPercentages from './ProposalFundingPercentages';
-import ProposalCardFooter from './ProposalCardFooter';
-import ProposalUsers from './ProposalUsers';
-import UserQuickView from '@/Components/UserQuickView';
-import ProposalFundingStatus from './ProposalFundingStatus';
-import Title from '@/Components/atoms/Title';
+import IdeascaleProfileUsers from '@/Pages/IdeascaleProfile/Partials/IdeascaleProfileUsersComponent';
 
 export default function ProposalVerticalCard({
-     proposal,
-     userSelected,
-     noSelectedUser,
-     handleUserClick,
-     quickPitchView,
-     toggleLocalQuickPitchView,
-     isHorizontal,
-     t,
-     hasQuickPitch,
-     yesVotes,
-     abstainVotes,
- }: any) {
+    proposal,
+    userSelected,
+    noSelectedUser,
+    handleUserClick,
+    quickPitchView,
+    toggleLocalQuickPitchView,
+    isHorizontal,
+    t,
+    hasQuickPitch,
+    yesVotes,
+    abstainVotes,
+}: any) {
     return (
-        <article className="bg-background relative flex h-full flex-col rounded-xl justify-between p-2 shadow-lg proposal-card proposal-card-vertical">
+        <article className="bg-background proposal-card proposal-card-vertical relative flex h-full flex-col justify-between rounded-xl p-2 shadow-lg">
             <section className="flex h-auto w-full flex-col items-start overflow-hidden">
                 <ProposalCardHeader
                     proposal={proposal}
@@ -36,7 +36,7 @@ export default function ProposalVerticalCard({
             <section>
                 <div className="grow overflow-auto p-2">
                     {userSelected ? (
-                        <UserQuickView user={userSelected}/>
+                        <UserQuickView user={userSelected} />
                     ) : (
                         <>
                             <ProposalCardNav
@@ -59,10 +59,12 @@ export default function ProposalVerticalCard({
                                         funding_status={proposal.funding_status}
                                     />
                                 </div>
-                                <ProposalFundingPercentages proposal={proposal}/>
+                                <ProposalFundingPercentages
+                                    proposal={proposal}
+                                />
                             </section>
                             {/*<div className="my-3 border-b"></div>*/}
-                            <div className="relative min-h-36 mt-4">
+                            <div className="relative mt-4 min-h-36">
                                 {quickPitchView ? (
                                     <ProposalQuickpitch
                                         quickpitch={proposal.quickpitch}
@@ -78,11 +80,18 @@ export default function ProposalVerticalCard({
                     )}
                 </div>
 
-                <ProposalUsers
-                    users={proposal.users}
-                    onUserClick={handleUserClick}
-                    className="border-t"
-                />
+                <div
+                    className={`flex items-center justify-between pt-3`}
+                    aria-labelledby="team-heading"
+                >
+                    <Title level="4" id="team-heading" className="font-medium">
+                        {t('teams')}
+                    </Title>
+                    <IdeascaleProfileUsers
+                        users={proposal?.users}
+                        onUserClick={handleUserClick}
+                    />
+                </div>
 
                 <div className="my-4 border-b"></div>
 
