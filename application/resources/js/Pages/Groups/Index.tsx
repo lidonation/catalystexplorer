@@ -2,13 +2,14 @@ import Paginator from '@/Components/Paginator';
 import Title from '@/Components/atoms/Title';
 import { FiltersProvider } from '@/Context/FiltersContext';
 import { ListProvider } from '@/Context/ListContext';
-import { Head } from '@inertiajs/react';
+import { Head, WhenVisible } from '@inertiajs/react';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { PaginatedData } from '../../../types/paginated-data';
 import { SearchParams } from '../../../types/search-params';
 import FundFiltersContainer from '../Proposals/Partials/FundFiltersContainer';
+import GroupCardLoader from './Partials/GroupCardMiniLoader';
 import GroupFilters from './Partials/GroupFilters';
 import GroupList from './Partials/GroupList';
 import GroupSearchControls from './Partials/GroupSearchControls';
@@ -48,7 +49,6 @@ const Index: React.FC<GroupsPageProps> = ({
         fetchFunds();
     }, []);
 
-
     return (
         <>
             <ListProvider>
@@ -83,7 +83,12 @@ const Index: React.FC<GroupsPageProps> = ({
                     </section>
 
                     <section className="container py-8">
-                        <GroupList groups={groups?.data || []} />
+                        <WhenVisible
+                            fallback={<GroupCardLoader />}
+                            data="groups"
+                        >
+                            <GroupList groups={groups?.data || []} />
+                        </WhenVisible>
                     </section>
 
                     <section className="w-full px-4 lg:container lg:px-0">
