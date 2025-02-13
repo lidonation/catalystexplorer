@@ -6,6 +6,7 @@ namespace App\Providers;
 
 use App\Models\BookmarkCollection;
 use App\Models\IdeascaleProfile;
+use App\Models\User;
 use App\Services\HashIdService;
 use Exception;
 use Illuminate\Routing\Router;
@@ -55,7 +56,13 @@ class RouteServiceProvider extends ServiceProvider
     /**
      * Bootstrap services.
      */
-    public function boot(Router $router): void {}
+    public function boot(Router $router): void {
+        Route::bind('user', function ($hashedId) {
+            $userId = (new HashIdService(new User))->decode($hashedId);
+            \Log::info('Decoded User ID:', ['hashedId' => $hashedId, 'userId' => $userId]);
+            return User::findOrFail($userId);
+        });
+    }
 
     protected function decodeHash(string $hashId): int|string
     {

@@ -25,6 +25,7 @@ export default function BookmarkButton({
     } = useBookmark({ modelType, itemId });
     const handleOpenChange = async (open: boolean) => {
         if (open && !isBookmarked) {
+            console.log('Clicked here');
             await createBookmark();
         } else {
             setIsOpen(open);

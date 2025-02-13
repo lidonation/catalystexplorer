@@ -90,8 +90,43 @@ class MyBookmarksController extends Controller
                 'bookmark' => BookmarkItemData::from($bookmarkItem),
             ]);
     }
-
     public function store(Request $request, string $modelType, int $modelId): JsonResponse
+    {
+        try {
+            if (!Auth::check()) {
+                return response()->json(['errors' => 'Unauthorized'], 401);
+            }
+            if (! BookmarkableType::isValid($modelType)) {
+                return response()->json(['errors' => 'Invalid model types'], 422);
+            }
+
+            $bookmarkableType = BookmarkableType::from($modelType);
+            $modelClass = $bookmarkableType->getModelClass();
+            $modelType = class_basename($modelClass);
+
+            DB::beginTransaction();
+            $bookmarkItem = BookmarkItem::create([
+                'user_id' => Auth::id(),
+                'model_type' => $modelClass,
+                'model_id' => $modelId,
+            ]);
+            DB::commit();
+
+            return response()->json([
+                'message' => 'Bookmark created successfully',
+                'isBookmarked' => true,
+                'bookmarkItem' => $bookmarkItem,
+            ]);
+        } catch (\Exception $e) {
+            DB::rollback();
+
+            return response()->json([
+                'errors' => 'Failed to create bookmark',
+                'err ' => $e], 403);
+        }
+    }
+
+    public function store1(Request $request, string $modelType, int $modelId): JsonResponse
     {
         try {
             if (! BookmarkableType::isValid($modelType)) {
@@ -221,7 +256,7 @@ class MyBookmarksController extends Controller
             ]);
 
             $itemData = new BookmarkItemData(
-                id: null,
+                hash: null,
                 user_id: Auth::id(),
                 bookmark_collection_id: $collection->id,
                 model_id: $validated['model_id'],

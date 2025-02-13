@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
+import {router} from "@inertiajs/react";
 
 interface UseBookmarkProps {
     modelType: string;
@@ -27,7 +28,38 @@ export default function useBookmark({ modelType, itemId }: UseBookmarkProps) {
         }
     };
 
-    const createBookmark = async () => {
+    const createBookmark = () => {
+        router.post(
+            route('api.bookmarks.store', { modelType, hash: itemId }),
+            {},
+            {
+                preserveScroll: true,
+                preserveState: true,
+                onSuccess: (page) => {
+                    console.log('Response : ', page.props);
+                    const bookmarkItem = page.props?.bookmarkItem;
+                    if (
+                        bookmarkItem &&
+                        typeof bookmarkItem === 'object' &&
+                        'id' in bookmarkItem
+                    ) {
+                        setIsBookmarked(true);
+                        setBookmarkId(bookmarkItem.id as string);
+                        setIsOpen(true);
+                        toast.success('Bookmark created successfully!', {
+                            className: 'bg-gray-800 text-white',
+                            toastId: 'bookmark-created',
+                        });
+                    }
+                },
+                onError: (errors) => {
+                    console.error('Error creating bookmark:', errors);
+                },
+            },
+        );
+    };
+
+    const createBookmark1 = async () => {
         try {
             const response = await axios.post(
                 route('api.bookmarks.store', { modelType, hash: itemId }),
