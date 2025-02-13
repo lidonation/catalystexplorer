@@ -83,6 +83,22 @@ const GroupCardFull: React.FC<GroupCardFullProps> = ({ group }) => {
 
                 <div className="border-content-light mt-4 border-t border-b pt-4 pb-4">
                     <SegmentedBar segments={segments} />
+                    <ul className='w-full flex justify-between mt-2'>
+                        {segments.map((segment, index) => (
+                            <li key={index} className='flex justify-between mt-2'>
+                                <div
+                                    className={`h-2 w-2 rounded-full mt-2 mr-2 ${segment.color}`}
+                                />
+
+                                <div className='flex justify-between gap-x-1'>
+                                    <p className="text-gray-persist">
+                                        {segment.label}:
+                                    </p>
+                                    <p className="font-bold">{`${segment.value}`}</p>
+                                </div>
+                            </li>
+                        ))}
+                    </ul>
                 </div>
 
                 <div>
