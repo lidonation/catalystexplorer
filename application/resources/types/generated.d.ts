@@ -133,7 +133,8 @@ proposals_completed?: number;
 amount_requested?: number;
 amount_awarded?: number;
 proposals_funded?: number;
-reviews?: number
+reviews?: number;
+ideascaleprofiles?: App.DataTransferObjects.IdeascaleProfileData[];
 };
 export type IdeascaleProfileData = {
 hash: string | null;
