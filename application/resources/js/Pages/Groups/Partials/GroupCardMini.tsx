@@ -95,7 +95,7 @@ const GroupCardMini: React.FC<GroupCardMiniProps> = ({ group }) => {
 
                 <div className="border-content-light mt-2 flex items-center justify-between border-t pt-3">
                     <IdeascaleProfileUsers
-                        users={group?.ideascaleprofiles || []}
+                        users={group?.ideascale_profiles || []}
                         onUserClick={handleUserClick}
                     />
                     <GroupSocials group={group} />
