@@ -3,7 +3,7 @@ import Selector from '@/Components/atoms/Selector';
 import SearchBar from '@/Components/SearchBar';
 import FilterLinesIcon from '@/Components/svgs/FilterLinesIcon';
 import { useFilterContext } from '@/Context/FiltersContext';
-import { ProposalParamsEnum } from '@/enums/proposal-search-params';
+import { ParamsEnum } from '@/enums/proposal-search-params';
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import ActiveFilters from './ActiveFilters';
@@ -19,7 +19,7 @@ function SearchControls({
     const { t } = useTranslation();
 
     const queryParams = new URLSearchParams(window.location.search);
-    const initialSearchQuery = queryParams.get(ProposalParamsEnum.QUERY) || '';
+    const initialSearchQuery = queryParams.get(ParamsEnum.QUERY) || '';
     const [searchQuery, setSearchQuery] = useState(initialSearchQuery);
     const [showFilters, setShowFilters] = useState(false);
 
@@ -29,7 +29,7 @@ function SearchControls({
 
     const handleSearch = (search: string) => {
         setFilters({
-            param: ProposalParamsEnum.QUERY,
+            param: ParamsEnum.QUERY,
             value: search,
             label: 'Search',
         });
@@ -37,14 +37,14 @@ function SearchControls({
         const url = new URL(window.location.href);
 
         if (search.trim() === '') {
-            url.searchParams.delete(ProposalParamsEnum.QUERY);
+            url.searchParams.delete(ParamsEnum.QUERY);
         } else {
             setFilters({
-                param: ProposalParamsEnum.QUERY,
+                param: ParamsEnum.QUERY,
                 value: search,
                 label: 'Search',
             });
-            url.searchParams.set(ProposalParamsEnum.QUERY, search);
+            url.searchParams.set(ParamsEnum.QUERY, search);
         }
 
         window.history.replaceState(null, '', url.toString());
@@ -60,7 +60,7 @@ function SearchControls({
 
     const filtersCount = filters.filter(
         (filter) =>
-            filter.param !== ProposalParamsEnum.PAGE && filter.value.length > 0,
+            filter.param !== ParamsEnum.PAGE && filter.value.length > 0,
     ).length;
 
     return (
@@ -88,10 +88,10 @@ function SearchControls({
 
                 <Selector
                     isMultiselect={false}
-                    selectedItems={getFilter(ProposalParamsEnum.SORTS)}
+                    selectedItems={getFilter(ParamsEnum.SORTS)}
                     setSelectedItems={(value) =>
                         setFilters({
-                            param: ProposalParamsEnum.SORTS,
+                            param: ParamsEnum.SORTS,
                             value,
                             label: 'Sorts',
                         })
@@ -100,7 +100,7 @@ function SearchControls({
                     hideCheckbox={true}
                     placeholder={t('proposals.options.sort')}
                     className={`bg-background ${
-                        getFilter(ProposalParamsEnum.SORTS)
+                        getFilter(ParamsEnum.SORTS)
                             ? 'bg-background-lighter text-primary'
                             : 'hover:bg-background-lighter text-gray-500'
                     }`}

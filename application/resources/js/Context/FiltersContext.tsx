@@ -1,4 +1,4 @@
-import { ProposalParamsEnum } from '@/enums/proposal-search-params';
+import { ParamsEnum } from '@/enums/proposal-search-params';
 import { router } from '@inertiajs/react';
 import {
     createContext,
@@ -122,8 +122,8 @@ export function FiltersProvider({
             filtersRef.current = filters;
 
             const paginationFiltered =
-                changedParams.includes(ProposalParamsEnum.PAGE) ||
-                changedParams.includes(ProposalParamsEnum.LIMIT);
+                changedParams.includes(ParamsEnum.PAGE) ||
+                changedParams.includes(ParamsEnum.LIMIT);
             router.get(
                 currentUrl,
                 formatToParams(),

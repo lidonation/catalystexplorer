@@ -1,4 +1,4 @@
-export enum ProposalParamsEnum {
+export enum ParamsEnum {
     AWARDED_ADA = 'aa',
     AWARDED_USD = 'au',
     BUDGETS = 'b',

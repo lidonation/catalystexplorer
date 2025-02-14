@@ -3,7 +3,7 @@ import { FiltersProvider } from '@/Context/FiltersContext';
 import { ListProvider } from '@/Context/ListContext';
 import { useMetrics } from '@/Context/MetricsContext';
 import { usePlayer } from '@/Context/PlayerContext';
-import { ProposalParamsEnum } from '@/enums/proposal-search-params';
+import { ParamsEnum } from '@/enums/proposal-search-params';
 import ProposalResults from '@/Pages/Proposals/Partials/ProposalResults';
 import VerticalCardLoading from '@/Pages/Proposals/Partials/ProposalVerticalCardLoading';
 import { PageProps } from '@/types';
@@ -45,7 +45,7 @@ export default function Index({
     const [showFilters, setShowFilters] = useState(false);
 
     const [quickPitchView, setQuickPitchView] = useState(
-        !!parseInt(filters[ProposalParamsEnum.QUICK_PITCHES]),
+        !!parseInt(filters[ParamsEnum.QUICK_PITCHES]),
     );
 
     useEffect(() => {

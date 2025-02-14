@@ -1,5 +1,5 @@
 import { useFilterContext } from '@/Context/FiltersContext';
-import { ProposalParamsEnum } from '@/enums/proposal-search-params';
+import { ParamsEnum } from '@/enums/proposal-search-params';
 import FundsFilter from './FundsFilter';
 
 type FundFiltersContainerProps = {
@@ -10,7 +10,7 @@ function FundFiltersContainer({ funds }: FundFiltersContainerProps) {
 
     const handleSetSelectedItems = (updatedItems: any[]) => {
         setFilters({
-            param: ProposalParamsEnum.FUNDS,
+            param: ParamsEnum.FUNDS,
             value: updatedItems,
             label: 'Funds',
         });
@@ -20,7 +20,7 @@ function FundFiltersContainer({ funds }: FundFiltersContainerProps) {
         <FundsFilter
             proposalsCount={funds}
             setSelectedItems={handleSetSelectedItems}
-            selectedItems={getFilter(ProposalParamsEnum.FUNDS) ?? []}
+            selectedItems={getFilter(ParamsEnum.FUNDS) ?? []}
         />
     );
 }

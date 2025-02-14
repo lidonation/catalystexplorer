@@ -2,7 +2,7 @@ import { RangePicker } from '@/Components/RangePicker';
 import { SearchSelect } from '@/Components/SearchSelect';
 import Selector from '@/Components/atoms/Selector';
 import { useFilterContext } from '@/Context/FiltersContext';
-import { ProposalParamsEnum } from '@/enums/proposal-search-params';
+import { ParamsEnum } from '@/enums/proposal-search-params';
 import { useTranslation } from 'react-i18next';
 
 const ProposalFilters = () => {
@@ -41,11 +41,11 @@ const ProposalFilters = () => {
                                 setFilters({
                                     label: t('proposals.filters.fundingStatus'),
                                     value,
-                                    param: ProposalParamsEnum.FUNDING_STATUS,
+                                    param: ParamsEnum.FUNDING_STATUS,
                                 })
                             }
                             selectedItems={getFilter(
-                                ProposalParamsEnum.FUNDING_STATUS,
+                                ParamsEnum.FUNDING_STATUS,
                             )}
                         />
                     </div>
@@ -72,11 +72,11 @@ const ProposalFilters = () => {
                                 setFilters({
                                     label: t('proposals.filters.opensource'),
                                     value,
-                                    param: ProposalParamsEnum.OPENSOURCE_PROPOSALS,
+                                    param: ParamsEnum.OPENSOURCE_PROPOSALS,
                                 })
                             }
                             selectedItems={getFilter(
-                                ProposalParamsEnum.OPENSOURCE_PROPOSALS,
+                                ParamsEnum.OPENSOURCE_PROPOSALS,
                             )}
                         />
                     </div>
@@ -103,11 +103,11 @@ const ProposalFilters = () => {
                                 setFilters({
                                     label: t('proposals.filters.projectStatus'),
                                     value,
-                                    param: ProposalParamsEnum.PROJECT_STATUS,
+                                    param: ParamsEnum.PROJECT_STATUS,
                                 })
                             }
                             selectedItems={getFilter(
-                                ProposalParamsEnum.PROJECT_STATUS,
+                                ParamsEnum.PROJECT_STATUS,
                             )}
                         />
                     </div>
@@ -117,12 +117,12 @@ const ProposalFilters = () => {
                         <SearchSelect
                             key={'tags'}
                             domain={'tags'}
-                            selected={getFilter(ProposalParamsEnum.TAGS) ?? []}
+                            selected={getFilter(ParamsEnum.TAGS) ?? []}
                             onChange={(value) =>
                                 setFilters({
                                     label: t('proposals.filters.tags'),
                                     value,
-                                    param: ProposalParamsEnum.TAGS,
+                                    param: ParamsEnum.TAGS,
                                 })
                             }
                             placeholder="Select"
@@ -136,13 +136,13 @@ const ProposalFilters = () => {
                             key={'campaigns'}
                             domain={'campaigns'}
                             selected={
-                                getFilter(ProposalParamsEnum.CAMPAIGNS) ?? []
+                                getFilter(ParamsEnum.CAMPAIGNS) ?? []
                             }
                             onChange={(value) =>
                                 setFilters({
                                     label: t('proposals.filters.campaigns'),
                                     value,
-                                    param: ProposalParamsEnum.CAMPAIGNS,
+                                    param: ParamsEnum.CAMPAIGNS,
                                 })
                             }
                             placeholder="Select"
@@ -158,13 +158,13 @@ const ProposalFilters = () => {
                             key={'groups'}
                             domain={'groups'}
                             selected={
-                                getFilter(ProposalParamsEnum.GROUPS) ?? []
+                                getFilter(ParamsEnum.GROUPS) ?? []
                             }
                             onChange={(value) =>
                                 setFilters({
                                     label: t('proposals.filters.groups'),
                                     value,
-                                    param: ProposalParamsEnum.GROUPS,
+                                    param: ParamsEnum.GROUPS,
                                 })
                             }
                             placeholder="Select"
@@ -178,13 +178,13 @@ const ProposalFilters = () => {
                             key={'communities'}
                             domain={'communities'}
                             selected={
-                                getFilter(ProposalParamsEnum.COMMUNITIES) ?? []
+                                getFilter(ParamsEnum.COMMUNITIES) ?? []
                             }
                             onChange={(value) =>
                                 setFilters({
                                     label: t('proposals.filters.communities'),
                                     value,
-                                    param: ProposalParamsEnum.COMMUNITIES,
+                                    param: ParamsEnum.COMMUNITIES,
                                 })
                             }
                             placeholder="Select"
@@ -222,10 +222,10 @@ const ProposalFilters = () => {
                                         'proposals.filters.communityCohort',
                                     ),
                                     value,
-                                    param: ProposalParamsEnum.COHORT,
+                                    param: ParamsEnum.COHORT,
                                 })
                             }
-                            selectedItems={getFilter(ProposalParamsEnum.COHORT)}
+                            selectedItems={getFilter(ParamsEnum.COHORT)}
                         />
                     </div>
 
@@ -235,14 +235,14 @@ const ProposalFilters = () => {
                             domain={'ideascaleProfiles'}
                             selected={
                                 getFilter(
-                                    ProposalParamsEnum.IDEASCALE_PROFILES,
+                                    ParamsEnum.IDEASCALE_PROFILES,
                                 ) ?? []
                             }
                             onChange={(value) =>
                                 setFilters({
                                     label: t('proposals.filters.proposers'),
                                     value,
-                                    param: ProposalParamsEnum.IDEASCALE_PROFILES,
+                                    param: ParamsEnum.IDEASCALE_PROFILES,
                                 })
                             }
                             placeholder="Select"
@@ -258,16 +258,16 @@ const ProposalFilters = () => {
                             key={'Budgets'}
                             context={t('proposals.filters.budgets')}
                             value={
-                                getFilter(ProposalParamsEnum.BUDGETS)?.length ==
+                                getFilter(ParamsEnum.BUDGETS)?.length ==
                                 0
                                     ? budgetRange
-                                    : getFilter(ProposalParamsEnum.BUDGETS)
+                                    : getFilter(ParamsEnum.BUDGETS)
                             }
                             onValueChange={(value) =>
                                 setFilters({
                                     label: t('proposals.filters.budgets'),
                                     value,
-                                    param: ProposalParamsEnum.BUDGETS,
+                                    param: ParamsEnum.BUDGETS,
                                 })
                             }
                             max={budgetRange[1]}
@@ -281,18 +281,18 @@ const ProposalFilters = () => {
                             key={'Project Length'}
                             context={t('proposals.filters.projectLength')}
                             value={
-                                getFilter(ProposalParamsEnum.PROJECT_LENGTH)
+                                getFilter(ParamsEnum.PROJECT_LENGTH)
                                     ?.length == 0
                                     ? projectLengthRange
                                     : getFilter(
-                                          ProposalParamsEnum.PROJECT_LENGTH,
+                                          ParamsEnum.PROJECT_LENGTH,
                                       )
                             }
                             onValueChange={(value) =>
                                 setFilters({
                                     label: t('proposals.filters.projectLength'),
                                     value,
-                                    param: ProposalParamsEnum.PROJECT_LENGTH,
+                                    param: ParamsEnum.PROJECT_LENGTH,
                                 })
                             }
                             max={projectLengthRange[1]}

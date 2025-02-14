@@ -2,7 +2,7 @@ import { RangePicker } from '@/Components/RangePicker';
 import { SearchSelect } from '@/Components/SearchSelect';
 import Selector from '@/Components/atoms/Selector';
 import { useFilterContext } from '@/Context/FiltersContext';
-import { ProposalParamsEnum } from '@/enums/proposal-search-params';
+import { ParamsEnum } from '@/enums/proposal-search-params';
 import { useTranslation } from 'react-i18next';
 
 interface GroupFiltersProps{
@@ -48,11 +48,11 @@ const GroupFilters = ({proposalsCount, totalAwardedAda, totalAwardedUsd}:GroupFi
                                 setFilters({
                                     label: t('proposals.filters.fundingStatus'),
                                     value,
-                                    param: ProposalParamsEnum.FUNDING_STATUS,
+                                    param: ParamsEnum.FUNDING_STATUS,
                                 })
                             }
                             selectedItems={getFilter(
-                                ProposalParamsEnum.FUNDING_STATUS,
+                                ParamsEnum.FUNDING_STATUS,
                             )}
                         />
                     </div>
@@ -79,11 +79,11 @@ const GroupFilters = ({proposalsCount, totalAwardedAda, totalAwardedUsd}:GroupFi
                                 setFilters({
                                     label: t('proposals.filters.projectStatus'),
                                     value,
-                                    param: ProposalParamsEnum.PROJECT_STATUS,
+                                    param: ParamsEnum.PROJECT_STATUS,
                                 })
                             }
                             selectedItems={getFilter(
-                                ProposalParamsEnum.PROJECT_STATUS,
+                                ParamsEnum.PROJECT_STATUS,
                             )}
                         />
                     </div>
@@ -93,12 +93,12 @@ const GroupFilters = ({proposalsCount, totalAwardedAda, totalAwardedUsd}:GroupFi
                         <SearchSelect
                             key={'tags'}
                             domain={'tags'}
-                            selected={getFilter(ProposalParamsEnum.TAGS) ?? []}
+                            selected={getFilter(ParamsEnum.TAGS) ?? []}
                             onChange={(value) =>
                                 setFilters({
                                     label: t('proposals.filters.tags'),
                                     value,
-                                    param: ProposalParamsEnum.TAGS,
+                                    param: ParamsEnum.TAGS,
                                 })
                             }
                             placeholder="Select"
@@ -112,13 +112,13 @@ const GroupFilters = ({proposalsCount, totalAwardedAda, totalAwardedUsd}:GroupFi
                             key={'campaigns'}
                             domain={'campaigns'}
                             selected={
-                                getFilter(ProposalParamsEnum.CAMPAIGNS) ?? []
+                                getFilter(ParamsEnum.CAMPAIGNS) ?? []
                             }
                             onChange={(value) =>
                                 setFilters({
                                     label: t('proposals.filters.campaigns'),
                                     value,
-                                    param: ProposalParamsEnum.CAMPAIGNS,
+                                    param: ParamsEnum.CAMPAIGNS,
                                 })
                             }
                             placeholder="Select"
@@ -135,7 +135,7 @@ const GroupFilters = ({proposalsCount, totalAwardedAda, totalAwardedUsd}:GroupFi
                             domain={'ideascaleProfiles.index'}
                             selected={
                                 getFilter(
-                                    ProposalParamsEnum.IDEASCALE_PROFILES,
+                                    ParamsEnum.IDEASCALE_PROFILES,
                                 ) ?? []
                             }
                             onChange={(value) =>
@@ -144,7 +144,7 @@ const GroupFilters = ({proposalsCount, totalAwardedAda, totalAwardedUsd}:GroupFi
                                         'proposals.filters.ideascaleProfiles',
                                     ),
                                     value,
-                                    param: ProposalParamsEnum.IDEASCALE_PROFILES,
+                                    param: ParamsEnum.IDEASCALE_PROFILES,
                                 })
                             }
                             placeholder="Select"
@@ -158,13 +158,13 @@ const GroupFilters = ({proposalsCount, totalAwardedAda, totalAwardedUsd}:GroupFi
                             key={'communities'}
                             domain={'communities'}
                             selected={
-                                getFilter(ProposalParamsEnum.COMMUNITIES) ?? []
+                                getFilter(ParamsEnum.COMMUNITIES) ?? []
                             }
                             onChange={(value) =>
                                 setFilters({
                                     label: t('proposals.filters.communities'),
                                     value,
-                                    param: ProposalParamsEnum.COMMUNITIES,
+                                    param: ParamsEnum.COMMUNITIES,
                                 })
                             }
                             placeholder="Select"
@@ -202,10 +202,10 @@ const GroupFilters = ({proposalsCount, totalAwardedAda, totalAwardedUsd}:GroupFi
                                         'proposals.filters.communityCohort',
                                     ),
                                     value,
-                                    param: ProposalParamsEnum.COHORT,
+                                    param: ParamsEnum.COHORT,
                                 })
                             }
-                            selectedItems={getFilter(ProposalParamsEnum.COHORT)}
+                            selectedItems={getFilter(ParamsEnum.COHORT)}
                         />
                     </div>
                 </div>
@@ -217,10 +217,10 @@ const GroupFilters = ({proposalsCount, totalAwardedAda, totalAwardedUsd}:GroupFi
                             key={'numberOfProposals'}
                             context={t('proposals.filters.numberOfProposals')}
                             value={
-                                getFilter(ProposalParamsEnum.PROPOSALS)
+                                getFilter(ParamsEnum.PROPOSALS)
                                     ?.length == 0
                                     ? proposalRange
-                                    : getFilter(ProposalParamsEnum.PROPOSALS)
+                                    : getFilter(ParamsEnum.PROPOSALS)
                             }
                             onValueChange={(value) =>
                                 setFilters({
@@ -228,7 +228,7 @@ const GroupFilters = ({proposalsCount, totalAwardedAda, totalAwardedUsd}:GroupFi
                                         'proposals.filters.numberOfProposals',
                                     ),
                                     value,
-                                    param: ProposalParamsEnum.PROPOSALS,
+                                    param: ParamsEnum.PROPOSALS,
                                 })
                             }
                             max={proposalRange[1]}
@@ -241,12 +241,12 @@ const GroupFilters = ({proposalsCount, totalAwardedAda, totalAwardedUsd}:GroupFi
                         <RangePicker
                             key={'awardedAda'}
                             context={t('proposals.filters.awardedAda')}
-                            value={getFilter(ProposalParamsEnum.AWARDED_ADA)}
+                            value={getFilter(ParamsEnum.AWARDED_ADA)}
                             onValueChange={(value) => {
                                 setFilters({
                                     label: t('proposals.filters.awardedAda'),
                                     value,
-                                    param: ProposalParamsEnum.AWARDED_ADA,
+                                    param: ParamsEnum.AWARDED_ADA,
                                 });
                             }}
                             max={adaRange[1]}
@@ -259,16 +259,16 @@ const GroupFilters = ({proposalsCount, totalAwardedAda, totalAwardedUsd}:GroupFi
                             key={'awarded_usd'}
                             context={t('proposals.filters.awardedUsd')}
                             value={
-                                getFilter(ProposalParamsEnum.AWARDED_USD)
+                                getFilter(ParamsEnum.AWARDED_USD)
                                     ?.length == 0
                                     ? usdRange
-                                    : getFilter(ProposalParamsEnum.AWARDED_USD)
+                                    : getFilter(ParamsEnum.AWARDED_USD)
                             }
                             onValueChange={(value) =>
                                 setFilters({
                                     label: t('proposals.filters.awardedUsd'),
                                     value,
-                                    param: ProposalParamsEnum.AWARDED_USD,
+                                    param: ParamsEnum.AWARDED_USD,
                                 })
                             }
                             max={usdRange[1]}
