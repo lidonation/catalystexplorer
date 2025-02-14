@@ -104,14 +104,14 @@ class Group extends Model implements HasMedia
     public function gravatar(): Attribute
     {
         return Attribute::make(
-            get: fn () => Avatar::create($this->name ?? 'default')->toGravatar()
+            get: fn() => Avatar::create($this->name ?? 'default')->toGravatar()
         );
     }
 
     public function profilePhotoUrl(): Attribute
     {
         return Attribute::make(
-            get: fn () => count($this->getMedia('group')) ? $this->getMedia('group')[0]->getFullUrl() : $this->gravatar
+            get: fn() => count($this->getMedia('group')) ? $this->getMedia('group')[0]->getFullUrl() : $this->gravatar
         );
     }
 
@@ -253,18 +253,25 @@ class Group extends Model implements HasMedia
     {
         $this->load(['media']);
         $array = $this->toArray();
-        $proposals = $this->proposals->map(fn ($p) => $p->toArray());
+        $proposals = $this->proposals;
 
         return array_merge($array, [
             'proposals_completed' => $proposals->filter(fn ($p) => $p['status'] === 'complete')?->count() ?? 0,
             'proposals_funded' => $proposals->filter(fn ($p) => (bool) $p['funded_at'])?->count() ?? 0,
+            'proposals_unfunded' => $proposals->filter(fn ($p) => empty($p['funded_at']))->count(),
             'amount_received' => intval($this->proposals()->whereNotNull('funded_at')->sum('amount_received')),
-            'proposals_ideafest' => $proposals->filter(fn ($p) => isset($p['is_ideafest_proposal']) && $p['is_ideafest_proposal'] === true)->count() ?? 0,
-            'proposals_woman' => $proposals->filter(fn ($p) => isset($p['is_woman_proposal']) && $p['is_woman_proposal'] === true)->count() ?? 0,
-            'proposals_impact' => $proposals->filter(fn ($p) => isset($p['is_impact_proposal']) && $p['is_impact_proposal'] === true)->count() ?? 0,
+            'proposals_woman' => $proposals->filter(fn ($p) => ($p->is_woman_proposal ?? false) === true)->count(),
+            'proposals_ideascale' => $proposals->filter(fn ($p) => ($p->is_ideascale_proposal ?? false) === true)->count(),
+            'proposals_impact' => $proposals->filter(fn ($p) => ($p->is_impact_proposal ?? false) === true)->count(),
+            'reviews' => $proposals->filter(fn ($p) => ! empty($p->reviewers_total))->count(),
             'amount_awarded_ada' => intval($this->amount_awarded_ada),
             'amount_awarded_usd' => intval($this->amount_awarded_usd),
+            'amount_distributed_ada' => intval($this->amount_distributed_ada),
+            'amount_distributed_usd' => intval($this->amount_distributed_usd),
+            'amount_requested_ada' => intval($this->amount_requested_ada),
+            'amount_requested_usd' => intval($this->amount_requested_usd),
             'proposals' => $this->proposals,
+            'proposals_count' => $proposals->count(),
             'ideascale_profiles' => $this->ideascale_profiles->map(fn ($m) => $m->toArray()),
             'tags' => $this->tags->map(fn ($m) => $m->toArray()),
         ]);

@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import IdeascaleProfileCard from './IdeascaleProfileCard';
+import IdeascaleProfileCardMini from './IdeascaleProfileCardMini';
 import RecordsNotFound from '@/Layouts/RecordsNotFound';
 import IdeascaleProfileData = App.DataTransferObjects.IdeascaleProfileData;
 
@@ -39,7 +39,7 @@ const IdeascaleProfilesList: React.FC<IdeascaleProfilesListProps> = ({
                         transition={{ duration: 0.4, ease: 'easeIn' }}
                         className='h-full'
                     >
-                        <IdeascaleProfileCard
+                        <IdeascaleProfileCardMini
                             ideascaleProfile={ideascaleProfile}
                         />
                     </motion.li>

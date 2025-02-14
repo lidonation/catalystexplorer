@@ -33,6 +33,11 @@ export default forwardRef(function TextInput(
             type={type}
             className={`border-border-primary border-opacity-40 bg-background text-content focus:border-primary rounded-md shadow-xs ${className}`}
             ref={localRef}
+            onKeyDown={(e) => {
+                if (e.key === ' ') {
+                    e.stopPropagation();
+                }
+            }}
         />
     );
 });

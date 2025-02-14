@@ -74,8 +74,22 @@ updated_at?: string;
 deleted_at?: string;
 };
 export type ConnectionData = {
-hash: string | null;
-name: string;
+    nodes: {
+        id: string;
+        type: string;
+        name: string;
+        hash?: string;
+        photo?: string;
+        val?: number;
+        x?: number;
+        y?: number;
+    }[];
+    links: {
+        source: string;
+        target: string;
+    }[];
+    rootGroupId:string;
+    rootGroupHash:string;
 };
 export type FundData = {
 amount: number;
@@ -127,13 +141,14 @@ amount_requested_usd?: number;
 amount_distributed_ada?: number;
 amount_distributed_usd?: number;
 proposals_count?: number;
-funded_proposals_count?: number;
-unfunded_proposals_count?: number;
-completed_proposals_count?: number;
+proposals_funded?: number;
+proposals_unfunded?: number;
+proposals_completed?: number;
 amount_requested?: number;
 amount_awarded?: number;
 proposals_funded?: number;
-ideascale_profiles?: Array<any>;
+reviews?: number;
+ideascale_profiles?: App.DataTransferObjects.IdeascaleProfileData[];
 };
 export type IdeascaleProfileData = {
 hash: string | null;
@@ -154,6 +169,10 @@ title?: string;
 profile_photo_url?: string;
 amount_awarded_usd?: number;
 amount_awarded_ada?: number;
+amount_requested_ada?: number;
+amount_requested_usd?: number;
+amount_distributed_ada?: number;
+amount_distributed_usd?: number;
 co_proposals_count?: number;
 own_proposals_count?: number;
 claimed_by?: number;

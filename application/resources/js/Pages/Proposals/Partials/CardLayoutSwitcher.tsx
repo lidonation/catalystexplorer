@@ -4,7 +4,7 @@ import ListBulletIcon from '@/Components/svgs/ListBulletIcon';
 import MiniCardSwitchIcon from '@/Components/svgs/MiniCardSwitchIcon';
 import VideoCameraIcon from '@/Components/svgs/VideoCameraIcon';
 import { useFilterContext } from '@/Context/FiltersContext';
-import { ProposalParamsEnum } from '@/enums/proposal-search-params';
+import { ParamsEnum } from '@/enums/proposal-search-params';
 import Button from '@/Components/atoms/Button';
 
 interface CardLayoutSwitcherProps {
@@ -29,7 +29,7 @@ export default function CardLayoutSwitcher({
     const setQuickpitch = (value: boolean) => {
         setGlobalQuickPitchView(value);
         setFilters({
-            param: ProposalParamsEnum.QUICK_PITCHES,
+            param: ParamsEnum.QUICK_PITCHES,
             value: value ? '1' : '',
             label: undefined,
         });

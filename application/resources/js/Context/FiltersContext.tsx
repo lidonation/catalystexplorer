@@ -1,4 +1,4 @@
-import { ProposalParamsEnum } from '@/enums/proposal-search-params';
+import { ParamsEnum } from '@/enums/proposal-search-params';
 import { router } from '@inertiajs/react';
 import {
     createContext,
@@ -9,7 +9,7 @@ import {
     useRef,
     useState,
 } from 'react';
-import { ProposalSearchParams } from '../../types/proposal-search-params';
+import { SearchParams } from '../../types/search-params';
 
 export interface FilteredItem {
     param: string;
@@ -59,7 +59,7 @@ export function FiltersProvider({
     routerOptions = {},
 }: {
     children: ReactNode;
-    defaultFilters: ProposalSearchParams;
+    defaultFilters: SearchParams;
     routerOptions?: Record<string, any>;
 }) {
     const initialFilters = formatToFilters(defaultFilters);
@@ -122,8 +122,8 @@ export function FiltersProvider({
             filtersRef.current = filters;
 
             const paginationFiltered =
-                changedParams.includes(ProposalParamsEnum.PAGE) ||
-                changedParams.includes(ProposalParamsEnum.LIMIT);
+                changedParams.includes(ParamsEnum.PAGE) ||
+                changedParams.includes(ParamsEnum.LIMIT);
             router.get(
                 currentUrl,
                 formatToParams(),
