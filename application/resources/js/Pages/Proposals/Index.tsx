@@ -17,9 +17,10 @@ import CardLayoutSwitcher from './Partials/CardLayoutSwitcher';
 import FundFiltersContainer from './Partials/FundFiltersContainer';
 import ProposalFilters from './Partials/ProposalFilters';
 import ProposalHorizontalCardLoading from './Partials/ProposalHorizontalCardLoading';
-import ProposalSearchControls from './Partials/ProposalSearchControls';
+import ProposalSortingOptions from '@/lib/ProposalSortOptions';
 import ProposalData = App.DataTransferObjects.ProposalData;
 import Title from '@/Components/atoms/Title';
+import SearchControls from '@/Components/atoms/SearchControls';
 
 interface HomePageProps extends Record<string, unknown> {
     proposals: PaginatedData<ProposalData[]>;
@@ -85,7 +86,7 @@ export default function Index({
                     <FundFiltersContainer funds={funds} />
                 </section>
 
-                <ProposalSearchControls onFiltersToggle={setShowFilters} />
+                <SearchControls onFiltersToggle={setShowFilters} sortOptions={ProposalSortingOptions()}/>
 
                 <section
                     className={`container flex w-full flex-col items-center justify-center overflow-hidden transition-[max-height] duration-500 ease-in-out ${

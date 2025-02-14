@@ -43,8 +43,8 @@ export default function IdeascaleProfileUsers({
             onMouseLeave={() => setIsHovered(false)}
         >
             <ul className="flex cursor-pointer -space-x-2">
-                {visibleUsers?.map((user) => (
-                    <li key={user.hash} onClick={() => onUserClick(user)}>
+                {visibleUsers?.map((user, index) => (
+                    <li key={index} onClick={() => onUserClick(user)}>
                         <UserAvatar
                             size="size-8"
                             imageUrl={user.profile_photo_url}

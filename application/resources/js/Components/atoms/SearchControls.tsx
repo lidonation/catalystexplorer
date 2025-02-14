@@ -1,18 +1,19 @@
 import Button from '@/Components/atoms/Button';
-import SearchBar from '@/Components/SearchBar';
 import Selector from '@/Components/atoms/Selector';
+import SearchBar from '@/Components/SearchBar';
 import FilterLinesIcon from '@/Components/svgs/FilterLinesIcon';
 import { useFilterContext } from '@/Context/FiltersContext';
 import { ProposalParamsEnum } from '@/enums/proposal-search-params';
-import ProposalSortingOptions from '@/lib/ProposalSortOptions';
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import ActiveFilters from './ActiveFilters';
 
-function ProposalSearchControls({
+function SearchControls({
     onFiltersToggle,
+    sortOptions,
 }: {
     onFiltersToggle: Dispatch<SetStateAction<boolean>>;
+    sortOptions: Array<any>;
 }) {
     const { getFilter, setFilters, filters } = useFilterContext();
     const { t } = useTranslation();
@@ -33,11 +34,28 @@ function ProposalSearchControls({
             label: 'Search',
         });
         setSearchQuery(search);
+        const url = new URL(window.location.href);
+
+        if (search.trim() === '') {
+            url.searchParams.delete(ProposalParamsEnum.QUERY);
+        } else {
+            setFilters({
+                param: ProposalParamsEnum.QUERY,
+                value: search,
+                label: 'Search',
+            });
+            url.searchParams.set(ProposalParamsEnum.QUERY, search);
+        }
+
+        window.history.replaceState(null, '', url.toString());
     };
 
     const toggleFilters = () => {
-        setShowFilters((prev) => !prev);
-        onFiltersToggle(showFilters);
+        setShowFilters((prev) => {
+            const newState = !prev;
+            onFiltersToggle(newState);
+            return newState;
+        });
     };
 
     const filtersCount = filters.filter(
@@ -55,12 +73,13 @@ function ProposalSearchControls({
                     initialSearch={searchQuery}
                 />
                 <Button
-                    className={`border-input bg-background flex flex-row items-center gap-2 rounded-lg border px-3 py-1.5 shadow-xs ${
+                    className={`border-input bg-background flex cursor-pointer flex-row items-center gap-2 rounded-lg border px-3 py-1.5 shadow-xs ${
                         showFilters
                             ? 'border-accent-blue text-primary ring-offset-background ring-1'
                             : 'hover:bg-background-lighter text-gray-500'
                     }`}
-                    onClick={() => toggleFilters()}
+                    onClick={toggleFilters}
+                    ariaLabel="Show Filters"
                 >
                     <FilterLinesIcon className={'size-6'} />
                     <span>{t('filters')}</span>
@@ -77,22 +96,22 @@ function ProposalSearchControls({
                             label: 'Sorts',
                         })
                     }
-                    options={ProposalSortingOptions()}
+                    options={sortOptions}
                     hideCheckbox={true}
                     placeholder={t('proposals.options.sort')}
                     className={`bg-background ${
                         getFilter(ProposalParamsEnum.SORTS)
-                            ? 'bg-background-lighter text-primary cursor-default'
+                            ? 'bg-background-lighter text-primary'
                             : 'hover:bg-background-lighter text-gray-500'
                     }`}
                 />
             </div>
 
             <div className="container mx-auto flex justify-start px-0">
-                <ActiveFilters sortOptions={ProposalSortingOptions()} />
+                <ActiveFilters sortOptions={sortOptions} />
             </div>
         </div>
     );
 }
 
-export default ProposalSearchControls;
+export default SearchControls;
