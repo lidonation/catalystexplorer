@@ -58,9 +58,7 @@ class GroupsController extends Controller
 
     public array $tagsCount = [];
 
-    public array $fundsCount = [];
-
-    public int $proposalsCount = 0;
+    public array $proposalsCount = [];
 
     public array $totalAwardedAda = [];
 
@@ -78,9 +76,9 @@ class GroupsController extends Controller
             'sort' => "{$this->sortBy}:{$this->sortOrder}",
             'filters' => $this->queryParams,
             'filterCounts' => [
-                'proposalsCount' => array_sum($this->fundsCount),
-                'totalAwardedAda' => array_sum($this->totalAwardedAda),
-                'totalAwardedUsd' => array_sum($this->totalAwardedUsd),
+                'proposalsCount' => round(max(array_keys($this->proposalsCount)), -1),
+                'totalAwardedAda' => max($this->totalAwardedAda),
+                'totalAwardedUsd' => max($this->totalAwardedUsd)
             ],
         ];
 
@@ -95,22 +93,24 @@ class GroupsController extends Controller
                 'funded_proposals',
                 'unfunded_proposals',
                 'completed_proposals',
-            ])->append([
-                'amount_awarded_ada',
-                'amount_awarded_usd',
-                'amount_requested_ada',
-                'amount_requested_usd',
-                'amount_distributed_ada',
-                'amount_distributed_usd',
-                'connected_items',
-            ]);
+            ])->append(
+                [
+                    'amount_awarded_ada',
+                    'amount_awarded_usd',
+                    'amount_requested_ada',
+                    'amount_requested_usd',
+                    'amount_distributed_ada',
+                    'amount_distributed_usd',
+                    'connected_items',
+                ]
+            );
 
         $connections = $this->getConnectionsData($request, $group->id, $group->hash);
 
         return Inertia::render('Groups/Group', [
             'group' => GroupData::from($group),
             'proposals' => Inertia::optional(
-                fn () => to_length_aware_paginator(
+                fn() => to_length_aware_paginator(
                     ProposalData::collect(
                         $group->proposals()->with(['users', 'fund'])->paginate(5)
                     )
@@ -118,7 +118,7 @@ class GroupsController extends Controller
 
             ),
             'ideascaleProfiles' => Inertia::optional(
-                fn () => to_length_aware_paginator(
+                fn() => to_length_aware_paginator(
                     IdeascaleProfileData::collect(
                         $group->ideascale_profiles()->with([])->paginate(12)
                     )
@@ -126,14 +126,14 @@ class GroupsController extends Controller
 
             ),
             'reviews' => Inertia::optional(
-                fn () => to_length_aware_paginator(
+                fn() => to_length_aware_paginator(
                     ReviewData::collect(
                         Review::query()->paginate(8)
                     )
                 )
             ),
             'locations' => Inertia::optional(
-                fn () => to_length_aware_paginator(
+                fn() => to_length_aware_paginator(
                     LocationData::collect(
                         $group->locations()->paginate(12)
                     )
@@ -141,7 +141,7 @@ class GroupsController extends Controller
 
             ),
             'connections' => Inertia::optional(
-                fn () => $connections
+                fn() => $connections
             ),
         ]);
     }
@@ -198,7 +198,7 @@ class GroupsController extends Controller
 
         $result = [
             'nodes' => $nodes->unique('id')->values()->all(),
-            'links' => $links->unique(fn ($link) => $link['source'].'-'.$link['target'])->values()->all(),
+            'links' => $links->unique(fn($link) => $link['source'] . '-' . $link['target'])->values()->all(),
         ];
 
         $result['rootGroupId'] = $groupId;
@@ -367,12 +367,12 @@ class GroupsController extends Controller
 
         if (! empty($this->queryParams[ProposalSearchParams::CAMPAIGNS()->value])) {
             $campaignIds = ($this->queryParams[ProposalSearchParams::CAMPAIGNS()->value]);
-            $filters[] = '('.implode(' OR ', array_map(fn ($c) => "proposals.campaign.id = {$c}", $campaignIds)).')';
+            $filters[] = '(' . implode(' OR ', array_map(fn($c) => "proposals.campaign.id = {$c}", $campaignIds)) . ')';
         }
 
         if (! empty($this->queryParams[ProposalSearchParams::TAGS()->value])) {
             $tagIds = ($this->queryParams[ProposalSearchParams::TAGS()->value]);
-            $filters[] = '('.implode(' OR ', array_map(fn ($c) => "tags.id = {$c}", $tagIds)).')';
+            $filters[] = '(' . implode(' OR ', array_map(fn($c) => "tags.id = {$c}", $tagIds)) . ')';
         }
 
         if (! empty($this->queryParams[ProposalSearchParams::IDEASCALE_PROFILES()->value])) {
@@ -386,8 +386,8 @@ class GroupsController extends Controller
         }
 
         if (! empty($this->queryParams[ProposalSearchParams::COHORT()->value])) {
-            $cohortFilters = array_map(fn ($cohort) => "{$cohort} > 0", $this->queryParams[ProposalSearchParams::COHORT()->value]);
-            $filters[] = '('.implode(' OR ', $cohortFilters).')';
+            $cohortFilters = array_map(fn($cohort) => "{$cohort} > 0", $this->queryParams[ProposalSearchParams::COHORT()->value]);
+            $filters[] = '(' . implode(' OR ', $cohortFilters) . ')';
         }
 
         return $filters;
@@ -400,8 +400,8 @@ class GroupsController extends Controller
             $this->tagsCount = $facets['tags.id'];
         }
 
-        if (isset($facets['proposals.fund.title']) && count($facets['proposals.fund.title'])) {
-            $this->fundsCount = $facets['proposals.fund.title'];
+        if (isset($facets['proposals_count']) && count($facets['proposals_count'])) {
+            $this->proposalsCount = $facets['proposals_count'];
         }
 
         if (isset($facets['amount_awarded_ada']) && count($facets['amount_awarded_ada'])) {
