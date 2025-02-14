@@ -19,8 +19,6 @@ export default forwardRef(function TextInput(
 
     useImperativeHandle(ref, () => ({
         focus: () => localRef.current?.focus(),
-        blur: () => localRef.current?.blur(),
-        value: localRef.current?.value,
     }));
 
     useEffect(() => {
