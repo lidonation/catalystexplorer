@@ -162,6 +162,7 @@ const GroupCardFull: React.FC<GroupCardFullProps> = ({ group }) => {
                             />
                         )}
                     </div>
+                    
                     <p className="text-3 text-gray-persist mt-1">
                         {t('groups.receivedVsAwarded')}
                     </p>
