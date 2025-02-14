@@ -60,7 +60,7 @@ class GroupsController extends Controller
 
     public array $fundsCount = [];
 
-    public int $proposalsCount = 0;
+    public array $proposalsCount = [];
 
     public array $totalAwardedAda = [];
 
@@ -78,7 +78,7 @@ class GroupsController extends Controller
             'sort' => "{$this->sortBy}:{$this->sortOrder}",
             'filters' => $this->queryParams,
             'filterCounts' => [
-                'proposalsCount' => round(max($this->fundsCount), -1),
+                'proposalsCount' => round(max(array_keys($this->proposalsCount)), -1),
                 'totalAwardedAda' => max($this->totalAwardedAda),
                 'totalAwardedUsd' => max($this->totalAwardedUsd)
             ],
@@ -95,54 +95,56 @@ class GroupsController extends Controller
                 'funded_proposals',
                 'unfunded_proposals',
                 'completed_proposals',
-            ])->append([
-                'amount_awarded_ada',
-                'amount_awarded_usd',
-                'amount_requested_ada',
-                'amount_requested_usd',
-                'amount_distributed_ada',
-                'amount_distributed_usd',
-                'connected_items',
-            ]);
+            ])->append(
+                [
+                    'amount_awarded_ada',
+                    'amount_awarded_usd',
+                    'amount_requested_ada',
+                    'amount_requested_usd',
+                    'amount_distributed_ada',
+                    'amount_distributed_usd',
+                    'connected_items',
+                ]
+            );
 
         $connections = $this->getConnectionsData($request, $group->id, $group->hash);
 
         return Inertia::render('Groups/Group', [
-            'group' => GroupData::from($group),
-            'proposals' => Inertia::optional(
-                fn() => to_length_aware_paginator(
-                    ProposalData::collect(
-                        $group->proposals()->with(['users', 'fund'])->paginate(5)
-                    )
-                )
+            // 'group' => GroupData::from($group),
+            // 'proposals' => Inertia::optional(
+            //     fn() => to_length_aware_paginator(
+            //         ProposalData::collect(
+            //             $group->proposals()->with(['users', 'fund'])->paginate(5)
+            //         )
+            //     )
 
-            ),
-            'ideascaleProfiles' => Inertia::optional(
-                fn () => to_length_aware_paginator(
-                    IdeascaleProfileData::collect(
-                        $group->ideascale_profiles()->with([])->paginate(12)
-                    )
-                )
+            // ),
+            // 'ideascaleProfiles' => Inertia::optional(
+            //     fn () => to_length_aware_paginator(
+            //         IdeascaleProfileData::collect(
+            //             $group->ideascale_profiles()->with([])->paginate(12)
+            //         )
+            //     )
 
-            ),
-            'reviews' => Inertia::optional(
-                fn () => to_length_aware_paginator(
-                    ReviewData::collect(
-                        Review::query()->paginate(8)
-                    )
-                )
-            ),
-            'locations' => Inertia::optional(
-                fn () => to_length_aware_paginator(
-                    LocationData::collect(
-                        $group->locations()->paginate(12)
-                    )
-                )
+            // ),
+            // 'reviews' => Inertia::optional(
+            //     fn () => to_length_aware_paginator(
+            //         ReviewData::collect(
+            //             Review::query()->paginate(8)
+            //         )
+            //     )
+            // ),
+            // 'locations' => Inertia::optional(
+            //     fn () => to_length_aware_paginator(
+            //         LocationData::collect(
+            //             $group->locations()->paginate(12)
+            //         )
+            //     )
 
-            ),
-            'connections' => Inertia::optional(
-                fn () => $connections
-            ),
+            // ),
+            // 'connections' => Inertia::optional(
+            //     fn () => $connections
+            // ),
         ]);
     }
 
@@ -198,7 +200,7 @@ class GroupsController extends Controller
 
         $result = [
             'nodes' => $nodes->unique('id')->values()->all(),
-            'links' => $links->unique(fn ($link) => $link['source'].'-'.$link['target'])->values()->all(),
+            'links' => $links->unique(fn($link) => $link['source'] . '-' . $link['target'])->values()->all(),
         ];
 
         $result['rootGroupId'] = $groupId;
@@ -402,6 +404,10 @@ class GroupsController extends Controller
 
         if (isset($facets['proposals.fund.title']) && count($facets['proposals.fund.title'])) {
             $this->fundsCount = $facets['proposals.fund.title'];
+        }
+
+        if (isset($facets['proposals_count']) && count($facets['proposals_count'])) {
+            $this->proposalsCount = $facets['proposals_count'];
         }
 
         if (isset($facets['amount_awarded_ada']) && count($facets['amount_awarded_ada'])) {
