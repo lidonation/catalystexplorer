@@ -3,7 +3,7 @@ import { FiltersProvider } from '@/Context/FiltersContext';
 import { ListProvider } from '@/Context/ListContext';
 import { useMetrics } from '@/Context/MetricsContext';
 import { usePlayer } from '@/Context/PlayerContext';
-import { ProposalParamsEnum } from '@/enums/proposal-search-params';
+import { ParamsEnum } from '@/enums/proposal-search-params';
 import ProposalResults from '@/Pages/Proposals/Partials/ProposalResults';
 import VerticalCardLoading from '@/Pages/Proposals/Partials/ProposalVerticalCardLoading';
 import { PageProps } from '@/types';
@@ -17,9 +17,10 @@ import CardLayoutSwitcher from './Partials/CardLayoutSwitcher';
 import FundFiltersContainer from './Partials/FundFiltersContainer';
 import ProposalFilters from './Partials/ProposalFilters';
 import ProposalHorizontalCardLoading from './Partials/ProposalHorizontalCardLoading';
-import ProposalSearchControls from './Partials/ProposalSearchControls';
+import ProposalSortingOptions from '@/lib/ProposalSortOptions';
 import ProposalData = App.DataTransferObjects.ProposalData;
 import Title from '@/Components/atoms/Title';
+import SearchControls from '@/Components/atoms/SearchControls';
 
 interface HomePageProps extends Record<string, unknown> {
     proposals: PaginatedData<ProposalData[]>;
@@ -44,7 +45,7 @@ export default function Index({
     const [showFilters, setShowFilters] = useState(false);
 
     const [quickPitchView, setQuickPitchView] = useState(
-        !!parseInt(filters[ProposalParamsEnum.QUICK_PITCHES]),
+        !!parseInt(filters[ParamsEnum.QUICK_PITCHES]),
     );
 
     useEffect(() => {
@@ -85,7 +86,7 @@ export default function Index({
                     <FundFiltersContainer funds={funds} />
                 </section>
 
-                <ProposalSearchControls onFiltersToggle={setShowFilters} />
+                <SearchControls onFiltersToggle={setShowFilters} sortOptions={ProposalSortingOptions()}/>
 
                 <section
                     className={`container flex w-full flex-col items-center justify-center overflow-hidden transition-[max-height] duration-500 ease-in-out ${
