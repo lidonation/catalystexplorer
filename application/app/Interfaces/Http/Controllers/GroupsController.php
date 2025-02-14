@@ -58,8 +58,6 @@ class GroupsController extends Controller
 
     public array $tagsCount = [];
 
-    public array $fundsCount = [];
-
     public array $proposalsCount = [];
 
     public array $totalAwardedAda = [];
@@ -110,41 +108,41 @@ class GroupsController extends Controller
         $connections = $this->getConnectionsData($request, $group->id, $group->hash);
 
         return Inertia::render('Groups/Group', [
-            // 'group' => GroupData::from($group),
-            // 'proposals' => Inertia::optional(
-            //     fn() => to_length_aware_paginator(
-            //         ProposalData::collect(
-            //             $group->proposals()->with(['users', 'fund'])->paginate(5)
-            //         )
-            //     )
+            'group' => GroupData::from($group),
+            'proposals' => Inertia::optional(
+                fn() => to_length_aware_paginator(
+                    ProposalData::collect(
+                        $group->proposals()->with(['users', 'fund'])->paginate(5)
+                    )
+                )
 
-            // ),
-            // 'ideascaleProfiles' => Inertia::optional(
-            //     fn () => to_length_aware_paginator(
-            //         IdeascaleProfileData::collect(
-            //             $group->ideascale_profiles()->with([])->paginate(12)
-            //         )
-            //     )
+            ),
+            'ideascaleProfiles' => Inertia::optional(
+                fn() => to_length_aware_paginator(
+                    IdeascaleProfileData::collect(
+                        $group->ideascale_profiles()->with([])->paginate(12)
+                    )
+                )
 
-            // ),
-            // 'reviews' => Inertia::optional(
-            //     fn () => to_length_aware_paginator(
-            //         ReviewData::collect(
-            //             Review::query()->paginate(8)
-            //         )
-            //     )
-            // ),
-            // 'locations' => Inertia::optional(
-            //     fn () => to_length_aware_paginator(
-            //         LocationData::collect(
-            //             $group->locations()->paginate(12)
-            //         )
-            //     )
+            ),
+            'reviews' => Inertia::optional(
+                fn() => to_length_aware_paginator(
+                    ReviewData::collect(
+                        Review::query()->paginate(8)
+                    )
+                )
+            ),
+            'locations' => Inertia::optional(
+                fn() => to_length_aware_paginator(
+                    LocationData::collect(
+                        $group->locations()->paginate(12)
+                    )
+                )
 
-            // ),
-            // 'connections' => Inertia::optional(
-            //     fn () => $connections
-            // ),
+            ),
+            'connections' => Inertia::optional(
+                fn() => $connections
+            ),
         ]);
     }
 
@@ -400,10 +398,6 @@ class GroupsController extends Controller
 
         if (isset($facets['tags.id']) && count($facets['tags.id'])) {
             $this->tagsCount = $facets['tags.id'];
-        }
-
-        if (isset($facets['proposals.fund.title']) && count($facets['proposals.fund.title'])) {
-            $this->fundsCount = $facets['proposals.fund.title'];
         }
 
         if (isset($facets['proposals_count']) && count($facets['proposals_count'])) {
