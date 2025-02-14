@@ -1,5 +1,6 @@
 import { currency } from '@/utils/currency';
 import { useTranslation } from 'react-i18next';
+import Paragraph from '@/Components/atoms/Paragraph';
 
 interface GroupFundingPercentagesProps extends Record<string, unknown> {
     group: App.DataTransferObjects.GroupData;
@@ -17,7 +18,7 @@ export default function GroupFundingPercentages({
 
     return (
         <div>
-            {/* First progrss bar */}
+            {/* First progress bar */}
             <div className="border-content-light grid grid-cols-2 gap-2 border-b pt-4 pb-4">
                 <div>
                     <div className="flex items-baseline justify-between gap-2">
@@ -25,7 +26,7 @@ export default function GroupFundingPercentages({
                             <div
                                 className={`bg-eye-logo h-full rounded-full`}
                                 role="progressbar"
-                                aria-label="funds recieved"
+                                aria-label="funds received"
                                 aria-valuenow={calculatePercentage(
                                     group?.amount_awarded_ada ?? 0,
                                     group?.amount_requested_ada ?? 0,
@@ -58,7 +59,7 @@ export default function GroupFundingPercentages({
                             <div
                                 className={`bg-primary h-full rounded-full`}
                                 role="progressbar"
-                                aria-label="funds recieved"
+                                aria-label="funds received"
                                 aria-valuenow={calculatePercentage(
                                     group?.amount_awarded_usd ?? 0,
                                     group?.amount_requested_usd ?? 0,
@@ -83,9 +84,9 @@ export default function GroupFundingPercentages({
                         </div>
                     </div>
                 </div>
-                <p className="text-3 text-gray-persist">
+                <Paragraph className="text-3 text-gray-persist">
                     {t('groups.awardedVsRequested')}
-                </p>
+                </Paragraph>
             </div>
 
             {/* Second Progress Bar */}
@@ -96,7 +97,7 @@ export default function GroupFundingPercentages({
                             <div
                                 className={`bg-eye-logo h-full rounded-full`}
                                 role="progressbar"
-                                aria-label="funds recieved"
+                                aria-label="funds received"
                                 aria-valuenow={calculatePercentage(
                                     group?.amount_distributed_ada ?? 0,
                                     group?.amount_awarded_ada ?? 0,
@@ -111,7 +112,7 @@ export default function GroupFundingPercentages({
                     </div>
                     <div className="mt-2 flex justify-between">
                         {(group?.amount_distributed_usd ?? 0) <= 0 && (
-                            <p>{t('groups.received')}</p>
+                            <Paragraph>{t('groups.received')}</Paragraph>
                         )}
                         <div>
                             <div>
@@ -132,7 +133,7 @@ export default function GroupFundingPercentages({
                             <div
                                 className={`bg-primary h-full rounded-full`}
                                 role="progressbar"
-                                aria-label="funds recieved"
+                                aria-label="funds received"
                                 aria-valuenow={calculatePercentage(
                                     group?.amount_distributed_usd ?? 0,
                                     group?.amount_awarded_usd ?? 0,
@@ -157,9 +158,9 @@ export default function GroupFundingPercentages({
                         </div>
                     </div>
                 </div>
-                <p className="text-3 text-gray-persist">
+                <Paragraph className="text-3 text-gray-persist">
                     {t('groups.receivedVsAwarded')}
-                </p>
+                </Paragraph>
             </div>
         </div>
     );

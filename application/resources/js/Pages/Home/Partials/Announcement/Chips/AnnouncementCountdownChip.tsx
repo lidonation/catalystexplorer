@@ -7,6 +7,7 @@ import {
 import { useScreenDimension } from '@/Hooks/useScreenDimension';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import Paragraph from '@/Components/atoms/Paragraph';
 
 interface AnnouncementCountdownChipProps {
     event_starts_at: string;
@@ -14,7 +15,6 @@ interface AnnouncementCountdownChipProps {
 }
 
 const parseDate = (dateStr: string) => {
-    // Handles "DD/MM/YYYY" format
     if (dateStr.includes('/')) {
         const [day, month, year] = dateStr.split('/');
         return new Date(
@@ -23,7 +23,6 @@ const parseDate = (dateStr: string) => {
             parseInt(day),
         ).getTime();
     }
-    // Handles ISO format
     return new Date(dateStr).getTime();
 };
 
@@ -88,13 +87,11 @@ const AnnouncementCountdownChip = ({
                             role="status"
                             aria-label={`${t('announcements.timeRemaining')}: ${remainingTime}`}
                         >
-                            {remainingTime}
+                            <Paragraph>{remainingTime}</Paragraph>
                         </div>
                     </TooltipTrigger>
                     <TooltipContent side="bottom">
-                        <p>
-                            {t('announcements.timeRemaining')}
-                        </p>
+                        <Paragraph>{t('announcements.timeRemaining')}</Paragraph>
                     </TooltipContent>
                 </Tooltip>
             </TooltipProvider>
@@ -102,8 +99,10 @@ const AnnouncementCountdownChip = ({
     }
 
     return (
-        <div className="shadow-2xs text-4 inline-flex items-center text-nowrap rounded-md border border-border-secondary px-2 text-content">
-            {formatTimeRemaining(timeRemaining) + ` ${t('announcements.remaining')}`}
+        <div className="shadow-2xs inline-flex items-center text-nowrap rounded-md border border-border-secondary px-2">
+            <Paragraph>
+                {formatTimeRemaining(timeRemaining) + ` ${t('announcements.remaining')}`}
+            </Paragraph>
         </div>
     );
 };

@@ -1,5 +1,6 @@
 import IdeascaleLogo from "@/assets/images/ideascale-logo.png";
 import Title from "@/Components/atoms/Title";
+import Paragraph from "@/Components/atoms/Paragraph";
 import { useTranslation } from "react-i18next";
 
 const ContributorProfile = () => {
@@ -33,7 +34,7 @@ const ContributorProfile = () => {
             />
             <div>
               <Title level="2" className="font-semibold">{mainContributor.name}</Title>
-              <p className="text-gray-500">{mainContributor.organization}</p>
+              <Paragraph className="text-gray-500">{mainContributor.organization}</Paragraph>
               <div className="flex gap-2 mt-2">
                 <a href="#" className="hover:opacity-80">
                   <div className="bg-black text-white rounded p-1">
@@ -58,8 +59,8 @@ const ContributorProfile = () => {
         </div>
 
         <div className="space-y-4 text-content">
-          <p>{mainContributor.bio}</p>
-          <p>{mainContributor.interests}</p>
+          <Paragraph>{mainContributor.bio}</Paragraph>
+          <Paragraph>{mainContributor.interests}</Paragraph>
         </div>
       </div>
 
@@ -74,7 +75,7 @@ const ContributorProfile = () => {
                 className="w-20 h-20 rounded-full object-cover border-4 border-green-500"
               />
               <div className="flex items-center">
-                <span className="font-medium">{contributor.name}</span>
+                <Paragraph className="font-medium">{contributor.name}</Paragraph>
                 {contributor.isVerified && (
                   <svg 
                     className="w-4 h-4 ml-1 text-green-500" 

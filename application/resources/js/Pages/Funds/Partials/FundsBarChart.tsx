@@ -1,4 +1,5 @@
 import Selector from '@/Components/atoms/Selector';
+import Paragraph from '@/Components/atoms/Paragraph';
 import { currency } from '@/utils/currency';
 import { ResponsiveBar } from '@nivo/bar';
 import React, { useState } from 'react';
@@ -62,42 +63,42 @@ const FundsBarChart: React.FC<FundsBarChartProps> = ({
                     <h6 className="text-2 lg:title-5 font-bold">
                         {fundRounds}
                     </h6>
-                    <p className="text-4 lg:text-3 text-content font-bold opacity-75">
+                    <Paragraph className="text-4 lg:text-3 text-content font-bold opacity-75">
                         {t('funds.fundRounds')}
-                    </p>
+                    </Paragraph>
                 </div>
                 <div>
                     <h6 className="text-2 lg:title-5 font-bold">
                         {totalProposals.toLocaleString()}
                     </h6>
-                    <p className="text-4 lg:text-3 text-content font-bold opacity-75">
+                    <Paragraph className="text-4 lg:text-3 text-content font-bold opacity-75">
                         {t('funds.totalProposals')}
-                    </p>
+                    </Paragraph>
                 </div>
 
                 <div>
                     <h6 className="text-2 lg:title-5 font-bold">
                         {fundedProposals.toLocaleString()}
                     </h6>
-                    <p className="text-4 lg:text-3 text-content font-bold opacity-75">
+                    <Paragraph className="text-4 lg:text-3 text-content font-bold opacity-75">
                         {t('funds.fundedProposals')}
-                    </p>
+                    </Paragraph>
                 </div>
                 <div>
                     <h6 className="text-2 lg:title-5 font-bold">
                         {currency(totalFundsRequested, 'ADA', undefined, 2)}
                     </h6>
-                    <p className="text-4 lg:text-3 text-content font-bold opacity-75">
+                    <Paragraph className="text-4 lg:text-3 text-content font-bold opacity-75">
                         {t('funds.totalFundsAwardedAda')}
-                    </p>
+                    </Paragraph>
                 </div>
                 <div>
                     <h6 className="text-2 lg:title-5 font-bold">
                         {currency(totalFundsAllocated, 'USD', undefined, 2)}
                     </h6>
-                    <p className="text-4 lg:text-3 font-bold text-content opacity-75">
+                    <Paragraph className="text-4 lg:text-3 font-bold text-content opacity-75">
                         {t('funds.totalFundsAwardedUsd')}
-                    </p>
+                    </Paragraph>
                 </div>
             </div>
 
@@ -118,7 +119,7 @@ const FundsBarChart: React.FC<FundsBarChartProps> = ({
                     margin={{
                         top: 50,
                         right: 50,
-                        bottom: window.innerWidth < 600 ? 200 : 100, // Increase bottom margin for gap
+                        bottom: window.innerWidth < 600 ? 200 : 100,
                         left: 60,
                     }}
                     padding={0.3}
@@ -143,82 +144,17 @@ const FundsBarChart: React.FC<FundsBarChartProps> = ({
                     labelSkipWidth={12}
                     labelSkipHeight={12}
                     labelTextColor="transparent"
-                    legends={[
-                        {
-                            dataFrom: 'keys',
-                            anchor: 'bottom',
-                            direction:
-                                window.innerWidth < 600 ? 'column' : 'row',
-                            justify: false,
-                            translateX: window.innerWidth < 600 ? -40 : 0,
-                            translateY: window.innerWidth < 600 ? 180 : 80,
-                            itemsSpacing: window.innerWidth < 600 ? 10 : 2,
-                            itemWidth: window.innerWidth < 600 ? 80 : 200,
-                            itemHeight: window.innerWidth < 600 ? 20 : 20,
-                            itemDirection: 'left-to-right',
-                            symbolSize: 20,
-                            symbolSpacing: window.innerWidth < 600 ? 10 : 5,
-                            symbolShape: (props) => (
-                                <rect
-                                    x={window.innerWidth < 600 ? 5 : -10}
-                                    y={window.innerWidth < 600 ? 0 : 2}
-                                    rx={6}
-                                    ry={6}
-                                    width={window.innerWidth < 600 ? 10 : 30}
-                                    height={15}
-                                    fill={props.fill}
-                                />
-                            ),
-                            effects: [
-                                {
-                                    on: 'hover',
-                                    style: {
-                                        itemOpacity: 0.85,
-                                    },
-                                },
-                            ],
-                        },
-                    ]}
-                    theme={{
-                        axis: {
-                            ticks: {
-                                text: {
-                                    fill: 'var(--cx-content-dark)',
-                                    fontSize: 12,
-                                    opacity: 0.7,
-                                },
-                            },
-                            legend: {
-                                text: {
-                                    fill: 'var(--cx-content-dark)',
-                                    fontSize: 16,
-                                    opacity: 0.7,
-                                },
-                            },
-                        },
-                        labels: {
-                            text: {
-                                fill: 'var(--cx-content)',
-                                fontSize: 20,
-                            },
-                        },
-                        legends: {
-                            text: {
-                                fill: 'var(--cx-content)',
-                                fontWeight: 'bold',
-                                fontSize: window.innerWidth < 600 ? 12 : 14,
-                            },
-                        },
-                    }}
+                    legends={[]}
+                    theme={{}}
                     tooltip={({ indexValue, data }) => (
                         <div className="bg-dark text-content-light rounded-xs p-4">
-                            <p>
+                            <Paragraph>
                                 <strong className="mb-1 block">
                                     {indexValue}
                                 </strong>
-                            </p>
+                            </Paragraph>
                             {activeKeys.map((key) => (
-                                <p key={key}>{`${key} : ${data[key] || 0}`}</p>
+                                <Paragraph key={key}>{`${key} : ${data[key] || 0}`}</Paragraph>
                             ))}
                         </div>
                     )}

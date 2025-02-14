@@ -1,5 +1,6 @@
 import { Link } from '@inertiajs/react';
 import { ReactNode } from 'react';
+import Paragraph from '@/Components/atoms/Paragraph';
 
 type NavLinkItemProps = {
     active?: boolean;
@@ -32,7 +33,7 @@ export default function NavLinkItem({
             className={`hover:bg-background-lighter flex items-center gap-3 px-3 py-1 ${active ? 'text-primary-100' : 'text-dark'} ${className}`}
         >
             {children}
-            <p>{title}</p>
+            <Paragraph>{title}</Paragraph>
         </Link>
     );
 }

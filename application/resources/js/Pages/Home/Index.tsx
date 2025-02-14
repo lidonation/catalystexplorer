@@ -19,6 +19,7 @@ import SecondaryLink from '@/Components/SecondaryLink';
 import SpecialAnnouncementCarousel from './Partials/Announcement/SpecialAnnouncementsCarousel';
 import SpecialAnnouncementLoading from './Partials/Announcement/SpecialAnnouncementLoading';
 import Title from '@/Components/atoms/Title';
+import Paragraph from '@/Components/atoms/Paragraph';
 
 interface HomePageProps extends Record<string, unknown> {
     posts: PostData[];
@@ -49,7 +50,7 @@ export default function Index({
 
                 <section className="annnouncements-wrapper">
                     <div className='container rounded-xl'>
-                        <WhenVisible fallback={<div>{t("loading")}...</div>} data="announcements">
+                        <WhenVisible fallback={<Paragraph>{t("loading")}...</Paragraph>} data="announcements">
                             <AnnouncementCarousel announcements={announcements} />
                         </WhenVisible>
                     </div>
@@ -59,7 +60,7 @@ export default function Index({
                     <div className='flex justify-between items-center'>
                         <div>
                             <Title level='2'>{t("metric.numbers")}</Title>
-                            <p className="text-4 text-content-dark opacity-70">{t("metric.subtitle")}</p>
+                            <Paragraph className="text-4 text-content-dark opacity-70">{t("metric.subtitle")}</Paragraph>
                         </div>
                         <div>
                             <SecondaryLink className="font-bold text-content-dark" href="/charts">
@@ -76,12 +77,11 @@ export default function Index({
                     </WhenVisible>
                 </section>
 
-
                 <section className="container proposals-wrapper">
                     <div className="flex items-center justify-between py-8">
                         <div>
                             <Title level='2'>{t("proposals.proposals")}</Title>
-                            <p className="text-4 text-content-dark opacity-70">{t("proposals.listSubtitle")}</p>
+                            <Paragraph className="text-4 text-content-dark opacity-70">{t("proposals.listSubtitle")}</Paragraph>
                         </div>
                         <div>
                             <SecondaryLink className="font-bold text-content-dark" href="/proposals">
@@ -89,14 +89,8 @@ export default function Index({
                             </SecondaryLink>
                         </div>
                     </div>
-                    <WhenVisible
-                        fallback={<VerticalCardLoading />}
-                        data="proposals"
-                    >
-                        <ProposalList
-                            proposals={proposals}
-                            isHorizontal={isHorizontal}
-                        />
+                    <WhenVisible fallback={<VerticalCardLoading />} data="proposals">
+                        <ProposalList proposals={proposals} isHorizontal={isHorizontal} />
                     </WhenVisible>
                 </section>
 
@@ -117,7 +111,7 @@ export default function Index({
                 <section className="posts-wrapper container flex flex-col gap-8">
                     <div>
                         <Title level='2'>{t('posts.title')}</Title>
-                        <p>{t('posts.subtitle')}</p>
+                        <Paragraph>{t('posts.subtitle')}</Paragraph>
                     </div>
                     <WhenVisible fallback={<PostListLoader />} data="posts">
                         <ul className="content-gap scrollable snaps-scrollable">

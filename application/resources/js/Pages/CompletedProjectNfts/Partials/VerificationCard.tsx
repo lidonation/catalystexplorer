@@ -1,6 +1,7 @@
 import { useTranslation } from "react-i18next";
 import Check from "@/Components/svgs/Check";
 import Title from "@/Components/atoms/Title";
+import Paragraph from "@/Components/atoms/Paragraph";
 
 interface VerificationCardProps {
     verificationCode: string;
@@ -24,11 +25,11 @@ const VerificationCard: React.FC<VerificationCardProps> = ({ verificationCode, o
                 <Check width={72} height={72} />
             </div>
             <div className="mt-4 text-center">
-                <p>{t("profileWorkflow.verificationCode")}</p>
-                <p className="text-2xl font-bold text-primary">CODE$: {verificationCode}</p>
-                <p className="w-3/4 mx-auto mt-4 text-base text-center">
+                <Paragraph>{t("profileWorkflow.verificationCode")}</Paragraph>
+                <Paragraph className="text-2xl font-bold text-primary">CODE$: {verificationCode}</Paragraph>
+                <Paragraph className="w-3/4 mx-auto mt-4 text-base text-center">
                     {t("profileWorkflow.verificationInstructions")}
-                </p>
+                </Paragraph>
                 <a
                     href="https://ideascale.com"
                     target="_blank"

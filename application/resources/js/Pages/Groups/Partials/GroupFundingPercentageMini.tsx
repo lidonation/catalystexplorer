@@ -1,5 +1,6 @@
 import { currency } from '@/utils/currency';
 import { useTranslation } from 'react-i18next';
+import  Paragraph  from '@/Components/atoms/Paragraph';
 
 interface GroupFundingPercentagesProps extends Record<string, unknown> {
     group: App.DataTransferObjects.GroupData;
@@ -40,7 +41,7 @@ export default function GroupFundingPercentagesMini({
                 </div>
                 <div className="mt-2 flex justify-between">
                     {(group?.amount_distributed_usd ?? 0) <= 0 && (
-                        <p>{t('groups.received')}</p>
+                        <Paragraph>{t('groups.received')}</Paragraph>
                     )}
                     <div>
                         <div>

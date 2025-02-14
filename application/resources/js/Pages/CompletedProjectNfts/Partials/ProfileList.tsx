@@ -1,5 +1,6 @@
 import ProfileCard from "./ProfileCard";
 import { useTranslation } from "react-i18next";
+import Paragraph from "@/Components/atoms/Paragraph";
 
 interface Profile {
     name: string;
@@ -20,7 +21,7 @@ const ProfileList: React.FC<ProfileListProps> = ({ profiles, onSelectProfile, se
     if (!Array.isArray(profiles) || profiles.length === 0) {
         return (
             <div className="p-4 text-center text-red-600 border border-gray-200 rounded-lg">
-                <p>{t("profileWorkflow.noProfilesAvailable")}</p>
+                <Paragraph>{t("profileWorkflow.noProfilesAvailable")}</Paragraph>
             </div>
         );
     }

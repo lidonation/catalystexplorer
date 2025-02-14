@@ -1,5 +1,6 @@
 import { useTranslation } from "react-i18next";
 import { useState } from "react";
+import Paragraph from "@/Components/atoms/Paragraph";
 import ProposalData = App.DataTransferObjects.ProposalData;
 
 interface ProposalListProps {
@@ -25,7 +26,7 @@ const ProposalList: React.FC<ProposalListProps> = ({ proposals }) => {
     if (!Array.isArray(proposals) || proposals.length === 0) {
         return (
             <div className="p-4 mt-8 text-center border border-gray-200 rounded-lg text-dark">
-                <p>{t("profileWorkflow.noProfilesAvailable")}</p>
+                <Paragraph>{t("profileWorkflow.noProfilesAvailable")}</Paragraph>
             </div>
         );
     }
@@ -35,11 +36,11 @@ const ProposalList: React.FC<ProposalListProps> = ({ proposals }) => {
             {currentProposals.map((proposal, index) => (
                 <div key={proposal.hash} className="p-4 border border-gray-200 rounded-lg shadow-sm">
                     <h4 className="font-bold">{proposal.title}</h4>
-                    <p className="text-sm">
+                    <Paragraph className="text-sm">
                         <strong>{t("profileWorkflow.budget")}:</strong> <span className="text-green-600"> {proposal.amount_requested} {proposal.currency} &nbsp; </span>
                         <strong>{t("profileWorkflow.fund")}:</strong> <span className="text-primary"> {proposal.fund?.label} &nbsp; </span>
                         <strong>{t("profileWorkflow.campaign")}:</strong> <span> {proposal.campaign?.label} </span>
-                    </p>
+                    </Paragraph>
                 </div>
             ))}
 
@@ -55,7 +56,6 @@ const ProposalList: React.FC<ProposalListProps> = ({ proposals }) => {
                 <span className="px-4 py-2 text-sm font-medium rounded-full bg-primary-light ">
                     {currentPage}
                 </span>
-
                 <button
                     onClick={() => handlePageChange(currentPage + 1)}
                     disabled={currentPage === totalPages}

@@ -1,6 +1,7 @@
 import ArrowLeftIcon from '@/Components/svgs/ArrowLeft';
 import { useList } from '@/Context/ListContext';
 import { TransitionListPageProps } from '../../../../../../types/general';
+import Paragraph from '@/Components/atoms/Paragraph';
 
 const BookmarkPage3 = ({ onNavigate }: TransitionListPageProps) => {
     const { latestAddedList } = useList();
@@ -17,14 +18,14 @@ const BookmarkPage3 = ({ onNavigate }: TransitionListPageProps) => {
                     className="flex items-center gap-2 px-3 py-2 font-bold text-content"
                 >
                     <ArrowLeftIcon />
-                    <p>Success</p>
+                    <Paragraph>Success</Paragraph>
                 </button>
             </div>
             <section className="flex flex-col items-center justify-center gap-1 px-3">
-                <p className="text-sm font-light italic">
+                <Paragraph className="text-sm font-light italic">
                     Successfully created
-                </p>
-                <p className="font-semibold">"{latestAddedList.name}"</p>
+                </Paragraph>
+                <Paragraph className="font-semibold">"{latestAddedList.name}"</Paragraph>
             </section>
         </div>
     );

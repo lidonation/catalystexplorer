@@ -9,6 +9,7 @@ import BookmarksList from './Partials/BookmarksList';
 import ProposalVerticalCardLoading from '@/Pages/Proposals/Partials/ProposalVerticalCardLoading';
 import IdeaScaleProfileLoader from '@/Pages/IdeascaleProfile/Partials/IdeaScaleProfileLoader';
 import Title from '@/Components/atoms/Title';
+import Paragraph from '@/Components/atoms/Paragraph';
 
 interface IndexProps {
   proposals: any[];
@@ -63,9 +64,9 @@ const Index: React.FC<IndexProps> = ({
       <Title className="text-2xl font-bold text-gray-600 mb-4">
         {t('noBookmarks')}
       </Title>
-      <p className="text-gray-500 max-w-md">
+      <Paragraph className="text-gray-500 max-w-md">
         {t('noBookmarksYet')}
-      </p>
+      </Paragraph>
     </div>
   );
 
@@ -106,9 +107,9 @@ const Index: React.FC<IndexProps> = ({
 
       <div ref={headerRef} className="px-8 py-4">
         <Title level='1'>{t('My Bookmarks')}</Title>
-        <p>
+        <Paragraph>
           {t('bookmark')}
-        </p>
+        </Paragraph>
       </div>
 
       {!hasBookmarks ? (
@@ -167,34 +168,6 @@ const Index: React.FC<IndexProps> = ({
                   activeType="people"
                 />
               </WhenVisible>
-            </div>
-
-            <div 
-              ref={(el) => sectionsRef.current.groups = el} 
-              className="mb-12"
-            >
-              <Title level='2' className="text-2xl font-bold mb-4">{t('Groups')}</Title>
-              <BookmarksList 
-                proposals={[]}
-                people={[]}
-                groups={groups}
-                reviews={[]}
-                activeType="groups"
-              />
-            </div>
-
-            <div 
-              ref={(el) => sectionsRef.current.reviews = el} 
-              className="mb-12"
-            >
-              <Title level='2' className="text-2xl font-bold mb-4">{t('Reviews')}</Title>
-              <BookmarksList 
-                proposals={[]}
-                people={[]}
-                groups={[]}
-                reviews={reviews}
-                activeType="reviews"
-              />
             </div>
           </main>
         </>

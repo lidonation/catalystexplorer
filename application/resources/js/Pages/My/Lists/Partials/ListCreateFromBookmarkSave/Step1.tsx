@@ -1,5 +1,6 @@
 import Checkbox from '@/Components/atoms/Checkbox';
 import PrimaryButton from '@/Components/atoms/PrimaryButton';
+import Paragraph from '@/Components/atoms/Paragraph';
 import { useList } from '@/Context/ListContext';
 import { List, PlusIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
@@ -70,10 +71,10 @@ const BookmarkPage1 = ({
         <div className="flex flex-col items-center justify-center space-y-1 py-2">
             <List className="h-10 w-10 text-gray-500" />
             <div className="text-center">
-                <p className="text-gray-700">No lists found</p>
-                <p className="text-sm text-gray-500">
+                <Paragraph className="text-gray-700">No lists found</Paragraph>
+                <Paragraph className="text-sm text-gray-500">
                     Create a new list to get started
-                </p>
+                </Paragraph>
             </div>
         </div>
     );
@@ -81,13 +82,13 @@ const BookmarkPage1 = ({
     return (
         <div className="space-y-1">
             <div className="bg-primary-light">
-                <p className="text-content px-3 py-2 font-bold">Add Bookmark</p>
+                <Paragraph className="text-content px-3 py-2 font-bold">Add Bookmark</Paragraph>
             </div>
             <section className="flex flex-col gap-3 px-3">
                 <div className="flex flex-col gap-1">
-                    <span className="text-sm font-light italic">
+                    <Paragraph className="text-sm font-light italic">
                         Successfully added to your bookmarks!
-                    </span>
+                    </Paragraph>
                     <button
                         className="text-error cursor-pointer font-semibold"
                         disabled={!isBookmarked}
@@ -109,7 +110,7 @@ const BookmarkPage1 = ({
                                 htmlFor={checkbox.value}
                                 className="flex cursor-pointer items-center justify-between"
                             >
-                                <p>{checkbox.label}</p>
+                                <Paragraph>{checkbox.label}</Paragraph>
                                 <Checkbox
                                     type="checkbox"
                                     id={checkbox.value}
@@ -135,7 +136,7 @@ const BookmarkPage1 = ({
                     onClick={() => onNavigate?.(1)}
                 >
                     <PlusIcon size={16} className="mr-2" />
-                    <p>New List</p>
+                    <Paragraph>New List</Paragraph>
                 </PrimaryButton>
             </section>
         </div>
