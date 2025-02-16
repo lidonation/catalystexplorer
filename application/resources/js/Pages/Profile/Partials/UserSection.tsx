@@ -1,7 +1,7 @@
 import { MapPin, Mail } from 'lucide-react';
 import Title from '@/Components/atoms/Title';
 import User = App.DataTransferObjects.UserData;
-import BackgroundHeader from '@/assets/images/Ideascale Profile Background Header.png';
+import BackgroundHeader from '@/assets/images/background-header.png';
 import { useTranslation } from 'react-i18next';
 import Image from '@/Components/Image';
 import { Link } from '@inertiajs/react';
