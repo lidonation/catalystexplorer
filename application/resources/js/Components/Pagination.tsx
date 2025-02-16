@@ -3,6 +3,7 @@ import * as React from 'react';
 
 import { cn } from '@/lib/utils';
 import { useTranslation } from 'react-i18next';
+import { InertiaLinkProps, Link } from '@inertiajs/react';
 
 const Pagination = ({ className, ...props }: React.ComponentProps<'nav'>) => {
     <nav
@@ -36,8 +37,8 @@ PaginationItem.displayName = 'PaginationItem';
 
 type PaginationLinkProps = {
     isActive?: boolean;
-    handleclick?: (update: React.MouseEvent<HTMLButtonElement>) => number;
-} & React.ComponentProps<'button'>;
+    handleclick?: (update: React.MouseEvent<Element>) => number;
+} & React.ComponentProps<'a'> & InertiaLinkProps;
 
 const PaginationLink = ({
     className,
@@ -45,12 +46,12 @@ const PaginationLink = ({
     handleclick,
     ...props
 }: PaginationLinkProps) => (
-    <button
+    <Link
         onClick={handleclick}
         aria-current={isActive ? 'page' : undefined}
         className={cn(className, isActive ? 'text-primary' : '')}
         {...props}
-    ></button>
+    ></Link>
 );
 PaginationLink.displayName = 'PaginationLink';
 

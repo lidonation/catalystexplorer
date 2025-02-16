@@ -21,6 +21,7 @@ interface FilterContextType {
     filters: FilteredItem[];
     setFilters: (filter: FilteredItem) => void;
     getFilter: (param: string) => any;
+    getFilters: (filter: FilteredItem) => string
 }
 
 const labels = {
@@ -67,6 +68,21 @@ export function FiltersProvider({
 
     const isFirstLoad = useRef(true);
 
+    const updateFilter = (updatedFilters: FilteredItem[], filter: FilteredItem) => {
+        if (!filter?.value) {
+            updatedFilters = updatedFilters.filter(
+                (item) => item.param !== filter.param,
+            );
+        } else {
+            updatedFilters = updatedFilters.filter(
+                (item) => item.param !== filter.param,
+            );
+            updatedFilters.push(filter);
+        }
+
+        return updatedFilters;
+    }
+
     const setFilters = useCallback((filter: FilteredItem) => {
         setFiltersState((prev: FilteredItem[]) => {
             const prevValue = prev.find((item) => item.param === filter.param);
@@ -77,20 +93,7 @@ export function FiltersProvider({
             }
 
             // Create a new array to avoid mutating the previous state
-            let updatedFilters = [...prev];
-
-            if (!filter?.value) {
-                updatedFilters = updatedFilters.filter(
-                    (item) => item.param !== filter.param,
-                );
-            } else {
-                updatedFilters = updatedFilters.filter(
-                    (item) => item.param !== filter.param,
-                );
-                updatedFilters.push(filter);
-            }
-
-            return updatedFilters;
+           return updateFilter([...prev], filter)
         });
     }, []);
 
@@ -138,8 +141,8 @@ export function FiltersProvider({
         fetchData().then();
     }, [filters, routerOptions]);
 
-    const formatToParams = () => {
-        return filters.reduce<Record<string, any>>((acc, item) => {
+    const formatToParams = (externalFilters?: FilteredItem[]) => {
+        return (externalFilters || filters).reduce<Record<string, any>>((acc, item) => {
             acc[item.param] = item.value || null;
             return acc;
         }, {});
@@ -151,8 +154,17 @@ export function FiltersProvider({
         return filters.find((filter) => filter.param == param)?.value;
     };
 
+    const getFilters = (filter: FilteredItem) => {
+            // Create a new array to avoid mutating the previous state
+            let updatedFilters = updateFilter([...filters], filter);    
+            // const currentUrl = window.location.origin + window.location.pathname;
+            const queryString = new URLSearchParams(formatToParams(updatedFilters)).toString();
+            
+        return `${window.location.pathname}?${queryString}`;
+    }
+
     return (
-        <FiltersContext.Provider value={{ filters, setFilters, getFilter }}>
+        <FiltersContext.Provider value={{ filters, setFilters, getFilter, getFilters }}>
             {children}
         </FiltersContext.Provider>
     );

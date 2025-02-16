@@ -4,11 +4,12 @@ import {
     PaginationNext,
     PaginationPrevious,
 } from '@/Components/Pagination';
-import { useFilterContext } from '@/Context/FiltersContext';
+import { FilteredItem, useFilterContext } from '@/Context/FiltersContext';
 import { ProposalParamsEnum } from '@/enums/proposal-search-params';
 import React from 'react';
 import { PaginatedData } from '../../types/paginated-data';
 import { cn } from '@/lib/utils';
+import { Link } from '@inertiajs/react';
 
 
 type PaginationComponentProps<T> = {
@@ -18,10 +19,14 @@ type PaginationComponentProps<T> = {
 const PaginationComponent: React.FC<PaginationComponentProps<any>> = ({
     pagination,
 }) => {
-    const { setFilters } = useFilterContext();
+    const { setFilters, getFilters } = useFilterContext();
 
     const setPagination = (param: string, value: number, label: string) => {
         setFilters({ param, value, label });
+    };
+
+    const buildUrl = (param: string, value: number, label: string) => {
+        return getFilters({param, value, label})
     };
 
     let {
@@ -42,6 +47,7 @@ const PaginationComponent: React.FC<PaginationComponentProps<any>> = ({
                     <div>
                         <PaginationItem className="list-none">
                             <PaginationPrevious
+                                href='#'
                                 onClick={
                                     prev_page_url
                                         ? () =>
@@ -75,14 +81,12 @@ const PaginationComponent: React.FC<PaginationComponentProps<any>> = ({
                                                 {link.label === '...' ? (
                                                     <PaginationEllipsis />
                                                 ) : (
-                                                    <button
-                                                        onClick={() =>
-                                                            setPagination(
-                                                                ProposalParamsEnum.PAGE,
-                                                                link.label,
-                                                                'Current Page',
-                                                            )
-                                                        }
+                                                    <Link
+                                                        href={buildUrl(
+                                                            ProposalParamsEnum.PAGE,
+                                                            link.label,
+                                                            'Current Page',
+                                                        )}
                                                         aria-current={
                                                             link.active
                                                                 ? 'page'
@@ -96,7 +100,7 @@ const PaginationComponent: React.FC<PaginationComponentProps<any>> = ({
                                                         )}
                                                     >
                                                         {link.label}
-                                                    </button>
+                                                    </Link>
                                                 )}
                                             </PaginationItem>
                                         ),
@@ -113,6 +117,7 @@ const PaginationComponent: React.FC<PaginationComponentProps<any>> = ({
                     <div>
                         <PaginationItem className="list-none">
                             <PaginationNext
+                                href='#'
                                 onClick={
                                     next_page_url
                                         ? () =>
