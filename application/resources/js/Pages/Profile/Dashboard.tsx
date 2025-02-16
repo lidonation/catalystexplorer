@@ -1,27 +1,65 @@
-import Title from '@/Components/atoms/Title';
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { Head } from '@inertiajs/react';
+import React, { useState, useEffect } from 'react';
+import { Head, usePage } from '@inertiajs/react';
+import { useTranslation } from 'react-i18next';
+import UserTab from './Partials/UserTab';
+import UserSection from './Partials/UserSection';
+import User = App.DataTransferObjects.UserData;
 
-export default function Dashboard() {
+interface UserProfileProps {
+    dashboard?: any[];
+    profile?: any[];
+    proposals?: any[];
+    reviews?: any[];
+    groups?: any[];
+    communities?: any[];
+    list?: any[];
+}
+
+export default function UserProfile({}: UserProfileProps) {
+    const { t } = useTranslation();
+    const { auth } = usePage().props;
+    const [activeTab, setActiveTab] = useState('Dashboard');
+
+    const tabs = [
+        { name: 'Dashboard', href: `dashboard` },
+        { name: 'My Profile', href: `profile` },
+        { name: 'My Proposals', href: `proposals` },
+        { name: 'My Reviews', href: `reviews` },
+        { name: 'My Groups', href: `groups` },
+        { name: 'My Communities', href: `communities` },
+        { name: 'My List', href: `list` }
+    ];
+
+    useEffect(() => {
+        const currentPath = window.location.pathname;
+        const lastPathSegment = currentPath.split('/').pop();
+        const matchingTab = tabs.find(tab => tab.href.split('/').pop() === lastPathSegment);
+        
+        if (matchingTab) {
+            setActiveTab(matchingTab.name);
+        }
+    }, [window.location.pathname]);
+ 
     return (
-        <AuthenticatedLayout
-            header={
-                <Title level='2' className="text-1 text-content leading-tight font-semibold">
-                    Dashboard
-                </Title>
-            }
-        >
-            <Head title="Dashboard" />
+        <div className="min-h-screen bg-background-lighter px-2">
+            <Head title={t('profile.title', 'User Profile')} />
 
-            <div className="py-12">
-                <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
-                    <div className="bg-background overflow-hidden shadow-xs sm:rounded-lg">
-                        <div className="text-content p-6">
-                            You're logged in!
-                        </div>
-                    </div>
+            <div className="bg-background-lighter px-2">
+                <div className="px-1 sm:px-6 lg:px-2 py-8 ml-4">
+                    <UserSection user={auth?.user as User} />
+                    
+                    <UserTab 
+                        tabs={tabs}
+                        activeTab={activeTab}
+                    />
                 </div>
             </div>
-        </AuthenticatedLayout>
+
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                <div className="text-center text-content">
+                    {t('comingSoon')}
+                </div>
+            </div>
+        </div>
     );
 }
