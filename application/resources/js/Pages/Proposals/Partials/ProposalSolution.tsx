@@ -32,7 +32,7 @@ export default function ProposalSolution({
             aria-labelledby="solution-preview"
         >
             <header className="solution-header flex justify-between">
-                <Title level='2' id="solution-heading" className="text-content font-medium">
+                <Title level='4' id="solution-heading" className="text-content font-medium">
                     Solution
                 </Title>
             </header>

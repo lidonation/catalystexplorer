@@ -46,14 +46,14 @@ class CampaignData extends Data
         public ?int $proposals_count,
 
         public ?int $unfunded_proposals_count,
-        
+
         public ?int $funded_proposals_count,
-        
+
         public ?int $completed_proposals_count,
 
         public ?float $totalAwarded,
 
         public ?float $totalDistributed,
+
     ) {}
 }
-

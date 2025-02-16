@@ -4,15 +4,18 @@ declare(strict_types=1);
 
 namespace App\Interfaces\Http\Controllers;
 
-use App\DataTransferObjects\ConnectionData;
 use App\DataTransferObjects\GroupData;
 use App\DataTransferObjects\IdeascaleProfileData;
 use App\DataTransferObjects\LocationData;
 use App\DataTransferObjects\ProposalData;
 use App\DataTransferObjects\ReviewData;
+use App\Enums\CatalystConnectionLinkType;
+use App\Enums\CatalystConnectionNodeType;
+use App\Enums\CatalystConnectionParams;
 use App\Enums\ProposalSearchParams;
 use App\Models\Fund;
 use App\Models\Group;
+use App\Models\IdeascaleProfile;
 use App\Models\Review;
 use App\Repositories\GroupRepository;
 use Illuminate\Http\Request;
@@ -55,9 +58,11 @@ class GroupsController extends Controller
 
     public array $tagsCount = [];
 
-    public array $fundsCount = [];
+    public array $proposalsCount = [];
 
-    public int $proposalsCount;
+    public array $totalAwardedAda = [];
+
+    public array $totalAwardedUsd = [];
 
     public function index(Request $request): Response
     {
@@ -71,8 +76,15 @@ class GroupsController extends Controller
             'sort' => "{$this->sortBy}:{$this->sortOrder}",
             'filters' => $this->queryParams,
             'filterCounts' => [
-                'tagsCount' => $this->tagsCount,
-                'fundsCount' => $this->fundsCount,
+                'proposalsCount' => !empty($this->proposalsCount)
+                    ? round(max(array_keys($this->proposalsCount)), -1)
+                    : 0,
+                'totalAwardedAda' => !empty($this->totalAwardedAda)
+                    ? max($this->totalAwardedAda)
+                    : 0,
+                'totalAwardedUsd' => !empty($this->totalAwardedUsd)
+                    ? max($this->totalAwardedUsd)
+                    : 0,
             ],
         ];
 
@@ -87,52 +99,161 @@ class GroupsController extends Controller
                 'funded_proposals',
                 'unfunded_proposals',
                 'completed_proposals',
-            ])->append([
-                'amount_awarded_ada',
-                'amount_awarded_usd',
-                'amount_requested_ada',
-                'amount_requested_usd',
-                'amount_distributed_ada',
-                'amount_distributed_usd',
-                'connected_items',
-            ]);
+            ])->append(
+                [
+                    'amount_awarded_ada',
+                    'amount_awarded_usd',
+                    'amount_requested_ada',
+                    'amount_requested_usd',
+                    'amount_distributed_ada',
+                    'amount_distributed_usd',
+                    'connected_items',
+                ]
+            );
+
+        $connections = $this->getConnectionsData($request, $group->id, $group->hash);
 
         return Inertia::render('Groups/Group', [
             'group' => GroupData::from($group),
             'proposals' => Inertia::optional(
-                fn () => to_length_aware_paginator(
+                fn() => to_length_aware_paginator(
                     ProposalData::collect(
                         $group->proposals()->with(['users', 'fund'])->paginate(5)
                     )
                 )
+
             ),
             'ideascaleProfiles' => Inertia::optional(
-                fn () => to_length_aware_paginator(
+                fn() => to_length_aware_paginator(
                     IdeascaleProfileData::collect(
                         $group->ideascale_profiles()->with([])->paginate(12)
                     )
                 )
+
             ),
             'reviews' => Inertia::optional(
-                fn () => to_length_aware_paginator(
+                fn() => to_length_aware_paginator(
                     ReviewData::collect(
                         Review::query()->paginate(8)
                     )
                 )
             ),
             'locations' => Inertia::optional(
-                fn () => to_length_aware_paginator(
+                fn() => to_length_aware_paginator(
                     LocationData::collect(
                         $group->locations()->paginate(12)
                     )
                 )
+
             ),
             'connections' => Inertia::optional(
-                fn () => ConnectionData::collect(
-                    $group->connected_items ?? []
-                )
+                fn() => $connections
             ),
         ]);
+    }
+
+    public function getConnectionsData(Request $request, int $groupId, ?string $hash = null): array
+    {
+        $rootGroup = Group::find($groupId);
+        $profileIds = (array) $request->query(CatalystConnectionParams::IDEASCALEPROFILE()->value, []);
+        $groupIds = (array) $request->query(CatalystConnectionParams::GROUP()->value, []);
+
+        $allGroupIds = array_merge([$groupId], $groupIds);
+        $allProfileIds = $profileIds;
+
+        $groups = Group::with(['connected_groups', 'connected_users'])
+            ->whereIn('id', $allGroupIds)
+            ->get();
+
+        $profiles = IdeascaleProfile::with(['connected_groups', 'connected_users'])
+            ->whereIn('id', $allProfileIds)
+            ->get();
+
+        $nodes = collect();
+        $links = collect();
+
+        foreach ($groups as $group) {
+            $nodes->push($this->formatNodeOrLink(CatalystConnectionNodeType::GROUP()->value, $group));
+
+            foreach ($group->connected_groups as $connectedGroup) {
+                $nodes->push($this->formatNodeOrLink(CatalystConnectionNodeType::GROUP()->value, $connectedGroup));
+                $links->push($this->formatNodeOrLink(CatalystConnectionLinkType::GROUP()->value, $connectedGroup, $group));
+            }
+
+            foreach ($group->connected_users as $profile) {
+                $nodes->push($this->formatNodeOrLink(CatalystConnectionNodeType::PROFILE()->value, $profile));
+                $links->push($this->formatNodeOrLink(CatalystConnectionLinkType::PROFILE()->value, $profile, $group));
+            }
+        }
+
+        foreach ($profiles as $profile) {
+            $nodes->push($this->formatNodeOrLink(CatalystConnectionNodeType::PROFILE()->value, $profile));
+
+            foreach ($profile->connected_groups as $group) {
+                $nodes->push($this->formatNodeOrLink(CatalystConnectionNodeType::GROUP()->value, $group));
+                $links->push($this->formatNodeOrLink(CatalystConnectionLinkType::PROFILE()->value, $profile, $group));
+            }
+
+            foreach ($profile->connected_users as $connectedProfile) {
+                if ($connectedProfile->id !== $profile->id) {
+                    $nodes->push($this->formatNodeOrLink(CatalystConnectionNodeType::PROFILE()->value, $connectedProfile));
+                    $links->push($this->formatNodeOrLink(CatalystConnectionLinkType::PROFILE()->value, $connectedProfile, $profile));
+                }
+            }
+        }
+
+        $result = [
+            'nodes' => $nodes->unique('id')->values()->all(),
+            'links' => $links->unique(fn($link) => $link['source'] . '-' . $link['target'])->values()->all(),
+        ];
+
+        $result['rootGroupId'] = $groupId;
+        $result['rootGroupHash'] = $rootGroup->hash;
+
+        return $result;
+    }
+
+    private function formatNodeOrLink(string $type, $entity, $source = null): array
+    {
+        if ($type === CatalystConnectionNodeType::GROUP()->value) {
+            return [
+                'id' => $entity->id,
+                'type' => 'group',
+                'name' => $entity->name,
+                'photo' => $entity->profile_photo_url,
+                'hash' => $entity->hash,
+            ];
+        }
+
+        if ($type === CatalystConnectionNodeType::PROFILE()->value) {
+            return [
+                'id' => $entity->id,
+                'type' => 'profile',
+                'name' => $entity->name,
+                'photo' => $entity->profile_photo_url,
+                'hash' => $entity->hash,
+            ];
+        }
+
+        if ($type === CatalystConnectionLinkType::GROUP()->value) {
+            $sourceId = $source instanceof Group ? $source->id : $source->id;
+
+            return [
+                'source' => $sourceId,
+                'target' => $entity->id,
+            ];
+        }
+
+        if ($type === CatalystConnectionLinkType::PROFILE()->value) {
+            $sourceId = $source instanceof Group ? $source->id : $source->id;
+
+            return [
+                'source' => $sourceId,
+                'target' => $entity->id,
+            ];
+        }
+
+        throw new \InvalidArgumentException("Invalid type provided: {$type}");
     }
 
     protected function getProps(Request $request): void
@@ -191,9 +312,9 @@ class GroupsController extends Controller
         $args['offset'] = ($page - 1) * $limit;
         $args['limit'] = $limit;
 
-        $proposals = app(GroupRepository::class);
+        $groups = app(GroupRepository::class);
 
-        $builder = $proposals->search(
+        $builder = $groups->search(
             $this->queryParams[ProposalSearchParams::QUERY()->value] ?? '',
             $args
         );
@@ -252,12 +373,12 @@ class GroupsController extends Controller
 
         if (! empty($this->queryParams[ProposalSearchParams::CAMPAIGNS()->value])) {
             $campaignIds = ($this->queryParams[ProposalSearchParams::CAMPAIGNS()->value]);
-            $filters[] = '('.implode(' OR ', array_map(fn ($c) => "proposals.campaign.id = {$c}", $campaignIds)).')';
+            $filters[] = '(' . implode(' OR ', array_map(fn($c) => "proposals.campaign.id = {$c}", $campaignIds)) . ')';
         }
 
         if (! empty($this->queryParams[ProposalSearchParams::TAGS()->value])) {
             $tagIds = ($this->queryParams[ProposalSearchParams::TAGS()->value]);
-            $filters[] = '('.implode(' OR ', array_map(fn ($c) => "tags.id = {$c}", $tagIds)).')';
+            $filters[] = '(' . implode(' OR ', array_map(fn($c) => "tags.id = {$c}", $tagIds)) . ')';
         }
 
         if (! empty($this->queryParams[ProposalSearchParams::IDEASCALE_PROFILES()->value])) {
@@ -271,8 +392,8 @@ class GroupsController extends Controller
         }
 
         if (! empty($this->queryParams[ProposalSearchParams::COHORT()->value])) {
-            $cohortFilters = array_map(fn ($cohort) => "{$cohort} > 0", $this->queryParams[ProposalSearchParams::COHORT()->value]);
-            $filters[] = '('.implode(' OR ', $cohortFilters).')';
+            $cohortFilters = array_map(fn($cohort) => "{$cohort} > 0", $this->queryParams[ProposalSearchParams::COHORT()->value]);
+            $filters[] = '(' . implode(' OR ', $cohortFilters) . ')';
         }
 
         return $filters;
@@ -280,12 +401,21 @@ class GroupsController extends Controller
 
     public function setCounts($facets, $facetStats)
     {
+
         if (isset($facets['tags.id']) && count($facets['tags.id'])) {
             $this->tagsCount = $facets['tags.id'];
         }
 
-        if (isset($facets['proposals.fund.title']) && count($facets['proposals.fund.title'])) {
-            $this->fundsCount = $facets['proposals.fund.title'];
+        if (isset($facets['proposals_count']) && count($facets['proposals_count'])) {
+            $this->proposalsCount = $facets['proposals_count'];
+        }
+
+        if (isset($facets['amount_awarded_ada']) && count($facets['amount_awarded_ada'])) {
+            $this->totalAwardedAda = array_keys($facets['amount_awarded_ada']);
+        }
+
+        if (isset($facets['amount_awarded_usd']) && count($facets['amount_awarded_usd'])) {
+            $this->totalAwardedUsd = array_keys($facets['amount_awarded_usd']);
         }
     }
 

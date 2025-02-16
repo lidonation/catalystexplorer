@@ -1,5 +1,5 @@
 import { FilteredItem, useFilterContext } from '@/Context/FiltersContext';
-import { ProposalParamsEnum } from '@/enums/proposal-search-params';
+import { ParamsEnum } from '@/enums/proposal-search-params';
 import { useSearchOptions } from '@/Hooks/useSearchOptions';
 import { shortNumber } from '@/utils/shortNumber';
 import React, { useState } from 'react';
@@ -137,31 +137,31 @@ const RangeFilters = ({ filter }: { filter: FilteredItem }) => {
     const { setFilters, getFilter } = useFilterContext();
 
     const removeFilter = () => {
-        if (filter.param == ProposalParamsEnum.PROJECT_LENGTH) {
+        if (filter.param == ParamsEnum.PROJECT_LENGTH) {
             setFilters({
                 param: filter.param,
                 value: [],
                 label: filter.label,
             });
-        } else if (filter.param == ProposalParamsEnum.BUDGETS) {
+        } else if (filter.param == ParamsEnum.BUDGETS) {
             setFilters({
                 param: filter.param,
                 value: [],
                 label: filter.label,
             });
-        } else if (filter.param == ProposalParamsEnum.AWARDED_ADA) {
+        } else if (filter.param == ParamsEnum.AWARDED_ADA) {
             setFilters({
                 param: filter.param,
                 value: [],
                 label: filter.label,
             });
-        } else if (filter.param == ProposalParamsEnum.AWARDED_USD) {
+        } else if (filter.param == ParamsEnum.AWARDED_USD) {
             setFilters({
                 param: filter.param,
                 value: [],
                 label: filter.label,
             });
-        }else if (filter.param == ProposalParamsEnum.PROPOSALS) {
+        }else if (filter.param == ParamsEnum.PROPOSALS) {
             setFilters({
                 param: filter.param,
                 value: [],

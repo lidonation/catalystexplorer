@@ -10,10 +10,8 @@ use App\Enums\ProposalSearchParams;
 use App\Models\Fund;
 use App\Models\Proposal;
 use App\Repositories\ProposalRepository;
-use Illuminate\Contracts\Pagination\Paginator;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Fluent;
 use Illuminate\Support\Stringable;
 use Inertia\Inertia;
@@ -178,28 +176,11 @@ class ProposalsController extends Controller
             $page,
             [
                 'pageName' => 'p',
+                'onEachSide' => 0,
             ]
         );
 
-        return $pagination->onEachSide(1)->toArray();
-    }
-
-    protected function getRandomProposals(): Paginator|array|Collection
-    {
-        $proposals = app(ProposalRepository::class);
-        $pagination = new LengthAwarePaginator(
-            ProposalData::collect(
-                $proposals->getQuery()->inRandomOrder()->limit($this->limit)->get()
-            ),
-            Proposal::count(),
-            $this->limit,
-            $this->currentPage,
-            [
-                'pageName' => 'p',
-            ]
-        );
-
-        return $pagination->onEachSide(1)->toArray();
+        return $pagination->toArray();
     }
 
     protected function getUserFilters(): array

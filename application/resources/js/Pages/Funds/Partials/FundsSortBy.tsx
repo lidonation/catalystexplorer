@@ -1,6 +1,6 @@
 import Selector from '@/Components/atoms/Selector';
 import { useFilterContext } from '@/Context/FiltersContext';
-import { ProposalParamsEnum } from '@/enums/proposal-search-params';
+import { ParamsEnum } from '@/enums/proposal-search-params';
 import { useTranslation } from 'react-i18next';
 
 export default function FundSortBy() {
@@ -23,10 +23,10 @@ export default function FundSortBy() {
             <Selector
                 isMultiselect={false}
                 options={sortingOptions}
-                selectedItems={getFilter(ProposalParamsEnum.SORTS)}
+                selectedItems={getFilter(ParamsEnum.SORTS)}
                 setSelectedItems={(value) =>
                     setFilters({
-                        param: ProposalParamsEnum.SORTS,
+                        param: ParamsEnum.SORTS,
                         value,
                         label: 'Sorts',
                     })
@@ -34,7 +34,7 @@ export default function FundSortBy() {
                 hideCheckbox={true}
                 placeholder={t('funds.sortBy')}
                 className={`bg-background ${
-                    getFilter(ProposalParamsEnum.SORTS)
+                    getFilter(ParamsEnum.SORTS)
                         ? 'bg-background text-primary cursor-default'
                         : 'hover:bg-background-lighter text-gray-500'
                 }`}

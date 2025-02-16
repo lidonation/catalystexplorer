@@ -1,24 +1,25 @@
 import Button from '@/Components/atoms/Button';
-import SearchBar from '@/Components/SearchBar';
 import Selector from '@/Components/atoms/Selector';
+import SearchBar from '@/Components/SearchBar';
 import FilterLinesIcon from '@/Components/svgs/FilterLinesIcon';
 import { useFilterContext } from '@/Context/FiltersContext';
-import { ProposalParamsEnum } from '@/enums/proposal-search-params';
-import ProposalSortingOptions from '@/lib/ProposalSortOptions';
+import { ParamsEnum } from '@/enums/proposal-search-params';
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import ActiveFilters from './ActiveFilters';
 
-function ProposalSearchControls({
+function SearchControls({
     onFiltersToggle,
+    sortOptions,
 }: {
     onFiltersToggle: Dispatch<SetStateAction<boolean>>;
+    sortOptions: Array<any>;
 }) {
     const { getFilter, setFilters, filters } = useFilterContext();
     const { t } = useTranslation();
 
     const queryParams = new URLSearchParams(window.location.search);
-    const initialSearchQuery = queryParams.get(ProposalParamsEnum.QUERY) || '';
+    const initialSearchQuery = queryParams.get(ParamsEnum.QUERY) || '';
     const [searchQuery, setSearchQuery] = useState(initialSearchQuery);
     const [showFilters, setShowFilters] = useState(false);
 
@@ -28,21 +29,38 @@ function ProposalSearchControls({
 
     const handleSearch = (search: string) => {
         setFilters({
-            param: ProposalParamsEnum.QUERY,
+            param: ParamsEnum.QUERY,
             value: search,
             label: 'Search',
         });
         setSearchQuery(search);
+        const url = new URL(window.location.href);
+
+        if (search.trim() === '') {
+            url.searchParams.delete(ParamsEnum.QUERY);
+        } else {
+            setFilters({
+                param: ParamsEnum.QUERY,
+                value: search,
+                label: 'Search',
+            });
+            url.searchParams.set(ParamsEnum.QUERY, search);
+        }
+
+        window.history.replaceState(null, '', url.toString());
     };
 
     const toggleFilters = () => {
-        setShowFilters((prev) => !prev);
-        onFiltersToggle(showFilters);
+        setShowFilters((prev) => {
+            const newState = !prev;
+            onFiltersToggle(newState);
+            return newState;
+        });
     };
 
     const filtersCount = filters.filter(
         (filter) =>
-            filter.param !== ProposalParamsEnum.PAGE && filter.value.length > 0,
+            filter.param !== ParamsEnum.PAGE && filter.value.length > 0,
     ).length;
 
     return (
@@ -55,12 +73,13 @@ function ProposalSearchControls({
                     initialSearch={searchQuery}
                 />
                 <Button
-                    className={`border-input bg-background flex flex-row items-center gap-2 rounded-lg border px-3 py-1.5 shadow-xs ${
+                    className={`border-input bg-background flex cursor-pointer flex-row items-center gap-2 rounded-lg border px-3 py-1.5 shadow-xs ${
                         showFilters
                             ? 'border-accent-blue text-primary ring-offset-background ring-1'
                             : 'hover:bg-background-lighter text-gray-500'
                     }`}
-                    onClick={() => toggleFilters()}
+                    onClick={toggleFilters}
+                    ariaLabel="Show Filters"
                 >
                     <FilterLinesIcon className={'size-6'} />
                     <span>{t('filters')}</span>
@@ -69,30 +88,30 @@ function ProposalSearchControls({
 
                 <Selector
                     isMultiselect={false}
-                    selectedItems={getFilter(ProposalParamsEnum.SORTS)}
+                    selectedItems={getFilter(ParamsEnum.SORTS)}
                     setSelectedItems={(value) =>
                         setFilters({
-                            param: ProposalParamsEnum.SORTS,
+                            param: ParamsEnum.SORTS,
                             value,
                             label: 'Sorts',
                         })
                     }
-                    options={ProposalSortingOptions()}
+                    options={sortOptions}
                     hideCheckbox={true}
                     placeholder={t('proposals.options.sort')}
                     className={`bg-background ${
-                        getFilter(ProposalParamsEnum.SORTS)
-                            ? 'bg-background-lighter text-primary cursor-default'
+                        getFilter(ParamsEnum.SORTS)
+                            ? 'bg-background-lighter text-primary'
                             : 'hover:bg-background-lighter text-gray-500'
                     }`}
                 />
             </div>
 
             <div className="container mx-auto flex justify-start px-0">
-                <ActiveFilters sortOptions={ProposalSortingOptions()} />
+                <ActiveFilters sortOptions={sortOptions} />
             </div>
         </div>
     );
 }
 
-export default ProposalSearchControls;
+export default SearchControls;

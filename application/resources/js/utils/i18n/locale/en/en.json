@@ -218,6 +218,7 @@
         "proposalReviews": "Proposal Reviews",
         "CSVs": "Proposal CSVs",
         "totalProposals": "Total Proposals",
+        "viewTeam": "View Team",
         "errors": {
             "noUrl": "No video URL provided",
             "invalidYoutubeFormat": "The YouTube link format is incorrect",
@@ -331,6 +332,9 @@
         "unfunded": "Unfunded",
         "awardedVsRequested": "Awarded vs Requested",
         "receivedVsAwarded": "Received vs Awarded",
+        "reviews": "Reviews",
+        "noMembers": "This group has no members",
+        "viewMembers": "View Members",
         "options":{
             "alphabetically": "Alphabetically: A to Z",
             "amountAwardedAdaDesc": "Amount Awarded ADA: High to Low",

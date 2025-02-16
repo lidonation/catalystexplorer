@@ -4,15 +4,14 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use App\Models\Model;
-use App\Traits\HasMetaData;
 use App\Models\CatalystExplorer\Moderation;
-use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Traits\HasMetaData;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Moderator extends Model
 {
-    use SoftDeletes, HasMetaData;
+    use HasMetaData, SoftDeletes;
 
     public function moderations(): HasMany
     {

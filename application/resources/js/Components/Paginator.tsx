@@ -4,12 +4,12 @@ import {
     PaginationNext,
     PaginationPrevious,
 } from '@/Components/Pagination';
-import { FilteredItem, useFilterContext } from '@/Context/FiltersContext';
-import { ProposalParamsEnum } from '@/enums/proposal-search-params';
+import { ParamsEnum } from '@/enums/proposal-search-params';
+import { useFilterContext } from '@/Context/FiltersContext';
 import React from 'react';
 import { PaginatedData } from '../../types/paginated-data';
-import { cn } from '@/lib/utils';
 import { Link } from '@inertiajs/react';
+import { cn } from '@/lib/utils';
 
 
 type PaginationComponentProps<T> = {
@@ -31,6 +31,7 @@ const PaginationComponent: React.FC<PaginationComponentProps<any>> = ({
 
     let {
         current_page,
+        per_page,
         links,
         prev_page_url,
         next_page_url,
@@ -52,7 +53,7 @@ const PaginationComponent: React.FC<PaginationComponentProps<any>> = ({
                                     prev_page_url
                                         ? () =>
                                             setPagination(
-                                                ProposalParamsEnum.PAGE,
+                                                ParamsEnum.PAGE,
                                                 current_page - 1,
                                                 'Current Page',
                                             )
@@ -83,7 +84,7 @@ const PaginationComponent: React.FC<PaginationComponentProps<any>> = ({
                                                 ) : (
                                                     <Link
                                                         href={buildUrl(
-                                                            ProposalParamsEnum.PAGE,
+                                                            ParamsEnum.PAGE,
                                                             link.label,
                                                             'Current Page',
                                                         )}
@@ -122,7 +123,7 @@ const PaginationComponent: React.FC<PaginationComponentProps<any>> = ({
                                     next_page_url
                                         ? () =>
                                             setPagination(
-                                                ProposalParamsEnum.PAGE,
+                                                ParamsEnum.PAGE,
                                                 current_page + 1,
                                                 'Current Page',
                                             )

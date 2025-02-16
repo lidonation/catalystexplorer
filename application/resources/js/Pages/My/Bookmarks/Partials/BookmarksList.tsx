@@ -1,8 +1,8 @@
 import React from 'react';
 import { useFilterContext } from '@/Context/FiltersContext';
-import { ProposalParamsEnum } from '@/enums/proposal-search-params';
+import { ParamsEnum } from '@/enums/proposal-search-params';
 import ProposalCard from '@/Pages/Proposals/Partials/ProposalCard';
-import IdeascaleProfileCard from '@/Pages/IdeascaleProfile/Partials/IdeascaleProfileCard';
+import IdeascaleProfileCardMini from '@/Pages/IdeascaleProfile/Partials/IdeascaleProfileCardMini';
 import RecordsNotFound from '@/Layouts/RecordsNotFound';
 import { useTranslation } from 'react-i18next';
 
@@ -14,16 +14,16 @@ interface BookmarksListProps {
     activeType: string | null;
 }
 
-const BookmarksList: React.FC<BookmarksListProps> = ({ 
-    proposals = [], 
-    people = [], 
-    groups = [], 
-    reviews = [], 
-    activeType 
+const BookmarksList: React.FC<BookmarksListProps> = ({
+    proposals = [],
+    people = [],
+    groups = [],
+    reviews = [],
+    activeType
 }) => {
     const { t } = useTranslation();
     const { getFilter } = useFilterContext();
-    const searchQuery = getFilter(ProposalParamsEnum.QUERY) || '';
+    const searchQuery = getFilter(ParamsEnum.QUERY) || '';
 
     const filterItems = (items: any[]) => {
         if (!searchQuery) return items;
@@ -72,7 +72,7 @@ const BookmarksList: React.FC<BookmarksListProps> = ({
                 filteredItems = filterItems(people);
                 return filteredItems.length > 0
                     ? filteredItems.map((profile, index) => (
-                        <IdeascaleProfileCard
+                        <IdeascaleProfileCardMini
                             key={`profile-${index}`}
                             ideascaleProfile={profile}
                         />

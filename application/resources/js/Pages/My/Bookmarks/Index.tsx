@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Head, WhenVisible } from '@inertiajs/react';
 import { FiltersProvider } from '@/Context/FiltersContext';
-import { ProposalParamsEnum } from '@/enums/proposal-search-params';
+import { ParamsEnum } from '@/enums/proposal-search-params';
 import BookmarkNavigation from './Partials/BookmarkNavigation';
 import BookmarkToolbar from './Partials/BookmarkToolbar';
 import { useTranslation } from 'react-i18next';
@@ -46,9 +46,9 @@ const Index: React.FC<IndexProps> = ({
   };  
 
   const defaultFilters = {
-    [ProposalParamsEnum.QUERY]: '',
-    [ProposalParamsEnum.PAGE]: 1,
-    [ProposalParamsEnum.LIMIT]: 10,
+    [ParamsEnum.QUERY]: '',
+    [ParamsEnum.PAGE]: 1,
+    [ParamsEnum.LIMIT]: 10,
     ...filters
   };
 

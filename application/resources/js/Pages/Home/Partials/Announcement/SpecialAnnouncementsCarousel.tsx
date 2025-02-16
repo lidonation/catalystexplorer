@@ -58,7 +58,7 @@ const SpecialAnnouncementCarousel = ({
                 >
                     {announcements.map((announcement) => (
                         <CarouselItem
-                            key={announcement.id}
+                            key={announcement.hash}
                             className="w-full shrink-0"
                         >
                             <SpecialAnnouncementCard
