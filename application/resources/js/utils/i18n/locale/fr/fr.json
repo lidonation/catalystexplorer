@@ -1,5 +1,7 @@
 {
     "activeFund": "Fonds Actif",
+    "addEmail": "Ajouter un e-mail",
+    "addYourCity": "Ajoutez votre ville",
     "appMessage": "Tous les votes doivent être soumis dans l'application officielle de vote Catalyst. Ceci n'est qu'un outil de recherche et de planification !",
     "articles": "Articles",
     "assetName": "Nom de l'actif",
@@ -48,6 +50,7 @@
     "numbers": "Chiffres",
     "mintNFT": "Créer un NFT",
     "privacy": "Confidentialité",
+    "profileBackground": "Contexte du profil",
     "proposalReviews": "Évaluations des propositions",
     "projectCatalyst": "Nom de la campagne Projet Catalyst",
     "policyID": "Policy ID",
@@ -115,6 +118,15 @@
             "title": "Résultats de recherche pour \"{{query}}\"",
             "viewMore": "Voir plus"
         }
+    },
+    "my": {
+        "dashboard":"Mon tableau de bord",
+        "profile":"Mon profil",
+        "proposals":"Mes propositions",
+        "reviews":"Mes avis",
+        "groups":"Mes groupes",
+        "communities":"Mes communautés",
+        "lists":"Mes listes"
     },
     "navigation": {
         "mobile": {
