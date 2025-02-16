@@ -43,7 +43,7 @@ const UserSection = ({ user }: UserSectionProps) => {
                             {user.location ? (
                                 <span className="break-words max-w-[200px] md:max-w-none">{user.location}</span>
                             ) : (
-                                <a href="#" className="text-primary underline cursor-pointer">{t('addYourCity')}</a>
+                                <a href="#" className="text-primary underline">{t('addYourCity')}</a>
                             )}
                         </div>
                         <div className="flex items-center justify-center gap-1.5">
@@ -51,7 +51,7 @@ const UserSection = ({ user }: UserSectionProps) => {
                             {user.email ? (
                                 <span className="break-words max-w-[200px] md:max-w-none">{user.email}</span>
                             ) : (
-                                <a href="#" className="text-primary underline cursor-pointer">{t('addEmail')}</a>
+                                <a href="#" className="text-primary underline">{t('addEmail')}</a>
                             )}
                         </div>
                     </div>
