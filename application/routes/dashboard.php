@@ -56,34 +56,6 @@ Route::localized(
                                     ->name('destroy');
                             });
                     });
-
-                Route::get('/communities', function () {
-                    return Inertia::render('My/Communities/Index');
-                })->name('communities');
-
-                Route::get('/dashboard', function () {
-                    return Inertia::render('My/Dashboard');
-                })->name('dashboard');
-
-                Route::get('/groups', function () {
-                    return Inertia::render('My/Groups/Index');
-                })->name('groups');
-
-                Route::get('/lists', function () {
-                    return Inertia::render('My/Lists/Index');
-                })->name('lists');
-
-                Route::get('/profile', function () {
-                    return Inertia::render('My/Profile/Index');
-                })->name('profile');
-
-                Route::get('/proposals', function () {
-                    return Inertia::render('My/Proposals/Index');
-                })->name('proposals');
-
-                Route::get('/reviews', function () {
-                    return Inertia::render('My/Reviews/Index');
-                })->name('reviews');
             });
     }
 );
