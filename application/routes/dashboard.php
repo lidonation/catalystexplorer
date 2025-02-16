@@ -13,8 +13,28 @@ Route::localized(
                 })->name('dashboard');
 
                 Route::get('/profile', function () {
-                    return Inertia::render('Profile/Profile');
+                    return Inertia::render('Profile/Dashboard');
                 })->name('profile');
+
+                Route::get('/proposals', function () {
+                    return Inertia::render('Profile/Dashboard');
+                })->name('proposals');
+
+                Route::get('/reviews', function () {
+                    return Inertia::render('Profile/Dashboard');
+                })->name('reviews');
+
+                Route::get('/groups', function () {
+                    return Inertia::render('Profile/Dashboard');
+                })->name('groups');
+
+                Route::get('/communities', function () {
+                    return Inertia::render('Profile/Dashboard');
+                })->name('communities');
+
+                Route::get('/list', function () {
+                    return Inertia::render('Profile/Dashboard');
+                })->name('list');
 
                 Route::prefix('bookmarks')->as('bookmarks.')
                     ->group(function () {
