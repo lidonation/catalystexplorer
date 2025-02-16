@@ -46,7 +46,7 @@ export default function UserProfile({}: UserProfileProps) {
 
             <div className="bg-background-lighter px-2">
                 <div className="px-1 sm:px-6 lg:px-2 py-8 ml-4">
-                    <UserSection user={auth?.user as User} />
+                    <UserSection user={auth?.user as unknown as User} />
                     
                     <UserTab 
                         tabs={tabs}
