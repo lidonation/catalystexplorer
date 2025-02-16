@@ -21,13 +21,13 @@ export default function UserProfile({}: UserProfileProps) {
     const [activeTab, setActiveTab] = useState('Dashboard');
 
     const tabs = [
-        { name: 'Dashboard', href: `dashboard` },
-        { name: 'My Profile', href: `profile` },
-        { name: 'My Proposals', href: `proposals` },
-        { name: 'My Reviews', href: `reviews` },
-        { name: 'My Groups', href: `groups` },
-        { name: 'My Communities', href: `communities` },
-        { name: 'My List', href: `list` }
+        { name: t('my.dashboard'), href: `dashboard` },
+        { name: t('my.profile'), href: `profile` },
+        { name: t('my.proposals'), href: `proposals` },
+        { name: t('my.reviews'), href: `reviews` },
+        { name: t('my.groups'), href: `groups` },
+        { name: t('my.communities'), href: `communities` },
+        { name: t('my.lists'), href: `list` }
     ];
 
     useEffect(() => {
@@ -42,7 +42,7 @@ export default function UserProfile({}: UserProfileProps) {
  
     return (
         <div className="min-h-screen bg-background-lighter px-2">
-            <Head title={t('profile.title', 'User Profile')} />
+            <Head title="Profile" />
 
             <div className="bg-background-lighter px-2">
                 <div className="px-1 sm:px-6 lg:px-2 py-8 ml-4">

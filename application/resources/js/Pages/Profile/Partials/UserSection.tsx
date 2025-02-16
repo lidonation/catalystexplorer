@@ -2,12 +2,14 @@ import { MapPin, Mail } from 'lucide-react';
 import Title from '@/Components/atoms/Title';
 import User = App.DataTransferObjects.UserData;
 import BackgroundHeader from '@/assets/images/Ideascale Profile Background Header.png';
+import { useTranslation } from 'react-i18next';
 
 interface UserSectionProps {
     user: User;
 }
 
 const UserSection = ({ user }: UserSectionProps) => {
+    const { t } = useTranslation();
     return (
         <div className="flex flex-col items-center text-center px-4">
             <div className="relative w-full max-w-md">
@@ -41,7 +43,7 @@ const UserSection = ({ user }: UserSectionProps) => {
                             {user.location ? (
                                 <span className="break-words max-w-[200px] md:max-w-none">{user.location}</span>
                             ) : (
-                                <a href="#" className="text-primary underline cursor-pointer">Add your city</a>
+                                <a href="#" className="text-primary underline cursor-pointer">{t('addYourCity')}</a>
                             )}
                         </div>
                         <div className="flex items-center justify-center gap-1.5">
@@ -49,7 +51,7 @@ const UserSection = ({ user }: UserSectionProps) => {
                             {user.email ? (
                                 <span className="break-words max-w-[200px] md:max-w-none">{user.email}</span>
                             ) : (
-                                <a href="#" className="text-primary underline cursor-pointer">Add email</a>
+                                <a href="#" className="text-primary underline cursor-pointer">{t('addEmail')}</a>
                             )}
                         </div>
                     </div>
