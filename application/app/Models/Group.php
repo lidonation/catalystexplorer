@@ -104,14 +104,14 @@ class Group extends Model implements HasMedia
     public function gravatar(): Attribute
     {
         return Attribute::make(
-            get: fn() => Avatar::create($this->name ?? 'default')->toGravatar()
+            get: fn () => Avatar::create($this->name ?? 'default')->toGravatar()
         );
     }
 
     public function profilePhotoUrl(): Attribute
     {
         return Attribute::make(
-            get: fn() => count($this->getMedia('group')) ? $this->getMedia('group')[0]->getFullUrl() : $this->gravatar
+            get: fn () => count($this->getMedia('group')) ? $this->getMedia('group')[0]->getFullUrl() : $this->gravatar
         );
     }
 
