@@ -27,7 +27,7 @@ const UserSection = ({ user }: UserSectionProps) => {
 
                 {/* Content container */}
                 <div className="relative flex flex-col items-center text-center">
-                    <div className="mt-16">
+                    <div className="">
                         <img
                             src={user.profile_photo_url}
                             alt={user.name}

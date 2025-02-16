@@ -46,7 +46,7 @@ Route::localized(
                 })->name('lists');
 
                 Route::get('/profile', function () {
-                    return Inertia::render('My/Profile/View');
+                    return Inertia::render('My/Profile/Index');
                 })->name('profile');
 
                 Route::get('/proposals', function () {
@@ -54,7 +54,7 @@ Route::localized(
                 })->name('proposals');
 
                 Route::get('/reviews', function () {
-                    return Inertia::render('My/Review/Index');
+                    return Inertia::render('My/Reviews/Index');
                 })->name('reviews');
             });
     }
