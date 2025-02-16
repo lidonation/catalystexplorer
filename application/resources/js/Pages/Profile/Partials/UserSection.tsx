@@ -19,7 +19,7 @@ const UserSection = ({ user }: UserSectionProps) => {
                     <div className="w-full h-full overflow-hidden bg-background-lighter">
                         <Image 
                             imageUrl={BackgroundHeader}
-                            alt={t('profileBackground')}
+                            alt={t('profileBackground')} 
                             size="w-full h-full object-cover"
                         />
                         <div className="absolute inset-y-0 left-0 w-32 bg-gradient-to-r from-background-lighter to-transparent"></div>
