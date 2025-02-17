@@ -1,6 +1,7 @@
 interface ImageProps {
     size?: string; // Made optional since there's a default value
     imageUrl?: string; // Made optional to allow conditional rendering
+    alt?: string;
   }
   
   export default function Image({ size = 'size-9', imageUrl }: ImageProps) {
