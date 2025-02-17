@@ -35,7 +35,7 @@ export default function Footer() {
                                 <Paragraph>{t('proposers')}</Paragraph>
                             </li>
                             <li>
-                                <Paragraph>{t('groups')}</Paragraph>
+                                <Paragraph>{t('groups.groups')}</Paragraph>
                             </li>
                             <li>
                                 <Paragraph>{t('communities')}</Paragraph>

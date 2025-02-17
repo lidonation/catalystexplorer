@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axiosClient from '@/utils/axiosClient';
 import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 
@@ -17,7 +17,7 @@ export default function useBookmark({ modelType, itemId }: UseBookmarkProps) {
     }, [modelType, itemId]);
     const fetchBookmarkStatus = async () => {
         try {
-            const response = await axios.get(
+            const response = await axiosClient.get(
                 route('api.bookmarks.status', { modelType, hash: itemId }),
             );
             setIsBookmarked(response.data.isBookmarked);
@@ -29,12 +29,12 @@ export default function useBookmark({ modelType, itemId }: UseBookmarkProps) {
 
     const createBookmark = async () => {
         try {
-            const response = await axios.post(
+            const response = await axiosClient.post(
                 route('api.bookmarks.store', { modelType, hash: itemId }),
             );
-            if (response.data.bookmarkItem) {
-                setIsBookmarked(true);
-                setBookmarkId(response.data.bookmarkItem.id);
+            if (response.data.bookmarkItems) {
+                setIsBookmarked(response.data.isBookmarked);
+                setBookmarkId(response.data.bookmarkId);
                 setIsOpen(true);
                 toast.success('Bookmark created successfully!', {
                     className: 'bg-gray-800 text-white',
@@ -49,7 +49,7 @@ export default function useBookmark({ modelType, itemId }: UseBookmarkProps) {
     const removeBookmark = async () => {
         try {
             if (bookmarkId) {
-                await axios.delete(
+                await axiosClient.delete(
                     route('api.bookmarks.remove', {
                         hash: bookmarkId,
                     }),
