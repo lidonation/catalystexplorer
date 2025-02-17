@@ -21,7 +21,7 @@ export default function ProposalCardHeader({
             'from-[var(--cx-background-gradient-1-dark)] to-[var(--cx-background-gradient-2-dark)]',
     };
     const headerBGColor =
-        gradientColors[proposal.status] || gradientColors.default;
+        gradientColors[proposal?.status] || gradientColors.default;
 
     return (
         <header
