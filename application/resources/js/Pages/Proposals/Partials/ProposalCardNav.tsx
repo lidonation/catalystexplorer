@@ -16,7 +16,7 @@ export default function ProposalCardNav({
                     <button
                         type="button"
                         onClick={() => toggleLocalQuickPitchView(false)}
-                        className={`w-full border-b-2 pb-3 font-semibold ${
+                        className={`w-full border-b-1 -mb-1 pb-3 font-semibold ${
                             !quickPitchView
                                 ? 'border-primary text-primary'
                                 : 'text-content border-transparent'

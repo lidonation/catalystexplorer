@@ -104,14 +104,21 @@ class Group extends Model implements HasMedia
     public function gravatar(): Attribute
     {
         return Attribute::make(
-            get: fn() => Avatar::create($this->name ?? 'default')->toGravatar()
+            get: fn () => Avatar::create($this->name ?? 'default')->toGravatar()
         );
     }
 
     public function profilePhotoUrl(): Attribute
     {
         return Attribute::make(
-            get: fn() => count($this->getMedia('group')) ? $this->getMedia('group')[0]->getFullUrl() : $this->gravatar
+            get: fn () => count($this->getMedia('group')) ? $this->getMedia('group')[0]->getFullUrl() : $this->gravatar
+        );
+    }
+
+    public function bannerPhotoUrl(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => count($this->getMedia('banner')) ? $this->getMedia('banner')[0]?->getFullUrl() : null
         );
     }
 
@@ -243,7 +250,10 @@ class Group extends Model implements HasMedia
 
     public function registerMediaCollections(): void
     {
-        $this->addMediaCollection('group')->useDisk('public');
+        $this->addMediaCollection('group')
+            ->useDisk('public');
+        $this->addMediaCollection('banner')
+            ->useDisk('public');
     }
 
     /**

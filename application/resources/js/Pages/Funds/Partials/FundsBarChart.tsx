@@ -3,6 +3,8 @@ import { currency } from '@/utils/currency';
 import { ResponsiveBar } from '@nivo/bar';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import Paragraph from '@/Components/atoms/Paragraph';
+
 
 interface FundsBarChartProps {
     funds: any;
@@ -62,42 +64,42 @@ const FundsBarChart: React.FC<FundsBarChartProps> = ({
                     <h6 className="text-2 lg:title-5 font-bold">
                         {fundRounds}
                     </h6>
-                    <p className="text-4 lg:text-3 text-content font-bold opacity-75">
+                    <Paragraph size="sm" className="text-4 lg:text-3 text-content font-bold opacity-75">
                         {t('funds.fundRounds')}
-                    </p>
+                    </Paragraph>
                 </div>
                 <div>
                     <h6 className="text-2 lg:title-5 font-bold">
                         {totalProposals.toLocaleString()}
                     </h6>
-                    <p className="text-4 lg:text-3 text-content font-bold opacity-75">
+                    <Paragraph size="sm" className="text-4 lg:text-3 text-content font-bold opacity-75">
                         {t('funds.totalProposals')}
-                    </p>
+                    </Paragraph>
                 </div>
 
                 <div>
                     <h6 className="text-2 lg:title-5 font-bold">
                         {fundedProposals.toLocaleString()}
                     </h6>
-                    <p className="text-4 lg:text-3 text-content font-bold opacity-75">
+                    <Paragraph size="sm" className="text-4 lg:text-3 text-content font-bold opacity-75">
                         {t('funds.fundedProposals')}
-                    </p>
+                    </Paragraph>
                 </div>
                 <div>
                     <h6 className="text-2 lg:title-5 font-bold">
                         {currency(totalFundsRequested, 'ADA', undefined, 2)}
                     </h6>
-                    <p className="text-4 lg:text-3 text-content font-bold opacity-75">
+                    <Paragraph size="sm" className="text-4 lg:text-3 text-content font-bold opacity-75">
                         {t('funds.totalFundsAwardedAda')}
-                    </p>
+                    </Paragraph>
                 </div>
                 <div>
                     <h6 className="text-2 lg:title-5 font-bold">
                         {currency(totalFundsAllocated, 'USD', undefined, 2)}
                     </h6>
-                    <p className="text-4 lg:text-3 font-bold text-content opacity-75">
+                    <Paragraph size="sm" className="text-4 lg:text-3 font-bold text-content opacity-75">
                         {t('funds.totalFundsAwardedUsd')}
-                    </p>
+                    </Paragraph>
                 </div>
             </div>
 
@@ -118,7 +120,7 @@ const FundsBarChart: React.FC<FundsBarChartProps> = ({
                     margin={{
                         top: 50,
                         right: 50,
-                        bottom: window.innerWidth < 600 ? 200 : 100, // Increase bottom margin for gap
+                        bottom: window.innerWidth < 600 ? 200 : 100,
                         left: 60,
                     }}
                     padding={0.3}
@@ -212,13 +214,15 @@ const FundsBarChart: React.FC<FundsBarChartProps> = ({
                     }}
                     tooltip={({ indexValue, data }) => (
                         <div className="bg-dark text-content-light rounded-xs p-4">
-                            <p>
+                            <Paragraph size="sm">
                                 <strong className="mb-1 block">
                                     {indexValue}
                                 </strong>
-                            </p>
+                            </Paragraph>
                             {activeKeys.map((key) => (
-                                <p key={key}>{`${key} : ${data[key] || 0}`}</p>
+                                <Paragraph size="sm" key={key}>
+                                    {`${key} : ${data[key] || 0}`}
+                                </Paragraph>
                             ))}
                         </div>
                     )}

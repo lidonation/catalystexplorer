@@ -23,7 +23,7 @@ export default function ProposalVerticalCard({
     abstainVotes,
 }: any) {
     return (
-        <article className="bg-background proposal-card proposal-card-vertical relative flex h-full flex-col justify-between rounded-xl p-2 shadow-lg">
+        <article className="bg-background proposal-card proposal-card-vertical relative flex h-full flex-col justify-between rounded-xl p-2 shadow-lg gap-3">
             <section className="flex h-auto w-full flex-col items-start overflow-hidden">
                 <ProposalCardHeader
                     proposal={proposal}
@@ -33,8 +33,8 @@ export default function ProposalVerticalCard({
                 />
             </section>
 
-            <section>
-                <div className="grow overflow-auto p-2">
+            <section className=''>
+                <div className="grow overflow-auto px-2">
                     {userSelected ? (
                         <UserQuickView user={userSelected} />
                     ) : (

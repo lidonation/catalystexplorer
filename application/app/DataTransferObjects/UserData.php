@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace App\DataTransferObjects;
 
+use Spatie\LaravelData\Attributes\DataCollectionOf;
 use Spatie\LaravelData\Data;
+use Spatie\LaravelData\DataCollection;
 use Spatie\TypeScriptTransformer\Attributes\TypeScript;
 
 #[TypeScript]
@@ -19,6 +21,9 @@ class UserData extends Data
 
         public string $profile_photo_url,
 
-        public ?string $email_verified_at = null
+        public ?string $email_verified_at,
+
+        #[DataCollectionOf(LocationData::class)]
+        public ?DataCollection $locations,
     ) {}
 }

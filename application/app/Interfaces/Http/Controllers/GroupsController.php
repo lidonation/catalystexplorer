@@ -76,13 +76,13 @@ class GroupsController extends Controller
             'sort' => "{$this->sortBy}:{$this->sortOrder}",
             'filters' => $this->queryParams,
             'filterCounts' => [
-                'proposalsCount' => !empty($this->proposalsCount)
+                'proposalsCount' => ! empty($this->proposalsCount)
                     ? round(max(array_keys($this->proposalsCount)), -1)
                     : 0,
-                'totalAwardedAda' => !empty($this->totalAwardedAda)
+                'totalAwardedAda' => ! empty($this->totalAwardedAda)
                     ? max($this->totalAwardedAda)
                     : 0,
-                'totalAwardedUsd' => !empty($this->totalAwardedUsd)
+                'totalAwardedUsd' => ! empty($this->totalAwardedUsd)
                     ? max($this->totalAwardedUsd)
                     : 0,
             ],
@@ -116,7 +116,7 @@ class GroupsController extends Controller
         return Inertia::render('Groups/Group', [
             'group' => GroupData::from($group),
             'proposals' => Inertia::optional(
-                fn() => to_length_aware_paginator(
+                fn () => to_length_aware_paginator(
                     ProposalData::collect(
                         $group->proposals()->with(['users', 'fund'])->paginate(5)
                     )
@@ -124,7 +124,7 @@ class GroupsController extends Controller
 
             ),
             'ideascaleProfiles' => Inertia::optional(
-                fn() => to_length_aware_paginator(
+                fn () => to_length_aware_paginator(
                     IdeascaleProfileData::collect(
                         $group->ideascale_profiles()->with([])->paginate(12)
                     )
@@ -132,14 +132,14 @@ class GroupsController extends Controller
 
             ),
             'reviews' => Inertia::optional(
-                fn() => to_length_aware_paginator(
+                fn () => to_length_aware_paginator(
                     ReviewData::collect(
                         Review::query()->paginate(8)
                     )
                 )
             ),
             'locations' => Inertia::optional(
-                fn() => to_length_aware_paginator(
+                fn () => to_length_aware_paginator(
                     LocationData::collect(
                         $group->locations()->paginate(12)
                     )
@@ -147,7 +147,7 @@ class GroupsController extends Controller
 
             ),
             'connections' => Inertia::optional(
-                fn() => $connections
+                fn () => $connections
             ),
         ]);
     }
@@ -204,7 +204,7 @@ class GroupsController extends Controller
 
         $result = [
             'nodes' => $nodes->unique('id')->values()->all(),
-            'links' => $links->unique(fn($link) => $link['source'] . '-' . $link['target'])->values()->all(),
+            'links' => $links->unique(fn ($link) => $link['source'].'-'.$link['target'])->values()->all(),
         ];
 
         $result['rootGroupId'] = $groupId;
@@ -373,12 +373,12 @@ class GroupsController extends Controller
 
         if (! empty($this->queryParams[ProposalSearchParams::CAMPAIGNS()->value])) {
             $campaignIds = ($this->queryParams[ProposalSearchParams::CAMPAIGNS()->value]);
-            $filters[] = '(' . implode(' OR ', array_map(fn($c) => "proposals.campaign.id = {$c}", $campaignIds)) . ')';
+            $filters[] = '('.implode(' OR ', array_map(fn ($c) => "proposals.campaign.id = {$c}", $campaignIds)).')';
         }
 
         if (! empty($this->queryParams[ProposalSearchParams::TAGS()->value])) {
             $tagIds = ($this->queryParams[ProposalSearchParams::TAGS()->value]);
-            $filters[] = '(' . implode(' OR ', array_map(fn($c) => "tags.id = {$c}", $tagIds)) . ')';
+            $filters[] = '('.implode(' OR ', array_map(fn ($c) => "tags.id = {$c}", $tagIds)).')';
         }
 
         if (! empty($this->queryParams[ProposalSearchParams::IDEASCALE_PROFILES()->value])) {
@@ -392,8 +392,8 @@ class GroupsController extends Controller
         }
 
         if (! empty($this->queryParams[ProposalSearchParams::COHORT()->value])) {
-            $cohortFilters = array_map(fn($cohort) => "{$cohort} > 0", $this->queryParams[ProposalSearchParams::COHORT()->value]);
-            $filters[] = '(' . implode(' OR ', $cohortFilters) . ')';
+            $cohortFilters = array_map(fn ($cohort) => "{$cohort} > 0", $this->queryParams[ProposalSearchParams::COHORT()->value]);
+            $filters[] = '('.implode(' OR ', $cohortFilters).')';
         }
 
         return $filters;
