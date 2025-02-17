@@ -115,7 +115,6 @@ class MyBookmarksController extends Controller
             return response()->json([
                 'bookmarkId' => $bookmarkItem->getRawOriginal('id'),
                 'isBookmarked' => true,
-                'modelType' => $modelType,
                 'bookmarkItems' => $bookmarkItem,
 
             ]);

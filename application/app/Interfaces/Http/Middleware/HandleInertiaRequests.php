@@ -5,8 +5,6 @@ declare(strict_types=1);
 namespace App\Interfaces\Http\Middleware;
 
 use App\DataTransferObjects\UserData;
-use App\Models\User;
-use App\Services\HashIdService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
 use Inertia\Middleware;
@@ -35,26 +33,6 @@ class HandleInertiaRequests extends Middleware
      */
     public function share(Request $request): array
     {
-        $user = null;
-
-        if ($request->user()) {
-            try {
-                // Decode the hashed ID
-                $userId = (new HashIdService(new User))->decode($request->user()->id);
-
-                // Validate the decoded ID
-                if (! is_numeric($userId)) {
-                    throw new \Exception('Decoded user ID is not a valid integer.');
-                }
-
-                // Fetch the user
-                $user = UserData::from(User::findOrFail((int) $userId));
-            } catch (\Exception $e) {
-                \Log::error('Failed to decode or fetch user:', ['error' => $e->getMessage()]);
-                // Optionally, handle the error (e.g., return a default user or throw an exception)
-            }
-        }
-
         return [
             ...parent::share($request),
             'locale' => app()->getLocale(),
