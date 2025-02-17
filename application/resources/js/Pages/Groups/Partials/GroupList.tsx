@@ -1,7 +1,8 @@
 import React from 'react';
-import GroupCardMini from './GroupCardMini';
 import GroupData = App.DataTransferObjects.GroupData;
-import GroupCardFull from './GroupCardFull';
+import GroupCard from "@/Pages/Groups/Partials/GroupCard";
+import GroupCardMini from "@/Pages/Groups/Partials/GroupCardMini";
+import GroupCardExtended from "@/Pages/Groups/Partials/GroupCardExtended";
 
 interface GroupListProps {
     groups: GroupData[];
@@ -18,11 +19,6 @@ const GroupList: React.FC<GroupListProps> = ({
                         <GroupCardMini group={group}/>
                     </li>
                 ))}
-                 {/* {groups?.map((group, index) => (
-                    <li key={index}>
-                        <GroupCardFull group={group}/>
-                    </li>
-                ))} */}
             </ul>
         </>
     );

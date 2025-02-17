@@ -17,9 +17,9 @@ const UserSection = ({ user }: UserSectionProps) => {
             <div className="relative w-full max-w-md">
                 <div className="absolute inset-0 h-full">
                     <div className="w-full h-full overflow-hidden bg-background-lighter">
-                        <Image 
+                        <Image
                             imageUrl={BackgroundHeader}
-                            alt={t('profileBackground')} 
+                            alt={t('profileBackground')}
                             size="w-full h-full object-cover"
                         />
                         <div className="absolute inset-y-0 left-0 w-32 bg-gradient-to-r from-background-lighter to-transparent"></div>
@@ -31,23 +31,26 @@ const UserSection = ({ user }: UserSectionProps) => {
                     <div className="mt-16">
                         <Image
                             imageUrl={user.profile_photo_url}
-                            size="h-32 w-32 border-4 border-background shadow-lg" 
+                            size="h-32 w-32 border-4 border-background shadow-lg"
                         />
                     </div>
 
                     <Title level='3' className="mt-3 text-lg md:text-xl">{user.name}</Title>
-                    
+
                     <div className="mt-2 flex flex-col gap-2 md:flex-row md:gap-6 text-darker text-sm md:text-base mb-6">
                         <div className="flex items-center justify-center gap-1.5">
                             <MapPin className="w-3.5 h-3.5 md:w-4 md:h-4" />
-                            {user.location ? (
-                                <span className="break-words max-w-[200px] md:max-w-none">{user.location}</span>
+                            {user.locations?.length > 0 ? (
+                                <span className="break-words max-w-[200px] md:max-w-none">
+                                    {JSON.stringify(user.locations)}
+                                </span>
                             ) : (
                                 <Link href="#" className="text-primary underline">{t('addYourCity')}</Link>
                             )}
                         </div>
                         <div className="flex items-center justify-center gap-1.5">
                             <Mail className="w-3.5 h-3.5 md:w-4 md:h-4" />
+
                             {user.email ? (
                                 <span className="break-words max-w-[200px] md:max-w-none">{user.email}</span>
                             ) : (
