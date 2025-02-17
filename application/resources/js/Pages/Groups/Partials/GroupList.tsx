@@ -1,28 +1,33 @@
 import React from 'react';
-import GroupCardMini from './GroupCardMini';
 import GroupData = App.DataTransferObjects.GroupData;
-import GroupCardFull from './GroupCardFull';
+import GroupCard from "@/Pages/Groups/Partials/GroupCard";
+import GroupCardMini from "@/Pages/Groups/Partials/GroupCardMini";
+import GroupCardExtended from "@/Pages/Groups/Partials/GroupCardExtended";
+import {AnimatePresence, motion} from "framer-motion";
 
 interface GroupListProps {
     groups: GroupData[];
 }
 
 const GroupList: React.FC<GroupListProps> = ({
-    groups,
-}) => {
+                                                 groups,
+                                             }) => {
     return (
         <>
             <ul className="grid w-full grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-                {groups?.map((group, index) => (
-                    <li key={index}>
-                        <GroupCardMini group={group}/>
-                    </li>
-                ))}
-                 {/* {groups?.map((group, index) => (
-                    <li key={index}>
-                        <GroupCardFull group={group}/>
-                    </li>
-                ))} */}
+                <AnimatePresence>
+                    {groups?.map((group, index) => (
+                        <motion.li
+                            key={index}
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            transition={{ duration: 0.5, ease: 'easeIn' }}
+                        >
+                            <GroupCardMini group={group}/>
+                        </motion.li>
+                    ))}
+                </AnimatePresence>
             </ul>
         </>
     );

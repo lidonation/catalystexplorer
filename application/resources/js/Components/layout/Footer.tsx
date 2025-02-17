@@ -1,5 +1,6 @@
 import catalystWhiteLogo from '@/assets/images/catalyst-explorer-all-white-logo.png';
 import { useTranslation } from 'react-i18next';
+import Paragraph from '@/Components/atoms/Paragraph'; // Added import for Paragraph component
 
 export default function Footer() {
     const { t } = useTranslation();
@@ -12,16 +13,16 @@ export default function Footer() {
                         <h5 className="title-6">{t('proposals.proposals')}</h5>
                         <ul className="menu-gap-y flex flex-col">
                             <li>
-                                <p>{t('proposals.allProposals')}</p>
+                                <Paragraph>{t('proposals.allProposals')}</Paragraph>
                             </li>
                             <li>
-                                <p>{t('proposalReviews')}</p>
+                                <Paragraph>{t('proposalReviews')}</Paragraph>
                             </li>
                             <li>
-                                <p>{t('monthlyReports')}</p>
+                                <Paragraph>{t('monthlyReports')}</Paragraph>
                             </li>
                             <li>
-                                <p>{t('funds.funds')}</p>
+                                <Paragraph>{t('funds.funds')}</Paragraph>
                             </li>
                         </ul>
                     </div>
@@ -31,16 +32,16 @@ export default function Footer() {
                         </h5>
                         <ul className="menu-gap-y flex flex-col">
                             <li>
-                                <p>{t('proposers')}</p>
+                                <Paragraph>{t('proposers')}</Paragraph>
                             </li>
                             <li>
-                                <p>{t('groups')}</p>
+                                <Paragraph>{t('groups')}</Paragraph>
                             </li>
                             <li>
-                                <p>{t('communities')}</p>
+                                <Paragraph>{t('communities')}</Paragraph>
                             </li>
                             <li>
-                                <p>{t('dReps')}</p>
+                                <Paragraph>{t('dReps')}</Paragraph>
                             </li>
                         </ul>
                     </div>
@@ -48,16 +49,16 @@ export default function Footer() {
                         <h5 className="title-6">{t('data')}</h5>
                         <ul className="menu-gap-y flex flex-col">
                             <li>
-                                <p>{t('numbers')}</p>
+                                <Paragraph>{t('numbers')}</Paragraph>
                             </li>
                             <li>
-                                <p>{t('ccv4Votes')}</p>
+                                <Paragraph>{t('ccv4Votes')}</Paragraph>
                             </li>
                             <li>
-                                <p>{t('catalystAPI')}</p>
+                                <Paragraph>{t('catalystAPI')}</Paragraph>
                             </li>
                             <li>
-                                <p>{t('proposalCSVs')}</p>
+                                <Paragraph>{t('proposalCSVs')}</Paragraph>
                             </li>
                         </ul>
                     </div>
@@ -65,16 +66,16 @@ export default function Footer() {
                         <h5 className="title-6">{t('social')}</h5>
                         <ul className="menu-gap-y flex flex-col">
                             <li>
-                                <p>{t('twitter')}</p>
+                                <Paragraph>{t('twitter')}</Paragraph>
                             </li>
                             <li>
-                                <p>{t('linkedIn')}</p>
+                                <Paragraph>{t('linkedIn')}</Paragraph>
                             </li>
                             <li>
-                                <p>{t('facebook')}</p>
+                                <Paragraph>{t('facebook')}</Paragraph>
                             </li>
                             <li>
-                                <p>{t('github')}</p>
+                                <Paragraph>{t('github')}</Paragraph>
                             </li>
                         </ul>
                     </div>
@@ -82,16 +83,16 @@ export default function Footer() {
                         <h5 className="title-6">{t('legal')}</h5>
                         <ul className="menu-gap-y flex flex-col">
                             <li>
-                                <p>{t('terms')}</p>
+                                <Paragraph>{t('terms')}</Paragraph>
                             </li>
                             <li>
-                                <p>{t('privacy')}</p>
+                                <Paragraph>{t('privacy')}</Paragraph>
                             </li>
                             <li>
-                                <p>{t('cookies')}</p>
+                                <Paragraph>{t('cookies')}</Paragraph>
                             </li>
                             <li>
-                                <p>{t('licenses')}</p>
+                                <Paragraph>{t('licenses')}</Paragraph>
                             </li>
                         </ul>
                     </div>
@@ -106,9 +107,9 @@ export default function Footer() {
                             alt={t('app.appLogoAlt')}
                         />
                     </div>
-                    <p className="text-base font-normal text-gray-300">
+                    <Paragraph className="text-base font-normal text-gray-300">
                         {t('copyright')}
-                    </p>
+                    </Paragraph>
                 </div>
             </section>
         </div>
