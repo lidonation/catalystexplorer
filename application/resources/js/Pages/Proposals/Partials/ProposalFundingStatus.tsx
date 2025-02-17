@@ -31,7 +31,7 @@ export default function ProposalFundingStatus({ funding_status = 'pending' }) {
 
     return (
         <span
-            className={`rounded-md border px-1 py-0.5 text-xs ${textColor} ${bgColor}`}
+            className={`rounded-md border px-1 py-0.5 text-xs inline-flex items-center justify-center ${textColor} ${bgColor}`}
         >
             {status}
         </span>

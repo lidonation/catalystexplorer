@@ -33,6 +33,7 @@ class ProposalRepository extends Repository
                     'ratings_count',
                     'slug',
                     'title',
+                    'funded_at',
                     'funding_status',
                     'groups.id',
                     'groups.name',
