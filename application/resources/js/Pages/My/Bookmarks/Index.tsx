@@ -107,9 +107,7 @@ const Index: React.FC<IndexProps> = ({
 
       <div ref={headerRef} className="px-8 py-4">
         <Title level='1'>{t('My Bookmarks')}</Title>
-        <Paragraph>
-          {t('bookmark')}
-        </Paragraph>
+        <Paragraph children={t('bookmark')}/>
       </div>
 
       {!hasBookmarks ? (
