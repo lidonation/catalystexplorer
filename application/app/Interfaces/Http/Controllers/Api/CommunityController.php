@@ -11,9 +11,25 @@ use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\Routing\ResponseFactory;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Response;
+use Inertia\Inertia;
 
 class CommunityController extends Controller
 {
+    public function index(): \Inertia\Response
+    {
+        $per_page = request('per_page', 24);
+
+        $communities = Community::query()
+            ->filter(request(['search', 'ids']));
+
+        $props = [
+            'communities' => CommunityResource::collection($communities->fastPaginate($per_page)->onEachSide(0)),
+        ];
+
+        return Inertia::render('Communities/Index', $props);
+
+    }
+
     public function community($communityId): \Illuminate\Http\Response|CommunityResource|Application|ResponseFactory
     {
         $community = Community::find($communityId);
