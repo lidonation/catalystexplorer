@@ -8,34 +8,6 @@ Route::localized(
     function () {
         Route::prefix('my')->as('my.')
             ->group(function () {
-                Route::get('/dashboard', function () {
-                    return Inertia::render('Profile/Dashboard');
-                })->name('dashboard');
-
-                Route::get('/profile', function () {
-                    return Inertia::render('Profile/Dashboard');
-                })->name('profile');
-
-                Route::get('/proposals', function () {
-                    return Inertia::render('Profile/Dashboard');
-                })->name('proposals');
-
-                Route::get('/reviews', function () {
-                    return Inertia::render('Profile/Dashboard');
-                })->name('reviews');
-
-                Route::get('/groups', function () {
-                    return Inertia::render('Profile/Dashboard');
-                })->name('groups');
-
-                Route::get('/communities', function () {
-                    return Inertia::render('Profile/Dashboard');
-                })->name('communities');
-
-                Route::get('/list', function () {
-                    return Inertia::render('Profile/Dashboard');
-                })->name('list');
-
                 Route::prefix('bookmarks')->as('bookmarks.')
                     ->group(function () {
                         Route::get('/', [MyBookmarksController::class, 'index'])
