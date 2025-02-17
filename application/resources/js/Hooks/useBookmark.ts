@@ -1,7 +1,7 @@
+import axiosClient from '@/utils/axiosClient';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
-import {router} from "@inertiajs/react";
 
 interface UseBookmarkProps {
     modelType: string;
@@ -18,7 +18,7 @@ export default function useBookmark({ modelType, itemId }: UseBookmarkProps) {
     }, [modelType, itemId]);
     const fetchBookmarkStatus = async () => {
         try {
-            const response = await axios.get(
+            const response = await axiosClient.get(
                 route('api.bookmarks.status', { modelType, hash: itemId }),
             );
             setIsBookmarked(response.data.isBookmarked);
@@ -28,45 +28,14 @@ export default function useBookmark({ modelType, itemId }: UseBookmarkProps) {
         }
     };
 
-    const createBookmark = () => {
-        router.post(
-            route('api.bookmarks.store', { modelType, hash: itemId }),
-            {},
-            {
-                preserveScroll: true,
-                preserveState: true,
-                onSuccess: (page) => {
-                    console.log('Response : ', page.props);
-                    const bookmarkItem = page.props?.bookmarkItem;
-                    if (
-                        bookmarkItem &&
-                        typeof bookmarkItem === 'object' &&
-                        'id' in bookmarkItem
-                    ) {
-                        setIsBookmarked(true);
-                        setBookmarkId(bookmarkItem.id as string);
-                        setIsOpen(true);
-                        toast.success('Bookmark created successfully!', {
-                            className: 'bg-gray-800 text-white',
-                            toastId: 'bookmark-created',
-                        });
-                    }
-                },
-                onError: (errors) => {
-                    console.error('Error creating bookmark:', errors);
-                },
-            },
-        );
-    };
-
-    const createBookmark1 = async () => {
+    const createBookmark = async () => {
         try {
-            const response = await axios.post(
+            const response = await axiosClient.post(
                 route('api.bookmarks.store', { modelType, hash: itemId }),
             );
-            if (response.data.bookmarkItem) {
-                setIsBookmarked(true);
-                setBookmarkId(response.data.bookmarkItem.id);
+            if (response.data.bookmarkItems) {
+                setIsBookmarked(response.data.isBookmarked);
+                setBookmarkId(response.data.bookmarkId);
                 setIsOpen(true);
                 toast.success('Bookmark created successfully!', {
                     className: 'bg-gray-800 text-white',
@@ -81,7 +50,7 @@ export default function useBookmark({ modelType, itemId }: UseBookmarkProps) {
     const removeBookmark = async () => {
         try {
             if (bookmarkId) {
-                await axios.delete(
+                await axiosClient.delete(
                     route('api.bookmarks.remove', {
                         hash: bookmarkId,
                     }),

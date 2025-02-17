@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Services;
 
 use App\Models\Model;
-use App\Models\User;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Sqids\Sqids;
 
@@ -30,6 +29,23 @@ class HashIdService
 
     public function encode($id): string
     {
+
+        if (! is_numeric($id) && is_string($id)) {
+            $decoded = $this->hashIds->decode($id);
+            if (! empty($decoded)) {
+                $id = $decoded[0];
+            }
+        }
+        if (is_numeric($id)) {
+            $id = (int) $id;
+        }
+        if (is_string($id) && ctype_digit($id)) {
+            $id = (int) $id;
+        }
+        if (! is_int($id) || $id < 0) {
+            throw new \Exception('ID must be a non-negative integer'.json_encode($id));
+        }
+
         return $this->hashIds->encode([$id]);
     }
 
@@ -39,23 +55,7 @@ class HashIdService
         if (is_int($hashId)) {
             return $hashId;
         }
-        dd($this->hashIds->decode($hashId));
 
         return $this->hashIds->decode($hashId)[0];
-    }
-    public function show(string $hashedId)
-    {
-        // Decode the hashed ID
-        $userId = (new HashIdService(new User))->decode($hashedId);
-        if (!is_numeric($userId)) {
-            throw new \Exception("Decoded user ID is not a valid integer.");
-        }
-        \Log::info('Decoded User ID:', ['id' => $userId]);
-
-        // Query the database using the decoded numeric ID
-        $user = User::findOrFail($userId);
-        \Log::info('User:', ['user' => $user]);
-
-        return response()->json($user);
     }
 }

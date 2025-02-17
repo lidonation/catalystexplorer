@@ -43,17 +43,18 @@ class HandleInertiaRequests extends Middleware
                 $userId = (new HashIdService(new User))->decode($request->user()->id);
 
                 // Validate the decoded ID
-                if (!is_numeric($userId)) {
-                    throw new \Exception("Decoded user ID is not a valid integer.");
+                if (! is_numeric($userId)) {
+                    throw new \Exception('Decoded user ID is not a valid integer.');
                 }
 
                 // Fetch the user
-                $user = UserData::from(User::findOrFail((int)$userId));
+                $user = UserData::from(User::findOrFail((int) $userId));
             } catch (\Exception $e) {
                 \Log::error('Failed to decode or fetch user:', ['error' => $e->getMessage()]);
                 // Optionally, handle the error (e.g., return a default user or throw an exception)
             }
         }
+
         return [
             ...parent::share($request),
             'locale' => app()->getLocale(),

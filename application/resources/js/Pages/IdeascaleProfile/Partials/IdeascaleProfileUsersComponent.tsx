@@ -32,7 +32,10 @@ export default function IdeascaleProfileUsers({
         <section className={`flex`} aria-labelledby="team-heading">
             <ul className="flex cursor-pointer -space-x-2">
                 {visibleUsers?.map((user) => (
-                    <li key={user.hash} onClick={() => onUserClick(user)}>
+                    <li
+                        key={user.hash ?? `user-${user.name}`}
+                        onClick={() => onUserClick(user)}
+                    >
                         <UserAvatar
                             size="size-8"
                             imageUrl={user.profile_photo_url}
