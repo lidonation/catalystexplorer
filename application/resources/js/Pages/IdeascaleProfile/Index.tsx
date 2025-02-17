@@ -75,7 +75,7 @@ const Index = ({
                 )}
             </FiltersProvider>
         </>
-    );
+    ); test
 };
 
 export default Index;
