@@ -48,17 +48,11 @@ const PaginationComponent: React.FC<PaginationComponentProps<any>> = ({
                     <div>
                         <PaginationItem className="list-none">
                             <PaginationPrevious
-                                href='#'
-                                onClick={
-                                    prev_page_url
-                                        ? () =>
-                                            setPagination(
-                                                ParamsEnum.PAGE,
-                                                current_page - 1,
-                                                'Current Page',
-                                            )
-                                        : () => ''
-                                }
+                                href={prev_page_url ? buildUrl(
+                                    ParamsEnum.PAGE,
+                                    current_page - 1,
+                                    'Current Page',
+                                ): ''}
                                 className={
                                     !prev_page_url
                                         ? 'pointer-events-none opacity-50'
@@ -118,17 +112,11 @@ const PaginationComponent: React.FC<PaginationComponentProps<any>> = ({
                     <div>
                         <PaginationItem className="list-none">
                             <PaginationNext
-                                href='#'
-                                onClick={
-                                    next_page_url
-                                        ? () =>
-                                            setPagination(
-                                                ParamsEnum.PAGE,
-                                                current_page + 1,
-                                                'Current Page',
-                                            )
-                                        : () => ''
-                                }
+                                href={next_page_url ? buildUrl(
+                                    ParamsEnum.PAGE,
+                                    current_page + 1,
+                                    'Current Page',
+                                ): ''}
                                 className={
                                     !next_page_url
                                         ? 'pointer-events-none opacity-50'
