@@ -1,10 +1,13 @@
+import Divider from '@/Components/Divider';
 import { PageProps } from '@/types';
-import {Head, WhenVisible} from '@inertiajs/react';
+import { Head, WhenVisible } from '@inertiajs/react';
 import { useTranslation } from 'react-i18next';
+import { PaginatedData } from '../../../types/paginated-data';
+import ProposalCard from './Partials/ProposalCard';
+import SinglePageCampaignCard from './Partials/SinglePageCampaignCard';
 import FundData = App.DataTransferObjects.FundData;
 import CampaignData = App.DataTransferObjects.CampaignData;
 import ProposalData = App.DataTransferObjects.ProposalData;
-import {PaginatedData} from "../../../types/paginated-data";
 
 interface CampaignPageProps extends Record<string, unknown> {
     fund: FundData;
@@ -12,10 +15,10 @@ interface CampaignPageProps extends Record<string, unknown> {
     proposals: PaginatedData<ProposalData[]>;
 }
 
-export default function Fund({
+export default function Campaign({
     fund,
     campaign,
-    proposals
+    proposals,
 }: PageProps<CampaignPageProps>) {
     const { t } = useTranslation();
 
@@ -23,19 +26,62 @@ export default function Fund({
         <>
             <Head title={fund.title} />
 
-            <div className="relative flex w-full flex-col justify-center gap-8">
-                <section className="container py-8">
-                    <h4 className="title-4">{campaign.title}</h4>
-                </section>
-                <section className="container py-8">
-                    <h4 className="title-4">{t('comingSoon')}</h4>
-                    <div>{JSON.stringify(campaign)}</div>
-                </section>
-                <section className='container py-8'>
-                    <WhenVisible data='proposals' fallback={<div>Loading Proposals...</div>}>
-                        <div>{JSON.stringify(proposals?.data)}</div>
-                    </WhenVisible>
-                </section>
+            <div className="flex w-full flex-col gap-y-4 rounded-lg p-4 lg:gap-y-12 lg:p-8">
+                <div className="relative grid grid-cols-9 gap-6">
+                    <div className="col-span-9 lg:col-span-3">
+                        <SinglePageCampaignCard
+                            fund={fund}
+                            campaign={campaign}
+                        />
+                    </div>
+                    <div className="col-span-9 flex flex-col gap-4 lg:col-span-6">
+                        <div className="bg-background flex flex-col gap-4 rounded-md px-6 py-4">
+                            <div className="align-center flex justify-between">
+                                <div className="text-content title-5">
+                                    {campaign.title}
+                                </div>
+                                <button className="bg-primary text-primary-light rounded-sm px-4 py-2 font-semibold">
+                                    {t('Submit a Proposal')}
+                                </button>
+                            </div>
+                            <Divider />
+                            <div className="flex justify-center gap-2">
+                                <div className="text-content text-2xl">
+                                    {campaign.excerpt}
+                                </div>
+                                <div className="text-primary boarder-primary title-5 flex h-8 w-12 items-center justify-center rounded-full border border-4 font-bold">
+                                    +
+                                </div>
+                            </div>
+                        </div>
+                        <WhenVisible
+                            data="proposals"
+                            fallback={<div>Loading Proposals...</div>}
+                        >
+                            <div className="bg-background rounded-md p-4">
+                                <div className="text-content title-5 px-4 py-2">
+                                    {t('Proposals')}
+                                </div>
+                                <Divider />
+                                <ul className="grid w-full auto-rows-fr gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                                    {proposals?.data &&
+                                        proposals?.data.map(
+                                            (proposal, index) => (
+                                                <li
+                                                    key={index}
+                                                    className="h-full p-4"
+                                                >
+                                                    <ProposalCard
+                                                        proposal={proposal}
+                                                    />
+                                                </li>
+                                            ),
+                                        )}
+                                </ul>
+                            </div>
+                        </WhenVisible>
+                    </div>
+                </div>
             </div>
         </>
     );
