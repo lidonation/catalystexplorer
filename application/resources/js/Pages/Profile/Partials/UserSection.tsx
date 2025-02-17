@@ -31,7 +31,7 @@ const UserSection = ({ user }: UserSectionProps) => {
                     <div className="mt-16">
                         <Image
                             imageUrl={user.profile_photo_url}
-                            size="h-32 w-32 border-4 border-background shadow-lg"
+                            size="h-32 w-32 border-4 border-background shadow-lg" 
                         />
                     </div>
 
