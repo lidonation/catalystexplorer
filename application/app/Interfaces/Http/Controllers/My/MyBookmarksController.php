@@ -19,7 +19,6 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Response;
 use Inertia\Inertia;
 use Inertia\Response as InertiaResponse;
@@ -94,6 +93,9 @@ class MyBookmarksController extends Controller
     public function store(Request $request, string $modelType, int $modelId): JsonResponse
     {
         try {
+            if (! Auth::check()) {
+                return response()->json(['errors' => 'Unauthorized'], 401);
+            }
             if (! BookmarkableType::isValid($modelType)) {
                 return response()->json(['errors' => 'Invalid model types'], 422);
             }
@@ -105,23 +107,26 @@ class MyBookmarksController extends Controller
             DB::beginTransaction();
             $bookmarkItem = BookmarkItem::create([
                 'user_id' => Auth::id(),
-                'model_type' => $modelClass,
+                'model_type' => $modelType,
                 'model_id' => $modelId,
             ]);
             DB::commit();
 
             return response()->json([
-                'message' => 'Bookmark created successfully',
-                'modelType' => $modelType,
-                'bookmarkItem' => $bookmarkItem,
+                'bookmarkId' => $bookmarkItem->getRawOriginal('id'),
+                'isBookmarked' => true,
+                'bookmarkItems' => $bookmarkItem,
+
             ]);
+
         } catch (\Exception $e) {
             DB::rollback();
-            Log::error('Error creating bookmark', ['error' => $e->getMessage()]);
 
             return response()->json([
-                'errors' => 'Failed to create bookmark',
-                'err ' => $e]);
+                'error' => 'Failed to create bookmark',
+                'model_id' => $modelId,
+                'exception' => $e->getMessage(),
+            ], 500);
         }
     }
 
@@ -132,7 +137,7 @@ class MyBookmarksController extends Controller
 
             if ($bookmarkItem->user_id !== Auth::id()) {
                 return response::json([
-                    'errors' => 'Unauthorized action'], 403);
+                    'errors' => 'Unauthorized action'], 401);
             }
 
             $bookmarkItem->delete();
@@ -149,8 +154,9 @@ class MyBookmarksController extends Controller
         }
     }
 
-    public function status(string $modelType, string $modelId): JsonResponse
+    public function status(string $modelType, $id): JsonResponse
     {
+        $modelType = class_basename($modelType);
         if (! BookmarkableType::isValid($modelType)) {
             return response()->json([
                 'error' => 'Invalid model type',
@@ -162,7 +168,7 @@ class MyBookmarksController extends Controller
         $modelName = class_basename($modelClass);
 
         $bookmarkItem = BookmarkItem::where('user_id', Auth::id())
-            ->where('model_id', $modelId)
+            ->where('model_id', $id)
             ->where(fn ($query) => $query->where('model_type', $modelClass)
                 ->orWhere('model_type', $modelName)
             )->first();
@@ -221,7 +227,7 @@ class MyBookmarksController extends Controller
             ]);
 
             $itemData = new BookmarkItemData(
-                id: null,
+                hash: null,
                 user_id: Auth::id(),
                 bookmark_collection_id: $collection->id,
                 model_id: $validated['model_id'],
