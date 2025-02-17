@@ -14,7 +14,7 @@ interface UserProfileProps {
     reviews?: any[];
     groups?: any[];
     communities?: any[];
-    list?: any[];
+    lists?: any[];
 }
 
 export default function UserProfile({}: UserProfileProps) {
@@ -26,20 +26,22 @@ export default function UserProfile({}: UserProfileProps) {
 
     useEffect(() => {
         const currentPath = window.location.pathname;
-        const lastPathSegment = currentPath.split('/').pop() || '';
+        const pathSegments = currentPath.split('/');
+        const lastPathSegment = pathSegments[pathSegments.length - 1];
+        
         const matchingTab = tabs.find(tab => {
-            const routeSegments = tab.routeName.split('.');
-            return routeSegments[routeSegments.length - 1] === lastPathSegment;
+            const tabPath = tab.href.split('/').pop();
+            return tabPath === lastPathSegment;
         });
         
         if (matchingTab) {
             setActiveTab(matchingTab.name);
         }
-    }, [tabs]);
+    }, [window.location.pathname, tabs]);
  
     return (
         <div className="min-h-screen bg-background-lighter px-2">
-            <Head title='Profile' />
+            <Head title={t('profile.title')} />
 
             <div className="bg-background-lighter px-2">
                 <div className="px-1 sm:px-6 lg:px-2 py-8 ml-4">
