@@ -8,6 +8,9 @@ export default function ProposalStatus({
     if (status === 'pending') {
         statusColor = 'bg-primary';
         projectStatus = 'Vote Pending';
+    } else if (funding_status === 'withdrawn') {
+        statusColor = 'bg-light';
+        projectStatus = 'Withdrawn';
     } else if (status === 'complete') {
         statusColor = 'bg-success';
         projectStatus = 'Complete';

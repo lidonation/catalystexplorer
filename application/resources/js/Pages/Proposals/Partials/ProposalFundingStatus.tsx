@@ -7,6 +7,10 @@ export default function ProposalFundingStatus({ funding_status = 'pending' }) {
         bgColor = '';
         textColor = '';
         status = 'Pending';
+    } else if (funding_status === 'withdrawn') {
+        bgColor = '';
+        textColor = '';
+        status = 'Withdrawn';
     } else if (funding_status === 'complete') {
         bgColor = 'bg-success-light';
         textColor = 'text-success';
@@ -30,10 +34,10 @@ export default function ProposalFundingStatus({ funding_status = 'pending' }) {
     }
 
     return (
-        <span
-            className={`rounded-md border px-1 py-0.5 text-xs inline-flex items-center justify-center ${textColor} ${bgColor}`}
+        <div
+            className={`rounded-md border px-1 py-0 text-xs inline-flex items-center justify-center ${textColor} ${bgColor}`}
         >
             {status}
-        </span>
+        </div>
     );
 }
