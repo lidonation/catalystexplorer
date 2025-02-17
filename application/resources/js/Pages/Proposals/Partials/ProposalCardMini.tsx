@@ -45,6 +45,7 @@ export default function ProposalCardMini({
                             funding_status={proposal.funding_status}
                         />
                     </div>
+
                     <ProposalFundingPercentages proposal={proposal}/>
                 </div>
                 <div className="border-t mt-3 border-t-dark/30">

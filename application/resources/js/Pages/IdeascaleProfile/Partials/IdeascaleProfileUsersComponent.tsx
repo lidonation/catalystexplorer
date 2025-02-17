@@ -42,7 +42,7 @@ export default function IdeascaleProfileUsers({
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
         >
-            <ul className="flex cursor-pointer -space-x-2">
+            <ul className="flex cursor-pointer -space-x-2 py-1">
                 {visibleUsers?.map((user, index) => (
                     <li key={index} onClick={() => onUserClick(user)}>
                         <UserAvatar
