@@ -17,7 +17,7 @@ class RatingFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            // 'rating' => 5,
         ];
     }
 }
