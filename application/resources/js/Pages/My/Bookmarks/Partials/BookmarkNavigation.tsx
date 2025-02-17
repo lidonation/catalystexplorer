@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "@inertiajs/react";
 import { useFilterContext } from "@/Context/FiltersContext";
-import { ProposalParamsEnum } from "@/enums/proposal-search-params";
+import { ParamsEnum } from "@/enums/proposal-search-params";
 
 interface BookmarkNavigationProps {
     counts: Record<string, number>;
@@ -24,7 +24,7 @@ const BookmarkNavigation: React.FC<BookmarkNavigationProps> = ({
     isSticky = false
 }) => {
     const { getFilter } = useFilterContext();
-    const searchQuery = getFilter(ProposalParamsEnum.QUERY) || '';
+    const searchQuery = getFilter(ParamsEnum.QUERY) || '';
 
     const filterItems = (items: any[], fields: string[]) => {
         if (!searchQuery) return items;

@@ -1,5 +1,7 @@
 {
     "activeFund": "Active Fund",
+    "addEmail": "Add email",
+    "addYourCity": "Add your city",
     "appMessage": "All Votes must be submitted in the official Catalyst Voting App. This is a research & planning tool only!",
     "articles": "Articles",
     "assetName": "Asset Name",
@@ -122,6 +124,15 @@
             "viewMore": "View more"
         }
     },
+    "my": {
+        "dashboard":"My Dashboard",
+        "profile":"My Profile",
+        "proposals":"My Proposals",
+        "reviews":"My Reviews",
+        "groups":"My Groups",
+        "communities":"My Communities",
+        "lists":"My Lists"
+    },
     "navigation": {
         "mobile": {
             "sidebar": "Mobile sidebar navigation section",
@@ -218,6 +229,7 @@
         "proposalReviews": "Proposal Reviews",
         "CSVs": "Proposal CSVs",
         "totalProposals": "Total Proposals",
+        "viewTeam": "View Team",
         "errors": {
             "noUrl": "No video URL provided",
             "invalidYoutubeFormat": "The YouTube link format is incorrect",
@@ -333,6 +345,7 @@
         "receivedVsAwarded": "Received vs Awarded",
         "reviews": "Reviews",
         "noMembers": "This group has no members",
+        "viewMembers": "View Members",
         "options":{
             "alphabetically": "Alphabetically: A to Z",
             "amountAwardedAdaDesc": "Amount Awarded ADA: High to Low",

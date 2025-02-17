@@ -23,6 +23,7 @@ final class ProposalData extends Data
 
         public ?string $slug,
 
+        #[TypeScriptOptional]
         public ?string $website,
 
         #[TypeScriptOptional]
@@ -31,19 +32,19 @@ final class ProposalData extends Data
         #[TypeScriptOptional]
         public $content,
 
+        #[TypeScriptOptional]
         public ?float $amount_requested,
 
+        #[TypeScriptOptional]
         public ?float $amount_received,
 
         #[TypeScriptOptional]
         public ?string $definition_of_success,
 
-        public ?string $status,
+        public string $status,
 
+        #[TypeScriptOptional]
         public ?string $funding_status,
-
-        //        #[TypeScriptOptional]
-        //        public ?array $meta_data,
 
         #[TypeScriptOptional]
         public ?string $funded_at,
@@ -54,10 +55,13 @@ final class ProposalData extends Data
         #[TypeScriptOptional]
         public ?string $funding_updated_at,
 
+        #[TypeScriptOptional]
         public ?int $yes_votes_count,
 
+        #[TypeScriptOptional]
         public ?int $no_votes_count,
 
+        #[TypeScriptOptional]
         public ?int $abstain_votes_count,
 
         #[TypeScriptOptional]

@@ -1,17 +1,22 @@
+import ToolTipHover from '@/Components/ToolTipHover';
 import UserAvatar from '@/Components/UserAvatar';
 import { PageProps } from '@/types';
 import { useLocalizedRoute } from '@/utils/localizedRoute';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 interface IdeascaleProfileUsers extends Record<string, unknown> {
     users: App.DataTransferObjects.IdeascaleProfileData[];
     onUserClick: (user: App.DataTransferObjects.IdeascaleProfileData) => void;
     className?: string;
+    toolTipProps: any;
 }
 
 export default function IdeascaleProfileUsers({
     users,
     onUserClick,
+    className,
+    toolTipProps,
 }: PageProps<IdeascaleProfileUsers>) {
     const { t } = useTranslation();
 
@@ -28,11 +33,18 @@ export default function IdeascaleProfileUsers({
         window.location.href = finalLink;
     };
 
+    const [isHovered, setIsHovered] = useState(false);
+
     return (
-        <section className={`flex`} aria-labelledby="team-heading">
+        <section
+            className={`relative flex`}
+            aria-labelledby="team-heading"
+            onMouseEnter={() => setIsHovered(true)}
+            onMouseLeave={() => setIsHovered(false)}
+        >
             <ul className="flex cursor-pointer -space-x-2">
-                {visibleUsers?.map((user) => (
-                    <li key={user.hash} onClick={() => onUserClick(user)}>
+                {visibleUsers?.map((user, index) => (
+                    <li key={index} onClick={() => onUserClick(user)}>
                         <UserAvatar
                             size="size-8"
                             imageUrl={user.profile_photo_url}
@@ -41,10 +53,21 @@ export default function IdeascaleProfileUsers({
                 ))}
 
                 {remainingCount > 0 && (
-                    <li>
-                        <div className="bg-content-light flex h-8 w-8 items-center justify-center rounded-full border-2 border-white text-sm text-gray-600" onClick={handleGenerateLink}>
+                    <li className="relative">
+                        <div
+                            className={`${className} flex h-8 w-8 items-center justify-center rounded-full border-2 border-white text-sm text-gray-600`}
+                            onClick={handleGenerateLink}
+                            onMouseEnter={() => setIsHovered(true)}
+                            onMouseLeave={() => setIsHovered(false)}
+                        >
                             {`+${remainingCount}`}
                         </div>
+
+                        {isHovered && (
+                            <div className="absolute bottom-full left-1/2 z-50 mb-2 -translate-x-1/2 transform">
+                                <ToolTipHover props={toolTipProps} />
+                            </div>
+                        )}
                     </li>
                 )}
             </ul>

@@ -12,8 +12,9 @@ import FundFiltersContainer from '../Proposals/Partials/FundFiltersContainer';
 import GroupCardLoader from './Partials/GroupCardMiniLoader';
 import GroupFilters from './Partials/GroupFilters';
 import GroupList from './Partials/GroupList';
-import GroupSearchControls from './Partials/GroupSearchControls';
 import GroupData = App.DataTransferObjects.GroupData;
+import SearchControls from '@/Components/atoms/SearchControls';
+import GroupSortingOptions from '@/lib/GroupSortOptions';
 
 interface GroupsPageProps extends Record<string, unknown> {
     groups: PaginatedData<GroupData[]>;
@@ -59,8 +60,11 @@ const Index: React.FC<GroupsPageProps> = ({
                     <Head title="Groups" />
 
                     <header>
-                        <div className="container">
+                        <div className="container py-2">
                             <Title level="1">{t('groups.title')}</Title>
+                            <p className="text-content">
+                        {t('groups.subtitle')}
+                    </p>
                         </div>
                     </header>
 
@@ -68,7 +72,7 @@ const Index: React.FC<GroupsPageProps> = ({
                         <FundFiltersContainer funds={funds} />
                     </section>
 
-                    <GroupSearchControls onFiltersToggle={setShowFilters} />
+                    <SearchControls onFiltersToggle={setShowFilters} sortOptions={GroupSortingOptions()}/>
 
                     <section
                         className={`container flex w-full flex-col items-center justify-center overflow-hidden transition-[max-height] duration-500 ease-in-out ${
