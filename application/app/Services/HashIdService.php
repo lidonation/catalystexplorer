@@ -29,21 +29,11 @@ class HashIdService
 
     public function encode($id): string
     {
-
         if (! is_numeric($id) && is_string($id)) {
             $decoded = $this->hashIds->decode($id);
             if (! empty($decoded)) {
                 $id = $decoded[0];
             }
-        }
-        if (is_numeric($id)) {
-            $id = (int) $id;
-        }
-        if (is_string($id) && ctype_digit($id)) {
-            $id = (int) $id;
-        }
-        if (! is_int($id) || $id < 0) {
-            throw new \Exception('ID must be a non-negative integer'.json_encode($id));
         }
 
         return $this->hashIds->encode([$id]);
@@ -51,7 +41,6 @@ class HashIdService
 
     public function decode($hashId): int
     {
-
         if (is_int($hashId)) {
             return $hashId;
         }

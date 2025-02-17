@@ -2,7 +2,7 @@ import { RangePicker } from '@/Components/RangePicker';
 import { SearchSelect } from '@/Components/SearchSelect';
 import Selector from '@/Components/atoms/Selector';
 import { useFilterContext } from '@/Context/FiltersContext'; // Import the custom hook
-import { ProposalParamsEnum } from '@/enums/proposal-search-params';
+import { ParamsEnum } from '@/enums/proposal-search-params';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import FundingStatusToggle from './FundingStatusToggle';
@@ -11,7 +11,7 @@ export default function IdeascaleProfilesFilters() {
     const { t } = useTranslation();
     const { filters, setFilters, getFilter } = useFilterContext();
     const [fundingStatus, setFundingStatus] = useState(
-        getFilter(ProposalParamsEnum.FUNDING_STATUS)?.[0] == 'funded'
+        getFilter(ParamsEnum.FUNDING_STATUS)?.[0] == 'funded'
             ? true
             : false,
     );
@@ -23,12 +23,12 @@ export default function IdeascaleProfilesFilters() {
         setFilters({
             label: t('proposals.filters.fundingStatus'),
             value: newFundingStatus ? ['funded'] : ['unfunded'],
-            param: ProposalParamsEnum.FUNDING_STATUS,
+            param: ParamsEnum.FUNDING_STATUS,
         });
     };
 
     return (
-        <div className="bg-background container w-full rounded-xl p-4 shadow-md">
+        <div className="bg-background container w-full rounded-xl shadow-md mb-8 p-4">
             <div className="grid grid-cols-2 items-center gap-4 lg:grid-cols-5 lg:gap-8">
                 <div>
                     <span className="mb-1 block text-sm font-medium">
@@ -37,12 +37,12 @@ export default function IdeascaleProfilesFilters() {
                     <SearchSelect
                         key={'fund-titles'}
                         domain={'fundTitles'}
-                        selected={getFilter(ProposalParamsEnum.FUNDS) ?? []}
+                        selected={getFilter(ParamsEnum.FUNDS) ?? []}
                         onChange={(value) =>
                             setFilters({
                                 label: t('ideascaleProfiles.limitFunds'),
                                 value,
-                                param: ProposalParamsEnum.FUNDS,
+                                param: ParamsEnum.FUNDS,
                             })
                         }
                         placeholder="Select"
@@ -74,11 +74,11 @@ export default function IdeascaleProfilesFilters() {
                             setFilters({
                                 label: t('proposals.filters.projectStatus'),
                                 value,
-                                param: ProposalParamsEnum.PROJECT_STATUS,
+                                param: ParamsEnum.PROJECT_STATUS,
                             })
                         }
                         selectedItems={getFilter(
-                            ProposalParamsEnum.PROJECT_STATUS,
+                            ParamsEnum.PROJECT_STATUS,
                         )}
                     />
                 </div>
@@ -90,12 +90,12 @@ export default function IdeascaleProfilesFilters() {
                     <SearchSelect
                         key={'tags'}
                         domain={'tags'}
-                        selected={getFilter(ProposalParamsEnum.TAGS) ?? []}
+                        selected={getFilter(ParamsEnum.TAGS) ?? []}
                         onChange={(value) =>
                             setFilters({
                                 label: t('proposals.filters.tags'),
                                 value,
-                                param: ProposalParamsEnum.TAGS,
+                                param: ParamsEnum.TAGS,
                             })
                         }
                         placeholder="Select"
@@ -113,15 +113,15 @@ export default function IdeascaleProfilesFilters() {
                         key={'Budgets'}
                         context={t('proposals.filters.budgets')}
                         value={
-                            getFilter(ProposalParamsEnum.BUDGETS)?.length == 0
+                            getFilter(ParamsEnum.BUDGETS)?.length == 0
                                 ? budgetRange
-                                : getFilter(ProposalParamsEnum.BUDGETS)
+                                : getFilter(ParamsEnum.BUDGETS)
                         }
                         onValueChange={(value) =>
                             setFilters({
                                 label: t('proposals.filters.budgets'),
                                 value,
-                                param: ProposalParamsEnum.BUDGETS,
+                                param: ParamsEnum.BUDGETS,
                             })
                         }
                         max={budgetRange[1]}

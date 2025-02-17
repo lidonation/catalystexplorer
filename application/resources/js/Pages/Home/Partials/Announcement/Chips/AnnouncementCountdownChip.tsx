@@ -7,6 +7,7 @@ import {
 import { useScreenDimension } from '@/Hooks/useScreenDimension';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import Paragraph from '@/Components/atoms/Paragraph';
 
 interface AnnouncementCountdownChipProps {
     event_starts_at: string;
@@ -41,7 +42,7 @@ const AnnouncementCountdownChip = ({
 }: AnnouncementCountdownChipProps) => {
     const [timeRemaining, setTimeRemaining] = useState<number>(0);
     const { isMobile } = useScreenDimension();
-    const {t} =useTranslation();
+    const {t} = useTranslation();
 
     useEffect(() => {
         const calculateTimeRemaining = () => {
@@ -81,7 +82,7 @@ const AnnouncementCountdownChip = ({
                 delayDuration={isMobile ? 0 : 150}
                 disableHoverableContent={isMobile}
             >
-                <Tooltip >
+                <Tooltip>
                     <TooltipTrigger asChild>
                         <div
                             className="shadow-2xs text-4 inline-flex items-center text-nowrap rounded-md border border-border-secondary px-2 text-content"
@@ -92,9 +93,9 @@ const AnnouncementCountdownChip = ({
                         </div>
                     </TooltipTrigger>
                     <TooltipContent side="bottom">
-                        <p>
+                        <Paragraph size="sm">
                             {t('announcements.timeRemaining')}
-                        </p>
+                        </Paragraph>
                     </TooltipContent>
                 </Tooltip>
             </TooltipProvider>

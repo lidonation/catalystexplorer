@@ -28,8 +28,9 @@ const GroupCardMini: React.FC<GroupCardMiniProps> = ({ group }) => {
 
     const noAwardedFunds =
         !group?.amount_awarded_ada && !group?.amount_awarded_usd;
-    const allAwardedFunds =
-        group?.amount_awarded_ada && group?.amount_awarded_usd;
+    const allAwardedFunds = !!(
+        group?.amount_awarded_ada && group?.amount_awarded_usd
+    );
 
     return (
         group && (
@@ -73,16 +74,20 @@ const GroupCardMini: React.FC<GroupCardMiniProps> = ({ group }) => {
 
                 <div>
                     <div
-                        className={`grid ${noAwardedFunds || allAwardedFunds ? 'grid-cols-2' : 'grid-cols-1'} mt-4 gap-2`}
+                        className={`grid ${noAwardedFunds || allAwardedFunds ? 'grid-cols-2' : 'grid-cols-1'} mt-4 gap-4`}
                     >
                         {(group?.amount_awarded_ada || noAwardedFunds) && (
-                            <GroupFundingPercentages
-                                amount={group?.amount_distributed_ada ?? 0}
-                                total={group?.amount_awarded_ada ?? 0}
-                                primaryBackgroundColor="bg-content-light"
-                                secondaryBackgroundColor="bg-primary"
-                                amount_currency="ADA"
-                            />
+                            <div>
+                                <GroupFundingPercentages
+                                    amount={group?.amount_distributed_ada ?? 0}
+                                    total={group?.amount_awarded_ada ?? 0}
+                                    primaryBackgroundColor="bg-content-light"
+                                    secondaryBackgroundColor="bg-primary"
+                                    amount_currency="ADA"
+                                    isMini={true}
+                                    twoColumns={noAwardedFunds || allAwardedFunds}
+                                />
+                            </div>
                         )}
                         {(group?.amount_awarded_usd || noAwardedFunds) && (
                             <GroupFundingPercentages
@@ -91,21 +96,25 @@ const GroupCardMini: React.FC<GroupCardMiniProps> = ({ group }) => {
                                 primaryBackgroundColor="bg-content-light"
                                 secondaryBackgroundColor="bg-primary-dark"
                                 amount_currency="USD"
+                                isMini={true}
+                                twoColumns={noAwardedFunds || allAwardedFunds}
+
                             />
                         )}
                     </div>
-                    <p className="text-gray-persist">{t('groups.received')}</p>
                 </div>
 
                 <div className="border-content-light mt-2 flex items-center justify-between border-t pt-3">
                     {group?.ideascale_profiles &&
-                    group?.ideascale_profiles.length > 0 && (
-                        <IdeascaleProfileUsers
-                            users={group?.ideascale_profiles || []}
-                            onUserClick={handleUserClick}
-                        />
-                    )}
-                    <div className='ml-auto'>
+                        group?.ideascale_profiles.length > 0 && (
+                            <IdeascaleProfileUsers
+                                users={group?.ideascale_profiles || []}
+                                onUserClick={handleUserClick}
+                                className="bg-primary text-light-persist"
+                                toolTipProps={t('groups.viewMembers')}
+                            />
+                        )}
+                    <div className="ml-auto">
                         <GroupSocials group={group} />
                     </div>
                 </div>

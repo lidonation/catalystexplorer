@@ -16,7 +16,6 @@ import { Dialog } from '@headlessui/react';
 import { usePage } from '@inertiajs/react';
 import { ReactNode, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import MainLayout from './RootLayout';

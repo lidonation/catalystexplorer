@@ -16,6 +16,7 @@ import { SearchParams } from '../../../types/search-params';
 import { FiltersProvider } from '@/Context/FiltersContext';
 import ProfileWorkflow from "./Partials/ProfileWorkflow";
 import Title from '@/Components/atoms/Title';
+import Paragraph from '@/Components/atoms/Paragraph'; // Added import for Paragraph component
 
 
 interface CompletedProjectNftsPageProps extends Record<string, unknown> {
@@ -89,9 +90,9 @@ export default function Index({
                     <Title className="mb-4 text-3xl md:text-4xl">
                         {t("completedProjectNfts.title")}
                     </Title>
-                    <p className="text-base md:text-lg">
+                    <Paragraph className="text-base md:text-lg">
                         {t("completedProjectNfts.subtitle")}
-                    </p>
+                    </Paragraph>
                 </div>
             </header>
 
@@ -120,12 +121,12 @@ export default function Index({
                 </div>
 
                 <div className="max-w-3xl mx-auto mt-8">
-                    <p className="text-sm text-center">
+                    <Paragraph className="text-sm text-center">
                         {t("completedProjectNfts.description")}{" "}
                         <a href="/hello-its-nashon" className="ml-1 underline">
                             {t("completedProjectNfts.artistStatement")}
                         </a>
-                    </p>
+                    </Paragraph>
                 </div>
             </section>
 
@@ -138,7 +139,7 @@ export default function Index({
 
                 {currentStep === 2 && user && <ProfileWorkflow user={user} />}
 
-                {currentStep === 3 && <p>Form 3</p>}
+                {currentStep === 3 && <Paragraph>Form 3</Paragraph>}
 
                 <StepTracker totalSteps={3} currentStep={currentStep} />
             </div>

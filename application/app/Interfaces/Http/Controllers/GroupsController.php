@@ -58,9 +58,7 @@ class GroupsController extends Controller
 
     public array $tagsCount = [];
 
-    public array $fundsCount = [];
-
-    public int $proposalsCount = 0;
+    public array $proposalsCount = [];
 
     public array $totalAwardedAda = [];
 
@@ -78,9 +76,15 @@ class GroupsController extends Controller
             'sort' => "{$this->sortBy}:{$this->sortOrder}",
             'filters' => $this->queryParams,
             'filterCounts' => [
-                'proposalsCount' => array_sum($this->fundsCount),
-                'totalAwardedAda' => array_sum($this->totalAwardedAda),
-                'totalAwardedUsd' => array_sum($this->totalAwardedUsd),
+                'proposalsCount' => ! empty($this->proposalsCount)
+                    ? round(max(array_keys($this->proposalsCount)), -1)
+                    : 0,
+                'totalAwardedAda' => ! empty($this->totalAwardedAda)
+                    ? max($this->totalAwardedAda)
+                    : 0,
+                'totalAwardedUsd' => ! empty($this->totalAwardedUsd)
+                    ? max($this->totalAwardedUsd)
+                    : 0,
             ],
         ];
 
@@ -95,15 +99,17 @@ class GroupsController extends Controller
                 'funded_proposals',
                 'unfunded_proposals',
                 'completed_proposals',
-            ])->append([
-                'amount_awarded_ada',
-                'amount_awarded_usd',
-                'amount_requested_ada',
-                'amount_requested_usd',
-                'amount_distributed_ada',
-                'amount_distributed_usd',
-                'connected_items',
-            ]);
+            ])->append(
+                [
+                    'amount_awarded_ada',
+                    'amount_awarded_usd',
+                    'amount_requested_ada',
+                    'amount_requested_usd',
+                    'amount_distributed_ada',
+                    'amount_distributed_usd',
+                    'connected_items',
+                ]
+            );
 
         $connections = $this->getConnectionsData($request, $group->id, $group->hash);
 
@@ -400,8 +406,8 @@ class GroupsController extends Controller
             $this->tagsCount = $facets['tags.id'];
         }
 
-        if (isset($facets['proposals.fund.title']) && count($facets['proposals.fund.title'])) {
-            $this->fundsCount = $facets['proposals.fund.title'];
+        if (isset($facets['proposals_count']) && count($facets['proposals_count'])) {
+            $this->proposalsCount = $facets['proposals_count'];
         }
 
         if (isset($facets['amount_awarded_ada']) && count($facets['amount_awarded_ada'])) {

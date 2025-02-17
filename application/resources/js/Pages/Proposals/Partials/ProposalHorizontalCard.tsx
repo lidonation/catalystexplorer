@@ -90,6 +90,8 @@ export default function ProposalHorizontalCard({
                     <IdeascaleProfileUsers
                         users={proposal?.users}
                         onUserClick={handleUserClick}
+                        className='bg-content-light'
+                        toolTipProps={t('proposals.viewTeam')}
                     />
                 </div>
 

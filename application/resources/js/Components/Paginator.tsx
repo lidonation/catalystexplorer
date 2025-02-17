@@ -5,7 +5,7 @@ import {
     PaginationPrevious,
 } from '@/Components/Pagination';
 import { useFilterContext } from '@/Context/FiltersContext';
-import { ProposalParamsEnum } from '@/enums/proposal-search-params';
+import { ParamsEnum } from '@/enums/proposal-search-params';
 import React from 'react';
 import { PaginatedData } from '../../types/paginated-data';
 import { cn } from '@/lib/utils';
@@ -45,7 +45,7 @@ const PaginationComponent: React.FC<PaginationComponentProps<any>> = ({
                                     prev_page_url
                                         ? () =>
                                             setPagination(
-                                                ProposalParamsEnum.PAGE,
+                                                ParamsEnum.PAGE,
                                                 current_page - 1,
                                                 'Current Page',
                                             )
@@ -77,7 +77,7 @@ const PaginationComponent: React.FC<PaginationComponentProps<any>> = ({
                                                     <button
                                                         onClick={() =>
                                                             setPagination(
-                                                                ProposalParamsEnum.PAGE,
+                                                                ParamsEnum.PAGE,
                                                                 link.label,
                                                                 'Current Page',
                                                             )
@@ -116,7 +116,7 @@ const PaginationComponent: React.FC<PaginationComponentProps<any>> = ({
                                     next_page_url
                                         ? () =>
                                             setPagination(
-                                                ProposalParamsEnum.PAGE,
+                                                ParamsEnum.PAGE,
                                                 current_page + 1,
                                                 'Current Page',
                                             )

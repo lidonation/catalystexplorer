@@ -1,5 +1,4 @@
 import axiosClient from '@/utils/axiosClient';
-import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 
