@@ -1,10 +1,11 @@
+import TextInput from '@/Components/atoms/TextInput';
 import useEscapeKey from '@/Hooks/useEscapeKey';
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import Button from './atoms/Button';
 import CloseIcon from './svgs/CloseIcon';
 import SearchLensIcon from './svgs/SearchLensIcon';
-import TextInput from "@/Components/atoms/TextInput";
+import { router } from '@inertiajs/react';
 
 interface SearchBarProps {
     autoFocus?: boolean;
@@ -41,10 +42,13 @@ const SearchBar = ({
         handleSearch(newValue);
     };
 
-    const handleClear = () => {
-        setSearchQuery('');
-        handleSearch('');
-    };
+
+const handleClear = useCallback(() => {
+    setSearchQuery('');
+    handleSearch('');
+
+    router.get(window.location.pathname, {}, { replace: true });
+}, []);
 
     return (
         <div className="w-full">
