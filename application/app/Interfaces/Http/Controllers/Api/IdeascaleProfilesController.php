@@ -9,7 +9,7 @@ use App\Interfaces\Http\Resources\IdeascaleProfileResource;
 use App\Models\IdeascaleProfile;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\Routing\ResponseFactory;
-use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -46,41 +46,12 @@ class IdeascaleProfilesController extends Controller
         return IdeascaleProfileResource::collection($ideascaleProfiles->fastPaginate($per_page)->onEachSide(0));
     }
 
-    public function connections(IdeascaleProfile $profile): JsonResponse
+    public function connections(Request $request, int $id): array
     {
-        if (! $profile) {
-            return response()->json([
-                'errors' => 'Profile not found',
-            ], Response::HTTP_NOT_FOUND);
-        }
+        $ideascaleProfile = IdeascaleProfile::findOrFail($id);
 
-        $nodes = $profile->connectedGroupsAndUsers()
-            ->map(fn ($item) => [
-                'id' => $item->id,
-                'name' => $item->name ?? 'Unnamed',
-                'color' => $item instanceof IdeascaleProfile ? 'rgb(97, 205, 187)' : 'rgb(232, 193, 160)',
-                'profilePhotoUrl' => $item->profilePhotoUrl,
-                'size' => 24,
-                'height' => 1,
-            ]);
+        $connections = $ideascaleProfile->getConnectionsData($request);
 
-        $links = $profile->connections()->get()->map(fn ($connection) => [
-            'source' => $connection->previous_model_id,
-            'target' => $connection->next_model_id,
-            'distance' => 100,
-        ]);
-
-        if ($links->isEmpty()) {
-            return response()->json([
-                'message' => 'No connections found.',
-                'nodes' => $nodes->toArray(),
-                'links' => [],
-            ]);
-        }
-
-        return response()->json([
-            'nodes' => $nodes->toArray(),
-            'links' => $links->toArray(),
-        ]);
+        return $connections;
     }
 }

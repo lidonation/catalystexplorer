@@ -9,6 +9,7 @@ use Spatie\Enum\Laravel\Enum;
 /**
  * @method static self IDEASCALEPROFILE()
  * @method static self GROUP()
+ * @method static self COMMUNITY()
  */
 final class CatalystConnectionParams extends Enum
 {
@@ -17,6 +18,7 @@ final class CatalystConnectionParams extends Enum
         return [
             'IDEASCALEPROFILE' => 'ip',
             'GROUP' => 'g',
+            'COMMUNITY' => 'c',
         ];
     }
 }

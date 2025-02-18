@@ -1,15 +1,22 @@
-import {PageProps} from '@/types';
-import {Head} from '@inertiajs/react';
-import {useTranslation} from 'react-i18next';
+import { PageProps } from '@/types';
+import { Head, WhenVisible } from '@inertiajs/react';
+import { useTranslation } from 'react-i18next';
+import Title from '@/Components/atoms/Title';
 import IdeascaleProfilesData = App.DataTransferObjects.IdeascaleProfileData;
-import IdeascaleProfileCard from "@/Pages/IdeascaleProfile/Partials/IdeascaleProfileCard";
+import ConnectionData = App.DataTransferObjects.ConnectionData;
+import Graph from '../../Components/Graph';
+import IdeascaleProfileCard from './Partials/IdeascaleProfileCard';
 
 interface IdeascaleProfilesPageProps extends Record<string, unknown> {
     ideascaleProfile: IdeascaleProfilesData;
+    connections: ConnectionData;
 }
 
-const IdeascaleProfile = ({ideascaleProfile}: PageProps<IdeascaleProfilesPageProps>) => {
-    const {t} = useTranslation();
+const IdeascaleProfile = ({
+    ideascaleProfile,
+    connections
+}: PageProps<IdeascaleProfilesPageProps>) => {
+    const { t } = useTranslation();
 
     return (
         <>
@@ -20,12 +27,27 @@ const IdeascaleProfile = ({ideascaleProfile}: PageProps<IdeascaleProfilesPagePro
                     <IdeascaleProfileCard ideascaleProfile={ideascaleProfile} />
                 </section>
 
+
                 <section className="container py-8">
                     <h4 className="title-4">{t('comingSoon')}</h4>
                     <div>{JSON.stringify(ideascaleProfile)}</div>
                 </section>
             </div>
 
+            <WhenVisible
+                data="connections"
+                fallback={<div>Loading Connections</div>}
+            >
+                <div className="w-full px-8 ">
+                    <Title level="2">Connections</Title>
+
+                    {typeof connections !== 'undefined' && (
+                        <div className="w-full">
+                            <Graph graphData={connections} />
+                        </div>
+                    )}
+                </div>
+            </WhenVisible>
         </>
     );
 };
