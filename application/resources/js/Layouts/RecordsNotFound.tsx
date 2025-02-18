@@ -2,7 +2,7 @@ import RecordsNotFoundIcon from '@/Components/svgs/RecordsNotFoundIcon';
 import { useTranslation } from 'react-i18next';
 
 type RecordsNotFoundProps = {
-    context?: 'proposals' | 'profiles' | 'groups' | 'reviews' | 'bookmarks' | 'search';
+    context?: 'proposals' | 'profiles' | 'groups' | 'reviews' | 'bookmarks' | 'search' | 'communities';
     searchTerm?: string;
 };
 
