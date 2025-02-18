@@ -6,6 +6,7 @@ import PrimaryButton from "../../../Components/atoms/PrimaryButton";
 import { useTranslation } from "react-i18next";
 import { FormEventHandler, useState } from "react";
 import axios from "axios";
+import {useLocalizedRoute} from "@/utils/localizedRoute";
 
 interface FormErrors {
     name?: string;
@@ -30,7 +31,7 @@ export default function RegisterForm() {
 
         post(route('register'), {
             onFinish: () => reset('password', 'password_confirmation'),
-            onSuccess: () => router.visit(route('my.dashboard')),
+            onSuccess: () => router.visit(useLocalizedRoute('my.dashboard')),
         })
     };
 
