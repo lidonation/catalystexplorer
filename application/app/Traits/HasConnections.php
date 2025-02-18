@@ -9,15 +9,18 @@ use App\Models\Community;
 use App\Models\Connection;
 use App\Models\Group;
 use App\Models\IdeascaleProfile;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Http\Request;
 
 trait HasConnections
 {
-    public function getConnectedItemsAttribute(): array
+    protected function connectedItems(): Attribute
     {
-        return $this->getConnectionsData();
+        return Attribute::make(
+            get: fn () => $this->getConnectionsData()
+        );
     }
 
     public function getConnectionsData(?Request $request = null): array
