@@ -4,11 +4,13 @@ import {
     PaginationNext,
     PaginationPrevious,
 } from '@/Components/Pagination';
-import { useFilterContext } from '@/Context/FiltersContext';
 import { ParamsEnum } from '@/enums/proposal-search-params';
+import { useFilterContext } from '@/Context/FiltersContext';
 import React from 'react';
 import { PaginatedData } from '../../types/paginated-data';
+import { Link } from '@inertiajs/react';
 import { cn } from '@/lib/utils';
+
 
 type PaginationComponentProps<T> = {
     pagination: PaginatedData<T>;
@@ -17,14 +19,19 @@ type PaginationComponentProps<T> = {
 const PaginationComponent: React.FC<PaginationComponentProps<any>> = ({
     pagination,
 }) => {
-    const { setFilters } = useFilterContext();
+    const { setFilters, getFilters } = useFilterContext();
 
     const setPagination = (param: string, value: number, label: string) => {
         setFilters({ param, value, label });
     };
 
+    const buildUrl = (param: string, value: number, label: string) => {
+        return getFilters({param, value, label})
+    };
+
     let {
         current_page,
+        per_page,
         links,
         prev_page_url,
         next_page_url,
@@ -41,16 +48,11 @@ const PaginationComponent: React.FC<PaginationComponentProps<any>> = ({
                     <div>
                         <PaginationItem className="list-none">
                             <PaginationPrevious
-                                onClick={
-                                    prev_page_url
-                                        ? () =>
-                                            setPagination(
-                                                ParamsEnum.PAGE,
-                                                current_page - 1,
-                                                'Current Page',
-                                            )
-                                        : () => ''
-                                }
+                                href={prev_page_url ? buildUrl(
+                                    ParamsEnum.PAGE,
+                                    current_page - 1,
+                                    'Current Page',
+                                ): ''}
                                 className={
                                     !prev_page_url
                                         ? 'pointer-events-none opacity-50'
@@ -74,14 +76,12 @@ const PaginationComponent: React.FC<PaginationComponentProps<any>> = ({
                                                 {link.label === '...' ? (
                                                     <PaginationEllipsis />
                                                 ) : (
-                                                    <button
-                                                        onClick={() =>
-                                                            setPagination(
-                                                                ParamsEnum.PAGE,
-                                                                link.label,
-                                                                'Current Page',
-                                                            )
-                                                        }
+                                                    <Link
+                                                        href={buildUrl(
+                                                            ParamsEnum.PAGE,
+                                                            link.label,
+                                                            'Current Page',
+                                                        )}
                                                         aria-current={
                                                             link.active
                                                                 ? 'page'
@@ -95,7 +95,7 @@ const PaginationComponent: React.FC<PaginationComponentProps<any>> = ({
                                                         )}
                                                     >
                                                         {link.label}
-                                                    </button>
+                                                    </Link>
                                                 )}
                                             </PaginationItem>
                                         ),
@@ -112,16 +112,11 @@ const PaginationComponent: React.FC<PaginationComponentProps<any>> = ({
                     <div>
                         <PaginationItem className="list-none">
                             <PaginationNext
-                                onClick={
-                                    next_page_url
-                                        ? () =>
-                                            setPagination(
-                                                ParamsEnum.PAGE,
-                                                current_page + 1,
-                                                'Current Page',
-                                            )
-                                        : () => ''
-                                }
+                                href={next_page_url ? buildUrl(
+                                    ParamsEnum.PAGE,
+                                    current_page + 1,
+                                    'Current Page',
+                                ): ''}
                                 className={
                                     !next_page_url
                                         ? 'pointer-events-none opacity-50'

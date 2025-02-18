@@ -5,6 +5,7 @@ import TextInput from '@/Components/atoms/TextInput';
 import { useList } from '@/Context/ListContext';
 import { useState } from 'react';
 import { TransitionListPageProps } from '../../../../../../types/general';
+import Paragraph from '@/Components/atoms/Paragraph';
 
 const BookmarkPage2 = ({ onNavigate }: TransitionListPageProps) => {
     const { addList, isAddingList } = useList();
@@ -47,7 +48,7 @@ const BookmarkPage2 = ({ onNavigate }: TransitionListPageProps) => {
                     className="flex items-center gap-2 px-3 py-2 font-bold text-content"
                 >
                     <ArrowLeftIcon />
-                    <p>New List</p>
+                    <Paragraph size="md">New List</Paragraph>
                 </button>
             </div>
             <section className="flex flex-col gap-3 px-3">
@@ -87,7 +88,9 @@ const BookmarkPage2 = ({ onNavigate }: TransitionListPageProps) => {
                     />
                 </div>
                 {error && (
-                    <p className="text-sm text-red-600">{error.message}</p>
+                    <Paragraph size="sm" className="text-red-600">
+                        {error.message}
+                    </Paragraph>
                 )}
 
                 <PrimaryButton
@@ -101,4 +104,5 @@ const BookmarkPage2 = ({ onNavigate }: TransitionListPageProps) => {
         </div>
     );
 };
+
 export default BookmarkPage2;

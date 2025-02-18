@@ -11,7 +11,7 @@ interface GroupCardFullProps {
     group: GroupData;
 }
 
-const GroupCardFull: React.FC<GroupCardFullProps> = ({ group }) => {
+const GroupCardExtended: React.FC<GroupCardFullProps> = ({ group }) => {
     const { t } = useTranslation();
 
     const segments = [
@@ -45,6 +45,7 @@ const GroupCardFull: React.FC<GroupCardFullProps> = ({ group }) => {
     return (
         <div className="bg-background flex h-full w-full flex-col rounded-lg shadow-md">
             <GroupHeroSection group={group} />
+
             <div className="mt-4 p-3">
                 <div className="flex w-full flex-col items-center gap-4">
                     <p className="text-lg font-bold">{group?.name}</p>
@@ -162,7 +163,7 @@ const GroupCardFull: React.FC<GroupCardFullProps> = ({ group }) => {
                             />
                         )}
                     </div>
-                    
+
                     <p className="text-3 text-gray-persist mt-1">
                         {t('groups.receivedVsAwarded')}
                     </p>
@@ -172,4 +173,4 @@ const GroupCardFull: React.FC<GroupCardFullProps> = ({ group }) => {
     );
 };
 
-export default GroupCardFull;
+export default GroupCardExtended;

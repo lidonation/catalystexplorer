@@ -1,27 +1,24 @@
-import Title from '@/Components/atoms/Title';
+import React from 'react';
 import { Head } from '@inertiajs/react';
+import { useTranslation } from 'react-i18next';
+import MyLayout from "@/Pages/My/MyLayout";
 
-const Index = () => {
+interface MyListProps {
+    notSureWhatThisIs?: any[];
+}
+
+export default function MyList({}: MyListProps) {
+    const { t } = useTranslation();
+
     return (
-        <>
-            <Head title="Jormungandr"/>
+        <MyLayout >
+            <Head title="My List" />
 
-            <header>
-                <div className='container'>
-                    <Title level='1'>My Lists</Title>
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                <div className="text-center text-content">
+                    {t('my.lists')} {t('comingSoon')}
                 </div>
-                <div className='container'>
-                    <p className="text-content">
-                        Your, research, and voting lists.
-                    </p>
-                </div>
-            </header>
-
-            <div className="flex h-screen w-full flex-col items-center justify-center">
-                <Title level='2'>Coming Soon</Title>
             </div>
-        </>
+        </MyLayout>
     );
-};
-
-export default Index;
+}

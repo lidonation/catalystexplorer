@@ -26,7 +26,7 @@ Route::prefix('api')->as('api.')->group(function () {
 
     Route::prefix('bookmark-items')->as('bookmarks.')
         ->group(function () {
-            Route::post('/{modelType}/{hash}', [MyBookmarksController::class, 'store'])
+            Route::post('/{modelType}/{hash}', [MyBookmarksController::class, 'store'])->middleware('auth')
                 ->name('store');
             Route::delete('/{hash}', [MyBookmarksController::class, 'delete'])
                 ->name('remove');

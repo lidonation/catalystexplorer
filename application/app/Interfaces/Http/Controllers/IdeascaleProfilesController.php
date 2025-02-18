@@ -30,10 +30,10 @@ class IdeascaleProfilesController extends Controller
     public function index(Request $request): Response
     {
         $this->getProps($request);
-        $profiles = $this->query();
 
         return Inertia::render('IdeascaleProfile/Index', [
-            'ideascaleProfiles' => $profiles,
+            'ideascaleProfilesCount' => 4,
+            'ideascaleProfiles' => Inertia::defer(fn () => $this->query()),
             'filters' => $this->queryParams,
         ]);
     }

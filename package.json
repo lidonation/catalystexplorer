@@ -17,6 +17,7 @@
     "semantic-release": "^24.2.1"
   },
   "dependencies": {
-    "@nivo/bar": "^0.88.0"
+    "@nivo/bar": "^0.88.0",
+    "chokidar": "^4.0.3"
   }
 }

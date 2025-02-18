@@ -29,6 +29,13 @@ class HashIdService
 
     public function encode($id): string
     {
+        if (! is_numeric($id) && is_string($id)) {
+            $decoded = $this->hashIds->decode($id);
+            if (! empty($decoded)) {
+                $id = $decoded[0];
+            }
+        }
+
         return $this->hashIds->encode([$id]);
     }
 
