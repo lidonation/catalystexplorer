@@ -22,12 +22,13 @@ interface IdeascaleProfilesPageProps extends Record<string, unknown> {
 const Index = ({
     ideascaleProfiles,
     filters,
+    ideascaleProfilesCount,
 }: PageProps<IdeascaleProfilesPageProps>) => {
     const { t } = useTranslation();
 
     const [showFilters, setShowFilters] = useState(false);
     const profiles = ideascaleProfiles?.data ?? [];
-    const maxProfilesPerPage = ideascaleProfiles?.per_page ?? 10;
+    const maxProfilesPerPage = ideascaleProfilesCount ?? ideascaleProfiles?.per_page ?? 10;
     const [loading, setLoading] = useState(true);
 
     useEffect(() => { setLoading(profiles.length === 0);}, [profiles])
