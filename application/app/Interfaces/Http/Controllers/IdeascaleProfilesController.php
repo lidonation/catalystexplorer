@@ -30,7 +30,6 @@ class IdeascaleProfilesController extends Controller
     public function index(Request $request): Response
     {
         $this->getProps($request);
-        $pagination = $this->query();
 
         return Inertia::render('IdeascaleProfile/Index', [
             'ideascaleProfilesCount' => 4,
