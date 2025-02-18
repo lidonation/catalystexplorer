@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Route;
 Route::prefix('api')->as('api.')->group(function () {
     Route::get('/groups', [GroupController::class, 'groups'])->name('groups');
     Route::get('/groups/{group:id}', [GroupController::class, 'group'])->name('group');
-    Route::get('/groups/{hash}/connections', [GroupsController::class, 'getConnectionsData'])->name('connections');
+    Route::get('/groups/{hash}/connections', [GroupController::class, 'connections'])->name('groups.connections');
 
     Route::get('/campaigns', [CampaignController::class, 'campaigns'])->name('campaigns');
     Route::get('/campaigns/{campaign:id}', [CampaignController::class, 'campaign'])->name('campaign');
@@ -23,6 +23,7 @@ Route::prefix('api')->as('api.')->group(function () {
 
     Route::get('/communities', [CommunityController::class, 'communities'])->name('communities');
     Route::get('/communities/{community:id}', [CommunityController::class, 'community'])->name('community');
+    Route::get('/communities/{hash}/connections', [CommunityController::class, 'connections'])->name('communities.connections');
 
     Route::prefix('bookmark-items')->as('bookmarks.')
         ->group(function () {
@@ -37,7 +38,7 @@ Route::prefix('api')->as('api.')->group(function () {
     Route::prefix('ideascale-profiles')->as('ideascaleProfiles.')->group(function () {
         Route::get('/', [IdeascaleProfilesController::class, 'ideascaleProfiles'])->name('index');
         Route::get('/{ideascaleProfile:id}', [IdeascaleProfilesController::class, 'ideascale_profile'])->name('show');
-        Route::get('/{profile}/connections', [IdeascaleProfilesController::class, 'connections'])->name('connections');
+        Route::get('/{hash}/connections', [IdeascaleProfilesController::class, 'connections'])->name('connections');
     });
 
     Route::get('/fund-titles', [ProposalsController::class, 'fundTitles'])->name('fundTitles');

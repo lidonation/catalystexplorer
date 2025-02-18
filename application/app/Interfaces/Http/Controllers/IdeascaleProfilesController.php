@@ -40,7 +40,12 @@ class IdeascaleProfilesController extends Controller
 
     public function show(Request $request, IdeascaleProfile $ideascaleProfile): Response
     {
-        return Inertia::render('IdeascaleProfile/IdeascaleProfile', compact('ideascaleProfile'));
+        $connections = $ideascaleProfile->getConnectionsData($request);
+
+        return Inertia::render('IdeascaleProfile/IdeascaleProfile', [
+            'ideascaleProfile' => $ideascaleProfile,
+            'connections' => $connections,
+        ]);
     }
 
     protected function query($returnBuilder = false, $attrs = null, $filters = [])

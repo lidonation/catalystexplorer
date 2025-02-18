@@ -88,8 +88,9 @@ export type ConnectionData = {
         source: string;
         target: string;
     }[];
-    rootGroupId:string;
-    rootGroupHash:string;
+    rootNodeId:string;
+    rootNodeHash:string;
+    rootNodeType: string;
 };
 export type FundData = {
 amount: number;
