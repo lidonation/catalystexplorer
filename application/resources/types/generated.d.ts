@@ -54,13 +54,14 @@ amount?: number;
 created_at: string | null;
 updated_at: string | null;
 label?: string;
-currency: string | null;
+currency: string;
 proposals_count: number | null;
 unfunded_proposals_count: number | null;
 funded_proposals_count: number | null;
 completed_proposals_count: number | null;
-totalAwarded: number | null;
-totalDistributed: number | null;
+total_requested: number;
+total_awarded: number;
+total_distributed: number;
 };
 export type CommunityData = {
 hash: string | null;
