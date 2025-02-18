@@ -1,9 +1,6 @@
 import { shortNumber } from "./shortNumber";
 
 export function currency(value: number, currency: string = 'USD', locale: string = 'en-US', maximumFractionDigits = 0) {
-    if (typeof value !== "number") {
-        return value;
-    }
     switch (currency) {
         case 'ADA':
             return shortNumber(value, maximumFractionDigits) + ' ₳';

@@ -41,10 +41,12 @@ export default function ProposalCardMini({
                 <div className="mt-4" aria-labelledby="funding-heading">
                     <div className="flex gap-2">
                         <Title level='3' className="font-semibold">{t('funding')}</Title>
+
                         <ProposalFundingStatus
                             funding_status={proposal.funding_status}
                         />
                     </div>
+
                     <ProposalFundingPercentages proposal={proposal}/>
                 </div>
                 <div className="border-t mt-3 border-t-dark/30">

@@ -115,6 +115,13 @@ class Group extends Model implements HasMedia
         );
     }
 
+    public function bannerPhotoUrl(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => count($this->getMedia('banner')) ? $this->getMedia('banner')[0]?->getFullUrl() : null
+        );
+    }
+
     public function amountRequestedAda(): Attribute
     {
         return Attribute::make(
@@ -243,7 +250,10 @@ class Group extends Model implements HasMedia
 
     public function registerMediaCollections(): void
     {
-        $this->addMediaCollection('group')->useDisk('public');
+        $this->addMediaCollection('group')
+            ->useDisk('public');
+        $this->addMediaCollection('banner')
+            ->useDisk('public');
     }
 
     /**

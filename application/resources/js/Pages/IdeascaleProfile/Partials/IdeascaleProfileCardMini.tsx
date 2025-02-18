@@ -10,14 +10,15 @@ import {useLocalizedRoute} from "@/utils/localizedRoute";
 import SegmentedBar from '@/Components/SegmentedBar';
 import {Segments} from '../../../../types/segments';
 import {Tooltip, TooltipContent, TooltipProvider} from "@/Components/atoms/Tooltip";
+import Paragraph from '@/Components/atoms/Paragraph';
 
 interface IdeascaleProfileProps {
     ideascaleProfile: IdeascaleProfileData;
 }
 
 const IdeascaleProfileCardMini: React.FC<IdeascaleProfileProps> = ({
-                                                                   ideascaleProfile,
-                                                               }) => {
+    ideascaleProfile,
+}) => {
     const {t} = useTranslation();
     const segments = [
         {
@@ -67,9 +68,9 @@ const IdeascaleProfileCardMini: React.FC<IdeascaleProfileProps> = ({
                                             ideascaleProfile?.username}
                                     </Link>
                                     <TooltipContent side="bottom">
-                                        <p>
+                                        <Paragraph size="sm">
                                             {ideascaleProfile?.username}
-                                        </p>
+                                        </Paragraph>
                                     </TooltipContent>
                                 </Tooltip>
                             </TooltipProvider>
@@ -86,12 +87,12 @@ const IdeascaleProfileCardMini: React.FC<IdeascaleProfileProps> = ({
                 </div>
 
                 <div className="border-border-secondary inline-flex items-center rounded-lg border px-2.5 py-1">
-                    <p className="text-3 text-content">
+                    <Paragraph size="sm" className="text-3 text-content">
                         {t('proposals.totalProposals')}:
-                    </p>
-                    <p className="text-3 text-content ml-1 font-bold">
+                    </Paragraph>
+                    <Paragraph size="sm" className="text-3 text-content ml-1 font-bold">
                         {ideascaleProfile?.proposals_count ?? 0}
-                    </p>
+                    </Paragraph>
                 </div>
             </div>
         </Card>

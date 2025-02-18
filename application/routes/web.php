@@ -1,5 +1,6 @@
 <?php
 
+use App\Interfaces\Http\Controllers\Api\CommunityController;
 use App\Interfaces\Http\Controllers\CampaignsController;
 use App\Interfaces\Http\Controllers\ChartsController;
 use App\Interfaces\Http\Controllers\CompletetProjectNftsController;
@@ -43,6 +44,14 @@ Route::localized(
                 ->name('index');
 
             Route::get('/{group:slug}', [GroupsController::class, 'group'])
+                ->name('group');
+        });
+
+        Route::prefix('/communities')->as('communities.')->group(function () {
+            Route::get('/', [CommunityController::class, 'index'])
+                ->name('index');
+
+            Route::get('/{community:slug}', [CommunityController::class, 'community'])
                 ->name('group');
         });
 
