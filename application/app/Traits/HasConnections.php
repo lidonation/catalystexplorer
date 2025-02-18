@@ -15,7 +15,12 @@ use Illuminate\Http\Request;
 
 trait HasConnections
 {
-    public function getConnectionsData(Request $request): array
+    public function getConnectedItemsAttribute(): array
+    {
+        return $this->getConnectionsData();
+    }
+
+    public function getConnectionsData(?Request $request = null): array
     {
         $id = $this->id;
         $rootNode = $this;
@@ -23,9 +28,9 @@ trait HasConnections
             return ['error' => 'Root node not found'];
         }
 
-        $profileIds = (array) $request->query(CatalystConnectionParams::IDEASCALEPROFILE()->value, []);
-        $groupIds = (array) $request->query(CatalystConnectionParams::GROUP()->value, []);
-        $communityIds = (array) $request->query(CatalystConnectionParams::COMMUNITY()->value, []);
+        $profileIds = $request ? (array) $request->query(CatalystConnectionParams::IDEASCALEPROFILE()->value, []) : [];
+        $groupIds = $request ? (array) $request->query(CatalystConnectionParams::GROUP()->value, []) : [];
+        $communityIds = $request ? (array) $request->query(CatalystConnectionParams::COMMUNITY()->value, []) : [];
 
         $nodes = collect();
         $links = collect();
@@ -131,7 +136,7 @@ trait HasConnections
         $connections = collect();
         $groupIds = [];
         $profileIds = [];
-        $commununityIds = [];
+        $communityIds = [];
 
         foreach ($entities as $entity) {
 
@@ -142,7 +147,7 @@ trait HasConnections
 
             $groupIds = array_merge($groupIds, $entity->connected_groups->pluck('id')->all());
             $profileIds = array_merge($profileIds, $entity->connected_users->pluck('id')->all());
-            $commununityIds = array_merge($commununityIds, $entity->connected_users->pluck('id')->all());
+            $communityIds = array_merge($communityIds, $entity->connected_communities->pluck('id')->all());
         }
 
         $groups = ! empty($groupIds) ? $this->fetchEntities(Group::class, $groupIds) : collect();

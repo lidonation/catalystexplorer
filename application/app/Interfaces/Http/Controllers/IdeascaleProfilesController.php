@@ -55,7 +55,7 @@ class IdeascaleProfilesController extends Controller
                 'amount_requested_usd',
             ]);
 
-        $connections = $ideascaleProfile->getConnectionsData($request);
+        $connections = $ideascaleProfile->connected_items;
 
         return Inertia::render('IdeascaleProfile/IdeascaleProfile', [
             'ideascaleProfile' => $ideascaleProfile,

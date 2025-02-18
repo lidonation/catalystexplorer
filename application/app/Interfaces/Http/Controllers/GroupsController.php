@@ -107,7 +107,7 @@ class GroupsController extends Controller
                 ]
             );
 
-        $connections = $group->getConnectionsData($request);
+        $connections = $group->connected_items;
 
         return Inertia::render('Groups/Group', [
             'group' => GroupData::from($group),

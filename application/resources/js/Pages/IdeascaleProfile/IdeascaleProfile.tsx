@@ -25,7 +25,6 @@ const IdeascaleProfile = ({
             <div className="relative flex w-full flex-col justify-center gap-8">
                 <section className="container py-8">
                     <IdeascaleProfileCard ideascaleProfile={ideascaleProfile} />
-                    <IdeascaleProfileCard ideascaleProfile={ideascaleProfile} />
                 </section>
 
 
