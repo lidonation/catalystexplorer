@@ -11,10 +11,8 @@ class IdeascaleProfilesSeeder extends Seeder
 {
     /**
      * Run the database seeds.
-     *
-     * @return void
      */
-    public function run()
+    public function run(): void
     {
         IdeascaleProfile::factory(10)
             ->create();

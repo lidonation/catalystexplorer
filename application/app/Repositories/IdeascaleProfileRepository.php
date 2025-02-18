@@ -23,7 +23,6 @@ class IdeascaleProfileRepository extends Repository
                 $args = array_merge(
                     [
                         'attributesToRetrieve' => [
-                            'id',
                             'hash',
                             'name',
                             'profile_photo_url',

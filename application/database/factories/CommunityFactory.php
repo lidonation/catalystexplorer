@@ -24,7 +24,7 @@ class CommunityFactory extends Factory
         return [
             'title' => $this->faker->sentence,
             'content' => $this->faker->paragraph,
-            'user_id' => User::factory(),
+            'user_id' => User::inRandomOrder()->first()?->id,
             'status' => $this->faker->randomElement(StatusEnum::cases()),
             'created_at' => now(),
             'updated_at' => now(),
