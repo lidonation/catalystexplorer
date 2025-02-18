@@ -1,19 +1,23 @@
+import SearchControls from '@/Components/atoms/SearchControls';
+import Title from '@/Components/atoms/Title';
 import Paginator from '@/Components/Paginator';
 import { FiltersProvider } from '@/Context/FiltersContext';
-import IdeaScaleProfileToolbar from '@/Pages/IdeascaleProfile/Partials/IdeaScaleProfileToolbar';
+import IdeascaleSortingOptions from '@/lib/IdeascaleSortOptions';
 import { PageProps } from '@/types';
-import { Head, WhenVisible } from '@inertiajs/react';
+import {Deferred, Head, WhenVisible} from '@inertiajs/react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { PaginatedData } from '../../../types/paginated-data';
-import { ProposalSearchParams } from '../../../types/proposal-search-params';
+import { SearchParams } from '../../../types/search-params';
 import IdeascaleProfilesList from './Partials/IdeascaleProfileList';
 import IdeaScaleProfileLoader from './Partials/IdeaScaleProfileLoader';
+import IdeascaleProfilesFilters from './Partials/IdeascaleProfilesFilters';
 import IdeascaleProfilesData = App.DataTransferObjects.IdeascaleProfileData;
-import Title from '@/Components/atoms/Title';
 
 interface IdeascaleProfilesPageProps extends Record<string, unknown> {
+    ideascaleProfilesCount: number;
     ideascaleProfiles: PaginatedData<IdeascaleProfilesData[]>;
-    filters: ProposalSearchParams;
+    filters: SearchParams;
 }
 const Index = ({
     ideascaleProfiles,
@@ -21,42 +25,55 @@ const Index = ({
 }: PageProps<IdeascaleProfilesPageProps>) => {
     const { t } = useTranslation();
 
+    const [showFilters, setShowFilters] = useState(false);
+    const profiles = ideascaleProfiles?.data ?? [];
+    const maxProfilesPerPage = ideascaleProfiles?.per_page ?? 10;
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => { setLoading(profiles.length === 0);}, [profiles])
     return (
         <>
             <FiltersProvider defaultFilters={filters}>
                 <Head title="Ideascale Profiles" />
 
-                <header className="container">
-                    <Title>
-                        {t('ideascaleProfiles.ideascaleProfiles')}
-                    </Title>
+                <header className="container py-2">
+                    <Title>{t('ideascaleProfiles.ideascaleProfiles')}</Title>
                     <p className="text-content">
                         {t('ideascaleProfiles.pageSubtitle')}
                     </p>
                 </header>
 
-                <section className="container flex w-full flex-col items-center justify-center">
-                    <IdeaScaleProfileToolbar />
+                <SearchControls
+                    sortOptions={IdeascaleSortingOptions()}
+                    onFiltersToggle={setShowFilters}
+                />
+
+                <section
+                    className={`container flex w-full flex-col items-center justify-center overflow-hidden transition-[max-height] duration-500 ease-in-out ${
+                        showFilters ? 'max-h-[500px]' : 'max-h-0'
+                    }`}
+                >
+                    <IdeascaleProfilesFilters />
                 </section>
 
                 <div className="flex w-full flex-col items-center">
                     <section className="container py-2 pb-10">
-                        <WhenVisible
-                            fallback={<IdeaScaleProfileLoader />}
+                        <Deferred
+                            fallback={<IdeaScaleProfileLoader count={maxProfilesPerPage} />}
                             data="ideascaleProfiles"
                         >
                             <IdeascaleProfilesList
-                                ideascaleProfiles={ideascaleProfiles.data || []}
+                                ideascaleProfiles={ideascaleProfiles?.data || []}
                             />
-                        </WhenVisible>
+                        </Deferred>
                     </section>
                 </div>
 
-                <section className="w-full px-4 lg:container lg:px-0">
-                    <Paginator
-                        pagination={ideascaleProfiles}
-                    />
-                </section>
+                {!loading && ideascaleProfiles && ideascaleProfiles.total > maxProfilesPerPage && (
+                    <section className="w-full px-4 lg:container lg:px-0">
+                        <Paginator pagination={ideascaleProfiles} />
+                    </section>
+                )}
             </FiltersProvider>
         </>
     );

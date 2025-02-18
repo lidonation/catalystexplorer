@@ -4,8 +4,8 @@ import ProposalFundingStatus from '@/Pages/Proposals/Partials/ProposalFundingSta
 import { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import Proposal = App.DataTransferObjects.ProposalData;
-import ProposalUsersMini from './ProposalUsersMini';
 import Title from '@/Components/atoms/Title';
+import IdeascaleProfileUsers from '@/Pages/IdeascaleProfile/Partials/IdeascaleProfileUsersComponent';
 
 interface ProposalCardMiniProps {
     proposal: Proposal;
@@ -41,16 +41,20 @@ export default function ProposalCardMini({
                 <div className="mt-4" aria-labelledby="funding-heading">
                     <div className="flex gap-2">
                         <Title level='3' className="font-semibold">{t('funding')}</Title>
+
                         <ProposalFundingStatus
                             funding_status={proposal.funding_status}
                         />
                     </div>
+
                     <ProposalFundingPercentages proposal={proposal}/>
                 </div>
                 <div className="border-t mt-3 border-t-dark/30">
-                    <ProposalUsersMini
+                    <IdeascaleProfileUsers
                         users={proposal.users}
                         onUserClick={handleUserClick}
+                        className='bg-content-light'
+                        toolTipProps={t('proposals.viewTeam')}
                     />
                 </div>
             </section>

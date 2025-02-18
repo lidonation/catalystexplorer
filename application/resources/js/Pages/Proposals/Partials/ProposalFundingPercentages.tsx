@@ -19,6 +19,8 @@ export default function ProposalFundingPercentages({ proposal }: Proposal) {
         currency(
             amount ? parseInt(amount.toString()) : 0,
             currencyCode || 'USD',
+            'en-US',
+            2
         ) as string;
 
     const getProgressBarColor = (percentage: number): string => {
@@ -45,6 +47,10 @@ export default function ProposalFundingPercentages({ proposal }: Proposal) {
         amountRequested,
         currencyCode,
     );
+    const formattedAmountReceived = formatCurrency(
+        amountReceived,
+        currencyCode,
+    );
     const formattedCampaignBudget = formatCurrency(
         campaignAmount,
         campaignCurrency,
@@ -61,19 +67,32 @@ export default function ProposalFundingPercentages({ proposal }: Proposal) {
 
     const progressBarColor = getProgressBarColor(fundingPercentage);
 
-    // Component Rendering
+    // Component Renderingf
     return (
         <div>
-            <div className="flex items-baseline justify-between gap-2">
-                <span>Received</span>
+            {!proposal?.funded_at && (<div className="flex items-baseline justify-between gap-2 pt-2">
+                <span>Requested</span>
                 <div>
-                    <span className="text-lg font-semibold">
+                    <span className="text-md font-semibold">
                         {formattedAmountRequested}
                     </span>
-                    <span className="text-highlight text-sm">{`/ ${formattedCampaignBudget} (${campaignPercentage}%)`}</span>
+                    <span
+                        className="text-highlight text-sm">{` (${campaignPercentage}% of fund)`}</span>
                 </div>
-            </div>
-            <div className="bg-content-light mt-2 h-3 w-full overflow-hidden rounded-full">
+            </div>)}
+
+            {!!proposal?.funded_at && (<div className="flex items-baseline justify-between gap-2">
+                <span>Received</span>
+                <div>
+                    <span className="text-md font-semibold">
+                        {formattedAmountReceived}
+                    </span>
+                    <span
+                        className="text-highlight text-sm">{` / ${formattedAmountRequested} (${fundingPercentage}%)`}</span>
+                </div>
+            </div>)}
+
+            {!!proposal?.funded_at && (<div className="bg-content-light mt-2 h-3 w-full overflow-hidden rounded-full">
                 <div
                     className={`h-full rounded-full ${progressBarColor}`}
                     role="progressbar"
@@ -83,7 +102,7 @@ export default function ProposalFundingPercentages({ proposal }: Proposal) {
                     aria-valuemax={100}
                     style={{ width: `${fundingPercentage}%` }}
                 ></div>
-            </div>
+            </div>)}
         </div>
     );
 }

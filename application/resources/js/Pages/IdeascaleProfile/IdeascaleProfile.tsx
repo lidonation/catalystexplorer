@@ -5,6 +5,7 @@ import Title from '@/Components/atoms/Title';
 import IdeascaleProfilesData = App.DataTransferObjects.IdeascaleProfileData;
 import ConnectionData = App.DataTransferObjects.ConnectionData;
 import Graph from '../../Components/Graph';
+import IdeascaleProfileCard from './Partials/IdeascaleProfileCard';
 
 interface IdeascaleProfilesPageProps extends Record<string, unknown> {
     ideascaleProfile: IdeascaleProfilesData;
@@ -23,8 +24,9 @@ const IdeascaleProfile = ({
 
             <div className="relative flex w-full flex-col justify-center gap-8">
                 <section className="container py-8">
-                    <h4 className="title-4">{ideascaleProfile.name}</h4>
+                    <IdeascaleProfileCard ideascaleProfile={ideascaleProfile} />
                 </section>
+
                 <section className="container py-8">
                     <h4 className="title-4">{t('comingSoon')}</h4>
                     <div>{JSON.stringify(ideascaleProfile)}</div>

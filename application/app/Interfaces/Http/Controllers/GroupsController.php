@@ -5,9 +5,14 @@ declare(strict_types=1);
 namespace App\Interfaces\Http\Controllers;
 
 use App\DataTransferObjects\GroupData;
+use App\DataTransferObjects\IdeascaleProfileData;
+use App\DataTransferObjects\LocationData;
+use App\DataTransferObjects\ProposalData;
+use App\DataTransferObjects\ReviewData;
 use App\Enums\ProposalSearchParams;
 use App\Models\Fund;
 use App\Models\Group;
+use App\Models\Review;
 use App\Repositories\GroupRepository;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -49,9 +54,11 @@ class GroupsController extends Controller
 
     public array $tagsCount = [];
 
-    public array $fundsCount = [];
+    public array $proposalsCount = [];
 
-    public int $proposalsCount;
+    public array $totalAwardedAda = [];
+
+    public array $totalAwardedUsd = [];
 
     public function index(Request $request): Response
     {
@@ -65,8 +72,15 @@ class GroupsController extends Controller
             'sort' => "{$this->sortBy}:{$this->sortOrder}",
             'filters' => $this->queryParams,
             'filterCounts' => [
-                'tagsCount' => $this->tagsCount,
-                'fundsCount' => $this->fundsCount,
+                'proposalsCount' => ! empty($this->proposalsCount)
+                    ? round(max(array_keys($this->proposalsCount)), -1)
+                    : 0,
+                'totalAwardedAda' => ! empty($this->totalAwardedAda)
+                    ? max($this->totalAwardedAda)
+                    : 0,
+                'totalAwardedUsd' => ! empty($this->totalAwardedUsd)
+                    ? max($this->totalAwardedUsd)
+                    : 0,
             ],
         ];
 
@@ -81,24 +95,53 @@ class GroupsController extends Controller
                 'funded_proposals',
                 'unfunded_proposals',
                 'completed_proposals',
-            ])->append([
-                'amount_awarded_ada',
-                'amount_awarded_usd',
-                'amount_requested_ada',
-                'amount_requested_usd',
-                'amount_distributed_ada',
-                'amount_distributed_usd',
-                'connected_items',
-            ]);
+            ])->append(
+                [
+                    'amount_awarded_ada',
+                    'amount_awarded_usd',
+                    'amount_requested_ada',
+                    'amount_requested_usd',
+                    'amount_distributed_ada',
+                    'amount_distributed_usd',
+                    'connected_items',
+                ]
+            );
 
         $connections = $group->getConnectionsData($request);
 
         return Inertia::render('Groups/Group', [
-            'group' => /* GroupData::from($group) */ [],
-            'proposals' => [],
-            'ideascaleProfiles' => [],
-            'reviews' => [],
-            'locations' => [],
+            'group' => GroupData::from($group),
+            'proposals' => Inertia::optional(
+                fn () => to_length_aware_paginator(
+                    ProposalData::collect(
+                        $group->proposals()->with(['users', 'fund'])->paginate(5)
+                    )
+                )
+
+            ),
+            'ideascaleProfiles' => Inertia::optional(
+                fn () => to_length_aware_paginator(
+                    IdeascaleProfileData::collect(
+                        $group->ideascale_profiles()->with([])->paginate(12)
+                    )
+                )
+
+            ),
+            'reviews' => Inertia::optional(
+                fn () => to_length_aware_paginator(
+                    ReviewData::collect(
+                        Review::query()->paginate(8)
+                    )
+                )
+            ),
+            'locations' => Inertia::optional(
+                fn () => to_length_aware_paginator(
+                    LocationData::collect(
+                        $group->locations()->paginate(12)
+                    )
+                )
+
+            ),
             'connections' => Inertia::optional(
                 fn () => $connections
             ),
@@ -161,9 +204,9 @@ class GroupsController extends Controller
         $args['offset'] = ($page - 1) * $limit;
         $args['limit'] = $limit;
 
-        $proposals = app(GroupRepository::class);
+        $groups = app(GroupRepository::class);
 
-        $builder = $proposals->search(
+        $builder = $groups->search(
             $this->queryParams[ProposalSearchParams::QUERY()->value] ?? '',
             $args
         );
@@ -250,12 +293,21 @@ class GroupsController extends Controller
 
     public function setCounts($facets, $facetStats)
     {
+
         if (isset($facets['tags.id']) && count($facets['tags.id'])) {
             $this->tagsCount = $facets['tags.id'];
         }
 
-        if (isset($facets['proposals.fund.title']) && count($facets['proposals.fund.title'])) {
-            $this->fundsCount = $facets['proposals.fund.title'];
+        if (isset($facets['proposals_count']) && count($facets['proposals_count'])) {
+            $this->proposalsCount = $facets['proposals_count'];
+        }
+
+        if (isset($facets['amount_awarded_ada']) && count($facets['amount_awarded_ada'])) {
+            $this->totalAwardedAda = array_keys($facets['amount_awarded_ada']);
+        }
+
+        if (isset($facets['amount_awarded_usd']) && count($facets['amount_awarded_usd'])) {
+            $this->totalAwardedUsd = array_keys($facets['amount_awarded_usd']);
         }
     }
 

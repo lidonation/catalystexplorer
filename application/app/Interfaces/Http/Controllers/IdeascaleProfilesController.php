@@ -30,16 +30,31 @@ class IdeascaleProfilesController extends Controller
     public function index(Request $request): Response
     {
         $this->getProps($request);
-        $profiles = $this->query();
 
         return Inertia::render('IdeascaleProfile/Index', [
-            'ideascaleProfiles' => $profiles,
+            'ideascaleProfilesCount' => 4,
+            'ideascaleProfiles' => Inertia::defer(fn () => $this->query()),
             'filters' => $this->queryParams,
         ]);
     }
 
     public function show(Request $request, IdeascaleProfile $ideascaleProfile): Response
     {
+        $ideascaleProfile
+            ->loadCount([
+                'completed_proposals',
+                'funded_proposals',
+                'unfunded_proposals',
+                'proposals',
+            ])->append([
+                'amount_distributed_ada',
+                'amount_distributed_usd',
+                'amount_awarded_ada',
+                'amount_awarded_usd',
+                'amount_requested_ada',
+                'amount_requested_usd',
+            ]);
+
         $connections = $ideascaleProfile->getConnectionsData($request);
 
         return Inertia::render('IdeascaleProfile/IdeascaleProfile', [

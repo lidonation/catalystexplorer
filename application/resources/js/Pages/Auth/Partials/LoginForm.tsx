@@ -1,10 +1,10 @@
 import Checkbox from '@/Components/atoms/Checkbox';
-import InputError from '@/Components/InputError';
-import InputLabel from '@/Components/InputLabel';
 import PrimaryButton from '@/Components/atoms/PrimaryButton';
 import SecondaryButton from '@/Components/atoms/SecondaryButton';
-import ConnectWalletIcon from '@/Components/svgs/ConnectWalletIcon';
 import TextInput from '@/Components/atoms/TextInput';
+import InputError from '@/Components/InputError';
+import InputLabel from '@/Components/InputLabel';
+import ConnectWalletIcon from '@/Components/svgs/ConnectWalletIcon';
 import { Link, router, useForm } from '@inertiajs/react';
 import axios from 'axios';
 import { FormEventHandler, useState } from 'react';
@@ -27,14 +27,17 @@ export default function LoginForm() {
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
 
+        const params = new URLSearchParams(window.location.search);
+        const redirectUrl = params.get('redirect') || route('my.dashboard');
+
         axios
             .post(route('login'), {
                 email: data.email,
                 password: data.password,
             })
-            .then((response) => {
+            .then(() => {
                 reset('password');
-                router.get('my/dashboard');
+                router.visit(redirectUrl);
             })
             .catch((error) => {
                 setErrors(error?.response?.data?.errors);
@@ -63,7 +66,7 @@ export default function LoginForm() {
                 </div>
 
                 <div>
-                    <InputLabel htmlFor="password" value={t("password")} />
+                    <InputLabel htmlFor="password" value={t('password')} />
 
                     <TextInput
                         id="password"
@@ -96,7 +99,7 @@ export default function LoginForm() {
                             href={route('password.request')}
                             className="text-4 text-primary hover:text-content focus:border-x-border-secondary focus:ring-offset font-bold focus:ring-2 focus:outline-hidden"
                         >
-                            {t("forgotPassword")}
+                            {t('forgotPassword')}
                         </Link>
                     </div>
                 </div>
@@ -128,7 +131,7 @@ export default function LoginForm() {
                         href={route('register')}
                         className="text-4 text-primary hover:text-content font-bold focus:ring-2 focus:ring-offset-2 focus:outline-hidden"
                     >
-                        {t("signup")}
+                        {t('signup')}
                     </Link>
                 </div>
             </form>
