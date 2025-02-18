@@ -5,13 +5,14 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Casts\DateFormatCast;
+use App\Traits\HasConnections;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Artisan;
 use Laravel\Scout\Searchable;
 
 class Community extends Model
 {
-    use Searchable;
+    use HasConnections, Searchable;
 
     protected function casts(): array
     {
