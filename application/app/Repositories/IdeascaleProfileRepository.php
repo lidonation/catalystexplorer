@@ -24,6 +24,7 @@ class IdeascaleProfileRepository extends Repository
                     [
                         'attributesToRetrieve' => [
                             'id',
+                            'hash',
                             'name',
                             'profile_photo_url',
                             'first_timer',
