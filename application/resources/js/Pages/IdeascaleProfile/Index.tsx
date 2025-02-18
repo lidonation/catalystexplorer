@@ -5,7 +5,7 @@ import { FiltersProvider } from '@/Context/FiltersContext';
 import IdeascaleSortingOptions from '@/lib/IdeascaleSortOptions';
 import { PageProps } from '@/types';
 import { Head, WhenVisible } from '@inertiajs/react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { PaginatedData } from '../../../types/paginated-data';
 import { SearchParams } from '../../../types/search-params';
@@ -25,6 +25,11 @@ const Index = ({
     const { t } = useTranslation();
 
     const [showFilters, setShowFilters] = useState(false);
+    const profiles = ideascaleProfiles?.data ?? [];
+    const maxProfilesPerPage = ideascaleProfiles?.per_page ?? 10;
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => { setLoading(profiles.length === 0);}, [profiles])
     return (
         <>
             <FiltersProvider defaultFilters={filters}>
@@ -53,7 +58,7 @@ const Index = ({
                 <div className="flex w-full flex-col items-center">
                     <section className="container py-2 pb-10">
                         <WhenVisible
-                            fallback={<IdeaScaleProfileLoader />}
+                            fallback={<IdeaScaleProfileLoader count={maxProfilesPerPage} />}
                             data="ideascaleProfiles"
                         >
                             <IdeascaleProfilesList
@@ -63,9 +68,11 @@ const Index = ({
                     </section>
                 </div>
 
-                <section className="w-full px-4 lg:container lg:px-0">
-                    <Paginator pagination={ideascaleProfiles} />
-                </section>
+                {!loading && ideascaleProfiles && ideascaleProfiles.total > maxProfilesPerPage && (
+                    <section className="w-full px-4 lg:container lg:px-0">
+                        <Paginator pagination={ideascaleProfiles} />
+                    </section>
+                )}
             </FiltersProvider>
         </>
     );
