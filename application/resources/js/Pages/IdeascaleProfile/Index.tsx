@@ -4,7 +4,7 @@ import Paginator from '@/Components/Paginator';
 import { FiltersProvider } from '@/Context/FiltersContext';
 import IdeascaleSortingOptions from '@/lib/IdeascaleSortOptions';
 import { PageProps } from '@/types';
-import { Head, WhenVisible } from '@inertiajs/react';
+import {Deferred, Head, WhenVisible} from '@inertiajs/react';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { PaginatedData } from '../../../types/paginated-data';
@@ -15,6 +15,7 @@ import IdeascaleProfilesFilters from './Partials/IdeascaleProfilesFilters';
 import IdeascaleProfilesData = App.DataTransferObjects.IdeascaleProfileData;
 
 interface IdeascaleProfilesPageProps extends Record<string, unknown> {
+    ideascaleProfilesCount: number;
     ideascaleProfiles: PaginatedData<IdeascaleProfilesData[]>;
     filters: SearchParams;
 }
@@ -57,14 +58,14 @@ const Index = ({
 
                 <div className="flex w-full flex-col items-center">
                     <section className="container py-2 pb-10">
-                        <WhenVisible
+                        <Deferred
                             fallback={<IdeaScaleProfileLoader count={maxProfilesPerPage} />}
                             data="ideascaleProfiles"
                         >
                             <IdeascaleProfilesList
-                                ideascaleProfiles={ideascaleProfiles.data || []}
+                                ideascaleProfiles={ideascaleProfiles?.data || []}
                             />
-                        </WhenVisible>
+                        </Deferred>
                     </section>
                 </div>
 
