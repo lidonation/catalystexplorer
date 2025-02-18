@@ -63,7 +63,7 @@ const IdeascaleProfileCardMini: React.FC<IdeascaleProfileProps> = ({
                             <TooltipProvider>
                                 <Tooltip>
                                     <Link className='line-clamp-2'
-                                          href={useLocalizedRoute('ideascaleProfiles.show', {id: ideascaleProfile?.hash})}>
+                                          href={useLocalizedRoute('ideascaleProfiles.show', {ideascaleProfile: ideascaleProfile?.hash})}>
                                         {ideascaleProfile?.name ??
                                             ideascaleProfile?.username}
                                     </Link>
