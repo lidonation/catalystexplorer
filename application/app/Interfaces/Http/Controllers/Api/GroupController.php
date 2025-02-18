@@ -9,6 +9,7 @@ use App\Interfaces\Http\Resources\GroupResource;
 use App\Models\Group;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\Routing\ResponseFactory;
+use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Response;
 
@@ -43,5 +44,14 @@ class GroupController extends Controller
             ->filter(request(['search', 'ids']));
 
         return GroupResource::collection($groups->fastPaginate($per_page)->onEachSide(0));
+    }
+
+    public function connections(Request $request, int $id): array
+    {
+        $group = Group::findOrFail($id);
+
+        $connections = $group->getConnectionsData($request);
+
+        return $connections;
     }
 }

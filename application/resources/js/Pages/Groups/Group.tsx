@@ -12,7 +12,7 @@ import ConnectionData = App.DataTransferObjects.ConnectionData;
 import Title from '@/Components/atoms/Title';
 import AggregatedReviewsSummary from "@/Components/AggregatedReviewsSummary";
 import React from "react";
-import Graph from './Partials/Graph';
+import Graph from '../../Components/Graph';
 
 
 interface GroupPageProps extends Record<string, unknown> {

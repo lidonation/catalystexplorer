@@ -9,6 +9,7 @@ use App\Interfaces\Http\Resources\CommunityResource;
 use App\Models\Community;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\Routing\ResponseFactory;
+use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Response;
 use Inertia\Inertia;
@@ -59,5 +60,14 @@ class CommunityController extends Controller
             ->filter(request(['search', 'ids']));
 
         return CommunityResource::collection($communities->fastPaginate($per_page)->onEachSide(0));
+    }
+
+    public function connections(Request $request, int $id): array
+    {
+        $community = Community::findOrFail($id);
+
+        $connections = $community->getConnectionsData($request);
+
+        return $connections;
     }
 }
