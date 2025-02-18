@@ -28,7 +28,7 @@ export default function LoginForm() {
         e.preventDefault();
 
         const params = new URLSearchParams(window.location.search);
-        const redirectUrl = params.get('redirect') || route('my.dashboard');
+        const redirectUrl = params.get('redirect') || null;
 
         axios
             .post(route('login'), {
@@ -37,7 +37,7 @@ export default function LoginForm() {
             })
             .then(() => {
                 reset('password');
-                router.visit(redirectUrl);
+                router.visit(redirectUrl || route('my.dashboard'));
             })
             .catch((error) => {
                 setErrors(error?.response?.data?.errors);

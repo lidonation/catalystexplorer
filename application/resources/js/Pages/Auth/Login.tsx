@@ -23,12 +23,12 @@ export default function Login({
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
         const params = new URLSearchParams(window.location.search);
-        const redirectUrl = params.get('redirect') || route('my.dashboard');
+        const redirectUrl = params.get('redirect') || null;
 
         post(route('login'), {
             onFinish: () => {
                 reset('password');
-                router.visit(redirectUrl);
+                router.visit(redirectUrl || route('my.dashboard'));
             },
         });
     };
