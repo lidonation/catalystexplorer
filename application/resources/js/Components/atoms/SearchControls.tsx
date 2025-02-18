@@ -7,6 +7,7 @@ import { ParamsEnum } from '@/enums/proposal-search-params';
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import ActiveFilters from './ActiveFilters';
+import { router } from '@inertiajs/react';
 
 function SearchControls({
     onFiltersToggle,
@@ -38,6 +39,7 @@ function SearchControls({
 
         if (search.trim() === '') {
             url.searchParams.delete(ParamsEnum.QUERY);
+            router.get(window.location.pathname, {}, { replace: true });
         } else {
             setFilters({
                 param: ParamsEnum.QUERY,
