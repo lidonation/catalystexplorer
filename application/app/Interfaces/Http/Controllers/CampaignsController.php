@@ -31,9 +31,10 @@ class CampaignsController extends Controller
             'fund' => $fund,
             'campaign' => $campaign,
             'proposals' => Inertia::optional(
-                fn () => ProposalData::collect(
-                    $campaign->proposals()->with('users')->paginate(6)
-                )
+                fn () => to_length_aware_paginator(
+                    ProposalData::collect(
+                        $campaign->proposals()->with('users')->paginate(6)
+                    ))->onEachSide(-1)
             ),
         ]);
     }

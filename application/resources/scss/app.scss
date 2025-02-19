@@ -1,8 +1,10 @@
-@use "tailwindcss" as *; /* Import Tailwind */
+@use "tailwindcss" as *;
+/* Import Tailwind */
 
 //@use 'tailwindcss/base';       /* Reference base styles */
 //@use 'tailwindcss/components'; /* Reference component styles */
 @use 'tailwindcss/utilities';
+
 @config "../../tailwind.config.js";
 
 
@@ -12,7 +14,7 @@
     }
 
     :root {
-        --cx-primary: #2596be;    
+        --cx-primary: #2596be;
         --cx-primary-light: #EFFAFC;
         --cx-primary-dark: #165A72;
         --cx-secondary: #3facd1;
@@ -152,6 +154,7 @@
         --border-primary-color: #b1e3f1;
         --border-secondary-color: #3facd1;
     }
+
     .bg-background {
         background-color: var(--cx-background);
     }
@@ -198,7 +201,7 @@
         background-color: var(--bg-accent-color);
     }
 
-    #main-content>header:first-child {
+    #main-content > header:first-child {
         @apply py-6;
     }
 
@@ -273,6 +276,19 @@
     .section-margin {
         @apply mt-8;
     }
+
+    article {
+        p ~ {
+
+            h1, h2, h3, h4, h5, h6 {
+                @apply font-bold mt-3 mb-1;
+            }
+        }
+
+        h3 {
+            @apply text-2xl;
+        }
+    }
 }
 
 .scrollable {
@@ -301,7 +317,7 @@
     scroll-padding-inline: 1.5rem;
 }
 
-.snaps-scrollable>* {
+.snaps-scrollable > * {
     scroll-snap-align: start;
 }
 

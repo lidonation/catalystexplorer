@@ -42,7 +42,7 @@ const PaginationComponent: React.FC<PaginationComponentProps<any>> = ({
 
     return (
         <div>
-            <div className="container border-t border-background-light mb-3 flex w-full flex-col gap-2 pt-8">
+            <div className="flex w-full flex-col gap-2">
                 <div className="flex flex-col md:flex-row items-center justify-between gap-4">
                     {/* Previous Button */}
                     <div>
