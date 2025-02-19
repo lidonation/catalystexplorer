@@ -59,7 +59,7 @@ Route::localized(
             Route::get('/', [IdeascaleProfilesController::class, 'index'])
                 ->name('index');
 
-            Route::get('/{ideascaleProfile:id}', [IdeascaleProfilesController::class, 'show'])
+            Route::get('/{ideascaleProfile}', [IdeascaleProfilesController::class, 'show'])
                 ->name('show');
         });
 

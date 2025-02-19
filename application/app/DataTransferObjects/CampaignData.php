@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\DataTransferObjects;
 
+use Spatie\LaravelData\Attributes\MapInputName;
 use Spatie\LaravelData\Data;
 use Spatie\TypeScriptTransformer\Attributes\Optional as TypeScriptOptional;
 use Spatie\TypeScriptTransformer\Attributes\TypeScript;
@@ -41,7 +42,7 @@ class CampaignData extends Data
         #[TypeScriptOptional]
         public ?string $label,
 
-        public ?string $currency,
+        public string $currency,
 
         public ?int $proposals_count,
 
@@ -51,9 +52,13 @@ class CampaignData extends Data
 
         public ?int $completed_proposals_count,
 
-        public ?float $totalAwarded,
+        #[MapInputName('totalRequested')]
+        public float $total_requested ,
 
-        public ?float $totalDistributed,
+        #[MapInputName('totalAwarded')]
+        public float $total_awarded,
 
+        #[MapInputName('totalDistributed')]
+        public float $total_distributed,
     ) {}
 }

@@ -30,10 +30,10 @@ class IdeascaleProfilesController extends Controller
     public function index(Request $request): Response
     {
         $this->getProps($request);
-        $profiles = $this->query();
 
         return Inertia::render('IdeascaleProfile/Index', [
-            'ideascaleProfiles' => $profiles,
+            'ideascaleProfilesCount' => 4,
+            'ideascaleProfiles' => Inertia::defer(fn () => $this->query()),
             'filters' => $this->queryParams,
         ]);
     }
@@ -55,7 +55,12 @@ class IdeascaleProfilesController extends Controller
                 'amount_requested_usd',
             ]);
 
-        return Inertia::render('IdeascaleProfile/IdeascaleProfile', compact('ideascaleProfile'));
+        $connections = $ideascaleProfile->connected_items;
+
+        return Inertia::render('IdeascaleProfile/IdeascaleProfile', [
+            'ideascaleProfile' => $ideascaleProfile,
+            'connections' => $connections,
+        ]);
     }
 
     protected function query($returnBuilder = false, $attrs = null, $filters = [])
