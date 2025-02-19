@@ -1,19 +1,19 @@
-import {Head, WhenVisible} from '@inertiajs/react';
-import {useTranslation} from 'react-i18next';
-import RelatedProposals from '../Proposals/Partials/RelatedProposals';
+import React from 'react';
+import { Head } from '@inertiajs/react';
+import { useTranslation } from 'react-i18next';
 import GroupData = App.DataTransferObjects.GroupData;
 import ProposalData = App.DataTransferObjects.ProposalData;
 import GroupCard from "@/Pages/Groups/Partials/GroupCard";
-import {PaginatedData} from "../../../types/paginated-data";
+import { PaginatedData } from "../../../types/paginated-data";
 import IdeascaleProfileData = App.DataTransferObjects.IdeascaleProfileData;
 import ReviewData = App.DataTransferObjects.ReviewData;
 import LocationData = App.DataTransferObjects.LocationData;
 import ConnectionData = App.DataTransferObjects.ConnectionData;
 import Title from '@/Components/atoms/Title';
-import AggregatedReviewsSummary from "@/Components/AggregatedReviewsSummary";
-import React from "react";
-import Graph from '../../Components/Graph';
-
+import GroupSocials from './Partials/GroupSocials';
+import Image from '@/Components/Image';
+import GroupHeader from '@/assets/images/group-header.jpg';
+import GroupTabs from './Partials/GroupTab';
 
 interface GroupPageProps extends Record<string, unknown> {
     group: GroupData;
@@ -24,94 +24,50 @@ interface GroupPageProps extends Record<string, unknown> {
     locations: PaginatedData<LocationData[]>;
 }
 
-const Group: React.FC<GroupPageProps> = ({group, proposals, connections, ideascaleProfiles, reviews, locations}) => {
-    const {t} = useTranslation();
-
+const Group: React.FC<GroupPageProps> = ({ group, proposals, connections, ideascaleProfiles, reviews, locations }) => {
+    const { t } = useTranslation();
 
     return (
         <>
-            <Head title={`${group.name} - Group`}/>
+            <Head title={`${group.name} - Group`} />
 
-            <header>
-                <div className="container">
-                    <Title>{group.name}</Title>
+            <header className="relative">
+                <div className="overflow-hidden rounded-lg mx-8 mt-4 sm:mx-10 h-80 sm:h-full">
+                    <Image
+                        imageUrl={group.hero_img_url || GroupHeader}
+                        size="w-full h-full object-cover"
+                    />
                 </div>
-                <div className="container">
+                <div className="container px-4 relative -mt-10 sm:-mt-15">
+                    <div className="flex flex-row items-start">
+                        <Image
+                            imageUrl={group.profile_photo_url}
+                            size="ml-8 sm:ml-2 w-24 h-24 sm:w-32 sm:h-32 md:w-40 md:h-40 rounded-full"
+                        />
+                        <div className="ml-5 pt-12 sm:pt-20">
+                            <Title className="text-xl sm:text-2xl font-bold text-content drop-shadow-lg mb-2">
+                                {group.name}
+                            </Title>
+                            <GroupSocials group={group} />
+                        </div>
+                    </div>
                 </div>
             </header>
 
-            <section className="container my-8 flex flex-row gap-4">
-                <div className='max-w-sm'>
+            <section className="container mx-auto px-8 sm:px-1 mt-10 flex flex-col lg:flex-row gap-8">
+                <div className="w-full h-full lg:w-1/3 xl:w-1/4">
                     <GroupCard group={group}/>
                 </div>
 
-                <div className='flex flex-col gap-32'>
-                    <WhenVisible data="proposals" fallback={<div>Loading Proposals...</div>}>
-                        <RelatedProposals
-                            proposals={proposals}
-                            groupId={group.hash ?? undefined}
-                            className='proposals-wrapper w-full grid grid-cols-1 gap-3 lg:grid-cols-2 xl:grid-cols-3'
-                        />
-                    </WhenVisible>
-
-                    <section>
-                        <WhenVisible data='connections' fallback={<div>Loading Connections</div>}>
-                            <div className='w-full'>
-                                <Title level='2'>Connections</Title>
-
-                                {typeof connections !== 'undefined' && (
-                                    <div className='w-full'>
-                                       <Graph graphData={connections}/>
-                                    </div>
-                                )}
-                            </div>
-                        </WhenVisible>
-                    </section>
-
-                    <section>
-                        <WhenVisible data='ideascaleProfiles' fallback={<div>Loading Ideascale Profiles</div>}>
-                            <div className='w-full overflow-auto'>
-                                <Title level='2'>Ideascale Profiles</Title>
-
-                                {typeof ideascaleProfiles?.data !== 'undefined' && (
-                                    <div className='max-w-lg'>
-                                        {JSON.stringify(ideascaleProfiles?.data)}
-                                    </div>
-                                )}
-                            </div>
-                        </WhenVisible>
-                    </section>
-
-                    <section>
-                        <WhenVisible data='reviews' fallback={<div>Loading Reviews</div>}>
-                            <div className='w-full overflow-auto'>
-                                <Title level='2'>Reviews</Title>
-                                <div>
-                                    <AggregatedReviewsSummary reviews={[]} />
-                                </div>
-
-                                {typeof reviews?.data !== 'undefined' && (
-                                    <div className='max-w-lg'>
-                                        {JSON.stringify(reviews?.data)}
-                                    </div>
-                                )}
-                            </div>
-                        </WhenVisible>
-                    </section>
-
-                    <section>
-                        <WhenVisible data='locations' fallback={<div>Loading Locations</div>}>
-                            <div className='w-full overflow-auto'>
-                                <Title level='2'>Locations</Title>
-
-                                {typeof locations?.data !== 'undefined' && (
-                                    <div className='max-w-lg'>
-                                        {JSON.stringify(locations?.data)}
-                                    </div>
-                                )}
-                            </div>
-                        </WhenVisible>
-                    </section>
+                <div className="flex flex-col gap-8 w-full lg:w-2/3 xl:w-3/4 shadow-xl bg-background p-4 rounded-lg">
+                    <GroupTabs
+                        group={group}
+                        proposals={proposals}
+                        connections={connections}
+                        ideascaleProfiles={ideascaleProfiles}
+                        reviews={reviews}
+                        locations={locations}
+                    />
                 </div>
             </section>
         </>
