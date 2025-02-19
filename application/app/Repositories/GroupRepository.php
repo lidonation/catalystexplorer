@@ -56,6 +56,7 @@ class GroupRepository extends Repository
                             'amount_awarded_ada',
                             'amount_awarded_usd',
                             'proposals_count',
+                            'proposals.fund.title',
                         ],
                     ],
                     $args
