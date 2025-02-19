@@ -7,6 +7,7 @@ namespace App\Models;
 use App\Casts\DateFormatCast;
 use App\Casts\HashId;
 use App\Enums\CatalystCurrencies;
+use App\Models\CatalystExplorer\Moderation;
 use App\Traits\HasAuthor;
 use App\Traits\HasMetaData;
 use App\Traits\HasTaxonomies;
@@ -16,6 +17,7 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Concerns\HasTimestamps;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Artisan;
@@ -172,36 +174,36 @@ class Proposal extends Model
     {
         $query->when(
             $filters['search'] ?? false,
-            fn (Builder $query, $search) => $query->where('title', 'ILIKE', '%'.$search.'%')
+            fn(Builder $query, $search) => $query->where('title', 'ILIKE', '%' . $search . '%')
         );
 
         $query->when(
             $filters['user_id'] ?? false,
-            fn (Builder $query, $user_id) => $query->where('user_id', $user_id)
+            fn(Builder $query, $user_id) => $query->where('user_id', $user_id)
         );
 
         $query->when(
             $filters['campaign_id'] ?? false,
-            fn (Builder $query, $campaign_id) => $query->where('campaign_id', $campaign_id)
+            fn(Builder $query, $campaign_id) => $query->where('campaign_id', $campaign_id)
         );
 
         $query->when(
             $filters['fund_id'] ?? false,
-            fn (Builder $query, $fund_id) => $query->whereRelation('fund_id', '=', $fund_id)
+            fn(Builder $query, $fund_id) => $query->whereRelation('fund_id', '=', $fund_id)
         );
     }
 
     public function currency(): Attribute
     {
         return Attribute::make(
-            get: fn ($currency) => $currency ?? $this->campaign?->currency ?? $this->fund?->currency ?? CatalystCurrencies::ADA()->value,
+            get: fn($currency) => $currency ?? $this->campaign?->currency ?? $this->fund?->currency ?? CatalystCurrencies::ADA()->value,
         );
     }
 
     public function quickPitchId(): Attribute
     {
         return Attribute::make(
-            get: fn () => $this->quickpitch ? collect(
+            get: fn() => $this->quickpitch ? collect(
                 explode(
                     '/',
                     $this->quickpitch
@@ -258,6 +260,20 @@ class Proposal extends Model
         );
     }
 
+    public function moderations(): HasMany
+    {
+        return $this->hasMany(Moderation::class, 'context_id', 'id')
+            ->where('context_type', Proposal::class);
+    }
+
+    public function discussions(): HasMany
+    {
+        return $this->hasMany(Discussion::class, 'model_id')
+            ->where('model_type', '=', static::class)
+            ->withCount(['ratings'])
+            ->withAvg('ratings', 'rating');
+    }
+
     /**
      * Get the value used to index the model.
      */
@@ -298,7 +314,7 @@ class Proposal extends Model
             "amount_requested_{$this->currency}" => $this->amount_requested ? intval($this->amount_requested) : 0,
             'amount_requested' => $this->amount_requested ? intval($this->amount_requested) : 0,
 
-            //            'auditability_score' => $this->meta_info->auditability_score ?? $this->getDiscussionRankingScore('Value for money') ?? 0,
+            // 'auditability_score' => $this->meta_info->auditability_score ?? $this->getDiscussionRankingScore('Value for money') ?? 0,
 
             'ca_rating' => intval($this->ratings_average) ?? 0.00,
             'campaign' => [
@@ -315,7 +331,7 @@ class Proposal extends Model
             'completed' => $this->status === 'complete' ? 1 : 0,
             'currency' => $this->currency,
 
-            //            'feasibility_score' => $this->meta_info->feasibility_score ?? $this->getDiscussionRankingScore('Feasibility') ?? 0,
+            // 'feasibility_score' => $this->meta_info->feasibility_score ?? $this->getDiscussionRankingScore('Feasibility') ?? 0,
             'funded' => (bool) $this->funded_at ? 1 : 0,
             'fund' => [
                 'id' => $this->fund_id,
@@ -348,7 +364,7 @@ class Proposal extends Model
             'tags' => $this->tags->toArray(),
 
             'users' => $this->team->map(function ($u) {
-                $proposals = $u->proposals?->map(fn ($p) => $p->toArray());
+                $proposals = $u->proposals?->map(fn($p) => $p->toArray());
 
                 return [
                     'id' => $u->id,
@@ -357,17 +373,17 @@ class Proposal extends Model
                     'name' => $u->name,
                     'bio' => $u->bio,
                     'profile_photo_url' => $u->media?->isNotEmpty() ? $u->thumbnail_url : $u->profile_photo_url,
-                    'proposals_completed' => $proposals?->filter(fn ($p) => $p['status'] === 'complete')?->count() ?? 0,
-                    'first_timer' => ($proposals?->map(fn ($p) => isset($p['fund']) ? $p['fund']['id'] : null)->unique()->count() === 1),
+                    'proposals_completed' => $proposals?->filter(fn($p) => $p['status'] === 'complete')?->count() ?? 0,
+                    'first_timer' => ($proposals?->map(fn($p) => isset($p['fund']) ? $p['fund']['id'] : null)->unique()->count() === 1),
                 ];
             }),
 
             'woman_proposal' => $this->is_woman_proposal ? 1 : 0,
             'link' => $this->link,
 
-            'alignment_score' => $this->meta_info->alignment_score ?? 0, // $this->getDiscussionRankingScore('Impact Alignment') ?? 0,
-            'feasibility_score' => $this->meta_info->feasibility_score ?? 0, // $this->getDiscussionRankingScore('Feasibility') ?? 0,
-            'auditability_score' => $this->meta_info->auditability_score ?? 0, // $this->getDiscussionRankingScore('Value for money') ?? 0,
+            'alignment_score' => $this->meta_info->alignment_score ?? $this->getDiscussionRankingScore('Impact Alignment') ?? 0,
+            'feasibility_score' => $this->meta_info->feasibility_score ?? $this->getDiscussionRankingScore('Feasibility') ?? 0,
+            'auditability_score' => $this->meta_info->auditability_score ?? $this->getDiscussionRankingScore('Value for money') ?? 0,
             'projectcatalyst_io_link' => $this->meta_info?->projectcatalyst_io_url ?? null,
             'project_length' => intval($this->meta_info->project_length) ?? 0,
             'vote_casts' => intval($this->meta_info->vote_casts) ?? 0,
@@ -435,7 +451,7 @@ class Proposal extends Model
             'amount_received' => 'integer',
             'amount_requested' => 'integer',
             'created_at' => DateFormatCast::class,
-            'currency' => CatalystCurrencies::class.':nullable',
+            'currency' => CatalystCurrencies::class . ':nullable',
             'funded_at' => DateFormatCast::class,
             'funding_updated_at' => DateFormatCast::class,
             'offchain_metas' => 'array',
