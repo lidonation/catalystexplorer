@@ -9,6 +9,7 @@ import { useTranslation } from 'react-i18next';
 import { Segments } from '../../../../types/segments';
 import FundData = App.DataTransferObjects.FundData;
 import CampaignData = App.DataTransferObjects.CampaignData;
+import Paragraph from "@/Components/atoms/Paragraph";
 
 interface CampaignCardProps {
     fund: FundData;
@@ -96,12 +97,12 @@ const CampaignCard: React.FC<CampaignCardProps> = ({
                     </svg>
                 </Title>
 
-                <p className="text-content-dark mb-4 line-clamp-3 opacity-80">
+                <Paragraph className="text-content-dark mb-4 line-clamp-3 opacity-80">
                     {campaign?.excerpt}
-                </p>
+                </Paragraph>
 
                 <div className="flex gap-2">
-                    <p className="bg-background text-content rounded-md border pr-2 pl-2">
+                    <div className="bg-background text-content rounded-md border pr-2 pl-2">
                         {t('proposals.filters.budget')}:{' '}
                         {currency(
                             campaign?.amount ?? 0,
@@ -109,10 +110,10 @@ const CampaignCard: React.FC<CampaignCardProps> = ({
                             undefined,
                             2,
                         )}
-                    </p>
+                    </div>
                 </div>
 
-                <div className="mt-8">
+                <div className="mt-6">
                     <AmountComparisonWithBar
                         title="Distributed vs Awarded"
                         numerator={campaign.total_distributed}

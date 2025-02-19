@@ -21,6 +21,7 @@ import ProposalSortingOptions from '@/lib/ProposalSortOptions';
 import ProposalData = App.DataTransferObjects.ProposalData;
 import Title from '@/Components/atoms/Title';
 import SearchControls from '@/Components/atoms/SearchControls';
+import Paragraph from "@/Components/atoms/Paragraph";
 
 interface HomePageProps extends Record<string, unknown> {
     proposals: PaginatedData<ProposalData[]>;
@@ -76,9 +77,9 @@ export default function Index({
                     </div>
 
                     <div className="container">
-                        <p className="text-content">
+                        <Paragraph className="text-content">
                             {t('proposals.pageSubtitle')}
-                        </p>
+                        </Paragraph>
                     </div>
                 </header>
 
