@@ -10,7 +10,6 @@ import { Link, router, useForm } from '@inertiajs/react';
 import axios from 'axios';
 import { FormEventHandler, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { route } from 'ziggy-js';
 
 interface FormErrors {
     email?: string;
