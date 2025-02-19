@@ -28,21 +28,21 @@ function Title({
         );
     } else if (level === '3') {
         content = (
-            <h2 id={id} {...props} className={`text-2xl ${className}`}>
+            <h3 id={id} {...props} className={`text-2xl ${className}`}>
                 {children}
-            </h2>
+            </h3>
         );
     } else if (level === '4') {
         content = (
-            <h2 id={id} {...props} className={`text-xl ${className}`}>
+            <h4 id={id} {...props} className={`text-xl ${className}`}>
                 {children}
-            </h2>
+            </h4>
         );
     } else if (level === '5') {
         content = (
-            <h2 id={id} {...props} className={`text-lg ${className}`}>
+            <h5 id={id} {...props} className={`text-lg ${className}`}>
                 {children}
-            </h2>
+            </h5>
         );
     } else {
         content = (

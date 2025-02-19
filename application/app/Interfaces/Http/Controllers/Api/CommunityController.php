@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Interfaces\Http\Controllers\Api;
 
+use App\DataTransferObjects\CommunityData;
 use App\Interfaces\Http\Controllers\Controller;
 use App\Interfaces\Http\Resources\CommunityResource;
 use App\Models\Community;
@@ -24,11 +25,12 @@ class CommunityController extends Controller
             ->filter(request(['search', 'ids']));
 
         $props = [
-            'communities' => CommunityResource::collection($communities->fastPaginate($per_page)->onEachSide(0)),
+            'communities' => to_length_aware_paginator(
+                CommunityData::collect($communities->paginate($per_page))
+            ),
         ];
 
         return Inertia::render('Communities/Index', $props);
-
     }
 
     public function community($communityId): \Illuminate\Http\Response|CommunityResource|Application|ResponseFactory
