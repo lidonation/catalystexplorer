@@ -8,16 +8,17 @@ import { ParamsEnum } from '@/enums/proposal-search-params';
 import { useFilterContext } from '@/Context/FiltersContext';
 import React from 'react';
 import { PaginatedData } from '../../types/paginated-data';
-import { Link } from '@inertiajs/react';
+import {InertiaLinkProps, Link} from '@inertiajs/react';
 import { cn } from '@/lib/utils';
-
 
 type PaginationComponentProps<T> = {
     pagination: PaginatedData<T>;
+    linkProps?: Partial<InertiaLinkProps>;
 };
 
 const PaginationComponent: React.FC<PaginationComponentProps<any>> = ({
     pagination,
+    linkProps = {} as InertiaLinkProps
 }) => {
     const { setFilters, getFilters } = useFilterContext();
 
@@ -46,8 +47,9 @@ const PaginationComponent: React.FC<PaginationComponentProps<any>> = ({
                 <div className="flex flex-col md:flex-row items-center justify-between gap-4">
                     {/* Previous Button */}
                     <div>
-                        <PaginationItem className="list-none">
+                        <PaginationItem className="list-none text-xs">
                             <PaginationPrevious
+                                linkProps={linkProps}
                                 href={prev_page_url ? buildUrl(
                                     ParamsEnum.PAGE,
                                     current_page - 1,
@@ -58,13 +60,14 @@ const PaginationComponent: React.FC<PaginationComponentProps<any>> = ({
                                         ? 'pointer-events-none opacity-50'
                                         : ''
                                 }
+
                             ></PaginationPrevious>
                         </PaginationItem>
                     </div>
-                    <div className='flex flex-col md:flex-row gap-4 items-center'>
+                    <div className='flex flex-col md:flex-row gap-3 items-center'>
                         {/* Page Numbers */}
                         <div className="flex flex-col justify-center gap-1">
-                            <ul className="flex flex-wrap lg:flex-nowrap list-none items-center gap-2 text-sm lg:gap-5 lg:text-base">
+                            <ul className="flex flex-wrap lg:flex-nowrap list-none items-center gap-1 text-sm lg:gap-4 lg:text-base">
                                 {links &&
                                     links.map((link, index) =>
                                         link.label.includes('&laquo;') ||
@@ -88,7 +91,7 @@ const PaginationComponent: React.FC<PaginationComponentProps<any>> = ({
                                                                 : undefined
                                                         }
                                                         className={cn(
-                                                            'rounded-full w-10 h-10 flex items-center justify-center',
+                                                            'rounded-full size-8 flex items-center justify-center',
                                                             link.active
                                                                 ? 'bg-background-darker'
                                                                 : ''
@@ -102,7 +105,7 @@ const PaginationComponent: React.FC<PaginationComponentProps<any>> = ({
                                     )}
                             </ul>
                         </div>
-                        <div className="w-full text-center text-sm">
+                        <div className="w-full text-center text-xs">
                             <span>
                                 Showing {from} - {to} of <span className='font-bold'>{total}</span>
                             </span>
@@ -110,8 +113,9 @@ const PaginationComponent: React.FC<PaginationComponentProps<any>> = ({
                     </div>
                     {/* Next Button */}
                     <div>
-                        <PaginationItem className="list-none">
+                        <PaginationItem className="list-none text-xs">
                             <PaginationNext
+                                linkProps={linkProps}
                                 href={next_page_url ? buildUrl(
                                     ParamsEnum.PAGE,
                                     current_page + 1,

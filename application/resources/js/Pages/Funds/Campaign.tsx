@@ -5,7 +5,6 @@ import {Head, WhenVisible} from '@inertiajs/react';
 import {useTranslation} from 'react-i18next';
 import {PaginatedData} from '../../../types/paginated-data';
 import CampaignAccordion from '../Campaign/Partials/CampaignAccordion';
-import CampaignCard from '../Campaign/Partials/CampaignCard';
 import ProposalCardMini from '../Proposals/Partials/ProposalCardMini';
 import FundData = App.DataTransferObjects.FundData;
 import CampaignData = App.DataTransferObjects.CampaignData;
@@ -13,6 +12,7 @@ import ProposalData = App.DataTransferObjects.ProposalData;
 import Paginator from "@/Components/Paginator";
 import {FiltersProvider} from "@/Context/FiltersContext";
 import {SearchParams} from "../../../types/search-params";
+import CampaignCardExtended from "@/Pages/Campaign/Partials/CampaignCardExtended";
 
 interface CampaignPageProps extends Record<string, unknown> {
     fund: FundData;
@@ -34,7 +34,7 @@ export default function Campaign({
             <div className="flex w-full flex-col gap-y-4 rounded-lg p-4 lg:gap-y-12 lg:p-8">
                 <div className="relative grid grid-cols-9 gap-6">
                     <div className="col-span-9 h-auto lg:col-span-3">
-                        <CampaignCard
+                        <CampaignCardExtended
                             fund={fund}
                             campaign={campaign}
                             className={
@@ -69,7 +69,7 @@ export default function Campaign({
                             data="proposals"
                             fallback={<div>Loading Proposals...</div>}
                         >
-                            <section className="bg-background rounded-md p-4 flex flex-col gap-8">
+                            <section className="bg-background bg-opacity-5 rounded-md p-4 flex flex-col gap-8">
                                 <div>
                                     <Title level="4">
                                         {t('Proposals')}
@@ -77,13 +77,13 @@ export default function Campaign({
 
                                     <Divider/>
 
-                                    <ul className="grid w-full auto-rows-fr md:grid-cols-2 2xl:grid-cols-3 gap-2">
+                                    <ul className="grid w-full auto-rows-fr md:grid-cols-2 2xl:grid-cols-3 gap-2 mt-4">
                                         {proposals?.data &&
                                             proposals?.data.map(
                                                 (proposal, index) => (
                                                     <li
                                                         key={index}
-                                                        className="h-full"
+                                                        className="h-full rounded-lg border-2 border-border-dark-on-dark"
                                                     >
                                                         <ProposalCardMini
                                                             proposal={proposal}
@@ -99,7 +99,7 @@ export default function Campaign({
                                     <Divider />
 
                                     <FiltersProvider defaultFilters={{} as SearchParams}>
-                                        {proposals && <Paginator pagination={proposals}/>}
+                                        {proposals && <Paginator pagination={proposals} linkProps={{only: ['proposals']}}/>}
                                     </FiltersProvider>
                                 </div>
                             </section>
