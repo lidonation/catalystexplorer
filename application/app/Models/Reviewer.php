@@ -13,8 +13,6 @@ class Reviewer extends Model
 {
     use HasMetaData;
 
-    protected $guarded = [];
-
     public function v1_reviews(): BelongsToMany
     {
         return $this->belongsToMany(Review::class, 'review_moderation_reviewers', 'review_moderation_id', 'reviewer_id');
@@ -23,10 +21,5 @@ class Reviewer extends Model
     public function moderations(): HasMany
     {
         return $this->hasMany(Moderation::class, 'reviewer_id');
-    }
-
-    public function reputationScores(): HasMany
-    {
-        return $this->hasMany(ReviewerReputationScore::class, 'reviewer_id');
     }
 }

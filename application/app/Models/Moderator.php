@@ -12,7 +12,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Moderator extends Model
 {
     use HasMetaData, SoftDeletes;
-    protected $guarded = [];
 
     public function moderations(): HasMany
     {

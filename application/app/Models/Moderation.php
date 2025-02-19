@@ -16,8 +16,6 @@ class Moderation extends Model
 {
     use HasMetaData, SoftDeletes;
 
-    protected $guarded = [];
-
     public function moderator(): BelongsTo
     {
         return $this->belongsTo(Moderator::class);
