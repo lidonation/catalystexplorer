@@ -26,7 +26,7 @@ const FundsBarChart: React.FC<FundsBarChartProps> = ({
     const { t } = useTranslation();
 
     const allKeys = [
-        { value: t('funds.totalProposals'), label: t('funds.totalProposals') },
+        { value: t('proposals.totalProposals'), label: t('proposals.totalProposals') },
         {
             value: t('funds.fundedProposals'),
             label: t('funds.fundedProposals'),
@@ -48,7 +48,7 @@ const FundsBarChart: React.FC<FundsBarChartProps> = ({
     const activeKeys = filters.length > 0 ? filters : [];
 
     const colorMap = {
-        [t('funds.totalProposals')]: '#4fadce',
+        [t('proposals.totalProposals')]: '#4fadce',
         [t('funds.fundedProposals')]: '#ee8434',
         [t('funds.completedProposals')]: '#16B364',
     };
@@ -73,7 +73,7 @@ const FundsBarChart: React.FC<FundsBarChartProps> = ({
                         {totalProposals.toLocaleString()}
                     </h6>
                     <Paragraph size="sm" className="text-4 lg:text-3 text-content font-bold opacity-75">
-                        {t('funds.totalProposals')}
+                        {t('proposals.totalProposals')}
                     </Paragraph>
                 </div>
 
@@ -87,7 +87,7 @@ const FundsBarChart: React.FC<FundsBarChartProps> = ({
                 </div>
                 <div>
                     <h6 className="text-2 lg:title-5 font-bold">
-                        {currency(totalFundsRequested, 'ADA', undefined, 2)}
+                        {currency(totalFundsRequested, 2, 'ADA', )}
                     </h6>
                     <Paragraph size="sm" className="text-4 lg:text-3 text-content font-bold opacity-75">
                         {t('funds.totalFundsAwardedAda')}
@@ -95,7 +95,7 @@ const FundsBarChart: React.FC<FundsBarChartProps> = ({
                 </div>
                 <div>
                     <h6 className="text-2 lg:title-5 font-bold">
-                        {currency(totalFundsAllocated, 'USD', undefined, 2)}
+                        {currency(totalFundsAllocated, 2, 'USD')}
                     </h6>
                     <Paragraph size="sm" className="text-4 lg:text-3 font-bold text-content opacity-75">
                         {t('funds.totalFundsAwardedUsd')}
@@ -138,7 +138,7 @@ const FundsBarChart: React.FC<FundsBarChartProps> = ({
                         tickSize: 5,
                         tickPadding: 5,
                         tickRotation: 0,
-                        legend: t('funds.totalProposals'),
+                        legend: t('proposals.totalProposals'),
                         legendPosition: 'middle',
                         legendOffset: -50,
                     }}

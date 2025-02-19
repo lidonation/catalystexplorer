@@ -1,6 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Segments } from '../../types/segments';
+import ColorDot from "@/Components/atoms/ColorDot";
 
 interface SegmentedBarToolTipHoverProps {
     segments: Segments[];
@@ -9,8 +10,6 @@ interface SegmentedBarToolTipHoverProps {
 const SegmentedBarToolTipHover: React.FC<SegmentedBarToolTipHoverProps> = ({
     segments,
 }) => {
-    const { t } = useTranslation();
-
     return (
         <div className="relative flex justify-center">
             <div className="bg-tooltip w-60 rounded-2xl p-4 text-white shadow-lg">
@@ -19,13 +18,13 @@ const SegmentedBarToolTipHover: React.FC<SegmentedBarToolTipHoverProps> = ({
                 <div className="border-border-secondary mb-2 border-b pb-2">
                     {segments.map((segment, index) => (
                         <div key={index} className="flex items-center">
-                            <div
-                                className={`mr-2 h-2 w-2 rounded-full ${segment.color}`}
-                            ></div>
-                            <p className="text-3">{segment.label}:</p>
-                            <p className="text-3 ml-1 font-bold">
+                            <ColorDot color={segment.color} />
+
+                            <div className="text-3">{segment.label}:</div>
+
+                            <div className="text-3 ml-1 font-bold">
                                 {segment.value}
-                            </p>
+                            </div>
                         </div>
                     ))}
                 </div>

@@ -7,7 +7,7 @@ export default function Card({
     children: React.ReactNode
 }) {
     return (
-        <div className="flex flex-col h-full bg-background rounded-lg shadow-md p-4" {...props}>
+        <div className="flex flex-col bg-background rounded-lg shadow-md p-4 card" {...props}>
             {children}
         </div>
     );

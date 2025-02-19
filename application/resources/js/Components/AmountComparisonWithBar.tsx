@@ -3,6 +3,7 @@ import {shortNumber} from '@/utils/shortNumber';
 import {useEffect, useState} from 'react';
 import {useTranslation} from 'react-i18next';
 import PercentageProgressBar from './PercentageProgressBar';
+import ValueLabel from "@/Components/atoms/ValueLabel";
 
 interface AmountComparisonWithBarPageProps extends Record<string, unknown> {
     title: string;
@@ -14,13 +15,13 @@ interface AmountComparisonWithBarPageProps extends Record<string, unknown> {
 }
 
 const AmountComparisonWithBar: React.FC<AmountComparisonWithBarPageProps> = ({
-                                                                                 title,
-                                                                                 numerator,
-                                                                                 denominator,
-                                                                                 currency = 'USD',
-                                                                                 smallSize = false,
-                                                                                 onWhiteBackground = false,
-                                                                             }) => {
+     title,
+     numerator,
+     denominator,
+     currency = 'USD',
+     smallSize = false,
+     onWhiteBackground = false,
+ }) => {
     const {t} = useTranslation();
 
     const [percentage, setPercentage] = useState<number>(0);
@@ -41,19 +42,19 @@ const AmountComparisonWithBar: React.FC<AmountComparisonWithBarPageProps> = ({
                 secondaryBackgroudColor={'bg-primary'}
             />
 
-            <div className="flex flex-col">
+            <div className="flex flex-col px-0.5">
                 <div className="flex items-center gap-2">
                     <span
                         className={`text-content font-bold ${smallSize ? 'text-lg' : 'text-xl'}`}
                     >
                         {currencySymbol(currency)}
-                        {shortNumber(numerator)}
+                        {shortNumber(numerator, 2)}
                     </span>
                     <span
                         className={`text-content ${smallSize ? 'text-lg' : 'text-xl'}`}
                     >
                         / {currencySymbol(currency)}
-                        {shortNumber(denominator)}({percentage ? percentage : 0}%)
+                        {shortNumber(denominator, 2)} <ValueLabel className={`${smallSize ? 'text-lg' : 'text-xl'}`}>({percentage ? percentage : 0}%)</ValueLabel>
                     </span>
                 </div>
                 <div
