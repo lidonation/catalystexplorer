@@ -1,5 +1,10 @@
-services:
+x-logging: &default-logging
+  driver: 'json-file'
+  options:
+    max-size: "50m"
+    max-file: 6
 
+services:
   # app
   catalystexplorer.com:
     build:
@@ -92,6 +97,7 @@ services:
   catalystexplorer.db:
     image: postgres:17.1-bookworm
     container_name: catalystexplorer.db
+    logging: *default-logging
     ports:
       - '${FORWARD_DB_PORT:-5432}:5432'
     environment:
@@ -120,8 +126,9 @@ services:
 
   # meilisearch
   catalystexplorer-search:
-    image: getmeili/meilisearch:v1.11.3
+    image: getmeili/meilisearch:v1.13.0
     container_name: catalystexplorer-search
+    logging: *default-logging
     ports:
       - '${FORWARD_MEILISEARCH_PORT:-7700}:7700'
     environment:
@@ -141,11 +148,11 @@ services:
       retries: 3
       timeout: 5s
 
-
   # redis
   catalystexplorer.redis:
     image: redis:8.0-M02-alpine3.20
     container_name: catalystexplorer.redis
+    logging: *default-logging
     ports:
       - '${FORWARD_REDIS_PORT:-6379}:6379'
     volumes:
@@ -159,10 +166,56 @@ services:
         - ping
       retries: 3
       timeout: 5s
-  
+
+  # minio
+  catalystexplorer-minio:
+    image: 'minio/minio:RELEASE.2025-02-18T16-25-55Z'
+    container_name: catalystexplorer-minio
+    ports:
+      - '${FORWARD_MINIO_PORT:-9001}:9001'
+      - '${FORWARD_MINIO_CONSOLE_PORT:-8900}:8900'
+    security_opt:
+      - no-new-privileges:true
+    environment:
+      MINIO_ROOT_USER: 'minio'
+      MINIO_ROOT_PASSWORD: 'minioroot'
+      MINIO_DEFAULT_BUCKET: 'catalystexplorer.com'
+    volumes:
+      - 'catalystexplorer-minio:/data/minio'
+    networks:
+      - catalystexplorer-net
+      - shared-network
+    command: 'minio server /data/minio --console-address ":${FORWARD_MINIO_CONSOLE_PORT:-8900}" --address ":${FORWARD_MINIO_PORT:-9001}"'
+    restart: always
+    logging: *default-logging
+    healthcheck:
+      test: [ "CMD", "mc", "ready", "local" ]
+      retries: 3
+      timeout: 5s
+
+  createbuckets:
+    image: minio/mc
+    environment:
+      MINIO_ROOT_USER: 'minio'
+      MINIO_ROOT_PASSWORD: 'minioroot'
+      MINIO_DEFAULT_BUCKET: 'catalystexplorer.com'
+    depends_on:
+      - catalystexplorer-minio
+    networks:
+      - catalystexplorer-net
+      - shared-network
+    entrypoint: >
+      /bin/sh -c "
+      /usr/bin/mc config host add minio http://catalystexplorer-minio:${FORWARD_MINIO_PORT:-9001} ${MINIO_ROOT_USER} ${MINIO_ROOT_PASSWORD};
+      /usr/bin/mc rm -r --force minio/${MINIO_DEFAULT_BUCKET};
+      /usr/bin/mc mb minio/${MINIO_DEFAULT_BUCKET};
+      /usr/bin/mc policy set public minio/${MINIO_DEFAULT_BUCKET};
+      exit 0;
+      "
   # catalystexplorer.cypress.gui:
   #   image: cypress/included:10.3.0
   #   container_name: catalystexplorer.cypress.gui
+  #  logging: *default-logging
   #   depends_on:
   #     - catalystexplorer.com
   #   environment:
@@ -192,6 +245,8 @@ networks:
     name: shared-network
     driver: bridge
 volumes:
+  catalystexplorer-minio:
+    driver: local
   catalystexplorer-db:
     driver: local
   catalystexplorer-search:

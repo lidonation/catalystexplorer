@@ -6,8 +6,7 @@ namespace App\Nova;
 
 use App\Enums\CatalystCurrencies;
 use App\Models\Fund;
-use Laravel\Nova\Actions\Action;
-use Laravel\Nova\Card;
+use Ebess\AdvancedNovaMediaLibrary\Fields\Images;
 use Laravel\Nova\Fields\DateTime;
 use Laravel\Nova\Fields\Field;
 use Laravel\Nova\Fields\HasMany;
@@ -18,9 +17,8 @@ use Laravel\Nova\Fields\Select;
 use Laravel\Nova\Fields\Slug;
 use Laravel\Nova\Fields\Stack;
 use Laravel\Nova\Fields\Text;
-use Laravel\Nova\Filters\Filter;
 use Laravel\Nova\Http\Requests\NovaRequest;
-use Laravel\Nova\Lenses\Lens;
+use Laravel\Nova\Panel;
 
 class Funds extends Resource
 {
@@ -79,19 +77,13 @@ class Funds extends Resource
                 CatalystCurrencies::ADA()->value => CatalystCurrencies::ADA()->value,
             ])->default(fn () => CatalystCurrencies::ADA()->value)->sortable(),
 
-            Image::make('Thumbnail', 'thumbnail')
-                ->disk('public')
-                ->path('funds/hero'),
-
-            Image::make('Banner', 'banner')
-                ->disk('public')
-                ->path('funds/banners'),
-
             DateTime::make('Launched At')
                 ->sortable(),
 
             Number::make('Amount')
                 ->required(),
+
+            new Panel('Media', self::mediaFields()),
 
             HasMany::make('Metadata', 'metas', Metas::class),
 
@@ -99,43 +91,21 @@ class Funds extends Resource
         ];
     }
 
-    /**
-     * Get the cards available for the resource.
-     *
-     * @return array<int, Card>
-     */
-    public function cards(NovaRequest $request): array
+    public static function mediaFields(): array
     {
-        return [];
-    }
+        return [
+            Images::make(__('Hero'), 'hero')
+                ->enableExistingMedia(),
+            Images::make(__('Banner'), 'banner')
+                ->enableExistingMedia(),
 
-    /**
-     * Get the filters available for the resource.
-     *
-     * @return array<int, Filter>
-     */
-    public function filters(NovaRequest $request): array
-    {
-        return [];
-    }
-
-    /**
-     * Get the lenses available for the resource.
-     *
-     * @return array<int, Lens>
-     */
-    public function lenses(NovaRequest $request): array
-    {
-        return [];
-    }
-
-    /**
-     * Get the actions available for the resource.
-     *
-     * @return array<int, Action>
-     */
-    public function actions(NovaRequest $request): array
-    {
-        return [];
+            //            Image::make('Thumbnail', 'thumbnail')
+            //                ->disk('public')
+            //                ->path('funds/hero'),
+            //
+            //            Image::make('Banner', 'banner')
+            //                ->disk('public')
+            //                ->path('funds/banner'),
+        ];
     }
 }
