@@ -51,7 +51,9 @@ const CatalystConnectionsGraph = ({
     const [hoveredNodeId, setHoveredNodeId] = useState<string | null>(null);
     const containerRef = useRef<HTMLDivElement>(null);
     const nodeSizes = useRef<Map<string, number>>(new Map());
-    const [focusedNodeId, setFocusedNodeId] = useState(null);
+    const [focusedNodeId, setFocusedNodeId] = useState<string | null>(
+        data.rootNodeId,
+    );
     const [dimensions, setDimensions] = useState({ width: 800, height: 600 });
 
     const loadImages = useCallback(() => {
@@ -100,7 +102,7 @@ const CatalystConnectionsGraph = ({
             fgRef.current.d3Force('link')?.distance(forces.linkDistance);
             fgRef.current
                 .d3Force('charge')
-                ?.distanceMax(200)
+                ?.distanceMax(500)
                 .strength(forces.chargeStrength);
         }
     }, [forces.linkDistance, forces.chargeStrength]);
@@ -119,7 +121,7 @@ const CatalystConnectionsGraph = ({
                 const node = data.nodes.find((n) => n.id === focusedNodeId);
                 if (node) {
                     const nodePosition = { x: node.x || 0, y: node.y || 0 };
-                    fgRef.current.zoom(2, 1000);
+                    fgRef.current.zoom(1, 1000);
                     fgRef.current.centerAt(
                         nodePosition.x,
                         nodePosition.y,
@@ -129,7 +131,7 @@ const CatalystConnectionsGraph = ({
             }, 2000);
             return () => clearTimeout(timer);
         }
-    }, [data, focusedNodeId]);
+    }, [data]);
 
     const handleNodeClick = useCallback((node: any) => {
         setFocusedNodeId(node.id);
@@ -137,24 +139,27 @@ const CatalystConnectionsGraph = ({
 
     useEffect(() => {
         const updateSize = () => {
-          if (containerRef.current) {
-            setDimensions({
-              width: containerRef.current.clientWidth,
-              height: containerRef.current.clientHeight,
-            });
-          }
+            if (containerRef.current) {
+                setDimensions({
+                    width: containerRef.current.clientWidth,
+                    height: containerRef.current.clientHeight,
+                });
+            }
         };
-    
-        updateSize(); 
-    
-        window.addEventListener("resize", updateSize);
-        return () => window.removeEventListener("resize", updateSize);
-      }, []);
+
+        updateSize();
+
+        window.addEventListener('resize', updateSize);
+        return () => window.removeEventListener('resize', updateSize);
+    }, []);
 
     const nodeCanvasObject = useCallback(
         (node: any, ctx: CanvasRenderingContext2D) => {
             let radius;
-            if (node.type === CatalystConnectionsEnum.GROUP) {
+            if (
+                node.type === CatalystConnectionsEnum.GROUP ||
+                node.type === CatalystConnectionsEnum.COMMUNITY
+            ) {
                 radius = config.nodeSize.group;
             } else {
                 if (!nodeSizes.current.has(node.id)) {
@@ -169,36 +174,118 @@ const CatalystConnectionsGraph = ({
             }
 
             const img = imageCache.current.get(node.photo!);
-            if (img) {
-                ctx.save();
-                ctx.beginPath();
-                ctx.arc(node.x!, node.y!, radius, 0, 2 * Math.PI);
-                ctx.closePath();
-                ctx.clip();
-                ctx.drawImage(
-                    img,
-                    node.x! - radius,
-                    node.y! - radius,
-                    radius * 2,
-                    radius * 2,
-                );
-                ctx.restore();
-            } else {
-                ctx.beginPath();
-                ctx.arc(node.x!, node.y!, radius, 0, 2 * Math.PI);
-                ctx.fillStyle = getColor(config.colors.node);
-                ctx.fill();
-            }
+            ctx.save();
 
-            if (node.type === CatalystConnectionsEnum.GROUP) {
+            if (
+                node.type === CatalystConnectionsEnum.GROUP ||
+                node.type === CatalystConnectionsEnum.COMMUNITY
+            ) {
+                // Draw octagon
+                const size = radius;
+                const angleStep = (Math.PI * 2) / 8;
+
                 ctx.beginPath();
-                ctx.arc(node.x!, node.y!, radius, 0, 2 * Math.PI);
+                for (let i = 0; i < 8; i++) {
+                    const angle = angleStep * i;
+                    const x = node.x! + size * Math.cos(angle);
+                    const y = node.y! + size * Math.sin(angle);
+                    if (i === 0) {
+                        ctx.moveTo(x, y);
+                    } else {
+                        ctx.lineTo(x, y);
+                    }
+                }
+                ctx.closePath();
+
+                if (img) {
+                    ctx.clip(); // Clip to the octagon shape
+                    ctx.drawImage(
+                        img,
+                        node.x! - radius,
+                        node.y! - radius,
+                        radius * 2,
+                        radius * 2,
+                    );
+                    ctx.restore(); // Restore the canvas state to prevent clipping issues
+                } else {
+                    ctx.fillStyle = getColor(config.colors.node);
+                    ctx.fill();
+                }
+
                 ctx.lineWidth = 1;
                 ctx.strokeStyle = getColor(config.colors.groupNode);
                 ctx.stroke();
+            } else {
+                if (img) {
+                    ctx.beginPath();
+                    ctx.arc(node.x!, node.y!, radius, 0, 2 * Math.PI);
+                    ctx.closePath();
+                    ctx.clip();
+                    ctx.drawImage(
+                        img,
+                        node.x! - radius,
+                        node.y! - radius,
+                        radius * 2,
+                        radius * 2,
+                    );
+                    ctx.restore();
+                } else {
+                    ctx.beginPath();
+                    ctx.arc(node.x!, node.y!, radius, 0, 2 * Math.PI);
+                    ctx.fillStyle = getColor(config.colors.node);
+                    ctx.fill();
+                }
+            }
+
+            if (node.id === focusedNodeId) {
+                const label = node.name;
+                const fontSize = 12;
+                ctx.font = `${fontSize}px Sans-Serif`;
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'top';
+
+                const textWidth = ctx.measureText(label).width;
+                const padding = 5;
+                const boxWidth = textWidth + padding * 2;
+                const boxHeight = fontSize + padding * 2;
+                const x = node.x! - boxWidth / 2;
+                const y = node.y! + radius + 5;
+
+                const borderRadius = 8;
+                ctx.fillStyle = getColor('--cx-tooltip-background');
+                ctx.beginPath();
+                ctx.moveTo(x + borderRadius, y);
+                ctx.lineTo(x + boxWidth - borderRadius, y);
+                ctx.quadraticCurveTo(
+                    x + boxWidth,
+                    y,
+                    x + boxWidth,
+                    y + borderRadius,
+                );
+                ctx.lineTo(x + boxWidth, y + boxHeight - borderRadius);
+                ctx.quadraticCurveTo(
+                    x + boxWidth,
+                    y + boxHeight,
+                    x + boxWidth - borderRadius,
+                    y + boxHeight,
+                );
+                ctx.lineTo(x + borderRadius, y + boxHeight);
+                ctx.quadraticCurveTo(
+                    x,
+                    y + boxHeight,
+                    x,
+                    y + boxHeight - borderRadius,
+                );
+                ctx.lineTo(x, y + borderRadius);
+                ctx.quadraticCurveTo(x, y, x + borderRadius, y);
+                ctx.closePath();
+                ctx.fill();
+
+                ctx.fillStyle = 'white';
+                ctx.fillText(label, node.x!, y + padding);
             }
         },
-        [config, getColor],
+        [config, getColor, focusedNodeId],
     );
 
     const linkCanvasObject = useCallback(
@@ -222,17 +309,9 @@ const CatalystConnectionsGraph = ({
                 focusedNodeId,
             );
 
-            ctx.strokeStyle =
-                isHovered || isNodeFocused
-                    ? getColor(config.colors.linkHover)
-                    : getColor(config.colors.link);
+            ctx.strokeStyle = getColor(config.colors.link);
 
-            const lineWidth =
-                sourceNode.type === CatalystConnectionsEnum.GROUP
-                    ? sourceNode.id === data.rootGroupId
-                        ? 1
-                        : 0.3
-                    : 0.3;
+            const lineWidth = isHovered || isNodeFocused ? 1.5 : 0.3;
 
             ctx.lineWidth = lineWidth;
             ctx.beginPath();
@@ -240,11 +319,17 @@ const CatalystConnectionsGraph = ({
             ctx.lineTo(targetNode.x!, targetNode.y!);
             ctx.stroke();
         },
-        [config.colors, getColor, hoveredNodeId, focusedNodeId, data.rootGroupId],
+        [
+            config.colors,
+            getColor,
+            hoveredNodeId,
+            focusedNodeId,
+            data.rootNodeId,
+        ],
     );
 
     return (
-        <div className="bg-background w-full">
+        <div className="bg-background w-full" ref={containerRef}>
             <ForceGraph2D
                 width={dimensions.width}
                 height={dimensions.height}

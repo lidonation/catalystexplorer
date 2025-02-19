@@ -22,12 +22,13 @@ interface IdeascaleProfilesPageProps extends Record<string, unknown> {
 const Index = ({
     ideascaleProfiles,
     filters,
+    ideascaleProfilesCount,
 }: PageProps<IdeascaleProfilesPageProps>) => {
     const { t } = useTranslation();
 
     const [showFilters, setShowFilters] = useState(false);
     const profiles = ideascaleProfiles?.data ?? [];
-    const maxProfilesPerPage = ideascaleProfiles?.per_page ?? 10;
+    const maxProfilesPerPage = ideascaleProfilesCount ?? ideascaleProfiles?.per_page ?? 10;
     const [loading, setLoading] = useState(true);
 
     useEffect(() => { setLoading(profiles.length === 0);}, [profiles])
@@ -69,7 +70,7 @@ const Index = ({
                     </section>
                 </div>
 
-                {!loading && ideascaleProfiles && ideascaleProfiles.total > maxProfilesPerPage && (
+                {ideascaleProfiles && ideascaleProfiles.total > 0 && (
                     <section className="w-full px-4 lg:container lg:px-0">
                         <Paginator pagination={ideascaleProfiles} />
                     </section>
