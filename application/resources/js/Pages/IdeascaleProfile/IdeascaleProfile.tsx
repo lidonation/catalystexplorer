@@ -6,11 +6,10 @@ import IdeascaleProfilesData = App.DataTransferObjects.IdeascaleProfileData;
 import ConnectionData = App.DataTransferObjects.ConnectionData;
 import Graph from '../../Components/Graph';
 import IdeascaleProfileCard from './Partials/IdeascaleProfileCard';
-import RecordsNotFound from '@/Layouts/RecordsNotFound';
 
 interface IdeascaleProfilesPageProps extends Record<string, unknown> {
-    ideascaleProfile: IdeascaleProfilesData | null;
-    connections: ConnectionData | null;
+    ideascaleProfile: IdeascaleProfilesData;
+    connections: ConnectionData;
 }
 
 const IdeascaleProfile = ({
@@ -21,26 +20,17 @@ const IdeascaleProfile = ({
 
     return (
         <>
-            <Head title={ideascaleProfile?.name || t('profileNotFound')} />
+            <Head title={ideascaleProfile.name} />
 
             <div className="relative flex w-full flex-col justify-center gap-8">
                 <section className="container py-8">
-                    {ideascaleProfile ? (
-                        <IdeascaleProfileCard ideascaleProfile={ideascaleProfile} />
-                    ) : (
-                        <RecordsNotFound context="profiles" />
-                    )}
+                    <IdeascaleProfileCard ideascaleProfile={ideascaleProfile} />
                 </section>
 
+
                 <section className="container py-8">
-                    {ideascaleProfile ? (
-                        <>
-                            <h4 className="title-4">{t('comingSoon')}</h4>
-                            <div>{JSON.stringify(ideascaleProfile)}</div>
-                        </>
-                    ) : (
-                        <RecordsNotFound context="profiles" />
-                    )}
+                    <h4 className="title-4">{t('comingSoon')}</h4>
+                    <div>{JSON.stringify(ideascaleProfile)}</div>
                 </section>
             </div>
 
@@ -51,12 +41,10 @@ const IdeascaleProfile = ({
                 <div className="w-full px-8 ">
                     <Title level="2">Connections</Title>
 
-                    {connections && Object.keys(connections).length > 0 ? (
+                    {typeof connections !== 'undefined' && (
                         <div className="w-full">
                             <Graph graphData={connections} />
                         </div>
-                    ) : (
-                        <RecordsNotFound context="connections" />
                     )}
                 </div>
             </WhenVisible>
