@@ -32,7 +32,7 @@ function Button({
             aria-expanded={arialExpanded}
             aria-controls={arialControls}
             aria-pressed={ariaPressed}
-            className={`rounded-sm text-content ${disabled ? 'cursor-not-allowed opacity-50' : ''} ${className}`}
+            className={`rounded-sm text-content hover:cursor-pointer ${disabled ? 'cursor-not-allowed opacity-50' : ''} ${className}`}
         >
             {children}
         </button>
