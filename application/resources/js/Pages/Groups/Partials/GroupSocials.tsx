@@ -26,7 +26,7 @@ export default function GroupSocials({ group }: GroupSocials) {
         <div
             aria-labelledby="group-socials"
         >
-            <div className="text-content flex justify-between gap-1">
+            <div className="text-content flex gap-2">
                 {group?.twitter && (
                     <a
                         href={socialLinks.twitter}

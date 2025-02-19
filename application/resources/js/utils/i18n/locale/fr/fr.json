@@ -5,6 +5,7 @@
     "appMessage": "Tous les votes doivent être soumis dans l'application officielle de vote Catalyst. Ceci n'est qu'un outil de recherche et de planification !",
     "articles": "Articles",
     "assetName": "Nom de l'actif",
+    "bio": "Biographie",
     "blockchainData": "Blockchain Data",
     "bookmarks": "Mes Signets",
     "bookmark": "Votre espace personnel pour organiser et gérer les idées liées aux propositions. Accédez facilement à vos propositions sauvegardées, vos notes de révision et partagez des listes sélectionnées pour rester au fait des idées et opportunités clés.",
@@ -23,7 +24,6 @@
     "github": "Github",
     "emailAddress": "Adresse e-mail",
     "fundProject": "Numéro du projet financé",
-    "groups": "Groupes",
     "home": "Accueil",
     "yesVotes": "Votes pour",
     "noVotes": "Votes contre",
@@ -109,9 +109,11 @@
         "tabs": {
             "proposals": "Propositions",
             "articles": "Articles",
-            "ideascaleprofiles": "Ideascale Profils",
+            "ideascaleProfiles": "Ideascale Profils",
             "groups": "Groupes",
             "communities": "Communautés",
+            "connections": "Relations",
+            "locations": "Emplacements",
             "reviews": "Avis"
         },
         "results": {
@@ -300,6 +302,30 @@
             "feasibilityLowToHigh": "Faisabilité : Du plus bas au plus élevé",
             "valueForMoneyHighToLow": "Valeur pour l'argent : Du plus élevé au plus bas",
             "valueForMoneyLowToHigh": "Valeur pour l'argent : Du plus bas au plus élevé"
+        }
+    },
+    "groups": {
+        "groups": "Groupes",
+        "title": "Groupes catalyseurs",
+        "subtitle": "Diversifiés, indépendants et inspirant ensemble le plus haut niveau de collaboration humaine",
+        "fundedProposals": "Propositions financées",
+        "received": "Reçue",
+        "totalRequested": "Total demandé",
+        "totalProposals": "Total des propositions",
+        "completed": "Complété",
+        "funded": "Financé",
+        "unfunded": "Non financé",
+        "awardedVsRequested": "Attribué vs demandé",
+        "receivedVsAwarded": "Rreçu vs attribué",
+        "reviews": "Avis",
+        "noMembers": "Ce groupe n'a aucun membre",
+        "viewMembers": "Afficher les membres",
+        "options":{
+            "alphabetically": "Par ordre alphabétique : A à Z",
+            "amountAwardedAdaDesc": "Montant accordé ADA : élevé à faible",
+            "amountAwardedAdaAsc": "Montant accordé ADA : faible à élevé",
+            "amountAwardedUsdDesc": "Montant accordé en USD : élevé à faible",
+            "amountAwardedUsdAsc": "Montant accordé en USD : faible à élevé"
         }
     },
     "posts": {
