@@ -27,34 +27,49 @@ const COLORS = {
 const Graph: React.FC<GraphProps> = ({ graphData }) => {
     const [selectedProfileIds] = useState<Set<string>>(new Set());
     const [selectedGroupIds] = useState<Set<string>>(new Set());
+    const [selectedCommunityIds] = useState<Set<string>>(new Set());
     const [currentData, setCurrentData] = useState<ConnectionData>(graphData);
 
-    const handleNodeClick = async (node: Node) => {
-        try {
-            const id = node.id;
-            const targetSet =
-                node.type === CatalystConnectionsEnum.GROUP
-                    ? selectedGroupIds
-                    : selectedProfileIds;
+    const routeName = graphData.rootNodeType == CatalystConnectionsEnum.GROUP 
+        ? 'api.groups.connections' 
+        : graphData.rootNodeType == CatalystConnectionsEnum.COMMUNITY
+            ? 'api.communities.connections'
+            : 'api.ideascaleProfiles.connections';
 
-            if (targetSet.has(id)) {
-                targetSet.delete(id);
-            } else {
-                targetSet.add(id);
-            }
+    const handleNodeClick = async (node: Node) => {
+        const id = node.id;
+        let targetSet: Set<string>;
+
+        switch (node.type) {
+            case CatalystConnectionsEnum.GROUP:
+                targetSet = selectedGroupIds;
+                break;
+            case CatalystConnectionsEnum.COMMUNITY:
+                targetSet = selectedCommunityIds;
+                break;
+            default:
+                targetSet = selectedProfileIds;
+        }
+
+        if (targetSet.has(id) || id === currentData.rootNodeId) {
+            return; // Exit early if the ID is already selected
+        }
+
+        try {
+            targetSet.add(id);
 
             const response = await axios.get<ConnectionData>(
-                route('api.connections', { hash: graphData.rootGroupHash }),
+                route(routeName, { hash: graphData.rootNodeHash }),
                 {
                     params: {
                         [CatalystConnectionParamsEnum.IDEASCALEPROFILE]: Array.from(selectedProfileIds),
                         [CatalystConnectionParamsEnum.GROUP]: Array.from(selectedGroupIds),
+                        [CatalystConnectionParamsEnum.COMMUNITY]: Array.from(selectedCommunityIds),
                     },
                 },
             );
 
             console.log('node clicked');
-
             setCurrentData(response.data);
         } catch (error) {
             console.error('Failed to update node:', error);
