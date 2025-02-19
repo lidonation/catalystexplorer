@@ -7,6 +7,7 @@ use Inertia\Inertia;
 Route::localized(
     function () {
         Route::prefix('my')->as('my.')
+            ->middleware(['auth'])
             ->group(function () {
                 Route::prefix('bookmarks')->as('bookmarks.')
                     ->group(function () {

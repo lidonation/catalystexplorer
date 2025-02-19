@@ -270,7 +270,7 @@ const IDFilters = React.memo(({ filter }: { filter: FilteredItem }) => {
     return (
         <div
             className="bg-background mr-1 flex items-center rounded-lg border px-1 py-1"
-            key={filter.label}
+            key={`${filter.label}-${filter.param}`}
         >
             <div className="mr-1 font-bold">{filter.label}:</div>
             <div className="mr-1 flex items-center gap-2">

@@ -146,6 +146,8 @@ amount_distributed_ada?: number;
 amount_distributed_usd?: number;
 proposals_count?: number;
 completed_proposals_count?: number;
+funded_proposals_count?: number;
+unfunded_proposals_count?: number;
 amount_requested?: number;
 amount_awarded?: number;
 proposals_funded?: number;
