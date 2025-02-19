@@ -22,7 +22,11 @@ use Spatie\Translatable\HasTranslations;
 
 class Group extends Model implements HasMedia
 {
-    use HasConnections, HasLocations, HasTranslations, InteractsWithMedia, Searchable;
+    use HasConnections,
+        HasLocations,
+        HasTranslations,
+        InteractsWithMedia,
+        Searchable;
 
     public array $translatable = [
         'bio',
@@ -30,6 +34,7 @@ class Group extends Model implements HasMedia
 
     protected $appends = [
         'profile_photo_url',
+        'hash',
     ];
 
     public static function runCustomIndex(): void

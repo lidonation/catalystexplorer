@@ -87,12 +87,6 @@ final class GroupData extends Data
         public ?int $completed_proposals_count,
 
         #[TypeScriptOptional]
-        public ?int $amount_requested,
-
-        #[TypeScriptOptional]
-        public ?int $amount_awarded,
-
-        #[TypeScriptOptional]
         public ?int $proposals_funded,
 
         #[TypeScriptOptional]
