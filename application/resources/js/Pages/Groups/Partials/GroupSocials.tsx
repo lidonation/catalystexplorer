@@ -57,7 +57,7 @@ export default function GroupSocials({ group }: GroupSocials) {
                 )}
                 {group?.github && (
                     <a
-                        href={socialLinks.web}
+                        href={socialLinks.github}
                         target="_blank"
                         rel="noopener noreferrer"
                     >
