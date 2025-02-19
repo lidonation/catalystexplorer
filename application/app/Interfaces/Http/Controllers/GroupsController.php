@@ -13,7 +13,6 @@ use App\Enums\CatalystConnectionLinkType;
 use App\Enums\CatalystConnectionNodeType;
 use App\Enums\CatalystConnectionParams;
 use App\Enums\ProposalSearchParams;
-use App\Models\Fund;
 use App\Models\Group;
 use App\Models\IdeascaleProfile;
 use App\Models\Review;
@@ -64,6 +63,8 @@ class GroupsController extends Controller
 
     public array $totalAwardedUsd = [];
 
+    public array $fundsCount = [];
+
     public function index(Request $request): Response
     {
         $this->getProps($request);
@@ -75,6 +76,7 @@ class GroupsController extends Controller
             'search' => $this->search,
             'sort' => "{$this->sortBy}:{$this->sortOrder}",
             'filters' => $this->queryParams,
+            'funds' => $this->fundsCount,
             'filterCounts' => [
                 'proposalsCount' => ! empty($this->proposalsCount)
                     ? round(max(array_keys($this->proposalsCount)), -1)
@@ -88,7 +90,26 @@ class GroupsController extends Controller
             ],
         ];
 
-        return Inertia::render('Groups/Index', $props);
+        return Inertia::render('Groups/Index', [
+            'groups' => Inertia::optional(
+                fn () => $groups
+            ),
+            'search' => $this->search,
+            'sort' => "{$this->sortBy}:{$this->sortOrder}",
+            'filters' => $this->queryParams,
+            'funds' => $this->fundsCount,
+            'filterCounts' => [
+                'proposalsCount' => ! empty($this->proposalsCount)
+                    ? round(max(array_keys($this->proposalsCount)), -1)
+                    : 0,
+                'totalAwardedAda' => ! empty($this->totalAwardedAda)
+                    ? max($this->totalAwardedAda)
+                    : 0,
+                'totalAwardedUsd' => ! empty($this->totalAwardedUsd)
+                    ? max($this->totalAwardedUsd)
+                    : 0,
+            ],
+        ]);
     }
 
     public function group(Request $request, Group $group, GroupRepository $groupRepository): Response
@@ -417,12 +438,9 @@ class GroupsController extends Controller
         if (isset($facets['amount_awarded_usd']) && count($facets['amount_awarded_usd'])) {
             $this->totalAwardedUsd = array_keys($facets['amount_awarded_usd']);
         }
-    }
 
-    public function getFundsWithProposalsCount()
-    {
-        return Fund::withCount('proposals')->get()->mapWithKeys(function ($fund) {
-            return [$fund->title => $fund->proposals_count];
-        });
+        if (isset($facets['proposals.fund.title']) && count($facets['proposals.fund.title'])) {
+            $this->fundsCount = $facets['proposals.fund.title'];
+        }
     }
 }

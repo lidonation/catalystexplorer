@@ -19,6 +19,7 @@ import GroupSortingOptions from '@/lib/GroupSortOptions';
 interface GroupsPageProps extends Record<string, unknown> {
     groups: PaginatedData<GroupData[]>;
     filters: SearchParams;
+    funds: { [key: string]: number };
     filterCounts: {
         proposalsCount: number;
         totalAwardedAda: number;
@@ -26,36 +27,21 @@ interface GroupsPageProps extends Record<string, unknown> {
     };
 }
 
-type FundsType = Record<string, number>;
-
 const Index: React.FC<GroupsPageProps> = ({
     groups,
     filters,
     filterCounts,
+    funds
 }) => {
     const [showFilters, setShowFilters] = useState(false);
     const { t } = useTranslation();
-    const [funds, setFunds] = useState<FundsType>({});
-
-    useEffect(() => {
-        const fetchFunds = async () => {
-            try {
-                const response = await axios.get(route('api.fundCounts'));
-                setFunds(response.data);
-            } catch (err) {
-                console.log(err);
-            }
-        };
-
-        fetchFunds();
-    }, []);
 
     return (
         <>
             <ListProvider>
                 <FiltersProvider
                     defaultFilters={filters}
-                    routerOptions={{ only: ['groups'] }}
+                    routerOptions={{ only: ['groups','funds'] }}
                 >
                     <Head title="Groups" />
 
