@@ -38,7 +38,7 @@ export default function ProposalCardMini({
                 />
             </section>
             <section>
-                <div className="mt-4" aria-labelledby="funding-heading">
+                <div className="mt-3" aria-labelledby="funding-heading">
                     <div className="flex gap-2">
                         <Title level='3' className="font-semibold">{t('funding')}</Title>
 
