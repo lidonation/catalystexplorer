@@ -2,6 +2,7 @@ import Title from '@/Components/atoms/Title';
 import AccordionButton from '@/Components/svgs/AccordionButton';
 import Markdown from 'marked-react';
 import { useState } from 'react';
+import Button from "@/Components/atoms/Button";
 
 interface CampaignAccordionProps {
     title?: string;
@@ -16,23 +17,22 @@ const CampaignAccordion: React.FC<CampaignAccordionProps> = ({
 
     return (
         <div className="w-full">
-            <button
-                className="flex w-full items-center"
-                onClick={() => setIsOpen(!isOpen)}
-            >
-                <span className="text-content text-left font-bold">
-                    <Title level="4" className="font-semibold">
+            <div className="flex w-full items-center">
+                <div className="text-content text-left">
+                    <Title level="6" className="font-medium">
                         <Markdown>{title}</Markdown>
                     </Title>
-                </span>
-                <span
-                    className={`flex h-8 w-8 items-center justify-center text-lg transition-transform`}
+                </div>
+                <Button
+                    onClick={() => setIsOpen(!isOpen)}
+                    className='flex size-8 items-center justify-center text-lg transition-transform'
                 >
                     <AccordionButton isOpen={isOpen} />
-                </span>
-            </button>
+                </Button>
+            </div>
+
             {isOpen && (
-                <div className="text-content p-4 text-left text-xl">
+                <div className="text-content py-4 text-left">
                     <Markdown>{content}</Markdown>
                 </div>
             )}
