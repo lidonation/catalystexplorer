@@ -23,6 +23,7 @@ class ProposalRepository extends Repository
 
                 $args['attributesToRetrieve'] = $attrs ?? [
                     'id',
+                    'hash',
                     'amount_requested',
                     'amount_received',
                     'currency',

@@ -55,7 +55,12 @@ class IdeascaleProfilesController extends Controller
                 'amount_requested_usd',
             ]);
 
-        return Inertia::render('IdeascaleProfile/IdeascaleProfile', compact('ideascaleProfile'));
+        $connections = $ideascaleProfile->connected_items;
+
+        return Inertia::render('IdeascaleProfile/IdeascaleProfile', [
+            'ideascaleProfile' => $ideascaleProfile,
+            'connections' => $connections,
+        ]);
     }
 
     protected function query($returnBuilder = false, $attrs = null, $filters = [])
