@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Discussion extends Model
@@ -31,5 +32,11 @@ class Discussion extends Model
     public function proposal(): BelongsTo
     {
         return $this->belongsTo(Proposal::class, 'model_id');
+    }
+
+    public function ratings(): HasMany
+    {
+        return $this->hasMany(Rating::class, 'model_id')
+        ->where('model_type', Discussion::class);
     }
 }
