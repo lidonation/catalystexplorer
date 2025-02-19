@@ -12,7 +12,15 @@
     "ccv4Votes": "CCV4 Votes",
     "charts": "Charts",
     "chooseMetaData": "Choose your own MetaData",
-    "communities": "Communities",
+    "communities": {
+        "communities": "Communities",
+        "title": "Catalyst Communities",
+        "subtitle": "Diverse, independent, and together inspiring the highest level of human collaboration",
+        "status": "Status",
+        "members": "Members",
+        "join": "Join",
+        "joined": "Joined"
+    },
     "confirmPassword": "Confirm Password",
     "connectWallet": "Connect wallet",
     "comingSoon": "Coming Soon",

@@ -23,7 +23,7 @@ const SearchVariants = ({
         t('proposals.proposals'),
         t('ideascaleProfiles.ideascaleProfiles'),
         t('groups'),
-        t('communities'),
+        t('communities.communities'),
         t('wallets'),
         t('reviews'),
         t('articles'),

@@ -38,7 +38,7 @@ export default function Footer() {
                                 <Paragraph>{t('groups.groups')}</Paragraph>
                             </li>
                             <li>
-                                <Paragraph>{t('communities')}</Paragraph>
+                                <Paragraph>{t('communities.communities')}</Paragraph>
                             </li>
                             <li>
                                 <Paragraph>{t('dReps')}</Paragraph>

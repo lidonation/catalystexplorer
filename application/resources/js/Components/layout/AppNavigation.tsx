@@ -9,6 +9,7 @@ import HomeIcon from '../svgs/HomeIcon';
 import NoteIcon from '../svgs/NoteIcon';
 import NotificationBoxIcon from '../svgs/NotificationBoxIcon';
 import PeopleIcon from '../svgs/PeopleIcon';
+import CommunityIcon from '../svgs/CommunityIcon';
 
 function AppNavigation() {
     const { t } = useTranslation();
@@ -69,6 +70,15 @@ function AppNavigation() {
             title: t('ideascaleProfiles.ideascaleProfiles'),
             icon: (isActive: boolean) => (
                 <PeopleIcon
+                    className={isActive ? 'text-primary-100' : 'text-dark'}
+                />
+            ),
+        },
+        {
+            href: useLocalizedRoute('communities.index'),
+            title: t('communities.communities'),
+            icon: (isActive: boolean) => (
+                <CommunityIcon
                     className={isActive ? 'text-primary-100' : 'text-dark'}
                 />
             ),
