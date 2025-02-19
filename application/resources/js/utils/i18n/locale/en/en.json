@@ -85,6 +85,7 @@
     "clear": "clear",
     "selection": "selection",
     "awarded": "Awarded",
+    "distributed": "Distributed",
     "requested": "Requested",
     "submitted": "Submitted",
     "approved": "Approved",
@@ -186,7 +187,6 @@
         "numbers": "Numbers",
         "subtitle": "View projects charts and filter results based on funds",
         "seeMore": "See more",
-        "totalProposals": "Total Proposals",
         "vs": "vs previous fund"
     },
     "announcements": {
@@ -206,7 +206,6 @@
         "fundedProjects": "Funded Projects",
         "subtitle": "Search proposals and challenges by title, content, or author and co-authors",
         "fundRounds": "Fund Rounds",
-        "totalProposals": "Total Proposals",
         "fundedProposals": "Funded Proposals",
         "totalFundsAwardedAda": "Total Funds Awarded ADA",
         "totalFundsAwardedUsd": "Total Funds Awarded USD",
@@ -341,7 +340,6 @@
         "fundedProposals": "Funded Proposals",
         "received": "Received",
         "totalRequested": "Total Requested",
-        "totalProposals": "Total Proposals",
         "completed": "Completed",
         "funded": "Funded",
         "unfunded": "Unfunded",

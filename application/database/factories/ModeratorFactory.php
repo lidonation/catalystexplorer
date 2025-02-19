@@ -19,10 +19,10 @@ class ModeratorFactory extends Factory
         return [
             'name' => $this->faker->name(),
             'email' => $this->faker->unique()->safeEmail(),
-            'twitter' => 'https://twitter.com/' . $this->faker->userName(),
-            'github' => 'https://github.com/' . $this->faker->userName(),
-            'linkedin' => 'https://linkedin.com/in/' . $this->faker->userName(),
-            'discord' => $this->faker->userName() . '#' . rand(1000, 9999),
+            'twitter' => 'https://twitter.com/'.$this->faker->userName(),
+            'github' => 'https://github.com/'.$this->faker->userName(),
+            'linkedin' => 'https://linkedin.com/in/'.$this->faker->userName(),
+            'discord' => $this->faker->userName().'#'.rand(1000, 9999),
         ];
     }
 }
