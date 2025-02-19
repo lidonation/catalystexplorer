@@ -32,7 +32,7 @@ class CampaignsController extends Controller
             'campaign' => $campaign,
             'proposals' => Inertia::optional(
                 fn () => ProposalData::collect(
-                    $campaign->proposals()->paginate(6)
+                    $campaign->proposals()->with('users')->paginate(6)
                 )
             ),
         ]);
