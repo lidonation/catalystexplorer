@@ -68,7 +68,7 @@ export default function Index({
 
     return (
         <ListProvider>
-            <FiltersProvider defaultFilters={filters} routerOptions={{ only: ['proposals', 'metrics'] }}>
+            <FiltersProvider defaultFilters={filters} routerOptions={{ only: ['proposals', 'metrics', 'funds'] }}>
                 <Head title="Proposals" />
 
                 <header>
