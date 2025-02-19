@@ -5,6 +5,7 @@ import TextInput from '@/Components/atoms/TextInput';
 import InputError from '@/Components/InputError';
 import InputLabel from '@/Components/InputLabel';
 import ConnectWalletIcon from '@/Components/svgs/ConnectWalletIcon';
+import { useLocalizedRoute } from '@/utils/localizedRoute';
 import { Link, router, useForm } from '@inertiajs/react';
 import axios from 'axios';
 import { FormEventHandler, useState } from 'react';
@@ -24,7 +25,7 @@ export default function LoginForm() {
     });
 
     const [errors, setErrors] = useState<FormErrors>({});
-
+    const localizedRoute = useLocalizedRoute('my.dashboard');
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
 
@@ -35,7 +36,7 @@ export default function LoginForm() {
             })
             .then(() => {
                 reset('password');
-                router.get('my.dashboard');
+                router.visit(localizedRoute);
             })
             .catch((error) => {
                 setErrors(error?.response?.data?.errors);
