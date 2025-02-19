@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import RelatedProposals from '@/Pages/Proposals/Partials/RelatedProposals';
-import Graph from './Graph';
+import Graph from '@/Components/Graph';
 import IdeascaleProfileCardMini from '@/Pages/IdeascaleProfile/Partials/IdeascaleProfileCardMini';
 import AggregatedReviewsSummary from "@/Components/AggregatedReviewsSummary";
 import { Link, WhenVisible } from '@inertiajs/react';
