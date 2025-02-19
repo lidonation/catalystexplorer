@@ -294,6 +294,18 @@
     }
 }
 
+.page {
+    &.page-campaign {
+        .card {
+            .card-campaign {
+                .card-summary, .card-title {
+                    @apply hidden;
+                }
+            }
+        }
+    }
+}
+
 .scrollable {
     grid-auto-flow: column;
     grid-auto-columns: 66.67%;

@@ -54,16 +54,18 @@ const GroupCardExtended: React.FC<GroupCardFullProps> = ({ group }) => {
                 <div className="mt-4 flex justify-between">
                     <div>
                         <div className="flex gap-2">
-                            <p className="text-1 font-bold">
+                            <div className="text-1 font-bold">
                                 {currency(
                                     group?.amount_requested_ada ?? 0,
+                                    2,
                                     'ADA',
                                 )}
-                            </p>
+                            </div>
                             +
                             <p className="text-1 font-bold">
                                 {currency(
                                     group?.amount_requested_usd ?? 0,
+                                    2,
                                     'USD',
                                 )}
                             </p>
@@ -77,7 +79,7 @@ const GroupCardExtended: React.FC<GroupCardFullProps> = ({ group }) => {
                             {group?.proposals_count ?? 0}
                         </p>
                         <p className="text-3 text-gray-persist">
-                            {t('groups.totalProposals')}
+                            {t('proposals.totalProposals')}
                         </p>
                     </div>
                 </div>

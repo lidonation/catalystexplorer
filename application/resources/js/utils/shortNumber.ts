@@ -18,5 +18,5 @@ export function shortNumber(value?: number|null, digits = 0) {
         return (value / 1_000).toFixed(digits) + 'k';
     }
 
-    return value.toFixed(0);
+    return value.toFixed(digits);
 }

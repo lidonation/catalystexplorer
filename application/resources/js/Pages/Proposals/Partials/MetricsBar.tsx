@@ -78,7 +78,7 @@ const SectionTwo: React.FC<
                     <span className="text-highlight block font-semibold text-nowrap">
                         ₳ {t('requested')}
                     </span>
-                    <span>{currency(requestedADA, 'ADA')}</span>
+                    <span>{currency(requestedADA, 2, 'ADA')}</span>
                 </div>
             )}
             {!!awardedUSD && (
@@ -107,7 +107,7 @@ const SectionTwo: React.FC<
                     <span className="text-highlight block font-semibold text-nowrap">
                         ₳ {t('awarded')}
                     </span>
-                    <span>{currency(awardedADA, 'ADA')}</span>
+                    <span>{currency(awardedADA, 2, 'ADA')}</span>
                 </div>
             )}
         </div>
