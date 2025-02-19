@@ -30,6 +30,12 @@ class User extends Authenticatable implements HasMedia
         'name',
         'email',
         'password',
+        'bio',
+        'profile_photo_path',
+        'short_bio',
+        'linkedin',
+        'twitter',
+
     ];
 
     /**
