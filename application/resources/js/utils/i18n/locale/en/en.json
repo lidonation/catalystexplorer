@@ -5,6 +5,7 @@
     "appMessage": "All Votes must be submitted in the official Catalyst Voting App. This is a research & planning tool only!",
     "articles": "Articles",
     "assetName": "Asset Name",
+    "bio": "Bio",
     "bookmarks": "My Bookmarks",
     "blockchainData": "Blockchain Data",
     "bookmark": "Your personal space for organizing and managing proposal insights. Easily access your saved proposals, review notes, and share curated lists to stay on top of key ideas and opportunities.",
@@ -115,9 +116,11 @@
         "tabs": {
             "proposals": "Proposals",
             "articles": "Articles",
-            "ideascaleprofiles": "Ideascale Profiles",
+            "ideascaleProfiles": "Ideascale Profiles",
             "groups": "Groups",
             "communities": "Communities",
+            "connections": "Connections",
+            "locations": "Locations",
             "reviews": "Reviews"
         },
         "results": {
