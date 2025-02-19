@@ -9,6 +9,7 @@ import { Link, router, useForm } from '@inertiajs/react';
 import axios from 'axios';
 import { FormEventHandler, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { route } from 'ziggy-js';
 
 interface FormErrors {
     email?: string;
@@ -27,9 +28,6 @@ export default function LoginForm() {
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
 
-        const params = new URLSearchParams(window.location.search);
-        const redirectUrl = params.get('redirect') || route('my.dashboard');
-
         axios
             .post(route('login'), {
                 email: data.email,
@@ -37,7 +35,7 @@ export default function LoginForm() {
             })
             .then(() => {
                 reset('password');
-                router.visit(redirectUrl);
+                router.get('my.dashboard');
             })
             .catch((error) => {
                 setErrors(error?.response?.data?.errors);

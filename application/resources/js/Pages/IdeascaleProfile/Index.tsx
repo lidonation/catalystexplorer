@@ -70,7 +70,7 @@ const Index = ({
                     </section>
                 </div>
 
-                {!loading && ideascaleProfiles && ideascaleProfiles.total > maxProfilesPerPage && (
+                {ideascaleProfiles && ideascaleProfiles.total > 0 && (
                     <section className="w-full px-4 lg:container lg:px-0">
                         <Paginator pagination={ideascaleProfiles} />
                     </section>
