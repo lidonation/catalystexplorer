@@ -128,44 +128,88 @@ class GroupsController extends Controller
                 ]
             );
 
+        $path = $request->path();
         $connections = $group->connected_items;
 
-        return Inertia::render('Groups/Group', [
-            'group' => GroupData::from($group),
-            'proposals' => Inertia::optional(
-                fn () => to_length_aware_paginator(
-                    ProposalData::collect(
-                        $group->proposals()->with(['users', 'fund'])->paginate(5)
-                    )
-                )
+        // Determine which tab we're on based on the URL path
+        if (str_contains($path, '/proposals')) {
+            $proposalsPaginator = $group->proposals()
+                ->with(['users', 'fund'])
+                ->paginate(5);
 
-            ),
-            'ideascaleProfiles' => Inertia::optional(
-                fn () => to_length_aware_paginator(
+            return Inertia::render('Groups/Proposals/Index', [
+                'group' => GroupData::from($group),
+                'proposals' => [
+                    'data' => ProposalData::collect($proposalsPaginator->items()),
+                    'total' => $proposalsPaginator->total(),
+                    'per_page' => $proposalsPaginator->perPage(),
+                    'current_page' => $proposalsPaginator->currentPage(),
+                    'last_page' => $proposalsPaginator->lastPage(),
+                    'from' => $proposalsPaginator->firstItem(),
+                    'to' => $proposalsPaginator->lastItem(),
+                ],
+            ]);
+        }
+
+        if (str_contains($path, '/connections')) {
+            return Inertia::render('Groups/Connections/Index', [
+                'group' => GroupData::from($group),
+                'connections' => Inertia::optional(fn () => $connections),
+            ]);
+        }
+
+        if (str_contains($path, '/ideascale-profiles')) {
+            return Inertia::render('Groups/IdeascaleProfiles/Index', [
+                'group' => GroupData::from($group),
+                'ideascaleProfiles' => Inertia::optional(fn () => to_length_aware_paginator(
                     IdeascaleProfileData::collect(
                         $group->ideascale_profiles()->with([])->paginate(12)
                     )
                 )
+                ),
+            ]);
+        }
 
-            ),
-            'reviews' => Inertia::optional(
-                fn () => to_length_aware_paginator(
+        if (str_contains($path, '/reviews')) {
+            return Inertia::render('Groups/Reviews/Index', [
+                'group' => GroupData::from($group),
+                'reviews' => Inertia::optional(fn () => to_length_aware_paginator(
                     ReviewData::collect(
                         Review::query()->paginate(8)
                     )
                 )
-            ),
-            'locations' => Inertia::optional(
-                fn () => to_length_aware_paginator(
+                ),
+            ]);
+        }
+
+        if (str_contains($path, '/locations')) {
+            return Inertia::render('Groups/Locations/Index', [
+                'group' => GroupData::from($group),
+                'locations' => Inertia::optional(fn () => to_length_aware_paginator(
                     LocationData::collect(
                         $group->locations()->paginate(12)
                     )
                 )
+                ),
+            ]);
+        }
 
-            ),
-            'connections' => Inertia::optional(
-                fn () => $connections
-            ),
+        // Default return if no specific path matches
+        $proposalsPaginator = $group->proposals()
+            ->with(['users', 'fund'])
+            ->paginate(5);
+
+        return Inertia::render('Groups/Proposals/Index', [
+            'group' => GroupData::from($group),
+            'proposals' => [
+                'data' => ProposalData::collect($proposalsPaginator->items()),
+                'total' => $proposalsPaginator->total(),
+                'per_page' => $proposalsPaginator->perPage(),
+                'current_page' => $proposalsPaginator->currentPage(),
+                'last_page' => $proposalsPaginator->lastPage(),
+                'from' => $proposalsPaginator->firstItem(),
+                'to' => $proposalsPaginator->lastItem(),
+            ],
         ]);
     }
 
