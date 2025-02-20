@@ -282,6 +282,15 @@ class Proposal extends Model
         return $this->id;
     }
 
+    public function getDiscussionRankingScore(string $discussionTitle): ?float
+    {
+        $rankingScoreAvg = $this->discussions
+            ->where('title', $discussionTitle)
+            ->pluck('ratings_avg_rating');
+
+        return (count($rankingScoreAvg) > 0) ? floatval($rankingScoreAvg[0]) : null;
+    }
+
     /**
      * Get the index able data array for the model.
      */
@@ -383,9 +392,9 @@ class Proposal extends Model
             'woman_proposal' => $this->is_woman_proposal ? 1 : 0,
             'link' => $this->link,
 
-            //            'alignment_score' => $this->meta_info->alignment_score ?? $this->getDiscussionRankingScore('Impact Alignment') ?? 0,
-            //            'feasibility_score' => $this->meta_info->feasibility_score ?? $this->getDiscussionRankingScore('Feasibility') ?? 0,
-            //            'auditability_score' => $this->meta_info->auditability_score ?? $this->getDiscussionRankingScore('Value for money') ?? 0,
+            'alignment_score' => $this->meta_info->alignment_score ?? $this->getDiscussionRankingScore('Impact Alignment') ?? 0,
+            'feasibility_score' => $this->meta_info->feasibility_score ?? $this->getDiscussionRankingScore('Feasibility') ?? 0,
+            'auditability_score' => $this->meta_info->auditability_score ?? $this->getDiscussionRankingScore('Value for money') ?? 0,
             'projectcatalyst_io_link' => $this->meta_info?->projectcatalyst_io_url ?? null,
             'project_length' => intval($this->meta_info->project_length) ?? 0,
             'vote_casts' => intval($this->meta_info->vote_casts) ?? 0,
