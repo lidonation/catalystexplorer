@@ -59,7 +59,7 @@ const CampaignCardMini: React.FC<CampaignCardMiniProps> = ({fund, campaign}) => 
                 </div>
                 <div className="flex gap-2">
                     <p className="bg-background text-content rounded-md border px-2">
-                        {t('proposals.filters.budget')}: {currency(campaign?.amount ?? 0, campaign?.currency?.toUpperCase() ?? 'USD', undefined, 2)}
+                        {t('proposals.filters.budget')}: {currency(campaign?.amount ?? 0, 2, campaign?.currency?.toUpperCase() ?? 'USD')}
                     </p>
                 </div>
             </div>

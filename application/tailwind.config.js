@@ -3,6 +3,10 @@ import defaultTheme from 'tailwindcss/defaultTheme';
 
 /** @type {import('tailwindcss').Config} */
 export default {
+    safelist: [
+        'size-2',
+        'size-3'
+    ],
     content: [
         './vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php',
         './storage/framework/views/*.php',
@@ -83,7 +87,7 @@ export default {
                     'var(--cx-background-gradient-1-light)',
                 'background-button-gradient-color-2':
                     'var(--cx-background-gradient-2-light)',
-                border: 'var(--cx-border-color)',
+                // border: 'var(--cx-border-color)',
                 'border-chip': 'var(--cx-border-chip-color)',
                 'border-secondary': 'var(--cx-border-secondary-color)',
                 'eye-logo': 'var(--cx-blue-eye-color)',
@@ -92,7 +96,8 @@ export default {
                 border: {
                     primary: 'var(--cx-primary)',
                     secondary: 'var(--border-secondary-color)',
-                    dark: 'var(--cx-dark)'
+                    dark: 'var(--cx-dark)',
+                    'dark-on-dark': 'var(--cx-border-color-dark)',
                 },
 
                 tooltip: 'var(--cx-tooltip-background)',

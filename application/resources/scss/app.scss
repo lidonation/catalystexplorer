@@ -1,8 +1,10 @@
-@use "tailwindcss" as *; /* Import Tailwind */
+@use "tailwindcss" as *;
+/* Import Tailwind */
 
 //@use 'tailwindcss/base';       /* Reference base styles */
 //@use 'tailwindcss/components'; /* Reference component styles */
 @use 'tailwindcss/utilities';
+
 @config "../../tailwind.config.js";
 
 
@@ -12,7 +14,7 @@
     }
 
     :root {
-        --cx-primary: #2596be;    
+        --cx-primary: #2596be;
         --cx-primary-light: #EFFAFC;
         --cx-primary-dark: #165A72;
         --cx-secondary: #3facd1;
@@ -42,6 +44,7 @@
         --cx-background-gradient-2-dark: #475467;
 
         --cx-border-color: #667085;
+        --cx-border-color-dark: #FFFFFF;
         --cx-border-secondary-color: #D0D5DD;
 
         --cx--border-chip-color: #9AD8E9;
@@ -99,6 +102,7 @@
         --cx-background-gradient-2-dark: #475467;
 
         --cx-border-color: #667085;
+        --cx-border-color-dark: #000000;
         --bg-secondary-color: #374151;
         --bg-accent-color: #3facd1;
         --bg-error-primary-color: #dc2626;
@@ -138,6 +142,7 @@
         --cx-background-lighter: #b1e3f1;
         --cx-background-light: #ffffff;
         --cx-border-color: #2596be;
+        --cx-border-color-dark: #e9efff;
         --bg-light-persist: #ffffff;
         --cx-tooltip-background: #101828CC;
 
@@ -152,6 +157,7 @@
         --border-primary-color: #b1e3f1;
         --border-secondary-color: #3facd1;
     }
+
     .bg-background {
         background-color: var(--cx-background);
     }
@@ -198,7 +204,7 @@
         background-color: var(--bg-accent-color);
     }
 
-    #main-content>header:first-child {
+    #main-content > header:first-child {
         @apply py-6;
     }
 
@@ -273,6 +279,31 @@
     .section-margin {
         @apply mt-8;
     }
+
+    article {
+        p ~ {
+
+            h1, h2, h3, h4, h5, h6 {
+                @apply font-bold mt-3 mb-1;
+            }
+        }
+
+        h3 {
+            @apply text-2xl;
+        }
+    }
+}
+
+.page {
+    &.page-campaign {
+        .card {
+            .card-campaign {
+                .card-summary, .card-title {
+                    @apply hidden;
+                }
+            }
+        }
+    }
 }
 
 .scrollable {
@@ -301,7 +332,7 @@
     scroll-padding-inline: 1.5rem;
 }
 
-.snaps-scrollable>* {
+.snaps-scrollable > * {
     scroll-snap-align: start;
 }
 
