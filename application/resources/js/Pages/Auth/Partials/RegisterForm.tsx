@@ -6,7 +6,9 @@ import PrimaryButton from "../../../Components/atoms/PrimaryButton";
 import { useTranslation } from "react-i18next";
 import { FormEventHandler, useState } from "react";
 import axios from "axios";
-import {useLocalizedRoute} from "@/utils/localizedRoute";
+import {generateLocalizedRoute, useLocalizedRoute} from "@/utils/localizedRoute";
+import {Simulate} from "react-dom/test-utils";
+import submit = Simulate.submit;
 
 interface FormErrors {
     name?: string;
@@ -17,7 +19,7 @@ interface FormErrors {
 
 
 export default function RegisterForm() {
-    const { data, setData, processing,post, reset } = useForm({
+    const { data, setData, processing, post, reset } = useForm({
         name: '',
         email: '',
         password: '',
@@ -29,12 +31,13 @@ export default function RegisterForm() {
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
 
-        post(route('register'), {
+        post(generateLocalizedRoute('register'), {
             onFinish: () => reset('password', 'password_confirmation'),
-            onSuccess: () => router.visit(useLocalizedRoute('my.dashboard')),
-        })
+            onSuccess: () =>
+                router.visit(generateLocalizedRoute('my.dashboard')),
+            onError: (errors) => setErrors(errors),
+        });
     };
-
 
     const { t } = useTranslation();
 
@@ -122,7 +125,7 @@ export default function RegisterForm() {
             <div className="flex w-full items-center justify-center">
                 <p className="mr-2">{t("registration.alreadyRegistered")}</p>
                 <Link
-                    href={route('login')}
+                    href={generateLocalizedRoute('login')}
                     className="text-primary hover:text-content rounded-md font-bold focus:ring-2 focus:ring-offset-2 focus:outline-hidden"
                 >
                     {t("login")}
