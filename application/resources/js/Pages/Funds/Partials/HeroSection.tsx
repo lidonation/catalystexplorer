@@ -10,7 +10,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({ fund }) => {
             <div
                 className="relative flex h-60 w-full items-center justify-center overflow-hidden rounded-lg bg-linear-to-r from-gray-100 to-gray-900">
                 <img
-                    src={fund.hero_img_url}
+                    src={fund.banner_img_url}
                     alt={fund.title || 'Fund'}
                     className="h-full w-full object-cover"
                 />

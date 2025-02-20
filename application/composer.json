@@ -26,6 +26,7 @@
         "laravel/scout": "^10.11",
         "laravel/tinker": "^2.9",
         "laravolt/avatar": "^6.0",
+        "league/flysystem-aws-s3-v3": "^3.29",
         "meilisearch/meilisearch-php": "^1.11",
         "saloonphp/laravel-plugin": "^3.0",
         "saloonphp/pagination-plugin": "^2.0",
