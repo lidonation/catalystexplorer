@@ -38,7 +38,7 @@ export default function Login({
                     router.visit(redirectUrl);
                 },
                 onError: (error) => {
-                    console.log('Logout error ', error);
+                    console.log('Login error ', error);
                 },
             },
         );

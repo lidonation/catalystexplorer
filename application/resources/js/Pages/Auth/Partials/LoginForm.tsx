@@ -36,7 +36,7 @@ export default function LoginForm() {
                     router.visit(generateLocalizedRoute('my.dashboard'));
                 },
                 onError: (error) => {
-                    console.log('Logout error ', error);
+                    console.log('Login error ', error);
                 },
             },
         );
