@@ -22,7 +22,7 @@ class ModeratorFactory extends Factory
             'twitter' => 'https://twitter.com/'.$this->faker->userName(),
             'github' => 'https://github.com/'.$this->faker->userName(),
             'linkedin' => 'https://linkedin.com/in/'.$this->faker->userName(),
-            'discord' => $this->faker->userName().'#'.rand(1000, 9999),
+            'discord' => $this->faker->userName().'#'.$this->faker->numberBetween(10000, 900000),
         ];
     }
 }
