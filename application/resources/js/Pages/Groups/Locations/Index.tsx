@@ -1,5 +1,5 @@
 import { Head, WhenVisible } from '@inertiajs/react';
-import MyLayout from "../MyLayout";
+import GroupLayout from "../GroupLayout";
 import LocationData = App.DataTransferObjects.LocationData;
 import GroupData = App.DataTransferObjects.GroupData;
 import { PaginatedData } from '../../../../types/paginated-data';
@@ -11,9 +11,9 @@ interface LocationPageProps {
 
 export default function Locations({ locations, group }: LocationPageProps) {
     return (
-        <MyLayout group={group}>
+        <GroupLayout group={group}>
             <Head title={`${group.name} - Connections`} />
-            
+
             <WhenVisible data='locations' fallback={<div>Loading Locations</div>}>
                 <div className='w-full overflow-auto'>
                     {typeof locations?.data !== 'undefined' && (
@@ -23,6 +23,6 @@ export default function Locations({ locations, group }: LocationPageProps) {
                     )}
                 </div>
             </WhenVisible>
-        </MyLayout>
+        </GroupLayout>
     );
 }

@@ -7,7 +7,7 @@ import IdeascaleProfileData = App.DataTransferObjects.IdeascaleProfileData;
 import ReviewData = App.DataTransferObjects.ReviewData;
 import LocationData = App.DataTransferObjects.LocationData;
 import ConnectionData = App.DataTransferObjects.ConnectionData;
-import MyLayout from './MyLayout';
+import GroupLayout from './GroupLayout';
 
 interface GroupPageProps {
     group: GroupData;
@@ -18,12 +18,12 @@ interface GroupPageProps {
     locations: PaginatedData<LocationData[]>;
 }
 
-export default function Group({ 
+export default function Group({
     group,
 }: GroupPageProps) {
     return (
-        <MyLayout group={group}>
+        <GroupLayout group={group}>
             <Head title={`${group.name} - Group`} />
-        </MyLayout>
+        </GroupLayout>
     );
 }
