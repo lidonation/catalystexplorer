@@ -10,7 +10,6 @@ use App\DataTransferObjects\LocationData;
 use App\DataTransferObjects\ProposalData;
 use App\DataTransferObjects\ReviewData;
 use App\Enums\ProposalSearchParams;
-use App\Models\Fund;
 use App\Models\Group;
 use App\Models\Review;
 use App\Repositories\GroupRepository;
@@ -60,6 +59,8 @@ class GroupsController extends Controller
 
     public array $totalAwardedUsd = [];
 
+    public array $fundsCount = [];
+
     public function index(Request $request): Response
     {
         $this->getProps($request);
@@ -71,6 +72,7 @@ class GroupsController extends Controller
             'search' => $this->search,
             'sort' => "{$this->sortBy}:{$this->sortOrder}",
             'filters' => $this->queryParams,
+            'funds' => $this->fundsCount,
             'filterCounts' => [
                 'proposalsCount' => ! empty($this->proposalsCount)
                     ? round(max(array_keys($this->proposalsCount)), -1)
@@ -84,7 +86,26 @@ class GroupsController extends Controller
             ],
         ];
 
-        return Inertia::render('Groups/Index', $props);
+        return Inertia::render('Groups/Index', [
+            'groups' => Inertia::optional(
+                fn () => $groups
+            ),
+            'search' => $this->search,
+            'sort' => "{$this->sortBy}:{$this->sortOrder}",
+            'filters' => $this->queryParams,
+            'funds' => $this->fundsCount,
+            'filterCounts' => [
+                'proposalsCount' => ! empty($this->proposalsCount)
+                    ? round(max(array_keys($this->proposalsCount)), -1)
+                    : 0,
+                'totalAwardedAda' => ! empty($this->totalAwardedAda)
+                    ? max($this->totalAwardedAda)
+                    : 0,
+                'totalAwardedUsd' => ! empty($this->totalAwardedUsd)
+                    ? max($this->totalAwardedUsd)
+                    : 0,
+            ],
+        ]);
     }
 
     public function group(Request $request, Group $group, GroupRepository $groupRepository): Response
@@ -107,44 +128,88 @@ class GroupsController extends Controller
                 ]
             );
 
+        $path = $request->path();
         $connections = $group->connected_items;
 
-        return Inertia::render('Groups/Group', [
-            'group' => GroupData::from($group),
-            'proposals' => Inertia::optional(
-                fn () => to_length_aware_paginator(
-                    ProposalData::collect(
-                        $group->proposals()->with(['users', 'fund'])->paginate(5)
-                    )
-                )
+        // Determine which tab we're on based on the URL path
+        if (str_contains($path, '/proposals')) {
+            $proposalsPaginator = $group->proposals()
+                ->with(['users', 'fund'])
+                ->paginate(5);
 
-            ),
-            'ideascaleProfiles' => Inertia::optional(
-                fn () => to_length_aware_paginator(
+            return Inertia::render('Groups/Proposals/Index', [
+                'group' => GroupData::from($group),
+                'proposals' => [
+                    'data' => ProposalData::collect($proposalsPaginator->items()),
+                    'total' => $proposalsPaginator->total(),
+                    'per_page' => $proposalsPaginator->perPage(),
+                    'current_page' => $proposalsPaginator->currentPage(),
+                    'last_page' => $proposalsPaginator->lastPage(),
+                    'from' => $proposalsPaginator->firstItem(),
+                    'to' => $proposalsPaginator->lastItem(),
+                ],
+            ]);
+        }
+
+        if (str_contains($path, '/connections')) {
+            return Inertia::render('Groups/Connections/Index', [
+                'group' => GroupData::from($group),
+                'connections' => Inertia::optional(fn () => $connections),
+            ]);
+        }
+
+        if (str_contains($path, '/ideascale-profiles')) {
+            return Inertia::render('Groups/IdeascaleProfiles/Index', [
+                'group' => GroupData::from($group),
+                'ideascaleProfiles' => Inertia::optional(fn () => to_length_aware_paginator(
                     IdeascaleProfileData::collect(
                         $group->ideascale_profiles()->with([])->paginate(12)
                     )
                 )
+                ),
+            ]);
+        }
 
-            ),
-            'reviews' => Inertia::optional(
-                fn () => to_length_aware_paginator(
+        if (str_contains($path, '/reviews')) {
+            return Inertia::render('Groups/Reviews/Index', [
+                'group' => GroupData::from($group),
+                'reviews' => Inertia::optional(fn () => to_length_aware_paginator(
                     ReviewData::collect(
                         Review::query()->paginate(8)
                     )
                 )
-            ),
-            'locations' => Inertia::optional(
-                fn () => to_length_aware_paginator(
+                ),
+            ]);
+        }
+
+        if (str_contains($path, '/locations')) {
+            return Inertia::render('Groups/Locations/Index', [
+                'group' => GroupData::from($group),
+                'locations' => Inertia::optional(fn () => to_length_aware_paginator(
                     LocationData::collect(
                         $group->locations()->paginate(12)
                     )
                 )
+                ),
+            ]);
+        }
 
-            ),
-            'connections' => Inertia::optional(
-                fn () => $connections
-            ),
+        // Default return if no specific path matches
+        $proposalsPaginator = $group->proposals()
+            ->with(['users', 'fund'])
+            ->paginate(5);
+
+        return Inertia::render('Groups/Proposals/Index', [
+            'group' => GroupData::from($group),
+            'proposals' => [
+                'data' => ProposalData::collect($proposalsPaginator->items()),
+                'total' => $proposalsPaginator->total(),
+                'per_page' => $proposalsPaginator->perPage(),
+                'current_page' => $proposalsPaginator->currentPage(),
+                'last_page' => $proposalsPaginator->lastPage(),
+                'from' => $proposalsPaginator->firstItem(),
+                'to' => $proposalsPaginator->lastItem(),
+            ],
         ]);
     }
 
@@ -309,12 +374,9 @@ class GroupsController extends Controller
         if (isset($facets['amount_awarded_usd']) && count($facets['amount_awarded_usd'])) {
             $this->totalAwardedUsd = array_keys($facets['amount_awarded_usd']);
         }
-    }
 
-    public function getFundsWithProposalsCount()
-    {
-        return Fund::withCount('proposals')->get()->mapWithKeys(function ($fund) {
-            return [$fund->title => $fund->proposals_count];
-        });
+        if (isset($facets['proposals.fund.title']) && count($facets['proposals.fund.title'])) {
+            $this->fundsCount = $facets['proposals.fund.title'];
+        }
     }
 }

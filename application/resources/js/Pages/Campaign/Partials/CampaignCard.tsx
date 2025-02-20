@@ -9,6 +9,7 @@ import { useTranslation } from 'react-i18next';
 import { Segments } from '../../../../types/segments';
 import FundData = App.DataTransferObjects.FundData;
 import CampaignData = App.DataTransferObjects.CampaignData;
+import Paragraph from "@/Components/atoms/Paragraph";
 
 interface CampaignCardProps {
     fund: FundData;
@@ -37,9 +38,9 @@ const CampaignCard: React.FC<CampaignCardProps> = ({
             value: campaign.funded_proposals_count,
         },
         {
-            label: 'Submitted',
+            label: 'Unfunded',
             color: 'bg-primary',
-            value: campaign.proposals_count,
+            value: campaign.unfunded_proposals_count,
         },
     ] as Segments[];
 
@@ -69,7 +70,7 @@ const CampaignCard: React.FC<CampaignCardProps> = ({
             </div>
 
             <div className="mt-4">
-                <SegmentedBar segments={segments} />
+                <SegmentedBar segments={segments}/>
             </div>
 
             <div className="pt-6">
@@ -96,29 +97,28 @@ const CampaignCard: React.FC<CampaignCardProps> = ({
                     </svg>
                 </Title>
 
-                <p className="text-content-dark mb-4 line-clamp-3 opacity-80">
+                <Paragraph className="text-content-dark mb-4 line-clamp-3 opacity-80">
                     {campaign?.excerpt}
-                </p>
+                </Paragraph>
 
                 <div className="flex gap-2">
-                    <p className="bg-background text-content rounded-md border pr-2 pl-2">
+                    <div className="bg-background text-content rounded-md border pr-2 pl-2">
                         {t('proposals.filters.budget')}:{' '}
                         {currency(
                             campaign?.amount ?? 0,
-                            campaign?.currency?.toUpperCase() ?? 'USD',
-                            undefined,
                             2,
+                            campaign?.currency?.toUpperCase() ?? 'USD',
                         )}
-                    </p>
+                    </div>
                 </div>
 
-                <div className="mt-8">
-                    <AmountComparisonWithBar
+                <div className="mt-6">
+                    {(campaign.total_distributed && campaign.total_awarded) && <AmountComparisonWithBar
                         title="Distributed vs Awarded"
                         numerator={campaign.total_distributed}
                         denominator={campaign.total_awarded}
                         currency={campaign.currency}
-                    />
+                    />}
                 </div>
             </div>
         </div>

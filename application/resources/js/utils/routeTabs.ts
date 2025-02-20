@@ -4,6 +4,7 @@ export interface Tab {
   name: string;
   href: string;
   routeName: string;
+  only?: string[];
 }
 
 export interface TabConfig {
@@ -38,5 +39,19 @@ export const myProfileTabs: TabConfig = {
     { key: 'groups' },
     { key: 'communities' },
     { key: 'lists' }
+  ]
+};
+
+export const groupTabs: TabConfig = {
+  translationPrefix: 'searchResults.tabs',
+  routePrefix: 'groups/{group:slug}',
+  tabs: [
+      { key: 'proposals' },
+      { key: 'connections' },
+      { key: 'ideascaleProfiles',
+        routeName: 'ideascale-profiles'
+      },
+      { key: 'reviews' },
+      { key: 'locations' }
   ]
 };
