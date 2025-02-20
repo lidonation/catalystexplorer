@@ -1,19 +1,18 @@
 import { ArrowLeft, ChevronRight, MoreHorizontal } from 'lucide-react';
 import * as React from 'react';
-
 import { cn } from '@/lib/utils';
 import { useTranslation } from 'react-i18next';
 import { InertiaLinkProps, Link } from '@inertiajs/react';
 
-const Pagination = ({ className, ...props }: React.ComponentProps<'nav'>) => {
-    <nav
-        role="navigation"
-        aria-label="pagination"
-        className={cn('mx-auto flex w-full', className)}
-        {...props}
-    />;
-};
-Pagination.displayName = 'Pagination';
+// const Pagination = ({ className, ...props }: React.ComponentProps<'nav'>) => {
+//     <nav
+//         role="navigation"
+//         aria-label="pagination"
+//         className={cn('mx-auto flex w-full', className)}
+//         {...props}
+//     />;
+// };
+// Pagination.displayName = 'Pagination';
 
 const PaginationContent = React.forwardRef<
     HTMLUListElement,
@@ -38,12 +37,14 @@ PaginationItem.displayName = 'PaginationItem';
 type PaginationLinkProps = {
     isActive?: boolean;
     handleclick?: (update: React.MouseEvent<Element>) => number;
+    linkProps: Partial<InertiaLinkProps>
 } & React.ComponentProps<'a'> & InertiaLinkProps;
 
 const PaginationLink = ({
     className,
     isActive,
     handleclick,
+    linkProps,
     ...props
 }: PaginationLinkProps) => (
     <Link
@@ -51,19 +52,22 @@ const PaginationLink = ({
         aria-current={isActive ? 'page' : undefined}
         className={cn(className, isActive ? 'text-primary' : '')}
         {...props}
+        {...linkProps}
     ></Link>
 );
 PaginationLink.displayName = 'PaginationLink';
 
 const PaginationPrevious = ({
     className,
+    linkProps,
     ...props
 }: React.ComponentProps<typeof PaginationLink>) => {
     const { t } = useTranslation();
     return (
         <PaginationLink
             aria-label={t('pagination.goPreviousPage')}
-            className={cn('flex items-center gap-1 pl-2.5', className)}
+            className={cn('flex items-center gap-1', className)}
+            linkProps={linkProps}
             {...props}
         >
             <ArrowLeft className="h-4 w-4" />
@@ -75,6 +79,7 @@ PaginationPrevious.displayName = 'PaginationPrevious';
 
 const PaginationNext = ({
     className,
+    linkProps,
     ...props
 }: React.ComponentProps<typeof PaginationLink>) => {
     const { t } = useTranslation();
@@ -82,6 +87,7 @@ const PaginationNext = ({
         <PaginationLink
             aria-label={t('pagination.goNextPage')}
             className={cn('flex items-center gap-1 pr-2.5', className)}
+            linkProps={linkProps}
             {...props}
         >
             <span>{t('pagination.next')}</span>
@@ -113,7 +119,7 @@ const PaginationEllipsis = ({
 PaginationEllipsis.displayName = 'PaginationEllipsis';
 
 export {
-    Pagination,
+    // Pagination,
     PaginationContent,
     PaginationEllipsis,
     PaginationItem,

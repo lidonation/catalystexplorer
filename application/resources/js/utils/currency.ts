@@ -1,6 +1,6 @@
 import { shortNumber } from "./shortNumber";
 
-export function currency(value: number, currency: string = 'USD', locale: string = 'en-US', maximumFractionDigits = 0) {
+export function currency(value: number, maximumFractionDigits = 2, currency: string = 'USD', locale: string = 'en-US') {
     switch (currency) {
         case 'ADA':
             return shortNumber(value, maximumFractionDigits) + ' ₳';

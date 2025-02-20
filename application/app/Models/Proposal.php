@@ -329,6 +329,8 @@ class Proposal extends Model
             'campaign' => [
                 'id' => $this->campaign_id,
                 'title' => $this->campaign?->title,
+                'currency' => $this->currency,
+                'proposals_count' => $this->campaign?->proposals_count,
                 'amount' => $this->campaign?->amount ? intval($this->campaign?->amount) : null,
                 'label' => $this->campaign?->label,
                 'status' => $this->campaign?->status,
