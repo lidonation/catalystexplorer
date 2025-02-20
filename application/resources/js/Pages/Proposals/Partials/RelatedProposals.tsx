@@ -1,7 +1,8 @@
 import React, {HTMLAttributes} from 'react';
-import {Link} from '@inertiajs/react';
-import {useTranslation} from 'react-i18next';
+import { Link, WhenVisible } from '@inertiajs/react';
+import { useTranslation } from 'react-i18next';
 import ProposalCardMini from './ProposalCardMini';
+import ProposalMiniCardLoader from './ProposalMiniCardLoader';
 import {PaginatedData} from "../../../../types/paginated-data";
 import ProposalData = App.DataTransferObjects.ProposalData;
 import { useLocalizedRoute } from '@/utils/localizedRoute';
@@ -9,30 +10,33 @@ import { useLocalizedRoute } from '@/utils/localizedRoute';
 interface RelatedProposalsProps extends HTMLAttributes<HTMLDivElement> {
     proposals: PaginatedData<ProposalData[]>;
     groupId?: string;
-    proposalWrapperClassName?: string;
     maxVisibleProposals?: number;
+    proposalWrapperClassName?: string;
 }
 
 const RelatedProposals: React.FC<RelatedProposalsProps> = ({
-   proposals,
-   groupId,
-   proposalWrapperClassName = '',
-   ...props
+    proposals,
+    groupId,
+    proposalWrapperClassName,
+    ...props
 }) => {
-    const {t} = useTranslation();
+    const { t } = useTranslation();
+
     const showViewMore = proposals.total > proposals.per_page;
 
     return (
-        <div {...props}>
-            {typeof proposals.data !== 'undefined' && (proposals.data.map((proposal) => (
-                <div className={proposalWrapperClassName}>
+        <WhenVisible
+            fallback={<ProposalMiniCardLoader />}
+            data="proposals"
+        >
+            <div {...props}>
+                {typeof proposals.data !== 'undefined' && (proposals.data.map((proposal) => (
                     <ProposalCardMini
                         key={proposal.hash}
                         proposal={proposal}
                         isHorizontal={false}
                     />
-                </div>
-            )))}
+                )))}
 
                 {showViewMore && (
                     <Link
@@ -46,10 +50,10 @@ const RelatedProposals: React.FC<RelatedProposalsProps> = ({
                                 <p className="text-sm text-gray-600">{t('proposals.proposals')}</p>
                             </div>
                         </div>
-                    </div>
-                </Link>
-            )}
-        </div>
+                    </Link>
+                )}
+            </div>
+        </WhenVisible>
     );
 };
 
