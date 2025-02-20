@@ -132,22 +132,21 @@ class Fund extends Model implements HasMedia
             ->withResponsiveImages()
             ->crop(180, 180, CropPosition::Top)
             ->performOnCollections('hero');
-        $this->addMediaConversion('banners')
+        $this->addMediaConversion('banner')
             ->width(1500)
             ->height(500)
             ->crop(2048, 2048, CropPosition::Top)
             ->withResponsiveImages()
-            ->performOnCollections('banners');
+            ->performOnCollections('banner');
     }
 
     public function registerMediaCollections(): void
     {
         $this->addMediaCollection('hero')
-            ->singleFile()
-            ->useDisk('public');
-        $this->addMediaCollection('banners')
-            ->singleFile()
-            ->useDisk('public');
+            ->singleFile();
+
+        $this->addMediaCollection('banner')
+            ->singleFile();
     }
 
     public function heroImageUrl(): Attribute
@@ -160,7 +159,7 @@ class Fund extends Model implements HasMedia
     public function bannerImgUrl(): Attribute
     {
         return Attribute::make(
-            get: fn () => $this->getFirstMediaUrl('banners')
+            get: fn () => $this->getFirstMediaUrl('banner')
         );
     }
 

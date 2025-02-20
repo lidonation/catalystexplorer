@@ -11,16 +11,14 @@ use Spatie\TypeScriptTransformer\Attributes\TypeScript;
 class ConnectionData extends Data
 {
     public function __construct(
-        public ?string $hash,
-
-        public ?string $rootGroupId,
-
-        public ?string $rootGroupHash,
-
-        public string $name,
-
+        /** @var ConnectionNodeData[] */
         public array $nodes,
 
-        public array $links
+        /** @var ConnectionLinkData[] */
+        public array $links,
+
+        public string $rootNodeId,
+        public string $rootNodeHash,
+        public string $rootNodeType,
     ) {}
 }

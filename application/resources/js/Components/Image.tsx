@@ -9,7 +9,7 @@ interface ImageProps {
       <img
         src={imageUrl}
         alt="avatar"
-        className={`rounded-full ${size}`}
+        className={` ${size}`}
         aria-label="User avatar"
       />
     ) : (
