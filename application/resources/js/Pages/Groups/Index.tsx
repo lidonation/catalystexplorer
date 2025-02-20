@@ -3,8 +3,7 @@ import Title from '@/Components/atoms/Title';
 import { FiltersProvider } from '@/Context/FiltersContext';
 import { ListProvider } from '@/Context/ListContext';
 import { Head, WhenVisible } from '@inertiajs/react';
-import axios from 'axios';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { PaginatedData } from '../../../types/paginated-data';
 import { SearchParams } from '../../../types/search-params';
@@ -48,9 +47,10 @@ const Index: React.FC<GroupsPageProps> = ({
                     <header>
                         <div className="container py-2">
                             <Title level="1">{t('groups.title')}</Title>
-                            <p className="text-content">
-                        {t('groups.subtitle')}
-                    </p>
+
+                            <div className="text-content">
+                                {t('groups.subtitle')}
+                            </div>
                         </div>
                     </header>
 
