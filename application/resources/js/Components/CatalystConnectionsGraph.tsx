@@ -281,7 +281,7 @@ const CatalystConnectionsGraph = ({
                         }
                     }
 
-                    if (totalOverlap < minOverlap) {
+                    if (totalOverlap < minOverlap + boxHeight) {
                         minOverlap = totalOverlap;
                         bestPosition = pos;
                     }
