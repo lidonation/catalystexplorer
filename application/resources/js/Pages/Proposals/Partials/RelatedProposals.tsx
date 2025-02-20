@@ -5,6 +5,7 @@ import ProposalCardMini from './ProposalCardMini';
 import ProposalMiniCardLoader from './ProposalMiniCardLoader';
 import {PaginatedData} from "../../../../types/paginated-data";
 import ProposalData = App.DataTransferObjects.ProposalData;
+import { useLocalizedRoute } from '@/utils/localizedRoute';
 
 interface RelatedProposalsProps extends HTMLAttributes<HTMLDivElement> {
     proposals: PaginatedData<ProposalData[]>;
@@ -20,7 +21,6 @@ const RelatedProposals: React.FC<RelatedProposalsProps> = ({
     const { t } = useTranslation();
 
     const showViewMore = proposals.total > proposals.per_page;
-
 
     return (
         <WhenVisible
@@ -38,7 +38,7 @@ const RelatedProposals: React.FC<RelatedProposalsProps> = ({
 
                 {showViewMore && (
                     <Link
-                        href={`/proposals${groupId ? `?g%5B0%5D=${groupId}` : ''}`}
+                        href={useLocalizedRoute('groups.proposals', { group: groupId })}
                         className="bg-background flex h-full flex-col items-center justify-center rounded-xl p-4 shadow-lg transition-transform hover:scale-95"
                     >
                         <div className="flex flex-col items-center gap-4">
