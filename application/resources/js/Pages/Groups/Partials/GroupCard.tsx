@@ -1,56 +1,140 @@
-import React from 'react';
+import React, { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import GroupData = App.DataTransferObjects.GroupData;
 import Card from "@/Components/Card";
+import Image from '@/Components/Image';
+import IdeascaleProfileUsers from '@/Pages/IdeascaleProfile/Partials/IdeascaleProfileUsersComponent';
+import GroupFundingPercentages from './GroupFundingPercentages';
+import GroupSocials from './GroupSocials';
+import Paragraph from '@/Components/atoms/Paragraph';
+import Title from '@/Components/atoms/Title';
+import UserQuickView from '@/Components/UserQuickView';
+import { Link } from '@inertiajs/react';
+import { useLocalizedRoute } from '@/utils/localizedRoute';
+import GroupData = App.DataTransferObjects.GroupData;
+
 
 interface GroupCardProps {
   group: GroupData;
 }
 
-const CampaignCard: React.FC<GroupCardProps> = ({ group }) => {
+const GroupCard: React.FC<GroupCardProps> = ({ group }) => {
   const { t } = useTranslation();
+  const [userSelected, setUserSelected] = 
+    useState<App.DataTransferObjects.IdeascaleProfileData | null>(null);
 
-  const heroImageUrl = group?.hero_img_url;
+  const handleUserClick = useCallback(
+    (user: App.DataTransferObjects.IdeascaleProfileData) => setUserSelected(user),
+    []
+  );
+  const noAwardedFunds = !group?.amount_awarded_ada && !group?.amount_awarded_usd;
+  const allAwardedFunds = !!(group?.amount_awarded_ada && group?.amount_awarded_usd);
 
   return (
     <Card>
-      <div className="pt-6">
-        <p className="text-content-dark opacity-80 mb-4 line-clamp-3">
-          {group?.bio}
-        </p>
-
-          <div className='flex flex-col gap-2'>
-              <div>
-                  Total Requested (Ada + USD) <br/>
-                  {group?.amount_requested_ada} + {group?.amount_requested_usd}
-              </div>
-
-              <div>
-                  Completed / Funded / Unfunded
-                  <br/>
-                  {group?.proposals_completed} / {group?.proposals_funded} / {group?.proposals_unfunded},
-              </div>
-
-              <div>
-                  Received VS Awarded Ada <br />
-              {group?.amount_distributed_ada} / {group?.amount_awarded_ada}
-              </div>
-
-              <div>
-                  Received VS Awarded USD <br />
-              {group?.amount_distributed_usd} / {group?.amount_awarded_usd}
-              </div>
-
-          </div>
-
-        <div className="flex gap-2">
-          <p className="bg-background text-content rounded-md border pr-2 pl-2">
-            {t('proposals.proposals')}: {group?.proposals_count ?? 0}
-          </p>
+      <section className="flex-grow">
+        <div className="flex flex-col items-center w-full gap-4">
+          <Image 
+            size="30" 
+            imageUrl={group?.profile_photo_url} 
+          />
+          <Link
+            href={useLocalizedRoute('groups.group', {
+              group: group?.slug,
+            })}
+            className="flex w-full justify-center"
+          >
+            <Title level="5">{group?.name}</Title>
+          </Link>
         </div>
-      </div>
+
+        <div className="px-2">
+          {userSelected ? (
+            <UserQuickView user={userSelected} />
+          ) : (
+            <>
+              <div className="flex w-full items-center justify-between mt-4">
+                <div>
+                  <div className="text-primary bg-eye-logo flex w-[60px] items-center justify-center rounded-md border p-1">
+                    <span className="text-sm font-bold">{group?.proposals_funded ?? 0}</span>
+                    <span>/</span>
+                    <span className="text-xs">{group?.proposals_count ?? 0}</span>
+                  </div>
+                  <Paragraph className="text-gray-persist mt-2 text-sm">
+                    {t('groups.fundedProposals')}
+                  </Paragraph>
+                </div>
+
+                <div className="text-right">
+                  <Paragraph className="text-lg font-bold">
+                    {group?.reviews ?? 0}
+                  </Paragraph>
+                  <Paragraph className="text-gray-persist mt-2 text-sm">
+                    {t('groups.reviews')}
+                  </Paragraph>
+                </div>
+              </div>
+
+              <section className="mt-3">
+                <div className={`grid ${noAwardedFunds || allAwardedFunds ? 'grid-cols-2' : 'grid-cols-1'} gap-4`}>
+                  {(group?.amount_awarded_ada || noAwardedFunds) && (
+                    <div>
+                      <GroupFundingPercentages
+                        amount={group?.amount_distributed_ada ?? 0}
+                        total={group?.amount_awarded_ada ?? 0}
+                        primaryBackgroundColor="bg-content-light"
+                        secondaryBackgroundColor="bg-primary"
+                        amount_currency="ADA"
+                        isMini={true}
+                        twoColumns={noAwardedFunds || allAwardedFunds}
+                      />
+                    </div>
+                  )}
+                  {(group?.amount_awarded_usd || noAwardedFunds) && (
+                    <GroupFundingPercentages
+                      amount={group?.amount_distributed_usd ?? 0}
+                      total={group?.amount_awarded_usd ?? 0}
+                      primaryBackgroundColor="bg-content-light"
+                      secondaryBackgroundColor="bg-primary-dark"
+                      amount_currency="USD"
+                      isMini={true}
+                      twoColumns={noAwardedFunds || allAwardedFunds}
+                    />
+                  )}
+                </div>
+              </section>
+
+              {group?.bio && (
+                <div className="relative mt-4">
+                  <p className="text-gray-700">{group.bio}</p>
+                </div>
+              )}
+            </>
+          )}
+        </div>
+      </section>
+
+      <section className="mt-auto pt-4">
+        <div className="border-t border-gray-200 pt-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <Title level="4" className="font-medium">
+                {t('teams')}
+              </Title>
+              {group?.ideascale_profiles && group?.ideascale_profiles.length > 0 && (
+                <IdeascaleProfileUsers
+                  users={group?.ideascale_profiles}
+                  onUserClick={handleUserClick}
+                  className="bg-content-light"
+                  toolTipProps={t('groups.viewMembers')}
+                />
+              )}
+            </div>
+            <GroupSocials group={group} />
+          </div>
+        </div>
+      </section>
     </Card>
   );
 };
 
-export default CampaignCard;
+export default GroupCard;
