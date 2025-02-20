@@ -73,7 +73,6 @@ class User extends Authenticatable implements HasMedia
     public function registerMediaConversions(?Media $media = null): void
     {
         $this->addMediaConversion('thumbnail')
-            ->useFallbackUrl($this->gravatar)
             ->width(150)
             ->height(150)
             ->withResponsiveImages()
@@ -81,7 +80,6 @@ class User extends Authenticatable implements HasMedia
             ->performOnCollections('profile');
 
         $this->addMediaConversion('large')
-            ->useFallbackUrl($this->gravatar)
             ->width(1080)
             ->height(1350)
             ->crop(1080, 1350, CropPosition::Top)
