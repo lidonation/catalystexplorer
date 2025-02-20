@@ -23,17 +23,30 @@ const IdeascaleProfileCard: React.FC<IdeascaleProfileProps> = ({
         {
             label: 'Completed',
             color: 'bg-success',
-            value: ideascaleProfile.completed_proposals_count,
+            value: ideascaleProfile.completed_proposals_count ?? 0,
         },
         {
             label: 'Funded',
             color: 'bg-warning',
-            value: ideascaleProfile.funded_proposals_count,
+            value: ideascaleProfile.funded_proposals_count ?? 0,
         },
         {
             label: 'Submitted',
             color: 'bg-primary',
-            value: ideascaleProfile.proposals_count,
+            value: ideascaleProfile.proposals_count ?? 0,
+        }
+    ] as Segments[];
+
+    const extraSegments = [
+        {
+            label: 'Proposer',
+            color: '',
+            value: ideascaleProfile.own_proposals_count ?? 0,
+        },
+        {
+            label: 'Collaborator',
+            color: '',
+            value: ideascaleProfile.collaborating_proposals_count ?? 0,
         },
     ] as Segments[];
 
@@ -75,7 +88,16 @@ const IdeascaleProfileCard: React.FC<IdeascaleProfileProps> = ({
             <div className='mt-auto flex flex-col gap-4'>
                 <div className="border-border-secondary border-t">
                     <div className="flex w-full justify-between pt-4">
-                        <SegmentedBar segments={segments}/>
+                    <SegmentedBar segments={segments}>
+                            {extraSegments.map((segment, index) => (
+                                <div key={index} className="flex items-center">
+                                    <p className="text-3">{segment.label}:</p>
+                                    <p className="text-3 ml-1 font-bold">
+                                        {segment.value}
+                                    </p>
+                                </div>
+                            ))}
+                        </SegmentedBar>
                     </div>
                 </div>
 

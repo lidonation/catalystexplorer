@@ -9,6 +9,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class ReviewModeration extends Model
 {
+    protected $guarded = [];
+
     public function reviews(): BelongsToMany
     {
         return $this->belongsToMany(Review::class, 'review_moderation_reviewers', 'review_moderation_id', 'reviewer_id');

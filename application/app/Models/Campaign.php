@@ -35,10 +35,21 @@ class Campaign extends Model implements HasMedia
         'media',
     ];
 
+    protected $appends = [
+        'currency',
+    ];
+
     public function label(): Attribute
     {
         return Attribute::make(
             get: fn () => $this->label ?? $this->title
+        );
+    }
+
+    public function currency(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => $this->currency ?? $this->fund?->currency
         );
     }
 

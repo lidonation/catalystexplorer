@@ -7,6 +7,7 @@ namespace App\Models;
 use App\Casts\DateFormatCast;
 use App\Casts\HashId;
 use App\Enums\CatalystCurrencies;
+use App\Models\CatalystExplorer\Moderation;
 use App\Traits\HasAuthor;
 use App\Traits\HasMetaData;
 use App\Traits\HasTaxonomies;
@@ -16,6 +17,7 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Concerns\HasTimestamps;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Artisan;
@@ -258,12 +260,35 @@ class Proposal extends Model
         );
     }
 
+    public function moderations(): HasMany
+    {
+        return $this->hasMany(Moderation::class, 'context_id', 'id')
+            ->where('context_type', Proposal::class);
+    }
+
+    public function discussions(): HasMany
+    {
+        return $this->hasMany(Discussion::class, 'model_id')
+            ->where('model_type', '=', static::class)
+            ->withCount(['ratings'])
+            ->withAvg('ratings', 'rating');
+    }
+
     /**
      * Get the value used to index the model.
      */
     public function getScoutKey(): mixed
     {
         return $this->id;
+    }
+
+    public function getDiscussionRankingScore(string $discussionTitle): ?float
+    {
+        $rankingScoreAvg = $this->discussions
+            ->where('title', $discussionTitle)
+            ->pluck('ratings_avg_rating');
+
+        return (count($rankingScoreAvg) > 0) ? floatval($rankingScoreAvg[0]) : null;
     }
 
     /**
@@ -298,12 +323,14 @@ class Proposal extends Model
             "amount_requested_{$this->currency}" => $this->amount_requested ? intval($this->amount_requested) : 0,
             'amount_requested' => $this->amount_requested ? intval($this->amount_requested) : 0,
 
-            //            'auditability_score' => $this->meta_info->auditability_score ?? $this->getDiscussionRankingScore('Value for money') ?? 0,
+            // 'auditability_score' => $this->meta_info->auditability_score ?? $this->getDiscussionRankingScore('Value for money') ?? 0,
 
             'ca_rating' => intval($this->ratings_average) ?? 0.00,
             'campaign' => [
                 'id' => $this->campaign_id,
                 'title' => $this->campaign?->title,
+                'currency' => $this->currency,
+                'proposals_count' => $this->campaign?->proposals_count,
                 'amount' => $this->campaign?->amount ? intval($this->campaign?->amount) : null,
                 'label' => $this->campaign?->label,
                 'status' => $this->campaign?->status,
@@ -315,7 +342,7 @@ class Proposal extends Model
             'completed' => $this->status === 'complete' ? 1 : 0,
             'currency' => $this->currency,
 
-            //            'feasibility_score' => $this->meta_info->feasibility_score ?? $this->getDiscussionRankingScore('Feasibility') ?? 0,
+            // 'feasibility_score' => $this->meta_info->feasibility_score ?? $this->getDiscussionRankingScore('Feasibility') ?? 0,
             'funded' => (bool) $this->funded_at ? 1 : 0,
             'fund' => [
                 'id' => $this->fund_id,
@@ -365,9 +392,9 @@ class Proposal extends Model
             'woman_proposal' => $this->is_woman_proposal ? 1 : 0,
             'link' => $this->link,
 
-            'alignment_score' => $this->meta_info->alignment_score ?? 0, // $this->getDiscussionRankingScore('Impact Alignment') ?? 0,
-            'feasibility_score' => $this->meta_info->feasibility_score ?? 0, // $this->getDiscussionRankingScore('Feasibility') ?? 0,
-            'auditability_score' => $this->meta_info->auditability_score ?? 0, // $this->getDiscussionRankingScore('Value for money') ?? 0,
+            'alignment_score' => $this->meta_info->alignment_score ?? $this->getDiscussionRankingScore('Impact Alignment') ?? 0,
+            'feasibility_score' => $this->meta_info->feasibility_score ?? $this->getDiscussionRankingScore('Feasibility') ?? 0,
+            'auditability_score' => $this->meta_info->auditability_score ?? $this->getDiscussionRankingScore('Value for money') ?? 0,
             'projectcatalyst_io_link' => $this->meta_info?->projectcatalyst_io_url ?? null,
             'project_length' => intval($this->meta_info->project_length) ?? 0,
             'vote_casts' => intval($this->meta_info->vote_casts) ?? 0,
