@@ -18,7 +18,7 @@ const SegmentedBarToolTipHover: React.FC<SegmentedBarToolTipHoverProps> = ({
                 <div className="border-border-secondary mb-2 border-b pb-2">
                     {segments.map((segment, index) => (
                         <div key={index} className="flex items-center">
-                            <ColorDot color={segment.color} />
+                            <ColorDot color={segment.color} className='mr-2' />
 
                             <div className="text-3">{segment.label}:</div>
 
