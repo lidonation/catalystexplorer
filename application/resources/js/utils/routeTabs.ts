@@ -4,6 +4,7 @@ export interface Tab {
   name: string;
   href: string;
   routeName: string;
+  only?: string[];
 }
 
 export interface TabConfig {
@@ -48,7 +49,7 @@ export const groupTabs: TabConfig = {
       { key: 'proposals' },
       { key: 'connections' },
       { key: 'ideascaleProfiles',
-        routeName: 'ideascale-profiles' 
+        routeName: 'ideascale-profiles'
       },
       { key: 'reviews' },
       { key: 'locations' }
