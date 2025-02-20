@@ -4,15 +4,17 @@ import SegmentedBarToolTipHover from './SegmentedBarToolTipHover';
 
 interface SegmentedProgressBarProps {
     segments: Segments[];
+    children?: React.ReactNode;
 }
 
-const SegmentedBar: React.FC<SegmentedProgressBarProps> = ({ segments }) => {
+const SegmentedBar: React.FC<SegmentedProgressBarProps> = ({ segments, children }) => {
     const total: number = segments.filter((seg) => (typeof  seg.value !== "undefined") )
         .reduce((acc, seg) => acc + seg.value, 0);
     const [isHovered, setIsHovered] = useState(false);
 
     const nonZeroValues = segments.filter((segments) => segments.value > 0);
     const singleNonZeroIndex = segments.findIndex((segments) => segments.value > 0);
+
 
     return (
         <div
@@ -21,7 +23,6 @@ const SegmentedBar: React.FC<SegmentedProgressBarProps> = ({ segments }) => {
             onMouseLeave={() => setIsHovered(false)}
         >
             {nonZeroValues.length === 1 ? (
-                // Render only one full-width bar if only one value is non-zero
                 <div
                     className={`${segments[singleNonZeroIndex]?.color} h-2 w-full rounded-md`}
                 ></div>
@@ -40,9 +41,10 @@ const SegmentedBar: React.FC<SegmentedProgressBarProps> = ({ segments }) => {
                     );
                 })
             )}
+
             {isHovered && (
                 <div className="absolute bottom-full left-1/2 z-100 mb-2 -translate-x-1/2 transform">
-                    <SegmentedBarToolTipHover segments={segments} />
+                    <SegmentedBarToolTipHover segments={segments}>{children}</SegmentedBarToolTipHover>
                 </div>
             )}
         </div>
