@@ -5,10 +5,12 @@ import ColorDot from "@/Components/atoms/ColorDot";
 
 interface SegmentedBarToolTipHoverProps {
     segments: Segments[];
+    children: React.ReactNode
 }
 
 const SegmentedBarToolTipHover: React.FC<SegmentedBarToolTipHoverProps> = ({
     segments,
+    children
 }) => {
     return (
         <div className="relative flex justify-center">
@@ -28,6 +30,7 @@ const SegmentedBarToolTipHover: React.FC<SegmentedBarToolTipHoverProps> = ({
                         </div>
                     ))}
                 </div>
+                {children}
             </div>
         </div>
     );
