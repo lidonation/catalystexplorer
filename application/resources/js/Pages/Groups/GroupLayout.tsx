@@ -22,11 +22,11 @@ interface MyLayoutProps {
     group: GroupData;
 }
 
-export default function MyLayout({ children, group }: MyLayoutProps) {
+export default function GroupLayout({ children, group }: MyLayoutProps) {
     const { t } = useTranslation();
     const { url } = usePage<PageProps>().props;
     const [activeTab, setActiveTab] = useState('');
-    
+
     const tabConfig = {
         ...groupTabs,
         routePrefix: `groups/${group.slug}`
@@ -35,14 +35,14 @@ export default function MyLayout({ children, group }: MyLayoutProps) {
 
     useEffect(() => {
         const currentPath = window.location.pathname;
-        
+
         const matchingTab = tabs.find(tab => {
             const cleanCurrentPath = currentPath.replace(/\/$/, '');
             const cleanTabPath = tab.href.replace(/\/$/, '');
-            
+
             return cleanCurrentPath.endsWith(cleanTabPath);
         });
-        
+
         if (matchingTab) {
             setActiveTab(matchingTab.name);
         }
@@ -79,7 +79,7 @@ export default function MyLayout({ children, group }: MyLayoutProps) {
                 </div>
 
                 <div className="flex flex-col gap-8 w-full lg:w-2/3 xl:w-3/4 shadow-xl bg-background p-4 rounded-lg">
-                    <GroupTabs 
+                    <GroupTabs
                         tabs={tabs}
                         activeTab={activeTab}
                     />

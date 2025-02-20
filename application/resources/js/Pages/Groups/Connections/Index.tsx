@@ -1,6 +1,6 @@
 import React from 'react';
 import { Head, WhenVisible } from '@inertiajs/react';
-import MyLayout from "../MyLayout";
+import GroupLayout from "../GroupLayout";
 import ConnectionData = App.DataTransferObjects.ConnectionData;
 import GroupData = App.DataTransferObjects.GroupData;
 import Graph from '@/Components/Graph';
@@ -12,9 +12,9 @@ interface ConnectionPageProps {
 
 export default function Connections({ connections, group }: ConnectionPageProps) {
     return (
-        <MyLayout group={group}>
+        <GroupLayout group={group}>
             <Head title={`${group.name} - Connections`} />
-            
+
             <WhenVisible data='connections' fallback={<div className="text-center py-4">Loading Connections</div>}>
                 <div className='w-full'>
                     {typeof connections !== 'undefined' && (
@@ -26,6 +26,6 @@ export default function Connections({ connections, group }: ConnectionPageProps)
                     )}
                 </div>
             </WhenVisible>
-        </MyLayout>
+        </GroupLayout>
     );
 }

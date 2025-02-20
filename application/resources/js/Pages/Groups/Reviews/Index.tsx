@@ -1,5 +1,5 @@
 import { Head, WhenVisible } from '@inertiajs/react';
-import MyLayout from "../MyLayout";
+import GroupLayout from "../GroupLayout";
 import ReviewData = App.DataTransferObjects.ReviewData;
 import GroupData = App.DataTransferObjects.GroupData;
 import { PaginatedData } from '../../../../types/paginated-data';
@@ -12,9 +12,9 @@ interface ReviewPageProps {
 
 export default function Reviews({ reviews, group }: ReviewPageProps) {
     return (
-        <MyLayout group={group}>
+        <GroupLayout group={group}>
             <Head title={`${group.name} - Connections`} />
-            
+
             <WhenVisible data='reviews' fallback={<div>Loading Reviews</div>}>
                 <div className='w-full overflow-auto'>
                     <div>
@@ -28,6 +28,6 @@ export default function Reviews({ reviews, group }: ReviewPageProps) {
                     )}
                 </div>
             </WhenVisible>
-        </MyLayout>
+        </GroupLayout>
     );
 }

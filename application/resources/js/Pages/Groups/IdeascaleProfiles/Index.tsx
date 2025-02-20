@@ -1,5 +1,5 @@
 import { Head, WhenVisible } from '@inertiajs/react';
-import MyLayout from "../MyLayout";
+import GroupLayout from "../GroupLayout";
 import IdeascaleProfileData = App.DataTransferObjects.IdeascaleProfileData;
 import GroupData = App.DataTransferObjects.GroupData;
 import { PaginatedData } from '../../../../types/paginated-data';
@@ -12,9 +12,9 @@ interface IdeascaleProfilePageProps {
 
 export default function IdeascaleProfiles({ ideascaleProfiles, group }: IdeascaleProfilePageProps) {
     return (
-        <MyLayout group={group}>
+        <GroupLayout group={group}>
             <Head title={`${group.name} - Connections`} />
-            
+
             <WhenVisible data='ideascaleProfiles' fallback={<div>Loading Ideascale Profiles</div>}>
                 <div className='w-full overflow-auto'>
                     {typeof ideascaleProfiles?.data !== 'undefined' && (
@@ -29,6 +29,6 @@ export default function IdeascaleProfiles({ ideascaleProfiles, group }: Ideascal
                     )}
                 </div>
             </WhenVisible>
-        </MyLayout>
+        </GroupLayout>
     );
 }
