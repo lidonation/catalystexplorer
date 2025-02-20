@@ -1,7 +1,7 @@
 export default function ProposalMiniCardLoader() {
     return (
-        <div className="proposals-wrapper mt-4 grid w-full grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-3">
-            {[1, 2, 3].map((proposal, index) => (
+        <div className="proposals-wrapper mt-4 grid w-full grid-cols-1 gap-3 lg:grid-cols-2 2xl:grid-cols-3">
+            {[1, 2, 3, 4].map((proposal, index) => (
                 <div
                     key={index}
                     className="bg-background min-h-96 w-full rounded-xl p-4 shadow-lg"
