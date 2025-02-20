@@ -40,3 +40,17 @@ export const myProfileTabs: TabConfig = {
     { key: 'lists' }
   ]
 };
+
+export const groupTabs: TabConfig = {
+  translationPrefix: 'searchResults.tabs',
+  routePrefix: 'groups/{group:slug}',
+  tabs: [
+      { key: 'proposals' },
+      { key: 'connections' },
+      { key: 'ideascaleProfiles',
+        routeName: 'ideascale-profiles' 
+      },
+      { key: 'reviews' },
+      { key: 'locations' }
+  ]
+};

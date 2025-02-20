@@ -43,8 +43,25 @@ Route::localized(
             Route::get('/', [GroupsController::class, 'index'])
                 ->name('index');
 
-            Route::get('/{group:slug}', [GroupsController::class, 'group'])
-                ->name('group');
+            Route::prefix('/{group:slug}')->group(function () {
+                Route::get('/', [GroupsController::class, 'group'])
+                    ->name('group');
+
+                Route::get('/proposals', [GroupsController::class, 'group'])
+                    ->name('proposals');
+
+                Route::get('/connections', [GroupsController::class, 'group'])
+                    ->name('connections');
+
+                Route::get('/ideascale-profiles', [GroupsController::class, 'group'])
+                    ->name('ideascaleProfiles');
+
+                Route::get('/reviews', [GroupsController::class, 'group'])
+                    ->name('reviews');
+
+                Route::get('/locations', [GroupsController::class, 'group'])
+                    ->name('locations');
+            });
         });
 
         Route::prefix('/communities')->as('communities.')->group(function () {

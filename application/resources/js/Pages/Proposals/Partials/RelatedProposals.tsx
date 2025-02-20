@@ -44,7 +44,7 @@ const RelatedProposals: React.FC<RelatedProposalsProps> = ({
                         <div className="flex flex-col items-center gap-4">
                             <div className="text-center">
                                 <p className="text-sm text-gray-600">{t('seeAll')}</p>
-                                <p className="text-xl font-semibold">{proposals.total - (proposals.per_page - 1)}</p>
+                                <p className="text-xl font-semibold">{proposals.total}</p>
                                 <p className="text-sm text-gray-600">{t('proposals.proposals')}</p>
                             </div>
                         </div>
