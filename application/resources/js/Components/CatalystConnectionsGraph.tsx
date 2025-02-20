@@ -276,7 +276,7 @@ const CatalystConnectionsGraph = ({
                             Math.pow(pos.x - otherNode.x!, 2) + 
                             Math.pow(pos.y - otherNode.y!, 2)
                         );
-                        if (distance < otherRadius + Math.max(boxWidth, boxHeight)) {
+                        if (distance < otherRadius + boxHeight) {
                             totalOverlap += 1;
                         }
                     }
