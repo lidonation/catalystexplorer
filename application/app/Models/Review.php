@@ -16,6 +16,8 @@ class Review extends Model
 {
     use Searchable;
 
+    protected $guarded = [];
+
     public function children(): Attribute
     {
         $children = $this->metas?->where('key', 'child_id')->pluck('content');

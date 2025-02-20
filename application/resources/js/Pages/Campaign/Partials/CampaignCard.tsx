@@ -38,9 +38,9 @@ const CampaignCard: React.FC<CampaignCardProps> = ({
             value: campaign.funded_proposals_count,
         },
         {
-            label: 'Submitted',
+            label: 'Unfunded',
             color: 'bg-primary',
-            value: campaign.proposals_count,
+            value: campaign.unfunded_proposals_count,
         },
     ] as Segments[];
 
@@ -106,20 +106,19 @@ const CampaignCard: React.FC<CampaignCardProps> = ({
                         {t('proposals.filters.budget')}:{' '}
                         {currency(
                             campaign?.amount ?? 0,
-                            campaign?.currency?.toUpperCase() ?? 'USD',
-                            undefined,
                             2,
+                            campaign?.currency?.toUpperCase() ?? 'USD',
                         )}
                     </div>
                 </div>
 
                 <div className="mt-6">
-                    <AmountComparisonWithBar
+                    {(campaign.total_distributed && campaign.total_awarded) && <AmountComparisonWithBar
                         title="Distributed vs Awarded"
                         numerator={campaign.total_distributed}
                         denominator={campaign.total_awarded}
                         currency={campaign.currency}
-                    />
+                    />}
                 </div>
             </div>
         </div>
