@@ -1,1 +1,4 @@
-yarn test
+make lint-backend
+git add -A
+make commitlint
+make tsc
