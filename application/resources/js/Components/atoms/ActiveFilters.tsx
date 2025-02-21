@@ -48,7 +48,7 @@ export default function ActiveFilters({
     const statusFilters = ['coh', 'fs', 'ps', 'f'];
     const rangeFilters = ['pl', 'b', 'aa', 'au', 'pr'];
     const sortFilters = ['st'];
-    const idFilters = ['t', 'cam', 'com', 'ip', 'g'];
+    const hashFilters = ['t', 'cam', 'com', 'ip', 'g'];
     const booleanFilters = ['op'];
 
     return (
@@ -87,8 +87,8 @@ export default function ActiveFilters({
                     );
                 }
 
-                if (idFilters.includes(filter.param) && filter.value.length) {
-                    return <IDFilters key={filter.param} filter={filter} />;
+                if (hashFilters.includes(filter.param) && filter.value.length) {
+                    return <HashFilters key={filter.param} filter={filter} />;
                 }
             })}
         </div>
@@ -241,18 +241,18 @@ const SortFilters = ({
     );
 };
 
-const IDFilters = React.memo(({ filter }: { filter: FilteredItem }) => {
+const HashFilters = React.memo(({ filter }: { filter: FilteredItem }) => {
     let domain = labels?.[filter.param as LabelKeys];
 
     if (filter.param === 'ip') {
         domain = 'ideascale-profiles';
     }
 
-    const { setIDs, options } = useSearchOptions<any>(domain);
+    const { setHashes, options } = useSearchOptions<any>(domain);
 
     React.useEffect(() => {
-        setIDs(filter.value);
-    }, [setIDs, filter.value]);
+        setHashes(filter.value);
+    }, [setHashes, filter.value]);
 
     const { setFilters } = useFilterContext();
 
@@ -288,7 +288,7 @@ const IDFilters = React.memo(({ filter }: { filter: FilteredItem }) => {
                             </span>
                             <button
                                 className="ml-2"
-                                onClick={() => removeFilter(option.id)}
+                                onClick={() => removeFilter(option.hash)}
                             >
                                 X{' '}
                             </button>{' '}
