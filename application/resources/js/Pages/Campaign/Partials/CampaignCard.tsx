@@ -24,7 +24,7 @@ const CampaignCard: React.FC<CampaignCardProps> = ({
 }) => {
     const { t } = useTranslation();
 
-    const heroImageUrl = fund?.hero_img_url;
+    const heroImageUrl = campaign?.hero_img_url ?? fund?.hero_img_url;
 
     const segments = [
         {
