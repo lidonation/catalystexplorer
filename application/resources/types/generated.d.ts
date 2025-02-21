@@ -50,6 +50,7 @@ slug: string | null;
 excerpt?: string;
 comment_prompt?: string;
 content?: string;
+hero_img_url?: string;
 amount: number;
 created_at: string | null;
 updated_at: string | null;

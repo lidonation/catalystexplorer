@@ -32,6 +32,9 @@ class CampaignData extends Data
         #[TypeScriptOptional]
         public ?string $content,
 
+        #[TypeScriptOptional]
+        public ?string $hero_img_url,
+
         public float $amount,
 
         public ?string $created_at,
