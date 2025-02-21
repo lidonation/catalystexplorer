@@ -1,15 +1,14 @@
+import LoginIcon from '@/Components/svgs/Login';
+import LoginForm from '@/Pages/Auth/Partials/LoginForm';
+import RegisterForm from '@/Pages/Auth/Partials/RegisterForm';
+import { generateLocalizedRoute } from '@/utils/localizedRoute';
 import { Link, router } from '@inertiajs/react';
 import React, { useState } from 'react';
-import axios from 'axios';
 import { useTranslation } from 'react-i18next';
 import LogOutIcon from '../svgs/LogOut';
-import LoginIcon from '../svgs/Login';
 import RegisterUserIcon from '../svgs/Register';
 import UserAvatar from '../UserAvatar';
 import ModalSidebar from './ModalSidebar';
-import RegisterForm from '@/Pages/Auth/Partials/RegisterForm';
-import LoginForm from '@/Pages/Auth/Partials/LoginForm';
-import {useLocalizedRoute} from "@/utils/localizedRoute";
 
 interface UserDetailsProps {
     user: App.DataTransferObjects.UserData;
@@ -17,18 +16,23 @@ interface UserDetailsProps {
 
 const UserDetails: React.FC<UserDetailsProps> = ({ user }) => {
     const { t } = useTranslation();
-    const [activeModal, setActiveModal] = useState<"register" | "login" | null>(null);
-    const dashboardRoute = useLocalizedRoute('my.dashboard'); 
+    const [activeModal, setActiveModal] = useState<'register' | 'login' | null>(
+        null,
+    );
 
     const logout = () => {
-        axios
-            .post('logout')
-            .then((response) => {
-                router.get('/')
-            })
-            .catch((error) => {
-                console.log(error);
-            });
+        router.post(
+            generateLocalizedRoute('logout'),
+            {},
+            {
+                onSuccess: () => {
+                    router.get('/');
+                },
+                onError: (error) => {
+                    console.log('Logout error ', error);
+                },
+            },
+        );
     };
 
     return (
@@ -41,20 +45,18 @@ const UserDetails: React.FC<UserDetailsProps> = ({ user }) => {
                         </div>
                         <div className="flex flex-col">
                             <Link
-                                href={dashboardRoute}
-                                className="text-4 font-semibold text-content"
+                                href={generateLocalizedRoute('my.dashboard')}
+                                className="text-4 text-content font-semibold"
                             >
                                 {user?.name}
                             </Link>
 
-                            <p className="text-5 text-content">
-                                {user?.email}
-                            </p>
+                            <p className="text-5 text-content">{user?.email}</p>
                             <Link
-                                href={route('profile.edit')}
+                                href={generateLocalizedRoute('profile.edit')}
                                 className="text-5 text-primary font-semibold"
                             >
-                                {t("users.editProfile")}
+                                {t('users.editProfile')}
                             </Link>
                         </div>
                     </div>
@@ -64,8 +66,7 @@ const UserDetails: React.FC<UserDetailsProps> = ({ user }) => {
                         height={20}
                         onClick={() => logout()}
                     />
-                    <div>
-                    </div>
+                    <div></div>
                 </div>
                 :
                 <>
@@ -84,12 +85,16 @@ const UserDetails: React.FC<UserDetailsProps> = ({ user }) => {
 
                     {activeModal && (
                         <ModalSidebar
-                            title={activeModal === "register" ? t("register") : t("login")}
+                            title={
+                                activeModal === 'register'
+                                    ? t('register')
+                                    : t('login')
+                            }
                             isOpen={!!activeModal}
                             onClose={() => setActiveModal(null)}
                         >
-                            {activeModal === "register" && <RegisterForm />}
-                            {activeModal === "login" && <LoginForm />}
+                            {activeModal === 'register' && <RegisterForm />}
+                            {activeModal === 'login' && <LoginForm />}
                         </ModalSidebar>
                     )}
                 </>

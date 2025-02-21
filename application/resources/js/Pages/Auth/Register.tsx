@@ -5,6 +5,7 @@ import TextInput from '@/Components/atoms/TextInput';
 import GuestLayout from '@/Layouts/GuestLayout';
 import { Head, Link, useForm } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
+import {generateLocalizedRoute} from "@/utils/localizedRoute";
 
 export default function Register() {
     const { data, setData, post, processing, errors, reset } = useForm({
@@ -17,7 +18,7 @@ export default function Register() {
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
 
-        post(route('register'), {
+        post(generateLocalizedRoute('register'), {
             onFinish: () => reset('password', 'password_confirmation'),
         });
     };
@@ -105,7 +106,7 @@ export default function Register() {
 
                 <div className="mt-4 flex items-center justify-end">
                     <Link
-                        href={route('login')}
+                        href={generateLocalizedRoute('login')}
                         className="text-4 text-dark hover:text-content rounded-md underline focus:ring-2 focus:ring-offset-2 focus:outline-hidden"
                     >
                         Already registered?

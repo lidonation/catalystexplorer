@@ -1,3 +1,4 @@
+import { generateLocalizedRoute } from '@/utils/localizedRoute';
 import { router } from '@inertiajs/react';
 import axios from 'axios';
 
@@ -12,7 +13,8 @@ api.interceptors.response.use(
         if (error.response?.status === 401) {
             const currentUrl =
                 window.location.pathname + window.location.search;
-            router.visit(route('login'), {
+            const locale = document.documentElement.lang || 'en';
+            router.visit(generateLocalizedRoute('login', {}, locale), {
                 preserveState: true,
                 replace: true,
                 only: [],

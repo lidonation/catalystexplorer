@@ -60,6 +60,9 @@ final class FundData extends Data
         public ?string $hero_img_url,
 
         #[TypeScriptOptional]
+        public ?string $banner_img_url,
+
+        #[TypeScriptOptional]
         public ?string $status,
 
         #[TypeScriptOptional, WithCast(DateTimeInterfaceCast::class, format: 'Y-m-d')]

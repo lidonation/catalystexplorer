@@ -5,9 +5,8 @@ import TextInput from '@/Components/atoms/TextInput';
 import InputError from '@/Components/InputError';
 import InputLabel from '@/Components/InputLabel';
 import ConnectWalletIcon from '@/Components/svgs/ConnectWalletIcon';
-import { useLocalizedRoute } from '@/utils/localizedRoute';
+import { generateLocalizedRoute } from '@/utils/localizedRoute';
 import { Link, router, useForm } from '@inertiajs/react';
-import axios from 'axios';
 import { FormEventHandler, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -15,7 +14,6 @@ interface FormErrors {
     email?: string;
     password?: string;
 }
-
 export default function LoginForm() {
     const { data, setData, reset, processing } = useForm({
         email: '',
@@ -24,22 +22,24 @@ export default function LoginForm() {
     });
 
     const [errors, setErrors] = useState<FormErrors>({});
-    const localizedRoute = useLocalizedRoute('my.dashboard');
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
-
-        axios
-            .post(route('login'), {
+        router.post(
+            generateLocalizedRoute('login'),
+            {
                 email: data.email,
                 password: data.password,
-            })
-            .then(() => {
-                reset('password');
-                router.visit(localizedRoute);
-            })
-            .catch((error) => {
-                setErrors(error?.response?.data?.errors);
-            });
+            },
+            {
+                onSuccess: () => {
+                    reset('password');
+                    router.visit(generateLocalizedRoute('my.dashboard'));
+                },
+                onError: (error) => {
+                    console.log('Login error ', error);
+                },
+            },
+        );
     };
 
     const { t } = useTranslation();
@@ -94,7 +94,7 @@ export default function LoginForm() {
                     </div>
                     <div>
                         <Link
-                            href={route('password.request')}
+                            href={generateLocalizedRoute('password.request')}
                             className="text-4 text-primary hover:text-content focus:border-x-border-secondary focus:ring-offset font-bold focus:ring-2 focus:outline-hidden"
                         >
                             {t('forgotPassword')}
@@ -126,7 +126,7 @@ export default function LoginForm() {
                 <div className="flex w-full items-center justify-center">
                     <p className="text-4 mr-2">{t('registration.noAccount')}</p>
                     <Link
-                        href={route('register')}
+                        href={generateLocalizedRoute('register')}
                         className="text-4 text-primary hover:text-content font-bold focus:ring-2 focus:ring-offset-2 focus:outline-hidden"
                     >
                         {t('signup')}
