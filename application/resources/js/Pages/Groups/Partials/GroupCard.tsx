@@ -13,6 +13,7 @@ import KeyValue from '@/Components/atoms/KeyValue';
 import {Link} from '@inertiajs/react';
 import {useLocalizedRoute} from '@/utils/localizedRoute';
 import GroupData = App.DataTransferObjects.GroupData;
+import Divider from "@/Components/Divider";
 
 interface GroupCardProps {
     group: GroupData;
@@ -34,11 +35,11 @@ const GroupCard: React.FC<GroupCardProps> = ({group}) => {
     return (
         <Card className='h-full'>
             <section className="flex-grow space-y-4">
-                <div className="flex flex-col items-center w-full gap-4">
+                <div className="flex flex-col items-center w-full gap-4 pt-2">
                     <Image
                         size="30"
                         imageUrl={group?.hero_img_url}
-                        className='size-20 border-3 border-darker rounded-full' />
+                        className='size-36 border-3 border-darker rounded-full' />
                 </div>
                 <div className="flex flex-col items-center w-full gap-4">
                     <Link
@@ -124,7 +125,11 @@ const GroupCard: React.FC<GroupCardProps> = ({group}) => {
                     </div>
                 </div>
 
-                <div className="border-t border-gray-200 pt-4">
+                <div>
+                    <Divider />
+                </div>
+
+                <div className="border-gray-200">
                     <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
                             <Title level="4" className="font-medium">
@@ -139,6 +144,7 @@ const GroupCard: React.FC<GroupCardProps> = ({group}) => {
                                 />
                             )}
                         </div>
+
                         <GroupSocials group={group}/>
                     </div>
                 </div>
