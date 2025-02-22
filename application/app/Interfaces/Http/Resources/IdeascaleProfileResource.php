@@ -18,6 +18,7 @@ class IdeascaleProfileResource extends JsonResource
     {
         return [
             'id' => $this->id,
+            'hash' => $this->hash,
             'ideascale_id' => $this->ideascale_id,
             'username' => $this->username,
             'email' => $this->email,
