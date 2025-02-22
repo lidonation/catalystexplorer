@@ -13,6 +13,8 @@ import Paginator from "@/Components/Paginator";
 import {FiltersProvider} from "@/Context/FiltersContext";
 import {SearchParams} from "../../../types/search-params";
 import CampaignCardExtended from "@/Pages/Campaign/Partials/CampaignCardExtended";
+import ProposalMiniCardLoader from "@/Pages/Proposals/Partials/ProposalMiniCardLoader";
+import React from "react";
 
 interface CampaignPageProps extends Record<string, unknown> {
     fund: FundData;
@@ -21,28 +23,28 @@ interface CampaignPageProps extends Record<string, unknown> {
 }
 
 export default function Campaign({
-                                     fund,
-                                     campaign,
-                                     proposals,
-                                 }: PageProps<CampaignPageProps>) {
+     fund,
+     campaign,
+     proposals,
+ }: PageProps<CampaignPageProps>) {
     const {t} = useTranslation();
 
     return (
         <>
             <Head title={fund.title}/>
 
-            <div className="flex w-full flex-col gap-y-4 rounded-lg p-4 lg:gap-y-12 lg:p-8">
-                <div className="relative grid grid-cols-9 gap-6">
+            <div className="flex w-full flex-col gap-y-4 rounded-lg p-4 lg:gap-y-12 lg:p-8 page page-campaign">
+                <div className="relative grid grid-cols-9 gap-5">
                     <div className="col-span-9 h-auto lg:col-span-3">
                         <CampaignCardExtended
                             fund={fund}
                             campaign={campaign}
                             className={
-                                'bg-background rounded-md p-2 lg:sticky lg:top-4'
+                                'lg:sticky lg:top-4'
                             }
                         />
                     </div>
-                    <div className="col-span-9 flex flex-col gap-4 lg:col-span-6">
+                    <div className="col-span-9 flex flex-col gap-5 lg:col-span-6">
                         <section className="bg-background flex flex-col gap-4 rounded-md px-6 py-4">
                             <div className="flex items-center justify-between">
                                 <Title level="3" className="font-bold">
@@ -67,7 +69,7 @@ export default function Campaign({
 
                         <WhenVisible
                             data="proposals"
-                            fallback={<div>Loading Proposals...</div>}
+                            fallback={<ProposalMiniCardLoader />}
                         >
                             <section className="bg-background bg-opacity-5 rounded-md p-4 flex flex-col gap-8">
                                 <div>

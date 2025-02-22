@@ -24,7 +24,7 @@ const CampaignCard: React.FC<CampaignCardProps> = ({
 }) => {
     const { t } = useTranslation();
 
-    const heroImageUrl = fund?.hero_img_url;
+    const heroImageUrl = campaign?.hero_img_url ?? fund?.hero_img_url;
 
     const segments = [
         {
@@ -70,7 +70,7 @@ const CampaignCard: React.FC<CampaignCardProps> = ({
             </div>
 
             <div className="mt-4">
-                <SegmentedBar segments={segments} />
+                <SegmentedBar segments={segments}/>
             </div>
 
             <div className="pt-6">

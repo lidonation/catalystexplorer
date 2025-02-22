@@ -1,12 +1,11 @@
-import { Link, router, useForm } from "@inertiajs/react";
-import InputLabel from "../../../Components/InputLabel";
-import TextInput from "../../../Components/atoms/TextInput";
-import InputError from "../../../Components/InputError";
-import PrimaryButton from "../../../Components/atoms/PrimaryButton";
-import { useTranslation } from "react-i18next";
-import { FormEventHandler, useState } from "react";
-import axios from "axios";
-import {useLocalizedRoute} from "@/utils/localizedRoute";
+import TextInput from '@/Components/atoms/TextInput';
+import InputError from '@/Components/InputError';
+import { generateLocalizedRoute } from '@/utils/localizedRoute';
+import { Link, router, useForm } from '@inertiajs/react';
+import { FormEventHandler, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import PrimaryButton from '../../../Components/atoms/PrimaryButton';
+import InputLabel from '../../../Components/InputLabel';
 
 interface FormErrors {
     name?: string;
@@ -15,9 +14,8 @@ interface FormErrors {
     password_confirmation?: string;
 }
 
-
 export default function RegisterForm() {
-    const { data, setData, processing,post, reset } = useForm({
+    const { data, setData, processing, post, reset } = useForm({
         name: '',
         email: '',
         password: '',
@@ -29,12 +27,13 @@ export default function RegisterForm() {
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
 
-        post(route('register'), {
+        post(generateLocalizedRoute('register'), {
             onFinish: () => reset('password', 'password_confirmation'),
-            onSuccess: () => router.visit(useLocalizedRoute('my.dashboard')),
-        })
+            onSuccess: () =>
+                router.visit(generateLocalizedRoute('my.dashboard')),
+            onError: (errors) => setErrors(errors),
+        });
     };
-
 
     const { t } = useTranslation();
 
@@ -58,7 +57,7 @@ export default function RegisterForm() {
             </div>
 
             <div>
-                <InputLabel htmlFor="email" value={t("email")} />
+                <InputLabel htmlFor="email" value={t('email')} />
 
                 <TextInput
                     id="email"
@@ -75,7 +74,7 @@ export default function RegisterForm() {
             </div>
 
             <div>
-                <InputLabel htmlFor="password" value={t("password")} />
+                <InputLabel htmlFor="password" value={t('password')} />
 
                 <TextInput
                     id="password"
@@ -87,14 +86,16 @@ export default function RegisterForm() {
                     onChange={(e) => setData('password', e.target.value)}
                     required
                 />
-                <p className="text-4 text-dark mt-1">{t("registration.passwordCharacters")}</p>
+                <p className="text-4 text-dark mt-1">
+                    {t('registration.passwordCharacters')}
+                </p>
                 <InputError message={errors?.password} className="mt-2" />
             </div>
 
             <div>
                 <InputLabel
                     htmlFor="password_confirmation"
-                    value={t("confirmPassword")}
+                    value={t('confirmPassword')}
                 />
 
                 <TextInput
@@ -110,24 +111,31 @@ export default function RegisterForm() {
                     required
                 />
 
-                <InputError message={errors?.password_confirmation} className="mt-2" />
+                <InputError
+                    message={errors?.password_confirmation}
+                    className="mt-2"
+                />
             </div>
 
             <div>
-                <PrimaryButton className="w-full h-10 flex items-center justify-center rounded-md" disabled={processing} type="submit">
-                    {t("getStarted")}
+                <PrimaryButton
+                    className="flex h-10 w-full items-center justify-center rounded-md"
+                    disabled={processing}
+                    type="submit"
+                >
+                    {t('getStarted')}
                 </PrimaryButton>
             </div>
 
             <div className="flex w-full items-center justify-center">
-                <p className="mr-2">{t("registration.alreadyRegistered")}</p>
+                <p className="mr-2">{t('registration.alreadyRegistered')}</p>
                 <Link
-                    href={route('login')}
+                    href={generateLocalizedRoute('login')}
                     className="text-primary hover:text-content rounded-md font-bold focus:ring-2 focus:ring-offset-2 focus:outline-hidden"
                 >
-                    {t("login")}
+                    {t('login')}
                 </Link>
             </div>
         </form>
-    )
+    );
 }

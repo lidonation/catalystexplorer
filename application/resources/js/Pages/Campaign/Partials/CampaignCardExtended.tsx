@@ -22,13 +22,13 @@ interface CampaignCardProps {
 }
 
 const CampaignCard: React.FC<CampaignCardProps> = ({
-                                                       fund,
-                                                       campaign,
-                                                       className
-                                                   }) => {
+   fund,
+   campaign,
+   className
+}) => {
     const {t} = useTranslation();
 
-    const heroImageUrl = fund?.hero_img_url;
+    const heroImageUrl = campaign?.hero_img_url ?? fund?.hero_img_url;
 
     const segments = [
         {
@@ -58,8 +58,8 @@ const CampaignCard: React.FC<CampaignCardProps> = ({
         return input; // Return original if format is incorrect
     };
     return (
-        <Card>
-            <div className={`${className} flex flex-col gap-6 card-campaign`}>
+        <Card className={className}>
+            <div className={`flex flex-col gap-6 card-campaign`}>
                 <section className="bg-content-light h-52 overflow-hidden rounded-lg">
                     {heroImageUrl ? (
                         <img
@@ -68,14 +68,14 @@ const CampaignCard: React.FC<CampaignCardProps> = ({
                             className="h-full w-full object-cover"
                         />
                     ) : (
-                        <div className="text-content bg-primary flex h-full items-center justify-center px-4">
+                        <div className="text-content bg-primary h-full flex items-center justify-center px-4">
                             <Title level="4">{campaign?.label}</Title>
                         </div>
                     )}
                 </section>
 
                 <section className="space-y-6">
-                    <div className='flex flex-row justify-between gap-3'>
+                    <div className='flex flex-row justify-between gap-2'>
                         <KeyValue valueKey={t('proposals.filters.budget')}
                                   value={currency(campaign.amount, 2, campaign.currency)}/>
                         <KeyValue valueKey='Total Proposals' value={campaign.proposals_count}/>
@@ -90,7 +90,7 @@ const CampaignCard: React.FC<CampaignCardProps> = ({
                             <SegmentedBar segments={segments}/>
                         </div>
 
-                        <div className="flex flex-row gap-3 justify-between text-sm px-0.5">
+                        <div className="flex flex-row flex-wrap gap-2 justify-between text-sm px-0.5">
                             {segments.map((segment, index) => (
                                 <div key={index} className='flex flex-row items-center gap-1'>
                                     <ColorDot color={segment.color} size={3}/>
@@ -127,7 +127,7 @@ const CampaignCard: React.FC<CampaignCardProps> = ({
                         </svg>
                     </Title>
 
-                    <Paragraph className="text-content-dark mb-4 line-clamp-3 opacity-80 card-summary">
+                    <Paragraph className="text-content-dark mb-4 line-clamp-5 opacity-80 card-summary">
                         {campaign?.excerpt}
                     </Paragraph>
 
