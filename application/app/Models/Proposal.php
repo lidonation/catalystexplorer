@@ -7,7 +7,6 @@ namespace App\Models;
 use App\Casts\DateFormatCast;
 use App\Casts\HashId;
 use App\Enums\CatalystCurrencies;
-use App\Models\CatalystExplorer\Moderation;
 use App\Traits\HasAuthor;
 use App\Traits\HasMetaData;
 use App\Traits\HasTaxonomies;
@@ -18,9 +17,11 @@ use Illuminate\Database\Eloquent\Concerns\HasTimestamps;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\DB;
 use Laravel\Scout\Searchable;
 
 class Proposal extends Model
@@ -266,12 +267,52 @@ class Proposal extends Model
             ->where('context_type', Proposal::class);
     }
 
+    public function reviews(): HasManyThrough
+    {
+        return $this->hasManyThrough(Review::class, Moderation::class, 'context_id', 'id', 'id', 'review_id')
+            ->where('moderations.context_type', static::class);
+    }
+
     public function discussions(): HasMany
     {
         return $this->hasMany(Discussion::class, 'model_id')
             ->where('model_type', '=', static::class)
             ->withCount(['ratings'])
             ->withAvg('ratings', 'rating');
+    }
+
+    public function ratings(): Attribute
+    {
+        return Attribute::make(
+            get: function () {
+                return DB::table('ratings')
+                    ->join('reviews', 'reviews.id', '=', 'ratings.review_id')
+                    ->join('moderations', 'moderations.review_id', '=', 'reviews.id')
+                    ->where('moderations.context_type', Proposal::class)
+                    ->where('moderations.context_id', $this->id)
+                    ->select('ratings.*')
+                    ->get();
+            }
+        );
+    }
+
+    public function avgRating(): Attribute
+    {
+        return Attribute::make(
+            get: function () {
+                return DB::table('ratings')
+                    ->join('reviews', 'reviews.id', '=', 'ratings.review_id')
+                    ->join('moderations', 'moderations.review_id', '=', 'reviews.id')
+                    ->where('moderations.context_type', Proposal::class)
+                    ->where('moderations.context_id', $this->id)
+                    ->avg('ratings.rating');
+            }
+        );
+    }
+
+    public function RatingsAverage(): Attribute
+    {
+        return Attribute::make(get: fn () => $this->ratings->avg('rating'));
     }
 
     /**
@@ -325,7 +366,7 @@ class Proposal extends Model
 
             // 'auditability_score' => $this->meta_info->auditability_score ?? $this->getDiscussionRankingScore('Value for money') ?? 0,
 
-            'ca_rating' => intval($this->ratings_average) ?? 0.00,
+            'ca_rating' => intval($this->avg_rating) ?? 0.00,
             'campaign' => [
                 'id' => $this->campaign_id,
                 'title' => $this->campaign?->title,

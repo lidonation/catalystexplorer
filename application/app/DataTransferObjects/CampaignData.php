@@ -32,7 +32,7 @@ class CampaignData extends Data
         #[TypeScriptOptional]
         public ?string $content,
 
-        public float $amount,
+        public ?float $amount,
 
         public ?string $created_at,
 
