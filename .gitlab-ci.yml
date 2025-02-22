@@ -212,7 +212,7 @@ cypress:
       export QUEUE_REPLICAS="1"
     fi
 
-    helm upgrade $DEPLOYMENT_NAME ./chart \
+    helm upgrade $DEPLOYMENT_NAME ./helm/app \
       --install \
       -f ./helm/app/values.yaml \
       --timeout 300s \
