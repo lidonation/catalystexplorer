@@ -287,8 +287,8 @@ cypress:
         --namespace="catalystexplorer-minio" \
         --create-namespace \
         -f ./helm/minio/values.yaml \
-        --set tenant.configSecret.accessKey="$DB_DATABASE" \
-        --set tenant.configSecret.secretKey="$DB_DATABASE" \
+        --set tenant.configSecret.accessKey="$MINIO_ACCESS_KEY" \
+        --set tenant.configSecret.secretKey="$MINIO_SECRET_KEY" \
         cx-minio \
         minio-operator/tenant
   - auto-deploy persist_environment_url
