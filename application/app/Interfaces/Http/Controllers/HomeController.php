@@ -7,6 +7,7 @@ namespace App\Interfaces\Http\Controllers;
 use App\DataTransferObjects\AnnouncementData;
 use App\DataTransferObjects\MetricData;
 use App\DataTransferObjects\ProposalData;
+use App\Enums\MetricsContext;
 use App\Enums\StatusEnum;
 use App\Models\Announcement;
 use App\Repositories\AnnouncementRepository;
@@ -77,7 +78,7 @@ class HomeController extends Controller
         return MetricData::collect(
             $metrics->limit($defaultLimit)
                 ->getQuery()
-                ->where('context', 'home')
+                ->where('context', MetricsContext::HOME)
                 ->where('status', StatusEnum::published()->value)
                 ->orderByDesc('order')
                 ->get()
