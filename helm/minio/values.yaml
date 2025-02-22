@@ -290,8 +290,8 @@ tenant:
   # See `Operator CRD: Features <https://min.io/docs/minio/kubernetes/upstream/reference/operator-crd.html#features>`__.
   features:
     bucketDNS: true
-    domains:
-      - ms3.catalystexplorer.com
+#    domains:
+#      ms3.catalystexplorer.com
     enableSFTP: false
 
   ###
@@ -500,8 +500,8 @@ ingress:
     ingressClassName: "traefik"
     labels: { }
     annotations:
-      - traefik.ingress.kubernetes.io/router.entrypoints: "websecure,web",
-      - traefik.ingress.kubernetes.io/router.middlewares: traefik-redirect-http-to-https@kubernetescrd
+        traefik.ingress.kubernetes.io/router.entrypoints: "websecure,web"
+        traefik.ingress.kubernetes.io/router.middlewares: traefik-redirect-http-to-https@kubernetescrd
     tls:
         - secretName: wildcard-catalystexplorer-tls
           hosts:
@@ -514,8 +514,8 @@ ingress:
     ingressClassName: "traefik"
     labels: { }
     annotations:
-      - traefik.ingress.kubernetes.io/router.entrypoints: "websecure,web",
-      - traefik.ingress.kubernetes.io/router.middlewares: traefik-redirect-http-to-https@kubernetescrd
+        traefik.ingress.kubernetes.io/router.entrypoints: "websecure,web"
+        traefik.ingress.kubernetes.io/router.middlewares: traefik-redirect-http-to-https@kubernetescrd
     tls:
       - secretName: wildcard-catalystexplorer-tls
         hosts:

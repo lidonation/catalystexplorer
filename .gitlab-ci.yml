@@ -212,7 +212,7 @@ cypress:
       export QUEUE_REPLICAS="1"
     fi
 
-    helm upgrade $DEPLOYMENT_NAME ./chart \
+    helm upgrade $DEPLOYMENT_NAME ./helm/app \
       --install \
       -f ./helm/app/values.yaml \
       --timeout 300s \
@@ -287,8 +287,8 @@ cypress:
         --namespace="catalystexplorer-minio" \
         --create-namespace \
         -f ./helm/minio/values.yaml \
-        --set tenant.configSecret.accessKey="$DB_DATABASE" \
-        --set tenant.configSecret.secretKey="$DB_DATABASE" \
+        --set tenant.configSecret.accessKey="$MINIO_ACCESS_KEY" \
+        --set tenant.configSecret.secretKey="$MINIO_SECRET_KEY" \
         cx-minio \
         minio-operator/tenant
   - auto-deploy persist_environment_url
