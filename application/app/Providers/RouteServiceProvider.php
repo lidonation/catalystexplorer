@@ -30,6 +30,7 @@ class RouteServiceProvider extends ServiceProvider
     public function register(): void
     {
         Route::bind('hash', function ($hashId) {
+            dd($hashId);
             try {
                 return $this->decodeHash($hashId);
             } catch (Exception $e) {

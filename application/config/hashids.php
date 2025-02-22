@@ -48,15 +48,20 @@ return [
             'length' => 11,
             'alphabet' => 'abcdeghijklmnopqrstuvwxyz0123456789',
         ],
+        \App\Models\Campaign::class => [
+            'salt' => \App\Models\Campaign::class.env('APP_KEY'),
+            'length' => 11,
+            'alphabet' => 'abcdefhijklmnopqrstuvwxyz0123456789',
+        ],
         \App\Models\Review::class => [
             'salt' => \App\Models\Review::class.env('APP_KEY'),
             'length' => 11,
-            'alphabet' => 'abcdefhijklmnopqrstuvwxyz0123456789',
+            'alphabet' => 'abcdefgijklmnopqrstuvwxyz0123456789',
         ],
         \App\Models\User::class => [
             'salt' => \App\Models\User::class.env('APP_KEY'),
             'length' => 11,
-            'alphabet' => 'abcdefgijklmnopqrstuvwxyz0123456789',
+            'alphabet' => 'abcdefghjklmnopqrstuvwxyz0123456789',
         ],
     ],
 ];
