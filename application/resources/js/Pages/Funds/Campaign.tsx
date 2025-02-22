@@ -23,10 +23,10 @@ interface CampaignPageProps extends Record<string, unknown> {
 }
 
 export default function Campaign({
-                                     fund,
-                                     campaign,
-                                     proposals,
-                                 }: PageProps<CampaignPageProps>) {
+     fund,
+     campaign,
+     proposals,
+ }: PageProps<CampaignPageProps>) {
     const {t} = useTranslation();
 
     return (

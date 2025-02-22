@@ -4,18 +4,23 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Enums\CatalystCurrencies;
 use App\Enums\ProposalStatus;
+use App\Traits\HasMetaData;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Spatie\Image\Enums\CropPosition;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class Campaign extends Model implements HasMedia
 {
-    use InteractsWithMedia,
+    use HasMetaData,
+        InteractsWithMedia,
         SoftDeletes;
 
     protected $hidden = [
@@ -33,10 +38,13 @@ class Campaign extends Model implements HasMedia
 
     protected $with = [
         'media',
+
     ];
 
     protected $appends = [
+        'hash',
         'currency',
+        'hero_img_url',
     ];
 
     public function label(): Attribute
@@ -71,6 +79,13 @@ class Campaign extends Model implements HasMedia
     {
         return Attribute::make(
             get: fn () => $this->funded_proposals()->sum('amount_received')
+        );
+    }
+
+    public function heroImgUrl(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => $this->getFirstMediaUrl('hero')
         );
     }
 
@@ -122,5 +137,35 @@ class Campaign extends Model implements HasMedia
         return $this->proposals()
             ->where(['type' => 'proposal'])
             ->whereNull('funded_at');
+    }
+
+    public function registerMediaConversions(?Media $media = null): void
+    {
+        $this->addMediaConversion('thumbnail')
+            ->width(320)
+            ->height(220)
+            ->withResponsiveImages()
+            ->crop(320, 220, CropPosition::Center)
+            ->performOnCollections('hero');
+    }
+
+    public function registerMediaCollections(): void
+    {
+        $this->addMediaCollection('hero')
+            ->singleFile();
+    }
+
+    protected function casts(): array
+    {
+        return [
+            'amount' => 'integer',
+            'created_at' => 'datetime',
+            'launched_at' => 'datetime',
+            'awarded_at' => 'datetime',
+            'review_started_at' => 'datetime',
+            'currency' => CatalystCurrencies::class.':nullable',
+            'updated_at' => 'datetime',
+            'meta_data' => 'array',
+        ];
     }
 }
