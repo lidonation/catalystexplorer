@@ -2,7 +2,7 @@ import { useLocalizedRoute } from '@/utils/localizedRoute';
 import { Link, WhenVisible } from '@inertiajs/react';
 import React, { HTMLAttributes } from 'react';
 import { useTranslation } from 'react-i18next';
-import { route } from 'ziggy-js'; // Make sure to import route
+import { route } from 'ziggy-js';
 import { PaginatedData } from '../../../../types/paginated-data';
 import ProposalCardMini from './ProposalCardMini';
 import ProposalMiniCardLoader from './ProposalMiniCardLoader';
