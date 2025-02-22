@@ -18,6 +18,7 @@ class CampaignResource extends JsonResource
     {
         return [
             'id' => $this->id,
+            'hash' => $this->hash,
             'title' => $this->title,
             'meta_title' => $this->meta_title,
             'slug' => $this->slug,
