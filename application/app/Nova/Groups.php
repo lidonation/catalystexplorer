@@ -6,6 +6,7 @@ namespace App\Nova;
 
 use App\Enums\StatusEnum;
 use App\Models\Group;
+use Ebess\AdvancedNovaMediaLibrary\Fields\Images;
 use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Fields\BelongsToMany;
 use Laravel\Nova\Fields\Field;
@@ -15,6 +16,7 @@ use Laravel\Nova\Fields\Select;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Fields\Textarea;
 use Laravel\Nova\Http\Requests\NovaRequest;
+use Laravel\Nova\Panel;
 
 class Groups extends Resource
 {
@@ -70,6 +72,8 @@ class Groups extends Resource
                 ->sortable()
                 ->required(),
 
+            new Panel('Media', self::mediaFields()),
+
             HasMany::make('Proposals', 'proposals', Proposals::class),
 
             BelongsToMany::make('Ideascale Profiles', 'ideascale_profiles', IdeascaleProfiles::class)
@@ -88,43 +92,13 @@ class Groups extends Resource
         ];
     }
 
-    /**
-     * Get the cards available for the resource.
-     *
-     * @return array<int, \Laravel\Nova\Card>
-     */
-    public function cards(NovaRequest $request): array
+    public static function mediaFields(): array
     {
-        return [];
-    }
-
-    /**
-     * Get the filters available for the resource.
-     *
-     * @return array<int, \Laravel\Nova\Filters\Filter>
-     */
-    public function filters(NovaRequest $request): array
-    {
-        return [];
-    }
-
-    /**
-     * Get the lenses available for the resource.
-     *
-     * @return array<int, \Laravel\Nova\Lenses\Lens>
-     */
-    public function lenses(NovaRequest $request): array
-    {
-        return [];
-    }
-
-    /**
-     * Get the actions available for the resource.
-     *
-     * @return array<int, \Laravel\Nova\Actions\Action>
-     */
-    public function actions(NovaRequest $request): array
-    {
-        return [];
+        return [
+            Images::make(__('Hero'), 'hero')
+                ->enableExistingMedia(),
+            Images::make(__('Banner'), 'banner')
+                ->enableExistingMedia(),
+        ];
     }
 }

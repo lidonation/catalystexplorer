@@ -59,7 +59,7 @@ const CampaignCard: React.FC<CampaignCardProps> = ({
                 {heroImageUrl ? (
                     <img
                         src={heroImageUrl}
-                        alt={fund.title}
+                        alt={`Cat: ${fund.title}`}
                         className="h-full w-full object-cover"
                     />
                 ) : (

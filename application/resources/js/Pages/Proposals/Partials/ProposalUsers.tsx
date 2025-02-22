@@ -29,7 +29,7 @@ export default function ProposalUsers({ users,onUserClick, className }: PageProp
                     <li key={user.hash} onClick={() => onUserClick(user)}>
                         <UserAvatar
                             size="size-8"
-                            imageUrl={user.profile_photo_url}
+                            imageUrl={user.hero_img_url}
                         />
                     </li>
                 ))}

@@ -53,7 +53,7 @@ export default function ProposalCardHeader({
                             </button>
                             <div className="relative flex items-center space-x-4 pt-16">
                                 <img
-                                    src={userSelected?.profile_photo_url}
+                                    src={userSelected?.hero_img_url}
                                     alt={`${userSelected?.name}'s profile`}
                                     className="relative inline-block h-10 w-10 rounded-full ring-2 ring-white"
                                 />

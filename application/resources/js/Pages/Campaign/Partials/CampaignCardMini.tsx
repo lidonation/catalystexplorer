@@ -40,7 +40,7 @@ const CampaignCardMini: React.FC<CampaignCardMiniProps> = ({fund, campaign}) => 
                 {heroImageUrl ? (
                     <img
                         src={heroImageUrl}
-                        alt={fund.title}
+                        alt={`Cat: ${fund.title}`}
                         className="h-full w-full object-cover font-semibold"
                     />
                 ) : (

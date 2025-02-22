@@ -18,7 +18,7 @@ class CampaignData extends Data
         #[TypeScriptOptional]
         public ?int $fund_id,
 
-        public ?string $title,
+        public string $title,
 
         public ?string $meta_title,
 

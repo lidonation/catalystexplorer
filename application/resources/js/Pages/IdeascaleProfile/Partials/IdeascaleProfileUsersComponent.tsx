@@ -47,7 +47,7 @@ export default function IdeascaleProfileUsers({
                     <li key={index} onClick={() => onUserClick(user)}>
                         <UserAvatar
                             size="size-8"
-                            imageUrl={user.profile_photo_url}
+                            imageUrl={user.hero_img_url}
                         />
                     </li>
                 ))}

@@ -44,7 +44,7 @@ const UserSection = ({ user }: UserSectionProps) => {
                         }
                     `}>
                         <Image
-                            imageUrl={user?.profile_photo_url}
+                            imageUrl={user?.hero_img_url}
                             size={`
                                 ${isDashboardPage
                                     ? 'h-32 w-32'

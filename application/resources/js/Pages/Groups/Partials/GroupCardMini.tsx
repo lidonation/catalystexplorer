@@ -36,7 +36,7 @@ const GroupCardMini: React.FC<GroupCardMiniProps> = ({ group }) => {
         group && (
             <Card>
                 <div className="flex h-full w-full flex-col items-center gap-4">
-                    <Image size="30" imageUrl={group?.profile_photo_url} />
+                    <Image size="30" imageUrl={group?.hero_img_url} />
                     <Link
                         href={useLocalizedRoute('groups.group', {
                             group: group?.slug,
