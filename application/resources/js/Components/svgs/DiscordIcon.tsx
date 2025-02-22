@@ -22,7 +22,7 @@ export default function DiscordIcon({
             className={`fill-current ${className}`}
         >
             <title>{t('icons.titles.discord')}</title>
-            <g clip-path="url(#clip0_7428_36757)">
+            <g clipPath="url(#clip0_7428_36757)">
                 <path
                     d="M11.1 12.7C11.1 14 9.7 15.2 8.5 14.3C7.2 13.3 7.7 11 9.3 10.9C10.3 10.9 11.1 11.8 11.1 12.7Z"
                     fill={className}

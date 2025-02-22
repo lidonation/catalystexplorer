@@ -30,7 +30,7 @@ const UserSection = ({ user }: UserSectionProps) => {
                 <div className="relative flex flex-col items-center text-center">
                     <div className="mt-16">
                         <Image
-                            imageUrl={user?.profile_photo_url}
+                            imageUrl={user?.hero_img_url}
                             size="h-32 w-32 border-4 border-background shadow-lg"
                         />
                     </div>

@@ -53,15 +53,15 @@ export default function GroupLayout({children, group}: GroupLayoutProps) {
             <header className="relative">
                 <div className="overflow-hidden rounded-lg mx-8 mt-4 sm:mx-10 sm:h-100">
                     <Image
-                        imageUrl={group.hero_img_url || GroupHeader}
+                        imageUrl={group.banner_img_url || GroupHeader}
                         className="w-full h-full object-cover"
                     />
                 </div>
                 <div className="container px-4 relative -mt-10">
                     <div className="flex flex-row items-start">
                         <Image
-                            imageUrl={group.profile_photo_url}
-                            className="ml-8 sm:ml-2 md:ml-10 md:-mt-5 w-24 h-24 sm:w-28 sm:h-28 md:w-32 md:h-32 lg:w-40 lg:h-40 rounded-full"
+                            imageUrl={group.hero_img_url}
+                            className="ml-8 sm:ml-2 md:ml-16 md:-mt-5 size-24 sm:size-28 md:size-32 lg:size-40 border-3 border-darker rounded-full"
                         />
                         <div className="ml-5 pt-12 sm:pt-16 md:pt-20 md:-mt-5">
                             <Title className="text-xl sm:text-2xl font-bold text-content drop-shadow-lg mb-2">

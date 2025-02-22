@@ -15,7 +15,7 @@ const GroupHeroSection: React.FC<HeroSectionProps> = ({ group }) => {
             {/*/>*/}
 
             <div className="border-background-lighter absolute bottom-[-25px] left-1/2 -translate-x-1/2 transform rounded-full border-4">
-                <Image size="30" imageUrl={group?.hero_img_url ?? group?.profile_photo_url} />
+                <Image size="30" imageUrl={group?.hero_img_url ?? group?.hero_img_url} />
             </div>
         </div>
     );

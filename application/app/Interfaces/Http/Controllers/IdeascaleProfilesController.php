@@ -156,7 +156,7 @@ class IdeascaleProfilesController extends Controller
             'attributesToRetrieve' => $attrs ?? [
                 'id',
                 'name',
-                'profile_photo_url',
+                'hero_img_url',
                 'first_timer',
                 'completed_proposals_count',
                 'funded_proposals_count',

@@ -52,7 +52,7 @@ class IdeascaleProfile extends Model implements HasMedia
         'title',
     ];
 
-    protected $appends = ['profile_photo_url', 'hash'];
+    protected $appends = ['hero_img_url', 'hash'];
 
     public array $translatable = [
         // 'bio',
@@ -198,7 +198,7 @@ class IdeascaleProfile extends Model implements HasMedia
         );
     }
 
-    public function profilePhotoUrl(): Attribute
+    public function heroImgUrl(): Attribute
     {
         return Attribute::make(
             get: fn () => count($this->getMedia('profile')) ? $this->getMedia('profile')[0]->getFullUrl() : $this->gravatar
@@ -323,6 +323,9 @@ class IdeascaleProfile extends Model implements HasMedia
             'proposals_count' => $this->proposals_count,
 
             'first_timer' => null,
+
+            'hero_img_url' => $this->hero_img_url,
+            'banner_img_url' => $this->banner_img_url,
 
             //            'first_timer' => ($proposals?->map(fn ($p) => ($p['fund_id']))->unique()->count() === 1),
             'amount_awarded_ada' => $this->amount_awarded_ada,

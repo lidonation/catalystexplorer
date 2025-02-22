@@ -23,6 +23,7 @@ const GroupList: React.FC<GroupListProps> = ({
                             animate={{ opacity: 1 }}
                             exit={{ opacity: 0 }}
                             transition={{ duration: 0.5, ease: 'easeIn' }}
+                            className='h-full'
                         >
                             <GroupCard group={group}/>
                         </motion.li>

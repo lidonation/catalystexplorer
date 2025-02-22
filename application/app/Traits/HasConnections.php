@@ -176,7 +176,7 @@ trait HasConnections
                 'id' => $entity->id,
                 'type' => $type,
                 'name' => $entity->name,
-                'photo' => $entity->profile_photo_url,
+                'photo' => $entity->hero_img_url,
                 'hash' => $entity->hash,
             ];
         }

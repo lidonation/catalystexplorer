@@ -33,35 +33,40 @@ return [
             'length' => 11,
             'alphabet' => 'abdefghijklmnopqrstuvwxyz0123456789',
         ],
+        \App\Models\Group::class => [
+            'salt' => \App\Models\Group::class.env('APP_KEY'),
+            'length' => 11,
+            'alphabet' => 'abcefghijklmnopqrstuvwxyz0123456789',
+        ],
         \App\Models\IdeascaleProfile::class => [
             'salt' => \App\Models\IdeascaleProfile::class.env('APP_KEY'),
             'length' => 11,
-            'alphabet' => 'abcefghijklmnopqrstuvwxyz0123456789',
+            'alphabet' => 'abcdfghijklmnopqrstuvwxyz0123456789',
         ],
         \App\Models\Location::class => [
             'salt' => \App\Models\Location::class.env('APP_KEY'),
             'length' => 11,
-            'alphabet' => 'abcdfghijklmnopqrstuvwxyz0123456789',
+            'alphabet' => 'abcdeghijklmnopqrstuvwxyz0123456789',
         ],
         \App\Models\Proposal::class => [
             'salt' => \App\Models\Proposal::class.env('APP_KEY'),
             'length' => 11,
-            'alphabet' => 'abcdeghijklmnopqrstuvwxyz0123456789',
+            'alphabet' => 'abcdefhijklmnopqrstuvwxyz0123456789',
         ],
         \App\Models\Campaign::class => [
             'salt' => \App\Models\Campaign::class.env('APP_KEY'),
             'length' => 11,
-            'alphabet' => 'abcdefhijklmnopqrstuvwxyz0123456789',
+            'alphabet' => 'abcdefgijklmnopqrstuvwxyz0123456789',
         ],
         \App\Models\Review::class => [
             'salt' => \App\Models\Review::class.env('APP_KEY'),
             'length' => 11,
-            'alphabet' => 'abcdefgijklmnopqrstuvwxyz0123456789',
+            'alphabet' => 'abcdefghjklmnopqrstuvwxyz0123456789',
         ],
         \App\Models\User::class => [
             'salt' => \App\Models\User::class.env('APP_KEY'),
             'length' => 11,
-            'alphabet' => 'abcdefghjklmnopqrstuvwxyz0123456789',
+            'alphabet' => 'abcdefghiklmnopqrstuvwxyz0123456789',
         ],
     ],
 ];

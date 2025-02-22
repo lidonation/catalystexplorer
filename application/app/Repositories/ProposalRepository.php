@@ -64,7 +64,7 @@ class ProposalRepository extends Repository
                     'users.username',
                     'users.ideascale_id',
                     'users.media.original_url',
-                    'users.profile_photo_url',
+                    'users.hero_img_url',
                     'fund.id',
                     'fund.label',
                     'fund.title',
