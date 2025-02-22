@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\DataTransferObjects;
 
+use Spatie\LaravelData\Attributes\MapOutputName;
 use Spatie\LaravelData\Attributes\WithCast;
 use Spatie\LaravelData\Casts\DateTimeInterfaceCast;
 use Spatie\LaravelData\Data;
@@ -49,7 +50,8 @@ final class MetricData extends Data
         public ?array $chartData,
 
         #[TypeScriptOptional]
-        public ?int $value,
+        #[MapOutputName('value')]
+        public ?int $metric_value,
 
         #[TypeScriptOptional]
         public ?int $order
