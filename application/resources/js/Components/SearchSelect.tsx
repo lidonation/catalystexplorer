@@ -18,7 +18,7 @@ import { ScrollArea } from './ScrollArea';
 export type SearchOption = {
     label?: string;
     hash?: string;
-};
+}; 
 
 type SearchSelectProps = {
     selected: string[];
@@ -176,3 +176,4 @@ export function SearchSelect({
         </Popover>
     );
 }
+ 
