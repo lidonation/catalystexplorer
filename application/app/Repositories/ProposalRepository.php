@@ -72,6 +72,7 @@ class ProposalRepository extends Repository
                     'fund.status',
                     'campaign.id',
                     'campaign.label',
+                    'campaign.title',
                     'campaign.amount',
                     'campaign.currency',
                     'campaign.proposals_count',
