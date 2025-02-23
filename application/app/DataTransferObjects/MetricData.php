@@ -4,16 +4,17 @@ declare(strict_types=1);
 
 namespace App\DataTransferObjects;
 
+use Spatie\LaravelData\Attributes\MapInputName;
 use Spatie\LaravelData\Attributes\MapOutputName;
 use Spatie\LaravelData\Attributes\WithCast;
 use Spatie\LaravelData\Casts\DateTimeInterfaceCast;
 use Spatie\LaravelData\Data;
-use Spatie\LaravelData\Mappers\SnakeCaseMapper;
+use Spatie\LaravelData\Mappers\CamelCaseMapper;
 use Spatie\TypeScriptTransformer\Attributes\Optional as TypeScriptOptional;
 use Spatie\TypeScriptTransformer\Attributes\TypeScript;
 
 #[TypeScript]
-#[MapOutputName(SnakeCaseMapper::class)]
+#[MapOutputName(CamelCaseMapper::class)]
 final class MetricData extends Data
 {
     public function __construct(
@@ -53,8 +54,8 @@ final class MetricData extends Data
 
         #[TypeScriptOptional]
         #[TypeScript('value')]
-        #[MapOutputName('value')]
-        public ?int $metric_value,
+        #[MapInputName('metric_value')]
+        public ?int $value,
 
         #[TypeScriptOptional]
         public ?int $order
