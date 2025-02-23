@@ -213,7 +213,7 @@ type: string;
 query: string;
 count_by?: string;
 chartData?: Array<any>;
-metric_value?: number;
+value?: number;
 order?: number;
 };
 export type PostData = {
