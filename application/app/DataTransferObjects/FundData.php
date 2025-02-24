@@ -19,7 +19,7 @@ final class FundData extends Data
 
         public ?string $label,
 
-        public ?string $title,
+        public string $title,
 
         public ?string $hash,
 
