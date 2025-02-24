@@ -128,44 +128,91 @@ class GroupsController extends Controller
                 ]
             );
 
+        $path = $request->path();
         $connections = $group->connected_items;
 
-        return Inertia::render('Groups/Group', [
+        // Determine which tab we're on based on the URL path
+        if (str_contains($path, '/proposals')) {
+            $proposalsPaginator = $group->proposals()
+                ->with(['users', 'fund'])
+                ->paginate(5);
+
+            return Inertia::render('Groups/Proposals/Index', [
+                'group' => GroupData::from($group),
+                'proposals' => [
+                    'data' => ProposalData::collect($proposalsPaginator->items()),
+                    'total' => $proposalsPaginator->total(),
+                    'per_page' => $proposalsPaginator->perPage(),
+                    'current_page' => $proposalsPaginator->currentPage(),
+                    'last_page' => $proposalsPaginator->lastPage(),
+                    'from' => $proposalsPaginator->firstItem(),
+                    'to' => $proposalsPaginator->lastItem(),
+                ],
+            ]);
+        }
+
+        if (str_contains($path, '/connections')) {
+            return Inertia::render('Groups/Connections/Index', [
+                'group' => GroupData::from($group),
+                'connections' => Inertia::optional(fn () => $connections),
+            ]);
+        }
+
+        if (str_contains($path, '/ideascale-profiles')) {
+            return Inertia::render('Groups/IdeascaleProfiles/Index', [
+                'group' => GroupData::from($group),
+                'ideascaleProfiles' => Inertia::optional(
+                    fn () => to_length_aware_paginator(
+                        IdeascaleProfileData::collect(
+                            $group->ideascale_profiles()->with([])->paginate(12)
+                        )
+                    )
+                ),
+            ]);
+        }
+
+        if (str_contains($path, '/reviews')) {
+            return Inertia::render('Groups/Reviews/Index', [
+                'group' => GroupData::from($group),
+                'reviews' => Inertia::optional(
+                    fn () => to_length_aware_paginator(
+                        ReviewData::collect(
+                            Review::query()->paginate(8)
+                        )
+                    )
+                ),
+            ]);
+        }
+
+        if (str_contains($path, '/locations')) {
+            return Inertia::render('Groups/Locations/Index', [
+                'group' => GroupData::from($group),
+                'locations' => Inertia::optional(
+                    fn () => to_length_aware_paginator(
+                        LocationData::collect(
+                            $group->locations()->paginate(12)
+                        )
+                    )
+                ),
+            ]);
+        }
+
+        // Default return if no specific path matches
+        $proposalsPaginator = $group->proposals()
+            ->with(['users', 'fund'])
+            ->paginate(5);
+
+        return Inertia::render('Groups/Proposals/Index', [
             'group' => GroupData::from($group),
-            'proposals' => Inertia::optional(
-                fn () => to_length_aware_paginator(
-                    ProposalData::collect(
-                        $group->proposals()->with(['users', 'fund'])->paginate(5)
-                    )
-                )
-
-            ),
-            'ideascaleProfiles' => Inertia::optional(
-                fn () => to_length_aware_paginator(
-                    IdeascaleProfileData::collect(
-                        $group->ideascale_profiles()->with([])->paginate(12)
-                    )
-                )
-
-            ),
-            'reviews' => Inertia::optional(
-                fn () => to_length_aware_paginator(
-                    ReviewData::collect(
-                        Review::query()->paginate(8)
-                    )
-                )
-            ),
-            'locations' => Inertia::optional(
-                fn () => to_length_aware_paginator(
-                    LocationData::collect(
-                        $group->locations()->paginate(12)
-                    )
-                )
-
-            ),
-            'connections' => Inertia::optional(
-                fn () => $connections
-            ),
+            'proposals' => [
+                'data' => ProposalData::collect($proposalsPaginator->items()),
+                'total' => $proposalsPaginator->total(),
+                'per_page' => $proposalsPaginator->perPage(),
+                'current_page' => $proposalsPaginator->currentPage(),
+                'last_page' => $proposalsPaginator->lastPage(),
+                'from' => $proposalsPaginator->firstItem(),
+                'to' => $proposalsPaginator->lastItem(),
+            ],
         ]);
     }
 
@@ -285,23 +332,23 @@ class GroupsController extends Controller
         }
 
         if (! empty($this->queryParams[ProposalSearchParams::CAMPAIGNS()->value])) {
-            $campaignIds = ($this->queryParams[ProposalSearchParams::CAMPAIGNS()->value]);
-            $filters[] = '('.implode(' OR ', array_map(fn ($c) => "proposals.campaign.id = {$c}", $campaignIds)).')';
+            $campaignHashes = ($this->queryParams[ProposalSearchParams::CAMPAIGNS()->value]);
+            $filters[] = '('.implode(' OR ', array_map(fn ($c) => "proposals.campaign.hash = {$c}", $campaignHashes)).')';
         }
 
         if (! empty($this->queryParams[ProposalSearchParams::TAGS()->value])) {
-            $tagIds = ($this->queryParams[ProposalSearchParams::TAGS()->value]);
-            $filters[] = '('.implode(' OR ', array_map(fn ($c) => "tags.id = {$c}", $tagIds)).')';
+            $tagHashes = ($this->queryParams[ProposalSearchParams::TAGS()->value]);
+            $filters[] = '('.implode(' OR ', array_map(fn ($c) => "tags.hash = {$c}", $tagHashes)).')';
         }
 
         if (! empty($this->queryParams[ProposalSearchParams::IDEASCALE_PROFILES()->value])) {
-            $ideascaleProfileIds = implode(',', $this->queryParams[ProposalSearchParams::IDEASCALE_PROFILES()->value]);
-            $filters[] = "ideascale_profiles.id IN [{$ideascaleProfileIds}]";
+            $ideascaleProfileHashes = implode(',', $this->queryParams[ProposalSearchParams::IDEASCALE_PROFILES()->value]);
+            $filters[] = "ideascale_profiles.hash IN [{$ideascaleProfileHashes}]";
         }
 
         if (! empty($this->queryParams[ProposalSearchParams::COMMUNITIES()->value])) {
-            $communityIds = implode(',', $this->queryParams[ProposalSearchParams::COMMUNITIES()->value]);
-            $filters[] = "proposals.communities.id IN [{$communityIds}]";
+            $communityHashes = implode(',', $this->queryParams[ProposalSearchParams::COMMUNITIES()->value]);
+            $filters[] = "proposals.communities.hash IN [{$communityHashes}]";
         }
 
         if (! empty($this->queryParams[ProposalSearchParams::COHORT()->value])) {

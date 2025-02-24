@@ -57,7 +57,7 @@ final class IdeascaleProfileData extends Data
         public ?string $title,
 
         #[TypeScriptOptional]
-        public ?string $profile_photo_url,
+        public ?string $hero_img_url,
 
         #[TypeScriptOptional]
         public ?int $amount_awarded_usd,

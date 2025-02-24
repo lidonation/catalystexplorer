@@ -177,9 +177,9 @@ services:
     security_opt:
       - no-new-privileges:true
     environment:
-      MINIO_ROOT_USER: 'minio'
-      MINIO_ROOT_PASSWORD: 'minioroot'
-      MINIO_DEFAULT_BUCKET: 'catalystexplorer.com'
+      MINIO_ROOT_USER: minio
+      MINIO_ROOT_PASSWORD: minioroot
+      MINIO_DEFAULT_BUCKET: catalystexplorer.com
     volumes:
       - 'catalystexplorer-minio:/data/minio'
     networks:
@@ -196,9 +196,9 @@ services:
   createbuckets:
     image: minio/mc
     environment:
-      MINIO_ROOT_USER: 'minio'
-      MINIO_ROOT_PASSWORD: 'minioroot'
-      MINIO_DEFAULT_BUCKET: 'catalystexplorer.com'
+      MINIO_ROOT_USER: minio
+      MINIO_ROOT_PASSWORD: minioroot
+      MINIO_DEFAULT_BUCKET: catalystexplorer.com
     depends_on:
       - catalystexplorer-minio
     networks:
@@ -206,10 +206,9 @@ services:
       - shared-network
     entrypoint: >
       /bin/sh -c "
-      /usr/bin/mc config host add minio http://catalystexplorer-minio:${FORWARD_MINIO_PORT:-9001} ${MINIO_ROOT_USER} ${MINIO_ROOT_PASSWORD};
-      /usr/bin/mc rm -r --force minio/${MINIO_DEFAULT_BUCKET};
+      until (/usr/bin/mc config host add minio http://catalystexplorer-minio:9001 ${MINIO_ROOT_USER} ${MINIO_ROOT_PASSWORD}) do echo '...waiting for minio...' && sleep 1; done;
       /usr/bin/mc mb minio/${MINIO_DEFAULT_BUCKET};
-      /usr/bin/mc policy set public minio/${MINIO_DEFAULT_BUCKET};
+      /usr/bin/mc anonymous set public minio/${MINIO_DEFAULT_BUCKET};
       exit 0;
       "
   # catalystexplorer.cypress.gui:

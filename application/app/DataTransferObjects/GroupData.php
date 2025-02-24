@@ -27,7 +27,7 @@ final class GroupData extends Data
         public ?string $bio,
 
         #[TypeScriptOptional]
-        public ?string $profile_photo_url,
+        public ?string $banner_img_url,
 
         #[TypeScriptOptional]
         public ?string $slug,
@@ -85,6 +85,12 @@ final class GroupData extends Data
 
         #[TypeScriptOptional]
         public ?int $completed_proposals_count,
+
+        #[TypeScriptOptional]
+        public ?int $funded_proposals_count,
+
+        #[TypeScriptOptional]
+        public ?int $unfunded_proposals_count,
 
         #[TypeScriptOptional]
         public ?int $proposals_funded,

@@ -6,6 +6,7 @@ namespace App\Nova;
 
 use App\Enums\MetricCountBy;
 use App\Enums\MetricQueryTypes;
+use App\Enums\MetricsContext;
 use App\Enums\MetricTypes;
 use App\Enums\StatusEnum;
 use App\Models\Metric;
@@ -75,10 +76,15 @@ class Metrics extends Resource
 
             Color::make(__('Color')),
 
-            Text::make(__('Context'))
-                ->filterable()
+            Select::make('Context')->options(MetricsContext::class)
                 ->sortable()
+                ->filterable()
                 ->nullable(),
+
+            //            Text::make(__('Context'))
+            //                ->filterable()
+            //                ->sortable()
+            //                ->nullable(),
 
             Select::make(__('Query'), 'query')
                 ->options([

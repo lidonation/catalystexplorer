@@ -30,7 +30,7 @@ class Fund extends Model implements HasMedia
     ];
 
     protected $appends = [
-        'banner_img_url',
+        'hero_img_url',
     ];
 
     protected $guarded = [];
@@ -40,6 +40,20 @@ class Fund extends Model implements HasMedia
         //        'funded_proposals',
         //        'completed_proposals',
     ];
+
+    public function heroImgUrl(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => $this->getFirstMediaUrl('hero')
+        );
+    }
+
+    public function bannerImgUrl(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => $this->getFirstMediaUrl('banner')
+        );
+    }
 
     public function currencySymbol(): Attribute
     {
@@ -132,6 +146,7 @@ class Fund extends Model implements HasMedia
             ->withResponsiveImages()
             ->crop(180, 180, CropPosition::Top)
             ->performOnCollections('hero');
+
         $this->addMediaConversion('banner')
             ->width(1500)
             ->height(500)
@@ -147,20 +162,6 @@ class Fund extends Model implements HasMedia
 
         $this->addMediaCollection('banner')
             ->singleFile();
-    }
-
-    public function heroImageUrl(): Attribute
-    {
-        return Attribute::make(
-            get: fn () => $this->getFirstMediaUrl('hero')
-        );
-    }
-
-    public function bannerImgUrl(): Attribute
-    {
-        return Attribute::make(
-            get: fn () => $this->getFirstMediaUrl('banner')
-        );
     }
 
     protected function casts(): array

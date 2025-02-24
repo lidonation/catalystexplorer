@@ -7,7 +7,6 @@ namespace App\Models;
 use App\Casts\DateFormatCast;
 use App\Casts\HashId;
 use App\Enums\CatalystCurrencies;
-use App\Models\CatalystExplorer\Moderation;
 use App\Traits\HasAuthor;
 use App\Traits\HasMetaData;
 use App\Traits\HasTaxonomies;
@@ -18,9 +17,11 @@ use Illuminate\Database\Eloquent\Concerns\HasTimestamps;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\DB;
 use Laravel\Scout\Searchable;
 
 class Proposal extends Model
@@ -174,36 +175,36 @@ class Proposal extends Model
     {
         $query->when(
             $filters['search'] ?? false,
-            fn(Builder $query, $search) => $query->where('title', 'ILIKE', '%' . $search . '%')
+            fn (Builder $query, $search) => $query->where('title', 'ILIKE', '%'.$search.'%')
         );
 
         $query->when(
             $filters['user_id'] ?? false,
-            fn(Builder $query, $user_id) => $query->where('user_id', $user_id)
+            fn (Builder $query, $user_id) => $query->where('user_id', $user_id)
         );
 
         $query->when(
             $filters['campaign_id'] ?? false,
-            fn(Builder $query, $campaign_id) => $query->where('campaign_id', $campaign_id)
+            fn (Builder $query, $campaign_id) => $query->where('campaign_id', $campaign_id)
         );
 
         $query->when(
             $filters['fund_id'] ?? false,
-            fn(Builder $query, $fund_id) => $query->whereRelation('fund_id', '=', $fund_id)
+            fn (Builder $query, $fund_id) => $query->whereRelation('fund_id', '=', $fund_id)
         );
     }
 
     public function currency(): Attribute
     {
         return Attribute::make(
-            get: fn($currency) => $currency ?? $this->campaign?->currency ?? $this->fund?->currency ?? CatalystCurrencies::ADA()->value,
+            get: fn ($currency) => $currency ?? $this->campaign?->currency ?? $this->fund?->currency ?? CatalystCurrencies::ADA()->value,
         );
     }
 
     public function quickPitchId(): Attribute
     {
         return Attribute::make(
-            get: fn() => $this->quickpitch ? collect(
+            get: fn () => $this->quickpitch ? collect(
                 explode(
                     '/',
                     $this->quickpitch
@@ -266,6 +267,12 @@ class Proposal extends Model
             ->where('context_type', Proposal::class);
     }
 
+    public function reviews(): HasManyThrough
+    {
+        return $this->hasManyThrough(Review::class, Moderation::class, 'context_id', 'id', 'id', 'review_id')
+            ->where('moderations.context_type', static::class);
+    }
+
     public function discussions(): HasMany
     {
         return $this->hasMany(Discussion::class, 'model_id')
@@ -274,12 +281,55 @@ class Proposal extends Model
             ->withAvg('ratings', 'rating');
     }
 
+    public function ratings(): Attribute
+    {
+        return Attribute::make(
+            get: function () {
+                return DB::table('ratings')
+                    ->join('reviews', 'reviews.id', '=', 'ratings.review_id')
+                    ->join('moderations', 'moderations.review_id', '=', 'reviews.id')
+                    ->where('moderations.context_type', Proposal::class)
+                    ->where('moderations.context_id', $this->id)
+                    ->select('ratings.*')
+                    ->get();
+            }
+        );
+    }
+
+    public function avgRating(): Attribute
+    {
+        return Attribute::make(
+            get: function () {
+                return DB::table('ratings')
+                    ->join('reviews', 'reviews.id', '=', 'ratings.review_id')
+                    ->join('moderations', 'moderations.review_id', '=', 'reviews.id')
+                    ->where('moderations.context_type', Proposal::class)
+                    ->where('moderations.context_id', $this->id)
+                    ->avg('ratings.rating');
+            }
+        );
+    }
+
+    public function RatingsAverage(): Attribute
+    {
+        return Attribute::make(get: fn () => $this->ratings->avg('rating'));
+    }
+
     /**
      * Get the value used to index the model.
      */
     public function getScoutKey(): mixed
     {
         return $this->id;
+    }
+
+    public function getDiscussionRankingScore(string $discussionTitle): ?float
+    {
+        $rankingScoreAvg = $this->discussions
+            ->where('title', $discussionTitle)
+            ->pluck('ratings_avg_rating');
+
+        return (count($rankingScoreAvg) > 0) ? floatval($rankingScoreAvg[0]) : null;
     }
 
     /**
@@ -316,10 +366,12 @@ class Proposal extends Model
 
             // 'auditability_score' => $this->meta_info->auditability_score ?? $this->getDiscussionRankingScore('Value for money') ?? 0,
 
-            'ca_rating' => intval($this->ratings_average) ?? 0.00,
+            'ca_rating' => intval($this->avg_rating) ?? 0.00,
             'campaign' => [
                 'id' => $this->campaign_id,
                 'title' => $this->campaign?->title,
+                'currency' => $this->currency,
+                'proposals_count' => $this->campaign?->proposals_count,
                 'amount' => $this->campaign?->amount ? intval($this->campaign?->amount) : null,
                 'label' => $this->campaign?->label,
                 'status' => $this->campaign?->status,
@@ -364,7 +416,7 @@ class Proposal extends Model
             'tags' => $this->tags->toArray(),
 
             'users' => $this->team->map(function ($u) {
-                $proposals = $u->proposals?->map(fn($p) => $p->toArray());
+                $proposals = $u->proposals?->map(fn ($p) => $p->toArray());
 
                 return [
                     'id' => $u->id,
@@ -372,9 +424,9 @@ class Proposal extends Model
                     'username' => $u->username,
                     'name' => $u->name,
                     'bio' => $u->bio,
-                    'profile_photo_url' => $u->media?->isNotEmpty() ? $u->thumbnail_url : $u->profile_photo_url,
-                    'proposals_completed' => $proposals?->filter(fn($p) => $p['status'] === 'complete')?->count() ?? 0,
-                    'first_timer' => ($proposals?->map(fn($p) => isset($p['fund']) ? $p['fund']['id'] : null)->unique()->count() === 1),
+                    'hero_img_url' => $u->media?->isNotEmpty() ? $u->thumbnail_url : $u->hero_img_url,
+                    'proposals_completed' => $proposals?->filter(fn ($p) => $p['status'] === 'complete')?->count() ?? 0,
+                    'first_timer' => ($proposals?->map(fn ($p) => isset($p['fund']) ? $p['fund']['id'] : null)->unique()->count() === 1),
                 ];
             }),
 
@@ -436,6 +488,11 @@ class Proposal extends Model
         return $this->belongsToMany(IdeascaleProfile::class, 'ideascale_profile_has_proposal', 'proposal_id', 'ideascale_profile_id');
     }
 
+    public function ideascaleProfiles(): BelongsToMany
+    {
+        return $this->belongsToMany(IdeascaleProfile::class, 'ideascale_profile_has_proposal', 'proposal_id', 'ideascale_profile_id');
+    }
+
     /**
      * Modify the query used to retrieve models when making all the models searchable.
      */
@@ -451,7 +508,7 @@ class Proposal extends Model
             'amount_received' => 'integer',
             'amount_requested' => 'integer',
             'created_at' => DateFormatCast::class,
-            'currency' => CatalystCurrencies::class . ':nullable',
+            'currency' => CatalystCurrencies::class.':nullable',
             'funded_at' => DateFormatCast::class,
             'funding_updated_at' => DateFormatCast::class,
             'offchain_metas' => 'array',

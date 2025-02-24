@@ -15,9 +15,9 @@ final class FundData extends Data
 {
     public function __construct(
 
-        public float $amount,
+        public ?float $amount,
 
-        public string $label,
+        public ?string $label,
 
         public string $title,
 
@@ -58,6 +58,9 @@ final class FundData extends Data
 
         #[TypeScriptOptional]
         public ?string $hero_img_url,
+
+        #[TypeScriptOptional]
+        public ?string $banner_img_url,
 
         #[TypeScriptOptional]
         public ?string $status,

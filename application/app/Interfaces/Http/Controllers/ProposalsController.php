@@ -215,28 +215,28 @@ class ProposalsController extends Controller
 
         // filter by challenge
         if (! empty($this->queryParams[ProposalSearchParams::CAMPAIGNS()->value])) {
-            $campaignIds = ($this->queryParams[ProposalSearchParams::CAMPAIGNS()->value]);
-            $filters[] = '('.implode(' OR ', array_map(fn ($c) => "campaign.id = {$c}", $campaignIds)).')';
+            $campaignHashes = ($this->queryParams[ProposalSearchParams::CAMPAIGNS()->value]);
+            $filters[] = '('.implode(' OR ', array_map(fn ($c) => "campaign.hash = {$c}", $campaignHashes)).')';
         }
 
         if (! empty($this->queryParams[ProposalSearchParams::TAGS()->value])) {
-            $tagIds = ($this->queryParams[ProposalSearchParams::TAGS()->value]);
-            $filters[] = '('.implode(' OR ', array_map(fn ($c) => "tags.id = {$c}", $tagIds)).')';
+            $tagHashes = ($this->queryParams[ProposalSearchParams::TAGS()->value]);
+            $filters[] = '('.implode(' OR ', array_map(fn ($c) => "tags.hash = {$c}", $tagHashes)).')';
         }
 
         if (! empty($this->queryParams[ProposalSearchParams::IDEASCALE_PROFILES()->value])) {
-            $ideascaleProfileIds = implode(',', $this->queryParams[ProposalSearchParams::IDEASCALE_PROFILES()->value]);
-            $filters[] = "users.id IN [{$ideascaleProfileIds}]";
+            $ideascaleProfileHashes = implode(',', $this->queryParams[ProposalSearchParams::IDEASCALE_PROFILES()->value]);
+            $filters[] = "users.hash IN [{$ideascaleProfileHashes}]";
         }
 
         if (! empty($this->queryParams[ProposalSearchParams::GROUPS()->value])) {
-            $groupIds = implode(',', $this->queryParams[ProposalSearchParams::GROUPS()->value]);
-            $filters[] = "groups.id IN [{$groupIds}]";
+            $groupHashes = implode(',', $this->queryParams[ProposalSearchParams::GROUPS()->value]);
+            $filters[] = "groups.hash IN [{$groupHashes}]";
         }
 
         if (! empty($this->queryParams[ProposalSearchParams::COMMUNITIES()->value])) {
-            $communityIds = implode(',', $this->queryParams[ProposalSearchParams::COMMUNITIES()->value]);
-            $filters[] = "communities.id IN [{$communityIds}]";
+            $communityHashes = implode(',', $this->queryParams[ProposalSearchParams::COMMUNITIES()->value]);
+            $filters[] = "communities.hash IN [{$communityHashes}]";
         }
 
         if (! empty($this->queryParams[ProposalSearchParams::PROJECT_LENGTH()->value])) {

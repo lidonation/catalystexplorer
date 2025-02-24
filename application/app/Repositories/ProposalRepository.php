@@ -64,7 +64,7 @@ class ProposalRepository extends Repository
                     'users.username',
                     'users.ideascale_id',
                     'users.media.original_url',
-                    'users.profile_photo_url',
+                    'users.hero_img_url',
                     'fund.id',
                     'fund.label',
                     'fund.title',
@@ -72,7 +72,10 @@ class ProposalRepository extends Repository
                     'fund.status',
                     'campaign.id',
                     'campaign.label',
+                    'campaign.title',
                     'campaign.amount',
+                    'campaign.currency',
+                    'campaign.proposals_count',
                 ];
                 $args['facets'] = [
                     'tags',

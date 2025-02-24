@@ -53,18 +53,16 @@ const FundCard: React.FC<FundCardProps> = ({
                         <span className="truncate text-sm font-bold sm:text-base">
                             {currency(
                                 fund?.amount_awarded ?? 0,
-                                fund?.currency,
-                                undefined,
                                 2,
+                                fund?.currency,
                             )}
                         </span>
                         <span className="text-xs sm:text-sm">/</span>
                         <span className="truncate text-xs text-gray-500 sm:text-sm">
                             {currency(
                                 fund?.amount_requested ?? 0,
-                                fund?.currency,
-                                undefined,
                                 2,
+                                fund?.currency
                             )}
                         </span>
                     </div>

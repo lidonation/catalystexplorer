@@ -15,9 +15,9 @@ spec:
   secretTemplate:
     annotations:
       reflector.v1.k8s.emberstack.com/reflection-allowed: "true"
-      reflector.v1.k8s.emberstack.com/reflection-allowed-namespaces: "catalystexplorer,catalystexplorer-preview"
+      reflector.v1.k8s.emberstack.com/reflection-allowed-namespaces: "catalystexplorer,catalystexplorer-preview,catalystexplorer-minio"
       reflector.v1.k8s.emberstack.com/reflection-auto-enabled: "true"
-      reflector.v1.k8s.emberstack.com/reflection-auto-namespaces: "catalystexplorer,catalystexplorer-preview"
+      reflector.v1.k8s.emberstack.com/reflection-auto-namespaces: "catalystexplorer,catalystexplorer-preview,catalystexplorer-minio"
   dnsNames:
     - "*.catalystexplorer.com"
 {{- end -}}
