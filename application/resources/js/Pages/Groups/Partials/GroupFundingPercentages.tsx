@@ -47,9 +47,9 @@ export default function GroupFundingPercentages({
 
                 <div className='mt-1'>
                     <span className="text-md font-semibold">
-                        {currency(amount, amount_currency, undefined, 2)}
+                        {currency(amount, 2, amount_currency)}
                     </span>
-                    <span className="text-highlight text-sm">{` / ${currency(total ?? 0, amount_currency, undefined, 2)}`}</span>
+                    <span className="text-highlight text-sm">{` / ${currency(total ?? 0, 2, amount_currency)}`}</span>
                     {
                         twoColumns && (
                             <br/>

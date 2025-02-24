@@ -8,6 +8,7 @@ use App\Services\HashIdService;
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Str;
 
 class HashId implements CastsAttributes
 {
@@ -25,7 +26,12 @@ class HashId implements CastsAttributes
             return $value;
         }
 
-        if (Route::currentRouteName() != null && str_contains(Route::currentRouteName(), 'nova.')) {
+        if (
+            Route::currentRouteName() != null &&
+            Str::of(
+                Route::currentRouteName()
+            )->contains(['nova.', 'horizon.', 'nova-api'])
+        ) {
             return $value;
         }
 
@@ -43,7 +49,12 @@ class HashId implements CastsAttributes
             return $value;
         }
 
-        if (Route::currentRouteName() != null && str_contains(Route::currentRouteName(), 'nova.')) {
+        if (
+            Route::currentRouteName() != null &&
+            Str::of(
+                Route::currentRouteName()
+            )->contains(['nova.', 'horizon.', 'nova-api'])
+        ) {
             return $value;
         }
 

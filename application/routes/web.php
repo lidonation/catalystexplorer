@@ -43,8 +43,25 @@ Route::localized(
             Route::get('/', [GroupsController::class, 'index'])
                 ->name('index');
 
-            Route::get('/{group:slug}', [GroupsController::class, 'group'])
-                ->name('group');
+            Route::prefix('/{group:slug}')->group(function () {
+                Route::get('/', [GroupsController::class, 'group'])
+                    ->name('group');
+
+                Route::get('/proposals', [GroupsController::class, 'group'])
+                    ->name('proposals');
+
+                Route::get('/connections', [GroupsController::class, 'group'])
+                    ->name('connections');
+
+                Route::get('/ideascale-profiles', [GroupsController::class, 'group'])
+                    ->name('ideascaleProfiles');
+
+                Route::get('/reviews', [GroupsController::class, 'group'])
+                    ->name('reviews');
+
+                Route::get('/locations', [GroupsController::class, 'group'])
+                    ->name('locations');
+            });
         });
 
         Route::prefix('/communities')->as('communities.')->group(function () {
@@ -59,8 +76,34 @@ Route::localized(
             Route::get('/', [IdeascaleProfilesController::class, 'index'])
                 ->name('index');
 
-            Route::get('/{ideascaleProfile}', [IdeascaleProfilesController::class, 'show'])
-                ->name('show');
+            Route::prefix('/{ideascaleProfile}')->group(function () {
+                Route::get('/', [IdeascaleProfilesController::class, 'show'])
+                    ->name('show');
+
+                Route::get('/proposals', [IdeascaleProfilesController::class, 'show'])
+                    ->name('proposals');
+
+                Route::get('/connections', [IdeascaleProfilesController::class, 'show'])
+                    ->name('connections');
+
+                Route::get('/groups', [IdeascaleProfilesController::class, 'show'])
+                    ->name('groups');
+
+                Route::get('/communities', [IdeascaleProfilesController::class, 'show'])
+                    ->name('communities');
+
+                Route::get('/reviews', [IdeascaleProfilesController::class, 'show'])
+                    ->name('reviews');
+
+                Route::get('/milestones', [IdeascaleProfilesController::class, 'show'])
+                    ->name('milestones');
+
+                Route::get('/reports', [IdeascaleProfilesController::class, 'show'])
+                    ->name('reports');
+
+                Route::get('/cam', [IdeascaleProfilesController::class, 'show'])
+                    ->name('cam');
+            });
         });
 
         Route::prefix('/reviews')->as('reviews.')->group(function () {

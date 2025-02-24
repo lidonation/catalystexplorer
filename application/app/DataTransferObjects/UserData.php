@@ -19,7 +19,7 @@ class UserData extends Data
 
         public string $email,
 
-        public ?string $profile_photo_url,
+        public ?string $hero_img_url,
 
         public ?string $email_verified_at,
 

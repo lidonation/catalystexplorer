@@ -36,7 +36,7 @@ interface GraphComponentProps {
 const CatalystConnectionsGraph = ({
     data,
     nodeSize = { group: 50, profile: { min: 5, max: 20 } },
-    forces = { linkDistance: 50, chargeStrength: -300 },
+    forces = { linkDistance: 100, chargeStrength: -500 },
     colors = {
         node: '--cx-primary',
         groupNodeBorder: '--success-gradient-color-2',
@@ -102,7 +102,7 @@ const CatalystConnectionsGraph = ({
             fgRef.current.d3Force('link')?.distance(forces.linkDistance);
             fgRef.current
                 .d3Force('charge')
-                ?.distanceMax(500)
+                ?.distanceMax(1000)
                 .strength(forces.chargeStrength);
         }
     }, [forces.linkDistance, forces.chargeStrength]);
@@ -172,18 +172,17 @@ const CatalystConnectionsGraph = ({
                 }
                 radius = nodeSizes.current.get(node.id)!;
             }
-
+    
             const img = imageCache.current.get(node.photo!);
             ctx.save();
-
+    
             if (
                 node.type === CatalystConnectionsEnum.GROUP ||
                 node.type === CatalystConnectionsEnum.COMMUNITY
             ) {
-                // Draw octagon
                 const size = radius;
                 const angleStep = (Math.PI * 2) / 8;
-
+    
                 ctx.beginPath();
                 for (let i = 0; i < 8; i++) {
                     const angle = angleStep * i;
@@ -196,9 +195,9 @@ const CatalystConnectionsGraph = ({
                     }
                 }
                 ctx.closePath();
-
+    
                 if (img) {
-                    ctx.clip(); // Clip to the octagon shape
+                    ctx.clip(); 
                     ctx.drawImage(
                         img,
                         node.x! - radius,
@@ -206,12 +205,12 @@ const CatalystConnectionsGraph = ({
                         radius * 2,
                         radius * 2,
                     );
-                    ctx.restore(); // Restore the canvas state to prevent clipping issues
+                    ctx.restore();
                 } else {
                     ctx.fillStyle = getColor(config.colors.node);
                     ctx.fill();
                 }
-
+    
                 ctx.lineWidth = 1;
                 ctx.strokeStyle = getColor(config.colors.groupNode);
                 ctx.stroke();
@@ -236,56 +235,83 @@ const CatalystConnectionsGraph = ({
                     ctx.fill();
                 }
             }
-
+    
             if (node.id === focusedNodeId) {
                 const label = node.name;
                 const fontSize = 12;
                 ctx.font = `${fontSize}px Sans-Serif`;
                 ctx.textAlign = 'center';
                 ctx.textBaseline = 'top';
-
+    
                 const textWidth = ctx.measureText(label).width;
                 const padding = 5;
                 const boxWidth = textWidth + padding * 2;
                 const boxHeight = fontSize + padding * 2;
-                const x = node.x! - boxWidth / 2;
-                const y = node.y! + radius + 5;
+                const margin = 5;
+
+                // Try different positions in this order: bottom, top, right, left
+                const positions = [
+                    { x: node.x!, y: node.y! + radius + margin }, // bottom
+                    { x: node.x!, y: node.y! - radius - boxHeight - margin }, // top
+                    { x: node.x! + radius + margin + boxWidth/2, y: node.y! - boxHeight / 2 }, // right
+                    { x: node.x! - radius - boxWidth/2 - margin/4, y: node.y! - boxHeight / 2 }, // left // left
+                ];
+
+                let bestPosition = positions[0];
+                let minOverlap = Infinity;
+
+                for (const pos of positions) {
+                    const labelBox = {
+                        x: pos.x - boxWidth / 2,
+                        y: pos.y,
+                        width: boxWidth,
+                        height: boxHeight,
+                    };
+
+                    let totalOverlap = 0;
+                    for (const otherNode of data.nodes) {
+                        if (otherNode.id === node.id) continue;
+                        const otherRadius = nodeSizes.current.get(otherNode.id) || config.nodeSize.profile.min;
+                        const distance = Math.sqrt(
+                            Math.pow(pos.x - otherNode.x!, 2) + 
+                            Math.pow(pos.y - otherNode.y!, 2)
+                        );
+                        if (distance < otherRadius + boxHeight) {
+                            totalOverlap += 1;
+                        }
+                    }
+
+                    if (totalOverlap < minOverlap + boxHeight) {
+                        minOverlap = totalOverlap;
+                        bestPosition = pos;
+                    }
+
+                    if (totalOverlap === 0) break; // Found perfect position
+                }
+
+                const x = bestPosition.x - boxWidth / 2;
+                const y = bestPosition.y;
 
                 const borderRadius = 8;
                 ctx.fillStyle = getColor('--cx-tooltip-background');
                 ctx.beginPath();
                 ctx.moveTo(x + borderRadius, y);
                 ctx.lineTo(x + boxWidth - borderRadius, y);
-                ctx.quadraticCurveTo(
-                    x + boxWidth,
-                    y,
-                    x + boxWidth,
-                    y + borderRadius,
-                );
+                ctx.quadraticCurveTo(x + boxWidth, y, x + boxWidth, y + borderRadius);
                 ctx.lineTo(x + boxWidth, y + boxHeight - borderRadius);
-                ctx.quadraticCurveTo(
-                    x + boxWidth,
-                    y + boxHeight,
-                    x + boxWidth - borderRadius,
-                    y + boxHeight,
-                );
+                ctx.quadraticCurveTo(x + boxWidth, y + boxHeight, x + boxWidth - borderRadius, y + boxHeight);
                 ctx.lineTo(x + borderRadius, y + boxHeight);
-                ctx.quadraticCurveTo(
-                    x,
-                    y + boxHeight,
-                    x,
-                    y + boxHeight - borderRadius,
-                );
+                ctx.quadraticCurveTo(x, y + boxHeight, x, y + borderRadius);
                 ctx.lineTo(x, y + borderRadius);
                 ctx.quadraticCurveTo(x, y, x + borderRadius, y);
                 ctx.closePath();
                 ctx.fill();
 
                 ctx.fillStyle = 'white';
-                ctx.fillText(label, node.x!, y + padding);
+                ctx.fillText(label, bestPosition.x, y + padding);
             }
         },
-        [config, getColor, focusedNodeId],
+        [config, getColor, focusedNodeId, data],
     );
 
     const linkCanvasObject = useCallback(

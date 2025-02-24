@@ -13,6 +13,7 @@
     "require": {
         "php": "^8.3",
         "codezero/laravel-localized-routes": "^4.0",
+        "ebess/advanced-nova-media-library": "^5.0",
         "hammerstone/fast-paginate": "^1.1",
         "hashids/hashids": "^5.0",
         "http-interop/http-factory-guzzle": "^1.2",
@@ -25,6 +26,7 @@
         "laravel/scout": "^10.11",
         "laravel/tinker": "^2.9",
         "laravolt/avatar": "^6.0",
+        "league/flysystem-aws-s3-v3": "^3.29",
         "meilisearch/meilisearch-php": "^1.11",
         "saloonphp/laravel-plugin": "^3.0",
         "saloonphp/pagination-plugin": "^2.0",

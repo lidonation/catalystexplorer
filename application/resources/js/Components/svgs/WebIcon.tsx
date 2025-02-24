@@ -1,4 +1,5 @@
 import { useTranslation } from 'react-i18next';
+import Title from '../atoms/Title';
 
 type WebProps = {
     className?: string;
@@ -21,8 +22,8 @@ export default function WebIcon({
             xmlns="http://www.w3.org/2000/svg"
             className={`fill-current ${className}`}
         >
-            <g clip-path="url(#clip0_7455_8)">
-                <title>{t('icons.titles.web')}</title>
+            <g clipPath="url(#clip0_7455_8)">
+                <Title>{t('icons.titles.web')}</Title>
                 <path
                     d="M9.3 15.5C8.8 15.5 7.8 16.3 7.6 16.3C7.5 16.3 7.2 15.9 7.1 15.8C6.4 14.8 6 13.6 5.9 12.3H8.6C8.6 13.4 8.9 14.4 9.3 15.4V15.5Z"
                     fill={className}

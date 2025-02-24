@@ -24,12 +24,12 @@ export default function ProposalUsers({ users,onUserClick, className }: PageProp
             <Title level='5' id="team-heading">
             {t('teams')}
             </Title>
-            <ul className="flex cursor-pointer -space-x-2 py-1">
+            <ul className="flex cursor-pointer -space-x-2 py-1.5">
                 {visibleUsers?.map((user) => (
                     <li key={user.hash} onClick={() => onUserClick(user)}>
                         <UserAvatar
                             size="size-8"
-                            imageUrl={user.profile_photo_url}
+                            imageUrl={user.hero_img_url}
                         />
                     </li>
                 ))}

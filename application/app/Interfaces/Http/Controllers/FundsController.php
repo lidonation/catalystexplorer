@@ -46,6 +46,7 @@ class FundsController extends Controller
 
     public function fund(Request $request, Fund $fund, MetricRepository $metrics): Response
     {
+        $fund->append(['banner_img_url']);
         $this->getProps($request);
 
         $campaigns = $this->getCampaigns($fund);

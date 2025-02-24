@@ -1,7 +1,7 @@
+import Title from '@/Components/atoms/Title';
 import { ListProvider } from '@/Context/ListContext';
 import BookmarkButton from '@/Pages/My/Bookmarks/Partials/BookmarkButton';
 import ProposalStatus from './ProposalStatus';
-import Title from '@/Components/atoms/Title';
 
 export default function ProposalCardHeader({
     proposal,
@@ -53,11 +53,11 @@ export default function ProposalCardHeader({
                             </button>
                             <div className="relative flex items-center space-x-4 pt-16">
                                 <img
-                                    src={userSelected?.profile_photo_url}
+                                    src={userSelected?.hero_img_url}
                                     alt={`${userSelected?.name}'s profile`}
                                     className="relative inline-block h-10 w-10 rounded-full ring-2 ring-white"
                                 />
-                                <Title level='3'>{userSelected?.name}</Title>
+                                <Title level="3">{userSelected?.name}</Title>
                             </div>
                         </div>
                     ) : (
@@ -90,7 +90,9 @@ export default function ProposalCardHeader({
                             isHorizontal ? 'mb-4 text-center' : ''
                         }`}
                     >
-                        {!userSelected ? proposal.title : null}
+                        {!userSelected ? (
+                            <Title level="4">{proposal.title}</Title>
+                        ) : null}
                     </a>
                     <div className="flex flex-row justify-end py-0.5 italic">
                         <span>~ {proposal.fund?.title}</span>

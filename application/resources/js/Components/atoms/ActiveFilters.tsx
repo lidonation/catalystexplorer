@@ -248,13 +248,12 @@ const IDFilters = React.memo(({ filter }: { filter: FilteredItem }) => {
         domain = 'ideascale-profiles';
     }
 
-    const { setIDs, options } = useSearchOptions<any>(domain);
+    const { setHashes, options } = useSearchOptions<any>(domain);
+    const { setFilters } = useFilterContext();
 
     React.useEffect(() => {
-        setIDs(filter.value);
-    }, [setIDs, filter.value]);
-
-    const { setFilters } = useFilterContext();
+        setHashes(filter.value);
+    }, [setHashes, filter.value]);
 
     const removeFilter = (value?: string) => {
         const newVal = filter.value.filter(
@@ -267,33 +266,35 @@ const IDFilters = React.memo(({ filter }: { filter: FilteredItem }) => {
         });
     };
 
+    const selectedOptions = options.filter(option => 
+        filter.value.includes(option.hash)
+    );
+
     return (
         <div
             className="bg-background mr-1 flex items-center rounded-lg border px-1 py-1"
-            key={filter.label}
+            key={`${filter.label}-${filter.param}`}
         >
             <div className="mr-1 font-bold">{filter.label}:</div>
             <div className="mr-1 flex items-center gap-2">
-                {' '}
-                {options &&
-                    options.map((option) => (
-                        <div key={option.label} className="flex items-center">
-                            {' '}
-                            <span>
-                                {formatSnakeCaseToTitleCase(
-                                    option?.name ??
-                                        option?.title ??
-                                        option?.label,
-                                )}
-                            </span>
-                            <button
-                                className="ml-2"
-                                onClick={() => removeFilter(option.id)}
-                            >
-                                X{' '}
-                            </button>{' '}
-                        </div>
-                    ))}
+                {selectedOptions.map((option) => (
+                    <div key={option.hash} className="flex items-center">
+                        <span>
+                            {formatSnakeCaseToTitleCase(
+                                option?.name ??
+                                option?.title ??
+                                option?.label ??
+                                'Unknown'
+                            )}
+                        </span>
+                        <button
+                            className="ml-2"
+                            onClick={() => removeFilter(option.hash)}
+                        >
+                            X
+                        </button>
+                    </div>
+                ))}
             </div>
         </div>
     );

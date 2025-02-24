@@ -1,8 +1,9 @@
-import { currencySymbol } from '@/utils/currencySymbol';
-import { shortNumber } from '@/utils/shortNumber';
-import { useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import {currencySymbol} from '@/utils/currencySymbol';
+import {shortNumber} from '@/utils/shortNumber';
+import {useEffect, useState} from 'react';
+import {useTranslation} from 'react-i18next';
 import PercentageProgressBar from './PercentageProgressBar';
+import ValueLabel from "@/Components/atoms/ValueLabel";
 
 interface AmountComparisonWithBarPageProps extends Record<string, unknown> {
     title: string;
@@ -14,14 +15,14 @@ interface AmountComparisonWithBarPageProps extends Record<string, unknown> {
 }
 
 const AmountComparisonWithBar: React.FC<AmountComparisonWithBarPageProps> = ({
-    title,
-    numerator,
-    denominator,
-    currency = 'USD',
-    smallSize = false,
-    onWhiteBackground = false,
-}) => {
-    const { t } = useTranslation();
+     title,
+     numerator,
+     denominator,
+     currency = 'USD',
+     smallSize = false,
+     onWhiteBackground = false,
+ }) => {
+    const {t} = useTranslation();
 
     const [percentage, setPercentage] = useState<number>(0);
 
@@ -40,25 +41,30 @@ const AmountComparisonWithBar: React.FC<AmountComparisonWithBarPageProps> = ({
                 primaryBackgroundColor={'bg-content-light'}
                 secondaryBackgroudColor={'bg-primary'}
             />
-            <div className="flex items-center gap-2">
-                <span
-                    className={`text-content font-bold ${smallSize ? 'text-lg' : 'text-2xl'}`}
+
+            <div className="flex flex-col px-0.5">
+                <div className="flex items-center gap-2">
+                    <span
+                        className={`text-content font-bold ${smallSize ? 'text-lg' : 'text-xl'}`}
+                    >
+                        {currencySymbol(currency)}
+                        {shortNumber(numerator, 2)}
+                    </span>
+                    <span
+                        className={`text-content ${smallSize ? 'text-lg' : 'text-xl'}`}
+                    >
+                        / {currencySymbol(currency)}
+                        {shortNumber(denominator, 2)} <ValueLabel className={`${smallSize ? 'text-lg' : 'text-xl'}`}>({percentage ? percentage : 0}%)</ValueLabel>
+                    </span>
+                </div>
+                <div
+                    className={`text-highlight ${smallSize ? 'text-md' : 'text-lg'}`}
                 >
-                    {currencySymbol(currency)}
-                    {shortNumber(numerator)}
-                </span>
-                <span
-                    className={`text-content ${smallSize ? 'text-lg' : 'text-2xl'}`}
-                >
-                    / {currencySymbol(currency)}
-                    {shortNumber(denominator)}({percentage ? percentage : 0}%)
-                </span>
+                    {t(title)}
+                </div>
             </div>
-            <div
-                className={`text-content ${smallSize ? 'text-lg' : 'text-2xl'}`}
-            >
-                {t(title)}
-            </div>
+
+
         </div>
     );
 };

@@ -16,9 +16,12 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Concerns\HasTimestamps;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\DB;
 use Laravel\Scout\Searchable;
 
 class Proposal extends Model
@@ -258,12 +261,75 @@ class Proposal extends Model
         );
     }
 
+    public function moderations(): HasMany
+    {
+        return $this->hasMany(Moderation::class, 'context_id', 'id')
+            ->where('context_type', Proposal::class);
+    }
+
+    public function reviews(): HasManyThrough
+    {
+        return $this->hasManyThrough(Review::class, Moderation::class, 'context_id', 'id', 'id', 'review_id')
+            ->where('moderations.context_type', static::class);
+    }
+
+    public function discussions(): HasMany
+    {
+        return $this->hasMany(Discussion::class, 'model_id')
+            ->where('model_type', '=', static::class)
+            ->withCount(['ratings'])
+            ->withAvg('ratings', 'rating');
+    }
+
+    public function ratings(): Attribute
+    {
+        return Attribute::make(
+            get: function () {
+                return DB::table('ratings')
+                    ->join('reviews', 'reviews.id', '=', 'ratings.review_id')
+                    ->join('moderations', 'moderations.review_id', '=', 'reviews.id')
+                    ->where('moderations.context_type', Proposal::class)
+                    ->where('moderations.context_id', $this->id)
+                    ->select('ratings.*')
+                    ->get();
+            }
+        );
+    }
+
+    public function avgRating(): Attribute
+    {
+        return Attribute::make(
+            get: function () {
+                return DB::table('ratings')
+                    ->join('reviews', 'reviews.id', '=', 'ratings.review_id')
+                    ->join('moderations', 'moderations.review_id', '=', 'reviews.id')
+                    ->where('moderations.context_type', Proposal::class)
+                    ->where('moderations.context_id', $this->id)
+                    ->avg('ratings.rating');
+            }
+        );
+    }
+
+    public function RatingsAverage(): Attribute
+    {
+        return Attribute::make(get: fn () => $this->ratings->avg('rating'));
+    }
+
     /**
      * Get the value used to index the model.
      */
     public function getScoutKey(): mixed
     {
         return $this->id;
+    }
+
+    public function getDiscussionRankingScore(string $discussionTitle): ?float
+    {
+        $rankingScoreAvg = $this->discussions
+            ->where('title', $discussionTitle)
+            ->pluck('ratings_avg_rating');
+
+        return (count($rankingScoreAvg) > 0) ? floatval($rankingScoreAvg[0]) : null;
     }
 
     /**
@@ -298,12 +364,14 @@ class Proposal extends Model
             "amount_requested_{$this->currency}" => $this->amount_requested ? intval($this->amount_requested) : 0,
             'amount_requested' => $this->amount_requested ? intval($this->amount_requested) : 0,
 
-            //            'auditability_score' => $this->meta_info->auditability_score ?? $this->getDiscussionRankingScore('Value for money') ?? 0,
+            // 'auditability_score' => $this->meta_info->auditability_score ?? $this->getDiscussionRankingScore('Value for money') ?? 0,
 
-            'ca_rating' => intval($this->ratings_average) ?? 0.00,
+            'ca_rating' => intval($this->avg_rating) ?? 0.00,
             'campaign' => [
                 'id' => $this->campaign_id,
                 'title' => $this->campaign?->title,
+                'currency' => $this->currency,
+                'proposals_count' => $this->campaign?->proposals_count,
                 'amount' => $this->campaign?->amount ? intval($this->campaign?->amount) : null,
                 'label' => $this->campaign?->label,
                 'status' => $this->campaign?->status,
@@ -315,7 +383,7 @@ class Proposal extends Model
             'completed' => $this->status === 'complete' ? 1 : 0,
             'currency' => $this->currency,
 
-            //            'feasibility_score' => $this->meta_info->feasibility_score ?? $this->getDiscussionRankingScore('Feasibility') ?? 0,
+            // 'feasibility_score' => $this->meta_info->feasibility_score ?? $this->getDiscussionRankingScore('Feasibility') ?? 0,
             'funded' => (bool) $this->funded_at ? 1 : 0,
             'fund' => [
                 'id' => $this->fund_id,
@@ -356,7 +424,7 @@ class Proposal extends Model
                     'username' => $u->username,
                     'name' => $u->name,
                     'bio' => $u->bio,
-                    'profile_photo_url' => $u->media?->isNotEmpty() ? $u->thumbnail_url : $u->profile_photo_url,
+                    'hero_img_url' => $u->media?->isNotEmpty() ? $u->thumbnail_url : $u->hero_img_url,
                     'proposals_completed' => $proposals?->filter(fn ($p) => $p['status'] === 'complete')?->count() ?? 0,
                     'first_timer' => ($proposals?->map(fn ($p) => isset($p['fund']) ? $p['fund']['id'] : null)->unique()->count() === 1),
                 ];
@@ -365,9 +433,9 @@ class Proposal extends Model
             'woman_proposal' => $this->is_woman_proposal ? 1 : 0,
             'link' => $this->link,
 
-            'alignment_score' => $this->meta_info->alignment_score ?? 0, // $this->getDiscussionRankingScore('Impact Alignment') ?? 0,
-            'feasibility_score' => $this->meta_info->feasibility_score ?? 0, // $this->getDiscussionRankingScore('Feasibility') ?? 0,
-            'auditability_score' => $this->meta_info->auditability_score ?? 0, // $this->getDiscussionRankingScore('Value for money') ?? 0,
+            'alignment_score' => $this->meta_info->alignment_score ?? $this->getDiscussionRankingScore('Impact Alignment') ?? 0,
+            'feasibility_score' => $this->meta_info->feasibility_score ?? $this->getDiscussionRankingScore('Feasibility') ?? 0,
+            'auditability_score' => $this->meta_info->auditability_score ?? $this->getDiscussionRankingScore('Value for money') ?? 0,
             'projectcatalyst_io_link' => $this->meta_info?->projectcatalyst_io_url ?? null,
             'project_length' => intval($this->meta_info->project_length) ?? 0,
             'vote_casts' => intval($this->meta_info->vote_casts) ?? 0,
@@ -416,6 +484,11 @@ class Proposal extends Model
     }
 
     public function users(): BelongsToMany
+    {
+        return $this->belongsToMany(IdeascaleProfile::class, 'ideascale_profile_has_proposal', 'proposal_id', 'ideascale_profile_id');
+    }
+
+    public function ideascaleProfiles(): BelongsToMany
     {
         return $this->belongsToMany(IdeascaleProfile::class, 'ideascale_profile_has_proposal', 'proposal_id', 'ideascale_profile_id');
     }
