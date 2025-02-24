@@ -122,6 +122,7 @@ review_started_at?: string;
 parent_id?: number;
 };
 export type GroupData = {
+id: Key | null | undefined;
 hash: string | null;
 user_id?: number;
 name?: string;

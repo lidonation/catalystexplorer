@@ -110,8 +110,8 @@ class GroupsController extends Controller
 
     public function myGroups(Request $request): Response
     {
-        $userid = 1320;
-        $groups = Group::where('user_id', $userid)->get();
+        $userid = $request->user()->id;
+        $groups = Group::where('user_id', $userid)->paginate(6);
         return Inertia::render('My/Groups/Index', [
             'groups' => GroupData::collect($groups)
         ]);

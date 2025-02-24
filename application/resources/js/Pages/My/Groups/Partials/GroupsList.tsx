@@ -1,7 +1,5 @@
 import React from 'react';
 import GroupData = App.DataTransferObjects.GroupData;
-import GroupCard from "@/Pages/Groups/Partials/GroupCard";
-import GroupCardMini from "@/Pages/Groups/Partials/GroupCardMini";
 import GroupCardExtended from "@/Pages/Groups/Partials/GroupCardExtended";
 import {AnimatePresence, motion} from "framer-motion";
 

@@ -1,7 +1,7 @@
 <?php
 
 use App\Interfaces\Http\Controllers\My\MyBookmarksController;
-use App\Interfaces\Http\Controllers\My\GroupsController;
+use App\Interfaces\Http\Controllers\GroupsController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
