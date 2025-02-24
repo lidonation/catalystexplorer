@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use App\Casts\DateFormatCast;
 use App\Enums\CatalystCurrencySymbols;
 use App\Enums\ProposalStatus;
 use App\Traits\HasConnections;
@@ -16,8 +15,10 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Facades\Artisan;
 use Laravel\Scout\Searchable;
 use Laravolt\Avatar\Facade as Avatar;
+use Spatie\Image\Enums\CropPosition;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
 use Spatie\Translatable\HasTranslations;
 
 class Group extends Model implements HasMedia
@@ -33,7 +34,7 @@ class Group extends Model implements HasMedia
     ];
 
     protected $appends = [
-        'profile_photo_url',
+        'hero_img_url',
         'hash',
     ];
 
@@ -51,6 +52,8 @@ class Group extends Model implements HasMedia
             'tags.id',
             'tags',
             'proposals.fund.title',
+            'proposals.campaign.hash',
+            'proposals.communities.hash',
             'proposals.status',
             'proposals_funded',
             'proposals_completed',
@@ -113,17 +116,17 @@ class Group extends Model implements HasMedia
         );
     }
 
-    public function profilePhotoUrl(): Attribute
+    public function heroImgUrl(): Attribute
     {
         return Attribute::make(
-            get: fn () => count($this->getMedia('group')) ? $this->getMedia('group')[0]->getFullUrl() : $this->gravatar
+            get: fn () => $this->getFirstMediaUrl('hero') ?? $this->gravatar
         );
     }
 
-    public function bannerPhotoUrl(): Attribute
+    public function bannerImgUrl(): Attribute
     {
         return Attribute::make(
-            get: fn () => count($this->getMedia('banner')) ? $this->getMedia('banner')[0]?->getFullUrl() : null
+            get: fn () => $this->getFirstMediaUrl('banner') ?? null
         );
     }
 
@@ -255,10 +258,25 @@ class Group extends Model implements HasMedia
 
     public function registerMediaCollections(): void
     {
-        $this->addMediaCollection('group')
-            ->useDisk('public');
-        $this->addMediaCollection('banner')
-            ->useDisk('public');
+        $this->addMediaCollection('hero')->singleFile();
+        $this->addMediaCollection('banner')->singleFile();
+    }
+
+    public function registerMediaConversions(?Media $media = null): void
+    {
+        $this->addMediaConversion('thumbnails')
+            ->width(180)
+            ->height(180)
+            ->withResponsiveImages()
+            ->crop(180, 180, CropPosition::Center)
+            ->performOnCollections('hero');
+
+        $this->addMediaConversion('banner')
+            ->width(1500)
+            ->height(550)
+            ->crop(2048, 840, CropPosition::Center)
+            ->withResponsiveImages()
+            ->performOnCollections('banner');
     }
 
     /**
@@ -285,6 +303,8 @@ class Group extends Model implements HasMedia
             'amount_distributed_usd' => intval($this->amount_distributed_usd),
             'amount_requested_ada' => intval($this->amount_requested_ada),
             'amount_requested_usd' => intval($this->amount_requested_usd),
+            'hero_img_url' => $this->hero_img_url,
+            'banner_img_url' => $this->banner_img_url,
             'proposals' => $this->proposals,
             'proposals_count' => $proposals->count(),
             'ideascale_profiles' => $this->ideascale_profiles->map(fn ($m) => $m->toArray()),
@@ -295,8 +315,8 @@ class Group extends Model implements HasMedia
     protected function casts(): array
     {
         return [
-            'created_at' => DateFormatCast::class,
-            'updated_at' => DateFormatCast::class,
+            'created_at' => 'datetime',
+            'updated_at' => 'datetime',
             'amount_requested' => 'integer',
             'amount_awarded_ada' => 'integer',
             'amount_awarded_usd' => 'integer',

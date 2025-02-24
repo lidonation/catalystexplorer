@@ -64,7 +64,7 @@ const CampaignCard: React.FC<CampaignCardProps> = ({
                     {heroImageUrl ? (
                         <img
                             src={heroImageUrl}
-                            alt={fund.title}
+                            alt={`Cat: ${fund.title}`}
                             className="h-full w-full object-cover"
                         />
                     ) : (
@@ -77,8 +77,8 @@ const CampaignCard: React.FC<CampaignCardProps> = ({
                 <section className="space-y-6">
                     <div className='flex flex-row justify-between gap-2'>
                         <KeyValue valueKey={t('proposals.filters.budget')}
-                                  value={currency(campaign.amount, 2, campaign.currency)}/>
-                        <KeyValue valueKey='Total Proposals' value={campaign.proposals_count}/>
+                                  value={currency((campaign.amount ?? 0), 2, campaign.currency)}/>
+                        <KeyValue valueKey='Total Proposals' value={campaign.proposals_count ?? 0}/>
                     </div>
 
                     <div>

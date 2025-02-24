@@ -30,7 +30,7 @@ class Metric extends Model
         ];
     }
 
-    public function value(): Attribute
+    public function metricValue(): Attribute
     {
         return Attribute::make(
             get: function () {
@@ -60,10 +60,6 @@ class Metric extends Model
                 $builder = call_user_func([$this->model, 'query']);
                 $aggregate = $this->query;
                 $field = $this->field;
-
-                if (! $modelInstance instanceof Proposal) {
-                    return null;
-                }
 
                 if ($this->rules?->isNotEmpty()) {
                     $builder = $this->applyRules($builder, $this->rules, $table);

@@ -424,7 +424,7 @@ class Proposal extends Model
                     'username' => $u->username,
                     'name' => $u->name,
                     'bio' => $u->bio,
-                    'profile_photo_url' => $u->media?->isNotEmpty() ? $u->thumbnail_url : $u->profile_photo_url,
+                    'hero_img_url' => $u->media?->isNotEmpty() ? $u->thumbnail_url : $u->hero_img_url,
                     'proposals_completed' => $proposals?->filter(fn ($p) => $p['status'] === 'complete')?->count() ?? 0,
                     'first_timer' => ($proposals?->map(fn ($p) => isset($p['fund']) ? $p['fund']['id'] : null)->unique()->count() === 1),
                 ];

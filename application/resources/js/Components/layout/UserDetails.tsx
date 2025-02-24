@@ -41,7 +41,7 @@ const UserDetails: React.FC<UserDetailsProps> = ({ user }) => {
                 <div className="flex items-center justify-between">
                     <div className="flex gap-3">
                         <div className="bg-background-light size-9 rounded-full">
-                            <UserAvatar imageUrl={user.profile_photo_url} />
+                            <UserAvatar imageUrl={user.hero_img_url} />
                         </div>
                         <div className="flex flex-col">
                             <Link

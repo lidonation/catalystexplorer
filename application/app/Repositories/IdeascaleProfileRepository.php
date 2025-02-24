@@ -25,7 +25,7 @@ class IdeascaleProfileRepository extends Repository
                         'attributesToRetrieve' => [
                             'hash',
                             'name',
-                            'profile_photo_url',
+                            'hero_img_url',
                             'first_timer',
                             'completed_proposals_count',
                             'funded_proposals_count',

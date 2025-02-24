@@ -11,7 +11,6 @@ use Laravel\Nova\Fields\DateTime;
 use Laravel\Nova\Fields\Field;
 use Laravel\Nova\Fields\HasMany;
 use Laravel\Nova\Fields\ID;
-use Laravel\Nova\Fields\Image;
 use Laravel\Nova\Fields\Number;
 use Laravel\Nova\Fields\Select;
 use Laravel\Nova\Fields\Slug;
@@ -98,14 +97,6 @@ class Funds extends Resource
                 ->enableExistingMedia(),
             Images::make(__('Banner'), 'banner')
                 ->enableExistingMedia(),
-
-            //            Image::make('Thumbnail', 'thumbnail')
-            //                ->disk('public')
-            //                ->path('funds/hero'),
-            //
-            //            Image::make('Banner', 'banner')
-            //                ->disk('public')
-            //                ->path('funds/banner'),
         ];
     }
 }

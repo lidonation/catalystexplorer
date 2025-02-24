@@ -66,7 +66,7 @@ const IdeascaleProfileCard: React.FC<IdeascaleProfileProps> = ({
                 <div className="flex gap-x-2 items-center mb-3">
                     <div className="flex-shrink-0">
                         <UserAvatar
-                            imageUrl={ideascaleProfile?.profile_photo_url}
+                            imageUrl={ideascaleProfile?.hero_img_url}
                             size="size-12"
                         />
                     </div>
