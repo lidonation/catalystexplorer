@@ -65,12 +65,9 @@ class ProposalSeeder extends Seeder
                     fn () => $IdeascaleProfiles->each(fn ($profile) => $proposals->random()->users()->attach($profile)),
                     fn () => $groups->each(fn ($group) => $proposals->random()->groups()->attach($group)),
                     fn () => $communities->each(fn ($community) => $proposals->random()->communities()->attach($community)),
-                    fn () => $proposals->each(function ($proposal) use ($IdeascaleProfiles, $groups, $communities) {
-                        $proposal->users()->attach($IdeascaleProfiles->random(fake()->randomElement([1, 2, 3, 4, 5])));
-                        $proposal->groups()->attach($groups->random());
-                        $proposal->communities()->attach($communities->random());
-                    }),
                 ]);
-            });
+            }
+
+        );
     }
 }
