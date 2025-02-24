@@ -44,10 +44,11 @@ class ProposalSeeder extends Seeder
         $ideascaleProfiles = IdeascaleProfile::factory()->count(1000)->create();
 
         $campaigns->each(
-            function ($campaign) use ($communities, $groups, $tags, $ideascaleProfiles) {
+            function ($campaign) use ($tags, $ideascaleProfiles) {
                 // Create proposals first
-                $proposals = Proposal::factory()
+                Proposal::factory()
                     ->count(50)
+                    ->hasAttached($ideascaleProfiles->random(fake()->randomElement([0, 1, 3, 4])))
                     ->state([
                         'campaign_id' => $campaign->id,
                         'fund_id' => $campaign->fund->id,
@@ -59,15 +60,14 @@ class ProposalSeeder extends Seeder
                     ]))
                     ->hasAttached($tags->random(), ['model_type' => Proposal::class])
                     ->create();
-
-                // Attach each IdeaScale profile to at least one proposal
-                Concurrency::run([
-                    fn () => $ideascaleProfiles->each(fn ($profile) => $proposals->random()->users()->attach($profile)),
-                    fn () => $groups->each(fn ($group) => $proposals->random()->groups()->attach($group)),
-                    fn () => $communities->each(fn ($community) => $proposals->random()->communities()->attach($community)),
-                ]);
             }
 
         );
+
+        Concurrency::run([
+            fn () => $ideascaleProfiles->each(fn ($profile) => Proposal::inRandomOrder()->first()->users()->syncWithoutDetaching($profile->id)),
+            fn () => $groups->each(fn ($group) => Proposal::inRandomOrder()->first()->groups()->syncWithoutDetaching($group->id)),
+            fn () => $communities->each(fn ($community) => Proposal::inRandomOrder()->first()->communities()->syncWithoutDetaching($community->id)),
+        ]);
     }
 }

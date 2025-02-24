@@ -488,6 +488,11 @@ class Proposal extends Model
         return $this->belongsToMany(IdeascaleProfile::class, 'ideascale_profile_has_proposal', 'proposal_id', 'ideascale_profile_id');
     }
 
+    public function ideascaleProfiles(): BelongsToMany
+    {
+        return $this->belongsToMany(IdeascaleProfile::class, 'ideascale_profile_has_proposal', 'proposal_id', 'ideascale_profile_id');
+    }
+
     /**
      * Modify the query used to retrieve models when making all the models searchable.
      */
