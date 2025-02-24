@@ -16,6 +16,7 @@ use App\Repositories\GroupRepository;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Fluent;
 use Illuminate\Support\Stringable;
 use Inertia\Inertia;
@@ -110,23 +111,33 @@ class GroupsController extends Controller
 
     public function group(Request $request, Group $group, GroupRepository $groupRepository): Response
     {
-        $group->load(['proposals'])
-            ->loadCount([
-                'proposals',
-                'funded_proposals',
-                'unfunded_proposals',
-                'completed_proposals',
-            ])->append(
-                [
-                    'amount_awarded_ada',
-                    'amount_awarded_usd',
-                    'amount_requested_ada',
-                    'amount_requested_usd',
-                    'amount_distributed_ada',
-                    'amount_distributed_usd',
-                    'connected_items',
-                ]
-            );
+        $startTime = microtime(true); // Start time
+
+        // Load relationships and counts
+        $group->load(['proposals']);
+        $loadProposalsTime = microtime(true);
+        Log::info('Loaded proposals: '.($loadProposalsTime - $startTime).' sec');
+
+        $group->loadCount([
+            'proposals',
+            'funded_proposals',
+            'unfunded_proposals',
+            'completed_proposals',
+        ]);
+        $loadCountsTime = microtime(true);
+        Log::info('Loaded proposal counts: '.($loadCountsTime - $loadProposalsTime).' sec');
+
+        $group->append([
+            'amount_awarded_ada',
+            'amount_awarded_usd',
+            'amount_requested_ada',
+            'amount_requested_usd',
+            'amount_distributed_ada',
+            'amount_distributed_usd',
+            'connected_items',
+        ]);
+        $appendAttributesTime = microtime(true);
+        Log::info('Appended attributes: '.($appendAttributesTime - $loadCountsTime).' sec');
 
         $path = $request->path();
         $connections = $group->connected_items;
@@ -136,6 +147,8 @@ class GroupsController extends Controller
             $proposalsPaginator = $group->proposals()
                 ->with(['users', 'fund'])
                 ->paginate(5);
+            $proposalsQueryTime = microtime(true);
+            Log::info('Fetched proposals: '.($proposalsQueryTime - $appendAttributesTime).' sec');
 
             return Inertia::render('Groups/Proposals/Index', [
                 'group' => GroupData::from($group),
@@ -159,45 +172,58 @@ class GroupsController extends Controller
         }
 
         if (str_contains($path, '/ideascale-profiles')) {
+            $profilesQueryTime = microtime(true);
+            Log::info('Fetched IdeaScale profiles: '.($profilesQueryTime - $appendAttributesTime).' sec');
+
             return Inertia::render('Groups/IdeascaleProfiles/Index', [
                 'group' => GroupData::from($group),
                 'ideascaleProfiles' => Inertia::optional(fn () => to_length_aware_paginator(
                     IdeascaleProfileData::collect(
-                        $group->ideascale_profiles()->with([])->paginate(12)
+                        $group->ideascale_profiles()->paginate(12)
                     )
-                )
-                ),
+                )),
             ]);
         }
 
         if (str_contains($path, '/reviews')) {
+            $reviewsQueryTime = microtime(true);
+            Log::info('Fetched reviews: '.($reviewsQueryTime - $appendAttributesTime).' sec');
+
             return Inertia::render('Groups/Reviews/Index', [
                 'group' => GroupData::from($group),
                 'reviews' => Inertia::optional(fn () => to_length_aware_paginator(
                     ReviewData::collect(
                         Review::query()->paginate(8)
                     )
-                )
-                ),
+                )),
             ]);
         }
 
         if (str_contains($path, '/locations')) {
+            $locationsQueryTime = microtime(true);
+            Log::info('Fetched locations: '.($locationsQueryTime - $appendAttributesTime).' sec');
+
             return Inertia::render('Groups/Locations/Index', [
                 'group' => GroupData::from($group),
                 'locations' => Inertia::optional(fn () => to_length_aware_paginator(
                     LocationData::collect(
                         $group->locations()->paginate(12)
                     )
-                )
-                ),
+                )),
             ]);
         }
 
         // Default return if no specific path matches
         $proposalsPaginator = $group->proposals()
-            ->with(['users', 'fund'])
+            ->select(['id', 'title', 'fund_id', 'campaign_id']) // Only select necessary fields
+            ->with([
+                'users:id,name',
+                'fund:id,title',
+            ])
             ->paginate(5);
+
+        $defaultProposalsQueryTime = microtime(true);
+        Log::info('Fetched default proposals: '.($defaultProposalsQueryTime - $appendAttributesTime).' sec');
 
         return Inertia::render('Groups/Proposals/Index', [
             'group' => GroupData::from($group),
