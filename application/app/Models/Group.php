@@ -52,6 +52,8 @@ class Group extends Model implements HasMedia
             'tags.id',
             'tags',
             'proposals.fund.title',
+            'proposals.campaign.hash',
+            'proposals.communities.hash',
             'proposals.status',
             'proposals_funded',
             'proposals_completed',
