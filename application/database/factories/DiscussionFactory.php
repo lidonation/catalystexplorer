@@ -20,7 +20,7 @@ class DiscussionFactory extends Factory
         return [
             'user_id' => User::inRandomOrder()->first()?->id,
             'model_id' => $relatedModel,
-            'model_type' => get_class($relatedModel),
+            'model_type' => Proposal::class,
             'status' => $this->faker->randomElement(StatusEnum::toValues()),
             'order' => $this->faker->numberBetween(1, 10),
             'content' => $this->faker->paragraph(),

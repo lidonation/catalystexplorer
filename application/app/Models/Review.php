@@ -7,7 +7,6 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
-use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Support\Facades\Artisan;
 use Laravel\Scout\Searchable;
@@ -67,10 +66,15 @@ class Review extends Model
         return $this->belongsTo(Discussion::class, 'model_id')->where('model_type', Discussion::class);
     }
 
-    public function proposal(): HasOneThrough
+    public function rating(): HasOne
     {
-        return $this->hasOneThrough(Proposal::class, Discussion::class, 'id', 'id', 'model_id', 'model_id')
-            ->where('discussions.model_type', Proposal::class);
+        return $this->hasOne(Rating::class, 'review_id', 'id');
+    }
+
+    public function proposal()
+    {
+        return $this->hasOneThrough(Proposal::class, Moderation::class, 'review_id', 'id', 'id', 'context_id')
+            ->where('moderations.context_type', Proposal::class);
     }
 
     public function parent(): BelongsTo

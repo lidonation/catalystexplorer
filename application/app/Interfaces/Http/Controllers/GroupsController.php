@@ -161,11 +161,12 @@ class GroupsController extends Controller
         if (str_contains($path, '/ideascale-profiles')) {
             return Inertia::render('Groups/IdeascaleProfiles/Index', [
                 'group' => GroupData::from($group),
-                'ideascaleProfiles' => Inertia::optional(fn () => to_length_aware_paginator(
-                    IdeascaleProfileData::collect(
-                        $group->ideascale_profiles()->with([])->paginate(12)
+                'ideascaleProfiles' => Inertia::optional(
+                    fn () => to_length_aware_paginator(
+                        IdeascaleProfileData::collect(
+                            $group->ideascale_profiles()->with([])->paginate(12)
+                        )
                     )
-                )
                 ),
             ]);
         }
@@ -173,11 +174,12 @@ class GroupsController extends Controller
         if (str_contains($path, '/reviews')) {
             return Inertia::render('Groups/Reviews/Index', [
                 'group' => GroupData::from($group),
-                'reviews' => Inertia::optional(fn () => to_length_aware_paginator(
-                    ReviewData::collect(
-                        Review::query()->paginate(8)
+                'reviews' => Inertia::optional(
+                    fn () => to_length_aware_paginator(
+                        ReviewData::collect(
+                            Review::query()->paginate(8)
+                        )
                     )
-                )
                 ),
             ]);
         }
@@ -185,11 +187,12 @@ class GroupsController extends Controller
         if (str_contains($path, '/locations')) {
             return Inertia::render('Groups/Locations/Index', [
                 'group' => GroupData::from($group),
-                'locations' => Inertia::optional(fn () => to_length_aware_paginator(
-                    LocationData::collect(
-                        $group->locations()->paginate(12)
+                'locations' => Inertia::optional(
+                    fn () => to_length_aware_paginator(
+                        LocationData::collect(
+                            $group->locations()->paginate(12)
+                        )
                     )
-                )
                 ),
             ]);
         }

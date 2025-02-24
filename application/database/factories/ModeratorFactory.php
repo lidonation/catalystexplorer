@@ -18,7 +18,7 @@ class ModeratorFactory extends Factory
     {
         return [
             'name' => $this->faker->name(),
-            'email' => $this->faker->unique()->safeEmail(),
+            'email' => $this->faker->unique()->safeEmail().$this->faker->numberBetween(1, 1000).$this->faker->numberBetween(1, 1000),
             'twitter' => 'https://twitter.com/'.$this->faker->userName(),
             'github' => 'https://github.com/'.$this->faker->userName(),
             'linkedin' => 'https://linkedin.com/in/'.$this->faker->userName(),

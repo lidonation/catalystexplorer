@@ -32,7 +32,7 @@ class CampaignFactory extends Factory
             'excerpt' => $this->faker->optional()->text(200),
             'comment_prompt' => $this->faker->optional()->sentence(),
             'content' => $this->faker->optional()->paragraphs(3, true),
-            'amount' => $this->faker->numberBetween(50000000, 1000000000),
+            'amount' => $this->faker->numberBetween(1000000, 50000000),
             'status' => $this->faker->optional()->randomElement([
                 'pending', 'unfunded', 'funded', 'complete', 'retired', 'startup', 'growth', 'expansion', 'matured',
             ]),
@@ -40,7 +40,6 @@ class CampaignFactory extends Factory
             'awarded_at' => $this->faker->optional()->dateTimeBetween('-2 years', 'now'),
             'created_at' => $this->faker->dateTimeBetween('-2 years', 'now'),
             'updated_at' => $this->faker->dateTimeBetween('-2 years', 'now'),
-            'deleted_at' => $this->faker->optional()->dateTimeBetween('-1 year', 'now'),
             'color' => $this->faker->optional()->safeColorName(),
             'label' => $this->faker->optional()->word(),
             'currency' => $this->faker->randomElement(array_merge(CatalystCurrencies::toValues(), [null])),
