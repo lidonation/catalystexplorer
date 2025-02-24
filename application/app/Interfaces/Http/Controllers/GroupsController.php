@@ -329,23 +329,23 @@ class GroupsController extends Controller
         }
 
         if (! empty($this->queryParams[ProposalSearchParams::CAMPAIGNS()->value])) {
-            $campaignIds = ($this->queryParams[ProposalSearchParams::CAMPAIGNS()->value]);
-            $filters[] = '('.implode(' OR ', array_map(fn ($c) => "proposals.campaign.id = {$c}", $campaignIds)).')';
+            $campaignHashes = ($this->queryParams[ProposalSearchParams::CAMPAIGNS()->value]);
+            $filters[] = '('.implode(' OR ', array_map(fn ($c) => "proposals.campaign.hash = {$c}", $campaignHashes)).')';
         }
 
         if (! empty($this->queryParams[ProposalSearchParams::TAGS()->value])) {
-            $tagIds = ($this->queryParams[ProposalSearchParams::TAGS()->value]);
-            $filters[] = '('.implode(' OR ', array_map(fn ($c) => "tags.id = {$c}", $tagIds)).')';
+            $tagHashes = ($this->queryParams[ProposalSearchParams::TAGS()->value]);
+            $filters[] = '('.implode(' OR ', array_map(fn ($c) => "tags.hash = {$c}", $tagHashes)).')';
         }
 
         if (! empty($this->queryParams[ProposalSearchParams::IDEASCALE_PROFILES()->value])) {
-            $ideascaleProfileIds = implode(',', $this->queryParams[ProposalSearchParams::IDEASCALE_PROFILES()->value]);
-            $filters[] = "ideascale_profiles.id IN [{$ideascaleProfileIds}]";
+            $ideascaleProfileHashes = implode(',', $this->queryParams[ProposalSearchParams::IDEASCALE_PROFILES()->value]);
+            $filters[] = "ideascale_profiles.hash IN [{$ideascaleProfileHashes}]";
         }
 
         if (! empty($this->queryParams[ProposalSearchParams::COMMUNITIES()->value])) {
-            $communityIds = implode(',', $this->queryParams[ProposalSearchParams::COMMUNITIES()->value]);
-            $filters[] = "proposals.communities.id IN [{$communityIds}]";
+            $communityHashes = implode(',', $this->queryParams[ProposalSearchParams::COMMUNITIES()->value]);
+            $filters[] = "proposals.communities.hash IN [{$communityHashes}]";
         }
 
         if (! empty($this->queryParams[ProposalSearchParams::COHORT()->value])) {

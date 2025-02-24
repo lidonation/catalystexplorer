@@ -232,7 +232,7 @@ const ProposalFilters = () => {
                     <div className="col-span-1 flex flex-col gap-2 pb-4">
                         <span>{t('proposals.filters.proposers')}</span>
                         <SearchSelect
-                            domain={'ideascaleProfiles'}
+                            domain={'ideascaleProfiles.index'}
                             selected={
                                 getFilter(
                                     ParamsEnum.IDEASCALE_PROFILES,
