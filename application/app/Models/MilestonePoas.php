@@ -4,14 +4,11 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class MilestonePoas extends Model
 {
-    use HasFactory;
-
     public $table = 'milestone_poas';
 
     public $timestamps = false;
