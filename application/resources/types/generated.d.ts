@@ -216,6 +216,56 @@ chartData?: Array<any>;
 value?: number;
 order?: number;
 };
+export type MilestoneData = {
+hash: string;
+title: string;
+current: boolean;
+outputs: string;
+success_criteria: string;
+evidence: string;
+month: number;
+cost: number;
+completion_percent: number;
+milestone: number;
+created_at: string;
+som_reviews: any | null;
+poas: any | null;
+};
+export type MilestonePoasData = {
+hash: string;
+content: string;
+created_at: string;
+current: boolean;
+reviews: any | null;
+signoffs: any | null;
+};
+export type MilestonePoasReviewData = {
+hash: string;
+content_approved: boolean;
+content_comment: string;
+role: string;
+created_at: string;
+user_id: string;
+current: boolean;
+};
+export type MilestonePoasSignoffData = {
+hash: string;
+created_at: string;
+user_id: string;
+};
+export type MilestoneSomReviewsData = {
+hash: string;
+outputs_approves: boolean;
+outputs_comment: string;
+success_criteria_approves: boolean;
+success_criteria_comment: string;
+evidence_approves: boolean;
+evidence_comment: string;
+current: boolean;
+role: string;
+user_id: string;
+created_at: string;
+};
 export type PostData = {
 id: number | null;
 title: string | null;
@@ -265,6 +315,23 @@ users: any | null;
 fund: App.DataTransferObjects.FundData | null;
 opensource: boolean | null;
 link?: string;
+};
+export type ProposalMilestoneData = {
+hash: string;
+title: string;
+url: string;
+proposal_id: number;
+project_id: number;
+created_at: string;
+budget: number;
+milestones_qty: number;
+funds_distributed: number;
+starting_date: string;
+currency: string;
+status: string;
+on_track: boolean | null;
+proposal: App.DataTransferObjects.ProposalData | null;
+milestones: any | null;
 };
 export type ReviewData = {
 hash: string | null;
