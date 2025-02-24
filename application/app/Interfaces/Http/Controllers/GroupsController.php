@@ -108,6 +108,15 @@ class GroupsController extends Controller
         ]);
     }
 
+    public function myGroups(Request $request): Response
+    {
+        $userid = 1320;
+        $groups = Group::where('user_id', $userid)->get();
+        return Inertia::render('My/Groups/Index', [
+            'groups' => GroupData::collect($groups)
+        ]);
+    }
+
     public function group(Request $request, Group $group, GroupRepository $groupRepository): Response
     {
         $group->load(['proposals'])
