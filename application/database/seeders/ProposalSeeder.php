@@ -41,10 +41,10 @@ class ProposalSeeder extends Seeder
         $groups = Group::factory()->count(30)->create();
         $tags = Tag::factory()->count(25)->create();
         $communities = Community::factory()->count(30)->create();
-        $IdeascaleProfiles = IdeascaleProfile::factory()->count(1000)->create();
+        $ideascaleProfiles = IdeascaleProfile::factory()->count(1000)->create();
 
         $campaigns->each(
-            function ($campaign) use ($communities, $groups, $tags, $IdeascaleProfiles) {
+            function ($campaign) use ($communities, $groups, $tags, $ideascaleProfiles) {
                 // Create proposals first
                 $proposals = Proposal::factory()
                     ->count(50)
@@ -62,7 +62,7 @@ class ProposalSeeder extends Seeder
 
                 // Attach each IdeaScale profile to at least one proposal
                 Concurrency::run([
-                    fn () => $IdeascaleProfiles->each(fn ($profile) => $proposals->random()->users()->attach($profile)),
+                    fn () => $ideascaleProfiles->each(fn ($profile) => $proposals->random()->users()->attach($profile)),
                     fn () => $groups->each(fn ($group) => $proposals->random()->groups()->attach($group)),
                     fn () => $communities->each(fn ($community) => $proposals->random()->communities()->attach($community)),
                 ]);
