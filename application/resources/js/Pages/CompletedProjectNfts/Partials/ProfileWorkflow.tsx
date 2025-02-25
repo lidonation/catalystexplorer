@@ -113,19 +113,21 @@ const ProfileWorkflow: React.FC<ProfileWorkflowProps> = ({
 
     const getSectionTitle = () => {
         if (showVerification) return '';
-    
-        if (viewProposal && !showClaimProfile) 
+
+        if (viewProposal && !showClaimProfile)
             return t('profileWorkflow.sectionTitle.selectProposal');
-    
-        if (showClaimProfile && !viewProposal) 
+
+        if (showClaimProfile && !viewProposal)
             return t('profileWorkflow.sectionTitle.claimProfile');
-    
-        if (!selectedProfile && !showClaimProfile) 
+
+        if (!selectedProfile && !showClaimProfile)
             return t('profileWorkflow.sectionTitle.start');
-    
+
         return '';
     };
-    
+
+    const totalProposalsViewed = proposals.per_page * proposals.current_page;
+
     return (
         <div className="bg-background mx-auto w-full max-w-lg rounded-2xl p-6 shadow-md">
             {!showVerification && (
@@ -163,7 +165,7 @@ const ProfileWorkflow: React.FC<ProfileWorkflowProps> = ({
                         <Paragraph className="mt-2">
                             {t('profileWorkflow.selectProposal')}
                             <span className="m-1 inline-block rounded border border-gray-200 px-1 text-xs">
-                                {`${proposals.per_page * proposals.current_page}/${proposals.total}`}
+                                {`${totalProposalsViewed > proposals?.total ? proposals?.total : totalProposalsViewed}/${proposals.total}`}
                             </span>
                         </Paragraph>
 

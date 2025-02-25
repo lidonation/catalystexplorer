@@ -6,7 +6,7 @@ import {
 } from '@/Components/Pagination';
 import { ParamsEnum } from '@/enums/proposal-search-params';
 import { useFilterContext } from '@/Context/FiltersContext';
-import React, { useEffect } from 'react';
+import React from 'react';
 import { PaginatedData } from '../../types/paginated-data';
 import {InertiaLinkProps, Link} from '@inertiajs/react';
 import { cn } from '@/lib/utils';

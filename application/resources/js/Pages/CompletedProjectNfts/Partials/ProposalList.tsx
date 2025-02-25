@@ -12,21 +12,6 @@ interface ProposalListProps {
 
 const ProposalList: React.FC<ProposalListProps> = ({ proposals }) => {
     const { t } = useTranslation();
-    const [currentPage, setCurrentPage] = useState(1);
-    const itemsPerPage = 5;
-    const totalPages = Math.ceil((proposals?.data?.length ?? 0) / itemsPerPage);
-    const currentProposals = proposals?.data
-        ? proposals.data.slice(
-              (currentPage - 1) * itemsPerPage,
-              currentPage * itemsPerPage,
-          )
-        : [];
-
-    const handlePageChange = (newPage: number) => {
-        if (newPage >= 1 && newPage <= totalPages) {
-            setCurrentPage(newPage);
-        }
-    };
 
     if (!Array.isArray(proposals.data) || proposals.data.length === 0) {
         return (
@@ -40,7 +25,7 @@ const ProposalList: React.FC<ProposalListProps> = ({ proposals }) => {
 
     return (
         <div className="mt-4 space-y-3">
-            {currentProposals.map((proposal, index) => (
+            {proposals?.data.map((proposal, index) => (
                 <div
                     key={proposal.hash}
                     className="rounded-lg border border-gray-200 p-4 shadow-sm"
