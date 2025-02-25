@@ -45,6 +45,8 @@ class Campaign extends Model implements HasMedia
         'hash',
         'currency',
         'hero_img_url',
+        'total_distributed',
+        'total_awarded',
     ];
 
     public function label(): Attribute
