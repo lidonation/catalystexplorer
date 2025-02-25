@@ -41,7 +41,8 @@ class RouteServiceProvider extends ServiceProvider
             try {
                 $locale = app()->getLocale();
                 $model = match (Route::currentRouteName()) {
-                    "{$locale}.ideascaleProfiles.show" => IdeascaleProfile::class,
+                    "{$locale}.ideascaleProfiles.show", 'api.completedProjectNfts.claim' => IdeascaleProfile::class,
+
                     default => null,
                 };
 

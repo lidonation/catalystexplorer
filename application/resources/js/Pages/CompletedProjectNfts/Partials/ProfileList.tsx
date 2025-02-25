@@ -1,43 +1,63 @@
-import ProfileCard from "./ProfileCard";
-import { useTranslation } from "react-i18next";
-import Paragraph from "@/Components/atoms/Paragraph"; // Added import for Paragraph component
-
-interface Profile {
-    name: string;
-    image: string;
-    proposals: number;
-    status: string; // "available" or "unavailable"
-}
+import Paragraph from '@/Components/atoms/Paragraph';
+import RecordsNotFound from '@/Layouts/RecordsNotFound';
+import React from 'react';
+import { useTranslation } from 'react-i18next';
+import { PaginatedData } from '../../../../types/paginated-data'; // Added import for Paragraph component
+import ProfileCard from './ProfileCard';
+import Paginator from '@/Components/Paginator';
+import IdeascaleProfileData = App.DataTransferObjects.IdeascaleProfileData;
 
 interface ProfileListProps {
-    profiles: Profile[];
-    onSelectProfile: (name: string) => void;
-    selectedProfile: any;
+    profiles: PaginatedData<IdeascaleProfileData[]>;
+    children?: (profile: IdeascaleProfileData) => React.ReactNode;
+    onProfileClick: (profile: IdeascaleProfileData) => void;
 }
 
-const ProfileList: React.FC<ProfileListProps> = ({ profiles, onSelectProfile, selectedProfile }) => {
+const ProfileList: React.FC<ProfileListProps> = ({
+    profiles,
+    children,
+    onProfileClick,
+}) => {
     const { t } = useTranslation();
 
-    if (!Array.isArray(profiles) || profiles.length === 0) {
+    if (!Array.isArray(profiles?.data) || profiles?.data?.length === 0) {
         return (
-            <div className="p-4 text-center text-red-600 border border-gray-200 rounded-lg">
-                <Paragraph>{t("profileWorkflow.noProfilesAvailable")}</Paragraph>
+            <div className="rounded-lg border border-gray-200 p-4 text-center text-red-600">
+                <RecordsNotFound />
+                <Paragraph>{t('profileWorkflow.noProfilesFound')}</Paragraph>
             </div>
         );
     }
 
     return (
-        <div className="mt-2 space-y-2">
-            {profiles.map((profile, index) => (
-                <div key={index} className="w-full sm:max-w-[400px] lg:max-w-[500px]">
-                    <ProfileCard
-                        profile={profile}
-                        onSelect={() => onSelectProfile(profile.name)}
-                        isSelected={selectedProfile === profile.name}
-                        showStatusBadge={profile.status === "available"}
+        <div>
+            <div className="mt-2 space-y-2">
+                {profiles.data.map((profile, index) => (
+                    <div
+                        key={index}
+                        className="w-full sm:max-w-[400px] lg:max-w-[500px]"
+                    >
+                        <ProfileCard
+                            profile={profile}
+                            onSelect={() => onProfileClick(profile)}
+                            className='cursor-pointer'
+                        >
+                            {children && children(profile)}
+                        </ProfileCard>
+                    </div>
+                ))}
+            </div>
+            <div className="mt-6 flex w-full items-center justify-between overflow-x-auto">
+                {profiles && (
+                    <Paginator
+                        pagination={profiles}
+                        linkProps={{
+                            preserveScroll: true,
+                            preserveState: true,
+                        }}
                     />
-                </div>
-            ))}
+                )}
+            </div>
         </div>
     );
 };

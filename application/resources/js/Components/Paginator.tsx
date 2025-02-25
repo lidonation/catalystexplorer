@@ -6,7 +6,7 @@ import {
 } from '@/Components/Pagination';
 import { ParamsEnum } from '@/enums/proposal-search-params';
 import { useFilterContext } from '@/Context/FiltersContext';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { PaginatedData } from '../../types/paginated-data';
 import {InertiaLinkProps, Link} from '@inertiajs/react';
 import { cn } from '@/lib/utils';
@@ -40,6 +40,7 @@ const PaginationComponent: React.FC<PaginationComponentProps<any>> = ({
         to,
         total
     } = pagination;
+
 
     return (
         <div>
@@ -96,8 +97,10 @@ const PaginationComponent: React.FC<PaginationComponentProps<any>> = ({
                                                                 ? 'bg-background-darker'
                                                                 : ''
                                                         )}
+                                                        {...linkProps} 
                                                     >
                                                         {link.label}
+
                                                     </Link>
                                                 )}
                                             </PaginationItem>
