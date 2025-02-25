@@ -13,8 +13,13 @@ class GroupSeeder extends Seeder
      * Run the database seeds.
      */
     public function run(): void
+<<<<<<< Updated upstream
     {
         Group::factory()
+=======
+    { 
+        $groups = Group::factory()
+>>>>>>> Stashed changes
             ->count(10)
             ->create();
     }

@@ -17,4 +17,4 @@ class IdeascaleProfilesSeeder extends Seeder
         IdeascaleProfile::factory(10)
             ->create();
     }
-}
+ }

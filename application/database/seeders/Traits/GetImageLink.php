@@ -10,7 +10,7 @@ use Illuminate\Container\Container;
 trait GetImageLink
 {
     public function getRandomImageLink(): ?string
-    {
+    { 
         $faker = $this->withFaker();
 
         $url = "https://i.pravatar.cc/300?img={$faker->numberBetween(1, 50)}";

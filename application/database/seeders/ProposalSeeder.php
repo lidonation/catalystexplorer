@@ -33,6 +33,19 @@ class ProposalSeeder extends Seeder
                 'launched_at' => $startDate->copy()->addMonths(($seq->index + 1) * 3)->addDays(7),
             ])
             ->create();
+<<<<<<< Updated upstream
+=======
+ 
+        $funds->each(function (Fund $fund) {
+            if ($heroImageLink = $this->getRandomImageLink()) {
+                $fund->addMediaFromUrl($heroImageLink)->toMediaCollection('hero');
+            }
+
+            if ($bannerImageLink = $this->getRandomBannerImageLink()) {
+                $fund->addMediaFromUrl($bannerImageLink)->toMediaCollection('banner');
+            }
+        });
+>>>>>>> Stashed changes
 
         $campaigns = $funds->flatMap(
             fn ($fund) => Campaign::factory()->count(5)->for($fund, 'fund')->create()

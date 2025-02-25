@@ -10,7 +10,7 @@ use Carbon\Carbon;
 use Database\Seeders\Traits\GetImageLink;
 use Illuminate\Database\Eloquent\Factories\Sequence;
 use Illuminate\Database\Seeder;
-
+ 
 class FundSeeder extends Seeder
 {
     use GetImageLink;
