@@ -17,12 +17,7 @@ class Review extends Model
 
     protected $guarded = [];
 
-    public function children(): Attribute
-    {
-        $children = $this->metas?->where('key', 'child_id')->pluck('content');
 
-        return Attribute::make(get: fn () => $children->isEmpty() ? null : self::fund($children));
-    }
 
     public static function getFilterableAttributes(): array
     {
