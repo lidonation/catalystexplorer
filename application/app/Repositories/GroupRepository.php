@@ -42,7 +42,7 @@ class GroupRepository extends Repository
                             'proposals_completed',
                             'proposals_funded',
                             'proposals_unfunded',
-                            'profile_photo_url',
+                            'hero_img_url',
                             'amount_distributed_ada',
                             'amount_distributed_usd',
                             'amount_requested_usd',

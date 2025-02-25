@@ -146,6 +146,7 @@ class Fund extends Model implements HasMedia
             ->withResponsiveImages()
             ->crop(180, 180, CropPosition::Top)
             ->performOnCollections('hero');
+
         $this->addMediaConversion('banner')
             ->width(1500)
             ->height(500)

@@ -20,7 +20,7 @@ class GroupFactory extends Factory
         return [
             'user_id' => User::inRandomOrder()->first()?->id,
             'name' => $this->faker->company,
-            'bio' => json_encode(['about' => $this->faker->paragraph]),
+            'bio' => $this->faker->paragraph,
             'deleted_at' => null,
             'created_at' => now(),
             'updated_at' => now(),

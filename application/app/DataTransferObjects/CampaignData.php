@@ -18,7 +18,7 @@ class CampaignData extends Data
         #[TypeScriptOptional]
         public ?int $fund_id,
 
-        public ?string $title,
+        public string $title,
 
         public ?string $meta_title,
 
@@ -32,7 +32,14 @@ class CampaignData extends Data
         #[TypeScriptOptional]
         public ?string $content,
 
+<<<<<<< HEAD
         public float $amount,
+=======
+        #[TypeScriptOptional]
+        public ?string $hero_img_url,
+
+        public ?float $amount,
+>>>>>>> origin/dev
 
         public ?string $created_at,
 

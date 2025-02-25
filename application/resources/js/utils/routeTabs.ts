@@ -14,6 +14,7 @@ export interface TabConfig {
     key: string;
     translationKey?: string;
     routeName?: string;
+    only?: string[];
   }[];
 }
 
@@ -23,7 +24,8 @@ export function generateTabs(t: TFunction, config: TabConfig): Tab[] {
     return {
       name: t(`${config.translationPrefix}.${tab.translationKey || tab.key}`),
       href: `/${config.routePrefix}/${tab.routeName || tab.key}`,
-      routeName
+      routeName,
+      ...(tab.only && { only: tab.only })
     };
   });
 }
@@ -55,3 +57,21 @@ export const groupTabs: TabConfig = {
       { key: 'locations' }
   ]
 };
+
+export const ideascaleProfileTabs: TabConfig = {
+  translationPrefix: 'ideascaleProfiles.tabs',
+  routePrefix: 'ideascale-profiles/{hash}',
+  tabs: [
+      { key: 'proposals', only: ['proposals'] },
+      { key: 'connections', only: ['connections'] },
+      { key: 'groups'},
+      { key: 'communities'},
+      { key: 'reviews'},
+      { key: 'milestones'},
+      { key: 'reports'},
+      { key: 'cam'}
+  ]
+};
+
+
+

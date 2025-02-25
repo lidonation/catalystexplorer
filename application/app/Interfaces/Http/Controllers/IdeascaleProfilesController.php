@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App\Interfaces\Http\Controllers;
 
 use App\Actions\TransformIdsToHashes;
+use App\DataTransferObjects\IdeascaleProfileData;
+use App\DataTransferObjects\ProposalData;
 use App\Enums\IdeascaleProfileSearchParams;
 use App\Enums\ProposalSearchParams;
 use App\Models\IdeascaleProfile;
@@ -40,6 +42,10 @@ class IdeascaleProfilesController extends Controller
 
     public function show(Request $request, IdeascaleProfile $ideascaleProfile): Response
     {
+        if (! $ideascaleProfile) {
+            abort(404, 'Ideascale Profile not found');
+        }
+
         $ideascaleProfile
             ->loadCount([
                 'completed_proposals',
@@ -55,11 +61,85 @@ class IdeascaleProfilesController extends Controller
                 'amount_requested_usd',
             ]);
 
-        $connections = $ideascaleProfile->connected_items;
+        $path = $request->path();
 
-        return Inertia::render('IdeascaleProfile/IdeascaleProfile', [
-            'ideascaleProfile' => $ideascaleProfile,
-            'connections' => $connections,
+        if (str_contains($path, '/proposals')) {
+            $proposalsPaginator = $ideascaleProfile->proposals()
+                ->with(['users', 'fund'])
+                ->paginate(perPage: 5);
+
+            return Inertia::render('IdeascaleProfile/Proposals/Index', [
+                'ideascaleProfile' => IdeascaleProfileData::from($ideascaleProfile),
+                'proposals' => Inertia::lazy(fn () => [
+                    'data' => ProposalData::collect($proposalsPaginator->items()),
+                    'total' => $proposalsPaginator->total(),
+                    'per_page' => $proposalsPaginator->perPage(),
+                    'current_page' => $proposalsPaginator->currentPage(),
+                    'last_page' => $proposalsPaginator->lastPage(),
+                    'from' => $proposalsPaginator->firstItem(),
+                    'to' => $proposalsPaginator->lastItem(),
+                ]),
+            ]);
+        }
+
+        if (str_contains($path, '/connections')) {
+            return Inertia::render('IdeascaleProfile/Connections/Index', [
+                'ideascaleProfile' => IdeascaleProfileData::from($ideascaleProfile),
+                'connections' => Inertia::lazy(fn () => $ideascaleProfile->connected_items), // Use lazy loading
+            ]);
+        }
+
+        if (str_contains($path, '/groups')) {
+            return Inertia::render('IdeascaleProfile/Groups/Index', [
+                'ideascaleProfile' => IdeascaleProfileData::from($ideascaleProfile),
+            ]);
+        }
+
+        if (str_contains($path, '/communities')) {
+            return Inertia::render('IdeascaleProfile/Communities/Index', [
+                'ideascaleProfile' => IdeascaleProfileData::from($ideascaleProfile),
+            ]);
+        }
+
+        if (str_contains($path, '/reviews')) {
+            return Inertia::render('IdeascaleProfile/Reviews/Index', [
+                'ideascaleProfile' => IdeascaleProfileData::from($ideascaleProfile),
+            ]);
+        }
+
+        if (str_contains($path, '/milestones')) {
+            return Inertia::render('IdeascaleProfile/Milestones/Index', [
+                'ideascaleProfile' => IdeascaleProfileData::from($ideascaleProfile),
+            ]);
+        }
+
+        if (str_contains($path, '/reports')) {
+            return Inertia::render('IdeascaleProfile/Reports/Index', [
+                'ideascaleProfile' => IdeascaleProfileData::from($ideascaleProfile),
+            ]);
+        }
+
+        if (str_contains($path, '/cam')) {
+            return Inertia::render('IdeascaleProfile/Cam/Index', [
+                'ideascaleProfile' => IdeascaleProfileData::from($ideascaleProfile),
+            ]);
+        }
+
+        $proposalsPaginator = $ideascaleProfile->proposals()
+            ->with(['users', 'fund'])
+            ->paginate(perPage: 5);
+
+        return Inertia::render('IdeascaleProfile/Proposals/Index', [
+            'ideascaleProfile' => IdeascaleProfileData::from($ideascaleProfile),
+            'proposals' => Inertia::lazy(fn () => [
+                'data' => ProposalData::collect($proposalsPaginator->items()),
+                'total' => $proposalsPaginator->total(),
+                'per_page' => $proposalsPaginator->perPage(),
+                'current_page' => $proposalsPaginator->currentPage(),
+                'last_page' => $proposalsPaginator->lastPage(),
+                'from' => $proposalsPaginator->firstItem(),
+                'to' => $proposalsPaginator->lastItem(),
+            ]),
         ]);
     }
 
@@ -76,7 +156,7 @@ class IdeascaleProfilesController extends Controller
             'attributesToRetrieve' => $attrs ?? [
                 'id',
                 'name',
-                'profile_photo_url',
+                'hero_img_url',
                 'first_timer',
                 'completed_proposals_count',
                 'funded_proposals_count',

@@ -17,8 +17,8 @@ import { ScrollArea } from './ScrollArea';
 
 export type SearchOption = {
     label?: string;
-    id?: string;
-};
+    hash?: string;
+}; 
 
 type SearchSelectProps = {
     selected: string[];
@@ -48,13 +48,13 @@ export function SearchSelect({
         if (typeof option === 'string') {
             return {
                 label: option,
-                id: option
+                hash: option
             };
         }
             // Handle when option is an object
             return {
                 label: option?.name ?? option?.title ?? option?.label ?? 'Unknown',
-                id: option?.id?.toString() ?? option?.toString() ?? 'unknown-id',
+                hash: option?.hash ?? 'unknown-hash',
             };
         },
     );
@@ -150,20 +150,20 @@ export function SearchSelect({
                             {options &&
                                 filteredOptions.map((option) => (
                                     <CommandItem
-                                        key={option.id}
-                                        value={option.id.toString()}
+                                        key={option.hash}
+                                        value={option.hash.toString()}
                                         onSelect={() =>
-                                            handleSelect(option.id.toString())
+                                            handleSelect(option.hash.toString())
                                         }
                                         className="bg-background! hover:bg-background-lighter! aria-selected:bg-background-lighter flex cursor-pointer justify-between"
                                     >
                                         {option.label}
                                         <Checkbox
-                                            id={option.id.toString()}
+                                            id={option.hash}
                                             checked={selected?.includes(
-                                                option.id.toString(),
+                                                option.hash,
                                             )}
-                                            value={option.id.toString()}
+                                            value={option.hash}
                                             onChange={() => {}}
                                             className="text-content-accent bg-background checked:bg-primary checked:hover:bg-primary focus:border-primary focus:ring-primary checked:focus:bg-primary mr-2 h-4 w-4 shadow-xs focus:border"
                                         />
