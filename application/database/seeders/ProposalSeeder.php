@@ -6,12 +6,14 @@ namespace Database\Seeders;
 
 use App\Models\Campaign;
 use App\Models\Community;
+use App\Models\Fund;
 use App\Models\Group;
 use App\Models\IdeascaleProfile;
 use App\Models\Meta;
 use App\Models\Proposal;
 use App\Models\Tag;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Concurrency;
 
 class ProposalSeeder extends Seeder
 {
@@ -20,17 +22,52 @@ class ProposalSeeder extends Seeder
      */
     public function run(): void
     {
-        Proposal::factory()->count(500)
-            ->recycle(Campaign::factory()->create())
-            ->has(IdeascaleProfile::factory(fake()->numberBetween(3, 10)), 'users')
-            ->has(Meta::factory()->state(fn () => [
-                'key' => fake()->randomElement(['woman_proposal', 'impact_proposal', 'ideafest_proposal']),
-                'content' => fake()->randomElement([0, 1]),
-                'model_type' => Proposal::class,
-            ]))
-            ->hasAttached(Group::factory(), [])
-            ->hasAttached(Tag::factory(), ['model_type' => Proposal::class])
-            ->hasAttached(Community::factory(), [])
+
+        $startDate = now()->subYears(3);
+
+        $funds = Fund::factory()
+            ->count(10)
+            ->sequence(fn ($seq) => [
+                'title' => 'Fund '.$seq->index + 1,
+                'created_at' => $startDate->copy()->addMonths(($seq->index + 1) * 3),
+                'launched_at' => $startDate->copy()->addMonths(($seq->index + 1) * 3)->addDays(7),
+            ])
             ->create();
+
+        $campaigns = $funds->flatMap(
+            fn ($fund) => Campaign::factory()->count(5)->for($fund, 'fund')->create()
+        );
+
+        $groups = Group::factory()->count(30)->create();
+        $tags = Tag::factory()->count(25)->create();
+        $communities = Community::factory()->count(30)->create();
+        $ideascaleProfiles = IdeascaleProfile::factory()->count(1000)->create();
+
+        $campaigns->each(
+            function ($campaign) use ($tags, $ideascaleProfiles) {
+                // Create proposals first
+                Proposal::factory()
+                    ->count(50)
+                    ->hasAttached($ideascaleProfiles->random(fake()->randomElement([0, 1, 3, 4])))
+                    ->state([
+                        'campaign_id' => $campaign->id,
+                        'fund_id' => $campaign->fund->id,
+                    ])
+                    ->has(Meta::factory()->state(fn () => [
+                        'key' => fake()->randomElement(['woman_proposal', 'impact_proposal', 'ideafest_proposal']),
+                        'content' => fake()->randomElement([0, 1]),
+                        'model_type' => Proposal::class,
+                    ]))
+                    ->hasAttached($tags->random(), ['model_type' => Proposal::class])
+                    ->create();
+            }
+
+        );
+
+        Concurrency::run([
+            fn () => $ideascaleProfiles->each(fn ($profile) => Proposal::inRandomOrder()->first()->users()->syncWithoutDetaching($profile->id)),
+            fn () => $groups->each(fn ($group) => Proposal::inRandomOrder()->first()->groups()->syncWithoutDetaching($group->id)),
+            fn () => $communities->each(fn ($community) => Proposal::inRandomOrder()->first()->communities()->syncWithoutDetaching($community->id)),
+        ]);
     }
 }

@@ -119,7 +119,7 @@ lint-frontend:
 
 .PHONY: logs
 logs:
-	docker logs --follow catalystexplore.com
+	docker logs --follow catalystexplorer.com
 
 .PHONY: migrate
 migrate:
