@@ -13,7 +13,6 @@ interface MyGroupsProps extends Record<string, unknown> {
 
 export default function MyGroups({groups}: MyGroupsProps) {
     const { t } = useTranslation();
-    console.log(groups);
     return (
         <MyLayout >
             <Head title="My Groups" />
