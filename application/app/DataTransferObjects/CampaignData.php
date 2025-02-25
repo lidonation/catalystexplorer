@@ -58,9 +58,9 @@ class CampaignData extends Data
         public ?float $total_requested,
 
         #[MapInputName('totalAwarded')]
-        public ?float $total_awarded,
+        public float $total_awarded,
 
         #[MapInputName('totalDistributed')]
-        public ?float $total_distributed,
+        public float $total_distributed,
     ) {}
 }
