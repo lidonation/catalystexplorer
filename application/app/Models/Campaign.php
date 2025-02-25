@@ -78,7 +78,7 @@ class Campaign extends Model implements HasMedia
     public function totalDistributed(): Attribute
     {
         return Attribute::make(
-            get: fn () => $this->funded_proposals()->sum('amount_received')
+            get: fn () => $this->funded_proposals()->sum('amount_received') ?? null
         );
     }
 

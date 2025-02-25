@@ -61,8 +61,8 @@ unfunded_proposals_count: number | null;
 funded_proposals_count: number | null;
 completed_proposals_count: number | null;
 total_requested: number | null;
-total_awarded: number | null;
-total_distributed: number | null;
+total_awarded: number;
+total_distributed: number;
 };
 export type CommunityData = {
 hash: string | null;

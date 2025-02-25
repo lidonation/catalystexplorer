@@ -15,7 +15,7 @@ final class MilestoneSomReviewsData extends Data
         public string $hash,
 
         public bool $outputs_approves,
-        
+
         public string $outputs_comment,
 
         public bool $success_criteria_approves,
