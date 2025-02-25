@@ -58,7 +58,7 @@ trait GetImageLink
         $faker = $this->withFaker();
         $colorSeed = crc32($groupName);
         $faker->seed($colorSeed);
-        $bgColor = substr(md5($groupName), 0, 6);
+        $bgColor = substr(hash('sha256', $groupName), 0, 6);
 
         return 'https://ui-avatars.com/api/?'
             .'name='.urlencode($initials)
