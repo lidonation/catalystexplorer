@@ -12,11 +12,13 @@ use App\Models\IdeascaleProfile;
 use App\Models\Meta;
 use App\Models\Proposal;
 use App\Models\Tag;
+use Database\Seeders\Traits\GetImageLink;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Concurrency;
 
 class ProposalSeeder extends Seeder
 {
+    use GetImageLink;
     /**
      * Run the database seeds.
      */
@@ -34,14 +36,47 @@ class ProposalSeeder extends Seeder
             ])
             ->create();
 
+        $funds->each(function (Fund $fund) {
+            if ($heroImageLink = $this->getRandomImageLink()) {
+                $fund->addMediaFromUrl($heroImageLink)->toMediaCollection('hero');
+            }
+
+            if ($bannerImageLink = $this->getRandomBannerImageLink()) {
+                $fund->addMediaFromUrl($bannerImageLink)->toMediaCollection('banner');
+            }
+        });
+
         $campaigns = $funds->flatMap(
             fn ($fund) => Campaign::factory()->count(5)->for($fund, 'fund')->create()
         );
 
+        $campaigns->each(function (Campaign $campaign) {
+            if ($heroImageLink = $this->getRandomImageLink()) {
+                $campaign->addMediaFromUrl($heroImageLink)->toMediaCollection('hero');
+            }
+        });
+
         $groups = Group::factory()->count(30)->create();
+
+        $groups->each(function (Group $group) {
+            if ($heroImageLink = $this->getRandomBannerImageLink()) {
+                $group->addMediaFromUrl($heroImageLink)->toMediaCollection('banner');
+            }
+
+            if ($logoImageLink = $this->getGroupInitialsLogoLink($group->name)) {
+                $group->addMediaFromUrl($logoImageLink)->toMediaCollection('hero');
+            }
+        });
+
         $tags = Tag::factory()->count(25)->create();
         $communities = Community::factory()->count(30)->create();
         $ideascaleProfiles = IdeascaleProfile::factory()->count(1000)->create();
+
+        $ideascaleProfiles->each(function (IdeascaleProfile $IdeascaleProfile) {
+            if ($heroImageLink = $this->getRandomImageLink()) {
+                $IdeascaleProfile->addMediaFromUrl($heroImageLink)->toMediaCollection('profile');
+            }
+        });
 
         $campaigns->each(
             function ($campaign) use ($tags, $ideascaleProfiles) {
