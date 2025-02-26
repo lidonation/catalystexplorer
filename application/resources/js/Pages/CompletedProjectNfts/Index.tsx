@@ -11,22 +11,34 @@ import StatisticCard from './Partials/StatisticCard';
 import StepTracker from './Partials/StepTracker';
 import { PaginatedData } from '../../../types/paginated-data';
 import { PageProps } from '@/types';
-import ProposalData = App.DataTransferObjects.ProposalData;
 import { SearchParams } from '../../../types/search-params';
 import { FiltersProvider } from '@/Context/FiltersContext';
 import ProfileWorkflow from "./Partials/ProfileWorkflow";
 import Title from '@/Components/atoms/Title';
-import Paragraph from '@/Components/atoms/Paragraph'; // Added import for Paragraph component
+import Paragraph from '@/Components/atoms/Paragraph';
+import ProposalData = App.DataTransferObjects.ProposalData; 
+import IdeascaleProfileData= App.DataTransferObjects.IdeascaleProfileData;
+import { currency } from '@/utils/currency';
 
 
 interface CompletedProjectNftsPageProps extends Record<string, unknown> {
     proposals: PaginatedData<ProposalData[]>;
+    ideascaleProfiles: PaginatedData<IdeascaleProfileData[]>
     filters: SearchParams;
+    amountDistributedAda: number;
+    amountDistributedUsd: number;
+    completedProposalsCount: number;
+    communityMembersFunded: number;
 }
 
 export default function Index({
     proposals,
-    filters
+    filters,
+    ideascaleProfiles,
+    amountDistributedAda,
+    amountDistributedUsd,
+    completedProposalsCount,
+    communityMembersFunded
 }: PageProps<CompletedProjectNftsPageProps>) {
 
     const { t } = useTranslation();
@@ -36,12 +48,6 @@ export default function Index({
     const isAuthenticated = !!user;
 
     const [currentStep, setCurrentStep] = useState<1 | 2 | 3>(isAuthenticated ? 2 : 1);
-
-    useEffect(() => {
-        if (isAuthenticated) {
-            console.log('proposals', JSON.stringify(proposals, null, 2));
-        }
-    }, [proposals]);
 
     useEffect(() => {
         if (isAuthenticated && currentStep === 1) {
@@ -59,29 +65,29 @@ export default function Index({
 
     const statistics = [
         {
-            value: '1436',
+            value: communityMembersFunded,
             description: t('completedProjectNfts.communityFunded'),
             icon: <PeopleIcon stroke="#3FACD1" width={32} height={32} />,
         },
         {
-            value: '1064',
+            value: completedProposalsCount,
             description: t('completedProjectNfts.projectsCompleted'),
             icon: <FileIcon />,
         },
         {
-            value: '$35.37M',
+            value: currency(amountDistributedUsd, 2, 'USD'),
             description: t('completedProjectNfts.usdDistributed'),
             icon: <UsdIcon />,
         },
         {
-            value: '84.96M ₳',
+            value: currency(amountDistributedAda, 2, 'ADA'),
             description: t('completedProjectNfts.adaDistributed'),
             icon: <AdaIcon />,
         },
     ];
 
     return (
-        <FiltersProvider defaultFilters={filters} routerOptions={{ only: ['proposals'] }}>
+        <FiltersProvider defaultFilters={filters} routerOptions={{ only: ['ideascaleProfiles', 'proposals'] }}>
             <Head title="Charts" />
 
             {/* Header Section */}
@@ -137,7 +143,7 @@ export default function Index({
                     />
                 )}
 
-                {currentStep === 2 && user && <ProfileWorkflow user={user} />}
+                {currentStep === 2 && user && <ProfileWorkflow user={user} profiles={ideascaleProfiles || []} proposals={proposals || []}/>}
 
                 {currentStep === 3 && <Paragraph>Form 3</Paragraph>}
 

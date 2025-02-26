@@ -27,7 +27,10 @@ const AmountComparisonWithBar: React.FC<AmountComparisonWithBarPageProps> = ({
     const [percentage, setPercentage] = useState<number>(0);
 
     useEffect(() => {
-        const percentageValue = Math.trunc((numerator / denominator) * 100);
+        let percentageValue = 0;
+        if(numerator > 0) {
+            percentageValue = Math.trunc((numerator / denominator) * 100);
+        }
         setPercentage(percentageValue);
     }, [currency]);
 
@@ -63,8 +66,6 @@ const AmountComparisonWithBar: React.FC<AmountComparisonWithBarPageProps> = ({
                     {t(title)}
                 </div>
             </div>
-
-
         </div>
     );
 };

@@ -41,6 +41,7 @@ const PaginationComponent: React.FC<PaginationComponentProps<any>> = ({
         total
     } = pagination;
 
+
     return (
         <div>
             <div className="flex w-full flex-col gap-2">
@@ -96,8 +97,10 @@ const PaginationComponent: React.FC<PaginationComponentProps<any>> = ({
                                                                 ? 'bg-background-darker'
                                                                 : ''
                                                         )}
+                                                        {...linkProps} 
                                                     >
                                                         {link.label}
+
                                                     </Link>
                                                 )}
                                             </PaginationItem>

@@ -25,6 +25,6 @@ final class MilestonePoasReviewData extends Data
         public string $user_id,
 
         public bool $current
-       
+
     ) {}
 }

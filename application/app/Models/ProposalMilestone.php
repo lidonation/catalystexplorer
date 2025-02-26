@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use App\Models\Proposal;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -16,6 +15,11 @@ class ProposalMilestone extends Model
     public function proposal(): BelongsTo
     {
         return $this->belongsTo(Proposal::class, 'proposal_id', 'id');
+    }
+
+    public function fund(): BelongsTo
+    {
+        return $this->belongsTo(Fund::class, 'fund_id', 'id');
     }
 
     public function milestones(): HasMany

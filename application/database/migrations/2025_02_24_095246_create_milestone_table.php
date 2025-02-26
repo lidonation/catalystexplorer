@@ -13,6 +13,10 @@ return new class extends Migration
     {
         Schema::create('milestones', function (Blueprint $table) {
             $table->bigInteger('id', false);
+            $table->foreignId('proposal_id')
+                ->nullable();
+            $table->foreignId('fund_id')
+                ->nullable();
             $table->text('title');
             $table->boolean('current');
             $table->text('outputs');

@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace App\Interfaces\Http\Controllers;
 
 use App\Actions\TransformIdsToHashes;
-use App\DataTransferObjects\ProposalMilestoneData;
 use App\DataTransferObjects\IdeascaleProfileData;
 use App\DataTransferObjects\ProposalData;
+use App\DataTransferObjects\ProposalMilestoneData;
 use App\Enums\IdeascaleProfileSearchParams;
 use App\Enums\ProposalSearchParams;
 use App\Models\IdeascaleProfile;
@@ -110,14 +110,15 @@ class IdeascaleProfilesController extends Controller
         }
 
         if (str_contains($path, '/milestones')) {
-            $proposalIds = $ideascaleProfile->own_proposals->pluck('id');    
-            $proposalMilestones = ProposalMilestone::whereIn('proposal_id', $proposalIds)
-                ->with('proposal', 'milestones')
+            $proposalMilestones = ProposalMilestone::whereHas('proposal', function ($query) use ($ideascaleProfile) {
+                $query->whereIn('id', $ideascaleProfile->own_proposals->pluck('id'));
+            })
+                ->with(['proposal', 'milestones'])
                 ->get();
 
             return Inertia::render('IdeascaleProfile/Milestones/Index', [
                 'ideascaleProfile' => IdeascaleProfileData::from($ideascaleProfile),
-                'proposalMilestones' => Inertia::optional(fn () => ProposalMilestoneData::collect($proposalMilestones))
+                'proposalMilestones' => Inertia::optional(fn () => ProposalMilestoneData::collect($proposalMilestones)),
             ]);
         }
 

@@ -15,7 +15,7 @@ final class MilestonePoasSignoffData extends Data
         public string $hash,
 
         public string $created_at,
-        
-       public string $user_id
+
+        public string $user_id
     ) {}
 }
