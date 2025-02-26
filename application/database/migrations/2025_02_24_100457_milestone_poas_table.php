@@ -13,6 +13,8 @@ return new class extends Migration
     {
         Schema::create('milestone_poas', function (Blueprint $table) {
             $table->bigInteger('id', false);
+            $table->foreignId('proposal_id')
+                ->nullable();
             $table->text('content');
             $table->foreignId('milestone_id')
                 ->nullable();

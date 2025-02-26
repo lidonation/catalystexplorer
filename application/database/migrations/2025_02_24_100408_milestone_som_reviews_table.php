@@ -16,6 +16,8 @@ return new class extends Migration
             $table->bigInteger('id', false);
             $table->foreignId('milestone_id')
                 ->nullable();
+            $table->foreignId('proposal_id')
+                ->nullable();
             $table->boolean('outputs_approves');
             $table->text('outputs_comment')
                 ->nullable();

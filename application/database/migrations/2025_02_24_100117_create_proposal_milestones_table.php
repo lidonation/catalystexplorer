@@ -18,6 +18,8 @@ return new class extends Migration
             $table->text('url');
             $table->foreignId('proposal_id')
                 ->nullable();
+            $table->foreignId('fund_id')
+                ->nullable();
             $table->bigInteger('project_id', false);
             $table->timestamp('created_at');
             $table->double('budget');
