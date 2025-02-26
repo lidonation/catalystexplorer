@@ -67,25 +67,6 @@ class GroupsController extends Controller
 
         $groups = $this->query();
 
-        $props = [
-            'groups' => $groups,
-            'search' => $this->search,
-            'sort' => "{$this->sortBy}:{$this->sortOrder}",
-            'filters' => $this->queryParams,
-            'funds' => $this->fundsCount,
-            'filterCounts' => [
-                'proposalsCount' => ! empty($this->proposalsCount)
-                    ? round(max(array_keys($this->proposalsCount)), -1)
-                    : 0,
-                'totalAwardedAda' => ! empty($this->totalAwardedAda)
-                    ? max($this->totalAwardedAda)
-                    : 0,
-                'totalAwardedUsd' => ! empty($this->totalAwardedUsd)
-                    ? max($this->totalAwardedUsd)
-                    : 0,
-            ],
-        ];
-
         return Inertia::render('Groups/Index', [
             'groups' => Inertia::optional(
                 fn () => $groups
