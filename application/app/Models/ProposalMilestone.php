@@ -17,6 +17,11 @@ class ProposalMilestone extends Model
         return $this->belongsTo(Proposal::class, 'proposal_id', 'id');
     }
 
+    public function fund(): BelongsTo
+    {
+        return $this->belongsTo(Fund::class, 'fund_id', 'id');
+    }
+
     public function milestones(): HasMany
     {
         return $this->hasMany(Milestone::class, 'proposal_milestone_id', 'id');
