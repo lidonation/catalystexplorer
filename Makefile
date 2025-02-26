@@ -111,7 +111,7 @@ image-build:
 
 .PHONY: logs
 lint-backend:
-	$(sail) pint
+	$(sail) pint app
 
 .PHONY: logs
 lint-frontend:

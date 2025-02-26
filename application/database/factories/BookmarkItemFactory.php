@@ -30,7 +30,7 @@ class BookmarkItemFactory extends Factory
             IdeascaleProfile::class,
             Group::class,
             Review::class,
-            BookmarkCollection::class,
+            // BookmarkCollection::class,
         ];
 
         $bookmarkableType = $this->faker->randomElement($bookmarkableModels);
