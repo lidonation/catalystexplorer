@@ -117,7 +117,7 @@ const CampaignCard: React.FC<CampaignCardProps> = ({
                         title="Distributed vs Awarded"
                         numerator={campaign.total_distributed}
                         denominator={campaign.total_awarded}
-                        currency={campaign.currency}
+                        currency={campaign.currency ?? ''}
                     />}
                 </div>
             </div>
