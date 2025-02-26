@@ -16,14 +16,14 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         $seeders = [
-            RoleSeeder::class,
-            PermissionSeeder::class,
-            UserSeeder::class,
-            AnnouncementSeeder::class,
-            MetricSeeder::class,
-            ProposalSeeder::class,
-            BookmarkItemSeeder::class,
+            // RoleSeeder::class,
+            // PermissionSeeder::class,
+            // UserSeeder::class,
+            // AnnouncementSeeder::class,
+            // MetricSeeder::class,
+            // ProposalSeeder::class,
             BookmarkCollectionSeeder::class,
+            BookmarkItemSeeder::class,
             RuleSeeder::class,
             MonthlyReportSeeder::class,
             RegistrationSeeder::class,

@@ -93,7 +93,7 @@ frontend-install:
 		--volume ${PWD}/application:/app \
 		--workdir /app \
 		--user root \
-		node:${nodeVersion}-alpine yarn install --ignore-engine
+		node:${nodeVersion}-alpine yarn install --ignore-engine --unsafe-perm=true
 
 .PHONY: frontend-clean
 frontend-clean:
@@ -156,7 +156,7 @@ vite:
 
 .PHONY: watch
 watch:
-	docker compose  up -d --remove-orphans && $(sail) npx vite --force
+	docker compose  up -d --remove-orphans && $(sail) npx vite --force -- --unsafe-perm=true
 
 .PHONY: test-backend
 test-backend:

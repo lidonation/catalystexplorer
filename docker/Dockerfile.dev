@@ -15,7 +15,7 @@ ARG TZ=UTC
 ARG APP_DIR=/var/www
 ARG APP_ENV
 ARG APP_DOMAIN
-ARG NODE_VERSION=20
+ARG NODE_VERSION=22
 
 ENV DEBIAN_FRONTEND=noninteractive \
     TERM=xterm-color \
@@ -95,7 +95,7 @@ RUN userdel --remove --force www-data \
     && useradd -ms /bin/bash --no-log-init --no-user-group -g sail -u 1001 sail \
     && setcap -r /usr/local/bin/frankenphp
 
-RUN chown -R ${USER}:${USER} ${ROOT} /var/{log,run} \
+RUN chown -R ${USER}:${USER} ${ROOT} /var/{log,run,www} \
     && chmod -R a+rw ${ROOT} /var/{log,run}
 
 RUN cp ${PHP_INI_DIR}/php.ini-production ${PHP_INI_DIR}/php.ini

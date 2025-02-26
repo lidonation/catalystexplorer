@@ -197,7 +197,7 @@ services:
     image: minio/mc
     environment:
       MINIO_ROOT_USER: minio
-      MINIO_ROOT_PASSWORD: minioroot
+      MINIO_ROOT_PASSWORD: miniorootp
       MINIO_DEFAULT_BUCKET: catalystexplorer.com
     depends_on:
       - catalystexplorer-minio
