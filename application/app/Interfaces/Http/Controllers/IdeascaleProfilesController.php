@@ -11,7 +11,6 @@ use App\DataTransferObjects\ProposalMilestoneData;
 use App\Enums\IdeascaleProfileSearchParams;
 use App\Enums\ProposalSearchParams;
 use App\Models\IdeascaleProfile;
-use App\Models\Milestone;
 use App\Models\ProposalMilestone;
 use App\Repositories\IdeascaleProfileRepository;
 use Illuminate\Http\Request;
