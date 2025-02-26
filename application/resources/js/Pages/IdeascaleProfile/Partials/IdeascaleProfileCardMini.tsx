@@ -75,6 +75,7 @@ const IdeascaleProfileCardMini: React.FC<IdeascaleProfileProps> = ({
                             size="size-12"
                         />
                     </div>
+                    <p>{ideascaleProfile?.claimed_by ?? 0}</p>
                     <div className="min-w-0 flex-1">
                         <div className="text-2 font-bold break-words">
                             <TooltipProvider>
