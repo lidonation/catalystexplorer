@@ -22,11 +22,11 @@ export default function MyGroups({groups}: MyGroupsProps) {
                     <GroupsList groups={groups?.data ?? []} />
                 </div>
             </div>
-                {groups && (
+                {/* {groups && (
                     <Paginator
                         pagination={groups}
                     />
-                )}
+                )} */}
         </MyLayout>
     );
 }
