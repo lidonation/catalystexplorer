@@ -17,7 +17,7 @@ const VerificationCard: React.FC<VerificationCardProps> = ({ verificationCode, o
                 className="flex items-center mb-4 text-sm font-medium cursor-pointer text-primary"
                 onClick={onBack}
             >
-                &larr; {t("profileWorkflow.back")}
+                {`< ${t('profileWorkflow.back')}`}
             </button>
             
             <Title level="2" className="text-lg font-semibold text-center">{t("profileWorkflow.verificationTitle")}</Title>

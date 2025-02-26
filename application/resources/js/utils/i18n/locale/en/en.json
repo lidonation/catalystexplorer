@@ -456,7 +456,8 @@
             "placeHolder": "Search for proposal"
         },
         "step": "Step",
-        "claimProfile": "Claim another profile"
+        "claimAnotherProfile": "Claim another profile",
+        "claimProfile": "Claim an Ideascale Profile"
     },
     "profileWorkflow": {
         "sectionTitle": {
@@ -484,7 +485,7 @@
         "loggedInAs": "Logged in as",
         "proposalsCount": "{{count}} Proposals",
         "unavailable": "Unavailable",
-        "noProfilesAvailable": "No profiles available.",
+        "noProfilesFound": "No profiles found.",
         "findCatalystUser": "Find a catalyst user",
         "available": "Available",
         "noProposalsAvailable": "No proposals found for this profile.",

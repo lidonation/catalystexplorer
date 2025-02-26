@@ -19,6 +19,7 @@ use Illuminate\Support\Facades\Concurrency;
 class ProposalSeeder extends Seeder
 {
     use GetImageLink;
+
     /**
      * Run the database seeds.
      */
