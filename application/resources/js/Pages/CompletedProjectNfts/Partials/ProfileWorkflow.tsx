@@ -1,256 +1,273 @@
-import React, { useState } from "react";
-import ProposalSearchBar from "./ProposalSearchBar";
-import ProfileSearchBar from "./ProfileSearchBar";
-import ProfileCard from "./ProfileCard";
-import ClaimProfileForm from "./ClaimProfileForm";
-import ProposalList from "./ProposalList";
-import ProfileList from "./ProfileList";
-import VerificationCard from "./VerificationCard";
+import Paragraph from '@/Components/atoms/Paragraph';
+import Title from '@/Components/atoms/Title';
+import { useFilterContext } from '@/Context/FiltersContext';
+import { ParamsEnum } from '@/enums/proposal-search-params';
+import { router } from '@inertiajs/react';
+import axios from 'axios';
+import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import PageHeader from "./PageHeader";
-import Title from "@/Components/atoms/Title";
-
-const initialClaimedProfiles: Profile[] = [
-    {
-        name: "John Doe",
-        image: "https://i.pravatar.cc/",
-        proposals: 2,
-        status: "claimed",
-    },
-    {
-        name: "John Velocity",
-        image: "https://i.pravatar.cc/",
-        proposals: 2,
-        status: "claimed",
-    },
-    {
-        name: "John XL",
-        image: "https://i.pravatar.cc/",
-        proposals: 2,
-        status: "claimed",
-    }
-];
-
-const initialProposals = [
-    {
-        profileName: "John Doe",
-        title: "Improving Community Engagement.Sustainable Energy Solutions.Sustainable Energy Solutions.Sustainable Energy Solutions.Sustainable Energy Solutions.",
-        budget: 5000,
-        fund: "Fund 9",
-        campaign: "Community Development",
-    },
-    {
-        profileName: "John Doe",
-        title: "Sustainable Energy Solutions.Sustainable Energy Solutions.Sustainable Energy Solutions.Sustainable Energy Solutions.",
-        budget: 10000,
-        fund: "Fund 10",
-        campaign: "Environmental Sustainability",
-    },
-
-    {
-        profileName: "John Velocity",
-        title: "Sustainable Energy Solutions.Sustainable Energy Solutions.Sustainable Energy Solutions.Sustainable Energy Solutions.",
-        budget: 10000,
-        fund: "Fund 10",
-        campaign: "Environmental Sustainability",
-    },
-
-    {
-        profileName: "John XL",
-        title: "Sustainable Energy Solutions.Sustainable Energy Solutions.Sustainable Energy Solutions.Sustainable Energy Solutions.",
-        budget: 10000,
-        fund: "Fund 10",
-        campaign: "Environmental Sustainability",
-    },
-
-    {
-        profileName: "John XL",
-        title: "Sustainable Energy Solutions.Sustainable Energy Solutions.Sustainable Energy Solutions.Sustainable Energy Solutions.",
-        budget: 10000,
-        fund: "Fund 10",
-        campaign: "Environmental Sustainability",
-    },
-];
-
-const initialAllProfiles = [
-    {
-        name: "Alice Hopper",
-        image: "https://i.pravatar.cc/",
-        proposals: 3,
-        status: "available",
-    },
-    {
-        name: "Lingi Kopper",
-        image: "https://i.pravatar.cc/",
-        proposals: 3,
-        status: "unavailable",
-    },
-    {
-        name: "Alice Gopper",
-        image: "https://i.pravatar.cc/",
-        proposals: 3,
-        status: "available",
-    },
-];
-interface Profile {
-    name: string;
-    image: string;
-    proposals: number;
-    status: string;
-}
-
-interface Proposal {
-    profileName: string;
-    title: string;
-    budget: number;
-    fund: string;
-    campaign: string;
-}
-
-interface ClaimProfileFormProps {
-    profile: Profile;
-    onClaim: (profile: Profile) => void;
-}
-
-interface ProfileListProps {
-    profiles: Profile[];
-    onSelectProfile: (name: string) => void;
-    selectedProfile: string | null;
-}
+import { PaginatedData } from '../../../../types/paginated-data';
+import ClaimProfileForm from './ClaimProfileForm';
+import PageHeader from './PageHeader';
+import ProfileCard from './ProfileCard';
+import ProfileList from './ProfileList';
+import ProfileSearchBar from './ProfileSearchBar';
+import ProposalList from './ProposalList';
+import ProposalSearchBar from './ProposalSearchBar';
+import VerificationCard from './VerificationCard';
+import IdeascaleProfileData = App.DataTransferObjects.IdeascaleProfileData;
+import ProposalData = App.DataTransferObjects.ProposalData;
 
 interface ProfileWorkflowProps {
     user: { name: string };
+    proposals: PaginatedData<ProposalData[]>;
+    profiles: PaginatedData<IdeascaleProfileData[]>;
 }
-const ProfileWorkflow: React.FC<ProfileWorkflowProps> = ({ user }) => {
+const ProfileWorkflow: React.FC<ProfileWorkflowProps> = ({
+    user,
+    profiles,
+    proposals,
+}) => {
     const { t } = useTranslation();
 
     const [showClaimProfile, setShowClaimProfile] = useState(false);
-    const [selectedProfile, setSelectedProfile] = useState<Profile | any>(null); // Use Profile object, not just string
-    const [claimedProfiles, setClaimedProfiles] = useState(initialClaimedProfiles);
-    const [allProfiles, setAllProfiles] = useState(initialAllProfiles);
-    const [formProfile, setFormProfile] = useState<string | null>(null);
+    const [profileSearchResults, setProfileSearchResults] = useState<
+        IdeascaleProfileData[]
+    >([]);
     const [showVerification, setShowVerification] = useState(false);
+    const [viewProposal, setViewProposal] = useState(false);
     const [verificationCode, setVerificationCode] = useState('');
+    const [claimProfile, setClaimProfile] =
+        useState<IdeascaleProfileData | null>(null);
+    const [selectedProfile, setSelectedProfile] =
+        useState<IdeascaleProfileData | null>(null);
+    const { getFilter, setFilters, filters } = useFilterContext();
+    const queryParams = new URLSearchParams(window.location.search);
+    const initialSearchQuery = queryParams.get(ParamsEnum.QUERY) || '';
+    const [searchQuery, setSearchQuery] = useState(initialSearchQuery);
 
-    const handleClaimProfile = (profile: Profile) => {
-        setClaimedProfiles([...claimedProfiles, profile]);
-        setAllProfiles(allProfiles.map(p => p.name === profile.name ? { ...p, status: "claimed" } : p));
-        setFormProfile(null);
-        setShowClaimProfile(false);
-        setVerificationCode('8vklg'); //TODO: Dynamically set verification code
-        setShowVerification(true);
+    const handleSearchProfiles = async (searchQuery = '', perPage = 6) => {
+        try {
+            const response = await axios.get(
+                route('api.ideascaleProfiles.index'),
+                {
+                    params: {
+                        search: searchQuery,
+                        per_page: perPage,
+                    },
+                },
+            );
+
+            setProfileSearchResults(response?.data?.data || []);
+        } catch (error) {
+            console.error('Error fetching profiles:', error);
+        }
     };
 
-    const handleProfileClick = (profile: Profile) => {
-        if (profile.status !== "available") return;
-        setFormProfile(formProfile === profile.name ? null : profile.name);
+    const handleSearchProposals = (search: string) => {
+        setFilters({
+            param: ParamsEnum.QUERY,
+            value: search,
+            label: 'Search',
+        });
+        setSearchQuery(search);
+        const url = new URL(window.location.href);
+
+        if (search.trim() === '') {
+            url.searchParams.delete(ParamsEnum.QUERY);
+            router.get(
+                window.location.pathname,
+                {},
+                { replace: true, preserveScroll: true, preserveState: true },
+            );
+        } else {
+            setFilters({
+                param: ParamsEnum.QUERY,
+                value: search,
+                label: 'Search',
+            });
+            url.searchParams.set(ParamsEnum.QUERY, search);
+        }
+
+        window.history.replaceState(null, '', url.toString());
+    };
+
+    const handleToggleClaimForm = (profile: IdeascaleProfileData) => {
+        if (profile?.claimed_by !== undefined && profile.claimed_by !== null)
+            return;
+
+        setClaimProfile((prev) => {
+            return prev?.hash === profile?.hash ? null : profile;
+        });
     };
 
     const handleBackFromVerification = () => {
         setShowVerification(false);
     };
 
-    const getSectionTitle = () => {
-        if (showVerification) return "";
-        if (!selectedProfile && !showClaimProfile) return t('profileWorkflow.sectionTitle.start');
-        if (selectedProfile) return t('profileWorkflow.sectionTitle.selectProposal');
-        if (showClaimProfile) return t('profileWorkflow.sectionTitle.claimProfile');
-        return "";
+    const handleProfileSelect = () => {
+        setViewProposal(true);
     };
 
-    return (
-        <div className="w-full max-w-lg p-6 mx-auto shadow-md bg-background rounded-2xl">
+    const getSectionTitle = () => {
+        if (showVerification) return '';
 
-            {!showVerification && <PageHeader userName={user.name} sectionTitle={getSectionTitle()} />}
+        if (viewProposal && !showClaimProfile)
+            return t('profileWorkflow.sectionTitle.selectProposal');
+
+        if (showClaimProfile && !viewProposal)
+            return t('profileWorkflow.sectionTitle.claimProfile');
+
+        if (!selectedProfile && !showClaimProfile)
+            return t('profileWorkflow.sectionTitle.start');
+
+        return '';
+    };
+
+    const totalProposalsViewed = proposals.per_page * proposals.current_page;
+
+    return (
+        <div className="bg-background mx-auto w-full max-w-lg rounded-2xl p-6 shadow-md">
+            {!showVerification && (
+                <PageHeader
+                    userName={user.name}
+                    sectionTitle={getSectionTitle()}
+                />
+            )}
 
             <div className="w-full">
-                {showVerification ? (
+                {viewProposal ? (
+                    <>
+                        <button
+                            className="text-primary mt-4 flex cursor-pointer items-center text-sm font-medium"
+                            onClick={() => {
+                                setViewProposal(false);
+                                setSelectedProfile(null);
+                            }}
+                        >
+                            {`< ${t('profileWorkflow.back')}`}
+                        </button>
+                        <div className="card-container mt-2 w-full">
+                            <ProposalSearchBar
+                                autoFocus={true}
+                                showRingOnFocus={true}
+                                handleSearch={(query) =>
+                                    handleSearchProposals(query)
+                                }
+                                focusState={(isFocused) =>
+                                    console.log(isFocused)
+                                }
+                            />
+                        </div>
+
+                        <Paragraph className="mt-2">
+                            {t('profileWorkflow.selectProposal')}
+                            <span className="m-1 inline-block rounded border border-gray-200 px-1 text-xs">
+                                {`${totalProposalsViewed > proposals?.total ? proposals?.total : totalProposalsViewed}/${proposals.total}`}
+                            </span>
+                        </Paragraph>
+
+                        <ProposalList proposals={proposals || []} />
+                    </>
+                ) : showVerification ? (
                     <VerificationCard
                         verificationCode={verificationCode}
                         onBack={handleBackFromVerification}
                     />
-                ) : !selectedProfile && !showClaimProfile ? (
+                ) : showClaimProfile ? (
                     <>
-                        <Title level="3" className="font-semibold">{t('profileWorkflow.myProfiles')}</Title>
+                        <button
+                            className="text-primary mt-4 mb-4 flex cursor-pointer items-center text-sm font-medium"
+                            onClick={() => setShowClaimProfile(false)}
+                        >
+                            {`< ${t('profileWorkflow.back')}`}
+                        </button>
+
+                        <ProfileSearchBar
+                            autoFocus={true}
+                            showRingOnFocus={true}
+                            handleSearch={(query) =>
+                                handleSearchProfiles(query)
+                            }
+                        />
+
+                        <div className="mt-4 space-y-2">
+                            {profileSearchResults.map((profile, index) => (
+                                <div
+                                    key={index}
+                                    className={`w-full sm:max-w-[400px] lg:max-w-[500px]`}
+                                >
+                                    <ProfileCard
+                                        profile={profile}
+                                        onSelect={() => {
+                                            setViewProposal(false);
+                                            handleToggleClaimForm(profile);
+                                        }}
+                                        className={
+                                            profile?.claimed_by
+                                                ? 'cursor-not-allowed'
+                                                : 'cursor-pointer'
+                                        }
+                                    >
+                                        <div className="ml-6 flex-shrink-0">
+                                            <span
+                                                className={`rounded-full px-3 py-1 text-sm ${
+                                                    !profile?.claimed_by
+                                                        ? 'cursor-pointer bg-green-100 text-green-600'
+                                                        : 'cursor-not-allowed bg-red-100 text-red-600'
+                                                }`}
+                                            >
+                                                {!profile?.claimed_by
+                                                    ? t(
+                                                          'profileWorkflow.claimProfile',
+                                                      )
+                                                    : t(
+                                                          'profileWorkflow.unavailable',
+                                                      )}
+                                            </span>
+                                        </div>
+                                    </ProfileCard>
+
+                                    {claimProfile?.hash === profile.hash &&
+                                        profile.hash && (
+                                            <ClaimProfileForm
+                                                profile={profile}
+                                                onVerificationCodeUpdate={
+                                                    setVerificationCode
+                                                }
+                                                onShowVerification={
+                                                    setShowVerification
+                                                }
+                                            />
+                                        )}
+                                </div>
+                            ))}
+                        </div>
+                    </>
+                ) : (
+                    <>
+                        <Title level="3" className="font-semibold">
+                            {t('profileWorkflow.myProfiles')}
+                        </Title>
                         <div className="my-2 border-t border-gray-300"></div>
                         <ProfileList
-                            profiles={claimedProfiles}
-                            onSelectProfile={(profileName) => {
-                                const profile = claimedProfiles.find(p => p.name === profileName) || null;
-                                setSelectedProfile(profile);
-                            }}
-                            selectedProfile={selectedProfile ? (selectedProfile as Profile).name : null}
+                            profiles={profiles.data || []}
+                            onProfileClick={handleProfileSelect}
                         />
                         <div className="my-2 border-t border-gray-300"></div>
 
                         <div className="mt-5 text-center">
                             <button
-                                className="text-sm font-medium border-b border-current border-dotted cursor-pointer text-primary"
+                                className="text-primary cursor-pointer border-b border-dotted border-current text-sm font-medium"
                                 onClick={() => setShowClaimProfile(true)}
                             >
-                                {t('completedProjectNfts.claimProfile')}
+                                {!profiles?.data || profiles?.data?.length === 0
+                                    ? t('completedProjectNfts.claimProfile')
+                                    : t(
+                                          'completedProjectNfts.claimAnotherProfile',
+                                      )}
                             </button>
                         </div>
-                    </>
-                ) : showClaimProfile ? (
-                    <>
-                        <button
-                            className="flex items-center mt-4 text-sm font-medium cursor-pointer text-primary"
-                            onClick={() => setShowClaimProfile(false)}
-                        >
-                            &larr; {t('profileWorkflow.back')}
-                        </button>
-
-                        <ProfileSearchBar />
-
-                        <div className="mt-4 space-y-2">
-                            {allProfiles
-                                .filter((profile) => profile.status !== "claimed")
-                                .map((profile, index) => (
-                                    <div key={index} className="w-full sm:max-w-[400px] lg:max-w-[500px]">
-                                        <ProfileCard
-                                            profile={profile}
-                                            onSelect={() => handleProfileClick(profile)}
-                                            isSelected={formProfile === profile.name}
-                                            showStatusBadge={true}
-                                        />
-                                        {formProfile === profile.name && (
-                                            <ClaimProfileForm
-                                                profile={profile}
-                                                onClaim={handleClaimProfile}
-                                            />
-                                        )}
-                                    </div>
-                                ))}
-                        </div>
-                    </>
-                ) : (
-                    <>
-                        <button
-                            className="flex items-center mt-4 text-sm font-medium cursor-pointer text-primary"
-                            onClick={() => setSelectedProfile(null)}
-                        >
-                            &larr; {t('profileWorkflow.back')}
-                        </button>
-                        <div className="w-full mt-2 card-container">
-                            <ProposalSearchBar
-                                autoFocus={true}
-                                showRingOnFocus={true}
-                                handleSearch={(query) => console.log(query)}
-                                focusState={(isFocused) => console.log(isFocused)}
-                            />
-                        </div>
-
-                        <p className="mt-2">
-                            {t('profileWorkflow.selectProposal')}
-                            <span className="inline-block px-1 m-1 text-xs border border-gray-200 rounded">
-                                2/3
-                            </span>
-                        </p>
-
-                        <ProposalList
-                            proposals={[]}
-                        />
                     </>
                 )}
             </div>

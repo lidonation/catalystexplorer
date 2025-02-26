@@ -22,15 +22,19 @@ class FundSeeder extends Seeder
     {
         $date = Carbon::make(now());
         $funds = Fund::factory()
-            ->count(5)
+            ->count(fake()->numberBetween(6, 15))
             ->recycle(User::factory()->create())
             ->sequence(fn (Sequence $sequence) => [
                 'launched_at' => $date->subMonths($sequence->count + 1),
             ])
             ->create();
         $funds->each(function (Fund $fund) {
-            if ($imageLink = $this->getRandomImageLink()) {
-                $fund->addMediaFromUrl($imageLink)->toMediaCollection('hero');
+            if ($heroImageLink = $this->getRandomImageLink()) {
+                $fund->addMediaFromUrl($heroImageLink)->toMediaCollection('hero');
+            }
+
+            if ($bannerImageLink = $this->getRandomBannerImageLink()) {
+                $fund->addMediaFromUrl($bannerImageLink)->toMediaCollection('banner');
             }
         });
     }

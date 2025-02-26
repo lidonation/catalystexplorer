@@ -5,7 +5,7 @@ import GroupFilters from '@/Pages/Groups/Partials/GroupFilters';
 
 export function useSearchOptions<T>(domain?: string) {
     const [searchTerm, setSearchTerm] = useState('');
-    const [hashes, setHashes] = useState<string[]>([]);
+    const [hashes, setHashes] = useState([]);
     const [options, setOptions] = useState<T[]>([]);
 
     // Helper to get the correct route name based on domain
@@ -32,12 +32,12 @@ export function useSearchOptions<T>(domain?: string) {
     useEffect(() => {
 
         const fetchData = async () => {
-            const routeName = getRouteName(domain);
+            const routeName = domain === 'ideascale-profiles' 
+                ? 'api.ideascaleProfiles.index' 
+                : `api.${domain}`;
+            
             const response = await resolvePromise<ApiPaginatedData<T>>(
-                requestManager.sendRequest('get', route(routeName, { 
-                    search: searchTerm, 
-                    hashes: hashes
-                }))
+                requestManager.sendRequest('get', route(routeName, { search: searchTerm, hashes }))
             );
 
             if (response) {
@@ -49,18 +49,12 @@ export function useSearchOptions<T>(domain?: string) {
             }
         };
 
-        if (searchTerm.length > 0 || hashes.length > 0) {
+        if (searchTerm.length || hashes.length) {
             fetchData();
-        } else {
-            setOptions([]);
         }
+
+
     }, [domain, searchTerm, hashes]);
 
-    return { 
-        searchTerm, 
-        setSearchTerm, 
-        options, 
-        hashes,
-        setHashes
-    };
+    return { searchTerm, setSearchTerm, options, hashes, setHashes };
 }

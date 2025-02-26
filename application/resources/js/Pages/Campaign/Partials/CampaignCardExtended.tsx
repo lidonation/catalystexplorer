@@ -28,7 +28,7 @@ const CampaignCard: React.FC<CampaignCardProps> = ({
 }) => {
     const {t} = useTranslation();
 
-    const heroImageUrl = fund?.hero_img_url;
+    const heroImageUrl = campaign?.hero_img_url ?? fund?.hero_img_url;
 
     const segments = [
         {
@@ -64,7 +64,7 @@ const CampaignCard: React.FC<CampaignCardProps> = ({
                     {heroImageUrl ? (
                         <img
                             src={heroImageUrl}
-                            alt={fund.title}
+                            alt={`Cat: ${fund.title}`}
                             className="h-full w-full object-cover"
                         />
                     ) : (
@@ -77,8 +77,8 @@ const CampaignCard: React.FC<CampaignCardProps> = ({
                 <section className="space-y-6">
                     <div className='flex flex-row justify-between gap-2'>
                         <KeyValue valueKey={t('proposals.filters.budget')}
-                                  value={currency(campaign.amount, 2, campaign.currency)}/>
-                        <KeyValue valueKey='Total Proposals' value={campaign.proposals_count}/>
+                                  value={currency(campaign.amount ?? 0, 2, campaign.currency ?? '')}/>
+                        <KeyValue valueKey='Total Proposals' value={campaign.proposals_count ?? 0}/>
                     </div>
 
                     <div>
@@ -136,7 +136,7 @@ const CampaignCard: React.FC<CampaignCardProps> = ({
                             title={`${t('distributed')} v. ${t('awarded')}`}
                             numerator={campaign.total_distributed}
                             denominator={campaign.total_awarded}
-                            currency={campaign.currency}
+                            currency={campaign.currency ?? ''}
                         />}
                     </div>
 
@@ -145,7 +145,7 @@ const CampaignCard: React.FC<CampaignCardProps> = ({
                             title={`${t('awarded')} v. ${t('requested')}`}
                             numerator={campaign.total_awarded}
                             denominator={campaign.total_requested}
-                            currency={campaign.currency}
+                            currency={campaign.currency ?? ''}
                         />}
                     </div>
                 </section>

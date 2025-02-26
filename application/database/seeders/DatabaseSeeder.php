@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Log;
 
 class DatabaseSeeder extends Seeder
@@ -15,14 +16,14 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         $seeders = [
-            RoleSeeder::class,
-            PermissionSeeder::class,
-            UserSeeder::class,
-            AnnouncementSeeder::class,
-            MetricSeeder::class,
-            ProposalSeeder::class,
-            BookmarkItemSeeder::class,
+            // RoleSeeder::class,
+            // PermissionSeeder::class,
+            // UserSeeder::class,
+            // AnnouncementSeeder::class,
+            // MetricSeeder::class,
+            // ProposalSeeder::class,
             BookmarkCollectionSeeder::class,
+            BookmarkItemSeeder::class,
             RuleSeeder::class,
             MonthlyReportSeeder::class,
             RegistrationSeeder::class,
@@ -40,6 +41,15 @@ class DatabaseSeeder extends Seeder
                 Log::error($e);
                 $this->command->error("Error running $seeder: ".$e->getMessage());
             }
+        }
+
+        $this->command->info('Running GenerateConnections command...');
+        try {
+            Artisan::call('ln:generate-connections', ['--clear' => true]);
+            $this->command->info('GenerateConnections command completed successfully.');
+        } catch (\Throwable $e) {
+            Log::error($e);
+            $this->command->error('Error running GenerateConnections: '.$e->getMessage());
         }
     }
 }

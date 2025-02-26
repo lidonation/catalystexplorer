@@ -4,14 +4,18 @@ declare(strict_types=1);
 
 namespace App\Interfaces\Http\Controllers;
 
+use App\DataTransferObjects\IdeascaleProfileData;
 use App\DataTransferObjects\ProposalData;
+use App\Enums\CatalystCurrencySymbols;
 use App\Enums\ProposalSearchParams;
-use App\Http\Controllers\Stringable;
+use App\Enums\ProposalStatus;
 use App\Models\IdeascaleProfile;
 use App\Models\Proposal;
+use App\Models\User;
 use App\Repositories\ProposalRepository;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Fluent;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -28,19 +32,51 @@ class CompletetProjectNftsController extends Controller
 
     protected ?string $sortOrder = 'desc';
 
-    protected null|string|Stringable $search = null;
+    protected ?string $search = null;
+
+    protected array $claimedIdeascaleProfiles = [];
+
+    protected ?User $user;
 
     /**
      * Display the user's profile form.
      */
+    public function __construct()
+    {
+        $this->user = Auth::user();
+    }
+
     public function index(Request $request): Response
     {
         $this->getProps($request);
+
         $proposals = $this->getClaimedIdeascaleProfilesProposals();
+
+        $claimedIdeascaleProfiles = $this->getClaimedIdeascaleProfiles();
+
+        $amountDistributedAda = Proposal::whereHas('fund', function ($query) {
+            $query->where('currency', CatalystCurrencySymbols::ADA->name);
+        })->sum('amount_received');
+
+        $amountDistributedUsd = Proposal::whereHas('fund', function ($query) {
+            $query->where('currency', CatalystCurrencySymbols::USD->name);
+        })->sum('amount_received');
+
+        $completedProposalsCount = Proposal::where('status', ProposalStatus::complete()->value)
+            ->count();
+
+        $membersFunded = IdeaScaleProfile::whereHas('proposals', function ($query) {
+            $query->whereNotNull('funded_at');
+        })->count();
 
         return Inertia::render('CompletedProjectNfts/Index', [
             'proposals' => $proposals,
             'filters' => $this->queryParams,
+            'ideascaleProfiles' => $claimedIdeascaleProfiles,
+            'amountDistributedAda' => $amountDistributedAda,
+            'amountDistributedUsd' => $amountDistributedUsd,
+            'completedProposalsCount' => $completedProposalsCount,
+            'communityMembersFunded' => $membersFunded,
         ]);
     }
 
@@ -51,7 +87,7 @@ class CompletetProjectNftsController extends Controller
 
     public function getClaimedIdeascaleProfilesProposals()
     {
-        $user = auth()->user();
+        $user = $this->user;
 
         $args = [];
 
@@ -60,10 +96,12 @@ class CompletetProjectNftsController extends Controller
         $limit = 3;
 
         if ($user) {
-            $claimedIdeascaleIds = IdeascaleProfile::where('claimed_by', $user->id)->pluck('ideascale_id')->toArray();
+            $claimedIdeascaleIds = IdeascaleProfile::where('claimed_by_id', $user->id)
+                ->pluck('id')
+                ->filter()
+                ->toArray();
 
             $claimedIdeascaleIdsString = implode(',', $claimedIdeascaleIds);
-
             $filter = "users.id IN [{$claimedIdeascaleIdsString}]";
 
             $args['filter'] = $filter;
@@ -127,5 +165,32 @@ class CompletetProjectNftsController extends Controller
 
             $this->sortOrder = $sort->last();
         }
+    }
+
+    public function getClaimedIdeascaleProfiles()
+    {
+        $page = 1;
+
+        $limit = 3;
+
+        $user = $this->user;
+
+        if ($user) {
+            $this->claimedIdeascaleProfiles = IdeascaleProfile::where('claimed_by_id', $user->id)
+                ->withCount(['proposals'])
+                ->get()
+                ->toArray();
+        }
+
+        $pagination = new LengthAwarePaginator(
+            IdeascaleProfileData::collect($this->claimedIdeascaleProfiles),
+            $limit,
+            $page,
+            [
+                'pageName' => 'p',
+            ]
+        );
+
+        return $pagination->onEachSide(1)->toArray();
     }
 }

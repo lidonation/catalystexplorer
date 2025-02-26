@@ -76,6 +76,8 @@ class ProposalRepository extends Repository
                     'campaign.amount',
                     'campaign.currency',
                     'campaign.proposals_count',
+                    'campaign.total_awarded',
+                    'campaign.total_distributed',
                 ];
                 $args['facets'] = [
                     'tags',

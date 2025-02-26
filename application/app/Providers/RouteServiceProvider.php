@@ -41,7 +41,7 @@ class RouteServiceProvider extends ServiceProvider
             try {
                 $locale = app()->getLocale();
                 $model = match (Route::currentRouteName()) {
-                    "{$locale}.ideascaleProfiles.show",
+                    "{$locale}.ideascaleProfiles.show", 'api.ideascaleProfiles.claim',
                     "{$locale}.ideascaleProfiles.proposals",
                     "{$locale}.ideascaleProfiles.groups",
                     "{$locale}.ideascaleProfiles.reviews",
@@ -50,6 +50,7 @@ class RouteServiceProvider extends ServiceProvider
                     "{$locale}.ideascaleProfiles.reports",
                     "{$locale}.ideascaleProfiles.cam",
                     "{$locale}.ideascaleProfiles.connections" => IdeascaleProfile::class,
+
                     default => null,
                 };
 
