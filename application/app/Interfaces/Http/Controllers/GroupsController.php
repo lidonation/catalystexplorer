@@ -142,11 +142,12 @@ class GroupsController extends Controller
         if (str_contains($path, '/ideascale-profiles')) {
             return Inertia::render('Groups/IdeascaleProfiles/Index', [
                 'group' => GroupData::from($group),
-                'ideascaleProfiles' => Inertia::optional(fn () => to_length_aware_paginator(
-                    IdeascaleProfileData::collect(
-                        $group->ideascale_profiles()->with([])->paginate(12)
+                'ideascaleProfiles' => Inertia::optional(
+                    fn () => to_length_aware_paginator(
+                        IdeascaleProfileData::collect(
+                            $group->ideascale_profiles()->with([])->paginate(12)
+                        )
                     )
-                )
                 ),
             ]);
         }
@@ -154,11 +155,12 @@ class GroupsController extends Controller
         if (str_contains($path, '/reviews')) {
             return Inertia::render('Groups/Reviews/Index', [
                 'group' => GroupData::from($group),
-                'reviews' => Inertia::optional(fn () => to_length_aware_paginator(
-                    ReviewData::collect(
-                        Review::query()->paginate(8)
+                'reviews' => Inertia::optional(
+                    fn () => to_length_aware_paginator(
+                        ReviewData::collect(
+                            Review::query()->paginate(8)
+                        )
                     )
-                )
                 ),
             ]);
         }
@@ -166,11 +168,12 @@ class GroupsController extends Controller
         if (str_contains($path, '/locations')) {
             return Inertia::render('Groups/Locations/Index', [
                 'group' => GroupData::from($group),
-                'locations' => Inertia::optional(fn () => to_length_aware_paginator(
-                    LocationData::collect(
-                        $group->locations()->paginate(12)
+                'locations' => Inertia::optional(
+                    fn () => to_length_aware_paginator(
+                        LocationData::collect(
+                            $group->locations()->paginate(12)
+                        )
                     )
-                )
                 ),
             ]);
         }
@@ -310,23 +313,23 @@ class GroupsController extends Controller
         }
 
         if (! empty($this->queryParams[ProposalSearchParams::CAMPAIGNS()->value])) {
-            $campaignIds = ($this->queryParams[ProposalSearchParams::CAMPAIGNS()->value]);
-            $filters[] = '('.implode(' OR ', array_map(fn ($c) => "proposals.campaign.id = {$c}", $campaignIds)).')';
+            $campaignHashes = ($this->queryParams[ProposalSearchParams::CAMPAIGNS()->value]);
+            $filters[] = '('.implode(' OR ', array_map(fn ($c) => "proposals.campaign.hash = {$c}", $campaignHashes)).')';
         }
 
         if (! empty($this->queryParams[ProposalSearchParams::TAGS()->value])) {
-            $tagIds = ($this->queryParams[ProposalSearchParams::TAGS()->value]);
-            $filters[] = '('.implode(' OR ', array_map(fn ($c) => "tags.id = {$c}", $tagIds)).')';
+            $tagHashes = ($this->queryParams[ProposalSearchParams::TAGS()->value]);
+            $filters[] = '('.implode(' OR ', array_map(fn ($c) => "tags.hash = {$c}", $tagHashes)).')';
         }
 
         if (! empty($this->queryParams[ProposalSearchParams::IDEASCALE_PROFILES()->value])) {
-            $ideascaleProfileIds = implode(',', $this->queryParams[ProposalSearchParams::IDEASCALE_PROFILES()->value]);
-            $filters[] = "ideascale_profiles.id IN [{$ideascaleProfileIds}]";
+            $ideascaleProfileHashes = implode(',', $this->queryParams[ProposalSearchParams::IDEASCALE_PROFILES()->value]);
+            $filters[] = "ideascale_profiles.hash IN [{$ideascaleProfileHashes}]";
         }
 
         if (! empty($this->queryParams[ProposalSearchParams::COMMUNITIES()->value])) {
-            $communityIds = implode(',', $this->queryParams[ProposalSearchParams::COMMUNITIES()->value]);
-            $filters[] = "proposals.communities.id IN [{$communityIds}]";
+            $communityHashes = implode(',', $this->queryParams[ProposalSearchParams::COMMUNITIES()->value]);
+            $filters[] = "proposals.communities.hash IN [{$communityHashes}]";
         }
 
         if (! empty($this->queryParams[ProposalSearchParams::COHORT()->value])) {

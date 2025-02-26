@@ -18,7 +18,7 @@ class CampaignData extends Data
         #[TypeScriptOptional]
         public ?int $fund_id,
 
-        public ?string $title,
+        public string $title,
 
         public ?string $meta_title,
 
@@ -31,6 +31,9 @@ class CampaignData extends Data
 
         #[TypeScriptOptional]
         public ?string $content,
+
+        #[TypeScriptOptional]
+        public ?string $hero_img_url,
 
         public ?float $amount,
 
@@ -55,9 +58,9 @@ class CampaignData extends Data
         public ?float $total_requested,
 
         #[MapInputName('totalAwarded')]
-        public ?float $total_awarded,
+        public float $total_awarded,
 
         #[MapInputName('totalDistributed')]
-        public ?float $total_distributed,
+        public float $total_distributed,
     ) {}
 }

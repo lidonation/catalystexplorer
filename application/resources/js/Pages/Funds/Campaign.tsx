@@ -23,15 +23,15 @@ interface CampaignPageProps extends Record<string, unknown> {
 }
 
 export default function Campaign({
-                                     fund,
-                                     campaign,
-                                     proposals,
-                                 }: PageProps<CampaignPageProps>) {
+     fund,
+     campaign,
+     proposals,
+ }: PageProps<CampaignPageProps>) {
     const {t} = useTranslation();
 
     return (
         <>
-            <Head title={fund.title}/>
+            <Head title={`Cat: ${fund.title}`}/>
 
             <div className="flex w-full flex-col gap-y-4 rounded-lg p-4 lg:gap-y-12 lg:p-8 page page-campaign">
                 <div className="relative grid grid-cols-9 gap-5">

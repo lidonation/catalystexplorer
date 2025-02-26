@@ -24,7 +24,7 @@ const CampaignCard: React.FC<CampaignCardProps> = ({
 }) => {
     const { t } = useTranslation();
 
-    const heroImageUrl = fund?.hero_img_url;
+    const heroImageUrl = campaign?.hero_img_url ?? fund?.hero_img_url;
 
     const segments = [
         {
@@ -59,7 +59,7 @@ const CampaignCard: React.FC<CampaignCardProps> = ({
                 {heroImageUrl ? (
                     <img
                         src={heroImageUrl}
-                        alt={fund.title}
+                        alt={`Cat: ${fund.title}`}
                         className="h-full w-full object-cover"
                     />
                 ) : (
@@ -113,7 +113,7 @@ const CampaignCard: React.FC<CampaignCardProps> = ({
                 </div>
 
                 <div className="mt-6">
-                    {(campaign.total_distributed && campaign.total_awarded) && <AmountComparisonWithBar
+                    {<AmountComparisonWithBar
                         title="Distributed vs Awarded"
                         numerator={campaign.total_distributed}
                         denominator={campaign.total_awarded}

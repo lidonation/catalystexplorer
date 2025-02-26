@@ -23,7 +23,7 @@ const ProfileCard: React.FC<ProfileCardProps> = React.memo(
                 <div className="flex flex-1 items-center space-x-3">
                     <div className="flex h-12 w-12 items-center justify-center overflow-hidden rounded-full bg-gradient-to-r from-gray-100 to-gray-900">
                         <UserAvatar
-                            imageUrl={profile?.profile_photo_url}
+                            imageUrl={profile?.hero_img_url}
                             size="size-12"
                         />
                     </div>

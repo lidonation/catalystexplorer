@@ -331,7 +331,17 @@
             "primaryProposalCountHighToLow": "Primary Proposal Count: High to Low",
             "coProposalCountLowToHigh": "Co-Proposal Count: Low to High",
             "coProposalCountHighToLow": "Co-Proposal Count: High to Low"
-        }
+        },
+        "tabs": {
+            "proposals": "Proposals",
+            "connections": "Connections",
+            "groups": "Groups",
+            "communities": "Communities",
+            "reviews": "Reviews",
+            "milestones": "Milestones",
+            "reports": "Reports",
+            "cam": "Cam"
+        }   
     },
     "groups": {
         "groups": "Groups",

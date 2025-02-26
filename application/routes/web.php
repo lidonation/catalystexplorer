@@ -9,6 +9,7 @@ use App\Interfaces\Http\Controllers\GroupsController;
 use App\Interfaces\Http\Controllers\HomeController;
 use App\Interfaces\Http\Controllers\IdeascaleProfilesController;
 use App\Interfaces\Http\Controllers\JormungandrController;
+use App\Interfaces\Http\Controllers\MilestoneController;
 use App\Interfaces\Http\Controllers\ProposalsController;
 use App\Interfaces\Http\Controllers\ReviewsController;
 use App\Interfaces\Http\Controllers\SearchController;
@@ -76,8 +77,34 @@ Route::localized(
             Route::get('/', [IdeascaleProfilesController::class, 'index'])
                 ->name('index');
 
-            Route::get('/{ideascaleProfile}', [IdeascaleProfilesController::class, 'show'])
-                ->name('show');
+            Route::prefix('/{ideascaleProfile}')->group(function () {
+                Route::get('/', [IdeascaleProfilesController::class, 'show'])
+                    ->name('show');
+
+                Route::get('/proposals', [IdeascaleProfilesController::class, 'show'])
+                    ->name('proposals');
+
+                Route::get('/connections', [IdeascaleProfilesController::class, 'show'])
+                    ->name('connections');
+
+                Route::get('/groups', [IdeascaleProfilesController::class, 'show'])
+                    ->name('groups');
+
+                Route::get('/communities', [IdeascaleProfilesController::class, 'show'])
+                    ->name('communities');
+
+                Route::get('/reviews', [IdeascaleProfilesController::class, 'show'])
+                    ->name('reviews');
+
+                Route::get('/milestones', [IdeascaleProfilesController::class, 'show'])
+                    ->name('milestones');
+
+                Route::get('/reports', [IdeascaleProfilesController::class, 'show'])
+                    ->name('reports');
+
+                Route::get('/cam', [IdeascaleProfilesController::class, 'show'])
+                    ->name('cam');
+            });
         });
 
         Route::prefix('/reviews')->as('reviews.')->group(function () {
@@ -105,6 +132,12 @@ Route::localized(
 
         Route::get('/s', [SearchController::class, 'index'])
             ->name('search.index');
+
+        // Milestones
+        Route::prefix('/{milestones}')->group(function () {
+            Route::get('/', [MilestoneController::class, 'index'])
+                ->name('index');
+        });
     }
 );
 
