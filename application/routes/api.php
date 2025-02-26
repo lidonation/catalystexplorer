@@ -5,7 +5,6 @@ use App\Interfaces\Http\Controllers\Api\CommunityController;
 use App\Interfaces\Http\Controllers\Api\GroupController;
 use App\Interfaces\Http\Controllers\Api\IdeascaleProfilesController;
 use App\Interfaces\Http\Controllers\Api\TagController;
-use App\Interfaces\Http\Controllers\CompletetProjectNftsController;
 use App\Interfaces\Http\Controllers\GroupsController;
 use App\Interfaces\Http\Controllers\My\MyBookmarksController;
 use App\Interfaces\Http\Controllers\ProposalsController;
@@ -39,7 +38,7 @@ Route::prefix('api')->as('api.')->group(function () {
 
     Route::prefix('ideascale-profiles')->as('ideascaleProfiles.')->group(function () {
         Route::get('/', [IdeascaleProfilesController::class, 'ideascaleProfiles'])->name('index');
-        Route::get('/claimed-ideascale-profiles', [IdeascaleProfilesController::class, 'getClaimedIdeascaleProfiles'])->name('claimed');
+        Route::post('/claim-ideascale-profile/{ideascaleProfile}', [IdeascaleProfilesController::class, 'claimIdeascaleProfile'])->name('claim');
         Route::get('/{ideascaleProfile:id}', [IdeascaleProfilesController::class, 'ideascale_profile'])->name('show');
         Route::get('/{hash}/connections', [IdeascaleProfilesController::class, 'connections'])->name('connections');
     });
@@ -48,7 +47,4 @@ Route::prefix('api')->as('api.')->group(function () {
 
     Route::get('/fund-counts', [GroupsController::class, 'getFundsWithProposalsCount'])->name('fundCounts');
 
-    Route::prefix('completed-project-nfts')->as('completedProjectNfts.')->group(function () {
-        Route::post('/claim-ideascale-profile/{ideascaleProfile}', [CompletetProjectNftsController::class, 'claimIdeascaleProfile'])->name('claim');
-    });
 });

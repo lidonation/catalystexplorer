@@ -21,7 +21,7 @@ import ProposalData = App.DataTransferObjects.ProposalData;
 interface ProfileWorkflowProps {
     user: { name: string };
     proposals: PaginatedData<ProposalData[]>;
-    profiles: IdeascaleProfileData[]
+    profiles: PaginatedData<IdeascaleProfileData[]>;
 }
 const ProfileWorkflow: React.FC<ProfileWorkflowProps> = ({
     user,
@@ -57,8 +57,6 @@ const ProfileWorkflow: React.FC<ProfileWorkflowProps> = ({
                     },
                 },
             );
-
-            console.log(response?.data?.data);
 
             setProfileSearchResults(response?.data?.data || []);
         } catch (error) {
@@ -253,7 +251,7 @@ const ProfileWorkflow: React.FC<ProfileWorkflowProps> = ({
                         </Title>
                         <div className="my-2 border-t border-gray-300"></div>
                         <ProfileList
-                            profiles={profiles}
+                            profiles={profiles.data || []}
                             onProfileClick={handleProfileSelect}
                         />
                         <div className="my-2 border-t border-gray-300"></div>
@@ -263,7 +261,7 @@ const ProfileWorkflow: React.FC<ProfileWorkflowProps> = ({
                                 className="text-primary cursor-pointer border-b border-dotted border-current text-sm font-medium"
                                 onClick={() => setShowClaimProfile(true)}
                             >
-                                {!profiles || profiles?.length === 0
+                                {!profiles?.data || profiles?.data?.length === 0
                                     ? t('completedProjectNfts.claimProfile')
                                     : t(
                                           'completedProjectNfts.claimAnotherProfile',

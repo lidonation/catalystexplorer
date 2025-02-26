@@ -37,7 +37,7 @@ const ClaimProfileForm = ({ profile, onVerificationCodeUpdate, onShowVerificatio
         e.preventDefault();
     
         try {
-            const response = await axios.post(route('api.completedProjectNfts.claim', {ideascaleProfile: profile?.hash}), data, {
+            const response = await axios.post(route('api.ideascaleProfiles.claim', {ideascaleProfile: profile?.hash}), data, {
                 headers: {
                     'Content-Type': 'application/json', 
                 },
@@ -48,8 +48,6 @@ const ClaimProfileForm = ({ profile, onVerificationCodeUpdate, onShowVerificatio
         } catch (error) {
             console.error(error);
         }
-    
-        console.log(data);
     };
 
     return (
@@ -103,7 +101,7 @@ const ClaimProfileForm = ({ profile, onVerificationCodeUpdate, onShowVerificatio
                 </div>
 
                 {/* Social Links */}
-                <div className="mt-2 grid grid-cols-2 gap-4">
+                <div className="mt-2 grid grid-cols-1 lg:grid-cols-2 gap-4">
                     <div>
                         <label htmlFor="ideascaleProfile" className="text-sm">
                             {t('profileWorkflow.ideascaleProfile')}{' '}

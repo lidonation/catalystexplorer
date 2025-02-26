@@ -1,6 +1,6 @@
 import Paragraph from '@/Components/atoms/Paragraph';
 import RecordsNotFound from '@/Layouts/RecordsNotFound';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import ProfileCard from './ProfileCard';
 import IdeascaleProfileData = App.DataTransferObjects.IdeascaleProfileData;
@@ -20,7 +20,7 @@ const ProfileList: React.FC<ProfileListProps> = ({
 
     if (!Array.isArray(profiles) || profiles?.length === 0) {
         return (
-            <div className="rounded-lg border border-gray-200 p-4 text-center text-red-600">
+            <div className="rounded-lg border border-gray-200 p-4 text-center text-gray-600">
                 <RecordsNotFound />
                 <Paragraph>{t('profileWorkflow.noProfilesFound')}</Paragraph>
             </div>
