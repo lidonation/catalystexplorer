@@ -14,9 +14,11 @@ return new class extends Migration
     {
         Schema::create('milestone_poas_reviews', function (Blueprint $table) {
             $table->bigInteger('id', false);
+            $table->foreignId('milestone_poas_id');
+            $table->foreignId('proposal_id')
+                ->nullable();
             $table->boolean('content_approved');
             $table->text('content_comment');
-            $table->foreignId('milestone_poas_id');
             $table->enum('role', [MilestoneRoleEnum::from(0)->role(), MilestoneRoleEnum::from(1)->role(), MilestoneRoleEnum::from(2)->role(), MilestoneRoleEnum::from(3)->role(), MilestoneRoleEnum::from(4)->role()]);
             $table->timestamp('created_at');
             $table->string('user_id');

@@ -16,6 +16,16 @@ class Milestone extends Model
         'poas',
     ];
 
+    public function proposal(): BelongsTo
+    {
+        return $this->belongsTo(Proposal::class, 'proposal_id', 'id');
+    }
+
+    public function fund(): BelongsTo
+    {
+        return $this->belongsTo(Fund::class, 'fund_id', 'id');
+    }
+
     public function parent_milestone(): BelongsTo
     {
         return $this->belongsTo(ProposalMilestone::class, 'proposal_milestone_id', 'id');

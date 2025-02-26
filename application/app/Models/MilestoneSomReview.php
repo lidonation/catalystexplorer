@@ -14,4 +14,9 @@ class MilestoneSomReview extends Model
     {
         return $this->belongsTo(Milestone::class, 'milestone_id', 'id');
     }
+
+    public function proposal(): BelongsTo
+    {
+        return $this->belongsTo(Proposal::class, 'proposal_id', 'id');
+    }
 }

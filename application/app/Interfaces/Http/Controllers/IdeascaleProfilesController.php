@@ -110,10 +110,11 @@ class IdeascaleProfilesController extends Controller
         }
 
         if (str_contains($path, '/milestones')) {
-            $proposalIds = $ideascaleProfile->own_proposals->pluck('id');
-            $proposalMilestones = ProposalMilestone::whereIn('proposal_id', $proposalIds)
-                ->with('proposal', 'milestones')
-                ->get();
+            $proposalMilestones = ProposalMilestone::whereHas('proposal', function ($query) use ($ideascaleProfile) {
+                $query->whereIn('id', $ideascaleProfile->own_proposals->pluck('id'));
+            })
+            ->with(['proposal', 'milestones'])
+            ->get();
 
             return Inertia::render('IdeascaleProfile/Milestones/Index', [
                 'ideascaleProfile' => IdeascaleProfileData::from($ideascaleProfile),
