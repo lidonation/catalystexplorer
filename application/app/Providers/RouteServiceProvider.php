@@ -41,7 +41,8 @@ class RouteServiceProvider extends ServiceProvider
             try {
                 $locale = app()->getLocale();
                 $model = match (Route::currentRouteName()) {
-                    "{$locale}.ideascaleProfiles.show", 'api.ideascaleProfiles.claim',
+                    "{$locale}.ideascaleProfiles.show",
+                    'api.ideascaleProfiles.claim',
                     "{$locale}.ideascaleProfiles.proposals",
                     "{$locale}.ideascaleProfiles.groups",
                     "{$locale}.ideascaleProfiles.reviews",
