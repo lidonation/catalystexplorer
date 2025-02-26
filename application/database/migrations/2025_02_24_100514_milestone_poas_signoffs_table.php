@@ -15,6 +15,8 @@ return new class extends Migration
             $table->bigInteger('id', false);
             $table->foreignId('milestone_poas_id')
                 ->nullable();
+            $table->foreignId('proposal_id')
+                ->nullable();
             $table->timestamp('created_at');
             $table->string('user_id');
         });
