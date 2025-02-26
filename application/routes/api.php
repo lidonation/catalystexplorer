@@ -39,6 +39,7 @@ Route::prefix('api')->as('api.')->group(function () {
 
     Route::prefix('ideascale-profiles')->as('ideascaleProfiles.')->group(function () {
         Route::get('/', [IdeascaleProfilesController::class, 'ideascaleProfiles'])->name('index');
+        Route::get('/claimed-ideascale-profiles', [IdeascaleProfilesController::class, 'getClaimedIdeascaleProfiles'])->name('claimed');
         Route::get('/{ideascaleProfile:id}', [IdeascaleProfilesController::class, 'ideascale_profile'])->name('show');
         Route::get('/{hash}/connections', [IdeascaleProfilesController::class, 'connections'])->name('connections');
     });

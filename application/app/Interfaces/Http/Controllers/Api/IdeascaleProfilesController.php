@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Interfaces\Http\Controllers\Api;
 
+use App\DataTransferObjects\IdeascaleProfileData;
 use App\Interfaces\Http\Controllers\Controller;
 use App\Interfaces\Http\Resources\IdeascaleProfileResource;
 use App\Models\IdeascaleProfile;
@@ -11,6 +12,8 @@ use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\Routing\ResponseFactory;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 
 class IdeascaleProfilesController extends Controller
@@ -54,5 +57,34 @@ class IdeascaleProfilesController extends Controller
         $connections = $ideascaleProfile->getConnectionsData($request);
 
         return $connections;
+    }
+
+    public function getClaimedIdeascaleProfiles()
+    {
+        $page = 1;
+
+        $limit = 6;
+
+        $user = Auth::user();
+
+        $claimedIdeascaleProfiles = [];
+
+        if ($user) {
+            $claimedIdeascaleProfiles = IdeascaleProfile::where('claimed_by_id', $user->id)
+                ->withCount(['proposals'])
+                ->get()
+                ->toArray();
+        }
+
+        $pagination = new LengthAwarePaginator(
+            IdeascaleProfileData::collect($claimedIdeascaleProfiles),
+            $limit,
+            $page,
+            [
+                'pageName' => 'p',
+            ]
+        );
+
+        return $pagination->onEachSide(1)->toArray();
     }
 }

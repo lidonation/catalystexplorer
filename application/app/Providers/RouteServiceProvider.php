@@ -40,8 +40,8 @@ class RouteServiceProvider extends ServiceProvider
         Route::bind('ideascaleProfile', function ($hashId) {
             try {
                 $locale = app()->getLocale();
-                $model = match (Route::currentRouteName()) {
-                    "{$locale}.ideascaleProfiles.show", 'api.completedProjectNfts.claim' => IdeascaleProfile::class,
+                $model = match (Route::currentRouteName() ?? '') {
+                    "{$locale}.ideascaleProfiles.show", 'api.completedProjectNfts.claim', 'api.ideascaleProfiles.claimed' => IdeascaleProfile::class,
 
                     default => null,
                 };

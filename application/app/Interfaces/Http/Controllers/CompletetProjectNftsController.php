@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Interfaces\Http\Controllers;
 
-use App\DataTransferObjects\IdeascaleProfileData;
 use App\DataTransferObjects\ProposalData;
 use App\Enums\CatalystCurrencySymbols;
 use App\Enums\ProposalSearchParams;
@@ -39,9 +38,6 @@ class CompletetProjectNftsController extends Controller
 
     protected ?User $user;
 
-    /**
-     * Display the user's profile form.
-     */
     public function __construct()
     {
         $this->user = Auth::user();
@@ -52,8 +48,6 @@ class CompletetProjectNftsController extends Controller
         $this->getProps($request);
 
         $proposals = $this->getClaimedIdeascaleProfilesProposals();
-
-        $claimedIdeascaleProfiles = $this->getClaimedIdeascaleProfiles();
 
         $amountDistributedAda = Proposal::whereHas('fund', function ($query) {
             $query->where('currency', CatalystCurrencySymbols::ADA->name);
@@ -73,7 +67,6 @@ class CompletetProjectNftsController extends Controller
         return Inertia::render('CompletedProjectNfts/Index', [
             'proposals' => $proposals,
             'filters' => $this->queryParams,
-            'ideascaleProfiles' => $claimedIdeascaleProfiles,
             'amountDistributedAda' => $amountDistributedAda,
             'amountDistributedUsd' => $amountDistributedUsd,
             'completedProposalsCount' => $completedProposalsCount,
@@ -97,7 +90,7 @@ class CompletetProjectNftsController extends Controller
         $limit = 3;
 
         if ($user) {
-            $claimedIdeascaleIds = IdeascaleProfile::where('claimed_by', $user->id)
+            $claimedIdeascaleIds = IdeascaleProfile::where('claimed_by_id', $user->id)
                 ->pluck('id')
                 ->filter()
                 ->toArray();
@@ -166,33 +159,6 @@ class CompletetProjectNftsController extends Controller
 
             $this->sortOrder = $sort->last();
         }
-    }
-
-    public function getClaimedIdeascaleProfiles()
-    {
-        $page = 1;
-
-        $limit = 3;
-
-        $user = $this->user;
-
-        if ($user) {
-            $this->claimedIdeascaleProfiles = IdeascaleProfile::where('claimed_by', $user->id)
-                ->withCount(['proposals'])
-                ->get()
-                ->toArray();
-        }
-
-        $pagination = new LengthAwarePaginator(
-            IdeascaleProfileData::collect($this->claimedIdeascaleProfiles),
-            $limit,
-            $page,
-            [
-                'pageName' => 'p',
-            ]
-        );
-
-        return $pagination->onEachSide(1)->toArray();
     }
 
     public function claimIdeascaleProfile(Request $request, IdeascaleProfile $ideascaleProfile)

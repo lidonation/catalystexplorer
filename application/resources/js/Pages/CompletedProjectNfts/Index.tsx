@@ -19,11 +19,11 @@ import Paragraph from '@/Components/atoms/Paragraph';
 import ProposalData = App.DataTransferObjects.ProposalData; 
 import IdeascaleProfileData= App.DataTransferObjects.IdeascaleProfileData;
 import { currency } from '@/utils/currency';
+import axios from 'axios';
 
 
 interface CompletedProjectNftsPageProps extends Record<string, unknown> {
     proposals: PaginatedData<ProposalData[]>;
-    ideascaleProfiles: PaginatedData<IdeascaleProfileData[]>
     filters: SearchParams;
     amountDistributedAda: number;
     amountDistributedUsd: number;
@@ -34,7 +34,6 @@ interface CompletedProjectNftsPageProps extends Record<string, unknown> {
 export default function Index({
     proposals,
     filters,
-    ideascaleProfiles,
     amountDistributedAda,
     amountDistributedUsd,
     completedProposalsCount,
@@ -44,10 +43,26 @@ export default function Index({
     const { t } = useTranslation();
     const { auth } = usePage().props;
     const user = auth?.user;
-    // Check authentication status
     const isAuthenticated = !!user;
 
     const [currentStep, setCurrentStep] = useState<1 | 2 | 3>(isAuthenticated ? 2 : 1);
+    const [ideascaleProfiles, setIdeascaleProfiles] = useState<IdeascaleProfileData[]>([]);
+
+    useEffect(()=>{
+        const handleFetchProfiles = async () => {
+            try {
+                const response = await axios.get(
+                    route('api.ideascaleProfiles.claimed')
+                );
+    
+                setIdeascaleProfiles(response?.data?.data || []);
+            } catch (error) {
+                console.error('Error fetching profiles:', error);
+            }
+        };
+
+        handleFetchProfiles();
+    }, [])
 
     useEffect(() => {
         if (isAuthenticated && currentStep === 1) {
