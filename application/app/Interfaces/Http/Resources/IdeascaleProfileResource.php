@@ -33,7 +33,7 @@ class IdeascaleProfileResource extends JsonResource
             'telegram' => $this->telegram,
             'title' => $this->title,
             'proposals_count' => $this->proposals_count,
-            'profile_photo_url' => $this->profile_photo_url,
+            'hero_img_url' => $this->hero_img_url,
         ];
     }
 }

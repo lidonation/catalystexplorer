@@ -10,7 +10,7 @@ import { FormEventHandler, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import TextInput from "@/Components/atoms/TextInput";
 import Title from './atoms/Title';
-import { generateLocalizedRoute, useLocalizedRoute } from '@/utils/localizedRoute';
+import { generateLocalizedRoute } from '@/utils/localizedRoute';
 
 interface LoginFormProps {
     title?: string;
