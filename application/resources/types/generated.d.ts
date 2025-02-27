@@ -52,6 +52,7 @@ comment_prompt?: string;
 content?: string;
 hero_img_url?: string;
 amount: number | null;
+amount: number | null;
 created_at: string | null;
 updated_at: string | null;
 label?: string;
