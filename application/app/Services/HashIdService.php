@@ -51,7 +51,7 @@ class HashIdService
 
         return $this->hashIds->decode($hashId)[0];
     }
-    
+
     public function decodeArray(array $hashIds): array
     {
         $result = [];
@@ -63,6 +63,7 @@ class HashIdService
                 $result[] = $decoded[0] ?? null;
             }
         }
+
         return $result;
     }
 }

@@ -352,6 +352,13 @@
         "proposer": "Proposer",
         "collaborator": "Collaborator",
         "noIdeascaleProfiles": "No Ideascale Profiles Found",
+        "bio": "Bio",
+        "claimed": "Claimed",
+        "available": "Available",
+        "totalRequested":"Total Requested",
+        "totalProposals": "Total Proposals",
+        "awardedVsRequested": "Awarded vs Requested",
+        "receivedVsAwarded": "Received vs Awarded",
         "options": {
             "alphabeticallyAsc": "Alphabetically: A to Z",
             "alphabeticallyDesc": "Alphabetically: Z to A",

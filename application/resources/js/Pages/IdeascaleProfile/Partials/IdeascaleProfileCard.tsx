@@ -14,6 +14,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Segments } from '../../../../types/segments';
 import IdeascaleProfileData = App.DataTransferObjects.IdeascaleProfileData;
+import FundingPercentages from '@/Components/FundingPercentages';
 
 interface IdeascaleProfileProps {
     ideascaleProfile: IdeascaleProfileData;
@@ -57,11 +58,11 @@ const IdeascaleProfileCard: React.FC<IdeascaleProfileProps> = ({
     return (
         <Card>
             <div className="relative mb-2 h-full w-full">
-                <div className="mb-3 flex items-center gap-x-2">
+                <div className="mb-3 flex items-center gap-4">
                     <div className="flex-shrink-0">
                         <UserAvatar
                             imageUrl={ideascaleProfile?.hero_img_url}
-                            size="size-12"
+                            size="size-16"
                         />
                     </div>
                     <div className="min-w-0 flex-1">
@@ -79,13 +80,13 @@ const IdeascaleProfileCard: React.FC<IdeascaleProfileProps> = ({
                                 </Link>
                             </Title>
                             <div className="mt-2 flex gap-2">
-                                <div className="bg-success text-background w-fit rounded-md p-2">
-                                    <Paragraph size="sm">Claimed</Paragraph>
+                                <div className="bg-success text-background w-fit rounded-md  px-2 py-2.5">
+                                    <Paragraph size="sm">{ideascaleProfile?.claimed_by_id ? t('ideascaleProfiles.claimed') :t('ideascaleProfiles.available')  }</Paragraph>
                                 </div>
-                                <div className="border-gray-persist text-gray-persist w-fit items-center rounded-md border p-2">
+                                <div className="border-gray-persist/50 text-gray-persist w-fit items-center rounded-md border-2  px-2 py-2.5">
                                     <ConnectIcon />
                                 </div>
-                                <div className="border-gray-persist text-gray-persist w-fit items-center rounded-md border">
+                                <div className="border-gray-persist/50 text-gray-persist/50 w-fit items-center rounded-md border-2">
                                     <ListProvider>
                                         <BookmarkButton
                                             modelType="ideascale-profiles"
@@ -104,7 +105,7 @@ const IdeascaleProfileCard: React.FC<IdeascaleProfileProps> = ({
             <div className="mt-4 mb-2">
                 <div className="mb-4">
                     <Paragraph size="md" className="font-bold">
-                        Bio
+                    {t('ideascaleProfiles.bio')}
                     </Paragraph>
                 </div>
                 <div className="border-gray-persist border-t">
@@ -114,19 +115,19 @@ const IdeascaleProfileCard: React.FC<IdeascaleProfileProps> = ({
                 </div>
             </div>
 
-            <div className="mt-4 mb-4 flex justify-between">
+            <div className="mt-4 mb-4 flex justify-between gap-2">
                 <div>
                     <Paragraph
                         size="lg"
                         className="font-bold"
                     >{`${currency(ideascaleProfile?.amount_requested_ada ?? 0, 2, 'ADA')} + ${currency(ideascaleProfile?.amount_requested_usd ?? 0, 2, 'USD')}`}</Paragraph>
-                    <Paragraph size="md">Total Requested</Paragraph>
+                    <Paragraph size="md" className='mt-1'>{t('ideascaleProfiles.totalRequested')}</Paragraph>
                 </div>
                 <div>
                     <Paragraph size="lg" className="font-bold">
                         {ideascaleProfile?.proposals_count ?? 0}
                     </Paragraph>
-                    <Paragraph size="md">Total Proposals</Paragraph>
+                    <Paragraph size="md" className='mt-1'>{t('ideascaleProfiles.totalProposals')}</Paragraph>
                 </div>
             </div>
 
@@ -136,19 +137,19 @@ const IdeascaleProfileCard: React.FC<IdeascaleProfileProps> = ({
                         <SegmentedBar segments={segments}>
                             {extraSegments.map((segment, index) => (
                                 <div key={index} className="flex items-center">
-                                    <p className="text-3">{segment.label}:</p>
-                                    <p className="text-3 ml-1 font-bold">
+                                    <Paragraph className="text-3">{segment.label}:</Paragraph>
+                                    <Paragraph className="text-3 ml-1 font-bold">
                                         {segment.value}
-                                    </p>
+                                    </Paragraph>
                                 </div>
                             ))}
                         </SegmentedBar>
                     </div>
-                    <ul className="mt-2 flex w-full justify-between">
+                    <ul className="mt-2 flex w-full justify-between gap-2">
                         {segments.map((segment, index) => (
                             <li key={index} className="mt-2">
                                 <div
-                                    className={`mt-1 mr-1 h-2 w-2 rounded-full ${segment.color}`}
+                                    className={`mt-1  h-2 w-2 rounded-full ${segment.color}`}
                                 />
                                 <div className="mt-2 flex justify-between">
                                     <Paragraph
@@ -169,7 +170,7 @@ const IdeascaleProfileCard: React.FC<IdeascaleProfileProps> = ({
                 <div className="flex flex-col gap-2">
                     <div>
                         <div className="grid grid-cols-2 gap-4 mb-4">
-                            <GroupFundingPercentages
+                            <FundingPercentages
                                 amount={
                                     ideascaleProfile?.amount_awarded_ada ?? 0
                                 }
@@ -179,10 +180,8 @@ const IdeascaleProfileCard: React.FC<IdeascaleProfileProps> = ({
                                 primaryBackgroundColor="bg-content-light"
                                 secondaryBackgroundColor="bg-primary"
                                 amount_currency="ADA"
-                                isMini={false}
-                                twoColumns={true}
                             />
-                            <GroupFundingPercentages
+                            <FundingPercentages
                                 amount={
                                     ideascaleProfile?.amount_awarded_usd ?? 0
                                 }
@@ -192,16 +191,14 @@ const IdeascaleProfileCard: React.FC<IdeascaleProfileProps> = ({
                                 primaryBackgroundColor="bg-content-light"
                                 secondaryBackgroundColor="bg-primary-dark"
                                 amount_currency="USD"
-                                isMini={false}
-                                twoColumns={true}
                             />
                         </div>
-                        <Paragraph>Awarded vs Requested</Paragraph>
+                        <Paragraph className='text-highlight'>{t('ideascaleProfiles.awardedVsRequested')}</Paragraph>
                     </div>
 
                     <div>
                         <div className="grid grid-cols-2 gap-4 mb-4">
-                            <GroupFundingPercentages
+                            <FundingPercentages
                                 amount={
                                     ideascaleProfile?.amount_distributed_ada ??
                                     0
@@ -212,10 +209,8 @@ const IdeascaleProfileCard: React.FC<IdeascaleProfileProps> = ({
                                 primaryBackgroundColor="bg-content-light"
                                 secondaryBackgroundColor="bg-primary"
                                 amount_currency="ADA"
-                                isMini={false}
-                                twoColumns={true}
                             />
-                            <GroupFundingPercentages
+                            <FundingPercentages
                                 amount={
                                     ideascaleProfile?.amount_distributed_usd ?? 0
                                 }
@@ -225,11 +220,9 @@ const IdeascaleProfileCard: React.FC<IdeascaleProfileProps> = ({
                                 primaryBackgroundColor="bg-content-light"
                                 secondaryBackgroundColor="bg-primary-dark"
                                 amount_currency="USD"
-                                isMini={false}
-                                twoColumns={true}
                             />
                         </div>
-                        <Paragraph>Awarded vs Requested</Paragraph>
+                        <Paragraph className='text-highlight'>{t('ideascaleProfiles.receivedVsAwarded')}</Paragraph>
                     </div>
                 </div>
             </div>

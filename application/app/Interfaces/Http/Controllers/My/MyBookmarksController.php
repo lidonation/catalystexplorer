@@ -22,8 +22,8 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Facades\Response;
+use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
 use Inertia\Response as InertiaResponse;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
@@ -117,7 +117,7 @@ class MyBookmarksController extends Controller
             DB::commit();
 
             return response()->json([
-                'bookmarkId' => $bookmarkItem->id, 
+                'bookmarkId' => $bookmarkItem->id,
                 'isBookmarked' => true,
                 'bookmarkItems' => $bookmarkItem,
 
@@ -158,11 +158,12 @@ class MyBookmarksController extends Controller
         }
     }
 
-    private function getBookmarkItemCollection($id): BookmarkCollection | null
+    private function getBookmarkItemCollection($id): ?BookmarkCollection
     {
         if (! $id) {
             return null;
         }
+
         return BookmarkCollection::findOrFail($id) ?? null;
     }
 
@@ -196,7 +197,7 @@ class MyBookmarksController extends Controller
         return response()->json([
             'isBookmarked' => false,
             'id' => null,
-            'collection' => null
+            'collection' => null,
         ]);
     }
 
@@ -288,9 +289,9 @@ class MyBookmarksController extends Controller
         try {
             DB::beginTransaction();
 
-            $decoded_collection_id = (new HashIdService(new BookmarkCollection()))
+            $decoded_collection_id = (new HashIdService(new BookmarkCollection))
                 ->decode($data['bookmark_collection_id']);
-            $decoded_bookmark_ids = (new HashIdService(new BookmarkItem()))
+            $decoded_bookmark_ids = (new HashIdService(new BookmarkItem))
                 ->decodeArray($data['bookmark_ids']);
 
             $collection = BookmarkCollection::findOrFail($decoded_collection_id);
@@ -313,7 +314,6 @@ class MyBookmarksController extends Controller
                 ], SymfonyResponse::HTTP_UNPROCESSABLE_ENTITY);
             }
 
-
             BookmarkItem::whereIn('id', $decoded_bookmark_ids)
                 ->where('user_id', Auth::id())
                 ->update(['bookmark_collection_id' => $decoded_collection_id]);
@@ -323,7 +323,7 @@ class MyBookmarksController extends Controller
             return response()->json([
                 'type' => 'success',
                 'message' => 'Bookmarks added to collection successfully',
-                'count' => $bookmarks->count()
+                'count' => $bookmarks->count(),
             ]);
         } catch (\Exception $e) {
             DB::rollBack();
@@ -345,9 +345,9 @@ class MyBookmarksController extends Controller
         try {
             DB::beginTransaction();
 
-            $decoded_collection_id = (new HashIdService(new BookmarkCollection()))
+            $decoded_collection_id = (new HashIdService(new BookmarkCollection))
                 ->decode($data['bookmark_collection_id']);
-            $decoded_bookmark_ids = (new HashIdService(new BookmarkItem()))
+            $decoded_bookmark_ids = (new HashIdService(new BookmarkItem))
                 ->decodeArray($data['bookmark_ids']);
 
             $collection = BookmarkCollection::findOrFail($decoded_collection_id);
@@ -380,7 +380,7 @@ class MyBookmarksController extends Controller
             return response()->json([
                 'type' => 'success',
                 'message' => 'Bookmarks removed from collection successfully',
-                'count' => $bookmarks->count()
+                'count' => $bookmarks->count(),
             ]);
         } catch (\Exception $e) {
             DB::rollBack();
@@ -390,7 +390,6 @@ class MyBookmarksController extends Controller
             ], SymfonyResponse::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
-
 
     public function retrieveCollections(): JsonResponse
     {
@@ -435,7 +434,7 @@ class MyBookmarksController extends Controller
                 'type' => BookmarkCollection::class,
                 'type_id' => null,
                 'type_type' => null,
-                'parent_id' => null
+                'parent_id' => null,
             ]);
 
             return response()->json([
@@ -451,13 +450,13 @@ class MyBookmarksController extends Controller
             return response()->json([
                 'type' => 'validation_error',
                 'message' => $firstErrorMessage,
-                'errors' => $e->errors()
+                'errors' => $e->errors(),
             ], 422);
         } catch (\Exception $e) {
             return response()->json([
                 'type' => 'server_error',
                 'message' => 'Unable to create collection',
-                'debug' => config('app.debug') ? $e->getMessage() : null
+                'debug' => config('app.debug') ? $e->getMessage() : null,
             ], 500);
         }
     }
