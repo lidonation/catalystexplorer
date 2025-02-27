@@ -102,7 +102,7 @@ class CompletetProjectNftsController extends Controller
         ]);
     }
 
-    public function show(Proposal $proposal): Response
+    public function show(Request $request, Proposal $proposal): Response
     {
         return Inertia::render('CompletedProjectNfts/Partials/Show', [
             'proposal' => $proposal,
