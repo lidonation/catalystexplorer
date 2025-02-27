@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import Paragraph from './atoms/Paragraph';
 import UserAvatar from './UserAvatar';
 
@@ -14,6 +15,9 @@ export const ReviewerInfo: React.FC<ReviewerInfoProps> = ({
     reviewCount,
     className = '',
 }) => {
+
+    const { t } = useTranslation();
+    
     return (
         <div className={`flex items-center space-x-4 ${className}`}>
             <UserAvatar imageUrl={image} size="size-12" />
@@ -23,7 +27,7 @@ export const ReviewerInfo: React.FC<ReviewerInfoProps> = ({
                 </Paragraph>
 
                 <Paragraph className="text-gray-persist text-1 mt-3">
-                    {reviewCount} Reviews
+                    {reviewCount} {t('reviews')}
                 </Paragraph>
             </div>
         </div>

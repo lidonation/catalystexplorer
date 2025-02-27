@@ -9,13 +9,13 @@ import IdeascaleProfileData = App.DataTransferObjects.IdeascaleProfileData;
 import ReviewData = App.DataTransferObjects.ReviewData;
 import UserData = App.DataTransferObjects.UserData;
 import RecordsNotFound from '@/Layouts/RecordsNotFound';
+import { SearchParams } from '../../../../types/search-params';
 
 export type ReviewItem = {
     review: ReviewData;
-    user: UserData;
-    userReviewsCount: number;
+    reviewerReviewsCount: number;
     rating: number;
-    ideascaleProfile: IdeascaleProfileData;
+    reviewerProfile: IdeascaleProfileData;
 };
 
 interface RankingCount {
@@ -26,25 +26,22 @@ interface ReviewsPageProps {
     ideascaleProfile: IdeascaleProfileData;
     reviews: PaginatedData<ReviewItem[]>;
     ratingStats: { [s: string]: number } | ArrayLike<number>;
+    filters: SearchParams;
 }
 
 export default function Reviews({
     ideascaleProfile,
     reviews,
     ratingStats,
+    filters
 }: ReviewsPageProps) {
     const { t } = useTranslation();
 
     const reviewsArray = reviews?.data?.map((item) => item.review) || [];
 
-    useEffect(() => {
-        console.log('Reviews:', JSON.stringify(reviews, null, 2));
-        console.log('Rating Stats:', JSON.stringify(ratingStats, null, 2));
-    }, [reviews, ratingStats]);
-
     return (
-        <IdeascaleProfileLayout ideascaleProfile={ideascaleProfile}>
-            <Head title={`${ideascaleProfile.name} - Reviews`} />
+        <IdeascaleProfileLayout ideascaleProfile={ideascaleProfile} filters={filters}>
+            <Head title={`${ideascaleProfile.name} - ${t('reviews')}`} />
 
             <div className="container">
                 {reviews.total > 0 ? (
@@ -58,7 +55,7 @@ export default function Reviews({
                         </div>
                         <div>
                             <ReviewList
-                                reviews={reviews.data ?? []}
+                                reviews={reviews?? []}
                             />
                         </div>
                     </div>
