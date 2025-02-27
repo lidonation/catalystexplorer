@@ -110,22 +110,13 @@ class IdeascaleProfilesController extends Controller
         }
 
         if (str_contains($path, '/milestones')) {
-
-            $proposalMilestones = ProposalMilestone::whereHas('proposal', function ($query) use ($ideascaleProfile) {
-                $query->has('users', $ideascaleProfile->id);
-            })
-                ->with(['proposal', 'milestones'])
-                ->get();
-
-            // $proposalMilestones = ProposalMilestone::whereHas('proposal', function ($query) use ($ideascaleProfile) {
-            //     $query->whereIn('id', $ideascaleProfile->own_proposals->pluck('id'));
-            // })
-            //     ->with(['proposal', 'milestones'])
-            //     ->get();
-
             return Inertia::render('IdeascaleProfile/Milestones/Index', [
                 'ideascaleProfile' => IdeascaleProfileData::from($ideascaleProfile),
-                'proposalMilestones' => Inertia::optional(fn () => ProposalMilestoneData::collect($proposalMilestones)),
+                'proposalMilestones' => Inertia::optional(fn () => to_length_aware_paginator(ProposalMilestoneData::collect(
+                    $proposalMilestones = ProposalMilestone::whereHas('proposal', function ($query) use ($ideascaleProfile) {
+                        $query->has('users', $ideascaleProfile->id);
+                    })->with(['proposal', 'milestones'])->paginate(6)
+                ))),
             ]);
         }
 
