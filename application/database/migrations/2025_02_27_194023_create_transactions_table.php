@@ -13,6 +13,14 @@ return new class extends Migration
     {
         Schema::create('transactions', function (Blueprint $table) {
             $table->id();
+            $table->string('hash')->unique();
+            $table->integer('epoch');
+            $table->bigInteger('block');
+            $table->json('inputs');
+            $table->json('outputs');
+            $table->bigInteger('fund_id')->nullable();
+            $table->nullableMorphs('model');
+            $table->json('metadata')->nullable();
             $table->timestamps();
         });
     }
