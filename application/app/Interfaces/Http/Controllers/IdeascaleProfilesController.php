@@ -7,11 +7,13 @@ namespace App\Interfaces\Http\Controllers;
 use App\Actions\TransformIdsToHashes;
 use App\DataTransferObjects\IdeascaleProfileData;
 use App\DataTransferObjects\ProposalData;
+use App\DataTransferObjects\ProposalMilestoneData;
 use App\DataTransferObjects\ReviewData;
 use App\DataTransferObjects\UserData;
 use App\Enums\IdeascaleProfileSearchParams;
 use App\Enums\ProposalSearchParams;
 use App\Models\IdeascaleProfile;
+use App\Models\ProposalMilestone;
 use App\Models\User;
 use App\Repositories\IdeascaleProfileRepository;
 use Illuminate\Http\Request;
@@ -164,6 +166,11 @@ class IdeascaleProfilesController extends Controller
         if (str_contains($path, '/milestones')) {
             return Inertia::render('IdeascaleProfile/Milestones/Index', [
                 'ideascaleProfile' => IdeascaleProfileData::from($ideascaleProfile),
+                'proposalMilestones' => Inertia::optional(fn () => to_length_aware_paginator(ProposalMilestoneData::collect(
+                    $proposalMilestones = ProposalMilestone::whereHas('proposal', function ($query) use ($ideascaleProfile) {
+                        $query->has('users', $ideascaleProfile->id);
+                    })->with(['proposal', 'milestones'])->paginate(6)
+                ))),
             ]);
         }
 
@@ -212,6 +219,7 @@ class IdeascaleProfilesController extends Controller
                 'name',
                 'hero_img_url',
                 'first_timer',
+                'claimed_by_id',
                 'completed_proposals_count',
                 'funded_proposals_count',
                 'unfunded_proposals_count',
@@ -239,6 +247,7 @@ class IdeascaleProfilesController extends Controller
         $response = new Fluent($builder->raw());
 
         $items = collect($response->hits);
+
         $pagination = new LengthAwarePaginator(
             (new TransformIdsToHashes)(
                 collection: $items,

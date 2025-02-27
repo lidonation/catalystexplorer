@@ -9,6 +9,7 @@ use App\Interfaces\Http\Controllers\GroupsController;
 use App\Interfaces\Http\Controllers\HomeController;
 use App\Interfaces\Http\Controllers\IdeascaleProfilesController;
 use App\Interfaces\Http\Controllers\JormungandrController;
+use App\Interfaces\Http\Controllers\MilestoneController;
 use App\Interfaces\Http\Controllers\ProposalsController;
 use App\Interfaces\Http\Controllers\ReviewsController;
 use App\Interfaces\Http\Controllers\SearchController;
@@ -120,7 +121,7 @@ Route::localized(
         Route::get('/completed-project-nfts', [CompletetProjectNftsController::class, 'index'])
             ->name('completedProjectsNfts.index');
 
-        Route::get('/completed-project-nfts/{proposal:id}', [CompletetProjectNftsController::class, 'show'])
+        Route::get('/completed-project-nfts/{proposal}', [CompletetProjectNftsController::class, 'show'])
             ->name('completedProjectsNfts.show');
 
         Route::get('/jormungandr', [JormungandrController::class, 'index'])
@@ -131,6 +132,12 @@ Route::localized(
 
         Route::get('/s', [SearchController::class, 'index'])
             ->name('search.index');
+
+        // Milestones
+        Route::prefix('/{milestones}')->group(function () {
+            Route::get('/', [MilestoneController::class, 'index'])
+                ->name('index');
+        });
     }
 );
 

@@ -377,6 +377,8 @@ class Proposal extends Model
                 'status' => $this->campaign?->status,
                 'link' => $this->campaign?->link,
                 'fund' => $this->campaign?->fund,
+                'total_awarded' => $this->campaign?->total_awarded,
+                'total_distributed' => $this->campaign?->total_distributed,
             ],
             'communities' => $communities->toArray(),
             "completed_amount_paid{$this->currency}" => ($this->amount_received && $this->status === 'complete') ? intval($this->amount_received) : 0,

@@ -1,4 +1,4 @@
-FROM registry.lidonation.com/lidonation/www.catalystexplorer.com/web-app-base:2025-02-22
+FROM registry.lidonation.com/lidonation/www.catalystexplorer.com/web-app-base:2025-02-25
 
 COPY /application /var/www/
 
