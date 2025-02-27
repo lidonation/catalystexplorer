@@ -80,9 +80,11 @@ class CompletetProjectNftsController extends Controller
         ]);
     }
 
-    public function show(Request $request, Proposal $proposal): Response
+    public function show(Proposal $proposal): Response
     {
-        return Inertia::render('CompletedProjectNfts/Partials/Show');
+        return Inertia::render('CompletedProjectNfts/Partials/Show', [
+            'proposal' => $proposal,
+        ]);
     }
 
     public function getClaimedIdeascaleProfilesProposals()
@@ -102,7 +104,7 @@ class CompletetProjectNftsController extends Controller
                 ->toArray();
 
             $claimedIdeascaleIdsString = implode(',', $claimedIdeascaleIds);
-            $filter = "users.id IN [{$claimedIdeascaleIdsString}]";
+            $filter = "users.id IN [{$claimedIdeascaleIdsString}] AND status = '".ProposalStatus::complete()->value."'";
 
             $args['filter'] = $filter;
 

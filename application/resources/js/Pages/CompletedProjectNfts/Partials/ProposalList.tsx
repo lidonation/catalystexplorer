@@ -5,6 +5,7 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { PaginatedData } from '../../../../types/paginated-data';
 import ProposalData = App.DataTransferObjects.ProposalData;
+import CompletedProposalCard from './CompletedProposalCard';
 
 interface ProposalListProps {
     proposals: PaginatedData<ProposalData[]>;
@@ -26,31 +27,7 @@ const ProposalList: React.FC<ProposalListProps> = ({ proposals }) => {
     return (
         <div className="mt-4 space-y-3">
             {proposals?.data.map((proposal, index) => (
-                <div
-                    key={proposal.hash}
-                    className="rounded-lg border border-gray-200 p-4 shadow-sm"
-                >
-                    <h4 className="font-bold">{proposal.title}</h4>
-                    <Paragraph className="text-sm">
-                        <strong>{t('profileWorkflow.budget')}:</strong>{' '}
-                        <span className="text-success">
-                            {' '}
-                            {currency(
-                                proposal.amount_requested ?? 0,
-                                undefined,
-                                proposal?.currency,
-                            )}{' '}
-                            &nbsp;{' '}
-                        </span>
-                        <strong>{t('profileWorkflow.fund')}:</strong>{' '}
-                        <span className="text-primary">
-                            {' '}
-                            {proposal.fund?.label} &nbsp;{' '}
-                        </span>
-                        <strong>{t('profileWorkflow.campaign')}:</strong>{' '}
-                        <span> {proposal.campaign?.label} </span>
-                    </Paragraph>
-                </div>
+                <CompletedProposalCard proposal={proposal}/>
             ))}
 
             {/* Pagination */}
