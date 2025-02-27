@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('hash')->unique();
             $table->integer('epoch');
             $table->bigInteger('block');
+            $table->bigInteger('total_output');
             $table->json('inputs');
             $table->json('outputs');
             $table->bigInteger('fund_id')->nullable();
