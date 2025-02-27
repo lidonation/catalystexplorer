@@ -44,7 +44,7 @@ deleted_at?: string;
 export type CampaignData = {
 hash: string | null;
 fund_id?: number;
-title: string;
+title: string | null;
 meta_title: string | null;
 slug: string | null;
 excerpt?: string;
@@ -62,8 +62,8 @@ unfunded_proposals_count: number | null;
 funded_proposals_count: number | null;
 completed_proposals_count: number | null;
 total_requested: number | null;
-total_awarded: number;
-total_distributed: number;
+total_awarded: number | null;
+total_distributed: number | null;
 };
 export type CommunityData = {
 hash: string | null;
@@ -182,7 +182,7 @@ amount_distributed_ada?: number;
 amount_distributed_usd?: number;
 co_proposals_count?: number;
 own_proposals_count?: number;
-claimed_by?: number;
+claimed_by_id?: number;
 completed_proposals_count?: number;
 funded_proposals_count?: number;
 unfunded_proposals_count?: number;
