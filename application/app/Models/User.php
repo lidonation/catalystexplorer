@@ -70,6 +70,11 @@ class User extends Authenticatable implements HasMedia
         );
     }
 
+    public function reviews()
+    {
+        return $this->hasMany(Review::class);
+    }
+
     public function registerMediaConversions(?Media $media = null): void
     {
         $this->addMediaConversion('thumbnail')

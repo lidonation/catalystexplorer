@@ -11,10 +11,14 @@ interface RankingCount {
 
 interface AggregatedReviewsSummaryPageProps extends Record<string, unknown> {
     reviews: ReviewData[];
+    ratingStats?: RankingCount
+    reviewsCount?: number
 }
 
 const AggregatedReviewsSummary: React.FC<AggregatedReviewsSummaryPageProps> = ({
     reviews,
+    ratingStats,
+    reviewsCount
 }) => {
     const { t } = useTranslation();
 
@@ -54,13 +58,13 @@ const AggregatedReviewsSummary: React.FC<AggregatedReviewsSummaryPageProps> = ({
                 <div className="mx-auto grid grid-cols-5">
                     <div className="text-content flex flex-col items-center justify-center p-4">
                         <h1 className="text-content title-1">
-                            {reviews.length}
+                            {reviewsCount}
                         </h1>
                         <p className="text-content">{t('Total Reviews')}</p>
                     </div>
                     <div className="col-span-4 flex items-center justify-center p-4 text-white">
                         <div className="flex w-full flex-col gap-4">
-                            {Object.entries(counts)
+                            {Object.entries(ratingStats || {})
                                 .sort(([a], [b]) => Number(b) - Number(a)) // Sort 5 → 1
                                 .map(([rating, count]) => (
                                     <div
@@ -69,14 +73,14 @@ const AggregatedReviewsSummary: React.FC<AggregatedReviewsSummaryPageProps> = ({
                                     >
                                         <div className="w-5/6">
                                             <ProgressBar
-                                                primaryBackgroundColor='bg-background'
+                                                primaryBackgroundColor='bg-light-gray-persist'
                                                 secondaryBackgroudColor='bg-primary'
                                                 value={count}
                                                 total={reviews.length}
                                             />
                                         </div>
                                         <div className="text-content flex items-center justify-center gap-2">
-                                            <StarIcon width={20} height={20} />
+                                            <StarIcon width={20} height={20} className='text-yellow-400' />
                                             {rating}
                                         </div>
                                     </div>
