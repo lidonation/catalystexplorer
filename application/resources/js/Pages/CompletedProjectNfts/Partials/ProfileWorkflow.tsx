@@ -167,7 +167,7 @@ const ProfileWorkflow: React.FC<ProfileWorkflowProps> = ({
                             </span>
                         </Paragraph>
 
-                        <ProposalList proposals={proposals.data || []} />
+                        <ProposalList proposals={proposals || []} />
                     </>
                 ) : showVerification ? (
                     <VerificationCard
