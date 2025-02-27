@@ -219,7 +219,38 @@
             "proposalCountsHighToLow": "Proposal count: High to Low"
         }
     },
-
+    "listQuickCreate": {
+        "createListLong": "Create a new list to get started",
+        "createListShort": "Create a list",
+        "addAll": "Add to List",
+        "addList": "New List",
+        "public": "Make public?",
+        "createListPlaceholder": "Create a new list",
+        "addDescPlaceholder": "Add a description",
+        "noLists": "No lists found",
+        "addBookmark": "Add Bookmark",
+        "successfulBookmarked": "Successfully added to your bookmarks!",
+        "success":{
+            "title": "Success",
+            "message": "Successfully created list"
+        },
+        "removeBookmark": "Remove",
+        "listName": "List Name",
+        "listDescription": "List Description",
+        "create": "Create",
+        "cancel": "Cancel",
+        "listFetchError": "Error fetching lists",
+        "listCreateError": "Error creating list",
+        "validationErrors": {
+            "general": "An error occurred",
+            "inputCheck": "Please check your input",
+            "emptyFields": "Name and Description are required",
+            "name": "Name is required",
+            "shortName": "Name must be at least 5 characters",
+            "shortDescription": "Description must be at least 10 characters",
+            "description": "Description is required"
+        }
+    },
     "proposals": {
         "allProposals": "All proposals",
         "proposals": "Proposals",

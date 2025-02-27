@@ -10,6 +10,7 @@ interface UseBookmarkProps {
 export default function useBookmark({ modelType, itemId }: UseBookmarkProps) {
     const [isBookmarked, setIsBookmarked] = useState(false);
     const [bookmarkId, setBookmarkId] = useState<string | null>(null);
+    const [associatedCollection, setAssociatedCollection] = useState<string | null>(null);
     const [isOpen, setIsOpen] = useState(false);
 
     useEffect(() => {
@@ -22,6 +23,7 @@ export default function useBookmark({ modelType, itemId }: UseBookmarkProps) {
             );
             setIsBookmarked(response.data.isBookmarked);
             setBookmarkId(response.data.id || null);
+            setAssociatedCollection(response.data?.collection?.hash || null);
         } catch (error) {
             console.error('Error fetching bookmark status', error);
         }
@@ -76,6 +78,8 @@ export default function useBookmark({ modelType, itemId }: UseBookmarkProps) {
     };
 
     return {
+        bookmarkId,
+        associatedCollection,
         isBookmarked,
         toggleBookmark,
         createBookmark,

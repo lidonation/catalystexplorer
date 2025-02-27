@@ -17,11 +17,22 @@ class BookmarkCollection extends Model
         'items',
     ];
 
+    // protected $fillable = [
+    //     'user_id',
+    //     'title',
+    //     'content',
+    //     'visibility',
+    // ];
+
     protected $fillable = [
         'user_id',
         'title',
         'content',
         'visibility',
+        'color',
+        'allow_comments',
+        'status',
+        'type',
     ];
 
     public function user(): BelongsTo
