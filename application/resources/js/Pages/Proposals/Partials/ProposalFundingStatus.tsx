@@ -26,7 +26,8 @@ export default function ProposalFundingStatus({ funding_status = 'pending' }) {
     }
     if (
         funding_status === 'not_approved' ||
-        funding_status === 'over_budget'
+        funding_status === 'over_budget' ||
+        !funding_status
     ) {
         bgColor = '';
         textColor = '';
