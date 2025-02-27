@@ -167,6 +167,7 @@ class IdeascaleProfilesController extends Controller
                 'name',
                 'hero_img_url',
                 'first_timer',
+                'claimed_by_id',
                 'completed_proposals_count',
                 'funded_proposals_count',
                 'unfunded_proposals_count',
@@ -194,6 +195,7 @@ class IdeascaleProfilesController extends Controller
         $response = new Fluent($builder->raw());
 
         $items = collect($response->hits);
+
         $pagination = new LengthAwarePaginator(
             (new TransformIdsToHashes)(
                 collection: $items,
