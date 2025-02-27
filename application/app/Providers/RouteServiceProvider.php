@@ -64,31 +64,23 @@ class RouteServiceProvider extends ServiceProvider
 
         Route::bind('proposal', function ($hashId) {
 
-            $locale = app()->getLocale();
-            $model = match (Route::currentRouteName()) {
-                "{$locale}.completedProjectsNfts.show" => Proposal::class,
+            try {
+                $locale = app()->getLocale();
+                $model = match (Route::currentRouteName()) {
+                    "{$locale}.completedProjectsNfts.show" => Proposal::class,
 
-            };
+                    default => null,
+                };
 
-            return (new HashIdService(new $model))->decode($hashId);
+                if ($model === null) {
+                    abort(404, 'No item found for this hash!');
+                }
 
-            // try {
-            //     $locale = app()->getLocale();
-            //     $model = match (Route::currentRouteName()) {
-            //         "{$locale}.completedProjectsNfts.show" => Proposal::class,
+                return (new HashIdService(new $model))->decode($hashId);
 
-            //         default => null,
-            //     };
-
-            //     if ($model === null) {
-            //         abort(404, 'No item found for this hash!');
-            //     }
-
-            //     return (new HashIdService(new $model))->decode($hashId);
-
-            // } catch (Exception) {
-            //     abort(404, 'No item found for this hash!');
-            // }
+            } catch (Exception) {
+                abort(404, 'No item found for this hash!');
+            }
         });
     }
 
