@@ -6,6 +6,7 @@ namespace App\Providers;
 
 use App\Models\BookmarkCollection;
 use App\Models\IdeascaleProfile;
+use App\Models\Proposal;
 use App\Services\HashIdService;
 use Exception;
 use Illuminate\Routing\Router;
@@ -32,7 +33,7 @@ class RouteServiceProvider extends ServiceProvider
         Route::bind('hash', function ($hashId) {
             try {
                 return $this->decodeHash($hashId);
-            } catch (Exception $e) {
+            } catch (Exception) {
                 abort(404, 'No item found for this hash!');
             }
         });
@@ -56,7 +57,28 @@ class RouteServiceProvider extends ServiceProvider
                 };
 
                 return (new HashIdService(new $model))->decode($hashId);
-            } catch (Exception $e) {
+            } catch (Exception) {
+                abort(404, 'No item found for this hash!');
+            }
+        });
+
+        Route::bind('proposal', function ($hashId) {
+
+            try {
+                $locale = app()->getLocale();
+                $model = match (Route::currentRouteName()) {
+                    "{$locale}.completedProjectsNfts.show" => Proposal::class,
+
+                    default => null,
+                };
+
+                if ($model === null) {
+                    abort(404, 'No item found for this hash!');
+                }
+
+                return (new HashIdService(new $model))->decode($hashId);
+
+            } catch (Exception) {
                 abort(404, 'No item found for this hash!');
             }
         });
