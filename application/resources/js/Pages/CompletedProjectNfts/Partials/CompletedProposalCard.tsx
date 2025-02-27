@@ -4,6 +4,7 @@ import { useLocalizedRoute } from '@/utils/localizedRoute';
 import { router } from '@inertiajs/react';
 import { useTranslation } from 'react-i18next';
 import ProposalData = App.DataTransferObjects.ProposalData;
+import Title from '@/Components/atoms/Title';
 
 interface ProposalProps {
     proposal: ProposalData;
@@ -22,7 +23,7 @@ export default function CompletedProposalCard({ proposal }: ProposalProps) {
             className="cursor-pointer rounded-lg border border-gray-200 p-4 shadow-sm"
             onClick={() => router.visit(localizedRoute)}
         >
-            <h4 className="font-bold">{proposal.title}</h4>
+            <Title level='5' className="font-bold">{proposal.title}</Title>
             <Paragraph className="text-sm">
                 <strong>{t('profileWorkflow.budget')}:</strong>{' '}
                 <span className="text-success">
