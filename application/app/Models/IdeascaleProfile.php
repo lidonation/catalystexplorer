@@ -337,7 +337,7 @@ class IdeascaleProfile extends Model implements HasMedia
     {
         return [
             //            'id' => HashId::class,
-            'claimed_by_id' => HashId::class,
+            // 'claimed_by_id' => HashId::class,
             'created_at' => DateFormatCast::class,
             'updated_at' => DateFormatCast::class,
         ];
