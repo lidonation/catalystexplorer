@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Interfaces\Http\Controllers;
+namespace App\Http\Controllers;
 
 use App\Models\Fund;
 use Illuminate\Http\Request;

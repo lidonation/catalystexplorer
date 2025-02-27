@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace App\Interfaces\Http\Controllers\My;
+namespace App\Http\Controllers\My;
 
 use App\DataTransferObjects\BookmarkCollectionData;
 use App\DataTransferObjects\BookmarkItemData;
 use App\Enums\BookmarkableType;
 use App\Enums\BookmarkStatus;
 use App\Enums\BookmarkVisibility;
-use App\Interfaces\Http\Controllers\Controller;
+use App\Http\Controllers\Controller;
 use App\Models\BookmarkCollection;
 use App\Models\BookmarkItem;
 use App\Models\Group;

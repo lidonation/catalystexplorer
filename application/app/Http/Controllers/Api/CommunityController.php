@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace App\Interfaces\Http\Controllers\Api;
+namespace App\Http\Controllers\Api;
 
 use App\DataTransferObjects\CommunityData;
-use App\Interfaces\Http\Controllers\Controller;
-use App\Interfaces\Http\Resources\CommunityResource;
+use App\Http\Controllers\Controller;
+use App\Http\Resources\CommunityResource;
 use App\Models\Community;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\Routing\ResponseFactory;

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Interfaces\Http\Middleware;
+namespace App\Http\Middleware;
 
 use App\DataTransferObjects\UserData;
 use Illuminate\Http\Request;

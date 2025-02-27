@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace App\Interfaces\Http\Controllers\Auth;
+namespace App\Http\Controllers\Auth;
 
-use App\Interfaces\Http\Controllers\Controller;
-use App\Interfaces\Http\Requests\Auth\LoginRequest;
+use App\Http\Controllers\Controller;
+use App\Http\Requests\Auth\LoginRequest;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;

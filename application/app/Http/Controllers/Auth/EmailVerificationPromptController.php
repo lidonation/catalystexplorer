@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Interfaces\Http\Controllers\Auth;
+namespace App\Http\Controllers\Auth;
 
-use App\Interfaces\Http\Controllers\Controller;
+use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;

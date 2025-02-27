@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace App\Interfaces\Http\Controllers\Auth;
+namespace App\Http\Controllers\Auth;
 
-use App\Interfaces\Http\Controllers\Controller;
-use App\Interfaces\Http\Requests\Auth\RegisteredUserRequest;
+use App\Http\Controllers\Controller;
+use App\Http\Requests\Auth\RegisteredUserRequest;
 use App\Models\User;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Interfaces\Http\Controllers;
+namespace App\Http\Controllers;
 
 use App\DataTransferObjects\CampaignData;
 use App\DataTransferObjects\FundData;

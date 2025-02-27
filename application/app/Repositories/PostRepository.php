@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Repositories;
 
-use App\Interfaces\Http\Intergrations\LidoNation\LidoNationConnector;
-use App\Interfaces\Http\Intergrations\LidoNation\Requests\GetPostsRequest;
+use App\Http\Intergrations\LidoNation\LidoNationConnector;
+use App\Http\Intergrations\LidoNation\Requests\GetPostsRequest;
 use App\Models\Fund;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Saloon\PaginationPlugin\PagedPaginator;
