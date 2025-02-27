@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StoreDrepRequest;
-use App\Http\Requests\UpdateDrepRequest;
-use App\Models\Drep;
+use App\Http\Requests\StoreTransactionRequest;
+use App\Http\Requests\UpdateTransactionRequest;
+use App\Models\Transaction;
 
-class DrepController
+class TransactionController
 {
     /**
      * Display a listing of the resource.
@@ -27,7 +27,7 @@ class DrepController
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreDrepRequest $request)
+    public function store(StoreTransactionRequest $request)
     {
         //
     }
@@ -35,7 +35,7 @@ class DrepController
     /**
      * Display the specified resource.
      */
-    public function show(Drep $drep)
+    public function show(Transaction $transaction)
     {
         //
     }
@@ -43,7 +43,7 @@ class DrepController
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Drep $drep)
+    public function edit(Transaction $transaction)
     {
         //
     }
@@ -51,7 +51,7 @@ class DrepController
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateDrepRequest $request, Drep $drep)
+    public function update(UpdateTransactionRequest $request, Transaction $transaction)
     {
         //
     }
@@ -59,7 +59,7 @@ class DrepController
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Drep $drep)
+    public function destroy(Transaction $transaction)
     {
         //
     }
