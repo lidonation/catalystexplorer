@@ -93,7 +93,7 @@ const ProfileWorkflow: React.FC<ProfileWorkflowProps> = ({
     };
 
     const handleToggleClaimForm = (profile: IdeascaleProfileData) => {
-        if (profile?.claimed_by !== undefined && profile.claimed_by !== null)
+        if (profile?.claimed_by_id !== undefined && profile.claimed_by_id !== null)
             return;
 
         setClaimProfile((prev) => {
@@ -204,7 +204,7 @@ const ProfileWorkflow: React.FC<ProfileWorkflowProps> = ({
                                             handleToggleClaimForm(profile);
                                         }}
                                         className={
-                                            profile?.claimed_by
+                                            profile?.claimed_by_id
                                                 ? 'cursor-not-allowed'
                                                 : 'cursor-pointer'
                                         }
@@ -212,12 +212,12 @@ const ProfileWorkflow: React.FC<ProfileWorkflowProps> = ({
                                         <div className="ml-6 flex-shrink-0">
                                             <span
                                                 className={`rounded-full px-3 py-1 text-sm ${
-                                                    !profile?.claimed_by
+                                                    !profile?.claimed_by_id
                                                         ? 'cursor-pointer bg-green-100 text-green-600'
                                                         : 'cursor-not-allowed bg-red-100 text-red-600'
                                                 }`}
                                             >
-                                                {!profile?.claimed_by
+                                                {!profile?.claimed_by_id
                                                     ? t(
                                                           'profileWorkflow.claimProfile',
                                                       )

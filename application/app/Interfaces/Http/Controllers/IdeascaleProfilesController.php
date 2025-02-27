@@ -110,11 +110,18 @@ class IdeascaleProfilesController extends Controller
         }
 
         if (str_contains($path, '/milestones')) {
+
             $proposalMilestones = ProposalMilestone::whereHas('proposal', function ($query) use ($ideascaleProfile) {
-                $query->whereIn('id', $ideascaleProfile->own_proposals->pluck('id'));
+                $query->has('users', $ideascaleProfile->id);
             })
                 ->with(['proposal', 'milestones'])
                 ->get();
+
+            // $proposalMilestones = ProposalMilestone::whereHas('proposal', function ($query) use ($ideascaleProfile) {
+            //     $query->whereIn('id', $ideascaleProfile->own_proposals->pluck('id'));
+            // })
+            //     ->with(['proposal', 'milestones'])
+            //     ->get();
 
             return Inertia::render('IdeascaleProfile/Milestones/Index', [
                 'ideascaleProfile' => IdeascaleProfileData::from($ideascaleProfile),
@@ -167,6 +174,7 @@ class IdeascaleProfilesController extends Controller
                 'name',
                 'hero_img_url',
                 'first_timer',
+                'claimed_by_id',
                 'completed_proposals_count',
                 'funded_proposals_count',
                 'unfunded_proposals_count',
@@ -194,6 +202,7 @@ class IdeascaleProfilesController extends Controller
         $response = new Fluent($builder->raw());
 
         $items = collect($response->hits);
+
         $pagination = new LengthAwarePaginator(
             (new TransformIdsToHashes)(
                 collection: $items,
