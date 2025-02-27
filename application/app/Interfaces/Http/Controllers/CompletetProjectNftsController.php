@@ -69,9 +69,31 @@ class CompletetProjectNftsController extends Controller
             $query->whereNotNull('funded_at');
         })->count();
 
+        $claimedIdeascaleProfiles = $this->getClaimedIdeascaleProfiles();
+
+        $amountDistributedAda = Proposal::whereHas('fund', function ($query) {
+            $query->where('currency', CatalystCurrencySymbols::ADA->name);
+        })->sum('amount_received');
+
+        $amountDistributedUsd = Proposal::whereHas('fund', function ($query) {
+            $query->where('currency', CatalystCurrencySymbols::USD->name);
+        })->sum('amount_received');
+
+        $completedProposalsCount = Proposal::where('status', ProposalStatus::complete()->value)
+            ->count();
+
+        $membersFunded = IdeaScaleProfile::whereHas('proposals', function ($query) {
+            $query->whereNotNull('funded_at');
+        })->count();
+
         return Inertia::render('CompletedProjectNfts/Index', [
             'proposals' => $proposals,
             'filters' => $this->queryParams,
+            'ideascaleProfiles' => $claimedIdeascaleProfiles,
+            'amountDistributedAda' => $amountDistributedAda,
+            'amountDistributedUsd' => $amountDistributedUsd,
+            'completedProposalsCount' => $completedProposalsCount,
+            'communityMembersFunded' => $membersFunded,
             'ideascaleProfiles' => $claimedIdeascaleProfiles,
             'amountDistributedAda' => $amountDistributedAda,
             'amountDistributedUsd' => $amountDistributedUsd,
@@ -82,11 +104,14 @@ class CompletetProjectNftsController extends Controller
 
     public function show(Request $request, Proposal $proposal): Response
     {
-        return Inertia::render('CompletedProjectNfts/Partials/Show');
+        return Inertia::render('CompletedProjectNfts/Partials/Show', [
+            'proposal' => $proposal,
+        ]);
     }
 
     public function getClaimedIdeascaleProfilesProposals()
     {
+        $user = $this->user;
         $user = $this->user;
 
         $args = [];
@@ -100,9 +125,13 @@ class CompletetProjectNftsController extends Controller
                 ->pluck('id')
                 ->filter()
                 ->toArray();
+            $claimedIdeascaleIds = IdeascaleProfile::where('claimed_by_id', $user->id)
+                ->pluck('id')
+                ->filter()
+                ->toArray();
 
             $claimedIdeascaleIdsString = implode(',', $claimedIdeascaleIds);
-            $filter = "users.id IN [{$claimedIdeascaleIdsString}]";
+            $filter = "users.id IN [{$claimedIdeascaleIdsString}] AND status = '".ProposalStatus::complete()->value."'";
 
             $args['filter'] = $filter;
 

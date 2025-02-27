@@ -7,6 +7,8 @@ namespace App\Interfaces\Http\Controllers\My;
 use App\DataTransferObjects\BookmarkCollectionData;
 use App\DataTransferObjects\BookmarkItemData;
 use App\Enums\BookmarkableType;
+use App\Enums\BookmarkStatus;
+use App\Enums\BookmarkVisibility;
 use App\Interfaces\Http\Controllers\Controller;
 use App\Models\BookmarkCollection;
 use App\Models\BookmarkItem;
@@ -14,11 +16,13 @@ use App\Models\Group;
 use App\Models\IdeascaleProfile;
 use App\Models\Proposal;
 use App\Models\Review;
+use App\Services\HashIdService;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Facades\Response;
 use Inertia\Inertia;
 use Inertia\Response as InertiaResponse;
@@ -113,7 +117,7 @@ class MyBookmarksController extends Controller
             DB::commit();
 
             return response()->json([
-                'bookmarkId' => $bookmarkItem->getRawOriginal('id'),
+                'bookmarkId' => $bookmarkItem->id, 
                 'isBookmarked' => true,
                 'bookmarkItems' => $bookmarkItem,
 
@@ -154,6 +158,14 @@ class MyBookmarksController extends Controller
         }
     }
 
+    private function getBookmarkItemCollection($id): BookmarkCollection | null
+    {
+        if (! $id) {
+            return null;
+        }
+        return BookmarkCollection::findOrFail($id) ?? null;
+    }
+
     public function status(string $modelType, $id): JsonResponse
     {
         $modelType = class_basename($modelType);
@@ -177,13 +189,14 @@ class MyBookmarksController extends Controller
             return response()->json([
                 'isBookmarked' => true,
                 'id' => $bookmarkItem->id,
-
+                'collection' => $this->getBookmarkItemCollection($bookmarkItem->bookmark_collection_id),
             ]);
         }
 
         return response()->json([
             'isBookmarked' => false,
             'id' => null,
+            'collection' => null
         ]);
     }
 
@@ -264,29 +277,189 @@ class MyBookmarksController extends Controller
         ]);
     }
 
-    public function createCollection(Request $request): JsonResponse|InertiaResponse
+    public function addBookmarkToCollection(Request $request): JsonResponse
     {
-        $this->authorize('create', BookmarkCollection::class);
-
         $data = $request->validate([
-            'title' => ['required', 'string', 'min:5'],
-            'content' => ['nullable', 'string', 'min:10'],
-            'visibility' => ['nullable', 'string', 'min:10'],
+            'bookmark_collection_id' => ['required'],
+            'bookmark_ids' => ['required', 'array'],
+            'bookmark_ids.*' => ['required'],
         ]);
 
-        $collection = BookmarkCollection::create([
-            'user_id' => Auth::id(),
-            'title' => $data['title'],
-            'content' => $data['content'],
-            'visibility' => $data['visibility'],
+        try {
+            DB::beginTransaction();
+
+            $decoded_collection_id = (new HashIdService(new BookmarkCollection()))
+                ->decode($data['bookmark_collection_id']);
+            $decoded_bookmark_ids = (new HashIdService(new BookmarkItem()))
+                ->decodeArray($data['bookmark_ids']);
+
+            $collection = BookmarkCollection::findOrFail($decoded_collection_id);
+
+            if ($collection->user_id !== Auth::id()) {
+                return response()->json([
+                    'message' => 'Unauthorized',
+                ], SymfonyResponse::HTTP_FORBIDDEN);
+            }
+
+            // $this->authorize('create', $collection);
+
+            $bookmarks = BookmarkItem::whereIn('id', $decoded_bookmark_ids)
+                ->where('user_id', Auth::id())
+                ->get();
+
+            if ($bookmarks->count() !== count($decoded_bookmark_ids)) {
+                return response()->json([
+                    'errors' => ['Invalid bookmark selection'],
+                ], SymfonyResponse::HTTP_UNPROCESSABLE_ENTITY);
+            }
+
+
+            BookmarkItem::whereIn('id', $decoded_bookmark_ids)
+                ->where('user_id', Auth::id())
+                ->update(['bookmark_collection_id' => $decoded_collection_id]);
+
+            DB::commit();
+
+            return response()->json([
+                'type' => 'success',
+                'message' => 'Bookmarks added to collection successfully',
+                'count' => $bookmarks->count()
+            ]);
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            return response()->json([
+                'errors' => ['Failed to add bookmarks to collection'],
+            ], SymfonyResponse::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    public function removeBookmarkFromCollection(Request $request): JsonResponse
+    {
+        $data = $request->validate([
+            'bookmark_collection_id' => ['required'],
+            'bookmark_ids' => ['required', 'array'],
+            'bookmark_ids.*' => ['required'],
         ]);
 
-        return response()->json(
-            [
+        try {
+            DB::beginTransaction();
+
+            $decoded_collection_id = (new HashIdService(new BookmarkCollection()))
+                ->decode($data['bookmark_collection_id']);
+            $decoded_bookmark_ids = (new HashIdService(new BookmarkItem()))
+                ->decodeArray($data['bookmark_ids']);
+
+            $collection = BookmarkCollection::findOrFail($decoded_collection_id);
+
+            if ($collection->user_id !== Auth::id()) {
+                return response()->json([
+                    'message' => 'Unauthorized',
+                ], SymfonyResponse::HTTP_FORBIDDEN);
+            }
+
+            // $this->authorize('update', $collection);
+
+            $bookmarks = BookmarkItem::whereIn('id', $decoded_bookmark_ids)
+                ->where('bookmark_collection_id', $data['bookmark_collection_id'])
+                ->where('user_id', Auth::id())
+                ->get();
+
+            if ($bookmarks->count() !== count($decoded_bookmark_ids)) {
+                return response()->json([
+                    'errors' => ['Invalid bookmark selection'],
+                ], SymfonyResponse::HTTP_UNPROCESSABLE_ENTITY);
+            }
+
+            BookmarkItem::whereIn('id', $decoded_bookmark_ids)
+                ->where('user_id', Auth::id())
+                ->update(['bookmark_collection_id' => null]);
+
+            DB::commit();
+
+            return response()->json([
+                'type' => 'success',
+                'message' => 'Bookmarks removed from collection successfully',
+                'count' => $bookmarks->count()
+            ]);
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            return response()->json([
+                'errors' => ['Failed to remove bookmarks from collection'],
+            ], SymfonyResponse::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+
+    public function retrieveCollections(): JsonResponse
+    {
+        try {
+
+            // $this->authorize('viewAny', BookmarkCollection::class);
+
+            $collections = BookmarkCollection::where('user_id', Auth::id())
+                ->withCount('items')
+                ->get();
+
+            return response()->json([
+                'type' => 'success',
+                'message' => 'Collections retrieved successfully',
+                'collections' => $collections,
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'type' => 'error',
+                'message' => 'Failed to retrieve collections',
+                'debug' => config('app.debug') ? $e->getMessage() : null,
+            ]);
+        }
+    }
+
+    public function createCollection(Request $request): JsonResponse
+    {
+        try {
+            $data = $request->validate([
+                'title' => ['required', 'string', 'min:5'],
+                'content' => ['nullable', 'string', 'min:10'],
+                'visibility' => ['nullable', 'string', 'in:public,unlisted,private'],
+            ]);
+
+            $collection = BookmarkCollection::create([
+                'user_id' => Auth::id(),
+                'title' => $data['title'],
+                'content' => $data['content'] ?? null,
+                'visibility' => $data['visibility'] ?? BookmarkVisibility::UNLISTED()->value,
+                'color' => $data['color'] ?? '#000000', // since not passing from quick list create, just adding a default color
+                'status' => BookmarkStatus::DRAFT()->value,
+                'type' => BookmarkCollection::class,
+                'type_id' => null,
+                'type_type' => null,
+                'parent_id' => null
+            ]);
+
+            return response()->json([
+                'type' => 'success',
                 'message' => 'Collection created successfully',
                 'collection' => $collection,
-            ]
-        );
+            ]);
+
+        } catch (ValidationException $e) {
+            $firstError = collect($e->errors())->first();
+            $firstErrorMessage = is_array($firstError) ? $firstError[0] : 'Please check your input';
+
+            return response()->json([
+                'type' => 'validation_error',
+                'message' => $firstErrorMessage,
+                'errors' => $e->errors()
+            ], 422);
+        } catch (\Exception $e) {
+            return response()->json([
+                'type' => 'server_error',
+                'message' => 'Unable to create collection',
+                'debug' => config('app.debug') ? $e->getMessage() : null
+            ], 500);
+        }
     }
 
     public function deleteCollection(Request $request): JsonResponse

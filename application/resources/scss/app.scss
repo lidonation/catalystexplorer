@@ -208,6 +208,14 @@
         @apply py-6;
     }
 
+    .no-scrollbar::-webkit-scrollbar {
+        display: none;
+    }
+    .no-scrollbar {
+        -ms-overflow-style: none;  
+        scrollbar-width: none;  
+  }
+
     body {
         @apply bg-background text-content transition-colors duration-300 ease-in-out;
     }

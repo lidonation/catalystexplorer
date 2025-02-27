@@ -5,7 +5,11 @@ import MetaData from './MetaData';
 import ContributorProfile from './ContributorProfile';
 import Title from '@/Components/atoms/Title';
 
-const Show = () => {
+interface PageProps{
+  proposal : App.DataTransferObjects.ProposalData
+}
+
+const Show = ({proposal}: PageProps) => {
   const [data] = useState({
     title: 'Token 2049 Side Event: Enterprise-Focused RWA',
   });
@@ -14,7 +18,7 @@ const Show = () => {
     <div className="mx-auto px-4 sm:px-6 lg:px-8">
       <div className="py-8">
         <div className="mb-8">
-          <Title level='1'>{data.title}</Title>
+          <Title level='1'>{proposal.title}</Title>
         </div>
 
         <div className="mt-8 grid grid-cols-1 md:grid-cols-12 gap-8">

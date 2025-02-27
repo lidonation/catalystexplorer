@@ -51,4 +51,18 @@ class HashIdService
 
         return $this->hashIds->decode($hashId)[0];
     }
+    
+    public function decodeArray(array $hashIds): array
+    {
+        $result = [];
+        foreach ($hashIds as $hashId) {
+            if (is_int($hashId)) {
+                $result[] = $hashId;
+            } else {
+                $decoded = $this->hashIds->decode($hashId);
+                $result[] = $decoded[0] ?? null;
+            }
+        }
+        return $result;
+    }
 }
