@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use App\Casts\DateFormatCast;
 use App\Casts\HashId;
 use App\Enums\CatalystCurrencySymbols;
 use App\Enums\ProposalStatus;
@@ -338,8 +337,8 @@ class IdeascaleProfile extends Model implements HasMedia
         return [
             //            'id' => HashId::class,
             // 'claimed_by_id' => HashId::class,
-            'created_at' => DateFormatCast::class,
-            'updated_at' => DateFormatCast::class,
+            'created_at' => 'datetime',
+            'updated_at' => 'datetime',
         ];
     }
 }
