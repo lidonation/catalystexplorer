@@ -122,13 +122,13 @@
         }
     },
     "my": {
-        "dashboard":"Mon tableau de bord",
-        "profile":"Mon profil",
-        "proposals":"Mes propositions",
-        "reviews":"Mes avis",
-        "groups":"Mes groupes",
-        "communities":"Mes communautés",
-        "lists":"Mes listes"
+        "dashboard": "Mon tableau de bord",
+        "profile": "Mon profil",
+        "proposals": "Mes propositions",
+        "reviews": "Mes avis",
+        "groups": "Mes groupes",
+        "communities": "Mes communautés",
+        "lists": "Mes listes"
     },
     "navigation": {
         "mobile": {
@@ -153,6 +153,38 @@
         "morePages": "Plus de pages",
         "goPreviousPage": "Aller à la page précédente",
         "goNextPage": "Aller à la page suivante"
+    },
+    "listQuickCreate": {
+        "createListLong": "Créez une nouvelle liste pour commencer",
+        "createListShort": "Créer une liste",
+        "addAll": "Ajouter à la liste",
+        "addList": "Nouvelle liste",
+        "public": "Rendre public ?",
+        "createListPlaceholder": "Créer une nouvelle liste",
+        "addDescPlaceholder": "Ajouter une description",
+        "noLists": "Aucune liste trouvée",
+        "addBookmark": "Ajouter aux favoris",
+        "successfulBookmarked": "Ajouté à vos favoris avec succès !",
+        "success": {
+            "title": "Succès",
+            "message": "Liste créée avec succès"
+        },
+        "removeBookmark": "Supprimer",
+        "listName": "Nom de la liste",
+        "listDescription": "Description de la liste",
+        "create": "Créer",
+        "cancel": "Annuler",
+        "listFetchError": "Erreur lors de la récupération des listes",
+        "listCreateError": "Erreur lors de la création de la liste",
+        "validationErrors": {
+            "general": "Une erreur s'est produite",
+            "inputCheck": "Veuillez vérifier vos informations",
+            "emptyFields": "Le nom et la description sont requis",
+            "name": "Le nom est requis",
+            "shortName": "Le nom doit comporter au moins 5 caractères",
+            "shortDescription": "La description doit comporter au moins 10 caractères",
+            "description": "La description est requise"
+        }
     },
     "searchBar": {
         "placeholder": "Rechercher des propositions, des fonds, des personnes, des articles et des données",
@@ -320,7 +352,7 @@
         "reviews": "Avis",
         "noMembers": "Ce groupe n'a aucun membre",
         "viewMembers": "Afficher les membres",
-        "options":{
+        "options": {
             "alphabetically": "Par ordre alphabétique : A à Z",
             "amountAwardedAdaDesc": "Montant accordé ADA : élevé à faible",
             "amountAwardedAdaAsc": "Montant accordé ADA : faible à élevé",

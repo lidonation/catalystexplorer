@@ -36,6 +36,22 @@ Route::prefix('api')->as('api.')->group(function () {
                 ->name('status');
         });
 
+    Route::prefix('collection-items')->as('collections.')
+        ->middleware('auth')
+        ->group(function () {
+            Route::post('/create', [MyBookmarksController::class, 'createCollection'])
+                ->name('create');
+            Route::get('/', [MyBookmarksController::class, 'retrieveCollections'])
+                ->name('retrieve');
+            Route::prefix('bookmarks')->as('bookmarks.')
+                ->group(function () {
+                    Route::post('/add', [MyBookmarksController::class, 'addBookmarkToCollection'])
+                        ->name('add');
+                    Route::post('/remove', [MyBookmarksController::class, 'removeBookmarkFromCollection'])
+                        ->name('remove');
+                });
+        });
+
     Route::prefix('ideascale-profiles')->as('ideascaleProfiles.')->group(function () {
         Route::get('/', [IdeascaleProfilesController::class, 'ideascaleProfiles'])->name('index');
         Route::post('/claim-ideascale-profile/{ideascaleProfile}', [IdeascaleProfilesController::class, 'claimIdeascaleProfile'])->name('claim');
