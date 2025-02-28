@@ -1,12 +1,12 @@
 import Title from '@/Components/atoms/Title';
 import Card from '@/Components/Card';
+import FundingPercentages from '@/Components/FundingPercentages';
 import Image from '@/Components/Image';
 import IdeascaleProfileUsers from '@/Pages/IdeascaleProfile/Partials/IdeascaleProfileUsersComponent';
 import { useLocalizedRoute } from '@/utils/localizedRoute';
 import { Link } from '@inertiajs/react';
 import React, { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import GroupFundingPercentages from './GroupFundingPercentages';
 import GroupSocials from './GroupSocials';
 import GroupData = App.DataTransferObjects.GroupData;
 
@@ -78,27 +78,22 @@ const GroupCardMini: React.FC<GroupCardMiniProps> = ({ group }) => {
                     >
                         {(group?.amount_awarded_ada || noAwardedFunds) && (
                             <div>
-                                <GroupFundingPercentages
+                                <FundingPercentages
                                     amount={group?.amount_distributed_ada ?? 0}
                                     total={group?.amount_awarded_ada ?? 0}
                                     primaryBackgroundColor="bg-content-light"
                                     secondaryBackgroundColor="bg-primary"
                                     amount_currency="ADA"
-                                    isMini={true}
-                                    twoColumns={noAwardedFunds || allAwardedFunds}
                                 />
                             </div>
                         )}
                         {(group?.amount_awarded_usd || noAwardedFunds) && (
-                            <GroupFundingPercentages
+                            <FundingPercentages
                                 amount={group?.amount_distributed_usd ?? 0}
                                 total={group?.amount_awarded_usd ?? 0}
                                 primaryBackgroundColor="bg-content-light"
                                 secondaryBackgroundColor="bg-primary-dark"
                                 amount_currency="USD"
-                                isMini={true}
-                                twoColumns={noAwardedFunds || allAwardedFunds}
-
                             />
                         )}
                     </div>

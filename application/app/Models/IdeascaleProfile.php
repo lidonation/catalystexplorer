@@ -271,6 +271,16 @@ class IdeascaleProfile extends Model implements HasMedia
         )->where('type', 'proposal');
     }
 
+    public function groups(): BelongsToMany
+    {
+        return $this->belongsToMany(
+            Group::class,
+            'group_has_ideascale_profile',
+            'ideascale_profile_id',
+            'group_id'
+        );
+    }
+
     public function claimed_by(): BelongsTo
     {
         return $this->belongsTo(User::class, 'claimed_by_id', 'id');
@@ -296,7 +306,7 @@ class IdeascaleProfile extends Model implements HasMedia
 
     public function toSearchableArray(): array
     {
-        $this->load('proposals');
+        $this->load('proposals', 'groups');
         $this->loadCount([
             'completed_proposals',
             'funded_proposals',
