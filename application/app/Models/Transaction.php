@@ -6,6 +6,4 @@ namespace App\Models;
 
 class Transaction extends Model
 {
-    /** @use HasFactory<\Database\Factories\TransactionFactory> */
-    use HasFactory;
 }
