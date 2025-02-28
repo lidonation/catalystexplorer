@@ -24,7 +24,7 @@ export const StarRating: React.FC<StarRatingProps> = ({
                     />
                 ))}{' '}
             </div>
-            {showValue && <ValueLabel className=" ms-4 text-4 font-bold text-content">{rating}</ValueLabel>}
+            {showValue && <ValueLabel className=" ms-4 text-lg font-bold text-content">{rating}</ValueLabel>}
         </div>
     );
 };
