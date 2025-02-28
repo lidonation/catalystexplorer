@@ -4,10 +4,11 @@ import SegmentedBarToolTipHover from './SegmentedBarToolTipHover';
 
 interface SegmentedProgressBarProps {
     segments: Segments[];
+    tooltipSegments?: Segments[];
     children?: React.ReactNode;
 }
 
-const SegmentedBar: React.FC<SegmentedProgressBarProps> = ({ segments, children }) => {
+const SegmentedBar: React.FC<SegmentedProgressBarProps> = ({ segments, tooltipSegments,children }) => {
     const total: number = segments.filter((seg) => (typeof  seg.value !== "undefined") )
         .reduce((acc, seg) => acc + seg.value, 0);
     const [isHovered, setIsHovered] = useState(false);
@@ -44,7 +45,7 @@ const SegmentedBar: React.FC<SegmentedProgressBarProps> = ({ segments, children 
 
             {isHovered && (
                 <div className="absolute bottom-full left-1/2 z-100 mb-2 -translate-x-1/2 transform">
-                    <SegmentedBarToolTipHover segments={segments}>{children}</SegmentedBarToolTipHover>
+                    <SegmentedBarToolTipHover segments={tooltipSegments || []}>{children}</SegmentedBarToolTipHover>
                 </div>
             )}
         </div>
