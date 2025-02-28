@@ -24,62 +24,78 @@ const IdeascaleProfileCardMini: React.FC<IdeascaleProfileProps> = ({
     ideascaleProfile,
 }) => {
     const { t } = useTranslation();
-    const completedProposalsCount =
-        ideascaleProfile?.completed_proposals_count ?? 0;
+    const completedProposalsCount = ideascaleProfile?.completed_proposals_count ?? 0;
     const fundedProposalsCount = ideascaleProfile?.funded_proposals_count ?? 0;
     const submittedProposalsCount = ideascaleProfile?.proposals_count ?? 0;
 
-    const chartSegments = [
-        {
-            label: 'Completed',
-            color: 'bg-success',
-            value: completedProposalsCount,
-        },
-        {
-            label: 'Funded',
-            color: 'bg-warning',
-            value: fundedProposalsCount - completedProposalsCount,
-        },
-        {
-            label: 'Submitted',
-            color: 'bg-primary',
-            value:
-                submittedProposalsCount -
-                completedProposalsCount -
-                submittedProposalsCount,
-        },
-    ] as Segments[];
-
-    const toolTipSegments = [
-        {
-            label: 'Completed',
-            color: 'bg-success',
-            value: completedProposalsCount,
-        },
-        {
-            label: 'Funded',
-            color: 'bg-warning',
-            value: fundedProposalsCount - completedProposalsCount,
-        },
-        {
-            label: 'Submitted',
-            color: 'bg-primary',
-            value: submittedProposalsCount,
-        },
-    ] as Segments[];
-
-    const extraSegments = [
-        {
-            label: 'Proposer',
-            color: '',
-            value: ideascaleProfile.own_proposals_count ?? 0,
-        },
-        {
-            label: 'Collaborator',
-            color: '',
-            value: ideascaleProfile.collaborating_proposals_count ?? 0,
-        },
-    ] as Segments[];
+   const segmentsLegend = [
+           {
+               label: 'Completed',
+               color: 'bg-success',
+               value: completedProposalsCount
+           },
+           {
+               label: 'Funded',
+               color: 'bg-warning',
+               value: fundedProposalsCount
+           },
+           {
+               label: 'Submitted',
+               color: 'bg-primary',
+               value: submittedProposalsCount
+           },
+       ] as Segments[];
+   
+       const chartSegments = [
+           {
+               label: 'Completed',
+               color: 'bg-success',
+               value: completedProposalsCount,
+           },
+           {
+               label: 'Funded',
+               color: 'bg-warning',
+               value: fundedProposalsCount - completedProposalsCount
+               ,
+           },
+           {
+               label: 'Submitted',
+               color: 'bg-primary',
+               value: submittedProposalsCount - completedProposalsCount - submittedProposalsCount
+           },
+       ] as Segments[];
+   
+       const toolTipSegments = [
+           {
+               label: 'Completed',
+               color: 'bg-success',
+               value: completedProposalsCount,
+           },
+           {
+               label: 'Funded',
+               color: 'bg-warning',
+               value: fundedProposalsCount - completedProposalsCount
+               ,
+           },
+           {
+               label: 'Submitted',
+               color: 'bg-primary',
+               value: submittedProposalsCount 
+           },
+       ] as Segments[];
+   
+       const extraSegments = [
+           {
+               label: 'Proposer',
+               color: '',
+               value: ideascaleProfile.own_proposals_count ?? 0,
+           },
+           {
+               label: 'Collaborator',
+               color: '',
+               value: ideascaleProfile.collaborating_proposals_count ?? 0,
+           },
+       ] as Segments[];
 
     return (
         <Card>
@@ -133,10 +149,7 @@ const IdeascaleProfileCardMini: React.FC<IdeascaleProfileProps> = ({
             <div className="mt-auto flex flex-col gap-4">
                 <div className="border-border-secondary border-t">
                     <div className="flex w-full justify-between pt-4">
-                        <SegmentedBar
-                            segments={chartSegments}
-                            tooltipSegments={toolTipSegments}
-                        >
+                        <SegmentedBar segments={chartSegments} tooltipSegments={toolTipSegments}>
                             {extraSegments.map((segment, index) => (
                                 <div key={index} className="flex items-center">
                                     <p className="text-3">{segment.label}:</p>
