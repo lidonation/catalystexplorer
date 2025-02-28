@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace App\Policies;
 
-use App\Models\Drep;
+use App\Models\Transaction;
 use App\Models\User;
 
-class DrepPolicy
+class TransactionPolicy
 {
     /**
      * Determine whether the user can view any models.
@@ -20,7 +20,7 @@ class DrepPolicy
     /**
      * Determine whether the user can view the model.
      */
-    public function view(User $user, Drep $drep): bool
+    public function view(User $user, Transaction $transaction): bool
     {
         return false;
     }
@@ -36,7 +36,7 @@ class DrepPolicy
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, Drep $drep): bool
+    public function update(User $user, Transaction $transaction): bool
     {
         return false;
     }
@@ -44,7 +44,7 @@ class DrepPolicy
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, Drep $drep): bool
+    public function delete(User $user, Transaction $transaction): bool
     {
         return false;
     }
@@ -52,7 +52,7 @@ class DrepPolicy
     /**
      * Determine whether the user can restore the model.
      */
-    public function restore(User $user, Drep $drep): bool
+    public function restore(User $user, Transaction $transaction): bool
     {
         return false;
     }
@@ -60,7 +60,7 @@ class DrepPolicy
     /**
      * Determine whether the user can permanently delete the model.
      */
-    public function forceDelete(User $user, Drep $drep): bool
+    public function forceDelete(User $user, Transaction $transaction): bool
     {
         return false;
     }

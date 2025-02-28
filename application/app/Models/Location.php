@@ -2,27 +2,38 @@
 
 declare(strict_types=1);
 
-declare(strict_types=1);
-
 namespace App\Models;
 
-use App\Traits\HasModel;
-use Database\Factories\LocationFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
 
-// use Illuminate\Database\Eloquent\Model;
-// use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Location extends Model
 {
-    /** @use HasFactory<LocationFactory> */
-    // use HasFactory;
-
-    use HasModel;
-
     protected $hidden = ['id', 'pivot.location_id'];
+
+    /**
+     * The roles that belong to the user.
+     */
+    public function groups(): BelongsToMany
+    {
+        return $this->belongsToMany(
+            Proposal::class, 'model_has_locations', 'model_id', 'location_id'
+        )->where('model_type', Group::class);
+    }
+
+    public function models(): MorphToMany
+    {
+        return $this->morphToMany(Location::class,
+            'model_tag',
+            'location_id',
+            'model_id'
+        );
+    }
 
     public function casts(): array
     {
         return [];
     }
+
 }

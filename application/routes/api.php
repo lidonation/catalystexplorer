@@ -1,13 +1,13 @@
 <?php
 
-use App\Interfaces\Http\Controllers\Api\CampaignController;
-use App\Interfaces\Http\Controllers\Api\CommunityController;
-use App\Interfaces\Http\Controllers\Api\GroupController;
-use App\Interfaces\Http\Controllers\Api\IdeascaleProfilesController;
-use App\Interfaces\Http\Controllers\Api\TagController;
-use App\Interfaces\Http\Controllers\GroupsController;
-use App\Interfaces\Http\Controllers\My\MyBookmarksController;
-use App\Interfaces\Http\Controllers\ProposalsController;
+use App\Http\Controllers\Api\CampaignController;
+use App\Http\Controllers\Api\CommunityController;
+use App\Http\Controllers\Api\GroupController;
+use App\Http\Controllers\Api\IdeascaleProfilesController;
+use App\Http\Controllers\Api\TagController;
+use App\Http\Controllers\GroupsController;
+use App\Http\Controllers\My\MyBookmarksController;
+use App\Http\Controllers\ProposalsController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('api')->as('api.')->group(function () {
