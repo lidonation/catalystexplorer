@@ -80,7 +80,7 @@ const IdeascaleProfileCard: React.FC<IdeascaleProfileProps> = ({
         {
             label: 'Submitted',
             color: 'bg-primary',
-            value: submittedProposalsCount - (fundedProposalsCount - completedProposalsCount)
+            value: submittedProposalsCount
         },
     ] as Segments[];
 
@@ -109,8 +109,8 @@ const IdeascaleProfileCard: React.FC<IdeascaleProfileProps> = ({
                     </div>
                     <div className="min-w-0 flex-1">
                         <div className="text-2 break-words">
-                            <div className='flex gap-2 items-center'>
-                                <Title level="4" className="font-bold">
+                            <div className=' w-full flex items-center'>
+                                <Title level="5" className="font-bold mr-1">
                                     <Link
                                         className="line-clamp-2"
                                         href={useLocalizedRoute(
