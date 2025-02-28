@@ -1,26 +1,23 @@
 import { currency } from '@/utils/currency';
 import { useTranslation } from 'react-i18next';
-import PercentageProgressBar from '../../../Components/PercentageProgressBar';
+import PercentageProgressBar from './PercentageProgressBar';
+import Paragraph from './atoms/Paragraph';
 
-interface GroupFundingPercentagesProps extends Record<string, unknown> {
+interface FundingPercentagesProps extends Record<string, unknown> {
     amount: number;
     total: number;
-    isMini: boolean;
-    twoColumns: boolean;
     amount_currency: string;
     primaryBackgroundColor: string;
     secondaryBackgroundColor: string;
 }
 
-export default function GroupFundingPercentages({
+export default function FundingPercentages({
     amount,
     total,
     amount_currency,
-    isMini,
-    twoColumns,
     primaryBackgroundColor,
     secondaryBackgroundColor,
-}: GroupFundingPercentagesProps) {
+}: FundingPercentagesProps) {
     const { t } = useTranslation();
     const calculatePercentage = (
         numerator: number,
@@ -38,24 +35,17 @@ export default function GroupFundingPercentages({
                     secondaryBackgroudColor={secondaryBackgroundColor}
                 />
             </div>
-            <div
-                className='mt-2 w-full flex justify-between'
-            >
-                {isMini && !twoColumns && (
-                    <p className="text-gray-persist mt-1">{t('groups.received')}</p>
-                )}
-
-                <div className='mt-1'>
-                    <span className="text-md font-semibold">
+            <div className="mt-2 flex w-full justify-between">
+                <div className="flex flex-wrap gap-1 items-center">
+                    <Paragraph className="text-md font-semibold">
                         {currency(amount, 2, amount_currency)}
-                    </span>
-                    <span className="text-highlight text-sm">{` / ${currency(total ?? 0, 2, amount_currency)}`}</span>
-                    {
-                        twoColumns && (
-                            <br/>
-                        )
-                    }
-                    <span className="text-highlight text-sm">{` (${calculatePercentage(amount ?? 0, total ?? 0)}%)`}</span>
+                    </Paragraph>
+                    <Paragraph size="sm" className="text-highlight">
+                        {` / ${currency(total ?? 0, 2, amount_currency)}`}
+                    </Paragraph>
+                    <Paragraph size="sm" className="text-highlight">
+                        {` (${calculatePercentage(amount ?? 0, total ?? 0)}%)`}
+                    </Paragraph>
                 </div>
             </div>
         </div>
