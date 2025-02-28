@@ -226,7 +226,7 @@ const IdeascaleProfileCard: React.FC<IdeascaleProfileProps> = ({
                             ))}
                         </SegmentedBar>
                     </div>
-                    <ul className="mt-2 flex w-full flex-wrap justify-between gap-2">
+                    <ul className="mt-2 flex w-full flex-wrap gap-x-4">
                         {segmentsLegend.map((segment, index) => (
                             <li key={index} className="mt-2">
                                 <div
