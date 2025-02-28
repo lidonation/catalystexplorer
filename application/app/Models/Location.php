@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
 
 
 class Location extends Model
@@ -21,6 +22,14 @@ class Location extends Model
         )->where('model_type', Group::class);
     }
 
+    public function models(): MorphToMany
+    {
+        return $this->morphToMany(Location::class,
+            'model_tag',
+            'location_id',
+            'model_id'
+        );
+    }
 
     public function casts(): array
     {

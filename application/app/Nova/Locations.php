@@ -8,6 +8,7 @@ use App\Models\Link;
 use App\Models\Location;
 use Laravel\Nova\Fields\Field;
 use Laravel\Nova\Fields\ID;
+use Laravel\Nova\Fields\MorphedByMany;
 use Laravel\Nova\Fields\MorphTo;
 use Laravel\Nova\Fields\MorphToMany;
 use Laravel\Nova\Fields\Number;
@@ -59,7 +60,8 @@ class Locations extends Resource
             Text::make(__('Region'), 'region'),
             Text::make(__('Country'), 'country'),
 
-            MorphToMany::make(__('Models'), 'models')->types([
+            MorphTo::make(__('Models'), 'models')
+                ->types([
                 Groups::class,
                 IdeascaleProfiles::class
             ]),

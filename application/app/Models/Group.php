@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Support\Facades\Artisan;
 use Laravel\Scout\Searchable;
 use Laravolt\Avatar\Facade as Avatar;
@@ -216,16 +217,6 @@ class Group extends Model implements HasMedia
             'location_id',
             'model_id'
         )->where('model_type', Proposal::class);
-    }
-
-    public function models(): BelongsToMany
-    {
-        return $this->belongsToMany(
-            Location::class,
-            'model_tag',
-            'location_id',
-            'model_id'
-        );
     }
 
     /**
