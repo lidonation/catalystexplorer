@@ -28,25 +28,25 @@ const IdeascaleProfileCardMini: React.FC<IdeascaleProfileProps> = ({
         ideascaleProfile?.completed_proposals_count ?? 0;
     const fundedProposalsCount = ideascaleProfile?.funded_proposals_count ?? 0;
     const submittedProposalsCount = ideascaleProfile?.proposals_count ?? 0;
-
     const chartSegments = [
         {
             label: 'Completed',
             color: 'bg-success',
-            value: completedProposalsCount,
+            value: (completedProposalsCount / submittedProposalsCount) * 100,
         },
         {
             label: 'Funded',
             color: 'bg-warning',
-            value: fundedProposalsCount - completedProposalsCount,
+            value: ((fundedProposalsCount - completedProposalsCount) / submittedProposalsCount) * 100,
         },
+
         {
             label: 'Submitted',
             color: 'bg-primary',
             value:
-                submittedProposalsCount -
-                completedProposalsCount -
-                submittedProposalsCount,
+                ((submittedProposalsCount - fundedProposalsCount) /
+                    submittedProposalsCount) *
+                100,
         },
     ] as Segments[];
 
@@ -54,17 +54,17 @@ const IdeascaleProfileCardMini: React.FC<IdeascaleProfileProps> = ({
         {
             label: 'Completed',
             color: 'bg-success',
-            value: completedProposalsCount,
+            value:  completedProposalsCount,
         },
         {
             label: 'Funded',
             color: 'bg-warning',
-            value: fundedProposalsCount - completedProposalsCount,
+            value: fundedProposalsCount,
         },
         {
             label: 'Submitted',
             color: 'bg-primary',
-            value: submittedProposalsCount,
+            value: submittedProposalsCount
         },
     ] as Segments[];
 

@@ -97,7 +97,7 @@ const GroupCardExtended: React.FC<GroupCardFullProps> = ({ group }) => {
                 </div>
 
                 <div className="border-content-light mt-4 border-t border-b pt-4 pb-4">
-                    <SegmentedBar segments={segments} />
+                    <SegmentedBar segments={segments} tooltipSegments={segments}/>
                     <ul className="mt-2 flex w-full justify-between">
                         {segments.map((segment, index) => (
                             <li

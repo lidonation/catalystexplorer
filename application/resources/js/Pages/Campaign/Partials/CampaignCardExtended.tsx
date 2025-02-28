@@ -87,7 +87,7 @@ const CampaignCard: React.FC<CampaignCardProps> = ({
 
                     <div className='space-y-3'>
                         <div>
-                            <SegmentedBar segments={segments}/>
+                            <SegmentedBar segments={segments} tooltipSegments={segments}/>
                         </div>
 
                         <div className="flex flex-row flex-wrap gap-2 justify-between text-sm px-0.5">

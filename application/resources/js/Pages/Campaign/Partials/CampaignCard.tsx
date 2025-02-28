@@ -70,7 +70,7 @@ const CampaignCard: React.FC<CampaignCardProps> = ({
             </div>
 
             <div className="mt-4">
-                <SegmentedBar segments={segments}/>
+                <SegmentedBar segments={segments} tooltipSegments={segments}/>
             </div>
 
             <div className="pt-6">
