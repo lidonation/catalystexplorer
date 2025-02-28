@@ -59,7 +59,7 @@ class Locations extends Resource
             Text::make(__('Region'), 'region'),
             Text::make(__('Country'), 'country'),
 
-            MorphToMany::make(__('Model'), 'model')->types([
+            MorphToMany::make(__('Models'), 'models')->types([
                 Groups::class,
                 IdeascaleProfiles::class
             ]),
