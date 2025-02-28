@@ -72,24 +72,7 @@ const IdeascaleProfileCard: React.FC<IdeascaleProfileProps> = ({
                 100,
         },
     ] as Segments[];
-
-    const toolTipSegments = [
-        {
-            label: 'Completed',
-            color: 'bg-success',
-            value: completedProposalsCount,
-        },
-        {
-            label: 'Funded',
-            color: 'bg-warning',
-            value: fundedProposalsCount,
-        },
-        {
-            label: 'Submitted',
-            color: 'bg-primary',
-            value: submittedProposalsCount,
-        },
-    ] as Segments[];
+ 
 
     const extraSegments = [
         {
