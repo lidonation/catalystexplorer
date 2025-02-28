@@ -52,6 +52,7 @@ class IdeascaleProfilesController extends Controller
         $this->getProps($request);
 
         $ideascaleProfile
+            ->load(['groups'])
             ->loadCount([
                 'completed_proposals',
                 'funded_proposals',
@@ -66,6 +67,11 @@ class IdeascaleProfilesController extends Controller
                 'amount_requested_usd',
             ]);
 
+        $ideascaleProfileData = [
+            ...$ideascaleProfile->toArray(),
+            'groups' => $ideascaleProfile->groups->toArray(),
+        ];
+
         $path = $request->path();
 
         if (str_contains($path, '/proposals')) {
@@ -74,7 +80,7 @@ class IdeascaleProfilesController extends Controller
                 ->paginate(perPage: 5);
 
             return Inertia::render('IdeascaleProfile/Proposals/Index', [
-                'ideascaleProfile' => IdeascaleProfileData::from($ideascaleProfile),
+                'ideascaleProfile' => IdeascaleProfileData::from($ideascaleProfileData),
                 'proposals' => Inertia::lazy(fn () => [
                     'data' => ProposalData::collect($proposalsPaginator->items()),
                     'total' => $proposalsPaginator->total(),
@@ -89,20 +95,20 @@ class IdeascaleProfilesController extends Controller
 
         if (str_contains($path, '/connections')) {
             return Inertia::render('IdeascaleProfile/Connections/Index', [
-                'ideascaleProfile' => IdeascaleProfileData::from($ideascaleProfile),
+                'ideascaleProfile' => IdeascaleProfileData::from($ideascaleProfileData),
                 'connections' => Inertia::lazy(fn () => $ideascaleProfile->connected_items), // Use lazy loading
             ]);
         }
 
         if (str_contains($path, '/groups')) {
             return Inertia::render('IdeascaleProfile/Groups/Index', [
-                'ideascaleProfile' => IdeascaleProfileData::from($ideascaleProfile),
+                'ideascaleProfile' => IdeascaleProfileData::from($ideascaleProfileData),
             ]);
         }
 
         if (str_contains($path, '/communities')) {
             return Inertia::render('IdeascaleProfile/Communities/Index', [
-                'ideascaleProfile' => IdeascaleProfileData::from($ideascaleProfile),
+                'ideascaleProfile' => IdeascaleProfileData::from($ideascaleProfileData),
             ]);
         }
 
@@ -119,9 +125,9 @@ class IdeascaleProfilesController extends Controller
 
         if (str_contains($path, '/milestones')) {
             return Inertia::render('IdeascaleProfile/Milestones/Index', [
-                'ideascaleProfile' => IdeascaleProfileData::from($ideascaleProfile),
+                'ideascaleProfile' => IdeascaleProfileData::from($ideascaleProfileData),
                 'proposalMilestones' => Inertia::optional(fn () => to_length_aware_paginator(ProposalMilestoneData::collect(
-                    $proposalMilestones = ProposalMilestone::whereHas('proposal', function ($query) use ($ideascaleProfile) {
+                    ProposalMilestone::whereHas('proposal', function ($query) use ($ideascaleProfile) {
                         $query->has('users', $ideascaleProfile->id);
                     })->with(['proposal', 'milestones'])->paginate(6)
                 ))),
@@ -130,13 +136,13 @@ class IdeascaleProfilesController extends Controller
 
         if (str_contains($path, '/reports')) {
             return Inertia::render('IdeascaleProfile/Reports/Index', [
-                'ideascaleProfile' => IdeascaleProfileData::from($ideascaleProfile),
+                'ideascaleProfile' => IdeascaleProfileData::from($ideascaleProfileData),
             ]);
         }
 
         if (str_contains($path, '/cam')) {
             return Inertia::render('IdeascaleProfile/Cam/Index', [
-                'ideascaleProfile' => IdeascaleProfileData::from($ideascaleProfile),
+                'ideascaleProfile' => IdeascaleProfileData::from($ideascaleProfileData),
             ]);
         }
 
@@ -145,7 +151,7 @@ class IdeascaleProfilesController extends Controller
             ->paginate(perPage: 5);
 
         return Inertia::render('IdeascaleProfile/Proposals/Index', [
-            'ideascaleProfile' => IdeascaleProfileData::from($ideascaleProfile),
+            'ideascaleProfile' => IdeascaleProfileData::from($ideascaleProfileData),
             'proposals' => Inertia::lazy(fn () => [
                 'data' => ProposalData::collect($proposalsPaginator->items()),
                 'total' => $proposalsPaginator->total(),
@@ -155,7 +161,67 @@ class IdeascaleProfilesController extends Controller
                 'from' => $proposalsPaginator->firstItem(),
                 'to' => $proposalsPaginator->lastItem(),
             ]),
+            'groups' => $ideascaleProfile->groups(),
         ]);
+    }
+
+    public function getReviewsData(IdeascaleProfile $ideascaleProfile, string $path): array
+    {
+
+        $proposals = $ideascaleProfile->own_proposals()
+            ->with([
+                'reviews' => function ($query) {
+                    $query->where('status', 'published')
+                        ->with([
+                            'user' => function ($q) {
+                                $q->withCount('reviews');
+                            },
+                            'rating:review_id,rating',
+                        ]);
+                },
+            ])
+            ->get();
+
+        $reviews = $proposals->flatMap(fn ($proposal) => $proposal->reviews);
+        $reviewerIds = $reviews->pluck('user.id')->filter()->unique()->values();
+
+        $reviewerProfiles = IdeascaleProfile::whereIn('claimed_by_id', $reviewerIds)->get();
+
+        $ratingStats = array_fill_keys([1, 2, 3, 4, 5], 0);
+
+        foreach ($reviews as $review) {
+            $rating = $review->rating->rating ?? null;
+            if (isset($rating) && isset($ratingStats[$rating])) {
+                $ratingStats[$rating]++;
+            }
+        }
+
+        $page = (int) ($this->queryParams[IdeascaleProfileSearchParams::PAGE()->value] ?? $this->currentPage);
+        $perPage = 10;
+        $reviewsPaginator = new LengthAwarePaginator(
+            $reviews->forPage($page, $perPage)->values(),
+            $reviews->count(),
+            $perPage,
+            $page,
+            ['path' => $path]
+        );
+
+        $formattedReviews = $reviewsPaginator->through(function ($review) use ($reviewerProfiles) {
+            $userId = $review->user->id ?? null;
+            $userProfile = $userId ? $reviewerProfiles->firstWhere('claimed_by_id', $userId) : null;
+
+            return [
+                'review' => ReviewData::from($review),
+                'reviewerReviewsCount' => $review->user->reviews_count ?? 0,
+                'rating' => $review->rating->rating ?? null,
+                'reviewerProfile' => IdeascaleProfileData::from($userProfile),
+            ];
+        })->toArray();
+
+        return [
+            'reviews' => $formattedReviews,
+            'ratingStats' => $ratingStats,
+        ];
     }
 
     public function getReviewsData(IdeascaleProfile $ideascaleProfile, string $path): array

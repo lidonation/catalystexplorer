@@ -21,6 +21,6 @@ export default function Image({
       {...props}
     />
   ) : (
-    <div className={`bg-dark/50 ${size} rounded-full h-36 w-36 ${className}`} />
+    <div className={`bg-content-highlight-intro ${size} rounded-full ${className}`} />
   );
 }

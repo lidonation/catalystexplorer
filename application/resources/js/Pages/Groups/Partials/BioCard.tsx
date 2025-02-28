@@ -4,8 +4,9 @@ import GroupData = App.DataTransferObjects.GroupData;
 import Card from "@/Components/Card";
 import SegmentedBar from '@/Components/SegmentedBar';
 import { Segments } from '../../../../types/segments';
-import GroupFundingPercentages from './GroupFundingPercentages';
 import Paragraph from '@/Components/atoms/Paragraph';
+import FundingPercentages from '@/Components/FundingPercentages';
+import { currency } from '@/utils/currency';
 
 interface BioCardProps {
   group: GroupData;
@@ -40,13 +41,13 @@ const BioCard: React.FC<BioCardProps> = ({ group }) => {
   return (
     <Card>
       <div>
-        <Paragraph className='border-b border-dark pb-3 pt-2'>{t('bio')}</Paragraph>
+        <Paragraph className='border-b border-dark pb-3 pt-2 font-bold'>{t('bio')}</Paragraph>
         <Paragraph className="text-content-dark opacity-80 mb-4 line-clamp-3 pt-4">{group?.bio}</Paragraph>
         <div className='flex flex-col gap-2'>
           <div className='flex justify-between border-b pb-4 border-dark'>
             <div>
               <Paragraph className='text-xl font-bold'>
-                {group?.amount_requested_ada} + {group?.amount_requested_usd}
+                {currency(group?.amount_requested_ada ?? 0, 2, 'ADA')} + {currency(group?.amount_requested_usd ?? 0, 2, 'USD')}
               </Paragraph>
               <Paragraph className='text-dark'>{t('groups.totalRequested')}</Paragraph>
             </div>
@@ -65,26 +66,22 @@ const BioCard: React.FC<BioCardProps> = ({ group }) => {
         >
           {(group?.amount_awarded_ada || noAwardedFunds) && (
             <div>
-              <GroupFundingPercentages
+              <FundingPercentages
                 amount={group?.amount_awarded_ada ?? 0}
                 total={group?.amount_requested_ada ?? 0}
                 primaryBackgroundColor="bg-content-light"
                 secondaryBackgroundColor="bg-primary"
                 amount_currency="ADA"
-                isMini={true}
-                twoColumns={noAwardedFunds || allAwardedFunds}
               />
             </div>
           )}
           {(group?.amount_awarded_usd || noAwardedFunds) && (
-            <GroupFundingPercentages
+            <FundingPercentages
               amount={group?.amount_awarded_usd ?? 0}
               total={group?.amount_requested_usd ?? 0}
               primaryBackgroundColor="bg-content-light"
               secondaryBackgroundColor="bg-primary-dark"
               amount_currency="USD"
-              isMini={true}
-              twoColumns={noAwardedFunds || allAwardedFunds}
             />
           )}
         </div>
@@ -95,26 +92,22 @@ const BioCard: React.FC<BioCardProps> = ({ group }) => {
         >
           {(group?.amount_awarded_ada || noAwardedFunds) && (
             <div>
-              <GroupFundingPercentages
+              <FundingPercentages
                 amount={group?.amount_distributed_ada ?? 0}
                 total={group?.amount_awarded_ada ?? 0}
                 primaryBackgroundColor="bg-content-light"
                 secondaryBackgroundColor="bg-primary"
                 amount_currency="ADA"
-                isMini={true}
-                twoColumns={noAwardedFunds || allAwardedFunds}
               />
             </div>
           )}
           {(group?.amount_awarded_usd || noAwardedFunds) && (
-            <GroupFundingPercentages
+            <FundingPercentages
               amount={group?.amount_distributed_usd ?? 0}
               total={group?.amount_awarded_usd ?? 0}
               primaryBackgroundColor="bg-content-light"
               secondaryBackgroundColor="bg-primary-dark"
               amount_currency="USD"
-              isMini={true}
-              twoColumns={noAwardedFunds || allAwardedFunds}
             />
           )}
         </div>

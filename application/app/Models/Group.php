@@ -202,17 +202,20 @@ class Group extends Model implements HasMedia
         );
     }
 
-    public function tags(): Attribute
+    public function tags()
     {
-        return Attribute::make(
-            get: function () {
-                return Tag::with('proposals')
-                    ->whereHas('proposals', function ($q) {
-                        $q->whereIn('model_id', $this->proposals->pluck('id'));
-                    })
-                    ->get();
-            },
-        );
+        return $this->belongsToMany(Tag::class, 'model_tag', 'tag_id', 'model_id')
+            ->where('model_type', Proposal::class);
+    }
+
+    public function locations(): BelongsToMany
+    {
+        return $this->belongsToMany(
+            Location::class,
+            'model_has_locations',
+            'location_id',
+            'model_id'
+        )->where('model_type', Proposal::class);
     }
 
     /**
@@ -220,7 +223,9 @@ class Group extends Model implements HasMedia
      */
     public function proposals(): BelongsToMany
     {
-        return $this->belongsToMany(Proposal::class, 'group_has_proposal', 'group_id', 'proposal_id', 'id', 'id', 'proposals');
+        return $this->belongsToMany(
+            Proposal::class, 'group_has_proposal', 'group_id', 'proposal_id', 'id', 'id', 'proposals'
+        );
         //            ->with('fund', 'communities');
     }
 
