@@ -9,6 +9,7 @@ use App\Models\Location;
 use Laravel\Nova\Fields\Field;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\MorphTo;
+use Laravel\Nova\Fields\MorphToMany;
 use Laravel\Nova\Fields\Number;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Http\Requests\NovaRequest;
@@ -58,8 +59,9 @@ class Locations extends Resource
             Text::make(__('Region'), 'region'),
             Text::make(__('Country'), 'country'),
 
-            MorphTo::make(__('Type'), 'model')->types([
+            MorphToMany::make(__('Model'), 'model')->types([
                 Groups::class,
+                IdeascaleProfiles::class
             ]),
         ];
     }
