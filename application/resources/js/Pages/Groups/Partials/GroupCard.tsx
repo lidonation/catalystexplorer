@@ -39,7 +39,7 @@ const GroupCard: React.FC<GroupCardProps> = ({group}) => {
                     <Image
                         size="30"
                         imageUrl={group?.hero_img_url}
-                        className='size-36 border-3 border-darker rounded-full' />
+                        className='h-36 w-36 border-3 border-darker rounded-full' />
                 </div>
                 <div className="flex flex-col items-center w-full gap-4">
                     <Link

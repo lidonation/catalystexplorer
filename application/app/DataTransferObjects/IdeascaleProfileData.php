@@ -100,5 +100,8 @@ final class IdeascaleProfileData extends Data
 
         #[TypeScriptOptional]
         public ?int $collaborating_proposals_count,
+
+        #[TypeScriptOptional]
+        public ?array $groups,
     ) {}
 }

@@ -15,8 +15,6 @@ export default function FundingPercentages({
     amount,
     total,
     amount_currency,
-    isMini,
-    twoColumns,
     primaryBackgroundColor,
     secondaryBackgroundColor,
 }: FundingPercentagesProps) {
@@ -37,15 +35,17 @@ export default function FundingPercentages({
                     secondaryBackgroudColor={secondaryBackgroundColor}
                 />
             </div>
-            <div
-                className='mt-2 w-full flex justify-between'
-            >
-                <div className='mt-1'>
+            <div className="mt-2 flex w-full justify-between">
+                <div className="flex flex-wrap gap-1 items-center">
                     <Paragraph className="text-md font-semibold">
                         {currency(amount, 2, amount_currency)}
                     </Paragraph>
-                    <Paragraph size='sm' className="text-highlight">{` / ${currency(total ?? 0, 2, amount_currency)}`}</Paragraph>
-                    <Paragraph size='sm' className="text-highlight">{` (${calculatePercentage(amount ?? 0, total ?? 0)}%)`}</Paragraph>
+                    <Paragraph size="sm" className="text-highlight">
+                        {` / ${currency(total ?? 0, 2, amount_currency)}`}
+                    </Paragraph>
+                    <Paragraph size="sm" className="text-highlight">
+                        {` (${calculatePercentage(amount ?? 0, total ?? 0)}%)`}
+                    </Paragraph>
                 </div>
             </div>
         </div>

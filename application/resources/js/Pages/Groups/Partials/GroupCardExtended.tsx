@@ -1,9 +1,12 @@
+import Title from '@/Components/atoms/Title';
+import FundingPercentages from '@/Components/FundingPercentages';
 import SegmentedBar from '@/Components/SegmentedBar';
 import { currency } from '@/utils/currency';
+import { useLocalizedRoute } from '@/utils/localizedRoute';
+import { Link } from '@inertiajs/react';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Segments } from '../../../../types/segments';
-import GroupFundingPercentages from './GroupFundingPercentages';
 import GroupHeroSection from './GroupHeroSection';
 import GroupData = App.DataTransferObjects.GroupData;
 
@@ -34,13 +37,15 @@ const GroupCardExtended: React.FC<GroupCardFullProps> = ({ group }) => {
 
     const noAwardedFunds =
         !group?.amount_awarded_ada && !group?.amount_awarded_usd;
-    const allAwardedFunds =
-        !!(group?.amount_awarded_ada && group?.amount_awarded_usd)
+    const allAwardedFunds = !!(
+        group?.amount_awarded_ada && group?.amount_awarded_usd
+    );
 
     const noReceivedFunds =
         !group?.amount_distributed_ada && !group?.amount_distributed_usd;
-    const allReceivedFunds =
-        !!(group?.amount_distributed_ada && group?.amount_distributed_usd)
+    const allReceivedFunds = !!(
+        group?.amount_distributed_ada && group?.amount_distributed_usd
+    );
 
     return (
         <div className="bg-background flex h-full w-full flex-col rounded-lg shadow-md">
@@ -48,7 +53,14 @@ const GroupCardExtended: React.FC<GroupCardFullProps> = ({ group }) => {
 
             <div className="mt-4 p-3">
                 <div className="flex w-full flex-col items-center gap-4">
-                    <p className="text-lg font-bold">{group?.name}</p>
+                    <Link
+                        href={useLocalizedRoute('groups.group', {
+                            group: group?.slug,
+                        })}
+                        className="flex w-full justify-center"
+                    >
+                        <Title level="5">{group?.name}</Title>
+                    </Link>
                 </div>
 
                 <div className="mt-4 flex justify-between">
@@ -85,7 +97,7 @@ const GroupCardExtended: React.FC<GroupCardFullProps> = ({ group }) => {
                 </div>
 
                 <div className="border-content-light mt-4 border-t border-b pt-4 pb-4">
-                    <SegmentedBar segments={segments}/>
+                    <SegmentedBar segments={segments} />
                     <ul className="mt-2 flex w-full justify-between">
                         {segments.map((segment, index) => (
                             <li
@@ -111,25 +123,21 @@ const GroupCardExtended: React.FC<GroupCardFullProps> = ({ group }) => {
                         className={`grid ${noAwardedFunds || allAwardedFunds ? 'grid-cols-2' : 'grid-cols-1'} mt-4 gap-4`}
                     >
                         {(group?.amount_awarded_ada || noAwardedFunds) && (
-                            <GroupFundingPercentages
+                            <FundingPercentages
                                 amount={group?.amount_awarded_ada ?? 0}
                                 total={group?.amount_requested_ada ?? 0}
                                 primaryBackgroundColor="bg-content-light"
                                 secondaryBackgroundColor="bg-primary"
                                 amount_currency="ADA"
-                                isMini={false}
-                                twoColumns={noAwardedFunds || allAwardedFunds}
                             />
                         )}
                         {(group?.amount_awarded_usd || noAwardedFunds) && (
-                            <GroupFundingPercentages
+                            <FundingPercentages
                                 amount={group?.amount_awarded_usd ?? 0}
                                 total={group?.amount_requested_usd ?? 0}
                                 primaryBackgroundColor="bg-content-light"
                                 secondaryBackgroundColor="bg-primary-dark"
                                 amount_currency="USD"
-                                isMini={false}
-                                twoColumns={noAwardedFunds || allAwardedFunds}
                             />
                         )}
                     </div>
@@ -143,25 +151,21 @@ const GroupCardExtended: React.FC<GroupCardFullProps> = ({ group }) => {
                         className={`grid ${noReceivedFunds || allReceivedFunds ? 'grid-cols-2' : 'grid-cols-1'} mt-4 gap-4`}
                     >
                         {(group?.amount_distributed_ada || noAwardedFunds) && (
-                            <GroupFundingPercentages
+                            <FundingPercentages
                                 amount={group?.amount_distributed_ada ?? 0}
                                 total={group?.amount_awarded_ada ?? 0}
                                 primaryBackgroundColor="bg-content-light"
                                 secondaryBackgroundColor="bg-primary"
                                 amount_currency="ADA"
-                                isMini={false}
-                                twoColumns={noReceivedFunds || allReceivedFunds}
                             />
                         )}
                         {(group?.amount_distributed_usd || noAwardedFunds) && (
-                            <GroupFundingPercentages
+                            <FundingPercentages
                                 amount={group?.amount_distributed_usd ?? 0}
                                 total={group?.amount_awarded_usd ?? 0}
                                 primaryBackgroundColor="bg-content-light"
                                 secondaryBackgroundColor="bg-primary-dark"
                                 amount_currency="USD"
-                                isMini={false}
-                                twoColumns={noReceivedFunds || allReceivedFunds}
                             />
                         )}
                     </div>
