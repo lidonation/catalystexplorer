@@ -139,7 +139,7 @@ const IdeascaleProfileCard: React.FC<IdeascaleProfileProps> = ({
                                     .join(', ')}
                             </Paragraph>
 
-                            <div className="mt-2 flex flex-col sm:flex-row sm:gap-2 sm:items-center md:flex-row md:gap-2 md:items-center lg:grid lg:grid-cols-1">
+                            <div className="mt-2 flex flex-col-row gap-2 items-center md:flex-row md:gap-2 md:items-center lg:grid lg:grid-cols-1 lg:gap-1">
                                 <Button
                                     className={`${ideascaleProfile?.claimed_by_id ? 'bg-success' : 'bg-primary'} text-content rounded-md px-2 py-2 w-20`}
                                 >
