@@ -213,7 +213,7 @@ class Group extends Model implements HasMedia
     {
         return $this->belongsToMany(
             Location::class,
-            'model_tag',
+            'model_has_locations',
             'location_id',
             'model_id'
         )->where('model_type', Proposal::class);

@@ -60,11 +60,11 @@ class Locations extends Resource
             Text::make(__('Region'), 'region'),
             Text::make(__('Country'), 'country'),
 
-            MorphTo::make(__('Models'), 'models')
-                ->types([
-                Groups::class,
-                IdeascaleProfiles::class
-            ]),
+//            MorphTo::make(__('Models'), 'models')
+//                ->types([
+//                Groups::class,
+//                IdeascaleProfiles::class
+//            ]),
         ];
     }
 }
