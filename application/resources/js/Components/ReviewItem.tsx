@@ -17,8 +17,7 @@ export const ReviewCard: React.FC<ReviewItemProps> = ({
         <div className={`pb-6 ${className}`}>
             <div className="flex items-center justify-between">
                 <ReviewerInfo
-                    name={review.reviewerProfile.name ?? ''}
-                    image={review.reviewerProfile.hero_img_url ?? ''}
+                    ideascaleProfile={review.reviewerProfile}
                     reviewCount={review.reviewerReviewsCount}
                 />
                 <StarRating rating={review.rating} />
