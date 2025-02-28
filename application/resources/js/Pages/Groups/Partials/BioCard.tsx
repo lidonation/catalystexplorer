@@ -58,7 +58,7 @@ const BioCard: React.FC<BioCardProps> = ({ group }) => {
           </div>
         </div>
         <div className='border-b pb-4 pt-4 border-dark'>
-          <SegmentedBar segments={segments}/>
+          <SegmentedBar segments={segments} tooltipSegments={segments}/>
         </div>
 
         <div

@@ -55,7 +55,7 @@ const CampaignCardMini: React.FC<CampaignCardMiniProps> = ({fund, campaign}) => 
                 </Title>
 
                 <div className="mt-4">
-                    <SegmentedBar segments={segments}/>
+                    <SegmentedBar segments={segments} tooltipSegments={segments}/>
                 </div>
                 <div className="flex gap-2">
                     <p className="bg-background text-content rounded-md border px-2">
