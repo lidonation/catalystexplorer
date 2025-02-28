@@ -4,7 +4,6 @@ import GroupData = App.DataTransferObjects.GroupData;
 import Card from "@/Components/Card";
 import SegmentedBar from '@/Components/SegmentedBar';
 import { Segments } from '../../../../types/segments';
-import GroupFundingPercentages from './GroupFundingPercentages';
 import Paragraph from '@/Components/atoms/Paragraph';
 import FundingPercentages from '@/Components/FundingPercentages';
 import { currency } from '@/utils/currency';
