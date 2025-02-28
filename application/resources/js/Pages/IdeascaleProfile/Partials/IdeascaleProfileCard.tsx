@@ -1,3 +1,4 @@
+import Button from '@/Components/atoms/Button';
 import Paragraph from '@/Components/atoms/Paragraph';
 import Title from '@/Components/atoms/Title';
 import Card from '@/Components/Card';
@@ -24,7 +25,8 @@ const IdeascaleProfileCard: React.FC<IdeascaleProfileProps> = ({
     ideascaleProfile,
 }) => {
     const { t } = useTranslation();
-    const completedProposalsCount = ideascaleProfile?.completed_proposals_count ?? 0;
+    const completedProposalsCount =
+        ideascaleProfile?.completed_proposals_count ?? 0;
     const fundedProposalsCount = ideascaleProfile?.funded_proposals_count ?? 0;
     const submittedProposalsCount = ideascaleProfile?.proposals_count ?? 0;
 
@@ -32,17 +34,17 @@ const IdeascaleProfileCard: React.FC<IdeascaleProfileProps> = ({
         {
             label: 'Completed',
             color: 'bg-success',
-            value: completedProposalsCount
+            value: completedProposalsCount,
         },
         {
             label: 'Funded',
             color: 'bg-warning',
-            value: fundedProposalsCount
+            value: fundedProposalsCount,
         },
         {
             label: 'Submitted',
             color: 'bg-primary',
-            value: submittedProposalsCount
+            value: submittedProposalsCount,
         },
     ] as Segments[];
 
@@ -50,39 +52,27 @@ const IdeascaleProfileCard: React.FC<IdeascaleProfileProps> = ({
         {
             label: 'Completed',
             color: 'bg-success',
-            value: completedProposalsCount,
+            value: (completedProposalsCount / submittedProposalsCount) * 100,
         },
         {
             label: 'Funded',
             color: 'bg-warning',
-            value: fundedProposalsCount - completedProposalsCount
-            ,
+            value:
+                ((fundedProposalsCount - completedProposalsCount) /
+                    submittedProposalsCount) *
+                100,
         },
-        {
-            label: 'Submitted',
-            color: 'bg-primary',
-            value: submittedProposalsCount - completedProposalsCount - submittedProposalsCount
-        },
-    ] as Segments[];
 
-    const toolTipSegments = [
-        {
-            label: 'Completed',
-            color: 'bg-success',
-            value: completedProposalsCount,
-        },
-        {
-            label: 'Funded',
-            color: 'bg-warning',
-            value: fundedProposalsCount - completedProposalsCount
-            ,
-        },
         {
             label: 'Submitted',
             color: 'bg-primary',
-            value: submittedProposalsCount
+            value:
+                ((submittedProposalsCount - fundedProposalsCount) /
+                    submittedProposalsCount) *
+                100,
         },
     ] as Segments[];
+ 
 
     const extraSegments = [
         {
@@ -109,8 +99,8 @@ const IdeascaleProfileCard: React.FC<IdeascaleProfileProps> = ({
                     </div>
                     <div className="min-w-0 flex-1">
                         <div className="text-2 break-words">
-                            <div className=' w-full flex items-center'>
-                                <Title level="5" className="font-bold mr-1">
+                            <div className="flex w-full items-center">
+                                <Title level="5" className="mr-1 font-bold">
                                     <Link
                                         className="line-clamp-2"
                                         href={useLocalizedRoute(
@@ -122,11 +112,9 @@ const IdeascaleProfileCard: React.FC<IdeascaleProfileProps> = ({
                                             ideascaleProfile?.username}
                                     </Link>
                                 </Title>
-                                {
-                                    ideascaleProfile?.claimed_by_id && (
-                                        <VerificationBadge />
-                                    )
-                                }
+                                {ideascaleProfile?.claimed_by_id && (
+                                    <VerificationBadge />
+                                )}
                             </div>
                             <Paragraph className="text-highlight" size="sm">
                                 {ideascaleProfile?.groups
@@ -134,28 +122,34 @@ const IdeascaleProfileCard: React.FC<IdeascaleProfileProps> = ({
                                     .join(', ')}
                             </Paragraph>
 
-                            <div className="mt-2 flex gap-2">
-                                <div
-                                    className={`${ideascaleProfile?.claimed_by_id ? 'bg-success' : 'bg-primary'} text-background w-fit rounded-md px-2 py-3`}
+                            <div className="mt-2 flex flex-col-row gap-2 items-center md:flex-row md:gap-2 md:items-center lg:grid lg:grid-cols-1 lg:gap-1">
+                                <Button
+                                    className={`${ideascaleProfile?.claimed_by_id ? 'bg-success' : 'bg-primary'} text-content rounded-md px-2 py-2 w-20`}
                                 >
-                                    <Paragraph size="sm">
+                                    <Paragraph
+                                        size="sm"
+                                        className="text-content-light"
+                                    >
                                         {ideascaleProfile?.claimed_by_id
                                             ? t('ideascaleProfiles.claimed')
                                             : t('ideascaleProfiles.claim')}
                                     </Paragraph>
-                                </div>
-                                <div className="border-gray-persist/50 text-gray-persist w-fit items-center rounded-md border-1 px-2 py-3">
-                                    <ConnectIcon />
-                                </div>
-                                <div className="border-gray-persist/50 text-gray-persist/50 w-fit items-center rounded-md border-1 py-0.5" >
-                                    <ListProvider>
-                                        <BookmarkButton
-                                            modelType="ideascale-profiles"
-                                            itemId={
-                                                ideascaleProfile?.hash ?? '0'
-                                            }
-                                        />
-                                    </ListProvider>
+                                </Button>
+                                <div className="flex gap-2 mt-2">
+                                    <div className="border-gray-persist/50 text-gray-persist w-fit items-center rounded-md border-1 px-2 py-3">
+                                        <ConnectIcon />
+                                    </div>
+                                    <div className="border-gray-persist/50 text-gray-persist/50 w-fit items-center rounded-md border-1 py-0.5">
+                                        <ListProvider>
+                                            <BookmarkButton
+                                                modelType="ideascale-profiles"
+                                                itemId={
+                                                    ideascaleProfile?.hash ??
+                                                    '0'
+                                                }
+                                            />
+                                        </ListProvider>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -199,7 +193,10 @@ const IdeascaleProfileCard: React.FC<IdeascaleProfileProps> = ({
             <div className="mt-auto flex flex-col gap-4">
                 <div>
                     <div className="flex w-full justify-between pt-4">
-                        <SegmentedBar segments={chartSegments} tooltipSegments={toolTipSegments}>
+                        <SegmentedBar
+                            segments={chartSegments}
+                            tooltipSegments={segmentsLegend}
+                        >
                             {extraSegments.map((segment, index) => (
                                 <div key={index} className="flex items-center">
                                     <Paragraph className="text-3">
@@ -212,7 +209,7 @@ const IdeascaleProfileCard: React.FC<IdeascaleProfileProps> = ({
                             ))}
                         </SegmentedBar>
                     </div>
-                    <ul className="mt-2 flex w-full justify-between gap-2">
+                    <ul className="mt-2 flex w-full flex-wrap gap-x-4">
                         {segmentsLegend.map((segment, index) => (
                             <li key={index} className="mt-2">
                                 <div
