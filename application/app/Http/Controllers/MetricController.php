@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StoreDrepRequest;
-use App\Http\Requests\UpdateDrepRequest;
-use App\Models\Drep;
+use App\Http\Requests\StoreMetricRequest;
+use App\Http\Requests\UpdateMetricRequest;
+use App\Models\Metric;
 
-class DrepController
+class MetricController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -29,7 +29,7 @@ class DrepController
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreDrepRequest $request)
+    public function store(StoreMetricRequest $request)
     {
         //
     }
@@ -37,7 +37,7 @@ class DrepController
     /**
      * Display the specified resource.
      */
-    public function show(Drep $drep)
+    public function show(Metric $metric)
     {
         //
     }
@@ -45,7 +45,7 @@ class DrepController
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Drep $drep)
+    public function edit(Metric $metric)
     {
         //
     }
@@ -53,7 +53,7 @@ class DrepController
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateDrepRequest $request, Drep $drep)
+    public function update(UpdateMetricRequest $request, Metric $metric)
     {
         //
     }
@@ -61,7 +61,7 @@ class DrepController
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Drep $drep)
+    public function destroy(Metric $metric)
     {
         //
     }

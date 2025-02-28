@@ -13,7 +13,12 @@ return new class extends Migration
     {
         Schema::create('dreps', function (Blueprint $table) {
             $table->id();
+            $table->bigInteger('voter_id');
+            $table->foreignId('user_id')
+            ->nullable()
+            ->constrained('users');     
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
