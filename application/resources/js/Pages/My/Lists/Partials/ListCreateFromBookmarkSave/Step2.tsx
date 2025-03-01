@@ -38,7 +38,11 @@ const BookmarkPage2 = ({ onNavigate }: TransitionListPageProps) => {
         isPublic: false,
     });
 
-    const handleSubmit = async () => {
+    const handleSubmit = async (e?: React.FormEvent) => {
+        if (e) {
+            e.preventDefault();
+        }
+        
         try {
             const schema = createFormSchema(t);
             schema.parse(formState);
@@ -83,6 +87,15 @@ const BookmarkPage2 = ({ onNavigate }: TransitionListPageProps) => {
             if (error) setError(null);
         };
 
+    const handleDescriptionChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+        setFormState((prev) => ({
+            ...prev,
+            description: e.target.value,
+        }));
+
+        if (error) setError(null);
+    };
+
     const handleSwitchChange = (checked: boolean) => {
         setFormState((prev) => ({
             ...prev,
@@ -90,10 +103,33 @@ const BookmarkPage2 = ({ onNavigate }: TransitionListPageProps) => {
         }));
     };
 
+    const handleTextareaKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+        if (e.key === ' ') {
+            e.preventDefault();
+            
+            const textarea = e.currentTarget;
+            const start = textarea.selectionStart;
+            const end = textarea.selectionEnd;
+            
+            const newText = formState.description.substring(0, start) + ' ' + 
+                           formState.description.substring(end);
+            
+            setFormState(prev => ({
+                ...prev,
+                description: newText
+            }));
+            
+            setTimeout(() => {
+                textarea.selectionStart = textarea.selectionEnd = start + 1;
+            }, 0);
+        }
+    };
+
     return (
         <div className="space-y-2">
             <div className="bg-primary-light">
                 <button
+                    type="button"
                     onClick={() => onNavigate?.(0)}
                     className="text-content flex items-center gap-2 px-3 py-2 font-bold"
                 >
@@ -103,20 +139,29 @@ const BookmarkPage2 = ({ onNavigate }: TransitionListPageProps) => {
                     </Paragraph>
                 </button>
             </div>
-            <section className="flex flex-col gap-3 px-3">
+            <form onSubmit={handleSubmit} className="flex flex-col gap-3 px-3">
                 <div className="flex flex-col gap-2">
                     <TextInput
                         type="text"
+                        id="list-name"
+                        name="name"
                         placeholder={t('listQuickCreate.createListPlaceholder')}
                         className="w-full border p-2 text-sm"
                         value={formState.name}
                         onChange={handleInputChange('name')}
+                        autoComplete="off"
+                        tabIndex={1000}
                     />
                     <textarea
+                        id="list-description"
+                        name="description"
                         placeholder={t('listQuickCreate.addDescPlaceholder')}
                         className="border-border-primary border-opacity-40 bg-background text-content focus:border-primary w-full rounded-md border p-2 text-sm shadow-xs"
                         value={formState.description}
-                        onChange={handleInputChange('description')}
+                        onChange={handleDescriptionChange}
+                        onKeyDown={handleTextareaKeyDown}
+                        autoComplete="off"
+                        tabIndex={1001}
                     />
                 </div>
 
@@ -136,13 +181,14 @@ const BookmarkPage2 = ({ onNavigate }: TransitionListPageProps) => {
                 )}
 
                 <PrimaryButton
+                    type="submit"
                     className="my-2 flex w-full items-center justify-center rounded-lg text-center capitalize"
                     onClick={handleSubmit}
                     loading={isAddingList}
                 >
                     {t('listQuickCreate.createListShort')}
                 </PrimaryButton>
-            </section>
+            </form>
         </div>
     );
 };

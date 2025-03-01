@@ -361,7 +361,7 @@ class MyBookmarksController extends Controller
             // $this->authorize('update', $collection);
 
             $bookmarks = BookmarkItem::whereIn('id', $decoded_bookmark_ids)
-                ->where('bookmark_collection_id', $data['bookmark_collection_id'])
+                ->where('bookmark_collection_id', $decoded_collection_id)
                 ->where('user_id', Auth::id())
                 ->get();
 

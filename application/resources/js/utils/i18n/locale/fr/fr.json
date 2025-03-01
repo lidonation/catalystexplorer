@@ -176,6 +176,7 @@
         "cancel": "Annuler",
         "listFetchError": "Erreur lors de la récupération des listes",
         "listCreateError": "Erreur lors de la création de la liste",
+        "errorUpdating": "Erreur lors de la mise à jour de la liste",
         "validationErrors": {
             "general": "Une erreur s'est produite",
             "inputCheck": "Veuillez vérifier vos informations",
