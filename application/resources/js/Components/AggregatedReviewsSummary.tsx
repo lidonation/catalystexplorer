@@ -1,6 +1,7 @@
 import { Head } from '@inertiajs/react';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import Paragraph from './atoms/Paragraph';
 import ProgressBar from './PercentageProgressBar';
 import StarIcon from './svgs/StarIcon';
 import ReviewData = App.DataTransferObjects.ReviewData;
@@ -11,10 +12,14 @@ interface RankingCount {
 
 interface AggregatedReviewsSummaryPageProps extends Record<string, unknown> {
     reviews: ReviewData[];
+    ratingStats?: RankingCount;
+    reviewsCount?: number;
 }
 
 const AggregatedReviewsSummary: React.FC<AggregatedReviewsSummaryPageProps> = ({
     reviews,
+    ratingStats,
+    reviewsCount,
 }) => {
     const { t } = useTranslation();
 
@@ -48,19 +53,22 @@ const AggregatedReviewsSummary: React.FC<AggregatedReviewsSummaryPageProps> = ({
 
     return (
         <>
-            <Head title="Groups" />
+            <Head title={`${t('groups')}`} />
 
             <div className="bg-background-dark w-full">
                 <div className="mx-auto grid grid-cols-5">
                     <div className="text-content flex flex-col items-center justify-center p-4">
-                        <h1 className="text-content title-1">
-                            {reviews.length}
-                        </h1>
-                        <p className="text-content">{t('Total Reviews')}</p>
+                        <p className="text-content text-2xl font-bold">
+                            {reviewsCount}
+                        </p>
+
+                        <Paragraph size="md" className="text-gray-persist mt-1">
+                            {t('Total Reviews')}
+                        </Paragraph>
                     </div>
                     <div className="col-span-4 flex items-center justify-center p-4 text-white">
                         <div className="flex w-full flex-col gap-4">
-                            {Object.entries(counts)
+                            {Object.entries(ratingStats || {})
                                 .sort(([a], [b]) => Number(b) - Number(a)) // Sort 5 → 1
                                 .map(([rating, count]) => (
                                     <div
@@ -69,15 +77,24 @@ const AggregatedReviewsSummary: React.FC<AggregatedReviewsSummaryPageProps> = ({
                                     >
                                         <div className="w-5/6">
                                             <ProgressBar
-                                                primaryBackgroundColor='bg-background'
-                                                secondaryBackgroudColor='bg-primary'
+                                                primaryBackgroundColor="bg-light-gray-persist"
+                                                secondaryBackgroudColor="bg-primary"
                                                 value={count}
                                                 total={reviews.length}
                                             />
                                         </div>
-                                        <div className="text-content flex items-center justify-center gap-2">
-                                            <StarIcon width={20} height={20} />
-                                            {rating}
+                                        <div className="flex items-center justify-center gap-2">
+                                            <StarIcon
+                                                width={20}
+                                                height={20}
+                                                className="text-yellow-400"
+                                            />
+                                            <Paragraph
+                                                size="lg"
+                                                className="font-bold text-content"
+                                            >
+                                                {rating}
+                                            </Paragraph>
                                         </div>
                                     </div>
                                 ))}

@@ -32,9 +32,9 @@ class ReviewData extends Data
 
         public ?string $status,
 
-        #[TypeScriptOptional]
-        public ?Carbon $published_at,
-
+        /*  #[TypeScriptOptional]
+         public ?Carbon $published_at,
+ */
         public ?string $type,
 
         public ?int $ranking_total,
