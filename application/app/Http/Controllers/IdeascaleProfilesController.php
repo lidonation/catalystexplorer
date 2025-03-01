@@ -8,6 +8,7 @@ use App\Actions\TransformIdsToHashes;
 use App\DataTransferObjects\IdeascaleProfileData;
 use App\DataTransferObjects\ProposalData;
 use App\DataTransferObjects\ProposalMilestoneData;
+use App\DataTransferObjects\ReviewData;
 use App\Enums\IdeascaleProfileSearchParams;
 use App\Enums\ProposalSearchParams;
 use App\Models\IdeascaleProfile;
@@ -47,6 +48,8 @@ class IdeascaleProfilesController extends Controller
         if (! $ideascaleProfile) {
             abort(404, 'Ideascale Profile not found');
         }
+
+        $this->getProps($request);
 
         $ideascaleProfile
             ->load(['groups'])
@@ -110,8 +113,13 @@ class IdeascaleProfilesController extends Controller
         }
 
         if (str_contains($path, '/reviews')) {
+            $data = $this->getReviewsData($ideascaleProfile, $path);
+
             return Inertia::render('IdeascaleProfile/Reviews/Index', [
                 'ideascaleProfile' => IdeascaleProfileData::from($ideascaleProfileData),
+                'reviews' => $data['reviews'],
+                'ratingStats' => $data['ratingStats'],
+                'filters' => $this->queryParams,
             ]);
         }
 
@@ -155,6 +163,65 @@ class IdeascaleProfilesController extends Controller
             ]),
             'groups' => $ideascaleProfile->groups(),
         ]);
+    }
+
+    public function getReviewsData(IdeascaleProfile $ideascaleProfile, string $path): array
+    {
+
+        $proposals = $ideascaleProfile->own_proposals()
+            ->with([
+                'reviews' => function ($query) {
+                    $query->where('status', 'published')
+                        ->with([
+                            'user' => function ($q) {
+                                $q->withCount('reviews');
+                            },
+                            'rating:review_id,rating',
+                        ]);
+                },
+            ])
+            ->get();
+
+        $reviews = $proposals->flatMap(fn ($proposal) => $proposal->reviews);
+        $reviewerIds = $reviews->pluck('user.id')->filter()->unique()->values();
+
+        $reviewerProfiles = IdeascaleProfile::whereIn('claimed_by_id', $reviewerIds)->get();
+
+        $ratingStats = array_fill_keys([1, 2, 3, 4, 5], 0);
+
+        foreach ($reviews as $review) {
+            $rating = $review->rating->rating ?? null;
+            if (isset($rating) && isset($ratingStats[$rating])) {
+                $ratingStats[$rating]++;
+            }
+        }
+
+        $page = (int) ($this->queryParams[IdeascaleProfileSearchParams::PAGE()->value] ?? $this->currentPage);
+        $perPage = 10;
+        $reviewsPaginator = new LengthAwarePaginator(
+            $reviews->forPage($page, $perPage)->values(),
+            $reviews->count(),
+            $perPage,
+            $page,
+            ['path' => $path]
+        );
+
+        $formattedReviews = $reviewsPaginator->through(function ($review) use ($reviewerProfiles) {
+            $userId = $review->user->id ?? null;
+            $userProfile = $userId ? $reviewerProfiles->firstWhere('claimed_by_id', $userId) : null;
+
+            return [
+                'review' => ReviewData::from($review),
+                'reviewerReviewsCount' => $review->user->reviews_count ?? 0,
+                'rating' => $review->rating->rating ?? null,
+                'reviewerProfile' => IdeascaleProfileData::from($userProfile),
+            ];
+        })->toArray();
+
+        return [
+            'reviews' => $formattedReviews,
+            'ratingStats' => $ratingStats,
+        ];
     }
 
     protected function query($returnBuilder = false, $attrs = null, $filters = [])

@@ -1,14 +1,15 @@
 <?php
 
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\GroupsController;
+use App\Http\Controllers\Api\TagController;
+use App\Http\Controllers\Api\GroupController;
+use App\Http\Controllers\ProposalsController;
 use App\Http\Controllers\Api\CampaignController;
 use App\Http\Controllers\Api\CommunityController;
-use App\Http\Controllers\Api\GroupController;
-use App\Http\Controllers\Api\IdeascaleProfilesController;
-use App\Http\Controllers\Api\TagController;
-use App\Http\Controllers\GroupsController;
 use App\Http\Controllers\My\MyBookmarksController;
-use App\Http\Controllers\ProposalsController;
-use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\CompletetProjectNftsController;
+use App\Http\Controllers\Api\IdeascaleProfilesController;
 
 Route::prefix('api')->as('api.')->group(function () {
     Route::get('/groups', [GroupController::class, 'groups'])->name('groups');
@@ -59,8 +60,18 @@ Route::prefix('api')->as('api.')->group(function () {
         Route::get('/{hash}/connections', [IdeascaleProfilesController::class, 'connections'])->name('connections');
     });
 
+
     Route::get('/fund-titles', [ProposalsController::class, 'fundTitles'])->name('fundTitles');
 
     Route::get('/fund-counts', [GroupsController::class, 'getFundsWithProposalsCount'])->name('fundCounts');
 
+    Route::prefix('/completed-project-nfts/')->as('completedProjectsNfts.')->group(
+        function () {
+            Route::get('/{proposal}/{nft}/details', [CompletetProjectNftsController::class, 'getNftDetails'])
+            ->name('details');
+
+            Route::post('/{proposal}/{nft}/update-metadata', [CompletetProjectNftsController::class, 'updateNftsMetadata'])
+            ->name('update');
+        }
+    );
 });

@@ -90,7 +90,7 @@ const IdeascaleProfileCard: React.FC<IdeascaleProfileProps> = ({
     return (
         <Card>
             <div className="relative mb-2 h-full w-full">
-                <div className="mb-3 flex items-center gap-4">
+                <div className="mb-3 flex items-center gap-3">
                     <div className="flex-shrink-0">
                         <UserAvatar
                             imageUrl={ideascaleProfile?.hero_img_url}
@@ -116,15 +116,16 @@ const IdeascaleProfileCard: React.FC<IdeascaleProfileProps> = ({
                                     <VerificationBadge />
                                 )}
                             </div>
+
                             <Paragraph className="text-highlight" size="sm">
                                 {ideascaleProfile?.groups
                                     ?.map((group) => group?.name)
                                     .join(', ')}
                             </Paragraph>
 
-                            <div className="mt-2 flex flex-col-row gap-2 items-center md:flex-row md:gap-2 md:items-center lg:grid lg:grid-cols-1 lg:gap-1">
+                            <div className="mt-2 flex flex-row flex-wrap gap-2 items-center md:items-center lg:gap-1.5">
                                 <Button
-                                    className={`${ideascaleProfile?.claimed_by_id ? 'bg-success' : 'bg-primary'} text-content rounded-md px-2 py-2 w-20`}
+                                    className={`${ideascaleProfile?.claimed_by_id ? 'bg-success' : 'bg-primary'} text-content rounded-md px-1 py-2 w-20`}
                                 >
                                     <Paragraph
                                         size="sm"
@@ -135,21 +136,21 @@ const IdeascaleProfileCard: React.FC<IdeascaleProfileProps> = ({
                                             : t('ideascaleProfiles.claim')}
                                     </Paragraph>
                                 </Button>
-                                <div className="flex gap-2 mt-2">
-                                    <div className="border-gray-persist/50 text-gray-persist w-fit items-center rounded-md border-1 px-2 py-3">
-                                        <ConnectIcon />
-                                    </div>
-                                    <div className="border-gray-persist/50 text-gray-persist/50 w-fit items-center rounded-md border-1 py-0.5">
-                                        <ListProvider>
-                                            <BookmarkButton
-                                                modelType="ideascale-profiles"
-                                                itemId={
-                                                    ideascaleProfile?.hash ??
-                                                    '0'
-                                                }
-                                            />
-                                        </ListProvider>
-                                    </div>
+                                <div className="border-gray-persist/50 text-gray-persist w-fit items-center rounded-md border-1 px-2 py-2">
+                                    <ConnectIcon />
+                                </div>
+                                <div className="border-gray-persist/50 text-gray-persist/50 w-fit items-center rounded-md border-1 py-0">
+                                    <ListProvider>
+                                        <BookmarkButton
+                                            modelType="ideascale-profiles"
+                                            width={16}
+                                            height={16}
+                                            itemId={
+                                                ideascaleProfile?.hash ??
+                                                '0'
+                                            }
+                                        />
+                                    </ListProvider>
                                 </div>
                             </div>
                         </div>

@@ -9,11 +9,15 @@ import TransitionMenu from '@/Pages/My/Lists/Partials/TransitionMenu';
 interface BookmarkButtonProps {
     modelType: string;
     itemId: string;
+    width?: number;
+    height?: number;
 }
 
 export default function BookmarkButton({
     modelType,
     itemId,
+    width = 24,
+    height = 24,
 }: BookmarkButtonProps) {
     const {
         isBookmarked,
@@ -53,7 +57,7 @@ export default function BookmarkButton({
                     aria-label={`bookmark-${modelType}`}
                     onClick={toggleBookmark}
                 >
-                    {isBookmarked ? <BookmarkOnIcon /> : <BookmarkOffIcon />}
+                    {isBookmarked ? <BookmarkOnIcon width={width} height={height} /> : <BookmarkOffIcon width={width} height={height} />}
                 </button>
             }
             pages={pages}
