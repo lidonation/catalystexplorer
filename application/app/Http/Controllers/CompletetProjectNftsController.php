@@ -4,21 +4,25 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use App\DataTransferObjects\IdeascaleProfileData;
-use App\DataTransferObjects\ProposalData;
-use App\Enums\CatalystCurrencySymbols;
-use App\Enums\ProposalSearchParams;
-use App\Enums\ProposalStatus;
-use App\Models\IdeascaleProfile;
-use App\Models\Proposal;
+// use App\Models\Nft;
 use App\Models\User;
-use App\Repositories\ProposalRepository;
-use Illuminate\Http\Request;
-use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Fluent;
 use Inertia\Inertia;
 use Inertia\Response;
+use App\Models\Proposal;
+use Illuminate\Http\Request;
+use App\Enums\ProposalStatus;
+use Illuminate\Support\Fluent;
+use App\Models\IdeascaleProfile;
+use App\Enums\ProposalSearchParams;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
+use App\Enums\CatalystCurrencySymbols;
+use App\DataTransferObjects\NMKRNftData;
+use App\Repositories\ProposalRepository;
+use App\DataTransferObjects\ProposalData;
+use Illuminate\Pagination\LengthAwarePaginator;
+use App\DataTransferObjects\IdeascaleProfileData;
+use App\Http\Intergrations\LidoNation\Requests\NMKRRequest;
 
 class CompletetProjectNftsController extends Controller
 {
@@ -131,7 +135,7 @@ class CompletetProjectNftsController extends Controller
                 ->toArray();
 
             $claimedIdeascaleIdsString = implode(',', $claimedIdeascaleIds);
-            $filter = "users.id IN [{$claimedIdeascaleIdsString}] AND status = '".ProposalStatus::complete()->value."'";
+            $filter = "users.id IN [{$claimedIdeascaleIdsString}] AND status = '" . ProposalStatus::complete()->value . "'";
 
             $args['filter'] = $filter;
 
@@ -196,7 +200,7 @@ class CompletetProjectNftsController extends Controller
         }
     }
 
-    public function getClaimedIdeascaleProfiles()
+    public function getClaimedIdeascaleProfiles(): array
     {
         $page = 1;
 
@@ -215,11 +219,64 @@ class CompletetProjectNftsController extends Controller
             IdeascaleProfileData::collect($this->claimedIdeascaleProfiles),
             $limit,
             $page,
-            [
+            options:[
                 'pageName' => 'p',
             ]
         );
 
         return $pagination->onEachSide(1)->toArray();
+    }
+
+    public function updateNftMetadata(Request $request,  $nft): void
+    {
+        // $nmkrMetadata = json_decode($nft->meta_info->nmkr_metadata, true);
+        // $lidoMeta = $nmkrMetadata[721][$nft->policy][$nft->name];
+
+        // if (! $nmkrMetadata) {
+        //     return;
+        // }
+
+        // if ($request->remove) {
+        //     $lidoMeta = array_filter($lidoMeta, function ($key) use ($request) {
+        //         return $key !== $request->meta['key'];
+        //     }, ARRAY_FILTER_USE_KEY);
+        // } else {
+        //     $lidoMeta[$request->meta['key']] = (string) $request->meta['value'];
+        // }
+
+        // $nmkrMetadata[721][$nft->policy][$nft->name] = $lidoMeta;
+
+        // if (! $nft->meta_info->nmkr_project_uid && ! $nft->meta_info->nmkr_nftuid) {
+        //     return;
+        // }
+
+        // try {
+
+        //     $req = $nft->updateNft($nmkrMetadata);
+
+        //     $response = $req->json();
+        //     $metadata = json_decode($response['metadata'], true);
+
+        //     $policy = array_key_first($metadata[721]);
+
+        //     $nft->policy = $policy;
+        //     $nft->save();
+
+        //     // save meta data
+        //     $nft->saveMeta('nmkr_metadata', json_encode($metadata), null, true);
+        // } catch (\Throwable $th) {
+        //     //throw $th;
+        //     Log::error("Error Updating Remote Nft:{$response['resultState']}");
+        // }
+
+    }
+
+
+    public function getNftDetails(  $nft,Request $request): ?NMKRNftData 
+    {
+        return null ;
+        // $response = $nft->getNMKRNftMetadata();
+
+        // return  NMKRNftData::fromArray($response->json());
     }
 }

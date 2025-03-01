@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Actions;
 
 use App\Models\Model;
+use Illuminate\Support\Facades\Auth;
 
 class FillCurrentUserId
 {
@@ -16,8 +17,8 @@ class FillCurrentUserId
     public function handle(Model &$model): void
     {
         // Fill the current user id
-        if (auth()->check()) {
-            $model->user_id = auth()->id();
+        if (Auth::check()) {
+            $model->user_id = Auth::id();
         }
     }
 }

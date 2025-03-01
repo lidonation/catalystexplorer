@@ -118,11 +118,16 @@ Route::localized(
         Route::get('/charts', [ChartsController::class, 'index'])
             ->name('charts.index');
 
-        Route::get('/completed-project-nfts', [CompletetProjectNftsController::class, 'index'])
-            ->name('completedProjectsNfts.index');
+        Route::prefix('/completed-project-nfts')->as('completedProjectsNfts.')->group(
+            function () {
+                Route::get('/', [CompletetProjectNftsController::class, 'index'])
+                    ->name('index');
 
-        Route::get('/completed-project-nfts/{proposal}', [CompletetProjectNftsController::class, 'show'])
-            ->name('completedProjectsNfts.show');
+                Route::get('/{proposal}', [CompletetProjectNftsController::class, 'show'])
+                    ->name('show');
+            }
+        );
+
 
         Route::get('/jormungandr', [JormungandrController::class, 'index'])
             ->name('jormungandr.index');
@@ -145,10 +150,10 @@ Route::get('/map', function () {
     return Inertia::render('Map');
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';
 
-require __DIR__.'/dashboard.php';
+require __DIR__ . '/dashboard.php';
 
-require __DIR__.'/api.php';
+require __DIR__ . '/api.php';
 
 Route::fallback(\CodeZero\LocalizedRoutes\Controllers\FallbackController::class);
