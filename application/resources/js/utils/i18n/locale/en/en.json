@@ -242,6 +242,7 @@
         "cancel": "Cancel",
         "listFetchError": "Error fetching lists",
         "listCreateError": "Error creating list",
+        "errorUpdating": "Error updating selection",
         "validationErrors": {
             "general": "An error occurred",
             "inputCheck": "Please check your input",

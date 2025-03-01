@@ -33,99 +33,46 @@ const BookmarkPage1 = ({
     } = useList();
 
     const [isLoading, setIsLoading] = useState(false);
-
     const [selectedListId, setSelectedListId] = useState<string | null>(
-        associateCollectionId || null,
+        associateCollectionId || null
     );
-    const [checkedItems, setCheckedItems] = useState<{
-        [key: string]: boolean;
-    }>({});
-    const [addAllChecked, setAddAllChecked] = useState(false);
-    const [loadingItems, setLoadingItems] = useState<{
-        [key: string]: boolean;
-    }>({});
+    const [loadingListId, setLoadingListId] = useState<string | null>(null);
 
     useEffect(() => {
         fetchLists();
     }, []);
 
+    // Update selected list when associateCollectionId changes or lists load
     useEffect(() => {
         if (associateCollectionId) {
-            setCheckedItems((prev) => ({
-                ...prev,
-                [associateCollectionId]: true,
-            }));
+            setSelectedListId(associateCollectionId);
         }
-    }, [lists]);
+    }, [associateCollectionId, lists]);
 
-    const checkboxValues = [
-        {
-            label: t('listQuickCreate.addAll'),
-            value: 'addAll',
-        },
-        ...lists.map((list) => ({
-            label: list.title,
-            value: list.id,
-        })),
-    ];
-
-    const handleAddAllChange = async (checked: boolean) => {
+    const handleAddAllClick = () => {
         toast.info(t('comingSoon'));
     };
 
-    const handleIndividualChange = async (listId: string, checked: boolean) => {
+    const handleCheckboxChange = async (listId: string) => {
         setIsLoading(true);
-        setLoadingItems((prev) => ({
-            ...prev,
-            [listId]: true,
-        }));
+        setLoadingListId(listId);
 
         try {
-            if (checked) {
-                await addBookmarkToList(listId, bookmarkId);
-            } else {
+            // If selecting the already selected list, deselect it
+            if (listId === selectedListId) {
                 await removeBookmarkFromList(listId, bookmarkId);
+                setSelectedListId(null);
+            } else {
+                // Otherwise, add bookmark to the newly selected list
+                await addBookmarkToList(listId, bookmarkId);
+                setSelectedListId(listId);
             }
-
-            setCheckedItems((prev) => ({
-                ...prev,
-                [listId]: checked,
-                ...(selectedListId && { [selectedListId]: false }),
-            }));
-
-            const updatedCheckedItems = {
-                ...checkedItems,
-                [listId]: checked,
-                ...(selectedListId && { [selectedListId]: false }),
-            };
-
-            const allItemsChecked = lists.every(
-                (list) => updatedCheckedItems[list.id] === true,
-            );
-
-            setAddAllChecked(allItemsChecked);
-            setSelectedListId(listId);
-            setIsLoading(false);
         } catch (error) {
-            console.error('Error updating list', listId, error);
+            console.error('Error updating list selection', error);
+            toast.error(t('listQuickCreate.errorUpdating'));
         } finally {
-            setLoadingItems((prev) => ({
-                ...prev,
-                [listId]: false,
-            }));
+            setLoadingListId(null);
             setIsLoading(false);
-        }
-    };
-
-    const handleCheckboxChange = (value: string) => {
-        if (value !== 'addAll' && loadingItems[value]) return;
-
-        if (value === 'addAll') {
-            const newCheckedState = !addAllChecked;
-            handleAddAllChange(newCheckedState);
-        } else {
-            const currentChecked = checkedItems[value] || false;
-            handleIndividualChange(value, !currentChecked);
         }
     };
 
@@ -202,44 +149,48 @@ const BookmarkPage1 = ({
                     <NoListsState />
                 ) : (
                     <div className="no-scrollbar flex max-h-24 flex-col gap-2 overflow-y-scroll">
-                        {checkboxValues.map((checkbox, index) => (
+                        {/* Add All option (button, not checkbox) */}
+                        <button
+                            onClick={handleAddAllClick}
+                            className={`flex items-center text-left ${
+                                isLoading
+                                    ? 'cursor-not-allowed opacity-70'
+                                    : 'cursor-pointer'
+                            }`}
+                            disabled={isLoading}
+                        >
+                            <Paragraph
+                                size="md"
+                                className="text-primary font-medium"
+                            >
+                                {t('listQuickCreate.addAll')}
+                            </Paragraph>
+                        </button>
+
+                        {/* List options with checkbox that behaves like radio buttons */}
+                        {lists.map((list) => (
                             <label
-                                key={index}
-                                htmlFor={checkbox.value}
-                                className={`flex  items-center justify-between ${
-                                    isLoading ? (
-                                        loadingItems[checkbox.value] ? 'cursor-progress' : 'cursor-not-allowed'
-                                    ) : 'cursor-pointer'
+                                key={list.id}
+                                htmlFor={list.id}
+                                className={`flex items-center justify-between ${
+                                    isLoading
+                                        ? 'cursor-not-allowed'
+                                        : 'cursor-pointer'
                                 }`}
                             >
-                                <Paragraph size="md">
-                                    {checkbox.label}
-                                </Paragraph>
+                                <Paragraph size="md">{list.title}</Paragraph>
                                 <CheckboxWithLoading
                                     type="checkbox"
-                                    id={checkbox.value}
-                                    name={checkbox.value}
-                                    value={checkbox.value}
-                                    checked={
-                                        checkbox.value === 'addAll'
-                                            ? addAllChecked
-                                            : checkedItems[checkbox.value] ||
-                                              false
-                                    }
-                                    onChange={() =>
-                                        handleCheckboxChange(checkbox.value)
-                                    }
-                                    isLoading={
-                                        loadingItems[checkbox.value] || false
-                                    }
-                                    disabled={isLoading}
+                                    id={list.id}
+                                    name={list.id}
+                                    checked={selectedListId === list.id}
+                                    onChange={() => handleCheckboxChange(list.id)}
+                                    isLoading={loadingListId === list.id}
+                                    disabled={isLoading || loadingListId !== null}
                                     style={{
                                         pointerEvents: isLoading
                                             ? 'none'
                                             : 'auto',
-                                        cursor: isLoading
-                                            ? 'not-allowed'
-                                            : 'pointer',
                                     }}
                                 />
                             </label>
@@ -250,6 +201,7 @@ const BookmarkPage1 = ({
                 <PrimaryButton
                     className="my-2 flex w-full items-center justify-center rounded-lg text-center capitalize"
                     onClick={() => onNavigate?.(1)}
+                    disabled={isLoading}
                 >
                     <PlusIcon size={16} className="mr-2" />
                     <Paragraph size="md">
