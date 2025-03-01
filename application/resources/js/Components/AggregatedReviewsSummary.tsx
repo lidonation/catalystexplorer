@@ -5,8 +5,6 @@ import Paragraph from './atoms/Paragraph';
 import ProgressBar from './PercentageProgressBar';
 import StarIcon from './svgs/StarIcon';
 import ReviewData = App.DataTransferObjects.ReviewData;
-import KeyValue from './atoms/KeyValue';
-import ValueLabel from './atoms/ValueLabel';
 
 interface RankingCount {
     [key: number]: number; // Mapping rating (1-5) to count
@@ -59,12 +57,12 @@ const AggregatedReviewsSummary: React.FC<AggregatedReviewsSummaryPageProps> = ({
 
             <div className="bg-background-dark w-full">
                 <div className="mx-auto grid grid-cols-5">
-                    <div className="text-content flex flex-col items-center justify-center p-4">    
-                        <p className="text-2xl text-content font-bold">
+                    <div className="text-content flex flex-col items-center justify-center p-4">
+                        <p className="text-content text-2xl font-bold">
                             {reviewsCount}
                         </p>
 
-                        <Paragraph size="md" className="mt-1 text-gray-persist">
+                        <Paragraph size="md" className="text-gray-persist mt-1">
                             {t('Total Reviews')}
                         </Paragraph>
                     </div>
@@ -93,7 +91,7 @@ const AggregatedReviewsSummary: React.FC<AggregatedReviewsSummaryPageProps> = ({
                                             />
                                             <Paragraph
                                                 size="lg"
-                                                className="font-bold"
+                                                className="font-bold text-content"
                                             >
                                                 {rating}
                                             </Paragraph>
