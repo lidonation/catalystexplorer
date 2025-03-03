@@ -5,24 +5,23 @@ declare(strict_types=1);
 namespace App\Http\Controllers;
 
 // use App\Models\Nft;
+use App\DataTransferObjects\IdeascaleProfileData;
+use App\DataTransferObjects\NMKRNftData;
+use App\DataTransferObjects\ProposalData;
+use App\Enums\CatalystCurrencySymbols;
+use App\Enums\ProposalSearchParams;
+use App\Enums\ProposalStatus;
+use App\Models\IdeascaleProfile;
+use App\Models\Proposal;
 use App\Models\User;
+use App\Repositories\ProposalRepository;
+use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Fluent;
 use Inertia\Inertia;
 use Inertia\Response;
-use App\Models\Proposal;
-use Illuminate\Http\Request;
-use App\Enums\ProposalStatus;
-use Illuminate\Support\Fluent;
-use App\Models\IdeascaleProfile;
-use App\Enums\ProposalSearchParams;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Auth;
-use App\Enums\CatalystCurrencySymbols;
-use App\DataTransferObjects\NMKRNftData;
-use App\Repositories\ProposalRepository;
-use App\DataTransferObjects\ProposalData;
-use Illuminate\Pagination\LengthAwarePaginator;
-use App\DataTransferObjects\IdeascaleProfileData;
-use App\Http\Intergrations\LidoNation\Requests\NMKRRequest;
 
 class CompletetProjectNftsController extends Controller
 {
@@ -135,7 +134,7 @@ class CompletetProjectNftsController extends Controller
                 ->toArray();
 
             $claimedIdeascaleIdsString = implode(',', $claimedIdeascaleIds);
-            $filter = "users.id IN [{$claimedIdeascaleIdsString}] AND status = '" . ProposalStatus::complete()->value . "'";
+            $filter = "users.id IN [{$claimedIdeascaleIdsString}] AND status = '".ProposalStatus::complete()->value."'";
 
             $args['filter'] = $filter;
 
@@ -219,7 +218,7 @@ class CompletetProjectNftsController extends Controller
             IdeascaleProfileData::collect($this->claimedIdeascaleProfiles),
             $limit,
             $page,
-            options:[
+            options: [
                 'pageName' => 'p',
             ]
         );
@@ -227,7 +226,7 @@ class CompletetProjectNftsController extends Controller
         return $pagination->onEachSide(1)->toArray();
     }
 
-    public function updateNftMetadata(Request $request,  $nft): void
+    public function updateNftMetadata(Request $request, $nft): void
     {
         // $nmkrMetadata = json_decode($nft->meta_info->nmkr_metadata, true);
         // $lidoMeta = $nmkrMetadata[721][$nft->policy][$nft->name];
@@ -271,10 +270,9 @@ class CompletetProjectNftsController extends Controller
 
     }
 
-
-    public function getNftDetails(  $nft,Request $request): ?NMKRNftData 
+    public function getNftDetails($nft, Request $request): ?NMKRNftData
     {
-        return null ;
+        return null;
         // $response = $nft->getNMKRNftMetadata();
 
         // return  NMKRNftData::fromArray($response->json());
