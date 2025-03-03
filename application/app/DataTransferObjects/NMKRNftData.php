@@ -8,7 +8,6 @@ use Carbon\Carbon;
 use Spatie\LaravelData\Data;
 use Spatie\TypeScriptTransformer\Attributes\TypeScript;
 
-
 #[TypeScript]
 class NMKRNftData extends Data
 {
