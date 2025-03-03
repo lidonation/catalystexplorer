@@ -123,7 +123,7 @@ Route::localized(
                 Route::get('/', [CompletetProjectNftsController::class, 'index'])
                     ->name('index');
 
-                Route::get('/{proposal}', [CompletetProjectNftsController::class, 'show'])
+                Route::get('/{proposal}/mint', [CompletetProjectNftsController::class, 'show'])
                     ->name('show');
             }
         );
