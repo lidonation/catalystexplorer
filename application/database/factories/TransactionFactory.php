@@ -21,7 +21,7 @@ class TransactionFactory extends Factory
     public function definition(): array
     {
         $inputs = collect();
-        $numInputs = rand(1, 3);
+        $numInputs = $this->faker->numberBetween(1, 3);
         for ($i = 0; $i < $numInputs; $i++) {
             $inputs->push([
                 'address' => 'addr1' . Str::random(length: 98),
@@ -31,7 +31,7 @@ class TransactionFactory extends Factory
         }
 
         $outputs = [];
-        $numOutputs = rand(1, 3);
+        $numOutputs = $this->faker->numberBetween(1, 3);
         for ($i = 0; $i < $numOutputs; $i++) {
             $outputs[] = [
                 'address' => 'addr1' . Str::random(length: 98),
@@ -42,13 +42,13 @@ class TransactionFactory extends Factory
 
         $metadataHash = $this->faker->unique()->sha256();
         $publicLabels = [];
-        $numEntries = rand(1, 4);
+        $numEntries = $this->faker->numberBetween(1, 4);
 
         for ($i = 1; $i <= $numEntries; $i++) {
-            if (rand(1, 100) <= 75) {
+            if ($this->faker->numberBetween(1, 100) <= 75) {
                 $publicLabels[$i] = bin2hex(random_bytes(32));
             } else {
-                $publicLabels[$i] = rand(100000, 99999999);
+                $publicLabels[$i] = $this->faker->numberBetween(100000, 99999999);
             }
         }
 
