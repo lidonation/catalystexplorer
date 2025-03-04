@@ -3,6 +3,7 @@ import ShareIcon from '@/Components/svgs/ShareIcon';
 import XIcon from '@/Components/svgs/XIcon';
 import LinkedInIcon from '@/Components/svgs/LinkedInIcons';
 import DiscordIcon from '@/Components/svgs/DiscordIcon';
+import Button from "@/Components/atoms/Button";
 
 interface ShareButtonProps {
   url: string;
@@ -20,7 +21,7 @@ export default function ShareButton({ url, className }: ShareButtonProps) {
     const shareLinks = {
         twitter: `https://x.com/share?url=${encodeURIComponent(url)}`,
         linkedin: `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`,
-        discord: `https://discord.com/channels/@me`, 
+        discord: `https://discord.com/channels/@me`,
     };
 
     const platforms = [
@@ -31,17 +32,16 @@ export default function ShareButton({ url, className }: ShareButtonProps) {
 
     return (
         <div className="relative">
-            <a
-                href="#"
+            <Button
                 onClick={(e) => {
-                    e.preventDefault(); 
+                    e.preventDefault();
                     setIsDropdownOpen(!isDropdownOpen);
                 }}
                 className={`flex items-center justify-center rounded-full hover:bg-background p-2 transition-colors ${className}`}
                 aria-label="Share"
             >
                 <ShareIcon />
-            </a>
+            </Button>
 
             {isDropdownOpen && (
                 <div className="absolute mt-2 w-48 bg-background shadow-lg rounded-md">
