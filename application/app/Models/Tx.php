@@ -2,14 +2,13 @@
 
 namespace App\Models;
 
-use App\Models\Traits\HasAuthor;
-use App\Models\Traits\HasModel;
+use App\Traits\HasAuthor;
+use App\Traits\HasModel;
 use Illuminate\Database\Eloquent\Casts\AsArrayObject;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Tx extends Model
 {
-    use HasAuthor, HasFactory, HasModel;
+    use HasAuthor, HasModel;
 
     protected $hidden = ['user_id', 'deleted_at', 'model_type', 'model_id'];
 

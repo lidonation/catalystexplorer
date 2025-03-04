@@ -2,11 +2,10 @@
 
 namespace App\Models;
 
-use App\Models\Traits\HasAuthor;
-use App\Models\Traits\HasMetaData;
-use App\Models\Traits\HasModel;
-use App\Models\Traits\HasTranslations;
-use Illuminate\Database\Eloquent\Model;
+use App\Traits\HasAuthor;
+use App\Traits\HasMetaData;
+use App\Traits\HasModel;
+use App\Traits\HasTranslations;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Lidonation\CardanoNftMaker\Interfaces\CardanoNftInterface;
