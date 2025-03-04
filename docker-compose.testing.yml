@@ -25,7 +25,7 @@ services:
         XDG_CONFIG_HOME:  /var/www/caddy 
         XDG_DATA_HOME:  /var/www/caddy 
         OCTANE_WATCH: 'false'
-        POSTGRESQL_WEB_DB_HOST: catalystexplorer.db
+        POSTGRESQL_WEB_DB_HOST: catalystexplorer_test.db
         POSTGRESQL_WEB_DB: explorerweb
         POSTGRESQL_WEB_USER: catalystexplorer
         POSTGRESQL_WEB_PASSWORD: ASLJ023470AlserLFH
@@ -62,7 +62,7 @@ services:
         POSTGRESQL_DB_SYNC_DB: cexplorer
         POSTGRESQL_DB_SYNC_USER: postgres
         XDG_CONFIG_HOME: /var/www
-        POSTGRESQL_WEB_DB_HOST: catalystexplorer.db
+        POSTGRESQL_WEB_DB_HOST: catalystexplorer_test.db
         POSTGRESQL_WEB_DB: explorerweb
         POSTGRESQL_WEB_USER: catalystexplorer
         POSTGRESQL_WEB_PASSWORD: ASLJ023470AlserLFH
