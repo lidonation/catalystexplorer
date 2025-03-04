@@ -14,8 +14,12 @@ use Illuminate\Support\Facades\Route;
 
 Route::localized(function () {
     Route::middleware('auth')->group(function () {
-        Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+        Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
         Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+        Route::patch('/profile/update/{field}', [ProfileController::class, 'update'])->name('profile.update.field');
+        Route::patch('/profile/socials', [ProfileController::class, 'updateSocials'])->name('profile.update.socials');
+        Route::post('/profile/photo', [ProfileController::class, 'updatePhoto'])->name('profile.photo.update');
+        Route::delete('/profile/photo', [ProfileController::class, 'destroyPhoto'])->name('profile.photo.destroy');
         Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     });
 
@@ -38,6 +42,9 @@ Route::localized(function () {
 
         Route::get('reset-password/{token}', [NewPasswordController::class, 'create'])
             ->name('password.reset');
+
+        Route::get('reset-password/update', [NewPasswordController::class, 'update'])
+            ->name('password.update');
 
         Route::post('reset-password', [NewPasswordController::class, 'store'])
             ->name('password.store');

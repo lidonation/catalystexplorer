@@ -1,92 +1,212 @@
-import React, { useState } from 'react';
 import Card from '@/Components/Card';
-import TextInput from '@/Components/atoms/TextInput';
-import Button from '@/Components/atoms/Button';
+import Paragraph from '@/Components/atoms/Paragraph';
 import Switch from '@/Components/atoms/Switch';
 import Title from '@/Components/atoms/Title';
-import Paragraph from '@/Components/atoms/Paragraph';
-import {Link2, Copy} from 'lucide-react';
-import { usePage } from '@inertiajs/react';
-import { useForm } from '@inertiajs/react';
-import LinkedInIcon from "@/Components/svgs/LinkedInIcons";
-import XIcon from "@/Components/svgs/XIcon";
-import WebIcon from "@/Components/svgs/WebIcon";
+import { formatTimeAgo } from '@/Components/layout/TimeFormatter';
+import CameraIcon from '@/Components/svgs/CameraIcon';
+import CheckIcon from '@/Components/svgs/CheckIcon';
+import CopyIcon from '@/Components/svgs/CopyIcon';
+import EditIcon from '@/Components/svgs/EditIcon';
+import LinkedInIcon from '@/Components/svgs/LinkedInIcons';
+import WebIcon from '@/Components/svgs/WebIcon';
+import XIcon from '@/Components/svgs/XIcon';
+import UpdatePasswordModal from '@/Pages/Profile/Partials/PasswordModal';
+import UpdateProfileFieldModal from '@/Pages/Profile/Partials/UpdateProfileModal';
+import UpdateSocialProfilesModal from '@/Pages/Profile/Partials/UpdateSocialProfiles';
+import { generateLocalizedRoute } from '@/utils/localizedRoute';
+import { PageProps } from '@inertiajs/core';
+import { router, useForm, usePage } from '@inertiajs/react';
+import { ChangeEvent, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+
+interface User {
+    id: number;
+    name: string;
+    email: string;
+    bio?: string;
+    short_bio?: string;
+    twitter?: string;
+    linkedin?: string;
+    website?: string;
+    city?: string;
+    updated_at?: string;
+    created_at?: string;
+    profile_photo_path?: string;
+}
+
+interface ModalConfig {
+    isOpen: boolean;
+    title: string;
+    fieldName: string;
+    fieldLabel: string;
+    currentValue: string;
+    updateRoute: string;
+    inputType?: string;
+    placeholder?: string;
+}
+
+interface ExtendedPageProps extends PageProps {
+    user: User;
+}
 
 export default function ProfileSettings() {
-    const { user } = usePage().props;
-    const [isPublic, setIsPublic] = useState(true);
+    const { t } = useTranslation();
+    const { user } = usePage<ExtendedPageProps>().props;
 
-    // Form handling with Inertia
-    const { data, setData, post, processing, errors } = useForm({
-        name: user.name || '',
-        email: user.email || '',
-        bio: user.bio || '',
-        short_bio: user.short_bio || '',
-        twitter: user.twitter || '',
-        linkedin: user.linkedin || '',
+    const [isPublic, setIsPublic] = useState(true);
+    const [modalConfig, setModalConfig] = useState<ModalConfig>({
+        isOpen: false,
+        title: '',
+        fieldName: '',
+        fieldLabel: '',
+        currentValue: '',
+        updateRoute: '',
+        inputType: 'text',
+        placeholder: '',
     });
 
-    // function updateProfile(e) {
-    //     e.preventDefault();
-    //     post(route('profile.update'));
-    // }
+    const [socialModalOpen, setSocialModalOpen] = useState(false);
+    const [photoPreview, setPhotoPreview] = useState<string | null>(null);
+    const [photoUploading, setPhotoUploading] = useState(false);
+    const [photoError, setPhotoError] = useState('');
+    const [copySuccess, setCopySuccess] = useState(false);
+    const [passwordModalOpen, setPasswordModalOpen] = useState(false);
 
-    function updateProfilePhoto(e) {
-        if (!e.target.files[0]) return;
+    const { data } = useForm({
+        name: user.name,
+        email: user.email,
+        bio: user.bio ?? '',
+        short_bio: user.short_bio ?? '',
+        twitter: user.twitter ?? '',
+        linkedin: user.linkedin ?? '',
+        city: user.city ?? '',
+        updated_at: user.updated_at ?? '',
+        created_at: user.created_at ?? '',
+    });
+
+    const handleCopyUrl = () => {
+        const urlElement = document.querySelector('.profile-url-text');
+        const url = urlElement ? urlElement.textContent : '';
+
+        if (typeof url === 'string') {
+            navigator.clipboard
+                .writeText(url)
+                .then(() => {
+                    setCopySuccess(true);
+                    setTimeout(() => {
+                        setCopySuccess(false);
+                    }, 2000);
+                })
+                .catch((err) => {
+                    console.error('Failed to copy: ', err);
+                });
+        }
+    };
+
+    const openModal = (config: Partial<ModalConfig>) => {
+        setModalConfig((prev) => ({
+            ...prev,
+            ...config,
+            isOpen: true,
+        }));
+    };
+
+    const closeModal = () => {
+        setModalConfig((prev) => ({
+            ...prev,
+            isOpen: false,
+        }));
+    };
+
+    const validatePhoto = (file: File): string | null => {
+        const acceptedTypes = ['image/jpeg', 'image/png', 'image/gif'];
+        if (!acceptedTypes.includes(file.type)) {
+            return 'File must be JPEG, PNG, or GIF';
+        }
+
+        const maxSize = 5 * 1024 * 1024;
+        if (file.size > maxSize) {
+            return 'File size must be less than 5MB';
+        }
+
+        return null;
+    };
+
+    const updateProfilePhoto = (e: ChangeEvent<HTMLInputElement>) => {
+        const files = e.target.files;
+        if (!files || files.length === 0) return;
+
+        const file = files[0];
+        const error = validatePhoto(file);
+
+        if (error) {
+            setPhotoError(error);
+            return;
+        }
+
+        setPhotoError('');
+
+        const reader = new FileReader();
+        reader.onload = (event) => {
+            const result = event.target?.result;
+            if (typeof result === 'string') {
+                setPhotoPreview(result);
+            }
+        };
+        reader.readAsDataURL(file);
+
+        setPhotoUploading(true);
 
         const formData = new FormData();
-        formData.append('photo', e.target.files[0]);
+        formData.append('photo', file);
 
-        // Use Inertia to upload the photo
-        Inertia.post(route('profile.photo.update'), formData, {
-            forceFormData: true
+        router.post(generateLocalizedRoute('profile.photo.update'), formData, {
+            forceFormData: true,
+            onSuccess: () => {
+                // Reset states
+                setPhotoUploading(false);
+                setPhotoPreview(null);
+            },
+            onError: (errors) => {
+                setPhotoUploading(false);
+                if (typeof errors === 'object' && errors !== null) {
+                    const photoError = (errors as Record<string, string>)[
+                        'photo'
+                    ];
+                    setPhotoError(photoError || 'Failed to upload photo');
+                }
+            },
         });
-    }
+    };
+
+    const removeProfilePhoto = () => {
+        router.delete(generateLocalizedRoute('profile.photo.destroy'));
+    };
 
     return (
-        <div className="min-h-screen bg-gray-100 p-8">
+        <div className="bg-background min-h-screen p-8 transition-colors duration-300 ease-in-out">
             <div className="mx-auto grid max-w-6xl grid-cols-12 gap-6">
-                {/* Left Column - 4/12 width */}
                 <div className="col-span-4 space-y-6">
-                    {/* About Section */}
-                    <Card className="rounded-lg border border-gray-100 shadow-sm">
+                    <Card className="bg-background rounded-lg shadow-sm transition-colors duration-300 ease-in-out">
                         <div className="p-6">
                             <div className="mb-4 space-y-4">
-                                <Title
-                                    level="3"
-                                    className="border-b border-gray-100 pb-2 text-gray-800"
-                                >
-                                    About
+                                <Title level="3" className="text-content pb-2">
+                                    {t('users.about')}
                                 </Title>
-                                <div className="py-2">
+                                <div className="border-t border-gray-200 py-2">
                                     {data.bio ? (
                                         <Paragraph
                                             size="sm"
-                                            className="text-gray-600"
+                                            className="text-content"
                                         >
                                             {data.bio}
                                         </Paragraph>
                                     ) : (
                                         <Paragraph
                                             size="sm"
-                                            className="text-gray-600"
+                                            className="text-content-gray"
                                         >
-                                            Darlington has the brains of an
-                                            engineer and the heart of a He's
-                                            been using his skills and experience
-                                            to help small businesses use a wide
-                                            range of technologies since 2007.
-                                            Darlington has a deep understanding
-                                            of emerging technologies, computer
-                                            programming languages, and
-                                            blockchain technologies. The
-                                            blockchain is a powerful, disruptive
-                                            technology that is changing the
-                                            world. Darlington wants the LIDO
-                                            Nation community to be a part of
-                                            that change, to create a better
-                                            future for you, your neighbor, and
-                                            the rest of us.
+                                            No biography available
                                         </Paragraph>
                                     )}
                                 </div>
@@ -94,211 +214,333 @@ export default function ProfileSettings() {
                         </div>
                     </Card>
 
-                    {/* Network Section */}
-                    {/* Network Section */}
-                    <Card className="rounded-lg border border-gray-100 shadow-sm">
+                    <Card className="bg-background rounded-lg shadow-sm transition-colors duration-300 ease-in-out">
                         <div className="p-6">
                             <div className="mb-4">
-                                <Title level="3" className="border-b border-gray-100 pb-2 text-gray-800">Network</Title>
+                                <Title level="3" className="text-content">
+                                    {t('users.network')}
+                                </Title>
                             </div>
                             <div className="space-y-4">
-                                <div className="flex items-center space-x-2">
-                                    <div className="flex h-6 w-6 items-center justify-center rounded-full bg-[#0077b5]">
-                                        <LinkedInIcon className="text-white h-4 w-4" />
+                                <div className="flex items-center space-x-2 border-t border-gray-200">
+                                    <div className="flex h-6 w-6 items-center justify-center rounded-full">
+                                        <LinkedInIcon className="text-light-persist h-4 w-4" />
                                     </div>
-                                    <Paragraph size="sm" className="text-gray-700">lidonation</Paragraph>
-                                </div>
-                                <div className="flex items-center space-x-2">
-                                    <XIcon className="text-black bg-white border border-gray-200 rounded-sm w-6 h-6 p-1" />
-                                    <Paragraph size="sm" className="text-gray-700">lidonation</Paragraph>
-                                </div>
-                                <div className="flex items-center space-x-2">
-                                    <WebIcon className="text-pink-500 bg-white border border-pink-500 rounded-full w-6 h-6 p-1" />
-                                    <Paragraph size="sm" className="text-gray-700">Lido Nation Foundation</Paragraph>
-                                </div>
-                            </div>
-                        </div>
-                    </Card>
-                    <Paragraph size="sm" className="mt-4 text-gray-500">
-                        JOINED JUNE 13, 2017
-                    </Paragraph>
-
-                </div>
-
-                {/* Right Column - 8/12 width */}
-                <div className="col-span-8 space-y-6">
-                    {/* Personal Info Section */}
-                    <Card className="border border-gray-200 rounded-lg shadow-sm">
-                        <div className="p-6">
-                            <div className="flex justify-between items-center mb-4">
-                                <Title level="3" className="text-gray-800">Personal Info</Title>
-                            </div>
-                            <div className="space-y-6">
-                                <div>
-                                    <Paragraph size="sm" className="font-medium text-gray-700 mb-2">Photo</Paragraph>
-                                    <div className="flex items-center space-x-4">
-                                        <div className="h-20 w-20 rounded-full border-2 border-gray-300 overflow-hidden">
-                                            <img
-                                                src={user.profile_photo_path || "/api/placeholder/150/150"}
-                                                alt="Profile"
-                                                className="w-full h-full object-cover"
-                                            />
-                                        </div>
-                                        <label className="cursor-pointer">
-                                            <input
-                                                type="file"
-                                                className="hidden"
-                                                onChange={updateProfilePhoto}
-                                                accept="image/*"
-                                            />
-                                            <Button
-                                                type="button"
-                                                className="border border-gray-300 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-50"
-                                            >
-                                                Change
-                                            </Button>
-                                        </label>
-                                    </div>
-                                </div>
-
-                                <div>
-                                    <Paragraph size="sm" className="font-medium text-gray-700 mb-2">Name</Paragraph>
-                                    <div className="flex items-center">
-                                        <TextInput
-                                            value={data.name}
-                                            onChange={e => setData('name', e.target.value)}
-                                            className="flex-1 px-3 py-2 border border-gray-300 rounded-md"
-                                        />
-                                        <Button
-                                            className="ml-2 p-2 border border-gray-300 rounded-md text-gray-600 hover:bg-gray-50"
-                                            type="button"
-                                        >
-                                            <Copy className="h-4 w-4" />
-                                        </Button>
-                                    </div>
-                                    {errors.name && <div className="text-red-500 text-sm mt-1">{errors.name}</div>}
-                                </div>
-
-                                <div>
-                                    <Paragraph size="sm" className="font-medium text-gray-700 mb-2">Social Profiles</Paragraph>
-                                    <div className="space-y-3">
-                                        <div>
-                                            <Paragraph size="sm" className="mb-1 text-gray-600">Twitter</Paragraph>
-                                            <div className="flex items-center">
-                                                <TextInput
-                                                    value={data.twitter}
-                                                    onChange={e => setData('twitter', e.target.value)}
-                                                    className="flex-1 px-3 py-2 border border-gray-300 rounded-md"
-                                                    placeholder="Twitter username"
-                                                />
-                                            </div>
-                                            {errors.twitter && <div className="text-red-500 text-sm mt-1">{errors.twitter}</div>}
-                                        </div>
-
-                                        <div>
-                                            <Paragraph size="sm" className="mb-1 text-gray-600">LinkedIn</Paragraph>
-                                            <div className="flex items-center">
-                                                <TextInput
-                                                    value={data.linkedin}
-                                                    onChange={e => setData('linkedin', e.target.value)}
-                                                    className="flex-1 px-3 py-2 border border-gray-300 rounded-md"
-                                                    placeholder="LinkedIn profile URL"
-                                                />
-                                            </div>
-                                            {errors.linkedin && <div className="text-red-500 text-sm mt-1">{errors.linkedin}</div>}
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div>
-                                    <Paragraph size="sm" className="font-medium text-gray-700 mb-2">City</Paragraph>
-                                    <div className="flex items-center">
-                                        <TextInput
-                                            placeholder="You have no address yet"
-                                            className="flex-1 px-3 py-2 border border-gray-300 rounded-md"
-                                        />
-                                        <Button
-                                            className="ml-2 border border-gray-300 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-50"
-                                            type="button"
-                                        >
-                                            Add
-                                        </Button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </Card>
-
-                    {/* Basic Settings Section */}
-                    <Card className="border border-gray-200 rounded-lg shadow-sm">
-                        <div className="p-6">
-                            <div className="flex justify-between items-center mb-4">
-                                <Title level="3" className="text-gray-800">Basic Settings</Title>
-                                <Switch
-                                    checked={isPublic}
-                                    onCheckedChange={setIsPublic}
-                                    label="Public Profile"
-                                    labelShouldPrecede={true}
-                                    size="sm"
-                                />
-                            </div>
-                            <div className="space-y-4">
-                                <div>
-                                    <Paragraph size="sm" className="font-medium text-gray-700 mb-2">Email</Paragraph>
-                                    <div className="flex items-center">
-                                        <TextInput
-                                            type="email"
-                                            value={data.email}
-                                            onChange={e => setData('email', e.target.value)}
-                                            className="flex-1 px-3 py-2 border border-gray-300 rounded-md"
-                                        />
-                                        <Button
-                                            className="ml-2 p-2 border border-gray-300 rounded-md text-gray-600 hover:bg-gray-50"
-                                            type="button"
-                                        >
-                                            <Copy className="h-4 w-4" />
-                                        </Button>
-                                    </div>
-                                    {errors.email && <div className="text-red-500 text-sm mt-1">{errors.email}</div>}
-                                </div>
-
-                                <div>
-                                    <Paragraph size="sm" className="font-medium text-gray-700 mb-2">Password</Paragraph>
-                                    <div className="flex items-center">
-                                        <TextInput
-                                            type="password"
-                                            value="********"
-                                            disabled={true}
-                                            className="flex-1 px-3 py-2 border border-gray-300 rounded-md bg-gray-100"
-                                        />
-                                        <Paragraph size="sm" className="ml-4 text-gray-500">
-                                            Password last changed 2 months ago
-                                        </Paragraph>
-                                    </div>
-                                    <Button
-                                        className="mt-2 border border-gray-300 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-50"
-                                        type="button"
-                                        onClick={() => window.location.href = route('password.edit')}
+                                    <Paragraph
+                                        size="sm"
+                                        className="text-content"
                                     >
-                                        Change Password
-                                    </Button>
+                                        {t('icons.titles.linkedIn')}
+                                    </Paragraph>
+                                </div>
+                                <div className="flex items-center space-x-2">
+                                    <XIcon className="text-black-persist bg-light-persist border-border-secondary h-6 w-6 rounded-sm border p-1 transition-colors duration-300 ease-in-out" />
+                                    <Paragraph
+                                        size="sm"
+                                        className="text-content"
+                                    >
+                                        {t('icons.titles.x')}
+                                    </Paragraph>
+                                </div>
+                                <div className="flex items-center space-x-2">
+                                    <WebIcon className="bg-light-persist border-accent text-accent h-6 w-6 rounded-full border p-1 transition-colors duration-300 ease-in-out" />
+                                    <Paragraph
+                                        size="sm"
+                                        className="text-content"
+                                    >
+                                        {t('users.website')}
+                                    </Paragraph>
+                                </div>
+                            </div>
+                        </div>
+                    </Card>
+                    <Paragraph size="sm" className="text-content mt-4">
+                        {user.created_at
+                            ? `JOINED ${new Date(user.created_at)
+                                  .toLocaleDateString('en-US', {
+                                      month: 'long',
+                                      day: 'numeric',
+                                      year: 'numeric',
+                                  })
+                                  .toUpperCase()}`
+                            : 'JOINED UNKNOWN'}
+                    </Paragraph>
+                </div>
+
+                <div className="col-span-8 space-y-6">
+                    <Card className="bg-background rounded-lg shadow-sm transition-colors duration-300 ease-in-out">
+                        <div className="p-6">
+                            <Title level="3" className="text-content mb-6">
+                                {t('users.personalInfo')}
+                            </Title>
+
+                            <div>
+                                <div className="border-t border-gray-200 py-4 transition-colors duration-300 ease-in-out">
+                                    <div className="flex items-center justify-between">
+                                        <div className="flex w-full">
+                                            <div className="text-content w-1/4">
+                                                {t('users.photo')}
+                                            </div>
+                                            <div className="w-3/4">
+                                                <div className="text-sm text-gray-400">
+                                                    {t(
+                                                        'users.photoSizeInstructions',
+                                                    )}
+                                                </div>
+                                                {photoError && (
+                                                    <div className="text-error mb-2 text-sm">
+                                                        {photoError}
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </div>
+                                        <div className="relative">
+                                            <img
+                                                src={
+                                                    photoPreview ||
+                                                    (user.profile_photo_path
+                                                        ? `/storage/${user.profile_photo_path}`
+                                                        : '/api/placeholder/150/150')
+                                                }
+                                                className={`border-border-secondary h-12 w-12 rounded-full border object-cover transition-colors duration-300 ease-in-out ${photoUploading ? 'opacity-50' : ''}`}
+                                                alt="Profile"
+                                            />
+                                            {(user.profile_photo_path ||
+                                                photoPreview) && (
+                                                <button
+                                                    onClick={removeProfilePhoto}
+                                                    className="bg-background hover:bg-background-lighter absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full border text-xs text-gray-400 shadow-sm transition-colors duration-300 ease-in-out"
+                                                    disabled={photoUploading}
+                                                >
+                                                    ×
+                                                </button>
+                                            )}
+                                            <label className="absolute right-3 bottom-0 cursor-pointer">
+                                                <input
+                                                    type="file"
+                                                    className="hidden"
+                                                    onChange={
+                                                        updateProfilePhoto
+                                                    }
+                                                    accept="image/jpeg,image/png,image/gif"
+                                                    disabled={photoUploading}
+                                                />
+                                                <div>
+                                                    <CameraIcon className="text-content-light h-5 w-5" />
+                                                </div>
+                                            </label>
+                                        </div>
+                                    </div>
                                 </div>
 
-                                <div>
-                                    <Paragraph size="sm" className="font-medium text-gray-700 mb-2">Profile Link</Paragraph>
-                                    <div className="flex items-center">
-                                        <TextInput
-                                            value="https://catalyexplorer.com/26853367910"
-                                            disabled={true}
-                                            className="flex-1 px-3 py-2 border border-gray-300 rounded-md bg-gray-100"
-                                        />
-                                        <Button
-                                            className="ml-2 border border-gray-300 text-gray-700 px-4 py-2 rounded-md flex items-center hover:bg-gray-50"
-                                            type="button"
+                                <div className="border-t border-gray-200 py-3 transition-colors duration-300 ease-in-out">
+                                    <div className="flex items-center justify-between">
+                                        <div className="flex w-full">
+                                            <div className="text-content w-1/4">
+                                                {t('profileWorkflow.name')}
+                                            </div>
+                                            <div className="text-content w-3/4">
+                                                {data.name}
+                                            </div>
+                                        </div>
+                                        <button
+                                            className="text-primary"
+                                            onClick={() => {
+                                                openModal({
+                                                    title: 'Update Profile Name',
+                                                    fieldName: 'name',
+                                                    fieldLabel: 'Name',
+                                                    currentValue: data.name,
+                                                    updateRoute:
+                                                        'profile.update.field',
+                                                });
+                                            }}
                                         >
-                                            <Link2 className="h-4 w-4 mr-1" />
+                                            <EditIcon className="text-primary" />
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div className="border-t border-gray-200 py-3 transition-colors duration-300 ease-in-out">
+                                    <div className="flex items-center justify-between">
+                                        <div className="flex w-full items-center">
+                                            <div className="text-contentw-1/4">
+                                                {t('users.socialProfiles')}
+                                            </div>
+                                            <div className="flex w-3/4 space-x-2">
+                                                <div className="bg-primary/10 flex h-8 w-8 items-center justify-center rounded-full">
+                                                    <LinkedInIcon className="text-primary h-5 w-5 rounded-full" />
+                                                </div>
+                                                <div className="bg-background-lighter flex h-8 w-8 items-center justify-center rounded-full transition-colors duration-300 ease-in-out">
+                                                    <XIcon className="text-content h-5 w-5" />
+                                                </div>
+                                                <div className="bg-accent/10 flex h-8 w-8 items-center justify-center rounded-full">
+                                                    <WebIcon className="text-accent h-5 w-5" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <button
+                                            className="text-primary"
+                                            onClick={() =>
+                                                setSocialModalOpen(true)
+                                            }
+                                        >
+                                            <EditIcon className="text-primary" />
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div className="border-t border-gray-200 py-4 transition-colors duration-300 ease-in-out">
+                                    <div className="flex items-center justify-between">
+                                        <div className="flex w-full">
+                                            <div className="text-content w-1/4">
+                                                {t('users.city')}
+                                            </div>
+                                            <div className="text-content w-3/4">
+                                                {data.city
+                                                    ? data.city
+                                                    : 'You have no an address yet'}
+                                            </div>
+                                        </div>
+                                        <button
+                                            className={
+                                                data.city
+                                                    ? 'text-primary'
+                                                    : 'text-accent'
+                                            }
+                                            onClick={() => {
+                                                openModal({
+                                                    title: data.city
+                                                        ? 'Update City'
+                                                        : 'Add City',
+                                                    fieldName: 'city',
+                                                    fieldLabel: 'City',
+                                                    currentValue:
+                                                        data.city || '',
+                                                    updateRoute:
+                                                        'profile.update.field',
+                                                });
+                                            }}
+                                        >
+                                            {data.city ? (
+                                                <EditIcon
+                                                    className="text-primary"
+                                                    width={20}
+                                                    height={20}
+                                                />
+                                            ) : (
+                                                'Add'
+                                            )}
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </Card>
+
+                    <Card className="bg-background rounded-lg shadow-sm transition-colors duration-300 ease-in-out">
+                        <div className="p-6">
+                            <div className="mb-6 flex items-center justify-between">
+                                <Title level="3" className="text-content">
+                                    {t('users.basicSettings')}
+                                </Title>
+                                <div className="flex items-center">
+                                    <span className="text-content mr-2 text-sm">
+                                        {t('users.publicProfile')}
+                                    </span>
+                                    <Switch
+                                        checked={isPublic}
+                                        onCheckedChange={setIsPublic}
+                                        size="sm"
+                                    />
+                                </div>
+                            </div>
+
+                            <div>
+                                <div className="border-t border-gray-200 py-3 transition-colors duration-300 ease-in-out">
+                                    <div className="flex items-center justify-between">
+                                        <div className="flex w-full">
+                                            <div className="text-content w-1/4">
+                                                {t('profileWorkflow.email')}
+                                            </div>
+                                            <div className="text-content w-3/4">
+                                                {data.email}
+                                            </div>
+                                        </div>
+                                        <button
+                                            className="text-primary"
+                                            onClick={() => {
+                                                openModal({
+                                                    title: 'Update Email Address',
+                                                    fieldName: 'email',
+                                                    fieldLabel: 'Email',
+                                                    currentValue: data.email,
+                                                    updateRoute:
+                                                        'profile.update.field',
+                                                    inputType: 'email',
+                                                });
+                                            }}
+                                        >
+                                            <EditIcon className="text-primary" />
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div className="border-t border-gray-200 py-3 transition-colors duration-300 ease-in-out">
+                                    <div className="flex items-center justify-between">
+                                        <div className="flex w-full">
+                                            <div className="text-content w-1/4">
+                                                {t('password')}
+                                            </div>
+                                            <div className="text-content w-3/4">
+                                                Password last changed{' '}
+                                                {formatTimeAgo(user.updated_at)}
+                                            </div>
+                                        </div>
+                                        <button
+                                            className="text-primary"
+                                            onClick={() =>
+                                                setPasswordModalOpen(true)
+                                            }
+                                        >
+                                            <EditIcon className="text-primary" />
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div className="border-t border-gray-200 py-3 transition-colors duration-300 ease-in-out">
+                                    <div className="flex items-center justify-between">
+                                        <div className="flex w-full">
+                                            <div className="text-content w-1/4">
+                                                {t('users.profileLink')}
+                                            </div>
+                                            <div className="flex w-3/4 items-center">
+                                                <span className="text-content profile-url-text">
+                                                    {`https://catalytexplorer.com/${user.id}`}
+                                                </span>
+                                                <button
+                                                    className="text-content-light hover:text-content ml-2 transition-colors duration-300 ease-in-out"
+                                                    onClick={handleCopyUrl}
+                                                    title="Copy URL"
+                                                >
+                                                    {copySuccess ? (
+                                                        <span className="text-primary flex items-center">
+                                                            <CheckIcon className="h-4 w-4" />
+                                                        </span>
+                                                    ) : (
+                                                        <CopyIcon className="h-4 w-4" />
+                                                    )}
+                                                </button>
+                                                {copySuccess && (
+                                                    <span className="text-primary ml-2 text-xs">
+                                                        Copied!
+                                                    </span>
+                                                )}
+                                            </div>
+                                        </div>
+                                        <button className="text-accent whitespace-nowrap">
                                             Re-create
-                                        </Button>
+                                        </button>
                                     </div>
                                 </div>
                             </div>
@@ -306,16 +548,35 @@ export default function ProfileSettings() {
                     </Card>
                 </div>
             </div>
-
-            <div className="max-w-6xl mx-auto mt-6 flex justify-end">
-                <Button
-                    type="submit"
-                    className="bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700 transition-colors"
-                    disabled={processing}
-                >
-                    Save Changes
-                </Button>
-            </div>
+            {modalConfig.isOpen && (
+                <UpdateProfileFieldModal
+                    isOpen={true}
+                    onClose={closeModal}
+                    title={modalConfig.title}
+                    fieldName={modalConfig.fieldName}
+                    fieldLabel={modalConfig.fieldLabel}
+                    currentValue={modalConfig.currentValue}
+                    updateRoute={modalConfig.updateRoute}
+                    inputType={modalConfig.inputType}
+                    placeholder={modalConfig.placeholder}
+                />
+            )}
+            {socialModalOpen && (
+                <UpdateSocialProfilesModal
+                    isOpen={socialModalOpen}
+                    onClose={() => setSocialModalOpen(false)}
+                    title="Update Social Profiles"
+                    linkedinUrl={user.linkedin || ''}
+                    twitterUrl={user.twitter || ''}
+                    websiteUrl={user.website || ''}
+                />
+            )}
+            {passwordModalOpen && (
+                <UpdatePasswordModal
+                    isOpen={passwordModalOpen}
+                    onClose={() => setPasswordModalOpen(false)}
+                />
+            )}
         </div>
     );
 }

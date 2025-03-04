@@ -29,6 +29,20 @@ class NewPasswordController extends Controller
         ]);
     }
 
+    public function update(Request $request): RedirectResponse
+    {
+        $validated = $request->validate([
+            'current_password' => ['required', 'current_password'],
+            'password' => ['required', 'confirmed', Rules\Password::defaults()],
+        ]);
+
+        $request->user()->update([
+            'password' => Hash::make($validated['password']),
+        ]);
+
+        return redirect()->back()->with('status', 'Password updated successfully.');
+    }
+
     /**
      * Handle an incoming new password request.
      *

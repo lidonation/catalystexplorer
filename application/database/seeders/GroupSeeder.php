@@ -16,7 +16,7 @@ class GroupSeeder extends Seeder
      * Run the database seeds.
      */
     public function run(): void
-    { 
+    {
         $groups = Group::factory()
             ->count(10)
             ->create();

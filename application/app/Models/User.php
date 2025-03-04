@@ -35,6 +35,8 @@ class User extends Authenticatable implements HasMedia
         'short_bio',
         'linkedin',
         'twitter',
+        'website',
+        'city',
 
     ];
 
