@@ -40,7 +40,7 @@ class TransactionFactory extends Factory
             ];
         }
 
-        $metadataHash = Str::random(64);
+        $metadataHash = $this->faker->unique()->sha256();
         $publicLabels = [];
         $numEntries = rand(1, 4);
 
