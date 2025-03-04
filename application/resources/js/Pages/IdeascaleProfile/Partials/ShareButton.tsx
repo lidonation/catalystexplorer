@@ -10,6 +10,8 @@ interface ShareButtonProps {
   itemId?: string;
   ideascaleProfile?: App.DataTransferObjects.IdeascaleProfileData;
   className?: string;
+  width?: number;
+  height?: number;
 }
 
 const ShareButton: React.FC<ShareButtonProps> = ({
@@ -107,13 +109,13 @@ const ShareButton: React.FC<ShareButtonProps> = ({
     <div className="relative inline-block" ref={dropdownRef}>
       <button
         onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-        className={`flex items-center justify-center rounded-full hover:bg-gray-100 p-2 transition-colors ${className}`}
+        className={`flex items-center justify-center rounded-full hover:bg-background p-2 transition-colors ${className}`}
         aria-label={t('share.open_share_options', 'Share')}
       >
         <ShareIcon />
       </button>
       {isDropdownOpen && (
-        <div className="absolute right-0 mt-2 w-48 bg-white border rounded-lg shadow-lg z-10">
+        <div className="absolute right-0 mt-2 w-48 bg-background border rounded-lg shadow-lg z-10">
           <ul className="py-1">
             {availablePlatforms.map(({ platform, label, Icon }) => (
               <li key={platform}>
@@ -122,9 +124,7 @@ const ShareButton: React.FC<ShareButtonProps> = ({
                   className="w-full flex items-center text-left px-4 py-2 hover:bg-gray-100 transition-colors"
                 >
                   <Icon 
-                    className="mr-2" 
-                    width={20} 
-                    height={20} 
+                    className="mr-2 text-black"
                   />
                   {label}
                 </button>

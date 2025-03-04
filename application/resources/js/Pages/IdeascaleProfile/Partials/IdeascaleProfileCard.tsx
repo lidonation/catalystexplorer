@@ -126,10 +126,30 @@ const IdeascaleProfileCard: React.FC<IdeascaleProfileProps> = ({
                             </Paragraph>
 
                             <div className="mt-2 flex flex-row flex-wrap gap-2 items-center md:items-center lg:gap-1.5">
-                                <ClaimedButton/>
-                                
-                                <div className="border-gray-persist/50 text-gray-persist w-fit items-center rounded-md border-1 px-2 py-2">
-                                    <ShareButton />
+                                <ClaimedButton
+                                />
+                                {/* <Button
+                                    className={`${ideascaleProfile?.claimed_by_id ? 'bg-success' : 'bg-primary'} text-content rounded-md px-1 py-2 w-20`}
+                                >
+                                    <Paragraph
+                                        size="sm"
+                                        className="text-content-light"
+                                    >
+                                        {ideascaleProfile?.claimed_by_id
+                                            ? t('ideascaleProfiles.claimed')
+                                            : t('ideascaleProfiles.claim')}
+                                    </Paragraph>
+                                </Button> */}
+                                <div className="border-gray-persist/50 text-gray-persist w-fit items-center rounded-md border-1 px-1 py-0">
+                                    <ShareButton 
+                                            modelType="ideascale-profiles"
+                                            className="text-content-light"
+                                            width={16}
+                                            height={16}
+                                            itemId={
+                                                ideascaleProfile?.hash ??
+                                                '0'
+                                            }/>
                                 </div>
                                 <div className="border-gray-persist/50 text-gray-persist/50 w-fit items-center rounded-md border-1 py-0">
                                     <ListProvider>
