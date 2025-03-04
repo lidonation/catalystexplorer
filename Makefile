@@ -83,8 +83,12 @@ devtools-install:
 		--workdir /app \
 		--user root \
 		node:${nodeVersion}-alpine yarn install --ignore-engine
-		$(sail) up -d
-		npx husky init
+	make up
+	npx husky init
+	echo 'npx --no -- commitlint --edit $$1' > .husky/commit-msg
+	chmod +x .husky/_/commit-msg
+	printf 'make lint-backend\ngit add -A\nmake tsc\nmake test-backend' > .husky/pre-commit
+	chmod +x .husky/pre-commit
 
 .PHONY: frontend-install
 frontend-install:
@@ -138,9 +142,9 @@ rm:
 sh:
 	$(sail) shell $(filter-out $@,$(MAKECMDGOALS))
 
-.PHONY: commitlint
-commitlint:
-	npx --no -- commitlint --edit $1
+# .PHONY: commitlint
+# commitlint:
+# 	npx --no -- commitlint --edit $1
 
 .PHONY: status
 status:
