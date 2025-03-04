@@ -6,6 +6,7 @@ namespace App\Nova;
 
 use App\Models\Nft;
 use Laravel\Nova\Fields\BelongsTo;
+use Illuminate\Http\Request;
 use Laravel\Nova\Fields\DateTime;
 use Laravel\Nova\Fields\HasMany;
 use Laravel\Nova\Fields\ID;
