@@ -21,14 +21,14 @@ const MetricCard: React.FC<MetricCardProps> = ({ metric }) => {
             ? JSON.parse(metric.chartData)
             : metric.chartData;
 
-            const lineData = chartData?.data ? [{
+            const lineData = [{
                 id: chartData.id || 'Data',
                 color: metric.color,
                 data: chartData.data.map((item: any) => ({
                     x: item.x,
                     y: item.y
                 }))
-            }] : [];        
+            }];      
 
     const calculateTrend = (currentValue: number, previousValue: number) => {
         if (previousValue !== 0) {
