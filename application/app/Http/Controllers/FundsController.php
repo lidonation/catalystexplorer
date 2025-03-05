@@ -60,13 +60,64 @@ class FundsController extends Controller
             'fund' => $fund,
             'filters' => $this->queryParams,
             'metrics' => Inertia::optional(
-                fn () => MetricData::collect($metrics
-                    ->limit(6)
-                    ->getQuery()
-                    ->where('context', 'fund')
-                    ->orderByDesc('order')
-                    ->get())
+                fn () => MetricData::collect(
+                    $metrics
+                        ->limit(6)
+                        ->getQuery()
+                        ->where('context', 'fund')
+                        ->get()
+                        ->map(function ($metric) use ($fund) {
+                            $chartData = $metric->chartData;
+
+                            if (! isset($chartData['data'])) {
+                                return $metric;
+                            }
+
+                            $currentFundData = collect($chartData['data'])->firstWhere('x', $fund->title);
+
+                            if (empty($chartData['data'])) {
+                                return null;
+                            }
+
+                            $filteredData = collect($chartData['data'])
+                                ->reject(fn ($item) => $item['x'] === $fund->title || empty($item['y']))
+                                ->values();
+
+                            if ($currentFundData && ! empty($currentFundData['y'])) {
+                                $filteredData->prepend($currentFundData);
+                            }
+
+                            if ($filteredData->isEmpty()) {
+                                return null;
+                            }
+
+                            return (object) array_merge((array) $metric, [
+                                'chartData' => [
+                                    'id' => $chartData['id'],
+                                    'color' => $chartData['color'],
+                                    'data' => $filteredData->values()->toArray(),
+                                ],
+                                'title' => $metric->title,
+                                'type' => $metric->type,
+                                'query' => $metric->query,
+                                'color' => $metric->color,
+                                'content' => $metric->content,
+                                'hash' => $metric->hash,
+                                'user_id' => $metric->user_id,
+                                'status' => $metric->status,
+                                'created_at' => $metric->created_at ?? now(),
+                                'updated_at' => $metric->updated_at ?? now(),
+                                'field' => $metric->field,
+                                'count_by' => $metric->count_by,
+                                'value' => collect($chartData['data'] ?? [])
+                                    ->firstWhere('x', $fund->title)['y'] ?? $metric->metric_value,
+                                'order' => $metric->order,
+                            ]);
+                        })
+                        ->filter()
+                )
             ),
+
             'campaigns' => Inertia::optional(fn () => CampaignData::collect($campaigns)),
         ]);
     }
@@ -89,7 +140,7 @@ class FundsController extends Controller
         }
 
         $query = $fund->campaigns()
-//            ->with(['proposals', 'funded_proposals'])
+            //            ->with(['proposals', 'funded_proposals'])
             ->withCount([
                 'completed_proposals',
                 'unfunded_proposals',

@@ -1,11 +1,12 @@
-import React, { useState } from 'react';
-import { ResponsiveLine } from '@nivo/line';
-import { useTranslation } from 'react-i18next';
-import MetricData = App.DataTransferObjects.MetricData;
+import Paragraph from '@/Components/atoms/Paragraph';
+import Title from '@/Components/atoms/Title';
 import ArrowTrendingDown from '@/Components/svgs/ArrowTrendingDown';
 import ArrowTrendingUp from '@/Components/svgs/ArrowTrendingUp';
 import { shortNumber } from '@/utils/shortNumber';
-import Title from '@/Components/atoms/Title';
+import { ResponsiveLine } from '@nivo/line';
+import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import MetricData = App.DataTransferObjects.MetricData;
 
 interface MetricCardProps {
     metric: MetricData;
@@ -15,23 +16,26 @@ const MetricCard: React.FC<MetricCardProps> = ({ metric }) => {
     const { t } = useTranslation();
     const [isHovered, setIsHovered] = useState(false);
 
-    const chartData = typeof metric.chartData === 'string'
-        ? JSON.parse(metric.chartData)
-        : metric.chartData;
+    const chartData =
+        typeof metric.chartData === 'string'
+            ? JSON.parse(metric.chartData)
+            : metric.chartData;
 
-    const lineData = chartData?.data ? [{
-        id: chartData.id || 'Data',
-        color: metric.color,
-        data: chartData.data.map((item: any) => ({
-            x: item.x,
-            y: item.y
-        }))
-    }] : [];
-
+    const lineData = [
+        {
+            id: chartData.id || 'Data',
+            color: metric.color,
+            data: chartData.data.map((item: any) => ({
+                x: item.x,
+                y: item.y,
+            })),
+        },
+    ];
 
     const calculateTrend = (currentValue: number, previousValue: number) => {
         if (previousValue !== 0) {
-            const percentageChange = ((currentValue - previousValue) / previousValue) * 100;
+            const percentageChange =
+                ((currentValue - previousValue) / previousValue) * 100;
             return {
                 value: Math.abs(percentageChange).toFixed(0),
                 isPositive: percentageChange >= 0,
@@ -46,7 +50,10 @@ const MetricCard: React.FC<MetricCardProps> = ({ metric }) => {
                 <span className="text-content text-2xl font-bold">
                     {shortNumber(metric.value ?? 0, 2)}
                 </span>
-                <Title level='3' className="text-content-gray-persist max-w-[200px] truncate text-sm font-medium">
+                <Title
+                    level="3"
+                    className="text-content-gray-persist max-w-[200px] truncate text-sm font-medium"
+                >
                     {metric.title}
                 </Title>
             </div>
@@ -71,7 +78,7 @@ const MetricCard: React.FC<MetricCardProps> = ({ metric }) => {
                                 xScale={{ type: 'point' }}
                                 yScale={{
                                     type: 'linear',
-                                    min: 'auto',
+                                    min: 0,
                                     max: 'auto',
                                     clamp: true,
                                 }}
@@ -102,39 +109,70 @@ const MetricCard: React.FC<MetricCardProps> = ({ metric }) => {
                                 pointBorderColor={{ from: 'serieColor' }}
                                 useMesh={true}
                                 tooltipFormat={(value) =>
-                                    shortNumber(Number(value))
+                                    shortNumber(Number(value), 2)
                                 }
                                 tooltip={({ point }) => {
                                     const currentIndex = point.index;
-                                    const currentData = lineData[0].data[currentIndex];
-                                    const previousData = lineData[0].data[currentIndex - 1];
+                                    const currentData =
+                                        lineData[0].data[currentIndex];
+                                    const previousData =
+                                        lineData[0].data[currentIndex - 1];
                                     const trend = previousData
-                                        ? calculateTrend(currentData.y, previousData.y)
+                                        ? calculateTrend(
+                                              currentData.y,
+                                              previousData.y,
+                                          )
                                         : { value: '0', isPositive: true };
 
                                     return (
                                         <div className="bg-dark relative rounded-lg p-4 text-white shadow-lg">
                                             <div className="max-w-sm">
-                                                <Title level='3' className="text-lg font-semibold">{point.data.xFormatted}</Title>
-                                                <p className="mt-2 flex items-center text-sm">
-                                                    <span className="shrink truncate">{metric.title}</span>:
-                                                    <span className="font-bold">{point.data.yFormatted}</span>
-                                                </p>
+                                                <Title
+                                                    level="3"
+                                                    className="text-lg font-semibold"
+                                                >
+                                                    {point.data.xFormatted}
+                                                </Title>
+                                                <Paragraph className="mt-2 flex items-center text-sm">
+                                                    <span className="shrink truncate mr-1">
+                                                        {metric.title}
+                                                    </span>
+                                                    :
+                                                    <span className="font-bold">
+                                                        {shortNumber(
+                                                            Number(
+                                                                point.data
+                                                                    .yFormatted,
+                                                            ),
+                                                            2,
+                                                        )}
+                                                    </span>
+                                                </Paragraph>
                                                 <div className="mt-2 flex items-center">
                                                     <span
                                                         className={
-                                                            trend.isPositive ? 'text-green-500' : 'text-red-500'
+                                                            trend.isPositive
+                                                                ? 'text-green-500'
+                                                                : 'text-red-500'
                                                         }
-                                                        style={{ display: 'flex', alignItems: 'center' }}
+                                                        style={{
+                                                            display: 'flex',
+                                                            alignItems:
+                                                                'center',
+                                                        }}
                                                     >
                                                         {trend.isPositive ? (
                                                             <ArrowTrendingUp />
                                                         ) : (
                                                             <ArrowTrendingDown />
                                                         )}
-                                                        <span className="ml-1 font-medium">{trend.value}%</span>
+                                                        <span className="ml-1 font-medium">
+                                                            {trend.value}%
+                                                        </span>
                                                     </span>
-                                                    <span className="ml-1">{t('metric.vs')}</span>
+                                                    <span className="ml-1">
+                                                        {t('metric.vs')}
+                                                    </span>
                                                 </div>
                                             </div>
                                             <div className="border-t-dark absolute bottom-0 left-1/2 h-0 w-0 -translate-x-1/2 translate-y-full border-t-[10px] border-r-[10px] border-l-[10px] border-r-transparent border-l-transparent"></div>
