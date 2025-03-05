@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ResponsiveLine } from '@nivo/line';
 import { useTranslation } from 'react-i18next';
 import MetricData = App.DataTransferObjects.MetricData;
@@ -71,7 +71,7 @@ const MetricCard: React.FC<MetricCardProps> = ({ metric }) => {
                                 xScale={{ type: 'point' }}
                                 yScale={{
                                     type: 'linear',
-                                    min: 'auto',
+                                    min:  0,
                                     max: 'auto',
                                     clamp: true,
                                 }}

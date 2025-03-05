@@ -5,18 +5,18 @@ declare(strict_types=1);
 namespace App\Nova;
 
 use App\Models\Nft;
-use Laravel\Nova\Fields\ID;
 use Illuminate\Http\Request;
-use Laravel\Nova\Fields\URL;
-use Laravel\Nova\Fields\Text;
-use Laravel\Nova\Fields\Select;
-use Laravel\Nova\Fields\Number;
-use Laravel\Nova\Fields\HasMany;
-use Laravel\Nova\Fields\MorphTo;
-use Laravel\Nova\Fields\Markdown;
-use Laravel\Nova\Fields\KeyValue;
-use Laravel\Nova\Fields\DateTime;
 use Laravel\Nova\Fields\BelongsTo;
+use Laravel\Nova\Fields\DateTime;
+use Laravel\Nova\Fields\HasMany;
+use Laravel\Nova\Fields\ID;
+use Laravel\Nova\Fields\KeyValue;
+use Laravel\Nova\Fields\Markdown;
+use Laravel\Nova\Fields\MorphTo;
+use Laravel\Nova\Fields\Number;
+use Laravel\Nova\Fields\Select;
+use Laravel\Nova\Fields\Text;
+use Laravel\Nova\Fields\URL;
 use Laravel\Nova\Http\Requests\NovaRequest;
 
 class Nfts extends Resource

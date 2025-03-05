@@ -13,6 +13,7 @@ import HeroSection from './Partials/HeroSection';
 import FundData = App.DataTransferObjects.FundData;
 import MetricData = App.DataTransferObjects.MetricData;
 import CampaignData = App.DataTransferObjects.CampaignData;
+import { useEffect } from 'react';
 
 interface FundPageProps extends Record<string, unknown> {
     fund: FundData;
