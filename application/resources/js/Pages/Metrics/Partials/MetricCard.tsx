@@ -20,23 +20,25 @@ const MetricCard: React.FC<MetricCardProps> = ({ metric }) => {
             ? JSON.parse(metric.chartData)
             : metric.chartData;
 
-    const lineData = [
-        {
-            id: chartData.id,
-            color: metric.color,
-            data: Array.isArray(chartData?.data)
-                ? chartData.data
-                      .filter(
-                          (item: any) =>
-                              item?.x !== undefined && item?.y !== undefined,
-                      )
-                      .map((item: any) => ({
-                          x: item?.x,
-                          y: item?.y,
-                      }))
-                : [],
-        },
-    ];
+    const lineData =
+        Array.isArray(chartData?.data) && chartData.data.length > 0
+            ? [
+                  {
+                      id: chartData.id || 'Data',
+                      color: metric.color,
+                      data: chartData.data
+                          .filter(
+                              (item: any) =>
+                                  item?.x !== undefined &&
+                                  item?.y !== undefined,
+                          )
+                          .map((item: any) => ({
+                              x: item.x,
+                              y: item.y,
+                          })),
+                  },
+              ]
+            : [];
 
     const calculateTrend = (currentValue: number, previousValue: number) => {
         if (previousValue !== 0) {
