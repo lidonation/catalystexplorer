@@ -23,8 +23,8 @@ const MetricCard: React.FC<MetricCardProps> = ({ metric }) => {
         id: chartData.id || 'Data',
         color: metric.color,
         data: chartData.data.map((item: any) => ({
-            x: item.x,
-            y: item.y
+            x: item?.x,
+            y: item?.y
         }))
     }] : [];
 
