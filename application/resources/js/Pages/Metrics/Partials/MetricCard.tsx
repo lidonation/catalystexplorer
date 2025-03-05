@@ -1,3 +1,4 @@
+import Paragraph from '@/Components/atoms/Paragraph';
 import Title from '@/Components/atoms/Title';
 import ArrowTrendingDown from '@/Components/svgs/ArrowTrendingDown';
 import ArrowTrendingUp from '@/Components/svgs/ArrowTrendingUp';
@@ -6,7 +7,6 @@ import { ResponsiveLine } from '@nivo/line';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import MetricData = App.DataTransferObjects.MetricData;
-import Paragraph from '@/Components/atoms/Paragraph';
 
 interface MetricCardProps {
     metric: MetricData;
@@ -21,14 +21,16 @@ const MetricCard: React.FC<MetricCardProps> = ({ metric }) => {
             ? JSON.parse(metric.chartData)
             : metric.chartData;
 
-            const lineData = [{
-                id: chartData.id || 'Data',
-                color: metric.color,
-                data: chartData.data.map((item: any) => ({
-                    x: item.x,
-                    y: item.y
-                }))
-            }];      
+    const lineData = [
+        {
+            id: chartData.id || 'Data',
+            color: metric.color,
+            data: chartData.data.map((item: any) => ({
+                x: item.x,
+                y: item.y,
+            })),
+        },
+    ];
 
     const calculateTrend = (currentValue: number, previousValue: number) => {
         if (previousValue !== 0) {
@@ -138,9 +140,12 @@ const MetricCard: React.FC<MetricCardProps> = ({ metric }) => {
                                                     :
                                                     <span className="font-bold">
                                                         {shortNumber(
-                                                            currentData.y,
+                                                            Number(
+                                                                point.data
+                                                                    .yFormatted,
+                                                            ),
                                                             2,
-                                                        )}  
+                                                        )}
                                                     </span>
                                                 </Paragraph>
                                                 <div className="mt-2 flex items-center">
