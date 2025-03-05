@@ -104,6 +104,7 @@ class FundsController extends Controller
                                 'order' => $metric->order,
                             ]);
                         })
+                        ->filter()
                 )
             ),
 

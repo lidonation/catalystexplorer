@@ -6,6 +6,7 @@ import { ResponsiveLine } from '@nivo/line';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import MetricData = App.DataTransferObjects.MetricData;
+import Paragraph from '@/Components/atoms/Paragraph';
 
 interface MetricCardProps {
     metric: MetricData;
@@ -20,25 +21,14 @@ const MetricCard: React.FC<MetricCardProps> = ({ metric }) => {
             ? JSON.parse(metric.chartData)
             : metric.chartData;
 
-    const lineData =
-        Array.isArray(chartData?.data) && chartData.data.length > 0
-            ? [
-                  {
-                      id: chartData.id || 'Data',
-                      color: metric.color,
-                      data: chartData.data
-                          .filter(
-                              (item: any) =>
-                                  item?.x !== undefined &&
-                                  item?.y !== undefined,
-                          )
-                          .map((item: any) => ({
-                              x: item.x,
-                              y: item.y,
-                          })),
-                  },
-              ]
-            : [];
+            const lineData = chartData?.data ? [{
+                id: chartData.id || 'Data',
+                color: metric.color,
+                data: chartData.data.map((item: any) => ({
+                    x: item.x,
+                    y: item.y
+                }))
+            }] : [];        
 
     const calculateTrend = (currentValue: number, previousValue: number) => {
         if (previousValue !== 0) {
@@ -141,7 +131,7 @@ const MetricCard: React.FC<MetricCardProps> = ({ metric }) => {
                                                 >
                                                     {point.data.xFormatted}
                                                 </Title>
-                                                <p className="mt-2 flex items-center text-sm">
+                                                <Paragraph className="mt-2 flex items-center text-sm">
                                                     <span className="shrink truncate">
                                                         {metric.title}
                                                     </span>
@@ -149,7 +139,7 @@ const MetricCard: React.FC<MetricCardProps> = ({ metric }) => {
                                                     <span className="font-bold">
                                                         {point.data.yFormatted}
                                                     </span>
-                                                </p>
+                                                </Paragraph>
                                                 <div className="mt-2 flex items-center">
                                                     <span
                                                         className={
