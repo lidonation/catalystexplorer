@@ -93,8 +93,8 @@ class FundsController extends Controller
 
                             return (object) array_merge((array) $metric, [
                                 'chartData' => [
-                                    'id' => $chartData['id'] ?? 'Unknown ID',
-                                    'color' => $chartData['color'] ?? 'default_color',
+                                    'id' => $chartData['id'],
+                                    'color' => $chartData['color'],
                                     'data' => $filteredData->values()->toArray(),
                                 ],
                                 'title' => $metric->title,
