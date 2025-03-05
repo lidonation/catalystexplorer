@@ -74,6 +74,11 @@ class Review extends Model
         return $this->belongsTo(self::class, 'parent_id');
     }
 
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
+
     public function model(): MorphTo
     {
         return $this->morphTo('model', 'model_type', 'model_id');

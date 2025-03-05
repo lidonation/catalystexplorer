@@ -15,7 +15,7 @@ final class BookmarkStatus extends Enum
     protected static function values(): array
     {
         return [
-            'DRAFT' => '    draft',
+            'DRAFT' => 'draft',
             'PUBLISHED' => 'published',
         ];
     }

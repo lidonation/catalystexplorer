@@ -77,7 +77,7 @@ const CampaignCard: React.FC<CampaignCardProps> = ({
                 <section className="space-y-6">
                     <div className='flex flex-row justify-between gap-2'>
                         <KeyValue valueKey={t('proposals.filters.budget')}
-                                  value={currency((campaign.amount ?? 0), 2, campaign.currency)}/>
+                                  value={currency(campaign.amount ?? 0, 2, campaign.currency ?? '')}/>
                         <KeyValue valueKey='Total Proposals' value={campaign.proposals_count ?? 0}/>
                     </div>
 
@@ -87,7 +87,7 @@ const CampaignCard: React.FC<CampaignCardProps> = ({
 
                     <div className='space-y-3'>
                         <div>
-                            <SegmentedBar segments={segments}/>
+                            <SegmentedBar segments={segments} tooltipSegments={segments}/>
                         </div>
 
                         <div className="flex flex-row flex-wrap gap-2 justify-between text-sm px-0.5">
@@ -136,7 +136,7 @@ const CampaignCard: React.FC<CampaignCardProps> = ({
                             title={`${t('distributed')} v. ${t('awarded')}`}
                             numerator={campaign.total_distributed}
                             denominator={campaign.total_awarded}
-                            currency={campaign.currency}
+                            currency={campaign.currency ?? ''}
                         />}
                     </div>
 
@@ -145,7 +145,7 @@ const CampaignCard: React.FC<CampaignCardProps> = ({
                             title={`${t('awarded')} v. ${t('requested')}`}
                             numerator={campaign.total_awarded}
                             denominator={campaign.total_requested}
-                            currency={campaign.currency}
+                            currency={campaign.currency ?? ''}
                         />}
                     </div>
                 </section>

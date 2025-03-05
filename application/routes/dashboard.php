@@ -1,6 +1,6 @@
 <?php
 
-use App\Interfaces\Http\Controllers\My\MyBookmarksController;
+use App\Http\Controllers\My\MyBookmarksController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 

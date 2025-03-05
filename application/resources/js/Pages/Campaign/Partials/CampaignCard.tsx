@@ -70,7 +70,7 @@ const CampaignCard: React.FC<CampaignCardProps> = ({
             </div>
 
             <div className="mt-4">
-                <SegmentedBar segments={segments}/>
+                <SegmentedBar segments={segments} tooltipSegments={segments}/>
             </div>
 
             <div className="pt-6">
@@ -115,9 +115,9 @@ const CampaignCard: React.FC<CampaignCardProps> = ({
                 <div className="mt-6">
                     {<AmountComparisonWithBar
                         title="Distributed vs Awarded"
-                        numerator={campaign.total_distributed}
-                        denominator={campaign.total_awarded}
-                        currency={campaign.currency}
+                        numerator={campaign.total_distributed ?? 0}
+                        denominator={campaign.total_awarded ?? 0}
+                        currency={campaign.currency ?? ''}
                     />}
                 </div>
             </div>

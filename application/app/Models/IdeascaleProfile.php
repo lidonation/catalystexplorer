@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use App\Casts\DateFormatCast;
 use App\Casts\HashId;
 use App\Enums\CatalystCurrencySymbols;
 use App\Enums\ProposalStatus;
@@ -272,6 +271,16 @@ class IdeascaleProfile extends Model implements HasMedia
         )->where('type', 'proposal');
     }
 
+    public function groups(): BelongsToMany
+    {
+        return $this->belongsToMany(
+            Group::class,
+            'group_has_ideascale_profile',
+            'ideascale_profile_id',
+            'group_id'
+        );
+    }
+
     public function claimed_by(): BelongsTo
     {
         return $this->belongsTo(User::class, 'claimed_by_id', 'id');
@@ -297,7 +306,7 @@ class IdeascaleProfile extends Model implements HasMedia
 
     public function toSearchableArray(): array
     {
-        $this->load('proposals');
+        $this->load('proposals', 'groups');
         $this->loadCount([
             'completed_proposals',
             'funded_proposals',
@@ -337,9 +346,9 @@ class IdeascaleProfile extends Model implements HasMedia
     {
         return [
             //            'id' => HashId::class,
-            'claimed_by_id' => HashId::class,
-            'created_at' => DateFormatCast::class,
-            'updated_at' => DateFormatCast::class,
+            // 'claimed_by_id' => HashId::class,
+            'created_at' => 'datetime',
+            'updated_at' => 'datetime',
         ];
     }
 }

@@ -27,6 +27,7 @@ class IdeascaleProfileRepository extends Repository
                             'name',
                             'hero_img_url',
                             'first_timer',
+                            'claimed_by_id',
                             'completed_proposals_count',
                             'funded_proposals_count',
                             'unfunded_proposals_count',

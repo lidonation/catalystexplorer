@@ -24,21 +24,47 @@ const IdeascaleProfileCardMini: React.FC<IdeascaleProfileProps> = ({
     ideascaleProfile,
 }) => {
     const { t } = useTranslation();
-    const segments = [
+    const completedProposalsCount =
+        ideascaleProfile?.completed_proposals_count ?? 0;
+    const fundedProposalsCount = ideascaleProfile?.funded_proposals_count ?? 0;
+    const submittedProposalsCount = ideascaleProfile?.proposals_count ?? 0;
+    const chartSegments = [
         {
             label: 'Completed',
             color: 'bg-success',
-            value: ideascaleProfile.completed_proposals_count ?? 0,
+            value: (completedProposalsCount / submittedProposalsCount) * 100,
         },
         {
             label: 'Funded',
             color: 'bg-warning',
-            value: ideascaleProfile.funded_proposals_count ?? 0,
+            value: ((fundedProposalsCount - completedProposalsCount) / submittedProposalsCount) * 100,
+        },
+
+        {
+            label: 'Submitted',
+            color: 'bg-primary',
+            value:
+                ((submittedProposalsCount - fundedProposalsCount) /
+                    submittedProposalsCount) *
+                100,
+        },
+    ] as Segments[];
+
+    const toolTipSegments = [
+        {
+            label: 'Completed',
+            color: 'bg-success',
+            value:  completedProposalsCount,
+        },
+        {
+            label: 'Funded',
+            color: 'bg-warning',
+            value: fundedProposalsCount,
         },
         {
             label: 'Submitted',
             color: 'bg-primary',
-            value: ideascaleProfile.proposals_count ?? 0,
+            value: submittedProposalsCount
         },
     ] as Segments[];
 
@@ -107,7 +133,10 @@ const IdeascaleProfileCardMini: React.FC<IdeascaleProfileProps> = ({
             <div className="mt-auto flex flex-col gap-4">
                 <div className="border-border-secondary border-t">
                     <div className="flex w-full justify-between pt-4">
-                        <SegmentedBar segments={segments}>
+                        <SegmentedBar
+                            segments={chartSegments}
+                            tooltipSegments={toolTipSegments}
+                        >
                             {extraSegments.map((segment, index) => (
                                 <div key={index} className="flex items-center">
                                     <p className="text-3">{segment.label}:</p>
