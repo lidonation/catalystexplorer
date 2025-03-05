@@ -85,7 +85,7 @@ class TransactionFactory extends Factory
             'model_type' => null,
             'model_id' => null,
             'metadata' => json_encode([
-                'meta_hash' => $metadataHash,
+                'metadata_hash' => $metadataHash,
                 'data' => $metadata,
             ]),
             'created_at' => $this->faker->dateTimeBetween('-1 year', 'now'),
