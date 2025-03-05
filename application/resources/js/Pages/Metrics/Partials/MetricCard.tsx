@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { ResponsiveLine } from '@nivo/line';
 import { useTranslation } from 'react-i18next';
 import MetricData = App.DataTransferObjects.MetricData;
