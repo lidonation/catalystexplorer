@@ -6,6 +6,7 @@ type ShareIconProps = {
     height?: number;
 };
 
+
 export default function ShareIcon({
     className,
     width = 16,
@@ -21,7 +22,7 @@ export default function ShareIcon({
             xmlns="http://www.w3.org/2000/svg"
             className={className}
         >
-            <title>{t('icons.title.share')}</title>
+            <title>{t('buttons.titles.share')}</title>
             <path
                 d="M2.66663 7.33325C4.25792 7.33325 5.78405 7.96539 6.90927 9.09061C8.03449 10.2158 8.66663 11.742 8.66663 13.3333"
                 stroke="#99A1B7"

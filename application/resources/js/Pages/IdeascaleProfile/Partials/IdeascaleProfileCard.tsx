@@ -126,19 +126,19 @@ const IdeascaleProfileCard: React.FC<IdeascaleProfileProps> = ({
                             </Paragraph>
 
                             <div className="mt-2 flex flex-row flex-wrap gap-2 items-center md:items-center lg:gap-1.5">
-                                <ClaimedButton/>
+                                <ClaimedButton
+                                 modelType="ideascale-profiles"
+                                 className="text-content-light"                                 
+                                 itemId={
+                                     ideascaleProfile?.hash ??
+                                     '0'
+                                 }/>
                               
                                 <div className="border-gray-persist/50 text-gray-persist w-fit items-center rounded-md border-1 px-1 py-0">
-                                    <ShareButton 
-                                            modelType="ideascale-profiles"
-                                            className="text-content-light"
-                                            url='string'
-                                            width={16}
-                                            height={16}
-                                            itemId={
-                                                ideascaleProfile?.hash ??
-                                                '0'
-                                            }/>
+                                    <ShareButton
+                                    ideascaleProfile={ideascaleProfile} 
+                                    modelType="ideascale-profiles" 
+                                />
                                 </div>
                                 <div className="border-gray-persist/50 text-gray-persist/50 w-fit items-center rounded-md border-1 py-0">
                                     <ListProvider>
