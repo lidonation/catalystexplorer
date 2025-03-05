@@ -81,7 +81,6 @@ class FundsController extends Controller
                                 $filteredData->prepend($currentFundData);
                             }
 
-                            // Return a new object with all required fields
                             return (object) array_merge((array) $metric, [
                                 'chartData' => [
                                     'id' => $chartData['id'] ?? 'Unknown ID',
