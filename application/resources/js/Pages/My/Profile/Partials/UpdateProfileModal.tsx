@@ -4,7 +4,7 @@ import TextInput from '@/Components/atoms/TextInput';
 import Title from '@/Components/atoms/Title';
 import { generateLocalizedRoute } from '@/utils/localizedRoute';
 import { useForm } from '@inertiajs/react';
-import { FormEventHandler } from 'react';
+import { FormEventHandler, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 
 interface UpdateProfileFieldModalProps {
@@ -17,6 +17,7 @@ interface UpdateProfileFieldModalProps {
     inputType?: string;
     updateRoute?: string;
     placeholder?: string;
+    onFieldUpdated?: (fieldName: string, value: string) => void;
 }
 
 export default function UpdateProfileFieldModal({
@@ -27,25 +28,49 @@ export default function UpdateProfileFieldModal({
     fieldLabel,
     currentValue,
     inputType = 'text',
+    updateRoute = 'profile.update.field',
     placeholder = '',
+    onFieldUpdated,
 }: UpdateProfileFieldModalProps) {
     const { t } = useTranslation();
+
+    console.log('Modal props:', {
+        fieldName,
+        fieldLabel,
+        currentValue,
+        inputType,
+        updateRoute,
+    });
 
     const { data, setData, patch, processing, errors, reset } = useForm({
         [fieldName]: currentValue || '',
     });
 
+    console.log('Initial form data:', data);
+
+    useEffect(() => {
+        console.log('Setting form data for', fieldName, 'to', currentValue);
+        setData(fieldName, currentValue || '');
+    }, [currentValue, fieldName, setData]);
+
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
+        const valueToSubmit = data[fieldName as keyof typeof data] as string;
 
         patch(
-            generateLocalizedRoute('profile.update.field', {
+            generateLocalizedRoute(updateRoute, {
                 field: fieldName,
             }),
             {
                 onSuccess: () => {
+                    if (onFieldUpdated) {
+                        onFieldUpdated(fieldName, valueToSubmit);
+                    }
                     onClose();
                     reset(fieldName);
+                },
+                onError: (errors) => {
+                    console.error('Form submission errors:', errors);
                 },
                 preserveScroll: true,
             },
@@ -53,6 +78,12 @@ export default function UpdateProfileFieldModal({
     };
 
     if (!isOpen) return null;
+
+    // Extract the value from the data object using a safer approach
+    const inputValue = (data[fieldName as keyof typeof data] as string) || '';
+
+    // Log the current value that will be displayed in the input
+    console.log('Input value to be displayed:', inputValue);
 
     return (
         <div className="bg-opacity-25 fixed inset-0 z-50 flex items-center justify-center bg-black">
@@ -80,8 +111,14 @@ export default function UpdateProfileFieldModal({
                             id={fieldName}
                             type={inputType}
                             name={fieldName}
-                            value={data[fieldName]}
-                            onChange={(e) => setData(fieldName, e.target.value)}
+                            value={inputValue}
+                            onChange={(e) => {
+                                console.log(
+                                    'Input changed to:',
+                                    e.target.value,
+                                );
+                                setData(fieldName, e.target.value);
+                            }}
                             placeholder={placeholder}
                             className={`w-full px-3 py-2 ${errors[fieldName] ? 'border-error' : ''}`}
                             required

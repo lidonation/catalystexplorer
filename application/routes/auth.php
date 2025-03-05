@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Route;
 Route::localized(function () {
     Route::middleware('auth')->group(function () {
         Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
-        Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+        Route::get('/my/profile', [ProfileController::class, 'show'])->name('my.profile');
         Route::patch('/profile/update/{field}', [ProfileController::class, 'update'])->name('profile.update.field');
         Route::patch('/profile/socials', [ProfileController::class, 'updateSocials'])->name('profile.update.socials');
         Route::post('/profile/photo', [ProfileController::class, 'updatePhoto'])->name('profile.photo.update');
