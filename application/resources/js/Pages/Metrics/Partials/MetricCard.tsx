@@ -33,8 +33,8 @@ const MetricCard: React.FC<MetricCardProps> = ({ metric }) => {
                                   item?.y !== undefined,
                           )
                           .map((item: any) => ({
-                              x: item.x,
-                              y: item.y,
+                              x: item?.x,
+                              y: item?.y,
                           })),
                   },
               ]
