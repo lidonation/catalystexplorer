@@ -75,10 +75,20 @@ class FundsController extends Controller
 
                             $currentFundData = collect($chartData['data'])->firstWhere('x', $fund->title);
 
-                            $filteredData = collect($chartData['data'])->reject(fn ($item) => $item['x'] === $fund->title);
+                            if (empty($chartData['data'])) {
+                                return null;
+                            }
 
-                            if ($currentFundData) {
+                            $filteredData = collect($chartData['data'])
+                                ->reject(fn ($item) => $item['x'] === $fund->title || empty($item['y']))
+                                ->values();
+
+                            if ($currentFundData && ! empty($currentFundData['y'])) {
                                 $filteredData->prepend($currentFundData);
+                            }
+
+                            if ($filteredData->isEmpty()) {
+                                return null;
                             }
 
                             return (object) array_merge((array) $metric, [
