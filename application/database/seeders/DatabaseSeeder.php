@@ -16,13 +16,13 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         $seeders = [
-               RoleSeeder::class,
-               PermissionSeeder::class,
-               UserSeeder::class,
-               AnnouncementSeeder::class,
-               MetricSeeder::class,
+            // RoleSeeder::class,
+            // PermissionSeeder::class,
+            // UserSeeder::class,
+            // AnnouncementSeeder::class,
+            // MetricSeeder::class,
             // ProposalSeeder::class,
-         /*    BookmarkCollectionSeeder::class,
+            BookmarkCollectionSeeder::class,
             BookmarkItemSeeder::class,
             RuleSeeder::class,
             MonthlyReportSeeder::class,
@@ -31,8 +31,6 @@ class DatabaseSeeder extends Seeder
             ModerationSeeder::class,
             VoterSeeder::class,
             SnapshotSeeder::class,
-            TransactionSeeder::class,
-            DrepSeeder::class */
         ];
 
         foreach ($seeders as $seeder) {
