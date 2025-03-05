@@ -24,19 +24,17 @@ const MetricCard: React.FC<MetricCardProps> = ({ metric }) => {
         {
             id: chartData.id,
             color: metric.color,
-            data:
-                Array.isArray(chartData?.data) && chartData.data.length > 0
-                    ? chartData.data
-                          .filter(
-                              (item: any) =>
-                                  item?.x !== undefined &&
-                                  item?.y !== undefined,
-                          )
-                          .map((item: any) => ({
-                              x: item?.x,
-                              y: item?.y,
-                          }))
-                    : [],
+            data: Array.isArray(chartData?.data)
+                ? chartData.data
+                      .filter(
+                          (item: any) =>
+                              item?.x !== undefined && item?.y !== undefined,
+                      )
+                      .map((item: any) => ({
+                          x: item?.x,
+                          y: item?.y,
+                      }))
+                : [],
         },
     ];
 
