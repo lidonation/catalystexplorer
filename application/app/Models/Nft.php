@@ -9,6 +9,7 @@ use App\Traits\HasLinks;
 use App\Traits\HasMetaData;
 use App\Traits\HasModel;
 use App\Traits\HasTranslations;
+use Illuminate\Database\Eloquent\Casts\AsArrayObject;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Lidonation\CardanoNftMaker\Interfaces\CardanoNftInterface;
