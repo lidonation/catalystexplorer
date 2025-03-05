@@ -107,7 +107,7 @@ const MetricCard: React.FC<MetricCardProps> = ({ metric }) => {
                                 pointBorderColor={{ from: 'serieColor' }}
                                 useMesh={true}
                                 tooltipFormat={(value) =>
-                                    shortNumber(Number(value))
+                                    shortNumber(Number(value), 2)
                                 }
                                 tooltip={({ point }) => {
                                     const currentIndex = point.index;
@@ -132,12 +132,15 @@ const MetricCard: React.FC<MetricCardProps> = ({ metric }) => {
                                                     {point.data.xFormatted}
                                                 </Title>
                                                 <Paragraph className="mt-2 flex items-center text-sm">
-                                                    <span className="shrink truncate">
+                                                    <span className="shrink truncate mr-1">
                                                         {metric.title}
                                                     </span>
                                                     :
                                                     <span className="font-bold">
-                                                        {point.data.yFormatted}
+                                                        {shortNumber(
+                                                            currentData.y,
+                                                            2,
+                                                        )}  
                                                     </span>
                                                 </Paragraph>
                                                 <div className="mt-2 flex items-center">
