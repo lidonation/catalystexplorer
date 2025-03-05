@@ -110,6 +110,15 @@
         "contactEmail": "support@lidonation.com",
         "appLogoAlt": "Catalyst Explorer logo."
     },
+
+    "buttons":{
+        "titles":{
+            "claim":"Claim Button",
+            "claimed":"Claimed Button",
+            "share":"Share Button"
+        }
+    },   
+    
     "searchResults": {
         "noResults": {
             "title": "No results found",

@@ -101,6 +101,15 @@
         "contactEmail": "support@lidonation.com",
         "appLogoAlt": "Logo de Catalyst Explore."
     },
+
+    "buttons":{
+        "titles":{
+            "claim": "Bouton de réclamation",
+            "claimed": "Bouton réclamé",
+            "share":"Bouton de partage"
+        }
+    },
+
     "searchResults": {
         "noResults": {
             "title": "Aucun résultat trouvé",
@@ -387,7 +396,7 @@
             "chart": "Icône de graphique",
             "check": "Icône de vérification",
             "chevron_up": "Icône de chevron vers le haut",
-            "chevron_down": "Icône de chevron vers le bas",
+            "chevron_down": "Icône de chevron vers le bas",     
             "close": "Icône de fermeture",
             "search": "Icône de recherche",
             "darkMode": "Icône de mode sombre",
