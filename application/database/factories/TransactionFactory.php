@@ -18,8 +18,10 @@ class TransactionFactory extends Factory
      *
      * @return array<string, mixed>
      */
+    protected static $transactionCount = 0;
     public function definition(): array
     {
+        static::$transactionCount++;
         $inputs = collect();
         $numInputs = $this->faker->numberBetween(1, 3);
         for ($i = 0; $i < $numInputs; $i++) {
@@ -41,16 +43,35 @@ class TransactionFactory extends Factory
         }
 
         $metadataHash = $this->faker->unique()->sha256();
-        $publicLabels = [];
         $numEntries = $this->faker->numberBetween(1, 4);
+        $metadata = [];
+        $numLabels = $this->faker->numberBetween(1, 4);
 
-        for ($i = 1; $i <= $numEntries; $i++) {
-            if ($this->faker->numberBetween(1, 100) <= 75) {
-                $publicLabels[$i] = bin2hex(random_bytes(32));
-            } else {
-                $publicLabels[$i] = $this->faker->numberBetween(100000, 99999999);
+        for ($i = 1; $i <= $numLabels; $i++) {
+            $data = [];
+            $numEntries = $this->faker->numberBetween(1, 4);
+
+            for ($j = 1; $j <= $numEntries; $j++) {
+                if ($this->faker->numberBetween(1, 100) <= 75) {
+                    $data[$j] = '0x' . bin2hex(random_bytes(32));
+                } else {
+                    $data[$j] = $this->faker->numberBetween(100000, 99999999);
+                }
             }
+
+            if (static::$transactionCount <= 50) {
+                $label = (string)$this->faker->unique()->numberBetween(60000, 70000);
+            } else {
+                $label = (string)$this->faker->randomElement([61284, 61285, 61286]);
+            }
+
+            $metadata[] = [
+                'label' => $label,
+                'data' => $data,
+            ];
         }
+
+        $metadataHash = hash('sha256', json_encode($metadata));
 
         return [
             'hash' => $this->faker->unique()->sha256(),
@@ -64,7 +85,7 @@ class TransactionFactory extends Factory
             'model_id' => null,
             'metadata' => json_encode([
                 'metadata_hash' => $metadataHash,
-                'public_labels' => $publicLabels
+                'data' => $metadata,
             ]),
             'created_at' => $this->faker->dateTimeBetween('-1 year', 'now'),
             'updated_at' => $this->faker->dateTimeBetween('-1 year', 'now'),
