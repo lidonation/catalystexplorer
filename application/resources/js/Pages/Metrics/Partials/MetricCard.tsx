@@ -125,7 +125,7 @@ const MetricCard: React.FC<MetricCardProps> = ({ metric }) => {
                                         : { value: '0', isPositive: true };
 
                                     return (
-                                        <div className="bg-dark relative rounded-lg p-4 text-white shadow-lg">
+                                        <div className="bg-tooltip relative rounded-lg p-4 text-white shadow-lg">
                                             <div className="max-w-sm">
                                                 <Title
                                                     level="3"
