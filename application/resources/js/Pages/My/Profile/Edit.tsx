@@ -10,14 +10,14 @@ import EditIcon from '@/Components/svgs/EditIcon';
 import LinkedInIcon from '@/Components/svgs/LinkedInIcons';
 import WebIcon from '@/Components/svgs/WebIcon';
 import XIcon from '@/Components/svgs/XIcon';
-import UpdatePasswordModal from '@/Pages/My/Profile/Partials/PasswordModal';
-import UpdateProfileFieldModal from '@/Pages/My/Profile/Partials/UpdateProfileModal';
-import UpdateSocialProfilesModal from '@/Pages/My/Profile/Partials/UpdateSocialProfiles';
+import SocialProfilesForm from '@/Pages/My/Profile/Partials/EditSocialsForm';
+import ProfileFieldForm from '@/Pages/My/Profile/Partials/UpdateProfileInformationForm';
 import { generateLocalizedRoute } from '@/utils/localizedRoute';
-import { PageProps } from '@inertiajs/core';
-import { router, useForm, usePage } from '@inertiajs/react';
+import { router, useForm } from '@inertiajs/react';
 import { ChangeEvent, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import PasswordForm from './Partials/UpdatePasswordForm';
+import BaseModal from './Partials/UpdateProfilesModal';
 
 interface User {
     id: number;
@@ -32,10 +32,10 @@ interface User {
     updated_at?: string;
     created_at?: string;
     profile_photo_path?: string;
+    password_updated_at?: string;
 }
 
-interface ModalConfig {
-    isOpen: boolean;
+interface ModalFieldConfig {
     title: string;
     fieldName: string;
     fieldLabel: string;
@@ -46,34 +46,30 @@ interface ModalConfig {
 }
 
 interface ProfileSettingsProps {
-    auth?: {
+    auth: {
         user: User;
     };
-    user?: User;
+    user: User;
 }
 
-export default function ProfileSettings({ auth, user: directUser }: ProfileSettingsProps) {
-    const { t } = useTranslation();
+enum ModalType {
+    NONE = 'none',
+    PROFILE_FIELD = 'profile_field',
+    SOCIAL_PROFILES = 'social_profiles',
+    PASSWORD = 'password',
+}
 
-    // const pageProps = usePage().props as unknown as CustomPageProps;
-    const authUser = auth?.user;
+export default function ProfileSettings({
+    auth,
+    user: directUser,
+}: ProfileSettingsProps) {
+    const { t } = useTranslation();
+    const authUser = auth.user;
     const user = directUser || authUser;
 
-    if (!user) {
-        return (
-            <div className="bg-background min-h-screen p-8 transition-colors duration-300 ease-in-out">
-                <Card className="p-6 text-center">
-                    <Title level="3" className="text-content mb-4">
-                        Loading profile...
-                    </Title>
-                </Card>
-            </div>
-        );
-    }
-
     const [isPublic, setIsPublic] = useState(true);
-    const [modalConfig, setModalConfig] = useState<ModalConfig>({
-        isOpen: false,
+    const [currentModal, setCurrentModal] = useState<ModalType>(ModalType.NONE);
+    const [modalConfig, setModalConfig] = useState<ModalFieldConfig>({
         title: '',
         fieldName: '',
         fieldLabel: '',
@@ -83,12 +79,10 @@ export default function ProfileSettings({ auth, user: directUser }: ProfileSetti
         placeholder: '',
     });
 
-    const [socialModalOpen, setSocialModalOpen] = useState(false);
     const [photoPreview, setPhotoPreview] = useState<string | null>(null);
     const [photoUploading, setPhotoUploading] = useState(false);
     const [photoError, setPhotoError] = useState('');
     const [copySuccess, setCopySuccess] = useState(false);
-    const [passwordModalOpen, setPasswordModalOpen] = useState(false);
 
     const { data, setData } = useForm({
         name: user.name || '',
@@ -101,11 +95,10 @@ export default function ProfileSettings({ auth, user: directUser }: ProfileSetti
         website: user.website || '',
         updated_at: user.updated_at || '',
         created_at: user.created_at || '',
+        password_updated_at: user.password_updated_at || '',
     });
 
     useEffect(() => {
-        console.log("User data changed, updating form data", user);
-        console.log("Full user object structure:", JSON.stringify(user, null, 2));
         if (user) {
             setData({
                 name: user.name || '',
@@ -118,6 +111,7 @@ export default function ProfileSettings({ auth, user: directUser }: ProfileSetti
                 website: user.website || '',
                 updated_at: user.updated_at || '',
                 created_at: user.created_at || '',
+                password_updated_at: user.password_updated_at || '',
             });
         }
     }, [user, setData]);
@@ -141,21 +135,24 @@ export default function ProfileSettings({ auth, user: directUser }: ProfileSetti
         }
     };
 
-    const openModal = (config: Partial<ModalConfig>) => {
+    const openProfileFieldModal = (config: Partial<ModalFieldConfig>) => {
         setModalConfig((prev) => ({
             ...prev,
             ...config,
-            isOpen: true,
         }));
+        setCurrentModal(ModalType.PROFILE_FIELD);
+    };
+
+    const openSocialProfilesModal = () => {
+        setCurrentModal(ModalType.SOCIAL_PROFILES);
+    };
+
+    const openPasswordModal = () => {
+        setCurrentModal(ModalType.PASSWORD);
     };
 
     const closeModal = () => {
-        setModalConfig((prev) => ({
-            ...prev,
-            isOpen: false,
-        }));
-
-        // Refresh data when modal closes
+        setCurrentModal(ModalType.NONE);
         router.reload({ only: ['user'] });
     };
 
@@ -219,11 +216,11 @@ export default function ProfileSettings({ auth, user: directUser }: ProfileSetti
             },
         });
     };
+
     const handleFieldUpdated = (fieldName: string, value: string) => {
-        // Update the form data with the new value
-        setData(prev => ({
+        setData((prev) => ({
             ...prev,
-            [fieldName]: value
+            [fieldName]: value,
         }));
     };
 
@@ -237,76 +234,80 @@ export default function ProfileSettings({ auth, user: directUser }: ProfileSetti
 
     return (
         <div className="bg-background min-h-screen p-8 transition-colors duration-300 ease-in-out">
-            <div className="mx-auto grid max-w-6xl grid-cols-12 gap-6">
-                <div className="col-span-4 space-y-6">
-                    <Card className="bg-background rounded-lg shadow-sm transition-colors duration-300 ease-in-out">
-                        <div className="p-6">
-                            <div className="mb-4 space-y-4">
-                                <Title level="3" className="text-content pb-2">
-                                    {t('users.about')}
-                                </Title>
-                                <div className="border-t border-gray-200 py-2">
-                                    {data.bio ? (
+            <div className="mx-auto grid max-w-6xl grid-cols-12 gap-6 text-left">
+                <div className="col-span-4 flex h-full flex-col justify-between">
+                    <div className="space-y-6">
+                        <Card className="bg-background rounded-lg shadow-sm transition-colors duration-300 ease-in-out">
+                            <div className="p-6">
+                                <div className="mb-4 space-y-4">
+                                    <Title
+                                        level="3"
+                                        className="text-content pb-2"
+                                    >
+                                        {t('users.about')}
+                                    </Title>
+                                    <div className="border-t border-gray-200 py-2">
+                                        {data.bio ? (
+                                            <Paragraph
+                                                size="sm"
+                                                className="text-content"
+                                            >
+                                                {data.bio}
+                                            </Paragraph>
+                                        ) : (
+                                            <Paragraph
+                                                size="sm"
+                                                className="text-content-gray"
+                                            >
+                                                No biography available
+                                            </Paragraph>
+                                        )}
+                                    </div>
+                                </div>
+                            </div>
+                        </Card>
+
+                        <Card className="bg-background rounded-lg shadow-sm transition-colors duration-300 ease-in-out">
+                            <div className="p-6">
+                                <div className="mb-4">
+                                    <Title level="3" className="text-content">
+                                        {t('users.network')}
+                                    </Title>
+                                </div>
+                                <div className="space-y-4">
+                                    <div className="flex items-center space-x-2 border-t border-gray-200">
+                                        <div className="flex h-6 w-6 items-center justify-center rounded-full">
+                                            <LinkedInIcon className="text-accent h-5 w-5 rounded-full" />
+                                        </div>
                                         <Paragraph
                                             size="sm"
                                             className="text-content"
                                         >
-                                            {data.bio}
+                                            {t('icons.titles.linkedIn')}
                                         </Paragraph>
-                                    ) : (
+                                    </div>
+                                    <div className="flex items-center space-x-2">
+                                        <XIcon className="text-content h-5 w-5 rounded-sm p-1 transition-colors duration-300 ease-in-out" />
                                         <Paragraph
                                             size="sm"
-                                            className="text-content-gray"
+                                            className="text-content"
                                         >
-                                            No biography available
+                                            {t('icons.titles.x')}
                                         </Paragraph>
-                                    )}
-                                </div>
-                            </div>
-                        </div>
-                    </Card>
-
-                    <Card className="bg-background rounded-lg shadow-sm transition-colors duration-300 ease-in-out">
-                        <div className="p-6">
-                            <div className="mb-4">
-                                <Title level="3" className="text-content">
-                                    {t('users.network')}
-                                </Title>
-                            </div>
-                            <div className="space-y-4">
-                                <div className="flex items-center space-x-2 border-t border-gray-200">
-                                    <div className="flex h-6 w-6 items-center justify-center rounded-full">
-                                        <LinkedInIcon className="text-light-persist h-4 w-4" />
                                     </div>
-                                    <Paragraph
-                                        size="sm"
-                                        className="text-content"
-                                    >
-                                        {data.linkedin ||
-                                            t('icons.titles.linkedIn')}
-                                    </Paragraph>
-                                </div>
-                                <div className="flex items-center space-x-2">
-                                    <XIcon className="border-border-secondary bg-light-persist text-black-persist h-6 w-6 rounded-sm border p-1 transition-colors duration-300 ease-in-out" />
-                                    <Paragraph
-                                        size="sm"
-                                        className="text-content"
-                                    >
-                                        {data.twitter || t('icons.titles.x')}
-                                    </Paragraph>
-                                </div>
-                                <div className="flex items-center space-x-2">
-                                    <WebIcon className="border-accent bg-light-persist text-accent h-6 w-6 rounded-full border p-1 transition-colors duration-300 ease-in-out" />
-                                    <Paragraph
-                                        size="sm"
-                                        className="text-content"
-                                    >
-                                        {data.website || t('users.website')}
-                                    </Paragraph>
+                                    <div className="flex items-center space-x-2">
+                                        <WebIcon className="text-accent-secondary h-6 w-6 rounded-full p-1 transition-colors duration-300 ease-in-out" />
+                                        <Paragraph
+                                            size="sm"
+                                            className="text-content"
+                                        >
+                                            {t('users.website')}
+                                        </Paragraph>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    </Card>
+                        </Card>
+                    </div>
                     <Paragraph size="sm" className="text-content mt-4">
                         {user.created_at
                             ? `JOINED ${new Date(user.created_at)
@@ -316,7 +317,7 @@ export default function ProfileSettings({ auth, user: directUser }: ProfileSetti
                                       year: 'numeric',
                                   })
                                   .toUpperCase()}`
-                            : 'JOINED UNKNOWN'}
+                            : ''}
                     </Paragraph>
                 </div>
 
@@ -355,7 +356,7 @@ export default function ProfileSettings({ auth, user: directUser }: ProfileSetti
                                                         ? `/storage/${user.profile_photo_path}`
                                                         : '/api/placeholder/150/150')
                                                 }
-                                                className={`border-border-secondary h-12 w-12 rounded-full border object-cover transition-colors duration-300 ease-in-out ${photoUploading ? 'opacity-50' : ''}`}
+                                                className={`border-border-secondary h-11 w-12 rounded-full border object-cover transition-colors duration-300 ease-in-out ${photoUploading ? 'opacity-50' : ''}`}
                                                 alt="Profile"
                                             />
                                             {(user.profile_photo_path ||
@@ -393,17 +394,17 @@ export default function ProfileSettings({ auth, user: directUser }: ProfileSetti
                                                 {t('profileWorkflow.name')}
                                             </div>
                                             <div className="text-content w-3/4">
-                                                {data.name}
+                                                {user.name}
                                             </div>
                                         </div>
                                         <button
                                             className="text-primary"
                                             onClick={() => {
-                                                openModal({
+                                                openProfileFieldModal({
                                                     title: 'Update Profile Name',
                                                     fieldName: 'name',
                                                     fieldLabel: 'Name',
-                                                    currentValue: data.name,
+                                                    currentValue: user.name,
                                                     updateRoute:
                                                         'profile.update.field',
                                                 });
@@ -414,29 +415,27 @@ export default function ProfileSettings({ auth, user: directUser }: ProfileSetti
                                     </div>
                                 </div>
 
-                                <div className="border-t border-gray-200 py-3 transition-colors duration-300 ease-in-out">
+                                <div className="border-t border-gray-200 py-4 transition-colors duration-300 ease-in-out">
                                     <div className="flex items-center justify-between">
-                                        <div className="flex w-full items-center">
+                                        <div className="flex w-full">
                                             <div className="text-content w-1/4">
                                                 {t('users.socialProfiles')}
                                             </div>
                                             <div className="flex w-3/4 space-x-2">
-                                                <div className="bg-primary/10 flex h-8 w-8 items-center justify-center rounded-full">
-                                                    <LinkedInIcon className="text-primary h-5 w-5 rounded-full" />
+                                                <div className="bg-background-lighter flex h-8 w-8 items-center justify-center rounded-full">
+                                                    <LinkedInIcon className="text-accent h-5 w-5 rounded-full" />
                                                 </div>
                                                 <div className="bg-background-lighter flex h-8 w-8 items-center justify-center rounded-full transition-colors duration-300 ease-in-out">
-                                                    <XIcon className="text-content h-5 w-5" />
+                                                    <XIcon className="text-accent-secondary h-5 w-5 rounded-full" />
                                                 </div>
-                                                <div className="bg-accent/10 flex h-8 w-8 items-center justify-center rounded-full">
-                                                    <WebIcon className="text-accent h-5 w-5" />
+                                                <div className="bg-background-lighter flex h-8 w-8 items-center justify-center rounded-full">
+                                                    <WebIcon className="text-accent-secondary h-5 w-5 rounded-full" />
                                                 </div>
                                             </div>
                                         </div>
                                         <button
                                             className="text-primary"
-                                            onClick={() =>
-                                                setSocialModalOpen(true)
-                                            }
+                                            onClick={openSocialProfilesModal}
                                         >
                                             <EditIcon className="text-primary" />
                                         </button>
@@ -466,15 +465,16 @@ export default function ProfileSettings({ auth, user: directUser }: ProfileSetti
                                                     : 'text-accent'
                                             }
                                             onClick={() => {
-                                                console.log("Current city when opening modal:", data.city);
-                                                openModal({
+                                                openProfileFieldModal({
                                                     title: user.city
                                                         ? 'Update City'
                                                         : 'Add City',
                                                     fieldName: 'city',
                                                     fieldLabel: 'City',
                                                     currentValue:
-                                                        user.city || '',
+                                                        user.city ||
+                                                        data.city ||
+                                                        '',
                                                     updateRoute:
                                                         'profile.update.field',
                                                     inputType: 'text',
@@ -482,11 +482,7 @@ export default function ProfileSettings({ auth, user: directUser }: ProfileSetti
                                             }}
                                         >
                                             {user.city ? (
-                                                <EditIcon
-                                                    className="text-primary"
-                                                    width={20}
-                                                    height={20}
-                                                />
+                                                <EditIcon className="text-primary" />
                                             ) : (
                                                 'Add'
                                             )}
@@ -517,7 +513,7 @@ export default function ProfileSettings({ auth, user: directUser }: ProfileSetti
 
                             <div>
                                 <div className="border-t border-gray-200 py-3 transition-colors duration-300 ease-in-out">
-                                    <div className="flex items-center justify-between">
+                                    <div className="flex items-center justify-between text-left">
                                         <div className="flex w-full">
                                             <div className="text-content w-1/4">
                                                 {t('profileWorkflow.email')}
@@ -529,7 +525,7 @@ export default function ProfileSettings({ auth, user: directUser }: ProfileSetti
                                         <button
                                             className="text-primary"
                                             onClick={() => {
-                                                openModal({
+                                                openProfileFieldModal({
                                                     title: 'Update Email Address',
                                                     fieldName: 'email',
                                                     fieldLabel: 'Email',
@@ -546,21 +542,21 @@ export default function ProfileSettings({ auth, user: directUser }: ProfileSetti
                                 </div>
 
                                 <div className="border-t border-gray-200 py-3 transition-colors duration-300 ease-in-out">
-                                    <div className="flex items-center justify-between">
+                                    <div className="flex items-center justify-between text-left">
                                         <div className="flex w-full">
                                             <div className="text-content w-1/4">
                                                 {t('password')}
                                             </div>
                                             <div className="text-content w-3/4">
                                                 Password last changed{' '}
-                                                {formatTimeAgo(user.updated_at)}
+                                                {formatTimeAgo(
+                                                    user.password_updated_at,
+                                                )}
                                             </div>
                                         </div>
                                         <button
                                             className="text-primary"
-                                            onClick={() =>
-                                                setPasswordModalOpen(true)
-                                            }
+                                            onClick={openPasswordModal}
                                         >
                                             <EditIcon className="text-primary" />
                                         </button>
@@ -568,7 +564,7 @@ export default function ProfileSettings({ auth, user: directUser }: ProfileSetti
                                 </div>
 
                                 <div className="border-t border-gray-200 py-3 transition-colors duration-300 ease-in-out">
-                                    <div className="flex items-center justify-between">
+                                    <div className="flex items-center justify-between text-left">
                                         <div className="flex w-full">
                                             <div className="text-content w-1/4">
                                                 {t('users.profileLink')}
@@ -587,7 +583,7 @@ export default function ProfileSettings({ auth, user: directUser }: ProfileSetti
                                                             <CheckIcon className="h-4 w-4" />
                                                         </span>
                                                     ) : (
-                                                        <CopyIcon className="h-4 w-4" />
+                                                        <CopyIcon className="text-content h-4 w-4" />
                                                     )}
                                                 </button>
                                                 {copySuccess && (
@@ -607,41 +603,50 @@ export default function ProfileSettings({ auth, user: directUser }: ProfileSetti
                     </Card>
                 </div>
             </div>
-            {modalConfig.isOpen && (
-                <UpdateProfileFieldModal
+
+            {/* Render the appropriate modal based on currentModal state */}
+            {currentModal === ModalType.PROFILE_FIELD && (
+                <BaseModal
                     isOpen={true}
                     onClose={closeModal}
                     title={modalConfig.title}
-                    fieldName={modalConfig.fieldName}
-                    fieldLabel={modalConfig.fieldLabel}
-                    currentValue={modalConfig.currentValue}
-                    updateRoute={modalConfig.updateRoute}
-                    inputType={modalConfig.inputType}
-                    placeholder={modalConfig.placeholder}
-                    onFieldUpdated={handleFieldUpdated}
-                />
+                >
+                    <ProfileFieldForm
+                        fieldName={modalConfig.fieldName}
+                        fieldLabel={modalConfig.fieldLabel}
+                        currentValue={modalConfig.currentValue}
+                        updateRoute={modalConfig.updateRoute}
+                        inputType={modalConfig.inputType}
+                        placeholder={modalConfig.placeholder}
+                        onClose={closeModal}
+                        onFieldUpdated={handleFieldUpdated}
+                    />
+                </BaseModal>
             )}
-            {socialModalOpen && (
-                <UpdateSocialProfilesModal
-                    isOpen={socialModalOpen}
-                    onClose={() => {
-                        setSocialModalOpen(false);
-                        router.reload({ only: ['user'] });
-                    }}
+
+            {currentModal === ModalType.SOCIAL_PROFILES && (
+                <BaseModal
+                    isOpen={true}
+                    onClose={closeModal}
                     title="Update Social Profiles"
-                    linkedinUrl={user.linkedin || ''}
-                    twitterUrl={user.twitter || ''}
-                    websiteUrl={user.website || ''}
-                />
+                >
+                    <SocialProfilesForm
+                        linkedinUrl={user.linkedin || ''}
+                        twitterUrl={user.twitter || ''}
+                        websiteUrl={user.website || ''}
+                        onClose={closeModal}
+                    />
+                </BaseModal>
             )}
-            {passwordModalOpen && (
-                <UpdatePasswordModal
-                    isOpen={passwordModalOpen}
-                    onClose={() => {
-                        setPasswordModalOpen(false);
-                        router.reload({ only: ['user'] });
-                    }}
-                />
+
+            {currentModal === ModalType.PASSWORD && (
+                <BaseModal
+                    isOpen={true}
+                    onClose={closeModal}
+                    title={t('updatePassword')}
+                >
+                    <PasswordForm onClose={closeModal} />
+                </BaseModal>
             )}
         </div>
     );

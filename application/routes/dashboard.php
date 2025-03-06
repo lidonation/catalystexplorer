@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\My\MyBookmarksController;
+use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -46,9 +47,8 @@ Route::localized(
                     return Inertia::render('My/Lists/Index');
                 })->name('lists');
 
-                Route::get('/profile', function () {
-                    return Inertia::render('My/Profile/Index');
-                })->name('profile');
+                Route::get('/profile', [ProfileController::class, 'edit'])
+                    ->name('profile');
 
                 Route::get('/proposals', function () {
                     return Inertia::render('My/Proposals/Index');

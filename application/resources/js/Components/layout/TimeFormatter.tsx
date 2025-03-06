@@ -1,5 +1,5 @@
 export function formatTimeAgo(timestamp: string | Date | undefined): string {
-    if (!timestamp) return 'Not available';
+    if (!timestamp) return 'Never';
 
     const date = new Date(timestamp);
     const now = new Date();

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Interfaces\Http\Controllers;
+namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
@@ -19,9 +19,9 @@ class ProfileController extends Controller
     /**
      * Display the user's profile form.
      */
-    public function show(Request $request): Response
+    public function edit(Request $request): Response
     {
-        return Inertia::render('My/Profile/index', [
+        return Inertia::render('My/Profile/Index', [
             'mustVerifyEmail' => $request->user() instanceof MustVerifyEmail,
             'status' => session('status'),
             'user' => $request->user()->only([
@@ -36,6 +36,7 @@ class ProfileController extends Controller
                 'city',
                 'updated_at',
                 'created_at',
+                'password_updated_at',
             ]),
         ]);
     }
@@ -46,13 +47,10 @@ class ProfileController extends Controller
     public function update(Request $request, string $field): RedirectResponse
     {
         $user = $request->user();
-        \Log::debug('All user attributes:', $user->getAttributes());
-        \Log::debug('Raw user city attribute: '.$user->city);
         $userData = $user->only([
             'name', 'email', 'bio', 'profile_photo_path', 'short_bio',
             'linkedin', 'twitter', 'website', 'city', 'updated_at', 'created_at',
         ]);
-        \Log::debug('User data array city: '.($userData['city'] ?? 'missing'));
         $validator = match ($field) {
             'name' => validator($request->all(), ['name' => ['required', 'string', 'max:255']]),
             'email' => validator($request->all(), [
@@ -83,7 +81,12 @@ class ProfileController extends Controller
         }
 
         if ($field === 'password') {
-            $user->password = Hash::make($request->input('password'));
+            $user->update([
+                'password' => Hash::make($request->input('password')),
+                'password_updated_at' => now(),
+            ]);
+        } else {
+            $user->save();
         }
 
         $user->save();
