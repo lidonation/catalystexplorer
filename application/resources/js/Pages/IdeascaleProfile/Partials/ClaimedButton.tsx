@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { usePage } from '@inertiajs/react';
 import Claim from '@/Components/svgs/ClaimIcon';
 import Claimed from '@/Components/svgs/ClaimedIcon';
+import Button from '@/Components/atoms/Button'; 
 
 interface ClaimedButtonProps {
   modelType?: string;
@@ -65,7 +66,6 @@ const ClaimedButton: React.FC<ClaimedButtonProps> = ({
         onClaimSuccess?.();
       }, 1000);
       
-      
     } catch (error) {
       console.error('Claim error:', error);
       setError(t('claim.network_error'));
@@ -77,15 +77,24 @@ const ClaimedButton: React.FC<ClaimedButtonProps> = ({
   return (
     <div className={`claim-button-container ${className}`}>
       {buttonState === 'claimed' ? (
-        <Claimed/>
-       
+        <Button
+          className="claimed-button flex items-center"
+          ariaLabel={t('claim.already_claimed', 'Already claimed')}
+          disabled={true}
+        >
+          <Claimed />
+        <div className="ml-2"> </div>
+        </Button>
       ) : (
-        <Claim  onClick={handleClaim}
-        />
-       
+        <Button
+          className={`claim-button flex items-center ${isLoading ? 'opacity-75' : ''}`}
+        >
+          <Claim
+          onClick={handleClaim} />
+          <div className="ml-2"></div>
+        </Button>
       )}
       
-    
       {error && (
         <div
           className="text-red-500 text-sm mt-2"
