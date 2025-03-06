@@ -37,7 +37,7 @@ class User extends Authenticatable implements HasMedia
         'twitter',
         'website',
         'city',
-
+        'password_updated_at'
     ];
 
     /**

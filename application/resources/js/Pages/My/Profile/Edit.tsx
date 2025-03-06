@@ -277,7 +277,7 @@ export default function ProfileSettings({
                                 <div className="space-y-4">
                                     <div className="flex items-center space-x-2 border-t border-gray-200">
                                         <div className="flex h-6 w-6 items-center justify-center rounded-full">
-                                            <LinkedInIcon className="text-accent h-5 w-5 rounded-full" />
+                                            <LinkedInIcon className="text-accent h-6 w-6 rounded-full" />
                                         </div>
                                         <Paragraph
                                             size="sm"
@@ -287,7 +287,7 @@ export default function ProfileSettings({
                                         </Paragraph>
                                     </div>
                                     <div className="flex items-center space-x-2">
-                                        <XIcon className="text-content h-5 w-5 rounded-sm p-1 transition-colors duration-300 ease-in-out" />
+                                        <XIcon className="text-content-light h-6 w-6 rounded-full bg-black" />
                                         <Paragraph
                                             size="sm"
                                             className="text-content"
@@ -296,7 +296,7 @@ export default function ProfileSettings({
                                         </Paragraph>
                                     </div>
                                     <div className="flex items-center space-x-2">
-                                        <WebIcon className="text-accent-secondary h-6 w-6 rounded-full p-1 transition-colors duration-300 ease-in-out" />
+                                        <WebIcon className="text-content-light bg-accent-secondary h-6 w-6 rounded-full" />
                                         <Paragraph
                                             size="sm"
                                             className="text-content"
@@ -422,14 +422,14 @@ export default function ProfileSettings({
                                                 {t('users.socialProfiles')}
                                             </div>
                                             <div className="flex w-3/4 space-x-2">
-                                                <div className="bg-background-lighter flex h-8 w-8 items-center justify-center rounded-full">
-                                                    <LinkedInIcon className="text-accent h-5 w-5 rounded-full" />
+                                                <div className="bg-background-transparent flex h-8 w-8 items-center justify-center rounded-full">
+                                                    <LinkedInIcon className="text-content h-5 w-5 rounded-full" />
                                                 </div>
                                                 <div className="bg-background-lighter flex h-8 w-8 items-center justify-center rounded-full transition-colors duration-300 ease-in-out">
-                                                    <XIcon className="text-accent-secondary h-5 w-5 rounded-full" />
+                                                    <XIcon className="text-content-light h-5 w-5 rounded-full bg-black" />
                                                 </div>
                                                 <div className="bg-background-lighter flex h-8 w-8 items-center justify-center rounded-full">
-                                                    <WebIcon className="text-accent-secondary h-5 w-5 rounded-full" />
+                                                    <WebIcon className="text-content-light bg-accent-secondary h-5 w-5 rounded-full" />
                                                 </div>
                                             </div>
                                         </div>

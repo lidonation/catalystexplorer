@@ -28,11 +28,9 @@ export default function PasswordForm({ onClose }: PasswordFormProps) {
                 reset('current_password', 'password', 'password_confirmation');
             },
             onError: (errors) => {
-                // setFormStatus('Error updating password');
                 console.error('Password update errors:', errors);
             },
             onFinish: () => {
-                // This will run whether successful or not
                 console.log('Password update request completed');
             },
             preserveScroll: true,

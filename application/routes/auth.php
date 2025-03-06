@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::localized(function () {
     Route::middleware('auth')->group(function () {
-        Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
+        Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
         Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     });
 
@@ -37,9 +37,6 @@ Route::localized(function () {
 
         Route::get('reset-password/{token}', [NewPasswordController::class, 'create'])
             ->name('password.reset');
-
-        Route::get('reset-password/update', [NewPasswordController::class, 'update'])
-            ->name('password.update');
 
         Route::post('reset-password', [NewPasswordController::class, 'store'])
             ->name('password.store');

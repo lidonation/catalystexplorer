@@ -28,21 +28,6 @@ class NewPasswordController extends Controller
             'token' => $request->route('token'),
         ]);
     }
-
-    public function update(Request $request): RedirectResponse
-    {
-        $validated = $request->validate([
-            'current_password' => ['required', 'current_password'],
-            'password' => ['required', 'confirmed', Rules\Password::defaults()],
-        ]);
-
-        $request->user()->update([
-            'password' => Hash::make($validated['password']),
-        ]);
-
-        return redirect()->back()->with('status', 'Password updated successfully.');
-    }
-
     /**
      * Handle an incoming new password request.
      *
@@ -64,6 +49,7 @@ class NewPasswordController extends Controller
             function ($user) use ($request) {
                 $user->forceFill([
                     'password' => Hash::make($request->password),
+                    'password_updated_at' => now(),
                     'remember_token' => Str::random(60),
                 ])->save();
 

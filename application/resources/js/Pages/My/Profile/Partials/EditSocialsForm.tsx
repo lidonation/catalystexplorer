@@ -50,8 +50,8 @@ export default function SocialProfilesForm({
                     className="text-content-gray mb-2 text-sm"
                 />
                 <div className="flex items-center">
-                    <div className="mr-5 flex h-8 w-8 items-center justify-center rounded-full bg-[#0077b5]">
-                        <LinkedInIcon className="text-light-persist h-5 w-5" />
+                    <div className="mr-5 flex h-8 w-8 items-center justify-center rounded-sm">
+                        <LinkedInIcon className="text-accent h-5 w-5 rounded-full" />
                     </div>
                     <TextInput
                         id="linkedin"
@@ -72,8 +72,8 @@ export default function SocialProfilesForm({
                     className="text-content-gray mb-2 text-sm"
                 />
                 <div className="flex items-center">
-                    <div className="bg-background mr-5 flex h-8 w-8 items-center justify-center rounded-sm border border-gray-200 transition-colors duration-300 ease-in-out">
-                        <XIcon className="text-content h-5 w-5" />
+                    <div className="bg-background mr-5 flex h-8 w-8 items-center justify-center rounded-sm">
+                        <XIcon className="text-content-light h-5 w-5 rounded-full bg-black" />
                     </div>
                     <TextInput
                         id="twitter"
@@ -94,8 +94,8 @@ export default function SocialProfilesForm({
                     className="text-content-gray mb-2 text-sm"
                 />
                 <div className="flex items-center">
-                    <div className="border-accent bg-background mr-5 flex h-8 w-8 items-center justify-center rounded-full border transition-colors duration-300 ease-in-out">
-                        <WebIcon className="text-accent h-5 w-5" />
+                    <div className="border-accent bg-background mr-5 flex h-8 w-8 items-center justify-center rounded-full">
+                        <WebIcon className="text-content-light bg-accent-secondary h-5 w-5 rounded-full" />
                     </div>
                     <TextInput
                         id="website"
