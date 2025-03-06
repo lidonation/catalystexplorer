@@ -5,17 +5,19 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Traits\HasAuthor;
+use App\Traits\HasLinks;
 use App\Traits\HasMetaData;
 use App\Traits\HasModel;
 use App\Traits\HasTranslations;
+use Illuminate\Database\Eloquent\Casts\AsArrayObject;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Lidonation\CardanoNftMaker\Interfaces\CardanoNftInterface;
 use Lidonation\CardanoNftMaker\Traits\NftServiceTrait;
 
-class Nft extends Model implements CardanoNftInterface, HasLink
+class Nft extends Model implements CardanoNftInterface
 {
-    use HasAuthor, HasMetaData, HasModel, HasTranslations, NftServiceTrait, SoftDeletes;
+    use HasAuthor, HasLinks, HasMetaData, HasModel, HasTranslations, NftServiceTrait, SoftDeletes;
 
     protected $hidden = ['artist_id', 'user_id', 'deleted_at', 'model_type', 'model_id'];
 

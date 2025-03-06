@@ -28,6 +28,7 @@
         "laravolt/avatar": "^6.0",
         "league/flysystem-aws-s3-v3": "^3.29",
         "lido-nation/cardano-nft-maker-laravel": "1.0.5",
+        "maatwebsite/excel": "^3.1",
         "meilisearch/meilisearch-php": "^1.11",
         "myclabs/deep-copy": "^1.13",
         "saloonphp/laravel-plugin": "^3.0",
