@@ -30,6 +30,14 @@ class User extends Authenticatable implements HasMedia
         'name',
         'email',
         'password',
+        'bio',
+        'profile_photo_path',
+        'short_bio',
+        'linkedin',
+        'twitter',
+        'website',
+        'city',
+        'password_updated_at',
     ];
 
     /**
@@ -53,6 +61,7 @@ class User extends Authenticatable implements HasMedia
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'password_updated_at' => 'datetime',
         ];
     }
 
