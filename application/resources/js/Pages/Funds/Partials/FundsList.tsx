@@ -33,29 +33,15 @@ const FundsList: React.FC<FundsListProps> = ({ funds }) => {
             let amountAwardedPercentageChange = '';
             let fundedProposalsPercentageChange = '';
 
-            const currentAmountAwardedPercentage = ((fund.amount_awarded / fund.amount_requested) * 100).toFixed(2)
-            const previousAmountAwardedPercentage = ((previousFund.amount_awarded / previousFund.amount_requested) * 100).toFixed(2);
-
-    
+            const currentAmountAwardedChange = (fund.amount_awarded / fund.amount_requested) * 100
+            const previousAmountAwardedChange = (previousFund.amount_awarded / previousFund.amount_requested) * 100
         
-            if (previousFund.amount_awarded > 0) {
-                amountAwardedPercentageChange= (parseFloat(previousAmountAwardedPercentage) - parseFloat(currentAmountAwardedPercentage)).toFixed(2);
-            }
+            amountAwardedPercentageChange = Number(((previousAmountAwardedChange - currentAmountAwardedChange)/previousAmountAwardedChange * 100)).toFixed(2);
 
-            const currentFundedProjectsPercentage = (
-                (fund.funded_proposals_count / fund.proposals_count) * 100
-            ).toFixed(2);
-            
-            const previousFundedProjectsPercentage = (
-                (previousFund.funded_proposals_count / previousFund.proposals_count) * 100
-            ).toFixed(2);
-            
-          
-            if (previousFund.funded_proposals_count > 0) {
-                fundedProposalsPercentageChange = (
-                    parseFloat(currentFundedProjectsPercentage) - parseFloat(previousFundedProjectsPercentage)
-                ).toFixed(2); 
-            }
+            const currentFundedProjectsPercentage = (fund.funded_proposals_count / fund.proposals_count) * 100
+            const previousFundedProjectsPercentage = (previousFund.funded_proposals_count / previousFund.proposals_count) * 100
+        
+            fundedProposalsPercentageChange = Number(((previousFundedProjectsPercentage - currentFundedProjectsPercentage) / previousFundedProjectsPercentage) * 100).toFixed(2);
 
             return {
                 fund: fund.title,

@@ -42,7 +42,15 @@ class HomeController extends Controller
                         ->get()
                 )
             ),
-            'metrics' => Inertia::optional(fn () => $this->getHomeMetrics($metrics)),
+            'metrics' => Inertia::optional(
+                fn () => collect($this->getHomeMetrics($metrics))
+                    ->filter(
+                        fn (MetricData $metric) => ! empty($metric->chartData) &&
+                            ! empty($metric->chartData['data']) &&
+                            collect($metric->chartData['data'])->contains(fn ($point) => ! empty($point['y']))
+                    )
+                    ->values()
+            ),
             'announcements' => Inertia::optional(
                 fn () => AnnouncementData::collect($announcements
                     ->limit(6)
