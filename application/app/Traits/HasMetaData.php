@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Traits;
 
-use App\Interfaces\IHasMetaData;
 use App\Models\Meta;
+use App\Models\Model;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Fluent;
@@ -39,7 +39,7 @@ trait HasMetaData
      * @param  mixed  $model
      * @param  bool  $updateIfExist
      */
-    public function saveMeta(string $key, string $content, ?IHasMetaData $model = null, $updateIfExist = true): bool
+    public function saveMeta(string $key, string $content, ?Model $model = null, $updateIfExist = true): bool
     {
         $model = $model ?? $this;
         $meta = null;
