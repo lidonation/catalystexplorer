@@ -31,7 +31,7 @@ interface User {
     city?: string;
     updated_at?: string;
     created_at?: string;
-    profile_photo_path?: string;
+    profile_photo_url?: string;
     password_updated_at?: string;
 }
 
@@ -352,14 +352,14 @@ export default function ProfileSettings({
                                             <img
                                                 src={
                                                     photoPreview ||
-                                                    (user.profile_photo_path
-                                                        ? `/storage/${user.profile_photo_path}`
+                                                    (user.profile_photo_url
+                                                        ? user.profile_photo_url
                                                         : '/api/placeholder/150/150')
                                                 }
                                                 className={`border-border-secondary h-11 w-12 rounded-full border object-cover transition-colors duration-300 ease-in-out ${photoUploading ? 'opacity-50' : ''}`}
                                                 alt="Profile"
                                             />
-                                            {(user.profile_photo_path ||
+                                            {(user.profile_photo_url ||
                                                 photoPreview) && (
                                                 <button
                                                     onClick={removeProfilePhoto}

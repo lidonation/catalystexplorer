@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\Models\Location;
 use App\Models\User;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Http\RedirectResponse;
@@ -21,23 +22,28 @@ class ProfileController extends Controller
      */
     public function edit(Request $request): Response
     {
+        $user = $request->user();
+        $user->load('location');
+        $userData = $user->only([
+            'name',
+            'email',
+            'bio',
+            'short_bio',
+            'linkedin',
+            'twitter',
+            'website',
+            'updated_at',
+            'created_at',
+            'password_updated_at',
+        ]);
+        $userData['city'] = $user->location ? $user->location->city : null;
+        $userData['profile_photo_url'] = $user->getFirstMediaUrl('profile');
+        $userData['profile_photo_thumbnail'] = $user->getFirstMediaUrl('profile', 'thumbnail');
+
         return Inertia::render('My/Profile/Index', [
-            'mustVerifyEmail' => $request->user() instanceof MustVerifyEmail,
+            'mustVerifyEmail' => $user instanceof MustVerifyEmail,
             'status' => session('status'),
-            'user' => $request->user()->only([
-                'name',
-                'email',
-                'bio',
-                'profile_photo_path',
-                'short_bio',
-                'linkedin',
-                'twitter',
-                'website',
-                'city',
-                'updated_at',
-                'created_at',
-                'password_updated_at',
-            ]),
+            'user' => $userData,
         ]);
     }
 
@@ -85,6 +91,17 @@ class ProfileController extends Controller
                 'password' => Hash::make($request->input('password')),
                 'password_updated_at' => now(),
             ]);
+        } elseif ($field === 'city') {
+            $city = $request->input('city');
+
+            if ($city) {
+                $location = Location::firstOrCreate(['city' => $city]);
+                $user->location_id = $location->id;
+                $user->save();
+            } else {
+                $user->location_id = null;
+            }
+            $user->save();
         } else {
             $user->save();
         }
@@ -133,16 +150,16 @@ class ProfileController extends Controller
     public function updatePhoto(Request $request): RedirectResponse
     {
         $request->validate([
-            'photo' => ['required', 'image', 'max:5120'], // 5MB max
+            'photo' => ['required', 'image', 'max:5120'],
         ]);
 
         $user = $request->user();
 
         if ($request->hasFile('photo')) {
-            $path = $request->file('photo')->store('profile-photos', 'public');
+            $user->clearMediaCollection('profile');
 
-            $user->profile_photo_path = $path;
-            $user->save();
+            $user->addMedia($request->file('photo'))
+                ->toMediaCollection('profile');
 
             return Redirect::route('my.profile')->with('status', 'Profile photo updated successfully.');
         }
@@ -154,8 +171,7 @@ class ProfileController extends Controller
     {
         $user = $request->user();
 
-        $user->profile_photo_path = null;
-        $user->save();
+        $user->clearMediaCollection('profile');
 
         return Redirect::route('my.profile')->with('status', 'Profile photo removed successfully.');
     }

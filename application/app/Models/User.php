@@ -31,12 +31,10 @@ class User extends Authenticatable implements HasMedia
         'email',
         'password',
         'bio',
-        'profile_photo_path',
         'short_bio',
         'linkedin',
         'twitter',
         'website',
-        'city',
         'password_updated_at',
     ];
 
@@ -99,5 +97,16 @@ class User extends Authenticatable implements HasMedia
             ->crop(1080, 1350, CropPosition::Top)
             ->withResponsiveImages()
             ->performOnCollections('profile');
+    }
+
+    public function registerMediaCollections(): void
+    {
+        $this->addMediaCollection('profile')
+            ->singleFile();
+    }
+
+    public function location()
+    {
+        return $this->belongsTo(Location::class);
     }
 }
