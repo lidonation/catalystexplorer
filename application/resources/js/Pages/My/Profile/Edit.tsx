@@ -31,7 +31,7 @@ interface User {
     city?: string;
     updated_at?: string;
     created_at?: string;
-    profile_photo_path?: string;
+    profile_photo_url?: string;
     password_updated_at?: string;
 }
 
@@ -58,6 +58,15 @@ enum ModalType {
     SOCIAL_PROFILES = 'social_profiles',
     PASSWORD = 'password',
 }
+const generateSocialLinks = (user: User) => {
+    return {
+        twitter: user.twitter ? `https://x.com/${user.twitter}` : '',
+        linkedin: user.linkedin
+            ? `https://www.linkedin.com/in/${user.linkedin}`
+            : '',
+        website: user.website || '',
+    };
+};
 
 export default function ProfileSettings({
     auth,
@@ -68,6 +77,7 @@ export default function ProfileSettings({
     const user = directUser || authUser;
 
     const [isPublic, setIsPublic] = useState(true);
+    const socialLinks = generateSocialLinks(user);
     const [currentModal, setCurrentModal] = useState<ModalType>(ModalType.NONE);
     const [modalConfig, setModalConfig] = useState<ModalFieldConfig>({
         title: '',
@@ -233,11 +243,11 @@ export default function ProfileSettings({
     };
 
     return (
-        <div className="bg-background min-h-screen p-8 transition-colors duration-300 ease-in-out">
+        <div className="bg-background min-h-screen p-8">
             <div className="mx-auto grid max-w-6xl grid-cols-12 gap-6 text-left">
                 <div className="col-span-4 flex h-full flex-col justify-between">
                     <div className="space-y-6">
-                        <Card className="bg-background rounded-lg shadow-sm transition-colors duration-300 ease-in-out">
+                        <Card className="bg-background rounded-lg shadow-sm">
                             <div className="p-6">
                                 <div className="mb-4 space-y-4">
                                     <Title
@@ -267,41 +277,104 @@ export default function ProfileSettings({
                             </div>
                         </Card>
 
-                        <Card className="bg-background rounded-lg shadow-sm transition-colors duration-300 ease-in-out">
+                        <Card className="bg-background rounded-lg shadow-sm">
                             <div className="p-6">
                                 <div className="mb-4">
                                     <Title level="3" className="text-content">
                                         {t('users.network')}
                                     </Title>
                                 </div>
-                                <div className="space-y-4">
-                                    <div className="flex items-center space-x-2 border-t border-gray-200">
-                                        <div className="flex h-6 w-6 items-center justify-center rounded-full">
-                                            <LinkedInIcon className="text-accent h-6 w-6 rounded-full" />
+                                <div className="space-y-4 border-t border-gray-200 pb-2">
+                                    <div className="mt-2 flex items-center space-x-2">
+                                        <div className="">
+                                            <a
+                                                href={socialLinks.linkedin}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className={
+                                                    socialLinks.linkedin
+                                                        ? 'cursor-pointer'
+                                                        : 'pointer-events-none cursor-default'
+                                                }
+                                            >
+                                                <LinkedInIcon className="text-content" />
+                                            </a>
                                         </div>
                                         <Paragraph
                                             size="sm"
                                             className="text-content"
                                         >
-                                            {t('icons.titles.linkedIn')}
+                                            {socialLinks.linkedin ? (
+                                                <a
+                                                    href={socialLinks.linkedin}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                >
+                                                    {t('icons.titles.linkedIn')}
+                                                </a>
+                                            ) : (
+                                                t('icons.titles.linkedIn')
+                                            )}
                                         </Paragraph>
                                     </div>
                                     <div className="flex items-center space-x-2">
-                                        <XIcon className="text-content-light h-6 w-6 rounded-full bg-black" />
+                                        <a
+                                            href={socialLinks.twitter}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className={
+                                                socialLinks.twitter
+                                                    ? 'cursor-pointer'
+                                                    : 'pointer-events-none cursor-default'
+                                            }
+                                        >
+                                            <XIcon className="text-content" />
+                                        </a>
                                         <Paragraph
                                             size="sm"
                                             className="text-content"
                                         >
-                                            {t('icons.titles.x')}
+                                            {socialLinks.twitter ? (
+                                                <a
+                                                    href={socialLinks.twitter}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                >
+                                                    {t('icons.titles.x')}
+                                                </a>
+                                            ) : (
+                                                t('icons.titles.x')
+                                            )}
                                         </Paragraph>
                                     </div>
                                     <div className="flex items-center space-x-2">
-                                        <WebIcon className="text-content-light bg-accent-secondary h-6 w-6 rounded-full" />
+                                        <a
+                                            href={socialLinks.website}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className={
+                                                socialLinks.website
+                                                    ? 'cursor-pointer'
+                                                    : 'pointer-events-none cursor-default'
+                                            }
+                                        >
+                                            <WebIcon className="text-content" />
+                                        </a>
                                         <Paragraph
                                             size="sm"
                                             className="text-content"
                                         >
-                                            {t('users.website')}
+                                            {socialLinks.website ? (
+                                                <a
+                                                    href={socialLinks.website}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                >
+                                                    {t('users.website')}
+                                                </a>
+                                            ) : (
+                                                t('users.website')
+                                            )}
                                         </Paragraph>
                                     </div>
                                 </div>
@@ -352,14 +425,14 @@ export default function ProfileSettings({
                                             <img
                                                 src={
                                                     photoPreview ||
-                                                    (user.profile_photo_path
-                                                        ? `/storage/${user.profile_photo_path}`
+                                                    (user.profile_photo_url
+                                                        ? user.profile_photo_url
                                                         : '/api/placeholder/150/150')
                                                 }
                                                 className={`border-border-secondary h-11 w-12 rounded-full border object-cover transition-colors duration-300 ease-in-out ${photoUploading ? 'opacity-50' : ''}`}
                                                 alt="Profile"
                                             />
-                                            {(user.profile_photo_path ||
+                                            {(user.profile_photo_url ||
                                                 photoPreview) && (
                                                 <button
                                                     onClick={removeProfilePhoto}
@@ -422,15 +495,30 @@ export default function ProfileSettings({
                                                 {t('users.socialProfiles')}
                                             </div>
                                             <div className="flex w-3/4 space-x-2">
-                                                <div className="bg-background-transparent flex h-8 w-8 items-center justify-center rounded-full">
-                                                    <LinkedInIcon className="text-content h-5 w-5 rounded-full" />
-                                                </div>
-                                                <div className="bg-background-lighter flex h-8 w-8 items-center justify-center rounded-full transition-colors duration-300 ease-in-out">
-                                                    <XIcon className="text-content-light h-5 w-5 rounded-full bg-black" />
-                                                </div>
-                                                <div className="bg-background-lighter flex h-8 w-8 items-center justify-center rounded-full">
-                                                    <WebIcon className="text-content-light bg-accent-secondary h-5 w-5 rounded-full" />
-                                                </div>
+                                                <a
+                                                    href={socialLinks.linkedin}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    className={`bg-background-transparent ${socialLinks.linkedin ? 'cursor-pointer' : 'pointer-events-none cursor-default'}`}
+                                                >
+                                                    <LinkedInIcon className="text-content h-7 w-7" />
+                                                </a>
+                                                <a
+                                                    href={socialLinks.twitter}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    className={`bg-background-transparent ${socialLinks.twitter ? 'cursor-pointer' : 'pointer-events-none cursor-default'}`}
+                                                >
+                                                    <XIcon className="text-content mr-1" />
+                                                </a>
+                                                <a
+                                                    href={socialLinks.website}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    className={`bg-background-transparent ${socialLinks.website ? 'cursor-pointer' : 'pointer-events-none cursor-default'}`}
+                                                >
+                                                    <WebIcon className="text-content" />
+                                                </a>
                                             </div>
                                         </div>
                                         <button
@@ -571,7 +659,7 @@ export default function ProfileSettings({
                                             </div>
                                             <div className="flex w-3/4 items-center">
                                                 <span className="profile-url-text text-content">
-                                                    {`https://catalytexplorer.com/${user.name}`}
+                                                    {`https://catalytexplorer.com/${user.name.replace(/\s+/g, '-').toLowerCase()}`}
                                                 </span>
                                                 <button
                                                     className="text-content-light hover:text-content ml-2 transition-colors duration-300 ease-in-out"
@@ -603,8 +691,6 @@ export default function ProfileSettings({
                     </Card>
                 </div>
             </div>
-
-            {/* Render the appropriate modal based on currentModal state */}
             {currentModal === ModalType.PROFILE_FIELD && (
                 <BaseModal
                     isOpen={true}
