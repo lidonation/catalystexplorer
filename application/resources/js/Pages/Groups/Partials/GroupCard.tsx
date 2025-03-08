@@ -48,7 +48,7 @@ const GroupCard: React.FC<GroupCardProps> = ({ group }) => {
                 </div>
                 <div className="flex w-full flex-col items-center gap-4">
                     <Link
-                        href={useLocalizedRoute('groups.group', {
+                        href={useLocalizedRoute('groups.group.proposals', {
                             group: group?.slug,
                         })}
                         className="flex w-full justify-center"

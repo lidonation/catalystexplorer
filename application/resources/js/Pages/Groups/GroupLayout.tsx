@@ -13,7 +13,6 @@ import BioCard from '@/Pages/Groups/Partials/BioCard';
 
 interface PageProps extends InertiaPageProps {
     url: string;
-
     [key: string]: any;
 }
 
@@ -78,9 +77,9 @@ export default function GroupLayout({children, group}: GroupLayoutProps) {
                     <BioCard group={group}/>
                 </div>
 
-                <div className="flex flex-col gap-8 w-full lg:w-2/3 xl:w-3/4 shadow-xl bg-background p-4 rounded-lg">
+                <div className="flex flex-col gap-8 w-full lg:w-2/3 xl:w-3/4 shadow-xl bg-background p-4 rounded-lg relative z-0">
                     <section
-                        className=" text-content-lighter [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] overflow-x-auto">
+                        className=" text-content-lighter [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] overflow-x-auto relative z-0">
                         <GroupTabs
                             tabs={tabs}
                             activeTab={activeTab}

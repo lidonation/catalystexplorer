@@ -35,10 +35,10 @@ export default function ProposalFundingStatus({ funding_status = 'pending' }) {
     }
 
     return (
-        <div
+        <span
             className={`rounded-md border px-1 py-0 text-xs inline-flex items-center justify-center ${textColor} ${bgColor}`}
         >
             {status}
-        </div>
+        </span>
     );
 }

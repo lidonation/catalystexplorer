@@ -8,9 +8,7 @@ interface IdeascaleProfilesListProps {
     ideascaleProfiles: IdeascaleProfileData[];
 }
 
-const IdeascaleProfilesList: React.FC<IdeascaleProfilesListProps> = ({
-                                                                         ideascaleProfiles,
-                                                                     }) => {
+const IdeascaleProfilesList: React.FC<IdeascaleProfilesListProps> = ({ideascaleProfiles,}) => {
     if (!ideascaleProfiles?.length) {
         return (
             <AnimatePresence>

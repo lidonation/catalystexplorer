@@ -114,21 +114,16 @@ class GroupsController extends Controller
 
         // Determine which tab we're on based on the URL path
         if (str_contains($path, '/proposals')) {
-            $proposalsPaginator = $group->proposals()
-                ->with(['users', 'fund'])
-                ->paginate(5);
-
             return Inertia::render('Groups/Proposals/Index', [
                 'group' => GroupData::from($group),
-                'proposals' => [
-                    'data' => ProposalData::collect($proposalsPaginator->items()),
-                    'total' => $proposalsPaginator->total(),
-                    'per_page' => $proposalsPaginator->perPage(),
-                    'current_page' => $proposalsPaginator->currentPage(),
-                    'last_page' => $proposalsPaginator->lastPage(),
-                    'from' => $proposalsPaginator->firstItem(),
-                    'to' => $proposalsPaginator->lastItem(),
-                ],
+                'proposals' => Inertia::optional(
+                    fn () => to_length_aware_paginator(
+                        ProposalData::collect(
+                            $group->proposals()
+                                ->with(['users', 'fund'])
+                                ->paginate(11, ['*'], 'p')
+                        ))->onEachSide(0)
+                ),
             ]);
         }
 
@@ -145,7 +140,17 @@ class GroupsController extends Controller
                 'ideascaleProfiles' => Inertia::optional(
                     fn () => to_length_aware_paginator(
                         IdeascaleProfileData::collect(
-                            $group->ideascale_profiles()->with([])->paginate(12)
+                            $group->ideascale_profiles()
+                                ->withCount([
+                                    'proposals',
+                                    'funded_proposals',
+                                    'unfunded_proposals',
+                                    'completed_proposals',
+                                    'own_proposals',
+                                    'collaborating_proposals',
+                                ])
+                                ->with([])
+                                ->paginate(12)
                         )
                     )
                 ),
@@ -178,22 +183,16 @@ class GroupsController extends Controller
             ]);
         }
 
-        // Default return if no specific path matches
-        $proposalsPaginator = $group->proposals()
-            ->with(['users', 'fund'])
-            ->paginate(5);
-
         return Inertia::render('Groups/Proposals/Index', [
             'group' => GroupData::from($group),
-            'proposals' => [
-                'data' => ProposalData::collect($proposalsPaginator->items()),
-                'total' => $proposalsPaginator->total(),
-                'per_page' => $proposalsPaginator->perPage(),
-                'current_page' => $proposalsPaginator->currentPage(),
-                'last_page' => $proposalsPaginator->lastPage(),
-                'from' => $proposalsPaginator->firstItem(),
-                'to' => $proposalsPaginator->lastItem(),
-            ],
+            'proposals' => Inertia::optional(
+                fn () => to_length_aware_paginator(
+                    ProposalData::collect(
+                        $group->proposals()
+                            ->with(['users', 'fund'])
+                            ->paginate(11, ['*'], 'p')
+                    ))->onEachSide(0)
+            ),
         ]);
     }
 

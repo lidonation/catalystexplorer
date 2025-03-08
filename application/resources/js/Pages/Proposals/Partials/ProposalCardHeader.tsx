@@ -29,7 +29,7 @@ export default function ProposalCardHeader({
         >
             {/* Top Section */}
             <div className="grow">
-                <div className="relative flex items-center justify-between px-4 py-3">
+                <div className="flex items-center justify-between px-4 py-3">
                     {userSelected ? (
                         <div>
                             <button
