@@ -51,7 +51,7 @@ export default function SocialProfilesForm({
                 />
                 <div className="flex items-center">
                     <div className="mr-5 flex h-8 w-8 items-center justify-center rounded-sm">
-                        <LinkedInIcon className="text-accent h-5 w-5 rounded-full" />
+                        <LinkedInIcon className="text-content" />
                     </div>
                     <TextInput
                         id="linkedin"
@@ -73,7 +73,7 @@ export default function SocialProfilesForm({
                 />
                 <div className="flex items-center">
                     <div className="bg-background mr-5 flex h-8 w-8 items-center justify-center rounded-sm">
-                        <XIcon className="text-content-light h-5 w-5 rounded-full bg-black" />
+                        <XIcon className="text-content" />
                     </div>
                     <TextInput
                         id="twitter"
@@ -95,7 +95,7 @@ export default function SocialProfilesForm({
                 />
                 <div className="flex items-center">
                     <div className="border-accent bg-background mr-5 flex h-8 w-8 items-center justify-center rounded-full">
-                        <WebIcon className="text-content-light bg-accent-secondary h-5 w-5 rounded-full" />
+                        <WebIcon className="text-content" />
                     </div>
                     <TextInput
                         id="website"
