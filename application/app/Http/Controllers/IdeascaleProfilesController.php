@@ -42,10 +42,6 @@ class IdeascaleProfilesController extends Controller
 
     public function show(Request $request, IdeascaleProfile $ideascaleProfile): Response
     {
-        if (! $ideascaleProfile) {
-            abort(404, 'Ideascale Profile not found');
-        }
-
         $this->getProps($request);
 
         $ideascaleProfile
@@ -154,7 +150,6 @@ class IdeascaleProfilesController extends Controller
 
     public function getReviewsData(IdeascaleProfile $ideascaleProfile, string $path): array
     {
-
         $proposals = $ideascaleProfile->own_proposals()
             ->with([
                 'reviews' => function ($query) {
