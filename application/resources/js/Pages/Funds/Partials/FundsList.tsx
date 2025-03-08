@@ -36,12 +36,12 @@ const FundsList: React.FC<FundsListProps> = ({ funds }) => {
             const currentAmountAwardedChange = (fund.amount_awarded / fund.amount_requested) * 100
             const previousAmountAwardedChange = (previousFund.amount_awarded / previousFund.amount_requested) * 100
         
-            amountAwardedPercentageChange = Number(((previousAmountAwardedChange - currentAmountAwardedChange)/previousAmountAwardedChange * 100)).toFixed(2);
+            amountAwardedPercentageChange = Number(((currentAmountAwardedChange - previousAmountAwardedChange)/previousAmountAwardedChange * 100)).toFixed(2);
 
             const currentFundedProjectsPercentage = (fund.funded_proposals_count / fund.proposals_count) * 100
             const previousFundedProjectsPercentage = (previousFund.funded_proposals_count / previousFund.proposals_count) * 100
         
-            fundedProposalsPercentageChange = Number(((previousFundedProjectsPercentage - currentFundedProjectsPercentage) / previousFundedProjectsPercentage) * 100).toFixed(2);
+            fundedProposalsPercentageChange = Number(((currentFundedProjectsPercentage - previousFundedProjectsPercentage) / previousFundedProjectsPercentage) * 100).toFixed(2);
 
             return {
                 fund: fund.title,
