@@ -79,7 +79,7 @@ class User extends Authenticatable implements HasMedia
 
     public function ideascale_profiles()
     {
-        return $this->hasMany(IdeascaleProfile::class);
+        return $this->hasMany(IdeascaleProfile::class, 'claimed_by_id');
     }
 
     public function reviews()
