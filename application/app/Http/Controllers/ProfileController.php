@@ -161,6 +161,8 @@ class ProfileController extends Controller
             $user->addMedia($request->file('photo'))
                 ->toMediaCollection('profile');
 
+            $user?->ideascale_profiles()->searchable();
+
             return Redirect::route('my.profile')->with('status', 'Profile photo updated successfully.');
         }
 
