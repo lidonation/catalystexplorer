@@ -129,7 +129,7 @@ class IdeascaleProfilesController extends Controller
                 'proposalMilestones' => Inertia::optional(fn () => to_length_aware_paginator(ProposalMilestoneData::collect(
                     ProposalMilestone::whereHas('proposal', function ($query) use ($ideascaleProfile) {
                         $query->has('users', $ideascaleProfile->id);
-                    })->with(['proposal', 'milestones'])->paginate(6)
+                    })->with(['milestones'])->paginate(6)
                 ))),
             ]);
         }
