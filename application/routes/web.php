@@ -45,9 +45,9 @@ Route::localized(
             Route::get('/', [GroupsController::class, 'index'])
                 ->name('index');
 
-            Route::prefix('/{group:slug}')->group(function () {
+            Route::prefix('/{group:slug}')->as('group.')->group(function () {
                 Route::get('/', [GroupsController::class, 'group'])
-                    ->name('group');
+                    ->name('index');
 
                 Route::get('/proposals', [GroupsController::class, 'group'])
                     ->name('proposals');

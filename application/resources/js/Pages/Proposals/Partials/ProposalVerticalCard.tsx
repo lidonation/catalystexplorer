@@ -23,7 +23,7 @@ export default function ProposalVerticalCard({
     abstainVotes,
 }: any) {
     return (
-        <article className="bg-background proposal-card proposal-card-vertical relative flex h-full flex-col justify-between rounded-xl p-2 shadow-lg gap-3">
+        <article className="bg-background proposal-card proposal-card-vertical flex h-full flex-col justify-between rounded-xl p-2 shadow-lg gap-3">
             <section className="flex h-auto w-full flex-col items-start overflow-hidden">
                 <ProposalCardHeader
                     proposal={proposal}
@@ -51,10 +51,11 @@ export default function ProposalVerticalCard({
                                 className="mt-3"
                                 aria-labelledby="funding-heading"
                             >
-                                <div className="flex flex-row gap-2 my-1">
+                                <div className="flex items-center flex-row gap-2 my-1.5">
                                     <Title level='4' className="font-semibold">
                                         {t('funding')}
                                     </Title>
+
                                     <ProposalFundingStatus
                                         funding_status={proposal.funding_status}
                                     />

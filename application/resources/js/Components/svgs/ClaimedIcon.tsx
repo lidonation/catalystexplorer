@@ -10,7 +10,7 @@ type ClaimedProps = {
 
 export default function Claimed({
     className,
-    width = 81,
+    width = 80,
     height = 30,
 }: ClaimedProps) {
     const { t } = useTranslation();

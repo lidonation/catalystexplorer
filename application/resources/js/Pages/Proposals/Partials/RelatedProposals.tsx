@@ -16,7 +16,7 @@ interface RouteConfig {
 
 const ROUTE_MAPPINGS: Record<string, RouteConfig> = {
     'groups': {
-        routeName: 'groups.proposals',  // update the route to the screen with all group's proposals
+        routeName: 'groups.group.proposals',  // update the route to the screen with all group's proposals
         paramKey: 'group',
         sourceParam: 'groupId'
     },
@@ -37,12 +37,12 @@ interface RelatedProposalsProps extends HTMLAttributes<HTMLDivElement> {
 }
 
 const RelatedProposals: React.FC<RelatedProposalsProps> = ({
-                                                               proposals,
-                                                               groupId,
-                                                               proposalWrapperClassName,
-                                                               ideascaleProfileId,
-                                                               ...props
-                                                           }) => {
+   proposals,
+   groupId,
+   proposalWrapperClassName,
+   ideascaleProfileId,
+   ...props
+}) => {
     const {t} = useTranslation();
 
     const showViewMore = proposals.total > proposals.per_page;
@@ -67,9 +67,8 @@ const RelatedProposals: React.FC<RelatedProposalsProps> = ({
             <div {...props}>
                 {typeof proposals.data !== 'undefined' &&
                     proposals.data.map((proposal) => (
-                        <div className={proposalWrapperClassName}>
+                        <div key={proposal.hash} className={proposalWrapperClassName}>
                             <ProposalCardMini
-                                key={proposal.hash}
                                 proposal={proposal}
                                 isHorizontal={false}
                             />
@@ -77,22 +76,24 @@ const RelatedProposals: React.FC<RelatedProposalsProps> = ({
                     ))}
 
                 {showViewMore && (
-                    <Link
-                        href={useLocalizedRoute(routeConfig.routeName, getRouteParams(routeConfig))}
-                        className="bg-background flex h-full flex-col items-center justify-center rounded-xl p-4 shadow-lg transition-transform hover:scale-95"
-                    >
-                        <div className="flex flex-col items-center gap-4">
-                            <div className="text-center">
-                                <p className="text-sm text-gray-600">{t('seeAll')}</p>
-                                <p className="text-xl font-semibold">{proposals.total}</p>
-                                <p className="text-sm text-gray-600">{t('proposals.proposals')}</p>
+                    <div className={proposalWrapperClassName}>
+                        <Link
+                            href={useLocalizedRoute(routeConfig.routeName, getRouteParams(routeConfig))}
+                            className="bg-background flex h-full flex-col items-center justify-center rounded-xl p-4 shadow-lg transition-transform hover:scale-95"
+                        >
+                            <div className="flex flex-col items-center gap-4">
+                                <div className="text-center">
+                                    <p className="text-sm text-gray-600">{t('seeAll')}</p>
+                                    <p className="text-xl font-semibold">{proposals.total}</p>
+                                    <p className="text-sm text-gray-600">{t('proposals.proposals')}</p>
+                                </div>
                             </div>
-                        </div>
-                    </Link>
-                )}
-            </div>
-        </WhenVisible>
-    );
-};
+                        </Link>
+                    </div>
+                        )}
+                    </div>
+                    </WhenVisible>
+                    );
+                };
 
-export default RelatedProposals;
+                export default RelatedProposals;

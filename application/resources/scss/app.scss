@@ -96,10 +96,12 @@
         --cx-background-darker: #000000;
         --cx-background-lighter: #374151;
         --cx-background-light: #ffffff;
-        --cx-background-gradient-1-light: #2596BE;
-        --cx-background-gradient-2-light: #8cdefa;
-        --cx-background-gradient-1-dark: #1B2230;
-        --cx-background-gradient-2-dark: #475467;
+        --cx-background-gradient-3-light: #066384;
+        --cx-background-gradient-2-light: #2596BE;
+        --cx-background-gradient-1-light: #8cdefa;
+        --cx-background-gradient-3-dark: #101828;
+        --cx-background-gradient-2-dark: #1B2230;
+        --cx-background-gradient-1-dark: #475467;
 
         --cx-border-color: #667085;
         --cx-border-color-dark: #000000;
@@ -212,8 +214,8 @@
         display: none;
     }
     .no-scrollbar {
-        -ms-overflow-style: none;  
-        scrollbar-width: none;  
+        -ms-overflow-style: none;
+        scrollbar-width: none;
   }
 
     body {
