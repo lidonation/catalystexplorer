@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Nova;
 
 use App\Models\IdeascaleProfile;
+use App\Nova\Actions\UpdateModelMedia;
 use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Fields\Field;
 use Laravel\Nova\Fields\HasMany;
@@ -132,6 +133,8 @@ class IdeascaleProfiles extends Resource
      */
     public function actions(NovaRequest $request): array
     {
-        return [];
+        return [
+            (new UpdateModelMedia),
+        ];
     }
 }

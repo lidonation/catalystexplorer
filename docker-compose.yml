@@ -93,6 +93,7 @@ services:
       - ./application:/var/www:cached
     networks:
       - catalystexplorer-net
+      - shared-network
 
   # database
   catalystexplorer.db:
