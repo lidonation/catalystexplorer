@@ -30,6 +30,12 @@ class User extends Authenticatable implements HasMedia
         'name',
         'email',
         'password',
+        'bio',
+        'short_bio',
+        'linkedin',
+        'twitter',
+        'website',
+        'password_updated_at',
     ];
 
     /**
@@ -53,6 +59,7 @@ class User extends Authenticatable implements HasMedia
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'password_updated_at' => 'datetime',
         ];
     }
 
@@ -68,6 +75,11 @@ class User extends Authenticatable implements HasMedia
         return Attribute::make(
             get: fn () => count($this->getMedia('profile')) ? $this->getMedia('profile')[0]->getFullUrl() : $this->gravatar
         );
+    }
+
+    public function ideascale_profiles()
+    {
+        return $this->hasMany(IdeascaleProfile::class, 'claimed_by_id');
     }
 
     public function reviews()
@@ -90,5 +102,16 @@ class User extends Authenticatable implements HasMedia
             ->crop(1080, 1350, CropPosition::Top)
             ->withResponsiveImages()
             ->performOnCollections('profile');
+    }
+
+    public function registerMediaCollections(): void
+    {
+        $this->addMediaCollection('profile')
+            ->singleFile();
+    }
+
+    public function location()
+    {
+        return $this->belongsTo(Location::class);
     }
 }

@@ -84,7 +84,7 @@ class FundsController extends Controller
                                 ->values();
 
                             if ($currentFundData && ! empty($currentFundData['y'])) {
-                                $filteredData->prepend($currentFundData);
+                                $filteredData->push($currentFundData);
                             }
 
                             if ($filteredData->isEmpty()) {

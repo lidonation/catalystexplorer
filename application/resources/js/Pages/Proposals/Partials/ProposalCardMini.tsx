@@ -28,7 +28,7 @@ export default function ProposalCardMini({
 
     const noSelectedUser = useCallback(() => setUserSelected(null), []);
     return (
-        <article className="bg-background relative flex h-full flex-col justify-between rounded-xl p-2 shadow-lg">
+        <article className="bg-background z-0 flex h-full flex-col justify-between rounded-xl p-2 shadow-lg">
             <section className="flex h-auto w-full flex-col items-start overflow-hidden rounded-xl">
                 <ProposalCardHeader
                     proposal={proposal}
@@ -39,7 +39,7 @@ export default function ProposalCardMini({
             </section>
             <section>
                 <div className="mt-3" aria-labelledby="funding-heading">
-                    <div className="flex gap-2">
+                    <div className="flex items-center gap-2">
                         <Title level='3' className="font-semibold">{t('funding')}</Title>
 
                         <ProposalFundingStatus

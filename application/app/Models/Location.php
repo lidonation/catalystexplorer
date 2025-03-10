@@ -5,10 +5,13 @@ declare(strict_types=1);
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 
 class Location extends Model
 {
+    protected $fillable = ['city'];
+
     protected $hidden = ['id', 'pivot.location_id'];
 
     /**
@@ -28,6 +31,11 @@ class Location extends Model
             'location_id',
             'model_id'
         );
+    }
+
+    public function users(): HasMany
+    {
+        return $this->hasMany(User::class);
     }
 
     public function casts(): array

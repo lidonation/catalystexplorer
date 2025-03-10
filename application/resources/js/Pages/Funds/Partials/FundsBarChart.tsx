@@ -213,7 +213,7 @@ const FundsBarChart: React.FC<FundsBarChartProps> = ({
                         },
                     }}
                     tooltip={({ indexValue, data }) => (
-                        <div className="bg-dark text-content-light rounded-xs p-4">
+                        <div className="bg-tooltip text-content-light rounded-xs p-4">
                             <Paragraph size="sm">
                                 <strong className="mb-1 block">
                                     {indexValue}

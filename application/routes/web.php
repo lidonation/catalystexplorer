@@ -10,6 +10,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\IdeascaleProfilesController;
 use App\Http\Controllers\JormungandrController;
 use App\Http\Controllers\MilestoneController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProposalsController;
 use App\Http\Controllers\ReviewsController;
 use App\Http\Controllers\SearchController;
@@ -44,9 +45,9 @@ Route::localized(
             Route::get('/', [GroupsController::class, 'index'])
                 ->name('index');
 
-            Route::prefix('/{group:slug}')->group(function () {
+            Route::prefix('/{group:slug}')->as('group.')->group(function () {
                 Route::get('/', [GroupsController::class, 'group'])
-                    ->name('group');
+                    ->name('index');
 
                 Route::get('/proposals', [GroupsController::class, 'group'])
                     ->name('proposals');
@@ -72,6 +73,16 @@ Route::localized(
             Route::get('/{community:slug}', [CommunityController::class, 'community'])
                 ->name('group');
         });
+
+
+        Route::patch('/profile/update/{field}', [ProfileController::class, 'update'])
+            ->name('profile.update.field');
+        Route::patch('/profile/socials', [ProfileController::class, 'updateSocials'])
+            ->name('profile.update.socials');
+        Route::post('/profile/photo', [ProfileController::class, 'updatePhoto'])
+            ->name('profile.photo.update');
+        Route::delete('/profile/photo', [ProfileController::class, 'destroyPhoto'])
+            ->name('profile.photo.destroy');
 
         Route::prefix('/ideascale-profiles')->as('ideascaleProfiles.')->group(function () {
             Route::get('/', [IdeascaleProfilesController::class, 'index'])
@@ -127,6 +138,7 @@ Route::localized(
                     ->name('show');
             }
         );
+
 
 
         Route::get('/jormungandr', [JormungandrController::class, 'index'])
