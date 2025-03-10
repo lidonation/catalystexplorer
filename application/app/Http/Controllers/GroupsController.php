@@ -89,6 +89,35 @@ class GroupsController extends Controller
         ]);
     }
 
+    public function myGroups(Request $request): Response
+    {
+        $userId = $request->user()->id;
+        $groups = Group::where('user_id', $userId)
+        ->with(['proposals'])
+        ->withCount([
+            'proposals',
+            'funded_proposals',
+            'unfunded_proposals',
+            'completed_proposals',
+        ])
+        ->paginate(6);
+
+        // dd($groups);
+
+        return Inertia::render('My/Groups/Index', [
+            'groups' => [
+            'data' => GroupData::collect($groups->items()),
+            'total' => $groups->total(),
+            'per_page' => $groups->perPage(),
+            'current_page' => $groups->currentPage(),
+            'last_page' => $groups->lastPage(),
+            'from' => $groups->firstItem(),
+            'to' => $groups->lastItem(),
+            ],
+        ]);
+        
+    }
+
     public function group(Request $request, Group $group, GroupRepository $groupRepository): Response
     {
         $group->load(['proposals'])

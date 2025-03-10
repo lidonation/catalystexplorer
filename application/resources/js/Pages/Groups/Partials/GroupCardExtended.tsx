@@ -12,6 +12,7 @@ import GroupData = App.DataTransferObjects.GroupData;
 
 interface GroupCardFullProps {
     group: GroupData;
+    children?: React.ReactNode;
 }
 
 const GroupCardExtended: React.FC<GroupCardFullProps> = ({ group }) => {
@@ -141,7 +142,7 @@ const GroupCardExtended: React.FC<GroupCardFullProps> = ({ group }) => {
                             />
                         )}
                     </div>
-                    <p className="text-3 text-gray-persist mt-1">
+                    <p className="text-3 text-gray-persist mt-1 text-left">
                         {t('groups.awardedVsRequested')}
                     </p>
                 </div>
@@ -170,7 +171,7 @@ const GroupCardExtended: React.FC<GroupCardFullProps> = ({ group }) => {
                         )}
                     </div>
 
-                    <p className="text-3 text-gray-persist mt-1">
+                    <p className="text-3 text-gray-persist mt-1 text-left">
                         {t('groups.receivedVsAwarded')}
                     </p>
                 </div>

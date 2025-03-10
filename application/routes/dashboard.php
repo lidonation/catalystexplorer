@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\My\MyBookmarksController;
+use App\Http\Controllers\GroupsController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -41,6 +42,8 @@ Route::localized(
                 Route::get('/groups', function () {
                     return Inertia::render('My/Groups/Index');
                 })->name('groups');
+
+                Route::get('/groups', [GroupsController::class, 'myGroups'])->name('groups');
 
                 Route::get('/lists', function () {
                     return Inertia::render('My/Lists/Index');
