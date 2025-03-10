@@ -12,7 +12,7 @@ export default function XIcon({ className, width = 48, height = 48 }: XProps) {
             width="24"
             height="24"
             viewBox="0 0 25 24"
-            fill="none"
+            fill="text-accent-secondary"
             xmlns="http://www.w3.org/2000/svg"
             className={`fill-current ${className}`}
         >

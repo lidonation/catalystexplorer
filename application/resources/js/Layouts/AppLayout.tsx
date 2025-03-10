@@ -26,7 +26,7 @@ export default function AppLayout({ children }: { children: ReactNode }) {
     const { url, props } = usePage();
     const breadcrumbItems = generateBreadcrumbs(url, props['locale'] as string);
     const memoizedChildren = useMemo(() => children, [children]);
-
+    const savedTheme = localStorage.getItem('theme');
     return (
         <MainLayout>
             {/* Sidebar for small screens */}
@@ -99,6 +99,7 @@ export default function AppLayout({ children }: { children: ReactNode }) {
                     <Footer />
                 </footer>
             </section>
+
             <ToastContainer
                 position="top-right"
                 autoClose={5000}
@@ -109,6 +110,7 @@ export default function AppLayout({ children }: { children: ReactNode }) {
                 pauseOnFocusLoss
                 draggable
                 pauseOnHover
+                theme={savedTheme ?? 'light'}
             />
         </MainLayout>
     );

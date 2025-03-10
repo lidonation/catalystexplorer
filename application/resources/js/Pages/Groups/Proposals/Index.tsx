@@ -21,7 +21,7 @@ export default function Proposals({ group, proposals }: ProposalsPageProps) {
                 <RelatedProposals
                     proposals={proposals}
                     groupId={group.hash ?? undefined}
-                    proposalWrapperClassName='rounded-lg border-2 border-border-dark-on-dark'
+                    proposalWrapperClassName='rounded-xl border-2 border-border-dark-on-dark'
                     className='proposals-wrapper w-full grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-3'
                 />
             </WhenVisible>

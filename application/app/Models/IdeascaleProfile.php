@@ -200,7 +200,7 @@ class IdeascaleProfile extends Model implements HasMedia
     public function heroImgUrl(): Attribute
     {
         return Attribute::make(
-            get: fn () => count($this->getMedia('profile')) ? $this->getMedia('profile')[0]->getFullUrl() : $this->gravatar
+            get: fn () => $this->claimed_by?->getFirstMediaUrl('profile') ?? $this->getFirstMediaUrl('profile') ?? $this->gravatar
         );
     }
 
@@ -224,10 +224,22 @@ class IdeascaleProfile extends Model implements HasMedia
             ->whereNull('funded_at');
     }
 
-    public function in_progress_proposals(): BelongsToMany
+    public function in_progress_proposals()
     {
         return $this->proposals()
             ->where(['type' => 'proposal', 'status' => 'in_progress']);
+    }
+
+    public function proposal_schedules()
+    {
+        return ProposalMilestone::whereHas('proposal', function ($query) {
+            $query->has('users', $this->id);
+        });
+
+        //        return $this->hasMany(ProposalMilestone::class)
+        //            ->whereHas('proposal', function ($query) {
+        //                $query->has('users', $this->id);
+        //            });
     }
 
     public function monthly_reports(): HasMany

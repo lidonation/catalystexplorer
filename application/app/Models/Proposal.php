@@ -207,6 +207,30 @@ class Proposal extends Model
         );
     }
 
+    public function completed(): Attribute
+    {
+        return Attribute::make(
+            get: function () {
+                if ($this->status === 'complete') {
+                    return 1;
+                }
+
+                if ($this->schedule?->status === 'completed') {
+                    return 1;
+                }
+
+                return 0;
+            }
+        );
+    }
+
+    public function amountReceived(): Attribute
+    {
+        return Attribute::make(
+            get: fn ($value) => ($this->schedule?->funds_distributed ?? $value)
+        );
+    }
+
     public function quickPitchId(): Attribute
     {
         return Attribute::make(
@@ -267,6 +291,16 @@ class Proposal extends Model
         );
     }
 
+    public function schedule(): HasOne|Proposal
+    {
+        return $this->hasOne(ProposalMilestone::class);
+    }
+
+    public function milestones(): HasManyThrough|Proposal
+    {
+        return $this->hasManyThrough(Milestone::class, ProposalMilestone::class);
+    }
+
     public function moderations(): HasMany
     {
         return $this->hasMany(Moderation::class, 'context_id', 'id')
@@ -316,7 +350,7 @@ class Proposal extends Model
         );
     }
 
-    public function RatingsAverage(): Attribute
+    public function ratingsAverage(): Attribute
     {
         return Attribute::make(get: fn () => $this->ratings->avg('rating'));
     }
@@ -388,7 +422,7 @@ class Proposal extends Model
             ],
             'communities' => $communities->toArray(),
             "completed_amount_paid{$this->currency}" => ($this->amount_received && $this->status === 'complete') ? intval($this->amount_received) : 0,
-            'completed' => $this->status === 'complete' ? 1 : 0,
+            'completed' => $this->completed,
             'currency' => $this->currency,
 
             // 'feasibility_score' => $this->meta_info->feasibility_score ?? $this->getDiscussionRankingScore('Feasibility') ?? 0,

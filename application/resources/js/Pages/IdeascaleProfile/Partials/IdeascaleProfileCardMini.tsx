@@ -15,6 +15,8 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Segments } from '../../../../types/segments';
 import IdeascaleProfileData = App.DataTransferObjects.IdeascaleProfileData;
+import KeyValue from "@/Components/atoms/KeyValue";
+import ValueLabel from "@/Components/atoms/ValueLabel";
 
 interface IdeascaleProfileProps {
     ideascaleProfile: IdeascaleProfileData;
@@ -82,7 +84,7 @@ const IdeascaleProfileCardMini: React.FC<IdeascaleProfileProps> = ({
     ] as Segments[];
 
     return (
-        <Card>
+        <Card className='relative z-10'>
             <div className="relative mb-2 h-full w-full">
                 <div className="mb-3 flex justify-end">
                     <ListProvider>
@@ -131,7 +133,7 @@ const IdeascaleProfileCardMini: React.FC<IdeascaleProfileProps> = ({
             </div>
 
             <div className="mt-auto flex flex-col gap-4">
-                <div className="border-border-secondary border-t">
+                {<div className="border-border-secondary border-t">
                     <div className="flex w-full justify-between pt-4">
                         <SegmentedBar
                             segments={chartSegments}
@@ -139,15 +141,17 @@ const IdeascaleProfileCardMini: React.FC<IdeascaleProfileProps> = ({
                         >
                             {extraSegments.map((segment, index) => (
                                 <div key={index} className="flex items-center">
-                                    <p className="text-3">{segment.label}:</p>
-                                    <p className="text-3 ml-1 font-bold">
+                                    <div className="text-sm font-s">
+                                        {segment.label}:
+                                    </div>
+                                    <div className="text-3 ml-1 font-bold">
                                         {segment.value}
-                                    </p>
+                                    </div>
                                 </div>
                             ))}
                         </SegmentedBar>
                     </div>
-                </div>
+                </div>}
 
                 <div className="border-border-secondary inline-flex w-auto w-fit items-center rounded-lg border px-2.5 py-1">
                     <Paragraph size="sm" className="text-3 text-content">

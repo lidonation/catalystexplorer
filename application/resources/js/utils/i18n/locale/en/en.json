@@ -16,6 +16,8 @@
     "communities": "Communities",
     "confirmPassword": "Confirm Password",
     "connect": "Connect",
+    "updatePassword" : "Update Password",
+    "currentPassword": "Current Password",
     "connectWallet": "Connect wallet",
     "comingSoon": "Coming Soon",
     "cookies": "Cookies",
@@ -390,7 +392,7 @@
             "milestones": "Milestones",
             "reports": "Reports",
             "cam": "Cam"
-        }   
+        }
     },
     "groups": {
         "groups": "Groups",
@@ -489,7 +491,18 @@
         "editProfile": "Edit profile",
         "viewProfile": "View Full Profile",
         "viewIdeascale": "View & Contact user on Ideascale",
-        "profile": "profile"
+        "profile": "profile",
+        "about": "About",
+        "city": "City",
+        "website": "Website",
+        "network": "Network",
+        "personalInfo": "Personal Info",
+        "photo": "Photo",
+        "photoSizeInstructions": "150×150px JPEG, PNG Image",
+        "basicSettings": "Basic Settings",
+        "publicProfile": "Public Profile",
+        "profileLink": "Public Profile",
+        "socialProfiles": "Social Profiles"
     },
     "completedProjectNfts": {
         "title": "Completed Project NFTs",
