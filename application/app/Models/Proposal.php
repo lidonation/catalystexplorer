@@ -172,6 +172,11 @@ class Proposal extends Model
         ]);
     }
 
+    public function milestone(): HasOne
+    {
+        return $this->hasOne(ProposalMilestone::class, 'proposal_id', 'id');
+    }
+
     public function scopeFilter($query, array $filters)
     {
         $query->when(
