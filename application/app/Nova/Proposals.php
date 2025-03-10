@@ -6,6 +6,7 @@ namespace App\Nova;
 
 use App\Enums\CatalystGlobals;
 use App\Models\Proposal;
+use App\Nova\Actions\UpdateModelMedia;
 use Illuminate\Support\Str;
 use Laravel\Nova\Actions\Action;
 use Laravel\Nova\Card;
@@ -134,6 +135,8 @@ class Proposals extends Resource
      */
     public function actions(NovaRequest $request): array
     {
-        return [];
+        return [
+            (new UpdateModelMedia),
+        ];
     }
 }

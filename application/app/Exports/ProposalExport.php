@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace App\Exports;
 
 use App\Models\Proposal;
+use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Contracts\Translation\HasLocalePreference;
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Maatwebsite\Excel\Concerns\Exportable;
 use Maatwebsite\Excel\Concerns\FromQuery;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;

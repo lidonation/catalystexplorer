@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Nova;
 
 use App\Models\User;
+use App\Nova\Actions\UpdateModelMedia;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\MergeValue;
 use Laravel\Nova\Actions\Action;
@@ -114,6 +115,8 @@ class Users extends Resource
      */
     public function actions(NovaRequest $request): array
     {
-        return [];
+        return [
+            (new UpdateModelMedia),
+        ];
     }
 }

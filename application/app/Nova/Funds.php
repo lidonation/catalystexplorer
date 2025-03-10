@@ -6,7 +6,9 @@ namespace App\Nova;
 
 use App\Enums\CatalystCurrencies;
 use App\Models\Fund;
+use App\Nova\Actions\UpdateModelMedia;
 use Ebess\AdvancedNovaMediaLibrary\Fields\Images;
+use Illuminate\Http\Request;
 use Laravel\Nova\Fields\DateTime;
 use Laravel\Nova\Fields\Field;
 use Laravel\Nova\Fields\HasMany;
@@ -97,6 +99,16 @@ class Funds extends Resource
                 ->enableExistingMedia(),
             Images::make(__('Banner'), 'banner')
                 ->enableExistingMedia(),
+        ];
+    }
+
+    /**
+     * Get the actions available for the resource.
+     */
+    public function actions(Request $request): array
+    {
+        return [
+            (new UpdateModelMedia),
         ];
     }
 }

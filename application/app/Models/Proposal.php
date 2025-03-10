@@ -172,6 +172,11 @@ class Proposal extends Model
         ]);
     }
 
+    public function milestone(): HasOne
+    {
+        return $this->hasOne(ProposalMilestone::class, 'proposal_id', 'id');
+    }
+
     public function scopeFilter($query, array $filters)
     {
         $query->when(
@@ -513,6 +518,11 @@ class Proposal extends Model
     public function team(): BelongsToMany
     {
         return $this->belongsToMany(IdeascaleProfile::class, 'ideascale_profile_has_proposal', 'proposal_id', 'ideascale_profile_id');
+    }
+
+    public function proposal_milestone(): HasOne
+    {
+        return $this->hasOne(ProposalMilestone::class, 'proposal_id', 'id');
     }
 
     public function author(): BelongsTo
