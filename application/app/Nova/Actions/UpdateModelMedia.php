@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Nova\Actions;
 
 use App\Jobs\UpdateModelMediaJob;
-use App\Models\Model;
 use Illuminate\Bus\Batchable;
 use Illuminate\Bus\PendingBatch;
 use Illuminate\Bus\Queueable;
@@ -15,6 +14,7 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Collection;
 use Laravel\Nova\Actions\Action;
 use Laravel\Nova\Fields\ActionFields;
+use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Http\Requests\NovaRequest;
 
 class UpdateModelMedia extends Action implements ShouldQueue
@@ -31,10 +31,11 @@ class UpdateModelMedia extends Action implements ShouldQueue
      */
     public function handle(ActionFields $fields, Collection $models)
     {
-        $models->each(function (Model $m) {
-            UpdateModelMediaJob::dispatch($m);
-        });
+        $collectionName = $fields->get('collectionName') ?? 'hero';
 
+        $models->each(function ($m) use ($collectionName) {
+            UpdateModelMediaJob::dispatch($m, $collectionName);
+        });
     }
 
     /**
@@ -44,7 +45,9 @@ class UpdateModelMedia extends Action implements ShouldQueue
      */
     public function fields(NovaRequest $request): array
     {
-        return [];
+        return [
+            Text::make('Collection Name', 'collectionName'),
+        ];
     }
 
     /**
