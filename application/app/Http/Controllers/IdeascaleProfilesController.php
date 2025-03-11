@@ -23,9 +23,6 @@ use Inertia\Response;
 
 class IdeascaleProfilesController extends Controller
 {
-    /**
-     * Display the user's profile form.
-     */
     protected int $limit = 40;
 
     protected int $currentPage = 1;
@@ -45,10 +42,6 @@ class IdeascaleProfilesController extends Controller
 
     public function show(Request $request, IdeascaleProfile $ideascaleProfile): Response
     {
-        if (! $ideascaleProfile) {
-            abort(404, 'Ideascale Profile not found');
-        }
-
         $this->getProps($request);
 
         $ideascaleProfile
@@ -75,21 +68,16 @@ class IdeascaleProfilesController extends Controller
         $path = $request->path();
 
         if (str_contains($path, '/proposals')) {
-            $proposalsPaginator = $ideascaleProfile->proposals()
-                ->with(['users', 'fund'])
-                ->paginate(perPage: 5);
-
             return Inertia::render('IdeascaleProfile/Proposals/Index', [
                 'ideascaleProfile' => IdeascaleProfileData::from($ideascaleProfileData),
-                'proposals' => Inertia::lazy(fn () => [
-                    'data' => ProposalData::collect($proposalsPaginator->items()),
-                    'total' => $proposalsPaginator->total(),
-                    'per_page' => $proposalsPaginator->perPage(),
-                    'current_page' => $proposalsPaginator->currentPage(),
-                    'last_page' => $proposalsPaginator->lastPage(),
-                    'from' => $proposalsPaginator->firstItem(),
-                    'to' => $proposalsPaginator->lastItem(),
-                ]),
+                'proposals' => Inertia::optional(
+                    fn () => to_length_aware_paginator(
+                        ProposalData::collect(
+                            $ideascaleProfile->proposals()
+                                ->with(['users', 'fund'])
+                                ->paginate(11, ['*'], 'p')
+                        ))->onEachSide(0)
+                ),
             ]);
         }
 
@@ -129,7 +117,7 @@ class IdeascaleProfilesController extends Controller
                 'proposalMilestones' => Inertia::optional(fn () => to_length_aware_paginator(ProposalMilestoneData::collect(
                     ProposalMilestone::whereHas('proposal', function ($query) use ($ideascaleProfile) {
                         $query->has('users', $ideascaleProfile->id);
-                    })->with(['proposal', 'milestones'])->paginate(6)
+                    })->with(['milestones'])->paginate(6)
                 ))),
             ]);
         }
@@ -146,28 +134,22 @@ class IdeascaleProfilesController extends Controller
             ]);
         }
 
-        $proposalsPaginator = $ideascaleProfile->proposals()
-            ->with(['users', 'fund'])
-            ->paginate(perPage: 5);
-
         return Inertia::render('IdeascaleProfile/Proposals/Index', [
             'ideascaleProfile' => IdeascaleProfileData::from($ideascaleProfileData),
-            'proposals' => Inertia::lazy(fn () => [
-                'data' => ProposalData::collect($proposalsPaginator->items()),
-                'total' => $proposalsPaginator->total(),
-                'per_page' => $proposalsPaginator->perPage(),
-                'current_page' => $proposalsPaginator->currentPage(),
-                'last_page' => $proposalsPaginator->lastPage(),
-                'from' => $proposalsPaginator->firstItem(),
-                'to' => $proposalsPaginator->lastItem(),
-            ]),
+            'proposals' => Inertia::optional(
+                fn () => to_length_aware_paginator(
+                    ProposalData::collect(
+                        $ideascaleProfile->proposals()
+                            ->with(['users', 'fund'])
+                            ->paginate(11, ['*'], 'p')
+                    ))->onEachSide(0)
+            ),
             'groups' => $ideascaleProfile->groups(),
         ]);
     }
 
     public function getReviewsData(IdeascaleProfile $ideascaleProfile, string $path): array
     {
-
         $proposals = $ideascaleProfile->own_proposals()
             ->with([
                 'reviews' => function ($query) {

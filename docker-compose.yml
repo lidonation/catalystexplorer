@@ -42,6 +42,7 @@ services:
       XDG_DATA_HOME: /var/www/caddy
     volumes:
       - ./application:/var/www:cached
+      - ./data/app/data:/data
     networks:
       - catalystexplorer-net
       - shared-network
@@ -92,6 +93,7 @@ services:
       - ./application:/var/www:cached
     networks:
       - catalystexplorer-net
+      - shared-network
 
   # database
   catalystexplorer.db:

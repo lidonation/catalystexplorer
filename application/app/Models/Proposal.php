@@ -18,6 +18,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Artisan;
@@ -171,6 +172,11 @@ class Proposal extends Model
         ]);
     }
 
+    public function milestone(): HasOne
+    {
+        return $this->hasOne(ProposalMilestone::class, 'proposal_id', 'id');
+    }
+
     public function scopeFilter($query, array $filters)
     {
         $query->when(
@@ -198,6 +204,30 @@ class Proposal extends Model
     {
         return Attribute::make(
             get: fn ($currency) => $currency ?? $this->campaign?->currency ?? $this->fund?->currency ?? CatalystCurrencies::ADA()->value,
+        );
+    }
+
+    public function completed(): Attribute
+    {
+        return Attribute::make(
+            get: function () {
+                if ($this->status === 'complete') {
+                    return 1;
+                }
+
+                if ($this->schedule?->status === 'completed') {
+                    return 1;
+                }
+
+                return 0;
+            }
+        );
+    }
+
+    public function amountReceived(): Attribute
+    {
+        return Attribute::make(
+            get: fn ($value) => ($this->schedule?->funds_distributed ?? $value)
         );
     }
 
@@ -261,6 +291,16 @@ class Proposal extends Model
         );
     }
 
+    public function schedule(): HasOne|Proposal
+    {
+        return $this->hasOne(ProposalMilestone::class);
+    }
+
+    public function milestones(): HasManyThrough|Proposal
+    {
+        return $this->hasManyThrough(Milestone::class, ProposalMilestone::class);
+    }
+
     public function moderations(): HasMany
     {
         return $this->hasMany(Moderation::class, 'context_id', 'id')
@@ -310,7 +350,7 @@ class Proposal extends Model
         );
     }
 
-    public function RatingsAverage(): Attribute
+    public function ratingsAverage(): Attribute
     {
         return Attribute::make(get: fn () => $this->ratings->avg('rating'));
     }
@@ -382,7 +422,7 @@ class Proposal extends Model
             ],
             'communities' => $communities->toArray(),
             "completed_amount_paid{$this->currency}" => ($this->amount_received && $this->status === 'complete') ? intval($this->amount_received) : 0,
-            'completed' => $this->status === 'complete' ? 1 : 0,
+            'completed' => $this->completed,
             'currency' => $this->currency,
 
             // 'feasibility_score' => $this->meta_info->feasibility_score ?? $this->getDiscussionRankingScore('Feasibility') ?? 0,
@@ -479,6 +519,11 @@ class Proposal extends Model
     public function team(): BelongsToMany
     {
         return $this->belongsToMany(IdeascaleProfile::class, 'ideascale_profile_has_proposal', 'proposal_id', 'ideascale_profile_id');
+    }
+
+    public function proposal_milestone(): HasOne
+    {
+        return $this->hasOne(ProposalMilestone::class, 'proposal_id', 'id');
     }
 
     public function author(): BelongsTo

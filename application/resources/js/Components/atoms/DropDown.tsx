@@ -32,10 +32,10 @@ export default function DropDown({
   useEffect(() => {
     if (mode === 'dropdown' && triggerRef?.current && popupRef.current && isOpen) {
       const triggerRect = triggerRef.current.getBoundingClientRect();
-      
+
       popupRef.current.style.top = `${triggerRect.bottom + window.scrollY}px`;
       popupRef.current.style.left = `${triggerRect.left + window.scrollX}px`;
-      
+
       if (position) {
         if (position.top !== undefined) popupRef.current.style.top = typeof position.top === 'number' ? `${position.top}px` : position.top;
         if (position.left !== undefined) popupRef.current.style.left = typeof position.left === 'number' ? `${position.left}px` : position.left;
@@ -116,7 +116,7 @@ export default function DropDown({
         style={{ position: 'absolute' }}
       >
         <CloseButton />
-        
+
         {title && (
           <div className="px-4 py-2 border-b border-gray-200">
             <Title level="3">{title}</Title>

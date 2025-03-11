@@ -5,7 +5,12 @@ declare(strict_types=1);
 namespace App\Nova;
 
 use App\Models\Nft;
+use App\Models\User;
+use App\Nova\Actions\SyncNftWithNMKR;
+use App\Nova\Actions\UpdateModelMedia;
+use App\Nova\Filters\NMKRNftsFilter;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Fields\DateTime;
 use Laravel\Nova\Fields\HasMany;
@@ -133,7 +138,7 @@ class Nfts extends Resource
      */
     public function filters(NovaRequest $request): array
     {
-        return [];
+        return [(new NMKRNftsFilter)];
     }
 
     /**
@@ -148,6 +153,9 @@ class Nfts extends Resource
 
     public function actions(NovaRequest $request): array
     {
-        return [];
+        return [
+            (new UpdateModelMedia),
+            new SyncNftWithNMKR,
+        ];
     }
 }

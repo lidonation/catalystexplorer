@@ -10,6 +10,11 @@ use Illuminate\Validation\Rule;
 
 class ProfileUpdateRequest extends FormRequest
 {
+    public function authorize(): bool
+    {
+        return true;
+    }
+
     /**
      * Get the validation rules that apply to the request.
      *
@@ -27,6 +32,12 @@ class ProfileUpdateRequest extends FormRequest
                 'max:255',
                 Rule::unique(User::class)->ignore($this->user()->id),
             ],
+            'bio' => ['string', 'max:255'],
+            'short-bio' => ['string', 'max:255'],
+            'profile_photo_path' => ['string', 'max:255'],
+            'linkedin' => ['string', 'max:255'],
+            'telegram' => ['string', 'max:255'],
+            'twitter' => ['string', 'max:255'],
         ];
     }
 }

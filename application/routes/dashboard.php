@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\My\MyBookmarksController;
 use App\Http\Controllers\ProposalsController;
+use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
