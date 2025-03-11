@@ -94,7 +94,7 @@ class ProposalsController extends Controller
     public function myProposals(Request $request): Response
     {
         $userId = Auth::id();
-        $ideascaleProfile = IdeascaleProfile::where('claimed_by', operator: 497)->first();
+        $ideascaleProfile = IdeascaleProfile::where('claimed_by_id', operator: 497)->first();
 
         if (! $ideascaleProfile) {
             return Inertia::render('My/Proposals/Index', [
