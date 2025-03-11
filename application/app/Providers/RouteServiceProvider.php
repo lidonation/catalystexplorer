@@ -68,6 +68,7 @@ class RouteServiceProvider extends ServiceProvider
                 $locale = app()->getLocale();
                 $model = match (Route::currentRouteName()) {
                     "{$locale}.completedProjectsNfts.show" => Proposal::class,
+                    "{$locale}.my.proposals.manage" => Proposal::class,
 
                     default => null,
                 };
