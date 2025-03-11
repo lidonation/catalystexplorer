@@ -103,7 +103,7 @@ class ProposalsController extends Controller
                 ],
             ]);
         }
-        
+
         $request->merge([
             ProposalSearchParams::IDEASCALE_PROFILES()->value => [$ideascaleProfile->hash],
         ]);
