@@ -100,6 +100,7 @@
     "verificationCode": "CODE$:",
     "verificationInstructions": "To verify your ownership of this profile, please send a personal message to Lido Nation on Ideascale and include the code above.",
     "goToIdeascale": "Go to Ideascale",
+    "proposal": "Proposal",
     "error404": {
         "mainText": "Sorry, we couldn't find what you're looking for",
         "subText": "Let's Find Your Way Back!"
@@ -277,6 +278,10 @@
         "CSVs": "Proposal CSVs",
         "totalProposals": "Total Proposals",
         "viewTeam": "View Team",
+        "action": "Action",
+        "status": "Status",
+        "fundingReceived": "Funding Received",
+        "manageProposal": "Manage Proposal",
         "errors": {
             "noUrl": "No video URL provided",
             "invalidYoutubeFormat": "The YouTube link format is incorrect",
@@ -484,7 +489,9 @@
             "usd": "USD Icon",
             "tick": "Tick Icon",
             "x": "X",
-            "web": "Web"
+            "web": "Web",
+            "arrowDown": "Arrow Down Icon",
+            "arrowUp": "Arrow Up Icon"
         }
     },
     "users": {
