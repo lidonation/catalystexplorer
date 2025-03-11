@@ -6,6 +6,7 @@ use App\Http\Controllers\ChartsController;
 use App\Http\Controllers\CompletetProjectNftsController;
 use App\Http\Controllers\FundsController;
 use App\Http\Controllers\GroupsController;
+use App\Http\Controllers\NftController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\IdeascaleProfilesController;
 use App\Http\Controllers\JormungandrController;
@@ -139,6 +140,10 @@ Route::localized(
             }
         );
 
+        Route::prefix('nfts')->as('crud.nfts.')->group(function () {
+            Route::patch('/update/{nft:id}', [CompletetProjectNftsController::class, 'updateMetadata'])
+                ->name('update');
+        });
 
 
         Route::get('/jormungandr', [JormungandrController::class, 'index'])
