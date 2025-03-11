@@ -2,6 +2,7 @@ import Title from '@/Components/atoms/Title';
 import { ListProvider } from '@/Context/ListContext';
 import BookmarkButton from '@/Pages/My/Bookmarks/Partials/BookmarkButton';
 import ProposalStatus from './ProposalStatus';
+import Button from '@/Components/atoms/Button';
 import {Link} from "@inertiajs/react";
 
 export default function ProposalCardHeader({
@@ -33,8 +34,8 @@ export default function ProposalCardHeader({
                 <div className="flex items-center justify-between px-4 py-3">
                     {userSelected ? (
                         <div>
-                            <button
-                                className="absolute top-4 right-4 rounded-lg bg-gray-600/50 p-2 text-white transition duration-200 ease-in-out hover:bg-gray-500/70 focus:outline-hidden"
+                            <Button
+                                className="absolute top-4 right-4 rounded-lg bg-background p-2 text-white transition duration-200 ease-in-out hover:bg-background focus:outline-hidden"
                                 onClick={noSelectedUser}
                             >
                                 <svg
@@ -51,7 +52,7 @@ export default function ProposalCardHeader({
                                         d="M6 18L18 6M6 6l12 12"
                                     />
                                 </svg>
-                            </button>
+                            </Button>
                             <div className="relative flex items-center space-x-4 pt-16">
                                 <img
                                     src={userSelected?.hero_img_url}
