@@ -107,23 +107,21 @@ class CompletetProjectNftsController extends Controller
         ]);
     }
 
-    public function show(Request $request, Proposal $proposal, Campaign $campaign): Response
+    public function show(Request $request, Proposal $proposal): Response
     {
         $user = $this->user;
-        $claimedIdeascaleProfiles = $user ? $this->getClaimedIdeascaleProfiles() : [];
-        $proposal->load('users');
+        $nft = null;
+        $artist = null;
+        $claimedIdeascaleProfiles = $this->getClaimedIdeascaleProfiles();
 
-        $contributorProfiles = IdeascaleProfile::whereIn('id', $proposal->users->pluck('id'))
-            ->get()
-            ->map(function($profile) {
-                return IdeascaleProfileData::from($profile);
+        $contributorProfiles = $proposal->users->map(function($profile) {
+            return IdeascaleProfileData::from($profile);
         });
 
         if ($user) {
-            $nft = Nft::where('user_id', $user->id)->first();
-            if ($nft && $nft->artist_id) {
-                $artist = User::where('id', $nft->artist_id)->first();
-            }
+            $user->load('nfts.artist');
+            $nft = $user->nfts->first();
+            $artist = $nft?->artist;
         }
 
         return Inertia::render('CompletedProjectNfts/Partials/Show', [

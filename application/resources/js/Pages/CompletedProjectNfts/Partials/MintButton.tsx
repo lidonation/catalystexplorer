@@ -5,6 +5,8 @@ import { PageProps } from '@/types';
 import { PaginatedData } from '../../../../types/paginated-data';
 import IdeascaleProfileData = App.DataTransferObjects.IdeascaleProfileData;
 import NMKRNftData = App.DataTransferObjects.NMKRNftData;
+import Button from '@/Components/atoms/Button';
+import Paragraph from '@/Components/atoms/Paragraph';
 
 export type MintButtonState = 'unauthenticated' | 'unauthorized' | 'mintable' | 'minted' | 'loading';
 
@@ -103,11 +105,11 @@ const MintButton: React.FC<MintButtonProps> = ({
 
     const popup = window.open(
       paymentUrl, 
-      "NFT-MAKER PRO Payment Gateway", 
+      t('paymentGateway'),
       `popup=1, location=1, width=${popupWidth}, height=${popupHeight}, left=${left}, top=${top}`
     );
 
-    document.body.style.background = "rgba(0, 0, 0, 0.5)";
+    document.body.style.background = "var(--cx-border-color-dark)";
 
     const backgroundCheck = setInterval(function () {
       if (popup && popup.closed) {
@@ -129,20 +131,19 @@ const MintButton: React.FC<MintButtonProps> = ({
     switch (buttonState) {
       case 'loading':
         return (
-          <Link 
-            href="#" 
+          <Button
             className="w-full inline-block text-center bg-dark text-dark font-medium py-3 px-4 rounded-md cursor-wait pointer-events-none"
             onClick={(e) => e.preventDefault()}
           >
             {t('loading')}
-          </Link>
+          </Button>
         );
 
       case 'unauthenticated':
         return (
           <Link 
             href="/login"
-            className="w-full inline-block text-center bg-blue-500 hover:bg-blue-600 text-content font-medium py-3 px-4 rounded-md transition duration-150"
+            className="w-full inline-block text-center bg-primary hover:bg-primary-dark text-content-light font-medium py-3 px-4 rounded-md transition duration-150"
           >
             {t('loginToMint')}
           </Link>
@@ -150,13 +151,12 @@ const MintButton: React.FC<MintButtonProps> = ({
       
       case 'unauthorized':
         return (
-          <Link 
-            href="#" 
+          <Button
             className="w-full inline-block text-center bg-dark text-content font-medium py-3 px-4 rounded-md cursor-not-allowed pointer-events-none"
             onClick={(e) => e.preventDefault()}
           >
             {t('mustBeProposer')}
-          </Link>
+          </Button>
         );
       
       case 'mintable':
@@ -165,25 +165,23 @@ const MintButton: React.FC<MintButtonProps> = ({
         // If payment link is not available, show disabled button
         if (!paymentLink) {
           return (
-            <Link 
-              href="#" 
-              className="w-full inline-block text-center bg-dark text-content font-medium py-3 px-4 rounded-md cursor-not-allowed pointer-events-none"
+            <Button
+              className="w-full inline-block text-center bg-dark text-content-light font-medium py-3 px-4 rounded-md cursor-not-allowed pointer-events-none"
               onClick={(e) => e.preventDefault()}
             >
               {t('mintNFT')}
-            </Link>
+            </Button>
           );
         }
         
         // Show green MINT NFT button
         return (
-          <Link
-            href="#"
+          <Button
             onClick={handleMint}
-            className="w-full inline-block text-center bg-success hover:bg-green-600 text-content font-medium py-3 px-4 rounded-md transition duration-150"
+            className="w-full inline-block text-center bg-success hover:bg-success-darker text-content-light font-medium py-3 px-4 rounded-md transition duration-150"
           >
             {t('mintNFT')}
-          </Link>
+          </Button>
         );
       
       case 'minted':
@@ -193,7 +191,7 @@ const MintButton: React.FC<MintButtonProps> = ({
           <Link 
             href={`https://pool.pm/${fingerprint}`}
             target="_blank"
-            className="w-full inline-block text-center bg-blue-400 hover:bg-blue-500 text-content font-medium py-3 px-4 rounded-md transition duration-150"
+            className="w-full inline-block text-center bg-primary hover:bg-primary-dark text-content font-medium py-3 px-4 rounded-md transition duration-150"
           >
             {t('viewNFT')}
           </Link>
@@ -207,9 +205,9 @@ const MintButton: React.FC<MintButtonProps> = ({
         {renderButton()}
       </div>
       {buttonState === 'mintable' && !getPaymentLink() && (
-        <p className="text-sm text-dark mt-2">
+        <Paragraph className="text-sm text-dark mt-2">
           {t('cantFindNFT')}
-        </p>
+        </Paragraph>
       )}
     </div>
   );

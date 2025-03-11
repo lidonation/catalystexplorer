@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Link, router } from '@inertiajs/react';
+import { router } from '@inertiajs/react';
 import { useLocalizedRoute } from '@/utils/localizedRoute';
+import Button from '@/Components/atoms/Button';
+import Paragraph from '@/Components/atoms/Paragraph';
 
 interface MetaDataProps {
   nft: any & { 
@@ -161,7 +163,7 @@ const MetaData = ({ nft }: MetaDataProps) => {
 
       <div className="space-y-6">
         {/* Project catalyst Campaign name */}
-        <div className="border-b border-gray-200 pb-4">
+        <div className="border-b border-dark pb-4">
           <div className="grid grid-cols-[200px_1fr] items-start">
             <div className="text-dark text-sm leading-relaxed">
               {t('projectCatalyst')}
@@ -171,7 +173,7 @@ const MetaData = ({ nft }: MetaDataProps) => {
         </div>
 
         {/* Funded Project Number */}
-        <div className="border-b border-gray-200 pb-4">
+        <div className="border-b border-dark pb-4">
           <div className="grid grid-cols-[200px_1fr] items-start">
             <div className="text-dark text-sm leading-relaxed">
               {t('fundProject')}
@@ -181,7 +183,7 @@ const MetaData = ({ nft }: MetaDataProps) => {
         </div>
 
         {/* Project Title */}
-        <div className="border-b border-gray-200 pb-4">
+        <div className="border-b border-dark pb-4">
           <div className="grid grid-cols-[200px_1fr] items-start">
             <div className="text-dark text-sm">
               {t('projectTitle')}
@@ -191,7 +193,7 @@ const MetaData = ({ nft }: MetaDataProps) => {
         </div>
 
         {/* Yes Votes */}
-        <div className="border-b border-gray-200 pb-4">
+        <div className="border-b border-dark pb-4">
           <div className="grid grid-cols-[200px_1fr] items-start">
             <div className="text-dark text-sm">
               {t('yesVotes')}
@@ -202,24 +204,26 @@ const MetaData = ({ nft }: MetaDataProps) => {
                   ? formatNumber(parseInt(metaValues.yesVotes)) 
                   : metaValues.yesVotes}
               </span>
-              <button
+              <Button
                 onClick={(e) => {
                   e.preventDefault();
                   handleToggleStrike('yesVotes');
                 }}
-                className={`text-sm border-none bg-transparent cursor-pointer ${struckFields.yesVotes ? 'text-success ' : 'text-error hover:text-red-700'}`}
-                title={struckFields.yesVotes ? t('restoreField') : t('removeField')}
+                className="text-sm border-none bg-transparent p-0"
+                ariaLabel={struckFields.yesVotes ? t('restoreField') : t('removeField')}
               >
-                {struckFields.yesVotes ? '↩' : '✕'}
-              </button>
+                <span className={struckFields.yesVotes ? 'text-success' : 'text-error'}>
+                  {struckFields.yesVotes ? '↩' : '✕'}
+                </span>
+              </Button>
             </div>
           </div>
         </div>
 
         {/* No Votes */}
-        <div className="border-b border-gray-200 pb-4">
+        <div className="border-b border-dark pb-4">
           <div className="grid grid-cols-[200px_1fr] items-start">
-            <div className="text-gray-500 text-sm">
+            <div className="text-dark text-sm">
               {t('noVotes')}
             </div>
             <div className="flex items-center gap-2">
@@ -228,49 +232,53 @@ const MetaData = ({ nft }: MetaDataProps) => {
                   ? formatNumber(parseInt(metaValues.noVotes))
                   : metaValues.noVotes}
               </span>
-              <button
+              <Button
                 onClick={(e) => {
                   e.preventDefault();
                   handleToggleStrike('noVotes');
                 }}
-                className={`text-sm border-none bg-transparent cursor-pointer ${struckFields.noVotes ? 'text-success ' : 'text-error hover:text-red-700'}`}
-                title={struckFields.noVotes ? t('restoreField') : t('removeField')}
+                className="text-sm border-none bg-transparent p-0"
+                ariaLabel={struckFields.noVotes ? t('restoreField') : t('removeField')}
               >
-                {struckFields.noVotes ? '↩' : '✕'}
-              </button>
+                <span className={struckFields.noVotes ? 'text-success' : 'text-error'}>
+                  {struckFields.noVotes ? '↩' : '✕'}
+                </span>
+              </Button>
             </div>
           </div>
         </div>
 
         {/* Role */}
-        <div className="border-b border-gray-200 pb-4">
+        <div className="border-b border-dark pb-4">
           <div className="grid grid-cols-[200px_1fr] items-start">
-            <div className="text-gray-500 text-sm">
+            <div className="text-dark text-sm">
               {t('role')}
             </div>
             <div className="flex items-center gap-2">
               <span className={`text-sm ${struckFields.role ? 'line-through text-dark' : ''}`}>
                 {metaValues.role}
               </span>
-              <button
+              <Button
                 onClick={(e) => {
                   e.preventDefault();
                   handleToggleStrike('role');
                 }}
-                className={`text-sm border-none bg-transparent cursor-pointer ${struckFields.role ? 'text-success ' : 'text-error hover:text-red-700'}`}
-                title={struckFields.role ? t('restoreField') : t('removeField')}
+                className="text-sm border-none bg-transparent p-0"
+                ariaLabel={struckFields.role ? t('restoreField') : t('removeField')}
               >
-                {struckFields.role ? '↩' : '✕'}
-              </button>
+                <span className={struckFields.role ? 'text-success' : 'text-error'}>
+                  {struckFields.role ? '↩' : '✕'}
+                </span>
+              </Button>
             </div>
           </div>
         </div>
       </div>
 
       <div className="flex justify-center mt-8">
-        <p className="text-xs text-dark italic text-center max-w-lg">
+        <Paragraph className="text-xs text-dark italic text-center max-w-lg">
           {t('metadataStrikeInstruction')}
-        </p>
+        </Paragraph>
       </div>
     </div>
   );

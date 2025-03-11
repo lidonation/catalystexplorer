@@ -3,6 +3,9 @@ import { useTranslation } from 'react-i18next';
 import { useState } from 'react';
 import Title from '@/Components/atoms/Title';
 import { Link } from '@inertiajs/react';
+import Paragraph from '@/Components/atoms/Paragraph';
+import Button from '@/Components/atoms/Button';
+import Image from '@/Components/Image';
 
 interface BlockchainDataProps {
   nft: any;
@@ -16,7 +19,7 @@ const BlockchainData = ({ nft }: BlockchainDataProps) => {
     return (
       <div className="rounded-lg bg-background p-2 max-w-2xl">
         <Title level='1' className="font-semibold mb-6">{t('blockchainData')}</Title>
-        <p className="text-gray-500">{t('noNFTDataAvailable')}</p>
+        <Paragraph className="text-dark">{t('noNFTDataAvailable')}</Paragraph>
       </div>
     );
   }
@@ -30,13 +33,13 @@ const BlockchainData = ({ nft }: BlockchainDataProps) => {
   return (
     <div className="rounded-lg bg-background p-2 max-w-2xl">
       {nft.storage_link || nft.preview_link ? (
-        <img
+        <Image
           src={nft.storage_link || nft.preview_link}
           alt="NFT Preview"
           className="w-full rounded-lg mb-8"
         />
       ) : (
-        <div className="w-full h-64 bg-gray-200 rounded-lg mb-8 flex items-center justify-center">
+        <div className="w-full h-64 bg-dark rounded-lg mb-8 flex items-center justify-center">
           <span className="text-content">{t('noPreviewAvailable')}</span>
         </div>
       )}
@@ -46,8 +49,7 @@ const BlockchainData = ({ nft }: BlockchainDataProps) => {
       <div className="space-y-6">
         <div className="grid grid-cols-[auto,24px,1fr] md:grid-cols-[160px,24px,1fr] items-start gap-x-2">
           <span className="text-sm text-dark">{t('policyID')}</span>
-          <Link 
-            href="#"
+          <Button
             className="text-content hover:text-dark"
             onClick={(e) => {
               e.preventDefault();
@@ -55,7 +57,7 @@ const BlockchainData = ({ nft }: BlockchainDataProps) => {
             }}
           >
             <Copy size={16} />
-          </Link>
+          </Button>
           <code className="text-sm text-content font-mono break-all">
             {nft.policy || 'Not available'}
             {copied === 'policy' && <span className="text-content ml-2">Copied!</span>}
@@ -64,8 +66,7 @@ const BlockchainData = ({ nft }: BlockchainDataProps) => {
 
         <div className="grid grid-cols-[auto,24px,1fr] md:grid-cols-[160px,24px,1fr] items-start gap-x-2">
           <span className="text-sm text-dark">{t('assetName')}</span>
-          <Link 
-            href="#"
+          <Button
             className="text-content hover:text-dark"
             onClick={(e) => {
               e.preventDefault();
@@ -73,7 +74,7 @@ const BlockchainData = ({ nft }: BlockchainDataProps) => {
             }}
           >
             <Copy size={16} />
-          </Link>
+          </Button>
           <code className="text-sm text-content font-mono break-all">
             {nft.name || t("unavailable")}
             {copied === 'name' && <span className="text-content ml-2">Copied!</span>}

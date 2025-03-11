@@ -87,6 +87,11 @@ class User extends Authenticatable implements HasMedia
         return $this->hasMany(Review::class);
     }
 
+    public function nfts()
+    {
+        return $this->hasMany(Nft::class);
+    }
+
     public function registerMediaConversions(?Media $media = null): void
     {
         $this->addMediaConversion('thumbnail')

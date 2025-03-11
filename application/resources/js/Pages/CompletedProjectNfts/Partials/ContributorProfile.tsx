@@ -5,10 +5,10 @@ import IdeascaleProfileData = App.DataTransferObjects.IdeascaleProfileData;
 import XIcon from "@/Components/svgs/XIcon";
 import LinkedInIcon from "@/Components/svgs/LinkedInIcons";
 import DiscordIcon from "@/Components/svgs/DiscordIcon";
-import WebIcon from "@/Components/svgs/WebIcon";
+import Image from "@/Components/Image";
 
 interface ContributorProfileProps {
-  contributorProfiles?: App.DataTransferObjects.IdeascaleProfileData[];
+  contributorProfiles?: IdeascaleProfileData[];
 }
 
 const ContributorProfile = ({ contributorProfiles = [] }: ContributorProfileProps) => {
@@ -20,7 +20,7 @@ const ContributorProfile = ({ contributorProfiles = [] }: ContributorProfileProp
       <div className="bg-background rounded-lg p-6">
         <div className="text-center py-8">
           <Title level="3" className="font-semibold mb-2">{t('noContributors')}</Title>
-          <Paragraph className="text-gray-500">{t('noContributorsAvailable')}</Paragraph>
+          <Paragraph className="text-dark">{t('noContributorsAvailable')}</Paragraph>
         </div>
       </div>
     );
@@ -37,7 +37,7 @@ const ContributorProfile = ({ contributorProfiles = [] }: ContributorProfileProp
       <div className="mb-8">
         <div className="flex justify-between items-start mb-4 border-b border-dark pb-4">
           <div className="flex gap-4">
-            <img
+            <Image
               src={mainContributor.hero_img_url}
               alt={mainContributor.name}
               className="w-20 h-20 rounded-full object-cover"
@@ -68,7 +68,7 @@ const ContributorProfile = ({ contributorProfiles = [] }: ContributorProfileProp
               </div>
             </div>
           </div>
-          <span className="bg-green-100 border-2 text-green-600 px-3 py-1 rounded-full text-sm">
+          <span className="bg-success-light border-2 text-success px-3 py-1 rounded-full text-sm">
             {t('minting')}
           </span>
         </div>
@@ -86,7 +86,7 @@ const ContributorProfile = ({ contributorProfiles = [] }: ContributorProfileProp
               {otherContributors.map((contributor, index) => (
                 <div key={contributor.hash || index} className="text-center">
                   <div className="flex justify-center mb-2">
-                    <img
+                    <Image
                       src={contributor.hero_img_url}
                       alt={contributor.name}
                       className="w-20 h-20 rounded-full object-cover border-2 border-success"

@@ -47,6 +47,7 @@
     "mintNFT": "Mint NFT",
     "viewNFT": "View NFT",
     "cantFindNFT": "Can't find NFT for mint",
+    "paymentGateway": "NFT-MAKER PRO Payment Gateway",
     "fundProject": "Funded Project Number",
     "projectTitle": "Project Title",
     "yesVotes": "Yes Votes",
