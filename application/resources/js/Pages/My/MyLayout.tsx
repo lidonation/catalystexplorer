@@ -6,9 +6,12 @@ import UserTab from '../Profile/Partials/UserTab';
 import { generateTabs, myProfileTabs } from '@/utils/routeTabs';
 import { useTranslation } from 'react-i18next';
 import User = App.DataTransferObjects.UserData;
+import { SearchParams } from '../../../types/search-params';
+import { FiltersProvider } from '@/Context/FiltersContext';
 
 interface MyLayoutProps {
     children: ReactNode;
+    filters?: SearchParams;
     dashboard?: any[];
     profile?: any[];
     proposals?: any[];
@@ -18,7 +21,7 @@ interface MyLayoutProps {
     lists?: any[];
 }
 
-export default function MyLayout({ children }: MyLayoutProps) {
+export default function MyLayout({ children, filters }: MyLayoutProps) {
     const { t } = useTranslation();
     const { auth, url } = usePage().props;
     const [activeTab, setActiveTab] = useState('');
@@ -40,6 +43,7 @@ export default function MyLayout({ children }: MyLayoutProps) {
     }, [tabs, url]);
 
     return (
+     <FiltersProvider defaultFilters={filters || {} as SearchParams}>
         <div className="min-h-screen bg-background-lighter px-2">
             <div className="bg-background-lighter px-2">
                 <div className="px-1 sm:px-6 lg:px-2 py-8 ml-4">
@@ -54,5 +58,6 @@ export default function MyLayout({ children }: MyLayoutProps) {
 
             {children}
         </div>
+        </FiltersProvider>
     );
 }
