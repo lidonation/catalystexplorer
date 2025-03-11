@@ -39,7 +39,7 @@ return [
     ],
 
     'lido' => [
-        'api_base_url' => env('LIDO_API_BASE_URL'),
+        'api_base_url' => env('LIDO_API_BASE_URL',),
         'api_key' => env('LIDO_API_KEY'),
     ],
 
