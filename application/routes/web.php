@@ -76,7 +76,6 @@ Route::localized(
                 ->name('group');
         });
 
-
         Route::patch('/profile/update/{field}', [ProfileController::class, 'update'])
             ->name('profile.update.field');
         Route::patch('/profile/socials', [ProfileController::class, 'updateSocials'])
@@ -146,7 +145,6 @@ Route::localized(
                 ->name('update');
         });
 
-
         Route::get('/jormungandr', [JormungandrController::class, 'index'])
             ->name('jormungandr.index');
 
@@ -162,13 +160,14 @@ Route::localized(
                 ->name('index');
         });
 
+        // Dreps
         Route::prefix('/dreps')->as('dreps.')->group(
             function () {
                 Route::get('/', [DrepController::class, 'index'])
                     ->name('index');
 
-                Route::get('/find-a-drep', [DrepController::class, 'show'])
-                    ->name('show');
+                Route::get('/list', [DrepController::class, 'list'])
+                    ->name('list');
             }
         );
     }
