@@ -7,6 +7,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreDrepRequest;
 use App\Http\Requests\UpdateDrepRequest;
 use App\Models\Drep;
+use Inertia\Inertia;
 
 class DrepController
 {
@@ -37,9 +38,11 @@ class DrepController
     /**
      * Display the specified resource.
      */
-    public function show(Drep $drep)
+    public function show()
     {
-        //
+        return Inertia::render('Dreps/DrepList', [
+            'filters' => [],
+        ]);
     }
 
     /**

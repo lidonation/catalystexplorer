@@ -1,9 +1,13 @@
+import Paragraph from '@/Components/atoms/Paragraph';
+import SearchControls from '@/Components/atoms/SearchControls';
+import Title from '@/Components/atoms/Title';
 import Paginator from '@/Components/Paginator';
 import { FiltersProvider } from '@/Context/FiltersContext';
 import { ListProvider } from '@/Context/ListContext';
 import { useMetrics } from '@/Context/MetricsContext';
 import { usePlayer } from '@/Context/PlayerContext';
 import { ParamsEnum } from '@/enums/proposal-search-params';
+import ProposalSortingOptions from '@/lib/ProposalSortOptions';
 import ProposalResults from '@/Pages/Proposals/Partials/ProposalResults';
 import VerticalCardLoading from '@/Pages/Proposals/Partials/ProposalVerticalCardLoading';
 import { PageProps } from '@/types';
@@ -17,11 +21,7 @@ import CardLayoutSwitcher from './Partials/CardLayoutSwitcher';
 import FundFiltersContainer from './Partials/FundFiltersContainer';
 import ProposalFilters from './Partials/ProposalFilters';
 import ProposalHorizontalCardLoading from './Partials/ProposalHorizontalCardLoading';
-import ProposalSortingOptions from '@/lib/ProposalSortOptions';
 import ProposalData = App.DataTransferObjects.ProposalData;
-import Title from '@/Components/atoms/Title';
-import SearchControls from '@/Components/atoms/SearchControls';
-import Paragraph from "@/Components/atoms/Paragraph";
 
 interface HomePageProps extends Record<string, unknown> {
     proposals: PaginatedData<ProposalData[]>;
@@ -42,7 +42,7 @@ export default function Index({
     const { setMetrics } = useMetrics();
 
     const [isHorizontal, setIsHorizontal] = useState(false);
-    const [isMini, setIsMini] = useState(false)
+    const [isMini, setIsMini] = useState(false);
     const [showFilters, setShowFilters] = useState(false);
 
     const [quickPitchView, setQuickPitchView] = useState(
@@ -65,15 +65,17 @@ export default function Index({
         };
     }, [metrics]);
 
-
     return (
         <ListProvider>
-            <FiltersProvider defaultFilters={filters} routerOptions={{ only: ['proposals', 'metrics', 'funds'] }}>
+            <FiltersProvider
+                defaultFilters={filters}
+                routerOptions={{ only: ['proposals', 'metrics', 'funds'] }}
+            >
                 <Head title="Proposals" />
 
                 <header>
                     <div className="container">
-                        <Title level='1'>{t('proposals.proposals')}</Title>
+                        <Title level="1">{t('proposals.proposals')}</Title>
                     </div>
 
                     <div className="container">
@@ -87,7 +89,13 @@ export default function Index({
                     <FundFiltersContainer funds={funds} />
                 </section>
 
-                <SearchControls onFiltersToggle={setShowFilters} sortOptions={ProposalSortingOptions()}/>
+                <section className="container">
+                    <SearchControls
+                        onFiltersToggle={setShowFilters}
+                        sortOptions={ProposalSortingOptions()}
+                        searchPlaceholder={t('searchBar.placeholder')}
+                    />
+                </section>
 
                 <section
                     className={`container flex w-full flex-col items-center justify-center overflow-hidden transition-[max-height] duration-500 ease-in-out ${

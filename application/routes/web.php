@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\CommunityController;
 use App\Http\Controllers\CampaignsController;
 use App\Http\Controllers\ChartsController;
 use App\Http\Controllers\CompletetProjectNftsController;
+use App\Http\Controllers\DrepController;
 use App\Http\Controllers\FundsController;
 use App\Http\Controllers\GroupsController;
 use App\Http\Controllers\NftController;
@@ -160,6 +161,16 @@ Route::localized(
             Route::get('/', [MilestoneController::class, 'index'])
                 ->name('index');
         });
+
+        Route::prefix('/dreps')->as('dreps.')->group(
+            function () {
+                Route::get('/', [DrepController::class, 'index'])
+                    ->name('index');
+
+                Route::get('/find-a-drep', [DrepController::class, 'show'])
+                    ->name('show');
+            }
+        );
     }
 );
 
