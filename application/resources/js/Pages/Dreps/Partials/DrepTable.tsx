@@ -45,13 +45,17 @@ export default function DrepTable({ dreps }: DrepTableProps) {
 
     return (
         <div className="w-full overflow-x-auto overflow-y-auto rounded-t-lg shadow-md">
-            <table className="border-dark/30 w-full border">
+            <table className="w-full">
                 <thead>
                     <tr className="bg-background-lighter border-dark/30 border-b">
                         {tableColumns.map((column, index) => (
                             <th
                                 key={index}
-                                className="text-gray-persist border-dark/30 border px-4 py-2 text-left"
+                                className={`text-gray-persist border-dark/30 px-4 py-2 text-left ${
+                                    index === tableColumns.length - 1
+                                        ? ''
+                                        : 'border-r'
+                                }`}
                             >
                                 {column.label}
                             </th>
@@ -112,7 +116,7 @@ export default function DrepTable({ dreps }: DrepTableProps) {
                                     {drep.status}
                                 </div>
                             </td>
-                            <td className="border-dark/30 border px-4 py-2">
+                            <td className="px-4 py-2">
                                 <Button className="bg-primary text-content-light cursor-pointer rounded px-3 py-1 text-sm">
                                     {t('dreps.drepList.delegate')}
                                 </Button>

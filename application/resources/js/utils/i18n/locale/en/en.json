@@ -612,7 +612,7 @@
             "delegatorsDesc": "Delegators: High to Low",
             "delegatorsAsc": "Delegators: Low to High",
             "votersDesc": "Voters: High to Low",
-            "voterAsc": "Voters: Low to High",
+            "votersAsc": "Voters: Low to High",
             "active": "Active",
             "inactive": "Inactive"
         }
