@@ -1,7 +1,9 @@
 import Paginator from '@/Components/Paginator';
+import SearchControls from '@/Components/atoms/SearchControls';
 import Title from '@/Components/atoms/Title';
 import { FiltersProvider } from '@/Context/FiltersContext';
 import { ListProvider } from '@/Context/ListContext';
+import GroupSortingOptions from '@/lib/GroupSortOptions';
 import { Head, WhenVisible } from '@inertiajs/react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -12,8 +14,6 @@ import GroupCardLoader from './Partials/GroupCardMiniLoader';
 import GroupFilters from './Partials/GroupFilters';
 import GroupList from './Partials/GroupList';
 import GroupData = App.DataTransferObjects.GroupData;
-import SearchControls from '@/Components/atoms/SearchControls';
-import GroupSortingOptions from '@/lib/GroupSortOptions';
 
 interface GroupsPageProps extends Record<string, unknown> {
     groups: PaginatedData<GroupData[]>;
@@ -30,7 +30,7 @@ const Index: React.FC<GroupsPageProps> = ({
     groups,
     filters,
     filterCounts,
-    funds
+    funds,
 }) => {
     const [showFilters, setShowFilters] = useState(false);
     const { t } = useTranslation();
@@ -40,7 +40,7 @@ const Index: React.FC<GroupsPageProps> = ({
             <ListProvider>
                 <FiltersProvider
                     defaultFilters={filters}
-                    routerOptions={{ only: ['groups','funds'] }}
+                    routerOptions={{ only: ['groups', 'funds'] }}
                 >
                     <Head title="Groups" />
 
@@ -58,7 +58,13 @@ const Index: React.FC<GroupsPageProps> = ({
                         <FundFiltersContainer funds={funds} />
                     </section>
 
-                    <SearchControls onFiltersToggle={setShowFilters} sortOptions={GroupSortingOptions()}/>
+                    <section className="container">
+                        <SearchControls
+                            onFiltersToggle={setShowFilters}
+                            sortOptions={GroupSortingOptions()}
+                            searchPlaceholder={t('searchBar.placeholder')}
+                        />
+                    </section>
 
                     <section
                         className={`container flex w-full flex-col items-center justify-center overflow-hidden transition-[max-height] duration-500 ease-in-out ${

@@ -13,6 +13,7 @@ interface SearchBarProps {
     handleSearch: (search: string) => void;
     focusState?: (state: boolean) => void;
     initialSearch?: string;
+    placeholder?: string;
 }
 
 const SearchBar = ({
@@ -21,6 +22,7 @@ const SearchBar = ({
     handleSearch,
     focusState,
     initialSearch,
+    placeholder
 }: SearchBarProps) => {
     const [searchQuery, setSearchQuery] = useState(initialSearch);
     const inputRef = useRef<HTMLInputElement>(null);
@@ -33,8 +35,6 @@ const SearchBar = ({
             inputRef.current.focus();
         }
     }, [autoFocus]);
-
-    const placeholder = t('searchBar.placeholder');
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const newValue = event.target.value;
@@ -51,7 +51,7 @@ const handleClear = useCallback(() => {
 }, []);
 
     return (
-        <div className="w-full">
+        <div className="w-full shadow-md">
             <label className="relative flex w-full items-center gap-2 pl-0">
                 <div className="absolute left-0 flex h-full w-10 items-center justify-center">
                     <SearchLensIcon width={16} className="text-content" />
@@ -60,7 +60,7 @@ const handleClear = useCallback(() => {
                 <TextInput
                     ref={inputRef}
                     placeholder={placeholder}
-                    size={placeholder.length}
+                    size={placeholder?.length}
                     className={`bg-background text-content focus:border-primary w-full rounded-lg border-0 pl-10 shadow-none focus:border-0 ${showRingOnFocus ? 'focus:ring-primary focus:ring-2' : 'focus:ring-0'}`}
                     value={searchQuery}
                     onChange={handleChange}
