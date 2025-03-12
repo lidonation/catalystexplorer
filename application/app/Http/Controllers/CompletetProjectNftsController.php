@@ -136,7 +136,6 @@ class CompletetProjectNftsController extends Controller
     public function getClaimedIdeascaleProfilesProposals()
     {
         $user = $this->user;
-        $user = $this->user;
 
         $args = [];
 
@@ -145,10 +144,6 @@ class CompletetProjectNftsController extends Controller
         $limit = 3;
 
         if ($user) {
-            $claimedIdeascaleIds = IdeascaleProfile::where('claimed_by_id', $user->id)
-                ->pluck('id')
-                ->filter()
-                ->toArray();
             $claimedIdeascaleIds = IdeascaleProfile::where('claimed_by_id', $user->id)
                 ->pluck('id')
                 ->filter()
