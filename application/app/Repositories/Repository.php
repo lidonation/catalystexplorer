@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Repositories;
 
-use App\Contract\RepositoryInterface;
+use App\Contracts\RepositoryInterface;
 use App\Models\Scopes\LimitScope;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
