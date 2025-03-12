@@ -8,10 +8,12 @@ use App\Actions\TransformIdsToHashes;
 use App\DataTransferObjects\ProposalData;
 use App\Enums\ProposalSearchParams;
 use App\Models\Fund;
+use App\Models\IdeascaleProfile;
 use App\Models\Proposal;
 use App\Repositories\ProposalRepository;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Fluent;
 use Illuminate\Support\Stringable;
 use Inertia\Inertia;
@@ -86,6 +88,33 @@ class ProposalsController extends Controller
                 'awardedUSD' => $this->sumDistributedUSD,
                 'awardedADA' => $this->sumDistributedADA,
             ],
+        ]);
+    }
+
+    public function myProposals(Request $request): Response
+    {
+        $userId = Auth::id();
+        $ideascaleProfile = IdeascaleProfile::where('claimed_by_id', operator: $userId)->first();
+
+        if (! $ideascaleProfile) {
+            return Inertia::render('My/Proposals/Index', [
+                'proposals' => [
+                    'data' => [],
+                ],
+            ]);
+        }
+
+        $request->merge([
+            ProposalSearchParams::IDEASCALE_PROFILES()->value => [$ideascaleProfile->hash],
+        ]);
+
+        $this->getProps($request);
+
+        $proposals = $this->query();
+
+        return Inertia::render('My/Proposals/Index', [
+            'proposals' => $proposals,
+            'filters' => $this->queryParams,
         ]);
     }
 

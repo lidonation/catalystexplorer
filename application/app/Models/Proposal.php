@@ -462,6 +462,7 @@ class Proposal extends Model
 
                 return [
                     'id' => $u->id,
+                    'hash' => $u->hash,
                     'ideascale_id' => $u->ideascale_id,
                     'username' => $u->username,
                     'name' => $u->name,

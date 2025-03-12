@@ -19,39 +19,56 @@ export default function IdeascaleProfileUsers({
     toolTipProps,
 }: PageProps<IdeascaleProfileUsers>) {
     const { t } = useTranslation();
-
+    
     // Limit the users array to the first 5
     const visibleUsers = users?.slice(0, 5);
     const remainingCount = users?.length - visibleUsers?.length;
-
+    
     const baseRoute = useLocalizedRoute('ideascaleProfiles.index');
-
+    
     const handleGenerateLink = () => {
         const userQuery = users.map((user) => user.name).join(',');
         const finalLink = `${baseRoute}?q=${encodeURIComponent(userQuery)}`;
-
+        
         window.location.href = finalLink;
     };
-
+    
+    // State for the "See all" tooltip
     const [isHovered, setIsHovered] = useState(false);
-
+    
+    // State to track which user is being hovered (using index since id might not be available)
+    const [hoveredUserIndex, setHoveredUserIndex] = useState<number | null>(null);
+    
     return (
         <section
             className={`relative flex`}
             aria-labelledby="team-heading"
-            onMouseEnter={() => setIsHovered(true)}
-            onMouseLeave={() => setIsHovered(false)}
         >
             <ul className="flex cursor-pointer -space-x-2 py-1.5">
                 {visibleUsers?.map((user, index) => (
-                    <li key={index} onClick={() => onUserClick(user)}>
+                    <li 
+                        key={index} 
+                        onClick={() => onUserClick(user)}
+                        onMouseEnter={() => setHoveredUserIndex(index)}
+                        onMouseLeave={() => setHoveredUserIndex(null)}
+                        className="relative"
+                    >
                         <UserAvatar
                             size="size-8"
                             imageUrl={user.hero_img_url}
                         />
+                        
+                        {/* User name tooltip on hover */}
+                        {hoveredUserIndex === index && (
+                            <div className="absolute bottom-full left-1/2 z-50 mb-2 -translate-x-1/2 transform">
+                                <div className="text-content text-xs rounded py-1 px-2 whitespace-nowrap">
+                                    {user.name || t('anonymous')}
+                                </div>
+                            </div>
+                        )}
                     </li>
                 ))}
-
+                
                 {remainingCount > 0 && (
                     <li className="relative">
                         <div
@@ -62,7 +79,7 @@ export default function IdeascaleProfileUsers({
                         >
                             {`+${remainingCount}`}
                         </div>
-
+                        
                         {isHovered && (
                             <div className="absolute bottom-full left-1/2 z-50 mb-2 -translate-x-1/2 transform">
                                 <ToolTipHover props={toolTipProps} />

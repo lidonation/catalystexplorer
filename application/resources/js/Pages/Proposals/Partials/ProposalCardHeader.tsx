@@ -2,6 +2,8 @@ import Title from '@/Components/atoms/Title';
 import { ListProvider } from '@/Context/ListContext';
 import BookmarkButton from '@/Pages/My/Bookmarks/Partials/BookmarkButton';
 import ProposalStatus from './ProposalStatus';
+import Button from '@/Components/atoms/Button';
+import {Link} from "@inertiajs/react";
 
 export default function ProposalCardHeader({
     proposal,
@@ -32,8 +34,8 @@ export default function ProposalCardHeader({
                 <div className="flex items-center justify-between px-4 py-3">
                     {userSelected ? (
                         <div>
-                            <button
-                                className="absolute top-4 right-4 rounded-lg bg-gray-600/50 p-2 text-white transition duration-200 ease-in-out hover:bg-gray-500/70 focus:outline-hidden"
+                            <Button
+                                className="absolute top-4 right-4 rounded-lg bg-background p-2 text-white transition duration-200 ease-in-out hover:bg-background focus:outline-hidden"
                                 onClick={noSelectedUser}
                             >
                                 <svg
@@ -50,14 +52,14 @@ export default function ProposalCardHeader({
                                         d="M6 18L18 6M6 6l12 12"
                                     />
                                 </svg>
-                            </button>
+                            </Button>
                             <div className="relative flex items-center space-x-4 pt-16">
                                 <img
                                     src={userSelected?.hero_img_url}
                                     alt={`${userSelected?.name}'s profile`}
                                     className="relative inline-block h-10 w-10 rounded-full ring-2 ring-white"
                                 />
-                                <Title level="3">{userSelected?.name}</Title>
+                                <Title level="4">{userSelected?.name}</Title>
                             </div>
                         </div>
                     ) : (
@@ -108,28 +110,28 @@ export default function ProposalCardHeader({
                         aria-label="Related Platforms"
                     >
                         {proposal.ideascale_link && (
-                            <a
+                            <Link
                                 href={proposal.ideascale_link}
                                 className="text-4 text-opacity-100 flex w-full items-center justify-center"
                                 target="_blank"
                                 rel="noopener noreferrer"
                             >
                                 <span>Ideascale</span>
-                            </a>
+                            </Link>
                         )}
                         {proposal.ideascale_link &&
                             proposal.projectcatalyst_io_link && (
                                 <div className="mx-2 h-3 border-r"></div>
                             )}
                         {proposal.projectcatalyst_io_link && (
-                            <a
+                            <Link
                                 href={proposal.projectcatalyst_io_link}
                                 className="text-4 text-opacity-100 flex w-full items-center justify-center"
                                 target="_blank"
                                 rel="noopener noreferrer"
                             >
                                 <span>Projectcatalyst.io</span>
-                            </a>
+                            </Link>
                         )}
                     </nav>
                 )}

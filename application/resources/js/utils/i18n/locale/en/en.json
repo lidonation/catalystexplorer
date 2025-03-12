@@ -22,6 +22,10 @@
     "comingSoon": "Coming Soon",
     "cookies": "Cookies",
     "copyright": "© 2024 Catalyst Explorer. All rights reserved.",
+    "minting": "You're Minting",
+    "loginToMint": "Login to Mint",
+    "mustBeProposer": "Must Be Proposer",
+    "copied": "Copied",
     "data": "Data",
     "dReps": "DReps",
     "email": "Email",
@@ -41,6 +45,9 @@
     "monthlyReports": "Monthly Reports",
     "metaTitle": "Meta Data Preview",
     "mintNFT": "Mint NFT",
+    "viewNFT": "View NFT",
+    "cantFindNFT": "Can't find NFT for mint",
+    "paymentGateway": "NFT-MAKER PRO Payment Gateway",
     "fundProject": "Funded Project Number",
     "projectTitle": "Project Title",
     "yesVotes": "Yes Votes",
@@ -100,6 +107,14 @@
     "verificationCode": "CODE$:",
     "verificationInstructions": "To verify your ownership of this profile, please send a personal message to Lido Nation on Ideascale and include the code above.",
     "goToIdeascale": "Go to Ideascale",
+    "proposal": "Proposal",
+    "noNFTDataAvailable": "No NFT data available",
+    "noPreviewAvailable": "No preview available",
+    "chooseMetaDataDescription": "Choose your own MetaData",
+    "metadataStrikeInstruction": "You may strike through metadata by clicking the X icon. Struck-through information will be excluded from the final mint.",
+    "nftPaymentGatewayTitle": "NFT-MAKER PRO Payment Gateway",
+    "artistRole": "Artist",
+    "cantFindNFTForMint": "Can't find NFT for mint",
     "error404": {
         "mainText": "Sorry, we couldn't find what you're looking for",
         "subText": "Let's Find Your Way Back!"
@@ -277,6 +292,10 @@
         "CSVs": "Proposal CSVs",
         "totalProposals": "Total Proposals",
         "viewTeam": "View Team",
+        "action": "Action",
+        "status": "Status",
+        "fundingReceived": "Funding Received",
+        "manageProposal": "Manage Proposal",
         "errors": {
             "noUrl": "No video URL provided",
             "invalidYoutubeFormat": "The YouTube link format is incorrect",
@@ -484,7 +503,9 @@
             "usd": "USD Icon",
             "tick": "Tick Icon",
             "x": "X",
-            "web": "Web"
+            "web": "Web",
+            "arrowDown": "Arrow Down Icon",
+            "arrowUp": "Arrow Up Icon"
         }
     },
     "users": {
