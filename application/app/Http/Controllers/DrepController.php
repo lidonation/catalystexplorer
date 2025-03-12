@@ -38,7 +38,7 @@ class DrepController
     /**
      * Display the specified resource.
      */
-    public function show()
+    public function list()
     {
         return Inertia::render('Dreps/DrepList', [
             'filters' => [],

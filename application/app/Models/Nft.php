@@ -28,7 +28,7 @@ class Nft extends Model implements CardanoNftInterface
         'name',
         'description',
     ];
-    
+
     // Add appended attributes needed by NftServiceTrait
     protected $appends = [
         'maker_project_uuid',
