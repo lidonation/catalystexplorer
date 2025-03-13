@@ -13,7 +13,6 @@ use App\DataTransferObjects\ReviewData;
 use App\Enums\IdeascaleProfileSearchParams;
 use App\Enums\ProposalSearchParams;
 use App\Models\Campaign;
-use App\Models\Fund;
 use App\Models\IdeascaleProfile;
 use App\Models\ProposalMilestone;
 use App\Repositories\IdeascaleProfileRepository;

@@ -22,7 +22,7 @@ export default function Cam({ ideascaleProfile, campaigns }: CamPageProps) {
 
             <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
                 <div className="flex flex-col items-center justify-center">
-                    {campaigns ? (
+                    {campaigns && campaigns.length > 0 ? (
                         <WhenVisible
                             fallback={<CampaignLoader />}
                             data="campaigns"
