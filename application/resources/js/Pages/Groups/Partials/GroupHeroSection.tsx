@@ -1,12 +1,14 @@
 import Image from '@/Components/Image';
 import GroupData = App.DataTransferObjects.GroupData;
 import Button from '@/Components/atoms/Button';
+import { useTranslation } from 'react-i18next';
 
 interface HeroSectionProps extends Record<string, unknown> {
     group: GroupData;
 }
 
 const GroupHeroSection: React.FC<HeroSectionProps> = ({ group }) => {
+    const { t } = useTranslation();
     return (
         <div className="bg-primary relative mx-auto flex h-40 w-full items-center justify-center rounded-xl">
             {/*<img*/}
@@ -15,7 +17,7 @@ const GroupHeroSection: React.FC<HeroSectionProps> = ({ group }) => {
             {/*    className="h-full w-full object-cover"*/}
             {/*/>*/}
             <Button className="absolute top-2 right-2 bg-success text-white py-1 px-3 rounded">
-                Manage Group
+                {t('groups.manageGroup')}
             </Button>
 
             <div className="border-background-lighter absolute bottom-[-25px] left-1/2 -translate-x-1/2 transform rounded-full border-4">
