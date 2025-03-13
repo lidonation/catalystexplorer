@@ -120,11 +120,6 @@ Route::localized(
             });
         });
 
-        Route::prefix('/catalyst-txns')->as('catalystTxns.')->group(function () {
-            Route::get('/', [TransactionController::class, 'index'])->name('index');
-            Route::get('/{catalystTransaction}', [TransactionController::class, 'show'])->name('show');
-        });
-
         Route::prefix('/reviews')->as('reviews.')->group(function () {
             Route::get('/', [ReviewsController::class, 'index'])
                 ->name('index');
@@ -151,8 +146,17 @@ Route::localized(
                 ->name('update');
         });
 
-        Route::get('/jormungandr', [JormungandrController::class, 'index'])
-            ->name('jormungandr.index');
+        Route::prefix('jormungandr')->as('jormungandr.')->group(function () {
+            Route::get('/', [JormungandrController::class, 'index'])
+                ->name('index');
+
+            Route::prefix('/transactions')->as('transactions.')->group(function () {
+                Route::get('/', [TransactionController::class, 'index'])
+                    ->name('index');
+                Route::get('/{catalystTransaction}', [TransactionController::class, 'show'])
+                    ->name('show');
+            });
+        });
 
         Route::get('/voter-tool', [VoterToolController::class, 'index'])
             ->name('voter-tool.index');
