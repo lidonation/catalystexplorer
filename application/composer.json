@@ -32,6 +32,7 @@
         "maatwebsite/excel": "^3.1",
         "meilisearch/meilisearch-php": "^1.11",
         "myclabs/deep-copy": "^1.13",
+        "outl1ne/nova-translatable": "^3.0",
         "revolution/laravel-google-sheets": "^7.1",
         "saloonphp/laravel-plugin": "^3.0",
         "saloonphp/pagination-plugin": "^2.0",

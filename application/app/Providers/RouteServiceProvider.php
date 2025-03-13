@@ -50,7 +50,7 @@ class RouteServiceProvider extends ServiceProvider
                     "{$locale}.ideascaleProfiles.communities",
                     "{$locale}.ideascaleProfiles.milestones",
                     "{$locale}.ideascaleProfiles.reports",
-                    "{$locale}.ideascaleProfiles.cam",
+                    "{$locale}.ideascaleProfiles.campaigns",
                     "{$locale}.ideascaleProfiles.connections" => IdeascaleProfile::class,
 
                     default => null,

@@ -7,6 +7,7 @@ namespace App\Nova;
 use App\Invokables\TruncateValue;
 use App\Models\Tx;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Fields\DateTime;
 use Laravel\Nova\Fields\ID;
@@ -53,7 +54,7 @@ class Txs extends Resource
             ID::make(__('ID'), 'id')->sortable(),
             Text::make(__('Hash'))->sortable()
                 ->displayUsing(new TruncateValue($request)),
-            BelongsTo::make('Author', 'author', User::class)->searchable()->hideFromIndex()
+            BelongsTo::make('Author', 'author', Users::class)->searchable()->hideFromIndex()
                 ->default(function () {
                     return Auth::id();
                 }),

@@ -6,7 +6,10 @@ namespace App\Nova;
 
 use App\Enums\StatusEnum;
 use App\Models\Group;
+use App\Nova\Actions\MakeSearchable;
+use App\Nova\Actions\UpdateModelMedia;
 use Ebess\AdvancedNovaMediaLibrary\Fields\Images;
+use Laravel\Nova\Actions\Action;
 use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Fields\BelongsToMany;
 use Laravel\Nova\Fields\Field;
@@ -99,6 +102,19 @@ class Groups extends Resource
                 ->enableExistingMedia(),
             Images::make(__('Banner'), 'banner')
                 ->enableExistingMedia(),
+        ];
+    }
+
+    /**
+     * Get the actions available for the resource.
+     *
+     * @return array<int, Action>
+     */
+    public function actions(NovaRequest $request): array
+    {
+        return [
+            (new UpdateModelMedia),
+            (new MakeSearchable),
         ];
     }
 }

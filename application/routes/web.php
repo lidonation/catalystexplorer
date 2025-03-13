@@ -114,8 +114,8 @@ Route::localized(
                 Route::get('/reports', [IdeascaleProfilesController::class, 'show'])
                     ->name('reports');
 
-                Route::get('/cam', [IdeascaleProfilesController::class, 'show'])
-                    ->name('cam');
+                Route::get('/campaigns', [IdeascaleProfilesController::class, 'show'])
+                    ->name('campaigns');
             });
         });
 

@@ -3,6 +3,7 @@
 use App\Http\Controllers\My\MyBookmarksController;
 use App\Http\Controllers\ProposalsController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\GroupsController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -40,16 +41,15 @@ Route::localized(
                     return Inertia::render('My/Dashboard');
                 })->name('dashboard');
 
-                Route::get('/groups', function () {
-                    return Inertia::render('My/Groups/Index');
-                })->name('groups');
+                Route::get('/groups', [GroupsController::class, 'myGroups'])->name('groups');
 
                 Route::get('/lists', function () {
                     return Inertia::render('My/Lists/Index');
                 })->name('lists');
 
-                Route::get('/profile', [ProfileController::class, 'edit'])
-                    ->name('profile');
+                Route::get('/profile', function () {
+                    return Inertia::render('My/Profile/Index');
+                })->name('profile');
 
                 Route::prefix('proposals')->as('proposals.')->group(function () {
                     Route::get('/', [ProposalsController::class, 'myProposals'])->name('index');
