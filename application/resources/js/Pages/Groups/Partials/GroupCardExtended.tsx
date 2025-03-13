@@ -9,29 +9,35 @@ import { useTranslation } from 'react-i18next';
 import { Segments } from '../../../../types/segments';
 import GroupHeroSection from './GroupHeroSection';
 import GroupData = App.DataTransferObjects.GroupData;
+import Paragraph from '@/Components/atoms/Paragraph';
 
 interface GroupCardFullProps {
     group: GroupData;
+    children?: React.ReactNode;
 }
 
 const GroupCardExtended: React.FC<GroupCardFullProps> = ({ group }) => {
     const { t } = useTranslation();
 
+    const completedGroupsCount = group?.completed_proposals_count ?? 0;
+    const FundedGroupssCount = group?.funded_proposals_count ?? 0;
+    const UnfundedGroupsCount = group?.unfunded_proposals_count ?? 0;
+
     const segments = [
         {
             label: 'Completed',
             color: 'bg-success',
-            value: group?.proposals_completed,
+            value: completedGroupsCount,
         },
         {
             label: 'Funded',
             color: 'bg-warning',
-            value: group?.proposals_funded,
+            value: FundedGroupssCount,
         },
         {
             label: 'Unfunded',
             color: 'bg-primary',
-            value: group?.proposals_unfunded,
+            value: UnfundedGroupsCount,
         },
     ] as Segments[];
 
@@ -54,7 +60,7 @@ const GroupCardExtended: React.FC<GroupCardFullProps> = ({ group }) => {
             <div className="mt-4 p-3">
                 <div className="flex w-full flex-col items-center gap-4">
                     <Link
-                        href={useLocalizedRoute('groups.group', {
+                        href={useLocalizedRoute('groups.group.index', {
                             group: group?.slug,
                         })}
                         className="flex w-full justify-center"
@@ -82,9 +88,9 @@ const GroupCardExtended: React.FC<GroupCardFullProps> = ({ group }) => {
                                 )}
                             </p>
                         </div>
-                        <p className="text-3 text-gray-persist">
+                        <Paragraph className="text-3 text-gray-persist text-left">
                             {t('groups.totalRequested')}
-                        </p>
+                        </Paragraph>
                     </div>
                     <div>
                         <p className="text-1 font-bold">
@@ -97,7 +103,7 @@ const GroupCardExtended: React.FC<GroupCardFullProps> = ({ group }) => {
                 </div>
 
                 <div className="border-content-light mt-4 border-t border-b pt-4 pb-4">
-                    <SegmentedBar segments={segments} tooltipSegments={segments}/>
+                    <SegmentedBar segments={segments} tooltipSegments={segments} />
                     <ul className="mt-2 flex w-full justify-between">
                         {segments.map((segment, index) => (
                             <li
@@ -141,9 +147,9 @@ const GroupCardExtended: React.FC<GroupCardFullProps> = ({ group }) => {
                             />
                         )}
                     </div>
-                    <p className="text-3 text-gray-persist mt-1">
+                    <Paragraph className="text-3 text-gray-persist mt-1 text-left">
                         {t('groups.awardedVsRequested')}
-                    </p>
+                    </Paragraph>
                 </div>
 
                 <div>
@@ -170,9 +176,9 @@ const GroupCardExtended: React.FC<GroupCardFullProps> = ({ group }) => {
                         )}
                     </div>
 
-                    <p className="text-3 text-gray-persist mt-1">
+                    <Paragraph className="text-3 text-gray-persist mt-1 text-left">
                         {t('groups.receivedVsAwarded')}
-                    </p>
+                    </Paragraph>
                 </div>
             </div>
         </div>
