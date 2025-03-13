@@ -108,6 +108,7 @@ class CompletetProjectNftsController extends Controller
 
     public function show(Request $request, Proposal $proposal): Response
     {
+
         $user = $this->user;
         $nft = null;
         $artist = null;

@@ -6,7 +6,6 @@ namespace App\Nova;
 
 use App\Enums\StatusEnum;
 use App\Models\Discussion as DiscussionModel;
-use App\Models\User;
 use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Fields\DateTime;
 use Laravel\Nova\Fields\ID;
@@ -28,7 +27,7 @@ class Discussion extends Resource
         return [
             ID::make()->sortable(),
 
-            BelongsTo::make('User', 'user', User::class)
+            BelongsTo::make('User', 'user', Users::class)
                 ->nullable()
                 ->sortable(),
 

@@ -46,7 +46,9 @@ class SyncNftWithNMKRJob implements ShouldQueue
             $this->createNFT($this->nft);
         } catch (\JsonException|FatalRequestException|RequestException $e) {
             Log::error($e->getResponse()?->body());
-            throw new \Exception($e->getResponse()?->body());
+
+            return;
+            // throw new \Exception($e->getResponse()?->body());
         }
     }
 
@@ -73,7 +75,7 @@ class SyncNftWithNMKRJob implements ShouldQueue
      * @throws RequestException
      * @throws \JsonException
      */
-    public function createNft(Nft $nft): string
+    public function createNft(Nft $nft): void
     {
         if ($this->projectUid) {
             $this->nft->saveMeta('nmkr_project_uid', $this->projectUid, null, true);
@@ -112,7 +114,7 @@ class SyncNftWithNMKRJob implements ShouldQueue
             'metadataPlaceholder' => $metadataPlaceholder,
         ];
 
-        $req = $this->nft->uploadNft(MetadataUpload::from($metadata));
+        $req = $this->nft->uploadNMKRNft(MetadataUpload::from($metadata));
 
         $response = $req->json();
         $metadata = json_decode($response['metadata'], true);
@@ -134,7 +136,6 @@ class SyncNftWithNMKRJob implements ShouldQueue
             $this->nft->saveMeta('nmkr_metadata', $metadata, null, true);
         }
 
-        return $req;
     }
 
     private function deleteExistingNft()
@@ -144,7 +145,7 @@ class SyncNftWithNMKRJob implements ShouldQueue
         $metadata = $this->nft->metas()->where('key', 'nmkr_metadata')->first();
 
         if ($uidMeta instanceof Meta) {
-            $response = $this->nft->deleteNft();
+            $response = $this->nft->deleteNMKRNft();
 
             if ($response->successful()) {
                 $uidMeta->delete();
@@ -173,7 +174,7 @@ class SyncNftWithNMKRJob implements ShouldQueue
 
     private function saveMetaDataToNMKR(array $metadata): string
     {
-        $req = $this->nft->updateNft($metadata);
+        $req = $this->nft->updateNMKRNft($metadata);
 
         return $req->json('metadata');
     }
