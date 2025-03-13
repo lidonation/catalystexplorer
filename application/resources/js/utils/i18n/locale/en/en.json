@@ -423,6 +423,7 @@
         "completed": "Completed",
         "funded": "Funded",
         "unfunded": "Unfunded",
+        "manageGroup": "Manage Group",
         "awardedVsRequested": "Awarded vs Requested",
         "receivedVsAwarded": "Received vs Awarded",
         "reviews": "Reviews",
