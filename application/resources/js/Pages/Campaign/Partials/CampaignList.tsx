@@ -1,23 +1,22 @@
 import React from "react";
-import CampaignCard from "./CampaignCard";
 import CampaignData = App.DataTransferObjects.CampaignData;
-import FundData = App.DataTransferObjects.FundData;
 
 interface CampaignProps {
-    campaigns: CampaignData[]
-    fund: FundData;
+    campaigns: CampaignData[],
+    children?: (campaign: CampaignData) => React.ReactNode;
+    className?: string
 }
 
 const CampaignList: React.FC<CampaignProps> = ({
     campaigns,
-    fund
+    children,
+    className
 }) => {
     return (
-        <div className="grid w-full grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
-            {campaigns &&
-                campaigns?.map((campaign) => (
-                    <CampaignCard key={campaign?.hash} fund={fund} campaign={campaign}/>
-                ))}
+        <div className={`grid w-full grid-cols-1 gap-6 md:grid-cols-2 xl:${className}`}>
+             {campaigns.map((campaign) =>
+                children ? children(campaign) : null
+            )}
 
         </div>
     )

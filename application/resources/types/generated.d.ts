@@ -63,6 +63,7 @@ completed_proposals_count: number | null;
 total_requested: number | null;
 total_awarded: number | null;
 total_distributed: number | null;
+fund: FundData | null;
 };
 export type CommunityData = {
 hash: string | null;
@@ -187,7 +188,7 @@ funded_proposals_count?: number;
 unfunded_proposals_count?: number;
 proposals_count?: number;
 collaborating_proposals_count?: number;
-groups?: Array<GroupData>;
+groups?: Array<any>;
 };
 export type LocationData = {
 hash: string | null;
@@ -374,7 +375,6 @@ model_type: string | null;
 title?: string;
 content: string;
 status: string | null;
-published_at?: string;
 type: string | null;
 ranking_total: number | null;
 helpful_total: number | null;
