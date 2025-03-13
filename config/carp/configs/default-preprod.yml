@@ -1,0 +1,15 @@
+source:
+  type: oura
+  socket: '/app/node-ipc/node.socket'
+  bearer: Unix
+
+sink:
+  type: cardano
+  db:
+    type: postgres
+    database_url: postgresql://carp:v8hlDV0yMAHHlIurYupj@catalystexplorer.cardanodb:5434/carp_preprod
+  network: preprod
+
+# start_block: 6ce4038a860a50034fff6fbb78ebbac342c7536e43e01c923b9546cc0cbdc57f
+
+

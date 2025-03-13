@@ -166,8 +166,16 @@
         background-color: var(--cx-background);
     }
 
+    .bg-background-lighter {
+        background-color: var(--cx-background-lighter);
+    }
+
     .text-content {
         color: var(--cx-content);
+    }
+
+    .text-content-light {
+        color: var(--cx-content-light);
     }
 
     .text-primary {
