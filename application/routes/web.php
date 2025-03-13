@@ -16,6 +16,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProposalsController;
 use App\Http\Controllers\ReviewsController;
 use App\Http\Controllers\SearchController;
+use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\VoterToolController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -119,6 +120,11 @@ Route::localized(
             });
         });
 
+        Route::prefix('/catalyst-txns')->as('catalystTxns.')->group(function () {
+            Route::get('/', [TransactionController::class, 'index'])->name('index');
+            Route::get('/{catalystTransaction}', [TransactionController::class, 'show'])->name('show');
+        });
+
         Route::prefix('/reviews')->as('reviews.')->group(function () {
             Route::get('/', [ReviewsController::class, 'index'])
                 ->name('index');
@@ -184,3 +190,4 @@ require __DIR__ . '/dashboard.php';
 require __DIR__ . '/api.php';
 
 Route::fallback(\CodeZero\LocalizedRoutes\Controllers\FallbackController::class);
+

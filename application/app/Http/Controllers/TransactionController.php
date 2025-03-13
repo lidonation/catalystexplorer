@@ -6,7 +6,9 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreTransactionRequest;
 use App\Http\Requests\UpdateTransactionRequest;
+use App\Models\CatalystTransaction;
 use App\Models\Transaction;
+use Inertia\Inertia;
 
 class TransactionController
 {
@@ -15,7 +17,47 @@ class TransactionController
      */
     public function index()
     {
-        //
+        try {
+            $catalystTransactions = CatalystTransaction::query()
+                ->when(request('label'), function ($query, $label) {
+                    return $query->whereRaw('metadata_labels::jsonb @> ?', [json_encode([(int) $label])]);
+                })
+                ->orderBy('block_id', 'desc')
+                ->paginate(10);
+
+            $catalystTransactions->getCollection()->transform(function ($transaction) {
+                $transaction->metadata = json_decode($transaction->metadata, true);
+
+                $labels = [
+                    61284 => 'Catalyst voting registration',
+                    61285 => 'Catalyst voting submission',
+                    61286 => 'Catalyst voting rewards',
+                ];
+
+                $labelIds = json_decode($transaction->metadata_labels ?? '[]', true);
+                $transaction->label_names = collect($labelIds)->map(function ($labelId) use ($labels) {
+                    return $labels[$labelId] ?? 'Unknown';
+                })->toArray();
+
+                return $transaction;
+            });
+
+            $metadataLabels = [
+                61284 => 'Catalyst voting registration',
+                61285 => 'Catalyst voting submission',
+                61286 => 'Catalyst voting rewards',
+            ];
+
+            return Inertia::render('Transactions/Index', [
+                'catalystTransactions' => $catalystTransactions,
+                'metadataLabels' => $metadataLabels,
+            ]);
+        } catch (\Exception $e) {
+            // Log the error
+            logger()->error('Catalyst Transaction error: '.$e->getMessage());
+
+            return response()->json(['error' => 'An error occurred while fetching the transactions'], 500);
+        }
     }
 
     /**
@@ -37,10 +79,32 @@ class TransactionController
     /**
      * Display the specified resource.
      */
-    public function show(Transaction $transaction)
+    public function show(CatalystTransaction $catalystTransaction)
     {
-        //
+        $labels = [
+            61284 => 'Catalyst voting registration',
+            61285 => 'Catalyst voting submission',
+            61286 => 'Catalyst voting rewards',
+        ];
+
+        // Get all labels as an array
+        $labelIds = json_decode($catalystTransaction->metadata_labels ?? '[]', true);
+        $labelNames = collect($labelIds)->map(function ($labelId) use ($labels) {
+            return [
+                'id' => $labelId,
+                'name' => $labels[$labelId] ?? 'Unknown',
+            ];
+        })->toArray();
+
+        return Inertia::render('Transactions/TxDetail', [
+            'transaction' => $catalystTransaction,
+            'metadataLabels' => $labelNames,
+        ]);
     }
+    // public function show(Transaction $transaction)
+    // {
+    //     //
+    // }
 
     /**
      * Show the form for editing the specified resource.

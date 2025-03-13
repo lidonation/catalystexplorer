@@ -1,0 +1,14 @@
+[
+  {
+    "transaction_metadatum_label": 61284,
+    "description": "CIP-0015 - Catalyst registration"
+  },
+  {
+    "transaction_metadatum_label": 61285,
+    "description": "CIP-0015 - Catalyst witness"
+  },
+  {
+    "transaction_metadatum_label": 61286,
+    "description": "CIP-0015 - Catalyst deregistration"
+  }
+]
