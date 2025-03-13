@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Factories;
 
 use App\Models\Fund;
@@ -33,6 +35,14 @@ class ReviewerReputationScoreFactory extends Factory
             },
             'deleted_at' => null,
         ];
+    }
+    public function forReviwer(Reviewer $reviewer): self
+    {
+       return $this->state(function (array $attributes) use ($reviewer) {
+           return [
+               'reviewer_id' => $reviewer->id
+           ];
+       });
     }
     public function forFund(Fund $fund): self
     {
