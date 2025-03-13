@@ -49,7 +49,7 @@ const CampaignCardMini: React.FC<CampaignCardMiniProps> = ({fund, campaign}) => 
     };
 
     return (
-        <Card className='p-2 rounded-xl'>
+        <Card className='rounded-xl'>
             <div className="bg-content-light h-60 overflow-hidden rounded-lg">
                 {heroImageUrl ? (
                     <img
