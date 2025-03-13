@@ -133,7 +133,7 @@ class IdeascaleProfilesController extends Controller
         }
 
         if (str_contains($path, '/cam')) {
-            return Inertia::render('IdeascaleProfile/Cam/Index', [
+            return Inertia::render('IdeascaleProfile/Campaigns/Index', [
                 'ideascaleProfile' => IdeascaleProfileData::from($ideascaleProfileData),
                 'campaigns' => CampaignData::collect(
                     Campaign::whereIn('id', $ideascaleProfile->proposals()->pluck('campaign_id'))->withCount([
