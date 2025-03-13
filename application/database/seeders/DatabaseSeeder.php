@@ -29,6 +29,7 @@ class DatabaseSeeder extends Seeder
             RegistrationSeeder::class,
             DelegationSeeder::class,
             ModerationSeeder::class,
+            ReviewerReputationScoreSeeder::class,
             VoterSeeder::class,
             SnapshotSeeder::class,
             TransactionSeeder::class,
