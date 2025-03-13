@@ -1,22 +1,23 @@
 <?php
 
-use App\Http\Controllers\Api\CommunityController;
-use App\Http\Controllers\CampaignsController;
-use App\Http\Controllers\ChartsController;
-use App\Http\Controllers\CompletetProjectNftsController;
-use App\Http\Controllers\FundsController;
-use App\Http\Controllers\GroupsController;
-use App\Http\Controllers\HomeController;
-use App\Http\Controllers\IdeascaleProfilesController;
-use App\Http\Controllers\JormungandrController;
-use App\Http\Controllers\MilestoneController;
-use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\ProposalsController;
-use App\Http\Controllers\ReviewsController;
-use App\Http\Controllers\SearchController;
-use App\Http\Controllers\VoterToolController;
-use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\FundsController;
+use App\Http\Controllers\ChartsController;
+use App\Http\Controllers\GroupsController;
+use App\Http\Controllers\SearchController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ReviewsController;
+use App\Http\Controllers\CampaignsController;
+use App\Http\Controllers\MilestoneController;
+use App\Http\Controllers\ProposalsController;
+use App\Http\Controllers\VoterToolController;
+use App\Http\Controllers\WorkflowsController;
+use App\Http\Controllers\JormungandrController;
+use App\Http\Controllers\Api\CommunityController;
+use App\Http\Controllers\IdeascaleProfilesController;
+use App\Http\Controllers\CompletetProjectNftsController;
 
 Route::localized(
     function () {
@@ -72,6 +73,12 @@ Route::localized(
 
             Route::get('/{community:slug}', [CommunityController::class, 'community'])
                 ->name('group');
+        });
+
+
+        Route::prefix('/workflows')->as('communities.')->group(function () {
+            Route::get('/{workflow}/step/{step}', [WorkflowsController::class, 'index'])
+                ->name('index');
         });
 
 

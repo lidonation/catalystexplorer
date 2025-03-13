@@ -18,7 +18,7 @@ import VerificationCard from './VerificationCard';
 import IdeascaleProfileData = App.DataTransferObjects.IdeascaleProfileData;
 import ProposalData = App.DataTransferObjects.ProposalData;
 
-interface ProfileWorkflowProps {
+export interface ProfileWorkflowProps {
     user: { name: string };
     proposals: PaginatedData<ProposalData[]>;
     profiles: PaginatedData<IdeascaleProfileData[]>;

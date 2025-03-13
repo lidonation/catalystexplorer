@@ -16,7 +16,7 @@
     "communities": "Communities",
     "confirmPassword": "Confirm Password",
     "connect": "Connect",
-    "updatePassword" : "Update Password",
+    "updatePassword": "Update Password",
     "currentPassword": "Current Password",
     "connectWallet": "Connect wallet",
     "comingSoon": "Coming Soon",
@@ -113,15 +113,13 @@
         "contactEmail": "support@lidonation.com",
         "appLogoAlt": "Catalyst Explorer logo."
     },
-
-    "buttons":{
-        "titles":{
-            "claim":"Claim Button",
-            "claimed":"Claimed Button",
-            "share":"Share Button"
+    "buttons": {
+        "titles": {
+            "claim": "Claim Button",
+            "claimed": "Claimed Button",
+            "share": "Share Button"
         }
-    },   
-    
+    },
     "searchResults": {
         "noResults": {
             "title": "No results found",
@@ -143,13 +141,13 @@
         }
     },
     "my": {
-        "dashboard":"My Dashboard",
-        "profile":"My Profile",
-        "proposals":"My Proposals",
-        "reviews":"My Reviews",
-        "groups":"My Groups",
-        "communities":"My Communities",
-        "lists":"My Lists"
+        "dashboard": "My Dashboard",
+        "profile": "My Profile",
+        "proposals": "My Proposals",
+        "reviews": "My Reviews",
+        "groups": "My Groups",
+        "communities": "My Communities",
+        "lists": "My Lists"
     },
     "navigation": {
         "mobile": {
@@ -168,7 +166,8 @@
         }
     },
     "breadcrumbs": {
-        "home": "Home"
+        "home": "Home",
+        "workflow": "Workflow"
     },
     "pagination": {
         "next": "Next",
@@ -243,7 +242,7 @@
         "noLists": "No lists found",
         "addBookmark": "Add Bookmark",
         "successfulBookmarked": "Successfully added to your bookmarks!",
-        "success":{
+        "success": {
             "title": "Success",
             "message": "Successfully created list"
         },
@@ -372,7 +371,7 @@
         "bio": "Bio",
         "claimed": "Claimed",
         "claim": "Claim",
-        "totalRequested":"Total Requested",
+        "totalRequested": "Total Requested",
         "totalProposals": "Total Proposals",
         "awardedVsRequested": "Awarded vs Requested",
         "receivedVsAwarded": "Received vs Awarded",
@@ -414,7 +413,7 @@
         "reviews": "Reviews",
         "noMembers": "This group has no members",
         "viewMembers": "View Members",
-        "options":{
+        "options": {
             "alphabetically": "Alphabetically: A to Z",
             "amountAwardedAdaDesc": "Amount Awarded ADA: High to Low",
             "amountAwardedAdaAsc": "Amount Awarded ADA: Low to High",

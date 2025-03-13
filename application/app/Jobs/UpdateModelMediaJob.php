@@ -11,6 +11,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\Middleware\RateLimited;
 use Illuminate\Queue\SerializesModels;
+use Laravel\Scout\Searchable;
 use Spatie\MediaLibrary\MediaCollections\Exceptions\UnreachableUrl;
 
 class UpdateModelMediaJob implements ShouldQueue
@@ -48,6 +49,10 @@ class UpdateModelMediaJob implements ShouldQueue
             }
 
             $this->model->addMediaFromUrl($image_url);
+
+            if (in_array(Searchable::class, class_uses_recursive($this->model::class))) {
+
+            }
         } catch (UnreachableUrl $exception) {
             report($exception);
         }

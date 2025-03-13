@@ -220,7 +220,8 @@
         "remaining": "Restant"
     },
     "breadcrumbs": {
-        "home": "Accueil"
+        "home": "Accueil",
+        "workflow": "Flux de travail"
     },
 
     "ideascaleProfiles": {
