@@ -17,6 +17,9 @@ final class ReviewModerationData extends Data
         #[TypeScriptOptional]
         public ?int $reviewer_id,
 
+        #[TypeScriptOptional]
+        public ?int $reviewer_reputation_score,
+
         public int $excellent_count,
 
         public int $good_count,
