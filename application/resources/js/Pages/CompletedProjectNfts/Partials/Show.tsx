@@ -11,14 +11,14 @@ import { useTranslation } from 'react-i18next';
 
 interface PageProps{
   proposal: App.DataTransferObjects.ProposalData;
-  ideascaleProfiles: PaginatedData<IdeascaleProfileData[]>;
-  contributorProfiles: IdeascaleProfileData[];
+  ideascaleProfiles: IdeascaleProfileData[];
+  author: IdeascaleProfileData;
   artist: UserData;
   campaignTitle: string,
   nft: any;
 }
 
-const Show = ({proposal, ideascaleProfiles, nft, artist, campaignTitle, contributorProfiles}: PageProps) => {
+const Show = ({proposal, ideascaleProfiles, nft, artist, author}: PageProps) => {
   const { t } = useTranslation();
   return (
     <div className="mx-auto px-4 sm:px-6 lg:px-8">
@@ -45,7 +45,7 @@ const Show = ({proposal, ideascaleProfiles, nft, artist, campaignTitle, contribu
         </div>
 
         <div className="py-4">
-          <ContributorProfile contributorProfiles={contributorProfiles} />
+          <ContributorProfile ideascaleProfiles={ideascaleProfiles} author={author} />
         </div>
       </div>
     </div>

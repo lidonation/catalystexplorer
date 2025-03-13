@@ -110,26 +110,40 @@ class CompletetProjectNftsController extends Controller
     public function show(Request $request, Proposal $proposal): Response
     {
         $user = $this->user;
-        $nft = null;
-        $artist = null;
-        $claimedIdeascaleProfiles = $this->getClaimedIdeascaleProfiles();
-
-        $contributorProfiles = $proposal->users->map(function($profile) {
-            return IdeascaleProfileData::from($profile);
+        
+        $proposal = Proposal::where('user_id', $user->id)
+            ->where('status', ProposalStatus::complete()->value)
+            ->first();
+        $proposal->load('users');
+        
+        $author = $proposal->author()->first();
+        
+        $contributorProfiles = $proposal->users->filter(function($profile) use ($author) {
+            return $profile->id !== $author->id;
         });
 
-        if ($user) {
-            $user->load('nfts.artist');
-            $nft = $user->nfts->first();
-            $artist = $nft?->artist;
+        $nft = null;
+        $artist = null;
+
+        foreach ($contributorProfiles as $profile) {
+            if ($profile->nfts->isNotEmpty()) {
+                $nft = $profile->nfts->first();
+                $artist = $nft->artist;
+                break;
+            }
         }
 
+        if (!$nft && $author && $author->nfts->isNotEmpty()) {
+            $nft = $author->nfts->first();
+            $artist = $nft->artist;
+        }
+        
         return Inertia::render('CompletedProjectNfts/Partials/Show', [
             'proposal' => $proposal,
-            'ideascaleProfiles' => $claimedIdeascaleProfiles,
+            'ideascaleProfiles' => $contributorProfiles,
+            'author' => $author,
             'nft' => $nft,
             'artist' => $artist,
-            'contributorProfiles' => $contributorProfiles
         ]);
     }
 

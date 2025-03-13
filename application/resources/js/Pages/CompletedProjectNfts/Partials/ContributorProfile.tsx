@@ -8,14 +8,15 @@ import DiscordIcon from "@/Components/svgs/DiscordIcon";
 import Image from "@/Components/Image";
 
 interface ContributorProfileProps {
-  contributorProfiles?: IdeascaleProfileData[];
+  ideascaleProfiles?: IdeascaleProfileData[];
+  author: IdeascaleProfileData;
 }
 
-const ContributorProfile = ({ contributorProfiles = [] }: ContributorProfileProps) => {
+const ContributorProfile = ({ ideascaleProfiles, author }: ContributorProfileProps) => {
   const { t } = useTranslation();
   
   // If no contributors provided or empty array, use a placeholder
-  if (!contributorProfiles || contributorProfiles.length === 0) {
+  if (!ideascaleProfiles || ideascaleProfiles.length === 0) {
     return (
       <div className="bg-background rounded-lg p-6">
         <div className="text-center py-8">
@@ -26,42 +27,36 @@ const ContributorProfile = ({ contributorProfiles = [] }: ContributorProfileProp
     );
   }
 
-  // Main contributor is the first one
-  const mainContributor = contributorProfiles[0];
-  
-  // Other contributors are the rest
-  const otherContributors = contributorProfiles.slice(1);
-
   return (
     <div className="bg-background rounded-lg p-6">
       <div className="mb-8">
         <div className="flex justify-between items-start mb-4 border-b border-dark pb-4">
           <div className="flex gap-4">
             <Image
-              src={mainContributor.hero_img_url}
-              alt={mainContributor.name}
+              src={author.hero_img_url}
+              alt={author.name}
               className="w-20 h-20 rounded-full object-cover"
             />
             <div>
-              <Title level="2" className="text-content font-semibold">{mainContributor.name}</Title>
-              <Paragraph className="text-dark">{mainContributor.title}</Paragraph>
+              <Title level="2" className="text-content font-semibold">{author.name}</Title>
+              <Paragraph className="text-dark">{author.title}</Paragraph>
               
               {/* Social links */}
               <div className="flex gap-2 mt-2">
-                {mainContributor.twitter && (
-                  <a href={`https://twitter.com/${mainContributor.twitter}`} target="_blank" rel="noopener noreferrer" className="hover:opacity-80">
+                {author.twitter && (
+                  <a href={`https://twitter.com/${author.twitter}`} target="_blank" rel="noopener noreferrer" className="hover:opacity-80">
                       <XIcon/>
                   </a>
                 )}
                 
-                {mainContributor.discord && (
-                  <a href={`https://discord.com/users/${mainContributor.discord}`} target="_blank" rel="noopener noreferrer" className="hover:opacity-80">
+                {author.discord && (
+                  <a href={`https://discord.com/users/${author.discord}`} target="_blank" rel="noopener noreferrer" className="hover:opacity-80">
                       <DiscordIcon/>
                   </a>
                 )}
                 
-                {mainContributor.linkedin && (
-                  <a href={`https://linkedin.com/in/${mainContributor.linkedin}`} target="_blank" rel="noopener noreferrer" className="hover:opacity-80">
+                {author.linkedin && (
+                  <a href={`https://linkedin.com/in/${author.linkedin}`} target="_blank" rel="noopener noreferrer" className="hover:opacity-80">
                       <LinkedInIcon/>
                   </a>
                 )}
@@ -74,25 +69,25 @@ const ContributorProfile = ({ contributorProfiles = [] }: ContributorProfileProp
         </div>
 
         <div className="space-y-4 text-content">
-          <Paragraph>{typeof mainContributor.bio === 'string' ? mainContributor.bio : ''}</Paragraph>
+          <Paragraph>{typeof author.bio === 'string' ? author.bio : ''}</Paragraph>
         </div>
       </div>
 
-      {otherContributors.length > 0 && (
+      {ideascaleProfiles.length > 0 && (
         <div>
           <Title level="3" className=" text-content font-semibold mb-4">{t('otherContributors')}</Title>
           <div className="border-t border-dark pt-5">
             <div className="flex flex-wrap gap-8">
-              {otherContributors.map((contributor, index) => (
-                <div key={contributor.hash || index} className="text-center">
+              {ideascaleProfiles.map((profile, index) => (
+                <div key={profile.hash || index} className="text-center">
                   <div className="flex justify-center mb-2">
                     <Image
-                      src={contributor.hero_img_url}
-                      alt={contributor.name}
+                      src={profile.hero_img_url}
+                      alt={profile.name}
                       className="w-20 h-20 rounded-full object-cover border-2 border-success"
                     />
                   </div>
-                  <span className="font-medium block">{contributor.name}</span>
+                  <span className="font-medium block">{profile.name}</span>
                 </div>
               ))}
             </div>
