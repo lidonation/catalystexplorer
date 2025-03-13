@@ -6,9 +6,12 @@ import {useTranslation} from 'react-i18next';
 import SegmentedBar from '@/Components/SegmentedBar'
 import Title from '@/Components/atoms/Title';
 import {Segments} from '../../../../types/segments';
+import Paragraph from '@/Components/atoms/Paragraph';
+import { Link } from '@inertiajs/react';
+import { useLocalizedRoute } from '@/utils/localizedRoute';
 
 interface CampaignCardMiniProps {
-    fund: FundData;
+    fund: FundData | null;
     campaign: CampaignData;
 }
 
@@ -34,33 +37,73 @@ const CampaignCardMini: React.FC<CampaignCardMiniProps> = ({fund, campaign}) => 
         },
     ] as Segments[];
 
+    const formatFundString = (
+        input: string | undefined,
+    ): string | undefined => {
+        const parts = input?.split('-'); // Split at '-'
+        if (parts?.length === 2) {
+            return `${parts[0].charAt(0).toUpperCase()}${parts[1]}`;
+        }
+        return input; // Return original if format is incorrect
+    };
+
     return (
         <div>
-            <div className="h-60 bg-content-light rounded-lg overflow-hidden">
+            <div className="bg-content-light h-60 overflow-hidden rounded-lg">
                 {heroImageUrl ? (
                     <img
                         src={heroImageUrl}
-                        alt={`Cat: ${fund.title}`}
-                        className="h-full w-full object-cover font-semibold"
+                        alt={`Cat: ${fund?.title}`}
+                        className="h-full w-full object-cover"
                     />
                 ) : (
-                    <div className="flex bg-primary items-center justify-center h-full">
-                        <span className="text-lg text-content-light">{t('developers')}</span>
+                    <div className="text-content bg-primary flex h-full items-center justify-center px-4">
+                        <Title level="4">{campaign?.label}</Title>
                     </div>
                 )}
             </div>
+
+            <div className="mt-4">
+                <SegmentedBar segments={segments} tooltipSegments={segments}/>
+            </div>
+
             <div className="pt-6">
-                <Title level="3" className="text-lg font-semibold mb-2 flex items-center justify-between">
-                    {campaign?.title}
+                <Title
+                    level="3"
+                    className="mb-2 flex items-center justify-between text-lg font-semibold"
+                >
+                    <Link
+                        href={useLocalizedRoute(
+                            'funds.fund.campaigns.campaign.show',
+                            { fund: fund?.slug, campaign: campaign.slug },
+                        )}
+                    >
+                        {formatFundString(fund?.slug)}: {campaign?.title}
+                    </Link>
+                    <svg
+                        width="34"
+                        height="34"
+                        version="1.1"
+                        viewBox="0 0 1200 1200"
+                        xmlns="http://www.w3.org/2000/svg"
+                    >
+                        <path d="m400 350c0-27.613 22.387-50 50-50h400c27.613 0 50 22.387 50 50v400c0 27.613-22.387 50-50 50s-50-22.387-50-50v-279.29l-414.64 414.64c-19.527 19.523-51.184 19.523-70.711 0-19.527-19.527-19.527-51.184 0-70.711l414.64-414.64h-279.29c-27.613 0-50-22.387-50-50z" />
+                    </svg>
                 </Title>
 
-                <div className="mt-4">
-                    <SegmentedBar segments={segments} tooltipSegments={segments}/>
-                </div>
+                <Paragraph className="text-content-dark mb-4 line-clamp-3 opacity-80">
+                    {campaign?.excerpt}
+                </Paragraph>
+
                 <div className="flex gap-2">
-                    <p className="bg-background text-content rounded-md border px-2">
-                        {t('proposals.filters.budget')}: {currency(campaign?.amount ?? 0, 2, campaign?.currency?.toUpperCase() ?? 'USD')}
-                    </p>
+                    <div className="bg-background text-content rounded-md border pr-2 pl-2">
+                        {t('proposals.filters.budget')}:{' '}
+                        {currency(
+                            campaign?.amount ?? 0,
+                            2,
+                            campaign?.currency?.toUpperCase() ?? 'USD',
+                        )}
+                    </div>
                 </div>
             </div>
         </div>

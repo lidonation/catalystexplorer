@@ -62,5 +62,7 @@ class CampaignData extends Data
 
         #[MapInputName('totalDistributed')]
         public ?float $total_distributed,
+
+        public ?FundData $fund,
     ) {}
 }
