@@ -12,13 +12,16 @@ use App\Traits\HasTranslations;
 use Illuminate\Database\Eloquent\Casts\AsArrayObject;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Lidonation\CardanoNftMaker\Interfaces\CardanoNftInterface;
 use Lidonation\CardanoNftMaker\Traits\NftServiceTrait;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
 
-class Nft extends Model implements CardanoNftInterface
+class Nft extends Model implements CardanoNftInterface, HasMedia
 {
-    use HasAuthor, HasLinks, HasMetaData, HasModel, HasTranslations, NftServiceTrait, SoftDeletes;
+    use HasAuthor, HasLinks, HasMetaData, HasModel, HasTranslations, InteractsWithMedia, NftServiceTrait, SoftDeletes;
 
     protected $hidden = ['artist_id', 'deleted_at', 'model_type', 'model_id'];
 
@@ -29,6 +32,12 @@ class Nft extends Model implements CardanoNftInterface
         'description',
     ];
     
+    // Add appended attributes needed by NftServiceTrait
+    protected $appends = [
+        'maker_project_uuid',
+        'maker_nft_uuid',
+    ];
+
     // Add appended attributes needed by NftServiceTrait
     protected $appends = [
         'maker_project_uuid',
@@ -79,5 +88,10 @@ class Nft extends Model implements CardanoNftInterface
     public function artist(): BelongsTo
     {
         return $this->belongsTo(User::class, 'artist_id');
+    }
+
+    public function txs(): HasMany
+    {
+        return $this->hasMany(Tx::class, 'model_id')->where('model_type', static::class);
     }
 }

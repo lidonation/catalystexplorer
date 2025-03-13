@@ -12,6 +12,7 @@ use App\Enums\CatalystCurrencySymbols;
 use App\Enums\ProposalSearchParams;
 use App\Enums\ProposalStatus;
 use App\Models\IdeascaleProfile;
+use App\Models\Nft;
 use App\Models\Proposal;
 use App\Models\Campaign;
 use App\Models\User;
@@ -150,7 +151,6 @@ class CompletetProjectNftsController extends Controller
     public function getClaimedIdeascaleProfilesProposals()
     {
         $user = $this->user;
-        $user = $this->user;
 
         $args = [];
 
@@ -159,10 +159,6 @@ class CompletetProjectNftsController extends Controller
         $limit = 3;
 
         if ($user) {
-            $claimedIdeascaleIds = IdeascaleProfile::where('claimed_by_id', $user->id)
-                ->pluck('id')
-                ->filter()
-                ->toArray();
             $claimedIdeascaleIds = IdeascaleProfile::where('claimed_by_id', $user->id)
                 ->pluck('id')
                 ->filter()

@@ -89,6 +89,27 @@ class GroupsController extends Controller
         ]);
     }
 
+    public function myGroups(Request $request): Response
+    {
+        $userId = $request->user()->id;
+        $groups = Group::where('user_id', $userId)
+            ->with(['proposals'])
+            ->withCount([
+                'proposals',
+                'funded_proposals',
+                'unfunded_proposals',
+                'completed_proposals',
+            ]);
+        $per_page = request('per_page', 6);
+        $props = [
+            'groups' => to_length_aware_paginator(
+                GroupData::collect($groups->paginate($per_page))
+            ),
+        ];
+
+        return Inertia::render('My/Groups/Index', $props);
+    }
+
     public function group(Request $request, Group $group, GroupRepository $groupRepository): Response
     {
         $group->load(['proposals'])
@@ -114,6 +135,10 @@ class GroupsController extends Controller
 
         // Determine which tab we're on based on the URL path
         if (str_contains($path, '/proposals')) {
+            $proposalsPaginator = $group->proposals()
+                ->with(['users', 'fund'])
+                ->paginate(5);
+
             return Inertia::render('Groups/Proposals/Index', [
                 'group' => GroupData::from($group),
                 'proposals' => Inertia::optional(
@@ -149,8 +174,7 @@ class GroupsController extends Controller
                                     'own_proposals',
                                     'collaborating_proposals',
                                 ])
-                                ->with([])
-                                ->paginate(12)
+                                ->with([])->paginate(12)
                         )
                     )
                 ),
@@ -182,6 +206,11 @@ class GroupsController extends Controller
                 ),
             ]);
         }
+
+        // Default return if no specific path matches
+        $proposalsPaginator = $group->proposals()
+            ->with(['users', 'fund'])
+            ->paginate(5);
 
         return Inertia::render('Groups/Proposals/Index', [
             'group' => GroupData::from($group),

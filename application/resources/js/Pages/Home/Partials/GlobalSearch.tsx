@@ -59,6 +59,7 @@ function GlobalSearch() {
                 handleSearch={handleSearch}
                 focusState={handleFocusState}
                 autoFocus
+                placeholder={t('searchBar.placeholder')}
             />
         </form>
     );

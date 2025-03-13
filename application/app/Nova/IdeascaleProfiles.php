@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace App\Nova;
 
 use App\Models\IdeascaleProfile;
+use App\Nova\Actions\MakeSearchable;
 use App\Nova\Actions\UpdateModelMedia;
+use Ebess\AdvancedNovaMediaLibrary\Fields\Images;
 use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Fields\Field;
 use Laravel\Nova\Fields\HasMany;
@@ -48,6 +50,10 @@ class IdeascaleProfiles extends Resource
     {
         return [
             ID::make()->sortable(),
+
+            Images::make(__('Profile Pic'), 'profile')
+                ->showOnIndex()
+                ->enableExistingMedia(),
 
             Text::make('Name')
                 ->sortable()->withMeta(
@@ -97,36 +103,6 @@ class IdeascaleProfiles extends Resource
     }
 
     /**
-     * Get the cards available for the resource.
-     *
-     * @return array<int, \Laravel\Nova\Card>
-     */
-    public function cards(NovaRequest $request): array
-    {
-        return [];
-    }
-
-    /**
-     * Get the filters available for the resource.
-     *
-     * @return array<int, \Laravel\Nova\Filters\Filter>
-     */
-    public function filters(NovaRequest $request): array
-    {
-        return [];
-    }
-
-    /**
-     * Get the lenses available for the resource.
-     *
-     * @return array<int, \Laravel\Nova\Lenses\Lens>
-     */
-    public function lenses(NovaRequest $request): array
-    {
-        return [];
-    }
-
-    /**
      * Get the actions available for the resource.
      *
      * @return array<int, \Laravel\Nova\Actions\Action>
@@ -135,6 +111,7 @@ class IdeascaleProfiles extends Resource
     {
         return [
             (new UpdateModelMedia),
+            (new MakeSearchable),
         ];
     }
 }

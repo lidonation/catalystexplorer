@@ -12,7 +12,6 @@ import { FiltersProvider } from '@/Context/FiltersContext';
 
 interface PageProps extends InertiaPageProps {
     url: string;
-
     [key: string]: any;
 }
 

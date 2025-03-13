@@ -23,7 +23,15 @@ export default function ProposalVerticalCard({
     abstainVotes,
 }: any) {
     return (
-        <article className="bg-background proposal-card proposal-card-vertical flex h-full flex-col justify-between rounded-xl p-2 shadow-lg gap-3">
+        <article className="bg-background proposal-card proposal-card-vertical flex h-full flex-col justify-between rounded-xl p-2 shadow-lg gap-3 relative">
+    {userSelected && (
+        <button
+            onClick={noSelectedUser}
+            aria-label="Close profile"
+        >
+        </button>
+    )}
+            
             <section className="flex h-auto w-full flex-col items-start overflow-hidden">
                 <ProposalCardHeader
                     proposal={proposal}

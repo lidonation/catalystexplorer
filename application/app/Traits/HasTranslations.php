@@ -20,32 +20,6 @@ trait HasTranslations
         getTranslations as baseGetTranslations;
     }
 
-    //    public function getTranslation(string $key, string $locale, bool $useFallbackLocale = true): mixed
-    //    {
-    //        $translation = $this->baseGetTranslation($key, $locale, $useFallbackLocale);
-    //        if ($this->hasGetMutator($key)) {
-    //            return $this->mutateAttribute($key, $translation);
-    //        }
-    //
-    //        if (!empty($translation)) {
-    //            return $translation;
-    //        }
-    //
-    //        if (!empty($this->getAttributes()) && isset($this->getAttributes()[$key])) {
-    //            return $this->getAttributes()[$key];
-    //        }
-    //
-    //        return null;
-    //    }
-
-    //    public function getTranslations(string $key = null, array $allowedLocales = null): array
-    //    {
-    //        if (app()->runningInConsole() && !is_array($this->getAttributes()[$key])) {
-    //            return [];
-    //        }
-    //        return $this->baseGetTranslations($key, $allowedLocales);
-    //    }
-
     /**
      * Convert the model instance to an array.
      */
