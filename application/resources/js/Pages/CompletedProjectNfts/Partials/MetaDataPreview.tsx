@@ -1,8 +1,6 @@
 import Title from "@/Components/atoms/Title";
 import IdeascaleProfileData = App.DataTransferObjects.IdeascaleProfileData;
 import UserData = App.DataTransferObjects.UserData;
-import NMKRNftData = App.DataTransferObjects.NMKRNftData;
-import { PaginatedData } from '../../../../types/paginated-data';
 import { useTranslation } from "react-i18next";
 import MintButton from "./MintButton";
 import Image from "@/Components/Image";
@@ -10,7 +8,7 @@ import Paragraph from "@/Components/atoms/Paragraph";
 import Button from "@/Components/atoms/Button";
 
 interface MetaDataPreviewProps {
-  ideascaleProfiles: PaginatedData<IdeascaleProfileData[]>;
+  ideascaleProfiles: IdeascaleProfileData[];
   artist?: UserData | null;
   nft: any & { 
     metas?: Array<{

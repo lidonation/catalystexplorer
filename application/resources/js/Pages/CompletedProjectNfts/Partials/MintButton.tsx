@@ -18,7 +18,7 @@ interface MintButtonProps {
     }>;
     minted_at?: string | null;
   };
-  ideascaleProfiles?: PaginatedData<IdeascaleProfileData[]>;
+  ideascaleProfiles?: IdeascaleProfileData[];
 }
 
 const MintButton: React.FC<MintButtonProps> = ({ 
@@ -69,7 +69,7 @@ const MintButton: React.FC<MintButtonProps> = ({
       return;
     }
 
-    if (ideascaleProfiles?.data && ideascaleProfiles.data.length > 0) {
+    if (ideascaleProfiles && ideascaleProfiles.length > 0) {
       setButtonState('mintable');
     } else {
       setButtonState('unauthorized');
