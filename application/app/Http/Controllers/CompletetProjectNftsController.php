@@ -77,9 +77,29 @@ class CompletetProjectNftsController extends Controller
 
         $claimedIdeascaleProfiles = $this->getClaimedIdeascaleProfiles();
 
+        $amountDistributedAda = Proposal::whereHas('fund', function ($query) {
+            $query->where('currency', CatalystCurrencySymbols::ADA->name);
+        })->sum('amount_received');
+
+        $amountDistributedUsd = Proposal::whereHas('fund', function ($query) {
+            $query->where('currency', CatalystCurrencySymbols::USD->name);
+        })->sum('amount_received');
+
+        $completedProposalsCount = Proposal::where('status', ProposalStatus::complete()->value)
+            ->count();
+
+        $membersFunded = IdeaScaleProfile::whereHas('proposals', function ($query) {
+            $query->whereNotNull('funded_at');
+        })->count();
+
         return Inertia::render('CompletedProjectNfts/Index', [
             'proposals' => $proposals,
             'filters' => $this->queryParams,
+            'ideascaleProfiles' => $claimedIdeascaleProfiles,
+            'amountDistributedAda' => $amountDistributedAda,
+            'amountDistributedUsd' => $amountDistributedUsd,
+            'completedProposalsCount' => $completedProposalsCount,
+            'communityMembersFunded' => $membersFunded,
             'ideascaleProfiles' => $claimedIdeascaleProfiles,
             'amountDistributedAda' => $amountDistributedAda,
             'amountDistributedUsd' => $amountDistributedUsd,
