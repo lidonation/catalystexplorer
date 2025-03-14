@@ -25,6 +25,7 @@ Route::prefix('api')->as('api.')->group(function () {
     Route::get('/communities', [CommunityController::class, 'communities'])->name('communities');
     Route::get('/communities/{community:id}', [CommunityController::class, 'community'])->name('community');
     Route::get('/communities/{hash}/connections', [CommunityController::class, 'connections'])->name('communities.connections');
+    Route::post('/communities/{hash}/join', [CommunityController::class, 'join'])->name('community.join');
 
     Route::prefix('bookmark-items')->as('bookmarks.')
         ->group(function () {

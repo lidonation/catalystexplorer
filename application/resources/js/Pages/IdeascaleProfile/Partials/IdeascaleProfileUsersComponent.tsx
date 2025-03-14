@@ -7,7 +7,7 @@ import { useTranslation } from 'react-i18next';
 
 interface IdeascaleProfileUsers extends Record<string, unknown> {
     users: App.DataTransferObjects.IdeascaleProfileData[];
-    onUserClick: (user: App.DataTransferObjects.IdeascaleProfileData) => void;
+    onUserClick?: (user: App.DataTransferObjects.IdeascaleProfileData) => void;
     className?: string;
     toolTipProps: any;
 }
