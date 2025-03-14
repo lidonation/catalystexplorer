@@ -27,17 +27,21 @@ export default function IdeascaleProfileUsers({
     const baseRoute = useLocalizedRoute('ideascaleProfiles.index');
     
     const handleGenerateLink = () => {
-        const userQuery = users.map((user) => user.name).join(',');
+        const userQuery = users?.map((user) => user.name || '').join(',') || '';
         const finalLink = `${baseRoute}?q=${encodeURIComponent(userQuery)}`;
         
         window.location.href = finalLink;
     };
     
-    // State for the "See all" tooltip
     const [isHovered, setIsHovered] = useState(false);
     
-    // State to track which user is being hovered (using index since id might not be available)
     const [hoveredUserIndex, setHoveredUserIndex] = useState<number | null>(null);
+    
+    const handleUserClick = (user: App.DataTransferObjects.IdeascaleProfileData) => {
+        if (onUserClick) {
+            onUserClick(user);
+        }
+    };
     
     return (
         <section
@@ -48,7 +52,7 @@ export default function IdeascaleProfileUsers({
                 {visibleUsers?.map((user, index) => (
                     <li 
                         key={index} 
-                        onClick={() => onUserClick(user)}
+                        onClick={() => handleUserClick(user)}
                         onMouseEnter={() => setHoveredUserIndex(index)}
                         onMouseLeave={() => setHoveredUserIndex(null)}
                         className="relative"
@@ -58,10 +62,9 @@ export default function IdeascaleProfileUsers({
                             imageUrl={user.hero_img_url}
                         />
                         
-                        {/* User name tooltip on hover */}
                         {hoveredUserIndex === index && (
                             <div className="absolute bottom-full left-1/2 z-50 mb-2 -translate-x-1/2 transform">
-                                <div className="text-content text-xs rounded py-1 px-2 whitespace-nowrap">
+                                <div className="bg-background border-2 text-content text-xs rounded py-1 px-2 whitespace-nowrap">
                                     {user.name || t('anonymous')}
                                 </div>
                             </div>
@@ -72,7 +75,7 @@ export default function IdeascaleProfileUsers({
                 {remainingCount > 0 && (
                     <li className="relative">
                         <div
-                            className={`${className} flex h-8 w-8 items-center justify-center rounded-full border-2 border-white text-sm text-gray-600`}
+                            className={`${className || ''} flex h-8 w-8 items-center justify-center rounded-full border-2 border-background text-sm text-dark`}
                             onClick={handleGenerateLink}
                             onMouseEnter={() => setIsHovered(true)}
                             onMouseLeave={() => setIsHovered(false)}
