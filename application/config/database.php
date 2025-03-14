@@ -94,6 +94,20 @@ return [
             'sslmode' => 'prefer',
         ],
 
+        'pgsql_carp' => [
+            'driver' => 'pgsql',
+            'host' => env('CARP_DB_HOST', '127.0.0.1'),
+            'port' => env('CARP_DB_PORT', '5434'),
+            'database' => env('CARP_DB_DATABASE', 'carp_preview'),
+            'username' => env('CARP_DB_USERNAME', 'carp'),
+            'password' => env('CARP_DB_PASSWORD', ''),
+            'charset' => 'utf8',
+            'prefix' => '',
+            'prefix_indexes' => true,
+            'schema' => 'public',
+            'sslmode' => 'prefer',
+        ],
+
         'sqlsrv' => [
             'driver' => 'sqlsrv',
             'url' => env('DB_URL'),
@@ -142,7 +156,7 @@ return [
 
         'options' => [
             'cluster' => env('REDIS_CLUSTER', 'redis'),
-            'prefix' => env('REDIS_PREFIX', Str::slug(env('APP_NAME', 'laravel'), '_').'_database_'),
+            'prefix' => env('REDIS_PREFIX', Str::slug(env('APP_NAME', 'laravel'), '_') . '_database_'),
         ],
 
         'default' => [

@@ -5,6 +5,7 @@ import NavLinkItem from '../atoms/NavLinkItem';
 import BarLineIcon from '../svgs/BarLineIcon';
 import ChartIcon from '../svgs/ChartIcon';
 import CheckIcon from '../svgs/CheckIcon';
+import CommunitiesIcon from '../svgs/CommunitiesSvg';
 import HomeIcon from '../svgs/HomeIcon';
 import NoteIcon from '../svgs/NoteIcon';
 import NotificationBoxIcon from '../svgs/NotificationBoxIcon';
@@ -60,6 +61,15 @@ function AppNavigation() {
             title: t('groups.groups'),
             icon: (isActive: boolean) => (
                 <CheckIcon
+                    className={isActive ? 'text-primary-100' : 'text-dark'}
+                />
+            ),
+        },
+        {
+            href: useLocalizedRoute('communities.index'),
+            title: t('communities.communities'),
+            icon: (isActive: boolean) => (
+                <CommunitiesIcon
                     className={isActive ? 'text-primary-100' : 'text-dark'}
                 />
             ),

@@ -109,6 +109,7 @@ class ProposalsController extends Controller
         ]);
 
         $this->getProps($request);
+        $this->queryParams[ProposalSearchParams::LIMIT()->value] = 12;
 
         $proposals = $this->query();
 

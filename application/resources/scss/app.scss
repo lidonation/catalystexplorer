@@ -27,7 +27,7 @@
         --cx-content: #101828;
         --cx-content-highlight: #ccf4ff;
         --cx-content-gray-persist: #667085;
-        --cx-content-light-gray-persist: #EAECF0;
+        --cx-content-light-gray-persist: #3467ce;
         --cx-content-black-persist: #101828;
         --cx-content-light: #eaecf0;
         --cx-content-dark: #101828;
@@ -166,8 +166,16 @@
         background-color: var(--cx-background);
     }
 
+    .bg-background-lighter {
+        background-color: var(--cx-background-lighter);
+    }
+
     .text-content {
         color: var(--cx-content);
+    }
+
+    .text-content-light {
+        color: var(--cx-content-light);
     }
 
     .text-primary {
