@@ -10,16 +10,11 @@ import Button from "@/Components/atoms/Button";
 interface MetaDataPreviewProps {
   ideascaleProfiles: IdeascaleProfileData[];
   artist?: UserData | null;
-  nft: any & { 
-    metas?: Array<{
-      key: string;
-      content: string;
-    }>;
-    minted_at?: string | null;
-  };
+  nft: any;
+  isOwner: boolean;
 }
 
-const MetaDataPreview = ({ideascaleProfiles, nft, artist}: MetaDataPreviewProps) => {
+const MetaDataPreview = ({ideascaleProfiles, nft, artist, isOwner}: MetaDataPreviewProps) => {
   const { t } = useTranslation();
   const artistImageUrl = artist?.hero_img_url || '';
 
@@ -28,7 +23,7 @@ const MetaDataPreview = ({ideascaleProfiles, nft, artist}: MetaDataPreviewProps)
       <div className="flex justify-between items-center mb-6 border-b border-l-content pb-4">
         <Title level="2" className="text-content text-xl font-semibold">{t('metaTitle')}</Title>
         <div className="flex items-center gap-2">
-          <MintButton ideascaleProfiles={ideascaleProfiles} nft={nft}/>
+          <MintButton ideascaleProfiles={ideascaleProfiles} nft={nft} isOwner={isOwner}/>
         </div>
       </div>
 

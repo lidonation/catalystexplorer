@@ -6,6 +6,7 @@ import XIcon from "@/Components/svgs/XIcon";
 import LinkedInIcon from "@/Components/svgs/LinkedInIcons";
 import DiscordIcon from "@/Components/svgs/DiscordIcon";
 import Image from "@/Components/Image";
+import { useEffect, useState } from "react";
 
 interface ContributorProfileProps {
   ideascaleProfiles?: IdeascaleProfileData[];
@@ -14,9 +15,22 @@ interface ContributorProfileProps {
 
 const ContributorProfile = ({ ideascaleProfiles, author }: ContributorProfileProps) => {
   const { t } = useTranslation();
+  const [profiles, setProfiles] = useState<IdeascaleProfileData[]>([]);
   
-  // If no contributors provided or empty array, use a placeholder
-  if (!ideascaleProfiles || ideascaleProfiles.length === 0) {
+  useEffect(() => {
+    if (!ideascaleProfiles) {
+      setProfiles([]);
+      return;
+    }
+    
+    if (!Array.isArray(ideascaleProfiles) && typeof ideascaleProfiles === 'object') {
+      setProfiles(Object.values(ideascaleProfiles));
+    } else if (Array.isArray(ideascaleProfiles)) {
+      setProfiles(ideascaleProfiles);
+    }
+  }, [ideascaleProfiles]);
+  
+  if (!profiles || profiles.length === 0) {
     return (
       <div className="bg-background rounded-lg p-6">
         <div className="text-center py-8">
@@ -73,12 +87,12 @@ const ContributorProfile = ({ ideascaleProfiles, author }: ContributorProfilePro
         </div>
       </div>
 
-      {ideascaleProfiles.length > 0 && (
+      {profiles.length > 0 && (
         <div>
-          <Title level="3" className=" text-content font-semibold mb-4">{t('otherContributors')}</Title>
+          <Title level="3" className="text-content font-semibold mb-4">{t('otherContributors')}</Title>
           <div className="border-t border-dark pt-5">
             <div className="flex flex-wrap gap-8">
-              {ideascaleProfiles.map((profile, index) => (
+              {profiles.map((profile, index) => (
                 <div key={profile.hash || index} className="text-center">
                   <div className="flex justify-center mb-2">
                     <Image

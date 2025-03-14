@@ -16,9 +16,10 @@ interface PageProps{
   artist: UserData;
   campaignTitle: string,
   nft: any;
+  isOwner: boolean;
 }
 
-const Show = ({proposal, ideascaleProfiles, nft, artist, author}: PageProps) => {
+const Show = ({proposal, ideascaleProfiles, nft, artist, author, isOwner}: PageProps) => {
   const { t } = useTranslation();
   return (
     <div className="mx-auto px-4 sm:px-6 lg:px-8">
@@ -36,10 +37,10 @@ const Show = ({proposal, ideascaleProfiles, nft, artist, author}: PageProps) => 
 
           <div className="md:col-span-8 space-y-8">
             <div>
-              <MetaDataPreview ideascaleProfiles={ideascaleProfiles} nft={nft} artist={artist} />
+              <MetaDataPreview ideascaleProfiles={ideascaleProfiles} nft={nft} artist={artist} isOwner={isOwner} />
             </div>
             <div>
-              <MetaData nft={nft}/>
+              <MetaData nft={nft} isOwner={isOwner}/>
             </div>
           </div>
         </div>

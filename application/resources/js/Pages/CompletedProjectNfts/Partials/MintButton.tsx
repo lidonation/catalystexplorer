@@ -19,11 +19,13 @@ interface MintButtonProps {
     minted_at?: string | null;
   };
   ideascaleProfiles?: IdeascaleProfileData[];
+  isOwner: boolean;
 }
 
 const MintButton: React.FC<MintButtonProps> = ({ 
   nft,
-  ideascaleProfiles
+  ideascaleProfiles,
+  isOwner = false,
 }) => {
   const { t } = useTranslation();
   const { auth } = usePage<PageProps>().props;
@@ -69,15 +71,21 @@ const MintButton: React.FC<MintButtonProps> = ({
       return;
     }
 
-    if (ideascaleProfiles && ideascaleProfiles.length > 0) {
+    if (isOwner) {
       setButtonState('mintable');
     } else {
       setButtonState('unauthorized');
     }
-  }, [user, nft, ideascaleProfiles]);
+  }, [user, nft, ideascaleProfiles, isOwner]);
 
   const handleMint = (e: React.MouseEvent) => {
     e.preventDefault();
+    
+    if (!isOwner) {
+      setError('You are not authorized to mint this NFT');
+      return;
+    }
+    
     const paymentUrl = getPaymentLink();
     if (paymentUrl) {
       openPaymentWindow(paymentUrl);
@@ -204,6 +212,11 @@ const MintButton: React.FC<MintButtonProps> = ({
       <div className="rounded-lg">
         {renderButton()}
       </div>
+      {error && (
+        <Paragraph className="text-sm text-error mt-2">
+          {error}
+        </Paragraph>
+      )}
       {buttonState === 'mintable' && !getPaymentLink() && (
         <Paragraph className="text-sm text-dark mt-2">
           {t('cantFindNFT')}
