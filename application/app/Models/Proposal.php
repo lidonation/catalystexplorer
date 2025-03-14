@@ -250,6 +250,7 @@ class Proposal extends Model
             }
         );
     }
+    
 
     public function isWomanProposal(): Attribute
     {

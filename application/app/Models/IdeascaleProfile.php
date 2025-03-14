@@ -200,7 +200,7 @@ class IdeascaleProfile extends Model implements HasMedia
     public function heroImgUrl(): Attribute
     {
         return Attribute::make(
-            get: fn () => $this->claimed_by?->getFirstMediaUrl('profile') ?? $this->getFirstMediaUrl('profile') ?? $this->gravatar
+            get: fn () =>  $this->getFirstMediaUrl('profile') ?? $this->gravatar
         );
     }
 

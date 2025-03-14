@@ -39,6 +39,7 @@ export default function Transactions({
     return (
         <>
             <Head title="Catalyst Transactions" />
+
             <div className="py-12">
                 <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
                     <div className="bg-background overflow-hidden bg-white p-6 shadow-xl sm:rounded-lg">

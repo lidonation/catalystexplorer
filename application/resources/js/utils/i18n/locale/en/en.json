@@ -13,7 +13,6 @@
     "ccv4Votes": "CCV4 Votes",
     "charts": "Charts",
     "chooseMetaData": "Choose your own MetaData",
-    "communities": "Communities",
     "confirmPassword": "Confirm Password",
     "connect": "Connect",
     "updatePassword": "Update Password",
@@ -429,6 +428,18 @@
         "reviews": "Reviews",
         "noMembers": "This group has no members",
         "viewMembers": "View Members",
+        "options": {
+            "alphabetically": "Alphabetically: A to Z",
+            "amountAwardedAdaDesc": "Amount Awarded ADA: High to Low",
+            "amountAwardedAdaAsc": "Amount Awarded ADA: Low to High",
+            "amountAwardedUsdDesc": "Amount Awarded USD: High to Low",
+            "amountAwardedUsdAsc": "Amount Awarded USD: Low to High"
+        }
+    },
+    "communities": {
+        "communities": "Communities",
+        "title": "Catalyst Communities",
+        "subtitle": "Diverse, independent, and together inspiring the highest level of human collaboration",
         "options": {
             "alphabetically": "Alphabetically: A to Z",
             "amountAwardedAdaDesc": "Amount Awarded ADA: High to Low",
