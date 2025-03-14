@@ -56,7 +56,7 @@ class ProposalRepository extends Repository
                     'solution',
                     'status',
                     'website',
-                    'type',
+                    
                     'link',
                     //                    'ranking_total',
                     'users.id',
