@@ -18,31 +18,33 @@ class ReviewerReputationScoreSeeder extends Seeder
     {
         //
         $reviewers = Reviewer::all();
-        $funds = Fund::all();
-        if ($funds->isEmpty()) {
-            foreach ($reviewers as $reviewer) {
-                ReviewerReputationScore::factory()->create([
-                    'reviewer_id' => $reviewer->id,
-                    'context_type' => null,
-                    'context_id' => null,
-                ]);
-            }
-        } else {
-            foreach ($reviewers as $reviewer) {
-                ReviewerReputationScore::factory()->create([
-                    'reviewer_id' => $reviewer->id,
-                    'context_type' => null,
-                    'context_id' => null,
-                ]);
+        $funds = Fund::all()->isEmpty()
+            ? Fund::factory()->count(3)->create()
+            : Fund::all();
+        $funds->each(function ($fund) use ($reviewers) {
+            $selectedReviewers = $reviewers->random(
+                fake()->numberBetween(5, min(20, $reviewers->count()))
+            );
 
-                foreach ($funds as $fund) {
-                    ReviewerReputationScore::factory()->create([
-                        'reviewer_id' => $reviewer->id,
+            $selectedReviewers->each(function ($reviewer) use ($fund) {
+                ReviewerReputationScore::factory()
+                    ->for($reviewer)
+                    ->state([
                         'context_type' => Fund::class,
                         'context_id' => $fund->id,
-                    ]);
-                }
-            }
-        }
+                    ])
+                    ->create();
+            });
+        });
+
+        $reviewers->random(min($reviewers->count(), 30))->each(function ($reviewer) {
+            ReviewerReputationScore::factory()
+                ->for($reviewer)
+                ->state([
+                    'context_type' => null,
+                    'context_id' => null,
+                ])
+                ->create();
+        });
     }
 }

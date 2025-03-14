@@ -232,7 +232,7 @@ services:
 
   # meilisearch
   catalystexplorer-search:
-    image: getmeili/meilisearch:v1.13.3
+    image: getmeili/meilisearch:v1.13.0
     container_name: catalystexplorer-search
     logging: *default-logging
     ports:
@@ -331,7 +331,7 @@ services:
   #     - ./application:/app
   #   networks:
   #     - catalystexplorer-net
-  
+
   # catalystexplorer.cypress.headless:
   #   image: cypress/included:10.3.0
   #   container_name: catalystexplorer.cypress.headless
