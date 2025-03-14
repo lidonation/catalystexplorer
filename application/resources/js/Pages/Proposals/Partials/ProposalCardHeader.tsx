@@ -35,7 +35,7 @@ export default function ProposalCardHeader({
                     {userSelected ? (
                         <div>
                             <Button
-                                className="absolute top-4 right-4 rounded-lg bg-background p-2 text-white transition duration-200 ease-in-out hover:bg-background focus:outline-hidden"
+                                className="absolute top-4 right-4 rounded-lg bg-background p-2 text-content transition duration-200 ease-in-out hover:bg-background focus:outline-hidden"
                                 onClick={noSelectedUser}
                             >
                                 <svg
