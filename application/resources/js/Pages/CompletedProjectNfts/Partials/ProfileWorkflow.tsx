@@ -17,9 +17,10 @@ import ProposalSearchBar from './ProposalSearchBar';
 import VerificationCard from './VerificationCard';
 import IdeascaleProfileData = App.DataTransferObjects.IdeascaleProfileData;
 import ProposalData = App.DataTransferObjects.ProposalData;
+import { User } from '@/types';
 
 export interface ProfileWorkflowProps {
-    user: { name: string };
+    user?: User;
     proposals: PaginatedData<ProposalData[]>;
     profiles: PaginatedData<IdeascaleProfileData[]>;
 }
@@ -130,7 +131,7 @@ const ProfileWorkflow: React.FC<ProfileWorkflowProps> = ({
         <div className="bg-background mx-auto w-full max-w-lg rounded-2xl p-6 shadow-md">
             {!showVerification && (
                 <PageHeader
-                    userName={user.name}
+                    userName={user?.name}
                     sectionTitle={getSectionTitle()}
                 />
             )}
@@ -251,7 +252,7 @@ const ProfileWorkflow: React.FC<ProfileWorkflowProps> = ({
                         </Title>
                         <div className="my-2 border-t border-gray-300"></div>
                         <ProfileList
-                            profiles={profiles.data || []}
+                            profiles={profiles?.data || []}
                             onProfileClick={handleProfileSelect}
                         />
                         <div className="my-2 border-t border-gray-300"></div>

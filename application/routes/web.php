@@ -13,7 +13,6 @@ use App\Http\Controllers\CampaignsController;
 use App\Http\Controllers\MilestoneController;
 use App\Http\Controllers\ProposalsController;
 use App\Http\Controllers\VoterToolController;
-use App\Http\Controllers\WorkflowsController;
 use App\Http\Controllers\JormungandrController;
 use App\Http\Controllers\Api\CommunityController;
 use App\Http\Controllers\IdeascaleProfilesController;
@@ -76,8 +75,8 @@ Route::localized(
         });
 
 
-        Route::prefix('/workflows')->as('communities.')->group(function () {
-            Route::get('/{workflow}/step/{step}', [WorkflowsController::class, 'index'])
+        Route::prefix('/workflows')->as('workflows.')->middleware('auth')->group(function () {
+            Route::get('/completed-projects-nfts/steps/{step}', [CompletetProjectNftsController::class, 'handleStep'])
                 ->name('index');
         });
 

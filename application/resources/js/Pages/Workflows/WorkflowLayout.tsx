@@ -27,7 +27,7 @@ export default function WorkflowLayout({ children }: WorkflowLayoutProps) {
                 <div className="flex w-full flex-row justify-center px-8">
                     <div className="relative w-4/5 rounded-l-lg bg-white">
                         <nav className="w-full gap-4 px-8 pt-4">
-                            <ul className="menu-gap-y flex flex-1 justify-stretch pb-3">
+                            <ul className="menu-gap-y flex w-full justify-stretch pb-3">
                                 <li>
                                     <div className="flex gap-2">
                                         <div className="bg-primary flex h-10 w-10 items-center justify-center rounded-full">
@@ -38,10 +38,10 @@ export default function WorkflowLayout({ children }: WorkflowLayoutProps) {
                                                 level="6"
                                                 className="font-semibold"
                                             >
-                                                Title
+                                                {t('Title')}
                                             </Title>
                                             <span className="text-slate">
-                                                {t('Step 2')}
+                                                {t('Step 1')}
                                             </span>
                                         </div>
                                     </div>
@@ -56,10 +56,10 @@ export default function WorkflowLayout({ children }: WorkflowLayoutProps) {
                                                 level="6"
                                                 className="text-primary font-semibold"
                                             >
-                                                Title
+                                                {t('Title')}
                                             </Title>
                                             <span className="text-slate">
-                                                {t('Step 3')}
+                                                {t('Step 2')}
                                             </span>
                                         </div>
                                     </div>
@@ -74,10 +74,10 @@ export default function WorkflowLayout({ children }: WorkflowLayoutProps) {
                                                 level="6"
                                                 className="text-slate font-semibold"
                                             >
-                                                Title
+                                                {t('Title')}
                                             </Title>
                                             <span className="text-slate">
-                                                {t('Step 1')}
+                                                {t('Step 3')}
                                             </span>
                                         </div>
                                     </div>
@@ -85,19 +85,21 @@ export default function WorkflowLayout({ children }: WorkflowLayoutProps) {
                             </ul>
                         </nav>
                         <div className="border-primary w-2/3 border-t-3"></div>
-                        <div className="min-h-120">{children}</div>
-                        <footer className="absolute bottom-8 flex w-full justify-between px-8">
-                            <PrimaryButton
-                                className="px-8 py-3 text-sm"
-                                disabled
-                            >
-                                <ChevronLeft className="h-4 w-4" />
-                                <span>{t('Previous')}</span>
-                            </PrimaryButton>
-                            <PrimaryButton className="px-8 py-3 text-sm">
-                                <span>{t('Next')}</span>
-                                <ChevronRight className="h-4 w-4" />
-                            </PrimaryButton>
+                        <div className="min-h-120 p-6">{children}</div>
+                        <footer className="absolute bottom-1 w-full bg-white">
+                            <div className="flex w-full justify-between px-8 pb-8">
+                                <PrimaryButton
+                                    className="px-8 py-3 text-sm"
+                                    disabled
+                                >
+                                    <ChevronLeft className="h-4 w-4" />
+                                    <span>{t('Previous')}</span>
+                                </PrimaryButton>
+                                <PrimaryButton className="px-8 py-3 text-sm">
+                                    <span>{t('Next')}</span>
+                                    <ChevronRight className="h-4 w-4" />
+                                </PrimaryButton>
+                            </div>
                         </footer>
                     </div>
                     <div className="bg-primary flex h-full flex-col items-center justify-center gap-3 rounded-r-lg px-8">

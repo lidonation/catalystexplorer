@@ -49,6 +49,31 @@ class CompletetProjectNftsController extends Controller
         $this->user = Auth::user();
     }
 
+    public function handleStep($step)
+    {
+        $method = "step{$step}";
+
+        if (method_exists($this, $method)) {
+            return $this->$method($step);
+        }
+
+        abort(404, "Step '{$step}' not found.");
+    }
+
+    public function step1()
+    {
+
+        $proposals = $this->getClaimedIdeascaleProfilesProposals();
+
+        $claimedIdeascaleProfiles = $this->getClaimedIdeascaleProfiles();
+
+        return Inertia::render('Workflows/CompletedProjectNfts/Step1', [
+            'proposals' => $proposals,
+            'filters' => $this->queryParams,
+            'ideascaleProfiles' => $claimedIdeascaleProfiles,
+        ]);
+    }
+
     public function index(Request $request): Response
     {
         $this->getProps($request);

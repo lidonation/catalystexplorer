@@ -21,7 +21,7 @@ const ProfileList: React.FC<ProfileListProps> = ({
     if (!Array.isArray(profiles) || profiles?.length === 0) {
         return (
             <div className="rounded-lg border border-gray-200 p-4 text-center text-gray-600">
-                <RecordsNotFound />
+                <RecordsNotFound showIcon={true} />
                 <Paragraph>{t('profileWorkflow.noProfilesFound')}</Paragraph>
             </div>
         );
