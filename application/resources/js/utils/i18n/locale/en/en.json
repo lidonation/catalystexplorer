@@ -13,15 +13,19 @@
     "ccv4Votes": "CCV4 Votes",
     "charts": "Charts",
     "chooseMetaData": "Choose your own MetaData",
-    "communities": "Communities",
     "confirmPassword": "Confirm Password",
     "connect": "Connect",
+    "updatePassword": "Update Password",
     "updatePassword": "Update Password",
     "currentPassword": "Current Password",
     "connectWallet": "Connect wallet",
     "comingSoon": "Coming Soon",
     "cookies": "Cookies",
     "copyright": "© 2024 Catalyst Explorer. All rights reserved.",
+    "minting": "You're Minting",
+    "loginToMint": "Login to Mint",
+    "mustBeProposer": "Must Be Proposer",
+    "copied": "Copied",
     "data": "Data",
     "dReps": "DReps",
     "email": "Email",
@@ -41,6 +45,9 @@
     "monthlyReports": "Monthly Reports",
     "metaTitle": "Meta Data Preview",
     "mintNFT": "Mint NFT",
+    "viewNFT": "View NFT",
+    "cantFindNFT": "Can't find NFT for mint",
+    "paymentGateway": "NFT-MAKER PRO Payment Gateway",
     "fundProject": "Funded Project Number",
     "projectTitle": "Project Title",
     "yesVotes": "Yes Votes",
@@ -101,6 +108,13 @@
     "verificationInstructions": "To verify your ownership of this profile, please send a personal message to Lido Nation on Ideascale and include the code above.",
     "goToIdeascale": "Go to Ideascale",
     "proposal": "Proposal",
+    "noNFTDataAvailable": "No NFT data available",
+    "noPreviewAvailable": "No preview available",
+    "chooseMetaDataDescription": "Choose your own MetaData",
+    "metadataStrikeInstruction": "You may strike through metadata by clicking the X icon. Struck-through information will be excluded from the final mint.",
+    "nftPaymentGatewayTitle": "NFT-MAKER PRO Payment Gateway",
+    "artistRole": "Artist",
+    "cantFindNFTForMint": "Can't find NFT for mint",
     "error404": {
         "mainText": "Sorry, we couldn't find what you're looking for",
         "subText": "Let's Find Your Way Back!"
@@ -395,7 +409,7 @@
             "reviews": "Reviews",
             "milestones": "Milestones",
             "reports": "Reports",
-            "cam": "Cam"
+            "campaigns": "Campaigns"
         }
     },
     "groups": {
@@ -408,11 +422,24 @@
         "completed": "Completed",
         "funded": "Funded",
         "unfunded": "Unfunded",
+        "manageGroup": "Manage Group",
         "awardedVsRequested": "Awarded vs Requested",
         "receivedVsAwarded": "Received vs Awarded",
         "reviews": "Reviews",
         "noMembers": "This group has no members",
         "viewMembers": "View Members",
+        "options": {
+            "alphabetically": "Alphabetically: A to Z",
+            "amountAwardedAdaDesc": "Amount Awarded ADA: High to Low",
+            "amountAwardedAdaAsc": "Amount Awarded ADA: Low to High",
+            "amountAwardedUsdDesc": "Amount Awarded USD: High to Low",
+            "amountAwardedUsdAsc": "Amount Awarded USD: Low to High"
+        }
+    },
+    "communities": {
+        "communities": "Communities",
+        "title": "Catalyst Communities",
+        "subtitle": "Diverse, independent, and together inspiring the highest level of human collaboration",
         "options": {
             "alphabetically": "Alphabetically: A to Z",
             "amountAwardedAdaDesc": "Amount Awarded ADA: High to Low",
@@ -566,5 +593,39 @@
         "verificationCode": "Verification Code",
         "verificationInstructions": "To verify your ownership of this profile, please send a personal message to Lido Nation on Ideascale and include the code above.",
         "goToIdeascale": "Go to Ideascale"
+    },
+    "dreps": {
+        "dreps": "DReps",
+        "drepSearch": "Search DRep",
+        "drepStatus": "DRep status",
+        "votingPowerAda": "Voting Power (₳)",
+        "drepList": {
+            "title": "DReps Directory",
+            "subtitle": "Delegate Representatives in Project Catalyst.",
+            "signUp": "Sign up to be a DRep",
+            "drep": "DRep",
+            "registeredOn": "Registered on",
+            "lastActive": "Last Active",
+            "votingPower": "Voting Power",
+            "delegators": "Delegators",
+            "status": "Status",
+            "delegate": "Delegate",
+            "anHourAgo": "an hour ago",
+            "copied": "Copied!"
+        },
+        "filters": {
+            "status": "status",
+            "votingPower": "Voting Power",
+            "delegators": "Delegators"
+        },
+        "options": {
+            "alphabetically": "Alphabetically: A to Z",
+            "delegatorsDesc": "Delegators: High to Low",
+            "delegatorsAsc": "Delegators: Low to High",
+            "votersDesc": "Voters: High to Low",
+            "votersAsc": "Voters: Low to High",
+            "active": "Active",
+            "inactive": "Inactive"
+        }
     }
 }

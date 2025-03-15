@@ -1,11 +1,9 @@
-import Button from '@/Components/atoms/Button';
 import ClaimedButton from './ClaimedButton';
 import Paragraph from '@/Components/atoms/Paragraph';
 import Title from '@/Components/atoms/Title';
 import Card from '@/Components/Card';
 import FundingPercentages from '@/Components/FundingPercentages';
 import SegmentedBar from '@/Components/SegmentedBar';
-import ConnectIcon from '@/Components/svgs/ConnectIcon';
 import { VerificationBadge } from '@/Components/svgs/VerificationBadge';
 import UserAvatar from '@/Components/UserAvatar';
 import { ListProvider } from '@/Context/ListContext';

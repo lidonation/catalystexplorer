@@ -3,15 +3,18 @@
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
-use App\Http\Controllers\FundsController;
 use App\Http\Controllers\ChartsController;
+use App\Http\Controllers\DrepController;
+use App\Http\Controllers\FundsController;
 use App\Http\Controllers\GroupsController;
+use App\Http\Controllers\NftController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ReviewsController;
 use App\Http\Controllers\CampaignsController;
 use App\Http\Controllers\MilestoneController;
 use App\Http\Controllers\ProposalsController;
+use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\VoterToolController;
 use App\Http\Controllers\JormungandrController;
 use App\Http\Controllers\Api\CommunityController;
@@ -127,8 +130,8 @@ Route::localized(
                 Route::get('/reports', [IdeascaleProfilesController::class, 'show'])
                     ->name('reports');
 
-                Route::get('/cam', [IdeascaleProfilesController::class, 'show'])
-                    ->name('cam');
+                Route::get('/campaigns', [IdeascaleProfilesController::class, 'show'])
+                    ->name('campaigns');
             });
         });
 
@@ -153,10 +156,22 @@ Route::localized(
             }
         );
 
+        Route::prefix('nfts')->as('crud.nfts.')->group(function () {
+            Route::patch('/update/{nft:id}', [CompletetProjectNftsController::class, 'updateMetadata'])
+                ->name('update');
+        });
 
+        Route::prefix('jormungandr')->as('jormungandr.')->group(function () {
+            Route::get('/', [JormungandrController::class, 'index'])
+                ->name('index');
 
-        Route::get('/jormungandr', [JormungandrController::class, 'index'])
-            ->name('jormungandr.index');
+            Route::prefix('/transactions')->as('transactions.')->group(function () {
+                Route::get('/', [TransactionController::class, 'index'])
+                    ->name('index');
+                Route::get('/{catalystTransaction}', [TransactionController::class, 'show'])
+                    ->name('show');
+            });
+        });
 
         Route::get('/voter-tool', [VoterToolController::class, 'index'])
             ->name('voter-tool.index');
@@ -169,6 +184,17 @@ Route::localized(
             Route::get('/', [MilestoneController::class, 'index'])
                 ->name('index');
         });
+
+        // Dreps
+        Route::prefix('/dreps')->as('dreps.')->group(
+            function () {
+                Route::get('/', [DrepController::class, 'index'])
+                    ->name('index');
+
+                Route::get('/list', [DrepController::class, 'list'])
+                    ->name('list');
+            }
+        );
     }
 );
 
@@ -183,3 +209,4 @@ require __DIR__ . '/dashboard.php';
 require __DIR__ . '/api.php';
 
 Route::fallback(\CodeZero\LocalizedRoutes\Controllers\FallbackController::class);
+

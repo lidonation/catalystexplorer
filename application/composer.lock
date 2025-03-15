@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "0636468b38487a823294969dd14e5667",
+    "content-hash": "74977907f06edee0c342b8b1f33f2768",
     "packages": [
         {
             "name": "amphp/amp",
@@ -6587,6 +6587,73 @@
                 }
             ],
             "time": "2025-03-06T09:59:55+00:00"
+        },
+        {
+            "name": "outl1ne/nova-translatable",
+            "version": "3.0.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/outl1ne/nova-translatable.git",
+                "reference": "9468ac3c5e6ee01b920b96c8996ffb365b489315"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/outl1ne/nova-translatable/zipball/9468ac3c5e6ee01b920b96c8996ffb365b489315",
+                "reference": "9468ac3c5e6ee01b920b96c8996ffb365b489315",
+                "shasum": ""
+            },
+            "require": {
+                "laravel/nova": "^5.0",
+                "php": ">=8.1",
+                "spatie/laravel-translatable": "^4.0 || ^5.0 || ^6.0 || ^7.0"
+            },
+            "require-dev": {
+                "laravel/nova-devtool": "^1.0",
+                "nunomaduro/collision": "^7.8",
+                "orchestra/testbench": "^8.30|^9.8"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Outl1ne\\NovaTranslatable\\FieldServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Outl1ne\\NovaTranslatable\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Tarvo Reinpalu",
+                    "email": "tarvoreinpalu@gmail.com",
+                    "role": "Developer"
+                },
+                {
+                    "name": "Outl1ne",
+                    "email": "info@outl1ne.com",
+                    "role": "Maintainer"
+                }
+            ],
+            "description": "A laravel-translatable extension for Laravel Nova.",
+            "keywords": [
+                "i18n",
+                "laravel",
+                "nova",
+                "translatable",
+                "translate"
+            ],
+            "support": {
+                "issues": "https://github.com/outl1ne/nova-translatable/issues",
+                "source": "https://github.com/outl1ne/nova-translatable/tree/3.0.2"
+            },
+            "time": "2024-12-18T16:22:23+00:00"
         },
         {
             "name": "paragonie/constant_time_encoding",

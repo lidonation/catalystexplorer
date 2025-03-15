@@ -31,6 +31,9 @@ const labels = {
     aa: 'Amount Awarded ADA',
     au: 'Amount Awarded USD',
     pr: 'Number of Proposals',
+    ds: 'Status',
+    vp: 'Voting Power',
+    d: 'Delegators'
 };
 
 type LabelKeys = keyof typeof labels;
@@ -45,8 +48,8 @@ export default function ActiveFilters({
 }) {
     const [clearFilter, setClearFilter] = useState(true);
     const { filters } = useFilterContext();
-    const statusFilters = ['coh', 'fs', 'ps', 'f'];
-    const rangeFilters = ['pl', 'b', 'aa', 'au', 'pr'];
+    const statusFilters = ['coh', 'fs', 'ps', 'f', 'ds'];
+    const rangeFilters = ['pl', 'b', 'aa', 'au', 'd', 'pr', 'vp'];
     const sortFilters = ['st'];
     const idFilters = ['t', 'cam', 'com', 'ip', 'g'];
     const booleanFilters = ['op'];
@@ -98,15 +101,17 @@ export default function ActiveFilters({
 const StatusFilters = ({ filter }: { filter: FilteredItem }) => {
     const { setFilters } = useFilterContext();
     const removeFilter = (value?: string) => {
-        const newVal = filter.value.filter(
-            (val: string | undefined) => val != value,
-        );
+        const values = Array.isArray(filter.value) ? filter.value : [filter.value];
+        const newVal = values.filter((val) => val !== value);
+
         setFilters({
             param: filter.param,
-            value: newVal,
+            value: newVal.length > 0 ? newVal : '',
             label: filter.label,
         });
     };
+
+    const values = Array.isArray(filter.value) ? filter.value : [filter.value];
 
     return (
         <div
@@ -116,7 +121,7 @@ const StatusFilters = ({ filter }: { filter: FilteredItem }) => {
             <div className="mr-1 font-bold">{filter.label}:</div>
             <div className="mr-1 flex items-center gap-2">
                 {' '}
-                {filter.value.map((value: string) => (
+                {values?.map((value: string) => (
                     <div key={value} className="flex items-center">
                         {' '}
                         <span>{formatSnakeCaseToTitleCase(value)}</span>
@@ -161,7 +166,19 @@ const RangeFilters = ({ filter }: { filter: FilteredItem }) => {
                 value: [],
                 label: filter.label,
             });
-        }else if (filter.param == ParamsEnum.PROPOSALS) {
+        } else if (filter.param == ParamsEnum.PROPOSALS) {
+            setFilters({
+                param: filter.param,
+                value: [],
+                label: filter.label,
+            });
+        } else if (filter.param == ParamsEnum.VOTING_POWER) {
+            setFilters({
+                param: filter.param,
+                value: [],
+                label: filter.label,
+            });
+        } else if (filter.param == ParamsEnum.DELEGATORS) {
             setFilters({
                 param: filter.param,
                 value: [],
@@ -266,8 +283,8 @@ const IDFilters = React.memo(({ filter }: { filter: FilteredItem }) => {
         });
     };
 
-    const selectedOptions = options.filter(option => 
-        filter.value.includes(option.hash)
+    const selectedOptions = options.filter((option) =>
+        filter.value.includes(option.hash),
     );
 
     return (
@@ -282,9 +299,9 @@ const IDFilters = React.memo(({ filter }: { filter: FilteredItem }) => {
                         <span>
                             {formatSnakeCaseToTitleCase(
                                 option?.name ??
-                                option?.title ??
-                                option?.label ??
-                                'Unknown'
+                                    option?.title ??
+                                    option?.label ??
+                                    'Unknown',
                             )}
                         </span>
                         <button

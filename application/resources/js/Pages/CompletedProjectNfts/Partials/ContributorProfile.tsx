@@ -1,95 +1,104 @@
-import IdeascaleLogo from "@/assets/images/ideascale-logo.png";
 import Title from "@/Components/atoms/Title";
-import Paragraph from "@/Components/atoms/Paragraph"; // Added import for Paragraph component
+import Paragraph from "@/Components/atoms/Paragraph";
 import { useTranslation } from "react-i18next";
+import IdeascaleProfileData = App.DataTransferObjects.IdeascaleProfileData;
+import XIcon from "@/Components/svgs/XIcon";
+import LinkedInIcon from "@/Components/svgs/LinkedInIcons";
+import DiscordIcon from "@/Components/svgs/DiscordIcon";
+import Image from "@/Components/Image";
 
-const ContributorProfile = () => {
+interface ContributorProfileProps {
+  contributorProfiles?: IdeascaleProfileData[];
+}
+
+const ContributorProfile = ({ contributorProfiles = [] }: ContributorProfileProps) => {
   const { t } = useTranslation();
-  const mainContributor = {
-    name: "Preston Odep",
-    organization: "Lido Nation Foundation",
-    avatar: IdeascaleLogo,
-    bio: "Preston - is a creative professional with a strong passion for exploring various forms of self-expression which has fast-tracked his journey into a successful career in product design. Over the past 7 years, he has had the opportunity to collaborate with a variety of top-tier companies, from startups and growing businesses to industry-leading unicorns, crafting solutions for complex challenges alongside exceptional teams.",
-    interests: "Outside design, he is a major football fan, believing that Manchester United is the best team ever and Messi being the G.O.A.T.",
-    status: "You're Minting"
-  };
+  
+  // If no contributors provided or empty array, use a placeholder
+  if (!contributorProfiles || contributorProfiles.length === 0) {
+    return (
+      <div className="bg-background rounded-lg p-6">
+        <div className="text-center py-8">
+          <Title level="3" className="font-semibold mb-2">{t('noContributors')}</Title>
+          <Paragraph className="text-dark">{t('noContributorsAvailable')}</Paragraph>
+        </div>
+      </div>
+    );
+  }
 
-  const otherContributors = [
-    {
-      name: "Phuffy King",
-      avatar: IdeascaleLogo,
-      isVerified: true
-    }
-  ];
+  // Main contributor is the first one
+  const mainContributor = contributorProfiles[0];
+  
+  // Other contributors are the rest
+  const otherContributors = contributorProfiles.slice(1);
 
   return (
     <div className="bg-background rounded-lg p-6">
       <div className="mb-8">
-        <div className="flex justify-between items-start mb-4 border-b border-gray-200 pb-4">
+        <div className="flex justify-between items-start mb-4 border-b border-dark pb-4">
           <div className="flex gap-4">
-            <img
-              src={mainContributor.avatar}
+            <Image
+              src={mainContributor.hero_img_url}
               alt={mainContributor.name}
               className="w-20 h-20 rounded-full object-cover"
             />
             <div>
-              <Title level="2" className="font-semibold">{mainContributor.name}</Title>
-              <Paragraph className="text-gray-500">{mainContributor.organization}</Paragraph>
+              <Title level="2" className="text-content font-semibold">{mainContributor.name}</Title>
+              <Paragraph className="text-dark">{mainContributor.title}</Paragraph>
+              
+              {/* Social links */}
               <div className="flex gap-2 mt-2">
-                <a href="#" className="hover:opacity-80">
-                  <div className="bg-black text-white rounded p-1">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                      <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
-                    </svg>
-                  </div>
-                </a>
-                <a href="#" className="hover:opacity-80">
-                  <div className="bg-blue-600 text-white rounded p-1">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                      <path d="M20.5 2h-17A1.5 1.5 0 002 3.5v17A1.5 1.5 0 003.5 22h17a1.5 1.5 0 001.5-1.5v-17A1.5 1.5 0 0020.5 2zM8 19H5v-9h3zM6.5 8.25A1.75 1.75 0 118.3 6.5a1.78 1.78 0 01-1.8 1.75zM19 19h-3v-4.74c0-1.42-.6-1.93-1.38-1.93A1.74 1.74 0 0013 14.19a.66.66 0 000 .14V19h-3v-9h2.9v1.3a3.11 3.11 0 012.7-1.4c1.55 0 3.36.86 3.36 3.66z"/>
-                    </svg>
-                  </div>
-                </a>
+                {mainContributor.twitter && (
+                  <a href={`https://twitter.com/${mainContributor.twitter}`} target="_blank" rel="noopener noreferrer" className="hover:opacity-80">
+                      <XIcon/>
+                  </a>
+                )}
+                
+                {mainContributor.discord && (
+                  <a href={`https://discord.com/users/${mainContributor.discord}`} target="_blank" rel="noopener noreferrer" className="hover:opacity-80">
+                      <DiscordIcon/>
+                  </a>
+                )}
+                
+                {mainContributor.linkedin && (
+                  <a href={`https://linkedin.com/in/${mainContributor.linkedin}`} target="_blank" rel="noopener noreferrer" className="hover:opacity-80">
+                      <LinkedInIcon/>
+                  </a>
+                )}
               </div>
             </div>
           </div>
-          <span className="bg-green-50 text-green-600 px-3 py-1 rounded-full text-sm">
-            {mainContributor.status}
+          <span className="bg-success-light border-2 text-success px-3 py-1 rounded-full text-sm">
+            {t('minting')}
           </span>
         </div>
 
         <div className="space-y-4 text-content">
-          <Paragraph>{mainContributor.bio}</Paragraph>
-          <Paragraph>{mainContributor.interests}</Paragraph>
+          <Paragraph>{typeof mainContributor.bio === 'string' ? mainContributor.bio : ''}</Paragraph>
         </div>
       </div>
 
-      <div>
-        <Title level="3" className="font-semibold mb-4">{t('otherContributors')}</Title>
-        <div className="space-y-4 border-t border-gray-200 pb-4">
-          {otherContributors.map((contributor, index) => (
-            <div key={index} className="flex items-center gap-3 pt-5">
-              <img
-                src={contributor.avatar}
-                alt={contributor.name}
-                className="w-20 h-20 rounded-full object-cover border-4 border-green-500"
-              />
-              <div className="flex items-center">
-                <span className="font-medium">{contributor.name}</span>
-                {contributor.isVerified && (
-                  <svg 
-                    className="w-4 h-4 ml-1 text-green-500" 
-                    viewBox="0 0 20 20" 
-                    fill="currentColor"
-                  >
-                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                  </svg>
-                )}
-              </div>
+      {otherContributors.length > 0 && (
+        <div>
+          <Title level="3" className=" text-content font-semibold mb-4">{t('otherContributors')}</Title>
+          <div className="border-t border-dark pt-5">
+            <div className="flex flex-wrap gap-8">
+              {otherContributors.map((contributor, index) => (
+                <div key={contributor.hash || index} className="text-center">
+                  <div className="flex justify-center mb-2">
+                    <Image
+                      src={contributor.hero_img_url}
+                      alt={contributor.name}
+                      className="w-20 h-20 rounded-full object-cover border-2 border-success"
+                    />
+                  </div>
+                  <span className="font-medium block">{contributor.name}</span>
+                </div>
+              ))}
             </div>
-          ))}
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };

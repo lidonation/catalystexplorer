@@ -69,7 +69,7 @@ export const ideascaleProfileTabs: TabConfig = {
       { key: 'reviews', only: ['reviews']},
       { key: 'milestones'},
       { key: 'reports'},
-      { key: 'cam'}
+      { key: 'campaigns'},
   ]
 };
 

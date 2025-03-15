@@ -5,12 +5,15 @@ declare(strict_types=1);
 namespace App\Http\Controllers;
 
 use App\Actions\TransformIdsToHashes;
+use App\DataTransferObjects\CampaignData;
 use App\DataTransferObjects\IdeascaleProfileData;
 use App\DataTransferObjects\ProposalData;
 use App\DataTransferObjects\ProposalMilestoneData;
 use App\DataTransferObjects\ReviewData;
 use App\Enums\IdeascaleProfileSearchParams;
 use App\Enums\ProposalSearchParams;
+use App\Models\Campaign;
+use App\Models\Fund;
 use App\Models\IdeascaleProfile;
 use App\Models\ProposalMilestone;
 use App\Repositories\IdeascaleProfileRepository;
@@ -76,7 +79,8 @@ class IdeascaleProfilesController extends Controller
                             $ideascaleProfile->proposals()
                                 ->with(['users', 'fund'])
                                 ->paginate(11, ['*'], 'p')
-                        ))->onEachSide(0)
+                        )
+                    )->onEachSide(0)
                 ),
             ]);
         }
@@ -129,8 +133,16 @@ class IdeascaleProfilesController extends Controller
         }
 
         if (str_contains($path, '/cam')) {
-            return Inertia::render('IdeascaleProfile/Cam/Index', [
+            return Inertia::render('IdeascaleProfile/Campaigns/Index', [
                 'ideascaleProfile' => IdeascaleProfileData::from($ideascaleProfileData),
+                'campaigns' => CampaignData::collect(
+                    Campaign::whereIn('id', $ideascaleProfile->proposals()->pluck('campaign_id'))->withCount([
+                        'completed_proposals',
+                        'unfunded_proposals',
+                        'funded_proposals',
+                    ])
+                        ->get()
+                ),
             ]);
         }
 
@@ -142,7 +154,8 @@ class IdeascaleProfilesController extends Controller
                         $ideascaleProfile->proposals()
                             ->with(['users', 'fund'])
                             ->paginate(11, ['*'], 'p')
-                    ))->onEachSide(0)
+                    )
+                )->onEachSide(0)
             ),
             'groups' => $ideascaleProfile->groups(),
         ]);

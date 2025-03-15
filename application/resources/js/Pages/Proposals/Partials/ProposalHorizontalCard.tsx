@@ -24,6 +24,14 @@ export default function ProposalHorizontalCard({
 }: any) {
     return (
         <article className="bg-background proposal-card proposal-card-horizontal relative flex max-h-screen min-h-[400px] flex-col space-y-4 overflow-auto rounded-xl p-4 shadow-lg md:flex-row md:space-y-0 md:space-x-4">
+            {userSelected && (
+                <button
+                    onClick={noSelectedUser}
+                    className="absolute right-4 top-4 z-10 rounded-full p-1 hover:bg-background hover:text-content focus:outline-none focus:ring-2 focus:ring-primary"
+                    aria-label="Close profile"
+                >
+                </button>
+            )}
             <div className="flex h-auto w-[500px] flex-col items-start overflow-hidden rounded-xl">
                 <ProposalCardHeader
                     proposal={proposal}

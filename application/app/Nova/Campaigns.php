@@ -7,7 +7,10 @@ namespace App\Nova;
 use App\Enums\CatalystCurrencies;
 use App\Models\Campaign;
 use App\Models\Fund;
+use App\Nova\Actions\MakeSearchable;
+use App\Nova\Actions\UpdateModelMedia;
 use Ebess\AdvancedNovaMediaLibrary\Fields\Images;
+use Laravel\Nova\Actions\Action;
 use Laravel\Nova\Fields\DateTime;
 use Laravel\Nova\Fields\Field;
 use Laravel\Nova\Fields\HasMany;
@@ -99,6 +102,19 @@ class Campaigns extends Resource
         return [
             Images::make(__('Hero'), 'hero')
                 ->enableExistingMedia(),
+        ];
+    }
+
+    /**
+     * Get the actions available for the resource.
+     *
+     * @return array<int, Action>
+     */
+    public function actions(NovaRequest $request): array
+    {
+        return [
+            (new UpdateModelMedia),
+            (new MakeSearchable),
         ];
     }
 }

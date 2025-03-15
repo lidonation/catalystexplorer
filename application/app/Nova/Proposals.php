@@ -6,6 +6,7 @@ namespace App\Nova;
 
 use App\Enums\CatalystGlobals;
 use App\Models\Proposal;
+use App\Nova\Actions\MakeSearchable;
 use App\Nova\Actions\UpdateModelMedia;
 use Illuminate\Support\Str;
 use Laravel\Nova\Actions\Action;
@@ -137,6 +138,7 @@ class Proposals extends Resource
     {
         return [
             (new UpdateModelMedia),
+            (new MakeSearchable),
         ];
     }
 }

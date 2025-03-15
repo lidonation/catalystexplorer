@@ -5,8 +5,11 @@ declare(strict_types=1);
 namespace App\Nova;
 
 use App\Models\IdeascaleProfile;
+use App\Nova\Actions\MakeSearchable;
 use App\Nova\Actions\UpdateModelMedia;
+use Ebess\AdvancedNovaMediaLibrary\Fields\Images;
 use Laravel\Nova\Fields\BelongsTo;
+use Laravel\Nova\Fields\BelongsToMany;
 use Laravel\Nova\Fields\Field;
 use Laravel\Nova\Fields\HasMany;
 use Laravel\Nova\Fields\ID;
@@ -49,25 +52,25 @@ class IdeascaleProfiles extends Resource
         return [
             ID::make()->sortable(),
 
+            Images::make(__('Profile Pic'), 'profile')
+                ->showOnIndex()
+                ->enableExistingMedia(),
+
             Text::make('Name')
-                ->sortable()->withMeta(
-                    [
-                        'extraAttributes' => [
-                            'autocomplete' => 'off',
-                        ],
-                    ]
-                )
+                ->sortable()->withMeta([
+                    'extraAttributes' => [
+                        'autocomplete' => 'off',
+                    ],
+                ])
                 ->rules('max:255')
                 ->required(),
 
             Text::make('username')
-                ->sortable()->withMeta(
-                    [
-                        'extraAttributes' => [
-                            'autocomplete' => 'off',
-                        ],
-                    ]
-                ),
+                ->sortable()->withMeta([
+                    'extraAttributes' => [
+                        'autocomplete' => 'off',
+                    ],
+                ]),
 
             Text::make('ideascale Id')
                 ->sortable()->withMeta(
@@ -92,38 +95,11 @@ class IdeascaleProfiles extends Resource
                 ->nullable()
                 ->searchable(),
 
+            BelongsToMany::make(__('Groups'), 'groups', Groups::class)
+                ->searchable(),
+
             HasMany::make('Metadata', 'metas', Metas::class),
         ];
-    }
-
-    /**
-     * Get the cards available for the resource.
-     *
-     * @return array<int, \Laravel\Nova\Card>
-     */
-    public function cards(NovaRequest $request): array
-    {
-        return [];
-    }
-
-    /**
-     * Get the filters available for the resource.
-     *
-     * @return array<int, \Laravel\Nova\Filters\Filter>
-     */
-    public function filters(NovaRequest $request): array
-    {
-        return [];
-    }
-
-    /**
-     * Get the lenses available for the resource.
-     *
-     * @return array<int, \Laravel\Nova\Lenses\Lens>
-     */
-    public function lenses(NovaRequest $request): array
-    {
-        return [];
     }
 
     /**
@@ -135,6 +111,7 @@ class IdeascaleProfiles extends Resource
     {
         return [
             (new UpdateModelMedia),
+            (new MakeSearchable),
         ];
     }
 }

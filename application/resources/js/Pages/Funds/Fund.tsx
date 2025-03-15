@@ -13,6 +13,7 @@ import HeroSection from './Partials/HeroSection';
 import FundData = App.DataTransferObjects.FundData;
 import MetricData = App.DataTransferObjects.MetricData;
 import CampaignData = App.DataTransferObjects.CampaignData;
+import CampaignCard from '../Campaign/Partials/CampaignCard';
 
 interface FundPageProps extends Record<string, unknown> {
     fund: FundData;
@@ -55,7 +56,10 @@ export default function Fund({
                     </WhenVisible>
                 </section>
 
-                <FiltersProvider defaultFilters={filters} routerOptions={{only:['campaigns']}}>
+                <FiltersProvider
+                    defaultFilters={filters}
+                    routerOptions={{ only: ['campaigns'] }}
+                >
                     <section className="container py-8">
                         <div className="flex w-full justify-between">
                             <div>
@@ -73,10 +77,15 @@ export default function Fund({
                                 fallback={<CampaignLoader />}
                                 data="campaigns"
                             >
-                                <CampaignList
-                                    campaigns={campaigns}
-                                    fund={fund}
-                                />
+                                <CampaignList campaigns={campaigns}className='grid-cols-3 gap-6'>
+                                    {(campaign) => (
+                                        <CampaignCard
+                                            key={campaign.hash}
+                                            campaign={campaign}
+                                            fund={fund}
+                                        />
+                                    )}
+                                </CampaignList>
                             </WhenVisible>
                         </div>
                     </section>

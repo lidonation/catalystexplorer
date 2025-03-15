@@ -1,6 +1,5 @@
 import React, { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import Paragraph from '@/Components/atoms/Paragraph';
 import ProposalCardHeader from '@/Pages/Proposals/Partials/ProposalCardHeader';
 import ProposalFundingStatus from '@/Pages/Proposals/Partials/ProposalFundingStatus';
 import ProposalFundingPercentages from '@/Pages/Proposals/Partials/ProposalFundingPercentages';
@@ -9,7 +8,6 @@ import IdeascaleProfileData = App.DataTransferObjects.IdeascaleProfileData;
 import ProposalData = App.DataTransferObjects.ProposalData;
 import ManageProposalButton from '@/Pages/My/Proposals/partials/ManageProposalButton';
 import TableHeaderCell from './ProposalTableHeaderCell';
-
 
 interface ColumnConfig {
   key: string;
@@ -90,7 +88,7 @@ const ProposalTable: React.FC<ProposalTableProps> = ({ proposals }) => {
             toolTipProps={t('proposals.viewTeam')}
           />
         </div>
-      ),  
+      ),
     },
     {
       key: 'action',
@@ -135,15 +133,15 @@ const ProposalTable: React.FC<ProposalTableProps> = ({ proposals }) => {
             {proposals.map((proposal, index) => {
               const proposalHash = proposal.hash ?? '';
               const helpers = getRowHelpers(proposalHash);
-              
+
               return (
-                <tr 
-                  key={proposalHash} 
+                <tr
+                  key={proposalHash}
                   className={index < proposals.length - 1 ? 'border-b border-light-gray-persist' : ''}
                 >
                   {columns.map(column => (
-                    <td 
-                      key={`${proposalHash}-${column.key}`} 
+                    <td
+                      key={`${proposalHash}-${column.key}`}
                       className="px-4 py-4 border-r border-light-gray-persist"
                     >
                       {column.renderCell(proposal, helpers)}

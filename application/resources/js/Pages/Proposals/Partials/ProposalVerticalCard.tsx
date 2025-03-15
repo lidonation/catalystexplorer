@@ -23,7 +23,16 @@ export default function ProposalVerticalCard({
     abstainVotes,
 }: any) {
     return (
-        <article className="bg-background proposal-card proposal-card-vertical flex h-full flex-col justify-between rounded-xl p-2 shadow-lg gap-3">
+        <article className="bg-background proposal-card proposal-card-vertical flex h-full flex-col justify-between rounded-xl p-2 shadow-lg gap-3 relative">
+            {userSelected && (
+                <button
+                    onClick={noSelectedUser}
+                    className="absolute right-4 top-4 z-10 rounded-full p-1 hover:bg-background hover:text-content focus:outline-none focus:ring-2 focus:ring-primary"
+                    aria-label="Close profile"
+                >
+                </button>
+            )}
+            
             <section className="flex h-auto w-full flex-col items-start overflow-hidden">
                 <ProposalCardHeader
                     proposal={proposal}

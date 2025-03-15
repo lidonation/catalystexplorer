@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace App\Nova;
 
 use App\Models\Nft;
-use App\Models\User;
 use App\Nova\Actions\SyncNftWithNMKR;
 use App\Nova\Actions\UpdateModelMedia;
 use App\Nova\Filters\NMKRNftsFilter;
+use Ebess\AdvancedNovaMediaLibrary\Fields\Images;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Laravel\Nova\Fields\BelongsTo;
@@ -66,7 +66,7 @@ class Nfts extends Resource
                     'required',
                 ]),
 
-            BelongsTo::make('Author', 'author', User::class)
+            BelongsTo::make('Author', 'author', Users::class)
                 ->searchable()
                 ->nullable()
                 ->hideFromIndex()
@@ -74,7 +74,7 @@ class Nfts extends Resource
                     return Auth::id();
                 }),
 
-            BelongsTo::make('Artist', 'artist', User::class)->searchable(),
+            BelongsTo::make('Artist', 'artist', Users::class)->searchable(),
             Text::make(__('Policy'), 'policy')->hideFromIndex(),
             Text::make(__('Owner Address'))->hideFromIndex(),
             Text::make(__('Rarity'))->sortable(),
@@ -91,7 +91,7 @@ class Nfts extends Resource
                 ->hideFromIndex(),
 
             MorphTo::make(__('Model'), 'model')->types([
-                User::class,
+                Users::class,
                 IdeascaleProfiles::class,
             ])->searchable()->nullable(),
 
@@ -108,18 +108,22 @@ class Nfts extends Resource
                 ]),
 
             DateTime::make(__('Minted At'), 'minted_at'),
-
             KeyValue::make(__('On-Chain Metadata'), 'metadata')
                 ->rules('json')
                 ->resolveUsing(function ($object) {
                     return collect($object)?->sortKeys();
                 }),
 
+            Images::make(__('Hero'), 'hero')
+                ->conversionOnDetailView('preview')
+                ->conversionOnIndexView('thumbnail')
+                ->enableExistingMedia(),
+
             Markdown::make(__('description'))->translatable()->help(
                 'Please limit your input to 63 characters for NFT uploads. Exceeding this limit may affect the upload process. Thank you!'
             ),
-
             HasMany::make(__('Transactions'), 'txs', Txs::class),
+            HasMany::make(__('Metas'), 'metas', Metas::class),
         ];
     }
 
