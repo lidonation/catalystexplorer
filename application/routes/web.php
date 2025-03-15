@@ -17,6 +17,8 @@ use App\Http\Controllers\JormungandrController;
 use App\Http\Controllers\Api\CommunityController;
 use App\Http\Controllers\IdeascaleProfilesController;
 use App\Http\Controllers\CompletetProjectNftsController;
+use App\Http\Controllers\WorkflowController;
+use App\Http\Middleware\WorkflowMiddleware;
 
 Route::localized(
     function () {
@@ -75,9 +77,15 @@ Route::localized(
         });
 
 
-        Route::prefix('/workflows')->as('workflows.')->middleware('auth')->group(function () {
+        Route::prefix('/workflows')->as('workflows.')->middleware(WorkflowMiddleware::class)->group(function () {
             Route::get('/completed-projects-nfts/steps/{step}', [CompletetProjectNftsController::class, 'handleStep'])
                 ->name('index');
+
+            Route::get('/completed-projects-nfts/steps/login', [WorkflowController::class, 'auth'])
+                ->name('loginForm');
+
+            Route::post('/completed-projects-nfts/login', [WorkflowController::class, 'login'])
+                ->name('login');
         });
 
 
