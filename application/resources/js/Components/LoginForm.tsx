@@ -11,6 +11,7 @@ import { useTranslation } from 'react-i18next';
 import TextInput from "@/Components/atoms/TextInput";
 import Title from './atoms/Title';
 import { generateLocalizedRoute } from '@/utils/localizedRoute';
+import ConnectWalletButton from './ConnectWalletButton';
 
 interface LoginFormProps {
     title?: string;
@@ -63,14 +64,7 @@ export default function LoginForm({ title }: LoginFormProps) {
                 </div>
 
                 <div className="mt-4 flex justify-center">
-                    <SecondaryButton
-                        className="hover:bg-background-lighter flex gap-2 rounded-md px-4 py-1.5 text-sm sm:text-base"
-                        icon={<ConnectWalletIcon className="bg-background"/>}
-                        iconPosition="left"
-                        type="submit"
-                    >
-                        {t('connectWallet')}
-                    </SecondaryButton>
+                    <ConnectWalletButton/>
                 </div>
 
                 <div className="py-4"></div>

@@ -1,6 +1,7 @@
 import { defineConfig } from 'vite';
 import laravel from 'laravel-vite-plugin';
 import react from '@vitejs/plugin-react';
+import wasm from "vite-plugin-wasm";
 import path from "node:path";
 
 
@@ -11,6 +12,7 @@ export default defineConfig({
             refresh: true,
         }),
         react(),
+        wasm(),
     ],
     resolve: {
         alias: {
@@ -22,5 +24,8 @@ export default defineConfig({
             host: 'localhost',
         },
         host: '0.0.0.0',
+    },
+    build: {
+        target: 'esnext',
     }
 });

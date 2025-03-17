@@ -2,9 +2,9 @@ import Checkbox from '@/Components/atoms/Checkbox';
 import PrimaryButton from '@/Components/atoms/PrimaryButton';
 import SecondaryButton from '@/Components/atoms/SecondaryButton';
 import TextInput from '@/Components/atoms/TextInput';
+import ConnectWalletButton from '@/Components/ConnectWalletButton';
 import InputError from '@/Components/InputError';
 import InputLabel from '@/Components/InputLabel';
-import ConnectWalletIcon from '@/Components/svgs/ConnectWalletIcon';
 import { generateLocalizedRoute } from '@/utils/localizedRoute';
 import { Link, router, useForm } from '@inertiajs/react';
 import { FormEventHandler, useState } from 'react';
@@ -113,14 +113,7 @@ export default function LoginForm() {
                 </div>
 
                 <div>
-                    <SecondaryButton
-                        className="flex h-10 w-full items-center justify-center rounded-md"
-                        icon={<ConnectWalletIcon />}
-                        iconPosition="left"
-                        type="submit"
-                    >
-                        {t('connectWallet')}
-                    </SecondaryButton>
+                    <ConnectWalletButton/>
                 </div>
 
                 <div className="flex w-full items-center justify-center">
