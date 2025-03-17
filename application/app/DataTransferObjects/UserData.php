@@ -15,8 +15,6 @@ class UserData extends Data
     public function __construct(
         public string $hash,
 
-        public int $id,
-
         public string $name,
 
         public string $email,

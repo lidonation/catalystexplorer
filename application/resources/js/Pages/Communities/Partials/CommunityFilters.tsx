@@ -25,7 +25,7 @@ const CommunityFilters = ({
     return (
         <>
             <div className="bg-background h-full w-full overflow-y-auto rounded-xl p-4">
-                <div className="grid grid-cols-2 gap-x-4 gap-y-3 rounded-xl md:grid-cols-2 lg:grid-cols-4">
+                <div className="grid grid-cols-2 gap-x-4 gap-y-3 rounded-xl md:grid-cols-2 lg:grid-cols-3">
                     <div className="col-span-1 flex flex-col gap-2 pb-4">
                         <span>{t('proposals.filters.fundingStatus')}</span>
                         <Selector
@@ -105,7 +105,9 @@ const CommunityFilters = ({
                             multiple={true}
                         />
                     </div>
+                </div>
 
+                <div className="grid grid-cols-2 gap-x-4 gap-y-3 rounded-xl md:grid-cols-2">
                     <div className="col-span-2 flex flex-col gap-2 pb-4 lg:col-span-1">
                         <span>{t('proposals.filters.campaigns')}</span>
                         <SearchSelect
@@ -123,9 +125,6 @@ const CommunityFilters = ({
                             multiple={true}
                         />
                     </div>
-                </div>
-
-                <div className="grid grid-cols-2 gap-x-4 gap-y-3 rounded-xl md:grid-cols-2 lg:grid-cols-3">
                     <div className="col-span-1 flex flex-col gap-2 pb-4">
                         <span>{t('proposals.filters.ideascaleProfiles')}</span>
                         <SearchSelect
@@ -145,61 +144,6 @@ const CommunityFilters = ({
                             }
                             placeholder="Select"
                             multiple={true}
-                        />
-                    </div>
-
-                    <div className="col-span-1 flex flex-col gap-2 pb-4">
-                        <span>{t('proposals.filters.communities')}</span>
-                        <SearchSelect
-                            key={'communities'}
-                            domain={'communities'}
-                            selected={getFilter(ParamsEnum.COMMUNITIES) ?? []}
-                            onChange={(value) =>
-                                setFilters({
-                                    label: t('proposals.filters.communities'),
-                                    value,
-                                    param: ParamsEnum.COMMUNITIES,
-                                })
-                            }
-                            placeholder="Select"
-                            multiple={true}
-                        />
-                    </div>
-
-                    <div className="col-span-1 flex flex-col gap-2 pb-4">
-                        <span>{t('proposals.filters.communityCohort')}</span>
-                        <Selector
-                            isMultiselect={true}
-                            options={[
-                                {
-                                    value: 'impact_proposal',
-                                    label: t(
-                                        'proposals.options.impactProposal',
-                                    ),
-                                },
-                                {
-                                    value: 'woman_proposal',
-                                    label: t(
-                                        'proposals.options.womenProposals',
-                                    ),
-                                },
-                                {
-                                    value: 'ideafest_proposal',
-                                    label: t(
-                                        'proposals.options.ideafestProposals',
-                                    ),
-                                },
-                            ]}
-                            setSelectedItems={(value) =>
-                                setFilters({
-                                    label: t(
-                                        'proposals.filters.communityCohort',
-                                    ),
-                                    value,
-                                    param: ParamsEnum.COHORT,
-                                })
-                            }
-                            selectedItems={getFilter(ParamsEnum.COHORT)}
                         />
                     </div>
                 </div>
