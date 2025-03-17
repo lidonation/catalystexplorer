@@ -1,6 +1,8 @@
 import Title from '@/Components/atoms/Title';
+import Card from '@/Components/Card';
 import Divider from '@/Components/Divider';
 import CommunitiesIcon from '@/Components/svgs/CommunitiesSvg';
+import Markdown from 'marked-react';
 import React, { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import CommunityIdeascaleProfiles from './CommunityIdeascaleProfiles';
@@ -26,7 +28,7 @@ const CommunityCard: React.FC<CommunityCardProps> = ({ community }) => {
     );
 
     return (
-        <div className="bg-background flex w-full flex-col justify-between overflow-hidden rounded rounded-lg shadow-lg">
+        <Card className="justify-between overflow-hidden">
             <div className="flex h-auto w-full items-center justify-center overflow-hidden pt-8 pb-4">
                 <div className="bg-background-darker border-background-lighter flex h-28 w-28 items-center justify-center overflow-hidden rounded-full border-4">
                     <CommunitiesIcon className="text-dark h-8 w-8" />
@@ -37,7 +39,9 @@ const CommunityCard: React.FC<CommunityCardProps> = ({ community }) => {
                     <Title level="3" className="font-semibold">
                         {community.title}
                     </Title>
-                    <p className="text-content text-2">{community.content}</p>
+                    <section className="text-content text-2">
+                        <Markdown>{community.content}</Markdown>
+                    </section>
                 </div>
             </div>
             <div>
@@ -71,7 +75,7 @@ const CommunityCard: React.FC<CommunityCardProps> = ({ community }) => {
                     />
                 </div>
             </div>
-        </div>
+        </Card>
     );
 };
 
