@@ -628,5 +628,36 @@
             "active": "Active",
             "inactive": "Inactive"
         }
+    },
+
+    "wallet": {
+        "connect": {
+            "title": "Connect Wallet",
+            "initializing": "Initializing wallet connection...",
+            "connectedTo": "Connected to:",
+            "disconnect": "Disconnect Wallet",
+            "selectWallet": "Select a wallet",
+            "noWallets": {
+                "title": "No supported wallets detected",
+                "subtitle": "Please install Lace, Eternl, Flint, or another Cardano wallet"
+            },
+            "errors": {
+                "notInitialized": "Cardano library not initialized yet. Please try again in a moment.",
+                "walletNotFound": "{{walletName}} wallet not found. Please install it first.",
+                "wrongNetwork": "Please switch to Mainnet in your wallet settings",
+                "noAddresses": "No addresses found in wallet",
+                "connectionFailed": "Connection failed",
+                "disconnectError": "Error disconnecting wallet",
+                "contextError": "useWallet must be used within a WalletProvider",
+                "wasmInitError": "Failed to initialize Cardano WASM module",
+                "wasmLibError": "Failed to initialize wallet connection library"
+            }
+        },
+        "status": {
+            "connected": "Connected",
+            "connecting": "Connecting",
+            "disconnect": "Disconnect"
+        }
     }
+
 }
