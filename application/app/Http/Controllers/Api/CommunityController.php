@@ -137,26 +137,11 @@ class CommunityController extends Controller
             });
         }
 
-        if (isset($this->queryParams[CommunitySearchParams::COMMUNITIES()->value])) {
-            $communityHashes = $this->queryParams[CommunitySearchParams::COMMUNITIES()->value];
-            $decodedCommunityIds = (new HashIdService(new Community))
-                ->decodeArray($communityHashes);
-            $query->whereIn('id', $decodedCommunityIds);
-        }
-
-        if (isset($this->queryParams[CommunitySearchParams::COHORT()->value])) {
-            $cohortFilters = $this->queryParams[CommunitySearchParams::COHORT()->value];
-            $query->whereHas('proposals.metas', function ($q) use ($cohortFilters) {
-                $q->whereIn('key', $cohortFilters)
-                    ->where('content', true);
-            });
-        }
-
         if (isset($this->queryParams[CommunitySearchParams::TAGS()->value])) {
             $tagsHashes = $this->queryParams[CommunitySearchParams::TAGS()->value];
             $decodedTagsIds = (new HashIdService(new Tag))
                 ->decodeArray($tagsHashes);
-            $query->whereHas('proposals.tags', function ($query) use ($decodedTagsIds) {
+            $query->whereHas('tags', function ($query) use($decodedTagsIds) {
                 $query->whereIn('tags.id', $decodedTagsIds);
             });
         }
@@ -244,13 +229,11 @@ class CommunityController extends Controller
             CommunitySearchParams::FUNDING_STATUS()->value => 'array|nullable',
             CommunitySearchParams::PROJECT_STATUS()->value => 'array|nullable',
             CommunitySearchParams::QUERY()->value => 'string|nullable',
-            CommunitySearchParams::COHORT()->value => 'array|nullable',
             CommunitySearchParams::PAGE()->value => 'int|nullable',
             CommunitySearchParams::LIMIT()->value => 'int|nullable',
             CommunitySearchParams::SORTS()->value => 'nullable',
             CommunitySearchParams::CAMPAIGNS()->value => 'array|nullable',
             CommunitySearchParams::TAGS()->value => 'array|nullable',
-            CommunitySearchParams::COMMUNITIES()->value => 'array|nullable',
             CommunitySearchParams::IDEASCALE_PROFILES()->value => 'array|nullable',
             CommunitySearchParams::FUNDS()->value => 'array|nullable',
             CommunitySearchParams::PROPOSALS()->value => 'array|nullable',
