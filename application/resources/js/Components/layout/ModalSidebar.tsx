@@ -5,6 +5,7 @@ import Button from '../atoms/Button';
 import CatalystLogo from '../atoms/CatalystLogo';
 import CloseIcon from '../svgs/CloseIcon';
 import Title from '../atoms/Title';
+import { useConnectWallet } from '@/Context/ConnectWalletSliderContext';
 
 type ModalSidebarProps = {
     isOpen?: boolean;
@@ -16,6 +17,7 @@ type ModalSidebarProps = {
 function ModalSidebar({ isOpen = false, title, children, onClose }: ModalSidebarProps) {
     const sidebarRef = useRef<HTMLDivElement | null>(null);
     const { t } = useTranslation();
+    const {isWalletConnectorOpen } = useConnectWallet();
 
     useEscapeKey(() => onClose());
 
@@ -61,7 +63,7 @@ function ModalSidebar({ isOpen = false, title, children, onClose }: ModalSidebar
                         ariaLabel={t('navigation.sidebar.close')}
                         aria-expanded={isOpen}
                         aria-controls="sidebar-modal"
-                        className="text-4 hover:bg-dark hidden items-center rounded-sm px-2 py-1 sm:block lg:inline-flex"
+                        className={`text-4 hover:bg-dark ${!isWalletConnectorOpen ? 'hidden' : ''} items-center rounded-sm px-2 py-1 sm:block lg:inline-flex`}
                     >
                         <CloseIcon width={18} height={18} />
                     </Button>
@@ -71,7 +73,7 @@ function ModalSidebar({ isOpen = false, title, children, onClose }: ModalSidebar
                     <div className="mt-6 hidden h-6 shrink-0 items-center justify-center px-6 sm:block lg:flex">
                         <CatalystLogo className="object-contain" />
                     </div>
-                    <section className="overflow-y-auto">{children}</section>
+                    <section>{children}</section>
                 </div>
             </div>
         </aside>
