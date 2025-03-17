@@ -88,4 +88,52 @@ class Nft extends Model implements CardanoNftInterface, HasMedia
     {
         return $this->hasMany(Tx::class, 'model_id')->where('model_type', static::class);
     }
+
+    /**
+     * Get only the required NFT metadata fields.
+     *
+     * @return array
+     */
+    public function getRequiredNftMetadata(): array
+    {
+        try {
+            // Try to get from NMKR API first
+            $response = $this->getNMKRNftMetadata();
+            $nftData = $response->json();
+
+            if ($nftData) {
+                return [
+                    'paymentGatewayLinkForSpecificSale' => $nftData['paymentGatewayLinkForSpecificSale'] ?? null,
+                    'state' => $nftData['state'] ?? null,
+                    'policyid' => $nftData['policyid'] ?? null,
+                    'assetname' => $nftData['assetname'] ?? null,
+                    'fingerprint' => $nftData['fingerprint'] ?? null,
+                ];
+            }
+
+            // Fall back to database metadata
+            return [
+                'paymentGatewayLinkForSpecificSale' => $this->maker_nft_uuid 
+                    ? "https://pay.preprod.nmkr.io/?p={$this->maker_project_uuid}&n={$this->maker_nft_uuid}" 
+                    : null,
+                'state' => $this->minted_at ? 'sold' : 'free',
+                'policyid' => $this->policy ?? null,
+                'assetname' => $this->assetname ?? ($this->metadata['assetname'] ?? null),
+                'fingerprint' => $this->fingerprint ?? ($this->metadata['fingerprint'] ?? null),
+            ];
+        } catch (\Throwable $th) {
+            Log::error('Error getting required NFT metadata: '.$th->getMessage(), [
+                'nft_id' => $this->id,
+                'exception' => $th,
+            ]);
+
+            return [
+                'paymentGatewayLinkForSpecificSale' => null,
+                'state' => null,
+                'policyid' => null,
+                'assetname' => null,
+                'fingerprint' => null,
+            ];
+        }
+    }
 }
