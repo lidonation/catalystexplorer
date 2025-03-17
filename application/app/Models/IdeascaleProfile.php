@@ -200,7 +200,7 @@ class IdeascaleProfile extends Model implements HasMedia
     public function heroImgUrl(): Attribute
     {
         return Attribute::make(
-            get: fn () =>  $this->getFirstMediaUrl('profile') ?? $this->gravatar
+            get: fn () => $this->getFirstMediaUrl('profile') ?? $this->gravatar
         );
     }
 
@@ -296,6 +296,12 @@ class IdeascaleProfile extends Model implements HasMedia
     public function claimed_by(): BelongsTo
     {
         return $this->belongsTo(User::class, 'claimed_by_id', 'id');
+    }
+
+    public function nfts(): HasMany
+    {
+        return $this->hasMany(Nft::class, 'model_id', 'id')
+            ->where('model_type', static::class);
     }
 
     /**
