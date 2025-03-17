@@ -16,6 +16,7 @@ use App\Models\Nft;
 use App\Models\Proposal;
 use App\Models\User;
 use App\Repositories\ProposalRepository;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Auth;
@@ -71,7 +72,7 @@ class CompletetProjectNftsController extends Controller
         return Inertia::render('Workflows/CompletedProjectNfts/Step1', [
             'proposals' => $proposals,
             'filters' => $this->queryParams,
-            'ideascaleProfiles' => $claimedIdeascaleProfiles,
+            'profiles' => $claimedIdeascaleProfiles,
         ]);
     }
 

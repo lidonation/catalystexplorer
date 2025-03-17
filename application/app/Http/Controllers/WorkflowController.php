@@ -13,16 +13,21 @@ class WorkflowController extends Controller
 {
     public function auth(Request $request)
     {
-        return Inertia::render('Workflows/CompletedProjectNfts/Step1', [
-            'intended_url' => $request->intended_url,
-        ]);
+
+        return Inertia::render('Workflows/Login');
     }
 
     public function login(LoginRequest $request): RedirectResponse
     {
+
+        $nextRoute = session()->pull('nextstep.route');
+        $nextRouteParam = session()->pull('nextstep.param');
+
         $request->authenticate();
 
         $request->session()->regenerate();
+
+        session()->put('intended.url', route($nextRoute, $nextRouteParam));
 
         return redirect()->intended($request->intended_url);
     }

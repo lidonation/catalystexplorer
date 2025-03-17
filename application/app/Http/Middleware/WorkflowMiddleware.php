@@ -6,6 +6,7 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Symfony\Component\HttpFoundation\Response;
 
 class WorkflowMiddleware
@@ -18,8 +19,14 @@ class WorkflowMiddleware
     public function handle(Request $request, Closure $next): Response
     {
 
+        Log::info('Authenticated user: ', ['user' => $request->user()]);
+
         if (! $request->user()) {
-            //    to_route();
+            Log::info('to login');
+            session()->put('nextstep.route', request()->route()->getName());
+            session()->put('nextstep.param', request()->route()->parameters());
+
+            return to_route('workflows.loginForm');
         }
 
         return $next($request);

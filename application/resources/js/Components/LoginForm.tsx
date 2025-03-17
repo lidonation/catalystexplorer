@@ -1,19 +1,20 @@
 import Checkbox from '@/Components/atoms/Checkbox';
-import InputError from '@/Components/InputError';
-import InputLabel from '@/Components/InputLabel';
 import PrimaryButton from '@/Components/atoms/PrimaryButton';
 import SecondaryButton from '@/Components/atoms/SecondaryButton';
+import TextInput from '@/Components/atoms/TextInput';
+import InputError from '@/Components/InputError';
+import InputLabel from '@/Components/InputLabel';
 import ConnectWalletIcon from '@/Components/svgs/ConnectWalletIcon';
+import { generateLocalizedRoute } from '@/utils/localizedRoute';
 import { Link, router, useForm } from '@inertiajs/react';
 import axios from 'axios';
 import { FormEventHandler, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import TextInput from "@/Components/atoms/TextInput";
 import Title from './atoms/Title';
-import { generateLocalizedRoute } from '@/utils/localizedRoute';
 
 interface LoginFormProps {
     title?: string;
+    postRoute?:string
 }
 
 interface FormErrors {
@@ -21,8 +22,9 @@ interface FormErrors {
     password?: string;
 }
 
-export default function LoginForm({ title }: LoginFormProps) {
+export default function LoginForm({ title, postRoute }: LoginFormProps) {
     const { t } = useTranslation();
+    
 
     const { data, setData, reset, processing } = useForm({
         email: '',
@@ -35,7 +37,7 @@ export default function LoginForm({ title }: LoginFormProps) {
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
         axios
-            .post(generateLocalizedRoute('login'), {
+            .post(postRoute ?? generateLocalizedRoute('login'), {
                 email: data.email,
                 password: data.password,
             })
@@ -49,11 +51,14 @@ export default function LoginForm({ title }: LoginFormProps) {
     };
 
     return (
-        <div className="flex items-center justify-center py-12">
+        <div className="not-prose flex items-center justify-center py-12">
             <div className="bg-background mx-4 w-full max-w-md rounded-2xl p-6 shadow-md sm:mx-0 sm:p-8">
                 {/* Conditionally render the title only if it's provided */}
                 {title && (
-                    <Title level='2' className="text-center text-2xl sm:text-3xl">
+                    <Title
+                        level="2"
+                        className="text-center text-2xl sm:text-3xl"
+                    >
                         {title}
                     </Title>
                 )}
@@ -65,7 +70,7 @@ export default function LoginForm({ title }: LoginFormProps) {
                 <div className="mt-4 flex justify-center">
                     <SecondaryButton
                         className="hover:bg-background-lighter flex gap-2 rounded-md px-4 py-1.5 text-sm sm:text-base"
-                        icon={<ConnectWalletIcon className="bg-background"/>}
+                        icon={<ConnectWalletIcon className="bg-background" />}
                         iconPosition="left"
                         type="submit"
                     >
@@ -119,7 +124,7 @@ export default function LoginForm({ title }: LoginFormProps) {
                         <div className="flex items-center gap-2">
                             <Checkbox
                                 id="remember-me"
-                                className="h-4 w-4 rounded text-primary"
+                                className="text-primary h-4 w-4 rounded"
                                 checked={data.remember}
                                 onChange={(e) =>
                                     setData(
@@ -134,7 +139,7 @@ export default function LoginForm({ title }: LoginFormProps) {
                         </div>
                         <Link
                             href="#"
-                            className="text-xs text-primary hover:underline sm:text-sm"
+                            className="text-primary text-xs hover:underline sm:text-sm"
                         >
                             {t('forgotPassword')}
                         </Link>
@@ -153,7 +158,7 @@ export default function LoginForm({ title }: LoginFormProps) {
                     {t('registration.noAccount')}{' '}
                     <Link
                         href="#"
-                        className="font-medium text-primary hover:underline"
+                        className="text-primary font-medium hover:underline"
                     >
                         {t('signup')}
                     </Link>

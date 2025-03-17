@@ -18,6 +18,7 @@ use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\VoterToolController;
 use App\Http\Controllers\JormungandrController;
 use App\Http\Controllers\Api\CommunityController;
+use App\Http\Controllers\ClaimIdeascaleProfileContoller;
 use App\Http\Controllers\IdeascaleProfilesController;
 use App\Http\Controllers\CompletetProjectNftsController;
 use App\Http\Controllers\WorkflowController;
@@ -80,14 +81,25 @@ Route::localized(
         });
 
 
-        Route::prefix('/workflows')->as('workflows.')->middleware(WorkflowMiddleware::class)->group(function () {
-            Route::get('/completed-projects-nfts/steps/{step}', [CompletetProjectNftsController::class, 'handleStep'])
-                ->name('index');
+        Route::prefix('/workflows')->as('workflows.')->group(function () {
 
-            Route::get('/completed-projects-nfts/steps/login', [WorkflowController::class, 'auth'])
+            Route::prefix('/completed-projects-nfts/steps')->as('completedProjectsNft.')
+                ->middleware([WorkflowMiddleware::class])
+                ->group(function () {
+                    Route::get('/{step}', [CompletetProjectNftsController::class, 'handleStep'])
+                        ->name('index');
+                });
+
+            Route::prefix('/claim-ideascale-profile/steps')->as('claimIdeascaleProfile.')
+                ->middleware([WorkflowMiddleware::class])
+                ->group(function () {
+                    Route::get('/{step}', [ClaimIdeascaleProfileContoller::class, 'handleStep'])
+                        ->name('index');
+                });
+
+            Route::get('/login', [WorkflowController::class, 'auth'])
                 ->name('loginForm');
-
-            Route::post('/completed-projects-nfts/login', [WorkflowController::class, 'login'])
+            Route::post('/login', [WorkflowController::class, 'login'])
                 ->name('login');
         });
 
@@ -209,4 +221,3 @@ require __DIR__ . '/dashboard.php';
 require __DIR__ . '/api.php';
 
 Route::fallback(\CodeZero\LocalizedRoutes\Controllers\FallbackController::class);
-
