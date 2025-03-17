@@ -6,17 +6,14 @@ import Button from '@/Components/atoms/Button';
 import Paragraph from '@/Components/atoms/Paragraph';
 
 interface MetaDataProps {
-  nft: any & { 
-    id?: number;
-    policy?: string; 
-    metas?: Array<{
-      key: string;
-      content: string;
-    }>;
-  }
+  nft: any & {
+    metadata: string;
+    metas: any;
+  };
+  isOwner: boolean;
 }
 
-const MetaData = ({ nft }: MetaDataProps) => {
+const MetaData = ({ nft, isOwner }: MetaDataProps) => {
   const { t } = useTranslation();
   const [struckFields, setStruckFields] = useState<Record<string, boolean>>({});
   const [metaValues, setMetaValues] = useState<Record<string, string>>({
@@ -48,7 +45,36 @@ const MetaData = ({ nft }: MetaDataProps) => {
   useEffect(() => {
     const extractMetadata = () => {
       try {
-        // Find nmkr_metadata in nft.metas array
+        if (nft.metadata) {
+          let parsedMetadata;
+          
+          if (typeof nft.metadata === 'string') {
+            parsedMetadata = JSON.parse(nft.metadata);
+          } else {
+            parsedMetadata = nft.metadata;
+          }
+          
+          const allKnownValues = {
+            campaignName: parsedMetadata.campaign_name || '',
+            projectNumber: parsedMetadata['Funded Project Number'] || '',
+            projectTitle: parsedMetadata.project_title || '',
+            yesVotes: parsedMetadata.yes_votes?.toString() || '', 
+            noVotes: parsedMetadata.no_votes?.toString() || '',
+            role: parsedMetadata.role || ''
+          };
+          
+          setMetaValues(() => ({
+            campaignName: allKnownValues.campaignName,
+            projectNumber: allKnownValues.projectNumber?.toString() || '',
+            projectTitle: allKnownValues.projectTitle,
+            yesVotes: allKnownValues.yesVotes,
+            noVotes: allKnownValues.noVotes,
+            role: allKnownValues.role
+          }));
+          
+          return;
+        }
+        
         const nmkrMetadata = nft?.metas?.find((meta: { key: string; }) => meta.key === 'nmkr_metadata');
         
         if (nmkrMetadata && nmkrMetadata.content) {
@@ -107,7 +133,7 @@ const MetaData = ({ nft }: MetaDataProps) => {
       }
     };
     
-    if (nft && nft.metas && nft.metas.length > 0) {
+    if ((nft && nft.metadata) || (nft && nft.metas && nft.metas.length > 0)) {
       extractMetadata();
     }
   }, [nft]);
@@ -157,129 +183,75 @@ const MetaData = ({ nft }: MetaDataProps) => {
     );
   };
 
+  const renderEditableField = (label: string, fieldKey: string, value: string) => {
+    const isNumber = fieldKey === 'yesVotes' || fieldKey === 'noVotes';
+    const displayValue = isNumber && parseInt(value) > 0 
+      ? formatNumber(parseInt(value)) 
+      : value;
+    
+    return (
+      <div className="border-b border-dark pb-4">
+        <div className="grid grid-cols-[200px_1fr] items-start">
+          <div className="text-dark text-sm">
+            {label}
+          </div>
+          <div className="flex items-center gap-2">
+            <span className={`text-sm ${struckFields[fieldKey] ? 'line-through text-dark' : ''}`}>
+              {displayValue}
+            </span>
+            {isOwner && (
+              <Button
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleToggleStrike(fieldKey);
+                }}
+                className="text-sm border-none bg-transparent p-0"
+                ariaLabel={struckFields[fieldKey] ? t('restoreField') : t('removeField')}
+              >
+                <span className={struckFields[fieldKey] ? 'text-success' : 'text-error'}>
+                  {struckFields[fieldKey] ? '↩' : '✕'}
+                </span>
+              </Button>
+            )}
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  const renderReadOnlyField = (label: string, value: string) => {
+    return (
+      <div className="border-b border-dark pb-4">
+        <div className="grid grid-cols-[200px_1fr] items-start">
+          <div className="text-dark text-sm leading-relaxed">
+            {label}
+          </div>
+          <div className="text-sm">{value}</div>
+        </div>
+      </div>
+    );
+  };
+
   return (
     <div className="bg-background rounded-lg p-6">
       <h4 className="text-lg font-semibold mb-6">{t('chooseMetaDataDescription')}</h4>
 
       <div className="space-y-6">
-        {/* Project catalyst Campaign name */}
-        <div className="border-b border-dark pb-4">
-          <div className="grid grid-cols-[200px_1fr] items-start">
-            <div className="text-dark text-sm leading-relaxed">
-              {t('projectCatalyst')}
-            </div>
-            <div className="text-sm">{metaValues.campaignName}</div>
-          </div>
-        </div>
-
-        {/* Funded Project Number */}
-        <div className="border-b border-dark pb-4">
-          <div className="grid grid-cols-[200px_1fr] items-start">
-            <div className="text-dark text-sm leading-relaxed">
-              {t('fundProject')}
-            </div>
-            <div className="text-sm">{metaValues.projectNumber}</div>
-          </div>
-        </div>
-
-        {/* Project Title */}
-        <div className="border-b border-dark pb-4">
-          <div className="grid grid-cols-[200px_1fr] items-start">
-            <div className="text-dark text-sm">
-              {t('projectTitle')}
-            </div>
-            <div className="text-sm">{metaValues.projectTitle}</div>
-          </div>
-        </div>
-
-        {/* Yes Votes */}
-        <div className="border-b border-dark pb-4">
-          <div className="grid grid-cols-[200px_1fr] items-start">
-            <div className="text-dark text-sm">
-              {t('yesVotes')}
-            </div>
-            <div className="flex items-center gap-2">
-              <span className={`text-sm ${struckFields.yesVotes ? 'line-through text-dark' : ''}`}>
-                {parseInt(metaValues.yesVotes) > 0 
-                  ? formatNumber(parseInt(metaValues.yesVotes)) 
-                  : metaValues.yesVotes}
-              </span>
-              <Button
-                onClick={(e) => {
-                  e.preventDefault();
-                  handleToggleStrike('yesVotes');
-                }}
-                className="text-sm border-none bg-transparent p-0"
-                ariaLabel={struckFields.yesVotes ? t('restoreField') : t('removeField')}
-              >
-                <span className={struckFields.yesVotes ? 'text-success' : 'text-error'}>
-                  {struckFields.yesVotes ? '↩' : '✕'}
-                </span>
-              </Button>
-            </div>
-          </div>
-        </div>
-
-        {/* No Votes */}
-        <div className="border-b border-dark pb-4">
-          <div className="grid grid-cols-[200px_1fr] items-start">
-            <div className="text-dark text-sm">
-              {t('noVotes')}
-            </div>
-            <div className="flex items-center gap-2">
-              <span className={`text-sm ${struckFields.noVotes ? 'line-through text-dark' : ''}`}>
-                {parseInt(metaValues.noVotes) > 0
-                  ? formatNumber(parseInt(metaValues.noVotes))
-                  : metaValues.noVotes}
-              </span>
-              <Button
-                onClick={(e) => {
-                  e.preventDefault();
-                  handleToggleStrike('noVotes');
-                }}
-                className="text-sm border-none bg-transparent p-0"
-                ariaLabel={struckFields.noVotes ? t('restoreField') : t('removeField')}
-              >
-                <span className={struckFields.noVotes ? 'text-success' : 'text-error'}>
-                  {struckFields.noVotes ? '↩' : '✕'}
-                </span>
-              </Button>
-            </div>
-          </div>
-        </div>
-
-        {/* Role */}
-        <div className="border-b border-dark pb-4">
-          <div className="grid grid-cols-[200px_1fr] items-start">
-            <div className="text-dark text-sm">
-              {t('role')}
-            </div>
-            <div className="flex items-center gap-2">
-              <span className={`text-sm ${struckFields.role ? 'line-through text-dark' : ''}`}>
-                {metaValues.role}
-              </span>
-              <Button
-                onClick={(e) => {
-                  e.preventDefault();
-                  handleToggleStrike('role');
-                }}
-                className="text-sm border-none bg-transparent p-0"
-                ariaLabel={struckFields.role ? t('restoreField') : t('removeField')}
-              >
-                <span className={struckFields.role ? 'text-success' : 'text-error'}>
-                  {struckFields.role ? '↩' : '✕'}
-                </span>
-              </Button>
-            </div>
-          </div>
-        </div>
+        {renderReadOnlyField(t('projectCatalyst'), metaValues.campaignName)}
+        {renderReadOnlyField(t('fundProject'), metaValues.projectNumber)}
+        {renderReadOnlyField(t('projectTitle'), metaValues.projectTitle)}
+        {renderEditableField(t('yesVotes'), 'yesVotes', metaValues.yesVotes)}
+        {renderEditableField(t('noVotes'), 'noVotes', metaValues.noVotes)}
+        {renderEditableField(t('role'), 'role', metaValues.role)}
       </div>
 
-      <div className="flex justify-center mt-8">
-        <Paragraph className="text-xs text-dark italic text-center max-w-lg">
-          {t('metadataStrikeInstruction')}
-        </Paragraph>
-      </div>
+      {isOwner && (
+        <div className="flex justify-center mt-8">
+          <Paragraph className="text-xs text-dark italic text-center max-w-lg">
+            {t('metadataStrikeInstruction')}
+          </Paragraph>
+        </div>
+      )}
     </div>
   );
 };
