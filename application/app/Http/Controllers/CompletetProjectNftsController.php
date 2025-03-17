@@ -6,7 +6,6 @@ namespace App\Http\Controllers;
 
 use App\Actions\TransformIdsToHashes;
 use App\DataTransferObjects\IdeascaleProfileData;
-use App\DataTransferObjects\NMKRNftData;
 use App\DataTransferObjects\ProposalData;
 use App\Enums\CatalystCurrencySymbols;
 use App\Enums\ProposalSearchParams;
@@ -110,10 +109,6 @@ class CompletetProjectNftsController extends Controller
 
     /**
      * Display a proposal.
-     *
-     * @param Request $request
-     * @param Proposal $proposal
-     * @return Response|RedirectResponse
      */
     public function show(Request $request, Proposal $proposal): Response|RedirectResponse
     {
@@ -125,26 +120,26 @@ class CompletetProjectNftsController extends Controller
 
         $user = $this->user;
         $isOwner = false;
-        
-        if (!empty($user)) {
+
+        if (! empty($user)) {
             $claimedProfile = $proposal->ideascaleProfiles()
                 ->where('claimed_by_id', $user->id)
                 ->first();
-            
+
             if ($claimedProfile) {
                 $isOwner = true;
                 $ideascaleProfile = $claimedProfile;
 
                 $contributorProfiles = $proposal->ideascaleProfiles
-                    ->filter(function($profile) use ($ideascaleProfile) {
+                    ->filter(function ($profile) use ($ideascaleProfile) {
                         return $profile->id !== $ideascaleProfile->id;
                     })
                     ->values()
                     ->toArray();
 
                 $nft = $ideascaleProfile->nfts()
-                ->whereJsonContains('metadata->project_title', $proposal->title)
-                ->first();
+                    ->whereJsonContains('metadata->project_title', $proposal->title)
+                    ->first();
                 $metadata = $nft->getRequiredNftMetadata();
             } else {
                 $isOwner = false;
@@ -152,7 +147,7 @@ class CompletetProjectNftsController extends Controller
                 $contributorProfiles = $proposal->ideascaleProfiles
                     ->values()
                     ->toArray();
-                    
+
                 $nft = $ideascaleProfile->nfts()
                     ->whereJsonContains('metadata->project_title', $proposal->title)
                     ->first();
@@ -164,12 +159,12 @@ class CompletetProjectNftsController extends Controller
             $ideascaleProfile = $proposal->author()->first();
 
             $contributorProfiles = $proposal->ideascaleProfiles
-            ->filter(function($profile) use ($ideascaleProfile) {
-                return $profile->id !== $ideascaleProfile->id;
-            })
-            ->values()
-            ->toArray();
-            
+                ->filter(function ($profile) use ($ideascaleProfile) {
+                    return $profile->id !== $ideascaleProfile->id;
+                })
+                ->values()
+                ->toArray();
+
             $nft = $ideascaleProfile->nfts()
                 ->whereJsonContains('metadata->project_title', $proposal->title)
                 ->first();
@@ -181,7 +176,7 @@ class CompletetProjectNftsController extends Controller
                 'error' => 'No profile found for this proposal',
             ]);
         }
-        
+
         $artist = null;
         if ($nft) {
             $artist = $nft->artist()->first();
@@ -317,10 +312,6 @@ class CompletetProjectNftsController extends Controller
 
     /**
      * Update NFT metadata.
-     *
-     * @param Nft $nft
-     * @param Request $request
-     * @return RedirectResponse
      */
     public function updateMetadata(Nft $nft, Request $request): RedirectResponse
     {
@@ -341,7 +332,7 @@ class CompletetProjectNftsController extends Controller
             if (property_exists($nft, 'metadata') || isset($nft->metadata)) {
                 // Handle updating the direct metadata
                 $metadata = $nft->metadata;
-                
+
                 // Map the frontend keys to the correct metadata keys
                 $metadataKeyMap = [
                     'campaignName' => 'campaign_name',
@@ -349,11 +340,11 @@ class CompletetProjectNftsController extends Controller
                     'projectTitle' => 'Project Title',
                     'yesVotes' => 'yes_votes',
                     'noVotes' => 'no_votes',
-                    'role' => 'role'
+                    'role' => 'role',
                 ];
-                
+
                 $metadataKey = $metadataKeyMap[$key] ?? $key;
-                
+
                 // Update the metadata based on the action
                 if ($shouldRemove) {
                     if (isset($metadata[$metadataKey])) {
@@ -362,17 +353,17 @@ class CompletetProjectNftsController extends Controller
                 } else {
                     $metadata[$metadataKey] = (string) $value;
                 }
-                
+
                 $nft->metadata = $metadata;
                 $nft->save();
-                
+
                 return back()->with([
                     'success' => true,
                     'is_removed' => $shouldRemove,
                     'key' => $key,
                 ]);
             }
-            
+
             // Fallback to the original method using metas
             $meta = $nft->metas->where('key', 'nmkr_metadata')->first();
 
@@ -410,9 +401,9 @@ class CompletetProjectNftsController extends Controller
                 'projectTitle' => 'projectTitle',
                 'yesVotes' => 'yesVotes',
                 'noVotes' => 'noVotes',
-                'role' => 'role'
+                'role' => 'role',
             ];
-            
+
             $metadataKey = $metadataKeyMap[$key] ?? $key;
 
             // Update the metadata based on the action
@@ -439,16 +430,13 @@ class CompletetProjectNftsController extends Controller
             ]);
 
             return back()->withErrors([
-                'error' => 'Failed to update metadata: ' . $th->getMessage(),
+                'error' => 'Failed to update metadata: '.$th->getMessage(),
             ]);
         }
     }
 
     /**
      * Get specific NFT details.
-     *
-     * @param Nft $nft
-     * @return JsonResponse
      */
     public function getNftDetails(Nft $nft): JsonResponse
     {
@@ -471,8 +459,8 @@ class CompletetProjectNftsController extends Controller
             // Fall back to database metadata if API fails
             if (isset($nft->metadata) && is_array($nft->metadata)) {
                 return response()->json([
-                    'paymentGatewayLinkForSpecificSale' => $nft->maker_nft_uuid 
-                        ? "https://pay.preprod.nmkr.io/?p={$nft->maker_project_uuid}&n={$nft->maker_nft_uuid}" 
+                    'paymentGatewayLinkForSpecificSale' => $nft->maker_nft_uuid
+                        ? "https://pay.preprod.nmkr.io/?p={$nft->maker_project_uuid}&n={$nft->maker_nft_uuid}"
                         : null,
                     'state' => $nft->minted_at ? 'sold' : 'free',
                     'policyid' => $nft->policy ?? null,

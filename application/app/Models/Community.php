@@ -16,7 +16,7 @@ use Laravel\Scout\Searchable;
 
 class Community extends Model
 {
-    use HasConnections, Searchable, HasTaxonomies;
+    use HasConnections, HasTaxonomies, Searchable;
 
     protected $appends = ['hash'];
 

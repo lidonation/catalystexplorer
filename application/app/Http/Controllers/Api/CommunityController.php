@@ -141,7 +141,7 @@ class CommunityController extends Controller
             $tagsHashes = $this->queryParams[CommunitySearchParams::TAGS()->value];
             $decodedTagsIds = (new HashIdService(new Tag))
                 ->decodeArray($tagsHashes);
-            $query->whereHas('tags', function ($query) use($decodedTagsIds) {
+            $query->whereHas('tags', function ($query) use ($decodedTagsIds) {
                 $query->whereIn('tags.id', $decodedTagsIds);
             });
         }
