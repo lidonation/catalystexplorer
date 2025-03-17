@@ -91,8 +91,6 @@ class Nft extends Model implements CardanoNftInterface, HasMedia
 
     /**
      * Get only the required NFT metadata fields.
-     *
-     * @return array
      */
     public function getRequiredNftMetadata(): array
     {
@@ -113,8 +111,8 @@ class Nft extends Model implements CardanoNftInterface, HasMedia
 
             // Fall back to database metadata
             return [
-                'paymentGatewayLinkForSpecificSale' => $this->maker_nft_uuid 
-                    ? "https://pay.preprod.nmkr.io/?p={$this->maker_project_uuid}&n={$this->maker_nft_uuid}" 
+                'paymentGatewayLinkForSpecificSale' => $this->maker_nft_uuid
+                    ? "https://pay.preprod.nmkr.io/?p={$this->maker_project_uuid}&n={$this->maker_nft_uuid}"
                     : null,
                 'state' => $this->minted_at ? 'sold' : 'free',
                 'policyid' => $this->policy ?? null,

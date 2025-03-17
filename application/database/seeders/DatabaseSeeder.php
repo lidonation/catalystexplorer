@@ -16,12 +16,12 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         $seeders = [
-            // RoleSeeder::class,
-            // PermissionSeeder::class,
-            // UserSeeder::class,
-            // AnnouncementSeeder::class,
-            // MetricSeeder::class,
-            // ProposalSeeder::class,
+            RoleSeeder::class,
+            PermissionSeeder::class,
+            UserSeeder::class,
+            AnnouncementSeeder::class,
+            MetricSeeder::class,
+            ProposalSeeder::class,
             BookmarkCollectionSeeder::class,
             BookmarkItemSeeder::class,
             RuleSeeder::class,
@@ -42,7 +42,7 @@ class DatabaseSeeder extends Seeder
                 $this->command->info("$seeder completed successfully.");
             } catch (\Throwable $e) {
                 Log::error($e);
-                $this->command->error("Error running $seeder: ".$e->getMessage());
+                $this->command->error("Error running $seeder: " . $e->getMessage());
             }
         }
 
@@ -52,7 +52,7 @@ class DatabaseSeeder extends Seeder
             $this->command->info('GenerateConnections command completed successfully.');
         } catch (\Throwable $e) {
             Log::error($e);
-            $this->command->error('Error running GenerateConnections: '.$e->getMessage());
+            $this->command->error('Error running GenerateConnections: ' . $e->getMessage());
         }
     }
 }
