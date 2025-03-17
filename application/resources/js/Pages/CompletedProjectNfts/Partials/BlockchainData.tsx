@@ -2,16 +2,16 @@ import { Copy } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useState } from 'react';
 import Title from '@/Components/atoms/Title';
-import { Link } from '@inertiajs/react';
 import Paragraph from '@/Components/atoms/Paragraph';
 import Button from '@/Components/atoms/Button';
 import Image from '@/Components/Image';
 
 interface BlockchainDataProps {
   nft: any;
+  metadata: any;
 }
 
-const BlockchainData = ({ nft }: BlockchainDataProps) => {
+const BlockchainData = ({ nft, metadata }: BlockchainDataProps) => {
   const { t } = useTranslation();
   const [copied, setCopied] = useState<string | null>(null);
 
@@ -53,13 +53,13 @@ const BlockchainData = ({ nft }: BlockchainDataProps) => {
             className="text-content hover:text-dark"
             onClick={(e) => {
               e.preventDefault();
-              copyToClipboard(nft.policy || '', 'policy');
+              copyToClipboard(metadata.policyid || '', 'policy');
             }}
           >
             <Copy size={16} />
           </Button>
           <code className="text-sm text-content font-mono break-all">
-            {nft.policy || 'Not available'}
+            {metadata.policyid || 'Not available'}
             {copied === 'policy' && <span className="text-content ml-2">Copied!</span>}
           </code>
         </div>
@@ -70,13 +70,13 @@ const BlockchainData = ({ nft }: BlockchainDataProps) => {
             className="text-content hover:text-dark"
             onClick={(e) => {
               e.preventDefault();
-              copyToClipboard(nft.name || '', 'name');
+              copyToClipboard(metadata.assetname || '', 'name');
             }}
           >
             <Copy size={16} />
           </Button>
           <code className="text-sm text-content font-mono break-all">
-            {nft.name || t("unavailable")}
+            {metadata.assetname || t("unavailable")}
             {copied === 'name' && <span className="text-content ml-2">Copied!</span>}
           </code>
         </div>

@@ -4,26 +4,22 @@ import { usePage, router, Link } from '@inertiajs/react';
 import { PageProps } from '@/types';
 import { PaginatedData } from '../../../../types/paginated-data';
 import IdeascaleProfileData = App.DataTransferObjects.IdeascaleProfileData;
-import NMKRNftData = App.DataTransferObjects.NMKRNftData;
 import Button from '@/Components/atoms/Button';
 import Paragraph from '@/Components/atoms/Paragraph';
 
 export type MintButtonState = 'unauthenticated' | 'unauthorized' | 'mintable' | 'minted' | 'loading';
 
 interface MintButtonProps {
-  nft: any & { 
-    metas?: Array<{
-      key: string;
-      content: string;
-    }>;
-    minted_at?: string | null;
-  };
+  nft: any;
+  metadata?: any;
   ideascaleProfiles?: PaginatedData<IdeascaleProfileData[]>;
+  claimedProfile: IdeascaleProfileData;
 }
 
 const MintButton: React.FC<MintButtonProps> = ({ 
   nft,
-  ideascaleProfiles
+  metadata,
+  claimedProfile,
 }) => {
   const { t } = useTranslation();
   const { auth } = usePage<PageProps>().props;
@@ -32,49 +28,33 @@ const MintButton: React.FC<MintButtonProps> = ({
   const [buttonState, setButtonState] = useState<MintButtonState>('loading');
   const [error, setError] = useState<string | null>(null);
 
-  // Safely parse NMKR metadata
-  const parseNmkrMetadata = (): NMKRNftData | null => {
-    try {
-      const nmkrMetadataRaw = nft.metas?.find((meta: { key: string }) => meta.key === 'nmkr_metadata');
-      if (!nmkrMetadataRaw) return null;
-
-      const nmkrMetadata = JSON.parse(nmkrMetadataRaw.content);
-      
-      const policyKey = Object.keys(nmkrMetadata['721'])[0];
-      const nftKey = Object.keys(nmkrMetadata['721'][policyKey])[0];
-      
-      return nmkrMetadata['721'][policyKey][nftKey]['nftDetails'] as NMKRNftData;
-    } catch (e) {
-      console.error('Error parsing NMKR metadata:', e);
-      return null;
-    }
-  };
-
-  const getPaymentLink = (): string | null => {
-    const nftDetails = parseNmkrMetadata();
-    return nftDetails?.paymentGatewayLinkForSpecificSale || null;
-  };
-
   useEffect(() => {
     if (!user) {
       setButtonState('unauthenticated');
       return;
     }
 
-    const nftDetails = parseNmkrMetadata();
-    const isMinted = nft.minted_at || nftDetails?.minted || nftDetails?.state === 'sold';
+    const isMinted = nft?.minted_at || (metadata?.state === 'sold' || metadata?.state === 'minted');
 
     if (isMinted) {
       setButtonState('minted');
       return;
     }
 
-    if (ideascaleProfiles?.data && ideascaleProfiles.data.length > 0) {
+    if (claimedProfile) {
       setButtonState('mintable');
     } else {
       setButtonState('unauthorized');
     }
-  }, [user, nft, ideascaleProfiles]);
+  }, [user, nft, metadata, claimedProfile]);
+
+  const getPaymentLink = (): string | null => {
+    return metadata.paymentGatewayLinkForSpecificSale || null;
+  };
+
+  const getNftFingerprint = (): string | null => {
+    return metadata.fingerprint || null;
+  };
 
   const handleMint = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -82,7 +62,7 @@ const MintButton: React.FC<MintButtonProps> = ({
     if (paymentUrl) {
       openPaymentWindow(paymentUrl);
     } else {
-      setError('Payment link not available');
+      setError('Payment link not available!');
     }
   };
 
@@ -122,11 +102,6 @@ const MintButton: React.FC<MintButtonProps> = ({
     }, 1000);
   };
 
-  const getNftFingerprint = (): string | null => {
-    const nftDetails = parseNmkrMetadata();
-    return nftDetails?.fingerprint || null;
-  };
-
   const renderButton = () => {
     switch (buttonState) {
       case 'loading':
@@ -160,21 +135,6 @@ const MintButton: React.FC<MintButtonProps> = ({
         );
       
       case 'mintable':
-        const paymentLink = getPaymentLink();
-        
-        // If payment link is not available, show disabled button
-        if (!paymentLink) {
-          return (
-            <Button
-              className="w-full inline-block text-center bg-dark text-content-light font-medium py-3 px-4 rounded-md cursor-not-allowed pointer-events-none"
-              onClick={(e) => e.preventDefault()}
-            >
-              {t('mintNFT')}
-            </Button>
-          );
-        }
-        
-        // Show green MINT NFT button
         return (
           <Button
             onClick={handleMint}
@@ -185,8 +145,7 @@ const MintButton: React.FC<MintButtonProps> = ({
         );
       
       case 'minted':
-        const fingerprint = getNftFingerprint();        
-        // Show VIEW NFT button linking to pool.pm
+        const fingerprint = getNftFingerprint();
         return (
           <Link 
             href={`https://pool.pm/${fingerprint}`}
@@ -204,6 +163,11 @@ const MintButton: React.FC<MintButtonProps> = ({
       <div className="rounded-lg">
         {renderButton()}
       </div>
+      {error && (
+        <Paragraph className="text-sm text-error mt-2">
+          {error}
+        </Paragraph>
+      )}
       {buttonState === 'mintable' && !getPaymentLink() && (
         <Paragraph className="text-sm text-dark mt-2">
           {t('cantFindNFT')}
