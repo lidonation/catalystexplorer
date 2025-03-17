@@ -235,7 +235,7 @@ class CommunityController extends Controller
             'query' => request()->query(),
         ]);
 
-        return $pagination->onEachSide(1);
+        return $pagination->onEachSide(0);
     }
 
     protected function getProps(Request $request): void
