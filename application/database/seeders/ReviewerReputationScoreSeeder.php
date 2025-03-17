@@ -1,11 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Seeders;
 
 use App\Models\Fund;
 use App\Models\Reviewer;
 use App\Models\ReviewerReputationScore;
-use Faker\Factory;
 use Illuminate\Database\Seeder;
 
 class ReviewerReputationScoreSeeder extends Seeder
@@ -16,31 +17,32 @@ class ReviewerReputationScoreSeeder extends Seeder
     public function run(): void
     {
         //
-        $faker = Factory::create();
-        $reviewers = Reviewer::all();
-        $funds = Fund::all();
+        $fundsCount = Fund::count();
+        if ($fundsCount === 0) {
+            Fund::factory()->count(3)->create();
+        }
 
-        if ($reviewers->isEmpty()) {
-            $reviewers = Reviewer::factory()->count(10)-create();
+        $reviewersCount = Reviewer::count();
+        if ($reviewersCount === 0) {
+            Reviewer::factory()->count(20)->create();
         }
-        if ($funds->isEmpty()) {
-            $funds = Fund::factory()->count(3)->create();
-        }
-        foreach ($reviewers as $reviewer) {
-            ReviewerReputationScore::create([
-                'reviewer_id' => $reviewer->id,
-                'score' => $faker->numberBetween(50, 100),
-                'context_type' => null,
-                'context_id' => null,
-            ]);
-            foreach ($funds as $fund) {
-                ReviewerReputationScore::create([
-                    'reviewer_id' => $reviewer->id,
-                    'score' => $faker->numberBetween(50, 100),
-                    'context_type' => Fund::class,
-                    'context_id' => $fund->id,
-                ]);
+        Reviewer::all()->each(function ($reviewer) {
+            $fundsToAttach = Fund::inRandomOrder()
+                ->take(fake()->numberBetween(1, min(3, Fund::count())))
+                ->get();
+
+            $fundsToAttach->each(function ($fund) use ($reviewer) {
+                ReviewerReputationScore::factory()
+                    ->forReviewer($reviewer)
+                    ->forFund($fund)
+                    ->create();
+            });
+            if (fake()->boolean(50)) {
+                ReviewerReputationScore::factory()
+                    ->forReviewer($reviewer)
+                    ->withoutContext()
+                    ->create();
             }
-        }
+        });
     }
 }

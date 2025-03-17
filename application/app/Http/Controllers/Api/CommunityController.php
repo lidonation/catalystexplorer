@@ -4,28 +4,26 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Api;
 
-
-use App\DataTransferObjects\CommunityData;
+use App\Enums\CatalystCurrencySymbols;
+use App\Enums\CommunitySearchParams;
+use App\Enums\ProposalSearchParams;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\CommunityResource;
+use App\Models\Campaign;
 use App\Models\Community;
+use App\Models\IdeascaleProfile;
+use App\Models\Tag;
+use App\Services\HashIdService;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\Routing\ResponseFactory;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Response;
-use App\Enums\CatalystCurrencySymbols;
-use App\Enums\CommunitySearchParams;
-use App\Enums\ProposalSearchParams;
-use App\Models\Campaign;
-use App\Models\IdeascaleProfile;
-use App\Models\Tag;
-use App\Services\HashIdService;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Pagination\LengthAwarePaginator;
-use Inertia\Inertia;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Stringable;
+use Inertia\Inertia;
 use Laravel\Scout\Builder;
 
 class CommunityController extends Controller
@@ -85,7 +83,7 @@ class CommunityController extends Controller
                     ? max($this->totalAwardedUsd)
                     : 0,
             ],
-            'communities' => $this->query($request)
+            'communities' => $this->query($request),
         ];
 
         return Inertia::render('Communities/Index', $props);
@@ -98,7 +96,7 @@ class CommunityController extends Controller
 
         $filters = [
             'search' => $request->input('q', null),
-        ];  
+        ];
         $query->filter($filters);
 
         if (isset($this->queryParams[CommunitySearchParams::PROPOSALS()->value])) {
@@ -123,42 +121,27 @@ class CommunityController extends Controller
 
         if (isset($this->queryParams[CommunitySearchParams::CAMPAIGNS()->value])) {
             $campaignHashes = $this->queryParams[CommunitySearchParams::CAMPAIGNS()->value];
-            $decoded_campaign_ids = (new HashIdService(new Campaign()))
+            $decoded_campaign_ids = (new HashIdService(new Campaign))
                 ->decodeArray($campaignHashes);
-            $query->whereHas('proposals.campaign', function ($query) use($decoded_campaign_ids) {
+            $query->whereHas('proposals.campaign', function ($query) use ($decoded_campaign_ids) {
                 $query->whereIn('id', $decoded_campaign_ids);
             });
         }
 
         if (isset($this->queryParams[CommunitySearchParams::IDEASCALE_PROFILES()->value])) {
             $ideascaleProfileHashes = $this->queryParams[CommunitySearchParams::IDEASCALE_PROFILES()->value];
-            $decodedIdeascaleProfileIds = (new HashIdService(new IdeascaleProfile()))
+            $decodedIdeascaleProfileIds = (new HashIdService(new IdeascaleProfile))
                 ->decodeArray($ideascaleProfileHashes);
-            $query->whereHas('ideascale_profiles', function ($query) use($decodedIdeascaleProfileIds) {
+            $query->whereHas('ideascale_profiles', function ($query) use ($decodedIdeascaleProfileIds) {
                 $query->whereIn('id', $decodedIdeascaleProfileIds);
-            });
-        }
-
-        if (isset($this->queryParams[CommunitySearchParams::COMMUNITIES()->value])) {
-            $communityHashes = $this->queryParams[CommunitySearchParams::COMMUNITIES()->value];
-            $decodedCommunityIds = (new HashIdService(new Community()))
-                ->decodeArray($communityHashes);
-            $query->whereIn('id', $decodedCommunityIds);
-        }
-
-        if (isset($this->queryParams[CommunitySearchParams::COHORT()->value])) {
-            $cohortFilters = $this->queryParams[CommunitySearchParams::COHORT()->value];
-            $query->whereHas('proposals.metas', function ($q)  use($cohortFilters) {
-                $q->whereIn('key', $cohortFilters)
-                    ->where('content', true);
             });
         }
 
         if (isset($this->queryParams[CommunitySearchParams::TAGS()->value])) {
             $tagsHashes = $this->queryParams[CommunitySearchParams::TAGS()->value];
-            $decodedTagsIds = (new HashIdService(new Tag()))
+            $decodedTagsIds = (new HashIdService(new Tag))
                 ->decodeArray($tagsHashes);
-            $query->whereHas('proposals.tags', function ($query) use($decodedTagsIds) {
+            $query->whereHas('tags', function ($query) use($decodedTagsIds) {
                 $query->whereIn('tags.id', $decodedTagsIds);
             });
         }
@@ -176,7 +159,7 @@ class CommunityController extends Controller
                 ->where('f.currency', CatalystCurrencySymbols::USD->name)
                 ->groupBy('chp.community_id');
 
-                // Now join this subquery to the main communities query
+            // Now join this subquery to the main communities query
             $query = $query->leftJoinSub($awardedUsdSub, 'usd', 'usd.community_id', '=', 'communities.id')
                 ->select('communities.*', 'usd.awarded_usd') // or use selectRaw() if needed
                 ->whereBetween('usd.awarded_usd', [$awardedUsd->first(), $awardedUsd->last()]);
@@ -195,7 +178,7 @@ class CommunityController extends Controller
                 ->where('f.currency', CatalystCurrencySymbols::ADA->name)
                 ->groupBy('chp.community_id');
 
-                // Now join this subquery to the main communities query
+            // Now join this subquery to the main communities query
             $query = $query->leftJoinSub($awardedAdaSub, 'ada', 'ada.community_id', '=', 'communities.id')
                 ->select('communities.*', 'ada.awarded_ada') // or use selectRaw() if needed
                 ->whereBetween('ada.awarded_ada', [$awardedAda->first(), $awardedAda->last()]);
@@ -211,8 +194,8 @@ class CommunityController extends Controller
                     : CatalystCurrencySymbols::USD->name;
 
                 $query->addSelect([
-                        'communities.*',
-                        DB::raw("(
+                    'communities.*',
+                    DB::raw("(
                             SELECT COALESCE(SUM(p.amount_requested), 0)
                             FROM community_has_proposal chp
                             JOIN proposals p ON p.id = chp.proposal_id
@@ -220,12 +203,12 @@ class CommunityController extends Controller
                             WHERE chp.community_id = communities.id
                               AND p.type = 'proposal'
                               AND p.funded_at IS NOT NULL
-                              AND f.currency = '" . $currency . "'
-                        ) as awarded_currency")
-                    ])->orderBy('awarded_currency', $this->sortOrder);
+                              AND f.currency = '".$currency."'
+                        ) as awarded_currency"),
+                ])->orderBy('awarded_currency', $this->sortOrder);
             }
         }
-        
+
         $total = $query->count();
 
         // Get paginated results
@@ -237,7 +220,7 @@ class CommunityController extends Controller
             'query' => request()->query(),
         ]);
 
-        return $pagination->onEachSide(1);
+        return $pagination->onEachSide(0);
     }
 
     protected function getProps(Request $request): void
@@ -246,13 +229,11 @@ class CommunityController extends Controller
             CommunitySearchParams::FUNDING_STATUS()->value => 'array|nullable',
             CommunitySearchParams::PROJECT_STATUS()->value => 'array|nullable',
             CommunitySearchParams::QUERY()->value => 'string|nullable',
-            CommunitySearchParams::COHORT()->value => 'array|nullable',
             CommunitySearchParams::PAGE()->value => 'int|nullable',
             CommunitySearchParams::LIMIT()->value => 'int|nullable',
             CommunitySearchParams::SORTS()->value => 'nullable',
             CommunitySearchParams::CAMPAIGNS()->value => 'array|nullable',
             CommunitySearchParams::TAGS()->value => 'array|nullable',
-            CommunitySearchParams::COMMUNITIES()->value => 'array|nullable',
             CommunitySearchParams::IDEASCALE_PROFILES()->value => 'array|nullable',
             CommunitySearchParams::FUNDS()->value => 'array|nullable',
             CommunitySearchParams::PROPOSALS()->value => 'array|nullable',
@@ -342,8 +323,8 @@ class CommunityController extends Controller
                     WHERE chp.community_id = communities.id
                     AND p.type = 'proposal'
                     AND p.funded_at IS NOT NULL
-                    AND f.currency = '" . CatalystCurrencySymbols::USD->name . "'
-                ) as awarded_usd")
+                    AND f.currency = '".CatalystCurrencySymbols::USD->name."'
+                ) as awarded_usd"),
             ])->addSelect([
                 'communities.*',
                 DB::raw("(
@@ -354,8 +335,8 @@ class CommunityController extends Controller
                     WHERE chp.community_id = communities.id
                     AND p.type = 'proposal'
                     AND p.funded_at IS NOT NULL
-                    AND f.currency = '" . CatalystCurrencySymbols::ADA->name . "'
-                ) as awarded_ada")
+                    AND f.currency = '".CatalystCurrencySymbols::ADA->name."'
+                ) as awarded_ada"),
             ]);
 
         $this->totalAwardedUsd = $query->pluck('awarded_usd')->toArray();
