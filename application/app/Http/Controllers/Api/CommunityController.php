@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Api;
 
+use App\DataTransferObjects\CommunityData;
 use App\Enums\CatalystCurrencySymbols;
 use App\Enums\CommunitySearchParams;
 use App\Enums\ProposalSearchParams;
@@ -91,7 +92,7 @@ class CommunityController extends Controller
 
     public function query(Request $request)
     {
-        $query = Community::query()->with(['proposals.campaign', 'ideascale_profiles'])
+        $query = Community::query()->with(['proposals.campaign', 'ideascale_profiles.claimer'])
             ->withCount('proposals');
 
         $filters = [
@@ -215,7 +216,7 @@ class CommunityController extends Controller
         $results = $query->offset(($this->currentPage - 1) * $this->limit)->limit($this->limit)->get();
 
         // Create LengthAwarePaginator instance
-        $pagination = new LengthAwarePaginator($results, $total, $this->limit, $this->currentPage, [
+        $pagination = new LengthAwarePaginator(CommunityData::collect($results), $total, $this->limit, $this->currentPage, [
             'path' => request()->url(),
             'query' => request()->query(),
         ]);

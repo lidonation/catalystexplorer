@@ -1,5 +1,5 @@
 export interface User {
-    id: number;
+    hash: string;
     name: string;
     email: string;
     email_verified_at?: string;

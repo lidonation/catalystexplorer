@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use App\Casts\HashId;
 use App\Enums\CatalystCurrencySymbols;
 use App\Enums\ProposalStatus;
+use App\Services\HashIdService;
 use App\Traits\HasConnections;
 use App\Traits\HasMetaData;
 use Illuminate\Database\Eloquent\Builder;
@@ -293,9 +293,9 @@ class IdeascaleProfile extends Model implements HasMedia
         );
     }
 
-    public function claimed_by(): BelongsTo
+    public function claimer(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'claimed_by_id', 'id');
+        return $this->belongsTo(User::class, 'claimed_by', 'id');
     }
 
     public function nfts(): HasMany
