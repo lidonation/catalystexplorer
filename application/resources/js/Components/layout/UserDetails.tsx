@@ -9,6 +9,7 @@ import LogOutIcon from '../svgs/LogOut';
 import RegisterUserIcon from '../svgs/Register';
 import UserAvatar from '../UserAvatar';
 import ModalSidebar from './ModalSidebar';
+import { useConnectWallet } from '@/Context/ConnectWalletSliderContext';
 
 interface UserDetailsProps {
     user: App.DataTransferObjects.UserData;
@@ -19,6 +20,7 @@ const UserDetails: React.FC<UserDetailsProps> = ({ user }) => {
     const [activeModal, setActiveModal] = useState<'register' | 'login' | null>(
         null,
     );
+    const {isWalletConnectorOpen } = useConnectWallet()
 
     const logout = () => {
         router.post(
@@ -83,7 +85,7 @@ const UserDetails: React.FC<UserDetailsProps> = ({ user }) => {
                         </ul>
                     </nav>
 
-                    {activeModal && (
+                    {activeModal && !isWalletConnectorOpen && (
                         <ModalSidebar
                             title={
                                 activeModal === 'register'
