@@ -8,6 +8,7 @@ use App\Http\Requests\StoreTransactionRequest;
 use App\Http\Requests\UpdateTransactionRequest;
 use App\Models\CatalystTransaction;
 use App\Models\Transaction;
+use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 class TransactionController
@@ -79,8 +80,12 @@ class TransactionController
     /**
      * Display the specified resource.
      */
-    public function show(CatalystTransaction $catalystTransaction)
+    public function show(Request $request)
     {
+        $txnIdToQuery = $request->route('catalystTransaction');
+        $catalystTransaction = CatalystTransaction::query()
+            ->where('hash', $txnIdToQuery)
+            ->firstOrFail();
         $labels = [
             61284 => 'Catalyst voting registration',
             61285 => 'Catalyst voting submission',

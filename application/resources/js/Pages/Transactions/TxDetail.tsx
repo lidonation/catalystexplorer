@@ -1,5 +1,6 @@
 import { Head, Link } from '@inertiajs/react';
 import { Transaction } from './Index';
+import { useLocalizedRoute } from '@/utils/localizedRoute';
 
 interface TransactionDetailProps {
   transaction: Transaction;
@@ -19,7 +20,7 @@ export default function TransactionDetail({
         <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
           <div className="bg-background overflow-hidden shadow-xl sm:rounded-lg p-6">
             <Link
-              href={'/catalyst-txns'}
+              href={useLocalizedRoute('jormungandr.transactions.index')}
               className="mb-6 inline-block text-indigo-600"
             >
               &larr; Back to Transactions
@@ -31,7 +32,7 @@ export default function TransactionDetail({
                 <dl className="space-y-2">
                   <div>
                     <dt className="text-sm font-medium text-gray-500">Transaction Hash</dt>
-                    <dd className="mt-1 text-sm text-content break-all">{transaction.hash}</dd>
+                    <dd className="mt-1 text-sm text-content break-all">{transaction.tx_hash}</dd>
                   </div>
                   <div>
                     <dt className="text-sm font-medium text-gray-500">Block ID</dt>

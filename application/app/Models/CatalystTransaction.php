@@ -10,8 +10,6 @@ class CatalystTransaction extends Model
 
     protected $connection = 'pgsql_carp';
 
-    public $timestamps = false;
-
     protected $fillable = [
         'hash',
         'block_id',
@@ -23,6 +21,8 @@ class CatalystTransaction extends Model
         'metadata_labels',
     ];
 
+    protected $appends = ['tx_hash'];
+
     protected function casts()
     {
         return [
@@ -30,24 +30,8 @@ class CatalystTransaction extends Model
         ];
     }
 
-    public function getMetadataAttribute($value)
+    public function getTxHashAttribute()
     {
-        if (is_resource($value)) {
-            $content = stream_get_contents($value);
-            $decoded = json_decode($content, true);
-
-            try {
-                // $decoded = json_decode($content, true);
-                if (json_last_error() === JSON_ERROR_NONE) {
-                    return $decoded;
-                }
-            } catch (\Exception $e) {
-                // Decoding failed
-            }
-
-            return $content;
-        }
-
-        return $value;
+        return $this->attributes['hash'] ?? null;
     }
 }

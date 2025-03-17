@@ -1,8 +1,9 @@
+import { useLocalizedRoute } from '@/utils/localizedRoute';
 import { Head, Link } from '@inertiajs/react';
 
 export interface Transaction {
-    id: number;
     hash: string;
+    tx_hash: string;
     block_id: number;
     tx_index: number;
     is_valid: boolean;
@@ -38,7 +39,7 @@ export default function Transactions({
 }: Props) {
     return (
         <>
-            <Head title="Catalyst Transactions" />
+            <Head title="Transactions" />
 
             <div className="py-12">
                 <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
@@ -70,7 +71,7 @@ export default function Transactions({
                             </thead>
                             <tbody className="divide-y divide-gray-200">
                                 {catalystTransactions.data.map((tx) => (
-                                    <tr key={tx.id}>
+                                    <tr key={tx.tx_hash}>
                                         <td className="text-content px-6 py-4 text-sm font-medium whitespace-nowrap">
                                             {tx.hash
                                                 ? typeof tx.hash === 'string'
@@ -90,7 +91,7 @@ export default function Transactions({
                                                         (label, index) => (
                                                             <span
                                                                 key={index}
-                                                                className="inline-flex rounded-full bg-blue-100 px-2 text-xs font-medium text-blue-800 w-fit"
+                                                                className="inline-flex w-fit rounded-full bg-blue-100 px-2 text-xs font-medium text-blue-800"
                                                             >
                                                                 {label}
                                                             </span>
@@ -120,7 +121,12 @@ export default function Transactions({
                                         </td>
                                         <td className="text-content px-6 py-4 text-sm whitespace-nowrap">
                                             <Link
-                                                href={`/catalyst-txns/${tx.id}`}
+                                                href={useLocalizedRoute(
+                                                    'jormungandr.transactions.show',
+                                                    {
+                                                        catalystTransaction: tx.tx_hash,
+                                                    },
+                                                )}
                                                 className="text-indigo-600 hover:text-indigo-900"
                                             >
                                                 View Details
