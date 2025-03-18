@@ -644,7 +644,7 @@
             "errors": {
                 "notInitialized": "Cardano library not initialized yet. Please try again in a moment.",
                 "walletNotFound": "{{walletName}} wallet not found. Please install it first.",
-                "wrongNetwork": "Please switch to Mainnet in your wallet settings",
+                "wrongNetwork": "Wrong network detected. Please switch to {{expected}}",
                 "noAddresses": "No addresses found in wallet",
                 "connectionFailed": "Connection failed",
                 "disconnectError": "Error disconnecting wallet",
