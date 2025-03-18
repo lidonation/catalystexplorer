@@ -3,12 +3,7 @@ import { CIP30API } from '@/types/wallet';
 import WalletSlider from '@/Components/WalletConnectSlider';
 import { useTranslation } from 'react-i18next';
 import { usePage } from '@inertiajs/react';
-
-
-const STORAGE_KEY = {
-  LAST_CONNECTED_WALLET: 'lastConnectedWallet',
-};
-
+import storageService from '@/utils/storage-service';
 interface WalletContextType {
   wallets: string[];
   connectedWallet: CIP30API | null;
@@ -25,9 +20,6 @@ interface WalletContextType {
   setIsConnecting: (value: string | null) => void;
   openConnectWalletSlider: () => void;
   closeConnectWalletSlider: () => void;
-  saveWalletConnectionToStorage: (walletName: string) => void;
-  getLastConnectedWalletFromStorage: () => string | null;
-  clearWalletConnectionFromStorage: () => void;
 }
 
 interface WalletProviderProps {
@@ -75,7 +67,7 @@ export function ConnectWalletProvider({
   }, []);
 
   useEffect(() => {
-    const lastWallet = getLastConnectedWalletFromStorage();
+    const lastWallet = storageService.getLastConnectedWallet();
     if (lastWallet && window.cardano?.[lastWallet] && CardanoWasm) {
       connectWallet(lastWallet);
     }
@@ -87,18 +79,6 @@ export function ConnectWalletProvider({
     } else {
       return [0];
     }
-  };
-
-  const saveWalletConnectionToStorage = (walletName: string): void => {
-    localStorage.setItem(STORAGE_KEY.LAST_CONNECTED_WALLET, walletName);
-  };
-  
-  const getLastConnectedWalletFromStorage = (): string | null => {
-    return localStorage.getItem(STORAGE_KEY.LAST_CONNECTED_WALLET);
-  };
-  
-  const clearWalletConnectionFromStorage = (): void => {
-    localStorage.removeItem(STORAGE_KEY.LAST_CONNECTED_WALLET);
   };
   
   const allowedNetworks = getAllowedNetworks(environment);
@@ -146,7 +126,7 @@ export function ConnectWalletProvider({
       setUserAddress(bech32Address);
       setConnectedWalletProvider(wallet);
 
-      saveWalletConnectionToStorage(walletName);
+      storageService.saveWalletConnection(walletName);
 
       setIsSliderOpen(false);
       
@@ -171,7 +151,7 @@ export function ConnectWalletProvider({
     }
 
     resetConnection();
-    clearWalletConnectionFromStorage();
+    storageService.clearWalletConnection();
   };
 
   const resetConnection = () => {
@@ -201,9 +181,6 @@ export function ConnectWalletProvider({
         closeConnectWalletSlider: () => setIsSliderOpen(false),
         isWalletConnectorOpen: isSliderOpen,
         connectedWalletProvider,
-        saveWalletConnectionToStorage,
-        getLastConnectedWalletFromStorage,
-        clearWalletConnectionFromStorage
       }}
     >
       {children}
