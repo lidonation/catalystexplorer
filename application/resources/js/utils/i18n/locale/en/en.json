@@ -552,7 +552,10 @@
         },
         "step": "Step",
         "claimAnotherProfile": "Claim another profile",
-        "claimProfile": "Claim an Ideascale Profile"
+        "claimProfile": "Claim an Ideascale Profile",
+        "unavailable": "Unavailable!",
+        "reservedUntil": "Reserved until",
+        "paymentPending": "Payment Pending"
     },
     "profileWorkflow": {
         "sectionTitle": {

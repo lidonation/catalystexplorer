@@ -49,7 +49,7 @@ class NftFactory extends Factory
                 "name" => "Project Catalyst Completion NFT: 55566",
                 "Fund" => "Fund". $this->faker->numberBetween(1, 2),
                 "campaign_name" => "Cardano Open: Developers",
-                "project_title" => "CCC: Cardano Multiversity MVP",
+                "Project Title" => "CCC: Cardano Multiversity MVP",
                 "budget" => $this->faker->numberBetween(50000, 350000),
                 "Funded Project Number" => $this->faker->numberBetween(50000, 350000),
                 "yes_votes" => $this->faker->numberBetween(5000000, 35000000),
