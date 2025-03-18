@@ -25,7 +25,6 @@ class ProposalSeeder extends Seeder
      */
     public function run(): void
     {
-
         $startDate = now()->subYears(3);
 
         $funds = Fund::factory()
