@@ -50,9 +50,9 @@ it('retrieves by id or slug with find method', function () {
         'slug' => 'nice-proposal',
     ])->create();
 
-    $foundById = $this->repository->find($proposal->id);
+    $foundById = $this->repository->find($proposal->getOriginal('id'));
     expect($foundById)->toBeInstanceOf(Proposal::class)
-        ->and($foundById->id)->toEqual($proposal->id);
+        ->and($foundById->id)->toEqual($proposal->getOriginal('id'));
 
     $foundBySlug = $this->repository->find('nice-proposal');
     expect($foundBySlug)->toBeInstanceOf(Proposal::class)
