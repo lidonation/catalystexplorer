@@ -1,14 +1,17 @@
+import PrimaryLink from '@/Components/atoms/PrimaryLink';
 import Title from '@/Components/atoms/Title';
 import ProfileList from '@/Pages/CompletedProjectNfts/Partials/ProfileList';
+import { StepDetails } from '@/types';
 import { useLocalizedRoute } from '@/utils/localizedRoute';
 import { Link } from '@inertiajs/react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
+import Content from '../Partials/WorkflowContent';
+import Footer from '../Partials/WorkflowFooter';
+import Nav from '../Partials/WorkflowNav';
 import WorkflowLayout from '../WorkflowLayout';
 import IdeascaleProfileData = App.DataTransferObjects.IdeascaleProfileData;
-import Nav from '../Partials/WorkflowNav';
-import { StepDetails } from '@/types';
-import Content from '../Partials/WorkflowContent';
 
 interface Step1Props {
     profiles: IdeascaleProfileData[];
@@ -31,13 +34,22 @@ const Step1: React.FC<Step1Props> = ({ profiles, stepDetails, activeStep }) => {
         }
     };
 
+    const preveStep = () => {
+        if (activeStep == 1) {
+            return '';
+        } else {
+            return useLocalizedRoute('workflows.completedProjectsNfts', {
+                step: activeStep - 1,
+            });
+        }
+    };
+
     return (
-        <WorkflowLayout asideInfo={stepDetails[activeStep].info??''}>
-            
+        <WorkflowLayout asideInfo={stepDetails[activeStep].info ?? ''}>
             <Nav stepDetails={stepDetails} />
 
             <Content>
-                <div className="bg-background mx-auto w-full max-w-lg rounded-2xl p-6 shadow-md">
+                <div className="bg-background mx-auto w-full rounded-2xl p-6">
                     <div className="w-full">
                         <>
                             <Title level="3" className="font-semibold">
@@ -69,6 +81,25 @@ const Step1: React.FC<Step1Props> = ({ profiles, stepDetails, activeStep }) => {
                     </div>
                 </div>
             </Content>
+
+            <Footer>
+                <PrimaryLink
+                    href={preveStep()}
+                    className="px-8 py-3 text-sm"
+                    disabled={activeStep == 1}
+                >
+                    <ChevronLeft className="h-4 w-4" />
+                    <span>{t('Previous')}</span>
+                </PrimaryLink>
+                <PrimaryLink
+                    href={preveStep()}
+                    className="px-8 py-3 text-sm"
+                    disabled={!!selectedProfiles.length}
+                >
+                    <span>{t('Next')}</span>
+                    <ChevronRight className="h-4 w-4" />
+                </PrimaryLink>
+            </Footer>
         </WorkflowLayout>
     );
 };

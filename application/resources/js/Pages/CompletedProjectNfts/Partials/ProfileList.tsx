@@ -27,12 +27,9 @@ const ProfileList: React.FC<ProfileListProps> = ({
     }
 
     return (
-        <div className="mt-2 space-y-2">
+        <div className="divide-gray-200 mt-2 space-y-2 divide-y">
             {profiles.map((profile, index) => (
-                <div
-                    key={index}
-                    className="w-full sm:max-w-[400px] lg:max-w-[500px]"
-                >
+                <div key={index} className="w-full">
                     <label
                         htmlFor={profile.hash as string | undefined}
                         className="flex items-center hover:cursor-pointer"
