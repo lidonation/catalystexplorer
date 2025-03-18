@@ -20,7 +20,6 @@ class DatabaseSeeder extends Seeder
             PermissionSeeder::class,
             UserSeeder::class,
             AnnouncementSeeder::class,
-            MetricSeeder::class,
             ProposalSeeder::class,
             BookmarkCollectionSeeder::class,
             BookmarkItemSeeder::class,
@@ -33,7 +32,9 @@ class DatabaseSeeder extends Seeder
             VoterSeeder::class,
             SnapshotSeeder::class,
             TransactionSeeder::class,
-            DrepSeeder::class
+            DrepSeeder::class,
+            MetricSeeder::class,
+
         ];
 
         foreach ($seeders as $seeder) {

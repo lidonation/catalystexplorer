@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Policies;
 
 use App\Enums\PermissionEnum;
+use App\Enums\RoleEnum;
 use App\Models\Fund;
 use App\Models\User;
 
@@ -57,6 +58,6 @@ class FundPolicy extends AppPolicy
      */
     public function delete(User $user, Fund $fund): bool
     {
-        return parent::canDelete($user, $fund) || $user->hasAnyPermission([PermissionEnum::delete_funds()->value]);
+        return $user->hasAnyRole([RoleEnum::admin()->value, RoleEnum::super_admin()->value]) || $user->hasAnyPermission([PermissionEnum::delete_funds()->value]);
     }
 }

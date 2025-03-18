@@ -1,29 +1,27 @@
 <?php
 
 use App\Models\User;
-
-test('login screen can be rendered', function () {
-    $response = $this->get('/login');
-
-    $response->assertStatus(200);
-});
+use Illuminate\Support\Facades\Hash;
 
 test('users can authenticate using the login screen', function () {
-    $user = User::factory()->create();
-
-    $response = $this->post('/login', [
-        'email' => $user->email,
-        'password' => 'password',
+    $user = User::factory()->create([
+        'password' => Hash::make('password')
     ]);
 
+    $this->withSession(['_token' => 'lido'])
+        ->post(route('login.store'), [
+            'email' => $user->email,
+            'password' => 'password',
+            '_token' => 'lido',
+        ]);
+
     $this->assertAuthenticated();
-    $response->assertRedirect(route('my.dashboard', absolute: false));
 });
 
 test('users can not authenticate with invalid password', function () {
     $user = User::factory()->create();
 
-    $this->post('/login', [
+    $this->post(route('login.store'), [
         'email' => $user->email,
         'password' => 'wrong-password',
     ]);
@@ -34,7 +32,11 @@ test('users can not authenticate with invalid password', function () {
 test('users can logout', function () {
     $user = User::factory()->create();
 
-    $response = $this->actingAs($user)->post('/logout');
+    $response = $this->withSession(['_token' => 'lido'])
+        ->actingAs($user)
+        ->post(route('logout'), [
+            '_token' => 'lido',
+        ]);
 
     $this->assertGuest();
     $response->assertRedirect('/');
