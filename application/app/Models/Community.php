@@ -8,6 +8,7 @@ use App\Casts\DateFormatCast;
 use App\Enums\CatalystCurrencySymbols;
 use App\Enums\ProposalStatus;
 use App\Traits\HasConnections;
+use App\Traits\HasTaxonomies;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -16,7 +17,7 @@ use Laravel\Scout\Searchable;
 
 class Community extends Model
 {
-    use HasConnections, Searchable;
+    use HasConnections, HasTaxonomies, Searchable;
 
     protected $appends = ['hash'];
 
@@ -45,19 +46,6 @@ class Community extends Model
             });
         })->when($filters['ids'] ?? null, function ($query, $ids) {
             $query->whereIn('id', is_array($ids) ? $ids : explode(',', $ids));
-        });
-
-        $query->when(! empty($filters['sort']), function ($query) use ($filters) {
-            [$column, $direction] = explode(':', $filters['sort']);
-            $query->orderBy($column, $direction);
-        });
-
-        $query->when(! empty($filters['cohort']), function ($query, $cohort) use ($filters) {
-            // dd($filters['cohort']);
-            $query->whereHas('proposals.metas', function ($q) use ($filters) {
-                $q->whereIn('key', $filters['cohort'])
-                    ->where('content', true);
-            })->get();
         });
 
         return $query;
@@ -108,19 +96,6 @@ class Community extends Model
                     ->whereHas('fund', function ($q) {
                         $q->where('currency', CatalystCurrencySymbols::USD->name);
                     })->sum('amount_requested');
-            },
-        );
-    }
-
-    public function tags(): Attribute
-    {
-        return Attribute::make(
-            get: function () {
-                return Tag::with('proposals')
-                    ->whereHas('proposals', function ($q) {
-                        $q->whereIn('model_id', $this->proposals->pluck('id'));
-                    })
-                    ->get();
             },
         );
     }

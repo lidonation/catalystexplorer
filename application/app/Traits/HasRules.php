@@ -69,9 +69,9 @@ trait HasRules
         return str_contains($subject, '.') ? $subject : "{$table}.{$subject}";
     }
 
-    private function isNullOperator(string $operator): bool
+    private function isNullOperator(string|Operators $operator): bool
     {
-        return in_array($operator, [
+        return in_array((string) $operator, [
             Operators::IS_NULL()->value,
             Operators::IS_NOT_NULL()->value,
         ]);
@@ -85,9 +85,9 @@ trait HasRules
         ]);
     }
 
-    private function applyNullQuery(Builder $query, string $subject, string $operator): void
+    private function applyNullQuery(Builder $query, string $subject, string|Operators $operator): void
     {
-        $method = $operator === Operators::IS_NULL()->value ? 'whereNull' : 'whereNotNull';
+        $method = (string) $operator === Operators::IS_NULL()->value ? 'whereNull' : 'whereNotNull';
         $query->{$method}($subject);
     }
 

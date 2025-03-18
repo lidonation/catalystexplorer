@@ -25,7 +25,6 @@ class ProposalSeeder extends Seeder
      */
     public function run(): void
     {
-
         $startDate = now()->subYears(3);
 
         $funds = Fund::factory()
@@ -83,7 +82,7 @@ class ProposalSeeder extends Seeder
             function ($campaign) use ($tags, $ideascaleProfiles) {
                 // Create proposals first
                 Proposal::factory()
-                    ->count(50)
+                    ->count(fake()->randomNumber(80))
                     ->hasAttached($ideascaleProfiles->random(fake()->randomElement([0, 1, 3, 4])))
                     ->state([
                         'campaign_id' => $campaign->id,
