@@ -5,10 +5,12 @@ import Title from '@/Components/atoms/Title';
 import Paragraph from '@/Components/atoms/Paragraph';
 import Button from '@/Components/atoms/Button';
 import Image from '@/Components/Image';
+import NMKRMetaData = App.DataTransferObjects.NMKRNftData;
+import NftData = App.DataTransferObjects.NftData;
 
 interface BlockchainDataProps {
-  nft: any;
-  metadata: any;
+  nft: NftData;
+  metadata: NMKRMetaData;
 }
 
 const BlockchainData = ({ nft, metadata }: BlockchainDataProps) => {
@@ -34,8 +36,9 @@ const BlockchainData = ({ nft, metadata }: BlockchainDataProps) => {
     <div className="rounded-lg bg-background p-2 max-w-2xl">
       {nft.storage_link || nft.preview_link ? (
         <Image
-          src={nft.storage_link || nft.preview_link}
+          imageUrl={nft.storage_link || nft.preview_link}
           alt="NFT Preview"
+          size = '12'
           className="w-full rounded-lg mb-8"
         />
       ) : (
@@ -59,7 +62,7 @@ const BlockchainData = ({ nft, metadata }: BlockchainDataProps) => {
             <Copy size={16} />
           </Button>
           <code className="text-sm text-content font-mono break-all">
-            {metadata.policyid || 'Not available'}
+            {metadata.policyid || t("completedProjectNfts.unavailable")}
             {copied === 'policy' && <span className="text-content ml-2">Copied!</span>}
           </code>
         </div>
@@ -76,7 +79,7 @@ const BlockchainData = ({ nft, metadata }: BlockchainDataProps) => {
             <Copy size={16} />
           </Button>
           <code className="text-sm text-content font-mono break-all">
-            {metadata.assetname || t("unavailable")}
+            {metadata.assetname || t("completedProjectNfts.unavailable")}
             {copied === 'name' && <span className="text-content ml-2">Copied!</span>}
           </code>
         </div>
