@@ -61,10 +61,6 @@ export function ConnectWalletProvider({
   }, [t]);
 
   useEffect(() => {
-    console.log('Current environment:', environment);
-  }, [environment]);
-
-  useEffect(() => {
     const supportedWallets = ['nami', 'eternl', 'flint', 'lace', 'typhon', 'yoroi', 'gerowallet'];
     const detected = supportedWallets.filter(w => window.cardano?.[w]);
     setWallets(detected);
@@ -130,7 +126,6 @@ export function ConnectWalletProvider({
       setUserAddress(bech32Address);
       setConnectedWalletProvider(wallet);
 
-      // Save wallet connection using storage service
       storageService.saveWalletConnection(walletName);
 
       setIsSliderOpen(false);
@@ -156,7 +151,6 @@ export function ConnectWalletProvider({
     }
 
     resetConnection();
-    // Clear wallet connection using storage service
     storageService.clearWalletConnection();
   };
 
