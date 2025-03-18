@@ -27,7 +27,7 @@ services:
       - 'host.docker.internal:host-gateway'
     ports:
       - '${APP_PORT:-80}:8000'
-      - '${VITE_PORT:-5173}:${VITE_PORT:-5173}'
+      - '${VITE_PORT:-5174}:${VITE_PORT:-5173}'
     environment:
       CONTAINER_ROLE: "app"
       IGNITION_LOCAL_SITES_PATH: '${PWD}'

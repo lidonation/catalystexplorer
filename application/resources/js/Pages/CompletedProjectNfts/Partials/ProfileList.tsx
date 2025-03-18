@@ -1,19 +1,18 @@
+import Checkbox from '@/Components/atoms/Checkbox';
 import Paragraph from '@/Components/atoms/Paragraph';
 import RecordsNotFound from '@/Layouts/RecordsNotFound';
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
 import ProfileCard from './ProfileCard';
 import IdeascaleProfileData = App.DataTransferObjects.IdeascaleProfileData;
 
 interface ProfileListProps {
     profiles: IdeascaleProfileData[];
-    children?: (profile: IdeascaleProfileData) => React.ReactNode;
-    onProfileClick: (profile: IdeascaleProfileData) => void;
+    onProfileClick: (profileHash: string | null) => void;
 }
 
 const ProfileList: React.FC<ProfileListProps> = ({
     profiles,
-    children,
     onProfileClick,
 }) => {
     const { t } = useTranslation();
@@ -34,13 +33,18 @@ const ProfileList: React.FC<ProfileListProps> = ({
                     key={index}
                     className="w-full sm:max-w-[400px] lg:max-w-[500px]"
                 >
-                    <ProfileCard
-                        profile={profile}
-                        onSelect={() => onProfileClick(profile)}
-                        className="cursor-pointer"
+                    <label
+                        htmlFor={profile.hash as string | undefined}
+                        className="flex items-center hover:cursor-pointer"
                     >
-                        {children && children(profile)}
-                    </ProfileCard>
+                        <ProfileCard profile={profile}></ProfileCard>
+                        <Checkbox
+                            name={profile.hash as string | undefined}
+                            id={profile.hash as string | undefined}
+                            onChange={() => onProfileClick(profile.hash)}
+                            className="text-content-accent bg-background checked:bg-primary checked:hover:bg-primary focus:border-primary focus:ring-primary checked:focus:bg-primary mr-2 h-4 w-4 shadow-xs focus:border"
+                        />
+                    </label>
                 </div>
             ))}
         </div>

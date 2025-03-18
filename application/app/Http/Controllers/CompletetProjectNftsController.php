@@ -51,39 +51,59 @@ class CompletetProjectNftsController extends Controller
         $this->user = Auth::user();
     }
 
-    public function handleStep($step)
+    public function handleStep(Request $request, $step)
     {
         $method = "step{$step}";
 
         if (method_exists($this, $method)) {
-            return $this->$method($step);
+            return $this->$method($request);
         }
 
         abort(404, "Step '{$step}' not found.");
     }
 
-    public function step1()
+    public function getStepDetails(): array
+    {
+        return [
+            '1' => [
+                'title' => 'Select Profile',
+                'Info' => 'Choose the profile(s) you want to mint from. The selected profile should be linked to the completed project whose NFT you’re minting.
+                            Not sure which one to pick? No worries—just select all available profiles and we’ll handle the rest! 🚀',
+            ],
+            '2' => [
+                'title' => 'Select Proposal',
+                'Info' => 'To get started, please select profile(s) to mint from',
+            ],
+        ];
+    }
+
+    public function step1(Request $request)
+    {
+        return Inertia::render('Workflows/CompletedProjectNfts/Step1', [
+            'profiles' => IdeascaleProfileData::collect(IdeascaleProfile::where('claimed_by_id', $this->user->id)
+                ->withCount(['proposals'])
+                ->get()),
+            'stepDetails' => $this->getStepDetails(),
+            'activeStep' => $request->step,
+        ]);
+    }
+
+    public function step2(Request $request)
     {
 
         $proposals = $this->getClaimedIdeascaleProfilesProposals();
 
-        $claimedIdeascaleProfiles = $this->getClaimedIdeascaleProfiles();
-
         return Inertia::render('Workflows/CompletedProjectNfts/Step1', [
             'proposals' => $proposals,
             'filters' => $this->queryParams,
-            'profiles' => $claimedIdeascaleProfiles,
+            'profiles' => IdeascaleProfileData::collect(IdeascaleProfile::where('claimed_by_id', $this->user->id)
+                ->withCount(['proposals'])
+                ->get()),
         ]);
     }
 
     public function index(Request $request): Response
     {
-        $this->getProps($request);
-
-        $proposals = $this->getClaimedIdeascaleProfilesProposals();
-
-        $claimedIdeascaleProfiles = $this->getClaimedIdeascaleProfiles();
-
         $amountDistributedAda = Proposal::whereHas('fund', function ($query) {
             $query->where('currency', CatalystCurrencySymbols::ADA->name);
         })->sum('amount_received');
@@ -98,8 +118,6 @@ class CompletetProjectNftsController extends Controller
         $membersFunded = IdeaScaleProfile::whereHas('proposals', function ($query) {
             $query->whereNotNull('funded_at');
         })->count();
-
-        $claimedIdeascaleProfiles = $this->getClaimedIdeascaleProfiles();
 
         $amountDistributedAda = Proposal::whereHas('fund', function ($query) {
             $query->where('currency', CatalystCurrencySymbols::ADA->name);
@@ -117,14 +135,10 @@ class CompletetProjectNftsController extends Controller
         })->count();
 
         return Inertia::render('CompletedProjectNfts/Index', [
-            'proposals' => $proposals,
-            'filters' => $this->queryParams,
-            'ideascaleProfiles' => $claimedIdeascaleProfiles,
             'amountDistributedAda' => $amountDistributedAda,
             'amountDistributedUsd' => $amountDistributedUsd,
             'completedProposalsCount' => $completedProposalsCount,
             'communityMembersFunded' => $membersFunded,
-            'ideascaleProfiles' => $claimedIdeascaleProfiles,
             'amountDistributedAda' => $amountDistributedAda,
             'amountDistributedUsd' => $amountDistributedUsd,
             'completedProposalsCount' => $completedProposalsCount,

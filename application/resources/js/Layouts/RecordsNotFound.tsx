@@ -28,7 +28,7 @@ export default function RecordsNotFound({
     };
 
     return (
-        <div className="bg-background flex w-full flex-col items-center justify-center rounded-lg px-4 py-16">
+        <div className="bg-background flex w-full flex-col items-center justify-center rounded-lg px-4 py-8">
             {showIcon && <RecordsNotFoundIcon />}
             {/* <p className="mt-2 max-w-md text-center text-base text-gray-600">
                 {getMessage()}

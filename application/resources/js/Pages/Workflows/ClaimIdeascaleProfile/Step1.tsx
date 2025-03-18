@@ -12,13 +12,12 @@ const Step1: React.FC<ProfileWorkflowProps & { filters: SearchParams }> = (
         const { auth } = usePage().props;
         const user = auth?.user;
     return (
-        <WorkflowLayout>
+        <WorkflowLayout asideInfo=''>
             <FiltersProvider
                 defaultFilters={props.filters}
                 routerOptions={{ only: ['ideascaleProfiles', 'proposals'] }}
             >
-               <div className="bg-background mx-auto w-full max-w-lg rounded-2xl p-6 shadow-md">
-            </div>
+                <div className="bg-background mx-auto w-full max-w-lg rounded-2xl p-6 shadow-md"></div>
             </FiltersProvider>
         </WorkflowLayout>
     );
