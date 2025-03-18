@@ -37,9 +37,6 @@ const ConnectWalletButton: React.FC<ConnectWalletButtonProps> = ({
         setIsConnecting,
         openConnectWalletSlider,
         closeConnectWalletSlider,
-        saveWalletConnectionToStorage,
-        getLastConnectedWalletFromStorage,
-        clearWalletConnectionFromStorage
     } = useConnectWallet();
 
     const { t } = useTranslation();
