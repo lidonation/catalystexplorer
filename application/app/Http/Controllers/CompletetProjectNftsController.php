@@ -155,7 +155,7 @@ class CompletetProjectNftsController extends Controller
         
         // Look for the NFT associated with this profile and proposal
         $nft = $ideascaleProfile->nfts()
-            ->whereJsonContains('metadata->project_title', $proposal->title)
+            ->whereJsonContains('metadata->Project Title', $proposal->title)
             ->first();
             
         // Get NFT metadata if NFT exists

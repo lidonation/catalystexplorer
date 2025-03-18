@@ -10,9 +10,10 @@ import Image from "@/Components/Image";
 interface ContributorProfileProps {
   contributorProfiles: IdeascaleProfileData[];
   author: IdeascaleProfileData;
+  isOwner: boolean;
 }
 
-const ContributorProfile = ({ contributorProfiles, author }: ContributorProfileProps) => {
+const ContributorProfile = ({ contributorProfiles, author, isOwner }: ContributorProfileProps) => {
   const { t } = useTranslation();
   
   // If no contributors provided or empty array, use a placeholder
@@ -24,7 +25,7 @@ const ContributorProfile = ({ contributorProfiles, author }: ContributorProfileP
         </div>
       </div>
     );
-  }
+  } 
 
   return (
     <div className="bg-background rounded-lg p-6">
@@ -62,9 +63,11 @@ const ContributorProfile = ({ contributorProfiles, author }: ContributorProfileP
               </div>
             </div>
           </div>
-          <span className="bg-success-light border-2 text-success px-3 py-1 rounded-full text-sm">
-            {t('minting')}
-          </span>
+          {isOwner && (
+            <span className="bg-success-light border-2 text-success px-3 py-1 rounded-full text-sm">
+              {t('minting')}
+            </span>
+          )}
         </div>
 
         <div className="space-y-4 text-content">
