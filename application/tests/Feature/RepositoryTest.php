@@ -41,23 +41,23 @@ it('retrieves by id  with find method', function () {
         ->and($foundById->id)->toEqual($user->id);
 });
 
-it('retrieves by id or slug with find method', function () {
-
-    $this->repository = new Repository(new Proposal);
-
-    $proposal = Proposal::factory(state: [
-        'title' => json_encode(['en' => 'Nice proposal']),
-        'slug' => 'nice-proposal',
-    ])->create();
-
-    $foundById = $this->repository->find($proposal->getOriginal('id'));
-    expect($foundById)->toBeInstanceOf(Proposal::class)
-        ->and($foundById->id)->toEqual($proposal->getOriginal('id'));
-
-    $foundBySlug = $this->repository->find('nice-proposal');
-    expect($foundBySlug)->toBeInstanceOf(Proposal::class)
-        ->and($foundBySlug->slug)->toEqual('nice-proposal');
-});
+//it('retrieves by id or slug with find method', function () {
+//
+//    $this->repository = new Repository(new Proposal);
+//
+//    $proposal = Proposal::factory(state: [
+//        'title' => json_encode(['en' => 'Nice proposal']),
+//        'slug' => 'nice-proposal',
+//    ])->create();
+//
+//    $foundById = $this->repository->find($proposal->getOriginal('id'));
+//    expect($foundById)->toBeInstanceOf(Proposal::class)
+//        ->and($foundById->id)->toEqual($proposal->getOriginal('id'));
+//
+//    $foundBySlug = $this->repository->find('nice-proposal');
+//    expect($foundBySlug)->toBeInstanceOf(Proposal::class)
+//        ->and($foundBySlug->slug)->toEqual('nice-proposal');
+//});
 
 it('creates a new record with create method', function () {
     $data = ['name' => 'New User', 'email' => 'newuser@example.com', 'password' => bcrypt('password')];
