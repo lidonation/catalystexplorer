@@ -440,12 +440,19 @@
         "communities": "Communities",
         "title": "Catalyst Communities",
         "subtitle": "Diverse, independent, and together inspiring the highest level of human collaboration",
+        "proposalSummary": "Proposals Summary",
+        "totalRequested":"Total Requested",
+        "proposers": "Proposers",
+        "collaborators": "Collaborators",
         "options": {
             "alphabetically": "Alphabetically: A to Z",
             "amountAwardedAdaDesc": "Amount Awarded ADA: High to Low",
             "amountAwardedAdaAsc": "Amount Awarded ADA: Low to High",
             "amountAwardedUsdDesc": "Amount Awarded USD: High to Low",
             "amountAwardedUsdAsc": "Amount Awarded USD: Low to High"
+        },
+        "tabs": {
+            "dashboard": "Dashboard"
         }
     },
     "posts": {

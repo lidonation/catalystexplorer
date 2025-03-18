@@ -4,15 +4,15 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use App\Enums\CatalystCurrencySymbols;
 use App\Casts\DateFormatCast;
+use App\Enums\CatalystCurrencySymbols;
+use App\Enums\ProposalStatus;
 use App\Traits\HasConnections;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Facades\Artisan;
 use Laravel\Scout\Searchable;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Database\Eloquent\Casts\Attribute;
-use Sqids\Sqids;
 
 class Community extends Model
 {
@@ -47,14 +47,14 @@ class Community extends Model
             $query->whereIn('id', is_array($ids) ? $ids : explode(',', $ids));
         });
 
-        $query->when(!empty($filters['sort']), function ($query) use ($filters) {
-            [$column, $direction] = explode(':', $filters['sort']); 
+        $query->when(! empty($filters['sort']), function ($query) use ($filters) {
+            [$column, $direction] = explode(':', $filters['sort']);
             $query->orderBy($column, $direction);
         });
 
-        $query->when(!empty($filters['cohort']), function ($query, $cohort) use ($filters) {
+        $query->when(! empty($filters['cohort']), function ($query, $cohort) use ($filters) {
             // dd($filters['cohort']);
-            $query->whereHas('proposals.metas', function ($q)  use($filters) {
+            $query->whereHas('proposals.metas', function ($q) use ($filters) {
                 $q->whereIn('key', $filters['cohort'])
                     ->where('content', true);
             })->get();
@@ -73,6 +73,19 @@ class Community extends Model
         return $this->proposals()
             ->where(['type' => 'proposal'])
             ->whereNotNull('funded_at');
+    }
+
+    public function completed_proposals(): BelongsToMany
+    {
+        return $this->proposals()
+            ->where(['type' => 'proposal', 'status' => ProposalStatus::complete()->value]);
+    }
+
+    public function unfunded_proposals(): BelongsToMany
+    {
+        return $this->proposals()
+            ->where('type', 'proposal')
+            ->whereNull('funded_at');
     }
 
     public function amountAwardedAda(): Attribute

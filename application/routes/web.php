@@ -73,8 +73,12 @@ Route::localized(
             Route::get('/', [CommunityController::class, 'index'])
                 ->name('index');
 
-            Route::get('/{community:slug}', [CommunityController::class, 'community'])
-                ->name('group');
+            Route::prefix('/{community:slug}')->group(function () {
+                Route::get('/', [CommunityController::class, 'show'])
+                    ->name('show');
+                Route::get('/dashboard', [CommunityController::class, 'show'])
+                    ->name('dashboard');
+            });
         });
 
         Route::patch('/profile/update/{field}', [ProfileController::class, 'update'])
@@ -194,4 +198,3 @@ require __DIR__ . '/dashboard.php';
 require __DIR__ . '/api.php';
 
 Route::fallback(\CodeZero\LocalizedRoutes\Controllers\FallbackController::class);
-

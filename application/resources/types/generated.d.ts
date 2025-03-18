@@ -63,7 +63,7 @@ completed_proposals_count: number | null;
 total_requested: number | null;
 total_awarded: number | null;
 total_distributed: number | null;
-fund: FundData | null;
+fund: App.DataTransferObjects.FundData | null;
 };
 export type CommunityData = {
 hash: string | null;
@@ -74,6 +74,9 @@ status?: string;
 slug?: string;
 ideascale_profiles: any | null;
 proposals_count?: number;
+completed_proposals_count?: number;
+funded_proposals_count?: number;
+Unfunded_proposals_count?: number;
 amount_awarded_ada?: number;
 amount_awarded_usd?: number;
 created_at?: string;
@@ -387,14 +390,30 @@ not_helpful_total: number | null;
 export type ReviewModerationData = {
 hash: string | null;
 reviewer_id?: number;
+reviewer_reputation_score?: number;
 excellent_count: number;
 good_count: number;
 filtered_out_count: number;
 flagged: boolean;
 qa_rationale?: Array<any>;
 };
+export type ReviewerData = {
+id: number | null;
+reviewr_id: string;
+meta_info: Array<any> | null;
+reputation_scores: any | null;
+};
+export type ReviewerReputationScoreData = {
+id: number | null;
+reviewer_id: number;
+score: number;
+context_type: string | null;
+context_id: number | null;
+fund_name: string | null;
+};
 export type UserData = {
 hash: string;
+id: number;
 name: string;
 email: string;
 hero_img_url: string | null;
