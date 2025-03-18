@@ -4,6 +4,8 @@ import MetaData from './MetaData';
 import ContributorProfile from './ContributorProfile';
 import Title from '@/Components/atoms/Title';
 import IdeascaleProfileData = App.DataTransferObjects.IdeascaleProfileData;
+import NMKRMetaData = App.DataTransferObjects.NMKRNftData;
+import NftData = App.DataTransferObjects.NftData;
 import UserData = App.DataTransferObjects.UserData;
 import { PaginatedData } from '../../../../types/paginated-data';
 import { Head } from '@inertiajs/react';
@@ -16,8 +18,8 @@ interface PageProps{
   contributorProfiles: IdeascaleProfileData[];
   artist: UserData;
   author: IdeascaleProfileData;
-  nft: any;
-  metadata: any;
+  nft: NftData;
+  metadata: NMKRMetaData;
   isOwner: boolean;
 }
 

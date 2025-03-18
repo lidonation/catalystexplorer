@@ -4,12 +4,10 @@ import { router } from '@inertiajs/react';
 import { useLocalizedRoute } from '@/utils/localizedRoute';
 import Button from '@/Components/atoms/Button';
 import Paragraph from '@/Components/atoms/Paragraph';
+import NftData = App.DataTransferObjects.NftData;
 
 interface MetaDataProps {
-  nft: any & {
-    metadata: string;
-    metas: any;
-  };
+  nft: NftData;
   isOwner: boolean;
 }
 
@@ -24,6 +22,7 @@ const MetaData = ({ nft, isOwner }: MetaDataProps) => {
     noVotes: '',
     role: ''
   });
+  const [isMetadataAvailable, setIsMetadataAvailable] = useState<boolean>(true);
   
   // Route generation
   const localizedUpdateRoute = nft?.id 
@@ -45,7 +44,7 @@ const MetaData = ({ nft, isOwner }: MetaDataProps) => {
   useEffect(() => {
     const extractMetadata = () => {
       try {
-        if (nft.metadata) {
+        if (nft?.metadata) {
           let parsedMetadata;
           
           if (typeof nft.metadata === 'string') {
@@ -53,6 +52,23 @@ const MetaData = ({ nft, isOwner }: MetaDataProps) => {
           } else {
             parsedMetadata = nft.metadata;
           }
+          
+          // Check if metadata is empty or has no relevant fields
+          const hasRelevantData = parsedMetadata && (
+            parsedMetadata.campaign_name || 
+            parsedMetadata['Funded Project Number'] || 
+            parsedMetadata.project_title ||
+            parsedMetadata.yes_votes ||
+            parsedMetadata.no_votes ||
+            parsedMetadata.role
+          );
+          
+          if (!hasRelevantData) {
+            setIsMetadataAvailable(false);
+            return;
+          }
+          
+          setIsMetadataAvailable(true);
           
           const allKnownValues = {
             campaignName: parsedMetadata.campaign_name || '',
@@ -105,6 +121,7 @@ const MetaData = ({ nft, isOwner }: MetaDataProps) => {
           }
 
           if (nftData) {
+            setIsMetadataAvailable(true);
             
             const allKnownValues = {
               campaignName: nftData.projectCatalystCampaignName || '',
@@ -126,15 +143,21 @@ const MetaData = ({ nft, isOwner }: MetaDataProps) => {
             }));
           } else {
             console.error('Could not find NFT metadata');
+            setIsMetadataAvailable(false);
           }
+        } else {
+          setIsMetadataAvailable(false);
         }
       } catch (e) {
         console.error('Error parsing metadata:', e);
+        setIsMetadataAvailable(false);
       }
     };
     
     if ((nft && nft.metadata) || (nft && nft.metas && nft.metas.length > 0)) {
       extractMetadata();
+    } else {
+      setIsMetadataAvailable(false);
     }
   }, [nft]);
 
@@ -231,21 +254,37 @@ const MetaData = ({ nft, isOwner }: MetaDataProps) => {
       </div>
     );
   };
+  
+  const renderUnavailableMessage = () => {
+    return (
+      <div className="flex flex-col items-center justify-center py-12">
+        <div className="text-center mb-4">
+          <span className="inline-block px-4 rounded-lg text-dark">
+            {t('completedProjectNfts.Unavailable')}
+          </span>
+        </div>
+      </div>
+    );
+  };
 
   return (
     <div className="bg-background rounded-lg p-6">
       <h4 className="text-lg font-semibold mb-6">{t('chooseMetaDataDescription')}</h4>
 
-      <div className="space-y-6">
-        {renderReadOnlyField(t('projectCatalyst'), metaValues.campaignName)}
-        {renderReadOnlyField(t('fundProject'), metaValues.projectNumber)}
-        {renderReadOnlyField(t('projectTitle'), metaValues.projectTitle)}
-        {renderEditableField(t('yesVotes'), 'yesVotes', metaValues.yesVotes)}
-        {renderEditableField(t('noVotes'), 'noVotes', metaValues.noVotes)}
-        {renderEditableField(t('role'), 'role', metaValues.role)}
-      </div>
+      {isMetadataAvailable ? (
+        <div className="space-y-6">
+          {renderReadOnlyField(t('projectCatalyst'), metaValues.campaignName)}
+          {renderReadOnlyField(t('fundProject'), metaValues.projectNumber)}
+          {renderReadOnlyField(t('projectTitle'), metaValues.projectTitle)}
+          {renderEditableField(t('yesVotes'), 'yesVotes', metaValues.yesVotes)}
+          {renderEditableField(t('noVotes'), 'noVotes', metaValues.noVotes)}
+          {renderEditableField(t('role'), 'role', metaValues.role)}
+        </div>
+      ) : (
+        renderUnavailableMessage()
+      )}
 
-      {isOwner && (
+      {isOwner && isMetadataAvailable && (
         <div className="flex justify-center mt-8">
           <Paragraph className="text-xs text-dark italic text-center max-w-lg">
             {t('metadataStrikeInstruction')}

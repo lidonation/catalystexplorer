@@ -6,7 +6,6 @@ import XIcon from "@/Components/svgs/XIcon";
 import LinkedInIcon from "@/Components/svgs/LinkedInIcons";
 import DiscordIcon from "@/Components/svgs/DiscordIcon";
 import Image from "@/Components/Image";
-import { cn } from "@/lib/utils";
 
 interface ContributorProfileProps {
   contributorProfiles: IdeascaleProfileData[];
@@ -33,7 +32,7 @@ const ContributorProfile = ({ contributorProfiles, author }: ContributorProfileP
         <div className="flex justify-between items-start mb-4 border-b border-dark pb-4">
           <div className="flex gap-4">
             <Image
-              src={author.hero_img_url}
+              imageUrl={author.hero_img_url}
               alt={author.name}
               className="w-20 h-20 rounded-full object-cover"
             />
@@ -75,18 +74,21 @@ const ContributorProfile = ({ contributorProfiles, author }: ContributorProfileP
 
       {contributorProfiles.length > 0 && (
         <div>
-          <Title level="3" className=" text-content font-semibold mb-4">{t('otherContributors')}</Title>
+          <Title level="3" className="text-content font-semibold mb-4">{t('otherContributors')}</Title>
           <div className="border-t border-dark pt-5">
-            <div className="flex flex-wrap gap-8">
+            <div className="flex flex-wrap gap-8 justify-start">
               {contributorProfiles.map((contributor, index) => {
                 // Ensure a unique key by combining id and index as fallback
                 const uniqueKey = contributor.hash ? `contributor-${contributor.hash}-${index}` : `contributor-index-${index}`;
                 
                 return (
-                  <div key={uniqueKey} className="text-center">
+                  <div 
+                    key={uniqueKey} 
+                    className="text-center flex-1 min-w-[120px] max-w-[200px]"
+                  >
                     <div className="flex justify-center mb-2">
                       <Image
-                        src={contributor.hero_img_url}
+                        imageUrl={contributor.hero_img_url}
                         alt={contributor.name}
                         className="w-20 h-20 rounded-full object-cover border-2 border-success"
                       />

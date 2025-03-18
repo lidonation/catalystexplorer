@@ -465,7 +465,10 @@
             "placeHolder": "Rechercher une proposition"
         },
         "step": "Étape",
-        "claimProfile": "Réclamer un autre profil"
+        "claimProfile": "Réclamer un autre profil",
+        "Unavailable": "Indisponible!",
+        "reservedUntil": "Réservé jusqu'à",
+        "paymentPending": "Paiement en attente"
     },
     "profileWorkflow": {
         "sectionTitle": {
