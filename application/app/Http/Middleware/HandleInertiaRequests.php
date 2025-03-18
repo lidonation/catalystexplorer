@@ -41,6 +41,21 @@ class HandleInertiaRequests extends Middleware
                 'isDownForMaintenance' => App::isDownForMaintenance(),
                 'locale' => app()->getLocale(),
             ],
+            'environment' => $this->detectEnvironment($request),
         ];
+    }
+
+    /**
+     * Detect the current environment based on the hostname.
+     */
+    protected function detectEnvironment(Request $request): string
+    {
+        $hostname = $request->getHost();
+        
+        if ($hostname === 'catalystexplorer.com') {
+            return 'production';
+        }
+        
+        return 'preview';
     }
 }

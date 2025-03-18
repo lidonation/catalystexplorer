@@ -20,7 +20,28 @@ const ConnectWalletButton: React.FC<ConnectWalletButtonProps> = ({
     iconPosition = 'left',
     onClick
 }) => {
-    const { openConnectWallet, isConnecting, disconnectWallet, userAddress, connectedWalletProvider } = useConnectWallet();
+    
+    const { 
+        wallets,
+        connectedWallet,
+        connectedWalletProvider,
+        userAddress,
+        error,
+        isConnecting,
+        isWalletConnectorOpen,
+        CardanoWasm,
+        networkId,
+        networkName,
+        connectWallet,
+        disconnectWallet,
+        setIsConnecting,
+        openConnectWalletSlider,
+        closeConnectWalletSlider,
+        saveWalletConnectionToStorage,
+        getLastConnectedWalletFromStorage,
+        clearWalletConnectionFromStorage
+    } = useConnectWallet();
+
     const { t } = useTranslation();
 
     return (
@@ -38,7 +59,7 @@ const ConnectWalletButton: React.FC<ConnectWalletButtonProps> = ({
                 disabled={!!isConnecting}
                 onClick={() => {
                     if (!connectedWalletProvider) {
-                        openConnectWallet();
+                        openConnectWalletSlider();
                         onClick?.();
                     }
                 }}
