@@ -4,7 +4,7 @@ import CardanoIcon from "@/Components/svgs/CardanoIcon";
 import ProjectCatalyst from "@/Components/svgs/ProjectCatalystIcon";
 import DrepsBanner from '@/assets/images/dreps-banner.jpg';
 import ProjectCatalystBackground from '@/assets/images/project-catalyst-banner.jpg';
-import { Head } from "@inertiajs/react";
+import { Head, Link } from "@inertiajs/react";
 import FaqSection from "./Partials/FaqSection";
 import { useTranslation } from "react-i18next";
 import Button from "@/Components/atoms/Button";
@@ -29,7 +29,7 @@ const Home = () => {
                     <div className="absolute inset-0 w-auto h-auto mt-4">
                         <div className="relative z-10 container mx-auto px-4 h-full flex items-center">
                             <div className="max-w-2xl">
-                                <Title level='1' className="text-3xl md:text-4xl font-bold mb-4 text-secondary transition">
+                                <Title level='1' className="text-3xl md:text-4xl font-bold mb-4 text-dark-persist transition">
                                     {t('dreps.landing.title')}
                                 </Title>
                                 <Paragraph className="text-dark mb-8">
@@ -39,9 +39,9 @@ const Home = () => {
                                     <Button className="bg-secondary text-content-light px-6 py-3 rounded-md text-center">
                                         {t('dreps.landing.signUp')}
                                     </Button>
-                                    <Button className="bg-transparent border-2 border-secondary text-secondary px-6 py-3 rounded-md transition text-center">
+                                    <Link href={'list'} className="bg-transparent border-2 border-secondary text-secondary px-6 py-3 rounded-md transition text-center">
                                         {t('dreps.landing.findDrep')}
-                                    </Button>
+                                    </Link>
                                 </div>
                             </div>
                         </div>
@@ -52,13 +52,13 @@ const Home = () => {
                 <div className="py-20 bg-background-dark">
                     <div className="container mx-auto px-4">
                         <div className="grid grid-cols-1 md:grid-cols-12 gap-16 items-center">
-                            <div className="md:col-span-3 flex justify-center">
-                                <div className="w-48 h-48 relative">
+                            <div className="md:col-span-4 flex justify-center">
+                                <div className="relative ">
                                     <CardanoIcon/>
                                 </div>
                             </div>
                             
-                            <div className="md:col-span-9">
+                            <div className="md:col-span-6">
                                 <Title level='2' className="text-2xl font-bold mb-4">{t('dreps.landing.aDrep')}</Title>
                                 <Paragraph className="text-darker mb-4">
                                     {t('dreps.landing.drepDescription')}
@@ -69,19 +69,19 @@ const Home = () => {
                 </div>
 
                 {/* Project Catalyst Section */}
-                <div className="py-16 min-h-screen md:min-h-[700px] flex flex-col justify-between relative" 
+                <div className="py-16 min-h-screen md:min-h-[600px] flex flex-col justify-between relative" 
                     style={{ 
                         backgroundImage: `url(${ProjectCatalystBackground})`,
                         backgroundSize: 'cover',
                         backgroundRepeat: 'no-repeat',
-                        backgroundPosition: 'center 1%',
+                        backgroundPosition: '85% 10%',
                     }}
                 >
-                    <div className="text-center">
-                        <div className="inline-block mb-4">
+                    <div className="flex flex-col items-center justify-center text-center px-4 pt-6 md:pt-1">
+                        <div className="mb-4">
                             <ProjectCatalyst/>
                         </div>
-                        <Title level='2' className="text-2xl md:text-3xl font-bold mb-4 text-secondary">
+                        <Title level='2' className="text-2xl md:text-3xl font-bold mb-4 text-dark-persist max-w-2xl mx-auto">
                             {t('dreps.landing.projectCatalyst')}
                         </Title>
                         <Paragraph className="text-dark max-w-2xl mx-auto">
@@ -90,10 +90,9 @@ const Home = () => {
                     </div>
                     
                     <div className="mt-auto pb-16">
-                        <div className="flex flex-col md:flex-row-reverse gap-12 px-4">
-                            <div className="w-full md:w-1/2"/>
-                            <div className="w-full md:w-1/2">
-                                <Title level='2' className="text-2xl md:text-3xl font-bold mb-4 text-secondary">
+                        <div className="container mx-auto px-4 md:px-8 lg:px-16">
+                            <div className="w-full md:w-1/2 lg:w-5/12">
+                                <Title level='2' className="text-2xl md:text-3xl font-bold mb-4 text-dark-persist">
                                     {t('dreps.landing.empower')}
                                 </Title>
                                 <Paragraph className="text-dark">
@@ -108,16 +107,14 @@ const Home = () => {
                 <FaqSection/>
 
                 {/* Call to Action */}
-                <div className="container py-12 bg-background-dark text-content">
+                <div className="container p-20 bg-background-dark text-content">
                     <div className="container mx-auto px-4">
                         <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-6">
-                            <h2 className="text-2xl font-bold">
-                                {t('dreps.landing.excite')}<br className="hidden md:block" />
+                            <Title level='2' className="text-2xl font-bold">
+                                {t('dreps.landing.excite')}<br/>
                                 {t('dreps.landing.answerExcite')}
-                            </h2>
-                            <Button
-                                className="bg-primary text-content px-6 py-3 rounded-md text-center w-full md:w-auto"
-                            >
+                            </Title>
+                            <Button className="bg-primary text-content-light px-6 py-3 rounded-md text-center w-full md:w-auto">
                                 {t('dreps.landing.signUp')}
                             </Button>
                         </div>

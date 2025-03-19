@@ -1,9 +1,10 @@
-import React from 'react';
 import { useState } from 'react';
 import Paragraph from "@/Components/atoms/Paragraph";
 import Title from "@/Components/atoms/Title";
 import { useTranslation } from 'react-i18next';
 import Button from '@/Components/atoms/Button';
+import MinusIcon from '@/Components/svgs/MinusIcon';
+import PlusIcon from '@/Components/svgs/PlusIcon';
 
 // Define interface for FAQ item props
 interface FaqItemProps {
@@ -25,7 +26,7 @@ const FaqItem = ({ question, answer }: FaqItemProps) => {
                 <Button 
                     className="w-8 h-8 flex items-center justify-center text-lg font-bold rounded-full bg-transparent text-content"
                 >
-                    {isOpen ? '-' : '+'}
+                    {isOpen ? <MinusIcon/> : <PlusIcon/> }
                 </Button>
             </div>
             
