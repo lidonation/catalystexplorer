@@ -303,6 +303,27 @@ uploadSource: string;
 priceInLamportCentralPayments: number;
 singlePriceSolana: number;
 };
+export type NftData = {
+metas: any;
+id: number;
+user_id: number;
+artist_id: number;
+model_id: number;
+model_type: string;
+storage_link: string;
+preview_link: string;
+name: string;
+owner_address: string;
+description: string;
+rarity: string;
+status: string;
+metadata: any;
+minted_at: string;
+qty: number;
+created_at: string;
+updated_at: string;
+deleted_at: string;
+};
 export type PostData = {
 id: number | null;
 title: string | null;

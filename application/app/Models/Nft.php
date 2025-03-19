@@ -14,6 +14,7 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Log;
 use Lidonation\CardanoNftMaker\Interfaces\CardanoNftInterface;
 use Lidonation\CardanoNftMaker\Traits\NftServiceTrait;
 use Spatie\MediaLibrary\HasMedia;
@@ -36,6 +37,7 @@ class Nft extends Model implements CardanoNftInterface, HasMedia
     protected $appends = [
         'maker_project_uuid',
         'maker_nft_uuid',
+        'required_nft_metadata',
     ];
 
     protected function casts(): array
@@ -87,5 +89,56 @@ class Nft extends Model implements CardanoNftInterface, HasMedia
     public function txs(): HasMany
     {
         return $this->hasMany(Tx::class, 'model_id')->where('model_type', static::class);
+    }
+
+    /**
+     * Get only the required NFT metadata fields.
+     */
+    protected function requiredNftMetadata(): Attribute
+    {
+        return Attribute::make(
+            get: function () {
+                try {
+                    $response = $this->getNMKRNftMetadata();
+                    $nftData = $response->json();
+
+                    if ($nftData) {
+                        return [
+                            'paymentGatewayLinkForSpecificSale' => $nftData['paymentGatewayLinkForSpecificSale'] ?? null,
+                            'state' => $nftData['state'] ?? null,
+                            'policyid' => $nftData['policyid'] ?? null,
+                            'assetname' => $nftData['assetname'] ?? null,
+                            'fingerprint' => $nftData['fingerprint'] ?? null,
+                            'reserveduntil' => $nftData['reserveduntil'] ?? null,
+                        ];
+                    }
+
+                    return [
+                        'paymentGatewayLinkForSpecificSale' => $this->maker_nft_uuid
+                            ? "https://pay.preprod.nmkr.io/?p={$this->maker_project_uuid}&n={$this->maker_nft_uuid}"
+                            : null,
+                        'state' => $this->minted_at ? 'sold' : 'free',
+                        'policyid' => $this->policy ?? null,
+                        'assetname' => $this->assetname ?? ($this->metadata['assetname'] ?? null),
+                        'fingerprint' => $this->fingerprint ?? ($this->metadata['fingerprint'] ?? null),
+                        'reserveduntil' => $this->reserveduntil ?? ($this->metadata['reserveduntil'] ?? null) ?? null,
+                    ];
+                } catch (\Throwable $th) {
+                    Log::error('Error getting required NFT metadata: '.$th->getMessage(), [
+                        'nft_id' => $this->id,
+                        'exception' => $th,
+                    ]);
+
+                    return [
+                        'paymentGatewayLinkForSpecificSale' => null,
+                        'state' => null,
+                        'policyid' => null,
+                        'assetname' => null,
+                        'fingerprint' => null,
+                        'reserveduntil' => null,
+                    ];
+                }
+            }
+        );
     }
 }

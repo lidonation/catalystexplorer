@@ -15,11 +15,13 @@ class BookmarkCollectionPolicy extends AppPolicy
      */
     public function viewAny(User $user): bool
     {
-        return parent::canViewAny($user) || $user->hasAnyPermission([PermissionEnum::read_bookmark_items()->value]);
+        return $user->hasAnyPermission([PermissionEnum::read_bookmark_items()->value]);
     }
 
     /**
      * Determine whether the user can view the model.
+     *
+     * @throws \Exception
      */
     public function view(User $user, BookmarkCollection $bookmarkCollection): bool
     {

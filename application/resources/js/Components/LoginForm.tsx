@@ -5,12 +5,13 @@ import TextInput from '@/Components/atoms/TextInput';
 import InputError from '@/Components/InputError';
 import InputLabel from '@/Components/InputLabel';
 import ConnectWalletIcon from '@/Components/svgs/ConnectWalletIcon';
-import { generateLocalizedRoute } from '@/utils/localizedRoute';
 import { Link, router, useForm } from '@inertiajs/react';
 import axios from 'axios';
 import { FormEventHandler, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import Title from './atoms/Title';
+import { generateLocalizedRoute } from '@/utils/localizedRoute';
+import ConnectWalletButton from './ConnectWalletButton';
 
 interface LoginFormProps {
     title?: string;
@@ -68,14 +69,7 @@ export default function LoginForm({ title, postRoute }: LoginFormProps) {
                 </div>
 
                 <div className="mt-4 flex justify-center">
-                    <SecondaryButton
-                        className="hover:bg-background-lighter flex gap-2 rounded-md px-4 py-1.5 text-sm sm:text-base"
-                        icon={<ConnectWalletIcon className="bg-background" />}
-                        iconPosition="left"
-                        type="submit"
-                    >
-                        {t('connectWallet')}
-                    </SecondaryButton>
+                    <ConnectWalletButton/>
                 </div>
 
                 <div className="py-4"></div>

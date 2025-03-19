@@ -298,6 +298,12 @@ class IdeascaleProfile extends Model implements HasMedia
         return $this->belongsTo(User::class, 'claimed_by_id', 'id');
     }
 
+    public function nfts(): HasMany
+    {
+        return $this->hasMany(Nft::class, 'model_id', 'id')
+            ->where('model_type', static::class);
+    }
+
     /**
      * Scope to filter groups
      */

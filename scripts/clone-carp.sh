@@ -170,6 +170,24 @@ if [ -f "$MODIFICATIONS_PATH/Dockerfile" ]; then
 else
     echo "Warning: Dockerfile not found at $MODIFICATIONS_PATH/Dockerfile"
 fi
+# 3.4.6 Replace cardano.rs sink
+echo "Replacing Cardano sink..."
+if [ -f "$MODIFICATIONS_PATH/modules/sinks/cardano.rs" ]; then
+    # rename the current cardano.rs file to cardano_legacy.rs
+    mv "$SUBMODULE_PATH/indexer/src/sinks/cardano.rs" "$SUBMODULE_PATH/indexer/src/sinks/cardano_legacy.rs"
+    # Copy the new cardano.rs file
+    cp "$MODIFICATIONS_PATH/modules/sinks/cardano.rs" "$SUBMODULE_PATH/indexer/src/sinks/"
+    echo "Copied cardano.rs successfully"
+else
+    echo "Warning: Cardano sink file not found at $MODIFICATIONS_PATH/modules/sinks/cardano.rs"
+fi
+
+if [ -f "$SUBMODULE_PATH/indexer/Cargo.toml" ]; then
+  echo 'cbor_event = { version = "2.4.0" }' >> "$SUBMODULE_PATH/indexer/Cargo.toml"
+  echo "Added cbor_event dependency to Cargo.toml"
+else
+  echo "Warning: Cargo.toml not found at $SUBMODULE_PATH/indexer/Cargo.toml"
+fi
 
 # 3.5. Handle migration files
 echo "Setting up migration files..."
