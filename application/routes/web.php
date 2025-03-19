@@ -173,8 +173,8 @@ Route::localized(
         // Dreps
         Route::prefix('/dreps')->as('dreps.')->group(
             function () {
-                Route::get('/', [DrepController::class, 'index'])
-                    ->name('index');
+                Route::get('/home', [DrepController::class, 'home'])
+                    ->name('home');
 
                 Route::get('/list', [DrepController::class, 'list'])
                     ->name('list');

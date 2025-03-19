@@ -617,10 +617,40 @@
             "anHourAgo": "an hour ago",
             "copied": "Copied!"
         },
+        "faq": {
+            "question1": "What is a DRep?",
+            "answer1": "A DRep (Delegate Representative) is a trusted community member who votes on governance proposals on behalf of ADA holders.",
+            "question2": "Why should I delegate my voting power?",
+            "answer2": "Delegation allows you to have a say in Cardano's governance without having to review and vote on every proposal yourself.",
+            "question3": "How do I choose a DRep?",
+            "answer3": "You can select a DRep based on their values, expertise, and voting history. Browse profiles and pick one that aligns with your vision for Cardano.",
+            "question4": "Can I change my DRep?",
+            "answer4": "Yes, you can re-delegate your voting power to a different DRep anytime.",
+            "question5": "Is delegation safe?",
+            "answer5": "Yes, delegation is secure. Your ADA never leaves your wallet, and you maintain full control over your funds.",
+            "question6": "Do I earn rewards for delegating?",
+            "answer6": "Currently, delegation is focused on governance participation, not financial rewards.",
+            "question7": "How do DReps make decisions?",
+            "answer7": "DReps carefully analyze proposals, ensuring informed, high-quality votes that benefit the Cardano ecosystem."
+        },
         "filters": {
             "status": "status",
             "votingPower": "Voting Power",
             "delegators": "Delegators"
+        },
+        "landing": {
+            "title": "Shape the Future of Cardano, Delegate to a DRep Today!",
+            "subtitle": "Delegate Representatives (DReps) are community members who represent the interests of the community in Project Catalyst. They are elected by the community to participate in the governance of the Catalyst ecosystem.",
+            "findDrep": "Find a Drep",
+            "signUp": "Sign up to be a DRep",
+            "aDrep": "What are DReps?",
+            "drepDescription": "DReps (Delegate Representatives), vote on governance proposals in Cardaon on behalf of ADA holders. Instead of voting individually, you can delegate your voting power to a DRep who representsv your interests helping shape the future of Cardano efficiently and transparently.",
+            "projectCatalyst": "Project Catalyst's Continued Growth and the Need for Delegation",
+            "projectCatalystDescription": "The Cardano community's Project Catalyst has grown rapidly, with Fund8 receiving nearly 1,000 proposals. To manage this increasing workload, a new delegation system is being introduced for sustainable governance.",
+            "empower": "Empowering Passive Voters Through Delegation",
+            "empowerDescription": "Delegation allows ADA holders to assign their voting power to DReps, ensuring their voices are heard across more proposals. DReps enhance decision-making in Project Catalyst by voting on most proposals.",
+            "excite": "Excited for for DReps in catalyst?",
+            "answerExcite": "Jump in & be a pioneer!"
         },
         "options": {
             "alphabetically": "Alphabetically: A to Z",
