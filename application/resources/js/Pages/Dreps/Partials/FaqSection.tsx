@@ -85,7 +85,7 @@ const FaqSection = () => {
     return (
         <div className="py-16 bg-background-dark m-2">
             <div className="container px-4 border-2 border-background bg-background shadow-md rounded-lg">
-                <Title level="2" className="text-2xl font-bold mb-8 mt-4 text-center">Frequently Asked Questions</Title>
+                <Title level="2" className="text-2xl font-bold mb-8 mt-4 text-center">{t('faq.faq')}</Title>
                 
                 <div className="space-y-6 mb-4">
                     {faqs.map((faq, index) => (
