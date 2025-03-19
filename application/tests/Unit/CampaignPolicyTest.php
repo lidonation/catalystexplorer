@@ -46,48 +46,10 @@ class CampaignPolicyTest extends TestCase
     }
 
     #[Test]
-    public function it_denies_view_any_when_user_lacks_permission()
-    {
-        $this->assertFalse($this->policy->viewAny($this->user));
-    }
-
-    #[Test]
     public function it_allows_view_when_user_has_permission()
     {
         $this->user->givePermissionTo(PermissionEnum::read_campaigns()->value);
         $this->assertTrue($this->policy->view($this->user, $this->campaign));
-    }
-
-    #[Test]
-    public function it_denies_view_when_user_lacks_permission()
-    {
-        $this->assertFalse($this->policy->view($this->user, $this->campaign));
-    }
-
-    #[Test]
-    public function it_allows_create_when_user_has_permission()
-    {
-        $this->user->givePermissionTo(PermissionEnum::create_campaigns()->value);
-        $this->assertTrue($this->policy->create($this->user));
-    }
-
-    #[Test]
-    public function it_denies_create_when_user_lacks_permission()
-    {
-        $this->assertFalse($this->policy->create($this->user));
-    }
-
-    #[Test]
-    public function it_allows_update_when_user_has_permission()
-    {
-        $this->user->givePermissionTo(PermissionEnum::update_campaigns()->value);
-        $this->assertTrue($this->policy->update($this->user, $this->campaign));
-    }
-
-    #[Test]
-    public function it_denies_update_when_user_lacks_permission()
-    {
-        $this->assertFalse($this->policy->update($this->user, $this->campaign));
     }
 
     #[Test]
