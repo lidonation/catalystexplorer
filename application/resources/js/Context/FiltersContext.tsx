@@ -21,7 +21,7 @@ interface FilterContextType {
     filters: FilteredItem[];
     setFilters: (filter: FilteredItem) => void;
     getFilter: (param: string) => any;
-    getFilters: (filter: FilteredItem) => string
+    getFilters: (filter: FilteredItem) => string;
 }
 
 const labels = {
@@ -68,7 +68,10 @@ export function FiltersProvider({
 
     const isFirstLoad = useRef(true);
 
-    const updateFilter = (updatedFilters: FilteredItem[], filter: FilteredItem) => {
+    const updateFilter = (
+        updatedFilters: FilteredItem[],
+        filter: FilteredItem,
+    ) => {
         if (!filter?.value) {
             updatedFilters = updatedFilters.filter(
                 (item) => item.param !== filter.param,
@@ -81,7 +84,7 @@ export function FiltersProvider({
         }
 
         return updatedFilters;
-    }
+    };
 
     const setFilters = useCallback((filter: FilteredItem) => {
         setFiltersState((prev: FilteredItem[]) => {
@@ -93,7 +96,17 @@ export function FiltersProvider({
             }
 
             // Create a new array to avoid mutating the previous state
-           return updateFilter([...prev], filter)
+            let updated = updateFilter([...prev], filter);
+
+            // If the filter changed is NOT the page itself, reset the page to 1
+            if (filter.param !== ParamsEnum.PAGE) {
+                updated = updateFilter(updated, {
+                    param: ParamsEnum.PAGE,
+                    label: 'Current Page',
+                    value: 1,
+                });
+            }
+            return updated;
         });
     }, []);
 
@@ -127,25 +140,24 @@ export function FiltersProvider({
             const paginationFiltered =
                 changedParams.includes(ParamsEnum.PAGE) ||
                 changedParams.includes(ParamsEnum.LIMIT);
-            router.get(
-                currentUrl,
-                formatToParams(),
-                {
-                    preserveState: true,
-                    preserveScroll: !paginationFiltered,
-                    ...routerOptions,
-                }
-            );
+            router.get(currentUrl, formatToParams(), {
+                preserveState: true,
+                preserveScroll: !paginationFiltered,
+                ...routerOptions,
+            });
         };
 
         fetchData().then();
     }, [filters, routerOptions]);
 
     const formatToParams = (externalFilters?: FilteredItem[]) => {
-        return (externalFilters || filters).reduce<Record<string, any>>((acc, item) => {
-            acc[item.param] = item.value || null;
-            return acc;
-        }, {});
+        return (externalFilters || filters).reduce<Record<string, any>>(
+            (acc, item) => {
+                acc[item.param] = item.value || null;
+                return acc;
+            },
+            {},
+        );
     };
 
     const filtersRef = useRef(filters);
@@ -155,16 +167,20 @@ export function FiltersProvider({
     };
 
     const getFilters = (filter: FilteredItem) => {
-            // Create a new array to avoid mutating the previous state
-            let updatedFilters = updateFilter([...filters], filter);    
-            // const currentUrl = window.location.origin + window.location.pathname;
-            const queryString = new URLSearchParams(formatToParams(updatedFilters)).toString();
-            
+        // Create a new array to avoid mutating the previous state
+        let updatedFilters = updateFilter([...filters], filter);
+        // const currentUrl = window.location.origin + window.location.pathname;
+        const queryString = new URLSearchParams(
+            formatToParams(updatedFilters),
+        ).toString();
+
         return `${window.location.pathname}?${queryString}`;
-    }
+    };
 
     return (
-        <FiltersContext.Provider value={{ filters, setFilters, getFilter, getFilters }}>
+        <FiltersContext.Provider
+            value={{ filters, setFilters, getFilter, getFilters }}
+        >
             {children}
         </FiltersContext.Provider>
     );
