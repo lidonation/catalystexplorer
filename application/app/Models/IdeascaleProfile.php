@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use App\Casts\HashId;
 use App\Enums\CatalystCurrencySymbols;
 use App\Enums\ProposalStatus;
 use App\Traits\HasConnections;
@@ -293,7 +292,7 @@ class IdeascaleProfile extends Model implements HasMedia
         );
     }
 
-    public function claimed_by(): BelongsTo
+    public function claimer(): BelongsTo
     {
         return $this->belongsTo(User::class, 'claimed_by_id', 'id');
     }
