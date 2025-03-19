@@ -8,15 +8,17 @@ use App\Http\Requests\StoreDrepRequest;
 use App\Http\Requests\UpdateDrepRequest;
 use App\Models\Drep;
 use Inertia\Inertia;
+use Illuminate\Http\Request;
+use Inertia\Response;
 
 class DrepController
 {
     /**
-     * Display a listing of the resource.
+     * Display a landing page.
      */
-    public function index()
+    public function home(Request $request): Response
     {
-        //
+        return Inertia::render('Dreps/Home');
     }
 
     /**
