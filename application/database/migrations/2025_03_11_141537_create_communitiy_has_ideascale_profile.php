@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('community_has_ideascale_profile', function (Blueprint $table) {
-            $table->foreignId('community_id')->constrained('groups');
+            $table->foreignId('community_id')->constrained('communities');
             $table->foreignId('ideascale_profile_id')->constrained('ideascale_profiles');
         });
     }

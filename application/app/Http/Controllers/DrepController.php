@@ -7,8 +7,8 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreDrepRequest;
 use App\Http\Requests\UpdateDrepRequest;
 use App\Models\Drep;
-use Inertia\Inertia;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 use Inertia\Response;
 
 class DrepController

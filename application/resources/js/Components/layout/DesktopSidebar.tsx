@@ -14,10 +14,10 @@ function DesktopSidebar(props: any) {
     return (
         <aside
             {...rest}
-            className="flex h-full flex-col justify-between gap-8"
+            className="flex h-full w-full flex-col justify-between gap-8"
             aria-label={t('navigation.desktop.sidebar')}
         >
-            <section className="flex h-6 shrink-0 items-center px-6 sm:pt-8">
+            <section className="flex h-6 shrink-0 items-center  sm:pt-8">
                 <CatalystLogo className="w-full"/>
             </section>
 

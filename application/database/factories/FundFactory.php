@@ -33,7 +33,7 @@ class FundFactory extends Factory
             'awarded_at' => $this->faker->dateTimeBetween('-1 years', 'now'),
             'color' => $this->faker->hexColor,
             'label' => $this->faker->word,
-            'currency' => 'USD',
+            'currency' => $this->faker->randomElement(['USD', 'ADA']),
             'review_started_at' => $this->faker->optional()->dateTime,
         ];
     }
