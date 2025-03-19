@@ -616,6 +616,7 @@
             "copied": "Copied!"
         },
         "faq": {
+            "faq": "Frequently Asked Questions",
             "question1": "What is a DRep?",
             "answer1": "A DRep (Delegate Representative) is a trusted community member who votes on governance proposals on behalf of ADA holders.",
             "question2": "Why should I delegate my voting power?",
