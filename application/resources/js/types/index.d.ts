@@ -26,3 +26,8 @@ export type Post = {
     read_time: string;
     type: string;
 };
+
+export type StepDetails = {
+    title: string;
+    info: string;
+};

@@ -126,7 +126,6 @@
         "contactEmail": "support@lidonation.com",
         "appLogoAlt": "Catalyst Explorer logo."
     },
-
     "buttons": {
         "titles": {
             "claim": "Claim Button",
@@ -134,7 +133,6 @@
             "share": "Share Button"
         }
     },
-
     "searchResults": {
         "noResults": {
             "title": "No results found",
@@ -181,7 +179,8 @@
         }
     },
     "breadcrumbs": {
-        "home": "Home"
+        "home": "Home",
+        "workflow": "Workflow"
     },
     "pagination": {
         "next": "Next",
@@ -597,7 +596,6 @@
         "verificationInstructions": "To verify your ownership of this profile, please send a personal message to Lido Nation on Ideascale and include the code above.",
         "goToIdeascale": "Go to Ideascale"
     },
-
     "dreps": {
         "dreps": "DReps",
         "drepSearch": "Search DRep",
@@ -632,35 +630,33 @@
             "inactive": "Inactive"
         }
     },
-
-    "wallet": {
-        "connect": {
-            "title": "Connect Wallet",
-            "initializing": "Initializing wallet connection...",
-            "connectedTo": "Connected to:",
-            "disconnect": "Disconnect Wallet",
-            "selectWallet": "Select a wallet",
-            "noWallets": {
-                "title": "No supported wallets detected",
-                "subtitle": "Please install Lace, Eternl, Flint, or another Cardano wallet"
+        "wallet": {
+            "connect": {
+                "title": "Connect Wallet",
+                "initializing": "Initializing wallet connection...",
+                "connectedTo": "Connected to:",
+                "disconnect": "Disconnect Wallet",
+                "selectWallet": "Select a wallet",
+                "noWallets": {
+                    "title": "No supported wallets detected",
+                    "subtitle": "Please install Lace, Eternl, Flint, or another Cardano wallet"
+                },
+                "errors": {
+                    "notInitialized": "Cardano library not initialized yet. Please try again in a moment.",
+                    "walletNotFound": "{{walletName}} wallet not found. Please install it first.",
+                    "wrongNetwork": "Wrong network detected. Please switch to {{expected}}",
+                    "noAddresses": "No addresses found in wallet",
+                    "connectionFailed": "Connection failed",
+                    "disconnectError": "Error disconnecting wallet",
+                    "contextError": "useWallet must be used within a WalletProvider",
+                    "wasmInitError": "Failed to initialize Cardano WASM module",
+                    "wasmLibError": "Failed to initialize wallet connection library"
+                }
             },
-            "errors": {
-                "notInitialized": "Cardano library not initialized yet. Please try again in a moment.",
-                "walletNotFound": "{{walletName}} wallet not found. Please install it first.",
-                "wrongNetwork": "Wrong network detected. Please switch to {{expected}}",
-                "noAddresses": "No addresses found in wallet",
-                "connectionFailed": "Connection failed",
-                "disconnectError": "Error disconnecting wallet",
-                "contextError": "useWallet must be used within a WalletProvider",
-                "wasmInitError": "Failed to initialize Cardano WASM module",
-                "wasmLibError": "Failed to initialize wallet connection library"
+            "status": {
+                "connected": "Connected",
+                "connecting": "Connecting",
+                "disconnect": "Disconnect"
             }
-        },
-        "status": {
-            "connected": "Connected",
-            "connecting": "Connecting",
-            "disconnect": "Disconnect"
         }
-    }
-
 }

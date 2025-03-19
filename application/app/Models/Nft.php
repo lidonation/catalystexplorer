@@ -14,11 +14,11 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Log;
 use Lidonation\CardanoNftMaker\Interfaces\CardanoNftInterface;
 use Lidonation\CardanoNftMaker\Traits\NftServiceTrait;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
-use Illuminate\Support\Facades\Log;
 
 class Nft extends Model implements CardanoNftInterface, HasMedia
 {
