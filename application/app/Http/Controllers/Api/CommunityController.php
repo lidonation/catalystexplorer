@@ -72,7 +72,7 @@ class CommunityController extends Controller
             'filterCounts' => [
                 'proposalsCount' => $this->maxProposalsCount,
                 'totalAwardedAda' => $this->maxAwardedAda,
-                'totalAwardedUsd' => $this->maxAwardedUsd
+                'totalAwardedUsd' => $this->maxAwardedUsd,
             ],
             'communities' => $communities,
         ];
@@ -87,7 +87,6 @@ class CommunityController extends Controller
 
         // set necessary counts
         $this->setCounts($query);
-        
 
         $filters = [
             'search' => $request->input('q', null),
@@ -307,8 +306,8 @@ class CommunityController extends Controller
     public function setCounts($query)
     {
         $query = $query->addSelect([
-                'communities.*',
-                DB::raw("(
+            'communities.*',
+            DB::raw("(
                     SELECT COALESCE(SUM(p.amount_requested), 0)
                     FROM community_has_proposal chp
                     JOIN proposals p ON p.id = chp.proposal_id
@@ -318,9 +317,9 @@ class CommunityController extends Controller
                     AND p.funded_at IS NOT NULL
                     AND f.currency = '".CatalystCurrencySymbols::USD->name."'
                 ) as awarded_usd"),
-            ])->addSelect([
-                'communities.*',
-                DB::raw("(
+        ])->addSelect([
+            'communities.*',
+            DB::raw("(
                     SELECT COALESCE(SUM(p.amount_requested), 0)
                     FROM community_has_proposal chp
                     JOIN proposals p ON p.id = chp.proposal_id
@@ -330,7 +329,7 @@ class CommunityController extends Controller
                     AND p.funded_at IS NOT NULL
                     AND f.currency = '".CatalystCurrencySymbols::ADA->name."'
                 ) as awarded_ada"),
-            ]);
+        ]);
 
         $this->maxAwardedUsd = max($query->pluck('awarded_usd')->toArray()) ?? 0;
         $this->maxAwardedAda = max($query->pluck('awarded_ada')->toArray()) ?? 0;
