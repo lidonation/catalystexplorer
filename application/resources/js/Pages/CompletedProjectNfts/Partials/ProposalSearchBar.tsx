@@ -4,7 +4,7 @@ import useEscapeKey from '@/Hooks/useEscapeKey';
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-interface SearchBarProps {
+export interface SearchBarProps {
     autoFocus?: boolean;
     showRingOnFocus?: boolean;
     handleSearch: (search: string) => void;

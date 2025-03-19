@@ -125,7 +125,7 @@ const MetricsBar: React.FC<ProposalMetrics | undefined> = (props) => {
         metrics &&
         onProposals && (
             <div
-                className={`bg-bg-dark sticky inset-x-0 bottom-0 mx-auto flex items-center justify-between overflow-hidden rounded-xl px-4 py-3 text-white shadow-lg transition-all duration-300 ${
+                className={`bg-bg-dark sticky inset-x-0 bottom-0 mx-auto flex items-center justify-between overflow-hidden rounded-xl px-4 py-3 text-white shadow-lg transition-all duration-300 mb-4 ${
                     isExpanded && !isPlayerBarExpanded ? 'w-full' : 'w-auto'
                 }`}
             >

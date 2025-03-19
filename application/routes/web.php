@@ -1,25 +1,29 @@
 <?php
 
-use App\Http\Controllers\Api\CommunityController;
-use App\Http\Controllers\CampaignsController;
-use App\Http\Controllers\ChartsController;
-use App\Http\Controllers\CompletetProjectNftsController;
-use App\Http\Controllers\DrepController;
-use App\Http\Controllers\FundsController;
-use App\Http\Controllers\GroupsController;
-use App\Http\Controllers\NftController;
-use App\Http\Controllers\HomeController;
-use App\Http\Controllers\IdeascaleProfilesController;
-use App\Http\Controllers\JormungandrController;
-use App\Http\Controllers\MilestoneController;
-use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\ProposalsController;
-use App\Http\Controllers\ReviewsController;
-use App\Http\Controllers\SearchController;
-use App\Http\Controllers\TransactionController;
-use App\Http\Controllers\VoterToolController;
-use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\NftController;
+use App\Http\Controllers\DrepController;
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\FundsController;
+use App\Http\Controllers\ChartsController;
+use App\Http\Controllers\GroupsController;
+use App\Http\Controllers\SearchController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ReviewsController;
+use App\Http\Middleware\WorkflowMiddleware;
+use App\Http\Controllers\WorkflowController;
+use App\Http\Controllers\CampaignsController;
+use App\Http\Controllers\MilestoneController;
+use App\Http\Controllers\ProposalsController;
+use App\Http\Controllers\VoterToolController;
+use App\Http\Controllers\JormungandrController;
+use App\Http\Controllers\TransactionController;
+use App\Http\Controllers\Api\CommunityController;
+use App\Http\Controllers\IdeascaleProfilesController;
+use App\Http\Controllers\ClaimIdeascaleProfileContoller;
+use App\Http\Controllers\CompletetProjectNftsController;
+use App\Http\Controllers\ClaimIdeascaleProfileController;
 
 Route::localized(
     function () {
@@ -76,6 +80,30 @@ Route::localized(
             Route::get('/{community:slug}', [CommunityController::class, 'community'])
                 ->name('group');
         });
+
+
+        Route::prefix('/workflows')->as('workflows.')->group(function () {
+
+            Route::prefix('/completed-projects-nfts/steps')->as('completedProjectsNft.')
+                ->middleware([WorkflowMiddleware::class])
+                ->group(function () {
+                    Route::get('/{step}', [CompletetProjectNftsController::class, 'handleStep'])
+                        ->name('index');
+                });
+
+            Route::prefix('/claim-ideascale-profile/steps')->as('claimIdeascaleProfile.')
+                ->middleware([WorkflowMiddleware::class])
+                ->group(function () {
+                    Route::get('/{step}', [ClaimIdeascaleProfileController::class, 'handleStep'])
+                        ->name('index');
+                });
+
+            Route::get('/login', [WorkflowController::class, 'auth'])
+                ->name('loginForm');
+            Route::post('/login', [WorkflowController::class, 'login'])
+                ->name('login');
+        });
+
 
         Route::patch('/profile/update/{field}', [ProfileController::class, 'update'])
             ->name('profile.update.field');
@@ -194,4 +222,3 @@ require __DIR__ . '/dashboard.php';
 require __DIR__ . '/api.php';
 
 Route::fallback(\CodeZero\LocalizedRoutes\Controllers\FallbackController::class);
-

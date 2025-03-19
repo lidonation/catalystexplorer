@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\Actions\TransformHashToIds;
 use App\Actions\TransformIdsToHashes;
 use App\DataTransferObjects\IdeascaleProfileData;
 use App\DataTransferObjects\ProposalData;
@@ -19,6 +20,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Fluent;
@@ -51,14 +53,59 @@ class CompletetProjectNftsController extends Controller
         $this->user = Auth::user();
     }
 
+    public function handleStep(Request $request, $step)
+    {
+        $method = "step{$step}";
+
+        if (method_exists($this, $method)) {
+            return $this->$method($request);
+        }
+
+        abort(404, "Step '{$step}' not found.");
+    }
+
+    public function getStepDetails(): Collection
+    {
+        return collect([
+            [
+                'title' => 'Select Profile',
+                'info' => 'Choose the profile(s) you want to mint from. The selected profile should be linked to the completed project whose NFT you’re minting.
+                            Not sure which one to pick? No worries—just select all available profiles and we’ll handle the rest! 🚀',
+            ],
+            [
+                'title' => 'Select Proposal',
+                'info' => 'To get started, please select proposal to mint from',
+            ],
+        ]);
+    }
+
+    public function step1(Request $request)
+    {
+        return Inertia::render('Workflows/CompletedProjectNfts/Step1', [
+            'profiles' => IdeascaleProfileData::collect(IdeascaleProfile::where('claimed_by_id', $this->user->id)
+                ->withCount(['proposals'])
+                ->get()),
+            'stepDetails' => $this->getStepDetails(),
+            'activeStep' => intval($request->step),
+        ]);
+    }
+
+    public function step2(Request $request)
+    {
+
+        $proposals = $this->getClaimedIdeascaleProfilesProposals($request);
+
+        return Inertia::render('Workflows/CompletedProjectNfts/Step2', [
+            'proposals' => $proposals,
+            'filters' => $this->queryParams,
+            'profiles' => $request->profiles,
+            'stepDetails' => $this->getStepDetails(),
+            'activeStep' => intval($request->step),
+        ]);
+    }
+
     public function index(Request $request): Response
     {
-        $this->getProps($request);
-
-        $proposals = $this->getClaimedIdeascaleProfilesProposals();
-
-        $claimedIdeascaleProfiles = $this->getClaimedIdeascaleProfiles();
-
         $amountDistributedAda = Proposal::whereHas('fund', function ($query) {
             $query->where('currency', CatalystCurrencySymbols::ADA->name);
         })->sum('amount_received');
@@ -73,8 +120,6 @@ class CompletetProjectNftsController extends Controller
         $membersFunded = IdeaScaleProfile::whereHas('proposals', function ($query) {
             $query->whereNotNull('funded_at');
         })->count();
-
-        $claimedIdeascaleProfiles = $this->getClaimedIdeascaleProfiles();
 
         $amountDistributedAda = Proposal::whereHas('fund', function ($query) {
             $query->where('currency', CatalystCurrencySymbols::ADA->name);
@@ -92,14 +137,6 @@ class CompletetProjectNftsController extends Controller
         })->count();
 
         return Inertia::render('CompletedProjectNfts/Index', [
-            'proposals' => $proposals,
-            'filters' => $this->queryParams,
-            'ideascaleProfiles' => $claimedIdeascaleProfiles,
-            'amountDistributedAda' => $amountDistributedAda,
-            'amountDistributedUsd' => $amountDistributedUsd,
-            'completedProposalsCount' => $completedProposalsCount,
-            'communityMembersFunded' => $membersFunded,
-            'ideascaleProfiles' => $claimedIdeascaleProfiles,
             'amountDistributedAda' => $amountDistributedAda,
             'amountDistributedUsd' => $amountDistributedUsd,
             'completedProposalsCount' => $completedProposalsCount,
@@ -121,30 +158,30 @@ class CompletetProjectNftsController extends Controller
         $user = $this->user;
         $isOwner = false;
         $metadata = null;
-        
+
         $ideascaleProfile = $proposal->author()->first();
-        
+
         if (empty($ideascaleProfile)) {
             return back()->withErrors([
                 'error' => 'No profile found for this proposal',
             ]);
         }
-        
+
         // Check if user is the owner of a claimed profile associated with this proposal
         $claimedProfile = null;
-        if (!empty($user)) {
+        if (! empty($user)) {
             $claimedProfile = $proposal->ideascaleProfiles()
                 ->where('claimed_by_id', $user->id)
                 ->first();
-                
-            $isOwner = !empty($claimedProfile);
+
+            $isOwner = ! empty($claimedProfile);
         }
-        
+
         // Set the correct ideascale profile to use (claimed profile if owner, author otherwise)
         if ($isOwner) {
             $ideascaleProfile = $claimedProfile;
         }
-        
+
         // Get contributor profiles (excluding the main profile)
         $contributorProfiles = $proposal->ideascaleProfiles
             ->filter(function ($profile) use ($ideascaleProfile) {
@@ -152,12 +189,12 @@ class CompletetProjectNftsController extends Controller
             })
             ->values()
             ->toArray();
-        
+
         // Look for the NFT associated with this profile and proposal
         $nft = $ideascaleProfile->nfts()
             ->whereJsonContains('metadata->Project Title', $proposal->title)
             ->first();
-            
+
         // Get NFT metadata if NFT exists
         $artist = null;
         if ($nft) {
@@ -165,9 +202,9 @@ class CompletetProjectNftsController extends Controller
                 $metadata = $nft->required_nft_metadata;
                 $artist = $nft->artist()->first();
             } catch (\Throwable $th) {
-                Log::warning('Failed to get NFT metadata: ' . $th->getMessage(), [
+                Log::warning('Failed to get NFT metadata: '.$th->getMessage(), [
                     'nft_id' => $nft->id,
-                    'proposal_id' => $proposal->id
+                    'proposal_id' => $proposal->id,
                 ]);
                 $metadata = [
                     'paymentGatewayLinkForSpecificSale' => null,
@@ -201,47 +238,43 @@ class CompletetProjectNftsController extends Controller
         ]);
     }
 
-    public function getClaimedIdeascaleProfilesProposals()
+    public function getClaimedIdeascaleProfilesProposals(Request $request)
     {
+        $profileIds = (new TransformHashToIds)(collect($request->profiles), new IdeascaleProfile);
+        $searchTerm = request('search');
+
         $user = $this->user;
 
         $args = [];
 
         $page = 1;
 
-        $limit = 3;
+        $limit = 10;
 
-        if ($user) {
-            $claimedIdeascaleIds = IdeascaleProfile::where('claimed_by_id', $user->id)
-                ->pluck('id')
-                ->filter()
-                ->toArray();
+        $claimedIdeascaleIdsString = implode(',', $profileIds);
+        $filter = "users.id IN [{$claimedIdeascaleIdsString}] AND status = '".ProposalStatus::complete()->value."'";
 
-            $claimedIdeascaleIdsString = implode(',', $claimedIdeascaleIds);
-            $filter = "users.id IN [{$claimedIdeascaleIdsString}] AND status = '".ProposalStatus::complete()->value."'";
+        $args['filter'] = $filter;
 
-            $args['filter'] = $filter;
-
-            if ((bool) $this->sortBy && (bool) $this->sortOrder) {
-                $args['sort'] = ["$this->sortBy:$this->sortOrder"];
-            }
-
-            if (isset($this->queryParams[ProposalSearchParams::PAGE()->value])) {
-                $page = (int) $this->queryParams[ProposalSearchParams::PAGE()->value];
-            }
-
-            if (isset($this->queryParams[ProposalSearchParams::LIMIT()->value])) {
-                $limit = (int) $this->queryParams[ProposalSearchParams::LIMIT()->value];
-            }
-
-            $args['offset'] = ($page - 1) * $limit;
-            $args['limit'] = $limit;
+        if ((bool) $this->sortBy && (bool) $this->sortOrder) {
+            $args['sort'] = ["$this->sortBy:$this->sortOrder"];
         }
+
+        if (isset($this->queryParams[ProposalSearchParams::PAGE()->value])) {
+            $page = (int) $this->queryParams[ProposalSearchParams::PAGE()->value];
+        }
+
+        if (isset($this->queryParams[ProposalSearchParams::LIMIT()->value])) {
+            $limit = (int) $this->queryParams[ProposalSearchParams::LIMIT()->value];
+        }
+
+        $args['offset'] = ($page - 1) * $limit;
+        $args['limit'] = $limit;
 
         $proposalRepository = app(ProposalRepository::class);
 
         $builder = $proposalRepository->search(
-            $this->queryParams[ProposalSearchParams::QUERY()->value] ?? '',
+            $searchTerm ?? '',
             $args
         );
 
@@ -348,41 +381,41 @@ class CompletetProjectNftsController extends Controller
             $metadataKey = $metadataKeyMap[$key] ?? $key;
 
             $nmkrMetadata = $nft->metas->where('key', 'nmkr_metadata')->first();
-            
-            if (!$nmkrMetadata) {
+
+            if (! $nmkrMetadata) {
                 throw new \Exception('No NMKR metadata found for this NFT');
             }
 
             $currentMetadata = json_decode($nmkrMetadata->content, true);
             if (json_last_error() !== JSON_ERROR_NONE) {
-                throw new \Exception('Invalid JSON in NMKR metadata: ' . json_last_error_msg());
+                throw new \Exception('Invalid JSON in NMKR metadata: '.json_last_error_msg());
             }
-            
-            if (!isset($currentMetadata['721'])) {
+
+            if (! isset($currentMetadata['721'])) {
                 throw new \Exception('Invalid NMKR metadata format: Missing 721 field');
             }
 
             $policyId = array_key_first($currentMetadata['721']);
-            if (!$policyId || $policyId === 'version') {
+            if (! $policyId || $policyId === 'version') {
                 throw new \Exception('Invalid NMKR metadata format: No valid policy ID found');
             }
-            
+
             if (isset($currentMetadata['721']['version'])) {
                 $version = $currentMetadata['721']['version'];
                 unset($currentMetadata['721']['version']);
             }
-            
-            $assetKeys = array_filter(array_keys($currentMetadata['721'][$policyId]), function($key) {
+
+            $assetKeys = array_filter(array_keys($currentMetadata['721'][$policyId]), function ($key) {
                 return $key !== 'version';
             });
-            
+
             if (empty($assetKeys)) {
                 throw new \Exception('Invalid NMKR metadata format: No asset names found');
             }
-            
+
             $assetName = $assetKeys[0];
             $assetMetadata = $currentMetadata['721'][$policyId][$assetName];
-            
+
             if ($shouldRemove) {
                 if (isset($assetMetadata[$metadataKey])) {
                     unset($assetMetadata[$metadataKey]);
@@ -390,19 +423,19 @@ class CompletetProjectNftsController extends Controller
             } else {
                 $assetMetadata[$metadataKey] = (string) $value;
             }
-            
+
             $currentMetadata['721'][$policyId][$assetName] = $assetMetadata;
-            
+
             if (isset($version)) {
                 $currentMetadata['721']['version'] = $version;
             }
-            
+
             $response = $nft->updateNMKRNft($currentMetadata);
-            
+
             if ($response->successful()) {
                 $nmkrMetadata->content = json_encode($currentMetadata);
                 $nmkrMetadata->save();
-                
+
                 if (property_exists($nft, 'metadata') || isset($nft->metadata)) {
                     $nmkrToLocalKeyMap = [
                         'projectCatalystCampaignName' => 'campaign_name',
@@ -414,7 +447,7 @@ class CompletetProjectNftsController extends Controller
                     ];
 
                     $localMetadata = [];
-                    
+
                     if (is_string($nft->metadata)) {
                         $localMetadata = json_decode($nft->metadata, true);
                     } elseif (is_array($nft->metadata)) {
@@ -422,8 +455,8 @@ class CompletetProjectNftsController extends Controller
                     } elseif (is_object($nft->metadata)) {
                         $localMetadata = (array) $nft->metadata;
                     }
-                    
-                    if (!is_array($localMetadata)) {
+
+                    if (! is_array($localMetadata)) {
                         $localMetadata = [];
                     }
 
@@ -434,7 +467,7 @@ class CompletetProjectNftsController extends Controller
                             unset($localMetadata[$nmkrKey]);
                         }
                     }
-                    
+
                     if ($localKey) {
                         if ($shouldRemove) {
                             if (isset($localMetadata[$localKey])) {
@@ -444,7 +477,7 @@ class CompletetProjectNftsController extends Controller
                             $localMetadata[$localKey] = (string) $value;
                         }
                     }
-                    
+
                     if (is_object($nft->metadata) && method_exists($nft->metadata, 'set')) {
                         foreach ($localMetadata as $k => $v) {
                             $nft->metadata->set($k, $v);
@@ -452,10 +485,10 @@ class CompletetProjectNftsController extends Controller
                     } else {
                         $nft->metadata = $localMetadata;
                     }
-                    
+
                     $nft->save();
                 }
-                
+
                 return back()->with([
                     'success' => true,
                     'is_removed' => $shouldRemove,
@@ -463,10 +496,10 @@ class CompletetProjectNftsController extends Controller
                 ]);
             } else {
                 $errorData = $response->json();
-                throw new \Exception('API update failed: ' . ($errorData['errorMessage'] ?? 'Unknown error'));
+                throw new \Exception('API update failed: '.($errorData['errorMessage'] ?? 'Unknown error'));
             }
         } catch (\Throwable $th) {
-            Log::error('Metadata update error: ' . $th->getMessage(), [
+            Log::error('Metadata update error: '.$th->getMessage(), [
                 'request' => $request->all(),
                 'nft_id' => $nft->id,
                 'exception' => $th,

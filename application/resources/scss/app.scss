@@ -64,6 +64,7 @@
         --border-primary-color: #182230;
         --bg-light-persist: #ffffff;
         --cx-tooltip-background: #101828CC;
+        --cx-slate: #ABB7C2;
 
         --cx-display-xs: 1.5rem;
         --cx-display-sm: 1.875rem;
@@ -186,6 +187,10 @@
     .text-accent {
         color: var(--cx-accent);
     }
+
+    .text-slate {
+        color: var(--cx-slate);
+    }
 }
 
 @layer base {
@@ -216,17 +221,18 @@
         background-color: var(--bg-accent-color);
     }
 
-    #main-content > header:first-child {
+    #main-content>header:first-child {
         @apply py-6;
     }
 
     .no-scrollbar::-webkit-scrollbar {
         display: none;
     }
+
     .no-scrollbar {
         -ms-overflow-style: none;
         scrollbar-width: none;
-  }
+    }
 
     body {
         @apply bg-background text-content transition-colors duration-300 ease-in-out;
@@ -301,9 +307,14 @@
     }
 
     article {
-        p ~ {
+        p~ {
 
-            h1, h2, h3, h4, h5, h6 {
+            h1,
+            h2,
+            h3,
+            h4,
+            h5,
+            h6 {
                 @apply font-bold mt-3 mb-1;
             }
         }
@@ -318,7 +329,9 @@
     &.page-campaign {
         .card {
             .card-campaign {
-                .card-summary, .card-title {
+
+                .card-summary,
+                .card-title {
                     @apply hidden;
                 }
             }
@@ -352,7 +365,7 @@
     scroll-padding-inline: 1.5rem;
 }
 
-.snaps-scrollable > * {
+.snaps-scrollable>* {
     scroll-snap-align: start;
 }
 

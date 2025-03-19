@@ -1,10 +1,8 @@
 import Paragraph from '@/Components/atoms/Paragraph';
+import Title from '@/Components/atoms/Title';
 import { currency } from '@/utils/currency';
-import { useLocalizedRoute } from '@/utils/localizedRoute';
-import { router } from '@inertiajs/react';
 import { useTranslation } from 'react-i18next';
 import ProposalData = App.DataTransferObjects.ProposalData;
-import Title from '@/Components/atoms/Title';
 
 interface ProposalProps {
     proposal: ProposalData;
@@ -13,17 +11,14 @@ interface ProposalProps {
 export default function CompletedProposalCard({ proposal }: ProposalProps) {
     const { t } = useTranslation();
 
-    const localizedRoute = useLocalizedRoute('completedProjectsNfts.show', {
-        proposal: proposal?.hash,
-    });
-
     return (
         <div
             key={proposal.hash}
-            className="cursor-pointer rounded-lg border border-gray-200 p-4 shadow-sm"
-            onClick={() => router.visit(localizedRoute)}
+            className="rounded-lg p-4 shadow-sm w-full "
         >
-            <Title level='5' className="font-bold">{proposal.title}</Title>
+            <Title level="5" className="font-bold">
+                {proposal.title}
+            </Title>
             <Paragraph className="text-sm">
                 <strong>{t('profileWorkflow.budget')}:</strong>{' '}
                 <span className="text-success">

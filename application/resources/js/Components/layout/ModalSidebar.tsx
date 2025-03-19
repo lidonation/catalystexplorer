@@ -70,7 +70,7 @@ function ModalSidebar({ isOpen = false, title, children, onClose }: ModalSidebar
                 </header>
 
                 <div className="flex h-full flex-col gap-6 px-6">
-                    <div className="mt-6 hidden h-6 shrink-0 items-center justify-center px-6 sm:block lg:flex">
+                    <div className="mt-6 hidden h-6 shrink-0 items-center justify-center sm:block lg:flex">
                         <CatalystLogo className="object-contain" />
                     </div>
                     <section>{children}</section>
