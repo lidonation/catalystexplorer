@@ -48,9 +48,6 @@ final class IdeascaleProfileData extends Data
         public ?string $ideascale,
 
         #[TypeScriptOptional]
-        public ?int $claimedBy,
-
-        #[TypeScriptOptional]
         public ?string $telegram,
 
         #[TypeScriptOptional]
@@ -103,5 +100,7 @@ final class IdeascaleProfileData extends Data
 
         #[TypeScriptOptional]
         public ?array $groups,
+
+        public ?UserData $claimed_by
     ) {}
 }
