@@ -256,6 +256,7 @@
             "copied": "Copied!"
         },
         "faq": {
+            "faq": "questions fréquemment posées",
             "question1": "Qu'est-ce qu'un DRep ?",
             "answer1": "Un DRep (Représentant Délégué) est un membre de confiance de la communauté qui vote sur les propositions de gouvernance au nom des détenteurs d'ADA.",
             "question2": "Pourquoi devrais-je déléguer mon pouvoir de vote ?",
