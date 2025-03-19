@@ -292,7 +292,7 @@ class IdeascaleProfile extends Model implements HasMedia
         );
     }
 
-    public function claimer(): BelongsTo
+    public function claimed_by(): BelongsTo
     {
         return $this->belongsTo(User::class, 'claimed_by_id', 'id');
     }

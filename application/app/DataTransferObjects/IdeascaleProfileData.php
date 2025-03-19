@@ -101,6 +101,6 @@ final class IdeascaleProfileData extends Data
         #[TypeScriptOptional]
         public ?array $groups,
 
-        public ?UserData $claimer
+        public ?UserData $claimed_by
     ) {}
 }
