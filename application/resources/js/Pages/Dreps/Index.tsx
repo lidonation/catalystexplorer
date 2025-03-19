@@ -9,7 +9,7 @@ import FaqSection from "./Partials/FaqSection";
 import { useTranslation } from "react-i18next";
 import Button from "@/Components/atoms/Button";
 
-const Home = () => {
+const Index = () => {
     const { t } = useTranslation();
     return (
         <>
@@ -125,4 +125,4 @@ const Home = () => {
     );
 };
 
-export default Home;
+export default Index;

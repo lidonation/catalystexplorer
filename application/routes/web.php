@@ -145,6 +145,15 @@ Route::localized(
             Route::patch('/update/{nft:id}', [CompletetProjectNftsController::class, 'updateMetadata'])
                 ->name('update');
         });
+        
+        // Dreps
+        Route::prefix('/dreps')->as('dreps.')->group(function () {
+                Route::get('/', [DrepController::class, 'index'])
+                    ->name('index');
+                Route::get('/list', [DrepController::class, 'list'])
+                    ->name('list');
+            }
+        );
 
         Route::prefix('jormungandr')->as('jormungandr.')->group(function () {
             Route::get('/', [JormungandrController::class, 'index'])
@@ -170,16 +179,6 @@ Route::localized(
                 ->name('index');
         });
 
-        // Dreps
-        Route::prefix('/dreps')->as('dreps.')->group(
-            function () {
-                Route::get('/home', [DrepController::class, 'home'])
-                    ->name('home');
-
-                Route::get('/list', [DrepController::class, 'list'])
-                    ->name('list');
-            }
-        );
     }
 );
 

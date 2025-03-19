@@ -16,9 +16,9 @@ class DrepController
     /**
      * Display a landing page.
      */
-    public function home(Request $request): Response
+    public function index(Request $request): Response
     {
-        return Inertia::render('Dreps/Home');
+        return Inertia::render('Dreps/Index');
     }
 
     /**
