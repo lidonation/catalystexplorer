@@ -22,7 +22,7 @@ const Home = () => {
                     style={{
                         backgroundImage: `url(${DrepsBanner})`,
                         backgroundSize: 'cover',
-                        backgroundPosition: 'right',
+                        backgroundPosition: 'center',
                         backgroundRepeat: 'no-repeat',
                     }}
                 >
@@ -52,7 +52,7 @@ const Home = () => {
                 <div className="py-20 bg-background-dark">
                     <div className="container mx-auto px-4">
                         <div className="grid grid-cols-1 md:grid-cols-12 gap-16 items-center">
-                            <div className="md:col-span-4 flex justify-center">
+                            <div className="hidden md:flex md:col-span-4 flex justify-center">
                                 <div className="relative ">
                                     <CardanoIcon/>
                                 </div>
@@ -69,12 +69,12 @@ const Home = () => {
                 </div>
 
                 {/* Project Catalyst Section */}
-                <div className="py-16 min-h-screen md:min-h-[600px] flex flex-col justify-between relative" 
+                <div className="py-16 min-h-[700px] md:min-h-[600px] flex flex-col justify-between relative" 
                     style={{ 
                         backgroundImage: `url(${ProjectCatalystBackground})`,
                         backgroundSize: 'cover',
                         backgroundRepeat: 'no-repeat',
-                        backgroundPosition: '85% 10%',
+                        backgroundPosition: 'center',
                     }}
                 >
                     <div className="flex flex-col items-center justify-center text-center px-4 pt-6 md:pt-1">
@@ -89,7 +89,7 @@ const Home = () => {
                         </Paragraph>
                     </div>
                     
-                    <div className="mt-auto pb-16">
+                    <div className="mt-10 pb-16">
                         <div className="container mx-auto px-4 md:px-8 lg:px-16">
                             <div className="w-full md:w-1/2 lg:w-5/12">
                                 <Title level='2' className="text-2xl md:text-3xl font-bold mb-4 text-dark-persist">
@@ -107,9 +107,9 @@ const Home = () => {
                 <FaqSection/>
 
                 {/* Call to Action */}
-                <div className="container p-20 bg-background-dark text-content">
+                <div className="container p-2 md:p-20 bg-background-dark text-content">
                     <div className="container mx-auto px-4">
-                        <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-6">
+                        <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-2">
                             <Title level='2' className="text-2xl font-bold">
                                 {t('dreps.landing.excite')}<br/>
                                 {t('dreps.landing.answerExcite')}
