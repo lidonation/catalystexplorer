@@ -6,5 +6,9 @@ type Props = { children: ReactNode };
 export default function Content({ children }: Props) {
     const { t } = useTranslation();
 
-    return <div className="h-[600px] overflow-y-auto p-6">{children}</div>;
+    return (
+        <div className="relative min-h-[400px] overflow-y-auto lg:h-[600px]">
+            {children}
+        </div>
+    );
 }

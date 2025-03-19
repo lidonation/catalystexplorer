@@ -54,6 +54,7 @@ class Proposal extends Model
     protected $appends = [
         'link',
         'hash',
+        'currency',
     ];
 
     public static function getFilterableAttributes(): array

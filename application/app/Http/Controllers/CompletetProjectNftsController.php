@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\Actions\TransformHashToIds;
 use App\Actions\TransformIdsToHashes;
 use App\DataTransferObjects\IdeascaleProfileData;
 use App\DataTransferObjects\NMKRNftData;
@@ -19,6 +20,7 @@ use App\Repositories\ProposalRepository;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Fluent;
@@ -62,19 +64,19 @@ class CompletetProjectNftsController extends Controller
         abort(404, "Step '{$step}' not found.");
     }
 
-    public function getStepDetails(): array
+    public function getStepDetails(): Collection
     {
-        return [
-            '1' => [
+        return collect([
+            [
                 'title' => 'Select Profile',
-                'Info' => 'Choose the profile(s) you want to mint from. The selected profile should be linked to the completed project whose NFT you’re minting.
+                'info' => 'Choose the profile(s) you want to mint from. The selected profile should be linked to the completed project whose NFT you’re minting.
                             Not sure which one to pick? No worries—just select all available profiles and we’ll handle the rest! 🚀',
             ],
-            '2' => [
+            [
                 'title' => 'Select Proposal',
-                'Info' => 'To get started, please select profile(s) to mint from',
+                'info' => 'To get started, please select proposal to mint from',
             ],
-        ];
+        ]);
     }
 
     public function step1(Request $request)
@@ -84,21 +86,21 @@ class CompletetProjectNftsController extends Controller
                 ->withCount(['proposals'])
                 ->get()),
             'stepDetails' => $this->getStepDetails(),
-            'activeStep' => $request->step,
+            'activeStep' => intval($request->step),
         ]);
     }
 
     public function step2(Request $request)
     {
 
-        $proposals = $this->getClaimedIdeascaleProfilesProposals();
+        $proposals = $this->getClaimedIdeascaleProfilesProposals($request);
 
-        return Inertia::render('Workflows/CompletedProjectNfts/Step1', [
+        return Inertia::render('Workflows/CompletedProjectNfts/Step2', [
             'proposals' => $proposals,
             'filters' => $this->queryParams,
-            'profiles' => IdeascaleProfileData::collect(IdeascaleProfile::where('claimed_by_id', $this->user->id)
-                ->withCount(['proposals'])
-                ->get()),
+            'profiles' => $request->profiles,
+            'stepDetails' => $this->getStepDetails(),
+            'activeStep' => intval($request->step),
         ]);
     }
 
@@ -139,10 +141,6 @@ class CompletetProjectNftsController extends Controller
             'amountDistributedUsd' => $amountDistributedUsd,
             'completedProposalsCount' => $completedProposalsCount,
             'communityMembersFunded' => $membersFunded,
-            'amountDistributedAda' => $amountDistributedAda,
-            'amountDistributedUsd' => $amountDistributedUsd,
-            'completedProposalsCount' => $completedProposalsCount,
-            'communityMembersFunded' => $membersFunded,
         ]);
     }
 
@@ -173,47 +171,43 @@ class CompletetProjectNftsController extends Controller
         ]);
     }
 
-    public function getClaimedIdeascaleProfilesProposals()
+    public function getClaimedIdeascaleProfilesProposals(Request $request)
     {
+        $profileIds = (new TransformHashToIds)(collect($request->profiles), new IdeascaleProfile);
+        $searchTerm = request('search');
+
         $user = $this->user;
 
         $args = [];
 
         $page = 1;
 
-        $limit = 3;
+        $limit = 10;
 
-        if ($user) {
-            $claimedIdeascaleIds = IdeascaleProfile::where('claimed_by_id', $user->id)
-                ->pluck('id')
-                ->filter()
-                ->toArray();
+        $claimedIdeascaleIdsString = implode(',', $profileIds);
+        $filter = "users.id IN [{$claimedIdeascaleIdsString}] AND status = '".ProposalStatus::complete()->value."'";
 
-            $claimedIdeascaleIdsString = implode(',', $claimedIdeascaleIds);
-            $filter = "users.id IN [{$claimedIdeascaleIdsString}] AND status = '".ProposalStatus::complete()->value."'";
+        $args['filter'] = $filter;
 
-            $args['filter'] = $filter;
-
-            if ((bool) $this->sortBy && (bool) $this->sortOrder) {
-                $args['sort'] = ["$this->sortBy:$this->sortOrder"];
-            }
-
-            if (isset($this->queryParams[ProposalSearchParams::PAGE()->value])) {
-                $page = (int) $this->queryParams[ProposalSearchParams::PAGE()->value];
-            }
-
-            if (isset($this->queryParams[ProposalSearchParams::LIMIT()->value])) {
-                $limit = (int) $this->queryParams[ProposalSearchParams::LIMIT()->value];
-            }
-
-            $args['offset'] = ($page - 1) * $limit;
-            $args['limit'] = $limit;
+        if ((bool) $this->sortBy && (bool) $this->sortOrder) {
+            $args['sort'] = ["$this->sortBy:$this->sortOrder"];
         }
+
+        if (isset($this->queryParams[ProposalSearchParams::PAGE()->value])) {
+            $page = (int) $this->queryParams[ProposalSearchParams::PAGE()->value];
+        }
+
+        if (isset($this->queryParams[ProposalSearchParams::LIMIT()->value])) {
+            $limit = (int) $this->queryParams[ProposalSearchParams::LIMIT()->value];
+        }
+
+        $args['offset'] = ($page - 1) * $limit;
+        $args['limit'] = $limit;
 
         $proposalRepository = app(ProposalRepository::class);
 
         $builder = $proposalRepository->search(
-            $this->queryParams[ProposalSearchParams::QUERY()->value] ?? '',
+            $searchTerm ?? '',
             $args
         );
 

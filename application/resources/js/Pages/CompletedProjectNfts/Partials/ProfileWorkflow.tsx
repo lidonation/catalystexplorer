@@ -127,153 +127,152 @@ const ProfileWorkflow: React.FC<ProfileWorkflowProps> = ({
 
     const totalProposalsViewed = proposals.per_page * proposals.current_page;
 
-     return (
-    //     // <div className="bg-background mx-auto w-full max-w-lg rounded-2xl p-6 shadow-md">
-    //     //     {!showVerification && (
-    //     //         <PageHeader
-    //     //             userName={user?.name}
-    //     //             sectionTitle={getSectionTitle()}
-    //     //         />
-    //     //     )}
+    return (
+        <div className="bg-background mx-auto w-full max-w-lg rounded-2xl p-6 shadow-md">
+            {/* {!showVerification && (
+                <PageHeader
+                    userName={user?.name}
+                    sectionTitle={getSectionTitle()}
+                />
+            )}
 
-    //     //     <div className="w-full">
-    //     //         {viewProposal ? (
-    //     //             <>
-    //     //                 <button
-    //     //                     className="text-primary mt-4 flex cursor-pointer items-center text-sm font-medium"
-    //     //                     onClick={() => {
-    //     //                         setViewProposal(false);
-    //     //                         setSelectedProfile(null);
-    //     //                     }}
-    //     //                 >
-    //     //                     {`< ${t('profileWorkflow.back')}`}
-    //     //                 </button>
-    //     //                 <div className="card-container mt-2 w-full">
-    //     //                     <ProposalSearchBar
-    //     //                         autoFocus={true}
-    //     //                         showRingOnFocus={true}
-    //     //                         handleSearch={(query) =>
-    //     //                             handleSearchProposals(query)
-    //     //                         }
-    //     //                         focusState={(isFocused) =>
-    //     //                             console.log(isFocused)
-    //     //                         }
-    //     //                     />
-    //     //                 </div>
+            <div className="w-full">
+                {viewProposal ? (
+                    <>
+                        <button
+                            className="text-primary mt-4 flex cursor-pointer items-center text-sm font-medium"
+                            onClick={() => {
+                                setViewProposal(false);
+                                setSelectedProfile(null);
+                            }}
+                        >
+                            {`< ${t('profileWorkflow.back')}`}
+                        </button>
+                        <div className="card-container mt-2 w-full">
+                            <ProposalSearchBar
+                                autoFocus={true}
+                                showRingOnFocus={true}
+                                handleSearch={(query) =>
+                                    handleSearchProposals(query)
+                                }
+                                focusState={(isFocused) =>
+                                    console.log(isFocused)
+                                }
+                            />
+                        </div>
 
-    //     //                 <Paragraph className="mt-2">
-    //     //                     {t('profileWorkflow.selectProposal')}
-    //     //                     <span className="m-1 inline-block rounded border border-gray-200 px-1 text-xs">
-    //     //                         {`${totalProposalsViewed > proposals?.total ? proposals?.total : totalProposalsViewed}/${proposals.total}`}
-    //     //                     </span>
-    //     //                 </Paragraph>
+                        <Paragraph className="mt-2">
+                            {t('profileWorkflow.selectProposal')}
+                            <span className="m-1 inline-block rounded border border-gray-200 px-1 text-xs">
+                                {`${totalProposalsViewed > proposals?.total ? proposals?.total : totalProposalsViewed}/${proposals.total}`}
+                            </span>
+                        </Paragraph>
 
-    //     //                 <ProposalList proposals={proposals || []} />
-    //     //             </>
-    //     //         ) : showVerification ? (
-    //     //             <VerificationCard
-    //     //                 verificationCode={verificationCode}
-    //     //                 onBack={handleBackFromVerification}
-    //     //             />
-    //     //         ) : showClaimProfile ? (
-    //     //             <>
-    //     //                 <button
-    //     //                     className="text-primary mt-4 mb-4 flex cursor-pointer items-center text-sm font-medium"
-    //     //                     onClick={() => setShowClaimProfile(false)}
-    //     //                 >
-    //     //                     {`< ${t('profileWorkflow.back')}`}
-    //     //                 </button>
+                        <ProposalList proposals={proposals || []} />
+                    </>
+                ) : showVerification ? (
+                    <VerificationCard
+                        verificationCode={verificationCode}
+                        onBack={handleBackFromVerification}
+                    />
+                ) : showClaimProfile ? (
+                    <>
+                        <button
+                            className="text-primary mt-4 mb-4 flex cursor-pointer items-center text-sm font-medium"
+                            onClick={() => setShowClaimProfile(false)}
+                        >
+                            {`< ${t('profileWorkflow.back')}`}
+                        </button>
 
-    //     //                 <ProfileSearchBar
-    //     //                     autoFocus={true}
-    //     //                     showRingOnFocus={true}
-    //     //                     handleSearch={(query) =>
-    //     //                         handleSearchProfiles(query)
-    //     //                     }
-    //     //                 />
+                        <ProfileSearchBar
+                            autoFocus={true}
+                            showRingOnFocus={true}
+                            handleSearch={(query) =>
+                                handleSearchProfiles(query)
+                            }
+                        />
 
-    //     //                 <div className="mt-4 space-y-2">
-    //     //                     {profileSearchResults.map((profile, index) => (
-    //     //                         <div
-    //     //                             key={index}
-    //     //                             className={`w-full sm:max-w-[400px] lg:max-w-[500px]`}
-    //     //                         >
-    //     //                             <ProfileCard
-    //     //                                 profile={profile}
-    //     //                                 onSelect={() => {
-    //     //                                     setViewProposal(false);
-    //     //                                     handleToggleClaimForm(profile);
-    //     //                                 }}
-    //     //                                 className={
-    //     //                                     profile?.claimed_by_id
-    //     //                                         ? 'cursor-not-allowed'
-    //     //                                         : 'cursor-pointer'
-    //     //                                 }
-    //     //                             >
-    //     //                                 <div className="ml-6 flex-shrink-0">
-    //     //                                     <span
-    //     //                                         className={`rounded-full px-3 py-1 text-sm ${
-    //     //                                             !profile?.claimed_by_id
-    //     //                                                 ? 'cursor-pointer bg-green-100 text-green-600'
-    //     //                                                 : 'cursor-not-allowed bg-red-100 text-red-600'
-    //     //                                         }`}
-    //     //                                     >
-    //     //                                         {!profile?.claimed_by_id
-    //     //                                             ? t(
-    //     //                                                   'profileWorkflow.claimProfile',
-    //     //                                               )
-    //     //                                             : t(
-    //     //                                                   'profileWorkflow.unavailable',
-    //     //                                               )}
-    //     //                                     </span>
-    //     //                                 </div>
-    //     //                             </ProfileCard>
+                        <div className="mt-4 space-y-2">
+                            {profileSearchResults.map((profile, index) => (
+                                <div
+                                    key={index}
+                                    className={`w-full sm:max-w-[400px] lg:max-w-[500px]`}
+                                >
+                                    <ProfileCard
+                                        profile={profile}
+                                        onSelect={() => {
+                                            setViewProposal(false);
+                                            handleToggleClaimForm(profile);
+                                        }}
+                                        className={
+                                            profile?.claimed_by_id
+                                                ? 'cursor-not-allowed'
+                                                : 'cursor-pointer'
+                                        }
+                                    >
+                                        <div className="ml-6 flex-shrink-0">
+                                            <span
+                                                className={`rounded-full px-3 py-1 text-sm ${
+                                                    !profile?.claimed_by_id
+                                                        ? 'cursor-pointer bg-green-100 text-green-600'
+                                                        : 'cursor-not-allowed bg-red-100 text-red-600'
+                                                }`}
+                                            >
+                                                {!profile?.claimed_by_id
+                                                    ? t(
+                                                          'profileWorkflow.claimProfile',
+                                                      )
+                                                    : t(
+                                                          'profileWorkflow.unavailable',
+                                                      )}
+                                            </span>
+                                        </div>
+                                    </ProfileCard>
 
-    //     //                             {claimProfile?.hash === profile.hash &&
-    //     //                                 profile.hash && (
-    //     //                                     <ClaimProfileForm
-    //     //                                         profile={profile}
-    //     //                                         onVerificationCodeUpdate={
-    //     //                                             setVerificationCode
-    //     //                                         }
-    //     //                                         onShowVerification={
-    //     //                                             setShowVerification
-    //     //                                         }
-    //     //                                     />
-    //     //                                 )}
-    //     //                         </div>
-    //     //                     ))}
-    //     //                 </div>
-    //     //             </>
-    //     //         ) : (
-    //     //             <>
-    //     //                 <Title level="3" className="font-semibold">
-    //     //                     {t('profileWorkflow.myProfiles')}
-    //     //                 </Title>
-    //     //                 <div className="my-2 border-t border-gray-300"></div>
-    //     //                 <ProfileList
-    //     //                     profiles={profiles?.data || []}
-    //     //                     onProfileClick={handleProfileSelect}
-    //     //                 />
-    //     //                 <div className="my-2 border-t border-gray-300"></div>
+                                    {claimProfile?.hash === profile.hash &&
+                                        profile.hash && (
+                                            <ClaimProfileForm
+                                                profile={profile}
+                                                onVerificationCodeUpdate={
+                                                    setVerificationCode
+                                                }
+                                                onShowVerification={
+                                                    setShowVerification
+                                                }
+                                            />
+                                        )}
+                                </div>
+                            ))}
+                        </div>
+                    </>
+                ) : (
+                    <>
+                        <Title level="3" className="font-semibold">
+                            {t('profileWorkflow.myProfiles')}
+                        </Title>
+                        <div className="my-2 border-t border-gray-300"></div>
+                        <ProfileList
+                            profiles={profiles?.data || []}
+                            onProfileClick={handleProfileSelect}
+                        />
+                        <div className="my-2 border-t border-gray-300"></div>
 
-    //     //                 <div className="mt-5 text-center">
-    //     //                     <button
-    //     //                         className="text-primary cursor-pointer border-b border-dotted border-current text-sm font-medium"
-    //     //                         onClick={() => setShowClaimProfile(true)}
-    //     //                     >
-    //     //                         {!profiles?.data || profiles?.data?.length === 0
-    //     //                             ? t('completedProjectNfts.claimProfile')
-    //     //                             : t(
-    //     //                                   'completedProjectNfts.claimAnotherProfile',
-    //     //                               )}
-    //     //                     </button>
-    //     //                 </div>
-    //     //             </>
-    //     //         )}
-    //     //     </div>
-    //     // </div>
-    <div></div>
+                        <div className="mt-5 text-center">
+                            <button
+                                className="text-primary cursor-pointer border-b border-dotted border-current text-sm font-medium"
+                                onClick={() => setShowClaimProfile(true)}
+                            >
+                                {!profiles?.data || profiles?.data?.length === 0
+                                    ? t('completedProjectNfts.claimProfile')
+                                    : t(
+                                          'completedProjectNfts.claimAnotherProfile',
+                                      )}
+                            </button>
+                        </div>
+                    </>
+                )}
+            </div> */}
+        </div>
     );
 };
 

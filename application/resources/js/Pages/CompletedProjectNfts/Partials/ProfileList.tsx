@@ -34,7 +34,7 @@ const ProfileList: React.FC<ProfileListProps> = ({
                         htmlFor={profile.hash as string | undefined}
                         className="flex items-center hover:cursor-pointer"
                     >
-                        <ProfileCard profile={profile}></ProfileCard>
+                        <ProfileCard profile={profile}/>
                         <Checkbox
                             name={profile.hash as string | undefined}
                             id={profile.hash as string | undefined}

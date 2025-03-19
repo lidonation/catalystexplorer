@@ -5,7 +5,7 @@ import { StepDetails } from '@/types';
 import { useLocalizedRoute } from '@/utils/localizedRoute';
 import { Link } from '@inertiajs/react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import React from 'react';
+import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import Content from '../Partials/WorkflowContent';
 import Footer from '../Partials/WorkflowFooter';
@@ -21,35 +21,42 @@ interface Step1Props {
 
 const Step1: React.FC<Step1Props> = ({ profiles, stepDetails, activeStep }) => {
     const { t } = useTranslation();
+    const [selectedProfiles, setSelectedProfile] = useState<string[]>([]);
 
-    let selectedProfiles: string[] = [];
-
-    const handleProfileSelect = (hash: string) => {
-        if (selectedProfiles.includes(hash)) {
-            selectedProfiles = selectedProfiles.filter(
+    const handleProfileSelect = (hash: string | null) => {
+        if (hash && selectedProfiles.includes(hash)) {
+            const updatedProfiles = selectedProfiles.filter(
                 (profilehash) => profilehash != hash,
             );
-        } else {
-            selectedProfiles.push(hash);
+            setSelectedProfile(updatedProfiles);
+            console.log({ selectedProfiles: updatedProfiles });
+        } else if (hash) {
+            const updatedProfiles = [...selectedProfiles, hash];
+            setSelectedProfile(updatedProfiles);
+            console.log({ selectedProfiles: updatedProfiles });
         }
     };
 
-    const preveStep = () => {
-        if (activeStep == 1) {
-            return '';
-        } else {
-            return useLocalizedRoute('workflows.completedProjectsNfts', {
-                step: activeStep - 1,
-            });
-        }
-    };
+    const localizedRoute = useLocalizedRoute;
+
+    const prevStep =
+        activeStep == 1
+            ? ''
+            : localizedRoute('workflows.completedProjectsNfts', {
+                  step: activeStep - 1,
+              });
+
+    const nextStep = localizedRoute('workflows.completedProjectsNft.index', {
+        step: activeStep + 1,
+        profiles: selectedProfiles,
+    });
 
     return (
-        <WorkflowLayout asideInfo={stepDetails[activeStep].info ?? ''}>
-            <Nav stepDetails={stepDetails} />
+        <WorkflowLayout asideInfo={stepDetails[activeStep - 1].info ?? ''}>
+            <Nav stepDetails={stepDetails} activeStep={activeStep} />
 
             <Content>
-                <div className="bg-background mx-auto w-full rounded-2xl p-6">
+                <div className="bg-background mx-auto w-full rounded-2xl lg:p-6 p-4">
                     <div className="w-full">
                         <>
                             <Title level="3" className="font-semibold">
@@ -58,7 +65,9 @@ const Step1: React.FC<Step1Props> = ({ profiles, stepDetails, activeStep }) => {
                             <div className="my-2 border-t border-gray-300"></div>
                             <ProfileList
                                 profiles={profiles || []}
-                                onProfileClick={() => handleProfileSelect}
+                                onProfileClick={(hash) =>
+                                    handleProfileSelect(hash)
+                                }
                             />
                             <div className="my-2 border-t border-gray-300"></div>
                             <div className="mt-5 text-center">
@@ -84,17 +93,21 @@ const Step1: React.FC<Step1Props> = ({ profiles, stepDetails, activeStep }) => {
 
             <Footer>
                 <PrimaryLink
-                    href={preveStep()}
-                    className="px-8 py-3 text-sm"
+                    href={prevStep}
+                    className="text-sm lg:px-8 lg:py-3"
                     disabled={activeStep == 1}
+                    onClick={(e) => activeStep == 1 && e.preventDefault()}
                 >
                     <ChevronLeft className="h-4 w-4" />
                     <span>{t('Previous')}</span>
                 </PrimaryLink>
                 <PrimaryLink
-                    href={preveStep()}
-                    className="px-8 py-3 text-sm"
-                    disabled={!!selectedProfiles.length}
+                    href={!selectedProfiles.length ? '' : nextStep}
+                    className="text-sm lg:px-8 lg:py-3"
+                    disabled={!selectedProfiles.length}
+                    onClick={(e) =>
+                        !selectedProfiles.length && e.preventDefault()
+                    }
                 >
                     <span>{t('Next')}</span>
                     <ChevronRight className="h-4 w-4" />
