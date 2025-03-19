@@ -82,7 +82,7 @@ class ProposalSeeder extends Seeder
             function ($campaign) use ($tags, $ideascaleProfiles) {
                 // Create proposals first
                 Proposal::factory()
-                    ->count(fake()->randomNumber(80))
+                    ->count(fake()->randomElement([20, 18, 60, 44, 35]))
                     ->hasAttached($ideascaleProfiles->random(fake()->randomElement([0, 1, 3, 4])))
                     ->state([
                         'campaign_id' => $campaign->getOriginal('id'),
