@@ -47,6 +47,18 @@ class Community extends Model
             $query->whereIn('id', is_array($ids) ? $ids : explode(',', $ids));
         });
 
+        $query->when(! empty($filters['sort']), function ($query) use ($filters) {
+            [$column, $direction] = explode(':', $filters['sort']);
+            $query->orderBy($column, $direction);
+        });
+
+        $query->when(! empty($filters['cohort']), function ($query, $cohort) use ($filters) {
+            $query->whereHas('proposals.metas', function ($q) use ($filters) {
+                $q->whereIn('key', $filters['cohort'])
+                    ->where('content', true);
+            })->get();
+        });
+
         return $query;
     }
 

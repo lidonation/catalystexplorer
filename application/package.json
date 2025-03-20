@@ -62,7 +62,6 @@
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "cmdk": "^1.0.4",
-    "cypress": "^13.13.1",
     "embla-carousel-react": "^8.5.1",
     "framer-motion": "^12.0.11",
     "i18next": "^23.16.4",

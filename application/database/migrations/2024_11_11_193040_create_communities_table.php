@@ -1,8 +1,9 @@
 <?php
 
-use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
+use App\Enums\StatusEnum;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Database\Migrations\Migration;
 
 return new class extends Migration
 {
@@ -16,7 +17,7 @@ return new class extends Migration
             $table->string('title', 255);
             $table->text('content');
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
-            $table->enum('status', ['draft', 'pending', 'accepted', 'available', 'claimed', 'completed', 'published']);
+            $table->enum('status', StatusEnum::toValues())->default(StatusEnum::draft());
             $table->timestamps(0);
             $table->timestamp('deleted_at')->nullable();
             $table->string('slug', 255);

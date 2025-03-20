@@ -19,7 +19,7 @@ const JoinCommunityButton: React.FC<JoinCommunityButtonProps> = ({
 
     const [hasJoined, setHasJoined] = useState(
         ideascale_profiles?.some(
-            (profile) => profile?.claimedBy === auth?.user?.id,
+            (profile) => profile?.claimed_by?.hash === auth?.user?.hash,
         ),
     );
 

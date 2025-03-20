@@ -38,7 +38,7 @@ class BookmarkItemFactory extends Factory
         return [
             'user_id' => User::inRandomOrder()->first()?->id,
             'bookmark_collection_id' => null,
-            'model_id' => $bookmarkableType::inRandomOrder()?->first()?->id,
+            'model_id' => $bookmarkableType::inRandomOrder()?->first()?->getOriginal('id'),
             'model_type' => $bookmarkableType,
             'title' => $this->faker->sentence(),
             'content' => $this->faker->paragraph(),

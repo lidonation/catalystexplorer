@@ -236,7 +236,71 @@
     "breadcrumbs": {
         "home": "Accueil"
     },
-
+    "dreps": {
+        "dreps": "DReps",
+        "drepSearch": "Search DRep",
+        "drepStatus": "DRep status",
+        "votingPowerAda": "Voting Power (₳)",
+        "drepList": {
+            "title": "DReps Directory",
+            "subtitle": "Delegate Representatives in Project Catalyst.",
+            "signUp": "Sign up to be a DRep",
+            "drep": "DRep",
+            "registeredOn": "Registered on",
+            "lastActive": "Last Active",
+            "votingPower": "Voting Power",
+            "delegators": "Delegators",
+            "status": "Status",
+            "delegate": "Delegate",
+            "anHourAgo": "an hour ago",
+            "copied": "Copied!"
+        },
+        "faq": {
+            "faq": "questions fréquemment posées",
+            "question1": "Qu'est-ce qu'un DRep ?",
+            "answer1": "Un DRep (Représentant Délégué) est un membre de confiance de la communauté qui vote sur les propositions de gouvernance au nom des détenteurs d'ADA.",
+            "question2": "Pourquoi devrais-je déléguer mon pouvoir de vote ?",
+            "answer2": "La délégation vous permet d'avoir votre mot à dire dans la gouvernance de Cardano sans avoir à examiner et voter sur chaque proposition vous-même.",
+            "question3": "Comment choisir un DRep ?",
+            "answer3": "Vous pouvez sélectionner un DRep en fonction de ses valeurs, son expertise et son historique de vote. Parcourez les profils et choisissez celui qui correspond à votre vision pour Cardano.",
+            "question4": "Puis-je changer de DRep ?",
+            "answer4": "Oui, vous pouvez redéléguer votre pouvoir de vote à un autre DRep à tout moment.",
+            "question5": "La délégation est-elle sécurisée ?",
+            "answer5": "Oui, la délégation est sécurisée. Votre ADA ne quitte jamais votre portefeuille, et vous conservez le contrôle total de vos fonds.",
+            "question6": "Est-ce que je gagne des récompenses pour la délégation ?",
+            "answer6": "Actuellement, la délégation est axée sur la participation à la gouvernance, pas sur les récompenses financières.",
+            "question7": "Comment les DReps prennent-ils leurs décisions ?",
+            "answer7": "Les DReps analysent soigneusement les propositions, assurant des votes éclairés et de haute qualité qui bénéficient à l'écosystème Cardano."
+        },
+        "filters": {
+            "status": "status",
+            "votingPower": "Voting Power",
+            "delegators": "Delegators"
+        },
+        "landing": {
+            "title": "Façonnez l'avenir de Cardano, déléguez à un DRep dès aujourd'hui !",
+            "subtitle": "Les Représentants Délégués (DReps) sont des membres de la communauté qui représentent les intérêts de la communauté dans le Projet Catalyst. Ils sont élus par la communauté pour participer à la gouvernance de l'écosystème Catalyst.",
+            "findDrep": "Trouver un DRep",
+            "signUp": "S'inscrire pour devenir un DRep",
+            "aDrep": "Que sont les DReps ?",
+            "drepDescription": "Les DReps (Représentants Délégués) votent sur les propositions de gouvernance dans Cardano au nom des détenteurs d'ADA. Au lieu de voter individuellement, vous pouvez déléguer votre pouvoir de vote à un DRep qui représente vos intérêts, aidant à façonner l'avenir de Cardano de manière efficace et transparente.",
+            "projectCatalyst": "La croissance continue du Projet Catalyst et le besoin de délégation",
+            "projectCatalystDescription": "Le Projet Catalyst de la communauté Cardano a connu une croissance rapide, avec près de 1 000 propositions reçues pour le Fonds 8. Pour gérer cette charge de travail croissante, un nouveau système de délégation est introduit pour une gouvernance durable.",
+            "empower": "Autonomiser les électeurs passifs grâce à la délégation",
+            "empowerDescription": "La délégation permet aux détenteurs d'ADA d'attribuer leur pouvoir de vote aux DReps, garantissant que leurs voix sont entendues sur davantage de propositions. Les DReps améliorent la prise de décision dans le Projet Catalyst en votant sur la plupart des propositions.",
+            "excite": "Enthousiaste à l'idée des DReps dans Catalyst ?",
+            "answerExcite": "Lancez-vous et soyez un pionnier !"
+        },
+        "options": {
+            "alphabetically": "Alphabetically: A to Z",
+            "delegatorsDesc": "Delegators: High to Low",
+            "delegatorsAsc": "Delegators: Low to High",
+            "votersDesc": "Voters: High to Low",
+            "votersAsc": "Voters: Low to High",
+            "active": "Active",
+            "inactive": "Inactive"
+        }
+    },
     "ideascaleProfiles": {
         "people": "Personnes",
         "ideascaleProfiles": "Ideascale Profils",
