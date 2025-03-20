@@ -255,7 +255,7 @@ class NMKRIntegrationTest extends TestCase
                 'base_url' => config('cardano-nft-maker-laravel.baseUrl'),
                 'project_uuid' => $this->projectUid
             ]);
-            $response = $nft->uploadNMKRNft($validatedMetadata, 'POST');
+            $response = $nft->uploadNMKRNft($validatedMetadata);
             Log::info('NMKR Upload Response', [
                 'status' => $response->status(),
                 'body' => $response->body()
