@@ -121,30 +121,30 @@ class CompletetProjectNftsController extends Controller
         $user = $this->user;
         $isOwner = false;
         $metadata = null;
-        
+
         $ideascaleProfile = $proposal->author()->first();
-        
+
         if (empty($ideascaleProfile)) {
             return back()->withErrors([
                 'error' => 'No profile found for this proposal',
             ]);
         }
-        
+
         // Check if user is the owner of a claimed profile associated with this proposal
         $claimedProfile = null;
-        if (!empty($user)) {
+        if (! empty($user)) {
             $claimedProfile = $proposal->ideascaleProfiles()
                 ->where('claimed_by_id', $user->id)
                 ->first();
-                
-            $isOwner = !empty($claimedProfile);
+
+            $isOwner = ! empty($claimedProfile);
         }
-        
+
         // Set the correct ideascale profile to use (claimed profile if owner, author otherwise)
         if ($isOwner) {
             $ideascaleProfile = $claimedProfile;
         }
-        
+
         // Get contributor profiles (excluding the main profile)
         $contributorProfiles = $proposal->ideascaleProfiles
             ->filter(function ($profile) use ($ideascaleProfile) {
@@ -152,12 +152,12 @@ class CompletetProjectNftsController extends Controller
             })
             ->values()
             ->toArray();
-        
+
         // Look for the NFT associated with this profile and proposal
         $nft = $ideascaleProfile->nfts()
             ->whereJsonContains('metadata->Project Title', $proposal->title)
             ->first();
-            
+
         // Get NFT metadata if NFT exists
         $artist = null;
         if ($nft) {
@@ -165,9 +165,9 @@ class CompletetProjectNftsController extends Controller
                 $metadata = $nft->required_nft_metadata;
                 $artist = $nft->artist()->first();
             } catch (\Throwable $th) {
-                Log::warning('Failed to get NFT metadata: ' . $th->getMessage(), [
+                Log::warning('Failed to get NFT metadata: '.$th->getMessage(), [
                     'nft_id' => $nft->id,
-                    'proposal_id' => $proposal->id
+                    'proposal_id' => $proposal->id,
                 ]);
                 $metadata = [
                     'paymentGatewayLinkForSpecificSale' => null,
@@ -348,41 +348,41 @@ class CompletetProjectNftsController extends Controller
             $metadataKey = $metadataKeyMap[$key] ?? $key;
 
             $nmkrMetadata = $nft->metas->where('key', 'nmkr_metadata')->first();
-            
-            if (!$nmkrMetadata) {
+
+            if (! $nmkrMetadata) {
                 throw new \Exception('No NMKR metadata found for this NFT');
             }
 
             $currentMetadata = json_decode($nmkrMetadata->content, true);
             if (json_last_error() !== JSON_ERROR_NONE) {
-                throw new \Exception('Invalid JSON in NMKR metadata: ' . json_last_error_msg());
+                throw new \Exception('Invalid JSON in NMKR metadata: '.json_last_error_msg());
             }
-            
-            if (!isset($currentMetadata['721'])) {
+
+            if (! isset($currentMetadata['721'])) {
                 throw new \Exception('Invalid NMKR metadata format: Missing 721 field');
             }
 
             $policyId = array_key_first($currentMetadata['721']);
-            if (!$policyId || $policyId === 'version') {
+            if (! $policyId || $policyId === 'version') {
                 throw new \Exception('Invalid NMKR metadata format: No valid policy ID found');
             }
-            
+
             if (isset($currentMetadata['721']['version'])) {
                 $version = $currentMetadata['721']['version'];
                 unset($currentMetadata['721']['version']);
             }
-            
-            $assetKeys = array_filter(array_keys($currentMetadata['721'][$policyId]), function($key) {
+
+            $assetKeys = array_filter(array_keys($currentMetadata['721'][$policyId]), function ($key) {
                 return $key !== 'version';
             });
-            
+
             if (empty($assetKeys)) {
                 throw new \Exception('Invalid NMKR metadata format: No asset names found');
             }
-            
+
             $assetName = $assetKeys[0];
             $assetMetadata = $currentMetadata['721'][$policyId][$assetName];
-            
+
             if ($shouldRemove) {
                 if (isset($assetMetadata[$metadataKey])) {
                     unset($assetMetadata[$metadataKey]);
@@ -390,19 +390,19 @@ class CompletetProjectNftsController extends Controller
             } else {
                 $assetMetadata[$metadataKey] = (string) $value;
             }
-            
+
             $currentMetadata['721'][$policyId][$assetName] = $assetMetadata;
-            
+
             if (isset($version)) {
                 $currentMetadata['721']['version'] = $version;
             }
-            
+
             $response = $nft->updateNMKRNft($currentMetadata);
-            
+
             if ($response->successful()) {
                 $nmkrMetadata->content = json_encode($currentMetadata);
                 $nmkrMetadata->save();
-                
+
                 if (property_exists($nft, 'metadata') || isset($nft->metadata)) {
                     $nmkrToLocalKeyMap = [
                         'projectCatalystCampaignName' => 'campaign_name',
@@ -414,7 +414,7 @@ class CompletetProjectNftsController extends Controller
                     ];
 
                     $localMetadata = [];
-                    
+
                     if (is_string($nft->metadata)) {
                         $localMetadata = json_decode($nft->metadata, true);
                     } elseif (is_array($nft->metadata)) {
@@ -422,8 +422,8 @@ class CompletetProjectNftsController extends Controller
                     } elseif (is_object($nft->metadata)) {
                         $localMetadata = (array) $nft->metadata;
                     }
-                    
-                    if (!is_array($localMetadata)) {
+
+                    if (! is_array($localMetadata)) {
                         $localMetadata = [];
                     }
 
@@ -434,7 +434,7 @@ class CompletetProjectNftsController extends Controller
                             unset($localMetadata[$nmkrKey]);
                         }
                     }
-                    
+
                     if ($localKey) {
                         if ($shouldRemove) {
                             if (isset($localMetadata[$localKey])) {
@@ -444,7 +444,7 @@ class CompletetProjectNftsController extends Controller
                             $localMetadata[$localKey] = (string) $value;
                         }
                     }
-                    
+
                     if (is_object($nft->metadata) && method_exists($nft->metadata, 'set')) {
                         foreach ($localMetadata as $k => $v) {
                             $nft->metadata->set($k, $v);
@@ -452,10 +452,10 @@ class CompletetProjectNftsController extends Controller
                     } else {
                         $nft->metadata = $localMetadata;
                     }
-                    
+
                     $nft->save();
                 }
-                
+
                 return back()->with([
                     'success' => true,
                     'is_removed' => $shouldRemove,
@@ -463,10 +463,10 @@ class CompletetProjectNftsController extends Controller
                 ]);
             } else {
                 $errorData = $response->json();
-                throw new \Exception('API update failed: ' . ($errorData['errorMessage'] ?? 'Unknown error'));
+                throw new \Exception('API update failed: '.($errorData['errorMessage'] ?? 'Unknown error'));
             }
         } catch (\Throwable $th) {
-            Log::error('Metadata update error: ' . $th->getMessage(), [
+            Log::error('Metadata update error: '.$th->getMessage(), [
                 'request' => $request->all(),
                 'nft_id' => $nft->id,
                 'exception' => $th,
