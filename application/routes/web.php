@@ -186,6 +186,17 @@ Route::localized(
             });
         });
 
+        // Dreps
+        Route::prefix('/dreps')->as('dreps.')->group(
+            function () {
+                Route::get('/home', [DrepController::class, 'home'])
+                    ->name('home');
+
+                Route::get('/list', [DrepController::class, 'list'])
+                    ->name('list');
+            }
+        );
+
         Route::get('/voter-tool', [VoterToolController::class, 'index'])
             ->name('voter-tool.index');
 
@@ -197,17 +208,6 @@ Route::localized(
             Route::get('/', [MilestoneController::class, 'index'])
                 ->name('index');
         });
-
-        // Dreps
-        Route::prefix('/dreps')->as('dreps.')->group(
-            function () {
-                Route::get('/home', [DrepController::class, 'home'])
-                    ->name('home');
-
-                Route::get('/list', [DrepController::class, 'list'])
-                    ->name('list');
-            }
-        );
     }
 );
 
