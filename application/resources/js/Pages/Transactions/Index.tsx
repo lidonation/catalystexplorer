@@ -16,7 +16,7 @@ export interface Transaction {
 }
 
 interface Props {
-    catalystTransactions: {
+    transactions: {
         data: Transaction[];
         links: {
             url: string | null;
@@ -33,7 +33,7 @@ interface Props {
 }
 
 export default function Transactions({
-    catalystTransactions,
+    transactions,
     metadataLabels,
 }: Props) {
     return (
@@ -69,7 +69,7 @@ export default function Transactions({
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-gray-200">
-                                {catalystTransactions.data.map((tx) => (
+                                {transactions?.data?.map((tx) => (
                                     <tr key={tx.id}>
                                         <td className="text-content px-6 py-4 text-sm font-medium whitespace-nowrap">
                                             {tx.hash
@@ -132,27 +132,27 @@ export default function Transactions({
                         </table>
 
                         {/* Pagination */}
-                        {catalystTransactions.last_page > 1 && (
+                        {transactions.last_page > 1 && (
                             <div className="mt-4 flex items-center justify-between border-t border-gray-200 px-4 py-3 sm:px-6">
                                 <div className="flex flex-1 justify-between sm:hidden">
                                     <Link
                                         href={
-                                            catalystTransactions.links[0].url ||
+                                            transactions.links[0].url ||
                                             ''
                                         }
-                                        className={`relative inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 ${!catalystTransactions.links[0].url ? 'cursor-not-allowed opacity-50' : 'hover:bg-gray-50'}`}
+                                        className={`relative inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 ${!transactions.links[0].url ? 'cursor-not-allowed opacity-50' : 'hover:bg-gray-50'}`}
                                         preserveScroll
                                     >
                                         Previous
                                     </Link>
                                     <Link
                                         href={
-                                            catalystTransactions.links[
-                                                catalystTransactions.links
+                                            transactions.links[
+                                                transactions.links
                                                     .length - 1
                                             ].url || ''
                                         }
-                                        className={`relative ml-3 inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 ${!catalystTransactions.links[catalystTransactions.links.length - 1].url ? 'cursor-not-allowed opacity-50' : 'hover:bg-gray-50'}`}
+                                        className={`relative ml-3 inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 ${!transactions.links[transactions.links.length - 1].url ? 'cursor-not-allowed opacity-50' : 'hover:bg-gray-50'}`}
                                         preserveScroll
                                     >
                                         Next
@@ -163,15 +163,15 @@ export default function Transactions({
                                         <p className="text-content text-sm">
                                             Showing{' '}
                                             <span className="font-medium">
-                                                {catalystTransactions.from}
+                                                {transactions.from}
                                             </span>{' '}
                                             to{' '}
                                             <span className="font-medium">
-                                                {catalystTransactions.to}
+                                                {transactions.to}
                                             </span>{' '}
                                             of{' '}
                                             <span className="font-medium">
-                                                {catalystTransactions.total}
+                                                {transactions.total}
                                             </span>{' '}
                                             results
                                         </p>
@@ -181,12 +181,12 @@ export default function Transactions({
                                             className="isolate inline-flex -space-x-px rounded-md shadow-sm"
                                             aria-label="Pagination"
                                         >
-                                            {catalystTransactions.links.map(
+                                            {transactions.links.map(
                                                 (link, index) => {
                                                     if (
                                                         index === 0 ||
                                                         index ===
-                                                            catalystTransactions
+                                                            transactions
                                                                 .links.length -
                                                                 1
                                                     ) {
