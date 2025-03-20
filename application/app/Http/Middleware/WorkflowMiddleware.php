@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Middleware;
 
 use Closure;
+use CodeZero\LocalizedRoutes\Illuminate\Routing\Redirector;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Symfony\Component\HttpFoundation\Response;
@@ -19,16 +20,25 @@ class WorkflowMiddleware
     public function handle(Request $request, Closure $next): Response
     {
 
-        Log::info('Authenticated user: ', ['user' => $request->user()]);
+        Log::info('Authenticated user: ', [
+            'user' => $request->user(),
+            'intended' => session()->get('intended.url'),
+        ]);
 
         if (! $request->user()) {
-            Log::info('to login');
+
             session()->put('nextstep.route', request()->route()->getName());
             session()->put('nextstep.param', request()->route()->parameters());
+            Log::info('to login', [
+                session()->get('nextstep'),
+            ]);
 
             return to_route('workflows.loginForm');
+        } else {
+            // dd($request->user(), $request->session());
+            return $next($request);
+            // return app(Redirector::class)->to(session()->get('intended.url'),302);
         }
 
-        return $next($request);
     }
 }

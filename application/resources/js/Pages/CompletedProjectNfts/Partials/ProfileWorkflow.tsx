@@ -129,7 +129,7 @@ const ProfileWorkflow: React.FC<ProfileWorkflowProps> = ({
 
     return (
         <div className="bg-background mx-auto w-full max-w-lg rounded-2xl p-6 shadow-md">
-            {/* {!showVerification && (
+            {!showVerification && (
                 <PageHeader
                     userName={user?.name}
                     sectionTitle={getSectionTitle()}
@@ -271,7 +271,7 @@ const ProfileWorkflow: React.FC<ProfileWorkflowProps> = ({
                         </div>
                     </>
                 )}
-            </div> */}
+            </div>
         </div>
     );
 };
