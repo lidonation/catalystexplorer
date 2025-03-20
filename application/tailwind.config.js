@@ -62,6 +62,7 @@ export default {
                 'black-persist': 'var(--cx-content-black-persist)',
                 dark: 'var(--cx-dark)',
                 primary: 'var(--cx-primary)',
+                slate: '--cx-slate',
                 'primary-dark': 'var(--cx-primary-dark)',
                 secondary: 'var(--cx-secondary)',
                 highlight: 'var(--cx-light)',

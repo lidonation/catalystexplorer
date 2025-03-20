@@ -69,11 +69,9 @@ class ProposalsController extends Controller
     {
         $this->getProps($request);
 
-        $proposals = $this->query();
-
         return Inertia::render('Proposals/Index', [
             'proposals' => Inertia::optional(
-                fn () => $proposals
+                fn () => $this->query()
             ),
             'filters' => $this->queryParams,
             'funds' => $this->fundsCount,
@@ -192,6 +190,7 @@ class ProposalsController extends Controller
 
         $response = new Fluent($builder->raw());
         $items = collect($response->hits);
+
         $this->setCounts($response->facetDistribution, $response->facetStats);
 
         $pagination = new LengthAwarePaginator(

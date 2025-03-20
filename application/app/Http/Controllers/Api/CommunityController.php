@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Api;
 
+use App\DataTransferObjects\CommunityData;
 use App\Enums\CatalystCurrencySymbols;
 use App\Enums\CommunitySearchParams;
 use App\Enums\ProposalSearchParams;
@@ -54,36 +55,26 @@ class CommunityController extends Controller
 
     protected Builder $searchBuilder;
 
-    public array $tagsCount = [];
+    public int $maxProposalsCount;
 
-    public array $proposalsCount = [];
+    public float $maxAwardedUsd;
 
-    public array $totalAwardedAda = [];
-
-    public array $totalAwardedUsd = [];
-
-    public array $fundsCount = [];
+    public float $maxAwardedAda;
 
     public function index(Request $request): \Inertia\Response
     {
-
-        $this->setCounts();
         $this->getProps($request);
+
+        $communities = $this->query($request);
 
         $props = [
             'filters' => $this->queryParams,
             'filterCounts' => [
-                'proposalsCount' => ! empty($this->proposalsCount)
-                    ? max($this->proposalsCount)
-                    : 0,
-                'totalAwardedAda' => ! empty($this->totalAwardedAda)
-                    ? max($this->totalAwardedAda)
-                    : 0,
-                'totalAwardedUsd' => ! empty($this->totalAwardedUsd)
-                    ? max($this->totalAwardedUsd)
-                    : 0,
+                'proposalsCount' => $this->maxProposalsCount,
+                'totalAwardedAda' => $this->maxAwardedAda,
+                'totalAwardedUsd' => $this->maxAwardedUsd,
             ],
-            'communities' => $this->query($request),
+            'communities' => $communities,
         ];
 
         return Inertia::render('Communities/Index', $props);
@@ -91,21 +82,16 @@ class CommunityController extends Controller
 
     public function query(Request $request)
     {
-        $query = Community::query()->with(['proposals.campaign', 'ideascale_profiles'])
+        $query = Community::query()->with(['proposals.campaign', 'ideascale_profiles.claimed_by'])
             ->withCount('proposals');
+
+        // set necessary counts
+        $this->setCounts($query);
 
         $filters = [
             'search' => $request->input('q', null),
         ];
         $query->filter($filters);
-
-        if (isset($this->queryParams[CommunitySearchParams::PROPOSALS()->value])) {
-            $proposalsRange = collect((object) $this->queryParams[ProposalSearchParams::PROPOSALS()->value]);
-
-            $query = DB::query()
-                ->fromSub($query->toBase(), 'communities')
-                ->whereBetween('proposals_count', [$proposalsRange->first(), $proposalsRange->last()]);
-        }
 
         if (isset($this->queryParams[CommunitySearchParams::FUNDING_STATUS()->value])) {
             $query->whereHas('proposals', function ($query) {
@@ -144,6 +130,14 @@ class CommunityController extends Controller
             $query->whereHas('tags', function ($query) use ($decodedTagsIds) {
                 $query->whereIn('tags.id', $decodedTagsIds);
             });
+        }
+
+        if (isset($this->queryParams[CommunitySearchParams::PROPOSALS()->value])) {
+            $proposalsRange = collect((object) $this->queryParams[ProposalSearchParams::PROPOSALS()->value]);
+
+            $query = DB::query()
+                ->fromSub($query->toBase(), 'communities')
+                ->whereBetween('proposals_count', [$proposalsRange->first(), $proposalsRange->last()]);
         }
 
         if (isset($this->queryParams[CommunitySearchParams::AWARDED_USD()->value])) {
@@ -215,7 +209,7 @@ class CommunityController extends Controller
         $results = $query->offset(($this->currentPage - 1) * $this->limit)->limit($this->limit)->get();
 
         // Create LengthAwarePaginator instance
-        $pagination = new LengthAwarePaginator($results, $total, $this->limit, $this->currentPage, [
+        $pagination = new LengthAwarePaginator(CommunityData::collect($results), $total, $this->limit, $this->currentPage, [
             'path' => request()->url(),
             'query' => request()->query(),
         ]);
@@ -309,13 +303,11 @@ class CommunityController extends Controller
         return back();
     }
 
-    public function setCounts()
+    public function setCounts($query)
     {
-        $query = Community::query()
-            ->withCount('proposals')
-            ->addSelect([
-                'communities.*',
-                DB::raw("(
+        $query = $query->addSelect([
+            'communities.*',
+            DB::raw("(
                     SELECT COALESCE(SUM(p.amount_requested), 0)
                     FROM community_has_proposal chp
                     JOIN proposals p ON p.id = chp.proposal_id
@@ -325,9 +317,9 @@ class CommunityController extends Controller
                     AND p.funded_at IS NOT NULL
                     AND f.currency = '".CatalystCurrencySymbols::USD->name."'
                 ) as awarded_usd"),
-            ])->addSelect([
-                'communities.*',
-                DB::raw("(
+        ])->addSelect([
+            'communities.*',
+            DB::raw("(
                     SELECT COALESCE(SUM(p.amount_requested), 0)
                     FROM community_has_proposal chp
                     JOIN proposals p ON p.id = chp.proposal_id
@@ -337,10 +329,10 @@ class CommunityController extends Controller
                     AND p.funded_at IS NOT NULL
                     AND f.currency = '".CatalystCurrencySymbols::ADA->name."'
                 ) as awarded_ada"),
-            ]);
+        ]);
 
-        $this->totalAwardedUsd = $query->pluck('awarded_usd')->toArray();
-        $this->totalAwardedAda = $query->pluck('awarded_ada')->toArray();
-        $this->proposalsCount = $query->pluck('proposals_count')->toArray();
+        $this->maxAwardedUsd = max($query->pluck('awarded_usd')->toArray()) ?? 0;
+        $this->maxAwardedAda = max($query->pluck('awarded_ada')->toArray()) ?? 0;
+        $this->maxProposalsCount = max($query->pluck('proposals_count')->toArray()) ?? 0;
     }
 }

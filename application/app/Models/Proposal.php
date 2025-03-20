@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Casts\DateFormatCast;
-use App\Casts\HashId;
 use App\Enums\CatalystCurrencies;
 use App\Traits\HasAuthor;
 use App\Traits\HasMetaData;
@@ -55,6 +54,7 @@ class Proposal extends Model
     protected $appends = [
         'link',
         'hash',
+        'currency',
     ];
 
     public static function getFilterableAttributes(): array
@@ -399,8 +399,6 @@ class Proposal extends Model
             "amount_requested_{$this->currency}" => $this->amount_requested ? intval($this->amount_requested) : 0,
             'amount_requested' => $this->amount_requested ? intval($this->amount_requested) : 0,
 
-            // 'auditability_score' => $this->meta_info->auditability_score ?? $this->getDiscussionRankingScore('Value for money') ?? 0,
-
             'ca_rating' => intval($this->avg_rating) ?? 0.00,
             'campaign' => [
                 'id' => $this->campaign_id,
@@ -420,7 +418,6 @@ class Proposal extends Model
             'completed' => $this->completed,
             'currency' => $this->currency,
 
-            // 'feasibility_score' => $this->meta_info->feasibility_score ?? $this->getDiscussionRankingScore('Feasibility') ?? 0,
             'funded' => (bool) $this->funded_at ? 1 : 0,
             'fund' => [
                 'id' => $this->fund_id,
@@ -462,7 +459,7 @@ class Proposal extends Model
                     'username' => $u->username,
                     'name' => $u->name,
                     'bio' => $u->bio,
-                    'hero_img_url' => $u->media?->isNotEmpty() ? $u->thumbnail_url : $u->hero_img_url,
+                    'hero_img_url' => $u->hero_img_url,
                     'proposals_completed' => $proposals?->filter(fn ($p) => $p['status'] === 'complete')?->count() ?? 0,
                     'first_timer' => ($proposals?->map(fn ($p) => isset($p['fund']) ? $p['fund']['id'] : null)->unique()->count() === 1),
                 ];

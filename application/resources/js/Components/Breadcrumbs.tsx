@@ -20,7 +20,7 @@ interface BreadcrumbsProps {
 
 const Breadcrumbs = ({
     items,
-    separator = <ChevronRight className="h-4 w-4 text-content" />,
+    separator = <ChevronRight className="text-content h-4 w-4" />,
     maxItems = 4,
     itemClassName = 'text-content hover:text-content-light transition-colors',
     activeClassName = 'text-content font-medium',
@@ -35,18 +35,20 @@ const Breadcrumbs = ({
               ]
             : items;
 
+
     if (
         displayItems.length === 1 &&
-        displayItems[0].label === t('breadcrumbs.home')
+        displayItems[0].label === t('breadcrumbs.home') ||
+        displayItems.some((item) => item.href.includes('workflows'))
     ) {
-        //don't display breadcrumbs if there is only one item and it's 'Home'
+        //don't display breadcrumbs if there is only one item and it's 'Home' or part of the workflow
         return null;
     }
 
     return (
         <nav
             aria-label="Breadcrumb"
-            className="container flex items-center space-x-2 pl-8 pt-5 text-sm"
+            className="container flex items-center space-x-2 pt-5 pl-8 text-sm"
         >
             {displayItems.map((item, index) => {
                 const isLast = index === displayItems.length - 1;
@@ -61,7 +63,7 @@ const Breadcrumbs = ({
                         )}
 
                         {isEllipsis ? (
-                            <MoreHorizontal className="h-4 w-4 text-content" />
+                            <MoreHorizontal className="text-content h-4 w-4" />
                         ) : isLast ? (
                             <span className={activeClassName}>
                                 {item.label}
