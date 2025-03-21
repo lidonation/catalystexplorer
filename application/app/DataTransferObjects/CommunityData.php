@@ -53,6 +53,12 @@ final class CommunityData extends Data
         public ?float $amount_awarded_usd,
 
         #[TypeScriptOptional]
+        public ?float $amount_distributed_ada,
+
+        #[TypeScriptOptional]
+        public ?float $amount_distributed_usd,
+
+        #[TypeScriptOptional]
         public ?string $created_at,
 
         #[TypeScriptOptional]

@@ -2,6 +2,8 @@ import Title from '@/Components/atoms/Title';
 import Card from '@/Components/Card';
 import Divider from '@/Components/Divider';
 import CommunitiesIcon from '@/Components/svgs/CommunitiesSvg';
+import { useLocalizedRoute } from '@/utils/localizedRoute';
+import { Link } from '@inertiajs/react';
 import Markdown from 'marked-react';
 import React, { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -37,12 +39,16 @@ const CommunityCard: React.FC<CommunityCardProps> = ({ community }) => {
             </div>
             <div className="px-8">
                 <div className="flex w-full flex-col items-center justify-center text-center">
-                    <Title level="3" className="font-semibold">
-                        {community.title}
-                    </Title>
-                    <section className="text-content text-2">
-                        <Markdown>{community.content}</Markdown>
-                    </section>
+                    <Link
+                        href={useLocalizedRoute('communities.dashboard', {
+                            slug: community.slug,
+                        })}
+                    >
+                        <Title level="4" className="font-semibold hover:text-primary">
+                            {community.title}
+                        </Title>
+                    </Link>
+                    <Paragraph className="text-content text-5">{community.content}</Paragraph>
                 </div>
             </div>
             <div>

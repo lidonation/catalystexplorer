@@ -33,7 +33,7 @@ export default function CommunityLayout({
 
     const tabConfig = {
         ...communityTabs,
-        routePrefix: `community/${community?.slug}`,
+        routePrefix: `communities/${community?.slug}`,
     };
     const tabs = generateTabs(t, tabConfig);
 
@@ -52,9 +52,6 @@ export default function CommunityLayout({
         }
     }, [tabs, url]);
 
-    useEffect(()=>{
-        console.log('community', community)
-    })
 
     return (
         <FiltersProvider defaultFilters={filters || ({} as SearchParams)}>

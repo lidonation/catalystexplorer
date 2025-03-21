@@ -1,9 +1,9 @@
-import {useLocalizedRoute} from '@/utils/localizedRoute';
-import {Link, WhenVisible} from '@inertiajs/react';
-import React, {HTMLAttributes} from 'react';
-import {useTranslation} from 'react-i18next';
-import {route} from 'ziggy-js';
-import {PaginatedData} from '../../../../types/paginated-data';
+import { useLocalizedRoute } from '@/utils/localizedRoute';
+import { Link, WhenVisible } from '@inertiajs/react';
+import React, { HTMLAttributes } from 'react';
+import { useTranslation } from 'react-i18next';
+import { route } from 'ziggy-js';
+import { PaginatedData } from '../../../../types/paginated-data';
 import ProposalCardMini from './ProposalCardMini';
 import ProposalMiniCardLoader from './ProposalMiniCardLoader';
 import ProposalData = App.DataTransferObjects.ProposalData;
@@ -11,39 +11,45 @@ import ProposalData = App.DataTransferObjects.ProposalData;
 interface RouteConfig {
     routeName: string;
     paramKey: string;
-    sourceParam: 'groupId' | 'ideascaleProfileId';
+    sourceParam: 'groupId' | 'ideascaleProfileId' | 'communityId';
 }
 
 const ROUTE_MAPPINGS: Record<string, RouteConfig> = {
-    'groups': {
-        routeName: 'groups.group.proposals',  // update the route to the screen with all group's proposals
+    groups: {
+        routeName: 'groups.group.proposals', // update the route to the screen with all group's proposals
         paramKey: 'group',
-        sourceParam: 'groupId'
+        sourceParam: 'groupId',
     },
-    'ideascaleProfiles': {
+    ideascaleProfiles: {
         routeName: 'ideascaleProfiles.proposals', // update the route to the screen with all ideascale profile's proposals
         paramKey: 'ideascaleProfile',
-        sourceParam: 'ideascaleProfileId'
+        sourceParam: 'ideascaleProfileId',
+    },
+    communities: {
+        routeName: 'communities.proposals',
+        paramKey: 'community',
+        sourceParam: 'communityId',
     },
 };
-
 
 interface RelatedProposalsProps extends HTMLAttributes<HTMLDivElement> {
     proposals: PaginatedData<ProposalData[]>;
     groupId?: string;
     ideascaleProfileId?: string;
+    communityId?: string;
     maxVisibleProposals?: number;
     proposalWrapperClassName?: string;
 }
 
 const RelatedProposals: React.FC<RelatedProposalsProps> = ({
-   proposals,
-   groupId,
-   proposalWrapperClassName,
-   ideascaleProfileId,
-   ...props
+    proposals,
+    groupId,
+    proposalWrapperClassName,
+    ideascaleProfileId,
+    communityId,
+    ...props
 }) => {
-    const {t} = useTranslation();
+    const { t } = useTranslation();
 
     const showViewMore = proposals.total > proposals.per_page;
 
@@ -56,18 +62,27 @@ const RelatedProposals: React.FC<RelatedProposalsProps> = ({
     };
 
     const getRouteParams = (config: RouteConfig) => {
-        const paramValue = config.sourceParam === 'groupId' ? groupId : ideascaleProfileId;
-        return {[config.paramKey]: paramValue};
+        const paramValue =
+            config.sourceParam === 'groupId'
+                ? groupId
+                : config.sourceParam === 'ideascaleProfileId'
+                  ? ideascaleProfileId
+                  : communityId;
+
+        return { [config.paramKey]: paramValue };
     };
 
     const routeConfig = getCurrentRouteConfig();
 
     return (
-        <WhenVisible fallback={<ProposalMiniCardLoader/>} data="proposals">
+        <WhenVisible fallback={<ProposalMiniCardLoader />} data="proposals">
             <div {...props}>
                 {typeof proposals.data !== 'undefined' &&
                     proposals.data.map((proposal) => (
-                        <div key={proposal.hash} className={proposalWrapperClassName}>
+                        <div
+                            key={proposal.hash}
+                            className={proposalWrapperClassName}
+                        >
                             <ProposalCardMini
                                 proposal={proposal}
                                 isHorizontal={false}
@@ -78,22 +93,31 @@ const RelatedProposals: React.FC<RelatedProposalsProps> = ({
                 {showViewMore && (
                     <div className={proposalWrapperClassName}>
                         <Link
-                            href={useLocalizedRoute(routeConfig.routeName, getRouteParams(routeConfig))}
+                            href={useLocalizedRoute(
+                                routeConfig.routeName,
+                                getRouteParams(routeConfig),
+                            )}
                             className="bg-background flex h-full flex-col items-center justify-center rounded-xl p-4 shadow-lg transition-transform hover:scale-95"
                         >
                             <div className="flex flex-col items-center gap-4">
                                 <div className="text-center">
-                                    <p className="text-sm text-gray-600">{t('seeAll')}</p>
-                                    <p className="text-xl font-semibold">{proposals.total}</p>
-                                    <p className="text-sm text-gray-600">{t('proposals.proposals')}</p>
+                                    <p className="text-sm text-gray-600">
+                                        {t('seeAll')}
+                                    </p>
+                                    <p className="text-xl font-semibold">
+                                        {proposals.total}
+                                    </p>
+                                    <p className="text-sm text-gray-600">
+                                        {t('proposals.proposals')}
+                                    </p>
                                 </div>
                             </div>
                         </Link>
                     </div>
-                        )}
-                    </div>
-                    </WhenVisible>
-                    );
-                };
+                )}
+            </div>
+        </WhenVisible>
+    );
+};
 
-                export default RelatedProposals;
+export default RelatedProposals;

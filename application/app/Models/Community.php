@@ -13,6 +13,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Log;
 use Laravel\Scout\Searchable;
 
 class Community extends Model
@@ -92,10 +93,44 @@ class Community extends Model
     {
         return Attribute::make(
             get: function () {
-                return $this->funded_proposals()
+                $amount = $this->funded_proposals()
                     ->whereHas('fund', function ($q) {
                         $q->where('currency', CatalystCurrencySymbols::USD->name);
                     })->sum('amount_requested');
+
+                // Log the retrieved amount
+                Log::info("Amount awarded in USD for Proposal ID {$this->id}: {$amount}");
+
+                return $amount;
+            },
+        );
+    }
+
+    public function amountDistributedAda(): Attribute
+    {
+        return Attribute::make(
+            get: function () {
+                return $this->funded_proposals()
+                    ->whereHas('fund', function ($q) {
+                        $q->where('currency', CatalystCurrencySymbols::ADA->name);
+                    })->sum('amount_received');
+            },
+        );
+    }
+
+    public function amountDistributedUsd(): Attribute
+    {
+        return Attribute::make(
+            get: function () {
+                $amount = $this->funded_proposals()
+                    ->whereHas('fund', function ($q) {
+                        $q->where('currency', CatalystCurrencySymbols::USD->name);
+                    })->sum('amount_received');
+
+                // Log the amount distributed in USD
+                Log::info("Amount distributed in USD for Proposal ID {$this->id}: {$amount}");
+
+                return $amount;
             },
         );
     }
@@ -103,5 +138,10 @@ class Community extends Model
     public function ideascale_profiles(): BelongsToMany
     {
         return $this->belongsToMany(IdeascaleProfile::class, 'community_has_ideascale_profile', 'community_id', 'ideascale_profile_id');
+    }
+
+    public function groups(): BelongsToMany
+    {
+        return $this->belongsToMany(Group::class, 'community_has_groups', 'community_id', 'group_id');
     }
 }

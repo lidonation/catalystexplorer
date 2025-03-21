@@ -444,6 +444,10 @@
         "totalRequested":"Total Requested",
         "proposers": "Proposers",
         "collaborators": "Collaborators",
+        "totalAmountAwarded" : "Total Amount Awarded",
+        "totalAmountDistributed" : "Total Amount Distributed",
+        "totalAmountRemaining" : "Total Amount Remaining",
+        "totalAwarded": "Total Amount of ADA & USD Awarded",
         "options": {
             "alphabetically": "Alphabetically: A to Z",
             "amountAwardedAdaDesc": "Amount Awarded ADA: High to Low",
@@ -452,7 +456,14 @@
             "amountAwardedUsdAsc": "Amount Awarded USD: Low to High"
         },
         "tabs": {
-            "dashboard": "Dashboard"
+            "dashboard": "Dashboard",
+            "proposals": "Proposals",
+            "members": "Members",
+            "groups": "Groups"
+        },
+        "filters": {
+            "totalAda": "Total Amount of ADA Awarded",
+            "totalUsd": "Total Amount of USD Awarded"
         }
     },
     "posts": {

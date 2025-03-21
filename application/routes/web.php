@@ -76,8 +76,18 @@ Route::localized(
             Route::prefix('/{community:slug}')->group(function () {
                 Route::get('/', [CommunityController::class, 'show'])
                     ->name('show');
+
                 Route::get('/dashboard', [CommunityController::class, 'show'])
                     ->name('dashboard');
+
+                Route::get('/proposals', [CommunityController::class, 'show'])
+                    ->name('proposals');
+
+                Route::get('/members', [CommunityController::class, 'show'])
+                    ->name('members');
+                    
+                Route::get('/groups', [CommunityController::class, 'show'])
+                    ->name('groups');
             });
         });
 

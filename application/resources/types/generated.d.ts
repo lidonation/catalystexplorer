@@ -79,6 +79,8 @@ funded_proposals_count?: number;
 Unfunded_proposals_count?: number;
 amount_awarded_ada?: number;
 amount_awarded_usd?: number;
+amount_distributed_ada?: number;
+amount_distributed_usd?: number;
 created_at?: string;
 updated_at?: string;
 deleted_at?: string;
@@ -413,7 +415,6 @@ fund_name: string | null;
 };
 export type UserData = {
 hash: string;
-id: number;
 name: string;
 email: string;
 hero_img_url: string | null;
