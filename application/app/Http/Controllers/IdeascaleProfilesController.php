@@ -6,6 +6,7 @@ namespace App\Http\Controllers;
 
 use App\Actions\TransformIdsToHashes;
 use App\DataTransferObjects\CampaignData;
+use App\DataTransferObjects\GroupData;
 use App\DataTransferObjects\IdeascaleProfileData;
 use App\DataTransferObjects\ProposalData;
 use App\DataTransferObjects\ProposalMilestoneData;
@@ -93,9 +94,12 @@ class IdeascaleProfilesController extends Controller
         }
 
         if (str_contains($path, '/groups')) {
+            // dd($ideascaleProfile->groups);
             return Inertia::render('IdeascaleProfile/Groups/Index', [
                 'ideascaleProfile' => IdeascaleProfileData::from($ideascaleProfileData),
+                'groups' => GroupData::collect($ideascaleProfile->groups),
             ]);
+
         }
 
         if (str_contains($path, '/communities')) {

@@ -3,6 +3,7 @@ import GroupData = App.DataTransferObjects.GroupData;
 import GroupCardExtended from "@/Pages/Groups/Partials/GroupCardExtended";
 import { AnimatePresence, motion } from "framer-motion";
 import { useTranslation } from 'react-i18next';
+import { Button } from '@headlessui/react';
 
 interface GroupListProps {
     groups: GroupData[];
@@ -25,6 +26,9 @@ const GroupsList: React.FC<GroupListProps> = ({
                             transition={{ duration: 0.5, ease: 'easeIn' }}
                         >
                             <GroupCardExtended group={group}>
+                             <Button className="absolute top-2 right-2 bg-success text-white py-1 px-3 rounded">
+                {t('groups.manageGroup')}
+            </Button> 
                             </GroupCardExtended>
                         </motion.li>
                     ))}

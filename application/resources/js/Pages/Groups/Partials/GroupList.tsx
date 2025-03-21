@@ -5,10 +5,12 @@ import {AnimatePresence, motion} from "framer-motion";
 
 interface GroupListProps {
     groups: GroupData[];
+    children?: (group: GroupData) => React.ReactNode;
+    className?: string
 }
 
 const GroupList: React.FC<GroupListProps> = ({
-    groups
+    groups, children
 }) => {
     return (
         <>
@@ -23,7 +25,7 @@ const GroupList: React.FC<GroupListProps> = ({
                             transition={{ duration: 0.5, ease: 'easeIn' }}
                             className='h-full'
                         >
-                            <GroupCard group={group}/>
+                            {children ? children(group) : <GroupCard group={group}/>}
                         </motion.li>
                     ))}
                 </AnimatePresence>
