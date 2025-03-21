@@ -2,7 +2,8 @@ import React, { createContext, useState, useContext, useEffect } from 'react';
 import { CIP30API } from '@/types/wallet';
 import WalletSlider from '@/Components/WalletConnectSlider';
 import { useTranslation } from 'react-i18next';
-
+import { usePage } from '@inertiajs/react';
+import storageService from '@/utils/storage-service';
 interface WalletContextType {
   wallets: string[];
   connectedWallet: CIP30API | null;
@@ -12,22 +13,26 @@ interface WalletContextType {
   isConnecting: string | null;
   isWalletConnectorOpen: boolean;
   CardanoWasm: any;
+  networkId: number | null;
+  networkName: string;
   connectWallet: (walletName: string) => Promise<void>;
   disconnectWallet: () => void;
   setIsConnecting: (value: string | null) => void;
-  openConnectWallet: () => void;
-  closeConnectWallet: () => void;
+  openConnectWalletSlider: () => void;
+  closeConnectWalletSlider: () => void;
 }
-
 
 interface WalletProviderProps {
   children: React.ReactNode;
-  onWalletConnected?: (wallet: CIP30API | null, address: string) => void;
+  onWalletConnected?: (wallet: CIP30API | null, address: string, networkId: number) => void;
 }
 
 const WalletContext = createContext<WalletContextType | undefined>(undefined);
 
-export function ConnectWalletProvider({ children, onWalletConnected }: WalletProviderProps) {
+export function ConnectWalletProvider({ 
+  children, 
+  onWalletConnected,
+}: WalletProviderProps) {
   const [wallets, setWallets] = useState<string[]>([]);
   const [connectedWallet, setConnectedWallet] = useState<CIP30API | null>(null);
   const [userAddress, setUserAddress] = useState<string>('');
@@ -36,7 +41,10 @@ export function ConnectWalletProvider({ children, onWalletConnected }: WalletPro
   const [CardanoWasm, setCardanoWasm] = useState<any>(null);
   const [isSliderOpen, setIsSliderOpen] = useState(false);
   const [connectedWalletProvider, setConnectedWalletProvider] = useState<any | null>(null);
+  const [networkId, setNetworkId] = useState<number | null>(null);
+  const [networkName, setNetworkName] = useState<string>('');
   const { t } = useTranslation();
+  const { environment } = usePage().props;
 
   useEffect(() => {
     async function initializeWasm() {
@@ -59,11 +67,21 @@ export function ConnectWalletProvider({ children, onWalletConnected }: WalletPro
   }, []);
 
   useEffect(() => {
-    const lastWallet = localStorage.getItem('lastConnectedWallet');
+    const lastWallet = storageService.getLastConnectedWallet();
     if (lastWallet && window.cardano?.[lastWallet] && CardanoWasm) {
       connectWallet(lastWallet);
     }
   }, [CardanoWasm]);
+
+  const getAllowedNetworks = (environment: any): number[] => {
+    if (environment === 'production') {
+      return [1];
+    } else {
+      return [0];
+    }
+  };
+  
+  const allowedNetworks = getAllowedNetworks(environment);
 
   const connectWallet = async (walletName: string) => {
     try {
@@ -80,8 +98,17 @@ export function ConnectWalletProvider({ children, onWalletConnected }: WalletPro
 
       const api = await wallet.enable();
 
-      const networkId = await api.getNetworkId();
-      if (networkId !== 1) throw new Error(t('wallet.connect.errors.wrongNetwork'));
+      const walletNetworkId = await api.getNetworkId();
+      
+      if (!allowedNetworks.includes(walletNetworkId)) {
+        const expectedNetwork = environment === 'production' ? 'Mainnet' : 'Preview/Testnet';
+        throw new Error(t('wallet.connect.errors.wrongNetwork', { 
+          expected: expectedNetwork
+        }));
+      }
+
+      setNetworkId(walletNetworkId);
+      setNetworkName(walletNetworkId === 0 ? 'Preview' : 'Mainnet');
 
       const usedAddresses = await api.getUsedAddresses();
       const unusedAddresses = await api.getUnusedAddresses();
@@ -99,9 +126,13 @@ export function ConnectWalletProvider({ children, onWalletConnected }: WalletPro
       setUserAddress(bech32Address);
       setConnectedWalletProvider(wallet);
 
-      localStorage.setItem('lastConnectedWallet', walletName);
+      storageService.saveWalletConnection(walletName);
 
       setIsSliderOpen(false);
+      
+      if (onWalletConnected) {
+        onWalletConnected(api, bech32Address, walletNetworkId);
+      }
 
     } catch (err) {
       setError(err instanceof Error ? err.message : t('wallet.connect.errors.connectionFailed'));
@@ -120,7 +151,7 @@ export function ConnectWalletProvider({ children, onWalletConnected }: WalletPro
     }
 
     resetConnection();
-    localStorage.removeItem('lastConnectedWallet');
+    storageService.clearWalletConnection();
   };
 
   const resetConnection = () => {
@@ -128,10 +159,8 @@ export function ConnectWalletProvider({ children, onWalletConnected }: WalletPro
     setConnectedWalletProvider(null);
     setError('');
     setUserAddress('');
-  };
-
-  const handleWalletConnected = (wallet: CIP30API | null, address: string) => {
-    onWalletConnected?.(wallet, address);
+    setNetworkId(null);
+    setNetworkName('');
   };
 
   return (
@@ -143,20 +172,26 @@ export function ConnectWalletProvider({ children, onWalletConnected }: WalletPro
         error,
         isConnecting,
         CardanoWasm,
+        networkId,
+        networkName,
         connectWallet,
         disconnectWallet,
         setIsConnecting,
-        openConnectWallet: () => setIsSliderOpen(true),
-        closeConnectWallet: () => setIsSliderOpen(false),
+        openConnectWalletSlider: () => setIsSliderOpen(true),
+        closeConnectWalletSlider: () => setIsSliderOpen(false),
         isWalletConnectorOpen: isSliderOpen,
-        connectedWalletProvider
+        connectedWalletProvider,
       }}
     >
       {children}
       <WalletSlider
         isOpen={isSliderOpen}
         onClose={() => setIsSliderOpen(false)}
-        onWalletConnected={handleWalletConnected}
+        onWalletConnected={(wallet, address) => {
+          if (onWalletConnected && networkId !== null) {
+            onWalletConnected(wallet, address, networkId);
+          }
+        }}
       />
       
     </WalletContext.Provider>

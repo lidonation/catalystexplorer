@@ -7,16 +7,18 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreDrepRequest;
 use App\Http\Requests\UpdateDrepRequest;
 use App\Models\Drep;
+use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Inertia\Response;
 
 class DrepController
 {
     /**
-     * Display a listing of the resource.
+     * Display a landing page.
      */
-    public function index()
+    public function index(Request $request): Response
     {
-        //
+        return Inertia::render('Dreps/Index');
     }
 
     /**

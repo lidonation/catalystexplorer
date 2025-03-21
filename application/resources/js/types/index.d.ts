@@ -1,5 +1,5 @@
 export interface User {
-    id: number;
+    hash: string;
     name: string;
     email: string;
     email_verified_at?: string;
@@ -25,4 +25,9 @@ export type Post = {
     published_at: string;
     read_time: string;
     type: string;
+};
+
+export type StepDetails = {
+    title: string;
+    info: string;
 };

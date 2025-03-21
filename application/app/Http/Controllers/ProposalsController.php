@@ -69,11 +69,11 @@ class ProposalsController extends Controller
     {
         $this->getProps($request);
 
-        $proposals = $this->query();
+        $proposal = $this->query();
 
         return Inertia::render('Proposals/Index', [
             'proposals' => Inertia::optional(
-                fn () => $proposals
+                fn () => $proposal
             ),
             'filters' => $this->queryParams,
             'funds' => $this->fundsCount,
@@ -192,6 +192,7 @@ class ProposalsController extends Controller
 
         $response = new Fluent($builder->raw());
         $items = collect($response->hits);
+
         $this->setCounts($response->facetDistribution, $response->facetStats);
 
         $pagination = new LengthAwarePaginator(
@@ -311,6 +312,7 @@ class ProposalsController extends Controller
 
     public function setCounts($facets, $facetStats): void
     {
+
         if (isset($facets['amount_awarded_USD'])) {
             foreach ($facets['amount_awarded_USD'] as $key => $value) {
                 $this->sumApprovedUSD += $key * $value;
@@ -376,6 +378,7 @@ class ProposalsController extends Controller
         if (isset($facets['fund.title']) && count($facets['fund.title'])) {
             $this->fundsCount = $facets['fund.title'];
         }
+
         // if (isset($facetStats['amount_requested'])) {
         //     $this->budgets = collect(array_values($facetStats['amount_requested']));
         // }
