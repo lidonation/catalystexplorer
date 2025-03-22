@@ -17,13 +17,13 @@ export default function Nav({ stepDetails, activeStep }: NavProps) {
     }
     
     useEffect(() => {
-        setProgress((activeStep / stepDetails.length) * 75);
+        setProgress((activeStep / stepDetails.length) * 100);
     }, [activeStep, stepDetails]);
 
     return (
         <div className="sticky top-16 z-50 lg:static lg:z-auto">
             <nav className="bg-background w-full gap-4 rounded-tl-lg px-4 pt-2 shadow-md lg:px-8 lg:pt-4">
-                <ul className="menu-gap-y flex w-full overflow-x-auto pb-3 whitespace-nowrap">
+                <ul className="menu-gap-y scrollbar-thin scrollbar-track flex w-full overflow-x-auto pb-3 whitespace-nowrap">
                     {stepDetails.map((step, index) => {
                         if (index + 1 < activeStep) {
                             return (
@@ -37,7 +37,7 @@ export default function Nav({ stepDetails, activeStep }: NavProps) {
                                                 level="6"
                                                 className="font-semibold"
                                             >
-                                                {step.title}
+                                                {t(step.title)}
                                             </Title>
                                             <span className="text-slate">
                                                 {t('Step') + (index + 1)}
@@ -58,7 +58,7 @@ export default function Nav({ stepDetails, activeStep }: NavProps) {
                                                 level="6"
                                                 className="text-primary font-semibold"
                                             >
-                                                {step.title}
+                                                {t(step.title)}
                                             </Title>
                                             <span className="text-slate">
                                                 {t(`Step ${index + 1}`)}
@@ -79,7 +79,7 @@ export default function Nav({ stepDetails, activeStep }: NavProps) {
                                                 level="6"
                                                 className="text-slate font-semibold"
                                             >
-                                                {step.title}
+                                                {t(step.title)}
                                             </Title>
                                             <span className="text-slate">
                                                 {t(`Step ${index + 1}`)}

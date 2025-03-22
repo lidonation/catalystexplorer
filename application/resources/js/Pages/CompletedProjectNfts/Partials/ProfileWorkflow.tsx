@@ -136,7 +136,7 @@ const ProfileWorkflow: React.FC<ProfileWorkflowProps> = ({
                 />
             )}
 
-            <div className="w-full">
+            {/* <div className="w-full">
                 {viewProposal ? (
                     <>
                         <button
@@ -192,12 +192,7 @@ const ProfileWorkflow: React.FC<ProfileWorkflowProps> = ({
                             }
                         />
 
-                        <div className="mt-4 space-y-2">
-                            {profileSearchResults.map((profile, index) => (
-                                <div
-                                    key={index}
-                                    className={`w-full sm:max-w-[400px] lg:max-w-[500px]`}
-                                >
+                   
                                     <ProfileCard
                                         profile={profile}
                                         onSelect={() => {
@@ -271,7 +266,7 @@ const ProfileWorkflow: React.FC<ProfileWorkflowProps> = ({
                         </div>
                     </>
                 )}
-            </div>
+            </div> */}
         </div>
     );
 };

@@ -1,17 +1,18 @@
 import UserAvatar from '@/Components/UserAvatar';
 import Checkbox from '@/Components/atoms/Checkbox';
 import Paragraph from '@/Components/atoms/Paragraph';
-import React from 'react';
+import React, { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import IdeascaleProfileData = App.DataTransferObjects.IdeascaleProfileData;
 
 interface ProfileCardProps {
     profile: IdeascaleProfileData;
     className?: string;
+    children?: ReactNode;
 }
 
 const ProfileCard: React.FC<ProfileCardProps> = React.memo(
-    ({ profile, className }) => {
+    ({ profile, className,children }) => {
         const { t } = useTranslation();
 
         return (
@@ -36,6 +37,7 @@ const ProfileCard: React.FC<ProfileCardProps> = React.memo(
                             })}
                         </Paragraph>
                     </div>
+                    {children}
                 </div>
             </div>
         );

@@ -37,18 +37,14 @@ export default function LoginForm({ title, postRoute }: LoginFormProps) {
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
-        axios
+        router
             .post(postRoute ?? generateLocalizedRoute('login'), {
                 email: data.email,
                 password: data.password,
+            },{
+                onSuccess:()=> reset('password'),
+                onError:(errors)=> setErrors(errors)
             })
-            .then((response) => {
-                reset('password');
-                router.reload();
-            })
-            .catch((error) => {
-                setErrors(error?.response?.data?.errors);
-            });
     };
 
     return (

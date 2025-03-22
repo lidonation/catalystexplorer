@@ -16,7 +16,7 @@ class WorkflowController extends Controller
         return Inertia::render('Workflows/Login');
     }
 
-    public function login(LoginRequest $request): \Illuminate\Http\RedirectResponse
+    public function login(LoginRequest $request)
     {
 
         $nextRoute = session()->pull('nextstep.route');
@@ -26,8 +26,6 @@ class WorkflowController extends Controller
 
         $request->session()->regenerate();
 
-        session()->put('intended.url', route($nextRoute, $nextRouteParam));
-
-        return to_route($nextRoute, $nextRouteParam, 303);
+        return to_route($nextRoute, $nextRouteParam);
     }
 }

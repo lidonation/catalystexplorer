@@ -103,6 +103,22 @@
     "nftPaymentGatewayTitle": "Passerelle de paiement NFT-MAKER PRO",
     "artistRole": "Artiste",
     "cantFindNFTForMint": "Impossible de trouver le NFT à mint",
+    "workflows": {
+        "claimIdeascale": {
+            "selectProfile": "Sélectionnez un profil",
+            "submitDetails": "Soumettre les détails",
+            "verification": "Le code de vérification",
+            "chooseProfile": "Choisissez le(s) profile(s) que vous souhaitez revendiquer. 🚀",
+            "submitDetailsForm": "Soumettez les détails que vous souhaitez mettre à jour sur le compte.",
+            "verifyOnIdeascale": "Pour vérifier votre propriété de ce profil, veuillez envoyer un message personnel à Lido Nation sur Ideascale et inclure le code ci-dessus."
+        },
+        "completedProjectNfts": {
+            "selectProfile": "Sélectionnez un profil",
+            "selectProposal": "Sélectionnez une proposition",
+            "selectProfileInfo": "Choisissez le(s) profil(s) à partir duquel/lesquels vous souhaitez créer des NFT. Le profil sélectionné doit être lié au projet finalisé dont vous souhaitez créer le NFT. Vous hésitez ? Pas de souci : sélectionnez simplement tous les profils disponibles et nous nous occupons du reste ! 🚀",
+            "selectProposalInfo": "Pour commencer, veuillez sélectionner la proposition à partir de laquelle créer"
+        }
+    },
     "error404": {
         "mainText": "Désolé, nous n'avons pas trouvé ce que vous cherchez",
         "subText": "Retrouvons votre chemin du retour!"
@@ -115,15 +131,13 @@
         "contactEmail": "support@lidonation.com",
         "appLogoAlt": "Logo de Catalyst Explore."
     },
-
-    "buttons":{
-        "titles":{
+    "buttons": {
+        "titles": {
             "claim": "Bouton de réclamation",
             "claimed": "Bouton réclamé",
-            "share":"Bouton de partage"
+            "share": "Bouton de partage"
         }
     },
-
     "searchResults": {
         "noResults": {
             "title": "Aucun résultat trouvé",
@@ -475,7 +489,7 @@
             "chart": "Icône de graphique",
             "check": "Icône de vérification",
             "chevron_up": "Icône de chevron vers le haut",
-            "chevron_down": "Icône de chevron vers le bas",     
+            "chevron_down": "Icône de chevron vers le bas",
             "close": "Icône de fermeture",
             "search": "Icône de recherche",
             "darkMode": "Icône de mode sombre",

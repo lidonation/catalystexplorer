@@ -69,6 +69,7 @@ class ProposalsController extends Controller
     {
         $this->getProps($request);
 
+        // dont
         $proposal = $this->query();
 
         return Inertia::render('Proposals/Index', [
