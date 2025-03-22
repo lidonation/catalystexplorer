@@ -587,5 +587,34 @@
         "verificationCode": "Code de vérification",
         "verificationInstructions": "Pour vérifier que vous êtes le propriétaire de ce profil, veuillez envoyer un message personnel à Lido Nation sur Ideascale et inclure le code ci-dessus.",
         "goToIdeascale": "Accéder à Ideascale"
+    },
+    "wallet": {
+        "connect": {
+            "title": "Connecter le portefeuille",
+            "initializing": "Initialisation de la connexion au portefeuille...",
+            "connectedTo": "Connecté à:",
+            "disconnect": "Déconnecter le portefeuille",
+            "selectWallet": "Sélectionnez un portefeuille",
+            "noWallets": {
+                "title": "Aucun portefeuille pris en charge détecté",
+                "subtitle": "Veuillez installer Lace, Eternl, Flint ou un autre portefeuille Cardano"
+            },
+            "errors": {
+                "notInitialized": "La bibliothèque Cardano n'est pas encore initialisée. Veuillez réessayer dans quelques instants..",
+                "walletNotFound": " Portefeuille introuvable. Veuillez d'abord l'installer.",
+                "wrongNetwork": "Mauvais réseau détecté. Veuillez passer à ",
+                "noAddresses": "Aucune adresse trouvée dans le portefeuille",
+                "connectionFailed": "La connexion a échoué",
+                "disconnectError": "Erreur lors de la déconnexion du portefeuille",
+                "contextError": "useWallet doit être utilisé dans un WalletProvider",
+                "wasmInitError": "Échec de l'initialisation du module Cardano WASM",
+                "wasmLibError": "Échec de l'initialisation de la bibliothèque de connexion au portefeuille"
+            }
+        },
+        "status": {
+            "connected": "Connected",
+            "connecting": "Connecting",
+            "disconnect": "Disconnect"
+        }
     }
 }
