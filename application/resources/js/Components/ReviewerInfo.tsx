@@ -25,7 +25,7 @@ export const ReviewerInfo: React.FC<ReviewerInfoProps> = ({
             )}
             <div className="flex flex-col">
                 {ideascaleProfile.name ? (
-                    <Paragraph className="text-content text-1 mt-3 font-bold">
+                    <Paragraph className="text-content text-1 mt-1 font-bold">
                         {ideascaleProfile.name}
                     </Paragraph>
                 ) : (
@@ -39,7 +39,7 @@ export const ReviewerInfo: React.FC<ReviewerInfoProps> = ({
                         </Paragraph>
                     </div>
                 )}
-                <Paragraph className="text-gray-persist text-1 mt-3">
+                <Paragraph className="text-gray-persist text-1">
                     {reviewCount} {t('reviews')}
                 </Paragraph>
             </div>
