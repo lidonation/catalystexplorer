@@ -14,7 +14,7 @@ const RichContent: React.FC<RichContentProps> = ({
     className = '',
 }) => {
     return (
-        <div className={`rich-content ${className}`}>
+        <div className={`${className}`}>
             {format === 'markdown' ? (
                 <ReactMarkdown rehypePlugins={[rehypeSanitize]}>
                     {content}
