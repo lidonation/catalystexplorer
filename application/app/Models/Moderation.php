@@ -24,6 +24,11 @@ class Moderation extends Model
         return $this->belongsTo(Review::class);
     }
 
+    public function reviewer(): BelongsTo
+    {
+        return $this->belongsTo(Reviewer::class);
+    }
+
     public function proposal(): BelongsTo
     {
         return $this->belongsTo(Proposal::class, 'context_id');

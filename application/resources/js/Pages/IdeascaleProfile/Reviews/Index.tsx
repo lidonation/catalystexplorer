@@ -7,6 +7,7 @@ import { PaginatedData } from '../../../../types/paginated-data';
 import IdeascaleProfileLayout from '../IdeascaleProfileLayout';
 import IdeascaleProfileData = App.DataTransferObjects.IdeascaleProfileData;
 import ReviewData = App.DataTransferObjects.ReviewData;
+import ReviewReputationScoreData = App.DataTransferObjects.ReviewerReputationScoreData;
 import UserData = App.DataTransferObjects.UserData;
 import RecordsNotFound from '@/Layouts/RecordsNotFound';
 import { SearchParams } from '../../../../types/search-params';
@@ -16,6 +17,7 @@ export type ReviewItem = {
     reviewerReviewsCount: number;
     rating: number;
     reviewerProfile: IdeascaleProfileData;
+    reputationScores: ReviewReputationScoreData[];
 };
 
 interface RankingCount {
@@ -25,6 +27,7 @@ interface RankingCount {
 interface ReviewsPageProps {
     ideascaleProfile: IdeascaleProfileData;
     reviews: PaginatedData<ReviewItem[]>;
+    reviewerReputationScores: ReviewReputationScoreData[];
     ratingStats: { [s: string]: number } | ArrayLike<number>;
     filters: SearchParams;
 }
