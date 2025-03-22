@@ -82,6 +82,11 @@ Route::localized(
                 ->name('group');
         });
 
+        Route::prefix('connections')->as('connections.')->group(
+            function () {
+                Route::get('/', [ConnectionsController::class, 'index'])
+                    ->name('index');
+
 
         Route::prefix('/workflows')->as('workflows.')->group(function () {
 
