@@ -15,6 +15,7 @@ use App\Enums\ProposalSearchParams;
 use App\Models\Campaign;
 use App\Models\Fund;
 use App\Models\IdeascaleProfile;
+use App\Models\Moderation;
 use App\Models\ProposalMilestone;
 use App\Repositories\IdeascaleProfileRepository;
 use Illuminate\Http\Request;
@@ -111,6 +112,7 @@ class IdeascaleProfilesController extends Controller
                 'ideascaleProfile' => IdeascaleProfileData::from($ideascaleProfileData),
                 'reviews' => $data['reviews'],
                 'ratingStats' => $data['ratingStats'],
+                'reputationScores' => $data['reputationScores'],
                 'filters' => $this->queryParams,
             ]);
         }
@@ -180,6 +182,13 @@ class IdeascaleProfilesController extends Controller
         $reviews = $proposals->flatMap(fn ($proposal) => $proposal->reviews);
         $reviewerIds = $reviews->pluck('user.id')->filter()->unique()->values();
 
+        $reviewIds = $reviews->pluck('id')->toArray();
+
+        $moderations = Moderation::whereIn('review_id', $reviewIds)
+            ->with('reviewer.reputationScores')
+            ->get()
+            ->keyBy('review_id');
+
         $reviewerProfiles = IdeascaleProfile::whereIn('claimed_by_id', $reviewerIds)->get();
 
         $ratingStats = array_fill_keys([1, 2, 3, 4, 5], 0);
@@ -201,21 +210,33 @@ class IdeascaleProfilesController extends Controller
             ['path' => $path]
         );
 
-        $formattedReviews = $reviewsPaginator->through(function ($review) use ($reviewerProfiles) {
+        $allReputationScores = collect();
+
+        $formattedReviews = $reviewsPaginator->through(function ($review) use ($reviewerProfiles, $moderations, &$allReputationScores) {
             $userId = $review->user->id ?? null;
             $userProfile = $userId ? $reviewerProfiles->firstWhere('claimed_by_id', $userId) : null;
+
+            $moderation = $moderations->get($review->id);
+
+            $reputationScores = collect();
+            if ($moderation && $moderation->reviewer) {
+                $reputationScores = $moderation->reviewer->reputationScores;
+                $allReputationScores = $allReputationScores->merge($reputationScores);
+            }
 
             return [
                 'review' => ReviewData::from($review),
                 'reviewerReviewsCount' => $review->user->reviews_count ?? 0,
                 'rating' => $review->rating->rating ?? null,
                 'reviewerProfile' => IdeascaleProfileData::from($userProfile),
+                'reputationScores' => $reputationScores,
             ];
         })->toArray();
 
         return [
             'reviews' => $formattedReviews,
             'ratingStats' => $ratingStats,
+            'reputationScores' => $allReputationScores,
         ];
     }
 
