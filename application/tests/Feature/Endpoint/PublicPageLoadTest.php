@@ -28,9 +28,45 @@ it('renders all public pages', function (string $path, string $component) {
 //    [
 //        'path' => '/en/confirm-password',
 //        'component' => 'Auth/ConfirmPassword',
+//    ],,
+//    [
+//        'path' => '/en/forgot-password',
+//        'component' => 'Auth/ForgotPassword',
 //    ],
     [
         'path' => '/en/connections',
         'component' => 'Connections/Index',
+    ],
+    [
+        'path' => '/en/dreps',
+        'component' => 'Dreps/Index',
+    ],
+    [
+        'path' => '/en/dreps/list',
+        'component' => 'Dreps/DrepList',
+    ],
+    [
+        'path' => '/en/funds',
+        'component' => 'Funds/Index',
+    ],
+    [
+        'path' => '/en/groups',
+        'component' => 'Groups/Index',
+    ],
+    [
+        'path' => '/en/ideascale-profiles',
+        'component' => 'IdeascaleProfile/Index',
+    ],
+    [
+        'path' => '/en/jormungandr/transactions',
+        'component' => 'Transactions/Index',
+    ],
+    [
+        'path' => '/en/proposals',
+        'component' => 'Proposals/Index',
+    ],
+    [
+        'path' => '/en/reviews',
+        'component' => 'Reviews/Index',
     ],
 ]);

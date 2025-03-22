@@ -119,11 +119,11 @@ class ReviewsController extends Controller
 
     protected function setFilters(Request $request): void
     {
-        $this->limit = (int) $request->input(QueryParamsEnum::PER_PAGE, 24);
-        $this->currentPage = (int) $request->input(QueryParamsEnum::PAGE, 1);
-        $this->search = $request->input(QueryParamsEnum::SEARCH, null);
+        $this->limit = (int) $request->input(QueryParamsEnum::LIMIT(), 24);
+        $this->currentPage = (int) $request->input(QueryParamsEnum::PAGE(), 1);
+        $this->search = $request->input(QueryParamsEnum::QUERY(), null);
 
-        $sort = collect(explode(':', $request->input(QueryParamsEnum::SORTS, '')))->filter();
+        $sort = collect(explode(':', $request->input(QueryParamsEnum::SORTS(), '')))->filter();
         if ($sort->isEmpty()) {
             $sort = collect(explode(':', collect([
                 'title:asc',
