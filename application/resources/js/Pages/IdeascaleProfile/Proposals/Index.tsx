@@ -20,7 +20,11 @@ export default function Proposals({ ideascaleProfile, proposals }: ProposalsPage
             <WhenVisible data="proposals" fallback={<ProposalMiniCardLoader />}>
                 <RelatedProposals
                         proposals={proposals}
+<<<<<<< HEAD
                         proposalWrapperClassName='rounded-lg border-2 border-border-dark-on-dark'
+=======
+                        proposalWrapperClassName='rounded-xl border-2 border-border-dark-on-dark'
+>>>>>>> origin/dev
                         ideascaleProfileId={ideascaleProfile.hash?? undefined}
                         className='proposals-wrapper w-full grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-3'
                     />

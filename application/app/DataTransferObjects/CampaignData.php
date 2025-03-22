@@ -48,7 +48,7 @@ class CampaignData extends Data
         #[TypeScriptOptional]
         public ?string $label,
 
-        public string $currency,
+        public ?string $currency,
 
         public int $proposals_count,
 
@@ -66,5 +66,10 @@ class CampaignData extends Data
 
         #[MapInputName('totalDistributed')]
         public ?float $total_distributed,
+<<<<<<< HEAD
+=======
+
+        public ?FundData $fund,
+>>>>>>> origin/dev
     ) {}
 }

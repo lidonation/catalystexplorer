@@ -1,0 +1,5 @@
+{
+    "require": {
+        "laravel/scout": "^10.13"
+    }
+}

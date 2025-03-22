@@ -2,27 +2,41 @@ import RecordsNotFoundIcon from '@/Components/svgs/RecordsNotFoundIcon';
 import { useTranslation } from 'react-i18next';
 
 type RecordsNotFoundProps = {
+<<<<<<< HEAD
     context?: 'proposals' | 'profiles' | 'groups' | 'reviews' | 'bookmarks' | 'search' | 'communities' | 'connections';
+=======
+    context?:
+        | 'proposals'
+        | 'profiles'
+        | 'groups'
+        | 'reviews'
+        | 'bookmarks'
+        | 'search'
+        | 'communities'
+        | 'connections'
+        | 'proposalMilestones';
+>>>>>>> origin/dev
     searchTerm?: string;
+    showIcon?: boolean;
 };
 
 export default function RecordsNotFound({
     context = 'search',
-    searchTerm = ''
+    searchTerm = '',
+    showIcon = true,
 }: RecordsNotFoundProps) {
     const { t } = useTranslation();
-
 
     const getMessage = () => {
         return t(`recordsNotFound.message`);
     };
 
     return (
-        <div className="flex flex-col items-center justify-center w-full py-16 px-4 bg-background rounded-lg">
-            <RecordsNotFoundIcon />
-            <p className="mt-2 text-base text-gray-600 text-center max-w-md">
+        <div className="bg-background flex w-full flex-col items-center justify-center rounded-lg px-4 py-8">
+            {showIcon && <RecordsNotFoundIcon />}
+            {/* <p className="mt-2 max-w-md text-center text-base text-gray-600">
                 {getMessage()}
-            </p>
+            </p> */}
         </div>
     );
 }

@@ -13,7 +13,10 @@ import BioCard from '@/Pages/Groups/Partials/BioCard';
 
 interface PageProps extends InertiaPageProps {
     url: string;
+<<<<<<< HEAD
 
+=======
+>>>>>>> origin/dev
     [key: string]: any;
 }
 
@@ -54,7 +57,11 @@ export default function GroupLayout({children, group}: GroupLayoutProps) {
                 <div className="overflow-hidden rounded-lg mx-8 mt-4 sm:mx-10 sm:h-100">
                     <Image
 <<<<<<< HEAD
+<<<<<<< HEAD
                         imageUrl={group.hero_img_url || GroupHeader}
+=======
+                        imageUrl={group.banner_img_url || GroupHeader}
+>>>>>>> origin/dev
 =======
                         imageUrl={group.banner_img_url || GroupHeader}
 >>>>>>> origin/dev
@@ -65,8 +72,13 @@ export default function GroupLayout({children, group}: GroupLayoutProps) {
                     <div className="flex flex-row items-start">
                         <Image
 <<<<<<< HEAD
+<<<<<<< HEAD
                             imageUrl={group.profile_photo_url}
                             className="ml-8 sm:ml-2 md:ml-10 md:-mt-5 w-24 h-24 sm:w-28 sm:h-28 md:w-32 md:h-32 lg:w-40 lg:h-40 rounded-full"
+=======
+                            imageUrl={group.hero_img_url}
+                            className="ml-8 sm:ml-2 md:ml-16 md:-mt-5 size-24 sm:size-28 md:size-32 lg:size-40 border-3 border-darker rounded-full"
+>>>>>>> origin/dev
 =======
                             imageUrl={group.hero_img_url}
                             className="ml-8 sm:ml-2 md:ml-16 md:-mt-5 size-24 sm:size-28 md:size-32 lg:size-40 border-3 border-darker rounded-full"
@@ -87,9 +99,15 @@ export default function GroupLayout({children, group}: GroupLayoutProps) {
                     <BioCard group={group}/>
                 </div>
 
+<<<<<<< HEAD
                 <div className="flex flex-col gap-8 w-full lg:w-2/3 xl:w-3/4 shadow-xl bg-background p-4 rounded-lg">
                     <section
                         className=" text-content-lighter [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] overflow-x-auto">
+=======
+                <div className="flex flex-col gap-8 w-full lg:w-2/3 xl:w-3/4 shadow-xl bg-background p-4 rounded-lg relative z-0">
+                    <section
+                        className=" text-content-lighter [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] overflow-x-auto relative z-0">
+>>>>>>> origin/dev
                         <GroupTabs
                             tabs={tabs}
                             activeTab={activeTab}

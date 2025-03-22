@@ -28,7 +28,11 @@ const CampaignCard: React.FC<CampaignCardProps> = ({
 }) => {
     const {t} = useTranslation();
 
+<<<<<<< HEAD
     const heroImageUrl = fund?.hero_img_url;
+=======
+    const heroImageUrl = campaign?.hero_img_url ?? fund?.hero_img_url;
+>>>>>>> origin/dev
 
     const segments = [
         {
@@ -64,7 +68,11 @@ const CampaignCard: React.FC<CampaignCardProps> = ({
                     {heroImageUrl ? (
                         <img
                             src={heroImageUrl}
+<<<<<<< HEAD
                             alt={fund.title}
+=======
+                            alt={`Cat: ${fund.title}`}
+>>>>>>> origin/dev
                             className="h-full w-full object-cover"
                         />
                     ) : (
@@ -77,8 +85,13 @@ const CampaignCard: React.FC<CampaignCardProps> = ({
                 <section className="space-y-6">
                     <div className='flex flex-row justify-between gap-2'>
                         <KeyValue valueKey={t('proposals.filters.budget')}
+<<<<<<< HEAD
                                   value={currency(campaign.amount, 2, campaign.currency)}/>
                         <KeyValue valueKey='Total Proposals' value={campaign.proposals_count}/>
+=======
+                                  value={currency(campaign.amount ?? 0, 2, campaign.currency ?? '')}/>
+                        <KeyValue valueKey='Total Proposals' value={campaign.proposals_count ?? 0}/>
+>>>>>>> origin/dev
                     </div>
 
                     <div>
@@ -87,7 +100,11 @@ const CampaignCard: React.FC<CampaignCardProps> = ({
 
                     <div className='space-y-3'>
                         <div>
+<<<<<<< HEAD
                             <SegmentedBar segments={segments}/>
+=======
+                            <SegmentedBar segments={segments} tooltipSegments={segments}/>
+>>>>>>> origin/dev
                         </div>
 
                         <div className="flex flex-row flex-wrap gap-2 justify-between text-sm px-0.5">
@@ -136,7 +153,11 @@ const CampaignCard: React.FC<CampaignCardProps> = ({
                             title={`${t('distributed')} v. ${t('awarded')}`}
                             numerator={campaign.total_distributed}
                             denominator={campaign.total_awarded}
+<<<<<<< HEAD
                             currency={campaign.currency}
+=======
+                            currency={campaign.currency ?? ''}
+>>>>>>> origin/dev
                         />}
                     </div>
 
@@ -145,7 +166,11 @@ const CampaignCard: React.FC<CampaignCardProps> = ({
                             title={`${t('awarded')} v. ${t('requested')}`}
                             numerator={campaign.total_awarded}
                             denominator={campaign.total_requested}
+<<<<<<< HEAD
                             currency={campaign.currency}
+=======
+                            currency={campaign.currency ?? ''}
+>>>>>>> origin/dev
                         />}
                     </div>
                 </section>

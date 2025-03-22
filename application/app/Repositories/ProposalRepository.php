@@ -56,7 +56,7 @@ class ProposalRepository extends Repository
                     'solution',
                     'status',
                     'website',
-                    'type',
+
                     'link',
                     //                    'ranking_total',
                     'users.id',
@@ -76,6 +76,11 @@ class ProposalRepository extends Repository
                     'campaign.amount',
                     'campaign.currency',
                     'campaign.proposals_count',
+<<<<<<< HEAD
+=======
+                    'campaign.total_awarded',
+                    'campaign.total_distributed',
+>>>>>>> origin/dev
                 ];
                 $args['facets'] = [
                     'tags',

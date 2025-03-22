@@ -6,6 +6,8 @@ export enum ParamsEnum {
     CAMPAIGNS = 'cam',
     COHORT = 'coh',
     COMMUNITIES = 'com',
+    DELEGATORS = 'd',
+    DREP_STATUS = 'ds',
     FUNDS = 'f',
     FUNDING_STATUS = 'fs',
     GROUPS = 'g',
@@ -26,4 +28,5 @@ export enum ParamsEnum {
     SORTS = 'st',
     TAGS = 't',
     TYPE = 'pt',
+    VOTING_POWER = 'vp',
 }

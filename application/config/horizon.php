@@ -204,9 +204,17 @@ return [
             ],
         ],
 
+        'preview' => [
+            'supervisor-1' => [
+                'maxProcesses' => 5,
+                'balanceMaxShift' => 1,
+                'balanceCooldown' => 3,
+            ],
+        ],
+
         'local' => [
             'supervisor-1' => [
-                'maxProcesses' => 3,
+                'maxProcesses' => env('HORIZON_MAX_PROCESSES', 3),
             ],
         ],
     ],

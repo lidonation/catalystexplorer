@@ -8,6 +8,7 @@ import ProposalFundingStatus from './ProposalFundingStatus';
 import ProposalQuickpitch from './ProposalQuickpitch';
 import ProposalSolution from './ProposalSolution';
 import IdeascaleProfileUsers from '@/Pages/IdeascaleProfile/Partials/IdeascaleProfileUsersComponent';
+import { useCallback, useState, useRef, useEffect } from 'react';
 
 export default function ProposalVerticalCard({
     proposal,
@@ -22,19 +23,53 @@ export default function ProposalVerticalCard({
     yesVotes,
     abstainVotes,
 }: any) {
+    const [cardHeight, setCardHeight] = useState<number | null>(null);
+    const cardRef = useRef<HTMLElement>(null);
+    
+    const wrappedHandleUserClick = useCallback(
+        (user: any) => {
+            if (cardRef.current) {
+                setCardHeight(cardRef.current.offsetHeight);
+            }
+            if (handleUserClick) {
+                handleUserClick(user);
+            }
+        },
+        [handleUserClick]
+    );
+    
+    const wrappedNoSelectedUser = useCallback(() => {
+        if (noSelectedUser) {
+            noSelectedUser();
+        }
+    }, [noSelectedUser]);
+
     return (
-        <article className="bg-background proposal-card proposal-card-vertical relative flex h-full flex-col justify-between rounded-xl p-2 shadow-lg gap-3">
+        <article 
+            ref={cardRef as React.RefObject<HTMLElement>}
+            className="bg-background proposal-card proposal-card-vertical flex h-full flex-col justify-between rounded-xl p-2 shadow-lg gap-3 relative"
+            style={cardHeight && userSelected ? { height: `${cardHeight}px` } : {}}
+        >
+            {userSelected && (
+                <button
+                    onClick={wrappedNoSelectedUser}
+                    className="absolute right-4 top-4 z-10 rounded-full p-1 hover:bg-background hover:text-content focus:outline-none focus:ring-2 focus:ring-primary"
+                    aria-label="Close profile"
+                >
+                </button>
+            )}
+            
             <section className="flex h-auto w-full flex-col items-start overflow-hidden">
                 <ProposalCardHeader
                     proposal={proposal}
                     userSelected={userSelected}
-                    noSelectedUser={noSelectedUser}
+                    noSelectedUser={wrappedNoSelectedUser}
                     isHorizontal={isHorizontal}
                 />
             </section>
 
-            <section className=''>
-                <div className="grow overflow-auto px-2">
+            <section className='flex-1 flex flex-col'>
+                <div className="flex-1 overflow-auto px-2">
                     {userSelected ? (
                         <UserQuickView user={userSelected} />
                     ) : (
@@ -51,10 +86,11 @@ export default function ProposalVerticalCard({
                                 className="mt-3"
                                 aria-labelledby="funding-heading"
                             >
-                                <div className="flex flex-row gap-2 my-1">
+                                <div className="flex items-center flex-row gap-2 my-1.5">
                                     <Title level='4' className="font-semibold">
                                         {t('funding')}
                                     </Title>
+
                                     <ProposalFundingStatus
                                         funding_status={proposal.funding_status}
                                     />
@@ -89,7 +125,7 @@ export default function ProposalVerticalCard({
                     </Title>
                     <IdeascaleProfileUsers
                         users={proposal?.users}
-                        onUserClick={handleUserClick}
+                        onUserClick={wrappedHandleUserClick}
                         className='bg-content-light'
                         toolTipProps={t('proposals.viewTeam')}
                     />

@@ -4,7 +4,7 @@ import Paginator from '@/Components/Paginator';
 import { FiltersProvider } from '@/Context/FiltersContext';
 import IdeascaleSortingOptions from '@/lib/IdeascaleSortOptions';
 import { PageProps } from '@/types';
-import {Deferred, Head, WhenVisible} from '@inertiajs/react';
+import { Deferred, Head } from '@inertiajs/react';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { PaginatedData } from '../../../types/paginated-data';
@@ -28,10 +28,13 @@ const Index = ({
 
     const [showFilters, setShowFilters] = useState(false);
     const profiles = ideascaleProfiles?.data ?? [];
-    const maxProfilesPerPage = ideascaleProfilesCount ?? ideascaleProfiles?.per_page ?? 10;
+    const maxProfilesPerPage =
+        ideascaleProfilesCount ?? ideascaleProfiles?.per_page ?? 10;
     const [loading, setLoading] = useState(true);
 
-    useEffect(() => { setLoading(profiles.length === 0);}, [profiles])
+    useEffect(() => {
+        setLoading(profiles.length === 0);
+    }, [profiles]);
     return (
         <>
             <FiltersProvider defaultFilters={filters}>
@@ -44,10 +47,13 @@ const Index = ({
                     </p>
                 </header>
 
-                <SearchControls
-                    sortOptions={IdeascaleSortingOptions()}
-                    onFiltersToggle={setShowFilters}
-                />
+                <section className="container">
+                    <SearchControls
+                        sortOptions={IdeascaleSortingOptions()}
+                        onFiltersToggle={setShowFilters}
+                        searchPlaceholder={t('searchBar.placeholder')}
+                    />
+                </section>
 
                 <section
                     className={`container flex w-full flex-col items-center justify-center overflow-hidden transition-[max-height] duration-500 ease-in-out ${
@@ -60,11 +66,17 @@ const Index = ({
                 <div className="flex w-full flex-col items-center">
                     <section className="container py-2 pb-10">
                         <Deferred
-                            fallback={<IdeaScaleProfileLoader count={maxProfilesPerPage} />}
+                            fallback={
+                                <IdeaScaleProfileLoader
+                                    count={maxProfilesPerPage}
+                                />
+                            }
                             data="ideascaleProfiles"
                         >
                             <IdeascaleProfilesList
-                                ideascaleProfiles={ideascaleProfiles?.data || []}
+                                ideascaleProfiles={
+                                    ideascaleProfiles?.data || []
+                                }
                             />
                         </Deferred>
                     </section>

@@ -12,9 +12,11 @@ import { router } from '@inertiajs/react';
 function SearchControls({
     onFiltersToggle,
     sortOptions,
+    searchPlaceholder
 }: {
     onFiltersToggle: Dispatch<SetStateAction<boolean>>;
     sortOptions: Array<any>;
+    searchPlaceholder?: string;
 }) {
     const { getFilter, setFilters, filters } = useFilterContext();
     const { t } = useTranslation();
@@ -66,13 +68,14 @@ function SearchControls({
     ).length;
 
     return (
-        <div className="sticky top-0 z-10 container mx-auto flex w-full flex-col gap-3 py-3 backdrop-blur-md">
+        <div className="sticky px-0 top-0 z-10 container mx-auto flex w-full flex-col gap-3 py-3 backdrop-blur-md">
             <div className="flex items-center justify-end gap-2">
                 <SearchBar
                     handleSearch={handleSearch}
                     autoFocus
                     showRingOnFocus
                     initialSearch={searchQuery}
+                    placeholder={searchPlaceholder}
                 />
                 <Button
                     className={`border-input bg-background flex cursor-pointer flex-row items-center gap-2 rounded-lg border px-3 py-1.5 shadow-xs ${

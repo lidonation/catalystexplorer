@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use App\Contract\RepositoryInterface;
+use App\Contracts\RepositoryInterface;
 
 arch()
     ->expect('App')

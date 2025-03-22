@@ -5,14 +5,14 @@ type XProps = {
     width?: number;
     height?: number;
 };
-export default function XIcon({ className, width = 48, height = 56 }: XProps) {
+export default function XIcon({ className, width = 48, height = 48 }: XProps) {
     const { t } = useTranslation();
     return (
         <svg
-            width="25"
+            width="24"
             height="24"
             viewBox="0 0 25 24"
-            fill="none"
+            fill="text-accent-secondary"
             xmlns="http://www.w3.org/2000/svg"
             className={`fill-current ${className}`}
         >

@@ -1,70 +1,70 @@
-import { useTranslation } from "react-i18next";
-import { useState } from "react";
-import Paragraph from "@/Components/atoms/Paragraph"; // Added import for Paragraph component
+import Paragraph from '@/Components/atoms/Paragraph'; // Added import for Paragraph component
+import { useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
+import { PaginatedData } from '../../../../types/paginated-data';
+import CompletedProposalCard from './CompletedProposalCard';
 import ProposalData = App.DataTransferObjects.ProposalData;
 
 interface ProposalListProps {
-    proposals: ProposalData[];
+    proposals: PaginatedData<ProposalData[]>;
+    onProposalClick?: (proposalHash: string | null) => void;
 }
 
-const ProposalList: React.FC<ProposalListProps> = ({ proposals }) => {
+const ProposalList: React.FC<ProposalListProps> = ({
+    proposals,
+    onProposalClick,
+}) => {
     const { t } = useTranslation();
-    const [currentPage, setCurrentPage] = useState(1);
-    const itemsPerPage = 5;
-    const totalPages = Math.ceil(proposals.length / itemsPerPage);
-    const currentProposals = proposals.slice(
-        (currentPage - 1) * itemsPerPage,
-        currentPage * itemsPerPage
-    );
-    
-    const handlePageChange = (newPage: number) => {
-        if (newPage >= 1 && newPage <= totalPages) {
-            setCurrentPage(newPage);
-        }
-    };
-    
-    if (!Array.isArray(proposals) || proposals.length === 0) {
+
+    if (proposals?.data && !proposals?.data.length) {
         return (
-            <div className="p-4 mt-8 text-center border border-gray-200 rounded-lg text-dark">
-                <Paragraph>{t("profileWorkflow.noProfilesAvailable")}</Paragraph>
+            <div className="text-dark lg:mt-8 m-4 rounded-lg border border-gray-200 lg:p-4 p-4 text-center">
+                <Paragraph>
+                    {t('profileWorkflow.noProposalsAvailable')}
+                </Paragraph>
             </div>
         );
     }
-    
+
+
     return (
-        <div className="mt-4 space-y-3">
-            {currentProposals.map((proposal, index) => (
-                <div key={proposal.hash} className="p-4 border border-gray-200 rounded-lg shadow-sm">
-                    <h4 className="font-bold">{proposal.title}</h4>
-                    <Paragraph className="text-sm">
-                        <strong>{t("profileWorkflow.budget")}:</strong> <span className="text-green-600"> {proposal.amount_requested} {proposal.currency} &nbsp; </span>
-                        <strong>{t("profileWorkflow.fund")}:</strong> <span className="text-primary"> {proposal.fund?.label} &nbsp; </span>
-                        <strong>{t("profileWorkflow.campaign")}:</strong> <span> {proposal.campaign?.label} </span>
-                    </Paragraph>
-                </div>
-            ))}
-            
+        <div className="lg:mt-4 space-y-2 lg:space-y-3 lg:p-6 p-4">
+            {proposals?.data &&
+                proposals?.data.map((proposal, index) => (
+                    <div className="w-full" key={index}>
+                        <input
+                            type="radio"
+                            id={proposal.hash as string | undefined}
+                            name="hosting"
+                            value="hosting-small"
+                            className="peer hidden"
+                            required
+                            onChange={() =>
+                                onProposalClick &&
+                                onProposalClick(proposal.hash)
+                            }
+                        />
+                        <label
+                            htmlFor={proposal.hash as string | undefined}
+                            className="peer-checked:border-primary peer-checked:text-primary peer-checked:border-primary inline-flex w-full cursor-pointer items-center justify-between rounded-lg border border-gray-100 text-gray-500 peer-checked:border-2"
+                        >
+                            <CompletedProposalCard proposal={proposal} />
+                        </label>
+                    </div>
+                ))}
+
             {/* Pagination */}
-            <div className="flex items-center justify-between mt-6">
-                <button
-                    onClick={() => handlePageChange(currentPage - 1)}
-                    disabled={currentPage === 1}
-                    className="flex items-center disabled:opacity-50"
-                >
-                    ← <span className="ml-1">{t("profileWorkflow.previous")}</span>
-                </button>
-                <span className="px-4 py-2 text-sm font-medium rounded-full bg-primary-light ">
-                    {currentPage}
-                </span>
-                
-                <button
-                    onClick={() => handlePageChange(currentPage + 1)}
-                    disabled={currentPage === totalPages}
-                    className="flex items-center disabled:opacity-50"
-                >
-                    <span className="mr-1">{t("profileWorkflow.next")}</span> →
-                </button>
-            </div>
+            {/* <div className="mt-6 flex w-full items-center justify-between overflow-x-auto">
+                {proposals && (
+                    <Paginator
+                        pagination={proposals}
+                        linkProps={{
+                            preserveScroll: true,
+                            preserveState: true,
+                        }}
+                    />
+                )}
+            </div> */}
         </div>
     );
 };

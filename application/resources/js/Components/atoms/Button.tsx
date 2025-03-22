@@ -1,7 +1,7 @@
-import { ReactNode } from 'react';
+import {MouseEventHandler, ReactNode} from 'react';
 
 type ButtonProps = {
-    onClick?: () => void;
+    onClick?: MouseEventHandler<HTMLButtonElement>;
     children: ReactNode;
     disabled?: boolean;
     className?: string;
@@ -32,7 +32,11 @@ function Button({
             aria-expanded={arialExpanded}
             aria-controls={arialControls}
             aria-pressed={ariaPressed}
+<<<<<<< HEAD
             className={`rounded-sm text-content hover:cursor-pointer ${disabled ? 'cursor-not-allowed opacity-50' : ''} ${className}`}
+=======
+            className={`rounded-sm hover:cursor-pointer ${disabled ? 'cursor-not-allowed opacity-50' : ''} ${className}`}
+>>>>>>> origin/dev
         >
             {children}
         </button>

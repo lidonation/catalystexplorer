@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
@@ -16,6 +15,7 @@ class Review extends Model
     use Searchable;
 
     protected $guarded = [];
+<<<<<<< HEAD
 
     public function children(): Attribute
     {
@@ -23,6 +23,8 @@ class Review extends Model
 
         return Attribute::make(get: fn () => $children->isEmpty() ? null : self::fund($children));
     }
+=======
+>>>>>>> origin/dev
 
     public static function getFilterableAttributes(): array
     {
@@ -80,6 +82,11 @@ class Review extends Model
     public function parent(): BelongsTo
     {
         return $this->belongsTo(self::class, 'parent_id');
+    }
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
     }
 
     public function model(): MorphTo

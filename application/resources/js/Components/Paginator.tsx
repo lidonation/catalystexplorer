@@ -41,20 +41,39 @@ const PaginationComponent: React.FC<PaginationComponentProps<any>> = ({
         total
     } = pagination;
 
+
     return (
+<<<<<<< HEAD
         <div>
             <div className="flex w-full flex-col gap-2">
                 <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+=======
+        <div className="mb-8">
+            <div className="flex w-full flex-col gap-2">
+                <div className="flex flex-col items-center justify-between gap-4 md:flex-row">
+>>>>>>> origin/dev
                     {/* Previous Button */}
                     <div>
                         <PaginationItem className="list-none text-xs">
                             <PaginationPrevious
                                 linkProps={linkProps}
+<<<<<<< HEAD
                                 href={prev_page_url ? buildUrl(
                                     ParamsEnum.PAGE,
                                     current_page - 1,
                                     'Current Page',
                                 ): ''}
+=======
+                                href={
+                                    prev_page_url
+                                        ? buildUrl(
+                                              ParamsEnum.PAGE,
+                                              current_page - 1,
+                                              'Current Page',
+                                          )
+                                        : ''
+                                }
+>>>>>>> origin/dev
                                 className={
                                     !prev_page_url
                                         ? 'pointer-events-none opacity-50'
@@ -64,14 +83,23 @@ const PaginationComponent: React.FC<PaginationComponentProps<any>> = ({
                             ></PaginationPrevious>
                         </PaginationItem>
                     </div>
+<<<<<<< HEAD
                     <div className='flex flex-col md:flex-row gap-3 items-center'>
                         {/* Page Numbers */}
                         <div className="flex flex-col justify-center gap-1">
                             <ul className="flex flex-wrap lg:flex-nowrap list-none items-center gap-1 text-sm lg:gap-4 lg:text-base">
+=======
+                    <div className="flex flex-col items-center gap-3 md:flex-row">
+                        {/* Page Numbers */}
+                        <div className="flex flex-col justify-center gap-1">
+                            <ul className="flex list-none flex-wrap items-center gap-1 text-sm lg:flex-nowrap lg:gap-4 lg:text-base">
+>>>>>>> origin/dev
                                 {links &&
                                     links.map((link, index) =>
                                         link.label.includes('&laquo;') ||
-                                            link.label.includes('&raquo;') ? null : (
+                                        link.label.includes(
+                                            '&raquo;',
+                                        ) ? null : (
                                             <PaginationItem
                                                 key={index}
                                                 className=""
@@ -91,11 +119,16 @@ const PaginationComponent: React.FC<PaginationComponentProps<any>> = ({
                                                                 : undefined
                                                         }
                                                         className={cn(
+<<<<<<< HEAD
                                                             'rounded-full size-8 flex items-center justify-center',
+=======
+                                                            'flex size-8 items-center justify-center rounded-full',
+>>>>>>> origin/dev
                                                             link.active
                                                                 ? 'bg-background-darker'
-                                                                : ''
+                                                                : '',
                                                         )}
+                                                        {...linkProps}
                                                     >
                                                         {link.label}
                                                     </Link>
@@ -107,7 +140,8 @@ const PaginationComponent: React.FC<PaginationComponentProps<any>> = ({
                         </div>
                         <div className="w-full text-center text-xs">
                             <span>
-                                Showing {from} - {to} of <span className='font-bold'>{total}</span>
+                                Showing {from} - {to} of{' '}
+                                <span className="font-bold">{total}</span>
                             </span>
                         </div>
                     </div>
@@ -116,11 +150,23 @@ const PaginationComponent: React.FC<PaginationComponentProps<any>> = ({
                         <PaginationItem className="list-none text-xs">
                             <PaginationNext
                                 linkProps={linkProps}
+<<<<<<< HEAD
                                 href={next_page_url ? buildUrl(
                                     ParamsEnum.PAGE,
                                     current_page + 1,
                                     'Current Page',
                                 ): ''}
+=======
+                                href={
+                                    next_page_url
+                                        ? buildUrl(
+                                              ParamsEnum.PAGE,
+                                              current_page + 1,
+                                              'Current Page',
+                                          )
+                                        : ''
+                                }
+>>>>>>> origin/dev
                                 className={
                                     !next_page_url
                                         ? 'pointer-events-none opacity-50'

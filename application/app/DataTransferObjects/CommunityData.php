@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace App\DataTransferObjects;
 
+use Spatie\LaravelData\Attributes\DataCollectionOf;
 use Spatie\LaravelData\Data;
+use Spatie\LaravelData\DataCollection;
 use Spatie\TypeScriptTransformer\Attributes\Optional as TypeScriptOptional;
 use Spatie\TypeScriptTransformer\Attributes\TypeScript;
 
@@ -28,6 +30,18 @@ final class CommunityData extends Data
 
         #[TypeScriptOptional]
         public ?string $slug,
+
+        #[DataCollectionOf(IdeascaleProfileData::class)]
+        public ?DataCollection $ideascale_profiles,
+
+        #[TypeScriptOptional]
+        public ?int $proposals_count,
+
+        #[TypeScriptOptional]
+        public ?float $amount_awarded_ada,
+
+        #[TypeScriptOptional]
+        public ?float $amount_awarded_usd,
 
         #[TypeScriptOptional]
         public ?string $created_at,

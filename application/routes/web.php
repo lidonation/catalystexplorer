@@ -1,20 +1,29 @@
 <?php
 
-use App\Interfaces\Http\Controllers\Api\CommunityController;
-use App\Interfaces\Http\Controllers\CampaignsController;
-use App\Interfaces\Http\Controllers\ChartsController;
-use App\Interfaces\Http\Controllers\CompletetProjectNftsController;
-use App\Interfaces\Http\Controllers\FundsController;
-use App\Interfaces\Http\Controllers\GroupsController;
-use App\Interfaces\Http\Controllers\HomeController;
-use App\Interfaces\Http\Controllers\IdeascaleProfilesController;
-use App\Interfaces\Http\Controllers\JormungandrController;
-use App\Interfaces\Http\Controllers\ProposalsController;
-use App\Interfaces\Http\Controllers\ReviewsController;
-use App\Interfaces\Http\Controllers\SearchController;
-use App\Interfaces\Http\Controllers\VoterToolController;
-use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\NftController;
+use App\Http\Controllers\DrepController;
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\FundsController;
+use App\Http\Controllers\ChartsController;
+use App\Http\Controllers\GroupsController;
+use App\Http\Controllers\SearchController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ReviewsController;
+use App\Http\Middleware\WorkflowMiddleware;
+use App\Http\Controllers\WorkflowController;
+use App\Http\Controllers\CampaignsController;
+use App\Http\Controllers\MilestoneController;
+use App\Http\Controllers\ProposalsController;
+use App\Http\Controllers\VoterToolController;
+use App\Http\Controllers\JormungandrController;
+use App\Http\Controllers\TransactionController;
+use App\Http\Controllers\Api\CommunityController;
+use App\Http\Controllers\IdeascaleProfilesController;
+use App\Http\Controllers\ClaimIdeascaleProfileContoller;
+use App\Http\Controllers\CompletetProjectNftsController;
+use App\Http\Controllers\ClaimIdeascaleProfileController;
 
 Route::localized(
     function () {
@@ -43,9 +52,15 @@ Route::localized(
             Route::get('/', [GroupsController::class, 'index'])
                 ->name('index');
 
+<<<<<<< HEAD
             Route::prefix('/{group:slug}')->group(function () {
                 Route::get('/', [GroupsController::class, 'group'])
                     ->name('group');
+=======
+            Route::prefix('/{group:slug}')->as('group.')->group(function () {
+                Route::get('/', [GroupsController::class, 'group'])
+                    ->name('index');
+>>>>>>> origin/dev
 
                 Route::get('/proposals', [GroupsController::class, 'group'])
                     ->name('proposals');
@@ -71,6 +86,39 @@ Route::localized(
             Route::get('/{community:slug}', [CommunityController::class, 'community'])
                 ->name('group');
         });
+
+
+        Route::prefix('/workflows')->as('workflows.')->group(function () {
+
+            Route::prefix('/completed-projects-nfts/steps')->as('completedProjectsNft.')
+                ->middleware([WorkflowMiddleware::class])
+                ->group(function () {
+                    Route::get('/{step}', [CompletetProjectNftsController::class, 'handleStep'])
+                        ->name('index');
+                });
+
+            Route::prefix('/claim-ideascale-profile/steps')->as('claimIdeascaleProfile.')
+                ->middleware([WorkflowMiddleware::class])
+                ->group(function () {
+                    Route::get('/{step}', [ClaimIdeascaleProfileController::class, 'handleStep'])
+                        ->name('index');
+                });
+
+            Route::get('/login', [WorkflowController::class, 'auth'])
+                ->name('loginForm');
+            Route::post('/login', [WorkflowController::class, 'login'])
+                ->name('login');
+        });
+
+
+        Route::patch('/profile/update/{field}', [ProfileController::class, 'update'])
+            ->name('profile.update.field');
+        Route::patch('/profile/socials', [ProfileController::class, 'updateSocials'])
+            ->name('profile.update.socials');
+        Route::post('/profile/photo', [ProfileController::class, 'updatePhoto'])
+            ->name('profile.photo.update');
+        Route::delete('/profile/photo', [ProfileController::class, 'destroyPhoto'])
+            ->name('profile.photo.destroy');
 
         Route::prefix('/ideascale-profiles')->as('ideascaleProfiles.')->group(function () {
             Route::get('/', [IdeascaleProfilesController::class, 'index'])
@@ -101,8 +149,13 @@ Route::localized(
                 Route::get('/reports', [IdeascaleProfilesController::class, 'show'])
                     ->name('reports');
 
+<<<<<<< HEAD
                 Route::get('/cam', [IdeascaleProfilesController::class, 'show'])
                     ->name('cam');
+=======
+                Route::get('/campaigns', [IdeascaleProfilesController::class, 'show'])
+                    ->name('campaigns');
+>>>>>>> origin/dev
             });
         });
 
@@ -117,20 +170,55 @@ Route::localized(
         Route::get('/charts', [ChartsController::class, 'index'])
             ->name('charts.index');
 
-        Route::get('/completed-project-nfts', [CompletetProjectNftsController::class, 'index'])
-            ->name('completedProjectsNfts.index');
+        Route::prefix('/completed-project-nfts')->as('completedProjectsNfts.')->group(
+            function () {
+                Route::get('/', [CompletetProjectNftsController::class, 'index'])
+                    ->name('index');
 
-        Route::get('/completed-project-nfts/{proposal:id}', [CompletetProjectNftsController::class, 'show'])
-            ->name('completedProjectsNfts.show');
+                Route::get('/{proposal}/mint', [CompletetProjectNftsController::class, 'show'])
+                    ->name('show');
+            }
+        );
 
-        Route::get('/jormungandr', [JormungandrController::class, 'index'])
-            ->name('jormungandr.index');
+        Route::prefix('nfts')->as('crud.nfts.')->group(function () {
+            Route::patch('/update/{nft:id}', [CompletetProjectNftsController::class, 'updateMetadata'])
+                ->name('update');
+        });
+
+        Route::prefix('jormungandr')->as('jormungandr.')->group(function () {
+            Route::get('/', [JormungandrController::class, 'index'])
+                ->name('index');
+
+            Route::prefix('/transactions')->as('transactions.')->group(function () {
+                Route::get('/', [TransactionController::class, 'index'])
+                    ->name('index');
+                Route::get('/{catalystTransaction}', [TransactionController::class, 'show'])
+                    ->name('show');
+            });
+        });
+
+        // Dreps
+        Route::prefix('/dreps')->as('dreps.')->group(
+            function () {
+                Route::get('/home', [DrepController::class, 'home'])
+                    ->name('home');
+
+                Route::get('/list', [DrepController::class, 'list'])
+                    ->name('list');
+            }
+        );
 
         Route::get('/voter-tool', [VoterToolController::class, 'index'])
             ->name('voter-tool.index');
 
         Route::get('/s', [SearchController::class, 'index'])
             ->name('search.index');
+
+        // Milestones
+        Route::prefix('/{milestones}')->group(function () {
+            Route::get('/', [MilestoneController::class, 'index'])
+                ->name('index');
+        });
     }
 );
 
@@ -138,10 +226,10 @@ Route::get('/map', function () {
     return Inertia::render('Map');
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';
 
-require __DIR__.'/dashboard.php';
+require __DIR__ . '/dashboard.php';
 
-require __DIR__.'/api.php';
+require __DIR__ . '/api.php';
 
 Route::fallback(\CodeZero\LocalizedRoutes\Controllers\FallbackController::class);

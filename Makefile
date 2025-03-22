@@ -8,24 +8,14 @@ nodeVersion := 20
 .PHONY: init
 init:
 	cp ./application/.env.example ./application/.env
+	chmod +x ./scripts/clone-carp.sh
+	chmod +x ./scripts/remove-carp.sh
 
 	docker run --rm --interactive --tty \
 		--volume ${PWD}:/app \
 		--workdir /app \
 		--user root \
 		node:20-alpine yarn install --ignore-engine
-
-	docker run --rm --interactive --tty \
-		--volume ${PWD}:/app \
-		--workdir /app \
-		--user root \
-		node:${nodeVersion}-alpine yarn install --ignore-engine
-
-	docker run --rm --interactive --tty \
-		--volume ${PWD}:/app \
-		--workdir /app \
-		--user root \
-		node:${nodeVersion}-alpine yarn install --ignore-engine
 
 	docker run --rm --interactive --tty \
 		--volume ${PWD}/application:/app \
@@ -39,10 +29,11 @@ init:
           composer install --ignore-platform-reqs
 
 	sudo chown -R $(id -u -n):$(id -g -n) ${PWD}/application/vendor
- 
+	./scripts/clone-carp.sh
+	chmod +x ./carp/scripts/entrypoint.sh
 	make up
 	sleep 10
-	$(compose) artisan key:generate
+	$(compose) php artisan key:generate
 	make migrate
 	$(compose) yarn husky init
 
@@ -83,8 +74,12 @@ devtools-install:
 		--workdir /app \
 		--user root \
 		node:${nodeVersion}-alpine yarn install --ignore-engine
-		$(sail) up -d
-		npx husky init
+	make up
+	npx husky init
+	echo 'npx --no -- commitlint --edit $$1' > .husky/commit-msg
+	chmod +x .husky/_/commit-msg
+	printf 'make lint-backend\ngit add -A\nmake tsc\nmake test-backend' > .husky/pre-commit
+	chmod +x .husky/pre-commit
 
 .PHONY: frontend-install
 frontend-install:
@@ -93,7 +88,7 @@ frontend-install:
 		--volume ${PWD}/application:/app \
 		--workdir /app \
 		--user root \
-		node:${nodeVersion}-alpine yarn install --ignore-engine
+		node:${nodeVersion}-alpine yarn install --ignore-engine --unsafe-perm=true
 
 .PHONY: frontend-clean
 frontend-clean:
@@ -111,7 +106,7 @@ image-build:
 
 .PHONY: logs
 lint-backend:
-	$(sail) pint
+	$(sail) pint app
 
 .PHONY: logs
 lint-frontend:
@@ -119,7 +114,7 @@ lint-frontend:
 
 .PHONY: logs
 logs:
-	docker logs --follow catalystexplore.com
+	docker logs --follow catalystexplorer.com
 
 .PHONY: migrate
 migrate:
@@ -138,9 +133,9 @@ rm:
 sh:
 	$(sail) shell $(filter-out $@,$(MAKECMDGOALS))
 
-.PHONY: commitlint
-commitlint:
-	npx --no -- commitlint --edit $1
+# .PHONY: commitlint
+# commitlint:
+# 	npx --no -- commitlint --edit $1
 
 .PHONY: status
 status:
@@ -156,13 +151,13 @@ vite:
 
 .PHONY: watch
 watch:
-	docker compose  up -d --remove-orphans && $(sail) npx vite --force
+	docker compose  up -d --remove-orphans && $(sail) npx vite --force -- --unsafe-perm=true
 
 .PHONY: test-backend
 test-backend:
 	docker-compose -f docker-compose.testing.yml up -d && \
     sleep 3 && \
-	docker-compose -f docker-compose.testing.yml exec -T catalystexplorer.com vendor/bin/pest --group=arch && \
+	docker-compose -f docker-compose.testing.yml exec -T catalystexplorer_test.com vendor/bin/pest --group=arch && \
 	sleep 3 && \
  	docker-compose -f docker-compose.testing.yml down --volumes
 

@@ -15,7 +15,7 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->web(append: [
-            \App\Interfaces\Http\Middleware\HandleInertiaRequests::class,
+            \App\Http\Middleware\HandleInertiaRequests::class,
             \Illuminate\Http\Middleware\AddLinkHeadersForPreloadedAssets::class,
             \CodeZero\LocalizedRoutes\Middleware\SetLocale::class,
             // \Illuminate\Routing\Middleware\SubstituteBindings::class,

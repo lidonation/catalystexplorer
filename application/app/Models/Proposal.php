@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Casts\DateFormatCast;
-use App\Casts\HashId;
 use App\Enums\CatalystCurrencies;
 use App\Models\CatalystExplorer\Moderation;
 use App\Traits\HasAuthor;
@@ -19,6 +18,10 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
+<<<<<<< HEAD
+=======
+use Illuminate\Database\Eloquent\Relations\HasOne;
+>>>>>>> origin/dev
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Artisan;
@@ -55,6 +58,7 @@ class Proposal extends Model
     protected $appends = [
         'link',
         'hash',
+        'currency',
     ];
 
     public static function getFilterableAttributes(): array
@@ -202,6 +206,30 @@ class Proposal extends Model
         );
     }
 
+    public function completed(): Attribute
+    {
+        return Attribute::make(
+            get: function () {
+                if ($this->status === 'complete') {
+                    return 1;
+                }
+
+                if ($this->schedule?->status === 'completed') {
+                    return 1;
+                }
+
+                return 0;
+            }
+        );
+    }
+
+    public function amountReceived(): Attribute
+    {
+        return Attribute::make(
+            get: fn ($value) => ($this->schedule?->funds_distributed ?? $value)
+        );
+    }
+
     public function quickPitchId(): Attribute
     {
         return Attribute::make(
@@ -262,6 +290,19 @@ class Proposal extends Model
         );
     }
 
+<<<<<<< HEAD
+=======
+    public function schedule(): HasOne|Proposal
+    {
+        return $this->hasOne(ProposalMilestone::class);
+    }
+
+    public function milestones(): HasManyThrough|Proposal
+    {
+        return $this->hasManyThrough(Milestone::class, ProposalMilestone::class);
+    }
+
+>>>>>>> origin/dev
     public function moderations(): HasMany
     {
         return $this->hasMany(Moderation::class, 'context_id', 'id')
@@ -311,7 +352,11 @@ class Proposal extends Model
         );
     }
 
+<<<<<<< HEAD
     public function RatingsAverage(): Attribute
+=======
+    public function ratingsAverage(): Attribute
+>>>>>>> origin/dev
     {
         return Attribute::make(get: fn () => $this->ratings->avg('rating'));
     }
@@ -365,8 +410,11 @@ class Proposal extends Model
             "amount_requested_{$this->currency}" => $this->amount_requested ? intval($this->amount_requested) : 0,
             'amount_requested' => $this->amount_requested ? intval($this->amount_requested) : 0,
 
+<<<<<<< HEAD
             // 'auditability_score' => $this->meta_info->auditability_score ?? $this->getDiscussionRankingScore('Value for money') ?? 0,
 
+=======
+>>>>>>> origin/dev
             'ca_rating' => intval($this->avg_rating) ?? 0.00,
             'campaign' => [
                 'id' => $this->campaign_id,
@@ -378,13 +426,18 @@ class Proposal extends Model
                 'status' => $this->campaign?->status,
                 'link' => $this->campaign?->link,
                 'fund' => $this->campaign?->fund,
+                'total_awarded' => $this->campaign?->total_awarded,
+                'total_distributed' => $this->campaign?->total_distributed,
             ],
             'communities' => $communities->toArray(),
             "completed_amount_paid{$this->currency}" => ($this->amount_received && $this->status === 'complete') ? intval($this->amount_received) : 0,
-            'completed' => $this->status === 'complete' ? 1 : 0,
+            'completed' => $this->completed,
             'currency' => $this->currency,
 
+<<<<<<< HEAD
             // 'feasibility_score' => $this->meta_info->feasibility_score ?? $this->getDiscussionRankingScore('Feasibility') ?? 0,
+=======
+>>>>>>> origin/dev
             'funded' => (bool) $this->funded_at ? 1 : 0,
             'fund' => [
                 'id' => $this->fund_id,
@@ -421,11 +474,16 @@ class Proposal extends Model
 
                 return [
                     'id' => $u->id,
+                    'hash' => $u->hash,
                     'ideascale_id' => $u->ideascale_id,
                     'username' => $u->username,
                     'name' => $u->name,
                     'bio' => $u->bio,
+<<<<<<< HEAD
                     'hero_img_url' => $u->media?->isNotEmpty() ? $u->thumbnail_url : $u->hero_img_url,
+=======
+                    'hero_img_url' => $u->hero_img_url,
+>>>>>>> origin/dev
                     'proposals_completed' => $proposals?->filter(fn ($p) => $p['status'] === 'complete')?->count() ?? 0,
                     'first_timer' => ($proposals?->map(fn ($p) => isset($p['fund']) ? $p['fund']['id'] : null)->unique()->count() === 1),
                 ];
@@ -477,6 +535,11 @@ class Proposal extends Model
     public function team(): BelongsToMany
     {
         return $this->belongsToMany(IdeascaleProfile::class, 'ideascale_profile_has_proposal', 'proposal_id', 'ideascale_profile_id');
+    }
+
+    public function proposal_milestone(): HasOne
+    {
+        return $this->hasOne(ProposalMilestone::class, 'proposal_id', 'id');
     }
 
     public function author(): BelongsTo

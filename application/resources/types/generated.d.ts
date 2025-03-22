@@ -55,14 +55,23 @@ amount: number | null;
 created_at: string | null;
 updated_at: string | null;
 label?: string;
+<<<<<<< HEAD
 currency: string;
 proposals_count: number;
+=======
+currency: string | null;
+proposals_count: number | null;
+>>>>>>> origin/dev
 unfunded_proposals_count: number | null;
 funded_proposals_count: number | null;
 completed_proposals_count: number | null;
 total_requested: number | null;
 total_awarded: number | null;
 total_distributed: number | null;
+<<<<<<< HEAD
+=======
+fund: App.DataTransferObjects.FundData | null;
+>>>>>>> origin/dev
 };
 export type CommunityData = {
 hash: string | null;
@@ -71,6 +80,10 @@ content?: string;
 user_id?: number;
 status?: string;
 slug?: string;
+ideascale_profiles: any | null;
+proposals_count?: number;
+amount_awarded_ada?: number;
+amount_awarded_usd?: number;
 created_at?: string;
 updated_at?: string;
 deleted_at?: string;
@@ -170,7 +183,6 @@ twitter?: string;
 linkedin?: string;
 discord?: string;
 ideascale?: string;
-claimedBy?: number;
 telegram?: string;
 title?: string;
 hero_img_url?: string;
@@ -182,12 +194,14 @@ amount_distributed_ada?: number;
 amount_distributed_usd?: number;
 co_proposals_count?: number;
 own_proposals_count?: number;
-claimed_by?: number;
+claimed_by_id?: number;
 completed_proposals_count?: number;
 funded_proposals_count?: number;
 unfunded_proposals_count?: number;
 proposals_count?: number;
 collaborating_proposals_count?: number;
+groups?: Array<any>;
+claimed_by: App.DataTransferObjects.UserData | null;
 };
 export type LocationData = {
 hash: string | null;
@@ -216,6 +230,108 @@ count_by?: string;
 chartData?: Array<any>;
 value?: number;
 order?: number;
+};
+export type MilestoneData = {
+hash: string;
+title: string;
+current: boolean;
+outputs: string;
+success_criteria: string;
+evidence: string;
+month: number;
+cost: number;
+completion_percent: number;
+milestone: number;
+created_at: string;
+som_reviews: any | null;
+poas: any | null;
+};
+export type MilestonePoasData = {
+hash: string;
+content: string;
+created_at: string;
+current: boolean;
+reviews: any | null;
+signoffs: any | null;
+};
+export type MilestonePoasReviewData = {
+hash: string;
+content_approved: boolean;
+content_comment: string;
+role: string;
+created_at: string;
+user_id: string;
+current: boolean;
+};
+export type MilestonePoasSignoffData = {
+hash: string;
+created_at: string;
+user_id: string;
+};
+export type MilestoneSomReviewsData = {
+hash: string;
+outputs_approves: boolean;
+outputs_comment: string;
+success_criteria_approves: boolean;
+success_criteria_comment: string;
+evidence_approves: boolean;
+evidence_comment: string;
+current: boolean;
+role: string;
+user_id: string;
+created_at: string;
+};
+export type NMKRNftData = {
+id: number;
+ipfshash: string;
+state: string;
+name: string;
+displayname: string;
+detaildata: string;
+minted: boolean;
+receiveraddress: string;
+selldate: string | null;
+soldby: string;
+reserveduntil: string | null;
+policyid: string;
+assetid: string;
+assetname: string;
+fingerprint: string;
+initialminttxhash: string;
+title: string;
+series: string;
+ipfsGatewayAddress: string;
+metadata: string;
+singlePrice: number;
+uid: string;
+paymentGatewayLinkForSpecificSale: string;
+sendBackCentralPaymentInLovelace: number;
+sendBackCentralPaymentInLamport: number;
+priceInLovelaceCentralPayments: number;
+uploadSource: string;
+priceInLamportCentralPayments: number;
+singlePriceSolana: number;
+};
+export type NftData = {
+metas: any;
+id: number;
+user_id: number;
+artist_id: number;
+model_id: number;
+model_type: string;
+storage_link: string;
+preview_link: string;
+name: string;
+owner_address: string;
+description: string;
+rarity: string;
+status: string;
+metadata: any;
+minted_at: string;
+qty: number;
+created_at: string;
+updated_at: string;
+deleted_at: string;
 };
 export type PostData = {
 id: number | null;
@@ -267,6 +383,23 @@ fund: App.DataTransferObjects.FundData | null;
 opensource: boolean | null;
 link?: string;
 };
+export type ProposalMilestoneData = {
+hash: string;
+title: string;
+url: string;
+proposal_id: number;
+project_id: number;
+created_at: string;
+budget: number;
+milestones_qty: number;
+funds_distributed: number;
+starting_date: string;
+currency: string;
+status: string;
+on_track: boolean | null;
+proposal: App.DataTransferObjects.ProposalData | null;
+milestones: any | null;
+};
 export type ReviewData = {
 hash: string | null;
 parent_id?: number;
@@ -276,7 +409,6 @@ model_type: string | null;
 title?: string;
 content: string;
 status: string | null;
-published_at?: string;
 type: string | null;
 ranking_total: number | null;
 helpful_total: number | null;
@@ -285,11 +417,26 @@ not_helpful_total: number | null;
 export type ReviewModerationData = {
 hash: string | null;
 reviewer_id?: number;
+reviewer_reputation_score?: number;
 excellent_count: number;
 good_count: number;
 filtered_out_count: number;
 flagged: boolean;
 qa_rationale?: Array<any>;
+};
+export type ReviewerData = {
+id: number | null;
+reviewr_id: string;
+meta_info: Array<any> | null;
+reputation_scores: any | null;
+};
+export type ReviewerReputationScoreData = {
+id: number | null;
+reviewer_id: number;
+score: number;
+context_type: string | null;
+context_id: number | null;
+fund_name: string | null;
 };
 export type UserData = {
 hash: string;

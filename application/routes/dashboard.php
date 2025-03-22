@@ -1,7 +1,14 @@
 <?php
 
+<<<<<<< HEAD
 use App\Interfaces\Http\Controllers\My\MyBookmarksController;
 use App\Interfaces\Http\Controllers\GroupsController;
+=======
+use App\Http\Controllers\My\MyBookmarksController;
+use App\Http\Controllers\ProposalsController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\GroupsController;
+>>>>>>> origin/dev
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -39,9 +46,7 @@ Route::localized(
                     return Inertia::render('My/Dashboard');
                 })->name('dashboard');
 
-                Route::get('/groups', function () {
-                    return Inertia::render('My/Groups/Index');
-                })->name('groups');
+                Route::get('/groups', [GroupsController::class, 'myGroups'])->name('groups');
 
                 Route::get('/groups', [GroupsController::class, 'myGroups'])->name('groups');
 
@@ -53,9 +58,12 @@ Route::localized(
                     return Inertia::render('My/Profile/Index');
                 })->name('profile');
 
-                Route::get('/proposals', function () {
-                    return Inertia::render('My/Proposals/Index');
-                })->name('proposals');
+                Route::prefix('proposals')->as('proposals.')->group(function () {
+                    Route::get('/', [ProposalsController::class, 'myProposals'])->name('index');
+                    Route::get('/{proposal}/manage', function () {
+                        return Inertia::render('My/Proposals/ManageProposal');
+                    })->name('manage');
+                });
 
                 Route::get('/reviews', function () {
                     return Inertia::render('My/Reviews/Index');

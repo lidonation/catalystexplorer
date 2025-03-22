@@ -1,23 +1,18 @@
-version: '3.8'
 
 services:
   # app
-  catalystexplorer.com:
-    build:
-        context: './'
-        dockerfile: ./docker/Dockerfile
-        args:
-            WWWGROUP: "${WWWGROUP:-1000}"
+  catalystexplorer_test.com:
     image: registry.lidonation.com/lidonation/www.catalystexplorer.com/web-app
-    container_name: catalystexplorer.com
+    platform: '${PLATFORM:-linux/amd64}'
+    container_name: catalystexplorer_test.com
     tty: true
     env_file:
         - ./application/.env.testing
     extra_hosts:
         - 'host.docker.internal:host-gateway'
     ports:
-        - '${APP_PORT:-80}:8000'
-        - '${VITE_PORT:-5173}:${VITE_PORT:-5173}'
+        - '8003:8000'
+        - '5178:${VITE_PORT:-5173}'
     environment:
         APP_ENV: testing
         WWWUSER: '${WWWUSER:-1000}'
@@ -30,21 +25,26 @@ services:
         XDG_CONFIG_HOME:  /var/www/caddy 
         XDG_DATA_HOME:  /var/www/caddy 
         OCTANE_WATCH: 'false'
+        POSTGRESQL_WEB_DB_HOST: catalystexplorer_test.db
+        POSTGRESQL_WEB_DB: explorerweb
+        POSTGRESQL_WEB_USER: catalystexplorer
+        POSTGRESQL_WEB_PASSWORD: ASLJ023470AlserLFH
     volumes:
         - ./application:/var/www:cached
     networks:
         - catalystexplorer-net_test
     depends_on:
-      - catalystexplorer.db
-      - catalystexplorer-search
-      - catalystexplorer.redis
+      - catalystexplorer_test.db
+      - catalystexplorer_test-search
+      - catalystexplorer_test.redis
 
-  catalystexplorer.queue:
+  catalystexplorer_test.queue:
     image: registry.lidonation.com/lidonation/www.catalystexplorer.com/web-app
-    container_name: catalystexplorer.queue
+    platform: '${PLATFORM:-linux/amd64}'
+    container_name: catalystexplorer_test.queue
     depends_on:
-        - catalystexplorer.db
-        - catalystexplorer.redis
+        - catalystexplorer_test.db
+        - catalystexplorer_test.redis
     env_file:
         - ./application/.env.testing
     environment:
@@ -62,7 +62,7 @@ services:
         POSTGRESQL_DB_SYNC_DB: cexplorer
         POSTGRESQL_DB_SYNC_USER: postgres
         XDG_CONFIG_HOME: /var/www
-        POSTGRESQL_WEB_DB_HOST: catalystexplorer.db
+        POSTGRESQL_WEB_DB_HOST: catalystexplorer_test.db
         POSTGRESQL_WEB_DB: explorerweb
         POSTGRESQL_WEB_USER: catalystexplorer
         POSTGRESQL_WEB_PASSWORD: ASLJ023470AlserLFH
@@ -83,11 +83,13 @@ services:
         - catalystexplorer-net_test
 
   # database
-  catalystexplorer.db:
+  catalystexplorer_test.db:
       image: postgres:17.1-bookworm
-      container_name: catalystexplorer.db
+      container_name: catalystexplorer_test.db
       ports:
-          - '${FORWARD_DB_PORT:-5432}:5432'
+          - '5437:5432'
+      env_file:
+        - ./application/.env.testing
       environment:
           - POSTGRES_LOGGING=true
           - POSTGRES_DB=explorerweb
@@ -111,11 +113,13 @@ services:
           timeout: 5s
 
   # meilisearch
-  catalystexplorer-search:
+  catalystexplorer_test-search:
       image: getmeili/meilisearch:v1.11.3
-      container_name: catalystexplorer-search
+      container_name: catalystexplorer_test-search
+      env_file:
+        - ./application/.env.testing
       ports:
-          - '${FORWARD_MEILISEARCH_PORT:-7700}:7700'
+          - '7711:7700'
       environment:
           MEILI_NO_ANALYTICS: '${MEILISEARCH_NO_ANALYTICS:-false}'
           MEILISEARCH_KEY: v8hlDV0yMAHHlIurYupj
@@ -134,11 +138,13 @@ services:
           timeout: 5s
 
   #redis
-  catalystexplorer.redis:
+  catalystexplorer_test.redis:
       image: redis:8.0-M02-alpine3.20
-      container_name: catalystexplorer.redis
+      container_name: catalystexplorer_test.redis
+      env_file:
+        - ./application/.env.testing
       ports:
-          - '${FORWARD_REDIS_PORT:-6379}:6379'
+          - '6378:6379'
       volumes:
           - 'test_catalystexplorer-redis:/data'
       networks:

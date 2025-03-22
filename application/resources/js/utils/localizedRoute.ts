@@ -7,6 +7,10 @@ export function useLocalizedRoute(name: string, params?: Record<string, any>) {
 
     return route(`${locale || 'en'}.${name}`, params);
 }
+<<<<<<< HEAD
+=======
+
+>>>>>>> origin/dev
 export function generateLocalizedRoute(
     name: string,
     params?: Record<string, any>,

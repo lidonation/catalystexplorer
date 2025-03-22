@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Policies;
 
 use App\Enums\PermissionEnum;
+use App\Enums\RoleEnum;
 use App\Models\Campaign;
 use App\Models\User;
 
@@ -49,7 +50,7 @@ class CampaignPolicy extends AppPolicy
      */
     public function delete(User $user, Campaign $campaign): bool
     {
-        return parent::canDelete($user, $campaign) || $user->hasAnyPermission([PermissionEnum::delete_campaigns()->value]);
+        return $user->hasAnyRole([RoleEnum::admin()->value, RoleEnum::super_admin()->value]) || $user->hasAnyPermission([PermissionEnum::delete_campaigns()->value]);
     }
 
     /**
@@ -57,6 +58,6 @@ class CampaignPolicy extends AppPolicy
      */
     public function restore(User $user, Campaign $campaign): bool
     {
-        return parent::canRestore($user, $campaign) || $user->hasAnyPermission([PermissionEnum::restore_campaigns()->value]);
+        return $user->hasRole([RoleEnum::admin()->value, RoleEnum::super_admin()->value]) || $user->hasAnyPermission([PermissionEnum::restore_campaigns()->value]);
     }
 }

@@ -1,41 +1,47 @@
-import ProfileCard from "./ProfileCard";
-import { useTranslation } from "react-i18next";
-import Paragraph from "@/Components/atoms/Paragraph"; // Added import for Paragraph component
-
-interface Profile {
-    name: string;
-    image: string;
-    proposals: number;
-    status: string; // "available" or "unavailable"
-}
+import Checkbox from '@/Components/atoms/Checkbox';
+import Paragraph from '@/Components/atoms/Paragraph';
+import RecordsNotFound from '@/Layouts/RecordsNotFound';
+import React from 'react';
+import { useTranslation } from 'react-i18next';
+import ProfileCard from './ProfileCard';
+import IdeascaleProfileData = App.DataTransferObjects.IdeascaleProfileData;
 
 interface ProfileListProps {
-    profiles: Profile[];
-    onSelectProfile: (name: string) => void;
-    selectedProfile: any;
+    profiles: IdeascaleProfileData[];
+    onProfileClick: (profileHash: string | null) => void;
 }
 
-const ProfileList: React.FC<ProfileListProps> = ({ profiles, onSelectProfile, selectedProfile }) => {
+const ProfileList: React.FC<ProfileListProps> = ({
+    profiles,
+    onProfileClick,
+}) => {
     const { t } = useTranslation();
 
-    if (!Array.isArray(profiles) || profiles.length === 0) {
+    if (!Array.isArray(profiles) || profiles?.length === 0) {
         return (
-            <div className="p-4 text-center text-red-600 border border-gray-200 rounded-lg">
-                <Paragraph>{t("profileWorkflow.noProfilesAvailable")}</Paragraph>
+            <div className="rounded-lg border border-gray-200 p-4 text-center text-gray-600">
+                <RecordsNotFound showIcon={true} />
+                <Paragraph>{t('profileWorkflow.noProfilesFound')}</Paragraph>
             </div>
         );
     }
 
     return (
-        <div className="mt-2 space-y-2">
+        <div className="divide-gray-200 mt-2 space-y-2 divide-y">
             {profiles.map((profile, index) => (
-                <div key={index} className="w-full sm:max-w-[400px] lg:max-w-[500px]">
-                    <ProfileCard
-                        profile={profile}
-                        onSelect={() => onSelectProfile(profile.name)}
-                        isSelected={selectedProfile === profile.name}
-                        showStatusBadge={profile.status === "available"}
-                    />
+                <div key={index} className="w-full">
+                    <label
+                        htmlFor={profile.hash as string | undefined}
+                        className="flex items-center hover:cursor-pointer"
+                    >
+                        <ProfileCard profile={profile}/>
+                        <Checkbox
+                            name={profile.hash as string | undefined}
+                            id={profile.hash as string | undefined}
+                            onChange={() => onProfileClick(profile.hash)}
+                            className="text-content-accent bg-background checked:bg-primary checked:hover:bg-primary focus:border-primary focus:ring-primary checked:focus:bg-primary mr-2 h-4 w-4 shadow-xs focus:border"
+                        />
+                    </label>
                 </div>
             ))}
         </div>

@@ -15,6 +15,11 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Segments } from '../../../../types/segments';
 import IdeascaleProfileData = App.DataTransferObjects.IdeascaleProfileData;
+<<<<<<< HEAD
+=======
+import KeyValue from "@/Components/atoms/KeyValue";
+import ValueLabel from "@/Components/atoms/ValueLabel";
+>>>>>>> origin/dev
 
 interface IdeascaleProfileProps {
     ideascaleProfile: IdeascaleProfileData;
@@ -24,21 +29,63 @@ const IdeascaleProfileCardMini: React.FC<IdeascaleProfileProps> = ({
     ideascaleProfile,
 }) => {
     const { t } = useTranslation();
+<<<<<<< HEAD
     const segments = [
         {
             label: 'Completed',
             color: 'bg-success',
             value: ideascaleProfile.completed_proposals_count ?? 0,
+=======
+    const completedProposalsCount =
+        ideascaleProfile?.completed_proposals_count ?? 0;
+    const fundedProposalsCount = ideascaleProfile?.funded_proposals_count ?? 0;
+    const submittedProposalsCount = ideascaleProfile?.proposals_count ?? 0;
+    const chartSegments = [
+        {
+            label: 'Completed',
+            color: 'bg-success',
+            value: (completedProposalsCount / submittedProposalsCount) * 100,
+>>>>>>> origin/dev
         },
         {
             label: 'Funded',
             color: 'bg-warning',
+<<<<<<< HEAD
             value: ideascaleProfile.funded_proposals_count ?? 0,
+=======
+            value: ((fundedProposalsCount - completedProposalsCount) / submittedProposalsCount) * 100,
+        },
+
+        {
+            label: 'Submitted',
+            color: 'bg-primary',
+            value:
+                ((submittedProposalsCount - fundedProposalsCount) /
+                    submittedProposalsCount) *
+                100,
+        },
+    ] as Segments[];
+
+    const toolTipSegments = [
+        {
+            label: 'Completed',
+            color: 'bg-success',
+            value:  completedProposalsCount,
+        },
+        {
+            label: 'Funded',
+            color: 'bg-warning',
+            value: fundedProposalsCount,
+>>>>>>> origin/dev
         },
         {
             label: 'Submitted',
             color: 'bg-primary',
+<<<<<<< HEAD
             value: ideascaleProfile.proposals_count ?? 0,
+=======
+            value: submittedProposalsCount
+>>>>>>> origin/dev
         },
     ] as Segments[];
 
@@ -56,7 +103,11 @@ const IdeascaleProfileCardMini: React.FC<IdeascaleProfileProps> = ({
     ] as Segments[];
 
     return (
+<<<<<<< HEAD
         <Card>
+=======
+        <Card className='relative z-10'>
+>>>>>>> origin/dev
             <div className="relative mb-2 h-full w-full">
                 <div className="mb-3 flex justify-end">
                     <ListProvider>
@@ -105,6 +156,7 @@ const IdeascaleProfileCardMini: React.FC<IdeascaleProfileProps> = ({
             </div>
 
             <div className="mt-auto flex flex-col gap-4">
+<<<<<<< HEAD
                 <div className="border-border-secondary border-t">
                     <div className="flex w-full justify-between pt-4">
                         <SegmentedBar segments={segments}>
@@ -114,11 +166,27 @@ const IdeascaleProfileCardMini: React.FC<IdeascaleProfileProps> = ({
                                     <p className="text-3 ml-1 font-bold">
                                         {segment.value}
                                     </p>
+=======
+                {<div className="border-border-secondary border-t">
+                    <div className="flex w-full justify-between pt-4">
+                        <SegmentedBar
+                            segments={chartSegments}
+                            tooltipSegments={toolTipSegments}
+                        >
+                            {extraSegments.map((segment, index) => (
+                                <div key={index} className="flex items-center">
+                                    <div className="text-sm font-s">
+                                        {segment.label}:
+                                    </div>
+                                    <div className="text-3 ml-1 font-bold">
+                                        {segment.value}
+                                    </div>
+>>>>>>> origin/dev
                                 </div>
                             ))}
                         </SegmentedBar>
                     </div>
-                </div>
+                </div>}
 
                 <div className="border-border-secondary inline-flex w-auto w-fit items-center rounded-lg border px-2.5 py-1">
                     <Paragraph size="sm" className="text-3 text-content">

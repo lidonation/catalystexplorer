@@ -128,12 +128,12 @@ pest:
 
     sleep 5
 
-    docker logs catalystexplorer.com
+    docker logs catalystexplorer_test.com
 
-    docker-compose -f docker-compose.testing.yml exec -t catalystexplorer.com sh -c '
+    docker-compose -f docker-compose.testing.yml exec -t catalystexplorer_test.com sh -c '
      php artisan migrate:fresh --force && \
      php artisan optimize:clear  && \
-     php artisan test --filter=arch'
+     php artisan test'
   rules:
   - if: '$CI_COMMIT_BRANCH != "main" && ($DEPLOY_WEBAPP == "true")'
   dependencies:

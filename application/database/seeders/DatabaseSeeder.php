@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Log;
 
 class DatabaseSeeder extends Seeder
@@ -19,17 +20,30 @@ class DatabaseSeeder extends Seeder
             PermissionSeeder::class,
             UserSeeder::class,
             AnnouncementSeeder::class,
+<<<<<<< HEAD
             MetricSeeder::class,
             ProposalSeeder::class,
             BookmarkItemSeeder::class,
+=======
+            ProposalSeeder::class,
+>>>>>>> origin/dev
             BookmarkCollectionSeeder::class,
+            BookmarkItemSeeder::class,
             RuleSeeder::class,
             MonthlyReportSeeder::class,
             RegistrationSeeder::class,
             DelegationSeeder::class,
             ModerationSeeder::class,
+<<<<<<< HEAD
+=======
+            ReviewerReputationScoreSeeder::class,
+>>>>>>> origin/dev
             VoterSeeder::class,
             SnapshotSeeder::class,
+            TransactionSeeder::class,
+            DrepSeeder::class,
+            MetricSeeder::class,
+
         ];
 
         foreach ($seeders as $seeder) {
@@ -38,8 +52,17 @@ class DatabaseSeeder extends Seeder
                 $this->command->info("$seeder completed successfully.");
             } catch (\Throwable $e) {
                 Log::error($e);
-                $this->command->error("Error running $seeder: ".$e->getMessage());
+                $this->command->error("Error running $seeder: " . $e->getMessage());
             }
+        }
+
+        $this->command->info('Running GenerateConnections command...');
+        try {
+            Artisan::call('ln:generate-connections', ['--clear' => true]);
+            $this->command->info('GenerateConnections command completed successfully.');
+        } catch (\Throwable $e) {
+            Log::error($e);
+            $this->command->error('Error running GenerateConnections: ' . $e->getMessage());
         }
     }
 }

@@ -45,10 +45,15 @@ class Campaign extends Model implements HasMedia
         'hash',
         'currency',
         'hero_img_url',
+<<<<<<< HEAD
     ];
 
     protected $appends = [
         'currency',
+=======
+        'total_distributed',
+        'total_awarded',
+>>>>>>> origin/dev
     ];
 
     public function label(): Attribute
@@ -82,7 +87,14 @@ class Campaign extends Model implements HasMedia
     public function totalDistributed(): Attribute
     {
         return Attribute::make(
-            get: fn () => $this->funded_proposals()->sum('amount_received')
+            get: fn () => $this->funded_proposals()->sum('amount_received') ?? null
+        );
+    }
+
+    public function heroImgUrl(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => $this->getFirstMediaUrl('hero')
         );
     }
 
