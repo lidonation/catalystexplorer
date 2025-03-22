@@ -8,13 +8,13 @@ use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
 
-class BookmarksController extends Controller
+class NumbersController extends Controller
 {
     /**
-     * Display the bookmarks index page.
+     * Display the user's profile form.
      */
     public function index(Request $request): Response
     {
-        return Inertia::render('Bookmarks/Index');
+        return Inertia::render('Numbers/Index');
     }
 }
