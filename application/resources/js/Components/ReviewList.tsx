@@ -19,9 +19,9 @@ export const ReviewList: React.FC<ReviewListProps> = ({
             {reviews?.data?.map((review) => (
                 <ReviewCard key={review.review.hash} review={review} />
             ))}
-                {/* Pagination */}
-                <div className="mb-8 flex w-full items-center justify-center ">
-               {reviews.data && (
+            {/* Pagination */}
+            <div className="mb-8 flex w-full items-center justify-center ">
+                {reviews.data && (
                     <Paginator
                         pagination={reviews}
                     />

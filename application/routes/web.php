@@ -1,29 +1,27 @@
 <?php
 
-use Inertia\Inertia;
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\NftController;
-use App\Http\Controllers\DrepController;
-use App\Http\Controllers\HomeController;
-use App\Http\Controllers\FundsController;
-use App\Http\Controllers\ChartsController;
-use App\Http\Controllers\GroupsController;
-use App\Http\Controllers\SearchController;
-use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\ReviewsController;
-use App\Http\Middleware\WorkflowMiddleware;
-use App\Http\Controllers\WorkflowController;
-use App\Http\Controllers\CampaignsController;
-use App\Http\Controllers\MilestoneController;
-use App\Http\Controllers\ProposalsController;
-use App\Http\Controllers\VoterToolController;
-use App\Http\Controllers\JormungandrController;
-use App\Http\Controllers\TransactionController;
+use App\Http\Controllers\BookmarksController;
 use App\Http\Controllers\Api\CommunityController;
-use App\Http\Controllers\IdeascaleProfilesController;
-use App\Http\Controllers\ClaimIdeascaleProfileContoller;
+use App\Http\Controllers\CampaignsController;
 use App\Http\Controllers\CompletetProjectNftsController;
-use App\Http\Controllers\ClaimIdeascaleProfileController;
+use App\Http\Controllers\ConnectionsController;
+use App\Http\Controllers\DrepController;
+use App\Http\Controllers\FundsController;
+use App\Http\Controllers\GroupsController;
+use App\Http\Controllers\NftController;
+use App\Http\Controllers\NumbersController;
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\IdeascaleProfilesController;
+use App\Http\Controllers\JormungandrController;
+use App\Http\Controllers\MilestoneController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ProposalsController;
+use App\Http\Controllers\ReviewsController;
+use App\Http\Controllers\SearchController;
+use App\Http\Controllers\TransactionController;
+use App\Http\Controllers\VoterToolController;
+use Illuminate\Support\Facades\Route;
+use Inertia\Inertia;
 
 Route::localized(
     function () {
@@ -81,29 +79,10 @@ Route::localized(
                 ->name('group');
         });
 
-
-        Route::prefix('/workflows')->as('workflows.')->group(function () {
-
-            Route::prefix('/completed-projects-nfts/steps')->as('completedProjectsNft.')
-                ->middleware([WorkflowMiddleware::class])
-                ->group(function () {
-                    Route::get('/{step}', [CompletetProjectNftsController::class, 'handleStep'])
-                        ->name('index');
-                });
-
-            Route::prefix('/claim-ideascale-profile/steps')->as('claimIdeascaleProfile.')
-                ->middleware([WorkflowMiddleware::class])
-                ->group(function () {
-                    Route::get('/{step}', [ClaimIdeascaleProfileController::class, 'handleStep'])
-                        ->name('index');
-                });
-
-            Route::get('/login', [WorkflowController::class, 'auth'])
-                ->name('loginForm');
-            Route::post('/login', [WorkflowController::class, 'login'])
-                ->name('login');
+        Route::prefix('connections')->as('connections.')->group(function () {
+            Route::get('/', [ConnectionsController::class, 'index'])
+                ->name('index');
         });
-
 
         Route::patch('/profile/update/{field}', [ProfileController::class, 'update'])
             ->name('profile.update.field');
@@ -156,8 +135,15 @@ Route::localized(
                 ->where('review', '[0-9]+');
         });
 
-        Route::get('/charts', [ChartsController::class, 'index'])
-            ->name('charts.index');
+        Route::prefix('numbers')->as('numbers.')->group(function () {
+            Route::get('/', [NumbersController::class, 'index'])
+                ->name('index');
+        });
+
+            Route::prefix('bookmarks')->as('bookmarks.')->group(function () {
+                Route::get('/', [BookmarksController::class, 'index'])
+                    ->name('index');
+            });
 
         Route::prefix('/completed-project-nfts')->as('completedProjectsNfts.')->group(
             function () {
@@ -189,8 +175,8 @@ Route::localized(
         // Dreps
         Route::prefix('/dreps')->as('dreps.')->group(
             function () {
-                Route::get('/home', [DrepController::class, 'home'])
-                    ->name('home');
+                Route::get('/', [DrepController::class, 'index'])
+                    ->name('index');
 
                 Route::get('/list', [DrepController::class, 'list'])
                     ->name('list');
@@ -222,3 +208,4 @@ require __DIR__ . '/dashboard.php';
 require __DIR__ . '/api.php';
 
 Route::fallback(\CodeZero\LocalizedRoutes\Controllers\FallbackController::class);
+
