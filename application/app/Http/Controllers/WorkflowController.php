@@ -4,14 +4,15 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\Auth\LoginRequest;
-use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Inertia\Response;
+use Illuminate\Http\Request;
+use Illuminate\Http\RedirectResponse;
+use App\Http\Requests\Auth\LoginRequest;
 
 class WorkflowController extends Controller
 {
-    public function auth(Request $request)
+    public function auth(Request $request): Response
     {
 
         return Inertia::render('Workflows/Login');
@@ -27,8 +28,6 @@ class WorkflowController extends Controller
 
         $request->session()->regenerate();
 
-        session()->put('intended.url', route($nextRoute, $nextRouteParam));
-
-        return redirect()->intended($request->intended_url);
+        return to_route($nextRoute, $nextRouteParam);
     }
 }

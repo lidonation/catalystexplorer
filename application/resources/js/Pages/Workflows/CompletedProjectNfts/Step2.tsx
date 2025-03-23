@@ -75,19 +75,19 @@ const Step2: React.FC<Step2Props> = ({
             <Nav stepDetails={stepDetails} activeStep={activeStep} />
 
             <Content>
-                    <div className="card-container sticky lg:top-0  w-full bg-background lg:px-6 lg:pt-6 px-4 pt-4 mb-4">
-                        <ProposalSearchBar
-                            autoFocus={true}
-                            showRingOnFocus={true}
-                            handleSearch={handleSearchProposals}
-                            focusState={(isFocused) => console.log(isFocused)}
-                        />
-                    </div>
-
-                    <ProposalList
-                        onProposalClick={(hash) => setSelectedProposalHash(hash)}
-                        proposals={proposals || []}
+                <div className="card-container bg-background sticky z-10 mb-4 w-full px-4 pt-4 lg:top-0 lg:px-6 lg:pt-8">
+                    <ProposalSearchBar
+                        autoFocus={true}
+                        showRingOnFocus={true}
+                        handleSearch={handleSearchProposals}
+                        focusState={(isFocused) => console.log(isFocused)}
                     />
+                </div>
+
+                <ProposalList
+                    onProposalClick={(hash) => setSelectedProposalHash(hash)}
+                    proposals={proposals || []}
+                />
             </Content>
 
             <Footer>

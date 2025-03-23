@@ -37,23 +37,19 @@ export default function LoginForm({ title, postRoute }: LoginFormProps) {
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
-        axios
+        router
             .post(postRoute ?? generateLocalizedRoute('login'), {
                 email: data.email,
                 password: data.password,
+            },{
+                onSuccess:()=> reset('password'),
+                onError:(errors)=> setErrors(errors)
             })
-            .then((response) => {
-                reset('password');
-                router.reload();
-            })
-            .catch((error) => {
-                setErrors(error?.response?.data?.errors);
-            });
     };
 
     return (
         <div className="not-prose flex items-center justify-center py-12">
-            <div className="bg-background mx-4 w-full max-w-md rounded-2xl p-6 shadow-md sm:mx-0 sm:p-8">
+            <div className="bg-background border-gray-200 border mx-4 w-full max-w-md rounded-2xl p-6 shadow-md sm:mx-0 sm:p-8">
                 {/* Conditionally render the title only if it's provided */}
                 {title && (
                     <Title

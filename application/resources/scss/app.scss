@@ -205,8 +205,11 @@
         color: var(--cx-slate);
     }
 
-    .fill-error-light {
-        fill: var(--content-error-light);
+    .scrollbar-thin::-webkit-scrollbar {
+        width: 2px;
+        height: 2px;
+        background-color: #667085;
+        opacity: 50;
     }
 
     .fill-success-light {

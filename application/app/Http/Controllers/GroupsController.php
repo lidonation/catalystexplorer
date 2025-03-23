@@ -92,7 +92,7 @@ class GroupsController extends Controller
     public function myGroups(Request $request): Response
     {
         $userId = $request->user()->id;
-        $groups = Group::where('user_id', $userId)
+        $groups = Group::whereRelation('ideascale_profiles', 'claimed_by_id', '=', $userId)
             ->with(['proposals'])
             ->withCount([
                 'proposals',
