@@ -19,10 +19,12 @@ use Laravolt\Avatar\Facade as Avatar;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\Translatable\HasTranslations;
+use Staudenmeir\EloquentHasManyDeep\HasManyDeep;
+use Staudenmeir\EloquentHasManyDeep\HasRelationships;
 
 class IdeascaleProfile extends Model implements HasMedia
 {
-    use HasConnections, HasMetaData, HasTranslations, InteractsWithMedia, Searchable;
+    use HasConnections, HasMetaData, HasRelationships, HasTranslations, InteractsWithMedia, Searchable;
 
     public int $maxValuesPerFacet = 8000;
 
@@ -290,6 +292,11 @@ class IdeascaleProfile extends Model implements HasMedia
             'ideascale_profile_id',
             'group_id'
         );
+    }
+
+    public function reviews(): HasManyDeep
+    {
+        return $this->hasManyDeepFromRelations($this->proposals(), (new Proposal)->reviews());
     }
 
     public function claimed_by(): BelongsTo

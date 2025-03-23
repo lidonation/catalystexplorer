@@ -210,7 +210,7 @@ function AppNavigation() {
                                                 active={false}
                                                 children
                                             />
-                                                
+
 
                                             <NavLinkItem
                                                 href="#"
@@ -219,7 +219,7 @@ function AppNavigation() {
                                                 active={false}
                                                 children
                                             />
-                                               
+
 
                                             <NavLinkItem
                                                 href="#"
@@ -272,7 +272,7 @@ function AppNavigation() {
                                                 active={false}
                                                 children
                                             />
-                                               
+
 
                                             <NavLinkItem
                                                 href="#"
@@ -281,7 +281,7 @@ function AppNavigation() {
                                                 active={false}
                                                 children
                                             />
-                                                
+
 
                                             <NavLinkItem
                                                 href="#"
@@ -290,8 +290,8 @@ function AppNavigation() {
                                                 active={false}
                                                 children
                                             />
-                                               
-                                            
+
+
                                         </div>
                                     )}
                                 </div>
@@ -334,16 +334,16 @@ function AppNavigation() {
                                                 active={false}
                                                 children
                                             />
-                                                
+
 
                                             <NavLinkItem
-                                                href="#"
+                                                href={useLocalizedRoute('reviews.index')}
                                                 title="Proposal Reviews"
                                                 ariaLabel={`${t('proposalReviews')} ${t('link')}`}
                                                 active={false}
                                                 children
                                             />
-                                               
+
 
                                             <NavLinkItem
                                                 href="#"
@@ -352,7 +352,7 @@ function AppNavigation() {
                                                 active={false}
                                                 children
                                             />
-                                                
+
 
                                             <NavLinkItem
                                                 href="#"
@@ -361,7 +361,7 @@ function AppNavigation() {
                                                 active={false}
                                                 children
                                             />
-                                               
+
 
                                             <NavLinkItem
                                                 href="#"
@@ -370,7 +370,7 @@ function AppNavigation() {
                                                 active={false}
                                                 children
                                             />
-                                               
+
 
                                             <NavLinkItem
                                                 href="#"
@@ -379,7 +379,7 @@ function AppNavigation() {
                                                 active={false}
                                                 children
                                             />
-                                               
+
 
                                             <NavLinkItem
                                                 href="#"
@@ -388,7 +388,7 @@ function AppNavigation() {
                                                 active={false}
                                                 children
                                             />
-                                               
+
                                         </div>
                                     )}
                                 </div>

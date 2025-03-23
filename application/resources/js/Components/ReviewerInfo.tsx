@@ -1,10 +1,9 @@
 import { useTranslation } from 'react-i18next';
 import Paragraph from './atoms/Paragraph';
-import UserAvatar from './UserAvatar';
 import IdeascaleProfileData = App.DataTransferObjects.IdeascaleProfileData;
-import { ReviewItem } from '@/Pages/IdeascaleProfile/Reviews/Index';
 import ReputationBadge from './ReputationBadge';
 import Button from './atoms/Button';
+import {ReviewItem} from "@/types/review-item";
 
 export interface ReviewerInfoProps {
     ideascaleProfile: IdeascaleProfileData;
@@ -40,10 +39,10 @@ export const ReviewerInfo: React.FC<ReviewerInfoProps> = ({
                     {reviewCount} {t('reviews')}
                 </Paragraph>
             </div>
-            
+
             {!ideascaleProfile.name && (
                 <div className="ml-4">
-                    <Button 
+                    <Button
                         className="bg-primary hover:bg-primary-dark text-light-persist rounded-xl px-4 py-2 transition-colors"
                     >
                         {t('ideascaleProfiles.claim')}

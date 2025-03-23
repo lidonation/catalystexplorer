@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { ReputationTier } from '@/enums/reputation-tier-enums';
 import Paragraph from './atoms/Paragraph';
-import { ReviewItem } from '@/Pages/IdeascaleProfile/Reviews/Index';
 import ToolTipHover from './ToolTipHover';
 import { useTranslation } from 'react-i18next';
+import {ReviewItem} from "@/types/review-item";
 
 export interface ReputationBadgeProps {
     review: ReviewItem;
@@ -16,24 +16,24 @@ export const ReputationBadge: React.FC<ReputationBadgeProps> = ({
 }) => {
     const { t } = useTranslation();
     const [showTooltip, setShowTooltip] = useState(false);
-    
+
     if (!review.reputationScores || review.reputationScores.length === 0) {
         return null;
     }
-    
+
     const finalScore = review.reputationScores[0].score;
-    
+
     const getTier = (score: number) => {
         if (score >= ReputationTier.GOOD_MARK) return ReputationTier.GOOD;
         if (score >= ReputationTier.NEUTRAL_MARK) return ReputationTier.NEUTRAL;
         if (score >= ReputationTier.NOT_GREAT_MARK) return ReputationTier.NOT_GREAT;
         return ReputationTier.NOT_GREAT;
     };
-    
+
     const tier = getTier(finalScore);
 
     const hexagonPath = "M28,4 C29.6,4 31.2,4.4 32.5,5.1 L48.6,15.1 C50.5,15.8 51.5,16.9 51.5,18 L51.5,38 C51.5,39.1 50.5,40.2 48.6,40.9 L32.5,50.9 C31.2,51.6 29.6,52 28,52 C26.4,52 24.8,51.6 23.5,50.9 L7.4,40.9 C5.5,40.2 4.5,39.1 4.5,38 L4.5,18 C4.5,16.9 5.5,15.8 7.4,15.1 L23.5,5.1 C24.8,4.4 26.4,4 28,4 Z";
-    
+
     // Define Tailwind color classes based on tier
     const getColorClasses = () => {
         switch (tier) {
@@ -63,17 +63,17 @@ export const ReputationBadge: React.FC<ReputationBadgeProps> = ({
                 };
         }
     };
-    
+
     const colorClasses = getColorClasses();
-    
+
     return (
-        <div 
+        <div
             className={`inline-block relative ${className}`}
             onMouseEnter={() => setShowTooltip(true)}
             onMouseLeave={() => setShowTooltip(false)}
         >
             <svg width="75" height="50" viewBox="0 0 56 56">
-                <path 
+                <path
                     d={hexagonPath}
                     className={`${colorClasses.fillClass} ${colorClasses.strokeClass}`}
                     strokeWidth="1.5"
@@ -82,8 +82,8 @@ export const ReputationBadge: React.FC<ReputationBadgeProps> = ({
                 />
                 <foreignObject x="10" y="18" width="36" height="20">
                     <div className="flex justify-center items-center h-full">
-                        <Paragraph 
-                            size="lg" 
+                        <Paragraph
+                            size="lg"
                             className={`${colorClasses.textClass} font-bold text-center`}
                         >
                             {finalScore}%
@@ -91,10 +91,10 @@ export const ReputationBadge: React.FC<ReputationBadgeProps> = ({
                     </div>
                 </foreignObject>
             </svg>
-            
+
             {showTooltip && (
                 <div className="absolute bottom-full left-1/2 z-50 mb-2 -translate-x-1/2 transform">
-                    <ToolTipHover 
+                    <ToolTipHover
                         props={t('reviewerReputationScore')}
                         className="w-auto px-3"
                     />
