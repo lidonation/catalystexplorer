@@ -52,11 +52,11 @@ const Step1: React.FC<Step1Props> = ({ profiles, stepDetails, activeStep }) => {
     });
 
     return (
-        <WorkflowLayout asideInfo={stepDetails[activeStep - 1].info ?? ''}>
+        <WorkflowLayout >
             <Nav stepDetails={stepDetails} activeStep={activeStep} />
 
             <Content>
-                <div className="bg-background mx-auto w-full rounded-2xl lg:p-6 p-4">
+                <div className="bg-background mx-auto w-full rounded-2xl p-4 lg:p-6">
                     <div className="w-full">
                         <>
                             <Title level="3" className="font-semibold">

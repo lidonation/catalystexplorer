@@ -20,7 +20,7 @@ class TransactionController
                 return $query->where('metadata_labels::jsonb @> ?', [json_encode([(int) $label])]);
             })
             ->orderBy('created_at', 'desc')
-            ->paginate(20);
+            ->paginate(60);
 
         return Inertia::render('Transactions/Index', [
             'transactions' => to_length_aware_paginator(

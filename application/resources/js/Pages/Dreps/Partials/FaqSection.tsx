@@ -19,7 +19,7 @@ const FaqItem = ({ question, answer }: FaqItemProps) => {
     return (
         <>
             <div 
-                className="flex justify-between items-center p-4 cursor-pointer bg-background hover:bg-background-darker"
+                className="flex justify-between items-center p-6 cursor-pointer bg-background hover:bg-background-darker"
                 onClick={() => setIsOpen(!isOpen)}
             >
                 <Title level="3" className="font-semibold text-lg">{question}</Title>
@@ -35,7 +35,7 @@ const FaqItem = ({ question, answer }: FaqItemProps) => {
                     isOpen ? 'max-h-40 opacity-100' : 'max-h-0 opacity-0'
                 }`}
             >
-                <Paragraph className="p-4 text-content">
+                <Paragraph className="px-6 py-4 text-content">
                     {answer}
                 </Paragraph>
             </div>
@@ -83,13 +83,15 @@ const FaqSection = () => {
     ];
 
     return (
-        <div className="py-16 bg-background-dark m-2">
-            <div className="container px-4 border-2 border-background bg-background shadow-md rounded-lg">
-                <Title level="2" className="text-2xl font-bold mb-8 mt-4 text-center">{t('dreps.faq.faq')}</Title>
+        <div className="py-6 px-6 bg-background-dark">
+            <div className="container mx-auto px-6 py-6 border-2 border-background rounded-xl bg-background shadow-md">
+                <Title level="2" className="text-2xl font-bold mb-8 text-center">
+                    {t('dreps.faq.faq')}
+                </Title>
                 
-                <div className="space-y-6 mb-4">
+                <div className="flex flex-col gap-4 mb-4">
                     {faqs.map((faq, index) => (
-                        <div key={index} className="border border-dark rounded-lg overflow-hidden">
+                        <div key={index} className="border border-dark rounded-xl overflow-hidden">
                             <FaqItem question={faq.question} answer={faq.answer} />
                         </div>
                     ))}

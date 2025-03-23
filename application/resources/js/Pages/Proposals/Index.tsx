@@ -57,6 +57,8 @@ export default function Index({
 
     useEffect(() => {
         if (metrics) {
+            console.log({ metrics });
+            
             setMetrics(metrics);
         }
 
@@ -71,7 +73,7 @@ export default function Index({
                 defaultFilters={filters}
                 routerOptions={{ only: ['proposals', 'metrics', 'funds'] }}
             >
-                <Head title="Proposals" />
+                <Head title={t('proposals.proposals')} />
 
                 <header>
                     <div className="container">

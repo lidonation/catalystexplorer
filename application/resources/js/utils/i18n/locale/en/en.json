@@ -76,6 +76,7 @@
     "reviews": "Reviews",
     "reviewers":"Reviewers",
     "register": "Register",
+    "reviewerReputationScore": "Reviewer Reputation Score",
     "searchQuery": "No results match your search query",
     "signin": "Sign in",
     "signup": "Sign up",
@@ -121,6 +122,22 @@
     "nftPaymentGatewayTitle": "NFT-MAKER PRO Payment Gateway",
     "artistRole": "Artist",
     "cantFindNFTForMint": "Can't find NFT for mint",
+    "workflows": {
+        "claimIdeascale": {
+            "selectProfile": "Select Profile",
+            "submitDetails": "Submit Details",
+            "verification": "Verification code",
+            "chooseProfile": "Choose the profile(s) you want to claim. 🚀",
+            "submitDetailsForm": "Submit details you would want updated to the account.",
+            "verifyOnIdeascale": "To verify your ownership of this profile, please send a personal message to Lido Nation on Ideascale and include the code above. "
+        },
+        "completedProjectNfts": {
+            "selectProfile": "Select Profile",
+            "selectProposal": "Select Proposal",
+            "selectProfileInfo": "Choose the profile(s) you want to mint from. The selected profile should be linked to the completed project whose NFT you’re minting.Not sure which one to pick? No worries—just select all available profiles and we’ll handle the rest! 🚀",
+            "selectProposalInfo":"To get started, please select proposal to mint from"
+        }
+    },
     "error404": {
         "mainText": "Sorry, we couldn't find what you're looking for",
         "subText": "Let's Find Your Way Back!"
@@ -390,7 +407,7 @@
         "noIdeascaleProfiles": "No Ideascale Profiles Found",
         "bio": "Bio",
         "claimed": "Claimed",
-        "claim": "Claim",
+        "claim": "Claim Profile",
         "totalRequested": "Total Requested",
         "totalProposals": "Total Proposals",
         "awardedVsRequested": "Awarded vs Requested",
@@ -671,33 +688,33 @@
             "inactive": "Inactive"
         }
     },
-        "wallet": {
-            "connect": {
-                "title": "Connect Wallet",
-                "initializing": "Initializing wallet connection...",
-                "connectedTo": "Connected to:",
-                "disconnect": "Disconnect Wallet",
-                "selectWallet": "Select a wallet",
-                "noWallets": {
-                    "title": "No supported wallets detected",
-                    "subtitle": "Please install Lace, Eternl, Flint, or another Cardano wallet"
-                },
-                "errors": {
-                    "notInitialized": "Cardano library not initialized yet. Please try again in a moment.",
-                    "walletNotFound": "{{walletName}} wallet not found. Please install it first.",
-                    "wrongNetwork": "Wrong network detected. Please switch to {{expected}}",
-                    "noAddresses": "No addresses found in wallet",
-                    "connectionFailed": "Connection failed",
-                    "disconnectError": "Error disconnecting wallet",
-                    "contextError": "useWallet must be used within a WalletProvider",
-                    "wasmInitError": "Failed to initialize Cardano WASM module",
-                    "wasmLibError": "Failed to initialize wallet connection library"
-                }
+    "wallet": {
+        "connect": {
+            "title": "Connect Wallet",
+            "initializing": "Initializing wallet connection...",
+            "connectedTo": "Connected to:",
+            "disconnect": "Disconnect Wallet",
+            "selectWallet": "Select a wallet",
+            "noWallets": {
+                "title": "No supported wallets detected",
+                "subtitle": "Please install Lace, Eternl, Flint, or another Cardano wallet"
             },
-            "status": {
-                "connected": "Connected",
-                "connecting": "Connecting",
-                "disconnect": "Disconnect"
+            "errors": {
+                "notInitialized": "Cardano library not initialized yet. Please try again in a moment.",
+                "walletNotFound": "{{walletName}} wallet not found. Please install it first.",
+                "wrongNetwork": "Wrong network detected. Please switch to {{expected}}",
+                "noAddresses": "No addresses found in wallet",
+                "connectionFailed": "Connection failed",
+                "disconnectError": "Error disconnecting wallet",
+                "contextError": "useWallet must be used within a WalletProvider",
+                "wasmInitError": "Failed to initialize Cardano WASM module",
+                "wasmLibError": "Failed to initialize wallet connection library"
             }
+        },
+        "status": {
+            "connected": "Connected",
+            "connecting": "Connecting",
+            "disconnect": "Disconnect"
         }
+    }
 }

@@ -68,18 +68,17 @@ class CompletetProjectNftsController extends Controller
     {
         return collect([
             [
-                'title' => 'Select Profile',
-                'info' => 'Choose the profile(s) you want to mint from. The selected profile should be linked to the completed project whose NFT you’re minting.
-                            Not sure which one to pick? No worries—just select all available profiles and we’ll handle the rest! 🚀',
+                'title' => 'workflows.completedProjectNfts.selectProfile',
+                'info' => 'workflows.completedProjectNfts.selectProfileInfo',
             ],
             [
-                'title' => 'Select Proposal',
-                'info' => 'To get started, please select proposal to mint from',
+                'title' => 'workflows.completedProjectNfts.selectProposal',
+                'info' => 'workflows.completedProjectNfts.selectProposalInfo',
             ],
         ]);
     }
 
-    public function step1(Request $request)
+    public function step1(Request $request): Response
     {
         return Inertia::render('Workflows/CompletedProjectNfts/Step1', [
             'profiles' => IdeascaleProfileData::collect(IdeascaleProfile::where('claimed_by_id', $this->user->id)
@@ -90,7 +89,7 @@ class CompletetProjectNftsController extends Controller
         ]);
     }
 
-    public function step2(Request $request)
+    public function step2(Request $request): Response
     {
 
         $proposals = $this->getClaimedIdeascaleProfilesProposals($request);
@@ -238,7 +237,7 @@ class CompletetProjectNftsController extends Controller
         ]);
     }
 
-    public function getClaimedIdeascaleProfilesProposals(Request $request)
+    public function getClaimedIdeascaleProfilesProposals(Request $request): array
     {
         $profileIds = (new TransformHashToIds)(collect($request->profiles), new IdeascaleProfile);
         $searchTerm = request('search');

@@ -61,6 +61,7 @@
     "proposers": "Proposeurs",
     "register": "Registre",
     "reviews": "Évaluations",
+    "reviewerReputationScore": "Score de réputation de l'évaluateur",
     "reviewers":"Réviseurs",
     "searchQuery": "Aucun résultat ne correspond à votre requête de recherche",
     "spending":"Dépenses",
@@ -110,6 +111,22 @@
     "nftPaymentGatewayTitle": "Passerelle de paiement NFT-MAKER PRO",
     "artistRole": "Artiste",
     "cantFindNFTForMint": "Impossible de trouver le NFT à mint",
+    "workflows": {
+        "claimIdeascale": {
+            "selectProfile": "Sélectionnez un profil",
+            "submitDetails": "Soumettre les détails",
+            "verification": "Le code de vérification",
+            "chooseProfile": "Choisissez le(s) profile(s) que vous souhaitez revendiquer. 🚀",
+            "submitDetailsForm": "Soumettez les détails que vous souhaitez mettre à jour sur le compte.",
+            "verifyOnIdeascale": "Pour vérifier votre propriété de ce profil, veuillez envoyer un message personnel à Lido Nation sur Ideascale et inclure le code ci-dessus."
+        },
+        "completedProjectNfts": {
+            "selectProfile": "Sélectionnez un profil",
+            "selectProposal": "Sélectionnez une proposition",
+            "selectProfileInfo": "Choisissez le(s) profil(s) à partir duquel/lesquels vous souhaitez créer des NFT. Le profil sélectionné doit être lié au projet finalisé dont vous souhaitez créer le NFT. Vous hésitez ? Pas de souci : sélectionnez simplement tous les profils disponibles et nous nous occupons du reste ! 🚀",
+            "selectProposalInfo": "Pour commencer, veuillez sélectionner la proposition à partir de laquelle créer"
+        }
+    },
     "error404": {
         "mainText": "Désolé, nous n'avons pas trouvé ce que vous cherchez",
         "subText": "Retrouvons votre chemin du retour!"
@@ -122,15 +139,13 @@
         "contactEmail": "support@lidonation.com",
         "appLogoAlt": "Logo de Catalyst Explore."
     },
-
-    "buttons":{
-        "titles":{
+    "buttons": {
+        "titles": {
             "claim": "Bouton de réclamation",
             "claimed": "Bouton réclamé",
-            "share":"Bouton de partage"
+            "share": "Bouton de partage"
         }
     },
-
     "searchResults": {
         "noResults": {
             "title": "Aucun résultat trouvé",
@@ -311,6 +326,7 @@
     "ideascaleProfiles": {
         "people": "Personnes",
         "ideascaleProfiles": "Ideascale Profils",
+        "claim":"Bouton de réclamation",
         "pageSubtitle": "Rechercher des propositions et des défis par titre, contenu ou auteur et co-auteurs",
         "ownProposals": "Propositions personnelles",
         "coProposals": "Propositions co",
@@ -482,7 +498,7 @@
             "chart": "Icône de graphique",
             "check": "Icône de vérification",
             "chevron_up": "Icône de chevron vers le haut",
-            "chevron_down": "Icône de chevron vers le bas",     
+            "chevron_down": "Icône de chevron vers le bas",
             "close": "Icône de fermeture",
             "connections":"Icône de connexions",
             "search": "Icône de recherche",
@@ -583,5 +599,34 @@
         "verificationCode": "Code de vérification",
         "verificationInstructions": "Pour vérifier que vous êtes le propriétaire de ce profil, veuillez envoyer un message personnel à Lido Nation sur Ideascale et inclure le code ci-dessus.",
         "goToIdeascale": "Accéder à Ideascale"
+    },
+    "wallet": {
+        "connect": {
+            "title": "Connecter le portefeuille",
+            "initializing": "Initialisation de la connexion au portefeuille...",
+            "connectedTo": "Connecté à:",
+            "disconnect": "Déconnecter le portefeuille",
+            "selectWallet": "Sélectionnez un portefeuille",
+            "noWallets": {
+                "title": "Aucun portefeuille pris en charge détecté",
+                "subtitle": "Veuillez installer Lace, Eternl, Flint ou un autre portefeuille Cardano"
+            },
+            "errors": {
+                "notInitialized": "La bibliothèque Cardano n'est pas encore initialisée. Veuillez réessayer dans quelques instants..",
+                "walletNotFound": " Portefeuille introuvable. Veuillez d'abord l'installer.",
+                "wrongNetwork": "Mauvais réseau détecté. Veuillez passer à ",
+                "noAddresses": "Aucune adresse trouvée dans le portefeuille",
+                "connectionFailed": "La connexion a échoué",
+                "disconnectError": "Erreur lors de la déconnexion du portefeuille",
+                "contextError": "useWallet doit être utilisé dans un WalletProvider",
+                "wasmInitError": "Échec de l'initialisation du module Cardano WASM",
+                "wasmLibError": "Échec de l'initialisation de la bibliothèque de connexion au portefeuille"
+            }
+        },
+        "status": {
+            "connected": "Connected",
+            "connecting": "Connecting",
+            "disconnect": "Disconnect"
+        }
     }
 }
