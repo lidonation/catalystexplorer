@@ -212,6 +212,11 @@
         opacity: 50;
     }
 
+    .scrollbar-thick::-webkit-scrollbar {
+        width: 12px;
+        height: 12px;
+    }
+
     .fill-success-light {
         fill: var(--content-success-light);
     }
