@@ -18,6 +18,7 @@
   },
   "dependencies": {
     "@nivo/bar": "^0.88.0",
-    "chokidar": "^4.0.3"
+    "chokidar": "^4.0.3",
+    "zod": "^3.24.2"
   }
 }
