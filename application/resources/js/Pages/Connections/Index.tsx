@@ -1,25 +1,23 @@
 import Title from '@/Components/atoms/Title';
 import { Head } from '@inertiajs/react';
 import Paragraph from '@/Components/atoms/Paragraph';
+import { useTranslation } from 'react-i18next';
 
 const Index = () => {
+    const { t } = useTranslation();
+
     return (
         <>
-            <Head title="Connections"/>
+            <Head title={t('connections')}/>
 
             <header>
                 <div className='container'>
-                    <Title>Connections</Title>
-                </div>
-                <div className='container'>
-                    <Paragraph className="text-content">
-                        View connections between proposals, challenges, and community members
-                    </Paragraph>
+                    <Title>{t('connections')}</Title>
                 </div>
             </header>
 
             <div className="flex h-screen w-full flex-col items-center justify-center">
-                <Title level='2'>Coming Soon</Title>
+                <Title level='2'>{t('comingSoon')}</Title>
             </div>
         </>
     );

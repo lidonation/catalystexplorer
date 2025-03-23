@@ -1,19 +1,23 @@
 import Title from '@/Components/atoms/Title';
 import { Head } from '@inertiajs/react';
+import { useTranslation } from 'react-i18next';
 
 const Index = () => {
+    const { t } = useTranslation();
+
     return (
         <>
-            <Head title="Lists and Bookmarks"/>
+            <Head title={t('listsAndBookmarks')}/>
 
             <header>
                 <div className='container'>
-                    <Title >Lists and Bookmarks</Title>
+                    <Title>{t('listsAndBookmarks')}</Title>
+                    
                 </div>
             </header>
 
             <div className="flex h-screen w-full flex-col items-center justify-center">
-                <Title level='2'>Coming Soon</Title>
+                <Title level='2'>{t('comingSoon')}</Title>
             </div>
         </>
     );
