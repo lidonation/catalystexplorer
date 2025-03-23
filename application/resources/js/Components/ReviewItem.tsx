@@ -4,7 +4,6 @@ import Divider from './Divider';
 import { ReviewerInfo } from './ReviewerInfo';
 import { StarRating } from './ReviewsStar';
 import Paragraph from './atoms/Paragraph';
-import ReputationBadge from './ReputationBadge';
 
 export interface ReviewItemProps {
     review: ReviewItem;
@@ -22,12 +21,8 @@ export const ReviewCard: React.FC<ReviewItemProps> = ({
                     <ReviewerInfo
                         ideascaleProfile={review.reviewerProfile}
                         reviewCount={review.reviewerReviewsCount}
+                        review={review}
                     />
-                    {review.reputationScores && review.reputationScores.length > 0 && (
-                        <div className="mt-4 ml-4">
-                            <ReputationBadge review={review} />
-                        </div>
-                    )}
                 </div>
                 <StarRating rating={review.rating} />
             </div>
