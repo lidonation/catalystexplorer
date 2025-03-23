@@ -1,7 +1,9 @@
-import React from 'react';
-import ReviewReputationScoreData = App.DataTransferObjects.ReviewerReputationScoreData;
+import React, { useState } from 'react';
+import { ReputationTier } from '@/enums/reputation-tier-enums';
 import Paragraph from './atoms/Paragraph';
 import { ReviewItem } from '@/Pages/IdeascaleProfile/Reviews/Index';
+import ToolTipHover from './ToolTipHover';
+import { useTranslation } from 'react-i18next';
 
 export interface ReputationBadgeProps {
     review: ReviewItem;
@@ -12,6 +14,9 @@ export const ReputationBadge: React.FC<ReputationBadgeProps> = ({
     review,
     className = '',
 }) => {
+    const { t } = useTranslation();
+    const [showTooltip, setShowTooltip] = useState(false);
+    
     if (!review.reputationScores || review.reputationScores.length === 0) {
         return null;
     }
@@ -19,9 +24,10 @@ export const ReputationBadge: React.FC<ReputationBadgeProps> = ({
     const finalScore = review.reputationScores[0].score;
     
     const getTier = (score: number) => {
-        if (score >= 70) return 'good';
-        if (score >= 40) return 'neutral';
-        return 'not-great';
+        if (score >= ReputationTier.GOOD_MARK) return ReputationTier.GOOD;
+        if (score >= ReputationTier.NEUTRAL_MARK) return ReputationTier.NEUTRAL;
+        if (score >= ReputationTier.NOT_GREAT_MARK) return ReputationTier.NOT_GREAT;
+        return ReputationTier.NOT_GREAT;
     };
     
     const tier = getTier(finalScore);
@@ -31,22 +37,22 @@ export const ReputationBadge: React.FC<ReputationBadgeProps> = ({
     // Define Tailwind color classes based on tier
     const getColorClasses = () => {
         switch (tier) {
-            case 'good':
+            case ReputationTier.GOOD:
                 return {
                     fillClass: 'fill-success-light',
-                    strokeClass: 'stroke-success',
+                    strokeClass: 'stroke-success-border',
                     textClass: 'text-success'
                 };
-            case 'neutral':
+            case ReputationTier.NEUTRAL:
                 return {
                     fillClass: 'fill-primary-light',
-                    strokeClass: 'stroke-primary',
+                    strokeClass: 'stroke-primary-border',
                     textClass: 'text-primary'
                 };
-            case 'not-great':
+            case ReputationTier.NOT_GREAT:
                 return {
                     fillClass: 'fill-error-light',
-                    strokeClass: 'stroke-error',
+                    strokeClass: 'stroke-error-border',
                     textClass: 'text-error'
                 };
             default:
@@ -61,7 +67,11 @@ export const ReputationBadge: React.FC<ReputationBadgeProps> = ({
     const colorClasses = getColorClasses();
     
     return (
-        <div className={`inline-block ${className}`}>
+        <div 
+            className={`inline-block relative ${className}`}
+            onMouseEnter={() => setShowTooltip(true)}
+            onMouseLeave={() => setShowTooltip(false)}
+        >
             <svg width="75" height="50" viewBox="0 0 56 56">
                 <path 
                     d={hexagonPath}
@@ -73,7 +83,7 @@ export const ReputationBadge: React.FC<ReputationBadgeProps> = ({
                 <foreignObject x="10" y="18" width="36" height="20">
                     <div className="flex justify-center items-center h-full">
                         <Paragraph 
-                            size="sm" 
+                            size="lg" 
                             className={`${colorClasses.textClass} font-bold text-center`}
                         >
                             {finalScore}%
@@ -81,6 +91,15 @@ export const ReputationBadge: React.FC<ReputationBadgeProps> = ({
                     </div>
                 </foreignObject>
             </svg>
+            
+            {showTooltip && (
+                <div className="absolute bottom-full left-1/2 z-50 mb-2 -translate-x-1/2 transform">
+                    <ToolTipHover 
+                        props={t('reviewerReputationScore')}
+                        className="w-auto px-3"
+                    />
+                </div>
+            )}
         </div>
     );
 };

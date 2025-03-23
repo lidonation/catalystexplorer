@@ -61,6 +61,7 @@
     "proposers": "Proposeurs",
     "register": "Registre",
     "reviews": "Évaluations",
+    "reviewerReputationScore": "Score de réputation de l'évaluateur",
     "reviewers":"Réviseurs",
     "searchQuery": "Aucun résultat ne correspond à votre requête de recherche",
     "spending":"Dépenses",
@@ -325,6 +326,7 @@
     "ideascaleProfiles": {
         "people": "Personnes",
         "ideascaleProfiles": "Ideascale Profils",
+        "claim":"Bouton de réclamation",
         "pageSubtitle": "Rechercher des propositions et des défis par titre, contenu ou auteur et co-auteurs",
         "ownProposals": "Propositions personnelles",
         "coProposals": "Propositions co",
