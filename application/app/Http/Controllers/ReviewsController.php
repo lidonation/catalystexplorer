@@ -4,9 +4,14 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\Actions\TransformIdsToHashes;
+use App\DataTransferObjects\ProposalData;
 use App\DataTransferObjects\ReviewData;
+use App\Enums\ProposalSearchParams;
 use App\Enums\QueryParamsEnum;
+use App\Models\Proposal;
 use App\Models\Review;
+use App\Repositories\ReviewRepository;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Fluent;
@@ -40,8 +45,6 @@ class ReviewsController extends Controller
         $props = [
             'reviews' => $this->query(),
             'search' => $this->search,
-            'currentPage' => $this->currentPage,
-            'perPage' => $this->perPage,
             'sortBy' => $this->sortBy,
             'sortOrder' => $this->sortOrder,
             'filters' => $this->filters,
@@ -68,6 +71,61 @@ class ReviewsController extends Controller
 
     public function query($returnBuilder = false, $attrs = null, $filters = [])
     {
+        $args = [
+            'filter' => $this->getUserFilters(),
+        ];
+
+        if ((bool) $this->sortBy && (bool) $this->sortOrder) {
+            $args['sort'] = ["$this->sortBy:$this->sortOrder"];
+        }
+
+        $page = isset($this->queryParams[ProposalSearchParams::PAGE()->value])
+            ? (int) $this->queryParams[ProposalSearchParams::PAGE()->value]
+            : 1;
+
+        $limit = isset($this->queryParams[ProposalSearchParams::LIMIT()->value])
+            ? (int) $this->queryParams[ProposalSearchParams::LIMIT()->value]
+            : 64;
+
+        $args['offset'] = ($page - 1) * $limit;
+        $args['limit'] = $limit;
+        $args['attributesToRetrieve'] = $attrs ?? [
+            'hash',
+            'title',
+            'content',
+            'status',
+            'model_id',
+            'model_type',
+        ];
+
+        $reviews = app(ReviewRepository::class);
+
+        $builder = $reviews->search(
+            $this->queryParams[ProposalSearchParams::QUERY()->value] ?? '',
+            $args
+        );
+
+        $response = new Fluent($builder->raw());
+        $items = collect($response->hits);
+
+        $pagination = new LengthAwarePaginator(
+            ReviewData::collect(
+                (new TransformIdsToHashes)(
+                    collection: $items,
+                    model: new Proposal
+                )->toArray()
+            ),
+            $response->estimatedTotalHits,
+            $limit,
+            $page,
+            [
+                'pageName' => 'p',
+                'onEachSide' => 0,
+            ]
+        );
+
+        return $pagination->toArray();
+
         $_options = [
             'filters' => array_merge([], $this->getUserFilters(), $filters),
         ];
@@ -80,7 +138,7 @@ class ReviewsController extends Controller
                 }
 
                 $options['attributesToRetrieve'] = $attrs ?? [
-                    'id',
+                    'hash',
                     'title',
                     'content',
                     'status',
@@ -103,18 +161,35 @@ class ReviewsController extends Controller
         }
 
         $response = new Fluent($this->searchBuilder->raw());
-
+        $items = collect($response->hits);
         $pagination = new LengthAwarePaginator(
-            $response->hits,
+            ProposalData::collect(
+                (new TransformIdsToHashes)(
+                    collection: $items,
+                    model: new Proposal
+                )->toArray()
+            ),
             $response->estimatedTotalHits,
-            $response->limit,
-            $this->currentPage,
+            $limit,
+            $page,
             [
                 'pageName' => 'p',
+                'onEachSide' => 0,
             ]
         );
 
-        return $pagination->onEachSide(1)->toArray();
+        return $pagination->toArray();
+
+        //        $pagination = new LengthAwarePaginator(
+        //            $response->hits,
+        //            $response->estimatedTotalHits,
+        //            $response->limit,
+        //            $this->currentPage,
+        //            [
+        //                'pageName' => 'p',
+        //            ]
+        //        );
+        //        return to_length_aware_paginator($pagination);
     }
 
     protected function setFilters(Request $request): void

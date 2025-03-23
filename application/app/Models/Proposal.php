@@ -302,10 +302,16 @@ class Proposal extends Model
             ->where('context_type', Proposal::class);
     }
 
+    //    public function reviews(): HasManyThrough
+    //    {
+    //        return $this->hasManyThrough(Review::class, Moderation::class, 'context_id', 'id', 'id', 'review_id')
+    //            ->where('moderations.context_type', static::class);
+    //    }
+
     public function reviews(): HasManyThrough
     {
-        return $this->hasManyThrough(Review::class, Moderation::class, 'context_id', 'id', 'id', 'review_id')
-            ->where('moderations.context_type', static::class);
+        return $this->hasManyThrough(Review::class, Discussion::class, 'model_id', 'id', 'id', 'model_id')
+            ->where('discussions.model_type', static::class);
     }
 
     public function discussions(): HasMany

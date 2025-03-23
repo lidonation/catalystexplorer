@@ -13,8 +13,6 @@ use Spatie\TypeScriptTransformer\Attributes\TypeScript;
 class ReviewData extends Data
 {
     public function __construct(
-        public ?string $id,
-
         public ?string $hash,
 
         #[TypeScriptOptional]

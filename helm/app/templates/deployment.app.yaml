@@ -107,7 +107,7 @@ spec:
                 - php
                 - artisan
                 - octane:status
-            initialDelaySeconds: 10
+            initialDelaySeconds: 15
             periodSeconds: 5
             timeoutSeconds: 5
             successThreshold: 1
