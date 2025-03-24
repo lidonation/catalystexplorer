@@ -112,6 +112,7 @@
     "nftPaymentGatewayTitle": "Passerelle de paiement NFT-MAKER PRO",
     "artistRole": "Artiste",
     "cantFindNFTForMint": "Impossible de trouver le NFT à mint",
+    "copyToClipboard": "Copy to clipboard",
     "workflows": {
         "claimIdeascale": {
             "selectProfile": "Sélectionnez un profil",
@@ -645,8 +646,7 @@
             "block": "Bloc",
             "actions": "Actions",
             "view": "Voir",
-            "voterRegistration": "Enregistrement des électeurs",
-            "copyToClipboard": "Copier dans le presse-papiers"
+            "voterRegistration": "Enregistrement des électeurs"
         },
         "options": {
             "newestToOldest": "Du plus récent au plus ancien",

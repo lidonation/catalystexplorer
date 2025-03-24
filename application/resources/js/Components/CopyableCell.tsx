@@ -33,7 +33,7 @@ const CopyableCell: React.FC<CopyableCellProps> = ({ displayText, fullText, titl
         <Button
           onClick={() => copyToClipboard(fullText)}
           className="ml-2 p-1 hover:bg-gray-100 rounded-full"
-          ariaLabel={t('transactions.table.copyToClipboard')}
+          ariaLabel={t('copyToClipboard')}
         >
           <CopyIcon width={16} height={16} className="text-gray-persist" />
         </Button>
