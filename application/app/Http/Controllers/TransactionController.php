@@ -17,9 +17,13 @@ use Inertia\Inertia;
 class TransactionController
 {
     protected int $limit = 20;
+
     protected int $currentPage = 1;
+
     protected array $queryParams = [];
+
     protected ?string $sortBy = 'created_at';
+
     protected ?string $sortOrder = 'desc';
 
     /**
@@ -84,7 +88,7 @@ class TransactionController
             TransactionSearchParams::SORT()->value => 'string|nullable',
         ]);
 
-        if (!empty($this->queryParams[TransactionSearchParams::SORT()->value])) {
+        if (! empty($this->queryParams[TransactionSearchParams::SORT()->value])) {
             $sort = collect(
                 explode(
                     ':',
@@ -149,20 +153,20 @@ class TransactionController
     protected function getUserFilters(): array
     {
         $filters = [];
-        
-        if (!empty($this->queryParams[TransactionSearchParams::TYPE()->value])) {
+
+        if (! empty($this->queryParams[TransactionSearchParams::TYPE()->value])) {
             $filters[] = "type = '{$this->queryParams[TransactionSearchParams::TYPE()->value]}'";
         }
 
-        if (!empty($this->queryParams[TransactionSearchParams::TX_HASH()->value])) {
+        if (! empty($this->queryParams[TransactionSearchParams::TX_HASH()->value])) {
             $filters[] = "tx_hash = '{$this->queryParams[TransactionSearchParams::TX_HASH()->value]}'";
         }
 
-        if (!empty($this->queryParams[TransactionSearchParams::BLOCK()->value])) {
+        if (! empty($this->queryParams[TransactionSearchParams::BLOCK()->value])) {
             $filters[] = "block = '{$this->queryParams[TransactionSearchParams::BLOCK()->value]}'";
         }
 
-        if (!empty($this->queryParams[TransactionSearchParams::ADDRESS()->value])) {
+        if (! empty($this->queryParams[TransactionSearchParams::ADDRESS()->value])) {
             $filters[] = "inputs.address = '{$this->queryParams[TransactionSearchParams::ADDRESS()->value]}'";
         }
 
