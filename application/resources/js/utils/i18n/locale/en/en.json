@@ -569,6 +569,8 @@
         "title": "Completed Project NFTs",
         "subtitle": "Completed Project Catalyst project teams are invited to mint a celebratory NFT to mark your achievement and share it with the world!",
         "nowMinting": "Now minting",
+        "celebrateYourWork": "Celebrate your hard work",
+        "onCardanoMainnet": "on Cardano mainnet.",
         "communityFunded": "Community Members Funded",
         "projectsCompleted": "Projects Completed",
         "usdDistributed": "USD Distributed",
@@ -583,7 +585,10 @@
         "claimProfile": "Claim an Ideascale Profile",
         "unavailable": "Unavailable!",
         "reservedUntil": "Reserved until",
-        "paymentPending": "Payment Pending"
+        "paymentPending": "Payment Pending",
+        "mintCompletionNft": "Mint Completion NFT",
+        "projectComplete": "Project Complete?",
+        "timeForLaunchParty": "Time for a launch party!"
     },
     "profileWorkflow": {
         "sectionTitle": {

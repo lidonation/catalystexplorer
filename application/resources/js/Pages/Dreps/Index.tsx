@@ -28,7 +28,7 @@ const Index = () => {
                             aspectRatio: '18/10'
                         }}
                     />
-                    
+
                     <div
                         className="block md:hidden w-full h-screen"
                         style={{
@@ -72,7 +72,7 @@ const Index = () => {
                                         <CardanoIcon/>
                                     </div>
                                 </div>
-                                
+
                                 <div className="md:col-span-6">
                                     <Title level='2' className="text-4xl md:text-5xl font-bold mb-4">{t('dreps.landing.aDrep')}</Title>
                                     <Paragraph className="text-dark mb-4">
@@ -84,8 +84,8 @@ const Index = () => {
                     </div>
 
                     {/* Project Catalyst Section */}
-                    <div className="py-16 min-h-[700px] md:min-h-[600px] flex flex-col justify-between relative" 
-                        style={{ 
+                    <div className="py-16 min-h-[700px] md:min-h-[600px] flex flex-col justify-between relative"
+                        style={{
                             backgroundImage: `url(${ProjectCatalystBackground})`,
                             backgroundSize: 'cover',
                             backgroundRepeat: 'no-repeat',
@@ -103,7 +103,7 @@ const Index = () => {
                                 {t('dreps.landing.projectCatalystDescription')}
                             </Paragraph>
                         </div>
-                        
+
                         <div className="mt-10 pb-16">
                             <div className="container mx-auto px-6 md:px-8 lg:px-16">
                                 <div className="w-full md:w-1/2 lg:w-5/12">
@@ -124,7 +124,7 @@ const Index = () => {
                     {/* Call to Action */}
                     <div className="py-8 md:py-16 px-6 md:px-40 bg-background-dark">
                         <div className="mx-auto">
-                            <div className="flex flex-col md:flex-row justify-between gap-4 md:gap-6">
+                            <div className="flex flex-col md:flex-row justify-between items-center gap-4 md:gap-6">
                                 <div className="text-left md:text-left mb-6 md:mb-0">
                                     <Title level='2' className="text3xl md:text-2xl lg:text-3xl font-bold">
                                         {t('dreps.landing.excite')}
