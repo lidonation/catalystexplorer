@@ -73,5 +73,17 @@ export const ideascaleProfileTabs: TabConfig = {
   ]
 };
 
+export const communityTabs: TabConfig = {
+  translationPrefix: 'communities.tabs',
+  routePrefix: 'communities/{community:slug}',
+  tabs: [
+      { key: 'dashboard' },
+      {key: 'proposals'},
+      {key: 'members'},
+      {key: 'groups'},
+      {key: 'events'}
+  ]
+};
+
 
 

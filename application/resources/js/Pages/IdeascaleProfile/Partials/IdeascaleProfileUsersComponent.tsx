@@ -52,7 +52,7 @@ export default function IdeascaleProfileUsers({
                 {visibleUsers?.map((user, index) => (
                     <li 
                         key={index} 
-                        onClick={() => handleUserClick(user)}
+                        onClick={() => onUserClick?.(user)}
                         onMouseEnter={() => setHoveredUserIndex(index)}
                         onMouseLeave={() => setHoveredUserIndex(null)}
                         className="relative"
