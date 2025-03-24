@@ -22,6 +22,7 @@
     "comingSoon": "Coming Soon",
     "cookies": "Cookies",
     "copyright": "© 2024 Catalyst Explorer. All rights reserved.",
+    "connections": "Connections",
     "minting": "You're Minting",
     "loginToMint": "Login to Mint",
     "mustBeProposer": "Must Be Proposer",
@@ -44,6 +45,7 @@
     "licenses": "Licenses",
     "login": "Login",
     "linkedIn": "LinkedIn",
+    "listsAndBookmarks": "Lists and Bookmarks",
     "monthlyReports": "Monthly Reports",
     "metaTitle": "Meta Data Preview",
     "mintNFT": "Mint NFT",
@@ -76,6 +78,7 @@
     "reviews": "Reviews",
     "reviewers":"Reviewers",
     "register": "Register",
+    "reviewerReputationScore": "Reviewer Reputation Score",
     "searchQuery": "No results match your search query",
     "signin": "Sign in",
     "signup": "Sign up",
@@ -120,6 +123,22 @@
     "nftPaymentGatewayTitle": "NFT-MAKER PRO Payment Gateway",
     "artistRole": "Artist",
     "cantFindNFTForMint": "Can't find NFT for mint",
+    "workflows": {
+        "claimIdeascale": {
+            "selectProfile": "Select Profile",
+            "submitDetails": "Submit Details",
+            "verification": "Verification code",
+            "chooseProfile": "Choose the profile(s) you want to claim. 🚀",
+            "submitDetailsForm": "Submit details you would want updated to the account.",
+            "verifyOnIdeascale": "To verify your ownership of this profile, please send a personal message to Lido Nation on Ideascale and include the code above. "
+        },
+        "completedProjectNfts": {
+            "selectProfile": "Select Profile",
+            "selectProposal": "Select Proposal",
+            "selectProfileInfo": "Choose the profile(s) you want to mint from. The selected profile should be linked to the completed project whose NFT you’re minting.Not sure which one to pick? No worries—just select all available profiles and we’ll handle the rest! 🚀",
+            "selectProposalInfo":"To get started, please select proposal to mint from"
+        }
+    },
     "error404": {
         "mainText": "Sorry, we couldn't find what you're looking for",
         "subText": "Let's Find Your Way Back!"
@@ -389,7 +408,7 @@
         "noIdeascaleProfiles": "No Ideascale Profiles Found",
         "bio": "Bio",
         "claimed": "Claimed",
-        "claim": "Claim",
+        "claim": "Claim Profile",
         "totalRequested": "Total Requested",
         "totalProposals": "Total Proposals",
         "awardedVsRequested": "Awarded vs Requested",
@@ -652,7 +671,7 @@
             "findDrep": "Find a Drep",
             "signUp": "Sign up to be a DRep",
             "aDrep": "What are DReps?",
-            "drepDescription": "DReps (Delegate Representatives), vote on governance proposals in Cardaon on behalf of ADA holders. Instead of voting individually, you can delegate your voting power to a DRep who representsv your interests helping shape the future of Cardano efficiently and transparently.",
+            "drepDescription": "DReps (Delegate Representatives), vote on governance proposals in Cardaon on behalf of ADA holders. Instead of voting individually, you can delegate your voting power to a DRep who represents your interests helping shape the future of Cardano efficiently and transparently.",
             "projectCatalyst": "Project Catalyst's Continued Growth and the Need for Delegation",
             "projectCatalystDescription": "The Cardano community's Project Catalyst has grown rapidly, with Fund8 receiving nearly 1,000 proposals. To manage this increasing workload, a new delegation system is being introduced for sustainable governance.",
             "empower": "Empowering Passive Voters Through Delegation",
@@ -728,10 +747,22 @@
                     "wasmLibError": "Failed to initialize wallet connection library"
                 }
             },
-            "status": {
-                "connected": "Connected",
-                "connecting": "Connecting",
-                "disconnect": "Disconnect"
+            "errors": {
+                "notInitialized": "Cardano library not initialized yet. Please try again in a moment.",
+                "walletNotFound": "{{walletName}} wallet not found. Please install it first.",
+                "wrongNetwork": "Wrong network detected. Please switch to {{expected}}",
+                "noAddresses": "No addresses found in wallet",
+                "connectionFailed": "Connection failed",
+                "disconnectError": "Error disconnecting wallet",
+                "contextError": "useWallet must be used within a WalletProvider",
+                "wasmInitError": "Failed to initialize Cardano WASM module",
+                "wasmLibError": "Failed to initialize wallet connection library"
             }
+        },
+        "status": {
+            "connected": "Connected",
+            "connecting": "Connecting",
+            "disconnect": "Disconnect"
         }
+    }
 }

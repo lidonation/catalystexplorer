@@ -129,14 +129,14 @@ const ProfileWorkflow: React.FC<ProfileWorkflowProps> = ({
 
     return (
         <div className="bg-background mx-auto w-full max-w-lg rounded-2xl p-6 shadow-md">
-            {/* {!showVerification && (
+            {!showVerification && (
                 <PageHeader
                     userName={user?.name}
                     sectionTitle={getSectionTitle()}
                 />
             )}
 
-            <div className="w-full">
+            {/* <div className="w-full">
                 {viewProposal ? (
                     <>
                         <button
@@ -192,12 +192,7 @@ const ProfileWorkflow: React.FC<ProfileWorkflowProps> = ({
                             }
                         />
 
-                        <div className="mt-4 space-y-2">
-                            {profileSearchResults.map((profile, index) => (
-                                <div
-                                    key={index}
-                                    className={`w-full sm:max-w-[400px] lg:max-w-[500px]`}
-                                >
+                   
                                     <ProfileCard
                                         profile={profile}
                                         onSelect={() => {

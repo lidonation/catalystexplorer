@@ -1,24 +1,15 @@
 import AggregatedReviewsSummary from '@/Components/AggregatedReviewsSummary';
 import { ReviewList } from '@/Components/ReviewList';
 import { Head } from '@inertiajs/react';
-import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { PaginatedData } from '../../../../types/paginated-data';
 import IdeascaleProfileLayout from '../IdeascaleProfileLayout';
 import IdeascaleProfileData = App.DataTransferObjects.IdeascaleProfileData;
-import ReviewData = App.DataTransferObjects.ReviewData;
 import ReviewReputationScoreData = App.DataTransferObjects.ReviewerReputationScoreData;
-import UserData = App.DataTransferObjects.UserData;
 import RecordsNotFound from '@/Layouts/RecordsNotFound';
 import { SearchParams } from '../../../../types/search-params';
+import {ReviewItem} from "@/types/review-item";
 
-export type ReviewItem = {
-    review: ReviewData;
-    reviewerReviewsCount: number;
-    rating: number;
-    reviewerProfile: IdeascaleProfileData;
-    reputationScores: ReviewReputationScoreData[];
-};
 
 interface RankingCount {
     [key: number]: number; // Mapping rating (1-5) to count

@@ -104,46 +104,46 @@ services:
       retries: 5
     command: >
       postgres -c port=5434 ${POSTGRES_ARGS:--c maintenance_work_mem=1GB -c max_parallel_maintenance_workers=4}
-  # catalystexplorer.carp:
-  #   container_name: catalystexplorer.carp
-  #   build:
-  #     context: ./carp
-  #     dockerfile: Dockerfile
-  #     target: carp
-  #     args:
-  #       - APP=/app
-  #   image: carp
-  #   environment:
-  #     - NETWORK=${NETWORK:-preview} # dynamic based on network, default to preview
-  #     - PGPASSFILE=/run/secrets/.pgpass
-  #     - RUST_BACKTRACE=full
-  #     - CARDANO_NODE_VERSION=10.1.4
-  #     - CARDANO_NODE_EXPOSED_PORT=3001
-  #     - POSTGRES_HOST=catalystexplorer.cardanodb
-  #     - POSTGRES_PORT=5434
-  #     - PGUSER=carp
-  #     - PGPASSWORD=v8hlDV0yMAHHlIurYupj
-  #     - POSTGRES_DB=carp_${NETWORK:-preview} # dynamic based on network, default to preview
-  #     - CONFIG_FILE=/app/indexer/configs/default.yml
-  #     - DATABASE_URL=postgresql://carp:v8hlDV0yMAHHlIurYupj@catalystexplorer.cardanodb:5434/carp_preview #again change here based on network
-  #   restart: "no"
-  #   secrets:
-  #     - source: pgpass
-  #       target: .pgpass
-  #   volumes:
-  #     - ./carp/indexer:/app/indexer:r
-  #     - ./carp/snapshots:/app/snapshots:r
-  #     - ./carp/scripts:/app/scripts:r
-  #     - node-ipc:/app/node-ipc:rw
-  #   entrypoint: ["/app/scripts/entrypoint.sh"]
-  #   depends_on:
-  #     catalystexplorer.cardanodb:
-  #       condition: service_healthy
-  #     catalystexplorer.cardanonode:
-  #       condition: service_healthy
-  #   networks:
-  #     - catalystexplorer-net
-  #     - shared-network
+  catalystexplorer.carp:
+    container_name: catalystexplorer.carp
+    build:
+      context: ./carp
+      dockerfile: Dockerfile
+      target: carp
+      args:
+        - APP=/app
+    image: carp
+    environment:
+      - NETWORK=${NETWORK:-preview} # dynamic based on network, default to preview
+      - PGPASSFILE=/run/secrets/.pgpass
+      - RUST_BACKTRACE=full
+      - CARDANO_NODE_VERSION=10.1.4
+      - CARDANO_NODE_EXPOSED_PORT=3001
+      - POSTGRES_HOST=catalystexplorer.cardanodb
+      - POSTGRES_PORT=5434
+      - PGUSER=carp
+      - PGPASSWORD=v8hlDV0yMAHHlIurYupj
+      - POSTGRES_DB=carp_${NETWORK:-preview} # dynamic based on network, default to preview
+      - CONFIG_FILE=/app/indexer/configs/default.yml
+      - DATABASE_URL=postgresql://carp:v8hlDV0yMAHHlIurYupj@catalystexplorer.cardanodb:5434/carp_preview #again change here based on network
+    restart: "no"
+    secrets:
+      - source: pgpass
+        target: .pgpass
+    volumes:
+      - ./carp/indexer:/app/indexer:r
+      - ./carp/snapshots:/app/snapshots:r
+      - ./carp/scripts:/app/scripts:r
+      - node-ipc:/app/node-ipc:rw
+    entrypoint: ["/app/scripts/entrypoint.sh"]
+    depends_on:
+      catalystexplorer.cardanodb:
+        condition: service_healthy
+      catalystexplorer.cardanonode:
+        condition: service_healthy
+    networks:
+      - catalystexplorer-net
+      - shared-network
 
   catalystexplorer.adminer:
     image: adminer:4.8.1
