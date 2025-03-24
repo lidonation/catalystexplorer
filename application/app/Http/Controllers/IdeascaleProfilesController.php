@@ -94,7 +94,6 @@ class IdeascaleProfilesController extends Controller
         }
 
         if (str_contains($path, '/groups')) {
-            // dd($ideascaleProfile->groups);
             return Inertia::render('IdeascaleProfile/Groups/Index', [
                 'ideascaleProfile' => IdeascaleProfileData::from($ideascaleProfileData),
                 'groups' => GroupData::collect($ideascaleProfile->groups),
