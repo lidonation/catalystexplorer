@@ -11,20 +11,16 @@ use Spatie\TypeScriptTransformer\Attributes\TypeScript;
 class TransactionData extends Data
 {
     public function __construct(
+        public ?string $hash,
         public string $tx_hash,
-
-        public ?int $epoch,
-
         public string $block,
-
-        public ?object $json_metadata,
-
-        public ?object $raw_metadata,
-
-        public ?string $created_at,
-
-        public ?array $inputs,
-
-        public $outputs,
+        public ?int $epoch,
+        public mixed $json_metadata,
+        public null|object|array $raw_metadata,
+        public string $created_at,
+        /** @var array<TransactionInputData> */
+        public array $inputs,
+        /** @var array<TransactionOutputData> */
+        public array $outputs,
     ) {}
 }

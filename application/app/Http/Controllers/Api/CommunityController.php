@@ -5,6 +5,9 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Api;
 
 use App\DataTransferObjects\CommunityData;
+use App\DataTransferObjects\GroupData;
+use App\DataTransferObjects\IdeascaleProfileData;
+use App\DataTransferObjects\ProposalData;
 use App\Enums\CatalystCurrencySymbols;
 use App\Enums\CommunitySearchParams;
 use App\Enums\ProposalSearchParams;
@@ -12,6 +15,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\CommunityResource;
 use App\Models\Campaign;
 use App\Models\Community;
+use App\Models\Fund;
 use App\Models\IdeascaleProfile;
 use App\Models\Tag;
 use App\Services\HashIdService;
@@ -22,6 +26,7 @@ use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Response;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Stringable;
 use Inertia\Inertia;
@@ -80,9 +85,264 @@ class CommunityController extends Controller
         return Inertia::render('Communities/Index', $props);
     }
 
+    public function show(Request $request, Community $community): \Inertia\Response
+    {
+
+        $community
+            ->loadCount([
+                'completed_proposals',
+                'funded_proposals',
+                'unfunded_proposals',
+                'own_proposals',
+                'collaborating_proposals',
+                'proposals',
+            ])->append([
+                'amount_distributed_ada',
+                'amount_distributed_usd',
+                'amount_awarded_ada',
+                'amount_awarded_usd',
+            ]);
+
+        $path = $request->path();
+
+        if (str_contains($path, '/proposals')) {
+            return Inertia::render('Communities/Proposals/Index', [
+                'community' => CommunityData::from($community),
+                'proposals' => Inertia::optional(
+                    fn () => to_length_aware_paginator(
+                        ProposalData::collect(
+                            $community->proposals()
+                                ->with(['users', 'fund'])
+                                ->paginate(11, ['*'], 'p')
+                        )
+                    )->onEachSide(0)
+                ),
+            ]);
+        }
+
+        if (str_contains($path, '/members')) {
+            return Inertia::render('Communities/Members/Index', [
+                'community' => CommunityData::from($community),
+                'ideascaleProfiles' => Inertia::optional(
+                    fn () => to_length_aware_paginator(
+                        IdeascaleProfileData::collect(
+                            $community->ideascale_profiles()
+                                ->withCount([
+                                    'proposals',
+                                    'funded_proposals',
+                                    'unfunded_proposals',
+                                    'completed_proposals',
+                                    'own_proposals',
+                                    'collaborating_proposals',
+                                ])
+                                ->with([])->paginate(12)
+                        )
+                    )
+                ),
+            ]);
+        }
+
+        if (str_contains($path, '/groups')) {
+            return Inertia::render('Communities/Groups/Index', [
+                'community' => CommunityData::from($community),
+                'groups' => Inertia::optional(
+                    fn () => to_length_aware_paginator(
+                        GroupData::collect(
+                            $community->groups()
+                                ->withCount([
+                                    'proposals',
+                                    'funded_proposals',
+                                    'unfunded_proposals',
+                                    'completed_proposals',
+                                ])
+                                ->paginate(12)
+                        )
+                    )
+                ),
+            ]);
+        }
+
+        if (str_contains($path, '/events')) {
+            return Inertia::render('Communities/Events/Index', [
+                'community' => CommunityData::from($community),
+            ]);
+        }
+
+        if (str_contains($path, '/dashboard')) {
+
+            $fundTitles = Fund::pluck('title')
+                ->sortBy(fn ($title) => (int) filter_var($title, FILTER_SANITIZE_NUMBER_INT))
+                ->values();
+
+            $communityData = Community::with('funded_proposals.fund')->find($community->id);
+
+            $fundedProposals = $communityData->funded_proposals;
+
+            $calculateSum = function ($proposals, $fundTitle, $currency, $field) {
+                return $proposals->filter(function ($proposal) use ($fundTitle, $currency) {
+                    $fund = $proposal->fund;
+
+                    return $fund && $fund->title === $fundTitle && $fund->currency === $currency;
+                })->sum($field);
+            };
+
+            $amountAwardedChartData = [
+                [
+                    'id' => 'Awarded ADA',
+                    'data' => $fundTitles->map(fn ($fundTitle) => [
+                        'x' => $fundTitle,
+                        'y' => $calculateSum($fundedProposals, $fundTitle, CatalystCurrencySymbols::ADA->name, 'amount_requested'),
+                    ])->values(),
+                ],
+                [
+                    'id' => 'Awarded USD',
+                    'data' => $fundTitles->map(fn ($fundTitle) => [
+                        'x' => $fundTitle,
+                        'y' => $calculateSum($fundedProposals, $fundTitle, CatalystCurrencySymbols::USD->name, 'amount_requested'),
+                    ])->values(),
+                ],
+            ];
+
+            $amountDistributedChartData = [
+                [
+                    'id' => 'Distributed ADA',
+                    'data' => $fundTitles->map(fn ($fundTitle) => [
+                        'x' => $fundTitle,
+                        'y' => $calculateSum($fundedProposals, $fundTitle, CatalystCurrencySymbols::ADA->name, 'amount_received'),
+                    ])->values(),
+                ],
+                [
+                    'id' => 'Distributed USD',
+                    'data' => $fundTitles->map(fn ($fundTitle) => [
+                        'x' => $fundTitle,
+                        'y' => $calculateSum($fundedProposals, $fundTitle, CatalystCurrencySymbols::USD->name, 'amount_received'),
+                    ])->values(),
+                ],
+            ];
+
+            $amountRemainingChartData = [
+                [
+                    'id' => 'Remaining ADA',
+                    'data' => $fundTitles->map(function ($fundTitle) use ($fundedProposals, $calculateSum) {
+                        $awarded = $calculateSum($fundedProposals, $fundTitle, CatalystCurrencySymbols::ADA->name, 'amount_requested');
+                        $distributed = $calculateSum($fundedProposals, $fundTitle, CatalystCurrencySymbols::ADA->name, 'amount_received');
+
+                        return [
+                            'x' => $fundTitle,
+                            'y' => $awarded - $distributed,
+                        ];
+                    })->values(),
+                ],
+                [
+                    'id' => 'Remaining USD',
+                    'data' => $fundTitles->map(function ($fundTitle) use ($fundedProposals, $calculateSum) {
+                        $awarded = $calculateSum($fundedProposals, $fundTitle, CatalystCurrencySymbols::USD->name, 'amount_requested');
+                        $distributed = $calculateSum($fundedProposals, $fundTitle, CatalystCurrencySymbols::USD->name, 'amount_received');
+
+                        return [
+                            'x' => $fundTitle,
+                            'y' => $awarded - $distributed,
+                        ];
+                    })->values(),
+                ],
+            ];
+
+            return Inertia::render('Communities/Dashboard/Index', [
+                'community' => CommunityData::from($community),
+                'amountAwardedChartData' => $amountAwardedChartData,
+                'amountDistributedChartData' => $amountDistributedChartData,
+                'amountRemainingChartData' => $amountRemainingChartData,
+            ]);
+        }
+
+        $fundTitles = Fund::pluck('title')
+            ->sortBy(fn ($title) => (int) filter_var($title, FILTER_SANITIZE_NUMBER_INT))
+            ->values();
+
+        $communityData = Community::with('funded_proposals.fund')->find($community->id);
+
+        $fundedProposals = $communityData->funded_proposals;
+
+        $calculateSum = function ($proposals, $fundTitle, $currency, $field) {
+            return $proposals->filter(function ($proposal) use ($fundTitle, $currency) {
+                $fund = $proposal->fund;
+
+                return $fund && $fund->title === $fundTitle && $fund->currency === $currency;
+            })->sum($field);
+        };
+
+        $amountAwardedChartData = [
+            [
+                'id' => 'Awarded ADA',
+                'data' => $fundTitles->map(fn ($fundTitle) => [
+                    'x' => $fundTitle,
+                    'y' => $calculateSum($fundedProposals, $fundTitle, CatalystCurrencySymbols::ADA->name, 'amount_requested'),
+                ])->values(),
+            ],
+            [
+                'id' => 'Awarded USD',
+                'data' => $fundTitles->map(fn ($fundTitle) => [
+                    'x' => $fundTitle,
+                    'y' => $calculateSum($fundedProposals, $fundTitle, CatalystCurrencySymbols::USD->name, 'amount_requested'),
+                ])->values(),
+            ],
+        ];
+
+        $amountDistributedChartData = [
+            [
+                'id' => 'Distributed ADA',
+                'data' => $fundTitles->map(fn ($fundTitle) => [
+                    'x' => $fundTitle,
+                    'y' => $calculateSum($fundedProposals, $fundTitle, CatalystCurrencySymbols::ADA->name, 'amount_received'),
+                ])->values(),
+            ],
+            [
+                'id' => 'Distributed USD',
+                'data' => $fundTitles->map(fn ($fundTitle) => [
+                    'x' => $fundTitle,
+                    'y' => $calculateSum($fundedProposals, $fundTitle, CatalystCurrencySymbols::USD->name, 'amount_received'),
+                ])->values(),
+            ],
+        ];
+
+        $amountRemainingChartData = [
+            [
+                'id' => 'Remaining ADA',
+                'data' => $fundTitles->map(function ($fundTitle) use ($fundedProposals, $calculateSum) {
+                    $awarded = $calculateSum($fundedProposals, $fundTitle, CatalystCurrencySymbols::ADA->name, 'amount_requested');
+                    $distributed = $calculateSum($fundedProposals, $fundTitle, CatalystCurrencySymbols::ADA->name, 'amount_received');
+
+                    return [
+                        'x' => $fundTitle,
+                        'y' => $awarded - $distributed,
+                    ];
+                })->values(),
+            ],
+            [
+                'id' => 'Remaining USD',
+                'data' => $fundTitles->map(function ($fundTitle) use ($fundedProposals, $calculateSum) {
+                    $awarded = $calculateSum($fundedProposals, $fundTitle, CatalystCurrencySymbols::USD->name, 'amount_requested');
+                    $distributed = $calculateSum($fundedProposals, $fundTitle, CatalystCurrencySymbols::USD->name, 'amount_received');
+
+                    return [
+                        'x' => $fundTitle,
+                        'y' => $awarded - $distributed,
+                    ];
+                })->values(),
+            ],
+        ];
+
+        return Inertia::render('Communities/Dashboard/Index', [
+            'community' => CommunityData::from($community),
+            'amountAwardedChartData' => $amountAwardedChartData,
+            'amountDistributedChartData' => $amountDistributedChartData,
+            'amountRemainingChartData' => $amountRemainingChartData,
+        ]);
+    }
+
     public function query(Request $request)
     {
-        $query = Community::query()->with(['proposals.campaign', 'ideascale_profiles.claimed_by'])
+        $query = Community::query()->with(['proposals.campaign'])
             ->withCount('proposals');
 
         // set necessary counts
@@ -296,7 +556,7 @@ class CommunityController extends Controller
     {
         $community = Community::findOrFail($communityHash);
 
-        $user = auth()->user();
+        $user = Auth::user();
 
         $community->ideascale_profiles()->attach($user->id);
 

@@ -398,7 +398,6 @@ class Proposal extends Model
 
         return array_merge($array, [
             'abstain_votes_count' => $this->abstain_votes_count,
-            //            'alignment_score' => $this->meta_info->alignment_score ?? $this->getDiscussionRankingScore('Impact Alignment') ?? 0,
             "amount_awarded_{$this->currency}" => (bool) $this->funded_at ? ($this->amount_requested ? intval($this->amount_requested) : 0) : null,
             "amount_received_{$this->currency}" => $this->amount_received ? intval($this->amount_received) : 0,
             'amount_received' => $this->amount_received ? intval($this->amount_received) : 0,
