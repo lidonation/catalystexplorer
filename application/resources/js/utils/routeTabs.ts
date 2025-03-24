@@ -81,6 +81,7 @@ export const communityTabs: TabConfig = {
       {key: 'proposals'},
       {key: 'members'},
       {key: 'groups'},
+      {key: 'events'}
   ]
 };
 

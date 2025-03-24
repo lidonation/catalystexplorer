@@ -94,6 +94,7 @@ class CommunityController extends Controller
                 'funded_proposals',
                 'unfunded_proposals',
                 'own_proposals',
+                'collaborating_proposals',
                 'proposals',
             ])->append([
                 'amount_distributed_ada',
@@ -158,6 +159,12 @@ class CommunityController extends Controller
                         )
                     )
                 ),
+            ]);
+        }
+
+        if (str_contains($path, '/events')) {
+            return Inertia::render('Communities/Events/Index', [
+                'community' => CommunityData::from($community),
             ]);
         }
 
@@ -335,7 +342,7 @@ class CommunityController extends Controller
 
     public function query(Request $request)
     {
-        $query = Community::query()->with(['proposals.campaign', 'ideascale_profiles.claimed_by'])
+        $query = Community::query()->with(['proposals.campaign'])
             ->withCount('proposals');
 
         // set necessary counts

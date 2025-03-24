@@ -92,22 +92,19 @@ class Community extends Model
     public function own_proposals(): BelongsToMany
     {
         return $this->proposals()
-            ->whereIn('user_id', function ($query) {
-                $query->select('ideascale_profiles.id')
-                    ->from('ideascale_profiles')
-                    ->whereIn('ideascale_profiles.id', $this->ideascale_profiles()->select('ideascale_profiles.id'));
-            })
+            ->whereIn('user_id', $this->ideascale_profiles()->pluck('id'))
             ->where('type', 'proposal');
     }
 
     public function collaborating_proposals(): BelongsToMany
     {
         return $this->proposals()
-            ->whereNotIn('user_id', function ($query) {
-                $query->select('ideascale_profiles.id')
-                    ->from('ideascale_profiles')
-                    ->whereIn('ideascale_profiles.id', $this->ideascale_profiles()->select('ideascale_profiles.id'));
+            ->whereIn('id', function ($query) {
+                $query->select('proposal_id')
+                    ->from('ideascale_profile_has_proposal')
+                    ->whereIn('ideascale_profile_id', $this->ideascale_profiles()->pluck('id'));
             })
+            ->whereNotIn('user_id', $this->ideascale_profiles()->pluck('id'))
             ->where('type', 'proposal');
     }
 
@@ -156,26 +153,25 @@ class Community extends Model
     {
         return Attribute::make(
             get: function () {
-                $amount = $this->funded_proposals()
+                return $this->funded_proposals()
                     ->whereHas('fund', function ($q) {
                         $q->where('currency', CatalystCurrencySymbols::USD->name);
                     })->sum('amount_received');
-
-                // Log the amount distributed in USD
-                Log::info("Amount distributed in USD for Proposal ID {$this->id}: {$amount}");
-
-                return $amount;
             },
         );
     }
 
-    public function ideascale_profiles(): BelongsToMany
+    public function ideascale_profiles(): Builder
     {
-        return $this->belongsToMany(IdeascaleProfile::class, 'community_has_ideascale_profile', 'community_id', 'ideascale_profile_id');
+        return IdeascaleProfile::whereHas('proposals', function ($query) {
+            $query->whereIn('proposals.id', $this->proposals()->pluck('id'));
+        });
     }
 
-    public function groups(): BelongsToMany
+    public function groups(): Builder
     {
-        return $this->belongsToMany(Group::class, 'community_has_groups', 'community_id', 'group_id');
+        return Group::whereHas('proposals', function ($query) {
+            $query->whereIn('proposals.id', $this->proposals()->pluck('id'));
+        });
     }
 }

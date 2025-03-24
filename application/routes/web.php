@@ -92,6 +92,9 @@ Route::localized(
                     
                 Route::get('/groups', [CommunityController::class, 'show'])
                     ->name('groups');
+
+                Route::get('/events', [CommunityController::class, 'show'])
+                    ->name('events');    
             });
         });
 
