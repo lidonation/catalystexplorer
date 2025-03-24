@@ -3,11 +3,11 @@ import { useTranslation } from 'react-i18next';
 import React from 'react';
 import Title from '@/Components/atoms/Title';
 import {PaginatedData} from "../../../types/paginated-data";
-import {ReviewItem} from "@/types/review-item";
 import {ReviewList} from "@/Components/ReviewList";
+import ReviewData = App.DataTransferObjects.ReviewData;
 
 interface ReviewsPageProps extends Record<string, unknown> {
-    reviews: PaginatedData<ReviewItem[]>;
+    reviews: PaginatedData<ReviewData[]>;
     search?: string | null;
     sort?: string;
 }
