@@ -52,26 +52,6 @@ const CommunityFundingChart: React.FC<CommunityFundingChartProps> = ({
 
     const chartData = filteredData.filter((item) => filters.includes(item.id));
 
-    const calculateTrend = (currentValue: number, previousValue: number) => {
-        if (previousValue !== 0) {
-            const percentageChange =
-                ((currentValue - previousValue) / previousValue) * 100;
-            return {
-                value: Math.abs(percentageChange).toFixed(0),
-                isPositive: percentageChange >= 0,
-            };
-        }
-        return { value: '0', isPositive: true };
-    };
-
-    chartData.forEach((dataset) => {
-        dataset.data.forEach((point) => {
-            if (isNaN(point.y)) {
-                console.error('Invalid point:', point);
-            }
-        });
-    });
-
     return (
         <Card>
             <div className="flex items-center justify-between">
@@ -89,7 +69,7 @@ const CommunityFundingChart: React.FC<CommunityFundingChartProps> = ({
                     />
                 </div>
             </div>
-            <div className="h-full">
+            <div className="h-[400px]">
                 {chartData.some((dataset) =>
                     dataset.data.some((point) => point.y !== 0),
                 ) ? (
@@ -179,77 +159,117 @@ const CommunityFundingChart: React.FC<CommunityFundingChartProps> = ({
                         }}
                         tooltipFormat={(value) => shortNumber(Number(value), 2)}
                         tooltip={({ point }) => {
-                            const currentDataset = chartData.find(
-                                (dataset) => dataset.id === point.serieId,
+                            const currentIndex = point.index;
+
+                            const calculateTrend = (
+                                currentY: number,
+                                previousY: number,
+                            ) => {
+                                if (!previousY || previousY === 0) {
+                                    return { value: '0', isPositive: true };
+                                }
+
+                                const percentageChange =
+                                    ((currentY - previousY) / previousY) * 100;
+
+                                return {
+                                    value: Math.abs(percentageChange).toFixed(
+                                        2,
+                                    ),
+                                    isPositive: percentageChange >= 0,
+                                };
+                            };
+
+                            // Map over datasets and calculate current, previous, and trend
+                            const dataWithPrevious = chartData.map(
+                                (dataset) => {
+                                    const current = dataset.data[currentIndex];
+                                    const previous =
+                                        currentIndex > 0
+                                            ? dataset.data[currentIndex - 1]
+                                            : null;
+
+                                    const trend = previous
+                                        ? calculateTrend(current.y, previous.y)
+                                        : { value: '0', isPositive: true };
+
+                                    return {
+                                        id: dataset.id,
+                                        color: dataset.color,
+                                        current,
+                                        previous,
+                                        trend,
+                                    };
+                                },
                             );
-                            const currentData = currentDataset?.data.find(
-                                (item) => item.x === point.data.x,
-                            );
-                            const currentIndex = currentDataset?.data.findIndex(
-                                (item) => item.x === point.data.x,
-                            );
-                            const previousData =
-                                (currentIndex ?? 0) > 0
-                                    ? currentDataset?.data[
-                                          (currentIndex ?? 0) - 1
-                                      ]
-                                    : null;
-                            const trend = previousData
-                                ? calculateTrend(
-                                      currentData?.y ?? 0,
-                                      previousData.y ?? 0,
-                                  )
-                                : { value: 'N/A', isPositive: null };
 
                             return (
                                 <div className="bg-tooltip relative rounded-lg p-4 text-white shadow-lg">
                                     <div className="max-w-sm">
+                                        {/* Tooltip Title (X-Axis value) */}
                                         <Title
                                             level="3"
                                             className="text-lg font-semibold"
                                         >
                                             {point.data.xFormatted}
                                         </Title>
-                                        <Paragraph className="mt-2 flex items-center text-sm">
-                                            <span className="mr-1 shrink truncate">
-                                                {chartTitle}
-                                            </span>
-                                            :
-                                            <span className="font-bold">
-                                                {shortNumber(
-                                                    Number(
-                                                        point.data.yFormatted,
-                                                    ),
-                                                    2,
-                                                )}
-                                            </span>
-                                        </Paragraph>
-                                        <div className="mt-2 flex items-center">
-                                            <span
-                                                className={
-                                                    trend.isPositive
-                                                        ? 'text-green-500'
-                                                        : 'text-red-500'
-                                                }
-                                                style={{
-                                                    display: 'flex',
-                                                    alignItems: 'center',
-                                                }}
-                                            >
-                                                {trend.isPositive ? (
-                                                    <ArrowTrendingUp />
-                                                ) : (
-                                                    <ArrowTrendingDown />
-                                                )}
-                                                <span className="ml-1 font-medium">
-                                                    {trend.value}%
-                                                </span>
-                                            </span>
-                                            <span className="ml-1">
-                                                {t('metric.vs')}
-                                            </span>
-                                        </div>
+
+                                        {/* Loop through each dataset (ADA, USD, etc.) */}
+                                        {dataWithPrevious.map((item) => (
+                                            <div key={item.id} className="mt-2">
+                                                {/* Dataset Label and Value */}
+                                                <Paragraph className="flex items-center text-sm">
+                                                    <span
+                                                        className="mr-1 shrink truncate"
+                                                        style={{
+                                                            color: item.color,
+                                                        }}
+                                                    >
+                                                        {item.id}
+                                                    </span>
+                                                    :
+                                                    <span className="ml-1 font-bold">
+                                                        {shortNumber(
+                                                            item?.current?.y,
+                                                            2,
+                                                        )}
+                                                    </span>
+                                                </Paragraph>
+
+                                                {/* Trend Indicator */}
+                                                <div className="mt-1 flex items-center">
+                                                    <span
+                                                        className={
+                                                            item.trend
+                                                                .isPositive
+                                                                ? 'text-green-500'
+                                                                : 'text-red-500'
+                                                        }
+                                                        style={{
+                                                            display: 'flex',
+                                                            alignItems:
+                                                                'center',
+                                                        }}
+                                                    >
+                                                        {item.trend
+                                                            .isPositive ? (
+                                                            <ArrowTrendingUp />
+                                                        ) : (
+                                                            <ArrowTrendingDown />
+                                                        )}
+                                                        <span className="ml-1 font-medium">
+                                                            {item.trend.value}%
+                                                        </span>
+                                                    </span>
+                                                    <span className="ml-1">
+                                                        {t('metric.vs')}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        ))}
                                     </div>
+
+                                    {/* Tooltip Arrow */}
                                     <div className="border-t-dark absolute bottom-0 left-1/2 h-0 w-0 -translate-x-1/2 translate-y-full border-t-[10px] border-r-[10px] border-l-[10px] border-r-transparent border-l-transparent"></div>
                                 </div>
                             );
