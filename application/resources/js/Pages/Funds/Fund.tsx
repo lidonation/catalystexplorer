@@ -77,7 +77,7 @@ export default function Fund({
                                 fallback={<CampaignLoader />}
                                 data="campaigns"
                             >
-                                <CampaignList campaigns={campaigns}className='grid-cols-3'>
+                                <CampaignList campaigns={campaigns}className='grid-cols-3 gap-6'>
                                     {(campaign) => (
                                         <CampaignCard
                                             key={campaign.hash}

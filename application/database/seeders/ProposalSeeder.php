@@ -25,7 +25,6 @@ class ProposalSeeder extends Seeder
      */
     public function run(): void
     {
-
         $startDate = now()->subYears(3);
 
         $funds = Fund::factory()
@@ -83,11 +82,11 @@ class ProposalSeeder extends Seeder
             function ($campaign) use ($tags, $ideascaleProfiles) {
                 // Create proposals first
                 Proposal::factory()
-                    ->count(50)
+                    ->count(fake()->randomElement([20, 18, 60, 44, 35]))
                     ->hasAttached($ideascaleProfiles->random(fake()->randomElement([0, 1, 3, 4])))
                     ->state([
-                        'campaign_id' => $campaign->id,
-                        'fund_id' => $campaign->fund->id,
+                        'campaign_id' => $campaign->getOriginal('id'),
+                        'fund_id' => $campaign->fund->getOriginal('id'),
                     ])
                     ->has(Meta::factory()->state(fn () => [
                         'key' => fake()->randomElement(['woman_proposal', 'impact_proposal', 'ideafest_proposal']),
@@ -101,9 +100,9 @@ class ProposalSeeder extends Seeder
         );
 
         Concurrency::run([
-            fn () => $ideascaleProfiles->each(fn ($profile) => Proposal::inRandomOrder()->first()->users()->syncWithoutDetaching($profile->id)),
-            fn () => $groups->each(fn ($group) => Proposal::inRandomOrder()->first()->groups()->syncWithoutDetaching($group->id)),
-            fn () => $communities->each(fn ($community) => Proposal::inRandomOrder()->first()->communities()->syncWithoutDetaching($community->id)),
+            fn () => $ideascaleProfiles->each(fn ($profile) => Proposal::inRandomOrder()->first()->users()->syncWithoutDetaching($profile->getOriginal('id'))),
+            fn () => $groups->each(fn ($group) => Proposal::inRandomOrder()->first()->groups()->syncWithoutDetaching($group->getOriginal('id'))),
+            fn () => $communities->each(fn ($community) => Proposal::inRandomOrder()->first()->communities()->syncWithoutDetaching($community->getOriginal('id'))),
         ]);
     }
 }

@@ -5,6 +5,7 @@
     "appMessage": "All Votes must be submitted in the official Catalyst Voting App. This is a research & planning tool only!",
     "articles": "Articles",
     "assetName": "Asset Name",
+    "API":"API",
     "bio": "Bio",
     "bookmarks": "My Bookmarks",
     "blockchainData": "Blockchain Data",
@@ -13,7 +14,6 @@
     "ccv4Votes": "CCV4 Votes",
     "charts": "Charts",
     "chooseMetaData": "Choose your own MetaData",
-    "communities": "Communities",
     "confirmPassword": "Confirm Password",
     "connect": "Connect",
     "updatePassword": "Update Password",
@@ -22,6 +22,7 @@
     "comingSoon": "Coming Soon",
     "cookies": "Cookies",
     "copyright": "© 2024 Catalyst Explorer. All rights reserved.",
+    "connections": "Connections",
     "minting": "You're Minting",
     "loginToMint": "Login to Mint",
     "mustBeProposer": "Must Be Proposer",
@@ -30,6 +31,7 @@
     "dReps": "DReps",
     "email": "Email",
     "emailAddress": "Email Address",
+    "general":"General",
     "facebook": "Facebook",
     "forgotPassword": "Forgot password",
     "funding": "Funding",
@@ -38,10 +40,12 @@
     "home": "Home",
     "jormungandr": "Jormungandr",
     "knowledgeBase": "Knowledge Base",
+    "impact":"Impact",
     "legal": "Legal",
     "licenses": "Licenses",
     "login": "Login",
     "linkedIn": "LinkedIn",
+    "listsAndBookmarks": "Lists and Bookmarks",
     "monthlyReports": "Monthly Reports",
     "metaTitle": "Meta Data Preview",
     "mintNFT": "Mint NFT",
@@ -72,16 +76,21 @@
     "profileBackground": "Profile Background",
     "projectCatalyst": "Project catalyst Campaign name",
     "reviews": "Reviews",
+    "reviewers":"Reviewers",
     "register": "Register",
+    "reviewerReputationScore": "Reviewer Reputation Score",
     "searchQuery": "No results match your search query",
     "signin": "Sign in",
     "signup": "Sign up",
     "social": "Social",
+    "spending": "Spending",
     "support": "Support",
     "seeAll": "See All",
     "terms": "Terms",
+    "transactions":"Transactions",
     "twitter": "Twitter",
     "votes": "My Votes",
+    "voters":"Voters",
     "wallets": "Wallets",
     "details": "Details",
     "teams": "Team",
@@ -115,6 +124,22 @@
     "nftPaymentGatewayTitle": "NFT-MAKER PRO Payment Gateway",
     "artistRole": "Artist",
     "cantFindNFTForMint": "Can't find NFT for mint",
+    "workflows": {
+        "claimIdeascale": {
+            "selectProfile": "Select Profile",
+            "submitDetails": "Submit Details",
+            "verification": "Verification code",
+            "chooseProfile": "Choose the profile(s) you want to claim. 🚀",
+            "submitDetailsForm": "Submit details you would want updated to the account.",
+            "verifyOnIdeascale": "To verify your ownership of this profile, please send a personal message to Lido Nation on Ideascale and include the code above. "
+        },
+        "completedProjectNfts": {
+            "selectProfile": "Select Profile",
+            "selectProposal": "Select Proposal",
+            "selectProfileInfo": "Choose the profile(s) you want to mint from. The selected profile should be linked to the completed project whose NFT you’re minting.Not sure which one to pick? No worries—just select all available profiles and we’ll handle the rest! 🚀",
+            "selectProposalInfo":"To get started, please select proposal to mint from"
+        }
+    },
     "error404": {
         "mainText": "Sorry, we couldn't find what you're looking for",
         "subText": "Let's Find Your Way Back!"
@@ -127,7 +152,6 @@
         "contactEmail": "support@lidonation.com",
         "appLogoAlt": "Catalyst Explorer logo."
     },
-
     "buttons": {
         "titles": {
             "claim": "Claim Button",
@@ -135,7 +159,6 @@
             "share": "Share Button"
         }
     },
-
     "searchResults": {
         "noResults": {
             "title": "No results found",
@@ -182,7 +205,8 @@
         }
     },
     "breadcrumbs": {
-        "home": "Home"
+        "home": "Home",
+        "workflow": "Workflow"
     },
     "pagination": {
         "next": "Next",
@@ -385,7 +409,7 @@
         "noIdeascaleProfiles": "No Ideascale Profiles Found",
         "bio": "Bio",
         "claimed": "Claimed",
-        "claim": "Claim",
+        "claim": "Claim Profile",
         "totalRequested": "Total Requested",
         "totalProposals": "Total Proposals",
         "awardedVsRequested": "Awarded vs Requested",
@@ -437,6 +461,18 @@
             "amountAwardedUsdAsc": "Amount Awarded USD: Low to High"
         }
     },
+    "communities": {
+        "communities": "Communities",
+        "title": "Catalyst Communities",
+        "subtitle": "Diverse, independent, and together inspiring the highest level of human collaboration",
+        "options": {
+            "alphabetically": "Alphabetically: A to Z",
+            "amountAwardedAdaDesc": "Amount Awarded ADA: High to Low",
+            "amountAwardedAdaAsc": "Amount Awarded ADA: Low to High",
+            "amountAwardedUsdDesc": "Amount Awarded USD: High to Low",
+            "amountAwardedUsdAsc": "Amount Awarded USD: Low to High"
+        }
+    },
     "posts": {
         "title": "Catalysts Posts",
         "subtitle": "Latest news and posts from our community"
@@ -466,6 +502,7 @@
             "chevron_down": "Chevron Down Icon",
             "close": "close Icon",
             "connect_wallet": "Connect wallet Icon",
+            "connections":"Connections Icon",
             "darkMode": "Dark Mode Icon",
             "discord": "Discord",
             "folder": "Folder Icon",
@@ -478,8 +515,10 @@
             "mail": "Mail Icon",
             "menu": "Menu Icon",
             "miniCardSwitch": "Mini Card Switch Icon",
+            "more":"More Icon",
             "note": "Note Icon",
             "notificationBox": "Notification Box Icon",
+            "numbers": "Numbers Icon",
             "people": "People Icon",
             "ideascaleProfile": "Ideascale Profile Icon",
             "search": "Search Icon",
@@ -541,7 +580,10 @@
         },
         "step": "Step",
         "claimAnotherProfile": "Claim another profile",
-        "claimProfile": "Claim an Ideascale Profile"
+        "claimProfile": "Claim an Ideascale Profile",
+        "unavailable": "Unavailable!",
+        "reservedUntil": "Reserved until",
+        "paymentPending": "Payment Pending"
     },
     "profileWorkflow": {
         "sectionTitle": {
@@ -583,7 +625,6 @@
         "verificationInstructions": "To verify your ownership of this profile, please send a personal message to Lido Nation on Ideascale and include the code above.",
         "goToIdeascale": "Go to Ideascale"
     },
-
     "dreps": {
         "dreps": "DReps",
         "drepSearch": "Search DRep",
@@ -603,10 +644,41 @@
             "anHourAgo": "an hour ago",
             "copied": "Copied!"
         },
+        "faq": {
+            "faq": "Frequently Asked Questions",
+            "question1": "What is a DRep?",
+            "answer1": "A DRep (Delegate Representative) is a trusted community member who votes on governance proposals on behalf of ADA holders.",
+            "question2": "Why should I delegate my voting power?",
+            "answer2": "Delegation allows you to have a say in Cardano's governance without having to review and vote on every proposal yourself.",
+            "question3": "How do I choose a DRep?",
+            "answer3": "You can select a DRep based on their values, expertise, and voting history. Browse profiles and pick one that aligns with your vision for Cardano.",
+            "question4": "Can I change my DRep?",
+            "answer4": "Yes, you can re-delegate your voting power to a different DRep anytime.",
+            "question5": "Is delegation safe?",
+            "answer5": "Yes, delegation is secure. Your ADA never leaves your wallet, and you maintain full control over your funds.",
+            "question6": "Do I earn rewards for delegating?",
+            "answer6": "Currently, delegation is focused on governance participation, not financial rewards.",
+            "question7": "How do DReps make decisions?",
+            "answer7": "DReps carefully analyze proposals, ensuring informed, high-quality votes that benefit the Cardano ecosystem."
+        },
         "filters": {
             "status": "status",
             "votingPower": "Voting Power",
             "delegators": "Delegators"
+        },
+        "landing": {
+            "title": "Shape the Future of Cardano, Delegate to a DRep Today!",
+            "subtitle": "Delegate Representatives (DReps) are community members who represent the interests of the community in Project Catalyst. They are elected by the community to participate in the governance of the Catalyst ecosystem.",
+            "findDrep": "Find a Drep",
+            "signUp": "Sign up to be a DRep",
+            "aDrep": "What are DReps?",
+            "drepDescription": "DReps (Delegate Representatives), vote on governance proposals in Cardaon on behalf of ADA holders. Instead of voting individually, you can delegate your voting power to a DRep who representsv your interests helping shape the future of Cardano efficiently and transparently.",
+            "projectCatalyst": "Project Catalyst's Continued Growth and the Need for Delegation",
+            "projectCatalystDescription": "The Cardano community's Project Catalyst has grown rapidly, with Fund8 receiving nearly 1,000 proposals. To manage this increasing workload, a new delegation system is being introduced for sustainable governance.",
+            "empower": "Empowering Passive Voters Through Delegation",
+            "empowerDescription": "Delegation allows ADA holders to assign their voting power to DReps, ensuring their voices are heard across more proposals. DReps enhance decision-making in Project Catalyst by voting on most proposals.",
+            "excite": "Excited for for DReps in catalyst?",
+            "answerExcite": "Jump in & be a pioneer!"
         },
         "options": {
             "alphabetically": "Alphabetically: A to Z",
@@ -616,6 +688,35 @@
             "votersAsc": "Voters: Low to High",
             "active": "Active",
             "inactive": "Inactive"
+        }
+    },
+    "wallet": {
+        "connect": {
+            "title": "Connect Wallet",
+            "initializing": "Initializing wallet connection...",
+            "connectedTo": "Connected to:",
+            "disconnect": "Disconnect Wallet",
+            "selectWallet": "Select a wallet",
+            "noWallets": {
+                "title": "No supported wallets detected",
+                "subtitle": "Please install Lace, Eternl, Flint, or another Cardano wallet"
+            },
+            "errors": {
+                "notInitialized": "Cardano library not initialized yet. Please try again in a moment.",
+                "walletNotFound": "{{walletName}} wallet not found. Please install it first.",
+                "wrongNetwork": "Wrong network detected. Please switch to {{expected}}",
+                "noAddresses": "No addresses found in wallet",
+                "connectionFailed": "Connection failed",
+                "disconnectError": "Error disconnecting wallet",
+                "contextError": "useWallet must be used within a WalletProvider",
+                "wasmInitError": "Failed to initialize Cardano WASM module",
+                "wasmLibError": "Failed to initialize wallet connection library"
+            }
+        },
+        "status": {
+            "connected": "Connected",
+            "connecting": "Connecting",
+            "disconnect": "Disconnect"
         }
     }
 }

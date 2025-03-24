@@ -8,6 +8,7 @@ import ProposalFundingPercentages from './ProposalFundingPercentages';
 import ProposalFundingStatus from './ProposalFundingStatus';
 import ProposalQuickpitch from './ProposalQuickpitch';
 import ProposalSolution from './ProposalSolution';
+import { useCallback, useState, useRef, useEffect } from 'react';
 
 export default function ProposalHorizontalCard({
     proposal,
@@ -22,15 +23,59 @@ export default function ProposalHorizontalCard({
     yesVotes,
     abstainVotes,
 }: any) {
+    const [cardHeight, setCardHeight] = useState<number | null>(null);
+    const [cardWidth, setCardWidth] = useState<number | null>(null);
+    const cardRef = useRef<HTMLElement>(null);
+    
+    useEffect(() => {
+        if (cardRef.current && !cardHeight) {
+            const height = cardRef.current.offsetHeight;
+            const width = cardRef.current.offsetWidth;
+            setCardHeight(height);
+            setCardWidth(width);
+        }
+    }, [cardHeight]);
+    
+    useEffect(() => {
+        const handleResize = () => {
+            if (cardRef.current && !userSelected) {
+                setCardHeight(cardRef.current.offsetHeight);
+                setCardWidth(cardRef.current.offsetWidth);
+            }
+        };
+        
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, [userSelected]);
+    
+    useEffect(() => {
+        if (cardRef.current && !userSelected) {
+            setCardHeight(cardRef.current.offsetHeight);
+            setCardWidth(cardRef.current.offsetWidth);
+        }
+    }, [userSelected]);
+    
+    const wrappedNoSelectedUser = useCallback(() => {
+        if (noSelectedUser) noSelectedUser();
+    }, [noSelectedUser]);
+
     return (
-        <article className="bg-background proposal-card proposal-card-horizontal relative flex max-h-screen min-h-[400px] flex-col space-y-4 overflow-auto rounded-xl p-4 shadow-lg md:flex-row md:space-y-0 md:space-x-4">
-            {userSelected && (
-        <button
-            onClick={noSelectedUser}
-            aria-label="Close profile"
+        <article 
+            ref={cardRef as React.RefObject<HTMLElement>}
+            className="bg-background proposal-card proposal-card-horizontal relative flex min-h-[400px] flex-col space-y-4 overflow-auto rounded-xl p-4 shadow-lg md:flex-row md:space-y-0 md:space-x-4"
+            style={cardHeight && userSelected ? { 
+                height: `${cardHeight}px`,
+                width: cardWidth ? `${cardWidth}px` : 'auto'
+            } : {}}
         >
-        </button>
-    )}
+            {userSelected && (
+                <button
+                    onClick={wrappedNoSelectedUser}
+                    className="absolute right-4 top-4 z-10 rounded-full p-1 hover:bg-background hover:text-content focus:outline-none focus:ring-2 focus:ring-primary"
+                    aria-label="Close profile"
+                >
+                </button>
+            )}
             <div className="flex h-auto w-[500px] flex-col items-start overflow-hidden rounded-xl">
                 <ProposalCardHeader
                     proposal={proposal}

@@ -16,6 +16,7 @@
     :root {
         --cx-primary: #2596be;
         --cx-primary-light: #EFFAFC;
+        --cx-primary-light-border: #9ad8e9;
         --cx-primary-dark: #165A72;
         --cx-secondary: #3facd1;
         --cx-dark: #667085;
@@ -27,7 +28,7 @@
         --cx-content: #101828;
         --cx-content-highlight: #ccf4ff;
         --cx-content-gray-persist: #667085;
-        --cx-content-light-gray-persist: #EAECF0;
+        --cx-content-light-gray-persist: #3467ce;
         --cx-content-black-persist: #101828;
         --cx-content-light: #eaecf0;
         --cx-content-dark: #101828;
@@ -58,12 +59,16 @@
         --content-hover-color: #101828;
         --content-error-primary-color: #dc2626;
         --content-error-secondary-color: #ef4444;
+        --content-error-light: #fee2e2;
+        --content-error-light-border: #fcc5c5;
         --content-success-light: #e0ffef;
+        --content-success-light-border: #b8e6cf;
         --success-gradient-color-2: #16b364;
         --success-gradient-color-1: #0a4d2b;
         --border-primary-color: #182230;
         --bg-light-persist: #ffffff;
         --cx-tooltip-background: #101828CC;
+        --cx-slate: #ABB7C2;
 
         --cx-display-xs: 1.5rem;
         --cx-display-sm: 1.875rem;
@@ -78,6 +83,7 @@
     [data-theme='dark'] {
         --cx-primary: #2596be;
         --cx-primary-light: #75b5c1;
+        --cx-primary-light-border: #5a9aa7;
         --cx-primary-dark: #165A72;
         --cx-secondary: #000000;
         --cx-light: #667085;
@@ -113,7 +119,11 @@
         --content-hover-color: #ffffff;
         --content-error-primary-color: #dc2626;
         --content-error-secondary-color: #ef4444;
+        --content-error-light: #fee2e2;
+        --content-error-light-border: #f99c9c;
         --content-success-color: #4ade80;
+        --content-success-light: #e0ffef;
+        --content-success-light-border: #6dcf97;
         --border-primary-color: #667085;
         --border-secondary-color: #3facd1;
         --bg-light-persist: #ffffff;
@@ -123,6 +133,7 @@
     [data-theme='voltaire'] {
         --cx-primary: #2596be;
         --cx-primary-light: #9cd3dc;
+        --cx-primary-light-border: #78b6c2;
         --cx-primary-dark: #165A72;
         --cx-secondary: #000000;
         --cx-light: #667085;
@@ -155,8 +166,11 @@
         --content-hover-color: #ffffff;
         --content-error-primary-color: #dc2626;
         --content-error-secondary-color: #ef4444;
+        --content-error-light: #fee2e2;
+        --content-error-light-border: #fbb6b6;
         --content-success-color: #4ade80;
         --content-success-light: #9debba;
+        --content-success-light-border: #7dcca2;
         --content-success-darker: #06c710;
         --border-primary-color: #b1e3f1;
         --border-secondary-color: #3facd1;
@@ -166,8 +180,16 @@
         background-color: var(--cx-background);
     }
 
+    .bg-background-lighter {
+        background-color: var(--cx-background-lighter);
+    }
+
     .text-content {
         color: var(--cx-content);
+    }
+
+    .text-content-light {
+        color: var(--cx-content-light);
     }
 
     .text-primary {
@@ -177,6 +199,42 @@
     // Example of custom Tailwind utilities
     .text-accent {
         color: var(--cx-accent);
+    }
+
+    .text-slate {
+        color: var(--cx-slate);
+    }
+
+    .scrollbar-thin::-webkit-scrollbar {
+        width: 2px;
+        height: 2px;
+        background-color: #667085;
+        opacity: 50;
+    }
+
+    .scrollbar-thick::-webkit-scrollbar {
+        width: 12px;
+        height: 12px;
+    }
+
+    .fill-success-light {
+        fill: var(--content-success-light);
+    }
+
+    .fill-primary-light {
+        fill: var(--cx-primary-light);
+    }
+
+    .stroke-success-border {
+        stroke: var(--content-success-light-border);
+    }
+
+    .stroke-primary-border {
+        stroke: var(--cx-primary-light-border);
+    }
+
+    .stroke-error-border {
+        stroke: var(--content-error-light-border);
     }
 }
 
@@ -208,17 +266,18 @@
         background-color: var(--bg-accent-color);
     }
 
-    #main-content > header:first-child {
+    #main-content>header:first-child {
         @apply py-6;
     }
 
     .no-scrollbar::-webkit-scrollbar {
         display: none;
     }
+
     .no-scrollbar {
         -ms-overflow-style: none;
         scrollbar-width: none;
-  }
+    }
 
     body {
         @apply bg-background text-content transition-colors duration-300 ease-in-out;
@@ -293,9 +352,14 @@
     }
 
     article {
-        p ~ {
+        p~ {
 
-            h1, h2, h3, h4, h5, h6 {
+            h1,
+            h2,
+            h3,
+            h4,
+            h5,
+            h6 {
                 @apply font-bold mt-3 mb-1;
             }
         }
@@ -310,7 +374,9 @@
     &.page-campaign {
         .card {
             .card-campaign {
-                .card-summary, .card-title {
+
+                .card-summary,
+                .card-title {
                     @apply hidden;
                 }
             }
@@ -344,7 +410,7 @@
     scroll-padding-inline: 1.5rem;
 }
 
-.snaps-scrollable > * {
+.snaps-scrollable>* {
     scroll-snap-align: start;
 }
 

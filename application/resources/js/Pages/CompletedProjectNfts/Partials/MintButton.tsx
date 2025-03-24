@@ -4,26 +4,24 @@ import { usePage, router, Link } from '@inertiajs/react';
 import { PageProps } from '@/types';
 import { PaginatedData } from '../../../../types/paginated-data';
 import IdeascaleProfileData = App.DataTransferObjects.IdeascaleProfileData;
-import NMKRNftData = App.DataTransferObjects.NMKRNftData;
+import NMKRMetaData = App.DataTransferObjects.NMKRNftData;
+import NftData = App.DataTransferObjects.NftData;
 import Button from '@/Components/atoms/Button';
 import Paragraph from '@/Components/atoms/Paragraph';
 
-export type MintButtonState = 'unauthenticated' | 'unauthorized' | 'mintable' | 'minted' | 'loading';
+export type MintButtonState = 'unauthenticated' | 'unauthorized' | 'mintable' | 'minted' | 'reserved' | 'loading';
 
 interface MintButtonProps {
-  nft: any & { 
-    metas?: Array<{
-      key: string;
-      content: string;
-    }>;
-    minted_at?: string | null;
-  };
+  nft: NftData;
+  metadata: NMKRMetaData;
   ideascaleProfiles?: PaginatedData<IdeascaleProfileData[]>;
+  claimedProfile: IdeascaleProfileData;
 }
 
 const MintButton: React.FC<MintButtonProps> = ({ 
   nft,
-  ideascaleProfiles
+  metadata,
+  claimedProfile,
 }) => {
   const { t } = useTranslation();
   const { auth } = usePage<PageProps>().props;
@@ -31,29 +29,43 @@ const MintButton: React.FC<MintButtonProps> = ({
 
   const [buttonState, setButtonState] = useState<MintButtonState>('loading');
   const [error, setError] = useState<string | null>(null);
+  const [countdown, setCountdown] = useState<string>('');
 
-  // Safely parse NMKR metadata
-  const parseNmkrMetadata = (): NMKRNftData | null => {
-    try {
-      const nmkrMetadataRaw = nft.metas?.find((meta: { key: string }) => meta.key === 'nmkr_metadata');
-      if (!nmkrMetadataRaw) return null;
+  // Format countdown timer similar to Vue implementation
+  const formatCountdown = (reserveduntil: string): string => {
+    const now = new Date().getTime();
+    const reservedUntilDate = new Date(reserveduntil + 'Z').getTime();
+    const timeDifference = reservedUntilDate - now;
 
-      const nmkrMetadata = JSON.parse(nmkrMetadataRaw.content);
-      
-      const policyKey = Object.keys(nmkrMetadata['721'])[0];
-      const nftKey = Object.keys(nmkrMetadata['721'][policyKey])[0];
-      
-      return nmkrMetadata['721'][policyKey][nftKey]['nftDetails'] as NMKRNftData;
-    } catch (e) {
-      console.error('Error parsing NMKR metadata:', e);
-      return null;
+    if (timeDifference <= 0) {
+      return t('available');
     }
+
+    const seconds = Math.floor((timeDifference / 1000) % 60);
+    const minutes = Math.floor((timeDifference / (1000 * 60)) % 60);
+    const hours = Math.floor((timeDifference / (1000 * 60 * 60)) % 24);
+    const days = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
+
+    return `${days}d ${hours}h ${minutes}m ${seconds}s`;
   };
 
-  const getPaymentLink = (): string | null => {
-    const nftDetails = parseNmkrMetadata();
-    return nftDetails?.paymentGatewayLinkForSpecificSale || null;
-  };
+  useEffect(() => {
+    let timer: NodeJS.Timeout | null = null;
+    
+    if (buttonState === 'reserved' && metadata?.reserveduntil) {
+      const updateCountdown = () => {
+        setCountdown(formatCountdown(metadata.reserveduntil as string));
+      };
+      
+      updateCountdown();
+      
+      timer = setInterval(updateCountdown, 1000);
+    }
+    
+    return () => {
+      if (timer) clearInterval(timer);
+    };
+  }, [buttonState, metadata?.reserveduntil]);
 
   useEffect(() => {
     if (!user) {
@@ -61,20 +73,38 @@ const MintButton: React.FC<MintButtonProps> = ({
       return;
     }
 
-    const nftDetails = parseNmkrMetadata();
-    const isMinted = nft.minted_at || nftDetails?.minted || nftDetails?.state === 'sold';
+    // Check if NFT is already minted
+    const isMinted = nft?.minted_at || (metadata?.state === 'sold' || metadata?.state === 'minted');
+    
+    // Check if NFT is reserved
+    const isReserved = metadata?.state === 'reserved' ||
+                      (metadata?.reserveduntil && new Date(metadata.reserveduntil + 'Z') > new Date());
 
     if (isMinted) {
       setButtonState('minted');
       return;
     }
+    
+    if (isReserved) {
+      setButtonState('reserved');
+      return;
+    }
 
-    if (ideascaleProfiles?.data && ideascaleProfiles.data.length > 0) {
+    // Only allow minting if user has claimed profile and NFT state is "free"
+    if (claimedProfile && metadata?.state === 'free') {
       setButtonState('mintable');
     } else {
       setButtonState('unauthorized');
     }
-  }, [user, nft, ideascaleProfiles]);
+  }, [user, nft, metadata, claimedProfile]);
+
+  const getPaymentLink = (): string | null => {
+    return metadata?.paymentGatewayLinkForSpecificSale || null;
+  };
+
+  const getNftFingerprint = (): string | null => {
+    return metadata?.fingerprint || null;
+  };
 
   const handleMint = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -82,7 +112,7 @@ const MintButton: React.FC<MintButtonProps> = ({
     if (paymentUrl) {
       openPaymentWindow(paymentUrl);
     } else {
-      setError('Payment link not available');
+      setError('Payment link not available!');
     }
   };
 
@@ -122,11 +152,6 @@ const MintButton: React.FC<MintButtonProps> = ({
     }, 1000);
   };
 
-  const getNftFingerprint = (): string | null => {
-    const nftDetails = parseNmkrMetadata();
-    return nftDetails?.fingerprint || null;
-  };
-
   const renderButton = () => {
     switch (buttonState) {
       case 'loading':
@@ -159,22 +184,17 @@ const MintButton: React.FC<MintButtonProps> = ({
           </Button>
         );
       
+      case 'reserved':
+        return (
+          <Button
+            className="w-full inline-block text-center bg-dark text-content-light font-medium py-3 px-4 rounded-md cursor-not-allowed pointer-events-none"
+            onClick={(e) => e.preventDefault()}
+          >
+            {t('completedProjectNfts.paymentPending')}
+          </Button>
+        );
+      
       case 'mintable':
-        const paymentLink = getPaymentLink();
-        
-        // If payment link is not available, show disabled button
-        if (!paymentLink) {
-          return (
-            <Button
-              className="w-full inline-block text-center bg-dark text-content-light font-medium py-3 px-4 rounded-md cursor-not-allowed pointer-events-none"
-              onClick={(e) => e.preventDefault()}
-            >
-              {t('mintNFT')}
-            </Button>
-          );
-        }
-        
-        // Show green MINT NFT button
         return (
           <Button
             onClick={handleMint}
@@ -185,8 +205,7 @@ const MintButton: React.FC<MintButtonProps> = ({
         );
       
       case 'minted':
-        const fingerprint = getNftFingerprint();        
-        // Show VIEW NFT button linking to pool.pm
+        const fingerprint = getNftFingerprint();
         return (
           <Link 
             href={`https://pool.pm/${fingerprint}`}
@@ -204,10 +223,40 @@ const MintButton: React.FC<MintButtonProps> = ({
       <div className="rounded-lg">
         {renderButton()}
       </div>
+      {error && (
+        <Paragraph className="text-sm text-error mt-2">
+          {error}
+        </Paragraph>
+      )}
       {buttonState === 'mintable' && !getPaymentLink() && (
         <Paragraph className="text-sm text-dark mt-2">
           {t('cantFindNFT')}
         </Paragraph>
+      )}
+      {buttonState === 'reserved' && (
+        <div className="mt-2">
+          {countdown && (
+            <div className="flex items-center gap-1 mt-1">
+              <svg
+                className="w-4 h-4 text-warning"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
+              </svg>
+              <Paragraph className="text-sm font-medium">
+                {t('completedProjectNfts.reservedUntil')}: {countdown}
+              </Paragraph>
+            </div>
+          )}
+        </div>
       )}
     </div>
   );

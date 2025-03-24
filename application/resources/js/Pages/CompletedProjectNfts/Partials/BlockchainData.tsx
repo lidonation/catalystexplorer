@@ -2,16 +2,18 @@ import { Copy } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useState } from 'react';
 import Title from '@/Components/atoms/Title';
-import { Link } from '@inertiajs/react';
 import Paragraph from '@/Components/atoms/Paragraph';
 import Button from '@/Components/atoms/Button';
 import Image from '@/Components/Image';
+import NMKRMetaData = App.DataTransferObjects.NMKRNftData;
+import NftData = App.DataTransferObjects.NftData;
 
 interface BlockchainDataProps {
-  nft: any;
+  nft: NftData;
+  metadata: NMKRMetaData;
 }
 
-const BlockchainData = ({ nft }: BlockchainDataProps) => {
+const BlockchainData = ({ nft, metadata }: BlockchainDataProps) => {
   const { t } = useTranslation();
   const [copied, setCopied] = useState<string | null>(null);
 
@@ -34,8 +36,9 @@ const BlockchainData = ({ nft }: BlockchainDataProps) => {
     <div className="rounded-lg bg-background p-2 max-w-2xl">
       {nft.storage_link || nft.preview_link ? (
         <Image
-          src={nft.storage_link || nft.preview_link}
+          imageUrl={nft.storage_link || nft.preview_link}
           alt="NFT Preview"
+          size = '12'
           className="w-full rounded-lg mb-8"
         />
       ) : (
@@ -53,13 +56,13 @@ const BlockchainData = ({ nft }: BlockchainDataProps) => {
             className="text-content hover:text-dark"
             onClick={(e) => {
               e.preventDefault();
-              copyToClipboard(nft.policy || '', 'policy');
+              copyToClipboard(metadata.policyid || '', 'policy');
             }}
           >
             <Copy size={16} />
           </Button>
           <code className="text-sm text-content font-mono break-all">
-            {nft.policy || 'Not available'}
+            {metadata.policyid || t("completedProjectNfts.unavailable")}
             {copied === 'policy' && <span className="text-content ml-2">Copied!</span>}
           </code>
         </div>
@@ -70,13 +73,13 @@ const BlockchainData = ({ nft }: BlockchainDataProps) => {
             className="text-content hover:text-dark"
             onClick={(e) => {
               e.preventDefault();
-              copyToClipboard(nft.name || '', 'name');
+              copyToClipboard(metadata.assetname || '', 'name');
             }}
           >
             <Copy size={16} />
           </Button>
           <code className="text-sm text-content font-mono break-all">
-            {nft.name || t("unavailable")}
+            {metadata.assetname || t("completedProjectNfts.unavailable")}
             {copied === 'name' && <span className="text-content ml-2">Copied!</span>}
           </code>
         </div>

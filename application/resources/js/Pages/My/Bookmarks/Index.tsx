@@ -20,12 +20,12 @@ interface IndexProps {
   filters?: any;
 }
 
-const Index: React.FC<IndexProps> = ({ 
-  proposals, 
-  people, 
-  reviews, 
-  groups, 
-  counts, 
+const Index: React.FC<IndexProps> = ({
+  proposals,
+  people,
+  reviews,
+  groups,
+  counts,
   filters = URLSearchParams
 }) => {
   const { t } = useTranslation();
@@ -44,7 +44,7 @@ const Index: React.FC<IndexProps> = ({
     people: 'people',
     groups: 'groups',
     reviews: 'reviews'
-  };  
+  };
 
   const defaultFilters = {
     [ParamsEnum.QUERY]: '',
@@ -53,10 +53,10 @@ const Index: React.FC<IndexProps> = ({
     ...filters
   };
 
-  const hasBookmarks = 
-    proposals.length > 0 || 
-    people.length > 0 || 
-    groups.length > 0 || 
+  const hasBookmarks =
+    proposals.length > 0 ||
+    people.length > 0 ||
+    groups.length > 0 ||
     reviews.length > 0;
 
   const renderEmptyState = () => (
@@ -118,9 +118,9 @@ const Index: React.FC<IndexProps> = ({
         <>
           <div className="px-8 py-4 sticky top-0 z-10 mx-auto flex w-full flex-col gap-4 pb-4 pt-6 backdrop-blur-md">
             <div className="items-center gap-2">
-              <BookmarkNavigation 
-                  counts={counts} 
-                  activeType={activeType} 
+              <BookmarkNavigation
+                  counts={counts}
+                  activeType={activeType}
                   onTypeChange={scrollToSection}
                   proposals={proposals}
                   people={people}
@@ -132,8 +132,8 @@ const Index: React.FC<IndexProps> = ({
           </div>
 
           <main className="flex w-full flex-col justify-center px-8 py-4 mt-6">
-            <div 
-              ref={(el) => sectionsRef.current.proposals = el} 
+            <div
+              ref={(el) => sectionsRef.current.proposals = el}
               className="mb-12"
             >
               <Title level='2' className="text-2xl font-bold mb-4">{t('Proposals')}</Title>
@@ -141,7 +141,7 @@ const Index: React.FC<IndexProps> = ({
                 fallback={<ProposalVerticalCardLoading />}
                 data="proposals"
               >
-                <BookmarksList 
+                <BookmarksList
                   proposals={proposals}
                   people={[]}
                   groups={[]}
@@ -151,8 +151,8 @@ const Index: React.FC<IndexProps> = ({
               </WhenVisible>
             </div>
 
-            <div 
-              ref={(el) => sectionsRef.current.people = el} 
+            <div
+              ref={(el) => sectionsRef.current.people = el}
               className="mb-12"
             >
               <Title level='2' className="text-2xl font-bold mb-4">{t('People')}</Title>
@@ -160,7 +160,7 @@ const Index: React.FC<IndexProps> = ({
                 fallback={<IdeaScaleProfileLoader />}
                 data="people"
               >
-                <BookmarksList 
+                <BookmarksList
                   proposals={[]}
                   people={people}
                   groups={[]}
@@ -170,12 +170,12 @@ const Index: React.FC<IndexProps> = ({
               </WhenVisible>
             </div>
 
-            <div 
-              ref={(el) => sectionsRef.current.groups = el} 
+            <div
+              ref={(el) => sectionsRef.current.groups = el}
               className="mb-12"
             >
               <Title level='2' className="text-2xl font-bold mb-4">{t('Groups')}</Title>
-              <BookmarksList 
+              <BookmarksList
                 proposals={[]}
                 people={[]}
                 groups={groups}
@@ -184,12 +184,12 @@ const Index: React.FC<IndexProps> = ({
               />
             </div>
 
-            <div 
-              ref={(el) => sectionsRef.current.reviews = el} 
+            <div
+              ref={(el) => sectionsRef.current.reviews = el}
               className="mb-12"
             >
               <Title level='2' className="text-2xl font-bold mb-4">{t('Reviews')}</Title>
-              <BookmarksList 
+              <BookmarksList
                 proposals={[]}
                 people={[]}
                 groups={[]}

@@ -9,6 +9,7 @@ use App\Nova\Actions\MakeSearchable;
 use App\Nova\Actions\UpdateModelMedia;
 use Ebess\AdvancedNovaMediaLibrary\Fields\Images;
 use Laravel\Nova\Fields\BelongsTo;
+use Laravel\Nova\Fields\BelongsToMany;
 use Laravel\Nova\Fields\Field;
 use Laravel\Nova\Fields\HasMany;
 use Laravel\Nova\Fields\ID;
@@ -56,24 +57,20 @@ class IdeascaleProfiles extends Resource
                 ->enableExistingMedia(),
 
             Text::make('Name')
-                ->sortable()->withMeta(
-                    [
-                        'extraAttributes' => [
-                            'autocomplete' => 'off',
-                        ],
-                    ]
-                )
+                ->sortable()->withMeta([
+                    'extraAttributes' => [
+                        'autocomplete' => 'off',
+                    ],
+                ])
                 ->rules('max:255')
                 ->required(),
 
             Text::make('username')
-                ->sortable()->withMeta(
-                    [
-                        'extraAttributes' => [
-                            'autocomplete' => 'off',
-                        ],
-                    ]
-                ),
+                ->sortable()->withMeta([
+                    'extraAttributes' => [
+                        'autocomplete' => 'off',
+                    ],
+                ]),
 
             Text::make('ideascale Id')
                 ->sortable()->withMeta(
@@ -96,6 +93,9 @@ class IdeascaleProfiles extends Resource
 
             BelongsTo::make(__('Claimed By'), 'claimed_by', Users::class)
                 ->nullable()
+                ->searchable(),
+
+            BelongsToMany::make(__('Groups'), 'groups', Groups::class)
                 ->searchable(),
 
             HasMany::make('Metadata', 'metas', Metas::class),

@@ -9,6 +9,7 @@ import {Segments} from '../../../../types/segments';
 import Paragraph from '@/Components/atoms/Paragraph';
 import { Link } from '@inertiajs/react';
 import { useLocalizedRoute } from '@/utils/localizedRoute';
+import Card from '@/Components/Card';
 
 interface CampaignCardMiniProps {
     fund: FundData | null;
@@ -48,7 +49,7 @@ const CampaignCardMini: React.FC<CampaignCardMiniProps> = ({fund, campaign}) => 
     };
 
     return (
-        <div>
+        <Card>
             <div className="bg-content-light h-60 overflow-hidden rounded-lg">
                 {heroImageUrl ? (
                     <img
@@ -106,7 +107,7 @@ const CampaignCardMini: React.FC<CampaignCardMiniProps> = ({fund, campaign}) => 
                     </div>
                 </div>
             </div>
-        </div>
+        </Card>
     );
 };
 

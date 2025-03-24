@@ -26,7 +26,7 @@ export default function Cam({ ideascaleProfile, campaigns }: CamPageProps) {
                             fallback={<CampaignLoader />}
                             data="campaigns"
                         >
-                            <CampaignList campaigns={campaigns} className='grid-cols-2'>
+                            <CampaignList campaigns={campaigns} className='grid-cols-2 gap-4'>
                                 {(campaign) => (
                                     <CampaignCardMini
                                         key={campaign.hash}

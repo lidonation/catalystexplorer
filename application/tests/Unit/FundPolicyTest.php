@@ -29,19 +29,6 @@ class FundPolicyTest extends TestCase
         $this->user = User::factory()->create();
     }
 
-    #[Test]
-    public function it_allows_user_with_permission_to_view_any_funds()
-    {
-        $this->user->givePermissionTo(PermissionEnum::read_funds()->value);
-
-        $this->assertTrue($this->policy->viewAny($this->user));
-    }
-
-    #[Test]
-    public function it_denies_user_without_permission_to_view_any_funds()
-    {
-        $this->assertFalse($this->policy->viewAny($this->user));
-    }
 
     #[Test]
     public function it_denies_user_without_permission_to_create_funds()

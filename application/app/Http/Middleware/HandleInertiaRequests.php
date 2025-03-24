@@ -41,6 +41,7 @@ class HandleInertiaRequests extends Middleware
                 'isDownForMaintenance' => App::isDownForMaintenance(),
                 'locale' => app()->getLocale(),
             ],
+            'environment' => app()->environment(),
         ];
     }
 }

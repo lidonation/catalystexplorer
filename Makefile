@@ -8,24 +8,14 @@ nodeVersion := 20
 .PHONY: init
 init:
 	cp ./application/.env.example ./application/.env
+	chmod +x ./scripts/clone-carp.sh
+	chmod +x ./scripts/remove-carp.sh
 
 	docker run --rm --interactive --tty \
 		--volume ${PWD}:/app \
 		--workdir /app \
 		--user root \
 		node:20-alpine yarn install --ignore-engine
-
-	docker run --rm --interactive --tty \
-		--volume ${PWD}:/app \
-		--workdir /app \
-		--user root \
-		node:${nodeVersion}-alpine yarn install --ignore-engine
-
-	docker run --rm --interactive --tty \
-		--volume ${PWD}:/app \
-		--workdir /app \
-		--user root \
-		node:${nodeVersion}-alpine yarn install --ignore-engine
 
 	docker run --rm --interactive --tty \
 		--volume ${PWD}/application:/app \
@@ -39,7 +29,8 @@ init:
           composer install --ignore-platform-reqs
 
 	sudo chown -R $(id -u -n):$(id -g -n) ${PWD}/application/vendor
- 
+	./scripts/clone-carp.sh
+	chmod +x ./carp/scripts/entrypoint.sh
 	make up
 	sleep 10
 	$(compose) php artisan key:generate

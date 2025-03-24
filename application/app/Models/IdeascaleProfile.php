@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use App\Casts\HashId;
 use App\Enums\CatalystCurrencySymbols;
 use App\Enums\ProposalStatus;
 use App\Traits\HasConnections;
@@ -20,10 +19,12 @@ use Laravolt\Avatar\Facade as Avatar;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\Translatable\HasTranslations;
+use Staudenmeir\EloquentHasManyDeep\HasManyDeep;
+use Staudenmeir\EloquentHasManyDeep\HasRelationships;
 
 class IdeascaleProfile extends Model implements HasMedia
 {
-    use HasConnections, HasMetaData, HasTranslations, InteractsWithMedia, Searchable;
+    use HasConnections, HasMetaData, HasRelationships, HasTranslations, InteractsWithMedia, Searchable;
 
     public int $maxValuesPerFacet = 8000;
 
@@ -200,7 +201,7 @@ class IdeascaleProfile extends Model implements HasMedia
     public function heroImgUrl(): Attribute
     {
         return Attribute::make(
-            get: fn () => $this->claimed_by?->getFirstMediaUrl('profile') ?? $this->getFirstMediaUrl('profile') ?? $this->gravatar
+            get: fn () => $this->getFirstMediaUrl('profile') ?? $this->gravatar
         );
     }
 
@@ -293,9 +294,20 @@ class IdeascaleProfile extends Model implements HasMedia
         );
     }
 
+    public function reviews(): HasManyDeep
+    {
+        return $this->hasManyDeepFromRelations($this->proposals(), (new Proposal)->reviews());
+    }
+
     public function claimed_by(): BelongsTo
     {
         return $this->belongsTo(User::class, 'claimed_by_id', 'id');
+    }
+
+    public function nfts(): HasMany
+    {
+        return $this->hasMany(Nft::class, 'model_id', 'id')
+            ->where('model_type', static::class);
     }
 
     /**

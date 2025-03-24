@@ -17,9 +17,10 @@ import ProposalSearchBar from './ProposalSearchBar';
 import VerificationCard from './VerificationCard';
 import IdeascaleProfileData = App.DataTransferObjects.IdeascaleProfileData;
 import ProposalData = App.DataTransferObjects.ProposalData;
+import { User } from '@/types';
 
-interface ProfileWorkflowProps {
-    user: { name: string };
+export interface ProfileWorkflowProps {
+    user?: User;
     proposals: PaginatedData<ProposalData[]>;
     profiles: PaginatedData<IdeascaleProfileData[]>;
 }
@@ -130,12 +131,12 @@ const ProfileWorkflow: React.FC<ProfileWorkflowProps> = ({
         <div className="bg-background mx-auto w-full max-w-lg rounded-2xl p-6 shadow-md">
             {!showVerification && (
                 <PageHeader
-                    userName={user.name}
+                    userName={user?.name}
                     sectionTitle={getSectionTitle()}
                 />
             )}
 
-            <div className="w-full">
+            {/* <div className="w-full">
                 {viewProposal ? (
                     <>
                         <button
@@ -191,12 +192,7 @@ const ProfileWorkflow: React.FC<ProfileWorkflowProps> = ({
                             }
                         />
 
-                        <div className="mt-4 space-y-2">
-                            {profileSearchResults.map((profile, index) => (
-                                <div
-                                    key={index}
-                                    className={`w-full sm:max-w-[400px] lg:max-w-[500px]`}
-                                >
+                   
                                     <ProfileCard
                                         profile={profile}
                                         onSelect={() => {
@@ -251,7 +247,7 @@ const ProfileWorkflow: React.FC<ProfileWorkflowProps> = ({
                         </Title>
                         <div className="my-2 border-t border-gray-300"></div>
                         <ProfileList
-                            profiles={profiles.data || []}
+                            profiles={profiles?.data || []}
                             onProfileClick={handleProfileSelect}
                         />
                         <div className="my-2 border-t border-gray-300"></div>
@@ -270,7 +266,7 @@ const ProfileWorkflow: React.FC<ProfileWorkflowProps> = ({
                         </div>
                     </>
                 )}
-            </div>
+            </div> */}
         </div>
     );
 };

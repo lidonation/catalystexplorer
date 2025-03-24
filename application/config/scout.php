@@ -137,7 +137,7 @@ return [
         'key' => env('MEILISEARCH_KEY'),
         'index-settings' => [
             Group::class => [
-                'filterableAttributes' => ['id', 'ideascale_profiles', 'tags', 'proposals', 'proposals_funded', 'proposals_completed', 'amount_awarded_usd', 'amount_awarded_ada'],
+                'filterableAttributes' => ['id', 'ideascale_profiles', 'tags', 'proposals', 'proposals_funded', 'proposals_completed', 'amount_awarded_usd', 'amount_awarded_ada', 'proposals_count'],
                 'sortableAttributes' => ['name', 'id', 'website', 'proposals_funded', 'proposals_completed', 'amount_awarded_ada', 'amount_awarded_usd', 'amount_requested'],
             ],
         ],
