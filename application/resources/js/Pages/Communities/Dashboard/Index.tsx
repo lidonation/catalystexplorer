@@ -22,7 +22,8 @@ export default function Proposals({
         ...((community?.amount_awarded_ada ?? 0) > 0
             ? [
                   {
-                      value: t('proposals.totalProposals'),
+                      id: 'ADA',
+                      value: 'ADA',
                       label: t('communities.filters.totalAda'),
                   },
               ]
@@ -30,7 +31,8 @@ export default function Proposals({
         ...((community?.amount_awarded_usd ?? 0) > 0
             ? [
                   {
-                      value: t('funds.fundedProposals'),
+                      id: 'USD',
+                      value:'USD',
                       label: t('communities.filters.totalUsd'),
                   },
               ]

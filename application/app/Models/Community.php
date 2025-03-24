@@ -89,6 +89,28 @@ class Community extends Model
             ->whereNull('funded_at');
     }
 
+    public function own_proposals(): BelongsToMany
+    {
+        return $this->proposals()
+            ->whereIn('user_id', function ($query) {
+                $query->select('ideascale_profiles.id')
+                    ->from('ideascale_profiles')
+                    ->whereIn('ideascale_profiles.id', $this->ideascale_profiles()->select('ideascale_profiles.id'));
+            })
+            ->where('type', 'proposal');
+    }
+
+    public function collaborating_proposals(): BelongsToMany
+    {
+        return $this->proposals()
+            ->whereNotIn('user_id', function ($query) {
+                $query->select('ideascale_profiles.id')
+                    ->from('ideascale_profiles')
+                    ->whereIn('ideascale_profiles.id', $this->ideascale_profiles()->select('ideascale_profiles.id'));
+            })
+            ->where('type', 'proposal');
+    }
+
     public function amountAwardedAda(): Attribute
     {
         return Attribute::make(

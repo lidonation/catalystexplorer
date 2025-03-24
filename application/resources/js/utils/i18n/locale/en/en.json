@@ -447,6 +447,8 @@
         "totalAmountDistributed" : "Total Amount Distributed",
         "totalAmountRemaining" : "Total Amount Remaining",
         "totalAwarded": "Total Amount of ADA & USD Awarded",
+        "amountAwardedUsd": "Amount Awarded USD",
+         "amountAwardedAda": "Amount Awarded ADA",
         "options": {
             "alphabetically": "Alphabetically: A to Z",
             "amountAwardedAdaDesc": "Amount Awarded ADA: High to Low",

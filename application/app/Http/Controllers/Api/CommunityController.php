@@ -15,6 +15,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\CommunityResource;
 use App\Models\Campaign;
 use App\Models\Community;
+use App\Models\Fund;
 use App\Models\IdeascaleProfile;
 use App\Models\Tag;
 use App\Services\HashIdService;
@@ -92,6 +93,7 @@ class CommunityController extends Controller
                 'completed_proposals',
                 'funded_proposals',
                 'unfunded_proposals',
+                'own_proposals',
                 'proposals',
             ])->append([
                 'amount_distributed_ada',
@@ -161,35 +163,35 @@ class CommunityController extends Controller
 
         if (str_contains($path, '/dashboard')) {
 
-            $communityData = Community::where('id', $community->id)
-                ->with(['proposals.fund'])
-                ->first()
-                ->proposals
-                ->whereNotNull('funded_at')
-                ->groupBy('fund.id');
-
-            $fundTitles = $community->proposals->map(fn ($p) => optional($p->fund)->title)
-                ->filter() // Remove null values
-                ->unique()
+            $fundTitles = Fund::pluck('title')
+                ->sortBy(fn ($title) => (int) filter_var($title, FILTER_SANITIZE_NUMBER_INT))
                 ->values();
+
+            $communityData = Community::with('funded_proposals.fund')->find($community->id);
+
+            $fundedProposals = $communityData->funded_proposals;
+
+            $calculateSum = function ($proposals, $fundTitle, $currency, $field) {
+                return $proposals->filter(function ($proposal) use ($fundTitle, $currency) {
+                    $fund = $proposal->fund;
+
+                    return $fund && $fund->title === $fundTitle && $fund->currency === $currency;
+                })->sum($field);
+            };
 
             $amountAwardedChartData = [
                 [
                     'id' => 'Awarded ADA',
                     'data' => $fundTitles->map(fn ($fundTitle) => [
                         'x' => $fundTitle,
-                        'y' => $communityData->flatMap(fn ($proposals) => $proposals)
-                            ->where(fn ($p) => optional($p->fund)->title === $fundTitle && optional($p->fund)->currency === CatalystCurrencySymbols::ADA->name)
-                            ->sum('amount_requested'),
+                        'y' => $calculateSum($fundedProposals, $fundTitle, CatalystCurrencySymbols::ADA->name, 'amount_requested'),
                     ])->values(),
                 ],
                 [
                     'id' => 'Awarded USD',
                     'data' => $fundTitles->map(fn ($fundTitle) => [
                         'x' => $fundTitle,
-                        'y' => $communityData->flatMap(fn ($proposals) => $proposals)
-                            ->where(fn ($p) => optional($p->fund)->title === $fundTitle && optional($p->fund)->currency === CatalystCurrencySymbols::USD->name)
-                            ->sum('amount_requested'),
+                        'y' => $calculateSum($fundedProposals, $fundTitle, CatalystCurrencySymbols::USD->name, 'amount_requested'),
                     ])->values(),
                 ],
             ];
@@ -199,41 +201,42 @@ class CommunityController extends Controller
                     'id' => 'Distributed ADA',
                     'data' => $fundTitles->map(fn ($fundTitle) => [
                         'x' => $fundTitle,
-                        'y' => $community->proposals
-                            ->where(fn ($p) => optional($p->fund)->title === $fundTitle && optional($p->fund)->currency === CatalystCurrencySymbols::ADA->name)
-                            ->sum('amount_received'),
+                        'y' => $calculateSum($fundedProposals, $fundTitle, CatalystCurrencySymbols::ADA->name, 'amount_received'),
                     ])->values(),
                 ],
                 [
                     'id' => 'Distributed USD',
                     'data' => $fundTitles->map(fn ($fundTitle) => [
                         'x' => $fundTitle,
-                        'y' => $community->proposals
-                            ->where(fn ($p) => optional($p->fund)->title === $fundTitle && optional($p->fund)->currency === CatalystCurrencySymbols::USD->name)
-                            ->sum('amount_received'),
+                        'y' => $calculateSum($fundedProposals, $fundTitle, CatalystCurrencySymbols::USD->name, 'amount_received'),
                     ])->values(),
                 ],
             ];
 
-            // Generate chart data for amount remaining
             $amountRemainingChartData = [
                 [
                     'id' => 'Remaining ADA',
-                    'data' => $fundTitles->map(fn ($fundTitle) => [
-                        'x' => $fundTitle,
-                        'y' => $community->proposals
-                            ->where(fn ($p) => optional($p->fund)->title === $fundTitle && optional($p->fund)->currency === CatalystCurrencySymbols::ADA->name)
-                            ->sum(fn ($proposal) => $proposal->amount_requested - $proposal->amount_received),
-                    ])->values(),
+                    'data' => $fundTitles->map(function ($fundTitle) use ($fundedProposals, $calculateSum) {
+                        $awarded = $calculateSum($fundedProposals, $fundTitle, CatalystCurrencySymbols::ADA->name, 'amount_requested');
+                        $distributed = $calculateSum($fundedProposals, $fundTitle, CatalystCurrencySymbols::ADA->name, 'amount_received');
+
+                        return [
+                            'x' => $fundTitle,
+                            'y' => $awarded - $distributed,
+                        ];
+                    })->values(),
                 ],
                 [
                     'id' => 'Remaining USD',
-                    'data' => $fundTitles->map(fn ($fundTitle) => [
-                        'x' => $fundTitle,
-                        'y' => $community->proposals
-                            ->where(fn ($p) => optional($p->fund)->title === $fundTitle && optional($p->fund)->currency === CatalystCurrencySymbols::USD->name)
-                            ->sum(fn ($proposal) => $proposal->amount_requested - $proposal->amount_received),
-                    ])->values(),
+                    'data' => $fundTitles->map(function ($fundTitle) use ($fundedProposals, $calculateSum) {
+                        $awarded = $calculateSum($fundedProposals, $fundTitle, CatalystCurrencySymbols::USD->name, 'amount_requested');
+                        $distributed = $calculateSum($fundedProposals, $fundTitle, CatalystCurrencySymbols::USD->name, 'amount_received');
+
+                        return [
+                            'x' => $fundTitle,
+                            'y' => $awarded - $distributed,
+                        ];
+                    })->values(),
                 ],
             ];
 
@@ -245,35 +248,35 @@ class CommunityController extends Controller
             ]);
         }
 
-        $communityData = Community::where('id', $community->id)
-            ->with(['proposals.fund'])
-            ->first()
-            ->proposals
-            ->whereNotNull('funded_at')
-            ->groupBy('fund.id');
-
-        $fundTitles = $community->proposals->map(fn ($p) => optional($p->fund)->title)
-            ->filter()
-            ->unique()
+        $fundTitles = Fund::pluck('title')
+            ->sortBy(fn ($title) => (int) filter_var($title, FILTER_SANITIZE_NUMBER_INT))
             ->values();
+
+        $communityData = Community::with('funded_proposals.fund')->find($community->id);
+
+        $fundedProposals = $communityData->funded_proposals;
+
+        $calculateSum = function ($proposals, $fundTitle, $currency, $field) {
+            return $proposals->filter(function ($proposal) use ($fundTitle, $currency) {
+                $fund = $proposal->fund;
+
+                return $fund && $fund->title === $fundTitle && $fund->currency === $currency;
+            })->sum($field);
+        };
 
         $amountAwardedChartData = [
             [
                 'id' => 'Awarded ADA',
                 'data' => $fundTitles->map(fn ($fundTitle) => [
                     'x' => $fundTitle,
-                    'y' => $communityData->flatMap(fn ($proposals) => $proposals)
-                        ->where(fn ($p) => optional($p->fund)->title === $fundTitle && optional($p->fund)->currency === CatalystCurrencySymbols::ADA->name)
-                        ->sum('amount_requested'),
+                    'y' => $calculateSum($fundedProposals, $fundTitle, CatalystCurrencySymbols::ADA->name, 'amount_requested'),
                 ])->values(),
             ],
             [
                 'id' => 'Awarded USD',
                 'data' => $fundTitles->map(fn ($fundTitle) => [
                     'x' => $fundTitle,
-                    'y' => $communityData->flatMap(fn ($proposals) => $proposals)
-                        ->where(fn ($p) => optional($p->fund)->title === $fundTitle && optional($p->fund)->currency === CatalystCurrencySymbols::USD->name)
-                        ->sum('amount_requested'),
+                    'y' => $calculateSum($fundedProposals, $fundTitle, CatalystCurrencySymbols::USD->name, 'amount_requested'),
                 ])->values(),
             ],
         ];
@@ -283,18 +286,14 @@ class CommunityController extends Controller
                 'id' => 'Distributed ADA',
                 'data' => $fundTitles->map(fn ($fundTitle) => [
                     'x' => $fundTitle,
-                    'y' => $communityData->proposals
-                        ->where(fn ($p) => optional($p->fund)->title === $fundTitle && optional($p->fund)->currency === CatalystCurrencySymbols::ADA->name)
-                        ->sum('amount_received'),
+                    'y' => $calculateSum($fundedProposals, $fundTitle, CatalystCurrencySymbols::ADA->name, 'amount_received'),
                 ])->values(),
             ],
             [
                 'id' => 'Distributed USD',
                 'data' => $fundTitles->map(fn ($fundTitle) => [
                     'x' => $fundTitle,
-                    'y' => $communityData->proposals
-                        ->where(fn ($p) => optional($p->fund)->title === $fundTitle && optional($p->fund)->currency === CatalystCurrencySymbols::USD->name)
-                        ->sum('amount_received'),
+                    'y' => $calculateSum($fundedProposals, $fundTitle, CatalystCurrencySymbols::USD->name, 'amount_received'),
                 ])->values(),
             ],
         ];
@@ -302,21 +301,27 @@ class CommunityController extends Controller
         $amountRemainingChartData = [
             [
                 'id' => 'Remaining ADA',
-                'data' => $fundTitles->map(fn ($fundTitle) => [
-                    'x' => $fundTitle,
-                    'y' => $communityData->proposals
-                        ->where(fn ($p) => optional($p->fund)->title === $fundTitle && optional($p->fund)->currency === CatalystCurrencySymbols::ADA->name)
-                        ->sum(fn ($proposal) => $proposal->amount_requested - $proposal->amount_received),
-                ])->values(),
+                'data' => $fundTitles->map(function ($fundTitle) use ($fundedProposals, $calculateSum) {
+                    $awarded = $calculateSum($fundedProposals, $fundTitle, CatalystCurrencySymbols::ADA->name, 'amount_requested');
+                    $distributed = $calculateSum($fundedProposals, $fundTitle, CatalystCurrencySymbols::ADA->name, 'amount_received');
+
+                    return [
+                        'x' => $fundTitle,
+                        'y' => $awarded - $distributed,
+                    ];
+                })->values(),
             ],
             [
                 'id' => 'Remaining USD',
-                'data' => $fundTitles->map(fn ($fundTitle) => [
-                    'x' => $fundTitle,
-                    'y' => $communityData->proposals
-                        ->where(fn ($p) => optional($p->fund)->title === $fundTitle && optional($p->fund)->currency === CatalystCurrencySymbols::USD->name)
-                        ->sum(fn ($proposal) => $proposal->amount_requested - $proposal->amount_received),
-                ])->values(),
+                'data' => $fundTitles->map(function ($fundTitle) use ($fundedProposals, $calculateSum) {
+                    $awarded = $calculateSum($fundedProposals, $fundTitle, CatalystCurrencySymbols::USD->name, 'amount_requested');
+                    $distributed = $calculateSum($fundedProposals, $fundTitle, CatalystCurrencySymbols::USD->name, 'amount_received');
+
+                    return [
+                        'x' => $fundTitle,
+                        'y' => $awarded - $distributed,
+                    ];
+                })->values(),
             ],
         ];
 

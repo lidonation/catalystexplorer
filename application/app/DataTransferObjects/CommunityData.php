@@ -44,7 +44,13 @@ final class CommunityData extends Data
         public ?int $funded_proposals_count,
 
         #[TypeScriptOptional]
-        public ?int $Unfunded_proposals_count,
+        public ?int $unfunded_proposals_count,
+
+        #[TypeScriptOptional]
+        public ?int $own_proposals_count,
+
+        #[TypeScriptOptional]
+        public ?int $collaborating_proposals_count,
 
         #[TypeScriptOptional]
         public ?float $amount_awarded_ada,

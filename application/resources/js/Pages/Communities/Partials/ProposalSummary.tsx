@@ -60,12 +60,12 @@ export default function ProposalSummaryCard({
             <div>
                 <Paragraph className="flex items-center mb-1">
                     <span className='w-32'>{t('communities.proposers')}</span>
-                    <span className='font-bold'>0</span>
+                    <span className='font-bold'>{community?.own_proposals_count ?? 0}</span>
                 </Paragraph>
 
                 <Paragraph className="flex items-center">
                     <span className='w-32'>{t('communities.collaborators')}</span>
-                    <span className='font-bold'>0</span>
+                    <span className='font-bold'>{community?.collaborating_proposals_count ?? 0}</span>
                 </Paragraph>
             </div>
         </Card>
