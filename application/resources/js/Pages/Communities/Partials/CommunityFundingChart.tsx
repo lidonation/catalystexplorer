@@ -190,7 +190,7 @@ const CommunityFundingChart: React.FC<CommunityFundingChartProps> = ({
                                             : null;
 
                                     const trend = previous
-                                        ? calculateTrend(current.y, previous.y)
+                                        ? calculateTrend(current?.y, previous?.y)
                                         : { value: '0', isPositive: true };
 
                                     return {
@@ -236,7 +236,6 @@ const CommunityFundingChart: React.FC<CommunityFundingChartProps> = ({
                                                     </span>
                                                 </Paragraph>
 
-                                                {/* Trend Indicator */}
                                                 <div className="mt-1 flex items-center">
                                                     <span
                                                         className={

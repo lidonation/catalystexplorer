@@ -106,9 +106,9 @@ export default function Proposals({
                     adaData={amountRemainingChartData[0]?.data}
                     usdData={amountRemainingChartData[1]?.data}
                     filterOptions={remainedOptions}
-                    filtersTitle={t('communities.totalRemaining')}
+                    filtersTitle={t('communities.totalRemained')}
                     chartTitle={t('communities.totalAmountRemaining')}
-                    legend={t('communities.totalRemaining')}
+                    legend={t('communities.totalRemained')}
                 />
             </div>
         </CommunityLayout>
