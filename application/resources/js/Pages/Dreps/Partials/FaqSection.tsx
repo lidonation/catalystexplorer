@@ -19,10 +19,10 @@ const FaqItem = ({ question, answer }: FaqItemProps) => {
     return (
         <>
             <div 
-                className="flex justify-between items-center p-6 cursor-pointer bg-background hover:bg-background-darker"
+                className="flex justify-between items-center py-3 md:py-4 px-6 cursor-pointer bg-background hover:bg-background-darker"
                 onClick={() => setIsOpen(!isOpen)}
             >
-                <Title level="3" className="font-semibold text-lg">{question}</Title>
+                <Title level="3" className="font-semibold text-xl">{question}</Title>
                 <Button 
                     className="w-8 h-8 flex items-center justify-center text-lg font-bold rounded-full bg-transparent text-content"
                 >
@@ -35,7 +35,7 @@ const FaqItem = ({ question, answer }: FaqItemProps) => {
                     isOpen ? 'max-h-40 opacity-100' : 'max-h-0 opacity-0'
                 }`}
             >
-                <Paragraph className="px-6 py-4 text-content">
+                <Paragraph className="px-6 py-2 md:py-4 text-content">
                     {answer}
                 </Paragraph>
             </div>
@@ -83,15 +83,15 @@ const FaqSection = () => {
     ];
 
     return (
-        <div className="py-6 px-6 bg-background-dark">
-            <div className="container mx-auto px-6 py-6 border-2 border-background rounded-xl bg-background shadow-md">
+        <div className="py-6 px-0 md:px-6 bg-background-dark">
+            <div className="mx-auto px-6 py-6 border-2 border-background rounded-xl bg-background shadow-md">
                 <Title level="2" className="text-2xl font-bold mb-8 text-center">
                     {t('dreps.faq.faq')}
                 </Title>
                 
                 <div className="flex flex-col gap-4 mb-4">
                     {faqs.map((faq, index) => (
-                        <div key={index} className="border border-dark rounded-xl overflow-hidden">
+                        <div key={index} className="border border-dark-light overflow-hidden">
                             <FaqItem question={faq.question} answer={faq.answer} />
                         </div>
                     ))}

@@ -57,8 +57,6 @@ export default function Index({
 
     useEffect(() => {
         if (metrics) {
-            console.log({ metrics });
-            
             setMetrics(metrics);
         }
 

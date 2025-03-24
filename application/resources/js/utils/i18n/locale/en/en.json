@@ -22,6 +22,7 @@
     "comingSoon": "Coming Soon",
     "cookies": "Cookies",
     "copyright": "© 2024 Catalyst Explorer. All rights reserved.",
+    "connections": "Connections",
     "minting": "You're Minting",
     "loginToMint": "Login to Mint",
     "mustBeProposer": "Must Be Proposer",
@@ -44,6 +45,7 @@
     "licenses": "Licenses",
     "login": "Login",
     "linkedIn": "LinkedIn",
+    "listsAndBookmarks": "Lists and Bookmarks",
     "monthlyReports": "Monthly Reports",
     "metaTitle": "Meta Data Preview",
     "mintNFT": "Mint NFT",
@@ -85,7 +87,6 @@
     "support": "Support",
     "seeAll": "See All",
     "terms": "Terms",
-    "transactions":"Transactions",
     "twitter": "Twitter",
     "votes": "My Votes",
     "voters":"Voters",
@@ -463,12 +464,42 @@
         "communities": "Communities",
         "title": "Catalyst Communities",
         "subtitle": "Diverse, independent, and together inspiring the highest level of human collaboration",
+        "proposalSummary": "Proposals Summary",
+        "totalRequested":"Total Requested",
+        "proposers": "Proposers",
+        "collaborators": "Collaborators",
+        "totalAmountAwarded" : "Total Amount Awarded",
+        "totalAmountDistributed" : "Total Amount Distributed",
+        "totalAmountRemaining" : "Total Amount Remaining",
+        "totalAwarded": "Total Amount of ADA & USD Awarded",
+        "totalDistributed": "Total Amount of ADA & USD Distributed",
+        "totalRemained": "Total Amount of ADA & USD Remaining",
+        "amountAwardedUsd": "Amount Awarded USD",
+        "amountAwardedAda": "Amount Awarded ADA",
+        "amountAwarded": "Amount Awarded",
+        "amountDistributed": "Amount Distributed",
+        "amountRemaining": "Amount Remaining",
         "options": {
             "alphabetically": "Alphabetically: A to Z",
             "amountAwardedAdaDesc": "Amount Awarded ADA: High to Low",
             "amountAwardedAdaAsc": "Amount Awarded ADA: Low to High",
             "amountAwardedUsdDesc": "Amount Awarded USD: High to Low",
             "amountAwardedUsdAsc": "Amount Awarded USD: Low to High"
+        },
+        "tabs": {
+            "dashboard": "Dashboard",
+            "proposals": "Proposals",
+            "members": "Members",
+            "groups": "Groups",
+            "events": "Events"
+        },
+        "filters": {
+            "totalAdaAwarded": "Total Amount of ADA Awarded",
+            "totalUsdAwarded": "Total Amount of USD Awarded",
+            "totalAdaDistributed": "Total Amount of ADA Distributed",
+            "totalUsdDistributed": "Total Amount of USD Distributed",
+            "totalAdaRemaining": "Total Amount of ADA Remaining",
+            "totalUsdRemaining": "Total Amount of USD Remaining"
         }
     },
     "posts": {
@@ -670,7 +701,7 @@
             "findDrep": "Find a Drep",
             "signUp": "Sign up to be a DRep",
             "aDrep": "What are DReps?",
-            "drepDescription": "DReps (Delegate Representatives), vote on governance proposals in Cardaon on behalf of ADA holders. Instead of voting individually, you can delegate your voting power to a DRep who representsv your interests helping shape the future of Cardano efficiently and transparently.",
+            "drepDescription": "DReps (Delegate Representatives), vote on governance proposals in Cardaon on behalf of ADA holders. Instead of voting individually, you can delegate your voting power to a DRep who represents your interests helping shape the future of Cardano efficiently and transparently.",
             "projectCatalyst": "Project Catalyst's Continued Growth and the Need for Delegation",
             "projectCatalystDescription": "The Cardano community's Project Catalyst has grown rapidly, with Fund8 receiving nearly 1,000 proposals. To manage this increasing workload, a new delegation system is being introduced for sustainable governance.",
             "empower": "Empowering Passive Voters Through Delegation",
@@ -687,6 +718,40 @@
             "active": "Active",
             "inactive": "Inactive"
         }
+    },
+    "transactions": {
+        "title": "Transactions",
+        "pageTitle": "Catalyst On Chain Transactions",
+        "pageDescription": "Register your stake key to participate in staking, governance, and secure transactions on the Cardano network.",
+        "table": {
+            "viewDetails": "View details for transaction",
+            "copyTxHash": "Copy transaction hash",
+            "copyStakeAddress": "Copy stake address",
+            "copyBlockHash": "Copy block hash",
+            "hash": "Hash",
+            "stakeAddress": "Stake Address",
+            "epoch": "Epoch",
+            "block": "Block",
+            "actions": "Actions",
+            "view": "View",
+            "voterRegistration": "Voter Registration",
+            "copyToClipboard": "Copy to clipboard" 
+        },
+        "options": {
+            "newestToOldest": "Newest to Oldest",
+            "oldestToNewest": "Oldest to Newest",
+            "blockAsc": "Block: Low to High",
+            "blockDesc": "Block: High to Low",
+            "epochAsc": "Epoch: Low to High",
+            "epochDesc": "Epoch: High to Low",
+            "amountHighToLow": "Amount: High to Low",
+            "amountLowToHigh": "Amount: Low to High",
+            "weightHighToLow": "Weight: High to Low",
+            "weightLowToHigh": "Weight: Low to High"
+        },
+        "searchBar": {
+            "placeholder": "Search transaction hash, epoch, block"
+        }  
     },
     "wallet": {
         "connect": {

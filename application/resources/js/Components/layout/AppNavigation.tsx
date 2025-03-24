@@ -79,7 +79,6 @@ function AppNavigation() {
             ),
         },
         {
-            href: useLocalizedRoute('numbers.index'),
             title: t('numbers'),
             icon: (isActive: boolean) => (
                 <NumbersIcon
@@ -89,7 +88,6 @@ function AppNavigation() {
             hasDropdown: true,
         },
         {
-            href: useLocalizedRoute('jormungandr.index'),
             title: t('jormungandr'),
             icon: (isActive: boolean) => (
                 <BarLineIcon
@@ -100,7 +98,7 @@ function AppNavigation() {
         },
         {
             href: useLocalizedRoute('connections.index'),
-            title: t('Connections'),
+            title: t('connections'),
             icon: (isActive: boolean) => (
                 <ConnectionsIcon
                     className={isActive ? 'text-primary-100' : 'text-dark'}
@@ -136,7 +134,7 @@ function AppNavigation() {
         },
         {
             href: useLocalizedRoute('bookmarks.index'),
-            title: t('Lists & Bookmarks'),
+            title: t('listsAndBookmarks'),
             icon: (isActive: boolean) => (
                 <BookmarkCheckIcon
                     className={isActive ? 'text-primary-100' : 'text-dark'}
@@ -145,12 +143,13 @@ function AppNavigation() {
         },
         {
             href: useLocalizedRoute('completedProjectsNfts.index'),
-            title: t('Complete Project NFTs'),
+            title: t('completedProjectNfts.title'),
             icon: (isActive: boolean) => (
                 <CompletedProjectNftsIcon
                     className={isActive ? 'text-primary-100' : 'text-dark'}
                 />
             ),
+            hasIndicator: true,
         },
         {
             title: t('More'),
@@ -166,68 +165,85 @@ function AppNavigation() {
     return (
         <nav className="flex flex-col justify-between" role="menu">
             <ul className="menu-gap-y flex flex-1 flex-col px-4" role="menu">
-                {navItems.map(({ href, title, icon, hasDropdown }) => {
+                {navItems.map(({ href, title, icon, hasDropdown, hasIndicator }) => {
                     const normalizedHref = href ? stripLanguagePrefix(href) : '';
                     const isActive = normalizedUrl === normalizedHref;
                     const isJormungandr = title === t('jormungandr');
                     const isNumbers = title === t('numbers');
                     const isMore = title === t('More');
 
+                    if (hasIndicator) {
+                        return (
+                            <li key={href} className="relative">
+                                <div className="flex items-center justify-between">
+                                    <NavLinkItem
+                                        ariaLabel={`${title} ${t('link')}`}
+                                        href={href || '#'}
+                                        title={title}
+                                        active={isActive}
+                                        prefetch
+                                        async
+                                    >
+                                        {icon(isActive)}
+                                    </NavLinkItem>
+                                    <div className="size-2 rounded-full bg-success mr-2"></div>
+                                </div>
+                            </li>
+                        );
+                    }
+
                     if (isJormungandr) {
                         return (
-                            <li key={href || title}>
+                            <li key={title}>
                                 <div>
-                                    <div className="flex items-center justify-between">
-                                        <NavLinkItem className="w-full"
-                                            ariaLabel={`${title} ${t('link')}`}
-                                            href={href || '#'}
-                                            title={title}
-                                            active={isActive}
-                                            prefetch
-                                            async
-                                        >
-                                            {icon(isActive)}
-                                        </NavLinkItem>
-                                        <Button
-                                            onClick={() => setJormungandrOpen(!jormungandrOpen)}
-                                            className="ml-2 focus:outline-none"
-                                            aria-label={jormungandrOpen ? 'Collapse menu' : 'Expand menu'}
-                                        >
-                                            {jormungandrOpen ? (
-                                                <ArrowUpIcon height={10} width={10} />
-                                            ) : (
-                                                <ArrowDownIcon height={10} width={10} />
-                                            )}
-                                        </Button>
+                                    <div 
+                                        className="flex items-center justify-between px-3 py-1 cursor-pointer text-sm text-dark transition-colors hover:bg-background-lighter"
+                                        onClick={() => setJormungandrOpen(!jormungandrOpen)}
+                                        role="button"
+                                        aria-expanded={jormungandrOpen}
+                                        aria-label={`${title} ${t('dropdown')}`}
+                                    >
+                                        <div className="flex items-center">
+                                            <span className="mr-3">
+                                                <BarLineIcon className="text-dark" />
+                                            </span>
+                                            <span>{title}</span>
+                                        </div>
+                                        {jormungandrOpen ? (
+                                            <ArrowUpIcon height={10} width={10} />
+                                        ) : (
+                                            <ArrowDownIcon height={10} width={10} />
+                                        )}
                                     </div>
 
                                     {jormungandrOpen && (
                                         <div className="pl-8 bg-background rounded">
                                             <NavLinkItem
-                                                href="#"
+                                                href={useLocalizedRoute('jormungandr.transactions.index')}
                                                 title={t('Transactions')}
-                                                ariaLabel={`${t('transactions')} ${t('link')}`}
+                                                ariaLabel={`${t('transactions.title')} ${t('link')}`}
                                                 active={false}
-                                                children
-                                            />
-                                                
+                                            >
+                                                <span></span>
+                                            </NavLinkItem>
 
                                             <NavLinkItem
                                                 href="#"
                                                 title={t('Votes')}
                                                 ariaLabel={`${t('votes')} ${t('link')}`}
                                                 active={false}
-                                                children
-                                            />
-                                               
+                                            >
+                                                <span></span>
+                                            </NavLinkItem>
 
                                             <NavLinkItem
                                                 href="#"
                                                 title={t('Voters')}
                                                 ariaLabel={`${t('voters')} ${t('link')}`}
                                                 active={false}
-                                                children
-                                            />
+                                            >
+                                                <span></span>
+                                            </NavLinkItem>
                                         </div>
                                     )}
                                 </div>
@@ -237,30 +253,26 @@ function AppNavigation() {
 
                     if (isNumbers) {
                         return (
-                            <li key={href || title}>
+                            <li key={title}>
                                 <div>
-                                    <div className="flex justify-between">
-                                        <NavLinkItem className="w-full"
-                                            ariaLabel={`${title} ${t('link')}`}
-                                            href={href || '#'}
-                                            title={title}
-                                            active={isActive}
-                                            prefetch
-                                            async
-                                        >
-                                            {icon(isActive)}
-                                        </NavLinkItem>
-                                        <Button
-                                            onClick={() => setNumbersOpen(!numbersOpen)}
-                                            className="ml-2 focus:outline-none"
-                                            aria-label={numbersOpen ? 'Collapse menu' : 'Expand menu'}
-                                        >
-                                            {numbersOpen ? (
-                                                <ArrowUpIcon height={10} width={10} />
-                                            ) : (
-                                                <ArrowDownIcon height={10} width={10} />
-                                            )}
-                                        </Button>
+                                    <div 
+                                        className="flex items-center justify-between px-3 py-1 cursor-pointer text-sm text-dark transition-colors hover:bg-background-lighter"
+                                        onClick={() => setNumbersOpen(!numbersOpen)}
+                                        role="button"
+                                        aria-expanded={numbersOpen}
+                                        aria-label={`${title} ${t('dropdown')}`}
+                                    >
+                                        <div className="flex items-center">
+                                            <span className="mr-3">
+                                                <NumbersIcon className="text-dark" />
+                                            </span>
+                                            <span>{title}</span>
+                                        </div>
+                                        {numbersOpen ? (
+                                            <ArrowUpIcon height={10} width={10} />
+                                        ) : (
+                                            <ArrowDownIcon height={10} width={10} />
+                                        )}
                                     </div>
 
                                     {numbersOpen && (
@@ -270,28 +282,27 @@ function AppNavigation() {
                                                 title={t('Impact')}
                                                 ariaLabel={`${t('impact')} ${t('link')}`}
                                                 active={false}
-                                                children
-                                            />
-                                               
+                                            >
+                                                <span></span>
+                                            </NavLinkItem>
 
                                             <NavLinkItem
                                                 href="#"
                                                 title={t('Spending')}
                                                 ariaLabel={`${t('spending')} ${t('link')}`}
                                                 active={false}
-                                                children
-                                            />
-                                                
+                                            >
+                                                <span></span>
+                                            </NavLinkItem>
 
                                             <NavLinkItem
                                                 href="#"
                                                 title={t('General')}
                                                 ariaLabel={`${t('general')} ${t('link')}`}
                                                 active={false}
-                                                children
-                                            />
-                                               
-                                            
+                                            >
+                                                <span></span>
+                                            </NavLinkItem>
                                         </div>
                                     )}
                                 </div>
@@ -303,26 +314,24 @@ function AppNavigation() {
                         return (
                             <li key={title}>
                                 <div>
-                                    <div className="flex items-center justify-between">
-                                        <NavLinkItem className="w-full"
-                                            ariaLabel={`${title} ${t('link')}`}
-                                            href="#"
-                                            title={title}
-                                            active={false}
-                                        >
-                                            {icon(false)}
-                                        </NavLinkItem>
-                                        <Button
-                                            onClick={() => setMoreOpen(!moreOpen)}
-                                            className="ml-2 focus:outline-none"
-                                            aria-label={moreOpen ? 'Collapse menu' : 'Expand menu'}
-                                        >
-                                            {moreOpen ? (
-                                                <ArrowUpIcon height={10} width={10} />
-                                            ) : (
-                                                <ArrowDownIcon height={10} width={10} />
-                                            )}
-                                        </Button>
+                                    <div 
+                                        className="flex items-center justify-between px-3 py-1 cursor-pointer text-sm text-dark transition-colors hover:bg-background-lighter"
+                                        onClick={() => setMoreOpen(!moreOpen)}
+                                        role="button"
+                                        aria-expanded={moreOpen}
+                                        aria-label={`${title} ${t('dropdown')}`}
+                                    >
+                                        <div className="flex items-center">
+                                            <span className="mr-3">
+                                                <MoreIcon className="text-dark" />
+                                            </span>
+                                            <span>{title}</span>
+                                        </div>
+                                        {moreOpen ? (
+                                            <ArrowUpIcon height={10} width={10} />
+                                        ) : (
+                                            <ArrowDownIcon height={10} width={10} />
+                                        )}
                                     </div>
 
                                     {moreOpen && (
@@ -332,63 +341,63 @@ function AppNavigation() {
                                                 title="API"
                                                 ariaLabel={`${t('API')} ${t('link')}`}
                                                 active={false}
-                                                children
-                                            />
-                                                
+                                            >
+                                                <span></span>
+                                            </NavLinkItem>
 
                                             <NavLinkItem
-                                                href="#"
+                                                href={useLocalizedRoute('reviews.index')}
                                                 title="Proposal Reviews"
                                                 ariaLabel={`${t('proposalReviews')} ${t('link')}`}
                                                 active={false}
-                                                children
-                                            />
-                                               
+                                            >
+                                                <span></span>
+                                            </NavLinkItem>
 
                                             <NavLinkItem
                                                 href="#"
                                                 title="Reviewers"
                                                 ariaLabel={`${t('reviewers')} ${t('link')}`}
                                                 active={false}
-                                                children
-                                            />
-                                                
+                                            >
+                                                <span></span>
+                                            </NavLinkItem>
 
                                             <NavLinkItem
                                                 href="#"
                                                 title="Milestones"
                                                 ariaLabel={`${t('milestones')} ${t('link')}`}
                                                 active={false}
-                                                children
-                                            />
-                                               
+                                            >
+                                                <span></span>
+                                            </NavLinkItem>
 
                                             <NavLinkItem
                                                 href="#"
                                                 title="Monthly Reports"
                                                 ariaLabel={`${t('monthlyReports')} ${t('link')}`}
                                                 active={false}
-                                                children
-                                            />
-                                               
+                                            >
+                                                <span></span>
+                                            </NavLinkItem>
 
                                             <NavLinkItem
                                                 href="#"
                                                 title="Proposal CSVs"
                                                 ariaLabel={`${t('CSVs')} ${t('link')}`}
                                                 active={false}
-                                                children
-                                            />
-                                               
+                                            >
+                                                <span></span>
+                                            </NavLinkItem>
 
                                             <NavLinkItem
                                                 href="#"
                                                 title="CCV4 Votes"
                                                 ariaLabel={`${t('ccV4Votes')} ${t('link')}`}
                                                 active={false}
-                                                children
-                                            />
-                                               
+                                            >
+                                                <span></span>
+                                            </NavLinkItem>
                                         </div>
                                     )}
                                 </div>

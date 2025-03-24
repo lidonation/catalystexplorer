@@ -7,9 +7,12 @@ use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 
 if (! function_exists('to_length_aware_paginator')) {
+    function to_review_item($items) {}
+}
+
+if (! function_exists('to_length_aware_paginator')) {
     function to_length_aware_paginator($items, $total = null, $perPage = null, $currentPage = null): LengthAwarePaginator|AbstractPaginator
     {
-
         if ($items instanceof Paginator) {
             $total = $items->total();
             $perPage = $items->perPage();

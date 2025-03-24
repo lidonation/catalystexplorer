@@ -1,9 +1,9 @@
 import React from 'react';
-import { ReviewItem } from '@/Pages/IdeascaleProfile/Reviews/Index';
 import Divider from './Divider';
-import { ReviewerInfo } from './ReviewerInfo';
-import { StarRating } from './ReviewsStar';
+import {ReviewerInfo} from './ReviewerInfo';
+import {StarRating} from './ReviewsStar';
 import Paragraph from './atoms/Paragraph';
+import {ReviewItem} from "@/types/review-item";
 
 export interface ReviewItemProps {
     review: ReviewItem;
@@ -11,8 +11,8 @@ export interface ReviewItemProps {
 }
 
 export const ReviewCard: React.FC<ReviewItemProps> = ({
-    review,
-    className = '',
+  review,
+  className = '',
 }) => {
     return (
         <div className={`pb-6 ${className}`}>
@@ -24,13 +24,15 @@ export const ReviewCard: React.FC<ReviewItemProps> = ({
                         review={review}
                     />
                 </div>
-                <StarRating rating={review.rating} />
+                <StarRating rating={review.rating}/>
             </div>
+
             <Paragraph className="text-gray-persist mt-3 text-3">
-              {review.review.content}
+                {review.review.content}
             </Paragraph>
+
             <div className="mt-6">
-                <Divider />
+                <Divider/>
             </div>
         </div>
     );

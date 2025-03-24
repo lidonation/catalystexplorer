@@ -302,10 +302,16 @@ class Proposal extends Model
             ->where('context_type', Proposal::class);
     }
 
+    //    public function reviews(): HasManyThrough
+    //    {
+    //        return $this->hasManyThrough(Review::class, Moderation::class, 'context_id', 'id', 'id', 'review_id')
+    //            ->where('moderations.context_type', static::class);
+    //    }
+
     public function reviews(): HasManyThrough
     {
-        return $this->hasManyThrough(Review::class, Moderation::class, 'context_id', 'id', 'id', 'review_id')
-            ->where('moderations.context_type', static::class);
+        return $this->hasManyThrough(Review::class, Discussion::class, 'model_id', 'id', 'id', 'model_id')
+            ->where('discussions.model_type', static::class);
     }
 
     public function discussions(): HasMany
@@ -392,7 +398,6 @@ class Proposal extends Model
 
         return array_merge($array, [
             'abstain_votes_count' => $this->abstain_votes_count,
-            //            'alignment_score' => $this->meta_info->alignment_score ?? $this->getDiscussionRankingScore('Impact Alignment') ?? 0,
             "amount_awarded_{$this->currency}" => (bool) $this->funded_at ? ($this->amount_requested ? intval($this->amount_requested) : 0) : null,
             "amount_received_{$this->currency}" => $this->amount_received ? intval($this->amount_received) : 0,
             'amount_received' => $this->amount_received ? intval($this->amount_received) : 0,
