@@ -465,12 +465,42 @@
         "communities": "Communities",
         "title": "Catalyst Communities",
         "subtitle": "Diverse, independent, and together inspiring the highest level of human collaboration",
+        "proposalSummary": "Proposals Summary",
+        "totalRequested":"Total Requested",
+        "proposers": "Proposers",
+        "collaborators": "Collaborators",
+        "totalAmountAwarded" : "Total Amount Awarded",
+        "totalAmountDistributed" : "Total Amount Distributed",
+        "totalAmountRemaining" : "Total Amount Remaining",
+        "totalAwarded": "Total Amount of ADA & USD Awarded",
+        "totalDistributed": "Total Amount of ADA & USD Distributed",
+        "totalRemained": "Total Amount of ADA & USD Remaining",
+        "amountAwardedUsd": "Amount Awarded USD",
+        "amountAwardedAda": "Amount Awarded ADA",
+        "amountAwarded": "Amount Awarded",
+        "amountDistributed": "Amount Distributed",
+        "amountRemaining": "Amount Remaining",
         "options": {
             "alphabetically": "Alphabetically: A to Z",
             "amountAwardedAdaDesc": "Amount Awarded ADA: High to Low",
             "amountAwardedAdaAsc": "Amount Awarded ADA: Low to High",
             "amountAwardedUsdDesc": "Amount Awarded USD: High to Low",
             "amountAwardedUsdAsc": "Amount Awarded USD: Low to High"
+        },
+        "tabs": {
+            "dashboard": "Dashboard",
+            "proposals": "Proposals",
+            "members": "Members",
+            "groups": "Groups",
+            "events": "Events"
+        },
+        "filters": {
+            "totalAdaAwarded": "Total Amount of ADA Awarded",
+            "totalUsdAwarded": "Total Amount of USD Awarded",
+            "totalAdaDistributed": "Total Amount of ADA Distributed",
+            "totalUsdDistributed": "Total Amount of USD Distributed",
+            "totalAdaRemaining": "Total Amount of ADA Remaining",
+            "totalUsdRemaining": "Total Amount of USD Remaining"
         }
     },
     "posts": {
