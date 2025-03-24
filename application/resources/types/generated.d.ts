@@ -430,6 +430,38 @@ context_type: string | null;
 context_id: number | null;
 fund_name: string | null;
 };
+export type TransactionData = {
+hash: string | null;
+tx_hash: string;
+block: string;
+epoch: number | null;
+json_metadata: any;
+raw_metadata: object | Array<any> | null;
+created_at: string;
+inputs: Array<App.DataTransferObjects.TransactionInputData>;
+outputs: Array<App.DataTransferObjects.TransactionOutputData>;
+};
+export type TransactionInputData = {
+address: string;
+amount: Array<any>;
+tx_hash: string;
+output_index: number;
+data_hash: string | null;
+inline_datum: object | null;
+reference_script_hash: string | null;
+collateral: boolean;
+reference: boolean;
+};
+export type TransactionOutputData = {
+address: string;
+amount: Array<any>;
+output_index: number;
+data_hash: string | null;
+inline_datum: object | null;
+collateral: boolean;
+reference_script_hash: string | null;
+consumed_by_tx: string | null;
+};
 export type UserData = {
 hash: string;
 name: string;
