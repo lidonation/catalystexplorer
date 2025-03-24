@@ -8,15 +8,13 @@ import UsdIcon from '@/Components/svgs/UsdIcon';
 import RecordsNotFound from '@/Layouts/RecordsNotFound';
 import {PageProps} from '@/types';
 import {currency} from '@/utils/currency';
-import {Head, Link, usePage} from '@inertiajs/react';
-import {useEffect, useState} from 'react';
+import {Head, Link} from '@inertiajs/react';
 import {useTranslation} from 'react-i18next';
 import {PaginatedData} from '../../../types/paginated-data';
 import {SearchParams} from '../../../types/search-params';
 import StatisticCard from './Partials/StatisticCard';
 import ProposalData = App.DataTransferObjects.ProposalData;
 import IdeascaleProfileData = App.DataTransferObjects.IdeascaleProfileData;
-import Button from "@/Components/atoms/Button";
 import Divider from "@/Components/Divider";
 import {useLocalizedRoute} from "@/utils/localizedRoute";
 
@@ -91,7 +89,7 @@ export default function Index({
 
                 <div className="mx-auto mt-8 max-w-3xl">
                     <Title level="1">
-                        <span className='text-primary'>Project Complete?</span> Time for a launch party!
+                        <span className='text-primary'>{t('completedProjectNfts.projectComplete')}</span> {t('completedProjectNfts.timeForLaunchParty')}
                     </Title>
 
                     <Paragraph className="md:text-lg mb-4">

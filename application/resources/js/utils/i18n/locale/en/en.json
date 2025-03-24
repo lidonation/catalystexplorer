@@ -586,7 +586,9 @@
         "unavailable": "Unavailable!",
         "reservedUntil": "Reserved until",
         "paymentPending": "Payment Pending",
-        "mintCompletionNft": "Mint Completion NFT"
+        "mintCompletionNft": "Mint Completion NFT",
+        "projectComplete": "Project Complete?",
+        "timeForLaunchParty": "Time for a launch party!"
     },
     "profileWorkflow": {
         "sectionTitle": {
