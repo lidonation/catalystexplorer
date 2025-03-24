@@ -68,7 +68,11 @@ class Transaction extends Model implements IHasMetaData
         return [
             'epoch',
             'created_at',
+<<<<<<< HEAD
             'total_output',
+=======
+            'total_ada_output',
+>>>>>>> dev
             'block',
             'json_metadata.voter_delegations.weight',
         ];
@@ -105,7 +109,11 @@ class Transaction extends Model implements IHasMetaData
             'outputs' => $outputs->toArray(),
             'type' => $this->type ?? ($this->json_metadata->txType ?? 'unknown'),
             'transaction_date' => $this->created_at?->format('Y-m-d'),
+<<<<<<< HEAD
             'total_output' => $totalLovelace
+=======
+            'total_ada_output' => $totalLovelace / 1000000, // Convert to ADA
+>>>>>>> dev
         ]);
     }
 

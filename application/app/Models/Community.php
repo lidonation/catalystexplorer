@@ -6,12 +6,14 @@ namespace App\Models;
 
 use App\Casts\DateFormatCast;
 use App\Enums\CatalystCurrencySymbols;
+use App\Enums\ProposalStatus;
 use App\Traits\HasConnections;
 use App\Traits\HasTaxonomies;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Log;
 use Laravel\Scout\Searchable;
 
 class Community extends Model
@@ -74,6 +76,38 @@ class Community extends Model
             ->whereNotNull('funded_at');
     }
 
+    public function completed_proposals(): BelongsToMany
+    {
+        return $this->proposals()
+            ->where(['type' => 'proposal', 'status' => ProposalStatus::complete()->value]);
+    }
+
+    public function unfunded_proposals(): BelongsToMany
+    {
+        return $this->proposals()
+            ->where('type', 'proposal')
+            ->whereNull('funded_at');
+    }
+
+    public function own_proposals(): BelongsToMany
+    {
+        return $this->proposals()
+            ->whereIn('user_id', $this->ideascale_profiles()->pluck('id'))
+            ->where('type', 'proposal');
+    }
+
+    public function collaborating_proposals(): BelongsToMany
+    {
+        return $this->proposals()
+            ->whereIn('id', function ($query) {
+                $query->select('proposal_id')
+                    ->from('ideascale_profile_has_proposal')
+                    ->whereIn('ideascale_profile_id', $this->ideascale_profiles()->pluck('id'));
+            })
+            ->whereNotIn('user_id', $this->ideascale_profiles()->pluck('id'))
+            ->where('type', 'proposal');
+    }
+
     public function amountAwardedAda(): Attribute
     {
         return Attribute::make(
@@ -90,16 +124,54 @@ class Community extends Model
     {
         return Attribute::make(
             get: function () {
-                return $this->funded_proposals()
+                $amount = $this->funded_proposals()
                     ->whereHas('fund', function ($q) {
                         $q->where('currency', CatalystCurrencySymbols::USD->name);
                     })->sum('amount_requested');
+
+                // Log the retrieved amount
+                Log::info("Amount awarded in USD for Proposal ID {$this->id}: {$amount}");
+
+                return $amount;
             },
         );
     }
 
-    public function ideascale_profiles(): BelongsToMany
+    public function amountDistributedAda(): Attribute
     {
-        return $this->belongsToMany(IdeascaleProfile::class, 'community_has_ideascale_profile', 'community_id', 'ideascale_profile_id');
+        return Attribute::make(
+            get: function () {
+                return $this->funded_proposals()
+                    ->whereHas('fund', function ($q) {
+                        $q->where('currency', CatalystCurrencySymbols::ADA->name);
+                    })->sum('amount_received');
+            },
+        );
+    }
+
+    public function amountDistributedUsd(): Attribute
+    {
+        return Attribute::make(
+            get: function () {
+                return $this->funded_proposals()
+                    ->whereHas('fund', function ($q) {
+                        $q->where('currency', CatalystCurrencySymbols::USD->name);
+                    })->sum('amount_received');
+            },
+        );
+    }
+
+    public function ideascale_profiles(): Builder
+    {
+        return IdeascaleProfile::whereHas('proposals', function ($query) {
+            $query->whereIn('proposals.id', $this->proposals()->pluck('id'));
+        });
+    }
+
+    public function groups(): Builder
+    {
+        return Group::whereHas('proposals', function ($query) {
+            $query->whereIn('proposals.id', $this->proposals()->pluck('id'));
+        });
     }
 }
