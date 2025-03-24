@@ -11,7 +11,6 @@ use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\Routing\ResponseFactory;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
-use Illuminate\Support\Str;
 use Symfony\Component\HttpFoundation\Response;
 
 class IdeascaleProfilesController extends Controller
@@ -55,36 +54,5 @@ class IdeascaleProfilesController extends Controller
         $connections = $ideascaleProfile->getConnectionsData($request);
 
         return $connections;
-    }
-
-    public function claimIdeascaleProfile(Request $request, IdeascaleProfile $ideascaleProfile)
-    {
-
-        $request->validate([
-            'name' => 'required|string',
-            'email' => 'required|email',
-            'bio' => 'nullable|string',
-            'ideascaleProfile' => 'nullable|string',
-            'twitter' => 'nullable|string',
-            'discord' => 'nullable|string',
-            'linkedIn' => 'nullable|string',
-        ]);
-
-        $randomCode = Str::random(5);
-
-        $ideascaleProfile->saveMeta('name', $request->input('name') ?? '');
-        $ideascaleProfile->saveMeta('email', $request->input('email') ?? '');
-        $ideascaleProfile->saveMeta('bio', $request->input('bio') ?? '');
-        $ideascaleProfile->saveMeta('ideascaleProfileLink', $request->input('ideascaleProfileLink') ?? '');
-        $ideascaleProfile->saveMeta('discord', $request->input('discord') ?? '');
-        $ideascaleProfile->saveMeta('twitter', $request->input('twitter') ?? '');
-        $ideascaleProfile->saveMeta('linkedIn', $request->input('linkedIn') ?? '');
-        $ideascaleProfile->saveMeta('verificationCode', $randomCode);
-        $ideascaleProfile->save();
-
-        return response()->json([
-            'message' => 'Profile claimed successfully',
-            'verificationCode' => $randomCode,
-        ]);
     }
 }

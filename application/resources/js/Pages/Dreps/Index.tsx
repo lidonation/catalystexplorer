@@ -18,7 +18,7 @@ const Index = () => {
             <div className="flex flex-col min-h-screen">
                 {/* Landing Section */}
                 <div 
-                    className="relative h-screen overflow-hidden mt-8"
+                    className="relative h-screen overflow-hidden"
                     style={{
                         backgroundImage: `url(${DrepsBanner})`,
                         backgroundSize: 'cover',
@@ -107,16 +107,22 @@ const Index = () => {
                 <FaqSection/>
 
                 {/* Call to Action */}
-                <div className="container p-2 md:p-20 bg-background-dark text-content">
-                    <div className="container mx-auto px-4">
-                        <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-2">
-                            <Title level='2' className="text-2xl font-bold">
-                                {t('dreps.landing.excite')}<br/>
-                                {t('dreps.landing.answerExcite')}
-                            </Title>
-                            <Button className="bg-primary text-content-light px-6 py-3 rounded-md text-center w-full md:w-auto">
-                                {t('dreps.landing.signUp')}
-                            </Button>
+                <div className="py-16 pl-24 pr-24 bg-background-dark">
+                    <div className="container mx-auto px-4 md:px-16">
+                        <div className="flex flex-col md:flex-row justify-between items-center gap-6">
+                            <div className="text-center md:text-left">
+                                <Title level='2' className="text-2xl md:text-3xl font-bold">
+                                    {t('dreps.landing.excite')}
+                                </Title>
+                                <Title level='2' className="text-2xl md:text-3xl font-bold">
+                                    {t('dreps.landing.answerExcite')}
+                                </Title>
+                            </div>
+                            <div>
+                                <Button className="bg-primary hover:bg-primary-dark text-light-persist px-8 py-4 rounded-md text-center w-full md:w-auto">
+                                    {t('dreps.landing.signUp')}
+                                </Button>
+                            </div>
                         </div>
                     </div>
                 </div>

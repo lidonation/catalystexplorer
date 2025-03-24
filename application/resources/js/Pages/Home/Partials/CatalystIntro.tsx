@@ -2,6 +2,7 @@ import BlueEyeIcon from '@/Components/svgs/BlueEyeIcon';
 import ConcentricCircles from '@/assets/images/bg-concentric-circles.png';
 import { useTranslation } from 'react-i18next';
 import GlobalSearch from './GlobalSearch';
+import Paragraph from "@/Components/atoms/Paragraph";
 
 const CatalystIntro = () => {
     const { t } = useTranslation();
@@ -22,17 +23,17 @@ const CatalystIntro = () => {
                         height={50}
                     />
                     <div>
-                        <p className="text-center text-3xl text-content-light">
+                        <Paragraph className="text-center text-3xl text-content-light">
                             {t('catalystIntro.title.normalText')}{' '}
                             <span className="text-content-highlight-intro">
                                 {t('catalystIntro.title.highlightedText')}
                             </span>
-                        </p>
+                        </Paragraph>
                     </div>
                     <div>
-                        <p className="text-center text-content-light">
+                        <Paragraph className="text-center text-content-light">
                             {t('catalystIntro.subtitle')}
-                        </p>
+                        </Paragraph>
                     </div>
                 </section>
 

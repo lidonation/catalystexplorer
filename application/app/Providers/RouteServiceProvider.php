@@ -40,23 +40,7 @@ class RouteServiceProvider extends ServiceProvider
 
         Route::bind('ideascaleProfile', function ($hashId) {
             try {
-                $locale = app()->getLocale();
-                $model = match (Route::currentRouteName()) {
-                    "{$locale}.ideascaleProfiles.show",
-                    'api.ideascaleProfiles.claim',
-                    "{$locale}.ideascaleProfiles.proposals",
-                    "{$locale}.ideascaleProfiles.groups",
-                    "{$locale}.ideascaleProfiles.reviews",
-                    "{$locale}.ideascaleProfiles.communities",
-                    "{$locale}.ideascaleProfiles.milestones",
-                    "{$locale}.ideascaleProfiles.reports",
-                    "{$locale}.ideascaleProfiles.campaigns",
-                    "{$locale}.ideascaleProfiles.connections" => IdeascaleProfile::class,
-
-                    default => null,
-                };
-
-                return (new HashIdService(new $model))->decode($hashId);
+                return (new HashIdService(new IdeascaleProfile))->decode($hashId);
             } catch (Exception) {
                 abort(404, 'No item found for this hash!');
             }
@@ -65,20 +49,7 @@ class RouteServiceProvider extends ServiceProvider
         Route::bind('proposal', function ($hashId) {
 
             try {
-                $locale = app()->getLocale();
-                $model = match (Route::currentRouteName()) {
-                    "{$locale}.completedProjectsNfts.show" => Proposal::class,
-                    "{$locale}.my.proposals.manage" => Proposal::class,
-
-                    default => null,
-                };
-
-                if ($model === null) {
-                    abort(404, 'No item found for this hash!');
-                }
-
-                return (new HashIdService(new $model))->decode($hashId);
-
+                return (new HashIdService(new Proposal))->decode($hashId);
             } catch (Exception) {
                 abort(404, 'No item found for this hash!');
             }

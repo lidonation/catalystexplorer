@@ -331,8 +331,8 @@ class CommunityController extends Controller
                 ) as awarded_ada"),
         ]);
 
-        $this->maxAwardedUsd = max($query->pluck('awarded_usd')->toArray()) ?? 0;
-        $this->maxAwardedAda = max($query->pluck('awarded_ada')->toArray()) ?? 0;
-        $this->maxProposalsCount = max($query->pluck('proposals_count')->toArray()) ?? 0;
+        $this->maxAwardedUsd = $query->pluck('awarded_usd')->isNotEmpty() ? max($query->pluck('awarded_usd')->toArray()) : 0;
+        $this->maxAwardedAda = $query->pluck('awarded_ada')->isNotEmpty() ? max($query->pluck('awarded_ada')->toArray()) : 0;
+        $this->maxProposalsCount = $query->pluck('proposals_count')->isNotEmpty() ? max($query->pluck('proposals_count')->toArray()) : 0;
     }
 }

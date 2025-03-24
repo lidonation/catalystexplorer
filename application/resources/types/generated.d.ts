@@ -392,6 +392,7 @@ proposal: App.DataTransferObjects.ProposalData | null;
 milestones: any | null;
 };
 export type ReviewData = {
+id: number | null;
 hash: string | null;
 parent_id?: number;
 user_id?: number;
