@@ -14,6 +14,8 @@ class Transaction extends Model implements IHasMetaData
 {
     use HasMetaData, Searchable;
 
+    public $timestamps = false;
+
     protected $fillable = [
         'tx_hash',
         'epoch',

@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Traits\HasMetaData;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Reviewer extends Model
@@ -14,9 +13,9 @@ class Reviewer extends Model
 
     protected $guarded = [];
 
-    public function v1_reviews(): BelongsToMany
+    public function reviews(): HasMany
     {
-        return $this->belongsToMany(Review::class, 'review_moderation_reviewers', 'review_moderation_id', 'reviewer_id');
+        return $this->hasMany(Review::class);
     }
 
     public function moderations(): HasMany
@@ -24,7 +23,7 @@ class Reviewer extends Model
         return $this->hasMany(Moderation::class, 'reviewer_id');
     }
 
-    public function reputationScores(): HasMany
+    public function reputation_scores(): HasMany
     {
         return $this->hasMany(ReviewerReputationScore::class, 'reviewer_id');
     }
