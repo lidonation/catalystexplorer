@@ -303,27 +303,6 @@ uploadSource: string;
 priceInLamportCentralPayments: number;
 singlePriceSolana: number;
 };
-export type NftData = {
-metas: any;
-id: number;
-user_id: number;
-artist_id: number;
-model_id: number;
-model_type: string;
-storage_link: string;
-preview_link: string;
-name: string;
-owner_address: string;
-description: string;
-rarity: string;
-status: string;
-metadata: any;
-minted_at: string;
-qty: number;
-created_at: string;
-updated_at: string;
-deleted_at: string;
-};
 export type PostData = {
 id: number | null;
 title: string | null;
@@ -392,15 +371,13 @@ proposal: App.DataTransferObjects.ProposalData | null;
 milestones: any | null;
 };
 export type ReviewData = {
-id: number | null;
 hash: string | null;
 parent_id?: number;
-user_id?: number;
-model_id: number | null;
-model_type: string | null;
 title?: string;
 content: string;
 status: string | null;
+rating: any;
+reviewer: App.DataTransferObjects.ReviewerData;
 type: string | null;
 ranking_total: number | null;
 helpful_total: number | null;
@@ -417,10 +394,11 @@ flagged: boolean;
 qa_rationale?: Array<any>;
 };
 export type ReviewerData = {
-id: number | null;
-reviewr_id: string;
-meta_info: Array<any> | null;
-reputation_scores: any | null;
+hash: string | null;
+reviews_count: any;
+reputation_scores?: any;
+catalyst_reviewer_id: any;
+claimed_by?: App.DataTransferObjects.UserData;
 };
 export type ReviewerReputationScoreData = {
 id: number | null;
@@ -429,6 +407,16 @@ score: number;
 context_type: string | null;
 context_id: number | null;
 fund_name: string | null;
+};
+export type TransactionData = {
+tx_hash: string;
+epoch: number | null;
+block: string;
+json_metadata: object | null;
+raw_metadata: object | null;
+created_at: string | null;
+inputs: Array<any> | null;
+outputs: any;
 };
 export type UserData = {
 hash: string;

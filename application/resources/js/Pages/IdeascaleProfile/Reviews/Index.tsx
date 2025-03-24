@@ -8,7 +8,7 @@ import IdeascaleProfileData = App.DataTransferObjects.IdeascaleProfileData;
 import ReviewReputationScoreData = App.DataTransferObjects.ReviewerReputationScoreData;
 import RecordsNotFound from '@/Layouts/RecordsNotFound';
 import { SearchParams } from '../../../../types/search-params';
-import {ReviewItem} from "@/types/review-item";
+import ReviewData = App.DataTransferObjects.ReviewData;
 
 
 interface RankingCount {
@@ -17,7 +17,7 @@ interface RankingCount {
 
 interface ReviewsPageProps {
     ideascaleProfile: IdeascaleProfileData;
-    reviews: PaginatedData<ReviewItem[]>;
+    reviews: PaginatedData<ReviewData[]>;
     reviewerReputationScores: ReviewReputationScoreData[];
     ratingStats: { [s: string]: number } | ArrayLike<number>;
     filters: SearchParams;
@@ -31,7 +31,7 @@ export default function Reviews({
 }: ReviewsPageProps) {
     const { t } = useTranslation();
 
-    const reviewsArray = reviews?.data?.map((item) => item.review) || [];
+    // const reviewsArray = reviews?.data?.map((item) => item.review) || [];
 
     return (
         <IdeascaleProfileLayout ideascaleProfile={ideascaleProfile} filters={filters}>
@@ -41,11 +41,11 @@ export default function Reviews({
                 {reviews.total > 0 ? (
                     <div className="space-y-8">
                         <div>
-                            <AggregatedReviewsSummary
-                                reviews={reviewsArray}
-                                ratingStats={ratingStats}
-                                reviewsCount={reviews.total}
-                            />
+                            {/*<AggregatedReviewsSummary*/}
+                            {/*    reviews={reviewsArray}*/}
+                            {/*    ratingStats={ratingStats}*/}
+                            {/*    reviewsCount={reviews.total}*/}
+                            {/*/>*/}
                         </div>
                         <div>
                             <ReviewList

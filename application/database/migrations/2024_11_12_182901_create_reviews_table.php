@@ -15,8 +15,9 @@ return new class extends Migration
         Schema::create('reviews', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
+            $table->softDeletes();
             $table->bigInteger('parent_id')->nullable();
-            $table->foreignId('user_id')->constrained('users')->nullable();
+            $table->foreignId('reviewer_id')->constrained('reviewers');
             $table->bigInteger('model_id');
             $table->string('model_type');
             $table->string('title')->nullable();

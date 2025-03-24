@@ -74,6 +74,11 @@ class Review extends Model
         return $this->belongsTo(self::class, 'parent_id');
     }
 
+    public function reviewer(): BelongsTo
+    {
+        return $this->belongsTo(self::class);
+    }
+
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
