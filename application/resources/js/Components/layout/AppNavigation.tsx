@@ -206,7 +206,7 @@ function AppNavigation() {
                                             <NavLinkItem
                                                 href="#"
                                                 title={t('Transactions')}
-                                                ariaLabel={`${t('transactions')} ${t('link')}`}
+                                                ariaLabel={`${t('transactions.title')} ${t('link')}`}
                                                 active={false}
                                                 children
                                             />
