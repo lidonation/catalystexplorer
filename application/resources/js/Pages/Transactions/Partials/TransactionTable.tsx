@@ -6,12 +6,7 @@ import RegisterTwo from '@/Components/svgs/RegisterTwo';
 import Paragraph from '@/Components/atoms/Paragraph';
 import { useTranslation } from 'react-i18next';
 import TransactionRow from './TransactionRow';
-<<<<<<< HEAD
 import CopyableCell from '@/Components/CopyableCell';
-=======
-import CopyableCell from './CopyableCell';
-
->>>>>>> dev
 
 interface ColumnConfig<T> {
   key: string;
@@ -27,10 +22,7 @@ interface CardanoTransactionTableProps {
 export const CardanoTransactionTable: React.FC<CardanoTransactionTableProps> = ({ transactions = [] }) => {
   const { CardanoWasm } = useConnectWallet();
   const { t } = useTranslation();
-<<<<<<< HEAD
   const voterRegistrationTypes = ['cip15', 'cip36'];
-=======
->>>>>>> dev
 
   const getStakeAddress = (address: string): string => {
     if (!CardanoWasm || !address) return '';
@@ -67,24 +59,16 @@ export const CardanoTransactionTable: React.FC<CardanoTransactionTableProps> = (
             fullText={tx.tx_hash}
             title={t('transactions.table.copyTxHash')}
           />
-<<<<<<< HEAD
           {voterRegistrationTypes.includes(tx.json_metadata?.txType) ? (
-=======
-          {tx.json_metadata?.txType === 'cip15' ? (
->>>>>>> dev
             <div className="flex items-center bg-background-lighter px-2 py-1 rounded">
               <RegisterTwo
                 width={12}
                 height={12}
                 className="mr-1 text-gray-persist"
               />
-<<<<<<< HEAD
               <Paragraph className="text-xs text-gray-persist font-bold">
                 {t('transactions.table.voterRegistration')}
               </Paragraph>
-=======
-              <Paragraph className="text-xs text-gray-persist font-bold">{t('transactions.table.voterRegistration')}</Paragraph>
->>>>>>> dev
             </div>
           ) : (
             <Paragraph size="sm">{tx.json_metadata?.txType}</Paragraph>
@@ -141,11 +125,7 @@ export const CardanoTransactionTable: React.FC<CardanoTransactionTableProps> = (
             </tr>
           </thead>
           <tbody>
-<<<<<<< HEAD
             {transactions.map((tx, index) => (
-=======
-           { transactions.map((tx, index) => (
->>>>>>> dev
               <TransactionRow
                 key={index}
                 transaction={tx}
@@ -154,11 +134,7 @@ export const CardanoTransactionTable: React.FC<CardanoTransactionTableProps> = (
                   console.log(t('transactions.table.viewDetails') + ":", tx.tx_hash);
                 }}
               />
-<<<<<<< HEAD
             ))}
-=======
-            )) }
->>>>>>> dev
           </tbody>
         </table>
       </div>
