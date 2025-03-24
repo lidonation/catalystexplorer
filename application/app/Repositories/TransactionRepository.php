@@ -21,7 +21,7 @@ class TransactionRepository extends Repository
             $term,
             function (Indexes $index, $query, $options) use ($args) {
                 $attrs = $args['attributesToRetrieve'] ?? null;
-                
+
                 $args['attributesToRetrieve'] = $attrs ?? [
                     'tx_hash',
                     'hash',
@@ -37,7 +37,7 @@ class TransactionRepository extends Repository
                     'metadata_labels',
                     'voters_details',
                 ];
-                
+
                 $args['facets'] = [
                     'epoch',
                     'type',
