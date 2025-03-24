@@ -91,7 +91,7 @@ export const CardanoTransactionTable: React.FC<CardanoTransactionTableProps> = (
     {
       key: 'epoch',
       header: t('transactions.table.epoch'),
-      render: (tx) => <Paragraph size="sm">{tx.epoch || '-'}</Paragraph>,
+      render: (tx) => <Paragraph size="sm" className='text-center'>{tx.epoch || '-'}</Paragraph>,
     },
     {
       key: 'block',
