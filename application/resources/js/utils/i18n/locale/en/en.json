@@ -87,7 +87,6 @@
     "support": "Support",
     "seeAll": "See All",
     "terms": "Terms",
-    "transactions":"Transactions",
     "twitter": "Twitter",
     "votes": "My Votes",
     "voters":"Voters",
@@ -689,6 +688,40 @@
             "active": "Active",
             "inactive": "Inactive"
         }
+    },
+    "transactions": {
+        "title": "Transactions",
+        "pageTitle": "Catalyst On Chain Transactions",
+        "pageDescription": "Register your stake key to participate in staking, governance, and secure transactions on the Cardano network.",
+        "table": {
+            "viewDetails": "View details for transaction",
+            "copyTxHash": "Copy transaction hash",
+            "copyStakeAddress": "Copy stake address",
+            "copyBlockHash": "Copy block hash",
+            "hash": "Hash",
+            "stakeAddress": "Stake Address",
+            "epoch": "Epoch",
+            "block": "Block",
+            "actions": "Actions",
+            "view": "View",
+            "voterRegistration": "Voter Registration",
+            "copyToClipboard": "Copy to clipboard" 
+        },
+        "options": {
+            "newestToOldest": "Newest to Oldest",
+            "oldestToNewest": "Oldest to Newest",
+            "blockAsc": "Block: Low to High",
+            "blockDesc": "Block: High to Low",
+            "epochAsc": "Epoch: Low to High",
+            "epochDesc": "Epoch: High to Low",
+            "amountHighToLow": "Amount: High to Low",
+            "amountLowToHigh": "Amount: Low to High",
+            "weightHighToLow": "Weight: High to Low",
+            "weightLowToHigh": "Weight: Low to High"
+        },
+        "searchBar": {
+            "placeholder": "Search transaction hash, epoch, block"
+        }  
     },
     "wallet": {
         "connect": {
