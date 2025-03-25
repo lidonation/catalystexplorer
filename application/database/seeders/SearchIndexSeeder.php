@@ -9,6 +9,7 @@ use App\Models\Group;
 use App\Models\IdeascaleProfile;
 use App\Models\MonthlyReport;
 use App\Models\Proposal;
+use App\Models\ProposalMilestone;
 use App\Models\Review;
 use App\Models\Transaction;
 use Illuminate\Database\Seeder;
@@ -27,5 +28,6 @@ class SearchIndexSeeder extends Seeder
         Community::runCustomIndex();
         MonthlyReport::runCustomIndex();
         Transaction::runCustomIndex();
+        ProposalMilestone::runCustomIndex();
     }
 }

@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\Group;
+use App\Models\ProposalMilestone;
 
 return [
 
@@ -139,6 +140,10 @@ return [
             Group::class => [
                 'filterableAttributes' => ['id', 'ideascale_profiles', 'tags', 'proposals', 'proposals_funded', 'proposals_completed', 'amount_awarded_usd', 'amount_awarded_ada', 'proposals_count'],
                 'sortableAttributes' => ['name', 'id', 'website', 'proposals_funded', 'proposals_completed', 'amount_awarded_ada', 'amount_awarded_usd', 'amount_requested'],
+            ],
+            ProposalMilestone::class => [
+                'filterableAttributes' => ['title'],
+                'sortableAttributes' => ['title'],
             ],
         ],
     ],
