@@ -18,6 +18,7 @@ use App\Http\Controllers\CampaignsController;
 use App\Http\Controllers\MilestoneController;
 use App\Http\Controllers\ProposalsController;
 use App\Http\Controllers\VoterToolController;
+use App\Http\Controllers\VoterHistoryController;
 use App\Http\Controllers\ConnectionsController;
 use App\Http\Controllers\JormungandrController;
 use App\Http\Controllers\TransactionController;
@@ -227,6 +228,11 @@ Route::localized(
                     ->name('list');
             }
         );
+
+        Route::prefix('/votes')->as('votes.')->group(function () {
+            Route::get('/', [VoterHistoryController::class, 'index'])
+                ->name('index');
+        });
 
         Route::get('/voter-tool', [VoterToolController::class, 'index'])
             ->name('voter-tool.index');
