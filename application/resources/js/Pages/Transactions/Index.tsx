@@ -1,225 +1,73 @@
 import { Head, Link } from '@inertiajs/react';
-
-export interface Transaction {
-    id: number;
-    hash: string;
-    block_id: number;
-    tx_index: number;
-    is_valid: boolean;
-    metadata_label: number;
-    metadata_labels: number[]; // Array of label IDs
-    label_names: string[]; // Array of label names
-    primary_label_name: string; // Name of the primary label
-    inputs: any;
-    outputs: any;
-    metadata: any;
-}
+import { CardanoTransactionTable } from './Partials/TransactionTable';
+import TransactionData = App.DataTransferObjects.TransactionData;
+import { useState } from 'react';
+import { FiltersProvider } from '@/Context/FiltersContext';
+import SearchControls from '@/Components/atoms/SearchControls';
+import TransactionSortOptions from '@/lib/TransactionSortOptions';
+import { useTranslation } from 'react-i18next';
+import { SearchParams } from '../../../types/search-params';
+import { PaginatedData } from '../../../types/paginated-data';
+import Paginator from '@/Components/Paginator';
+import Title from '@/Components/atoms/Title';
+import Paragraph from '@/Components/atoms/Paragraph';
 
 interface Props {
-    transactions: {
-        data: Transaction[];
-        links: {
-            url: string | null;
-            label: string;
-            active: boolean;
-        }[];
-        current_page: number;
-        last_page: number;
-        from: number;
-        to: number;
-        total: number;
-    };
+    transactions: PaginatedData<TransactionData[]>;
     metadataLabels: Record<number, string>;
+    filters: SearchParams;
 }
 
 export default function Transactions({
     transactions,
     metadataLabels,
+    filters,
 }: Props) {
+    const { t } = useTranslation();
+    const [showFilters, setShowFilters] = useState(false);
+
     return (
-        <>
-            <Head title="Catalyst Transactions" />
+        <FiltersProvider defaultFilters={filters}>
+            <Head title={t('transactions.title')} />
+
+            <div className="mt-4">
+                <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
+                    <Title level="2">
+                        {t('transactions.pageTitle')}
+                    </Title>
+                    <Paragraph size="sm" className="mt-2 text-gray-600">
+                        {t('transactions.pageDescription')}
+
+                    </Paragraph>
+                </div>
+            </div>
 
             <div className="py-12">
                 <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
                     <div className="bg-background overflow-hidden bg-white p-6 shadow-xl sm:rounded-lg">
-                        <h2 className="mb-4 text-2xl font-bold">
-                            Catalyst Transactions
-                        </h2>
+                        <div className="border-b border-background-lighter w-full mb-4">
+                            <Title level="4" className="mb-4 font-bold">
+                                {t('transactions.title')}
+                            </Title>
+                        </div>
 
-                        {/* Transactions table */}
-                        <table className="min-w-full divide-y divide-gray-200">
-                            <thead className="bg-background-lighter">
-                                <tr>
-                                    <th className="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase">
-                                        Hash
-                                    </th>
-                                    <th className="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase">
-                                        Block
-                                    </th>
-                                    <th className="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase">
-                                        Type
-                                    </th>
-                                    <th className="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase">
-                                        Valid
-                                    </th>
-                                    <th className="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase">
-                                        Actions
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody className="divide-y divide-gray-200">
-                                {transactions?.data?.map((tx) => (
-                                    <tr key={tx.id}>
-                                        <td className="text-content px-6 py-4 text-sm font-medium whitespace-nowrap">
-                                            {tx.hash
-                                                ? typeof tx.hash === 'string'
-                                                    ? tx.hash.substring(0, 16)
-                                                    : 'Invalid Hash'
-                                                : 'No Hash'}
-                                            ...
-                                        </td>
-                                        <td className="text-content px-6 py-4 text-sm whitespace-nowrap">
-                                            {tx.block_id}
-                                        </td>
-                                        <td className="text-content px-6 py-4 text-sm whitespace-nowrap">
-                                            {/* Display all labels as badges */}
-                                            <div className="flex flex-col flex-wrap gap-1">
-                                                {tx.label_names ? (
-                                                    tx.label_names.map(
-                                                        (label, index) => (
-                                                            <span
-                                                                key={index}
-                                                                className="inline-flex rounded-full bg-blue-100 px-2 text-xs font-medium text-blue-800 w-fit"
-                                                            >
-                                                                {label}
-                                                            </span>
-                                                        ),
-                                                    )
-                                                ) : (
-                                                    <span>
-                                                        {metadataLabels[
-                                                            tx.metadata_label
-                                                        ] || 'Unknown'}
-                                                    </span>
-                                                )}
-                                            </div>
-                                        </td>
-                                        <td className="px-6 py-4 whitespace-nowrap">
-                                            <span
-                                                className={`inline-flex rounded-full px-2 text-xs leading-5 font-semibold ${
-                                                    tx.is_valid
-                                                        ? 'bg-green-100 text-green-800'
-                                                        : 'bg-red-100 text-red-800'
-                                                }`}
-                                            >
-                                                {tx.is_valid
-                                                    ? 'Valid'
-                                                    : 'Invalid'}
-                                            </span>
-                                        </td>
-                                        <td className="text-content px-6 py-4 text-sm whitespace-nowrap">
-                                            <Link
-                                                href={`/catalyst-txns/${tx.id}`}
-                                                className="text-indigo-600 hover:text-indigo-900"
-                                            >
-                                                View Details
-                                            </Link>
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
+                        <section className="w-full mb-4">
+                            <SearchControls
+                                sortOptions={TransactionSortOptions()}
+                                onFiltersToggle={setShowFilters}
+                                searchPlaceholder={t('transactions.searchBar.placeholder')}
+                            />
+                        </section>
 
-                        {/* Pagination */}
-                        {transactions.last_page > 1 && (
-                            <div className="mt-4 flex items-center justify-between border-t border-gray-200 px-4 py-3 sm:px-6">
-                                <div className="flex flex-1 justify-between sm:hidden">
-                                    <Link
-                                        href={
-                                            transactions.links[0].url ||
-                                            ''
-                                        }
-                                        className={`relative inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 ${!transactions.links[0].url ? 'cursor-not-allowed opacity-50' : 'hover:bg-gray-50'}`}
-                                        preserveScroll
-                                    >
-                                        Previous
-                                    </Link>
-                                    <Link
-                                        href={
-                                            transactions.links[
-                                                transactions.links
-                                                    .length - 1
-                                            ].url || ''
-                                        }
-                                        className={`relative ml-3 inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 ${!transactions.links[transactions.links.length - 1].url ? 'cursor-not-allowed opacity-50' : 'hover:bg-gray-50'}`}
-                                        preserveScroll
-                                    >
-                                        Next
-                                    </Link>
-                                </div>
-                                <div className="hidden sm:flex sm:flex-1 sm:items-center sm:justify-between">
-                                    <div>
-                                        <p className="text-content text-sm">
-                                            Showing{' '}
-                                            <span className="font-medium">
-                                                {transactions.from}
-                                            </span>{' '}
-                                            to{' '}
-                                            <span className="font-medium">
-                                                {transactions.to}
-                                            </span>{' '}
-                                            of{' '}
-                                            <span className="font-medium">
-                                                {transactions.total}
-                                            </span>{' '}
-                                            results
-                                        </p>
-                                    </div>
-                                    <div>
-                                        <nav
-                                            className="isolate inline-flex -space-x-px rounded-md shadow-sm"
-                                            aria-label="Pagination"
-                                        >
-                                            {transactions.links.map(
-                                                (link, index) => {
-                                                    if (
-                                                        index === 0 ||
-                                                        index ===
-                                                            transactions
-                                                                .links.length -
-                                                                1
-                                                    ) {
-                                                        return null;
-                                                    }
-
-                                                    return (
-                                                        <Link
-                                                            key={index}
-                                                            href={
-                                                                link.url || ''
-                                                            }
-                                                            className={`relative inline-flex items-center px-4 py-2 text-sm font-medium ${
-                                                                link.active
-                                                                    ? 'z-10 bg-indigo-600 text-white focus:z-20'
-                                                                    : 'bg-white text-gray-500 hover:bg-gray-50 focus:z-20'
-                                                            } ${!link.url ? 'cursor-not-allowed opacity-50' : ''}`}
-                                                            preserveScroll
-                                                            dangerouslySetInnerHTML={{
-                                                                __html: link.label,
-                                                            }}
-                                                        />
-                                                    );
-                                                },
-                                            )}
-                                        </nav>
-                                    </div>
-                                </div>
+                        <div className="overflow-hidden border border-background-lighter rounded-lg">
+                            <CardanoTransactionTable transactions={transactions?.data ?? []} />
+                            <div className="w-full flex items-center justify-center">
+                                {transactions && <Paginator pagination={transactions} />}
                             </div>
-                        )}
+                        </div>
                     </div>
                 </div>
             </div>
-        </>
+        </FiltersProvider>
     );
 }

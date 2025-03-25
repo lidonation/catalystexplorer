@@ -78,8 +78,25 @@ Route::localized(
             Route::get('/', [CommunityController::class, 'index'])
                 ->name('index');
 
-            Route::get('/{community:slug}', [CommunityController::class, 'community'])
-                ->name('group');
+            Route::prefix('/{community:slug}')->group(function () {
+                Route::get('/', [CommunityController::class, 'show'])
+                    ->name('show');
+
+                Route::get('/dashboard', [CommunityController::class, 'show'])
+                    ->name('dashboard');
+
+                Route::get('/proposals', [CommunityController::class, 'show'])
+                    ->name('proposals');
+
+                Route::get('/members', [CommunityController::class, 'show'])
+                    ->name('members');
+                    
+                Route::get('/groups', [CommunityController::class, 'show'])
+                    ->name('groups');
+
+                Route::get('/events', [CommunityController::class, 'show'])
+                    ->name('events');    
+            });
         });
 
         Route::prefix('connections')->as('connections.')->group(function () {
@@ -195,7 +212,7 @@ Route::localized(
             Route::prefix('/transactions')->as('transactions.')->group(function () {
                 Route::get('/', [TransactionController::class, 'index'])
                     ->name('index');
-                Route::get('/{catalystTransaction}', [TransactionController::class, 'show'])
+                Route::get('/{txHash}', [TransactionController::class, 'show'])
                     ->name('show');
             });
         });

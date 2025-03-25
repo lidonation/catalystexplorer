@@ -87,7 +87,6 @@
     "support": "Support",
     "seeAll": "See All",
     "terms": "Terms",
-    "transactions":"Transactions",
     "twitter": "Twitter",
     "votes": "My Votes",
     "voters":"Voters",
@@ -124,6 +123,7 @@
     "nftPaymentGatewayTitle": "NFT-MAKER PRO Payment Gateway",
     "artistRole": "Artist",
     "cantFindNFTForMint": "Can't find NFT for mint",
+    "copyToClipboard": "Copy to clipboard",
     "workflows": {
         "claimIdeascale": {
             "selectProfile": "Select Profile",
@@ -465,12 +465,42 @@
         "communities": "Communities",
         "title": "Catalyst Communities",
         "subtitle": "Diverse, independent, and together inspiring the highest level of human collaboration",
+        "proposalSummary": "Proposals Summary",
+        "totalRequested":"Total Requested",
+        "proposers": "Proposers",
+        "collaborators": "Collaborators",
+        "totalAmountAwarded" : "Total Amount Awarded",
+        "totalAmountDistributed" : "Total Amount Distributed",
+        "totalAmountRemaining" : "Total Amount Remaining",
+        "totalAwarded": "Total Amount of ADA & USD Awarded",
+        "totalDistributed": "Total Amount of ADA & USD Distributed",
+        "totalRemained": "Total Amount of ADA & USD Remaining",
+        "amountAwardedUsd": "Amount Awarded USD",
+        "amountAwardedAda": "Amount Awarded ADA",
+        "amountAwarded": "Amount Awarded",
+        "amountDistributed": "Amount Distributed",
+        "amountRemaining": "Amount Remaining",
         "options": {
             "alphabetically": "Alphabetically: A to Z",
             "amountAwardedAdaDesc": "Amount Awarded ADA: High to Low",
             "amountAwardedAdaAsc": "Amount Awarded ADA: Low to High",
             "amountAwardedUsdDesc": "Amount Awarded USD: High to Low",
             "amountAwardedUsdAsc": "Amount Awarded USD: Low to High"
+        },
+        "tabs": {
+            "dashboard": "Dashboard",
+            "proposals": "Proposals",
+            "members": "Members",
+            "groups": "Groups",
+            "events": "Events"
+        },
+        "filters": {
+            "totalAdaAwarded": "Total Amount of ADA Awarded",
+            "totalUsdAwarded": "Total Amount of USD Awarded",
+            "totalAdaDistributed": "Total Amount of ADA Distributed",
+            "totalUsdDistributed": "Total Amount of USD Distributed",
+            "totalAdaRemaining": "Total Amount of ADA Remaining",
+            "totalUsdRemaining": "Total Amount of USD Remaining"
         }
     },
     "posts": {
@@ -569,6 +599,8 @@
         "title": "Completed Project NFTs",
         "subtitle": "Completed Project Catalyst project teams are invited to mint a celebratory NFT to mark your achievement and share it with the world!",
         "nowMinting": "Now minting",
+        "celebrateYourWork": "Celebrate your hard work",
+        "onCardanoMainnet": "on Cardano mainnet.",
         "communityFunded": "Community Members Funded",
         "projectsCompleted": "Projects Completed",
         "usdDistributed": "USD Distributed",
@@ -583,7 +615,10 @@
         "claimProfile": "Claim an Ideascale Profile",
         "unavailable": "Unavailable!",
         "reservedUntil": "Reserved until",
-        "paymentPending": "Payment Pending"
+        "paymentPending": "Payment Pending",
+        "mintCompletionNft": "Mint Completion NFT",
+        "projectComplete": "Project Complete?",
+        "timeForLaunchParty": "Time for a launch party!"
     },
     "profileWorkflow": {
         "sectionTitle": {
@@ -689,6 +724,39 @@
             "active": "Active",
             "inactive": "Inactive"
         }
+    },
+    "transactions": {
+        "title": "Transactions",
+        "pageTitle": "Catalyst On Chain Transactions",
+        "pageDescription": "Register your stake key to participate in staking, governance, and secure transactions on the Cardano network.",
+        "table": {
+            "viewDetails": "View details for transaction",
+            "copyTxHash": "Copy transaction hash",
+            "copyStakeAddress": "Copy stake address",
+            "copyBlockHash": "Copy block hash",
+            "hash": "Hash",
+            "stakeAddress": "Stake Address",
+            "epoch": "Epoch",
+            "block": "Block",
+            "actions": "Actions",
+            "view": "View",
+            "voterRegistration": "Voter Registration"
+        },
+        "options": {
+            "newestToOldest": "Newest to Oldest",
+            "oldestToNewest": "Oldest to Newest",
+            "blockAsc": "Block: Low to High",
+            "blockDesc": "Block: High to Low",
+            "epochAsc": "Epoch: Low to High",
+            "epochDesc": "Epoch: High to Low",
+            "amountHighToLow": "Amount: High to Low",
+            "amountLowToHigh": "Amount: Low to High",
+            "weightHighToLow": "Weight: High to Low",
+            "weightLowToHigh": "Weight: Low to High"
+        },
+        "searchBar": {
+            "placeholder": "Search transaction hash, epoch, block"
+        }  
     },
     "wallet": {
         "connect": {

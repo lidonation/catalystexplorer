@@ -14,7 +14,6 @@
     "ccv4Votes": "Votes CCV4",
     "charts": "Graphiques",
     "comingSoon": "À venir",
-    "communities": "Communautés",
     "chooseMetaData": "Choisissez vos propres métadonnées",
     "cookies": "Cookies",
     "copyright": "© 2024 Explorateur Catalyst. Tous droits réservés.",
@@ -72,7 +71,6 @@
     "support": "Support",
     "seeAll": "Voir Tout",
     "terms": "Conditions Générales",
-    "transactions":"Transactions",
     "votes": "Mes Votes",
     "voters":"Électrices",
     "wallets": "Portefeuilles",
@@ -113,6 +111,7 @@
     "nftPaymentGatewayTitle": "Passerelle de paiement NFT-MAKER PRO",
     "artistRole": "Artiste",
     "cantFindNFTForMint": "Impossible de trouver le NFT à mint",
+    "copyToClipboard": "Copier dans le presse-papiers",
     "workflows": {
         "claimIdeascale": {
             "selectProfile": "Sélectionnez un profil",
@@ -259,6 +258,18 @@
     },
     "breadcrumbs": {
         "home": "Accueil"
+    },
+    "communities": {
+        "communities": "Communautés",
+        "title": "Catalyst Communautés",
+        "subtitle": "Diversifiés, indépendants et inspirant ensemble le plus haut niveau de collaboration humaine",
+        "options": {
+            "alphabetically": "Alphabétiquement: A to Z",
+            "amountAwardedAdaDesc": "Montant Accordé ada: plus élevé au plus bas",
+            "amountAwardedAdaAsc": "Montant Accordé ada: plus bas au plus élevé",
+            "amountAwardedUsdDesc": "Montant Accordé USD: plus élevé au plus bas",
+            "amountAwardedUsdAsc": "Montant Acordé USD: plus bas au plus élevé"
+        }
     },
     "dreps": {
         "dreps": "DReps",
@@ -474,6 +485,7 @@
             "amountAwardedUsdAsc": "Montant accordé en USD : faible à élevé"
         }
     },
+
     "posts": {
         "title": "Articles des Catalysts",
         "subtitle": "Dernières nouvelles et publications de notre communauté"
@@ -544,6 +556,8 @@
         "profile": "profil"
     },
     "completedProjectNfts": {
+        "celebrateYourWork": "Célébrez votre travail acharné",
+        "onCardanoMainnet": "sur le mainnet de Cardano.",
         "title": "NFT de projets terminés",
         "subtitle": "Les équipes de projets Project Catalyst terminées sont invitées à créer un NFT de célébration pour marquer votre réussite et le partager avec le monde !",
         "nowMinting": "En cours de création",
@@ -560,7 +574,10 @@
         "claimProfile": "Réclamer un autre profil",
         "Unavailable": "Indisponible!",
         "reservedUntil": "Réservé jusqu'à",
-        "paymentPending": "Paiement en attente"
+        "paymentPending": "Paiement en attente",
+        "mintCompletionNft": "NFT Mint Complete",
+        "projectComplete": "Projet terminé?",
+        "timeForLaunchParty": "C'est l'heure d'une soirée de lancement!"
     },
     "profileWorkflow": {
         "sectionTitle": {
@@ -629,6 +646,39 @@
             "connected": "Connected",
             "connecting": "Connecting",
             "disconnect": "Disconnect"
+        }
+    },
+    "transactions": {
+        "title": "Transactions",
+        "pageTitle": "Transactions On Chain Catalyst",
+        "pageDescription": "Enregistrez votre clé de participation pour participer au staking, à la gouvernance et aux transactions sécurisées sur le réseau Cardano.",
+        "table": {
+            "viewDetails": "Voir les détails de la transaction",
+            "copyTxHash": "Copier le hash de la transaction",
+            "copyStakeAddress": "Copier l'adresse de participation",
+            "copyBlockHash": "Copier le hash du bloc",
+            "hash": "Hash",
+            "stakeAddress": "Adresse de participation",
+            "epoch": "Époque",
+            "block": "Bloc",
+            "actions": "Actions",
+            "view": "Voir",
+            "voterRegistration": "Enregistrement des électeurs"
+        },
+        "options": {
+            "newestToOldest": "Du plus récent au plus ancien",
+            "oldestToNewest": "Du plus ancien au plus récent",
+            "blockAsc": "Bloc : Du plus bas au plus élevé",
+            "blockDesc": "Bloc : Du plus élevé au plus bas",
+            "epochAsc": "Époque : Du plus bas au plus élevé",
+            "epochDesc": "Époque : Du plus élevé au plus bas",
+            "amountHighToLow": "Montant : Du plus élevé au plus bas",
+            "amountLowToHigh": "Montant : Du plus bas au plus élevé",
+            "weightHighToLow": "Poids : Du plus élevé au plus bas",
+            "weightLowToHigh": "Poids : Du plus bas au plus élevé"
+        },
+        "searchBar": {
+            "placeholder": "Rechercher un hash de transaction, une époque, un bloc"
         }
     }
 }
