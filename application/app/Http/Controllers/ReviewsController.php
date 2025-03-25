@@ -124,7 +124,7 @@ class ReviewsController extends Controller
             ]
         );
 
-        dd($pagination->toArray());
+        //        dd($pagination->toArray());
 
         return $pagination->toArray();
 

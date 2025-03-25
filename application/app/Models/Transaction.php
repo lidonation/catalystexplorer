@@ -107,7 +107,7 @@ class Transaction extends Model implements IHasMetaData
             'outputs' => $outputs->toArray(),
             'type' => $this->type ?? ($this->json_metadata->txType ?? 'unknown'),
             'transaction_date' => $this->created_at?->format('Y-m-d'),
-            'total_output' => $totalLovelace
+            'total_output' => $totalLovelace,
         ]);
     }
 
