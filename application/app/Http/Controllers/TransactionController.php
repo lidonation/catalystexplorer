@@ -49,8 +49,10 @@ class TransactionController
     /**
      * Display the specified resource.
      */
-    public function show(Transaction $catalystTransaction)
+    public function show($txHash)
     {
+        $catalystTransaction = Transaction::where('tx_hash', $txHash)->firstOrFail();
+
         $labels = [
             61284 => 'Catalyst voting registration',
             61285 => 'Catalyst voting submission',
@@ -66,7 +68,7 @@ class TransactionController
             ];
         })->toArray();
 
-        return Inertia::render('Transactions/TxDetail', [
+        return Inertia::render('Transactions/TransactionDetail', [
             'transaction' => $catalystTransaction,
             'metadataLabels' => $labelNames,
         ]);
