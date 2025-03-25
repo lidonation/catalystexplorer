@@ -196,7 +196,7 @@ function AppNavigation() {
                         return (
                             <li key={title}>
                                 <div>
-                                    <div 
+                                    <div
                                         className="flex items-center justify-between px-3 py-1 cursor-pointer text-sm text-dark transition-colors hover:bg-background-lighter"
                                         onClick={() => setJormungandrOpen(!jormungandrOpen)}
                                         role="button"
@@ -217,11 +217,11 @@ function AppNavigation() {
                                     </div>
 
                                     {jormungandrOpen && (
-                                        <div className="pl-8 bg-background rounded">
+                                        <div className="pl-6 bg-background">
                                             <NavLinkItem
                                                 href={useLocalizedRoute('jormungandr.transactions.index')}
                                                 title={t('Transactions')}
-                                                ariaLabel={`${t('transactions')} ${t('link')}`}
+                                                ariaLabel={`${t('transactions.title')} ${t('link')}`}
                                                 active={false}
                                             >
                                                 <span></span>
@@ -255,7 +255,7 @@ function AppNavigation() {
                         return (
                             <li key={title}>
                                 <div>
-                                    <div 
+                                    <div
                                         className="flex items-center justify-between px-3 py-1 cursor-pointer text-sm text-dark transition-colors hover:bg-background-lighter"
                                         onClick={() => setNumbersOpen(!numbersOpen)}
                                         role="button"
@@ -276,7 +276,7 @@ function AppNavigation() {
                                     </div>
 
                                     {numbersOpen && (
-                                        <div className="pl-8 bg-background rounded">
+                                        <div className="pl-6 bg-background rounded">
                                             <NavLinkItem
                                                 href="#"
                                                 title={t('Impact')}
@@ -314,7 +314,7 @@ function AppNavigation() {
                         return (
                             <li key={title}>
                                 <div>
-                                    <div 
+                                    <div
                                         className="flex items-center justify-between px-3 py-1 cursor-pointer text-sm text-dark transition-colors hover:bg-background-lighter"
                                         onClick={() => setMoreOpen(!moreOpen)}
                                         role="button"
@@ -335,7 +335,7 @@ function AppNavigation() {
                                     </div>
 
                                     {moreOpen && (
-                                        <div className="pl-8 bg-background shadow-md rounded-md">
+                                        <div className="pl-7 bg-background rounded-md">
                                             <NavLinkItem
                                                 href="#"
                                                 title="API"

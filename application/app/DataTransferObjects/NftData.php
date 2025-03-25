@@ -24,7 +24,7 @@ class NftData extends Data
         public string $description,
         public string $rarity,
         public string $status,
-        public array $metadata,
+        public NftMetaData $metadata,
         public ?Carbon $minted_at,
         public int $qty,
         public ?Carbon $created_at,

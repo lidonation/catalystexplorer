@@ -1,10 +1,10 @@
 import { ReviewCard } from './ReviewItem';
 import Paginator from '@/Components/Paginator';
 import { PaginatedData } from '../../types/paginated-data';
-import {ReviewItem} from "@/types/review-item";
+import ReviewData = App.DataTransferObjects.ReviewData;
 
 export interface ReviewListProps {
-    reviews: PaginatedData<ReviewItem[]>;
+    reviews: PaginatedData<ReviewData[]>;
     className?: string;
 }
 
@@ -15,7 +15,7 @@ export const ReviewList: React.FC<ReviewListProps> = ({
     return (
         <div className={`space-y-6 ${className}`}>
             {reviews?.data?.map((review) => (
-                <ReviewCard key={review.review?.hash} review={review} />
+                <ReviewCard key={review?.hash} review={review} />
             ))}
 
             {/* Pagination */}

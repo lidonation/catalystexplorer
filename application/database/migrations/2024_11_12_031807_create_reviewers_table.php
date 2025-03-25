@@ -11,11 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-
-        Schema::table('reviews', function (Blueprint $table) {
+        Schema::create('reviewers', function (Blueprint $table) {
+            $table->id();
+            $table->timestamps();
+            $table->char('catalyst_reviewer_id');
+            $table->foreignId('claimed_by_id')->nullable()->constrained('users');
             $table->softDeletes();
-            $table->dropColumn('user_id')->cascade();
-            $table->foreignId('user_id')->nullable();
         });
     }
 
@@ -24,8 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('reviews', function (Blueprint $table) {
-            $table->dropColumn('deleted_at');
-        });
+        Schema::dropIfExists('reviewers');
     }
 };

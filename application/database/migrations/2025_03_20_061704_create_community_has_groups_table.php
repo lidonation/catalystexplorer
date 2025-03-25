@@ -11,11 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('reviewers', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
-            $table->char('reviewer_id');
-            $table->softDeletes();
+        Schema::create('community_has_groups', function (Blueprint $table) {
+            $table->foreignId('community_id')->constrained()->onDelete('cascade');
+            $table->foreignId('group_id')->constrained()->onDelete('cascade');
         });
     }
 
@@ -24,6 +22,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('reviewers');
+        Schema::dropIfExists('community_has_groups');
     }
 };

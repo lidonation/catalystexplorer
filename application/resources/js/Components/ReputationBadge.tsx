@@ -3,10 +3,10 @@ import { ReputationTier } from '@/enums/reputation-tier-enums';
 import Paragraph from './atoms/Paragraph';
 import ToolTipHover from './ToolTipHover';
 import { useTranslation } from 'react-i18next';
-import {ReviewItem} from "@/types/review-item";
+import ReviewData = App.DataTransferObjects.ReviewData;
 
 export interface ReputationBadgeProps {
-    review: ReviewItem;
+    review: ReviewData;
     className?: string;
 }
 
@@ -17,11 +17,11 @@ export const ReputationBadge: React.FC<ReputationBadgeProps> = ({
     const { t } = useTranslation();
     const [showTooltip, setShowTooltip] = useState(false);
 
-    if (!review.reputationScores || review.reputationScores.length === 0) {
+    if (!review?.reviewer?.reputation_scores || review?.reviewer?.reputation_scores.length === 0) {
         return null;
     }
 
-    const finalScore = review.reputationScores[0].score;
+    const finalScore = review?.reviewer?.reputation_scores[0].score;
 
     const getTier = (score: number) => {
         if (score >= ReputationTier.GOOD_MARK) return ReputationTier.GOOD;
