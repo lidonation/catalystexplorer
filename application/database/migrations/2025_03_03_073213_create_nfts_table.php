@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 use App\Enums\CatalystCurrencies;
-use App\Enums\StatusEnum;
+use App\Enums\NftStatusEnum;
 
 return new class extends Migration
 {
@@ -26,7 +26,7 @@ return new class extends Migration
             $table->text('owner_address')->nullable();
             $table->json('description')->nullable();
             $table->text('rarity')->nullable();
-            $table->enum('status', StatusEnum::toArray())->default(StatusEnum::published()->value);
+            $table->enum('status', NftStatusEnum::toArray())->default(NftStatusEnum::minted()->value);
             $table->decimal('price', 20, 6)->nullable();
             $table->text('currency', CatalystCurrencies::values())->nullable();
             $table->json('metadata')->nullable();
