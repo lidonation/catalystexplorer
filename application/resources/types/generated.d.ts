@@ -333,6 +333,8 @@ metas: Array<any>;
 };
 export type NftMetaData = {
 campaign_name: string;
+fundedProjectNumber: string;
+projectTitle: string;
 yes_votes: string;
 no_votes: string;
 role: string;
