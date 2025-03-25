@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\DataTransferObjects;
 
-use App\Models\Rating;
 use Spatie\LaravelData\Data;
 use Spatie\TypeScriptTransformer\Attributes\Optional as TypeScriptOptional;
 use Spatie\TypeScriptTransformer\Attributes\TypeScript;
@@ -19,15 +18,15 @@ class ReviewData extends Data
         public ?int $parent_id,
 
         #[TypeScriptOptional]
-        public string $title,
+        public ?string $title,
 
-        public string $content,
+        public ?string $content,
 
         public ?string $status,
 
-        public Rating $rating,
+        public ?int $rating,
 
-        public ReviewerData $reviewer,
+        public ?ReviewerData $reviewer,
 
         public ?string $type,
 

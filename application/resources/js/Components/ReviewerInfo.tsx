@@ -27,16 +27,16 @@ export const ReviewerInfo: React.FC<ReviewerInfoProps> = ({
                 ) : (
                     <div className="flex items-center">
                         <Paragraph className="font-bold text-content mr-2">
-                            #{review?.reviewer.catalyst_reviewer_id}
+                            #{review?.reviewer?.catalyst_reviewer_id}
                         </Paragraph>
                     </div>
                 )}
                 <Paragraph className="text-gray-persist text-sm">
-                    {review?.reviewer.reviews_count} {t('reviews')}
+                    {review?.reviewer?.reviews_count} {t('reviews')}
                 </Paragraph>
             </div>
 
-            {!review?.reviewer.claimed_by && (
+            {!review?.reviewer?.claimed_by && (
                 <div className="ml-4">
                     <Button
                         className="bg-primary hover:bg-primary-dark text-light-persist rounded-xl px-4 py-2 transition-colors"
