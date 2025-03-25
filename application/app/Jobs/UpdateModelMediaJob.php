@@ -11,6 +11,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\Middleware\RateLimited;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Http;
 use Spatie\MediaLibrary\MediaCollections\Exceptions\UnreachableUrl;
 
 class UpdateModelMediaJob implements ShouldQueue
@@ -42,15 +43,41 @@ class UpdateModelMediaJob implements ShouldQueue
     public function updateModelMedia($image_url): void
     {
         try {
-            if ($this->collectionName) {
-                $this->model->addMediaFromUrl($image_url)
-                    ->toMediaCollection($this->collectionName);
+            if (! filter_var($image_url, FILTER_VALIDATE_URL)) {
+                throw new \Exception('Invalid URL provided.');
             }
 
-            $this->model->addMediaFromUrl($image_url);
+            $response = Http::head($image_url);
+
+            if (! $response->successful()) {
+                throw new \Exception('URL is not reachable.');
+            }
+
+            $contentType = $response->header('Content-Type');
+
+            if (! str_starts_with($contentType, 'image/')) {
+                throw new \Exception('The URL does not point to a valid media file.');
+            }
+
+            if ($this->model->getMedia($this->collectionName)->where('file_name', basename($image_url))->isNotEmpty()) {
+                throw new \Exception('Media already exists in the collection.');
+            }
+
+            $this->model->addMediaFromUrl($image_url)->toMediaCollection($this->collectionName);
+
         } catch (UnreachableUrl $exception) {
             report($exception);
+        } catch (\Exception $exception) {
+            report($exception);
         }
+    }
+
+    private function isValidMediaUrl(string $url): bool
+    {
+        $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'mp4', 'mov'];
+        $pathInfo = pathinfo(parse_url($url, PHP_URL_PATH));
+
+        return isset($pathInfo['extension']) && in_array(strtolower($pathInfo['extension']), $allowedExtensions);
     }
 
     public function middleware()
