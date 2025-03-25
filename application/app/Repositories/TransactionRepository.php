@@ -30,7 +30,7 @@ class TransactionRepository extends Repository
                     'type',
                     'created_at',
                     'transaction_date',
-                    'total_ada_output',
+                    'total_output',
                     'inputs',
                     'outputs',
                     'json_metadata',
