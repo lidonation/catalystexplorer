@@ -27,7 +27,7 @@ const TransactionRow: React.FC<TransactionRowProps> = ({
   const { t } = useTranslation();
   
   const localizedRoute = useLocalizedRoute('jormungandr.transactions.show', {
-    Transaction: transaction?.hash,
+    txHash: transaction?.tx_hash,
   });
 
   const handleViewDetails = () => {

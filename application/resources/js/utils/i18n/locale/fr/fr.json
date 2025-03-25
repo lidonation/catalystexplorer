@@ -71,7 +71,6 @@
     "support": "Support",
     "seeAll": "Voir Tout",
     "terms": "Conditions Générales",
-    "transactions":"Transactions",
     "votes": "Mes Votes",
     "voters":"Électrices",
     "wallets": "Portefeuilles",
@@ -112,6 +111,7 @@
     "nftPaymentGatewayTitle": "Passerelle de paiement NFT-MAKER PRO",
     "artistRole": "Artiste",
     "cantFindNFTForMint": "Impossible de trouver le NFT à mint",
+    "copyToClipboard": "Copier dans le presse-papiers",
     "workflows": {
         "claimIdeascale": {
             "selectProfile": "Sélectionnez un profil",
@@ -646,6 +646,39 @@
             "connected": "Connected",
             "connecting": "Connecting",
             "disconnect": "Disconnect"
+        }
+    },
+    "transactions": {
+        "title": "Transactions",
+        "pageTitle": "Transactions On Chain Catalyst",
+        "pageDescription": "Enregistrez votre clé de participation pour participer au staking, à la gouvernance et aux transactions sécurisées sur le réseau Cardano.",
+        "table": {
+            "viewDetails": "Voir les détails de la transaction",
+            "copyTxHash": "Copier le hash de la transaction",
+            "copyStakeAddress": "Copier l'adresse de participation",
+            "copyBlockHash": "Copier le hash du bloc",
+            "hash": "Hash",
+            "stakeAddress": "Adresse de participation",
+            "epoch": "Époque",
+            "block": "Bloc",
+            "actions": "Actions",
+            "view": "Voir",
+            "voterRegistration": "Enregistrement des électeurs"
+        },
+        "options": {
+            "newestToOldest": "Du plus récent au plus ancien",
+            "oldestToNewest": "Du plus ancien au plus récent",
+            "blockAsc": "Bloc : Du plus bas au plus élevé",
+            "blockDesc": "Bloc : Du plus élevé au plus bas",
+            "epochAsc": "Époque : Du plus bas au plus élevé",
+            "epochDesc": "Époque : Du plus élevé au plus bas",
+            "amountHighToLow": "Montant : Du plus élevé au plus bas",
+            "amountLowToHigh": "Montant : Du plus bas au plus élevé",
+            "weightHighToLow": "Poids : Du plus élevé au plus bas",
+            "weightLowToHigh": "Poids : Du plus bas au plus élevé"
+        },
+        "searchBar": {
+            "placeholder": "Rechercher un hash de transaction, une époque, un bloc"
         }
     }
 }
