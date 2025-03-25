@@ -85,11 +85,11 @@ const MetaData = ({ nft, isOwner }: MetaDataProps) => {
           if (meta.campaign_name && !values.campaignName) 
             values.campaignName = meta.campaign_name;
             
-          if (meta['Funded Project Number'] && !values.projectNumber) 
-            values.projectNumber = meta['Funded Project Number'].toString();
+          if (meta.fundedProjectNumber && !values.projectNumber) 
+            values.projectNumber = meta.fundedProjectNumber.toString();
             
-          if (meta['Project Title'] && !values.projectTitle) 
-            values.projectTitle = meta['Project Title'];
+          if (meta.projectTitle && !values.projectTitle) 
+            values.projectTitle = meta.projectTitle;
             
           if (meta.yes_votes && !values.yesVotes) 
             values.yesVotes = meta.yes_votes.toString();
