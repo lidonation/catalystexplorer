@@ -30,11 +30,11 @@ const TransactionSortOptions = () => {
         },
         {
             label: t('transactions.options.amountHighToLow'),
-            value: 'total_ada_output:desc',
+            value: 'total_output:desc',
         },
         {
             label: t('transactions.options.amountLowToHigh'),
-            value: 'total_ada_output:asc',
+            value: 'total_output:asc',
         },
         {
             label: t('transactions.options.weightHighToLow'),

@@ -123,6 +123,7 @@
     "nftPaymentGatewayTitle": "NFT-MAKER PRO Payment Gateway",
     "artistRole": "Artist",
     "cantFindNFTForMint": "Can't find NFT for mint",
+    "copyToClipboard": "Copy to clipboard",
     "workflows": {
         "claimIdeascale": {
             "selectProfile": "Select Profile",
@@ -739,8 +740,7 @@
             "block": "Block",
             "actions": "Actions",
             "view": "View",
-            "voterRegistration": "Voter Registration",
-            "copyToClipboard": "Copy to clipboard" 
+            "voterRegistration": "Voter Registration"
         },
         "options": {
             "newestToOldest": "Newest to Oldest",

@@ -92,9 +92,13 @@ const Index: React.FC<CommunitiesPageProps> = ({
                             <CommunitiesList communities={communities} />
                         </WhenVisible>
                     </section>
-                    <section className="container w-full py-8">
-                        {communities && <Paginator pagination={communities} />}
-                    </section>
+                    {communities && communities.total > 0 && (
+                        <section className="container w-full py-8">
+                            {communities && (
+                                <Paginator pagination={communities} />
+                            )}
+                        </section>
+                    )}
                 </FiltersProvider>
             </ListProvider>
         </>
