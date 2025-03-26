@@ -13,7 +13,6 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Facades\Artisan;
-use Illuminate\Support\Facades\Log;
 use Laravel\Scout\Searchable;
 
 class Community extends Model
@@ -89,25 +88,6 @@ class Community extends Model
             ->whereNull('funded_at');
     }
 
-    public function own_proposals(): BelongsToMany
-    {
-        return $this->proposals()
-            ->whereIn('user_id', $this->ideascale_profiles()->pluck('id'))
-            ->where('type', 'proposal');
-    }
-
-    public function collaborating_proposals(): BelongsToMany
-    {
-        return $this->proposals()
-            ->whereIn('id', function ($query) {
-                $query->select('proposal_id')
-                    ->from('ideascale_profile_has_proposal')
-                    ->whereIn('ideascale_profile_id', $this->ideascale_profiles()->pluck('id'));
-            })
-            ->whereNotIn('user_id', $this->ideascale_profiles()->pluck('id'))
-            ->where('type', 'proposal');
-    }
-
     public function amountAwardedAda(): Attribute
     {
         return Attribute::make(
@@ -124,15 +104,10 @@ class Community extends Model
     {
         return Attribute::make(
             get: function () {
-                $amount = $this->funded_proposals()
+                return $this->funded_proposals()
                     ->whereHas('fund', function ($q) {
                         $q->where('currency', CatalystCurrencySymbols::USD->name);
                     })->sum('amount_requested');
-
-                // Log the retrieved amount
-                Log::info("Amount awarded in USD for Proposal ID {$this->id}: {$amount}");
-
-                return $amount;
             },
         );
     }
@@ -164,14 +139,18 @@ class Community extends Model
     public function ideascale_profiles(): Builder
     {
         return IdeascaleProfile::whereHas('proposals', function ($query) {
-            $query->whereIn('proposals.id', $this->proposals()->pluck('id'));
+            $query->whereHas('communities', function ($q) {
+                $q->where('communities.id', $this->id);
+            });
         });
     }
 
     public function groups(): Builder
     {
         return Group::whereHas('proposals', function ($query) {
-            $query->whereIn('proposals.id', $this->proposals()->pluck('id'));
+            $query->whereHas('communities', function ($q) {
+                $q->where('communities.id', $this->id);
+            });
         });
     }
 }

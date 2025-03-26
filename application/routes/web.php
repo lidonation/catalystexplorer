@@ -19,7 +19,7 @@ use App\Http\Controllers\ProposalsController;
 use App\Http\Controllers\VoterToolController;
 use App\Http\Controllers\JormungandrController;
 use App\Http\Controllers\TransactionController;
-use App\Http\Controllers\Api\CommunityController;
+use App\Http\Controllers\CommunityController;
 use App\Http\Controllers\IdeascaleProfilesController;
 use App\Http\Controllers\ClaimIdeascaleProfileContoller;
 use App\Http\Controllers\CompletetProjectNftsController;
