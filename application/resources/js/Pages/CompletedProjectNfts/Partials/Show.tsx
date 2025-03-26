@@ -42,20 +42,22 @@ const Show = ({
         <Head title={t('completedProjectNfts.title')} />
         
         <div className="py-8">
-          <div className="mb-8">
+          <div className="mb-8 ml-12">
             <Title level='1'>{proposal.title}</Title>
           </div>
 
           {nft === null ? (
-            <RecordsNotFound context="proposals" />
+            <div className="mb-8 ml-12">
+             <RecordsNotFound context="proposals" />
+            </div>
           ) : (
             <>
               <div className="mt-8 grid grid-cols-1 md:grid-cols-12 gap-8">
-                <div className="md:col-span-4">
+                <div className="md:col-span-4 ml-12">
                   <BlockchainData nft={nft} metadata={metadata}/>
                 </div>
 
-                <div className="md:col-span-8 space-y-8">
+                <div className="md:col-span-8 space-y-8 mr-12">
                   <div>
                     <MetaDataPreview 
                       ideascaleProfiles={ideascaleProfiles} 
@@ -71,7 +73,7 @@ const Show = ({
                 </div>
               </div>
 
-              <div className="py-4">
+              <div className="py-4 ml-12 mr-12">
                 <ContributorProfile contributorProfiles={contributorProfiles} author={author} isOwner={isOwner} />
               </div>
             </>
