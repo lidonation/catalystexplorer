@@ -140,6 +140,7 @@
         "contactEmail": "support@lidonation.com",
         "appLogoAlt": "Logo de Catalyst Explore."
     },
+
     "buttons": {
         "titles": {
             "claim": "Bouton de réclamation",
@@ -258,18 +259,6 @@
     },
     "breadcrumbs": {
         "home": "Accueil"
-    },
-    "communities": {
-        "communities": "Communautés",
-        "title": "Catalyst Communautés",
-        "subtitle": "Diversifiés, indépendants et inspirant ensemble le plus haut niveau de collaboration humaine",
-        "options": {
-            "alphabetically": "Alphabétiquement: A to Z",
-            "amountAwardedAdaDesc": "Montant Accordé ada: plus élevé au plus bas",
-            "amountAwardedAdaAsc": "Montant Accordé ada: plus bas au plus élevé",
-            "amountAwardedUsdDesc": "Montant Accordé USD: plus élevé au plus bas",
-            "amountAwardedUsdAsc": "Montant Acordé USD: plus bas au plus élevé"
-        }
     },
     "dreps": {
         "dreps": "DReps",
@@ -485,7 +474,48 @@
             "amountAwardedUsdAsc": "Montant accordé en USD : faible à élevé"
         }
     },
-
+    "communities": {
+        "communities": "Communautés",
+        "title": "Communautés Catalyst",
+        "subtitle": "Diverses, indépendantes et ensemble inspirant le plus haut niveau de collaboration humaine",
+        "proposalSummary": "Résumé des propositions",
+        "totalRequested": "Total demandé",
+        "proposers": "Proposants",
+        "collaborators": "Collaborateurs",
+        "totalAmountAwarded": "Montant total attribué",
+        "totalAmountDistributed": "Montant total distribué",
+        "totalAmountRemaining": "Montant total restant",
+        "totalAwarded": "Montant total d'ADA et USD attribué",
+        "totalDistributed": "Montant total d'ADA et USD distribué",
+        "totalRemained": "Montant total d'ADA et USD restant",
+        "amountAwardedUsd": "Montant attribué en USD",
+        "amountAwardedAda": "Montant attribué en ADA",
+        "amountAwarded": "Montant attribué",
+        "amountDistributed": "Montant distribué",
+        "amountRemaining": "Montant restant",
+        "options": {
+            "alphabetically": "Alphabétiquement : A à Z",
+            "amountAwardedAdaDesc": "Montant attribué en ADA : Du plus élevé au plus bas",
+            "amountAwardedAdaAsc": "Montant attribué en ADA : Du plus bas au plus élevé",
+            "amountAwardedUsdDesc": "Montant attribué en USD : Du plus élevé au plus bas",
+            "amountAwardedUsdAsc": "Montant attribué en USD : Du plus bas au plus élevé"
+        },
+        "tabs": {
+            "dashboard": "Tableau de bord",
+            "proposals": "Propositions",
+            "members": "Membres",
+            "groups": "Groupes",
+            "events": "Événements"
+        },
+        "filters": {
+            "totalAdaAwarded": "Montant total d'ADA attribué",
+            "totalUsdAwarded": "Montant total d'USD attribué",
+            "totalAdaDistributed": "Montant total d'ADA distribué",
+            "totalUsdDistributed": "Montant total d'USD distribué",
+            "totalAdaRemaining": "Montant total d'ADA restant",
+            "totalUsdRemaining": "Montant total d'USD restant"
+        }
+    },
     "posts": {
         "title": "Articles des Catalysts",
         "subtitle": "Dernières nouvelles et publications de notre communauté"
@@ -548,6 +578,13 @@
             "ada": "Icône Ada",
             "usd": "Icône USD"
         }
+    },
+    "segments": {
+        "completed": "Terminé",
+        "unfunded": "Non financé",
+        "funded": "Financé",
+        "ownProposals": "Propositions personnelles",
+        "collaboratingProposals": "Propositions collaboratives"
     },
     "users": {
         "editProfile": "modifier le profil",
