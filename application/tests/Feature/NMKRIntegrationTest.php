@@ -114,7 +114,6 @@ class NMKRIntegrationTest extends TestCase
                     $nft->name => [
                         "name" => $updatedName,
                         "description" => $updatedDescription,
-                        // Include other required fields
                         "image" => "ipfs://QmQfXRk7gy2WYx5y23XRb6CLZwF3LRoiSQ2vr2DY9oLPYJ",
                         "mediaType" => "image/png"
                     ]
