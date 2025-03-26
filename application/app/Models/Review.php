@@ -105,7 +105,7 @@ class Review extends Model
             'discussion' => $this->discussion?->toArray(),
             'parent' => $this->parent?->toArray(),
             'children' => $this->children,
-            'rating' => $this->rating->rating,
+            'rating' => $this->rating?->rating,
             'reviewer' => $this->reviewer,
         ]);
     }
