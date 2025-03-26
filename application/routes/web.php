@@ -1,30 +1,32 @@
 <?php
 
+use App\Http\Controllers\BookmarksController;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\NftController;
 use App\Http\Controllers\DrepController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\FundsController;
+use App\Http\Controllers\ChartsController;
 use App\Http\Controllers\GroupsController;
 use App\Http\Controllers\SearchController;
-use App\Http\Controllers\NumbersController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ReviewsController;
 use App\Http\Middleware\WorkflowMiddleware;
 use App\Http\Controllers\WorkflowController;
-use App\Http\Controllers\BookmarksController;
 use App\Http\Controllers\CampaignsController;
 use App\Http\Controllers\MilestoneController;
 use App\Http\Controllers\ProposalsController;
 use App\Http\Controllers\VoterToolController;
-use App\Http\Controllers\ConnectionsController;
 use App\Http\Controllers\JormungandrController;
 use App\Http\Controllers\TransactionController;
-use App\Http\Controllers\Api\CommunityController;
+use App\Http\Controllers\CommunityController;
 use App\Http\Controllers\IdeascaleProfilesController;
+use App\Http\Controllers\ClaimIdeascaleProfileContoller;
 use App\Http\Controllers\CompletetProjectNftsController;
 use App\Http\Controllers\ClaimIdeascaleProfileController;
+use App\Http\Controllers\ConnectionsController;
+use App\Http\Controllers\NumbersController;
 
 Route::localized(
     function () {
@@ -90,12 +92,12 @@ Route::localized(
 
                 Route::get('/members', [CommunityController::class, 'show'])
                     ->name('members');
-                    
+
                 Route::get('/groups', [CommunityController::class, 'show'])
                     ->name('groups');
 
                 Route::get('/events', [CommunityController::class, 'show'])
-                    ->name('events');    
+                    ->name('events');
             });
         });
 
@@ -103,7 +105,6 @@ Route::localized(
             Route::get('/', [ConnectionsController::class, 'index'])
                 ->name('index');
         });
-
 
         Route::prefix('/workflows')->as('workflows.')->group(function () {
 
@@ -119,8 +120,6 @@ Route::localized(
                 ->group(function () {
                     Route::get('/{step}', [ClaimIdeascaleProfileController::class, 'handleStep'])
                         ->name('index');
-                    Route::post('/{ideascaleProfile}/claim', [ClaimIdeascaleProfileController::class, 'claimIdeascaleProfile'])
-                        ->name('saveClaim');
                 });
 
             Route::get('/login', [WorkflowController::class, 'auth'])
@@ -128,6 +127,7 @@ Route::localized(
             Route::post('/login', [WorkflowController::class, 'login'])
                 ->name('login');
         });
+
 
         Route::patch('/profile/update/{field}', [ProfileController::class, 'update'])
             ->name('profile.update.field');
@@ -190,6 +190,10 @@ Route::localized(
                 ->name('index');
         });
 
+
+        Route::get('/charts', [ChartsController::class, 'index'])
+            ->name('charts.index');
+
         Route::prefix('/completed-project-nfts')->as('completedProjectsNfts.')->group(
             function () {
                 Route::get('/', [CompletetProjectNftsController::class, 'index'])
@@ -212,7 +216,7 @@ Route::localized(
             Route::prefix('/transactions')->as('transactions.')->group(function () {
                 Route::get('/', [TransactionController::class, 'index'])
                     ->name('index');
-                Route::get('/{txHash}', [TransactionController::class, 'show'])
+                Route::get('/{catalystTransaction}', [TransactionController::class, 'show'])
                     ->name('show');
             });
         });
@@ -228,6 +232,7 @@ Route::localized(
             }
         );
 
+
         Route::get('/voter-tool', [VoterToolController::class, 'index'])
             ->name('voter-tool.index');
 
@@ -240,7 +245,6 @@ Route::localized(
                 ->name('index');
         });
     }
-
 );
 
 Route::get('/map', function () {
@@ -254,4 +258,3 @@ require __DIR__ . '/dashboard.php';
 require __DIR__ . '/api.php';
 
 Route::fallback(\CodeZero\LocalizedRoutes\Controllers\FallbackController::class);
-

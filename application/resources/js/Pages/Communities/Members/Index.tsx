@@ -11,14 +11,13 @@ import { useEffect } from 'react';
 interface DashboardPageProps {
     community: CommunityData;
    ideascaleProfiles: PaginatedData<IdeascaleProfileData[]>;
+   ownProposals: number;
+   collaboratingProposals: number;
 }
 
-export default function Proposals({ community, ideascaleProfiles }: DashboardPageProps) {
-    useEffect(()=>{
-        console.log(ideascaleProfiles)
-    })
+export default function Proposals({ community, ideascaleProfiles, ownProposals, collaboratingProposals}: DashboardPageProps) {
     return (
-        <CommunityLayout community={community}>
+        <CommunityLayout community={community} ownProposalsCount={ownProposals} coProposalsCount={collaboratingProposals}>
             <Head title={`${community?.title} - Members`} />
             <WhenVisible
                 data="ideascaleProfiles"

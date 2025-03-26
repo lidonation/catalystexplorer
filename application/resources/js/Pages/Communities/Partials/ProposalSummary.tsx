@@ -10,30 +10,30 @@ import CommunityData = App.DataTransferObjects.CommunityData;
 
 interface ProposalSummaryCardProps {
     community: CommunityData;
+    ownProposalsCount: number;
+    coProposalsCount: number;
 }
 
 export default function ProposalSummaryCard({
     community,
+    ownProposalsCount,
+    coProposalsCount
 }: ProposalSummaryCardProps) {
     const { t } = useTranslation();
 
-    useEffect(() => {
-        console.log(community?.completed_proposals_count);
-    });
-
     const segments = [
         {
-            label: 'Completed',
+            label: t('segments.completed'),
             color: 'bg-success',
             value: community?.completed_proposals_count,
         },
         {
-            label: 'Funded',
+            label: t('segments.funded'),
             color: 'bg-warning',
             value: community?.funded_proposals_count,
         },
         {
-            label: 'Unfunded',
+            label: t('segments.unfunded'),
             color: 'bg-primary',
             value: community?.proposals_count,
         },
@@ -60,12 +60,12 @@ export default function ProposalSummaryCard({
             <div>
                 <Paragraph className="flex items-center mb-1">
                     <span className='w-32'>{t('communities.proposers')}</span>
-                    <span className='font-bold'>{community?.own_proposals_count ?? 0}</span>
+                    <span className='font-bold'>{ownProposalsCount}</span>
                 </Paragraph>
 
                 <Paragraph className="flex items-center">
                     <span className='w-32'>{t('communities.collaborators')}</span>
-                    <span className='font-bold'>{community?.collaborating_proposals_count ?? 0}</span>
+                    <span className='font-bold'>{coProposalsCount}</span>
                 </Paragraph>
             </div>
         </Card>

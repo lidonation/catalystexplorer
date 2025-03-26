@@ -9,6 +9,8 @@ interface DashboardPageProps {
     amountAwardedChartData: Array<any>;
     amountDistributedChartData: Array<any>;
     amountRemainingChartData: Array<any>;
+    ownProposals: number;
+    collaboratingProposals: number;
 }
 
 export default function Proposals({
@@ -16,6 +18,8 @@ export default function Proposals({
     amountAwardedChartData,
     amountDistributedChartData,
     amountRemainingChartData,
+    ownProposals,
+    collaboratingProposals,
 }: DashboardPageProps) {
     const { t } = useTranslation();
     const awardedFilterOptions = [
@@ -32,7 +36,7 @@ export default function Proposals({
             ? [
                   {
                       id: 'USD',
-                      value:'USD',
+                      value: 'USD',
                       label: t('communities.filters.totalUsdAwarded'),
                   },
               ]
@@ -53,7 +57,7 @@ export default function Proposals({
             ? [
                   {
                       id: 'USD',
-                      value:'USD',
+                      value: 'USD',
                       label: t('communities.filters.totalUsdDistributed'),
                   },
               ]
@@ -73,7 +77,7 @@ export default function Proposals({
             ? [
                   {
                       id: 'USD',
-                      value:'USD',
+                      value: 'USD',
                       label: t('communities.filters.totalUsdRemaining'),
                   },
               ]
@@ -81,7 +85,11 @@ export default function Proposals({
     ];
 
     return (
-        <CommunityLayout community={community}>
+        <CommunityLayout
+            community={community}
+            ownProposalsCount={ownProposals}
+            coProposalsCount={collaboratingProposals}
+        >
             <Head title={`${community?.title} - Dashboard`} />
             <div className="grid grid-cols-1 gap-4">
                 <CommunityFundingChart
