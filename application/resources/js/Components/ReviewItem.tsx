@@ -1,32 +1,37 @@
-import { ReviewItem } from '@/Pages/IdeascaleProfile/Reviews/Index';
+import React from 'react';
 import Divider from './Divider';
-import { ReviewerInfo } from './ReviewerInfo';
-import { StarRating } from './ReviewsStar';
+import {ReviewerInfo} from './ReviewerInfo';
+import {StarRating} from './ReviewsStar';
 import Paragraph from './atoms/Paragraph';
+import ReviewData = App.DataTransferObjects.ReviewData;
 
 export interface ReviewItemProps {
-    review: ReviewItem;
+    review: ReviewData;
     className?: string;
 }
 
 export const ReviewCard: React.FC<ReviewItemProps> = ({
-    review,
-    className = '',
+  review,
+  className = '',
 }) => {
     return (
         <div className={`pb-6 ${className}`}>
-            <div className="flex items-center justify-between">
-                <ReviewerInfo
-                    ideascaleProfile={review.reviewerProfile}
-                    reviewCount={review.reviewerReviewsCount}
-                />
-                <StarRating rating={review.rating} />
+            <div className="flex items-start justify-between">
+                <div className="flex">
+                    <ReviewerInfo
+                        review={review}
+                    />
+                </div>
+
+                <StarRating rating={review.rating}/>
             </div>
+
             <Paragraph className="text-gray-persist mt-3 text-3">
-              {review.review.content}
+                {review.content}
             </Paragraph>
+
             <div className="mt-6">
-                <Divider />
+                <Divider/>
             </div>
         </div>
     );

@@ -5,11 +5,12 @@ declare(strict_types=1);
 namespace Database\Factories;
 
 use App\Models\Fund;
+use App\Models\Transaction;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Transaction>
+ * @extends Factory<Transaction>
  */
 class TransactionFactory extends Factory
 {
@@ -74,21 +75,17 @@ class TransactionFactory extends Factory
         $metadataHash = hash('sha256', json_encode($metadata));
 
         return [
-            'hash' => $this->faker->unique()->sha256(),
-            'epoch' => $this->faker->numberBetween(300, 400),
+            'tx_hash' => $this->faker->unique()->sha256(),
+            'epoch' => $this->faker->numberBetween(300, 500),
             'block' => $this->faker->numberBetween(600000, 700000),
             'inputs' => json_encode($inputs),
             'outputs' => json_encode($outputs),
-            'total_output' => collect($outputs)->sum('amount'),
-            'fund_id' => Fund::inRandomOrder()->first(),
-            'model_type' => null,
-            'model_id' => null,
-            'metadata' => json_encode([
+            'raw_metadata' => json_encode([
                 'metadata_hash' => $metadataHash,
                 'data' => $metadata,
             ]),
+            'total_output' => collect($outputs)->sum('amount'),
             'created_at' => $this->faker->dateTimeBetween('-1 year', 'now'),
-            'updated_at' => $this->faker->dateTimeBetween('-1 year', 'now'),
         ];
     }
 }

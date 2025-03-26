@@ -15,8 +15,25 @@ class TransactionSeeder extends Seeder
      */
     public function run(): void
     {
-        Transaction::factory()
-            ->count(100)
-            ->create();
+        Transaction::truncate();
+        $csvFile = fopen(base_path('database/data/transactions.csv'), 'r');
+        $firstLine = true;
+        while (($data = fgetcsv($csvFile, 8000, ',')) !== false) {
+            if (! $firstLine) {
+                Transaction::factory([
+                    'tx_hash' => $data[1],
+                    'block' => $data[3],
+                    'json_metadata' => json_decode($data[4]),
+                    'raw_metadata' => json_decode($data[5]),
+                    'inputs' => json_decode($data[6]),
+                    'outputs' => json_decode($data[7]),
+                    'type' => $data[8],
+                    'created_at' => $data[9],
+                    'voters_details' => json_decode($data[10]),
+                ])->create();
+            }
+            $firstLine = false;
+        }
+        fclose($csvFile);
     }
 }

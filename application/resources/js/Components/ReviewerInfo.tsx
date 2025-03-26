@@ -1,48 +1,50 @@
 import { useTranslation } from 'react-i18next';
 import Paragraph from './atoms/Paragraph';
-import UserAvatar from './UserAvatar';
-import IdeascaleProfileData = App.DataTransferObjects.IdeascaleProfileData;
+import ReputationBadge from './ReputationBadge';
+import Button from './atoms/Button';
+import ReviewData = App.DataTransferObjects.ReviewData;
 
 export interface ReviewerInfoProps {
-    ideascaleProfile: IdeascaleProfileData;
-    reviewCount: number;
+    review: ReviewData;
     className?: string;
 }
 
 export const ReviewerInfo: React.FC<ReviewerInfoProps> = ({
-    reviewCount,
-    ideascaleProfile,
+    review,
     className = '',
 }) => {
     const { t } = useTranslation();
 
     return (
-        <div className={`flex ${ideascaleProfile.name ? 'items-center' : ''} space-x-4 ${className}`}>
-            {ideascaleProfile.hero_img_url ? (
-                <UserAvatar imageUrl={ideascaleProfile.hero_img_url} size="size-12" />
-            ) : (
-                <div className="w-12 h-12 rounded-full bg-gray-300"></div>
-            )}
+        <div className={`flex items-center ${className}`}>
+            <ReputationBadge review={review}/>
+
             <div className="flex flex-col">
-                {ideascaleProfile.name ? (
-                    <Paragraph className="text-content text-1 mt-3 font-bold">
-                        {ideascaleProfile.name}
+                {(typeof review?.reviewer?.claimed_by !== 'undefined') ? (
+                    <Paragraph className="text-content text-1 font-bold">
+                        {review?.reviewer?.claimed_by?.name}
                     </Paragraph>
                 ) : (
-                    <div
-                        className={`${ideascaleProfile?.claimed_by_id ? 'bg-success' : 'bg-primary'} text-background w-fit rounded-md px-2 py-3`}
-                    >
-                        <Paragraph size="sm">
-                            {ideascaleProfile?.claimed_by_id
-                                ? t('ideascaleProfiles.claimed')
-                                : t('ideascaleProfiles.claim')}
+                    <div className="flex items-center">
+                        <Paragraph className="font-bold text-content mr-2">
+                            #{review?.reviewer?.catalyst_reviewer_id}
                         </Paragraph>
                     </div>
                 )}
-                <Paragraph className="text-gray-persist text-1 mt-3">
-                    {reviewCount} {t('reviews')}
+                <Paragraph className="text-gray-persist text-sm">
+                    {review?.reviewer?.reviews_count} {t('reviews')}
                 </Paragraph>
             </div>
+
+            {!review?.reviewer?.claimed_by && (
+                <div className="ml-4">
+                    <Button
+                        className="bg-primary hover:bg-primary-dark text-light-persist rounded-xl px-4 py-2 transition-colors"
+                    >
+                        {t('ideascaleProfiles.claim')}
+                    </Button>
+                </div>
+            )}
         </div>
     );
 };

@@ -304,7 +304,7 @@ class CommunityController extends Controller
 
     public function query(Request $request)
     {
-        $query = Community::query()->with(['proposals.campaign', 'proposals.users', 'proposals.groups'])
+        $query = Community::query()->with(['proposals.campaign', 'ideascale_profiles.claimed_by'])
             ->withCount('proposals');
 
         // set necessary counts
@@ -553,8 +553,8 @@ class CommunityController extends Controller
                 ) as awarded_ada"),
         ]);
 
-        $this->maxAwardedUsd = max($query->pluck('awarded_usd')->toArray()) ?? 0;
-        $this->maxAwardedAda = max($query->pluck('awarded_ada')->toArray()) ?? 0;
-        $this->maxProposalsCount = max($query->pluck('proposals_count')->toArray()) ?? 0;
+        $this->maxAwardedUsd = $query->pluck('awarded_usd')->isNotEmpty() ? max($query->pluck('awarded_usd')->toArray()) : 0;
+        $this->maxAwardedAda = $query->pluck('awarded_ada')->isNotEmpty() ? max($query->pluck('awarded_ada')->toArray()) : 0;
+        $this->maxProposalsCount = $query->pluck('proposals_count')->isNotEmpty() ? max($query->pluck('proposals_count')->toArray()) : 0;
     }
 }

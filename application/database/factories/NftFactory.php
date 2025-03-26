@@ -3,7 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\User;
-use App\Enums\StatusEnum;
+use App\Enums\NftStatusEnum;
 use Illuminate\Support\Str;
 use App\Models\IdeascaleProfile;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -44,7 +44,7 @@ class NftFactory extends Factory
             'price' => 0 ,
             'description' => 'Completed Projects mint custom Completion NFTs via NMKR API & LidoNation Catalyst Explorer. Minting a completion NFT is a celebration, a ceremony, a shareable trackable community artifact. Art by Stephanie King.',
             'rarity' => $this->faker->randomElement(['common', 'rare', 'legendary']),
-            'status' => $this->faker->randomElement(StatusEnum::toArray()),
+            'status' => $this->faker->randomElement(NftStatusEnum::toArray()),
             'metadata' => [
                 "name" => "Project Catalyst Completion NFT: 55566",
                 "Fund" => "Fund". $this->faker->numberBetween(1, 2),

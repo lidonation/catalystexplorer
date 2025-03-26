@@ -58,7 +58,7 @@ const FundsBarChart: React.FC<FundsBarChartProps> = ({
     };
 
     return (
-        <div className="bg-background rounded-md p-8 shadow-xs lg:p-16">
+        <div className="bg-background rounded-md p-4 shadow-xs lg:p-16">
             <div className="grid w-full grid-cols-2 justify-between gap-4 lg:grid-cols-5">
                 <div>
                     <h6 className="text-2 lg:title-5 font-bold">
@@ -112,7 +112,7 @@ const FundsBarChart: React.FC<FundsBarChartProps> = ({
                     placeholder={t('funds.filter')}
                 />
             </div>
-            <div style={{ height: '400px' }} className="w-full">
+            <div style={{ height: '400px', minHeight: '640px' }} className="w-full">
                 <ResponsiveBar
                     data={funds}
                     keys={activeKeys}
@@ -150,15 +150,15 @@ const FundsBarChart: React.FC<FundsBarChartProps> = ({
                             dataFrom: 'keys',
                             anchor: 'bottom',
                             direction:
-                                window.innerWidth < 600 ? 'column' : 'row',
+                                window.innerWidth < 600 ? 'row' : 'row',
                             justify: false,
                             translateX: window.innerWidth < 600 ? -40 : 0,
                             translateY: window.innerWidth < 600 ? 180 : 80,
                             itemsSpacing: window.innerWidth < 600 ? 10 : 2,
                             itemWidth: window.innerWidth < 600 ? 80 : 200,
-                            itemHeight: window.innerWidth < 600 ? 20 : 20,
+                            itemHeight: window.innerWidth < 600 ? 16 : 20,
                             itemDirection: 'left-to-right',
-                            symbolSize: 20,
+                            symbolSize: window.innerWidth < 600 ? 16 : 20,
                             symbolSpacing: window.innerWidth < 600 ? 10 : 5,
                             symbolShape: (props) => (
                                 <rect

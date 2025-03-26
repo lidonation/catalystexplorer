@@ -309,7 +309,6 @@ priceInLamportCentralPayments: number;
 singlePriceSolana: number;
 };
 export type NftData = {
-metas: any;
 id: number;
 user_id: number;
 artist_id: number;
@@ -322,12 +321,21 @@ owner_address: string;
 description: string;
 rarity: string;
 status: string;
-metadata: any;
-minted_at: string;
+metadata: App.DataTransferObjects.NftMetaData;
+minted_at: string | null;
 qty: number;
-created_at: string;
-updated_at: string;
-deleted_at: string;
+created_at: string | null;
+updated_at: string | null;
+deleted_at: string | null;
+metas: Array<any>;
+};
+export type NftMetaData = {
+campaign_name: string;
+fundedProjectNumber: string;
+projectTitle: string;
+yes_votes: string;
+no_votes: string;
+role: string;
 };
 export type PostData = {
 id: number | null;
@@ -399,12 +407,11 @@ milestones: any | null;
 export type ReviewData = {
 hash: string | null;
 parent_id?: number;
-user_id?: number;
-model_id: number | null;
-model_type: string | null;
 title?: string;
 content: string;
 status: string | null;
+rating: any;
+reviewer: App.DataTransferObjects.ReviewerData;
 type: string | null;
 ranking_total: number | null;
 helpful_total: number | null;
@@ -421,10 +428,11 @@ flagged: boolean;
 qa_rationale?: Array<any>;
 };
 export type ReviewerData = {
-id: number | null;
-reviewr_id: string;
-meta_info: Array<any> | null;
-reputation_scores: any | null;
+hash: string | null;
+reviews_count: any;
+reputation_scores?: any;
+catalyst_reviewer_id: any;
+claimed_by?: App.DataTransferObjects.UserData;
 };
 export type ReviewerReputationScoreData = {
 id: number | null;
@@ -433,6 +441,38 @@ score: number;
 context_type: string | null;
 context_id: number | null;
 fund_name: string | null;
+};
+export type TransactionData = {
+hash: string | null;
+tx_hash: string;
+block: string;
+epoch: number | null;
+json_metadata: any;
+raw_metadata: object | Array<any> | null;
+created_at: string;
+inputs: Array<App.DataTransferObjects.TransactionInputData>;
+outputs: Array<App.DataTransferObjects.TransactionOutputData>;
+};
+export type TransactionInputData = {
+address: string;
+amount: Array<any>;
+tx_hash: string;
+output_index: number;
+data_hash: string | null;
+inline_datum: object | null;
+reference_script_hash: string | null;
+collateral: boolean;
+reference: boolean;
+};
+export type TransactionOutputData = {
+address: string;
+amount: Array<any>;
+output_index: number;
+data_hash: string | null;
+inline_datum: object | null;
+collateral: boolean;
+reference_script_hash: string | null;
+consumed_by_tx: string | null;
 };
 export type UserData = {
 hash: string;

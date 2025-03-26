@@ -5,6 +5,7 @@
     "appMessage": "All Votes must be submitted in the official Catalyst Voting App. This is a research & planning tool only!",
     "articles": "Articles",
     "assetName": "Asset Name",
+    "API":"API",
     "bio": "Bio",
     "bookmarks": "My Bookmarks",
     "blockchainData": "Blockchain Data",
@@ -21,6 +22,7 @@
     "comingSoon": "Coming Soon",
     "cookies": "Cookies",
     "copyright": "© 2024 Catalyst Explorer. All rights reserved.",
+    "connections": "Connections",
     "minting": "You're Minting",
     "loginToMint": "Login to Mint",
     "mustBeProposer": "Must Be Proposer",
@@ -29,6 +31,7 @@
     "dReps": "DReps",
     "email": "Email",
     "emailAddress": "Email Address",
+    "general":"General",
     "facebook": "Facebook",
     "forgotPassword": "Forgot password",
     "funding": "Funding",
@@ -37,10 +40,12 @@
     "home": "Home",
     "jormungandr": "Jormungandr",
     "knowledgeBase": "Knowledge Base",
+    "impact":"Impact",
     "legal": "Legal",
     "licenses": "Licenses",
     "login": "Login",
     "linkedIn": "LinkedIn",
+    "listsAndBookmarks": "Lists and Bookmarks",
     "monthlyReports": "Monthly Reports",
     "metaTitle": "Meta Data Preview",
     "mintNFT": "Mint NFT",
@@ -71,16 +76,20 @@
     "profileBackground": "Profile Background",
     "projectCatalyst": "Project catalyst Campaign name",
     "reviews": "Reviews",
+    "reviewers":"Reviewers",
     "register": "Register",
+    "reviewerReputationScore": "Reviewer Reputation Score",
     "searchQuery": "No results match your search query",
     "signin": "Sign in",
     "signup": "Sign up",
     "social": "Social",
+    "spending": "Spending",
     "support": "Support",
     "seeAll": "See All",
     "terms": "Terms",
     "twitter": "Twitter",
     "votes": "My Votes",
+    "voters":"Voters",
     "wallets": "Wallets",
     "details": "Details",
     "teams": "Team",
@@ -114,6 +123,23 @@
     "nftPaymentGatewayTitle": "NFT-MAKER PRO Payment Gateway",
     "artistRole": "Artist",
     "cantFindNFTForMint": "Can't find NFT for mint",
+    "copyToClipboard": "Copy to clipboard",
+    "workflows": {
+        "claimIdeascale": {
+            "selectProfile": "Select Profile",
+            "submitDetails": "Submit Details",
+            "verification": "Verification code",
+            "chooseProfile": "Choose the profile(s) you want to claim. 🚀",
+            "submitDetailsForm": "Submit details you would want updated to the account.",
+            "verifyOnIdeascale": "To verify your ownership of this profile, please send a personal message to Lido Nation on Ideascale and include the code above. "
+        },
+        "completedProjectNfts": {
+            "selectProfile": "Select Profile",
+            "selectProposal": "Select Proposal",
+            "selectProfileInfo": "Choose the profile(s) you want to mint from. The selected profile should be linked to the completed project whose NFT you’re minting.Not sure which one to pick? No worries—just select all available profiles and we’ll handle the rest! 🚀",
+            "selectProposalInfo":"To get started, please select proposal to mint from"
+        }
+    },
     "error404": {
         "mainText": "Sorry, we couldn't find what you're looking for",
         "subText": "Let's Find Your Way Back!"
@@ -383,7 +409,7 @@
         "noIdeascaleProfiles": "No Ideascale Profiles Found",
         "bio": "Bio",
         "claimed": "Claimed",
-        "claim": "Claim",
+        "claim": "Claim Profile",
         "totalRequested": "Total Requested",
         "totalProposals": "Total Proposals",
         "awardedVsRequested": "Awarded vs Requested",
@@ -506,6 +532,7 @@
             "chevron_down": "Chevron Down Icon",
             "close": "close Icon",
             "connect_wallet": "Connect wallet Icon",
+            "connections":"Connections Icon",
             "darkMode": "Dark Mode Icon",
             "discord": "Discord",
             "folder": "Folder Icon",
@@ -518,8 +545,10 @@
             "mail": "Mail Icon",
             "menu": "Menu Icon",
             "miniCardSwitch": "Mini Card Switch Icon",
+            "more":"More Icon",
             "note": "Note Icon",
             "notificationBox": "Notification Box Icon",
+            "numbers": "Numbers Icon",
             "people": "People Icon",
             "ideascaleProfile": "Ideascale Profile Icon",
             "search": "Search Icon",
@@ -577,6 +606,8 @@
         "title": "Completed Project NFTs",
         "subtitle": "Completed Project Catalyst project teams are invited to mint a celebratory NFT to mark your achievement and share it with the world!",
         "nowMinting": "Now minting",
+        "celebrateYourWork": "Celebrate your hard work",
+        "onCardanoMainnet": "on Cardano mainnet.",
         "communityFunded": "Community Members Funded",
         "projectsCompleted": "Projects Completed",
         "usdDistributed": "USD Distributed",
@@ -591,7 +622,10 @@
         "claimProfile": "Claim an Ideascale Profile",
         "unavailable": "Unavailable!",
         "reservedUntil": "Reserved until",
-        "paymentPending": "Payment Pending"
+        "paymentPending": "Payment Pending",
+        "mintCompletionNft": "Mint Completion NFT",
+        "projectComplete": "Project Complete?",
+        "timeForLaunchParty": "Time for a launch party!"
     },
     "profileWorkflow": {
         "sectionTitle": {
@@ -680,7 +714,7 @@
             "findDrep": "Find a Drep",
             "signUp": "Sign up to be a DRep",
             "aDrep": "What are DReps?",
-            "drepDescription": "DReps (Delegate Representatives), vote on governance proposals in Cardaon on behalf of ADA holders. Instead of voting individually, you can delegate your voting power to a DRep who representsv your interests helping shape the future of Cardano efficiently and transparently.",
+            "drepDescription": "DReps (Delegate Representatives), vote on governance proposals in Cardaon on behalf of ADA holders. Instead of voting individually, you can delegate your voting power to a DRep who represents your interests helping shape the future of Cardano efficiently and transparently.",
             "projectCatalyst": "Project Catalyst's Continued Growth and the Need for Delegation",
             "projectCatalystDescription": "The Cardano community's Project Catalyst has grown rapidly, with Fund8 receiving nearly 1,000 proposals. To manage this increasing workload, a new delegation system is being introduced for sustainable governance.",
             "empower": "Empowering Passive Voters Through Delegation",
@@ -698,33 +732,66 @@
             "inactive": "Inactive"
         }
     },
-        "wallet": {
-            "connect": {
-                "title": "Connect Wallet",
-                "initializing": "Initializing wallet connection...",
-                "connectedTo": "Connected to:",
-                "disconnect": "Disconnect Wallet",
-                "selectWallet": "Select a wallet",
-                "noWallets": {
-                    "title": "No supported wallets detected",
-                    "subtitle": "Please install Lace, Eternl, Flint, or another Cardano wallet"
-                },
-                "errors": {
-                    "notInitialized": "Cardano library not initialized yet. Please try again in a moment.",
-                    "walletNotFound": "{{walletName}} wallet not found. Please install it first.",
-                    "wrongNetwork": "Wrong network detected. Please switch to {{expected}}",
-                    "noAddresses": "No addresses found in wallet",
-                    "connectionFailed": "Connection failed",
-                    "disconnectError": "Error disconnecting wallet",
-                    "contextError": "useWallet must be used within a WalletProvider",
-                    "wasmInitError": "Failed to initialize Cardano WASM module",
-                    "wasmLibError": "Failed to initialize wallet connection library"
-                }
+    "transactions": {
+        "title": "Transactions",
+        "pageTitle": "Catalyst On Chain Transactions",
+        "pageDescription": "Register your stake key to participate in staking, governance, and secure transactions on the Cardano network.",
+        "table": {
+            "viewDetails": "View details for transaction",
+            "copyTxHash": "Copy transaction hash",
+            "copyStakeAddress": "Copy stake address",
+            "copyBlockHash": "Copy block hash",
+            "hash": "Hash",
+            "stakeAddress": "Stake Address",
+            "epoch": "Epoch",
+            "block": "Block",
+            "actions": "Actions",
+            "view": "View",
+            "voterRegistration": "Voter Registration"
+        },
+        "options": {
+            "newestToOldest": "Newest to Oldest",
+            "oldestToNewest": "Oldest to Newest",
+            "blockAsc": "Block: Low to High",
+            "blockDesc": "Block: High to Low",
+            "epochAsc": "Epoch: Low to High",
+            "epochDesc": "Epoch: High to Low",
+            "amountHighToLow": "Amount: High to Low",
+            "amountLowToHigh": "Amount: Low to High",
+            "weightHighToLow": "Weight: High to Low",
+            "weightLowToHigh": "Weight: Low to High"
+        },
+        "searchBar": {
+            "placeholder": "Search transaction hash, epoch, block"
+        }  
+    },
+    "wallet": {
+        "connect": {
+            "title": "Connect Wallet",
+            "initializing": "Initializing wallet connection...",
+            "connectedTo": "Connected to:",
+            "disconnect": "Disconnect Wallet",
+            "selectWallet": "Select a wallet",
+            "noWallets": {
+                "title": "No supported wallets detected",
+                "subtitle": "Please install Lace, Eternl, Flint, or another Cardano wallet"
             },
-            "status": {
-                "connected": "Connected",
-                "connecting": "Connecting",
-                "disconnect": "Disconnect"
+            "errors": {
+                "notInitialized": "Cardano library not initialized yet. Please try again in a moment.",
+                "walletNotFound": "{{walletName}} wallet not found. Please install it first.",
+                "wrongNetwork": "Wrong network detected. Please switch to {{expected}}",
+                "noAddresses": "No addresses found in wallet",
+                "connectionFailed": "Connection failed",
+                "disconnectError": "Error disconnecting wallet",
+                "contextError": "useWallet must be used within a WalletProvider",
+                "wasmInitError": "Failed to initialize Cardano WASM module",
+                "wasmLibError": "Failed to initialize wallet connection library"
             }
+        },
+        "status": {
+            "connected": "Connected",
+            "connecting": "Connecting",
+            "disconnect": "Disconnect"
         }
+    }
 }

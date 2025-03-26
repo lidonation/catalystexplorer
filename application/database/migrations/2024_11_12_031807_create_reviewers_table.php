@@ -14,7 +14,8 @@ return new class extends Migration
         Schema::create('reviewers', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
-            $table->char('reviewer_id');
+            $table->char('catalyst_reviewer_id');
+            $table->foreignId('claimed_by_id')->nullable()->constrained('users');
             $table->softDeletes();
         });
     }

@@ -5,6 +5,7 @@
     "appMessage": "Tous les votes doivent être soumis dans l'application officielle de vote Catalyst. Ceci n'est qu'un outil de recherche et de planification !",
     "articles": "Articles",
     "assetName": "Nom de l'actif",
+    "API":"API",
     "bio": "Biographie",
     "blockchainData": "Blockchain Data",
     "bookmarks": "Mes Signets",
@@ -16,10 +17,12 @@
     "chooseMetaData": "Choisissez vos propres métadonnées",
     "cookies": "Cookies",
     "copyright": "© 2024 Explorateur Catalyst. Tous droits réservés.",
+    "connections": "Connexions",
     "data": "Données",
     "dReps": "DReps",
     "facebook": "Facebook",
     "getStarted": "Commencer",
+    "general":"Général",
     "github": "Github",
     "emailAddress": "Adresse e-mail",
     "fundProject": "Numéro du projet financé",
@@ -28,11 +31,13 @@
     "noVotes": "Votes contre",
     "role": "Rôle",
     "projectTitle": "Titre du projet",
+    "impact":"Impact",
     "jormungandr": "Jormungandr",
     "knowledgeBase": "Base de Connaissances",
     "legal": "Légal",
     "licenses": "Licences",
     "linkedIn": "LinkedIn",
+    "listsAndBookmarks": "Listes et Signets",
     "login": "Se connecter",
     "filters": "Filtres",
     "otherContributors": "Autres contributeurs",
@@ -57,13 +62,17 @@
     "proposers": "Proposeurs",
     "register": "Registre",
     "reviews": "Évaluations",
+    "reviewerReputationScore": "Score de réputation de l'évaluateur",
+    "reviewers":"Réviseurs",
     "searchQuery": "Aucun résultat ne correspond à votre requête de recherche",
+    "spending":"Dépenses",
     "social": "Social",
     "twitter": "Twitter",
     "support": "Support",
     "seeAll": "Voir Tout",
     "terms": "Conditions Générales",
     "votes": "Mes Votes",
+    "voters":"Électrices",
     "wallets": "Portefeuilles",
     "details": "Détails",
     "teams": "Équipe",
@@ -102,6 +111,23 @@
     "nftPaymentGatewayTitle": "Passerelle de paiement NFT-MAKER PRO",
     "artistRole": "Artiste",
     "cantFindNFTForMint": "Impossible de trouver le NFT à mint",
+    "copyToClipboard": "Copier dans le presse-papiers",
+    "workflows": {
+        "claimIdeascale": {
+            "selectProfile": "Sélectionnez un profil",
+            "submitDetails": "Soumettre les détails",
+            "verification": "Le code de vérification",
+            "chooseProfile": "Choisissez le(s) profile(s) que vous souhaitez revendiquer. 🚀",
+            "submitDetailsForm": "Soumettez les détails que vous souhaitez mettre à jour sur le compte.",
+            "verifyOnIdeascale": "Pour vérifier votre propriété de ce profil, veuillez envoyer un message personnel à Lido Nation sur Ideascale et inclure le code ci-dessus."
+        },
+        "completedProjectNfts": {
+            "selectProfile": "Sélectionnez un profil",
+            "selectProposal": "Sélectionnez une proposition",
+            "selectProfileInfo": "Choisissez le(s) profil(s) à partir duquel/lesquels vous souhaitez créer des NFT. Le profil sélectionné doit être lié au projet finalisé dont vous souhaitez créer le NFT. Vous hésitez ? Pas de souci : sélectionnez simplement tous les profils disponibles et nous nous occupons du reste ! 🚀",
+            "selectProposalInfo": "Pour commencer, veuillez sélectionner la proposition à partir de laquelle créer"
+        }
+    },
     "error404": {
         "mainText": "Désolé, nous n'avons pas trouvé ce que vous cherchez",
         "subText": "Retrouvons votre chemin du retour!"
@@ -122,7 +148,6 @@
             "share": "Bouton de partage"
         }
     },
-
     "searchResults": {
         "noResults": {
             "title": "Aucun résultat trouvé",
@@ -303,6 +328,7 @@
     "ideascaleProfiles": {
         "people": "Personnes",
         "ideascaleProfiles": "Ideascale Profils",
+        "claim":"Bouton de réclamation",
         "pageSubtitle": "Rechercher des propositions et des défis par titre, contenu ou auteur et co-auteurs",
         "ownProposals": "Propositions personnelles",
         "coProposals": "Propositions co",
@@ -518,6 +544,7 @@
             "chevron_up": "Icône de chevron vers le haut",
             "chevron_down": "Icône de chevron vers le bas",
             "close": "Icône de fermeture",
+            "connections":"Icône de connexions",
             "search": "Icône de recherche",
             "darkMode": "Icône de mode sombre",
             "folder": "Icône de dossier",
@@ -528,8 +555,10 @@
             "mail": "Icône de courrier",
             "menu": "Icône de menu",
             "miniCardSwitch": "Icône de commutateur de mini-carte",
+            "more":"Plus d'icônes",
             "note": "Icône de note",
             "notificationBox": "Icône de boîte de notification",
+            "numbers":"Icône de nombres",
             "people": "Icône de personnes",
             "voltaireMode": "Icône de mode Voltaire",
             "link": "Icône de lien",
@@ -564,6 +593,8 @@
         "profile": "profil"
     },
     "completedProjectNfts": {
+        "celebrateYourWork": "Célébrez votre travail acharné",
+        "onCardanoMainnet": "sur le mainnet de Cardano.",
         "title": "NFT de projets terminés",
         "subtitle": "Les équipes de projets Project Catalyst terminées sont invitées à créer un NFT de célébration pour marquer votre réussite et le partager avec le monde !",
         "nowMinting": "En cours de création",
@@ -580,7 +611,10 @@
         "claimProfile": "Réclamer un autre profil",
         "Unavailable": "Indisponible!",
         "reservedUntil": "Réservé jusqu'à",
-        "paymentPending": "Paiement en attente"
+        "paymentPending": "Paiement en attente",
+        "mintCompletionNft": "NFT Mint Complete",
+        "projectComplete": "Projet terminé?",
+        "timeForLaunchParty": "C'est l'heure d'une soirée de lancement!"
     },
     "profileWorkflow": {
         "sectionTitle": {
@@ -621,5 +655,67 @@
         "verificationCode": "Code de vérification",
         "verificationInstructions": "Pour vérifier que vous êtes le propriétaire de ce profil, veuillez envoyer un message personnel à Lido Nation sur Ideascale et inclure le code ci-dessus.",
         "goToIdeascale": "Accéder à Ideascale"
+    },
+    "wallet": {
+        "connect": {
+            "title": "Connecter le portefeuille",
+            "initializing": "Initialisation de la connexion au portefeuille...",
+            "connectedTo": "Connecté à:",
+            "disconnect": "Déconnecter le portefeuille",
+            "selectWallet": "Sélectionnez un portefeuille",
+            "noWallets": {
+                "title": "Aucun portefeuille pris en charge détecté",
+                "subtitle": "Veuillez installer Lace, Eternl, Flint ou un autre portefeuille Cardano"
+            },
+            "errors": {
+                "notInitialized": "La bibliothèque Cardano n'est pas encore initialisée. Veuillez réessayer dans quelques instants..",
+                "walletNotFound": " Portefeuille introuvable. Veuillez d'abord l'installer.",
+                "wrongNetwork": "Mauvais réseau détecté. Veuillez passer à ",
+                "noAddresses": "Aucune adresse trouvée dans le portefeuille",
+                "connectionFailed": "La connexion a échoué",
+                "disconnectError": "Erreur lors de la déconnexion du portefeuille",
+                "contextError": "useWallet doit être utilisé dans un WalletProvider",
+                "wasmInitError": "Échec de l'initialisation du module Cardano WASM",
+                "wasmLibError": "Échec de l'initialisation de la bibliothèque de connexion au portefeuille"
+            }
+        },
+        "status": {
+            "connected": "Connected",
+            "connecting": "Connecting",
+            "disconnect": "Disconnect"
+        }
+    },
+    "transactions": {
+        "title": "Transactions",
+        "pageTitle": "Transactions On Chain Catalyst",
+        "pageDescription": "Enregistrez votre clé de participation pour participer au staking, à la gouvernance et aux transactions sécurisées sur le réseau Cardano.",
+        "table": {
+            "viewDetails": "Voir les détails de la transaction",
+            "copyTxHash": "Copier le hash de la transaction",
+            "copyStakeAddress": "Copier l'adresse de participation",
+            "copyBlockHash": "Copier le hash du bloc",
+            "hash": "Hash",
+            "stakeAddress": "Adresse de participation",
+            "epoch": "Époque",
+            "block": "Bloc",
+            "actions": "Actions",
+            "view": "Voir",
+            "voterRegistration": "Enregistrement des électeurs"
+        },
+        "options": {
+            "newestToOldest": "Du plus récent au plus ancien",
+            "oldestToNewest": "Du plus ancien au plus récent",
+            "blockAsc": "Bloc : Du plus bas au plus élevé",
+            "blockDesc": "Bloc : Du plus élevé au plus bas",
+            "epochAsc": "Époque : Du plus bas au plus élevé",
+            "epochDesc": "Époque : Du plus élevé au plus bas",
+            "amountHighToLow": "Montant : Du plus élevé au plus bas",
+            "amountLowToHigh": "Montant : Du plus bas au plus élevé",
+            "weightHighToLow": "Poids : Du plus élevé au plus bas",
+            "weightLowToHigh": "Poids : Du plus bas au plus élevé"
+        },
+        "searchBar": {
+            "placeholder": "Rechercher un hash de transaction, une époque, un bloc"
+        }
     }
 }

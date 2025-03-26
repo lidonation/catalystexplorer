@@ -1,4 +1,5 @@
 import ConcentricCircles from '@/assets/images/bg-concentric-circles.png';
+import RichContent from '@/Components/RichContent';
 
 import { CatalystWhiteLogo } from '@/Components/svgs/CatalystWhiteLogo';
 import { ReactNode, useState } from 'react';
@@ -49,7 +50,13 @@ export default function WorkflowLayout({
                             </div>
                             <div className="mt-6">
                                 <p className="text-content-light text-center">
-                                    {asideInfo}
+                                    <RichContent
+                                        content={
+                                            asideInfo &&
+                                            (t(asideInfo) as string | undefined)
+                                        }
+                                        format="markdown"
+                                    />
                                 </p>
                             </div>
                         </div>
@@ -57,13 +64,18 @@ export default function WorkflowLayout({
 
                     {/* Sidebar for Large Screens */}
                     <div className="bg-primary hidden h-auto flex-col items-center justify-center gap-y-3 rounded-r-lg px-8 lg:flex lg:w-1/3">
-                        <div className="flex h-6 items-center px-8 sm:pt-8">
+                        <div className="flex h-6 items-center pr-6 sm:pt-8">
                             <CatalystWhiteLogo />
                         </div>
                         <div className="mt-6">
-                            <p className="text-content-light text-center">
-                                {asideInfo}
-                            </p>
+                            <RichContent
+                                content={
+                                    asideInfo &&
+                                    (t(asideInfo) as string | undefined)
+                                }
+                                className="text-center"
+                                format="markdown"
+                            />
                         </div>
                     </div>
                 </div>
