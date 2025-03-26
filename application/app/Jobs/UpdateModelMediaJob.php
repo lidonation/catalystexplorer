@@ -8,6 +8,7 @@ use App\Http\Intergrations\LidoNation\Requests\GetModelMedia;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
+use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\Middleware\RateLimited;
 use Illuminate\Queue\SerializesModels;
@@ -18,11 +19,17 @@ class UpdateModelMediaJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
+    public $tries = 0;
+
     public function __construct(
         public $model,
         public ?string $collectionName = 'hero',
     ) {}
 
+    /**
+     * @throws UnreachableUrl
+     * @throws ConnectionException
+     */
     public function handle(): void
     {
         $req = app(GetModelMedia::class);
@@ -40,6 +47,10 @@ class UpdateModelMediaJob implements ShouldQueue
         }
     }
 
+    /**
+     * @throws UnreachableUrl
+     * @throws ConnectionException
+     */
     public function updateModelMedia($image_url): void
     {
         try {
@@ -65,10 +76,9 @@ class UpdateModelMediaJob implements ShouldQueue
 
             $this->model->addMediaFromUrl($image_url)->toMediaCollection($this->collectionName);
 
-        } catch (UnreachableUrl $exception) {
+        } catch (UnreachableUrl|\Exception $exception) {
             report($exception);
-        } catch (\Exception $exception) {
-            report($exception);
+            throw $exception;
         }
     }
 
@@ -80,7 +90,7 @@ class UpdateModelMediaJob implements ShouldQueue
         return isset($pathInfo['extension']) && in_array(strtolower($pathInfo['extension']), $allowedExtensions);
     }
 
-    public function middleware()
+    public function middleware(): array
     {
         return [(new RateLimited('media-update-job'))];
     }
