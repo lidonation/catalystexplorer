@@ -82,14 +82,6 @@ class UpdateModelMediaJob implements ShouldQueue
         }
     }
 
-    private function isValidMediaUrl(string $url): bool
-    {
-        $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'mp4', 'mov'];
-        $pathInfo = pathinfo(parse_url($url, PHP_URL_PATH));
-
-        return isset($pathInfo['extension']) && in_array(strtolower($pathInfo['extension']), $allowedExtensions);
-    }
-
     public function middleware(): array
     {
         return [(new RateLimited('media-update-job'))];
