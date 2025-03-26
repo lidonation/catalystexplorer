@@ -124,8 +124,6 @@ class ReviewsController extends Controller
             ]
         );
 
-        dd($pagination->toArray());
-
         return $pagination->toArray();
 
         $_options = [
