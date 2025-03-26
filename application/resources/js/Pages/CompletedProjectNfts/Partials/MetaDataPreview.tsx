@@ -41,7 +41,7 @@ const MetaDataPreview = ({ideascaleProfiles, nft, artist, metadata, claimedProfi
       <div className="flex flex-col items-center justify-center py-6">
         <div className="text-center mb-4">
           <span className="inline-block px-4 py-2 rounded-lg text-dark">
-            {t('completedProjectNfts.Unavailable')}
+            {t('completedProjectNfts.unavailable')}
           </span>
         </div>
       </div>
