@@ -5,14 +5,18 @@ import RecordsNotFound from '@/Layouts/RecordsNotFound';
 
 interface EventsPageProps {
     community: CommunityData;
+    ownProposals: number;
+    coProposals: number;
 }
 
 export default function Proposals({
     community,
+    ownProposals,
+    coProposals
 }: EventsPageProps) {
 
     return (
-        <CommunityLayout community={community}>
+        <CommunityLayout community={community} ownProposalsCount={ownProposals} coProposalsCount={coProposals}>
             <Head title={`${community?.title} - Events`} />
             <div>
                 <RecordsNotFound/>
