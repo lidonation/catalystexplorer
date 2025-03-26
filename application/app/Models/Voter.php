@@ -22,3 +22,4 @@ class Voter extends Model
         return $this->hasMany(VoterHistory::class, 'stake_address', 'stake_pub');
     }
 }
+ 

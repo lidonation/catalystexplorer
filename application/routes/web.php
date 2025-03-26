@@ -228,6 +228,11 @@ Route::localized(
             }
         );
 
+        Route::prefix('/votes')->as('votes.')->group(function () {
+            Route::get('/', [VoterHistoryController::class, 'index'])
+                ->name('index');
+        }); 
+
         Route::get('/voter-tool', [VoterToolController::class, 'index'])
             ->name('voter-tool.index');
 
