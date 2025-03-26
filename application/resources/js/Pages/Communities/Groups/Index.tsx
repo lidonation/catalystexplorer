@@ -11,11 +11,13 @@ import GroupCard from '@/Pages/Groups/Partials/GroupCard';
 interface DashboardPageProps {
     community: CommunityData;
     groups: PaginatedData<GroupData[]>;
+    ownProposals: number;
+    collaboratingProposals: number;
 }
 
-export default function Groups({ community, groups }: DashboardPageProps) {
+export default function Groups({ community, groups, ownProposals, collaboratingProposals }: DashboardPageProps) {
     return (
-        <CommunityLayout community={community}>
+        <CommunityLayout community={community} ownProposalsCount={ownProposals} coProposalsCount={collaboratingProposals}>
             <Head title={`${community?.title} -Groups`} />
 
             <WhenVisible data="groups" fallback={<GroupCardLoader />}>

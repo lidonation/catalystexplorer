@@ -77,8 +77,6 @@ proposals_count?: number;
 completed_proposals_count?: number;
 funded_proposals_count?: number;
 unfunded_proposals_count?: number;
-own_proposals_count?: number;
-collaborating_proposals_count?: number;
 amount_awarded_ada?: number;
 amount_awarded_usd?: number;
 amount_distributed_ada?: number;

@@ -6,7 +6,7 @@ use App\Http\Controllers\Api\TagController;
 use App\Http\Controllers\Api\GroupController;
 use App\Http\Controllers\ProposalsController;
 use App\Http\Controllers\Api\CampaignController;
-use App\Http\Controllers\Api\CommunityController;
+use App\Http\Controllers\CommunityController;
 use App\Http\Controllers\My\MyBookmarksController;
 use App\Http\Controllers\CompletetProjectNftsController;
 use App\Http\Controllers\Api\IdeascaleProfilesController;

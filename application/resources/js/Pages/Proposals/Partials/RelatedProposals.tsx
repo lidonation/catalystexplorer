@@ -7,6 +7,7 @@ import { PaginatedData } from '../../../../types/paginated-data';
 import ProposalCardMini from './ProposalCardMini';
 import ProposalMiniCardLoader from './ProposalMiniCardLoader';
 import ProposalData = App.DataTransferObjects.ProposalData;
+import Paragraph from '@/Components/atoms/Paragraph';
 
 interface RouteConfig {
     routeName: string;
@@ -101,15 +102,15 @@ const RelatedProposals: React.FC<RelatedProposalsProps> = ({
                         >
                             <div className="flex flex-col items-center gap-4">
                                 <div className="text-center">
-                                    <p className="text-sm text-gray-600">
+                                    <Paragraph className="text-sm text-gray-600">
                                         {t('seeAll')}
-                                    </p>
-                                    <p className="text-xl font-semibold">
+                                    </Paragraph>
+                                    <Paragraph className="text-xl font-semibold">
                                         {proposals.total}
-                                    </p>
-                                    <p className="text-sm text-gray-600">
+                                    </Paragraph>
+                                    <Paragraph className="text-sm text-gray-600">
                                         {t('proposals.proposals')}
-                                    </p>
+                                    </Paragraph>
                                 </div>
                             </div>
                         </Link>

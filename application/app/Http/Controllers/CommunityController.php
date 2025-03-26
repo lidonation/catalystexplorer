@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers;
 
 use App\DataTransferObjects\CommunityData;
 use App\DataTransferObjects\GroupData;
@@ -11,7 +11,6 @@ use App\DataTransferObjects\ProposalData;
 use App\Enums\CatalystCurrencySymbols;
 use App\Enums\CommunitySearchParams;
 use App\Enums\ProposalSearchParams;
-use App\Http\Controllers\Controller;
 use App\Http\Resources\CommunityResource;
 use App\Models\Campaign;
 use App\Models\Community;
@@ -93,8 +92,6 @@ class CommunityController extends Controller
                 'completed_proposals',
                 'funded_proposals',
                 'unfunded_proposals',
-                'own_proposals',
-                'collaborating_proposals',
                 'proposals',
             ])->append([
                 'amount_distributed_ada',
@@ -105,156 +102,35 @@ class CommunityController extends Controller
 
         $path = $request->path();
 
-        if (str_contains($path, '/proposals')) {
-            return Inertia::render('Communities/Proposals/Index', [
-                'community' => CommunityData::from($community),
-                'proposals' => Inertia::optional(
-                    fn () => to_length_aware_paginator(
-                        ProposalData::collect(
-                            $community->proposals()
-                                ->with(['users', 'fund'])
-                                ->paginate(11, ['*'], 'p')
-                        )
-                    )->onEachSide(0)
-                ),
-            ]);
-        }
+        // Find Own Proposals and Co proposals
+        $communityProposalIds = $community->proposals()->pluck('id');
 
-        if (str_contains($path, '/members')) {
-            return Inertia::render('Communities/Members/Index', [
-                'community' => CommunityData::from($community),
-                'ideascaleProfiles' => Inertia::optional(
-                    fn () => to_length_aware_paginator(
-                        IdeascaleProfileData::collect(
-                            $community->ideascale_profiles()
-                                ->withCount([
-                                    'proposals',
-                                    'funded_proposals',
-                                    'unfunded_proposals',
-                                    'completed_proposals',
-                                    'own_proposals',
-                                    'collaborating_proposals',
-                                ])
-                                ->with([])->paginate(12)
-                        )
-                    )
-                ),
-            ]);
-        }
+        $ideascaleProfiles = $community->ideascale_profiles()->with('own_proposals', 'collaborating_proposals')->get();
 
-        if (str_contains($path, '/groups')) {
-            return Inertia::render('Communities/Groups/Index', [
-                'community' => CommunityData::from($community),
-                'groups' => Inertia::optional(
-                    fn () => to_length_aware_paginator(
-                        GroupData::collect(
-                            $community->groups()
-                                ->withCount([
-                                    'proposals',
-                                    'funded_proposals',
-                                    'unfunded_proposals',
-                                    'completed_proposals',
-                                ])
-                                ->paginate(12)
-                        )
-                    )
-                ),
-            ]);
-        }
+        $community->setRelation('ideascale_profiles', $ideascaleProfiles);
 
-        if (str_contains($path, '/events')) {
-            return Inertia::render('Communities/Events/Index', [
-                'community' => CommunityData::from($community),
-            ]);
-        }
+        $community->ideascale_profiles;
 
-        if (str_contains($path, '/dashboard')) {
+        $allOwnProposals = $community->ideascale_profiles
+            ->flatMap(function ($profile) {
+                return $profile->own_proposals;
+            })
+            ->unique('id');
 
-            $fundTitles = Fund::pluck('title')
-                ->sortBy(fn ($title) => (int) filter_var($title, FILTER_SANITIZE_NUMBER_INT))
-                ->values();
+        $allCollaboratingProposals = $community->ideascale_profiles
+            ->flatMap(function ($profile) {
+                return $profile->collaborating_proposals;
+            })
+            ->unique('id');
 
-            $communityData = Community::with('funded_proposals.fund')->find($community->id);
+        $ownProposalIds = $allOwnProposals->pluck('id')->toArray();
+        $collaboratingProposalIds = $allCollaboratingProposals->pluck('id')->toArray();
+        $communityProposalIds = $community->proposals()->pluck('id')->toArray(); // Convert to array
 
-            $fundedProposals = $communityData->funded_proposals;
+        $commonOwnProposalsCount = count(array_intersect($ownProposalIds, $communityProposalIds));
+        $commonCollaboratingProposalsCount = count(array_intersect($collaboratingProposalIds, $communityProposalIds));
 
-            $calculateSum = function ($proposals, $fundTitle, $currency, $field) {
-                return $proposals->filter(function ($proposal) use ($fundTitle, $currency) {
-                    $fund = $proposal->fund;
-
-                    return $fund && $fund->title === $fundTitle && $fund->currency === $currency;
-                })->sum($field);
-            };
-
-            $amountAwardedChartData = [
-                [
-                    'id' => 'Awarded ADA',
-                    'data' => $fundTitles->map(fn ($fundTitle) => [
-                        'x' => $fundTitle,
-                        'y' => $calculateSum($fundedProposals, $fundTitle, CatalystCurrencySymbols::ADA->name, 'amount_requested'),
-                    ])->values(),
-                ],
-                [
-                    'id' => 'Awarded USD',
-                    'data' => $fundTitles->map(fn ($fundTitle) => [
-                        'x' => $fundTitle,
-                        'y' => $calculateSum($fundedProposals, $fundTitle, CatalystCurrencySymbols::USD->name, 'amount_requested'),
-                    ])->values(),
-                ],
-            ];
-
-            $amountDistributedChartData = [
-                [
-                    'id' => 'Distributed ADA',
-                    'data' => $fundTitles->map(fn ($fundTitle) => [
-                        'x' => $fundTitle,
-                        'y' => $calculateSum($fundedProposals, $fundTitle, CatalystCurrencySymbols::ADA->name, 'amount_received'),
-                    ])->values(),
-                ],
-                [
-                    'id' => 'Distributed USD',
-                    'data' => $fundTitles->map(fn ($fundTitle) => [
-                        'x' => $fundTitle,
-                        'y' => $calculateSum($fundedProposals, $fundTitle, CatalystCurrencySymbols::USD->name, 'amount_received'),
-                    ])->values(),
-                ],
-            ];
-
-            $amountRemainingChartData = [
-                [
-                    'id' => 'Remaining ADA',
-                    'data' => $fundTitles->map(function ($fundTitle) use ($fundedProposals, $calculateSum) {
-                        $awarded = $calculateSum($fundedProposals, $fundTitle, CatalystCurrencySymbols::ADA->name, 'amount_requested');
-                        $distributed = $calculateSum($fundedProposals, $fundTitle, CatalystCurrencySymbols::ADA->name, 'amount_received');
-
-                        return [
-                            'x' => $fundTitle,
-                            'y' => $awarded - $distributed,
-                        ];
-                    })->values(),
-                ],
-                [
-                    'id' => 'Remaining USD',
-                    'data' => $fundTitles->map(function ($fundTitle) use ($fundedProposals, $calculateSum) {
-                        $awarded = $calculateSum($fundedProposals, $fundTitle, CatalystCurrencySymbols::USD->name, 'amount_requested');
-                        $distributed = $calculateSum($fundedProposals, $fundTitle, CatalystCurrencySymbols::USD->name, 'amount_received');
-
-                        return [
-                            'x' => $fundTitle,
-                            'y' => $awarded - $distributed,
-                        ];
-                    })->values(),
-                ],
-            ];
-
-            return Inertia::render('Communities/Dashboard/Index', [
-                'community' => CommunityData::from($community),
-                'amountAwardedChartData' => $amountAwardedChartData,
-                'amountDistributedChartData' => $amountDistributedChartData,
-                'amountRemainingChartData' => $amountRemainingChartData,
-            ]);
-        }
-
+        // Chart Data
         $fundTitles = Fund::pluck('title')
             ->sortBy(fn ($title) => (int) filter_var($title, FILTER_SANITIZE_NUMBER_INT))
             ->values();
@@ -332,11 +208,97 @@ class CommunityController extends Controller
             ],
         ];
 
+        if (str_contains($path, '/proposals')) {
+            return Inertia::render('Communities/Proposals/Index', [
+                'community' => CommunityData::from($community),
+                'proposals' => Inertia::optional(
+                    fn () => to_length_aware_paginator(
+                        ProposalData::collect(
+                            $community->proposals()
+                                ->with(['users', 'fund'])
+                                ->paginate(11, ['*'], 'p')
+                        )
+                    )->onEachSide(0)
+                ),
+                'ownProposals' => $commonOwnProposalsCount,
+                'collaboratingProposals' => $commonCollaboratingProposalsCount,
+            ]);
+        }
+
+        if (str_contains($path, '/members')) {
+            return Inertia::render('Communities/Members/Index', [
+                'community' => CommunityData::from($community),
+                'ideascaleProfiles' => Inertia::optional(
+                    fn () => to_length_aware_paginator(
+                        IdeascaleProfileData::collect(
+                            $community->ideascale_profiles()
+                                ->withCount([
+                                    'proposals',
+                                    'funded_proposals',
+                                    'unfunded_proposals',
+                                    'completed_proposals',
+                                    'own_proposals',
+                                    'collaborating_proposals',
+                                ])
+                                ->with([])->paginate(20)
+                        )
+                    )
+                ),
+                'ownProposals' => $commonOwnProposalsCount,
+                'collaboratingProposals' => $commonCollaboratingProposalsCount,
+            ]);
+        }
+
+        if (str_contains($path, '/groups')) {
+            return Inertia::render('Communities/Groups/Index', [
+                'community' => CommunityData::from($community),
+                'groups' => Inertia::optional(
+                    fn () => to_length_aware_paginator(
+                        GroupData::collect(
+                            $community->groups()
+                                ->withCount([
+                                    'proposals',
+                                    'funded_proposals',
+                                    'unfunded_proposals',
+                                    'completed_proposals',
+                                ])
+                                ->paginate(12)
+                        )
+                    )
+                ),
+                'ownProposals' => $commonOwnProposalsCount,
+                'collaboratingProposals' => $commonCollaboratingProposalsCount,
+            ]);
+        }
+
+        if (str_contains($path, '/events')) {
+            return Inertia::render('Communities/Events/Index', [
+                'community' => CommunityData::from($community),
+                'ownProposals' => $commonOwnProposalsCount,
+                'collaboratingProposals' => $commonCollaboratingProposalsCount,
+            ]);
+        }
+
+        if (str_contains($path, '/dashboard')) {
+
+            return Inertia::render('Communities/Dashboard/Index', [
+                'community' => CommunityData::from($community),
+                'coProposals' => 1,
+                'amountAwardedChartData' => $amountAwardedChartData,
+                'amountDistributedChartData' => $amountDistributedChartData,
+                'amountRemainingChartData' => $amountRemainingChartData,
+                'ownProposals' => $commonOwnProposalsCount,
+                'collaboratingProposals' => $commonCollaboratingProposalsCount,
+            ]);
+        }
+
         return Inertia::render('Communities/Dashboard/Index', [
             'community' => CommunityData::from($community),
             'amountAwardedChartData' => $amountAwardedChartData,
             'amountDistributedChartData' => $amountDistributedChartData,
             'amountRemainingChartData' => $amountRemainingChartData,
+            'ownProposals' => $commonOwnProposalsCount,
+            'collaboratingProposals' => $commonCollaboratingProposalsCount,
         ]);
     }
 

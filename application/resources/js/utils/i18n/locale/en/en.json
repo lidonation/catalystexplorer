@@ -578,6 +578,13 @@
             "arrowUp": "Arrow Up Icon"
         }
     },
+    "segments": {
+      "completed": "Completed",
+      "unfunded": "Unfunded",
+      "funded": "Funded",
+      "ownProposals":"Own Proposals",
+      "collaboratingProposals": "Collaborating Proposals"
+    },
     "users": {
         "editProfile": "Edit profile",
         "viewProfile": "View Full Profile",
