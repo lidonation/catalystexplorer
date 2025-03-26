@@ -304,7 +304,7 @@ class CommunityController extends Controller
 
     public function query(Request $request)
     {
-        $query = Community::query()->with(['proposals.campaign', 'ideascale_profiles.claimed_by'])
+        $query = Community::query()->with(['proposals.campaign'])
             ->withCount('proposals');
 
         // set necessary counts
