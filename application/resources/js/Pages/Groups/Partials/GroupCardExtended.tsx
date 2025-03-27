@@ -16,7 +16,7 @@ interface GroupCardFullProps {
     children?: React.ReactNode;
 }
 
-const GroupCardExtended: React.FC<GroupCardFullProps> = ({ group }) => {
+const GroupCardExtended: React.FC<GroupCardFullProps> = ({ group, children }) => {
     const { t } = useTranslation();
 
     const completedGroupsCount = group?.completed_proposals_count ?? 0;
@@ -55,7 +55,7 @@ const GroupCardExtended: React.FC<GroupCardFullProps> = ({ group }) => {
 
     return (
         <div className="bg-background flex h-full w-full flex-col rounded-lg shadow-md">
-            <GroupHeroSection group={group} />
+            <GroupHeroSection group={group} children={children}/>
 
             <div className="mt-4 p-3">
                 <div className="flex w-full flex-col items-center gap-4">
