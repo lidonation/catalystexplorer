@@ -33,7 +33,7 @@ class MilestoneSomReviewFactory extends Factory
             'current' => $this->faker->boolean,
             'role' => $this->faker->randomElement([MilestoneRoleEnum::from(0)->role(), MilestoneRoleEnum::from(1)->role(), MilestoneRoleEnum::from(2)->role(), MilestoneRoleEnum::from(3)->role(), MilestoneRoleEnum::from(4)->role()]),
             'user_id' => (string) $this->faker->randomNumber(5, true),
-            'created_at' => Carbon::now()->subDays(rand(0, 3 * 365)),
+            'created_at' => Carbon::now()->subDays($this->faker->numberBetween(0, 3 * 365)),
         ];
     }
 }
