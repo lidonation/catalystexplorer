@@ -60,7 +60,7 @@ const Index: React.FC<ReviewsPageProps> = ({
                     showFilters ? 'max-h-[500px]' : 'max-h-0'
                 }`}
             >
-                <ProposalFilters />
+                {/* <ProposalFilters /> */}
             </section>
 
             <div className="flex w-full flex-col items-center justify-center">
