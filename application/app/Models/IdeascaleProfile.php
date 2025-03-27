@@ -20,11 +20,10 @@ use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\Translatable\HasTranslations;
 use Staudenmeir\EloquentHasManyDeep\HasManyDeep;
-use Staudenmeir\EloquentHasManyDeep\HasRelationships;
 
 class IdeascaleProfile extends Model implements HasMedia
 {
-    use HasConnections, HasMetaData, HasRelationships, HasTranslations, InteractsWithMedia, Searchable;
+    use HasConnections, HasMetaData, HasTranslations, InteractsWithMedia, Searchable;
 
     public int $maxValuesPerFacet = 8000;
 
@@ -233,11 +232,11 @@ class IdeascaleProfile extends Model implements HasMedia
 
     public function proposal_schedules()
     {
-        return ProposalMilestone::whereHas('proposal', function ($query) {
+        return ProjectSchedule::whereHas('proposal', function ($query) {
             $query->has('users', $this->id);
         });
 
-        //        return $this->hasMany(ProposalMilestone::class)
+        //        return $this->hasMany(ProjectSchedule::class)
         //            ->whereHas('proposal', function ($query) {
         //                $query->has('users', $this->id);
         //            });

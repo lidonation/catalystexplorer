@@ -171,6 +171,11 @@ Route::localized(
             });
         });
 
+        Route::prefix('/milestones')->as('milestones.')->group(function () {
+            Route::get('/', [MilestoneController::class, 'index'])
+                ->name('index');
+        });
+
         Route::prefix('/reviews')->as('reviews.')->group(function () {
             Route::get('/', [ReviewsController::class, 'index'])
                 ->name('index');
@@ -215,7 +220,7 @@ Route::localized(
             Route::prefix('/transactions')->as('transactions.')->group(function () {
                 Route::get('/', [TransactionController::class, 'index'])
                     ->name('index');
-                Route::get('/{catalystTransaction}', [TransactionController::class, 'show'])
+                Route::get('/{transaction}', [TransactionController::class, 'show'])
                     ->name('show');
             });
         });

@@ -1,7 +1,6 @@
 import { Head, WhenVisible } from '@inertiajs/react';
 import { useTranslation } from 'react-i18next';
 import ReviewData = App.DataTransferObjects.ReviewData;
-import ReviewHorizontalCard from '@/Pages/Reviews/Partials/ReviewHorizontalCard';
 import ReviewHorizontalCardLoader from './ReviewHorizontalCardLoader';
 import Title from "@/Components/atoms/Title";
 

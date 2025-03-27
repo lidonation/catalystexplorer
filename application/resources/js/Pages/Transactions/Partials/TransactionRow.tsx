@@ -25,17 +25,17 @@ const TransactionRow: React.FC<TransactionRowProps> = ({
   onViewDetails,
 }) => {
   const { t } = useTranslation();
-  
+
   const localizedRoute = useLocalizedRoute('jormungandr.transactions.show', {
-    txHash: transaction?.tx_hash,
+      transaction: transaction?.tx_hash,
   });
 
   const handleViewDetails = () => {
-  
+
       router.visit(localizedRoute);
-    
+
   };
-  
+
   return (
     <tr className="border-b border-background-lighter">
       {columns.map((column) => (

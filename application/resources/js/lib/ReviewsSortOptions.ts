@@ -15,11 +15,11 @@ const ReviewsSortOptions = () => {
         },
         {
             label: t('reviews.options.avgReputationScoreAsc'),
-            value: 'avgReputation:asc',
+            value: 'reviewer.avg_reputation_score:asc',
         },
         {
             label: t('reviews.options.avgReputationScoreDesc'),
-            value: 'avgReputation:desc',
+            value: 'reviewer.avg_reputation_score:desc',
         },
     ];
 };

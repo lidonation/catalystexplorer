@@ -82,12 +82,12 @@ class ReviewsController extends Controller
             $args['sort'] = ["$this->sortBy:$this->sortOrder"];
         }
 
-        $page = isset($this->queryParams[ProposalSearchParams::PAGE()->value])
-            ? (int) $this->queryParams[ProposalSearchParams::PAGE()->value]
+        $page = isset($this->currentPage)
+            ? (int) $this->currentPage
             : 1;
 
-        $limit = isset($this->queryParams[ProposalSearchParams::LIMIT()->value])
-            ? (int) $this->queryParams[ProposalSearchParams::LIMIT()->value]
+        $limit = isset($this->limit)
+            ? (int) $this->limit
             : 64;
 
         $args['offset'] = ($page - 1) * $limit;
@@ -138,7 +138,6 @@ class ReviewsController extends Controller
         $this->setCounts($response->facetDistribution, $response->facetStats);
 
         return $pagination->toArray();
-
     }
 
     protected function setFilters(Request $request): void
@@ -148,16 +147,12 @@ class ReviewsController extends Controller
         $this->search = $request->input(QueryParamsEnum::QUERY(), null);
 
         $sort = collect(explode(':', $request->input(QueryParamsEnum::SORTS(), '')))->filter();
-        if ($sort->isEmpty()) {
-            $sort = collect(explode(':', collect([
-                'title:asc',
-                'title:desc',
-                'status:desc',
-                'status:asc',
-            ])->random()));
+
+        if (!$sort->isEmpty()) {
+            $this->sortBy = $sort->first();
+            $this->sortOrder = $sort->last();
         }
-        $this->sortBy = $sort->first();
-        $this->sortOrder = $sort->last();
+
     }
 
     protected function getUserFilters(): array
