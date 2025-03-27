@@ -76,69 +76,39 @@ const MetaData = ({ nft, isOwner }: MetaDataProps) => {
       try {
         // Try main metadata first
         if (nft.metadata) {
-          let meta = nft.metadata;
-          if (typeof meta === 'string') {
-            meta = JSON.parse(meta);
-          }
+          const meta = typeof nft.metadata === 'string' 
+            ? safeJsonParse(nft.metadata, {}) 
+            : (nft.metadata as Record<string, unknown>);
           
-          // Map metadata keys to our keys
-          if (meta.campaign_name && !values.campaignName) 
-            values.campaignName = meta.campaign_name;
-            
-          if (meta.fundedProjectNumber && !values.projectNumber) 
-            values.projectNumber = meta.fundedProjectNumber.toString();
-            
-          if (meta.projectTitle && !values.projectTitle) 
-            values.projectTitle = meta.projectTitle;
-            
-          if (meta.yes_votes && !values.yesVotes) 
-            values.yesVotes = meta.yes_votes.toString();
-            
-          if (meta.no_votes && !values.noVotes) 
-            values.noVotes = meta.no_votes.toString();
-            
-          if (meta.role && !values.role) 
-            values.role = meta.role;
+          const keyMappings: Record<string, readonly string[]> = {
+            campaignName: ['Project Catalyst Campaign Name'],
+            projectNumber: ['Funded Project Number'],
+            projectTitle: ['Project Title'],
+            yesVotes: ['yes votes'],
+            noVotes: ['no votes'],
+            role: ['role']
+          };
+          
+          extractValuesFromMapping(meta, keyMappings, values);
         }
         
-        // Check NMKR metadata too
-        const nmkrMeta = nft.metas?.find((m: { key: string; }) => m.key === 'nmkr_metadata');
-        if (nmkrMeta && nmkrMeta.content) {
-          const meta = JSON.parse(nmkrMeta.content);
+        const nmkrMeta = nft.metas?.find(m => m.key === 'nmkr_metadata');
+        if (nmkrMeta?.content) {
+          const meta = safeJsonParse(nmkrMeta.content, {});
           
-          // Extract NFT data from the complex NMKR structure
-          let nftData = null;
-          
-          if (meta['721']) {
-            const policyKeys = Object.keys(meta['721']).filter(k => k !== 'version');
-            for (const policy of policyKeys) {
-              const assetKeys = Object.keys(meta['721'][policy]).filter(k => k !== 'version');
-              if (assetKeys.length > 0) {
-                nftData = meta['721'][policy][assetKeys[0]];
-                break;
-              }
-            }
-          }
+          const nftData = extractNftDataFromNmkr(meta);
           
           if (nftData) {
-            // Map NMKR keys to our keys
-            if (nftData.projectCatalystCampaignName && !values.campaignName)
-              values.campaignName = nftData.projectCatalystCampaignName;
-              
-            if (nftData.fundedProjectNumber && !values.projectNumber)
-              values.projectNumber = nftData.fundedProjectNumber.toString();
-              
-            if (nftData.projectTitle && !values.projectTitle)
-              values.projectTitle = nftData.projectTitle;
-              
-            if (nftData.yesVotes && !values.yesVotes)
-              values.yesVotes = nftData.yesVotes.toString();
-              
-            if (nftData.noVotes && !values.noVotes)
-              values.noVotes = nftData.noVotes.toString();
-              
-            if (nftData.role && !values.role)
-              values.role = nftData.role;
+            const keyMappings: Record<string, readonly string[]> = {
+              campaignName: ['Project Catalyst Campaign Name'],
+              projectNumber: ['Funded Project Number'],
+              projectTitle: ['Project Title'],
+              yesVotes: ['yes votes'],
+              noVotes: ['no votes'],
+              role: ['role']
+            };
+            
+            extractValuesFromMapping(nftData, keyMappings, values);
           }
         }
       } catch (e) {
@@ -146,6 +116,49 @@ const MetaData = ({ nft, isOwner }: MetaDataProps) => {
       }
       
       return values;
+    };
+    
+    const safeJsonParse = (jsonString: string, fallback: Record<string, unknown> = {}): Record<string, unknown> => {
+      try {
+        return JSON.parse(jsonString);
+      } catch (e) {
+        console.error('Error parsing JSON:', e);
+        return fallback;
+      }
+    };
+    
+    const extractValuesFromMapping = (
+      source: Record<string, unknown>,
+      mappings: Record<string, readonly string[]>,
+      target: Record<string, string>
+    ): void => {
+      Object.entries(mappings).forEach(([valueKey, possibleKeys]) => {
+        for (const key of possibleKeys) {
+          const value = source[key];
+          if (value !== undefined && value !== null && !target[valueKey]) {
+            target[valueKey] = String(value);
+            break;
+          }
+        }
+      });
+    };
+    
+    const extractNftDataFromNmkr = (meta: Record<string, unknown>): Record<string, unknown> | null => {
+      if (!meta['721']) return null;
+      
+      const nmkrMeta = meta['721'] as Record<string, unknown>;
+      const policyKeys = Object.keys(nmkrMeta).filter(k => k !== 'version');
+      
+      for (const policy of policyKeys) {
+        const policyData = nmkrMeta[policy] as Record<string, unknown>;
+        const assetKeys = Object.keys(policyData).filter(k => k !== 'version');
+        
+        if (assetKeys.length > 0) {
+          return policyData[assetKeys[0]] as Record<string, unknown>;
+        }
+      }
+      
+      return null;
     };
     
     // Get struck states
