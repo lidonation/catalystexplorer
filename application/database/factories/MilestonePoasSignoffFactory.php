@@ -23,7 +23,7 @@ class MilestonePoasSignoffFactory extends Factory
             'id' => $this->faker->unique()->randomNumber(5, true),
             'milestone_poas_id' => MilestonePoas::factory(),
             'proposal_id' => Proposal::factory(),
-            'created_at' => Carbon::now()->subDays(rand(0, 3 * 365)),
+            'created_at' => Carbon::now()->subDays($this->faker->numberBetween(0, 3 * 365)),
             'user_id' => (string) $this->faker->randomNumber(5, true),
         ];
     }

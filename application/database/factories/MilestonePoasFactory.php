@@ -27,7 +27,7 @@ class MilestonePoasFactory extends Factory
             'proposal_id' => Proposal::factory(),
             'content' => $this->faker->paragraphs(3, true),
             'milestone_id' => Milestone::factory(),
-            'created_at' => Carbon::now()->subDays(rand(0, 3 * 365)),
+            'created_at' => Carbon::now()->subDays($this->faker->numberBetween(0, 3 * 365)),
             'current' => $this->faker->boolean,
         ];
     }
