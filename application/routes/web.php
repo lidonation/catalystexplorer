@@ -171,6 +171,11 @@ Route::localized(
             });
         });
 
+        Route::prefix('/milestones')->as('milestones.')->group(function () {
+            Route::get('/', [MilestoneController::class, 'index'])
+                ->name('index');
+        });
+
         Route::prefix('/reviews')->as('reviews.')->group(function () {
             Route::get('/', [ReviewsController::class, 'index'])
                 ->name('index');
