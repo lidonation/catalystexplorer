@@ -411,7 +411,6 @@ content: string | null;
 status: string | null;
 rating: number | null;
 reviewer: App.DataTransferObjects.ReviewerData | null;
-type: string | null;
 ranking_total: number | null;
 helpful_total: number | null;
 not_helpful_total: number | null;
@@ -430,7 +429,8 @@ export type ReviewerData = {
 hash: string | null;
 reviews_count: any;
 reputation_scores?: any;
-catalyst_reviewer_id: any;
+catalyst_reviewer_id: string;
+avg_reputation_score: number | null;
 claimed_by?: App.DataTransferObjects.UserData;
 };
 export type ReviewerReputationScoreData = {

@@ -1,22 +1,34 @@
-import { Head } from '@inertiajs/react';
-import { useTranslation } from 'react-i18next';
-import React from 'react';
+import SearchControls from '@/Components/atoms/SearchControls';
 import Title from '@/Components/atoms/Title';
-import {PaginatedData} from "../../../types/paginated-data";
-import {ReviewList} from "@/Components/ReviewList";
-import ReviewData = App.DataTransferObjects.ReviewData;
-import { SearchParams } from '../../../types/search-params';
+import { ReviewList } from '@/Components/ReviewList';
 import { FiltersProvider } from '@/Context/FiltersContext';
+import { Head } from '@inertiajs/react';
+import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { PaginatedData } from '../../../types/paginated-data';
+import { SearchParams } from '../../../types/search-params';
+import FundFiltersContainer from '../Proposals/Partials/FundFiltersContainer';
+import ProposalFilters from '../Proposals/Partials/ProposalFilters';
+import ReviewData = App.DataTransferObjects.ReviewData;
+import ReviewsSortOptions from '@/lib/ReviewsSortOptions';
 
 interface ReviewsPageProps extends Record<string, unknown> {
     reviews: PaginatedData<ReviewData[]>;
+    funds: any;
     search?: string | null;
     sort?: string;
     filters: SearchParams;
 }
 
-const Index: React.FC<ReviewsPageProps> = ({ reviews, filters }) => {
+const Index: React.FC<ReviewsPageProps> = ({
+    reviews,
+    filters,
+    funds,
+    sort,
+    search,
+}) => {
     const { t } = useTranslation();
+    const [showFilters, setShowFilters] = useState(false);
 
     return (
         <FiltersProvider
@@ -31,8 +43,28 @@ const Index: React.FC<ReviewsPageProps> = ({ reviews, filters }) => {
                 </div>
             </header>
 
-            <div className="flex  w-full flex-col items-center justify-center">
-                <section className='container'>
+            <section className="container">
+                <FundFiltersContainer funds={funds} />
+            </section>
+
+            <section className="container">
+                <SearchControls
+                    onFiltersToggle={setShowFilters}
+                    sortOptions={ReviewsSortOptions()}
+                    searchPlaceholder={t('searchBar.placeholder')}
+                />
+            </section>
+
+            <section
+                className={`container flex w-full flex-col items-center justify-center overflow-hidden transition-[max-height] duration-500 ease-in-out ${
+                    showFilters ? 'max-h-[500px]' : 'max-h-0'
+                }`}
+            >
+                {/* <ProposalFilters /> */}
+            </section>
+
+            <div className="flex w-full flex-col items-center justify-center">
+                <section className="container">
                     <ReviewList reviews={reviews} />
                 </section>
             </div>
