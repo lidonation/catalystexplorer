@@ -28,8 +28,6 @@ class ReviewData extends Data
 
         public ?ReviewerData $reviewer,
 
-        public ?string $type,
-
         public ?int $ranking_total,
 
         public ?int $helpful_total,

@@ -6,8 +6,10 @@ namespace App\Models;
 
 use App\Enums\CatalystCurrencySymbols;
 use App\Enums\ProposalStatus;
+use App\Models\Scopes\LimitScope;
 use App\Traits\HasConnections;
 use App\Traits\HasMetaData;
+use Illuminate\Database\Eloquent\Attributes\ScopedBy;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -21,6 +23,7 @@ use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\Translatable\HasTranslations;
 use Staudenmeir\EloquentHasManyDeep\HasManyDeep;
 
+// #[ScopedBy(new LimitScope(64))]
 class IdeascaleProfile extends Model implements HasMedia
 {
     use HasConnections, HasMetaData, HasTranslations, InteractsWithMedia, Searchable;

@@ -5,7 +5,7 @@
     "appMessage": "All Votes must be submitted in the official Catalyst Voting App. This is a research & planning tool only!",
     "articles": "Articles",
     "assetName": "Asset Name",
-    "API":"API",
+    "API": "API",
     "bio": "Bio",
     "bookmarks": "My Bookmarks",
     "blockchainData": "Blockchain Data",
@@ -23,6 +23,7 @@
     "cookies": "Cookies",
     "copyright": "© 2024 Catalyst Explorer. All rights reserved.",
     "connections": "Connections",
+    "explore": "Explore",
     "minting": "You're Minting",
     "loginToMint": "Login to Mint",
     "mustBeProposer": "Must Be Proposer",
@@ -31,7 +32,7 @@
     "dReps": "DReps",
     "email": "Email",
     "emailAddress": "Email Address",
-    "general":"General",
+    "general": "General",
     "facebook": "Facebook",
     "forgotPassword": "Forgot password",
     "funding": "Funding",
@@ -40,7 +41,7 @@
     "home": "Home",
     "jormungandr": "Jormungandr",
     "knowledgeBase": "Knowledge Base",
-    "impact":"Impact",
+    "impact": "Impact",
     "legal": "Legal",
     "licenses": "Licenses",
     "login": "Login",
@@ -75,8 +76,7 @@
     "privacy": "Privacy",
     "profileBackground": "Profile Background",
     "projectCatalyst": "Project catalyst Campaign name",
-    "reviews": "Reviews",
-    "reviewers":"Reviewers",
+    "reviewers": "Reviewers",
     "register": "Register",
     "reviewerReputationScore": "Reviewer Reputation Score",
     "searchQuery": "No results match your search query",
@@ -89,7 +89,7 @@
     "terms": "Terms",
     "twitter": "Twitter",
     "votes": "My Votes",
-    "voters":"Voters",
+    "voters": "Voters",
     "wallets": "Wallets",
     "details": "Details",
     "teams": "Team",
@@ -137,7 +137,7 @@
             "selectProfile": "Select Profile",
             "selectProposal": "Select Proposal",
             "selectProfileInfo": "Choose the profile(s) you want to mint from. The selected profile should be linked to the completed project whose NFT you’re minting.Not sure which one to pick? No worries—just select all available profiles and we’ll handle the rest! 🚀",
-            "selectProposalInfo":"To get started, please select proposal to mint from"
+            "selectProposalInfo": "To get started, please select proposal to mint from"
         }
     },
     "error404": {
@@ -469,12 +469,13 @@
         "title": "Catalyst Communities",
         "subtitle": "Diverse, independent, and together inspiring the highest level of human collaboration",
         "proposalSummary": "Proposals Summary",
-        "totalRequested":"Total Requested",
-        "proposers": "Proposers",
+        "totalRequested": "Total Requested",
+        "proposals": "Proposals Supported",
+        "proposers": "People Supported",
         "collaborators": "Collaborators",
-        "totalAmountAwarded" : "Total Amount Awarded",
-        "totalAmountDistributed" : "Total Amount Distributed",
-        "totalAmountRemaining" : "Total Amount Remaining",
+        "totalAmountAwarded": "Total Amount Awarded",
+        "totalAmountDistributed": "Total Amount Distributed",
+        "totalAmountRemaining": "Total Amount Remaining",
         "totalAwarded": "Total Amount of ADA & USD Awarded",
         "totalDistributed": "Total Amount of ADA & USD Distributed",
         "totalRemained": "Total Amount of ADA & USD Remaining",
@@ -535,7 +536,7 @@
             "chevron_down": "Chevron Down Icon",
             "close": "close Icon",
             "connect_wallet": "Connect wallet Icon",
-            "connections":"Connections Icon",
+            "connections": "Connections Icon",
             "darkMode": "Dark Mode Icon",
             "discord": "Discord",
             "folder": "Folder Icon",
@@ -548,7 +549,7 @@
             "mail": "Mail Icon",
             "menu": "Menu Icon",
             "miniCardSwitch": "Mini Card Switch Icon",
-            "more":"More Icon",
+            "more": "More Icon",
             "note": "Note Icon",
             "notificationBox": "Notification Box Icon",
             "numbers": "Numbers Icon",
@@ -582,11 +583,11 @@
         }
     },
     "segments": {
-      "completed": "Completed",
-      "unfunded": "Unfunded",
-      "funded": "Funded",
-      "ownProposals":"Own Proposals",
-      "collaboratingProposals": "Collaborating Proposals"
+        "completed": "Completed",
+        "unfunded": "Unfunded",
+        "funded": "Funded",
+        "ownProposals": "Own Proposals",
+        "collaboratingProposals": "Collaborating Proposals"
     },
     "users": {
         "editProfile": "Edit profile",
@@ -735,6 +736,15 @@
             "inactive": "Inactive"
         }
     },
+    "reviews": {
+        "reviews": "Reviews",
+        "options": {
+            "ratingAsc": "Rating: Low to High",
+            "ratingDesc": "Rating: High to Low",
+            "avgReputationScoreAsc": "Reputation: Low to High",
+            "avgReputationScoreDesc": "Reputation: High to Low"
+        }
+    },
     "transactions": {
         "title": "Transactions",
         "pageTitle": "Catalyst On Chain Transactions",
@@ -766,7 +776,7 @@
         },
         "searchBar": {
             "placeholder": "Search transaction hash, epoch, block"
-        }  
+        }
     },
     "wallet": {
         "connect": {

@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use App\Casts\DateFormatCast;
 use App\Enums\CatalystCurrencySymbols;
 use App\Enums\ProposalStatus;
 use App\Traits\HasConnections;
@@ -15,18 +14,20 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Log;
 use Laravel\Scout\Searchable;
+use Staudenmeir\EloquentHasManyDeep\HasManyDeep;
+use Staudenmeir\EloquentHasManyDeep\HasRelationships;
 
 class Community extends Model
 {
-    use HasConnections, HasTaxonomies, Searchable;
+    use HasConnections, HasRelationships, HasTaxonomies, Searchable;
 
     protected $appends = ['hash'];
 
     protected function casts(): array
     {
         return [
-            'created_at' => DateFormatCast::class,
-            'updated_at' => DateFormatCast::class,
+            'created_at' => 'datetime',
+            'updated_at' => 'datetime',
         ];
     }
 
@@ -62,31 +63,6 @@ class Community extends Model
         });
 
         return $query;
-    }
-
-    public function proposals(): BelongsToMany
-    {
-        return $this->belongsToMany(Proposal::class, 'community_has_proposal', 'community_id', 'proposal_id', 'id', 'id', 'proposals');
-    }
-
-    public function funded_proposals(): BelongsToMany
-    {
-        return $this->proposals()
-            ->where(['type' => 'proposal'])
-            ->whereNotNull('funded_at');
-    }
-
-    public function completed_proposals(): BelongsToMany
-    {
-        return $this->proposals()
-            ->where(['type' => 'proposal', 'status' => ProposalStatus::complete()->value]);
-    }
-
-    public function unfunded_proposals(): BelongsToMany
-    {
-        return $this->proposals()
-            ->where('type', 'proposal')
-            ->whereNull('funded_at');
     }
 
     public function amountAwardedAda(): Attribute
@@ -142,21 +118,38 @@ class Community extends Model
         );
     }
 
-    public function ideascale_profiles(): Builder
+    public function proposals(): BelongsToMany
     {
-        return IdeascaleProfile::whereHas('proposals', function ($query) {
-            $query->whereHas('communities', function ($q) {
-                $q->where('communities.id', $this->id);
-            });
-        });
+        return $this->belongsToMany(Proposal::class, 'community_has_proposal', 'community_id', 'proposal_id', 'id', 'id', 'proposals');
     }
 
-    public function groups(): Builder
+    public function funded_proposals(): BelongsToMany
     {
-        return Group::whereHas('proposals', function ($query) {
-            $query->whereHas('communities', function ($q) {
-                $q->where('communities.id', $this->id);
-            });
-        });
+        return $this->proposals()
+            ->where(['type' => 'proposal'])
+            ->whereNotNull('funded_at');
+    }
+
+    public function completed_proposals(): BelongsToMany
+    {
+        return $this->proposals()
+            ->where(['type' => 'proposal', 'status' => ProposalStatus::complete()->value]);
+    }
+
+    public function unfunded_proposals(): BelongsToMany
+    {
+        return $this->proposals()
+            ->where('type', 'proposal')
+            ->whereNull('funded_at');
+    }
+
+    public function ideascale_profiles(): HasManyDeep
+    {
+        return $this->hasManyDeepFromRelationsWithConstraints([$this, 'proposals'], [new Proposal, 'users']);
+    }
+
+    public function groups(): HasManyDeep
+    {
+        return $this->hasManyDeepFromRelationsWithConstraints([$this, 'proposals'], [new Proposal, 'groups']);
     }
 }

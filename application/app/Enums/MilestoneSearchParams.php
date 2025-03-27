@@ -7,7 +7,6 @@ namespace App\Enums;
 use Spatie\Enum\Enum;
 
 /**
- 
  * @method static self PAGE()
  * @method static self LIMIT()
  * @method static self QUERY()

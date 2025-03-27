@@ -35,7 +35,7 @@ class ProjectSchedule extends Model
             'proposal.users.hash',
             'proposal.project_length',
             'proposal.amount_requested',
-            'proposal.amount_received'
+            'proposal.amount_received',
         ];
     }
 
@@ -67,10 +67,9 @@ class ProjectSchedule extends Model
             'on_track' => $this->on_track,
             'proposal' => $this->proposal,
             'fund' => $this->fund,
-            'milestones' => $this->milestones->map(fn ($m) => $m->toArray())
+            'milestones' => $this->milestones->map(fn ($m) => $m->toArray()),
         ]);
     }
-
 
     public function proposal(): BelongsTo
     {

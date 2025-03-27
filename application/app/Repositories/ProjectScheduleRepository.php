@@ -36,7 +36,7 @@ class ProjectScheduleRepository extends Repository
                             'currency',
                             'status',
                             'proposal',
-                            'milestones'
+                            'milestones',
                         ],
                     ],
                     $args

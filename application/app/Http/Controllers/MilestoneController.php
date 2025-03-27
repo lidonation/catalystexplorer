@@ -29,6 +29,7 @@ class MilestoneController extends Controller
     {
 
         $this->getProps($request);
+
         return Inertia::render('Milestones/Index', [
             'projectSchedules' => Inertia::defer(fn () => $this->query()),
             'filters' => $this->queryParams,
