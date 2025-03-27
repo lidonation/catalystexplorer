@@ -3,14 +3,14 @@ import { Head } from '@inertiajs/react';
 import { useTranslation } from 'react-i18next';
 import { PaginatedData } from '../../../types/paginated-data';
 import { SearchParams } from '../../../types/search-params';
-import ProposalMilestoneData = App.DataTransferObjects.ProposalMilestoneData;
+import ProjectScheduleData = App.DataTransferObjects.ProjectScheduleData;
 
 interface ActiveFundsProp extends Record<string, unknown> {
-    proposalMilestones: PaginatedData<ProposalMilestoneData[]>;
+    projectSchedules: PaginatedData<ProjectScheduleData[]>;
     filters: SearchParams;
 }
 
-const Index: React.FC<ActiveFundsProp> = ({ proposalMilestones, filters }) => {
+const Index: React.FC<ActiveFundsProp> = ({ projectSchedules, filters }) => {
     const { t } = useTranslation();
 
     return (
@@ -27,7 +27,7 @@ const Index: React.FC<ActiveFundsProp> = ({ proposalMilestones, filters }) => {
             </header>
 
             <div className="flex h-screen w-full flex-col items-center justify-center">
-                <Title level="2">{t('comingSoon')}</Title>
+                <Title level="2">{JSON.stringify(projectSchedules)}</Title>
             </div>
         </>
     );

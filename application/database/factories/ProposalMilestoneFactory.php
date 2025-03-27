@@ -3,14 +3,14 @@
 namespace Database\Factories;
 
 use App\Models\Milestone;
-use App\Models\ProposalMilestone;
+use App\Models\ProjectSchedule;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\ProposalMilestone>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\ProjectSchedule>
  */
-class ProposalMilestoneFactory extends Factory
+class ProjectScheduleFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -41,16 +41,16 @@ class ProposalMilestoneFactory extends Factory
 
     public function configure(): static
     {
-        return $this->afterCreating(function (ProposalMilestone $proposalMilestone) {
+        return $this->afterCreating(function (ProjectSchedule $projectSchedule) {
             for ($i = 1; $i <= 4; $i++) {
                 Milestone::factory()
                     ->create([
-                        'proposal_id' => $proposalMilestone->proposal_id,
-                        'fund_id' => $proposalMilestone->fund_id,
-                        'proposal_milestone_id' => $proposalMilestone->id,
-                        'cost' => $proposalMilestone->budget / 4,
+                        'proposal_id' => $projectSchedule->proposal_id,
+                        'fund_id' => $projectSchedule->fund_id,
+                        'proposal_milestone_id' => $projectSchedule->id,
+                        'cost' => $projectSchedule->budget / 4,
                         'milestone' => $i,
-                        'created_at' => $proposalMilestone->created_at
+                        'created_at' => $projectSchedule->created_at
                     ]);
             }
         });

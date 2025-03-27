@@ -232,11 +232,11 @@ class IdeascaleProfile extends Model implements HasMedia
 
     public function proposal_schedules()
     {
-        return ProposalMilestone::whereHas('proposal', function ($query) {
+        return ProjectSchedule::whereHas('proposal', function ($query) {
             $query->has('users', $this->id);
         });
 
-        //        return $this->hasMany(ProposalMilestone::class)
+        //        return $this->hasMany(ProjectSchedule::class)
         //            ->whereHas('proposal', function ($query) {
         //                $query->has('users', $this->id);
         //            });

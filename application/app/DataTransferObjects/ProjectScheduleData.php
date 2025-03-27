@@ -11,7 +11,7 @@ use Spatie\LaravelData\DataCollection;
 use Spatie\TypeScriptTransformer\Attributes\TypeScript;
 
 #[TypeScript]
-final class ProposalMilestoneData extends Data
+final class ProjectScheduleData extends Data
 {
     public function __construct(
 

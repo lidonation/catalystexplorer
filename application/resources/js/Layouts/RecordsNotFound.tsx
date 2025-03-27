@@ -11,7 +11,7 @@ type RecordsNotFoundProps = {
         | 'search'
         | 'communities'
         | 'connections'
-        | 'proposalMilestones';
+        | 'projectSchedules';
     searchTerm?: string;
     showIcon?: boolean;
 };

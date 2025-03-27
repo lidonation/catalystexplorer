@@ -4,20 +4,20 @@ declare(strict_types=1);
 
 namespace App\Repositories;
 
-use App\Models\ProposalMilestone;
+use App\Models\ProjectSchedule;
 use Laravel\Scout\Builder;
 use Meilisearch\Endpoints\Indexes;
 
-class ProposalMilestoneRepository extends Repository
+class ProjectScheduleRepository extends Repository
 {
-    public function __construct(ProposalMilestone $model)
+    public function __construct(ProjectSchedule $model)
     {
         parent::__construct($model);
     }
 
     public function search(string $term, array $args = []): Builder
     {
-        return ProposalMilestone::search(
+        return ProjectSchedule::search(
             $term,
             function (Indexes $index, $query) use ($args) {
                 $args = array_merge(
@@ -30,7 +30,7 @@ class ProposalMilestoneRepository extends Repository
                             'project_id',
                             'created_at',
                             'budget',
-                            'milestone_qty',
+                            'milestone_count',
                             'funds_distributed',
                             'starting_date',
                             'currency',

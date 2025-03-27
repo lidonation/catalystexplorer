@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use App\DataTransferObjects\ProposalMilestoneData;
+use App\DataTransferObjects\ProjectScheduleData;
 use App\Enums\MilestoneSearchParams;
-use App\Repositories\ProposalMilestoneRepository;
+use App\Repositories\ProjectScheduleRepository;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Fluent;
@@ -19,7 +19,7 @@ class MilestoneController extends Controller
 
     protected int $currentPage = 1;
 
-    protected ?string $sortBy = 'title';
+    protected ?string $sortBy = 'milestones_count';
 
     protected ?string $sortOrder = 'desc';
 
@@ -30,7 +30,7 @@ class MilestoneController extends Controller
 
         $this->getProps($request);
         return Inertia::render('Milestones/Index', [
-            'proposalMilestones' => Inertia::defer(fn () => $this->query()),
+            'projectSchedules' => Inertia::defer(fn () => $this->query()),
             'filters' => $this->queryParams,
         ]);
     }
@@ -81,9 +81,9 @@ class MilestoneController extends Controller
         $args['offset'] = ($page - 1) * $limit;
         $args['limit'] = $limit;
 
-        $proposalMilestone = app(ProposalMilestoneRepository::class);
+        $projectSchedule = app(ProjectScheduleRepository::class);
 
-        $builder = $proposalMilestone->search(
+        $builder = $projectSchedule->search(
             $this->queryParams[MilestoneSearchParams::QUERY()->value] ?? '',
             $args
         );
@@ -91,7 +91,7 @@ class MilestoneController extends Controller
         $response = new Fluent($builder->raw());
 
         $pagination = new LengthAwarePaginator(
-            ProposalMilestoneData::collect($response->hits),
+            ProjectScheduleData::collect($response->hits),
             $response->estimatedTotalHits,
             $limit,
             $page,

@@ -10,21 +10,32 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\Artisan;
 use Laravel\Scout\Searchable;
 
-class ProposalMilestone extends Model
+class ProjectSchedule extends Model
 {
     use Searchable;
 
     public $timestamps = false;
 
+    public $table = 'proposal_milestones';
+
     public static function runCustomIndex(): void
     {
-        Artisan::call('cx:create-search-index App\\\\Models\\\\ProposalMilestone cx_proposal_milestone');
+        Artisan::call('cx:create-search-index App\\\\Models\\\\ProjectSchedule cx_project_schedule');
     }
 
     public static function getFilterableAttributes(): array
     {
         return [
-            'title'
+            'title',
+            'started_at',
+            'status',
+            'milestone_count',
+            'milestone.hash',
+            'fund.hash',
+            'proposal.users.hash',
+            'proposal.project_length',
+            'proposal.amount_requested',
+            'proposal.amount_received'
         ];
     }
 
@@ -38,7 +49,9 @@ class ProposalMilestone extends Model
     public static function getSortableAttributes(): array
     {
         return [
-            'title',
+            'milestones_count',
+            'proposal.amount_requested',
+            'proposal.project_length',
         ];
     }
 
@@ -47,13 +60,14 @@ class ProposalMilestone extends Model
      */
     public function toSearchableArray(): array
     {
+        $this->loadMissing(['proposal.users', 'fund', 'milestones']);
         $array = $this->toArray();
 
         return array_merge($array, [
             'on_track' => $this->on_track,
             'proposal' => $this->proposal,
             'fund' => $this->fund,
-            'milestones' => $this->milestones->map(fn ($m) => $m->toArray()),
+            'milestones' => $this->milestones->map(fn ($m) => $m->toArray())
         ]);
     }
 
