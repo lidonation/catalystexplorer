@@ -215,7 +215,7 @@ Route::localized(
             Route::prefix('/transactions')->as('transactions.')->group(function () {
                 Route::get('/', [TransactionController::class, 'index'])
                     ->name('index');
-                Route::get('/{catalystTransaction}', [TransactionController::class, 'show'])
+                Route::get('/{transaction}', [TransactionController::class, 'show'])
                     ->name('show');
             });
         });
