@@ -32,7 +32,7 @@ export const ReviewerInfo: React.FC<ReviewerInfoProps> = ({
                     </div>
                 )}
                 <Paragraph className="text-gray-persist text-sm">
-                    {review?.reviewer?.reviews_count} {t('reviews')}
+                    {review?.reviewer?.reviews_count} {t('reviews.reviews')}
                 </Paragraph>
             </div>
 

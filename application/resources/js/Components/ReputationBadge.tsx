@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
 import { ReputationTier } from '@/enums/reputation-tier-enums';
+import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import Paragraph from './atoms/Paragraph';
 import ToolTipHover from './ToolTipHover';
-import { useTranslation } from 'react-i18next';
 import ReviewData = App.DataTransferObjects.ReviewData;
 
 export interface ReputationBadgeProps {
@@ -17,22 +17,29 @@ export const ReputationBadge: React.FC<ReputationBadgeProps> = ({
     const { t } = useTranslation();
     const [showTooltip, setShowTooltip] = useState(false);
 
-    if (!review?.reviewer?.reputation_scores || review?.reviewer?.reputation_scores.length === 0) {
+    if (
+        !review?.reviewer?.reputation_scores ||
+        review?.reviewer?.reputation_scores.length === 0
+    ) {
         return null;
     }
 
-    const finalScore = review?.reviewer?.reputation_scores[0].score;
+    const finalScore = review?.reviewer?.avg_reputation_score ;
 
-    const getTier = (score: number) => {
+    const getTier = (score: number | null) => {
+        if (!score) return;
+
         if (score >= ReputationTier.GOOD_MARK) return ReputationTier.GOOD;
         if (score >= ReputationTier.NEUTRAL_MARK) return ReputationTier.NEUTRAL;
-        if (score >= ReputationTier.NOT_GREAT_MARK) return ReputationTier.NOT_GREAT;
+        if (score >= ReputationTier.NOT_GREAT_MARK)
+            return ReputationTier.NOT_GREAT;
         return ReputationTier.NOT_GREAT;
     };
 
     const tier = getTier(finalScore);
 
-    const hexagonPath = "M28,4 C29.6,4 31.2,4.4 32.5,5.1 L48.6,15.1 C50.5,15.8 51.5,16.9 51.5,18 L51.5,38 C51.5,39.1 50.5,40.2 48.6,40.9 L32.5,50.9 C31.2,51.6 29.6,52 28,52 C26.4,52 24.8,51.6 23.5,50.9 L7.4,40.9 C5.5,40.2 4.5,39.1 4.5,38 L4.5,18 C4.5,16.9 5.5,15.8 7.4,15.1 L23.5,5.1 C24.8,4.4 26.4,4 28,4 Z";
+    const hexagonPath =
+        'M28,4 C29.6,4 31.2,4.4 32.5,5.1 L48.6,15.1 C50.5,15.8 51.5,16.9 51.5,18 L51.5,38 C51.5,39.1 50.5,40.2 48.6,40.9 L32.5,50.9 C31.2,51.6 29.6,52 28,52 C26.4,52 24.8,51.6 23.5,50.9 L7.4,40.9 C5.5,40.2 4.5,39.1 4.5,38 L4.5,18 C4.5,16.9 5.5,15.8 7.4,15.1 L23.5,5.1 C24.8,4.4 26.4,4 28,4 Z';
 
     // Define Tailwind color classes based on tier
     const getColorClasses = () => {
@@ -41,25 +48,25 @@ export const ReputationBadge: React.FC<ReputationBadgeProps> = ({
                 return {
                     fillClass: 'fill-success-light',
                     strokeClass: 'stroke-success-border',
-                    textClass: 'text-success'
+                    textClass: 'text-success',
                 };
             case ReputationTier.NEUTRAL:
                 return {
                     fillClass: 'fill-primary-light',
                     strokeClass: 'stroke-primary-border',
-                    textClass: 'text-primary'
+                    textClass: 'text-primary',
                 };
             case ReputationTier.NOT_GREAT:
                 return {
                     fillClass: 'fill-error-light',
                     strokeClass: 'stroke-error-border',
-                    textClass: 'text-error'
+                    textClass: 'text-error',
                 };
             default:
                 return {
                     fillClass: 'fill-dark',
                     strokeClass: 'stroke-darker',
-                    textClass: 'text-darker'
+                    textClass: 'text-darker',
                 };
         }
     };
@@ -68,7 +75,7 @@ export const ReputationBadge: React.FC<ReputationBadgeProps> = ({
 
     return (
         <div
-            className={`inline-block relative ${className}`}
+            className={`relative inline-block ${className}`}
             onMouseEnter={() => setShowTooltip(true)}
             onMouseLeave={() => setShowTooltip(false)}
         >
@@ -81,10 +88,10 @@ export const ReputationBadge: React.FC<ReputationBadgeProps> = ({
                     strokeLinejoin="round"
                 />
                 <foreignObject x="10" y="18" width="36" height="20">
-                    <div className="flex justify-center items-center h-full">
+                    <div className="flex h-full items-center justify-center">
                         <Paragraph
                             size="lg"
-                            className={`${colorClasses.textClass} font-bold text-center`}
+                            className={`${colorClasses.textClass} text-center font-bold`}
                         >
                             {finalScore}%
                         </Paragraph>

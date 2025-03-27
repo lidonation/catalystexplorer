@@ -2,7 +2,7 @@ import ValueLabel from './atoms/ValueLabel';
 import StarIcon from './svgs/StarIcon';
 
 export interface StarRatingProps {
-    rating: number;
+    rating: number | null;
     showValue?: boolean;
     className?: string;
 }
@@ -20,11 +20,15 @@ export const StarRating: React.FC<StarRatingProps> = ({
                         key={star}
                         width={16}
                         height={16}
-                        className={`${star <= rating ? 'text-yellow-400' : 'text-light-gray-persist'}`}
+                        className={`${star <= (rating ?? 0) ? 'text-yellow-400' : 'text-light-gray-persist'}`}
                     />
                 ))}{' '}
             </div>
-            {showValue && <ValueLabel className=" ms-4 text-lg font-bold text-content">{rating}</ValueLabel>}
+            {showValue && (
+                <ValueLabel className="text-content ms-4 text-lg font-bold">
+                    {rating}
+                </ValueLabel>
+            )}
         </div>
     );
 };

@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Http\Controllers;
 
 use App\Actions\TransformIdsToHashes;
-use App\DataTransferObjects\ProposalData;
 use App\DataTransferObjects\ReviewData;
 use App\Enums\ProposalSearchParams;
 use App\Enums\QueryParamsEnum;
@@ -18,11 +17,12 @@ use Illuminate\Support\Fluent;
 use Inertia\Inertia;
 use Inertia\Response;
 use Laravel\Scout\Builder;
-use Meilisearch\Endpoints\Indexes;
 
 class ReviewsController extends Controller
 {
     protected int $currentPage;
+
+    protected array $queryParams = [];
 
     protected int $perPage = 24;
 
@@ -33,6 +33,8 @@ class ReviewsController extends Controller
     protected ?string $search = null;
 
     protected array $filters = [];
+
+    public array $fundsCount = [];
 
     protected int $limit;
 
@@ -48,6 +50,7 @@ class ReviewsController extends Controller
             'sortBy' => $this->sortBy,
             'sortOrder' => $this->sortOrder,
             'filters' => $this->filters,
+            'funds' => $this->fundsCount,
         ];
 
         return Inertia::render('Reviews/Index', $props);
@@ -79,12 +82,12 @@ class ReviewsController extends Controller
             $args['sort'] = ["$this->sortBy:$this->sortOrder"];
         }
 
-        $page = isset($this->queryParams[ProposalSearchParams::PAGE()->value])
-            ? (int) $this->queryParams[ProposalSearchParams::PAGE()->value]
+        $page = isset($this->currentPage)
+            ? (int) $this->currentPage
             : 1;
 
-        $limit = isset($this->queryParams[ProposalSearchParams::LIMIT()->value])
-            ? (int) $this->queryParams[ProposalSearchParams::LIMIT()->value]
+        $limit = isset($this->limit)
+            ? (int) $this->limit
             : 64;
 
         $args['offset'] = ($page - 1) * $limit;
@@ -95,7 +98,15 @@ class ReviewsController extends Controller
             'content',
             'status',
             'model_id',
+            'rating',
+            'reviewer',
             'model_type',
+            'reviewer.avg_reputation_score',
+        ];
+
+        $args['facets'] = [
+            'rating',
+            'reviewer.reputation_scores.fund.label',
         ];
 
         $reviews = app(ReviewRepository::class);
@@ -124,72 +135,9 @@ class ReviewsController extends Controller
             ]
         );
 
-        return $pagination->toArray();
-
-        $_options = [
-            'filters' => array_merge([], $this->getUserFilters(), $filters),
-        ];
-
-        $this->searchBuilder = Review::search(
-            $this->search,
-            function (Indexes $index, $query, $options) use ($_options, $attrs) {
-                if (count($_options['filters']) > 0) {
-                    $options['filter'] = implode(' AND ', $_options['filters']);
-                }
-
-                $options['attributesToRetrieve'] = $attrs ?? [
-                    'hash',
-                    'title',
-                    'content',
-                    'status',
-                    'model_id',
-                    'model_type',
-                ];
-
-                if ((bool) $this->sortBy && (bool) $this->sortOrder) {
-                    $options['sort'] = ["$this->sortBy:$this->sortOrder"];
-                }
-                $options['offset'] = (($this->currentPage ?? 1) - 1) * $this->limit;
-                $options['limit'] = $this->limit;
-
-                return $index->search($query, $options);
-            }
-        );
-
-        if ($returnBuilder) {
-            return $this->searchBuilder;
-        }
-
-        $response = new Fluent($this->searchBuilder->raw());
-        $items = collect($response->hits);
-        $pagination = new LengthAwarePaginator(
-            ProposalData::collect(
-                (new TransformIdsToHashes)(
-                    collection: $items,
-                    model: new Proposal
-                )->toArray()
-            ),
-            $response->estimatedTotalHits,
-            $limit,
-            $page,
-            [
-                'pageName' => 'p',
-                'onEachSide' => 0,
-            ]
-        );
+        $this->setCounts($response->facetDistribution, $response->facetStats);
 
         return $pagination->toArray();
-
-        //        $pagination = new LengthAwarePaginator(
-        //            $response->hits,
-        //            $response->estimatedTotalHits,
-        //            $response->limit,
-        //            $this->currentPage,
-        //            [
-        //                'pageName' => 'p',
-        //            ]
-        //        );
-        //        return to_length_aware_paginator($pagination);
     }
 
     protected function setFilters(Request $request): void
@@ -199,16 +147,12 @@ class ReviewsController extends Controller
         $this->search = $request->input(QueryParamsEnum::QUERY(), null);
 
         $sort = collect(explode(':', $request->input(QueryParamsEnum::SORTS(), '')))->filter();
-        if ($sort->isEmpty()) {
-            $sort = collect(explode(':', collect([
-                'title:asc',
-                'title:desc',
-                'status:desc',
-                'status:asc',
-            ])->random()));
+
+        if (!$sort->isEmpty()) {
+            $this->sortBy = $sort->first();
+            $this->sortOrder = $sort->last();
         }
-        $this->sortBy = $sort->first();
-        $this->sortOrder = $sort->last();
+
     }
 
     protected function getUserFilters(): array
@@ -220,5 +164,12 @@ class ReviewsController extends Controller
         }
 
         return $_options;
+    }
+
+    public function setCounts($facets, $facetStats): void
+    {
+        if (isset($facets['reviewer.reputation_scores.fund.label']) && count($facets['reviewer.reputation_scores.fund.label'])) {
+            $this->fundsCount = $facets['reviewer.reputation_scores.fund.label'];
+        }
     }
 }
