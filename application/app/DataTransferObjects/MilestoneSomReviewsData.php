@@ -16,15 +16,15 @@ final class MilestoneSomReviewsData extends Data
 
         public bool $outputs_approves,
 
-        public string $outputs_comment,
+        public ?string $outputs_comment,
 
         public bool $success_criteria_approves,
 
-        public string $success_criteria_comment,
+        public ?string $success_criteria_comment,
 
         public bool $evidence_approves,
 
-        public string $evidence_comment,
+        public ?string $evidence_comment,
 
         public bool $current,
 

@@ -28,7 +28,7 @@ class Milestone extends Model
 
     public function parent_milestone(): BelongsTo
     {
-        return $this->belongsTo(ProposalMilestone::class, 'proposal_milestone_id', 'id');
+        return $this->belongsTo(ProjectSchedule::class, 'proposal_milestone_id', 'id');
     }
 
     public function som_reviews(): HasMany

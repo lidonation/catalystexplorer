@@ -34,6 +34,7 @@ class DatabaseSeeder extends Seeder
             TransactionSeeder::class,
             DrepSeeder::class,
             MetricSeeder::class,
+            ProjectScheduleSeeder::class,
 
         ];
 

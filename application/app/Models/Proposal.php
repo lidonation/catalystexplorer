@@ -288,12 +288,17 @@ class Proposal extends Model
 
     public function schedule(): HasOne|Proposal
     {
-        return $this->hasOne(ProposalMilestone::class);
+        return $this->hasOne(ProjectSchedule::class, 'proposal_id', 'id');
+    }
+
+    public function proposal_milestone(): HasOne
+    {
+        return $this->hasOne(ProjectSchedule::class, 'proposal_id', 'id');
     }
 
     public function milestones(): HasManyThrough|Proposal
     {
-        return $this->hasManyThrough(Milestone::class, ProposalMilestone::class);
+        return $this->hasManyThrough(Milestone::class, ProjectSchedule::class);
     }
 
     public function moderations(): HasMany
@@ -518,10 +523,7 @@ class Proposal extends Model
         return $this->belongsToMany(IdeascaleProfile::class, 'ideascale_profile_has_proposal', 'proposal_id', 'ideascale_profile_id');
     }
 
-    public function proposal_milestone(): HasOne
-    {
-        return $this->hasOne(ProposalMilestone::class, 'proposal_id', 'id');
-    }
+    
 
     public function author(): BelongsTo
     {

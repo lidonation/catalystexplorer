@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\Group;
+use App\Models\ProjectSchedule;
 
 return [
 
@@ -44,7 +45,7 @@ return [
     |
     */
 
-    'queue' => env('SCOUT_QUEUE', true),
+    'queue' => env('SCOUT_QUEUE', false),
 
     /*
     |--------------------------------------------------------------------------
@@ -139,6 +140,10 @@ return [
             Group::class => [
                 'filterableAttributes' => ['id', 'ideascale_profiles', 'tags', 'proposals', 'proposals_funded', 'proposals_completed', 'amount_awarded_usd', 'amount_awarded_ada', 'proposals_count'],
                 'sortableAttributes' => ['name', 'id', 'website', 'proposals_funded', 'proposals_completed', 'amount_awarded_ada', 'amount_awarded_usd', 'amount_requested'],
+            ],
+            ProjectSchedule::class => [
+                'filterableAttributes' => ['title', 'started_at', 'status', 'milestone_count', 'milestone.hash', 'fund.hash', 'proposal.users.hash', 'proposal.project_length', 'proposal.amount_requested', 'proposal.amount_received'],
+                'sortableAttributes' => ['milestones_count', 'proposal.amount_requested', 'proposal.project_length',],
             ],
         ],
     ],
