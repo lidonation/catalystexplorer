@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\DataTransferObjects;
 
 use Spatie\LaravelData\Data;
+use Spatie\TypeScriptTransformer\Attributes\Optional as TypeScriptOptional;
 use Spatie\TypeScriptTransformer\Attributes\TypeScript;
 
 #[TypeScript]
@@ -15,7 +16,7 @@ class ReviewerReputationScoreData extends Data
 
         public int $reviewer_id,
 
-        public int $score,
+        public float $score,
 
         #[TypeScriptOptional]
         public ?string $context_type,

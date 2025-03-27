@@ -331,8 +331,6 @@ metas: Array<any>;
 };
 export type NftMetaData = {
 campaign_name: string;
-fundedProjectNumber: string;
-projectTitle: string;
 yes_votes: string;
 no_votes: string;
 role: string;
@@ -408,11 +406,10 @@ export type ReviewData = {
 hash: string | null;
 parent_id?: number;
 title?: string;
-content: string;
+content: string | null;
 status: string | null;
-rating: any;
-reviewer: App.DataTransferObjects.ReviewerData;
-type: string | null;
+rating: number | null;
+reviewer: App.DataTransferObjects.ReviewerData | null;
 ranking_total: number | null;
 helpful_total: number | null;
 not_helpful_total: number | null;
@@ -431,7 +428,8 @@ export type ReviewerData = {
 hash: string | null;
 reviews_count: any;
 reputation_scores?: any;
-catalyst_reviewer_id: any;
+catalyst_reviewer_id: string;
+avg_reputation_score: number | null;
 claimed_by?: App.DataTransferObjects.UserData;
 };
 export type ReviewerReputationScoreData = {
