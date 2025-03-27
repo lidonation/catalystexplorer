@@ -437,6 +437,9 @@
             "campaigns": "Campaigns"
         }
     },
+    "milestones": {
+        "milestones": "Milestones"
+    },
     "groups": {
         "groups": "Groups",
         "title": "Catalyst Groups",
