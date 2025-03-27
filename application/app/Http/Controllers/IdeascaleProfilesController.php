@@ -6,6 +6,7 @@ namespace App\Http\Controllers;
 
 use App\Actions\TransformIdsToHashes;
 use App\DataTransferObjects\CampaignData;
+use App\DataTransferObjects\GroupData;
 use App\DataTransferObjects\IdeascaleProfileData;
 use App\DataTransferObjects\ProjectScheduleData;
 use App\DataTransferObjects\ProposalData;
@@ -13,7 +14,6 @@ use App\DataTransferObjects\ReviewData;
 use App\Enums\IdeascaleProfileSearchParams;
 use App\Enums\ProposalSearchParams;
 use App\Models\Campaign;
-use App\Models\Fund;
 use App\Models\IdeascaleProfile;
 use App\Models\Moderation;
 use App\Models\ProjectSchedule;
@@ -96,6 +96,10 @@ class IdeascaleProfilesController extends Controller
         if (str_contains($path, '/groups')) {
             return Inertia::render('IdeascaleProfile/Groups/Index', [
                 'ideascaleProfile' => IdeascaleProfileData::from($ideascaleProfileData),
+                'groups' => GroupData::collect(
+                    $ideascaleProfile->groups()
+                        ->paginate(12)
+                ),
             ]);
         }
 

@@ -1,5 +1,3 @@
-import GroupList from '@/Pages/Groups/Partials/GroupList';
-import ProposalMiniCardLoader from '@/Pages/Proposals/Partials/ProposalMiniCardLoader';
 import { Head, WhenVisible } from '@inertiajs/react';
 import { PaginatedData } from '../../../../types/paginated-data';
 import CommunityLayout from '../CommunityLayout';
