@@ -17,6 +17,7 @@ use App\Http\Controllers\BookmarksController;
 use App\Http\Controllers\CampaignsController;
 use App\Http\Controllers\MilestoneController;
 use App\Http\Controllers\ProposalsController;
+use App\Http\Controllers\VoterHistoryController;
 use App\Http\Controllers\VoterToolController;
 use App\Http\Controllers\ConnectionsController;
 use App\Http\Controllers\JormungandrController;

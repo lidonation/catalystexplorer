@@ -42,7 +42,7 @@ class VoterHistory extends Model
     {
         return [
             'time',
-            // 'voting'
+            // 'voting',
         ];
     }
     
