@@ -1,10 +1,11 @@
 import React, {useState, useEffect} from 'react';
 import {useTranslation} from 'react-i18next';
-import {usePage} from '@inertiajs/react';
-import Claim from '@/Components/svgs/ClaimIcon';
+import {Link, usePage} from '@inertiajs/react';
 import Claimed from '@/Components/svgs/ClaimedIcon';
 import Button from '@/Components/atoms/Button';
 import {toast} from "react-toastify";
+import {useLocalizedRoute} from "@/utils/localizedRoute";
+import PrimaryLink from "@/Components/atoms/PrimaryLink";
 
 interface ClaimedButtonProps {
     modelType?: string;
@@ -38,11 +39,6 @@ const ClaimedButton: React.FC<ClaimedButtonProps> = ({
             setButtonState(!!claimedBy ? 'claimed' : 'unclaimed');
         }
     }, [claimedBy]);
-
-    const getCsrfToken = (): string => {
-        const tokenElement = document.querySelector('meta[name="csrf-token"]');
-        return tokenElement ? tokenElement.getAttribute('content') || '' : '';
-    };
 
     const handleClaim = async () => {
         if (!isAuthenticated) {
@@ -89,7 +85,28 @@ const ClaimedButton: React.FC<ClaimedButtonProps> = ({
                 <div
                     className={`claim-button flex items-center ${isLoading ? 'opacity-75' : ''}`}
                 >
-                    <Claim width={64} onClick={handleClaim} />
+                    <PrimaryLink
+                        href={useLocalizedRoute('workflows.claimIdeascaleProfile.index', {step: 1})}
+                        disabled={isLoading}
+                        className={`
+                            inline-flex items-center justify-center
+                            ${isLoading ? 'opacity-70 cursor-not-allowed' : ''}
+                            ${className}
+                        `}
+                        aria-label={t('claim.claim_profile')}
+                    >
+                        {isLoading ? (
+                            <div className="flex items-center space-x-2">
+                                <span className="animate-pulse">
+                                    {t('claim.claiming', 'Claiming...')}
+                                </span>
+                            </div>
+                        ) : (
+                            <div className='text-sm'>
+                                {t('ideascaleProfiles.claim')}
+                            </div>
+                        )}
+                    </PrimaryLink>
                 </div>
             )}
 

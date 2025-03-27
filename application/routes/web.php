@@ -107,7 +107,6 @@ Route::localized(
         });
 
         Route::prefix('/workflows')->as('workflows.')->group(function () {
-
             Route::prefix('/completed-projects-nfts/steps')->as('completedProjectsNft.')
                 ->middleware([WorkflowMiddleware::class])
                 ->group(function () {
