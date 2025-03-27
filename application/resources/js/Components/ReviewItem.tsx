@@ -23,7 +23,7 @@ export const ReviewCard: React.FC<ReviewItemProps> = ({
                     />
                 </div>
 
-                <StarRating rating={review.rating}/>
+                {review.rating && <StarRating rating={review.rating}/>}
             </div>
 
             <Paragraph className="text-gray-persist mt-3 text-3">

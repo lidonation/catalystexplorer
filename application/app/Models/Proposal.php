@@ -523,8 +523,6 @@ class Proposal extends Model
         return $this->belongsToMany(IdeascaleProfile::class, 'ideascale_profile_has_proposal', 'proposal_id', 'ideascale_profile_id');
     }
 
-    
-
     public function author(): BelongsTo
     {
         return $this->belongsTo(IdeascaleProfile::class, 'user_id', 'id', 'author');
