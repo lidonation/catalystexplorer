@@ -81,6 +81,7 @@ amount_awarded_ada?: number;
 amount_awarded_usd?: number;
 amount_distributed_ada?: number;
 amount_distributed_usd?: number;
+ideascale_profiles_count: number;
 created_at?: string;
 updated_at?: string;
 deleted_at?: string;
