@@ -51,7 +51,7 @@ class Review extends Model
             'status',
             'created_at',
             'reviewer.avg_reputation_score',
-            'rating'
+            'rating',
         ];
     }
 

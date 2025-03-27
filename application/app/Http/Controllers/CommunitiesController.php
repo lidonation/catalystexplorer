@@ -30,8 +30,9 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Stringable;
 use Inertia\Inertia;
 use Laravel\Scout\Builder;
+use Staudenmeir\EloquentHasManyDeep\HasManyDeep;
 
-class CommunityController extends Controller
+class CommunitiesController extends Controller
 {
     protected int $currentPage = 1;
 
@@ -86,13 +87,17 @@ class CommunityController extends Controller
 
     public function show(Request $request, Community $community): \Inertia\Response
     {
-
         $community
+            ->load([
+                'ideascale_profiles' => fn (HasManyDeep $q) => $q->limit(5),
+                'ideascale_profiles.media',
+            ])
             ->loadCount([
                 'completed_proposals',
                 'funded_proposals',
                 'unfunded_proposals',
                 'proposals',
+                'ideascale_profiles',
             ])->append([
                 'amount_distributed_ada',
                 'amount_distributed_usd',
@@ -101,34 +106,6 @@ class CommunityController extends Controller
             ]);
 
         $path = $request->path();
-
-        // Find Own Proposals and Co proposals
-        $communityProposalIds = $community->proposals()->pluck('id');
-
-        $ideascaleProfiles = $community->ideascale_profiles()->with('own_proposals', 'collaborating_proposals')->get();
-
-        $community->setRelation('ideascale_profiles', $ideascaleProfiles);
-
-        $community->ideascale_profiles;
-
-        $allOwnProposals = $community->ideascale_profiles
-            ->flatMap(function ($profile) {
-                return $profile->own_proposals;
-            })
-            ->unique('id');
-
-        $allCollaboratingProposals = $community->ideascale_profiles
-            ->flatMap(function ($profile) {
-                return $profile->collaborating_proposals;
-            })
-            ->unique('id');
-
-        $ownProposalIds = $allOwnProposals->pluck('id')->toArray();
-        $collaboratingProposalIds = $allCollaboratingProposals->pluck('id')->toArray();
-        $communityProposalIds = $community->proposals()->pluck('id')->toArray(); // Convert to array
-
-        $commonOwnProposalsCount = count(array_intersect($ownProposalIds, $communityProposalIds));
-        $commonCollaboratingProposalsCount = count(array_intersect($collaboratingProposalIds, $communityProposalIds));
 
         // Chart Data
         $fundTitles = Fund::pluck('title')
@@ -208,6 +185,16 @@ class CommunityController extends Controller
             ],
         ];
 
+        if (str_contains($path, '/dashboard')) {
+
+            return Inertia::render('Communities/Dashboard/Index', [
+                'community' => CommunityData::from($community),
+                'amountAwardedChartData' => $amountAwardedChartData,
+                'amountDistributedChartData' => $amountDistributedChartData,
+                'amountRemainingChartData' => $amountRemainingChartData,
+            ]);
+        }
+
         if (str_contains($path, '/proposals')) {
             return Inertia::render('Communities/Proposals/Index', [
                 'community' => CommunityData::from($community),
@@ -220,8 +207,6 @@ class CommunityController extends Controller
                         )
                     )->onEachSide(0)
                 ),
-                'ownProposals' => $commonOwnProposalsCount,
-                'collaboratingProposals' => $commonCollaboratingProposalsCount,
             ]);
         }
 
@@ -244,8 +229,6 @@ class CommunityController extends Controller
                         )
                     )
                 ),
-                'ownProposals' => $commonOwnProposalsCount,
-                'collaboratingProposals' => $commonCollaboratingProposalsCount,
             ]);
         }
 
@@ -266,29 +249,12 @@ class CommunityController extends Controller
                         )
                     )
                 ),
-                'ownProposals' => $commonOwnProposalsCount,
-                'collaboratingProposals' => $commonCollaboratingProposalsCount,
             ]);
         }
 
         if (str_contains($path, '/events')) {
             return Inertia::render('Communities/Events/Index', [
                 'community' => CommunityData::from($community),
-                'ownProposals' => $commonOwnProposalsCount,
-                'collaboratingProposals' => $commonCollaboratingProposalsCount,
-            ]);
-        }
-
-        if (str_contains($path, '/dashboard')) {
-
-            return Inertia::render('Communities/Dashboard/Index', [
-                'community' => CommunityData::from($community),
-                'coProposals' => 1,
-                'amountAwardedChartData' => $amountAwardedChartData,
-                'amountDistributedChartData' => $amountDistributedChartData,
-                'amountRemainingChartData' => $amountRemainingChartData,
-                'ownProposals' => $commonOwnProposalsCount,
-                'collaboratingProposals' => $commonCollaboratingProposalsCount,
             ]);
         }
 
@@ -297,15 +263,16 @@ class CommunityController extends Controller
             'amountAwardedChartData' => $amountAwardedChartData,
             'amountDistributedChartData' => $amountDistributedChartData,
             'amountRemainingChartData' => $amountRemainingChartData,
-            'ownProposals' => $commonOwnProposalsCount,
-            'collaboratingProposals' => $commonCollaboratingProposalsCount,
         ]);
     }
 
     public function query(Request $request)
     {
-        $query = Community::query()->with(['proposals.campaign'])
-            ->withCount('proposals');
+        $query = Community::query()->with([
+            'ideascale_profiles' => fn (HasManyDeep $q) => $q->limit(5),
+            'ideascale_profiles.media',
+        ])
+            ->withCount(['proposals', 'ideascale_profiles']);
 
         // set necessary counts
         $this->setCounts($query);

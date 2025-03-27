@@ -148,7 +148,7 @@ class ReviewsController extends Controller
 
         $sort = collect(explode(':', $request->input(QueryParamsEnum::SORTS(), '')))->filter();
 
-        if (!$sort->isEmpty()) {
+        if (! $sort->isEmpty()) {
             $this->sortBy = $sort->first();
             $this->sortOrder = $sort->last();
         }

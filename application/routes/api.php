@@ -6,7 +6,7 @@ use App\Http\Controllers\Api\TagController;
 use App\Http\Controllers\Api\GroupController;
 use App\Http\Controllers\ProposalsController;
 use App\Http\Controllers\Api\CampaignController;
-use App\Http\Controllers\CommunityController;
+use App\Http\Controllers\CommunitiesController;
 use App\Http\Controllers\My\MyBookmarksController;
 use App\Http\Controllers\CompletetProjectNftsController;
 use App\Http\Controllers\Api\IdeascaleProfilesController;
@@ -22,10 +22,10 @@ Route::prefix('api')->as('api.')->group(function () {
     Route::get('/tags', [TagController::class, 'tags'])->name('tags');
     Route::get('/tags/{tag:id}', [TagController::class, 'tag'])->name('tag');
 
-    Route::get('/communities', [CommunityController::class, 'communities'])->name('communities');
-    Route::get('/communities/{community:id}', [CommunityController::class, 'community'])->name('community');
-    Route::get('/communities/{hash}/connections', [CommunityController::class, 'connections'])->name('communities.connections');
-    Route::post('/communities/{hash}/join', [CommunityController::class, 'join'])->name('community.join');
+    Route::get('/communities', [CommunitiesController::class, 'communities'])->name('communities');
+    Route::get('/communities/{community:id}', [CommunitiesController::class, 'community'])->name('community');
+    Route::get('/communities/{hash}/connections', [CommunitiesController::class, 'connections'])->name('communities.connections');
+    Route::post('/communities/{hash}/join', [CommunitiesController::class, 'join'])->name('community.join');
 
     Route::prefix('bookmark-items')->as('bookmarks.')
         ->group(function () {

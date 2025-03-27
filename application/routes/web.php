@@ -20,7 +20,7 @@ use App\Http\Controllers\ProposalsController;
 use App\Http\Controllers\VoterToolController;
 use App\Http\Controllers\JormungandrController;
 use App\Http\Controllers\TransactionController;
-use App\Http\Controllers\CommunityController;
+use App\Http\Controllers\CommunitiesController;
 use App\Http\Controllers\IdeascaleProfilesController;
 use App\Http\Controllers\ClaimIdeascaleProfileContoller;
 use App\Http\Controllers\CompletetProjectNftsController;
@@ -77,26 +77,26 @@ Route::localized(
         });
 
         Route::prefix('/communities')->as('communities.')->group(function () {
-            Route::get('/', [CommunityController::class, 'index'])
+            Route::get('/', [CommunitiesController::class, 'index'])
                 ->name('index');
 
             Route::prefix('/{community:slug}')->group(function () {
-                Route::get('/', [CommunityController::class, 'show'])
+                Route::get('/', [CommunitiesController::class, 'show'])
                     ->name('show');
 
-                Route::get('/dashboard', [CommunityController::class, 'show'])
+                Route::get('/dashboard', [CommunitiesController::class, 'show'])
                     ->name('dashboard');
 
-                Route::get('/proposals', [CommunityController::class, 'show'])
+                Route::get('/proposals', [CommunitiesController::class, 'show'])
                     ->name('proposals');
 
-                Route::get('/members', [CommunityController::class, 'show'])
+                Route::get('/members', [CommunitiesController::class, 'show'])
                     ->name('members');
 
-                Route::get('/groups', [CommunityController::class, 'show'])
+                Route::get('/groups', [CommunitiesController::class, 'show'])
                     ->name('groups');
 
-                Route::get('/events', [CommunityController::class, 'show'])
+                Route::get('/events', [CommunitiesController::class, 'show'])
                     ->name('events');
             });
         });
