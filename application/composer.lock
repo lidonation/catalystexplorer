@@ -5400,11 +5400,11 @@
         },
         {
             "name": "lido-nation/cardano-nft-maker-laravel",
-            "version": "2.0.0",
+            "version": "2.1",
             "source": {
                 "type": "git",
                 "url": "https://gitlab.lidonation.com/lidonation/cardano-nft-maker-laravel",
-                "reference": "87d4ee7b55fe5e0bca972f7c3aef0e3c9ee0e595"
+                "reference": "073bde0676ca364d006605ba4d3ca56b0f18fabb"
             },
             "require": {
                 "illuminate/contracts": "^10.0||^11.0",
@@ -5465,7 +5465,7 @@
                 "laravel",
                 "lido-nation"
             ],
-            "time": "2025-03-03T06:50:44+00:00"
+            "time": "2025-03-27T07:44:06+00:00"
         },
         {
             "name": "maatwebsite/excel",
