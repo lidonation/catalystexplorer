@@ -22,11 +22,12 @@ use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\Translatable\HasTranslations;
 use Staudenmeir\EloquentHasManyDeep\HasManyDeep;
+use Staudenmeir\EloquentHasManyDeep\HasRelationships;
 
 // #[ScopedBy(new LimitScope(64))]
 class IdeascaleProfile extends Model implements HasMedia
 {
-    use HasConnections, HasMetaData, HasTranslations, InteractsWithMedia, Searchable;
+    use HasConnections, HasMetaData, HasRelationships, HasTranslations, InteractsWithMedia, Searchable;
 
     public int $maxValuesPerFacet = 8000;
 
@@ -227,7 +228,7 @@ class IdeascaleProfile extends Model implements HasMedia
             ->whereNull('funded_at');
     }
 
-    public function in_progress_proposals()
+    public function in_progress_proposals(): BelongsToMany
     {
         return $this->proposals()
             ->where(['type' => 'proposal', 'status' => 'in_progress']);

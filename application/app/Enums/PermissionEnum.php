@@ -20,6 +20,7 @@ use Spatie\Enum\Laravel\Enum;
  * @method static self create_reviews()
  * @method static self create_rewards()
  * @method static self create_roles()
+ * @method static self create_transactions()
  * @method static self create_users()
  * @method static self create_votes()
  * @method static self create_campaigns()
@@ -39,6 +40,7 @@ use Spatie\Enum\Laravel\Enum;
  * @method static self read_ratings()
  * @method static self read_reviews()
  * @method static self read_roles()
+ * @method static self read_transactions()
  * @method static self read_users()
  * @method static self read_campaigns()
  * @method static self read_bookmark_items()
@@ -57,6 +59,7 @@ use Spatie\Enum\Laravel\Enum;
  * @method static self update_ratings()
  * @method static self update_reviews()
  * @method static self update_roles()
+ * @method static self update_transactions()
  * @method static self update_users()
  * @method static self update_campaigns()
  * @method static self update_bookmark_items()
@@ -76,6 +79,7 @@ use Spatie\Enum\Laravel\Enum;
  * @method static self delete_reviews()
  * @method static self delete_rewards()
  * @method static self delete_roles()
+ * @method static self delete_transactions()
  * @method static self delete_users()
  * @method static self delete_campaigns()
  * @method static self delete_bookmark_items()
@@ -89,6 +93,7 @@ use Spatie\Enum\Laravel\Enum;
  * @method static self restore_monthly_reports()
  * @method static self restore_links()
  * @method static self restore_locations()
+ * @method static self restore_transactions()
  */
 final class PermissionEnum extends Enum
 {

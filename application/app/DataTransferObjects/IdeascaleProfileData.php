@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace App\DataTransferObjects;
 
+use Spatie\LaravelData\Attributes\DataCollectionOf;
 use Spatie\LaravelData\Data;
+use Spatie\LaravelData\DataCollection;
 use Spatie\TypeScriptTransformer\Attributes\Optional as TypeScriptOptional;
 use Spatie\TypeScriptTransformer\Attributes\TypeScript;
 
@@ -96,11 +98,17 @@ final class IdeascaleProfileData extends Data
         public ?int $proposals_count,
 
         #[TypeScriptOptional]
+        public ?int $reviews_count,
+
+        #[TypeScriptOptional]
         public ?int $collaborating_proposals_count,
 
         #[TypeScriptOptional]
-        public ?array $groups,
+        public $groups,
 
-        public ?UserData $claimed_by
+        public ?UserData $claimed_by,
+
+        #[DataCollectionOf(ReviewData::class)]
+        public ?DataCollection $reviews,
     ) {}
 }

@@ -196,9 +196,11 @@ completed_proposals_count?: number;
 funded_proposals_count?: number;
 unfunded_proposals_count?: number;
 proposals_count?: number;
+reviews_count?: number;
 collaborating_proposals_count?: number;
-groups?: Array<any>;
+groups?: any;
 claimed_by: App.DataTransferObjects.UserData | null;
+reviews: any | null;
 };
 export type LocationData = {
 hash: string | null;
@@ -411,6 +413,7 @@ title?: string;
 content: string | null;
 status: string | null;
 rating: number | null;
+proposal: App.DataTransferObjects.ProposalData | null;
 reviewer: App.DataTransferObjects.ReviewerData | null;
 ranking_total: number | null;
 helpful_total: number | null;
@@ -438,9 +441,9 @@ export type ReviewerReputationScoreData = {
 id: number | null;
 reviewer_id: number;
 score: number;
-context_type: string | null;
-context_id: number | null;
-fund_name: string | null;
+context_type?: string;
+context_id?: number;
+fund_name?: string;
 };
 export type TransactionData = {
 hash: string | null;

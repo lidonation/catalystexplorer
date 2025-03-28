@@ -19,14 +19,14 @@ interface ReviewsPageProps {
     ideascaleProfile: IdeascaleProfileData;
     reviews: PaginatedData<ReviewData[]>;
     reviewerReputationScores: ReviewReputationScoreData[];
-    ratingStats: { [s: string]: number } | ArrayLike<number>;
+    // ratingStats: { [s: string]: number } | ArrayLike<number>;
     filters: SearchParams;
 }
 
 export default function Reviews({
     ideascaleProfile,
     reviews,
-    ratingStats,
+    // ratingStats,
     filters
 }: ReviewsPageProps) {
     const { t } = useTranslation();
@@ -38,7 +38,7 @@ export default function Reviews({
             <Head title={`${ideascaleProfile.name} - ${t('reviews')}`} />
 
             <div className="container">
-                {reviews.total > 0 ? (
+                {reviews?.total > 0 ? (
                     <div className="space-y-8">
                         <div>
                             {/*<AggregatedReviewsSummary*/}
@@ -49,7 +49,7 @@ export default function Reviews({
                         </div>
                         <div>
                             <ReviewList
-                                reviews={reviews?? []}
+                                reviews={reviews ?? []}
                             />
                         </div>
                     </div>

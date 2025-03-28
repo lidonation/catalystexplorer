@@ -16,6 +16,7 @@ import ShareButton from './ShareButton';
 import { useTranslation } from 'react-i18next';
 import { Segments } from '../../../../types/segments';
 import IdeascaleProfileData = App.DataTransferObjects.IdeascaleProfileData;
+import GroupData = App.DataTransferObjects.GroupData;
 
 interface IdeascaleProfileProps {
     ideascaleProfile: IdeascaleProfileData;
@@ -119,7 +120,7 @@ const IdeascaleProfileCard: React.FC<IdeascaleProfileProps> = ({
 
                             <Paragraph className="text-highlight" size="sm">
                                 {ideascaleProfile?.groups
-                                    ?.map((group) => group?.name)
+                                    ?.map((group: GroupData) => group?.name)
                                     .join(', ')}
                             </Paragraph>
 

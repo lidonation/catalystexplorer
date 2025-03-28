@@ -5,18 +5,19 @@ declare(strict_types=1);
 namespace App\Nova;
 
 use App\Enums\StatusEnum;
-use App\Models\Discussion as DiscussionModel;
+use App\Models\Discussion;
 use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Fields\DateTime;
+use Laravel\Nova\Fields\HasMany;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Number;
 use Laravel\Nova\Fields\Select;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Http\Requests\NovaRequest;
 
-class Discussion extends Resource
+class Discussions extends Resource
 {
-    public static $model = DiscussionModel::class;
+    public static $model = Discussion::class;
 
     public static $title = 'id';
 
@@ -27,9 +28,9 @@ class Discussion extends Resource
         return [
             ID::make()->sortable(),
 
-            BelongsTo::make('User', 'user', Users::class)
-                ->nullable()
-                ->sortable(),
+            //            BelongsTo::make('User', 'user', Users::class)
+            //                ->nullable()
+            //                ->sortable(),
 
             Text::make('Model ID', 'model_id')
                 ->nullable()
@@ -54,28 +55,9 @@ class Discussion extends Resource
                 ->nullable(),
 
             DateTime::make('Published At', 'published_at')
-                ->nullable()
-                ->format('YYYY-MM-DD HH:mm:ss'),
+                ->nullable(),
+
+            HasMany::make('Reviews', 'reviews', Reviews::class),
         ];
-    }
-
-    public function cards(NovaRequest $request): array
-    {
-        return [];
-    }
-
-    public function filters(NovaRequest $request): array
-    {
-        return [];
-    }
-
-    public function lenses(NovaRequest $request): array
-    {
-        return [];
-    }
-
-    public function actions(NovaRequest $request): array
-    {
-        return [];
     }
 }

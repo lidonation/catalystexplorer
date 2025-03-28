@@ -110,13 +110,16 @@ class IdeascaleProfilesController extends Controller
         }
 
         if (str_contains($path, '/reviews')) {
-            //            $data = $this->getReviewsData($ideascaleProfile, $path);
+            $reviews = to_length_aware_paginator(
+                ReviewData::collect(
+                    $ideascaleProfile->reviews()->with(['reviewer.reputation_scores', 'proposal'])->paginate(12)
+                )
+            );
+            $ideascaleProfile->loadCount(['reviews']);
 
             return Inertia::render('IdeascaleProfile/Reviews/Index', [
-                'ideascaleProfile' => IdeascaleProfileData::from($ideascaleProfileData),
-                'reviews' => $ideascaleProfile?->reviews,
-                //                'ratingStats' => $data['ratingStats'],
-                //                'reputationScores' => $data['reputationScores'],
+                'ideascaleProfile' => IdeascaleProfileData::from($ideascaleProfile),
+                'reviews' => $reviews,
                 'filters' => $this->queryParams,
             ]);
         }
