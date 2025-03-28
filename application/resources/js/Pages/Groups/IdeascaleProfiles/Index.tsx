@@ -18,7 +18,7 @@ export default function IdeascaleProfiles({ideascaleProfiles, group}: IdeascaleP
             <WhenVisible data='ideascaleProfiles' fallback={<div>Loading Ideascale Profiles</div>}>
                 <div className='w-full overflow-auto'>
                     {typeof ideascaleProfiles?.data !== 'undefined' && (
-                        <div className='grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-4 '>
+                        <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 '>
                             {ideascaleProfiles.data.map((profile) => (
                                 <div className='rounded-lg border-2 border-border-dark-on-dark'>
                                     <IdeascaleProfileCardMini

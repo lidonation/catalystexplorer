@@ -9,7 +9,7 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Milestone>
+ * @extends Factory<Milestone>
  */
 class MilestoneFactory extends Factory
 {
@@ -21,7 +21,7 @@ class MilestoneFactory extends Factory
     public function definition(): array
     {
         return [
-            'id' => $this->faker->unique()->randomNumber(5), 
+            'id' => $this->faker->unique()->randomNumber(5),
             'proposal_id' => $this->faker->randomNumber(2),
             'fund_id' => $this->faker->randomNumber(2),
             'title' => $this->faker->sentence(4),
@@ -42,7 +42,7 @@ class MilestoneFactory extends Factory
     {
         return $this->afterCreating(function (Milestone $milestone) {
             MilestoneSomReview::factory()
-                ->count(rand(2, 5))
+                ->count($this->faker->numberBetween(2, 5))
                 ->create([
                     'milestone_id' => $milestone->id,
                     'proposal_id' => $milestone->proposal_id,
@@ -50,7 +50,7 @@ class MilestoneFactory extends Factory
                 ]);
 
             MilestonePoas::factory()
-                ->count(rand(2, 5))
+                ->count($this->faker->numberBetween(2, 5))
                 ->create([
                     'milestone_id' => $milestone->id,
                     'proposal_id' => $milestone->proposal_id,

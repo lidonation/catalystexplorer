@@ -21,7 +21,7 @@ class ProjectScheduleFactory extends Factory
     {
         $status = $this->faker->randomElement(['completed', 'paused']);
         $milestoneAmount =  $this->faker->numberBetween(1000, 10000);
-        
+
         return [
             'id' => $this->faker->unique()->randomNumber(5, true),
             'title' => $this->faker->sentence(4),
@@ -33,7 +33,7 @@ class ProjectScheduleFactory extends Factory
             'budget' => 4 * $milestoneAmount,
             'milestone_count' => 4,
             'funds_distributed' => $status == 'completed' ? 4 * $milestoneAmount : 2 * $milestoneAmount,
-            'starting_date' => Carbon::now()->addDays(rand(1, 60)),
+            'starting_date' => Carbon::now()->addDays($this->faker->numberBetween(1, 60)),
             'currency' => $this->faker->randomElement(['usd', 'ada']),
             'status' => $status,
         ];

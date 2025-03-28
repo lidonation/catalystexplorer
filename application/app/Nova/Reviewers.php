@@ -4,29 +4,28 @@ declare(strict_types=1);
 
 namespace App\Nova;
 
-use App\Models\Review;
+use App\Models\Reviewer;
 use App\Nova\Actions\MakeSearchable;
 use Laravel\Nova\Actions\Action;
-use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Fields\ID;
-use Laravel\Nova\Fields\Textarea;
+use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Http\Requests\NovaRequest;
 
-class Reviews extends Resource
+class Reviewers extends Resource
 {
     /**
      * The model the resource corresponds to.
      *
-     * @var class-string<Review>
+     * @var class-string<Reviewer>
      */
-    public static $model = Review::class;
+    public static $model = Reviewer::class;
 
     /**
      * The single value that should be used to represent the resource when being displayed.
      *
      * @var string
      */
-    public static $title = 'id';
+    public static $title = 'catalyst_reviewer_id';
 
     /**
      * The columns that should be searched.
@@ -35,6 +34,7 @@ class Reviews extends Resource
      */
     public static $search = [
         'id',
+        'catalyst_reviewer_id',
     ];
 
     /**
@@ -46,10 +46,7 @@ class Reviews extends Resource
     {
         return [
             ID::make()->sortable(),
-            Textarea::make('Content'),
-            BelongsTo::make(__('Reviewer'), 'reviewer', Reviewers::class)
-                ->searchable()
-                ->filterable(),
+            Text::make('Cat Id', 'catalyst_reviewer_id'),
         ];
     }
 

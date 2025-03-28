@@ -10,6 +10,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Session;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -35,8 +36,15 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
-        return redirect()->intended($request->input('redirect'));
+        $intendedDestination = session('url.intended');
 
+        session()->forget('url.intended');
+
+        if ($intendedDestination) {
+            return redirect($intendedDestination);
+        }
+
+        return redirect('/');
     }
 
     /**
