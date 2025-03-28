@@ -26,9 +26,9 @@ class ReviewsController extends Controller
 
     protected int $perPage = 24;
 
-    protected ?string $sortBy = null;
+    protected ?string $sortBy = 'helpful_total';
 
-    protected ?string $sortOrder = null;
+    protected ?string $sortOrder = 'desc';
 
     protected ?string $search = null;
 
@@ -112,7 +112,7 @@ class ReviewsController extends Controller
         $reviews = app(ReviewRepository::class);
 
         $builder = $reviews->search(
-            $this->queryParams[ProposalSearchParams::QUERY()->value] ?? '',
+            $this->search ?? '',
             $args
         );
 
@@ -152,7 +152,6 @@ class ReviewsController extends Controller
             $this->sortBy = $sort->first();
             $this->sortOrder = $sort->last();
         }
-
     }
 
     protected function getUserFilters(): array

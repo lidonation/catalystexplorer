@@ -176,29 +176,29 @@ class Proposal extends Model
     {
         $query->when(
             $filters['search'] ?? false,
-            fn (Builder $query, $search) => $query->where('title', 'ILIKE', '%'.$search.'%')
+            fn(Builder $query, $search) => $query->where('title', 'ILIKE', '%' . $search . '%')
         );
 
         $query->when(
             $filters['user_id'] ?? false,
-            fn (Builder $query, $user_id) => $query->where('user_id', $user_id)
+            fn(Builder $query, $user_id) => $query->where('user_id', $user_id)
         );
 
         $query->when(
             $filters['campaign_id'] ?? false,
-            fn (Builder $query, $campaign_id) => $query->where('campaign_id', $campaign_id)
+            fn(Builder $query, $campaign_id) => $query->where('campaign_id', $campaign_id)
         );
 
         $query->when(
             $filters['fund_id'] ?? false,
-            fn (Builder $query, $fund_id) => $query->whereRelation('fund_id', '=', $fund_id)
+            fn(Builder $query, $fund_id) => $query->whereRelation('fund_id', '=', $fund_id)
         );
     }
 
     public function currency(): Attribute
     {
         return Attribute::make(
-            get: fn ($currency) => $currency ?? $this->campaign?->currency ?? $this->fund?->currency ?? CatalystCurrencies::ADA()->value,
+            get: fn($currency) => $currency ?? $this->campaign?->currency ?? $this->fund?->currency ?? CatalystCurrencies::ADA()->value,
         );
     }
 
@@ -222,14 +222,14 @@ class Proposal extends Model
     public function amountReceived(): Attribute
     {
         return Attribute::make(
-            get: fn ($value) => ($this->schedule?->funds_distributed ?? $value)
+            get: fn($value) => ($this->schedule?->funds_distributed ?? $value)
         );
     }
 
     public function quickPitchId(): Attribute
     {
         return Attribute::make(
-            get: fn () => $this->quickpitch ? collect(
+            get: fn() => $this->quickpitch ? collect(
                 explode(
                     '/',
                     $this->quickpitch
@@ -309,8 +309,14 @@ class Proposal extends Model
 
     public function reviews(): HasManyThrough
     {
-        return $this->hasManyThrough(Review::class, Discussion::class, 'model_id', 'id', 'id', 'model_id')
-            ->where('discussions.model_type', static::class);
+        return $this->hasManyThrough(
+            Review::class,
+            Discussion::class,
+            'model_id',
+            'model_id',
+            'id',
+            'id'
+        )->where('discussions.model_type', Proposal::class);
     }
 
     public function discussions(): HasMany
@@ -352,7 +358,7 @@ class Proposal extends Model
 
     public function ratingsAverage(): Attribute
     {
-        return Attribute::make(get: fn () => $this->ratings->avg('rating'));
+        return Attribute::make(get: fn() => $this->ratings->avg('rating'));
     }
 
     /**
@@ -454,7 +460,7 @@ class Proposal extends Model
             'tags' => $this->tags->toArray(),
 
             'users' => $this->team->map(function ($u) {
-                $proposals = $u->proposals?->map(fn ($p) => $p->toArray());
+                $proposals = $u->proposals?->map(fn($p) => $p->toArray());
 
                 return [
                     'id' => $u->id,
@@ -464,8 +470,8 @@ class Proposal extends Model
                     'name' => $u->name,
                     'bio' => $u->bio,
                     'hero_img_url' => $u->hero_img_url,
-                    'proposals_completed' => $proposals?->filter(fn ($p) => $p['status'] === 'complete')?->count() ?? 0,
-                    'first_timer' => ($proposals?->map(fn ($p) => isset($p['fund']) ? $p['fund']['id'] : null)->unique()->count() === 1),
+                    'proposals_completed' => $proposals?->filter(fn($p) => $p['status'] === 'complete')?->count() ?? 0,
+                    'first_timer' => ($proposals?->map(fn($p) => isset($p['fund']) ? $p['fund']['id'] : null)->unique()->count() === 1),
                 ];
             }),
 
@@ -547,7 +553,7 @@ class Proposal extends Model
             'amount_received' => 'integer',
             'amount_requested' => 'integer',
             'created_at' => DateFormatCast::class,
-            'currency' => CatalystCurrencies::class.':nullable',
+            'currency' => CatalystCurrencies::class . ':nullable',
             'funded_at' => DateFormatCast::class,
             'funding_updated_at' => DateFormatCast::class,
             'offchain_metas' => 'array',
