@@ -1,31 +1,30 @@
-import React, { useEffect } from 'react';
-import { Head } from '@inertiajs/react';
-import { useTranslation } from 'react-i18next';
-import IdeascaleProfileData = App.DataTransferObjects.IdeascaleProfileData;
-import RecordsNotFound from '@/Layouts/RecordsNotFound';
-import IdeascaleProfileLayout from '../IdeascaleProfileLayout';
-import GroupData = App.DataTransferObjects.GroupData;
-import { PaginatedData } from '../../../../types/paginated-data';
-import { group } from 'console';
 import GroupCardExtended from '@/Pages/Groups/Partials/GroupCardExtended';
+import GroupCardLoader from '@/Pages/Groups/Partials/GroupCardMiniLoader';
+import { Head, WhenVisible } from '@inertiajs/react';
+import { useTranslation } from 'react-i18next';
+import { PaginatedData } from '../../../../types/paginated-data';
+import IdeascaleProfileLayout from '../IdeascaleProfileLayout';
+import IdeascaleProfileData = App.DataTransferObjects.IdeascaleProfileData;
+import GroupData = App.DataTransferObjects.GroupData;
+import RecordsNotFound from '@/Layouts/RecordsNotFound';
 
 interface GroupsPageProps {
     ideascaleProfile: IdeascaleProfileData;
     groups: PaginatedData<GroupData[]>;
 }
 
-export default function Groups({ideascaleProfile, groups}: GroupsPageProps) {
+export default function Groups({ ideascaleProfile, groups }: GroupsPageProps) {
     const { t } = useTranslation();
 
     return (
         <IdeascaleProfileLayout ideascaleProfile={ideascaleProfile}>
-              <Head title={`${ideascaleProfile.name} - Groups`} />
+            <Head title={`${ideascaleProfile.name} - Groups`} />
 
-            <div className="mx-auto">
-                {
-                    groups?.data ? (
-                        <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
-                            {groups?.data?.map((group) => (
+            <WhenVisible data="groups" fallback={<GroupCardLoader />}>
+                <div className="w-full overflow-auto">
+                    {groups?.data && groups.data.length > 0 ? (
+                        <div className="grid grid-cols-2 gap-4">
+                            {groups?.data.map((group) => (
                                 <div className="border-border-dark-on-dark rounded-lg border-2">
                                     <GroupCardExtended
                                         key={group?.hash}
@@ -35,13 +34,12 @@ export default function Groups({ideascaleProfile, groups}: GroupsPageProps) {
                             ))}
                         </div>
                     ) : (
-                        <div className="flex flex-col items-center justify-center">
-                    <RecordsNotFound />
+                        <div className='flex h-full w-full items-center justify-center'>
+                            <RecordsNotFound />
+                        </div>
+                    )}
                 </div>
-                    )
-                }
-
-            </div>
+            </WhenVisible>
         </IdeascaleProfileLayout>
     );
 }
