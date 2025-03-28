@@ -244,7 +244,7 @@ Route::localized(
             ->name('search.index');
 
         // Milestones
-        Route::prefix('/{milestones}')->group(function () {
+        Route::prefix('/milestone/{milestones}')->group(function () {
             Route::get('/', [MilestoneController::class, 'index'])
                 ->name('index');
         });
