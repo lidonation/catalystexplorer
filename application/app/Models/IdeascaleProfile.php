@@ -22,7 +22,11 @@ use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\Translatable\HasTranslations;
 use Staudenmeir\EloquentHasManyDeep\HasManyDeep;
+<<<<<<< application/app/Models/IdeascaleProfile.php
+use \Staudenmeir\EloquentHasManyDeep\HasRelationships;
+=======
 use Staudenmeir\EloquentHasManyDeep\HasRelationships;
+>>>>>>> application/app/Models/IdeascaleProfile.php
 
 // #[ScopedBy(new LimitScope(64))]
 class IdeascaleProfile extends Model implements HasMedia
@@ -236,14 +240,7 @@ class IdeascaleProfile extends Model implements HasMedia
 
     public function proposal_schedules()
     {
-        return ProjectSchedule::whereHas('proposal', function ($query) {
-            $query->has('users', $this->id);
-        });
-
-        //        return $this->hasMany(ProjectSchedule::class)
-        //            ->whereHas('proposal', function ($query) {
-        //                $query->has('users', $this->id);
-        //            });
+        return $this->hasManyDeep(ProjectSchedule::class, ['ideascale_profile_has_proposal', Proposal::class], ['ideascale_profile_id', 'id'], ['id', 'proposal_id']);
     }
 
     public function monthly_reports(): HasMany
