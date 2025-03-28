@@ -4,17 +4,18 @@ declare(strict_types=1);
 
 namespace App\Policies;
 
+use App\Enums\PermissionEnum;
 use App\Models\Transaction;
 use App\Models\User;
 
-class TransactionPolicy
+class TransactionPolicy extends AppPolicy
 {
     /**
      * Determine whether the user can view any models.
      */
     public function viewAny(User $user): bool
     {
-        return false;
+        return parent::canViewAny($user) || $user->hasAnyPermission([PermissionEnum::read_transactions()->value]);
     }
 
     /**
@@ -22,7 +23,7 @@ class TransactionPolicy
      */
     public function view(User $user, Transaction $transaction): bool
     {
-        return false;
+        return parent::canView($user, $transaction) || $user->hasAnyPermission([PermissionEnum::read_users()->value]);
     }
 
     /**
@@ -30,7 +31,7 @@ class TransactionPolicy
      */
     public function create(User $user): bool
     {
-        return false;
+        return parent::canCreate($user) || $user->hasAnyPermission([PermissionEnum::create_users()->value]);
     }
 
     /**
@@ -38,7 +39,7 @@ class TransactionPolicy
      */
     public function update(User $user, Transaction $transaction): bool
     {
-        return false;
+        return parent::canUpdate($user, $transaction) || $user->hasAnyPermission([PermissionEnum::update_transactions()->value]);
     }
 
     /**
@@ -46,22 +47,6 @@ class TransactionPolicy
      */
     public function delete(User $user, Transaction $transaction): bool
     {
-        return false;
-    }
-
-    /**
-     * Determine whether the user can restore the model.
-     */
-    public function restore(User $user, Transaction $transaction): bool
-    {
-        return false;
-    }
-
-    /**
-     * Determine whether the user can permanently delete the model.
-     */
-    public function forceDelete(User $user, Transaction $transaction): bool
-    {
-        return false;
+        return parent::canDelete($user, $transaction) || $user->hasAnyPermission([PermissionEnum::delete_transactions()->value]);
     }
 }
