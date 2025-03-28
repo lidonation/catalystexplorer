@@ -1,3 +1,4 @@
+import Paragraph from '@/Components/atoms/Paragraph';
 import Title from '@/Components/atoms/Title';
 import FundingPercentages from '@/Components/FundingPercentages';
 import SegmentedBar from '@/Components/SegmentedBar';
@@ -9,14 +10,16 @@ import { useTranslation } from 'react-i18next';
 import { Segments } from '../../../../types/segments';
 import GroupHeroSection from './GroupHeroSection';
 import GroupData = App.DataTransferObjects.GroupData;
-import Paragraph from '@/Components/atoms/Paragraph';
 
 interface GroupCardFullProps {
     group: GroupData;
     children?: React.ReactNode;
 }
 
-const GroupCardExtended: React.FC<GroupCardFullProps> = ({ group, children }) => {
+const GroupCardExtended: React.FC<GroupCardFullProps> = ({
+    group,
+    children,
+}) => {
     const { t } = useTranslation();
 
     const completedGroupsCount = group?.completed_proposals_count ?? 0;
@@ -55,7 +58,7 @@ const GroupCardExtended: React.FC<GroupCardFullProps> = ({ group, children }) =>
 
     return (
         <div className="bg-background flex h-full w-full flex-col rounded-lg shadow-md">
-            <GroupHeroSection group={group} children={children}/>
+            <GroupHeroSection group={group} children={children} />
 
             <div className="mt-4 p-3">
                 <div className="flex w-full flex-col items-center gap-4">
@@ -103,7 +106,10 @@ const GroupCardExtended: React.FC<GroupCardFullProps> = ({ group, children }) =>
                 </div>
 
                 <div className="border-content-light mt-4 border-t border-b pt-4 pb-4">
-                    <SegmentedBar segments={segments} tooltipSegments={segments} />
+                    <SegmentedBar
+                        segments={segments}
+                        tooltipSegments={segments}
+                    />
                     <ul className="mt-2 flex w-full justify-between">
                         {segments.map((segment, index) => (
                             <li
