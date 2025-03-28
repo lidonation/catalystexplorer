@@ -79,7 +79,7 @@ export const ReputationBadge: React.FC<ReputationBadgeProps> = ({
             onMouseEnter={() => setShowTooltip(true)}
             onMouseLeave={() => setShowTooltip(false)}
         >
-            <svg width="75" height="50" viewBox="0 0 56 56">
+            <svg height="50" viewBox="0 0 56 56">
                 <path
                     d={hexagonPath}
                     className={`${colorClasses.fillClass} ${colorClasses.strokeClass}`}

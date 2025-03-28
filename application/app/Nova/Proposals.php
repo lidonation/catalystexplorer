@@ -96,6 +96,10 @@ class Proposals extends Resource
                 ->filterable(),
 
             HasMany::make('Metadata', 'metas', Metas::class),
+
+            HasMany::make(__('Discussions'), 'discussions', Discussions::class),
+
+            HasMany::make(__('Reviews'), 'reviews', Reviews::class),
         ];
     }
 
