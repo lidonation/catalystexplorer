@@ -742,7 +742,9 @@
             "ratingAsc": "Rating: Low to High",
             "ratingDesc": "Rating: High to Low",
             "avgReputationScoreAsc": "Reputation: Low to High",
-            "avgReputationScoreDesc": "Reputation: High to Low"
+            "avgReputationScoreDesc": "Reputation: High to Low",
+            "helpful":"Helpful",
+            "notHelpful": "Not Helpful"
         }
     },
     "transactions": {
