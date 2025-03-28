@@ -98,6 +98,11 @@ class IdeascaleProfiles extends Resource
             BelongsToMany::make(__('Groups'), 'groups', Groups::class)
                 ->searchable(),
 
+            BelongsToMany::make(__('Proposals'), 'proposals', Proposals::class)
+                ->searchable(),
+
+            HasMany::make(__('Reviews'), 'reviews', Reviews::class),
+
             HasMany::make('Metadata', 'metas', Metas::class),
         ];
     }

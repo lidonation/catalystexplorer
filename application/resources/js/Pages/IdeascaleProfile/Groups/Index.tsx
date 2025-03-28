@@ -20,11 +20,11 @@ export default function Groups({ideascaleProfile, groups}: GroupsPageProps) {
     return (
         <IdeascaleProfileLayout ideascaleProfile={ideascaleProfile}>
               <Head title={`${ideascaleProfile.name} - Groups`} />
-            
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+            <div className="mx-auto">
                 {
                     groups?.data ? (
-                        <div className="grid grid-cols-2 gap-4">
+                        <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
                             {groups?.data?.map((group) => (
                                 <div className="border-border-dark-on-dark rounded-lg border-2">
                                     <GroupCardExtended
@@ -40,7 +40,7 @@ export default function Groups({ideascaleProfile, groups}: GroupsPageProps) {
                 </div>
                     )
                 }
-                
+
             </div>
         </IdeascaleProfileLayout>
     );

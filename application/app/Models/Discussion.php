@@ -24,10 +24,16 @@ class Discussion extends Model
         return $this->morphTo('model', 'model_type', 'model_id');
     }
 
-    public function review(): BelongsTo
+    public function reviews(): BelongsTo
     {
-        return $this->belongsTo(Review::class, 'model_id');
+        return $this->belongsTo(Review::class, 'model_id')
+            ->where('model_type', Discussion::class);
     }
+
+    //    public function review(): BelongsTo
+    //    {
+    //        return $this->belongsTo(Review::class, 'model_id');
+    //    }
 
     public function proposal(): BelongsTo
     {
