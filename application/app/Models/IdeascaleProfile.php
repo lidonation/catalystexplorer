@@ -22,11 +22,12 @@ use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\Translatable\HasTranslations;
 use Staudenmeir\EloquentHasManyDeep\HasManyDeep;
+use Staudenmeir\EloquentHasManyDeep\HasRelationships;
 
 // #[ScopedBy(new LimitScope(64))]
 class IdeascaleProfile extends Model implements HasMedia
 {
-    use HasConnections, HasMetaData, HasTranslations, InteractsWithMedia, Searchable;
+    use HasConnections, HasMetaData, HasTranslations, InteractsWithMedia, Searchable,HasRelationships;
 
     public int $maxValuesPerFacet = 8000;
 

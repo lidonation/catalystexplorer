@@ -7,18 +7,27 @@ namespace App\Models;
 use App\Traits\HasMetaData;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Staudenmeir\EloquentHasManyDeep\HasManyDeep;
+use Staudenmeir\EloquentHasManyDeep\HasRelationships;
 
 class Reviewer extends Model
 {
-    use HasMetaData;
+    use HasMetaData,HasRelationships;
 
     protected $guarded = [];
 
     protected $appends = ['avg_reputation_score'];
 
+    public $withCount = ['proposals','reviews'];
+
     public function reviews(): HasMany
     {
         return $this->hasMany(Review::class);
+    }
+
+    public function proposals(): HasManyDeep
+    {
+        return $this->hasManyDeepFromRelations($this->reviews(), (new Review())->proposal());
     }
 
     public function moderations(): HasMany

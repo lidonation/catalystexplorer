@@ -4,15 +4,17 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Laravel\Scout\Searchable;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
-use Illuminate\Support\Facades\Artisan;
-use Laravel\Scout\Searchable;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Staudenmeir\EloquentHasManyDeep\HasRelationships;
+use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 
 class Review extends Model
 {
-    use Searchable;
+    use Searchable, HasRelationships;
 
     protected $guarded = [];
 
@@ -29,6 +31,8 @@ class Review extends Model
             'reviewer.reputation_scores.fund.label',
             'rating',
             'reviewer.avg_reputation_score',
+            'proposal.id',
+            'proposal.ideascale_profiles.id'
         ];
     }
 
@@ -39,7 +43,12 @@ class Review extends Model
             'title',
             'content',
             'status',
+            'reviewer_id',
             'reviewer.reputation_scores.fund',
+            'proposal.title',
+            'proposal.content',
+            'proposal.ideascale_profiles.name',
+            'proposal.ideascale_profiles.username'
         ];
     }
 
@@ -52,6 +61,8 @@ class Review extends Model
             'created_at',
             'reviewer.avg_reputation_score',
             'rating',
+            'helpful_total',
+            'not_helpful_total'
         ];
     }
 
@@ -70,11 +81,20 @@ class Review extends Model
         return $this->hasOne(Rating::class, 'review_id', 'id');
     }
 
-    public function proposal()
+
+
+    public function proposal(): HasOneThrough
     {
-        return $this->hasOneThrough(Proposal::class, Moderation::class, 'review_id', 'id', 'id', 'context_id')
-            ->where('moderations.context_type', Proposal::class);
+        return $this->hasOneThrough(
+            Proposal::class,
+            Discussion::class,
+            'id',         
+            'id',       
+            'model_id',   
+            'model_id'    
+        )->where('discussions.model_type', Proposal::class);;
     }
+
 
     public function parent(): BelongsTo
     {
@@ -103,7 +123,7 @@ class Review extends Model
 
     public function toSearchableArray(): array
     {
-        $this->load(['model', 'discussion', 'parent', 'reviewer.reputation_scores.fund']);
+        $this->load(['model', 'discussion', 'parent', 'reviewer.reputation_scores.fund','proposal.ideascaleProfiles']);
 
         $array = $this->toArray();
 

@@ -5,7 +5,7 @@
     "appMessage": "Tous les votes doivent être soumis dans l'application officielle de vote Catalyst. Ceci n'est qu'un outil de recherche et de planification !",
     "articles": "Articles",
     "assetName": "Nom de l'actif",
-    "API":"API",
+    "API": "API",
     "bio": "Biographie",
     "blockchainData": "Blockchain Data",
     "bookmarks": "Mes Signets",
@@ -23,7 +23,7 @@
     "dReps": "DReps",
     "facebook": "Facebook",
     "getStarted": "Commencer",
-    "general":"Général",
+    "general": "Général",
     "github": "Github",
     "emailAddress": "Adresse e-mail",
     "fundProject": "Numéro du projet financé",
@@ -32,7 +32,7 @@
     "noVotes": "Votes contre",
     "role": "Rôle",
     "projectTitle": "Titre du projet",
-    "impact":"Impact",
+    "impact": "Impact",
     "jormungandr": "Jormungandr",
     "knowledgeBase": "Base de Connaissances",
     "legal": "Légal",
@@ -62,18 +62,17 @@
     "metaTitle": "Meta Data Preview",
     "proposers": "Proposeurs",
     "register": "Registre",
-    "reviews": "Évaluations",
     "reviewerReputationScore": "Score de réputation de l'évaluateur",
-    "reviewers":"Réviseurs",
+    "reviewers": "Réviseurs",
     "searchQuery": "Aucun résultat ne correspond à votre requête de recherche",
-    "spending":"Dépenses",
+    "spending": "Dépenses",
     "social": "Social",
     "twitter": "Twitter",
     "support": "Support",
     "seeAll": "Voir Tout",
     "terms": "Conditions Générales",
     "votes": "Mes Votes",
-    "voters":"Électrices",
+    "voters": "Électrices",
     "wallets": "Portefeuilles",
     "details": "Détails",
     "teams": "Équipe",
@@ -141,7 +140,6 @@
         "contactEmail": "support@lidonation.com",
         "appLogoAlt": "Logo de Catalyst Explore."
     },
-
     "buttons": {
         "titles": {
             "claim": "Bouton de réclamation",
@@ -329,7 +327,7 @@
     "ideascaleProfiles": {
         "people": "Personnes",
         "ideascaleProfiles": "Ideascale Profils",
-        "claim":"Bouton de réclamation",
+        "claim": "Bouton de réclamation",
         "pageSubtitle": "Rechercher des propositions et des défis par titre, contenu ou auteur et co-auteurs",
         "ownProposals": "Propositions personnelles",
         "coProposals": "Propositions co",
@@ -545,7 +543,7 @@
             "chevron_up": "Icône de chevron vers le haut",
             "chevron_down": "Icône de chevron vers le bas",
             "close": "Icône de fermeture",
-            "connections":"Icône de connexions",
+            "connections": "Icône de connexions",
             "search": "Icône de recherche",
             "darkMode": "Icône de mode sombre",
             "folder": "Icône de dossier",
@@ -556,10 +554,10 @@
             "mail": "Icône de courrier",
             "menu": "Icône de menu",
             "miniCardSwitch": "Icône de commutateur de mini-carte",
-            "more":"Plus d'icônes",
+            "more": "Plus d'icônes",
             "note": "Icône de note",
             "notificationBox": "Icône de boîte de notification",
-            "numbers":"Icône de nombres",
+            "numbers": "Icône de nombres",
             "people": "Icône de personnes",
             "voltaireMode": "Icône de mode Voltaire",
             "link": "Icône de lien",
@@ -684,6 +682,17 @@
             "connected": "Connected",
             "connecting": "Connecting",
             "disconnect": "Disconnect"
+        }
+    },
+    "reviews": {
+        "reviews": "Évaluations",
+        "options": {
+            "ratingAsc": "Évaluation : de faible à élevée",
+            "ratingDesc": "Évaluation : du plus élevé au plus bas",
+            "avgReputationScoreAsc": "Réputation : de faible à élevée",
+            "avgReputationScoreDesc": "Réputation : de haute à basse",
+            "helpful": "Utile",
+            "notHelpful": "Pas utile"
         }
     },
     "transactions": {

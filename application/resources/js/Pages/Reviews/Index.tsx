@@ -39,13 +39,9 @@ const Index: React.FC<ReviewsPageProps> = ({
 
             <header>
                 <div className="container">
-                    <Title level="1">{t('reviews')}</Title>
+                    <Title level="1">{t('reviews.reviews')}</Title>
                 </div>
             </header>
-
-            <section className="container">
-                <FundFiltersContainer funds={funds} />
-            </section>
 
             <section className="container">
                 <SearchControls
