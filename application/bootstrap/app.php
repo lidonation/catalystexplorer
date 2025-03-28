@@ -18,7 +18,7 @@ return Application::configure(basePath: dirname(__DIR__))
             \App\Http\Middleware\HandleInertiaRequests::class,
             \Illuminate\Http\Middleware\AddLinkHeadersForPreloadedAssets::class,
             \CodeZero\LocalizedRoutes\Middleware\SetLocale::class,
-            // \Illuminate\Routing\Middleware\SubstituteBindings::class,
+            \App\Http\Middleware\CaptureIntendedUrl::class, 
         ]);
         $middleware->trustProxies(at: '*');
     })
