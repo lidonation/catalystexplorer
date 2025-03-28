@@ -21,6 +21,14 @@ const ReviewsSortOptions = () => {
             label: t('reviews.options.avgReputationScoreDesc'),
             value: 'reviewer.avg_reputation_score:desc',
         },
+        {
+            label: t('reviews.options.helpful'),
+            value: 'helpful_total:asc',
+        },
+        {
+            label: t('reviews.options.notHelpful'),
+            value: 'not_helpful_total:desc',
+        },
     ];
 };
 

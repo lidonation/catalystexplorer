@@ -97,7 +97,12 @@ class IdeascaleProfilesController extends Controller
             return Inertia::render('IdeascaleProfile/Groups/Index', [
                 'ideascaleProfile' => IdeascaleProfileData::from($ideascaleProfileData),
                 'groups' => GroupData::collect(
-                    $ideascaleProfile->groups()
+                    $ideascaleProfile->groups()->withCount([
+                        'completed_proposals',
+                        'unfunded_proposals',
+                        'funded_proposals',
+                        'proposals',
+                    ])
                         ->paginate(12)
                 ),
             ]);

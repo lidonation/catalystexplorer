@@ -6,10 +6,8 @@ namespace App\Models;
 
 use App\Enums\CatalystCurrencySymbols;
 use App\Enums\ProposalStatus;
-use App\Models\Scopes\LimitScope;
 use App\Traits\HasConnections;
 use App\Traits\HasMetaData;
-use Illuminate\Database\Eloquent\Attributes\ScopedBy;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -236,14 +234,7 @@ class IdeascaleProfile extends Model implements HasMedia
 
     public function proposal_schedules()
     {
-        return ProjectSchedule::whereHas('proposal', function ($query) {
-            $query->has('users', $this->id);
-        });
-
-        //        return $this->hasMany(ProjectSchedule::class)
-        //            ->whereHas('proposal', function ($query) {
-        //                $query->has('users', $this->id);
-        //            });
+        return $this->hasManyDeep(ProjectSchedule::class, ['ideascale_profile_has_proposal', Proposal::class], ['ideascale_profile_id', 'id'], ['id', 'proposal_id']);
     }
 
     public function monthly_reports(): HasMany

@@ -19,6 +19,8 @@ export default function LoginForm() {
         email: '',
         password: '',
         remember: false,
+        redirect: window.location.href 
+
     });
 
     const [errors, setErrors] = useState<FormErrors>({});
@@ -33,7 +35,6 @@ export default function LoginForm() {
             {
                 onSuccess: () => {
                     reset('password');
-                    router.visit(generateLocalizedRoute('my.dashboard'));
                 },
                 onError: (error) => {
                     console.log('Login error ', error);
