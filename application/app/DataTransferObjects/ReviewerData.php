@@ -22,7 +22,7 @@ class ReviewerData extends Data
         #[DataCollectionOf(ReviewerReputationScoreData::class)]
         public ?DataCollection $reputation_scores,
 
-        public string $catalyst_reviewer_id,
+        public ?string $catalyst_reviewer_id,
 
         public ?int $avg_reputation_score,
 

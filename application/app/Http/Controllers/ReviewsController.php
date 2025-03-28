@@ -6,7 +6,6 @@ namespace App\Http\Controllers;
 
 use App\Actions\TransformIdsToHashes;
 use App\DataTransferObjects\ReviewData;
-use App\Enums\ProposalSearchParams;
 use App\Enums\QueryParamsEnum;
 use App\Models\Proposal;
 use App\Models\Review;
