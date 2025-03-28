@@ -8,15 +8,15 @@ use App\Actions\TransformIdsToHashes;
 use App\DataTransferObjects\CampaignData;
 use App\DataTransferObjects\GroupData;
 use App\DataTransferObjects\IdeascaleProfileData;
+use App\DataTransferObjects\ProjectScheduleData;
 use App\DataTransferObjects\ProposalData;
-use App\DataTransferObjects\ProposalMilestoneData;
 use App\DataTransferObjects\ReviewData;
 use App\Enums\IdeascaleProfileSearchParams;
 use App\Enums\ProposalSearchParams;
 use App\Models\Campaign;
 use App\Models\IdeascaleProfile;
 use App\Models\Moderation;
-use App\Models\ProposalMilestone;
+use App\Models\ProjectSchedule;
 use App\Repositories\IdeascaleProfileRepository;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -115,13 +115,16 @@ class IdeascaleProfilesController extends Controller
         }
 
         if (str_contains($path, '/reviews')) {
-            //            $data = $this->getReviewsData($ideascaleProfile, $path);
+            $reviews = to_length_aware_paginator(
+                ReviewData::collect(
+                    $ideascaleProfile->reviews()->with(['reviewer.reputation_scores', 'proposal'])->paginate(12)
+                )
+            );
+            $ideascaleProfile->loadCount(['reviews']);
 
             return Inertia::render('IdeascaleProfile/Reviews/Index', [
-                'ideascaleProfile' => IdeascaleProfileData::from($ideascaleProfileData),
-                'reviews' => $ideascaleProfile?->reviews,
-                //                'ratingStats' => $data['ratingStats'],
-                //                'reputationScores' => $data['reputationScores'],
+                'ideascaleProfile' => IdeascaleProfileData::from($ideascaleProfile),
+                'reviews' => $reviews,
                 'filters' => $this->queryParams,
             ]);
         }
@@ -129,8 +132,8 @@ class IdeascaleProfilesController extends Controller
         if (str_contains($path, '/milestones')) {
             return Inertia::render('IdeascaleProfile/Milestones/Index', [
                 'ideascaleProfile' => IdeascaleProfileData::from($ideascaleProfileData),
-                'proposalMilestones' => Inertia::optional(fn () => to_length_aware_paginator(ProposalMilestoneData::collect(
-                    ProposalMilestone::whereHas('proposal', function ($query) use ($ideascaleProfile) {
+                'projectSchedules' => Inertia::optional(fn () => to_length_aware_paginator(ProjectScheduleData::collect(
+                    ProjectSchedule::whereHas('proposal', function ($query) use ($ideascaleProfile) {
                         $query->has('users', $ideascaleProfile->id);
                     })->with(['milestones'])->paginate(6)
                 ))),

@@ -10,11 +10,13 @@ use Illuminate\Database\Eloquent\Scope;
 
 class LimitScope implements Scope
 {
+    public function __construct(protected ?int $limit = null) {}
+
     /**
      * Apply the scope to a given Eloquent query builder.
      */
     public function apply(Builder $builder, Model $model): void
     {
-        $builder->limit(config('app.limit_scope_limit'));
+        $builder->limit($this->limit ?? config('app.limit_scope_limit'));
     }
 }

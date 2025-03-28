@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Casts\Attribute;
+use App\Casts\Percentage;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -14,6 +14,13 @@ class ReviewerReputationScore extends Model
     use SoftDeletes;
 
     protected $guarded = [];
+
+    protected function casts(): array
+    {
+        return [
+            'score' => Percentage::class,
+        ];
+    }
 
     public function reviewer(): BelongsTo
     {
@@ -25,10 +32,8 @@ class ReviewerReputationScore extends Model
         return $this->morphTo('context', 'context_type', 'context_id');
     }
 
-    public function score(): Attribute
+    public function fund(): BelongsTo
     {
-        return Attribute::make(
-            get: fn () => (bool) $this->score ? $this->score * 100 : 0,
-        );
+        return $this->belongsTo(Fund::class, 'context_id');
     }
 }

@@ -5,29 +5,21 @@ import RichContent from '@/Components/RichContent';
 import CommunitiesIcon from '@/Components/svgs/CommunitiesSvg';
 import { useLocalizedRoute } from '@/utils/localizedRoute';
 import { Link } from '@inertiajs/react';
-import React, { useCallback, useState } from 'react';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
 import CommunityIdeascaleProfiles from './CommunityIdeascaleProfiles';
 import JoinCommunityButton from './JoinCommunityButton';
-import FundData = App.DataTransferObjects.FundData;
-import CampaignData = App.DataTransferObjects.CampaignData;
 import CommunityData = App.DataTransferObjects.CommunityData;
+import PrimaryLink from "@/Components/atoms/PrimaryLink";
+import Value from "@/Components/atoms/Value";
 
 interface CommunityCardProps {
     community: CommunityData;
+    embedded?: boolean;
 }
 
-const CommunityCard: React.FC<CommunityCardProps> = ({ community }) => {
+const CommunityCard: React.FC<CommunityCardProps> = ({ community, embedded = true }) => {
     const { t } = useTranslation();
-
-    const [userSelected, setUserSelected] =
-        useState<App.DataTransferObjects.IdeascaleProfileData | null>(null);
-
-    const handleUserClick = useCallback(
-        (user: App.DataTransferObjects.IdeascaleProfileData) =>
-            setUserSelected(user),
-        [],
-    );
 
     return (
         <Card className="justify-between overflow-hidden">
@@ -51,42 +43,42 @@ const CommunityCard: React.FC<CommunityCardProps> = ({ community }) => {
                         </Title>
                     </Link>
                     <RichContent
-                        className="text-content text-4"
+                        className="text-content text-4 pb-2"
                         content={community.content}
                     />
                 </div>
             </div>
-            <div>
+            {embedded && ( <div>
                 <div className="px-8">
-                    <div className="mt-4 flex flex-row justify-between">
+                    <div className="mt-4 flex flex-row justify-between items-center">
                         <div className="text-4 text-primary-100">
-                            {t('status').toUpperCase()}
+                            {t('communities.proposers').toUpperCase()}
                         </div>
-                        <div className="bg-background-lighter inline-flex items-center justify-center rounded-md px-2 py-1">
-                            {community.status
-                                ? community?.status.charAt(0).toUpperCase() +
-                                  community?.status.slice(1)
-                                : ''}
-                        </div>
-                    </div>
-                    <Divider dotted={true} />
-                    <div className="flex flex-row justify-between">
-                        <div className="text-4 text-primary-100">
-                            {t('members').toUpperCase()}
-                        </div>
+
                         <CommunityIdeascaleProfiles
                             ideascaleProfiles={community.ideascale_profiles}
+                            total={community.ideascale_profiles_count}
                         />
                     </div>
+
+                    <Divider dotted={true} />
+
+                    <div className="flex flex-row justify-between items-center">
+                        <div className="text-4 text-primary-100">
+                            {t('communities.proposals').toUpperCase()}
+                        </div>
+                        <Value>{community.proposals_count}</Value>
+                    </div>
                 </div>
+
                 <Divider />
+
                 <div className="align-center flex justify-center py-4">
-                    <JoinCommunityButton
-                        ideascale_profiles={community.ideascale_profiles}
-                        community={community}
-                    />
+                    <PrimaryLink href={useLocalizedRoute('communities.dashboard', {slug: community.slug,})}>
+                        {t('explore')}
+                    </PrimaryLink>
                 </div>
-            </div>
+            </div>)}
         </Card>
     );
 };

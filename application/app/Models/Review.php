@@ -25,6 +25,10 @@ class Review extends Model
             'status',
             'model_id',
             'model_type',
+            'reviewer.reputation_scores.fund.id',
+            'reviewer.reputation_scores.fund.label',
+            'rating',
+            'reviewer.avg_reputation_score',
         ];
     }
 
@@ -35,6 +39,7 @@ class Review extends Model
             'title',
             'content',
             'status',
+            'reviewer.reputation_scores.fund',
         ];
     }
 
@@ -45,6 +50,8 @@ class Review extends Model
             'title',
             'status',
             'created_at',
+            'reviewer.avg_reputation_score',
+            'rating',
         ];
     }
 
@@ -76,7 +83,7 @@ class Review extends Model
 
     public function reviewer(): BelongsTo
     {
-        return $this->belongsTo(self::class);
+        return $this->belongsTo(Reviewer::class);
     }
 
     public function user(): BelongsTo
@@ -96,7 +103,7 @@ class Review extends Model
 
     public function toSearchableArray(): array
     {
-        $this->load(['model', 'discussion', 'parent']);
+        $this->load(['model', 'discussion', 'parent', 'reviewer.reputation_scores.fund']);
 
         $array = $this->toArray();
 
@@ -106,7 +113,6 @@ class Review extends Model
             'parent' => $this->parent?->toArray(),
             'children' => $this->children,
             'rating' => $this->rating?->rating,
-            'reviewer' => $this->reviewer,
         ]);
     }
 }

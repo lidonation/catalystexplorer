@@ -7,7 +7,9 @@ namespace App\Nova;
 use App\Models\Review;
 use App\Nova\Actions\MakeSearchable;
 use Laravel\Nova\Actions\Action;
+use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Fields\ID;
+use Laravel\Nova\Fields\Textarea;
 use Laravel\Nova\Http\Requests\NovaRequest;
 
 class Reviews extends Resource
@@ -44,6 +46,10 @@ class Reviews extends Resource
     {
         return [
             ID::make()->sortable(),
+            Textarea::make('Content'),
+            BelongsTo::make(__('Reviewer'), 'reviewer', Reviewers::class)
+                ->searchable()
+                ->filterable(),
         ];
     }
 

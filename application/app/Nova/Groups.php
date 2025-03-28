@@ -65,7 +65,7 @@ class Groups extends Resource
             Text::make(__('Slug'))->sortable(),
 
             Select::make('Status', 'status')
-                ->options(StatusEnum::toValues())
+                ->options(StatusEnum::toArray())
                 ->default(StatusEnum::draft())
                 ->sortable(),
 

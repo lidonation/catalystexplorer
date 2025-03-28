@@ -153,7 +153,7 @@ return [
     |
     */
 
-    'fast_termination' => false,
+    'fast_termination' => true,
 
     /*
     |--------------------------------------------------------------------------
@@ -214,7 +214,7 @@ return [
 
         'local' => [
             'supervisor-1' => [
-                'maxProcesses' => env('HORIZON_MAX_PROCESSES', 3),
+                'maxProcesses' => 10,
             ],
         ],
     ],

@@ -15,6 +15,7 @@ arch()
         IdeascaleProfile::class,
         ModelTag::class,
         'App\Models\Scopes',
+        'App\Models\Pivot',
     ]);
 
 arch()

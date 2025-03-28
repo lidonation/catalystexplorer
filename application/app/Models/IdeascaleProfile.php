@@ -22,6 +22,7 @@ use Spatie\Translatable\HasTranslations;
 use Staudenmeir\EloquentHasManyDeep\HasManyDeep;
 use Staudenmeir\EloquentHasManyDeep\HasRelationships;
 
+// #[ScopedBy(new LimitScope(64))]
 class IdeascaleProfile extends Model implements HasMedia
 {
     use HasConnections, HasMetaData, HasRelationships, HasTranslations, InteractsWithMedia, Searchable;
@@ -225,7 +226,7 @@ class IdeascaleProfile extends Model implements HasMedia
             ->whereNull('funded_at');
     }
 
-    public function in_progress_proposals()
+    public function in_progress_proposals(): BelongsToMany
     {
         return $this->proposals()
             ->where(['type' => 'proposal', 'status' => 'in_progress']);
@@ -233,14 +234,7 @@ class IdeascaleProfile extends Model implements HasMedia
 
     public function proposal_schedules()
     {
-        return ProposalMilestone::whereHas('proposal', function ($query) {
-            $query->has('users', $this->id);
-        });
-
-        //        return $this->hasMany(ProposalMilestone::class)
-        //            ->whereHas('proposal', function ($query) {
-        //                $query->has('users', $this->id);
-        //            });
+        return $this->hasManyDeep(ProjectSchedule::class, ['ideascale_profile_has_proposal', Proposal::class], ['ideascale_profile_id', 'id'], ['id', 'proposal_id']);
     }
 
     public function monthly_reports(): HasMany

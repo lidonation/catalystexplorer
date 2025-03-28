@@ -69,6 +69,7 @@ const CommunityFundingChart: React.FC<CommunityFundingChartProps> = ({
                     />
                 </div>
             </div>
+
             <div className="h-[400px]">
                 {chartData.some((dataset) =>
                     dataset.data.some((point) => point.y !== 0),

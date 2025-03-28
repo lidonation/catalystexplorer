@@ -53,7 +53,7 @@ const Index: React.FC<CommunitiesPageProps> = ({
         <>
             <ListProvider>
                 <FiltersProvider defaultFilters={filters}>
-                    <Head title="Communities" />
+                    <Head title={t('communities.title')} />
 
                     <header>
                         <div className="container py-2">
@@ -74,7 +74,7 @@ const Index: React.FC<CommunitiesPageProps> = ({
 
                     <section
                         className={`container flex w-full flex-col items-center justify-center overflow-hidden transition-[max-height] duration-500 ease-in-out ${
-                            showFilters ? 'max-h-[500px]' : 'max-h-0'
+                            showFilters ? 'max-h-svh' : 'max-h-0'
                         }`}
                     >
                         <CommunityFilters
@@ -84,7 +84,7 @@ const Index: React.FC<CommunitiesPageProps> = ({
                         />
                     </section>
 
-                    <section className="container flex w-full flex-col items-center justify-center overflow-hidden py-8 duration-500 ease-in-out">
+                    <section className="container flex w-full flex-col items-center mt-4 justify-center overflow-hidden duration-500 ease-in-out">
                         <WhenVisible
                             fallback={<CommunityLoader />}
                             data="campaigns"
@@ -93,7 +93,7 @@ const Index: React.FC<CommunitiesPageProps> = ({
                         </WhenVisible>
                     </section>
                     {communities && communities.total > 0 && (
-                        <section className="container w-full py-8">
+                        <section className="container w-full py-8 mt-4">
                             {communities && (
                                 <Paginator pagination={communities} />
                             )}

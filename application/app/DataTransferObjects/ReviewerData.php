@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\DataTransferObjects;
 
-use App\Models\ReviewerReputationScore;
 use Spatie\LaravelData\Attributes\DataCollectionOf;
 use Spatie\LaravelData\Data;
 use Spatie\LaravelData\DataCollection;
@@ -20,10 +19,12 @@ class ReviewerData extends Data
         public $reviews_count,
 
         #[TypeScriptOptional]
-        #[DataCollectionOf(ReviewerReputationScore::class)]
+        #[DataCollectionOf(ReviewerReputationScoreData::class)]
         public ?DataCollection $reputation_scores,
 
-        public $catalyst_reviewer_id,
+        public string $catalyst_reviewer_id,
+
+        public ?int $avg_reputation_score,
 
         #[TypeScriptOptional]
         public ?UserData $claimed_by,

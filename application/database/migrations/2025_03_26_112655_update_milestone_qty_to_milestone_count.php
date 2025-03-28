@@ -11,9 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('community_has_groups', function (Blueprint $table) {
-            $table->foreignId('community_id')->constrained()->onDelete('cascade');
-            $table->foreignId('group_id')->constrained()->onDelete('cascade');
+        Schema::table('proposal_milestones', function (Blueprint $table) {
+            $table->renameColumn('milestones_qty', 'milestone_count');
         });
     }
 
@@ -22,6 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('community_has_groups');
+        Schema::table('proposal_milestones', function (Blueprint $table) {
+            $table->renameColumn('milestone_count', 'milestones_qty');
+        });
     }
 };

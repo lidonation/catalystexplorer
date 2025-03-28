@@ -87,7 +87,7 @@ services:
       image: postgres:17.1-bookworm
       container_name: catalystexplorer_test.db
       ports:
-          - '5437:5432'
+          - '5439:5432'
       env_file:
         - ./application/.env.testing
       environment:
