@@ -17,8 +17,8 @@ export const ReviewList: React.FC<ReviewListProps> = ({
     return (
         <div className={`space-y-6 ${className}`}>
             {reviews?.data?.map((review) => (
-                <section>
-                    <ReviewCard key={review?.hash} review={review}/>
+                <section key={review?.hash}>
+                    <ReviewCard  review={review}/>
 
                     <div className="mt-6">
                         <Divider/>

@@ -7,6 +7,8 @@ import RichContent from "@/Components/RichContent";
 import ValueLabel from "@/Components/atoms/ValueLabel";
 import {t} from "i18next";
 import Value from "@/Components/atoms/Value";
+import {useLocalizedRoute} from "@/utils/localizedRoute";
+import {Link} from "@inertiajs/react";
 
 export interface ReviewItemProps {
     review: ReviewData;
@@ -14,9 +16,9 @@ export interface ReviewItemProps {
 }
 
 export const ReviewCard: React.FC<ReviewItemProps> = ({
-  review,
-  className = '',
-}) => {
+                                                          review,
+                                                          className = '',
+                                                      }) => {
     return (
         <div className={`pb-6 ${className}`}>
             <div className="flex items-start justify-between">
@@ -35,11 +37,25 @@ export const ReviewCard: React.FC<ReviewItemProps> = ({
                 content={review.content}
             />}
 
-            <section>
-                <div className='flex gap-2 items-center'>
-                    <ValueLabel>{t('proposal')}</ValueLabel>
-                    <Value>{review?.proposal?.title}</Value>
-                </div>
+            <section className='flex flex-wrap gap-4 items-center '>
+                {review?.proposal?.link && <div className='flex gap-2 items-center'>
+                    <ValueLabel>
+                        {t('proposal')}
+                    </ValueLabel>
+                    <Link href={review?.proposal?.link} className='link-primary text-sm'>
+                        {review?.proposal?.title}
+                    </Link>
+                </div>}
+
+                {review?.proposal?.fund?.title && <div className='flex gap-2 items-center'>
+                    <ValueLabel>
+                        {t('funds.fund')}
+                    </ValueLabel>
+                    <Link href={useLocalizedRoute('funds.fund.show', {slug: review?.proposal?.fund?.slug})}
+                          className='link-primary text-sm'>
+                        {review?.proposal?.fund?.title}
+                    </Link>
+                </div>}
             </section>
 
         </div>

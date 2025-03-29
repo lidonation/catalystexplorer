@@ -113,7 +113,7 @@
         --cx-border-color: #667085;
         --cx-border-color-dark: #000000;
         --cx-border-dark-light: #cbced4;
-        
+
         --bg-secondary-color: #374151;
         --bg-accent-color: #3facd1;
         --bg-error-primary-color: #dc2626;
@@ -160,7 +160,7 @@
         --cx-border-color: #2596be;
         --cx-border-color-dark: #e9efff;
         --cx-border-dark-light: #cbced4;
-        
+
         --bg-light-persist: #ffffff;
         --cx-tooltip-background: #101828CC;
 
@@ -208,6 +208,13 @@
 
     .text-slate {
         color: var(--cx-slate);
+    }
+
+    .link-primary {
+        color: var(--cx-primary);
+        &:hover {
+            color: var(--cx-accent);
+        }
     }
 
     .scrollbar-thin::-webkit-scrollbar {
