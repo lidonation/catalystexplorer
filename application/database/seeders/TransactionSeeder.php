@@ -22,14 +22,16 @@ class TransactionSeeder extends Seeder
             if (! $firstLine) {
                 Transaction::factory([
                     'tx_hash' => $data[1],
-                    'block' => $data[3],
-                    'json_metadata' => json_decode($data[4]),
-                    'raw_metadata' => json_decode($data[5]),
-                    'inputs' => json_decode($data[6]),
-                    'outputs' => json_decode($data[7]),
-                    'type' => $data[8],
-                    'created_at' => $data[9],
-                    'voters_details' => json_decode($data[10]),
+                    'block' => $data[4],
+                    "epoch" => $data[9],
+                    "stake_pub" => $data[11],
+                    "stake_key" => $data[10],
+                    'json_metadata' => json_decode($data[2]),
+                    'raw_metadata' => json_decode($data[3]),
+                    'inputs' => json_decode($data[5]),
+                    'outputs' => json_decode($data[6]),
+                    'type' => $data[7],
+                    'created_at' => $data[8],
                 ])->create();
             }
             $firstLine = false;
