@@ -166,40 +166,56 @@ test-arch:
 	make test-backend && \
 	make up 
 
-.PHONY: cypress-install
-cypress-install:
-	docker compose run --rm catalystexplorer.cypress.headless install
 
-.PHONY: cypress-run
-cypress-run:
-	docker compose run --rm catalystexplorer.cypress.headless run --project /app
+.PHONY: seed-index
+seed-index:
+	$(sail)	artisan db:seed --class=SearchIndexSeeder
 
-.PHONY: test-e2e
-test-e2e:
-	make watch & \
-	sleep 10 && \
-	make cypress-run
+.PHONY: create-index import-index 
 
-.PHONY: cypress-open-linux
-cypress-open-linux:
-	docker compose run --rm \
-		-e DISPLAY=${DISPLAY} \
-		-v /tmp/.X11-unix:/tmp/.X11-unix \
-		catalystexplorer.cypress.gui open --project /app
+MODELS = App\\Models\\Proposal App\\Models\\IdeascaleProfile App\\Models\\Group App\\Models\\Review App\\Models\\MonthlyReport
 
-.PHONY: cypress-open-mac
-cypress-open-mac:
-	@echo "📱 Starting Cypress with Electron..."
-	cd application && ELECTRON_NO_ATTACH_CONSOLE=true yarn cypress open
+create-index:
+	@model_filter="$(filter-out $@,$(MAKECMDGOALS))"; \
+	model_filter="$$(echo $$model_filter | head -n1)"; \
+	if [ -z "$$model_filter" ]; then \
+		models="$(MODELS)"; \
+	else \
+		models="$$(echo $(MODELS) | tr ' ' '\n' | grep -i "$$model_filter")"; \
+		echo "$$models";\
+	fi; \
+	for model in $$models; do \
+		$(sail) artisan cx:create-search-index "$$model"; \
+	done
 
-.PHONY: cypress-open-windows
-cypress-open-windows:
-	docker compose run --rm catalystexplorer.cypress.gui open --project /app --browser chrome
+%:
+	@:
 
-.PHONY: cypress-clean
-cypress-clean:
-	@echo "🧹 Cleaning Cypress cache..."
-	rm -rf application/cypress/videos
-	rm -rf application/cypress/screenshots
-	rm -rf application/cypress/downloads
-	@echo "✨ Cypress cache cleaned"
+import-index:
+	@model_filter="$(filter-out $@,$(MAKECMDGOALS))"; \
+	model_filter="$$(echo $$model_filter | head -n1)"; \
+	if [ -z "$$model_filter" ]; then \
+		models="$(MODELS)"; \
+	else \
+		models="$$(echo $(MODELS) | tr ' ' '\n' | grep -i "$$model_filter")"; \
+		echo "$$models";\
+	fi; \
+	for model in $$models; do \
+		$(sail) artisan scout:import "$$model"; \
+	done
+%:
+	@:
+	
+.PHONY: clear-meili
+
+INDEXES = cx_proposals cx_ideascale_profiles cx_monthly_reports cx_review cx_groups
+
+clear-meili:
+	@index_filter="$(filter-out $@,$(MAKECMDGOALS))"; \
+	for index in $(INDEXES); do \
+		if [ -z "$$index_filter" ] || echo $$index | grep -i "$$index_filter" > /dev/null; then \
+			$(sail) artisan scout:delete-index "$$index"; \
+		fi \
+	done
+%:
+	@:
