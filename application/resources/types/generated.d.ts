@@ -433,7 +433,7 @@ export type ReviewerData = {
 hash: string | null;
 reviews_count: any;
 reputation_scores?: any;
-catalyst_reviewer_id: string;
+catalyst_reviewer_id: string | null;
 avg_reputation_score: number | null;
 claimed_by?: App.DataTransferObjects.UserData;
 };

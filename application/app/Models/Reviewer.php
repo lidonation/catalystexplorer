@@ -18,7 +18,7 @@ class Reviewer extends Model
 
     protected $appends = ['avg_reputation_score'];
 
-    public $withCount = ['proposals','reviews'];
+    public $withCount = ['proposals', 'reviews'];
 
     public function reviews(): HasMany
     {
@@ -27,7 +27,7 @@ class Reviewer extends Model
 
     public function proposals(): HasManyDeep
     {
-        return $this->hasManyDeepFromRelations($this->reviews(), (new Review())->proposal());
+        return $this->hasManyDeepFromRelations($this->reviews(), (new Review)->proposal());
     }
 
     public function moderations(): HasMany
