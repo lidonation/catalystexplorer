@@ -173,7 +173,7 @@ seed-index:
 
 .PHONY: create-index import-index 
 
-MODELS = App\\Models\\Proposal App\\Models\\IdeascaleProfile App\\Models\\Group App\\Models\\Review App\\Models\\MonthlyReport
+MODELS = App\\Models\\Proposal App\\Models\\IdeascaleProfile App\\Models\\Group App\\Models\\Review App\\Models\\MonthlyReport App\\Models\\Transaction
 
 create-index:
 	@model_filter="$(filter-out $@,$(MAKECMDGOALS))"; \
@@ -205,10 +205,10 @@ import-index:
 	done
 %:
 	@:
-	
+
 .PHONY: clear-meili
 
-INDEXES = cx_proposals cx_ideascale_profiles cx_monthly_reports cx_review cx_groups
+INDEXES = cx_proposals cx_ideascale_profiles cx_monthly_reports cx_review cx_groups cx_transactions
 
 clear-meili:
 	@index_filter="$(filter-out $@,$(MAKECMDGOALS))"; \
