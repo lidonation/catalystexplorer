@@ -117,7 +117,7 @@ class IdeascaleProfilesController extends Controller
         if (str_contains($path, '/reviews')) {
             $reviews = to_length_aware_paginator(
                 ReviewData::collect(
-                    $ideascaleProfile->reviews()->with(['reviewer.reputation_scores', 'proposal'])->paginate(12)
+                    $ideascaleProfile->reviews()->with(['reviewer.reputation_scores', 'proposal.fund'])->paginate(12)
                 )
             );
             $ideascaleProfile->loadCount(['reviews']);

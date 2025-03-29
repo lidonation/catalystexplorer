@@ -6,11 +6,11 @@ interface ValueLabelProps extends HTMLAttributes<HTMLDivElement> {
     className?: string;
 }
 
-export default function Value({children, className = '', ...props }: ValueLabelProps) {
+export default function Value({children, className = '', ...props}: ValueLabelProps) {
     return (
         <div
-            {...props}
-            className='text-2xl'>
+            className='text-2xl'
+            {...props}>
             {children}
         </div>
     );
