@@ -84,7 +84,7 @@ class TransactionFactory extends Factory
                 'metadata_hash' => $metadataHash,
                 'data' => $metadata,
             ]),
-            'total_output' => collect($outputs)->sum('amount'),
+            // 'total_output' => collect($outputs)->sum('amount'),
             'created_at' => $this->faker->dateTimeBetween('-1 year', 'now'),
         ];
     }

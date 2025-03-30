@@ -20,14 +20,14 @@ class Transaction extends Model implements IHasMetaData
         'tx_hash',
         'epoch',
         'block',
+        'stake_pub',
+        'stake_key',
         'json_metadata',
         'raw_metadata',
         'inputs',
         'outputs',
         'type',
         'created_at',
-        'voters_details',
-        'total_output',
     ];
 
     public static function getSearchableAttributes(): array
@@ -70,7 +70,6 @@ class Transaction extends Model implements IHasMetaData
         return [
             'epoch',
             'created_at',
-            'total_output',
             'block',
             'json_metadata.voter_delegations.weight',
         ];
@@ -139,7 +138,6 @@ class Transaction extends Model implements IHasMetaData
             'raw_metadata' => 'object',
             'inputs' => 'array',
             'outputs' => 'array',
-            'voters_details' => 'array',
             'created_at' => 'datetime',
         ];
     }
