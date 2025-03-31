@@ -23,65 +23,53 @@ export default function Proposals({
 }: DashboardPageProps) {
     const { t } = useTranslation();
     const awardedFilterOptions = [
-        ...((community?.amount_awarded_ada ?? 0) > 0
-            ? [
-                  {
-                      id: 'ADA',
-                      value: 'ADA',
-                      label: t('communities.filters.totalAdaAwarded'),
-                  },
-              ]
-            : []),
-        ...((community?.amount_awarded_usd ?? 0) > 0
-            ? [
-                  {
-                      id: 'USD',
-                      value: 'USD',
-                      label: t('communities.filters.totalUsdAwarded'),
-                  },
-              ]
-            : []),
+        [
+            {
+                id: 'ADA',
+                value: 'ADA',
+                label: t('communities.filters.totalAdaAwarded'),
+            },
+        ],
+        [
+            {
+                id: 'USD',
+                value: 'USD',
+                label: t('communities.filters.totalUsdAwarded'),
+            },
+        ]
     ];
 
     const distributedFilterOptions = [
-        ...((community?.amount_awarded_ada ?? 0) > 0
-            ? [
-                  {
-                      id: 'ADA',
-                      value: 'ADA',
-                      label: t('communities.filters.totalAdaDistributed'),
-                  },
-              ]
-            : []),
-        ...((community?.amount_awarded_usd ?? 0) > 0
-            ? [
-                  {
-                      id: 'USD',
-                      value: 'USD',
-                      label: t('communities.filters.totalUsdDistributed'),
-                  },
-              ]
-            : []),
+        [
+            {
+                id: 'ADA',
+                value: 'ADA',
+                label: t('communities.filters.totalAdaDistributed'),
+            },
+        ],
+        [
+            {
+                id: 'USD',
+                value: 'USD',
+                label: t('communities.filters.totalUsdDistributed'),
+            },
+        ],
     ];
     const remainedOptions = [
-        ...((community?.amount_awarded_ada ?? 0) > 0
-            ? [
-                  {
-                      id: 'ADA',
-                      value: 'ADA',
-                      label: t('communities.filters.totalAdaRemaining'),
-                  },
-              ]
-            : []),
-        ...((community?.amount_awarded_usd ?? 0) > 0
-            ? [
-                  {
-                      id: 'USD',
-                      value: 'USD',
-                      label: t('communities.filters.totalUsdRemaining'),
-                  },
-              ]
-            : []),
+        [
+            {
+                id: 'ADA',
+                value: 'ADA',
+                label: t('communities.filters.totalAdaRemaining'),
+            },
+        ],
+        [
+            {
+                id: 'USD',
+                value: 'USD',
+                label: t('communities.filters.totalUsdRemaining'),
+            },
+        ],
     ];
 
     return (
@@ -95,7 +83,7 @@ export default function Proposals({
                 <CommunityFundingChart
                     adaData={amountAwardedChartData[0]?.data}
                     usdData={amountAwardedChartData[1]?.data}
-                    filterOptions={awardedFilterOptions}
+                    filterOptions={awardedFilterOptions.flat()}
                     filtersTitle={t('communities.totalAwarded')}
                     chartTitle={t('communities.totalAmountAwarded')}
                     legend={t('communities.totalAwarded')}
@@ -104,7 +92,7 @@ export default function Proposals({
                 <CommunityFundingChart
                     adaData={amountDistributedChartData[0]?.data}
                     usdData={amountDistributedChartData[1]?.data}
-                    filterOptions={distributedFilterOptions}
+                    filterOptions={distributedFilterOptions.flat()}
                     filtersTitle={t('communities.totalDistributed')}
                     chartTitle={t('communities.totalAmountDistributed')}
                     legend={t('communities.totalDistributed')}
@@ -113,7 +101,7 @@ export default function Proposals({
                 <CommunityFundingChart
                     adaData={amountRemainingChartData[0]?.data}
                     usdData={amountRemainingChartData[1]?.data}
-                    filterOptions={remainedOptions}
+                    filterOptions={remainedOptions.flat()}
                     filtersTitle={t('communities.totalRemained')}
                     chartTitle={t('communities.totalAmountRemaining')}
                     legend={t('communities.totalRemained')}
