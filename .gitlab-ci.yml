@@ -138,6 +138,7 @@ pest:
      php artisan cx:create-search-index "App\Models\IdeascaleProfile" && \ 
      php artisan cx:create-search-index "App\Models\Review" && \
      php artisan cx:create-search-index "App\Models\Transaction" && \
+     sleep 10 && \
      php artisan cx:create-search-index "App\Models\MonthlyReport" && \
      php artisan test'
   rules:
