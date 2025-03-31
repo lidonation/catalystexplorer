@@ -118,7 +118,7 @@ export default function Index({
                     </WhenVisible>
                 </section>
 
-                <section className="posts-wrapper container flex flex-col gap-8">
+                <section className="posts-wrapper container flex flex-col gap-8 py-8">
                     <div>
                         <Title level='2'>{t('posts.title')}</Title>
                         <Paragraph>{t('posts.subtitle')}</Paragraph>

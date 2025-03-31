@@ -90,8 +90,8 @@ Route::localized(
                 Route::get('/proposals', [CommunitiesController::class, 'show'])
                     ->name('proposals');
 
-                Route::get('/members', [CommunitiesController::class, 'show'])
-                    ->name('members');
+                Route::get('/ideascale-profiles', [CommunitiesController::class, 'show'])
+                    ->name('ideascaleProfiles');
 
                 Route::get('/groups', [CommunitiesController::class, 'show'])
                     ->name('groups');

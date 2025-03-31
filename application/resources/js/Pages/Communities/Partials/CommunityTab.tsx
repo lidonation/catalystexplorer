@@ -18,6 +18,8 @@ export default function CommunityTabs({tabs, activeTab}: CommunityTabsProps) {
                             key={tab.routeName}
                             href={tab.href}
                             only={[...(tab.only ?? [])]}
+                            preserveScroll
+                            prefetch
                             className={`
                                     whitespace-nowrap text-sm md:text-base px-2 md:px-3 py-2
                                     group flex items-center gap-2 outline-hidden transition-colors
