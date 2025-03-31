@@ -4,12 +4,13 @@ declare(strict_types=1);
 
 namespace Tests\Unit;
 
+use Tests\TestCase;
 use App\Models\Fund;
 use App\Models\Reviewer;
+use Illuminate\Support\Facades\DB;
+use PHPUnit\Framework\Attributes\Test;
 use App\Models\ReviewerReputationScore;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use PHPUnit\Framework\Attributes\Test;
-use Tests\TestCase;
 
 class ReviewerReputationScoreTest extends TestCase
 {
@@ -18,11 +19,7 @@ class ReviewerReputationScoreTest extends TestCase
     #[Test]
     public function it_can_create_reviewer_reputation_score()
     {
-        $reviewer = Reviewer::factory()->create();
-        $reputationScore = ReviewerReputationScore::factory()->create([
-            'reviewer_id' => $reviewer->id,
-            'score' => 85,
-        ]);
+        $reviewer = Reviewer::factory()->has(ReviewerReputationScore::factory(state:['score' => 85,]), 'reputation_scores')->create();
 
         $this->assertDatabaseHas('reviewer_reputation_scores', [
             'reviewer_id' => $reviewer->id,
@@ -63,7 +60,7 @@ class ReviewerReputationScoreTest extends TestCase
             'reviewer_id' => $reviewer->id,
         ]);
 
-        $this->assertEquals(3, $reviewer->reputationScores()->count());
+        $this->assertEquals(3, $reviewer->reputation_scores()->count());
     }
     #[Test]
     public function it_eager_loads_reputation_scores()
@@ -77,21 +74,21 @@ class ReviewerReputationScoreTest extends TestCase
         }
 
         $queryCount = 0;
-        \DB::listen(function($query) use (&$queryCount) {
+        DB::listen(function($query) use (&$queryCount) {
             $queryCount++;
         });
 
         $reviewersWithoutEager = Reviewer::all();
         foreach ($reviewersWithoutEager as $reviewer) {
-            $reviewer->reputationScores->count();
+            $reviewer->reputation_scores->count();
         }
 
         $queriesWithoutEager = $queryCount;
         $queryCount = 0;
 
-        $reviewersWithEager = Reviewer::with('reputationScores')->get();
+        $reviewersWithEager = Reviewer::with('reputation_scores')->get();
         foreach ($reviewersWithEager as $reviewer) {
-            $reviewer->reputationScores->count();
+            $reviewer->reputation_scores->count();
         }
 
         $queriesWithEager = $queryCount;

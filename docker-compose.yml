@@ -279,38 +279,13 @@ services:
       /usr/bin/mc anonymous set public minio/${MINIO_DEFAULT_BUCKET};
       exit 0;
       "
-  # catalystexplorer.cypress.gui:
-  #   image: cypress/included:10.3.0
-  #   container_name: catalystexplorer.cypress.gui
-  #  logging: *default-logging
-  #   depends_on:
-  #     - catalystexplorer.com
-  #   environment:
-  #     - CYPRESS_baseUrl=http://catalystexplorer.com:8000
-  #     - ELECTRON_NO_ATTACH_CONSOLE=true
-  #     - NODE_OPTIONS=--no-sandbox
-  #   volumes:
-  #     - ./application:/app
-  #   networks:
-  #     - catalystexplorer-net
-  
-  # catalystexplorer.cypress.headless:
-  #   image: cypress/included:10.3.0
-  #   container_name: catalystexplorer.cypress.headless
-  #   environment:
-  #     - CI=true
-  #     - CYPRESS_baseUrl=http://catalystexplorer.com:8000
-  #   volumes:
-  #     - ./application:/app
-  #   networks:
-  #     - catalystexplorer-net
-
 networks:
   catalystexplorer-net:
     driver: bridge
   shared-network:
     name: shared-network
     driver: bridge
+
 volumes:
   catalystexplorer-minio:
     driver: local
@@ -320,6 +295,8 @@ volumes:
     driver: local
   catalystexplorer-redis:
     driver: local
+  test_catalystexplorer-db:
+        driver: local
   node-ipc:
   node-db:
   db-data:

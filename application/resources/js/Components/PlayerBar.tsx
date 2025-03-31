@@ -50,8 +50,8 @@ const PlayerBar = () => {
     };
 
     const handleStop = () => {
-        stopCurrentTrack();
         setIsPlayerBarExpanded(false);
+        stopCurrentTrack();
     };
 
     const speedOptions = [
@@ -101,7 +101,7 @@ const PlayerBar = () => {
                 <span>Proposal: {playlist?.[currentTrackIndex]?.title}</span>
             </div> */}
                 <div
-                    className={`sticky inset-x-0 bottom-0 mx-auto transition-all duration-300 mb-4 ${
+                    className={`sticky inset-x-0 bottom-0 mx-auto mb-4 transition-all duration-300 ${
                         isPlayerBarExpanded ? 'w-full max-w-2xl' : 'w-16'
                     } bg-bg-dark flex items-center justify-between overflow-hidden rounded-xl px-4 py-3 text-white shadow-lg`}
                 >
@@ -137,7 +137,7 @@ const PlayerBar = () => {
                                     )}
                                 </button>
                                 <button
-                                    disabled={loading || !playlist}
+                                    disabled={loading}
                                     onClick={handleStop}
                                     className="background-button-gradient-color-2 border-dark hover:bg-dark flex h-8 w-8 items-center justify-center rounded-md border sm:h-12 sm:w-12"
                                 >
