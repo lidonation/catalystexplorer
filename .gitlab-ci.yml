@@ -133,6 +133,7 @@ pest:
     docker-compose -f docker-compose.testing.yml exec -t catalystexplorer_test.com sh -c '
      php artisan migrate:fresh --force && \
      php artisan optimize:clear  && \
+     sleep 10 && \
      php artisan cx:create-search-index "App\Models\Group" && \ 
      php artisan cx:create-search-index "App\Models\Proposal" && \
      php artisan cx:create-search-index "App\Models\IdeascaleProfile" && \ 
