@@ -279,31 +279,34 @@ services:
       /usr/bin/mc anonymous set public minio/${MINIO_DEFAULT_BUCKET};
       exit 0;
       "
-  # catalystexplorer.cypress.gui:
-  #   image: cypress/included:10.3.0
-  #   container_name: catalystexplorer.cypress.gui
-  #  logging: *default-logging
-  #   depends_on:
-  #     - catalystexplorer.com
-  #   environment:
-  #     - CYPRESS_baseUrl=http://catalystexplorer.com:8000
-  #     - ELECTRON_NO_ATTACH_CONSOLE=true
-  #     - NODE_OPTIONS=--no-sandbox
-  #   volumes:
-  #     - ./application:/app
-  #   networks:
-  #     - catalystexplorer-net
-  
-  # catalystexplorer.cypress.headless:
-  #   image: cypress/included:10.3.0
-  #   container_name: catalystexplorer.cypress.headless
-  #   environment:
-  #     - CI=true
-  #     - CYPRESS_baseUrl=http://catalystexplorer.com:8000
-  #   volumes:
-  #     - ./application:/app
-  #   networks:
-  #     - catalystexplorer-net
+  catalystexplorer_test.db:
+      image: postgres:17.1-bookworm
+      container_name: catalystexplorer_test.db
+      ports:
+          - '5439:5432'
+      env_file:
+        - ./application/.env.testing
+      environment:
+          - POSTGRES_LOGGING=true
+          - POSTGRES_DB=explorerweb
+          - POSTGRES_PASSWORD=ASLJ023470AlserLFH
+          - POSTGRES_USER=catalystexplorer
+          - POSTGRES_POSTGRES_PASSWORD=alj2340aaALJAF2341408AUUZLJK
+      volumes:
+          - 'test_catalystexplorer-db:/var/lib/postgresql/data'
+      networks:
+          - catalystexplorer-net_test
+      healthcheck:
+          test:
+              - CMD
+              - pg_isready
+              - '-q'
+              - '-d'
+              - 'explorerweb'
+              - '-U'
+              - 'catalystexplorer'
+          retries: 3
+          timeout: 5s
 
 networks:
   catalystexplorer-net:
@@ -311,6 +314,8 @@ networks:
   shared-network:
     name: shared-network
     driver: bridge
+  catalystexplorer-net_test:
+        driver: bridge
 volumes:
   catalystexplorer-minio:
     driver: local
@@ -320,6 +325,8 @@ volumes:
     driver: local
   catalystexplorer-redis:
     driver: local
+  test_catalystexplorer-db:
+        driver: local
   node-ipc:
   node-db:
   db-data:
