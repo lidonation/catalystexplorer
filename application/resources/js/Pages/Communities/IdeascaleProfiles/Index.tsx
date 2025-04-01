@@ -1,5 +1,4 @@
 import RecordsNotFound from '@/Layouts/RecordsNotFound';
-import IdeascaleProfileCardMini from '@/Pages/IdeascaleProfile/Partials/IdeascaleProfileCardMini';
 import IdeaScaleProfileLoader from '@/Pages/IdeascaleProfile/Partials/IdeaScaleProfileLoader';
 import { Head, WhenVisible } from '@inertiajs/react';
 import { PaginatedData } from '../../../../types/paginated-data';

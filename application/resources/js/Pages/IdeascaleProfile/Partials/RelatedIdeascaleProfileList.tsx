@@ -5,7 +5,6 @@ import RecordsNotFound from '@/Layouts/RecordsNotFound';
 import IdeascaleProfileData = App.DataTransferObjects.IdeascaleProfileData;
 import {PaginatedData} from "../../../../types/paginated-data";
 import {Link} from "@inertiajs/react";
-import {useLocalizedRoute} from "@/utils/localizedRoute";
 import Paragraph from "@/Components/atoms/Paragraph";
 import {useTranslation} from "react-i18next";
 
