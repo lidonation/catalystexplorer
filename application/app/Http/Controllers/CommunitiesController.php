@@ -210,8 +210,8 @@ class CommunitiesController extends Controller
             ]);
         }
 
-        if (str_contains($path, '/members')) {
-            return Inertia::render('Communities/Members/Index', [
+        if (str_contains($path, '/ideascale-profiles')) {
+            return Inertia::render('Communities/IdeascaleProfiles/Index', [
                 'community' => CommunityData::from($community),
                 'ideascaleProfiles' => Inertia::optional(
                     fn () => to_length_aware_paginator(
@@ -225,7 +225,7 @@ class CommunitiesController extends Controller
                                     'own_proposals',
                                     'collaborating_proposals',
                                 ])
-                                ->with([])->paginate(20)
+                                ->with([])->paginate(19)
                         )
                     )
                 ),
@@ -272,7 +272,10 @@ class CommunitiesController extends Controller
             'ideascale_profiles' => fn (HasManyDeep $q) => $q->limit(5),
             'ideascale_profiles.media',
         ])
-            ->withCount(['proposals', 'ideascale_profiles']);
+            ->withCount([
+                'proposals',
+                'ideascale_profiles',
+            ]);
 
         // set necessary counts
         $this->setCounts($query);

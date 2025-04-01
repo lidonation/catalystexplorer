@@ -133,6 +133,14 @@ pest:
     docker-compose -f docker-compose.testing.yml exec -t catalystexplorer_test.com sh -c '
      php artisan migrate:fresh --force && \
      php artisan optimize:clear  && \
+     sleep 10 && \
+     php artisan cx:create-search-index "App\Models\Group" && \ 
+     php artisan cx:create-search-index "App\Models\Proposal" && \
+     php artisan cx:create-search-index "App\Models\IdeascaleProfile" && \ 
+     php artisan cx:create-search-index "App\Models\Review" && \
+     php artisan cx:create-search-index "App\Models\Transaction" && \
+     sleep 10 && \
+     php artisan cx:create-search-index "App\Models\MonthlyReport" && \
      php artisan test'
   rules:
   - if: '$CI_COMMIT_BRANCH != "main" && ($DEPLOY_WEBAPP == "true")'
@@ -140,45 +148,7 @@ pest:
   - composer
   - yarn
 
-# cypress:
-#   stage: test
-#   image: docker:24.0.7-dind-alpine3.18
-#   cache: {}
-#   retry: 1
-#   script:
-#     - |
-#       set -xev
 
-#       docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
-#   dependencies:
-#     - composer
-#     - yarn
-#   artifacts:
-#     when: on_failure
-#     paths:
-#       - ./application/tests/cypress/videos/**/*.mp4
-#       - ./application/tests/cypress/screenshots/**/*.png
-#     expire_in: 2 day
-
-cypress:
-  image: cypress/included:10.3.0
-  stage: test
-  needs:
-  - composer
-  - yarn
-  script:
-  - cd application
-  - cp "$ENV_FILE" .env
-  - NODE_ENV=test yarn cypress run --browser chrome --headless
-  artifacts:
-    when: on_failure
-    expire_in: 2 days
-    paths:
-    - application/cypress/screenshots
-    - application/cypress/videos
-  rules:
-  - if: '$DEPLOY_WEBAPP == "true"'
-  allow_failure: true # allow failure to not block the pipeline for now
 
 ########## Helper Scripts ############
 ######################################

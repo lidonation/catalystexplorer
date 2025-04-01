@@ -30,11 +30,6 @@ class Discussion extends Model
             ->where('model_type', Discussion::class);
     }
 
-    //    public function review(): BelongsTo
-    //    {
-    //        return $this->belongsTo(Review::class, 'model_id');
-    //    }
-
     public function proposal(): BelongsTo
     {
         return $this->belongsTo(Proposal::class, 'model_id');

@@ -22,7 +22,7 @@ const CommunityCard: React.FC<CommunityCardProps> = ({ community, embedded = tru
     const { t } = useTranslation();
 
     return (
-        <Card className="justify-between overflow-hidden">
+        <Card className="justify-between overflow-hidden flex-1">
             <div className="flex h-auto w-full items-center justify-center overflow-hidden pt-8 pb-4">
                 <div className="bg-background-darker border-background-lighter flex h-28 w-28 items-center justify-center overflow-hidden rounded-full border-4">
                     <CommunitiesIcon className="text-dark h-8 w-8" />

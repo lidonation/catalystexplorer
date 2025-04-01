@@ -62,11 +62,14 @@ export default function CommunityLayout({
                 <main className="mt-10 flex h-full flex-col gap-4 px-8 sm:px-4 md:px-6 lg:px-8">
                     <div className="mx-auto w-full lg:mx-0 lg:self-start">
                         {community ? (
-                            <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
-                                <div className='lg:col-span-7'>
-                                    <CommunityCard embedded={false} community={community} />
+                            <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+                                <div className="flex h-full">
+                                    <CommunityCard
+                                        embedded={false}
+                                        community={community}
+                                    />
                                 </div>
-                                <div className='lg:col-span-5 h-full'>
+                                <div className="flex h-full">
                                     <ProposalSummaryCard
                                         community={community}
                                         coProposalsCount={coProposalsCount}
