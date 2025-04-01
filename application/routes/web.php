@@ -119,6 +119,8 @@ Route::localized(
                 ->group(function () {
                     Route::get('/{step}', [ClaimIdeascaleProfileController::class, 'handleStep'])
                         ->name('index');
+                    Route::post('/{ideascaleProfile}/claim', [ClaimIdeascaleProfileController::class, 'claimIdeascaleProfile'])
+                        ->name('saveClaim');
                 });
 
             Route::get('/login', [WorkflowController::class, 'auth'])

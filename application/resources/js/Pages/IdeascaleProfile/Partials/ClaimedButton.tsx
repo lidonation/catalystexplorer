@@ -1,11 +1,11 @@
-import React, {useState, useEffect} from 'react';
-import {useTranslation} from 'react-i18next';
-import {Link, usePage} from '@inertiajs/react';
-import Claimed from '@/Components/svgs/ClaimedIcon';
 import Button from '@/Components/atoms/Button';
-import {toast} from "react-toastify";
-import {useLocalizedRoute} from "@/utils/localizedRoute";
-import PrimaryLink from "@/Components/atoms/PrimaryLink";
+import PrimaryLink from '@/Components/atoms/PrimaryLink';
+import Claimed from '@/Components/svgs/ClaimedIcon';
+import { useLocalizedRoute } from '@/utils/localizedRoute';
+import { usePage } from '@inertiajs/react';
+import React, { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { toast } from 'react-toastify';
 
 interface ClaimedButtonProps {
     modelType?: string;
@@ -20,17 +20,17 @@ const ClaimedButton: React.FC<ClaimedButtonProps> = ({
     itemId = '0',
     claimedBy,
     className = '',
-    onClaimSuccess
+    onClaimSuccess,
 }) => {
-    const {t} = useTranslation();
+    const { t } = useTranslation();
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [localClaimedBy, setLocalClaimedBy] = useState(claimedBy);
-    const [buttonState, setButtonState] = useState<'unclaimed' | 'claiming' | 'claimed'>(
-        !!claimedBy ? 'claimed' : 'unclaimed'
-    );
+    const [buttonState, setButtonState] = useState<
+        'unclaimed' | 'claiming' | 'claimed'
+    >(!!claimedBy ? 'claimed' : 'unclaimed');
 
-    const {auth} = usePage().props as any;
+    const { auth } = usePage().props as any;
     const isAuthenticated = auth && auth.user;
 
     useEffect(() => {
@@ -61,7 +61,6 @@ const ClaimedButton: React.FC<ClaimedButtonProps> = ({
                 setIsLoading(false);
                 onClaimSuccess?.();
             }, 1000);
-
         } catch (error) {
             console.error('Claim error:', error);
             setError(t('claim.network_error'));
@@ -86,13 +85,12 @@ const ClaimedButton: React.FC<ClaimedButtonProps> = ({
                     className={`claim-button flex items-center ${isLoading ? 'opacity-75' : ''}`}
                 >
                     <PrimaryLink
-                        href={useLocalizedRoute('workflows.claimIdeascaleProfile.index', {step: 1})}
+                        href={useLocalizedRoute(
+                            'workflows.claimIdeascaleProfile.index',
+                            { step: 2, profile: itemId },
+                        )}
                         disabled={isLoading}
-                        className={`
-                            inline-flex items-center justify-center
-                            ${isLoading ? 'opacity-70 cursor-not-allowed' : ''}
-                            ${className}
-                        `}
+                        className={`inline-flex items-center justify-center ${isLoading ? 'cursor-not-allowed opacity-70' : ''} ${className} `}
                         aria-label={t('claim.claim_profile')}
                     >
                         {isLoading ? (
@@ -102,7 +100,7 @@ const ClaimedButton: React.FC<ClaimedButtonProps> = ({
                                 </span>
                             </div>
                         ) : (
-                            <div className='text-sm'>
+                            <div className="text-sm">
                                 {t('ideascaleProfiles.claim')}
                             </div>
                         )}
@@ -111,10 +109,7 @@ const ClaimedButton: React.FC<ClaimedButtonProps> = ({
             )}
 
             {error && (
-                <div
-                    className="text-red-500 text-sm mt-2"
-                    role="alert"
-                >
+                <div className="mt-2 text-sm text-red-500" role="alert">
                     {error}
                 </div>
             )}
