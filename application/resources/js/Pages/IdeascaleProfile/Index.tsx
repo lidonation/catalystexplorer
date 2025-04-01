@@ -83,7 +83,7 @@ const Index = ({
                 </div>
 
                 {ideascaleProfiles && ideascaleProfiles.total > 0 && (
-                    <section className="w-full px-4 lg:container lg:px-0">
+                    <section className="w-full container">
                         <Paginator pagination={ideascaleProfiles} />
                     </section>
                 )}
