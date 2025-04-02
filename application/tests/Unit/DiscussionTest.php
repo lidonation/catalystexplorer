@@ -19,14 +19,10 @@ class DiscussionTest extends TestCase
     public function it_has_a_review_relationship()
     {
 
-        $review = Review::factory()->create();
-        $discussion = Discussion::factory()->create([
-            'model_type' => Review::class,
-            'model_id' => $review->id,
-        ]);
+        $discussion = Discussion::factory()->for(Review::factory(state:['id'=>4]),'reviews')->create();
 
-        $this->assertInstanceOf(Review::class, $discussion->review);
-        $this->assertEquals($review->id, $discussion->review->id);
+        $this->assertInstanceOf(Review::class, $discussion->reviews()->first());
+        $this->assertEquals(4, $discussion->reviews()->first()->id);
     }
 
     #[Test]

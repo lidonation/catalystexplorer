@@ -71,14 +71,14 @@ const Step1: React.FC<Step1Props> = ({ profiles, stepDetails, activeStep }) => {
             <Nav stepDetails={stepDetails} activeStep={activeStep} />
 
             <Content>
-                <div className="card-container bg-background sticky mb-4 w-full px-4 pt-4 lg:top-0 lg:px-8  z-10">
+                <div className="bg-background sticky mb-4 w-full px-4 pt-4 lg:top-0 lg:px-8">
                     <ProfileSearchBar
                         autoFocus={true}
                         showRingOnFocus={true}
                         handleSearch={(query) => handleSearchProfiles(query)}
                     />
                 </div>
-                <div className="relative px-4 lg:px-8 ">
+                <div className="px-4 lg:px-8">
                     <div className="mt-4 w-full space-y-2 overflow-y-auto">
                         {!!profiles.length &&
                             profiles.map((profile, index) => (

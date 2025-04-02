@@ -87,7 +87,7 @@ const Index: React.FC<GroupsPageProps> = ({
                         </WhenVisible>
                     </section>
 
-                    <section className="w-full px-4 lg:container lg:px-0">
+                    <section className="container">
                         {groups && <Paginator pagination={groups} />}
                     </section>
                 </FiltersProvider>

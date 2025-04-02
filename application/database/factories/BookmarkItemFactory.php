@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Database\Factories;
 
-use App\Models\BookmarkCollection;
+use App\Enums\VoteEnum;
 use App\Models\BookmarkItem;
 use App\Models\Group;
 use App\Models\IdeascaleProfile;
@@ -43,6 +43,7 @@ class BookmarkItemFactory extends Factory
             'title' => $this->faker->sentence(),
             'content' => $this->faker->paragraph(),
             'action' => $this->faker->optional()->numberBetween(1, 10),
+            'vote' => $this->faker->randomElement(VoteEnum::values()),
         ];
     }
 }

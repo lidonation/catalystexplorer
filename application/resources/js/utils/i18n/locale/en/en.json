@@ -472,6 +472,7 @@
         "totalRequested": "Total Requested",
         "proposals": "Proposals Supported",
         "proposers": "People Supported",
+        "ideascale-profiles": "People Supported",
         "collaborators": "Collaborators",
         "totalAmountAwarded": "Total Amount Awarded",
         "totalAmountDistributed": "Total Amount Distributed",
@@ -491,13 +492,10 @@
             "amountAwardedUsdDesc": "Amount Awarded USD: High to Low",
             "amountAwardedUsdAsc": "Amount Awarded USD: Low to High"
         },
-        "tabs": {
-            "dashboard": "Dashboard",
-            "proposals": "Proposals",
-            "members": "Members",
-            "groups": "Groups",
-            "events": "Events"
-        },
+        "dashboard": "Dashboard",
+        "members": "Members",
+        "groups": "Groups",
+        "events": "Events",
         "filters": {
             "totalAdaAwarded": "Total Amount of ADA Awarded",
             "totalUsdAwarded": "Total Amount of USD Awarded",

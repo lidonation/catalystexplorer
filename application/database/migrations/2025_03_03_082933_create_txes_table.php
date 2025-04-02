@@ -18,7 +18,7 @@ return new class extends Migration
             $table->bigInteger('model_id');
             $table->text('model_type');
             $table->text('policy')->nullable();
-            $table->text('hash')->nullable();
+            $table->text('txhash')->nullable();
             $table->text('address')->nullable();
             $table->enum('status', StatusEnum::toArray())->default(StatusEnum::published()->value);
             $table->double('quantity', 20, 6);

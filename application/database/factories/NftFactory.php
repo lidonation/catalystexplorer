@@ -36,7 +36,7 @@ class NftFactory extends Factory
             'name' => $this->faker->words(1, true),
             'user_id' => User::factory(),
             'artist_id' => User::factory(),
-            'model_id' => IdeascaleProfile::inRandomOrder()->first()?->id ?? IdeascaleProfile::factory(),
+            'model_id' =>  IdeascaleProfile::factory(),
             'model_type' => IdeascaleProfile::class,
             'storage_link' => $artLink,
             'preview_link' => $artLink,

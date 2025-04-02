@@ -145,11 +145,13 @@ class Community extends Model
 
     public function ideascale_profiles(): HasManyDeep
     {
-        return $this->hasManyDeepFromRelationsWithConstraints([$this, 'proposals'], [new Proposal, 'users']);
+        return $this->hasManyDeepFromRelationsWithConstraints([$this, 'proposals'], [new Proposal, 'users'])
+            ->groupBy(['ideascale_profiles.id', 'community_has_proposal.community_id']);
     }
 
     public function groups(): HasManyDeep
     {
-        return $this->hasManyDeepFromRelationsWithConstraints([$this, 'proposals'], [new Proposal, 'groups']);
+        return $this->hasManyDeepFromRelationsWithConstraints([$this, 'proposals'], [new Proposal, 'groups'])
+            ->groupBy(['groups.id', 'community_has_proposal.community_id']);
     }
 }

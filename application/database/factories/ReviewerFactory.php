@@ -19,7 +19,7 @@ class ReviewerFactory extends Factory
     public function definition(): array
     {
         return [
-            'reviewer_id' => "z_assessor_{$this->faker->numberBetween(1, 1000)}",
+            'catalyst_reviewer_id' => "z_assessor_{$this->faker->numberBetween(1, 1000)}",
         ];
     }
 }

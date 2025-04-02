@@ -25,14 +25,15 @@ class Percentage implements CastsAttributes
 
     public function set(Model $model, string $key, mixed $value, array $attributes): ?float
     {
-        if (is_null($value)) {
-            return null;
-        }
+        return $value;
+        // if (is_null($value)) {
+        //     return null;
+        // }
 
-        if (! is_numeric($value)) {
-            throw new InvalidArgumentException("The attribute $key must be numeric.");
-        }
+        // if (! is_numeric($value)) {
+        //     throw new InvalidArgumentException("The attribute $key must be numeric.");
+        // }
 
-        return round(((float) $value) / 100, 6);
+        // return round(((float) $value) / 100, 6);
     }
 }
