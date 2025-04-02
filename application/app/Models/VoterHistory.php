@@ -4,50 +4,106 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Log;
 use Laravel\Scout\Searchable;
 
 class VoterHistory extends Model
 {
     use SoftDeletes, Searchable;
 
-    public $guarded = [];
+    /**
+     * The table associated with the model.
+     *
+     * @var string
+     */
+    protected $table = 'voter_history';
 
-    public $table = 'voter_history';
+    /**
+     * The attributes that aren't mass assignable.
+     *
+     * @var array<string>
+     */
+    protected $guarded = [];
 
-    public static function runCustomIndex(): void
-    {
-        Artisan::call('cx:create-search-index App\\\\Models\\\\VoterHistory cx_voter_history');
-    }
+    /**
+     * The attributes that should be appended to arrays.
+     *
+     * @var array<string>
+     */
+    protected $appends = [
+        'voting_power',
+        'fund',
+        'hash',
+    ];
 
-    public static function getFilterableAttributes() : array
+    /**
+     * Get the sortable attributes for the model.
+     *
+     * @return array<string>
+     */
+    public static function getSortableAttributes(): array
     {
         return [
-            'choice',
+            'time',
+            'voting_power',
+            'fund',
         ];
     }
 
-    public static function getSearchableAttributes() : array
+    /**
+     * Get the searchable attributes for the model.
+     *
+     * @return array<string>
+     */
+    public static function getSearchableAttributes(): array
     {
         return [
             'stake_address',
             'fragment_id',
             'caster',
             'raw_fragment',
+            'fund',
         ];
     }
 
-    public static function getSortableAttributes() : array
+    /**
+     * Get the filterable attributes for the model.
+     *
+     * @return array<string>
+     */
+    public static function getFilterableAttributes(): array
     {
         return [
-            'time',
-            // 'voting',
+            'choice',
+            'fund',
         ];
     }
-    
 
-    public function scopeFilter(Builder $query, array $filters) : Builder
+    /**
+     * Run the custom index for the model.
+     *
+     * @return void
+     */
+    public static function runCustomIndex(): void
+    {
+        Artisan::call('cx:create-search-index App\\\\Models\\\\VoterHistory cx_voter_history');
+    }
+
+    /**
+     * Scope to filter voter history.
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param array $filters
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeFilter(Builder $query, array $filters): Builder
     {
         $query->when($filters['search'] ?? null, function ($query, $search) {
             $query->where(function ($q) use ($search) {
@@ -63,9 +119,47 @@ class VoterHistory extends Model
         return $query;
     }
 
+    /**
+     * Scope to order by voting power.
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param string $direction
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeWithVotingPower(Builder $query, string $direction = 'asc'): Builder
+    {
+        return $query
+            ->select('voter_history.*')
+            ->leftJoin('voters', 'voter_history.caster', '=', 'voters.cat_id')
+            ->leftJoin('voting_powers', 'voters.id', '=', 'voting_powers.voter_id')
+            ->orderByRaw('COALESCE(voting_powers.voting_power, 0) ' . $direction);
+    }
+
+    /**
+     * Get the data to index in Elasticsearch.
+     *
+     * @return array
+     */
     public function toSearchableArray(): array
     {
+        $this->load(['voter', 'voter.voting_powers', 'voter.voting_powers.snapshot', 'voter.voting_powers.snapshot.fund']);
+
+        $fundData = null;
+        $snapshot = $this->snapshot()->first();
+        if ($snapshot) {
+            $fund = $snapshot->fund()->first();
+            if ($fund) {
+                $fundData = $fund->title;
+            }
+        }
+
+        $votingPower = 0;
+        if ($this->voter && $this->voter->voting_powers->isNotEmpty()) {
+            $votingPower = (float) $this->voter->voting_powers->first()->voting_power;
+        }
+        
         return [
+            'id' => $this->id,
             'stake_address' => $this->stake_address,
             'fragment_id' => $this->fragment_id,
             'caster' => $this->caster,
@@ -74,11 +168,112 @@ class VoterHistory extends Model
             'choice' => $this->choice,
             'time' => $this->time,
             'snapshot_id' => $this->snapshot_id,
+            'created_at' => $this->created_at,
+            'updated_at' => $this->updated_at,
+            'deleted_at' => $this->deleted_at,
+            'voting_power' => $votingPower,
+            'fund' => $fundData,
+            'hash' => $this->hash,
         ];
     }
 
-    public function voter(): HasOne
+    /**
+     * Get the voter for this history record.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function voter(): BelongsTo
     {
-        return $this->hasOne(Voter::class, 'cat_id', 'caster');
+        return $this->belongsTo(Voter::class, 'caster', 'cat_id');
+    }
+
+    /**
+     * Get the voting power relationship through voter.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOneThrough
+     */
+    public function voterPower(): HasOneThrough
+    {
+        return $this->hasOneThrough(
+            VotingPower::class,
+            Voter::class,
+            'cat_id', // Foreign key on voters table
+            'voter_id', // Foreign key on voting_powers table
+            'caster', // Local key on voter_history table
+            'id' // Local key on voters table
+        );
+    }
+    
+    /**
+     * Get the snapshot through voting power.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOneThrough
+     */
+    public function snapshot(): HasMany
+    {
+        return $this->hasMany(Snapshot::class, 'id', 'snapshot_id');
+    }
+    
+    /**
+     * Get the fund through snapshot.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOneThrough
+     */
+    public function fund()
+    {
+        return $this->belongsToMany(
+            Fund::class,
+            'snapshots',
+            'id',
+            'model_id'
+        )->where('snapshots.model_type', Fund::class)
+        ->where('snapshots.id', $this->snapshot_id);
+    }
+
+    /**
+     * Get the voting power attribute.
+     */
+    public function votingPower(): Attribute
+    {
+        return Attribute::make(
+            get: function () {
+                $votingPower = $this->voterPower()->first();
+                
+                return $votingPower ? (float) $votingPower->voting_power : 0;
+            },
+        );
+    }
+
+    /**
+     * Get the fund name attribute.
+     */
+    public function fundName(): Attribute
+    {
+        return Attribute::make(
+            get: function () {
+                $snapshot = $this->snapshot()->first();                
+                if (!$snapshot) {
+                    return null;
+                }
+                
+                $fund = $snapshot->fund()->first();                
+                return $fund;
+            },
+        );
+    }
+    
+    /**
+     * The model's casts.
+     *
+     * @var array
+     */
+    protected function casts(): array
+    {
+        return [
+            'time' => 'datetime',
+            'created_at' => 'datetime',
+            'updated_at' => 'datetime',
+            'deleted_at' => 'datetime',
+        ];
     }
 }

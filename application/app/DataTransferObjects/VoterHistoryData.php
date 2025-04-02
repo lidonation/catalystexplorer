@@ -4,7 +4,10 @@ declare(strict_types=1);
 
 namespace App\DataTransferObjects;
 
+use App\Models\Voter;
+use App\Models\VotingPower;
 use Spatie\LaravelData\Data;
+use Illuminate\Support\Collection;
 use Spatie\TypeScriptTransformer\Attributes\Optional as TypeScriptOptional;
 use Spatie\TypeScriptTransformer\Attributes\TypeScript;
 
@@ -14,6 +17,7 @@ final class VoterHistoryData extends Data
     public function __construct(
         public ?string $hash,
 
+        #[TypeScriptOptional]
         public ?string $stake_address,
 
         #[TypeScriptOptional]
@@ -45,5 +49,11 @@ final class VoterHistoryData extends Data
 
         #[TypeScriptOptional]
         public ?string $deleted_at,
+        
+        #[TypeScriptOptional]
+        public ?float $voting_power,
+
+        #[TypeScriptOptional]
+        public ?string $fund,
     ) {}
 }

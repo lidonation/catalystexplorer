@@ -1,6 +1,6 @@
 import TextInput from '@/Components/atoms/TextInput';
 import useEscapeKey from '@/Hooks/useEscapeKey';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState, forwardRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import Button from './atoms/Button';
 import CloseIcon from './svgs/CloseIcon';
@@ -16,17 +16,20 @@ interface SearchBarProps {
     placeholder?: string;
 }
 
-const SearchBar = ({
+const SearchBar = forwardRef<HTMLInputElement, SearchBarProps>(({
     autoFocus = false,
     showRingOnFocus = false,
     handleSearch,
     focusState,
-    initialSearch,
+    initialSearch = '',
     placeholder
-}: SearchBarProps) => {
+}: SearchBarProps, ref) => {
     const [searchQuery, setSearchQuery] = useState(initialSearch);
-    const inputRef = useRef<HTMLInputElement>(null);
+    const internalInputRef = useRef<HTMLInputElement>(null);
     const { t } = useTranslation();
+    
+    // Use the forwarded ref or fall back to internal ref
+    const inputRef = (ref as React.RefObject<HTMLInputElement>) || internalInputRef;
 
     useEscapeKey(() => handleClear());
 
@@ -34,7 +37,7 @@ const SearchBar = ({
         if (autoFocus && inputRef.current) {
             inputRef.current.focus();
         }
-    }, [autoFocus]);
+    }, [autoFocus, inputRef]);
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const newValue = event.target.value;
@@ -42,13 +45,12 @@ const SearchBar = ({
         handleSearch(newValue);
     };
 
+    const handleClear = useCallback(() => {
+        setSearchQuery('');
+        handleSearch('');
 
-const handleClear = useCallback(() => {
-    setSearchQuery('');
-    handleSearch('');
-
-    router.get(window.location.pathname, {}, { replace: true });
-}, []);
+        router.get(window.location.pathname, {}, { replace: true });
+    }, [handleSearch]);
 
     return (
         <div className="w-full shadow-md rounded-md">
@@ -81,6 +83,9 @@ const handleClear = useCallback(() => {
             </label>
         </div>
     );
-};
+});
+
+// Add display name for better debugging
+SearchBar.displayName = 'SearchBar';
 
 export default SearchBar;

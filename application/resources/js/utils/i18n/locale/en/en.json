@@ -329,6 +329,7 @@
         },
         "filters": {
             "fundingStatus": "Funding Status",
+            "epoch": "Epoch",
             "opensource": "Opensource",
             "projectStatus": "Project Status",
             "tags": "Tags",

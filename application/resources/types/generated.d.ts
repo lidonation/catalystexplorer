@@ -484,4 +484,19 @@ hero_img_url: string | null;
 email_verified_at: string | null;
 locations: any | null;
 };
+export type VoterHistoryData = {
+hash: string;
+stake_address: string;
+fragment_id: string;
+caster: string;
+time: string;
+raw_fragment: string;
+proposal: number;
+choice: number;
+fund: App.DataTransferObjects.FundData;
+voting_power: number;
+snapshot_id: number;
+created_at: string;
+updated_at: string;
+};
 }

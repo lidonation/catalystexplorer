@@ -48,7 +48,7 @@ export default function ActiveFilters({
 }) {
     const [clearFilter, setClearFilter] = useState(true);
     const { filters } = useFilterContext();
-    const statusFilters = ['coh', 'fs', 'ps', 'f', 'ds'];
+    const statusFilters = ['coh', 'fs', 'ps', 'f', 'ds', 'c'];
     const rangeFilters = ['pl', 'b', 'aa', 'au', 'd', 'pr', 'vp'];
     const sortFilters = ['st'];
     const idFilters = ['t', 'cam', 'com', 'ip', 'g'];

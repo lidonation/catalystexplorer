@@ -12,6 +12,7 @@ use Spatie\Enum\Enum;
  * @method static self QUERY()
  * @method static self SORTS()
  * @method static self choice()
+ * @method static self FUND()
  */
 final class VoteSearchParams extends Enum
 {
@@ -23,6 +24,7 @@ final class VoteSearchParams extends Enum
             'QUERY' => 'q',
             'SORTS' => 'st',
             'CHOICE' => 'c',
+            'FUND' => 'f',
         ];
     }
 }

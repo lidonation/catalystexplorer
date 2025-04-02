@@ -17,7 +17,7 @@ use App\Http\Controllers\BookmarksController;
 use App\Http\Controllers\CampaignsController;
 use App\Http\Controllers\MilestoneController;
 use App\Http\Controllers\ProposalsController;
-use App\Http\Controllers\VoterHistoryController;
+use App\Http\Controllers\VoterHistoriesController;
 use App\Http\Controllers\VoterToolController;
 use App\Http\Controllers\ConnectionsController;
 use App\Http\Controllers\JormungandrController;
@@ -230,7 +230,7 @@ Route::localized(
         );
 
         Route::prefix('/votes')->as('votes.')->group(function () {
-            Route::get('/', [VoterHistoryController::class, 'index'])
+            Route::get('/', [VoterHistoriesController::class, 'index'])
                 ->name('index');
         }); 
 
