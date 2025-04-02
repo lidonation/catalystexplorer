@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Jobs;
 
-
 use App\Enums\StatusEnum;
 use App\Models\Nft;
 use Carbon\Carbon;
@@ -22,6 +21,7 @@ class UpdateNMKRNftStatus implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     private Collection $nfts;
+
     private \Illuminate\Support\Collection $NotificationSaleNfts;
 
     /**
@@ -34,7 +34,7 @@ class UpdateNMKRNftStatus implements ShouldQueue
         }
 
         $this->NotificationSaleNfts = collect($this->nmkrPayload['NotificationSaleNfts'])
-            ->map(fn($item) => new Fluent($item));
+            ->map(fn ($item) => new Fluent($item));
 
         $this->nfts = Nft::whereHas('metas', function ($query) {
             $query
@@ -51,11 +51,12 @@ class UpdateNMKRNftStatus implements ShouldQueue
         $this->nfts->each(function ($nft) {
             if ($nft->meta_info?->nmkr_project_uid !== $this->nmkrPayload['ProjectUid']) {
                 Log::info('NMKR-webhook:', ["Nft:{$nft->id} has no project uuid"]);
+
                 return;
             }
 
             $nftNotification = $this->NotificationSaleNfts->first(
-                fn($notification) => $notification->NftUid == $nft->meta_info?->nmkr_nftuid
+                fn ($notification) => $notification->NftUid == $nft->meta_info?->nmkr_nftuid
             );
 
             $nft->txs()->create([
