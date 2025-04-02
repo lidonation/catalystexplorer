@@ -11,6 +11,7 @@ use App\DataTransferObjects\ProposalData;
 use App\Enums\CatalystCurrencySymbols;
 use App\Enums\ProposalSearchParams;
 use App\Enums\ProposalStatus;
+use App\Jobs\UpdateNMKRNftStatus;
 use App\Models\IdeascaleProfile;
 use App\Models\Nft;
 use App\Models\Proposal;
@@ -554,6 +555,21 @@ class CompletetProjectNftsController extends Controller
 
             // Return null instead of error for better UI handling
             return response()->json(null);
+        }
+    }
+
+    public function updateNftMintStatus(Request $request)
+    {
+        try {
+            $payload = $request->input();
+
+            Log::info('NMKR-webhook Payload:', $payload, true);
+
+            UpdateNMKRNftStatus::dispatch($payload);
+
+            return response()->json(['message' => 'Webhook processed successfully'], 200);
+        } catch (\Exception $e) {
+            Log::error('Error processing NMKR-webhook:', ['error' => $e->getMessage()]);
         }
     }
 }
