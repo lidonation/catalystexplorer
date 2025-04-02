@@ -4,28 +4,29 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use App\Actions\TransformHashToIds;
-use App\Actions\TransformIdsToHashes;
-use App\DataTransferObjects\IdeascaleProfileData;
-use App\DataTransferObjects\ProposalData;
-use App\Enums\CatalystCurrencySymbols;
-use App\Enums\ProposalSearchParams;
-use App\Enums\ProposalStatus;
-use App\Models\IdeascaleProfile;
 use App\Models\Nft;
-use App\Models\Proposal;
 use App\Models\User;
-use App\Repositories\ProposalRepository;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
-use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Fluent;
 use Inertia\Inertia;
 use Inertia\Response;
+use App\Models\Proposal;
+use Illuminate\Http\Request;
+use App\Enums\ProposalStatus;
+use Illuminate\Support\Fluent;
+use App\Models\IdeascaleProfile;
+use App\Jobs\UpdateNMKRNftStatus;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Collection;
+use App\Actions\TransformHashToIds;
+use App\Enums\ProposalSearchParams;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
+use App\Actions\TransformIdsToHashes;
+use Illuminate\Http\RedirectResponse;
+use App\Enums\CatalystCurrencySymbols;
+use App\Repositories\ProposalRepository;
+use App\DataTransferObjects\ProposalData;
+use Illuminate\Pagination\LengthAwarePaginator;
+use App\DataTransferObjects\IdeascaleProfileData;
 
 class CompletetProjectNftsController extends Controller
 {
@@ -201,7 +202,7 @@ class CompletetProjectNftsController extends Controller
                 $metadata = $nft->required_nft_metadata;
                 $artist = $nft->artist()->first();
             } catch (\Throwable $th) {
-                Log::warning('Failed to get NFT metadata: '.$th->getMessage(), [
+                Log::warning('Failed to get NFT metadata: ' . $th->getMessage(), [
                     'nft_id' => $nft->id,
                     'proposal_id' => $proposal->id,
                 ]);
@@ -251,7 +252,7 @@ class CompletetProjectNftsController extends Controller
         $limit = 10;
 
         $claimedIdeascaleIdsString = implode(',', $profileIds);
-        $filter = "users.id IN [{$claimedIdeascaleIdsString}] AND status = '".ProposalStatus::complete()->value."'";
+        $filter = "users.id IN [{$claimedIdeascaleIdsString}] AND status = '" . ProposalStatus::complete()->value . "'";
 
         $args['filter'] = $filter;
 
@@ -387,7 +388,7 @@ class CompletetProjectNftsController extends Controller
 
             $currentMetadata = json_decode($nmkrMetadata->content, true);
             if (json_last_error() !== JSON_ERROR_NONE) {
-                throw new \Exception('Invalid JSON in NMKR metadata: '.json_last_error_msg());
+                throw new \Exception('Invalid JSON in NMKR metadata: ' . json_last_error_msg());
             }
 
             if (! isset($currentMetadata['721'])) {
@@ -495,10 +496,10 @@ class CompletetProjectNftsController extends Controller
                 ]);
             } else {
                 $errorData = $response->json();
-                throw new \Exception('API update failed: '.($errorData['errorMessage'] ?? 'Unknown error'));
+                throw new \Exception('API update failed: ' . ($errorData['errorMessage'] ?? 'Unknown error'));
             }
         } catch (\Throwable $th) {
-            Log::error('Metadata update error: '.$th->getMessage(), [
+            Log::error('Metadata update error: ' . $th->getMessage(), [
                 'request' => $request->all(),
                 'nft_id' => $nft->id,
                 'exception' => $th,
@@ -506,7 +507,7 @@ class CompletetProjectNftsController extends Controller
             ]);
 
             return back()->withErrors([
-                'error' => 'Failed to update metadata: '.$th->getMessage(),
+                'error' => 'Failed to update metadata: ' . $th->getMessage(),
             ]);
         }
     }
@@ -547,13 +548,29 @@ class CompletetProjectNftsController extends Controller
 
             return response()->json(null);
         } catch (\Throwable $th) {
-            Log::error('Error Getting NFT Details: '.$th->getMessage(), [
+            Log::error('Error Getting NFT Details: ' . $th->getMessage(), [
                 'nft_id' => $nft->id,
                 'exception' => $th,
             ]);
 
             // Return null instead of error for better UI handling
             return response()->json(null);
+        }
+    }
+
+
+    public function updateNftMintStatus(Request $request)
+    {
+        try {
+            $payload = $request->input();
+
+            Log::info('NMKR-webhook Payload:', $payload, true);
+
+            UpdateNMKRNftStatus::dispatch($payload);
+
+            return response()->json(['message' => 'Webhook processed successfully'], 200);
+        } catch (\Exception $e) {
+            Log::error('Error processing NMKR-webhook:', ['error' => $e->getMessage()]);
         }
     }
 }

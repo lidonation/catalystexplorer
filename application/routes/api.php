@@ -1,12 +1,13 @@
 <?php
 
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\GroupsController;
 use App\Http\Controllers\Api\TagController;
 use App\Http\Controllers\Api\GroupController;
 use App\Http\Controllers\ProposalsController;
-use App\Http\Controllers\Api\CampaignController;
 use App\Http\Controllers\CommunitiesController;
+use App\Http\Controllers\Api\CampaignController;
 use App\Http\Controllers\My\MyBookmarksController;
 use App\Http\Controllers\CompletetProjectNftsController;
 use App\Http\Controllers\Api\IdeascaleProfilesController;
@@ -69,10 +70,13 @@ Route::prefix('api')->as('api.')->group(function () {
     Route::prefix('/completed-project-nfts/')->as('completedProjectsNfts.')->group(
         function () {
             Route::get('/{proposal}/{nft}/details', [CompletetProjectNftsController::class, 'getNftDetails'])
-            ->name('details');
+                ->name('details');
 
             Route::post('/{proposal}/{nft}/update-metadata', [CompletetProjectNftsController::class, 'updateNftsMetadata'])
-            ->name('update');
+                ->name('update');
         }
     );
+
+
+    Route::post('nmkr/notifications', action: [CompletetProjectNftsController::class, 'updateNftMintStatus'])->name('nmkr');
 });
