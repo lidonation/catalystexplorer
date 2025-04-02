@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\BookmarksController;
+use App\Http\Controllers\VoterListController;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\NftController;
@@ -119,6 +120,21 @@ Route::localized(
                 ->group(function () {
                     Route::get('/{step}', [ClaimIdeascaleProfileController::class, 'handleStep'])
                         ->name('index');
+                });
+
+            Route::prefix('/create-voter-list/steps')->as('createVoterList.')
+                ->middleware([WorkflowMiddleware::class])
+                ->group(function () {
+                    Route::get('/{step}', [VoterListController::class, 'handleStep'])
+                        ->name('index');
+                    Route::post('/save-list-details', [VoterListController::class, 'saveListDetails'])
+                        ->name('saveListDetails');
+                    Route::post('/save-proposals', [VoterListController::class, 'saveProposals'])
+                        ->name('saveProposals');
+                    Route::post('/save-rationales', [VoterListController::class, 'saveRationales'])
+                        ->name('saveRationales');
+                    Route::post('/finalize', [VoterListController::class, 'finalizeVoterList'])
+                        ->name('finalize');
                 });
 
             Route::get('/login', [WorkflowController::class, 'auth'])
