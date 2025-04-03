@@ -47,8 +47,6 @@ class Group extends Model implements HasMedia
     {
         return [
             'id',
-            'ideascale_profiles.id',
-            'ideascale_profiles',
             'tags.id',
             'tags',
             'proposals.fund.title',
@@ -63,7 +61,7 @@ class Group extends Model implements HasMedia
             'proposals_ideafest',
             'proposals_woman',
             'proposals_impact',
-            'ideascale_profiles.id',
+            'ideascale_profiles.hash',
         ];
     }
 
@@ -74,6 +72,9 @@ class Group extends Model implements HasMedia
             'proposals',
             'ideascale_profiles',
             'tags',
+            'ideascale_profiles.hash',
+            'ideascale_profiles.name',
+            'ideascale_profiles.username',
         ];
     }
 
@@ -88,6 +89,7 @@ class Group extends Model implements HasMedia
             'amount_awarded_ada',
             'amount_awarded_usd',
             'amount_requested',
+            'ideascale_profiles.hash',
         ];
     }
 
