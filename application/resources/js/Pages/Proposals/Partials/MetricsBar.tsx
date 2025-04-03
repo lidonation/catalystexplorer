@@ -1,5 +1,4 @@
 import { useMetrics } from '@/Context/MetricsContext';
-import { usePlayer } from '@/Context/PlayerContext';
 import { useUIContext } from '@/Context/SharedUIContext';
 import { ProposalMetrics } from '@/types/proposal-metrics';
 import { currency } from '@/utils/currency';
@@ -46,47 +45,48 @@ const SectionOne: React.FC<
 const SectionTwo: React.FC<
     Pick<
         ProposalMetrics,
-        'requestedUSD' | 'requestedADA' | 'awardedUSD' | 'awardedADA'
+        'requestedUSD' | 'requestedADA' | 'distributedUSD' | 'distributedADA' | 'awardedUSD' | 'awardedADA'
     >
-> = ({ requestedUSD, requestedADA, awardedUSD, awardedADA }) => {
+> = ({ distributedUSD, distributedADA, awardedUSD, awardedADA, requestedUSD, requestedADA, }) => {
     const { t } = useTranslation();
     return (
         <div className="flex w-full items-center justify-between text-sm md:text-base">
-            {!!requestedUSD && (
+            {!!distributedUSD && (
                 <div
                     className={
-                        'border-dark flex grow flex-col items-center border-l px-2 ' +
-                        (requestedADA || awardedUSD || awardedADA
-                            ? ' border-r'
+                        'border-dark flex grow flex-col items-center px-2' +
+                        (!requestedUSD || !requestedADA ? ' border-l' : '') +
+                        (!!distributedADA ? ' border-r' : '')
+                    }
+                >
+                    <span className="text-highlight block font-semibold text-nowrap">
+                        $ {t('distributed')}
+                    </span>
+                    <span>{currency(distributedUSD)}</span>
+                </div>
+            )}
+            {!!distributedADA && (
+                <div
+                    className={
+                        'flex grow flex-col items-center px-2' +
+                        (!requestedUSD || !requestedADA || !requestedUSD
+                            ? ' border-l'
                             : '')
                     }
                 >
                     <span className="text-highlight block font-semibold text-nowrap">
-                        $ {t('requested')}
+                        ₳ {t('distributed')}
                     </span>
-                    <span>{currency(requestedUSD)}</span>
+                    <span>{currency(distributedADA, 2, 'ADA')}</span>
                 </div>
             )}
-            {!!requestedADA && (
-                <div
-                    className={
-                        'border-dark flex grow flex-col items-center px-2' +
-                        (!requestedUSD ? ' border-l' : '') +
-                        (awardedUSD || awardedADA ? ' border-r' : '')
-                    }
-                >
-                    <span className="text-highlight block font-semibold text-nowrap">
-                        ₳ {t('requested')}
-                    </span>
-                    <span>{currency(requestedADA, 2, 'ADA')}</span>
-                </div>
-            )}
+
             {!!awardedUSD && (
                 <div
                     className={
                         'border-dark flex grow flex-col items-center px-2' +
                         (!requestedUSD || !requestedADA ? ' border-l' : '') +
-                        (!!awardedADA ? ' border-r' : '')
+                        (!!awardedUSD ? ' border-r' : '')
                     }
                 >
                     <span className="text-highlight block font-semibold text-nowrap">
@@ -108,6 +108,36 @@ const SectionTwo: React.FC<
                         ₳ {t('awarded')}
                     </span>
                     <span>{currency(awardedADA, 2, 'ADA')}</span>
+                </div>
+            )}
+
+
+            {!!requestedUSD && (
+                <div
+                    className={
+                        'border-dark flex grow flex-col items-center border-l px-2 ' +
+                        (requestedADA || distributedUSD || distributedADA
+                            ? ' border-r'
+                            : '')
+                    }
+                >
+                    <span className="text-highlight block font-semibold text-nowrap">
+                        $ {t('requested')}
+                    </span>
+                    <span>{currency(requestedUSD)}</span>
+                </div>
+            )}
+            {!!requestedADA && (
+                <div
+                    className={
+                        'border-dark flex grow flex-col items-center px-2' +
+                        (!requestedUSD ? ' border-l' : '')
+                    }
+                >
+                    <span className="text-highlight block font-semibold text-nowrap">
+                        ₳ {t('requested')}
+                    </span>
+                    <span>{currency(requestedADA, 2, 'ADA')}</span>
                 </div>
             )}
         </div>
@@ -140,10 +170,12 @@ const MetricsBar: React.FC<ProposalMetrics | undefined> = (props) => {
                     <div className="hidden w-full items-center md:flex md:space-x-4">
                         <div className="grow items-center transition-all duration-300">
                             <SectionTwo
+                                distributedUSD={metrics?.distributedUSD}
+                                distributedADA={metrics?.distributedADA}
+                                awardedADA={metrics?.awardedADA}
+                                awardedUSD={metrics?.awardedUSD}
                                 requestedUSD={metrics?.requestedUSD}
                                 requestedADA={metrics?.requestedADA}
-                                awardedUSD={metrics?.awardedUSD}
-                                awardedADA={metrics?.awardedADA}
                             />
                         </div>
                     </div>
