@@ -68,13 +68,13 @@ const Step2: React.FC<Step1Props> = ({ stepDetails, activeStep }) => {
         <WorkflowLayout asideInfo={stepDetails[activeStep - 1].info ?? ''}>
             <Nav stepDetails={stepDetails} activeStep={activeStep} />
 
-            <Content>
+            {/* <Content>
                 <DrepSignupForm
                     form={form}
                     setIsValid={setIsFormValid}
                     ref={formRef}
                 />
-            </Content>
+            </Content> */}
 
             <Footer>
                 <PrimaryLink
@@ -88,7 +88,7 @@ const Step2: React.FC<Step1Props> = ({ stepDetails, activeStep }) => {
                 </PrimaryLink>
                 <PrimaryButton
                     className="text-sm lg:px-8 lg:py-3"
-                    disabled={!isFormValid || !profile?.hash}
+                    disabled={!isFormValid }
                     onClick={() => (isFormValid ? submitForm() : '')}
                 >
                     <span>{t('profileWorkflow.claimProfile')}</span>
