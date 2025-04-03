@@ -101,6 +101,10 @@ class ReviewsController extends Controller
             'reviewer',
             'model_type',
             'reviewer.avg_reputation_score',
+            'reviewer.claimedBy',
+            'helpful_total',
+            'not_helpful_total',
+            'ranking_total',
         ];
 
         $args['facets'] = [

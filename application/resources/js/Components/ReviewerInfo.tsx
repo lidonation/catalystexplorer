@@ -4,6 +4,8 @@ import ReputationBadge from './ReputationBadge';
 import Button from './atoms/Button';
 import ReviewData = App.DataTransferObjects.ReviewData;
 import ValueLabel from "@/Components/atoms/ValueLabel";
+import { use } from 'i18next';
+import { useEffect } from 'react';
 
 export interface ReviewerInfoProps {
     review: ReviewData;
@@ -15,11 +17,9 @@ export const ReviewerInfo: React.FC<ReviewerInfoProps> = ({
     className = '',
 }) => {
     const { t } = useTranslation();
-
     return (
         <div className={`flex items-center gap-1 ${className}`}>
             <ReputationBadge review={review}/>
-
             <div className="flex flex-col">
                 {( !!review?.reviewer?.claimed_by) ? (
                     <Paragraph className="text-content text-1 font-bold">

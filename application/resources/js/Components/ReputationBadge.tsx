@@ -1,5 +1,5 @@
 import { ReputationTier } from '@/enums/reputation-tier-enums';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import Paragraph from './atoms/Paragraph';
 import ToolTipHover from './ToolTipHover';
@@ -24,7 +24,7 @@ export const ReputationBadge: React.FC<ReputationBadgeProps> = ({
         return null;
     }
 
-    const finalScore = review?.reviewer?.avg_reputation_score ;
+    const finalScore = review?.reviewer?.avg_reputation_score  || 0;
 
     const getTier = (score: number | null) => {
         if (!score) return;
@@ -72,6 +72,10 @@ export const ReputationBadge: React.FC<ReputationBadgeProps> = ({
     };
 
     const colorClasses = getColorClasses();
+
+    useEffect(()=>{
+        console.log('ReputationBadge', finalScore);
+    }, [review])
 
     return (
         <div

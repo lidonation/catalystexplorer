@@ -77,6 +77,8 @@
     "react-i18next": "^15.1.0",
     "react-map-gl": "^7.1.9",
     "react-markdown": "^10.1.0",
+    "react-masonry-css": "^1.0.16",
+    "react-rating": "^2.0.5",
     "react-refresh": "^0.14.2",
     "react-toastify": "^11.0.3",
     "rehype-sanitize": "^6.0.0",
