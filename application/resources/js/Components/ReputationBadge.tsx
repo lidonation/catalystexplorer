@@ -73,10 +73,6 @@ export const ReputationBadge: React.FC<ReputationBadgeProps> = ({
 
     const colorClasses = getColorClasses();
 
-    useEffect(()=>{
-        console.log('ReputationBadge', finalScore);
-    }, [review])
-
     return (
         <div
             className={`relative inline-block ${className}`}
