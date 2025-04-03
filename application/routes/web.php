@@ -123,6 +123,15 @@ Route::localized(
                         ->name('saveClaim');
                 });
 
+            Route::prefix('/drep-sign-up/steps')->as('drepSignUp.')
+                ->middleware([WorkflowMiddleware::class])
+                ->group(function () {
+                    Route::get('/{step}', [DrepController::class, 'handleStep'])
+                        ->name('index');
+                    // Route::post('/{ideascaleProfile}/claim', [ClaimIdeascaleProfileController::class, 'claimIdeascaleProfile'])
+                    //     ->name('saveClaim');
+                });
+
             Route::get('/login', [WorkflowController::class, 'auth'])
                 ->name('loginForm');
             Route::post('/login', [WorkflowController::class, 'login'])

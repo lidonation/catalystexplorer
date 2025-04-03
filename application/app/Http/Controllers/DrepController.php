@@ -4,14 +4,13 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StoreDrepRequest;
-use App\Http\Requests\UpdateDrepRequest;
 use App\Models\Drep;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use Inertia\Inertia;
 use Inertia\Response;
 
-class DrepController
+class DrepController extends Controller
 {
     /**
      * Display a landing page.
@@ -19,22 +18,6 @@ class DrepController
     public function index(Request $request): Response
     {
         return Inertia::render('Dreps/Index');
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(StoreDrepRequest $request)
-    {
-        //
     }
 
     /**
@@ -48,26 +31,48 @@ class DrepController
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Summary of drep sign up Steps
+     *
+     * @param  mixed  $step
      */
-    public function edit(Drep $drep)
+    public function handleStep(Request $request, $step)
     {
-        //
+        $method = "step{$step}";
+
+        if (method_exists($this, $method)) {
+            return $this->$method($request);
+        }
+
+        abort(404, "Step '{$step}' not found.");
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(UpdateDrepRequest $request, Drep $drep)
+    public function step1(Request $request): Response
     {
-        //
+        return Inertia::render('Workflows/DrepSignup/Step1', [
+            'stepDetails' => $this->getStepDetails(),
+            'activeStep' => intval($request->step),
+        ]);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Drep $drep)
+    public function step2(Request $request): Response
     {
-        //
+        return Inertia::render('Workflows/DrepSignup/Step2', [
+            'stepDetails' => $this->getStepDetails(),
+            'activeStep' => intval($request->step),
+        ]);
+    }
+
+    public function getStepDetails(): Collection
+    {
+        return collect([
+            [
+                'title' => 'workflows.drepSignup.selectProfile',
+                'info' => 'workflows.drepSignup.selectProfileInfo',
+            ],
+            [
+                'title' => 'workflows.drepSignup.selectProposal',
+                'info' => 'workflows.drepSignup.selectProposalInfo',
+            ],
+        ]);
     }
 }

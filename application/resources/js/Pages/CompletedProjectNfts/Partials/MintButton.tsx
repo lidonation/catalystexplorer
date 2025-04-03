@@ -206,15 +206,30 @@ const MintButton: React.FC<MintButtonProps> = ({
       
       case 'minted':
         const fingerprint = getNftFingerprint();
-        return (
-          <Link 
-            href={`https://pool.pm/${fingerprint}`}
-            target="_blank"
-            className="w-full inline-block text-center bg-primary hover:bg-primary-dark text-content font-medium py-3 px-4 rounded-md transition duration-150"
-          >
-            {t('viewNFT')}
-          </Link>
-        );
+        
+        // Check if fingerprint is available before creating the link
+        if (fingerprint) {
+          // Using a simple anchor tag to avoid CORS issues
+          return (
+            <a 
+              href={`https://pool.pm/${fingerprint}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-full inline-block text-center bg-primary hover:bg-primary-dark text-content-light font-medium py-3 px-4 rounded-md transition duration-150"
+            >
+              {t('viewNFT')}
+            </a>
+          );
+        } else {
+          return (
+            <Button
+              className="w-full inline-block text-center bg-dark text-content font-medium py-3 px-4 rounded-md cursor-not-allowed pointer-events-none opacity-70"
+              onClick={(e) => e.preventDefault()}
+            >
+              {t('nftPending')}
+            </Button>
+          );
+        }
     }
   };
 

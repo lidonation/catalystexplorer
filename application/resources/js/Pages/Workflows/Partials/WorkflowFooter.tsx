@@ -12,8 +12,8 @@ export default function Footer({ children }: Props) {
     }
 
     return (
-        <footer className="bg-background w-full">
-            <div className="flex w-full justify-between lg:px-10 lg:pb-6 pb-4 px-4 mt-4">
+        <footer className="bg-background sticky bottom-0 w-full pt-1">
+            <div className="mt-4 flex w-full justify-between px-4 pb-4 lg:px-10 lg:pb-6">
                 {children}
             </div>
         </footer>
