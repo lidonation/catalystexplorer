@@ -12,9 +12,9 @@ const SectionOne: React.FC<
 > = ({ submitted, approved, completed }) => {
     const { t } = useTranslation();
     return (
-        <div className="flex w-full items-center justify-between text-sm md:text-base">
+        <div className="flex w-full items-center justify-between text-sm md:text-base divide-x divide-dark">
             {!!submitted && (
-                <div className="border-dark flex grow flex-col items-center border-r px-2">
+                <div className="flex grow flex-col items-center px-2">
                     <span className="content-light block font-semibold">
                         {t('submitted')}
                     </span>
@@ -22,7 +22,7 @@ const SectionOne: React.FC<
                 </div>
             )}
             {!!approved && (
-                <div className="border-dark flex grow flex-col items-center border-r px-2">
+                <div className="flex grow flex-col items-center px-2">
                     <span className="text-primary block font-semibold">
                         {t('approved')}
                     </span>
@@ -50,13 +50,11 @@ const SectionTwo: React.FC<
 > = ({ distributedUSD, distributedADA, awardedUSD, awardedADA, requestedUSD, requestedADA, }) => {
     const { t } = useTranslation();
     return (
-        <div className="flex w-full items-center justify-between text-sm md:text-base">
+        <div className="flex w-full items-center justify-between text-sm md:text-base divide-x divide-dark">
             {!!distributedUSD && (
                 <div
                     className={
-                        'border-dark flex grow flex-col items-center px-2' +
-                        (!requestedUSD || !requestedADA ? ' border-l' : '') +
-                        (!!distributedADA ? ' border-r' : '')
+                        'flex grow flex-col items-center px-2'
                     }
                 >
                     <span className="text-highlight block font-semibold text-nowrap">
@@ -68,10 +66,7 @@ const SectionTwo: React.FC<
             {!!distributedADA && (
                 <div
                     className={
-                        'flex grow flex-col items-center px-2' +
-                        (!requestedUSD || !requestedADA || !requestedUSD
-                            ? ' border-l'
-                            : '')
+                        'flex grow flex-col items-center px-2'
                     }
                 >
                     <span className="text-highlight block font-semibold text-nowrap">
@@ -84,9 +79,7 @@ const SectionTwo: React.FC<
             {!!awardedUSD && (
                 <div
                     className={
-                        'border-dark flex grow flex-col items-center px-2' +
-                        (!requestedUSD || !requestedADA ? ' border-l' : '') +
-                        (!!awardedUSD ? ' border-r' : '')
+                        'flex grow flex-col items-center px-2'
                     }
                 >
                     <span className="text-highlight block font-semibold text-nowrap">
@@ -98,10 +91,7 @@ const SectionTwo: React.FC<
             {!!awardedADA && (
                 <div
                     className={
-                        'flex grow flex-col items-center px-2' +
-                        (!requestedUSD || !requestedADA || !requestedUSD
-                            ? ' border-l'
-                            : '')
+                        'flex grow flex-col items-center px-2'
                     }
                 >
                     <span className="text-highlight block font-semibold text-nowrap">
@@ -115,10 +105,7 @@ const SectionTwo: React.FC<
             {!!requestedUSD && (
                 <div
                     className={
-                        'border-dark flex grow flex-col items-center border-l px-2 ' +
-                        (requestedADA || distributedUSD || distributedADA
-                            ? ' border-r'
-                            : '')
+                        'flex grow flex-col items-center px-2'
                     }
                 >
                     <span className="text-highlight block font-semibold text-nowrap">
@@ -130,8 +117,7 @@ const SectionTwo: React.FC<
             {!!requestedADA && (
                 <div
                     className={
-                        'border-dark flex grow flex-col items-center px-2' +
-                        (!requestedUSD ? ' border-l' : '')
+                        'flex grow flex-col items-center px-2'
                     }
                 >
                     <span className="text-highlight block font-semibold text-nowrap">
@@ -155,7 +141,7 @@ const MetricsBar: React.FC<ProposalMetrics | undefined> = (props) => {
         metrics &&
         onProposals && (
             <div
-                className={`bg-bg-dark sticky inset-x-0 bottom-0 mx-auto flex items-center justify-between overflow-hidden rounded-xl px-4 py-3 text-white shadow-lg transition-all duration-300 mb-4 ${
+                className={`bg-bg-dark sticky divide-x divide-dark inset-x-0 bottom-0 mx-auto flex items-center justify-between overflow-hidden rounded-xl px-4 py-3 text-white shadow-lg transition-all duration-300 mb-4 ${
                     isExpanded && !isPlayerBarExpanded ? 'w-full' : 'w-auto'
                 }`}
             >
