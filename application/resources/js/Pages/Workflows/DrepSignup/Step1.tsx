@@ -1,6 +1,9 @@
 import Paragraph from '@/Components/atoms/Paragraph';
 import PrimaryButton from '@/Components/atoms/PrimaryButton';
 import PrimaryLink from '@/Components/atoms/PrimaryLink';
+import ClaimProfileForm, {
+    ClaimFormHandles,
+} from '@/Pages/Workflows/ClaimIdeascaleProfile/partials/ClaimProfileForm';
 import { StepDetails } from '@/types';
 import {
     generateLocalizedRoute,
@@ -15,7 +18,7 @@ import Footer from '../Partials/WorkflowFooter';
 import Nav from '../Partials/WorkflowNav';
 import WorkflowLayout from '../WorkflowLayout';
 import IdeascaleProfileData = App.DataTransferObjects.IdeascaleProfileData;
-import ClaimProfileForm, { ClaimFormHandles, IdeascaleProfileFormFields } from './partials/ClaimProfileForm';
+import DrepSignupForm from './partials/DrepSignupForm';
 
 interface Step1Props {
     profile: IdeascaleProfileData;
@@ -23,18 +26,15 @@ interface Step1Props {
     activeStep: number;
 }
 
-const Step2: React.FC<Step1Props> = ({ profile, stepDetails, activeStep }) => {
+const Step2: React.FC<Step1Props> = ({ stepDetails, activeStep }) => {
     const [isFormValid, setIsFormValid] = useState(false);
     const formRef = useRef<ClaimFormHandles>(null);
 
     const form = useForm({
-        name: profile?.name ?? (profile?.username || ''),
-        email: profile?.email || '',
-        bio: profile?.bio || '',
-        ideascaleProfile: profile?.ideascale || '',
-        twitter: profile?.twitter || '',
-        discord: profile?.discord || '',
-        linkedIn: profile?.linkedin || '',
+        name: '',
+        email: '',
+        bio: '',
+        link: '',
     });
 
     const localizedRoute = useLocalizedRoute;
@@ -48,19 +48,18 @@ const Step2: React.FC<Step1Props> = ({ profile, stepDetails, activeStep }) => {
     const submitForm = () => {
         if (formRef.current) {
             const formData = formRef.current.getFormData;
-            console.log(formData.data);
 
-            formData.post(
-                generateLocalizedRoute(
-                    'workflows.claimIdeascaleProfile.saveClaim',
-                    {
-                        ideascaleProfile: profile.hash,
-                    },
-                ),
-                {
-                    onError: (errors: Record<keyof IdeascaleProfileFormFields, string>) =>
-                        form.setError(errors),
-                },
+            formData.post(''
+                // generateLocalizedRoute(
+                //     'workflows.claimIdeascaleProfile.saveClaim',
+                //     {
+                //         ideascaleProfile: profile.hash,
+                //     },
+                // ),
+                // {
+                //     onError: (errors: Record<keyof DrepSignupFormFields, string>) =>
+                //         form.setError(errors),
+                // },
             );
         }
     };
@@ -69,25 +68,13 @@ const Step2: React.FC<Step1Props> = ({ profile, stepDetails, activeStep }) => {
         <WorkflowLayout asideInfo={stepDetails[activeStep - 1].info ?? ''}>
             <Nav stepDetails={stepDetails} activeStep={activeStep} />
 
-            {profile?.hash && (
-                <Content>
-                    <ClaimProfileForm
-                        form={form}
-                        setIsValid={setIsFormValid}
-                        ref={formRef}
-                    />
-                </Content>
-            )}
-
-            {!profile?.hash && (
-                <Content>
-                    <div className="m-4 rounded-lg border border-gray-200 p-4 text-center text-gray-600 lg:m-8">
-                        <Paragraph>
-                            {t('profileWorkflow.noProfilesFound')}
-                        </Paragraph>
-                    </div>
-                </Content>
-            )}
+            {/* <Content>
+                <DrepSignupForm
+                    form={form}
+                    setIsValid={setIsFormValid}
+                    ref={formRef}
+                />
+            </Content> */}
 
             <Footer>
                 <PrimaryLink
@@ -101,7 +88,7 @@ const Step2: React.FC<Step1Props> = ({ profile, stepDetails, activeStep }) => {
                 </PrimaryLink>
                 <PrimaryButton
                     className="text-sm lg:px-8 lg:py-3"
-                    disabled={!isFormValid || !profile?.hash}
+                    disabled={!isFormValid }
                     onClick={() => (isFormValid ? submitForm() : '')}
                 >
                     <span>{t('profileWorkflow.claimProfile')}</span>

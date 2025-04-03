@@ -136,16 +136,6 @@ const Step1: React.FC<Step1Props> = ({ profiles, stepDetails, activeStep }) => {
                                             </ProfileCard>
                                         </label>
                                     </div>
-                                    {/* {claimProfile?.hash === profile.hash &&
-                                    profile.hash && (
-                                        <ClaimProfileForm
-                                            profile={profile}
-                                            onVerificationCodeUpdate={
-                                                setVerificationCode
-                                            }
-                                            onShowVerification={setShowVerification}
-                                        />
-                                    )} */}
                                 </div>
                             ))}
 

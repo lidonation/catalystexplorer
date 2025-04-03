@@ -32,7 +32,7 @@ export default function Fund({
 
     return (
         <>
-            <Head title={fund.title} />
+            <Head title={fund?.title as string|undefined} />
 
             <div className="relative flex w-full flex-col justify-center gap-8">
                 {/* Hero Image */}

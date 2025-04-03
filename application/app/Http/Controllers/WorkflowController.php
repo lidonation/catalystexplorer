@@ -14,17 +14,16 @@ class WorkflowController extends Controller
 {
     public function auth(Request $request): Response
     {
-
         return Inertia::render('Workflows/Login');
     }
 
     public function login(LoginRequest $request): RedirectResponse
     {
 
+        $request->authenticate();
+
         $nextRoute = session()->pull('nextstep.route');
         $nextRouteParam = session()->pull('nextstep.param');
-
-        $request->authenticate();
 
         $request->session()->regenerate();
 

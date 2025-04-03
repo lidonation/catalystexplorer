@@ -110,7 +110,7 @@ y?: number;
 export type FundData = {
 amount: number | null;
 label: string | null;
-title: string;
+title: string | null;
 hash: string | null;
 proposals_count?: number;
 funded_proposals_count?: number;
@@ -173,7 +173,7 @@ ideascaleId?: number;
 username?: string;
 email?: string;
 name?: string;
-bio?: Array<any> | string | null;
+bio?: string;
 createdAt?: string;
 updatedAt?: string;
 twitter?: string;

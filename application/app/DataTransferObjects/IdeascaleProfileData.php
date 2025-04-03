@@ -29,7 +29,7 @@ final class IdeascaleProfileData extends Data
         public ?string $name,
 
         #[TypeScriptOptional]
-        public string|array|null $bio,
+        public ?string $bio,
 
         #[TypeScriptOptional]
         public ?string $createdAt,
