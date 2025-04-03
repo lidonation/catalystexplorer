@@ -77,7 +77,7 @@ export default function AppLayout({ children }: { children: ReactNode }) {
                                     <div className="">
                                         <MetricsBar />
                                     </div>
-                                    <div>
+                                    <div className='hidden lg:block'>
                                         <PlayerBar />
                                     </div>
                                 </section>

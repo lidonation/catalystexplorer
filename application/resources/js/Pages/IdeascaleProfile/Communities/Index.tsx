@@ -2,7 +2,6 @@ import React from 'react';
 import { Head } from '@inertiajs/react';
 import { useTranslation } from 'react-i18next';
 import IdeascaleProfileData = App.DataTransferObjects.IdeascaleProfileData;
-import MyLayout from "@/Pages/My/MyLayout";
 import RecordsNotFound from '@/Layouts/RecordsNotFound';
 import IdeascaleProfileLayout from '../IdeascaleProfileLayout';
 
@@ -17,7 +16,7 @@ export default function Communities({ideascaleProfile}: CommunitiesPageProps) {
     return (
         <IdeascaleProfileLayout ideascaleProfile={ideascaleProfile}>
               <Head title={`${ideascaleProfile.name} - Communities`} />
-            
+
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                 <div className="flex flex-col items-center justify-center">
                     <RecordsNotFound />

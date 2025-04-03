@@ -49,7 +49,7 @@ const ClaimProfileForm = forwardRef<ClaimFormHandles, ClaimProfileFormProps>(
         }, [form.data.email, form.data.name]);
 
         return (
-            <div className="mt-4 mb-4 rounded-lg p-4 shadow-md lg:p-8">
+            <div className=" rounded-lg p-4 lg:p-8">
                 <form>
                     {/* Name */}
                     <div className="mt-3">

@@ -58,7 +58,7 @@ services:
         POSTGRESQL_DB_SYNC_DB_HOST: postgres_dbsync
         POSTGRESQL_DB_SYNC_PASSWORD: v8hlDV0yMAHHlIurYupj
         MEILISEARCH_KEY: v8hlDV0yMAHHlIurYupj
-        MEILISEARCH_HOST: "http://catalystexplorer-search:7700"
+        MEILISEARCH_HOST: "http://catalystexplorer_test-search:7700"
         POSTGRESQL_DB_SYNC_DB: cexplorer
         POSTGRESQL_DB_SYNC_USER: postgres
         XDG_CONFIG_HOME: /var/www

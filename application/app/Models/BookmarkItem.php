@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use App\Casts\HashId;
+use App\Enums\VoteEnum;
 use App\Traits\HasHashId;
 use App\Traits\HasModel;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -39,7 +39,7 @@ class BookmarkItem extends Model
     public function casts(): array
     {
         return [
-            'id' => HashId::class,
+            'vote' => VoteEnum::class,
         ];
 
     }

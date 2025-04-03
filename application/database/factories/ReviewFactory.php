@@ -7,6 +7,7 @@ namespace Database\Factories;
 use App\Enums\StatusEnum;
 use App\Models\Discussion;
 use App\Models\Review;
+use App\Models\Reviewer;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -17,7 +18,7 @@ class ReviewFactory extends Factory
 
         return [
             'parent_id' => null,
-            'user_id' => User::inRandomOrder()->first()?->id,
+            'reviewer_id' => Reviewer::factory(),
             'model_id' => Discussion::factory(),
             'model_type' => Discussion::class,
             'title' => $this->faker->sentence(),
