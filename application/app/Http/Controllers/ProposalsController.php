@@ -86,8 +86,10 @@ class ProposalsController extends Controller
                 'completed' => $this->completedProposals,
                 'requestedUSD' => $this->sumBudgetsUSD,
                 'requestedADA' => $this->sumBudgetsADA,
-                'awardedUSD' => $this->sumDistributedUSD,
-                'awardedADA' => $this->sumDistributedADA,
+                'awardedUSD' => $this->sumApprovedUSD,
+                'awardedADA' => $this->sumApprovedADA,
+                'distributedUSD' => $this->sumDistributedUSD,
+                'distributedADA' => $this->sumDistributedADA,
             ],
         ]);
     }
