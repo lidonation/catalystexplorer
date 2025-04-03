@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace App\Http\Middleware;
 
 use Closure;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Symfony\Component\HttpFoundation\Response;
 
 class WorkflowMiddleware
@@ -19,13 +21,15 @@ class WorkflowMiddleware
     {
         if (! $request->user()) {
 
-            session()->put('nextstep.route', request()->route()->getName());
-            session()->put('nextstep.param', request()->route()->parameters());
+            if (! session()->has('nextstep.route') && Str::doesntContain($request->route()->getName(), 'login')) {
+                session()->put('nextstep.route', $request->route()->getName());
+                session()->put('nextstep.param', $request->route()->parameters());
+            }
 
             return to_route('workflows.loginForm');
-        } else {
-            return $next($request);
         }
 
+
+        return $next($request);
     }
 }
