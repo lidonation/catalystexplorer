@@ -1,15 +1,14 @@
 import Paragraph from '@/Components/atoms/Paragraph';
 import PrimaryLink from '@/Components/atoms/PrimaryLink';
-import Title from '@/Components/atoms/Title';
 import { StepDetails } from '@/types';
 import { generateLocalizedRoute } from '@/utils/localizedRoute';
-import { t } from 'i18next';
 import { ChevronLeft,ChevronRight } from 'lucide-react';
 import React from 'react';
 import Content from '../Partials/WorkflowContent';
 import Footer from '../Partials/WorkflowFooter';
 import Nav from '../Partials/WorkflowNav';
 import WorkflowLayout from '../WorkflowLayout';
+import { useTranslation } from 'react-i18next';
 
 
 interface Step1Props {
@@ -28,20 +27,20 @@ const Step1: React.FC<Step1Props> = ({ stepDetails, activeStep }) => {
         step: activeStep - 1,
     });
 
+    const { t } = useTranslation();
+
     return (
         <WorkflowLayout asideInfo={stepDetails[activeStep - 1].info ?? ''}>
             <Nav stepDetails={stepDetails} activeStep={activeStep} />
 
             <Content>
-                <div className="bg-background w-full h-full flex flex-col items-center justify-center p-8">
+                <div className="bg-background w-full flex flex-col items-center justify-center p-8">
                     <div className="max-w-2xl mb-8">
                         <Paragraph className="mb-4 text-gray-persist">
-                            Before you start, let's set up your Voting List. A Voting List is a collection of proposals 
-                            that you support and want others to consider. This helps streamline governance participation. Ready to begin? In the next steps, you'll name your list, add proposals, and explain 
-                            your rationale for selecting them.
+                            {t('workflows.voterList.welcome')}
                         </Paragraph>
                         <Paragraph className="font-light italic text-gray-persist">
-                            Unlike other list types, only proposals can be added to voting lists.
+                            {t('workflows.voterList.proposalsOnly')}
                         </Paragraph>
                     </div>
                 </div>

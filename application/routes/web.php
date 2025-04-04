@@ -138,6 +138,9 @@ Route::localized(
                     Route::post('/finalize', [VoterListController::class, 'finalizeVoterList'])
                         ->name('finalize');
                 });
+            
+            Route::get('/create-voter-list/success', [VoterListController::class, 'success'])
+                ->name('createVoterList.success');
 
             Route::get('/login', [WorkflowController::class, 'auth'])
                 ->name('loginForm');
