@@ -22,9 +22,9 @@ const GroupCardExtended: React.FC<GroupCardFullProps> = ({
 }) => {
     const { t } = useTranslation();
 
-    const completedGroupsCount = group?.completed_proposals_count ?? 0;
-    const FundedGroupssCount = group?.funded_proposals_count ?? 0;
-    const UnfundedGroupsCount = group?.unfunded_proposals_count ?? 0;
+    const completedGroupsCount = group?.proposals_completed ?? 0;
+    const FundedGroupssCount = group?.proposals_funded ?? 0;
+    const UnfundedGroupsCount = group?.proposals_unfunded ?? 0;
 
     const segments = [
         {

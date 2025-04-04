@@ -1,13 +1,13 @@
-import React from 'react';
-import { Head } from '@inertiajs/react';
-import { useTranslation } from 'react-i18next';
-import MyLayout from "@/Pages/My/MyLayout";
-import GroupData = App.DataTransferObjects.GroupData;
-import { PaginatedData } from '../../../../types/paginated-data';
-import MyGroupsList from './Partials/MyGroupsList';
 import Paginator from '@/Components/Paginator';
 import { FiltersProvider } from '@/Context/FiltersContext';
+import MyLayout from '@/Pages/My/MyLayout';
+import { Head, WhenVisible } from '@inertiajs/react';
+import { useTranslation } from 'react-i18next';
+import { PaginatedData } from '../../../../types/paginated-data';
 import { SearchParams } from '../../../../types/search-params';
+import MyGroupsList from './Partials/MyGroupsList';
+import GroupData = App.DataTransferObjects.GroupData;
+import GroupCardExtendedLoader from '@/Pages/Groups/Partials/GroupCardExtendedLoader';
 
 interface MyGroupsProps extends Record<string, unknown> {
     groups: PaginatedData<GroupData[]>;
@@ -17,15 +17,20 @@ interface MyGroupsProps extends Record<string, unknown> {
 export default function MyGroups({ groups, filters }: MyGroupsProps) {
     const { t } = useTranslation();
     return (
-        <FiltersProvider defaultFilters={filters ?? {}}>
-
+        <FiltersProvider
+            defaultFilters={filters ?? {}}
+            routerOptions={{ only: 'groups' }}
+        >
             <MyLayout>
                 <Head title="My Groups" />
 
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-                    <div className="text-center text-content">
+                <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+                    <WhenVisible
+                        fallback={<GroupCardExtendedLoader />}
+                        data="groups"
+                    >
                         <MyGroupsList groups={groups?.data || []} />
-                    </div>
+                    </WhenVisible>
                 </div>
 
                 {groups && groups.total > 0 && (
