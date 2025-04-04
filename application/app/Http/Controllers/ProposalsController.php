@@ -97,9 +97,9 @@ class ProposalsController extends Controller
     public function myProposals(Request $request): Response
     {
         $userId = Auth::id();
-        $ideascaleProfile = IdeascaleProfile::where('claimed_by_id', operator: $userId)->first();
+        $ideascaleProfile = IdeascaleProfile::where('claimed_by_id', operator: $userId)->get()->map(fn ($p) => $p->hash);
 
-        if (! $ideascaleProfile) {
+        if (empty($ideascaleProfile)) {
             return Inertia::render('My/Proposals/Index', [
                 'proposals' => [
                     'data' => [],
@@ -108,7 +108,7 @@ class ProposalsController extends Controller
         }
 
         $request->merge([
-            ProposalSearchParams::IDEASCALE_PROFILES()->value => [$ideascaleProfile->hash],
+            ProposalSearchParams::IDEASCALE_PROFILES()->value => $ideascaleProfile->toArray(),
         ]);
 
         $this->getProps($request);

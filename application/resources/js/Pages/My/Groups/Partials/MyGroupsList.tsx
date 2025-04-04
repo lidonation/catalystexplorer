@@ -1,9 +1,9 @@
+import Button from '@/Components/atoms/Button';
 import GroupCardExtended from '@/Pages/Groups/Partials/GroupCardExtended';
 import { AnimatePresence, motion } from 'framer-motion';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import GroupData = App.DataTransferObjects.GroupData;
-import Button from '@/Components/atoms/Button';
 
 interface GroupListProps {
     groups: GroupData[];
