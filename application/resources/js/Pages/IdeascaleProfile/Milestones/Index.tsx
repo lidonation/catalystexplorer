@@ -1,14 +1,16 @@
 import RecordsNotFound from '@/Layouts/RecordsNotFound';
 import { Head, WhenVisible } from '@inertiajs/react';
 import { useTranslation } from 'react-i18next';
+import { PaginatedData } from '../../../../types/paginated-data';
 import IdeascaleProfileLayout from '../IdeascaleProfileLayout';
+import MilestoneAccordion from '../Partials/MilestoneAccordion';
 import IdeascaleProfileData = App.DataTransferObjects.IdeascaleProfileData;
 import ProjectScheduleData = App.DataTransferObjects.ProjectScheduleData;
 
 interface MilestonesPageProps {
     ideascaleProfile: IdeascaleProfileData;
     notSureWhatThisIs?: any[];
-    projectSchedules: ProjectScheduleData[] | null;
+    projectSchedules: PaginatedData<ProjectScheduleData[]>;
 }
 
 export default function Milestones({
@@ -30,12 +32,20 @@ export default function Milestones({
                         <section className="container py-8">
                             {projectSchedules ? (
                                 <>
-                                    <h4 className="title-4">
-                                        {t('comingSoon')}
-                                    </h4>
-                                    <div>
-                                        {JSON.stringify(projectSchedules)}
-                                    </div>
+                                    <MilestoneAccordion
+                                        milestones={
+                                            projectSchedules.data[1].milestones
+                                        }
+                                        totalCost={
+                                            projectSchedules.data[1].budget
+                                        }
+                                        currency={
+                                            projectSchedules.data[1].currency
+                                        }
+                                        onTrack={
+                                            projectSchedules.data[1].on_track
+                                        }
+                                    />
                                 </>
                             ) : (
                                 <RecordsNotFound context="projectSchedules" />
