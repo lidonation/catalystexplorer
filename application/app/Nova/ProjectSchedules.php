@@ -12,7 +12,6 @@ use Ebess\AdvancedNovaMediaLibrary\Fields\Images;
 use Laravel\Nova\Actions\Action;
 use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Fields\Field;
-use Laravel\Nova\Fields\HasMany;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Select;
 use Laravel\Nova\Fields\Text;
@@ -60,7 +59,7 @@ class ProjectSchedules extends Resource
                 ->sortable()
                 ->required(),
 
-            Text::make(__('Url'), 'url')->sortable(),
+            Text::make(__('Url'), 'url')->hideFromIndex(),
 
             Select::make('Status', 'status')
                 ->options(StatusEnum::toArray())
@@ -70,8 +69,6 @@ class ProjectSchedules extends Resource
             BelongsTo::make(__('Proposal'), 'proposal', Proposals::class),
 
             BelongsTo::make(__('Fund'), 'fund', Funds::class),
-
-            HasMany::make('Proposals', 'proposals', Proposals::class),
         ];
     }
 
