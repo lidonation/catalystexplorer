@@ -130,6 +130,14 @@ class IdeascaleProfilesController extends Controller
         }
 
         if (str_contains($path, '/milestones')) {
+            //            dd(
+            //                to_length_aware_paginator(ProjectScheduleData::collect(
+            //                    ProjectSchedule::whereHas('proposal', function ($query) use ($ideascaleProfile) {
+            //                        $query->has('users', $ideascaleProfile->id);
+            //                    })->with(['milestones'])->paginate(6)
+            //                ))
+            //            );
+
             return Inertia::render('IdeascaleProfile/Milestones/Index', [
                 'ideascaleProfile' => IdeascaleProfileData::from($ideascaleProfileData),
                 'projectSchedules' => Inertia::optional(fn () => to_length_aware_paginator(ProjectScheduleData::collect(

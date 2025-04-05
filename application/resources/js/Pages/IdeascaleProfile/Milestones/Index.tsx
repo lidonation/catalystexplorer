@@ -30,7 +30,7 @@ export default function Milestones({
                         fallback={<div>Loading Connections</div>}
                     >
                         <section className="container py-8">
-                            {projectSchedules ? (
+                            {projectSchedules && projectSchedules.data?.length > 0 ? (
                                 <>
                                     <MilestoneAccordion
                                         milestones={
