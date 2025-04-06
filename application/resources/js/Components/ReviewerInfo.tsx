@@ -27,7 +27,7 @@ export const ReviewerInfo: React.FC<ReviewerInfoProps> = ({
                     </Paragraph>
                 ) : (
                     <div className="flex items-center gap-2">
-                        <ValueLabel>Reviewer</ValueLabel>
+                        <ValueLabel>{t('reviews.reviewer')}</ValueLabel>
                         <Paragraph className="font-bold text-content mr-2">
                             {review?.reviewer?.catalyst_reviewer_id}
                         </Paragraph>

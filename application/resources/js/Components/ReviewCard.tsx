@@ -1,8 +1,9 @@
 import ValueLabel from '@/Components/atoms/ValueLabel';
 import { useLocalizedRoute } from '@/utils/localizedRoute';
-import { Link } from '@inertiajs/react';
+import { Button } from '@headlessui/react';
+import { Link, router } from '@inertiajs/react';
 import { t } from 'i18next';
-import React, { useEffect } from 'react';
+import React, { useState } from 'react';
 import Card from './Card';
 import ExpandableContent from './ExpandableContext';
 import { ReviewerInfo } from './ReviewerInfo';
@@ -10,6 +11,8 @@ import { StarRating } from './ReviewsStar';
 import Paragraph from './atoms/Paragraph';
 import ThumbsDownIcon from './svgs/ThumbsDown';
 import ThumbsUpIcon from './svgs/ThumbsUpIcon';
+import RichContent from './RichContent';
+import { useTranslation } from 'react-i18next';
 import ReviewData = App.DataTransferObjects.ReviewData;
 
 export interface ReviewItemProps {
@@ -21,6 +24,45 @@ export const ReviewCard: React.FC<ReviewItemProps> = ({
     review,
     className = '',
 }) => {
+    const [isLoading, setIsLoading] = useState(false);
+    const { t } = useTranslation();
+
+    const markHelpful = () => {
+        if (!review?.hash) return;
+
+        setIsLoading(true);
+
+        router.put(
+            route('api.reviews.helpful', { hash: review.hash }),
+            {},
+            {
+                preserveScroll: true,
+                onFinish: () => setIsLoading(false),
+                onError: (errors) => {
+                    console.error(errors);
+                },
+            },
+        );
+    };
+
+    const markNotHelpful = () => {
+        if (!review?.hash) return;
+
+        setIsLoading(true);
+
+        router.put(
+            route('api.reviews.notHelpful', { hash: review.hash }),
+            {},
+            {
+                preserveScroll: true,
+                onFinish: () => setIsLoading(false),
+                onError: (errors) => {
+                    console.error(errors);
+                },
+            },
+        );
+    };
+
     return (
         <Card>
             <div className={`pb-6 ${className}`}>
@@ -33,24 +75,45 @@ export const ReviewCard: React.FC<ReviewItemProps> = ({
                 </div>
 
                 {review.content && (
-                    <ExpandableContent content={review.content} />
+                    <ExpandableContent className={'line-clamp-5 overflow-hidden text-ellipsis mt-2'}>
+                        <RichContent
+                            className="text-gray-persist text-3"
+                            content={review?.content}
+                        />
+                    </ExpandableContent>
                 )}
 
-                <div className="mt-8 flex justify-between items-center">
-                    <Paragraph className="text-gray-persist">
-                        Was this a helpful review?
+                <div className="mt-8 flex items-center justify-between">
+                    <Paragraph className="text-gray-persist text-sm">
+                        {t('reviews.helpfulReview')}
                     </Paragraph>
-                    <div className='flex gap-2'>
-                        <div className="bg-success/30 border-success text-success flex items-center gap-1 rounded-md border p-2">
+                    <div className="flex gap-2">
+                        <Button
+                            className={`bg-success/30 border-success text-success flex items-center gap-1 rounded-md border p-2 ${
+                                isLoading
+                                    ? 'cursor-not-allowed'
+                                    : 'cursor-pointer'
+                            }`}
+                            onClick={markHelpful}
+                            disabled={isLoading}
+                        >
                             <ThumbsUpIcon />
-                            <Paragraph className="font-bold">Yes</Paragraph>
+                            <Paragraph className="font-bold">{t('reviews.yes')}</Paragraph>
                             {review?.helpful_total}
-                        </div>
-                        <div className="bg-error/30 border-error text-error flex items-center gap-1 rounded-md border p-2">
+                        </Button>
+                        <Button
+                            className={`bg-error/30 border-error text-error flex items-center gap-1 rounded-md border p-2 ${
+                                isLoading
+                                    ? 'cursor-not-allowed'
+                                    : 'cursor-pointer'
+                            }`}
+                            onClick={markNotHelpful}
+                            disabled={isLoading}
+                        >
                             <ThumbsDownIcon />
-                            <Paragraph className="font-bold">No</Paragraph>
+                            <Paragraph className="font-bold">{t('reviews.no')}</Paragraph>
                             {review?.not_helpful_total}
-                        </div>
+                        </Button>
                     </div>
                 </div>
 

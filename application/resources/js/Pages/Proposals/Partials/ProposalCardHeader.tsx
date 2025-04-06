@@ -4,6 +4,7 @@ import BookmarkButton from '@/Pages/My/Bookmarks/Partials/BookmarkButton';
 import ProposalStatus from './ProposalStatus';
 import Button from '@/Components/atoms/Button';
 import {Link} from "@inertiajs/react";
+import ExpandableContent from '@/Components/ExpandableContext';
 
 export default function ProposalCardHeader({
     proposal,
@@ -93,7 +94,9 @@ export default function ProposalCardHeader({
                         }`}
                     >
                         {!userSelected ? (
-                            <Title level="4">{proposal.title}</Title>
+                            <ExpandableContent className='line-clamp-3 overflow-hidden text-ellipsis'>
+                                <Title level="4">{proposal.title}</Title>
+                            </ExpandableContent>
                         ) : null}
                     </a>
                     <div className="flex flex-row justify-end py-0.5 italic">
