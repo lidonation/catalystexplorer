@@ -3,10 +3,7 @@ import defaultTheme from 'tailwindcss/defaultTheme';
 
 /** @type {import('tailwindcss').Config} */
 export default {
-    safelist: [
-        'size-2',
-        'size-3'
-    ],
+    safelist: ['size-2', 'size-3'],
     content: [
         './vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php',
         './storage/framework/views/*.php',
@@ -18,7 +15,7 @@ export default {
     theme: {
         extend: {
             animation: {
-                'waveform': 'waveform 1s ease-in-out infinite',
+                waveform: 'waveform 1s ease-in-out infinite',
             },
             keyframes: {
                 waveform: {
@@ -68,9 +65,10 @@ export default {
                 highlight: 'var(--cx-light)',
                 accent: 'var(--cx-accent)',
                 'accent-blue': 'var(--bg-accent-color)',
-                'dark-persist':'var(--content-primary-color)',
+                'dark-persist': 'var(--content-primary-color)',
                 'accent-secondary': 'var(--cx-accent-secondary)',
                 error: 'var(--bg-error-primary-color)',
+                'error-light': 'var(--content-error-light-border)',
                 success: 'var(--success-gradient-color-2)',
                 'success-light': 'var(--content-success-light)',
                 warning: 'var(--bg-warning-primary-color)',
@@ -84,7 +82,7 @@ export default {
                     'var(--cx-intro-gradient-1)',
                 'background-home-gradient-color-2':
                     'var(--cx-intro-gradient-2)',
-                    'background-button-gradient-color-1':
+                'background-button-gradient-color-1':
                     'var(--cx-background-gradient-1-light)',
                 'background-button-gradient-color-2':
                     'var(--cx-background-gradient-2-light)',
@@ -104,31 +102,51 @@ export default {
                 tooltip: 'var(--cx-tooltip-background)',
             },
             fontSize: {
-                'cx-display-xs': ['var(--cx-display-xs)', {
-                    fontWeight: 'var(--cx-display-weight)',
-                }],
-                'cx-display-sm': ['var(--cx-display-sm)', {
-                    fontWeight: 'var(--cx-display-weight)',
-                }],
-                'cx-display-md': ['var(--cx-display-md)', {
-                    fontWeight: 'var(--cx-display-weight)',
-                }],
-                'cx-display-lg': ['var(--cx-display-lg)', {
-                    fontWeight: 'var(--cx-display-weight)',
-                }],
-                'cx-display-xl': ['var(--cx-display-xl)', {
-                    fontWeight: 'var(--cx-display-weight)',
-                }],
-                'cx-display-2xl': ['var(--cx-display-2xl)', {
-                    fontWeight: 'var(--cx-display-weight)',
-                }],
-                md: ['1rem', {
-                    lineHeight: '1.5rem',
-                }]
-            }
+                'cx-display-xs': [
+                    'var(--cx-display-xs)',
+                    {
+                        fontWeight: 'var(--cx-display-weight)',
+                    },
+                ],
+                'cx-display-sm': [
+                    'var(--cx-display-sm)',
+                    {
+                        fontWeight: 'var(--cx-display-weight)',
+                    },
+                ],
+                'cx-display-md': [
+                    'var(--cx-display-md)',
+                    {
+                        fontWeight: 'var(--cx-display-weight)',
+                    },
+                ],
+                'cx-display-lg': [
+                    'var(--cx-display-lg)',
+                    {
+                        fontWeight: 'var(--cx-display-weight)',
+                    },
+                ],
+                'cx-display-xl': [
+                    'var(--cx-display-xl)',
+                    {
+                        fontWeight: 'var(--cx-display-weight)',
+                    },
+                ],
+                'cx-display-2xl': [
+                    'var(--cx-display-2xl)',
+                    {
+                        fontWeight: 'var(--cx-display-weight)',
+                    },
+                ],
+                md: [
+                    '1rem',
+                    {
+                        lineHeight: '1.5rem',
+                    },
+                ],
+            },
         },
     },
 
     plugins: [forms],
 };
-

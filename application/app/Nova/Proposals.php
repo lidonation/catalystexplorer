@@ -13,6 +13,7 @@ use Laravel\Nova\Actions\Action;
 use Laravel\Nova\Card;
 use Laravel\Nova\Exceptions\HelperNotSupported;
 use Laravel\Nova\Fields\BelongsTo;
+use Laravel\Nova\Fields\BelongsToMany;
 use Laravel\Nova\Fields\Field;
 use Laravel\Nova\Fields\HasMany;
 use Laravel\Nova\Fields\ID;
@@ -45,7 +46,7 @@ class Proposals extends Resource
      *
      * @var string
      */
-    public static $title = 'id';
+    public static $title = 'title';
 
     /**
      * The columns that should be searched.
@@ -96,6 +97,8 @@ class Proposals extends Resource
                 ->filterable(),
 
             HasMany::make('Metadata', 'metas', Metas::class),
+
+            BelongsToMany::make(__('Users'), 'users', Users::class),
 
             HasMany::make(__('Discussions'), 'discussions', Discussions::class),
 
