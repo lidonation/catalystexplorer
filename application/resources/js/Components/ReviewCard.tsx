@@ -1,14 +1,17 @@
-import React from 'react';
-import Divider from './Divider';
-import {ReviewerInfo} from './ReviewerInfo';
-import {StarRating} from './ReviewsStar';
+import RichContent from '@/Components/RichContent';
+import ValueLabel from '@/Components/atoms/ValueLabel';
+import { useLocalizedRoute } from '@/utils/localizedRoute';
+import { Link, router } from '@inertiajs/react';
+import React, { useState } from 'react';
+import { ReviewerInfo } from './ReviewerInfo';
+import { StarRating } from './ReviewsStar';
 import ReviewData = App.DataTransferObjects.ReviewData;
-import RichContent from "@/Components/RichContent";
-import ValueLabel from "@/Components/atoms/ValueLabel";
-import {t} from "i18next";
-import Value from "@/Components/atoms/Value";
-import {useLocalizedRoute} from "@/utils/localizedRoute";
-import {Link} from "@inertiajs/react";
+import { useTranslation } from 'react-i18next';
+import Card from './Card';
+import ExpandableContent from './ExpandableContent';
+import Paragraph from './atoms/Paragraph';
+import { Button } from '@headlessui/react';
+import { ThumbsDownIcon, ThumbsUpIcon } from 'lucide-react';
 
 export interface ReviewItemProps {
     review: ReviewData;
@@ -16,48 +19,138 @@ export interface ReviewItemProps {
 }
 
 export const ReviewCard: React.FC<ReviewItemProps> = ({
-                                                          review,
-                                                          className = '',
-                                                      }) => {
+    review,
+    className = '',
+}) => {
+    const [isLoading, setIsLoading] = useState(false);
+    const { t } = useTranslation();
+
+    const markHelpful = () => {
+        if (!review?.hash) return;
+
+        setIsLoading(true);
+
+        router.put(
+            route('api.reviews.helpful', { hash: review.hash }),
+            {},
+            {
+                preserveScroll: true,
+                onFinish: () => setIsLoading(false),
+                onError: (errors) => {
+                    console.error(errors);
+                },
+            },
+        );
+    };
+
+    const markNotHelpful = () => {
+        if (!review?.hash) return;
+
+        setIsLoading(true);
+
+        router.put(
+            route('api.reviews.notHelpful', { hash: review.hash }),
+            {},
+            {
+                preserveScroll: true,
+                onFinish: () => setIsLoading(false),
+                onError: (errors) => {
+                    console.error(errors);
+                },
+            },
+        );
+    };
+
     return (
-        <div className={`pb-6 ${className}`}>
-            <div className="flex items-start justify-between">
-                <div className="flex">
-                    <ReviewerInfo
-                        review={review}
-                    />
+        <Card>
+            <div className={`pb-6 ${className}`}>
+                <div className="flex items-start justify-between">
+                    <div className="flex">
+                        <ReviewerInfo review={review} />
+                    </div>
+
+                    {review.rating && <StarRating rating={review.rating} />}
                 </div>
 
-                {review.rating && <StarRating rating={review.rating}/>}
+                {review.content && (
+                    <ExpandableContent
+                        className={
+                            'mt-2 line-clamp-5 overflow-hidden text-ellipsis'
+                        }
+                    >
+                        <RichContent
+                            className="text-gray-persist text-3"
+                            content={review?.content}
+                        />
+                    </ExpandableContent>
+                )}
+
+                <div className="mt-8 flex items-center justify-between">
+                    <Paragraph className="text-gray-persist text-sm">
+                        {t('reviews.helpfulReview')}
+                    </Paragraph>
+                    <div className="flex gap-2">
+                        <Button
+                            className={`bg-success/30 border-success text-success flex items-center gap-1 rounded-md border p-2 ${
+                                isLoading
+                                    ? 'cursor-not-allowed'
+                                    : 'cursor-pointer'
+                            }`}
+                            onClick={markHelpful}
+                            disabled={isLoading}
+                        >
+                            <ThumbsUpIcon />
+                            <Paragraph className="font-bold">
+                                {t('reviews.yes')}
+                            </Paragraph>
+                            {review?.helpful_total}
+                        </Button>
+                        <Button
+                            className={`bg-error/30 border-error text-error flex items-center gap-1 rounded-md border p-2 ${
+                                isLoading
+                                    ? 'cursor-not-allowed'
+                                    : 'cursor-pointer'
+                            }`}
+                            onClick={markNotHelpful}
+                            disabled={isLoading}
+                        >
+                            <ThumbsDownIcon />
+                            <Paragraph className="font-bold">
+                                {t('reviews.no')}
+                            </Paragraph>
+                            {review?.not_helpful_total}
+                        </Button>
+                    </div>
+                </div>
+
+                <section className="flex flex-wrap items-center gap-4">
+                    {review?.proposal?.link && (
+                        <div className="flex items-center gap-2">
+                            <ValueLabel>{t('proposal')}</ValueLabel>
+                            <Link
+                                href={review?.proposal?.link}
+                                className="link-primary text-sm"
+                            >
+                                {review?.proposal?.title}
+                            </Link>
+                        </div>
+                    )}
+
+                    {review?.proposal?.fund?.title && (
+                        <div className="flex items-center gap-2">
+                            <ValueLabel>{t('funds.fund')}</ValueLabel>
+                            <Link
+                                href={useLocalizedRoute('funds.fund.show', {
+                                    slug: review?.proposal?.fund?.slug,
+                                })}
+                                className="link-primary text-sm"
+                            >
+                                {review?.proposal?.fund?.title}
+                            </Link>
+                        </div>
+                    )}
+                </section>
             </div>
-
-
-            {review.content && <RichContent
-                className="text-content text-4 pb-2"
-                content={review.content}
-            />}
-
-            <section className='flex flex-wrap gap-4 items-center '>
-                {review?.proposal?.link && <div className='flex gap-2 items-center'>
-                    <ValueLabel>
-                        {t('proposal')}
-                    </ValueLabel>
-                    <Link href={review?.proposal?.link} className='link-primary text-sm'>
-                        {review?.proposal?.title}
-                    </Link>
-                </div>}
-
-                {review?.proposal?.fund?.title && <div className='flex gap-2 items-center'>
-                    <ValueLabel>
-                        {t('funds.fund')}
-                    </ValueLabel>
-                    <Link href={useLocalizedRoute('funds.fund.show', {slug: review?.proposal?.fund?.slug})}
-                          className='link-primary text-sm'>
-                        {review?.proposal?.fund?.title}
-                    </Link>
-                </div>}
-            </section>
-
-        </div>
+        </Card>
     );
 };
