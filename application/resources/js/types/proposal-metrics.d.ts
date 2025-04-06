@@ -6,4 +6,6 @@ export type  ProposalMetrics = {
     requestedADA?: number;
     awardedUSD?: number;
     awardedADA?: number;
+    distributedUSD?: number;
+    distributedADA?: number;
 }

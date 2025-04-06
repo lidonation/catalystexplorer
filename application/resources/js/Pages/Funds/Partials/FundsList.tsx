@@ -7,11 +7,16 @@ interface FundsListProps {
 }
 
 const FundsList: React.FC<FundsListProps> = ({ funds }) => {
-    const sortedFunds = funds.sort((a, b) => {
-        const numA = parseInt(a.title.replace(/\D/g, ''), 10);
-        const numB = parseInt(b.title.replace(/\D/g, ''), 10);
-        return numB - numA;
-    });
+   const sortedFunds: FundData[] = [...funds].sort((a, b) => {
+       const numA = a.title ? parseInt(a.title.replace(/\D/g, ''), 10) : NaN;
+       const numB = b.title ? parseInt(b.title.replace(/\D/g, ''), 10) : NaN;
+
+       if (isNaN(numA) && isNaN(numB)) return 0;
+       if (isNaN(numA)) return 1;
+       if (isNaN(numB)) return -1;
+
+       return numB - numA;
+   });
 
     const calculatePercentageChanges = (funds: any) => {
         funds.sort((a: any, b: any) => {
@@ -29,19 +34,35 @@ const FundsList: React.FC<FundsListProps> = ({ funds }) => {
                 };
             }
 
-            const previousFund = funds[index + 1]; 
+            const previousFund = funds[index + 1];
             let amountAwardedPercentageChange = '';
             let fundedProposalsPercentageChange = '';
 
-            const currentAmountAwardedChange = (fund.amount_awarded / fund.amount_requested) * 100
-            const previousAmountAwardedChange = (previousFund.amount_awarded / previousFund.amount_requested) * 100
-        
-            amountAwardedPercentageChange = Number(((currentAmountAwardedChange - previousAmountAwardedChange)/previousAmountAwardedChange * 100)).toFixed(2);
+            const currentAmountAwardedChange =
+                (fund.amount_awarded / fund.amount_requested) * 100;
+            const previousAmountAwardedChange =
+                (previousFund.amount_awarded / previousFund.amount_requested) *
+                100;
 
-            const currentFundedProjectsPercentage = (fund.funded_proposals_count / fund.proposals_count) * 100
-            const previousFundedProjectsPercentage = (previousFund.funded_proposals_count / previousFund.proposals_count) * 100
-        
-            fundedProposalsPercentageChange = Number(((currentFundedProjectsPercentage - previousFundedProjectsPercentage) / previousFundedProjectsPercentage) * 100).toFixed(2);
+            amountAwardedPercentageChange = Number(
+                ((currentAmountAwardedChange - previousAmountAwardedChange) /
+                    previousAmountAwardedChange) *
+                    100,
+            ).toFixed(2);
+
+            const currentFundedProjectsPercentage =
+                (fund.funded_proposals_count / fund.proposals_count) * 100;
+            const previousFundedProjectsPercentage =
+                (previousFund.funded_proposals_count /
+                    previousFund.proposals_count) *
+                100;
+
+            fundedProposalsPercentageChange = Number(
+                ((currentFundedProjectsPercentage -
+                    previousFundedProjectsPercentage) /
+                    previousFundedProjectsPercentage) *
+                    100,
+            ).toFixed(2);
 
             return {
                 fund: fund.title,
@@ -55,7 +76,6 @@ const FundsList: React.FC<FundsListProps> = ({ funds }) => {
     };
 
     const fundPercentages = calculatePercentageChanges(funds);
-
 
     return (
         <ul className="grid w-full auto-rows-fr gap-4 sm:grid-cols-2 lg:grid-cols-3">

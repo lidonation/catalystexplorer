@@ -29,9 +29,9 @@ final class ProjectScheduleData extends Data
 
         public ?string $created_at,
 
-        public ?int $budget,
+        public int $budget,
 
-        public ?int $milestones_qty,
+        public int $milestone_count,
 
         public float $funds_distributed,
 
@@ -42,7 +42,7 @@ final class ProjectScheduleData extends Data
         public string $status,
 
         #[MapInputName('onTrack')]
-        public ?bool $on_track,
+        public bool $on_track,
 
         public ?ProposalData $proposal,
 
