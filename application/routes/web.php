@@ -135,8 +135,6 @@ Route::localized(
                         ->name('saveProposals');
                     Route::post('/save-rationales', [VoterListController::class, 'saveRationales'])
                         ->name('saveRationales');
-                    Route::post('/finalize', [VoterListController::class, 'finalizeVoterList'])
-                        ->name('finalize');
                 });
             
             Route::get('/create-voter-list/success', [VoterListController::class, 'success'])

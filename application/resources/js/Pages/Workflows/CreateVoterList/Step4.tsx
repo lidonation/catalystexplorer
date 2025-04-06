@@ -20,15 +20,18 @@ interface Step4Props {
     stepDetails: StepDetails[];
     activeStep: number;
     rationale?: string;
+    bookmarkHash: string;
 }
 
 const Step4: React.FC<Step4Props> = ({
     stepDetails,
     activeStep,
     rationale = '',
+    bookmarkHash
 }) => {
     const form = useForm({
         rationale: rationale || '',
+        bookmarkHash: bookmarkHash,
     });
 
     const [isFormValid, setIsFormValid] = useState(false);

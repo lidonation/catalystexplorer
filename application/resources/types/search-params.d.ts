@@ -9,7 +9,7 @@ export type SearchParams = {
     [ParamsEnum.CAMPAIGNS]: string[];
     [ParamsEnum.COHORT]: string[];
     [ParamsEnum.COMMUNITIES]: string[];
-    [ParamsEnum.FUNDS]: string[];
+    [ParamsEnum.FUNDS]: string | string[];
     [ParamsEnum.FUNDING_STATUS]: (string[] | string);
     [ParamsEnum.GROUPS]: string[];
     [ParamsEnum.LIMIT]: number;

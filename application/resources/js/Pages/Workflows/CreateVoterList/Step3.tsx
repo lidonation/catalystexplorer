@@ -1,37 +1,30 @@
 import Paragraph from '@/Components/atoms/Paragraph';
 import PrimaryButton from '@/Components/atoms/PrimaryButton';
 import PrimaryLink from '@/Components/atoms/PrimaryLink';
-import SearchControls from '@/Components/atoms/SearchControls';
+import Selector from '@/Components/atoms/Selector';
+import ValueLabel from '@/Components/atoms/ValueLabel';
+import Paginator from '@/Components/Paginator';
+import ProposalVotingCard from '@/Components/ProposalVotingCard';
+import { FiltersProvider } from '@/Context/FiltersContext';
+import { BookMarkCollectionEnum } from '@/enums/bookmark-collection-enums';
+import { ParamsEnum } from '@/enums/proposal-search-params';
+import { VoteEnum } from '@/enums/votes-enums';
+import RecordsNotFound from '@/Layouts/RecordsNotFound';
+import ProposalSortingOptions from '@/lib/ProposalSortOptions';
 import { StepDetails } from '@/types';
-import {
-    generateLocalizedRoute,
-    useLocalizedRoute,
-} from '@/utils/localizedRoute';
+import { generateLocalizedRoute, useLocalizedRoute } from '@/utils/localizedRoute';
 import { router, useForm } from '@inertiajs/react';
-import { ChevronLeft, ChevronRight, Check } from 'lucide-react';
-import React, { useState, useEffect } from 'react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { SearchParams } from '../../../../types/search-params';
+import { PaginatedData } from '../../../../types/paginated-data';
+import ProposalData = App.DataTransferObjects.ProposalData;
 import Content from '../Partials/WorkflowContent';
 import Footer from '../Partials/WorkflowFooter';
 import Nav from '../Partials/WorkflowNav';
 import WorkflowLayout from '../WorkflowLayout';
-import Paginator from '@/Components/Paginator';
-import ProposalSortingOptions from '@/lib/ProposalSortOptions';
-import { FiltersProvider } from '@/Context/FiltersContext';
-import { ParamsEnum } from '@/enums/proposal-search-params';
-import { useTranslation } from 'react-i18next';
-import { SearchParams } from '../../../../types/search-params';
-import { currency } from '@/utils/currency';
-import ProposalData = App.DataTransferObjects.ProposalData;
-import { PaginatedData } from '../../../../types/paginated-data';
-import SearchBar from '@/Components/SearchBar';
-import Selector from '@/Components/atoms/Selector';
-import ValueLabel from '@/Components/atoms/ValueLabel';
-import Value from '@/Components/atoms/Value';
-import Button from '@/Components/atoms/Button';
-import { VoteEnum } from '@/enums/votes-enums';
-import RecordsNotFound from '@/Layouts/RecordsNotFound';
-import ProposalCard from '@/Pages/Proposals/Partials/ProposalCard';
-import ProposalVotingCard from '@/Components/ProposalVotingCard';
+import ProposalSearchBar from './partials/ProposalSearchBar';
 
 interface Campaign {
     id: number;
@@ -46,14 +39,8 @@ interface Step3Props {
     campaigns: Campaign[];
     selectedProposals: string[];
     filters: SearchParams;
-}
-
-interface ProposalCardProps {
-    proposal: ProposalData;
-    isSelected: boolean;
-    onSelect: (proposalSlug: string) => void;
-    onVote?: (proposalSlug: string, vote: VoteEnum) => void;
-    currentVote?: VoteEnum;
+    bookmarkHash: string;
+    fundSlug?: string;
 }
 
 const Step3: React.FC<Step3Props> = ({
@@ -62,54 +49,69 @@ const Step3: React.FC<Step3Props> = ({
     proposals,
     campaigns = [],
     selectedProposals = [],
-    filters
+    filters,
+    bookmarkHash,
+    fundSlug
 }) => {
+    const { t } = useTranslation();
+    const localizedRoute = useLocalizedRoute;
+    const prevStep = localizedRoute('workflows.createVoterList.index', { step: activeStep - 1 });
 
-    const [selectedIds, setSelectedIds] = useState<Set<string>>(
-        new Set(selectedProposals || [])
-    );
-
+    const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set(selectedProposals));
     const [votes, setVotes] = useState<Record<string, VoteEnum>>({});
 
     const form = useForm({
-        proposals: Array.from(selectedIds) || [],
-        votes: votes || {},
+        proposals: Array.from(selectedIds),
+        votes,
+        bookmarkHash,
     });
-
-    const { t } = useTranslation();
 
     useEffect(() => {
         form.setData('proposals', Array.from(selectedIds));
         form.setData('votes', votes);
     }, [selectedIds, votes]);
 
-    useEffect(() => {
-        console.log('Proposals data:', JSON.stringify(proposals, null, 2));
-    }, [proposals]);
+    const buildUpdatedFilters = (updates: Partial<SearchParams> = {}) => {
+      
+        const baseFilters: Record<string, any> = { ...filters };
 
-    useEffect(() => {
-        console.log('Form data:', {
-            proposals: form.data.proposals,
-            votes: form.data.votes
+        if (fundSlug) {
+            baseFilters[ParamsEnum.FUNDS] = fundSlug;
+        }
+
+        if (bookmarkHash) {
+            baseFilters[BookMarkCollectionEnum.BOOKMARK_COLLECTION] = bookmarkHash;
+        }
+
+        Object.entries(updates).forEach(([key, value]) => {
+            if (value === null || value === undefined || value === '') {
+                delete baseFilters[key];
+            } else {
+                baseFilters[key] = value;
+            }
         });
-    }, [form.data]);
 
-    const localizedRoute = useLocalizedRoute;
-    const prevStep = localizedRoute('workflows.createVoterList.index', {
-        step: activeStep - 1,
-    });
+        if (Object.keys(updates).length > 0 &&
+            !updates[ParamsEnum.PAGE] &&
+            baseFilters[ParamsEnum.PAGE]
+        ) {
+            baseFilters[ParamsEnum.PAGE] = 1;
+        }
 
+        return baseFilters;
+    };
     const handleSelectProposal = (proposalSlug: string) => {
         setSelectedIds(prevSelected => {
-
             const newSelected = new Set(prevSelected);
 
             if (newSelected.has(proposalSlug)) {
                 newSelected.delete(proposalSlug);
 
-                const newVotes = { ...votes };
-                delete newVotes[proposalSlug];
-                setVotes(newVotes);
+                setVotes(prev => {
+                    const newVotes = { ...prev };
+                    delete newVotes[proposalSlug];
+                    return newVotes;
+                });
             } else {
                 newSelected.add(proposalSlug);
             }
@@ -119,7 +121,6 @@ const Step3: React.FC<Step3Props> = ({
     };
 
     const handleVote = (proposalSlug: string, vote: VoteEnum) => {
-
         if (!selectedIds.has(proposalSlug)) {
             setSelectedIds(prev => new Set([...prev, proposalSlug]));
         }
@@ -130,6 +131,42 @@ const Step3: React.FC<Step3Props> = ({
         }));
     };
 
+    const handleSearch = (search: string) => {
+        const updatedFilters: Record<string, string | number | string[] | number[]> = {
+            ...filters,
+        };
+
+        if (search) {
+            updatedFilters[ParamsEnum.QUERY] = search;
+            updatedFilters[ParamsEnum.PAGE] = 1;
+        } else {
+            delete updatedFilters[ParamsEnum.QUERY];
+            delete updatedFilters[ParamsEnum.PAGE];
+        }
+
+        if (fundSlug) {
+            updatedFilters[ParamsEnum.FUNDS] = fundSlug;
+        }
+
+        if (bookmarkHash) {
+            updatedFilters[BookMarkCollectionEnum.BOOKMARK_COLLECTION] = bookmarkHash;
+        }
+
+        router.get(
+            window.location.pathname,
+            updatedFilters,
+            { preserveState: true, replace: true }
+        );
+    };
+
+    const handleFilterChange = (paramName: string, value: string | number | string[] | number[]) => {
+        router.get(
+            window.location.pathname,
+            buildUpdatedFilters({ [paramName]: value }),
+            { preserveState: true, replace: true }
+        );
+    };
+
     const submitForm = () => {
         form.post(generateLocalizedRoute('workflows.createVoterList.saveProposals'));
     };
@@ -137,7 +174,10 @@ const Step3: React.FC<Step3Props> = ({
     return (
         <FiltersProvider
             defaultFilters={filters}
-            routerOptions={{ only: ['proposals'], preserveState: true }}
+            routerOptions={{
+                preserveState: true,
+                replace: true
+            }}
         >
             <WorkflowLayout asideInfo={stepDetails[activeStep - 1].info ?? ''}>
                 <Nav stepDetails={stepDetails} activeStep={activeStep} />
@@ -145,23 +185,11 @@ const Step3: React.FC<Step3Props> = ({
                 <Content>
                     <div className="max-w-3xl mx-auto w-full">
                         <div className="bg-background justify-center items-center top-0 z-10 mb-4 w-full px-4 pt-4">
-                            <SearchBar
-                                handleSearch={(search) => {
-                                    const updatedFilters = {
-                                        ...filters,
-                                        [ParamsEnum.QUERY]: search,
-                                        [ParamsEnum.PAGE]: 1,
-                                    };
-
-                                    router.get(window.location.pathname, updatedFilters, {
-                                        preserveState: true,
-                                        replace: true,
-                                    });
-                                }}
+                            <ProposalSearchBar
+                                handleSearch={handleSearch}
                                 autoFocus
                                 showRingOnFocus
                                 initialSearch={filters[ParamsEnum.QUERY] || ''}
-                                placeholder={t('workflows.voterList.searchProposals')}
                             />
 
                             <div className="mt-4 flex flex-col md:flex-row md:justify-between md:items-center gap-4">
@@ -180,18 +208,7 @@ const Step3: React.FC<Step3Props> = ({
                                         <Selector
                                             isMultiselect={false}
                                             selectedItems={filters[ParamsEnum.CAMPAIGNS] || ''}
-                                            setSelectedItems={(value) => {
-                                                const updatedFilters = {
-                                                    ...filters,
-                                                    [ParamsEnum.CAMPAIGNS]: value,
-                                                    [ParamsEnum.PAGE]: 1,
-                                                };
-
-                                                router.get(window.location.pathname, updatedFilters, {
-                                                    preserveState: true,
-                                                    replace: true,
-                                                });
-                                            }}
+                                            setSelectedItems={(value) => handleFilterChange(ParamsEnum.CAMPAIGNS, value)}
                                             options={campaigns.map(campaign => ({
                                                 label: campaign.title,
                                                 value: campaign.hash
@@ -203,18 +220,7 @@ const Step3: React.FC<Step3Props> = ({
                                         <Selector
                                             isMultiselect={false}
                                             selectedItems={filters[ParamsEnum.SORTS] || ''}
-                                            setSelectedItems={(value) => {
-                                                const updatedFilters = {
-                                                    ...filters,
-                                                    [ParamsEnum.SORTS]: value,
-                                                    [ParamsEnum.PAGE]: 1,
-                                                };
-
-                                                router.get(window.location.pathname, updatedFilters, {
-                                                    preserveState: true,
-                                                    replace: true,
-                                                });
-                                            }}
+                                            setSelectedItems={(value) => handleFilterChange(ParamsEnum.SORTS, value)}
                                             options={ProposalSortingOptions()}
                                             hideCheckbox={true}
                                             placeholder={t('proposals.options.sort')}
