@@ -175,8 +175,10 @@ class ReviewsController extends Controller
         }
     }
 
-    public function helpfulReview(Request $request, Review $review)
+    public function helpfulReview(Request $request,int $review)
     {
+        // $review = Review::find($review);
+        dd($review);
         if (! $request->user()) {
             return redirect()->route('login');
         }

@@ -31,8 +31,8 @@ export const ReviewCard: React.FC<ReviewItemProps> = ({
 
         // setIsLoading(true);
 
-        router.patch(
-            generateLocalizedRoute('reviews.helpful', { id: review?.hash }),
+        router.post(
+            generateLocalizedRoute('reviews.helpful', { review: review?.hash }),
             {},
             {
                 preserveScroll: true,
@@ -49,8 +49,10 @@ export const ReviewCard: React.FC<ReviewItemProps> = ({
 
         // setIsLoading(true);
 
-        router.patch(
-            route('api.reviews.notHelpful', { id: review?.hash }),
+        router.post(
+            generateLocalizedRoute('reviews.notHelpful', {
+                id: review?.hash,
+            }),
             {},
             {
                 preserveScroll: true,
