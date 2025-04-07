@@ -1,6 +1,6 @@
 import RichContent from '@/Components/RichContent';
 import ValueLabel from '@/Components/atoms/ValueLabel';
-import { useLocalizedRoute } from '@/utils/localizedRoute';
+import { generateLocalizedRoute, useLocalizedRoute } from '@/utils/localizedRoute';
 import { Link, router } from '@inertiajs/react';
 import React, { useState } from 'react';
 import { ReviewerInfo } from './ReviewerInfo';
@@ -10,8 +10,9 @@ import { useTranslation } from 'react-i18next';
 import Card from './Card';
 import ExpandableContent from './ExpandableContent';
 import Paragraph from './atoms/Paragraph';
-import { Button } from '@headlessui/react';
-import { ThumbsDownIcon, ThumbsUpIcon } from 'lucide-react';
+import Button from './atoms/Button';
+import ThumbsDownIcon from './svgs/ThumbsDownIcon';
+import ThumbsUpIcon from './svgs/ThumbsUpIcon';
 
 export interface ReviewItemProps {
     review: ReviewData;
@@ -28,10 +29,10 @@ export const ReviewCard: React.FC<ReviewItemProps> = ({
     const markHelpful = () => {
         if (!review?.hash) return;
 
-        setIsLoading(true);
+        // setIsLoading(true);
 
-        router.put(
-            route('api.reviews.helpful', { hash: review.hash }),
+        router.patch(
+            generateLocalizedRoute('reviews.helpful', { id: review?.hash }),
             {},
             {
                 preserveScroll: true,
@@ -46,10 +47,10 @@ export const ReviewCard: React.FC<ReviewItemProps> = ({
     const markNotHelpful = () => {
         if (!review?.hash) return;
 
-        setIsLoading(true);
+        // setIsLoading(true);
 
-        router.put(
-            route('api.reviews.notHelpful', { hash: review.hash }),
+        router.patch(
+            route('api.reviews.notHelpful', { id: review?.hash }),
             {},
             {
                 preserveScroll: true,
@@ -100,7 +101,7 @@ export const ReviewCard: React.FC<ReviewItemProps> = ({
                             onClick={markHelpful}
                             disabled={isLoading}
                         >
-                            <ThumbsUpIcon />
+                            <ThumbsUpIcon/>
                             <Paragraph className="font-bold">
                                 {t('reviews.yes')}
                             </Paragraph>

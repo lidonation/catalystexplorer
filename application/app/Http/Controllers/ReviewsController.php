@@ -175,11 +175,13 @@ class ReviewsController extends Controller
         }
     }
 
-    public function helpfulReview(Request $request, $hash)
+    public function helpfulReview(Request $request, Review $review)
     {
-        $review = Review::findOrFail($hash);
-        $helpfulKey = 'helpful_review_'.$hash;
-        $notHelpfulKey = 'not_helpful_review_'.$hash;
+        if (! $request->user()) {
+            return redirect()->route('login');
+        }
+        $helpfulKey = 'helpful_review_'.$review;
+        $notHelpfulKey = 'not_helpful_review_'.$review;
 
         if (session()->has($helpfulKey)) {
             $review->helpful_total = max(0, $review->helpful_total - 1);
@@ -194,15 +196,16 @@ class ReviewsController extends Controller
             session()->put($helpfulKey, true);
         }
         $review->save();
-
-        return response()->json(['message' => 'Marked as helpful']);
     }
 
-    public function notHelpfulReview($hash)
+    public function notHelpfulReview(Request $request, Review $review)
     {
-        $review = Review::findOrFail($hash);
-        $notHelpfulKey = 'not_helpful_review_'.$hash;
-        $helpfulKey = 'helpful_review_'.$hash;
+        if (! $request->user()) {
+            return redirect()->route('login');
+        }
+
+        $notHelpfulKey = 'not_helpful_review_'.$review;
+        $helpfulKey = 'helpful_review_'.$review;
 
         if (session()->has($notHelpfulKey)) {
             $review->not_helpful_total = max(0, $review->not_helpful_total - 1);
@@ -217,6 +220,6 @@ class ReviewsController extends Controller
         }
         $review->save();
 
-        return response()->json(['message' => 'Marked as not helpful']);
+        return response()->noContent();
     }
 }
