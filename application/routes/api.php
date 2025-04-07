@@ -78,10 +78,5 @@ Route::prefix('api')->as('api.')->group(function () {
         }
     );
 
-    // Route::prefix('reviews/{review}')->as('reviews.')->group(function () {
-    //     Route::patch('/not-helpful', [ReviewsController::class, 'notHelpfulReview'])->name('notHelpful');
-    //     Route::patch('/helpful', [ReviewsController::class, 'helpfulReview'])->name('helpful');
-    // });
-
     Route::post('nmkr/notifications', action: [CompletetProjectNftsController::class, 'updateNftMintStatus'])->name('nmkr');
 });
