@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\BookmarksController;
+use App\Http\Controllers\VotingWorkflowController;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\NftController;
@@ -122,6 +123,19 @@ Route::localized(
                     Route::post('/{ideascaleProfile}/claim', [ClaimIdeascaleProfileController::class, 'claimIdeascaleProfile'])
                         ->name('saveClaim');
                 });
+            Route::prefix('voting')->middleware(['auth', 'workflow'])->group(function () {
+                Route::get('/step/{step}/{sessionId?}', [VotingWorkflowController::class, 'handleStep'])
+                    ->name('workflows.voting.index');
+
+                Route::post('/save-decisions', [VotingWorkflowController::class, 'saveVotingDecisions'])
+                    ->name('workflows.voting.saveDecisions');
+
+                Route::post('/sign-ballot', [VotingWorkflowController::class, 'signBallot'])
+                    ->name('workflows.voting.signBallot');
+
+                Route::post('/submit-votes', [VotingWorkflowController::class, 'submitVotes'])
+                    ->name('workflows.voting.submitVotes');
+            });
 
             Route::get('/login', [WorkflowController::class, 'auth'])
                 ->name('loginForm');
