@@ -48,7 +48,7 @@ class RouteServiceProvider extends ServiceProvider
         });
 
         Route::bind('proposal', function ($hashId) {
-           
+
             try {
                 return (new HashIdService(new Proposal))->decode($hashId);
             } catch (Exception) {

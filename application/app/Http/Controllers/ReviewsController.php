@@ -175,15 +175,12 @@ class ReviewsController extends Controller
         }
     }
 
-    public function helpfulReview(Request $request,int $review)
+    public function helpfulReview(int $reviewId)
     {
-        // $review = Review::find($review);
-        dd($review);
-        if (! $request->user()) {
-            return redirect()->route('login');
-        }
-        $helpfulKey = 'helpful_review_'.$review;
-        $notHelpfulKey = 'not_helpful_review_'.$review;
+        $review = Review::find($reviewId);
+
+        $helpfulKey = 'helpful_review_'.$reviewId;
+        $notHelpfulKey = 'not_helpful_review_'.$reviewId;
 
         if (session()->has($helpfulKey)) {
             $review->helpful_total = max(0, $review->helpful_total - 1);
@@ -198,16 +195,15 @@ class ReviewsController extends Controller
             session()->put($helpfulKey, true);
         }
         $review->save();
+        $this->updateReviewInSearch($review);
     }
 
-    public function notHelpfulReview(Request $request, Review $review)
+    public function notHelpfulReview(int $reviewId)
     {
-        if (! $request->user()) {
-            return redirect()->route('login');
-        }
+        $review = Review::find($reviewId);
 
-        $notHelpfulKey = 'not_helpful_review_'.$review;
-        $helpfulKey = 'helpful_review_'.$review;
+        $notHelpfulKey = 'not_helpful_review_'.$reviewId;
+        $helpfulKey = 'helpful_review_'.$reviewId;
 
         if (session()->has($notHelpfulKey)) {
             $review->not_helpful_total = max(0, $review->not_helpful_total - 1);
@@ -221,7 +217,12 @@ class ReviewsController extends Controller
             session()->put($notHelpfulKey, true);
         }
         $review->save();
+    }
 
-        return response()->noContent();
+    protected function updateReviewInSearch(Review $review)
+    {
+
+        $review->searchable();
+
     }
 }

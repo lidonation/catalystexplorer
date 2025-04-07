@@ -1,18 +1,21 @@
 import RichContent from '@/Components/RichContent';
 import ValueLabel from '@/Components/atoms/ValueLabel';
-import { generateLocalizedRoute, useLocalizedRoute } from '@/utils/localizedRoute';
+import {
+    generateLocalizedRoute,
+    useLocalizedRoute,
+} from '@/utils/localizedRoute';
 import { Link, router } from '@inertiajs/react';
 import React, { useState } from 'react';
-import { ReviewerInfo } from './ReviewerInfo';
-import { StarRating } from './ReviewsStar';
-import ReviewData = App.DataTransferObjects.ReviewData;
 import { useTranslation } from 'react-i18next';
 import Card from './Card';
 import ExpandableContent from './ExpandableContent';
-import Paragraph from './atoms/Paragraph';
+import { ReviewerInfo } from './ReviewerInfo';
+import { StarRating } from './ReviewsStar';
 import Button from './atoms/Button';
+import Paragraph from './atoms/Paragraph';
 import ThumbsDownIcon from './svgs/ThumbsDownIcon';
 import ThumbsUpIcon from './svgs/ThumbsUpIcon';
+import ReviewData = App.DataTransferObjects.ReviewData;
 
 export interface ReviewItemProps {
     review: ReviewData;
@@ -23,22 +26,30 @@ export const ReviewCard: React.FC<ReviewItemProps> = ({
     review,
     className = '',
 }) => {
-    const [isLoading, setIsLoading] = useState(false);
+    const [isLoadingHelpful, setIsLoadingHelpful] = useState(false);
+    const [isLoadingNotHelpful, setIsLoadingNotHelpful] = useState(false);
+
     const { t } = useTranslation();
 
     const markHelpful = () => {
         if (!review?.hash) return;
 
-        // setIsLoading(true);
+        setIsLoadingHelpful(true);
 
         router.post(
             generateLocalizedRoute('reviews.helpful', { review: review?.hash }),
             {},
             {
                 preserveScroll: true,
-                onFinish: () => setIsLoading(false),
+                onFinish: () => {
+                    router.reload({
+                        only: ['review'],
+                        onFinish: () => setIsLoadingHelpful(false),
+                    });
+                },
                 onError: (errors) => {
                     console.error(errors);
+                    setIsLoadingHelpful(false);
                 },
             },
         );
@@ -47,22 +58,28 @@ export const ReviewCard: React.FC<ReviewItemProps> = ({
     const markNotHelpful = () => {
         if (!review?.hash) return;
 
-        // setIsLoading(true);
-
         router.post(
             generateLocalizedRoute('reviews.notHelpful', {
                 id: review?.hash,
             }),
             {},
             {
+                onStart: () => {
+                    setIsLoadingNotHelpful(true);
+                },
                 preserveScroll: true,
-                onFinish: () => setIsLoading(false),
+                onFinish: () => {
+                    router.reload({
+                        only: ['review'],
+                        onFinish: () => setIsLoadingNotHelpful(false),
+                    });
+                },
                 onError: (errors) => {
                     console.error(errors);
+                    setIsLoadingNotHelpful(false);
                 },
             },
         );
-        
     };
 
     return (
@@ -77,11 +94,7 @@ export const ReviewCard: React.FC<ReviewItemProps> = ({
                 </div>
 
                 {review.content && (
-                    <ExpandableContent
-                        className={
-                            'mt-2 line-clamp-5'
-                        }
-                    >
+                    <ExpandableContent className={'mt-2 line-clamp-5'}>
                         <RichContent
                             className="text-gray-persist text-3"
                             content={review?.content}
@@ -96,33 +109,47 @@ export const ReviewCard: React.FC<ReviewItemProps> = ({
                     <div className="flex gap-2">
                         <Button
                             className={`bg-success/30 border-success text-success flex items-center gap-1 rounded-md border p-2 ${
-                                isLoading
+                                isLoadingHelpful
                                     ? 'cursor-not-allowed'
                                     : 'cursor-pointer'
                             }`}
                             onClick={markHelpful}
-                            disabled={isLoading}
+                            disabled={isLoadingHelpful}
                         >
-                            <ThumbsUpIcon/>
-                            <Paragraph className="font-bold">
-                                {t('reviews.yes')}
-                            </Paragraph>
-                            {review?.helpful_total}
+                            {isLoadingHelpful ? (
+                                t('reviews.processing')
+                            ) : (
+                                <>
+                                    <ThumbsUpIcon />
+                                    <Paragraph className="font-bold">
+                                        {t('reviews.yes')}
+                                    </Paragraph>
+                                    <Paragraph>{review?.helpful_total}</Paragraph>
+                                </>
+                            )}
                         </Button>
                         <Button
                             className={`bg-error/30 border-error text-error flex items-center gap-1 rounded-md border p-2 ${
-                                isLoading
+                                isLoadingNotHelpful
                                     ? 'cursor-not-allowed'
                                     : 'cursor-pointer'
                             }`}
                             onClick={markNotHelpful}
-                            disabled={isLoading}
+                            disabled={isLoadingNotHelpful}
                         >
-                            <ThumbsDownIcon />
-                            <Paragraph className="font-bold">
-                                {t('reviews.no')}
-                            </Paragraph>
-                            {review?.not_helpful_total}
+                            {isLoadingNotHelpful ? (
+                              t('reviews.processing')
+                            ) : (
+                                <>
+                                    <ThumbsDownIcon />
+                                    <Paragraph className="font-bold">
+                                        {t('reviews.no')}
+                                    </Paragraph>
+                                    <Paragraph>
+                                    {review?.not_helpful_total}
+                                    </Paragraph>
+                                </>
+                            )}
                         </Button>
                     </div>
                 </div>
