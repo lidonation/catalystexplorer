@@ -175,7 +175,7 @@ class ReviewsController extends Controller
         }
     }
 
-    public function helpfulReview($hash)
+    public function helpfulReview(Request $request, $hash)
     {
         $review = Review::findOrFail($hash);
         $helpfulKey = 'helpful_review_'.$hash;
@@ -194,6 +194,8 @@ class ReviewsController extends Controller
             session()->put($helpfulKey, true);
         }
         $review->save();
+
+        return response()->json(['message' => 'Marked as helpful']);
     }
 
     public function notHelpfulReview($hash)
@@ -214,5 +216,7 @@ class ReviewsController extends Controller
             session()->put($notHelpfulKey, true);
         }
         $review->save();
+
+        return response()->json(['message' => 'Marked as not helpful']);
     }
 }

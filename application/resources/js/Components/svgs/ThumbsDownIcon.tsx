@@ -8,8 +8,8 @@ type ThumbsDownIconProps = {
 
 function ThumbsDownIcon({
     className,
-    width = 18,
-    height = 18,
+    width = 16,
+    height = 16,
 }: ThumbsDownIconProps) {
     const { t } = useTranslation();
     return (

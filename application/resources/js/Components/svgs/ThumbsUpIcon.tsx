@@ -8,15 +8,15 @@ type ThumbsUpIconProps = {
 
 function ThumbsUpIcon({
     className,
-    width = 18,
-    height = 18,
+    width = 5,
+    height = 5,
 }: ThumbsUpIconProps) {
     const { t } = useTranslation();
     return (
         <svg
             width={width}
             height={height}
-            viewBox="0 0 12 13"
+            viewBox="0 0 1 1"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
         >

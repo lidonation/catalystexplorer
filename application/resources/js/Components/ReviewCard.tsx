@@ -59,6 +59,7 @@ export const ReviewCard: React.FC<ReviewItemProps> = ({
                 },
             },
         );
+        
     };
 
     return (
@@ -75,7 +76,7 @@ export const ReviewCard: React.FC<ReviewItemProps> = ({
                 {review.content && (
                     <ExpandableContent
                         className={
-                            'mt-2 line-clamp-5 overflow-hidden text-ellipsis'
+                            'mt-2 line-clamp-5'
                         }
                     >
                         <RichContent
