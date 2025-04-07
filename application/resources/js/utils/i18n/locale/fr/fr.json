@@ -54,6 +54,7 @@
     "noReviewBookmarks": "Aucun signet d'évaluation trouvé",
     "numbers": "Chiffres",
     "mintNFT": "Créer un NFT",
+    "nftPending": "NFT en attente",
     "privacy": "Confidentialité",
     "profileBackground": "Contexte du profil",
     "proposalReviews": "Évaluations des propositions",
@@ -126,6 +127,65 @@
             "selectProposal": "Sélectionnez une proposition",
             "selectProfileInfo": "Choisissez le(s) profil(s) à partir duquel/lesquels vous souhaitez créer des NFT. Le profil sélectionné doit être lié au projet finalisé dont vous souhaitez créer le NFT. Vous hésitez ? Pas de souci : sélectionnez simplement tous les profils disponibles et nous nous occupons du reste ! 🚀",
             "selectProposalInfo": "Pour commencer, veuillez sélectionner la proposition à partir de laquelle créer"
+        },
+        "voterList": {
+            "welcome": "Avant de commencer, configurons votre Liste de Vote. Une Liste de Vote est une collection de propositions que vous soutenez et que vous souhaitez que d'autres considèrent. Cela aide à simplifier la participation à la gouvernance. Prêt à commencer ? Dans les prochaines étapes, vous nommerez votre liste, ajouterez des propositions et expliquerez votre raisonnement pour les sélectionner.",
+            "proposalsOnly": "Contrairement à d'autres types de listes, seules les propositions peuvent être ajoutées aux listes de vote.",
+            "title": "Titre",
+            "description": "Description",
+            "descriptionPlaceholder": "Décrivez en quelques mots l'objectif de cette liste.",
+            "descriptionHint": "Doit contenir au moins 200 caractères.",
+            "selectFund": "Sélectionner un Fonds",
+            "visibility": "Visibilité",
+            "visibilityOptions": {
+                "public": "Public",
+                "private": "Privé",
+                "delegators": "Délégateurs"
+            },
+            "comments": "Commentaires",
+            "commentsEnabled": "Commentaires activés",
+            "chooseColor": "Choisir une couleur",
+            "pickTheme": "Choisir un thème pour la liste",
+            "status": "Statut",
+            "statusOptions": {
+                "published": "Publier",
+                "draft": "Brouillon"
+            },
+            "selectCampaign": "Sélectionner une campagne :",
+            "allCampaigns": "Toutes",
+            "selectedProposals": "Propositions sélectionnées :",
+            "proposalCard": {
+                "budget": "Budget :",
+                "fund": "Fonds :",
+                "campaign": "Campagne :",
+                "voteYes": "Oui",
+                "voteAbstain": "Abstention"
+            },
+            "searchProposals": "Rechercher une proposition",
+            "errors": {
+                "titleRequired": "Le titre est requis",
+                "fundRequired": "La sélection d'un fonds est requise",
+                "descriptionLength": "La description doit contenir 200 caractères",
+                "rationaleLength": "Le raisonnement doit contenir au moins 200 caractères"
+            },
+            "rationale": {
+                "label": "Raisonnement",
+                "placeholder": "Résumez le raisonnement derrière vos sélections.",
+                "hint": "Minimum de 200 caractères requis"
+            },
+            "success": {
+                "title": "Succès !!",
+                "message": "Votre Liste de Vote a été créée ! Partagez-la avec d'autres et influencez les décisions de gouvernance."
+            },
+            "steps": {
+                "details": "Détails",
+                "listDetail": "Détail de la Liste",
+                "listDetailInfo": "Donnez un nom et une courte description à votre Liste de Vote. Cela aide les autres à comprendre de quoi il s'agit.",
+                "proposals": "Propositions",
+                "proposalsInfo": "Ajoutons maintenant des propositions à votre Liste de Vote. Vous pouvez rechercher des propositions existantes et sélectionner celles qui correspondent.",
+                "rationale": "Raisonnement",
+                "rationaleInfo": "Pourquoi avez-vous sélectionné ces propositions ? Fournir un raisonnement aide les autres à comprendre vos choix et rend votre liste plus crédible."
+            }
         }
     },
     "error404": {

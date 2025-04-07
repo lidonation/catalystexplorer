@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\BookmarksController;
+use App\Http\Controllers\VoterListController;
 use App\Http\Controllers\VotingWorkflowController;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Route;
@@ -136,6 +137,31 @@ Route::localized(
                 Route::post('/submit-votes', [VotingWorkflowController::class, 'submitVotes'])
                     ->name('workflows.voting.submitVotes');
             });
+
+            Route::prefix('/create-voter-list/steps')->as('createVoterList.')
+                ->middleware([WorkflowMiddleware::class])
+                ->group(function () {
+                    Route::get('/{step}', [VoterListController::class, 'handleStep'])
+                        ->name('index');
+                    Route::post('/save-list-details', [VoterListController::class, 'saveListDetails'])
+                        ->name('saveListDetails');
+                    Route::post('/save-proposals', [VoterListController::class, 'saveProposals'])
+                        ->name('saveProposals');
+                    Route::post('/save-rationales', [VoterListController::class, 'saveRationales'])
+                        ->name('saveRationales');
+                });
+
+            Route::get('/create-voter-list/success', [VoterListController::class, 'success'])
+                ->name('createVoterList.success');
+
+            Route::prefix('/drep-sign-up/steps')->as('drepSignUp.')
+                ->middleware([WorkflowMiddleware::class])
+                ->group(function () {
+                    Route::get('/{step}', [DrepController::class, 'handleStep'])
+                        ->name('index');
+                    // Route::post('/{ideascaleProfile}/claim', [ClaimIdeascaleProfileController::class, 'claimIdeascaleProfile'])
+                    //     ->name('saveClaim');
+                });
 
             Route::get('/login', [WorkflowController::class, 'auth'])
                 ->name('loginForm');

@@ -26,9 +26,15 @@ export default function Index({
         "Completed Proposals": fund.completed_proposals_count
     }))
     .sort((a, b) => {
-        const numA = parseInt(a.fund.replace(/\D/g, ''), 10);
-        const numB = parseInt(b.fund.replace(/\D/g, ''), 10);
-        return numA - numB;  
+
+        const numA = a.fund ? parseInt(a.fund.replace(/\D/g, ''), 10) : NaN;
+        const numB = b.fund ? parseInt(b.fund.replace(/\D/g, ''), 10) : NaN;
+
+        if (isNaN(numA) && isNaN(numB)) return 0;
+        if (isNaN(numA)) return 1;
+        if (isNaN(numB)) return -1;
+
+        return numB - numA;
     });
 
     return (

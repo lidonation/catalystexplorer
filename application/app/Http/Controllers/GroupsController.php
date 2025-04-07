@@ -11,6 +11,7 @@ use App\DataTransferObjects\ProposalData;
 use App\DataTransferObjects\ReviewData;
 use App\Enums\ProposalSearchParams;
 use App\Models\Group;
+use App\Models\IdeascaleProfile;
 use App\Models\Review;
 use App\Repositories\GroupRepository;
 use Illuminate\Http\Request;
@@ -92,18 +93,20 @@ class GroupsController extends Controller
     public function myGroups(Request $request): Response
     {
         $userId = $request->user()->id;
-        $groups = Group::whereRelation('ideascale_profiles', 'claimed_by_id', '=', $userId)
-            ->with(['proposals'])
-            ->withCount([
-                'proposals',
-                'funded_proposals',
-                'unfunded_proposals',
-                'completed_proposals',
-            ]);
-        $per_page = request('per_page', 6);
+
+        $ideascaleProfile = IdeascaleProfile::where('claimed_by_id', operator: $userId)->get()->map(fn ($p) => $p->hash);
+
+        $this->queryParams[ProposalSearchParams::PAGE()->value] = 1;
+
+        $this->getProps($request);
+
+        $this->queryParams[ProposalSearchParams::IDEASCALE_PROFILES()->value] = $ideascaleProfile->toArray();
+
+        $this->queryParams[ProposalSearchParams::limit()->value] = 6;
+
         $props = [
-            'groups' => to_length_aware_paginator(
-                GroupData::collect($groups->paginate($per_page))
+            'groups' => Inertia::optional(
+                fn () => $this->query()
             ),
         ];
 
@@ -147,7 +150,8 @@ class GroupsController extends Controller
                             $group->proposals()
                                 ->with(['users', 'fund'])
                                 ->paginate(11, ['*'], 'p')
-                        ))->onEachSide(0)
+                        )
+                    )->onEachSide(0)
                 ),
             ]);
         }
@@ -220,7 +224,8 @@ class GroupsController extends Controller
                         $group->proposals()
                             ->with(['users', 'fund'])
                             ->paginate(11, ['*'], 'p')
-                    ))->onEachSide(0)
+                    )
+                )->onEachSide(0)
             ),
         ]);
     }
@@ -352,6 +357,7 @@ class GroupsController extends Controller
 
         if (! empty($this->queryParams[ProposalSearchParams::IDEASCALE_PROFILES()->value])) {
             $ideascaleProfileHashes = implode(',', $this->queryParams[ProposalSearchParams::IDEASCALE_PROFILES()->value]);
+
             $filters[] = "ideascale_profiles.hash IN [{$ideascaleProfileHashes}]";
         }
 
