@@ -753,6 +753,15 @@
             "avgReputationScoreDesc": "Réputation : de haute à basse",
             "helpful": "Utile",
             "notHelpful": "Pas utile"
+        },
+        "filters":{
+            "funds": "Fonds",
+            "proposals": "Propositions",
+            "reviewerIds": "Identifiants des réviseurs",
+            "helpful": "Utile",
+            "ratings":"Notation",
+            "reputationScores": "Score de Réputation"
+
         }
     },
     "transactions": {

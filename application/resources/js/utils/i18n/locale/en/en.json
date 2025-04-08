@@ -812,6 +812,15 @@
             "avgReputationScoreDesc": "Reputation: High to Low",
             "helpful": "Helpful",
             "notHelpful": "Not Helpful"
+        },
+        "filters":{
+            "funds": "Fund",
+            "proposals": "Proposal",
+            "reviewerIds": "Reviewer ID",
+            "helpful": "Helpful",
+            "ratings":"Rating",
+            "reputationScores": "Reputation Score"
+
         }
     },
     "transactions": {
