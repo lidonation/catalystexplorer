@@ -759,6 +759,39 @@
             "placeholder": "Search transaction hash, epoch, block"
         }  
     },
+    "vote": {
+        "catalystVotes": "Catalyst Votes",
+        "viewOnchainTransactions": "View onchain (jormugandr) transactions of votes cast",
+        "noStakeAddressFound": "No stake address found",
+        "stakeAddress": "Stake Address",
+        "choice": "Choice",
+        "noChoicesAvailable": "No choices available",
+        "noEpochsAvailable": "No epochs available",
+        "votingHistory": "Voting History",
+        "search": "Search",
+        "searchBar": "Paste stake address here...",
+        "searchPlaceholder": "Search by Fragment ID, Caster, or Raw Fragment",
+        "secondarySearch": "Secondary Search",
+        "sort": "Sort",
+        "notAvailable": "N/A",
+        "timeAgo": {
+        "justNow": "Just now",
+        "anHourAgo": "an hour ago",
+        "hoursAgo": "{{hours}} hours ago",
+        "aDayAgo": "a day ago",
+        "daysAgo": "{{days}} days ago"
+        },
+        "table": {
+        "fund": "Fund",
+        "stakeAddress": "Stake Address",
+        "fragmentId": "Fragment ID",
+        "caster": "Caster",
+        "timestamp": "Timestamp",
+        "choice": "Choice",
+        "votingPower": "Voting Power",
+        "rawFragment": "Raw Fragment"
+        }
+    },
     "wallet": {
         "connect": {
             "title": "Connect Wallet",

@@ -11,18 +11,20 @@ import SearchBar from '@/Components/SearchBar';
 import { VoteEnums } from '@/enums/vote-search-enums';
 import { FiltersProvider, useFilterContext } from '@/Context/FiltersContext';
 import { SearchParams } from '../../../types/search-params';
-import Paginator from '@/Components/Paginator';
+import VoteHistoryTableLoader from './Partials/VoterHistoryTableLoader';
 
 interface VoteHistoryProps {
     voterHistories?: PaginatedData<VoterHistoryData[]>;
     search?: string;
+    secondarySearch?: string;
     sort?: string;
     filters?: SearchParams;
 }
 
 const IndexComponent: React.FC<VoteHistoryProps> = (props) => {
-    const { getFilter, setFilters, filters } = useFilterContext();
+    const { setFilters, filters } = useFilterContext();
     const searchInputRef = useRef<HTMLInputElement>(null);
+    const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
     const queryParams = new URLSearchParams(window.location.search);
     const initialStakeAddressQuery = queryParams.get(VoteEnums.QUERY) || '';
@@ -50,23 +52,37 @@ const IndexComponent: React.FC<VoteHistoryProps> = (props) => {
         for (const [key, value] of params.entries()) {
             if (value) {
                 let label = key;
-                if (key === VoteEnums.QUERY) {
-                    label = 'Stake Address';
-                    setHasSearchedStake(true);
-                }
-                else if (key === VoteEnums.FUND) label = t('proposals.filters.epoch');
-                else if (key === VoteEnums.CHOICE) label = 'Choice';
                 
-                setFilters({
-                    param: key,
-                    value: value,
-                    label: label
-                });
+                if (key === VoteEnums.QUERY) {
+                    label = t('vote.stakeAddress');
+                    setHasSearchedStake(true);
+                    
+                    setFilters({
+                        param: key,
+                        value: value,
+                        label: label
+                    });
+                }
+                else if (key === VoteEnums.FUND) {
+                    label = t('proposals.filters.epoch');
+                    setFilters({
+                        param: key,
+                        value: value,
+                        label: label
+                    });
+                }
+                else if (key === VoteEnums.CHOICE) {
+                    label = t('vote.choice');
+                    setFilters({
+                        param: key,
+                        value: value,
+                        label: label
+                    });
+                }
             }
         }
     }, []);
 
-    // Effect to handle refocusing the stake address search field
     useEffect(() => {
         if (!isSearching && shouldRefocus && searchInputRef.current) {
             const timeoutId = setTimeout(() => {
@@ -78,79 +94,105 @@ const IndexComponent: React.FC<VoteHistoryProps> = (props) => {
         }
     }, [isSearching, shouldRefocus]);
 
+    useEffect(() => {
+        return () => {
+            if (searchTimeoutRef.current) {
+                clearTimeout(searchTimeoutRef.current);
+            }
+        };
+    }, []);
+
     const handleStakeAddressSearch = (search: string) => {
+        if (stakeAddressQuery === search) {
+            return;
+        }
+        
+        if (searchTimeoutRef.current) {
+            clearTimeout(searchTimeoutRef.current);
+        }
+        
         setIsSearching(true);
-        setShouldRefocus(true); // Set flag to return focus after search completes
+        setShouldRefocus(true);
+        
+        setStakeAddressQuery(search);
+        setHasSearchedStake(!!search);
         
         setFilters({
             param: VoteEnums.QUERY,
             value: search,
-            label: 'Stake Address',
+            label: t('vote.stakeAddress'),
         });
-        setStakeAddressQuery(search);
-        setHasSearchedStake(!!search);
         
-        router.get(window.location.pathname, { [VoteEnums.QUERY]: search }, {
-            preserveScroll: true,
-            only: ['voterHistories', 'filters'],
-            onFinish: () => {
-                setIsSearching(false);
-                // We'll handle refocusing in the useEffect
+        searchTimeoutRef.current = setTimeout(() => {
+            const url = new URL(window.location.href);
+            const params: Record<string, any> = {};
+            
+            params[VoteEnums.QUERY] = search;
+            
+            const secondarySearch = url.searchParams.get(VoteEnums.SECONDARY_QUERY);
+            if (secondarySearch) {
+                params[VoteEnums.SECONDARY_QUERY] = secondarySearch;
             }
-        });
+            
+            for (const [key, value] of url.searchParams.entries()) {
+                if (key !== VoteEnums.QUERY && key !== VoteEnums.SECONDARY_QUERY && value) {
+                    params[key] = value;
+                }
+            }
+            
+            router.get(window.location.pathname, params, {
+                preserveScroll: true,
+                only: ['voterHistories', 'filters'],
+                onFinish: () => {
+                    setIsSearching(false);
+                }
+            });
+        }, 300);
     };
 
     return (
         <>
-            <Head title="Catalyst Votes"/>
+            <Head title={t('vote.catalystVotes')}/>
 
             <header>
                 <div className='container'>
-                    <Title>Catalyst Votes</Title>
-                    <Paragraph children="View onchain (jormugandr) transactions of votes cast" className='text-'/>
+                    <Title level='1'>{t('vote.catalystVotes')}</Title>
+                    <Paragraph children={t('vote.viewOnchainTransactions')} className='text-'/>
                 </div>
             </header>
 
             <div className="container mt-4 flex flex-col">
                 <div className="mb-4">
-                    <h3 className="text-lg font-medium mb-2">
-                        Search by Stake Address
-                    </h3>
                     <SearchBar
                         handleSearch={handleStakeAddressSearch}
                         autoFocus
                         showRingOnFocus
                         initialSearch={stakeAddressQuery}
-                        placeholder={t('searchBar.stakeAddressPlaceholder', 'Paste stake address...')}
+                        placeholder={t('vote.searchBar')}
                         ref={searchInputRef}
                     />
                 </div>
                 
                 {isSearching && (
-                    <div className="w-full text-center py-4">
-                        <div className="inline-block animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-gray-900"></div>
-                        <p className="mt-2">Searching...</p>
-                    </div>
+                    <VoteHistoryTableLoader />
                 )}
                 
                 {!isSearching && (!hasSearchedStake || !voterHistories || !voterHistories.data || voterHistories.data.length === 0) ? (
-                    <RecordsNotFound />
-                ) : !isSearching && (
-                    <div>
-                        <div className="mb-4">
-                            <h3 className="text-lg font-medium">
-                                Total records: {voterHistories?.total || 0}
-                            </h3>
+                    <div className='bg-background rounded-lg shadow-lg p-4 mb-8'>
+                        <Title className='border-b border-dark-light pt-4 pb-4' level='3'>{t('vote.votingHistory')}</Title>
+                        <div className="bg-background flex w-full flex-col items-center justify-center rounded-lg px-4 py-8 mb-10">
+                            <RecordsNotFound />
+                            <Paragraph className="mt-4 text-center text-dark">
+                                {t('vote.noStakeAddressFound')}
+                            </Paragraph>
                         </div>
-                        
+                    </div>
+                ) : !isSearching && (
+                    <div className='bg-background rounded-lg shadow-lg'>                        
                         <VoterHistoryTable 
-                            voterHistories={voterHistories?.data || []} 
+                            voterHistories={voterHistories as PaginatedData<VoterHistoryData[]>} 
                             filters={searchParams} 
                         />
-                        
-                        <section className="w-full px-4 lg:container lg:px-0 mt-4">
-                            {voterHistories && <Paginator pagination={voterHistories} />}
-                        </section>
                     </div>
                 )}
             </div>

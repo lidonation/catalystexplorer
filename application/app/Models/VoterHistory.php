@@ -83,6 +83,7 @@ class VoterHistory extends Model
         return [
             'choice',
             'fund',
+            'stake_address',
         ];
     }
 
@@ -197,10 +198,10 @@ class VoterHistory extends Model
         return $this->hasOneThrough(
             VotingPower::class,
             Voter::class,
-            'cat_id', // Foreign key on voters table
-            'voter_id', // Foreign key on voting_powers table
-            'caster', // Local key on voter_history table
-            'id' // Local key on voters table
+            'cat_id',
+            'voter_id',
+            'caster',
+            'id'
         );
     }
     

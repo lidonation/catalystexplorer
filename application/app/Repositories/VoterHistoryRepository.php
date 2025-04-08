@@ -7,6 +7,7 @@ namespace App\Repositories;
 use App\Models\VoterHistory;
 use Laravel\Scout\Builder;
 use Meilisearch\Endpoints\Indexes;
+use Illuminate\Support\Facades\Log;
 
 class VoterHistoryRepository extends Repository
 {
@@ -15,51 +16,65 @@ class VoterHistoryRepository extends Repository
         parent::__construct($model);
     }
     
+    /**
+     * Search for voter history records
+     * 
+     * @param string $term The search term
+     * @param array $args Additional search arguments
+     * @return \Laravel\Scout\Builder
+     */
     public function search(string $term, array $args = []): Builder
     {
+        $isStakeSearch = $args['isStakeSearch'] ?? false;
+        $isSecondarySearch = $args['isSecondarySearch'] ?? false;
+        
+        unset($args['isStakeSearch']);
+        unset($args['isSecondarySearch']);
+        
         return VoterHistory::Search(
             $term,
-            function (Indexes $index, $query) use ($args) {
-                $args = array_merge(
-                    [
-                        'attributesToRetrieve' => [
-                            'hash',
-                            'stake_address',
-                            'fragment_id',
-                            'caster',
-                            'raw_fragment',
-                            'choice',
-                            'time',
-                            'voting_power',
-                            'fund',
-                        ],
-                        'facets' => [
-                            'choice',
-                            'fund',
-                        ],
+            function (Indexes $index, $query) use ($args, $isStakeSearch, $isSecondarySearch) {
+                $defaultArgs = [
+                    'attributesToRetrieve' => [
+                        'hash',
+                        'stake_address',
+                        'fragment_id',
+                        'caster',
+                        'raw_fragment',
+                        'choice',
+                        'time',
+                        'voting_power',
+                        'fund',
                     ],
-                    $args
-                );
-
-                // Ensure voting_power is included in sortable attributes if sorting by it
-                if (isset($args['sort']) && is_array($args['sort'])) {
-                    foreach ($args['sort'] as $sortItem) {
+                    'facets' => [
+                        'choice',
+                        'fund',
+                    ],
+                ];
+                
+                if ($isStakeSearch) {
+                    $defaultArgs['attributesToSearchOn'] = ['stake_address'];
+                }
+                else if ($isSecondarySearch) {
+                    $defaultArgs['attributesToSearchOn'] = ['fragment_id', 'caster', 'raw_fragment', 'fund'];
+                }
+                
+                $mergedArgs = array_merge($defaultArgs, $args);
+                
+                if (isset($mergedArgs['sort']) && is_array($mergedArgs['sort'])) {
+                    foreach ($mergedArgs['sort'] as $sortItem) {
                         if (strpos($sortItem, 'voting_power:') === 0) {
-                            // Register voting_power as sortable if not already
                             $this->ensureVotingPowerIsSortable($index);
                             break;
                         }
                     }
                 }
 
-                return $index->search($query, $args);
+                return $index->search($query, $mergedArgs);
             }
         );
     }
     
-    /**
-     * Ensure voting_power is included in sortable attributes
-     */
     protected function ensureVotingPowerIsSortable(Indexes $index): void
     {
         try {
@@ -73,8 +88,7 @@ class VoterHistoryRepository extends Repository
                 ]);
             }
         } catch (\Exception $e) {
-            // Log error but continue execution
-            \Log::error("Failed to register voting_power as sortable: " . $e->getMessage());
+            Log::error("Failed to register voting_power as sortable: " . $e->getMessage());
         }
     }
 }

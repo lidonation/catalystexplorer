@@ -1,6 +1,9 @@
 export enum VoteEnums {
-    CHOICE = 'c',
-    FUND = 'f',
-    SORT = 'st',
     QUERY = 'q',
+    SECONDARY_QUERY = 'sq',
+    FUND = 'f',
+    CHOICE = 'c',
+    PAGE = 'p',
+    LIMIT = 'l',
+    SORT = 'st'
 }

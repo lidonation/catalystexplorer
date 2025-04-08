@@ -620,6 +620,39 @@
         "verificationInstructions": "Pour vérifier que vous êtes le propriétaire de ce profil, veuillez envoyer un message personnel à Lido Nation sur Ideascale et inclure le code ci-dessus.",
         "goToIdeascale": "Accéder à Ideascale"
     },
+    "vote": {
+        "catalystVotes": "Votes Catalyst",
+        "viewOnchainTransactions": "Afficher les transactions on-chain (jormugandr) des votes exprimés",
+        "noStakeAddressFound": "Aucune adresse de stake trouvée",
+        "stakeAddress": "Adresse de Stake",
+        "choice": "Choix",
+        "noChoicesAvailable": "Aucun choix disponible",
+        "noEpochsAvailable": "Aucune époque disponible",
+        "votingHistory": "Historique des votes",
+        "search": "Icône de recherche",
+        "searchBar": "Collez l'adresse du pieu ici...",
+        "searchPlaceholder": "Rechercher par ID de fragment, émetteur ou fragment brut",
+        "secondarySearch": "Recherche secondaire",
+        "sort": "Trier par",
+        "notAvailable": "N/D",
+        "timeAgo": {
+        "justNow": "À l'instant",
+        "anHourAgo": "il y a une heure",
+        "hoursAgo": "il y a {{hours}} heures",
+        "aDayAgo": "il y a un jour",
+        "daysAgo": "il y a {{days}} jours"
+        },
+        "table": {
+            "fund": "Fonds",
+            "stakeAddress": "Adresse de Stake",
+            "fragmentId": "ID de Fragment",
+            "caster": "Émetteur",
+            "timestamp": "Horodatage",
+            "choice": "Choix",
+            "votingPower": "Puissance de Vote",
+            "rawFragment": "Fragment Brut"
+        }
+    },
     "wallet": {
         "connect": {
             "title": "Connecter le portefeuille",
