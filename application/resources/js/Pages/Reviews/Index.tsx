@@ -9,6 +9,7 @@ import { PaginatedData } from '../../../types/paginated-data';
 import { SearchParams } from '../../../types/search-params';
 import FundFiltersContainer from '../Proposals/Partials/FundFiltersContainer';
 import ProposalFilters from '../Proposals/Partials/ProposalFilters';
+import ReviewsFilter from './Partials/ReviewsFilters';
 import ReviewData = App.DataTransferObjects.ReviewData;
 import ReviewsSortOptions from '@/lib/ReviewsSortOptions';
 
@@ -35,7 +36,7 @@ const Index: React.FC<ReviewsPageProps> = ({
             defaultFilters={filters}
             routerOptions={{ only: ['reviews'] }}
         >
-            <Head title={t('reviews')} />
+            <Head title={t('reviews.reviews')} />
 
             <header>
                 <div className="container">
@@ -56,7 +57,7 @@ const Index: React.FC<ReviewsPageProps> = ({
                     showFilters ? 'max-h-[500px]' : 'max-h-0'
                 }`}
             >
-                {/* <ProposalFilters /> */}
+                <ReviewsFilter />
             </section>
 
             <div className="flex w-full flex-col items-center justify-center">

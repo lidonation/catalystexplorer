@@ -800,6 +800,11 @@
     },
     "reviews": {
         "reviews": "Reviews",
+        "reviewer": "Reviewer",
+        "helpfulReview": "Was this a helpful review?",
+        "yes": "Yes",
+        "no": "No",
+        "processing": "Processing...",
         "options": {
             "ratingAsc": "Rating: Low to High",
             "ratingDesc": "Rating: High to Low",
@@ -807,6 +812,15 @@
             "avgReputationScoreDesc": "Reputation: High to Low",
             "helpful": "Helpful",
             "notHelpful": "Not Helpful"
+        },
+        "filters":{
+            "funds": "Fund",
+            "proposals": "Proposal",
+            "reviewerIds": "Reviewer ID",
+            "helpful": "Helpful",
+            "ratings":"Rating",
+            "reputationScores": "Reputation Score"
+
         }
     },
     "transactions": {

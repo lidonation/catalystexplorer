@@ -35,6 +35,10 @@ use Spatie\Enum\Enum;
  * @method static self PAGE()
  * @method static self IDEASCALE_PROFILES()
  * @method static self PROJECT_STATUS()
+ * @method static self REVIEWER_IDS()
+ * @method static self RATINGS()
+ * @method static self REPUTATION_SCORES()
+ * @method static self HELPFUL()
  * @method static self QUERY()
  * @method static self QUICK_PITCHES()
  * @method static self VIEW()
@@ -67,6 +71,10 @@ final class ProposalSearchParams extends Enum
             'PAGE' => 'p',
             'IDEASCALE_PROFILES' => 'ip',
             'PROJECT_STATUS' => 'ps',
+            'REVIEWER_IDS' => 'ri',
+            'RATINGS' => 'r',
+            'REPUTATION_SCORES' => 'rs',
+            'HELPFUL' => 'h',
             'QUERY' => 'q',
             'QUICK_PITCHES' => 'qp',
             'VIEW' => 'v',

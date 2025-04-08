@@ -746,6 +746,11 @@
     },
     "reviews": {
         "reviews": "Évaluations",
+        "reviewer": "Evaluateur",
+        "helpfulReview": "Cet avis était-il utile ?",
+        "yes": "Oui",
+        "no": "Non",
+        "processing": "Traitement en cours...",
         "options": {
             "ratingAsc": "Évaluation : de faible à élevée",
             "ratingDesc": "Évaluation : du plus élevé au plus bas",
@@ -753,6 +758,15 @@
             "avgReputationScoreDesc": "Réputation : de haute à basse",
             "helpful": "Utile",
             "notHelpful": "Pas utile"
+        },
+        "filters":{
+            "funds": "Fonds",
+            "proposals": "Propositions",
+            "reviewerIds": "Identifiants des réviseurs",
+            "helpful": "Utile",
+            "ratings":"Notation",
+            "reputationScores": "Score de Réputation"
+
         }
     },
     "transactions": {

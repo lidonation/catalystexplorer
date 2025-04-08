@@ -6,6 +6,7 @@ use App\Http\Controllers\GroupsController;
 use App\Http\Controllers\Api\TagController;
 use App\Http\Controllers\Api\GroupController;
 use App\Http\Controllers\ProposalsController;
+use App\Http\Controllers\ReviewsController;
 use App\Http\Controllers\CommunitiesController;
 use App\Http\Controllers\Api\CampaignController;
 use App\Http\Controllers\My\MyBookmarksController;
@@ -65,6 +66,12 @@ Route::prefix('api')->as('api.')->group(function () {
 
     Route::get('/fund-titles', [ProposalsController::class, 'fundTitles'])->name('fundTitles');
 
+    Route::get('/proposal-titles', [ReviewsController::class, 'proposalTitles'])->name('proposalTitles');
+
+    Route::get('/reviewer-ids', [ReviewsController::class, 'reviewerIds'])->name('reviewerIds');
+
+    Route::get('/helpful-total', [ReviewsController::class, 'helpfulTotal'])->name('helpfulTotal');
+
     Route::get('/fund-counts', [GroupsController::class, 'getFundsWithProposalsCount'])->name('fundCounts');
 
     Route::prefix('/completed-project-nfts/')->as('completedProjectsNfts.')->group(
@@ -76,7 +83,6 @@ Route::prefix('api')->as('api.')->group(function () {
                 ->name('update');
         }
     );
-
 
     Route::post('nmkr/notifications', action: [CompletetProjectNftsController::class, 'updateNftMintStatus'])->name('nmkr');
 });

@@ -6,6 +6,7 @@ namespace App\Models;
 
 use App\Traits\HasMetaData;
 use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Staudenmeir\EloquentHasManyDeep\HasManyDeep;
 use Staudenmeir\EloquentHasManyDeep\HasRelationships;
@@ -17,6 +18,8 @@ class Reviewer extends Model
     protected $guarded = [];
 
     protected $appends = ['avg_reputation_score'];
+
+    protected $with = ['claimedBy'];
 
     public $withCount = ['proposals', 'reviews'];
 
@@ -47,5 +50,10 @@ class Reviewer extends Model
     public function reputation_scores(): HasMany
     {
         return $this->hasMany(ReviewerReputationScore::class, 'reviewer_id');
+    }
+
+    public function claimedBy(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'claimed_by_id', 'id');
     }
 }
