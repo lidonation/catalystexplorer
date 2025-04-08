@@ -101,6 +101,10 @@ class ReviewsController extends Controller
             'reviewer',
             'model_type',
             'reviewer.avg_reputation_score',
+            'reviewer.claimedBy',
+            'helpful_total',
+            'not_helpful_total',
+            'ranking_total',
         ];
 
         $args['facets'] = [
@@ -169,5 +173,56 @@ class ReviewsController extends Controller
         if (isset($facets['reviewer.reputation_scores.fund.label']) && count($facets['reviewer.reputation_scores.fund.label'])) {
             $this->fundsCount = $facets['reviewer.reputation_scores.fund.label'];
         }
+    }
+
+    public function helpfulReview(int $reviewId)
+    {
+        $review = Review::find($reviewId);
+
+        $helpfulKey = 'helpful_review_'.$reviewId;
+        $notHelpfulKey = 'not_helpful_review_'.$reviewId;
+
+        if (session()->has($helpfulKey)) {
+            $review->helpful_total = max(0, $review->helpful_total - 1);
+            session()->forget($helpfulKey);
+        } else {
+            if (session()->has($notHelpfulKey)) {
+                $review->not_helpful_total = max(0, $review->not_helpful_total - 1);
+                session()->forget($notHelpfulKey);
+            }
+
+            $review->helpful_total += 1;
+            session()->put($helpfulKey, true);
+        }
+        $review->save();
+        $this->updateReviewInSearch($review);
+    }
+
+    public function notHelpfulReview(int $reviewId)
+    {
+        $review = Review::find($reviewId);
+
+        $notHelpfulKey = 'not_helpful_review_'.$reviewId;
+        $helpfulKey = 'helpful_review_'.$reviewId;
+
+        if (session()->has($notHelpfulKey)) {
+            $review->not_helpful_total = max(0, $review->not_helpful_total - 1);
+            session()->forget($notHelpfulKey);
+        } else {
+            if (session()->has($helpfulKey)) {
+                $review->helpful_total = max(0, $review->helpful_total - 1);
+                session()->forget($helpfulKey);
+            }
+            $review->not_helpful_total += 1;
+            session()->put($notHelpfulKey, true);
+        }
+        $review->save();
+    }
+
+    protected function updateReviewInSearch(Review $review)
+    {
+
+        $review->searchable();
+
     }
 }

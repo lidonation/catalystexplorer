@@ -1,7 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import Paragraph from './atoms/Paragraph';
 import ReputationBadge from './ReputationBadge';
-import Button from './atoms/Button';
 import ReviewData = App.DataTransferObjects.ReviewData;
 import ValueLabel from "@/Components/atoms/ValueLabel";
 
@@ -27,7 +26,7 @@ export const ReviewerInfo: React.FC<ReviewerInfoProps> = ({
                     </Paragraph>
                 ) : (
                     <div className="flex items-center gap-2">
-                        <ValueLabel>Reviewer</ValueLabel>
+                        <ValueLabel>{t('reviews.reviewer')}</ValueLabel>
                         <Paragraph className="font-bold text-content mr-2">
                             {review?.reviewer?.catalyst_reviewer_id}
                         </Paragraph>

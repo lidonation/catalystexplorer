@@ -11,6 +11,7 @@ use App\Http\Controllers\Api\CampaignController;
 use App\Http\Controllers\My\MyBookmarksController;
 use App\Http\Controllers\CompletetProjectNftsController;
 use App\Http\Controllers\Api\IdeascaleProfilesController;
+use App\Http\Controllers\ReviewsController;
 
 Route::prefix('api')->as('api.')->group(function () {
     Route::get('/groups', [GroupController::class, 'groups'])->name('groups');
@@ -76,7 +77,6 @@ Route::prefix('api')->as('api.')->group(function () {
                 ->name('update');
         }
     );
-
 
     Route::post('nmkr/notifications', action: [CompletetProjectNftsController::class, 'updateNftMintStatus'])->name('nmkr');
 });

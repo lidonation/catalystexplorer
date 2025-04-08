@@ -7,6 +7,7 @@ namespace App\Providers;
 use App\Models\BookmarkCollection;
 use App\Models\IdeascaleProfile;
 use App\Models\Proposal;
+use App\Models\Review;
 use App\Services\HashIdService;
 use Exception;
 use Illuminate\Routing\Router;
@@ -50,6 +51,14 @@ class RouteServiceProvider extends ServiceProvider
 
             try {
                 return (new HashIdService(new Proposal))->decode($hashId);
+            } catch (Exception) {
+                abort(404, 'No item found for this hash!');
+            }
+        });
+
+        Route::bind('review', function ($hashId) {
+            try {
+                return (new HashIdService(new Review))->decode($hashId);
             } catch (Exception) {
                 abort(404, 'No item found for this hash!');
             }

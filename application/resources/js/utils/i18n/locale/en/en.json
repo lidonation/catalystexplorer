@@ -800,6 +800,11 @@
     },
     "reviews": {
         "reviews": "Reviews",
+        "reviewer": "Reviewer",
+        "helpfulReview": "Was this a helpful review?",
+        "yes": "Yes",
+        "no": "No",
+        "processing": "Processing...",
         "options": {
             "ratingAsc": "Rating: Low to High",
             "ratingDesc": "Rating: High to Low",
