@@ -7,12 +7,12 @@ use App\Http\Controllers\Api\TagController;
 use App\Http\Controllers\Api\GroupController;
 use App\Http\Controllers\VoterHistoriesController;
 use App\Http\Controllers\ProposalsController;
+use App\Http\Controllers\ReviewsController;
 use App\Http\Controllers\CommunitiesController;
 use App\Http\Controllers\Api\CampaignController;
 use App\Http\Controllers\My\MyBookmarksController;
 use App\Http\Controllers\CompletetProjectNftsController;
 use App\Http\Controllers\Api\IdeascaleProfilesController;
-use App\Http\Controllers\ReviewsController;
 
 Route::prefix('api')->as('api.')->group(function () {
     Route::get('/groups', [GroupController::class, 'groups'])->name('groups');
@@ -68,6 +68,12 @@ Route::prefix('api')->as('api.')->group(function () {
 
 
     Route::get('/fund-titles', [ProposalsController::class, 'fundTitles'])->name('fundTitles');
+
+    Route::get('/proposal-titles', [ReviewsController::class, 'proposalTitles'])->name('proposalTitles');
+
+    Route::get('/reviewer-ids', [ReviewsController::class, 'reviewerIds'])->name('reviewerIds');
+
+    Route::get('/helpful-total', [ReviewsController::class, 'helpfulTotal'])->name('helpfulTotal');
 
     Route::get('/fund-counts', [GroupsController::class, 'getFundsWithProposalsCount'])->name('fundCounts');
 

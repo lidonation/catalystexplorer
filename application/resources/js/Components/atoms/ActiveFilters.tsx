@@ -37,6 +37,11 @@ const labels = {
     vp: 'Voting Power',
     d: 'Delegators',
     c: 'Choice',
+    p: 'Proposals',
+    ri: 'Reviewer IDs',
+    h: 'Helpful',
+    r: 'Rating',
+    rs: 'Reputation Score'
 };
 
 type LabelKeys = keyof typeof labels;
@@ -50,11 +55,11 @@ export default function ActiveFilters({
     }[];
 }) {
     const { filters } = useFilterContext();
-    const statusFilters = ['coh', 'fs', 'ps', 'f', 'ds', 'c'];
-    const rangeFilters = ['pl', 'b', 'aa', 'au', 'd', 'pr', 'vp'];
+    const statusFilters = ['coh', 'fs', 'ps', 'f', 'ds', 'c', 'p', 'ri'];
+    const rangeFilters = ['pl', 'b', 'aa', 'au', 'd', 'pr', 'vp', 'r', 'rs'];
     const sortFilters = ['st'];
     const idFilters = ['t', 'cam', 'com', 'ip', 'g'];
-    const booleanFilters = ['op'];
+    const booleanFilters = ['op', 'h'];
 
     return (
         <div className="flex w-full flex-wrap gap-3 text-sm transition-all duration-300">
@@ -220,6 +225,24 @@ const RangeFilters = ({ filter }: { filter: FilteredItem }) => {
                 value: [],
                 label: filter.label,
             });
+        } else if (filter.param == ParamsEnum.RATINGS) {
+            setFilters({
+                param: filter.param,
+                value: [],
+                label: filter.label,
+            });
+        } else if (filter.param == ParamsEnum.REPUTATION_SCORES) {
+            setFilters({
+                param: filter.param,
+                value: [],
+                label: filter.label,
+            });
+        } else if (filter.param == ParamsEnum.HELPFUL) {
+            setFilters({
+                param: filter.param,
+                value: [],
+                label: filter.label,
+            });
         }
     };
 
@@ -251,7 +274,7 @@ const BooleanFilters = ({ filter }: { filter: FilteredItem }) => {
             className="bg-background mr-1 flex items-center rounded-lg border px-1 py-1"
             key={filter.label}
         >
-            <div className="mr-1">{filter.label}</div>
+            <div className="mr-1 font-bold">{filter.label}:</div>
             <button className="ml-2" onClick={() => removeFilter()}>
                 X{' '}
             </button>
@@ -299,6 +322,10 @@ const IDFilters = React.memo(({ filter }: { filter: FilteredItem }) => {
 
     if (filter.param === 'ip') {
         domain = 'ideascale-profiles';
+    } else if (filter.param === ParamsEnum.PROPOSALS) {
+        domain = 'proposal-titles';
+    } else if (filter.param === ParamsEnum.REVIEWER_IDS) {
+        domain = 'reviewer-ids';
     }
 
     const { setHashes, options } = useSearchOptions<any>(domain);
