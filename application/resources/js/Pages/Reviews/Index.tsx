@@ -35,7 +35,7 @@ const Index: React.FC<ReviewsPageProps> = ({
             defaultFilters={filters}
             routerOptions={{ only: ['reviews'] }}
         >
-            <Head title={t('reviews')} />
+            <Head title={t('reviews.reviews')} />
 
             <header>
                 <div className="container">

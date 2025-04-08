@@ -205,11 +205,17 @@ Route::localized(
         });
 
         Route::prefix('/reviews')->as('reviews.')->group(function () {
-            Route::get('/', [ReviewsController::class, 'index'])
-                ->name('index');
+
+            Route::prefix('/{review:hash}')->middleware(['auth'])->group(function () {
+                Route::post('/not-helpful', [ReviewsController::class, 'notHelpfulReview'])->name('notHelpful');
+                Route::post('/helpful', [ReviewsController::class, 'helpfulReview'])->name('helpful');
+            });
             Route::get('/{review}', [ReviewsController::class, 'review'])
                 ->name('review')
                 ->where('review', '[0-9]+');
+
+            Route::get('/', [ReviewsController::class, 'index'])
+                ->name('index');
         });
 
         Route::prefix('numbers')->as('numbers.')->group(function () {
