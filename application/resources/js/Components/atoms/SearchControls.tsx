@@ -4,7 +4,7 @@ import SearchBar from '@/Components/SearchBar';
 import FilterLinesIcon from '@/Components/svgs/FilterLinesIcon';
 import { useFilterContext } from '@/Context/FiltersContext';
 import { ParamsEnum } from '@/enums/proposal-search-params';
-import { Dispatch, SetStateAction, useEffect, useState } from 'react';
+import { Dispatch, SetStateAction, useEffect, useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import ActiveFilters from './ActiveFilters';
 import { router } from '@inertiajs/react';
@@ -30,6 +30,10 @@ function SearchControls({
         setSearchQuery(initialSearchQuery);
     }, [initialSearchQuery]);
 
+    useEffect(() => {
+        onFiltersToggle(showFilters);
+    }, [showFilters, onFiltersToggle]);
+
     const handleSearch = (search: string) => {
         setFilters({
             param: ParamsEnum.QUERY,
@@ -54,13 +58,9 @@ function SearchControls({
         window.history.replaceState(null, '', url.toString());
     };
 
-    const toggleFilters = () => {
-        setShowFilters((prev) => {
-            const newState = !prev;
-            onFiltersToggle(newState);
-            return newState;
-        });
-    };
+    const toggleFilters = useCallback(() => {
+        setShowFilters(prev => !prev);
+    }, []);
 
     const filtersCount = filters.filter(
         (filter) =>

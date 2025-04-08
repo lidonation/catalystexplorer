@@ -5,7 +5,7 @@
     "appMessage": "Tous les votes doivent être soumis dans l'application officielle de vote Catalyst. Ceci n'est qu'un outil de recherche et de planification !",
     "articles": "Articles",
     "assetName": "Nom de l'actif",
-    "API": "API",
+    "API":"API",
     "bio": "Biographie",
     "blockchainData": "Blockchain Data",
     "bookmarks": "Mes Signets",
@@ -18,12 +18,11 @@
     "cookies": "Cookies",
     "copyright": "© 2024 Explorateur Catalyst. Tous droits réservés.",
     "connections": "Connexions",
-    "explore": "Explorer",
     "data": "Données",
     "dReps": "DReps",
     "facebook": "Facebook",
     "getStarted": "Commencer",
-    "general": "Général",
+    "general":"Général",
     "github": "Github",
     "emailAddress": "Adresse e-mail",
     "fundProject": "Numéro du projet financé",
@@ -32,7 +31,7 @@
     "noVotes": "Votes contre",
     "role": "Rôle",
     "projectTitle": "Titre du projet",
-    "impact": "Impact",
+    "impact":"Impact",
     "jormungandr": "Jormungandr",
     "knowledgeBase": "Base de Connaissances",
     "legal": "Légal",
@@ -54,7 +53,6 @@
     "noReviewBookmarks": "Aucun signet d'évaluation trouvé",
     "numbers": "Chiffres",
     "mintNFT": "Créer un NFT",
-    "nftPending": "NFT en attente",
     "privacy": "Confidentialité",
     "profileBackground": "Contexte du profil",
     "proposalReviews": "Évaluations des propositions",
@@ -63,17 +61,18 @@
     "metaTitle": "Meta Data Preview",
     "proposers": "Proposeurs",
     "register": "Registre",
+    "reviews": "Évaluations",
     "reviewerReputationScore": "Score de réputation de l'évaluateur",
-    "reviewers": "Réviseurs",
+    "reviewers":"Réviseurs",
     "searchQuery": "Aucun résultat ne correspond à votre requête de recherche",
-    "spending": "Dépenses",
+    "spending":"Dépenses",
     "social": "Social",
     "twitter": "Twitter",
     "support": "Support",
     "seeAll": "Voir Tout",
     "terms": "Conditions Générales",
     "votes": "Mes Votes",
-    "voters": "Électrices",
+    "voters":"Électrices",
     "wallets": "Portefeuilles",
     "details": "Détails",
     "teams": "Équipe",
@@ -127,65 +126,6 @@
             "selectProposal": "Sélectionnez une proposition",
             "selectProfileInfo": "Choisissez le(s) profil(s) à partir duquel/lesquels vous souhaitez créer des NFT. Le profil sélectionné doit être lié au projet finalisé dont vous souhaitez créer le NFT. Vous hésitez ? Pas de souci : sélectionnez simplement tous les profils disponibles et nous nous occupons du reste ! 🚀",
             "selectProposalInfo": "Pour commencer, veuillez sélectionner la proposition à partir de laquelle créer"
-        },
-        "voterList": {
-            "welcome": "Avant de commencer, configurons votre Liste de Vote. Une Liste de Vote est une collection de propositions que vous soutenez et que vous souhaitez que d'autres considèrent. Cela aide à simplifier la participation à la gouvernance. Prêt à commencer ? Dans les prochaines étapes, vous nommerez votre liste, ajouterez des propositions et expliquerez votre raisonnement pour les sélectionner.",
-            "proposalsOnly": "Contrairement à d'autres types de listes, seules les propositions peuvent être ajoutées aux listes de vote.",
-            "title": "Titre",
-            "description": "Description",
-            "descriptionPlaceholder": "Décrivez en quelques mots l'objectif de cette liste.",
-            "descriptionHint": "Doit contenir au moins 200 caractères.",
-            "selectFund": "Sélectionner un Fonds",
-            "visibility": "Visibilité",
-            "visibilityOptions": {
-                "public": "Public",
-                "private": "Privé",
-                "delegators": "Délégateurs"
-            },
-            "comments": "Commentaires",
-            "commentsEnabled": "Commentaires activés",
-            "chooseColor": "Choisir une couleur",
-            "pickTheme": "Choisir un thème pour la liste",
-            "status": "Statut",
-            "statusOptions": {
-                "published": "Publier",
-                "draft": "Brouillon"
-            },
-            "selectCampaign": "Sélectionner une campagne :",
-            "allCampaigns": "Toutes",
-            "selectedProposals": "Propositions sélectionnées :",
-            "proposalCard": {
-                "budget": "Budget :",
-                "fund": "Fonds :",
-                "campaign": "Campagne :",
-                "voteYes": "Oui",
-                "voteAbstain": "Abstention"
-            },
-            "searchProposals": "Rechercher une proposition",
-            "errors": {
-                "titleRequired": "Le titre est requis",
-                "fundRequired": "La sélection d'un fonds est requise",
-                "descriptionLength": "La description doit contenir 200 caractères",
-                "rationaleLength": "Le raisonnement doit contenir au moins 200 caractères"
-            },
-            "rationale": {
-                "label": "Raisonnement",
-                "placeholder": "Résumez le raisonnement derrière vos sélections.",
-                "hint": "Minimum de 200 caractères requis"
-            },
-            "success": {
-                "title": "Succès !!",
-                "message": "Votre Liste de Vote a été créée ! Partagez-la avec d'autres et influencez les décisions de gouvernance."
-            },
-            "steps": {
-                "details": "Détails",
-                "listDetail": "Détail de la Liste",
-                "listDetailInfo": "Donnez un nom et une courte description à votre Liste de Vote. Cela aide les autres à comprendre de quoi il s'agit.",
-                "proposals": "Propositions",
-                "proposalsInfo": "Ajoutons maintenant des propositions à votre Liste de Vote. Vous pouvez rechercher des propositions existantes et sélectionner celles qui correspondent.",
-                "rationale": "Raisonnement",
-                "rationaleInfo": "Pourquoi avez-vous sélectionné ces propositions ? Fournir un raisonnement aide les autres à comprendre vos choix et rend votre liste plus crédible."
-            }
         }
     },
     "error404": {
@@ -319,6 +259,18 @@
     "breadcrumbs": {
         "home": "Accueil"
     },
+    "communities": {
+        "communities": "Communautés",
+        "title": "Catalyst Communautés",
+        "subtitle": "Diversifiés, indépendants et inspirant ensemble le plus haut niveau de collaboration humaine",
+        "options": {
+            "alphabetically": "Alphabétiquement: A to Z",
+            "amountAwardedAdaDesc": "Montant Accordé ada: plus élevé au plus bas",
+            "amountAwardedAdaAsc": "Montant Accordé ada: plus bas au plus élevé",
+            "amountAwardedUsdDesc": "Montant Accordé USD: plus élevé au plus bas",
+            "amountAwardedUsdAsc": "Montant Acordé USD: plus bas au plus élevé"
+        }
+    },
     "dreps": {
         "dreps": "DReps",
         "drepSearch": "Search DRep",
@@ -387,7 +339,7 @@
     "ideascaleProfiles": {
         "people": "Personnes",
         "ideascaleProfiles": "Ideascale Profils",
-        "claim": "Bouton de réclamation",
+        "claim":"Bouton de réclamation",
         "pageSubtitle": "Rechercher des propositions et des défis par titre, contenu ou auteur et co-auteurs",
         "ownProposals": "Propositions personnelles",
         "coProposals": "Propositions co",
@@ -447,6 +399,7 @@
         },
         "filters": {
             "fundingStatus": "Statut de financement",
+            "epoch":"Époque",
             "opensource": "Opensource",
             "projectStatus": "Statut du projet",
             "tags": "Balises",
@@ -533,48 +486,7 @@
             "amountAwardedUsdAsc": "Montant accordé en USD : faible à élevé"
         }
     },
-    "communities": {
-        "communities": "Communautés",
-        "title": "Communautés Catalyst",
-        "subtitle": "Diverses, indépendantes et ensemble inspirant le plus haut niveau de collaboration humaine",
-        "proposalSummary": "Résumé des propositions",
-        "totalRequested": "Total demandé",
-        "proposers": "Proposants",
-        "collaborators": "Collaborateurs",
-        "totalAmountAwarded": "Montant total attribué",
-        "totalAmountDistributed": "Montant total distribué",
-        "totalAmountRemaining": "Montant total restant",
-        "totalAwarded": "Montant total d'ADA et USD attribué",
-        "totalDistributed": "Montant total d'ADA et USD distribué",
-        "totalRemained": "Montant total d'ADA et USD restant",
-        "amountAwardedUsd": "Montant attribué en USD",
-        "amountAwardedAda": "Montant attribué en ADA",
-        "amountAwarded": "Montant attribué",
-        "amountDistributed": "Montant distribué",
-        "amountRemaining": "Montant restant",
-        "options": {
-            "alphabetically": "Alphabétiquement : A à Z",
-            "amountAwardedAdaDesc": "Montant attribué en ADA : Du plus élevé au plus bas",
-            "amountAwardedAdaAsc": "Montant attribué en ADA : Du plus bas au plus élevé",
-            "amountAwardedUsdDesc": "Montant attribué en USD : Du plus élevé au plus bas",
-            "amountAwardedUsdAsc": "Montant attribué en USD : Du plus bas au plus élevé"
-        },
-        "tabs": {
-            "dashboard": "Tableau de bord",
-            "proposals": "Propositions",
-            "members": "Membres",
-            "groups": "Groupes",
-            "events": "Événements"
-        },
-        "filters": {
-            "totalAdaAwarded": "Montant total d'ADA attribué",
-            "totalUsdAwarded": "Montant total d'USD attribué",
-            "totalAdaDistributed": "Montant total d'ADA distribué",
-            "totalUsdDistributed": "Montant total d'USD distribué",
-            "totalAdaRemaining": "Montant total d'ADA restant",
-            "totalUsdRemaining": "Montant total d'USD restant"
-        }
-    },
+
     "posts": {
         "title": "Articles des Catalysts",
         "subtitle": "Dernières nouvelles et publications de notre communauté"
@@ -603,7 +515,7 @@
             "chevron_up": "Icône de chevron vers le haut",
             "chevron_down": "Icône de chevron vers le bas",
             "close": "Icône de fermeture",
-            "connections": "Icône de connexions",
+            "connections":"Icône de connexions",
             "search": "Icône de recherche",
             "darkMode": "Icône de mode sombre",
             "folder": "Icône de dossier",
@@ -614,10 +526,10 @@
             "mail": "Icône de courrier",
             "menu": "Icône de menu",
             "miniCardSwitch": "Icône de commutateur de mini-carte",
-            "more": "Plus d'icônes",
+            "more":"Plus d'icônes",
             "note": "Icône de note",
             "notificationBox": "Icône de boîte de notification",
-            "numbers": "Icône de nombres",
+            "numbers":"Icône de nombres",
             "people": "Icône de personnes",
             "voltaireMode": "Icône de mode Voltaire",
             "link": "Icône de lien",
@@ -637,13 +549,6 @@
             "ada": "Icône Ada",
             "usd": "Icône USD"
         }
-    },
-    "segments": {
-        "completed": "Terminé",
-        "unfunded": "Non financé",
-        "funded": "Financé",
-        "ownProposals": "Propositions personnelles",
-        "collaboratingProposals": "Propositions collaboratives"
     },
     "users": {
         "editProfile": "modifier le profil",
@@ -715,6 +620,39 @@
         "verificationInstructions": "Pour vérifier que vous êtes le propriétaire de ce profil, veuillez envoyer un message personnel à Lido Nation sur Ideascale et inclure le code ci-dessus.",
         "goToIdeascale": "Accéder à Ideascale"
     },
+    "vote": {
+        "catalystVotes": "Votes Catalyst",
+        "viewOnchainTransactions": "Afficher les transactions on-chain (jormugandr) des votes exprimés",
+        "noStakeAddressFound": "Aucune adresse de stake trouvée",
+        "stakeAddress": "Adresse de Stake",
+        "choice": "Choix",
+        "noChoicesAvailable": "Aucun choix disponible",
+        "noEpochsAvailable": "Aucune époque disponible",
+        "votingHistory": "Historique des votes",
+        "search": "Icône de recherche",
+        "searchBar": "Collez l'adresse du pieu ici...",
+        "searchPlaceholder": "Rechercher par ID de fragment, émetteur ou fragment brut",
+        "secondarySearch": "Recherche secondaire",
+        "sort": "Trier par",
+        "notAvailable": "N/D",
+        "timeAgo": {
+        "justNow": "À l'instant",
+        "anHourAgo": "il y a une heure",
+        "hoursAgo": "il y a {{hours}} heures",
+        "aDayAgo": "il y a un jour",
+        "daysAgo": "il y a {{days}} jours"
+        },
+        "table": {
+            "fund": "Fonds",
+            "stakeAddress": "Adresse de Stake",
+            "fragmentId": "ID de Fragment",
+            "caster": "Émetteur",
+            "timestamp": "Horodatage",
+            "choice": "Choix",
+            "votingPower": "Puissance de Vote",
+            "rawFragment": "Fragment Brut"
+        }
+    },
     "wallet": {
         "connect": {
             "title": "Connecter le portefeuille",
@@ -742,17 +680,6 @@
             "connected": "Connected",
             "connecting": "Connecting",
             "disconnect": "Disconnect"
-        }
-    },
-    "reviews": {
-        "reviews": "Évaluations",
-        "options": {
-            "ratingAsc": "Évaluation : de faible à élevée",
-            "ratingDesc": "Évaluation : du plus élevé au plus bas",
-            "avgReputationScoreAsc": "Réputation : de faible à élevée",
-            "avgReputationScoreDesc": "Réputation : de haute à basse",
-            "helpful": "Utile",
-            "notHelpful": "Pas utile"
         }
     },
     "transactions": {

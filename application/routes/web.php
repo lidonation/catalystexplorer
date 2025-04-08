@@ -13,6 +13,7 @@ use App\Http\Controllers\GroupsController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ReviewsController;
+use App\Http\Controllers\VoterHistoriesController;
 use App\Http\Middleware\WorkflowMiddleware;
 use App\Http\Controllers\WorkflowController;
 use App\Http\Controllers\CampaignsController;
@@ -270,6 +271,10 @@ Route::localized(
             }
         );
 
+        Route::prefix('/votes')->as('votes.')->group(function () {
+            Route::get('/', [VoterHistoriesController::class, 'index'])
+                ->name('index');
+        }); 
 
         Route::get('/voter-tool', [VoterToolController::class, 'index'])
             ->name('voter-tool.index');

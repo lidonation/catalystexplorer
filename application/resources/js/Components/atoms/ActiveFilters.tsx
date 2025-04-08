@@ -1,8 +1,10 @@
 import { FilteredItem, useFilterContext } from '@/Context/FiltersContext';
 import { ParamsEnum } from '@/enums/proposal-search-params';
+import { VoteEnums } from '@/enums/vote-search-enums';
 import { useSearchOptions } from '@/Hooks/useSearchOptions';
 import { shortNumber } from '@/utils/shortNumber';
 import React, { useState } from 'react';
+import { router } from '@inertiajs/react';
 
 function formatSnakeCaseToTitleCase(input: string) {
     if (!input) return;
@@ -33,7 +35,8 @@ const labels = {
     pr: 'Number of Proposals',
     ds: 'Status',
     vp: 'Voting Power',
-    d: 'Delegators'
+    d: 'Delegators',
+    c: 'Choice',
 };
 
 type LabelKeys = keyof typeof labels;
@@ -46,9 +49,8 @@ export default function ActiveFilters({
         value: string;
     }[];
 }) {
-    const [clearFilter, setClearFilter] = useState(true);
     const { filters } = useFilterContext();
-    const statusFilters = ['coh', 'fs', 'ps', 'f', 'ds'];
+    const statusFilters = ['coh', 'fs', 'ps', 'f', 'ds', 'c'];
     const rangeFilters = ['pl', 'b', 'aa', 'au', 'd', 'pr', 'vp'];
     const sortFilters = ['st'];
     const idFilters = ['t', 'cam', 'com', 'ip', 'g'];
@@ -62,7 +64,7 @@ export default function ActiveFilters({
                 }
                 if (
                     statusFilters.includes(filter.param) &&
-                    filter.value.length
+                    (filter.value.length || typeof filter.value === 'string')
                 ) {
                     return <StatusFilters key={filter.param} filter={filter} />;
                 }
@@ -101,17 +103,53 @@ export default function ActiveFilters({
 const StatusFilters = ({ filter }: { filter: FilteredItem }) => {
     const { setFilters } = useFilterContext();
     const removeFilter = (value?: string) => {
-        const values = Array.isArray(filter.value) ? filter.value : [filter.value];
-        const newVal = values.filter((val) => val !== value);
+        const values = Array.isArray(filter.value) 
+            ? filter.value 
+            : String(filter.value).split(',');
+        
+        const newVal = values.filter((val) => String(val) !== String(value));
 
-        setFilters({
-            param: filter.param,
-            value: newVal.length > 0 ? newVal : '',
-            label: filter.label,
-        });
+        setTimeout(() => {
+            const currentUrl = window.location.pathname;
+            const currentParams = new URLSearchParams(window.location.search);
+            
+            if (newVal.length === 0) {
+                currentParams.delete(filter.param);
+                
+                setFilters({
+                    param: filter.param,
+                    value: null,
+                    label: undefined
+                });
+            } else {
+                const newValue = newVal.join(',');
+                currentParams.set(filter.param, newValue);
+                
+                setFilters({
+                    param: filter.param,
+                    value: newValue,
+                    label: filter.label
+                });
+            }
+            
+            const params: Record<string, string> = {};
+            for (const [key, value] of currentParams.entries()) {
+                if (value) {
+                    params[key] = value;
+                }
+            }
+            
+            router.get(currentUrl, params, {
+                preserveState: true,
+                preserveScroll: true,
+                only: ['voterHistories', 'filters']
+            });
+        }, 10);
     };
 
-    const values = Array.isArray(filter.value) ? filter.value : [filter.value];
+    const values = Array.isArray(filter.value) 
+        ? filter.value 
+        : String(filter.value).split(',');
 
     return (
         <div
@@ -120,10 +158,8 @@ const StatusFilters = ({ filter }: { filter: FilteredItem }) => {
         >
             <div className="mr-1 font-bold">{filter.label}:</div>
             <div className="mr-1 flex items-center gap-2">
-                {' '}
                 {values?.map((value: string) => (
                     <div key={value} className="flex items-center">
-                        {' '}
                         <span>{formatSnakeCaseToTitleCase(value)}</span>
                         <button
                             className="ml-2"

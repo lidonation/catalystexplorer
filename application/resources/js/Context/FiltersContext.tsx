@@ -72,40 +72,56 @@ export function FiltersProvider({
         updatedFilters: FilteredItem[],
         filter: FilteredItem,
     ) => {
-        if (!filter?.value) {
-            updatedFilters = updatedFilters.filter(
-                (item) => item.param !== filter.param,
-            );
-        } else {
-            updatedFilters = updatedFilters.filter(
-                (item) => item.param !== filter.param,
-            );
+        // First, remove the existing filter
+        updatedFilters = updatedFilters.filter(
+            (item) => item.param !== filter.param,
+        );
+        
+        // Check if value is effectively empty (null, undefined, empty string, or empty array)
+        const isEmptyValue = 
+            filter.value === null || 
+            filter.value === undefined || 
+            filter.value === '' || 
+            (Array.isArray(filter.value) && filter.value.length === 0);
+        
+        // Only add the filter back if it's not empty
+        if (!isEmptyValue) {
             updatedFilters.push(filter);
         }
-
+    
         return updatedFilters;
     };
 
     const setFilters = useCallback((filter: FilteredItem) => {
         setFiltersState((prev: FilteredItem[]) => {
-            const prevValue = prev.find((item) => item.param === filter.param);
+            const prevFilter = prev.find((item) => item.param === filter.param);
 
+            const areValuesEqual = (val1: any, val2: any) => {
+                if (Array.isArray(val1) && Array.isArray(val2)) {
+                    if (val1.length !== val2.length) return false;
+                    const sortedVal1 = [...val1].sort();
+                    const sortedVal2 = [...val2].sort();
+                    return sortedVal1.every((val, idx) => val === sortedVal2[idx]);
+                }
+                
+                if (typeof val1 === 'string' && typeof val2 === 'string') {
+                    const arr1 = val1.split(',').filter(Boolean).sort();
+                    const arr2 = val2.split(',').filter(Boolean).sort();
+                    if (arr1.length !== arr2.length) return false;
+                    return arr1.every((val, idx) => val === arr2[idx]);
+                }
+                
+                return val1 === val2;
+            };
+            
             // If the new filter value matches the previous value, return the same state
-            if (prevValue?.value === filter.value) {
+            if (prevFilter && areValuesEqual(prevFilter.value, filter.value)) {
                 return prev;
             }
 
             // Create a new array to avoid mutating the previous state
             let updated = updateFilter([...prev], filter);
-
-            // If the filter changed is NOT the page itself, reset the page to 1
-            if (filter.param !== ParamsEnum.PAGE) {
-                updated = updateFilter(updated, {
-                    param: ParamsEnum.PAGE,
-                    label: 'Current Page',
-                    value: 1,
-                });
-            }
+            
             return updated;
         });
     }, []);
@@ -148,12 +164,20 @@ export function FiltersProvider({
         };
 
         fetchData().then();
-    }, [filters, routerOptions]);
+    }, [filters]);
 
     const formatToParams = (externalFilters?: FilteredItem[]) => {
         return (externalFilters || filters).reduce<Record<string, any>>(
             (acc, item) => {
-                acc[item.param] = item.value || null;
+                const isEmpty = 
+                    item.value === null || 
+                    item.value === undefined || 
+                    item.value === '' || 
+                    (Array.isArray(item.value) && item.value.length === 0);
+                    
+                if (!isEmpty) {
+                    acc[item.param] = item.value;
+                }
                 return acc;
             },
             {},

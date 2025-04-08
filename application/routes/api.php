@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\GroupsController;
 use App\Http\Controllers\Api\TagController;
 use App\Http\Controllers\Api\GroupController;
+use App\Http\Controllers\VoterHistoriesController;
 use App\Http\Controllers\ProposalsController;
 use App\Http\Controllers\CommunitiesController;
 use App\Http\Controllers\Api\CampaignController;
@@ -17,6 +18,8 @@ Route::prefix('api')->as('api.')->group(function () {
     Route::get('/groups', [GroupController::class, 'groups'])->name('groups');
     Route::get('/groups/{group:id}', [GroupController::class, 'group'])->name('group');
     Route::get('/groups/{hash}/connections', [GroupController::class, 'connections'])->name('groups.connections');
+
+    Route::get('/choices', [VoterHistoriesController::class, 'getChoices'])->name('choices');
 
     Route::get('/campaigns', [CampaignController::class, 'campaigns'])->name('campaigns');
     Route::get('/campaigns/{campaign:id}', [CampaignController::class, 'campaign'])->name('campaign');

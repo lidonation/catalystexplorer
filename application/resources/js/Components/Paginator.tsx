@@ -8,7 +8,7 @@ import { ParamsEnum } from '@/enums/proposal-search-params';
 import { useFilterContext } from '@/Context/FiltersContext';
 import React from 'react';
 import { PaginatedData } from '../../types/paginated-data';
-import {InertiaLinkProps, Link} from '@inertiajs/react';
+import { InertiaLinkProps, Link, router } from '@inertiajs/react';
 import { cn } from '@/lib/utils';
 
 type PaginationComponentProps<T> = {
@@ -27,7 +27,37 @@ const PaginationComponent: React.FC<PaginationComponentProps<any>> = ({
     };
 
     const buildUrl = (param: string, value: number, label: string) => {
-        return getFilters({param, value, label})
+        return getFilters({param, value, label});
+    };
+    
+    const isVoterHistoryPage = () => {
+        return window.location.pathname.includes('/votes');
+    };
+
+    const handleNavigate = (e: React.MouseEvent, pageNumber: number) => {
+        if (isVoterHistoryPage()) {
+            e.preventDefault();
+            
+            const url = new URL(window.location.href);
+            const params: Record<string, any> = {};
+            
+            for (const [key, value] of url.searchParams.entries()) {
+                if (value) params[key] = value;
+            }
+            
+            params[ParamsEnum.PAGE] = pageNumber;
+            
+            router.get(window.location.pathname, params, {
+                preserveScroll: true,
+                preserveState: true,
+                only: ['voterHistories', 'filters'],
+                replace: false
+            });
+            
+            return false;
+        }
+        
+        return true;
     };
 
     let {
@@ -65,6 +95,11 @@ const PaginationComponent: React.FC<PaginationComponentProps<any>> = ({
                                         ? 'pointer-events-none opacity-50'
                                         : ''
                                 }
+                                onClick={(e) => {
+                                    if (prev_page_url && !handleNavigate(e, current_page - 1)) {
+                                        return false;
+                                    }
+                                }}
                             ></PaginationPrevious>
                         </PaginationItem>
                     </div>
@@ -102,6 +137,11 @@ const PaginationComponent: React.FC<PaginationComponentProps<any>> = ({
                                                                 ? 'bg-background-darker'
                                                                 : '',
                                                         )}
+                                                        onClick={(e) => {
+                                                            if (!handleNavigate(e, parseInt(link.label))) {
+                                                                return false;
+                                                            }
+                                                        }}
                                                         {...linkProps}
                                                     >
                                                         {link.label}
@@ -138,6 +178,11 @@ const PaginationComponent: React.FC<PaginationComponentProps<any>> = ({
                                         ? 'pointer-events-none opacity-50'
                                         : ''
                                 }
+                                onClick={(e) => {
+                                    if (next_page_url && !handleNavigate(e, current_page + 1)) {
+                                        return false;
+                                    }
+                                }}
                             ></PaginationNext>
                         </PaginationItem>
                     </div>
