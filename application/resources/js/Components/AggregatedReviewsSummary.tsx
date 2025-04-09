@@ -12,13 +12,13 @@ interface RankingCount {
 
 interface AggregatedReviewsSummaryPageProps extends Record<string, unknown> {
     reviews: ReviewData[];
-    ratingStats?: RankingCount;
+    aggregatedRatings?: RankingCount;
     reviewsCount?: number;
 }
 
 const AggregatedReviewsSummary: React.FC<AggregatedReviewsSummaryPageProps> = ({
     reviews,
-    ratingStats,
+    aggregatedRatings,
     reviewsCount,
 }) => {
     const { t } = useTranslation();
@@ -67,38 +67,49 @@ const AggregatedReviewsSummary: React.FC<AggregatedReviewsSummaryPageProps> = ({
                         </Paragraph>
                     </div>
                     <div className="col-span-4 flex items-center justify-center p-4 text-white">
+
                         <div className="flex w-full flex-col gap-4">
-                            {Object.entries(ratingStats || {})
-                                .sort(([a], [b]) => Number(b) - Number(a)) // Sort 5 → 1
-                                .map(([rating, count]) => (
-                                    <div
-                                        key={rating}
-                                        className="flex w-full items-center justify-center gap-4"
-                                    >
-                                        <div className="w-5/6">
-                                            <ProgressBar
-                                                primaryBackgroundColor="bg-light-gray-persist"
-                                                secondaryBackgroudColor="bg-primary"
-                                                value={count}
-                                                total={reviews.length}
-                                            />
+                            {Object.entries(aggregatedRatings || {})
+                                .sort(([a], [b]) => Number(b) - Number(a))
+                                .filter(([_, count]) => count > 0)
+                                .map(([rating, count]) => {
+                                    
+                                    const totalRatings = Object.values(aggregatedRatings || {}).reduce(
+                                        (sum, count) => sum + (count as number),
+                                        0
+                                    );
+
+                                    return (
+                                        <div
+                                            key={rating}
+                                            className="flex w-full items-center justify-center gap-4"
+                                        >
+                                            <div className="w-5/6">
+                                                <ProgressBar
+                                                    primaryBackgroundColor="bg-gray-persist/30"
+                                                    secondaryBackgroudColor="bg-primary/80"
+                                                    value={count}
+                                                    total={totalRatings > 0 ? totalRatings : 1}
+                                                />
+                                            </div>
+                                            <div className="flex items-center justify-center gap-2">
+                                                <StarIcon
+                                                    width={20}
+                                                    height={20}
+                                                    className="text-yellow-400"
+                                                />
+                                                <Paragraph
+                                                    size="lg"
+                                                    className="font-bold text-content"
+                                                >
+                                                    {rating}
+                                                </Paragraph>
+                                            </div>
                                         </div>
-                                        <div className="flex items-center justify-center gap-2">
-                                            <StarIcon
-                                                width={20}
-                                                height={20}
-                                                className="text-yellow-400"
-                                            />
-                                            <Paragraph
-                                                size="lg"
-                                                className="font-bold text-content"
-                                            >
-                                                {rating}
-                                            </Paragraph>
-                                        </div>
-                                    </div>
-                                ))}
+                                    );
+                                })}
                         </div>
+
                     </div>
                 </div>
             </div>

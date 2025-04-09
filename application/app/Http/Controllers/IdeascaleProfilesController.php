@@ -122,10 +122,13 @@ class IdeascaleProfilesController extends Controller
             );
             $ideascaleProfile->loadCount(['reviews']);
 
+            $aggregatedRatings = $ideascaleProfile->aggregated_ratings;
+
             return Inertia::render('IdeascaleProfile/Reviews/Index', [
                 'ideascaleProfile' => IdeascaleProfileData::from($ideascaleProfile),
                 'reviews' => $reviews,
                 'filters' => $this->queryParams,
+                'aggregatedRatings' => $aggregatedRatings,
             ]);
         }
 
