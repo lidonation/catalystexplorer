@@ -124,7 +124,9 @@ export const ReviewCard: React.FC<ReviewItemProps> = ({
                                     <Paragraph className="font-bold">
                                         {t('reviews.yes')}
                                     </Paragraph>
-                                    <Paragraph>{review?.helpful_total}</Paragraph>
+                                    <Paragraph>
+                                        {review?.helpful_total}
+                                    </Paragraph>
                                 </>
                             )}
                         </Button>
@@ -138,7 +140,7 @@ export const ReviewCard: React.FC<ReviewItemProps> = ({
                             disabled={isLoadingNotHelpful}
                         >
                             {isLoadingNotHelpful ? (
-                              t('reviews.processing')
+                                t('reviews.processing')
                             ) : (
                                 <>
                                     <ThumbsDownIcon />
@@ -146,7 +148,7 @@ export const ReviewCard: React.FC<ReviewItemProps> = ({
                                         {t('reviews.no')}
                                     </Paragraph>
                                     <Paragraph>
-                                    {review?.not_helpful_total}
+                                        {review?.not_helpful_total}
                                     </Paragraph>
                                 </>
                             )}
