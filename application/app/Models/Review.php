@@ -28,7 +28,8 @@ class Review extends Model
             'title',
             'content',
             'reviewer.catalyst_reviewer_id',
-            'helpful_total',
+            'positive_rankings',
+            'negative_ranings',
             'status',
             'model_id',
             'model_type',
@@ -67,6 +68,8 @@ class Review extends Model
             'reviewer.avg_reputation_score',
             'rating',
             'rankings',
+            'positive_rankings',
+            'negative_rankings',
         ];
     }
 
@@ -170,9 +173,9 @@ class Review extends Model
 
         if (isset($this->queryParams[ProposalSearchParams::HELPFUL()->value])) {
             if ($this->queryParams[ProposalSearchParams::HELPFUL()->value] === 'true') {
-                $filters[] = 'helpful_total > 0';
+                $filters[] = 'positive_rankings > 0';
             } elseif ($this->queryParams[ProposalSearchParams::HELPFUL()->value] === 'false') {
-                $filters[] = 'helpful_total = 0';
+                $filters[] = 'positive_rankings = 0';
             }
         }
     }

@@ -27,7 +27,7 @@ class ReviewsController extends Controller
 
     protected int $perPage = 24;
 
-    protected ?string $sortBy = 'helpful_total';
+    protected ?string $sortBy = 'positive_rankings';
 
     protected ?string $sortOrder = 'desc';
 
