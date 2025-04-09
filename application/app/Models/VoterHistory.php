@@ -11,19 +11,11 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Artisan;
-use Illuminate\Support\Facades\Log;
 use Laravel\Scout\Searchable;
 
 class VoterHistory extends Model
 {
-    use SoftDeletes, Searchable;
-
-    /**
-     * The table associated with the model.
-     *
-     * @var string
-     */
-    protected $table = 'voter_history';
+    use Searchable, SoftDeletes;
 
     /**
      * The attributes that aren't mass assignable.
@@ -89,8 +81,6 @@ class VoterHistory extends Model
 
     /**
      * Run the custom index for the model.
-     *
-     * @return void
      */
     public static function runCustomIndex(): void
     {
@@ -99,10 +89,6 @@ class VoterHistory extends Model
 
     /**
      * Scope to filter voter history.
-     *
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     * @param array $filters
-     * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeFilter(Builder $query, array $filters): Builder
     {
@@ -122,10 +108,6 @@ class VoterHistory extends Model
 
     /**
      * Scope to order by voting power.
-     *
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     * @param string $direction
-     * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeWithVotingPower(Builder $query, string $direction = 'asc'): Builder
     {
@@ -133,13 +115,11 @@ class VoterHistory extends Model
             ->select('voter_history.*')
             ->leftJoin('voters', 'voter_history.caster', '=', 'voters.cat_id')
             ->leftJoin('voting_powers', 'voters.id', '=', 'voting_powers.voter_id')
-            ->orderByRaw('COALESCE(voting_powers.voting_power, 0) ' . $direction);
+            ->orderByRaw('COALESCE(voting_powers.voting_power, 0) '.$direction);
     }
 
     /**
      * Get the data to index in Elasticsearch.
-     *
-     * @return array
      */
     public function toSearchableArray(): array
     {
@@ -158,7 +138,7 @@ class VoterHistory extends Model
         if ($this->voter && $this->voter->voting_powers->isNotEmpty()) {
             $votingPower = (float) $this->voter->voting_powers->first()->voting_power;
         }
-        
+
         return [
             'id' => $this->id,
             'stake_address' => $this->stake_address,
@@ -180,8 +160,6 @@ class VoterHistory extends Model
 
     /**
      * Get the voter for this history record.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function voter(): BelongsTo
     {
@@ -190,8 +168,6 @@ class VoterHistory extends Model
 
     /**
      * Get the voting power relationship through voter.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasOneThrough
      */
     public function voterPower(): HasOneThrough
     {
@@ -204,7 +180,7 @@ class VoterHistory extends Model
             'id'
         );
     }
-    
+
     /**
      * Get the snapshot through voting power.
      *
@@ -214,7 +190,7 @@ class VoterHistory extends Model
     {
         return $this->hasMany(Snapshot::class, 'id', 'snapshot_id');
     }
-    
+
     /**
      * Get the fund through snapshot.
      *
@@ -228,7 +204,7 @@ class VoterHistory extends Model
             'id',
             'model_id'
         )->where('snapshots.model_type', Fund::class)
-        ->where('snapshots.id', $this->snapshot_id);
+            ->where('snapshots.id', $this->snapshot_id);
     }
 
     /**
@@ -239,7 +215,7 @@ class VoterHistory extends Model
         return Attribute::make(
             get: function () {
                 $votingPower = $this->voterPower()->first();
-                
+
                 return $votingPower ? (float) $votingPower->voting_power : 0;
             },
         );
@@ -252,17 +228,18 @@ class VoterHistory extends Model
     {
         return Attribute::make(
             get: function () {
-                $snapshot = $this->snapshot()->first();                
-                if (!$snapshot) {
+                $snapshot = $this->snapshot()->first();
+                if (! $snapshot) {
                     return null;
                 }
-                
-                $fund = $snapshot->fund()->first();                
+
+                $fund = $snapshot->fund()->first();
+
                 return $fund;
             },
         );
     }
-    
+
     /**
      * The model's casts.
      *

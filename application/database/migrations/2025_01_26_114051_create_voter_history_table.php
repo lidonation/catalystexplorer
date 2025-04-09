@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('voter_history', function (Blueprint $table) {
+        Schema::create('voter_histories', function (Blueprint $table) {
             $table->id();
             $table->text('stake_address');
             $table->text('fragment_id');
