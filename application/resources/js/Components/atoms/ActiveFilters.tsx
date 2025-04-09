@@ -1,8 +1,10 @@
 import { FilteredItem, useFilterContext } from '@/Context/FiltersContext';
 import { ParamsEnum } from '@/enums/proposal-search-params';
+import { VoteEnums } from '@/enums/vote-search-enums';
 import { useSearchOptions } from '@/Hooks/useSearchOptions';
 import { shortNumber } from '@/utils/shortNumber';
 import React, { useState } from 'react';
+import { router } from '@inertiajs/react';
 
 function formatSnakeCaseToTitleCase(input: string) {
     if (!input) return;
@@ -33,7 +35,13 @@ const labels = {
     pr: 'Number of Proposals',
     ds: 'Status',
     vp: 'Voting Power',
-    d: 'Delegators'
+    d: 'Delegators',
+    c: 'Choice',
+    p: 'Proposals',
+    ri: 'Reviewer IDs',
+    h: 'Helpful',
+    r: 'Rating',
+    rs: 'Reputation Score'
 };
 
 type LabelKeys = keyof typeof labels;
@@ -46,13 +54,12 @@ export default function ActiveFilters({
         value: string;
     }[];
 }) {
-    const [clearFilter, setClearFilter] = useState(true);
     const { filters } = useFilterContext();
-    const statusFilters = ['coh', 'fs', 'ps', 'f', 'ds'];
-    const rangeFilters = ['pl', 'b', 'aa', 'au', 'd', 'pr', 'vp'];
+    const statusFilters = ['coh', 'fs', 'ps', 'f', 'ds', 'c', 'p', 'ri'];
+    const rangeFilters = ['pl', 'b', 'aa', 'au', 'd', 'pr', 'vp', 'r', 'rs'];
     const sortFilters = ['st'];
     const idFilters = ['t', 'cam', 'com', 'ip', 'g'];
-    const booleanFilters = ['op'];
+    const booleanFilters = ['op', 'h'];
 
     return (
         <div className="flex w-full flex-wrap gap-3 text-sm transition-all duration-300">
@@ -62,7 +69,7 @@ export default function ActiveFilters({
                 }
                 if (
                     statusFilters.includes(filter.param) &&
-                    filter.value.length
+                    (filter.value.length || typeof filter.value === 'string')
                 ) {
                     return <StatusFilters key={filter.param} filter={filter} />;
                 }
@@ -101,17 +108,53 @@ export default function ActiveFilters({
 const StatusFilters = ({ filter }: { filter: FilteredItem }) => {
     const { setFilters } = useFilterContext();
     const removeFilter = (value?: string) => {
-        const values = Array.isArray(filter.value) ? filter.value : [filter.value];
-        const newVal = values.filter((val) => val !== value);
+        const values = Array.isArray(filter.value) 
+            ? filter.value 
+            : String(filter.value).split(',');
+        
+        const newVal = values.filter((val) => String(val) !== String(value));
 
-        setFilters({
-            param: filter.param,
-            value: newVal.length > 0 ? newVal : '',
-            label: filter.label,
-        });
+        setTimeout(() => {
+            const currentUrl = window.location.pathname;
+            const currentParams = new URLSearchParams(window.location.search);
+            
+            if (newVal.length === 0) {
+                currentParams.delete(filter.param);
+                
+                setFilters({
+                    param: filter.param,
+                    value: null,
+                    label: undefined
+                });
+            } else {
+                const newValue = newVal.join(',');
+                currentParams.set(filter.param, newValue);
+                
+                setFilters({
+                    param: filter.param,
+                    value: newValue,
+                    label: filter.label
+                });
+            }
+            
+            const params: Record<string, string> = {};
+            for (const [key, value] of currentParams.entries()) {
+                if (value) {
+                    params[key] = value;
+                }
+            }
+            
+            router.get(currentUrl, params, {
+                preserveState: true,
+                preserveScroll: true,
+                only: ['voterHistories', 'filters']
+            });
+        }, 10);
     };
 
-    const values = Array.isArray(filter.value) ? filter.value : [filter.value];
+    const values = Array.isArray(filter.value) 
+        ? filter.value 
+        : String(filter.value).split(',');
 
     return (
         <div
@@ -120,10 +163,8 @@ const StatusFilters = ({ filter }: { filter: FilteredItem }) => {
         >
             <div className="mr-1 font-bold">{filter.label}:</div>
             <div className="mr-1 flex items-center gap-2">
-                {' '}
                 {values?.map((value: string) => (
                     <div key={value} className="flex items-center">
-                        {' '}
                         <span>{formatSnakeCaseToTitleCase(value)}</span>
                         <button
                             className="ml-2"
@@ -184,6 +225,24 @@ const RangeFilters = ({ filter }: { filter: FilteredItem }) => {
                 value: [],
                 label: filter.label,
             });
+        } else if (filter.param == ParamsEnum.RATINGS) {
+            setFilters({
+                param: filter.param,
+                value: [],
+                label: filter.label,
+            });
+        } else if (filter.param == ParamsEnum.REPUTATION_SCORES) {
+            setFilters({
+                param: filter.param,
+                value: [],
+                label: filter.label,
+            });
+        } else if (filter.param == ParamsEnum.HELPFUL) {
+            setFilters({
+                param: filter.param,
+                value: [],
+                label: filter.label,
+            });
         }
     };
 
@@ -215,7 +274,7 @@ const BooleanFilters = ({ filter }: { filter: FilteredItem }) => {
             className="bg-background mr-1 flex items-center rounded-lg border px-1 py-1"
             key={filter.label}
         >
-            <div className="mr-1">{filter.label}</div>
+            <div className="mr-1 font-bold">{filter.label}:</div>
             <button className="ml-2" onClick={() => removeFilter()}>
                 X{' '}
             </button>
@@ -243,6 +302,27 @@ const SortFilters = ({
             value: null,
             label: undefined,
         });
+
+        setTimeout(() => {
+            const currentUrl = window.location.pathname;
+            const currentParams = new URLSearchParams(window.location.search);
+            
+            const sortParams = ['st', 'sort', 'voting_power', 'time'];
+            sortParams.forEach(param => currentParams.delete(param));
+
+            const params: Record<string, string> = {};
+            for (const [key, value] of currentParams.entries()) {
+                if (value) {
+                    params[key] = value;
+                }
+            }
+            
+            router.get(currentUrl, params, {
+                preserveState: true,
+                preserveScroll: true,
+                only: ['voterHistories', 'filters']
+            });
+        }, 10);
     };
 
     return (
@@ -263,6 +343,10 @@ const IDFilters = React.memo(({ filter }: { filter: FilteredItem }) => {
 
     if (filter.param === 'ip') {
         domain = 'ideascale-profiles';
+    } else if (filter.param === ParamsEnum.PROPOSALS) {
+        domain = 'proposal-titles';
+    } else if (filter.param === ParamsEnum.REVIEWER_IDS) {
+        domain = 'reviewer-ids';
     }
 
     const { setHashes, options } = useSearchOptions<any>(domain);

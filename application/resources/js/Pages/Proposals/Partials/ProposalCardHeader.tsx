@@ -1,9 +1,10 @@
+import Button from '@/Components/atoms/Button';
 import Title from '@/Components/atoms/Title';
+import ExpandableContent from '@/Components/ExpandableContent';
 import { ListProvider } from '@/Context/ListContext';
 import BookmarkButton from '@/Pages/My/Bookmarks/Partials/BookmarkButton';
+import { Link } from '@inertiajs/react';
 import ProposalStatus from './ProposalStatus';
-import Button from '@/Components/atoms/Button';
-import {Link} from "@inertiajs/react";
 
 export default function ProposalCardHeader({
     proposal,
@@ -35,7 +36,7 @@ export default function ProposalCardHeader({
                     {userSelected ? (
                         <div>
                             <Button
-                                className="absolute top-4 right-4 rounded-lg bg-background p-2 text-content transition duration-200 ease-in-out hover:bg-background focus:outline-hidden"
+                                className="bg-background text-content hover:bg-background absolute top-4 right-4 rounded-lg p-2 transition duration-200 ease-in-out focus:outline-hidden"
                                 onClick={noSelectedUser}
                             >
                                 <svg
@@ -93,7 +94,9 @@ export default function ProposalCardHeader({
                         }`}
                     >
                         {!userSelected ? (
-                            <Title level="4">{proposal.title}</Title>
+                            <ExpandableContent className="line-clamp-3 overflow-hidden text-ellipsis">
+                                <Title level="4">{proposal.title}</Title>
+                            </ExpandableContent>
                         ) : null}
                     </a>
                     <div className="flex flex-row justify-end py-0.5 italic">

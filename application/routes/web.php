@@ -14,6 +14,7 @@ use App\Http\Controllers\GroupsController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ReviewsController;
+use App\Http\Controllers\VoterHistoriesController;
 use App\Http\Middleware\WorkflowMiddleware;
 use App\Http\Controllers\WorkflowController;
 use App\Http\Controllers\CampaignsController;
@@ -221,11 +222,17 @@ Route::localized(
         });
 
         Route::prefix('/reviews')->as('reviews.')->group(function () {
-            Route::get('/', [ReviewsController::class, 'index'])
-                ->name('index');
+
+            Route::prefix('/{review:hash}')->middleware(['auth'])->group(function () {
+                Route::post('/not-helpful', [ReviewsController::class, 'notHelpfulReview'])->name('notHelpful');
+                Route::post('/helpful', [ReviewsController::class, 'helpfulReview'])->name('helpful');
+            });
             Route::get('/{review}', [ReviewsController::class, 'review'])
                 ->name('review')
                 ->where('review', '[0-9]+');
+
+            Route::get('/', [ReviewsController::class, 'index'])
+                ->name('index');
         });
 
         Route::prefix('numbers')->as('numbers.')->group(function () {
@@ -280,6 +287,10 @@ Route::localized(
             }
         );
 
+        Route::prefix('/votes')->as('votes.')->group(function () {
+            Route::get('/', [VoterHistoriesController::class, 'index'])
+                ->name('index');
+        }); 
 
         Route::get('/voter-tool', [VoterToolController::class, 'index'])
             ->name('voter-tool.index');
