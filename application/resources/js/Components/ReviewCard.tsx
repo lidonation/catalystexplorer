@@ -24,15 +24,15 @@ export const ReviewCard: React.FC<ReviewItemProps> = ({
     review,
     className = '',
 }) => {
-    const [isLoadingPositive, setIsLoadingHelpful] = useState(false);
-    const [isLoadingNegative, setIsLoadingNotHelpful] = useState(false);
+    const [isLoadingPositive, setIsLoadingPositive] = useState(false);
+    const [isLoadingNegative, setIsLoadingNegative] = useState(false);
 
     const { t } = useTranslation();
 
     const markPositive = () => {
         if (!review?.hash) return;
 
-        setIsLoadingHelpful(true);
+        setIsLoadingPositive(true);
 
         router.post(
             generateLocalizedRoute('reviews.helpful', { review: review?.hash }),
@@ -42,12 +42,12 @@ export const ReviewCard: React.FC<ReviewItemProps> = ({
                 onFinish: () => {
                     router.reload({
                         only: ['review'],
-                        onFinish: () => setIsLoadingHelpful(false),
+                        onFinish: () => setIsLoadingPositive(false),
                     });
                 },
                 onError: (errors) => {
                     console.error(errors);
-                    setIsLoadingHelpful(false);
+                    setIsLoadingPositive(false);
                 },
             },
         );
@@ -63,18 +63,18 @@ export const ReviewCard: React.FC<ReviewItemProps> = ({
             {},
             {
                 onStart: () => {
-                    setIsLoadingNotHelpful(true);
+                    setIsLoadingNegative(true);
                 },
                 preserveScroll: true,
                 onFinish: () => {
                     router.reload({
                         only: ['review'],
-                        onFinish: () => setIsLoadingNotHelpful(false),
+                        onFinish: () => setIsLoadingNegative(false),
                     });
                 },
                 onError: (errors) => {
                     console.error(errors);
-                    setIsLoadingNotHelpful(false);
+                    setIsLoadingNegative(false);
                 },
             },
         );

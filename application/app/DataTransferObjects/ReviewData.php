@@ -32,10 +32,6 @@ class ReviewData extends Data
 
         public ?int $ranking_total,
 
-        public ?int $helpful_total,
-
-        public ?int $not_helpful_total,
-
         public ?int $positive_rankings,
 
         public ?int $negative_rankings,

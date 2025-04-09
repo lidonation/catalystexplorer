@@ -67,8 +67,8 @@ class ReviewsController extends Controller
                 'content' => $review->content ?? '',
                 'type' => $review->type ?? 'default',
                 'ranking_total' => $review->ranking_total ?? 0,
-                'helpful_total' => $review->helpful_total ?? 0,
-                'not_helpful_total' => $review->not_helpful_total ?? 0,
+                'positive_rankings' => $review->positiveRankings->count() ?? 0,
+                'negative_rankings' => $review->negativeRankings->count() ?? 0,
             ]),
         ]);
     }
@@ -104,8 +104,6 @@ class ReviewsController extends Controller
             'model_type',
             'reviewer.avg_reputation_score',
             'reviewer.claimedBy',
-            'helpful_total',
-            'not_helpful_total',
             'ranking_total',
             'positive_rankings',
             'negative_rankings',

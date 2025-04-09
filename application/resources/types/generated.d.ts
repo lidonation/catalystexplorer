@@ -423,8 +423,6 @@ rating: number | null;
 proposal: App.DataTransferObjects.ProposalData | null;
 reviewer: App.DataTransferObjects.ReviewerData | null;
 ranking_total: number | null;
-helpful_total: number | null;
-not_helpful_total: number | null;
 positive_rankings: number | null;
 negative_rankings: number | null;
 };
