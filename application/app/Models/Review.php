@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
@@ -61,8 +62,7 @@ class Review extends Model
             'created_at',
             'reviewer.avg_reputation_score',
             'rating',
-            'helpful_total',
-            'not_helpful_total',
+            'rankings',
         ];
     }
 
@@ -113,6 +113,24 @@ class Review extends Model
         return $this->morphTo('model', 'model_type', 'model_id');
     }
 
+    public function rankings(): HasMany
+    {
+        return $this->hasMany(Ranking::class, 'model_id')
+            ->where('model_type', Review::class);
+    }
+
+    public function positiveRankings(): HasMany
+    {
+        return $this->rankings()
+            ->where('value', '=', 1);
+    }
+
+    public function negativeRankings(): HasMany
+    {
+        return $this->rankings()
+            ->where('value', '=', -1);
+    }
+
     public function review_moderation_reviewer(): HasOne
     {
         return $this->hasOne(ReviewModerationReviewer::class, 'review_id');
@@ -130,6 +148,9 @@ class Review extends Model
             'parent' => $this->parent?->toArray(),
             'children' => $this->children,
             'rating' => $this->rating?->rating,
+            'ranking' => $this->rankings,
+            'positive_rankings' => $this->positiveRankings->count(),
+            'negative_rankings' => $this->negativeRankings->count(),
         ]);
     }
 }

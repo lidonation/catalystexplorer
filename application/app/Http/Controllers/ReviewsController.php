@@ -8,10 +8,12 @@ use App\Actions\TransformIdsToHashes;
 use App\DataTransferObjects\ReviewData;
 use App\Enums\QueryParamsEnum;
 use App\Models\Proposal;
+use App\Models\Ranking;
 use App\Models\Review;
 use App\Repositories\ReviewRepository;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Fluent;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -105,6 +107,8 @@ class ReviewsController extends Controller
             'helpful_total',
             'not_helpful_total',
             'ranking_total',
+            'positive_rankings',
+            'negative_rankings',
         ];
 
         $args['facets'] = [
@@ -177,52 +181,46 @@ class ReviewsController extends Controller
 
     public function helpfulReview(int $reviewId)
     {
+
+        $ranking = Ranking::updateOrCreate(
+            [
+                'user_id' => Auth::id(),
+                'model_id' => $reviewId,
+                'model_type' => Review::class,
+            ],
+            [
+                'value' => 1,
+            ]
+        );
+
         $review = Review::find($reviewId);
 
-        $helpfulKey = 'helpful_review_'.$reviewId;
-        $notHelpfulKey = 'not_helpful_review_'.$reviewId;
+        if ($review) {
+            $review->rankings()->save($ranking);
+            $review->searchable();
 
-        if (session()->has($helpfulKey)) {
-            $review->helpful_total = max(0, $review->helpful_total - 1);
-            session()->forget($helpfulKey);
-        } else {
-            if (session()->has($notHelpfulKey)) {
-                $review->not_helpful_total = max(0, $review->not_helpful_total - 1);
-                session()->forget($notHelpfulKey);
-            }
-
-            $review->helpful_total += 1;
-            session()->put($helpfulKey, true);
         }
-        $review->save();
-        $this->updateReviewInSearch($review);
+
     }
 
     public function notHelpfulReview(int $reviewId)
     {
+        $ranking = Ranking::updateOrCreate(
+            [
+                'user_id' => Auth::user()->id,
+                'model_id' => $reviewId,
+                'model_type' => Review::class,
+            ],
+            [
+                'value' => -1,
+            ]
+        );
+
         $review = Review::find($reviewId);
 
-        $notHelpfulKey = 'not_helpful_review_'.$reviewId;
-        $helpfulKey = 'helpful_review_'.$reviewId;
-
-        if (session()->has($notHelpfulKey)) {
-            $review->not_helpful_total = max(0, $review->not_helpful_total - 1);
-            session()->forget($notHelpfulKey);
-        } else {
-            if (session()->has($helpfulKey)) {
-                $review->helpful_total = max(0, $review->helpful_total - 1);
-                session()->forget($helpfulKey);
-            }
-            $review->not_helpful_total += 1;
-            session()->put($notHelpfulKey, true);
+        if ($review) {
+            $review->rankings()->save($ranking);
+            $review->searchable();
         }
-        $review->save();
-    }
-
-    protected function updateReviewInSearch(Review $review)
-    {
-
-        $review->searchable();
-
     }
 }

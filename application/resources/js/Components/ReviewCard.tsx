@@ -9,12 +9,10 @@ import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import Card from './Card';
 import ExpandableContent from './ExpandableContent';
+import RankingButtons from './RankingButtons';
 import { ReviewerInfo } from './ReviewerInfo';
 import { StarRating } from './ReviewsStar';
-import Button from './atoms/Button';
 import Paragraph from './atoms/Paragraph';
-import ThumbsDownIcon from './svgs/ThumbsDownIcon';
-import ThumbsUpIcon from './svgs/ThumbsUpIcon';
 import ReviewData = App.DataTransferObjects.ReviewData;
 
 export interface ReviewItemProps {
@@ -26,12 +24,12 @@ export const ReviewCard: React.FC<ReviewItemProps> = ({
     review,
     className = '',
 }) => {
-    const [isLoadingHelpful, setIsLoadingHelpful] = useState(false);
-    const [isLoadingNotHelpful, setIsLoadingNotHelpful] = useState(false);
+    const [isLoadingPositive, setIsLoadingHelpful] = useState(false);
+    const [isLoadingNegative, setIsLoadingNotHelpful] = useState(false);
 
     const { t } = useTranslation();
 
-    const markHelpful = () => {
+    const markPositive = () => {
         if (!review?.hash) return;
 
         setIsLoadingHelpful(true);
@@ -55,7 +53,7 @@ export const ReviewCard: React.FC<ReviewItemProps> = ({
         );
     };
 
-    const markNotHelpful = () => {
+    const markNegative = () => {
         if (!review?.hash) return;
 
         router.post(
@@ -106,52 +104,14 @@ export const ReviewCard: React.FC<ReviewItemProps> = ({
                     <Paragraph className="text-gray-persist text-sm">
                         {t('reviews.helpfulReview')}
                     </Paragraph>
-                    <div className="flex gap-2">
-                        <Button
-                            className={`bg-success/30 border-success text-success flex items-center gap-1 rounded-md border p-2 ${
-                                isLoadingHelpful
-                                    ? 'cursor-not-allowed'
-                                    : 'cursor-pointer'
-                            }`}
-                            onClick={markHelpful}
-                            disabled={isLoadingHelpful}
-                        >
-                            {isLoadingHelpful ? (
-                                t('reviews.processing')
-                            ) : (
-                                <>
-                                    <ThumbsUpIcon />
-                                    <Paragraph className="font-bold">
-                                        {t('reviews.yes')}
-                                    </Paragraph>
-                                    <Paragraph>{review?.helpful_total}</Paragraph>
-                                </>
-                            )}
-                        </Button>
-                        <Button
-                            className={`bg-error/30 border-error text-error flex items-center gap-1 rounded-md border p-2 ${
-                                isLoadingNotHelpful
-                                    ? 'cursor-not-allowed'
-                                    : 'cursor-pointer'
-                            }`}
-                            onClick={markNotHelpful}
-                            disabled={isLoadingNotHelpful}
-                        >
-                            {isLoadingNotHelpful ? (
-                              t('reviews.processing')
-                            ) : (
-                                <>
-                                    <ThumbsDownIcon />
-                                    <Paragraph className="font-bold">
-                                        {t('reviews.no')}
-                                    </Paragraph>
-                                    <Paragraph>
-                                    {review?.not_helpful_total}
-                                    </Paragraph>
-                                </>
-                            )}
-                        </Button>
-                    </div>
+                    <RankingButtons
+                        isLoadingNegative={isLoadingNegative}
+                        isLoadingPositive={isLoadingPositive}
+                        positiveRankings={review?.positive_rankings ?? 0}
+                        negativeRankings={review?.negative_rankings ?? 0}
+                        markNegative={markNegative}
+                        markPositive={markPositive}
+                    />
                 </div>
 
                 <section className="flex flex-wrap items-center gap-4">
