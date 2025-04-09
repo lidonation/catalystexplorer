@@ -21,7 +21,7 @@ class Ranking extends Model
         return $this->morphTo('model', 'model_type', 'model_id');
     }
 
-    public function user()
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class, 'user_id');
     }
