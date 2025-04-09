@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Enums\ProposalSearchParams;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasOneThrough;
@@ -24,6 +25,8 @@ class Review extends Model
             'id',
             'title',
             'content',
+            'reviewer.catalyst_reviewer_id',
+            'helpful_total',
             'status',
             'model_id',
             'model_type',
@@ -116,6 +119,43 @@ class Review extends Model
     public function review_moderation_reviewer(): HasOne
     {
         return $this->hasOne(ReviewModerationReviewer::class, 'review_id');
+    }
+
+    public function scopeFilter($query, array $filters)
+    {
+        $query->when(
+            $filters['fund'] ?? false,
+            fn (Builder $query, $fund) => $query->whereHas('reviewer.reputation_scores', function ($query) use ($fund) {
+                $query->whereHas('fund', function ($query) use ($fund) {
+                    $query->where('label', $fund);
+                });
+            })
+        );
+
+        $query->when($filters['search'] ?? false, function ($query, $search) {
+            $query->whereHas('proposal', function ($q) use ($search) {
+                $q->where('title', 'like', "%{$search}%");
+            });
+        });
+
+        $query->when($filters['ids'] ?? false, function ($query, $ids) {
+            $query->whereIn('proposal_id', $ids);
+        });
+
+        $query->when(
+            $filters['reviewer_id'] ?? false,
+            fn (Builder $query, $catalyst_reviewer_id) => $query->whereHas('reviewer', function ($query) use ($catalyst_reviewer_id) {
+                $query->where('catalyst_reviewer_id', $catalyst_reviewer_id);
+            })
+        );
+
+        if (isset($this->queryParams[ProposalSearchParams::HELPFUL()->value])) {
+            if ($this->queryParams[ProposalSearchParams::HELPFUL()->value] === 'true') {
+                $filters[] = 'helpful_total > 0';
+            } elseif ($this->queryParams[ProposalSearchParams::HELPFUL()->value] === 'false') {
+                $filters[] = 'helpful_total = 0';
+            }
+        }
     }
 
     public function toSearchableArray(): array

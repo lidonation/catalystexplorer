@@ -9,7 +9,7 @@ export type SearchParams = {
     [ParamsEnum.CAMPAIGNS]: string[];
     [ParamsEnum.COHORT]: string[];
     [ParamsEnum.COMMUNITIES]: string[];
-    [ParamsEnum.FUNDS]: string[];
+    [ParamsEnum.FUNDS]: string | string[];
     [ParamsEnum.FUNDING_STATUS]: (string[] | string);
     [ParamsEnum.GROUPS]: string[];
     [ParamsEnum.LIMIT]: number;
@@ -28,5 +28,11 @@ export type SearchParams = {
     [ParamsEnum.TAGS]: string[];
     [ParamsEnum.TYPE]: string;
     [ParamsEnum.PROJECT_LENGTH]: number[];
+    // New parameters
+    [ParamsEnum.PROPOSALS]: string[];
+    [ParamsEnum.REVIEWER_IDS]: string[];
+    [ParamsEnum.HELPFUL]: string;
+    [ParamsEnum.RATINGS]: string[];
+    [ParamsEnum.REPUTATION_SCORES]: number[];
     [key: string]: any; 
 };

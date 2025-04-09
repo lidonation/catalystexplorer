@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\BookmarksController;
+use App\Http\Controllers\VoterListController;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\NftController;
@@ -12,6 +13,7 @@ use App\Http\Controllers\GroupsController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ReviewsController;
+use App\Http\Controllers\VoterHistoriesController;
 use App\Http\Middleware\WorkflowMiddleware;
 use App\Http\Controllers\WorkflowController;
 use App\Http\Controllers\CampaignsController;
@@ -123,6 +125,22 @@ Route::localized(
                         ->name('saveClaim');
                 });
 
+            Route::prefix('/create-voter-list/steps')->as('createVoterList.')
+                ->middleware([WorkflowMiddleware::class])
+                ->group(function () {
+                    Route::get('/{step}', [VoterListController::class, 'handleStep'])
+                        ->name('index');
+                    Route::post('/save-list-details', [VoterListController::class, 'saveListDetails'])
+                        ->name('saveListDetails');
+                    Route::post('/save-proposals', [VoterListController::class, 'saveProposals'])
+                        ->name('saveProposals');
+                    Route::post('/save-rationales', [VoterListController::class, 'saveRationales'])
+                        ->name('saveRationales');
+                });
+            
+            Route::get('/create-voter-list/success', [VoterListController::class, 'success'])
+                ->name('createVoterList.success');
+                
             Route::prefix('/drep-sign-up/steps')->as('drepSignUp.')
                 ->middleware([WorkflowMiddleware::class])
                 ->group(function () {
@@ -253,6 +271,10 @@ Route::localized(
             }
         );
 
+        Route::prefix('/votes')->as('votes.')->group(function () {
+            Route::get('/', [VoterHistoriesController::class, 'index'])
+                ->name('index');
+        }); 
 
         Route::get('/voter-tool', [VoterToolController::class, 'index'])
             ->name('voter-tool.index');

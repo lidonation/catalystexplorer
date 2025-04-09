@@ -20,6 +20,7 @@ use Spatie\Enum\Enum;
  * @method static self QUERY()
  * @method static self SORTS()
  * @method static self TAGS()
+ * @method static self BOOKMARK_COLLECTION()
  */
 final class QueryParamsEnum extends Enum
 {
@@ -39,6 +40,7 @@ final class QueryParamsEnum extends Enum
             'QUERY' => 'q',
             'SORTS' => 'st',
             'TAGS' => 't',
+            'BOOKMARK_COLLECTION' => 'bk',
         ];
     }
 }
