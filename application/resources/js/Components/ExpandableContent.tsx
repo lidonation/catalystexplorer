@@ -13,13 +13,13 @@ const ExpandableContent: React.FC<ExpandableContentProps> = ({
 
     return (
         <div
-            className={`relative cursor-pointer overflow-hidden transition-opacity duration-1500 ease-out ${isExpanded ? '' : `${className}`}`}
+            className={`relative cursor-pointer overflow-hidden transition-opacity duration-3000 ease-out ${isExpanded ? '' : `${className}`}`}
             onMouseEnter={() => setIsExpanded(true)}
             onMouseLeave={() => setIsExpanded(false)}
         >
             {children}
             {!isExpanded && (
-                <div className="absolute right-0 bottom-0 left-0 h-8 opacity-100 transition-opacity duration-200 ease-out group-hover:opacity-0" />
+            <div className="absolute right-0 bottom-0 left-0 h-8 opacity-100 transition-opacity duration-1000 ease-out group-hover:opacity-0" />
             )}
         </div>
     );
