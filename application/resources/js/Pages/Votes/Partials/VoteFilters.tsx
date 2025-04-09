@@ -1,0 +1,129 @@
+import React, { useState, useEffect } from 'react';
+import { SearchSelect } from '@/Components/SearchSelect';
+import { useFilterContext } from '@/Context/FiltersContext';
+import { VoteEnums } from '@/enums/vote-search-enums';
+import { useTranslation } from 'react-i18next';
+import { router } from '@inertiajs/react';
+
+const VoteFilters = () => {
+    const { t } = useTranslation();
+    const { setFilters, getFilter, filters } = useFilterContext();
+    const [selectedChoice, setSelectedChoice] = useState<string[]>([]);
+    const [selectedFund, setSelectedFund] = useState<string[]>([]);
+    const [isInitialized, setIsInitialized] = useState(false);
+
+    const parseFilterValue = (value: any): string[] => {
+        if (value === null || value === undefined) return [];
+        
+        if (typeof value === 'string') {
+            if (value === '') return [];
+            
+            return value.split(',').filter(Boolean);
+        }
+        
+        if (Array.isArray(value)) {
+            return value.map(String);
+        }
+        
+        return [String(value)];
+    };
+    
+    useEffect(() => {
+        const choiceFilter = getFilter(VoteEnums.CHOICE);
+        const choiceValues = choiceFilter ? parseFilterValue(choiceFilter) : [];
+        setSelectedChoice(choiceValues);
+        
+        const fundFilter = getFilter(VoteEnums.FUND);
+        const fundValues = fundFilter ? parseFilterValue(fundFilter) : [];
+        setSelectedFund(fundValues);
+        
+        setIsInitialized(true);
+    }, [filters]);
+    
+    const handleFilterUpdate = (param: string, selectedItems: string[]) => {
+        const isChoiceFilter = param === VoteEnums.CHOICE;
+        const setter = isChoiceFilter ? setSelectedChoice : setSelectedFund;
+        const labelText = isChoiceFilter ? t('vote.choice') : t('proposals.filters.epoch');
+
+        // Update local state
+        setter(selectedItems);
+        
+        // Clear filter if no items selected
+        if (selectedItems.length === 0) {
+            setFilters({
+                param: param,
+                value: null,
+                label: undefined
+            });
+            
+            // Update URL
+            setTimeout(() => {
+                const currentUrl = window.location.pathname;
+                const currentParams = new URLSearchParams(window.location.search);
+                currentParams.delete(param);
+                
+                const params: Record<string, string> = {};
+                for (const [key, value] of currentParams.entries()) {
+                    if (value) {
+                        params[key] = value;
+                    }
+                }
+                
+                router.get(currentUrl, params, {
+                    preserveState: true,
+                    preserveScroll: true,
+                    only: ['voterHistories', 'filters']
+                });
+            }, 10);
+        } else {
+            // Set filter with selected items
+            setFilters({
+                param: param,
+                value: selectedItems.join(','),
+                label: labelText
+            });
+        }
+    };
+    
+    const handleChoiceChange = (selectedItems: string[]) => {
+        handleFilterUpdate(VoteEnums.CHOICE, selectedItems);
+    };
+    
+    const handleFundChange = (selectedItems: string[]) => {
+        handleFilterUpdate(VoteEnums.FUND, selectedItems);
+    };
+
+    return (
+        <div className="w-full bg-background border border-dark-light rounded-md p-4">
+            <div className="grid grid-cols-2 gap-8">
+                <div className="flex flex-col gap-2">
+                    <span className="font-medium text-gray-persist">{t('vote.choice')}</span>
+                    <SearchSelect
+                        key={'choices'}
+                        domain='choices'
+                        selected={selectedChoice}
+                        onChange={handleChoiceChange}
+                        placeholder={t('select')}
+                        multiple={true}
+                        emptyText={t('vote.noChoicesAvailable')}
+                    />
+                </div>
+
+                <div className="flex flex-col gap-2">
+                    <span className="font-medium text-gray-persist">{t('proposals.filters.epoch')}</span>
+                    <SearchSelect
+                        key={'fund-titles'}
+                        domain='fundTitles'
+                        selected={selectedFund}
+                        onChange={handleFundChange}
+                        placeholder={t('select', 'Select')}
+                        multiple={true}
+                        emptyText={t('vote.noEpochsAvailable')}
+                    />
+                </div>
+            </div>
+        </div>
+    );
+};
+
+export default VoteFilters;

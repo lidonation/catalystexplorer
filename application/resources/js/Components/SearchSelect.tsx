@@ -44,17 +44,15 @@ export function SearchSelect({
     const { t } = useTranslation();
 
     const filteredOptions = options.map((option) => {
-        // Handle when option is a string
         if (typeof option === 'string') {
             return {
                 label: option,
                 hash: option
             };
         }
-            // Handle when option is an object
             return {
                 label: option?.name ?? option?.title ?? option?.label ?? 'Unknown',
-                hash: option?.hash ?? 'unknown-hash',
+                hash: option?.hash ?? option?.id?.toString() ?? 'unknown-hash',
             };
         },
     );
@@ -62,27 +60,28 @@ export function SearchSelect({
     const handleSelect = useCallback(
         (value: string) => {
             if (multiple) {
-                onChange(
-                    selected.includes(value)
-                        ? selected.filter((item) => item !== value)
-                        : [...(selected ?? []), value],
-                );
+                const newSelected = selected.includes(value)
+                    ? selected.filter((item) => item !== value)
+                    : [...selected, value];
+                onChange(newSelected);
             } else {
                 onChange([value]);
                 setOpen(false);
                 setSearchTerm('');
             }
         },
-        [multiple, onChange, selected],
+        [multiple, onChange, selected, setSearchTerm],
     );
     const handleClear = useCallback(
         (e: React.MouseEvent) => {
             e.stopPropagation();
-            selected.length ? onChange([]) : '';
+            if (selected.length) {
+                onChange([]);
+            }
             setSearchTerm('');
             setOpen(false);
         },
-        [onChange],
+        [onChange, selected.length, setSearchTerm],
     );
 
     // Clear search when closing the popover
@@ -90,7 +89,7 @@ export function SearchSelect({
         if (!open) {
             setSearchTerm('');
         }
-    }, [open]);
+    }, [open, setSearchTerm]);
 
     return (
         <Popover open={open} onOpenChange={setOpen}>
@@ -148,27 +147,28 @@ export function SearchSelect({
                             className={`max-h-64 min-h-24 lg:max-h-96 ${options.length > 10 ? 'overflow-scroll' : ''}`}
                         >
                             {options &&
-                                filteredOptions.map((option) => (
-                                    <CommandItem
-                                        key={option.hash}
-                                        value={option.hash.toString()}
-                                        onSelect={() =>
-                                            handleSelect(option.hash.toString())
-                                        }
-                                        className="bg-background! hover:bg-background-lighter! aria-selected:bg-background-lighter flex cursor-pointer justify-between"
-                                    >
-                                        {option.label}
-                                        <Checkbox
-                                            id={option.hash}
-                                            checked={selected?.includes(
-                                                option.hash,
-                                            )}
-                                            value={option.hash}
-                                            onChange={() => {}}
-                                            className="text-content-accent bg-background checked:bg-primary checked:hover:bg-primary focus:border-primary focus:ring-primary checked:focus:bg-primary mr-2 h-4 w-4 shadow-xs focus:border"
-                                        />
-                                    </CommandItem>
-                                ))}
+                                filteredOptions.map((option) => {
+                                    const hashStr = String(option.hash);
+                                    const isSelected = selected.some(item => String(item) === hashStr);
+                                    
+                                    return (
+                                        <CommandItem
+                                            key={hashStr}
+                                            value={hashStr}
+                                            onSelect={() => handleSelect(hashStr)}
+                                            className="bg-background! hover:bg-background-lighter! aria-selected:bg-background-lighter flex cursor-pointer justify-between"
+                                        >
+                                            {option.label}
+                                            <Checkbox
+                                                id={hashStr}
+                                                checked={isSelected}
+                                                value={hashStr}
+                                                onChange={() => {}}
+                                                className="text-content-accent bg-background checked:bg-primary checked:hover:bg-primary focus:border-primary focus:ring-primary checked:focus:bg-primary mr-2 h-4 w-4 shadow-xs focus:border"
+                                            />
+                                        </CommandItem>
+                                    );
+                                })}
                         </ScrollArea>
                     </CommandGroup>
                 </Command>

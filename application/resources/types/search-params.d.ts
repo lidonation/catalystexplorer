@@ -28,5 +28,11 @@ export type SearchParams = {
     [ParamsEnum.TAGS]: string[];
     [ParamsEnum.TYPE]: string;
     [ParamsEnum.PROJECT_LENGTH]: number[];
+    // New parameters
+    [ParamsEnum.PROPOSALS]: string[];
+    [ParamsEnum.REVIEWER_IDS]: string[];
+    [ParamsEnum.HELPFUL]: string;
+    [ParamsEnum.RATINGS]: string[];
+    [ParamsEnum.REPUTATION_SCORES]: number[];
     [key: string]: any; 
 };
