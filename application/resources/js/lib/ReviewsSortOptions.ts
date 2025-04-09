@@ -23,11 +23,11 @@ const ReviewsSortOptions = () => {
         },
         {
             label: t('reviews.options.helpful'),
-            value: 'helpful_total:asc',
+            value: 'positive_rankings:asc',
         },
         {
             label: t('reviews.options.notHelpful'),
-            value: 'not_helpful_total:desc',
+            value: 'negative_rankings:desc',
         },
     ];
 };

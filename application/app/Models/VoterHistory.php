@@ -49,6 +49,11 @@ class VoterHistory extends Model
         ];
     }
 
+    public function searchableAs()
+    {
+        return 'cx_voter_histories';
+    }
+
     /**
      * Get the searchable attributes for the model.
      *
@@ -84,7 +89,7 @@ class VoterHistory extends Model
      */
     public static function runCustomIndex(): void
     {
-        Artisan::call('cx:create-search-index App\\\\Models\\\\VoterHistory cx_voter_history');
+        Artisan::call('cx:create-search-index App\\\\Models\\\\VoterHistory cx_voter_histories');
     }
 
     /**
@@ -123,14 +128,20 @@ class VoterHistory extends Model
      */
     public function toSearchableArray(): array
     {
-        $this->load(['voter', 'voter.voting_powers', 'voter.voting_powers.snapshot', 'voter.voting_powers.snapshot.fund']);
+        $this->loadMissing([
+            'voter', 
+            'voter.voting_powers', 
+            'voter.voting_powers.snapshot', 
+            'voter.voting_powers.snapshot.fund',
+            'snapshot',
+            'snapshot.fund'
+        ]);
 
         $fundData = null;
-        $snapshot = $this->snapshot()->first();
-        if ($snapshot) {
-            $fund = $snapshot->fund()->first();
-            if ($fund) {
-                $fundData = $fund->title;
+        if ($this->snapshot && $this->snapshot->isNotEmpty()) {
+            $snapshot = $this->snapshot->first();
+            if ($snapshot && $snapshot->fund) {
+                $fundData = $snapshot->fund->title;
             }
         }
 
@@ -182,9 +193,9 @@ class VoterHistory extends Model
     }
 
     /**
-     * Get the snapshot through voting power.
+     * Get the snapshot.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasOneThrough
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function snapshot(): HasMany
     {
@@ -194,7 +205,7 @@ class VoterHistory extends Model
     /**
      * Get the fund through snapshot.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasOneThrough
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
     public function fund()
     {
@@ -210,34 +221,52 @@ class VoterHistory extends Model
     /**
      * Get the voting power attribute.
      */
-    public function votingPower(): Attribute
+    public function getVotingPower(): float
     {
-        return Attribute::make(
-            get: function () {
-                $votingPower = $this->voterPower()->first();
-
-                return $votingPower ? (float) $votingPower->voting_power : 0;
-            },
-        );
+        if ($this->relationLoaded('voterPower') && $this->voterPower !== null) {
+            return (float) $this->voterPower->voting_power;
+        }
+        
+        if ($this->relationLoaded('voter') && 
+            $this->voter !== null && 
+            $this->voter->relationLoaded('voting_powers') && 
+            $this->voter->voting_powers->isNotEmpty()) {
+            return (float) $this->voter->voting_powers->first()->voting_power;
+        }
+        
+        if (!$this->relationLoaded('voterPower')) {
+            $this->load('voterPower');
+            if ($this->voterPower !== null) {
+                return (float) $this->voterPower->voting_power;
+            }
+        }
+        
+        return 0;
     }
 
     /**
-     * Get the fund name attribute.
+     * Get the fund attribute.
      */
-    public function fundName(): Attribute
+    public function getFund()
     {
-        return Attribute::make(
-            get: function () {
-                $snapshot = $this->snapshot()->first();
-                if (! $snapshot) {
-                    return null;
+        if ($this->relationLoaded('snapshot') && 
+            $this->snapshot->isNotEmpty() && 
+            $this->snapshot->first()->relationLoaded('fund')) {
+            $fund = $this->snapshot->first()->fund;
+            return $fund ? $fund->title : null;
+        }
+        
+        if (!$this->relationLoaded('snapshot')) {
+            $this->load(['snapshot', 'snapshot.fund']);
+            if ($this->snapshot->isNotEmpty()) {
+                $snapshot = $this->snapshot->first();
+                if ($snapshot && $snapshot->fund) {
+                    return $snapshot->fund->title;
                 }
-
-                $fund = $snapshot->fund()->first();
-
-                return $fund;
-            },
-        );
+            }
+        }
+        
+        return null;
     }
 
     /**
