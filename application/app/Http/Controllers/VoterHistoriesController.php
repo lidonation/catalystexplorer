@@ -5,19 +5,17 @@ declare(strict_types=1);
 namespace App\Http\Controllers;
 
 use App\DataTransferObjects\VoterHistoryData;
-use Illuminate\Http\Request;
 use App\Enums\VoteSearchParams;
-use App\Models\VoterHistory;
 use App\Models\Voter;
-use App\Models\VotingPower;
+use App\Models\VoterHistory;
 use App\Repositories\VoterHistoryRepository;
+use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Fluent;
+use Illuminate\Support\Stringable;
 use Inertia\Inertia;
 use Inertia\Response;
 use Laravel\Scout\Builder;
-use Illuminate\Support\Stringable;
-use Illuminate\Support\Facades\Log;
 
 class VoterHistoriesController extends Controller
 {
@@ -47,7 +45,7 @@ class VoterHistoriesController extends Controller
     public function index(Request $request): Response
     {
         $this->getProps($request);
-        
+
         $voterHistories = $this->query();
 
         $props = [
@@ -75,17 +73,17 @@ class VoterHistoriesController extends Controller
             VoteSearchParams::QUERY()->value => 'string|nullable',
             VoteSearchParams::SECONDARY_QUERY()->value => 'string|nullable',
         ]);
-        
-        if (!empty($this->queryParams[VoteSearchParams::SORTS()->value])) {
+
+        if (! empty($this->queryParams[VoteSearchParams::SORTS()->value])) {
             $sort = collect(explode(':', $this->queryParams[VoteSearchParams::SORTS()->value]))->filter();
             $this->sortBy = $sort->first();
             $this->sortOrder = $sort->last();
         }
-        
+
         if (isset($this->queryParams[VoteSearchParams::QUERY()->value])) {
             $this->search = $this->queryParams[VoteSearchParams::QUERY()->value];
         }
-        
+
         if (isset($this->queryParams[VoteSearchParams::SECONDARY_QUERY()->value])) {
             $this->secondarySearch = $this->queryParams[VoteSearchParams::SECONDARY_QUERY()->value];
         }
@@ -116,25 +114,24 @@ class VoterHistoriesController extends Controller
         $args['limit'] = $limit;
 
         $voterHistories = app(VoterHistoryRepository::class);
-        
+
         $query = '';
-        
-        if (!empty($this->secondarySearch)) {
+
+        if (! empty($this->secondarySearch)) {
             $query = $this->secondarySearch;
             $args['isSecondarySearch'] = true;
-            
-            if (!empty($this->search)) {
+
+            if (! empty($this->search)) {
                 $args['filter'][] = "stake_address = '{$this->search}'";
             }
-        } 
-        else if (!empty($this->search)) {
+        } elseif (! empty($this->search)) {
             $query = $this->search;
             $args['isStakeSearch'] = true;
         }
-        
+
         $builder = $voterHistories->search($query, $args);
         $response = new Fluent($builder->raw());
-        
+
         $this->setCounts($response->facetDistribution ?? [], $response->facetStats ?? []);
 
         $pagination = new LengthAwarePaginator(
@@ -166,13 +163,12 @@ class VoterHistoriesController extends Controller
             } else {
                 $choiceArray = [$choices];
             }
-            
-            $choiceArray = array_filter(array_map('trim', $choiceArray), function($value) {
+
+            $choiceArray = array_filter(array_map('trim', $choiceArray), function ($value) {
                 return $value !== '' && $value !== null;
             });
-            
-            
-            if (!empty($choiceArray)) {
+
+            if (! empty($choiceArray)) {
                 if (count($choiceArray) === 1) {
                     $filters[] = "choice = {$choiceArray[0]}";
                 } else {
@@ -181,7 +177,7 @@ class VoterHistoriesController extends Controller
                 }
             }
         }
-        
+
         if (isset($this->queryParams[VoteSearchParams::FUND()->value]) && $this->queryParams[VoteSearchParams::FUND()->value] !== null && $this->queryParams[VoteSearchParams::FUND()->value] !== '') {
             $fund = $this->queryParams[VoteSearchParams::FUND()->value];
 
@@ -192,17 +188,17 @@ class VoterHistoriesController extends Controller
             } else {
                 $fundArray = [$fund];
             }
-            
-            $fundArray = array_filter(array_map('trim', $fundArray), function($value) {
+
+            $fundArray = array_filter(array_map('trim', $fundArray), function ($value) {
                 return $value !== '' && $value !== null;
             });
 
-            if (!empty($fundArray)) {
+            if (! empty($fundArray)) {
                 $funds = implode("','", $fundArray);
                 $filters[] = "fund IN ['{$funds}']";
             }
         }
-        
+
         return $filters;
     }
 
@@ -214,7 +210,7 @@ class VoterHistoriesController extends Controller
         if (isset($facets['choice'])) {
             $this->choice = $facets['choice'];
         }
-        
+
         if (isset($facets['fund'])) {
             $this->funds = $facets['fund'];
         }
@@ -230,13 +226,13 @@ class VoterHistoriesController extends Controller
             ->whereNotNull('choice')
             ->orderBy('choice')
             ->pluck('choice')
-            ->map(function($choice) {
+            ->map(function ($choice) {
                 $label = is_numeric($choice) ? "{$choice}" : $choice;
-                
+
                 return [
                     'id' => $choice,
                     'name' => $label,
-                    'hash' => $choice
+                    'hash' => $choice,
                 ];
             });
 

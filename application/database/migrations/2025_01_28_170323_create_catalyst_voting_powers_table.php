@@ -15,14 +15,13 @@ return new class extends Migration
             $table->id();
             $table->string('delegate');
             $table->unsignedBigInteger('snapshot_id');
-            $table->unsignedBigInteger('voter_id');
-            $table->decimal('voting_power', 18, 8);
-            $table->boolean('consumed')->default(false);
-            $table->integer('votes_cast')->default(0);
+            $table->text('voter_id');
+            $table->float('voting_power');
+            $table->boolean('consumed')->nullable();
+            $table->integer('votes_cast')->nullable();
             $table->foreign('snapshot_id')->references('id')->on('snapshots')->onDelete('cascade');
 
             $table->timestamps();
-
         });
     }
 
