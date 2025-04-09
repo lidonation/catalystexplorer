@@ -54,6 +54,8 @@ class VoterHistoriesController extends Controller
             'secondarySearch' => $this->secondarySearch,
             'sort' => "{$this->sortBy}:{$this->sortOrder}",
             'filters' => $this->queryParams,
+            'choices' => $this->choice,
+            'funds' => $this->funds,
         ];
 
         return Inertia::render('Votes/Index', $props);
@@ -106,9 +108,9 @@ class VoterHistoriesController extends Controller
             ? (int) $this->queryParams[VoteSearchParams::PAGE()->value]
             : 1;
 
-        $limit = isset($this->queryParams['l'])
-            ? (int) $this->queryParams['l']
-            : 9;
+        $limit = isset($this->queryParams[VoteSearchParams::LIMIT()->value])
+            ? (int) $this->queryParams[VoteSearchParams::LIMIT()->value]
+            : 10;
 
         $args['offset'] = ($page - 1) * $limit;
         $args['limit'] = $limit;
@@ -128,19 +130,25 @@ class VoterHistoriesController extends Controller
             $query = $this->search;
             $args['isStakeSearch'] = true;
         }
-
+        
+        $args['facets'] = ['choice', 'fund'];
+        
         $builder = $voterHistories->search($query, $args);
         $response = new Fluent($builder->raw());
 
         $this->setCounts($response->facetDistribution ?? [], $response->facetStats ?? []);
 
+        $voterHistoryData = VoterHistoryData::collect($response->hits ?? []);
+        
         $pagination = new LengthAwarePaginator(
-            VoterHistoryData::collect($response->hits ?? []),
+            $voterHistoryData,
             $response->estimatedTotalHits ?? 0,
             $limit,
             $page,
             [
                 'pageName' => VoteSearchParams::PAGE()->value,
+                'path' => request()->url(),
+                'query' => request()->query(),
             ]
         );
 
@@ -167,8 +175,8 @@ class VoterHistoriesController extends Controller
             $choiceArray = array_filter(array_map('trim', $choiceArray), function ($value) {
                 return $value !== '' && $value !== null;
             });
-
-            if (! empty($choiceArray)) {
+            
+            if (!empty($choiceArray)) {
                 if (count($choiceArray) === 1) {
                     $filters[] = "choice = {$choiceArray[0]}";
                 } else {
@@ -217,7 +225,7 @@ class VoterHistoriesController extends Controller
     }
 
     /**
-     * Get unique choice values for filter dropdown
+     * Get unique choice values for filter dropdown - optimized to avoid N+1 queries
      */
     public function getChoices()
     {
