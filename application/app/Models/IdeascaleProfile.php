@@ -14,6 +14,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\DB;
 use Laravel\Scout\Searchable;
 use Laravolt\Avatar\Facade as Avatar;
 use Spatie\MediaLibrary\HasMedia;
@@ -291,6 +292,33 @@ class IdeascaleProfile extends Model implements HasMedia
     public function reviews(): HasManyDeep
     {
         return $this->hasManyDeepFromRelations($this->proposals(), (new Proposal)->reviews());
+    }
+
+    public function aggregatedRatings(): Attribute
+    {
+        return Attribute::make(
+            get: function () {
+                $proposalIds = $this->proposals()->pluck('proposals.id');
+
+                if ($proposalIds->isEmpty()) {
+                    return collect(range(1, 5))->mapWithKeys(fn ($rating) => [$rating => 0])->all();
+                }
+
+                $ratingsQuery = DB::table('ratings')
+                    ->select('ratings.rating', DB::raw('COUNT(*) as count'))
+                    ->join('reviews', 'reviews.id', '=', 'ratings.review_id')
+                    ->join('discussions', 'reviews.model_id', '=', 'discussions.id')
+                    ->whereIn('discussions.model_id', $proposalIds)
+                    ->where('discussions.model_type', Proposal::class)
+                    ->groupBy('ratings.rating');
+
+                $ratings = $ratingsQuery->pluck('count', 'rating')->toArray();
+
+                return collect(range(1, 5))
+                    ->mapWithKeys(fn ($rating) => [$rating => $ratings[$rating] ?? 0])
+                    ->all();
+            }
+        );
     }
 
     public function claimed_by(): BelongsTo
