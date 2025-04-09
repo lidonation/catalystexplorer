@@ -124,19 +124,6 @@ Route::localized(
                     Route::post('/{ideascaleProfile}/claim', [ClaimIdeascaleProfileController::class, 'claimIdeascaleProfile'])
                         ->name('saveClaim');
                 });
-            Route::prefix('voting')->middleware(['auth', 'workflow'])->group(function () {
-                Route::get('/step/{step}/{sessionId?}', [VotingWorkflowController::class, 'handleStep'])
-                    ->name('workflows.voting.index');
-
-                Route::post('/save-decisions', [VotingWorkflowController::class, 'saveVotingDecisions'])
-                    ->name('workflows.voting.saveDecisions');
-
-                Route::post('/sign-ballot', [VotingWorkflowController::class, 'signBallot'])
-                    ->name('workflows.voting.signBallot');
-
-                Route::post('/submit-votes', [VotingWorkflowController::class, 'submitVotes'])
-                    ->name('workflows.voting.submitVotes');
-            });
 
             Route::prefix('/create-voter-list/steps')->as('createVoterList.')
                 ->middleware([WorkflowMiddleware::class])
@@ -153,6 +140,21 @@ Route::localized(
 
             Route::get('/create-voter-list/success', [VoterListController::class, 'success'])
                 ->name('createVoterList.success');
+
+            Route::prefix('/voting/steps')->as('voting.')
+                ->middleware([WorkflowMiddleware::class])
+                ->group(function () {
+                    Route::get('/{step}', [VotingWorkflowController::class, 'handleStep'])
+                        ->name('index');
+                    Route::post('/save-decisions', [VotingWorkflowController::class, 'saveVotingDecisions'])
+                        ->name('saveDecisions');
+                    Route::post('/sign-ballot', [VotingWorkflowController::class, 'signBallot'])
+                        ->name('signBallot');
+                    Route::post('/submit-votes', [VotingWorkflowController::class, 'submitVotes'])
+                        ->name('submitVotes');
+                    Route::get('/success', [VotingWorkflowController::class, 'success'])
+                        ->name('voting.success');
+                });
 
             Route::prefix('/drep-sign-up/steps')->as('drepSignUp.')
                 ->middleware([WorkflowMiddleware::class])
