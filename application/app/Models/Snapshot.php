@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Snapshot extends Model
 {
@@ -33,5 +33,4 @@ class Snapshot extends Model
     {
         return $this->belongsTo(Fund::class, 'model_id');
     }
-
 }

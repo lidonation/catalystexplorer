@@ -16,7 +16,10 @@ return new class extends Migration
             $table->string('snapshot_name');
             $table->string('model_type');
             $table->unsignedBigInteger('model_id');
-            $table->timestamps();
+            $table->integer('epoch');
+            $table->smallInteger('order');
+
+            $table->timestamp('snapshot_at');
 
             $table->index(['model_type', 'model_id']);
         });

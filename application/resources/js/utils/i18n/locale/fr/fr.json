@@ -126,6 +126,65 @@
             "selectProposal": "Sélectionnez une proposition",
             "selectProfileInfo": "Choisissez le(s) profil(s) à partir duquel/lesquels vous souhaitez créer des NFT. Le profil sélectionné doit être lié au projet finalisé dont vous souhaitez créer le NFT. Vous hésitez ? Pas de souci : sélectionnez simplement tous les profils disponibles et nous nous occupons du reste ! 🚀",
             "selectProposalInfo": "Pour commencer, veuillez sélectionner la proposition à partir de laquelle créer"
+        },
+        "voterList": {
+            "welcome": "Before you start, let's set up your Voting List. A Voting List is a collection of proposals that you support and want others to consider. This helps streamline governance participation. Ready to begin? In the next steps, you'll name your list, add proposals, and explain your rationale for selecting them.",
+            "proposalsOnly": "Unlike other list types, only proposals can be added to voting lists.",
+            "title": "Title",
+            "description": "Description",
+            "descriptionPlaceholder": "Describe the purpose of this list in a few words.",
+            "descriptionHint": "Must be at least 200 characters.",
+            "selectFund": "Select Fund",
+            "visibility": "Visibility",
+            "visibilityOptions": {
+                "public": "Public",
+                "private": "Private",
+                "delegators": "Delegators"
+            },
+            "comments": "Comments",
+            "commentsEnabled": "Comments Enabled",
+            "chooseColor": "Choose Color",
+            "pickTheme": "Pick list theme",
+            "status": "Status",
+            "statusOptions": {
+                "published": "Publish",
+                "draft": "Draft"
+            },
+            "selectCampaign": "Select campaign:",
+            "allCampaigns": "All",
+            "selectedProposals": "Selected Proposals:",
+            "proposalCard": {
+                "budget": "Budget:",
+                "fund": "Fund:",
+                "campaign": "Campaign:",
+                "voteYes": "Yes",
+                "voteAbstain": "Abstain"
+            },
+            "searchProposals": "Search for a proposal",
+            "errors": {
+                "titleRequired": "Title is required",
+                "fundRequired": "Fund selection is required",
+                "descriptionLength": "Description must be 200 characters",
+                "rationaleLength": "Rationale must be at least 200 characters"
+            },
+            "rationale": {
+                "label": "Rationale",
+                "placeholder": "Summerize the reasoning behind your selections.",
+                "hint": "Minimum 200 characters required"
+            },
+            "success": {
+                "title": "Success!!",
+                "message": "Your Voting List has been created! Share it with others and make an impact on governance decisions."
+            },
+            "steps": {
+                "details": "Details",
+                "listDetail": "List Detail",
+                "listDetailInfo": "Give your Voting List a name and a short description. This helps others understand what your list is about",
+                "proposals": "Proposals",
+                "proposalsInfo": "Now, let's add proposals to your Voting List. You can search for existing proposals and select the ones that align.",
+                "rationale": "Rationale",
+                "rationaleInfo": "Why did you select these proposals? Providing a rationale helps others understand your choices and makes your list more credible."
+            }
         }
     },
     "error404": {
@@ -261,14 +320,44 @@
     },
     "communities": {
         "communities": "Communautés",
-        "title": "Catalyst Communautés",
-        "subtitle": "Diversifiés, indépendants et inspirant ensemble le plus haut niveau de collaboration humaine",
+        "title": "Communautés Catalyst",
+        "subtitle": "Diverses, indépendantes et ensemble inspirant le plus haut niveau de collaboration humaine",
+        "proposalSummary": "Résumé des propositions",
+        "totalRequested": "Total demandé",
+        "proposers": "Proposants",
+        "collaborators": "Collaborateurs",
+        "totalAmountAwarded": "Montant total attribué",
+        "totalAmountDistributed": "Montant total distribué",
+        "totalAmountRemaining": "Montant total restant",
+        "totalAwarded": "Montant total d'ADA et USD attribué",
+        "totalDistributed": "Montant total d'ADA et USD distribué",
+        "totalRemained": "Montant total d'ADA et USD restant",
+        "amountAwardedUsd": "Montant attribué en USD",
+        "amountAwardedAda": "Montant attribué en ADA",
+        "amountAwarded": "Montant attribué",
+        "amountDistributed": "Montant distribué",
+        "amountRemaining": "Montant restant",
         "options": {
-            "alphabetically": "Alphabétiquement: A to Z",
-            "amountAwardedAdaDesc": "Montant Accordé ada: plus élevé au plus bas",
-            "amountAwardedAdaAsc": "Montant Accordé ada: plus bas au plus élevé",
-            "amountAwardedUsdDesc": "Montant Accordé USD: plus élevé au plus bas",
-            "amountAwardedUsdAsc": "Montant Acordé USD: plus bas au plus élevé"
+            "alphabetically": "Alphabétiquement : A à Z",
+            "amountAwardedAdaDesc": "Montant attribué en ADA : Du plus élevé au plus bas",
+            "amountAwardedAdaAsc": "Montant attribué en ADA : Du plus bas au plus élevé",
+            "amountAwardedUsdDesc": "Montant attribué en USD : Du plus élevé au plus bas",
+            "amountAwardedUsdAsc": "Montant attribué en USD : Du plus bas au plus élevé"
+        },
+        "tabs": {
+            "dashboard": "Tableau de bord",
+            "proposals": "Propositions",
+            "members": "Membres",
+            "groups": "Groupes",
+            "events": "Événements"
+        },
+        "filters": {
+            "totalAdaAwarded": "Montant total d'ADA attribué",
+            "totalUsdAwarded": "Montant total d'USD attribué",
+            "totalAdaDistributed": "Montant total d'ADA distribué",
+            "totalUsdDistributed": "Montant total d'USD distribué",
+            "totalAdaRemaining": "Montant total d'ADA restant",
+            "totalUsdRemaining": "Montant total d'USD restant"
         }
     },
     "dreps": {
@@ -486,7 +575,6 @@
             "amountAwardedUsdAsc": "Montant accordé en USD : faible à élevé"
         }
     },
-
     "posts": {
         "title": "Articles des Catalysts",
         "subtitle": "Dernières nouvelles et publications de notre communauté"
@@ -549,6 +637,13 @@
             "ada": "Icône Ada",
             "usd": "Icône USD"
         }
+    },
+    "segments": {
+        "completed": "Terminé",
+        "unfunded": "Non financé",
+        "funded": "Financé",
+        "ownProposals": "Propositions personnelles",
+        "collaboratingProposals": "Propositions collaboratives"
     },
     "users": {
         "editProfile": "modifier le profil",
