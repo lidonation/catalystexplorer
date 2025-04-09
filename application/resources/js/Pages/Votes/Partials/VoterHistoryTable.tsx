@@ -24,8 +24,8 @@ interface VoterHistoryTableProps {
 
 const VoterHistoryTable: React.FC<VoterHistoryTableProps> = ({ voterHistories }) => {
   const { t } = useTranslation();
-  const [showFilters, setShowFilters] = useState(false);
-  const { filters } = useFilterContext();
+  const [showFilters, setShowFilters] = useState<boolean>(false);
+  const { filters, setFilters } = useFilterContext();
   const [isLoading, setIsLoading] = useState(false);
   const prevFiltersRef = useRef('');
   const isInitialRender = useRef(true);
@@ -283,7 +283,25 @@ const VoterHistoryTable: React.FC<VoterHistoryTableProps> = ({ voterHistories })
                 linkProps={{
                   preserveScroll: true,
                   only: ['voterHistories', 'filters'],
-                  replace: true
+                  replace: true,
+                  onClick: (e) => {
+                    // If this is a pagination link, handle it manually
+                    const target = e.target as HTMLAnchorElement;
+                    if (target.href && target.href.includes(VoteEnums.PAGE)) {
+                      e.preventDefault();
+                      const url = new URL(target.href);
+                      const pageValue = url.searchParams.get(VoteEnums.PAGE);
+                      if (pageValue) {
+                        // Use setFilters directly, not filters.setFilters
+                        setFilters({
+                          param: VoteEnums.PAGE,
+                          value: parseInt(pageValue),
+                          label: 'Current Page',
+                          resetPageOnChange: false
+                        });
+                      }
+                    }
+                  }
                 }}
               />
             </div>
