@@ -40,7 +40,8 @@ const Breadcrumbs = ({
         displayItems.length === 1 &&
         displayItems[0].label === t('breadcrumbs.home') ||
         displayItems.some((item) => item.href.includes('workflows')) ||
-        displayItems.some((item) => item.href.includes('dreps'))
+        displayItems.some((item) => item.href.includes('dreps')) ||
+        displayItems.some((item) => item.href.includes('votes')) 
     ) {
         //don't display breadcrumbs if there is only one item and it's 'Home' or part of the workflow
         return null;
