@@ -406,6 +406,13 @@ fund: App.DataTransferObjects.FundData | null;
 opensource: boolean | null;
 link?: string;
 };
+export type RankingData = {
+hash?: string;
+user_id?: number;
+model_id: number;
+model_type: string;
+value: number;
+};
 export type ReviewData = {
 hash: string | null;
 parent_id?: number;
@@ -416,8 +423,8 @@ rating: number | null;
 proposal: App.DataTransferObjects.ProposalData | null;
 reviewer: App.DataTransferObjects.ReviewerData | null;
 ranking_total: number | null;
-helpful_total: number | null;
-not_helpful_total: number | null;
+positive_rankings: number | null;
+negative_rankings: number | null;
 };
 export type ReviewModerationData = {
 hash: string | null;
@@ -478,7 +485,7 @@ reference_script_hash: string | null;
 consumed_by_tx: string | null;
 };
 export type UserData = {
-hash: string;
+hash: string | null;
 name: string;
 email: string;
 hero_img_url: string | null;
