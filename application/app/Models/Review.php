@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Support\Facades\Artisan;
+use Laravel\Scout\Builder;
 use Laravel\Scout\Searchable;
 use Staudenmeir\EloquentHasManyDeep\HasRelationships;
 
