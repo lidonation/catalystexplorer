@@ -37,12 +37,6 @@ const labels = {
     com: 'Communities',
     ip: 'Ideascale Profiles',
     g: 'Groups',
-    // New additions
-    pr: 'Proposals',
-    ri: 'Reviewer IDs',
-    h: 'Helpful',
-    r: 'Ratings',
-    rs: 'Reputation Score'
 };
 
 type LabelKeys = keyof typeof labels;
@@ -175,6 +169,7 @@ export function FiltersProvider({
     const getFilters = (filter: FilteredItem) => {
         // Create a new array to avoid mutating the previous state
         let updatedFilters = updateFilter([...filters], filter);
+        // const currentUrl = window.location.origin + window.location.pathname;
         const queryString = new URLSearchParams(
             formatToParams(updatedFilters),
         ).toString();

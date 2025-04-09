@@ -21,4 +21,9 @@ class Voter extends Model
     {
         return $this->hasMany(VoterHistory::class, 'stake_address', 'stake_pub');
     }
+
+    public function voting_powers(): HasMany
+    {
+        return $this->hasMany(VotingPower::class, 'voter_id');
+    }
 }

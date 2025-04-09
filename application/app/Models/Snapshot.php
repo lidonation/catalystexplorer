@@ -6,6 +6,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Snapshot extends Model
 {
@@ -27,4 +28,10 @@ class Snapshot extends Model
     {
         return $this->hasMany(VotingPower::class, 'snapshot_id', 'id');
     }
+
+    public function fund(): BelongsTo
+    {
+        return $this->belongsTo(Fund::class, 'model_id');
+    }
+
 }
