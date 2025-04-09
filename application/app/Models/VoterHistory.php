@@ -49,6 +49,11 @@ class VoterHistory extends Model
         ];
     }
 
+    public function searchableAs()
+    {
+        return 'cx_voter_histories';
+    }
+
     /**
      * Get the searchable attributes for the model.
      *
