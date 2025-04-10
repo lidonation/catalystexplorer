@@ -24,6 +24,6 @@ class Voter extends Model
 
     public function voting_powers(): HasMany
     {
-        return $this->hasMany(VotingPower::class, 'voter_id');
+        return $this->hasMany(VotingPower::class, 'voter_id', 'cat_id');
     }
 }
