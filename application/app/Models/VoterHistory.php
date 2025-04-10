@@ -18,6 +18,13 @@ class VoterHistory extends Model
     use Searchable, SoftDeletes;
 
     /**
+     * The table associated with the model.
+     *
+     * @var string
+     */
+    protected $table = 'voter_history';
+
+    /**
      * The attributes that aren't mass assignable.
      *
      * @var array<string>
@@ -129,12 +136,12 @@ class VoterHistory extends Model
     public function toSearchableArray(): array
     {
         $this->loadMissing([
-            'voter',
-            'voter.voting_powers',
-            'voter.voting_powers.snapshot',
+            'voter', 
+            'voter.voting_powers', 
+            'voter.voting_powers.snapshot', 
             'voter.voting_powers.snapshot.fund',
             'snapshot',
-            'snapshot.fund',
+            'snapshot.fund'
         ]);
 
         $fundData = null;
@@ -189,11 +196,13 @@ class VoterHistory extends Model
             'voter_id',
             'caster',
             'id'
-        );
+        )->whereRaw('voting_powers.voter_id = voters.id::text');
     }
 
     /**
      * Get the snapshot.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function snapshot(): HasMany
     {
@@ -224,21 +233,21 @@ class VoterHistory extends Model
         if ($this->relationLoaded('voterPower') && $this->voterPower !== null) {
             return (float) $this->voterPower->voting_power;
         }
-
-        if ($this->relationLoaded('voter') &&
-            $this->voter !== null &&
-            $this->voter->relationLoaded('voting_powers') &&
+        
+        if ($this->relationLoaded('voter') && 
+            $this->voter !== null && 
+            $this->voter->relationLoaded('voting_powers') && 
             $this->voter->voting_powers->isNotEmpty()) {
             return (float) $this->voter->voting_powers->first()->voting_power;
         }
-
-        if (! $this->relationLoaded('voterPower')) {
+        
+        if (!$this->relationLoaded('voterPower')) {
             $this->load('voterPower');
             if ($this->voterPower !== null) {
                 return (float) $this->voterPower->voting_power;
             }
         }
-
+        
         return 0;
     }
 
@@ -247,15 +256,14 @@ class VoterHistory extends Model
      */
     public function getFund()
     {
-        if ($this->relationLoaded('snapshot') &&
-            $this->snapshot->isNotEmpty() &&
+        if ($this->relationLoaded('snapshot') && 
+            $this->snapshot->isNotEmpty() && 
             $this->snapshot->first()->relationLoaded('fund')) {
             $fund = $this->snapshot->first()->fund;
-
             return $fund ? $fund->title : null;
         }
-
-        if (! $this->relationLoaded('snapshot')) {
+        
+        if (!$this->relationLoaded('snapshot')) {
             $this->load(['snapshot', 'snapshot.fund']);
             if ($this->snapshot->isNotEmpty()) {
                 $snapshot = $this->snapshot->first();
@@ -264,7 +272,7 @@ class VoterHistory extends Model
                 }
             }
         }
-
+        
         return null;
     }
 
