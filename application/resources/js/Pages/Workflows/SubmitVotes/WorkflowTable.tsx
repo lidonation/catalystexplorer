@@ -49,12 +49,12 @@ const getVoteClass = (voteType: VoteEnum) => {
 };
 
 function WorkflowTable<T>({
-                                       items,
-                                       columns,
-                                       keyExtractor,
-                                       votesMap,
-                                       emptyState = { context: 'records', showIcon: true }
-                                   }: WorkflowTableProps<T>): React.ReactElement {
+                              items,
+                              columns,
+                              keyExtractor,
+                              votesMap,
+                              emptyState = { context: 'records', showIcon: true }
+                          }: WorkflowTableProps<T>): React.ReactElement {
     const defaultVoteRender = (item: T, index: number) => {
         const key = keyExtractor(item);
         if (!votesMap) return null;

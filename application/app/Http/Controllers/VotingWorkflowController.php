@@ -10,6 +10,7 @@ use App\Enums\ProposalSearchParams;
 use App\Enums\QueryParamsEnum;
 use App\Models\Fund;
 use App\Models\Proposal;
+use App\Models\Signatures;
 use App\Repositories\ProposalRepository;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -38,6 +39,8 @@ class VotingWorkflowController extends Controller
 
     public function step1(Request $request): Response
     {
+        $this->setCorrectNextStep($request, 1);
+
         return Inertia::render('Workflows/SubmitVotes/Step1', [
             'stepDetails' => $this->getStepDetails(),
             'activeStep' => intval($request->step),
@@ -50,23 +53,38 @@ class VotingWorkflowController extends Controller
 
     public function step2(Request $request): Response
     {
+        $this->setCorrectNextStep($request, 2);
         $selectedProposalSlugs = $request->session()->get('selected_proposals', []);
         $votes = $request->session()->get('votes', []);
+        $proposalData = $request->session()->get('proposal_data', []); // Get stored proposal data
 
         $page = (int) $request->input(ProposalSearchParams::PAGE()->value, 1);
         $limit = (int) $request->input('limit', 5);
 
-        $selectedProposals = $this->getSelectedProposals($selectedProposalSlugs, $votes);
-
-        $paginatedProposals = $this->paginateArray(
-            $selectedProposals,
-            $limit,
-            $page,
-            [
-                'pageName' => 'p',
-                'path' => $request->url(),
-            ]
-        );
+        // If we have stored proposal data, use it
+        if (! empty($proposalData)) {
+            $paginatedProposals = $this->paginateArray(
+                $proposalData,
+                $limit,
+                $page,
+                [
+                    'pageName' => 'p',
+                    'path' => $request->url(),
+                ]
+            );
+        } else {
+            // Fall back to the existing method if no stored data
+            $selectedProposals = $this->getSelectedProposals($selectedProposalSlugs, $votes);
+            $paginatedProposals = $this->paginateArray(
+                $selectedProposals,
+                $limit,
+                $page,
+                [
+                    'pageName' => 'p',
+                    'path' => $request->url(),
+                ]
+            );
+        }
 
         return Inertia::render('Workflows/SubmitVotes/Step2', [
             'stepDetails' => $this->getStepDetails(),
@@ -79,6 +97,8 @@ class VotingWorkflowController extends Controller
 
     public function step3(Request $request): Response
     {
+        $this->setCorrectNextStep($request, 3);
+
         return Inertia::render('Workflows/SubmitVotes/Step3', [
             'stepDetails' => $this->getStepDetails(),
             'activeStep' => intval($request->step),
@@ -87,15 +107,26 @@ class VotingWorkflowController extends Controller
 
     public function step4(Request $request): Response
     {
+        $this->setCorrectNextStep($request, 4);
+        $wallet = $request->session()->get('wallet', null);
+
+        $selectedProposalSlugs = $request->session()->get('selected_proposals', []);
+        $votes = $request->session()->get('votes', []);
+        $proposalData = $request->session()->get('proposal_data', []);
+        Log::info('Saving Voting Decisions in step 4', [
+            'proposalData' => $validated['proposalData'] ?? [],
+        ]);
+
         return Inertia::render('Workflows/SubmitVotes/Step4', [
             'stepDetails' => $this->getStepDetails(),
             'activeStep' => intval($request->step),
-            'wallet' => $request->session()->get('wallet', null),
+            'wallet' => $wallet,
         ]);
     }
 
     public function step5(Request $request): Response
     {
+        $this->setCorrectNextStep($request, 5);
         $selectedProposalSlugs = $request->session()->get('selected_proposals', []);
         $votes = $request->session()->get('votes', []);
 
@@ -119,6 +150,7 @@ class VotingWorkflowController extends Controller
             'activeStep' => intval($request->step),
             'proposals' => $paginatedProposals,
             'filters' => $this->getFilters($request),
+            'votes' => $votes,
         ]);
     }
 
@@ -127,6 +159,21 @@ class VotingWorkflowController extends Controller
         return Inertia::render('Workflows/SubmitVotes/Success', [
             'stepDetails' => $this->getStepDetails(),
             'activeStep' => 6,
+        ]);
+    }
+
+    private function setCorrectNextStep(Request $request, int $step): void
+    {
+        $nextStep = $step + 1;
+        if ($nextStep > 6) {
+            $nextStep = 6;
+        }
+
+        $request->session()->put('nextstep', [
+            'route' => 'workflows.voting.index',
+            'param' => [
+                'step' => (string) $nextStep,
+            ],
         ]);
     }
 
@@ -140,17 +187,19 @@ class VotingWorkflowController extends Controller
         $validated = $request->validate([
             'proposals' => 'array',
             'votes' => 'array',
+            'proposalData' => 'array',
         ]);
-        Log::info('Saving Voting Decisions', [
-            'proposals' => $validated['proposals'],
-            'votes' => $validated['votes'],
+        Log::info('Saving Voting Decisions - Detailed', [
+            'proposals_count' => count($validated['proposals'] ?? []),
+            'votes_count' => count($validated['votes'] ?? []),
+            'proposalData_count' => count($validated['proposalData'] ?? []),
+            'proposals' => $validated['proposals'] ?? [],
+            'votes' => $validated['votes'] ?? [],
+            'first_proposal' => $validated['proposalData'][0] ?? null,
         ]);
         $request->session()->put('selected_proposals', $validated['proposals'] ?? []);
         $request->session()->put('votes', $validated['votes'] ?? []);
-        Log::info('Session Data After Saving', [
-            'selected_proposals' => $request->session()->get('selected_proposals'),
-            'votes' => $request->session()->get('votes'),
-        ]);
+        $request->session()->put('proposal_data', $validated['proposalData'] ?? []);
 
         return to_route('workflows.voting.index', [
             'step' => 2,
@@ -161,9 +210,14 @@ class VotingWorkflowController extends Controller
     {
         $validated = $request->validate([
             'wallet' => 'required|string',
+            'walletAddress' => 'nullable|string',
+            'network' => 'nullable|string',
+            'networkId' => 'nullable|string',
+            'stake_key' => 'nullable|string',
         ]);
 
         $request->session()->put('wallet', $validated['wallet']);
+        $request->session()->put('wallet_data', $validated);
 
         return to_route('workflows.voting.index', [
             'step' => 4,
@@ -175,10 +229,39 @@ class VotingWorkflowController extends Controller
         $selectedProposals = $request->session()->get('selected_proposals', []);
         $votes = $request->session()->get('votes', []);
         $wallet = $request->session()->get('wallet', null);
+        $walletData = $request->session()->get('wallet_data', []);
+
+        foreach ($request->only([
+            'walletName', 'walletAddress', 'walletProvider',
+            'balance', 'network', 'chainId', 'timestamp', 'stake_key',
+        ]) as $key => $value) {
+            if ($value) {
+                $walletData[$key] = $value;
+            }
+        }
+
+        $request->session()->put('wallet_data', $walletData);
 
         if (empty($selectedProposals) || empty($votes) || empty($wallet)) {
             return back()->withErrors(['message' => 'Missing required data for vote submission.']);
         }
+        try {
+            Signatures::create([
+                'stake_key' => $walletData['stake_key'] ?? '',
+                'signature' => $walletData['signature'] ?? '',
+                'signature_key' => $walletData['signature_key'] ?? '',
+                'wallet_provider' => $wallet,
+            ]);
+
+        } catch (\Exception $e) {
+            return back()->withErrors(['message' => 'Error saving signature. Please try again.']);
+        }
+        $request->session()->put('nextstep', [
+            'route' => 'en.workflows.voting.index',
+            'param' => [
+                'step' => '5',
+            ],
+        ]);
 
         return to_route('workflows.voting.index', [
             'step' => 5,
@@ -254,35 +337,52 @@ class VotingWorkflowController extends Controller
     {
         $dbProposals = Proposal::whereIn('slug', $slugs)
             ->with('fund')
-            ->get()
-            ->map(function ($proposal) use ($votes) {
-                return [
-                    'slug' => $proposal->slug,
-                    'title' => $proposal->title,
+            ->get();
+        $dbProposalsMap = $dbProposals->keyBy('slug')->toArray();
+
+        $result = [];
+
+        foreach ($slugs as $slug) {
+            if (isset($dbProposalsMap[$slug])) {
+                $proposal = $dbProposalsMap[$slug];
+                $result[] = [
+                    'slug' => $proposal['slug'],
+                    'title' => $proposal['title'],
                     'fund' => [
-                        'title' => $proposal->fund->title ?? 'Unknown Fund',
+                        'title' => $proposal['fund']['title'] ?? 'Unknown Fund',
                     ],
-                    'requested_funds' => $proposal->requested_funds ?? '75K ADA',
-                    'vote' => $votes[$proposal->slug] ?? null,
+                    'budget' => $proposal['budget'] ?? $proposal['amount_requested'] ?? '75K ADA',
+                    'requested_funds' => $proposal['amount_requested'] ?? '75K ADA',
+                    'vote' => $votes[$slug] ?? null,
                     'exists' => true,
                 ];
-            })
-            ->keyBy('slug')
-            ->toArray();
-        $result = [];
-        foreach ($dbProposals as $proposal) {
-            $result[] = $proposal;
-        }
+            } else {
+                $humanReadableTitle = ucwords(str_replace('-', ' ', $slug));
 
-        foreach ($votes as $slug => $vote) {
-            if (! isset($dbProposals[$slug])) {
                 $result[] = [
                     'slug' => $slug,
-                    'title' => $slug,
+                    'title' => $humanReadableTitle,
                     'fund' => [
                         'title' => 'Unknown Fund',
                     ],
-                    'requested_funds' => '75k ADA',
+                    'requested_funds' => '75K ADA',
+                    'vote' => $votes[$slug] ?? null,
+                    'exists' => false,
+                ];
+            }
+        }
+
+        foreach ($votes as $slug => $vote) {
+            if (! in_array($slug, $slugs)) {
+                $humanReadableTitle = ucwords(str_replace('-', ' ', $slug));
+
+                $result[] = [
+                    'slug' => $slug,
+                    'title' => $humanReadableTitle,
+                    'fund' => [
+                        'title' => 'Unknown Fund',
+                    ],
+                    'requested_funds' => '75K ADA',
                     'vote' => $vote,
                     'exists' => false,
                 ];
@@ -298,19 +398,31 @@ class VotingWorkflowController extends Controller
             return [];
         }
 
-        return Proposal::whereIn('slug', $slugs)
+        $existingProposals = Proposal::whereIn('slug', $slugs)
             ->with('fund')
             ->get()
-            ->map(function ($proposal, $index) {
-                return [
-                    'slug' => $proposal->slug,
-                    'title' => $proposal->title,
-                    'fund' => $proposal->fund->title ?? 'Unknown Fund',
-                    'requested_funds' => $proposal->requested_funds ?? '75K A',
-                    'status' => $index === 0 ? 'submitted' : 'submitting',
-                ];
-            })
-            ->toArray();
+            ->keyBy('slug');
+
+        $proposals = [];
+        $isFirstProposal = true;
+
+        foreach ($slugs as $slug) {
+            $proposal = $existingProposals->get($slug);
+
+            $proposalData = [
+                'slug' => $slug,
+                'title' => $proposal ? $proposal->title : $slug,
+                'fund' => $proposal && $proposal->fund ? $proposal->fund->title : 'Unknown Fund',
+                'requested_funds' => $proposal ? ($proposal->amount_requested ?? '75K ADA') : '75K ADA',
+                'status' => $isFirstProposal ? 'submitted' : 'submitting',
+                'vote' => $votes[$slug] ?? null,
+            ];
+
+            $proposals[] = $proposalData;
+            $isFirstProposal = false;
+        }
+
+        return $proposals;
     }
 
     private function getFilters(Request $request): array

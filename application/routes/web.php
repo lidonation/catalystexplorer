@@ -154,7 +154,7 @@ Route::localized(
                     Route::post('/submit-votes', [VotingWorkflowController::class, 'submitVotes'])
                         ->name('submitVotes');
                     Route::get('/success', [VotingWorkflowController::class, 'success'])
-                        ->name('voting.success');
+                        ->name('success');
                 });
 
             Route::prefix('/drep-sign-up/steps')->as('drepSignUp.')
@@ -290,7 +290,7 @@ Route::localized(
         Route::prefix('/votes')->as('votes.')->group(function () {
             Route::get('/', [VoterHistoriesController::class, 'index'])
                 ->name('index');
-        }); 
+        });
 
         Route::get('/voter-tool', [VoterToolController::class, 'index'])
             ->name('voter-tool.index');

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { router } from '@inertiajs/react';
@@ -47,21 +47,25 @@ const Step3: React.FC<Step3Props> = ({
     const {
         connectedWalletProvider,
         userAddress,
-        openConnectWalletSlider
+        stakeKey,
+        openConnectWalletSlider,
+        networkName,
+        networkId,
     } = useConnectWallet();
-
-    useEffect(() => {
-        if (connectedWalletProvider && userAddress) {
-            handleSubmit();
-        }
-    }, [connectedWalletProvider, userAddress]);
 
     const handleSubmit = () => {
         router.post(generateLocalizedRoute('workflows.voting.signBallot'), {
-            wallet: connectedWalletProvider?.name || ''
+            wallet: connectedWalletProvider?.name || '',
+            walletAddress: userAddress,
+            network: networkName,
+            networkId: networkId ? String(networkId) : null,
+            stake_key: stakeKey
         }, {
             onSuccess: () => {
                 router.visit(nextStep);
+            },
+            onError: (errors) => {
+                console.error('Wallet connection errors:', errors);
             }
         });
     };
@@ -76,23 +80,10 @@ const Step3: React.FC<Step3Props> = ({
                         <Title level="4" className="mb-8 text-content font-bold text-center">{t('Connect Wallet')}</Title>
 
                         <div className="w-full max-w-md space-y-4">
-                            {connectedWalletProvider ? (
-                                <div className="p-4 bg-success-light rounded-lg border border-success">
-                                    <Title level="4" className="text-content font-bold">
-                                        {t('wallet.connect.connectedTo')}
-                                    </Title>
-                                    <div className="flex items-center justify-between mt-2">
-                                        <Paragraph className="font-mono text-sm font-medium text-dark">
-                                            {userAddress.substring(0, 8)}...{userAddress.substring(userAddress.length - 8)}
-                                        </Paragraph>
-                                    </div>
-                                </div>
-                            ) : (
-                                <ConnectWalletButton
-                                    className="w-full justify-center py-3"
-                                    onClick={openConnectWalletSlider}
-                                />
-                            )}
+                            <ConnectWalletButton
+                                className="w-full justify-center py-3"
+                                onClick={openConnectWalletSlider}
+                            />
                         </div>
                     </div>
                 </div>
@@ -111,10 +102,8 @@ const Step3: React.FC<Step3Props> = ({
                     className="text-sm lg:px-8 lg:py-3"
                     disabled={!connectedWalletProvider}
                     onClick={(e) => {
-                        if (!connectedWalletProvider) {
-                            e.preventDefault();
-                        } else {
-                            e.preventDefault();
+                        e.preventDefault();
+                        if (connectedWalletProvider) {
                             handleSubmit();
                         }
                     }}

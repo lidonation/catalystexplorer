@@ -16,12 +16,12 @@ interface ProposalVotingCardProps {
     currentVote?: VoteEnum;
 }
 
-const ProposalVotingCard: React.FC<ProposalVotingCardProps> = ({ 
-    proposal, 
-    isSelected, 
-    onSelect, 
-    onVote, 
-    currentVote 
+const ProposalVotingCard: React.FC<ProposalVotingCardProps> = ({
+    proposal,
+    isSelected,
+    onSelect,
+    onVote,
+    currentVote
 }) => {
     const { t } = useTranslation();
 
@@ -44,7 +44,7 @@ const ProposalVotingCard: React.FC<ProposalVotingCardProps> = ({
         amountRequested,
         currencyCode,
     );
-    
+
     return (
         <div className="flex items-center ml-4 mr-2 p-4 border border-gray-200 rounded-lg shadow-sm mb-4">
             <div

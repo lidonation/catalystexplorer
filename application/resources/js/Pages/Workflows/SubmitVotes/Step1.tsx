@@ -54,11 +54,24 @@ const Step1: React.FC<Step1Props> = ({
     const form = useForm({
         proposals: Array.from(selectedProposals),
         votes: votesState,
+        proposalData: proposals.data
+            .filter(p => p.slug && selectedProposals.has(p.slug))
+            .map(p => ({
+                slug: p.slug || '',
+                title: p.title || '',
+                fund: {
+                    title: p.fund?.title || 'Unknown Fund'
+                },
+                requested_funds: p.amount_requested || '75K ADA',
+                vote: votesState[p.slug || ''] || null,
+                exists: true
+            }))
     });
 
     useEffect(() => {
         form.setData('proposals', Array.from(selectedProposals));
         form.setData('votes', votesState);
+        proposalData: proposals.data.filter(p => selectedProposals.has(p.slug || ''))
     }, [selectedProposals, votesState]);
 
     const handleSelectProposal = (proposalSlug: string) => {

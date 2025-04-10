@@ -11,7 +11,7 @@ declare global {
       };
     }
   }
-  
+
   export interface CIP30API {
     getNetworkId: () => Promise<number>;
     getUtxos: () => Promise<string[] | undefined>;
@@ -19,6 +19,7 @@ declare global {
     getBalance: () => Promise<string>;
     getUsedAddresses: () => Promise<string[]>;
     getUnusedAddresses: () => Promise<string[]>;
+    getRewardAddresses: () => Promise<string[]>;
     signTx: (tx: string, partialSign?: boolean) => Promise<string>;
     submitTx: (tx: string) => Promise<string>;
     experimental?: {

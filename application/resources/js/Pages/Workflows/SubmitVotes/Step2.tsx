@@ -8,7 +8,6 @@ import WorkflowLayout from '../WorkflowLayout';
 import Content from '../Partials/WorkflowContent';
 import Footer from '../Partials/WorkflowFooter';
 import Nav from '../Partials/WorkflowNav';
-import PaginatedWorkflowTable from './WorkflowTable';
 import { VoteEnum } from '@/enums/votes-enums';
 import { StepDetails } from '@/types';
 import { ParamsEnum } from '@/enums/proposal-search-params';
@@ -23,7 +22,6 @@ interface ProposalType {
     fund?: {
         title: string;
     };
-    budget?: string;
     requested_funds?: string;
     vote?: VoteEnum;
 }
@@ -56,18 +54,19 @@ const Step2: React.FC<Step2Props> = ({
     });
 
     useEffect(() => {
+        console.log('Step2 received data:', {
+            selectedProposals,
+            votes,
+            filters
+        });
+        console.log('Proposal details:', selectedProposals.data.map(proposal => ({
+            slug: proposal.slug,
+            title: proposal.title,
+            fund: proposal.fund,
+            requested_funds: proposal.requested_funds,
+            vote: proposal.vote
+        })));
         const errors: string[] = [];
-
-        if (selectedProposals.total === 0) {
-            errors.push("No proposals were selected in previous step");
-        }
-
-        const missingVotes = selectedProposals.data.filter(p =>
-            votes[p.slug] === undefined || votes[p.slug] === null
-        );
-        if (missingVotes.length > 0) {
-            errors.push(`Proposals missing votes: ${missingVotes.map(p => p.slug).join(', ')}`);
-        }
 
         setFormErrors(errors);
     }, [selectedProposals, votes]);
@@ -137,7 +136,7 @@ const Step2: React.FC<Step2Props> = ({
         {
             key: 'budget',
             header: 'Budget',
-            render: (item: ProposalType) => item.requested_funds || item.budget || '-'
+            render: (item: ProposalType) => item.requested_funds || item.requested_funds || '-'
         },
         {
             key: 'vote',
