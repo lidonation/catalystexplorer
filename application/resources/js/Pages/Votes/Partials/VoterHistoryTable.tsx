@@ -16,6 +16,8 @@ import { SearchParams } from '../../../../types/search-params';
 import { PaginatedData } from '../../../../types/paginated-data';
 import VoterHistoryData = App.DataTransferObjects.VoterHistoryData;
 import Button from '@/Components/atoms/Button';
+import RecordsNotFound from '@/Layouts/RecordsNotFound';
+import Paragraph from '@/Components/atoms/Paragraph';
 
 interface VoterHistoryTableProps {
   voterHistories?: PaginatedData<VoterHistoryData[]>;
@@ -31,6 +33,7 @@ const VoterHistoryTable: React.FC<VoterHistoryTableProps> = ({ voterHistories })
   const isInitialRender = useRef(true);
   const [hoveredCell, setHoveredCell] = useState<{rowIndex: number, col: string} | null>(null);
   const [copiedField, setCopiedField] = useState<string | null>(null);
+  const [hasSearched, setHasSearched] = useState<boolean>(false);
   
   useEffect(() => {
     if (isInitialRender.current) {
@@ -52,6 +55,7 @@ const VoterHistoryTable: React.FC<VoterHistoryTableProps> = ({ voterHistories })
     
     prevFiltersRef.current = currentFiltersStr;
     setIsLoading(true);
+    setHasSearched(true);
     
     const url = new URL(window.location.href);
     const params: Record<string, any> = {};
@@ -78,6 +82,17 @@ const VoterHistoryTable: React.FC<VoterHistoryTableProps> = ({ voterHistories })
     });
   }, [filters]);
 
+  // Check if there are active search filters
+  const hasActiveFilters = () => {
+    if (!filters || filters.length === 0) return false;
+    
+    return filters.some(filter => 
+      filter.param === VoteEnums.QUERY || 
+      filter.param === VoteEnums.SECONDARY_QUERY ||
+      filter.value !== undefined && filter.value !== ''
+    );
+  };
+
   const safelyGetNestedValue = (obj: any, path: string, defaultValue: any = 'N/A') => {
     try {
       const result = path.split('.').reduce((o, key) => (o && o[key] !== undefined) ? o[key] : null, obj);
@@ -85,6 +100,26 @@ const VoterHistoryTable: React.FC<VoterHistoryTableProps> = ({ voterHistories })
     } catch (e) {
       console.error(`Error accessing path ${path}:`, e);
       return defaultValue;
+    }
+  };
+
+  const formatTime = (timestamp: string): string => {
+    try {
+      const date = new Date(timestamp);
+      const month = date.toLocaleString('en-US', { month: 'short' });
+      const day = date.getDate();
+      const year = date.getFullYear();
+      
+      let hours = date.getHours();
+      const ampm = hours >= 12 ? 'PM' : 'AM';
+      hours = hours % 12;
+      hours = hours ? hours : 12;
+      const minutes = date.getMinutes().toString().padStart(2, '0');
+      
+      return `${month} ${day}, ${year} ${hours}:${minutes} ${ampm}`;
+    } catch (e) {
+      console.error('Error formatting time:', e);
+      return 'N/A';
     }
   };
 
@@ -183,6 +218,17 @@ const VoterHistoryTable: React.FC<VoterHistoryTableProps> = ({ voterHistories })
     );
   };
 
+  // Check if we should show "Records Not Found"
+  const shouldShowNoRecords = () => {
+    // Return true if:
+    // 1. Not loading
+    // 2. Either hasSearched is true OR there are active filters
+    // 3. No data or empty data array
+    return !isLoading && 
+           (hasSearched || hasActiveFilters()) && 
+           (!voterHistories?.data || voterHistories.data.length === 0);
+  };
+
   return (
     <div className="overflow-x-auto">
       <section className="container">
@@ -204,110 +250,113 @@ const VoterHistoryTable: React.FC<VoterHistoryTableProps> = ({ voterHistories })
         <VoteFilters/>
       </section>
       
-      <div className='container mb-4'>
-        <div className="w-full bg-background shadow-sm overflow-hidden rounded-lg border border-dark-light">
-          <div className="overflow-x-auto">
-            <table className="min-w-full w-max">
-              <thead className="bg-background-lighter whitespace-nowrap">
-                <tr>
-                  <th className="py-3 px-4 border-b border-r border-dark-light text-left font-medium text-gray-persist bg-background-lighter">{t('vote.table.fund')}</th>
-                  <th className="py-3 px-4 border-b border-r border-dark-light text-left font-medium text-gray-persist">{t('vote.table.stakeAddress')}</th>
-                  <th className="py-3 px-4 border-b border-r border-dark-light text-left font-medium text-gray-persist">{t('vote.table.fragmentId')}</th>
-                  <th className="py-3 px-4 border-b border-r border-dark-light text-left font-medium text-gray-persist">{t('vote.table.caster')}</th>
-                  <th className="py-3 px-4 border-b border-r border-dark-light text-left font-medium text-gray-persist">{t('vote.table.timestamp')}</th>
-                  <th className="py-3 px-4 border-b border-r border-dark-light text-center font-medium text-gray-persist">{t('vote.table.choice')}</th>
-                  <th className="py-3 px-4 border-b border-r border-dark-light text-left font-medium text-gray-persist">{t('vote.table.votingPower')}</th>
-                  <th className="py-3 px-4 border-b border-dark-light text-left font-medium text-gray-persist">{t('vote.table.rawFragment')}</th>
-                </tr>
-              </thead>
-              <tbody className="whitespace-nowrap">
-                {!isLoading && voterHistories?.data && voterHistories.data.length > 0 ? (
-                  voterHistories.data.map((history, index) => (
-                    <tr key={safelyGetNestedValue(history, 'fragment_id', index)}>
-                      <td className="py-4 px-4 border-b border-r border-dark-light text-darker bg-background">
-                        {typeof history.fund === 'string' 
-                            ? history.fund 
-                            : history.fund && typeof history.fund === 'object' && 'title' in history.fund
-                            ? history.fund.title
-                            : t('vote.notAvailable')}
-                      </td>
-                      <td className="py-4 px-4 border-b border-r border-dark-light text-darker w-40">
-                        {history.stake_address ? 
-                          getValueWithTooltip(index, history, 'stake_address', history.stake_address) : 
-                          t('vote.notAvailable')}
-                      </td>
-                      <td className="py-4 px-4 border-b border-r border-dark-light text-darker w-40">
-                        {getValueWithTooltip(index, history, 'fragment_id', safelyGetNestedValue(history, 'fragment_id'))}
-                      </td>
-                      <td className="py-4 px-4 border-b border-r border-dark-light text-darker w-40">
-                        {getValueWithTooltip(index, history, 'caster', safelyGetNestedValue(history, 'caster'))}
-                      </td>
-                      <td className="py-4 px-4 border-b border-r border-dark-light text-content">
-                        <div className="flex flex-col">
-                          <span>{safelyGetNestedValue(history, 'time')}</span>
-                          <span className="text-xs text-gray-persist">
-                            {getTimeAgo(safelyGetNestedValue(history, 'time'))}
-                          </span>
-                        </div>
-                      </td>
-                      <td className="py-4 px-4 border-b border-r text-center border-dark-light text-darker">
-                        {typeof safelyGetNestedValue(history, 'choice') === 'number' 
-                          ? safelyGetNestedValue(history, 'choice').toString() 
-                          : safelyGetNestedValue(history, 'choice')}
-                      </td>
-                      <td className="py-4 px-4 border-b border-r border-dark-light text-content">
-                        <div className="flex items-center">
-                          <span>{formatVotingPower(history.voting_power)}</span>
-                        </div>
-                      </td>
-                      <td className="py-4 px-4 border-b border-dark-light text-darker w-40">
-                        {getValueWithTooltip(index, history, 'raw_fragment', safelyGetNestedValue(history, 'raw_fragment'))}
-                      </td>
-                    </tr>
-                  ))
-                ) : !isLoading && (
+      {shouldShowNoRecords() && (
+        <div className="bg-background flex w-full flex-col items-center justify-center rounded-lg px-4 py-8 mb-10">
+            <RecordsNotFound />
+            <Paragraph className="mt-4 text-center text-dark">
+                {t('vote.noStakeAddressFound')}
+            </Paragraph>
+        </div>
+      )}
+
+      {(!shouldShowNoRecords() || isLoading) && (
+        <div className='container mb-4'>
+          <div className="w-full bg-background shadow-sm overflow-hidden rounded-lg border border-dark-light">
+            <div className="overflow-x-auto">
+              <table className="min-w-full w-max">
+                <thead className="bg-background-lighter whitespace-nowrap">
                   <tr>
-                    <td colSpan={8} className="py-8 text-center text-darker">
-                      {t('common.noResults')}
-                    </td>
+                    <th className="py-3 px-4 border-b border-r border-dark-light text-left font-medium text-gray-persist bg-background-lighter">{t('vote.table.fund')}</th>
+                    <th className="py-3 px-4 border-b border-r border-dark-light text-left font-medium text-gray-persist">{t('vote.table.stakeAddress')}</th>
+                    <th className="py-3 px-4 border-b border-r border-dark-light text-left font-medium text-gray-persist">{t('vote.table.fragmentId')}</th>
+                    <th className="py-3 px-4 border-b border-r border-dark-light text-left font-medium text-gray-persist">{t('vote.table.caster')}</th>
+                    <th className="py-3 px-4 border-b border-r border-dark-light text-left font-medium text-gray-persist">{t('vote.table.timestamp')}</th>
+                    <th className="py-3 px-4 border-b border-r border-dark-light text-center font-medium text-gray-persist">{t('vote.table.choice')}</th>
+                    <th className="py-3 px-4 border-b border-r border-dark-light text-left font-medium text-gray-persist">{t('vote.table.votingPower')}</th>
+                    <th className="py-3 px-4 border-b border-dark-light text-left font-medium text-gray-persist">{t('vote.table.rawFragment')}</th>
                   </tr>
-                )}
-              </tbody>
-            </table>
-          </div>
-          
-          {!isLoading && voterHistories && (
-            <div className="bg-background rounded-b-lg border-t border-dark-light p-2">
-              <Paginator
-                pagination={voterHistories} 
-                linkProps={{
-                  preserveScroll: true,
-                  only: ['voterHistories', 'filters'],
-                  replace: true,
-                  onClick: (e) => {
-                    // If this is a pagination link, handle it manually
-                    const target = e.target as HTMLAnchorElement;
-                    if (target.href && target.href.includes(VoteEnums.PAGE)) {
-                      e.preventDefault();
-                      const url = new URL(target.href);
-                      const pageValue = url.searchParams.get(VoteEnums.PAGE);
-                      if (pageValue) {
-                        // Use setFilters directly, not filters.setFilters
-                        setFilters({
-                          param: VoteEnums.PAGE,
-                          value: parseInt(pageValue),
-                          label: 'Current Page',
-                          resetPageOnChange: false
-                        });
+                </thead>
+                <tbody className="whitespace-nowrap">
+                  {!isLoading && voterHistories?.data && voterHistories.data.length > 0 && (
+                    voterHistories.data.map((history, index) => (
+                      <tr key={safelyGetNestedValue(history, 'fragment_id', index)}>
+                        <td className="py-4 px-4 border-b border-r border-dark-light text-darker bg-background">
+                          {typeof history.fund === 'string' 
+                              ? history.fund 
+                              : history.fund && typeof history.fund === 'object' && 'title' in history.fund
+                              ? history.fund.title
+                              : t('vote.notAvailable')}
+                        </td>
+                        <td className="py-4 px-4 border-b border-r border-dark-light text-darker w-40">
+                          {history.stake_address ? 
+                            getValueWithTooltip(index, history, 'stake_address', history.stake_address) : 
+                            t('vote.notAvailable')}
+                        </td>
+                        <td className="py-4 px-4 border-b border-r border-dark-light text-darker w-40">
+                          {getValueWithTooltip(index, history, 'fragment_id', safelyGetNestedValue(history, 'fragment_id'))}
+                        </td>
+                        <td className="py-4 px-4 border-b border-r border-dark-light text-darker w-40">
+                          {getValueWithTooltip(index, history, 'caster', safelyGetNestedValue(history, 'caster'))}
+                        </td>
+                        <td className="py-4 px-4 border-b border-r border-dark-light text-content">
+                          <div className="flex flex-col">
+                            <span>{formatTime(safelyGetNestedValue(history, 'time'))}</span>
+                            <span className="text-xs text-gray-persist">
+                              {getTimeAgo(safelyGetNestedValue(history, 'time'))}
+                            </span>
+                          </div>
+                        </td>
+                        <td className="py-4 px-4 border-b border-r text-center border-dark-light text-darker">
+                          {typeof safelyGetNestedValue(history, 'choice') === 'number' 
+                            ? safelyGetNestedValue(history, 'choice').toString() 
+                            : safelyGetNestedValue(history, 'choice')}
+                        </td>
+                        <td className="py-4 px-4 border-b border-r border-dark-light text-content">
+                          <div className="flex items-center">
+                            <span>{formatVotingPower(history.voting_power)}</span>
+                          </div>
+                        </td>
+                        <td className="py-4 px-4 border-b border-dark-light text-darker w-40">
+                          {getValueWithTooltip(index, history, 'raw_fragment', safelyGetNestedValue(history, 'raw_fragment'))}
+                        </td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            </div>
+            
+            {!isLoading && voterHistories && voterHistories.data && voterHistories.data.length > 0 && (
+              <div className="bg-background rounded-b-lg border-t border-dark-light p-2">
+                <Paginator
+                  pagination={voterHistories} 
+                  linkProps={{
+                    preserveScroll: true,
+                    only: ['voterHistories', 'filters'],
+                    replace: true,
+                    onClick: (e) => {
+                      const target = e.target as HTMLAnchorElement;
+                      if (target.href && target.href.includes(VoteEnums.PAGE)) {
+                        e.preventDefault();
+                        const url = new URL(target.href);
+                        const pageValue = url.searchParams.get(VoteEnums.PAGE);
+                        if (pageValue) {
+                          setFilters({
+                            param: VoteEnums.PAGE,
+                            value: parseInt(pageValue),
+                            label: 'Current Page',
+                            resetPageOnChange: false
+                          });
+                        }
                       }
                     }
-                  }
-                }}
-              />
-            </div>
-          )}
+                  }}
+                />
+              </div>
+            )}
+          </div>
         </div>
-      </div>
+      )}
 
       {isLoading && <VoteHistoryTableLoader/>}
       
