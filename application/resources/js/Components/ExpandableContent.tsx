@@ -10,7 +10,7 @@ const ExpandableContent: React.FC<ExpandableContentProps> = ({ className, childr
 
     return (
         <div
-            className={`relative cursor-pointer overflow-hidden transition-all duration-300 ease-in-out ${isExpanded ? '' : `${className}`}`}
+            className={`relative cursor-pointer overflow-hidden transition-opacity duration-3000 ease-in-out ${isExpanded ? '' : `${className}`}`}
             onMouseEnter={() => setIsExpanded(true)}
             onMouseLeave={() => setIsExpanded(false)}
         >
