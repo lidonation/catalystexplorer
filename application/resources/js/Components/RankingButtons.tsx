@@ -41,7 +41,7 @@ const RankingButtons: React.FC<RankingButtonsProps> = ({
                         <Paragraph className="font-bold">
                             {t('reviews.yes')}
                         </Paragraph>
-                        <Paragraph>{positiveRankings}</Paragraph>
+                        <Paragraph>{`(${positiveRankings})`}</Paragraph>
                     </>
                 )}
             </Button>
@@ -61,7 +61,7 @@ const RankingButtons: React.FC<RankingButtonsProps> = ({
                         <Paragraph className="font-bold">
                             {t('reviews.no')}
                         </Paragraph>
-                        <Paragraph>{negativeRankings}</Paragraph>
+                        <Paragraph>{`(${negativeRankings})`}</Paragraph>
                     </>
                 )}
             </Button>

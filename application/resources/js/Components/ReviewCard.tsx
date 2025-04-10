@@ -92,7 +92,7 @@ export const ReviewCard: React.FC<ReviewItemProps> = ({
                 </div>
 
                 {review.content && (
-                    <ExpandableContent className={'mt-2 line-clamp-5'}>
+                    <ExpandableContent className={'line-clamp-5'}>
                         <RichContent
                             className="text-gray-persist text-3"
                             content={review?.content}
