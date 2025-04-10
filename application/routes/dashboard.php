@@ -37,9 +37,7 @@ Route::localized(
                     return Inertia::render('My/Communities/Index');
                 })->name('communities');
 
-                Route::get('/dashboard', function () {
-                    return Inertia::render('My/Dashboard');
-                })->name('dashboard');
+                Route::get('/dashboard', [ProfileController::class, 'userSummary'])->name('dashboard');
 
                 Route::get('/groups', [GroupsController::class, 'myGroups'])->name('groups');
 

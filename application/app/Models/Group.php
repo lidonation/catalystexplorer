@@ -114,21 +114,21 @@ class Group extends Model implements HasMedia
     public function gravatar(): Attribute
     {
         return Attribute::make(
-            get: fn () => Avatar::create($this->name ?? 'default')->toGravatar()
+            get: fn() => Avatar::create($this->name ?? 'default')->toGravatar()
         );
     }
 
     public function heroImgUrl(): Attribute
     {
         return Attribute::make(
-            get: fn () => $this->getFirstMediaUrl('hero') ?? $this->gravatar
+            get: fn() => $this->getFirstMediaUrl('hero') ?? $this->gravatar
         );
     }
 
     public function bannerImgUrl(): Attribute
     {
         return Attribute::make(
-            get: fn () => $this->getFirstMediaUrl('banner') ?? null
+            get: fn() => $this->getFirstMediaUrl('banner') ?? null
         );
     }
 
@@ -226,7 +226,13 @@ class Group extends Model implements HasMedia
     public function proposals(): BelongsToMany
     {
         return $this->belongsToMany(
-            Proposal::class, 'group_has_proposal', 'group_id', 'proposal_id', 'id', 'id', 'proposals'
+            Proposal::class,
+            'group_has_proposal',
+            'group_id',
+            'proposal_id',
+            'id',
+            'id',
+            'proposals'
         );
     }
 
@@ -291,18 +297,24 @@ class Group extends Model implements HasMedia
     public function toSearchableArray(): array
     {
         $this->load(['media']);
+
         $array = $this->toArray();
-        $proposals = $this->proposals;
+
+        $proposals = $this->proposals->map(fn($p) => $p->toSearchableArray());
+
+        $ideascale_profiles = $this->ideascale_profiles->map(
+            fn($profile) => $profile->toSearchableArray(['proposals','groups'])
+        );
 
         return array_merge($array, [
-            'proposals_completed' => $proposals->filter(fn ($p) => $p['status'] === 'complete')?->count() ?? 0,
-            'proposals_funded' => $proposals->filter(fn ($p) => (bool) $p['funded_at'])?->count() ?? 0,
-            'proposals_unfunded' => $proposals->filter(fn ($p) => empty($p['funded_at']))->count(),
+            'proposals_completed' => $proposals->filter(fn($p) => $p['status'] === 'complete')?->count() ?? 0,
+            'proposals_funded' => $proposals->filter(fn($p) => (bool) $p['funded_at'])?->count() ?? 0,
+            'proposals_unfunded' => $proposals->filter(fn($p) => empty($p['funded_at']))->count(),
             'amount_received' => intval($this->proposals()->whereNotNull('funded_at')->sum('amount_received')),
-            'proposals_woman' => $proposals->filter(fn ($p) => ($p->is_woman_proposal ?? false) === true)->count(),
-            'proposals_ideascale' => $proposals->filter(fn ($p) => ($p->is_ideascale_proposal ?? false) === true)->count(),
-            'proposals_impact' => $proposals->filter(fn ($p) => ($p->is_impact_proposal ?? false) === true)->count(),
-            'reviews' => $proposals->filter(fn ($p) => ! empty($p->reviewers_total))->count(),
+            'proposals_woman' => $proposals->filter(fn($p) => ($p->is_woman_proposal ?? false) === true)->count(),
+            'proposals_ideascale' => $proposals->filter(fn($p) => ($p->is_ideascale_proposal ?? false) === true)->count(),
+            'proposals_impact' => $proposals->filter(fn($p) => ($p->is_impact_proposal ?? false) === true)->count(),
+            'reviews' => $proposals->filter(fn($p) => ! empty($p->reviewers_total))->count(),
             'amount_awarded_ada' => intval($this->amount_awarded_ada),
             'amount_awarded_usd' => intval($this->amount_awarded_usd),
             'amount_distributed_ada' => intval($this->amount_distributed_ada),
@@ -311,10 +323,11 @@ class Group extends Model implements HasMedia
             'amount_requested_usd' => intval($this->amount_requested_usd),
             'hero_img_url' => $this->hero_img_url,
             'banner_img_url' => $this->banner_img_url,
-            'proposals' => $this->proposals,
+            'proposals' => $proposals,
             'proposals_count' => $proposals->count(),
-            'ideascale_profiles' => $this->ideascale_profiles->map(fn ($m) => $m->toArray()),
-            'tags' => $this->tags->map(fn ($m) => $m->toArray()),
+            'ideascale_profiles' => $ideascale_profiles,
+            'tags' => $this->tags->map(fn($m) => $m->toArray()),
+            'connected_items' => $this->connected_items
         ]);
     }
 

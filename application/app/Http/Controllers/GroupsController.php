@@ -138,9 +138,6 @@ class GroupsController extends Controller
 
         // Determine which tab we're on based on the URL path
         if (str_contains($path, '/proposals')) {
-            $proposalsPaginator = $group->proposals()
-                ->with(['users', 'fund'])
-                ->paginate(5);
 
             return Inertia::render('Groups/Proposals/Index', [
                 'group' => GroupData::from($group),
@@ -212,9 +209,6 @@ class GroupsController extends Controller
         }
 
         // Default return if no specific path matches
-        $proposalsPaginator = $group->proposals()
-            ->with(['users', 'fund'])
-            ->paginate(5);
 
         return Inertia::render('Groups/Proposals/Index', [
             'group' => GroupData::from($group),

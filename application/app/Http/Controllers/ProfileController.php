@@ -4,17 +4,20 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use App\Models\Location;
 use App\Models\User;
-use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Illuminate\Http\RedirectResponse;
+use Inertia\Inertia;
+use App\Models\Group;
+use Inertia\Response;
+use App\Models\Location;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
+use App\Models\IdeascaleProfile;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Redirect;
-use Illuminate\Validation\Rule;
-use Inertia\Inertia;
-use Inertia\Response;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Repositories\IdeascaleProfileRepository;
 
 class ProfileController extends Controller
 {
@@ -55,8 +58,17 @@ class ProfileController extends Controller
     {
         $user = $request->user();
         $userData = $user->only([
-            'name', 'email', 'bio', 'profile_photo_path', 'short_bio',
-            'linkedin', 'twitter', 'website', 'city', 'updated_at', 'created_at',
+            'name',
+            'email',
+            'bio',
+            'profile_photo_path',
+            'short_bio',
+            'linkedin',
+            'twitter',
+            'website',
+            'city',
+            'updated_at',
+            'created_at',
         ]);
         $validator = match ($field) {
             'name' => validator($request->all(), ['name' => ['required', 'string', 'max:255']]),
@@ -198,5 +210,67 @@ class ProfileController extends Controller
         $request->session()->regenerateToken();
 
         return Redirect::to('/');
+    }
+
+    public function userSummary(Request $request): Response
+    {
+        $userId = $request->user()->id;
+
+        $ideascaleProfile = app(IdeascaleProfileRepository::class);
+
+        $args = [
+            'filter' => ["claimed_by_id = {$userId }"],
+            'attributesToRetrieve' => $attrs ?? [
+                'id',
+                'claimed_by_id',
+                'completed_proposals_count',
+                'funded_proposals_count',
+                'unfunded_proposals_count',
+                'proposals_count',
+                'collaborating_proposals_count',
+                'own_proposals_count',
+                'amount_awarded_ada',
+                'amount_awarded_usd',
+                'proposals_funded',
+                'proposals_total_amount_requested',
+                'completed_proposals_count',
+                'funded_proposals_count',
+                'unfunded_proposals_count',
+            ],
+            'facets'=> [
+                'amount_awarded_ada',
+                'amount_awarded_usd',
+                'amount_distributed_ada',
+                'amount_distributed_usd',
+                'completed_proposals_count',
+                'funded_proposals_count',
+                'unfunded_proposals_count',
+                'own_proposals_count',
+                'collaborating_proposals_count',
+            ]
+        ];
+
+
+        $builder = $ideascaleProfile->search( '',
+            $args
+        );
+
+
+        dd($builder->raw(),IdeascaleProfile::where('claimed_by_id', operator: $userId)->withCount([
+            'completed_proposals',
+            'funded_proposals',
+            'unfunded_proposals',
+            'collaborating_proposals',
+            'proposals',
+        ])->get()->each->append([
+            'amount_awarded_ada',
+            'amount_awarded_usd',
+            'amount_distributed_ada',
+            'amount_distributed_usd',
+        ]));
+
+        $ideascaleProfile = IdeascaleProfile::where('claimed_by_id', operator: $userId)->get()->map(fn($p) => $p->hash);
+        
+        return Inertia::render('My/Dashboard');
     }
 }
