@@ -13,7 +13,7 @@ const GroupsList: React.FC<GroupListProps> = ({ groups }) => {
     const { t } = useTranslation();
     return (
         <>
-            <ul className="grid w-full grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+            <ul className="grid w-full grid-cols-1 gap-4 xl:grid-cols-2 2xl:grid-cols-3">
                 <AnimatePresence>
                     {groups?.map((group, index) => (
                         <motion.li
