@@ -18,13 +18,6 @@ class VoterHistory extends Model
     use Searchable, SoftDeletes;
 
     /**
-     * The table associated with the model.
-     *
-     * @var string
-     */
-    protected $table = 'voter_history';
-
-    /**
      * The attributes that aren't mass assignable.
      *
      * @var array<string>
