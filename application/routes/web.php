@@ -137,10 +137,10 @@ Route::localized(
                     Route::post('/save-rationales', [VoterListController::class, 'saveRationales'])
                         ->name('saveRationales');
                 });
-            
+
             Route::get('/create-voter-list/success', [VoterListController::class, 'success'])
                 ->name('createVoterList.success');
-                
+
             Route::prefix('/drep-sign-up/steps')->as('drepSignUp.')
                 ->middleware([WorkflowMiddleware::class])
                 ->group(function () {
@@ -258,6 +258,12 @@ Route::localized(
                 Route::get('/{transaction}', [TransactionController::class, 'show'])
                     ->name('show');
             });
+
+            Route::prefix('/votes')->as('votes.')->group(function () {
+                Route::get('/', [VoterHistoriesController::class, 'index'])
+                    ->name('index');
+            });
+
         });
 
         // Dreps
@@ -271,10 +277,6 @@ Route::localized(
             }
         );
 
-        Route::prefix('/votes')->as('votes.')->group(function () {
-            Route::get('/', [VoterHistoriesController::class, 'index'])
-                ->name('index');
-        }); 
 
         Route::get('/voter-tool', [VoterToolController::class, 'index'])
             ->name('voter-tool.index');

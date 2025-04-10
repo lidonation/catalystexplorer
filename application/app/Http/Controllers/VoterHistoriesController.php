@@ -130,16 +130,16 @@ class VoterHistoriesController extends Controller
             $query = $this->search;
             $args['isStakeSearch'] = true;
         }
-        
+
         $args['facets'] = ['choice', 'fund'];
-        
+
         $builder = $voterHistories->search($query, $args);
         $response = new Fluent($builder->raw());
 
         $this->setCounts($response->facetDistribution ?? [], $response->facetStats ?? []);
 
         $voterHistoryData = VoterHistoryData::collect($response->hits ?? []);
-        
+
         $pagination = new LengthAwarePaginator(
             $voterHistoryData,
             $response->estimatedTotalHits ?? 0,
@@ -175,8 +175,8 @@ class VoterHistoriesController extends Controller
             $choiceArray = array_filter(array_map('trim', $choiceArray), function ($value) {
                 return $value !== '' && $value !== null;
             });
-            
-            if (!empty($choiceArray)) {
+
+            if (! empty($choiceArray)) {
                 if (count($choiceArray) === 1) {
                     $filters[] = "choice = {$choiceArray[0]}";
                 } else {

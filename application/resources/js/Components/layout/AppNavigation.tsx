@@ -251,7 +251,9 @@ function AppNavigation() {
                                                 </NavLinkItem>
 
                                                 <NavLinkItem
-                                                    href="#"
+                                                    href={useLocalizedRoute(
+                                                        'jormungandr.votes.index',
+                                                    )}
                                                     title={t('Votes')}
                                                     ariaLabel={`${t('votes')} ${t('link')}`}
                                                     active={false}

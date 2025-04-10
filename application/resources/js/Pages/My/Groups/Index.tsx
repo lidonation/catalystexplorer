@@ -24,7 +24,7 @@ export default function MyGroups({ groups, filters }: MyGroupsProps) {
             <MyLayout>
                 <Head title="My Groups" />
 
-                <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+                <div className="container mb-8">
                     <WhenVisible
                         fallback={<GroupCardExtendedLoader />}
                         data="groups"
@@ -34,7 +34,7 @@ export default function MyGroups({ groups, filters }: MyGroupsProps) {
                 </div>
 
                 {groups && groups.total > 0 && (
-                    <section className="w-full px-4 lg:container lg:px-0">
+                    <section className="w-full container">
                         <Paginator pagination={groups} />
                     </section>
                 )}
