@@ -157,6 +157,7 @@ Route::localized(
                         ->name('success');
                 });
 
+
             Route::prefix('/drep-sign-up/steps')->as('drepSignUp.')
                 ->middleware([WorkflowMiddleware::class])
                 ->group(function () {
@@ -274,6 +275,12 @@ Route::localized(
                 Route::get('/{transaction}', [TransactionController::class, 'show'])
                     ->name('show');
             });
+
+            Route::prefix('/votes')->as('votes.')->group(function () {
+                Route::get('/', [VoterHistoriesController::class, 'index'])
+                    ->name('index');
+            });
+
         });
 
         // Dreps

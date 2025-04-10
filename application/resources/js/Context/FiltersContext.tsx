@@ -15,6 +15,7 @@ export interface FilteredItem {
     param: string;
     label?: string;
     value?: any;
+    resetPageOnChange?: boolean;
 }
 
 interface FilterContextType {
@@ -37,6 +38,11 @@ const labels = {
     com: 'Communities',
     ip: 'Ideascale Profiles',
     g: 'Groups',
+    pr: 'Proposals',
+    ri: 'Reviewer IDs',
+    h: 'Helpful',
+    r: 'Ratings',
+    rs: 'Reputation Score',
 };
 
 type LabelKeys = keyof typeof labels;
@@ -67,6 +73,7 @@ export function FiltersProvider({
     const [filters, setFiltersState] = useState<FilteredItem[]>(initialFilters);
 
     const isFirstLoad = useRef(true);
+    const pendingRequestRef = useRef<NodeJS.Timeout | null>(null);
 
     const updateFilter = (
         updatedFilters: FilteredItem[],
@@ -98,14 +105,18 @@ export function FiltersProvider({
             // Create a new array to avoid mutating the previous state
             let updated = updateFilter([...prev], filter);
 
-            // If the filter changed is NOT the page itself, reset the page to 1
-            if (filter.param !== ParamsEnum.PAGE) {
+            const shouldResetPage = 
+                filter.param !== ParamsEnum.PAGE && 
+                filter.resetPageOnChange !== false;
+                
+            if (shouldResetPage) {
                 updated = updateFilter(updated, {
                     param: ParamsEnum.PAGE,
                     label: 'Current Page',
                     value: 1,
                 });
             }
+            
             return updated;
         });
     }, []);
@@ -118,7 +129,11 @@ export function FiltersProvider({
             return;
         }
 
-        const fetchData = async () => {
+        if (pendingRequestRef.current) {
+            clearTimeout(pendingRequestRef.current);
+        }
+
+        pendingRequestRef.current = setTimeout(() => {
             const previousFilters = filtersRef.current || [];
 
             const changedFilters = filters.filter((filter) => {
@@ -140,14 +155,20 @@ export function FiltersProvider({
             const paginationFiltered =
                 changedParams.includes(ParamsEnum.PAGE) ||
                 changedParams.includes(ParamsEnum.LIMIT);
+                
             router.get(currentUrl, formatToParams(), {
                 preserveState: true,
                 preserveScroll: !paginationFiltered,
                 ...routerOptions,
             });
+        }, 50);
+        
+        return () => {
+            if (pendingRequestRef.current) {
+                clearTimeout(pendingRequestRef.current);
+                pendingRequestRef.current = null;
+            }
         };
-
-        fetchData().then();
     }, [filters, routerOptions]);
 
     const formatToParams = (externalFilters?: FilteredItem[]) => {

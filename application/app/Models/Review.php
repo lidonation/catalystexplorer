@@ -6,10 +6,12 @@ namespace App\Models;
 
 use App\Enums\ProposalSearchParams;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Support\Facades\Artisan;
+use Laravel\Scout\Builder;
 use Laravel\Scout\Searchable;
 use Staudenmeir\EloquentHasManyDeep\HasRelationships;
 
@@ -26,7 +28,8 @@ class Review extends Model
             'title',
             'content',
             'reviewer.catalyst_reviewer_id',
-            'helpful_total',
+            'positive_rankings',
+            'negative_ranings',
             'status',
             'model_id',
             'model_type',
@@ -64,8 +67,9 @@ class Review extends Model
             'created_at',
             'reviewer.avg_reputation_score',
             'rating',
-            'helpful_total',
-            'not_helpful_total',
+            'rankings',
+            'positive_rankings',
+            'negative_rankings',
         ];
     }
 
@@ -116,6 +120,24 @@ class Review extends Model
         return $this->morphTo('model', 'model_type', 'model_id');
     }
 
+    public function rankings(): HasMany
+    {
+        return $this->hasMany(Ranking::class, 'model_id')
+            ->where('model_type', Review::class);
+    }
+
+    public function positiveRankings(): HasMany
+    {
+        return $this->rankings()
+            ->where('value', '=', 1);
+    }
+
+    public function negativeRankings(): HasMany
+    {
+        return $this->rankings()
+            ->where('value', '=', -1);
+    }
+
     public function review_moderation_reviewer(): HasOne
     {
         return $this->hasOne(ReviewModerationReviewer::class, 'review_id');
@@ -151,9 +173,9 @@ class Review extends Model
 
         if (isset($this->queryParams[ProposalSearchParams::HELPFUL()->value])) {
             if ($this->queryParams[ProposalSearchParams::HELPFUL()->value] === 'true') {
-                $filters[] = 'helpful_total > 0';
+                $filters[] = 'positive_rankings > 0';
             } elseif ($this->queryParams[ProposalSearchParams::HELPFUL()->value] === 'false') {
-                $filters[] = 'helpful_total = 0';
+                $filters[] = 'positive_rankings = 0';
             }
         }
     }
@@ -170,6 +192,9 @@ class Review extends Model
             'parent' => $this->parent?->toArray(),
             'children' => $this->children,
             'rating' => $this->rating?->rating,
+            'ranking' => $this->rankings,
+            'positive_rankings' => $this->positiveRankings->count(),
+            'negative_rankings' => $this->negativeRankings->count(),
         ]);
     }
 }

@@ -11,17 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('snapshots', function (Blueprint $table) {
+        Schema::create('rankings', function (Blueprint $table) {
             $table->id();
-            $table->string('snapshot_name');
-            $table->string('model_type');
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->unsignedBigInteger('model_id');
-            $table->integer('epoch');
-            $table->smallInteger('order');
-
-            $table->timestamp('snapshot_at');
-
-            $table->index(['model_type', 'model_id']);
+            $table->string('model_type'); 
+            $table->tinyInteger('value'); 
+            $table->timestamps();
         });
     }
 
@@ -30,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('snapshots');
+        Schema::dropIfExists('rankings');
     }
 };
