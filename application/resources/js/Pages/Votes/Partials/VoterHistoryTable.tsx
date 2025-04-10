@@ -88,6 +88,27 @@ const VoterHistoryTable: React.FC<VoterHistoryTableProps> = ({ voterHistories })
     }
   };
 
+  const formatTime = (timestamp: string): string => {
+    try {
+      const date = new Date(timestamp);
+      const month = date.toLocaleString('en-US', { month: 'short' });
+      const day = date.getDate();
+      const year = date.getFullYear();
+      
+      // Format hours and minutes with AM/PM
+      let hours = date.getHours();
+      const ampm = hours >= 12 ? 'PM' : 'AM';
+      hours = hours % 12;
+      hours = hours ? hours : 12; // Convert 0 to 12
+      const minutes = date.getMinutes().toString().padStart(2, '0');
+      
+      return `${month} ${day}, ${year} ${hours}:${minutes} ${ampm}`;
+    } catch (e) {
+      console.error('Error formatting time:', e);
+      return 'N/A';
+    }
+  };
+
   const formatVotingPower = (value: any): string => {
     if (value === undefined || value === null) return '₳ 0.0';
     
@@ -244,7 +265,7 @@ const VoterHistoryTable: React.FC<VoterHistoryTableProps> = ({ voterHistories })
                       </td>
                       <td className="py-4 px-4 border-b border-r border-dark-light text-content">
                         <div className="flex flex-col">
-                          <span>{safelyGetNestedValue(history, 'time')}</span>
+                          <span>{formatTime(safelyGetNestedValue(history, 'time'))}</span>
                           <span className="text-xs text-gray-persist">
                             {getTimeAgo(safelyGetNestedValue(history, 'time'))}
                           </span>
