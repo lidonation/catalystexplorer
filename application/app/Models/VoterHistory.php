@@ -189,7 +189,7 @@ class VoterHistory extends Model
             'voter_id',
             'caster',
             'id'
-        );
+        )->whereRaw('voting_powers.voter_id = voters.id::text');
     }
 
     /**
