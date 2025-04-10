@@ -8,6 +8,7 @@ use App\Actions\TransformHashToIds;
 use App\Actions\TransformIdsToHashes;
 use App\DataTransferObjects\IdeascaleProfileData;
 use App\DataTransferObjects\ProposalData;
+use App\Enums\NftStatusEnum;
 use App\Enums\CatalystCurrencySymbols;
 use App\Enums\ProposalSearchParams;
 use App\Enums\ProposalStatus;
