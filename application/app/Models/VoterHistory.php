@@ -18,6 +18,13 @@ class VoterHistory extends Model
     use Searchable, SoftDeletes;
 
     /**
+     * The table associated with the model.
+     *
+     * @var string
+     */
+    protected $table = 'voter_history';
+
+    /**
      * The attributes that aren't mass assignable.
      *
      * @var array<string>
@@ -189,7 +196,7 @@ class VoterHistory extends Model
             'voter_id',
             'caster',
             'id'
-        );
+        )->whereRaw('voting_powers.voter_id = voters.id::text');
     }
 
     /**
