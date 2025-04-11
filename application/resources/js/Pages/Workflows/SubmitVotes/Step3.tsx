@@ -51,23 +51,51 @@ const Step3: React.FC<Step3Props> = ({
         openConnectWalletSlider,
         networkName,
         networkId,
+        extractSignature
     } = useConnectWallet();
 
-    const handleSubmit = () => {
-        router.post(generateLocalizedRoute('workflows.voting.signBallot'), {
-            wallet: connectedWalletProvider?.name || '',
-            walletAddress: userAddress,
-            network: networkName,
-            networkId: networkId ? String(networkId) : null,
-            stake_key: stakeKey
-        }, {
-            onSuccess: () => {
-                router.visit(nextStep);
-            },
-            onError: (errors) => {
-                console.error('Wallet connection errors:', errors);
+    const handleSubmit = async () => {
+        if (!connectedWalletProvider || !userAddress) {
+            console.error('Wallet not connected');
+            return;
+        }
+        try {
+            // Create a message to sign (typically containing voting information)
+            const messageToSign = JSON.stringify({
+                voter: userAddress,
+                stakeKey: stakeKey,
+                proposals: selectedProposals.map(p => p.slug),
+                votes: votes,
+                timestamp: new Date().toISOString()
+            });
+
+            // Extract signature using the wallet
+            const signatureResult = await extractSignature(messageToSign);
+
+            if (!signatureResult) {
+                console.error('Failed to get signature');
+                return;
             }
-        });
+            router.post(generateLocalizedRoute('workflows.voting.signBallot'), {
+                wallet: connectedWalletProvider?.name || '',
+                walletAddress: userAddress,
+                network: networkName,
+                networkId: networkId ? String(networkId) : null,
+                stake_key: stakeKey,
+                signature: signatureResult.signature,
+                signature_key: signatureResult.key,
+                message: messageToSign
+            }, {
+                onSuccess: () => {
+                    router.visit(nextStep);
+                },
+                onError: (errors) => {
+                    console.error('Wallet connection errors:', errors);
+                }
+            });
+        } catch (error) {
+            console.error('Error during signature process:', error);
+        }
     };
 
     return (

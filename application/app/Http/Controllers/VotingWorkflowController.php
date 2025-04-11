@@ -129,8 +129,9 @@ class VotingWorkflowController extends Controller
         $this->setCorrectNextStep($request, 5);
         $selectedProposalSlugs = $request->session()->get('selected_proposals', []);
         $votes = $request->session()->get('votes', []);
+        $proposalData = $request->session()->get('proposal_data', []);
 
-        $proposals = $this->getProposalsWithSubmissionStatus($selectedProposalSlugs, $votes);
+        $proposals = $this->getProposalsWithSubmissionStatus($selectedProposalSlugs, $votes, $proposalData);
 
         $page = (int) $request->input(ProposalSearchParams::PAGE()->value, 1);
         $limit = (int) $request->input('limit', 5);
@@ -189,14 +190,6 @@ class VotingWorkflowController extends Controller
             'votes' => 'array',
             'proposalData' => 'array',
         ]);
-        Log::info('Saving Voting Decisions - Detailed', [
-            'proposals_count' => count($validated['proposals'] ?? []),
-            'votes_count' => count($validated['votes'] ?? []),
-            'proposalData_count' => count($validated['proposalData'] ?? []),
-            'proposals' => $validated['proposals'] ?? [],
-            'votes' => $validated['votes'] ?? [],
-            'first_proposal' => $validated['proposalData'][0] ?? null,
-        ]);
         $request->session()->put('selected_proposals', $validated['proposals'] ?? []);
         $request->session()->put('votes', $validated['votes'] ?? []);
         $request->session()->put('proposal_data', $validated['proposalData'] ?? []);
@@ -214,6 +207,9 @@ class VotingWorkflowController extends Controller
             'network' => 'nullable|string',
             'networkId' => 'nullable|string',
             'stake_key' => 'nullable|string',
+            'signature' => 'nullable|string',
+            'signature_key' => 'nullable|string',
+            'message' => 'nullable|string',
         ]);
 
         $request->session()->put('wallet', $validated['wallet']);
@@ -392,10 +388,16 @@ class VotingWorkflowController extends Controller
         return $result;
     }
 
-    private function getProposalsWithSubmissionStatus(array $slugs, array $votes): array
+    private function getProposalsWithSubmissionStatus(array $slugs, array $votes, array $proposalData = []): array
     {
         if (empty($slugs)) {
             return [];
+        }
+        $proposalDataMap = [];
+        foreach ($proposalData as $proposal) {
+            if (isset($proposal['slug'])) {
+                $proposalDataMap[$proposal['slug']] = $proposal;
+            }
         }
 
         $existingProposals = Proposal::whereIn('slug', $slugs)
@@ -404,22 +406,34 @@ class VotingWorkflowController extends Controller
             ->keyBy('slug');
 
         $proposals = [];
-        $isFirstProposal = true;
-
         foreach ($slugs as $slug) {
-            $proposal = $existingProposals->get($slug);
+            if (isset($proposalDataMap[$slug])) {
+                // Use data from session
+                $sessionProposal = $proposalDataMap[$slug];
 
-            $proposalData = [
-                'slug' => $slug,
-                'title' => $proposal ? $proposal->title : $slug,
-                'fund' => $proposal && $proposal->fund ? $proposal->fund->title : 'Unknown Fund',
-                'requested_funds' => $proposal ? ($proposal->amount_requested ?? '75K ADA') : '75K ADA',
-                'status' => $isFirstProposal ? 'submitted' : 'submitting',
-                'vote' => $votes[$slug] ?? null,
-            ];
+                $proposals[] = [
+                    'slug' => $slug,
+                    'title' => $sessionProposal['title'] ?? $slug,
+                    'fund' => is_array($sessionProposal['fund']) ?
+                        $sessionProposal['fund']['title'] ?? 'Unknown Fund' :
+                        $sessionProposal['fund'] ?? 'Unknown Fund',
+                    'requested_funds' => $sessionProposal['requested_funds'] ?? '75K ADA',
+                    'status' => 'submitted',
+                    'vote' => $votes[$slug] ?? null,
+                ];
+            } else {
+                // Fallback to database data
+                $proposal = $existingProposals->get($slug);
 
-            $proposals[] = $proposalData;
-            $isFirstProposal = false;
+                $proposals[] = [
+                    'slug' => $slug,
+                    'title' => $proposal ? $proposal->title : $slug,
+                    'fund' => $proposal && $proposal->fund ? $proposal->fund->title : 'Unknown Fund',
+                    'requested_funds' => $proposal ? ($proposal->amount_requested ?? '75K ADA') : '75K ADA',
+                    'status' => 'submitted',
+                    'vote' => $votes[$slug] ?? null,
+                ];
+            }
         }
 
         return $proposals;

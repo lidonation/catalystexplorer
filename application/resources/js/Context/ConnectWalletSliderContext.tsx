@@ -21,6 +21,7 @@ interface WalletContextType {
   setIsConnecting: (value: string | null) => void;
   openConnectWalletSlider: () => void;
   closeConnectWalletSlider: () => void;
+  extractSignature: (message: string) => Promise<{signature: string, key: string} | null>;
 }
 
 interface WalletProviderProps {
@@ -84,6 +85,43 @@ export function ConnectWalletProvider({
   };
 
   const allowedNetworks = getAllowedNetworks(environment);
+  const extractSignature = async (message: string) => {
+      try {
+          if (!connectedWallet) {
+              throw new Error(t('wallet.errors.notConnected'));
+          }
+          const encoder = new TextEncoder();
+          const messageBytes = encoder.encode(message);
+          const messageHex = Array.from(messageBytes)
+              .map(b => b.toString(16).padStart(2, '0'))
+              .join('');
+
+         if (!userAddress) {
+              throw new Error(t('wallet.errors.noAddresses'));
+         }
+
+         let addressToSignWith;
+         if (userAddress.startsWith('addr')) {
+             addressToSignWith = CardanoWasm.Address.from_bech32(userAddress).to_hex();
+         } else {
+             addressToSignWith = userAddress;
+         }
+         const signatureResult = await connectedWallet.signData(
+             addressToSignWith,
+             messageHex
+         );
+
+         return {
+             signature: signatureResult.signature,
+             key: signatureResult.key
+         };
+      } catch (error) {
+          console.error('Error extracting signature:', error);
+          setError(error instanceof Error ? error.message : t('wallet.errors.signFailed'));
+          return null;
+      }
+  };
+
 
   const connectWallet = async (walletName: string) => {
     try {
@@ -152,6 +190,7 @@ export function ConnectWalletProvider({
         onWalletConnected(api, bech32Address, walletNetworkId);
       }
 
+
     } catch (err) {
       setError(err instanceof Error ? err.message : t('wallet.connect.errors.connectionFailed'));
     } finally {
@@ -201,6 +240,7 @@ export function ConnectWalletProvider({
         closeConnectWalletSlider: () => setIsSliderOpen(false),
         isWalletConnectorOpen: isSliderOpen,
         connectedWalletProvider,
+          extractSignature
       }}
     >
       {children}

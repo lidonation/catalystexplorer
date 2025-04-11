@@ -225,7 +225,7 @@ const Step1: React.FC<Step1Props> = ({
                                         pagination={proposals}
                                         linkProps={{
                                             preserveState: true,
-                                            preserveScroll: true,
+                                            preserveScroll: false,
                                         }}
                                     />
                                 </div>

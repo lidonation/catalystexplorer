@@ -51,21 +51,17 @@ const Step2: React.FC<Step2Props> = ({
     const form = useForm({
         proposals: selectedProposals.data.map(p => p.slug),
         votes,
+        proposalData: selectedProposals.data.map(p => ({
+            slug: p.slug,
+            title: p.title,
+            fund: p.fund,
+            requested_funds: p.requested_funds,
+            vote: votes[p.slug] || null,
+            exists: true
+        }))
     });
 
     useEffect(() => {
-        console.log('Step2 received data:', {
-            selectedProposals,
-            votes,
-            filters
-        });
-        console.log('Proposal details:', selectedProposals.data.map(proposal => ({
-            slug: proposal.slug,
-            title: proposal.title,
-            fund: proposal.fund,
-            requested_funds: proposal.requested_funds,
-            vote: proposal.vote
-        })));
         const errors: string[] = [];
 
         setFormErrors(errors);
@@ -76,7 +72,16 @@ const Step2: React.FC<Step2Props> = ({
             console.error("Form validation errors:", formErrors);
             return;
         }
-
+        form.setData('proposals', selectedProposals.data.map(p => p.slug));
+        form.setData('votes', votes);
+        form.setData('proposalData', selectedProposals.data.map(p => ({
+            slug: p.slug,
+            title: p.title,
+            fund: p.fund,
+            requested_funds: p.requested_funds,
+            vote: votes[p.slug] || null,
+            exists: true as const,
+        })));
         form.post(generateLocalizedRoute('workflows.voting.saveDecisions'), {
             onSuccess: () => {
                 router.visit(nextStep);
@@ -149,6 +154,7 @@ const Step2: React.FC<Step2Props> = ({
             defaultFilters={filters}
             routerOptions={{
                 preserveState: true,
+                preserveScroll: false,
                 replace: true
             }}
         >
