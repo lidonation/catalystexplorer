@@ -788,6 +788,7 @@
         "helpfulReview": "Cet avis était-il utile ?",
         "yes": "Oui",
         "no": "Non",
+        "select": "Sélectionner",
         "processing": "Traitement en cours...",
         "options": {
             "ratingAsc": "Évaluation : de faible à élevée",

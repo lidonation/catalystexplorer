@@ -56,4 +56,19 @@ class Reviewer extends Model
     {
         return $this->belongsTo(User::class, 'claimed_by_id', 'id');
     }
+
+    public function scopeFilter($query, array $filters)
+    {
+        if (! empty($filters['search'])) {
+            $query->where(function ($q) use ($filters) {
+                $q->where('catalyst_reviewer_id', 'like', "%{$filters['search']}%");
+            });
+        }
+
+        if (! empty($filters['ids'])) {
+            $query->whereIn('catalyst_reviewer_id', (array) $filters['ids']);
+        }
+
+        return $query;
+    }
 }

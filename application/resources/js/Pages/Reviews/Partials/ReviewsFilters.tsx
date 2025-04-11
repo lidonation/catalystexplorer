@@ -13,11 +13,11 @@ const ReviewsFilter = () => {
     const reputationRange = [1, 100];
 
     return (
-        <>
+        <div className="mb-6 w-full">
             <div className="bg-background w-full rounded-xl p-4">
                 <div className="grid grid-cols-2 gap-x-4 gap-y-3 rounded-xl md:grid-cols-2 lg:grid-cols-4">
                     <div className="col-span-1 flex flex-col gap-2 pb-4">
-                    <span>{t('reviews.filters.funds')}</span>
+                        <span>{t('reviews.filters.funds')}</span>
                         <SearchSelect
                             key={'fund-titles'}
                             domain={'fundTitles'}
@@ -35,10 +35,10 @@ const ReviewsFilter = () => {
                     </div>
                     
                     <div className="col-span-1 flex flex-col gap-2 pb-4">
-                    <span>{t('reviews.filters.proposals')}</span>
+                        <span>{t('reviews.filters.proposals')}</span>
                         <SearchSelect
-                            key={'proposal-titles'}
-                            domain={'proposalTitles'}
+                            key={'proposals'}
+                            domain={'proposals'}
                             selected={getFilter(ParamsEnum.PROPOSALS) ?? []}
                             onChange={(value) =>
                                 setFilters({
@@ -53,10 +53,10 @@ const ReviewsFilter = () => {
                     </div>
                     
                     <div className="col-span-1 flex flex-col gap-2 pb-4">
-                    <span>{t('reviews.filters.reviewerIds')}</span>
+                        <span>{t('reviews.filters.reviewerIds')}</span>
                         <SearchSelect
-                            key={'reviewer-ids'}
-                            domain={'reviewerIds'}
+                            key={'reviewers'}
+                            domain={'reviewers'}
                             selected={getFilter(ParamsEnum.REVIEWER_IDS) ?? []}
                             onChange={(value) =>
                                 setFilters({
@@ -71,26 +71,26 @@ const ReviewsFilter = () => {
                     </div>
 
                     <div className="col-span-1 flex flex-col gap-2 pb-4">
-                    <span>{t('reviews.filters.helpful')}</span>
+                        <span>{t('reviews.filters.helpful')}</span>
                         <Selector
                             isMultiselect={false}
                             options={[
                                 {
-                                    value: '',
-                                    label: 'Select',
+                                    value: 'Select',
+                                    label: t('reviews.select'),
                                 },
                                 {
                                     value: 'true',
-                                    label: 'Yes',
+                                    label: t('reviews.yes'),
                                 },
                                 {
                                     value: 'false',
-                                    label: 'No',
+                                    label: t('reviews.no'),
                                 },
                             ]}
                             setSelectedItems={(value) =>
                                 setFilters({
-                                    label: t('reviews.filters.helpful'),
+                                    label: `${t('reviews.filters.helpful')}: ${value === 'true' ? t('reviews.yes') : t('reviews.no')}`,
                                     value,
                                     param: ParamsEnum.HELPFUL,
                                 })
@@ -114,7 +114,7 @@ const ReviewsFilter = () => {
                             }
                             onValueChange={(value) =>
                                 setFilters({
-                                    label: t('reviews.filters.rating'),
+                                    label: t('reviews.filters.ratings'),
                                     value,
                                     param: ParamsEnum.RATINGS,
                                 })
@@ -148,7 +148,7 @@ const ReviewsFilter = () => {
                     </div>
                 </div>
             </div>
-        </>
+        </div>
     );
 };
 

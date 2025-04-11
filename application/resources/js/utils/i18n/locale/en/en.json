@@ -875,6 +875,32 @@
             "inactive": "Inactive"
         }
     },
+    "reviews": {
+        "reviews": "Reviews",
+        "reviewer": "Reviewer",
+        "helpfulReview": "Was this a helpful review?",
+        "yes": "Yes",
+        "no": "No",
+        "select": "Select",
+        "processing": "Processing...",
+        "options": {
+            "ratingAsc": "Rating: Low to High",
+            "ratingDesc": "Rating: High to Low",
+            "avgReputationScoreAsc": "Reputation: Low to High",
+            "avgReputationScoreDesc": "Reputation: High to Low",
+            "helpful": "Helpful",
+            "notHelpful": "Not Helpful"
+        },
+        "filters":{
+            "funds": "Fund",
+            "proposals": "Proposal",
+            "reviewerIds": "Reviewer ID",
+            "helpful": "Helpful",
+            "ratings":"Rating",
+            "reputationScores": "Reputation Score"
+
+        }
+    },
     "transactions": {
         "title": "Transactions",
         "pageTitle": "Catalyst On Chain Transactions",
@@ -908,31 +934,7 @@
             "placeholder": "Search transaction hash, epoch, block"
         }
     },
-    "reviews": {
-        "reviews": "Reviews",
-        "reviewer": "Reviewer",
-        "helpfulReview": "Was this a helpful review?",
-        "yes": "Yes",
-        "no": "No",
-        "processing": "Processing...",
-        "options": {
-            "ratingAsc": "Rating: Low to High",
-            "ratingDesc": "Rating: High to Low",
-            "avgReputationScoreAsc": "Reputation: Low to High",
-            "avgReputationScoreDesc": "Reputation: High to Low",
-            "helpful": "Helpful",
-            "notHelpful": "Not Helpful"
-        },
-        "filters":{
-            "funds": "Fund",
-            "proposals": "Proposal",
-            "reviewerIds": "Reviewer ID",
-            "helpful": "Helpful",
-            "ratings":"Rating",
-            "reputationScores": "Reputation Score"
-
-        }
-    },
+   
     "vote": {
         "catalystVotes": "Catalyst Votes",
         "viewOnchainTransactions": "View onchain (jormugandr) transactions of votes cast",
