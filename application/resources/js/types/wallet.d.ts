@@ -22,6 +22,7 @@ declare global {
     getRewardAddresses: () => Promise<string[]>;
     signTx: (tx: string, partialSign?: boolean) => Promise<string>;
     submitTx: (tx: string) => Promise<string>;
+    signData(addr: string, payload: string): Promise<{ signature: string, key: string }>;
     experimental?: {
       getCollateralParams: () => Promise<any>;
     };
