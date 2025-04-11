@@ -5,13 +5,14 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Enums\ProposalSearchParams;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Support\Facades\Artisan;
-use Laravel\Scout\Builder;
+// use Laravel\Scout\Builder;
 use Laravel\Scout\Searchable;
 use Staudenmeir\EloquentHasManyDeep\HasRelationships;
 
@@ -67,6 +68,7 @@ class Review extends Model
             'created_at',
             'reviewer.avg_reputation_score',
             'rating',
+            'helpful_total',
             'rankings',
             'positive_rankings',
             'negative_rankings',
@@ -155,7 +157,7 @@ class Review extends Model
         );
 
         $query->when($filters['search'] ?? false, function ($query, $search) {
-            $query->whereHas('proposal', function ($q) use ($search) {
+            $query->whereHas('proposals', function ($q) use ($search) {
                 $q->where('title', 'like', "%{$search}%");
             });
         });
@@ -165,9 +167,9 @@ class Review extends Model
         });
 
         $query->when(
-            $filters['reviewer_id'] ?? false,
-            fn (Builder $query, $catalyst_reviewer_id) => $query->whereHas('reviewer', function ($query) use ($catalyst_reviewer_id) {
-                $query->where('catalyst_reviewer_id', $catalyst_reviewer_id);
+            $filters['reviewer_ids'] ?? false,
+            fn (Builder $query, $reviewerIds) => $query->whereHas('reviewer', function ($query) use ($reviewerIds) {
+                $query->whereIn('catalyst_reviewer_id', $reviewerIds);
             })
         );
 

@@ -42,20 +42,26 @@ export function SearchSelect({
         useSearchOptions<any>(domain);
 
     const { t } = useTranslation();
-
-    const filteredOptions = options.map((option) => {
+    
+    const filteredOptions = options.map((option, index) => {
+        // Handle when option is a string
         if (typeof option === 'string') {
-            return {
-                label: option,
-                hash: option
-            };
+          return {
+            label: option,
+            catalyst_reviewer_id: option, // Store string as reviewer ID if relevant
+            title: option, // Store string as title if it's a proposal
+            hash: option // Use the string itself as the hash
+          };
         }
-            return {
-                label: option?.name ?? option?.title ?? option?.label ?? 'Unknown',
-                hash: option?.hash ?? option?.id?.toString() ?? 'unknown-hash',
-            };
-        },
-    );
+        
+        // Handle when option is an object
+        return {
+          label: option?.name ?? option?.title ?? option?.label ?? option?.catalyst_reviewer_id ?? 'Unknown',
+          catalyst_reviewer_id: option?.catalyst_reviewer_id,
+          title: option?.title, 
+          hash: option?.catalyst_reviewer_id ?? option?.title ?? option?.hash ?? option?.id ?? `unknown-hash-${index}`
+        };
+      });
 
     const handleSelect = useCallback(
         (value: string) => {
@@ -72,6 +78,7 @@ export function SearchSelect({
         },
         [multiple, onChange, selected, setSearchTerm],
     );
+    
     const handleClear = useCallback(
         (e: React.MouseEvent) => {
             e.stopPropagation();
@@ -81,7 +88,7 @@ export function SearchSelect({
             setSearchTerm('');
             setOpen(false);
         },
-        [onChange, selected.length, setSearchTerm],
+        [onChange, selected, setSearchTerm, selected.length, setSearchTerm],
     );
 
     // Clear search when closing the popover
@@ -112,7 +119,7 @@ export function SearchSelect({
                 </button>
             </PopoverTrigger>
             <PopoverContent
-                className="bg-background min-w-[var(--radix-popover-trigger-width)] p-0"
+            className="bg-background min-w-[var(--radix-popover-trigger-width)] w-[300px] p-0"
                 align="start"
             >
                 <Command shouldFilter={false}>
@@ -147,28 +154,27 @@ export function SearchSelect({
                             className={`max-h-64 min-h-24 lg:max-h-96 ${options.length > 10 ? 'overflow-scroll' : ''}`}
                         >
                             {options &&
-                                filteredOptions.map((option) => {
-                                    const hashStr = String(option.hash);
-                                    const isSelected = selected.some(item => String(item) === hashStr);
-                                    
-                                    return (
-                                        <CommandItem
-                                            key={hashStr}
-                                            value={hashStr}
-                                            onSelect={() => handleSelect(hashStr)}
-                                            className="bg-background! hover:bg-background-lighter! aria-selected:bg-background-lighter flex cursor-pointer justify-between"
-                                        >
-                                            {option.label}
-                                            <Checkbox
-                                                id={hashStr}
-                                                checked={isSelected}
-                                                value={hashStr}
-                                                onChange={() => {}}
-                                                className="text-content-accent bg-background checked:bg-primary checked:hover:bg-primary focus:border-primary focus:ring-primary checked:focus:bg-primary mr-2 h-4 w-4 shadow-xs focus:border"
-                                            />
-                                        </CommandItem>
-                                    );
-                                })}
+                                filteredOptions.map((option, index) => (
+                                    <CommandItem
+                                        key={`${option.hash}-${index}`} // Added index to ensure uniqueness
+                                        value={option.hash.toString()}
+                                        onSelect={() =>
+                                            handleSelect(option.hash.toString())
+                                        }
+                                        className="bg-background! hover:bg-background-lighter! aria-selected:bg-background-lighter flex cursor-pointer justify-between"
+                                    >
+                                        {option.label}
+                                        <Checkbox
+                                            id={`checkbox-${option.hash}-${index}`} // Make checkbox ID unique too
+                                            checked={selected?.includes(
+                                                option.hash,
+                                            )}
+                                            value={option.hash}
+                                            onChange={() => {}}
+                                            className="text-content-accent bg-background checked:bg-primary checked:hover:bg-primary focus:border-primary focus:ring-primary checked:focus:bg-primary mr-2 h-4 w-4 shadow-xs focus:border"
+                                        />
+                                    </CommandItem>
+                                ))}
                         </ScrollArea>
                     </CommandGroup>
                 </Command>

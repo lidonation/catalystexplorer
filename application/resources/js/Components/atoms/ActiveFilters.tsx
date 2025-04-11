@@ -344,9 +344,9 @@ const IDFilters = React.memo(({ filter }: { filter: FilteredItem }) => {
     if (filter.param === 'ip') {
         domain = 'ideascale-profiles';
     } else if (filter.param === ParamsEnum.PROPOSALS) {
-        domain = 'proposal-titles';
+        domain = 'proposals';
     } else if (filter.param === ParamsEnum.REVIEWER_IDS) {
-        domain = 'reviewer-ids';
+        domain = 'reviewers';
     }
 
     const { setHashes, options } = useSearchOptions<any>(domain);
