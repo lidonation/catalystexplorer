@@ -36,6 +36,9 @@ const [searchPerformedWithNoResults, setSearchPerformedWithNoResults] = useState
 const [isSearching, setIsSearching] = useState(false);
 const [shouldRefocus, setShouldRefocus] = useState(false);
 
+const isInitialNullState = !hasSearchedStake && !isSearching && 
+                          (!voterHistories || !voterHistories.data || voterHistories.data.length === 0);
+
 const searchParams = useMemo(() => {
     const paramsObj = {} as SearchParams;
     filters.forEach(filter => {
@@ -181,6 +184,18 @@ return (
             {isSearching && (
                 <VoteHistoryTableLoader />
             )}
+
+            {isInitialNullState && (
+                <div className='bg-background rounded-lg shadow-lg p-4 mb-8'>
+                    <Title className='border-b border-dark-light pt-4 pb-4 font-bold' level='3'>{t('vote.votingHistory')}</Title>
+                    <div className="bg-background flex w-full flex-col items-center justify-center rounded-lg px-4 py-8 mb-10">
+                        <RecordsNotFound context="search" showIcon={true} />
+                        <Paragraph className="mt-4 text-center text-dark">
+                            {t('vote.noStakeAddressFound')}
+                        </Paragraph>
+                    </div>
+                </div>
+            )}
             
             {!isSearching && searchPerformedWithNoResults ? (
                 <div className='bg-background rounded-lg shadow-lg p-4 mb-8'>
@@ -192,7 +207,7 @@ return (
                         </Paragraph>
                     </div>
                 </div>
-            ) : !isSearching && (
+            ) : (!isSearching && !isInitialNullState) && (
                 <div className='bg-background rounded-lg shadow-lg mb-8'>                        
                     <VoterHistoryTable 
                         voterHistories={voterHistories as PaginatedData<VoterHistoryData[]>} 

@@ -82,7 +82,6 @@ const VoterHistoryTable: React.FC<VoterHistoryTableProps> = ({ voterHistories })
     });
   }, [filters]);
 
-  // Check if there are active search filters
   const hasActiveFilters = () => {
     if (!filters || filters.length === 0) return false;
     
@@ -105,7 +104,12 @@ const VoterHistoryTable: React.FC<VoterHistoryTableProps> = ({ voterHistories })
 
   const formatTime = (timestamp: string): string => {
     try {
+      if (!timestamp) return 'N/A';
+      
       const date = new Date(timestamp);
+      
+      if (isNaN(date.getTime())) return 'N/A';
+      
       const month = date.toLocaleString('en-US', { month: 'short' });
       const day = date.getDate();
       const year = date.getFullYear();
@@ -124,23 +128,33 @@ const VoterHistoryTable: React.FC<VoterHistoryTableProps> = ({ voterHistories })
   };
 
   const formatVotingPower = (value: any): string => {
-    if (value === undefined || value === null) return '₳ 0.0';
+    if (value === undefined || value === null) return '₳ 0';
     
     try {
       const numValue = Number(value);
-      if (Number.isNaN(numValue)) return '₳ 0.0';
+      if (Number.isNaN(numValue)) return '₳ 0';
+      const adaValue = numValue / 1000000;
       
-      const formattedValue = numValue.toFixed(2);
+      const formattedValue = adaValue.toLocaleString(undefined, {
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 6
+      });
+      
       return `₳ ${formattedValue}`;
     } catch (e) {
       console.error('Error formatting voting power:', e);
-      return '₳ 0.0';
+      return '₳ 0';
     }
   };
 
   const getTimeAgo = (timestamp: string): string => {
     try {
+      if (!timestamp) return t('vote.notAvailable');
+      
       const date = new Date(timestamp);
+      
+      if (isNaN(date.getTime())) return t('vote.notAvailable');
+      
       const now = new Date();
       const diffMs = now.getTime() - date.getTime();
       const diffHrs = Math.floor(diffMs / (1000 * 60 * 60));
@@ -154,7 +168,7 @@ const VoterHistoryTable: React.FC<VoterHistoryTableProps> = ({ voterHistories })
       return t('vote.timeAgo.daysAgo', { days: diffDays });
     } catch (e) {
       console.error('Error formatting time ago:', e);
-      return 'N/A';
+      return t('vote.notAvailable');
     }
   };
 
@@ -218,12 +232,7 @@ const VoterHistoryTable: React.FC<VoterHistoryTableProps> = ({ voterHistories })
     );
   };
 
-  // Check if we should show "Records Not Found"
   const shouldShowNoRecords = () => {
-    // Return true if:
-    // 1. Not loading
-    // 2. Either hasSearched is true OR there are active filters
-    // 3. No data or empty data array
     return !isLoading && 
            (hasSearched || hasActiveFilters()) && 
            (!voterHistories?.data || voterHistories.data.length === 0);
@@ -300,9 +309,9 @@ const VoterHistoryTable: React.FC<VoterHistoryTableProps> = ({ voterHistories })
                         </td>
                         <td className="py-4 px-4 border-b border-r border-dark-light text-content">
                           <div className="flex flex-col">
-                            <span>{formatTime(safelyGetNestedValue(history, 'time'))}</span>
+                            <span>{formatTime(safelyGetNestedValue(history, 'created_at'))}</span>
                             <span className="text-xs text-gray-persist">
-                              {getTimeAgo(safelyGetNestedValue(history, 'time'))}
+                              {getTimeAgo(safelyGetNestedValue(history, 'created_at'))}
                             </span>
                           </div>
                         </td>

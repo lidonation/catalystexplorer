@@ -45,10 +45,8 @@ const VoteFilters = () => {
         const setter = isChoiceFilter ? setSelectedChoice : setSelectedFund;
         const labelText = isChoiceFilter ? t('vote.choice') : t('proposals.filters.epoch');
 
-        // Update local state
         setter(selectedItems);
         
-        // Clear filter if no items selected
         if (selectedItems.length === 0) {
             setFilters({
                 param: param,
@@ -56,7 +54,6 @@ const VoteFilters = () => {
                 label: undefined
             });
             
-            // Update URL
             setTimeout(() => {
                 const currentUrl = window.location.pathname;
                 const currentParams = new URLSearchParams(window.location.search);
@@ -76,7 +73,6 @@ const VoteFilters = () => {
                 });
             }, 10);
         } else {
-            // Set filter with selected items
             setFilters({
                 param: param,
                 value: selectedItems.join(','),
@@ -95,22 +91,9 @@ const VoteFilters = () => {
 
     return (
         <div className="w-full bg-background border border-dark-light rounded-md p-4">
-            <div className="grid grid-cols-2 gap-8">
+            <div className="gap-8">
                 <div className="flex flex-col gap-2">
-                    <span className="font-medium text-gray-persist">{t('vote.choice')}</span>
-                    <SearchSelect
-                        key={'choices'}
-                        domain='choices'
-                        selected={selectedChoice}
-                        onChange={handleChoiceChange}
-                        placeholder={t('select')}
-                        multiple={true}
-                        emptyText={t('vote.noChoicesAvailable')}
-                    />
-                </div>
-
-                <div className="flex flex-col gap-2">
-                    <span className="font-medium text-gray-persist">{t('proposals.filters.epoch')}</span>
+                    <span className="font-medium text-gray-persist">{t('vote.table.fund')}</span>
                     <SearchSelect
                         key={'fund-titles'}
                         domain='fundTitles'
