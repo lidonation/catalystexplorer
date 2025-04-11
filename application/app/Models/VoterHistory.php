@@ -43,7 +43,7 @@ class VoterHistory extends Model
     public static function getSortableAttributes(): array
     {
         return [
-            'time',
+            'created_at',
             'voting_power',
             'fund',
         ];
@@ -81,6 +81,7 @@ class VoterHistory extends Model
             'choice',
             'fund',
             'stake_address',
+            'created_at',
         ];
     }
 
