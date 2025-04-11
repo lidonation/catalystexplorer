@@ -6,8 +6,9 @@ namespace App\Http\Controllers;
 
 use App\Actions\TransformIdsToHashes;
 use App\DataTransferObjects\ReviewData;
+use App\Enums\ProposalSearchParams;
 use App\Enums\QueryParamsEnum;
-use App\Models\Proposal;
+use App\Models\Fund;
 use App\Models\Ranking;
 use App\Models\Review;
 use App\Repositories\ReviewRepository;
@@ -21,7 +22,7 @@ use Laravel\Scout\Builder;
 
 class ReviewsController extends Controller
 {
-    protected int $currentPage;
+    protected int $currentPage = 1;
 
     protected array $queryParams = [];
 
@@ -35,9 +36,15 @@ class ReviewsController extends Controller
 
     protected array $filters = [];
 
+    public array $fundLabels = [];
+
+    public array $ratingDistribution = [];
+
+    public array $reputationScoreDistribution = [];
+
     public array $fundsCount = [];
 
-    protected int $limit;
+    protected int $limit = 24;
 
     protected Builder $searchBuilder;
 
@@ -50,8 +57,13 @@ class ReviewsController extends Controller
             'search' => $this->search,
             'sortBy' => $this->sortBy,
             'sortOrder' => $this->sortOrder,
+            'sort' => "{$this->sortBy}:{$this->sortOrder}",
             'filters' => $this->filters,
-            'funds' => $this->fundsCount,
+            'queryParams' => $this->queryParams,
+            'funds' => $this->fundLabels,
+            'fundsCount' => $this->fundsCount,
+            'ratingDistribution' => $this->ratingDistribution,
+            'reputationScoreDistribution' => $this->reputationScoreDistribution,
         ];
 
         return Inertia::render('Reviews/Index', $props);
@@ -69,8 +81,37 @@ class ReviewsController extends Controller
                 'ranking_total' => $review->ranking_total ?? 0,
                 'positive_rankings' => $review->positiveRankings->count() ?? 0,
                 'negative_rankings' => $review->negativeRankings->count() ?? 0,
+                'helpful_total' => $review->helpful_total ?? 0,
+                'not_helpful_total' => $review->not_helpful_total ?? 0,
             ]),
         ]);
+    }
+
+    protected function setFilters(Request $request): void
+    {
+        $this->limit = (int) $request->input(QueryParamsEnum::LIMIT(), 24);
+        $this->currentPage = (int) $request->input(QueryParamsEnum::PAGE(), 1);
+        $this->search = $request->input(QueryParamsEnum::QUERY(), null);
+
+        $this->queryParams = $request->validate([
+            ProposalSearchParams::FUNDS()->value => 'array|nullable',
+            ProposalSearchParams::PROPOSALS()->value => 'array|nullable',
+            ProposalSearchParams::REVIEWER_IDS()->value => 'array|nullable',
+            ProposalSearchParams::RATINGS()->value => 'array|nullable',
+            ProposalSearchParams::REPUTATION_SCORES()->value => 'array|nullable',
+            ProposalSearchParams::HELPFUL()->value => 'string|nullable',
+            ProposalSearchParams::QUERY()->value => 'string|nullable',
+            ProposalSearchParams::PAGE()->value => 'integer|nullable',
+            ProposalSearchParams::LIMIT()->value => 'integer|nullable',
+            ProposalSearchParams::SORTS()->value => 'string|nullable',
+        ]);
+
+        $sort = collect(explode(':', $request->input(ProposalSearchParams::SORTS()->value, '')))->filter();
+
+        if (! $sort->isEmpty()) {
+            $this->sortBy = $sort->first();
+            $this->sortOrder = $sort->last();
+        }
     }
 
     public function query($returnBuilder = false, $attrs = null, $filters = [])
@@ -107,11 +148,16 @@ class ReviewsController extends Controller
             'ranking_total',
             'positive_rankings',
             'negative_rankings',
+            'helpful_total',
+            'not_helpful_total',
         ];
 
         $args['facets'] = [
             'rating',
             'reviewer.reputation_scores.fund.label',
+            'reviewer.avg_reputation_score',
+            'proposal.id',
+            'status',
         ];
 
         $reviews = app(ReviewRepository::class);
@@ -121,6 +167,10 @@ class ReviewsController extends Controller
             $args
         );
 
+        if ($returnBuilder) {
+            return $builder;
+        }
+
         $response = new Fluent($builder->raw());
         $items = collect($response->hits);
 
@@ -128,7 +178,7 @@ class ReviewsController extends Controller
             ReviewData::collect(
                 (new TransformIdsToHashes)(
                     collection: $items,
-                    model: new Proposal
+                    model: new Review
                 )->toArray()
             ),
             $response->estimatedTotalHits,
@@ -145,41 +195,88 @@ class ReviewsController extends Controller
         return $pagination->toArray();
     }
 
-    protected function setFilters(Request $request): void
-    {
-        $this->limit = (int) $request->input(QueryParamsEnum::LIMIT(), 24);
-        $this->currentPage = (int) $request->input(QueryParamsEnum::PAGE(), 1);
-        $this->search = $request->input(QueryParamsEnum::QUERY(), null);
-
-        $sort = collect(explode(':', $request->input(QueryParamsEnum::SORTS(), '')))->filter();
-
-        if (! $sort->isEmpty()) {
-            $this->sortBy = $sort->first();
-            $this->sortOrder = $sort->last();
-        }
-    }
-
     protected function getUserFilters(): array
     {
-        $_options = [];
+        $filters = [];
 
         if (isset($this->filters['status'])) {
-            $_options[] = "status = '{$this->filters['status']}'";
+            $filters[] = "status = '{$this->filters['status']}'";
         }
 
-        return $_options;
+        if (! empty($this->queryParams[ProposalSearchParams::FUNDS()->value])) {
+            $fundLabels = implode("','", $this->queryParams[ProposalSearchParams::FUNDS()->value]);
+            $filters[] = "reviewer.reputation_scores.fund.label IN ['{$fundLabels}']";
+        }
+
+        if (! empty($this->queryParams[ProposalSearchParams::PROPOSALS()->value])) {
+            $validProposalIds = array_filter($this->queryParams[ProposalSearchParams::PROPOSALS()->value], 'is_numeric');
+            if (! empty($validProposalIds)) {
+                $proposalIds = implode(',', $validProposalIds);
+                $filters[] = "proposal.id IN [{$proposalIds}]";
+            }
+        }
+
+        $reviewerIdsKey = ProposalSearchParams::REVIEWER_IDS()->value;
+        if (! empty($this->queryParams[$reviewerIdsKey])) {
+            $reviewerIds = implode("','", $this->queryParams[$reviewerIdsKey]);
+            $filters[] = "reviewer.catalyst_reviewer_id IN ['{$reviewerIds}']";
+        }
+
+        if (! empty($this->queryParams[ProposalSearchParams::RATINGS()->value])) {
+            $ratingRange = collect((object) $this->queryParams[ProposalSearchParams::RATINGS()->value]);
+            $filters[] = "(rating {$ratingRange->first()} TO {$ratingRange->last()})";
+        }
+
+        if (! empty($this->queryParams[ProposalSearchParams::REPUTATION_SCORES()->value])) {
+            $reputationRange = collect((object) $this->queryParams[ProposalSearchParams::REPUTATION_SCORES()->value]);
+            $filters[] = "(reviewer.avg_reputation_score {$reputationRange->first()} TO {$reputationRange->last()})";
+        }
+
+        if (isset($this->queryParams[ProposalSearchParams::HELPFUL()->value])) {
+            if (is_numeric($this->queryParams[ProposalSearchParams::HELPFUL()->value])) {
+                $helpfulValue = (int) $this->queryParams[ProposalSearchParams::HELPFUL()->value];
+                $filters[] = "helpful_total >= {$helpfulValue}";
+            } elseif ($this->queryParams[ProposalSearchParams::HELPFUL()->value] === 'true') {
+                $filters[] = 'helpful_total > 0';
+            }
+        }
+
+        return $filters;
     }
 
     public function setCounts($facets, $facetStats): void
     {
         if (isset($facets['reviewer.reputation_scores.fund.label']) && count($facets['reviewer.reputation_scores.fund.label'])) {
+            $this->fundLabels = $facets['reviewer.reputation_scores.fund.label'];
             $this->fundsCount = $facets['reviewer.reputation_scores.fund.label'];
         }
+
+        if (isset($facets['rating']) && count($facets['rating'])) {
+            $this->ratingDistribution = $facets['rating'];
+        }
+
+        if (isset($facets['reviewer.avg_reputation_score']) && count($facets['reviewer.avg_reputation_score'])) {
+            $this->reputationScoreDistribution = $facets['reviewer.avg_reputation_score'];
+        }
+    }
+
+    public function fundTitles()
+    {
+        $fundTitles = Fund::pluck('title');
+
+        return response()->json($fundTitles);
+    }
+
+    public function helpfulTotal()
+    {
+        return response()->json([
+            ['value' => 'true', 'label' => 'Yes'],
+            ['value' => 'false', 'label' => 'No'],
+        ]);
     }
 
     public function helpfulReview(int $reviewId)
     {
-
         $ranking = Ranking::updateOrCreate(
             [
                 'user_id' => Auth::id(),
@@ -196,9 +293,7 @@ class ReviewsController extends Controller
         if ($review) {
             $review->rankings()->save($ranking);
             $review->searchable();
-
         }
-
     }
 
     public function notHelpfulReview(int $reviewId)
