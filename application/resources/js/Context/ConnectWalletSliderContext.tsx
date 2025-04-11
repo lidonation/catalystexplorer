@@ -9,6 +9,7 @@ interface WalletContextType {
   connectedWallet: CIP30API | null;
   connectedWalletProvider: any | null;
   userAddress: string;
+  stakeKey: string;
   error: string;
   isConnecting: string | null;
   isWalletConnectorOpen: boolean;
@@ -29,10 +30,11 @@ interface WalletProviderProps {
 
 const WalletContext = createContext<WalletContextType | undefined>(undefined);
 
-export function ConnectWalletProvider({ 
-  children, 
+export function ConnectWalletProvider({
+  children,
   onWalletConnected,
 }: WalletProviderProps) {
+    const [stakeKey, setStakeKey] = useState<string>('');
   const [wallets, setWallets] = useState<string[]>([]);
   const [connectedWallet, setConnectedWallet] = useState<CIP30API | null>(null);
   const [userAddress, setUserAddress] = useState<string>('');
@@ -80,7 +82,7 @@ export function ConnectWalletProvider({
       return [0];
     }
   };
-  
+
   const allowedNetworks = getAllowedNetworks(environment);
 
   const connectWallet = async (walletName: string) => {
@@ -99,10 +101,10 @@ export function ConnectWalletProvider({
       const api = await wallet.enable();
 
       const walletNetworkId = await api.getNetworkId();
-      
+
       if (!allowedNetworks.includes(walletNetworkId)) {
         const expectedNetwork = environment === 'production' ? 'Mainnet' : 'Preview/Testnet';
-        throw new Error(t('wallet.connect.errors.wrongNetwork', { 
+        throw new Error(t('wallet.connect.errors.wrongNetwork', {
           expected: expectedNetwork
         }));
       }
@@ -122,6 +124,22 @@ export function ConnectWalletProvider({
       const address = CardanoWasm.Address.from_hex(hexAddress);
       const bech32Address = address.to_bech32();
 
+      try {
+          const rewardAddresses = await api.getRewardAddresses();
+
+          if (rewardAddresses && rewardAddresses.length > 0) {
+              const stakeKeyHex = rewardAddresses[0];
+              setStakeKey(stakeKeyHex);
+              console.log('Stake key retrieved:', stakeKeyHex);
+            } else {
+                console.warn('No reward addresses found');
+                setStakeKey('');
+            }
+        } catch (stakeError) {
+            console.error('Error getting stake key:', stakeError);
+            setStakeKey('');
+        }
+
       setConnectedWallet(api);
       setUserAddress(bech32Address);
       setConnectedWalletProvider(wallet);
@@ -129,7 +147,7 @@ export function ConnectWalletProvider({
       storageService.saveWalletConnection(walletName);
 
       setIsSliderOpen(false);
-      
+
       if (onWalletConnected) {
         onWalletConnected(api, bech32Address, walletNetworkId);
       }
@@ -159,6 +177,7 @@ export function ConnectWalletProvider({
     setConnectedWalletProvider(null);
     setError('');
     setUserAddress('');
+    setStakeKey('')
     setNetworkId(null);
     setNetworkName('');
   };
@@ -169,6 +188,7 @@ export function ConnectWalletProvider({
         wallets,
         connectedWallet,
         userAddress,
+          stakeKey,
         error,
         isConnecting,
         CardanoWasm,
@@ -193,7 +213,7 @@ export function ConnectWalletProvider({
           }
         }}
       />
-      
+
     </WalletContext.Provider>
   );
 }
