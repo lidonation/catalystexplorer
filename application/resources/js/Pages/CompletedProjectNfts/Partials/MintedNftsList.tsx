@@ -11,7 +11,7 @@ const MintedNftsList: React.FC<MintedNftsListProps> = ({ nfts }) => {
 
   if (!nfts?.length) {
     return (
-      <div className="text-center text-gray-500 text-lg">
+      <div className="text-center text-slate text-lg">
         <RecordsNotFound />
       </div>
     );

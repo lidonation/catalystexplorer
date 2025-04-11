@@ -26,15 +26,15 @@ const MintedNftsCard: React.FC<MintedNftsCardProps> = ({
         className="w-full h-full object-cover duration-300 group-hover:scale-105"
       />
 
-      <div className="absolute inset-0 bg-black bg-opacity-10 opacity-10 group-hover:opacity-80 transition-opacity duration-300 z-10" />
+      <div className="absolute inset-0 bg-background-darker bg-opacity-10 opacity-10 group-hover:opacity-80 transition-opacity duration-300 z-10" />
 
-      <div className="absolute bottom-0 left-0 right-0 bg-white rounded-[20px] p-4 m-4 shadow-lg opacity-0 group-hover:opacity-100 translate-y-4 group-hover:translate-y-0 transition-all duration-300 z-20">
-        <h3 className="text-base font-bold text-black truncate">{name}</h3>
-        <p className="text-sm text-gray-600 mt-1 line-clamp-3">{description}</p>
+      <div className="absolute bottom-0 left-0 right-0 bg-background rounded-[20px] p-4 m-4 shadow-lg opacity-0 group-hover:opacity-100 translate-y-4 group-hover:translate-y-0 transition-all duration-300 z-20">
+        <h3 className="text-base font-bold text-content truncate">{name}</h3>
+        <p className="text-sm text-slate mt-1 line-clamp-3">{description}</p>
 
         <button
            onClick={onView}
-          className="mt-4 w-full bg-primary text-white font-medium py-2 px-4 rounded hover:bg-primary/90 transition-all"
+          className="mt-4 w-full bg-primary text-content-light font-medium py-2 px-4 rounded hover:bg-primary/90 transition-all"
         >
           {t('viewNFT')}
         </button>
