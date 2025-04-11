@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\BookmarksController;
 use App\Http\Controllers\VoterListController;
+use App\Http\Controllers\VotingWorkflowController;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\NftController;
@@ -141,6 +142,22 @@ Route::localized(
             Route::get('/create-voter-list/success', [VoterListController::class, 'success'])
                 ->name('createVoterList.success');
 
+            Route::prefix('/voting/steps')->as('voting.')
+                ->middleware([WorkflowMiddleware::class])
+                ->group(function () {
+                    Route::get('/{step}', [VotingWorkflowController::class, 'handleStep'])
+                        ->name('index');
+                    Route::post('/save-decisions', [VotingWorkflowController::class, 'saveVotingDecisions'])
+                        ->name('saveDecisions');
+                    Route::post('/sign-ballot', [VotingWorkflowController::class, 'signBallot'])
+                        ->name('signBallot');
+                    Route::post('/submit-votes', [VotingWorkflowController::class, 'submitVotes'])
+                        ->name('submitVotes');
+                    Route::get('/success', [VotingWorkflowController::class, 'success'])
+                        ->name('success');
+                });
+
+
             Route::prefix('/drep-sign-up/steps')->as('drepSignUp.')
                 ->middleware([WorkflowMiddleware::class])
                 ->group(function () {
@@ -277,6 +294,10 @@ Route::localized(
             }
         );
 
+        Route::prefix('/votes')->as('votes.')->group(function () {
+            Route::get('/', [VoterHistoriesController::class, 'index'])
+                ->name('index');
+        });
 
         Route::get('/voter-tool', [VoterToolController::class, 'index'])
             ->name('voter-tool.index');

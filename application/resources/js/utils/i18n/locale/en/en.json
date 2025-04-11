@@ -199,7 +199,87 @@
         },
         "drepSignUp": {
             "signUpForm": "1. If you already have an account, log in with your credentials.\n2. If you’re new, sign up using your email and create a secure password.\n3. Verify your email to activate your account.",
-            "connectWallet": "1. Choose a supported Cardano wallet (e.g., Yoroi, Daedalus, Eternl).\n2. Follow the prompts to connect your wallet securely.\n3. Ensure your wallet has sufficient ADA for transactions."
+            "connectWallet": "1. Choose a supported Cardano wallet (e.g., Yoroi, Daedalus, Eternl).\n2. Follow the prompts to connect your wallet securely.\n3. Ensure your wallet has sufficient ADA for transactions.",
+            "selectProposalInfo":"To get started, please select proposal to mint from"
+        },
+        "voterList": {
+            "welcome": "Before you start, let's set up your Voting List. A Voting List is a collection of proposals that you support and want others to consider. This helps streamline governance participation. Ready to begin? In the next steps, you'll name your list, add proposals, and explain your rationale for selecting them.",
+            "proposalsOnly": "Unlike other list types, only proposals can be added to voting lists.",
+            "title": "Title",
+            "description": "Description",
+            "descriptionPlaceholder": "Describe the purpose of this list in a few words.",
+            "descriptionHint": "Must be at least 200 characters.",
+            "selectFund": "Select Fund",
+            "visibility": "Visibility",
+            "visibilityOptions": {
+                "public": "Public",
+                "private": "Private",
+                "delegators": "Delegators"
+            },
+            "comments": "Comments",
+            "commentsEnabled": "Comments Enabled",
+            "chooseColor": "Choose Color",
+            "pickTheme": "Pick list theme",
+            "status": "Status",
+            "statusOptions": {
+                "published": "Publish",
+                "draft": "Draft"
+            },
+            "selectCampaign": "Select campaign:",
+            "allCampaigns": "All",
+            "selectedProposals": "Selected Proposals:",
+            "proposalCard": {
+                "budget": "Budget:",
+                "fund": "Fund:",
+                "campaign": "Campaign:",
+                "voteYes": "Yes",
+                "voteAbstain": "Abstain"
+            },
+            "searchProposals": "Search for a proposal",
+            "errors": {
+                "titleRequired": "Title is required",
+                "fundRequired": "Fund selection is required",
+                "descriptionLength": "Description must be 200 characters",
+                "rationaleLength": "Rationale must be at least 200 characters"
+            },
+            "rationale": {
+                "label": "Rationale",
+                "placeholder": "Summerize the reasoning behind your selections.",
+                "hint": "Minimum 200 characters required"
+            },
+            "success": {
+                "title": "Success!!",
+                "message": "Your Voting List has been created! Share it with others and make an impact on governance decisions."
+            },
+            "steps": {
+                "details": "Details",
+                "listDetail": "List Detail",
+                "listDetailInfo": "Give your Voting List a name and a short description. This helps others understand what your list is about",
+                "proposals": "Proposals",
+                "proposalsInfo": "Now, let's add proposals to your Voting List. You can search for existing proposals and select the ones that align.",
+                "rationale": "Rationale",
+                "rationaleInfo": "Why did you select these proposals? Providing a rationale helps others understand your choices and makes your list more credible."
+            }
+        },
+        "voting": {
+            "success": {
+                "title": "Success!!",
+                "message": "You have successfully submitted your votes!!"
+            },
+            "steps": {
+                "readyToVote" : "Ready to Vote!!",
+                "submitVotes" : "Submit Votes",
+                "votesSubmitted" : "Votes Submitted",
+                "submitVotesInfo" : "From your list of selected proposals, please cast your votes",
+                "submitReviewedVotes" : "You've reviewed your selections. Click 'Submit Votes' below to finalize your choices and complete the process.",
+                "submitReviewedVotesInfo" : "Successfully verified. Proceed and submit your vote",
+                "votesSummary" : "Votes Summary",
+                "votesSummaryInfo" : "Highlighted is a summary of your voting. To make changes to your vote, go to the previous screen and amend.",
+                "connectWallet" : "Connect Wallet",
+                "connectWalletInfo" : "Connect your wallet to submit your votes.",
+                "submission" : "Submission",
+                "submissionInfo" : "Submitting your votes"
+            }
         }
     },
     "error404": {
