@@ -41,7 +41,7 @@ class VoterHistoryRepository extends Repository
                         'caster',
                         'raw_fragment',
                         'choice',
-                        'created_at',
+                        'time',
                         'voting_power',
                         'fund',
                     ],

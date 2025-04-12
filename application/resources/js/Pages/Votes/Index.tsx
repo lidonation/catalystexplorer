@@ -12,6 +12,9 @@ import { VoteEnums } from '@/enums/vote-search-enums';
 import { FiltersProvider, useFilterContext } from '@/Context/FiltersContext';
 import { SearchParams } from '../../../types/search-params';
 import VoteHistoryTableLoader from './Partials/VoterHistoryTableLoader';
+import SecondarySearchControls from '@/Components/atoms/SecondarySearchControls';
+import VoteSortOptions from '@/lib/VoteSortOptions';
+import VoteFilters from './Partials/VoteFilters';
 
 interface VoteHistoryProps {
 voterHistories?: PaginatedData<VoterHistoryData[]>;
@@ -25,7 +28,7 @@ const IndexComponent: React.FC<VoteHistoryProps> = (props) => {
 const { setFilters, filters } = useFilterContext();
 const searchInputRef = useRef<HTMLInputElement>(null);
 const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-
+const [showFilters, setShowFilters] = useState<boolean>(false);
 const queryParams = new URLSearchParams(window.location.search);
 const initialStakeAddressQuery = queryParams.get(VoteEnums.QUERY) || '';
 const [stakeAddressQuery, setStakeAddressQuery] = useState(initialStakeAddressQuery);
@@ -161,6 +164,8 @@ const handleStakeAddressSearch = (search: string) => {
     }, 300);
 };
 
+const sortOptions = VoteSortOptions();
+
 return (
     <>
         <Head title={t('vote.catalystVotes')}/>
@@ -188,6 +193,20 @@ return (
             {isInitialNullState && (
                 <div className='bg-background rounded-lg shadow-lg p-4 mb-8'>
                     <Title className='border-b border-dark-light pt-4 pb-4 font-bold' level='3'>{t('vote.votingHistory')}</Title>
+                    <SecondarySearchControls
+                        onFiltersToggle={setShowFilters}
+                        sortOptions={sortOptions}
+                        searchPlaceholder={t('vote.searchPlaceholder')}
+                        searchParam={VoteEnums.SECONDARY_QUERY}
+                        searchLabel={t('vote.secondarySearch')}
+                    />
+                    <section
+                        className={`container overflow-hidden transition-all duration-500 ease-in-out ${
+                            showFilters ? 'max-h-[500px] my-4' : 'max-h-0'
+                        }`}
+                    >
+                        <VoteFilters/>
+                    </section>
                     <div className="bg-background flex w-full flex-col items-center justify-center rounded-lg px-4 py-8 mb-10">
                         <RecordsNotFound context="search" showIcon={true} />
                         <Paragraph className="mt-4 text-center text-dark">
@@ -200,6 +219,21 @@ return (
             {!isSearching && searchPerformedWithNoResults ? (
                 <div className='bg-background rounded-lg shadow-lg p-4 mb-8'>
                     <Title className='border-b border-dark-light pt-4 pb-4 font-bold' level='3'>{t('vote.votingHistory')}</Title>
+                    <SecondarySearchControls
+                        onFiltersToggle={setShowFilters}
+                        sortOptions={sortOptions}
+                        searchPlaceholder={t('vote.searchPlaceholder')}
+                        searchParam={VoteEnums.SECONDARY_QUERY}
+                        searchLabel={t('vote.secondarySearch')}
+                    />
+                    <section
+                        className={`container overflow-hidden transition-all duration-500 ease-in-out ${
+                            showFilters ? 'max-h-[500px] my-4' : 'max-h-0'
+                        }`}
+                    >
+                        <VoteFilters/>
+                    </section>
+
                     <div className="bg-background flex w-full flex-col items-center justify-center rounded-lg px-4 py-8 mb-10">
                         <RecordsNotFound />
                         <Paragraph className="mt-4 text-center text-dark">

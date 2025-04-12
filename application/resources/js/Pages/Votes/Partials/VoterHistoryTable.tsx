@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef, Dispatch, SetStateAction } from 'react';
 import { useTranslation } from 'react-i18next';
 import { router } from '@inertiajs/react';
 import _ from 'lodash';
@@ -22,11 +22,16 @@ import Paragraph from '@/Components/atoms/Paragraph';
 interface VoterHistoryTableProps {
   voterHistories?: PaginatedData<VoterHistoryData[]>;
   filters: SearchParams;
+  showFilters?: boolean;
+  setShowFilters?: Dispatch<SetStateAction<boolean>>;
 }
 
-const VoterHistoryTable: React.FC<VoterHistoryTableProps> = ({ voterHistories }) => {
+const VoterHistoryTable: React.FC<VoterHistoryTableProps> = ({ 
+  voterHistories, 
+  showFilters = false, 
+  setShowFilters = () => {} 
+}) => {
   const { t } = useTranslation();
-  const [showFilters, setShowFilters] = useState<boolean>(false);
   const { filters, setFilters } = useFilterContext();
   const [isLoading, setIsLoading] = useState(false);
   const prevFiltersRef = useRef('');
@@ -34,6 +39,11 @@ const VoterHistoryTable: React.FC<VoterHistoryTableProps> = ({ voterHistories })
   const [hoveredCell, setHoveredCell] = useState<{rowIndex: number, col: string} | null>(null);
   const [copiedField, setCopiedField] = useState<string | null>(null);
   const [hasSearched, setHasSearched] = useState<boolean>(false);
+  
+  const [internalShowFilters, setInternalShowFilters] = useState(false);
+  
+  const handleFiltersToggle: Dispatch<SetStateAction<boolean>> = 
+    setShowFilters !== (() => {}) ? setShowFilters : setInternalShowFilters;
   
   useEffect(() => {
     if (isInitialRender.current) {
@@ -102,73 +112,21 @@ const VoterHistoryTable: React.FC<VoterHistoryTableProps> = ({ voterHistories })
     }
   };
 
-  const formatTime = (timestamp: string): string => {
-    try {
-      if (!timestamp) return 'N/A';
-      
-      const date = new Date(timestamp);
-      
-      if (isNaN(date.getTime())) return 'N/A';
-      
-      const month = date.toLocaleString('en-US', { month: 'short' });
-      const day = date.getDate();
-      const year = date.getFullYear();
-      
-      let hours = date.getHours();
-      const ampm = hours >= 12 ? 'PM' : 'AM';
-      hours = hours % 12;
-      hours = hours ? hours : 12;
-      const minutes = date.getMinutes().toString().padStart(2, '0');
-      
-      return `${month} ${day}, ${year} ${hours}:${minutes} ${ampm}`;
-    } catch (e) {
-      console.error('Error formatting time:', e);
-      return 'N/A';
-    }
-  };
-
   const formatVotingPower = (value: any): string => {
     if (value === undefined || value === null) return '₳ 0';
     
     try {
       const numValue = Number(value);
       if (Number.isNaN(numValue)) return '₳ 0';
+      
       const adaValue = numValue / 1000000;
       
-      const formattedValue = adaValue.toLocaleString(undefined, {
-        minimumFractionDigits: 0,
-        maximumFractionDigits: 6
-      });
+      const formattedValue = Math.floor(adaValue).toLocaleString();
       
       return `₳ ${formattedValue}`;
     } catch (e) {
       console.error('Error formatting voting power:', e);
       return '₳ 0';
-    }
-  };
-
-  const getTimeAgo = (timestamp: string): string => {
-    try {
-      if (!timestamp) return t('vote.notAvailable');
-      
-      const date = new Date(timestamp);
-      
-      if (isNaN(date.getTime())) return t('vote.notAvailable');
-      
-      const now = new Date();
-      const diffMs = now.getTime() - date.getTime();
-      const diffHrs = Math.floor(diffMs / (1000 * 60 * 60));
-      
-      if (diffHrs < 1) return t('vote.timeAgo.justNow');
-      if (diffHrs === 1) return t('vote.timeAgo.anHourAgo');
-      if (diffHrs < 24) return t('vote.timeAgo.hoursAgo', { hours: diffHrs });
-      
-      const diffDays = Math.floor(diffHrs / 24);
-      if (diffDays === 1) return t('vote.timeAgo.aDayAgo');
-      return t('vote.timeAgo.daysAgo', { days: diffDays });
-    } catch (e) {
-      console.error('Error formatting time ago:', e);
-      return t('vote.notAvailable');
     }
   };
 
@@ -238,13 +196,15 @@ const VoterHistoryTable: React.FC<VoterHistoryTableProps> = ({ voterHistories })
            (!voterHistories?.data || voterHistories.data.length === 0);
   };
 
+  const sortOptionsList = VoteSortOptions();
+
   return (
     <div className="overflow-x-auto">
       <section className="container">
         <Title className='border-b border-dark-light pt-4 pb-4 font-bold' level='3'>{t('vote.votingHistory')}</Title>
         <SecondarySearchControls
-          onFiltersToggle={setShowFilters}
-          sortOptions={VoteSortOptions()}
+          onFiltersToggle={handleFiltersToggle}
+          sortOptions={sortOptionsList}
           searchPlaceholder={t('vote.searchPlaceholder')}
           searchParam={VoteEnums.SECONDARY_QUERY}
           searchLabel={t('vote.secondarySearch')}
@@ -253,7 +213,7 @@ const VoterHistoryTable: React.FC<VoterHistoryTableProps> = ({ voterHistories })
       
       <section
         className={`container overflow-hidden transition-all duration-500 ease-in-out ${
-          showFilters ? 'max-h-[500px] my-4' : 'max-h-0'
+          (showFilters || internalShowFilters) ? 'max-h-[500px] my-4' : 'max-h-0'
         }`}
       >
         <VoteFilters/>
@@ -309,10 +269,11 @@ const VoterHistoryTable: React.FC<VoterHistoryTableProps> = ({ voterHistories })
                         </td>
                         <td className="py-4 px-4 border-b border-r border-dark-light text-content">
                           <div className="flex flex-col">
-                            <span>{formatTime(safelyGetNestedValue(history, 'created_at'))}</span>
-                            <span className="text-xs text-gray-persist">
-                              {getTimeAgo(safelyGetNestedValue(history, 'created_at'))}
-                            </span>
+                            <span>{history.time}</span>
+                            {/* For time ago */}
+                            {/* <span className="text-xs text-gray-persist">
+                              {history.time}
+                            </span> */} 
                           </div>
                         </td>
                         <td className="py-4 px-4 border-b border-r text-center border-dark-light text-darker">
