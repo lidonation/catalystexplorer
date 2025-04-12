@@ -27,7 +27,7 @@ const RankingButtons: React.FC<RankingButtonsProps> = ({
     return (
         <div className="flex gap-2">
             <Button
-                className={`bg-success/30 border-success text-success flex items-center gap-1 rounded-md border p-2 ${
+                className={`bg-success/30 border-success text-success flex items-center gap-1 rounded-md border p-1  ${
                     isLoadingPositive ? 'cursor-not-allowed' : 'cursor-pointer'
                 }`}
                 onClick={markPositive}
