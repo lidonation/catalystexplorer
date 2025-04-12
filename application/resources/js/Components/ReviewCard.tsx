@@ -90,7 +90,7 @@ export const ReviewCard: React.FC<ReviewItemProps> = ({
         >
             <Card
                 className={clsx(
-                    isHovered ? 'z-30 shadow-md' : 'z-0',
+                    isHovered ? 'z-30 shadow-sm' : 'z-0',
                     isHovered
                         ? 'absolute top-0 right-0 left-0 w-full'
                         : 'relative w-full',
