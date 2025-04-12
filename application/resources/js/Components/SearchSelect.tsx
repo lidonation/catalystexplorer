@@ -41,7 +41,7 @@ export function SearchSelect({
     const { searchTerm, setSearchTerm, options } =
         useSearchOptions<any>(domain);
 
-    const { t } = useTranslation();
+    const { t } = useTranslation();    
 
     const filteredOptions = options.map((option) => {
         // Handle when option is a string

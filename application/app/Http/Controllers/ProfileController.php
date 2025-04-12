@@ -4,20 +4,18 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use App\Models\User;
-use Inertia\Inertia;
-use App\Models\Group;
-use Inertia\Response;
 use App\Models\Location;
+use App\Models\User;
+use App\Repositories\IdeascaleProfileRepository;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Validation\Rule;
-use App\Models\IdeascaleProfile;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Redirect;
-use Illuminate\Contracts\Auth\MustVerifyEmail;
-use App\Repositories\IdeascaleProfileRepository;
+use Illuminate\Validation\Rule;
+use Inertia\Inertia;
+use Inertia\Response;
 
 class ProfileController extends Controller
 {
@@ -219,58 +217,95 @@ class ProfileController extends Controller
         $ideascaleProfile = app(IdeascaleProfileRepository::class);
 
         $args = [
-            'filter' => ["claimed_by_id = {$userId }"],
+            'filter' => ["claimed_by_id = {$userId}"],
             'attributesToRetrieve' => $attrs ?? [
-                'id',
-                'claimed_by_id',
+                'proposals',
                 'completed_proposals_count',
                 'funded_proposals_count',
                 'unfunded_proposals_count',
                 'proposals_count',
                 'collaborating_proposals_count',
                 'own_proposals_count',
-                'amount_awarded_ada',
-                'amount_awarded_usd',
-                'proposals_funded',
+                'amount_requested_ada',
+                'amount_requested_usd',
                 'proposals_total_amount_requested',
                 'completed_proposals_count',
                 'funded_proposals_count',
                 'unfunded_proposals_count',
             ],
-            'facets'=> [
-                'amount_awarded_ada',
-                'amount_awarded_usd',
-                'amount_distributed_ada',
-                'amount_distributed_usd',
-                'completed_proposals_count',
-                'funded_proposals_count',
-                'unfunded_proposals_count',
-                'own_proposals_count',
-                'collaborating_proposals_count',
-            ]
         ];
 
-
-        $builder = $ideascaleProfile->search( '',
+        $builder = $ideascaleProfile->search(
+            '',
             $args
         );
 
+        $hits = $builder->raw()['hits'];
 
-        dd($builder->raw(),IdeascaleProfile::where('claimed_by_id', operator: $userId)->withCount([
-            'completed_proposals',
-            'funded_proposals',
-            'unfunded_proposals',
-            'collaborating_proposals',
-            'proposals',
-        ])->get()->each->append([
-            'amount_awarded_ada',
-            'amount_awarded_usd',
-            'amount_distributed_ada',
-            'amount_distributed_usd',
-        ]));
+        $proposals = [];
 
-        $ideascaleProfile = IdeascaleProfile::where('claimed_by_id', operator: $userId)->get()->map(fn($p) => $p->hash);
-        
-        return Inertia::render('My/Dashboard');
+        $totalsSummary = collect($hits)->reduce(function ($carry, $item) use (&$proposals) {
+            $proposals = array_merge($proposals, $item['proposals']);
+            foreach ($item as $key => $value) {
+                if (is_int($value)) {
+                    $carry[$key] = ($carry[$key] ?? 0) + $value;
+                }
+            }
+
+            return $carry;
+        }, []);
+
+        $metrics = [
+            'USD' => ['amount_received_USD', 'amount_awarded_USD'],
+            'ADA' => ['amount_received_ADA', 'amount_awarded_ADA'],
+        ];
+
+        $grouped = collect($proposals)->groupBy(fn ($p) => $p['currency'])
+            ->map(fn ($byCurrency) => $byCurrency->groupBy(fn ($p) => $p['fund']['title'] ?? 'Unknown Fund'));
+
+        $graphData = [
+            'amount_received' => [],
+            'amount_awarded' => [],
+        ];
+
+        collect($metrics)->each(function ($fields, $currency) use ($grouped, &$graphData) {
+            if (! isset($grouped[$currency])) {
+                return;
+            }
+
+            $currencyData = $grouped[$currency]->map(function ($items, $fundTitle) use ($fields, $currency) {
+                $totals = collect($fields)->mapWithKeys(fn ($field) => [$field => 0]);
+
+                foreach ($items as $item) {
+                    $totals = $totals->mapWithKeys(fn ($val, $field) => [
+                        $field => $val + ($item[$field] ?? 0),
+                    ]);
+                }
+
+                return [
+                    'x' => $fundTitle,
+                    'y' => $totals->get("amount_received_{$currency}", 0),
+                    'y_awarded' => $totals->get("amount_awarded_{$currency}", 0),
+                ];
+            });
+
+            $graphData['amount_received'][$currency] = $currencyData->map(fn ($data) => [
+                'x' => $data['x'],
+                'y' => $data['y'],
+            ])->values();
+
+            $graphData['amount_awarded'][$currency] = $currencyData->map(fn ($data) => [
+                'x' => $data['x'],
+                'y' => $data['y_awarded'],
+            ])->values();
+        });
+
+        return Inertia::render(
+            'My/Dashboard',
+            [
+                'totalsSummary' => $totalsSummary,
+                'graphData' => $graphData,
+            ]
+        );
     }
 }

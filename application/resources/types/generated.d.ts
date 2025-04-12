@@ -138,7 +138,7 @@ hash: string | null;
 user_id?: number;
 name?: string;
 hero_img_url?: string;
-bio?: string;
+bio?: Array<any> | string | null;
 banner_img_url?: string;
 slug?: string;
 status?: string;
@@ -478,7 +478,7 @@ reference_script_hash: string | null;
 consumed_by_tx: string | null;
 };
 export type UserData = {
-hash: string;
+hash: string | null;
 name: string;
 email: string;
 hero_img_url: string | null;

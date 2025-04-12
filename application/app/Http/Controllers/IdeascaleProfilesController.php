@@ -39,7 +39,7 @@ class IdeascaleProfilesController extends Controller
 
         return Inertia::render('IdeascaleProfile/Index', [
             'ideascaleProfilesCount' => 4,
-            'ideascaleProfiles' => Inertia::defer(fn() => $this->query()),
+            'ideascaleProfiles' => Inertia::defer(fn () => $this->query()),
             'filters' => $this->queryParams,
         ]);
     }
@@ -75,7 +75,7 @@ class IdeascaleProfilesController extends Controller
             return Inertia::render('IdeascaleProfile/Proposals/Index', [
                 'ideascaleProfile' => IdeascaleProfileData::from($ideascaleProfileData),
                 'proposals' => Inertia::optional(
-                    fn() => to_length_aware_paginator(
+                    fn () => to_length_aware_paginator(
                         ProposalData::collect(
                             $ideascaleProfile->proposals()
                                 ->with(['users', 'fund'])
@@ -89,7 +89,7 @@ class IdeascaleProfilesController extends Controller
         if (str_contains($path, '/connections')) {
             return Inertia::render('IdeascaleProfile/Connections/Index', [
                 'ideascaleProfile' => IdeascaleProfileData::from($ideascaleProfileData),
-                'connections' => Inertia::lazy(fn() => $ideascaleProfile->connected_items), // Use lazy loading
+                'connections' => Inertia::lazy(fn () => $ideascaleProfile->connected_items), // Use lazy loading
             ]);
         }
 
@@ -132,9 +132,9 @@ class IdeascaleProfilesController extends Controller
         if (str_contains($path, '/milestones')) {
             return Inertia::render('IdeascaleProfile/Milestones/Index', [
                 'ideascaleProfile' => IdeascaleProfileData::from($ideascaleProfileData),
-                'projectSchedules' => Inertia::optional(fn() => to_length_aware_paginator(ProjectScheduleData::collect(
+                'projectSchedules' => Inertia::optional(fn () => to_length_aware_paginator(ProjectScheduleData::collect(
                     ProjectSchedule::whereHas('proposal', function ($query) use ($ideascaleProfile) {
-                        $query->whereHas('users', fn($q) => $q->where('ideascale_profile_id', $ideascaleProfile->id));
+                        $query->whereHas('users', fn ($q) => $q->where('ideascale_profile_id', $ideascaleProfile->id));
                     })->with(['milestones'])->paginate(6)
                 ))),
             ]);
@@ -162,7 +162,7 @@ class IdeascaleProfilesController extends Controller
         return Inertia::render('IdeascaleProfile/Proposals/Index', [
             'ideascaleProfile' => IdeascaleProfileData::from($ideascaleProfileData),
             'proposals' => Inertia::optional(
-                fn() => to_length_aware_paginator(
+                fn () => to_length_aware_paginator(
                     ProposalData::collect(
                         $ideascaleProfile->proposals()
                             ->with(['users', 'fund'])
@@ -190,7 +190,7 @@ class IdeascaleProfilesController extends Controller
             ])
             ->get();
 
-        $reviews = $proposals->flatMap(fn($proposal) => $proposal->reviews);
+        $reviews = $proposals->flatMap(fn ($proposal) => $proposal->reviews);
         $reviewerIds = $reviews->pluck('user.id')->filter()->unique()->values();
 
         $reviewIds = $reviews->pluck('id')->toArray();
@@ -348,7 +348,7 @@ class IdeascaleProfilesController extends Controller
             // Tags filter
             if (! empty($this->queryParams[ProposalSearchParams::TAGS()->value])) {
                 $tagIds = array_map('intval', $this->queryParams[ProposalSearchParams::TAGS()->value]);
-                $filters[] = '(' . implode(' OR ', array_map(fn($t) => "proposals.tags.id = {$t}", $tagIds)) . ')';
+                $filters[] = '('.implode(' OR ', array_map(fn ($t) => "proposals.tags.id = {$t}", $tagIds)).')';
             }
 
             // Funding status filter

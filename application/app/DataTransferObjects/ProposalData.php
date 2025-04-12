@@ -41,7 +41,7 @@ final class ProposalData extends Data
         #[TypeScriptOptional]
         public ?string $definition_of_success,
 
-        public string $status,
+        public ?string $status,
 
         #[TypeScriptOptional]
         public ?string $funding_status,

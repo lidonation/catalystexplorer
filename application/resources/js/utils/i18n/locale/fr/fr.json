@@ -15,6 +15,9 @@
     "charts": "Graphiques",
     "comingSoon": "À venir",
     "chooseMetaData": "Choisissez vos propres métadonnées",
+    "allCurencies": "Toutes les devises",
+    "totalAda": "Montant total en ADA",
+    "totalUsd": "Montant total en USD",
     "cookies": "Cookies",
     "copyright": "© 2024 Explorateur Catalyst. Tous droits réservés.",
     "connections": "Connexions",
@@ -395,6 +398,7 @@
         "projectStatus": "Statut du projet",
         "limitTags": "Limite aux balises",
         "fundingStatus": "Statut du financement",
+        "collaborator": "Collaborateur",
         "noIdeascaleProfiles": "Aucune Ideascale Profils trouvée",
         "options": {
             "alphabeticallyAsc": "Alphabétiquement A à Z",
@@ -431,8 +435,11 @@
         "allProposals": "Toutes les propositions",
         "CSVs": "CSVs de propositions",
         "proposals": "Propositions",
+        "proposalSummary": "Résumé des propositions",
         "projectVideo": "Vidéo du projet",
         "providedUrl": "URL fournie",
+        "totalRequested": "Total demandé",
+        "owner": "Propriétaire",
         "listSubtitle": "Les votes des propositions doivent être soumis dans l'application officielle de vote Catalyst.",
         "pageSubtitle": "Rechercher des propositions et des défis par titre, contenu ou auteur et co-auteurs.",
         "seeMoreProposals": "Voir plus de propositions",
@@ -759,14 +766,13 @@
             "helpful": "Utile",
             "notHelpful": "Pas utile"
         },
-        "filters":{
+        "filters": {
             "funds": "Fonds",
             "proposals": "Propositions",
             "reviewerIds": "Identifiants des réviseurs",
             "helpful": "Utile",
-            "ratings":"Notation",
+            "ratings": "Notation",
             "reputationScores": "Score de Réputation"
-
         }
     },
     "transactions": {

@@ -1,4 +1,4 @@
-import React, {ReactNode, useEffect, useState} from 'react';
+import React, {ReactNode, useEffect, useMemo, useState} from 'react';
 import {usePage} from '@inertiajs/react';
 import Image from '@/Components/Image';
 import Title from '@/Components/atoms/Title';
@@ -23,14 +23,14 @@ interface GroupLayoutProps {
 
 export default function GroupLayout({children, group}: GroupLayoutProps) {
     const {t} = useTranslation();
-    const {url} = usePage<PageProps>().props;
+    const url = window.location.origin;
     const [activeTab, setActiveTab] = useState('');
 
     const tabConfig = {
         ...groupTabs,
         routePrefix: `groups/${group.slug}`
     };
-    const tabs = generateTabs(t, tabConfig);
+    const tabs = useMemo(() => generateTabs(t, tabConfig), [t, tabConfig]);
 
     useEffect(() => {
         const currentPath = window.location.pathname;
@@ -41,8 +41,10 @@ export default function GroupLayout({children, group}: GroupLayoutProps) {
 
             return cleanCurrentPath.endsWith(cleanTabPath);
         });
+        
 
         if (matchingTab) {
+                    console.log('tyty');
             setActiveTab(matchingTab.name);
         }
     }, [tabs, url]);
