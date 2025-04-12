@@ -28,17 +28,17 @@ export const ReviewCard: React.FC<ReviewItemProps> = ({
     const [isLoadingPositive, setIsLoadingPositive] = useState(false);
     const [isLoadingNegative, setIsLoadingNegative] = useState(false);
     const [isHovered, setIsHovered] = useState(false);
-    const { t } = useTranslation()
+    const { t } = useTranslation();
     const contentRef = useRef<HTMLParagraphElement | null>(null);
     const [lineCount, setLineCount] = useState(0);
-  
+
     useEffect(() => {
-      const element = contentRef.current;
-      if (element) {
-        const lineHeight = parseFloat(getComputedStyle(element).lineHeight);
-        const height = element.offsetHeight;
-        setLineCount(Math.round(height / lineHeight));
-      }
+        const element = contentRef.current;
+        if (element) {
+            const lineHeight = parseFloat(getComputedStyle(element).lineHeight);
+            const height = element.offsetHeight;
+            setLineCount(Math.round(height / lineHeight));
+        }
     }, [review?.content]);
 
     const markPositive = () => {
@@ -101,12 +101,12 @@ export const ReviewCard: React.FC<ReviewItemProps> = ({
             <Card
                 className={clsx(
                     isHovered && lineCount >= 5 ? 'z-30 shadow-md' : 'z-0',
-                    isHovered  && lineCount >= 5
+                    isHovered && lineCount >= 5
                         ? 'absolute top-0 right-0 left-0 w-full'
                         : 'relative w-full',
                 )}
                 style={{
-                    transition: ' 0.9s ease, transform 0.9s ease', 
+                    transition: ' 0.9s ease, transform 0.9s ease',
                 }}
             >
                 <div className={`pb-6 ${className}`}>
@@ -121,14 +121,14 @@ export const ReviewCard: React.FC<ReviewItemProps> = ({
                     {review.content && (
                         <ExpandableContent expanded={isHovered} lineClamp={5}>
                             <RichContent
-                            className={`text-gray-persist text-3 ${lineCount >=5 ? 'cursor-pointer' : ''}`}
+                                className={`text-gray-persist text-3 ${lineCount >= 5 ? 'cursor-pointer' : ''}`}
                                 content={review?.content}
                                 ref={contentRef}
                             />
                         </ExpandableContent>
                     )}
 
-                    <div className="mt-8 flex items-center justify-between">
+                    <div className="mt-8 flex items-center gap-6">
                         <Paragraph className="text-gray-persist text-sm">
                             {t('reviews.helpfulReview')}
                         </Paragraph>
@@ -141,7 +141,7 @@ export const ReviewCard: React.FC<ReviewItemProps> = ({
                             markPositive={markPositive}
                         />
                     </div>
-                    <section className="flex flex-wrap items-center gap-4 mt-4">
+                    <section className="mt-4 flex flex-wrap items-center gap-4">
                         {review?.proposal?.link && (
                             <div className="flex items-center gap-2">
                                 <ValueLabel>{t('proposal')}</ValueLabel>
