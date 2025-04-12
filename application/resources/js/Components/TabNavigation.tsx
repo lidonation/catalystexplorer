@@ -17,9 +17,9 @@ export default function TabNavigation({
     activeTab, 
     centerTabs = true,
     className = "min-w-max border-b border-b-light-gray-persist",
-    tabClassName = "whitespace-nowrap text-sm md:text-base px-2 md:px-3 py-2 group flex items-center gap-2 outline-hidden transition-colors hover:text-content-dark",
+    tabClassName = "whitespace-nowrap text-sm md:text-base px-1 md:px-2 py-1 group flex items-center gap-1 outline-hidden transition-colors hover:text-content-dark",
     activeTabClassName = "-mb-px border-b-2 border-b-primary text-primary",
-    wrapperClassName = "mt-4 md:mt-8 text-content-lighter overflow-x-auto overflow-y-hidden"
+    wrapperClassName = "mt-3 md:mt-6 text-content-lighter overflow-x-auto overflow-y-hidden pb-1"
 }: TabNavigationProps) {
     const tabRefs = useRef<(HTMLAnchorElement | null)[]>([]);
     const navRef = useRef<HTMLElement>(null);
@@ -83,7 +83,7 @@ export default function TabNavigation({
     return (
         <div className={wrapperClassName}>
             <nav className={className} ref={navRef}>
-                <div className="flex flex-row gap-2 md:gap-6">
+                <div className="flex flex-row gap-1 md:gap-4">
                     {tabs.map((tab, index) => {
                         const isActive = activeTab === tab.name;
 
