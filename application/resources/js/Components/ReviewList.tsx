@@ -31,7 +31,7 @@ export const ReviewList: React.FC<ReviewListProps> = ({
                     <section 
                         key={review?.hash} 
                         className="relative mb-2"
-                        style={{ zIndex: reviews?.data?.length - index }} // Higher cards get higher z-index
+                        style={{ zIndex: reviews?.data?.length - index }} 
                     >
                         <ReviewCard review={review} />
                     </section>
