@@ -21,14 +21,18 @@ export const ReviewList: React.FC<ReviewListProps> = ({
     };
 
     return (
-        <div className={`space-y-6 ${className}`}>
+        <div className={`space-y-8 ${className}`}>
             <Masonry
                 breakpointCols={breakpointColumnsObj}
-                className="-ml-4 flex w-auto"
+                className="relative flex w-auto"
                 columnClassName="pl-2"
             >
-                {reviews?.data?.map((review) => (
-                    <section key={review?.hash} className="mb-2">
+                {reviews?.data?.map((review, index) => (
+                    <section 
+                        key={review?.hash} 
+                        className="relative mb-2"
+                        style={{ zIndex: reviews?.data?.length - index }} // Higher cards get higher z-index
+                    >
                         <ReviewCard review={review} />
                     </section>
                 ))}
