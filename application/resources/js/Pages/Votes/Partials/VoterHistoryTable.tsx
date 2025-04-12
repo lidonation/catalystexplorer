@@ -28,8 +28,8 @@ interface VoterHistoryTableProps {
 
 const VoterHistoryTable: React.FC<VoterHistoryTableProps> = ({ 
   voterHistories, 
-  showFilters = false, 
-  setShowFilters = () => {} 
+  showFilters, 
+  setShowFilters
 }) => {
   const { t } = useTranslation();
   const { filters, setFilters } = useFilterContext();
@@ -40,10 +40,12 @@ const VoterHistoryTable: React.FC<VoterHistoryTableProps> = ({
   const [copiedField, setCopiedField] = useState<string | null>(null);
   const [hasSearched, setHasSearched] = useState<boolean>(false);
   
+  // For internal filter toggle if no external one is provided
   const [internalShowFilters, setInternalShowFilters] = useState(false);
   
-  const handleFiltersToggle: Dispatch<SetStateAction<boolean>> = 
-    setShowFilters !== (() => {}) ? setShowFilters : setInternalShowFilters;
+  // Handle filters toggle by using either the provided state or internal state
+  const filtersVisible = showFilters !== undefined ? showFilters : internalShowFilters;
+  const toggleFilters: Dispatch<SetStateAction<boolean>> = setShowFilters || setInternalShowFilters;
   
   useEffect(() => {
     if (isInitialRender.current) {
@@ -203,7 +205,7 @@ const VoterHistoryTable: React.FC<VoterHistoryTableProps> = ({
       <section className="container">
         <Title className='border-b border-dark-light pt-4 pb-4 font-bold' level='3'>{t('vote.votingHistory')}</Title>
         <SecondarySearchControls
-          onFiltersToggle={handleFiltersToggle}
+          onFiltersToggle={toggleFilters}
           sortOptions={sortOptionsList}
           searchPlaceholder={t('vote.searchPlaceholder')}
           searchParam={VoteEnums.SECONDARY_QUERY}
@@ -213,7 +215,7 @@ const VoterHistoryTable: React.FC<VoterHistoryTableProps> = ({
       
       <section
         className={`container overflow-hidden transition-all duration-500 ease-in-out ${
-          (showFilters || internalShowFilters) ? 'max-h-[500px] my-4' : 'max-h-0'
+          filtersVisible ? 'max-h-[500px] my-4' : 'max-h-0'
         }`}
       >
         <VoteFilters/>
