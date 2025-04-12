@@ -23,13 +23,13 @@ export default function Milestones({
         <IdeascaleProfileLayout ideascaleProfile={ideascaleProfile}>
             <Head title={`${ideascaleProfile.name} - Milestones`} />
 
-            <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+            <div className="mx-auto">
                 <div className="flex flex-col items-center justify-center">
                     <WhenVisible
                         data="projectSchedules"
                         fallback={<div>Loading Connections</div>}
                     >
-                        <section className="container py-8">
+                        <section className="w-full py-4">
                             {projectSchedules && projectSchedules.data?.length > 0 ? (
                                 <>
                                     <MilestoneAccordion
