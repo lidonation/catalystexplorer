@@ -1,7 +1,9 @@
 import AggregatedReviewsSummary from '@/Components/AggregatedReviewsSummary';
 import Paragraph from '@/Components/atoms/Paragraph';
 import { ReviewCard } from '@/Components/ReviewCard';
+import { ParamsEnum } from '@/enums/proposal-search-params';
 import RecordsNotFound from '@/Layouts/RecordsNotFound';
+import { useLocalizedRoute } from '@/utils/localizedRoute';
 import { Head, Link, WhenVisible } from '@inertiajs/react';
 import { useTranslation } from 'react-i18next';
 import Masonry from 'react-masonry-css';
@@ -28,8 +30,6 @@ export default function Reviews({
     };
 
     const { t } = useTranslation();
-
-    console.log({ reviews });
 
     return (
         <GroupLayout group={group}>
@@ -63,7 +63,13 @@ export default function Reviews({
                                         reviews?.total > reviews?.per_page && (
                                             <div className="">
                                                 <Link
-                                                    href="#"
+                                                    href={useLocalizedRoute(
+                                                        'reviews.index',
+                                                        {
+                                                            [ParamsEnum.GROUPS]:
+                                                                [group.hash],
+                                                        },
+                                                    )}
                                                     className="bg-background flex min-h-54 flex-col items-center justify-center rounded-xl p-4 shadow-lg transition-transform hover:scale-95"
                                                 >
                                                     <div className="flex flex-col items-center gap-4">
