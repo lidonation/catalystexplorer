@@ -41,8 +41,6 @@ const BioCard: React.FC<BioCardProps> = ({ group }) => {
   const allAwardedFunds = !!(
     group?.amount_awarded_ada && group?.amount_awarded_usd
   );
-console.log({ group, locale: Array.isArray(group.bio) });
-
 
   return (
       <Card>

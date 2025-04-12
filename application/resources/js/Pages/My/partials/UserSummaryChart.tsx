@@ -18,36 +18,47 @@ interface UserSummaryChartProps {
         }[];
     }[];
     title: string;
-    defaultFilter?: string[];
+}
+
+interface Option {
+    label: string;
+    value: string;
+    selected: boolean;
 }
 
 export default function UserSummaryChart({
     graphData = [],
     title,
-    defaultFilter,
 }: UserSummaryChartProps) {
     const { t } = useTranslation();
 
-    const availableCurrencies = graphData.map((d) => d.id);
+    const filters = ['all', ...graphData.map((item) => item.id)];
 
-    const currencyOptions = [
-        ...(availableCurrencies.length > 1
-            ? [{ label: t('all'), value: 'all' }]
-            : []),
-        ...availableCurrencies.map((id) => ({
-            label: id === 'usd' ? t('totalUsd') : t('totalAda'),
-            value: id,
-        })),
-    ];
+    const [selectedCurrencies, setSelectedCurrencies] =
+        useState<string[]>(filters);
 
-    const [selectedCurrencies, setSelectedCurrencies] = useState<string[]>(
-        defaultFilter ?? ['usd', 'ada'],
-    );
+    const currencyOptions = (): Option[] => {
+        const labelMap: Record<string, string> = {
+            usd: t('totalUsd'),
+            ada: t('totalAda'),
+            all: t('allCurrencies'),
+        };
+
+        return filters.map((curr) => ({
+            label: labelMap[curr] || curr.toUpperCase(),
+            value: curr,
+            selected: selectedCurrencies.includes(curr),
+        }));
+    };
 
     const filteredData = useMemo(() => {
-        const selected = selectedCurrencies.map((c) => c);
-        if (selected.includes('all')) return graphData;
-        return graphData.filter((entry) => selected.includes(entry.id));
+        if (selectedCurrencies.includes('all')) {
+            return graphData;
+        }
+
+        return graphData.filter((entry) =>
+            selectedCurrencies.includes(entry.id),
+        );
     }, [graphData, selectedCurrencies]);
 
     const calculateTrend = (current: number, previous: number) => {
@@ -66,8 +77,8 @@ export default function UserSummaryChart({
     const tickValues = Array.from(
         { length: Math.ceil(maxY / interval) + 1 },
         (_, i) => i * interval,
-    );
-    console.log(title, 'filteredData:', filteredData);
+    );    
+
     return (
         <Card className="flex h-full min-h-64 flex-col gap-4">
             <div className="border-content-light flex items-center justify-between border-b pb-4">
@@ -82,7 +93,7 @@ export default function UserSummaryChart({
                         {t('filterChart')}
                     </span>
                     <ChartFilter
-                        variants={currencyOptions}
+                        variants={currencyOptions()}
                         value={selectedCurrencies}
                         onChange={setSelectedCurrencies}
                     />
@@ -115,7 +126,7 @@ export default function UserSummaryChart({
                         tickValues,
                         tickSize: 0,
                         tickPadding: 4,
-                        legend: 'Amount',
+                        legend: t('amount'),
                         legendOffset: -40,
                         legendPosition: 'middle',
                         format: (value) => shortNumber(Number(value)),
@@ -172,7 +183,7 @@ export default function UserSummaryChart({
                                     </Title>
                                     <Paragraph className="mt-2 flex items-center text-sm">
                                         <span className="text-capitalize mr-1 truncate">
-                                            {`Amount ${serieId}`}
+                                            {`${t('amount')} ${serieId}`}
                                         </span>
                                         :
                                         <span className="ml-1 font-bold">

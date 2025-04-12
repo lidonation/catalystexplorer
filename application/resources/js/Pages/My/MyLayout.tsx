@@ -1,13 +1,13 @@
 // MyLayout.tsx
-import { ReactNode, useEffect, useState } from 'react';
-import { usePage } from '@inertiajs/react';
-import UserSection from './Components/UserSection';
-import UserTab from '../Profile/Partials/UserTab';
-import { generateTabs, myProfileTabs } from '@/utils/routeTabs';
-import { useTranslation } from 'react-i18next';
-import User = App.DataTransferObjects.UserData;
-import { SearchParams } from '../../../types/search-params';
 import { FiltersProvider } from '@/Context/FiltersContext';
+import { generateTabs, myProfileTabs } from '@/utils/routeTabs';
+import { usePage } from '@inertiajs/react';
+import { ReactNode, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { SearchParams } from '../../../types/search-params';
+import UserTab from '../Profile/Partials/UserTab';
+import UserSection from './Components/UserSection';
+import User = App.DataTransferObjects.UserData;
 
 interface MyLayoutProps {
     children: ReactNode;
@@ -29,35 +29,32 @@ export default function MyLayout({ children, filters }: MyLayoutProps) {
 
     useEffect(() => {
         const currentPath = window.location.pathname;
-        
-        const matchingTab = tabs.find(tab => {
+
+        const matchingTab = tabs.find((tab) => {
             const cleanCurrentPath = currentPath.replace(/\/$/, '');
             const cleanTabPath = tab.href.replace(/\/$/, '');
-            
+
             return cleanCurrentPath.endsWith(cleanTabPath);
         });
-        
+
         if (matchingTab) {
             setActiveTab(matchingTab.name);
         }
     }, [tabs, url]);
 
     return (
-     <FiltersProvider defaultFilters={filters || {} as SearchParams}>
-        <div className="min-h-screen bg-background-lighter px-2">
-            <div className="bg-background-lighter px-2">
-                <div className="px-1 sm:px-6 lg:px-2 py-8 ml-4">
-                    <UserSection user={auth?.user as unknown as User} />
-                    
-                    <UserTab 
-                        tabs={tabs}
-                        activeTab={activeTab}
-                    />
-                </div>
-            </div>
+        <FiltersProvider defaultFilters={filters || ({} as SearchParams)}>
+            <div className="bg-background-lighter min-h-screen px-2">
+                <div className="bg-background-lighter px-2">
+                    <div className="ml-4 px-1 py-8 sm:px-6 lg:px-2">
+                        <UserSection user={auth?.user as User} />
 
-            {children}
-        </div>
+                        <UserTab tabs={tabs} activeTab={activeTab} />
+                    </div>
+                </div>
+
+                {children}
+            </div>
         </FiltersProvider>
     );
 }

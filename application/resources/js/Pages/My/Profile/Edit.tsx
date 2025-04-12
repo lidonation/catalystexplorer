@@ -73,6 +73,8 @@ export default function ProfileSettings({
     user: directUser,
 }: ProfileSettingsProps) {
     const { t } = useTranslation();
+    console.log({});
+    
     const authUser = auth.user;
     const user = directUser || authUser;
 

@@ -75,6 +75,7 @@ class IdeascaleProfile extends Model implements HasMedia
             'outstanding_proposals_count',
             'own_proposals_count',
             'collaborating_proposals_count',
+            'co_proposals_count',
             'proposals_count',
         ];
     }

@@ -19,6 +19,7 @@ export interface TabConfig {
 }
 
 export function generateTabs(t: TFunction, config: TabConfig): Tab[] {
+  
   return config.tabs.map(tab => {
     const routeName = `${config.routePrefix}.${tab.routeName || tab.key}`;
     return {
@@ -48,13 +49,15 @@ export const groupTabs: TabConfig = {
   translationPrefix: 'searchResults.tabs',
   routePrefix: 'groups/{group:slug}',
   tabs: [
-      { key: 'proposals' },
-      { key: 'connections' },
-      { key: 'ideascaleProfiles',
-        routeName: 'ideascale-profiles'
-      },
-      { key: 'reviews' },
-      { key: 'locations' }
+    { key: 'proposals', only: ['proposals', 'group'] },
+    { key: 'connections', only: ['connections', 'group'] },
+    {
+      key: 'ideascaleProfiles',
+      routeName: 'ideascale-profiles',
+      only: ['connections', 'group']
+    },
+    { key: 'reviews', only: ['reviews', 'group', 'aggregatedRatings'] },
+    { key: 'locations' }
   ]
 };
 
@@ -62,14 +65,14 @@ export const ideascaleProfileTabs: TabConfig = {
   translationPrefix: 'ideascaleProfiles.tabs',
   routePrefix: 'ideascale-profiles/{hash}',
   tabs: [
-      { key: 'proposals', only: ['proposals'] },
-      { key: 'connections', only: ['connections'] },
-      { key: 'groups', only: ['groups'] },
-      { key: 'communities'},
-      { key: 'reviews', only: ['reviews']},
-      { key: 'milestones'},
-      { key: 'reports'},
-      { key: 'campaigns'},
+    { key: 'proposals', only: ['proposals'] },
+    { key: 'connections', only: ['connections'] },
+    { key: 'groups', only: ['groups'] },
+    { key: 'communities' },
+    { key: 'reviews', only: ['reviews'] },
+    { key: 'milestones' },
+    { key: 'reports' },
+    { key: 'campaigns' },
   ]
 };
 
@@ -77,11 +80,11 @@ export const communityTabs: TabConfig = {
   translationPrefix: 'communities',
   routePrefix: 'communities/{community:slug}',
   tabs: [
-      {key: 'dashboard'},
-      {key: 'proposals', only: ['proposals']},
-      {key: 'ideascale-profiles', only: ['ideascaleProfiles']},
-      {key: 'groups', only: ['groups']},
-      {key: 'events'}
+    { key: 'dashboard' },
+    { key: 'proposals', only: ['proposals'] },
+    { key: 'ideascale-profiles', only: ['ideascaleProfiles'] },
+    { key: 'groups', only: ['groups'] },
+    { key: 'events' }
   ]
 };
 

@@ -88,7 +88,15 @@ export const ReviewCard: React.FC<ReviewItemProps> = ({
                         <ReviewerInfo review={review} />
                     </div>
 
-                    {review.rating && <StarRating rating={review.rating} />}
+                    {review.rating && (
+                        <StarRating
+                            rating={
+                                typeof review.rating == 'object'
+                                    ? review?.rating.rating
+                                    : review.rating
+                            }
+                        />
+                    )}
                 </div>
 
                 {review.content && (

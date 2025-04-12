@@ -28,7 +28,7 @@ export const ReviewList: React.FC<ReviewListProps> = ({
                 columnClassName="pl-2"
             >
                 {reviews?.data?.map((review) => (
-                    <section key={review?.hash} className="mb-2">
+                    <section key={review?.hash} className="mb-8">
                         <ReviewCard review={review} />
                     </section>
                 ))}

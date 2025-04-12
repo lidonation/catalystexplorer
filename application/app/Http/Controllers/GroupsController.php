@@ -128,29 +128,34 @@ class GroupsController extends Controller
             return $builder->raw()['hits'][0] ?? null;
         });
 
-        $proposals = $groupData['proposals'];
+        $proposals = collect($groupData['proposals']);
 
-        $ideascaleProfiles = $groupData['ideascale_profiles'];
+        $ideascaleProfiles = collect($groupData['ideascale_profiles']);
 
         $connections = $groupData['connected_items'];
 
         $reviews = collect($proposals)->flatMap(fn ($p) => $p['reviews']);
 
+        $ratings = collect($reviews)->map(fn ($p) => $p['rating'])->groupBy('rating');
+
+        $aggregatedRatings = $ratings->mapWithKeys(fn ($r, $k) => [$k => $r->count()]);
+
         $props = [
             'group' => GroupData::from($group),
-            'proposals' => Inertia::optional(fn () => to_length_aware_paginator(
+            'proposals' => fn () => to_length_aware_paginator(
                 ProposalData::collect(
                     $proposals
                 ),
                 perPage: 11,
                 currentPage: 1
-            )->onEachSide(0)),
+            )->onEachSide(0),
             'connections' => Inertia::optional(fn () => $connections),
             'ideascaleProfiles' => Inertia::optional(
                 fn () => to_length_aware_paginator(
                     IdeascaleProfileData::collect(
                         $ideascaleProfiles,
                     ),
+                    total: count($ideascaleProfiles),
                     perPage: 11,
                     currentPage: 1
                 )
@@ -165,12 +170,14 @@ class GroupsController extends Controller
             'reviews' => Inertia::optional(
                 fn () => to_length_aware_paginator(
                     ReviewData::collect(
-                        $reviews
+                        $reviews->take(11)
                     ),
+                    total: $reviews->count(),
                     perPage: 11,
                     currentPage: 1
                 )
             ),
+            'aggregatedRatings' => $aggregatedRatings,
         ];
 
         $path = $request->path();

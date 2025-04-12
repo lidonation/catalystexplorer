@@ -4,6 +4,7 @@ use App\Http\Controllers\My\MyBookmarksController;
 use App\Http\Controllers\ProposalsController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\GroupsController;
+use App\Http\Controllers\ReviewsController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -56,9 +57,7 @@ Route::localized(
                     })->name('manage');
                 });
 
-                Route::get('/reviews', function () {
-                    return Inertia::render('My/Reviews/Index');
-                })->name('reviews');
+                Route::get('/reviews', [ReviewsController::class, 'myReviews'])->name('reviews');
             });
     }
 );
