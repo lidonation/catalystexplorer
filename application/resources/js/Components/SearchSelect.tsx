@@ -41,48 +41,54 @@ export function SearchSelect({
     const { searchTerm, setSearchTerm, options } =
         useSearchOptions<any>(domain);
 
-    const { t } = useTranslation();    
-
-    const filteredOptions = options.map((option) => {
+    const { t } = useTranslation();
+    
+    const filteredOptions = options.map((option, index) => {
         // Handle when option is a string
         if (typeof option === 'string') {
-            return {
-                label: option,
-                hash: option
-            };
+          return {
+            label: option,
+            catalyst_reviewer_id: option, // Store string as reviewer ID if relevant
+            title: option, // Store string as title if it's a proposal
+            hash: option // Use the string itself as the hash
+          };
         }
-            // Handle when option is an object
-            return {
-                label: option?.name ?? option?.title ?? option?.label ?? 'Unknown',
-                hash: option?.hash ?? 'unknown-hash',
-            };
-        },
-    );
+        
+        // Handle when option is an object
+        return {
+          label: option?.name ?? option?.title ?? option?.label ?? option?.catalyst_reviewer_id ?? 'Unknown',
+          catalyst_reviewer_id: option?.catalyst_reviewer_id,
+          title: option?.title, 
+          hash: option?.catalyst_reviewer_id ?? option?.title ?? option?.hash ?? option?.id ?? `unknown-hash-${index}`
+        };
+      });
 
     const handleSelect = useCallback(
         (value: string) => {
             if (multiple) {
-                onChange(
-                    selected.includes(value)
-                        ? selected.filter((item) => item !== value)
-                        : [...(selected ?? []), value],
-                );
+                const newSelected = selected.includes(value)
+                    ? selected.filter((item) => item !== value)
+                    : [...selected, value];
+                onChange(newSelected);
             } else {
                 onChange([value]);
                 setOpen(false);
                 setSearchTerm('');
             }
         },
-        [multiple, onChange, selected],
+        [multiple, onChange, selected, setSearchTerm],
     );
+    
     const handleClear = useCallback(
         (e: React.MouseEvent) => {
             e.stopPropagation();
-            selected.length ? onChange([]) : '';
+            if (selected.length) {
+                onChange([]);
+            }
             setSearchTerm('');
             setOpen(false);
         },
-        [onChange],
+        [onChange, selected, setSearchTerm, selected.length, setSearchTerm],
     );
 
     // Clear search when closing the popover
@@ -90,7 +96,7 @@ export function SearchSelect({
         if (!open) {
             setSearchTerm('');
         }
-    }, [open]);
+    }, [open, setSearchTerm]);
 
     return (
         <Popover open={open} onOpenChange={setOpen}>
@@ -113,7 +119,7 @@ export function SearchSelect({
                 </button>
             </PopoverTrigger>
             <PopoverContent
-                className="bg-background min-w-[var(--radix-popover-trigger-width)] p-0"
+            className="bg-background min-w-[var(--radix-popover-trigger-width)] w-[300px] p-0"
                 align="start"
             >
                 <Command shouldFilter={false}>
@@ -148,9 +154,9 @@ export function SearchSelect({
                             className={`max-h-64 min-h-24 lg:max-h-96 ${options.length > 10 ? 'overflow-scroll' : ''}`}
                         >
                             {options &&
-                                filteredOptions.map((option) => (
+                                filteredOptions.map((option, index) => (
                                     <CommandItem
-                                        key={option.hash}
+                                        key={`${option.hash}-${index}`} // Added index to ensure uniqueness
                                         value={option.hash.toString()}
                                         onSelect={() =>
                                             handleSelect(option.hash.toString())
@@ -159,7 +165,7 @@ export function SearchSelect({
                                     >
                                         {option.label}
                                         <Checkbox
-                                            id={option.hash}
+                                            id={`checkbox-${option.hash}-${index}`} // Make checkbox ID unique too
                                             checked={selected?.includes(
                                                 option.hash,
                                             )}

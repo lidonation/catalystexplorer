@@ -19,14 +19,14 @@ interface ReviewsPageProps {
     ideascaleProfile: IdeascaleProfileData;
     reviews: PaginatedData<ReviewData[]>;
     reviewerReputationScores: ReviewReputationScoreData[];
-    // ratingStats: { [s: string]: number } | ArrayLike<number>;
+    aggregatedRatings: { [s: string]: number } | ArrayLike<number>;
     filters: SearchParams;
 }
 
 export default function Reviews({
     ideascaleProfile,
     reviews,
-    // ratingStats,
+    aggregatedRatings,
     filters
 }: ReviewsPageProps) {
     const { t } = useTranslation();
@@ -41,11 +41,11 @@ export default function Reviews({
                 {reviews?.total > 0 ? (
                     <div className="space-y-8">
                         <div>
-                            {/*<AggregatedReviewsSummary*/}
-                            {/*    reviews={reviewsArray}*/}
-                            {/*    ratingStats={ratingStats}*/}
-                            {/*    reviewsCount={reviews.total}*/}
-                            {/*/>*/}
+                            <AggregatedReviewsSummary
+                                reviews={reviews?.data}
+                                aggregatedRatings={aggregatedRatings}
+                                reviewsCount={reviews.total}
+                            />
                         </div>
                         <div>
                             <ReviewList

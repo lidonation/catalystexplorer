@@ -7,8 +7,8 @@
     "assetName": "Asset Name",
     "API": "API",
     "bio": "Bio",
-    "allCurencies":"All Currencies",
-    "totalAda":"Total Amount in ADA",
+    "allCurencies": "All Currencies",
+    "totalAda": "Total Amount in ADA",
     "totalUsd": "Total Amount in USD",
     "bookmarks": "My Bookmarks",
     "blockchainData": "Blockchain Data",
@@ -26,7 +26,6 @@
     "cookies": "Cookies",
     "copyright": "© 2024 Catalyst Explorer. All rights reserved.",
     "connections": "Connections",
-    "explore": "Explore",
     "minting": "You're Minting",
     "loginToMint": "Login to Mint",
     "mustBeProposer": "Must Be Proposer",
@@ -44,6 +43,7 @@
     "home": "Home",
     "jormungandr": "Jormungandr",
     "knowledgeBase": "Knowledge Base",
+    "explore": "Explore",
     "impact": "Impact",
     "legal": "Legal",
     "licenses": "Licenses",
@@ -98,7 +98,7 @@
     "details": "Details",
     "teams": "Team",
     "yes": "Yes",
-    "filterChart":"Filter chart",
+    "filterChart": "Filter chart",
     "abstain": "Abstain",
     "notSet": "Not set",
     "loading": "Loading",
@@ -142,6 +142,11 @@
             "selectProfile": "Select Profile",
             "selectProposal": "Select Proposal",
             "selectProfileInfo": "Choose the profile(s) you want to mint from. The selected profile should be linked to the completed project whose NFT you’re minting.Not sure which one to pick? No worries—just select all available profiles and we’ll handle the rest! 🚀",
+            "selectProposalInfo": "To get started, please select proposal to mint from"
+        },
+        "drepSignUp": {
+            "signUpForm": "1. If you already have an account, log in with your credentials.\n2. If you’re new, sign up using your email and create a secure password.\n3. Verify your email to activate your account.",
+            "connectWallet": "1. Choose a supported Cardano wallet (e.g., Yoroi, Daedalus, Eternl).\n2. Follow the prompts to connect your wallet securely.\n3. Ensure your wallet has sufficient ADA for transactions.",
             "selectProposalInfo": "To get started, please select proposal to mint from"
         },
         "voterList": {
@@ -203,9 +208,25 @@
                 "rationaleInfo": "Why did you select these proposals? Providing a rationale helps others understand your choices and makes your list more credible."
             }
         },
-        "drepSignUp": {
-            "signUpForm": "1. If you already have an account, log in with your credentials.\n2. If you’re new, sign up using your email and create a secure password.\n3. Verify your email to activate your account.",
-            "connectWallet": "1. Choose a supported Cardano wallet (e.g., Yoroi, Daedalus, Eternl).\n2. Follow the prompts to connect your wallet securely.\n3. Ensure your wallet has sufficient ADA for transactions."
+        "voting": {
+            "success": {
+                "title": "Success!!",
+                "message": "You have successfully submitted your votes!!"
+            },
+            "steps": {
+                "readyToVote": "Ready to Vote!!",
+                "submitVotes": "Submit Votes",
+                "votesSubmitted": "Votes Submitted",
+                "submitVotesInfo": "From your list of selected proposals, please cast your votes",
+                "submitReviewedVotes": "You've reviewed your selections. Click 'Submit Votes' below to finalize your choices and complete the process.",
+                "submitReviewedVotesInfo": "Successfully verified. Proceed and submit your vote",
+                "votesSummary": "Votes Summary",
+                "votesSummaryInfo": "Highlighted is a summary of your voting. To make changes to your vote, go to the previous screen and amend.",
+                "connectWallet": "Connect Wallet",
+                "connectWalletInfo": "Connect your wallet to submit your votes.",
+                "submission": "Submission",
+                "submissionInfo": "Submitting your votes"
+            }
         }
     },
     "error404": {
@@ -400,6 +421,7 @@
         },
         "filters": {
             "fundingStatus": "Funding Status",
+            "epoch": "Epoch",
             "opensource": "Opensource",
             "projectStatus": "Project Status",
             "tags": "Tags",
@@ -563,10 +585,13 @@
             "amountAwardedUsdDesc": "Amount Awarded USD: High to Low",
             "amountAwardedUsdAsc": "Amount Awarded USD: Low to High"
         },
-        "dashboard": "Dashboard",
-        "members": "Members",
-        "groups": "Groups",
-        "events": "Events",
+        "tabs": {
+            "dashboard": "Dashboard",
+            "proposals": "Proposals",
+            "members": "Members",
+            "groups": "Groups",
+            "events": "Events"
+        },
         "filters": {
             "totalAdaAwarded": "Total Amount of ADA Awarded",
             "totalUsdAwarded": "Total Amount of USD Awarded",
@@ -811,6 +836,7 @@
         "helpfulReview": "Was this a helpful review?",
         "yes": "Yes",
         "no": "No",
+        "select": "Select",
         "processing": "Processing...",
         "options": {
             "ratingAsc": "Rating: Low to High",
@@ -860,6 +886,43 @@
         },
         "searchBar": {
             "placeholder": "Search transaction hash, epoch, block"
+        }
+    },
+    "vote": {
+        "catalystVotes": "Catalyst Votes",
+        "viewOnchainTransactions": "View onchain (jormugandr) transactions of votes cast",
+        "noStakeAddressFound": "No stake address found",
+        "stakeAddress": "Stake Address",
+        "choice": "Choice",
+        "noChoicesAvailable": "No choices available",
+        "noEpochsAvailable": "No epochs available",
+        "votingHistory": "Voting History",
+        "votingPowerHighToLow": "Voting Power: High to Low",
+        "votingPowerLowToHigh": "Voting Power: Low to High",
+        "timeOlderToNewer": "Time: Oldest to Newest",
+        "timeNewerToOlder": "Time: Newest to Oldest",
+        "search": "Search",
+        "searchBar": "Paste stake address here...",
+        "searchPlaceholder": "Search by Fragment ID, Caster, or Raw Fragment",
+        "secondarySearch": "Secondary Search",
+        "sort": "Sort",
+        "notAvailable": "N/A",
+        "timeAgo": {
+            "justNow": "Just now",
+            "anHourAgo": "an hour ago",
+            "hoursAgo": "{{hours}} hours ago",
+            "aDayAgo": "a day ago",
+            "daysAgo": "{{days}} days ago"
+        },
+        "table": {
+            "fund": "Fund",
+            "stakeAddress": "Stake Address",
+            "fragmentId": "Fragment ID",
+            "caster": "Caster",
+            "timestamp": "Timestamp",
+            "choice": "Choice",
+            "votingPower": "Voting Power",
+            "rawFragment": "Raw Fragment"
         }
     },
     "wallet": {

@@ -406,6 +406,13 @@ fund: App.DataTransferObjects.FundData | null;
 opensource: boolean | null;
 link?: string;
 };
+export type RankingData = {
+hash?: string;
+user_id?: number;
+model_id: number;
+model_type: string;
+value: number;
+};
 export type ReviewData = {
 hash: string | null;
 parent_id?: number;
@@ -416,8 +423,8 @@ rating: number | null;
 proposal: App.DataTransferObjects.ProposalData | null;
 reviewer: App.DataTransferObjects.ReviewerData | null;
 ranking_total: number | null;
-helpful_total: number | null;
-not_helpful_total: number | null;
+positive_rankings: number | null;
+negative_rankings: number | null;
 };
 export type ReviewModerationData = {
 hash: string | null;
@@ -484,5 +491,20 @@ email: string;
 hero_img_url: string | null;
 email_verified_at: string | null;
 locations: any | null;
+};
+export type VoterHistoryData = {
+hash: string;
+stake_address: string;
+fragment_id: string;
+caster: string;
+time: string;
+raw_fragment: string;
+proposal: number;
+choice: number;
+fund: App.DataTransferObjects.FundData;
+voting_power: number;
+snapshot_id: number;
+created_at: string;
+updated_at: string;
 };
 }

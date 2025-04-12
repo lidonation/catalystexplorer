@@ -8,7 +8,7 @@ import { ParamsEnum } from '@/enums/proposal-search-params';
 import { useFilterContext } from '@/Context/FiltersContext';
 import React from 'react';
 import { PaginatedData } from '../../types/paginated-data';
-import {InertiaLinkProps, Link} from '@inertiajs/react';
+import { InertiaLinkProps, Link } from '@inertiajs/react';
 import { cn } from '@/lib/utils';
 
 type PaginationComponentProps<T> = {
@@ -27,7 +27,7 @@ const PaginationComponent: React.FC<PaginationComponentProps<any>> = ({
     };
 
     const buildUrl = (param: string, value: number, label: string) => {
-        return getFilters({param, value, label})
+        return getFilters({param, value, label});
     };
 
     let {

@@ -12,6 +12,7 @@ use App\Models\ProjectSchedule;
 use App\Models\Proposal;
 use App\Models\Review;
 use App\Models\Transaction;
+use App\Models\VoterHistory;
 use Illuminate\Database\Seeder;
 
 class SearchIndexSeeder extends Seeder
@@ -29,5 +30,6 @@ class SearchIndexSeeder extends Seeder
         MonthlyReport::runCustomIndex();
         Transaction::runCustomIndex();
         ProjectSchedule::runCustomIndex();
+        VoterHistory::runCustomIndex();
     }
 }
