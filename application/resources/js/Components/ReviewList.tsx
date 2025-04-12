@@ -38,7 +38,7 @@ export const ReviewList: React.FC<ReviewListProps> = ({
                 ))}
             </Masonry>
 
-            {/* Pagination */}
+          
             <div className="mb-8 flex w-full items-center justify-center">
                 {reviews.data && <Paginator pagination={reviews} />}
             </div>
