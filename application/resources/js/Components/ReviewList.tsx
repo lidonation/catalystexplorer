@@ -21,11 +21,10 @@ export const ReviewList: React.FC<ReviewListProps> = ({
     };
 
     return (
-        <div className={`space-y-8 ${className}`}>
+        <div className={` ${className}`}>
             <Masonry
                 breakpointCols={breakpointColumnsObj}
                 className="relative flex w-auto"
-                columnClassName="pl-2"
             >
                 {reviews?.data?.map((review, index) => (
                     <section 
