@@ -14,7 +14,7 @@ const ExpandableContent: React.FC<ExpandableContentProps> = ({
     className,
     children,
     expanded = false,
-    lineClamp = 5,
+    lineClamp,
     collapsedHeight = 100,
     transitionDuration = '0.4s',
 }) => {
