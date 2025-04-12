@@ -25,11 +25,12 @@ export const ReviewList: React.FC<ReviewListProps> = ({
             <Masonry
                 breakpointCols={breakpointColumnsObj}
                 className="relative flex w-auto"
+                columnClassName="pr-2"
             >
                 {reviews?.data?.map((review, index) => (
                     <section 
                         key={review?.hash} 
-                        className="relative mb-2"
+                        className="relative mb-2 "
                         style={{ zIndex: reviews?.data?.length - index }} 
                     >
                         <ReviewCard review={review} />
