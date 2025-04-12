@@ -5,6 +5,7 @@ import { ListProvider } from '@/Context/ListContext';
 import BookmarkButton from '@/Pages/My/Bookmarks/Partials/BookmarkButton';
 import { Link } from '@inertiajs/react';
 import ProposalStatus from './ProposalStatus';
+import { useState } from 'react';
 
 export default function ProposalCardHeader({
     proposal,
@@ -17,6 +18,7 @@ export default function ProposalCardHeader({
     noSelectedUser: () => void;
     isHorizontal: boolean;
 }) {
+    const [isHovered, setIsHovered] = useState(false);
     const gradientColors: Record<string, unknown> = {
         complete:
             'from-[var(--success-gradient-color-1)] to-[var(--success-gradient-color-2)]',
@@ -29,6 +31,8 @@ export default function ProposalCardHeader({
     return (
         <header
             className={`text-content-light w-full rounded-xl bg-linear-to-tr ${headerBGColor} flex shrink flex-col ${isHorizontal ? 'h-full' : ''}`}
+            onMouseEnter={() => setIsHovered(true)}
+            onMouseLeave={() => setIsHovered(false)}
         >
             {/* Top Section */}
             <div className="grow">
@@ -94,7 +98,7 @@ export default function ProposalCardHeader({
                         }`}
                     >
                         {!userSelected ? (
-                            <ExpandableContent className="line-clamp-3 overflow-hidden text-ellipsis">
+                            <ExpandableContent className="overflow-hidden text-ellipsis" lineClamp={3} expanded={isHovered}>
                                 <Title level="4">{proposal.title}</Title>
                             </ExpandableContent>
                         ) : null}
