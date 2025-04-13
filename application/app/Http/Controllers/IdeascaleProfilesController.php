@@ -157,8 +157,7 @@ class IdeascaleProfilesController extends Controller
                         'completed_proposals',
                         'unfunded_proposals',
                         'funded_proposals',
-                    ])
-                        ->get()
+                    ])->get()
                 ),
             ]);
         }

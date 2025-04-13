@@ -226,7 +226,13 @@ class Group extends Model implements HasMedia
     public function proposals(): BelongsToMany
     {
         return $this->belongsToMany(
-            Proposal::class, 'group_has_proposal', 'group_id', 'proposal_id', 'id', 'id', 'proposals'
+            Proposal::class,
+            'group_has_proposal',
+            'group_id',
+            'proposal_id',
+            'id',
+            'id',
+            'proposals'
         );
     }
 
@@ -291,8 +297,14 @@ class Group extends Model implements HasMedia
     public function toSearchableArray(): array
     {
         $this->load(['media']);
+
         $array = $this->toArray();
-        $proposals = $this->proposals;
+
+        $proposals = $this->proposals->map(fn ($p) => $p->toSearchableArray());
+
+        $ideascale_profiles = $this->ideascale_profiles->map(
+            fn ($profile) => $profile->toSearchableArray(['proposals', 'groups'])
+        );
 
         return array_merge($array, [
             'proposals_completed' => $proposals->filter(fn ($p) => $p['status'] === 'complete')?->count() ?? 0,
@@ -311,10 +323,11 @@ class Group extends Model implements HasMedia
             'amount_requested_usd' => intval($this->amount_requested_usd),
             'hero_img_url' => $this->hero_img_url,
             'banner_img_url' => $this->banner_img_url,
-            'proposals' => $this->proposals,
+            'proposals' => $proposals,
             'proposals_count' => $proposals->count(),
-            'ideascale_profiles' => $this->ideascale_profiles->map(fn ($m) => $m->toArray()),
+            'ideascale_profiles' => $ideascale_profiles,
             'tags' => $this->tags->map(fn ($m) => $m->toArray()),
+            'connected_items' => $this->connected_items,
         ]);
     }
 

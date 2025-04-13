@@ -12,11 +12,11 @@ use App\DataTransferObjects\ReviewData;
 use App\Enums\ProposalSearchParams;
 use App\Models\Group;
 use App\Models\IdeascaleProfile;
-use App\Models\Review;
 use App\Repositories\GroupRepository;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Fluent;
 use Illuminate\Support\Stringable;
 use Inertia\Inertia;
@@ -115,119 +115,90 @@ class GroupsController extends Controller
 
     public function group(Request $request, Group $group, GroupRepository $groupRepository): Response
     {
-        $group->load(['proposals'])
-            ->loadCount([
-                'proposals',
-                'funded_proposals',
-                'unfunded_proposals',
-                'completed_proposals',
-            ])->append(
-                [
-                    'amount_awarded_ada',
-                    'amount_awarded_usd',
-                    'amount_requested_ada',
-                    'amount_requested_usd',
-                    'amount_distributed_ada',
-                    'amount_distributed_usd',
-                    'connected_items',
-                ]
-            );
+        $cacheKey = "group_{$group->id}";
+
+        $groupData = Cache::remember($cacheKey, now()->addMinutes(10), function () use ($group, $groupRepository) {
+            $args = [
+                'filter' => ["id = {$group->id}"],
+                'attributesToRetrieve' => ['*'],
+            ];
+
+            $builder = $groupRepository->search('', $args);
+
+            return $builder->raw()['hits'][0] ?? null;
+        });
+
+        $proposals = collect($groupData['proposals']);
+
+        $ideascaleProfiles = collect($groupData['ideascale_profiles']);
+
+        $connections = $groupData['connected_items'];
+
+        $reviews = collect($proposals)->flatMap(fn ($p) => $p['reviews']);
+
+        $ratings = collect($reviews)->map(fn ($p) => $p['rating'])->groupBy('rating');
+
+        $aggregatedRatings = $ratings->mapWithKeys(fn ($r, $k) => [$k => $r->count()]);
+
+        $props = [
+            'group' => GroupData::from($group),
+            'proposals' => fn () => to_length_aware_paginator(
+                ProposalData::collect(
+                    $proposals
+                ),
+                perPage: 11,
+                currentPage: 1
+            )->onEachSide(0),
+            'connections' => Inertia::optional(fn () => $connections),
+            'ideascaleProfiles' => Inertia::optional(
+                fn () => to_length_aware_paginator(
+                    IdeascaleProfileData::collect(
+                        $ideascaleProfiles,
+                    ),
+                    total: count($ideascaleProfiles),
+                    perPage: 11,
+                    currentPage: 1
+                )
+            ),
+            'locations' => Inertia::optional(
+                fn () => to_length_aware_paginator(
+                    LocationData::collect(
+                        $group->locations()->paginate(12)
+                    )
+                )
+            ),
+            'reviews' => Inertia::optional(
+                fn () => to_length_aware_paginator(
+                    ReviewData::collect(
+                        $reviews->take(11)
+                    ),
+                    total: $reviews->count(),
+                    perPage: 11,
+                    currentPage: 1
+                )
+            ),
+            'aggregatedRatings' => $aggregatedRatings,
+        ];
 
         $path = $request->path();
-        $connections = $group->connected_items;
-
-        // Determine which tab we're on based on the URL path
-        if (str_contains($path, '/proposals')) {
-            $proposalsPaginator = $group->proposals()
-                ->with(['users', 'fund'])
-                ->paginate(5);
-
-            return Inertia::render('Groups/Proposals/Index', [
-                'group' => GroupData::from($group),
-                'proposals' => Inertia::optional(
-                    fn () => to_length_aware_paginator(
-                        ProposalData::collect(
-                            $group->proposals()
-                                ->with(['users', 'fund'])
-                                ->paginate(11, ['*'], 'p')
-                        )
-                    )->onEachSide(0)
-                ),
-            ]);
-        }
 
         if (str_contains($path, '/connections')) {
-            return Inertia::render('Groups/Connections/Index', [
-                'group' => GroupData::from($group),
-                'connections' => Inertia::optional(fn () => $connections),
-            ]);
+            return Inertia::render('Groups/Connections/Index', $props);
         }
 
         if (str_contains($path, '/ideascale-profiles')) {
-            return Inertia::render('Groups/IdeascaleProfiles/Index', [
-                'group' => GroupData::from($group),
-                'ideascaleProfiles' => Inertia::optional(
-                    fn () => to_length_aware_paginator(
-                        IdeascaleProfileData::collect(
-                            $group->ideascale_profiles()
-                                ->withCount([
-                                    'proposals',
-                                    'funded_proposals',
-                                    'unfunded_proposals',
-                                    'completed_proposals',
-                                    'own_proposals',
-                                    'collaborating_proposals',
-                                ])
-                                ->with([])->paginate(12)
-                        )
-                    )
-                ),
-            ]);
+            return Inertia::render('Groups/IdeascaleProfiles/Index', $props);
         }
 
         if (str_contains($path, '/reviews')) {
-            return Inertia::render('Groups/Reviews/Index', [
-                'group' => GroupData::from($group),
-                'reviews' => Inertia::optional(
-                    fn () => to_length_aware_paginator(
-                        ReviewData::collect(
-                            Review::query()->paginate(8)
-                        )
-                    )
-                ),
-            ]);
+            return Inertia::render('Groups/Reviews/Index', props: $props);
         }
 
         if (str_contains($path, '/locations')) {
-            return Inertia::render('Groups/Locations/Index', [
-                'group' => GroupData::from($group),
-                'locations' => Inertia::optional(
-                    fn () => to_length_aware_paginator(
-                        LocationData::collect(
-                            $group->locations()->paginate(12)
-                        )
-                    )
-                ),
-            ]);
+            return Inertia::render('Groups/Locations/Index', $props);
         }
 
-        // Default return if no specific path matches
-        $proposalsPaginator = $group->proposals()
-            ->with(['users', 'fund'])
-            ->paginate(5);
-
-        return Inertia::render('Groups/Proposals/Index', [
-            'group' => GroupData::from($group),
-            'proposals' => Inertia::optional(
-                fn () => to_length_aware_paginator(
-                    ProposalData::collect(
-                        $group->proposals()
-                            ->with(['users', 'fund'])
-                            ->paginate(11, ['*'], 'p')
-                    )
-                )->onEachSide(0)
-            ),
-        ]);
+        return Inertia::render('Groups/Proposals/Index', $props);
     }
 
     protected function getProps(Request $request): void

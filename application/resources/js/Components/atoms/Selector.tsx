@@ -17,8 +17,8 @@ type SelectProps = {
     context?: string;
     basic?: boolean;
     className?: string;
-    hideCheckbox?: boolean; // New prop to hide checkboxes
-    placeholder?: string; // New prop for custom placeholder
+    hideCheckbox?: boolean;
+    placeholder?: string;
 };
 
 export default function Selector({
@@ -29,8 +29,8 @@ export default function Selector({
     setSelectedItems,
     className,
     bgColor = 'bg-background',
-    hideCheckbox = false, // Default to false
-    placeholder = '', // Default to empty string
+    hideCheckbox = false, 
+    placeholder = '',
     ...props
 }: SelectProps) {
     const [open, setOpen] = useState(false);

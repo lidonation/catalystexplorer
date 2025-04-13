@@ -26,6 +26,7 @@ const IdeascaleProfileCardMini: React.FC<IdeascaleProfileProps> = ({
     ideascaleProfile,
 }) => {
     const { t } = useTranslation();
+        console.log({ ideascaleProfile });
     const completedProposalsCount =
         ideascaleProfile?.completed_proposals_count ?? 0;
     const fundedProposalsCount = ideascaleProfile?.funded_proposals_count ?? 0;

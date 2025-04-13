@@ -5,8 +5,12 @@
     "appMessage": "All Votes must be submitted in the official Catalyst Voting App. This is a research & planning tool only!",
     "articles": "Articles",
     "assetName": "Asset Name",
-    "API":"API",
+    "API": "API",
     "bio": "Bio",
+    "allCurrencies": "All Currencies",
+    "totalAda": "Total Amount in ADA",
+    "totalUsd": "Total Amount in USD",
+    "amount": "Amount ",
     "bookmarks": "My Bookmarks",
     "blockchainData": "Blockchain Data",
     "bookmark": "Your personal space for organizing and managing proposal insights. Easily access your saved proposals, review notes, and share curated lists to stay on top of key ideas and opportunities.",
@@ -31,7 +35,7 @@
     "dReps": "DReps",
     "email": "Email",
     "emailAddress": "Email Address",
-    "general":"General",
+    "general": "General",
     "facebook": "Facebook",
     "forgotPassword": "Forgot password",
     "funding": "Funding",
@@ -40,7 +44,8 @@
     "home": "Home",
     "jormungandr": "Jormungandr",
     "knowledgeBase": "Knowledge Base",
-    "impact":"Impact",
+    "explore": "Explore",
+    "impact": "Impact",
     "legal": "Legal",
     "licenses": "Licenses",
     "login": "Login",
@@ -50,6 +55,7 @@
     "metaTitle": "Meta Data Preview",
     "mintNFT": "Mint NFT",
     "viewNFT": "View NFT",
+    "nftPending": "Nft Pending",
     "cantFindNFT": "Can't find NFT for mint",
     "paymentGateway": "NFT-MAKER PRO Payment Gateway",
     "fundProject": "Funded Project Number",
@@ -75,7 +81,7 @@
     "privacy": "Privacy",
     "profileBackground": "Profile Background",
     "projectCatalyst": "Project catalyst Campaign name",
-    "reviewers":"Reviewers",
+    "reviewers": "Reviewers",
     "register": "Register",
     "reviewerReputationScore": "Reviewer Reputation Score",
     "searchQuery": "No results match your search query",
@@ -88,11 +94,12 @@
     "terms": "Terms",
     "twitter": "Twitter",
     "votes": "My Votes",
-    "voters":"Voters",
+    "voters": "Voters",
     "wallets": "Wallets",
     "details": "Details",
     "teams": "Team",
     "yes": "Yes",
+    "filterChart": "Filter chart",
     "abstain": "Abstain",
     "notSet": "Not set",
     "loading": "Loading",
@@ -136,71 +143,12 @@
             "selectProfile": "Select Profile",
             "selectProposal": "Select Proposal",
             "selectProfileInfo": "Choose the profile(s) you want to mint from. The selected profile should be linked to the completed project whose NFT you’re minting.Not sure which one to pick? No worries—just select all available profiles and we’ll handle the rest! 🚀",
-            "selectProposalInfo":"To get started, please select proposal to mint from"
-        },
-        "voterList": {
-            "welcome": "Before you start, let's set up your Voting List. A Voting List is a collection of proposals that you support and want others to consider. This helps streamline governance participation. Ready to begin? In the next steps, you'll name your list, add proposals, and explain your rationale for selecting them.",
-            "proposalsOnly": "Unlike other list types, only proposals can be added to voting lists.",
-            "title": "Title",
-            "description": "Description",
-            "descriptionPlaceholder": "Describe the purpose of this list in a few words.",
-            "descriptionHint": "Must be at least 200 characters.",
-            "selectFund": "Select Fund",
-            "visibility": "Visibility",
-            "visibilityOptions": {
-                "public": "Public",
-                "private": "Private",
-                "delegators": "Delegators"
-            },
-            "comments": "Comments",
-            "commentsEnabled": "Comments Enabled",
-            "chooseColor": "Choose Color",
-            "pickTheme": "Pick list theme",
-            "status": "Status",
-            "statusOptions": {
-                "published": "Publish",
-                "draft": "Draft"
-            },
-            "selectCampaign": "Select campaign:",
-            "allCampaigns": "All",
-            "selectedProposals": "Selected Proposals:",
-            "proposalCard": {
-                "budget": "Budget:",
-                "fund": "Fund:",
-                "campaign": "Campaign:",
-                "voteYes": "Yes",
-                "voteAbstain": "Abstain"
-            },
-            "searchProposals": "Search for a proposal",
-            "errors": {
-                "titleRequired": "Title is required",
-                "fundRequired": "Fund selection is required",
-                "descriptionLength": "Description must be 200 characters",
-                "rationaleLength": "Rationale must be at least 200 characters"
-            },
-            "rationale": {
-                "label": "Rationale",
-                "placeholder": "Summerize the reasoning behind your selections.",
-                "hint": "Minimum 200 characters required"
-            },
-            "success": {
-                "title": "Success!!",
-                "message": "Your Voting List has been created! Share it with others and make an impact on governance decisions."
-            },
-            "steps": {
-                "details": "Details",
-                "listDetail": "List Detail",
-                "listDetailInfo": "Give your Voting List a name and a short description. This helps others understand what your list is about",
-                "proposals": "Proposals",
-                "proposalsInfo": "Now, let's add proposals to your Voting List. You can search for existing proposals and select the ones that align.",
-                "rationale": "Rationale",
-                "rationaleInfo": "Why did you select these proposals? Providing a rationale helps others understand your choices and makes your list more credible."
-            }
+            "selectProposalInfo": "To get started, please select proposal to mint from"
         },
         "drepSignUp": {
             "signUpForm": "1. If you already have an account, log in with your credentials.\n2. If you’re new, sign up using your email and create a secure password.\n3. Verify your email to activate your account.",
             "connectWallet": "1. Choose a supported Cardano wallet (e.g., Yoroi, Daedalus, Eternl).\n2. Follow the prompts to connect your wallet securely.\n3. Ensure your wallet has sufficient ADA for transactions.",
-            "selectProposalInfo":"To get started, please select proposal to mint from"
+            "selectProposalInfo": "To get started, please select proposal to mint from"
         },
         "voterList": {
             "welcome": "Before you start, let's set up your Voting List. A Voting List is a collection of proposals that you support and want others to consider. This helps streamline governance participation. Ready to begin? In the next steps, you'll name your list, add proposals, and explain your rationale for selecting them.",
@@ -267,18 +215,18 @@
                 "message": "You have successfully submitted your votes!!"
             },
             "steps": {
-                "readyToVote" : "Ready to Vote!!",
-                "submitVotes" : "Submit Votes",
-                "votesSubmitted" : "Votes Submitted",
-                "submitVotesInfo" : "From your list of selected proposals, please cast your votes",
-                "submitReviewedVotes" : "You've reviewed your selections. Click 'Submit Votes' below to finalize your choices and complete the process.",
-                "submitReviewedVotesInfo" : "Successfully verified. Proceed and submit your vote",
-                "votesSummary" : "Votes Summary",
-                "votesSummaryInfo" : "Highlighted is a summary of your voting. To make changes to your vote, go to the previous screen and amend.",
-                "connectWallet" : "Connect Wallet",
-                "connectWalletInfo" : "Connect your wallet to submit your votes.",
-                "submission" : "Submission",
-                "submissionInfo" : "Submitting your votes"
+                "readyToVote": "Ready to Vote!!",
+                "submitVotes": "Submit Votes",
+                "votesSubmitted": "Votes Submitted",
+                "submitVotesInfo": "From your list of selected proposals, please cast your votes",
+                "submitReviewedVotes": "You've reviewed your selections. Click 'Submit Votes' below to finalize your choices and complete the process.",
+                "submitReviewedVotesInfo": "Successfully verified. Proceed and submit your vote",
+                "votesSummary": "Votes Summary",
+                "votesSummaryInfo": "Highlighted is a summary of your voting. To make changes to your vote, go to the previous screen and amend.",
+                "connectWallet": "Connect Wallet",
+                "connectWalletInfo": "Connect your wallet to submit your votes.",
+                "submission": "Submission",
+                "submissionInfo": "Submitting your votes"
             }
         }
     },
@@ -448,6 +396,7 @@
     "proposals": {
         "allProposals": "All proposals",
         "proposals": "Proposals",
+        "proposalSummary": "Proposals Summary",
         "projectVideo": "Project Video",
         "providedUrl": "Provided URL",
         "listSubtitle": "Proposal votes must be submitted in the official Catalyst Voting App",
@@ -460,8 +409,10 @@
         "viewTeam": "View Team",
         "action": "Action",
         "status": "Status",
+        "owner": "Owner",
         "fundingReceived": "Funding Received",
         "manageProposal": "Manage Proposal",
+        "totalRequested": "Total Requested",
         "errors": {
             "noUrl": "No video URL provided",
             "invalidYoutubeFormat": "The YouTube link format is incorrect",
@@ -580,6 +531,9 @@
             "campaigns": "Campaigns"
         }
     },
+    "milestones": {
+        "milestones": "Milestones"
+    },
     "groups": {
         "groups": "Groups",
         "title": "Catalyst Groups",
@@ -609,12 +563,14 @@
         "title": "Catalyst Communities",
         "subtitle": "Diverse, independent, and together inspiring the highest level of human collaboration",
         "proposalSummary": "Proposals Summary",
-        "totalRequested":"Total Requested",
-        "proposers": "Proposers",
+        "totalRequested": "Total Requested",
+        "proposals": "Proposals Supported",
+        "proposers": "People Supported",
+        "ideascale-profiles": "People Supported",
         "collaborators": "Collaborators",
-        "totalAmountAwarded" : "Total Amount Awarded",
-        "totalAmountDistributed" : "Total Amount Distributed",
-        "totalAmountRemaining" : "Total Amount Remaining",
+        "totalAmountAwarded": "Total Amount Awarded",
+        "totalAmountDistributed": "Total Amount Distributed",
+        "totalAmountRemaining": "Total Amount Remaining",
         "totalAwarded": "Total Amount of ADA & USD Awarded",
         "totalDistributed": "Total Amount of ADA & USD Distributed",
         "totalRemained": "Total Amount of ADA & USD Remaining",
@@ -675,7 +631,7 @@
             "chevron_down": "Chevron Down Icon",
             "close": "close Icon",
             "connect_wallet": "Connect wallet Icon",
-            "connections":"Connections Icon",
+            "connections": "Connections Icon",
             "darkMode": "Dark Mode Icon",
             "discord": "Discord",
             "folder": "Folder Icon",
@@ -688,7 +644,7 @@
             "mail": "Mail Icon",
             "menu": "Menu Icon",
             "miniCardSwitch": "Mini Card Switch Icon",
-            "more":"More Icon",
+            "more": "More Icon",
             "note": "Note Icon",
             "notificationBox": "Notification Box Icon",
             "numbers": "Numbers Icon",
@@ -891,14 +847,13 @@
             "helpful": "Helpful",
             "notHelpful": "Not Helpful"
         },
-        "filters":{
+        "filters": {
             "funds": "Fund",
             "proposals": "Proposal",
             "reviewerIds": "Reviewer ID",
             "helpful": "Helpful",
-            "ratings":"Rating",
+            "ratings": "Rating",
             "reputationScores": "Reputation Score"
-
         }
     },
     "transactions": {
@@ -934,7 +889,6 @@
             "placeholder": "Search transaction hash, epoch, block"
         }
     },
-   
     "vote": {
         "catalystVotes": "Catalyst Votes",
         "viewOnchainTransactions": "View onchain (jormugandr) transactions of votes cast",
@@ -955,11 +909,11 @@
         "sort": "Sort",
         "notAvailable": "N/A",
         "timeAgo": {
-        "justNow": "Just now",
-        "anHourAgo": "an hour ago",
-        "hoursAgo": "{{hours}} hours ago",
-        "aDayAgo": "a day ago",
-        "daysAgo": "{{days}} days ago"
+            "justNow": "Just now",
+            "anHourAgo": "an hour ago",
+            "hoursAgo": "{{hours}} hours ago",
+            "aDayAgo": "a day ago",
+            "daysAgo": "{{days}} days ago"
         },
         "table": {
             "fund": "Fund",
