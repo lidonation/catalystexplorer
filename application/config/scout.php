@@ -69,8 +69,8 @@ return [
     */
 
     'chunk' => [
-        'searchable' => env('SCOUT_CHUNK_SIZE', 100),
-        'unsearchable' => 100,
+        'searchable' => env('SCOUT_CHUNK_SIZE', 80),
+        'unsearchable' => 200,
     ],
 
     /*
