@@ -12,6 +12,7 @@ export const StarRating: React.FC<StarRatingProps> = ({
     showValue = true,
     className = '',
 }) => {
+
     return (
         <div className={`flex items-center ${className}`}>
             <div className="flex">

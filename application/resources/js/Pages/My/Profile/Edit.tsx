@@ -73,6 +73,8 @@ export default function ProfileSettings({
     user: directUser,
 }: ProfileSettingsProps) {
     const { t } = useTranslation();
+    console.log({});
+    
     const authUser = auth.user;
     const user = directUser || authUser;
 
@@ -243,12 +245,12 @@ export default function ProfileSettings({
     };
 
     return (
-        <div className="bg-background min-h-screen p-8">
-            <div className="mx-auto grid max-w-6xl grid-cols-12 gap-6 text-left">
+        <div className="lg:bg-background min-h-screen lg:p-8">
+            <div className="mx-auto max-w-6xl grid-cols-12 gap-6 text-left lg:grid">
                 <div className="col-span-4 flex h-full flex-col justify-between">
                     <div className="space-y-6">
                         <Card className="bg-background rounded-lg shadow-sm">
-                            <div className="p-6">
+                            <div className="lg:p-6">
                                 <div className="mb-4 space-y-4">
                                     <Title
                                         level="3"
@@ -278,7 +280,7 @@ export default function ProfileSettings({
                         </Card>
 
                         <Card className="bg-background rounded-lg shadow-sm">
-                            <div className="p-6">
+                            <div className="lg:p-6">
                                 <div className="mb-4">
                                     <Title level="3" className="text-content">
                                         {t('users.network')}
@@ -396,7 +398,7 @@ export default function ProfileSettings({
 
                 <div className="col-span-8 space-y-6">
                     <Card className="bg-background rounded-lg shadow-sm transition-colors duration-300 ease-in-out">
-                        <div className="p-6">
+                        <div className="lg:p-6">
                             <Title level="3" className="text-content mb-6">
                                 {t('users.personalInfo')}
                             </Title>
@@ -582,13 +584,13 @@ export default function ProfileSettings({
                     </Card>
 
                     <Card className="bg-background rounded-lg shadow-sm transition-colors duration-300 ease-in-out">
-                        <div className="p-6">
+                        <div className="lg:p-6">
                             <div className="mb-6 flex items-center justify-between">
                                 <Title level="3" className="text-content">
                                     {t('users.basicSettings')}
                                 </Title>
                                 <div className="flex items-center">
-                                    <span className="text-content mr-2 text-sm">
+                                    <span className="text-content mr-2 text-sm text-nowrap">
                                         {t('users.publicProfile')}
                                     </span>
                                     <Switch
@@ -606,7 +608,7 @@ export default function ProfileSettings({
                                             <div className="text-content w-1/4">
                                                 {t('profileWorkflow.email')}
                                             </div>
-                                            <div className="text-content w-3/4">
+                                            <div className="text-content w-3/4 text-sm lg:text-base">
                                                 {data.email}
                                             </div>
                                         </div>
@@ -635,7 +637,7 @@ export default function ProfileSettings({
                                             <div className="text-content w-1/4">
                                                 {t('password')}
                                             </div>
-                                            <div className="text-content w-3/4">
+                                            <div className="text-content w-3/4 text-sm lg:text-base">
                                                 Password last changed{' '}
                                                 {formatTimeAgo(
                                                     user.password_updated_at,
@@ -658,11 +660,11 @@ export default function ProfileSettings({
                                                 {t('users.profileLink')}
                                             </div>
                                             <div className="flex w-3/4 items-center">
-                                                <span className="profile-url-text text-content">
+                                                <span className="profile-url-text text-content text-sm lg:text-base">
                                                     {`https://catalytexplorer.com/${user.name.replace(/\s+/g, '-').toLowerCase()}`}
                                                 </span>
                                                 <button
-                                                    className="text-content-light hover:text-content ml-2 transition-colors duration-300 ease-in-out"
+                                                    className="text-content-light hover:text-content lg:ml-2 text-sm transition-colors duration-300 ease-in-out lg:text-base"
                                                     onClick={handleCopyUrl}
                                                     title="Copy URL"
                                                 >
@@ -681,7 +683,7 @@ export default function ProfileSettings({
                                                 )}
                                             </div>
                                         </div>
-                                        <button className="text-accent whitespace-nowrap">
+                                        <button className="text-accent text-sm whitespace-nowrap lg:text-base">
                                             Re-create
                                         </button>
                                     </div>

@@ -6,6 +6,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Location;
 use App\Models\User;
+use App\Repositories\IdeascaleProfileRepository;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -55,8 +56,17 @@ class ProfileController extends Controller
     {
         $user = $request->user();
         $userData = $user->only([
-            'name', 'email', 'bio', 'profile_photo_path', 'short_bio',
-            'linkedin', 'twitter', 'website', 'city', 'updated_at', 'created_at',
+            'name',
+            'email',
+            'bio',
+            'profile_photo_path',
+            'short_bio',
+            'linkedin',
+            'twitter',
+            'website',
+            'city',
+            'updated_at',
+            'created_at',
         ]);
         $validator = match ($field) {
             'name' => validator($request->all(), ['name' => ['required', 'string', 'max:255']]),
@@ -198,5 +208,104 @@ class ProfileController extends Controller
         $request->session()->regenerateToken();
 
         return Redirect::to('/');
+    }
+
+    public function userSummary(Request $request): Response
+    {
+        $userId = $request->user()->id;
+
+        $ideascaleProfile = app(IdeascaleProfileRepository::class);
+
+        $args = [
+            'filter' => ["claimed_by_id = {$userId}"],
+            'attributesToRetrieve' => $attrs ?? [
+                'proposals',
+                'completed_proposals_count',
+                'funded_proposals_count',
+                'unfunded_proposals_count',
+                'proposals_count',
+                'collaborating_proposals_count',
+                'own_proposals_count',
+                'amount_requested_ada',
+                'amount_requested_usd',
+                'proposals_total_amount_requested',
+                'completed_proposals_count',
+                'funded_proposals_count',
+                'unfunded_proposals_count',
+            ],
+        ];
+
+        $builder = $ideascaleProfile->search(
+            '',
+            $args
+        );
+
+        $hits = $builder->raw()['hits'];
+
+        $proposals = [];
+
+        $totalsSummary = collect($hits)->reduce(function ($carry, $item) use (&$proposals) {
+            $proposals = array_merge($proposals, $item['proposals']);
+            foreach ($item as $key => $value) {
+                if (is_int($value)) {
+                    $carry[$key] = ($carry[$key] ?? 0) + $value;
+                }
+            }
+
+            return $carry;
+        }, []);
+
+        $metrics = [
+            'USD' => ['amount_received_USD', 'amount_awarded_USD'],
+            'ADA' => ['amount_received_ADA', 'amount_awarded_ADA'],
+        ];
+
+        $grouped = collect($proposals)->groupBy(fn ($p) => $p['currency'])
+            ->map(fn ($byCurrency) => $byCurrency->groupBy(fn ($p) => $p['fund']['title'] ?? 'Unknown Fund'));
+
+        $graphData = [
+            'amount_received' => [],
+            'amount_awarded' => [],
+        ];
+
+        collect($metrics)->each(function ($fields, $currency) use ($grouped, &$graphData) {
+            if (! isset($grouped[$currency])) {
+                return;
+            }
+
+            $currencyData = $grouped[$currency]->map(function ($items, $fundTitle) use ($fields, $currency) {
+                $totals = collect($fields)->mapWithKeys(fn ($field) => [$field => 0]);
+
+                foreach ($items as $item) {
+                    $totals = $totals->mapWithKeys(fn ($val, $field) => [
+                        $field => $val + ($item[$field] ?? 0),
+                    ]);
+                }
+
+                return [
+                    'x' => $fundTitle,
+                    'y' => $totals->get("amount_received_{$currency}", 0),
+                    'y_awarded' => $totals->get("amount_awarded_{$currency}", 0),
+                ];
+            });
+
+            $graphData['amount_received'][$currency] = $currencyData->map(fn ($data) => [
+                'x' => $data['x'],
+                'y' => $data['y'],
+            ])->values();
+
+            $graphData['amount_awarded'][$currency] = $currencyData->map(fn ($data) => [
+                'x' => $data['x'],
+                'y' => $data['y_awarded'],
+            ])->values();
+        });
+
+        return Inertia::render(
+            'My/Dashboard',
+            [
+                'totalsSummary' => $totalsSummary,
+                'graphData' => $graphData,
+            ]
+        );
     }
 }

@@ -115,8 +115,16 @@ export const ReviewCard: React.FC<ReviewItemProps> = ({
                             <ReviewerInfo review={review} />
                         </div>
 
-                        {review.rating && <StarRating rating={review.rating} />}
-                    </div>
+                    {review.rating && (
+                        <StarRating
+                            rating={
+                                typeof review.rating == 'object'
+                                    ? review?.rating.rating
+                                    : review.rating
+                            }
+                        />
+                    )}
+                </div>
 
                     {review.content && (
                         <ExpandableContent expanded={isHovered} lineClamp={5}>
