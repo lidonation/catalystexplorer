@@ -84,7 +84,7 @@ return [
     */
 
     'waits' => [
-        'redis:default' => 60,
+        'redis:default' => 90,
     ],
 
     /*
@@ -135,8 +135,8 @@ return [
 
     'metrics' => [
         'trim_snapshots' => [
-            'job' => 24,
-            'queue' => 24,
+            'job' => 60,
+            'queue' => 60,
         ],
     ],
 
@@ -166,7 +166,7 @@ return [
     |
     */
 
-    'memory_limit' => 64,
+    'memory_limit' => 256,
 
     /*
     |--------------------------------------------------------------------------
@@ -188,7 +188,7 @@ return [
             'maxProcesses' => 1,
             'maxTime' => 0,
             'maxJobs' => 0,
-            'memory' => 256,
+            'memory' => 512,
             'tries' => 1,
             'timeout' => 400,
             'nice' => 0,
@@ -199,6 +199,7 @@ return [
         'production' => [
             'supervisor-1' => [
                 'maxProcesses' => 10,
+                'memory' => 1024,
                 'balanceMaxShift' => 1,
                 'balanceCooldown' => 3,
             ],
