@@ -9,8 +9,10 @@ use App\DataTransferObjects\ReviewData;
 use App\Enums\ProposalSearchParams;
 use App\Enums\QueryParamsEnum;
 use App\Models\Fund;
+use App\Models\IdeascaleProfile;
 use App\Models\Ranking;
 use App\Models\Review;
+use App\Repositories\ProposalRepository;
 use App\Repositories\ReviewRepository;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -315,5 +317,41 @@ class ReviewsController extends Controller
             $review->rankings()->save($ranking);
             $review->searchable();
         }
+    }
+
+    public function myReviews(Request $request, ProposalRepository $proposalrepository): Response
+    {
+        $userId = Auth::id();
+
+        $ideascaleProfile = IdeascaleProfile::where('claimed_by_id', operator: $userId)->get()->map(fn ($p) => $p->hash);
+
+        $ideascaleProfileHashes = implode(',', $ideascaleProfile->toArray());
+
+        $args = [
+            'filter' => ["users.hash IN [{$ideascaleProfileHashes}]"],
+        ];
+
+        $builder = $proposalrepository->search('', $args);
+
+        $reviews = collect($builder->raw()['hits'])->flatMap(fn ($p) => $p['reviews']);
+
+        $ratings = collect($reviews)->map(fn ($p) => $p['rating'])->groupBy('rating');
+
+        $aggregatedRatings = $ratings->mapWithKeys(fn ($r, $k) => [$k => $r->count()]);
+
+        return Inertia::render('My/Reviews/Index', [
+            'aggregatedRatings' => $aggregatedRatings,
+            'reviews' => Inertia::optional(
+                fn () => to_length_aware_paginator(
+                    ReviewData::collect(
+                        $reviews->take(11)
+                    ),
+                    total: $reviews->count(),
+                    perPage: 11,
+                    currentPage: 1
+                ),
+            ),
+            'ideascaleProfileHashes' => $ideascaleProfileHashes,
+        ]);
     }
 }

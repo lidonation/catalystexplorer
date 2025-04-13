@@ -410,6 +410,7 @@ class Proposal extends Model
             'amount_requested' => $this->amount_requested ? intval($this->amount_requested) : 0,
 
             'ca_rating' => intval($this->avg_rating) ?? 0.00,
+            'reviews' => $this->reviews->map(fn ($r) => $r->load(['rating', 'reviewer'])),
             'campaign' => [
                 'id' => $this->campaign_id,
                 'title' => $this->campaign?->title,
