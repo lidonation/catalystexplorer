@@ -4,8 +4,8 @@ import ExpandableContent from '@/Components/ExpandableContent';
 import { ListProvider } from '@/Context/ListContext';
 import BookmarkButton from '@/Pages/My/Bookmarks/Partials/BookmarkButton';
 import { Link } from '@inertiajs/react';
-import ProposalStatus from './ProposalStatus';
 import { useState } from 'react';
+import ProposalStatus from './ProposalStatus';
 
 export default function ProposalCardHeader({
     proposal,
@@ -30,7 +30,7 @@ export default function ProposalCardHeader({
 
     return (
         <header
-            className={`text-content-light w-full rounded-xl bg-linear-to-tr ${headerBGColor} flex shrink flex-col ${isHorizontal ? 'h-full' : ''}`}
+            className={`title text-content-light w-full rounded-xl bg-linear-to-tr ${headerBGColor} flex shrink flex-col ${isHorizontal ? 'h-full' : ''}`}
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
         >
@@ -98,7 +98,12 @@ export default function ProposalCardHeader({
                         }`}
                     >
                         {!userSelected ? (
-                            <ExpandableContent className="overflow-hidden text-ellipsis" lineClamp={3} expanded={isHovered}>
+                            <ExpandableContent
+                            lineClamp={3}
+                            transitionDuration="0.9s"
+                            enableHoverExpand={true}
+                            parentSelector=".title"
+                            >
                                 <Title level="4">{proposal.title}</Title>
                             </ExpandableContent>
                         ) : null}

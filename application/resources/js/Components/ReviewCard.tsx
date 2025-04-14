@@ -5,8 +5,7 @@ import {
     useLocalizedRoute,
 } from '@/utils/localizedRoute';
 import { Link, router } from '@inertiajs/react';
-import clsx from 'clsx';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import Card from './Card';
 import ExpandableContent from './ExpandableContent';
@@ -27,19 +26,8 @@ export const ReviewCard: React.FC<ReviewItemProps> = ({
 }) => {
     const [isLoadingPositive, setIsLoadingPositive] = useState(false);
     const [isLoadingNegative, setIsLoadingNegative] = useState(false);
-    const [isHovered, setIsHovered] = useState(false);
     const { t } = useTranslation();
     const contentRef = useRef<HTMLParagraphElement | null>(null);
-    const [lineCount, setLineCount] = useState(0);
-
-    useEffect(() => {
-        const element = contentRef.current;
-        if (element) {
-            const lineHeight = parseFloat(getComputedStyle(element).lineHeight);
-            const height = element.offsetHeight;
-            setLineCount(Math.round(height / lineHeight));
-        }
-    }, [review?.content]);
 
     const markPositive = () => {
         if (!review?.hash) return;
@@ -93,23 +81,9 @@ export const ReviewCard: React.FC<ReviewItemProps> = ({
     };
 
     return (
-        <div
-            className="relative"
-            onMouseEnter={() => setIsHovered(true)}
-            onMouseLeave={() => setIsHovered(false)}
-        >
-            <Card
-                className={clsx(
-                    isHovered && lineCount >= 5 ? 'z-30 shadow-md' : 'z-0',
-                    isHovered && lineCount >= 5
-                        ? 'absolute top-0 right-0 left-0 w-full'
-                        : 'relative w-full',
-                )}
-                style={{
-                    transition: ' 0.9s ease, transform 0.9s ease',
-                }}
-            >
-                <div className={`pb-6 ${className}`}>
+        <div className="relative">
+            <Card className={`card ${className}`}>
+                <div className="pb-6">
                     <div className="flex items-start justify-between">
                         <div className="flex">
                             <ReviewerInfo review={review} />
@@ -118,56 +92,63 @@ export const ReviewCard: React.FC<ReviewItemProps> = ({
                         {review.rating && <StarRating rating={review.rating} />}
                     </div>
 
-                    {review.content && (
-                        <ExpandableContent expanded={isHovered} lineClamp={5}>
-                            <RichContent
-                                className={`text-gray-persist text-3 ${lineCount >= 5 ? 'cursor-pointer' : ''}`}
-                                content={review?.content}
-                                ref={contentRef}
+                    <div>
+                        {review.content && (
+                            <ExpandableContent 
+                                lineClamp={5}
+                                transitionDuration="0.9s"
+                                enableHoverExpand={true}
+                                parentSelector=".card" 
+                            >
+                                <RichContent
+                                    className="text-gray-persist text-3 cursor-pointer"
+                                    content={review?.content}
+                                    ref={contentRef}
+                                />
+                            </ExpandableContent>
+                        )}
+
+                        <div className="mt-8 flex items-center gap-6">
+                            <Paragraph className="text-gray-persist text-sm">
+                                {t('reviews.helpfulReview')}
+                            </Paragraph>
+                            <RankingButtons
+                                isLoadingNegative={isLoadingNegative}
+                                isLoadingPositive={isLoadingPositive}
+                                positiveRankings={review?.positive_rankings ?? 0}
+                                negativeRankings={review?.negative_rankings ?? 0}
+                                markNegative={markNegative}
+                                markPositive={markPositive}
                             />
-                        </ExpandableContent>
-                    )}
+                        </div>
+                        <section className="mt-4 flex flex-wrap items-center gap-4">
+                            {review?.proposal?.link && (
+                                <div className="flex items-center gap-2">
+                                    <ValueLabel>{t('proposal')}</ValueLabel>
+                                    <Link
+                                        href={review?.proposal?.link}
+                                        className="link-primary text-sm"
+                                    >
+                                        {review?.proposal?.title}
+                                    </Link>
+                                </div>
+                            )}
 
-                    <div className="mt-8 flex items-center gap-6">
-                        <Paragraph className="text-gray-persist text-sm">
-                            {t('reviews.helpfulReview')}
-                        </Paragraph>
-                        <RankingButtons
-                            isLoadingNegative={isLoadingNegative}
-                            isLoadingPositive={isLoadingPositive}
-                            positiveRankings={review?.positive_rankings ?? 0}
-                            negativeRankings={review?.negative_rankings ?? 0}
-                            markNegative={markNegative}
-                            markPositive={markPositive}
-                        />
+                            {review?.proposal?.fund?.title && (
+                                <div className="flex items-center gap-2">
+                                    <ValueLabel>{t('funds.fund')}</ValueLabel>
+                                    <Link
+                                        href={useLocalizedRoute('funds.fund.show', {
+                                            slug: review?.proposal?.fund?.slug,
+                                        })}
+                                        className="link-primary text-sm"
+                                    >
+                                        {review?.proposal?.fund?.title}
+                                    </Link>
+                                </div>
+                            )}
+                        </section>
                     </div>
-                    <section className="mt-4 flex flex-wrap items-center gap-4">
-                        {review?.proposal?.link && (
-                            <div className="flex items-center gap-2">
-                                <ValueLabel>{t('proposal')}</ValueLabel>
-                                <Link
-                                    href={review?.proposal?.link}
-                                    className="link-primary text-sm"
-                                >
-                                    {review?.proposal?.title}
-                                </Link>
-                            </div>
-                        )}
-
-                        {review?.proposal?.fund?.title && (
-                            <div className="flex items-center gap-2">
-                                <ValueLabel>{t('funds.fund')}</ValueLabel>
-                                <Link
-                                    href={useLocalizedRoute('funds.fund.show', {
-                                        slug: review?.proposal?.fund?.slug,
-                                    })}
-                                    className="link-primary text-sm"
-                                >
-                                    {review?.proposal?.fund?.title}
-                                </Link>
-                            </div>
-                        )}
-                    </section>
                 </div>
             </Card>
         </div>
