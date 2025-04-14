@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace App\DataTransferObjects;
 
+use Spatie\LaravelData\Attributes\DataCollectionOf;
 use Spatie\LaravelData\Data;
+use Spatie\LaravelData\DataCollection;
 use Spatie\TypeScriptTransformer\Attributes\Optional as TypeScriptOptional;
 use Spatie\TypeScriptTransformer\Attributes\TypeScript;
 
@@ -102,9 +104,10 @@ final class GroupData extends Data
         public ?int $proposals_completed,
 
         #[TypeScriptOptional]
-        public ?array $ideascale_profiles,
+        #[DataCollectionOf(IdeascaleProfileData::class)]
+        public ?DataCollection $ideascale_profiles,
 
         #[TypeScriptOptional]
-        public ?int $reviews
+        public ?int $reviews_count
     ) {}
 }

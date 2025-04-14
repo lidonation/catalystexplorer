@@ -13,6 +13,7 @@ use App\Enums\ProposalSearchParams;
 use App\Models\Group;
 use App\Models\IdeascaleProfile;
 use App\Repositories\GroupRepository;
+use App\Repositories\ProposalRepository;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
@@ -113,92 +114,99 @@ class GroupsController extends Controller
         return Inertia::render('My/Groups/Index', $props);
     }
 
-    public function group(Request $request, Group $group, GroupRepository $groupRepository): Response
+    public function group(Request $request, Group $group, ProposalRepository $proposalRepository): Response
     {
-        $cacheKey = "group_{$group->id}";
 
-        $groupData = Cache::remember($cacheKey, now()->addMinutes(10), function () use ($group, $groupRepository) {
+        $groupData = Cache::remember("group:{$group->hash}:with_counts", now()->addMinutes(10), function () use ($group) {
+            $group->loadCount([
+                'proposals',
+                'funded_proposals',
+                'unfunded_proposals',
+                'completed_proposals',
+            ])->append([
+                'amount_awarded_ada',
+                'amount_awarded_usd',
+                'amount_requested_ada',
+                'amount_requested_usd',
+                'amount_distributed_ada',
+                'amount_distributed_usd',
+                'connected_items',
+            ]);
+
+            return GroupData::from($group);
+        });
+
+        $cacheKey = "group:{$group->hash}:proposals_data";
+
+        [
+            'proposals' => $proposals,
+            'reviews' => $reviews,
+            'aggregatedRatings' => $aggregatedRatings,
+            'ideascaleProfiles' => $ideascaleProfiles
+        ] = Cache::remember($cacheKey, now()->addMinutes(10), function () use ($proposalRepository, $group) {
             $args = [
-                'filter' => ["id = {$group->id}"],
+                'filter' => ["groups.hash = {$group->hash}"],
                 'attributesToRetrieve' => ['*'],
             ];
 
-            $builder = $groupRepository->search('', $args);
+            $ideascaleProfiles = $group->ideascale_profiles()->withCount('proposals')->get();
 
-            return $builder->raw()['hits'][0] ?? null;
+            $builder = $proposalRepository->search('', $args);
+
+            $proposals = $builder->raw()['hits'] ?? [];
+
+            $reviews = collect($proposals)->flatMap(fn ($p) => $p['reviews'] ?? []);
+            $ratings = collect($reviews)->map(fn ($p) => $p['rating'])->groupBy('rating');
+            $aggregatedRatings = $ratings->mapWithKeys(fn ($r, $k) => [$k => $r->count()]);
+
+            return compact('proposals', 'reviews', 'aggregatedRatings', 'ideascaleProfiles');
         });
 
-        $proposals = collect($groupData['proposals']);
-
-        $ideascaleProfiles = collect($groupData['ideascale_profiles']);
-
-        $connections = $groupData['connected_items'];
-
-        $reviews = collect($proposals)->flatMap(fn ($p) => $p['reviews']);
-
-        $ratings = collect($reviews)->map(fn ($p) => $p['rating'])->groupBy('rating');
-
-        $aggregatedRatings = $ratings->mapWithKeys(fn ($r, $k) => [$k => $r->count()]);
-
         $props = [
-            'group' => GroupData::from($group),
+            'group' => $groupData,
+
             'proposals' => fn () => to_length_aware_paginator(
-                ProposalData::collect(
-                    $proposals
-                ),
+                ProposalData::collect($proposals),
                 perPage: 11,
                 currentPage: 1
             )->onEachSide(0),
-            'connections' => Inertia::optional(fn () => $connections),
+
+            'connections' => Inertia::optional(fn () => $group->connected_items),
+
             'ideascaleProfiles' => Inertia::optional(
                 fn () => to_length_aware_paginator(
-                    IdeascaleProfileData::collect(
-                        $ideascaleProfiles,
-                    ),
+                    IdeascaleProfileData::collect($ideascaleProfiles),
                     total: count($ideascaleProfiles),
                     perPage: 11,
                     currentPage: 1
                 )
             ),
+
             'locations' => Inertia::optional(
                 fn () => to_length_aware_paginator(
-                    LocationData::collect(
-                        $group->locations()->paginate(12)
-                    )
+                    LocationData::collect($group->locations()->paginate(12))
                 )
             ),
+
             'reviews' => Inertia::optional(
                 fn () => to_length_aware_paginator(
-                    ReviewData::collect(
-                        $reviews->take(11)
-                    ),
+                    ReviewData::collect($reviews->take(11)),
                     total: $reviews->count(),
                     perPage: 11,
                     currentPage: 1
                 )
             ),
+
             'aggregatedRatings' => $aggregatedRatings,
         ];
 
-        $path = $request->path();
-
-        if (str_contains($path, '/connections')) {
-            return Inertia::render('Groups/Connections/Index', $props);
-        }
-
-        if (str_contains($path, '/ideascale-profiles')) {
-            return Inertia::render('Groups/IdeascaleProfiles/Index', $props);
-        }
-
-        if (str_contains($path, '/reviews')) {
-            return Inertia::render('Groups/Reviews/Index', props: $props);
-        }
-
-        if (str_contains($path, '/locations')) {
-            return Inertia::render('Groups/Locations/Index', $props);
-        }
-
-        return Inertia::render('Groups/Proposals/Index', $props);
+        return match (true) {
+            str_contains($request->path(), '/connections') => Inertia::render('Groups/Connections/Index', $props),
+            str_contains($request->path(), '/ideascale-profiles') => Inertia::render('Groups/IdeascaleProfiles/Index', $props),
+            str_contains($request->path(), '/reviews') => Inertia::render('Groups/Reviews/Index', $props),
+            str_contains($request->path(), '/locations') => Inertia::render('Groups/Locations/Index', $props),
+            default => Inertia::render('Groups/Proposals/Index', $props),
+        };
     }
 
     protected function getProps(Request $request): void

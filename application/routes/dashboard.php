@@ -57,7 +57,7 @@ Route::localized(
                     })->name('manage');
                 });
 
-                Route::get('/reviews', [ReviewsController::class, 'myReviews'])->name('reviews');
+                Route::get('/reviews', [ProfileController::class, 'myReviews'])->name('reviews');
             });
     }
 );

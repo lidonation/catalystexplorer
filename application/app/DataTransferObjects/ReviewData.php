@@ -24,7 +24,7 @@ class ReviewData extends Data
 
         public ?string $status,
 
-        public int|RatingData $rating,
+        public int|RatingData|null $rating,
 
         public ?ProposalData $proposal,
 
