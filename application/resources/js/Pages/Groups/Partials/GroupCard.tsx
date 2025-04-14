@@ -83,7 +83,7 @@ const GroupCard: React.FC<GroupCardProps> = ({ group }) => {
 
                                     <KeyValue
                                         valueKey={t('groups.reviews')}
-                                        value={group?.reviews ?? 0}
+                                        value={group?.reviews_count ?? 0}
                                         className="text-right"
                                     />
                                 </div>

@@ -4,13 +4,17 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\DataTransferObjects\ReviewData;
+use App\Models\IdeascaleProfile;
 use App\Models\Location;
 use App\Models\User;
 use App\Repositories\IdeascaleProfileRepository;
+use App\Repositories\ProposalRepository;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Validation\Rule;
@@ -214,98 +218,169 @@ class ProfileController extends Controller
     {
         $userId = $request->user()->id;
 
-        $ideascaleProfile = app(IdeascaleProfileRepository::class);
+        $cacheKey = "user:{$userId}:dashboard_summary";
 
-        $args = [
-            'filter' => ["claimed_by_id = {$userId}"],
-            'attributesToRetrieve' => $attrs ?? [
-                'proposals',
-                'completed_proposals_count',
-                'funded_proposals_count',
-                'unfunded_proposals_count',
-                'proposals_count',
-                'collaborating_proposals_count',
-                'own_proposals_count',
-                'amount_requested_ada',
-                'amount_requested_usd',
-                'proposals_total_amount_requested',
-                'completed_proposals_count',
-                'funded_proposals_count',
-                'unfunded_proposals_count',
-            ],
-        ];
+        [
+            'totalsSummary' => $totalsSummary,
+            'graphData' => $graphData,
+        ] = Cache::remember($cacheKey, now()->addMinutes(10), function () use ($userId) {
+            $ideascaleProfile = app(IdeascaleProfileRepository::class);
 
-        $builder = $ideascaleProfile->search(
-            '',
-            $args
-        );
+            $args = [
+                'filter' => ["claimed_by_id = {$userId}"],
+                'attributesToRetrieve' => [
+                    'proposals',
+                    'name',
+                    'username',
+                    'completed_proposals_count',
+                    'funded_proposals_count',
+                    'unfunded_proposals_count',
+                    'proposals_count',
+                    'collaborating_proposals_count',
+                    'own_proposals_count',
+                    'amount_requested_ada',
+                    'amount_requested_usd',
+                    'proposals_total_amount_requested',
+                    'completed_proposals_count',
+                    'funded_proposals_count',
+                    'unfunded_proposals_count',
+                ],
+            ];
 
-        $hits = $builder->raw()['hits'];
+            $builder = $ideascaleProfile->search('', $args);
+            $hits = $builder->raw()['hits'] ?? [];
 
-        $proposals = [];
+            $proposals = [];
+            $totalsSummary = collect($hits)->reduce(function ($carry, $item) use (&$proposals) {
+                $itemProposals = $item['proposals'] ?? [];
 
-        $totalsSummary = collect($hits)->reduce(function ($carry, $item) use (&$proposals) {
-            $proposals = array_merge($proposals, $item['proposals']);
-            foreach ($item as $key => $value) {
-                if (is_int($value)) {
-                    $carry[$key] = ($carry[$key] ?? 0) + $value;
-                }
-            }
+                $proposals = array_merge($proposals, is_array($itemProposals) ? $itemProposals : []);
 
-            return $carry;
-        }, []);
-
-        $metrics = [
-            'USD' => ['amount_received_USD', 'amount_awarded_USD'],
-            'ADA' => ['amount_received_ADA', 'amount_awarded_ADA'],
-        ];
-
-        $grouped = collect($proposals)->groupBy(fn ($p) => $p['currency'])
-            ->map(fn ($byCurrency) => $byCurrency->groupBy(fn ($p) => $p['fund']['title'] ?? 'Unknown Fund'));
-
-        $graphData = [
-            'amount_received' => [],
-            'amount_awarded' => [],
-        ];
-
-        collect($metrics)->each(function ($fields, $currency) use ($grouped, &$graphData) {
-            if (! isset($grouped[$currency])) {
-                return;
-            }
-
-            $currencyData = $grouped[$currency]->map(function ($items, $fundTitle) use ($fields, $currency) {
-                $totals = collect($fields)->mapWithKeys(fn ($field) => [$field => 0]);
-
-                foreach ($items as $item) {
-                    $totals = $totals->mapWithKeys(fn ($val, $field) => [
-                        $field => $val + ($item[$field] ?? 0),
-                    ]);
+                foreach ($item as $key => $value) {
+                    if (is_int($value)) {
+                        $carry[$key] = ($carry[$key] ?? 0) + $value;
+                    }
                 }
 
-                return [
-                    'x' => $fundTitle,
-                    'y' => $totals->get("amount_received_{$currency}", 0),
-                    'y_awarded' => $totals->get("amount_awarded_{$currency}", 0),
-                ];
-            });
+                return $carry;
+            }, []);
 
-            $graphData['amount_received'][$currency] = $currencyData->map(fn ($data) => [
-                'x' => $data['x'],
-                'y' => $data['y'],
-            ])->values();
+            $metrics = [
+                'USD' => ['amount_received', 'amount_requested'],
+                'ADA' => ['amount_received', 'amount_requested'],
+            ];
 
-            $graphData['amount_awarded'][$currency] = $currencyData->map(fn ($data) => [
-                'x' => $data['x'],
-                'y' => $data['y_awarded'],
-            ])->values();
+            $grouped = collect($proposals)
+                ->filter(fn ($p) => isset($p['fund']) && is_array($p['fund']))
+                ->groupBy(fn ($p) => $p['fund']['currency'] ?? 'Unknown Currency')
+                ->map(
+                    fn ($byCurrency) => $byCurrency->groupBy(fn ($p) => $p['fund']['title'])
+                )->toArray();
+
+            $graphData = [
+                'amount_received' => [],
+                'amount_awarded' => [],
+            ];
+
+            collect($metrics)->each(
+                function ($fields, $currency) use ($grouped, &$graphData) {
+                    if (! isset($grouped[$currency])) {
+                        return;
+                    }
+
+                    $currencyData = collect($grouped[$currency])->map(function ($items, $fundTitle) use ($fields) {
+                        $totals = collect($fields)->mapWithKeys(fn ($field) => [$field => 0]);
+
+                        foreach ($items as $item) {
+                            $totals = $totals->mapWithKeys(function ($val, $field) use ($item) {
+                                $value = $item[$field] ?? 0;
+
+                                if (str_starts_with($field, 'amount_requested') && empty($item['funded_at'])) {
+                                    $value = 0;
+                                }
+
+                                return [$field => $val + $value];
+                            });
+                        }
+
+                        return [
+                            'x' => $fundTitle,
+                            'y' => $totals->get('amount_received', 0),
+                            'y_awarded' => $totals->get('amount_requested', 0),
+                        ];
+                    });
+
+                    $graphData['amount_received'][$currency] = $currencyData
+                        ->filter(fn ($data) => $data['y'] > 0 || $data['y_awarded'] > 0)
+                        ->map(fn ($data) => [
+                            'x' => $data['x'],
+                            'y' => $data['y'],
+                        ])->values();
+
+                    $graphData['amount_awarded'][$currency] = $currencyData
+                        ->filter(fn ($data) => $data['y'] > 0 || $data['y_awarded'] > 0)
+                        ->map(fn ($data) => [
+                            'x' => $data['x'],
+                            'y' => $data['y_awarded'],
+                        ])->values();
+                }
+            );
+
+            return compact('totalsSummary', 'graphData');
         });
 
-        return Inertia::render(
-            'My/Dashboard',
-            [
-                'totalsSummary' => $totalsSummary,
-                'graphData' => $graphData,
-            ]
-        );
+        return Inertia::render('My/Dashboard', [
+            'totalsSummary' => $totalsSummary,
+            'graphData' => $graphData,
+        ]);
+    }
+
+    public function myReviews(Request $request, ProposalRepository $proposalRepository): Response
+    {
+        $userId = Auth::id();
+
+        $cacheKey = "user:{$userId}:reviews_summary";
+
+        [
+            'aggregatedRatings' => $aggregatedRatings,
+            'reviews' => $reviews,
+            'ideascaleProfileHashes' => $ideascaleProfileHashes,
+        ] = Cache::remember($cacheKey, now()->addMinutes(10), function () use ($userId, $proposalRepository) {
+            $ideascaleProfile = IdeascaleProfile::where('claimed_by_id', $userId)
+                ->get()
+                ->map(fn ($p) => $p->id);
+
+            $ideascaleProfileHashes = implode(',', $ideascaleProfile->toArray());
+
+            $args = [
+                'filter' => ["users.id IN [{$ideascaleProfileHashes}]"],
+            ];
+
+            $builder = $proposalRepository->search('', $args);
+            $hits = $builder->raw()['hits'] ?? [];
+
+            $reviews = collect($hits)->flatMap(fn ($p) => $p['reviews'] ?? []);
+            $ratings = collect($reviews)->map(fn ($p) => $p['rating'])->groupBy('rating');
+            $aggregatedRatings = $ratings->mapWithKeys(fn ($r, $k) => [$k => $r->count()]);
+
+            return [
+                'aggregatedRatings' => $aggregatedRatings,
+                'reviews' => $reviews,
+                'ideascaleProfileHashes' => $ideascaleProfileHashes,
+            ];
+        });
+
+        return Inertia::render('My/Reviews/Index', [
+            'aggregatedRatings' => $aggregatedRatings,
+            'reviews' => Inertia::optional(
+                fn () => to_length_aware_paginator(
+                    ReviewData::collect($reviews->take(11)),
+                    total: $reviews->count(),
+                    perPage: 11,
+                    currentPage: 1
+                ),
+            ),
+            'ideascaleProfileHashes' => $ideascaleProfileHashes,
+        ]);
     }
 }

@@ -48,7 +48,7 @@ class GroupRepository extends Repository
                             'amount_requested_usd',
                             'amount_requested_ada',
                             'ideascale_profiles',
-                            'reviews',
+                            'reviews_count',
 
                         ],
                         'facets' => [

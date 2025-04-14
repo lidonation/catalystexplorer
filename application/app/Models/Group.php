@@ -20,11 +20,14 @@ use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 use Spatie\Translatable\HasTranslations;
+use Staudenmeir\EloquentHasManyDeep\HasManyDeep;
+use Staudenmeir\EloquentHasManyDeep\HasRelationships;
 
 class Group extends Model implements HasMedia
 {
     use HasConnections,
         HasLocations,
+        HasRelationships,
         HasTranslations,
         InteractsWithMedia,
         Searchable;
@@ -274,6 +277,11 @@ class Group extends Model implements HasMedia
         $this->addMediaCollection('banner')->singleFile();
     }
 
+    public function reviews(): HasManyDeep
+    {
+        return $this->hasManyDeepFromRelations($this->proposals(), (new Proposal)->reviews());
+    }
+
     public function registerMediaConversions(?Media $media = null): void
     {
         $this->addMediaConversion('thumbnails')
@@ -300,11 +308,9 @@ class Group extends Model implements HasMedia
 
         $array = $this->toArray();
 
-        $proposals = $this->proposals->map(fn ($p) => $p->toSearchableArray());
+        $proposals = $this->proposals;
 
-        $ideascale_profiles = $this->ideascale_profiles->map(
-            fn ($profile) => $profile->toSearchableArray(['proposals', 'groups'])
-        );
+        $ideascale_profiles = $this->ideascale_profiles;
 
         return array_merge($array, [
             'proposals_completed' => $proposals->filter(fn ($p) => $p['status'] === 'complete')?->count() ?? 0,
@@ -314,7 +320,7 @@ class Group extends Model implements HasMedia
             'proposals_woman' => $proposals->filter(fn ($p) => ($p->is_woman_proposal ?? false) === true)->count(),
             'proposals_ideascale' => $proposals->filter(fn ($p) => ($p->is_ideascale_proposal ?? false) === true)->count(),
             'proposals_impact' => $proposals->filter(fn ($p) => ($p->is_impact_proposal ?? false) === true)->count(),
-            'reviews' => $proposals->filter(fn ($p) => ! empty($p->reviewers_total))->count(),
+            'reviews_count' => $this->reviews->count(),
             'amount_awarded_ada' => intval($this->amount_awarded_ada),
             'amount_awarded_usd' => intval($this->amount_awarded_usd),
             'amount_distributed_ada' => intval($this->amount_distributed_ada),
@@ -323,7 +329,6 @@ class Group extends Model implements HasMedia
             'amount_requested_usd' => intval($this->amount_requested_usd),
             'hero_img_url' => $this->hero_img_url,
             'banner_img_url' => $this->banner_img_url,
-            'proposals' => $proposals,
             'proposals_count' => $proposals->count(),
             'ideascale_profiles' => $ideascale_profiles,
             'tags' => $this->tags->map(fn ($m) => $m->toArray()),

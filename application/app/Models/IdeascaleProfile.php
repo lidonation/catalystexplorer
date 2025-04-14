@@ -63,6 +63,7 @@ class IdeascaleProfile extends Model implements HasMedia
     public static function getSortableAttributes(): array
     {
         return [
+            'id',
             'name',
             'username',
             'email',
@@ -95,6 +96,8 @@ class IdeascaleProfile extends Model implements HasMedia
     public static function getFilterableAttributes(): array
     {
         return [
+            'id',
+            'hash',
             'completed_proposals_count',
             'funded_proposals_count',
             'unfunded_proposals_count',
@@ -353,9 +356,8 @@ class IdeascaleProfile extends Model implements HasMedia
         return $query;
     }
 
-    public function toSearchableArray(?array $exclude = []): array
+    public function toSearchableArray(): array
     {
-
         $this->loadCount([
             'completed_proposals',
             'funded_proposals',
@@ -365,13 +367,18 @@ class IdeascaleProfile extends Model implements HasMedia
             'own_proposals',
             'collaborating_proposals',
             'proposals',
+            'reviews',
         ]);
 
         $array = $this->toArray();
 
+        $proposals = $this->proposals->map(function ($p) {
+            $p->load('fund');
+        });
+
         return array_merge($array, [
-            'proposals' => in_array('groups', $exclude) ? null : $this->proposals->map(fn ($p) => $p->toSearchableArray()),
-            'groups' => in_array('groups', $exclude) ? null : $this->groups->map(fn ($g) => $g->toSearchableArray()),
+            'proposals' => $proposals,
+            'groups' => $this->groups,
             'completed_proposals_count' => $this->completed_proposals_count,
             'funded_proposals_count' => $this->funded_proposals_count,
             'unfunded_proposals_count' => $this->unfunded_proposals_count,
@@ -380,13 +387,10 @@ class IdeascaleProfile extends Model implements HasMedia
             'own_proposals_count' => $this->own_proposals_count,
             'collaborating_proposals_count' => $this->collaborating_proposals_count,
             'proposals_count' => $this->proposals_count,
-
+            'reviews' => $this->reviews,
             'first_timer' => null,
-
             'hero_img_url' => $this->hero_img_url,
             'banner_img_url' => $this->banner_img_url,
-
-            //            'first_timer' => ($proposals?->map(fn ($p) => ($p['fund_id']))->unique()->count() === 1),
             'amount_awarded_ada' => $this->amount_awarded_ada,
             'amount_awarded_usd' => intval($this->amount_awarded_usd),
             'amount_distributed_ada' => intval($this->amount_distributed_ada),
