@@ -64,7 +64,7 @@ const GroupCardMini: React.FC<GroupCardMiniProps> = ({ group }) => {
 
                     <div>
                         <p className="text-1 font-bold">
-                            {group?.reviews ?? 0}
+                            {group?.reviews_count ?? 0}
                         </p>
                         <p className="text-3 text-gray-persist mt-2">
                             {t('groups.reviews')}
