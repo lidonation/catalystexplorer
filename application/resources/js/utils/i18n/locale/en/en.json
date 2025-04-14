@@ -150,6 +150,23 @@
             "connectWallet": "1. Choose a supported Cardano wallet (e.g., Yoroi, Daedalus, Eternl).\n2. Follow the prompts to connect your wallet securely.\n3. Ensure your wallet has sufficient ADA for transactions.",
             "selectProposalInfo": "To get started, please select proposal to mint from"
         },
+        "resetPassword": {
+            "alreadyHaveAccount": "Already have an account?",
+            "checkInbox": "Check your Inbox",
+            "confirmPassword": "Confirm Password",
+            "continue": "Continue",
+            "email":"Email",
+            "enterEmail": "Enter your email to reset password.",
+            "enterNewPassword": "Enter your New Password",
+            "forgot":"Forgot password",
+            "forgotInfo": "To reset your password, enter the registered email in which you have a Catalyst Explorer account.",
+            "newPassword": "New Password",
+            "reset": "Reset Password",
+            "resetInfo": "Create a new password for your account. Make sure it is strong and secure.",
+            "sent": "A password reset link has been sent to your email. Check your inbox (or spam folder) and follow the instructions to reset your password.",
+            "submit": "Submit",
+            "resend": "Resend Email"
+        },
         "voterList": {
             "welcome": "Before you start, let's set up your Voting List. A Voting List is a collection of proposals that you support and want others to consider. This helps streamline governance participation. Ready to begin? In the next steps, you'll name your list, add proposals, and explain your rationale for selecting them.",
             "proposalsOnly": "Unlike other list types, only proposals can be added to voting lists.",
