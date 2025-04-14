@@ -206,11 +206,11 @@ import-index:
 %:
 	@:
 
-.PHONY: clear-meili
+.PHONY: delete-index
 
 INDEXES = cx_proposals cx_ideascale_profiles cx_monthly_reports cx_review cx_groups cx_transactions
 
-clear-meili:
+delete-index:
 	@index_filter="$(filter-out $@,$(MAKECMDGOALS))"; \
 	for index in $(INDEXES); do \
 		if [ -z "$$index_filter" ] || echo $$index | grep -i "$$index_filter" > /dev/null; then \

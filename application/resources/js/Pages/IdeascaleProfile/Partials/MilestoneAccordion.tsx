@@ -95,7 +95,7 @@ const MilestoneAccordion: React.FC<MilestoneAccordionProps> = ({
                     </div>
 
                     {openIndex === index && (
-                        <div className="p-4">
+                        <div className="py-4 px-0.5">
                             <div className="overflow-x-auto">
                                 <table className="border-background-lighter w-full table-auto border">
                                     <tbody>

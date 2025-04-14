@@ -51,6 +51,6 @@ final class VoterHistoryData extends Data
         public ?float $voting_power,
 
         #[TypeScriptOptional]
-        public ?string $fund,
+        public FundData|string|null $fund,
     ) {}
 }

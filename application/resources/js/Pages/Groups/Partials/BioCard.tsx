@@ -7,6 +7,7 @@ import { Segments } from '../../../../types/segments';
 import Paragraph from '@/Components/atoms/Paragraph';
 import FundingPercentages from '@/Components/FundingPercentages';
 import { currency } from '@/utils/currency';
+import { usePage } from '@inertiajs/react';
 
 interface BioCardProps {
   group: GroupData;
@@ -14,6 +15,9 @@ interface BioCardProps {
 
 const BioCard: React.FC<BioCardProps> = ({ group }) => {
   const { t } = useTranslation();
+
+   const { locale } = usePage().props;
+   
   const segments = [
     {
       label: t('groups.completed'),
@@ -39,81 +43,108 @@ const BioCard: React.FC<BioCardProps> = ({ group }) => {
   );
 
   return (
-    <Card>
-      <div>
-        <Paragraph className='border-b border-dark pb-3 pt-2 font-bold'>{t('bio')}</Paragraph>
-        <Paragraph className="text-content-dark opacity-80 mb-4 line-clamp-3 pt-4">{group?.bio}</Paragraph>
-        <div className='flex flex-col gap-2'>
-          <div className='flex justify-between border-b pb-4 border-dark'>
-            <div>
-              <Paragraph className='text-xl font-bold'>
-                {currency(group?.amount_requested_ada ?? 0, 2, 'ADA')} + {currency(group?.amount_requested_usd ?? 0, 2, 'USD')}
+      <Card>
+          <div>
+              <Paragraph className="border-dark border-b pt-2 pb-3 font-bold">
+                  {t('bio')}
               </Paragraph>
-              <Paragraph className='text-dark'>{t('groups.totalRequested')}</Paragraph>
-            </div>
-            <div>
-              <Paragraph className='text-xl font-bold'>{group?.proposals_count ?? 0}</Paragraph>
-              <Paragraph className='text-dark'>{t('proposals.proposals')}</Paragraph>
-            </div>
+              <Paragraph className="text-content-dark mb-4 line-clamp-3 pt-4 opacity-80">
+                  { group?.bio}
+              </Paragraph>
+              <div className="flex flex-col gap-2">
+                  <div className="border-dark flex justify-between border-b pb-4">
+                      <div>
+                          <Paragraph className="text-xl font-bold">
+                              {currency(
+                                  group?.amount_requested_ada ?? 0,
+                                  2,
+                                  'ADA',
+                              )}{' '}
+                              +{' '}
+                              {currency(
+                                  group?.amount_requested_usd ?? 0,
+                                  2,
+                                  'USD',
+                              )}
+                          </Paragraph>
+                          <Paragraph className="text-dark">
+                              {t('groups.totalRequested')}
+                          </Paragraph>
+                      </div>
+                      <div>
+                          <Paragraph className="text-xl font-bold">
+                              {group?.proposals_count ?? 0}
+                          </Paragraph>
+                          <Paragraph className="text-dark">
+                              {t('proposals.proposals')}
+                          </Paragraph>
+                      </div>
+                  </div>
+              </div>
+              <div className="border-dark border-b pt-4 pb-4">
+                  <SegmentedBar
+                      segments={segments}
+                      tooltipSegments={segments}
+                  />
+              </div>
+
+              <div
+                  className={`grid ${noAwardedFunds || allAwardedFunds ? 'grid-cols-2' : 'grid-cols-1'} mt-4 gap-4`}
+              >
+                  {(group?.amount_awarded_ada || noAwardedFunds) && (
+                      <div>
+                          <FundingPercentages
+                              amount={group?.amount_awarded_ada ?? 0}
+                              total={group?.amount_requested_ada ?? 0}
+                              primaryBackgroundColor="bg-content-light"
+                              secondaryBackgroundColor="bg-primary"
+                              amount_currency="ADA"
+                          />
+                      </div>
+                  )}
+                  {(group?.amount_awarded_usd || noAwardedFunds) && (
+                      <FundingPercentages
+                          amount={group?.amount_awarded_usd ?? 0}
+                          total={group?.amount_requested_usd ?? 0}
+                          primaryBackgroundColor="bg-content-light"
+                          secondaryBackgroundColor="bg-primary-dark"
+                          amount_currency="USD"
+                      />
+                  )}
+              </div>
+              <Paragraph className="text-dark border-b pt-4 pb-4">
+                  {t('groups.awardedVsRequested')}
+              </Paragraph>
+
+              <div
+                  className={`grid ${noAwardedFunds || allAwardedFunds ? 'grid-cols-2' : 'grid-cols-1'} mt-4 gap-4`}
+              >
+                  {(group?.amount_awarded_ada || noAwardedFunds) && (
+                      <div>
+                          <FundingPercentages
+                              amount={group?.amount_distributed_ada ?? 0}
+                              total={group?.amount_awarded_ada ?? 0}
+                              primaryBackgroundColor="bg-content-light"
+                              secondaryBackgroundColor="bg-primary"
+                              amount_currency="ADA"
+                          />
+                      </div>
+                  )}
+                  {(group?.amount_awarded_usd || noAwardedFunds) && (
+                      <FundingPercentages
+                          amount={group?.amount_distributed_usd ?? 0}
+                          total={group?.amount_awarded_usd ?? 0}
+                          primaryBackgroundColor="bg-content-light"
+                          secondaryBackgroundColor="bg-primary-dark"
+                          amount_currency="USD"
+                      />
+                  )}
+              </div>
+              <Paragraph className="text-dark mb-4 border-b pt-4 pb-4">
+                  {t('groups.receivedVsAwarded')}
+              </Paragraph>
           </div>
-        </div>
-        <div className='border-b pb-4 pt-4 border-dark'>
-          <SegmentedBar segments={segments} tooltipSegments={segments}/>
-        </div>
-
-        <div
-          className={`grid ${noAwardedFunds || allAwardedFunds ? 'grid-cols-2' : 'grid-cols-1'} mt-4 gap-4`}
-        >
-          {(group?.amount_awarded_ada || noAwardedFunds) && (
-            <div>
-              <FundingPercentages
-                amount={group?.amount_awarded_ada ?? 0}
-                total={group?.amount_requested_ada ?? 0}
-                primaryBackgroundColor="bg-content-light"
-                secondaryBackgroundColor="bg-primary"
-                amount_currency="ADA"
-              />
-            </div>
-          )}
-          {(group?.amount_awarded_usd || noAwardedFunds) && (
-            <FundingPercentages
-              amount={group?.amount_awarded_usd ?? 0}
-              total={group?.amount_requested_usd ?? 0}
-              primaryBackgroundColor="bg-content-light"
-              secondaryBackgroundColor="bg-primary-dark"
-              amount_currency="USD"
-            />
-          )}
-        </div>
-        <Paragraph className='pt-4 text-dark border-b pb-4'>{t('groups.awardedVsRequested')}</Paragraph>
-
-        <div
-          className={`grid ${noAwardedFunds || allAwardedFunds ? 'grid-cols-2' : 'grid-cols-1'} mt-4 gap-4`}
-        >
-          {(group?.amount_awarded_ada || noAwardedFunds) && (
-            <div>
-              <FundingPercentages
-                amount={group?.amount_distributed_ada ?? 0}
-                total={group?.amount_awarded_ada ?? 0}
-                primaryBackgroundColor="bg-content-light"
-                secondaryBackgroundColor="bg-primary"
-                amount_currency="ADA"
-              />
-            </div>
-          )}
-          {(group?.amount_awarded_usd || noAwardedFunds) && (
-            <FundingPercentages
-              amount={group?.amount_distributed_usd ?? 0}
-              total={group?.amount_awarded_usd ?? 0}
-              primaryBackgroundColor="bg-content-light"
-              secondaryBackgroundColor="bg-primary-dark"
-              amount_currency="USD"
-            />
-          )}
-        </div>
-        <Paragraph className='border-b pt-4 pb-4 mb-4 text-dark'>{t('groups.receivedVsAwarded')}</Paragraph>
-      </div>
-    </Card>
+      </Card>
   );
 };
 

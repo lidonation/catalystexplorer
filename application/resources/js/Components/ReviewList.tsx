@@ -21,20 +21,24 @@ export const ReviewList: React.FC<ReviewListProps> = ({
     };
 
     return (
-        <div className={`space-y-6 ${className}`}>
+        <div className={` ${className}`}>
             <Masonry
                 breakpointCols={breakpointColumnsObj}
-                className="-ml-4 flex w-auto"
-                columnClassName="pl-2"
+                className="relative flex w-auto"
+                columnClassName="pr-2"
             >
-                {reviews?.data?.map((review) => (
-                    <section key={review?.hash} className="mb-2">
+                {reviews?.data?.map((review, index) => (
+                    <section 
+                        key={review?.hash} 
+                        className="relative mb-2 "
+                        style={{ zIndex: reviews?.data?.length - index }} 
+                    >
                         <ReviewCard review={review} />
                     </section>
                 ))}
             </Masonry>
 
-            {/* Pagination */}
+          
             <div className="mb-8 flex w-full items-center justify-center">
                 {reviews.data && <Paginator pagination={reviews} />}
             </div>

@@ -64,7 +64,7 @@ export default function ProfileFieldForm({
     const inputValue = (data[fieldName as keyof typeof data] as string) || '';
 
     return (
-        <form onSubmit={submit} className="p-4">
+        <form onSubmit={submit} className="lg:p-4">
             <div className="mb-4">
                 <InputLabel
                     htmlFor={fieldName}
