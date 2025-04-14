@@ -16,6 +16,7 @@ import { PaginatedData } from '../../../../types/paginated-data';
 import { SearchParams } from '../../../../types/search-params';
 import { VoteEnum } from '@/enums/votes-enums';
 import RecordsNotFound from '@/Layouts/RecordsNotFound';
+import {currency} from "@/utils/currency";
 
 interface ProposalSubmissionStatus {
     slug: string;
@@ -44,6 +45,16 @@ const Step5: React.FC<Step5Props> = ({
     const { t } = useTranslation();
     const localizedRoute = useLocalizedRoute;
     const prevStep = generateLocalizedRoute('workflows.voting.index', { step: activeStep - 1 });
+    const formatCurrency = (
+        amount: number | string | null | undefined,
+        currencyCode: string = 'ADA'
+    ): string => {
+        return currency(
+            amount ? parseInt(amount.toString()) : 0,
+            2,
+            currencyCode
+        ) as string;
+    };
 
     const votesForTable: Record<string, VoteEnum> = {};
     Object.keys(votes).forEach(slug => {
@@ -74,7 +85,11 @@ const Step5: React.FC<Step5Props> = ({
         {
             key: 'budget',
             header: 'Budget',
-            render: (item: ProposalSubmissionStatus) => item.requested_funds || '75K ADA'
+            render: (item: ProposalSubmissionStatus) => {
+                const amountRequested = item.requested_funds || '75000';
+                const currencyCode = 'ADA';
+                return formatCurrency(amountRequested, currencyCode);
+            }
         },
         {
             key: 'vote',

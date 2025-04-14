@@ -83,16 +83,16 @@ function WorkflowTable<T>({
     }
 
     return (
-        <div className="rounded-lg bg-white shadow-sm">
+        <div className="rounded-lg  shadow-sm">
             <div className="overflow-x-auto">
                 <table className="w-full divide-y divide-gray-200">
-                    <thead className="bg-gray-50">
+                    <thead className="text-content">
                     <tr>
                         {columns.map((column, index) => (
                             <th
                                 key={index}
                                 className={`
-                                    px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider
+                                    px-4 py-3 text-left text-xs font-medium text-content uppercase tracking-wider
                                     border-b border-gray-200
                                     ${index < columns.length - 1 ? 'border-r border-gray-200' : ''}
                                 `}
@@ -104,12 +104,12 @@ function WorkflowTable<T>({
                     </thead>
                     <tbody className="divide-y divide-gray-200">
                     {items.data.map((item, index) => (
-                        <tr key={keyExtractor(item)} className="hover:bg-gray-50">
+                        <tr key={keyExtractor(item)} className="text-content">
                             {columns.map((column, colIndex) => (
                                 <td
                                     key={colIndex}
                                     className={`
-                                        px-4 py-4 text-sm text-gray-900
+                                        px-4 py-4 text-sm text-content
                                         ${colIndex < columns.length - 1 ? 'border-r border-gray-200' : ''}
                                     `}
                                 >

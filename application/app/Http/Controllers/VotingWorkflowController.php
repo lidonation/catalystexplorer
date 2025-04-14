@@ -16,7 +16,6 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Fluent;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -113,9 +112,6 @@ class VotingWorkflowController extends Controller
         $selectedProposalSlugs = $request->session()->get('selected_proposals', []);
         $votes = $request->session()->get('votes', []);
         $proposalData = $request->session()->get('proposal_data', []);
-        Log::info('Saving Voting Decisions in step 4', [
-            'proposalData' => $validated['proposalData'] ?? [],
-        ]);
 
         return Inertia::render('Workflows/SubmitVotes/Step4', [
             'stepDetails' => $this->getStepDetails(),

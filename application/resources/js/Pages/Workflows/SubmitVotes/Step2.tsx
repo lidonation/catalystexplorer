@@ -15,6 +15,7 @@ import { SearchParams } from '../../../../types/search-params';
 import { FiltersProvider } from '@/Context/FiltersContext';
 import { PaginatedData } from '../../../../types/paginated-data';
 import WorkflowTable from "./WorkflowTable";
+import { currency } from '@/utils/currency';
 
 interface ProposalType {
     slug: string;
@@ -47,6 +48,16 @@ const Step2: React.FC<Step2Props> = ({
     const nextStep = localizedRoute('workflows.voting.index', { step: activeStep + 1 });
 
     const [formErrors, setFormErrors] = useState<string[]>([]);
+    const formatCurrency = (
+        amount: number | string | null | undefined,
+        currencyCode: string = 'ADA'
+    ): string => {
+        return currency(
+            amount ? parseInt(amount.toString()) : 0,
+            2,
+            currencyCode
+        ) as string;
+    };
 
     const form = useForm({
         proposals: selectedProposals.data.map(p => p.slug),
@@ -141,7 +152,12 @@ const Step2: React.FC<Step2Props> = ({
         {
             key: 'budget',
             header: 'Budget',
-            render: (item: ProposalType) => item.requested_funds || item.requested_funds || '-'
+            render: (item: ProposalType) => {
+                const amountRequested = item.requested_funds || '0';
+                const currencyCode = 'ADA';
+
+                return formatCurrency(amountRequested, currencyCode);
+            }
         },
         {
             key: 'vote',
