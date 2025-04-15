@@ -1,10 +1,8 @@
 import { RangePicker } from '@/Components/RangePicker';
 import { useTranslation } from 'react-i18next';
 import { SearchSelect } from '@/Components/SearchSelect';
-import Selector from '@/Components/atoms/Selector';
 import { useFilterContext } from '@/Context/FiltersContext';
 import { ParamsEnum } from '@/enums/proposal-search-params';
-
 
 const ReviewsFilter = () => {
     const { t } = useTranslation();
@@ -15,7 +13,7 @@ const ReviewsFilter = () => {
     return (
         <div className="mb-6 w-full">
             <div className="bg-background w-full rounded-xl p-4">
-                <div className="grid grid-cols-2 gap-x-4 gap-y-3 rounded-xl md:grid-cols-2 lg:grid-cols-4">
+                <div className="grid grid-cols-2 gap-x-4 gap-y-3 rounded-xl md:grid-cols-3 lg:grid-cols-3">
                     <div className="col-span-1 flex flex-col gap-2 pb-4">
                         <span>{t('reviews.filters.funds')}</span>
                         <SearchSelect
@@ -67,35 +65,6 @@ const ReviewsFilter = () => {
                             }
                             placeholder="Select"
                             multiple={true}
-                        />
-                    </div>
-
-                    <div className="col-span-1 flex flex-col gap-2 pb-4">
-                        <span>{t('reviews.filters.helpful')}</span>
-                        <Selector
-                            isMultiselect={false}
-                            options={[
-                                {
-                                    value: 'Select',
-                                    label: t('reviews.select'),
-                                },
-                                {
-                                    value: 'true',
-                                    label: t('reviews.yes'),
-                                },
-                                {
-                                    value: 'false',
-                                    label: t('reviews.no'),
-                                },
-                            ]}
-                            setSelectedItems={(value) =>
-                                setFilters({
-                                    label: `${t('reviews.filters.helpful')}: ${value === 'true' ? t('reviews.yes') : t('reviews.no')}`,
-                                    value,
-                                    param: ParamsEnum.HELPFUL,
-                                })
-                            }
-                            selectedItems={getFilter(ParamsEnum.HELPFUL)}
                         />
                     </div>
                 </div>
