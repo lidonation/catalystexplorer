@@ -10,6 +10,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rules;
 use Illuminate\Validation\ValidationException;
@@ -23,8 +24,10 @@ class NewPasswordController extends Controller
      */
     public function create(Request $request): Response
     {
-        return Inertia::render('Auth/ResetPassword', [
+        return Inertia::render('Workflows/PasswordReset/Step2', [
             'email' => $request->email,
+            'stepDetails' => $this->getStepDetails(),
+            'activeStep' => 2,
             'token' => $request->route('token'),
         ]);
     }
@@ -67,6 +70,20 @@ class NewPasswordController extends Controller
 
         throw ValidationException::withMessages([
             'email' => [trans($status)],
+        ]);
+    }
+
+    public function getStepDetails(): Collection
+    {
+        return collect([
+            [
+                'title' => 'workflows.resetPassword.forgot',
+                'info' => 'workflows.resetPassword.forgotInfo',
+            ],
+            [
+                'title' => 'workflows.resetPassword.reset',
+                'info' => 'workflows.resetPassword.resetInfo',
+            ],
         ]);
     }
 }

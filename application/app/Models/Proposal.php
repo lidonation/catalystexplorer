@@ -90,6 +90,7 @@ class Proposal extends Model
             'users',
             'tags',
             'tags.id',
+            'title',
             'categories',
             'funding_status',
             'status',

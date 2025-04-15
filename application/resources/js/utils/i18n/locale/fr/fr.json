@@ -75,6 +75,7 @@
     "twitter": "Twitter",
     "support": "Support",
     "seeAll": "Voir Tout",
+    "signup": "S'inscrire",
     "terms": "Conditions Générales",
     "votes": "Mes Votes",
     "voters": "Électrices",
@@ -131,6 +132,23 @@
             "selectProposal": "Sélectionnez une proposition",
             "selectProfileInfo": "Choisissez le(s) profil(s) à partir duquel/lesquels vous souhaitez créer des NFT. Le profil sélectionné doit être lié au projet finalisé dont vous souhaitez créer le NFT. Vous hésitez ? Pas de souci : sélectionnez simplement tous les profils disponibles et nous nous occupons du reste ! 🚀",
             "selectProposalInfo": "Pour commencer, veuillez sélectionner la proposition à partir de laquelle créer"
+        },
+        "resetPassword": {
+            "alreadyHaveAccount": "Déjà inscrit ?",
+            "checkInbox": "Vérifiez votre boîte de réception",
+            "confirmPassword": "Confirmez le mot de passe",
+            "continue": "Continuer",
+            "email": "Email",
+            "enterEmail": "Entrez votre email pour réinitialiser votre mot de passe.",
+            "enterNewPassword": "Entrez un nouveau mot de passe",
+            "forgot": "Mot de passe oublié",
+            "forgotInfo": "Pour réinitialiser votre mot de passe, saisissez l'adresse e-mail enregistrée avec laquelle vous disposez d'un compte Catalyst Explorer.",
+            "reset": "Réinitialiser le mot de passe",
+            "resetInfo": "Créez un nouveau mot de passe pour votre compte. Assurez-vous qu'il est fort et sécurisé.",
+            "newPassword": "Nouveau mot de passe",
+            "sent": "Un lien de réinitialisation de mot de passe vous a été envoyé par e-mail. Consultez votre boîte de réception (ou votre dossier spam) et suivez les instructions pour réinitialiser votre mot de passe.",
+            "submit": "Soumettre",
+            "resend": "Renvoyer l'e-mail"
         },
         "voterList": {
             "welcome": "Avant de commencer, configurons votre Liste de Vote. Une Liste de Vote est une collection de propositions que vous soutenez et que vous souhaitez que d'autres considèrent. Cela aide à simplifier la participation à la gouvernance. Prêt à commencer ? Dans les prochaines étapes, vous nommerez votre liste, ajouterez des propositions et expliquerez votre raisonnement pour les sélectionner.",
