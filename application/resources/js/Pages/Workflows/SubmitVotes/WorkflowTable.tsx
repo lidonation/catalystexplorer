@@ -22,7 +22,7 @@ interface WorkflowTableProps<T> {
     };
 }
 
-const getVoteText = (voteType: VoteEnum) => {
+const getVoteText = (voteType: VoteEnum): string => {
     switch(voteType) {
         case VoteEnum.YES:
             return 'Yes';
@@ -35,17 +35,22 @@ const getVoteText = (voteType: VoteEnum) => {
     }
 };
 
-const getVoteClass = (voteType: VoteEnum) => {
+const getVoteClass = (voteType: VoteEnum): string => {
     switch(voteType) {
         case VoteEnum.YES:
-            return 'bg-success text-white';
+            return 'bg-green-500 text-white';
         case VoteEnum.NO:
-            return 'bg-red-100 text-red-800';
+            return 'bg-red-500 text-white';
         case VoteEnum.ABSTAIN:
-            return 'bg-warning text-white';
+            return 'bg-orange-400 text-white';
         default:
-            return 'bg-gray-100 text-gray-800';
+            return 'bg-gray-200 text-gray-700';
     }
+};
+
+const formatHeaderText = (text: string): string => {
+    if (!text) return '';
+    return text.charAt(0).toUpperCase() + text.slice(1).toLowerCase();
 };
 
 function WorkflowTable<T>({
@@ -55,22 +60,30 @@ function WorkflowTable<T>({
                               votesMap,
                               emptyState = { context: 'records', showIcon: true }
                           }: WorkflowTableProps<T>): React.ReactElement {
-    const defaultVoteRender = (item: T, index: number) => {
+
+    const defaultVoteRender = (item: T, index: number): React.ReactNode => {
         const key = keyExtractor(item);
         if (!votesMap) return null;
         const voteType = votesMap[key];
         return voteType !== undefined ? (
-            <span className={`px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded ${getVoteClass(voteType)}`}>
+            <span className={`px-4 py-2 inline-flex text-sm font-medium rounded-md ${getVoteClass(voteType)}`}>
                 {getVoteText(voteType)}
             </span>
         ) : null;
     };
 
-    const defaultRender = (item: T, columnKey: string, index: number) => {
+    const defaultRender = (item: T, columnKey: string, index: number): React.ReactNode => {
         const value = columnKey.split('.').reduce((obj: any, key: string) =>
                 obj && obj[key] !== undefined ? obj[key] : undefined,
             item
         );
+
+        if (columnKey === 'title') {
+            return typeof value === 'string'
+                ? value.replace(/\b\w/g, l => l.toUpperCase())
+                : (value ?? '-');
+        }
+
         return value ?? '-';
     };
 
@@ -83,62 +96,55 @@ function WorkflowTable<T>({
     }
 
     return (
-        <div className="rounded-lg  shadow-sm">
-            <div className="overflow-x-auto">
-                <table className="w-full divide-y divide-gray-200">
-                    <thead className="text-content">
+        <div className="bg-background rounded-lg overflow-hidden">
+            <div className="overflow-x-auto px-4 py-4">
+                <table className="w-full border-collapse border border-gray-200">
+                    <thead>
                     <tr>
                         {columns.map((column, index) => (
                             <th
                                 key={index}
-                                className={`
-                                    px-4 py-3 text-left text-xs font-medium text-content uppercase tracking-wider
-                                    border-b border-gray-200
-                                    ${index < columns.length - 1 ? 'border-r border-gray-200' : ''}
-                                `}
+                                className="px-4 py-4 text-left text-sm font-medium text-content border border-gray-100"
                             >
-                                {column.header}
+                                {formatHeaderText(column.header)}
                             </th>
                         ))}
                     </tr>
                     </thead>
-                    <tbody className="divide-y divide-gray-200">
-                    {items.data.map((item, index) => (
-                        <tr key={keyExtractor(item)} className="text-content">
-                            {columns.map((column, colIndex) => (
-                                <td
-                                    key={colIndex}
-                                    className={`
-                                        px-4 py-4 text-sm text-content
-                                        ${colIndex < columns.length - 1 ? 'border-r border-gray-200' : ''}
-                                    `}
-                                >
-                                    {column.key === 'index'
-                                        ? index + 1 + ((items.current_page - 1) * items.per_page)
-                                        : column.key === 'vote' && votesMap
-                                            ? (column.render || defaultVoteRender)(item, index)
-                                            : (column.render || ((item, index) => defaultRender(item, column.key, index)))(item, index)
-                                    }
-                                </td>
-                            ))}
+                    <tbody>
+                    {items.data.map((item, rowIndex) => (
+                        <tr key={keyExtractor(item)}>
+                            {columns.map((column, colIndex) => {
+                                const isProposalColumn = column.key === 'title' || column.header.toLowerCase() === 'proposal';
+                                const cellClass = `px-2 py-2 border border-gray-100 text-content font-normal sm:text-base font-sans ${
+                                    isProposalColumn ? 'max-w-md overflow-hidden text-ellipsis' : ''
+                                }`;
+
+                                return (
+                                    <td key={colIndex} className={cellClass}>
+                                        {column.key === 'index'
+                                            ? rowIndex + 1 + ((items.current_page - 1) * items.per_page)
+                                            : column.key === 'vote' && votesMap
+                                                ? (column.render || defaultVoteRender)(item, rowIndex)
+                                                : (column.render || ((item, idx) => defaultRender(item, column.key, idx)))(item, rowIndex)
+                                        }
+                                    </td>
+                                );
+                            })}
                         </tr>
                     ))}
                     </tbody>
                 </table>
             </div>
-
-            {/* Pagination */}
-            {items.data.length > 0 && (
-                <div className="mt-6">
-                    <Paginator
-                        pagination={items}
-                        linkProps={{
-                            preserveState: true,
-                            preserveScroll: true,
-                        }}
-                    />
-                </div>
-            )}
+            <div className="px-4">
+                <Paginator
+                    pagination={items}
+                    linkProps={{
+                        preserveState: true,
+                        preserveScroll: true
+                    }}
+                />
+            </div>
         </div>
     );
 }
