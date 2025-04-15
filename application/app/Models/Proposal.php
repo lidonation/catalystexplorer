@@ -408,9 +408,7 @@ class Proposal extends Model
             'amount_received' => $this->amount_received ? intval($this->amount_received) : 0,
             "amount_requested_{$this->currency}" => $this->amount_requested ? intval($this->amount_requested) : 0,
             'amount_requested' => $this->amount_requested ? intval($this->amount_requested) : 0,
-
             'ca_rating' => intval($this->avg_rating) ?? 0.00,
-            'reviews' => $this->reviews->map(fn ($r) => $r->load(['rating', 'reviewer'])),
             'campaign' => [
                 'id' => $this->campaign_id,
                 'title' => $this->campaign?->title,
