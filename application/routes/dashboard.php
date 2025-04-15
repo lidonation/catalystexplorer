@@ -42,9 +42,7 @@ Route::localized(
 
                 Route::get('/groups', [GroupsController::class, 'myGroups'])->name('groups');
 
-                Route::get('/lists', function () {
-                    return Inertia::render('My/Lists/Index');
-                })->name('lists');
+                Route::get('/lists', [MyBookmarksController::class, 'collectionIndex'])->name('lists.index');
 
                 Route::get('/profile', function () {
                     return Inertia::render('My/Profile/Index');
