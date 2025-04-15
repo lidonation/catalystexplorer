@@ -186,7 +186,7 @@ class Review extends Model
 
     public function toSearchableArray(): array
     {
-        $this->load(['model', 'discussion', 'parent', 'reviewer.reputation_scores.fund', 'proposal.ideascaleProfiles', 'proposal.groups']);
+        $this->load(['model', 'discussion', 'parent', 'reviewer.reputation_scores.fund', 'proposal']);
 
         $array = $this->toArray();
 
