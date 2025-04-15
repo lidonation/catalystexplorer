@@ -277,7 +277,7 @@ class VotingWorkflowController extends Controller
         }
 
         $page = $request->input(ProposalSearchParams::PAGE()->value, default: 1);
-        $limit = $request->input('limit', 10);
+        $limit = $request->input('limit', 5);
         $search = $request->input(ProposalSearchParams::QUERY()->value, '');
         $campaignHash = $request->input(ProposalSearchParams::CAMPAIGNS()->value);
         $sort = $request->input(ProposalSearchParams::SORTS()->value);

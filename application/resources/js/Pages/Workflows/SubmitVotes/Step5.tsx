@@ -15,13 +15,14 @@ import { StepDetails } from '@/types';
 import { PaginatedData } from '../../../../types/paginated-data';
 import { SearchParams } from '../../../../types/search-params';
 import { VoteEnum } from '@/enums/votes-enums';
-import RecordsNotFound from '@/Layouts/RecordsNotFound';
-import {currency} from "@/utils/currency";
+import { currency } from '@/utils/currency';
 
 interface ProposalSubmissionStatus {
     slug: string;
     title: string;
-    fund: string;
+    fund?: {
+        title: string;
+    };
     requested_funds?: string;
     status: 'submitted' | 'submitting';
     vote?: number;
@@ -45,6 +46,7 @@ const Step5: React.FC<Step5Props> = ({
     const { t } = useTranslation();
     const localizedRoute = useLocalizedRoute;
     const prevStep = generateLocalizedRoute('workflows.voting.index', { step: activeStep - 1 });
+
     const formatCurrency = (
         amount: number | string | null | undefined,
         currencyCode: string = 'ADA'
@@ -62,6 +64,7 @@ const Step5: React.FC<Step5Props> = ({
         else if (votes[slug] === 1) votesForTable[slug] = VoteEnum.YES;
         else votesForTable[slug] = VoteEnum.ABSTAIN;
     });
+
     const handleComplete = useCallback(() => {
         console.log('Votes being completed:', votes);
         console.log('Formatted votes for table:', votesForTable);
@@ -72,11 +75,21 @@ const Step5: React.FC<Step5Props> = ({
     const columns = [
         {
             key: 'index',
-            header: 'No.'
+            header: 'No.',
+            render: (_: ProposalSubmissionStatus, index: number) => index + 1
         },
         {
             key: 'fund',
-            header: 'Fund'
+            header: 'Fund',
+            render: (item: ProposalSubmissionStatus) => {
+                // Handle both string and object fund structures
+                if (typeof item.fund === 'string') {
+                    return item.fund || '-';
+                } else if (item.fund && typeof item.fund === 'object') {
+                    return item.fund.title || '-';
+                }
+                return '-';
+            }
         },
         {
             key: 'title',
@@ -86,7 +99,7 @@ const Step5: React.FC<Step5Props> = ({
             key: 'budget',
             header: 'Budget',
             render: (item: ProposalSubmissionStatus) => {
-                const amountRequested = item.requested_funds || '75000';
+                const amountRequested = item.requested_funds || '0';
                 const currencyCode = 'ADA';
                 return formatCurrency(amountRequested, currencyCode);
             }
@@ -95,15 +108,15 @@ const Step5: React.FC<Step5Props> = ({
             key: 'vote',
             header: 'Vote',
             render: (item: ProposalSubmissionStatus) => (
-                <div className={`
-                    px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded
-                    ${item.status === 'submitted' ? 'bg-success text-white' : 'bg-warning text-white'}
-                `}>
-                    {item.status === 'submitted' ? 'Submitted' : 'Submitted'}
-                </div>
+                <span className={`px-4 py-2 inline-flex text-sm font-medium rounded-md ${
+                    item.status === 'submitted' ? 'bg-green-500 text-white' : 'bg-orange-400 text-white'
+                }`}>
+                    {item.status === 'submitted' ? 'Submitted' : 'Submitting'}
+                </span>
             )
         }
     ];
+
     return (
         <FiltersProvider
             defaultFilters={filters}
@@ -116,7 +129,7 @@ const Step5: React.FC<Step5Props> = ({
                 <Nav stepDetails={stepDetails} activeStep={activeStep} />
 
                 <Content>
-                    <div className="max-w-3xl mx-auto w-full px-4 sm:px-6 lg:px-8">
+                    <div className="mx-auto w-full">
                         <WorkflowTable
                             items={proposals}
                             columns={columns}
