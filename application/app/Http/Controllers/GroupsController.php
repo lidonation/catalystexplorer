@@ -4,26 +4,27 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use Inertia\Inertia;
+use App\Models\Group;
+use Inertia\Response;
+use Laravel\Scout\Builder;
+use Illuminate\Http\Request;
+use Illuminate\Support\Fluent;
+use App\Models\IdeascaleProfile;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Stringable;
+use JetBrains\PhpStorm\ArrayShape;
+use App\Enums\ProposalSearchParams;
+use App\Repositories\GroupRepository;
+use Illuminate\Support\Facades\Cache;
 use App\DataTransferObjects\GroupData;
-use App\DataTransferObjects\IdeascaleProfileData;
+use App\Repositories\ReviewRepository;
+use App\DataTransferObjects\ReviewData;
+use App\Repositories\ProposalRepository;
 use App\DataTransferObjects\LocationData;
 use App\DataTransferObjects\ProposalData;
-use App\DataTransferObjects\ReviewData;
-use App\Enums\ProposalSearchParams;
-use App\Models\Group;
-use App\Models\IdeascaleProfile;
-use App\Repositories\GroupRepository;
-use App\Repositories\ProposalRepository;
-use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Fluent;
-use Illuminate\Support\Stringable;
-use Inertia\Inertia;
-use Inertia\Response;
-use JetBrains\PhpStorm\ArrayShape;
-use Laravel\Scout\Builder;
+use App\DataTransferObjects\IdeascaleProfileData;
 
 class GroupsController extends Controller
 {
@@ -114,11 +115,11 @@ class GroupsController extends Controller
         return Inertia::render('My/Groups/Index', $props);
     }
 
-    public function group(Request $request, Group $group, ProposalRepository $proposalRepository): Response
+    public function group(Request $request, Group $group, ReviewRepository $reviewRepository): Response
     {
 
         $groupData = Cache::remember("group:{$group->hash}:with_counts", now()->addMinutes(10), function () use ($group) {
-            $group->loadCount([
+            $group->load(['proposals'])->loadCount([
                 'proposals',
                 'funded_proposals',
                 'unfunded_proposals',
@@ -143,19 +144,20 @@ class GroupsController extends Controller
             'reviews' => $reviews,
             'aggregatedRatings' => $aggregatedRatings,
             'ideascaleProfiles' => $ideascaleProfiles
-        ] = Cache::remember($cacheKey, now()->addMinutes(10), function () use ($proposalRepository, $group) {
+        ] = Cache::remember($cacheKey, now()->addMinutes(10), function () use ($reviewRepository, $group) {
             $args = [
-                'filter' => ["groups.hash = {$group->hash}"],
+                'filter' => ["proposal.groups.hash = {$group->hash}"],
                 'attributesToRetrieve' => ['*'],
             ];
 
+        
+            $proposals = $group->proposals;
+
             $ideascaleProfiles = $group->ideascale_profiles()->withCount('proposals')->get();
 
-            $builder = $proposalRepository->search('', $args);
+            $builder = $reviewRepository->search('', $args);
 
-            $proposals = $builder->raw()['hits'] ?? [];
-
-            $reviews = collect($proposals)->flatMap(fn ($p) => $p['reviews'] ?? []);
+            $reviews = $builder->raw()['hits'] ?? [];
             $ratings = collect($reviews)->map(fn ($p) => $p['rating'])->groupBy('rating');
             $aggregatedRatings = $ratings->mapWithKeys(fn ($r, $k) => [$k => $r->count()]);
 
@@ -190,8 +192,8 @@ class GroupsController extends Controller
 
             'reviews' => Inertia::optional(
                 fn () => to_length_aware_paginator(
-                    ReviewData::collect($reviews->take(11)),
-                    total: $reviews->count(),
+                    ReviewData::collect(collect($reviews)->take(11)),
+                    total: count($reviews),
                     perPage: 11,
                     currentPage: 1
                 )
