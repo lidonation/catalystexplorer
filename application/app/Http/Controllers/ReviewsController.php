@@ -91,7 +91,10 @@ class ReviewsController extends Controller
     {
         $this->limit = (int) $request->input(QueryParamsEnum::LIMIT(), 24);
         $this->currentPage = (int) $request->input(QueryParamsEnum::PAGE(), 1);
+        $this->search = $request->input(QueryParamsEnum::QUERY(), null);
+
         $this->queryParams = $request->validate([
+
             ProposalSearchParams::FUNDS()->value => 'array|nullable',
             ProposalSearchParams::PROPOSALS()->value => 'array|nullable',
             ProposalSearchParams::REVIEWER_IDS()->value => 'array|nullable',
