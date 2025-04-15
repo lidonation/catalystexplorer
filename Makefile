@@ -171,7 +171,7 @@ test-arch:
 seed-index:
 	$(sail)	artisan db:seed --class=SearchIndexSeeder
 
-.PHONY: create-index import-index 
+.PHONY: create-index import-index flush-index
 
 MODELS = App\\Models\\Proposal App\\Models\\IdeascaleProfile App\\Models\\Group App\\Models\\Review App\\Models\\MonthlyReport App\\Models\\Transaction
 
@@ -202,6 +202,21 @@ import-index:
 	fi; \
 	for model in $$models; do \
 		$(sail) artisan scout:import "$$model"; \
+	done
+%:
+	@:
+
+flush-index:
+	@model_filter="$(filter-out $@,$(MAKECMDGOALS))"; \
+	model_filter="$$(echo $$model_filter | head -n1)"; \
+	if [ -z "$$model_filter" ]; then \
+		models="$(MODELS)"; \
+	else \
+		models="$$(echo $(MODELS) | tr ' ' '\n' | grep -i "$$model_filter")"; \
+		echo "$$models";\
+	fi; \
+	for model in $$models; do \
+		$(sail) artisan scout:flush "$$model"; \
 	done
 %:
 	@:

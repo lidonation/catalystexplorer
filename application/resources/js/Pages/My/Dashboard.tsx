@@ -62,13 +62,15 @@ export default function MyDashboard({
                                 const awardedData = [
                                     {
                                         id: 'usd',
-                                        data:
-                                            graphData.amount_awarded.USD ?? [],
+                                        data: graphData.amount_awarded?.USD ?? [
+                                            { x: 0, y: 0 },
+                                        ],
                                     },
                                     {
                                         id: 'ada',
-                                        data:
-                                            graphData.amount_awarded.USD ?? [],
+                                        data: graphData.amount_awarded?.USD ?? [
+                                            { x: 0, y: 0 },
+                                        ],
                                     },
                                 ].filter((item) => item.data.length > 0);
 
@@ -90,13 +92,13 @@ export default function MyDashboard({
                                 const distributedData = [
                                     {
                                         id: 'usd',
-                                        data:
-                                            graphData.amount_received.USD ?? [],
+                                        data: graphData.amount_received
+                                            ?.USD ?? [{ x: 0, y: 0 }],
                                     },
                                     {
                                         id: 'ada',
-                                        data:
-                                            graphData.amount_received.ADA ?? [],
+                                        data: graphData.amount_received
+                                            ?.ADA ?? [{ x: 0, y: 0 }],
                                     },
                                 ].filter((item) => item.data.length > 0);
 

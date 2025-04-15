@@ -39,7 +39,9 @@ class Review extends Model
             'rating',
             'reviewer.avg_reputation_score',
             'proposal.id',
+            'proposal.ideascale_profiles.hash',
             'proposal.ideascale_profiles.id',
+            'proposal.groups.hash',
         ];
     }
 
@@ -184,7 +186,7 @@ class Review extends Model
 
     public function toSearchableArray(): array
     {
-        $this->load(['model', 'discussion', 'parent', 'reviewer.reputation_scores.fund', 'proposal.ideascaleProfiles']);
+        $this->load(['model', 'discussion', 'parent', 'reviewer.reputation_scores.fund', 'proposal']);
 
         $array = $this->toArray();
 

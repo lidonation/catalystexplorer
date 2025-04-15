@@ -142,7 +142,7 @@ Route::localized(
             Route::get('/create-voter-list/success', [VoterListController::class, 'success'])
                 ->name('createVoterList.success');
 
-            Route::prefix('/voting/steps')->as('voting.')
+            Route::prefix('/submit-votes/steps')->as('voting.')
                 ->middleware([WorkflowMiddleware::class])
                 ->group(function () {
                     Route::get('/{step}', [VotingWorkflowController::class, 'handleStep'])
