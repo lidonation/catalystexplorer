@@ -4,22 +4,23 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use App\DataTransferObjects\ReviewData;
-use App\Models\IdeascaleProfile;
-use App\Models\Location;
 use App\Models\User;
-use App\Repositories\IdeascaleProfileRepository;
-use App\Repositories\ProposalRepository;
-use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Redirect;
-use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 use Inertia\Response;
+use App\Models\Location;
+use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
+use App\Models\IdeascaleProfile;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Cache;
+use App\Repositories\ReviewRepository;
+use App\DataTransferObjects\ReviewData;
+use App\Repositories\ProposalRepository;
+use Illuminate\Support\Facades\Redirect;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Repositories\IdeascaleProfileRepository;
 
 class ProfileController extends Controller
 {
@@ -335,7 +336,7 @@ class ProfileController extends Controller
         ]);
     }
 
-    public function myReviews(Request $request, ProposalRepository $proposalRepository): Response
+    public function myReviews(Request $request, ReviewRepository $reviewRepository): Response
     {
         $userId = Auth::id();
 
@@ -345,21 +346,19 @@ class ProfileController extends Controller
             'aggregatedRatings' => $aggregatedRatings,
             'reviews' => $reviews,
             'ideascaleProfileHashes' => $ideascaleProfileHashes,
-        ] = Cache::remember($cacheKey, now()->addMinutes(10), function () use ($userId, $proposalRepository) {
+        ] = Cache::remember($cacheKey, now()->addMinutes(10), function () use ($userId, $reviewRepository) {
             $ideascaleProfile = IdeascaleProfile::where('claimed_by_id', $userId)
-                ->get()
-                ->map(fn ($p) => $p->id);
+                ->pluck('id');
 
             $ideascaleProfileHashes = implode(',', $ideascaleProfile->toArray());
 
             $args = [
-                'filter' => ["users.id IN [{$ideascaleProfileHashes}]"],
+                'filter' => ["proposal.ideascale_profile.id IN [{$ideascaleProfileHashes}]"],
             ];
 
-            $builder = $proposalRepository->search('', $args);
-            $hits = $builder->raw()['hits'] ?? [];
+            $builder = $reviewRepository->search('', $args);
+            $reviews= $builder->raw()['hits'] ?? [];
 
-            $reviews = collect($hits)->flatMap(fn ($p) => $p['reviews'] ?? []);
             $ratings = collect($reviews)->map(fn ($p) => $p['rating'])->groupBy('rating');
             $aggregatedRatings = $ratings->mapWithKeys(fn ($r, $k) => [$k => $r->count()]);
 
@@ -374,8 +373,8 @@ class ProfileController extends Controller
             'aggregatedRatings' => $aggregatedRatings,
             'reviews' => Inertia::optional(
                 fn () => to_length_aware_paginator(
-                    ReviewData::collect($reviews->take(11)),
-                    total: $reviews->count(),
+                    ReviewData::collect(collect($reviews)->take(11)),
+                    total: count($reviews),
                     perPage: 11,
                     currentPage: 1
                 ),
