@@ -24,7 +24,7 @@ export default function Reviews({
     aggregatedRatings,
 }: ReviewPageProps) {
     const breakpointColumnsObj = {
-        default: 2,
+        default: 1,
         1100: 2,
         768: 1,
     };

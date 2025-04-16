@@ -4,23 +4,24 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\DataTransferObjects\ReviewData;
+use App\Models\Community;
+use App\Models\IdeascaleProfile;
+use App\Models\Location;
 use App\Models\User;
+use App\Repositories\IdeascaleProfileRepository;
+use App\Repositories\ReviewRepository;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Redirect;
+use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 use Inertia\Response;
-use App\Models\Location;
-use Illuminate\Http\Request;
-use Illuminate\Validation\Rule;
-use App\Models\IdeascaleProfile;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Http\RedirectResponse;
-use Illuminate\Support\Facades\Cache;
-use App\Repositories\ReviewRepository;
-use App\DataTransferObjects\ReviewData;
-use App\Repositories\ProposalRepository;
-use Illuminate\Support\Facades\Redirect;
-use Illuminate\Contracts\Auth\MustVerifyEmail;
-use App\Repositories\IdeascaleProfileRepository;
+use Staudenmeir\EloquentHasManyDeep\HasManyDeep;
 
 class ProfileController extends Controller
 {
@@ -336,6 +337,30 @@ class ProfileController extends Controller
         ]);
     }
 
+    public function userCommunities()
+    {
+        $userId = Auth::id();
+
+        $cacheKey = "user:{$userId}:communities";
+
+        $communities = Cache::remember($cacheKey, now()->addMinutes(10), function () use ($userId) {
+
+            $ideascaleProfileIDs = IdeascaleProfile::where('claimed_by_id', $userId)->pluck('id')->toArray();
+
+            return Community::query()
+                ->whereRelation('ideascale_profiles', fn ($p) => $p->whereIn('ideascale_profiles.id', $ideascaleProfileIDs))
+                ->with([
+                    'ideascale_profiles' => fn (HasManyDeep $q) => $q->limit(5),
+                    'ideascale_profiles.media',
+                ])
+                ->withCount(['proposals', 'ideascale_profiles'])->get();
+        });
+
+        return Inertia::render('My/Communities/Index', [
+            'communities' => $communities,
+        ]);
+    }
+
     public function myReviews(Request $request, ReviewRepository $reviewRepository): Response
     {
         $userId = Auth::id();
@@ -347,17 +372,17 @@ class ProfileController extends Controller
             'reviews' => $reviews,
             'ideascaleProfileHashes' => $ideascaleProfileHashes,
         ] = Cache::remember($cacheKey, now()->addMinutes(10), function () use ($userId, $reviewRepository) {
-            $ideascaleProfile = IdeascaleProfile::where('claimed_by_id', $userId)
-                ->pluck('id');
+            $ideascaleProfile = IdeascaleProfile::where('claimed_by_id', $userId)->get()
+                ->map(fn ($p) => $p->hash);
 
             $ideascaleProfileHashes = implode(',', $ideascaleProfile->toArray());
 
             $args = [
-                'filter' => ["proposal.ideascale_profile.id IN [{$ideascaleProfileHashes}]"],
+                'filter' => ["proposal.ideascale_profiles.hash IN [{$ideascaleProfileHashes}]"],
             ];
 
             $builder = $reviewRepository->search('', $args);
-            $reviews= $builder->raw()['hits'] ?? [];
+            $reviews = $builder->raw()['hits'] ?? [];
 
             $ratings = collect($reviews)->map(fn ($p) => $p['rating'])->groupBy('rating');
             $aggregatedRatings = $ratings->mapWithKeys(fn ($r, $k) => [$k => $r->count()]);

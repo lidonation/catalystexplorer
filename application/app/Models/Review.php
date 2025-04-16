@@ -58,6 +58,7 @@ class Review extends Model
             'proposal.content',
             'proposal.ideascale_profiles.name',
             'proposal.ideascale_profiles.username',
+            'proposal.groups.hash',
         ];
     }
 
@@ -74,6 +75,7 @@ class Review extends Model
             'rankings',
             'positive_rankings',
             'negative_rankings',
+            'proposal.groups.hash',
         ];
     }
 

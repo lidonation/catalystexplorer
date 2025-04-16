@@ -4,27 +4,26 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use Inertia\Inertia;
-use App\Models\Group;
-use Inertia\Response;
-use Laravel\Scout\Builder;
-use Illuminate\Http\Request;
-use Illuminate\Support\Fluent;
-use App\Models\IdeascaleProfile;
-use Illuminate\Support\Collection;
-use Illuminate\Support\Stringable;
-use JetBrains\PhpStorm\ArrayShape;
-use App\Enums\ProposalSearchParams;
-use App\Repositories\GroupRepository;
-use Illuminate\Support\Facades\Cache;
 use App\DataTransferObjects\GroupData;
-use App\Repositories\ReviewRepository;
-use App\DataTransferObjects\ReviewData;
-use App\Repositories\ProposalRepository;
+use App\DataTransferObjects\IdeascaleProfileData;
 use App\DataTransferObjects\LocationData;
 use App\DataTransferObjects\ProposalData;
+use App\DataTransferObjects\ReviewData;
+use App\Enums\ProposalSearchParams;
+use App\Models\Group;
+use App\Models\IdeascaleProfile;
+use App\Repositories\GroupRepository;
+use App\Repositories\ReviewRepository;
+use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
-use App\DataTransferObjects\IdeascaleProfileData;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Fluent;
+use Illuminate\Support\Stringable;
+use Inertia\Inertia;
+use Inertia\Response;
+use JetBrains\PhpStorm\ArrayShape;
+use Laravel\Scout\Builder;
 
 class GroupsController extends Controller
 {
@@ -96,19 +95,13 @@ class GroupsController extends Controller
     {
         $userId = $request->user()->id;
 
-        $ideascaleProfile = IdeascaleProfile::where('claimed_by_id', operator: $userId)->get()->map(fn ($p) => $p->hash);
-
-        $this->queryParams[ProposalSearchParams::PAGE()->value] = 1;
-
-        $this->getProps($request);
-
-        $this->queryParams[ProposalSearchParams::IDEASCALE_PROFILES()->value] = $ideascaleProfile->toArray();
-
-        $this->queryParams[ProposalSearchParams::limit()->value] = 6;
+        $groups = Cache::remember("user-groups:{ $userId }", now()->addMinutes(10), function () use ($userId) {
+            return IdeascaleProfile::where('claimed_by_id', operator: $userId)->get()->flatMap(fn ($p) => $p->groups);
+        });
 
         $props = [
             'groups' => Inertia::optional(
-                fn () => $this->query()
+                fn () => GroupData::collect($groups)
             ),
         ];
 
@@ -150,7 +143,6 @@ class GroupsController extends Controller
                 'attributesToRetrieve' => ['*'],
             ];
 
-        
             $proposals = $group->proposals;
 
             $ideascaleProfiles = $group->ideascale_profiles()->withCount('proposals')->get();

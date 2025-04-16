@@ -1,31 +1,31 @@
 import AggregatedReviewsSummary from '@/Components/AggregatedReviewsSummary';
 import Paragraph from '@/Components/atoms/Paragraph';
+import Card from '@/Components/Card';
+import { ReviewCard } from '@/Components/ReviewCard';
+import { ParamsEnum } from '@/enums/proposal-search-params';
 import RecordsNotFound from '@/Layouts/RecordsNotFound';
 import MyLayout from '@/Pages/My/MyLayout';
+import { useLocalizedRoute } from '@/utils/localizedRoute';
 import { Head, Link, WhenVisible } from '@inertiajs/react';
 import { useTranslation } from 'react-i18next';
 import Masonry from 'react-masonry-css';
 import { PaginatedData } from '../../../../types/paginated-data';
 import ReviewData = App.DataTransferObjects.ReviewData;
-import { ReviewCard } from '@/Components/ReviewCard';
-import Card from '@/Components/Card';
-import { useLocalizedRoute } from '@/utils/localizedRoute';
-import { ParamsEnum } from '@/enums/proposal-search-params';
 
 interface MyReviewsProps {
     reviews: PaginatedData<ReviewData[]>;
     aggregatedRatings: { [s: string]: number } | ArrayLike<number>;
-    ideascaleProfileHashes: string[]
+    ideascaleProfileHashes: string[];
 }
 
 export default function MyReviews({
     reviews,
     aggregatedRatings,
-    ideascaleProfileHashes
+    ideascaleProfileHashes,
 }: MyReviewsProps) {
     const { t } = useTranslation();
     const breakpointColumnsObj = {
-        default: 2,
+        default: 1,
         1100: 2,
         768: 1,
     };
@@ -46,13 +46,18 @@ export default function MyReviews({
                             <div>
                                 <Masonry
                                     breakpointCols={breakpointColumnsObj}
-                                    className="flex w-auto gap-2"
-                                    columnClassName=""
+                                    className="relative flex w-auto"
+                                    columnClassName="pr-2"
                                 >
-                                    {reviews?.data?.map((review) => (
+                                    {reviews?.data?.map((review, index) => (
                                         <section
                                             key={review?.hash}
-                                            className="mb-2"
+                                            className="relative mb-2"
+                                            style={{
+                                                zIndex:
+                                                    reviews?.data?.length -
+                                                    index,
+                                            }}
                                         >
                                             <ReviewCard review={review} />
                                         </section>
