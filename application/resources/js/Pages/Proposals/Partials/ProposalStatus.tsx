@@ -1,6 +1,9 @@
 export default function ProposalStatus({
     status = 'pending',
     funding_status = 'funded',
+}: {
+    status: null | string;
+    funding_status: undefined | string;
 }) {
     let statusColor = '';
     let projectStatus = '';

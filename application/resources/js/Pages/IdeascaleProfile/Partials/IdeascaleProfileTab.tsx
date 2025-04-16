@@ -6,7 +6,7 @@ interface IdeascaleProfileTabProps {
     activeTab: string;
 }
 
-export default function IdeascaleProfileTabs({ tabs, activeTab }: IdeascaleProfileTabProps) {
+export default function IdeascaleProfileTabs({ tabs, activeTab }: IdeascaleProfileTabProps) {    
  
     return (
         <TabNavigation

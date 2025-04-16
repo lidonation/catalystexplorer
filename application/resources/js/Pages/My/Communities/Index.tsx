@@ -5,7 +5,7 @@ import MyLayout from "@/Pages/My/MyLayout";
 import RecordsNotFound from '@/Layouts/RecordsNotFound';
 
 interface MyCommunitiesProps {
-    notSureWhatThisIs?: any[];
+    communities?: any[];
 }
 
 export default function MyCommunities({}: MyCommunitiesProps) {

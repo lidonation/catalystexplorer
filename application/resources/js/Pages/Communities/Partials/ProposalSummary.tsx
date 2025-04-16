@@ -27,17 +27,17 @@ export default function ProposalSummaryCard({
 
     const segments = [
         {
-            label: t('segments.completed'),
+            label: t('completed'),
             color: 'bg-success',
             value: community?.completed_proposals_count,
         },
         {
-            label: t('segments.funded'),
+            label: t('funded'),
             color: 'bg-warning',
             value: community?.funded_proposals_count,
         },
         {
-            label: t('segments.unfunded'),
+            label: t('unfunded'),
             color: 'bg-primary',
             value: community?.proposals_count,
         },
@@ -45,17 +45,17 @@ export default function ProposalSummaryCard({
 
     const segmentsLegend = [
         {
-            label: 'Completed',
+            label: t('completed'),
             color: 'bg-success',
             value: community.completed_proposals_count,
         },
         {
-            label: 'Funded',
+            label: t('funded'),
             color: 'bg-warning',
             value: community.funded_proposals_count,
         },
         {
-            label: 'Submitted',
+            label: t('submitted'),
             color: 'bg-primary',
             value: community.proposals_count,
         },

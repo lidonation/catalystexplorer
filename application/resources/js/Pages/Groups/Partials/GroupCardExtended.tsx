@@ -55,6 +55,7 @@ const GroupCardExtended: React.FC<GroupCardFullProps> = ({
     const allReceivedFunds = !!(
         group?.amount_distributed_ada && group?.amount_distributed_usd
     );
+    
 
     return (
         <div className="bg-background flex h-full w-full flex-col rounded-lg shadow-md">
