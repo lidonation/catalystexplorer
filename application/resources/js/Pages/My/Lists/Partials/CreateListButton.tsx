@@ -4,6 +4,7 @@ import BookmarkPage2 from '@/Pages/My/Lists/Partials/ListCreateFromBookmarkSave/
 import BookmarkPage3 from '@/Pages/My/Lists/Partials/ListCreateFromBookmarkSave/Step3';
 import TransitionMenu from '@/Pages/My/Lists/Partials/TransitionMenu';
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 interface CreateListButtonProps {
     variant?: 'default' | 'large';
@@ -18,6 +19,8 @@ export default function CreateListButton({
     const handleOpenChange = (open: boolean) => {
         setIsOpen(open);
     };
+
+    const {t} = useTranslation();
 
     const pages = [
         <ListProvider key="provider-main">
@@ -40,7 +43,7 @@ export default function CreateListButton({
                     className={buttonClasses}
                     onClick={() => setIsOpen(true)}
                 >
-                    + Create New List
+                    {`+ ${t('my.createList')}`}
                 </Button>
             }
             pages={pages}

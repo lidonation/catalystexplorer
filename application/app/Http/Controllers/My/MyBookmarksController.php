@@ -340,9 +340,9 @@ class MyBookmarksController extends Controller
 
     public function showCollection(BookmarkCollection $bookmarkCollection): InertiaResponse|JsonResponse
     {
-        $this->authorize('view', $bookmarkCollection);
+        // $this->authorize('view', $bookmarkCollection);
 
-        return Inertia::render('BookmarkCollection', [
+        return Inertia::render('My/Lists/BookmarkCollection', [
             'bookmarkCollection' => BookmarkCollectionData::from($bookmarkCollection),
         ]);
     }

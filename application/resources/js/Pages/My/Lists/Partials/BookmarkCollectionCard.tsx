@@ -3,6 +3,9 @@ import Button from '@/Components/atoms/Button';
 import KeyValue from '@/Components/atoms/KeyValue';
 import Paragraph from '@/Components/atoms/Paragraph';
 import Title from '@/Components/atoms/Title';
+import { useLocalizedRoute } from '@/utils/localizedRoute';
+import { Link } from '@inertiajs/react';
+import { useTranslation } from 'react-i18next';
 import BookmarkCollectionData = App.DataTransferObjects.BookmarkCollectionData;
 
 const BookmarkCollectionCard = ({
@@ -10,6 +13,7 @@ const BookmarkCollectionCard = ({
 }: {
     collection: BookmarkCollectionData;
 }) => {
+    const { t } = useTranslation();
     return (
         <Card>
             <div className="p-4">
@@ -17,12 +21,18 @@ const BookmarkCollectionCard = ({
                     <div className="flex items-center gap-4">
                         <Title level="4">{collection.title}</Title>
                         <div className="bg-primary inline-block rounded-md px-3 py-1 text-sm text-white">
-                            {collection?.items_count} items
+                            {`${collection?.items_count} ${t('my.items')}`}
                         </div>
                     </div>
-                    <Button className="bg-success px-4 py-1.5 font-medium text-white">
-                        Manage
-                    </Button>
+                    <Link
+                        href={useLocalizedRoute('my.lists.show', {
+                            list: collection?.hash,
+                        })}
+                    >
+                        <Button className="bg-success px-4 py-1.5 font-medium text-white">
+                            {t('my.manage')}
+                        </Button>
+                    </Link>
                 </div>
 
                 <Paragraph className="mb-4 text-sm text-gray-600">

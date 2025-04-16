@@ -278,7 +278,8 @@
         "communities": "My Communities",
         "lists": "My Lists",
         "items": "items",
-        "manage": "Manage"
+        "manage": "Manage",
+        "createList": "Create New List"
     },
     "navigation": {
         "mobile": {
