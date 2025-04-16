@@ -256,7 +256,10 @@
         "reviews": "Mes avis",
         "groups": "Mes groupes",
         "communities": "Mes communautés",
-        "lists": "Mes listes"
+        "lists": "Mes listes",
+        "items": "éléments",
+        "manage": "Gérer",
+        "createList": "Créer une nouvelle liste"
     },
     "navigation": {
         "mobile": {
