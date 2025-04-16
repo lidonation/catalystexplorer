@@ -30,7 +30,10 @@ export const ReviewCard: React.FC<ReviewItemProps> = ({
     const [isHovered, setIsHovered] = useState(false);
     const { t } = useTranslation();
     const contentRef = useRef<HTMLParagraphElement | null>(null);
+    const cardRef = useRef<HTMLDivElement>(null);
     const [lineCount, setLineCount] = useState(0);
+    const [baseHeight, setBaseHeight] = useState<number>(0);
+
 
     useEffect(() => {
         const element = contentRef.current;
@@ -41,11 +44,15 @@ export const ReviewCard: React.FC<ReviewItemProps> = ({
         }
     }, [review?.content]);
 
+    useEffect(() => {
+        if (cardRef.current && !baseHeight) {
+            setBaseHeight(cardRef.current.offsetHeight);
+        }
+    }, [cardRef.current]);
+
     const markPositive = () => {
         if (!review?.hash) return;
-
         setIsLoadingPositive(true);
-
         router.post(
             generateLocalizedRoute('reviews.helpful', { review: review?.hash }),
             {},
@@ -67,7 +74,6 @@ export const ReviewCard: React.FC<ReviewItemProps> = ({
 
     const markNegative = () => {
         if (!review?.hash) return;
-
         router.post(
             generateLocalizedRoute('reviews.notHelpful', {
                 id: review?.hash,
@@ -93,91 +99,106 @@ export const ReviewCard: React.FC<ReviewItemProps> = ({
     };
 
     return (
-        <div
-            className="relative"
-            onMouseEnter={() => setIsHovered(true)}
-            onMouseLeave={() => setIsHovered(false)}
+        <div 
+            className="relative" 
+            style={{ 
+                height: baseHeight > 0 ? baseHeight : 'auto',
+                marginBottom: '8px' 
+            }}
         >
-            <Card
-                className={clsx(
-                    isHovered && lineCount >= 5 ? 'z-30 shadow-md' : 'z-0',
-                    isHovered && lineCount >= 5
-                        ? 'absolute top-0 right-0 left-0 w-full'
-                        : 'relative w-full',
-                )}
+            <div
+                ref={cardRef}
+                onMouseEnter={() => setIsHovered(true)}
+                onMouseLeave={() => setIsHovered(false)}
+                className="relative"
                 style={{
-                    transition: ' 0.9s ease, transform 0.9s ease',
+                    position: isHovered && lineCount >= 5 ? 'absolute' : 'relative',
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    width: '100%',
+                    zIndex: isHovered && lineCount >= 5 ? 30 : 'auto',
                 }}
             >
-                <div className={`pb-6 ${className}`}>
-                    <div className="flex items-start justify-between">
-                        <div className="flex">
-                            <ReviewerInfo review={review} />
+                <Card
+                    className={clsx(
+                        "w-full",
+                        isHovered && lineCount >= 5 ? 'shadow-lg' : 'shadow-sm'
+                    )}
+                    style={{
+                        transition: 'box-shadow 0.3s ease',
+                    }}
+                >
+                    <div className={`pb-6 ${className}`}>
+                        <div className="flex items-start justify-between">
+                            <div className="flex">
+                                <ReviewerInfo review={review} />
+                            </div>
+
+                            {review.rating && (
+                                <StarRating
+                                    rating={
+                                        typeof review.rating == 'object'
+                                            ? review?.rating.rating
+                                            : review.rating
+                                    }
+                                />
+                            )}
                         </div>
 
-                    {review.rating && (
-                        <StarRating
-                            rating={
-                                typeof review.rating == 'object'
-                                    ? review?.rating.rating
-                                    : review.rating
-                            }
-                        />
-                    )}
-                </div>
+                        {review.content && (
+                            <ExpandableContent expanded={isHovered} lineClamp={5}>
+                                <RichContent
+                                    className={`text-gray-persist text-3 ${lineCount >= 5 ? 'cursor-pointer' : ''}`}
+                                    content={review?.content}
+                                    ref={contentRef}
+                                />
+                            </ExpandableContent>
+                        )}
 
-                    {review.content && (
-                        <ExpandableContent expanded={isHovered} lineClamp={5}>
-                            <RichContent
-                                className={`text-gray-persist text-3 ${lineCount >= 5 ? 'cursor-pointer' : ''}`}
-                                content={review?.content}
-                                ref={contentRef}
+                        <div className="mt-8 flex items-center gap-6">
+                            <Paragraph className="text-gray-persist text-sm">
+                                {t('reviews.helpfulReview')}
+                            </Paragraph>
+                            <RankingButtons
+                                isLoadingNegative={isLoadingNegative}
+                                isLoadingPositive={isLoadingPositive}
+                                positiveRankings={review?.positive_rankings ?? 0}
+                                negativeRankings={review?.negative_rankings ?? 0}
+                                markNegative={markNegative}
+                                markPositive={markPositive}
                             />
-                        </ExpandableContent>
-                    )}
+                        </div>
+                        <section className="mt-4 flex flex-wrap items-center gap-4">
+                            {review?.proposal?.link && (
+                                <div className="flex items-center gap-2">
+                                    <ValueLabel>{t('proposal')}</ValueLabel>
+                                    <Link
+                                        href={review?.proposal?.link}
+                                        className="link-primary text-sm"
+                                    >
+                                        {review?.proposal?.title}
+                                    </Link>
+                                </div>
+                            )}
 
-                    <div className="mt-8 flex items-center gap-6">
-                        <Paragraph className="text-gray-persist text-sm">
-                            {t('reviews.helpfulReview')}
-                        </Paragraph>
-                        <RankingButtons
-                            isLoadingNegative={isLoadingNegative}
-                            isLoadingPositive={isLoadingPositive}
-                            positiveRankings={review?.positive_rankings ?? 0}
-                            negativeRankings={review?.negative_rankings ?? 0}
-                            markNegative={markNegative}
-                            markPositive={markPositive}
-                        />
+                            {review?.proposal?.fund?.title && (
+                                <div className="flex items-center gap-2">
+                                    <ValueLabel>{t('funds.fund')}</ValueLabel>
+                                    <Link
+                                        href={useLocalizedRoute('funds.fund.show', {
+                                            slug: review?.proposal?.fund?.slug,
+                                        })}
+                                        className="link-primary text-sm"
+                                    >
+                                        {review?.proposal?.fund?.title}
+                                    </Link>
+                                </div>
+                            )}
+                        </section>
                     </div>
-                    <section className="mt-4 flex flex-wrap items-center gap-4">
-                        {review?.proposal?.link && (
-                            <div className="flex items-center gap-2">
-                                <ValueLabel>{t('proposal')}</ValueLabel>
-                                <Link
-                                    href={review?.proposal?.link}
-                                    className="link-primary text-sm"
-                                >
-                                    {review?.proposal?.title}
-                                </Link>
-                            </div>
-                        )}
-
-                        {review?.proposal?.fund?.title && (
-                            <div className="flex items-center gap-2">
-                                <ValueLabel>{t('funds.fund')}</ValueLabel>
-                                <Link
-                                    href={useLocalizedRoute('funds.fund.show', {
-                                        slug: review?.proposal?.fund?.slug,
-                                    })}
-                                    className="link-primary text-sm"
-                                >
-                                    {review?.proposal?.fund?.title}
-                                </Link>
-                            </div>
-                        )}
-                    </section>
-                </div>
-            </Card>
+                </Card>
+            </div>
         </div>
     );
 };
