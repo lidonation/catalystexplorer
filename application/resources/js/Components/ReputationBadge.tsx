@@ -1,9 +1,10 @@
 import { ReputationTier } from '@/enums/reputation-tier-enums';
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import Paragraph from './atoms/Paragraph';
 import ToolTipHover from './ToolTipHover';
 import ReviewData = App.DataTransferObjects.ReviewData;
+import { createPortal } from 'react-dom';
 
 export interface ReputationBadgeProps {
     review: ReviewData;
@@ -16,6 +17,18 @@ export const ReputationBadge: React.FC<ReputationBadgeProps> = ({
 }) => {
     const { t } = useTranslation();
     const [showTooltip, setShowTooltip] = useState(false);
+    const badgeRef = useRef<HTMLDivElement>(null);
+    const [tooltipPosition, setTooltipPosition] = useState({ top: 0, left: 0 });
+    
+    useEffect(() => {
+        if (showTooltip && badgeRef.current) {
+            const rect = badgeRef.current.getBoundingClientRect();
+            setTooltipPosition({
+                top: rect.top - 40, 
+                left: rect.left + rect.width / 2 
+            });
+        }
+    }, [showTooltip]);
 
     if (
         !review?.reviewer?.reputation_scores ||
@@ -24,7 +37,7 @@ export const ReputationBadge: React.FC<ReputationBadgeProps> = ({
         return null;
     }
 
-    const finalScore = review?.reviewer?.avg_reputation_score ;
+    const finalScore = review?.reviewer?.avg_reputation_score;
 
     const getTier = (score: number | null) => {
         if (!score) return;
@@ -75,6 +88,7 @@ export const ReputationBadge: React.FC<ReputationBadgeProps> = ({
 
     return (
         <div
+            ref={badgeRef}
             className={`relative inline-block ${className}`}
             onMouseEnter={() => setShowTooltip(true)}
             onMouseLeave={() => setShowTooltip(false)}
@@ -99,13 +113,20 @@ export const ReputationBadge: React.FC<ReputationBadgeProps> = ({
                 </foreignObject>
             </svg>
 
-            {showTooltip && (
-                <div className="absolute bottom-full left-1/2 z-50 mb-2 -translate-x-1/2 transform">
+            {showTooltip && document.body && createPortal(
+                <div 
+                    className="fixed transform -translate-x-1/2 z-[1000]"
+                    style={{
+                        top: `${tooltipPosition.top}px`,
+                        left: `${tooltipPosition.left}px`
+                    }}
+                >
                     <ToolTipHover
                         props={t('reviewerReputationScore')}
                         className="w-auto px-3"
                     />
-                </div>
+                </div>,
+                document.body
             )}
         </div>
     );
