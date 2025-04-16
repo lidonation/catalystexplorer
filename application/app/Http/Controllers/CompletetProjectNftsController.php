@@ -8,6 +8,7 @@ use App\Actions\TransformHashToIds;
 use App\Actions\TransformIdsToHashes;
 use App\DataTransferObjects\IdeascaleProfileData;
 use App\DataTransferObjects\ProposalData;
+use App\Enums\NftStatusEnum;
 use App\Enums\CatalystCurrencySymbols;
 use App\Enums\ProposalSearchParams;
 use App\Enums\ProposalStatus;
@@ -136,11 +137,22 @@ class CompletetProjectNftsController extends Controller
             $query->whereNotNull('funded_at');
         })->count();
 
+        $mintedNfts = Nft::where('status', NftStatusEnum::minted()->value)
+        ->get(['name', 'description', 'preview_link']) 
+        ->map(function ($nft) {
+            return [
+                'name' => $nft->name,
+                'description' => $nft->description,
+                'preview_link' => $nft->preview_link,
+            ];
+        });
+    
         return Inertia::render('CompletedProjectNfts/Index', [
             'amountDistributedAda' => $amountDistributedAda,
             'amountDistributedUsd' => $amountDistributedUsd,
             'completedProposalsCount' => $completedProposalsCount,
             'communityMembersFunded' => $membersFunded,
+            'mintedNfts' => $mintedNfts,
         ]);
     }
 
