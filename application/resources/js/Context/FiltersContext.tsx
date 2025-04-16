@@ -38,7 +38,7 @@ const labels = {
     com: 'Communities',
     ip: 'Ideascale Profiles',
     g: 'Groups',
-    pr: 'Proposals',
+    pro: 'Proposals',
     ri: 'Reviewer IDs',
     h: 'Helpful',
     r: 'Ratings',
