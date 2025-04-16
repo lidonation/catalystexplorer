@@ -6,6 +6,7 @@ namespace App\Http\Controllers;
 
 use App\Actions\TransformIdsToHashes;
 use App\DataTransferObjects\CampaignData;
+use App\DataTransferObjects\CommunityData;
 use App\DataTransferObjects\GroupData;
 use App\DataTransferObjects\IdeascaleProfileData;
 use App\DataTransferObjects\ProjectScheduleData;
@@ -14,16 +15,19 @@ use App\DataTransferObjects\ReviewData;
 use App\Enums\IdeascaleProfileSearchParams;
 use App\Enums\ProposalSearchParams;
 use App\Models\Campaign;
+use App\Models\Community;
 use App\Models\IdeascaleProfile;
 use App\Models\Moderation;
 use App\Models\ProjectSchedule;
 use App\Repositories\IdeascaleProfileRepository;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Fluent;
 use Inertia\Inertia;
 use Inertia\Response;
+use Staudenmeir\EloquentHasManyDeep\HasManyDeep;
 
 class IdeascaleProfilesController extends Controller
 {
@@ -47,134 +51,163 @@ class IdeascaleProfilesController extends Controller
     public function show(Request $request, IdeascaleProfile $ideascaleProfile): Response
     {
         $this->getProps($request);
+        $profileId = $ideascaleProfile->id;
 
-        $ideascaleProfile
-            ->load(['groups'])
-            ->loadCount([
-                'completed_proposals',
-                'funded_proposals',
-                'unfunded_proposals',
-                'proposals',
-            ])->append([
-                'amount_distributed_ada',
-                'amount_distributed_usd',
-                'amount_awarded_ada',
-                'amount_awarded_usd',
-                'amount_requested_ada',
-                'amount_requested_usd',
-            ]);
+        $cacheKey = "ideascale_profile:{$profileId}:base_data";
 
-        $ideascaleProfileData = [
-            ...$ideascaleProfile->toArray(),
-            'groups' => $ideascaleProfile->groups->toArray(),
-        ];
+        $ideascaleProfileData = Cache::remember($cacheKey, now()->addMinutes(10), function () use ($ideascaleProfile) {
+            $ideascaleProfile
+                ->load(['groups'])
+                ->loadCount([
+                    'completed_proposals',
+                    'funded_proposals',
+                    'unfunded_proposals',
+                    'proposals',
+                    'reviews',
+                ])->append([
+                    'amount_distributed_ada',
+                    'amount_distributed_usd',
+                    'amount_awarded_ada',
+                    'amount_awarded_usd',
+                    'amount_requested_ada',
+                    'amount_requested_usd',
+                    'aggregated_ratings',
+                ]);
 
-        $path = $request->path();
+            return [
+                ...$ideascaleProfile->toArray(),
+                'groups' => $ideascaleProfile->groups->toArray(),
+            ];
+        });
 
-        if (str_contains($path, '/proposals')) {
-            return Inertia::render('IdeascaleProfile/Proposals/Index', [
-                'ideascaleProfile' => IdeascaleProfileData::from($ideascaleProfileData),
-                'proposals' => Inertia::optional(
+        $currentPage = 1;
+
+        $props = [
+            'ideascaleProfile' => IdeascaleProfileData::from($ideascaleProfileData),
+
+            'proposals' => Inertia::optional(
+                fn () => Cache::remember(
+                    "profile:{$profileId}:proposals:page:{$currentPage}",
+                    now()->addMinutes(10),
                     fn () => to_length_aware_paginator(
                         ProposalData::collect(
                             $ideascaleProfile->proposals()
                                 ->with(['users', 'fund'])
-                                ->paginate(11, ['*'], 'p')
+                                ->paginate(11, ['*'], 'p', $currentPage)
                         )
                     )->onEachSide(0)
-                ),
-            ]);
-        }
-
-        if (str_contains($path, '/connections')) {
-            return Inertia::render('IdeascaleProfile/Connections/Index', [
-                'ideascaleProfile' => IdeascaleProfileData::from($ideascaleProfileData),
-                'connections' => Inertia::lazy(fn () => $ideascaleProfile->connected_items), // Use lazy loading
-            ]);
-        }
-
-        if (str_contains($path, '/groups')) {
-            return Inertia::render('IdeascaleProfile/Groups/Index', [
-                'ideascaleProfile' => IdeascaleProfileData::from($ideascaleProfileData),
-                'groups' => GroupData::collect(
-                    $ideascaleProfile->groups()->withCount([
-                        'completed_proposals',
-                        'unfunded_proposals',
-                        'funded_proposals',
-                        'proposals',
-                    ])
-                        ->paginate(12)
-                ),
-            ]);
-        }
-
-        if (str_contains($path, '/communities')) {
-            return Inertia::render('IdeascaleProfile/Communities/Index', [
-                'ideascaleProfile' => IdeascaleProfileData::from($ideascaleProfileData),
-            ]);
-        }
-
-        if (str_contains($path, '/reviews')) {
-            $reviews = to_length_aware_paginator(
-                ReviewData::collect(
-                    $ideascaleProfile->reviews()->with(['reviewer.reputation_scores', 'proposal.fund'])->paginate(12)
                 )
-            );
-            $ideascaleProfile->loadCount(['reviews']);
-
-            $aggregatedRatings = $ideascaleProfile->aggregated_ratings;
-
-            return Inertia::render('IdeascaleProfile/Reviews/Index', [
-                'ideascaleProfile' => IdeascaleProfileData::from($ideascaleProfile),
-                'reviews' => $reviews,
-                'filters' => $this->queryParams,
-                'aggregatedRatings' => $aggregatedRatings,
-            ]);
-        }
-
-        if (str_contains($path, '/milestones')) {
-            return Inertia::render('IdeascaleProfile/Milestones/Index', [
-                'ideascaleProfile' => IdeascaleProfileData::from($ideascaleProfileData),
-                'projectSchedules' => Inertia::optional(fn () => to_length_aware_paginator(ProjectScheduleData::collect(
-                    ProjectSchedule::whereHas('proposal', function ($query) use ($ideascaleProfile) {
-                        $query->whereHas('users', fn ($q) => $q->where('ideascale_profile_id', $ideascaleProfile->id));
-                    })->with(['milestones'])->paginate(6)
-                ))),
-            ]);
-        }
-
-        if (str_contains($path, '/reports')) {
-            return Inertia::render('IdeascaleProfile/Reports/Index', [
-                'ideascaleProfile' => IdeascaleProfileData::from($ideascaleProfileData),
-            ]);
-        }
-
-        if (str_contains($path, '/cam')) {
-            return Inertia::render('IdeascaleProfile/Campaigns/Index', [
-                'ideascaleProfile' => IdeascaleProfileData::from($ideascaleProfileData),
-                'campaigns' => CampaignData::collect(
-                    Campaign::whereIn('id', $ideascaleProfile->proposals()->pluck('campaign_id'))->withCount([
-                        'completed_proposals',
-                        'unfunded_proposals',
-                        'funded_proposals',
-                    ])->get()
-                ),
-            ]);
-        }
-
-        return Inertia::render('IdeascaleProfile/Proposals/Index', [
-            'ideascaleProfile' => IdeascaleProfileData::from($ideascaleProfileData),
-            'proposals' => Inertia::optional(
-                fn () => to_length_aware_paginator(
-                    ProposalData::collect(
-                        $ideascaleProfile->proposals()
-                            ->with(['users', 'fund'])
-                            ->paginate(11, ['*'], 'p')
-                    )
-                )->onEachSide(0)
             ),
-            'groups' => $ideascaleProfile->groups(),
-        ]);
+
+            'groups' => Inertia::optional(
+                fn () => Cache::remember(
+                    "profile:{$profileId}:groups:page:{$currentPage}",
+                    now()->addMinutes(10),
+                    fn () => to_length_aware_paginator(
+                        GroupData::collect(
+                            $ideascaleProfile->groups()
+                                ->withCount([
+                                    'completed_proposals',
+                                    'unfunded_proposals',
+                                    'funded_proposals',
+                                    'proposals',
+                                ])
+                                ->paginate(12, ['*'], 'p', $currentPage)
+                        )
+                    )
+                )
+            ),
+
+            'connections' => Inertia::optional(
+                fn () => Cache::remember(
+                    "profile:{$profileId}:connections",
+                    now()->addMinutes(10),
+                    fn () => $ideascaleProfile->connected_items
+                )
+            ),
+
+            'communities' => Inertia::optional(
+                fn () => Cache::remember(
+                    "profile:{$profileId}:communities:page:{$currentPage}",
+                    now()->addMinutes(10),
+                    fn () => CommunityData::collect(
+                        to_length_aware_paginator(
+                            items: Community::query()
+                                ->whereRelation('ideascale_profiles', 'ideascale_profiles.id', $profileId)
+                                ->with([
+                                    'ideascale_profiles' => fn (HasManyDeep $q) => $q->limit(5),
+                                    'ideascale_profiles.media',
+                                ])
+                                ->withCount(['proposals', 'ideascale_profiles'])
+                                ->paginate(12, ['*'], 'p', $currentPage)
+                        )
+                    )
+                )
+            ),
+
+            'reviews' => Inertia::optional(
+                fn () => Cache::remember(
+                    "profile:{$profileId}:reviews:page:{$currentPage}",
+                    now()->addMinutes(10),
+                    fn () => to_length_aware_paginator(
+                        ReviewData::collect(
+                            $ideascaleProfile->reviews()
+                                ->with(['reviewer.reputation_scores', 'proposal.fund'])
+                                ->paginate(11, ['*'], 'p', $currentPage)
+                        )
+                    )
+                )
+            ),
+
+            'aggregatedRatings' => Cache::remember(
+                "profile:{$profileId}:aggregated_ratings",
+                now()->addMinutes(10),
+                fn () => $ideascaleProfileData['aggregated_ratings'] ?? []
+            ),
+
+            'projectSchedules' => Inertia::optional(
+                fn () => Cache::remember(
+                    "profile:{$profileId}:project_schedules:page:{$currentPage}",
+                    now()->addMinutes(10),
+                    fn () => to_length_aware_paginator(
+                        ProjectScheduleData::collect(
+                            ProjectSchedule::whereHas('proposal', function ($query) use ($profileId) {
+                                $query->whereHas('users', fn ($q) => $q->where('ideascale_profile_id', $profileId));
+                            })
+                                ->with(['milestones'])
+                                ->paginate(6, ['*'], 'p', $currentPage)
+                        )
+                    )
+                )
+            ),
+
+            'campaigns' => Inertia::optional(
+                fn () => Cache::remember(
+                    "profile:{$profileId}:campaigns",
+                    now()->addMinutes(10),
+                    fn () => CampaignData::collect(
+                        Campaign::whereIn('id', $ideascaleProfile->proposals()->pluck('campaign_id'))
+                            ->withCount([
+                                'completed_proposals',
+                                'unfunded_proposals',
+                                'funded_proposals',
+                            ])
+                            ->get()
+                    )
+                )
+            ),
+        ];
+
+        return match (true) {
+            str_contains($request->path(), '/connections') => Inertia::render('IdeascaleProfile/Connections/Index', $props),
+            str_contains($request->path(), '/groups') => Inertia::render('IdeascaleProfile/Groups/Index', $props),
+            str_contains($request->path(), '/communities') => Inertia::render('IdeascaleProfile/Communities/Index', $props),
+            str_contains($request->path(), '/reviews') => Inertia::render('IdeascaleProfile/Reviews/Index', $props),
+            str_contains($request->path(), '/milestones') => Inertia::render('IdeascaleProfile/Milestones/Index', $props),
+            str_contains($request->path(), '/reports') => Inertia::render('IdeascaleProfile/Reports/Index', $props),
+            str_contains($request->path(), '/campaigns') => Inertia::render('IdeascaleProfile/Campaigns/Index', $props),
+            default => Inertia::render('IdeascaleProfile/Proposals/Index', $props),
+        };
     }
 
     public function getReviewsData(IdeascaleProfile $ideascaleProfile, string $path): array

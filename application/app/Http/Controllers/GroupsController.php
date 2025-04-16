@@ -95,19 +95,13 @@ class GroupsController extends Controller
     {
         $userId = $request->user()->id;
 
-        $ideascaleProfile = IdeascaleProfile::where('claimed_by_id', operator: $userId)->get()->map(fn ($p) => $p->hash);
-
-        $this->queryParams[ProposalSearchParams::PAGE()->value] = 1;
-
-        $this->getProps($request);
-
-        $this->queryParams[ProposalSearchParams::IDEASCALE_PROFILES()->value] = $ideascaleProfile->toArray();
-
-        $this->queryParams[ProposalSearchParams::limit()->value] = 6;
+        $groups = Cache::remember("user-groups:{ $userId }", now()->addMinutes(10), function () use ($userId) {
+            return IdeascaleProfile::where('claimed_by_id', operator: $userId)->get()->flatMap(fn ($p) => $p->groups);
+        });
 
         $props = [
             'groups' => Inertia::optional(
-                fn () => $this->query()
+                fn () => GroupData::collect($groups)
             ),
         ];
 

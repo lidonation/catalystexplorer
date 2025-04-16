@@ -1,4 +1,6 @@
+import Button from '@/Components/atoms/Button';
 import Checkbox from '@/Components/atoms/Checkbox';
+import Paragraph from '@/Components/atoms/Paragraph';
 import PrimaryButton from '@/Components/atoms/PrimaryButton';
 import SecondaryButton from '@/Components/atoms/SecondaryButton';
 import TextInput from '@/Components/atoms/TextInput';
@@ -14,7 +16,12 @@ interface FormErrors {
     email?: string;
     password?: string;
 }
-export default function LoginForm() {
+
+interface LoginFormProps {
+    closeModal?: () => void;
+}
+
+export default function LoginForm({ closeModal }: LoginFormProps) {
     const { data, setData, reset, processing } = useForm({
         email: '',
         password: '',
@@ -44,6 +51,17 @@ export default function LoginForm() {
     };
 
     const { t } = useTranslation();
+    
+    const handleForgotPassword = () => {
+        if (closeModal) closeModal();
+        router.get(generateLocalizedRoute('password.request'));
+    };
+
+    const handleRegister = () => {
+        if(closeModal) closeModal();
+        router.get(generateLocalizedRoute('register'));
+    }
+
     return (
         <>
             <form onSubmit={submit} className="content-gap flex flex-col">
@@ -89,17 +107,18 @@ export default function LoginForm() {
                                 setData('remember', e.target.checked as false)
                             }
                         />
-                        <p className="text-4 text-dark ms-2">
+                        <Paragraph className="text-4 text-dark ms-2">
                             {t('rememberMe')}
-                        </p>
+                        </Paragraph>
                     </div>
                     <div>
-                        <Link
-                            href={generateLocalizedRoute('password.request')}
+                        <Button
+                            type="button"
+                            onClick={handleForgotPassword}
                             className="text-4 text-primary hover:text-content focus:border-x-border-secondary focus:ring-offset font-bold focus:ring-2 focus:outline-hidden"
                         >
                             {t('forgotPassword')}
-                        </Link>
+                        </Button>
                     </div>
                 </div>
 
@@ -114,17 +133,18 @@ export default function LoginForm() {
                 </div>
 
                 <div>
-                    <ConnectWalletButton/>
+                    <ConnectWalletButton />
                 </div>
 
                 <div className="flex w-full items-center justify-center">
-                    <p className="text-4 mr-2">{t('registration.noAccount')}</p>
-                    <Link
-                        href={generateLocalizedRoute('register')}
+                    <Paragraph className="text-4 mr-2">{t('registration.noAccount')}</Paragraph>
+                    <Button
+                        type="button"
+                        onClick={handleRegister}
                         className="text-4 text-primary hover:text-content font-bold focus:ring-2 focus:ring-offset-2 focus:outline-hidden"
                     >
                         {t('signup')}
-                    </Link>
+                    </Button>
                 </div>
             </form>
         </>

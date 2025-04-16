@@ -30,7 +30,7 @@ final class ProposalData extends Data
         public ?string $excerpt,
 
         #[TypeScriptOptional]
-        public $content,
+        public ?string $content,
 
         #[TypeScriptOptional]
         public ?float $amount_requested,
@@ -41,7 +41,7 @@ final class ProposalData extends Data
         #[TypeScriptOptional]
         public ?string $definition_of_success,
 
-        public string $status,
+        public ?string $status,
 
         #[TypeScriptOptional]
         public ?string $funding_status,
