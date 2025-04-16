@@ -59,7 +59,8 @@ export default function ProposalVerticalCard({
                 </button>
             )}
             
-            <section className="flex h-auto w-full flex-col items-start overflow-hidden">
+            {/* Changed overflow-hidden to overflow-visible for proper hover expansion */}
+            <section className="relative flex h-auto w-full flex-col items-start overflow-visible">
                 <ProposalCardHeader
                     proposal={proposal}
                     userSelected={userSelected}

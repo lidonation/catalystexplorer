@@ -5,11 +5,11 @@ import {
     useLocalizedRoute,
 } from '@/utils/localizedRoute';
 import { Link, router } from '@inertiajs/react';
-import clsx from 'clsx';
 import React, { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import Card from './Card';
 import ExpandableContent from './ExpandableContent';
+import ExpandableContentAnimation from './ExpandableContentAnimation';
 import RankingButtons from './RankingButtons';
 import { ReviewerInfo } from './ReviewerInfo';
 import { StarRating } from './ReviewsStar';
@@ -34,7 +34,6 @@ export const ReviewCard: React.FC<ReviewItemProps> = ({
     const [lineCount, setLineCount] = useState(0);
     const [baseHeight, setBaseHeight] = useState<number>(0);
 
-
     useEffect(() => {
         const element = contentRef.current;
         if (element) {
@@ -46,7 +45,7 @@ export const ReviewCard: React.FC<ReviewItemProps> = ({
 
     useEffect(() => {
         if (cardRef.current && !baseHeight) {
-            setBaseHeight(cardRef.current.offsetHeight);
+            setBaseHeight(cardRef.current.scrollHeight);
         }
     }, [cardRef.current]);
 
@@ -99,35 +98,14 @@ export const ReviewCard: React.FC<ReviewItemProps> = ({
     };
 
     return (
-        <div 
-            className="relative" 
-            style={{ 
-                height: baseHeight > 0 ? baseHeight : 'auto',
-                marginBottom: '8px' 
-            }}
-        >
-            <div
-                ref={cardRef}
-                onMouseEnter={() => setIsHovered(true)}
-                onMouseLeave={() => setIsHovered(false)}
-                className="relative"
-                style={{
-                    position: isHovered && lineCount >= 5 ? 'absolute' : 'relative',
-                    top: 0,
-                    left: 0,
-                    right: 0,
-                    width: '100%',
-                    zIndex: isHovered && lineCount >= 5 ? 30 : 'auto',
-                }}
+        <>
+            <ExpandableContentAnimation
+                lineClamp={5}
+                contentRef={contentRef}
+                onHoverChange={setIsHovered}
+                className={className}
             >
                 <Card
-                    className={clsx(
-                        "w-full",
-                        isHovered && lineCount >= 5 ? 'shadow-lg' : 'shadow-sm'
-                    )}
-                    style={{
-                        transition: 'box-shadow 0.3s ease',
-                    }}
                 >
                     <div className={`pb-6 ${className}`}>
                         <div className="flex items-start justify-between">
@@ -147,7 +125,10 @@ export const ReviewCard: React.FC<ReviewItemProps> = ({
                         </div>
 
                         {review.content && (
-                            <ExpandableContent expanded={isHovered} lineClamp={5}>
+                            <ExpandableContent
+                                expanded={isHovered}
+                                lineClamp={5}
+                            >
                                 <RichContent
                                     className={`text-gray-persist text-3 ${lineCount >= 5 ? 'cursor-pointer' : ''}`}
                                     content={review?.content}
@@ -163,8 +144,12 @@ export const ReviewCard: React.FC<ReviewItemProps> = ({
                             <RankingButtons
                                 isLoadingNegative={isLoadingNegative}
                                 isLoadingPositive={isLoadingPositive}
-                                positiveRankings={review?.positive_rankings ?? 0}
-                                negativeRankings={review?.negative_rankings ?? 0}
+                                positiveRankings={
+                                    review?.positive_rankings ?? 0
+                                }
+                                negativeRankings={
+                                    review?.negative_rankings ?? 0
+                                }
                                 markNegative={markNegative}
                                 markPositive={markPositive}
                             />
@@ -186,9 +171,13 @@ export const ReviewCard: React.FC<ReviewItemProps> = ({
                                 <div className="flex items-center gap-2">
                                     <ValueLabel>{t('funds.fund')}</ValueLabel>
                                     <Link
-                                        href={useLocalizedRoute('funds.fund.show', {
-                                            slug: review?.proposal?.fund?.slug,
-                                        })}
+                                        href={useLocalizedRoute(
+                                            'funds.fund.show',
+                                            {
+                                                slug: review?.proposal?.fund
+                                                    ?.slug,
+                                            },
+                                        )}
                                         className="link-primary text-sm"
                                     >
                                         {review?.proposal?.fund?.title}
@@ -198,7 +187,7 @@ export const ReviewCard: React.FC<ReviewItemProps> = ({
                         </section>
                     </div>
                 </Card>
-            </div>
-        </div>
+            </ExpandableContentAnimation>
+        </>
     );
 };

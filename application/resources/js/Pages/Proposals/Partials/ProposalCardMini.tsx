@@ -83,7 +83,9 @@ export default function ProposalCardMini({
                 </button>
             )}
             
-            <section className="flex h-auto w-full flex-col items-start overflow-hidden rounded-xl">
+            {/* The key change is here - we need to ensure the header section has position relative 
+                and a higher z-index so it can overlay content on hover */}
+            <section className="flex h-auto w-full flex-col items-start overflow-visible rounded-xl relative">
                 <ProposalCardHeader
                     proposal={proposal}
                     userSelected={userSelected}
