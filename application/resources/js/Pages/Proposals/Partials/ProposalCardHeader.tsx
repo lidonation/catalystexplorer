@@ -4,8 +4,8 @@ import ExpandableContent from '@/Components/ExpandableContent';
 import { ListProvider } from '@/Context/ListContext';
 import BookmarkButton from '@/Pages/My/Bookmarks/Partials/BookmarkButton';
 import { Link } from '@inertiajs/react';
-import ProposalStatus from './ProposalStatus';
 import { useState } from 'react';
+import ProposalStatus from './ProposalStatus';
 
 export default function ProposalCardHeader({
     proposal,
@@ -25,8 +25,13 @@ export default function ProposalCardHeader({
         default:
             'from-[var(--cx-background-gradient-1-dark)] to-[var(--cx-background-gradient-2-dark)]',
     };
+
     const headerBGColor =
-        gradientColors[proposal?.status] || gradientColors.default;
+        proposal?.status == 'complete'
+            ? gradientColors.complete
+            : gradientColors.default;
+
+    console.log({ headerBGColor });
 
     return (
         <header
@@ -71,7 +76,7 @@ export default function ProposalCardHeader({
                         <>
                             <ProposalStatus
                                 status={proposal.status}
-                                funding_status={proposal.funding_status}
+                                funding_status={proposal?.funding_status}
                             />
 
                             <ListProvider>
@@ -98,7 +103,11 @@ export default function ProposalCardHeader({
                         }`}
                     >
                         {!userSelected ? (
-                            <ExpandableContent className="overflow-hidden text-ellipsis" lineClamp={3} expanded={isHovered}>
+                            <ExpandableContent
+                                className="overflow-hidden text-ellipsis"
+                                lineClamp={3}
+                                expanded={isHovered}
+                            >
                                 <Title level="4">{proposal.title}</Title>
                             </ExpandableContent>
                         ) : null}

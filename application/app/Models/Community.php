@@ -123,6 +123,11 @@ class Community extends Model
         return $this->belongsToMany(Proposal::class, 'community_has_proposal', 'community_id', 'proposal_id', 'id', 'id', 'proposals');
     }
 
+    public function reviews(): HasManyDeep
+    {
+        return $this->hasManyDeepFromRelations($this->proposals(), (new Proposal)->reviews());
+    }
+
     public function funded_proposals(): BelongsToMany
     {
         return $this->proposals()
@@ -153,5 +158,11 @@ class Community extends Model
     {
         return $this->hasManyDeepFromRelationsWithConstraints([$this, 'proposals'], [new Proposal, 'groups'])
             ->groupBy(['groups.id', 'community_has_proposal.community_id']);
+    }
+
+    public function toSearchableArray()
+    {
+        return $this->load(['groups', 'proposals', 'ideascale_profiles', 'reviews'])
+            ->withCount(['unfunded_proposals', 'completed_proposals', 'funded_proposals'])->toArray();
     }
 }

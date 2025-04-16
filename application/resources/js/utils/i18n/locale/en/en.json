@@ -112,6 +112,7 @@
     "distributed": "Distributed",
     "requested": "Requested",
     "submitted": "Submitted",
+    "funded": "Funded",
     "approved": "Approved",
     "completed": "Completed",
     "loginPrompt": "Login to get started",
@@ -580,6 +581,9 @@
     },
     "communities": {
         "communities": "Communities",
+        "dashboard": "Community Dashboard",
+        "groups": "Groups Supported",
+        "events": "Community events",
         "title": "Catalyst Communities",
         "subtitle": "Diverse, independent, and together inspiring the highest level of human collaboration",
         "proposalSummary": "Proposals Summary",

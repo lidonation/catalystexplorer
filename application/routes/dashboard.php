@@ -34,9 +34,7 @@ Route::localized(
                             });
                     });
 
-                Route::get('/communities', function () {
-                    return Inertia::render('My/Communities/Index');
-                })->name('communities');
+                Route::get('/communities', [ProfileController::class, 'userCommunities'])->name('communities');
 
                 Route::get('/dashboard', [ProfileController::class, 'userSummary'])->name('dashboard');
 

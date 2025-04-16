@@ -49,7 +49,7 @@ export default function IdeascaleProfileLayout({children, ideascaleProfile, filt
     }, [tabs, url]);
 
     return (
-        <FiltersProvider defaultFilters={filters || {} as SearchParams}>
+    
             <div className="bg-background-lighter mb-8">
                 <main className="px-8 sm:px-4 md:px-6 lg:px-8 mt-10 flex flex-col lg:flex-row gap-4 h-full">
                     <div className="w-full  lg:w-1/3 xl:w-1/4 mx-auto lg:mx-0 lg:sticky lg:top-4 lg:self-start">
@@ -76,6 +76,5 @@ export default function IdeascaleProfileLayout({children, ideascaleProfile, filt
                     </div>
                 </main>
             </div>
-        </FiltersProvider>
     );
 }
