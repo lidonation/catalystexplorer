@@ -33,16 +33,19 @@ const ExpandableContent: React.FC<ExpandableContentProps> = ({
     
     return (
         <div
-            ref={contentRef}
-            style={{
-                maxHeight: height,
-                overflow: 'hidden',
-                transition: `max-height ${transitionDuration} ease-in-out`,
-            }}
-            className={clsx('relative', className)}
+            className={clsx('overflow-visible', className)} 
         >
-            <div className={clsx(!expanded && `line-clamp-${lineClamp}`)}>
-                {children}
+            <div
+                ref={contentRef}
+                style={{
+                    maxHeight: height,
+                    overflow: 'hidden',
+                    transition: `max-height ${transitionDuration} ease-in-out`,
+                }}
+            >
+                <div className={clsx(!expanded && lineClamp ? `line-clamp-${lineClamp}` : '')}>
+                    {children}
+                </div>
             </div>
         </div>
     );

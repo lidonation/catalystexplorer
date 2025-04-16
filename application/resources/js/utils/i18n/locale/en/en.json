@@ -434,6 +434,8 @@
         "fundingReceived": "Funding Received",
         "manageProposal": "Manage Proposal",
         "totalRequested": "Total Requested",
+        "ideascale": "Ideascale",
+        "rrojectCatalyst": "Projectcatalyst.io",
         "errors": {
             "noUrl": "No video URL provided",
             "invalidYoutubeFormat": "The YouTube link format is incorrect",
