@@ -109,6 +109,8 @@ class ReviewsController extends Controller
             ProposalSearchParams::IDEASCALE_PROFILES()->value => 'array|nullable',
         ]);
 
+        $this->filters = $this->queryParams;
+
         $sort = collect(explode(':', $request->input(ProposalSearchParams::SORTS()->value, '')))->filter();
 
         if (! $sort->isEmpty()) {

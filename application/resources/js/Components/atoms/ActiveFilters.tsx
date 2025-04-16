@@ -37,7 +37,7 @@ const labels = {
     vp: 'Voting Power',
     d: 'Delegators',
     c: 'Choice',
-    p: 'Proposals',
+    pro: 'Proposals',
     ri: 'Reviewer IDs',
     h: 'Helpful',
     r: 'Rating',
@@ -55,7 +55,7 @@ export default function ActiveFilters({
     }[];
 }) {
     const { filters } = useFilterContext();
-    const statusFilters = ['coh', 'fs', 'ps', 'f', 'ds', 'c', 'p', 'ri'];
+    const statusFilters = ['coh', 'fs', 'ps', 'f', 'ds', 'c', 'pro', 'ri'];
     const rangeFilters = ['pl', 'b', 'aa', 'au', 'd', 'pr', 'vp', 'r', 'rs'];
     const sortFilters = ['st'];
     const idFilters = ['t', 'cam', 'com', 'ip', 'g'];

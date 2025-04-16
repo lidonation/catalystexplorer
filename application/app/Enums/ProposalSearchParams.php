@@ -67,7 +67,7 @@ final class ProposalSearchParams extends Enum
             'MIN_BUDGET' => 'bmin',
             'MIN_PROJECT_LENGTH' => 'lmin',
             'OPENSOURCE_PROPOSALS' => 'op',
-            'PROPOSALS' => 'pr',
+            'PROPOSALS' => 'pro',
             'PAGE' => 'p',
             'IDEASCALE_PROFILES' => 'ip',
             'PROJECT_STATUS' => 'ps',
