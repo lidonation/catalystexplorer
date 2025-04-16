@@ -68,7 +68,7 @@ const ReviewsFilter = () => {
                         />
                     </div>
 
-                    <div className="col-span-1 flex flex-col gap-2 pb-4 lg:col-span-2">
+                    <div className="col-span-1 flex flex-col gap-2 pb-4 lg:col-span-1">
                         <span>{t('reviews.filters.proposals')}</span>
                         <SearchSelect
                             key={'proposals'}
@@ -86,7 +86,7 @@ const ReviewsFilter = () => {
                         />
                     </div>
 
-                    <div className="col-span-1 flex flex-col gap-2 pb-4 lg:col-span-2">
+                    <div className="col-span-1 flex flex-col gap-2 pb-4 lg:col-span-1">
                         <span>{t('proposals.filters.proposers')}</span>
                         <SearchSelect
                             domain={'ideascaleProfiles.index'}
