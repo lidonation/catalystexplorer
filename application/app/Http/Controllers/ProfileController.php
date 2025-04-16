@@ -407,7 +407,7 @@ class ProfileController extends Controller
                     currentPage: 1
                 ),
             ),
-            'ideascaleProfileHashes' => $ideascaleProfileHashes,
+            'ideascaleProfileHashes' => [$ideascaleProfileHashes],
         ]);
     }
 }
