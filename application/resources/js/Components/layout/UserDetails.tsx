@@ -10,6 +10,7 @@ import RegisterUserIcon from '../svgs/Register';
 import UserAvatar from '../UserAvatar';
 import ModalSidebar from './ModalSidebar';
 import { useConnectWallet } from '@/Context/ConnectWalletSliderContext';
+import Paragraph from '../atoms/Paragraph';
 
 interface UserDetailsProps {
     user: App.DataTransferObjects.UserData;
@@ -37,6 +38,10 @@ const UserDetails: React.FC<UserDetailsProps> = ({ user }) => {
         );
     };
 
+    const closeModal = () => {
+        setActiveModal(null);
+    };
+
     return (
         <>
             {user ?
@@ -53,7 +58,7 @@ const UserDetails: React.FC<UserDetailsProps> = ({ user }) => {
                                 {user?.name}
                             </Link>
 
-                            <p className="text-5 text-content">{user?.email}</p>
+                            <Paragraph className="text-5 text-content">{user?.email}</Paragraph>
                             <Link
                                 href={generateLocalizedRoute('profile.edit')}
                                 className="text-5 text-primary font-semibold"
@@ -76,11 +81,11 @@ const UserDetails: React.FC<UserDetailsProps> = ({ user }) => {
                         <ul className="menu-gap-y flex flex-1 flex-row">
                             <li className='flex items-center gap-1 px-2 py-1 hover:bg-background-lighter cursor-pointer' onClick={() => setActiveModal("register")}>
                                 <RegisterUserIcon className="text-dark" />
-                                <p className="text-3">{t('register')}</p>
+                                <Paragraph className="text-3">{t('register')}</Paragraph>
                             </li>
                             <li className='flex items-center gap-1 px-2 py-1 hover:bg-background-lighter cursor-pointer' onClick={() => setActiveModal("login")}>
                                 <LoginIcon className="text-dark" />
-                                <p className="text-3">{t('login')}</p>
+                                <Paragraph className="text-3">{t('login')}</Paragraph>
                             </li>
                         </ul>
                     </nav>
@@ -95,8 +100,8 @@ const UserDetails: React.FC<UserDetailsProps> = ({ user }) => {
                             isOpen={!!activeModal}
                             onClose={() => setActiveModal(null)}
                         >
-                            {activeModal === 'register' && <RegisterForm />}
-                            {activeModal === 'login' && <LoginForm />}
+                            {activeModal === 'register' && <RegisterForm closeModal={closeModal} />}
+                            {activeModal === 'login' && <LoginForm closeModal={closeModal} />}
                         </ModalSidebar>
                     )}
                 </>

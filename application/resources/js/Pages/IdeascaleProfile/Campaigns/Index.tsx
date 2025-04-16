@@ -1,18 +1,22 @@
 import RecordsNotFound from '@/Layouts/RecordsNotFound';
+import CampaignCardMini from '@/Pages/Campaign/Partials/CampaignCardMini';
 import CampaignList from '@/Pages/Campaign/Partials/CampaignList';
+import CampaignLoader from '@/Pages/Campaign/Partials/CampaignLoader';
 import { Head, WhenVisible } from '@inertiajs/react';
 import { useTranslation } from 'react-i18next';
 import IdeascaleProfileLayout from '../IdeascaleProfileLayout';
 import IdeascaleProfileData = App.DataTransferObjects.IdeascaleProfileData;
-import CampaignCardMini from '@/Pages/Campaign/Partials/CampaignCardMini';
-import CampaignLoader from '@/Pages/Campaign/Partials/CampaignLoader';
+import CampaignData = App.DataTransferObjects.CampaignData;
 
 interface CamPageProps {
     ideascaleProfile: IdeascaleProfileData;
-    campaigns: Array<any>;
+    campaigns: CampaignData[];
 }
 
-export default function Cam({ ideascaleProfile, campaigns }: CamPageProps) {
+export default function Campaigns({
+    ideascaleProfile,
+    campaigns,
+}: CamPageProps) {
     const { t } = useTranslation();
 
     return (
@@ -21,12 +25,12 @@ export default function Cam({ ideascaleProfile, campaigns }: CamPageProps) {
 
             <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
                 <div className="flex flex-col items-center justify-center">
-                    {campaigns ? (
-                        <WhenVisible
-                            fallback={<CampaignLoader />}
-                            data="campaigns"
-                        >
-                            <CampaignList campaigns={campaigns} className='grid-cols-2 gap-4'>
+                    <WhenVisible fallback={<CampaignLoader />} data="campaigns">
+                        {campaigns && campaigns.length ? (
+                            <CampaignList
+                                campaigns={campaigns}
+                                className="grid-cols-2 gap-4"
+                            >
                                 {(campaign) => (
                                     <CampaignCardMini
                                         key={campaign.hash}
@@ -35,10 +39,10 @@ export default function Cam({ ideascaleProfile, campaigns }: CamPageProps) {
                                     />
                                 )}
                             </CampaignList>
-                        </WhenVisible>
-                    ) : (
-                        <RecordsNotFound />
-                    )}
+                        ) : (
+                            <RecordsNotFound />
+                        )}
+                    </WhenVisible>
                 </div>
             </div>
         </IdeascaleProfileLayout>

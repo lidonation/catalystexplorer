@@ -1,3 +1,4 @@
+import Paragraph from '@/Components/atoms/Paragraph';
 import { useLocalizedRoute } from '@/utils/localizedRoute';
 import { Link, WhenVisible } from '@inertiajs/react';
 import React, { HTMLAttributes } from 'react';
@@ -7,7 +8,6 @@ import { PaginatedData } from '../../../../types/paginated-data';
 import ProposalCardMini from './ProposalCardMini';
 import ProposalMiniCardLoader from './ProposalMiniCardLoader';
 import ProposalData = App.DataTransferObjects.ProposalData;
-import Paragraph from '@/Components/atoms/Paragraph';
 
 interface RouteConfig {
     routeName: string;
@@ -35,45 +35,19 @@ const ROUTE_MAPPINGS: Record<string, RouteConfig> = {
 
 interface RelatedProposalsProps extends HTMLAttributes<HTMLDivElement> {
     proposals: PaginatedData<ProposalData[]>;
-    groupId?: string;
-    ideascaleProfileId?: string;
-    communityId?: string;
-    maxVisibleProposals?: number;
+    routeParam: { [x: string]: string[] | string | null };
     proposalWrapperClassName?: string;
 }
 
 const RelatedProposals: React.FC<RelatedProposalsProps> = ({
     proposals,
-    groupId,
+    routeParam,
     proposalWrapperClassName,
-    ideascaleProfileId,
-    communityId,
     ...props
 }) => {
     const { t } = useTranslation();
 
     const showViewMore = proposals.total > proposals.per_page;
-
-    const getCurrentRouteConfig = () => {
-        const currentRoute = route().current();
-
-        const baseRoute = currentRoute?.split('.')[1] ?? '';
-
-        return ROUTE_MAPPINGS[baseRoute] || ROUTE_MAPPINGS['groups'];
-    };
-
-    const getRouteParams = (config: RouteConfig) => {
-        const paramValue =
-            config.sourceParam === 'groupId'
-                ? groupId
-                : config.sourceParam === 'ideascaleProfileId'
-                  ? ideascaleProfileId
-                  : communityId;
-
-        return { [config.paramKey]: paramValue };
-    };
-
-    const routeConfig = getCurrentRouteConfig();
 
     return (
         <WhenVisible fallback={<ProposalMiniCardLoader />} data="proposals">
@@ -95,8 +69,8 @@ const RelatedProposals: React.FC<RelatedProposalsProps> = ({
                     <div className={proposalWrapperClassName}>
                         <Link
                             href={useLocalizedRoute(
-                                routeConfig.routeName,
-                                getRouteParams(routeConfig),
+                                'proposals.index',
+                                routeParam,
                             )}
                             className="bg-background flex h-full flex-col items-center justify-center rounded-xl p-4 shadow-lg transition-transform hover:scale-95"
                         >

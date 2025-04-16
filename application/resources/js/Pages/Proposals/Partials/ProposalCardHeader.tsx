@@ -30,7 +30,11 @@ export default function ProposalCardHeader({
     };
 
     const headerBGColor =
-        gradientColors[proposal?.status] || gradientColors.default;
+        proposal?.status == 'complete'
+            ? gradientColors.complete
+            : gradientColors.default;
+
+    console.log({ headerBGColor });
 
     const contentRef = useRef<HTMLParagraphElement | null>(null);
     const [lineCount, setLineCount] = useState(0);
@@ -90,7 +94,7 @@ export default function ProposalCardHeader({
                         <>
                             <ProposalStatus
                                 status={proposal.status}
-                                funding_status={proposal.funding_status}
+                                funding_status={proposal?.funding_status}
                             />
                             <ListProvider>
                                 {proposal.hash && (

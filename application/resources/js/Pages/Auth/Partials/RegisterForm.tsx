@@ -6,6 +6,8 @@ import { FormEventHandler, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import PrimaryButton from '../../../Components/atoms/PrimaryButton';
 import InputLabel from '../../../Components/InputLabel';
+import Button from '@/Components/atoms/Button';
+import Paragraph from '@/Components/atoms/Paragraph';
 
 interface FormErrors {
     name?: string;
@@ -14,7 +16,11 @@ interface FormErrors {
     password_confirmation?: string;
 }
 
-export default function RegisterForm() {
+interface RegisterFormProps {
+    closeModal?: () => void;
+}
+
+export default function RegisterForm({ closeModal }: RegisterFormProps) {
     const { data, setData, processing, post, reset } = useForm({
         name: '',
         email: '',
@@ -29,13 +35,20 @@ export default function RegisterForm() {
 
         post(generateLocalizedRoute('register'), {
             onFinish: () => reset('password', 'password_confirmation'),
-            onSuccess: () =>
-                router.visit(generateLocalizedRoute('my.dashboard')),
+            onSuccess: () => {
+                if (closeModal) closeModal();
+                router.visit(generateLocalizedRoute('my.dashboard'));
+            },
             onError: (errors) => setErrors(errors),
         });
     };
 
     const { t } = useTranslation();
+
+    const handleLoginClick = () => {
+        if (closeModal) closeModal();
+        router.get(generateLocalizedRoute('login'));
+    };
 
     return (
         <form onSubmit={submit} className="content-gap flex flex-col">
@@ -86,9 +99,9 @@ export default function RegisterForm() {
                     onChange={(e) => setData('password', e.target.value)}
                     required
                 />
-                <p className="text-4 text-dark mt-1">
+                <Paragraph className="text-4 text-dark mt-1">
                     {t('registration.passwordCharacters')}
-                </p>
+                </Paragraph>
                 <InputError message={errors?.password} className="mt-2" />
             </div>
 
@@ -128,13 +141,14 @@ export default function RegisterForm() {
             </div>
 
             <div className="flex w-full items-center justify-center">
-                <p className="mr-2">{t('registration.alreadyRegistered')}</p>
-                <Link
-                    href={generateLocalizedRoute('login')}
+                <Paragraph className="mr-2">{t('registration.alreadyRegistered')}</Paragraph>
+                <Button
+                    type="button"
+                    onClick={handleLoginClick}
                     className="text-primary hover:text-content rounded-md font-bold focus:ring-2 focus:ring-offset-2 focus:outline-hidden"
                 >
                     {t('login')}
-                </Link>
+                </Button>
             </div>
         </form>
     );

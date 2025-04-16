@@ -1,64 +1,60 @@
 import AggregatedReviewsSummary from '@/Components/AggregatedReviewsSummary';
-import { ReviewList } from '@/Components/ReviewList';
-import { Head } from '@inertiajs/react';
+import { ParamsEnum } from '@/enums/proposal-search-params';
+import RecordsNotFound from '@/Layouts/RecordsNotFound';
+import RelatedReviews from '@/Pages/Reviews/Partials/RelatedReviews';
+import { Head, WhenVisible } from '@inertiajs/react';
 import { useTranslation } from 'react-i18next';
 import { PaginatedData } from '../../../../types/paginated-data';
 import IdeascaleProfileLayout from '../IdeascaleProfileLayout';
 import IdeascaleProfileData = App.DataTransferObjects.IdeascaleProfileData;
-import ReviewReputationScoreData = App.DataTransferObjects.ReviewerReputationScoreData;
-import RecordsNotFound from '@/Layouts/RecordsNotFound';
-import { SearchParams } from '../../../../types/search-params';
 import ReviewData = App.DataTransferObjects.ReviewData;
 
-
-interface RankingCount {
-    [key: number]: number; // Mapping rating (1-5) to count
-}
 
 interface ReviewsPageProps {
     ideascaleProfile: IdeascaleProfileData;
     reviews: PaginatedData<ReviewData[]>;
-    reviewerReputationScores: ReviewReputationScoreData[];
     aggregatedRatings: { [s: string]: number } | ArrayLike<number>;
-    filters: SearchParams;
 }
 
 export default function Reviews({
     ideascaleProfile,
     reviews,
     aggregatedRatings,
-    filters
 }: ReviewsPageProps) {
     const { t } = useTranslation();
 
-    // const reviewsArray = reviews?.data?.map((item) => item.review) || [];
 
     return (
-        <IdeascaleProfileLayout ideascaleProfile={ideascaleProfile} filters={filters}>
+        <IdeascaleProfileLayout ideascaleProfile={ideascaleProfile}>
             <Head title={`${ideascaleProfile.name} - ${t('reviews')}`} />
-
-            <div className="container">
-                {reviews?.total > 0 ? (
-                    <div className="space-y-8">
-                        <div>
-                            <AggregatedReviewsSummary
-                                reviews={reviews?.data}
-                                aggregatedRatings={aggregatedRatings}
-                                reviewsCount={reviews.total}
+            <WhenVisible data="reviews" fallback={<div>Loading Reviews</div>}>
+                <div className="container">
+                    {reviews?.total > 0 ? (
+                        <div className="space-y-8">
+                            <div>
+                                <AggregatedReviewsSummary
+                                    reviews={reviews?.data}
+                                    aggregatedRatings={aggregatedRatings}
+                                    reviewsCount={reviews.total}
+                                />
+                            </div>
+                            <RelatedReviews
+                                reviews={reviews}
+                                routeParam={{
+                                    [ParamsEnum.IDEASCALE_PROFILES]:
+                                        ideascaleProfile.hash
+                                            ? [ideascaleProfile.hash]
+                                            : null,
+                                }}
                             />
                         </div>
-                        <div>
-                            <ReviewList
-                                reviews={reviews ?? []}
-                            />
+                    ) : (
+                        <div className="py-8 text-center">
+                            <RecordsNotFound />
                         </div>
-                    </div>
-                ) : (
-                    <div className="text-center py-8">
-                        <RecordsNotFound/>
-                    </div>
-                )}
-            </div>
+                    )}
+                </div>
+            </WhenVisible>
         </IdeascaleProfileLayout>
     );
 }
