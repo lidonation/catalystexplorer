@@ -352,7 +352,7 @@ class ProfileController extends Controller
             $ideascaleProfileHashes = implode(',', $ideascaleProfile->toArray());
 
             $args = [
-                'filter' => ["proposal.ideascale_profile.id IN [{$ideascaleProfileHashes}]"],
+                'filter' => ["proposal.ideascale_profiles.id IN [{$ideascaleProfileHashes}]"],
             ];
 
             $builder = $reviewRepository->search('', $args);

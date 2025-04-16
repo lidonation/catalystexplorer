@@ -45,6 +45,9 @@ final class BookmarkCollectionData extends Data
         public ?int $type_id,
 
         #[TypeScriptOptional]
+        public ?int $items_count,
+
+        #[TypeScriptOptional]
         public ?string $type_type,
 
         #[TypeScriptOptional]
@@ -54,6 +57,9 @@ final class BookmarkCollectionData extends Data
         public ?string $updated_at,
 
         #[TypeScriptOptional]
-        public ?string $deleted_at
+        public ?string $deleted_at,
+
+        #[TypeScriptOptional]
+        public ?array $type_counts = [],
     ) {}
 }

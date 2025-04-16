@@ -183,7 +183,7 @@ class Review extends Model
 
     public function toSearchableArray(): array
     {
-        $this->load(['model', 'discussion', 'parent', 'reviewer.reputation_scores.fund', 'proposal']);
+        $this->load(['model', 'discussion', 'parent', 'reviewer.reputation_scores.fund', 'proposal', 'proposal.ideascale_profiles']);
 
         $array = $this->toArray();
 
@@ -196,9 +196,6 @@ class Review extends Model
             'ranking' => $this->rankings,
             'positive_rankings' => $this->positiveRankings->count(),
             'negative_rankings' => $this->negativeRankings->count(),
-            'proposal' => [
-                'title' => $this->proposal?->title,
-            ],
         ]);
     }
 }

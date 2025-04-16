@@ -5,7 +5,7 @@ import AdaIcon from '@/Components/svgs/AdaIcon';
 import FileIcon from '@/Components/svgs/FileIcon';
 import PeopleIcon from '@/Components/svgs/PeopleIcon';
 import UsdIcon from '@/Components/svgs/UsdIcon';
-import RecordsNotFound from '@/Layouts/RecordsNotFound';
+import MintedNftsCardLoader from './Partials/MintedNftsCardLoader';
 import {PageProps} from '@/types';
 import {currency} from '@/utils/currency';
 import {Head, Link} from '@inertiajs/react';
@@ -15,8 +15,11 @@ import {SearchParams} from '../../../types/search-params';
 import StatisticCard from './Partials/StatisticCard';
 import ProposalData = App.DataTransferObjects.ProposalData;
 import IdeascaleProfileData = App.DataTransferObjects.IdeascaleProfileData;
+import NftData = App.DataTransferObjects.NftData; 
 import Divider from "@/Components/Divider";
 import {useLocalizedRoute} from "@/utils/localizedRoute";
+import { WhenVisible } from '@inertiajs/react';
+import MintedNftsList from './Partials/MintedNftsList';
 
 interface CompletedProjectNftsPageProps extends Record<string, unknown> {
     proposals: PaginatedData<ProposalData[]>;
@@ -26,6 +29,7 @@ interface CompletedProjectNftsPageProps extends Record<string, unknown> {
     amountDistributedUsd: number;
     completedProposalsCount: number;
     communityMembersFunded: number;
+    mintedNfts: NftData[];
 }
 
 export default function Index({
@@ -33,6 +37,7 @@ export default function Index({
                                   amountDistributedUsd,
                                   completedProposalsCount,
                                   communityMembersFunded,
+                                  mintedNfts,
                               }: PageProps<CompletedProjectNftsPageProps>) {
     const {t} = useTranslation();
 
@@ -134,8 +139,10 @@ export default function Index({
                 </div>
             </section>
 
-            <section className="container mx-auto flex w-full flex-col items-center justify-center py-12">
-                <RecordsNotFound showIcon={true}/>
+            <section className="container py-8">
+                <WhenVisible fallback={<MintedNftsCardLoader />} data="funds">
+                    <MintedNftsList nfts={mintedNfts}/>
+                </WhenVisible>
             </section>
         </>
     );
