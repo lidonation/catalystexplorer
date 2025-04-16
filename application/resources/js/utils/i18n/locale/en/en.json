@@ -293,7 +293,10 @@
         "reviews": "My Reviews",
         "groups": "My Groups",
         "communities": "My Communities",
-        "lists": "My Lists"
+        "lists": "My Lists",
+        "items": "items",
+        "manage": "Manage",
+        "createList": "Create New List"
     },
     "navigation": {
         "mobile": {

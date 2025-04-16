@@ -23,10 +23,12 @@ visibility?: string;
 status?: string;
 type?: string;
 type_id?: number;
+items_count?: number;
 type_type?: string;
 created_at?: string;
 updated_at?: string;
 deleted_at?: string;
+type_counts?: Array<any>;
 };
 export type BookmarkItemData = {
 hash: string | null;

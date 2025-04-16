@@ -1,4 +1,4 @@
-import {MouseEventHandler, ReactNode} from 'react';
+import {MouseEventHandler, ReactNode, forwardRef} from 'react';
 
 type ButtonProps = {
     onClick?: MouseEventHandler<HTMLButtonElement>;
@@ -12,7 +12,7 @@ type ButtonProps = {
     ariaPressed?: boolean;
 };
 
-function Button({
+const Button = forwardRef<HTMLButtonElement, ButtonProps>(({
     onClick,
     children,
     disabled = false,
@@ -22,9 +22,10 @@ function Button({
     arialExpanded,
     arialControls,
     ariaPressed,
-}: ButtonProps) {
+}, ref) => {
     return (
         <button
+            ref={ref}
             onClick={disabled ? undefined : onClick}
             type={type}
             disabled={disabled}
@@ -37,6 +38,8 @@ function Button({
             {children}
         </button>
     );
-}
+});
+
+Button.displayName = 'Button';
 
 export default Button;

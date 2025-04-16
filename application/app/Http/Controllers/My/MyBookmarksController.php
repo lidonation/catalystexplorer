@@ -9,9 +9,11 @@ use App\DataTransferObjects\BookmarkItemData;
 use App\Enums\BookmarkableType;
 use App\Enums\BookmarkStatus;
 use App\Enums\BookmarkVisibility;
+use App\Enums\ProposalSearchParams;
 use App\Http\Controllers\Controller;
 use App\Models\BookmarkCollection;
 use App\Models\BookmarkItem;
+use App\Models\Community;
 use App\Models\Group;
 use App\Models\IdeascaleProfile;
 use App\Models\Proposal;
@@ -35,6 +37,8 @@ class MyBookmarksController extends Controller
     protected int $defaultLimit = 36;
 
     protected int $defaultPage = 1;
+
+    protected array $queryParams = [];
 
     protected function getBookmarkableTypes(): array
     {
@@ -122,7 +126,6 @@ class MyBookmarksController extends Controller
                 'bookmarkItems' => $bookmarkItem,
 
             ]);
-
         } catch (\Exception $e) {
             DB::rollback();
 
@@ -141,7 +144,8 @@ class MyBookmarksController extends Controller
 
             if ($bookmarkItem->user_id !== Auth::id()) {
                 return response::json([
-                    'errors' => 'Unauthorized action'], 401);
+                    'errors' => 'Unauthorized action',
+                ], 401);
             }
 
             $bookmarkItem->delete();
@@ -182,8 +186,9 @@ class MyBookmarksController extends Controller
 
         $bookmarkItem = BookmarkItem::where('user_id', Auth::id())
             ->where('model_id', $id)
-            ->where(fn ($query) => $query->where('model_type', $modelClass)
-                ->orWhere('model_type', $modelName)
+            ->where(
+                fn ($query) => $query->where('model_type', $modelClass)
+                    ->orWhere('model_type', $modelName)
             )->first();
 
         if ($bookmarkItem) {
@@ -240,14 +245,19 @@ class MyBookmarksController extends Controller
                 'title' => $validated['collection']['title'],
             ]);
 
-            $itemData = new BookmarkItemData(
-                hash: null,
-                user_id: Auth::id(),
-                bookmark_collection_id: $collection->id,
-                model_id: $validated['model_id'],
-                model_type: $modelType,
-                content: null
-            );
+            $itemData = BookmarkItemData::from([
+                'hash' => null,
+                'user_id' => Auth::id(),
+                'bookmark_collection_id' => $collection->id,
+                'model_id' => $validated['model_id'],
+                'model_type' => $modelType,
+                'title' => null,
+                'content' => null,
+                'action' => null,
+                'created_at' => now()->toISOString(),
+                'updated_at' => now()->toISOString(),
+                'deleted_at' => null,
+            ]);
 
             BookmarkItem::create($itemData->toArray());
 
@@ -266,14 +276,73 @@ class MyBookmarksController extends Controller
 
     public function collectionIndex(Request $request): InertiaResponse
     {
-        return Inertia::render('My/Lists/Index', []);
+        $userId = Auth::user()->id;
+        $hashService = new HashIdService(new BookmarkCollection);
+
+        $this->queryParams = $request->validate([
+            ProposalSearchParams::PAGE()->value => 'int|nullable',
+            'per_page' => 'int|nullable', // Optional: Allow custom per_page value in query params
+        ]);
+
+        $page = $this->queryParams[ProposalSearchParams::PAGE()->value] ?? 1;
+        $perPage = $this->queryParams[ProposalSearchParams::LIMIT()->value] ?? 5;
+
+        $modelMap = [
+            'Proposal' => Proposal::class,
+            'IdeascaleProfile' => IdeascaleProfile::class,
+            'Community' => Community::class,
+            'Group' => Group::class,
+            'Review' => Review::class,
+        ];
+
+        $allModelTypes = array_keys($modelMap);
+
+        $bookmarkCollections = BookmarkCollection::where('user_id', $userId)
+            ->orderBy('created_at', 'desc')
+            ->paginate($perPage, ['*'], 'page', $page);
+
+        $bookmarkCollections->getCollection()->each(function ($collection) use ($hashService, $allModelTypes) {
+            $collection->decoded_id = $hashService->decode($collection->getKey());
+            $collection->hash = $collection->hash;
+
+            $dbTypeCounts = BookmarkItem::where('bookmark_collection_id', $collection->decoded_id)
+                ->select('model_type', DB::raw('count(*) as count'))
+                ->groupBy('model_type')
+                ->get();
+
+            $typeCounts = [];
+
+            foreach ($allModelTypes as $modelType) {
+                $typeCounts[] = [
+                    'model' => $modelType,
+                    'count' => 0,
+                ];
+            }
+
+            foreach ($dbTypeCounts as $typeCount) {
+                foreach ($typeCounts as &$item) {
+                    if ($item['model'] === $typeCount->model_type) {
+                        $item['count'] = (int) $typeCount->count;
+                        break;
+                    }
+                }
+            }
+
+            $collection->type_counts = $typeCounts;
+
+            $collection->total_items = array_sum(array_column($typeCounts, 'count'));
+        });
+
+        return Inertia::render('My/Lists/Index', [
+            'bookmarkCollections' => BookmarkCollectionData::collect($bookmarkCollections),
+        ]);
     }
 
     public function showCollection(BookmarkCollection $bookmarkCollection): InertiaResponse|JsonResponse
     {
-        $this->authorize('view', $bookmarkCollection);
+        // $this->authorize('view', $bookmarkCollection);
 
-        return Inertia::render('BookmarkCollection', [
+        return Inertia::render('My/Lists/BookmarkCollection', [
             'bookmarkCollection' => BookmarkCollectionData::from($bookmarkCollection),
         ]);
     }
@@ -442,7 +511,6 @@ class MyBookmarksController extends Controller
                 'message' => 'Collection created successfully',
                 'collection' => $collection,
             ]);
-
         } catch (ValidationException $e) {
             $firstError = collect($e->errors())->first();
             $firstErrorMessage = is_array($firstError) ? $firstError[0] : 'Please check your input';
