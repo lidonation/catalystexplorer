@@ -104,7 +104,7 @@ const Step3: React.FC<Step3Props> = ({
 
             <Content>
                 <div className="max-w-3xl mx-auto w-full">
-                    <div className="bg-white p-6 rounded-lg flex flex-col items-center justify-center">
+                    <div className="p-6 rounded-lg flex flex-col items-center justify-center">
                         <Title level="4" className="mb-8 text-content font-bold text-center">{t('Connect Wallet')}</Title>
 
                         <div className="w-full max-w-md space-y-4">

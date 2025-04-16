@@ -7,6 +7,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
@@ -17,10 +18,12 @@ class PasswordResetLinkController extends Controller
     /**
      * Display the password reset link request view.
      */
-    public function create(): Response
+    public function create(Request $request): Response
     {
-        return Inertia::render('Auth/ForgotPassword', [
+        return Inertia::render('Workflows/PasswordReset/Step1', [
             'status' => session('status'),
+            'stepDetails' => $this->getStepDetails(),
+            'activeStep' => 1,
         ]);
     }
 
@@ -48,6 +51,20 @@ class PasswordResetLinkController extends Controller
 
         throw ValidationException::withMessages([
             'email' => [trans($status)],
+        ]);
+    }
+
+    public function getStepDetails(): Collection
+    {
+        return collect([
+            [
+                'title' => 'workflows.resetPassword.forgot',
+                'info' => 'workflows.resetPassword.forgotInfo',
+            ],
+            [
+                'title' => 'workflows.resetPassword.reset',
+                'info' => 'workflows.resetPassword.resetInfo',
+            ],
         ]);
     }
 }

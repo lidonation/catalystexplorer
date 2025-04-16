@@ -252,7 +252,7 @@ const RangeFilters = ({ filter }: { filter: FilteredItem }) => {
             key={filter.label}
         >
             <div className="mr-1">{filter.label}</div>
-            <div>{`${filter.value[0]} to ${shortNumber(filter.value[1])} `}</div>
+            <div>{`${filter.value[0]} `}</div>
             <button className="ml-2" onClick={() => removeFilter()}>
                 X{' '}
             </button>

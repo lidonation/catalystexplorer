@@ -53,9 +53,6 @@ const Step4: React.FC<Step4Props> = ({
     });
 
     const submitVotes = () => {
-        // Log the route we're going to use
-
-        // Use the same route utility for both
         form.post(submitRoute, {
             onSuccess: () => {
                 router.visit(successRoute);
@@ -72,7 +69,7 @@ const Step4: React.FC<Step4Props> = ({
 
             <Content>
                 <div className="max-w-3xl mx-auto w-full">
-                    <div className="bg-white p-6 rounded-lg flex flex-col items-center justify-center">
+                    <div className="p-6 rounded-lg flex flex-col items-center justify-center">
                         <Title level="4" className="mb-6 text-center">{t('workflows.voting.steps.readyToVote')}</Title>
                         <SubmitIcon size={100} />
 

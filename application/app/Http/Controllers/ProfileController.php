@@ -381,6 +381,9 @@ class ProfileController extends Controller
                 'filter' => ["proposal.ideascale_profiles.hash IN [{$ideascaleProfileHashes}]"],
             ];
 
+            /**
+             * @var \Laravel\Scout\Builder
+             */
             $builder = $reviewRepository->search('', $args);
             $reviews = $builder->raw()['hits'] ?? [];
 

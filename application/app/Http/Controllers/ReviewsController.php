@@ -94,6 +94,7 @@ class ReviewsController extends Controller
         $this->search = $request->input(QueryParamsEnum::QUERY(), null);
 
         $this->queryParams = $request->validate([
+
             ProposalSearchParams::FUNDS()->value => 'array|nullable',
             ProposalSearchParams::PROPOSALS()->value => 'array|nullable',
             ProposalSearchParams::REVIEWER_IDS()->value => 'array|nullable',
@@ -139,6 +140,7 @@ class ReviewsController extends Controller
         $args['attributesToRetrieve'] = $attrs ?? [
             'hash',
             'title',
+            'proposal',
             'content',
             'status',
             'model_id',
@@ -158,7 +160,7 @@ class ReviewsController extends Controller
             'rating',
             'reviewer.reputation_scores.fund.label',
             'reviewer.avg_reputation_score',
-            'proposal.id',
+            'proposal.title',
             'status',
         ];
 
@@ -221,10 +223,10 @@ class ReviewsController extends Controller
         }
 
         if (! empty($this->queryParams[ProposalSearchParams::PROPOSALS()->value])) {
-            $validProposalIds = array_filter($this->queryParams[ProposalSearchParams::PROPOSALS()->value], 'is_numeric');
-            if (! empty($validProposalIds)) {
-                $proposalIds = implode(',', $validProposalIds);
-                $filters[] = "proposal.id IN [{$proposalIds}]";
+            $proposalTitles = $this->queryParams[ProposalSearchParams::PROPOSALS()->value];
+            if (! empty($proposalTitles)) {
+                $proposalTitleString = implode("','", $proposalTitles);
+                $filters[] = "proposal.title IN ['{$proposalTitleString}']";
             }
         }
 
@@ -242,15 +244,6 @@ class ReviewsController extends Controller
         if (! empty($this->queryParams[ProposalSearchParams::REPUTATION_SCORES()->value])) {
             $reputationRange = collect((object) $this->queryParams[ProposalSearchParams::REPUTATION_SCORES()->value]);
             $filters[] = "(reviewer.avg_reputation_score {$reputationRange->first()} TO {$reputationRange->last()})";
-        }
-
-        if (isset($this->queryParams[ProposalSearchParams::HELPFUL()->value])) {
-            if (is_numeric($this->queryParams[ProposalSearchParams::HELPFUL()->value])) {
-                $helpfulValue = (int) $this->queryParams[ProposalSearchParams::HELPFUL()->value];
-                $filters[] = "helpful_total >= {$helpfulValue}";
-            } elseif ($this->queryParams[ProposalSearchParams::HELPFUL()->value] === 'true') {
-                $filters[] = 'helpful_total > 0';
-            }
         }
 
         return $filters;
@@ -277,14 +270,6 @@ class ReviewsController extends Controller
         $fundTitles = Fund::pluck('title');
 
         return response()->json($fundTitles);
-    }
-
-    public function helpfulTotal()
-    {
-        return response()->json([
-            ['value' => 'true', 'label' => 'Yes'],
-            ['value' => 'false', 'label' => 'No'],
-        ]);
     }
 
     public function helpfulReview(int $reviewId)
