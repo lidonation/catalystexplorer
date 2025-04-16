@@ -1,5 +1,8 @@
+import { ReactNode } from "react";
+
 export interface TransitionListPageProps {
     onNavigate?: (pageIndex: number) => void;
+    children?: ReactNode
 }
 export interface List {
     id: string;

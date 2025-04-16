@@ -28,7 +28,7 @@ type FormState = {
     isPublic: boolean;
 };
 
-const BookmarkPage2 = ({ onNavigate }: TransitionListPageProps) => {
+const BookmarkPage2 = ({ onNavigate, children }: TransitionListPageProps) => {
     const { t } = useTranslation();
     const { addList, isAddingList } = useList();
     const [error, setError] = useState<Error | null>(null);
@@ -133,7 +133,7 @@ const BookmarkPage2 = ({ onNavigate }: TransitionListPageProps) => {
                     onClick={() => onNavigate?.(0)}
                     className="text-content flex items-center gap-2 px-3 py-2 font-bold"
                 >
-                    <ArrowLeftIcon />
+                    {children}
                     <Paragraph size="md">
                         {t('listQuickCreate.addList')}
                     </Paragraph>

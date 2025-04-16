@@ -1,3 +1,4 @@
+import ArrowLeftIcon from '@/Components/svgs/ArrowLeft';
 import BookmarkOffIcon from '@/Components/svgs/BookmarkOffIcon';
 import BookmarkOnIcon from '@/Components/svgs/BookmarkOnIcon';
 import useBookmark from '@/Hooks/useBookmark';
@@ -45,7 +46,9 @@ export default function BookmarkButton({
             handleRemoveBookmark={removeBookmark}
             associateCollectionId={associatedCollection as string}
         />,
-        <BookmarkPage2 key="priority" />,
+        <BookmarkPage2 key="priority" >
+             <ArrowLeftIcon />
+        </BookmarkPage2>,
         <BookmarkPage3 key="new-list" />,
     ];
 
