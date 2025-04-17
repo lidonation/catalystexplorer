@@ -119,4 +119,9 @@ class User extends Authenticatable implements HasMedia
     {
         return $this->belongsTo(Location::class);
     }
+
+    public function signatures()
+    {
+        return $this->hasMany(Signatures::class);
+    }
 }

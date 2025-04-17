@@ -20,5 +20,11 @@ class Signatures extends Model
         'signature',
         'signature_key',
         'wallet_provider',
+        'user_id',
     ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }
