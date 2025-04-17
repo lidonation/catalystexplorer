@@ -17,8 +17,10 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Log;
 use Lidonation\CardanoNftMaker\Interfaces\CardanoNftInterface;
 use Lidonation\CardanoNftMaker\Traits\NftServiceTrait;
+use Spatie\Image\Enums\CropPosition;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class Nft extends Model implements CardanoNftInterface, HasMedia
 {
@@ -38,6 +40,7 @@ class Nft extends Model implements CardanoNftInterface, HasMedia
         'maker_project_uuid',
         'maker_nft_uuid',
         'required_nft_metadata',
+        'preview_img_url',
     ];
 
     protected function casts(): array
@@ -49,6 +52,14 @@ class Nft extends Model implements CardanoNftInterface, HasMedia
             'created_at' => 'datetime:Y-m-d',
             'updated_at' => 'datetime:Y-m-d',
         ];
+    }
+
+    /**
+     * Register media collections
+     */
+    public function registerMediaCollections(): void
+    {
+        $this->addMediaCollection('preview')->singleFile();
     }
 
     /**
@@ -72,12 +83,22 @@ class Nft extends Model implements CardanoNftInterface, HasMedia
     }
 
     /**
-     * Get the NFT's preview link
+     * Get the NFT's preview image URL from media relationship
+     */
+    protected function previewImgUrl(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => $this->getFirstMediaUrl('preview') ?? $this->preview_link ?? $this->storage_link
+        );
+    }
+
+    /**
+     * Legacy accessor (deprecated, use previewImgUrl instead)
      */
     protected function previewLink(): Attribute
     {
         return Attribute::make(
-            get: fn ($value) => $value ?? $this->storage_link
+            get: fn ($value) => $value ?? $this->preview_img_url
         );
     }
 
@@ -89,6 +110,31 @@ class Nft extends Model implements CardanoNftInterface, HasMedia
     public function txs(): HasMany
     {
         return $this->hasMany(Tx::class, 'model_id')->where('model_type', static::class);
+    }
+
+    /**
+     * Register media conversions
+     */
+    public function registerMediaConversions(?Media $media = null): void
+    {
+        $this->addMediaConversion('thumbnails')
+            ->width(180)
+            ->height(180)
+            ->withResponsiveImages()
+            ->crop(180, 180, CropPosition::Center)
+            ->performOnCollections('preview');
+
+        $this->addMediaConversion('medium')
+            ->width(600)
+            ->height(600)
+            ->crop(600, 600, CropPosition::Center)
+            ->withResponsiveImages()
+            ->performOnCollections('preview');
+
+        $this->addMediaConversion('large')
+            ->width(1200)
+            ->withResponsiveImages()
+            ->performOnCollections('preview');
     }
 
     /**
