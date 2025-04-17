@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Actions\TransformHashToIds;
 use App\Enums\CatalystCurrencySymbols;
 use App\Enums\ProposalStatus;
 use App\Traits\HasConnections;
@@ -56,6 +57,7 @@ class Group extends Model implements HasMedia
             'proposals.campaign.hash',
             'proposals.communities.hash',
             'proposals.status',
+            'proposals.funding_status',
             'proposals_funded',
             'proposals_completed',
             'amount_awarded_ada',
@@ -108,6 +110,9 @@ class Group extends Model implements HasMedia
                     ->orWhere('meta_title', 'ilike', "%{$search}%");
             });
         })->when($filters['ids'] ?? null, function ($query, $ids) {
+            $query->whereIn('id', is_array($ids) ? $ids : explode(',', $ids));
+        })->when($filters['hashes'] ?? null, function ($query, $hashes) {
+            $ids = (new TransformHashToIds)(collect($hashes), new static);
             $query->whereIn('id', is_array($ids) ? $ids : explode(',', $ids));
         });
 

@@ -55,10 +55,10 @@ export default function ActiveFilters({
     }[];
 }) {
     const { filters } = useFilterContext();
-    const statusFilters = ['coh', 'fs', 'ps', 'f', 'ds', 'c', 'pro', 'ri'];
+    const statusFilters = ['coh', 'fs', 'ps', 'f', 'ds', 'c', 'pro'];
     const rangeFilters = ['pl', 'b', 'aa', 'au', 'd', 'pr', 'vp', 'r', 'rs'];
     const sortFilters = ['st'];
-    const idFilters = ['t', 'cam', 'com', 'ip', 'g'];
+    const idFilters = ['t', 'cam', 'com', 'ip', 'g', 'ri'];
     const booleanFilters = ['op', 'h'];
 
     return (
@@ -385,6 +385,7 @@ const IDFilters = React.memo(({ filter }: { filter: FilteredItem }) => {
                                 option?.name ??
                                     option?.title ??
                                     option?.label ??
+                                    option?.catalyst_reviewer_id ??
                                     'Unknown',
                             )}
                         </span>

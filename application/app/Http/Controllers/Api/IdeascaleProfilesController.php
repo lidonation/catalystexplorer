@@ -39,10 +39,9 @@ class IdeascaleProfilesController extends Controller
                 'message' => 'query parameter \'per_page\' should not exceed 60',
             ], 60);
         }
-
         $ideascaleProfiles = IdeascaleProfile::query()
             ->withCount(['proposals'])
-            ->filter(request(['search', 'ids']));
+            ->filter(request(['search', 'ids', 'hashes']));
 
         return IdeascaleProfileResource::collection($ideascaleProfiles->fastPaginate($per_page)->onEachSide(0));
     }

@@ -29,6 +29,8 @@ const ReviewsFilter = () => {
                             }
                             placeholder="Select"
                             multiple={true}
+                            valueField={'hash'}
+                            labelField={'title'}
                         />
                     </div>
 
@@ -47,6 +49,8 @@ const ReviewsFilter = () => {
                             }
                             placeholder="Select"
                             multiple={true}
+                            valueField={'hash'}
+                            labelField={'name'}
                         />
                     </div>
 
@@ -65,6 +69,8 @@ const ReviewsFilter = () => {
                             }
                             placeholder="Select"
                             multiple={true}
+                            valueField={'hash'}
+                            labelField={'catalyst_reviewer_id'}
                         />
                     </div>
 
@@ -83,6 +89,8 @@ const ReviewsFilter = () => {
                             }
                             placeholder="Select"
                             multiple={true}
+                            valueField={'hash'}
+                            labelField={'title'}
                         />
                     </div>
 
@@ -102,6 +110,8 @@ const ReviewsFilter = () => {
                             }
                             placeholder="Select"
                             multiple={true}
+                            valueField={'hash'}
+                            labelField={'title'}
                         />
                     </div>
                 </div>

@@ -63,6 +63,11 @@ return [
             'length' => 11,
             'alphabet' => 'abcdefghjklmnopqrstuvwxyz0123456789',
         ],
+        \App\Models\Reviewer::class => [
+            'salt' => \App\Models\Reviewer::class . env('APP_KEY'),
+            'length' => 11,
+            'alphabet' => 'abcdefghjklmnopqrstuvwxyz0123456789',
+        ],
         \App\Models\User::class => [
             'salt' => \App\Models\User::class.env('APP_KEY'),
             'length' => 11,

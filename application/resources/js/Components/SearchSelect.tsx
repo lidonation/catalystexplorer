@@ -1,10 +1,10 @@
 'use client';
+import Checkbox from '@/Components/atoms/Checkbox';
 import { useSearchOptions } from '@/Hooks/useSearchOptions';
 import { cn } from '@/lib/utils';
 import { ChevronDown } from 'lucide-react';
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import Checkbox from '@/Components/atoms/Checkbox';
 import {
     Command,
     CommandEmpty,
@@ -18,7 +18,7 @@ import { ScrollArea } from './ScrollArea';
 export type SearchOption = {
     label?: string;
     hash?: string;
-}; 
+};
 
 type SearchSelectProps = {
     selected: string[];
@@ -27,6 +27,8 @@ type SearchSelectProps = {
     emptyText?: string;
     multiple?: boolean;
     domain?: string;
+    valueField: string;
+    labelField: string;
 };
 
 export function SearchSelect({
@@ -36,32 +38,23 @@ export function SearchSelect({
     emptyText = 'No results found.',
     multiple = false,
     domain,
+    labelField,
+    valueField,
 }: SearchSelectProps) {
     const [open, setOpen] = useState(false);
     const { searchTerm, setSearchTerm, options } =
         useSearchOptions<any>(domain);
 
     const { t } = useTranslation();
-    
     const filteredOptions = options.map((option, index) => {
-        // Handle when option is a string
-        if (typeof option === 'string') {
-          return {
-            label: option,
-            catalyst_reviewer_id: option, // Store string as reviewer ID if relevant
-            title: option, // Store string as title if it's a proposal
-            hash: option // Use the string itself as the hash
-          };
-        }
-        
+
         // Handle when option is an object
         return {
-          label: option?.name ?? option?.title ?? option?.label ?? option?.catalyst_reviewer_id ?? 'Unknown',
-          catalyst_reviewer_id: option?.catalyst_reviewer_id,
-          title: option?.title, 
-          hash: option?.catalyst_reviewer_id ?? option?.title ?? option?.hash ?? option?.id ?? `unknown-hash-${index}`
+            label: option[labelField],
+            title: option[labelField],
+            hash: option[valueField],
         };
-      });
+    });
 
     const handleSelect = useCallback(
         (value: string) => {
@@ -78,7 +71,7 @@ export function SearchSelect({
         },
         [multiple, onChange, selected, setSearchTerm],
     );
-    
+
     const handleClear = useCallback(
         (e: React.MouseEvent) => {
             e.stopPropagation();
@@ -119,7 +112,7 @@ export function SearchSelect({
                 </button>
             </PopoverTrigger>
             <PopoverContent
-            className="bg-background min-w-[var(--radix-popover-trigger-width)] w-[300px] p-0"
+                className="bg-background w-[300px] min-w-[var(--radix-popover-trigger-width)] p-0"
                 align="start"
             >
                 <Command shouldFilter={false}>

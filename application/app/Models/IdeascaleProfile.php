@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Actions\TransformHashToIds;
 use App\Enums\CatalystCurrencySymbols;
 use App\Enums\ProposalStatus;
 use App\Traits\HasConnections;
@@ -350,6 +351,9 @@ class IdeascaleProfile extends Model implements HasMedia
                     ->orWhere('username', 'ilike', "%{$search}%");
             });
         })->when($filters['ids'] ?? null, function ($query, $ids) {
+            $query->whereIn('id', is_array($ids) ? $ids : explode(',', $ids));
+        })->when($filters['hashes'] ?? null, function ($query, $hashes) {
+            $ids = (new TransformHashToIds)(collect($hashes), new static);
             $query->whereIn('id', is_array($ids) ? $ids : explode(',', $ids));
         });
 
