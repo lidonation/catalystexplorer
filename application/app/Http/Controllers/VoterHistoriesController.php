@@ -270,7 +270,6 @@ class VoterHistoriesController extends Controller
             'unifiedSearch' => 'nullable|string',
         ]);
 
-        // Ensure unifiedSearch is set in queryParams
         $this->queryParams['unifiedSearch'] = $request->input('unifiedSearch', 'true');
 
         $voterHistories = $this->query();
