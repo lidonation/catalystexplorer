@@ -243,6 +243,7 @@ class VotingWorkflowController extends Controller
                 'signature' => $walletData['signature'] ?? '',
                 'signature_key' => $walletData['signature_key'] ?? '',
                 'wallet_provider' => $wallet,
+                'user_id' => auth()->id(),
             ]);
 
         } catch (\Exception $e) {

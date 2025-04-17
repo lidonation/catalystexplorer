@@ -61,10 +61,6 @@ class VoterHistoryRepository extends Repository
                 }
 
                 $mergedArgs = array_merge($defaultArgs, $args);
-                if ($isUnifiedSearch && empty($query)) {
-                    $query = '*';
-                    $mergedArgs['filter'] = $mergedArgs['filter'] ?? [];
-                }
                 if (isset($mergedArgs['sort']) && is_array($mergedArgs['sort'])) {
                     foreach ($mergedArgs['sort'] as $sortItem) {
                         if (strpos($sortItem, 'voting_power:') === 0) {

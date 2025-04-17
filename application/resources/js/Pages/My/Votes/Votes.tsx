@@ -84,19 +84,18 @@ const VotesComponent: React.FC<VoteHistoryProps> = (props) => {
                 paramsObj[filter.param] = filter.value;
             }
         });
-        // Always include unifiedSearch
         paramsObj['unifiedSearch'] = 'true';
         return paramsObj;
     }, [filters]);
 
     return (
         <>
-            <Head title={t('vote.myVotes')} />
-            <div className="mx-auto px-4 py-8 sm:px-6 lg:px-8">
+            <Head title={t('votes')} />
+            <div className="mx-auto">
                 <div className="text-content">
                     {isAuthenticated ? (
                         <div className="container flex flex-col">
-                            <div className='bg-background rounded-lg shadow-lg mb-8'>
+                            <div className='bg-background rounded-lg shadow-lg'>
                                 <VoterHistoryTable
                                     voterHistories={voterHistories as PaginatedData<VoterHistoryData[]>}
                                     filters={searchParams}

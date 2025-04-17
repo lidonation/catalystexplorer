@@ -19,7 +19,7 @@ export interface TabConfig {
 }
 
 export function generateTabs(t: TFunction, config: TabConfig): Tab[] {
-  
+
   return config.tabs.map(tab => {
     const routeName = `${config.routePrefix}.${tab.routeName || tab.key}`;
     return {
@@ -41,7 +41,9 @@ export const myProfileTabs: TabConfig = {
     { key: 'reviews' },
     { key: 'groups' },
     { key: 'communities' },
-    { key: 'lists' }
+    { key: 'lists' },
+    { key: 'votes' }
+
   ]
 };
 
