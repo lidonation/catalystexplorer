@@ -10,7 +10,7 @@ import GroupData = App.DataTransferObjects.GroupData;
 import GroupCardExtendedLoader from '@/Pages/Groups/Partials/GroupCardExtendedLoader';
 
 interface MyGroupsProps extends Record<string, unknown> {
-    groups: PaginatedData<GroupData[]>;
+    groups: GroupData[];
     filters: SearchParams;
 }
 
@@ -29,15 +29,10 @@ export default function MyGroups({ groups, filters }: MyGroupsProps) {
                         fallback={<GroupCardExtendedLoader />}
                         data="groups"
                     >
-                        <MyGroupsList groups={groups?.data || []} />
+                        <MyGroupsList groups={groups|| []} />
                     </WhenVisible>
                 </div>
 
-                {groups && groups.total > 0 && (
-                    <section className="w-full container">
-                        <Paginator pagination={groups} />
-                    </section>
-                )}
             </MyLayout>
         </FiltersProvider>
     );

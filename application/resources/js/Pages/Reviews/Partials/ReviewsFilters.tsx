@@ -1,10 +1,8 @@
 import { RangePicker } from '@/Components/RangePicker';
 import { useTranslation } from 'react-i18next';
 import { SearchSelect } from '@/Components/SearchSelect';
-import Selector from '@/Components/atoms/Selector';
 import { useFilterContext } from '@/Context/FiltersContext';
 import { ParamsEnum } from '@/enums/proposal-search-params';
-
 
 const ReviewsFilter = () => {
     const { t } = useTranslation();
@@ -15,14 +13,14 @@ const ReviewsFilter = () => {
     return (
         <div className="mb-6 w-full">
             <div className="bg-background w-full rounded-xl p-4">
-                <div className="grid grid-cols-2 gap-x-4 gap-y-3 rounded-xl md:grid-cols-2 lg:grid-cols-4">
+                <div className="grid grid-cols-2 gap-x-4 gap-y-3 rounded-xl md:grid-cols-3 lg:grid-cols-3">
                     <div className="col-span-1 flex flex-col gap-2 pb-4">
                         <span>{t('reviews.filters.funds')}</span>
                         <SearchSelect
                             key={'fund-titles'}
                             domain={'fundTitles'}
                             selected={getFilter(ParamsEnum.FUNDS) ?? []}
-                            onChange={(value) => 
+                            onChange={(value) =>
                                 setFilters({
                                     label: t('reviews.filters.funds'),
                                     value,
@@ -33,25 +31,25 @@ const ReviewsFilter = () => {
                             multiple={true}
                         />
                     </div>
-                    
+
                     <div className="col-span-1 flex flex-col gap-2 pb-4">
-                        <span>{t('reviews.filters.proposals')}</span>
+                        <span>{t('proposals.filters.groups')}</span>
                         <SearchSelect
-                            key={'proposals'}
-                            domain={'proposals'}
-                            selected={getFilter(ParamsEnum.PROPOSALS) ?? []}
+                            key={'groups'}
+                            domain={'groups'}
+                            selected={getFilter(ParamsEnum.GROUPS) ?? []}
                             onChange={(value) =>
                                 setFilters({
-                                    label: t('reviews.filters.proposals'),
+                                    label: t('proposals.filters.groups'),
                                     value,
-                                    param: ParamsEnum.PROPOSALS,
+                                    param: ParamsEnum.GROUPS,
                                 })
                             }
                             placeholder="Select"
                             multiple={true}
                         />
                     </div>
-                    
+
                     <div className="col-span-1 flex flex-col gap-2 pb-4">
                         <span>{t('reviews.filters.reviewerIds')}</span>
                         <SearchSelect
@@ -70,38 +68,46 @@ const ReviewsFilter = () => {
                         />
                     </div>
 
-                    <div className="col-span-1 flex flex-col gap-2 pb-4">
-                        <span>{t('reviews.filters.helpful')}</span>
-                        <Selector
-                            isMultiselect={false}
-                            options={[
-                                {
-                                    value: 'Select',
-                                    label: t('reviews.select'),
-                                },
-                                {
-                                    value: 'true',
-                                    label: t('reviews.yes'),
-                                },
-                                {
-                                    value: 'false',
-                                    label: t('reviews.no'),
-                                },
-                            ]}
-                            setSelectedItems={(value) =>
+                    <div className="col-span-1 flex flex-col gap-2 pb-4 lg:col-span-1">
+                        <span>{t('reviews.filters.proposals')}</span>
+                        <SearchSelect
+                            key={'proposals'}
+                            domain={'proposals'}
+                            selected={getFilter(ParamsEnum.PROPOSALS) ?? []}
+                            onChange={(value) =>
                                 setFilters({
-                                    label: `${t('reviews.filters.helpful')}: ${value === 'true' ? t('reviews.yes') : t('reviews.no')}`,
+                                    label: t('reviews.filters.proposals'),
                                     value,
-                                    param: ParamsEnum.HELPFUL,
+                                    param: ParamsEnum.PROPOSALS,
                                 })
                             }
-                            selectedItems={getFilter(ParamsEnum.HELPFUL)}
+                            placeholder="Select"
+                            multiple={true}
+                        />
+                    </div>
+
+                    <div className="col-span-1 flex flex-col gap-2 pb-4 lg:col-span-1">
+                        <span>{t('proposals.filters.proposers')}</span>
+                        <SearchSelect
+                            domain={'ideascaleProfiles.index'}
+                            selected={
+                                getFilter(ParamsEnum.IDEASCALE_PROFILES) ?? []
+                            }
+                            onChange={(value) =>
+                                setFilters({
+                                    label: t('proposals.filters.proposers'),
+                                    value,
+                                    param: ParamsEnum.IDEASCALE_PROFILES,
+                                })
+                            }
+                            placeholder="Select"
+                            multiple={true}
                         />
                     </div>
                 </div>
 
                 <div className="my-6 w-full border-b"></div>
-                
+
                 <div className="grid grid-cols-1 gap-x-4 gap-y-3 rounded-xl lg:grid-cols-2">
                     <div className="pb-4">
                         <RangePicker
@@ -130,13 +136,16 @@ const ReviewsFilter = () => {
                             key={'Reputation Score'}
                             context={t('reviews.filters.reputationScores')}
                             value={
-                                getFilter(ParamsEnum.REPUTATION_SCORES)?.length === 0
+                                getFilter(ParamsEnum.REPUTATION_SCORES)
+                                    ?.length === 0
                                     ? reputationRange
                                     : getFilter(ParamsEnum.REPUTATION_SCORES)
                             }
                             onValueChange={(value) =>
                                 setFilters({
-                                    label: t('reviews.filters.reputationScores'),
+                                    label: t(
+                                        'reviews.filters.reputationScores',
+                                    ),
                                     value,
                                     param: ParamsEnum.REPUTATION_SCORES,
                                 })

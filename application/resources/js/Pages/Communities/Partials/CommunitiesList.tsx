@@ -23,7 +23,7 @@ const CommunitiesList: React.FC<CommunitiesProps> = ({communities}) => {
                         <RecordsNotFound context="communities" searchTerm=""/>
                     </div>
                 ) : (
-                    <div className="grid w-full grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
+                    <div className="grid w-full grid-cols-1 gap-4 grid-cols-2 xl:grid-cols-3">
                         {communities.data &&
                             communities.data?.map((community) => (
                                 <CommunityCard key={community.hash} community={community}/>

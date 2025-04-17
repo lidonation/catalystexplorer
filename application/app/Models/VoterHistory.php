@@ -45,6 +45,7 @@ class VoterHistory extends Model
         return [
             'voting_power',
             'fund',
+            'time',
         ];
     }
 

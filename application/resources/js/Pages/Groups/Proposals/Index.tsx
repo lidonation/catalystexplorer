@@ -6,6 +6,7 @@ import GroupData = App.DataTransferObjects.GroupData;
 import ProposalData = App.DataTransferObjects.ProposalData;
 import { PaginatedData } from "../../../../types/paginated-data";
 import ProposalMiniCardLoader from "@/Pages/Proposals/Partials/ProposalMiniCardLoader";
+import { ParamsEnum } from '@/enums/proposal-search-params';
 
 interface ProposalsPageProps {
     group: GroupData;
@@ -20,9 +21,11 @@ export default function Proposals({ group, proposals }: ProposalsPageProps) {
             <WhenVisible data="proposals" fallback={<ProposalMiniCardLoader />}>
                 <RelatedProposals
                     proposals={proposals}
-                    groupId={group.hash ?? undefined}
-                    proposalWrapperClassName='rounded-xl border-2 border-border-dark-on-dark'
-                    className='proposals-wrapper w-full grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-3'
+                    routeParam={{
+                        [ParamsEnum.GROUPS]: group.hash ? [group.hash] : null,
+                    }}
+                    proposalWrapperClassName="rounded-xl border-2 border-border-dark-on-dark"
+                    className="proposals-wrapper grid w-full grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-3"
                 />
             </WhenVisible>
         </GroupLayout>

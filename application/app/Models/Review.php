@@ -30,7 +30,7 @@ class Review extends Model
             'content',
             'reviewer.catalyst_reviewer_id',
             'positive_rankings',
-            'negative_ranings',
+            'negative_rankings',
             'status',
             'model_id',
             'model_type',
@@ -39,7 +39,10 @@ class Review extends Model
             'rating',
             'reviewer.avg_reputation_score',
             'proposal.id',
+            'proposal.title',
+            'proposal.ideascale_profiles.hash',
             'proposal.ideascale_profiles.id',
+            'proposal.groups.hash',
         ];
     }
 
@@ -56,6 +59,7 @@ class Review extends Model
             'proposal.content',
             'proposal.ideascale_profiles.name',
             'proposal.ideascale_profiles.username',
+            'proposal.groups.hash',
         ];
     }
 
@@ -72,6 +76,7 @@ class Review extends Model
             'rankings',
             'positive_rankings',
             'negative_rankings',
+            'proposal.groups.hash',
         ];
     }
 
@@ -162,10 +167,6 @@ class Review extends Model
             });
         });
 
-        $query->when($filters['ids'] ?? false, function ($query, $ids) {
-            $query->whereIn('proposal_id', $ids);
-        });
-
         $query->when(
             $filters['reviewer_ids'] ?? false,
             fn (Builder $query, $reviewerIds) => $query->whereHas('reviewer', function ($query) use ($reviewerIds) {
@@ -184,7 +185,7 @@ class Review extends Model
 
     public function toSearchableArray(): array
     {
-        $this->load(['model', 'discussion', 'parent', 'reviewer.reputation_scores.fund', 'proposal.ideascaleProfiles']);
+        $this->load(['model', 'discussion', 'parent', 'reviewer.reputation_scores.fund', 'proposal', 'proposal.ideascale_profiles']);
 
         $array = $this->toArray();
 

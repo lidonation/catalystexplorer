@@ -34,17 +34,16 @@ Route::localized(
                             });
                     });
 
-                Route::get('/communities', function () {
-                    return Inertia::render('My/Communities/Index');
-                })->name('communities');
+                Route::get('/communities', [ProfileController::class, 'userCommunities'])->name('communities');
 
                 Route::get('/dashboard', [ProfileController::class, 'userSummary'])->name('dashboard');
 
                 Route::get('/groups', [GroupsController::class, 'myGroups'])->name('groups');
 
-                Route::get('/lists', function () {
-                    return Inertia::render('My/Lists/Index');
-                })->name('lists');
+                Route::prefix('lists')->name('lists.')->group(function () {
+                    Route::get('/', [MyBookmarksController::class, 'collectionIndex'])->name('index');
+                    Route::get('/{list}', [MyBookmarksController::class, 'showCollection'])->name('show');
+                });
 
                 Route::get('/profile', function () {
                     return Inertia::render('My/Profile/Index');
@@ -57,7 +56,7 @@ Route::localized(
                     })->name('manage');
                 });
 
-                Route::get('/reviews', [ReviewsController::class, 'myReviews'])->name('reviews');
+                Route::get('/reviews', [ProfileController::class, 'myReviews'])->name('reviews');
             });
     }
 );
