@@ -4,8 +4,10 @@ import ExpandableContent from '@/Components/ExpandableContent';
 import { ListProvider } from '@/Context/ListContext';
 import BookmarkButton from '@/Pages/My/Bookmarks/Partials/BookmarkButton';
 import { Link } from '@inertiajs/react';
+import { useEffect, useRef, useState } from 'react';
 import ProposalStatus from './ProposalStatus';
-import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import ExpandableContentAnimation from '@/Components/ExpandableContentAnimation';
 
 export default function ProposalCardHeader({
     proposal,
@@ -19,23 +21,44 @@ export default function ProposalCardHeader({
     isHorizontal: boolean;
 }) {
     const [isHovered, setIsHovered] = useState(false);
+
     const gradientColors: Record<string, unknown> = {
         complete:
             'from-[var(--success-gradient-color-1)] to-[var(--success-gradient-color-2)]',
         default:
             'from-[var(--cx-background-gradient-1-dark)] to-[var(--cx-background-gradient-2-dark)]',
     };
+
     const headerBGColor =
-        gradientColors[proposal?.status] || gradientColors.default;
+        proposal?.status == 'complete'
+            ? gradientColors.complete
+            : gradientColors.default;
+
+    console.log({ headerBGColor });
+
+    const contentRef = useRef<HTMLParagraphElement | null>(null);
+    const [lineCount, setLineCount] = useState(0);
+
+    const {t} = useTranslation();
+
+    useEffect(() => {
+        const element = contentRef.current;
+        if (element) {
+            const lineHeight = parseFloat(getComputedStyle(element).lineHeight);
+            const height = element.offsetHeight;
+            setLineCount(Math.round(height / lineHeight));
+        }
+    }, [proposal?.title]);
 
     return (
-        <header
-            className={`text-content-light w-full rounded-xl bg-linear-to-tr ${headerBGColor} flex shrink flex-col ${isHorizontal ? 'h-full' : ''}`}
-            onMouseEnter={() => setIsHovered(true)}
-            onMouseLeave={() => setIsHovered(false)}
+        <ExpandableContentAnimation
+            lineClamp={3}
+            contentRef={contentRef}
+            onHoverChange={setIsHovered}
         >
-            {/* Top Section */}
-            <div className="grow">
+            <header
+                className={`text-content-light w-full rounded-xl bg-linear-to-tr ${headerBGColor} flex shrink flex-col ${isHorizontal ? 'h-full' : ''}`}
+            >
                 <div className="flex items-center justify-between px-4 py-3">
                     {userSelected ? (
                         <div>
@@ -71,9 +94,8 @@ export default function ProposalCardHeader({
                         <>
                             <ProposalStatus
                                 status={proposal.status}
-                                funding_status={proposal.funding_status}
+                                funding_status={proposal?.funding_status}
                             />
-
                             <ListProvider>
                                 {proposal.hash && (
                                     <BookmarkButton
@@ -85,9 +107,15 @@ export default function ProposalCardHeader({
                         </>
                     )}
                 </div>
+
                 {/* Card Content */}
                 <div
-                    className={`min-h-20 p-2 px-4 leading-tight ${!isHorizontal ? '' : 'flex h-full w-full items-center justify-center'}`}
+                    className={`min-h-20 p-2 px-4 leading-tight ${
+                        !isHorizontal
+                            ? ''
+                            : 'flex h-full w-full items-center justify-center'
+                    }`}
+                    style={{ overflow: 'visible' }}
                 >
                     <a
                         href={proposal.link}
@@ -96,52 +124,58 @@ export default function ProposalCardHeader({
                         className={`hover:text-primary font-medium ${
                             isHorizontal ? 'mb-4 text-center' : ''
                         }`}
+                        style={{ overflow: 'visible' }}
                     >
                         {!userSelected ? (
-                            <ExpandableContent className="overflow-hidden text-ellipsis" lineClamp={3} expanded={isHovered}>
-                                <Title level="4">{proposal.title}</Title>
-                            </ExpandableContent>
+                            <div ref={contentRef}>
+                                <ExpandableContent
+                                    className="text-ellipsis"
+                                    lineClamp={3}
+                                    expanded={isHovered}
+                                >
+                                    <Title level="4">{proposal.title}</Title>
+                                </ExpandableContent>
+                            </div>
                         ) : null}
                     </a>
                     <div className="flex flex-row justify-end py-0.5 italic">
                         <span>~ {proposal.fund?.title}</span>
                     </div>
                 </div>
-            </div>
-
-            {!userSelected &&
-                (proposal.ideascale_link ||
-                    proposal.projectcatalyst_io_link) && (
-                    <nav
-                        className="text-content-light flex items-center justify-evenly rounded-b-xl bg-white/25 p-2 font-semibold"
-                        aria-label="Related Platforms"
-                    >
-                        {proposal.ideascale_link && (
-                            <Link
-                                href={proposal.ideascale_link}
-                                className="text-4 text-opacity-100 flex w-full items-center justify-center"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                            >
-                                <span>Ideascale</span>
-                            </Link>
-                        )}
-                        {proposal.ideascale_link &&
-                            proposal.projectcatalyst_io_link && (
-                                <div className="mx-2 h-3 border-r"></div>
+                {!userSelected &&
+                    (proposal.ideascale_link ||
+                        proposal.projectcatalyst_io_link) && (
+                        <nav
+                            className="text-content-light flex items-center justify-evenly rounded-b-xl bg-white/25 p-2 font-semibold"
+                            aria-label="Related Platforms"
+                        >
+                            {proposal.ideascale_link && (
+                                <Link
+                                    href={proposal.ideascale_link}
+                                    className="text-4 text-opacity-100 flex w-full items-center justify-center"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                >
+                                    <span>{t('proposals.ideascale')}</span>
+                                </Link>
                             )}
-                        {proposal.projectcatalyst_io_link && (
-                            <Link
-                                href={proposal.projectcatalyst_io_link}
-                                className="text-4 text-opacity-100 flex w-full items-center justify-center"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                            >
-                                <span>Projectcatalyst.io</span>
-                            </Link>
-                        )}
-                    </nav>
-                )}
-        </header>
+                            {proposal.ideascale_link &&
+                                proposal.projectcatalyst_io_link && (
+                                    <div className="mx-2 h-3 border-r"></div>
+                                )}
+                            {proposal.projectcatalyst_io_link && (
+                                <Link
+                                    href={proposal.projectcatalyst_io_link}
+                                    className="text-4 text-opacity-100 flex w-full items-center justify-center"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                >
+                                    <span>{t('proposals.projectCatalyst')}</span>
+                                </Link>
+                            )}
+                        </nav>
+                    )}
+            </header>
+        </ExpandableContentAnimation>
     );
 }

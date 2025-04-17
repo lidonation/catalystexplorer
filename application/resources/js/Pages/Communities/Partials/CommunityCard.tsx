@@ -22,7 +22,7 @@ const CommunityCard: React.FC<CommunityCardProps> = ({ community, embedded = tru
     const { t } = useTranslation();
 
     return (
-        <Card className="justify-between overflow-hidden flex-1">
+        <Card className="border-border-dark-on-dark flex-1 justify-between overflow-hidden border">
             <div className="flex h-auto w-full items-center justify-center overflow-hidden pt-8 pb-4">
                 <div className="bg-background-darker border-background-lighter flex h-28 w-28 items-center justify-center overflow-hidden rounded-full border-4">
                     <CommunitiesIcon className="text-dark h-8 w-8" />
@@ -48,37 +48,43 @@ const CommunityCard: React.FC<CommunityCardProps> = ({ community, embedded = tru
                     />
                 </div>
             </div>
-            {embedded && ( <div>
-                <div className="px-8">
-                    <div className="mt-4 flex flex-row justify-between items-center">
-                        <div className="text-4 text-primary-100">
-                            {t('communities.proposers').toUpperCase()}
+            {embedded && (
+                <div>
+                    <div className="px-8">
+                        <div className="mt-4 flex flex-row items-center justify-between">
+                            <div className="text-4 text-primary-100">
+                                {t('communities.proposers').toUpperCase()}
+                            </div>
+
+                            <CommunityIdeascaleProfiles
+                                ideascaleProfiles={community.ideascale_profiles}
+                                total={community.ideascale_profiles_count}
+                            />
                         </div>
 
-                        <CommunityIdeascaleProfiles
-                            ideascaleProfiles={community.ideascale_profiles}
-                            total={community.ideascale_profiles_count}
-                        />
-                    </div>
+                        <Divider dotted={true} />
 
-                    <Divider dotted={true} />
-
-                    <div className="flex flex-row justify-between items-center">
-                        <div className="text-4 text-primary-100">
-                            {t('communities.proposals').toUpperCase()}
+                        <div className="flex flex-row items-center justify-between">
+                            <div className="text-4 text-primary-100">
+                                {t('communities.proposals').toUpperCase()}
+                            </div>
+                            <Value>{community.proposals_count}</Value>
                         </div>
-                        <Value>{community.proposals_count}</Value>
+                    </div>
+
+                    <Divider />
+
+                    <div className="align-center flex justify-center py-4">
+                        <PrimaryLink
+                            href={useLocalizedRoute('communities.dashboard', {
+                                slug: community.slug,
+                            })}
+                        >
+                            {t('explore')}
+                        </PrimaryLink>
                     </div>
                 </div>
-
-                <Divider />
-
-                <div className="align-center flex justify-center py-4">
-                    <PrimaryLink href={useLocalizedRoute('communities.dashboard', {slug: community.slug,})}>
-                        {t('explore')}
-                    </PrimaryLink>
-                </div>
-            </div>)}
+            )}
         </Card>
     );
 };

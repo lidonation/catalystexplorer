@@ -23,6 +23,7 @@ use Laravel\Nova\Fields\Select;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Fields\URL;
 use Laravel\Nova\Http\Requests\NovaRequest;
+use Laravel\Nova\Panel;
 
 class Nfts extends Resource
 {
@@ -84,7 +85,6 @@ class Nfts extends Resource
 
             Text::make(__('Currency'))->default('usd'),
 
-            URL::make(__('Preview Link'), 'preview_link')->rules(['required']),
             URL::make(__('Storage URI'), 'storage_link')
                 ->nullable()
                 ->rules(['required'])
@@ -108,22 +108,42 @@ class Nfts extends Resource
                 ]),
 
             DateTime::make(__('Minted At'), 'minted_at'),
+
+            new Panel('Media', self::mediaFields()),
+
             KeyValue::make(__('On-Chain Metadata'), 'metadata')
                 ->rules('json')
                 ->resolveUsing(function ($object) {
                     return collect($object)?->sortKeys();
                 }),
 
-            Images::make(__('Hero'), 'hero')
-                ->conversionOnDetailView('preview')
-                ->conversionOnIndexView('thumbnail')
-                ->enableExistingMedia(),
-
             Markdown::make(__('description'))->translatable()->help(
                 'Please limit your input to 63 characters for NFT uploads. Exceeding this limit may affect the upload process. Thank you!'
             ),
             HasMany::make(__('Transactions'), 'txs', Txs::class),
             HasMany::make(__('Metas'), 'metas', Metas::class),
+        ];
+    }
+
+    /**
+     * Get media fields for the resource.
+     */
+    public static function mediaFields(): array
+    {
+        return [
+            Images::make(__('Preview'), 'preview')
+                ->conversionOnDetailView('medium')
+                ->conversionOnIndexView('thumbnails')
+                ->enableExistingMedia(),
+
+            Images::make(__('Hero'), 'hero')
+                ->conversionOnDetailView('preview')
+                ->conversionOnIndexView('thumbnail')
+                ->enableExistingMedia(),
+
+            URL::make(__('Preview Link (Legacy)'), 'preview_link')
+                ->help('Legacy field: Use the Preview media field above instead')
+                ->hideFromIndex(),
         ];
     }
 

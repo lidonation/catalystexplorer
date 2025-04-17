@@ -105,7 +105,11 @@ class ReviewsController extends Controller
             ProposalSearchParams::PAGE()->value => 'integer|nullable',
             ProposalSearchParams::LIMIT()->value => 'integer|nullable',
             ProposalSearchParams::SORTS()->value => 'string|nullable',
+            ProposalSearchParams::GROUPS()->value => 'array|nullable',
+            ProposalSearchParams::IDEASCALE_PROFILES()->value => 'array|nullable',
         ]);
+
+        $this->filters = $this->queryParams;
 
         $sort = collect(explode(':', $request->input(ProposalSearchParams::SORTS()->value, '')))->filter();
 
@@ -208,6 +212,16 @@ class ReviewsController extends Controller
         if (! empty($this->queryParams[ProposalSearchParams::FUNDS()->value])) {
             $fundLabels = implode("','", $this->queryParams[ProposalSearchParams::FUNDS()->value]);
             $filters[] = "reviewer.reputation_scores.fund.label IN ['{$fundLabels}']";
+        }
+
+        if (! empty($this->queryParams[ProposalSearchParams::GROUPS()->value])) {
+            $groupHashes = implode(',', $this->queryParams[ProposalSearchParams::GROUPS()->value]);
+            $filters[] = "proposal.groups.hash IN [{$groupHashes}]";
+        }
+
+        if (! empty($this->queryParams[ProposalSearchParams::IDEASCALE_PROFILES()->value])) {
+            $ideascaleProfileHashes = implode(',', $this->queryParams[ProposalSearchParams::IDEASCALE_PROFILES()->value]);
+            $filters[] = "proposal.ideascale_profiles.hash IN [{$ideascaleProfileHashes}]";
         }
 
         if (! empty($this->queryParams[ProposalSearchParams::PROPOSALS()->value])) {

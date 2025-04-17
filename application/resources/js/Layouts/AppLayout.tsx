@@ -41,7 +41,7 @@ export default function AppLayout({ children }: { children: ReactNode }) {
             </Dialog>
 
             {/* Sidebar for larger screens */}
-            <div className="bg-background hidden h-full lg:fixed lg:inset-y-0 lg:z-30 lg:flex lg:w-72">
+            <div className="bg-background hidden h-full lg:fixed lg:inset-y-0 lg:z-30 lg:flex lg:w-72 ">
                 <DesktopSidebar />
             </div>
 

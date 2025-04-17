@@ -112,6 +112,7 @@
     "distributed": "Distributed",
     "requested": "Requested",
     "submitted": "Submitted",
+    "funded": "Funded",
     "approved": "Approved",
     "completed": "Completed",
     "loginPrompt": "Login to get started",
@@ -434,6 +435,8 @@
         "fundingReceived": "Funding Received",
         "manageProposal": "Manage Proposal",
         "totalRequested": "Total Requested",
+        "ideascale": "Ideascale",
+        "rrojectCatalyst": "Projectcatalyst.io",
         "errors": {
             "noUrl": "No video URL provided",
             "invalidYoutubeFormat": "The YouTube link format is incorrect",
@@ -581,6 +584,9 @@
     },
     "communities": {
         "communities": "Communities",
+        "dashboard": "Community Dashboard",
+        "groups": "Groups Supported",
+        "events": "Community events",
         "title": "Catalyst Communities",
         "subtitle": "Diverse, independent, and together inspiring the highest level of human collaboration",
         "proposalSummary": "Proposals Summary",
