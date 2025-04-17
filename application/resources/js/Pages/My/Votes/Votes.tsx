@@ -10,7 +10,6 @@ import { PaginatedData } from '../../../../types/paginated-data';
 import { SearchParams } from '../../../../types/search-params';
 import { VoteEnums } from '@/enums/vote-search-enums';
 
-// Define your VoterHistoryData type
 import VoterHistoryData = App.DataTransferObjects.VoterHistoryData;
 
 interface VoteHistoryProps {
@@ -29,25 +28,20 @@ const VotesComponent: React.FC<VoteHistoryProps> = (props) => {
     const { props: pageProps } = usePage();
     const isAuthenticated = pageProps.auth?.user;
 
-    // Set unifiedSearch parameter on mount
     useEffect(() => {
         console.log('Search Params:', {
             query: searchParams,
             unifiedSearch: 'true',
             url: window.location.href
         });
-        // We're using VoteEnums.QUERY for the unified search
         const url = new URL(window.location.href);
         url.searchParams.set('unifiedSearch', 'true');
         window.history.replaceState({}, '', url.toString());
 
-        // Set unified search flag
         url.searchParams.set('unifiedSearch', 'true');
 
-        // Update the URL without refreshing the page
         window.history.replaceState({}, '', url.toString());
 
-        // Load any existing search params
         const searchQuery = url.searchParams.get(VoteEnums.QUERY);
         if (searchQuery) {
             setFilters({
@@ -57,7 +51,6 @@ const VotesComponent: React.FC<VoteHistoryProps> = (props) => {
             });
         }
 
-        // Load other filter params
         const fundParam = url.searchParams.get(VoteEnums.FUND);
         if (fundParam) {
             setFilters({
