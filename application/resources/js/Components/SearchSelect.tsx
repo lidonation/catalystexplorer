@@ -43,25 +43,30 @@ export function SearchSelect({
 
     const { t } = useTranslation();
     
-    const filteredOptions = options.map((option, index) => {
-        // Handle when option is a string
+    const filteredOptions = options.map((option) => {
         if (typeof option === 'string') {
-          return {
-            label: option,
-            catalyst_reviewer_id: option, // Store string as reviewer ID if relevant
-            title: option, // Store string as title if it's a proposal
-            hash: option // Use the string itself as the hash
-          };
+            const trimmedOption = option.trim();
+            return {
+                label: trimmedOption,
+                hash: trimmedOption,
+                title: trimmedOption
+            };
         }
         
-        // Handle when option is an object
+        const label = (option?.name ?? option?.title ?? option?.label ?? option?.catalyst_reviewer_id ?? 'Unknown').trim();
+        
+        const hash = domain === 'proposals' 
+                    ? (option?.title?.trim() ?? option?.hash?.trim() ?? 'unknown-hash') 
+                    : domain === 'reviewers'
+                    ? (option?.catalyst_reviewer_id?.trim() ?? option?.hash?.trim() ?? 'unknown-hash')
+                    : (option?.hash?.trim() ?? option?.title?.trim() ?? option?.catalyst_reviewer_id?.trim() ?? 'unknown-hash');
+        
         return {
-          label: option?.name ?? option?.title ?? option?.label ?? option?.catalyst_reviewer_id ?? 'Unknown',
-          catalyst_reviewer_id: option?.catalyst_reviewer_id,
-          title: option?.title, 
-          hash: option?.catalyst_reviewer_id ?? option?.title ?? option?.hash ?? option?.id ?? `unknown-hash-${index}`
+            label,
+            title: (option?.title ?? option?.catalyst_reviewer_id ?? 'Unknown').trim(),
+            hash,
         };
-      });
+    });
 
     const handleSelect = useCallback(
         (value: string) => {
