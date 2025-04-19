@@ -234,8 +234,16 @@ class ReviewsController extends Controller
 
         $reviewerIdsKey = ProposalSearchParams::REVIEWER_IDS()->value;
         if (! empty($this->queryParams[$reviewerIdsKey])) {
-            $reviewerIds = implode("','", $this->queryParams[$reviewerIdsKey]);
-            $filters[] = "reviewer.catalyst_reviewer_id IN ['{$reviewerIds}']";
+            $reviewerIds = is_array($this->queryParams[$reviewerIdsKey])
+                ? $this->queryParams[$reviewerIdsKey]
+                : explode(',', $this->queryParams[$reviewerIdsKey]);
+
+            if (count($reviewerIds) === 1) {
+                $filters[] = "reviewer.catalyst_reviewer_id = '{$reviewerIds[0]}'";
+            } else {
+                $reviewerIdsString = implode("','", $reviewerIds);
+                $filters[] = "reviewer.catalyst_reviewer_id IN ['{$reviewerIdsString}']";
+            }
         }
 
         if (! empty($this->queryParams[ProposalSearchParams::RATINGS()->value])) {
