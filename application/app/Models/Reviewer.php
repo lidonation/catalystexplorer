@@ -5,15 +5,16 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Traits\HasMetaData;
-use Illuminate\Database\Eloquent\Casts\Attribute;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use App\Actions\TransformHashToIds;
 use Staudenmeir\EloquentHasManyDeep\HasManyDeep;
+use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Staudenmeir\EloquentHasManyDeep\HasRelationships;
 
 class Reviewer extends Model
 {
-    use HasMetaData,HasRelationships;
+    use HasMetaData, HasRelationships;
 
     protected $guarded = [];
 
@@ -43,7 +44,7 @@ class Reviewer extends Model
         $avg = $this->reputation_scores()->avg('score');
 
         return Attribute::make(
-            get: fn () => is_null($avg) ? null : round($avg * 100, 2)
+            get: fn() => is_null($avg) ? null : round($avg * 100, 2)
         );
     }
 
@@ -59,11 +60,14 @@ class Reviewer extends Model
 
     public function scopeFilter($query, array $filters)
     {
-        if (! empty($filters['search'])) {
-            $query->where(function ($q) use ($filters) {
-                $q->where('catalyst_reviewer_id', 'like', "%{$filters['search']}%");
-            });
-        }
+        $query->where(function ($q) use ($filters) {
+            $q->where('catalyst_reviewer_id', 'like', "%{$filters['search']}%");
+        })->when($filters['ids'] ?? null, function ($query, $ids) {
+            $query->whereIn('id', is_array($ids) ? $ids : explode(',', $ids));
+        })->when($filters['hashes'] ?? null, function ($query, $hashes) {
+            $ids = (new TransformHashToIds)(collect($hashes), new static);
+            $query->whereIn('id', is_array($ids) ? $ids : explode(',', $ids));
+        });
 
         if (! empty($filters['ids'])) {
             $query->whereIn('catalyst_reviewer_id', (array) $filters['ids']);
