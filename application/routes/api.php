@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CardanoBudgetProposalController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\GroupsController;
@@ -72,7 +73,6 @@ Route::prefix('api')->as('api.')->group(function () {
         Route::get('/{hash}/connections', [IdeascaleProfilesController::class, 'connections'])->name('connections');
     });
 
-
     Route::get('/fund-titles', [ProposalsController::class, 'fundTitles'])->name('fundTitles');
 
     Route::get('/helpful-total', [ReviewsController::class, 'helpfulTotal'])->name('helpfulTotal');
@@ -90,4 +90,25 @@ Route::prefix('api')->as('api.')->group(function () {
     );
 
     Route::post('nmkr/notifications', action: [CompletetProjectNftsController::class, 'updateNftMintStatus'])->name('nmkr');
+
+    Route::prefix('cardano')->as('cardano.')
+        ->middleware([])
+        ->group(function () {
+            Route::prefix('budget-proposals')->as('budgetProposals.')
+                ->middleware([])
+                ->group(function () {
+                    Route::get('/', [CardanoBudgetProposalController::class, 'index'] )
+                        ->name('index');
+                    Route::get('/metrics', [CardanoBudgetProposalController::class, 'metrics'] )
+                        ->name('metrics');
+
+                    Route::get('/metrics/catalyst-proposals/{username}', [CardanoBudgetProposalController::class, 'relatedCatalystProposalsCount'] )
+                        ->name('metrics.catalystProposals');
+
+                    Route::get('/catalyst-proposals/{username}', [CardanoBudgetProposalController::class, 'relatedCatalystProposals'] )
+                        ->name('relatedCatalystProposals');
+                });
+        });
+
+
 });
