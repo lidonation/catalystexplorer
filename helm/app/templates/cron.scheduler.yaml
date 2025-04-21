@@ -60,5 +60,5 @@ spec:
                         command:
                           - /bin/sh
                           - -c
-                          - kubectl exec $(kubectl get pods -l service=catalystexplorer-app --field-selector=status.phase=Running -o=jsonpath='{.items[0].metadata.name}') -c app -- php /var/www/artisan schedule:run php /var/www/artisan schedule:run --verbose --no-interaction
+                          - kubectl exec $(kubectl get pods -l service=catalystexplorer-app --field-selector=status.phase=Running -o=jsonpath='{.items[0].metadata.name}') -c app -- php /var/www/artisan schedule:run --verbose --no-interaction
                     restartPolicy: Never
