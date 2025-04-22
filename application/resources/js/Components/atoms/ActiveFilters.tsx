@@ -108,48 +108,19 @@ export default function ActiveFilters({
 const StatusFilters = ({ filter }: { filter: FilteredItem }) => {
     const { setFilters } = useFilterContext();
     const removeFilter = (value?: string) => {
-        const values = Array.isArray(filter.value) 
+        const currentValue = Array.isArray(filter.value) 
             ? filter.value 
             : String(filter.value).split(',');
+            
+        const newVal = currentValue.filter(
+            (val: string | undefined) => val != value,
+        );
         
-        const newVal = values.filter((val) => String(val) !== String(value));
-
-        setTimeout(() => {
-            const currentUrl = window.location.pathname;
-            const currentParams = new URLSearchParams(window.location.search);
-            
-            if (newVal.length === 0) {
-                currentParams.delete(filter.param);
-                
-                setFilters({
-                    param: filter.param,
-                    value: null,
-                    label: undefined
-                });
-            } else {
-                const newValue = newVal.join(',');
-                currentParams.set(filter.param, newValue);
-                
-                setFilters({
-                    param: filter.param,
-                    value: newValue,
-                    label: filter.label
-                });
-            }
-            
-            const params: Record<string, string> = {};
-            for (const [key, value] of currentParams.entries()) {
-                if (value) {
-                    params[key] = value;
-                }
-            }
-            
-            router.get(currentUrl, params, {
-                preserveState: true,
-                preserveScroll: true,
-                only: ['voterHistories', 'filters']
-            });
-        }, 10);
+        setFilters({
+            param: filter.param,
+            value: newVal,
+            label: filter.label,
+        });
     };
 
     const values = Array.isArray(filter.value) 

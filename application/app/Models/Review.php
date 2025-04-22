@@ -12,7 +12,6 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Support\Facades\Artisan;
-// use Laravel\Scout\Builder;
 use Laravel\Scout\Searchable;
 use Staudenmeir\EloquentHasManyDeep\HasRelationships;
 
@@ -29,6 +28,7 @@ class Review extends Model
             'title',
             'content',
             'reviewer.catalyst_reviewer_id',
+            'reviewer.hash',
             'positive_rankings',
             'negative_rankings',
             'status',
@@ -40,6 +40,7 @@ class Review extends Model
             'reviewer.avg_reputation_score',
             'proposal.id',
             'proposal.title',
+            'proposal.hash',
             'proposal.ideascale_profiles.hash',
             'proposal.ideascale_profiles.id',
             'proposal.groups.hash',
@@ -54,8 +55,10 @@ class Review extends Model
             'content',
             'status',
             'reviewer_id',
+            'reviewer.hash',
             'reviewer.reputation_scores.fund',
             'proposal.title',
+            'proposal.hash',
             'proposal.content',
             'proposal.ideascale_profiles.name',
             'proposal.ideascale_profiles.username',
@@ -70,9 +73,11 @@ class Review extends Model
             'title',
             'status',
             'created_at',
+            'reviewer.hash',
             'reviewer.avg_reputation_score',
             'rating',
             'helpful_total',
+            'proposal.hash',
             'rankings',
             'positive_rankings',
             'negative_rankings',
@@ -185,7 +190,7 @@ class Review extends Model
 
     public function toSearchableArray(): array
     {
-        $this->load(['model', 'discussion', 'parent', 'reviewer.reputation_scores.fund', 'proposal', 'proposal.ideascale_profiles']);
+        $this->load(['model', 'discussion', 'parent', 'reviewer.reputation_scores.fund', 'proposal']);
 
         $array = $this->toArray();
 

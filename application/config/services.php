@@ -43,4 +43,8 @@ return [
         'api_key' => env('LIDO_API_KEY'),
     ],
 
+    'govtools' => [
+        'budget_proposals' => env('GOVTOOLS_BUDGET_PROPOSALS', ''),
+    ]
+
 ];

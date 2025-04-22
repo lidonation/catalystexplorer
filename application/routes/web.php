@@ -1,8 +1,10 @@
 <?php
 
 use App\Http\Controllers\BookmarksController;
+use App\Http\Controllers\CardanoBudgetProposalController;
 use App\Http\Controllers\VoterListController;
 use App\Http\Controllers\VotingWorkflowController;
+use CodeZero\LocalizedRoutes\Controllers\FallbackController;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\NftController;
@@ -173,7 +175,6 @@ Route::localized(
                 ->name('login');
         });
 
-
         Route::patch('/profile/update/{field}', [ProfileController::class, 'update'])
             ->name('profile.update.field');
         Route::patch('/profile/socials', [ProfileController::class, 'updateSocials'])
@@ -246,7 +247,6 @@ Route::localized(
                 ->name('index');
         });
 
-
         Route::get('/charts', [ChartsController::class, 'index'])
             ->name('charts.index');
 
@@ -310,6 +310,13 @@ Route::localized(
             Route::get('/', [MilestoneController::class, 'index'])
                 ->name('index');
         });
+
+        // Cardano Budget Proposals
+        Route::prefix('/cardano')->as('cardano.')
+            ->group(function () {
+                Route::get('/budget-proposals/{username}', [CardanoBudgetProposalController::class, 'loadProposalsInExplorer'])
+                    ->name('budgetProposals');
+            });
     }
 );
 
@@ -323,4 +330,4 @@ require __DIR__ . '/dashboard.php';
 
 require __DIR__ . '/api.php';
 
-Route::fallback(\CodeZero\LocalizedRoutes\Controllers\FallbackController::class);
+Route::fallback(FallbackController::class);
