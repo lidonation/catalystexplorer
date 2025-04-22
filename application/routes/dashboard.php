@@ -3,6 +3,7 @@
 use App\Http\Controllers\My\MyBookmarksController;
 use App\Http\Controllers\ProposalsController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\GroupsController;
 use App\Http\Controllers\ReviewsController;
 use Illuminate\Support\Facades\Route;
@@ -44,6 +45,8 @@ Route::localized(
                     Route::get('/', [MyBookmarksController::class, 'collectionIndex'])->name('index');
                     Route::get('/{list}', [MyBookmarksController::class, 'showCollection'])->name('show');
                 });
+
+                Route::get('/transactions', [TransactionController::class, 'userTransaction'])->name('transactions');
 
                 Route::get('/profile', function () {
                     return Inertia::render('My/Profile/Index');

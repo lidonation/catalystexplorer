@@ -41,7 +41,8 @@ export const myProfileTabs: TabConfig = {
     { key: 'reviews' },
     { key: 'groups' },
     { key: 'communities' },
-    { key: 'lists' }
+    { key: 'lists' },
+    {key: 'transactions'}
   ]
 };
 
