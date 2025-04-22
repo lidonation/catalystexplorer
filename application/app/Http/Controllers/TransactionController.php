@@ -7,8 +7,8 @@ namespace App\Http\Controllers;
 use App\Actions\TransformIdsToHashes;
 use App\DataTransferObjects\TransactionData;
 use App\Enums\TransactionSearchParams;
-use App\Models\Transaction;
 use App\Models\Signatures;
+use App\Models\Transaction;
 use App\Repositories\TransactionRepository;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -82,18 +82,18 @@ class TransactionController
     public function userTransaction(Request $request): Response
     {
         $this->getProps($request);
-        
+
         $user = $request->user();
-        
+
         $userStakeKeys = Signatures::where('user_id', $user->id)
             ->pluck('stake_key')
             ->filter()
             ->toArray();
-        
+
         $this->userStakeKeys = $userStakeKeys;
-        
+
         $transactions = $this->query();
-        
+
         return Inertia::render('My/Transactions/Index', [
             'transactions' => $transactions,
             'filters' => $this->queryParams,
