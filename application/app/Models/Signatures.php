@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Traits\HasMetaData;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Signatures extends Model
 {
@@ -21,4 +23,18 @@ class Signatures extends Model
         'signature_key',
         'wallet_provider',
     ];
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    
+    /**
+     * Get the transactions associated with this signature's stake key.
+     */
+    public function transactions(): HasMany
+    {
+        return $this->hasMany(Transaction::class, 'stake_key', 'stake_key');
+    }
 }
