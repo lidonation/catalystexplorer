@@ -204,7 +204,12 @@ class TransactionController
         }
 
         if (! empty($this->userStakeKeys)) {
-            $filters[] = "stake_key = '{$this->userStakeKeys[0]}'";
+            if (count($this->userStakeKeys) === 1) {
+                $filters[] = "stake_key = '{$this->userStakeKeys[0]}'";
+            } else {
+                $stakeKeysList = "'" . implode("','", $this->userStakeKeys) . "'";
+                $filters[] = "stake_key IN [$stakeKeysList]";
+            }
         }
 
         return $filters;
