@@ -92,6 +92,23 @@ class User extends Authenticatable implements HasMedia
         return $this->hasMany(Nft::class);
     }
 
+    public function signatures()
+    {
+        return $this->hasMany(Signatures::class);
+    }
+
+    public function transactions()
+    {
+        return $this->hasManyThrough(
+            Transaction::class,
+            Signatures::class,
+            'user_id',
+            'stake_key',
+            'id',
+            'stake_key'
+        );
+    }
+
     public function registerMediaConversions(?Media $media = null): void
     {
         $this->addMediaConversion('thumbnail')
@@ -118,10 +135,5 @@ class User extends Authenticatable implements HasMedia
     public function location()
     {
         return $this->belongsTo(Location::class);
-    }
-
-    public function signatures()
-    {
-        return $this->hasMany(Signatures::class);
     }
 }
