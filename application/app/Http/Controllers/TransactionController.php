@@ -117,11 +117,6 @@ class TransactionController
             $transactions = $this->query();
         }
 
-        // dd([
-        //     'userStakeKeys' => $this->userStakeKeys,
-        //     'transactions' => $transactions,
-        // ]);
-
         return Inertia::render('My/Transactions/Index', [
             'transactions' => $transactions,
             'filters' => $this->queryParams,
