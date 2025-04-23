@@ -27,7 +27,7 @@ class ReviewerController extends Controller
         }
 
         $reviewers = Reviewer::query()
-            ->filter(request(['search', 'ids']));
+            ->filter(request(['search', 'ids', 'hashes']));
 
         return ReviewerResource::collection($reviewers->fastPaginate($per_page)->onEachSide(0));
     }

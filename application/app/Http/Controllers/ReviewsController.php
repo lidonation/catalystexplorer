@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\Actions\TransformHashToIds;
 use App\Actions\TransformIdsToHashes;
 use App\DataTransferObjects\ReviewData;
 use App\Enums\ProposalSearchParams;
@@ -210,8 +211,9 @@ class ReviewsController extends Controller
         }
 
         if (! empty($this->queryParams[ProposalSearchParams::FUNDS()->value])) {
-            $fundLabels = implode("','", $this->queryParams[ProposalSearchParams::FUNDS()->value]);
-            $filters[] = "reviewer.reputation_scores.fund.label IN ['{$fundLabels}']";
+            $idsFromHash = (new TransformHashToIds)(collect($this->queryParams[ProposalSearchParams::FUNDS()->value]), new Fund);
+            $funds = implode("','", $idsFromHash);
+            $filters[] = "proposal.fund_id IN ['{$funds}']";
         }
 
         if (! empty($this->queryParams[ProposalSearchParams::GROUPS()->value])) {
@@ -234,16 +236,14 @@ class ReviewsController extends Controller
 
         $reviewerIdsKey = ProposalSearchParams::REVIEWER_IDS()->value;
         if (! empty($this->queryParams[$reviewerIdsKey])) {
-            $reviewerIds = is_array($this->queryParams[$reviewerIdsKey])
-                ? $this->queryParams[$reviewerIdsKey]
-                : explode(',', $this->queryParams[$reviewerIdsKey]);
 
-            if (count($reviewerIds) === 1) {
-                $filters[] = "reviewer.catalyst_reviewer_id = '{$reviewerIds[0]}'";
-            } else {
-                $reviewerIdsString = implode("','", $reviewerIds);
-                $filters[] = "reviewer.catalyst_reviewer_id IN ['{$reviewerIdsString}']";
-            }
+            $idsFromHash = (new TransformHashToIds)(collect($this->queryParams[$reviewerIdsKey]), new Review);
+
+            $reviewerIds = implode(',', $idsFromHash);
+
+            // dd($reviewerIds);
+
+            $filters[] = "reviewer_id IN ['{$reviewerIds}']";
         }
 
         if (! empty($this->queryParams[ProposalSearchParams::RATINGS()->value])) {
