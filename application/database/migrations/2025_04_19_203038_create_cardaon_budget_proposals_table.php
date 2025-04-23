@@ -30,6 +30,7 @@ return new class extends Migration
 
             $table->timestamps();
 
+            $table->text('committee_name')->nullable();
             $table->text('intersect_admin_further_text')->nullable();
             $table->text('cost_breakdown');
             $table->text('problem_statement');
@@ -43,6 +44,10 @@ return new class extends Migration
             $table->text('resourcing_duration_estimates');
             $table->text('other_contract_type')->nullable();
             $table->text('key_dependencies');
+
+            $table->text('contract_type')->nullable();
+            $table->text('country')->nullable();
+            $table->text('related_roadmap');
 
             $table->softDeletes();
 
