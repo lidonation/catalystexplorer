@@ -28,6 +28,8 @@ class TransactionController
 
     protected ?string $sortOrder = 'desc';
 
+    protected array $userStakeKeys = [];
+
     /**
      * Display a listing of the resource.
      */
@@ -85,14 +87,35 @@ class TransactionController
 
         $user = $request->user();
 
-        $userStakeKeys = Signatures::where('user_id', $user->id)
+        $this->userStakeKeys = Signatures::where('user_id', $user->id)
             ->pluck('stake_key')
             ->filter()
             ->toArray();
 
-        $this->userStakeKeys = $userStakeKeys;
+        $transactions = null;
 
-        $transactions = $this->query();
+        if (empty($this->userStakeKeys)) {
+            $page = isset($this->queryParams[TransactionSearchParams::PAGE()->value])
+                ? (int) $this->queryParams[TransactionSearchParams::PAGE()->value]
+                : $this->currentPage;
+
+            $limit = isset($this->queryParams[TransactionSearchParams::LIMIT()->value])
+                ? (int) $this->queryParams[TransactionSearchParams::LIMIT()->value]
+                : $this->limit;
+
+            $transactions = new LengthAwarePaginator(
+                [],
+                0,
+                $limit,
+                $page,
+                [
+                    'pageName' => 'p',
+                    'onEachSide' => 0,
+                ]
+            );
+        } else {
+            $transactions = $this->query();
+        }
 
         return Inertia::render('My/Transactions/Index', [
             'transactions' => $transactions,
@@ -204,7 +227,8 @@ class TransactionController
         }
 
         if (! empty($this->userStakeKeys)) {
-            $filters[] = "stake_key = '{$this->userStakeKeys[0]}'";
+            $stakeKeysList = "'".implode("','", $this->userStakeKeys)."'";
+            $filters[] = "stake_key IN [$stakeKeysList]";
         }
 
         return $filters;

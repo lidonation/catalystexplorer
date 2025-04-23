@@ -44,9 +44,7 @@ const ProposalFilters = () => {
                                     param: ParamsEnum.FUNDING_STATUS,
                                 })
                             }
-                            selectedItems={getFilter(
-                                ParamsEnum.FUNDING_STATUS,
-                            )}
+                            selectedItems={getFilter(ParamsEnum.FUNDING_STATUS)}
                         />
                     </div>
 
@@ -106,9 +104,7 @@ const ProposalFilters = () => {
                                     param: ParamsEnum.PROJECT_STATUS,
                                 })
                             }
-                            selectedItems={getFilter(
-                                ParamsEnum.PROJECT_STATUS,
-                            )}
+                            selectedItems={getFilter(ParamsEnum.PROJECT_STATUS)}
                         />
                     </div>
 
@@ -127,6 +123,8 @@ const ProposalFilters = () => {
                             }
                             placeholder="Select"
                             multiple={true}
+                            valueField={'hash'}
+                            labelField={'title'}
                         />
                     </div>
 
@@ -135,9 +133,7 @@ const ProposalFilters = () => {
                         <SearchSelect
                             key={'campaigns'}
                             domain={'campaigns'}
-                            selected={
-                                getFilter(ParamsEnum.CAMPAIGNS) ?? []
-                            }
+                            selected={getFilter(ParamsEnum.CAMPAIGNS) ?? []}
                             onChange={(value) =>
                                 setFilters({
                                     label: t('proposals.filters.campaigns'),
@@ -147,6 +143,8 @@ const ProposalFilters = () => {
                             }
                             placeholder="Select"
                             multiple={true}
+                            valueField={'hash'}
+                            labelField={'title'}
                         />
                     </div>
                 </div>
@@ -157,9 +155,7 @@ const ProposalFilters = () => {
                         <SearchSelect
                             key={'groups'}
                             domain={'groups'}
-                            selected={
-                                getFilter(ParamsEnum.GROUPS) ?? []
-                            }
+                            selected={getFilter(ParamsEnum.GROUPS) ?? []}
                             onChange={(value) =>
                                 setFilters({
                                     label: t('proposals.filters.groups'),
@@ -169,6 +165,8 @@ const ProposalFilters = () => {
                             }
                             placeholder="Select"
                             multiple={true}
+                            valueField={'hash'}
+                            labelField={'name'}
                         />
                     </div>
 
@@ -177,9 +175,7 @@ const ProposalFilters = () => {
                         <SearchSelect
                             key={'communities'}
                             domain={'communities'}
-                            selected={
-                                getFilter(ParamsEnum.COMMUNITIES) ?? []
-                            }
+                            selected={getFilter(ParamsEnum.COMMUNITIES) ?? []}
                             onChange={(value) =>
                                 setFilters({
                                     label: t('proposals.filters.communities'),
@@ -189,6 +185,8 @@ const ProposalFilters = () => {
                             }
                             placeholder="Select"
                             multiple={true}
+                            valueField={'hash'}
+                            labelField={'title'}
                         />
                     </div>
 
@@ -234,9 +232,7 @@ const ProposalFilters = () => {
                         <SearchSelect
                             domain={'ideascaleProfiles.index'}
                             selected={
-                                getFilter(
-                                    ParamsEnum.IDEASCALE_PROFILES,
-                                ) ?? []
+                                getFilter(ParamsEnum.IDEASCALE_PROFILES) ?? []
                             }
                             onChange={(value) =>
                                 setFilters({
@@ -247,6 +243,8 @@ const ProposalFilters = () => {
                             }
                             placeholder="Select"
                             multiple={true}
+                            valueField={'hash'}
+                            labelField={'name'}
                         />
                     </div>
                 </div>
@@ -258,8 +256,7 @@ const ProposalFilters = () => {
                             key={'Budgets'}
                             context={t('proposals.filters.budgets')}
                             value={
-                                getFilter(ParamsEnum.BUDGETS)?.length ==
-                                0
+                                getFilter(ParamsEnum.BUDGETS)?.length == 0
                                     ? budgetRange
                                     : getFilter(ParamsEnum.BUDGETS)
                             }
@@ -281,12 +278,10 @@ const ProposalFilters = () => {
                             key={'Project Length'}
                             context={t('proposals.filters.projectLength')}
                             value={
-                                getFilter(ParamsEnum.PROJECT_LENGTH)
-                                    ?.length == 0
+                                getFilter(ParamsEnum.PROJECT_LENGTH)?.length ==
+                                0
                                     ? projectLengthRange
-                                    : getFilter(
-                                          ParamsEnum.PROJECT_LENGTH,
-                                      )
+                                    : getFilter(ParamsEnum.PROJECT_LENGTH)
                             }
                             onValueChange={(value) =>
                                 setFilters({

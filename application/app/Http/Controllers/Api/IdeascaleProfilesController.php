@@ -42,7 +42,7 @@ class IdeascaleProfilesController extends Controller
 
         $ideascaleProfiles = IdeascaleProfile::query()
             ->withCount(['proposals'])
-            ->filter(request(['search', 'ids']));
+            ->filter(request(['search', 'ids', 'hashes']));
 
         return IdeascaleProfileResource::collection($ideascaleProfiles->fastPaginate($per_page)->onEachSide(0));
     }

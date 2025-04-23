@@ -90,18 +90,22 @@ const VoteFilters = () => {
     };
 
     return (
-        <div className="w-full bg-background border border-dark-light rounded-md p-4">
+        <div className="bg-background border-dark-light w-full rounded-md border p-4">
             <div className="gap-8">
                 <div className="flex flex-col gap-2">
-                    <span className="font-medium text-gray-persist">{t('vote.table.fund')}</span>
+                    <span className="text-gray-persist font-medium">
+                        {t('vote.table.fund')}
+                    </span>
                     <SearchSelect
                         key={'fund-titles'}
-                        domain='fundTitles'
+                        domain="fundTitles"
                         selected={selectedFund}
                         onChange={handleFundChange}
                         placeholder={t('select', 'Select')}
                         multiple={true}
                         emptyText={t('vote.noEpochsAvailable')}
+                        valueField={'hash'}
+                        labelField={'title'}
                     />
                 </div>
             </div>

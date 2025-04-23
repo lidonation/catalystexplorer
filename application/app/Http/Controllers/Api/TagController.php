@@ -40,7 +40,7 @@ class TagController extends Controller
         }
 
         $tags = Tag::query()
-            ->filter(request(['search', 'ids']));
+            ->filter(request(['search', 'ids', 'hashes']));
 
         return TagResource::collection($tags->fastPaginate($per_page)->onEachSide(0));
     }

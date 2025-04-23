@@ -34,7 +34,6 @@ export default function ProposalCardHeader({
             ? gradientColors.complete
             : gradientColors.default;
 
-    console.log({ headerBGColor });
 
     const contentRef = useRef<HTMLParagraphElement | null>(null);
     const [lineCount, setLineCount] = useState(0);

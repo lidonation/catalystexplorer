@@ -66,8 +66,6 @@ const Step5: React.FC<Step5Props> = ({
     });
 
     const handleComplete = useCallback(() => {
-        console.log('Votes being completed:', votes);
-        console.log('Formatted votes for table:', votesForTable);
         const successStep = generateLocalizedRoute('workflows.voting.index', { step: 6 });
         window.location.href = successStep;
     }, []);

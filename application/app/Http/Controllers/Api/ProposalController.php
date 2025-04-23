@@ -27,7 +27,7 @@ class ProposalController extends Controller
         }
 
         $proposals = Proposal::query()
-            ->filter(request(['search', 'ids']));
+            ->filter(request(['search', 'ids', 'hashes']));
 
         return ProposalResource::collection($proposals->fastPaginate($per_page)->onEachSide(0));
     }

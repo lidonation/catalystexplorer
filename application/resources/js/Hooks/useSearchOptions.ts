@@ -24,6 +24,7 @@ export function useSearchOptions<T>(domain?: string) {
             const routeName = domain === 'ideascale-profiles' 
                 ? 'api.ideascaleProfiles.index' 
                 : `api.${domain}`;
+
             
             const response = await resolvePromise<ApiPaginatedData<T>>(
                 requestManager.sendRequest('get', route(routeName, { search: searchTerm, hashes }))
