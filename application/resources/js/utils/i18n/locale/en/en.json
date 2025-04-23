@@ -298,7 +298,8 @@
         "lists": "My Lists",
         "items": "items",
         "manage": "Manage",
-        "createList": "Create New List"
+        "createList": "Create New List",
+        "votes": "My Votes"
     },
     "navigation": {
         "mobile": {
@@ -934,6 +935,7 @@
         "searchPlaceholder": "Search by Fragment ID, Caster, or Raw Fragment",
         "secondarySearch": "Secondary Search",
         "sort": "Sort",
+        "searchStakeFragmentCaster": "Search by stake address, fragment ID, caster",
         "notAvailable": "N/A",
         "timeAgo": {
             "justNow": "Just now",

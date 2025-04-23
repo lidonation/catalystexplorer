@@ -26,13 +26,15 @@ class VoterHistoryRepository extends Repository
     {
         $isStakeSearch = $args['isStakeSearch'] ?? false;
         $isSecondarySearch = $args['isSecondarySearch'] ?? false;
+        $isUnifiedSearch = $args['unifiedSearch'] ?? false;
 
         unset($args['isStakeSearch']);
         unset($args['isSecondarySearch']);
+        unset($args['unifiedSearch']);
 
         return VoterHistory::Search(
             $term,
-            function (Indexes $index, $query) use ($args, $isStakeSearch, $isSecondarySearch) {
+            function (Indexes $index, $query) use ($args, $isStakeSearch, $isSecondarySearch, $isUnifiedSearch) {
                 $defaultArgs = [
                     'attributesToRetrieve' => [
                         'hash',
@@ -50,15 +52,15 @@ class VoterHistoryRepository extends Repository
                         'fund',
                     ],
                 ];
-
                 if ($isStakeSearch) {
                     $defaultArgs['attributesToSearchOn'] = ['stake_address'];
                 } elseif ($isSecondarySearch) {
                     $defaultArgs['attributesToSearchOn'] = ['fragment_id', 'caster', 'raw_fragment', 'fund'];
+                } elseif ($isUnifiedSearch) {
+                    $defaultArgs['attributesToSearchOn'] = ['stake_address', 'fragment_id', 'caster', 'raw_fragment'];
                 }
 
                 $mergedArgs = array_merge($defaultArgs, $args);
-
                 if (isset($mergedArgs['sort']) && is_array($mergedArgs['sort'])) {
                     foreach ($mergedArgs['sort'] as $sortItem) {
                         if (strpos($sortItem, 'voting_power:') === 0) {

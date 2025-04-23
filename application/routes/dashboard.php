@@ -6,6 +6,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\GroupsController;
 use App\Http\Controllers\ReviewsController;
+use App\Http\Controllers\VoterHistoriesController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -40,6 +41,7 @@ Route::localized(
                 Route::get('/dashboard', [ProfileController::class, 'userSummary'])->name('dashboard');
 
                 Route::get('/groups', [GroupsController::class, 'myGroups'])->name('groups');
+                Route::get('/votes', [VoterHistoriesController::class, 'myVotes'])->name('votes');
 
                 Route::prefix('lists')->name('lists.')->group(function () {
                     Route::get('/', [MyBookmarksController::class, 'collectionIndex'])->name('index');

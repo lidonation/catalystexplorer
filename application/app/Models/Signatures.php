@@ -22,6 +22,7 @@ class Signatures extends Model
         'signature',
         'signature_key',
         'wallet_provider',
+        'user_id',
     ];
 
     public function user(): BelongsTo
@@ -29,7 +30,6 @@ class Signatures extends Model
         return $this->belongsTo(User::class);
     }
 
-    
     /**
      * Get the transactions associated with this signature's stake key.
      */
