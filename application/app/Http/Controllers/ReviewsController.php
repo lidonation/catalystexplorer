@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\Actions\TransformHashToIds;
 use App\Actions\TransformIdsToHashes;
 use App\DataTransferObjects\ReviewData;
 use App\Enums\ProposalSearchParams;
@@ -210,8 +211,9 @@ class ReviewsController extends Controller
         }
 
         if (! empty($this->queryParams[ProposalSearchParams::FUNDS()->value])) {
-            $fundLabels = implode("','", $this->queryParams[ProposalSearchParams::FUNDS()->value]);
-            $filters[] = "reviewer.reputation_scores.fund.label IN ['{$fundLabels}']";
+            $idsFromHash = (new TransformHashToIds)(collect($this->queryParams[ProposalSearchParams::FUNDS()->value]), new Fund);
+            $funds = implode("','", $idsFromHash);
+            $filters[] = "proposal.fund_id IN ['{$funds}']";
         }
 
         if (! empty($this->queryParams[ProposalSearchParams::GROUPS()->value])) {

@@ -30,7 +30,7 @@ class Fund extends Model implements HasMedia
     ];
 
     protected $appends = [
-        'hero_img_url',
+        'hero_img_url', 'hash',
     ];
 
     protected $guarded = [];

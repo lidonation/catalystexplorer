@@ -14,7 +14,7 @@ class MigrateNftPreviewMediaCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'nft:migrate-preview-media
+    protected $signature = 'cx:migrate-nft-preview-media
     {--batch=100 : Number of NFTs to process in each batch}
     {--force : Force regeneration of existing media} 
     {--queue : Process the migration in a queue job}

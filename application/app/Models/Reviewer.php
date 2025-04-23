@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Actions\TransformHashToIds;
 use App\Traits\HasMetaData;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -13,7 +14,7 @@ use Staudenmeir\EloquentHasManyDeep\HasRelationships;
 
 class Reviewer extends Model
 {
-    use HasMetaData,HasRelationships;
+    use HasMetaData, HasRelationships;
 
     protected $guarded = [];
 
@@ -59,15 +60,17 @@ class Reviewer extends Model
 
     public function scopeFilter($query, array $filters)
     {
-        if (! empty($filters['search'])) {
-            $query->where(function ($q) use ($filters) {
-                $q->where('catalyst_reviewer_id', 'like', "%{$filters['search']}%");
-            });
-        }
+        $idsFromHash = ! empty($filters['hashes']) ? (new TransformHashToIds)(collect($filters['hashes']), new static) : [];
 
-        if (! empty($filters['ids'])) {
-            $query->whereIn('catalyst_reviewer_id', (array) $filters['ids']);
-        }
+        $ids = ! empty($filters['ids']) ? array_merge($filters['ids'], $idsFromHash) : $idsFromHash;
+
+        $query->when(
+            ! empty($filters['search']),
+            fn ($q) => $q->where('catalyst_reviewer_id', 'ilike', "{$filters['search']}%")
+        )->when(
+            ! empty($ids),
+            fn ($q) => $q->whereIn('id', $ids)
+        );
 
         return $query;
     }

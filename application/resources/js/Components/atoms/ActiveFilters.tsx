@@ -3,7 +3,7 @@ import { ParamsEnum } from '@/enums/proposal-search-params';
 import { VoteEnums } from '@/enums/vote-search-enums';
 import { useSearchOptions } from '@/Hooks/useSearchOptions';
 import { shortNumber } from '@/utils/shortNumber';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { router } from '@inertiajs/react';
 
 function formatSnakeCaseToTitleCase(input: string) {
@@ -55,10 +55,10 @@ export default function ActiveFilters({
     }[];
 }) {
     const { filters } = useFilterContext();
-    const statusFilters = ['coh', 'fs', 'ps', 'f', 'ds', 'c', 'pro', 'ri'];
+    const statusFilters = ['coh', 'fs', 'ps', 'ds', 'c', 'pro'];
     const rangeFilters = ['pl', 'b', 'aa', 'au', 'd', 'pr', 'vp', 'r', 'rs'];
     const sortFilters = ['st'];
-    const idFilters = ['t', 'cam', 'com', 'ip', 'g'];
+    const idFilters = ['t', 'cam', 'com', 'ip', 'g', 'ri',  'f'];
     const booleanFilters = ['op', 'h'];
 
     return (
@@ -223,7 +223,7 @@ const RangeFilters = ({ filter }: { filter: FilteredItem }) => {
             key={filter.label}
         >
             <div className="mr-1">{filter.label}</div>
-            <div>{`${filter.value[0]} `}</div>
+            <div>{`from ${shortNumber(filter.value[0])} to  ${shortNumber(filter.value[1])}`}</div>
             <button className="ml-2" onClick={() => removeFilter()}>
                 X{' '}
             </button>
@@ -312,18 +312,22 @@ const SortFilters = ({
 const IDFilters = React.memo(({ filter }: { filter: FilteredItem }) => {
     let domain = labels?.[filter.param as LabelKeys];
 
+    console.log({ filter });
+    
     if (filter.param === 'ip') {
         domain = 'ideascale-profiles';
     } else if (filter.param === ParamsEnum.PROPOSALS) {
         domain = 'proposals';
     } else if (filter.param === ParamsEnum.REVIEWER_IDS) {
         domain = 'reviewers';
+    } else if (filter.param === ParamsEnum.FUNDS) {
+        domain = 'funds';
     }
 
     const { setHashes, options } = useSearchOptions<any>(domain);
     const { setFilters } = useFilterContext();
 
-    React.useEffect(() => {
+    useEffect(() => {
         setHashes(filter.value);
     }, [setHashes, filter.value]);
 
@@ -342,6 +346,7 @@ const IDFilters = React.memo(({ filter }: { filter: FilteredItem }) => {
         filter.value.includes(option.hash),
     );
 
+    console.log({ selectedOptions });
     return (
         <div
             className="bg-background mr-1 flex items-center rounded-lg border px-1 py-1"
@@ -356,6 +361,7 @@ const IDFilters = React.memo(({ filter }: { filter: FilteredItem }) => {
                                 option?.name ??
                                     option?.title ??
                                     option?.label ??
+                                    option?.catalyst_reviewer_id ??
                                     'Unknown',
                             )}
                         </span>

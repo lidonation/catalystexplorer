@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\Actions\TransformHashToIds;
 use App\Actions\TransformIdsToHashes;
+use App\DataTransferObjects\FundData;
 use App\DataTransferObjects\ProposalData;
 use App\Enums\ProposalSearchParams;
 use App\Models\Fund;
@@ -147,7 +149,6 @@ class ProposalsController extends Controller
             ProposalSearchParams::COMMUNITIES()->value => 'array|nullable',
             ProposalSearchParams::IDEASCALE_PROFILES()->value => 'array|nullable',
             ProposalSearchParams::FUNDS()->value => 'array|nullable',
-            ProposalSearchParams::QUICK_PITCHES()->value => 'string|nullable',
         ]);
 
         // format sort params for meili
@@ -284,31 +285,10 @@ class ProposalsController extends Controller
         }
 
         if (! empty($this->queryParams[ProposalSearchParams::FUNDS()->value])) {
-            $funds = implode("','", $this->queryParams[ProposalSearchParams::FUNDS()->value]);
-            $filters[] = "fund.title IN ['{$funds}']";
+            $idsFromHash = (new TransformHashToIds)(collect($this->queryParams[ProposalSearchParams::FUNDS()->value]), new Fund);
+            $funds = implode("','", $idsFromHash);
+            $filters[] = "fund.id IN ['{$funds}']";
         }
-
-        //
-        //        if ($this->fundingStatus === 'paid') {
-        //            $filters[] = '(paid = 1)';
-        //        }
-        //
-        //        if (count($this->proposalsFilter)) {
-        //            $filters[] = 'id IN'.$this->proposalsFilter->toJson();
-        //        }
-        //        // filter by fund
-        //        if ($this->fundsFilter->isNotEmpty()) {
-        //            $filters[] = '('.$this->fundsFilter->map(fn ($f) => "fund.id = {$f}")->implode(' OR ').')';
-        //        }
-        //
-        //
-        //        if ($this->categoriesFilter->isNotEmpty()) {
-        //            $filters[] = 'categories.id IN '.$this->categoriesFilter->toJson();
-        //        }
-        //
-
-        //
-        //
 
         return $filters;
     }
@@ -318,37 +298,37 @@ class ProposalsController extends Controller
 
         if (isset($facets['amount_awarded_USD'])) {
             foreach ($facets['amount_awarded_USD'] as $key => $value) {
-                $this->sumApprovedUSD += $key * $value;
+                $this->sumApprovedUSD += intval($key * $value);
             }
         }
 
         if (isset($facets['amount_awarded_ADA'])) {
             foreach ($facets['amount_awarded_ADA'] as $key => $value) {
-                $this->sumApprovedADA += $key * $value;
+                $this->sumApprovedADA += intval($key * $value);
             }
         }
 
         if (isset($facets['amount_received_ADA'])) {
             foreach ($facets['amount_received_ADA'] as $key => $value) {
-                $this->sumDistributedADA += $key * $value;
+                $this->sumDistributedADA += intval($key * $value);
             }
         }
 
         if (isset($facets['amount_received_USD'])) {
             foreach ($facets['amount_received_USD'] as $key => $value) {
-                $this->sumDistributedUSD += $key * $value;
+                $this->sumDistributedUSD += intval($key * $value);
             }
         }
 
         if (isset($facets['amount_requested_ADA'])) {
             foreach ($facets['amount_requested_ADA'] as $key => $value) {
-                $this->sumBudgetsADA += $key * $value;
+                $this->sumBudgetsADA += intval($key * $value);
             }
         }
 
         if (isset($facets['amount_requested_USD'])) {
             foreach ($facets['amount_requested_USD'] as $key => $value) {
-                $this->sumBudgetsUSD += $key * $value;
+                $this->sumBudgetsUSD += intval($key * $value);
             }
         }
 
@@ -417,10 +397,17 @@ class ProposalsController extends Controller
         }
     }
 
-    public function fundTitles()
+    public function fundTitles(Request $request)
     {
         $fundTitles = Fund::pluck('title');
 
         return response()->json($fundTitles);
+    }
+
+    public function funds(Request $request)
+    {
+        $funds = Fund::when($request->search, fn ($q, $search) => $q->where('title', 'ilike', "{$search}%"))->get();
+
+        return FundData::collect($funds);
     }
 }

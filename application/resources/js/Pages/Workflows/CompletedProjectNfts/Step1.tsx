@@ -29,11 +29,9 @@ const Step1: React.FC<Step1Props> = ({ profiles, stepDetails, activeStep }) => {
                 (profilehash) => profilehash != hash,
             );
             setSelectedProfile(updatedProfiles);
-            console.log({ selectedProfiles: updatedProfiles });
         } else if (hash) {
             const updatedProfiles = [...selectedProfiles, hash];
             setSelectedProfile(updatedProfiles);
-            console.log({ selectedProfiles: updatedProfiles });
         }
     };
 

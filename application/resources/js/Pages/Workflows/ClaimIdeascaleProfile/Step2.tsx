@@ -48,7 +48,6 @@ const Step2: React.FC<Step1Props> = ({ profile, stepDetails, activeStep }) => {
     const submitForm = () => {
         if (formRef.current) {
             const formData = formRef.current.getFormData;
-            console.log(formData.data);
 
             formData.post(
                 generateLocalizedRoute(

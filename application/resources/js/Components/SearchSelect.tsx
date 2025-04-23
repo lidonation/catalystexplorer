@@ -14,6 +14,7 @@ import {
 } from './Command';
 import { Popover, PopoverContent, PopoverTrigger } from './Popover';
 import { ScrollArea } from './ScrollArea';
+import { log } from 'node:console';
 
 export type SearchOption = {
     label?: string;
@@ -27,6 +28,8 @@ type SearchSelectProps = {
     emptyText?: string;
     multiple?: boolean;
     domain?: string;
+    valueField:string
+    labelField:string
 };
 
 export function SearchSelect({
@@ -36,35 +39,19 @@ export function SearchSelect({
     emptyText = 'No results found.',
     multiple = false,
     domain,
+    labelField,
+    valueField,
 }: SearchSelectProps) {
     const [open, setOpen] = useState(false);
     const { searchTerm, setSearchTerm, options } =
         useSearchOptions<any>(domain);
 
     const { t } = useTranslation();
-    
+
     const filteredOptions = options.map((option) => {
-        if (typeof option === 'string') {
-            const trimmedOption = option.trim();
-            return {
-                label: trimmedOption,
-                hash: trimmedOption,
-                title: trimmedOption
-            };
-        }
-        
-        const label = (option?.name ?? option?.title ?? option?.label ?? option?.catalyst_reviewer_id ?? 'Unknown').trim();
-        
-        const hash = domain === 'proposals' 
-                    ? (option?.title?.trim() ?? option?.hash?.trim() ?? 'unknown-hash') 
-                    : domain === 'reviewers'
-                    ? (option?.catalyst_reviewer_id?.trim() ?? option?.hash?.trim() ?? 'unknown-hash')
-                    : (option?.hash?.trim() ?? option?.title?.trim() ?? option?.catalyst_reviewer_id?.trim() ?? 'unknown-hash');
-        
         return {
-            label,
-            title: (option?.title ?? option?.catalyst_reviewer_id ?? 'Unknown').trim(),
-            hash,
+            label: option[labelField],
+            value: option[valueField],
         };
     });
 
@@ -83,7 +70,7 @@ export function SearchSelect({
         },
         [multiple, onChange, selected, setSearchTerm],
     );
-    
+
     const handleClear = useCallback(
         (e: React.MouseEvent) => {
             e.stopPropagation();
@@ -124,7 +111,7 @@ export function SearchSelect({
                 </button>
             </PopoverTrigger>
             <PopoverContent
-            className="bg-background min-w-[var(--radix-popover-trigger-width)] w-[300px] p-0"
+                className="bg-background w-[300px] min-w-[var(--radix-popover-trigger-width)] p-0"
                 align="start"
             >
                 <Command shouldFilter={false}>
@@ -161,20 +148,20 @@ export function SearchSelect({
                             {options &&
                                 filteredOptions.map((option, index) => (
                                     <CommandItem
-                                        key={`${option.hash}-${index}`} // Added index to ensure uniqueness
-                                        value={option.hash.toString()}
+                                        key={`${option.value}-${index}`} 
+                                        value={option.value}
                                         onSelect={() =>
-                                            handleSelect(option.hash.toString())
+                                            handleSelect(option.value)
                                         }
                                         className="bg-background! hover:bg-background-lighter! aria-selected:bg-background-lighter flex cursor-pointer justify-between"
                                     >
                                         {option.label}
                                         <Checkbox
-                                            id={`checkbox-${option.hash}-${index}`} // Make checkbox ID unique too
+                                            id={`checkbox-${option.value}-${index}`}
                                             checked={selected?.includes(
-                                                option.hash,
+                                                option.value,
                                             )}
-                                            value={option.hash}
+                                            value={option.value}
                                             onChange={() => {}}
                                             className="text-content-accent bg-background checked:bg-primary checked:hover:bg-primary focus:border-primary focus:ring-primary checked:focus:bg-primary mr-2 h-4 w-4 shadow-xs focus:border"
                                         />
