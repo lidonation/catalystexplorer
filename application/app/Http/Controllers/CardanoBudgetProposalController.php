@@ -15,9 +15,22 @@ use Illuminate\Support\Str;
 
 class CardanoBudgetProposalController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        return CardanoBudgetProposalData::collect(CardanoBudgetProposal::paginate(12));
+        $params = $request->query();
+        $query = CardanoBudgetProposal::query();
+        $query->when(
+            isset($params['sortBy']),
+            fn ($q) => ($q->orderBy($this->getDbColumnName($params['sortBy']), $params['sortOrder'] ?? 'DESC'))
+        )->when(
+            isset($params['category']),
+            fn ($q) => ($q->where('budget_cat', $params['category']))
+        )->when(
+            isset($params['committee']),
+            fn ($q) => ($q->where('committee_name', $params['committee']))
+        );
+
+        return CardanoBudgetProposalData::collect($query->paginate($params['limit'] ?? 12));
     }
 
     public function loadProposalsInExplorer(Request $request, string $username)
@@ -145,5 +158,13 @@ class CardanoBudgetProposalController extends Controller
                     }]
                 )
             );
+    }
+
+    protected function getDbColumnName($column)
+    {
+        return match ($column) {
+            'commentsCount' => 'prop_comments_number',
+            default => Str::of($column)->snake()->value()
+        };
     }
 }
