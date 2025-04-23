@@ -68,6 +68,15 @@ export function SearchSelect({
         };
     });
 
+    const sortedOptions = [...filteredOptions].sort((a, b) => {
+        const aIsSelected = selected.includes(a.hash);
+        const bIsSelected = selected.includes(b.hash);
+        options
+        if (aIsSelected && !bIsSelected) return -1;
+        if (!aIsSelected && bIsSelected) return 1;
+        return 0;
+    });
+
     const handleSelect = useCallback(
         (value: string) => {
             if (multiple) {
@@ -159,9 +168,9 @@ export function SearchSelect({
                             className={`max-h-64 min-h-24 lg:max-h-96 ${options.length > 10 ? 'overflow-scroll' : ''}`}
                         >
                             {options &&
-                                filteredOptions.map((option, index) => (
+                                sortedOptions.map((option, index) => (
                                     <CommandItem
-                                        key={`${option.hash}-${index}`} // Added index to ensure uniqueness
+                                        key={`${option.hash}-${index}`} 
                                         value={option.hash.toString()}
                                         onSelect={() =>
                                             handleSelect(option.hash.toString())
