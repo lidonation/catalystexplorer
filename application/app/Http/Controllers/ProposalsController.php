@@ -73,9 +73,7 @@ class ProposalsController extends Controller
         $proposal = $this->query();
 
         return Inertia::render('Proposals/Index', [
-            'proposals' => Inertia::optional(
-                fn () => $proposal
-            ),
+            'proposals' => $proposal,
             'filters' => $this->queryParams,
             'funds' => $this->fundsCount,
             'search' => $this->search,
