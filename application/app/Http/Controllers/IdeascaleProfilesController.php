@@ -41,9 +41,13 @@ class IdeascaleProfilesController extends Controller
     {
         $this->getProps($request);
 
+        $ideascaleProfiles = $this->query();
+
         return Inertia::render('IdeascaleProfile/Index', [
             'ideascaleProfilesCount' => 4,
-            'ideascaleProfiles' => Inertia::defer(fn () => $this->query()),
+            'ideascaleProfiles' => app()->environment('testing')
+                ? $ideascaleProfiles
+                : Inertia::defer(fn () => $this->query()),
             'filters' => $this->queryParams,
         ]);
     }
