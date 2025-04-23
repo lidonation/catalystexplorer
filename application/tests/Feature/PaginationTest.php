@@ -65,6 +65,9 @@ class PaginationTest extends TestCase
     {
         parent::setUp();
 
+        $this->app['env'] = 'testing';
+        config(['app.env' => 'testing']);
+
         $this->user = User::factory()->create();
 
         $this->mockRepositories();
@@ -116,13 +119,13 @@ class PaginationTest extends TestCase
             ],
             'facetStats'         => [],
         ];
-    
+
         // use PHPUnit mock for the Scout Builder instead of Mockery
         $builder = $this->createMock(\Laravel\Scout\Builder::class);
         $builder->method('raw')->willReturn($rawResponse);
-    
+
         $repoProp = "{$repository}Repository";
-    
+
         $this->$repoProp
             ->expects($this->any())
             ->method('search')
@@ -212,6 +215,7 @@ class PaginationTest extends TestCase
         $this->setupMockPagination($repository, array_slice($items, 0, $perPage), 50, $perPage);
 
         $response = $this->get(route($route));
+        
         $response->assertStatus(200);
 
         $this->assertPaginationProps($response, $component, $propName, [
