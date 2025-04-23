@@ -28,6 +28,8 @@ class Review extends Model
             'title',
             'content',
             'reviewer.catalyst_reviewer_id',
+            'reviewer.id',
+            'reviewer_id',
             'reviewer.hash',
             'positive_rankings',
             'negative_rankings',
