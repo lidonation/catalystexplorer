@@ -39,9 +39,7 @@ class MigrateNftPreviewMediaCommand extends Command
         $startId = $this->option('start_id') ? (int) $this->option('start_id') : null;
         $endId = $this->option('end_id') ? (int) $this->option('end_id') : null;
 
-        $this->info('Starting NFT preview media migration');
-        $this->info("Batch size: {$batchSize}");
-        $this->info('Force regenerate: '.($force ? 'Yes' : 'No'));
+        $this->info('Starting NFT preview media migration...');
 
         if ($startId) {
             $this->info("Starting from NFT ID: {$startId}");
@@ -58,12 +56,9 @@ class MigrateNftPreviewMediaCommand extends Command
             dispatch($job);
             $this->info('Job has been dispatched to the queue');
         } else {
-            $this->info('Running job synchronously...');
-            $this->output->progressStart();
 
             $job->handle();
 
-            $this->output->progressFinish();
             $this->info('Media migration completed!');
         }
 
