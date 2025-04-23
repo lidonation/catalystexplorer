@@ -74,6 +74,9 @@ Route::prefix('api')->as('api.')->group(function () {
     });
 
     Route::get('/fund-titles', [ProposalsController::class, 'fundTitles'])->name('fundTitles');
+    
+    Route::get('/funds', [ProposalsController::class, 'funds'])->name('funds');
+
 
     Route::get('/helpful-total', [ReviewsController::class, 'helpfulTotal'])->name('helpfulTotal');
 

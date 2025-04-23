@@ -28,30 +28,30 @@ export default function IdeascaleProfilesFilters() {
     };
 
     return (
-        <div className="bg-background container w-full rounded-xl shadow-md mb-8 p-4">
+        <div className="bg-background container mb-8 w-full rounded-xl p-4 shadow-md">
             <div className="grid grid-cols-2 items-center gap-4 lg:grid-cols-5 lg:gap-8">
-                <div>
-                    <span className="mb-1 block text-sm font-medium">
-                        {t('ideascaleProfiles.limitFunds')}
-                    </span>
+                <div className="flex flex-col gap-2">
+                    <span>{t('reviews.filters.funds')}</span>
                     <SearchSelect
-                        key={'fund-titles'}
-                        domain={'fundTitles'}
+                        key={'funds'}
+                        domain={'funds'}
                         selected={getFilter(ParamsEnum.FUNDS) ?? []}
                         onChange={(value) =>
                             setFilters({
-                                label: t('ideascaleProfiles.limitFunds'),
+                                label: t('reviews.filters.funds'),
                                 value,
                                 param: ParamsEnum.FUNDS,
                             })
                         }
                         placeholder="Select"
                         multiple={true}
+                        valueField={'hash'}
+                        labelField={'title'}
                     />
                 </div>
 
-                <div>
-                    <span className="mb-1 block text-sm font-medium">
+                <div className="flex flex-col gap-2">
+                    <span className="">
                         {t('ideascaleProfiles.projectStatus')}
                     </span>
                     <Selector
@@ -77,14 +77,12 @@ export default function IdeascaleProfilesFilters() {
                                 param: ParamsEnum.PROJECT_STATUS,
                             })
                         }
-                        selectedItems={getFilter(
-                            ParamsEnum.PROJECT_STATUS,
-                        )}
+                        selectedItems={getFilter(ParamsEnum.PROJECT_STATUS)}
                     />
                 </div>
 
-                <div>
-                    <span className="mb-1 block text-sm font-medium">
+                <div className="flex flex-col gap-2">
+                    <span className="">
                         {t('ideascaleProfiles.limitTags')}
                     </span>
                     <SearchSelect
@@ -100,6 +98,8 @@ export default function IdeascaleProfilesFilters() {
                         }
                         placeholder="Select"
                         multiple={true}
+                        valueField={'hash'}
+                        labelField={'title'}
                     />
                 </div>
 
