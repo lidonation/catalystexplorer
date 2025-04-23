@@ -56,8 +56,8 @@ export function SearchSelect({
     });
 
     const sortedOptions = [...filteredOptions].sort((a, b) => {
-        const aIsSelected = selected.includes(a.hash);
-        const bIsSelected = selected.includes(b.hash);
+        const aIsSelected = selected.includes(a.value);
+        const bIsSelected = selected.includes(b.value);
         options
         if (aIsSelected && !bIsSelected) return -1;
         if (!aIsSelected && bIsSelected) return 1;

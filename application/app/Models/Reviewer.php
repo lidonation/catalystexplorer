@@ -68,10 +68,10 @@ class Reviewer extends Model
 
         $query->when(
             $term,
-            fn($q) => $q->where('catalyst_reviewer_id', 'ilike', "{$term}%")
+            fn ($q) => $q->where('catalyst_reviewer_id', 'ilike', "{$term}%")
         )->when(
-            !empty($ids),
-            fn($q) => $q->whereIn('id', $ids)
+            ! empty($ids),
+            fn ($q) => $q->whereIn('id', $ids)
         );
 
         return $query;

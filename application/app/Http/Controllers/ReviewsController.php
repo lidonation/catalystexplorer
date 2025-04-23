@@ -236,13 +236,13 @@ class ReviewsController extends Controller
 
         $reviewerIdsKey = ProposalSearchParams::REVIEWER_IDS()->value;
         if (! empty($this->queryParams[$reviewerIdsKey])) {
-            
+
             $idsFromHash = (new TransformHashToIds)(collect($this->queryParams[$reviewerIdsKey]), new Review);
 
-            $reviewerIds =  implode(',', $idsFromHash);
+            $reviewerIds = implode(',', $idsFromHash);
 
             // dd($reviewerIds);
-            
+
             $filters[] = "reviewer_id IN ['{$reviewerIds}']";
         }
 
