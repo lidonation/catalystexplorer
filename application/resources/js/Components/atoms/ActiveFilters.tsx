@@ -312,7 +312,6 @@ const SortFilters = ({
 const IDFilters = React.memo(({ filter }: { filter: FilteredItem }) => {
     let domain = labels?.[filter.param as LabelKeys];
 
-    console.log({ filter });
     
     if (filter.param === 'ip') {
         domain = 'ideascale-profiles';
@@ -346,7 +345,6 @@ const IDFilters = React.memo(({ filter }: { filter: FilteredItem }) => {
         filter.value.includes(option.hash),
     );
 
-    console.log({ selectedOptions });
     return (
         <div
             className="bg-background mr-1 flex items-center rounded-lg border px-1 py-1"

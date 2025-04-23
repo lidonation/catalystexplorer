@@ -64,12 +64,14 @@ class Reviewer extends Model
 
         $ids = ! empty($filters['ids']) ? array_merge($filters['ids'], $idsFromHash) : $idsFromHash;
 
+        $term = isset($filters['search']) ? (string) $filters['search'] : null;
+
         $query->when(
-            ! empty($filters['search']),
-            fn ($q) => $q->where('catalyst_reviewer_id', 'ilike', "{$filters['search']}%")
+            $term,
+            fn($q) => $q->where('catalyst_reviewer_id', 'ilike', "{$term}%")
         )->when(
-            ! empty($ids),
-            fn ($q) => $q->whereIn('id', $ids)
+            !empty($ids),
+            fn($q) => $q->whereIn('id', $ids)
         );
 
         return $query;
