@@ -1,64 +1,64 @@
-# kind: Role
-# apiVersion: rbac.authorization.k8s.io/v1
-# metadata:
-#     namespace: {{ .Values.namespace }}
-#     name: "{{ $.Chart.Name }}-scheduler"
-# rules:
-#   - apiGroups: [ "", "extensions", "apps" ]
-#     resources:
-#       - deployments
-#       - replicasets
-#       - pods
-#       - pods/list
-#       - pods/exec
-#     verbs:
-#       - 'list'
-#       - 'get'
-#   - apiGroups: [ "" ]
-#     resources: [ "pods/exec" ]
-#     verbs: [ "create" ]
-# ---
-# kind: RoleBinding
-# apiVersion: rbac.authorization.k8s.io/v1
-# metadata:
-#     name: "{{ $.Chart.Name }}-scheduler"
-#     namespace: {{ .Values.namespace }}
-# subjects:
-#   - kind: ServiceAccount
-#     name: "sa-{{ $.Chart.Name }}-scheduler"
-#     apiGroup: ""
-# roleRef:
-#     kind: Role
-#     name: "{{ $.Chart.Name }}-scheduler"
-#     apiGroup: rbac.authorization.k8s.io
-# ---
-# apiVersion: v1
-# kind: ServiceAccount
-# metadata:
-#     name: "sa-{{ $.Chart.Name }}-scheduler"
-#     namespace: {{ .Values.namespace }}
-# ---
-# apiVersion: batch/v1
-# kind: CronJob
-# metadata:
-#     name: "{{ $.Chart.Name }}-scheduler"
-#     namespace: {{ .Values.namespace }}
-# spec:
-#     schedule: "*/5 * * * *"
-#     concurrencyPolicy: Forbid
-#     successfulJobsHistoryLimit: 2
-#     failedJobsHistoryLimit: 2
-#     jobTemplate:
-#         spec:
-#             template:
-#                 spec:
-#                     serviceAccountName: "sa-{{ $.Chart.Name }}-scheduler"
-#                     containers:
-#                       - name: scheduler-run
-#                         image: bitnami/kubectl:1.24.9-debian-11-r10
-#                         imagePullPolicy: IfNotPresent
-#                         command:
-#                           - /bin/sh
-#                           - -c
-#                           - kubectl exec $(kubectl get pods -l service=catalystexplorer-app --field-selector=status.phase=Running -o=jsonpath='{.items[0].metadata.name}') -c app -- php /var/www/artisan schedule:run php /var/www/artisan schedule:run --verbose --no-interaction
-#                     restartPolicy: Never
+kind: Role
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+    namespace: {{ .Values.namespace }}
+    name: "{{ $.Chart.Name }}-scheduler"
+rules:
+  - apiGroups: [ "", "extensions", "apps" ]
+    resources:
+      - deployments
+      - replicasets
+      - pods
+      - pods/list
+      - pods/exec
+    verbs:
+      - 'list'
+      - 'get'
+  - apiGroups: [ "" ]
+    resources: [ "pods/exec" ]
+    verbs: [ "create" ]
+---
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+    name: "{{ $.Chart.Name }}-scheduler"
+    namespace: {{ .Values.namespace }}
+subjects:
+  - kind: ServiceAccount
+    name: "sa-{{ $.Chart.Name }}-scheduler"
+    apiGroup: ""
+roleRef:
+    kind: Role
+    name: "{{ $.Chart.Name }}-scheduler"
+    apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+    name: "sa-{{ $.Chart.Name }}-scheduler"
+    namespace: {{ .Values.namespace }}
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+    name: "{{ $.Chart.Name }}-scheduler"
+    namespace: {{ .Values.namespace }}
+spec:
+    schedule: "*/5 * * * *"
+    concurrencyPolicy: Forbid
+    successfulJobsHistoryLimit: 2
+    failedJobsHistoryLimit: 2
+    jobTemplate:
+        spec:
+            template:
+                spec:
+                    serviceAccountName: "sa-{{ $.Chart.Name }}-scheduler"
+                    containers:
+                      - name: scheduler-run
+                        image: bitnami/kubectl:1.24.9-debian-11-r10
+                        imagePullPolicy: IfNotPresent
+                        command:
+                          - /bin/sh
+                          - -c
+                          - kubectl exec $(kubectl get pods -l service=catalystexplorer-app --field-selector=status.phase=Running -o=jsonpath='{.items[0].metadata.name}') -c app -- php /var/www/artisan schedule:run --verbose --no-interaction
+                    restartPolicy: Never

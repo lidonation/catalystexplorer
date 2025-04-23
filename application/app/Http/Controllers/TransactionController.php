@@ -7,12 +7,14 @@ namespace App\Http\Controllers;
 use App\Actions\TransformIdsToHashes;
 use App\DataTransferObjects\TransactionData;
 use App\Enums\TransactionSearchParams;
+use App\Models\Signatures;
 use App\Models\Transaction;
 use App\Repositories\TransactionRepository;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Fluent;
 use Inertia\Inertia;
+use Inertia\Response;
 
 class TransactionController
 {
@@ -71,6 +73,35 @@ class TransactionController
         return Inertia::render('Transactions/TransactionDetail', [
             'transaction' => $catalystTransaction,
             'metadataLabels' => $labelNames,
+        ]);
+    }
+
+    /**
+     * Display transactions for the authenticated user.
+     */
+    public function userTransaction(Request $request): Response
+    {
+        $this->getProps($request);
+
+        $user = $request->user();
+
+        $userStakeKeys = Signatures::where('user_id', $user->id)
+            ->pluck('stake_key')
+            ->filter()
+            ->toArray();
+
+        $this->userStakeKeys = $userStakeKeys;
+
+        $transactions = $this->query();
+
+        return Inertia::render('My/Transactions/Index', [
+            'transactions' => $transactions,
+            'filters' => $this->queryParams,
+            'metadataLabels' => [
+                61284 => 'Catalyst voting registration',
+                61285 => 'Catalyst voting submission',
+                61286 => 'Catalyst voting rewards',
+            ],
         ]);
     }
 
@@ -170,6 +201,10 @@ class TransactionController
 
         if (! empty($this->queryParams[TransactionSearchParams::ADDRESS()->value])) {
             $filters[] = "inputs.address = '{$this->queryParams[TransactionSearchParams::ADDRESS()->value]}'";
+        }
+
+        if (! empty($this->userStakeKeys)) {
+            $filters[] = "stake_key = '{$this->userStakeKeys[0]}'";
         }
 
         return $filters;

@@ -24,12 +24,16 @@ interface VoterHistoryTableProps {
   filters: SearchParams;
   showFilters?: boolean;
   setShowFilters?: Dispatch<SetStateAction<boolean>>;
+  unifiedSearch?: boolean;
+   customTitle?: string;
 }
 
-const VoterHistoryTable: React.FC<VoterHistoryTableProps> = ({ 
-  voterHistories, 
-  showFilters, 
-  setShowFilters
+const VoterHistoryTable: React.FC<VoterHistoryTableProps> = ({
+  voterHistories,
+  showFilters,
+  setShowFilters,
+   unifiedSearch = false,
+   customTitle
 }) => {
   const { t } = useTranslation();
   const { filters, setFilters } = useFilterContext();
@@ -39,52 +43,45 @@ const VoterHistoryTable: React.FC<VoterHistoryTableProps> = ({
   const [hoveredCell, setHoveredCell] = useState<{rowIndex: number, col: string} | null>(null);
   const [copiedField, setCopiedField] = useState<string | null>(null);
   const [hasSearched, setHasSearched] = useState<boolean>(false);
-  
   // For internal filter toggle if no external one is provided
   const [internalShowFilters, setInternalShowFilters] = useState(false);
-  
   // Handle filters toggle by using either the provided state or internal state
   const filtersVisible = showFilters !== undefined ? showFilters : internalShowFilters;
   const toggleFilters: Dispatch<SetStateAction<boolean>> = setShowFilters || setInternalShowFilters;
-  
   useEffect(() => {
     if (isInitialRender.current) {
       isInitialRender.current = false;
       prevFiltersRef.current = JSON.stringify(filters);
       return;
     }
-    
     if (filters.length === 0) return;
-    
-    const nonPrimaryFilters = filters.filter(filter => 
+    const nonPrimaryFilters = filters.filter(filter =>
       filter.param !== VoteEnums.QUERY
     );
-    
     if (nonPrimaryFilters.length === 0) return;
-    
     const currentFiltersStr = JSON.stringify(nonPrimaryFilters);
     if (prevFiltersRef.current === currentFiltersStr) return;
-    
+
     prevFiltersRef.current = currentFiltersStr;
     setIsLoading(true);
     setHasSearched(true);
-    
+
     const url = new URL(window.location.href);
     const params: Record<string, any> = {};
-    
+
     for (const [key, value] of url.searchParams.entries()) {
       if (value) params[key] = value;
     }
-    
+
     const primarySearch = url.searchParams.get(VoteEnums.QUERY);
     if (primarySearch) params[VoteEnums.QUERY] = primarySearch;
-    
+
     nonPrimaryFilters.forEach(filter => {
       if (filter.param && filter.value !== undefined && filter.value !== '') {
         params[filter.param] = filter.value;
       }
     });
-    
+
     router.get(window.location.pathname, params, {
       preserveScroll: true,
       preserveState: true,
@@ -96,9 +93,9 @@ const VoterHistoryTable: React.FC<VoterHistoryTableProps> = ({
 
   const hasActiveFilters = () => {
     if (!filters || filters.length === 0) return false;
-    
-    return filters.some(filter => 
-      filter.param === VoteEnums.QUERY || 
+
+    return filters.some(filter =>
+      filter.param === VoteEnums.QUERY ||
       filter.param === VoteEnums.SECONDARY_QUERY ||
       filter.value !== undefined && filter.value !== ''
     );
@@ -116,15 +113,15 @@ const VoterHistoryTable: React.FC<VoterHistoryTableProps> = ({
 
   const formatVotingPower = (value: any): string => {
     if (value === undefined || value === null) return '₳ 0';
-    
+
     try {
       const numValue = Number(value);
       if (Number.isNaN(numValue)) return '₳ 0';
-      
+
       const adaValue = numValue / 1000000;
-      
+
       const formattedValue = Math.floor(adaValue).toLocaleString();
-      
+
       return `₳ ${formattedValue}`;
     } catch (e) {
       console.error('Error formatting voting power:', e);
@@ -152,7 +149,7 @@ const VoterHistoryTable: React.FC<VoterHistoryTableProps> = ({
   const truncateText = (text: string, maxLength: number = 10) => {
     if (!text) return 'N/A';
     if (text.length <= maxLength) return text;
-    
+
     const startChars = Math.ceil(maxLength / 2);
     const endChars = Math.floor(maxLength / 2);
     return `${text.substring(0, startChars)}...${text.substring(text.length - endChars)}`;
@@ -160,7 +157,7 @@ const VoterHistoryTable: React.FC<VoterHistoryTableProps> = ({
 
   const getValueWithTooltip = (rowIndex: number, history: VoterHistoryData, col: string, value: string) => {
     const isHovered = hoveredCell && hoveredCell.rowIndex === rowIndex && hoveredCell.col === col;
-    
+
     return (
       <div className="flex items-center justify-between relative w-full">
         <div className="flex-1 truncate cursor-pointer"
@@ -169,20 +166,20 @@ const VoterHistoryTable: React.FC<VoterHistoryTableProps> = ({
         >
           {truncateText(value)}
         </div>
-        
+
         {isHovered && value.length > 10 && (
           <div className="absolute left-1/2 transform -translate-x-1/2 -translate-y-full -top-2 z-20">
             <ToolTipHover props={value} />
           </div>
         )}
-        
-        <Button 
+
+        <Button
           className="flex-shrink-0 text-gray-persist hover:text-primary focus:outline-none"
           onClick={() => copyToClipboard(value, `${rowIndex}-${col}`)}
         >
           <CopyIcon width={16} height={16} />
         </Button>
-        
+
         {copiedField === `${rowIndex}-${col}` && (
           <span className="absolute -top-10 right-0 z-10 bg-content-success-light text-content-success-darker text-xs px-2 py-1 rounded">
             {t('copied')}
@@ -191,10 +188,28 @@ const VoterHistoryTable: React.FC<VoterHistoryTableProps> = ({
       </div>
     );
   };
+  const formatTimestamp = (isoTimestamp?: string): string => {
+      if (!isoTimestamp) return 'N/A' ;
+      try {
+          const date = new Date(isoTimestamp);
+          const options: Intl.DateTimeFormatOptions = {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric',
+                hour: 'numeric',
+                minute: '2-digit',
+                hour12: true
+          };
+         return date.toLocaleString('en-US', options);
+      } catch (e) {
+          console.error('Error formatting timestamp:', e);
+          return isoTimestamp;
+      }
+  };
 
   const shouldShowNoRecords = () => {
-    return !isLoading && 
-           (hasSearched || hasActiveFilters()) && 
+    return !isLoading &&
+           (hasSearched || hasActiveFilters()) &&
            (!voterHistories?.data || voterHistories.data.length === 0);
   };
 
@@ -203,16 +218,17 @@ const VoterHistoryTable: React.FC<VoterHistoryTableProps> = ({
   return (
     <div className="overflow-x-auto">
       <section className="container">
-        <Title className='border-b border-dark-light pt-4 pb-4 font-bold' level='3'>{t('vote.votingHistory')}</Title>
-        <SecondarySearchControls
-          onFiltersToggle={toggleFilters}
-          sortOptions={sortOptionsList}
-          searchPlaceholder={t('vote.searchPlaceholder')}
-          searchParam={VoteEnums.SECONDARY_QUERY}
-          searchLabel={t('vote.secondarySearch')}
-        />
+        <Title className='border-b border-dark-light pt-4 pb-4 font-bold' level='3'>{customTitle || t('vote.votingHistory')}</Title>
+          <SecondarySearchControls
+              onFiltersToggle={toggleFilters}
+              sortOptions={sortOptionsList}
+              searchPlaceholder={unifiedSearch ? t('vote.searchStakeFragmentCaster') : t('vote.searchPlaceholder')}
+              searchParam={unifiedSearch ? VoteEnums.QUERY : VoteEnums.SECONDARY_QUERY}
+              searchLabel={unifiedSearch ? t('vote.search') : t('vote.secondarySearch')}
+              isUnifiedSearch={unifiedSearch}
+          />
       </section>
-      
+
       <section
         className={`container overflow-hidden transition-all duration-500 ease-in-out ${
           filtersVisible ? 'max-h-[500px] my-4' : 'max-h-0'
@@ -220,7 +236,7 @@ const VoterHistoryTable: React.FC<VoterHistoryTableProps> = ({
       >
         <VoteFilters/>
       </section>
-      
+
       {shouldShowNoRecords() && (
         <div className="bg-background flex w-full flex-col items-center justify-center rounded-lg px-4 py-8 mb-10">
             <RecordsNotFound />
@@ -252,15 +268,15 @@ const VoterHistoryTable: React.FC<VoterHistoryTableProps> = ({
                     voterHistories.data.map((history, index) => (
                       <tr key={safelyGetNestedValue(history, 'fragment_id', index)}>
                         <td className="py-4 px-4 border-b border-r border-dark-light text-darker bg-background">
-                          {typeof history.fund === 'string' 
-                              ? history.fund 
+                          {typeof history.fund === 'string'
+                              ? history.fund
                               : history.fund && typeof history.fund === 'object' && 'title' in history.fund
                               ? history.fund.title
                               : t('vote.notAvailable')}
                         </td>
                         <td className="py-4 px-4 border-b border-r border-dark-light text-darker w-40">
-                          {history.stake_address ? 
-                            getValueWithTooltip(index, history, 'stake_address', history.stake_address) : 
+                          {history.stake_address ?
+                            getValueWithTooltip(index, history, 'stake_address', history.stake_address) :
                             t('vote.notAvailable')}
                         </td>
                         <td className="py-4 px-4 border-b border-r border-dark-light text-darker w-40">
@@ -271,16 +287,16 @@ const VoterHistoryTable: React.FC<VoterHistoryTableProps> = ({
                         </td>
                         <td className="py-4 px-4 border-b border-r border-dark-light text-content">
                           <div className="flex flex-col">
-                            <span>{history.time}</span>
+                              <span>{formatTimestamp(history.time)}</span>
                             {/* For time ago */}
                             {/* <span className="text-xs text-gray-persist">
                               {history.time}
-                            </span> */} 
+                            </span> */}
                           </div>
                         </td>
                         <td className="py-4 px-4 border-b border-r text-center border-dark-light text-darker">
-                          {typeof safelyGetNestedValue(history, 'choice') === 'number' 
-                            ? safelyGetNestedValue(history, 'choice').toString() 
+                          {typeof safelyGetNestedValue(history, 'choice') === 'number'
+                            ? safelyGetNestedValue(history, 'choice').toString()
                             : safelyGetNestedValue(history, 'choice')}
                         </td>
                         <td className="py-4 px-4 border-b border-r border-dark-light text-content">
@@ -297,11 +313,11 @@ const VoterHistoryTable: React.FC<VoterHistoryTableProps> = ({
                 </tbody>
               </table>
             </div>
-            
+
             {!isLoading && voterHistories && voterHistories.data && voterHistories.data.length > 0 && (
               <div className="bg-background rounded-b-lg border-t border-dark-light p-2">
                 <Paginator
-                  pagination={voterHistories} 
+                  pagination={voterHistories}
                   linkProps={{
                     preserveScroll: true,
                     only: ['voterHistories', 'filters'],
@@ -331,7 +347,7 @@ const VoterHistoryTable: React.FC<VoterHistoryTableProps> = ({
       )}
 
       {isLoading && <VoteHistoryTableLoader/>}
-      
+
     </div>
   );
 };

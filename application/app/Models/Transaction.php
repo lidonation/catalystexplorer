@@ -53,6 +53,7 @@ class Transaction extends Model implements IHasMetaData
             'epoch',
             'block',
             'type',
+            'stake_key',
             'json_metadata.txType',
             'json_metadata.stake_key',
             'inputs.address',
@@ -129,6 +130,14 @@ class Transaction extends Model implements IHasMetaData
         });
 
         return $query;
+    }
+
+    /**
+     * Get the signature associated with this transaction's stake key.
+     */
+    public function signature()
+    {
+        return $this->belongsTo(Signatures::class, 'stake_key', 'stake_key');
     }
 
     protected function casts(): array
