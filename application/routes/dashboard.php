@@ -3,8 +3,10 @@
 use App\Http\Controllers\My\MyBookmarksController;
 use App\Http\Controllers\ProposalsController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\GroupsController;
 use App\Http\Controllers\ReviewsController;
+use App\Http\Controllers\VoterHistoriesController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -39,11 +41,14 @@ Route::localized(
                 Route::get('/dashboard', [ProfileController::class, 'userSummary'])->name('dashboard');
 
                 Route::get('/groups', [GroupsController::class, 'myGroups'])->name('groups');
+                Route::get('/votes', [VoterHistoriesController::class, 'myVotes'])->name('votes');
 
                 Route::prefix('lists')->name('lists.')->group(function () {
                     Route::get('/', [MyBookmarksController::class, 'collectionIndex'])->name('index');
                     Route::get('/{list}', [MyBookmarksController::class, 'showCollection'])->name('show');
                 });
+
+                Route::get('/transactions', [TransactionController::class, 'userTransaction'])->name('transactions');
 
                 Route::get('/profile', function () {
                     return Inertia::render('My/Profile/Index');

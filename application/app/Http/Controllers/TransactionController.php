@@ -7,12 +7,14 @@ namespace App\Http\Controllers;
 use App\Actions\TransformIdsToHashes;
 use App\DataTransferObjects\TransactionData;
 use App\Enums\TransactionSearchParams;
+use App\Models\Signatures;
 use App\Models\Transaction;
 use App\Repositories\TransactionRepository;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Fluent;
 use Inertia\Inertia;
+use Inertia\Response;
 
 class TransactionController
 {
@@ -25,6 +27,8 @@ class TransactionController
     protected ?string $sortBy = 'created_at';
 
     protected ?string $sortOrder = 'desc';
+
+    protected array $userStakeKeys = [];
 
     /**
      * Display a listing of the resource.
@@ -71,6 +75,56 @@ class TransactionController
         return Inertia::render('Transactions/TransactionDetail', [
             'transaction' => $catalystTransaction,
             'metadataLabels' => $labelNames,
+        ]);
+    }
+
+    /**
+     * Display transactions for the authenticated user.
+     */
+    public function userTransaction(Request $request): Response
+    {
+        $this->getProps($request);
+
+        $user = $request->user();
+
+        $this->userStakeKeys = Signatures::where('user_id', $user->id)
+            ->pluck('stake_key')
+            ->filter()
+            ->toArray();
+
+        $transactions = null;
+
+        if (empty($this->userStakeKeys)) {
+            $page = isset($this->queryParams[TransactionSearchParams::PAGE()->value])
+                ? (int) $this->queryParams[TransactionSearchParams::PAGE()->value]
+                : $this->currentPage;
+
+            $limit = isset($this->queryParams[TransactionSearchParams::LIMIT()->value])
+                ? (int) $this->queryParams[TransactionSearchParams::LIMIT()->value]
+                : $this->limit;
+
+            $transactions = new LengthAwarePaginator(
+                [],
+                0,
+                $limit,
+                $page,
+                [
+                    'pageName' => 'p',
+                    'onEachSide' => 0,
+                ]
+            );
+        } else {
+            $transactions = $this->query();
+        }
+
+        return Inertia::render('My/Transactions/Index', [
+            'transactions' => $transactions,
+            'filters' => $this->queryParams,
+            'metadataLabels' => [
+                61284 => 'Catalyst voting registration',
+                61285 => 'Catalyst voting submission',
+                61286 => 'Catalyst voting rewards',
+            ],
         ]);
     }
 
@@ -170,6 +224,11 @@ class TransactionController
 
         if (! empty($this->queryParams[TransactionSearchParams::ADDRESS()->value])) {
             $filters[] = "inputs.address = '{$this->queryParams[TransactionSearchParams::ADDRESS()->value]}'";
+        }
+
+        if (! empty($this->userStakeKeys)) {
+                $stakeKeysList = "'" . implode("','", $this->userStakeKeys) . "'";
+                $filters[] = "stake_key IN [$stakeKeysList]";
         }
 
         return $filters;

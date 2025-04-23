@@ -119,7 +119,13 @@ class VoterHistoriesController extends Controller
 
         $query = '';
 
-        if (! empty($this->secondarySearch)) {
+        $isUnifiedSearch = isset($this->queryParams['unifiedSearch']) &&
+            $this->queryParams['unifiedSearch'] === 'true';
+
+        if ($isUnifiedSearch) {
+            $args['unifiedSearch'] = true;
+            $query = $this->search ?: $this->secondarySearch ?: '';
+        } elseif (! empty($this->secondarySearch)) {
             $query = $this->secondarySearch;
             $args['isSecondarySearch'] = true;
 
@@ -130,7 +136,6 @@ class VoterHistoriesController extends Controller
             $query = $this->search;
             $args['isStakeSearch'] = true;
         }
-
         $args['facets'] = ['choice', 'fund'];
 
         $builder = $voterHistories->search($query, $args);
@@ -245,5 +250,41 @@ class VoterHistoriesController extends Controller
             });
 
         return response()->json($choices);
+    }
+
+    public function myVotes(Request $request): Response
+    {
+        $requestData = $request->all();
+        $requestData['unifiedSearch'] = $request->input('unifiedSearch', 'true');
+        $request->replace($requestData);
+
+        $this->getProps($request);
+        $this->queryParams = $request->validate([
+            VoteSearchParams::CHOICE()->value => 'nullable',
+            VoteSearchParams::FUND()->value => 'nullable',
+            VoteSearchParams::PAGE()->value => 'int|nullable',
+            VoteSearchParams::LIMIT()->value => 'int|nullable',
+            VoteSearchParams::SORTS()->value => 'nullable',
+            VoteSearchParams::QUERY()->value => 'string|nullable',
+            VoteSearchParams::SECONDARY_QUERY()->value => 'string|nullable',
+            'unifiedSearch' => 'nullable|string',
+        ]);
+
+        $this->queryParams['unifiedSearch'] = $request->input('unifiedSearch', 'true');
+
+        $voterHistories = $this->query();
+
+        $props = [
+            'voterHistories' => $voterHistories,
+            'search' => $this->search,
+            'secondarySearch' => $this->secondarySearch,
+            'sort' => "{$this->sortBy}:{$this->sortOrder}",
+            'filters' => $this->queryParams,
+            'choices' => $this->choice,
+            'funds' => $this->funds,
+            'unifiedSearch' => true,
+        ];
+
+        return Inertia::render('My/Votes/Votes', $props);
     }
 }

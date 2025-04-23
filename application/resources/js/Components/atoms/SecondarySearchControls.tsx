@@ -21,6 +21,8 @@ function SecondarySearchControls({
     searchPlaceholder?: string;
     searchParam?: string;
     searchLabel?: string;
+    isUnifiedSearch?: boolean;
+
 }) {
     const { getFilter, setFilters, filters } = useFilterContext();
     const { t } = useTranslation();
@@ -46,6 +48,7 @@ function SecondarySearchControls({
         });
         setSearchQuery(search);
         const url = new URL(window.location.href);
+        url.searchParams.set('unifiedSearch', 'true');
 
         if (search.trim() === '') {
             url.searchParams.delete(searchParam);
@@ -68,7 +71,7 @@ function SecondarySearchControls({
 
     const filtersCount = filters.filter(
         (filter) =>
-            filter.param !== VoteEnums.PAGE && 
+            filter.param !== VoteEnums.PAGE &&
             filter.param !== VoteEnums.QUERY &&
             filter.param !== VoteEnums.SECONDARY_QUERY &&
             filter.value.length > 0,
@@ -115,7 +118,7 @@ function SecondarySearchControls({
                                 setTimeout(() => {
                                     const currentUrl = window.location.pathname;
                                     const currentParams = new URLSearchParams(window.location.search);
-                                    
+
                                     currentParams.delete(VoteEnums.SORT);
                                     currentParams.delete('sort');
                                     currentParams.delete('voting_power');
@@ -126,7 +129,7 @@ function SecondarySearchControls({
                                             params[key] = value;
                                         }
                                     }
-                                    
+
                                     router.get(currentUrl, params, {
                                         preserveState: true,
                                         preserveScroll: true,
