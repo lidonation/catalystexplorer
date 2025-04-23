@@ -372,7 +372,7 @@ class IdeascaleProfilesController extends Controller
             // Fund filter
             if (! empty($this->queryParams[ProposalSearchParams::FUNDS()->value])) {
                 $funds = implode("','", $this->queryParams[ProposalSearchParams::FUNDS()->value]);
-                $filters[] = "proposals.fund.title IN ['{$funds}']";
+                $filters[] = "proposals.fund.hash IN ['{$funds}']";
             }
 
             // Project status filter

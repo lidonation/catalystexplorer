@@ -58,13 +58,23 @@ return [
             'length' => 11,
             'alphabet' => 'abcdefgijklmnopqrstuvwxyz0123456789',
         ],
+        \App\Models\Reviewer::class => [
+            'salt' => \App\Models\Reviewer::class.env('APP_KEY'),
+            'length' => 11,
+            'alphabet' => 'abcdefghjklmnopqrstuvwxyz0123456789',
+        ],
         \App\Models\Review::class => [
-            'salt' => \App\Models\Review::class.env('APP_KEY'),
+            'salt' => \App\Models\Review::class . env('APP_KEY'),
             'length' => 11,
             'alphabet' => 'abcdefghjklmnopqrstuvwxyz0123456789',
         ],
         \App\Models\User::class => [
             'salt' => \App\Models\User::class.env('APP_KEY'),
+            'length' => 11,
+            'alphabet' => 'abcdefghiklmnopqrstuvwxyz0123456789',
+        ],
+        \App\Models\Fund::class => [
+            'salt' => \App\Models\Fund::class . env('APP_KEY'),
             'length' => 11,
             'alphabet' => 'abcdefghiklmnopqrstuvwxyz0123456789',
         ],

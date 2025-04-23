@@ -227,8 +227,8 @@ class TransactionController
         }
 
         if (! empty($this->userStakeKeys)) {
-                $stakeKeysList = "'" . implode("','", $this->userStakeKeys) . "'";
-                $filters[] = "stake_key IN [$stakeKeysList]";
+            $stakeKeysList = "'".implode("','", $this->userStakeKeys)."'";
+            $filters[] = "stake_key IN [$stakeKeysList]";
         }
 
         return $filters;

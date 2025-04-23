@@ -40,7 +40,7 @@ class CampaignController extends Controller
         }
 
         $campaigns = Campaign::query()
-            ->filter(request(['search', 'ids']));
+            ->filter(request(['search', 'ids', 'hashes']));
 
         return CampaignResource::collection($campaigns->fastPaginate($per_page)->onEachSide(0));
     }

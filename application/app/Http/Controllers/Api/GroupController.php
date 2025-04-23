@@ -41,7 +41,7 @@ class GroupController extends Controller
         }
 
         $groups = Group::query()
-            ->filter(request(['search', 'ids']));
+            ->filter(request(['search', 'ids', 'hashes']));
 
         return GroupResource::collection($groups->fastPaginate($per_page)->onEachSide(0));
     }
