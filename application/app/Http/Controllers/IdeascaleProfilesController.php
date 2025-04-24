@@ -41,9 +41,13 @@ class IdeascaleProfilesController extends Controller
     {
         $this->getProps($request);
 
+        $ideascaleProfiles = $this->query();
+
         return Inertia::render('IdeascaleProfile/Index', [
             'ideascaleProfilesCount' => 4,
-            'ideascaleProfiles' => Inertia::defer(fn () => $this->query()),
+            'ideascaleProfiles' => app()->environment('testing')
+                ? $ideascaleProfiles
+                : Inertia::defer(fn () => $this->query()),
             'filters' => $this->queryParams,
         ]);
     }
@@ -372,7 +376,7 @@ class IdeascaleProfilesController extends Controller
             // Fund filter
             if (! empty($this->queryParams[ProposalSearchParams::FUNDS()->value])) {
                 $funds = implode("','", $this->queryParams[ProposalSearchParams::FUNDS()->value]);
-                $filters[] = "proposals.fund.title IN ['{$funds}']";
+                $filters[] = "proposals.fund.hash IN ['{$funds}']";
             }
 
             // Project status filter

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Actions\TransformHashToIds;
 use App\Casts\DateFormatCast;
 use App\Enums\CatalystCurrencies;
 use App\Traits\HasAuthor;
@@ -175,6 +176,13 @@ class Proposal extends Model
 
     public function scopeFilter($query, array $filters)
     {
+        $idsFromHash = ! empty($filters['hashes']) ? (new TransformHashToIds)(collect($filters['hashes']), new static) : null;
+
+        $query->when(
+            $idsFromHash ?? false,
+            fn (Builder $query, $search) => $query->whereIn('id', $idsFromHash)
+        );
+
         $query->when(
             $filters['search'] ?? false,
             fn (Builder $query, $search) => $query->where('title', 'ILIKE', '%'.$search.'%')

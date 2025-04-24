@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Actions\TransformHashToIds;
 use App\Enums\CatalystCurrencies;
 use App\Enums\ProposalStatus;
 use App\Traits\HasMetaData;
@@ -96,14 +97,16 @@ class Campaign extends Model implements HasMedia
      */
     public function scopeFilter(Builder $query, array $filters): Builder
     {
+        $idsFromHash = isset($filters['hashes']) ? (new TransformHashToIds)(collect($filters['hashes']), new static) : [];
+
         $query->when($filters['search'] ?? null, function ($query, $search) {
             $query->where(function ($q) use ($search) {
                 $q->where('title', 'ilike', "%{$search}%")
                     ->orWhere('id', 'like', "%{$search}%")
                     ->orWhere('meta_title', 'ilike', "%{$search}%");
             });
-        })->when($filters['ids'] ?? null, function ($query, $ids) {
-            $query->whereIn('id', is_array($ids) ? $ids : explode(',', $ids));
+        })->when($filters['ids'] ?? null, function ($query, $ids) use ($idsFromHash) {
+            $query->whereIn('id', is_array($ids) ? array_merge($ids, $idsFromHash) : explode(',', $ids));
         });
 
         return $query;

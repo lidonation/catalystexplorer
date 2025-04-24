@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Actions\TransformHashToIds;
 use App\Enums\CatalystCurrencySymbols;
 use App\Enums\ProposalStatus;
 use App\Traits\HasConnections;
@@ -101,14 +102,18 @@ class Group extends Model implements HasMedia
      */
     public function scopeFilter(Builder $query, array $filters): Builder
     {
+        $idsFromHash = ! empty($filters['hashes']) ? (new TransformHashToIds)(collect($filters['hashes']), new static) : [];
+
+        $ids = ! empty($filters['ids']) ? array_merge($filters['ids'], $idsFromHash) : $idsFromHash;
+
         $query->when($filters['search'] ?? null, function ($query, $search) {
             $query->where(function ($q) use ($search) {
                 $q->where('name', 'ilike', "%{$search}%")
-                    ->orWhere('id', 'like', "%{$search}%")
+                    ->orWhere('id', 'ilike', "%{$search}%")
                     ->orWhere('meta_title', 'ilike', "%{$search}%");
             });
-        })->when($filters['ids'] ?? null, function ($query, $ids) {
-            $query->whereIn('id', is_array($ids) ? $ids : explode(',', $ids));
+        })->when($ids, function ($query) use ($ids) {
+            $query->whereIn('id', $ids);
         });
 
         return $query;

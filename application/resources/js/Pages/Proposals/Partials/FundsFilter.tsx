@@ -2,6 +2,7 @@ import Checkbox from '@/Components/atoms/Checkbox';
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import FundData = App.DataTransferObjects.FundData;
 
 interface FundFiltersProps {
     selectedItems: any;
@@ -15,7 +16,7 @@ const FundsFilter: React.FC<FundFiltersProps> = ({
     setSelectedItems,
 }) => {
     const { t } = useTranslation();
-    const [funds, setFunds] = useState<string[]>([]);
+    const [funds, setFunds] = useState<FundData[]>([]);
     const [isFetching, setIsFetching] = useState(false);
 
     useEffect(() => {
@@ -31,15 +32,10 @@ const FundsFilter: React.FC<FundFiltersProps> = ({
     const fetchFunds = async () => {
         try {
             setIsFetching(true);
-            const response = await axios.get(route('api.fundTitles'));
-            const fetchedFunds = response?.data || [];
-            const sortedFunds = fetchedFunds.sort((a: string, b: string) => {
-                const numA = parseInt(a.match(/\d+/)?.[0] ?? '0', 10);
-                const numB = parseInt(b.match(/\d+/)?.[0] ?? '0', 10);
-                return numB - numA;
-            });
-            setFunds(sortedFunds);
-            localStorage.setItem('funds', JSON.stringify(sortedFunds));
+            const response = await axios.get(route('api.funds'));
+            const fetchedFunds: FundData[] = response?.data || [];
+            setFunds(fetchedFunds);
+            localStorage.setItem('funds', JSON.stringify(fetchedFunds));
         } catch (error) {
             console.error('Failed to fetch funds:', error);
         } finally {
@@ -47,7 +43,7 @@ const FundsFilter: React.FC<FundFiltersProps> = ({
         }
     };
 
-    const handleSelect = (value: string) => {
+    const handleSelect = (value: string|null) => {
         const updatedItems = selectedItems.includes(value)
             ? selectedItems.filter((item: string) => item !== value)
             : [...(selectedItems ?? []), value];
@@ -64,28 +60,31 @@ const FundsFilter: React.FC<FundFiltersProps> = ({
                 {funds.map((fund) => {
                     return (
                         <li
-                            className={`flex w-full cursor-pointer rounded-md border-transparent bg-background shadow-xs border-2 hover:border-primary ${selectedItems.includes(fund) ? 'border-primary' : ''}`}
-                            key={fund + Math.random()}
-                            onClick={() => handleSelect(fund)}
-                            aria-label={fund}
+                            className={`bg-background hover:border-primary flex w-full cursor-pointer rounded-md border-2 border-transparent shadow-xs ${selectedItems.includes(fund) ? 'border-primary' : ''}`}
+                            onClick={() => handleSelect(fund.hash)}
+                            aria-label={fund.hash as string}
                         >
                             <div className="m-4">
                                 <Checkbox
-                                    id={fund}
-                                    value={fund}
-                                    checked={selectedItems.includes(fund)}
+                                    id={fund.hash as string | undefined}
+                                    value={fund.hash as string}
+                                    checked={selectedItems.includes(fund.hash)}
                                     onChange={() => {}}
-                                    className="text-content-accent mr-2 h-4 w-4 bg-background shadow-xs checked:bg-primary checked:hover:bg-primary focus:border focus:border-primary focus:ring-primary checked:focus:bg-primary"
+                                    className="text-content-accent bg-background checked:bg-primary checked:hover:bg-primary focus:border-primary focus:ring-primary checked:focus:bg-primary mr-2 h-4 w-4 shadow-xs focus:border"
                                 />
                             </div>
                             <div className="m-4 ml-2 w-full">
-                                <div className="mb-2 font-medium">{fund}</div>
+                                <div className="mb-2 font-medium">
+                                    {fund.label}
+                                </div>
                                 <div className="flex w-full justify-between">
                                     <div className="text-gray-persist">
                                         {t('proposals.totalProposals')}
                                     </div>
                                     <div className="font-bold">
-                                        {proposalsCount[fund] || 0}
+                                        {fund.title
+                                            ? proposalsCount[fund.title]
+                                            : 0}
                                     </div>
                                 </div>
                             </div>

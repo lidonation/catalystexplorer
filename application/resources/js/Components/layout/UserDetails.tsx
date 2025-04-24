@@ -58,7 +58,7 @@ const UserDetails: React.FC<UserDetailsProps> = ({ user }) => {
                                 {user?.name}
                             </Link>
 
-                            <Paragraph className="text-5 text-content">{user?.email}</Paragraph>
+                            <Paragraph className="text-5 text-content text-xs">{user?.email}</Paragraph>
                             <Link
                                 href={generateLocalizedRoute('profile.edit')}
                                 className="text-5 text-primary font-semibold"
@@ -73,7 +73,6 @@ const UserDetails: React.FC<UserDetailsProps> = ({ user }) => {
                         height={20}
                         onClick={() => logout()}
                     />
-                    <div></div>
                 </div>
                 :
                 <>

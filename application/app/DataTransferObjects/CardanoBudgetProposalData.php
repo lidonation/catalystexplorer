@@ -13,17 +13,39 @@ use Spatie\TypeScriptTransformer\Attributes\TypeScript;
 final class CardanoBudgetProposalData extends Data
 {
     public function __construct(
-        #[MapOutputName('govToolUserName')]
-        public ?string $govtool_username,
-
         #[MapOutputName('govToolUserId')]
         public int $govtool_user_id,
 
         #[MapOutputName('govToolProposalId')]
         public int $govtool_proposal_id,
 
+        #[MapOutputName('proposalName')]
+        public ?string $proposal_name,
+
+        #[MapOutputName('govToolUserName')]
+        public ?string $govtool_username,
+
+        #[MapOutputName('adaAmount')]
+        public ?int $ada_amount,
+
         #[TypeScriptOptional]
-        #[MapOutputName('intersectAdminFurtherText')]
-        public ?string $intersect_admin_further_text,
+        #[MapOutputName('budgetCat')]
+        public ?string $budget_cat,
+
+        #[TypeScriptOptional]
+        #[MapOutputName('committeeName')]
+        public ?string $committee_name,
+
+        #[TypeScriptOptional]
+        #[MapOutputName('updatedAt')]
+        public ?string $updated_at,
+
+        #[TypeScriptOptional]
+        #[MapOutputName('commentsCount')]
+        public ?int $prop_comments_number,
+
+        #[TypeScriptOptional]
+        #[MapOutputName('proposalBenefit')]
+        public ?string $proposal_benefit,
     ) {}
 }
