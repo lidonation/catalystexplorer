@@ -20,6 +20,7 @@ class Signatures extends Model
     protected $fillable = [
         'stake_key',
         'signature',
+        'stake_address',
         'signature_key',
         'wallet_provider',
         'user_id',

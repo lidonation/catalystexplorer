@@ -203,6 +203,7 @@ class VotingWorkflowController extends Controller
             'network' => 'nullable|string',
             'networkId' => 'nullable|string',
             'stake_key' => 'nullable|string',
+            'stake_address' => 'nullable|string',
             'signature' => 'nullable|string',
             'signature_key' => 'nullable|string',
             'message' => 'nullable|string',
@@ -225,7 +226,7 @@ class VotingWorkflowController extends Controller
 
         foreach ($request->only([
             'walletName', 'walletAddress', 'walletProvider',
-            'balance', 'network', 'chainId', 'timestamp', 'stake_key',
+            'balance', 'network', 'chainId', 'timestamp', 'stake_key', 'stake_address',
         ]) as $key => $value) {
             if ($value) {
                 $walletData[$key] = $value;
@@ -240,6 +241,7 @@ class VotingWorkflowController extends Controller
         try {
             Signatures::create([
                 'stake_key' => $walletData['stake_key'] ?? '',
+                'stake_address' => $walletData['stake_address'] ?? '',
                 'signature' => $walletData['signature'] ?? '',
                 'signature_key' => $walletData['signature_key'] ?? '',
                 'wallet_provider' => $wallet,
