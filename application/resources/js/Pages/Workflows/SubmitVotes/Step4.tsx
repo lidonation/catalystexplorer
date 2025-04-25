@@ -47,9 +47,10 @@ const Step4: React.FC<Step4Props> = ({
     const prevStep = localizedRoute('workflows.voting.index', { step: activeStep - 1 });
     const successRoute = localizedRoute('workflows.voting.index', { step: activeStep + 1 });
     const submitRoute = localizedRoute('workflows.voting.submitVotes');
-    const { stakeKey } = useConnectWallet();
+    const { stakeKey, stakeAddress } = useConnectWallet();
     const form = useForm({
-        stake_key: stakeKey
+        stake_key: stakeKey,
+        stake_address: stakeAddress
     });
 
     const submitVotes = () => {

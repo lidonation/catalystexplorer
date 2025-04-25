@@ -10,6 +10,7 @@ interface WalletContextType {
   connectedWalletProvider: any | null;
   userAddress: string;
   stakeKey: string;
+  stakeAddress: string;
   error: string;
   isConnecting: string | null;
   isWalletConnectorOpen: boolean;
@@ -35,7 +36,8 @@ export function ConnectWalletProvider({
   children,
   onWalletConnected,
 }: WalletProviderProps) {
-    const [stakeKey, setStakeKey] = useState<string>('');
+  const [stakeKey, setStakeKey] = useState<string>('');
+  const [stakeAddress, setStakeAddress] = useState<string>('');
   const [wallets, setWallets] = useState<string[]>([]);
   const [connectedWallet, setConnectedWallet] = useState<CIP30API | null>(null);
   const [userAddress, setUserAddress] = useState<string>('');
@@ -48,6 +50,40 @@ export function ConnectWalletProvider({
   const [networkName, setNetworkName] = useState<string>('');
   const { t } = useTranslation();
   const { environment } = usePage().props;
+
+  const deriveStakeAddress = (hexStakeAddressBytes: string, isTestnet: boolean): string => {
+        try {
+            if (!CardanoWasm || !hexStakeAddressBytes) {
+                return '';
+            }
+            const hexPairs = hexStakeAddressBytes.match(/.{1,2}/g) || [];
+            const addressBytes = new Uint8Array(hexPairs.map(byte => parseInt(byte, 16)));
+
+            try {
+                const address = CardanoWasm.Address.from_bytes(addressBytes);
+                const bech32Address = address.to_bech32();
+                return bech32Address;
+            } catch (error) {
+                console.warn('Could not parse as Address, trying as RewardAddress:', error);
+
+                try {
+                    const rewardAddress = CardanoWasm.RewardAddress.from_bytes(addressBytes);
+                    const bech32Address = rewardAddress.to_address().to_bech32();
+                    return bech32Address;
+                } catch (error2) {
+                    console.warn('Could not parse as RewardAddress either:', error2);
+                    const prefix = isTestnet ? 'stake_test1' : 'stake1';
+                    const simplifiedAddress = `${prefix}${hexStakeAddressBytes}`;
+                    console.log('Using simplified stake address (fallback):', simplifiedAddress);
+                    return simplifiedAddress;
+                }
+            }
+        } catch (error) {
+            console.error('Error deriving stake address:', error);
+            const prefix = isTestnet ? 'stake_test1' : 'stake1';
+            return `${prefix}${hexStakeAddressBytes}`;
+        }
+    };
 
   useEffect(() => {
     async function initializeWasm() {
@@ -161,6 +197,7 @@ export function ConnectWalletProvider({
       const hexAddress = allAddresses[0];
       const address = CardanoWasm.Address.from_hex(hexAddress);
       const bech32Address = address.to_bech32();
+      let derivedStakeAddress = '';
 
       try {
           const rewardAddresses = await api.getRewardAddresses();
@@ -169,6 +206,9 @@ export function ConnectWalletProvider({
               const stakeKeyHex = rewardAddresses[0];
               setStakeKey(stakeKeyHex);
               console.log('Stake key retrieved:', stakeKeyHex);
+              const isTestnet = walletNetworkId === 0;
+              derivedStakeAddress = deriveStakeAddress(stakeKeyHex, isTestnet);
+              setStakeAddress(derivedStakeAddress);
             } else {
                 console.warn('No reward addresses found');
                 setStakeKey('');
@@ -216,7 +256,8 @@ export function ConnectWalletProvider({
     setConnectedWalletProvider(null);
     setError('');
     setUserAddress('');
-    setStakeKey('')
+    setStakeKey('');
+    setStakeAddress('');
     setNetworkId(null);
     setNetworkName('');
   };
@@ -227,7 +268,8 @@ export function ConnectWalletProvider({
         wallets,
         connectedWallet,
         userAddress,
-          stakeKey,
+        stakeKey,
+        stakeAddress,
         error,
         isConnecting,
         CardanoWasm,
