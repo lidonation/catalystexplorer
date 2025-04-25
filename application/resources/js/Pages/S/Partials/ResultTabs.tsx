@@ -25,12 +25,12 @@ const ResultTabs = ({
         setActiveTab(tab);
     };
     return (
-        <div className="text-content-lighter flex flex-row items-center gap-6 border-b border-b-light-gray-persist">
+        <div className="text-content-lighter flex flex-row items-center gap-6 border-b border-b-light-gray-persist overflow-x-auto whitespace-nowrap pb-0.5 scrollbar-none">
             {tabConfig.map((tab) => (
                 <a
                     key={tab.name}
                     href={`#section-${tab.name}`}
-                    className={`group flex items-center gap-2 py-2 outline-hidden transition-colors hover:text-content-dark ${
+                    className={`group flex flex-shrink-0 items-center gap-2 py-2 outline-hidden transition-colors hover:text-content-dark ${
                         activeTab === tab.name &&
                         '-mb-px border-b-2 border-b-primary text-primary'
                     }`}
