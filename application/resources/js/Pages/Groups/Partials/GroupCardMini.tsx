@@ -34,11 +34,11 @@ const GroupCardMini: React.FC<GroupCardMiniProps> = ({ group }) => {
 
     return (
         group && (
-            <Card>
-                <div className="flex h-full w-full flex-col items-center gap-4">
+            <Card className="h-full flex flex-col">
+                <div className="flex w-full flex-col items-center gap-4">
                     <Image size="30" imageUrl={group?.hero_img_url} />
                     <Link
-                        href={useLocalizedRoute('groups.group', {
+                        href={useLocalizedRoute('groups.group.proposals', {
                             group: group?.slug,
                         })}
                         className="flex w-full justify-center"
@@ -72,7 +72,7 @@ const GroupCardMini: React.FC<GroupCardMiniProps> = ({ group }) => {
                     </div>
                 </div>
 
-                <div>
+                <div className="flex-grow">
                     <div
                         className={`grid ${noAwardedFunds || allAwardedFunds ? 'grid-cols-2' : 'grid-cols-1'} mt-4 gap-4`}
                     >
