@@ -259,6 +259,7 @@
         "communities": "Mes communautés",
         "lists": "Mes listes",
         "transactions": "Transactions",
+        "noTransactions": "Aucune transaction trouvée",
         "items": "éléments",
         "manage": "Gérer",
         "createList": "Créer une nouvelle liste"

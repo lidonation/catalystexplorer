@@ -1,6 +1,7 @@
 import { Head } from "@inertiajs/react";
 import React, { useState } from "react";
 import MyLayout from "../MyLayout";
+import RecordsNotFound from "@/Layouts/RecordsNotFound";
 import MyTransactionTable from "./Partials/MyTranscationsTable";
 import TransactionData = App.DataTransferObjects.TransactionData;
 import { PaginatedData } from "../../../../types/paginated-data";
@@ -10,6 +11,7 @@ import { useTranslation } from "react-i18next";
 import SearchControls from "@/Components/atoms/SearchControls";
 import TransactionSortOptions from "@/lib/TransactionSortOptions";
 import Title from "@/Components/atoms/Title";
+import Paragraph from "@/Components/atoms/Paragraph";
 
 interface MyTransactionProps {
     transactions: PaginatedData<TransactionData[]>;
@@ -20,6 +22,7 @@ interface MyTransactionProps {
 const MyTransaction: React.FC<MyTransactionProps> = ({transactions}) => {
     const { t } = useTranslation();
     const [showFilters, setShowFilters] = useState(false);
+    const hasTransactions = transactions?.data?.length > 0;
 
     return (
         <MyLayout>
@@ -42,12 +45,21 @@ const MyTransaction: React.FC<MyTransactionProps> = ({transactions}) => {
                             />
                         </section>
 
-                        <div className="overflow-hidden border border-background-lighter rounded-lg">
-                            <MyTransactionTable transactions={transactions?.data ?? []} />
-                            <div className="w-full flex items-center justify-center">
-                                {transactions && <Paginator pagination={transactions} />}
+                        {hasTransactions ? (
+                            <div className="overflow-hidden border border-background-lighter rounded-lg">
+                                <MyTransactionTable transactions={transactions.data} />
+                                <div className="w-full flex items-center justify-center">
+                                    <Paginator pagination={transactions} />
+                                </div>
                             </div>
-                        </div>
+                        ) : (
+                            <div className="bg-background flex w-full flex-col items-center justify-center rounded-lg px-4 py-8 mb-10">
+                                <RecordsNotFound />
+                                <Paragraph className="mt-4 text-center text-dark">
+                                    {t('my.noTransactions')}
+                                </Paragraph>
+                            </div>
+                        )}
                     </div>
                 </div>
             </div>
