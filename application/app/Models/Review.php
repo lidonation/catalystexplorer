@@ -57,6 +57,7 @@ class Review extends Model
             'title',
             'content',
             'status',
+            'model_type',
             'reviewer_id',
             'reviewer.hash',
             'reviewer.reputation_scores.fund',
@@ -199,6 +200,7 @@ class Review extends Model
         $array = $this->toArray();
 
         return array_merge($array, [
+            'model_type' => 'review',
             'model' => $this->model?->toArray(),
             'discussion' => $this->discussion?->toArray(),
             'parent' => $this->parent?->toArray(),
