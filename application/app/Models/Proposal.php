@@ -7,10 +7,12 @@ namespace App\Models;
 use App\Actions\TransformHashToIds;
 use App\Casts\DateFormatCast;
 use App\Enums\CatalystCurrencies;
+use App\Models\Scopes\ProposalTypeScope;
 use App\Traits\HasAuthor;
 use App\Traits\HasMetaData;
 use App\Traits\HasTaxonomies;
 use App\Traits\HasTranslations;
+use Illuminate\Database\Eloquent\Attributes\ScopedBy;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Concerns\HasTimestamps;
@@ -25,6 +27,7 @@ use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
 use Laravel\Scout\Searchable;
 
+#[ScopedBy(ProposalTypeScope::class)]
 class Proposal extends Model
 {
     use HasAuthor,

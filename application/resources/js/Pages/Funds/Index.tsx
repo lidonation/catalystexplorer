@@ -24,18 +24,7 @@ export default function Index({
         "Total Proposals": fund.proposals_count,
         "Funded Proposals": fund.funded_proposals_count,
         "Completed Proposals": fund.completed_proposals_count
-    }))
-    .sort((a, b) => {
-
-        const numA = a.fund ? parseInt(a.fund.replace(/\D/g, ''), 10) : NaN;
-        const numB = b.fund ? parseInt(b.fund.replace(/\D/g, ''), 10) : NaN;
-
-        if (isNaN(numA) && isNaN(numB)) return 0;
-        if (isNaN(numA)) return 1;
-        if (isNaN(numB)) return -1;
-
-        return numB - numA;
-    });
+    })).reverse();
 
     return (
         <>
