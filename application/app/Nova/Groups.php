@@ -18,6 +18,7 @@ use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Select;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Fields\Textarea;
+use Laravel\Nova\Fields\URL;
 use Laravel\Nova\Http\Requests\NovaRequest;
 use Laravel\Nova\Panel;
 
@@ -75,6 +76,8 @@ class Groups extends Resource
                 ->sortable()
                 ->required(),
 
+            new Panel('Socials', self::socialFields()),
+
             new Panel('Media', self::mediaFields()),
 
             HasMany::make('Proposals', 'proposals', Proposals::class),
@@ -92,6 +95,16 @@ class Groups extends Resource
                     ];
                 }),
 
+        ];
+    }
+
+    public static function socialFields(): array
+    {
+        return [
+            URL::make(__('Website'), 'website'),
+            Text::make(__('Twitter'), 'twitter'),
+            Text::make(__('Discord'), 'discord'),
+            Text::make(__('Github'), 'github'),
         ];
     }
 

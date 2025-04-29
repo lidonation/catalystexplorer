@@ -67,6 +67,12 @@ total_awarded: number | null;
 total_distributed: number | null;
 fund: App.DataTransferObjects.FundData | null;
 };
+export type CardanoBudgetProposalData = {
+govtool_username: string | null;
+govtool_user_id: number;
+govtool_proposal_id: number;
+intersect_admin_further_text?: string;
+};
 export type CommunityData = {
 hash: string | null;
 title?: string;
@@ -327,6 +333,7 @@ description: string;
 rarity: string;
 status: string;
 metadata: App.DataTransferObjects.NftMetaData;
+required_nft_metadata: App.DataTransferObjects.NMKRNftData;
 minted_at: string | null;
 qty: number;
 created_at: string | null;
@@ -378,7 +385,7 @@ title: string | null;
 slug: string | null;
 website?: string;
 excerpt?: string;
-content?: string;
+content?: Array<any> | string | null;
 amount_requested?: number;
 amount_received?: number;
 definition_of_success?: string;
@@ -406,6 +413,7 @@ quickpitch_length?: number;
 users: any | null;
 fund: App.DataTransferObjects.FundData | null;
 opensource: boolean | null;
+nft: App.DataTransferObjects.NftData | null;
 link?: string;
 };
 export type RankingData = {

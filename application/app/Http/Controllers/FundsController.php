@@ -23,11 +23,13 @@ class FundsController extends Controller
 
     public function index(Request $request, FundRepository $fundRepository): Response
     {
-        $funds = FundData::collect($fundRepository->getQuery()->withCount([
-            'proposals',
-            'funded_proposals',
-            'completed_proposals',
-        ])->get());
+        $funds = FundData::collect($fundRepository->getQuery()
+            ->withCount([
+                'proposals',
+                'funded_proposals',
+                'completed_proposals',
+            ])->get());
+
         $totalProposals = $funds->sum('proposals_count');
         $fundedProposals = $funds->sum('funded_proposals_count');
         $totalFundsAwardedADA = $funds->where('currency', CatalystCurrencies::ADA()->value)->sum('amount_awarded');
@@ -117,7 +119,6 @@ class FundsController extends Controller
                         ->filter()
                 )
             ),
-
             'campaigns' => Inertia::optional(fn () => CampaignData::collect($campaigns)),
         ]);
     }

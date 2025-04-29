@@ -132,7 +132,8 @@
             "selectProfile": "Sélectionnez un profil",
             "selectProposal": "Sélectionnez une proposition",
             "selectProfileInfo": "Choisissez le(s) profil(s) à partir duquel/lesquels vous souhaitez créer des NFT. Le profil sélectionné doit être lié au projet finalisé dont vous souhaitez créer le NFT. Vous hésitez ? Pas de souci : sélectionnez simplement tous les profils disponibles et nous nous occupons du reste ! 🚀",
-            "selectProposalInfo": "Pour commencer, veuillez sélectionner la proposition à partir de laquelle créer"
+            "selectProposalInfo": "Pour commencer, veuillez sélectionner la proposition à partir de laquelle créer",
+            "viewNft": "Voir le NFT"
         },
         "resetPassword": {
             "alreadyHaveAccount": "Déjà inscrit ?",

@@ -28,18 +28,18 @@ export const ReviewList: React.FC<ReviewListProps> = ({
                 columnClassName="pr-2"
             >
                 {reviews?.data?.map((review, index) => (
-                    <section 
-                        key={review?.hash} 
+                    <section
+                        key={review?.hash}
                         className="relative mb-2 "
-                        style={{ zIndex: reviews?.data?.length - index }} 
+                        style={{ zIndex: reviews?.data?.length - index }}
                     >
                         <ReviewCard review={review} />
                     </section>
                 ))}
             </Masonry>
 
-          
-            <div className="mb-8 flex w-full items-center justify-center">
+
+            <div className="mb-8 w-full ">
                 {reviews.data && <Paginator pagination={reviews} />}
             </div>
         </div>

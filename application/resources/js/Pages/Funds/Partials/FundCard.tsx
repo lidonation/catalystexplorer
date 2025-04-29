@@ -33,7 +33,7 @@ const FundCard: React.FC<FundCardProps> = ({
                 </Link>
                 {/* Responsive Image Section */}
                 <div
-                    className="flex h-24 w-24 items-center justify-center overflow-hidden rounded-full bg-linear-to-r from-gray-100 to-gray-900 sm:h-32 sm:w-32 lg:h-36 lg:w-36"
+                    className="flex h-20 w-20 items-center justify-center overflow-hidden rounded-full bg-linear-to-r from-gray-100 to-gray-900 sm:h-24 sm:w-24 lg:h-28 lg:w-28"
                 >
                     <img
                         src={fund.hero_img_url}

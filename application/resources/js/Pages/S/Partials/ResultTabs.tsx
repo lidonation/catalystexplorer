@@ -38,7 +38,7 @@ const ResultTabs = ({
                     onClick={(e) => handleTabClick(tab.name)}
                 >
                     <span className="font-medium">
-                        {t(`searchResults.tabs.${tab.name.toLowerCase()}`)}
+                        {t(`searchResults.tabs.${tab.name}`)}
                     </span>
                     <span
                         className={`flex min-w-[2em] items-center justify-center rounded-full border px-2 py-0.5 text-sm transition-all ${

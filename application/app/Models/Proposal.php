@@ -7,10 +7,12 @@ namespace App\Models;
 use App\Actions\TransformHashToIds;
 use App\Casts\DateFormatCast;
 use App\Enums\CatalystCurrencies;
+use App\Models\Scopes\ProposalTypeScope;
 use App\Traits\HasAuthor;
 use App\Traits\HasMetaData;
 use App\Traits\HasTaxonomies;
 use App\Traits\HasTranslations;
+use Illuminate\Database\Eloquent\Attributes\ScopedBy;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Concerns\HasTimestamps;
@@ -24,11 +26,15 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
 use Laravel\Scout\Searchable;
+use Staudenmeir\EloquentHasManyDeep\HasManyDeep;
+use Staudenmeir\EloquentHasManyDeep\HasRelationships;
 
+#[ScopedBy(ProposalTypeScope::class)]
 class Proposal extends Model
 {
     use HasAuthor,
         HasMetaData,
+        HasRelationships,
         HasTaxonomies,
         HasTimestamps,
         HasTranslations,
@@ -493,6 +499,7 @@ class Proposal extends Model
             'projectcatalyst_io_link' => $this->meta_info?->projectcatalyst_io_url ?? null,
             'project_length' => intval($this->meta_info->project_length) ?? 0,
             'vote_casts' => intval($this->meta_info->vote_casts) ?? 0,
+            'nft' => $this->nft,
         ]);
     }
 
@@ -545,6 +552,11 @@ class Proposal extends Model
     public function ideascaleProfiles(): BelongsToMany
     {
         return $this->belongsToMany(IdeascaleProfile::class, 'ideascale_profile_has_proposal', 'proposal_id', 'ideascale_profile_id');
+    }
+
+    public function nft(): HasManyDeep
+    {
+        return $this->hasManyDeepFromRelations($this->ideascaleProfiles(), (new IdeascaleProfile)->nfts());
     }
 
     /**

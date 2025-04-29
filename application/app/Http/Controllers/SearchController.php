@@ -30,7 +30,7 @@ class SearchController extends Controller
 
         $repositories = [
             'proposals' => $proposals,
-            'ideascaleprofiles' => $ideascaleProfiles,
+            'ideascaleProfiles' => $ideascaleProfiles,
             'groups' => $groups,
             'communities' => $communities,
             'reviews' => $reviews,
