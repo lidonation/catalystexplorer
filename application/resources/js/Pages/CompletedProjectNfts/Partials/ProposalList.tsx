@@ -26,7 +26,7 @@ const ProposalList: React.FC<ProposalListProps> = ({
         );
     }
 
-
+    
     return (
         <div className="lg:mt-4 space-y-2 lg:space-y-3 lg:p-6 p-4">
             {proposals?.data &&
@@ -43,10 +43,11 @@ const ProposalList: React.FC<ProposalListProps> = ({
                                 onProposalClick &&
                                 onProposalClick(proposal.hash)
                             }
+                            disabled={!!proposal?.nft?.minted_at}
                         />
                         <label
                             htmlFor={proposal.hash as string | undefined}
-                            className="peer-checked:border-primary peer-checked:text-primary peer-checked:border-primary inline-flex w-full cursor-pointer items-center justify-between rounded-lg border border-gray-100 text-gray-500 peer-checked:border-2"
+                            className={`peer-checked:border-primary peer-checked:text-primary peer-checked:border-primary inline-flex w-full ${proposal?.nft?.minted_at ? 'cursor-not-allowed' : 'cursor-pointer'} items-center justify-between rounded-lg border border-gray-100 text-gray-500 peer-checked:border-2`}
                         >
                             <CompletedProposalCard proposal={proposal} />
                         </label>
