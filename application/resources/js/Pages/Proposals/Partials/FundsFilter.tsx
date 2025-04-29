@@ -56,11 +56,12 @@ const FundsFilter: React.FC<FundFiltersProps> = ({
 
     return (
         <div className="w-full py-8">
-            <ul className="content-gap scrollable snaps-scrollable">
-                {funds.map((fund) => {
-                    return (
-                        <li
-                            className={`bg-background hover:border-primary flex w-full cursor-pointer rounded-md border-2 border-transparent shadow-xs ${selectedItems.includes(fund) ? 'border-primary' : ''}`}
+            <div className="overflow-x-auto pb-4">
+                <ul className="flex gap-4 whitespace-nowrap min-w-max">
+                    {funds.map((fund) => {
+                        return (
+                            <li
+                                className={`flex w-[250px] flex-shrink-0 cursor-pointer rounded-md border-transparent bg-background shadow-xs border-2 hover:border-primary ${selectedItems.includes(fund) ? 'border-primary' : ''}`}
                             onClick={() => handleSelect(fund.hash)}
                             aria-label={fund.hash as string}
                         >
@@ -73,7 +74,7 @@ const FundsFilter: React.FC<FundFiltersProps> = ({
                                     className="text-content-accent bg-background checked:bg-primary checked:hover:bg-primary focus:border-primary focus:ring-primary checked:focus:bg-primary mr-2 h-4 w-4 shadow-xs focus:border"
                                 />
                             </div>
-                            <div className="m-4 ml-2 w-full">
+                            <div className="m-4 ml-1 w-full">
                                 <div className="mb-2 font-medium">
                                     {fund.label}
                                 </div>
@@ -92,6 +93,7 @@ const FundsFilter: React.FC<FundFiltersProps> = ({
                     );
                 })}
             </ul>
+            </div>
         </div>
     );
 };

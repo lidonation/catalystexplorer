@@ -18,6 +18,7 @@ import ReviewData = App.DataTransferObjects.ReviewData;
 import IdeascaleProfileData = App.DataTransferObjects.IdeascaleProfileData;
 import GroupData = App.DataTransferObjects.GroupData;
 import Title from '@/Components/atoms/Title';
+import { ReviewCard } from '@/Components/ReviewCard';
 
 interface SearchResultsData {
     hits:
@@ -165,7 +166,17 @@ const DynamicSearchResults = ({
             case 'reviews':
                 return (
                     <div className="flex flex-col gap-4">
-                        <div>{translation('comingSoon')}</div>
+                        <Title level="2">{t('reviews.reviews')}</Title>
+                        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:items-start">
+                            {data.hits.map((review, index) => (
+                                <section
+                                    key={review.hash || index}
+                                    className="relative mb-6 overflow-hidden"
+                                >
+                                    <ReviewCard review={review as ReviewData} />
+                                </section>
+                            ))}
+                        </div>
                         <div className="flex w-full items-center justify-center">
                             <NavLink href={`/reviews?q=${query}`}>
                                 <Button className="text-center">
