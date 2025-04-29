@@ -48,7 +48,7 @@ export default function CompletedProposalCard({ proposal }: ProposalProps) {
                     href={`https://pool.pm/${proposal?.nft?.required_nft_metadata?.fingerprint}`}
                     className="w-auto text-sm whitespace-nowrap lg:px-8 lg:py-3"
                 >
-                    View NFT
+                    {t('workflows.completedProjectNfts.viewNft')}
                 </PrimaryLink>
             )}
         </div>
