@@ -26,12 +26,15 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
 use Laravel\Scout\Searchable;
+use Staudenmeir\EloquentHasManyDeep\HasManyDeep;
+use Staudenmeir\EloquentHasManyDeep\HasRelationships;
 
 #[ScopedBy(ProposalTypeScope::class)]
 class Proposal extends Model
 {
     use HasAuthor,
         HasMetaData,
+        HasRelationships,
         HasTaxonomies,
         HasTimestamps,
         HasTranslations,
@@ -496,6 +499,7 @@ class Proposal extends Model
             'projectcatalyst_io_link' => $this->meta_info?->projectcatalyst_io_url ?? null,
             'project_length' => intval($this->meta_info->project_length) ?? 0,
             'vote_casts' => intval($this->meta_info->vote_casts) ?? 0,
+            'nft' => $this->nft,
         ]);
     }
 
@@ -548,6 +552,11 @@ class Proposal extends Model
     public function ideascaleProfiles(): BelongsToMany
     {
         return $this->belongsToMany(IdeascaleProfile::class, 'ideascale_profile_has_proposal', 'proposal_id', 'ideascale_profile_id');
+    }
+
+    public function nft(): HasManyDeep
+    {
+        return $this->hasManyDeepFromRelations($this->ideascaleProfiles(), (new IdeascaleProfile)->nfts());
     }
 
     /**

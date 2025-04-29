@@ -112,6 +112,8 @@ final class ProposalData extends Data
 
         public ?bool $opensource,
 
+        public ?NftData $nft,
+
         #[TypeScriptOptional]
         public ?string $link,
 
