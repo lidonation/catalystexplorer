@@ -75,7 +75,7 @@ const VoteFilters = () => {
         } else {
             setFilters({
                 param: param,
-                value: selectedItems.join(','),
+                value: selectedItems,
                 label: labelText
             });
         }
@@ -98,7 +98,7 @@ const VoteFilters = () => {
                     </span>
                     <SearchSelect
                         key={'fund-titles'}
-                        domain="fundTitles"
+                        domain={'fundTitles'}
                         selected={selectedFund}
                         onChange={handleFundChange}
                         placeholder={t('select', 'Select')}
