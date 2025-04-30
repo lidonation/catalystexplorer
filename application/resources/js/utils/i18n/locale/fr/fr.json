@@ -210,6 +210,37 @@
                 "rationale": "Raisonnement",
                 "rationaleInfo": "Pourquoi avez-vous sélectionné ces propositions ? Fournir un raisonnement aide les autres à comprendre vos choix et rend votre liste plus crédible."
             }
+        },
+        "signature": {
+            "steps": {
+                "connectWallet": "Connecter le Portefeuille",
+                "signHotWallet": "Signer le Portefeuille Actif"
+            },
+            "signWallet": "Signer le portefeuille",
+            "signAuth": "En signant, vous autorisez cette action en toute sécurité avec votre portefeuille. Votre clé privée reste en sécurité. Procédez si les détails sont corrects.",
+            "signMessage": "Signer",
+            "signing": "Signature en cours...",
+            "success": {
+                "title": "Succès !!",
+                "message": "Votre signature a été effectuée avec succès et enregistrée en toute sécurité. Votre transaction est maintenant autorisée et prête à être traitée."
+            },
+            "errors": {
+                "failedToGetSignature": "Échec de l'obtention de la signature du portefeuille",
+                "failedToSaveSignature": "Échec de l'enregistrement de la signature : {{details}}",
+                "processingError": "Erreur durant le processus de signature : {{details}}",
+                "unknownError": "Une erreur inconnue s'est produite"
+            },
+            "duplicateSignature": "Signature en double détectée. Cette signature a déjà été enregistrée.",
+            "signatureDetails": "Détails de la Signature",
+            "stakingKey": "Clé de Staking",
+            "walletInfo": "Informations du Portefeuille",
+            "messageToSign": "Message à Signer",
+            "signatureResult": "Résultat de la Signature",
+            "duplicatesFound": "Signatures en Double Trouvées",
+            "duplicatesMessage": "Nous avons trouvé des signatures dans notre système avec la même clé de staking.",
+            "verification": {
+                "title": "Vérification du Portefeuille Catalyst Explorer"
+            }
         }
     },
     "error404": {
