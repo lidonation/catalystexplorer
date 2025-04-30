@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\BookmarksController;
 use App\Http\Controllers\CardanoBudgetProposalController;
+use App\Http\Controllers\SignatureWorkflowController;
 use App\Http\Controllers\VoterListController;
 use App\Http\Controllers\VotingWorkflowController;
 use CodeZero\LocalizedRoutes\Controllers\FallbackController;
@@ -158,6 +159,8 @@ Route::localized(
                     Route::get('/success', [VotingWorkflowController::class, 'success'])
                         ->name('success');
                 });
+            
+            
 
 
             Route::prefix('/drep-sign-up/steps')->as('drepSignUp.')
@@ -168,6 +171,22 @@ Route::localized(
                     // Route::post('/{ideascaleProfile}/claim', [ClaimIdeascaleProfileController::class, 'claimIdeascaleProfile'])
                     //     ->name('saveClaim');
                 });
+
+            Route::prefix('/signature-capture/steps')->as('signature.')
+                ->middleware([WorkflowMiddleware::class])
+                ->group(function () {
+                    Route::get('/{step}', [SignatureWorkflowController::class, 'handleStep'])
+                        ->name('index');
+                    Route::post('/sign-message', [SignatureWorkflowController::class, 'signMessage'])
+                        ->name('signMessage');
+                    Route::post('/save-signature', [SignatureWorkflowController::class, 'saveSignature'])
+                        ->name('saveSignature');
+                    Route::get('/success', [SignatureWorkflowController::class, 'success'])
+                        ->name('success');
+                });
+            
+             Route::get('/signature-capture/success', [SignatureWorkflowController::class, 'success'])
+                ->name('signature.success');
 
             Route::get('/login', [WorkflowController::class, 'auth'])
                 ->name('loginForm');
