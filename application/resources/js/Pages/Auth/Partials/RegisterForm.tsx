@@ -51,9 +51,9 @@ export default function RegisterForm({ closeModal }: RegisterFormProps) {
     };
 
     return (
-        <form onSubmit={submit} className="content-gap flex flex-col">
+        <form onSubmit={submit} className="content-gap flex flex-col w-full p-4">
             <div>
-                <InputLabel htmlFor="name" value="Name" />
+                <InputLabel htmlFor="name" value={t('name')} />
 
                 <TextInput
                     id="name"
