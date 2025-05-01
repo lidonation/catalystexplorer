@@ -34,7 +34,6 @@ class FundFactory extends Factory
             'color' => $this->faker->hexColor,
             'label' => $this->faker->word,
             'currency' => $this->faker->randomElement(['USD', 'ADA']),
-            'review_started_at' => $this->faker->optional()->dateTime,
         ];
     }
 }

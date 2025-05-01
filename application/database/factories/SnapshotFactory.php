@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Database\Factories;
 
+use App\Models\Fund;
 use App\Models\Snapshot;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -20,8 +21,11 @@ class SnapshotFactory extends Factory
     public function definition(): array
     {
         return [
-            'snapshot_name' => $this->faker->word(),
-            'snapshot_date' => $this->faker->dateTimeThisYear(),
+            'model_type' => Fund::class,
+            'model_id' => Fund::factory(),
+            'epoch'=> $this->faker->numberBetween(300,800),
+            'snapshot_at' => now()->subWeeks($this->faker->numberBetween(1, 4)),
+            'order' => $this->faker->numberBetween(1, 24),
         ];
     }
 }

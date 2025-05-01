@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Snapshot;
 use App\Models\VoterHistory;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -19,7 +20,7 @@ class VoterHistoryFactory extends Factory
             'raw_fragment' => $this->faker->text,
             'proposal' => $this->faker->randomNumber(),
             'choice' => $this->faker->numberBetween(1, 10),
-            'snapshot_id' => $this->faker->optional()->randomNumber(),
+            'snapshot_id' => Snapshot::factory(),
         ];
     }
 }
