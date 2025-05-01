@@ -29,11 +29,6 @@ const VotesComponent: React.FC<VoteHistoryProps> = (props) => {
     const isAuthenticated = pageProps.auth?.user;
 
     useEffect(() => {
-        console.log('Search Params:', {
-            query: searchParams,
-            unifiedSearch: 'true',
-            url: window.location.href
-        });
         const url = new URL(window.location.href);
         url.searchParams.set('unifiedSearch', 'true');
         window.history.replaceState({}, '', url.toString());
@@ -89,12 +84,18 @@ const VotesComponent: React.FC<VoteHistoryProps> = (props) => {
                     {isAuthenticated ? (
                         <div className="container flex flex-col">
                             <div className='bg-background rounded-lg shadow-lg'>
-                                <VoterHistoryTable
-                                    voterHistories={voterHistories as PaginatedData<VoterHistoryData[]>}
-                                    filters={searchParams}
-                                    unifiedSearch={true}
-                                    customTitle={t('votes')}
-                                />
+                                {voterHistories?.data && voterHistories.data.length > 0 ? (
+                                    <VoterHistoryTable
+                                        voterHistories={voterHistories as PaginatedData<VoterHistoryData[]>}
+                                        filters={searchParams}
+                                        unifiedSearch={true}
+                                        customTitle={t('votes')}
+                                    />
+                                ) : (
+                                    <div className="text-center py-8">
+                                        <RecordsNotFound />
+                                    </div>
+                                )}
                             </div>
                         </div>
                     ) : (

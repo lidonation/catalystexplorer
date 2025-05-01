@@ -8,7 +8,7 @@ import { Button } from '@headlessui/react';
 import { TFunction } from 'i18next';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-
+import GroupCardMini from '@/Pages/Groups/Partials/GroupCardMini';
 import AnnouncementData = App.DataTransferObjects.AnnouncementData;
 import CampaignData = App.DataTransferObjects.CampaignData;
 import CommunityData = App.DataTransferObjects.CommunityData;
@@ -18,6 +18,7 @@ import ReviewData = App.DataTransferObjects.ReviewData;
 import IdeascaleProfileData = App.DataTransferObjects.IdeascaleProfileData;
 import GroupData = App.DataTransferObjects.GroupData;
 import Title from '@/Components/atoms/Title';
+import { ReviewCard } from '@/Components/ReviewCard';
 
 interface SearchResultsData {
     hits:
@@ -128,8 +129,15 @@ const DynamicSearchResults = ({
             case 'groups':
                 return (
                     <div className="flex flex-col gap-4">
-                        <div>{translation('comingSoon')}</div>
-                        <div className="flex w-full items-center justify-center">
+                        <Title level='2'>{t('searchResults.tabs.groups')}</Title>
+                        <ul className="grid w-full grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4">
+                            {data.hits.map((group, index) =>(
+                                <li key={index}>
+                                    <GroupCardMini group={group as GroupData} />
+                                </li>
+                            ))}
+                        </ul>
+                        <div className="flex items-center justify-center w-full">
                             <NavLink href={`/groups?q=${query}`}>
                                 <Button className="text-center">
                                     {translation(
@@ -158,7 +166,17 @@ const DynamicSearchResults = ({
             case 'reviews':
                 return (
                     <div className="flex flex-col gap-4">
-                        <div>{translation('comingSoon')}</div>
+                        <Title level="2">{t('reviews.reviews')}</Title>
+                        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:items-start">
+                            {data.hits.map((review, index) => (
+                                <section
+                                    key={review.hash || index}
+                                    className="relative mb-6 overflow-hidden"
+                                >
+                                    <ReviewCard review={review as ReviewData} />
+                                </section>
+                            ))}
+                        </div>
                         <div className="flex w-full items-center justify-center">
                             <NavLink href={`/reviews?q=${query}`}>
                                 <Button className="text-center">

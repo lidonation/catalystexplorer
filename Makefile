@@ -223,7 +223,7 @@ flush-index:
 
 .PHONY: delete-index
 
-INDEXES = cx_proposals cx_ideascale_profiles cx_monthly_reports cx_review cx_groups cx_transactions
+INDEXES = cx_proposals cx_ideascale_profiles cx_monthly_reports cx_review cx_groups cx_transactions cx_communities
 
 delete-index:
 	@index_filter="$(filter-out $@,$(MAKECMDGOALS))"; \

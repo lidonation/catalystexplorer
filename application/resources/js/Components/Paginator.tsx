@@ -27,7 +27,7 @@ const PaginationComponent: React.FC<PaginationComponentProps<any>> = ({
     };
 
     const buildUrl = (param: string, value: number, label: string) => {
-        return getFilters({param, value, label});
+        return getFilters({ param, value, label });
     };
 
     let {
@@ -54,10 +54,10 @@ const PaginationComponent: React.FC<PaginationComponentProps<any>> = ({
                                 href={
                                     prev_page_url
                                         ? buildUrl(
-                                              ParamsEnum.PAGE,
-                                              current_page - 1,
-                                              'Current Page',
-                                          )
+                                            ParamsEnum.PAGE,
+                                            current_page - 1,
+                                            'Current Page',
+                                        )
                                         : ''
                                 }
                                 className={
@@ -75,9 +75,9 @@ const PaginationComponent: React.FC<PaginationComponentProps<any>> = ({
                                 {links &&
                                     links.map((link, index) =>
                                         link.label.includes('&laquo;') ||
-                                        link.label.includes(
-                                            '&raquo;',
-                                        ) ? null : (
+                                            link.label.includes(
+                                                '&raquo;',
+                                            ) ? null : (
                                             <PaginationItem
                                                 key={index}
                                                 className=""
@@ -91,16 +91,14 @@ const PaginationComponent: React.FC<PaginationComponentProps<any>> = ({
                                                             link.label,
                                                             'Current Page',
                                                         )}
-                                                        aria-current={
-                                                            link.active
-                                                                ? 'page'
-                                                                : undefined
-                                                        }
+                                                        onClick={(e) => {
+                                                            e.preventDefault();
+                                                            setPagination(ParamsEnum.PAGE, link.label, 'Current Page');
+                                                        }}
+                                                        aria-current={link.active ? 'page' : undefined}
                                                         className={cn(
                                                             'flex size-8 items-center justify-center rounded-full',
-                                                            link.active
-                                                                ? 'bg-background-darker'
-                                                                : '',
+                                                            link.active ? 'bg-background-darker' : '',
                                                         )}
                                                         {...linkProps}
                                                     >
@@ -127,10 +125,10 @@ const PaginationComponent: React.FC<PaginationComponentProps<any>> = ({
                                 href={
                                     next_page_url
                                         ? buildUrl(
-                                              ParamsEnum.PAGE,
-                                              current_page + 1,
-                                              'Current Page',
-                                          )
+                                            ParamsEnum.PAGE,
+                                            current_page + 1,
+                                            'Current Page',
+                                        )
                                         : ''
                                 }
                                 className={

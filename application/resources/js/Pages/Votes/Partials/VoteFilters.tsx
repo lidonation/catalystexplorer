@@ -75,7 +75,7 @@ const VoteFilters = () => {
         } else {
             setFilters({
                 param: param,
-                value: selectedItems.join(','),
+                value: selectedItems,
                 label: labelText
             });
         }

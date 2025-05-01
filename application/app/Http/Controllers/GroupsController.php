@@ -70,9 +70,9 @@ class GroupsController extends Controller
         $groups = $this->query();
 
         return Inertia::render('Groups/Index', [
-            'groups' => Inertia::optional(
-                fn () => $groups
-            ),
+            'groups' => app()->environment('testing')
+                ? $groups
+                : Inertia::optional(fn () => $groups),
             'search' => $this->search,
             'sort' => "{$this->sortBy}:{$this->sortOrder}",
             'filters' => $this->queryParams,

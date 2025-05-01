@@ -48,6 +48,7 @@ const Step3: React.FC<Step3Props> = ({
         connectedWalletProvider,
         userAddress,
         stakeKey,
+        stakeAddress,
         openConnectWalletSlider,
         networkName,
         networkId,
@@ -64,6 +65,7 @@ const Step3: React.FC<Step3Props> = ({
             const messageToSign = JSON.stringify({
                 voter: userAddress,
                 stakeKey: stakeKey,
+                stakeAddress: stakeAddress,
                 proposals: selectedProposals.map(p => p.slug),
                 votes: votes,
                 timestamp: new Date().toISOString()
@@ -82,6 +84,7 @@ const Step3: React.FC<Step3Props> = ({
                 network: networkName,
                 networkId: networkId ? String(networkId) : null,
                 stake_key: stakeKey,
+                stake_address: stakeAddress,
                 signature: signatureResult.signature,
                 signature_key: signatureResult.key,
                 message: messageToSign

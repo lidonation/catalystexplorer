@@ -10,6 +10,7 @@ use App\Enums\ProposalFundingStatus;
 use App\Enums\ProposalStatus;
 use App\Models\Scopes\OrderByLaunchedDateScope;
 use App\Traits\HasMetaData;
+use Illuminate\Database\Eloquent\Attributes\ScopedBy;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
@@ -20,6 +21,7 @@ use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
+#[ScopedBy(OrderByLaunchedDateScope::class)]
 class Fund extends Model implements HasMedia
 {
     use HasMetaData,
@@ -182,11 +184,5 @@ class Fund extends Model implements HasMedia
             'assessment_started_at' => 'datetime:Y-m-d',
             'amount' => 'integer',
         ];
-    }
-
-    protected static function booted(): void
-    {
-        parent::booted();
-        static::addGlobalScope(new OrderByLaunchedDateScope);
     }
 }

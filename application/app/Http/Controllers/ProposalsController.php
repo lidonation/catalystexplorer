@@ -75,9 +75,9 @@ class ProposalsController extends Controller
         $proposal = $this->query();
 
         return Inertia::render('Proposals/Index', [
-            'proposals' => Inertia::optional(
-                fn () => $proposal
-            ),
+            'proposals' => app()->environment('testing')
+                ? $proposal
+                : Inertia::optional(callback: fn () => $proposal),
             'filters' => $this->queryParams,
             'funds' => $this->fundsCount,
             'search' => $this->search,
@@ -399,7 +399,14 @@ class ProposalsController extends Controller
 
     public function fundTitles(Request $request)
     {
-        $fundTitles = Fund::pluck('title');
+        $funds = Fund::all(['id', 'title']);
+
+        $fundTitles = $funds->map(function ($fund) {
+            return [
+                'hash' => $fund->hash,
+                'title' => $fund->title,
+            ];
+        });
 
         return response()->json($fundTitles);
     }

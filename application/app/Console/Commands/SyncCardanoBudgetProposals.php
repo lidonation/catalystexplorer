@@ -36,9 +36,13 @@ class SyncCardanoBudgetProposals extends Command
                     '$and' => [['is_active' => 'true']],
                 ],
                 'populate' => [
-                    'bd_costing',
+                    'bd_costing.preferred_currency',
                     'bd_psapb.type_name',
-                    'bd_proposal_detail',
+                    'bd_psapb.roadmap_name',
+                    'bd_psapb.committee_name',
+                    'bd_proposal_detail.contract_type_name',
+                    'bd_further_information.proposal_links',
+                    'bd_proposal_ownership.be_country',
                     'creator',
                 ],
                 'pagination' => [
@@ -61,9 +65,7 @@ class SyncCardanoBudgetProposals extends Command
                     if (! isset($proposal['attributes'])) {
                         throw new \Exception('Malformed data.');
                     }
-
                     $attributes = $proposal['attributes'];
-
                     $props->put('is_active', $attributes['is_active']);
                     $props->put('privacy_policy', $attributes['privacy_policy']);
                     $props->put('intersect_admin_further_text', $attributes['intersect_named_administrator']);
@@ -75,7 +77,6 @@ class SyncCardanoBudgetProposals extends Command
                     if (! isset($attributes['bd_costing'])) {
                         throw new \Exception('Malformed data.');
                     }
-
                     $cost = $attributes['bd_costing']['data']['attributes'];
                     $props->put('ada_amount', $cost['ada_amount']);
                     $props->put('amount_in_preferred_currency', $cost['amount_in_preferred_currency']);
@@ -85,13 +86,11 @@ class SyncCardanoBudgetProposals extends Command
                         FILTER_FLAG_ALLOW_FRACTION
                     );
                     $props->put('usd_to_ada_conversion_rate', $sanitizedConversationRate);
-
                     $props->put('cost_breakdown', $cost['cost_breakdown']);
 
                     if (! isset($attributes['bd_psapb'])) {
                         throw new \Exception('Malformed data.');
                     }
-
                     $bd_psapb = $attributes['bd_psapb']['data']['attributes'];
                     $props->put('proposal_benefit', $bd_psapb['proposal_benefit']);
                     $props->put('problem_statement', $bd_psapb['problem_statement']);
@@ -101,7 +100,6 @@ class SyncCardanoBudgetProposals extends Command
                     if (! isset($attributes['bd_proposal_detail'])) {
                         throw new \Exception('Malformed data.');
                     }
-
                     $bd_proposal_detail = $attributes['bd_proposal_detail']['data']['attributes'];
                     $props->put('experience', $bd_proposal_detail['experience']);
                     $props->put('proposal_name', $bd_proposal_detail['proposal_name']);
@@ -112,19 +110,41 @@ class SyncCardanoBudgetProposals extends Command
                     $props->put('key_proposal_deliverables', $bd_proposal_detail['key_proposal_deliverables']);
                     $props->put('resourcing_duration_estimates', $bd_proposal_detail['resourcing_duration_estimates']);
 
+                    $contract_type_name = $bd_proposal_detail['contract_type_name']['data']['attributes'];
+                    $props->put('contract_type', $contract_type_name['contract_type_name']);
+
                     if (! isset($bd_psapb['type_name'])) {
                         throw new \Exception('Malformed data.');
                     }
-
                     $type_name = $bd_psapb['type_name']['data']['attributes'];
                     $props->put('budget_cat', $type_name['type_name']);
 
-                    if (! isset($attributes['bd_proposal_detail'])) {
+                    if (! isset($bd_psapb['committee_name'])) {
                         throw new \Exception('Malformed data.');
                     }
+                    $committee_name = $bd_psapb['committee_name']['data']['attributes'];
+                    $props->put('committee_name', $committee_name['committee_name']);
 
+                    if (! isset($bd_psapb['roadmap_name'])) {
+                        throw new \Exception('Malformed data.');
+                    }
+                    $roadmap_name = $bd_psapb['roadmap_name']['data']['attributes'];
+                    $props->put('related_roadmap', $roadmap_name['roadmap_name']);
+
+                    if (! isset($attributes['bd_proposal_ownership']['data']['attributes'])) {
+                        throw new \Exception('Malformed data.');
+                    }
+                    $bd_proposal_ownership = $attributes['bd_proposal_ownership']['data']['attributes'];
+
+                    if (isset($bd_proposal_ownership['be_country']['data']['attributes'])) {
+                        $be_country = $bd_proposal_ownership['be_country']['data']['attributes'];
+                        $props->put('country', $be_country['country_name']);
+                    }
+
+                    if (! isset($attributes['creator'])) {
+                        throw new \Exception('Malformed data.');
+                    }
                     $creator = $attributes['creator']['data'];
-
                     $props->put('govtool_user_id', $creator['id']);
                     $props->put('govtool_username', $creator['attributes']['govtool_username']);
 

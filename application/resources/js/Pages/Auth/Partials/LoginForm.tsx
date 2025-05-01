@@ -64,7 +64,7 @@ export default function LoginForm({ closeModal }: LoginFormProps) {
 
     return (
         <>
-            <form onSubmit={submit} className="content-gap flex flex-col">
+            <form onSubmit={submit} className="content-gap flex flex-col w-full p-4">
                 <div>
                     <InputLabel htmlFor="email" value={t('email')} />
 

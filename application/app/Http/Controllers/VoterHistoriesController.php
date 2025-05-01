@@ -6,11 +6,14 @@ namespace App\Http\Controllers;
 
 use App\DataTransferObjects\VoterHistoryData;
 use App\Enums\VoteSearchParams;
+use App\Models\Fund;
+use App\Models\Signatures;
 use App\Models\Voter;
 use App\Models\VoterHistory;
 use App\Repositories\VoterHistoryRepository;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Fluent;
 use Illuminate\Support\Stringable;
 use Inertia\Inertia;
@@ -192,27 +195,38 @@ class VoterHistoriesController extends Controller
         }
 
         if (isset($this->queryParams[VoteSearchParams::FUND()->value]) && $this->queryParams[VoteSearchParams::FUND()->value] !== null && $this->queryParams[VoteSearchParams::FUND()->value] !== '') {
-            $fund = $this->queryParams[VoteSearchParams::FUND()->value];
+            try {
+                $fundData = $this->fundData();
 
-            if (is_string($fund) && str_contains($fund, ',')) {
-                $fundArray = explode(',', $fund);
-            } elseif (is_array($fund)) {
-                $fundArray = $fund;
-            } else {
-                $fundArray = [$fund];
-            }
-
-            $fundArray = array_filter(array_map('trim', $fundArray), function ($value) {
-                return $value !== '' && $value !== null;
-            });
-
-            if (! empty($fundArray)) {
-                $funds = implode("','", $fundArray);
-                $filters[] = "fund IN ['{$funds}']";
+                if ($fundData->count() > 0) {
+                    $fundTitles = implode("','", $fundData->toArray());
+                    $filters[] = "fund IN ['{$fundTitles}']";
+                }
+            } catch (\Exception $e) {
+                Log::error('Error processing fund filter:', [
+                    'error' => $e->getMessage(),
+                    'trace' => $e->getTraceAsString(),
+                ]);
             }
         }
 
         return $filters;
+    }
+
+    protected function fundData()
+    {
+        $fundHashes = $this->queryParams[VoteSearchParams::FUND()->value];
+
+        if (! is_array($fundHashes)) {
+            $fundHashes = explode(',', $fundHashes);
+        }
+
+        $fundData = Fund::all()
+            ->filter(fn ($fund) => in_array($fund->hash, $fundHashes))
+            ->pluck('title')
+            ->filter();
+
+        return $fundData;
     }
 
     /**
@@ -254,9 +268,11 @@ class VoterHistoriesController extends Controller
 
     public function myVotes(Request $request): Response
     {
-        $requestData = $request->all();
-        $requestData['unifiedSearch'] = $request->input('unifiedSearch', 'true');
-        $request->replace($requestData);
+        $user = auth()->user();
+        $userStakeKeys = Signatures::where('user_id', $user->id)
+            ->pluck('stake_address')
+            ->filter()
+            ->toArray();
 
         $this->getProps($request);
         $this->queryParams = $request->validate([
@@ -270,14 +286,67 @@ class VoterHistoriesController extends Controller
             'unifiedSearch' => 'nullable|string',
         ]);
 
-        $this->queryParams['unifiedSearch'] = $request->input('unifiedSearch', 'true');
+        $searchQuery = ! empty($this->search) ? $this->search : '';
 
-        $voterHistories = $this->query();
+        $filters = $this->getUserFilters();
 
+        if (empty($userStakeKeys)) {
+            $filters[] = "stake_address = 'NO_STAKE_KEYS_FOR_USER'";
+        } else {
+            if (count($userStakeKeys) === 1) {
+                $filters[] = "stake_address = '{$userStakeKeys[0]}'";
+            } else {
+                $stakeAddresses = implode("','", $userStakeKeys);
+                $filters[] = "stake_address IN ['{$stakeAddresses}']";
+            }
+        }
+
+        $sort = null;
+        if ((bool) $this->sortBy && (bool) $this->sortOrder) {
+            $sort = ["$this->sortBy:$this->sortOrder"];
+        }
+        $page = isset($this->queryParams[VoteSearchParams::PAGE()->value])
+            ? (int) $this->queryParams[VoteSearchParams::PAGE()->value]
+            : 1;
+
+        $limit = isset($this->queryParams[VoteSearchParams::LIMIT()->value])
+            ? (int) $this->queryParams[VoteSearchParams::LIMIT()->value]
+            : 10;
+
+        $offset = ($page - 1) * $limit;
+
+        $voterHistories = app(VoterHistoryRepository::class);
+
+        $searchArgs = [
+            'filter' => $filters,
+            'offset' => $offset,
+            'limit' => $limit,
+            'facets' => ['choice', 'fund'],
+            'unifiedSearch' => true,
+        ];
+        if ($sort) {
+            $searchArgs['sort'] = $sort;
+        }
+        $builder = $voterHistories->search($searchQuery, $searchArgs);
+        $response = new Fluent($builder->raw());
+        $this->setCounts($response->facetDistribution ?? [], $response->facetStats ?? []);
+        $voterHistoryData = VoterHistoryData::collect($response->hits ?? []);
+        $pagination = new LengthAwarePaginator(
+            $voterHistoryData,
+            $response->estimatedTotalHits ?? 0,
+            $limit,
+            $page,
+            [
+                'pageName' => VoteSearchParams::PAGE()->value,
+                'path' => request()->url(),
+                'query' => request()->query(),
+            ]
+        );
+        $voterHistoriesArray = $pagination->onEachSide(1)->toArray();
         $props = [
-            'voterHistories' => $voterHistories,
-            'search' => $this->search,
-            'secondarySearch' => $this->secondarySearch,
+            'voterHistories' => $voterHistoriesArray,
+            'search' => $searchQuery,
+            'secondarySearch' => null,
             'sort' => "{$this->sortBy}:{$this->sortOrder}",
             'filters' => $this->queryParams,
             'choices' => $this->choice,

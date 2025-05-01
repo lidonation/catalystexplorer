@@ -79,6 +79,7 @@ class VoterHistory extends Model
         return [
             'choice',
             'fund',
+            'fund_hash',
             'stake_address',
             'time',
         ];

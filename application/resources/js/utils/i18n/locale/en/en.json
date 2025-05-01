@@ -6,6 +6,7 @@
     "articles": "Articles",
     "assetName": "Asset Name",
     "API": "API",
+    "authMessage": "You can explore proposals, monthly reports, people, and groups. Filter proposals by funding status or budget size, Fund, Campaign, key words, and more.",
     "bio": "Bio",
     "allCurrencies": "All Currencies",
     "totalAda": "Total Amount in ADA",
@@ -54,6 +55,7 @@
     "monthlyReports": "Monthly Reports",
     "metaTitle": "Meta Data Preview",
     "mintNFT": "Mint NFT",
+    "name": "Name",
     "viewNFT": "View NFT",
     "nftPending": "Nft Pending",
     "cantFindNFT": "Can't find NFT for mint",
@@ -144,7 +146,8 @@
             "selectProfile": "Select Profile",
             "selectProposal": "Select Proposal",
             "selectProfileInfo": "Choose the profile(s) you want to mint from. The selected profile should be linked to the completed project whose NFT you’re minting.Not sure which one to pick? No worries—just select all available profiles and we’ll handle the rest! 🚀",
-            "selectProposalInfo": "To get started, please select proposal to mint from"
+            "selectProposalInfo": "To get started, please select proposal to mint from",
+            "viewNft": "View NFT"
         },
         "drepSignUp": {
             "signUpForm": "1. If you already have an account, log in with your credentials.\n2. If you’re new, sign up using your email and create a secure password.\n3. Verify your email to activate your account.",
@@ -246,6 +249,37 @@
                 "submission": "Submission",
                 "submissionInfo": "Submitting your votes"
             }
+        },
+        "signature": {
+            "steps": {
+                "connectWallet": "Connect Wallet",
+                "signHotWallet": "Sign Hot Wallet"
+            },
+            "signWallet": "Sign wallet",
+            "signAuth": "By signing, you authorize this action securely with your wallet. Your private key remains Safe. Proceed if the details are correct.",
+            "signMessage": "Sign",
+            "signing": "Signing...",
+            "success": {
+                "title": "Success!!",
+                "message": "Your signature was successful and securely recorded. Your transaction is now authorized and ready to proceed."
+            },
+            "errors": {
+                "failedToGetSignature": "Failed to get signature from wallet",
+                "failedToSaveSignature": "Failed to save signature: {{details}}",
+                "processingError": "Error during signature process: {{details}}",
+                "unknownError": "Unknown error occurred"
+            },
+            "duplicateSignature": "Duplicate signature detected. This signature has already been saved.",
+            "signatureDetails": "Signature Details",
+            "stakingKey": "Stake Key",
+            "walletInfo": "Wallet Information",
+            "messageToSign": "Message to Sign",
+            "signatureResult": "Signature Result",
+            "duplicatesFound": "Duplicate Signatures Found",
+            "duplicatesMessage": "We found signatures in our system with the same stake key.",
+            "verification": {
+                "title": "Catalyst Explorer Wallet Verification"
+            }
         }
     },
     "error404": {
@@ -295,6 +329,7 @@
         "groups": "My Groups",
         "communities": "My Communities",
         "transactions": "Transactions",
+        "noTransactions": "No transactions Found.",
         "lists": "My Lists",
         "items": "items",
         "manage": "Manage",
@@ -958,6 +993,7 @@
     "wallet": {
         "connect": {
             "title": "Connect Wallet",
+            "subtitle": "Choose the wallet you want to connect with:",
             "initializing": "Initializing wallet connection...",
             "connectedTo": "Connected to:",
             "disconnect": "Disconnect Wallet",
