@@ -29,8 +29,6 @@ class VoterHistory extends Model
      * @var array<string>
      */
     protected $appends = [
-        'voting_power',
-        'fund',
         'hash',
     ];
 
@@ -43,7 +41,7 @@ class VoterHistory extends Model
     {
         return [
             'voting_power',
-            'fund',
+            'snapshot.fund',
             'time',
         ];
     }
@@ -65,7 +63,7 @@ class VoterHistory extends Model
             'fragment_id',
             'caster',
             'raw_fragment',
-            'fund',
+            'snapshot.fund',
         ];
     }
 
@@ -78,8 +76,9 @@ class VoterHistory extends Model
     {
         return [
             'choice',
-            'fund',
-            'fund_hash',
+            'snapshot.fund',
+            'snapshot.fund.hash',
+            'snapshot.fund.title',
             'stake_address',
             'time',
         ];
@@ -121,7 +120,7 @@ class VoterHistory extends Model
             ->select('voter_history.*')
             ->leftJoin('voters', 'voter_history.caster', '=', 'voters.cat_id')
             ->leftJoin('voting_powers', 'voters.id', '=', 'voting_powers.voter_id')
-            ->orderByRaw('COALESCE(voting_powers.voting_power, 0) '.$direction);
+            ->orderByRaw('COALESCE(voting_powers.voting_power, 0) ' . $direction);
     }
 
     /**
@@ -129,23 +128,10 @@ class VoterHistory extends Model
      */
     public function toSearchableArray(): array
     {
-        $this->loadMissing([
-            'voter',
-            'voting_powers',
-            'snapshot',
-        ]);
-
-        return [
-            'id' => $this->id,
-            'stake_address' => $this->stake_address,
-            'fragment_id' => $this->fragment_id,
-            'caster' => $this->caster,
-            'raw_fragment' => $this->raw_fragment,
-            // 'proposal' => $this->proposal,
-            'choice' => $this->choice,
-            'time' => $this->time,
-            'fund' => $this->snapshot->fund,
-        ];
+        return  array_merge(
+            $this->load(['snapshot.fund',])->toArray(),
+            ['voting_power' => $this->voting_power->voting_power]
+        );
     }
 
     /**
@@ -166,7 +152,7 @@ class VoterHistory extends Model
      */
     public function snapshot(): HasOne
     {
-        return $this->hasOne(Snapshot::class);
+        return $this->hasOne(Snapshot::class, 'id', 'snapshot_id',);
     }
 
     /**

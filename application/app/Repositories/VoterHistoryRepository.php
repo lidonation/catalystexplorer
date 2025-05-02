@@ -45,17 +45,17 @@ class VoterHistoryRepository extends Repository
                         'choice',
                         'time',
                         'voting_power',
-                        'fund',
+                        'snapshot',
                     ],
                     'facets' => [
                         'choice',
-                        'fund',
+                        'snapshot.fund',
                     ],
                 ];
                 if ($isStakeSearch) {
                     $defaultArgs['attributesToSearchOn'] = ['stake_address'];
                 } elseif ($isSecondarySearch) {
-                    $defaultArgs['attributesToSearchOn'] = ['fragment_id', 'caster', 'raw_fragment', 'fund'];
+                    $defaultArgs['attributesToSearchOn'] = ['fragment_id', 'caster', 'raw_fragment', 'snapshot.fund'];
                 } elseif ($isUnifiedSearch) {
                     $defaultArgs['attributesToSearchOn'] = ['stake_address', 'fragment_id', 'caster', 'raw_fragment'];
                 }
