@@ -6,6 +6,7 @@
     "articles": "Articles",
     "assetName": "Asset Name",
     "API": "API",
+    "authMessage": "You can explore proposals, monthly reports, people, and groups. Filter proposals by funding status or budget size, Fund, Campaign, key words, and more.",
     "bio": "Bio",
     "allCurrencies": "All Currencies",
     "totalAda": "Total Amount in ADA",
@@ -54,6 +55,7 @@
     "monthlyReports": "Monthly Reports",
     "metaTitle": "Meta Data Preview",
     "mintNFT": "Mint NFT",
+    "name": "Name",
     "viewNFT": "View NFT",
     "nftPending": "Nft Pending",
     "cantFindNFT": "Can't find NFT for mint",
@@ -246,6 +248,37 @@
                 "connectWalletInfo": "Connect your wallet to submit your votes.",
                 "submission": "Submission",
                 "submissionInfo": "Submitting your votes"
+            }
+        },
+        "signature": {
+            "steps": {
+                "connectWallet": "Connect Wallet",
+                "signHotWallet": "Sign Hot Wallet"
+            },
+            "signWallet": "Sign wallet",
+            "signAuth": "By signing, you authorize this action securely with your wallet. Your private key remains Safe. Proceed if the details are correct.",
+            "signMessage": "Sign",
+            "signing": "Signing...",
+            "success": {
+                "title": "Success!!",
+                "message": "Your signature was successful and securely recorded. Your transaction is now authorized and ready to proceed."
+            },
+            "errors": {
+                "failedToGetSignature": "Failed to get signature from wallet",
+                "failedToSaveSignature": "Failed to save signature: {{details}}",
+                "processingError": "Error during signature process: {{details}}",
+                "unknownError": "Unknown error occurred"
+            },
+            "duplicateSignature": "Duplicate signature detected. This signature has already been saved.",
+            "signatureDetails": "Signature Details",
+            "stakingKey": "Stake Key",
+            "walletInfo": "Wallet Information",
+            "messageToSign": "Message to Sign",
+            "signatureResult": "Signature Result",
+            "duplicatesFound": "Duplicate Signatures Found",
+            "duplicatesMessage": "We found signatures in our system with the same stake key.",
+            "verification": {
+                "title": "Catalyst Explorer Wallet Verification"
             }
         }
     },
@@ -919,6 +952,12 @@
             "placeholder": "Search transaction hash, epoch, block"
         }
     },
+    "validation": {
+        "required": "{{field}} is required",
+        "emailFormat": "Please enter a valid email address",
+        "passwordLength": "Password must be at least 8 characters",
+        "passwordMatch": "Passwords do not match"
+    },
     "vote": {
         "catalystVotes": "Catalyst Votes",
         "viewOnchainTransactions": "View onchain (jormugandr) transactions of votes cast",
@@ -960,6 +999,7 @@
     "wallet": {
         "connect": {
             "title": "Connect Wallet",
+            "subtitle": "Choose the wallet you want to connect with:",
             "initializing": "Initializing wallet connection...",
             "connectedTo": "Connected to:",
             "disconnect": "Disconnect Wallet",

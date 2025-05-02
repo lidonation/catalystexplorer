@@ -30,8 +30,50 @@ export default function RegisterForm({ closeModal }: RegisterFormProps) {
 
     const [errors, setErrors] = useState<FormErrors>({});
 
+    const validateEmail = (email: string): boolean => {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailRegex.test(email);
+    };
+    
+    const validatePasswordStrength = (password: string): boolean => {
+        return password.length >= 8;
+    };
+    
+    const validateForm = (): boolean => {
+        const newErrors: FormErrors = {};
+        let isValid = true;
+
+        if (!validateEmail(data.email)) {
+            newErrors.email = t('validation.emailFormat');
+            isValid = false;
+        }
+
+        if (!data.password) {
+            newErrors.password = t('validation.required');
+            isValid = false;
+        } else if (!validatePasswordStrength(data.password)) {
+            newErrors.password = t('validation.passwordLength');
+            isValid = false;
+        }
+
+        if (!data.password_confirmation) {
+            newErrors.password_confirmation = t('validation.required');
+            isValid = false;
+        } else if (data.password !== data.password_confirmation) {
+            newErrors.password_confirmation = t('validation.passwordMatch');
+            isValid = false;
+        }
+        
+        setErrors(newErrors);
+        return isValid;
+    };
+
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
+        
+        if (!validateForm()) {
+            return;
+        }
 
         post(generateLocalizedRoute('register'), {
             onFinish: () => reset('password', 'password_confirmation'),
@@ -39,7 +81,10 @@ export default function RegisterForm({ closeModal }: RegisterFormProps) {
                 if (closeModal) closeModal();
                 router.visit(generateLocalizedRoute('my.dashboard'));
             },
-            onError: (errors) => setErrors(errors),
+            onError: (serverErrors) => {
+                console.log('Registration error:', serverErrors);
+                setErrors(serverErrors);
+            },
         });
     };
 
@@ -51,9 +96,9 @@ export default function RegisterForm({ closeModal }: RegisterFormProps) {
     };
 
     return (
-        <form onSubmit={submit} className="content-gap flex flex-col">
+        <form onSubmit={submit} className="content-gap flex flex-col w-full p-4">
             <div>
-                <InputLabel htmlFor="name" value="Name" />
+                <InputLabel htmlFor="name" value={t('name')} />
 
                 <TextInput
                     id="name"

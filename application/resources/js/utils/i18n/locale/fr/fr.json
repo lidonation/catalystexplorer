@@ -6,6 +6,7 @@
     "articles": "Articles",
     "assetName": "Nom de l'actif",
     "API": "API",
+    "authMessage": "Vous pouvez explorer les propositions, les rapports mensuels, les personnes et les groupes. Filtrez les propositions par statut de financement, budget, fonds, campagne, mots-clés, etc.",
     "bio": "Biographie",
     "blockchainData": "Blockchain Data",
     "bookmarks": "Mes Signets",
@@ -14,6 +15,7 @@
     "ccv4Votes": "Votes CCV4",
     "charts": "Graphiques",
     "comingSoon": "À venir",
+    "confirmPassword": "Confirmez le mot de passe",
     "chooseMetaData": "Choisissez vos propres métadonnées",
     "allCurrencies": "Toutes les devises",
     "totalAda": "Montant total en ADA",
@@ -22,6 +24,7 @@
     "cookies": "Cookies",
     "copyright": "© 2024 Explorateur Catalyst. Tous droits réservés.",
     "connections": "Connexions",
+    "email": "Email",
     "explore": "Explorer",
     "data": "Données",
     "dReps": "DReps",
@@ -45,8 +48,10 @@
     "listsAndBookmarks": "Listes et Signets",
     "login": "Se connecter",
     "filters": "Filtres",
+    "forgotPassword": "mot de passe oublié",
     "otherContributors": "Autres contributeurs",
     "monthlyReports": "Rapports Mensuels",
+    "name": "Nom",
     "nobookmarks": "Pas encore de signets",
     "noBookmarksYet": "Vous n'avez pas marqué de signets pour les propositions, les personnes, les groupes ou les évaluations. Commencez à explorer et ajoutez vos favoris à vos signets !",
     "noImage": "Pas d'image",
@@ -65,8 +70,10 @@
     "projectCatalyst": "Nom de la campagne Projet Catalyst",
     "policyID": "Policy ID",
     "metaTitle": "Meta Data Preview",
+    "password": "Mot de passe",
     "proposers": "Proposeurs",
     "register": "Registre",
+    "rememberMe": "Souviens-toi de moi",
     "reviewerReputationScore": "Score de réputation de l'évaluateur",
     "reviewers": "Réviseurs",
     "searchQuery": "Aucun résultat ne correspond à votre requête de recherche",
@@ -89,6 +96,7 @@
     "link": "lien",
     "select": "Sélectionner",
     "selected": "choisie",
+    "signin": "Se connecter",
     "clear": "claire",
     "copied": "copié",
     "selection": "sélection",
@@ -210,6 +218,37 @@
                 "rationale": "Raisonnement",
                 "rationaleInfo": "Pourquoi avez-vous sélectionné ces propositions ? Fournir un raisonnement aide les autres à comprendre vos choix et rend votre liste plus crédible."
             }
+        },
+        "signature": {
+            "steps": {
+                "connectWallet": "Connecter le Portefeuille",
+                "signHotWallet": "Signer le Portefeuille Actif"
+            },
+            "signWallet": "Signer le portefeuille",
+            "signAuth": "En signant, vous autorisez cette action en toute sécurité avec votre portefeuille. Votre clé privée reste en sécurité. Procédez si les détails sont corrects.",
+            "signMessage": "Signer",
+            "signing": "Signature en cours...",
+            "success": {
+                "title": "Succès !!",
+                "message": "Votre signature a été effectuée avec succès et enregistrée en toute sécurité. Votre transaction est maintenant autorisée et prête à être traitée."
+            },
+            "errors": {
+                "failedToGetSignature": "Échec de l'obtention de la signature du portefeuille",
+                "failedToSaveSignature": "Échec de l'enregistrement de la signature : {{details}}",
+                "processingError": "Erreur durant le processus de signature : {{details}}",
+                "unknownError": "Une erreur inconnue s'est produite"
+            },
+            "duplicateSignature": "Signature en double détectée. Cette signature a déjà été enregistrée.",
+            "signatureDetails": "Détails de la Signature",
+            "stakingKey": "Clé de Staking",
+            "walletInfo": "Informations du Portefeuille",
+            "messageToSign": "Message à Signer",
+            "signatureResult": "Résultat de la Signature",
+            "duplicatesFound": "Signatures en Double Trouvées",
+            "duplicatesMessage": "Nous avons trouvé des signatures dans notre système avec la même clé de staking.",
+            "verification": {
+                "title": "Vérification du Portefeuille Catalyst Explorer"
+            }
         }
     },
     "error404": {
@@ -280,7 +319,8 @@
     },
     "registration": {
         "alreadyRegistered": "Déjà inscrit?",
-        "passwordCharacters": "Doit contenir 8 caractères"
+        "passwordCharacters": "Doit contenir 8 caractères",
+        "noAccount": "Vous n'avez pas de compte ?"
     },
     "pagination": {
         "next": "Suivante",
@@ -752,6 +792,11 @@
         "verificationCode": "Code de vérification",
         "verificationInstructions": "Pour vérifier que vous êtes le propriétaire de ce profil, veuillez envoyer un message personnel à Lido Nation sur Ideascale et inclure le code ci-dessus.",
         "goToIdeascale": "Accéder à Ideascale"
+    },
+    "validation": {
+        "emailFormat": "S'il vous plaît, mettez une adresse email valide",
+        "passwordLength": "Le mot de passe doit comporter au moins 8 caractères",
+        "passwordMatch": "Les mots de passe ne correspondent pas"
     },
     "wallet": {
         "connect": {

@@ -15,6 +15,7 @@ function SecondarySearchControls({
     searchPlaceholder,
     searchParam = VoteEnums.QUERY,
     searchLabel = 'Search',
+    isUnifiedSearch = false,
 }: {
     onFiltersToggle: Dispatch<SetStateAction<boolean>>;
     sortOptions: Array<any>;
@@ -48,8 +49,10 @@ function SecondarySearchControls({
         });
         setSearchQuery(search);
         const url = new URL(window.location.href);
-        url.searchParams.set('unifiedSearch', 'true');
-
+        const isUnified = isUnifiedSearch || url.searchParams.get('unifiedSearch') === 'true';
+        if (isUnified) {
+            url.searchParams.set('unifiedSearch', 'true');
+        }
         if (search.trim() === '') {
             url.searchParams.delete(searchParam);
             router.get(window.location.pathname, {}, { replace: true });
@@ -60,9 +63,21 @@ function SecondarySearchControls({
                 label: t(searchLabel === 'Search' ? 'vote.search' : searchLabel, searchLabel),
             });
             url.searchParams.set(searchParam, search);
+            if (isUnified) {
+                const params: Record<string, string> = {};
+                for (const [key, value] of url.searchParams.entries()) {
+                    params[key] = value;
+                }
+                router.get(window.location.pathname, params, {
+                    preserveScroll: true,
+                    preserveState: true,
+                    only: ['voterHistories', 'filters'],
+                    replace: true
+                });
+            } else {
+                window.history.replaceState(null, '', url.toString());
+            }
         }
-
-        window.history.replaceState(null, '', url.toString());
     };
 
     const toggleFilters = useCallback(() => {

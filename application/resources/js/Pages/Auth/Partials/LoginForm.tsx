@@ -31,8 +31,37 @@ export default function LoginForm({ closeModal }: LoginFormProps) {
     });
 
     const [errors, setErrors] = useState<FormErrors>({});
+    
+    const validateEmail = (email: string): boolean => {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailRegex.test(email);
+    };
+    
+    const validateForm = (): boolean => {
+        const newErrors: FormErrors = {};
+        let isValid = true;
+
+        if (!validateEmail(data.email)) {
+            newErrors.email = t('validation.emailFormat');
+            isValid = false;
+        }
+        
+        if (!data.password) {
+            newErrors.password = t('validation.required');
+            isValid = false;
+        }
+        
+        setErrors(newErrors);
+        return isValid;
+    };
+
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
+        
+        if (!validateForm()) {
+            return;
+        }
+        
         router.post(
             generateLocalizedRoute('login'),
             {
@@ -43,8 +72,9 @@ export default function LoginForm({ closeModal }: LoginFormProps) {
                 onSuccess: () => {
                     reset('password');
                 },
-                onError: (error) => {
-                    console.log('Login error ', error);
+                onError: (serverErrors) => {
+                    console.log('Login error ', serverErrors);
+                    setErrors(serverErrors);
                 },
             },
         );
@@ -64,7 +94,7 @@ export default function LoginForm({ closeModal }: LoginFormProps) {
 
     return (
         <>
-            <form onSubmit={submit} className="content-gap flex flex-col">
+            <form onSubmit={submit} className="content-gap flex flex-col w-full p-4">
                 <div>
                     <InputLabel htmlFor="email" value={t('email')} />
 
@@ -77,6 +107,7 @@ export default function LoginForm({ closeModal }: LoginFormProps) {
                         autoComplete="username"
                         isFocused={true}
                         onChange={(e) => setData('email', e.target.value)}
+                        required
                     />
 
                     <InputError message={errors?.email} className="mt-2" />
@@ -93,6 +124,7 @@ export default function LoginForm({ closeModal }: LoginFormProps) {
                         className="mt-1 block w-full"
                         autoComplete="current-password"
                         onChange={(e) => setData('password', e.target.value)}
+                        required
                     />
 
                     <InputError message={errors?.password} className="mt-2" />
