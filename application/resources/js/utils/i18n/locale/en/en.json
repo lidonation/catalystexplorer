@@ -952,6 +952,12 @@
             "placeholder": "Search transaction hash, epoch, block"
         }
     },
+    "validation": {
+        "required": "{{field}} is required",
+        "emailFormat": "Please enter a valid email address",
+        "passwordLength": "Password must be at least 8 characters",
+        "passwordMatch": "Passwords do not match"
+    },
     "vote": {
         "catalystVotes": "Catalyst Votes",
         "viewOnchainTransactions": "View onchain (jormugandr) transactions of votes cast",
