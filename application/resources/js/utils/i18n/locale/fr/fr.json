@@ -793,6 +793,11 @@
         "verificationInstructions": "Pour vérifier que vous êtes le propriétaire de ce profil, veuillez envoyer un message personnel à Lido Nation sur Ideascale et inclure le code ci-dessus.",
         "goToIdeascale": "Accéder à Ideascale"
     },
+    "validation": {
+        "emailFormat": "S'il vous plaît, mettez une adresse email valide",
+        "passwordLength": "Le mot de passe doit comporter au moins 8 caractères",
+        "passwordMatch": "Les mots de passe ne correspondent pas"
+    },
     "wallet": {
         "connect": {
             "title": "Connecter le portefeuille",
