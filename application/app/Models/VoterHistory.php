@@ -120,7 +120,7 @@ class VoterHistory extends Model
             ->select('voter_history.*')
             ->leftJoin('voters', 'voter_history.caster', '=', 'voters.cat_id')
             ->leftJoin('voting_powers', 'voters.id', '=', 'voting_powers.voter_id')
-            ->orderByRaw('COALESCE(voting_powers.voting_power, 0) ' . $direction);
+            ->orderByRaw('COALESCE(voting_powers.voting_power, 0) '.$direction);
     }
 
     /**
@@ -128,8 +128,8 @@ class VoterHistory extends Model
      */
     public function toSearchableArray(): array
     {
-        return  array_merge(
-            $this->load(['snapshot.fund',])->toArray(),
+        return array_merge(
+            $this->load(['snapshot.fund'])->toArray(),
             ['voting_power' => $this->voting_power->voting_power]
         );
     }
@@ -152,7 +152,7 @@ class VoterHistory extends Model
      */
     public function snapshot(): HasOne
     {
-        return $this->hasOne(Snapshot::class, 'id', 'snapshot_id',);
+        return $this->hasOne(Snapshot::class, 'id', 'snapshot_id');
     }
 
     /**
