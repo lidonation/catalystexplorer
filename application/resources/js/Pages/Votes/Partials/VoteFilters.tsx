@@ -43,7 +43,7 @@ const VoteFilters = () => {
     const handleFilterUpdate = (param: string, selectedItems: string[]) => {
         const isChoiceFilter = param === VoteEnums.CHOICE;
         const setter = isChoiceFilter ? setSelectedChoice : setSelectedFund;
-        const labelText = isChoiceFilter ? t('vote.choice') : t('proposals.filters.epoch');
+        const labelText = isChoiceFilter ? t('vote.choice') : t('funds.fund');
 
         setter(selectedItems);
         
