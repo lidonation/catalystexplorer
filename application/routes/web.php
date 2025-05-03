@@ -180,8 +180,8 @@ Route::localized(
                         ->name('saveSignature');
                 });
 
-//             Route::get('/signature-capture/success', [SignatureWorkflowController::class, 'success'])
-//                ->name('signature.success');
+            Route::get('/signature-capture/success', [SignatureWorkflowController::class, 'success'])
+                ->name('signature.success');
 
             Route::get('/login', [WorkflowController::class, 'auth'])
                 ->name('loginForm');
