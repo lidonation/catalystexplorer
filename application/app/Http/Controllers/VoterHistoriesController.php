@@ -8,11 +8,13 @@ use App\DataTransferObjects\VoterHistoryData;
 use App\Enums\VoteSearchParams;
 use App\Models\Signatures;
 use App\Models\Voter;
+use App\Models\Fund;
 use App\Models\VoterHistory;
 use App\Repositories\VoterHistoryRepository;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Fluent;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Stringable;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -193,27 +195,38 @@ class VoterHistoriesController extends Controller
         }
 
         if (isset($this->queryParams[VoteSearchParams::FUND()->value]) && $this->queryParams[VoteSearchParams::FUND()->value] !== null && $this->queryParams[VoteSearchParams::FUND()->value] !== '') {
-            $fund = $this->queryParams[VoteSearchParams::FUND()->value];
-
-            if (is_string($fund) && str_contains($fund, ',')) {
-                $fundArray = explode(',', $fund);
-            } elseif (is_array($fund)) {
-                $fundArray = $fund;
-            } else {
-                $fundArray = [$fund];
-            }
-
-            $fundArray = array_filter(array_map('trim', $fundArray), function ($value) {
-                return $value !== '' && $value !== null;
-            });
-
-            if (! empty($fundArray)) {
-                $funds = implode("','", $fundArray);
-                $filters[] = "fund IN ['{$funds}']";
+            try {
+                $fundData = $this->fundData();
+                    
+                if ($fundData->count() > 0) {
+                    $fundTitles = implode("','", $fundData->toArray());
+                    $filters[] = "fund IN ['{$fundTitles}']";
+                }
+            } catch (\Exception $e) {
+                Log::error('Error processing fund filter:', [
+                    'error' => $e->getMessage(),
+                    'trace' => $e->getTraceAsString(),
+                ]);
             }
         }
 
         return $filters;
+    }
+
+    protected function fundData()
+    {
+        $fundHashes = $this->queryParams[VoteSearchParams::FUND()->value];
+        
+        if (!is_array($fundHashes)) {
+            $fundHashes = explode(',', $fundHashes);
+        }
+        
+        $fundData = Fund::all()
+            ->filter(fn($fund) => in_array($fund->hash, $fundHashes))
+            ->pluck('title')
+            ->filter();
+
+        return $fundData;
     }
 
     /**

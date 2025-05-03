@@ -80,6 +80,7 @@ class VoterHistory extends Model
         return [
             'choice',
             'fund',
+            'fund_hash',
             'stake_address',
             'time',
         ];
@@ -166,6 +167,7 @@ class VoterHistory extends Model
             'deleted_at' => $this->deleted_at,
             'voting_power' => $votingPower,
             'fund' => $fundData,
+            'fund_hash' => $snapshot->fund->hash,
             'hash' => $this->hash,
         ];
     }

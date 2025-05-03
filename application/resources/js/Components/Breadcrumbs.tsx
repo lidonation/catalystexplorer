@@ -42,7 +42,9 @@ const Breadcrumbs = ({
         displayItems.some((item) => item.href.includes('workflows')) ||
         displayItems.some((item) => item.href.includes('dreps')) ||
         displayItems.some((item) => item.href.includes('votes')) ||
-        displayItems.some((item) => item.href.includes('password'))
+        displayItems.some((item) => item.href.includes('password')) ||
+        displayItems.some((item) => item.href.includes('login')) ||
+        displayItems.some((item) => item.href.includes('register'))
     ) {
         //don't display breadcrumbs if there is only one item and it's 'Home' or part of the workflow
         return null;

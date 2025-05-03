@@ -313,18 +313,20 @@ class Group extends Model implements HasMedia
 
         $array = $this->toArray();
 
-        $proposals = $this->proposals;
+        $proposals = $this->proposals->load('fund')->map(function ($p) {
+            return $p->toArray();
+        })->toArray();
 
         $ideascale_profiles = $this->ideascale_profiles;
 
         return array_merge($array, [
-            'proposals_completed' => $proposals->filter(fn ($p) => $p['status'] === 'complete')?->count() ?? 0,
-            'proposals_funded' => $proposals->filter(fn ($p) => (bool) $p['funded_at'])?->count() ?? 0,
-            'proposals_unfunded' => $proposals->filter(fn ($p) => empty($p['funded_at']))->count(),
+            'proposals_completed' => collect($proposals)->filter(fn ($p) => $p['status'] === 'complete')?->count() ?? 0,
+            'proposals_funded' => collect($proposals)->filter(fn ($p) => (bool) $p['funded_at'])?->count() ?? 0,
+            'proposals_unfunded' => collect($proposals)->filter(fn ($p) => empty($p['funded_at']))->count(),
             'amount_received' => intval($this->proposals()->whereNotNull('funded_at')->sum('amount_received')),
-            'proposals_woman' => $proposals->filter(fn ($p) => ($p->is_woman_proposal ?? false) === true)->count(),
-            'proposals_ideascale' => $proposals->filter(fn ($p) => ($p->is_ideascale_proposal ?? false) === true)->count(),
-            'proposals_impact' => $proposals->filter(fn ($p) => ($p->is_impact_proposal ?? false) === true)->count(),
+            'proposals_woman' => collect($proposals)->filter(fn ($p) => ($p->is_woman_proposal ?? false) === true)->count(),
+            'proposals_ideascale' => collect($proposals)->filter(fn ($p) => ($p->is_ideascale_proposal ?? false) === true)->count(),
+            'proposals_impact' => collect($proposals)->filter(fn ($p) => ($p->is_impact_proposal ?? false) === true)->count(),
             'reviews_count' => $this->reviews->count(),
             'amount_awarded_ada' => intval($this->amount_awarded_ada),
             'amount_awarded_usd' => intval($this->amount_awarded_usd),
@@ -334,7 +336,8 @@ class Group extends Model implements HasMedia
             'amount_requested_usd' => intval($this->amount_requested_usd),
             'hero_img_url' => $this->hero_img_url,
             'banner_img_url' => $this->banner_img_url,
-            'proposals_count' => $proposals->count(),
+            'proposals_count' => collect($proposals)->count(),
+            'proposals' => $proposals,
             'ideascale_profiles' => $ideascale_profiles,
             'tags' => $this->tags->map(fn ($m) => $m->toArray()),
             'connected_items' => $this->connected_items,

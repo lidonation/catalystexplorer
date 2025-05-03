@@ -399,7 +399,14 @@ class ProposalsController extends Controller
 
     public function fundTitles(Request $request)
     {
-        $fundTitles = Fund::pluck('title');
+        $funds = Fund::all(['id', 'title']);
+        
+        $fundTitles = $funds->map(function ($fund) {
+            return [
+                'hash' => $fund->hash,
+                'title' => $fund->title
+            ];
+        });
 
         return response()->json($fundTitles);
     }
