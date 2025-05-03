@@ -13,6 +13,7 @@ use App\Traits\HasMetaData;
 use Illuminate\Database\Eloquent\Attributes\ScopedBy;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Query\Builder;
 use Spatie\Image\Enums\CropPosition;
@@ -32,7 +33,8 @@ class Fund extends Model implements HasMedia
     ];
 
     protected $appends = [
-        'hero_img_url', 'hash',
+        'hero_img_url',
+        'hash',
     ];
 
     protected $guarded = [];
@@ -110,6 +112,11 @@ class Fund extends Model implements HasMedia
             $filters['status'] ?? false,
             fn (Builder $query, $status) => $query->where('status', $status)
         );
+    }
+
+    public function voting_powers(): HasManyThrough
+    {
+        return $this->hasManyThrough(VotingPower::class, Snapshot::class, 'model_id', 'snapshot_id', 'id', 'id');
     }
 
     public function proposals(): HasMany

@@ -17,6 +17,6 @@ class VotingPower extends Model
 
     public function voter(): BelongsTo
     {
-        return $this->belongsTo(Voter::class, 'voter_id');
+        return $this->belongsTo(Voter::class, 'voter_id', 'cat_id');
     }
 }
