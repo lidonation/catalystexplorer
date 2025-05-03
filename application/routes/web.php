@@ -159,9 +159,6 @@ Route::localized(
                     Route::get('/success', [VotingWorkflowController::class, 'success'])
                         ->name('success');
                 });
-            
-            
-
 
             Route::prefix('/drep-sign-up/steps')->as('drepSignUp.')
                 ->middleware([WorkflowMiddleware::class])
@@ -182,9 +179,9 @@ Route::localized(
                     Route::post('/save-signature', [SignatureWorkflowController::class, 'saveSignature'])
                         ->name('saveSignature');
                 });
-            
-             Route::get('/signature-capture/success', [SignatureWorkflowController::class, 'success'])
-                ->name('signature.success');
+
+//             Route::get('/signature-capture/success', [SignatureWorkflowController::class, 'success'])
+//                ->name('signature.success');
 
             Route::get('/login', [WorkflowController::class, 'auth'])
                 ->name('loginForm');

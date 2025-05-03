@@ -107,9 +107,9 @@ spec:
                 - php
                 - artisan
                 - octane:status
-            initialDelaySeconds: 20
+            initialDelaySeconds: 15
             periodSeconds: 5
-            timeoutSeconds: 5
+            timeoutSeconds: 15
             successThreshold: 1
             failureThreshold: 5
         - name: sidecar

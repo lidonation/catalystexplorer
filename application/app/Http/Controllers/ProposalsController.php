@@ -400,11 +400,11 @@ class ProposalsController extends Controller
     public function fundTitles(Request $request)
     {
         $funds = Fund::all(['id', 'title']);
-        
+
         $fundTitles = $funds->map(function ($fund) {
             return [
                 'hash' => $fund->hash,
-                'title' => $fund->title
+                'title' => $fund->title,
             ];
         });
 
