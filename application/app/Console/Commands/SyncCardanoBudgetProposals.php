@@ -60,12 +60,12 @@ class SyncCardanoBudgetProposals extends Command
                 $data = $authResponse->collect()->get('data');
                 collect($data)->each(function ($proposal) {
                     $props = collect([]);
-                    $props->put('govtool_proposal_id', $proposal['id']);
 
                     if (! isset($proposal['attributes'])) {
                         throw new \Exception('Malformed data.');
                     }
                     $attributes = $proposal['attributes'];
+                    $props->put('govtool_proposal_id', $attributes['master_id']);
                     $props->put('is_active', $attributes['is_active']);
                     $props->put('privacy_policy', $attributes['privacy_policy']);
                     $props->put('intersect_admin_further_text', $attributes['intersect_named_administrator']);
@@ -150,7 +150,7 @@ class SyncCardanoBudgetProposals extends Command
 
                     CardanoBudgetProposal::updateOrCreate(
                         [
-                            'govtool_proposal_id' => $proposal['id'],
+                            'govtool_proposal_id' => $attributes['master_id'],
                             'govtool_user_id' => $creator['id'],
                         ],
                         $props->toArray()
