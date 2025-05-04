@@ -139,7 +139,7 @@ class VoterHistoriesController extends Controller
             $query = $this->search;
             $args['isStakeSearch'] = true;
         }
-        $args['facets'] = ['choice', 'fund'];
+        $args['facets'] = ['choice', 'snapshot.fund.title'];
 
         $builder = $voterHistories->search($query, $args);
         $response = new Fluent($builder->raw());
@@ -200,7 +200,7 @@ class VoterHistoriesController extends Controller
 
                 if ($fundData->count() > 0) {
                     $fundTitles = implode("','", $fundData->toArray());
-                    $filters[] = "fund IN ['{$fundTitles}']";
+                    $filters[] = "snapshot.fund.title IN ['{$fundTitles}']";
                 }
             } catch (\Exception $e) {
                 Log::error('Error processing fund filter:', [

@@ -25,7 +25,10 @@ class CatalystVotingPowerFactory extends Factory
         return [
             'snapshot_id' => Snapshot::factory(),
             'delegate' => $this->faker->unique()->hexColor(),
-            'voting_power' => $this->faker->randomFloat(2, 1, 1000),
+            'voting_power' => $this->faker->numberBetween(100000, 50000000),
+            'consumed' => $this->faker->boolean(),
+            'votes_cast' => $this->faker->randomNumber(),
+            'voter_id' => 'ca1q5q'. $this->faker->sha256
         ];
     }
 }
