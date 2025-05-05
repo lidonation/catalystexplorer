@@ -44,7 +44,7 @@ export default function CompletedProposalCard({ proposal}: ProposalProps) {
                     <span> {proposal.campaign?.label} </span>
                 </Paragraph>
             </div>
-            {!proposal?.completed_project_nft?.required_nft_metadata?.fingerprint && (
+            {proposal?.completed_project_nft?.required_nft_metadata?.fingerprint && (
                 <PrimaryLink
                     href={`https://pool.pm/${proposal?.completed_project_nft?.required_nft_metadata?.fingerprint}`}
                     className="w-auto text-sm whitespace-nowrap lg:px-8 lg:py-3"
