@@ -29,7 +29,6 @@ class Proposal extends Model
 {
     use HasAuthor,
         HasMetaData,
-        HasRelationships,
         HasTaxonomies,
         HasTimestamps,
         HasTranslations,
