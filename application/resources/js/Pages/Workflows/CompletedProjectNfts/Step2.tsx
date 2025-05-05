@@ -8,7 +8,7 @@ import {
 } from '@/utils/localizedRoute';
 import { router, usePage } from '@inertiajs/react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import React, { memo, useCallback, useState } from 'react';
+import React, { memo, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { PaginatedData } from '../../../../types/paginated-data';
 import Content from '../Partials/WorkflowContent';
@@ -27,7 +27,7 @@ const Step2: React.FC<Step2Props> = ({
     stepDetails,
     activeStep,
     proposals,
-    profiles,
+    profiles
 }) => {
     const { t } = useTranslation();
     const [selectedProposalHash, setSelectedProposalHash] = useState<string|null>(null);
@@ -49,6 +49,7 @@ const Step2: React.FC<Step2Props> = ({
           })
         : '';
 
+
     const handleSearchProposals = useCallback(
         (searchTerm: string) => {
             setSearch(searchTerm);
@@ -69,6 +70,8 @@ const Step2: React.FC<Step2Props> = ({
         },
         [activeStep, profiles, locale],
     );
+
+    
 
     return (
         <WorkflowLayout asideInfo={stepDetails[activeStep - 1].info ?? ''}>

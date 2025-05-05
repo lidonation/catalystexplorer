@@ -346,6 +346,7 @@ campaign_name: string;
 yes_votes: string;
 no_votes: string;
 role: string;
+project_title: string;
 };
 export type PostData = {
 id: number | null;
@@ -413,7 +414,7 @@ quickpitch_length?: number;
 users: any | null;
 fund: App.DataTransferObjects.FundData | null;
 opensource: boolean | null;
-nft: App.DataTransferObjects.NftData | null;
+completed_project_nft: App.DataTransferObjects.NftData | null;
 link?: string;
 };
 export type RankingData = {
