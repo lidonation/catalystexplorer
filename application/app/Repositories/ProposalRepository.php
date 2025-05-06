@@ -78,6 +78,7 @@ class ProposalRepository extends Repository
                     'campaign.proposals_count',
                     'campaign.total_awarded',
                     'campaign.total_distributed',
+                    'completed_project_nft',
                 ];
                 $args['facets'] = [
                     'tags',

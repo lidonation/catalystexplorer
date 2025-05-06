@@ -9,28 +9,30 @@ interface TableHeaderCellProps {
   sortable?: boolean;
   sortDirection?: 'asc' | 'desc' | null;
   onSort?: () => void;
+  isLastColumn?: boolean;
 }
 
-const TableHeaderCell: React.FC<TableHeaderCellProps> = ({ 
-  label, 
+const TableHeaderCell: React.FC<TableHeaderCellProps> = ({
+  label,
   sortable = false,
   sortDirection = null,
-  onSort
+  onSort,
+  isLastColumn = false,
 }) => (
-  <th className="px-6 py-3 border-r border-light-gray-persist">
+  <th className={`px-6 py-3 ${isLastColumn ? '' : 'border-r border-gray-persist/20'}`}>
     <div className="flex items-center justify-center gap-1 cursor-pointer" onClick={sortable ? onSort : undefined}>
       <Paragraph className="text-dark">{label}</Paragraph>
       {sortable && (
         <div className="flex-col gap-2">
-          <ArrowUpIcon 
-            width={8} 
-            height={6} 
-            className={sortDirection === 'asc' ? 'text-primary' : 'text-dark'} 
+          <ArrowUpIcon
+            width={8}
+            height={6}
+            className={sortDirection === 'asc' ? 'text-primary' : 'text-dark'}
           />
-          <ArrowDownIcon 
-            width={8} 
-            height={5} 
-            className={sortDirection === 'desc' ? 'text-primary' : 'text-dark'} 
+          <ArrowDownIcon
+            width={8}
+            height={5}
+            className={sortDirection === 'desc' ? 'text-primary' : 'text-dark'}
           />
         </div>
       )}

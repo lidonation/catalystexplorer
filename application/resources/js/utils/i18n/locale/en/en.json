@@ -498,7 +498,8 @@
             "ideascaleProfiles": "Ideascale Profiles",
             "numberOfProposals": "Number of Proposals",
             "awardedAda": "Awarded (ADA)",
-            "awardedUsd": "Awarded (USD)"
+            "awardedUsd": "Awarded (USD)",
+            "fund": "Fund"
         },
         "options": {
             "sort": "Sort by",

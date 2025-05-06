@@ -50,13 +50,13 @@ export default function AuthLayout({ children }: AuthLayoutProps) {
 
           <div className="mt-45 relative overflow-hidden">
             <div className="flex items-end gap-6">
-              <Image imageUrl={LoginImageOne} className="w-[219.5px] h-[221.5px]" />
-              <Image imageUrl={LoginImageTwo} className="w-[240.5px] h-[174px]" />
-              <Image imageUrl={LoginImageThree} className="w-[346px] h-[348px]" />
+              <Image imageUrl={LoginImageOne} className="w-[292.67px] h-[295.3px]" />
+              <Image imageUrl={LoginImageTwo} className="w-[320.67px] h-[232px]" />
+              <Image imageUrl={LoginImageThree} className="w-[461.3px] h-[464px]" />
             </div>
             
             <div className="flex mt-6 gap-6">
-              <Image imageUrl={LoginImageFour} className="w-[219.5px] h-[361px]" />
+              <Image imageUrl={LoginImageFour} className="w-[292.67px] h-[481.3px]" />
               <Image imageUrl={LoginImageFive} className="w-[543.5px] h-[361px]" />
             </div>
           </div>

@@ -11,6 +11,16 @@ function DesktopSidebar(props: any) {
     const {t} = useTranslation();
     const {auth} = usePage().props;
     const {...rest} = props;
+    
+    const currentPath = window.location.pathname;
+    
+    if (
+        currentPath.includes('login') ||
+        currentPath.includes('register')
+    ) {
+        return null;
+    }
+    
     return (
         <aside
             {...rest}

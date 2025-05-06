@@ -80,4 +80,39 @@ class NMKRNftData extends Data
             singlePriceSolana: $data['singlePriceSolana'],
         );
     }
+
+    public static function createDefault(): static
+    {
+        return new self(
+            id: 0,
+            ipfshash: '',
+            state: '',
+            name: '',
+            displayname: '',
+            detaildata: '',
+            minted: false,
+            receiveraddress: '',
+            selldate: null,
+            soldby: '',
+            reserveduntil: null,
+            policyid: '',
+            assetid: '',
+            assetname: '',
+            fingerprint: '',
+            initialminttxhash: '',
+            title: '',
+            series: '',
+            ipfsGatewayAddress: '',
+            metadata: '',
+            singlePrice: 0.0,
+            uid: '',
+            paymentGatewayLinkForSpecificSale: '',
+            sendBackCentralPaymentInLovelace: 0,
+            sendBackCentralPaymentInLamport: 0,
+            priceInLovelaceCentralPayments: 0,
+            uploadSource: '',
+            priceInLamportCentralPayments: 0,
+            singlePriceSolana: 0.0
+        );
+    }
 }
