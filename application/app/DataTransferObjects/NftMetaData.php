@@ -15,5 +15,21 @@ class NftMetaData extends Data
         public string $yes_votes,
         public string $no_votes,
         public string $role,
+        public string $project_title
     ) {}
+
+    public static function fromArray(?array $data = null): static
+    {
+        if ($data === null) {
+            return new self('', '0', '0', '', '');
+        }
+
+        return new self(
+            campaign_name: $data['campaign_name'] ?? '',
+            yes_votes: $data['yes_votes'] ?? '0',
+            no_votes: $data['no_votes'] ?? '0',
+            role: $data['role'] ?? '',
+            project_title: $data['project_title'] ?? ''
+        );
+    }
 }

@@ -40,26 +40,30 @@ class NftData extends Data
     public static function fromArray(array $data): static
     {
         return new self(
-            id: $data['id'],
-            user_id: $data['user_id'],
-            artist_id: $data['artist_id'],
-            model_id: $data['model_id'],
-            model_type: $data['model_type'],
-            storage_link: $data['storage_link'],
-            preview_link: $data['preview_link'],
-            name: $data['name'],
-            owner_address: $data['owner_address'],
-            description: $data['description'],
-            rarity: $data['rarity'],
-            status: $data['status'],
-            metadata: $data['metadata'],
-            required_nft_metadata: $data['required_nft_metadata'],
-            minted_at: isset($data['minted_at']) ? Carbon::parse($data['minted_at']) : null,
-            qty: $data['qty'],
-            created_at: isset($data['created_at']) ? Carbon::parse($data['created_at']) : null,
-            updated_at: isset($data['updated_at']) ? Carbon::parse($data['updated_at']) : null,
-            deleted_at: isset($data['deleted_at']) ? Carbon::parse($data['deleted_at']) : null,
-            metas: $data['metas'],
+            id: $data['id'] ?? 0, // or throw custom error if it's required
+            user_id: $data['user_id'] ?? 0,
+            artist_id: $data['artist_id'] ?? 0,
+            model_id: $data['model_id'] ?? 0,
+            model_type: $data['model_type'] ?? '',
+            storage_link: $data['storage_link'] ?? '',
+            preview_link: $data['preview_link'] ?? '',
+            name: $data['name'] ?? '',
+            owner_address: $data['owner_address'] ?? '',
+            description: $data['description'] ?? '',
+            rarity: $data['rarity'] ?? '',
+            status: $data['status'] ?? '',
+            metadata: NftMetaData::fromArray($data['metadata'] ?? null), // default instance if not passed
+            required_nft_metadata: isset($data['required_nft_metadata']) ?
+            (is_array($data['required_nft_metadata']) ?
+                NMKRNftData::fromArray($data['required_nft_metadata']) :
+                $data['required_nft_metadata']) :
+            NMKRNftData::createDefault(),
+            minted_at: ! empty($data['minted_at']) ? Carbon::parse($data['minted_at']) : null,
+            qty: $data['qty'] ?? 0,
+            created_at: ! empty($data['created_at']) ? Carbon::parse($data['created_at']) : null,
+            updated_at: ! empty($data['updated_at']) ? Carbon::parse($data['updated_at']) : null,
+            deleted_at: ! empty($data['deleted_at']) ? Carbon::parse($data['deleted_at']) : null,
+            metas: $data['metas'] ?? [],
         );
     }
 }
