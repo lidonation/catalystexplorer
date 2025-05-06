@@ -17,7 +17,7 @@ const TableHeaderCell: React.FC<TableHeaderCellProps> = ({
   sortDirection = null,
   onSort
 }) => (
-  <th className="px-6 py-3 border-r border-light-gray-persist">
+  <th className="px-6 py-3 border-r border-background-lighter">
     <div className="flex items-center justify-center gap-1 cursor-pointer" onClick={sortable ? onSort : undefined}>
       <Paragraph className="text-dark">{label}</Paragraph>
       {sortable && (

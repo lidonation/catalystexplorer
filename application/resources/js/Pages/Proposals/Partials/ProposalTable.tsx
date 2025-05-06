@@ -114,10 +114,10 @@ const ProposalTable: React.FC<ProposalTableProps> = ({ proposals }) => {
   }, [selectedUserMap]);
 
   return (
-    <div className="w-full border border-light-gray-persist rounded-lg overflow-hidden">
+    <div className="w-full border border-background-lighter rounded-lg overflow-hidden">
       <div className="overflow-x-auto">
         <table className="min-w-full table-auto">
-          <thead className="bg-background border-b border-light-gray-persist">
+          <thead className="border-b bg-background border-background-lighter">
             <tr>
               {columns.map(column => (
                 <TableHeaderCell
@@ -137,12 +137,12 @@ const ProposalTable: React.FC<ProposalTableProps> = ({ proposals }) => {
               return (
                 <tr
                   key={proposalHash}
-                  className={index < proposals.length - 1 ? 'border-b border-light-gray-persist' : ''}
+                  className={index < proposals.length - 1 ? 'border-b border-background-lighter' : ''}
                 >
                   {columns.map(column => (
                     <td
                       key={`${proposalHash}-${column.key}`}
-                      className="px-4 py-4 border-r border-light-gray-persist"
+                      className="px-4 py-4 border-r border-background-lighter"
                     >
                       {column.renderCell(proposal, helpers)}
                     </td>
