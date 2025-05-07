@@ -1,7 +1,3 @@
-import React, { useState } from 'react';
-import { Head } from '@inertiajs/react';
-import { useTranslation } from 'react-i18next';
-import MyLayout from "@/Pages/My/MyLayout";
 import RecordsNotFound from '@/Layouts/RecordsNotFound';
 import MyLayout from '@/Pages/My/MyLayout';
 import ProposalTable from '@/Pages/Proposals/Partials/ProposalTable';
@@ -17,6 +13,7 @@ import SearchControls from '@/Components/atoms/SearchControls';
 import { FiltersProvider } from '@/Context/FiltersContext';
 import ProposalSortingOptions from '@/lib/ProposalSortOptions';
 import ProposalFilters from '@/Pages/Proposals/Partials/ProposalFilters';
+import ProposalData = App.DataTransferObjects.ProposalData;
 
 interface MyProposalsProps {
     proposals: PaginatedData<ProposalData[]>;
