@@ -1,9 +1,6 @@
-import Paragraph from '@/Components/atoms/Paragraph';
 import PrimaryButton from '@/Components/atoms/PrimaryButton';
 import PrimaryLink from '@/Components/atoms/PrimaryLink';
-import ClaimProfileForm, {
-    ClaimFormHandles,
-} from '@/Pages/Workflows/ClaimIdeascaleProfile/partials/ClaimProfileForm';
+import { ClaimFormHandles } from '@/Pages/Workflows/ClaimIdeascaleProfile/partials/ClaimProfileForm';
 import { StepDetails } from '@/types';
 import {
     generateLocalizedRoute,
@@ -17,8 +14,10 @@ import Content from '../Partials/WorkflowContent';
 import Footer from '../Partials/WorkflowFooter';
 import Nav from '../Partials/WorkflowNav';
 import WorkflowLayout from '../WorkflowLayout';
+import DrepSignupForm, {
+    DrepSignupFormFields,
+} from './partials/DrepSignupForm';
 import IdeascaleProfileData = App.DataTransferObjects.IdeascaleProfileData;
-import DrepSignupForm from './partials/DrepSignupForm';
 
 interface Step1Props {
     profile: IdeascaleProfileData;
@@ -26,7 +25,7 @@ interface Step1Props {
     activeStep: number;
 }
 
-const Step2: React.FC<Step1Props> = ({ stepDetails, activeStep }) => {
+const Step1: React.FC<Step1Props> = ({ stepDetails, activeStep }) => {
     const [isFormValid, setIsFormValid] = useState(false);
     const formRef = useRef<ClaimFormHandles>(null);
 
@@ -49,17 +48,18 @@ const Step2: React.FC<Step1Props> = ({ stepDetails, activeStep }) => {
         if (formRef.current) {
             const formData = formRef.current.getFormData;
 
-            formData.post(''
-                // generateLocalizedRoute(
-                //     'workflows.claimIdeascaleProfile.saveClaim',
-                //     {
-                //         ideascaleProfile: profile.hash,
-                //     },
-                // ),
-                // {
-                //     onError: (errors: Record<keyof DrepSignupFormFields, string>) =>
-                //         form.setError(errors),
-                // },
+            formData.post(
+                generateLocalizedRoute(
+                    'workflows.claimIdeascaleProfile.saveClaim',
+                    {
+                        // ideascaleProfile: profile.hash,
+                    },
+                ),
+                {
+                    onError: (
+                        errors: Record<keyof DrepSignupFormFields, string>
+                    ) => form.setError(errors),
+                },
             );
         }
     };
@@ -68,13 +68,13 @@ const Step2: React.FC<Step1Props> = ({ stepDetails, activeStep }) => {
         <WorkflowLayout asideInfo={stepDetails[activeStep - 1].info ?? ''}>
             <Nav stepDetails={stepDetails} activeStep={activeStep} />
 
-            {/* <Content>
+            <Content>
                 <DrepSignupForm
                     form={form}
                     setIsValid={setIsFormValid}
                     ref={formRef}
                 />
-            </Content> */}
+            </Content>
 
             <Footer>
                 <PrimaryLink
@@ -88,7 +88,7 @@ const Step2: React.FC<Step1Props> = ({ stepDetails, activeStep }) => {
                 </PrimaryLink>
                 <PrimaryButton
                     className="text-sm lg:px-8 lg:py-3"
-                    disabled={!isFormValid }
+                    disabled={!isFormValid}
                     onClick={() => (isFormValid ? submitForm() : '')}
                 >
                     <span>{t('profileWorkflow.claimProfile')}</span>
@@ -99,4 +99,4 @@ const Step2: React.FC<Step1Props> = ({ stepDetails, activeStep }) => {
     );
 };
 
-export default Step2;
+export default Step1;

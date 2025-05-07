@@ -17,6 +17,8 @@ class DrepController extends Controller
      */
     public function index(Request $request): Response
     {
+        $drep = '';
+
         return Inertia::render('Dreps/Index');
     }
 
@@ -48,6 +50,7 @@ class DrepController extends Controller
 
     public function step1(Request $request): Response
     {
+
         return Inertia::render('Workflows/DrepSignup/Step1', [
             'stepDetails' => $this->getStepDetails(),
             'activeStep' => intval($request->step),
@@ -62,17 +65,30 @@ class DrepController extends Controller
         ]);
     }
 
+    public function step3(Request $request): Response
+    {
+        return Inertia::render('Workflows/DrepSignup/Step2', [
+            'stepDetails' => $this->getStepDetails(),
+            'activeStep' => intval($request->step),
+        ]);
+    }
+
     public function getStepDetails(): Collection
     {
         return collect([
             [
-                'title' => 'workflows.drepSignup.selectProfile',
-                'info' => 'workflows.drepSignup.selectProfileInfo',
+                'title' => 'workflows.drepSignUp.createAccount',
+                'info' => 'workflows.drepSignUp.createAccountInfo',
             ],
             [
-                'title' => 'workflows.drepSignup.selectProposal',
-                'info' => 'workflows.drepSignup.selectProposalInfo',
+                'title' => 'workflows.drepSignUp.connectWallet',
+                'info' => 'workflows.drepSignUp.connectWalletInfo',
+            ],
+            [
+                'title' => 'workflows.drepSignUp.signWallet',
+                'info' => 'workflows.drepSignUp.signWalletInfo',
             ],
         ]);
+
     }
 }
