@@ -32,16 +32,15 @@ export default function UserSummaryChart({
 }: UserSummaryChartProps) {
     const { t } = useTranslation();
 
-    const filters = ['all', ...graphData.map((item) => item.id)];
-
-    const [selectedCurrencies, setSelectedCurrencies] =
-        useState<string[]>(filters);
+    const filters = [...graphData.map((item) => item.id)];
+    const [selectedCurrencies, setSelectedCurrencies] = useState<string[]>([
+        filters[0],
+    ]);
 
     const currencyOptions = (): Option[] => {
         const labelMap: Record<string, string> = {
             usd: t('totalUsd'),
             ada: t('totalAda'),
-            all: t('allCurrencies'),
         };
 
         return filters.map((curr) => ({
@@ -52,10 +51,6 @@ export default function UserSummaryChart({
     };
 
     const filteredData = useMemo(() => {
-        if (selectedCurrencies.includes('all')) {
-            return graphData;
-        }
-
         return graphData.filter((entry) =>
             selectedCurrencies.includes(entry.id),
         );
@@ -69,7 +64,7 @@ export default function UserSummaryChart({
         return { value: '0', isPositive: true };
     };
 
-    const allYValues = graphData.flatMap((series) =>
+    const allYValues = filteredData.flatMap((series) =>
         series.data.map((d) => d.y),
     );
     const maxY = Math.max(...allYValues, 0);
@@ -77,7 +72,7 @@ export default function UserSummaryChart({
     const tickValues = Array.from(
         { length: Math.ceil(maxY / interval) + 1 },
         (_, i) => i * interval,
-    );    
+    );
 
     return (
         <Card className="flex h-full min-h-64 flex-col gap-4">
