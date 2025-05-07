@@ -3,6 +3,7 @@ import { ChevronRight, MoreHorizontal } from 'lucide-react';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import HomeIcon from './svgs/HomeIcon';
+import { truncateMiddle } from '@/utils/truncateMiddle';
 
 interface BreadcrumbItem {
     label: string;
@@ -16,6 +17,7 @@ interface BreadcrumbsProps {
     maxItems?: number;
     itemClassName?: string;
     activeClassName?: string;
+    maxLabelLength?: number;
 }
 
 const Breadcrumbs = ({
@@ -71,7 +73,7 @@ const Breadcrumbs = ({
                             <MoreHorizontal className="text-content h-4 w-4" />
                         ) : isLast ? (
                             <span className={activeClassName}>
-                                {item.label}
+                                {truncateMiddle(item.label)}
                             </span>
                         ) : (
                             <Link href={item.href} className={itemClassName}>
