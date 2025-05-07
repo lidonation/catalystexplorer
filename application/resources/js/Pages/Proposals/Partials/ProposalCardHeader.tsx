@@ -1,13 +1,14 @@
 import Button from '@/Components/atoms/Button';
 import Title from '@/Components/atoms/Title';
 import ExpandableContent from '@/Components/ExpandableContent';
+import ExpandableContentAnimation from '@/Components/ExpandableContentAnimation';
 import { ListProvider } from '@/Context/ListContext';
 import BookmarkButton from '@/Pages/My/Bookmarks/Partials/BookmarkButton';
 import { Link } from '@inertiajs/react';
 import { useEffect, useRef, useState } from 'react';
-import ProposalStatus from './ProposalStatus';
 import { useTranslation } from 'react-i18next';
-import ExpandableContentAnimation from '@/Components/ExpandableContentAnimation';
+import CompareButton from './CompareButton';
+import ProposalStatus from './ProposalStatus';
 
 export default function ProposalCardHeader({
     proposal,
@@ -34,11 +35,10 @@ export default function ProposalCardHeader({
             ? gradientColors.complete
             : gradientColors.default;
 
-
     const contentRef = useRef<HTMLParagraphElement | null>(null);
     const [lineCount, setLineCount] = useState(0);
 
-    const {t} = useTranslation();
+    const { t } = useTranslation();
 
     useEffect(() => {
         const element = contentRef.current;
@@ -95,14 +95,26 @@ export default function ProposalCardHeader({
                                 status={proposal.status}
                                 funding_status={proposal?.funding_status}
                             />
-                            <ListProvider>
+                            <div className="flex items-center">
+                                <ListProvider>
+                                    {proposal.hash && (
+                                        <>
+                                            <BookmarkButton
+                                                modelType="proposals"
+                                                itemId={proposal.hash}
+                                            />
+                                        </>
+                                    )}
+                                </ListProvider>
                                 {proposal.hash && (
-                                    <BookmarkButton
-                                        modelType="proposals"
-                                        itemId={proposal.hash}
+                                    <CompareButton
+                                        model="proposal"
+                                        hash={proposal.hash}
+                                        tooltipDescription={'Compare Proposals'}
+                                        data={proposal}
                                     />
                                 )}
-                            </ListProvider>
+                            </div>
                         </>
                     )}
                 </div>
@@ -169,7 +181,9 @@ export default function ProposalCardHeader({
                                     target="_blank"
                                     rel="noopener noreferrer"
                                 >
-                                    <span>{t('proposals.projectCatalyst')}</span>
+                                    <span>
+                                        {t('proposals.projectCatalyst')}
+                                    </span>
                                 </Link>
                             )}
                         </nav>
