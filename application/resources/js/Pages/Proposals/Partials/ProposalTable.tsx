@@ -132,60 +132,48 @@ const ProposalTable: React.FC<ProposalTableProps> = ({ proposals }) => {
         [selectedUserMap],
     );
 
-    return (
-        <div className="w-full overflow-hidden rounded-lg shadow-sm">
-            <div className="overflow-x-auto">
-                <table className="min-w-full table-auto">
-                    <thead className="bg-background-lighter">
-                        <tr>
-                            {columns.map((column, index) => (
-                                <TableHeaderCell
-                                    key={column.key}
-                                    label={column.label}
-                                    sortable={column.sortable}
-                                    onSort={
-                                        column.sortable
-                                            ? () => handleSort(column.key)
-                                            : undefined
-                                    }
-                                    isLastColumn={index === columns.length - 1}
-                                />
-                            ))}
-                        </tr>
-                    </thead>
-                    <tbody className="bg-background">
-                        {proposals.map((proposal, index) => {
-                            const proposalHash = proposal.hash ?? '';
-                            const helpers = getRowHelpers(proposalHash);
+  return (
+    <div className="w-full border border-background-lighter rounded-lg overflow-hidden">
+      <div className="overflow-x-auto">
+        <table className="min-w-full table-auto">
+          <thead className="border-b bg-background border-background-lighter">
+            <tr>
+              {columns.map(column => (
+                <TableHeaderCell
+                  key={column.key}
+                  label={column.label}
+                  sortable={column.sortable}
+                  onSort={column.sortable ? () => handleSort(column.key) : undefined}
+                />
+              ))}
+            </tr>
+          </thead>
+          <tbody className="bg-background">
+            {proposals.map((proposal, index) => {
+              const proposalHash = proposal.hash ?? '';
+              const helpers = getRowHelpers(proposalHash);
 
-                            return (
-                                <tr
-                                    key={proposalHash}
-                                    className={
-                                        index < proposals.length - 1
-                                            ? 'border-gray-persist/20 border-b'
-                                            : ''
-                                    }
-                                >
-                                    {columns.map((column, index) => (
-                                        <td
-                                            key={`${proposalHash}-${column.key}`}
-                                            className={`px-4 py-4 ${index < columns.length - 1 ? 'border-gray-persist/20 border-r' : ''}`}
-                                        >
-                                            {column.renderCell(
-                                                proposal,
-                                                helpers,
-                                            )}
-                                        </td>
-                                    ))}
-                                </tr>
-                            );
-                        })}
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    );
+              return (
+                <tr
+                  key={proposalHash}
+                  className={index < proposals.length - 1 ? 'border-b border-background-lighter' : ''}
+                >
+                  {columns.map(column => (
+                    <td
+                      key={`${proposalHash}-${column.key}`}
+                      className="px-4 py-4 border-r border-background-lighter"
+                    >
+                      {column.renderCell(proposal, helpers)}
+                    </td>
+                  ))}
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
 };
 
 export default ProposalTable;

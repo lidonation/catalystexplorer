@@ -760,11 +760,27 @@
         "personalInfo": "Personal Info",
         "photo": "Photo",
         "photoSizeInstructions": "150×150px JPEG, PNG Image",
+        "photoErrors": {
+            "invalidType": "File must be JPEG, PNG, or GIF",
+            "tooLarge": "File size must be less than 5MB",
+            "uploadFailed": "Failed to upload photo"
+        },
         "basicSettings": "Basic Settings",
         "publicProfile": "Public Profile",
         "profileLink": "Public Profile",
-        "socialProfiles": "Social Profiles"
-    },
+        "socialProfiles": "Social Profiles",
+        "copied": "Copied!",
+        "noBiography": "No biography available",
+        "updateSocialProfiles": "Update Social Profiles",
+        "updateProfileName": "Update Profile Name",
+        "updateEmailAddress": "Update Email Address",
+        "updateCity": "Update City",
+        "addCity": "Add City",
+        "noAddress": "You have no address yet",
+        "add": "Add",
+        "recreate": "Re-create",
+        "notProvided": "Not provided"
+      },
     "completedProjectNfts": {
         "title": "Completed Project NFTs",
         "subtitle": "Completed Project Catalyst project teams are invited to mint a celebratory NFT to mark your achievement and share it with the world!",

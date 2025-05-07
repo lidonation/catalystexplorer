@@ -12,7 +12,7 @@ const MyProfile: React.FC = () => {
         <MyLayout>
             <Head title="My Profile" />
 
-            <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+            <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                 <div className="text-content text-center">
                     {isAuthenticated ? (
                         <ProfileSettings
