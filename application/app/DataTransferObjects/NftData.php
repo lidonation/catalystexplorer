@@ -25,7 +25,7 @@ class NftData extends Data
         public string $rarity,
         public string $status,
         public NftMetaData $metadata,
-        public NMKRNftData $required_nft_metadata,
+
         public ?Carbon $minted_at,
         public int $qty,
         public ?Carbon $created_at,
@@ -52,12 +52,10 @@ class NftData extends Data
             description: $data['description'] ?? '',
             rarity: $data['rarity'] ?? '',
             status: $data['status'] ?? '',
-            metadata: NftMetaData::fromArray($data['metadata'] ?? null), // default instance if not passed
-            required_nft_metadata: isset($data['required_nft_metadata']) ?
-            (is_array($data['required_nft_metadata']) ?
-                NMKRNftData::fromArray($data['required_nft_metadata']) :
-                $data['required_nft_metadata']) :
-            NMKRNftData::createDefault(),
+            metadata: isset($data['metadata'])
+                ? (is_array($data['metadata']) ? NftMetaData::fromArray($data['metadata']) : $data['metadata'])
+                : NftMetaData::createDefault(),
+
             minted_at: ! empty($data['minted_at']) ? Carbon::parse($data['minted_at']) : null,
             qty: $data['qty'] ?? 0,
             created_at: ! empty($data['created_at']) ? Carbon::parse($data['created_at']) : null,

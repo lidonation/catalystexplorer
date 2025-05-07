@@ -21,7 +21,7 @@ class NftMetaData extends Data
     public static function fromArray(?array $data = null): static
     {
         if ($data === null) {
-            return new self('', '0', '0', '', '');
+            return self::createDefault();
         }
 
         return new self(
@@ -31,5 +31,10 @@ class NftMetaData extends Data
             role: $data['role'] ?? '',
             project_title: $data['project_title'] ?? ''
         );
+    }
+
+    public static function createDefault(): static
+    {
+        return new self('', '0', '0', '', '');
     }
 }
