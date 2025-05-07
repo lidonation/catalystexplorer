@@ -6,6 +6,14 @@ const ProposalSortingOptions = () => {
     const { t } = useTranslation();
     return [
         {
+            label: t('proposals.options.titleAtoZ'),
+            value: 'title:asc',
+        },
+        {
+            label: t('proposals.options.titleZtoA'),
+            value: 'title:desc',
+        },
+        {
             label: t('proposals.options.votesCastLowToHigh'),
             value: 'votes_cast:asc',
         },
@@ -84,6 +92,14 @@ const ProposalSortingOptions = () => {
         {
             label: t('proposals.options.valueForMoneyLowToHigh'),
             value: 'auditability_score:asc',
+        },
+        {
+            label: t('proposals.options.fundingStatusAtoZ'),
+            value: 'funding_status:asc',
+        },
+        {
+            label: t('proposals.options.fundingStatusZtoA'),
+            value: 'funding_status:desc',
         },
     ]
 };

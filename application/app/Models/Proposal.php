@@ -156,6 +156,7 @@ class Proposal extends Model
             'ranking_total',
             'users.proposals_completed',
             'votes_cast',
+            'funding_status',
         ];
     }
 
