@@ -254,10 +254,7 @@ class TransactionController
         $allTimeVotes = $voter->count();
         
         $fundsParticipated = $voter->voting_powers->map(function ($votingPower) {
-            if ($votingPower->snapshot && $votingPower->snapshot->fund) {
-                return $votingPower->snapshot->fund->title;
-            }
-            return null;
+            return $votingPower->snapshot?->fund?->title;
         })->filter()->unique()->values()->all();
         
         return [ 
