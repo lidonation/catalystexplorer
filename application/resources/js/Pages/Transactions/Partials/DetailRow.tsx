@@ -2,6 +2,8 @@ import React, { ReactNode } from 'react';
 import Paragraph from '@/Components/atoms/Paragraph';
 import { CopyIcon } from 'lucide-react';
 import { copyToClipboard } from '@/utils/copyClipboard';
+import ValueLabel from '@/Components/atoms/ValueLabel';
+import Value from '@/Components/atoms/Value';
 
 interface DetailRowProps {
   label: string;
@@ -23,17 +25,17 @@ export default function DetailRow({
   const displayValue = value !== null && value !== undefined ? String(value) : '';
   return (
     <div className={`flex items-start border-b border-background-lighter pb-4 ${className}`}>
-      <Paragraph className='text-gray-persist w-36'>{label}</Paragraph>
+      <ValueLabel className='text-gray-persist w-36'>{label}</ValueLabel>
       
       {children ? (
         children
       ) : (
         <div className='flex items-center flex-1'>
-          <Paragraph 
+          <Value 
             className={`text-content font-bold truncate mr-2 ${background ? 'bg-background-lighter px-2 py-1 rounded-sm' : ''}`}
           >
             {value}
-          </Paragraph>
+          </Value>
           
           {copyable && (
             <CopyIcon

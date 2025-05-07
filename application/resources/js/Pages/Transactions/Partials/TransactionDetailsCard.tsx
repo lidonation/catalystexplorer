@@ -1,5 +1,7 @@
 import Title from '@/Components/atoms/Title';
 import Paragraph from '@/Components/atoms/Paragraph';
+import Value from '@/Components/atoms/Value';
+import ValueLabel from '@/Components/atoms/ValueLabel';
 import { CopyIcon } from 'lucide-react';
 import TransactionData = App.DataTransferObjects.TransactionData;
 import { useTranslation } from 'react-i18next';
@@ -36,9 +38,9 @@ export default function TransactionDetailsCard({ transaction }: TransactionDetai
 
           <DetailRow label={t('transactions.block')}>
             <div className='flex items-center flex-1'>
-              <Paragraph className='text-content font-bold truncate max-w-xs mr-2'>
+              <Value className='text-content font-bold truncate max-w-xs mr-2'>
                 {truncateMiddle(transaction.block)}
-              </Paragraph>
+              </Value>
               <CopyIcon 
                 className='cursor-pointer text-gray-400 w-4 h-4' 
                 onClick={() => copyToClipboard(transaction.block)}
@@ -48,9 +50,9 @@ export default function TransactionDetailsCard({ transaction }: TransactionDetai
 
           <DetailRow label={t('vote.table.timestamp')}>
             <div className='flex-1'>
-              <Paragraph className='text-content font-bold'>
+              <Value className='text-content font-bold'>
                 {formatTimestamp(transaction.created_at)}
-              </Paragraph>
+              </Value>
               <span className='text-gray-persist text-sm'>
                 {getTimeSince(transaction.created_at)}
               </span>
@@ -73,15 +75,15 @@ export default function TransactionDetailsCard({ transaction }: TransactionDetai
           <DetailRow label={t('transactions.delegations')}>
             <div className='flex-1'>
               <div className="flex items-center mb-2">
-                <span className='bg-background-lighter px-2 py-1 rounded text-sm text-content font-bold mr-2'>
+                <Value className='bg-background-lighter px-2 py-1 rounded text-sm text-content font-bold mr-2'>
                   {delegations.length}
-                </span>
+                </Value>
               </div>
               {delegations.map((delegation: {voting_key: string}, index: number) => (
                 <div key={index} className="flex items-center mb-1">
-                  <span className='text-content font-bold'>
+                  <Value className='text-content font-bold'>
                     {truncateMiddle(delegation.voting_key, 10, 6)}
-                  </span>
+                  </Value>
                   <CopyIcon 
                     className='cursor-pointer text-gray-persist w-4 h-4 ml-2' 
                     onClick={() => copyToClipboard(delegation.voting_key)}

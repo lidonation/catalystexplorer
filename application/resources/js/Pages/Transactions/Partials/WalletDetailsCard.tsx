@@ -1,5 +1,6 @@
 import Title from '@/Components/atoms/Title';
 import Paragraph from '@/Components/atoms/Paragraph';
+import Value from '@/Components/atoms/Value';
 import { CopyIcon } from 'lucide-react';
 import { t } from 'i18next';
 import Button from '@/Components/atoms/Button';
@@ -31,7 +32,7 @@ export default function WalletDetailsCard({ transaction, walletStats }: WalletDe
             value={adaFormat(transaction.json_metadata.controlled_amount)}
           />
 
-          <DetailRow 
+          <DetailRow
             label={t('transactions.allTimeVotes')} 
             value={`${walletStats.all_time_votes} votes`}
             background
@@ -55,9 +56,9 @@ export default function WalletDetailsCard({ transaction, walletStats }: WalletDe
 
           <DetailRow label={t('transactions.stakePub')}>
             <div className='flex items-center flex-1'>
-              <Paragraph className='text-content font-bold truncate mr-2'>
+              <Value className='text-content font-bold truncate mr-2'>
                 {truncateMiddle(transaction.stake_pub)}
-              </Paragraph>
+              </Value>
               <CopyIcon 
                 className='cursor-pointer text-gray-persist font-bold w-4 h-4' 
                 onClick={() => copyToClipboard(transaction.stake_pub)}
@@ -70,9 +71,9 @@ export default function WalletDetailsCard({ transaction, walletStats }: WalletDe
             className="border-none"
           >
             <div className='flex items-center flex-1'>
-              <Paragraph className='text-content font-bold truncate mr-2'>
+              <Value className='text-content font-bold truncate mr-2'>
                 {truncateMiddle(transaction.json_metadata.payment_address)}
-              </Paragraph>
+              </Value>
               <CopyIcon 
                 className='cursor-pointer text-gray-persist w-4 h-4' 
                 onClick={() => copyToClipboard(transaction.json_metadata.payment_address)}

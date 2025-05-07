@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import Title from '@/Components/atoms/Title';
 import { useTranslation } from 'react-i18next';
-import { JsonWrapper } from './JsonDisplay';
+import { JsonWrapper } from '../../../Components/JsonDisplay';
 import TransactionData = App.DataTransferObjects.TransactionData;
 
 interface MetadataCardProps {
