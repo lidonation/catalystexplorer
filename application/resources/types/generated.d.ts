@@ -475,15 +475,18 @@ order?: number;
 fund?: App.DataTransferObjects.FundData;
 };
 export type TransactionData = {
-hash: string | null;
+hash: string;
 tx_hash: string;
+type: string;
 block: string;
 epoch: number | null;
 json_metadata: any;
+stake_pub: string;
 raw_metadata: object | Array<any> | null;
 created_at: string;
 inputs: Array<App.DataTransferObjects.TransactionInputData>;
 outputs: Array<App.DataTransferObjects.TransactionOutputData>;
+witness: any;
 };
 export type TransactionInputData = {
 address: string;
