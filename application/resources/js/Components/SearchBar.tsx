@@ -51,7 +51,7 @@ const SearchBar = forwardRef<HTMLInputElement, SearchBarProps>(({
     }, [handleSearch]);
 
     return (
-        <div className="w-full shadow-md rounded-md">
+        <div className="w-full shadow-sm rounded-md">
             <label className="relative flex w-full items-center gap-2 pl-0">
                 <div className="absolute left-0 flex h-full w-10 items-center justify-center">
                     <SearchLensIcon width={16} className="text-content" />

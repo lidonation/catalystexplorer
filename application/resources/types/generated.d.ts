@@ -68,16 +68,10 @@ total_distributed: number | null;
 fund: App.DataTransferObjects.FundData | null;
 };
 export type CardanoBudgetProposalData = {
+govtool_username: string | null;
 govtool_user_id: number;
 govtool_proposal_id: number;
-proposal_name: string | null;
-govtool_username: string | null;
-ada_amount: number | null;
-budget_cat?: string;
-committee_name?: string;
-updated_at?: string;
-prop_comments_number?: number;
-proposal_benefit?: string;
+intersect_admin_further_text?: string;
 };
 export type CommunityData = {
 hash: string | null;
@@ -352,6 +346,7 @@ campaign_name: string;
 yes_votes: string;
 no_votes: string;
 role: string;
+project_title: string;
 };
 export type PostData = {
 id: number | null;
@@ -419,7 +414,7 @@ quickpitch_length?: number;
 users: any | null;
 fund: App.DataTransferObjects.FundData | null;
 opensource: boolean | null;
-nft: App.DataTransferObjects.NftData | null;
+completed_project_nft: App.DataTransferObjects.NftData | null;
 link?: string;
 };
 export type RankingData = {

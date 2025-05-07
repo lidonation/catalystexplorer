@@ -3,8 +3,11 @@ import { Head } from '@inertiajs/react';
 import { useTranslation } from 'react-i18next';
 import MyLayout from "@/Pages/My/MyLayout";
 import RecordsNotFound from '@/Layouts/RecordsNotFound';
+import MyLayout from '@/Pages/My/MyLayout';
 import ProposalTable from '@/Pages/Proposals/Partials/ProposalTable';
-import ProposalData = App.DataTransferObjects.ProposalData;
+import { Head } from '@inertiajs/react';
+import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { PaginatedData } from '../../../../types/paginated-data';
 import { SearchParams } from '../../../../types/search-params';
 import Paginator from '@/Components/Paginator';
@@ -16,8 +19,8 @@ import ProposalSortingOptions from '@/lib/ProposalSortOptions';
 import ProposalFilters from '@/Pages/Proposals/Partials/ProposalFilters';
 
 interface MyProposalsProps {
-  proposals: PaginatedData<ProposalData[]>;
-  filters: SearchParams;
+    proposals: PaginatedData<ProposalData[]>;
+    filters: SearchParams;
 }
 
 export default function MyProposals({ proposals, filters }: MyProposalsProps) {

@@ -530,7 +530,8 @@
             "groups": "Groupes",
             "budgets": "Budgets",
             "budget": "Budget",
-            "projectLength": "Durée du projet (mois)"
+            "projectLength": "Durée du projet (mois)",
+            "fund": "Fonds"
         },
         "options": {
             "sort": "Trier par",

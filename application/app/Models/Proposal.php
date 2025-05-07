@@ -26,7 +26,6 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
 use Laravel\Scout\Searchable;
-use Staudenmeir\EloquentHasManyDeep\HasManyDeep;
 use Staudenmeir\EloquentHasManyDeep\HasRelationships;
 
 #[ScopedBy(ProposalTypeScope::class)]
@@ -492,14 +491,13 @@ class Proposal extends Model
 
             'woman_proposal' => $this->is_woman_proposal ? 1 : 0,
             'link' => $this->link,
-
             'alignment_score' => $this->meta_info->alignment_score ?? $this->getDiscussionRankingScore('Impact Alignment') ?? 0,
             'feasibility_score' => $this->meta_info->feasibility_score ?? $this->getDiscussionRankingScore('Feasibility') ?? 0,
             'auditability_score' => $this->meta_info->auditability_score ?? $this->getDiscussionRankingScore('Value for money') ?? 0,
             'projectcatalyst_io_link' => $this->meta_info?->projectcatalyst_io_url ?? null,
             'project_length' => intval($this->meta_info->project_length) ?? 0,
             'vote_casts' => intval($this->meta_info->vote_casts) ?? 0,
-            'nft' => $this->nft,
+            'completed_project_nft' => $this->completedProjectNft,
         ]);
     }
 
@@ -554,9 +552,20 @@ class Proposal extends Model
         return $this->belongsToMany(IdeascaleProfile::class, 'ideascale_profile_has_proposal', 'proposal_id', 'ideascale_profile_id');
     }
 
-    public function nft(): HasManyDeep
+    public function completedProjectNft(): Attribute
     {
-        return $this->hasManyDeepFromRelations($this->ideascaleProfiles(), (new IdeascaleProfile)->nfts());
+        return Attribute::make(
+            function () {
+                $englishTitle = json_decode($this->title, true)['en'] ?? $this->title;
+
+                return Nft::whereRelation(
+                    'ideascale_profile',
+                    fn ($q) => $q->whereIn('ideascale_profiles.id', $this->users->pluck('id')->toArray())
+                )
+                    ->whereJsonContains('metadata->Project Title', $englishTitle)
+                    ->get();
+            }
+        );
     }
 
     /**
