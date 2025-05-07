@@ -1,25 +1,27 @@
 import Card from '@/Components/Card';
 import Paragraph from '@/Components/atoms/Paragraph';
 import Switch from '@/Components/atoms/Switch';
-import Title from '@/Components/atoms/Title';
 import { formatTimeAgo } from '@/Components/layout/TimeFormatter';
-import CameraIcon from '@/Components/svgs/CameraIcon';
 import CheckIcon from '@/Components/svgs/CheckIcon';
 import CopyIcon from '@/Components/svgs/CopyIcon';
-import EditIcon from '@/Components/svgs/EditIcon';
 import LinkedInIcon from '@/Components/svgs/LinkedInIcons';
 import WebIcon from '@/Components/svgs/WebIcon';
 import XIcon from '@/Components/svgs/XIcon';
-import SocialProfilesForm from '@/Pages/My/Profile/Partials/EditSocialsForm';
-import ProfileFieldForm from '@/Pages/My/Profile/Partials/UpdateProfileInformationForm';
+import SocialProfilesForm from './Partials/EditSocialsForm';
+import ProfileFieldForm from './Partials/UpdateProfileInformationForm';
 import { generateLocalizedRoute } from '@/utils/localizedRoute';
 import { router, useForm } from '@inertiajs/react';
-import { ChangeEvent, useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import PasswordForm from './Partials/UpdatePasswordForm';
 import BaseModal from './Partials/UpdateProfilesModal';
+import ProfileField from './Partials/ProfileField';
+import useProfileState, { ModalType } from './hooks/useProfileState';
+import ProfilePhotoUploader from './Partials/ProfilePhotoUploader';
+import ProfileSection from './Partials/ProfileSection';
+import Button from '@/Components/atoms/Button';
 
-interface User {
+export interface User {
     id: number;
     name: string;
     email: string;
@@ -35,7 +37,15 @@ interface User {
     password_updated_at?: string;
 }
 
-interface ModalFieldConfig {
+export interface ProfileSettingsProps {
+    auth: {
+        user: User;
+    };
+    user: User;
+}
+
+
+export interface ModalFieldConfig {
     title: string;
     fieldName: string;
     fieldLabel: string;
@@ -45,25 +55,16 @@ interface ModalFieldConfig {
     placeholder?: string;
 }
 
-interface ProfileSettingsProps {
-    auth: {
-        user: User;
-    };
-    user: User;
+export interface SocialLinks {
+    twitter: string;
+    linkedin: string;
+    website: string;
 }
 
-enum ModalType {
-    NONE = 'none',
-    PROFILE_FIELD = 'profile_field',
-    SOCIAL_PROFILES = 'social_profiles',
-    PASSWORD = 'password',
-}
 const generateSocialLinks = (user: User) => {
     return {
         twitter: user.twitter ? `https://x.com/${user.twitter}` : '',
-        linkedin: user.linkedin
-            ? `https://www.linkedin.com/in/${user.linkedin}`
-            : '',
+        linkedin: user.linkedin ? `https://www.linkedin.com/in/${user.linkedin}` : '',
         website: user.website || '',
     };
 };
@@ -73,28 +74,22 @@ export default function ProfileSettings({
     user: directUser,
 }: ProfileSettingsProps) {
     const { t } = useTranslation();
-    console.log({});
-    
     const authUser = auth.user;
     const user = directUser || authUser;
-
-    const [isPublic, setIsPublic] = useState(true);
     const socialLinks = generateSocialLinks(user);
-    const [currentModal, setCurrentModal] = useState<ModalType>(ModalType.NONE);
-    const [modalConfig, setModalConfig] = useState<ModalFieldConfig>({
-        title: '',
-        fieldName: '',
-        fieldLabel: '',
-        currentValue: '',
-        updateRoute: '',
-        inputType: 'text',
-        placeholder: '',
-    });
 
-    const [photoPreview, setPhotoPreview] = useState<string | null>(null);
-    const [photoUploading, setPhotoUploading] = useState(false);
-    const [photoError, setPhotoError] = useState('');
-    const [copySuccess, setCopySuccess] = useState(false);
+    const {
+        state,
+        setIsPublic,
+        openProfileFieldModal,
+        openSocialProfilesModal,
+        openPasswordModal,
+        closeModal,
+        setCopySuccess,
+        setPhotoPreview,
+        setPhotoUploading,
+        setPhotoError
+    } = useProfileState();
 
     const { data, setData } = useForm({
         name: user.name || '',
@@ -147,88 +142,6 @@ export default function ProfileSettings({
         }
     };
 
-    const openProfileFieldModal = (config: Partial<ModalFieldConfig>) => {
-        setModalConfig((prev) => ({
-            ...prev,
-            ...config,
-        }));
-        setCurrentModal(ModalType.PROFILE_FIELD);
-    };
-
-    const openSocialProfilesModal = () => {
-        setCurrentModal(ModalType.SOCIAL_PROFILES);
-    };
-
-    const openPasswordModal = () => {
-        setCurrentModal(ModalType.PASSWORD);
-    };
-
-    const closeModal = () => {
-        setCurrentModal(ModalType.NONE);
-        router.reload({ only: ['user'] });
-    };
-
-    const validatePhoto = (file: File): string | null => {
-        const acceptedTypes = ['image/jpeg', 'image/png', 'image/gif'];
-        if (!acceptedTypes.includes(file.type)) {
-            return 'File must be JPEG, PNG, or GIF';
-        }
-
-        const maxSize = 5 * 1024 * 1024;
-        if (file.size > maxSize) {
-            return 'File size must be less than 5MB';
-        }
-
-        return null;
-    };
-
-    const updateProfilePhoto = (e: ChangeEvent<HTMLInputElement>) => {
-        const files = e.target.files;
-        if (!files || files.length === 0) return;
-
-        const file = files[0];
-        const error = validatePhoto(file);
-
-        if (error) {
-            setPhotoError(error);
-            return;
-        }
-
-        setPhotoError('');
-
-        const reader = new FileReader();
-        reader.onload = (event) => {
-            const result = event.target?.result;
-            if (typeof result === 'string') {
-                setPhotoPreview(result);
-            }
-        };
-        reader.readAsDataURL(file);
-
-        setPhotoUploading(true);
-
-        const formData = new FormData();
-        formData.append('photo', file);
-
-        router.post(generateLocalizedRoute('profile.photo.update'), formData, {
-            forceFormData: true,
-            onSuccess: () => {
-                setPhotoUploading(false);
-                setPhotoPreview(null);
-                router.reload({ only: ['user'] });
-            },
-            onError: (errors) => {
-                setPhotoUploading(false);
-                if (typeof errors === 'object' && errors !== null) {
-                    const photoError = (errors as Record<string, string>)[
-                        'photo'
-                    ];
-                    setPhotoError(photoError || 'Failed to upload photo');
-                }
-            },
-        });
-    };
-
     const handleFieldUpdated = (fieldName: string, value: string) => {
         setData((prev) => ({
             ...prev,
@@ -236,506 +149,288 @@ export default function ProfileSettings({
         }));
     };
 
-    const removeProfilePhoto = () => {
-        router.delete(generateLocalizedRoute('profile.photo.destroy'), {
-            onSuccess: () => {
-                router.reload({ only: ['user'] });
-            },
-        });
+    const renderSocialIcon = (type: 'linkedin' | 'twitter' | 'website') => {
+        const link = socialLinks[type];
+        const Icon = type === 'linkedin' ? LinkedInIcon : type === 'twitter' ? XIcon : WebIcon;
+        const title = type === 'linkedin' ? t('icons.titles.linkedIn') :
+            type === 'twitter' ? t('icons.titles.x') :
+                t('users.website');
+
+        return (
+            <div className="flex items-center space-x-2">
+                <a
+                    href={link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={link ? 'cursor-pointer' : 'pointer-events-none cursor-default'}
+                >
+                    <Icon className="text-content" />
+                </a>
+                <Paragraph size="sm" className="text-content font-bold">
+                    {link ? (
+                        <a href={link} target="_blank" rel="noopener noreferrer">
+                            {title}
+                        </a>
+                    ) : (
+                        title
+                    )}
+                </Paragraph>
+            </div>
+        );
+    };
+
+    // Render modals based on currentModal state
+    const renderModals = () => {
+        switch (state.currentModal) {
+            case ModalType.PROFILE_FIELD:
+                return (
+                    <BaseModal isOpen={true} onClose={closeModal} title={state.modalConfig.title}>
+                        <ProfileFieldForm
+                            fieldName={state.modalConfig.fieldName}
+                            fieldLabel={state.modalConfig.fieldLabel}
+                            currentValue={state.modalConfig.currentValue}
+                            updateRoute={state.modalConfig.updateRoute}
+                            inputType={state.modalConfig.inputType}
+                            placeholder={state.modalConfig.placeholder}
+                            onClose={closeModal}
+                            onFieldUpdated={handleFieldUpdated}
+                        />
+                    </BaseModal>
+                );
+            case ModalType.SOCIAL_PROFILES:
+                return (
+                    <BaseModal isOpen={true} onClose={closeModal} title={t('users.updateSocialProfiles')}>
+                        <SocialProfilesForm
+                            linkedinUrl={user.linkedin || ''}
+                            twitterUrl={user.twitter || ''}
+                            websiteUrl={user.website || ''}
+                            onClose={closeModal}
+                        />
+                    </BaseModal>
+                );
+            case ModalType.PASSWORD:
+                return (
+                    <BaseModal isOpen={true} onClose={closeModal} title={t('updatePassword')}>
+                        <PasswordForm onClose={closeModal} />
+                    </BaseModal>
+                );
+            default:
+                return null;
+        }
     };
 
     return (
-        <div className="lg:bg-background min-h-screen lg:p-8">
-            <div className="mx-auto max-w-6xl grid-cols-12 gap-6 text-left lg:grid">
+        <div className="mb-8">
+            <div className="mx-auto max-w-6xl grid-cols-12 gap-3 text-left lg:grid">
+                {/* Left column */}
                 <div className="col-span-4 flex h-full flex-col justify-between">
-                    <div className="space-y-6">
+                    <div className="space-y-3">
+                        {/* About card */}
                         <Card className="bg-background rounded-lg shadow-sm">
-                            <div className="lg:p-6">
-                                <div className="mb-4 space-y-4">
-                                    <Title
-                                        level="3"
-                                        className="text-content pb-2"
-                                    >
-                                        {t('users.about')}
-                                    </Title>
-                                    <div className="border-t border-gray-200 py-2">
-                                        {data.bio ? (
-                                            <Paragraph
-                                                size="sm"
-                                                className="text-content"
-                                            >
-                                                {data.bio}
-                                            </Paragraph>
-                                        ) : (
-                                            <Paragraph
-                                                size="sm"
-                                                className="text-content-gray"
-                                            >
-                                                No biography available
-                                            </Paragraph>
-                                        )}
-                                    </div>
+                            <ProfileSection title={t('users.about')}>
+                                <div className="py-4">
+                                    {data.bio ? (
+                                        <Paragraph size="sm" className="text-gray-persist">
+                                            {data.bio}
+                                        </Paragraph>
+                                    ) : (
+                                        <Paragraph size="sm" className="text-gray-persist">
+                                            {t('users.noBiography')}
+                                        </Paragraph>
+                                    )}
                                 </div>
-                            </div>
+                            </ProfileSection>
                         </Card>
 
+                        {/* Network card */}
                         <Card className="bg-background rounded-lg shadow-sm">
-                            <div className="lg:p-6">
-                                <div className="mb-4">
-                                    <Title level="3" className="text-content">
-                                        {t('users.network')}
-                                    </Title>
+                            <ProfileSection title={t('users.network')}>
+                                <div className="space-y-4 py-4">
+                                    {renderSocialIcon('linkedin')}
+                                    {renderSocialIcon('twitter')}
+                                    {renderSocialIcon('website')}
                                 </div>
-                                <div className="space-y-4 border-t border-gray-200 pb-2">
-                                    <div className="mt-2 flex items-center space-x-2">
-                                        <div className="">
-                                            <a
-                                                href={socialLinks.linkedin}
-                                                target="_blank"
-                                                rel="noopener noreferrer"
-                                                className={
-                                                    socialLinks.linkedin
-                                                        ? 'cursor-pointer'
-                                                        : 'pointer-events-none cursor-default'
-                                                }
-                                            >
-                                                <LinkedInIcon className="text-content" />
-                                            </a>
-                                        </div>
-                                        <Paragraph
-                                            size="sm"
-                                            className="text-content"
-                                        >
-                                            {socialLinks.linkedin ? (
-                                                <a
-                                                    href={socialLinks.linkedin}
-                                                    target="_blank"
-                                                    rel="noopener noreferrer"
-                                                >
-                                                    {t('icons.titles.linkedIn')}
-                                                </a>
-                                            ) : (
-                                                t('icons.titles.linkedIn')
-                                            )}
-                                        </Paragraph>
-                                    </div>
-                                    <div className="flex items-center space-x-2">
-                                        <a
-                                            href={socialLinks.twitter}
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            className={
-                                                socialLinks.twitter
-                                                    ? 'cursor-pointer'
-                                                    : 'pointer-events-none cursor-default'
-                                            }
-                                        >
-                                            <XIcon className="text-content" />
-                                        </a>
-                                        <Paragraph
-                                            size="sm"
-                                            className="text-content"
-                                        >
-                                            {socialLinks.twitter ? (
-                                                <a
-                                                    href={socialLinks.twitter}
-                                                    target="_blank"
-                                                    rel="noopener noreferrer"
-                                                >
-                                                    {t('icons.titles.x')}
-                                                </a>
-                                            ) : (
-                                                t('icons.titles.x')
-                                            )}
-                                        </Paragraph>
-                                    </div>
-                                    <div className="flex items-center space-x-2">
-                                        <a
-                                            href={socialLinks.website}
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            className={
-                                                socialLinks.website
-                                                    ? 'cursor-pointer'
-                                                    : 'pointer-events-none cursor-default'
-                                            }
-                                        >
-                                            <WebIcon className="text-content" />
-                                        </a>
-                                        <Paragraph
-                                            size="sm"
-                                            className="text-content"
-                                        >
-                                            {socialLinks.website ? (
-                                                <a
-                                                    href={socialLinks.website}
-                                                    target="_blank"
-                                                    rel="noopener noreferrer"
-                                                >
-                                                    {t('users.website')}
-                                                </a>
-                                            ) : (
-                                                t('users.website')
-                                            )}
-                                        </Paragraph>
-                                    </div>
-                                </div>
-                            </div>
+                            </ProfileSection>
                         </Card>
                     </div>
+
+                    {/* Joined date */}
                     <Paragraph size="sm" className="text-content mt-4">
                         {user.created_at
                             ? `JOINED ${new Date(user.created_at)
-                                  .toLocaleDateString('en-US', {
-                                      month: 'long',
-                                      day: 'numeric',
-                                      year: 'numeric',
-                                  })
-                                  .toUpperCase()}`
+                                .toLocaleDateString('en-US', {
+                                    month: 'long',
+                                    day: 'numeric',
+                                    year: 'numeric',
+                                })
+                                .toUpperCase()}`
                             : ''}
                     </Paragraph>
                 </div>
 
-                <div className="col-span-8 space-y-6">
-                    <Card className="bg-background rounded-lg shadow-sm transition-colors duration-300 ease-in-out">
-                        <div className="lg:p-6">
-                            <Title level="3" className="text-content mb-6">
-                                {t('users.personalInfo')}
-                            </Title>
-
-                            <div>
-                                <div className="border-t border-gray-200 py-4 transition-colors duration-300 ease-in-out">
-                                    <div className="flex items-center justify-between">
-                                        <div className="flex w-full">
-                                            <div className="text-content w-1/4">
-                                                {t('users.photo')}
-                                            </div>
-                                            <div className="w-3/4">
-                                                <div className="text-sm text-gray-400">
-                                                    {t(
-                                                        'users.photoSizeInstructions',
-                                                    )}
-                                                </div>
-                                                {photoError && (
-                                                    <div className="text-error mb-2 text-sm">
-                                                        {photoError}
-                                                    </div>
-                                                )}
-                                            </div>
-                                        </div>
-                                        <div className="relative">
-                                            <img
-                                                src={
-                                                    photoPreview ||
-                                                    (user.profile_photo_url
-                                                        ? user.profile_photo_url
-                                                        : '/api/placeholder/150/150')
-                                                }
-                                                className={`border-border-secondary h-11 w-12 rounded-full border object-cover transition-colors duration-300 ease-in-out ${photoUploading ? 'opacity-50' : ''}`}
-                                                alt="Profile"
-                                            />
-                                            {(user.profile_photo_url ||
-                                                photoPreview) && (
-                                                <button
-                                                    onClick={removeProfilePhoto}
-                                                    className="bg-background hover:bg-background-lighter absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full border text-xs text-gray-400 shadow-sm transition-colors duration-300 ease-in-out"
-                                                    disabled={photoUploading}
-                                                >
-                                                    ×
-                                                </button>
-                                            )}
-                                            <label className="absolute right-3 bottom-0 cursor-pointer">
-                                                <input
-                                                    type="file"
-                                                    className="hidden"
-                                                    onChange={
-                                                        updateProfilePhoto
-                                                    }
-                                                    accept="image/jpeg,image/png,image/gif"
-                                                    disabled={photoUploading}
-                                                />
-                                                <div>
-                                                    <CameraIcon className="text-content-light h-5 w-5" />
-                                                </div>
-                                            </label>
+                {/* Right column */}
+                <div className="col-span-8">
+                    {/* Personal Info Card */}
+                    <Card className="bg-background rounded-lg shadow-sm mb-3">
+                        <ProfileSection title={t('users.personalInfo')}>
+                            {/* Photo field */}
+                            <div className="flex items-center justify-between border-t border-background-lighter">
+                                <div className="flex w-full py-8">
+                                    <div className="text-gray-persist w-1/4">
+                                        {t('users.photo')}
+                                    </div>
+                                    <div className="w-3/4">
+                                        <div className="text-sm text-dark">
+                                            {t('users.photoSizeInstructions')}
                                         </div>
                                     </div>
                                 </div>
-
-                                <div className="border-t border-gray-200 py-3 transition-colors duration-300 ease-in-out">
-                                    <div className="flex items-center justify-between">
-                                        <div className="flex w-full">
-                                            <div className="text-content w-1/4">
-                                                {t('profileWorkflow.name')}
-                                            </div>
-                                            <div className="text-content w-3/4">
-                                                {user.name}
-                                            </div>
-                                        </div>
-                                        <button
-                                            className="text-primary"
-                                            onClick={() => {
-                                                openProfileFieldModal({
-                                                    title: 'Update Profile Name',
-                                                    fieldName: 'name',
-                                                    fieldLabel: 'Name',
-                                                    currentValue: user.name,
-                                                    updateRoute:
-                                                        'profile.update.field',
-                                                });
-                                            }}
-                                        >
-                                            <EditIcon className="text-primary" />
-                                        </button>
-                                    </div>
-                                </div>
-
-                                <div className="border-t border-gray-200 py-4 transition-colors duration-300 ease-in-out">
-                                    <div className="flex items-center justify-between">
-                                        <div className="flex w-full">
-                                            <div className="text-content w-1/4">
-                                                {t('users.socialProfiles')}
-                                            </div>
-                                            <div className="flex w-3/4 space-x-2">
-                                                <a
-                                                    href={socialLinks.linkedin}
-                                                    target="_blank"
-                                                    rel="noopener noreferrer"
-                                                    className={`bg-background-transparent ${socialLinks.linkedin ? 'cursor-pointer' : 'pointer-events-none cursor-default'}`}
-                                                >
-                                                    <LinkedInIcon className="text-content h-7 w-7" />
-                                                </a>
-                                                <a
-                                                    href={socialLinks.twitter}
-                                                    target="_blank"
-                                                    rel="noopener noreferrer"
-                                                    className={`bg-background-transparent ${socialLinks.twitter ? 'cursor-pointer' : 'pointer-events-none cursor-default'}`}
-                                                >
-                                                    <XIcon className="text-content mr-1" />
-                                                </a>
-                                                <a
-                                                    href={socialLinks.website}
-                                                    target="_blank"
-                                                    rel="noopener noreferrer"
-                                                    className={`bg-background-transparent ${socialLinks.website ? 'cursor-pointer' : 'pointer-events-none cursor-default'}`}
-                                                >
-                                                    <WebIcon className="text-content" />
-                                                </a>
-                                            </div>
-                                        </div>
-                                        <button
-                                            className="text-primary"
-                                            onClick={openSocialProfilesModal}
-                                        >
-                                            <EditIcon className="text-primary" />
-                                        </button>
-                                    </div>
-                                </div>
-
-                                <div className="border-t border-gray-200 py-4 transition-colors duration-300 ease-in-out">
-                                    <div className="flex items-center justify-between">
-                                        <div className="flex w-full">
-                                            <div className="text-content w-1/4">
-                                                {t('users.city')}
-                                            </div>
-                                            <div className="text-content w-3/4">
-                                                {data.city ? (
-                                                    data.city
-                                                ) : (
-                                                    <span className="text-gray-400 italic">
-                                                        You have no address yet
-                                                    </span>
-                                                )}
-                                            </div>
-                                        </div>
-                                        <button
-                                            className={
-                                                user.city
-                                                    ? 'text-primary'
-                                                    : 'text-accent'
-                                            }
-                                            onClick={() => {
-                                                openProfileFieldModal({
-                                                    title: user.city
-                                                        ? 'Update City'
-                                                        : 'Add City',
-                                                    fieldName: 'city',
-                                                    fieldLabel: 'City',
-                                                    currentValue:
-                                                        user.city ||
-                                                        data.city ||
-                                                        '',
-                                                    updateRoute:
-                                                        'profile.update.field',
-                                                    inputType: 'text',
-                                                });
-                                            }}
-                                        >
-                                            {user.city ? (
-                                                <EditIcon className="text-primary" />
-                                            ) : (
-                                                'Add'
-                                            )}
-                                        </button>
-                                    </div>
-                                </div>
+                                <ProfilePhotoUploader
+                                    photoPreview={state.photoPreview}
+                                    profilePhotoUrl={user.profile_photo_url}
+                                    photoUploading={state.photoUploading}
+                                    photoError={state.photoError}
+                                    setPhotoPreview={setPhotoPreview}
+                                    setPhotoUploading={setPhotoUploading}
+                                    setPhotoError={setPhotoError}
+                                />
                             </div>
-                        </div>
+
+                            {/* Name field */}
+                            <ProfileField
+                                label={t('profileWorkflow.name')}
+                                value={user.name}
+                                onEdit={() => {
+                                    openProfileFieldModal({
+                                        title: t('users.updateProfileName'),
+                                        fieldName: 'name',
+                                        fieldLabel: t('profileWorkflow.name'),
+                                        currentValue: user.name,
+                                        updateRoute: 'profile.update.field',
+                                    });
+                                }}
+                            />
+
+                            {/* Social Profiles field */}
+                            <ProfileField
+                                label={t('users.socialProfiles')}
+                                value={
+                                    <div className="flex space-x-2">
+                                        <a href={socialLinks.linkedin} target="_blank" rel="noopener noreferrer"
+                                            className={`bg-background-transparent ${socialLinks.linkedin ? 'cursor-pointer' : 'pointer-events-none cursor-default'}`}>
+                                            <LinkedInIcon className="text-content h-7 w-7" />
+                                        </a>
+                                        <a href={socialLinks.twitter} target="_blank" rel="noopener noreferrer"
+                                            className={`bg-background-transparent ${socialLinks.twitter ? 'cursor-pointer' : 'pointer-events-none cursor-default'}`}>
+                                            <XIcon className="text-content mr-1" />
+                                        </a>
+                                        <a href={socialLinks.website} target="_blank" rel="noopener noreferrer"
+                                            className={`bg-background-transparent ${socialLinks.website ? 'cursor-pointer' : 'pointer-events-none cursor-default'}`}>
+                                            <WebIcon className="text-content" />
+                                        </a>
+                                    </div>
+                                }
+                                onEdit={openSocialProfilesModal}
+                            />
+
+                            {/* City field */}
+                            <ProfileField
+                                label={t('users.city')}
+                                value={data.city ? data.city : undefined}
+                                placeholder={t('users.noAddress')}
+                                onEdit={() => {
+                                    openProfileFieldModal({
+                                        title: user.city ? t('users.updateCity') : t('users.addCity'),
+                                        fieldName: 'city',
+                                        fieldLabel: t('users.city'),
+                                        currentValue: user.city || data.city || '',
+                                        updateRoute: 'profile.update.field',
+                                        inputType: 'text',
+                                    });
+                                }}
+                                buttonText={user.city ? undefined : t('users.add')}
+                            />
+                        </ProfileSection>
                     </Card>
 
-                    <Card className="bg-background rounded-lg shadow-sm transition-colors duration-300 ease-in-out">
-                        <div className="lg:p-6">
-                            <div className="mb-6 flex items-center justify-between">
-                                <Title level="3" className="text-content">
-                                    {t('users.basicSettings')}
-                                </Title>
+                    {/* Basic Settings Card */}
+                    <Card className="bg-background rounded-lg shadow-sm">
+                        <ProfileSection
+                            title={t('users.basicSettings')}
+                            rightElement={
                                 <div className="flex items-center">
                                     <span className="text-content mr-2 text-sm text-nowrap">
                                         {t('users.publicProfile')}
                                     </span>
                                     <Switch
-                                        checked={isPublic}
+                                        checked={state.isPublic}
                                         onCheckedChange={setIsPublic}
                                         size="sm"
                                     />
                                 </div>
-                            </div>
+                            }
+                        >
+                            {/* Email field */}
+                            <ProfileField
+                                label={t('profileWorkflow.email')}
+                                value={<span className="font-bold">{data.email}</span>}
+                                onEdit={() => {
+                                    openProfileFieldModal({
+                                        title: t('users.updateEmailAddress'),
+                                        fieldName: 'email',
+                                        fieldLabel: t('profileWorkflow.email'),
+                                        currentValue: data.email,
+                                        updateRoute: 'profile.update.field',
+                                        inputType: 'email',
+                                    });
+                                }}
+                            />
 
-                            <div>
-                                <div className="border-t border-gray-200 py-3 transition-colors duration-300 ease-in-out">
-                                    <div className="flex items-center justify-between text-left">
-                                        <div className="flex w-full">
-                                            <div className="text-content w-1/4">
-                                                {t('profileWorkflow.email')}
-                                            </div>
-                                            <div className="text-content w-3/4 text-sm lg:text-base">
-                                                {data.email}
-                                            </div>
-                                        </div>
-                                        <button
-                                            className="text-primary"
-                                            onClick={() => {
-                                                openProfileFieldModal({
-                                                    title: 'Update Email Address',
-                                                    fieldName: 'email',
-                                                    fieldLabel: 'Email',
-                                                    currentValue: data.email,
-                                                    updateRoute:
-                                                        'profile.update.field',
-                                                    inputType: 'email',
-                                                });
-                                            }}
+                            {/* Password field */}
+                            <ProfileField
+                                label={t('password')}
+                                value={`Password last changed ${formatTimeAgo(user.password_updated_at)}`}
+                                onEdit={openPasswordModal}
+                            />
+
+                            {/* Profile link field */}
+                            <ProfileField
+                                label={t('users.profileLink')}
+                                value={
+                                    <div className="flex items-center">
+                                        <span className="profile-url-text text-content text-sm lg:text-base">
+                                            {`https://catalytexplorer.com/${user.name.replace(/\s+/g, '-').toLowerCase()}`}
+                                        </span>
+                                        <Button
+                                            className="text-content-light hover:text-content ml-2 text-sm transition-colors duration-300 ease-in-out"
+                                            onClick={handleCopyUrl}
+                                            ariaLabel="Copy URL"
                                         >
-                                            <EditIcon className="text-primary" />
-                                        </button>
-                                    </div>
-                                </div>
-
-                                <div className="border-t border-gray-200 py-3 transition-colors duration-300 ease-in-out">
-                                    <div className="flex items-center justify-between text-left">
-                                        <div className="flex w-full">
-                                            <div className="text-content w-1/4">
-                                                {t('password')}
-                                            </div>
-                                            <div className="text-content w-3/4 text-sm lg:text-base">
-                                                Password last changed{' '}
-                                                {formatTimeAgo(
-                                                    user.password_updated_at,
-                                                )}
-                                            </div>
-                                        </div>
-                                        <button
-                                            className="text-primary"
-                                            onClick={openPasswordModal}
-                                        >
-                                            <EditIcon className="text-primary" />
-                                        </button>
-                                    </div>
-                                </div>
-
-                                <div className="border-t border-gray-200 py-3 transition-colors duration-300 ease-in-out">
-                                    <div className="flex items-center justify-between text-left">
-                                        <div className="flex w-full">
-                                            <div className="text-content w-1/4">
-                                                {t('users.profileLink')}
-                                            </div>
-                                            <div className="flex w-3/4 items-center">
-                                                <span className="profile-url-text text-content text-sm lg:text-base">
-                                                    {`https://catalytexplorer.com/${user.name.replace(/\s+/g, '-').toLowerCase()}`}
+                                            {state.copySuccess ? (
+                                                <span className="text-primary flex items-center">
+                                                    <CheckIcon className="h-4 w-4" />
                                                 </span>
-                                                <button
-                                                    className="text-content-light hover:text-content lg:ml-2 text-sm transition-colors duration-300 ease-in-out lg:text-base"
-                                                    onClick={handleCopyUrl}
-                                                    title="Copy URL"
-                                                >
-                                                    {copySuccess ? (
-                                                        <span className="text-primary flex items-center">
-                                                            <CheckIcon className="h-4 w-4" />
-                                                        </span>
-                                                    ) : (
-                                                        <CopyIcon className="text-content h-4 w-4" />
-                                                    )}
-                                                </button>
-                                                {copySuccess && (
-                                                    <span className="text-primary ml-2 text-xs">
-                                                        Copied!
-                                                    </span>
-                                                )}
-                                            </div>
-                                        </div>
-                                        <button className="text-accent text-sm whitespace-nowrap lg:text-base">
-                                            Re-create
-                                        </button>
+                                            ) : (
+                                                <CopyIcon className="text-content h-4 w-4" />
+                                            )}
+                                        </Button>
+                                        {state.copySuccess && (
+                                             <span className="text-primary ml-2 text-xs">{t('users.copied')}</span>
+                                        )}
                                     </div>
-                                </div>
-                            </div>
-                        </div>
+                                }
+                                onEdit={() => {
+                                    // You could update this to handle re-creating the profile link
+                                    // or keep the button as part of the value JSX above
+                                }}
+                                buttonText={t('users.recreate')}
+                            />
+                        </ProfileSection>
                     </Card>
                 </div>
             </div>
-            {currentModal === ModalType.PROFILE_FIELD && (
-                <BaseModal
-                    isOpen={true}
-                    onClose={closeModal}
-                    title={modalConfig.title}
-                >
-                    <ProfileFieldForm
-                        fieldName={modalConfig.fieldName}
-                        fieldLabel={modalConfig.fieldLabel}
-                        currentValue={modalConfig.currentValue}
-                        updateRoute={modalConfig.updateRoute}
-                        inputType={modalConfig.inputType}
-                        placeholder={modalConfig.placeholder}
-                        onClose={closeModal}
-                        onFieldUpdated={handleFieldUpdated}
-                    />
-                </BaseModal>
-            )}
 
-            {currentModal === ModalType.SOCIAL_PROFILES && (
-                <BaseModal
-                    isOpen={true}
-                    onClose={closeModal}
-                    title="Update Social Profiles"
-                >
-                    <SocialProfilesForm
-                        linkedinUrl={user.linkedin || ''}
-                        twitterUrl={user.twitter || ''}
-                        websiteUrl={user.website || ''}
-                        onClose={closeModal}
-                    />
-                </BaseModal>
-            )}
-
-            {currentModal === ModalType.PASSWORD && (
-                <BaseModal
-                    isOpen={true}
-                    onClose={closeModal}
-                    title={t('updatePassword')}
-                >
-                    <PasswordForm onClose={closeModal} />
-                </BaseModal>
-            )}
+            {renderModals()}
         </div>
     );
 }
