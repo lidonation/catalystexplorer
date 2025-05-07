@@ -547,7 +547,11 @@
             "feasibilityHighToLow": "Feasibility: High to Low",
             "feasibilityLowToHigh": "Feasibility: Low to High",
             "valueForMoneyHighToLow": "Value for money: High to Low",
-            "valueForMoneyLowToHigh": "Value for money: Low to High"
+            "valueForMoneyLowToHigh": "Value for money: Low to High",
+            "fundingStatusAtoZ": "Funding Status: A-Z",
+            "fundingStatusZtoA": "Funding Status: Z-A",
+            "titleAtoZ": "Alphabetically: A-Z",
+            "titleZtoA": "Alphabetically: Z-A"
         }
     },
     "ideascaleProfiles": {
