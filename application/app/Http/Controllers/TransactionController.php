@@ -240,6 +240,13 @@ class TransactionController
 
     private function getWalletStats(string $stakeKey)
     {
+        
+        if (!$stakeKey) {
+            return [
+                'all_time_votes' => 0,
+                'funds_participated' => []
+            ];
+        }
         $voter = Voter::where('stake_pub', $stakeKey)
             ->with(['voting_powers.snapshot.fund'])
             ->first();
@@ -254,10 +261,7 @@ class TransactionController
         $allTimeVotes = $voter->count();
         
         $fundsParticipated = $voter->voting_powers->map(function ($votingPower) {
-            if ($votingPower->snapshot && $votingPower->snapshot->fund) {
-                return $votingPower->snapshot->fund->title;
-            }
-            return null;
+            return $votingPower->snapshot?->fund?->title;
         })->filter()->unique()->values()->all();
         
         return [ 

@@ -67,6 +67,14 @@ db-seed:
 down:
 	$(sail) down
 
+.PHONY: ts-transform
+ts-transform:
+	$(sail) artisan typescript:transform
+
+.PHONY: db-schema
+db-schema:
+	$(sail) node --loader ts-node/esm resources/js/scripts/generateDbSchema.ts
+
 .PHONY: devtools-install
 devtools-install:
 	docker run --rm --interactive --tty \
