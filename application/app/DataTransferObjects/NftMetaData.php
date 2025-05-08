@@ -25,11 +25,12 @@ class NftMetaData extends Data
         }
 
         return new self(
-            campaign_name: $data['campaign_name'] ?? '',
-            yes_votes: $data['yes_votes'] ?? '0',
-            no_votes: $data['no_votes'] ?? '0',
-            role: $data['role'] ?? '',
-            project_title: $data['project_title'] ?? ''
+            campaign_name: (string) ($data['campaign_name'] ?? ''),
+            yes_votes: (string) ($data['yes_votes'] ?? '0'),
+            no_votes: (string) ($data['no_votes'] ?? '0'),
+            role: (string) ($data['role'] ?? ''),
+            project_title: (string) ($data['project_title'] ?? '')
         );
+
     }
 }
