@@ -62,23 +62,22 @@ export default function ProposalSummaryCard({
     ] as Segments[];
 
     return (
-        <Card className='h-full flex-1'>
+        <Card className="h-full flex-1">
             <div className="border-background-lighter border-b-2">
                 <Title level="5" className="mb-2 font-bold">
                     {t('communities.proposalSummary')}
                 </Title>
             </div>
             <div className="text-3">
-                <Title
-                    className="font-bold"
-                    level="3"
-                >{`${currency(community?.amount_awarded_ada ?? 0, 2, 'ADA')} + ${currency(community?.amount_awarded_usd ?? 0, 2, 'USD')}`}</Title>
+                <Title className="font-bold" level={"3"}>
+                    {`${currency(community?.amount_awarded_ada ?? 0, 2, 'ADA')} + ${currency(community?.amount_awarded_usd ?? 0, 2, 'USD')}`}
+                </Title>
                 <Paragraph className="text-gray-persist">
                     {t('communities.totalRequested')}
                 </Paragraph>
             </div>
             <div className="border-background-lighter mt-4 mb-4 border-b-2 pb-4">
-                <SegmentedBar segments={segments} tooltipSegments={segments}/>
+                <SegmentedBar segments={segments} tooltipSegments={segments} />
                 <ul className="mt-2 flex w-full flex-wrap gap-x-4">
                     {segmentsLegend.map((segment, index) => (
                         <li key={index} className="mt-2">
@@ -101,18 +100,24 @@ export default function ProposalSummaryCard({
                 </ul>
             </div>
 
-            <div className='flex flex-col gap-3'>
-                <div className="flex justify-between items-center mb-1">
-                    <ValueLabel className='shrink'>{t('communities.proposers')}</ValueLabel>
+            <div className="flex flex-col gap-3">
+                <div className="mb-1 flex items-center justify-between">
+                    <ValueLabel className="shrink">
+                        {t('communities.proposers')}
+                    </ValueLabel>
                     <CommunityIdeascaleProfiles
                         ideascaleProfiles={community.ideascale_profiles}
                         total={community.ideascale_profiles_count}
                     />
                 </div>
 
-                <div className="flex justify-between items-center mb-1">
-                    <ValueLabel className='shrink'>{t('communities.proposals')}</ValueLabel>
-                    <Value className='font-bold shrink'>{community.proposals_count}</Value>
+                <div className="mb-1 flex items-center justify-between">
+                    <ValueLabel className="shrink">
+                        {t('communities.proposals')}
+                    </ValueLabel>
+                    <Value className="shrink font-bold">
+                        {community.proposals_count}
+                    </Value>
                 </div>
             </div>
         </Card>
