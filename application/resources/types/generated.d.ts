@@ -486,6 +486,8 @@ export type TransactionData = {
 hash: string | null;
 tx_hash: string;
 block: string;
+type: string;
+witness: string;
 epoch: number | null;
 json_metadata: any;
 raw_metadata: object | Array<any> | null;
