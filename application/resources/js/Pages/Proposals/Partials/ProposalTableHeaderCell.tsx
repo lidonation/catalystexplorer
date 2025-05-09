@@ -19,7 +19,7 @@ const TableHeaderCell: React.FC<TableHeaderCellProps> = ({
   onSort,
   isLastColumn = false,
 }) => (
-  <th className={`px-6 py-3 ${isLastColumn ? '' : 'border-r border-gray-persist/20'}`}>
+  <th className="px-6 py-3 border-r border-background-lighter">
     <div className="flex items-center justify-center gap-1 cursor-pointer" onClick={sortable ? onSort : undefined}>
       <Paragraph className="text-dark">{label}</Paragraph>
       {sortable && (

@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { PaginatedData } from '../../../../types/paginated-data';
 import CompletedProposalCard from './CompletedProposalCard';
 import ProposalData = App.DataTransferObjects.ProposalData;
+import { usePage } from '@inertiajs/react';
 
 interface ProposalListProps {
     proposals: PaginatedData<ProposalData[]>;
@@ -26,7 +27,6 @@ const ProposalList: React.FC<ProposalListProps> = ({
         );
     }
 
-    
     return (
         <div className="lg:mt-4 space-y-2 lg:space-y-3 lg:p-6 p-4">
             {proposals?.data &&
@@ -43,13 +43,13 @@ const ProposalList: React.FC<ProposalListProps> = ({
                                 onProposalClick &&
                                 onProposalClick(proposal.hash)
                             }
-                            disabled={!!proposal?.nft?.minted_at}
+                            disabled={!!proposal?.completed_project_nft?.required_nft_metadata?.fingerprint}
                         />
                         <label
                             htmlFor={proposal.hash as string | undefined}
-                            className={`peer-checked:border-primary peer-checked:text-primary peer-checked:border-primary inline-flex w-full ${proposal?.nft?.minted_at ? 'cursor-not-allowed' : 'cursor-pointer'} items-center justify-between rounded-lg border border-gray-100 text-gray-500 peer-checked:border-2`}
+                            className={`peer-checked:border-primary peer-checked:text-primary peer-checked:border-primary inline-flex w-full items-center justify-between rounded-lg border border-gray-100 text-gray-500 peer-checked:border-2`}
                         >
-                            <CompletedProposalCard proposal={proposal} />
+                            <CompletedProposalCard proposal={proposal}/>
                         </label>
                     </div>
                 ))}

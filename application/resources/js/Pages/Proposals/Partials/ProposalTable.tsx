@@ -6,6 +6,9 @@ import ProposalFundingStatus from '@/Pages/Proposals/Partials/ProposalFundingSta
 import React, { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import TableHeaderCell from './ProposalTableHeaderCell';
+import { useFilterContext } from '@/Context/FiltersContext';
+import { ParamsEnum } from '@/enums/proposal-search-params';
+import { router } from '@inertiajs/react';
 import IdeascaleProfileData = App.DataTransferObjects.IdeascaleProfileData;
 import ProposalData = App.DataTransferObjects.ProposalData;
 
@@ -13,6 +16,7 @@ interface ColumnConfig {
     key: string;
     label: string;
     sortable?: boolean;
+    sortKey?: string;
     renderCell: (
         proposal: ProposalData,
         helpers: TableHelpers,
@@ -31,20 +35,50 @@ interface ProposalTableProps {
 
 const ProposalTable: React.FC<ProposalTableProps> = ({ proposals }) => {
     const { t } = useTranslation();
+    const { setFilters, getFilter } = useFilterContext();
     const [selectedUserMap, setSelectedUserMap] = useState<
         Record<string, IdeascaleProfileData | null>
     >({});
-    const [sortConfig, setSortConfig] = useState<{
-        key: string;
-        direction: 'asc' | 'desc';
-    } | null>(null);
+
+    const currentSort = getFilter(ParamsEnum.SORTS) || null;
+    const [sortField, sortDirection] = currentSort ? currentSort.split(':') : [null, null];
 
     const handleSort = (key: string) => {
-        let direction: 'asc' | 'desc' = 'asc';
-        if (sortConfig?.key === key) {
-            direction = sortConfig.direction === 'asc' ? 'desc' : 'asc';
+        let direction: 'asc' | 'desc' | null = 'asc';
+
+        if (sortField === key) {
+            if (sortDirection === 'asc') {
+                direction = 'desc';
+            } else if (sortDirection === 'desc') {
+                direction = null;
+            } else {
+                direction = 'asc';
+            }
         }
-        setSortConfig({ key, direction });
+
+        if (!direction) {
+            const url = new URL(window.location.href);
+        
+            url.searchParams.delete(ParamsEnum.SORTS);
+            
+            router.get(url.pathname + url.search, {}, {
+                preserveState: true,
+                preserveScroll: true,
+                replace: true
+            });
+            
+            setFilters({
+                param: ParamsEnum.SORTS,
+                value: null,
+                label: 'Sort',
+            });
+        } else {
+            setFilters({
+                param: ParamsEnum.SORTS,
+                value: `${key}:${direction}`,
+                label: 'Sort',
+            });
+        }
     };
 
     const columns: ColumnConfig[] = [
@@ -52,6 +86,7 @@ const ProposalTable: React.FC<ProposalTableProps> = ({ proposals }) => {
             key: 'proposal',
             label: t('proposal'),
             sortable: true,
+            sortKey: 'title',
             renderCell: (proposal, { selectedUser, noSelectedUser }) => (
                 <div className="w-80">
                     <ProposalCardHeader
@@ -67,6 +102,7 @@ const ProposalTable: React.FC<ProposalTableProps> = ({ proposals }) => {
             key: 'status',
             label: t('proposals.status'),
             sortable: true,
+            sortKey: 'funding_status',
             renderCell: (proposal) => (
                 <div>
                     <ProposalFundingStatus
@@ -79,6 +115,7 @@ const ProposalTable: React.FC<ProposalTableProps> = ({ proposals }) => {
             key: 'funding',
             label: t('proposals.fundingReceived'),
             sortable: true,
+            sortKey: 'amount_received',
             renderCell: (proposal) => (
                 <div className="flex w-60">
                     <ProposalFundingPercentages proposal={proposal} />
@@ -88,7 +125,8 @@ const ProposalTable: React.FC<ProposalTableProps> = ({ proposals }) => {
         {
             key: 'teams',
             label: t('teams'),
-            sortable: true,
+            sortable: false,
+            sortKey: 'users.proposals_completed',
             renderCell: (proposal, { handleUserClick }) => (
                 <div className="w-40">
                     <IdeascaleProfileUsers
@@ -133,22 +171,18 @@ const ProposalTable: React.FC<ProposalTableProps> = ({ proposals }) => {
     );
 
     return (
-        <div className="w-full overflow-hidden rounded-lg shadow-sm">
+        <div className="w-full border border-background-lighter rounded-lg overflow-hidden">
             <div className="overflow-x-auto">
                 <table className="min-w-full table-auto">
-                    <thead className="bg-background-lighter">
+                    <thead className="border-b bg-background border-background-lighter">
                         <tr>
-                            {columns.map((column, index) => (
+                            {columns.map(column => (
                                 <TableHeaderCell
                                     key={column.key}
                                     label={column.label}
                                     sortable={column.sortable}
-                                    onSort={
-                                        column.sortable
-                                            ? () => handleSort(column.key)
-                                            : undefined
-                                    }
-                                    isLastColumn={index === columns.length - 1}
+                                    sortDirection={column.sortKey === sortField ? sortDirection as 'asc' | 'desc' | null : null}
+                                    onSort={column.sortable ? () => handleSort(column.sortKey || column.key) : undefined}
                                 />
                             ))}
                         </tr>
@@ -161,21 +195,14 @@ const ProposalTable: React.FC<ProposalTableProps> = ({ proposals }) => {
                             return (
                                 <tr
                                     key={proposalHash}
-                                    className={
-                                        index < proposals.length - 1
-                                            ? 'border-gray-persist/20 border-b'
-                                            : ''
-                                    }
+                                    className={index < proposals.length - 1 ? 'border-b border-background-lighter' : ''}
                                 >
-                                    {columns.map((column, index) => (
+                                    {columns.map(column => (
                                         <td
                                             key={`${proposalHash}-${column.key}`}
-                                            className={`px-4 py-4 ${index < columns.length - 1 ? 'border-gray-persist/20 border-r' : ''}`}
+                                            className="px-4 py-4 border-r border-background-lighter"
                                         >
-                                            {column.renderCell(
-                                                proposal,
-                                                helpers,
-                                            )}
+                                            {column.renderCell(proposal, helpers)}
                                         </td>
                                     ))}
                                 </tr>

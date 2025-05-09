@@ -9,6 +9,7 @@ use App\DataTransferObjects\TransactionData;
 use App\Enums\TransactionSearchParams;
 use App\Models\Signatures;
 use App\Models\Transaction;
+use App\Models\Voter;
 use App\Repositories\TransactionRepository;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -72,9 +73,12 @@ class TransactionController
             ];
         })->toArray();
 
+        $walletStats = $this->getWalletStats($catalystTransaction->stake_key);
+
         return Inertia::render('Transactions/TransactionDetail', [
             'transaction' => $catalystTransaction,
             'metadataLabels' => $labelNames,
+            'walletStats' => $walletStats,
         ]);
     }
 
@@ -232,5 +236,37 @@ class TransactionController
         }
 
         return $filters;
+    }
+
+    private function getWalletStats(string $stakeKey)
+    {
+
+        if (! $stakeKey) {
+            return [
+                'all_time_votes' => 0,
+                'funds_participated' => [],
+            ];
+        }
+        $voter = Voter::where('stake_pub', $stakeKey)
+            ->with(['voting_powers.snapshot.fund'])
+            ->first();
+
+        if (! $voter) {
+            return [
+                'all_time_votes' => 0,
+                'funds_participated' => [],
+            ];
+        }
+
+        $allTimeVotes = $voter->count();
+
+        $fundsParticipated = $voter->voting_powers->map(function ($votingPower) {
+            return $votingPower->snapshot?->fund?->title;
+        })->filter()->unique()->values()->all();
+
+        return [
+            'all_time_votes' => $allTimeVotes,
+            'funds_participated' => $fundsParticipated,
+        ];
     }
 }

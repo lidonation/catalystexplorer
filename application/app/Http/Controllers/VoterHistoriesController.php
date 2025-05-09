@@ -321,7 +321,7 @@ class VoterHistoriesController extends Controller
             'filter' => $filters,
             'offset' => $offset,
             'limit' => $limit,
-            'facets' => ['choice', 'fund'],
+            'facets' => ['choice', 'snapshot.fund.title'],
             'unifiedSearch' => true,
         ];
         if ($sort) {

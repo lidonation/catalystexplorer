@@ -107,6 +107,11 @@ class Nft extends Model implements CardanoNftInterface, HasMedia
         return $this->belongsTo(User::class, 'artist_id');
     }
 
+    public function ideascale_profile(): BelongsTo
+    {
+        return $this->belongsTo(IdeascaleProfile::class, 'model_id')->where('model_type', IdeascaleProfile::class);
+    }
+
     public function txs(): HasMany
     {
         return $this->hasMany(Tx::class, 'model_id')->where('model_type', static::class);

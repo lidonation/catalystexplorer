@@ -30,6 +30,8 @@
         --cx-content-light-gray-persist: #3467ce;
         --cx-content-black-persist: #101828;
         --cx-content-light: #eaecf0;
+        --cx-content-yellow: #96bb01;
+        --cx-content-pink: #f92672;
         --cx-content-dark: #101828;
         --cx-intro-gradient-1: #066384;
         --cx-intro-gradient-2: #4fadce;
@@ -38,6 +40,7 @@
         --cx-background-darker: #f9fafb;
         --cx-background-lighter: #f0f1f4;
         --cx-background-light: #667085;
+        --cx-background-json: #1a1b2e;
         --cx-background-gradient-1-light: #3facd1;
         --cx-background-gradient-2-light: #2596be;
         --cx-background-gradient-1-dark: #1b2230;
@@ -102,6 +105,7 @@
         --cx-background-darker: #000000;
         --cx-background-lighter: #374151;
         --cx-background-light: #ffffff;
+        --cx-background-json: #1a1b2e;
         --cx-background-gradient-3-light: #066384;
         --cx-background-gradient-2-light: #2596be;
         --cx-background-gradient-1-light: #8cdefa;
@@ -122,6 +126,8 @@
         --content-error-primary-color: #dc2626;
         --content-error-secondary-color: #ef4444;
         --content-error-light: #fee2e2;
+        --cx-content-yellow: #96bb01;
+        --cx-content-pink: #f92672;
         --content-error-light-border: #f99c9c;
         --content-success-color: #4ade80;
         --content-success-light: #e0ffef;
@@ -156,6 +162,7 @@
         --cx-background-gradient-2-dark: #0033ad;
         --cx-background-lighter: #b1e3f1;
         --cx-background-light: #ffffff;
+        --cx-background-json: #1a1b2e;
         --cx-border-color: #2596be;
         --cx-border-color-dark: #e9efff;
         --cx-border-dark-light: #cbced4;
@@ -171,6 +178,8 @@
         --content-error-primary-color: #dc2626;
         --content-error-secondary-color: #ef4444;
         --content-error-light: #fee2e2;
+        --cx-content-yellow: #96bb01;
+        --cx-content-pink: #f92672;
         --content-error-light-border: #fbb6b6;
         --content-success-color: #4ade80;
         --content-success-light: #9debba;
@@ -186,6 +195,10 @@
 
     .bg-background-lighter {
         background-color: var(--cx-background-lighter);
+    }
+
+    .bg-background-json {
+        background-color: var(--cx-background-json);
     }
 
     .text-content {
@@ -214,6 +227,14 @@
         &:hover {
             color: var(--cx-accent);
         }
+    }
+
+    .text-json-key {
+        color: var(--cx-content-pink);
+    }
+    
+    .text-json-string {
+        color: var(--cx-content-yellow);
     }
 
     .scrollbar-thin::-webkit-scrollbar {

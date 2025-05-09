@@ -352,6 +352,7 @@ campaign_name: string;
 yes_votes: string;
 no_votes: string;
 role: string;
+project_title: string;
 };
 export type PostData = {
 id: number | null;
@@ -419,7 +420,7 @@ quickpitch_length?: number;
 users: any | null;
 fund: App.DataTransferObjects.FundData | null;
 opensource: boolean | null;
-nft: App.DataTransferObjects.NftData | null;
+completed_project_nft?: App.DataTransferObjects.NftData;
 link?: string;
 };
 export type RankingData = {
@@ -480,15 +481,18 @@ order?: number;
 fund?: App.DataTransferObjects.FundData;
 };
 export type TransactionData = {
-hash: string | null;
+hash: string;
 tx_hash: string;
+type: string;
 block: string;
 epoch: number | null;
 json_metadata: any;
+stake_pub: string;
 raw_metadata: object | Array<any> | null;
 created_at: string;
 inputs: Array<App.DataTransferObjects.TransactionInputData>;
 outputs: Array<App.DataTransferObjects.TransactionOutputData>;
+witness: any;
 };
 export type TransactionInputData = {
 address: string;
@@ -518,6 +522,11 @@ email: string;
 hero_img_url: string | null;
 email_verified_at: string | null;
 locations: any | null;
+};
+export type UserSettingData = {
+language: string;
+theme: string;
+viewChartBy: string;
 };
 export type VoterHistoryData = {
 hash: string | null;

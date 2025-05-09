@@ -51,7 +51,7 @@ export default function MyDashboard({
                 </div>
             )}
 
-            <div className="mx-auto grid max-w-7xl grid-cols-1 gap-4 px-4 pt-8 sm:px-6 lg:grid-cols-3 lg:px-8">
+            <div className="mx-auto grid max-w-7xl grid-cols-1 gap-4 px-4 sm:px-6 lg:grid-cols-3 lg:px-8">
                 {totalsSummary && (
                     <UserFundSummary totalsSummary={totalsSummary}/>
                 )}

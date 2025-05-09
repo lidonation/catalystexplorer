@@ -17,7 +17,6 @@ const ProposalCard = React.memo(
         proposal,
         isHorizontal,
         globalQuickPitchView,
-        setGlobalQuickPitchView,
     }: ProposalCardProps) => {
         const { t } = useTranslation();
 
