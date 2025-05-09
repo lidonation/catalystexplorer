@@ -19,15 +19,31 @@ class CardanoBudgetProposalController extends Controller
     {
         $params = $request->query();
         $query = CardanoBudgetProposal::query();
+
+        $query->when(
+            isset($params['s']) && is_string($params['s']),
+            fn ($q) => $q->where(function ($q2) use ($params) {
+                $q2->where('proposal_name', 'ILIKE', '%'.$params['s'].'%')
+                    ->orWhere('govtool_username', 'ILIKE', '%'.$params['s'].'%')
+                    ->orWhere('country', 'ILIKE', '%'.$params['s'].'%');
+            })
+        );
+        
         $query->when(
             isset($params['sortBy']),
             fn ($q) => ($q->orderBy($this->getDbColumnName($params['sortBy']), $params['sortOrder'] ?? 'DESC'))
         )->when(
-            isset($params['category']),
-            fn ($q) => ($q->where('budget_cat', $params['category']))
+            isset($params['category']) && is_string($params['category']),
+            fn ($q) => $q->where('budget_cat', $params['category'])
         )->when(
-            isset($params['committee']),
-            fn ($q) => ($q->where('committee_name', $params['committee']))
+            isset($params['category']) && is_array($params['category']),
+            fn ($q) => $q->whereIn('budget_cat', $params['category'])
+        )->when(
+            isset($params['committee']) && is_string($params['committee']),
+            fn ($q) => $q->where('committee_name', $params['committee'])
+        )->when(
+            isset($params['committee']) && is_array($params['committee']),
+            fn ($q) => $q->whereIn('committee_name', $params['committee'])
         );
 
         return CardanoBudgetProposalData::collect($query->paginate($params['limit'] ?? 12));
@@ -119,6 +135,7 @@ class CardanoBudgetProposalController extends Controller
                 $request->has('s'),
                 fn ($q) => $q->where('proposal_name', 'iLIKE', '%'.$request->input('s').'%')
                     ->orWhere('govtool_username', 'iLIKE', '%'.$request->input('s').'%')
+                    ->orWhere('country', 'iLIKE', '%'.$request->input('s').'%')
             )
             ->when(
                 $request->filled('category'),

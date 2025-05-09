@@ -68,10 +68,16 @@ total_distributed: number | null;
 fund: App.DataTransferObjects.FundData | null;
 };
 export type CardanoBudgetProposalData = {
-govtool_username: string | null;
 govtool_user_id: number;
 govtool_proposal_id: number;
-intersect_admin_further_text?: string;
+proposal_name: string | null;
+govtool_username: string | null;
+ada_amount: number | null;
+budget_cat?: string;
+committee_name?: string;
+updated_at?: string;
+prop_comments_number?: number;
+proposal_benefit?: string;
 };
 export type CommunityData = {
 hash: string | null;
@@ -414,7 +420,7 @@ quickpitch_length?: number;
 users: any | null;
 fund: App.DataTransferObjects.FundData | null;
 opensource: boolean | null;
-completed_project_nft: App.DataTransferObjects.NftData | null;
+completed_project_nft?: App.DataTransferObjects.NftData;
 link?: string;
 };
 export type RankingData = {
@@ -475,15 +481,18 @@ order?: number;
 fund?: App.DataTransferObjects.FundData;
 };
 export type TransactionData = {
-hash: string | null;
+hash: string;
 tx_hash: string;
+type: string;
 block: string;
 epoch: number | null;
 json_metadata: any;
+stake_pub: string;
 raw_metadata: object | Array<any> | null;
 created_at: string;
 inputs: Array<App.DataTransferObjects.TransactionInputData>;
 outputs: Array<App.DataTransferObjects.TransactionOutputData>;
+witness: any;
 };
 export type TransactionInputData = {
 address: string;
@@ -513,6 +522,11 @@ email: string;
 hero_img_url: string | null;
 email_verified_at: string | null;
 locations: any | null;
+};
+export type UserSettingData = {
+language: string;
+theme: string;
+viewChartBy: string;
 };
 export type VoterHistoryData = {
 hash: string | null;
