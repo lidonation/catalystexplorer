@@ -39,9 +39,7 @@ export default function MyProposals({ proposals, filters }: MyProposalsProps) {
                     <div className="mt-4">
                         <ProposalTable proposals={proposals.data} />
                         <div className="mt-8">
-                            {proposals?.data && proposals?.data.length > 8 && (
-                                <Paginator pagination={proposals} />
-                            )}
+                           <Paginator pagination={proposals} />
                         </div>
                     </div>
                 ) : (
