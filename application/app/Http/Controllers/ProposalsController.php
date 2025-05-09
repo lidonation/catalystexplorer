@@ -124,6 +124,17 @@ class ProposalsController extends Controller
         ]);
     }
 
+    public function charts()
+    {
+
+        return Inertia::render('Charts/Index');
+    }
+
+    public function chartDetail()
+    {
+        return Inertia::render('Charts/ChartDetail');
+    }
+
     protected function getProps(Request $request): void
     {
         $this->queryParams = $request->validate([

@@ -10,6 +10,7 @@ export default {
         './resources/views/**/*.blade.php',
         './resources/js/**/*.tsx',
         './resources/scss/*.scss',
+        './node_modules/@inertiaui/modal-react/src/**/*.{js,jsx}',
     ],
 
     theme: {
