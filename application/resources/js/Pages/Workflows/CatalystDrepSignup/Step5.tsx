@@ -1,55 +1,73 @@
 import PrimaryButton from '@/Components/atoms/PrimaryButton';
+import PrimaryLink from '@/Components/atoms/PrimaryLink';
 import Textarea from '@/Components/atoms/Textarea';
+import InputError from '@/Components/InputError';
 import { StepDetails } from '@/types';
-import { generateLocalizedRoute } from '@/utils/localizedRoute';
-import { FormDataConvertible } from '@inertiajs/core';
+import {
+    generateLocalizedRoute,
+    useLocalizedRoute,
+} from '@/utils/localizedRoute';
 import { InertiaFormProps, useForm } from '@inertiajs/react';
 import { t } from 'i18next';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 import React from 'react';
 import Content from '../Partials/WorkflowContent';
+import Footer from '../Partials/WorkflowFooter';
 import Nav from '../Partials/WorkflowNav';
 import WorkflowLayout from '../WorkflowLayout';
-import IdeascaleProfileData = App.DataTransferObjects.IdeascaleProfileData;
-import InputError from '@/Components/InputError';
+import CatalysDrepData = App.DataTransferObjects.CatalystDrepData;
 
 interface Step5Props {
-    catalystDrep: string;
+    catalystDrep: CatalysDrepData;
     stepDetails: StepDetails[];
     activeStep: number;
 }
 
-export interface DrepSignupFormFields
-    extends Record<string, FormDataConvertible> {
-    objective: string;
-    qualifications: string;
-    motivation: string;
-}
+export interface DrepSignupFormFields extends CatalysDrepData {}
 
 export interface DrepSignupFormHandles {
     getFormData: InertiaFormProps<DrepSignupFormFields>;
 }
 
-const step5: React.FC<Step5Props> = ({ stepDetails, activeStep, catalystDrep}) => {
+const step5: React.FC<Step5Props> = ({
+    stepDetails,
+    activeStep,
+    catalystDrep,
+}) => {
     const form = useForm<DrepSignupFormFields>({
-        objective: '',
-        qualifications: '',
-        motivation: '',
+        ...catalystDrep,
     });
 
     const { data, setData } = form;
 
-    const submitForm = () => {
+    const localizedRoute = useLocalizedRoute;
 
+    console.log({ catalystDrep ,form});
+    
+
+    const submitForm = () => {
         form.patch(
             generateLocalizedRoute('workflows.drepSignUp.patch', {
-                catalystDrep,
+                catalystDrep:catalystDrep.hash,
             }),
             {
-                onError: (errors: Record<keyof DrepSignupFormFields, string>) =>
-                    form.setError(errors),
+                onError: (errors) => {
+                    for (const key in errors) {
+                        form.setError(
+                            key as keyof DrepSignupFormFields,
+                            errors[key],
+                        );
+                    }
+                },
             },
         );
     };
+
+    const prevStep = localizedRoute('workflows.drepSignUp.index', {
+        step: activeStep - 1,
+    });
+
+    const nextStep = localizedRoute('dreps.list');
 
     return (
         <WorkflowLayout asideInfo={stepDetails[activeStep - 1].info ?? ''}>
@@ -79,7 +97,7 @@ const step5: React.FC<Step5Props> = ({ stepDetails, activeStep, catalystDrep}) =
                                 )}
                                 required
                                 minLengthEnforced
-                                value={form.data.objective}
+                                value={form.data.objective ?? ''}
                                 onChange={(e) =>
                                     setData('objective', e.target.value)
                                 }
@@ -104,7 +122,7 @@ const step5: React.FC<Step5Props> = ({ stepDetails, activeStep, catalystDrep}) =
                                 )}
                                 required
                                 minLengthEnforced
-                                value={form.data.motivation}
+                                value={form.data.motivation ?? ''}
                                 onChange={(e) =>
                                     setData('motivation', e.target.value)
                                 }
@@ -131,7 +149,7 @@ const step5: React.FC<Step5Props> = ({ stepDetails, activeStep, catalystDrep}) =
                                     'workflows.catalystDrepSignup.qualificationsPlaceholder',
                                 )}
                                 minLengthEnforced
-                                value={form.data.qualifications}
+                                value={form.data.qualifications ?? ''}
                                 onChange={(e) =>
                                     setData('qualifications', e.target.value)
                                 }
@@ -142,13 +160,35 @@ const step5: React.FC<Step5Props> = ({ stepDetails, activeStep, catalystDrep}) =
                         <PrimaryButton
                             onClick={() => submitForm()}
                             type="button"
-                            className="w-full text-sm"
+                            className="w-full text-sm lg:px-8 lg:py-2"
                         >
                             {t('workflows.catalystDrepSignup.submitStatement')}
                         </PrimaryButton>
                     </form>
                 </div>
             </Content>
+            <Footer>
+                <PrimaryLink
+                    href={prevStep}
+                    className="text-sm lg:px-8 lg:py-2"
+                >
+                    <ChevronLeft className="h-4 w-4" />
+                    <span>{t('Previous')}</span>
+                </PrimaryLink>
+
+                <PrimaryLink
+                    className="text-sm lg:px-8 lg:py-2"
+                    disabled={
+                        !catalystDrep.objective ||
+                        !catalystDrep.qualifications ||
+                        !catalystDrep.motivation
+                    }
+                    href={nextStep}
+                >
+                    <span>{t('Next')}</span>
+                    <ChevronRight className="h-4 w-4" />
+                </PrimaryLink>
+            </Footer>
         </WorkflowLayout>
     );
 };

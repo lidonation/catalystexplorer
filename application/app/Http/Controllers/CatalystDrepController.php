@@ -132,7 +132,7 @@ class CatalystDrepController extends Controller
         }
 
         return Inertia::render('Workflows/CatalystDrepSignup/Step5', [
-            'catalystDrep' => $catalystDrep->hash,
+            'catalystDrep' => CatalystDrepData::from($catalystDrep),
             'stepDetails' => $this->getStepDetails(),
             'activeStep' => intval($request->step),
         ]);
@@ -231,7 +231,9 @@ class CatalystDrepController extends Controller
 
         $drep = $catalystDrep->update($attributes);
 
-        return $drep;
+        if ($drep) {
+            return to_route('workflows.drepSignUp.index', ['step' => 5]);
+        }
     }
 
     public function getStepDetails(): Collection

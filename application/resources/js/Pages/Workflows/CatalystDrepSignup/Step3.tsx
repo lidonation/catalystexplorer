@@ -190,7 +190,7 @@ const Step3: React.FC<Step3Props> = ({
                     loading={isSigning}
                     onClick={() => handleSignature()}
                 >
-                    <span>{t('next')}</span>
+                    <span>{t('Next')}</span>
                     <ChevronRight className="h-4 w-4" />
                 </PrimaryButton>
             </Footer>

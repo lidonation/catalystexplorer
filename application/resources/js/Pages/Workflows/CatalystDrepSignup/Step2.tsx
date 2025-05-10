@@ -18,7 +18,7 @@ import WorkflowLayout from '../WorkflowLayout';
 import CatalysDrepData = App.DataTransferObjects.CatalystDrepData;
 
 interface Step1Props {
-    catalysDrep: string;
+    catalystDrep: string;
     stepDetails: StepDetails[];
     activeStep: number;
 }
@@ -26,7 +26,7 @@ interface Step1Props {
 const Step2: React.FC<Step1Props> = ({
     stepDetails,
     activeStep,
-    catalysDrep,
+    catalystDrep,
 }) => {
     const localizedRoute = useLocalizedRoute;
 
@@ -44,7 +44,7 @@ const Step2: React.FC<Step1Props> = ({
     const verifyWallet = () => {
         router.post(
             generateLocalizedRoute('workflows.drepSignUp.validateWallet', {
-                catalysDrep,
+                catalystDrep,
             }),
             { stakeAddress },
             {
@@ -58,16 +58,16 @@ const Step2: React.FC<Step1Props> = ({
             <Nav stepDetails={stepDetails} activeStep={activeStep} />
 
             <Content>
-                <div className="mx-auto w-full max-w-3xl">
+                <div className="mx-auto w-full max-w-3xl px-4">
                     <ConnectWalletList />
                     <div
-                        className={`bg-danger-light mt-6 transform overflow-hidden rounded-xl py-3 text-center transition-all duration-500 ease-in-out ${
+                        className={`bg-danger-light container mt-6 transform overflow-hidden rounded-xl py-3 text-center transition-all duration-500 ease-in-out ${
                             error.length
                                 ? 'max-w-full translate-x-0 px-6'
                                 : 'max-w-0 translate-x-full px-0'
                         }`}
                     >
-                        <p className="inline-block min-w-max whitespace-nowrap text-slate-500">
+                        <p className="inline-block text-slate-500 lg:min-w-max lg:whitespace-nowrap">
                             {t(error)}
                         </p>
                     </div>

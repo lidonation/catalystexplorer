@@ -10,9 +10,11 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { PaginatedData } from '../../../types/paginated-data';
 import { SearchParams } from '../../../types/search-params';
-import DrepTable from './Partials/DrepTable';
 import DrepFilters from './Partials/DrepFilters';
+import DrepTable from './Partials/DrepTable';
 import CatalystDrepData = App.DataTransferObjects.CatalystDrepData;
+import PrimaryLink from '@/Components/atoms/PrimaryLink';
+import { useLocalizedRoute } from '@/utils/localizedRoute';
 
 interface DrepListPageProps extends Record<string, unknown> {
     filters: SearchParams;
@@ -22,7 +24,6 @@ interface DrepListPageProps extends Record<string, unknown> {
 const Index = ({ filters, catalystDreps }: DrepListPageProps) => {
     const [showFilters, setShowFilters] = useState(false);
     const { t } = useTranslation();
-
 
     return (
         <>
@@ -40,39 +41,51 @@ const Index = ({ filters, catalystDreps }: DrepListPageProps) => {
                     </div>
                 </header>
 
-                <section className="container py-8">
-                    <div className="bg-background w-full rounded-md p-4 shadow-xs">
-                        <div className="flex w-full justify-between py-4">
-                            <Title level="4">{t('dreps.dreps')}</Title>
-                            <Button className="bg-primary text-content-light cursor-pointer p-2 text-white">
-                                {t('dreps.drepList.signUp')}
-                            </Button>
-                        </div>
-                        <div className="border-dark/30 border-t py-4">
-                            <SearchControls
-                                searchPlaceholder={t('dreps.drepSearch')}
-                                sortOptions={DrepSortingOptions()}
-                                onFiltersToggle={setShowFilters}
-                            />
-                        </div>
+                {catalystDreps?.data.length && (
+                    <section className="container py-8">
+                        <div className="bg-background w-full rounded-md p-4 shadow-xs">
+                            <div className="flex w-full justify-between py-4">
+                                <Title level="4">{t('dreps.dreps')}</Title>
+                                <PrimaryLink
+                                    className="bg-primary text-content-light cursor-pointer p-2 text-white"
+                                    href={useLocalizedRoute(
+                                        'workflows.drepSignUp.index',
+                                        {
+                                            step: 1,
+                                        },
+                                    )}
+                                >
+                                    {t('dreps.drepList.signUp')}
+                                </PrimaryLink>
+                            </div>
+                            <div className="border-dark/30 border-t py-4">
+                                <SearchControls
+                                    searchPlaceholder={t('dreps.drepSearch')}
+                                    sortOptions={DrepSortingOptions()}
+                                    onFiltersToggle={setShowFilters}
+                                />
+                            </div>
 
-                        <div
-                            className={`flex w-full flex-col items-center justify-center overflow-hidden transition-[max-height] duration-500 ease-in-out ${
-                                showFilters ? 'max-h-[500px]' : 'max-h-0'
-                            }`}
-                        >
-                            <DrepFilters />
-                        </div>
+                            <div
+                                className={`flex w-full flex-col items-center justify-center overflow-hidden transition-[max-height] duration-500 ease-in-out ${
+                                    showFilters ? 'max-h-[500px]' : 'max-h-0'
+                                }`}
+                            >
+                                <DrepFilters />
+                            </div>
 
-                        <div>
-                            <DrepTable dreps={catalystDreps?.data || []} />
-                        </div>
+                            <div>
+                                <DrepTable dreps={catalystDreps?.data || []} />
+                            </div>
 
-                        <div className="bg-background-lighter rounded-b-lg p-4 shadow-md">
-                            {catalystDreps && <Paginator pagination={catalystDreps} />}
+                            <div className="bg-background-lighter rounded-b-lg p-4 shadow-md">
+                                {catalystDreps && (
+                                    <Paginator pagination={catalystDreps} />
+                                )}
+                            </div>
                         </div>
-                    </div>
-                </section>
+                    </section>
+                )}
             </FiltersProvider>
         </>
     );

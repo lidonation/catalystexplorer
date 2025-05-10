@@ -20,7 +20,7 @@ class CatalystDrep extends Model
 
     public function stakeAddress(): Attribute
     {
-        return Attribute::make(get: fn () => $this->signatures()->first()->stake_address);
+        return Attribute::make(get: fn () => $this->signatures()?->first()?->stake_address);
     }
 
     public function lastActive(): Attribute
