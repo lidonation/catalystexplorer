@@ -5,18 +5,15 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Models\User;
+use App\Traits\HasAuthor;
 use App\Models\Signatures;
+use App\Models\Traits\HasSignatures;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 
 class CatalystDrep extends Model {
 
-    use SoftDeletes;
+    use SoftDeletes, HasSignatures, HasAuthor;
 
     public $guarded = [];
 
-    public function signatures(): HasManyThrough
-    {
-        return $this->hasManyThrough(Signatures::class,User::class);
-    }
 }

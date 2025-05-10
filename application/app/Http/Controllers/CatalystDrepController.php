@@ -7,6 +7,7 @@ namespace App\Http\Controllers;
 use App\Models\Drep;
 use Inertia\Inertia;
 use Inertia\Response;
+use App\Models\Signature;
 use App\Models\CatalystDrep;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
@@ -111,7 +112,7 @@ class CatalystDrepController extends Controller
                 "regex:$stakeAddressPattern",
             ],
         ]);
-        
+
         $prevVotingHistory = DB::select('SELECT reg.stake_pub,
                             COUNT(DISTINCT cs.model_id) AS distinct_fund_ids
                         FROM public.voting_powers cvp
@@ -124,17 +125,50 @@ class CatalystDrepController extends Controller
                         GROUP BY reg.stake_pub
             ',  ['stake1u80hpp5qp7k58q5v3qztfee0vzdaf3pt6ff0e3hvxegtugs64a6qm']);
 
-            // dd($prevVotingHistory);
 
-        if(empty($prevVotingHistory) || $prevVotingHistory[0]?->distinct_fund_ids < 2 ){
+        if (empty($prevVotingHistory) || $prevVotingHistory[0]?->distinct_fund_ids < 2) {
             return back()->withErrors(['message' => 'workflows.catalystDrepSignup.2roundsRule']);
         }
 
         return to_route('workflows.drepSignUp.index', ['step' => 3]);
     }
 
+    public function captureSignature(CatalystDrep $catalystDrep, Request $request)
+    {
+        $stakeAddressPattern = app()->environment('production')
+            ? '/^stake1[0-9a-z]{38,}$/'
+            : '/^stake_test1[0-9a-z]{38,}$/';
+
+        $validated = $request->validate([
+            'signature' => 'required|string',
+            'signature_key' => 'required|string',
+            'stake_key' => 'required|string',
+            'stakeAddress' => [
+                'required',
+                "regex:$stakeAddressPattern",
+            ],
+        ]);
+
+        // Create or update the signature
+        $signature = Signature::updateOrCreate(
+            [
+                'signature' => $validated['signature'],
+                'stake_key' => $validated['stake_key']
+            ],
+            $validated
+        );
+
+        // Attach the signature to the CatalystDrep if not already attached
+        $catalystDrep->modelSignatures()->firstOrCreate([
+            'model_id' => $catalystDrep->id,
+            'model_type' => CatalystDrep::class,
+            'signature_id' => $signature->id,
+        ]);
+    }
+
     public function updateDrep(CatalystDrep $catalysDrep, Request $request)
     {
+
         $attributes = $request->validate([
             'objective' => 'nullable|min:100',
             'motivation' => 'nullable|min:100',
