@@ -77,16 +77,16 @@ class DrepController extends Controller
     {
         return collect([
             [
-                'title' => 'workflows.drepSignUp.createAccount',
-                'info' => 'workflows.drepSignUp.createAccountInfo',
+                'title' => 'workflows.catalystDrepSignup.createAccount',
+                'info' => 'workflows.catalystDrepSignup.createAccountInfo',
             ],
             [
-                'title' => 'workflows.drepSignUp.connectWallet',
-                'info' => 'workflows.drepSignUp.connectWalletInfo',
+                'title' => 'workflows.catalystDrepSignup.connectWallet',
+                'info' => 'workflows.catalystDrepSignup.connectWalletInfo',
             ],
             [
-                'title' => 'workflows.drepSignUp.signWallet',
-                'info' => 'workflows.drepSignUp.signWalletInfo',
+                'title' => 'workflows.catalystDrepSignup.signWallet',
+                'info' => 'workflows.catalystDrepSignup.signWalletInfo',
             ],
         ]);
 

@@ -1,50 +1,57 @@
 import PrimaryButton from '@/Components/atoms/PrimaryButton';
 import PrimaryLink from '@/Components/atoms/PrimaryLink';
+import ConnectWalletList from '@/Components/ConnectWalletList';
 import { useConnectWallet } from '@/Context/ConnectWalletSliderContext';
 import { StepDetails } from '@/types';
-import { useLocalizedRoute } from '@/utils/localizedRoute';
+import {
+    generateLocalizedRoute,
+    useLocalizedRoute,
+} from '@/utils/localizedRoute';
+import { router } from '@inertiajs/react';
 import { t } from 'i18next';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import React from 'react';
+import React, { useState } from 'react';
 import Content from '../Partials/WorkflowContent';
 import Footer from '../Partials/WorkflowFooter';
 import Nav from '../Partials/WorkflowNav';
 import WorkflowLayout from '../WorkflowLayout';
-import IdeascaleProfileData = App.DataTransferObjects.IdeascaleProfileData;
-import ConnectWalletList from '@/Components/ConnectWalletList';
+import CatalysDrepData = App.DataTransferObjects.CatalystDrepData;
 
 interface Step1Props {
-    profile: IdeascaleProfileData;
+    catalysDrep: CatalysDrepData;
     stepDetails: StepDetails[];
     activeStep: number;
 }
 
-const Step2: React.FC<Step1Props> = ({ stepDetails, activeStep }) => {
+const Step2: React.FC<Step1Props> = ({
+    stepDetails,
+    activeStep,
+    catalysDrep,
+}) => {
     const localizedRoute = useLocalizedRoute;
 
-    const {
-        connectedWallet,
-        connectedWalletProvider,
-        userAddress,
-        stakeKey,
-        stakeAddress,
-        networkName,
-        networkId,
-         extractSignature 
-    } = useConnectWallet();
+    const { stakeKey, stakeAddress } = useConnectWallet();
 
-    const signature = '';
-
-    const submitSignature = () => {
-        
-    };
+    const [error, setError] = useState<string>('');
 
     const prevStep =
         activeStep === 1
             ? ''
             : localizedRoute('workflows.drepSignUp.index', {
-                  step: activeStep + 1,
+                  step: activeStep - 1,
               });
+
+    const verifyWallet = () => {
+        router.post(
+            generateLocalizedRoute('workflows.drepSignUp.validateWallet', {
+                catalysDrep,
+            }),
+            { stakeAddress },
+            {
+                onError: (errors) => setError(errors.message),
+            },
+        );
+    };
 
     return (
         <WorkflowLayout asideInfo={stepDetails[activeStep - 1].info ?? ''}>
@@ -53,6 +60,17 @@ const Step2: React.FC<Step1Props> = ({ stepDetails, activeStep }) => {
             <Content>
                 <div className="mx-auto w-full max-w-3xl">
                     <ConnectWalletList />
+                    <div
+                        className={`bg-danger-light mt-6 transform overflow-hidden rounded-xl py-3 text-center transition-all duration-500 ease-in-out ${
+                            error.length
+                                ? 'max-w-full translate-x-0 px-6'
+                                : 'max-w-0 translate-x-full px-0'
+                        }`}
+                    >
+                        <p className="inline-block min-w-max whitespace-nowrap text-slate-500">
+                            {t(error)}
+                        </p>
+                    </div>
                 </div>
             </Content>
 
@@ -68,8 +86,8 @@ const Step2: React.FC<Step1Props> = ({ stepDetails, activeStep }) => {
                 </PrimaryLink>
                 <PrimaryButton
                     className="text-sm lg:px-8 lg:py-3"
-                    disabled={!userAddress}
-                    onClick={() => (userAddress ? submitSignature() : '')}
+                    disabled={!stakeAddress}
+                    onClick={() => (stakeAddress ? verifyWallet() : '')}
                 >
                     <span>{t('profileWorkflow.next')}</span>
                     <ChevronRight className="h-4 w-4" />

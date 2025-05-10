@@ -1,14 +1,9 @@
 import PrimaryButton from '@/Components/atoms/PrimaryButton';
-import PrimaryLink from '@/Components/atoms/PrimaryLink';
-import { ClaimFormHandles } from '@/Pages/Workflows/ClaimIdeascaleProfile/partials/ClaimProfileForm';
 import { StepDetails } from '@/types';
-import {
-    generateLocalizedRoute,
-    useLocalizedRoute,
-} from '@/utils/localizedRoute';
+import { generateLocalizedRoute } from '@/utils/localizedRoute';
 import { useForm } from '@inertiajs/react';
 import { t } from 'i18next';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { ChevronRight } from 'lucide-react';
 import React, { useRef, useState } from 'react';
 import Content from '../Partials/WorkflowContent';
 import Footer from '../Partials/WorkflowFooter';
@@ -16,6 +11,7 @@ import Nav from '../Partials/WorkflowNav';
 import WorkflowLayout from '../WorkflowLayout';
 import DrepSignupForm, {
     DrepSignupFormFields,
+    DrepSignupFormHandles,
 } from './partials/DrepSignupForm';
 import IdeascaleProfileData = App.DataTransferObjects.IdeascaleProfileData;
 
@@ -27,37 +23,30 @@ interface Step1Props {
 
 const Step1: React.FC<Step1Props> = ({ stepDetails, activeStep }) => {
     const [isFormValid, setIsFormValid] = useState(false);
-    const formRef = useRef<ClaimFormHandles>(null);
+    const formRef = useRef<DrepSignupFormHandles>(null);
 
-    const form = useForm({
+    const form = useForm<DrepSignupFormFields>({
         name: '',
         email: '',
         bio: '',
         link: '',
+        willMaintain: false,
     });
-
-    const localizedRoute = useLocalizedRoute;
-    const prevStep =
-        activeStep === 1
-            ? ''
-            : localizedRoute('workflows.claimIdeascaleProfile.index', {
-                  step: activeStep - 1,
-              });
 
     const submitForm = () => {
         if (formRef.current) {
             const formData = formRef.current.getFormData;
 
+            if (!formData.data.willMaintain) {
+                form.setError({'willMaintain': "1"});
+                return;
+            }
+
             formData.post(
-                generateLocalizedRoute(
-                    'workflows.claimIdeascaleProfile.saveClaim',
-                    {
-                        // ideascaleProfile: profile.hash,
-                    },
-                ),
+                generateLocalizedRoute('workflows.drepSignUp.create'),
                 {
                     onError: (
-                        errors: Record<keyof DrepSignupFormFields, string>
+                        errors: Record<keyof DrepSignupFormFields, string>,
                     ) => form.setError(errors),
                 },
             );
@@ -77,17 +66,8 @@ const Step1: React.FC<Step1Props> = ({ stepDetails, activeStep }) => {
             </Content>
 
             <Footer>
-                <PrimaryLink
-                    href={prevStep}
-                    className="text-sm lg:px-8 lg:py-3"
-                    disabled={activeStep == 1}
-                    onClick={(e) => activeStep == 1 && e.preventDefault()}
-                >
-                    <ChevronLeft className="h-4 w-4" />
-                    <span>{t('Previous')}</span>
-                </PrimaryLink>
                 <PrimaryButton
-                    className="text-sm lg:px-8 lg:py-3"
+                    className="ml-auto text-sm lg:px-8 lg:py-3"
                     disabled={!isFormValid}
                     onClick={() => (isFormValid ? submitForm() : '')}
                 >

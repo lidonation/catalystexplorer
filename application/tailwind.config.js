@@ -91,10 +91,11 @@ export default {
                 'border-secondary': 'var(--cx-border-secondary-color)',
                 'eye-logo': 'var(--cx-blue-eye-color)',
                 'primary-light': 'var(--cx-primary-light)',
+                'danger-light': 'var(--cx-danger-light)',
 
                 border: {
                     primary: 'var(--cx-primary)',
-                    secondary: 'var(--border-secondary-color)',
+                    secondary: 'var(--cx-border-secondary-color)',
                     dark: 'var(--cx-dark)',
                     'dark-on-dark': 'var(--cx-border-color-dark)',
                 },

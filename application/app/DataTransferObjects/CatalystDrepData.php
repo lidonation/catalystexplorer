@@ -1,0 +1,29 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\DataTransferObjects;
+
+
+use Spatie\LaravelData\Data;
+use Spatie\TypeScriptTransformer\Attributes\Optional as TypeScriptOptional;
+use Spatie\TypeScriptTransformer\Attributes\TypeScript;
+
+#[TypeScript]
+final class CatalystDrepData extends Data
+{
+    public function __construct(
+        public ?string $hash,
+
+        public ?string $name,
+
+        public ?string $bio,
+
+        public ?string $motivation,
+
+        public ?string $qualifications,
+
+        public ?string $objective,
+
+    ) {}
+}

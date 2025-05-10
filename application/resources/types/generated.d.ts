@@ -79,6 +79,14 @@ updated_at?: string;
 prop_comments_number?: number;
 proposal_benefit?: string;
 };
+export type CatalystDrepData = {
+hash: number | null;
+name: string | null;
+bio: string | null;
+motivation: string | null;
+qualifications: string | null;
+objective: string | null;
+};
 export type CommunityData = {
 hash: string | null;
 title?: string;
