@@ -15,6 +15,9 @@
     "ccv4Votes": "Votes CCV4",
     "charts": "Graphiques",
     "comingSoon": "À venir",
+    "from": "De",
+    "to": "À",
+    "unavailable": "Indisponible",
     "confirmPassword": "Confirmez le mot de passe",
     "chooseMetaData": "Choisissez vos propres métadonnées",
     "allCurrencies": "Toutes les devises",
@@ -250,6 +253,31 @@
             "verification": {
                 "title": "Vérification du Portefeuille Catalyst Explorer"
             }
+        },
+        "catalystDrepSignup": {
+            "motivations": "2. Motivations",
+            "objectives": "1. Vos Objectifs",
+            "qualifications": "3. Qualifications",
+            "motivationsPlaceholder": "Mettez en avant vos forces, engagements et votre vision pour la communauté",
+            "objectivesPlaceholder": "Parlez de vos valeurs et de votre approche de la gouvernance...",
+            "qualificationsPlaceholder": "Qu'est-ce qui vous qualifie pour ce rôle dans Catalyst",
+            "2roundsRule": "Pour continuer, vous devez avoir participé à au moins 2 cycles de vote précédents.",
+            "signMessageInfo": "Vérifiez la propriété du portefeuille.",
+            "signMessage": "Signez afin que nous puissions vérifier la propriété de votre portefeuille.",
+            "willMaintain": "Je m'engage à stocker correctement ces informations et à les maintenir à jour",
+            "createAccount": "Créer un compte",
+            "createAccountInfo": "\n1. Si vous avez déjà un compte, connectez-vous avec vos identifiants.\n2. Si vous êtes nouveau, inscrivez-vous avec votre e-mail et créez un mot de passe sécurisé.\n3. Vérifiez votre e-mail pour activer votre compte.",
+            "connectWallet": "Connecter le portefeuille",
+            "connectWalletInfo": "\n1. Choisissez un portefeuille Cardano compatible (par ex. Yoroi, Daedalus, Eternl).\n2. Suivez les instructions pour connecter votre portefeuille en toute sécurité.\n3. Assurez-vous que votre portefeuille contient suffisamment d’ADA pour les transactions.",
+            "signWallet": "Signer la transaction",
+            "signWalletInfo": "\n1. Approuvez une action unique de signature pour vérifier la propriété de votre portefeuille.\n2. Cette action ne transfère pas de fonds, mais lie votre portefeuille à votre compte DRep.\n3. Suivez les instructions de votre portefeuille pour terminer la signature.",
+            "success": "Succès",
+            "successStepMsg": "Votre portefeuille a été ajouté à ce compte DRep.",
+            "successInfo": "\n1. En cas de succès, un message de confirmation s’affichera et votre compte DRep sera actif.\n2. En cas d’erreur, vérifiez :\n* Une mauvaise connexion du portefeuille\n* Des retards ou erreurs réseau\n3. Réessayez ou contactez le support en cas de problème persistant.",
+            "platformStatement": "Déclaration de Plateforme",
+            "platformStatementMsg": "Déclaration de Plateforme. Faites savoir à la communauté qui vous êtes et ce que vous représentez.",
+            "platformStatementInfo": "\n1. Présentez-vous en tant que DRep et exposez vos principes de gouvernance.\n2. Expliquez pourquoi les détenteurs d’ADA devraient vous déléguer.\n3. Privilégiez le multilinguisme pour toucher un public mondial.",
+            "submitStatement": "Soumettre la Déclaration"
         }
     },
     "error404": {

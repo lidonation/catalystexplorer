@@ -9,7 +9,7 @@ use App\Models\Voter;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Drep>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\CatalystDrep>
  */
 class DrepFactory extends Factory
 {

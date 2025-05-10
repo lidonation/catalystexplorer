@@ -15,6 +15,9 @@
     :root {
         --cx-primary: #2596be;
         --cx-primary-light: #effafc;
+        --cx-danger-light: #DA3E521A;
+        --cx-danger-strong: #ea2f2f;
+        --cx-slate-light: #D0D5DD;
         --cx-primary-light-border: #9ad8e9;
         --cx-primary-dark: #165a72;
         --cx-secondary: #3facd1;
@@ -38,7 +41,7 @@
 
         --cx-background: #ffffff;
         --cx-background-darker: #f9fafb;
-        --cx-background-lighter: #f0f1f4;
+        --cx-background-lighter: #F9FAFB;
         --cx-background-light: #667085;
         --cx-background-json: #1a1b2e;
         --cx-background-gradient-1-light: #3facd1;
@@ -224,6 +227,7 @@
 
     .link-primary {
         color: var(--cx-primary);
+
         &:hover {
             color: var(--cx-accent);
         }
@@ -272,6 +276,22 @@
     .border-dark-light {
         border-color: var(--cx-border-dark-light);
     }
+
+    .steps-list-wrapper {
+        ol {
+            list-style-type: decimal;
+            li {
+                margin-bottom: 0.5rem;
+            }
+            +ul {
+                list-style-type: disc;    
+                padding-left: 1.25rem;
+                li {
+                    margin-bottom: 0.4rem;
+                }
+            }
+        }
+    }
 }
 
 @layer base {
@@ -302,7 +322,7 @@
         background-color: var(--bg-accent-color);
     }
 
-    #main-content > header:first-child {
+    #main-content>header:first-child {
         @apply py-6;
     }
 
@@ -388,7 +408,8 @@
     }
 
     article {
-        p ~ {
+        p~ {
+
             h1,
             h2,
             h3,
@@ -409,6 +430,7 @@
     &.page-campaign {
         .card {
             .card-campaign {
+
                 .card-summary,
                 .card-title {
                     @apply hidden;
@@ -444,7 +466,7 @@
     scroll-padding-inline: 1.5rem;
 }
 
-.snaps-scrollable > * {
+.snaps-scrollable>* {
     scroll-snap-align: start;
 }
 

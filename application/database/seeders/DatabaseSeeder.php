@@ -32,7 +32,7 @@ class DatabaseSeeder extends Seeder
             VoterSeeder::class,
             SnapshotSeeder::class,
             TransactionSeeder::class,
-            DrepSeeder::class,
+            CatalystDrepSeeder::class,
             MetricSeeder::class,
             ProjectScheduleSeeder::class,
 

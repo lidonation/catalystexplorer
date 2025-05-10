@@ -1,35 +1,41 @@
-import React, { forwardRef } from 'react';
+import { defaultSchema } from 'hast-util-sanitize';
+import { forwardRef } from 'react';
 import ReactMarkdown from 'react-markdown';
 import rehypeSanitize from 'rehype-sanitize';
+import remarkGfm from 'remark-gfm';
+
 
 interface RichContentProps {
-  content?: string;
-  format?: 'html' | 'markdown';
-  className?: string;
+    content?: string;
+    format?: 'html' | 'markdown';
+    className?: string;
 }
 
+const customSchema = {
+    ...defaultSchema,
+    tagNames: [...(defaultSchema.tagNames || []), 'ol', 'ul', 'li'],
+};
+
 const RichContent = forwardRef<HTMLDivElement, RichContentProps>(
-  ({ content, format = 'html', className = '' }, ref) => {
-    return (
-      <div ref={ref} className={className}>
-        {format === 'markdown' ? (
-          <ReactMarkdown rehypePlugins={[rehypeSanitize]}>
-            {content || ''}
-          </ReactMarkdown>
-        ) : (
-          <div
-            dangerouslySetInnerHTML={{
-              __html: content as string | TrustedHTML,
-            }}
-          />
-        )}
-      </div>
-    );
-  }
+    ({ content, format = 'html', className = '' }, ref) => {
+        return (
+            <div ref={ref} className={`${className} + steps-list-wrapper`}>
+                {format === 'markdown' ? (
+                    <ReactMarkdown remarkPlugins={[[remarkGfm]]}>
+                        {content || ''}
+                    </ReactMarkdown>
+                ) : (
+                    <div
+                        dangerouslySetInnerHTML={{
+                            __html: content as string | TrustedHTML,
+                        }}
+                    />
+                )}
+            </div>
+        );
+    },
 );
 
-// Optional but good for debugging in DevTools
 RichContent.displayName = 'RichContent';
 
 export default RichContent;
-
