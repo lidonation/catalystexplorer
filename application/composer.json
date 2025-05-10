@@ -18,6 +18,7 @@
         "hashids/hashids": "^5.0",
         "http-interop/http-factory-guzzle": "^1.2",
         "inertiajs/inertia-laravel": "2.0",
+        "inertiaui/modal": "^0.21.0",
         "laravel/framework": "^11.9",
         "laravel/horizon": "^5.29",
         "laravel/nova": "^5.0",
