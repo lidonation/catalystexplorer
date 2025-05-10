@@ -52,7 +52,7 @@ export default function WorkflowLayout({
                                     </div>
                                     <div className="mt-6">
                                         <RichContent
-                                            className="text-center text-white"
+                                            className="text-white"
                                             content={
                                                 asideInfo &&
                                                 (t(asideInfo) as
@@ -81,7 +81,7 @@ export default function WorkflowLayout({
                                         ? (t(asideInfo) as string | undefined)
                                         : ''
                                 }
-                                className="text-center text-white"
+                                className="text-white"
                                 format="markdown"
                             />
                         </div>

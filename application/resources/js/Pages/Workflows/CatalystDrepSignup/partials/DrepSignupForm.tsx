@@ -101,6 +101,7 @@ const DrepSignupForm = forwardRef<DrepSignupFormHandles, DrepSignupFormProps>(
                             onChange={(e) => setData('bio', e.target.value)}
                             className="h-30 w-full rounded-lg px-4 py-2"
                         />
+                        <InputError message={form.errors.bio} />
                     </div>
 
                     <div>
@@ -131,7 +132,7 @@ const DrepSignupForm = forwardRef<DrepSignupFormHandles, DrepSignupFormProps>(
                         />
                         <label
                             htmlFor="willMaintain"
-                            className={`text-sm ${!data.willMaintain && form.errors.willMaintain ? 'text-red-500' : 'text-slate'}`}
+                            className={`text-sm ${!data.willMaintain && form.errors.willMaintain ? 'text-danger-strong' : 'text-slate'}`}
                         >
                             {t('workflows.catalystDrepSignup.willMaintain')}
                         </label>

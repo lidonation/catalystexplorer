@@ -166,8 +166,12 @@ Route::localized(
                         ->name('index');
                     Route::post('/drep', [CatalystDrepController::class, 'saveDrep'])
                         ->name('create');
-                Route::post('{catalysDrep}/validate-drep-wallet', [CatalystDrepController::class, 'validateDrepWallet'])
-                    ->name('validateWallet');
+                Route::patch('{catalystDrep}/drep', [CatalystDrepController::class, 'updateDrep'])
+                    ->name('patch');
+                    Route::post('{catalystDrep}/validate-drep-wallet', [CatalystDrepController::class, 'validateDrepWallet'])
+                        ->name('validateWallet');
+                    Route::post('{catalystDrep}/capture-signature', [CatalystDrepController::class, 'captureSignature'])
+                        ->name('captureSignature');
                 });
 
             Route::prefix('/signature-capture/steps')->as('signature.')

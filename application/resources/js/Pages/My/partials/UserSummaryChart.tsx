@@ -195,7 +195,7 @@ export default function UserSummaryChart({
                                             className={
                                                 trend.isPositive
                                                     ? 'text-green-500'
-                                                    : 'text-red-500'
+                                                    : 'text-danger-strong'
                                             }
                                             style={{
                                                 display: 'flex',

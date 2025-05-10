@@ -83,6 +83,7 @@
     "react-toastify": "^11.0.3",
     "recharts": "^2.7.0",
     "rehype-sanitize": "^6.0.0",
+    "remark-gfm": "^4.0.1",
     "tailwind-merge": "^2.5.4",
     "tailwindcss-animate": "^1.0.7",
     "ziggy-js": "^2.4.1",

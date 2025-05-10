@@ -1,11 +1,12 @@
 <?php
 
-namespace App\Models\Traits;
+declare(strict_types=1);
 
-use App\Models\Signature;
+namespace App\Traits;
+
 use App\Models\ModelSignature;
+use App\Models\Signature;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 
 trait HasSignatures
@@ -19,12 +20,12 @@ trait HasSignatures
     public function signatures(): HasManyThrough
     {
         return $this->hasManyThrough(
-            Signature::class,            // Final related model
-            ModelSignature::class,       // Intermediate model (pivot)
-            'model_id',                  // Foreign key on pivot
-            'id',                        // Foreign key on Signature
-            'id',                        // Local key on this model
-            'signature_id'               // Local key on pivot
-        )->where('model_signatures.model_type', static::class);
+            Signature::class,
+            ModelSignature::class,
+            'model_id',
+            'id',
+            'id',
+            'signature_id'
+        )->where('model_signature.model_type', static::class);
     }
 }

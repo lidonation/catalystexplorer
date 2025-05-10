@@ -80,12 +80,16 @@ prop_comments_number?: number;
 proposal_benefit?: string;
 };
 export type CatalystDrepData = {
-hash: number | null;
+hash: string | null;
 name: string | null;
 bio: string | null;
 motivation: string | null;
 qualifications: string | null;
 objective: string | null;
+stake_address: string | null;
+voting_power: number | null;
+last_active: string | null;
+status: string | null;
 };
 export type CommunityData = {
 hash: string | null;

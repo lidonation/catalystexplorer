@@ -65,7 +65,7 @@ class RouteServiceProvider extends ServiceProvider
             }
         });
 
-        Route::bind('catalysDrep', function ($hashId) {
+        Route::bind('catalystDrep', function ($hashId) {
             try {
                 return (new HashIdService(new CatalystDrep))->decode($hashId);
             } catch (Exception) {

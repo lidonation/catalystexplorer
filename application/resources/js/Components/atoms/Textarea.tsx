@@ -54,8 +54,8 @@ export default forwardRef(function Textarea(
                 {...props}
                 className={`border ${
                     isTooShort
-                        ? 'border-red-500 focus:border-red-500 focus:ring-0'
-                        : 'border-secondary border-opacity-40 focus:border-primary'
+                        ? 'border-danger-strong focus:border-danger-strong focus:ring-0'
+                        : 'border-slate-light border-opacity-40 focus:border-primary'
                 } bg-background text-content rounded-md shadow-xs ${className}`}
                 ref={localRef}
                 value={value}
@@ -69,7 +69,7 @@ export default forwardRef(function Textarea(
             <div className="mt-1 mb-2 flex items-center justify-between">
                 <Paragraph
                     size="sm"
-                    className={`text-[0.75rem] ${isTooShort ? 'text-red-500' : 'text-gray-persist'}`}
+                    className={`text-[0.75rem] ${isTooShort ? 'text-danger-strong' : 'text-gray-persist'}`}
                 >
                     {t('minCharTextarea')}
                 </Paragraph>

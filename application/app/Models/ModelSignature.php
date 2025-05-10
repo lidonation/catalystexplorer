@@ -1,11 +1,18 @@
 <?php
 
-namespace App\Models;
+declare(strict_types=1);
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
+namespace App\Models;
 
 class ModelSignature extends Model
 {
-    use HasFactory;
+    public $timestamps = false;
+
+    public $incrementing = false;
+
+    protected $primaryKey = null;
+
+    public $guarded = [];
+
+    public $table = 'model_signature';
 }

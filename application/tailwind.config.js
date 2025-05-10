@@ -73,6 +73,7 @@ export default {
                 'success-light': 'var(--content-success-light)',
                 warning: 'var(--bg-warning-primary-color)',
                 hover: 'var(--content-hover-color)',
+                'slate-light': 'var(--cx-slate-light)',
                 background: 'var(--cx-background)',
                 'background-light': 'var(--cx-background-light)',
                 'background-lighter': 'var(--cx-background-lighter)',
@@ -92,6 +93,7 @@ export default {
                 'eye-logo': 'var(--cx-blue-eye-color)',
                 'primary-light': 'var(--cx-primary-light)',
                 'danger-light': 'var(--cx-danger-light)',
+                'danger-strong': 'var(--cx-danger-strong)',
 
                 border: {
                     primary: 'var(--cx-primary)',

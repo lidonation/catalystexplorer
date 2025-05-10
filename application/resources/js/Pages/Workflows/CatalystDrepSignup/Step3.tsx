@@ -15,6 +15,7 @@ import Footer from '../Partials/WorkflowFooter';
 import Nav from '../Partials/WorkflowNav';
 import WorkflowLayout from '../WorkflowLayout';
 import CatalysDrepData = App.DataTransferObjects.CatalystDrepData;
+import PrimaryButton from '@/Components/atoms/PrimaryButton';
 
 interface SignatureData {
     stake_key?: string;
@@ -28,13 +29,13 @@ interface SignatureData {
 interface Step3Props {
     stepDetails: any[];
     activeStep: number;
-    catalysDrep: CatalysDrepData;
+    catalystDrep: string;
 }
 
 const Step3: React.FC<Step3Props> = ({
     stepDetails,
     activeStep,
-    catalysDrep,
+    catalystDrep,
 }) => {
     const { t } = useTranslation();
     const localizedRoute = useLocalizedRoute;
@@ -47,6 +48,7 @@ const Step3: React.FC<Step3Props> = ({
         openConnectWalletSlider,
         extractSignature,
         stakeAddress,
+        stakeKey,
     } = useConnectWallet();
 
     const [isSigning, setIsSigning] = useState(false);
@@ -60,17 +62,24 @@ const Step3: React.FC<Step3Props> = ({
                 t('workflows.catalystDrepSignup.signMessage'),
             );
 
+            console.log({ signatureResult });
+
             if (!signatureResult) {
                 return;
             }
 
             router.post(
-                generateLocalizedRoute('workflows.drepSignUp.validateWallet', {
-                    catalysDrep,
-                }),
+                generateLocalizedRoute(
+                    'workflows.drepSignUp.captureSignature',
+                    {
+                        catalystDrep,
+                    },
+                ),
                 {
                     signature: signatureResult.signature,
                     signature_key: signatureResult.key,
+                    stake_key: stakeKey,
+                    stakeAddress,
                 },
                 { onError: (errors) => setError(errors.message) },
             );
@@ -84,6 +93,7 @@ const Step3: React.FC<Step3Props> = ({
                             : t('workflows.signature.errors.unknownError'),
                 }),
             );
+        } finally {
             setIsSigning(false);
         }
     };
@@ -140,16 +150,14 @@ const Step3: React.FC<Step3Props> = ({
                             </span>
                             <span className="font-medium">
                                 {t(
-                                    'workflows.catalystDrepSignup.signMessageButton',
+                                    'workflows.catalystDrepSignup.signMessageInfo',
                                 )}
                             </span>
                         </div>
 
                         <div className="bg-primary-light mt-6 rounded-xl p-4 text-center">
                             <p className="text-slate-500">
-                                {t(
-                                    'workflows.catalystDrepSignup.signMessageButton',
-                                )}
+                                {t('workflows.catalystDrepSignup.signMessage')}
                             </p>
                         </div>
                     </div>
@@ -176,8 +184,7 @@ const Step3: React.FC<Step3Props> = ({
                     <span>{t('Previous')}</span>
                 </PrimaryLink>
 
-                <PrimaryLink
-                    href={prevStep}
+                <PrimaryButton
                     className="text-sm lg:px-8 lg:py-2"
                     disabled={isSigning || !stakeAddress}
                     loading={isSigning}
@@ -185,7 +192,7 @@ const Step3: React.FC<Step3Props> = ({
                 >
                     <span>{t('next')}</span>
                     <ChevronRight className="h-4 w-4" />
-                </PrimaryLink>
+                </PrimaryButton>
             </Footer>
         </WorkflowLayout>
     );

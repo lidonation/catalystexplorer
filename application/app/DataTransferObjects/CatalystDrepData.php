@@ -4,9 +4,7 @@ declare(strict_types=1);
 
 namespace App\DataTransferObjects;
 
-
 use Spatie\LaravelData\Data;
-use Spatie\TypeScriptTransformer\Attributes\Optional as TypeScriptOptional;
 use Spatie\TypeScriptTransformer\Attributes\TypeScript;
 
 #[TypeScript]
@@ -24,6 +22,14 @@ final class CatalystDrepData extends Data
         public ?string $qualifications,
 
         public ?string $objective,
+
+        public ?string $stake_address,
+
+        public ?int $voting_power,
+
+        public ?string $last_active,
+
+        public ?string $status,
 
     ) {}
 }

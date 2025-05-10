@@ -18,7 +18,7 @@ import WorkflowLayout from '../WorkflowLayout';
 import CatalysDrepData = App.DataTransferObjects.CatalystDrepData;
 
 interface Step1Props {
-    catalysDrep: CatalysDrepData;
+    catalysDrep: string;
     stepDetails: StepDetails[];
     activeStep: number;
 }

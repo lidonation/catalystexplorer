@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('model_signature', function (Blueprint $table) {
             $table->text('model_type');
             $table->foreignId('model_id');
-            $table->foreignId('signature')->constrained('signatures');
+            $table->foreignId('signature_id')->constrained('signatures');
         });
     }
 

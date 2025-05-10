@@ -4,18 +4,17 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use App\Models\Drep;
-use Inertia\Inertia;
-use Inertia\Response;
-use App\Models\Signature;
+use App\DataTransferObjects\CatalystDrepData;
 use App\Models\CatalystDrep;
+use App\Models\Drep;
+use App\Models\Signature;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Http\RedirectResponse;
-use App\DataTransferObjects\CatalystDrepData;
-use Illuminate\Validation\ValidationException;
+use Illuminate\Support\Facades\DB;
+use Inertia\Inertia;
+use Inertia\Response;
 
 class CatalystDrepController extends Controller
 {
@@ -34,7 +33,14 @@ class CatalystDrepController extends Controller
      */
     public function list()
     {
+
         return Inertia::render('Dreps/DrepList', [
+            'catalystDreps' => to_length_aware_paginator(
+                CatalystDrepData::collect(
+                    CatalystDrep::query()
+                        ->paginate(11, ['*'], 'p', 1)
+                )
+            )->onEachSide(0),
             'filters' => [],
         ]);
     }
@@ -66,22 +72,67 @@ class CatalystDrepController extends Controller
 
     public function step2(Request $request): RedirectResponse|Response
     {
-        $catalysDrep = CatalystDrep::where('user_id', Auth::user()->id)->first();
+        $catalystDrep = CatalystDrep::where('user_id', Auth::user()->id)->first();
 
-        if (empty($catalysDrep?->id)) {
+        if (empty($catalystDrep?->id)) {
             return to_route('workflows.drepSignUp.index', ['step' => '1']);
         }
 
         return Inertia::render('Workflows/CatalystDrepSignup/Step2', [
-            'catalysDrep' => $catalysDrep->hash,
+            'catalystDrep' => $catalystDrep->hash,
             'stepDetails' => $this->getStepDetails(),
             'activeStep' => intval($request->step),
         ]);
     }
 
-    public function step3(Request $request): Response
+    public function step3(Request $request): RedirectResponse|Response
     {
+        $catalystDrep = CatalystDrep::where('user_id', Auth::user()->id)->first();
+
+        if (empty($catalystDrep?->id)) {
+            return to_route('workflows.drepSignUp.index', ['step' => '1']);
+        }
+
         return Inertia::render('Workflows/CatalystDrepSignup/Step3', [
+            'catalystDrep' => $catalystDrep->hash,
+            'stepDetails' => $this->getStepDetails(),
+            'activeStep' => intval($request->step),
+        ]);
+    }
+
+    public function step4(Request $request): RedirectResponse|Response
+    {
+        $catalystDrep = CatalystDrep::where('user_id', Auth::user()->id)->first();
+
+        if (empty($catalystDrep?->id)) {
+            return to_route('workflows.drepSignUp.index', ['step' => 1]);
+        }
+
+        if (empty($catalystDrep?->modelSignatures)) {
+            return to_route('workflows.drepSignUp.index', ['step' => 3]);
+        }
+
+        return Inertia::render('Workflows/CatalystDrepSignup/Success', [
+            'catalystDrep' => $catalystDrep->hash,
+            'stepDetails' => $this->getStepDetails(),
+            'activeStep' => intval($request->step),
+        ]);
+    }
+
+    public function step5(Request $request): RedirectResponse|Response
+    {
+        $catalystDrep = CatalystDrep::where('user_id', Auth::user()->id)->first();
+
+        if (empty($catalystDrep?->id)) {
+            return to_route('workflows.drepSignUp.index', ['step' => 1]);
+        }
+
+        if (empty($catalystDrep?->modelSignatures)) {
+            return to_route('workflows.drepSignUp.index', ['step' => 3]);
+        }
+
+        return Inertia::render('Workflows/CatalystDrepSignup/Step5', [
+            'catalystDrep' => $catalystDrep->hash,
             'stepDetails' => $this->getStepDetails(),
             'activeStep' => intval($request->step),
         ]);
@@ -100,7 +151,8 @@ class CatalystDrepController extends Controller
 
         return to_route('workflows.drepSignUp.index', ['step' => 2]);
     }
-    public function validateDrepWallet(CatalystDrep $catalysDrep, Request $request)
+
+    public function validateDrepWallet(CatalystDrep $catalystDrep, Request $request)
     {
         $stakeAddressPattern = app()->environment('production')
             ? '/^stake1[0-9a-z]{38,}$/'
@@ -123,8 +175,7 @@ class CatalystDrepController extends Controller
                         AND cs.model_id IS NOT NULL
                         AND reg.stake_pub = ?
                         GROUP BY reg.stake_pub
-            ',  ['stake1u80hpp5qp7k58q5v3qztfee0vzdaf3pt6ff0e3hvxegtugs64a6qm']);
-
+            ', [$request->stakeAddress]);
 
         if (empty($prevVotingHistory) || $prevVotingHistory[0]?->distinct_fund_ids < 2) {
             return back()->withErrors(['message' => 'workflows.catalystDrepSignup.2roundsRule']);
@@ -153,7 +204,8 @@ class CatalystDrepController extends Controller
         $signature = Signature::updateOrCreate(
             [
                 'signature' => $validated['signature'],
-                'stake_key' => $validated['stake_key']
+                'stake_key' => $validated['stake_key'],
+                'stake_address' => $validated['stakeAddress'],
             ],
             $validated
         );
@@ -164,18 +216,20 @@ class CatalystDrepController extends Controller
             'model_type' => CatalystDrep::class,
             'signature_id' => $signature->id,
         ]);
+
+        return to_route('workflows.drepSignUp.index', ['step' => 4]);
     }
 
-    public function updateDrep(CatalystDrep $catalysDrep, Request $request)
+    public function updateDrep(CatalystDrep $catalystDrep, Request $request)
     {
 
         $attributes = $request->validate([
-            'objective' => 'nullable|min:100',
-            'motivation' => 'nullable|min:100',
-            'qualifications' => 'nullable|min:100'
+            'objective' => 'required|min:200',
+            'motivation' => 'required|min:200',
+            'qualifications' => 'required|min:200',
         ]);
 
-        $drep = CatalystDrep::update(['id' => $catalysDrep->id], $attributes);
+        $drep = $catalystDrep->update($attributes);
 
         return $drep;
     }
@@ -194,6 +248,14 @@ class CatalystDrepController extends Controller
             [
                 'title' => 'workflows.catalystDrepSignup.signWallet',
                 'info' => 'workflows.catalystDrepSignup.signWalletInfo',
+            ],
+            [
+                'title' => 'workflows.catalystDrepSignup.success',
+                'info' => 'workflows.catalystDrepSignup.successInfo',
+            ],
+            [
+                'title' => 'workflows.catalystDrepSignup.platformStatement',
+                'info' => 'workflows.catalystDrepSignup.platformStatementInfo',
             ],
         ]);
     }
