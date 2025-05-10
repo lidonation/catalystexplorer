@@ -74,6 +74,7 @@ export default {
                 'success-light': 'var(--content-success-light)',
                 warning: 'var(--bg-warning-primary-color)',
                 hover: 'var(--content-hover-color)',
+                'slate-light': 'var(--cx-slate-light)',
                 background: 'var(--cx-background)',
                 'background-light': 'var(--cx-background-light)',
                 'background-lighter': 'var(--cx-background-lighter)',
@@ -92,10 +93,12 @@ export default {
                 'border-secondary': 'var(--cx-border-secondary-color)',
                 'eye-logo': 'var(--cx-blue-eye-color)',
                 'primary-light': 'var(--cx-primary-light)',
+                'danger-light': 'var(--cx-danger-light)',
+                'danger-strong': 'var(--cx-danger-strong)',
 
                 border: {
                     primary: 'var(--cx-primary)',
-                    secondary: 'var(--border-secondary-color)',
+                    secondary: 'var(--cx-border-secondary-color)',
                     dark: 'var(--cx-dark)',
                     'dark-on-dark': 'var(--cx-border-color-dark)',
                 },

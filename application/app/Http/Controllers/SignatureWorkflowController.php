@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use App\Models\Signatures;
+use App\Models\Signature;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -43,7 +43,7 @@ class SignatureWorkflowController extends Controller
 
         $existingSignatures = [];
         if (isset($walletData['stake_key'])) {
-            $existingSignatures = Signatures::where('user_id', Auth::id())
+            $existingSignatures = Signature::where('user_id', Auth::id())
                 ->where('stake_key', $walletData['stake_key'])
                 ->get();
         }
@@ -102,7 +102,7 @@ class SignatureWorkflowController extends Controller
 
         $request->session()->put('signature_data', $signatureData);
 
-        $existingSignature = Signatures::where('user_id', Auth::id())
+        $existingSignature = Signature::where('user_id', Auth::id())
             ->where('stake_key', $signatureData['stake_key'])
             ->where('signature', $signatureData['signature'])
             ->first();
@@ -114,7 +114,7 @@ class SignatureWorkflowController extends Controller
         }
 
         try {
-            Signatures::create([
+            Signature::create([
                 'stake_key' => $signatureData['stake_key'],
                 'stake_address' => $signatureData['stake_address'],
                 'signature' => $signatureData['signature'],

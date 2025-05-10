@@ -40,7 +40,7 @@ const getVoteClass = (voteType: VoteEnum): string => {
         case VoteEnum.YES:
             return 'bg-green-500 text-white';
         case VoteEnum.NO:
-            return 'bg-red-500 text-white';
+            return 'bg-danger-strong text-white';
         case VoteEnum.ABSTAIN:
             return 'bg-orange-400 text-white';
         default:

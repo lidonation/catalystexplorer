@@ -31,7 +31,7 @@ export default forwardRef(function TextInput(
         <input
             {...props}
             type={type}
-            className={`border-border-primary border-opacity-40 bg-background text-content focus:border-primary rounded-md shadow-xs ${className}`}
+            className={`border border-secondary border-opacity-40 bg-background text-content focus:border-primary rounded-md shadow-xs ${className}`}
             ref={localRef}
             onKeyDown={(e) => {
                 if (e.key === ' ') {
