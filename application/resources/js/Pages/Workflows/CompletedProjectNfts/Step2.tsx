@@ -17,7 +17,7 @@ import Nav from '../Partials/WorkflowNav';
 import WorkflowLayout from '../WorkflowLayout';
 
 interface Step2Props {
-    profiles: App.DataTransferObjects.IdeascaleProfileData[];
+    profiles: Record<number, string>;
     stepDetails: StepDetails[];
     activeStep: number;
     proposals: PaginatedData<App.DataTransferObjects.ProposalData[]>;
@@ -49,7 +49,6 @@ const Step2: React.FC<Step2Props> = ({
           })
         : '';
 
-
     const handleSearchProposals = useCallback(
         (searchTerm: string) => {
             setSearch(searchTerm);
@@ -71,7 +70,7 @@ const Step2: React.FC<Step2Props> = ({
         [activeStep, profiles, locale],
     );
 
-    
+    const profileHash : string = profiles[0] || '';
 
     return (
         <WorkflowLayout asideInfo={stepDetails[activeStep - 1].info ?? ''}>
@@ -90,6 +89,7 @@ const Step2: React.FC<Step2Props> = ({
                 <ProposalList
                     onProposalClick={(hash) => setSelectedProposalHash(hash)}
                     proposals={proposals || []}
+                    profileHash={profileHash as string}
                 />
             </Content>
 

@@ -290,6 +290,7 @@ class CompletetProjectNftsController extends Controller
         );
 
         $response = new Fluent(attributes: $builder->raw());
+
         $items = collect($response->hits);
 
         $pagination = new LengthAwarePaginator(
