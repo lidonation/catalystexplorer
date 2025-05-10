@@ -14,6 +14,7 @@ import { FiltersProvider } from '@/Context/FiltersContext';
 import ProposalSortingOptions from '@/lib/ProposalSortOptions';
 import ProposalFilters from '@/Pages/Proposals/Partials/ProposalFilters';
 import ProposalData = App.DataTransferObjects.ProposalData;
+import MyProposalFilters from './partials/MyProposalsFilters';
 
 interface MyProposalsProps {
     proposals: PaginatedData<ProposalData[]>;
@@ -51,14 +52,14 @@ export default function MyProposals({ proposals, filters }: MyProposalsProps) {
                   showFilters ? 'max-h-[500px]' : 'max-h-0'
                 }`}
               >
-                <ProposalFilters />
+                <MyProposalFilters />
               </section>
 
               <div className="overflow-hidden border border-background-lighter rounded-lg">
                 {proposals.data && proposals.data.length > 0 ? (
                   <div>
                     <ProposalTable proposals={proposals.data} />
-                    <div className="w-full flex items-center justify-center">
+                    <div className="w-full flex items-center justify-center mt-4">
                       <Paginator pagination={proposals} />
                     </div>
                   </div>

@@ -14,7 +14,7 @@ const WorkflowLogin: React.FC<{ title: string; intendedRoute :string}> = ({
     return (
         <WorkflowLayout asideInfo=''>
             <LoginForm
-                title={`${t('completedProjectNfts.nowMinting')}: ${t('funds.funds')} 2-12`}
+                title={''}
                 postRoute={useLocalizedRoute('workflows.login')}
             />
         </WorkflowLayout>

@@ -14,6 +14,8 @@ class TransactionData extends Data
         public ?string $hash,
         public string $tx_hash,
         public string $block,
+        public ?string $witness = null,
+        public ?string $type =null,
         public ?int $epoch,
         public mixed $json_metadata,
         public null|object|array $raw_metadata,
