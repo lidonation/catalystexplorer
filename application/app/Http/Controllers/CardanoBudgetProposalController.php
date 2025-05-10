@@ -28,7 +28,7 @@ class CardanoBudgetProposalController extends Controller
                     ->orWhere('country', 'ILIKE', '%'.$params['s'].'%');
             })
         );
-        
+
         $query->when(
             isset($params['sortBy']),
             fn ($q) => ($q->orderBy($this->getDbColumnName($params['sortBy']), $params['sortOrder'] ?? 'DESC'))
