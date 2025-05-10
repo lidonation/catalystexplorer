@@ -40,10 +40,7 @@ const step5: React.FC<Step5Props> = ({
 
     const { data, setData } = form;
 
-    const localizedRoute = useLocalizedRoute;
-
-    console.log({ catalystDrep ,form});
-    
+    const localizedRoute = useLocalizedRoute;    
 
     const submitForm = () => {
         form.patch(

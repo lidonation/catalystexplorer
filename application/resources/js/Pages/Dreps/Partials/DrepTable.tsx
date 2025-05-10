@@ -14,7 +14,6 @@ interface DrepTableProps {
 
 export default function DrepTable({ dreps }: DrepTableProps) {
     const { t } = useTranslation();
-    console.log({ dreps });
 
     const [copySuccess, setCopySuccess] = useState<Record<number, boolean>>(
         Object.fromEntries(dreps.map((_, index) => [index, false])),
