@@ -28,7 +28,7 @@ class CardanoBudgetProposalController extends Controller
                     ->orWhere('country', 'ILIKE', '%'.$params['s'].'%');
             })
         );
-        
+
         $query->when(
             isset($params['sortBy']),
             fn ($q) => ($q->orderBy($this->getDbColumnName($params['sortBy']), $params['sortOrder'] ?? 'DESC'))
@@ -140,6 +140,10 @@ class CardanoBudgetProposalController extends Controller
             ->when(
                 $request->filled('category'),
                 fn ($q) => $q->where('budget_cat', $request->input('category'))
+            )
+            ->when( 
+                $request->filled('committee'),
+                fn ($q) => $q->where('committee_name', $request->input('committee'))
             );
 
         $whereClaus = Str::of($whereQueries->toRawSql())->after('where')->value();

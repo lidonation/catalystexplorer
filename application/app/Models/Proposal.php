@@ -61,6 +61,7 @@ class Proposal extends Model
         'link',
         'hash',
         'currency',
+        'completed_project_nft',
     ];
 
     public static function getFilterableAttributes(): array
@@ -498,7 +499,26 @@ class Proposal extends Model
             'projectcatalyst_io_link' => $this->meta_info?->projectcatalyst_io_url ?? null,
             'project_length' => intval($this->meta_info->project_length) ?? 0,
             'vote_casts' => intval($this->meta_info->vote_casts) ?? 0,
-            'completed_project_nft' => $this->completedProjectNft,
+            'completed_project_nft' => $this->completed_project_nft?->map(function ($nft) {
+                return [
+                    'id' => $nft->id,
+                    'name' => $nft->name,
+                    'user_id' => $nft->user_id,
+                    'metadata' => $nft->metadata,
+                    'description' => $nft->description,
+                    'storage_link' => $nft->storage_link,
+                    'preview_link' => $nft->preview_link,
+                    'policy' => $nft->policy,
+                    'profile_hash' => $nft->ideascale_profile?->hash ?? null,
+                    'currency' => $nft->currency,
+                    'status' => $nft->status,
+                    'rarity' => $nft->rarity,
+                    'price' => $nft->price,
+                    'required_nft_metadata' => $nft->required_nft_metadata,
+                    'qty' => $nft->qty,
+                    'minted_at' => $nft->minted_at,
+                ];
+            })->toArray() ?? [],
         ]);
     }
 
@@ -556,7 +576,7 @@ class Proposal extends Model
     public function completedProjectNft(): Attribute
     {
         return Attribute::make(
-            function () {
+            get: function () {
                 $englishTitle = json_decode($this->title, true)['en'] ?? $this->title;
 
                 return Nft::whereRelation(

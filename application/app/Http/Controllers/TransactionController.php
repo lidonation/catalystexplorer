@@ -7,9 +7,9 @@ namespace App\Http\Controllers;
 use App\Actions\TransformIdsToHashes;
 use App\DataTransferObjects\TransactionData;
 use App\Enums\TransactionSearchParams;
-use App\Models\Voter;
 use App\Models\Signatures;
 use App\Models\Transaction;
+use App\Models\Voter;
 use App\Repositories\TransactionRepository;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -240,33 +240,33 @@ class TransactionController
 
     private function getWalletStats(string $stakeKey)
     {
-        
-        if (!$stakeKey) {
+
+        if (! $stakeKey) {
             return [
                 'all_time_votes' => 0,
-                'funds_participated' => []
+                'funds_participated' => [],
             ];
         }
         $voter = Voter::where('stake_pub', $stakeKey)
             ->with(['voting_powers.snapshot.fund'])
             ->first();
-        
-        if (!$voter) {
+
+        if (! $voter) {
             return [
                 'all_time_votes' => 0,
-                'funds_participated' => []
+                'funds_participated' => [],
             ];
         }
-        
+
         $allTimeVotes = $voter->count();
-        
+
         $fundsParticipated = $voter->voting_powers->map(function ($votingPower) {
             return $votingPower->snapshot?->fund?->title;
         })->filter()->unique()->values()->all();
-        
-        return [ 
+
+        return [
             'all_time_votes' => $allTimeVotes,
-            'funds_participated' => $fundsParticipated
+            'funds_participated' => $fundsParticipated,
         ];
     }
 }

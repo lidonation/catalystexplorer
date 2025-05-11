@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Providers;
 
 use App\Models\BookmarkCollection;
+use App\Models\CatalystDrep;
 use App\Models\IdeascaleProfile;
 use App\Models\Proposal;
 use App\Models\Review;
@@ -59,6 +60,14 @@ class RouteServiceProvider extends ServiceProvider
         Route::bind('review', function ($hashId) {
             try {
                 return (new HashIdService(new Review))->decode($hashId);
+            } catch (Exception) {
+                abort(404, 'No item found for this hash!');
+            }
+        });
+
+        Route::bind('catalystDrep', function ($hashId) {
+            try {
+                return (new HashIdService(new CatalystDrep))->decode($hashId);
             } catch (Exception) {
                 abort(404, 'No item found for this hash!');
             }
