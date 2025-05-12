@@ -7,7 +7,9 @@ import Divider from '@/Components/Divider';
 import FundingPercentages from '@/Components/FundingPercentages';
 import Image from '@/Components/Image';
 import UserQuickView from '@/Components/UserQuickView';
+import { ListProvider } from '@/Context/ListContext';
 import IdeascaleProfileUsers from '@/Pages/IdeascaleProfile/Partials/IdeascaleProfileUsersComponent';
+import BookmarkButton from '@/Pages/My/Bookmarks/Partials/BookmarkButton';
 import { useLocalizedRoute } from '@/utils/localizedRoute';
 import { Link } from '@inertiajs/react';
 import React, { useCallback, useState } from 'react';
@@ -38,7 +40,17 @@ const GroupCard: React.FC<GroupCardProps> = ({ group }) => {
 
     return (
         <Card className="h-full">
-            <section className="flex-grow space-y-4">
+            <div className="border-gray-persist/50 text-gray-persist/50  z-20 ml-auto w-fit items-center rounded-md border-1 py-0">
+                <ListProvider>
+                    <BookmarkButton
+                        modelType="groups"
+                        width={16}
+                        height={16}
+                        itemId={group?.hash??'0'}
+                    />
+                </ListProvider>
+            </div>
+            <section className=" flex-grow space-y-4">
                 <div className="flex w-full flex-col items-center gap-4 pt-2">
                     <Image
                         size="30"

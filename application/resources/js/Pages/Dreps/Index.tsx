@@ -1,13 +1,15 @@
-import Paragraph from "@/Components/atoms/Paragraph";
-import Title from "@/Components/atoms/Title";
-import CardanoIcon from "@/Components/svgs/CardanoIcon";
-import ProjectCatalyst from "@/Components/svgs/ProjectCatalystIcon";
+import Button from '@/Components/atoms/Button';
+import Paragraph from '@/Components/atoms/Paragraph';
+import PrimaryLink from '@/Components/atoms/PrimaryLink';
+import Title from '@/Components/atoms/Title';
+import CardanoIcon from '@/Components/svgs/CardanoIcon';
+import ProjectCatalyst from '@/Components/svgs/ProjectCatalystIcon';
 import DrepsBanner from '@/assets/images/dreps-banner.jpg';
 import ProjectCatalystBackground from '@/assets/images/project-catalyst-banner.jpg';
-import { Head, Link } from "@inertiajs/react";
-import FaqSection from "./Partials/FaqSection";
-import { useTranslation } from "react-i18next";
-import Button from "@/Components/atoms/Button";
+import { useLocalizedRoute } from '@/utils/localizedRoute';
+import { Head, Link } from '@inertiajs/react';
+import { useTranslation } from 'react-i18next';
+import FaqSection from './Partials/FaqSection';
 
 const Index = () => {
     const { t } = useTranslation();
@@ -15,45 +17,59 @@ const Index = () => {
         <>
             <Head title="Dreps" />
 
-            <div className="-mt-0 relative">
+            <div className="relative -mt-0">
                 {/* Landing Section */}
                 <div className="relative w-full overflow-visible">
                     <div
-                        className="hidden md:block w-full"
+                        className="hidden w-full md:block"
                         style={{
                             backgroundImage: `url(${DrepsBanner})`,
                             backgroundSize: 'contain',
                             backgroundPosition: 'top center',
                             backgroundRepeat: 'no-repeat',
-                            aspectRatio: '18/10'
+                            aspectRatio: '18/10',
                         }}
                     />
 
                     <div
-                        className="block md:hidden w-full h-screen"
+                        className="block h-screen w-full md:hidden"
                         style={{
                             backgroundImage: `url(${DrepsBanner})`,
                             backgroundSize: 'cover',
                             backgroundPosition: 'center',
                             backgroundRepeat: 'no-repeat',
-                            height: '700px'
+                            height: '700px',
                         }}
                     />
 
                     <div className="absolute inset-0">
-                        <div className=" mx-auto px-6 md:px-6 lg:px-16 h-full flex items-center">
+                        <div className="mx-auto flex h-full items-center px-6 md:px-6 lg:px-16">
                             <div className="max-w-2xl">
-                                <Title level='1' className="text-5xl md:text-5xl font-bold mb-4 text-dark-persist transition">
+                                <Title
+                                    level="1"
+                                    className="text-dark-persist mb-4 text-5xl font-bold transition md:text-5xl"
+                                >
                                     {t('dreps.landing.title')}
                                 </Title>
                                 <Paragraph className="text-dark mb-8">
                                     {t('dreps.landing.subtitle')}
                                 </Paragraph>
-                                <div className="flex flex-col sm:flex-row gap-4">
-                                    <Button className="bg-secondary text-content-light px-6 py-3 rounded-md text-center">
+                                <div className="flex flex-col gap-4 sm:flex-row">
+                                    <PrimaryLink
+                                        href={useLocalizedRoute(
+                                            'workflows.drepSignUp.index',
+                                            {
+                                                step: 1,
+                                            },
+                                        )}
+                                        className="bg-secondary text-content-light rounded-md px-6 py-3 text-center"
+                                    >
                                         {t('dreps.landing.signUp')}
-                                    </Button>
-                                    <Link href={'dreps/list'} className="bg-transparent border-2 border-secondary text-secondary px-6 py-3 rounded-md transition text-center">
+                                    </PrimaryLink>
+                                    <Link
+                                        href={'dreps/list'}
+                                        className="border-secondary text-secondary rounded-md border-2 bg-transparent px-6 py-3 text-center transition"
+                                    >
                                         {t('dreps.landing.findDrep')}
                                     </Link>
                                 </div>
@@ -62,19 +78,24 @@ const Index = () => {
                     </div>
                 </div>
 
-                <div className="flex flex-col min-h-screen">
+                <div className="flex min-h-screen flex-col">
                     {/* What are DReps Section */}
-                    <div className="py-15 bg-background-dark">
+                    <div className="bg-background-dark py-15">
                         <div className="mx-auto px-6 md:px-10 lg:px-16">
-                            <div className="grid grid-cols-1 md:grid-cols-12 gap-16 items-center">
-                                <div className="hidden md:flex md:col-span-4 flex justify-center">
+                            <div className="grid grid-cols-1 items-center gap-16 md:grid-cols-12">
+                                <div className="flex hidden justify-center md:col-span-4 md:flex">
                                     <div className="relative">
-                                        <CardanoIcon/>
+                                        <CardanoIcon />
                                     </div>
                                 </div>
 
                                 <div className="md:col-span-6">
-                                    <Title level='2' className="text-4xl md:text-5xl font-bold mb-4">{t('dreps.landing.aDrep')}</Title>
+                                    <Title
+                                        level="2"
+                                        className="mb-4 text-4xl font-bold md:text-5xl"
+                                    >
+                                        {t('dreps.landing.aDrep')}
+                                    </Title>
                                     <Paragraph className="text-dark mb-4">
                                         {t('dreps.landing.drepDescription')}
                                     </Paragraph>
@@ -84,7 +105,8 @@ const Index = () => {
                     </div>
 
                     {/* Project Catalyst Section */}
-                    <div className="py-16 min-h-[700px] md:min-h-[600px] flex flex-col justify-between relative"
+                    <div
+                        className="relative flex min-h-[700px] flex-col justify-between py-16 md:min-h-[600px]"
                         style={{
                             backgroundImage: `url(${ProjectCatalystBackground})`,
                             backgroundSize: 'cover',
@@ -92,14 +114,17 @@ const Index = () => {
                             backgroundPosition: 'center',
                         }}
                     >
-                        <div className="flex flex-col items-center justify-center text-center px-4 pt-6 md:pt-1">
+                        <div className="flex flex-col items-center justify-center px-4 pt-6 text-center md:pt-1">
                             <div className="mb-4">
-                                <ProjectCatalyst/>
+                                <ProjectCatalyst />
                             </div>
-                            <Title level='2' className="text-5xl md:text-4xl font-bold mb-4 text-dark-persist max-w-2xl mx-auto">
+                            <Title
+                                level="2"
+                                className="text-dark-persist mx-auto mb-4 max-w-2xl text-5xl font-bold md:text-4xl"
+                            >
                                 {t('dreps.landing.projectCatalyst')}
                             </Title>
-                            <Paragraph className="text-dark max-w-2xl mx-auto">
+                            <Paragraph className="text-dark mx-auto max-w-2xl">
                                 {t('dreps.landing.projectCatalystDescription')}
                             </Paragraph>
                         </div>
@@ -107,7 +132,10 @@ const Index = () => {
                         <div className="mt-10 pb-16">
                             <div className="container mx-auto px-6 md:px-8 lg:px-16">
                                 <div className="w-full md:w-1/2 lg:w-5/12">
-                                    <Title level='2' className="text-5xl md:text-4xl font-bold mb-4 text-dark-persist">
+                                    <Title
+                                        level="2"
+                                        className="text-dark-persist mb-4 text-5xl font-bold md:text-4xl"
+                                    >
                                         {t('dreps.landing.empower')}
                                     </Title>
                                     <Paragraph className="text-dark">
@@ -119,22 +147,28 @@ const Index = () => {
                     </div>
 
                     {/* FAQ Section */}
-                    <FaqSection/>
+                    <FaqSection />
 
                     {/* Call to Action */}
-                    <div className="py-8 md:py-16 px-6 md:px-40 bg-background-dark">
+                    <div className="bg-background-dark px-6 py-8 md:px-40 md:py-16">
                         <div className="mx-auto">
-                            <div className="flex flex-col md:flex-row justify-between items-center gap-4 md:gap-6">
-                                <div className="text-left md:text-left mb-6 md:mb-0">
-                                    <Title level='2' className="text3xl md:text-2xl lg:text-3xl font-bold">
+                            <div className="flex flex-col items-center justify-between gap-4 md:flex-row md:gap-6">
+                                <div className="mb-6 text-left md:mb-0 md:text-left">
+                                    <Title
+                                        level="2"
+                                        className="text3xl font-bold md:text-2xl lg:text-3xl"
+                                    >
                                         {t('dreps.landing.excite')}
                                     </Title>
-                                    <Title level='2' className="text-3xl md:text-2xl lg:text-3xl font-bold">
+                                    <Title
+                                        level="2"
+                                        className="text-3xl font-bold md:text-2xl lg:text-3xl"
+                                    >
                                         {t('dreps.landing.answerExcite')}
                                     </Title>
                                 </div>
                                 <div className="w-full md:w-auto">
-                                    <Button className="bg-primary hover:bg-primary-dark text-light-persist px-8 py-3 rounded-md text-center w-full">
+                                    <Button className="bg-primary hover:bg-primary-dark text-light-persist w-full rounded-md px-8 py-3 text-center">
                                         {t('dreps.landing.signUp')}
                                     </Button>
                                 </div>

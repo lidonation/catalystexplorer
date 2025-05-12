@@ -21,10 +21,10 @@ export default function CompletedProposalCard({ proposal, profileHash}: Proposal
     return (
         <div
             key={proposal.hash}
-            className={`flex flex-row flex-col w-full items-center justify-between rounded-lg p-4 shadow-sm`}
+            className={`flex w-full flex-col flex-row items-center justify-between rounded-lg p-4 shadow-sm`}
         >
             <div
-                className={`w-full ${filteredNfts[0]?.status === 'minted' ? 'opacity-70' : 'opacity-100'}`}
+                className={`w-full ${filteredNfts?.[0]?.status === 'minted' ? 'opacity-70' : 'opacity-100'}`}
             >
                 <Title level="5" className="font-bold">
                     {proposal.title}
@@ -49,15 +49,17 @@ export default function CompletedProposalCard({ proposal, profileHash}: Proposal
                     <span> {proposal.campaign?.label} </span>
                 </Paragraph>
             </div>
-            {filteredNfts[0]?.status === 'minted' && (
+            {filteredNfts?.[0]?.status === 'minted' && (
                 <div>
                     <PrimaryLink
-                    href={`https://pool.pm/${filteredNfts[0]?.required_nft_metadata?.fingerprint}`}
-                    className="w-auto text-sm whitespace-nowrap lg:px-8 lg:py-3"
-                >
-                    {t('workflows.completedProjectNfts.viewNft')}
-                </PrimaryLink>
-                <Paragraph className='mt-2 text-gray-persist/70'>{t('workflows.completedProjectNfts.alreadyMinted')}</Paragraph>
+                        href={`https://pool.pm/${filteredNfts?.[0]?.required_nft_metadata?.fingerprint}`}
+                        className="w-auto text-sm whitespace-nowrap lg:px-8 lg:py-3"
+                    >
+                        {t('workflows.completedProjectNfts.viewNft')}
+                    </PrimaryLink>
+                    <Paragraph className="text-gray-persist/70 mt-2">
+                        {t('workflows.completedProjectNfts.alreadyMinted')}
+                    </Paragraph>
                 </div>
             )}
         </div>

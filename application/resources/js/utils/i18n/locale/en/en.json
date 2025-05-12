@@ -34,6 +34,7 @@
     "connections": "Connections",
     "minting": "You're Minting",
     "loginToMint": "Login to Mint",
+    "unavailableForMint": "Unavailable",
     "mustBeProposer": "Must Be Proposer",
     "copied": "Copied",
     "data": "Data",

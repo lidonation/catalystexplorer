@@ -7,7 +7,7 @@ namespace App\Http\Controllers;
 use App\Actions\TransformIdsToHashes;
 use App\DataTransferObjects\TransactionData;
 use App\Enums\TransactionSearchParams;
-use App\Models\Signatures;
+use App\Models\Signature;
 use App\Models\Transaction;
 use App\Models\Voter;
 use App\Repositories\TransactionRepository;
@@ -91,7 +91,7 @@ class TransactionController
 
         $user = $request->user();
 
-        $this->userStakeKeys = Signatures::where('user_id', $user->id)
+        $this->userStakeKeys = Signature::where('user_id', $user->id)
             ->pluck('stake_key')
             ->filter()
             ->toArray();
