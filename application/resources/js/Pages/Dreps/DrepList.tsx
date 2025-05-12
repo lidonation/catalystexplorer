@@ -38,7 +38,7 @@ const Index = ({ filters, catalystDreps }: DrepListPageProps) => {
                         </Paragraph>
                     </div>
                 </header>
-                
+
                 <section className="container py-8">
                     <div className="bg-background w-full rounded-md p-4 shadow-xs">
                         <div className="flex w-full justify-between py-4">
@@ -57,6 +57,7 @@ const Index = ({ filters, catalystDreps }: DrepListPageProps) => {
                         </div>
                         <div className="border-dark/30 border-t py-4">
                             <SearchControls
+                                border={'border-dark-light'}
                                 searchPlaceholder={t('dreps.drepSearch')}
                                 sortOptions={DrepSortingOptions()}
                                 onFiltersToggle={setShowFilters}
