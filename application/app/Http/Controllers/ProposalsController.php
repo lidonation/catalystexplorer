@@ -11,12 +11,15 @@ use App\DataTransferObjects\ProposalData;
 use App\Enums\ProposalSearchParams;
 use App\Models\Fund;
 use App\Models\IdeascaleProfile;
+use App\Models\Connection;
 use App\Models\Proposal;
 use App\Repositories\ProposalRepository;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Fluent;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Stringable;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -96,6 +99,76 @@ class ProposalsController extends Controller
         ]);
     }
 
+    public function proposal(Request $request, $slug): Response
+    {
+        $proposal = Proposal::where('slug', $slug)->firstOrFail();
+        $this->getProps($request);
+        
+        $proposalId = $proposal->id;
+
+        $cacheKey = "proposal:{$proposalId}:base_data";
+
+        $proposalData = Cache::remember($cacheKey, now()->addMinutes(10), function () use ($proposal) {
+            $proposal->load(['groups', 'ideascaleProfiles', 'team', 'team.proposals']);
+            
+            $data = $proposal->toArray();
+            
+            $data['alignment_score'] = $proposal->getDiscussionRankingScore('Impact Alignment') ?? 0;
+            $data['feasibility_score'] = $proposal->getDiscussionRankingScore('Feasibility') ?? 0;
+            $data['auditability_score'] = $proposal->getDiscussionRankingScore('Value for money') ?? 0;
+            
+            $ideascaleProfileIds = $proposal->ideascaleProfiles ? $proposal->ideascaleProfiles->pluck('id')->toArray() : [];
+            $counts = $this->getCounts($ideascaleProfileIds);
+            
+            $data['users'] = $proposal->team ? $proposal->team->map(function ($u) {
+                $proposals = $u->proposals ? $u->proposals->map(fn ($p) => $p->toArray()) : collect([]);
+
+                return [
+                    'id' => $u->id,
+                    'hash' => $u->hash,
+                    'ideascale_id' => $u->ideascale_id,
+                    'username' => $u->username,
+                    'name' => $u->name,
+                    'bio' => $u->bio,
+                    'hero_img_url' => $u->hero_img_url,
+                    'proposals_completed' => $proposals->filter(fn ($p) => $p['status'] === 'complete')->count() ?? 0,
+                    'first_timer' => ($proposals->map(fn ($p) => isset($p['fund']) ? $p['fund']['id'] : null)->unique()->count() === 1),
+                ];
+            })->toArray() : [];
+            
+            return [
+                ...$data,
+                'groups' => $proposal->groups ? $proposal->groups->toArray() : [],
+                'userCompleteProposalsCount' => $counts['userCompleteProposalsCount'] ?? 0,
+                'userOutstandingProposalsCount' => $counts['userOutstandingProposalsCount'] ?? 0,
+                'catalystConnectionsCount' => $counts['catalystConnectionCount'] ?? 0
+            ];
+        });
+
+        $currentPage = 1;
+
+        $props = [
+            'proposal' => ProposalData::from($proposalData),
+            'proposals' => Inertia::optional(
+                fn () => Cache::remember(
+                    "proposal:{$proposalId}:proposals:page:{$currentPage}",
+                    now()->addMinutes(10),
+                    fn () => to_length_aware_paginator(
+                        ProposalData::collect($proposal)
+                    )->onEachSide(0)
+                )
+            ),
+            'userCompleteProposalsCount' => $proposalData['userCompleteProposalsCount'] ?? 0,
+            'userOutstandingProposalsCount' => $proposalData['userOutstandingProposalsCount'] ?? 0,
+            'catalystConnectionsCount' => $proposalData['catalystConnectionsCount'] ?? 0
+        ];
+
+        return match (true) {
+            str_contains($request->path(), '/project-information') => Inertia::render('Proposals/Proposal', $props),
+            default => Inertia::render('Proposals/Proposal', $props), 
+        };
+    }
+    
     public function myProposals(Request $request): Response
     {
         $userId = Auth::id();
@@ -419,5 +492,47 @@ class ProposalsController extends Controller
         $funds = Fund::when($request->search, fn ($q, $search) => $q->where('title', 'ilike', "{$search}%"))->get();
 
         return FundData::collect($funds);
+    }
+
+    public function getCounts($ideascaleProfileIds)
+    {
+        if (empty($ideascaleProfileIds)) {
+            return [
+                'userCompleteProposalsCount' => 0,
+                'userOutstandingProposalsCount' => 0,
+                'catalystConnectionCount' => 0
+            ];
+        }
+
+        try {
+            $userCompleteProposalsCount = Proposal::where('status', 'complete')
+                ->whereHas('ideascaleProfiles', function ($query) use ($ideascaleProfileIds) {
+                    $query->whereIn('ideascale_profiles.id', $ideascaleProfileIds);
+                })
+                ->count();
+
+            $userOutstandingProposalsCount = Proposal::where('status', 'in_progress')
+                ->whereHas('ideascaleProfiles', function ($query) use ($ideascaleProfileIds) {
+                    $query->whereIn('ideascale_profiles.id', $ideascaleProfileIds);
+                })
+                ->count();
+
+            $catalystConnectionCount = Connection::whereIn('previous_model_id', $ideascaleProfileIds)
+                ->where('previous_model_type', IdeascaleProfile::class)
+                ->distinct()
+                ->count();
+
+            return [
+                'userCompleteProposalsCount' => $userCompleteProposalsCount,
+                'userOutstandingProposalsCount' => $userOutstandingProposalsCount,
+                'catalystConnectionCount' => $catalystConnectionCount
+            ];
+        } catch (\Exception $e) {            
+            return [
+                'userCompleteProposalsCount' => 0,
+                'userOutstandingProposalsCount' => 0,
+                'catalystConnectionCount' => 0
+            ];
+        }
     }
 }
