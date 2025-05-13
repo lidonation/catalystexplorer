@@ -211,6 +211,11 @@ class Proposal extends Model
         );
     }
 
+    public function getRouteKeyName(): string
+    {
+        return 'slug';
+    }
+
     public function currency(): Attribute
     {
         return Attribute::make(
@@ -297,7 +302,7 @@ class Proposal extends Model
     {
         return Attribute::make(
             get: function () {
-                return "https://www.lidonation.com/en/proposals/{$this->slug}";
+                return config('app.url') . "/en/proposals/{$this->slug}";
             }
         );
     }
