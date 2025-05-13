@@ -99,6 +99,15 @@ final class ProposalData extends Data
         public ?int $ranking_total,
 
         #[TypeScriptOptional]
+        public ?int $alignment_score,
+
+        #[TypeScriptOptional]
+        public ?int $feasibility_score,
+
+        #[TypeScriptOptional]
+        public ?int $auditability_score,
+
+        #[TypeScriptOptional]
         public ?string $quickpitch,
 
         #[TypeScriptOptional]
