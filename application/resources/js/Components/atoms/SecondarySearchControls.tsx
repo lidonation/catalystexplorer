@@ -3,11 +3,17 @@ import Selector from '@/Components/atoms/Selector';
 import SearchBar from '@/Components/SearchBar';
 import FilterLinesIcon from '@/Components/svgs/FilterLinesIcon';
 import { useFilterContext } from '@/Context/FiltersContext';
-import { Dispatch, SetStateAction, useEffect, useState, useCallback } from 'react';
+import { VoteEnums } from '@/enums/vote-search-enums';
+import { router } from '@inertiajs/react';
+import {
+    Dispatch,
+    SetStateAction,
+    useCallback,
+    useEffect,
+    useState,
+} from 'react';
 import { useTranslation } from 'react-i18next';
 import ActiveFilters from './ActiveFilters';
-import { router } from '@inertiajs/react';
-import { VoteEnums } from '@/enums/vote-search-enums';
 
 function SecondarySearchControls({
     onFiltersToggle,
@@ -23,7 +29,6 @@ function SecondarySearchControls({
     searchParam?: string;
     searchLabel?: string;
     isUnifiedSearch?: boolean;
-
 }) {
     const { getFilter, setFilters, filters } = useFilterContext();
     const { t } = useTranslation();
@@ -45,11 +50,15 @@ function SecondarySearchControls({
         setFilters({
             param: searchParam,
             value: search,
-            label: t(searchLabel === 'Search' ? 'vote.search' : searchLabel, searchLabel),
+            label: t(
+                searchLabel === 'Search' ? 'vote.search' : searchLabel,
+                searchLabel,
+            ),
         });
         setSearchQuery(search);
         const url = new URL(window.location.href);
-        const isUnified = isUnifiedSearch || url.searchParams.get('unifiedSearch') === 'true';
+        const isUnified =
+            isUnifiedSearch || url.searchParams.get('unifiedSearch') === 'true';
         if (isUnified) {
             url.searchParams.set('unifiedSearch', 'true');
         }
@@ -60,7 +69,10 @@ function SecondarySearchControls({
             setFilters({
                 param: searchParam,
                 value: search,
-                label: t(searchLabel === 'Search' ? 'vote.search' : searchLabel, searchLabel),
+                label: t(
+                    searchLabel === 'Search' ? 'vote.search' : searchLabel,
+                    searchLabel,
+                ),
             });
             url.searchParams.set(searchParam, search);
             if (isUnified) {
@@ -72,7 +84,7 @@ function SecondarySearchControls({
                     preserveScroll: true,
                     preserveState: true,
                     only: ['voterHistories', 'filters'],
-                    replace: true
+                    replace: true,
                 });
             } else {
                 window.history.replaceState(null, '', url.toString());
@@ -81,7 +93,7 @@ function SecondarySearchControls({
     };
 
     const toggleFilters = useCallback(() => {
-        setShowFilters(prev => !prev);
+        setShowFilters((prev) => !prev);
     }, []);
 
     const filtersCount = filters.filter(
@@ -93,10 +105,11 @@ function SecondarySearchControls({
     ).length;
 
     return (
-        <div className="sticky px-0 top-0 z-10 container mx-auto flex w-full flex-col gap-3 py-3 backdrop-blur-md">
-            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2">
+        <div className="sticky top-0 z-10 container mx-auto flex w-full flex-col gap-3 px-0 py-3 backdrop-blur-md">
+            <div className="flex flex-col items-start gap-2 sm:flex-row sm:items-center">
                 <div className="w-full">
                     <SearchBar
+                        border={'border-dark-light'}
                         handleSearch={handleSearch}
                         autoFocus
                         showRingOnFocus
@@ -104,9 +117,9 @@ function SecondarySearchControls({
                         placeholder={searchPlaceholder}
                     />
                 </div>
-                <div className="flex flex-col xs:flex-row sm:flex-row gap-2 w-full sm:w-auto">
+                <div className="xs:flex-row flex w-full flex-col gap-2 sm:w-auto sm:flex-row">
                     <Button
-                        className={`border-input bg-background flex cursor-pointer w-full sm:w-auto flex-row items-center justify-center gap-2 rounded-lg border px-3 py-1.5 shadow-xs ${
+                        className={`border-input bg-background flex w-full cursor-pointer flex-row items-center justify-center gap-2 rounded-lg border px-3 py-1.5 shadow-xs sm:w-auto ${
                             showFilters
                                 ? 'border-accent-blue text-primary ring-offset-background ring-1'
                                 : 'hover:bg-background-lighter text-gray-persist'
@@ -132,14 +145,19 @@ function SecondarySearchControls({
 
                                 setTimeout(() => {
                                     const currentUrl = window.location.pathname;
-                                    const currentParams = new URLSearchParams(window.location.search);
+                                    const currentParams = new URLSearchParams(
+                                        window.location.search,
+                                    );
 
                                     currentParams.delete(VoteEnums.SORT);
                                     currentParams.delete('sort');
                                     currentParams.delete('voting_power');
 
                                     const params: Record<string, string> = {};
-                                    for (const [key, value] of currentParams.entries()) {
+                                    for (const [
+                                        key,
+                                        value,
+                                    ] of currentParams.entries()) {
                                         if (value) {
                                             params[key] = value;
                                         }
@@ -148,7 +166,7 @@ function SecondarySearchControls({
                                     router.get(currentUrl, params, {
                                         preserveState: true,
                                         preserveScroll: true,
-                                        only: ['voterHistories', 'filters']
+                                        only: ['voterHistories', 'filters'],
                                     });
                                 }, 10);
                             } else {

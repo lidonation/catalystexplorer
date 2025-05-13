@@ -28,7 +28,7 @@ export default function BookmarkButton({
         setIsOpen,
         bookmarkId,
         associatedCollection
-    } = useBookmark({ modelType, itemId });
+    } = useBookmark({ modelType, itemId });   
     const handleOpenChange = async (open: boolean) => {
         if (open && !isBookmarked) {
             await createBookmark();
@@ -47,7 +47,7 @@ export default function BookmarkButton({
         />,
         <BookmarkPage2 key="priority" />,
         <BookmarkPage3 key="new-list" />,
-    ];
+    ];    
 
     return (
         <TransitionMenu

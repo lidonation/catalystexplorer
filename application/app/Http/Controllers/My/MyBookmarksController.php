@@ -13,7 +13,6 @@ use App\Enums\ProposalSearchParams;
 use App\Http\Controllers\Controller;
 use App\Models\BookmarkCollection;
 use App\Models\BookmarkItem;
-use App\Models\Community;
 use App\Models\Group;
 use App\Models\IdeascaleProfile;
 use App\Models\Proposal;
@@ -109,8 +108,7 @@ class MyBookmarksController extends Controller
             }
 
             $bookmarkableType = BookmarkableType::from($modelType);
-            $modelClass = $bookmarkableType->getModelClass();
-            $modelType = class_basename($modelClass);
+            $modelType = $bookmarkableType->getModelClass();
 
             DB::beginTransaction();
             $bookmarkItem = BookmarkItem::create([
@@ -245,8 +243,7 @@ class MyBookmarksController extends Controller
                 'title' => $validated['collection']['title'],
             ]);
 
-            $itemData = BookmarkItemData::from([
-                'hash' => null,
+            BookmarkItem::create([
                 'user_id' => Auth::id(),
                 'bookmark_collection_id' => $collection->id,
                 'model_id' => $validated['model_id'],
@@ -254,12 +251,7 @@ class MyBookmarksController extends Controller
                 'title' => null,
                 'content' => null,
                 'action' => null,
-                'created_at' => now()->toISOString(),
-                'updated_at' => now()->toISOString(),
-                'deleted_at' => null,
             ]);
-
-            BookmarkItem::create($itemData->toArray());
 
             DB::commit();
 
@@ -277,61 +269,18 @@ class MyBookmarksController extends Controller
     public function collectionIndex(Request $request): InertiaResponse
     {
         $userId = Auth::user()->id;
-        $hashService = new HashIdService(new BookmarkCollection);
 
         $this->queryParams = $request->validate([
             ProposalSearchParams::PAGE()->value => 'int|nullable',
-            'per_page' => 'int|nullable', // Optional: Allow custom per_page value in query params
+            'per_page' => 'int|nullable',
         ]);
 
         $page = $this->queryParams[ProposalSearchParams::PAGE()->value] ?? 1;
         $perPage = $this->queryParams[ProposalSearchParams::LIMIT()->value] ?? 5;
 
-        $modelMap = [
-            'Proposal' => Proposal::class,
-            'IdeascaleProfile' => IdeascaleProfile::class,
-            'Community' => Community::class,
-            'Group' => Group::class,
-            'Review' => Review::class,
-        ];
-
-        $allModelTypes = array_keys($modelMap);
-
         $bookmarkCollections = BookmarkCollection::where('user_id', $userId)
             ->orderBy('created_at', 'desc')
             ->paginate($perPage, ['*'], 'page', $page);
-
-        $bookmarkCollections->getCollection()->each(function ($collection) use ($hashService, $allModelTypes) {
-            $collection->decoded_id = $hashService->decode($collection->getKey());
-            $collection->hash = $collection->hash;
-
-            $dbTypeCounts = BookmarkItem::where('bookmark_collection_id', $collection->decoded_id)
-                ->select('model_type', DB::raw('count(*) as count'))
-                ->groupBy('model_type')
-                ->get();
-
-            $typeCounts = [];
-
-            foreach ($allModelTypes as $modelType) {
-                $typeCounts[] = [
-                    'model' => $modelType,
-                    'count' => 0,
-                ];
-            }
-
-            foreach ($dbTypeCounts as $typeCount) {
-                foreach ($typeCounts as &$item) {
-                    if ($item['model'] === $typeCount->model_type) {
-                        $item['count'] = (int) $typeCount->count;
-                        break;
-                    }
-                }
-            }
-
-            $collection->type_counts = $typeCounts;
-
-            $collection->total_items = array_sum(array_column($typeCounts, 'count'));
-        });
 
         return Inertia::render('My/Lists/Index', [
             'bookmarkCollections' => BookmarkCollectionData::collect($bookmarkCollections),
