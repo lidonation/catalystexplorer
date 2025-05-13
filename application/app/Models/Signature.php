@@ -8,7 +8,7 @@ use App\Traits\HasMetaData;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class Signatures extends Model
+class Signature extends Model
 {
     use HasMetaData;
 

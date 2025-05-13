@@ -1,5 +1,6 @@
 import InputError from '@/Components/InputError';
 import TextInput from '@/Components/atoms/TextInput';
+import Textarea from '@/Components/atoms/Textarea';
 import { FormDataConvertible } from '@inertiajs/core';
 import { InertiaFormProps } from '@inertiajs/react';
 import { forwardRef, useEffect, useImperativeHandle } from 'react';
@@ -85,18 +86,16 @@ const ClaimProfileForm = forwardRef<ClaimFormHandles, ClaimProfileFormProps>(
                         <label htmlFor="bio" className="text-sm">
                             {t('profileWorkflow.bio')}
                         </label>
-                        <textarea
+                        <Textarea
                             id="bio"
                             name="bio"
+                            required
+                            minLengthEnforced
                             value={form.data.bio}
                             onChange={(e) => setData('bio', e.target.value)}
-                            className="focus:ring-primary bg-background h-30 w-full rounded-lg border px-4 py-2 focus:ring-2"
-                            onKeyDown={(e) => {
-                                if (e.key === ' ') {
-                                    e.stopPropagation();
-                                }
-                            }}
+                            className="h-30 w-full rounded-lg px-4 py-2"
                         />
+                        <InputError message={form.errors.bio} />
                     </div>
 
                     {/* Social Links */}

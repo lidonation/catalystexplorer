@@ -15,11 +15,7 @@ class BookmarkItem extends Model
 {
     use HasHashId,HasModel, SoftDeletes;
 
-    protected $fillable = [
-        'user_id',
-        'model_type',
-        'model_id',
-    ];
+    protected $guarded = [];
 
     public function user(): BelongsTo
     {

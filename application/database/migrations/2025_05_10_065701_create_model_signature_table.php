@@ -11,14 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('dreps', function (Blueprint $table) {
-            $table->id();
-            $table->bigInteger('voter_id');
-            $table->foreignId('user_id')
-            ->nullable()
-            ->constrained('users');     
-            $table->timestamps();
-            $table->softDeletes();
+        Schema::create('model_signature', function (Blueprint $table) {
+            $table->text('model_type');
+            $table->foreignId('model_id');
+            $table->foreignId('signature_id')->constrained('signatures');
         });
     }
 
@@ -27,6 +23,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('dreps');
+        Schema::dropIfExists('model_signature');
     }
 };

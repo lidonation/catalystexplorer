@@ -109,7 +109,7 @@ const ClaimedButton: React.FC<ClaimedButtonProps> = ({
             )}
 
             {error && (
-                <div className="mt-2 text-sm text-red-500" role="alert">
+                <div className="text-danger-strong mt-2 text-sm" role="alert">
                     {error}
                 </div>
             )}

@@ -1,9 +1,14 @@
 import Title from '@/Components/atoms/Title';
-import { Head } from '@inertiajs/react';
+import { Head, router } from '@inertiajs/react';
+import ModalLayout from '@/Layouts/ModalLayout';
 
 const Index = () => {
+    function handleChartDetailModalClose() {
+            router.reload({ only: ['proposals'] });
+    }
+
     return (
-        <>
+        <ModalLayout onModalClosed={handleChartDetailModalClose}>
             <Head title="Charts"/>
 
             <header>
@@ -20,7 +25,7 @@ const Index = () => {
             <div className="flex h-screen w-full flex-col items-center justify-center">
                 <Title level='2'>Coming Soon</Title>
             </div>
-        </>
+        </ModalLayout>
     );
 };
 

@@ -1,46 +1,50 @@
 <?php
 
-use App\Http\Controllers\BookmarksController;
-use App\Http\Controllers\CardanoBudgetProposalController;
-use App\Http\Controllers\SignatureWorkflowController;
-use App\Http\Controllers\VoterListController;
-use App\Http\Controllers\VotingWorkflowController;
-use CodeZero\LocalizedRoutes\Controllers\FallbackController;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\NftController;
 use App\Http\Controllers\DrepController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\FundsController;
 use App\Http\Controllers\ChartsController;
 use App\Http\Controllers\GroupsController;
 use App\Http\Controllers\SearchController;
+use App\Http\Controllers\NumbersController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ReviewsController;
-use App\Http\Controllers\VoterHistoriesController;
 use App\Http\Middleware\WorkflowMiddleware;
 use App\Http\Controllers\WorkflowController;
+use App\Http\Controllers\BookmarksController;
 use App\Http\Controllers\CampaignsController;
 use App\Http\Controllers\MilestoneController;
 use App\Http\Controllers\ProposalsController;
+use App\Http\Controllers\VoterListController;
 use App\Http\Controllers\VoterToolController;
+use App\Http\Controllers\CommunitiesController;
+use App\Http\Controllers\ConnectionsController;
 use App\Http\Controllers\JormungandrController;
 use App\Http\Controllers\TransactionController;
-use App\Http\Controllers\CommunitiesController;
+use App\Http\Controllers\CatalystDrepController;
+use App\Http\Controllers\VoterHistoriesController;
+use App\Http\Controllers\VotingWorkflowController;
 use App\Http\Controllers\IdeascaleProfilesController;
-use App\Http\Controllers\ClaimIdeascaleProfileContoller;
-use App\Http\Controllers\CompletetProjectNftsController;
+use App\Http\Controllers\SignatureWorkflowController;
+use App\Http\Controllers\CompletedProjectNftsController;
+use App\Http\Controllers\CardanoBudgetProposalController;
 use App\Http\Controllers\ClaimIdeascaleProfileController;
-use App\Http\Controllers\ConnectionsController;
-use App\Http\Controllers\NumbersController;
+use CodeZero\LocalizedRoutes\Controllers\FallbackController;
 
 Route::localized(
     function () {
         Route::get('/', [HomeController::class, 'index'])
             ->name('home');
-
-        Route::get('/proposals', [ProposalsController::class, 'index'])
-            ->name('proposals.index');
+            
+        Route::prefix('/proposals')->as('proposals.')->group(function () {
+            Route::get('/', [ProposalsController::class, 'index'])
+                ->name('index');
+        });
+        
+        Route::get('/proposals/charts', [ProposalsController::class, 'charts'])
+            ->name('proposals.charts');
 
         Route::prefix('/funds')->as('funds.')->group(function () {
             Route::get('/', [FundsController::class, 'index'])
@@ -116,7 +120,7 @@ Route::localized(
             Route::prefix('/completed-projects-nfts/steps')->as('completedProjectsNft.')
                 ->middleware([WorkflowMiddleware::class])
                 ->group(function () {
-                    Route::get('/{step}', [CompletetProjectNftsController::class, 'handleStep'])
+                    Route::get('/{step}', [CompletedProjectNftsController::class, 'handleStep'])
                         ->name('index');
                 });
 
@@ -163,10 +167,16 @@ Route::localized(
             Route::prefix('/drep-sign-up/steps')->as('drepSignUp.')
                 ->middleware([WorkflowMiddleware::class])
                 ->group(function () {
-                    Route::get('/{step}', [DrepController::class, 'handleStep'])
+                    Route::get('/{step}', [CatalystDrepController::class, 'handleStep'])
                         ->name('index');
-                    // Route::post('/{ideascaleProfile}/claim', [ClaimIdeascaleProfileController::class, 'claimIdeascaleProfile'])
-                    //     ->name('saveClaim');
+                    Route::post('/drep', [CatalystDrepController::class, 'saveDrep'])
+                        ->name('create');
+                Route::patch('{catalystDrep}/drep', [CatalystDrepController::class, 'updateDrep'])
+                    ->name('patch');
+                    Route::post('{catalystDrep}/validate-drep-wallet', [CatalystDrepController::class, 'validateDrepWallet'])
+                        ->name('validateWallet');
+                    Route::post('{catalystDrep}/capture-signature', [CatalystDrepController::class, 'captureSignature'])
+                        ->name('captureSignature');
                 });
 
             Route::prefix('/signature-capture/steps')->as('signature.')
@@ -266,16 +276,16 @@ Route::localized(
 
         Route::prefix('/completed-project-nfts')->as('completedProjectsNfts.')->group(
             function () {
-                Route::get('/', [CompletetProjectNftsController::class, 'index'])
+                Route::get('/', [CompletedProjectNftsController::class, 'index'])
                     ->name('index');
 
-                Route::get('/{proposal}/mint', [CompletetProjectNftsController::class, 'show'])
+                Route::get('/{proposal:hash}/mint', [CompletedProjectNftsController::class, 'show'])
                     ->name('show');
             }
         );
 
         Route::prefix('nfts')->as('crud.nfts.')->group(function () {
-            Route::patch('/update/{nft:id}', [CompletetProjectNftsController::class, 'updateMetadata'])
+            Route::patch('/update/{nft:id}', [CompletedProjectNftsController::class, 'updateMetadata'])
                 ->name('update');
         });
 
@@ -294,16 +304,15 @@ Route::localized(
                 Route::get('/', [VoterHistoriesController::class, 'index'])
                     ->name('index');
             });
-
         });
 
         // Dreps
         Route::prefix('/dreps')->as('dreps.')->group(
             function () {
-                Route::get('/', [DrepController::class, 'index'])
+                Route::get('/', [CatalystDrepController::class, 'index'])
                     ->name('index');
 
-                Route::get('/list', [DrepController::class, 'list'])
+                Route::get('/list', [CatalystDrepController::class, 'list'])
                     ->name('list');
             }
         );

@@ -101,12 +101,13 @@ const Step2: React.FC<Step2Props> = ({
             <Nav stepDetails={stepDetails} activeStep={activeStep} />
 
             <Content>
-                <div className=" bg-background p-6 lg:p-8 max-w-3xl mx-auto">
-                    <div className="space-y-6 rounded-lg p-6 shadow-sm border border-gray-100">
-
-                        <div className="flex justify-end items-center mb-6">
+                <div className="bg-background mx-auto max-w-3xl p-6 lg:p-8">
+                    <div className="space-y-6 rounded-lg border border-gray-100 p-6 shadow-sm">
+                        <div className="mb-6 flex items-center justify-end">
                             <div className="flex items-center">
-                                <ValueLabel className="mr-2 text-sm text-gray-persist font-bold">{t('workflows.voterList.selectFund')}</ValueLabel>
+                                <ValueLabel className="text-gray-persist mr-2 text-sm font-bold">
+                                    {t('workflows.voterList.selectFund')}
+                                </ValueLabel>
                                 <Selector
                                     isMultiselect={false}
                                     selectedItems={form.data.fund_slug}
@@ -115,40 +116,47 @@ const Step2: React.FC<Step2Props> = ({
                                     }}
                                     options={funds?.map((fund: any) => ({
                                         label: fund.title,
-                                        value: fund.slug
+                                        value: fund.slug,
                                     }))}
                                     hideCheckbox={true}
-                                    placeholder={t('workflows.voterList.selectFund')}
+                                    placeholder={t(
+                                        'workflows.voterList.selectFund',
+                                    )}
                                     className="w-64"
                                 />
                             </div>
                         </div>
                         <div>
-                            <ValueLabel className='text-content'>
+                            <ValueLabel className="text-content">
                                 {t('workflows.voterList.title')}
                             </ValueLabel>
                             <div className="h-2"></div>
                             <TextInput
                                 id="title"
-                                className="w-full !border-gray-persist !focus:border-gray-600 rounded-sm placeholder:text-sm"
+                                className="!border-gray-persist !focus:border-gray-600 w-full rounded-sm placeholder:text-sm"
                                 placeholder={t('workflows.voterList.title')}
                                 value={form.data.title}
-                                onChange={(e) => form.setData('title', e.target.value)}
+                                onChange={(e) =>
+                                    form.setData('title', e.target.value)
+                                }
                                 required
                             />
                             {errors.title && (
-                                <Paragraph size="sm" className="text-red-500 mt-1">
+                                <Paragraph
+                                    size="sm"
+                                    className="text-danger-strong mt-1"
+                                >
                                     {errors.title}
                                 </Paragraph>
                             )}
                         </div>
 
                         <div
-                            onKeyDown={e => e.stopPropagation()}
-                            onClick={e => e.stopPropagation()}
-                            onFocus={e => e.stopPropagation()}
+                            onKeyDown={(e) => e.stopPropagation()}
+                            onClick={(e) => e.stopPropagation()}
+                            onFocus={(e) => e.stopPropagation()}
                         >
-                            <ValueLabel className='text-content mb-4'>
+                            <ValueLabel className="text-content mb-4">
                                 {t('workflows.voterList.description')}
                             </ValueLabel>
                             <div className="h-2"></div>
@@ -156,28 +164,42 @@ const Step2: React.FC<Step2Props> = ({
                                 id="content"
                                 rows={4}
                                 style={{ whiteSpace: 'pre-wrap' }}
-                                className="w-full bg-background rounded-md border border-gray-persist px-4 py-2 focus:outline-none focus:ring-1 focus:ring-primary placeholder:text-sm whitespace-pre-wrap"
-                                placeholder={t('workflows.voterList.descriptionPlaceholder')}
+                                className="bg-background border-gray-persist focus:ring-primary w-full rounded-md border px-4 py-2 whitespace-pre-wrap placeholder:text-sm focus:ring-1 focus:outline-none"
+                                placeholder={t(
+                                    'workflows.voterList.descriptionPlaceholder',
+                                )}
                                 value={form.data.content}
                                 onChange={(e) => {
                                     const valueWithWhitespace = e.target.value;
-                                    form.setData('content', valueWithWhitespace);
-                                    console.log('Text with whitespace:', valueWithWhitespace);
+                                    form.setData(
+                                        'content',
+                                        valueWithWhitespace,
+                                    );
+                                    console.log(
+                                        'Text with whitespace:',
+                                        valueWithWhitespace,
+                                    );
                                 }}
                             />
-                            <div className="flex justify-between items-center mt-1">
-                                <Paragraph size="sm" className="text-gray-persist text-[0.75rem]">
+                            <div className="mt-1 flex items-center justify-between">
+                                <Paragraph
+                                    size="sm"
+                                    className="text-gray-persist text-[0.75rem]"
+                                >
                                     {t('workflows.voterList.descriptionHint')}
                                 </Paragraph>
-                                <Paragraph size="sm" className="text-gray-persist text-[0.75rem]">
+                                <Paragraph
+                                    size="sm"
+                                    className="text-gray-persist text-[0.75rem]"
+                                >
                                     {form.data.content.length}/200
                                 </Paragraph>
                             </div>
                         </div>
 
-                        <div className="grid grid-cols-12 gap-4 items-center">
+                        <div className="grid grid-cols-12 items-center gap-4">
                             <div className="col-span-3">
-                                <ValueLabel className='text-content'>
+                                <ValueLabel className="text-content">
                                     {t('workflows.voterList.visibility')}
                                 </ValueLabel>
                             </div>
@@ -185,72 +207,113 @@ const Step2: React.FC<Step2Props> = ({
                                 <RadioGroup
                                     name="visibility"
                                     selectedValue={form.data.visibility}
-                                    onChange={(value) => form.setData('visibility', value)}
+                                    onChange={(value) =>
+                                        form.setData('visibility', value)
+                                    }
                                     options={[
-                                        { value: VisibilityEnum.PUBLIC, label: t('workflows.voterList.visibilityOptions.public') },
-                                        { value: VisibilityEnum.PRIVATE, label: t('workflows.voterList.visibilityOptions.private') },
-                                        { value: VisibilityEnum.DELEGATORS, label: t('workflows.voterList.visibilityOptions.delegators') }
+                                        {
+                                            value: VisibilityEnum.PUBLIC,
+                                            label: t(
+                                                'workflows.voterList.visibilityOptions.public',
+                                            ),
+                                        },
+                                        {
+                                            value: VisibilityEnum.PRIVATE,
+                                            label: t(
+                                                'workflows.voterList.visibilityOptions.private',
+                                            ),
+                                        },
+                                        {
+                                            value: VisibilityEnum.DELEGATORS,
+                                            label: t(
+                                                'workflows.voterList.visibilityOptions.delegators',
+                                            ),
+                                        },
                                     ]}
                                     labelClassName="font-bold text-gray-persist ml-2"
                                 />
                             </div>
                         </div>
 
-                        <div className="grid grid-cols-12 gap-4 items-center">
+                        <div className="grid grid-cols-12 items-center gap-4">
                             <div className="col-span-3">
-                                <ValueLabel className='text-content'>
+                                <ValueLabel className="text-content">
                                     {t('workflows.voterList.comments')}
                                 </ValueLabel>
                             </div>
                             <div className="col-span-9 flex items-center gap-2">
                                 <CustomSwitch
                                     checked={form.data.comments_enabled}
-                                    onCheckedChange={(checked) => form.setData('comments_enabled', checked)}
+                                    onCheckedChange={(checked) =>
+                                        form.setData(
+                                            'comments_enabled',
+                                            checked,
+                                        )
+                                    }
                                     color="bg-primary"
                                     size="md"
                                     className="!w-auto"
                                 />
-                                <Paragraph size="sm" className="font-bold text-gray-persist">{t('workflows.voterList.commentsEnabled')}</Paragraph>
+                                <Paragraph
+                                    size="sm"
+                                    className="text-gray-persist font-bold"
+                                >
+                                    {t('workflows.voterList.commentsEnabled')}
+                                </Paragraph>
                             </div>
                         </div>
 
-                        <div className="grid grid-cols-12 gap-4 items-center">
+                        <div className="grid grid-cols-12 items-center gap-4">
                             <div className="col-span-3">
-
-                                <ValueLabel className='text-content'>
+                                <ValueLabel className="text-content">
                                     {t('workflows.voterList.chooseColor')}
                                 </ValueLabel>
 
-                                <Paragraph className="text-xs text-gray-persist">{t('workflows.voterList.pickTheme')}</Paragraph>
+                                <Paragraph className="text-gray-persist text-xs">
+                                    {t('workflows.voterList.pickTheme')}
+                                </Paragraph>
                             </div>
                             <div className="col-span-9 flex items-center">
                                 <div className="relative">
-                                    <div className="flex items-center border border-dark rounded-md px-2 w-full">
+                                    <div className="border-dark flex w-full items-center rounded-md border px-2">
                                         <div
-                                            className="w-4 h-4 rounded-sm mr-2"
-                                            style={{ backgroundColor: form.data.color }}
+                                            className="mr-2 h-4 w-4 rounded-sm"
+                                            style={{
+                                                backgroundColor:
+                                                    form.data.color,
+                                            }}
                                         />
                                         <input
                                             type="text"
                                             value={form.data.color}
-                                            onChange={(e) => form.setData('color', e.target.value)}
-                                            className="bg-background text-content border-none focus:outline-none text-sm"
+                                            onChange={(e) =>
+                                                form.setData(
+                                                    'color',
+                                                    e.target.value,
+                                                )
+                                            }
+                                            className="bg-background text-content border-none text-sm focus:outline-none"
                                         />
                                         <input
                                             type="color"
                                             id="color-picker"
                                             value={form.data.color}
-                                            onChange={(e) => form.setData('color', e.target.value)}
-                                            className="absolute opacity-0 w-full h-full top-0 left-0 cursor-pointer"
+                                            onChange={(e) =>
+                                                form.setData(
+                                                    'color',
+                                                    e.target.value,
+                                                )
+                                            }
+                                            className="absolute top-0 left-0 h-full w-full cursor-pointer opacity-0"
                                         />
                                     </div>
                                 </div>
                             </div>
                         </div>
 
-                        <div className="grid grid-cols-12 gap-4 items-center">
+                        <div className="grid grid-cols-12 items-center gap-4">
                             <div className="col-span-3">
-                                <ValueLabel className='text-content'>
+                                <ValueLabel className="text-content">
                                     {t('workflows.voterList.status')}
                                 </ValueLabel>
                             </div>
@@ -258,10 +321,22 @@ const Step2: React.FC<Step2Props> = ({
                                 <RadioGroup
                                     name="status"
                                     selectedValue={form.data.status}
-                                    onChange={(value) => form.setData('status', value)}
+                                    onChange={(value) =>
+                                        form.setData('status', value)
+                                    }
                                     options={[
-                                        { value: StatusEnum.PUBLISHED, label: t('workflows.voterList.statusOptions.published') },
-                                        { value: StatusEnum.DRAFT, label: t('workflows.voterList.statusOptions.draft') }
+                                        {
+                                            value: StatusEnum.PUBLISHED,
+                                            label: t(
+                                                'workflows.voterList.statusOptions.published',
+                                            ),
+                                        },
+                                        {
+                                            value: StatusEnum.DRAFT,
+                                            label: t(
+                                                'workflows.voterList.statusOptions.draft',
+                                            ),
+                                        },
                                     ]}
                                 />
                             </div>

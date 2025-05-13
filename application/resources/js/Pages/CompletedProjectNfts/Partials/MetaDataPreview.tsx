@@ -24,6 +24,8 @@ const MetaDataPreview = ({ideascaleProfiles, nft, artist, metadata, claimedProfi
   const artistImageUrl = artist?.hero_img_url || '';
   const [isMetadataAvailable, setIsMetadataAvailable] = useState<boolean>(true);
   
+
+  
   useEffect(() => {
     const hasRequiredMetadata = metadata && (
       metadata.paymentGatewayLinkForSpecificSale || 

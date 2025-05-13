@@ -19,6 +19,9 @@ import { useTranslation } from 'react-i18next';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import MainLayout from './RootLayout';
+// @ts-ignore
+import { ModalRoot } from '@inertiaui/modal-react';
+import GraphButton from '@/Components/GraphButton';
 
 export default function AppLayout({ children }: { children: ReactNode }) {
     const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -27,9 +30,9 @@ export default function AppLayout({ children }: { children: ReactNode }) {
     const breadcrumbItems = generateBreadcrumbs(url, props['locale'] as string);
     const memoizedChildren = useMemo(() => children, [children]);
     const savedTheme = localStorage.getItem('theme');
-    
+
     const isAuthPage = url.includes('login') || url.includes('register');
-    
+
     return (
         <MainLayout>
             {/* Sidebar for small screens */}
@@ -84,6 +87,9 @@ export default function AppLayout({ children }: { children: ReactNode }) {
                                     <div className='hidden lg:block'>
                                         <PlayerBar />
                                     </div>
+                                    <div className='hidden lg:block'>
+                                        <GraphButton/>
+                                    </div>
                                 </section>
                             </UIProvider>
                         </MetricsProvider>
@@ -116,6 +122,9 @@ export default function AppLayout({ children }: { children: ReactNode }) {
                 pauseOnHover
                 theme={savedTheme ?? 'light'}
             />
+
+            <ModalRoot />
+
         </MainLayout>
     );
 }

@@ -134,7 +134,7 @@ const MetricCard: React.FC<MetricCardProps> = ({ metric }) => {
                                                     {point.data.xFormatted}
                                                 </Title>
                                                 <Paragraph className="mt-2 flex items-center text-sm">
-                                                    <span className="shrink truncate mr-1">
+                                                    <span className="mr-1 shrink truncate">
                                                         {metric.title}
                                                     </span>
                                                     :
@@ -153,7 +153,7 @@ const MetricCard: React.FC<MetricCardProps> = ({ metric }) => {
                                                         className={
                                                             trend.isPositive
                                                                 ? 'text-green-500'
-                                                                : 'text-red-500'
+                                                                : 'text-danger-strong'
                                                         }
                                                         style={{
                                                             display: 'flex',

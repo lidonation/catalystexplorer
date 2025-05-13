@@ -1,22 +1,27 @@
+import PrimaryButton from '@/Components/atoms/PrimaryButton';
 import CheckIcon from '@/Components/svgs/CheckIcon';
 import CopyIcon from '@/Components/svgs/CopyIcon';
+import ToolTipHover from '@/Components/ToolTipHover';
+import { currency } from '@/utils/currency';
 import { Button } from '@headlessui/react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import CatalystDrepData = App.DataTransferObjects.CatalystDrepData;
 
-interface DrepTableProps extends Record<string, unknown> {
-    dreps: Array<any>;
+interface DrepTableProps {
+    dreps: CatalystDrepData[];
 }
 
 export default function DrepTable({ dreps }: DrepTableProps) {
     const { t } = useTranslation();
+
     const [copySuccess, setCopySuccess] = useState<Record<number, boolean>>(
         Object.fromEntries(dreps.map((_, index) => [index, false])),
     );
 
     const tableColumns = [
         { label: t('dreps.drepList.drep') },
-        { label: t('dreps.drepList.registeredOn') },
+        // { label: t('dreps.drepList.registeredOn') },
         { label: t('dreps.drepList.lastActive') },
         { label: t('dreps.drepList.votingPower') },
         { label: t('dreps.drepList.delegators') },
@@ -66,10 +71,17 @@ export default function DrepTable({ dreps }: DrepTableProps) {
                     {dreps.map((drep, index) => (
                         <tr key={index} className="border-dark/30 border-b">
                             <td className="text-gray-persist flex items-center gap-2 px-4 py-8">
-                                <span>{drep.drep}</span>
+                                <span>{drep.stake_address}</span>
                                 <Button
                                     className="text-content-light hover:text-content flex cursor-pointer items-center transition-colors duration-300 ease-in-out"
-                                    onClick={() => handleCopy(drep.drep, index)}
+                                    onClick={() =>
+                                        drep.stake_address
+                                            ? handleCopy(
+                                                  drep.stake_address,
+                                                  index,
+                                              )
+                                            : ''
+                                    }
                                     title="Copy URL"
                                 >
                                     {copySuccess[index] ? (
@@ -87,23 +99,25 @@ export default function DrepTable({ dreps }: DrepTableProps) {
                                 )}
                             </td>
 
-                            <td className="border-dark/30 border px-4 py-2">
+                            {/* <td className="border-dark/30 border px-4 py-2">
                                 <span> {drep.registeredOn}</span> <br />
                                 <span className="text-gray-persist mt-2">
                                     {t('dreps.drepList.anHourAgo')}
                                 </span>
-                            </td>
+                            </td> */}
                             <td className="border-dark/30 border px-4 py-2">
-                                <span> {drep.lastActive}</span> <br />
-                                <span className="text-gray-persist mt-2">
+                                <span> {drep.last_active}</span> <br />
+                                {/* <span className="text-gray-persist mt-2">
                                     {t('dreps.drepList.anHourAgo')}
-                                </span>
+                                </span> */}
                             </td>
                             <td className="border-dark/30 border px-4 py-2">
-                                {drep.votingPower}
+                                {drep.voting_power
+                                    ? currency(drep.voting_power, 2, 'ADA')
+                                    : '-'}
                             </td>
                             <td className="border-dark/30 border px-4 py-2">
-                                {drep.delegators}
+                                {'-'}
                             </td>
                             <td className="border-dark/30 border px-4 py-2">
                                 <div
@@ -113,13 +127,22 @@ export default function DrepTable({ dreps }: DrepTableProps) {
                                             : 'text-error border-error/50 bg-error/10'
                                     }`}
                                 >
-                                    {drep.status}
+                                    {'N/A'}
                                 </div>
                             </td>
                             <td className="px-4 py-2">
-                                <Button className="bg-primary text-content-light cursor-pointer rounded px-3 py-1 text-sm">
-                                    {t('dreps.drepList.delegate')}
-                                </Button>
+                                <div className="group relative inline-block w-full">
+                                    <ToolTipHover
+                                        props={t('Feature Unavailable')}
+                                        className="pointer-events-none absolute bottom-full left-1/2 z-10 mb-2 -translate-x-1/2 opacity-0 transition-opacity duration-200 group-hover:opacity-100"
+                                    />
+                                    <PrimaryButton
+                                        disabled
+                                        className="bg-primary text-content-light w-full cursor-not-allowed rounded px-3 py-1 text-sm"
+                                    >
+                                        {t('dreps.drepList.unavailable')}
+                                    </PrimaryButton>
+                                </div>
                             </td>
                         </tr>
                     ))}

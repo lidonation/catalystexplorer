@@ -17,6 +17,7 @@ class TransactionData extends Data
         public ?string $witness,
         public ?string $type,
         public ?int $epoch,
+        public ?string $stake_pub,
         public mixed $json_metadata,
         public null|object|array $raw_metadata,
         public string $created_at,

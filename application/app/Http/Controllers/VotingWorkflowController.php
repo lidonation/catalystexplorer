@@ -10,7 +10,7 @@ use App\Enums\ProposalSearchParams;
 use App\Enums\QueryParamsEnum;
 use App\Models\Fund;
 use App\Models\Proposal;
-use App\Models\Signatures;
+use App\Models\Signature;
 use App\Repositories\ProposalRepository;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -239,7 +239,7 @@ class VotingWorkflowController extends Controller
             return back()->withErrors(['message' => 'Missing required data for vote submission.']);
         }
         try {
-            Signatures::create([
+            Signature::create([
                 'stake_key' => $walletData['stake_key'] ?? '',
                 'stake_address' => $walletData['stake_address'] ?? '',
                 'signature' => $walletData['signature'] ?? '',
