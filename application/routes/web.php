@@ -1,7 +1,6 @@
 <?php
 
 use Inertia\Inertia;
-use App\Models\Proposal;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DrepController;
 use App\Http\Controllers\HomeController;
