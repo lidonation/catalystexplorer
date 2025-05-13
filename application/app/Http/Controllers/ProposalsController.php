@@ -123,18 +123,10 @@ class ProposalsController extends Controller
             'filters' => $this->queryParams,
         ]);
     }
-
     public function charts()
     {
-
-        return Inertia::render('Charts/Index');
+        return Inertia::modal('Charts/Index',["slideover" => true])->baseRoute('proposals.index');
     }
-
-    public function chartDetail()
-    {
-        return Inertia::render('Charts/ChartDetail');
-    }
-
     protected function getProps(Request $request): void
     {
         $this->queryParams = $request->validate([
@@ -244,10 +236,10 @@ class ProposalsController extends Controller
         }
 
         if (isset($this->queryParams[ProposalSearchParams::OPENSOURCE_PROPOSALS()->value])) {
-            $filters[] = 'opensource = '.$this->queryParams[ProposalSearchParams::OPENSOURCE_PROPOSALS()->value];
+            $filters[] = 'opensource = ' . $this->queryParams[ProposalSearchParams::OPENSOURCE_PROPOSALS()->value];
         }
 
-        $filters[] = 'type='.($this->queryParams[ProposalSearchParams::TYPE()->value] ?? 'proposal');
+        $filters[] = 'type=' . ($this->queryParams[ProposalSearchParams::TYPE()->value] ?? 'proposal');
 
         if (isset($this->queryParams[ProposalSearchParams::QUICK_PITCHES()->value])) {
             $filters[] = 'quickpitch IS NOT NULL';
@@ -262,12 +254,12 @@ class ProposalsController extends Controller
         // filter by challenge
         if (! empty($this->queryParams[ProposalSearchParams::CAMPAIGNS()->value])) {
             $campaignHashes = ($this->queryParams[ProposalSearchParams::CAMPAIGNS()->value]);
-            $filters[] = '('.implode(' OR ', array_map(fn ($c) => "campaign.hash = {$c}", $campaignHashes)).')';
+            $filters[] = '(' . implode(' OR ', array_map(fn($c) => "campaign.hash = {$c}", $campaignHashes)) . ')';
         }
 
         if (! empty($this->queryParams[ProposalSearchParams::TAGS()->value])) {
             $tagHashes = ($this->queryParams[ProposalSearchParams::TAGS()->value]);
-            $filters[] = '('.implode(' OR ', array_map(fn ($c) => "tags.hash = {$c}", $tagHashes)).')';
+            $filters[] = '(' . implode(' OR ', array_map(fn($c) => "tags.hash = {$c}", $tagHashes)) . ')';
         }
 
         if (! empty($this->queryParams[ProposalSearchParams::IDEASCALE_PROFILES()->value])) {
@@ -291,8 +283,8 @@ class ProposalsController extends Controller
         }
 
         if (! empty($this->queryParams[ProposalSearchParams::COHORT()->value])) {
-            $cohortFilters = array_map(fn ($cohort) => "{$cohort} = 1", $this->queryParams[ProposalSearchParams::COHORT()->value]);
-            $filters[] = '('.implode(' OR ', $cohortFilters).')';
+            $cohortFilters = array_map(fn($cohort) => "{$cohort} = 1", $this->queryParams[ProposalSearchParams::COHORT()->value]);
+            $filters[] = '(' . implode(' OR ', $cohortFilters) . ')';
         }
 
         if (! empty($this->queryParams[ProposalSearchParams::FUNDS()->value])) {

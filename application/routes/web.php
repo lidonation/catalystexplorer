@@ -41,11 +41,8 @@ Route::localized(
         Route::get('/proposals', [ProposalsController::class, 'index'])
             ->name('proposals.index');
         
-        //routes for demoing routing pages onto modals
         Route::get('/proposals/charts', [ProposalsController::class, 'charts'])
             ->name('proposals.charts');
-        Route::get('/proposals/charts/detail', [ProposalsController::class, 'chartDetail'])
-            ->name('proposals.charts.detail');
 
         Route::prefix('/funds')->as('funds.')->group(function () {
             Route::get('/', [FundsController::class, 'index'])

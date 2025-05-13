@@ -25,7 +25,7 @@ const SearchVariants = ({
         t('groups.groups'),
         t('communities.communities'),
         t('wallets'),
-        t('reviews'),
+        t('reviews.reviews'),
         t('articles'),
     ];
     const handleSelection = (newValue: string[]) => {
@@ -68,9 +68,9 @@ const SearchVariants = ({
     };
 
     return (
-        <div className="text-content relative">
+        <div className="text-content h-full relative">
             <Listbox value={value} onChange={handleSelection} multiple>
-                <ListboxButton className="flex items-center justify-center gap-3 px-3 text-nowrap">
+                <ListboxButton className="flex items-center justify-center gap-3 px-3 py-2 text-nowrap">
                     {({ open }) => (
                         <div className="flex items-center gap-3">
                             {t('searchBar.all_filters')}

@@ -14,74 +14,83 @@ interface SearchBarProps {
     focusState?: (state: boolean) => void;
     initialSearch?: string;
     placeholder?: string;
+    border?: string|null;
 }
 
-const SearchBar = forwardRef<HTMLInputElement, SearchBarProps>(({
-    autoFocus = false,
-    showRingOnFocus = false,
-    handleSearch,
-    focusState,
-    initialSearch = '',
-    placeholder
-}: SearchBarProps, ref) => {
-    const [searchQuery, setSearchQuery] = useState(initialSearch);
-    const internalInputRef = useRef<HTMLInputElement>(null);
-    const { t } = useTranslation();
-    const inputRef = (ref as React.RefObject<HTMLInputElement>) || internalInputRef;
+const SearchBar = forwardRef<HTMLInputElement, SearchBarProps>(
+    (
+        {
+            autoFocus = false,
+            showRingOnFocus = false,
+            handleSearch,
+            focusState,
+            initialSearch = '',
+            placeholder,
+            border = null,
+        }: SearchBarProps,
+        ref,
+    ) => {
+        const [searchQuery, setSearchQuery] = useState(initialSearch);
+        const internalInputRef = useRef<HTMLInputElement>(null);
+        const { t } = useTranslation();
+        const inputRef =
+            (ref as React.RefObject<HTMLInputElement>) || internalInputRef;
 
-    useEscapeKey(() => handleClear());
+        useEscapeKey(() => handleClear());
 
-    useEffect(() => {
-        if (autoFocus && inputRef.current) {
-            inputRef.current.focus();
-        }
-    }, [autoFocus, inputRef]);
+        useEffect(() => {
+            if (autoFocus && inputRef.current) {
+                inputRef.current.focus();
+            }
+        }, [autoFocus, inputRef]);
 
-    const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const newValue = event.target.value;
-        setSearchQuery(newValue);
-        handleSearch(newValue);
-    };
+        const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+            const newValue = event.target.value;
+            setSearchQuery(newValue);
+            handleSearch(newValue);
+        };
 
-    const handleClear = useCallback(() => {
-        setSearchQuery('');
-        handleSearch('');
+        const handleClear = useCallback(() => {
+            setSearchQuery('');
+            handleSearch('');
 
-        router.get(window.location.pathname, {}, { replace: true });
-    }, [handleSearch]);
+            router.get(window.location.pathname, {}, { replace: true });
+        }, [handleSearch]);
 
-    return (
-        <div className="w-full shadow-sm rounded-md border border-gray-persist">
-            <label className="relative flex w-full items-center gap-2 pl-0">
-                <div className="absolute left-0 flex h-full w-10 items-center justify-center">
-                    <SearchLensIcon width={16} className="text-content" />
-                </div>
+        return (
+            <div className="w-full rounded-md shadow-sm">
+                <label className="relative flex w-full items-center gap-2 pl-0">
+                    <div className="absolute left-0 flex h-full w-10 items-center justify-center">
+                        <SearchLensIcon width={16} className="text-content" />
+                    </div>
 
-                <TextInput
-                    ref={inputRef}
-                    placeholder={placeholder}
-                    size={placeholder?.length}
-                    className={`bg-background text-content focus:border-primary w-full rounded-lg border-0 pl-10 shadow-none focus:border-0 ${showRingOnFocus ? 'focus:ring-primary focus:ring-2' : 'focus:ring-0'}`}
-                    value={searchQuery}
-                    onChange={handleChange}
-                    onFocus={() => {
-                        focusState?.(true);
-                    }}
-                    onBlur={() => {
-                        focusState?.(false);
-                    }}
-                />
-                <Button
-                    onClick={() => handleClear()}
-                    ariaLabel={t('clear')}
-                    className="hover:text-primary absolute right-0 flex h-full w-10 cursor-pointer items-center justify-center"
-                >
-                    <CloseIcon width={16} />
-                </Button>
-            </label>
-        </div>
-    );
-});
+                    <TextInput
+                        ref={inputRef}
+                        border={border}
+                        placeholder={placeholder}
+                        size={placeholder?.length}
+                        className={`bg-background text-content focus:border-primary w-full rounded-lg ${!border?'border-0':''} pl-10 shadow-none focus:border-0 ${showRingOnFocus ? 'focus:ring-primary focus:ring-2' : 'focus:ring-0'}`}
+                        value={searchQuery}
+                        onChange={handleChange}
+                        onFocus={() => {
+                            focusState?.(true);
+                        }}
+                        onBlur={() => {
+                            focusState?.(false);
+                        }}
+                    />
+                    <Button
+                        onClick={() => handleClear()}
+                        ariaLabel={t('clear')}
+                        className="hover:text-primary absolute right-0 flex h-full w-10 cursor-pointer items-center justify-center"
+                    >
+                        <CloseIcon width={16} />
+                    </Button>
+                </label>
+            </div>
+        );
+    },
+);
 
 SearchBar.displayName = 'SearchBar';
 

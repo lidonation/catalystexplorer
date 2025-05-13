@@ -12,11 +12,13 @@ import { router } from '@inertiajs/react';
 function SearchControls({
     onFiltersToggle,
     sortOptions,
-    searchPlaceholder
+    searchPlaceholder,
+    border
 }: {
     onFiltersToggle: Dispatch<SetStateAction<boolean>>;
     sortOptions: Array<any>;
     searchPlaceholder?: string;
+    border?: null | string
 }) {
     const { getFilter, setFilters, filters } = useFilterContext();
     const { t } = useTranslation();
@@ -71,6 +73,7 @@ function SearchControls({
         <div className="sticky px-0 top-0 z-10 container mx-auto flex w-full flex-col gap-3 py-3 backdrop-blur-md">
             <div className="flex items-center justify-end gap-2">
                 <SearchBar
+                border={'border-dark-light'}
                     handleSearch={handleSearch}
                     autoFocus
                     showRingOnFocus

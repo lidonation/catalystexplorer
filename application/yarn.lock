@@ -598,11 +598,6 @@
     "@inertiajs/core" "2.0.3"
     lodash.isequal "^4.5.0"
 
-"@inertiaui/modal-react@^0.21.0":
-  version "0.21.0"
-  resolved "https://registry.yarnpkg.com/@inertiaui/modal-react/-/modal-react-0.21.0.tgz#8e35ebdc37281eab00306cadcc9129ca996a9f2c"
-  integrity sha512-FaJnmZQO9AyQc338OUdvlNmxGIRZZF6vS/idC0cS6YEIXACVjCuQlmUltv7RDG4onDnzaitLLx9IHN4vzo4Vdg==
-
 "@inertiaui/modal-react@file:vendor/inertiaui/modal/react":
   version "0.21.0"
 

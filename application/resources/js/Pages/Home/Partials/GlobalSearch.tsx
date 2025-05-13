@@ -49,8 +49,8 @@ function GlobalSearch() {
     return (
         <form
             onSubmit={submit}
-            className={`flex items-center divide-x-2 divide-border rounded-lg bg-background transition-all duration-200 ${
-                isFocused ? 'divide-primary ring-2 ring-primary' : ''
+            className={`divide-slate-light divide-border bg-background flex items-center divide-x-2 rounded-lg transition-all duration-200 ${
+                isFocused ? 'ring-primary ring-3' : ''
             }`}
         >
             <SearchVariants value={searchFilters} onChange={setSearchFilters} />

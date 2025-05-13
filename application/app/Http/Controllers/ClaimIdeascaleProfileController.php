@@ -102,7 +102,7 @@ class ClaimIdeascaleProfileController extends Controller
         $request->validate([
             'name' => 'required|string',
             'email' => 'required|email',
-            'bio' => 'nullable|string',
+            'bio' => 'nullable|string|min:200',
             'ideascaleProfile' => 'nullable|string',
             'twitter' => 'nullable|string',
             'discord' => 'nullable|string',

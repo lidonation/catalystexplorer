@@ -28,7 +28,11 @@ type_type?: string;
 created_at?: string;
 updated_at?: string;
 deleted_at?: string;
-type_counts?: Array<any>;
+types_count?: { [key: string]: any };
+proposals_count?: number;
+groups_count?: number;
+communities_count?: number;
+reviews_count?: number;
 };
 export type BookmarkItemData = {
 hash: string | null;
@@ -362,11 +366,11 @@ deleted_at: string | null;
 metas: Array<any>;
 };
 export type NftMetaData = {
-campaign_name: string;
-yes_votes: string;
-no_votes: string;
-role: string;
-project_title: string;
+campaign_name: string | null;
+yes_votes: string | null;
+no_votes: string | null;
+role: string | null;
+project_title: string | null;
 };
 export type PostData = {
 id: number | null;
@@ -498,10 +502,10 @@ export type TransactionData = {
 hash: string | null;
 tx_hash: string;
 block: string;
-type: string;
-witness: string;
-stake_pub: string;
+witness: string | null;
+type: string | null;
 epoch: number | null;
+stake_pub: string | null;
 json_metadata: any;
 raw_metadata: object | Array<any> | null;
 created_at: string;
