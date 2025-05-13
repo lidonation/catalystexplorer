@@ -244,7 +244,7 @@ class CompletedProjectNftsController extends Controller
             'author' => $ideascaleProfile,
             'nft' => [
                 ...$nft->toArray(),
-                'hash' => $nft->hash
+                'hash' => $nft->hash,
             ],
             'metadata' => $metadata,
             'artist' => $artist,
