@@ -14,6 +14,7 @@ class NftData extends Data
 {
     public function __construct(
         public int $id = 0,
+        public ?string $hash = '',
         public int $user_id = 0,
         public int $artist_id = 0,
         public int $model_id = 0,

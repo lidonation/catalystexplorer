@@ -14,7 +14,7 @@ use App\Http\Controllers\ReviewsController;
 use App\Http\Controllers\CommunitiesController;
 use App\Http\Controllers\Api\CampaignController;
 use App\Http\Controllers\My\MyBookmarksController;
-use App\Http\Controllers\CompletetProjectNftsController;
+use App\Http\Controllers\CompletedProjectNftsController;
 use App\Http\Controllers\Api\IdeascaleProfilesController;
 
 Route::prefix('api')->as('api.')->group(function () {
@@ -84,15 +84,15 @@ Route::prefix('api')->as('api.')->group(function () {
 
     Route::prefix('/completed-project-nfts/')->as('completedProjectsNfts.')->group(
         function () {
-            Route::get('/{proposal}/{nft}/details', [CompletetProjectNftsController::class, 'getNftDetails'])
+            Route::get('/{proposal}/{nft}/details', [CompletedProjectNftsController::class, 'getNftDetails'])
                 ->name('details');
 
-            Route::post('/{proposal}/{nft}/update-metadata', [CompletetProjectNftsController::class, 'updateNftsMetadata'])
+            Route::post('/{proposal}/{nft}/update-metadata', [CompletedProjectNftsController::class, 'updateNftsMetadata'])
                 ->name('update');
         }
     );
 
-    Route::post('nmkr/notifications', action: [CompletetProjectNftsController::class, 'updateNftMintStatus'])->name('nmkr');
+    Route::post('nmkr/notifications', action: [CompletedProjectNftsController::class, 'updateNftMintStatus'])->name('nmkr');
 
     Route::prefix('cardano')->as('cardano.')
         ->middleware([])

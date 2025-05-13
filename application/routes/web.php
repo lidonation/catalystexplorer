@@ -1,6 +1,7 @@
 <?php
 
 use Inertia\Inertia;
+use App\Models\Proposal;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DrepController;
 use App\Http\Controllers\HomeController;
@@ -28,7 +29,7 @@ use App\Http\Controllers\VoterHistoriesController;
 use App\Http\Controllers\VotingWorkflowController;
 use App\Http\Controllers\IdeascaleProfilesController;
 use App\Http\Controllers\SignatureWorkflowController;
-use App\Http\Controllers\CompletetProjectNftsController;
+use App\Http\Controllers\CompletedProjectNftsController;
 use App\Http\Controllers\CardanoBudgetProposalController;
 use App\Http\Controllers\ClaimIdeascaleProfileController;
 use CodeZero\LocalizedRoutes\Controllers\FallbackController;
@@ -37,9 +38,11 @@ Route::localized(
     function () {
         Route::get('/', [HomeController::class, 'index'])
             ->name('home');
-
-        Route::get('/proposals', [ProposalsController::class, 'index'])
-            ->name('proposals.index');
+            
+        Route::prefix('/proposals')->as('proposals.')->group(function () {
+            Route::get('/', [ProposalsController::class, 'index'])
+                ->name('index');
+        });
         
         Route::get('/proposals/charts', [ProposalsController::class, 'charts'])
             ->name('proposals.charts');
@@ -118,7 +121,7 @@ Route::localized(
             Route::prefix('/completed-projects-nfts/steps')->as('completedProjectsNft.')
                 ->middleware([WorkflowMiddleware::class])
                 ->group(function () {
-                    Route::get('/{step}', [CompletetProjectNftsController::class, 'handleStep'])
+                    Route::get('/{step}', [CompletedProjectNftsController::class, 'handleStep'])
                         ->name('index');
                 });
 
@@ -274,16 +277,16 @@ Route::localized(
 
         Route::prefix('/completed-project-nfts')->as('completedProjectsNfts.')->group(
             function () {
-                Route::get('/', [CompletetProjectNftsController::class, 'index'])
+                Route::get('/', [CompletedProjectNftsController::class, 'index'])
                     ->name('index');
 
-                Route::get('/{proposal}/mint', [CompletetProjectNftsController::class, 'show'])
+                Route::get('/{proposal:hash}/mint', [CompletedProjectNftsController::class, 'show'])
                     ->name('show');
             }
         );
 
         Route::prefix('nfts')->as('crud.nfts.')->group(function () {
-            Route::patch('/update/{nft:id}', [CompletetProjectNftsController::class, 'updateMetadata'])
+            Route::patch('/update/{nft:id}', [CompletedProjectNftsController::class, 'updateMetadata'])
                 ->name('update');
         });
 
