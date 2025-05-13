@@ -86,6 +86,7 @@
     "filters": "Filters",
     "rememberMe": "Remember me",
     "privacy": "Privacy",
+    "problem": "Problem",
     "profileBackground": "Profile Background",
     "projectCatalyst": "Project catalyst Campaign name",
     "reviewers": "Reviewers",
@@ -98,6 +99,9 @@
     "spending": "Spending",
     "support": "Support",
     "seeAll": "See All",
+    "seeLess": "See less",
+    "seeMore":"See more",
+    "solution": "Solution",
     "terms": "Terms",
     "twitter": "Twitter",
     "transaction": "Transaction",
@@ -326,7 +330,8 @@
             "claim": "Claim Button",
             "claimed": "Claimed Button",
             "share": "Share Button"
-        }
+        },
+        "bookmark": "Bookmark"
     },
     "searchResults": {
         "noResults": {
@@ -490,11 +495,17 @@
         "quickPitch": "Quick Pitch",
         "proposalReviews": "Proposal Reviews",
         "CSVs": "Proposal CSVs",
+        "impactAlignment": "Impact Alignment",
+        "feasibility": "Feasibility",
+        "valueForMoney": "Value for Money",
         "totalProposals": "Total Proposals",
         "viewTeam": "View Team",
         "action": "Action",
         "status": "Status",
         "owner": "Owner",
+        "outstanding": "Proposals Outstanding",
+        "completed": "Proposals Completed",
+        "catalystConnection": "Catalyst Connections",
         "fundingReceived": "Funding Received",
         "manageProposal": "Manage Proposal",
         "totalRequested": "Total Requested",
@@ -578,6 +589,11 @@
             "fundingStatusZtoA": "Funding Status: Z-A",
             "titleAtoZ": "Alphabetically: A-Z",
             "titleZtoA": "Alphabetically: Z-A"
+        },
+        "tabs": {
+            "projectInfo": "Project Information",
+            "community": "Community Review",
+            "team": "Team Information"
         }
     },
     "ideascaleProfiles": {
@@ -632,6 +648,7 @@
         "subtitle": "Diverse, independent, and together inspiring the highest level of human collaboration",
         "fundedProposals": "Funded Proposals",
         "received": "Received",
+        "requested": "Requested",
         "totalRequested": "Total Requested",
         "completed": "Completed",
         "funded": "Funded",

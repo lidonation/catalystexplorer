@@ -41,6 +41,14 @@ Route::localized(
         Route::prefix('/proposals')->as('proposals.')->group(function () {
             Route::get('/', [ProposalsController::class, 'index'])
                 ->name('index');
+            
+            Route::prefix('/{slug}')->as('group.')->group(function () {
+                Route::get('/', [ProposalsController::class, 'proposal'])
+                    ->name('index');
+                
+                Route::get('/project-information', [ProposalsController::class, 'proposal'])
+                    ->name('projectInformation');
+            });
         });
         
         Route::get('/proposals/charts', [ProposalsController::class, 'charts'])
