@@ -299,6 +299,15 @@
         z-index: 50 !important;
         position: fixed !important;
     }
+
+    .im-backdrop {
+        background-color: var(--cx-dark) !important;
+        opacity: 0.5 !important;
+    }
+    
+    .im-slideover-wrapper{
+        max-width: 90vw !important;
+    }
 }
 
 @layer base {
