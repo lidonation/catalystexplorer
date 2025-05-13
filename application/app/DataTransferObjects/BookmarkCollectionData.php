@@ -59,7 +59,22 @@ final class BookmarkCollectionData extends Data
         #[TypeScriptOptional]
         public ?string $deleted_at,
 
+        /**
+         * @var object<string, mixed>
+         */
         #[TypeScriptOptional]
-        public ?array $type_counts = [],
+        public $types_count,
+
+        #[TypeScriptOptional]
+        public ?int $proposals_count,
+
+        #[TypeScriptOptional]
+        public ?int $groups_count,
+
+        #[TypeScriptOptional]
+        public ?int $communities_count,
+
+        #[TypeScriptOptional]
+        public ?int $reviews_count,
     ) {}
 }

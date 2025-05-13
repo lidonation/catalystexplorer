@@ -18,9 +18,7 @@ export default function MyList({ bookmarkCollections }: MyListProps) {
     const [showCreate, setShowCreate] = useState(false);
     const { t } = useTranslation();
 
-    useEffect(() => {
-        console.log('bookmarkCollections', bookmarkCollections);
-    }, []);
+
 
     const handleCreateClick = () => {
         setShowCreate(true);

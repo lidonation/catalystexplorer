@@ -141,7 +141,7 @@ class CardanoBudgetProposalController extends Controller
                 $request->filled('category'),
                 fn ($q) => $q->where('budget_cat', $request->input('category'))
             )
-            ->when( 
+            ->when(
                 $request->filled('committee'),
                 fn ($q) => $q->where('committee_name', $request->input('committee'))
             );

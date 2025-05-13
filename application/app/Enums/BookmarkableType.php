@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Enums;
 
 use App\Models\BookmarkCollection;
+use App\Models\Community;
 use App\Models\Group;
 use App\Models\IdeascaleProfile;
 use App\Models\Proposal;
@@ -18,6 +19,7 @@ enum BookmarkableType: string
     case GROUPS = 'groups';
     case REVIEWS = 'reviews';
     case LISTS = 'lists';
+    case COMMUNITIES = 'communities';
 
     /**
      * Get the fully qualified class name for the bookmarkable type
@@ -29,7 +31,9 @@ enum BookmarkableType: string
             self::IDEASCALE_PROFILES => IdeascaleProfile::class,
             self::GROUPS => Group::class,
             self::REVIEWS => Review::class,
-            self::LISTS, self::BOOKMARK_COLLECTIONS => BookmarkCollection::class,
+            self::LISTS,
+            self::BOOKMARK_COLLECTIONS => BookmarkCollection::class,
+            self::COMMUNITIES => Community::class,
         };
     }
 
