@@ -342,6 +342,7 @@ priceInLamportCentralPayments: number;
 singlePriceSolana: number;
 };
 export type NftData = {
+hash: string;
 id: number;
 user_id: number;
 artist_id: number;
@@ -433,6 +434,9 @@ solution?: string;
 experience?: string;
 currency?: string;
 ranking_total?: number;
+alignment_score: number;
+feasibility_score: number;
+auauditability_score: number;
 quickpitch?: string;
 quickpitch_length?: number;
 users: any | null;

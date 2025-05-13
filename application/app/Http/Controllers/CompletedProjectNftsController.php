@@ -29,7 +29,7 @@ use Illuminate\Support\Fluent;
 use Inertia\Inertia;
 use Inertia\Response;
 
-class CompletetProjectNftsController extends Controller
+class CompletedProjectNftsController extends Controller
 {
     protected int $currentPage = 1;
 
@@ -242,7 +242,10 @@ class CompletetProjectNftsController extends Controller
             'contributorProfiles' => $contributorProfiles,
             'claimedProfile' => $claimedProfile,
             'author' => $ideascaleProfile,
-            'nft' => $nft,
+            'nft' => [
+                ...$nft->toArray(),
+                'hash' => $nft->hash
+            ],
             'metadata' => $metadata,
             'artist' => $artist,
             'isOwner' => $isOwner,

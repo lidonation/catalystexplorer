@@ -9,6 +9,7 @@ use App\Traits\HasLinks;
 use App\Traits\HasMetaData;
 use App\Traits\HasModel;
 use App\Traits\HasTranslations;
+use App\Traits\HasHashId;
 use Illuminate\Database\Eloquent\Casts\AsArrayObject;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -24,7 +25,7 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class Nft extends Model implements CardanoNftInterface, HasMedia
 {
-    use HasAuthor, HasLinks, HasMetaData, HasModel, HasTranslations, InteractsWithMedia, NftServiceTrait, SoftDeletes;
+    use HasAuthor, HasHashId, HasLinks, HasMetaData, HasModel, HasTranslations, InteractsWithMedia, NftServiceTrait, SoftDeletes;
 
     protected $hidden = ['artist_id', 'deleted_at', 'model_type', 'model_id'];
 
@@ -37,6 +38,7 @@ class Nft extends Model implements CardanoNftInterface, HasMedia
 
     // Add appended attributes needed by NftServiceTrait
     protected $appends = [
+        'hash',
         'maker_project_uuid',
         'maker_nft_uuid',
         'required_nft_metadata',
