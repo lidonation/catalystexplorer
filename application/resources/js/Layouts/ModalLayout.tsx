@@ -27,7 +27,6 @@ const ModalLayout: React.FC<ModalLayoutProps> = ({
     className = '',
     closeButton = false,
     closeExplicitly = false,
-    maxWidth = '5xl',
     paddingClasses = 'p-4 sm:p-6',
     panelClasses,
     position = 'right',
@@ -38,8 +37,21 @@ const ModalLayout: React.FC<ModalLayoutProps> = ({
 }) => {
     const modalRef = useRef<{ close: () => void }>(null);
 
-    useEffect(() => {
+     useEffect(() => {
         onModalOpened?.();
+        
+        const handleKeyDown = (e: KeyboardEvent) => {
+            if (e.key === 'Escape') {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+        };
+        
+        document.addEventListener('keydown', handleKeyDown, true);
+        
+        return () => {
+            document.removeEventListener('keydown', handleKeyDown, true);
+        };
     }, [onModalOpened]);
 
     const handleButtonClose = () => {
@@ -63,7 +75,6 @@ const ModalLayout: React.FC<ModalLayoutProps> = ({
             position={position}
             showProgress={showProgress}
             closeExplicitly={closeExplicitly}
-            maxWidth={maxWidth}
             navigate={navigate}
             panelClasses={`bg-background lg:my-4 min-h-screen rounded-lg ${panelClasses}`}
             slideover={slideover}
