@@ -25,8 +25,8 @@ const MetaData = ({ nft, isOwner }: MetaDataProps) => {
   const [isMetadataAvailable, setIsMetadataAvailable] = useState<boolean>(true);
   
   // Route generation
-  const localizedUpdateRoute = nft?.id 
-    ? useLocalizedRoute('crud.nfts.update', { nft: nft.id })
+  const localizedUpdateRoute = nft?.hash
+    ? useLocalizedRoute('crud.nfts.update', { nft: nft.hash })
     : null;
 
   // Format numbers with k, M, etc.
@@ -41,12 +41,12 @@ const MetaData = ({ nft, isOwner }: MetaDataProps) => {
   };
 
   useEffect(() => {
-    if (!nft?.id) {
+    if (!nft?.hash) {
       setIsMetadataAvailable(false);
       return;
     }
     
-    const storageKey = `nft_${nft.id}`;
+    const storageKey = `nft_${nft.hash}`;
     
     // Function to extract initial values
     const extractInitialValues = () => {
@@ -186,11 +186,11 @@ const MetaData = ({ nft, isOwner }: MetaDataProps) => {
     const hasData = Object.values(values).some(v => !!v);
     setIsMetadataAvailable(hasData);
     
-  }, [nft?.id, nft?.metadata, nft?.metas]);
+  }, [nft?.hash, nft?.metadata, nft?.metas]);
 
   const handleToggleStrike = (key: string) => {
-    if (!localizedUpdateRoute || !nft?.id) {
-      console.error('Cannot toggle strike: NFT ID is missing');
+    if (!localizedUpdateRoute || !nft?.hash) {
+      console.error('Cannot toggle strike: NFT Hash is missing');
       return;
     }
   
@@ -207,7 +207,7 @@ const MetaData = ({ nft, isOwner }: MetaDataProps) => {
     
     // Save to localStorage
     try {
-      localStorage.setItem(`nft_${nft.id}_struck`, JSON.stringify(newStruckFields));
+      localStorage.setItem(`nft_${nft.hash}_struck`, JSON.stringify(newStruckFields));
     } catch (e) {
       console.error('Error saving struck states to localStorage:', e);
     }
@@ -235,7 +235,7 @@ const MetaData = ({ nft, isOwner }: MetaDataProps) => {
             });
             
             try {
-              localStorage.setItem(`nft_${nft.id}_struck`, JSON.stringify({
+              localStorage.setItem(`nft_${nft.hash}_struck`, JSON.stringify({
                 ...struckFields, 
                 [key]: currentlyStruck
               }));
