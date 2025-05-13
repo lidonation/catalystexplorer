@@ -6,7 +6,10 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
-use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
+use Illuminate\Http\Response as LaravelResponse;
+use Inertia\Response as InertiaResponse;
+use InertiaUI\Modal\Modal;
 
 class CaptureIntendedUrl
 {
@@ -15,7 +18,7 @@ class CaptureIntendedUrl
      *
      * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
      */
-    public function handle(Request $request, Closure $next): Response
+    public function handle(Request $request, Closure $next): SymfonyResponse|LaravelResponse|InertiaResponse|Modal
     {
         // Skip storing URL for authentication-related routes
         if ($request->is(['login', 'register', 'logout']) ||

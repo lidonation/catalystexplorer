@@ -57,10 +57,10 @@ const FundsFilter: React.FC<FundFiltersProps> = ({
     return (
         <div className="w-full py-8">
             <div className="overflow-x-auto pb-4">
-                <ul className="flex gap-4 whitespace-nowrap min-w-max">
+                <ul className="flex gap-4 whitespace-nowrap min-w-max" >
                     {funds.map((fund) => {
                         return (
-                            <li
+                            <li key={fund.hash}
                                 className={`flex w-[250px] flex-shrink-0 cursor-pointer rounded-md border-transparent bg-background shadow-xs border-2 hover:border-primary ${selectedItems.includes(fund) ? 'border-primary' : ''}`}
                             onClick={() => handleSelect(fund.hash)}
                             aria-label={fund.hash as string}

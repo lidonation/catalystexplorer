@@ -104,6 +104,7 @@ const DrepSignupForm = forwardRef<DrepSignupFormHandles, DrepSignupFormProps>(
                         <InputError message={form.errors.bio} />
                     </div>
 
+                    {/* link */}
                     <div>
                         <label htmlFor="link" className="text-sm">
                             {t('link')}
@@ -119,7 +120,6 @@ const DrepSignupForm = forwardRef<DrepSignupFormHandles, DrepSignupFormProps>(
                         <InputError message={form.errors.ideascaleProfile} />
                     </div>
 
-                    {/* Bio */}
                     <div className="mt-3 flex items-center">
                         <Checkbox
                             name="willMaintain"

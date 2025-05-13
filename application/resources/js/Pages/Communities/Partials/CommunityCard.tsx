@@ -1,28 +1,42 @@
+import PrimaryLink from '@/Components/atoms/PrimaryLink';
 import Title from '@/Components/atoms/Title';
+import Value from '@/Components/atoms/Value';
 import Card from '@/Components/Card';
 import Divider from '@/Components/Divider';
 import RichContent from '@/Components/RichContent';
 import CommunitiesIcon from '@/Components/svgs/CommunitiesSvg';
+import { ListProvider } from '@/Context/ListContext';
+import BookmarkButton from '@/Pages/My/Bookmarks/Partials/BookmarkButton';
 import { useLocalizedRoute } from '@/utils/localizedRoute';
 import { Link } from '@inertiajs/react';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import CommunityIdeascaleProfiles from './CommunityIdeascaleProfiles';
-import JoinCommunityButton from './JoinCommunityButton';
 import CommunityData = App.DataTransferObjects.CommunityData;
-import PrimaryLink from "@/Components/atoms/PrimaryLink";
-import Value from "@/Components/atoms/Value";
 
 interface CommunityCardProps {
     community: CommunityData;
     embedded?: boolean;
 }
 
-const CommunityCard: React.FC<CommunityCardProps> = ({ community, embedded = true }) => {
+const CommunityCard: React.FC<CommunityCardProps> = ({
+    community,
+    embedded = true,
+}) => {
     const { t } = useTranslation();
 
     return (
         <Card className="border-border-dark-on-dark flex-1 justify-between overflow-hidden border">
+            <div className="ml-auto border-gray-persist/50 text-gray-persist/50 w-fit items-center rounded-md border-1 py-0">
+                <ListProvider>
+                    <BookmarkButton
+                        modelType="communities"
+                        width={16}
+                        height={16}
+                        itemId={community?.hash ?? '0'}
+                    />
+                </ListProvider>
+            </div>
             <div className="flex h-auto w-full items-center justify-center overflow-hidden pt-8 pb-4">
                 <div className="bg-background-darker border-background-lighter flex h-28 w-28 items-center justify-center overflow-hidden rounded-full border-4">
                     <CommunitiesIcon className="text-dark h-8 w-8" />

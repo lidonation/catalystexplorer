@@ -59,7 +59,7 @@ const ProposalSearchBar = ({
                     ref={inputRef}
                     placeholder={placeholder}
                     size={placeholder.length}
-                    className={`w-full rounded-lg border-0 bg-background pl-10 text-content shadow-none focus:border-0 focus:border-primary ${showRingOnFocus ? 'focus:ring-2 focus:ring-primary' : 'focus:ring-0'}`}
+                    className={`w-full rounded-lg  bg-background pl-10 text-content shadow-none focus:border-0 focus:border-primary ${showRingOnFocus ? 'focus:ring-2 focus:ring-primary' : 'focus:ring-0'}`}
                     value={searchQuery ?? ""}
                     onChange={handleChange}
                     onFocus={() => {
