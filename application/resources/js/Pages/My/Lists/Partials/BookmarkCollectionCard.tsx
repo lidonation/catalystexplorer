@@ -3,6 +3,7 @@ import Button from '@/Components/atoms/Button';
 import KeyValue from '@/Components/atoms/KeyValue';
 import Paragraph from '@/Components/atoms/Paragraph';
 import Title from '@/Components/atoms/Title';
+import capitalizeFirstLetter from '@/utils/caps';
 import { useLocalizedRoute } from '@/utils/localizedRoute';
 import { Link } from '@inertiajs/react';
 import { useTranslation } from 'react-i18next';
@@ -14,6 +15,7 @@ const BookmarkCollectionCard = ({
     collection: BookmarkCollectionData;
 }) => {
     const { t } = useTranslation();
+
     return (
         <Card>
             <div className="p-4">
@@ -40,27 +42,20 @@ const BookmarkCollectionCard = ({
                 </Paragraph>
 
                 <div className="grid grid-cols-2 gap-4 md:grid-cols-6">
-                    {collection?.type_counts?.map((item, index) => {
-                        const count = item?.count ?? 0;
-                        const model = item?.model ?? '';
-
-                        // Handle pluralization
-                        let pluralizedModel = model;
-                        if (count !== 1) {
-                            pluralizedModel =
-                                model === 'Community'
-                                    ? 'Communities'
-                                    : model + 's';
-                        }
-
-                        return (
-                            <KeyValue
-                                key={index}
-                                valueKey={pluralizedModel}
-                                value={count}
-                            />
-                        );
-                    })}
+                    {Object.entries(collection?.types_count ?? {})?.map(
+                        (item) => {
+                            let pluralizedModel = capitalizeFirstLetter(
+                                item[0],
+                            );
+                            return (
+                                <KeyValue
+                                    key={pluralizedModel}
+                                    valueKey={pluralizedModel}
+                                    value={item[1]}
+                                />
+                            );
+                        },
+                    )}
                 </div>
             </div>
         </Card>

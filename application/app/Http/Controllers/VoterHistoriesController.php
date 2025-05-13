@@ -7,12 +7,14 @@ namespace App\Http\Controllers;
 use App\DataTransferObjects\VoterHistoryData;
 use App\Enums\VoteSearchParams;
 use App\Models\Fund;
-use App\Models\Signatures;
+use App\Models\Signature;
+use App\Models\User;
 use App\Models\Voter;
 use App\Models\VoterHistory;
 use App\Repositories\VoterHistoryRepository;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Fluent;
 use Illuminate\Support\Stringable;
@@ -268,8 +270,12 @@ class VoterHistoriesController extends Controller
 
     public function myVotes(Request $request): Response
     {
-        $user = auth()->user();
-        $userStakeKeys = Signatures::where('user_id', $user->id)
+        /**
+         * @var User $user
+         */
+        $user = Auth::user();
+
+        $userStakeKeys = Signature::where('user_id', $user->id)
             ->pluck('stake_address')
             ->filter()
             ->toArray();

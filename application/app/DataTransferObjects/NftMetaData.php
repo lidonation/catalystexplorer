@@ -11,11 +11,11 @@ use Spatie\TypeScriptTransformer\Attributes\TypeScript;
 class NftMetaData extends Data
 {
     public function __construct(
-        public string $campaign_name,
-        public string $yes_votes,
-        public string $no_votes,
-        public string $role,
-        public string $project_title
+        public ?string $campaign_name,
+        public ?string $yes_votes,
+        public ?string $no_votes,
+        public ?string $role,
+        public ?string $project_title
     ) {}
 
     public static function fromArray(?array $data = null): static

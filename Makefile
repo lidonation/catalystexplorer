@@ -181,7 +181,7 @@ seed-index:
 
 .PHONY: create-index import-index flush-index
 
-MODELS = App\\Models\\Proposal App\\Models\\IdeascaleProfile App\\Models\\Group App\\Models\\Review App\\Models\\MonthlyReport App\\Models\\Transaction App\\Models\\VoterHistory
+MODELS = App\\Models\\ProjectSchedule  App\\Models\\Proposal App\\Models\\IdeascaleProfile App\\Models\\Group App\\Models\\Review App\\Models\\MonthlyReport App\\Models\\Transaction App\\Models\\VoterHistory
 
 create-index:
 	@model_filter="$(filter-out $@,$(MAKECMDGOALS))"; \
