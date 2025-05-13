@@ -171,7 +171,7 @@ const DynamicSearchResults = ({
                             {data.hits.map((review, index) => (
                                 <section
                                     key={review.hash || index}
-                                    className="relative mb-6 overflow-hidden"
+                                    className="relative mb-2"
                                 >
                                     <ReviewCard review={review as ReviewData} />
                                 </section>
