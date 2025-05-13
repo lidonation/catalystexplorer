@@ -302,7 +302,7 @@ class Proposal extends Model
     {
         return Attribute::make(
             get: function () {
-                return "https://www.catalystexplorer.com/en/proposals/{$this->slug}";
+                return config('app.url') . "/en/proposals/{$this->slug}";
             }
         );
     }
