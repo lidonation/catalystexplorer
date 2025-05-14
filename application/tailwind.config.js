@@ -74,7 +74,7 @@ export default {
                 'success-light': 'var(--content-success-light)',
                 warning: 'var(--bg-warning-primary-color)',
                 hover: 'var(--content-hover-color)',
-                'slate-light': 'var(--cx-slate-light)',
+                'gray-light': 'var(--cx-slate-light)',
                 background: 'var(--cx-background)',
                 'background-light': 'var(--cx-background-light)',
                 'background-lighter': 'var(--cx-background-lighter)',

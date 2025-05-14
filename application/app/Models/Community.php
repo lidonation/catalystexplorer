@@ -162,7 +162,18 @@ class Community extends Model
 
     public function toSearchableArray()
     {
-        return $this->load(['groups', 'proposals', 'ideascale_profiles', 'reviews'])
-            ->withCount(['unfunded_proposals', 'completed_proposals', 'funded_proposals'])->toArray();
+        // $this->loadMissing([
+        //     'groups',
+        //     'ideascale_profiles',
+        //     'reviews',
+        // ]);
+
+        $this->loadCount([
+            'unfunded_proposals',
+            'completed_proposals',
+            'funded_proposals',
+        ]);
+
+        return $this->toArray();
     }
 }

@@ -10,17 +10,16 @@ use App\DataTransferObjects\FundData;
 use App\DataTransferObjects\ProposalData;
 use App\DataTransferObjects\ReviewData;
 use App\Enums\ProposalSearchParams;
+use App\Models\Connection;
 use App\Models\Fund;
 use App\Models\IdeascaleProfile;
-use App\Models\Connection;
 use App\Models\Proposal;
 use App\Repositories\ProposalRepository;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Fluent;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Fluent;
 use Illuminate\Support\Stringable;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -104,23 +103,23 @@ class ProposalsController extends Controller
     {
         $proposal = Proposal::where('slug', $slug)->firstOrFail();
         $this->getProps($request);
-        
+
         $proposalId = $proposal->id;
 
         $cacheKey = "proposal:{$proposalId}:base_data";
 
         $proposalData = Cache::remember($cacheKey, now()->addMinutes(10), function () use ($proposal) {
             $proposal->load(['groups', 'ideascaleProfiles', 'team', 'team.proposals', 'reviews', 'author']);
-            
+
             $data = $proposal->toArray();
-            
+
             $data['alignment_score'] = $proposal->getDiscussionRankingScore('Impact Alignment') ?? 0;
             $data['feasibility_score'] = $proposal->getDiscussionRankingScore('Feasibility') ?? 0;
             $data['auditability_score'] = $proposal->getDiscussionRankingScore('Value for money') ?? 0;
-            
+
             $ideascaleProfileIds = $proposal->ideascaleProfiles ? $proposal->ideascaleProfiles->pluck('id')->toArray() : [];
             $counts = $this->getCounts($ideascaleProfileIds);
-            
+
             $data['users'] = $proposal->team ? $proposal->team->map(function ($u) {
                 $proposals = $u->proposals ? $u->proposals->map(fn ($p) => $p->toArray()) : collect([]);
 
@@ -136,13 +135,13 @@ class ProposalsController extends Controller
                     'first_timer' => ($proposals->map(fn ($p) => isset($p['fund']) ? $p['fund']['id'] : null)->unique()->count() === 1),
                 ];
             })->toArray() : [];
-            
+
             return [
                 ...$data,
                 'groups' => $proposal->groups ? $proposal->groups->toArray() : [],
                 'userCompleteProposalsCount' => $counts['userCompleteProposalsCount'] ?? 0,
                 'userOutstandingProposalsCount' => $counts['userOutstandingProposalsCount'] ?? 0,
-                'catalystConnectionsCount' => $counts['catalystConnectionCount'] ?? 0
+                'catalystConnectionsCount' => $counts['catalystConnectionCount'] ?? 0,
             ];
         });
 
@@ -182,7 +181,7 @@ class ProposalsController extends Controller
             'connections' => $teamConnections,
             'userCompleteProposalsCount' => $proposalData['userCompleteProposalsCount'] ?? 0,
             'userOutstandingProposalsCount' => $proposalData['userOutstandingProposalsCount'] ?? 0,
-            'catalystConnectionsCount' => $proposalData['catalystConnectionsCount'] ?? 0
+            'catalystConnectionsCount' => $proposalData['catalystConnectionsCount'] ?? 0,
         ];
 
         return match (true) {
@@ -192,7 +191,7 @@ class ProposalsController extends Controller
             default => Inertia::render('Proposals/Details/Index', $props),
         };
     }
-    
+
     public function myProposals(Request $request): Response
     {
         $userId = Auth::id();
@@ -526,7 +525,7 @@ class ProposalsController extends Controller
             return [
                 'userCompleteProposalsCount' => 0,
                 'userOutstandingProposalsCount' => 0,
-                'catalystConnectionCount' => 0
+                'catalystConnectionCount' => 0,
             ];
         }
 
@@ -551,13 +550,13 @@ class ProposalsController extends Controller
             return [
                 'userCompleteProposalsCount' => $userCompleteProposalsCount,
                 'userOutstandingProposalsCount' => $userOutstandingProposalsCount,
-                'catalystConnectionCount' => $catalystConnectionCount
+                'catalystConnectionCount' => $catalystConnectionCount,
             ];
-        } catch (\Exception $e) {            
+        } catch (\Exception $e) {
             return [
                 'userCompleteProposalsCount' => 0,
                 'userOutstandingProposalsCount' => 0,
-                'catalystConnectionCount' => 0
+                'catalystConnectionCount' => 0,
             ];
         }
     }
@@ -565,8 +564,8 @@ class ProposalsController extends Controller
     private function generateTeamNetworkData(Proposal $proposal): array
     {
         $author = $proposal->author;
-        
-        if (!$author) {
+
+        if (! $author) {
             $author = $proposal->team->first();
         }
 
@@ -574,55 +573,55 @@ class ProposalsController extends Controller
             'nodes' => [],
             'links' => [],
             'rootNodeId' => $author ? $author->id : null,
-            'rootNodeHash' => $author ? $author->hash : null, 
-            'rootNodeType' => $author ? get_class($author) : null
+            'rootNodeHash' => $author ? $author->hash : null,
+            'rootNodeType' => $author ? get_class($author) : null,
         ];
-        
-        if (!$author) {
+
+        if (! $author) {
             return $teamConnections;
         }
-        
+
         $teamConnections['nodes'][] = [
             'id' => $author->id,
             'type' => get_class($author),
             'name' => $author->name ?? $author->username ?? 'Author',
             'photo' => $author->hero_img_url ?? null,
-            'hash' => $author->hash
+            'hash' => $author->hash,
         ];
-        
+
         foreach ($proposal->team as $member) {
             if ($member->id == $author->id) {
                 continue;
             }
-            
+
             $teamConnections['nodes'][] = [
                 'id' => $member->id,
                 'type' => get_class($member),
                 'name' => $member->name ?? $member->username ?? 'Team Member',
                 'photo' => $member->hero_img_url ?? null,
-                'hash' => $member->hash
+                'hash' => $member->hash,
             ];
-            
+
             $teamConnections['links'][] = [
                 'source' => $author->id,
-                'target' => $member->id
+                'target' => $member->id,
             ];
-            
+
             foreach ($proposal->team as $otherMember) {
                 if ($member->id != $otherMember->id && $otherMember->id != $author->id) {
                     $teamConnections['links'][] = [
                         'source' => $member->id,
-                        'target' => $otherMember->id
+                        'target' => $otherMember->id,
                     ];
                 }
             }
         }
-        
-        $teamConnections['links'] = array_values(array_unique(array_map(function($link) {
+
+        $teamConnections['links'] = array_values(array_unique(array_map(function ($link) {
             return json_encode($link);
         }, $teamConnections['links']), SORT_REGULAR));
-        
-        $teamConnections['links'] = array_map(function($link) {
+
+        $teamConnections['links'] = array_map(function ($link) {
             return json_decode($link, true);
         }, $teamConnections['links']);
 

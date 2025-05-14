@@ -68,7 +68,7 @@ const FundCard: React.FC<FundCardProps> = ({
                     </div>
                     <div className="mt-1 flex items-center">
                         {percentageChange >= 0 ? (
-                            <ArrowTrendingUp className="h-3 w-3 text-green-500 sm:h-4 sm:w-4" />
+                            <ArrowTrendingUp className="h-3 w-3 text-success sm:h-4 sm:w-4" />
                         ) : (
                             <ArrowTrendingDown className="h-3 w-3 text-danger-strong sm:h-4 sm:w-4" />
                         )}
@@ -96,7 +96,7 @@ const FundCard: React.FC<FundCardProps> = ({
                     </div>
                     <div className="mt-1 flex items-center">
                         {projectPercentageChange >= 0 ? (
-                            <ArrowTrendingUp className="h-3 w-3 text-green-500 sm:h-4 sm:w-4" />
+                            <ArrowTrendingUp className="h-3 w-3 text-success sm:h-4 sm:w-4" />
                         ) : (
                             <ArrowTrendingDown className="h-3 w-3 text-danger-strong sm:h-4 sm:w-4" />
                         )}
