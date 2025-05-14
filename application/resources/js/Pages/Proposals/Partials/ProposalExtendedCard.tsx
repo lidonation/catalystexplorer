@@ -101,7 +101,7 @@ export default function ProposalExtendedCard({
                                     proposal={proposal}
                                 />
                             </section>
-                            <div className="relative mt-2 min-h-36">
+                            <div className="relative mt-2 min-h-64">
                                 <ProposalSolution
                                     solution={proposal.solution}
                                     problem={proposal.problem}

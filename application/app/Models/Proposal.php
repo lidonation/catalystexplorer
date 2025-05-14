@@ -9,6 +9,7 @@ use App\Casts\DateFormatCast;
 use App\Enums\CatalystCurrencies;
 use App\Models\Scopes\ProposalTypeScope;
 use App\Traits\HasAuthor;
+use App\Traits\HasConnections;
 use App\Traits\HasMetaData;
 use App\Traits\HasTaxonomies;
 use App\Traits\HasTranslations;
@@ -37,6 +38,7 @@ class Proposal extends Model
         HasTaxonomies,
         HasTimestamps,
         HasTranslations,
+        HasConnections,
         Searchable,
         SoftDeletes;
 
@@ -495,6 +497,7 @@ class Proposal extends Model
                     'first_timer' => ($proposals?->map(fn ($p) => isset($p['fund']) ? $p['fund']['id'] : null)->unique()->count() === 1),
                 ];
             }),
+            'reviews' => $this->reviews,
 
             'woman_proposal' => $this->is_woman_proposal ? 1 : 0,
             'link' => $this->link,
@@ -504,6 +507,7 @@ class Proposal extends Model
             'projectcatalyst_io_link' => $this->meta_info?->projectcatalyst_io_url ?? null,
             'project_length' => intval($this->meta_info->project_length) ?? 0,
             'vote_casts' => intval($this->meta_info->vote_casts) ?? 0,
+            'connected_items' => $this->connected_items,
             'completed_project_nft' => $this->completed_project_nft?->map(function ($nft) {
                 return [
                     'id' => $nft->id,

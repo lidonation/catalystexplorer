@@ -16,7 +16,7 @@ export default function TabNavigation({
     tabs, 
     activeTab, 
     centerTabs = true,
-    className = "min-w-max border-b border-b-light-gray-persist",
+    className = "min-w-max border-b border-gray-persist",
     tabClassName = "whitespace-nowrap text-sm md:text-base px-1 md:px-2 py-1 group flex items-center gap-1 outline-hidden transition-colors hover:text-content-dark",
     activeTabClassName = "-mb-px border-b-2 border-b-primary text-primary",
     wrapperClassName = "mt-3 md:mt-6 text-content-lighter overflow-x-auto overflow-y-hidden pb-1 lg:overflow-x-hidden"

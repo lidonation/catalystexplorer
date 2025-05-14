@@ -8,6 +8,7 @@ use App\Actions\TransformHashToIds;
 use App\Actions\TransformIdsToHashes;
 use App\DataTransferObjects\FundData;
 use App\DataTransferObjects\ProposalData;
+use App\DataTransferObjects\ReviewData;
 use App\Enums\ProposalSearchParams;
 use App\Models\Fund;
 use App\Models\IdeascaleProfile;
@@ -109,7 +110,7 @@ class ProposalsController extends Controller
         $cacheKey = "proposal:{$proposalId}:base_data";
 
         $proposalData = Cache::remember($cacheKey, now()->addMinutes(10), function () use ($proposal) {
-            $proposal->load(['groups', 'ideascaleProfiles', 'team', 'team.proposals']);
+            $proposal->load(['groups', 'ideascaleProfiles', 'team', 'team.proposals', 'reviews', 'author']);
             
             $data = $proposal->toArray();
             
@@ -147,6 +148,8 @@ class ProposalsController extends Controller
 
         $currentPage = 1;
 
+        $teamConnections = $this->generateTeamNetworkData($proposal);
+
         $props = [
             'proposal' => ProposalData::from($proposalData),
             'proposals' => Inertia::optional(
@@ -158,14 +161,35 @@ class ProposalsController extends Controller
                     )->onEachSide(0)
                 )
             ),
+            'reviews' => Inertia::optional(
+                fn () => Cache::remember(
+                    "proposal:{$proposalId}:reviews:page:{$currentPage}",
+                    now()->addMinutes(10),
+                    fn () => to_length_aware_paginator(
+                        ReviewData::collect(
+                            $proposal->reviews()
+                                ->with(['reviewer.reputation_scores', 'proposal.fund'])
+                                ->paginate(11, ['*'], 'p', $currentPage)
+                        )
+                    )
+                )
+            ),
+            'aggregatedRatings' => Cache::remember(
+                "proposal:{$proposalId}:aggregated_ratings",
+                now()->addMinutes(10),
+                fn () => $proposalData['aggregated_ratings'] ?? []
+            ),
+            'connections' => $teamConnections,
             'userCompleteProposalsCount' => $proposalData['userCompleteProposalsCount'] ?? 0,
             'userOutstandingProposalsCount' => $proposalData['userOutstandingProposalsCount'] ?? 0,
             'catalystConnectionsCount' => $proposalData['catalystConnectionsCount'] ?? 0
         ];
 
         return match (true) {
-            str_contains($request->path(), '/project-information') => Inertia::render('Proposals/Proposal', $props),
-            default => Inertia::render('Proposals/Proposal', $props), 
+            str_contains($request->path(), '/details') => Inertia::render('Proposals/Details/Index', $props),
+            str_contains($request->path(), '/community-review') => Inertia::render('Proposals/CommunityReview/Index', $props),
+            str_contains($request->path(), '/team-information') => Inertia::render('Proposals/TeamInformation/Index', $props),
+            default => Inertia::render('Proposals/Details/Index', $props),
         };
     }
     
@@ -536,5 +560,72 @@ class ProposalsController extends Controller
                 'catalystConnectionCount' => 0
             ];
         }
+    }
+
+    private function generateTeamNetworkData(Proposal $proposal): array
+    {
+        $author = $proposal->author;
+        
+        if (!$author) {
+            $author = $proposal->team->first();
+        }
+
+        $teamConnections = [
+            'nodes' => [],
+            'links' => [],
+            'rootNodeId' => $author ? $author->id : null,
+            'rootNodeHash' => $author ? $author->hash : null, 
+            'rootNodeType' => $author ? get_class($author) : null
+        ];
+        
+        if (!$author) {
+            return $teamConnections;
+        }
+        
+        $teamConnections['nodes'][] = [
+            'id' => $author->id,
+            'type' => get_class($author),
+            'name' => $author->name ?? $author->username ?? 'Author',
+            'photo' => $author->hero_img_url ?? null,
+            'hash' => $author->hash
+        ];
+        
+        foreach ($proposal->team as $member) {
+            if ($member->id == $author->id) {
+                continue;
+            }
+            
+            $teamConnections['nodes'][] = [
+                'id' => $member->id,
+                'type' => get_class($member),
+                'name' => $member->name ?? $member->username ?? 'Team Member',
+                'photo' => $member->hero_img_url ?? null,
+                'hash' => $member->hash
+            ];
+            
+            $teamConnections['links'][] = [
+                'source' => $author->id,
+                'target' => $member->id
+            ];
+            
+            foreach ($proposal->team as $otherMember) {
+                if ($member->id != $otherMember->id && $otherMember->id != $author->id) {
+                    $teamConnections['links'][] = [
+                        'source' => $member->id,
+                        'target' => $otherMember->id
+                    ];
+                }
+            }
+        }
+        
+        $teamConnections['links'] = array_values(array_unique(array_map(function($link) {
+            return json_encode($link);
+        }, $teamConnections['links']), SORT_REGULAR));
+        
+        $teamConnections['links'] = array_map(function($link) {
+            return json_decode($link, true);
+        }, $teamConnections['links']);
+
+        return $teamConnections;
     }
 }
