@@ -46,8 +46,14 @@ Route::localized(
                 Route::get('/', [ProposalsController::class, 'proposal'])
                     ->name('index');
                 
-                Route::get('/project-information', [ProposalsController::class, 'proposal'])
-                    ->name('projectInformation');
+                Route::get('/details', [ProposalsController::class, 'proposal'])
+                    ->name('details');
+
+                Route::get('/community-review', [ProposalsController::class, 'proposal'])
+                    ->name('communityReview');
+
+                Route::get('/team-information', [ProposalsController::class, 'proposal'])
+                    ->name('teamInformation');
             });
         });
         
