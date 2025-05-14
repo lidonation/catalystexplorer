@@ -152,7 +152,7 @@ const MetricCard: React.FC<MetricCardProps> = ({ metric }) => {
                                                     <span
                                                         className={
                                                             trend.isPositive
-                                                                ? 'text-green-500'
+                                                                ? 'text-success'
                                                                 : 'text-danger-strong'
                                                         }
                                                         style={{

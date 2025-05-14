@@ -33,12 +33,13 @@ use Staudenmeir\EloquentHasManyDeep\HasRelationships;
 class Proposal extends Model
 {
     use HasAuthor,
+        HasConnections,
+        HasConnections,
         HasMetaData,
         HasRelationships,
         HasTaxonomies,
         HasTimestamps,
         HasTranslations,
-        HasConnections,
         Searchable,
         SoftDeletes;
 
@@ -63,7 +64,7 @@ class Proposal extends Model
         'link',
         'hash',
         'currency',
-        'completed_project_nft',
+        // 'completed_project_nft',
     ];
 
     public static function getFilterableAttributes(): array
@@ -304,7 +305,7 @@ class Proposal extends Model
     {
         return Attribute::make(
             get: function () {
-                return config('app.url') . "/en/proposals/{$this->slug}";
+                return config('app.url')."/en/proposals/{$this->slug}";
             }
         );
     }

@@ -27,6 +27,14 @@ export default function ProposalExtendedCard({
 }: any) {
     const [cardHeight, setCardHeight] = useState<number | null>(null);
     const cardRef = useRef<HTMLElement>(null);
+    const [solutionExpanded, setSolutionExpanded] = useState(false);
+    const [solutionHeight, setSolutionHeight] = useState<number | null>(null);
+
+    const handleSolutionExpand = (expanded: boolean, height: number) => {
+        setSolutionExpanded(expanded);
+        const adjustedHeight = expanded ? height * 1.2 : height;
+        setSolutionHeight(adjustedHeight);
+    };
     
     const wrappedHandleUserClick = useCallback(
         (user: any) => {
@@ -101,11 +109,18 @@ export default function ProposalExtendedCard({
                                     proposal={proposal}
                                 />
                             </section>
-                            <div className="relative mt-2 min-h-64">
+                            <div 
+                                className="relative mt-2 transition-all duration-300 ease-in-out" 
+                                style={{ 
+                                    minHeight: solutionHeight ? `${solutionHeight}px` : '150px',
+                                    marginBottom: solutionExpanded ? '20px' : '0',
+                                }}
+                            >
                                 <ProposalSolution
                                     solution={proposal.solution}
                                     problem={proposal.problem}
                                     slug={proposal.slug}
+                                    onContentExpand={handleSolutionExpand}
                                 />
                             </div>
                             <div className="relative mt-2 border-t border-b border-gray-persist pt-2 pb-2">
