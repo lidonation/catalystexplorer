@@ -52,7 +52,7 @@ class RouteServiceProvider extends ServiceProvider
 
             try {
                 $id = (new HashIdService(new Proposal))->decode($hashId);
-                
+
                 return Proposal::findOrFail($id);
             } catch (Exception) {
                 abort(404, 'No item found for this hash!');
