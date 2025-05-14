@@ -18,18 +18,18 @@ const MintedNftsList: React.FC<MintedNftsListProps> = ({ nfts }) => {
   }
 
   return (
-  <div className="grid gap-6 p-4 grid-cols-[repeat(auto-fit,minmax(280px,1fr))]">
-    {nfts.map((nft, index) => (
-      <MintedNftsCard
-        key={index}
-        image={nft.preview_link}
-        name={nft.name || 'Unnamed NFT'}
-        description={nft.description || 'No description available'}
-        preview_link={nft.preview_link}
-        onView={() => {}}
-      />
-    ))}
-  </div>
+      <div className="grid grid-cols-[repeat(auto-fit,minmax(280px,1fr))] gap-6 p-4">
+          {nfts.map((nft, index) => (
+              <MintedNftsCard
+                  key={index}
+                  image={nft.preview_link}
+                  fingerprint={nft.fingerprint}
+                  name={nft.name || 'Unnamed NFT'}
+                  description={nft.description || 'No description available'}
+                  preview_link={nft.preview_link}
+              />
+          ))}
+      </div>
   );
 };
 

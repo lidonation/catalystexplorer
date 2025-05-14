@@ -10,7 +10,7 @@ export default forwardRef(function TextInput(
     {
         type = 'text',
         className = '',
-        border = 'border-slate-light',
+        border = 'border-gray-light',
         isFocused = false,
         ...props
     }: InputHTMLAttributes<HTMLInputElement> & { isFocused?: boolean; border?:string|null

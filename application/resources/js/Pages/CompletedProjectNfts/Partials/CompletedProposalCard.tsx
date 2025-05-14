@@ -1,7 +1,7 @@
 import Paragraph from '@/Components/atoms/Paragraph';
-import PrimaryLink from '@/Components/atoms/PrimaryLink';
 import Title from '@/Components/atoms/Title';
 import { currency } from '@/utils/currency';
+import { ArrowUpRight } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import ProposalData = App.DataTransferObjects.ProposalData;
 import NftData = App.DataTransferObjects.NftData;
@@ -17,20 +17,14 @@ export default function CompletedProposalCard({
     profileHash,
 }: ProposalProps) {
     const { t } = useTranslation();
-    const completedProjectNft = proposal?.completed_project_nft || [];
-    const filteredNfts = completedProjectNft?.filter(
-        (nft: NftData) => nft?.profile_hash === profileHash,
-    );
-    const hasFilteredNft = filteredNfts && filteredNfts.length > 0;
-    const isNftMinted = hasFilteredNft && filteredNfts[0]?.status === 'minted';
 
     return (
         <div
             key={proposal.hash}
-            className={`flex w-full flex-col flex-row items-center justify-between rounded-lg p-4 shadow-sm`}
+            className={`flex w-full flex-col  items-center justify-between rounded-lg p-4 shadow-sm lg:relative`}
         >
             <div
-                className={`w-full ${isNftMinted ? 'opacity-70' : 'opacity-100'}`}
+                className={`w-full ${proposal.minted_nfts_fingerprint ? 'opacity-70' : 'opacity-100'}`}
             >
                 <Title level="5" className="font-bold">
                     {proposal.title}
@@ -55,17 +49,22 @@ export default function CompletedProposalCard({
                     <span> {proposal.campaign?.label} </span>
                 </Paragraph>
             </div>
-            {isNftMinted && (
-                <div>
-                    <PrimaryLink
-                        href={`https://pool.pm/${filteredNfts[0]?.required_nft_metadata?.fingerprint}`}
-                        className="w-auto text-sm whitespace-nowrap lg:px-8 lg:py-3"
-                    >
-                        {t('workflows.completedProjectNfts.viewNft')}
-                    </PrimaryLink>
-                    <Paragraph className="text-gray-persist/70 mt-2">
-                        {t('workflows.completedProjectNfts.alreadyMinted')}
-                    </Paragraph>
+
+            {proposal.minted_nfts_fingerprint && (
+                <div className="right-0 bottom-0 ml-auto flex gap-2 p-2 lg:absolute">
+                    {proposal.minted_nfts_fingerprint.map(
+                        (fingerprint, index) => (
+                            <a
+                                href={`https://pool.pm/${fingerprint}`}
+                                target="_blank "
+                                className="hover:bg-background-tertiary hover:text-content-secondary focus:bg-background-accent active:bg-background-tertiary bg-primary active:text-content-secondary text-content-light relative inline-flex w-auto cursor-pointer items-center justify-center rounded-md p-1 text-sm tracking-widest whitespace-nowrap transition duration-150 ease-in-out focus:ring-0 focus:ring-offset-0 focus:outline-hidden"
+                            >
+                                {t('workflows.completedProjectNfts.viewNft') +
+                                    ` ${proposal.minted_nfts_fingerprint && proposal.minted_nfts_fingerprint.length > 1 ? index + 1 : ''}`}
+                                <ArrowUpRight className="text-sm" />
+                            </a>
+                        ),
+                    )}
                 </div>
             )}
         </div>

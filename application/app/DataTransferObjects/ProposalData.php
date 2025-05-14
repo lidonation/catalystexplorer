@@ -96,6 +96,9 @@ final class ProposalData extends Data
         public ?string $currency,
 
         #[TypeScriptOptional]
+        public ?array $minted_nfts_fingerprint,
+
+        #[TypeScriptOptional]
         public ?int $ranking_total,
 
         #[TypeScriptOptional]

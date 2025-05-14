@@ -9,17 +9,16 @@ use App\Actions\TransformIdsToHashes;
 use App\DataTransferObjects\FundData;
 use App\DataTransferObjects\ProposalData;
 use App\Enums\ProposalSearchParams;
+use App\Models\Connection;
 use App\Models\Fund;
 use App\Models\IdeascaleProfile;
-use App\Models\Connection;
 use App\Models\Proposal;
 use App\Repositories\ProposalRepository;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Fluent;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Fluent;
 use Illuminate\Support\Stringable;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -103,23 +102,23 @@ class ProposalsController extends Controller
     {
         $proposal = Proposal::where('slug', $slug)->firstOrFail();
         $this->getProps($request);
-        
+
         $proposalId = $proposal->id;
 
         $cacheKey = "proposal:{$proposalId}:base_data";
 
         $proposalData = Cache::remember($cacheKey, now()->addMinutes(10), function () use ($proposal) {
             $proposal->load(['groups', 'ideascaleProfiles', 'team', 'team.proposals']);
-            
+
             $data = $proposal->toArray();
-            
+
             $data['alignment_score'] = $proposal->getDiscussionRankingScore('Impact Alignment') ?? 0;
             $data['feasibility_score'] = $proposal->getDiscussionRankingScore('Feasibility') ?? 0;
             $data['auditability_score'] = $proposal->getDiscussionRankingScore('Value for money') ?? 0;
-            
+
             $ideascaleProfileIds = $proposal->ideascaleProfiles ? $proposal->ideascaleProfiles->pluck('id')->toArray() : [];
             $counts = $this->getCounts($ideascaleProfileIds);
-            
+
             $data['users'] = $proposal->team ? $proposal->team->map(function ($u) {
                 $proposals = $u->proposals ? $u->proposals->map(fn ($p) => $p->toArray()) : collect([]);
 
@@ -135,13 +134,13 @@ class ProposalsController extends Controller
                     'first_timer' => ($proposals->map(fn ($p) => isset($p['fund']) ? $p['fund']['id'] : null)->unique()->count() === 1),
                 ];
             })->toArray() : [];
-            
+
             return [
                 ...$data,
                 'groups' => $proposal->groups ? $proposal->groups->toArray() : [],
                 'userCompleteProposalsCount' => $counts['userCompleteProposalsCount'] ?? 0,
                 'userOutstandingProposalsCount' => $counts['userOutstandingProposalsCount'] ?? 0,
-                'catalystConnectionsCount' => $counts['catalystConnectionCount'] ?? 0
+                'catalystConnectionsCount' => $counts['catalystConnectionCount'] ?? 0,
             ];
         });
 
@@ -160,15 +159,15 @@ class ProposalsController extends Controller
             ),
             'userCompleteProposalsCount' => $proposalData['userCompleteProposalsCount'] ?? 0,
             'userOutstandingProposalsCount' => $proposalData['userOutstandingProposalsCount'] ?? 0,
-            'catalystConnectionsCount' => $proposalData['catalystConnectionsCount'] ?? 0
+            'catalystConnectionsCount' => $proposalData['catalystConnectionsCount'] ?? 0,
         ];
 
         return match (true) {
             str_contains($request->path(), '/project-information') => Inertia::render('Proposals/Proposal', $props),
-            default => Inertia::render('Proposals/Proposal', $props), 
+            default => Inertia::render('Proposals/Proposal', $props),
         };
     }
-    
+
     public function myProposals(Request $request): Response
     {
         $userId = Auth::id();
@@ -502,7 +501,7 @@ class ProposalsController extends Controller
             return [
                 'userCompleteProposalsCount' => 0,
                 'userOutstandingProposalsCount' => 0,
-                'catalystConnectionCount' => 0
+                'catalystConnectionCount' => 0,
             ];
         }
 
@@ -527,13 +526,13 @@ class ProposalsController extends Controller
             return [
                 'userCompleteProposalsCount' => $userCompleteProposalsCount,
                 'userOutstandingProposalsCount' => $userOutstandingProposalsCount,
-                'catalystConnectionCount' => $catalystConnectionCount
+                'catalystConnectionCount' => $catalystConnectionCount,
             ];
-        } catch (\Exception $e) {            
+        } catch (\Exception $e) {
             return [
                 'userCompleteProposalsCount' => 0,
                 'userOutstandingProposalsCount' => 0,
-                'catalystConnectionCount' => 0
+                'catalystConnectionCount' => 0,
             ];
         }
     }

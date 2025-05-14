@@ -137,14 +137,7 @@ class CompletedProjectNftsController extends Controller
         })->count();
 
         $mintedNfts = Nft::where('status', NftStatusEnum::minted()->value)
-            ->get(['name', 'description', 'preview_link'])
-            ->map(function ($nft) {
-                return [
-                    'name' => $nft->name,
-                    'description' => $nft->description,
-                    'preview_link' => $nft->preview_link,
-                ];
-            });
+            ->get();
 
         return Inertia::render('CompletedProjectNfts/Index', [
             'amountDistributedAda' => $amountDistributedAda,
@@ -255,9 +248,13 @@ class CompletedProjectNftsController extends Controller
     public function getClaimedIdeascaleProfilesProposals(Request $request): array
     {
         $profileIds = (new TransformHashToIds)(collect($request->profiles), new IdeascaleProfile);
+
         $searchTerm = request('search');
 
-        $user = $this->user;
+        // get minted nft for the selected profiles
+        $mintedNfts = Nft::whereIn('model_id', $profileIds)->where('status', NftStatusEnum::minted()->value)
+            ->select('metadata', 'fingerprint')
+            ->get();
 
         $args = [];
 
@@ -296,6 +293,10 @@ class CompletedProjectNftsController extends Controller
 
         $items = collect($response->hits);
 
+        if (! empty($mintedNfts)) {
+            $items = $this->mapProposalToNFt($mintedNfts, $items);
+        }
+
         $pagination = new LengthAwarePaginator(
             ProposalData::collect(
                 (new TransformIdsToHashes)(
@@ -313,6 +314,31 @@ class CompletedProjectNftsController extends Controller
         );
 
         return $pagination->toArray();
+    }
+
+    protected function mapProposalToNFt(Collection $nfts, Collection $proposals): Collection
+    {
+        $nftIndex = [];
+
+        foreach ($nfts as $nft) {
+            $metadata = $nft->metadata;
+            $title = $metadata['Project Title'] ?? null;
+
+            if ($title) {
+                $nftIndex[$title][] =
+                    $nft['fingerprint'];
+            }
+        }
+
+        return $proposals->map(function ($proposal) use ($nftIndex) {
+            $title = $proposal['title'];
+
+            if (isset($nftIndex[$title])) {
+                $proposal['minted_nfts_fingerprint'] = $nftIndex[$title] ?? [];
+            }
+
+            return $proposal;
+        });
     }
 
     protected function getProps(Request $request): void

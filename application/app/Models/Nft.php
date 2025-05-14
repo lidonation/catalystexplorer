@@ -41,7 +41,7 @@ class Nft extends Model implements CardanoNftInterface, HasMedia
         'hash',
         'maker_project_uuid',
         'maker_nft_uuid',
-        'required_nft_metadata',
+        // 'required_nft_metadata',
         'preview_img_url',
     ];
 
