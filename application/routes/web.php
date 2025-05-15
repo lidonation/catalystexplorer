@@ -41,6 +41,9 @@ Route::localized(
         Route::prefix('/proposals')->as('proposals.')->group(function () {
             Route::get('/', [ProposalsController::class, 'index'])
                 ->name('index');
+            
+            Route::get('/charts', [ProposalsController::class, 'charts'])
+            ->name('charts');
 
             Route::get('/{slug}', function ($slug) {
                 return redirect()->route('proposals.group.details', ['slug' => $slug]);
@@ -58,9 +61,6 @@ Route::localized(
             });
         });
         
-        Route::get('/proposals/charts', [ProposalsController::class, 'charts'])
-            ->name('proposals.charts');
-
         Route::prefix('/funds')->as('funds.')->group(function () {
             Route::get('/', [FundsController::class, 'index'])
                 ->name('index');
