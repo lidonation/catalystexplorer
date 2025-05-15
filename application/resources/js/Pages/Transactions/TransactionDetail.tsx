@@ -64,7 +64,7 @@ export default function TransactionDetail({
                         <DetailRow label={t('transactions.stakePub')}>
                             <div className="flex flex-1 items-center">
                                 <Value className="text-content mr-2 truncate font-bold">
-                                    {truncateMiddle(transaction.stake_pub)}
+                                    {truncateMiddle(transaction.stake_pub ?? '-')}
                                 </Value>
                                 <CopyIcon
                                     className="text-gray-persist h-4 w-4 cursor-pointer font-bold"
@@ -83,7 +83,7 @@ export default function TransactionDetail({
                                 <Value className="text-content mr-2 truncate font-bold">
                                     {truncateMiddle(
                                         transaction.json_metadata
-                                            .payment_address,
+                                            .payment_address ?? '-'
                                     )}
                                 </Value>
                                 <CopyIcon
