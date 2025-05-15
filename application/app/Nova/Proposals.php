@@ -6,11 +6,11 @@ namespace App\Nova;
 
 use App\Enums\CatalystGlobals;
 use App\Models\Proposal;
+use App\Nova\Actions\EditModel;
 use App\Nova\Actions\MakeSearchable;
 use App\Nova\Actions\UpdateModelMedia;
 use Illuminate\Support\Str;
 use Laravel\Nova\Actions\Action;
-use Laravel\Nova\Card;
 use Laravel\Nova\Exceptions\HelperNotSupported;
 use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Fields\BelongsToMany;
@@ -20,9 +20,7 @@ use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Slug;
 use Laravel\Nova\Fields\Stack;
 use Laravel\Nova\Fields\Text;
-use Laravel\Nova\Filters\Filter;
 use Laravel\Nova\Http\Requests\NovaRequest;
-use Laravel\Nova\Lenses\Lens;
 
 class Proposals extends Resource
 {
@@ -55,6 +53,7 @@ class Proposals extends Resource
      */
     public static $search = [
         'id',
+        'title',
     ];
 
     /**
@@ -81,7 +80,6 @@ class Proposals extends Resource
             })->asHtml()->hideWhenCreating()->hideWhenUpdating(),
 
             Text::make(__('Title'), 'title')
-//                ->translatable()
                 ->required()
                 ->withMeta(
                     [
@@ -107,36 +105,6 @@ class Proposals extends Resource
     }
 
     /**
-     * Get the cards available for the resource.
-     *
-     * @return array<int, Card>
-     */
-    public function cards(NovaRequest $request): array
-    {
-        return [];
-    }
-
-    /**
-     * Get the filters available for the resource.
-     *
-     * @return array<int, Filter>
-     */
-    public function filters(NovaRequest $request): array
-    {
-        return [];
-    }
-
-    /**
-     * Get the lenses available for the resource.
-     *
-     * @return array<int, Lens>
-     */
-    public function lenses(NovaRequest $request): array
-    {
-        return [];
-    }
-
-    /**
      * Get the actions available for the resource.
      *
      * @return array<int, Action>
@@ -144,6 +112,7 @@ class Proposals extends Resource
     public function actions(NovaRequest $request): array
     {
         return [
+            (new EditModel),
             (new UpdateModelMedia),
             (new MakeSearchable),
         ];

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Observers\AnnouncementObserver;
+use App\Traits\HasAuthor;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
@@ -17,7 +18,7 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
 #[ObservedBy([AnnouncementObserver::class])]
 class Announcement extends Model implements HasMedia
 {
-    use InteractsWithMedia, Prunable;
+    use HasAuthor, InteractsWithMedia, Prunable;
 
     protected $fillable = [
         'title',

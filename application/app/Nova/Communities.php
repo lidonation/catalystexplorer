@@ -6,6 +6,7 @@ namespace App\Nova;
 
 use App\Enums\StatusEnum;
 use App\Models\Community;
+use App\Nova\Actions\EditModel;
 use App\Nova\Actions\MakeSearchable;
 use Laravel\Nova\Actions\Action;
 use Laravel\Nova\Fields\BelongsToMany;
@@ -40,8 +41,9 @@ class Communities extends Resource
     public static $search = [
         'id',
         'title',
-        'content',
     ];
+
+    public static $perPageOptions = [25, 50, 100, 250];
 
     /**
      * Get the fields displayed by the resource.
@@ -81,6 +83,7 @@ class Communities extends Resource
     public function actions(NovaRequest $request): array
     {
         return [
+            //            (new EditModel)
             (new MakeSearchable),
         ];
     }
