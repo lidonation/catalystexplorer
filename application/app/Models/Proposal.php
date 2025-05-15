@@ -304,7 +304,7 @@ class Proposal extends Model
     {
         return Attribute::make(
             get: function () {
-                return config('app.url')."/en/proposals/{$this->slug}/details";
+                return config('app.url') . "/en/proposals/{$this->slug}";
             }
         );
     }
