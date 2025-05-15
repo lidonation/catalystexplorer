@@ -64,7 +64,6 @@ class Proposal extends Model
         'link',
         'hash',
         'currency',
-        // 'completed_project_nft',
     ];
 
     public static function getFilterableAttributes(): array
@@ -305,7 +304,7 @@ class Proposal extends Model
     {
         return Attribute::make(
             get: function () {
-                return config('app.url') . "/en/proposals/{$this->slug}/details";
+                return config('app.url')."/en/proposals/{$this->slug}/details";
             }
         );
     }
@@ -509,26 +508,6 @@ class Proposal extends Model
             'project_length' => intval($this->meta_info->project_length) ?? 0,
             'vote_casts' => intval($this->meta_info->vote_casts) ?? 0,
             'connected_items' => $this->connected_items,
-            'completed_project_nft' => $this->completed_project_nft?->map(function ($nft) {
-                return [
-                    'id' => $nft->id,
-                    'name' => $nft->name,
-                    'user_id' => $nft->user_id,
-                    'metadata' => $nft->metadata,
-                    'description' => $nft->description,
-                    'storage_link' => $nft->storage_link,
-                    'preview_link' => $nft->preview_link,
-                    'policy' => $nft->policy,
-                    'profile_hash' => $nft->ideascale_profile?->hash ?? null,
-                    'currency' => $nft->currency,
-                    'status' => $nft->status,
-                    'rarity' => $nft->rarity,
-                    'price' => $nft->price,
-                    'required_nft_metadata' => $nft->required_nft_metadata,
-                    'qty' => $nft->qty,
-                    'minted_at' => $nft->minted_at,
-                ];
-            })->toArray() ?? [],
         ]);
     }
 
