@@ -1,14 +1,13 @@
+import PrimaryLink from '@/Components/atoms/PrimaryLink';
+import IdeascaleProfileUsers from '@/Pages/IdeascaleProfile/Partials/IdeascaleProfileUsersComponent';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
+import { Grab } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import ProposalFundingPercentages from '../Partials/ProposalFundingPercentages';
 import ProposalFundingStatus from '../Partials/ProposalFundingStatus';
 import ColumnHeader from './Partials/ColumnHeader';
 import ProposalData = App.DataTransferObjects.ProposalData;
-import IdeascaleProfileUsers from '@/Pages/IdeascaleProfile/Partials/IdeascaleProfileUsersComponent';
-import { useTranslation } from 'react-i18next';
-import PrimaryLink from '@/Components/atoms/PrimaryLink';
-import { Grab } from 'lucide-react';
-
 
 export default function SortableProposalColumn({
     proposal,
@@ -33,7 +32,7 @@ export default function SortableProposalColumn({
         { id: 'title', label: 'Title', height: 'h-32' },
         { id: 'fund', label: 'Fund', height: 'h-16' },
         { id: 'status', label: 'Status', height: 'h-16' },
-        { id: 'solution', label: 'Solution', height: 'h-24' },
+        { id: 'solution', label: 'Solution', height: 'h-42' },
         { id: 'funding', label: 'Funding Received', height: 'h-24' },
         { id: 'yes-votes', label: 'Yes Votes', height: 'h-16' },
         { id: 'no-votes', label: 'No Votes', height: 'h-16' },
@@ -55,11 +54,11 @@ export default function SortableProposalColumn({
             style={style}
             {...attributes}
             {...listeners}
-            className="flex w-[180px] cursor-move flex-col bg-white"
+            className="flex cursor-move flex-col bg-white"
         >
             {/* Reorder */}
             <div
-                className={`${rows[0].height} flex items-center justify-center border-r border-b p-2`}
+                className={`${rows[0].height} border-gray-light flex items-center justify-center border-r border-b p-2`}
             >
                 <div className="flex items-center justify-center gap-1">
                     <Grab className="h-4 w-4 text-gray-500" />
@@ -68,11 +67,15 @@ export default function SortableProposalColumn({
             </div>
 
             {/* Title */}
-            <ColumnHeader proposal={proposal} />
+            <div
+                className={`${rows[1].height} border-gray-light flex items-center justify-center border-r border-b p-2`}
+            >
+                <ColumnHeader proposal={proposal} />
+            </div>
 
             {/* Fund */}
             <div
-                className={`${rows[2].height} flex items-center justify-center border-r border-b p-2`}
+                className={`${rows[2].height} border-gray-light flex items-center justify-center border-r border-b p-2`}
             >
                 <span className="rounded-md bg-gray-100 px-2 py-1 text-xs">
                     {proposal?.fund?.title}
@@ -81,7 +84,7 @@ export default function SortableProposalColumn({
 
             {/* Status */}
             <div
-                className={`${rows[3].height} flex items-center border-r border-b p-2`}
+                className={`${rows[3].height} border-gray-light flex items-center border-r border-b p-2`}
             >
                 {' '}
                 <ProposalFundingStatus
@@ -91,21 +94,21 @@ export default function SortableProposalColumn({
 
             {/* Solution */}
             <div
-                className={`${rows[4].height} flex items-center border-r border-b p-2`}
+                className={`${rows[4].height} border-gray-light flex items-center border-r border-b p-2`}
             >
-                <p className="line-clamp-2 text-xs">{proposal.solution}</p>
+                <p className="line-clamp-2">{proposal.solution}</p>
             </div>
 
             {/* Funding Received */}
             <div
-                className={`${rows[5].height} flex flex-col justify-center border-r border-b p-2`}
+                className={`${rows[5].height} border-gray-light flex flex-col justify-center border-r border-b p-2`}
             >
                 <ProposalFundingPercentages proposal={proposal} />
             </div>
 
             {/* Yes Votes */}
             <div
-                className={`${rows[6].height} flex items-center border-r border-b p-2`}
+                className={`${rows[6].height} border-gray-light flex items-center border-r border-b p-2`}
             >
                 <div className="flex items-center gap-1">
                     <svg
@@ -133,7 +136,7 @@ export default function SortableProposalColumn({
 
             {/* No Votes */}
             <div
-                className={`${rows[7].height} flex items-center border-r border-b p-2`}
+                className={`${rows[7].height} border-gray-light flex items-center border-r border-b p-2`}
             >
                 <div className="flex items-center gap-1">
                     <svg
@@ -161,7 +164,7 @@ export default function SortableProposalColumn({
 
             {/* Team */}
             <div
-                className={`${rows[8].height} flex items-center border-r border-b p-2`}
+                className={`${rows[8].height} border-gray-light flex items-center border-r border-b p-2`}
             >
                 <IdeascaleProfileUsers
                     users={proposal?.users}
@@ -173,12 +176,9 @@ export default function SortableProposalColumn({
 
             {/* View Proposal Button */}
             <div
-                className={`${rows[9].height} flex items-center border-r border-b p-2`}
+                className={`${rows[9].height} border-gray-light flex items-center border-r border-b p-2`}
             >
-                <PrimaryLink
-                    href={proposal.link ?? '#'}
-                    className="h-8 w-full bg-blue-500 text-xs hover:bg-blue-600"
-                >
+                <PrimaryLink href={proposal.link ?? '#'} className="h-8 w-full">
                     View Proposal
                 </PrimaryLink>
             </div>

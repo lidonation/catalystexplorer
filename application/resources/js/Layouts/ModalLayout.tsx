@@ -1,9 +1,9 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef } from 'react'
+import Button from '@/Components/atoms/Button';
+import { router } from '@inertiajs/react';
 // @ts-ignore
 import { Modal } from '@inertiaui/modal-react';
-import { router } from '@inertiajs/react';
 import { X } from 'lucide-react';
-import Button from '@/Components/atoms/Button';
 
 interface ModalLayoutProps {
     children: React.ReactNode;
@@ -17,6 +17,7 @@ interface ModalLayoutProps {
     position?: string;
     showProgress?: boolean;
     navigate?: boolean;
+    name?: string | null;
     onModalClosed?: () => void;
     onModalOpened?: () => void;
 }
@@ -30,6 +31,7 @@ const ModalLayout: React.FC<ModalLayoutProps> = ({
     paddingClasses = 'p-4 sm:p-6',
     panelClasses,
     position = 'right',
+    name = null,
     showProgress = false,
     navigate = true,
     onModalClosed,
@@ -37,18 +39,18 @@ const ModalLayout: React.FC<ModalLayoutProps> = ({
 }) => {
     const modalRef = useRef<{ close: () => void }>(null);
 
-     useEffect(() => {
+    useEffect(() => {
         onModalOpened?.();
-        
+
         const handleKeyDown = (e: KeyboardEvent) => {
             if (e.key === 'Escape') {
                 e.preventDefault();
                 e.stopPropagation();
             }
         };
-        
+
         document.addEventListener('keydown', handleKeyDown, true);
-        
+
         return () => {
             document.removeEventListener('keydown', handleKeyDown, true);
         };
@@ -76,6 +78,7 @@ const ModalLayout: React.FC<ModalLayoutProps> = ({
             showProgress={showProgress}
             closeExplicitly={closeExplicitly}
             navigate={navigate}
+            name={name}
             panelClasses={`bg-background lg:my-4 min-h-screen rounded-lg ${panelClasses}`}
             slideover={slideover}
             className={`relative ${className}`}
@@ -84,11 +87,11 @@ const ModalLayout: React.FC<ModalLayoutProps> = ({
             <Button
                 onClick={handleButtonClose}
                 ariaLabel="Close"
-                className="bg-background shadow-md !rounded-full p-2 z-10 mb-4 hover:bg-background-lighter md:mb-0 md:absolute md:-top-4 md:-left-4"
+                className="bg-background hover:bg-background-lighter z-10 mb-4 !rounded-full p-2 shadow-md md:absolute md:-top-4 md:-left-4 md:mb-0"
             >
-                <X className="w-5 h-5 text-content" />
+                <X className="text-content h-5 w-5" />
             </Button>
-            <div className="overflow-y-auto h-full">{children}</div>
+            <div className="h-full overflow-y-auto">{children}</div>
         </Modal>
     );
 };
