@@ -75,6 +75,7 @@
     "metaTitle": "Meta Data Preview",
     "password": "Mot de passe",
     "proposers": "Proposeurs",
+    "problem": "Problème",
     "register": "Registre",
     "rememberMe": "Souviens-toi de moi",
     "reviewerReputationScore": "Score de réputation de l'évaluateur",
@@ -86,6 +87,9 @@
     "twitter": "Twitter",
     "support": "Support",
     "seeAll": "Voir Tout",
+    "seeMore": "Voir plus",
+    "seeLess": "Voir moins",
+    "solution": "Solution",
     "signup": "S'inscrire",
     "terms": "Conditions Générales",
     "votes": "Mes Votes",
@@ -297,7 +301,8 @@
             "claim": "Bouton de réclamation",
             "claimed": "Bouton réclamé",
             "share": "Bouton de partage"
-        }
+        },
+        "bookmark": "Icône de signet"
     },
     "searchResults": {
         "noResults": {
@@ -535,6 +540,12 @@
         "providedUrl": "URL fournie",
         "totalRequested": "Total demandé",
         "owner": "Propriétaire",
+        "outstanding": "Propositions en attente",
+        "completed": "Propositions complétées",
+        "catalystConnection": "Connexions Catalyst",
+        "impactAlignment": "Alignement des impacts",
+        "feasibility": "Faisabilité",
+        "valueForMoney": "Rapport qualité/prix",
         "listSubtitle": "Les votes des propositions doivent être soumis dans l'application officielle de vote Catalyst.",
         "pageSubtitle": "Rechercher des propositions et des défis par titre, contenu ou auteur et co-auteurs.",
         "seeMoreProposals": "Voir plus de propositions",
@@ -609,6 +620,11 @@
             "feasibilityLowToHigh": "Faisabilité : Du plus bas au plus élevé",
             "valueForMoneyHighToLow": "Valeur pour l'argent : Du plus élevé au plus bas",
             "valueForMoneyLowToHigh": "Valeur pour l'argent : Du plus bas au plus élevé"
+        },
+        "tabs": {
+            "details": "Détails",
+            "community": "Examen communautaire",
+            "team": "Informations sur l'équipe"
         }
     },
     "groups": {
@@ -617,6 +633,7 @@
         "subtitle": "Diversifiés, indépendants et inspirant ensemble le plus haut niveau de collaboration humaine",
         "fundedProposals": "Propositions financées",
         "received": "Reçue",
+        "requested": "Demandée",
         "totalRequested": "Total demandé",
         "totalProposals": "Total des propositions",
         "completed": "Complété",

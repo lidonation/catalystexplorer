@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Traits\HasAuthor;
+use App\Traits\HasHashId;
 use App\Traits\HasLinks;
 use App\Traits\HasMetaData;
 use App\Traits\HasModel;
 use App\Traits\HasTranslations;
-use App\Traits\HasHashId;
 use Illuminate\Database\Eloquent\Casts\AsArrayObject;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -41,7 +41,7 @@ class Nft extends Model implements CardanoNftInterface, HasMedia
         'hash',
         'maker_project_uuid',
         'maker_nft_uuid',
-        'required_nft_metadata',
+        // 'required_nft_metadata',
         'preview_img_url',
     ];
 

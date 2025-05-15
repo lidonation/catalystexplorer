@@ -1,10 +1,20 @@
 import { Star } from 'lucide-react';
+import clsx from 'clsx';
 
 interface RatingProp {
-  rating:number
+  rating: number;
+  className?: string;
+  filledClassName?: string;
+  emptyClassName?: string;
+  showValue?: boolean;
 }
 
-const Rating = ({ rating = 3.5 }: RatingProp) => {
+const Rating = ({ 
+  rating = 3.5, 
+  className,
+  filledClassName = "fill-yellow-400 text-yellow-400",
+  showValue = true
+}: RatingProp) => {
     const renderStars = () => {
         const fullStars = Math.floor(rating);
         const hasHalfStar = rating % 1 >= 0.5;
@@ -33,7 +43,7 @@ const Rating = ({ rating = 3.5 }: RatingProp) => {
                             >
                                 <Star
                                     size={14}
-                                    className="fill-yellow-400 text-yellow-400"
+                                    className={filledClassName}
                                 />
                             </div>
                         )}
@@ -43,13 +53,15 @@ const Rating = ({ rating = 3.5 }: RatingProp) => {
     };
 
     return (
-        <div className="mr-4 flex items-center">
-            <div className="mr-2 flex items-center space-x-0.5">
+        <div className={clsx("flex items-center", showValue ? "mr-4" : "", className)}>
+            <div className={clsx("flex items-center space-x-0.5", showValue ? "mr-2" : "")}>
                 {renderStars()}
             </div>
-            <span className="text-content mt-1 text-xl font-medium">
-                {Number(rating).toFixed(1)}
-            </span>
+            {showValue && (
+                <span className="text-content mt-1 text-xl font-medium">
+                    {Number(rating).toFixed(1)}
+                </span>
+            )}
         </div>
     );
 };

@@ -56,7 +56,7 @@ export default forwardRef(function Textarea(
                 className={`border ${
                     isTooShort
                         ? 'border-red-500 focus:border-red-500 focus:ring-0'
-                        : 'border-slate-light border-opacity-40 focus:border-primary'
+                        : 'border-gray-light border-opacity-40 focus:border-primary'
                 } bg-background text-content rounded-md shadow-xs ${className}`}
                 ref={localRef}
                 value={value}

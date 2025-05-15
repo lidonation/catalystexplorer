@@ -49,7 +49,7 @@ function GlobalSearch() {
     return (
         <form
             onSubmit={submit}
-            className={`divide-slate-light divide-border bg-background flex items-center divide-x-2 rounded-lg transition-all duration-200 ${
+            className={`divide-gray-light divide-border bg-background flex items-center divide-x-2 rounded-lg transition-all duration-200 ${
                 isFocused ? 'ring-primary ring-3' : ''
             }`}
         >

@@ -6,10 +6,10 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
-use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 use Illuminate\Http\Response as LaravelResponse;
 use Inertia\Response as InertiaResponse;
 use InertiaUI\Modal\Modal;
+use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 
 class CaptureIntendedUrl
 {

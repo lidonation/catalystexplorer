@@ -227,7 +227,7 @@ const CommunityFundingChart: React.FC<CommunityFundingChartProps> = ({
                                                 <span
                                                     className={
                                                         item.trend.isPositive
-                                                            ? 'text-green-500'
+                                                            ? 'text-success'
                                                             : 'text-danger-strong'
                                                     }
                                                     style={{
