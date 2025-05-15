@@ -69,7 +69,7 @@ export default function TransactionDetail({
                                 <CopyIcon
                                     className="text-gray-persist h-4 w-4 cursor-pointer font-bold"
                                     onClick={() =>
-                                        copyToClipboard(transaction.stake_pub)
+                                        copyToClipboard(transaction.stake_pub ?? '-')
                                     }
                                 />
                             </div>
@@ -91,7 +91,7 @@ export default function TransactionDetail({
                                     onClick={() =>
                                         copyToClipboard(
                                             transaction.json_metadata
-                                                .payment_address,
+                                                .payment_address ?? '-',
                                         )
                                     }
                                 />
@@ -103,11 +103,11 @@ export default function TransactionDetail({
                             href={useLocalizedRoute(
                                 'jormungandr.transactions.wallet',
                                 {
-                                    transaction: transaction?.tx_hash,
-                                    catId: transaction?.json_metadata?.voter_delegations[0]?.catId,
+                                    transaction: transaction?.tx_hash ?? '',
+                                    catId: transaction?.json_metadata?.voter_delegations[0]?.catId ?? '',
                                     paymentAddress:
                                         transaction?.json_metadata
-                                            .payment_address,
+                                            .payment_address ?? '',
                                 },
                             )}
                         >
