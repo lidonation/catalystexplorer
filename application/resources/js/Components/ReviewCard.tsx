@@ -30,9 +30,7 @@ export const ReviewCard: React.FC<ReviewItemProps> = ({
     const [isHovered, setIsHovered] = useState(false);
     const { t } = useTranslation();
     const contentRef = useRef<HTMLParagraphElement | null>(null);
-    const cardRef = useRef<HTMLDivElement>(null);
     const [lineCount, setLineCount] = useState(0);
-    const [baseHeight, setBaseHeight] = useState<number>(0);
 
     useEffect(() => {
         const element = contentRef.current;
@@ -43,11 +41,6 @@ export const ReviewCard: React.FC<ReviewItemProps> = ({
         }
     }, [review?.content]);
 
-    useEffect(() => {
-        if (cardRef.current && !baseHeight) {
-            setBaseHeight(cardRef.current.scrollHeight);
-        }
-    }, [cardRef.current]);
 
     const markPositive = () => {
         if (!review?.hash) return;

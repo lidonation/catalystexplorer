@@ -1000,7 +1000,15 @@
             "block": "Block",
             "actions": "Actions",
             "view": "View",
-            "voterRegistration": "Voter Registration"
+            "voterRegistration": "Voter Registration",
+            "type": "Type",
+            "fund": "Fund",
+            "fragmentId": "Fragment ID",
+            "caster": "Caster",
+            "timestamp": "Timestamp",
+            "choice": "Choice",
+            "votingPower": "Voting Power",
+            "rawFragment": "Raw Fragment"
         },
         "options": {
             "newestToOldest": "Newest to Oldest",
@@ -1016,6 +1024,13 @@
         },
         "searchBar": {
             "placeholder": "Search transaction hash, epoch, block"
+        },
+        "wallet" :{
+            "title": "Wallet Details",
+            "wallet": "Wallet",
+            "stakeKey": "Stake Key",
+            "catalystVotes": "Catalyst Votes",
+            "transactions": "Transactions"
         }
     },
     "validation": {
