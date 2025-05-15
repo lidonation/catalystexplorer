@@ -1,6 +1,5 @@
 import { useCallback, useState, useRef, useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import Markdown from "marked-react";
 import Button from "@/Components/atoms/Button";
 import PlusIcon from "@/Components/svgs/PlusIcon";
 import MinusIcon from "@/Components/svgs/MinusIcon";
@@ -71,19 +70,20 @@ const MarkdownContent = ({ content }: MarkdownContentProps) => {
                 </ReactMarkdown>
             </div>
             
-            {isContentTruncated && (
-                <div className='w-full flex items-center justify-center'>
-                    <Button 
-                        onClick={toggleContentExpand}
-                        aria-label={isContentExpanded ? t('common.collapse') : t('common.expand')}
-                    >
-                        {isContentExpanded ? <MinusIcon /> : <PlusIcon />}
-                    </Button>
-                </div>
+            {!isContentExpanded && isContentTruncated && (
+                <div className="absolute bottom-0 left-0 right-0 h-16 backdrop-blur-sm bg-background/30 pointer-events-none flex items-center justify-center" />
             )}
             
-            {!isContentExpanded && isContentTruncated && (
-                <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-background to-transparent pointer-events-none" />
+            {isContentTruncated && (
+                <div className='absolute bottom-4 left-0 right-0 flex items-center justify-center z-10'>
+                    <Button 
+                        onClick={toggleContentExpand}
+                        className="shadow-md p-2 rounded-full"
+                        aria-label={isContentExpanded ? t('common.collapse') : t('common.expand')}
+                    >
+                        {isContentExpanded ? <MinusIcon className="w-5 h-5" /> : <PlusIcon className="w-5 h-5" />}
+                    </Button>
+                </div>
             )}
         </div>
     );

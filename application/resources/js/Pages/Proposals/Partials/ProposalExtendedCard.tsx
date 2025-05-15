@@ -7,7 +7,7 @@ import ProposalFundingDetails from './ProposalFundingDetails';
 import ProposalFundingStatus from './ProposalFundingStatus';
 import ProposalSolution from './ProposalSolution';
 import IdeascaleProfileUsers from '@/Pages/IdeascaleProfile/Partials/IdeascaleProfileUsersComponent';
-import { useCallback, useState, useRef } from 'react';
+import { useCallback, useState, useRef, useEffect } from 'react';
 import Rating from '@/Components/Rating';
 import ValueLabel from '@/Components/atoms/ValueLabel';
 import Button from '@/Components/atoms/Button';
@@ -29,11 +29,38 @@ export default function ProposalExtendedCard({
     const cardRef = useRef<HTMLElement>(null);
     const [solutionExpanded, setSolutionExpanded] = useState(false);
     const [solutionHeight, setSolutionHeight] = useState<number | null>(null);
+    const cardContainerRef = useRef<HTMLDivElement>(null);
+    const solutionContainerRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        if (cardRef.current) {
+            const initialHeight = cardRef.current.offsetHeight;
+            if (!cardHeight) {
+                setCardHeight(initialHeight);
+            }
+        }
+    }, []);
 
     const handleSolutionExpand = (expanded: boolean, height: number) => {
         setSolutionExpanded(expanded);
-        const adjustedHeight = expanded ? height * 1.2 : height;
-        setSolutionHeight(adjustedHeight);
+        setSolutionHeight(height);
+        
+        setTimeout(() => {
+            if (cardContainerRef.current) {
+                if (solutionContainerRef.current) {
+                    solutionContainerRef.current.style.height = expanded ? `auto` : 'auto';
+                    solutionContainerRef.current.style.overflow = expanded ? 'visible' : 'hidden';
+                }
+                
+                cardContainerRef.current.style.transition = 'all 0.3s ease-in-out';
+                
+                if (expanded) {
+                    cardContainerRef.current.style.minHeight = `${cardHeight ? cardHeight + height/2 : 650}px`;
+                } else {
+                    cardContainerRef.current.style.minHeight = '';
+                }
+            }
+        }, 50);
     };
     
     const wrappedHandleUserClick = useCallback(
@@ -110,10 +137,9 @@ export default function ProposalExtendedCard({
                                 />
                             </section>
                             <div 
-                                className="relative mt-2 transition-all duration-300 ease-in-out" 
+                                className={`relative mt-2 transition-all duration-300 ease-in-out ${solutionExpanded ? 'mb-1' : 'mb-1'}`}
                                 style={{ 
-                                    minHeight: solutionHeight ? `${solutionHeight}px` : '150px',
-                                    marginBottom: solutionExpanded ? '20px' : '0',
+                                    minHeight: solutionHeight ? `${solutionHeight}px` : 'auto',
                                 }}
                             >
                                 <ProposalSolution

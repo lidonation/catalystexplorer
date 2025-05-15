@@ -59,7 +59,7 @@ export const ReviewCard: React.FC<ReviewItemProps> = ({
                 preserveScroll: true,
                 onFinish: () => {
                     router.reload({
-                        only: ['review'],
+                        only: ['reviews'],
                         onFinish: () => setIsLoadingPositive(false),
                     });
                 },
@@ -85,7 +85,7 @@ export const ReviewCard: React.FC<ReviewItemProps> = ({
                 preserveScroll: true,
                 onFinish: () => {
                     router.reload({
-                        only: ['review'],
+                        only: ['reviews'],
                         onFinish: () => setIsLoadingNegative(false),
                     });
                 },
