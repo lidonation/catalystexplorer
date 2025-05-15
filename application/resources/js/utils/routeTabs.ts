@@ -95,7 +95,7 @@ export const proposalTabs: TabConfig = {
   translationPrefix: 'proposals.tabs',
   routePrefix: 'proposals/{slug}',
   tabs: [
-    {key: 'projectInfo', routeName: 'details',},
+    {key: 'details', routeName: 'details',},
     {key: 'community', routeName: 'community-review',},
     {key: 'team', routeName: 'team-information',},
   ]
