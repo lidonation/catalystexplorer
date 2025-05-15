@@ -8,6 +8,7 @@ import ProposalFundingPercentages from '../Partials/ProposalFundingPercentages';
 import ProposalFundingStatus from '../Partials/ProposalFundingStatus';
 import ColumnHeader from './Partials/ColumnHeader';
 import ProposalData = App.DataTransferObjects.ProposalData;
+import { shortNumber } from '@/utils/shortNumber';
 
 export default function SortableProposalColumn({
     proposal,
@@ -54,7 +55,7 @@ export default function SortableProposalColumn({
             style={style}
             {...attributes}
             {...listeners}
-            className="flex cursor-move flex-col bg-white"
+            className="flex w-72 cursor-move flex-col bg-white"
         >
             {/* Reorder */}
             <div
@@ -128,7 +129,7 @@ export default function SortableProposalColumn({
                     <span className="flex gap-2">
                         <span className="font-semibold">{t('yes')}</span>
                         <span className="text-highlight">
-                            ({proposal.yes_votes_count})
+                            ({shortNumber(proposal.yes_votes_count ?? 0)})
                         </span>
                     </span>
                 </div>
@@ -156,7 +157,7 @@ export default function SortableProposalColumn({
                     <span className="flex gap-2">
                         <span className="font-semibold">{t('abstain')}</span>
                         <span className="text-highlight">
-                            ({proposal.abstain_votes_count})
+                            ({shortNumber(proposal.abstain_votes_count ?? 0)})
                         </span>
                     </span>
                 </div>

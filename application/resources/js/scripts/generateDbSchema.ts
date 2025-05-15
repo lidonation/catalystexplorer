@@ -8,7 +8,6 @@ const __dirname = dirname(__filename);
 
 const typeTableMap: Record<string, string> = {
     "proposal_comparisons": 'ProposalData',
-    "ideascale_profile_data": 'IdeascaleProfileData',
     "user_setting": 'UserSettingData'
 };
 

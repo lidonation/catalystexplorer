@@ -1,5 +1,9 @@
 'use client';
 
+import ModalLayout from '@/Layouts/ModalLayout';
+import { useLiveQuery } from 'dexie-react-hooks';
+
+import { IndexedDBService } from '@/Services/IndexDbService';
 import {
     closestCenter,
     DndContext,
@@ -15,14 +19,9 @@ import {
     SortableContext,
     sortableKeyboardCoordinates,
 } from '@dnd-kit/sortable';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import SortableProposalColumn from './SortableProposalColumn';
 import ProposalData = App.DataTransferObjects.ProposalData;
-import { IndexedDBService } from '@/Services/IndexDbService';
-import ModalLayout from '@/Layouts/ModalLayout';
-
-// Sample data based on the screenshot
-const initialProposals: ProposalData[] = await IndexedDBService.getAll('proposal_comparisons')
 
 const rows = [
     { id: 'reorder', label: 'Reorder', height: 'h-16' },
@@ -40,9 +39,19 @@ const rows = [
 // Sortable column component
 
 export default function ProposalsTable() {
-    const [proposals, setProposals] = useState(initialProposals);
+    const [proposals, setProposals] = useState<ProposalData[]>([]);
 
-    // Configure sensors for drag detection
+    const liveProposals = useLiveQuery(
+        () => IndexedDBService.getAll('proposal_comparisons'),
+        [],
+    );
+
+    useEffect(() => {
+        if (liveProposals) {
+            setProposals(liveProposals);
+        }
+    }, [liveProposals]);
+
     const sensors = useSensors(
         useSensor(PointerSensor, {
             activationConstraint: {
@@ -54,8 +63,7 @@ export default function ProposalsTable() {
         }),
     );
 
-    // Handle drag end event
-    function handleDragEnd(event: DragEndEvent) {
+    async function handleDragEnd(event: DragEndEvent) {
         const { active, over } = event;
 
         if (over && active.id !== over.id) {
@@ -66,8 +74,24 @@ export default function ProposalsTable() {
                 const newIndex = items.findIndex(
                     (item) => item.hash === over.id,
                 );
+                const newOrder = arrayMove(items, oldIndex, newIndex);
 
-                return arrayMove(items, oldIndex, newIndex);
+                newOrder.forEach((item, index) => {
+                    if (item.order !== index + 1 && item.hash) {
+                        IndexedDBService.update(
+                            'proposal_comparisons',
+                            item.hash,
+                            {
+                                order: index + 1,
+                            },
+                        );
+                    }
+                });
+
+                return newOrder.map((item, index) => ({
+                    ...item,
+                    order: index + 1,
+                }));
             });
         }
     }

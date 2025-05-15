@@ -95,6 +95,46 @@ start docker containers.
 `make test-backend`
 Run pest php tests.
 
+## create meilisearch indexed
+
+`make create-index` ##For creating all indices for all models, 
+
+`make create-index proposal` ##To create for individual models pass the model name 
+
+`make import-index` ##for loading the document to meili, also accepts argument
+
+`make flush-index` ##for flushing the document to meili, also accepts argument
+
+`make delete-index` ##for flushing the document to meili, also accepts argument
+
+
+## create indexDb tables
+In the `application/resources/js/scripts/generateDbSchema.ts` file you can declare the table and the type to be infered, we also generate the columns from the type keys here is the object you wan to update for this 
+
+```ts
+const typeTableMap: Record<string, string> = {
+    "ideascale_profile_data": 'IdeascaleProfileData',
+};
+```
+
+Notice the types match the genarated types name from our dto, we do this for consistency and eas of maintainance.
+
+After updating this object runs `make db-schema` to generate the schema that indexDb will use to create the tables. You can verify this in `application/resources/js/db/generated-db-schema.ts`
+
+```ts
+// Auto-generated. Do not edit manually.
+
+export const TABLE_INDEXES = {
+    "ideascale_profile_data": "hash, ideascaleId, username, email..."
+};
+
+export interface DbModels {
+    "ideascale_profile_data": App.DataTransferObjects.IdeascaleProfileData;
+
+}
+
+```
+
 ## Contributing
 
 We welcome contributions from the community! Please check out our [Contribution Guidelines](CONTRIBUTING.md) for more information.

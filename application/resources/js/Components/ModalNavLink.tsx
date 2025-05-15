@@ -76,19 +76,24 @@ const ModalNavLink: React.FC<ModalNavLinkProps> = ({
             async={async}
             closeButton={closeButton}
             closeExplicitly={closeExplicitly}
+            preservescroll={preserveScroll}
+            preservestate={preserveState}
             maxWidth={maxWidth}
             paddingClasses={paddingClasses}
-            panelClasses = {`bg-background relative mt-16 lg:my-4 min-h-screen rounded-lg ${panelClasses || ""}`}
+            panelClasses={`bg-background relative mt-16 lg:my-4 min-h-screen rounded-lg ${panelClasses || ''}`}
             position={position}
             showProgress={true}
+            prefetch={'false'}
         >
-            {({ loading }: { loading: boolean }) => (
+            {({ loading }: { loading: boolean }) =>
                 loading ? (
                     <div className="flex items-center justify-center">
-                      <div className="animate-spin rounded-full h-5 w-5 border-2 border-background-lighter border-t-primary"></div>
+                        <div className="border-background-lighter border-t-primary h-5 w-5 animate-spin rounded-full border-2"></div>
                     </div>
-                ) : children
-            )}
+                ) : (
+                    children
+                )
+            }
         </ModalLink>
     );
 };
