@@ -48,7 +48,6 @@ export const ReviewCard: React.FC<ReviewItemProps> = ({
             setBaseHeight(cardRef.current.scrollHeight);
         }
     }, [cardRef.current]);
-
     const markPositive = () => {
         if (!review?.hash) return;
         setIsLoadingPositive(true);
@@ -59,7 +58,7 @@ export const ReviewCard: React.FC<ReviewItemProps> = ({
                 preserveScroll: true,
                 onFinish: () => {
                     router.reload({
-                        only: ['review'],
+                        only: ['reviews','proposals', 'groups', 'ideascaleProfiles'],
                         onFinish: () => setIsLoadingPositive(false),
                     });
                 },
@@ -85,7 +84,7 @@ export const ReviewCard: React.FC<ReviewItemProps> = ({
                 preserveScroll: true,
                 onFinish: () => {
                     router.reload({
-                        only: ['review'],
+                        only: ['reviews', 'proposals', 'groups', 'ideascaleProfiles'],
                         onFinish: () => setIsLoadingNegative(false),
                     });
                 },
