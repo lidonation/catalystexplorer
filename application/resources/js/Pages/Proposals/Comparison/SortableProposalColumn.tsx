@@ -55,7 +55,7 @@ export default function SortableProposalColumn({
             style={style}
             {...attributes}
             {...listeners}
-            className="flex w-72 cursor-move flex-col bg-white"
+            className="flex w-72 cursor-move flex-col bg-background"
         >
             {/* Reorder */}
             <div

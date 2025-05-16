@@ -101,7 +101,7 @@ export default function ProposalsTable() {
             <div className="relative container mx-4 mb-4 w-full">
                 <div className="bg-background flex w-full gap-1 rounded-lg shadow-lg">
                     {/* Sticky Row Headers */}
-                    <div className="bg-background-lighter sticky left-0 z-10 flex flex-col shadow-md">
+                    <div className="bg-background-lighter sticky left-0 z-10 flex flex-col shadow-lg rounded-l-lg">
                         {rows.map((row) => (
                             <div
                                 key={row.id}

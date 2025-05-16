@@ -91,7 +91,7 @@ const ModalLayout: React.FC<ModalLayoutProps> = ({
             >
                 <X className="text-content h-5 w-5" />
             </Button>
-            <div className="h-full overflow-y-auto">{children}</div>
+            <div className="h-full ">{children}</div>
         </Modal>
     );
 };
