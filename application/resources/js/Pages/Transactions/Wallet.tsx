@@ -38,9 +38,6 @@ export default function Wallet({
     const { t } = useTranslation();
     const [activeTab, setActiveTab] = useState('votes');
 
-    useEffect(() => {
-        console.log('transaction', walletTransactions);
-    });
     return (
         <>
             <FiltersProvider defaultFilters={filters}>
@@ -76,7 +73,7 @@ export default function Wallet({
                                 </Value>
                                 <CopyIcon
                                     className="text-gray-persist h-4 w-4 cursor-pointer font-bold"
-                                    onClick={() => copyToClipboard(stakeKey)}
+                                    onClick={() => copyToClipboard(stakeKey ?? '-')}
                                 />
                             </div>
                         </DetailRow>
