@@ -10,9 +10,11 @@ export default forwardRef(function TextInput(
     {
         type = 'text',
         className = '',
+        border = 'border-gray-light',
         isFocused = false,
         ...props
-    }: InputHTMLAttributes<HTMLInputElement> & { isFocused?: boolean },
+    }: InputHTMLAttributes<HTMLInputElement> & { isFocused?: boolean; border?:string|null
+     },
     ref,
 ) {
     const localRef = useRef<HTMLInputElement>(null);
@@ -31,7 +33,7 @@ export default forwardRef(function TextInput(
         <input
             {...props}
             type={type}
-            className={`border border-secondary border-opacity-40 bg-background text-content focus:border-primary rounded-md shadow-xs ${className}`}
+            className={`${border} border-opacity-40 bg-background text-content focus:border-primary rounded-md shadow-xs focus:outline-none ${className}`}
             ref={localRef}
             onKeyDown={(e) => {
                 if (e.key === ' ') {

@@ -189,7 +189,7 @@ export default function UserSummaryChart({
                                         <span
                                             className={
                                                 trend.isPositive
-                                                    ? 'text-green-500'
+                                                    ? 'text-success'
                                                     : 'text-danger-strong'
                                             }
                                             style={{

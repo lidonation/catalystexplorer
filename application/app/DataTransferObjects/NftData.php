@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\DataTransferObjects;
 
 use Carbon\Carbon;
+use Illuminate\Support\Collection;
 use Spatie\LaravelData\Data;
 use Spatie\TypeScriptTransformer\Attributes\TypeScript;
 
@@ -13,6 +14,7 @@ class NftData extends Data
 {
     public function __construct(
         public int $id = 0,
+        public ?string $hash = '',
         public int $user_id = 0,
         public int $artist_id = 0,
         public int $model_id = 0,
@@ -33,7 +35,7 @@ class NftData extends Data
         public ?Carbon $created_at = null,
         public ?Carbon $updated_at = null,
         public ?Carbon $deleted_at = null,
-        public array $metas = [],
+        public array|Collection $metas = [],
     ) {}
 
     /**

@@ -7,8 +7,13 @@ namespace App\Nova;
 use App\Enums\BookmarkStatus;
 use App\Enums\BookmarkVisibility;
 use App\Enums\CommentsAllowance;
+use App\Models\BookmarkCollection;
+use App\Nova\Actions\EditModel;
+use Laravel\Nova\Actions\Action;
 use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Fields\Color;
+use Laravel\Nova\Fields\DateTime;
+use Laravel\Nova\Fields\Field;
 use Laravel\Nova\Fields\HasMany;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Select;
@@ -23,14 +28,14 @@ class BookmarkCollections extends Resource
      *
      * @var class-string<BookmarkCollection>
      */
-    public static $model = \App\Models\BookmarkCollection::class;
+    public static $model = BookmarkCollection::class;
 
     /**
      * The single value that should be used to represent the resource when being displayed.
      *
      * @var string
      */
-    public static $title = 'id';
+    public static $title = 'title';
 
     /**
      * The columns that should be searched.
@@ -42,10 +47,21 @@ class BookmarkCollections extends Resource
         'title',
     ];
 
+    public static $perPageOptions = [25, 50, 100, 250];
+
+    /**
+     * The pagination per-page options used the resource via relationship.
+     *
+     * @var int
+     *
+     * @deprecated use `$perPageViaRelationshipOptions` instead.
+     */
+    public static $perPageViaRelationship = 6;
+
     /**
      * Get the fields displayed by the resource.
      *
-     * @return array<int, \Laravel\Nova\Fields\Field>
+     * @return array<int, Field>
      */
     public function fields(NovaRequest $request): array
     {
@@ -63,6 +79,7 @@ class BookmarkCollections extends Resource
             Color::make(__('Color'))
                 ->sortable()
                 ->rules('required', 'max:255'),
+
             Select::make(__('Allow Comments'), 'allow-comments')
                 ->options([
                     CommentsAllowance::NO()->value => CommentsAllowance::NO()->value,
@@ -98,9 +115,19 @@ class BookmarkCollections extends Resource
                 ->searchable()
                 ->rules('required'),
 
+            BelongsTo::make(__('Parent'), 'parent', BookmarkCollections::class)
+                ->sortable()
+                ->searchable(),
+
             Text::make(__('Type'), 'type')
                 ->default(BookmarkCollections::class)
                 ->rules('required', 'max:255')
+                ->sortable(),
+
+            DateTime::make(__('Created At'), 'created_at')
+                ->sortable(),
+
+            DateTime::make(__('Updated At'), 'updated_at')
                 ->sortable(),
 
             HasMany::make(__('Items'), 'items', BookmarkItems::class)
@@ -109,42 +136,14 @@ class BookmarkCollections extends Resource
     }
 
     /**
-     * Get the cards available for the resource.
-     *
-     * @return array<int, \Laravel\Nova\Card>
-     */
-    public function cards(NovaRequest $request): array
-    {
-        return [];
-    }
-
-    /**
-     * Get the filters available for the resource.
-     *
-     * @return array<int, \Laravel\Nova\Filters\Filter>
-     */
-    public function filters(NovaRequest $request): array
-    {
-        return [];
-    }
-
-    /**
-     * Get the lenses available for the resource.
-     *
-     * @return array<int, \Laravel\Nova\Lenses\Lens>
-     */
-    public function lenses(NovaRequest $request): array
-    {
-        return [];
-    }
-
-    /**
      * Get the actions available for the resource.
      *
-     * @return array<int, \Laravel\Nova\Actions\Action>
+     * @return array<int, Action>
      */
     public function actions(NovaRequest $request): array
     {
-        return [];
+        return [
+            (new EditModel),
+        ];
     }
 }

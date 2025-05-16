@@ -5,7 +5,10 @@ declare(strict_types=1);
 namespace App\Nova;
 
 use App\Models\BookmarkItem;
+use App\Nova\Actions\EditModel;
+use Laravel\Nova\Actions\Action;
 use Laravel\Nova\Fields\BelongsTo;
+use Laravel\Nova\Fields\DateTime;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\MorphTo;
 use Laravel\Nova\Fields\Number;
@@ -29,6 +32,8 @@ class BookmarkItems extends Resource
      */
     public static $title = 'id';
 
+    public static $with = ['collection'];
+
     /**
      * The columns that should be searched.
      *
@@ -39,6 +44,15 @@ class BookmarkItems extends Resource
         'title',
         'content',
     ];
+
+    /**
+     * The pagination per-page options used the resource via relationship.
+     *
+     * @var int
+     *
+     * @deprecated use `$perPageViaRelationshipOptions` instead.
+     */
+    public static $perPageViaRelationship = 25;
 
     /**
      * Get the fields displayed by the resource.
@@ -80,46 +94,24 @@ class BookmarkItems extends Resource
             Number::make(__('Action'), 'action')
                 ->sortable()
                 ->rules('nullable', 'integer'),
+
+            DateTime::make(__('Created At'), 'created_at')
+                ->sortable(),
+
+            DateTime::make(__('Updated At'), 'updated_at')
+                ->sortable(),
         ];
-    }
-
-    /**
-     * Get the cards available for the resource.
-     *
-     * @return array<int, \Laravel\Nova\Card>
-     */
-    public function cards(NovaRequest $request): array
-    {
-        return [];
-    }
-
-    /**
-     * Get the filters available for the resource.
-     *
-     * @return array<int, \Laravel\Nova\Filters\Filter>
-     */
-    public function filters(NovaRequest $request): array
-    {
-        return [];
-    }
-
-    /**
-     * Get the lenses available for the resource.
-     *
-     * @return array<int, \Laravel\Nova\Lenses\Lens>
-     */
-    public function lenses(NovaRequest $request): array
-    {
-        return [];
     }
 
     /**
      * Get the actions available for the resource.
      *
-     * @return array<int, \Laravel\Nova\Actions\Action>
+     * @return array<int, Action>
      */
     public function actions(NovaRequest $request): array
     {
-        return [];
+        return [
+            (new EditModel),
+        ];
     }
 }

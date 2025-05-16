@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Database\Factories;
 
 use App\Enums\CatalystCurrencies;
+use App\Enums\FundStatus;
 use App\Models\Campaign;
 use App\Models\Fund;
 use App\Models\User;
@@ -33,9 +34,7 @@ class CampaignFactory extends Factory
             'comment_prompt' => $this->faker->optional()->sentence(),
             'content' => $this->faker->optional()->paragraphs(3, true),
             'amount' => $this->faker->numberBetween(1000000, 50000000),
-            'status' => $this->faker->optional()->randomElement([
-                'pending', 'unfunded', 'funded', 'complete', 'retired', 'startup', 'growth', 'expansion', 'matured',
-            ]),
+            'status' => $this->faker->optional()->randomElement(array_merge(FundStatus::toValues(), [null])),
             'launched_at' => $this->faker->optional()->dateTimeBetween('-2 years', 'now'),
             'awarded_at' => $this->faker->optional()->dateTimeBetween('-2 years', 'now'),
             'created_at' => $this->faker->dateTimeBetween('-2 years', 'now'),

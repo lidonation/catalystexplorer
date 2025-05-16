@@ -28,7 +28,7 @@ use App\Http\Controllers\VoterHistoriesController;
 use App\Http\Controllers\VotingWorkflowController;
 use App\Http\Controllers\IdeascaleProfilesController;
 use App\Http\Controllers\SignatureWorkflowController;
-use App\Http\Controllers\CompletetProjectNftsController;
+use App\Http\Controllers\CompletedProjectNftsController;
 use App\Http\Controllers\CardanoBudgetProposalController;
 use App\Http\Controllers\ClaimIdeascaleProfileController;
 use App\Http\Controllers\WalletController;
@@ -38,6 +38,30 @@ Route::localized(
     function () {
         Route::get('/', [HomeController::class, 'index'])
             ->name('home');
+            
+        Route::prefix('/proposals')->as('proposals.')->group(function () {
+            Route::get('/', [ProposalsController::class, 'index'])
+                ->name('index');
+            
+            Route::get('/charts', [ProposalsController::class, 'charts'])
+            ->name('charts');
+
+            Route::get('/{slug}', function ($slug) {
+                return redirect()->route('proposals.group.details', ['slug' => $slug]);
+            })->name('redirect');
+            
+            Route::prefix('/{slug}')->as('group.')->group(function () {                
+                Route::get('/details', [ProposalsController::class, 'proposal'])
+                    ->name('details');
+
+                Route::get('/community-review', [ProposalsController::class, 'proposal'])
+                    ->name('communityReview');
+
+                Route::get('/team-information', [ProposalsController::class, 'proposal'])
+                    ->name('teamInformation');
+            });
+        });
+        
 
         Route::get('/proposals', [ProposalsController::class, 'index'])
             ->name('proposals.index');
@@ -122,7 +146,7 @@ Route::localized(
             Route::prefix('/completed-projects-nfts/steps')->as('completedProjectsNft.')
                 ->middleware([WorkflowMiddleware::class])
                 ->group(function () {
-                    Route::get('/{step}', [CompletetProjectNftsController::class, 'handleStep'])
+                    Route::get('/{step}', [CompletedProjectNftsController::class, 'handleStep'])
                         ->name('index');
                 });
 
@@ -278,16 +302,16 @@ Route::localized(
 
         Route::prefix('/completed-project-nfts')->as('completedProjectsNfts.')->group(
             function () {
-                Route::get('/', [CompletetProjectNftsController::class, 'index'])
+                Route::get('/', [CompletedProjectNftsController::class, 'index'])
                     ->name('index');
 
-                Route::get('/{proposal}/mint', [CompletetProjectNftsController::class, 'show'])
+                Route::get('/{proposal:hash}/mint', [CompletedProjectNftsController::class, 'show'])
                     ->name('show');
             }
         );
 
         Route::prefix('nfts')->as('crud.nfts.')->group(function () {
-            Route::patch('/update/{nft:id}', [CompletetProjectNftsController::class, 'updateMetadata'])
+            Route::patch('/update/{nft:id}', [CompletedProjectNftsController::class, 'updateMetadata'])
                 ->name('update');
         });
 
@@ -299,7 +323,7 @@ Route::localized(
                 Route::get('/', [TransactionController::class, 'index'])
                     ->name('index');
                 Route::get('/{transaction}', [TransactionController::class, 'show'])
-                    ->name('show');
+                    ->name('show');   
             });
 
             Route::prefix('/wallets')->as('wallets.')->group(function () {

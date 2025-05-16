@@ -236,7 +236,7 @@
     .text-json-key {
         color: var(--cx-content-pink);
     }
-    
+
     .text-json-string {
         color: var(--cx-content-yellow);
     }
@@ -284,13 +284,29 @@
                 margin-bottom: 0.5rem;
             }
             +ul {
-                list-style-type: disc;    
+                list-style-type: disc;
                 padding-left: 1.25rem;
                 li {
                     margin-bottom: 0.4rem;
                 }
             }
         }
+    }
+
+    .im-dialog {
+        width: 100vw !important;
+        height: 100vh !important;
+        z-index: 50 !important;
+        position: fixed !important;
+    }
+
+    .im-backdrop {
+        background-color: var(--cx-dark) !important;
+        opacity: 0.5 !important;
+    }
+    
+    .im-slideover-wrapper{
+        max-width: 90vw !important;
     }
 }
 

@@ -21,15 +21,12 @@ interface TransactionDetailProps {
     };
 }
 
-export default function TransactionDetail({
-    transaction,
-    walletStats,
-}: TransactionDetailProps) {
-    const { t } = useTranslation();
- 
-    return (
-        <>
-            <Head title="Transaction" />
+export default function TransactionDetail({transaction, walletStats}: TransactionDetailProps) {
+  const { t } = useTranslation();
+
+  return (
+    <>
+      <Head title="Transaction" />
 
             <header className="mt-10">
                 <div className="container mx-auto">
@@ -54,71 +51,9 @@ export default function TransactionDetail({
                     <TransactionDetailsCard transaction={transaction} />
                 </div>
 
-                <div className="container mb-8">
-                    <WalletDetailsCard
-                        transaction={transaction}
-                        walletStats={walletStats}
-                    >
-                        <DetailRow label={t('transactions.stakePub')}>
-                            <div className="flex flex-1 items-center">
-                                <Value className="text-content mr-2 truncate font-bold">
-                                    {truncateMiddle(
-                                        transaction.stake_pub ?? '-',
-                                    )}
-                                </Value>
-                                <CopyIcon
-                                    className="text-gray-persist h-4 w-4 cursor-pointer font-bold"
-                                    onClick={() =>
-                                        copyToClipboard(
-                                            transaction.stake_pub ?? '-',
-                                        )
-                                    }
-                                />
-                            </div>
-                        </DetailRow>
-
-                        <DetailRow
-                            label={t('transactions.paymentAddress')}
-                            className="border-none"
-                        >
-                            <div className="flex flex-1 items-center">
-                                <Value className="text-content mr-2 truncate font-bold">
-                                    {truncateMiddle(
-                                        transaction.json_metadata
-                                            .payment_address ?? '-',
-                                    )}
-                                </Value>
-                                <CopyIcon
-                                    className="text-gray-persist h-4 w-4 cursor-pointer"
-                                    onClick={() =>
-                                        copyToClipboard(
-                                            transaction.json_metadata
-                                                .payment_address ?? '-',
-                                        )
-                                    }
-                                />
-                            </div>
-                        </DetailRow>
-
-                        <Link
-                            className="text-primary"
-                            href={useLocalizedRoute(
-                                'jormungandr.wallets.show',
-                                {
-
-                                    stakeKey:
-                                        transaction?.json_metadata?.stake_key ??
-                                        '',
-                                    catId:
-                                        transaction?.json_metadata
-                                            ?.voter_delegations[0]?.catId ?? '',
-                                },
-                            )}
-                        >
-                            {t('transactions.view')}
-                        </Link>
-                    </WalletDetailsCard>
-                </div>
+        <div className="container mb-8">
+          <WalletDetailsCard transaction={transaction} walletStats={walletStats} />
+        </div>
 
                 <div className="container mx-auto">
                     <MetadataCard transaction={transaction} />

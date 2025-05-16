@@ -31,9 +31,12 @@ export default function useBookmark({ modelType, itemId }: UseBookmarkProps) {
 
     const createBookmark = async () => {
         try {
+            console.log({ itemId });
+            
             const response = await axiosClient.post(
                 route('api.bookmarks.store', { modelType, hash: itemId }),
             );
+
             if (response.data.bookmarkItems) {
                 setIsBookmarked(response.data.isBookmarked);
                 setBookmarkId(response.data.bookmarkId);

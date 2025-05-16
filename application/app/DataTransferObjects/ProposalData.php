@@ -96,7 +96,19 @@ final class ProposalData extends Data
         public ?string $currency,
 
         #[TypeScriptOptional]
+        public ?array $minted_nfts_fingerprint,
+
+        #[TypeScriptOptional]
         public ?int $ranking_total,
+
+        #[TypeScriptOptional]
+        public ?int $alignment_score,
+
+        #[TypeScriptOptional]
+        public ?int $feasibility_score,
+
+        #[TypeScriptOptional]
+        public ?int $auditability_score,
 
         #[TypeScriptOptional]
         public ?string $quickpitch,
@@ -107,6 +119,10 @@ final class ProposalData extends Data
         #[MapOutputName('users')]
         #[DataCollectionOf(IdeascaleProfileData::class)]
         public ?DataCollection $users,
+
+        #[MapOutputName('reviews')]
+        #[DataCollectionOf(ReviewData::class)]
+        public ?DataCollection $reviews,
 
         public ?FundData $fund,
 
