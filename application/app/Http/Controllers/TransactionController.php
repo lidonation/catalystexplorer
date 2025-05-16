@@ -85,11 +85,13 @@ class TransactionController
         ]);
     }
 
-    public function singleWallet(Request $request, Transaction $transaction): Response
+    public function singleWallet(Request $request, $wallet, $catId): Response
     {
 
+        $paymentAddress = $wallet;
+        $transaction = Transaction::where('json_metadata->voter_delegations->0->catId', $catId)->firstOrFail();
         $walletStats = $this->getWalletStats($transaction->stake_key ?? $transaction->json_metadata->stake_key ?? '');
-        $transactions = Transaction::where('json_metadata->payment_address', $transaction->json_metadata->payment_address);
+        $transactions = Transaction::where('json_metadata->payment_address', $paymentAddress);
         $currentPage = 1;
 
         $request->merge([

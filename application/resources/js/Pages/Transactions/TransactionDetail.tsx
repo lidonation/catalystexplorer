@@ -101,13 +101,13 @@ export default function TransactionDetail({
                         <Link
                             className="text-primary"
                             href={useLocalizedRoute(
-                                'jormungandr.transactions.wallet',
+                                'jormungandr.wallets.wallet',
                                 {
-                                    transaction: transaction?.tx_hash ?? '',
-                                    catId: transaction?.json_metadata?.voter_delegations[0]?.catId ?? '',
-                                    paymentAddress:
+                                     wallet:
                                         transaction?.json_metadata
                                             .payment_address ?? '',
+                                    catId: transaction?.json_metadata?.voter_delegations[0]?.catId ?? '',
+                                    
                                 },
                             )}
                         >

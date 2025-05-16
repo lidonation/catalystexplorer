@@ -303,6 +303,13 @@ Route::localized(
                     ->name('wallet');    
             });
 
+            Route::prefix('/wallets')->as('wallets.')->group(function () {
+                Route::get('/', [TransactionController::class, 'index'])
+                    ->name('index');
+                Route::get('/{wallet}/{catId}', [TransactionController::class, 'singleWallet'])
+                    ->name('wallet');
+            });
+
             Route::prefix('/votes')->as('votes.')->group(function () {
                 Route::get('/', [VoterHistoriesController::class, 'index'])
                     ->name('index');
