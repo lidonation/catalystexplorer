@@ -109,18 +109,18 @@ export const CardanoTransactionTable: React.FC<CardanoTransactionTableProps> = (
   ];
 
   return (
-    <div className="overflow-x-auto">
-      <div className="inline-block min-w-full border-t border-l border-r border-background-lighter overflow-hidden">
-        <table className="min-w-full bg-background table-fixed">
-          <thead>
-            <tr className="border-b border-background-lighter">
+    <div className="w-full overflow-x-auto rounded-t-lg shadow-[0_-1px_4px_0_rgba(0,0,0,0.05)]">
+    <div className="inline-block min-w-full overflow-hidden">
+        <table className="min-w-full table-fixed">
+            <thead className="bg-background-lighter border-gray-persist/30 border-b">
+                <tr className="border-background-lighter border-r border-b">
               {columns.map(column => (
-                <th key={column.key} className="p-3  border-r border-background-lighter">
-                  <Paragraph size="sm" className="font-medium text-left text-gray-persist">{column.header}</Paragraph>
+                <th key={column.key} className="p-3  border-r border-gray-persist/30 last:border-r-0">
+                  <Paragraph size="sm" className="font-medium text-left text-content/60">{column.header}</Paragraph>
                 </th>
               ))}
               <th className="p-3">
-                <Paragraph size="sm" className="font-medium text-left text-gray-persist">{t('transactions.table.actions')}</Paragraph>
+                <Paragraph size="sm" className="font-medium text-left text-content/60">{t('transactions.table.actions')}</Paragraph>
               </th>
             </tr>
           </thead>

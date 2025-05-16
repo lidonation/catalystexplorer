@@ -15,6 +15,7 @@ use Spatie\Enum\Enum;
  * @method static self ADDRESS()
  * @method static self METADATA_LABELS()
  * @method static self DATE_RANGE()
+ * @method static self STAKE_KEY()
  * @method static self PAGE()
  * @method static self LIMIT()
  * @method static self SORT()
@@ -32,6 +33,7 @@ final class TransactionSearchParams extends Enum
             'ADDRESS' => 'addr',
             'METADATA_LABELS' => 'ml',
             'DATE_RANGE' => 'dr',
+            'STAKE_KEY' => 'stk',
             'PAGE' => 'p',
             'LIMIT' => 'l',
             'SORT' => 'st',
