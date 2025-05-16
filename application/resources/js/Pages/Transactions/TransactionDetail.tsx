@@ -1,17 +1,17 @@
-import Title from '@/Components/atoms/Title';
-import Value from '@/Components/atoms/Value';
-import { copyToClipboard } from '@/utils/copyClipboard';
-import { useLocalizedRoute } from '@/utils/localizedRoute';
-import { truncateMiddle } from '@/utils/truncateMiddle';
-import { Head, Link } from '@inertiajs/react';
-import { ChevronLeft, CopyIcon } from 'lucide-react';
-import { useEffect } from 'react';
-import { useTranslation } from 'react-i18next';
-import DetailRow from './Partials/DetailRow';
-import MetadataCard from './Partials/MetadataCard';
-import TransactionDetailsCard from './Partials/TransactionDetailsCard';
-import WalletDetailsCard from './Partials/WalletDetailsCard';
+
+import { useTranslation } from "react-i18next";
 import TransactionData = App.DataTransferObjects.TransactionData;
+import { Head, Link } from "@inertiajs/react";
+import Title from "@/Components/atoms/Title";
+import { useLocalizedRoute } from "@/utils/localizedRoute";
+import { ChevronLeft, CopyIcon } from "lucide-react";
+import TransactionDetailsCard from "./Partials/TransactionDetailsCard";
+import WalletDetailsCard from "./Partials/WalletDetailsCard";
+import DetailRow from "./Partials/DetailRow";
+import Value from "@/Components/atoms/Value";
+import { truncateMiddle } from "@/utils/truncateMiddle";
+import { copyToClipboard } from "@/utils/copyClipboard";
+import MetadataCard from "./Partials/MetadataCard";
 
 interface TransactionDetailProps {
     transaction: TransactionData;
@@ -26,7 +26,7 @@ export default function TransactionDetail({
     walletStats,
 }: TransactionDetailProps) {
     const { t } = useTranslation();
-    useEffect(() => {});
+ 
     return (
         <>
             <Head title="Transaction" />
