@@ -313,6 +313,8 @@ Route::localized(
                     ->name('index');
                 Route::get('/{transaction}', [TransactionController::class, 'show'])
                     ->name('show');
+                 Route::get('/{transaction:tx_hash}/{catId}/wallet/{paymentAddress}', [TransactionController::class, 'singleWallet'])
+                    ->name('wallet');    
             });
 
             Route::prefix('/votes')->as('votes.')->group(function () {

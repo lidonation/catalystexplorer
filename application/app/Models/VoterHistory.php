@@ -43,6 +43,7 @@ class VoterHistory extends Model
             'voting_power',
             'snapshot.fund',
             'time',
+            'created_at',
         ];
     }
 

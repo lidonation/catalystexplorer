@@ -137,7 +137,7 @@ class Transaction extends Model implements IHasMetaData
      */
     public function signature()
     {
-        return $this->belongsTo(Signatures::class, 'stake_key', 'stake_key');
+        return $this->belongsTo(Signature::class, 'stake_key', 'stake_key');
     }
 
     public function registration()
