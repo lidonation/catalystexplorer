@@ -1,17 +1,17 @@
 import Title from '@/Components/atoms/Title';
+import Value from '@/Components/atoms/Value';
+import { copyToClipboard } from '@/utils/copyClipboard';
 import { useLocalizedRoute } from '@/utils/localizedRoute';
+import { truncateMiddle } from '@/utils/truncateMiddle';
 import { Head, Link } from '@inertiajs/react';
 import { ChevronLeft, CopyIcon } from 'lucide-react';
+import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
+import DetailRow from './Partials/DetailRow';
 import MetadataCard from './Partials/MetadataCard';
 import TransactionDetailsCard from './Partials/TransactionDetailsCard';
 import WalletDetailsCard from './Partials/WalletDetailsCard';
 import TransactionData = App.DataTransferObjects.TransactionData;
-import DetailRow from './Partials/DetailRow';
-import Value from '@/Components/atoms/Value';
-import { copyToClipboard } from '@/utils/copyClipboard';
-import { truncateMiddle } from '@/utils/truncateMiddle';
-import { useEffect } from 'react';
 
 interface TransactionDetailProps {
     transaction: TransactionData;
@@ -26,9 +26,7 @@ export default function TransactionDetail({
     walletStats,
 }: TransactionDetailProps) {
     const { t } = useTranslation();
-    useEffect(()=>{
-
-    })
+    useEffect(() => {});
     return (
         <>
             <Head title="Transaction" />
@@ -64,12 +62,16 @@ export default function TransactionDetail({
                         <DetailRow label={t('transactions.stakePub')}>
                             <div className="flex flex-1 items-center">
                                 <Value className="text-content mr-2 truncate font-bold">
-                                    {truncateMiddle(transaction.stake_pub ?? '-')}
+                                    {truncateMiddle(
+                                        transaction.stake_pub ?? '-',
+                                    )}
                                 </Value>
                                 <CopyIcon
                                     className="text-gray-persist h-4 w-4 cursor-pointer font-bold"
                                     onClick={() =>
-                                        copyToClipboard(transaction.stake_pub ?? '-')
+                                        copyToClipboard(
+                                            transaction.stake_pub ?? '-',
+                                        )
                                     }
                                 />
                             </div>
@@ -83,7 +85,7 @@ export default function TransactionDetail({
                                 <Value className="text-content mr-2 truncate font-bold">
                                     {truncateMiddle(
                                         transaction.json_metadata
-                                            .payment_address ?? '-'
+                                            .payment_address ?? '-',
                                     )}
                                 </Value>
                                 <CopyIcon
@@ -101,19 +103,20 @@ export default function TransactionDetail({
                         <Link
                             className="text-primary"
                             href={useLocalizedRoute(
-                                'jormungandr.wallets.wallet',
+                                'jormungandr.wallets.show',
                                 {
-                                     wallet:
+
+                                    stakeKey:
+                                        transaction?.json_metadata?.stake_key ??
+                                        '',
+                                    catId:
                                         transaction?.json_metadata
-                                            .payment_address ?? '',
-                                    catId: transaction?.json_metadata?.voter_delegations[0]?.catId ?? '',
-                                    
+                                            ?.voter_delegations[0]?.catId ?? '',
                                 },
                             )}
                         >
                             {t('transactions.view')}
                         </Link>
-
                     </WalletDetailsCard>
                 </div>
 
