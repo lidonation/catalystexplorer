@@ -76,7 +76,7 @@ class TransactionController
             ];
         })->toArray();
 
-        $walletStats = $this->getWalletStats($catalystTransaction->stake_key);
+        $walletStats = $this->getWalletStats($catalystTransaction->stake_key ?? $catalystTransaction->json_metadata->stake_key ?? '');
 
         return Inertia::render('Transactions/TransactionDetail', [
             'transaction' => $catalystTransaction,
