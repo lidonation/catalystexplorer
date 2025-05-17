@@ -6,7 +6,7 @@ import DetailRow from './DetailRow';
 import TransactionData = App.DataTransferObjects.TransactionData;
 
 interface WalletDetailsCardProps {
-    transaction: TransactionData;
+    transaction?: TransactionData;
     walletStats: {
         all_time_votes: number;
         funds_participated: string[];
@@ -35,7 +35,7 @@ export default function WalletDetailsCard({
                     <DetailRow
                         label={t('transactions.balance')}
                         value={adaFormat(
-                            transaction.json_metadata.controlled_amount,
+                            transaction?.json_metadata.controlled_amount,
                         )}
                     />
 
@@ -54,12 +54,12 @@ export default function WalletDetailsCard({
                     <DetailRow label={t('transactions.drepStatus')}>
                         <Paragraph
                             className={`rounded-xl px-2 py-1 font-bold ${
-                                transaction.json_metadata.status === 'true'
+                                transaction?.json_metadata.status === 'true'
                                     ? 'bg-success-light text-success border'
                                     : 'bg-error-light text-error border'
                             }`}
                         >
-                            {transaction.json_metadata.status === 'true'
+                            {transaction?.json_metadata.status === 'true'
                                 ? 'Active'
                                 : 'Inactive'}
                         </Paragraph>
