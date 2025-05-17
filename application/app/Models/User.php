@@ -94,14 +94,14 @@ class User extends Authenticatable implements HasMedia
 
     public function signatures()
     {
-        return $this->hasMany(Signatures::class);
+        return $this->hasMany(Signature::class);
     }
 
     public function transactions()
     {
         return $this->hasManyThrough(
             Transaction::class,
-            Signatures::class,
+            Signature::class,
             'user_id',
             'stake_key',
             'id',

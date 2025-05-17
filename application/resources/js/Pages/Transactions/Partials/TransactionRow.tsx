@@ -37,9 +37,9 @@ const TransactionRow: React.FC<TransactionRowProps> = ({
   };
 
   return (
-    <tr className="border-b border-background-lighter">
+    <tr className="border-gray-persist/30 border-b">
       {columns.map((column) => (
-        <td key={column.key} className="p-3 border-r border-background-lighter" style={column.width ? { width: column.width } : {}}>
+        <td key={column.key} className="p-3 border-r border-gray-persist/30" style={column.width ? { width: column.width } : {}}>
           {column.render(transaction)}
         </td>
       ))}
