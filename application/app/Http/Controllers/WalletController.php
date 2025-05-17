@@ -41,7 +41,7 @@ class WalletController extends Controller
 
         $catalystVotes = $this->voterHistoryQuery();
 
-        return Inertia::render('Transactions/Wallet', [
+        return Inertia::render('Wallets/Wallet', [
             'filters' => $this->queryParams,
             'catalystVotes' => $catalystVotes,
             'walletTransactions' => TransactionData::collect(

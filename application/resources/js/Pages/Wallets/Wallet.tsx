@@ -11,10 +11,10 @@ import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { PaginatedData } from '../../../types/paginated-data';
 import { SearchParams } from '../../../types/search-params';
-import CatalystVotesTable from './Partials/CatalystVotesTable';
-import DetailRow from './Partials/DetailRow';
-import WalletDetailsCard from './Partials/WalletDetailsCard';
-import WalletTransactionsTable from './Partials/WalletTransactionsTable';
+import CatalystVotesTable from '../Transactions/Partials/CatalystVotesTable';
+import DetailRow from '../Transactions/Partials/DetailRow';
+import WalletDetailsCard from '../Transactions/Partials/WalletDetailsCard';
+import WalletTransactionsTable from '../Transactions/Partials/WalletTransactionsTable';
 import TransactionData = App.DataTransferObjects.TransactionData;
 import VoterHistoryData = App.DataTransferObjects.VoterHistoryData;
 
