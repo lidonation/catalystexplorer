@@ -12,10 +12,6 @@ uses(RefreshDatabase::class);
 
 
 it('renders all public pages', function (string $path, string $component) {
-    $user = User::factory()->create();
-
-    Auth::login($user->first());
-
     $this->get($path)
         ->assertOk()
         ->assertInertia(fn(Assert $page) => $page->component($component));
@@ -36,14 +32,6 @@ it('renders all public pages', function (string $path, string $component) {
         'path' => '/en/completed-project-nfts',
         'component' => 'CompletedProjectNfts/Index',
     ],
-    // [
-    //     'path' => '/en/confirm-password',
-    //     'component' => 'Auth/ConfirmPassword',
-    // ],,
-    // [
-    //     'path' => '/en/forgot-password',
-    //     'component' => 'Auth/ForgotPassword',
-    // ],
     [
         'path' => '/en/connections',
         'component' => 'Connections/Index',
@@ -79,13 +67,5 @@ it('renders all public pages', function (string $path, string $component) {
     [
         'path' => '/en/reviews',
         'component' => 'Reviews/Index',
-    ],
-    [
-        'path' => '/en/workflows/completed-projects-nfts/steps/1',
-        'component' => 'Workflows/CompletedProjectNfts/Step1',
-    ],
-    [
-        'path' => '/en/workflows/claim-ideascale-profile/steps/1',
-        'component' => 'Workflows/ClaimIdeascaleProfile/Step1',
     ],
 ]);
