@@ -10,11 +10,14 @@ import ProposalFundingPercentages from '../Partials/ProposalFundingPercentages';
 import ProposalFundingStatus from '../Partials/ProposalFundingStatus';
 import ColumnHeader from './Partials/ColumnHeader';
 import ProposalData = App.DataTransferObjects.ProposalData;
+import ProposalSolution from '../Partials/ProposalSolution';
 
 export default function SortableProposalColumn({
     proposal,
+    isLast,
 }: {
     proposal: ProposalData;
+    isLast:boolean;
 }) {
     const {
         attributes,
@@ -107,17 +110,17 @@ export default function SortableProposalColumn({
         >
             {/* Reorder */}
             <div
-                className={`${rows[0].height} !bg-background-lighter border-gray-light flex items-center justify-between border-r border-b p-4`}
+                className={`${rows[0].height} !bg-background-lighter border-gray-light flex items-center justify-between border-r border-b p-4 ${isLast ? 'rounded-tr-lg' : ''} `}
             >
                 <div className="flex cursor-move items-center gap-1">
-                    <Grab className="h-4 w-4 text-gray-500" />
-                    <span className="text-sm">
+                    <Grab className="text-dark h-4 w-4" />
+                    <span className="text-dark">
                         {t('proposalComparison.tableHeaders.reorder')}
                     </span>
                 </div>
                 <MinusSquareIcon
                     onClick={() => handleRemove()}
-                    className="h-4 w-4 cursor-pointer text-gray-500"
+                    className="text-dark h-4 w-4 cursor-pointer"
                 />
             </div>
 
@@ -149,9 +152,9 @@ export default function SortableProposalColumn({
 
             {/* Solution */}
             <div
-                className={`${rows[4].height} border-gray-light flex items-center border-r border-b p-4`}
+                className={`${rows[4].height} border-gray-light bg-background flex items-center border-r border-b p-4`}
             >
-                <p className="line-clamp-4">{proposal.solution}</p>
+                <ProposalSolution solution={proposal.solution} />
             </div>
 
             {/* Funding Received */}

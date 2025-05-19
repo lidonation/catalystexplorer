@@ -58,26 +58,35 @@ export default function ProposalSolution({
             contentRef={solutionContentRef}
             onHoverChange={setIsHoveredSolution}
         >
-            <section className="proposal-solution" ref={containerRef}>
+            <section
+                className="proposal-solution bg-background"
+                ref={containerRef}
+            >
                 {solution && (
                     <div className="solution-container">
-                        <header className="solution-header flex justify-between mb-2">
-                            <Title level="4" id="solution-heading" className="text-content font-medium">
+                        <header className="solution-header mb-2 flex justify-between">
+                            <Title
+                                level="4"
+                                id="solution-heading"
+                                className="text-content font-medium"
+                            >
                                 {t('solution')}
                             </Title>
                         </header>
-                        
+
                         <div className="text-content">
                             <ExpandableContent
                                 expanded={isHoveredSolution}
                                 lineClamp={3}
                                 collapsedHeight={120}
                             >
-                                <div 
+                                <div
                                     ref={solutionContentRef}
                                     className={`${solutionLineCount > 3 ? 'cursor-pointer' : ''}`}
                                     style={{
-                                        paddingBottom: isHoveredSolution ? '20px' : '0',
+                                        paddingBottom: isHoveredSolution
+                                            ? '20px'
+                                            : '0',
                                     }}
                                 >
                                     <Markdown>{solution}</Markdown>

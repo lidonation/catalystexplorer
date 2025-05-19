@@ -283,7 +283,7 @@ class ProposalsController extends Controller
 
         $limit = isset($this->queryParams[ProposalSearchParams::LIMIT()->value])
             ? (int) $this->queryParams[ProposalSearchParams::LIMIT()->value]
-            : 36;
+            : 24;
 
         $args['offset'] = ($page - 1) * $limit;
         $args['limit'] = $limit;
