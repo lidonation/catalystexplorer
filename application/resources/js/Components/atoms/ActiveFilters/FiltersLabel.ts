@@ -1,0 +1,28 @@
+const labels = {
+    b: 'Budgets',
+    f: 'Funds',
+    fs: 'Funding Status',
+    pl: 'Project Length',
+    ps: 'Project Status',
+    op: 'Opensource',
+    t: 'Tags',
+    cam: 'Campaigns',
+    coh: 'Cohort',
+    com: 'Communities',
+    ip: 'Ideascale Profiles',
+    g: 'groups',
+    aa: 'Amount Awarded ADA',
+    au: 'Amount Awarded USD',
+    pr: 'Number of Proposals',
+    ds: 'Status',
+    vp: 'Voting Power',
+    d: 'Delegators',
+    c: 'Choice',
+    pro: 'Proposals',
+    ri: 'Reviewer IDs',
+    h: 'Helpful',
+    r: 'Rating',
+    rs: 'Reputation Score',
+};
+
+export default labels;

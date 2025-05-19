@@ -29,7 +29,7 @@ class ProposalsController extends Controller
 {
     protected int $currentPage = 1;
 
-    protected int $limit = 36;
+    protected int $limit = 24;
 
     protected array $queryParams = [];
 

@@ -4,21 +4,27 @@ import SearchBar from '@/Components/SearchBar';
 import FilterLinesIcon from '@/Components/svgs/FilterLinesIcon';
 import { useFilterContext } from '@/Context/FiltersContext';
 import { ParamsEnum } from '@/enums/proposal-search-params';
-import { Dispatch, SetStateAction, useEffect, useState, useCallback } from 'react';
-import { useTranslation } from 'react-i18next';
-import ActiveFilters from './ActiveFilters';
 import { router } from '@inertiajs/react';
+import {
+    Dispatch,
+    SetStateAction,
+    useCallback,
+    useEffect,
+    useState,
+} from 'react';
+import { useTranslation } from 'react-i18next';
+import ActiveFilters from './ActiveFilters/ActiveFilters';
 
 function SearchControls({
     onFiltersToggle,
     sortOptions,
     searchPlaceholder,
-    border
+    border,
 }: {
     onFiltersToggle: Dispatch<SetStateAction<boolean>>;
     sortOptions: Array<any>;
     searchPlaceholder?: string;
-    border?: null | string
+    border?: null | string;
 }) {
     const { getFilter, setFilters, filters } = useFilterContext();
     const { t } = useTranslation();
@@ -61,62 +67,67 @@ function SearchControls({
     };
 
     const toggleFilters = useCallback(() => {
-        setShowFilters(prev => !prev);
+        setShowFilters((prev) => !prev);
     }, []);
 
     const filtersCount = filters.filter(
-        (filter) =>
-            filter.param !== ParamsEnum.PAGE && filter.value.length > 0,
+        (filter) => filter.param !== ParamsEnum.PAGE && filter.value.length > 0,
     ).length;
 
     return (
-        <div className="sticky px-0 top-0 z-10 container mx-auto flex w-full flex-col gap-3 py-3 backdrop-blur-md">
-            <div className="flex items-center justify-end gap-2">
+        <div className="sticky top-0 z-10 container mx-auto flex w-full flex-col gap-3 px-0 py-3 backdrop-blur-md">
+            <div className="flex flex-col items-center justify-end gap-2 lg:flex-row">
                 <SearchBar
-                border={'border-dark-light'}
+                    border={'border-dark-light'}
                     handleSearch={handleSearch}
                     autoFocus
                     showRingOnFocus
                     initialSearch={searchQuery}
                     placeholder={searchPlaceholder}
                 />
-                <Button
-                    className={`border-input bg-background flex cursor-pointer flex-row items-center gap-2 rounded-lg border px-3 py-1.5 shadow-xs ${
-                        showFilters
-                            ? 'border-accent-blue text-primary ring-offset-background ring-1'
-                            : 'hover:bg-background-lighter text-gray-500'
-                    }`}
-                    onClick={toggleFilters}
-                    ariaLabel="Show Filters"
-                >
-                    <FilterLinesIcon className={'size-6'} />
-                    <span>{t('filters')}</span>
-                    <span>({filtersCount})</span>
-                </Button>
 
-                <Selector
-                    isMultiselect={false}
-                    selectedItems={getFilter(ParamsEnum.SORTS)}
-                    setSelectedItems={(value) =>
-                        setFilters({
-                            param: ParamsEnum.SORTS,
-                            value,
-                            label: 'Sorts',
-                        })
-                    }
-                    options={sortOptions}
-                    hideCheckbox={true}
-                    placeholder={t('proposals.options.sort')}
-                    className={`bg-background ${
-                        getFilter(ParamsEnum.SORTS)
-                            ? 'bg-background-lighter text-primary'
-                            : 'hover:bg-background-lighter text-gray-500'
-                    }`}
-                />
+                <div className="flex gap-2 max-sm:w-full max-sm:justify-between">
+                    <Button
+                        className={`border-input bg-background flex cursor-pointer flex-row items-center gap-2 rounded-lg border px-3 py-1.5 shadow-xs ${
+                            showFilters
+                                ? 'border-accent-blue text-primary ring-offset-background ring-1'
+                                : 'hover:bg-background-lighter text-gray-500'
+                        }`}
+                        onClick={toggleFilters}
+                        ariaLabel="Show Filters"
+                    >
+                        <FilterLinesIcon className={'size-6'} />
+                        <span>{t('filters')}</span>
+                        <span>({filtersCount})</span>
+                    </Button>
+                    <Selector
+                        isMultiselect={false}
+                        selectedItems={getFilter(ParamsEnum.SORTS)}
+                        setSelectedItems={(value) =>
+                            setFilters({
+                                param: ParamsEnum.SORTS,
+                                value,
+                                label: 'Sorts',
+                            })
+                        }
+                        options={sortOptions}
+                        hideCheckbox={true}
+                        placeholder={t('proposals.options.sort')}
+                        className={`bg-background ${
+                            getFilter(ParamsEnum.SORTS)
+                                ? 'bg-background-lighter text-primary'
+                                : 'hover:bg-background-lighter text-gray-500'
+                        }`}
+                    />
+                </div>
             </div>
 
             <div className="container mx-auto flex justify-start px-0">
-                <ActiveFilters sortOptions={sortOptions} />
+                <ActiveFilters
+                    sortOptions={sortOptions}
+                    filters={filters}
+                    setFilters={setFilters}
+                />
             </div>
         </div>
     );

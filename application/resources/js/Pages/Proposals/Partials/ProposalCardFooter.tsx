@@ -13,7 +13,6 @@ const ProposalCardFooter: React.FC<ProposalCardFooterProps> = ({
 }) => {
     return (
     <footer className="flex items-center justify-between rounded-lg border border-t">
-        <div className="h-full border-r"></div>
         <button className="text-4 flex gap-1 items-center w-1/2 items-center justify-center  p-2">
             <svg
                 xmlns="http://www.w3.org/2000/svg"

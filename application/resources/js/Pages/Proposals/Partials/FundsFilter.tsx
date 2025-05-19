@@ -61,7 +61,7 @@ const FundsFilter: React.FC<FundFiltersProps> = ({
                     {funds.map((fund) => {
                         return (
                             <li key={fund.hash}
-                                className={`flex w-[250px] flex-shrink-0 cursor-pointer rounded-md border-transparent bg-background shadow-xs border-2 hover:border-primary ${selectedItems.includes(fund) ? 'border-primary' : ''}`}
+                                className={`flex  flex-shrink-0 cursor-pointer rounded-md border-transparent bg-background shadow-xs border-2 hover:border-primary ${selectedItems.includes(fund) ? 'border-primary' : ''}`}
                             onClick={() => handleSelect(fund.hash)}
                             aria-label={fund.hash as string}
                         >
@@ -78,7 +78,7 @@ const FundsFilter: React.FC<FundFiltersProps> = ({
                                 <div className="mb-2 font-medium">
                                     {fund.label}
                                 </div>
-                                <div className="flex w-full justify-between">
+                                <div className="flex w-full justify-between gap-4">
                                     <div className="text-gray-persist">
                                         {t('proposals.totalProposals')}
                                     </div>

@@ -128,7 +128,7 @@ export default function Selector({
                                     <Checkbox
                                         id={option.value}
                                         checked={
-                                            isMultiselect
+                                            isMultiselect && selectedItems.length
                                                 ? selectedItems?.includes(
                                                       option.value,
                                                   )
