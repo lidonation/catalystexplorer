@@ -17,7 +17,6 @@ use App\Repositories\ProposalRepository;
 use App\Repositories\VoterHistoryRepository;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Inertia\Testing\AssertableInertia as Assert;
-use Laravel\Scout\Builder;
 use Mockery;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
@@ -145,7 +144,7 @@ class PaginationTest extends TestCase
                 'route' => 'proposals.index',
                 'component' => 'Proposals/Index',
                 'propName' => 'proposals',
-                'perPage' => 36,
+                'perPage' => 24,
                 'factory' => fn() => Proposal::factory(),
                 'modelData' => ['campaign_id' => fn() => Campaign::factory()->create()->id, 'fund_id' => fn() => Fund::factory()->create()->id],
             ],
@@ -163,7 +162,7 @@ class PaginationTest extends TestCase
                 'route' => 'ideascaleProfiles.index',
                 'component' => 'IdeascaleProfile/Index',
                 'propName' => 'ideascaleProfiles',
-                'perPage' => 40,
+                'perPage' => 24,
                 'factory' => fn() => IdeascaleProfile::factory(),
                 'modelData' => [],
             ],
@@ -190,8 +189,8 @@ class PaginationTest extends TestCase
                 'route' => 'jormungandr.transactions.index',
                 'component' => 'Transactions/Index',
                 'propName' => 'transactions',
-                'perPage' => 20,
-                'factory' => null, // Special case that needs custom handling
+                'perPage' => 24,
+                'factory' => null, 
                 'modelData' => [],
             ],
         ];
