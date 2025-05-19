@@ -11,7 +11,7 @@ const ReviewsFilter = () => {
     const reputationRange = [1, 100];
 
     return (
-        <div className="mb-6 w-full">
+        <div className="mb-6 w-full overflow-x-auto">
             <div className="bg-background w-full rounded-xl p-4">
                 <div className="grid grid-cols-2 gap-x-4 gap-y-3 rounded-xl md:grid-cols-3 lg:grid-cols-3">
                     <div className="col-span-1 flex flex-col gap-2 pb-4">

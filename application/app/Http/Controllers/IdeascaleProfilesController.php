@@ -31,7 +31,7 @@ use Staudenmeir\EloquentHasManyDeep\HasManyDeep;
 
 class IdeascaleProfilesController extends Controller
 {
-    protected int $limit = 40;
+    protected int $limit = 24;
 
     protected int $currentPage = 1;
 

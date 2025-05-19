@@ -55,11 +55,11 @@ const ProposalSortingOptions = () => {
         },
         {
             label: t('proposals.options.noVotesHighToLow'),
-            value: 'no_votes_count:desc',
+            value: 'abstain_votes_count:desc',
         },
         {
             label: t('proposals.options.noVotesLowToHigh'),
-            value: 'no_votes_count:asc',
+            value: 'abstain_votes_count:asc',
         },
         {
             label: t('proposals.options.ratingHighToLow'),

@@ -106,14 +106,14 @@ export default function ProposalCardHeader({
                                         </>
                                     )}
                                 </ListProvider>
-                                {/* {proposal.hash && (
+                                {proposal.hash && (
                                     <CompareButton
                                         model="proposal"
                                         hash={proposal.hash}
                                         tooltipDescription={'Compare Proposals'}
                                         data={proposal}
                                     />
-                                )} */}
+                                )}
                             </div>
                         </>
                     )}

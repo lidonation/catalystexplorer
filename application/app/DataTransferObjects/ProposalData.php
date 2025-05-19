@@ -129,11 +129,10 @@ final class ProposalData extends Data
         public ?bool $opensource,
 
         #[TypeScriptOptional]
-        #[DataCollectionOf(NftData::class)]
-        public ?DataCollection $completed_project_nft,
+        public ?string $link,
 
         #[TypeScriptOptional]
-        public ?string $link,
+        public ?int $order,
 
     ) {}
 }

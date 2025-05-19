@@ -1,10 +1,10 @@
 'use client';
+import Checkbox from '@/Components/atoms/Checkbox';
 import { useSearchOptions } from '@/Hooks/useSearchOptions';
 import { cn } from '@/lib/utils';
 import { ChevronDown } from 'lucide-react';
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import Checkbox from '@/Components/atoms/Checkbox';
 import {
     Command,
     CommandEmpty,
@@ -14,12 +14,11 @@ import {
 } from './Command';
 import { Popover, PopoverContent, PopoverTrigger } from './Popover';
 import { ScrollArea } from './ScrollArea';
-import { log } from 'node:console';
 
 export type SearchOption = {
     label?: string;
     hash?: string;
-}; 
+};
 
 type SearchSelectProps = {
     selected: string[];
@@ -28,8 +27,8 @@ type SearchSelectProps = {
     emptyText?: string;
     multiple?: boolean;
     domain?: string;
-    valueField:string
-    labelField:string
+    valueField: string;
+    labelField: string;
 };
 
 export function SearchSelect({
@@ -56,9 +55,10 @@ export function SearchSelect({
     });
 
     const sortedOptions = [...filteredOptions].sort((a, b) => {
+        if (!selected.length) return 0;
         const aIsSelected = selected.includes(a.value);
         const bIsSelected = selected.includes(b.value);
-        options
+        options;
         if (aIsSelected && !bIsSelected) return -1;
         if (!aIsSelected && bIsSelected) return 1;
         return 0;
@@ -157,7 +157,7 @@ export function SearchSelect({
                             {options &&
                                 sortedOptions.map((option, index) => (
                                     <CommandItem
-                                        key={`${option.value}-${index}`} 
+                                        key={`${option.value}-${index}`}
                                         value={option.value}
                                         onSelect={() =>
                                             handleSelect(option.value)
@@ -167,9 +167,13 @@ export function SearchSelect({
                                         {option.label}
                                         <Checkbox
                                             id={`checkbox-${option.value}-${index}`}
-                                            checked={selected?.includes(
-                                                option.value,
-                                            )}
+                                            checked={
+                                                selected.length
+                                                    ? selected?.includes(
+                                                          option.value,
+                                                      )
+                                                    : false
+                                            }
                                             value={option.value}
                                             onChange={() => {}}
                                             className="text-content-accent bg-background checked:bg-primary checked:hover:bg-primary focus:border-primary focus:ring-primary checked:focus:bg-primary mr-2 h-4 w-4 shadow-xs focus:border"
