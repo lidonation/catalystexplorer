@@ -70,7 +70,7 @@ export default function ProposalVerticalCard({
             </section>
 
             <section className='flex-1 flex flex-col'>
-                <div className="flex-1 overflow-auto px-2">
+                <div className="flex-1  px-2">
                     {userSelected ? (
                         <UserQuickView user={userSelected} />
                     ) : (

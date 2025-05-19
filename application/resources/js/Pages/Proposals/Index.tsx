@@ -147,7 +147,7 @@ export default function Index({
                 <section className="w-full px-4 lg:container lg:px-0">
                     {proposals && <Paginator pagination={proposals} />}
                 </section>
-                <ProposalComparison />
+               
             </FiltersProvider>
         </ListProvider>
     );
