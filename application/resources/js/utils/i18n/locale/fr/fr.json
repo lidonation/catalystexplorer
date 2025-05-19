@@ -135,6 +135,25 @@
     "artistRole": "Artiste",
     "cantFindNFTForMint": "Impossible de trouver le NFT à mint",
     "copyToClipboard": "Copier dans le presse-papiers",
+    "proposalComparison": {
+        "title": "Comparer les propositions Catalyst",
+        "subtitle": "Analysez et évaluez facilement les propositions pour prendre des décisions éclairées sur le financement, l’impact et l’alignement stratégique.",
+        "searchPlaceholder": "Rechercher une proposition",
+        "viewProposal": "Voir la proposition",
+        "tableHeaders": {
+            "metric":"Métrique",
+            "reorder": "Réorganiser",
+            "title": "Titre",
+            "fund": "Fonds",
+            "status": "Statut",
+            "solution": "Solution",
+            "funding": "Financement reçu",
+            "yesVotes": "Votes pour",
+            "noVotes": "Votes contre",
+            "team": "Équipe",
+            "action": "Action"
+        }
+    },
     "workflows": {
         "claimIdeascale": {
             "selectProfile": "Sélectionnez un profil",
@@ -536,6 +555,7 @@
         "CSVs": "CSVs de propositions",
         "proposals": "Propositions",
         "proposalSummary": "Résumé des propositions",
+        "totalProposals": "Propositions totales",
         "projectVideo": "Vidéo du projet",
         "providedUrl": "URL fournie",
         "totalRequested": "Total demandé",

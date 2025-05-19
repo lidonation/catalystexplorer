@@ -13,7 +13,7 @@ import {
     useState,
 } from 'react';
 import { useTranslation } from 'react-i18next';
-import ActiveFilters from './ActiveFilters';
+import ActiveFilters from './ActiveFilters/ActiveFilters';
 
 function SecondarySearchControls({
     onFiltersToggle,
@@ -190,7 +190,7 @@ function SecondarySearchControls({
             </div>
 
             <div className="container mx-auto flex justify-start px-0">
-                <ActiveFilters sortOptions={sortOptions} />
+                <ActiveFilters sortOptions={sortOptions} filters={filters} setFilters={setFilters} />
             </div>
         </div>
     );

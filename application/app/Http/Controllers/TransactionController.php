@@ -22,7 +22,7 @@ use Inertia\Response;
 
 class TransactionController
 {
-    protected int $limit = 20;
+    protected int $limit = 24;
 
     protected int $currentPage = 1;
 
@@ -76,7 +76,7 @@ class TransactionController
             ];
         })->toArray();
 
-        $walletStats = $this->getWalletStats($catalystTransaction->stake_key);
+        $walletStats = $this->getWalletStats($catalystTransaction->stake_key ?? $catalystTransaction->json_metadata->stake_key ?? '');
 
         return Inertia::render('Transactions/TransactionDetail', [
             'transaction' => $catalystTransaction,
@@ -321,7 +321,7 @@ class TransactionController
         return $filters;
     }
 
-    private function getWalletStats(string $stakeKey)
+    private function getWalletStats(?string $stakeKey = null)
     {
 
         if (! $stakeKey) {

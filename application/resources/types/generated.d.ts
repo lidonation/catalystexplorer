@@ -441,10 +441,11 @@ auditability_score?: number;
 quickpitch?: string;
 quickpitch_length?: number;
 users: any | null;
+reviews: any | null;
 fund: App.DataTransferObjects.FundData | null;
 opensource: boolean | null;
-completed_project_nft?: any;
 link?: string;
+order?: number;
 };
 export type RankingData = {
 hash?: string;
