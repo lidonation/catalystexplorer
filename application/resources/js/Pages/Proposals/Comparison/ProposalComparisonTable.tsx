@@ -96,13 +96,13 @@ export default function ProposalsTable() {
     }
 
     return (
-        <>
+        <div className="container">
             <header>
-                <div className="container">
+                <div className=" ">
                     <Title level="1">{t('proposalComparison.title')}</Title>
                 </div>
 
-                <div className="container">
+                <div className=" ">
                     <Paragraph className="text-content">
                         {t('proposalComparison.subtitle')}
                     </Paragraph>
@@ -154,6 +154,6 @@ export default function ProposalsTable() {
                     </DndContext>
                 </div>
             </div>
-        </>
+        </div>
     );
 }
