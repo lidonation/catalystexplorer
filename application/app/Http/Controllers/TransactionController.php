@@ -321,7 +321,7 @@ class TransactionController
         return $filters;
     }
 
-    private function getWalletStats(string $stakeKey)
+    private function getWalletStats(?string $stakeKey = null)
     {
 
         if (! $stakeKey) {
