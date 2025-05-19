@@ -46,6 +46,7 @@ class VoterHistoryRepository extends Repository
                         'time',
                         'voting_power',
                         'snapshot',
+                        'created_at',
                     ],
                     'facets' => [
                         'choice',

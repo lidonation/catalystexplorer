@@ -1,7 +1,5 @@
 import Title from '@/Components/atoms/Title';
-import Paragraph from '@/Components/atoms/Paragraph';
 import Value from '@/Components/atoms/Value';
-import ValueLabel from '@/Components/atoms/ValueLabel';
 import { CopyIcon } from 'lucide-react';
 import TransactionData = App.DataTransferObjects.TransactionData;
 import { useTranslation } from 'react-i18next';

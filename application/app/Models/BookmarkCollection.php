@@ -48,6 +48,11 @@ class BookmarkCollection extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function parent(): BelongsTo
+    {
+        return $this->belongsTo(BookmarkCollection::class, 'parent_id');
+    }
+
     public function items(): HasMany
     {
         return $this->hasMany(BookmarkItem::class);

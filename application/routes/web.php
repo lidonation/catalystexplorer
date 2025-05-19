@@ -31,6 +31,7 @@ use App\Http\Controllers\SignatureWorkflowController;
 use App\Http\Controllers\CompletedProjectNftsController;
 use App\Http\Controllers\CardanoBudgetProposalController;
 use App\Http\Controllers\ClaimIdeascaleProfileController;
+use App\Http\Controllers\WalletController;
 use CodeZero\LocalizedRoutes\Controllers\FallbackController;
 
 Route::localized(
@@ -42,10 +43,14 @@ Route::localized(
             Route::get('/', [ProposalsController::class, 'index'])
                 ->name('index');
             
-            Route::prefix('/{slug}')->as('group.')->group(function () {
-                Route::get('/', [ProposalsController::class, 'proposal'])
-                    ->name('index');
-                
+            Route::get('/charts', [ProposalsController::class, 'charts'])
+            ->name('charts');
+
+            Route::get('/{slug}', function ($slug) {
+                return redirect()->route('proposals.group.details', ['slug' => $slug]);
+            })->name('redirect');
+            
+            Route::prefix('/{slug}')->as('group.')->group(function () {                
                 Route::get('/details', [ProposalsController::class, 'proposal'])
                     ->name('details');
 
@@ -57,8 +62,15 @@ Route::localized(
             });
         });
         
+
+        Route::get('/proposals', [ProposalsController::class, 'index'])
+            ->name('proposals.index');
+
+        //routes for demoing routing pages onto modals
         Route::get('/proposals/charts', [ProposalsController::class, 'charts'])
             ->name('proposals.charts');
+        Route::get('/proposals/charts/detail', [ProposalsController::class, 'chartDetail'])
+            ->name('proposals.charts.detail');
 
         Route::prefix('/funds')->as('funds.')->group(function () {
             Route::get('/', [FundsController::class, 'index'])
@@ -185,8 +197,8 @@ Route::localized(
                         ->name('index');
                     Route::post('/drep', [CatalystDrepController::class, 'saveDrep'])
                         ->name('create');
-                Route::patch('{catalystDrep}/drep', [CatalystDrepController::class, 'updateDrep'])
-                    ->name('patch');
+                    Route::patch('{catalystDrep}/drep', [CatalystDrepController::class, 'updateDrep'])
+                        ->name('patch');
                     Route::post('{catalystDrep}/validate-drep-wallet', [CatalystDrepController::class, 'validateDrepWallet'])
                         ->name('validateWallet');
                     Route::post('{catalystDrep}/capture-signature', [CatalystDrepController::class, 'captureSignature'])
@@ -311,6 +323,11 @@ Route::localized(
                 Route::get('/', [TransactionController::class, 'index'])
                     ->name('index');
                 Route::get('/{transaction}', [TransactionController::class, 'show'])
+                    ->name('show');   
+            });
+
+            Route::prefix('/wallets')->as('wallets.')->group(function () {
+                Route::get('/{stakeKey}/{catId}', [WalletController::class, 'show'])
                     ->name('show');
             });
 

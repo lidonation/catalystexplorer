@@ -5,6 +5,9 @@ declare(strict_types=1);
 namespace App\Nova;
 
 use App\Models\CardanoBudgetProposal;
+use App\Nova\Actions\EditModel;
+use Laravel\Nova\Actions\Action;
+use Laravel\Nova\Fields\Boolean;
 use Laravel\Nova\Fields\DateTime;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Markdown;
@@ -26,7 +29,9 @@ class CardanoBudgetProposals extends Resource
      *
      * @var string
      */
-    public static $title = 'id';
+    public static $title = 'proposal_name';
+
+    public static $perPageOptions = [25, 50, 100, 250];
 
     /**
      * The columns that should be searched.
@@ -48,20 +53,54 @@ class CardanoBudgetProposals extends Resource
     {
         return [
             ID::make()->sortable(),
-            Text::make(__('Ttitle'), 'proposal_name')
+
+            Text::make(__('Title'), 'proposal_name')
                 ->sortable(),
-            ID::make('govtool_user_id')->sortable(),
-            ID::make('govtool_proposal_id')->sortable(),
-            Number::make(__('Ada Amount'), 'ada_amount')
-                ->sortable(),
-            DateTime::make('Updated At')->sortable(),
-            DateTime::make('Created At')->sortable(),
+
             Text::make(__('Username'), 'govtool_username')
                 ->sortable(),
+
+            ID::make('govtool_user_id')->sortable(),
+            ID::make('govtool_proposal_id')->sortable(),
+
+            Boolean::make(__('Active'), 'is_active')
+                ->sortable()
+                ->filterable(),
+
+            Boolean::make(__('Accepts Policy'), 'privacy_policy')
+                ->sortable()
+                ->filterable(),
+
+            Boolean::make(__('Intersect is Admin'), 'intersect_named_administrator')
+                ->sortable()
+                ->filterable(),
+
+            Number::make(__('Ada Amount'), 'ada_amount')
+                ->sortable(),
+
+            Number::make(__('Prefer Currency Amount'), 'amount_in_preferred_currency')
+                ->sortable(),
+
+            DateTime::make('Updated At')->sortable(),
+            DateTime::make('Created At')->sortable(),
+
+            Text::make(__('USD to Ada'), 'usd_to_ada_conversion_rate')
+                ->sortable(),
+
             Text::make(__('Category'), 'budget_cat')
                 ->sortable()
                 ->filterable(),
 
+            Text::make(__('Committee'), 'committee_name')
+                ->sortable()
+                ->filterable(),
+
+            Text::make(__('Related Roadmap')),
+
+            Number::make(__('Comments Count'), 'prop_comments_number'),
+
+            Text::make(__('Country')),
+            Text::make(__('Contract Type')),
             Markdown::make(__('Problem Statement')),
             Markdown::make(__('Proposal Benefit')),
             Markdown::make(__('Cost Breakdown')),
@@ -73,18 +112,21 @@ class CardanoBudgetProposals extends Resource
             Markdown::make(__('Key Proposal Deliverables')),
             Markdown::make(__('Resourcing Duration Estimates')),
             Markdown::make(__('Key Dependencies')),
+            Markdown::make(__('Other Contract Type')),
 
         ];
 
     }
 
     /**
-     * Get the cards available for the resource.
+     * Get the actions available for the resource.
      *
-     * @return array<int, \Laravel\Nova\Card>
+     * @return array<int, Action>
      */
-    public function cards(NovaRequest $request): array
+    public function actions(NovaRequest $request): array
     {
-        return [];
+        return [
+            (new EditModel),
+        ];
     }
 }

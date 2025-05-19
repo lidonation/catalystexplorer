@@ -642,7 +642,7 @@
             "valueForMoneyLowToHigh": "Valeur pour l'argent : Du plus bas au plus élevé"
         },
         "tabs": {
-            "projectInfo": "Informations sur le projet",
+            "details": "Détails",
             "community": "Examen communautaire",
             "team": "Informations sur l'équipe"
         }

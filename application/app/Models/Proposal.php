@@ -64,7 +64,6 @@ class Proposal extends Model
         'link',
         'hash',
         'currency',
-        // 'completed_project_nft',
     ];
 
     public static function getFilterableAttributes(): array
