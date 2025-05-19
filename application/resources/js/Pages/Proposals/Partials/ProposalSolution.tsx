@@ -21,15 +21,12 @@ export default function ProposalSolution({
 }: PageProps<ProposalSolution>) {
     const { t } = useTranslation();
     const [isHoveredSolution, setIsHoveredSolution] = useState(false);
-    
-    const solutionContentRef = useRef<HTMLDivElement | null>(null);
     const containerRef = useRef<HTMLDivElement | null>(null);
     
     const [solutionLineCount, setSolutionLineCount] = useState(0);
-    const [expandedHeight, setExpandedHeight] = useState(0);
 
     useEffect(() => {
-        const element = solutionContentRef.current;
+        const element = containerRef.current;
         if (element) {
             const lineHeight = parseFloat(getComputedStyle(element).lineHeight);
             const height = element.offsetHeight;
@@ -37,25 +34,10 @@ export default function ProposalSolution({
         }
     }, [solution]);
     
-    useEffect(() => {
-        if (solutionContentRef.current) {
-            setTimeout(() => {
-                if (solutionContentRef.current) {
-                    const height = solutionContentRef.current.scrollHeight;
-                    setExpandedHeight(height);
-                    
-                    if (onContentExpand) {
-                        onContentExpand(isHoveredSolution, height + 40);
-                    }
-                }
-            }, 10);
-        }
-    }, [isHoveredSolution, onContentExpand]);
-    
     return (
         <ExpandableContentAnimation
             lineClamp={3}
-            contentRef={solutionContentRef}
+            contentRef={containerRef}
             onHoverChange={setIsHoveredSolution}
         >
             <section
@@ -80,9 +62,9 @@ export default function ProposalSolution({
                                 lineClamp={3}
                                 collapsedHeight={120}
                             >
-                                <div
-                                    ref={solutionContentRef}
-                                    className={`${solutionLineCount > 3 ? 'cursor-pointer' : ''}`}
+                                <div 
+                                    ref={containerRef}
+                                    className={`${solutionLineCount > 3 ? 'cursor-pointer' : ''} ${isHoveredSolution ? 'bg-background relative z-10' : ''}`}
                                     style={{
                                         paddingBottom: isHoveredSolution
                                             ? '20px'
