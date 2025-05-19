@@ -28,7 +28,7 @@ export default function IdeascaleProfilesFilters() {
     };
 
     return (
-        <div className="bg-background container mb-8 w-full rounded-xl p-4 shadow-md">
+        <div className="bg-background container mb-8 w-full overflow-x-auto rounded-xl p-4 shadow-md">
             <div className="grid grid-cols-2 items-center gap-4 lg:grid-cols-5 lg:gap-8">
                 <div className="flex flex-col gap-2">
                     <span>{t('reviews.filters.funds')}</span>
@@ -82,9 +82,7 @@ export default function IdeascaleProfilesFilters() {
                 </div>
 
                 <div className="flex flex-col gap-2">
-                    <span className="">
-                        {t('ideascaleProfiles.limitTags')}
-                    </span>
+                    <span className="">{t('ideascaleProfiles.limitTags')}</span>
                     <SearchSelect
                         key={'tags'}
                         domain={'tags'}

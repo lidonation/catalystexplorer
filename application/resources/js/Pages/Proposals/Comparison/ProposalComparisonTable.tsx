@@ -1,9 +1,5 @@
-'use client';
-
-import ModalLayout from '@/Layouts/ModalLayout';
-import { useLiveQuery } from 'dexie-react-hooks';
-
-import { IndexedDBService } from '@/Services/IndexDbService';
+import Paragraph from '@/Components/atoms/Paragraph';
+import Title from '@/Components/atoms/Title';
 import {
     closestCenter,
     DndContext,
@@ -14,43 +10,75 @@ import {
     type DragEndEvent,
 } from '@dnd-kit/core';
 import {
-    arrayMove,
     horizontalListSortingStrategy,
     SortableContext,
     sortableKeyboardCoordinates,
 } from '@dnd-kit/sortable';
-import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import ComparisonTableFilters from './Partials/ComparisonTableFilters';
 import SortableProposalColumn from './SortableProposalColumn';
-import ProposalData = App.DataTransferObjects.ProposalData;
+import { useProposalComparison } from '@/Context/ProposalComparisonContext';
 
-const rows = [
-    { id: 'reorder', label: 'Reorder', height: 'h-16' },
-    { id: 'title', label: 'Title', height: 'h-32' },
-    { id: 'fund', label: 'Fund', height: 'h-16' },
-    { id: 'status', label: 'Status', height: 'h-16' },
-    { id: 'solution', label: 'Solution', height: 'h-42' },
-    { id: 'funding', label: 'Funding Received', height: 'h-24' },
-    { id: 'yes-votes', label: 'Yes Votes', height: 'h-16' },
-    { id: 'no-votes', label: 'No Votes', height: 'h-16' },
-    { id: 'team', label: 'Team', height: 'h-16' },
-    { id: 'action', label: 'Action', height: 'h-16' },
-];
 
-// Sortable column component
+
 
 export default function ProposalsTable() {
-    const [proposals, setProposals] = useState<ProposalData[]>([]);
+    const { t } = useTranslation();
 
-    const liveProposals = useLiveQuery(
-        () => IndexedDBService.getAll('proposal_comparisons'),
-        [],
-    );
+    const rows = [
+        {
+            id: 'metric',
+            label: t('proposalComparison.tableHeaders.metric'),
+            height: 'h-16',
+        },
+        {
+            id: 'title',
+            label: t('proposalComparison.tableHeaders.title'),
+            height: 'h-32',
+        },
+        {
+            id: 'fund',
+            label: t('proposalComparison.tableHeaders.fund'),
+            height: 'h-16',
+        },
+        {
+            id: 'status',
+            label: t('proposalComparison.tableHeaders.status'),
+            height: 'h-16',
+        },
+        {
+            id: 'solution',
+            label: t('proposalComparison.tableHeaders.solution'),
+            height: 'h-42',
+        },
+        {
+            id: 'funding',
+            label: t('proposalComparison.tableHeaders.funding'),
+            height: 'h-24',
+        },
+        {
+            id: 'yes-votes',
+            label: t('proposalComparison.tableHeaders.yesVotes'),
+            height: 'h-16',
+        },
+        {
+            id: 'no-votes',
+            label: t('proposalComparison.tableHeaders.noVotes'),
+            height: 'h-16',
+        },
+        {
+            id: 'team',
+            label: t('proposalComparison.tableHeaders.team'),
+            height: 'h-16',
+        },
+        {
+            id: 'action',
+            label: t('proposalComparison.tableHeaders.action'),
+            height: 'h-16',
+        },
+    ];
 
-    useEffect(() => {
-        if (liveProposals) {
-            setProposals(liveProposals);
-        }
-    }, [liveProposals]);
+    const { filteredProposals, reorderProposals } = useProposalComparison();
 
     const sensors = useSensors(
         useSensor(PointerSensor, {
@@ -63,45 +91,31 @@ export default function ProposalsTable() {
         }),
     );
 
-    async function handleDragEnd(event: DragEndEvent) {
+    function handleDragEnd(event: DragEndEvent) {
         const { active, over } = event;
-
         if (over && active.id !== over.id) {
-            setProposals((items) => {
-                const oldIndex = items.findIndex(
-                    (item) => item.hash === active.id,
-                );
-                const newIndex = items.findIndex(
-                    (item) => item.hash === over.id,
-                );
-                const newOrder = arrayMove(items, oldIndex, newIndex);
-
-                newOrder.forEach((item, index) => {
-                    if (item.order !== index + 1 && item.hash) {
-                        IndexedDBService.update(
-                            'proposal_comparisons',
-                            item.hash,
-                            {
-                                order: index + 1,
-                            },
-                        );
-                    }
-                });
-
-                return newOrder.map((item, index) => ({
-                    ...item,
-                    order: index + 1,
-                }));
-            });
+            reorderProposals(active.id as string, over.id as string);
         }
     }
 
     return (
-        <ModalLayout name="proposal-comparison">
-            <div className="relative container mx-4 mb-4 w-full">
+        <>
+            <header>
+                <div className="container">
+                    <Title level="1">{t('proposalComparison.title')}</Title>
+                </div>
+
+                <div className="container">
+                    <Paragraph className="text-content">
+                        {t('proposalComparison.subtitle')}
+                    </Paragraph>
+                </div>
+            </header>
+            <ComparisonTableFilters />
+            <div className="relative container mb-4 w-full">
                 <div className="bg-background flex w-full gap-1 rounded-lg shadow-lg">
                     {/* Sticky Row Headers */}
-                    <div className="bg-background-lighter sticky left-0 z-10 flex flex-col shadow-lg rounded-l-lg">
+                    <div className="bg-background sticky left-0 z-10 flex flex-col rounded-l-lg shadow-lg">
                         {rows.map((row) => (
                             <div
                                 key={row.id}
@@ -124,10 +138,12 @@ export default function ProposalsTable() {
                         >
                             <div className="flex min-w-max">
                                 <SortableContext
-                                    items={proposals.map((p) => p.hash ?? '')}
+                                    items={filteredProposals.map(
+                                        (p) => p.hash ?? '',
+                                    )}
                                     strategy={horizontalListSortingStrategy}
                                 >
-                                    {proposals.map((proposal) => (
+                                    {filteredProposals.map((proposal) => (
                                         <SortableProposalColumn
                                             key={proposal.hash}
                                             proposal={proposal}
@@ -139,6 +155,6 @@ export default function ProposalsTable() {
                     </div>
                 </div>
             </div>
-        </ModalLayout>
+        </>
     );
 }

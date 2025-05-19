@@ -22,6 +22,7 @@ import MainLayout from './RootLayout';
 // @ts-ignore
 import { ModalRoot } from '@inertiaui/modal-react';
 import GraphButton from '@/Components/GraphButton';
+import ModalNavLink from '@/Components/ModalNavLink';
 
 export default function AppLayout({ children }: { children: ReactNode }) {
     const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -52,10 +53,12 @@ export default function AppLayout({ children }: { children: ReactNode }) {
                 </div>
             )}
 
-            <section className={`bg-background-lighter lg:mt-4 ${isAuthPage ? '' : 'lg:ml-72'} ${isAuthPage ? '' : 'lg:rounded-tl-4xl'}`}>
+            <section
+                className={`bg-background-lighter lg:mt-4 ${isAuthPage ? '' : 'lg:ml-72'} ${isAuthPage ? '' : 'lg:rounded-tl-4xl'}`}
+            >
                 {/* Mobile header */}
                 <header className="bg-background sticky top-0 z-30 border-b border-gray-200 lg:hidden">
-                    <div className="flex h-16 items-center justify-between ">
+                    <div className="flex h-16 items-center justify-between">
                         <CatalystLogo className="h-8" />
                         <Button
                             onClick={() => setSidebarOpen(!sidebarOpen)}
@@ -74,21 +77,27 @@ export default function AppLayout({ children }: { children: ReactNode }) {
                 </header>
 
                 {/* Main content */}
-                <main id="main-content" >
+                <main id="main-content">
                     <Breadcrumbs items={breadcrumbItems} />
                     <PlayerProvider>
                         <MetricsProvider>
                             {memoizedChildren}
                             <UIProvider>
-                                <section className="sticky inset-x-0 bottom-0 mx-auto flex items-center justify-center gap-2 ">
-                                    <div className="">
+                                <section className="sticky inset-x-0 bottom-0 mx-auto flex items-center justify-center gap-2">
+                                    {/* <div className="">
                                         <MetricsBar />
-                                    </div>
-                                    <div className='hidden lg:block'>
+                                    </div> */}
+                                    <div className="hidden lg:block">
                                         <PlayerBar />
+                                        <ModalNavLink
+                                            className="bg-bg-dark flex items-center justify-between overflow-hidden rounded-xl px-4 py-3 text-white shadow-lg"
+                                            href="#proposal-comparison"
+                                        >
+                                            Compare Proposals
+                                        </ModalNavLink>
                                     </div>
-                                    <div className='hidden lg:block'>
-                                        <GraphButton/>
+                                    <div className="hidden lg:block">
+                                        <GraphButton />
                                     </div>
                                 </section>
                             </UIProvider>
@@ -124,7 +133,6 @@ export default function AppLayout({ children }: { children: ReactNode }) {
             />
 
             <ModalRoot />
-
         </MainLayout>
     );
 }

@@ -20,7 +20,7 @@ const GroupFilters = ({proposalsCount, totalAwardedAda, totalAwardedUsd}:GroupFi
 
     return (
         <>
-            <div className="bg-background h-full w-full overflow-y-auto rounded-xl p-4">
+            <div className="bg-background h-full w-full overflow-x-auto overflow-y-auto rounded-xl p-4">
                 <div className="grid grid-cols-2 gap-x-4 gap-y-3 rounded-xl md:grid-cols-2 lg:grid-cols-4">
                     <div className="col-span-1 flex flex-col gap-2 pb-4">
                         <span>{t('proposals.filters.fundingStatus')}</span>

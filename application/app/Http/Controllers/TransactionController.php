@@ -19,7 +19,7 @@ use Inertia\Response;
 
 class TransactionController
 {
-    protected int $limit = 20;
+    protected int $limit = 24;
 
     protected int $currentPage = 1;
 

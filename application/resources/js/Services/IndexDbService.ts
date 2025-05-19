@@ -37,9 +37,10 @@ export class IndexedDBService {
         const table = db[tableName];
 
         if (table.schema.idxByName['order']) {
-            return table.orderBy('order').toArray();
+            return table.orderBy('order').reverse().toArray();
         }
 
+        // Fallback: return as-is
         return table.toArray();
     }
 

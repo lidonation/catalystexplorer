@@ -24,6 +24,7 @@ import ProposalHorizontalCardLoading from './Partials/ProposalHorizontalCardLoad
 import ProposalData = App.DataTransferObjects.ProposalData;
 import ProposalsTable from './Comparison/ProposalComparisonTable';
 import ModalNavLink from '@/Components/ModalNavLink';
+import ProposalComparison from './Comparison/ProposalComparison';
 // @ts-ignore
 
 interface HomePageProps extends Record<string, unknown> {
@@ -106,9 +107,7 @@ export default function Index({
                     }`}
                 >
                     <ProposalFilters />
-                    <ModalNavLink href="#proposal-comparison">
-                        Perform Action
-                    </ModalNavLink>
+                    
                 </section>
 
                 <section className="container flex flex-col items-end pt-2 pb-1">
@@ -148,7 +147,7 @@ export default function Index({
                 <section className="w-full px-4 lg:container lg:px-0">
                     {proposals && <Paginator pagination={proposals} />}
                 </section>
-                <ProposalsTable />
+                <ProposalComparison />
             </FiltersProvider>
         </ListProvider>
     );

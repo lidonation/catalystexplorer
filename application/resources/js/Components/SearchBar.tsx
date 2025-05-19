@@ -14,7 +14,8 @@ interface SearchBarProps {
     focusState?: (state: boolean) => void;
     initialSearch?: string;
     placeholder?: string;
-    border?: string|null;
+    border?: string | null;
+    reloadOnClear?:boolean
 }
 
 const SearchBar = forwardRef<HTMLInputElement, SearchBarProps>(
@@ -27,6 +28,7 @@ const SearchBar = forwardRef<HTMLInputElement, SearchBarProps>(
             initialSearch = '',
             placeholder,
             border = null,
+            reloadOnClear = true,
         }: SearchBarProps,
         ref,
     ) => {
@@ -54,6 +56,7 @@ const SearchBar = forwardRef<HTMLInputElement, SearchBarProps>(
             setSearchQuery('');
             handleSearch('');
 
+            if (!reloadOnClear) return;
             router.get(window.location.pathname, {}, { replace: true });
         }, [handleSearch]);
 
@@ -69,7 +72,7 @@ const SearchBar = forwardRef<HTMLInputElement, SearchBarProps>(
                         border={border}
                         placeholder={placeholder}
                         size={placeholder?.length}
-                        className={`bg-background text-content focus:border-primary w-full rounded-lg ${!border?'border-0':''} pl-10 shadow-none focus:border-0 ${showRingOnFocus ? 'focus:ring-primary focus:ring-2' : 'focus:ring-0'}`}
+                        className={`bg-background text-content focus:border-primary w-full rounded-lg ${!border ? 'border-0' : ''} pl-10 shadow-none focus:border-0 ${showRingOnFocus ? 'focus:ring-primary focus:ring-2' : 'focus:ring-0'}`}
                         value={searchQuery}
                         onChange={handleChange}
                         onFocus={() => {

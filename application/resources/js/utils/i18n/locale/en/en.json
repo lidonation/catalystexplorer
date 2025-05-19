@@ -100,7 +100,7 @@
     "support": "Support",
     "seeAll": "See All",
     "seeLess": "See less",
-    "seeMore":"See more",
+    "seeMore": "See more",
     "solution": "Solution",
     "terms": "Terms",
     "twitter": "Twitter",
@@ -143,6 +143,25 @@
     "artistRole": "Artist",
     "cantFindNFTForMint": "Can't find NFT for mint",
     "copyToClipboard": "Copy to clipboard",
+    "proposalComparison": {
+        "title": "Compare Catalyst Proposals",
+        "subtitle": "Easily analyze and evaluate proposals to make informed decisions on funding, impact, and strategic alignment.",
+        "searchPlaceholder": "Search for proposal",
+        "viewProposal": "View Proposal",
+        "tableHeaders": {
+            "metric": "Metric",
+            "reorder": "Reorder",
+            "title": "Title",
+            "fund": "Fund",
+            "status": "Status",
+            "solution": "Solution",
+            "funding": "Funding Received",
+            "yesVotes": "Yes Votes",
+            "noVotes": "No Votes",
+            "team": "Team",
+            "action": "Action"
+        }
+    },
     "workflows": {
         "claimIdeascale": {
             "selectProfile": "Select Profile",
@@ -828,7 +847,7 @@
         "add": "Add",
         "recreate": "Re-create",
         "notProvided": "Not provided"
-      },
+    },
     "completedProjectNfts": {
         "title": "Completed Project NFTs",
         "subtitle": "Completed Project Catalyst project teams are invited to mint a celebratory NFT to mark your achievement and share it with the world!",
@@ -912,7 +931,7 @@
             "delegate": "Delegate",
             "anHourAgo": "an hour ago",
             "copied": "Copied!",
-            "unavailable":"Unavailable"
+            "unavailable": "Unavailable"
         },
         "faq": {
             "faq": "Frequently Asked Questions",
