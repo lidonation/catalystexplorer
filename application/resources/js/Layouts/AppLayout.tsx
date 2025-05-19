@@ -88,7 +88,7 @@ export default function AppLayout({ children }: { children: ReactNode }) {
                                         <MetricsBar />
                                     </div> */}
                                     <div className="hidden lg:block">
-                                        <PlayerBar />
+                                        {/* <PlayerBar /> */}
                                         <ModalNavLink
                                             className="bg-bg-dark flex items-center justify-between overflow-hidden rounded-xl px-4 py-3 text-white shadow-lg"
                                             href="#proposal-comparison"
