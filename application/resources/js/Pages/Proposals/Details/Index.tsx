@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next";
 import ProposalLayout from "../ProposalLayout";
-import MarkdownContent from "../Partials/MarkdownContent";
+import ProposalContent from "../Partials/ProposalContent";
 
 interface IndexProps {
     proposal: App.DataTransferObjects.ProposalData;
@@ -43,7 +43,7 @@ const Index = ({
                     </div>
                 </div>
             </div>
-            <MarkdownContent content={proposal.content} />
+            <ProposalContent content={proposal.content} />
         </ProposalLayout>
     );
 };
