@@ -38,19 +38,19 @@ Route::localized(
     function () {
         Route::get('/', [HomeController::class, 'index'])
             ->name('home');
-            
+
         Route::prefix('/proposals')->as('proposals.')->group(function () {
             Route::get('/', [ProposalsController::class, 'index'])
                 ->name('index');
-            
+
             Route::get('/charts', [ProposalsController::class, 'charts'])
-            ->name('charts');
+                ->name('charts');
 
             Route::get('/{slug}', function ($slug) {
                 return redirect()->route('proposals.group.details', ['slug' => $slug]);
             })->name('redirect');
-            
-            Route::prefix('/{slug}')->as('group.')->group(function () {                
+
+            Route::prefix('/{slug}')->as('group.')->group(function () {
                 Route::get('/details', [ProposalsController::class, 'proposal'])
                     ->name('details');
 
@@ -61,7 +61,7 @@ Route::localized(
                     ->name('teamInformation');
             });
         });
-        
+
 
         Route::get('/proposals', [ProposalsController::class, 'index'])
             ->name('proposals.index');
@@ -187,6 +187,21 @@ Route::localized(
                     Route::post('/submit-votes', [VotingWorkflowController::class, 'submitVotes'])
                         ->name('submitVotes');
                     Route::get('/success', [VotingWorkflowController::class, 'success'])
+                        ->name('success');
+                });
+
+            Route::prefix('/bookmarks/steps')->as('bookmarks.')
+                ->middleware([WorkflowMiddleware::class])
+                ->group(function () {
+                    Route::get('/{step}', [BookmarksController::class, 'handleStep'])
+                        ->name('index');
+                    Route::post('/save-list', [BookmarksController::class, 'saveList'])
+                        ->name('saveList');
+                    Route::post('{bookmarkCollection}/add-list-item/', [BookmarksController::class, 'addListItem'])
+                        ->name('addListItem');
+                    Route::post('/submit-votes', [BookmarksController::class, 'submitVotes'])
+                        ->name('submitVotes');
+                    Route::get('/success', [BookmarksController::class, 'success'])
                         ->name('success');
                 });
 
@@ -323,7 +338,7 @@ Route::localized(
                 Route::get('/', [TransactionController::class, 'index'])
                     ->name('index');
                 Route::get('/{transaction}', [TransactionController::class, 'show'])
-                    ->name('show');   
+                    ->name('show');
             });
 
             Route::prefix('/wallets')->as('wallets.')->group(function () {

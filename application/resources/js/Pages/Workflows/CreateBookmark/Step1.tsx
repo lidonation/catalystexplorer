@@ -17,14 +17,8 @@ interface Step1Props {
 }
 
 const Step1: React.FC<Step1Props> = ({ stepDetails, activeStep }) => {
-    const nextStep = generateLocalizedRoute('workflows.createVoterList.index', {
+    const nextStep = generateLocalizedRoute('workflows.bookmarks.index', {
         step: activeStep + 1,
-    });
-
-    const prevStep = activeStep === 1 
-    ? '' 
-    : generateLocalizedRoute('workflows.createVoterList.index', {
-        step: activeStep - 1,
     });
 
     const { t } = useTranslation();
@@ -47,18 +41,9 @@ const Step1: React.FC<Step1Props> = ({ stepDetails, activeStep }) => {
             </Content>
 
             <Footer>
-                <PrimaryLink
-                    href={prevStep}
-                    className="text-sm lg:px-8 lg:py-3"
-                    disabled={activeStep == 1}
-                    onClick={(e) => activeStep == 1 && e.preventDefault()}
-                >
-                    <ChevronLeft className="h-4 w-4" />
-                    <span>{t('Previous')}</span>
-                </PrimaryLink>
                 <PrimaryLink 
                     href={nextStep} 
-                    className="text-sm lg:px-8 lg:py-3"
+                    className="text-sm ml-auto lg:px-8 lg:py-3"
                 >
                     <span>{t('Next')}</span>
                     <ChevronRight className="h-4 w-4" />
