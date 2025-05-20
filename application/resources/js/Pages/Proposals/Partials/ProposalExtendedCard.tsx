@@ -98,8 +98,8 @@ export default function ProposalExtendedCard({
                                 aria-labelledby="funding-heading"
                             >
                                 <div className="flex items-center flex-row justify-between my-1.5">
-                                    <Title level='4' className="font-semibold">
-                                        {t('funding')}
+                                    <Title level='5' className="text-base font-medium leading-normal">
+                                        {t('ideascaleProfiles.fundingStatus')}
                                     </Title>
 
                                     <ProposalFundingStatus

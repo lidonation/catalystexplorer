@@ -48,9 +48,9 @@ export default function ProposalSolution({
                     <div className="solution-container">
                         <header className="solution-header mb-2 flex justify-between">
                             <Title
-                                level="4"
+                                level="5"
                                 id="solution-heading"
-                                className="text-content font-medium"
+                                className="mt-2 text-content text-base font-medium"
                             >
                                 {t('solution')}
                             </Title>
