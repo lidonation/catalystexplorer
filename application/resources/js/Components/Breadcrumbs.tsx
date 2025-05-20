@@ -26,6 +26,7 @@ const Breadcrumbs = ({
     maxItems = 4,
     itemClassName = 'text-content hover:text-content-light transition-colors',
     activeClassName = 'text-content font-medium',
+    maxLabelLength = 30,
 }: BreadcrumbsProps) => {
     const { t } = useTranslation();
     const displayItems =
@@ -52,6 +53,14 @@ const Breadcrumbs = ({
         return null;
     }
 
+    const formatLabel = (label: string, isHome: boolean) => {
+        if (isHome) {
+            return <HomeIcon className="text-content" />;
+        }
+        
+        return truncateMiddle(label, maxLabelLength);
+    };
+
     return (
         <nav
             aria-label="Breadcrumb"
@@ -60,6 +69,7 @@ const Breadcrumbs = ({
             {displayItems.map((item, index) => {
                 const isLast = index === displayItems.length - 1;
                 const isEllipsis = item.isEllipsis;
+                const isHome = item.label.includes(t('breadcrumbs.home'));
 
                 return (
                     <React.Fragment key={item.href || index}>
@@ -73,15 +83,11 @@ const Breadcrumbs = ({
                             <MoreHorizontal className="text-content h-4 w-4" />
                         ) : isLast ? (
                             <span className={activeClassName}>
-                                {truncateMiddle(item.label)}
+                                {formatLabel(item.label, isHome)}
                             </span>
                         ) : (
                             <Link href={item.href} className={itemClassName}>
-                                {item.label.includes(t('breadcrumbs.home')) ? (
-                                    <HomeIcon className="text-content" />
-                                ) : (
-                                    item.label
-                                )}
+                                {formatLabel(item.label, isHome)}
                             </Link>
                         )}
                     </React.Fragment>
