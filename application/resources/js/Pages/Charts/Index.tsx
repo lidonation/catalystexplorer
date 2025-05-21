@@ -117,7 +117,7 @@ const Index = ({ filters }: PageProps) => {
     return (
         canShowModal && (
             <ModalLayout onModalClosed={handleChartDetailModalClose} setCloseModal={setCloseModal}>
-                {/* <FiltersProvider defaultFilters={filters}>
+                <FiltersProvider defaultFilters={filters}>
                     <div className="flex flex-col gap-4">
                         <Title level="2">Select your metrics</Title>
                         <Card className="flex flex-col gap-6 p-8">
@@ -153,8 +153,7 @@ const Index = ({ filters }: PageProps) => {
                             </div>
                         </Card>
                     </div>
-                </FiltersProvider> */}
-                <div>test</div>
+                </FiltersProvider>
             </ModalLayout>
         )
     );
