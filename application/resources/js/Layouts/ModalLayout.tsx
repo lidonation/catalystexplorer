@@ -19,6 +19,7 @@ interface ModalLayoutProps {
     navigate?: boolean;
     onModalClosed?: () => void;
     onModalOpened?: () => void;
+     setCloseModal?: (fn: () => void) => void;
 }
 
 const ModalLayout: React.FC<ModalLayoutProps> = ({
@@ -34,6 +35,7 @@ const ModalLayout: React.FC<ModalLayoutProps> = ({
     navigate = true,
     onModalClosed,
     onModalOpened,
+    setCloseModal,
 }) => {
     const modalRef = useRef<{ close: () => void }>(null);
 
@@ -53,6 +55,12 @@ const ModalLayout: React.FC<ModalLayoutProps> = ({
             document.removeEventListener('keydown', handleKeyDown, true);
         };
     }, [onModalOpened]);
+
+    useEffect(() => {
+    if (setCloseModal && modalRef.current) {
+        setCloseModal(() => modalRef.current!.close);
+    }
+}, [setCloseModal]);
 
     const handleButtonClose = () => {
         modalRef.current?.close();
