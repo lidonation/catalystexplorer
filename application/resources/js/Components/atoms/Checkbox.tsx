@@ -12,6 +12,7 @@ export default function Checkbox({
                 'border-border text-content-accent focus:ring-primary rounded-sm shadow-xs ' +
                 className
             }
+            value={props.value ? props.value : ''}
         />
     );
 }

@@ -19,6 +19,7 @@ type SelectProps = {
     className?: string;
     hideCheckbox?: boolean;
     placeholder?: string;
+    disabled?: boolean;
 };
 
 export default function Selector({
@@ -31,6 +32,7 @@ export default function Selector({
     bgColor = 'bg-background',
     hideCheckbox = false, 
     placeholder = '',
+    disabled = false,
     ...props
 }: SelectProps) {
     const [open, setOpen] = useState(false);
@@ -39,7 +41,6 @@ export default function Selector({
 
     let currentOption = null;
 
-    // Use custom placeholder if provided, otherwise default logic
     let defaultPlaceholder = isMultiselect
         ? `${t('select')} `
         : `${t('select')} ${context}`;
@@ -85,6 +86,7 @@ export default function Selector({
                         aria-expanded={open}
                         aria-label={t('select') + ' ' + t('option')}
                         className="border-input placeholder:text-muted-foreground ring-offset-background flex h-full w-full items-center justify-between rounded-md border bg-transparent px-3 py-2 text-sm shadow-xs disabled:cursor-not-allowed disabled:opacity-50"
+                        disabled={disabled}
                     >
                         <span className="flex items-center gap-2 overflow-hidden">
                             <span className="overflow-clip text-sm text-nowrap">

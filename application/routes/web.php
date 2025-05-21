@@ -43,6 +43,9 @@ Route::localized(
             Route::get('/', [ProposalsController::class, 'index'])
                 ->name('index');
             
+            Route::get('/charts-metrics', [ProposalsController::class, 'chartsMetrics'])
+            ->name('chartsMetrics');
+
             Route::get('/charts', [ProposalsController::class, 'charts'])
             ->name('charts');
 

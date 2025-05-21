@@ -511,6 +511,9 @@
         "totalRequested": "Total Requested",
         "ideascale": "Ideascale",
         "projectCatalyst": "Projectcatalyst.io",
+        "submittedProposals": "Submitted Proposals",
+        "approvedProposals": "Approved Proposals",
+        "completedProposals": "Completed Proposals",
         "errors": {
             "noUrl": "No video URL provided",
             "invalidYoutubeFormat": "The YouTube link format is incorrect",
@@ -594,7 +597,17 @@
             "details": "Details",
             "community": "Community Review",
             "team": "Team Information"
+        },
+        "charts": {
+            "trendChart": "Trend Chart",
+            "lineChart": "Line Chart",
+            "pieChart": "Pie Chart",
+            "barGraph": "Bar Graph",
+            "heatMap": "Heat Map",
+            "scatterPlots": "Scatter Plots",
+            "stackBarCharts": "Stacked Bar Charts"
         }
+
     },
     "ideascaleProfiles": {
         "people": "People",
