@@ -25,14 +25,14 @@ interface WalletProps {
         all_time_votes: number;
         funds_participated: string[];
     };
-    stakeKey: string;
+    transaction: TransactionData;
     filters: SearchParams;
 }
 export default function Wallet({
     walletStats,
     catalystVotes,
     walletTransactions,
-    stakeKey,
+    transaction,
     filters,
 }: WalletProps) {
     const { t } = useTranslation();
@@ -69,11 +69,11 @@ export default function Wallet({
                         <DetailRow label={t('transactions.wallet.stakeKey')}>
                             <div className="flex flex-1 items-center">
                                 <Value className="text-content mr-2 truncate font-bold">
-                                    {truncateMiddle(stakeKey ?? '-')}
+                                    {truncateMiddle(transaction?.json_metadata?.stake_key ?? '-')}
                                 </Value>
                                 <CopyIcon
                                     className="text-gray-persist h-4 w-4 cursor-pointer font-bold"
-                                    onClick={() => copyToClipboard(stakeKey ?? '-')}
+                                    onClick={() => copyToClipboard(transaction?.json_metadata?.stake_key  ?? '-')}
                                 />
                             </div>
                         </DetailRow>

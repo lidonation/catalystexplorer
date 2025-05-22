@@ -19,6 +19,7 @@ use Spatie\Enum\Enum;
  * @method static self PAGE()
  * @method static self LIMIT()
  * @method static self SORT()
+ * @method static self CAT_ID()
  */
 final class TransactionSearchParams extends Enum
 {
@@ -34,9 +35,11 @@ final class TransactionSearchParams extends Enum
             'METADATA_LABELS' => 'ml',
             'DATE_RANGE' => 'dr',
             'STAKE_KEY' => 'stk',
+            'CAT_ID' => 'cat',
             'PAGE' => 'p',
             'LIMIT' => 'l',
             'SORT' => 'st',
+
         ];
     }
 }
