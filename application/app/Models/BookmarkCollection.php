@@ -5,14 +5,17 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Casts\HashId;
+use App\Traits\HasAuthor;
+use App\Traits\HasMetaData;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Spatie\Comments\Models\Concerns\HasComments;
 
 class BookmarkCollection extends Model
 {
-    use SoftDeletes;
+    use HasAuthor, HasComments, HasMetaData, SoftDeletes;
 
     protected $withCount = [
         'items',
@@ -21,6 +24,7 @@ class BookmarkCollection extends Model
         'groups',
         'reviews',
         'communities',
+        'comments',
     ];
 
     protected $appends = ['types_count', 'hash'];
@@ -42,11 +46,6 @@ class BookmarkCollection extends Model
         'status',
         'type',
     ];
-
-    public function user(): BelongsTo
-    {
-        return $this->belongsTo(User::class);
-    }
 
     public function parent(): BelongsTo
     {
@@ -101,10 +100,28 @@ class BookmarkCollection extends Model
         );
     }
 
+    /*
+    * This string will be used in notifications on what a new comment
+    * was made.
+    */
+    public function commentableName(): string
+    {
+        return $this->title;
+    }
+
+    /*
+    * This URL will be used in notifications to let the user know
+    * where the comment itself can be read.
+    */
+    public function commentUrl(): string
+    {
+        return '';
+    }
+
     public function casts(): array
     {
         return [
-            'id' => HashId::class,
+            // 'id' => HashId::class,
         ];
     }
 }

@@ -4,34 +4,31 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Api;
 
-use App\DataTransferObjects\GroupData;
+use App\DataTransferObjects\CommunityData;
 use App\Http\Controllers\Controller;
-use App\Http\Resources\GroupResource;
-use App\Models\Group;
-use App\Repositories\GroupRepository;
-use Illuminate\Contracts\Foundation\Application;
-use Illuminate\Contracts\Routing\ResponseFactory;
-use Illuminate\Http\Request;
+use App\Http\Resources\CommunityResource;
+use App\Models\Community;
+use App\Repositories\CommunityRepository;
 use Illuminate\Http\Response;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Fluent;
 
-class GroupController extends Controller
+class CommunityController extends Controller
 {
-    public function group($groupId): \Illuminate\Http\Response|GroupResource|Application|ResponseFactory
+    public function community($communityId): CommunityResource|Response
     {
-        $group = Group::find($groupId);
+        $community = Community::find($communityId);
 
-        if (is_null($group)) {
+        if (is_null($community)) {
             return response([
-                'errors' => 'Group not found',
+                'errors' => 'Communities not found',
             ], Response::HTTP_NOT_FOUND);
         } else {
-            return new GroupResource($group);
+            return new CommunityResource($community);
         }
     }
 
-    public function groups(): array|Response
+    public function communities(): array|Response
     {
         $per_page = request('per_page', 24);
 
@@ -62,9 +59,9 @@ class GroupController extends Controller
         $args['offset'] = ($page - 1) * $per_page;
         $args['limit'] = $per_page;
 
-        $groups = app(GroupRepository::class);
+        $communities = app(CommunityRepository::class);
 
-        $builder = $groups->search(
+        $builder = $communities->search(
             request('search') ?? '',
             $args
         );
@@ -72,7 +69,7 @@ class GroupController extends Controller
         $response = new Fluent($builder->raw());
 
         $pagination = new LengthAwarePaginator(
-            GroupData::collect($response->hits),
+            CommunityData::collect($response->hits),
             $response->estimatedTotalHits,
             $per_page,
             $page,
@@ -82,14 +79,5 @@ class GroupController extends Controller
         );
 
         return $pagination->onEachSide(1)->toArray();
-    }
-
-    public function connections(Request $request, int $id): array
-    {
-        $group = Group::findOrFail($id);
-
-        $connections = $group->getConnectionsData($request);
-
-        return $connections;
     }
 }

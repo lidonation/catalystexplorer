@@ -33,6 +33,8 @@ proposals_count?: number;
 groups_count?: number;
 communities_count?: number;
 reviews_count?: number;
+comments_count?: number;
+author?: App.DataTransferObjects.UserData;
 };
 export type BookmarkItemData = {
 hash: string | null;

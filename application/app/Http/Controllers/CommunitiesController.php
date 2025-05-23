@@ -11,18 +11,13 @@ use App\DataTransferObjects\ProposalData;
 use App\Enums\CatalystCurrencySymbols;
 use App\Enums\CommunitySearchParams;
 use App\Enums\ProposalSearchParams;
-use App\Http\Resources\CommunityResource;
 use App\Models\Campaign;
 use App\Models\Community;
 use App\Models\Fund;
 use App\Models\IdeascaleProfile;
 use App\Models\Tag;
 use App\Services\HashIdService;
-use Illuminate\Contracts\Foundation\Application;
-use Illuminate\Contracts\Routing\ResponseFactory;
 use Illuminate\Http\Request;
-use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
-use Illuminate\Http\Response;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
@@ -436,37 +431,6 @@ class CommunitiesController extends Controller
         }
 
         $this->currentPage = (int) $request->query(CommunitySearchParams::PAGE()->value) ?? 1;
-    }
-
-    public function community($communityId): \Illuminate\Http\Response|CommunityResource|Application|ResponseFactory
-    {
-        $community = Community::find($communityId);
-
-        if (is_null($community)) {
-            return response([
-                'errors' => 'Communities not found',
-            ], Response::HTTP_NOT_FOUND);
-        } else {
-            return new CommunityResource($community);
-        }
-    }
-
-    public function communities(): Response|AnonymousResourceCollection|Application|ResponseFactory
-    {
-        $per_page = request('per_page', 24);
-
-        // per_page query doesn't exceed 60
-        if ($per_page > 60) {
-            return response([
-                'status_code' => 60,
-                'message' => 'query parameter \'per_page\' should not exceed 60',
-            ], 60);
-        }
-
-        $communities = Community::query()
-            ->filter(request(['search', 'ids']));
-
-        return CommunityResource::collection($communities->fastPaginate($per_page)->onEachSide(0));
     }
 
     public function connections(Request $request, int $id): array
