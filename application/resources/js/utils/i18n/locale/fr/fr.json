@@ -301,6 +301,18 @@
             "platformStatementMsg": "Déclaration de Plateforme. Faites savoir à la communauté qui vous êtes et ce que vous représentez.",
             "platformStatementInfo": "\n1. Présentez-vous en tant que DRep et exposez vos principes de gouvernance.\n2. Expliquez pourquoi les détenteurs d’ADA devraient vous déléguer.\n3. Privilégiez le multilinguisme pour toucher un public mondial.",
             "submitStatement": "Soumettre la Déclaration"
+        },
+        "bookmarks": {
+            "intro": "Avant de commencer, configurons votre liste de favoris. Une liste de favoris est une collection personnalisée d’éléments sauvegardés, vous permettant d’organiser, d’accéder et de gérer facilement le contenu qui compte pour vous. Prêt à commencer ?\n\n*Dans les prochaines étapes, vous nommerez votre liste, ajouterez vos éléments et expliquerez votre raisonnement pour les avoir sélectionnés.*",
+            "details": "Détails",
+            "listDetail": "Détail de la liste",
+            "listDetailInfo": "Donnez un nom et une brève description à votre liste de vote. Cela aide les autres à comprendre de quoi il s'agit.",
+            "listItems": "Propositions",
+            "listItemsInfo": "Ajoutons maintenant des éléments liés à votre liste de favoris. Vous pouvez rechercher des propositions existantes et sélectionner celles qui correspondent.",
+            "rationale": "Raisonnement",
+            "rationaleInfo": "Pourquoi avez-vous sélectionné ces éléments ? Fournir un raisonnement aide les autres à comprendre vos choix et rend votre liste plus crédible.",
+            "bookmarkCreated": "Votre liste de favoris a été créée !",
+            "viewList": "Voir la liste"
         }
     },
     "error404": {
