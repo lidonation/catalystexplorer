@@ -2,11 +2,12 @@ import Paginator from '@/Components/Paginator';
 import PrimaryLink from '@/Components/atoms/PrimaryLink';
 import MyLayout from '@/Pages/My/MyLayout';
 import { useLocalizedRoute } from '@/utils/localizedRoute';
-import { Head } from '@inertiajs/react';
+import { Head, WhenVisible } from '@inertiajs/react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { PaginatedData } from '../../../../types/paginated-data';
-import BookmarkCollectionCard from './Partials/BookmarkCollectionCard';
+import { PaginatedData } from '../../../types/paginated-data';
+import BookmarkCollectionList from './Partials/BookmarkCollectionList';
+import BookmarkCollectionListLoader from './Partials/BookmarkCollectionListLoader';
 import BookmarkPage2 from './Partials/ListCreateFromBookmarkSave/Step2';
 import BookmarkPage3 from './Partials/ListCreateFromBookmarkSave/Step3';
 import BookmarkCollectionData = App.DataTransferObjects.BookmarkCollectionData;
@@ -51,14 +52,16 @@ export default function MyList({ bookmarkCollections }: MyListProps) {
 
                 {bookmarkCollections?.data &&
                 bookmarkCollections?.data?.length > 0 ? (
-                    <div className="grid grid-cols-1 gap-4">
-                        {bookmarkCollections?.data.map((collection) => (
-                            <BookmarkCollectionCard
-                                key={collection.hash}
-                                collection={collection}
-                            />
-                        ))}
-                    </div>
+                    <WhenVisible
+                        fallback={<BookmarkCollectionListLoader />}
+                        data="groups"
+                    >
+                        <BookmarkCollectionList
+                            bookmarkCollections={
+                                bookmarkCollections?.data || []
+                            }
+                        />
+                    </WhenVisible>
                 ) : (
                     <div className="flex flex-col items-center justify-center py-20">
                         <PrimaryLink

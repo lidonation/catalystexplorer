@@ -7,7 +7,7 @@ import { useList } from '@/Context/ListContext';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { z } from 'zod';
-import { TransitionListPageProps } from '../../../../../../types/general';
+import { TransitionListPageProps } from '../../../../../types/general';
 
 const createFormSchema = (t: (key: string) => string) =>
     z.object({
@@ -42,7 +42,7 @@ const BookmarkPage2 = ({ onNavigate }: TransitionListPageProps) => {
         if (e) {
             e.preventDefault();
         }
-        
+
         try {
             const schema = createFormSchema(t);
             schema.parse(formState);
@@ -87,7 +87,9 @@ const BookmarkPage2 = ({ onNavigate }: TransitionListPageProps) => {
             if (error) setError(null);
         };
 
-    const handleDescriptionChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const handleDescriptionChange = (
+        e: React.ChangeEvent<HTMLTextAreaElement>,
+    ) => {
         setFormState((prev) => ({
             ...prev,
             description: e.target.value,
@@ -103,22 +105,26 @@ const BookmarkPage2 = ({ onNavigate }: TransitionListPageProps) => {
         }));
     };
 
-    const handleTextareaKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    const handleTextareaKeyDown = (
+        e: React.KeyboardEvent<HTMLTextAreaElement>,
+    ) => {
         if (e.key === ' ') {
             e.preventDefault();
-            
+
             const textarea = e.currentTarget;
             const start = textarea.selectionStart;
             const end = textarea.selectionEnd;
-            
-            const newText = formState.description.substring(0, start) + ' ' + 
-                           formState.description.substring(end);
-            
-            setFormState(prev => ({
+
+            const newText =
+                formState.description.substring(0, start) +
+                ' ' +
+                formState.description.substring(end);
+
+            setFormState((prev) => ({
                 ...prev,
-                description: newText
+                description: newText,
             }));
-            
+
             setTimeout(() => {
                 textarea.selectionStart = textarea.selectionEnd = start + 1;
             }, 0);

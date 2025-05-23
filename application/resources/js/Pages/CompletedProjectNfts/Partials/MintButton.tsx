@@ -4,7 +4,7 @@ import { PageProps } from '@/types';
 import { Link, router, usePage } from '@inertiajs/react';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { PaginatedData } from '../../../../types/paginated-data';
+import { PaginatedData } from '../../../types/paginated-data';
 import IdeascaleProfileData = App.DataTransferObjects.IdeascaleProfileData;
 import NMKRMetaData = App.DataTransferObjects.NMKRNftData;
 import NftData = App.DataTransferObjects.NftData;

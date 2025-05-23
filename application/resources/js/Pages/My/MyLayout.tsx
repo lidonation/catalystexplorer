@@ -4,7 +4,7 @@ import { generateTabs, myProfileTabs } from '@/utils/routeTabs';
 import { usePage } from '@inertiajs/react';
 import { ReactNode, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { SearchParams } from '../../../types/search-params';
+import { SearchParams } from '../../types/search-params';
 import UserTab from '../Profile/Partials/UserTab';
 import UserSection from './Components/UserSection';
 import User = App.DataTransferObjects.UserData;

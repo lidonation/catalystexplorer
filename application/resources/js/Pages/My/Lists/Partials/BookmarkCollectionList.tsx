@@ -2,7 +2,7 @@ import GroupCard from '@/Pages/Groups/Partials/GroupCard';
 import { AnimatePresence, motion } from 'framer-motion';
 import React from 'react';
 import BookmarkCollectionData = App.DataTransferObjects.BookmarkCollectionData;
-import BookmarkCollectionCard from '../../Lists/Partials/BookmarkCollectionCard';
+import BookmarkCollectionCard from './BookmarkCollectionCard';
 
 interface BookmarkCollectionListProps {
     bookmarkCollections: BookmarkCollectionData[];
@@ -11,7 +11,7 @@ interface BookmarkCollectionListProps {
 const BookmarkCollectionList: React.FC<BookmarkCollectionListProps> = ({ bookmarkCollections }) => {
     return (
         <>
-            <ul className="grid w-full grid-cols-1 gap-4">
+            <ul className="grid grid-cols-1 gap-4">
                 <AnimatePresence>
                     {bookmarkCollections?.map((bookmarkCollection, index) => (
                         <motion.li

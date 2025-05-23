@@ -15,7 +15,6 @@
     "totalAda": "Total Amount in ADA",
     "totalUsd": "Total Amount in USD",
     "amount": "Amount ",
-    "bookmarks": "My Bookmarks",
     "minCharTextarea": "Minimum 200 characters required",
     "blockchainData": "Blockchain Data",
     "bookmark": "Your personal space for organizing and managing proposal insights. Easily access your saved proposals, review notes, and share curated lists to stay on top of key ideas and opportunities.",
@@ -1156,5 +1155,10 @@
             "connecting": "Connecting",
             "disconnect": "Disconnect"
         }
+    },
+    "bookmarks": {
+        "listTitle": "Discover Community Lists",
+        "listSubtitle": "Browse and search curated bookmark lists shared by others.",
+        "myBookmarks": "My Bookmarks"
     }
 }

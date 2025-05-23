@@ -7,10 +7,10 @@ import { copyToClipboard } from '@/utils/copyClipboard';
 import { truncateMiddle } from '@/utils/truncateMiddle';
 import { Head } from '@inertiajs/react';
 import { ChevronLeft, CopyIcon } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { PaginatedData } from '../../../types/paginated-data';
-import { SearchParams } from '../../../types/search-params';
+import { PaginatedData } from '../../types/paginated-data';
+import { SearchParams } from '../../types/search-params';
 import CatalystVotesTable from '../Transactions/Partials/CatalystVotesTable';
 import DetailRow from '../Transactions/Partials/DetailRow';
 import WalletDetailsCard from '../Transactions/Partials/WalletDetailsCard';
@@ -73,7 +73,9 @@ export default function Wallet({
                                 </Value>
                                 <CopyIcon
                                     className="text-gray-persist h-4 w-4 cursor-pointer font-bold"
-                                    onClick={() => copyToClipboard(stakeKey ?? '-')}
+                                    onClick={() =>
+                                        copyToClipboard(stakeKey ?? '-')
+                                    }
                                 />
                             </div>
                         </DetailRow>

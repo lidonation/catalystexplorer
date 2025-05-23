@@ -1,19 +1,19 @@
 import AmountComparisonWithBar from '@/Components/AmountComparisonWithBar';
+import ColorDot from '@/Components/atoms/ColorDot';
+import KeyValue from '@/Components/atoms/KeyValue';
+import Paragraph from '@/Components/atoms/Paragraph';
 import Title from '@/Components/atoms/Title';
+import Card from '@/Components/Card';
+import Divider from '@/Components/Divider';
 import SegmentedBar from '@/Components/SegmentedBar';
-import {currency} from '@/utils/currency';
-import {useLocalizedRoute} from '@/utils/localizedRoute';
-import {Link} from '@inertiajs/react';
+import { currency } from '@/utils/currency';
+import { useLocalizedRoute } from '@/utils/localizedRoute';
+import { Link } from '@inertiajs/react';
 import React from 'react';
-import {useTranslation} from 'react-i18next';
-import {Segments} from '../../../../types/segments';
+import { useTranslation } from 'react-i18next';
+import { Segments } from '@/types/segments';
 import FundData = App.DataTransferObjects.FundData;
 import CampaignData = App.DataTransferObjects.CampaignData;
-import Paragraph from "@/Components/atoms/Paragraph";
-import ColorDot from "@/Components/atoms/ColorDot";
-import KeyValue from "@/Components/atoms/KeyValue";
-import Divider from "@/Components/Divider";
-import Card from "@/Components/Card";
 
 interface CampaignCardProps {
     fund: FundData;
@@ -22,11 +22,11 @@ interface CampaignCardProps {
 }
 
 const CampaignCard: React.FC<CampaignCardProps> = ({
-   fund,
-   campaign,
-   className
+    fund,
+    campaign,
+    className,
 }) => {
-    const {t} = useTranslation();
+    const { t } = useTranslation();
 
     const heroImageUrl = campaign?.hero_img_url ?? fund?.hero_img_url;
 
@@ -59,7 +59,7 @@ const CampaignCard: React.FC<CampaignCardProps> = ({
     };
     return (
         <Card className={className}>
-            <div className={`flex flex-col gap-6 card-campaign`}>
+            <div className={`card-campaign flex flex-col gap-6`}>
                 <section className="bg-content-light h-52 overflow-hidden rounded-lg">
                     {heroImageUrl ? (
                         <img
@@ -68,33 +68,50 @@ const CampaignCard: React.FC<CampaignCardProps> = ({
                             className="h-full w-full object-cover"
                         />
                     ) : (
-                        <div className="text-content bg-primary h-full flex items-center justify-center px-4">
+                        <div className="text-content bg-primary flex h-full items-center justify-center px-4">
                             <Title level="4">{campaign?.label}</Title>
                         </div>
                     )}
                 </section>
 
                 <section className="space-y-6">
-                    <div className='flex flex-row justify-between gap-2'>
-                        <KeyValue valueKey={t('proposals.filters.budget')}
-                                  value={currency(campaign.amount ?? 0, 2, campaign.currency ?? '')}/>
-                        <KeyValue valueKey='Total Proposals' value={campaign.proposals_count ?? 0}/>
+                    <div className="flex flex-row justify-between gap-2">
+                        <KeyValue
+                            valueKey={t('proposals.filters.budget')}
+                            value={currency(
+                                campaign.amount ?? 0,
+                                2,
+                                campaign.currency ?? '',
+                            )}
+                        />
+                        <KeyValue
+                            valueKey="Total Proposals"
+                            value={campaign.proposals_count ?? 0}
+                        />
                     </div>
 
                     <div>
-                        <Divider/>
+                        <Divider />
                     </div>
 
-                    <div className='space-y-3'>
+                    <div className="space-y-3">
                         <div>
-                            <SegmentedBar segments={segments} tooltipSegments={segments}/>
+                            <SegmentedBar
+                                segments={segments}
+                                tooltipSegments={segments}
+                            />
                         </div>
 
-                        <div className="flex flex-row flex-wrap gap-2 justify-between text-sm px-0.5">
+                        <div className="flex flex-row flex-wrap justify-between gap-2 px-0.5 text-sm">
                             {segments.map((segment, index) => (
-                                <div key={index} className='flex flex-row items-center gap-1'>
-                                    <ColorDot color={segment.color} size={3}/>
-                                    <div className='text-highlight'>{segment.label}</div>
+                                <div
+                                    key={index}
+                                    className="flex flex-row items-center gap-1"
+                                >
+                                    <ColorDot color={segment.color} size={3} />
+                                    <div className="text-highlight">
+                                        {segment.label}
+                                    </div>
                                     <div>{segment.value}</div>
                                 </div>
                             ))}
@@ -105,12 +122,12 @@ const CampaignCard: React.FC<CampaignCardProps> = ({
                 <section>
                     <Title
                         level="3"
-                        className="mb-2 flex items-center justify-between text-lg font-semibold card-title"
+                        className="card-title mb-2 flex items-center justify-between text-lg font-semibold"
                     >
                         <Link
                             href={useLocalizedRoute(
                                 'funds.fund.campaigns.campaign.show',
-                                {fund: fund.slug, campaign: campaign.slug},
+                                { fund: fund.slug, campaign: campaign.slug },
                             )}
                         >
                             {formatFundString(fund.slug)}: {campaign?.title}
@@ -122,31 +139,35 @@ const CampaignCard: React.FC<CampaignCardProps> = ({
                             viewBox="0 0 1200 1200"
                             xmlns="http://www.w3.org/2000/svg"
                         >
-                            <path
-                                d="m400 350c0-27.613 22.387-50 50-50h400c27.613 0 50 22.387 50 50v400c0 27.613-22.387 50-50 50s-50-22.387-50-50v-279.29l-414.64 414.64c-19.527 19.523-51.184 19.523-70.711 0-19.527-19.527-19.527-51.184 0-70.711l414.64-414.64h-279.29c-27.613 0-50-22.387-50-50z"/>
+                            <path d="m400 350c0-27.613 22.387-50 50-50h400c27.613 0 50 22.387 50 50v400c0 27.613-22.387 50-50 50s-50-22.387-50-50v-279.29l-414.64 414.64c-19.527 19.523-51.184 19.523-70.711 0-19.527-19.527-19.527-51.184 0-70.711l414.64-414.64h-279.29c-27.613 0-50-22.387-50-50z" />
                         </svg>
                     </Title>
 
-                    <Paragraph className="text-content-dark mb-4 line-clamp-5 opacity-80 card-summary">
+                    <Paragraph className="text-content-dark card-summary mb-4 line-clamp-5 opacity-80">
                         {campaign?.excerpt}
                     </Paragraph>
 
                     <div className="mt-6">
-                        {(campaign.total_distributed && campaign.total_awarded) && <AmountComparisonWithBar
-                            title={`${t('distributed')} v. ${t('awarded')}`}
-                            numerator={campaign.total_distributed}
-                            denominator={campaign.total_awarded}
-                            currency={campaign.currency ?? ''}
-                        />}
+                        {campaign.total_distributed &&
+                            campaign.total_awarded && (
+                                <AmountComparisonWithBar
+                                    title={`${t('distributed')} v. ${t('awarded')}`}
+                                    numerator={campaign.total_distributed}
+                                    denominator={campaign.total_awarded}
+                                    currency={campaign.currency ?? ''}
+                                />
+                            )}
                     </div>
 
                     <div className="mt-6">
-                        {(campaign.total_requested && campaign.total_awarded) && <AmountComparisonWithBar
-                            title={`${t('awarded')} v. ${t('requested')}`}
-                            numerator={campaign.total_awarded}
-                            denominator={campaign.total_requested}
-                            currency={campaign.currency ?? ''}
-                        />}
+                        {campaign.total_requested && campaign.total_awarded && (
+                            <AmountComparisonWithBar
+                                title={`${t('awarded')} v. ${t('requested')}`}
+                                numerator={campaign.total_awarded}
+                                denominator={campaign.total_requested}
+                                currency={campaign.currency ?? ''}
+                            />
+                        )}
                     </div>
                 </section>
             </div>

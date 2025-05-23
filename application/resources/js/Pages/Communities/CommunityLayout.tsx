@@ -5,7 +5,7 @@ import { PageProps as InertiaPageProps } from '@inertiajs/core';
 import { usePage } from '@inertiajs/react';
 import { ReactNode, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { SearchParams } from '../../../types/search-params';
+import { SearchParams } from '../../types/search-params';
 import CommunityCard from './Partials/CommunityCard';
 import CommunityTabs from './Partials/CommunityTab';
 import ProposalSummaryCard from './Partials/ProposalSummary';

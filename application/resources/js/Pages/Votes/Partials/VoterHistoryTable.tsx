@@ -18,8 +18,8 @@ import React, {
     useState,
 } from 'react';
 import { useTranslation } from 'react-i18next';
-import { PaginatedData } from '../../../../types/paginated-data';
-import { SearchParams } from '../../../../types/search-params';
+import { PaginatedData } from '../../../types/paginated-data';
+import { SearchParams } from '../../../types/search-params';
 import VoteFilters from './VoteFilters';
 import VoteHistoryTableLoader from './VoterHistoryTableLoader';
 import VoterHistoryData = App.DataTransferObjects.VoterHistoryData;

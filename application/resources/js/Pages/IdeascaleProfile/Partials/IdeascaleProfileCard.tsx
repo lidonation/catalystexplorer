@@ -1,4 +1,3 @@
-import ClaimedButton from './ClaimedButton';
 import Paragraph from '@/Components/atoms/Paragraph';
 import Title from '@/Components/atoms/Title';
 import Card from '@/Components/Card';
@@ -12,9 +11,10 @@ import { currency } from '@/utils/currency';
 import { useLocalizedRoute } from '@/utils/localizedRoute';
 import { Link } from '@inertiajs/react';
 import React from 'react';
-import ShareButton from './ShareButton';
 import { useTranslation } from 'react-i18next';
-import { Segments } from '../../../../types/segments';
+import { Segments } from '../../../types/segments';
+import ClaimedButton from './ClaimedButton';
+import ShareButton from './ShareButton';
 import IdeascaleProfileData = App.DataTransferObjects.IdeascaleProfileData;
 import GroupData = App.DataTransferObjects.GroupData;
 
@@ -74,7 +74,6 @@ const IdeascaleProfileCard: React.FC<IdeascaleProfileProps> = ({
         },
     ] as Segments[];
 
-
     const extraSegments = [
         {
             label: 'Proposer',
@@ -124,20 +123,18 @@ const IdeascaleProfileCard: React.FC<IdeascaleProfileProps> = ({
                                     .join(', ')}
                             </Paragraph>
 
-                            <div className="mt-2 flex flex-row flex-wrap gap-2 items-center md:items-center">
+                            <div className="mt-2 flex flex-row flex-wrap items-center gap-2 md:items-center">
                                 <ClaimedButton
-                                 modelType="ideascale-profiles"
-                                 className="text-content-light"
-                                 itemId={
-                                     ideascaleProfile?.hash ??
-                                     '0'
-                                 }/>
-
-                                <div className=" w-fit items-center rounded-md p-0">
-                                    <ShareButton
-                                    ideascaleProfile={ideascaleProfile}
                                     modelType="ideascale-profiles"
+                                    className="text-content-light"
+                                    itemId={ideascaleProfile?.hash ?? '0'}
                                 />
+
+                                <div className="w-fit items-center rounded-md p-0">
+                                    <ShareButton
+                                        ideascaleProfile={ideascaleProfile}
+                                        modelType="ideascale-profiles"
+                                    />
                                 </div>
                                 <div className="border-gray-persist/50 text-gray-persist/50 w-fit items-center rounded-md border-1 py-0">
                                     <ListProvider>
@@ -146,8 +143,7 @@ const IdeascaleProfileCard: React.FC<IdeascaleProfileProps> = ({
                                             width={16}
                                             height={16}
                                             itemId={
-                                                ideascaleProfile?.hash ??
-                                                '0'
+                                                ideascaleProfile?.hash ?? '0'
                                             }
                                         />
                                     </ListProvider>

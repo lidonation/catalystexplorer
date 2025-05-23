@@ -1,13 +1,11 @@
-import Paginator from '@/Components/Paginator';
 import { FiltersProvider } from '@/Context/FiltersContext';
+import GroupCardExtendedLoader from '@/Pages/Groups/Partials/GroupCardExtendedLoader';
 import MyLayout from '@/Pages/My/MyLayout';
 import { Head, WhenVisible } from '@inertiajs/react';
 import { useTranslation } from 'react-i18next';
-import { PaginatedData } from '../../../../types/paginated-data';
-import { SearchParams } from '../../../../types/search-params';
+import { SearchParams } from '../../../types/search-params';
 import MyGroupsList from './Partials/MyGroupsList';
 import GroupData = App.DataTransferObjects.GroupData;
-import GroupCardExtendedLoader from '@/Pages/Groups/Partials/GroupCardExtendedLoader';
 
 interface MyGroupsProps extends Record<string, unknown> {
     groups: GroupData[];
@@ -29,10 +27,9 @@ export default function MyGroups({ groups, filters }: MyGroupsProps) {
                         fallback={<GroupCardExtendedLoader />}
                         data="groups"
                     >
-                        <MyGroupsList groups={groups|| []} />
+                        <MyGroupsList groups={groups || []} />
                     </WhenVisible>
                 </div>
-
             </MyLayout>
         </FiltersProvider>
     );

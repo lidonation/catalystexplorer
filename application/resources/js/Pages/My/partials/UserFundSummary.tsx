@@ -2,8 +2,8 @@ import Title from '@/Components/atoms/Title';
 import Card from '@/Components/Card';
 import SegmentedBar from '@/Components/SegmentedBar';
 import { currency } from '@/utils/currency';
-import { Segments } from '../../../../types/segments';
 import { useTranslation } from 'react-i18next';
+import { Segments } from '../../../types/segments';
 
 interface TotalsSummaryProp {
     totalsSummary: {

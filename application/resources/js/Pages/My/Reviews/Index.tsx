@@ -6,7 +6,7 @@ import MyLayout from '@/Pages/My/MyLayout';
 import RelatedReviews from '@/Pages/Reviews/Partials/RelatedReviews';
 import { Head, WhenVisible } from '@inertiajs/react';
 import { useTranslation } from 'react-i18next';
-import { PaginatedData } from '../../../../types/paginated-data';
+import { PaginatedData } from '../../../types/paginated-data';
 import ReviewData = App.DataTransferObjects.ReviewData;
 
 interface MyReviewsProps {
@@ -43,7 +43,8 @@ export default function MyReviews({
                             <RelatedReviews
                                 reviews={reviews}
                                 routeParam={{
-                                    [ParamsEnum.IDEASCALE_PROFILES]: ideascaleProfileHashes,
+                                    [ParamsEnum.IDEASCALE_PROFILES]:
+                                        ideascaleProfileHashes,
                                 }}
                             />
                         </div>
