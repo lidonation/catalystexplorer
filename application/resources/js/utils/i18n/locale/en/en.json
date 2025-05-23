@@ -386,18 +386,19 @@
     },
     "my": {
         "dashboard": "My Dashboard",
-        "profile": "My Profile",
-        "proposals": "My Proposals",
-        "reviews": "My Reviews",
-        "groups": "My Groups",
-        "communities": "My Communities",
+        "userDashboard": "Dashboard",
+        "profile": "Profile",
+        "proposals": "Proposals",
+        "reviews": "Reviews",
+        "groups": "Groups",
+        "communities": "Communities",
         "transactions": "Transactions",
         "noTransactions": "No transactions Found.",
-        "lists": "My Lists",
+        "lists": "Lists",
         "items": "items",
         "manage": "Manage",
         "createList": "Create New List",
-        "votes": "My Votes"
+        "votes": "Votes"
     },
     "navigation": {
         "mobile": {
