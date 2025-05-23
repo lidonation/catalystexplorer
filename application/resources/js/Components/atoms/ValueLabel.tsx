@@ -9,7 +9,7 @@ interface ValueLabelProps extends HTMLAttributes<HTMLDivElement> {
 export default function ValueLabel({children, className = '', ...props }: ValueLabelProps) {
     return (
         <span
-            className={`text-highlight text-sm ${className}`}
+            className={`text-highlight  ${className}`}
             {...props}
         >{children}</span>);
 }

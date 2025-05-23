@@ -76,5 +76,11 @@ final class BookmarkCollectionData extends Data
 
         #[TypeScriptOptional]
         public ?int $reviews_count,
+
+        #[TypeScriptOptional]
+        public ?int $comments_count,
+
+        #[TypeScriptOptional]
+        public ?UserData $author,
     ) {}
 }
