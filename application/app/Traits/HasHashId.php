@@ -12,7 +12,16 @@ trait HasHashId
     public function hash(): Attribute
     {
         return Attribute::make(
-            get: fn () => (new HashIdService($this))->encode($this->getOriginal('id'))
+            get: fn() => (new HashIdService($this))->encode($this->getOriginal('id'))
         );
+    }
+
+
+    public static function byHash(string $hash): mixed
+    {
+        $modelInstance = new static;
+        $id = (new HashIdService($modelInstance))->decode($hash);
+
+        return static::find($id);
     }
 }

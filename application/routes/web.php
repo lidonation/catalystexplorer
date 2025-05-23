@@ -190,19 +190,22 @@ Route::localized(
                         ->name('success');
                 });
 
-            Route::prefix('/bookmarks/steps')->as('bookmarks.')
+            Route::prefix('/create-bookmarks/steps')->as('bookmarks.')
                 ->middleware([WorkflowMiddleware::class])
                 ->group(function () {
+                Route::get('/success', [BookmarksController::class, 'success'])
+                    ->name('success');
                     Route::get('/{step}', [BookmarksController::class, 'handleStep'])
                         ->name('index');
                     Route::post('/save-list', [BookmarksController::class, 'saveList'])
                         ->name('saveList');
-                    Route::post('{bookmarkCollection}/add-list-item/', [BookmarksController::class, 'addListItem'])
-                        ->name('addListItem');
-                    Route::post('/submit-votes', [BookmarksController::class, 'submitVotes'])
-                        ->name('submitVotes');
-                    Route::get('/success', [BookmarksController::class, 'success'])
-                        ->name('success');
+                    Route::post('{bookmarkCollection}/add-list-item/', [BookmarksController::class, 'addBookmarkItem'])
+                        ->name('addBookmarkItem');
+                    Route::post('{bookmarkCollection}/remove-list-item/', [BookmarksController::class, 'removeBookmarkItem'])
+                        ->name('removeBookmarkItem');
+                    Route::post('{bookmarkCollection}/save-rationales', [BookmarksController::class, 'saveRationales'])
+                        ->name('saveRationales');
+                    
                 });
 
             Route::prefix('/drep-sign-up/steps')->as('drepSignUp.')

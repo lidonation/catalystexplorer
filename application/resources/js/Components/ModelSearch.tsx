@@ -1,58 +1,112 @@
+import { useBookmarkContext } from '@/Context/BookmarkContext';
 import useEscapeKey from '@/Hooks/useEscapeKey';
-import { Key, useEffect, useRef, useState } from 'react';
+import { useSearchOptions } from '@/Hooks/useSearchOptions';
+import { currency } from '@/utils/currency';
+import { useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import Button from './atoms/Button';
+import Checkbox from './atoms/Checkbox';
 import TextInput from './atoms/TextInput';
+import Card from './Card';
 import CloseIcon from './svgs/CloseIcon';
 import SearchLensIcon from './svgs/SearchLensIcon';
+
+const modelTypes = {
+    'proposals': {
+        labelField: 'title',
+        statsField: [
+            { label: 'Status', value: 'funding_status' },
+            { label: 'Budget', value: 'amount_requested' },
+            { label: 'Fund', value: 'fund.label' },
+            { label: 'Campaign', value: 'campaign.label' },
+        ],
+    },
+    'ideascale-profiles': {
+        labelField: 'name',
+        statsField: [
+            { label: 'Funded Proposals', value: 'funded_proposals_count' },
+            {
+                label: 'Completed Proposals',
+                value: 'completed_proposals_count',
+            },
+            { label: 'Total Awarded (Ada)', value: 'amount_awarded_ada' },
+            { label: 'Total Awarded (Usd)', value: 'amount_awarded_usd' },
+        ],
+    },
+    'groups': {
+        labelField: 'name',
+        statsField: [
+            { label: 'Funded Proposals', value: 'proposals_funded' },
+            { label: 'Completed Proposals', value: 'proposals_completed' },
+            { label: 'Total Awarded (Ada)', value: 'amount_awarded_ada' },
+            { label: 'Total Awarded (Usd)', value: 'amount_awarded_usd' },
+        ],
+    },
+    'communities': {
+        labelField: 'title',
+        statsField: [],
+    },
+    'reviews': {
+        labelField: 'proposal.title',
+        statsField: [
+            { label: 'Rating', value: 'rating' },
+            { label: 'Project Status', value: 'proposal.status' },
+            {
+                label: 'Reviewer Reputation Score',
+                value: 'reviewer.avg_reputation_score',
+            },
+        ],
+    },
+};
+
+type ModelSearchProps = {
+    className?: string;
+    placeholder: string;
+    domain:
+        | 'proposals'
+        | 'reviews'
+        | 'groups'
+        | 'communities'
+        | 'ideascale-profiles';
+};
 
 export default function ModelSearch({
     className,
     placeholder,
     domain,
-    metricFields,
-    selectedItems,
-    handleSelect,
-}: {
-    className?: string;
-    placeholder: string;
-    domain: string;
-    metricFields?: string[];
-    selectedItems?: string[];
-    handleSelect: (hash: string) => void;
-}) {
-    const [searchQuery, setSearchQuery] = useState('');
-    const [results, setResults] = useState([]);
+}: ModelSearchProps) {
     const inputRef = useRef<HTMLInputElement>(null);
     const { t } = useTranslation();
+    const { searchTerm, setSearchTerm, options } =
+        useSearchOptions<any>(domain);
+        
+    const model = modelTypes[domain];
 
-    useEscapeKey(() => handleClear());
+    const { selectedItemsByType, toggleSelection, statusMessages, progress } = useBookmarkContext();
+
+    const selectedHashes = selectedItemsByType[domain] || []; 
+
+    useEscapeKey(() => setSearchTerm(''));
 
     useEffect(() => {
-        if (inputRef.current) {
-            inputRef.current.focus();
+        inputRef.current?.focus();
+    }, []);
+
+    function formatStat(obj: any, path: string) {
+        const value = path.split('.').reduce((acc, key) => acc?.[key], obj);
+        if (value == null) return '—';
+        if (path?.includes('amount')) {
+            const isAda = path?.includes('ada');
+            return currency(value, 3, isAda ? 'ADA' : undefined);
         }
-    }, [inputRef]);
-
-    function handleSearch(term: string): void {
-        throw new Error('Function not implemented.');
+        return value;
     }
-
-    const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const newValue = event.target.value;
-        setSearchQuery(newValue);
-        handleSearch(newValue);
-    };
-
-    const handleClear = () => {
-        setSearchQuery('');
-        handleSearch('');
-    };
 
     return (
         <div>
-            <div className={`w-full ${className}`}>
-                <label className="relative flex w-full items-center gap-2 pl-0">
+            {/* Search Bar */}
+            <div className={`sticky top-0 w-full ${className}`}>
+                <label className="relative flex w-full items-center gap-2">
                     <div className="absolute left-0 flex h-full w-10 items-center justify-center">
                         <SearchLensIcon width={16} className="text-dark" />
                     </div>
@@ -61,29 +115,105 @@ export default function ModelSearch({
                         ref={inputRef}
                         placeholder={placeholder}
                         size={placeholder.length}
-                        className={`bg-background text-content focus:border-primary w-full rounded-lg pl-10 shadow-none focus:border-0 ${showRingOnFocus ? 'focus:ring-primary focus:ring-2' : 'focus:ring-0'}`}
-                        value={searchQuery ?? ''}
-                        onChange={handleChange}
+                        className="bg-background text-content focus:ring-primary w-full rounded-lg pl-10 shadow-none focus:ring-2"
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
                     />
+
                     <Button
-                        onClick={() => handleClear()}
+                        onClick={() => setSearchTerm('')}
                         ariaLabel={t('clear')}
-                        className="hover:text-primary absolute right-0 flex h-full w-10 cursor-pointer items-center justify-center"
+                        className="hover:text-primary absolute right-0 flex h-full w-10 items-center justify-center"
                     >
                         <CloseIcon width={16} />
                     </Button>
                 </label>
             </div>
-            <div className="space-y-2 p-4 lg:mt-4 lg:space-y-3 lg:p-6">
-                {results &&
-                    results.map((result, index) => (
-                        <div className="w-full" key={index}>
-                            <label
-                                htmlFor={result.hash as string | undefined}
-                                className={`peer-checked:border-primary peer-checked:text-primary peer-checked:border-primary ${proposal.minted_nfts_fingerprint ? 'cursor-not-allowed' : ''} inline-flex w-full items-center justify-between rounded-lg border border-gray-100 text-gray-500 peer-checked:border-2`}
-                            ></label>
-                        </div>
-                    ))}
+
+            {/* Results */}
+            <div className="h-120 space-y-4 overflow-y-auto py-4 lg:mt-4 lg:space-y-3 lg:py-6">
+                {options?.map((result) => {
+                    const hash = result.hash;
+                    console.log({
+                        hash,
+                        selectedHashes,
+                        t: formatStat(result, model.labelField),
+                    });
+                    
+                    const isSelected = selectedHashes.includes(hash);
+
+                    const statusClasses = {
+                        saving: 'border-yellow-500 animate-pulse',
+                        removing: 'border-red-500 animate-pulse',
+                        saved: 'border-green-500',
+                        removed: 'border-gray-400',
+                    };
+
+                    return (
+                        <Card
+                            key={hash}
+                            className={`w-full rounded-xl border shadow-sm transition-all ${
+                                isSelected
+                                    ? 'border-primary border-2'
+                                    : 'border-gray-light'
+                            } ${status ? statusClasses[status] : ''}`}
+                        >
+                            <label htmlFor={hash} className="block px-2">
+                                <div className="flex items-center gap-3">
+                                    <Checkbox
+                                        id={hash}
+                                        checked={isSelected}
+                                        onChange={() =>
+                                            toggleSelection(domain, hash)
+                                        }
+                                        className="bg-background text-content-accent checked:bg-primary focus:border-primary focus:ring-primary h-4 w-4 shadow-xs"
+                                    />
+                                    <div className="space-y-1">
+                                        <h3 className="text-lg font-bold">
+                                            {formatStat(
+                                                result,
+                                                model.labelField,
+                                            )}
+                                        </h3>
+
+                                        <div className="flex flex-wrap gap-4 pt-1">
+                                            {model.statsField.map(
+                                                ({ label, value }, index) => (
+                                                    <div
+                                                        key={value}
+                                                        className="flex items-center gap-2 text-sm"
+                                                    >
+                                                        <span className="font-bold">
+                                                            {label}:
+                                                        </span>
+                                                        <span
+                                                            className={`font-medium ${
+                                                                index === 0
+                                                                    ? 'text-success'
+                                                                    : index ===
+                                                                        1
+                                                                      ? 'text-primary'
+                                                                      : index ===
+                                                                          3
+                                                                        ? 'text-json-key'
+                                                                        : ''
+                                                            }`}
+                                                        >
+                                                            {formatStat(
+                                                                result,
+                                                                value,
+                                                            )}
+                                                        </span>
+                                                    </div>
+                                                ),
+                                            )}
+                                        </div>
+                                    </div>
+                                </div>
+                            </label>
+                        </Card>
+                    );
+                })}
             </div>
         </div>
     );

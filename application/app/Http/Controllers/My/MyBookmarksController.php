@@ -278,7 +278,7 @@ class MyBookmarksController extends Controller
         $page = $this->queryParams[ProposalSearchParams::PAGE()->value] ?? 1;
         $perPage = $this->queryParams[ProposalSearchParams::LIMIT()->value] ?? 5;
 
-        $bookmarkCollections = BookmarkCollection::where('user_id', $userId)
+        $bookmarkCollections = BookmarkCollection::where('user_id', $userId)->with('author')
             ->orderBy('created_at', 'desc')
             ->paginate($perPage, ['*'], 'page', $page);
 

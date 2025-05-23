@@ -49,7 +49,7 @@ const Step2: React.FC<Step2Props> = ({
     const [isFormTouched, setIsFormTouched] = useState(false);
 
     const localizedRoute = useLocalizedRoute;
-    const prevStep = localizedRoute('workflows.createVoterList.index', {
+    const prevStep = localizedRoute('workflows.bookmarks.index', {
         step: activeStep - 1,
     });
 
@@ -65,17 +65,6 @@ const Step2: React.FC<Step2Props> = ({
 
     const validateForm = () => {
         const newErrors: Record<string, string> = {};
-
-        if (!form.data.title.trim()) {
-            newErrors.title = t('workflows.voterList.errors.titleRequired');
-        }
-
-
-        if (form.data.content.length < 100) {
-            newErrors.content = t(
-                'workflows.voterList.errors.descriptionLength',
-            );
-        }
 
         setErrors(newErrors);
 

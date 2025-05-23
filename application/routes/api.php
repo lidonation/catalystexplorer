@@ -1,21 +1,23 @@
 <?php
 
-use App\Http\Controllers\CardanoBudgetProposalController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\GroupsController;
 use App\Http\Controllers\Api\TagController;
-use App\Http\Controllers\Api\GroupController;
-use App\Http\Controllers\Api\ProposalController;
-use App\Http\Controllers\Api\ReviewerController;
-use App\Http\Controllers\VoterHistoriesController;
-use App\Http\Controllers\ProposalsController;
 use App\Http\Controllers\ReviewsController;
+use App\Http\Controllers\Api\GroupController;
+use App\Http\Controllers\ProposalsController;
+use App\Http\Controllers\Api\ReviewController;
 use App\Http\Controllers\CommunitiesController;
 use App\Http\Controllers\Api\CampaignController;
+use App\Http\Controllers\Api\ProposalController;
+use App\Http\Controllers\Api\ReviewerController;
+use App\Http\Controllers\Api\CommunityController;
 use App\Http\Controllers\My\MyBookmarksController;
+use App\Http\Controllers\VoterHistoriesController;
 use App\Http\Controllers\CompletedProjectNftsController;
 use App\Http\Controllers\Api\IdeascaleProfilesController;
+use App\Http\Controllers\CardanoBudgetProposalController;
 
 Route::prefix('api')->as('api.')->group(function () {
     Route::get('/groups', [GroupController::class, 'groups'])->name('groups');
@@ -34,14 +36,17 @@ Route::prefix('api')->as('api.')->group(function () {
 
     Route::get('/reviewers', [ReviewerController::class, 'reviewers'])->name('reviewers');
 
-    Route::get('/communities', [CommunitiesController::class, 'communities'])->name('communities');
+    Route::get('/reviews', [ReviewController::class, 'reviews'])->name('reviews');
+
+    Route::get('/communities', [CommunityController::class, 'communities'])->name('communities');
     Route::get('/communities/{community:id}', [CommunitiesController::class, 'community'])->name('community');
+
     Route::get('/communities/{hash}/connections', [CommunitiesController::class, 'connections'])->name('communities.connections');
     Route::post('/communities/{hash}/join', [CommunitiesController::class, 'join'])->name('community.join');
 
     Route::prefix('bookmark-items')->as('bookmarks.')
         ->group(function () {
-            Route::post('/{modelType}/{hash}', [MyBookmarksController::class, 'store'])
+            Route::post('/{modelType}/{hash}/{bookmarkCollection?}', [MyBookmarksController::class, 'store'])
                 ->middleware('auth')
                 ->name('store');
             Route::delete('/{hash}', [MyBookmarksController::class, 'delete'])
