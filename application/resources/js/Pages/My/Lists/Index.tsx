@@ -33,7 +33,7 @@ export default function MyList({ bookmarkCollections }: MyListProps) {
         <>
             <Head title="My List" />
 
-            <div className="mx-auto max-w-7xl px-4 py-2 sm:px-6 lg:px-8">
+            <div className="mx-auto max-w-7xl px-4 py-2 sm:px-6 lg:px-8 h-screen">
                 {bookmarkCollections?.data &&
                     bookmarkCollections?.data?.length > 0 && (
                         <div className="mb-6 flex items-center">

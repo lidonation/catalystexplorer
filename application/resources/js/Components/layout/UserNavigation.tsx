@@ -76,7 +76,7 @@ function UserNavigation() {
                                     >
                                         <div className="flex items-center">
                                             <span className="mr-3">
-                                                <BarLineIcon className={`${isOnMyRoute ? 'text-content hover:text-content-light' : 'text-dark'}`} />
+                                                <BarLineIcon className={`${isOnMyRoute ? 'text-content hover:text-gray-persist' : 'text-dark'}`} />
                                             </span>
                                             <span>{title}</span>
                                         </div>
@@ -84,13 +84,13 @@ function UserNavigation() {
                                             <ArrowUpIcon
                                                 height={10}
                                                 width={10}
-                                                className={`${isOnMyRoute ? 'text-content hover:text-content-light' : 'text-dark'}`}
+                                                className={`${isOnMyRoute ? 'text-content hover:text-gray-persist' : 'text-dark'}`}
                                             />
                                         ) : (
                                             <ArrowDownIcon
                                                 height={10}
                                                 width={10}
-                                                className={`${isOnMyRoute ? 'text-content hover:text-content-light' : 'text-dark'}`}
+                                                className={`${isOnMyRoute ? 'text-content hover:text-gray-persist' : 'text-dark'}`}
                                             />
                                         )}
                                     </div>
@@ -104,7 +104,7 @@ function UserNavigation() {
                                                 title={t('my.userDashboard')}
                                                 ariaLabel={`${t('my.userDashboard')} ${t('link')}`}
                                                 active={false}
-                                                className={`${isOnMyRoute ? 'text-content hover:text-content-light' : 'text-dark'} flex items-center gap-2`}
+                                                className={`${isOnMyRoute ? 'text-content hover:hover:text-gray-persist' : 'text-dark'} flex items-center gap-2`}
                                             >
                                                 <span></span>
                                             </NavLinkItem>
@@ -116,7 +116,7 @@ function UserNavigation() {
                                                 title={t('my.profile')}
                                                 ariaLabel={`${t('my.profile')} ${t('link')}`}
                                                 active={false}
-                                                className={`${isOnMyRoute ? 'text-content hover:text-content-light' : 'text-dark'} flex items-center gap-2`}
+                                                className={`${isOnMyRoute ? 'text-content hover:text-gray-persist' : 'text-dark'} flex items-center gap-2`}
                                             >
                                                 <span></span>
                                             </NavLinkItem>
@@ -128,7 +128,7 @@ function UserNavigation() {
                                                 title={t('my.proposals')}
                                                 ariaLabel={`${t('my.proposals')} ${t('link')}`}
                                                 active={false}
-                                                className={`${isOnMyRoute ? 'text-content hover:text-content-light' : 'text-dark'} flex items-center gap-2`}
+                                                className={`${isOnMyRoute ? 'text-content hover:text-gray-persist' : 'text-dark'} flex items-center gap-2`}
                                             >
                                                 <span></span>
                                             </NavLinkItem>
@@ -139,7 +139,7 @@ function UserNavigation() {
                                                 title={t('my.reviews')}
                                                 ariaLabel={`${t('my.reviews')} ${t('link')}`}
                                                 active={false}
-                                                className={`${isOnMyRoute ? 'text-content hover:text-content-light' : 'text-dark'} flex items-center gap-2`}
+                                                className={`${isOnMyRoute ? 'text-content hover:text-gray-persist' : 'text-dark'} flex items-center gap-2`}
                                             >
                                                 <span></span>
                                             </NavLinkItem>
@@ -150,7 +150,7 @@ function UserNavigation() {
                                                 title={t('my.groups')}
                                                 ariaLabel={`${t('my.groups')} ${t('link')}`}
                                                 active={false}
-                                               className={`${isOnMyRoute ? 'text-content hover:text-content-light' : 'text-dark'} flex items-center gap-2`}
+                                               className={`${isOnMyRoute ? 'text-content hover:text-gray-persist' : 'text-dark'} flex items-center gap-2`}
                                             >
                                                 <span></span>
                                             </NavLinkItem>
@@ -161,7 +161,7 @@ function UserNavigation() {
                                                 title={t('my.communities')}
                                                 ariaLabel={`${t('my.communities')} ${t('link')}`}
                                                 active={false}
-                                                className={`${isOnMyRoute ? 'text-content hover:text-content-light' : 'text-dark'} flex items-center gap-2`}
+                                                className={`${isOnMyRoute ? 'text-content hover:text-gray-persist' : 'text-dark'} flex items-center gap-2`}
                                             >
                                                 <span></span>
                                             </NavLinkItem>
@@ -172,7 +172,7 @@ function UserNavigation() {
                                                 title={t('my.lists')}
                                                 ariaLabel={`${t('my.lists')} ${t('link')}`}
                                                 active={false}
-                                                className={`${isOnMyRoute ? 'text-content hover:text-content-light' : 'text-dark'} flex items-center gap-2`}
+                                                className={`${isOnMyRoute ? 'text-content hover:text-gray-persist' : 'text-dark'} flex items-center gap-2`}
                                             >
                                                 <span></span>
                                             </NavLinkItem>
@@ -183,7 +183,7 @@ function UserNavigation() {
                                                 title={t('my.transactions')}
                                                 ariaLabel={`${t('my.transactions')} ${t('link')}`}
                                                 active={false}
-                                                className={`${isOnMyRoute ? 'text-content hover:text-content-light' : 'text-dark'} flex items-center gap-2`}
+                                                className={`${isOnMyRoute ? 'text-content hover:text-gray-persist' : 'text-dark'} flex items-center gap-2`}
                                             >
                                                 <span></span>
                                             </NavLinkItem>
@@ -194,7 +194,7 @@ function UserNavigation() {
                                                 title={t('my.votes')}
                                                 ariaLabel={`${t('my.votes')} ${t('link')}`}
                                                 active={false}
-                                               className={`${isOnMyRoute ? 'text-content hover:text-content-light' : 'text-dark'} flex items-center gap-2`}
+                                               className={`${isOnMyRoute ? 'text-content hover:text-gray-persist' : 'text-dark'} flex items-center gap-2`}
                                             >
                                                 <span></span>
                                             </NavLinkItem>
