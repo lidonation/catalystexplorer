@@ -79,7 +79,7 @@ const VotesComponent: React.FC<VoteHistoryProps> = (props) => {
     return (
         <>
             <Head title={t('votes')} />
-            <div className="mx-auto">
+            <div className="mx-auto py-8">
                 <div className="text-content">
                     {isAuthenticated ? (
                         <div className="container flex flex-col">
@@ -109,18 +109,13 @@ const VotesComponent: React.FC<VoteHistoryProps> = (props) => {
 
 const Votes: React.FC<VoteHistoryProps> = (props) => {
     return (
-        <MyLayout>
+      
             <FiltersProvider
                 defaultFilters={{} as SearchParams}
-                routerOptions={{
-                    only: ['voterHistories'],
-                    preserveState: true,
-                    preserveScroll: true
-                }}
+              
             >
                 <VotesComponent {...props} />
             </FiltersProvider>
-        </MyLayout>
     );
 };
 

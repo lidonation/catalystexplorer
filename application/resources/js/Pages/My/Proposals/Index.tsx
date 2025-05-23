@@ -26,13 +26,13 @@ export default function MyProposals({ proposals, filters }: MyProposalsProps) {
   const [showFilters, setShowFilters] = useState(false);
 
   return (
-    <MyLayout filters={filters}>
+   
       <FiltersProvider defaultFilters={filters} routerOptions={{ only: ['proposals'] }}>
         <Head title={t('my.proposals')}/>
 
-        <div className="pb-8">
+        <div className="pb-8 pt-8">
           <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
-            <div className="bg-background overflow-hidden bg-white p-6 shadow-xl sm:rounded-lg">
+            <div className="bg-background overflow-hidden bg-white p-6 shadow-md sm:rounded-lg">
               <div className="border-b border-background-lighter w-full mb-4">
                 <Title level="4" className="mb-4 font-bold">
                   {t('my.proposals')}
@@ -73,6 +73,5 @@ export default function MyProposals({ proposals, filters }: MyProposalsProps) {
           </div>
         </div>
       </FiltersProvider>
-    </MyLayout>
   );
 }
