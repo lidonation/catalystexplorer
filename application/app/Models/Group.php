@@ -13,7 +13,6 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Support\Facades\Artisan;
 use Laravel\Scout\Searchable;
 use Laravolt\Avatar\Facade as Avatar;
 use Spatie\Image\Enums\CropPosition;
@@ -37,15 +36,12 @@ class Group extends Model implements HasMedia
         'bio',
     ];
 
+    public $meiliIndexName = 'cx_groups';
+
     protected $appends = [
         'hero_img_url',
         'hash',
     ];
-
-    public static function runCustomIndex(): void
-    {
-        Artisan::call('cx:create-search-index App\\\\Models\\\\Group cx_groups');
-    }
 
     public static function getFilterableAttributes(): array
     {

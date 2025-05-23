@@ -18,7 +18,7 @@ parent_id?: number;
 title?: string;
 content?: string;
 color?: string;
-allow_comments?: string;
+allow_comments?: boolean;
 visibility?: string;
 status?: string;
 type?: string;

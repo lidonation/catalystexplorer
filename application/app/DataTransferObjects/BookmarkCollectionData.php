@@ -30,7 +30,7 @@ final class BookmarkCollectionData extends Data
         public ?string $color,
 
         #[TypeScriptOptional]
-        public ?string $allow_comments,
+        public ?bool $allow_comments,
 
         #[TypeScriptOptional]
         public ?string $visibility,

@@ -48,18 +48,6 @@ const Index: React.FC<BookmarkCollectionListProps> = ({
                     />
                 </section>
 
-                <section
-                    className={`container flex w-full flex-col items-center justify-center overflow-hidden transition-[max-height] duration-500 ease-in-out ${
-                        showFilters ? 'max-h-[500px]' : 'max-h-0'
-                    }`}
-                >
-                    {/* <GroupFilters
-                        proposalsCount={filterCounts.proposalsCount}
-                        totalAwardedAda={filterCounts.totalAwardedAda}
-                        totalAwardedUsd={filterCounts.totalAwardedUsd}
-                    /> */}
-                </section>
-
                 <section className="container py-8">
                     <WhenVisible
                         fallback={<BookmarkCollectionListLoader />}

@@ -32,7 +32,6 @@ const Step4: React.FC<Step4Props> = ({
 }) => {
     const form = useForm({
         rationale: rationale || '',
-        bookmarkCollection,
     });
 
     const [isFormValid, setIsFormValid] = useState(false);
@@ -92,7 +91,7 @@ const Step4: React.FC<Step4Props> = ({
                                 )}
                                 id="rationale"
                                 name="rationale"
-                                minLengthValue={100}
+                                minLengthValue={200}
                                 minLengthEnforced
                                 required
                                 value={form.data.rationale}

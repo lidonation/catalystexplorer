@@ -32,7 +32,7 @@ const RadioGroup: React.FC<RadioGroupProps> = ({
 }) => {
     return (
         <div
-            className={`flex ${direction === 'horizontal' ? 'space-x-4' : 'flex-col space-y-2'} ${groupClassName}`}
+            className={`flex flex-wrap ${direction === 'horizontal' ? 'space-x-4' : 'flex-col space-y-2'} ${groupClassName}`}
         >
             {options.map((option) => (
                 <label key={option.value} className="inline-flex items-center">

@@ -21,27 +21,26 @@ import Content from '../Partials/WorkflowContent';
 import Footer from '../Partials/WorkflowFooter';
 import Nav from '../Partials/WorkflowNav';
 import WorkflowLayout from '../WorkflowLayout';
+import BookmarkCollectionData = App.DataTransferObjects.BookmarkCollectionData;
 
 interface Step2Props {
     stepDetails: StepDetails[];
     activeStep: number;
-    funds: any;
-    latestFund: any;
-    voterList: any;
+    bookmarkCollection?: BookmarkCollectionData;
 }
 
 const Step2: React.FC<Step2Props> = ({
     stepDetails,
     activeStep,
-    voterList,
+    bookmarkCollection,
 }) => {
     const form = useForm({
-        title: voterList?.title || '',
-        visibility: voterList?.visibility || VisibilityEnum.UNLISTED,
-        content: voterList?.content || '',
-        comments_enabled: voterList?.allow_comments || false,
-        color: voterList?.color || '#2596BE',
-        status: voterList?.status || StatusEnum.DRAFT,
+        title: bookmarkCollection?.title || '',
+        visibility: bookmarkCollection?.visibility || VisibilityEnum.UNLISTED,
+        content: bookmarkCollection?.content || '',
+        comments_enabled: bookmarkCollection?.allow_comments || false,
+        color: bookmarkCollection?.color || '#2596BE',
+        status: bookmarkCollection?.status || StatusEnum.DRAFT,
     });
 
     const [isFormValid, setIsFormValid] = useState(false);
@@ -49,9 +48,13 @@ const Step2: React.FC<Step2Props> = ({
     const [isFormTouched, setIsFormTouched] = useState(false);
 
     const localizedRoute = useLocalizedRoute;
-    const prevStep = localizedRoute('workflows.bookmarks.index', {
-        step: activeStep - 1,
-    });
+
+    const param = bookmarkCollection
+        ? { step: activeStep - 1, bookmarkCollection: bookmarkCollection?.hash}
+        : { step: activeStep - 1 };
+        
+
+    const prevStep = localizedRoute('workflows.bookmarks.index', param);
 
     const { t } = useTranslation();
 
@@ -71,14 +74,12 @@ const Step2: React.FC<Step2Props> = ({
         setIsFormValid(
             Object.keys(newErrors).length === 0 &&
                 !!form.data.title &&
-                form.data.content.length >= 100,
+                form.data.content.length >= 200,
         );
     };
 
     const submitForm = () => {
-        form.post(
-            generateLocalizedRoute('workflows.bookmarks.saveList'),
-        );
+        form.post(generateLocalizedRoute('workflows.bookmarks.saveList'));
     };
 
     return (
@@ -112,7 +113,7 @@ const Step2: React.FC<Step2Props> = ({
                         <Textarea
                             id="content"
                             name="content"
-                            minLengthValue={100}
+                            minLengthValue={200}
                             minLengthEnforced
                             required
                             value={form.data.content}
@@ -124,13 +125,13 @@ const Step2: React.FC<Step2Props> = ({
                         <InputError message={form.errors.content} />
                     </div>
 
-                    <div className="grid grid-cols-12 items-center gap-4">
-                        <div className="col-span-3">
+                    <div className="flex flex-col gap-4 lg:flex-row lg:items-center">
+                        <div className="">
                             <ValueLabel className="text-content">
                                 {t('workflows.voterList.visibility')}
                             </ValueLabel>
                         </div>
-                        <div className="col-span-9">
+                        <div className="">
                             <RadioGroup
                                 name="visibility"
                                 selectedValue={form.data.visibility}
@@ -162,13 +163,13 @@ const Step2: React.FC<Step2Props> = ({
                         </div>
                     </div>
 
-                    <div className="grid grid-cols-12 items-center gap-4">
-                        <div className="col-span-3">
+                    <div className="flex flex-col gap-4 lg:flex-row lg:items-center">
+                        <div className="mr-2">
                             <ValueLabel className="text-content">
                                 {t('workflows.voterList.comments')}
                             </ValueLabel>
                         </div>
-                        <div className="col-span-9 flex items-center gap-2">
+                        <div className="flex items-center gap-2">
                             <CustomSwitch
                                 checked={form.data.comments_enabled}
                                 onCheckedChange={(checked) =>
@@ -187,8 +188,8 @@ const Step2: React.FC<Step2Props> = ({
                         </div>
                     </div>
 
-                    <div className="grid grid-cols-12 items-center gap-4">
-                        <div className="col-span-3">
+                    <div className="flex flex-col gap-4 lg:flex-row lg:items-center">
+                        <div className="">
                             <ValueLabel className="text-content">
                                 {t('workflows.voterList.chooseColor')}
                             </ValueLabel>
@@ -197,7 +198,7 @@ const Step2: React.FC<Step2Props> = ({
                                 {t('workflows.voterList.pickTheme')}
                             </Paragraph>
                         </div>
-                        <div className="col-span-9 flex items-center">
+                        <div className="flex items-center">
                             <div className="relative">
                                 <div className="border-gray-light flex w-full items-center rounded-md border px-2">
                                     <div
@@ -277,7 +278,7 @@ const Step2: React.FC<Step2Props> = ({
                 </PrimaryLink>
                 <PrimaryButton
                     className="text-sm lg:px-8 lg:py-3"
-                    disabled={!isFormValid}
+                    disabled={!isFormValid && !bookmarkCollection?.hash}
                     onClick={submitForm}
                 >
                     <span>{t('Next')}</span>

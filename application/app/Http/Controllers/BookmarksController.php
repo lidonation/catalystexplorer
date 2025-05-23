@@ -40,17 +40,26 @@ class BookmarksController extends Controller
 
     public function step1(Request $request): Response
     {
+
         return Inertia::render('Workflows/CreateBookmark/Step1', [
             'stepDetails' => $this->getStepDetails(),
             'activeStep' => intval($request->step),
+            'bookmarkCollection' => $request->bookmarkCollection,
         ]);
     }
 
     public function step2(Request $request): Response
     {
+        $collection = null;
+
+        if ($hash = $request->bookmarkCollection) {
+            $collection = BookmarkCollection::byHash($hash);
+        }
+
         return Inertia::render('Workflows/CreateBookmark/Step2', [
             'stepDetails' => $this->getStepDetails(),
             'activeStep' => intval($request->step),
+            'bookmarkCollection' => $collection,
         ]);
     }
 
@@ -105,10 +114,13 @@ class BookmarksController extends Controller
             ]);
         }
 
+        $collection = BookmarkCollection::byHash($request->bookmarkCollection);
+
         return Inertia::render('Workflows/CreateBookmark/Step4', [
             'stepDetails' => $this->getStepDetails(),
             'activeStep' => intval($request->step),
-            'bookmarkCollection' => $request->bookmarkCollection,
+            'rationale' => $collection->meta_info?->rationale,
+            'bookmarkCollection' => $collection->hash,
         ]);
     }
 

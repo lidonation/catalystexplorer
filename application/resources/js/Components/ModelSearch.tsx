@@ -186,7 +186,7 @@ export default function ModelSearch({
                                                             {label}:
                                                         </span>
                                                         <span
-                                                            className={`font-medium ${
+                                                            className={`${
                                                                 index === 0
                                                                     ? 'text-success'
                                                                     : index ===
