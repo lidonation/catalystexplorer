@@ -88,63 +88,6 @@ export const BookmarkProvider: React.FC<{
             },
         );
     };
-    // useEffect(() => {
-    //     if (queue.length === 0) return;
-    //     setProgress({ total: queue.length, completed: 0 });
-
-    //     const processQueue = async () => {
-    //         for (const action of queue) {
-    //             setStatusMessages((msgs) => [
-    //                 ...msgs,
-    //                 {
-    //                     model: action.model,
-    //                     hash: action.hash,
-    //                     type: action.action === 'add' ? 'saving' : 'removing',
-    //                 },
-    //             ]);
-
-    //             try {
-    //                 router.post(
-    //                     route('api.bookmarks.add'),
-    //                     {
-    //                         hash: action.hash,
-    //                         modelType: action.model,
-    //                         bookmarkCollection: bookmarkCollection,
-    //                     },
-
-    //                     { preserveScroll: true },
-    //                 );
-
-    //                 setStatusMessages((msgs) => [
-    //                     ...msgs,
-    //                     {
-    //                         model: action.model,
-    //                         hash: action.hash,
-    //                         type: action.action === 'add' ? 'saved' : 'removed',
-    //                     },
-    //                 ]);
-
-    //                 setTimeout(() => {
-    //                     setStatusMessages((msgs) =>
-    //                         msgs.filter(
-    //                             (m) =>
-    //                                 m.hash !== action.hash ||
-    //                                 m.type === 'saving' ||
-    //                                 m.type === 'removing',
-    //                         ),
-    //                     );
-    //                 }, 3000);
-    //             } catch {
-    //                 // Optionally handle errors
-    //             } finally {
-    //                 setProgress((p) => ({ ...p, completed: p.completed + 1 }));
-    //             }
-    //         }
-    //         setQueue([]);
-    //     };
-
-    //     processQueue();
-    // }, [queue]);
 
     return (
         <BookmarkContext.Provider
