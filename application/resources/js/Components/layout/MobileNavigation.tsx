@@ -4,14 +4,22 @@ import AppNavigation from './AppNavigation';
 import ThemeSwitcher from './ThemeSwitcher';
 import UserDetails from './UserDetails';
 import UserNavigation from './UserNavigation';
-import { usePage } from '@inertiajs/react';
+import { router, usePage } from '@inertiajs/react';
 import User = App.DataTransferObjects.UserData;
+import { useEffect, useState } from 'react';
 
 function MobileNavigation() {
     const { t } = useTranslation();
     const {auth} = usePage().props;
+    const [isOpen, setIsOpen] = useState(true);
+
+   useEffect(() => {
+    const handleFinish = () => setIsOpen(false);
+    return router.on('finish', handleFinish); 
+}, []);
 
     return (
+        isOpen && (
         <div className="fixed inset-0 top-16 flex">
             <DialogPanel
                 transition
@@ -32,7 +40,7 @@ function MobileNavigation() {
                 </aside>
             </DialogPanel>
         </div>
-    );
+    ));
 }
 
 export default MobileNavigation;

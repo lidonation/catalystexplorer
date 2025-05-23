@@ -24,6 +24,7 @@ function AppNavigation() {
     const [jormungandrOpen, setJormungandrOpen] = useState(false);
     const [numbersOpen, setNumbersOpen] = useState(false);
     const [moreOpen, setMoreOpen] = useState(false);
+    const isOnMyRoute = url.includes('/my/');
 
     const stripLanguagePrefix = (path?: string) => {
         if (!path) return '';
@@ -67,6 +68,7 @@ function AppNavigation() {
                     className={isActive ? 'text-primary-100' : 'text-dark'}
                 />
             ),
+            hideOnMyRoute: true,
         },
         {
             href: useLocalizedRoute('ideascaleProfiles.index'),
@@ -76,6 +78,7 @@ function AppNavigation() {
                     className={isActive ? 'text-primary-100' : 'text-dark'}
                 />
             ),
+            hideOnMyRoute: true,
         },
         {
             title: t('numbers'),
@@ -85,6 +88,7 @@ function AppNavigation() {
                 />
             ),
             hasDropdown: true,
+            hideOnMyRoute: true,
         },
         {
             title: t('jormungandr'),
@@ -94,6 +98,7 @@ function AppNavigation() {
                 />
             ),
             hasDropdown: true,
+            hideOnMyRoute: true,
         },
         {
             href: useLocalizedRoute('connections.index'),
@@ -103,6 +108,7 @@ function AppNavigation() {
                     className={isActive ? 'text-primary-100' : 'text-dark'}
                 />
             ),
+            hideOnMyRoute: true,
         },
         {
             href: useLocalizedRoute('communities.index'),
@@ -112,6 +118,7 @@ function AppNavigation() {
                     className={isActive ? 'text-primary-100' : 'text-dark'}
                 />
             ),
+            hideOnMyRoute: true,
         },
         {
             href: useLocalizedRoute('groups.index'),
@@ -121,6 +128,7 @@ function AppNavigation() {
                     className={isActive ? 'text-primary-100' : 'text-dark'}
                 />
             ),
+            hideOnMyRoute: true,
         },
         {
             href: useLocalizedRoute('milestones.index'),
@@ -130,6 +138,7 @@ function AppNavigation() {
                     className={isActive ? 'text-primary-100' : 'text-dark'}
                 />
             ),
+            hideOnMyRoute: true,
         },
         {
             href: useLocalizedRoute('dreps.index'),
@@ -139,6 +148,7 @@ function AppNavigation() {
                     className={isActive ? 'text-primary-100' : 'text-dark'}
                 />
             ),
+            hideOnMyRoute: true,
         },
         {
             href: useLocalizedRoute('bookmarks.index'),
@@ -148,6 +158,7 @@ function AppNavigation() {
                     className={isActive ? 'text-primary-100' : 'text-dark'}
                 />
             ),
+            hideOnMyRoute: true,
         },
         {
             href: useLocalizedRoute('completedProjectsNfts.index'),
@@ -158,6 +169,7 @@ function AppNavigation() {
                 />
             ),
             hasIndicator: true,
+            hideOnMyRoute: true,
         },
         {
             title: t('More'),
@@ -167,13 +179,21 @@ function AppNavigation() {
                 />
             ),
             hasDropdown: true,
+            hideOnMyRoute: true,
         },
     ];
 
+    const filteredNavItems = navItems.filter((item) => {
+        if (isOnMyRoute && item.hideOnMyRoute) {
+            return false;
+        }
+        return true;
+    });
+
     return (
-        <nav className="flex flex-col justify-between" role="menu">
+        <nav className="flex flex-col justify-between h-auto" role="menu">
             <ul className="menu-gap-y flex flex-1 flex-col px-4" role="menu">
-                {navItems.map(
+                {filteredNavItems.map(
                     ({ href, title, icon, hasDropdown, hasIndicator }) => {
                         const normalizedHref = href
                             ? stripLanguagePrefix(href)
@@ -208,7 +228,7 @@ function AppNavigation() {
                                 <li key={title}>
                                     <div>
                                         <div
-                                            className="text-dark hover:bg-background-lighter flex cursor-pointer items-center justify-between px-3 py-1 text-sm transition-colors"
+                                            className={`text-dark hover:bg-background-lighter flex cursor-pointer items-center justify-between px-3 py-1 text-sm transition-colors`}
                                             onClick={() =>
                                                 setJormungandrOpen(
                                                     !jormungandrOpen,

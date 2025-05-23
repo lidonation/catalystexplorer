@@ -12,6 +12,7 @@ import SearchControls from "@/Components/atoms/SearchControls";
 import TransactionSortOptions from "@/lib/TransactionSortOptions";
 import Title from "@/Components/atoms/Title";
 import Paragraph from "@/Components/atoms/Paragraph";
+import { FiltersProvider } from "@/Context/FiltersContext";
 
 interface MyTransactionProps {
     transactions: PaginatedData<TransactionData[]>;
@@ -19,18 +20,17 @@ interface MyTransactionProps {
     filters: SearchParams;
 }
 
-const MyTransaction: React.FC<MyTransactionProps> = ({transactions}) => {
+const MyTransaction: React.FC<MyTransactionProps> = ({transactions, filters}) => {
     const { t } = useTranslation();
     const [showFilters, setShowFilters] = useState(false);
     const hasTransactions = transactions?.data?.length > 0;
 
     return (
-        <MyLayout>
+        <FiltersProvider defaultFilters={filters}>
             <Head title="My Transactions" />
-
-            <div className="py-6">
+            <div className="py-8">
                 <div className="mx-auto max-w-10xl sm:px-6 lg:px-8">
-                    <div className="bg-background overflow-hidden p-6 shadow-xl sm:rounded-lg">
+                    <div className="bg-background overflow-hidden p-6 shadow-md sm:rounded-lg">
                         <div className="border-b border-background-lighter w-full mb-4">
                             <Title level="4" className="mb-4 font-bold">
                                 {t('transactions.title')}
@@ -63,7 +63,7 @@ const MyTransaction: React.FC<MyTransactionProps> = ({transactions}) => {
                     </div>
                 </div>
             </div>
-        </MyLayout>
+        </FiltersProvider>
     );
 }
 
