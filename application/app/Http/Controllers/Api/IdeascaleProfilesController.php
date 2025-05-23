@@ -4,17 +4,17 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Api;
 
-use Illuminate\Http\Request;
-use App\Models\IdeascaleProfile;
-use Laravel\Nova\Support\Fluent;
+use App\DataTransferObjects\IdeascaleProfileData;
 use App\Http\Controllers\Controller;
-use Symfony\Component\HttpFoundation\Response;
-use Illuminate\Pagination\LengthAwarePaginator;
 use App\Http\Resources\IdeascaleProfileResource;
+use App\Models\IdeascaleProfile;
 use App\Repositories\IdeascaleProfileRepository;
 use Illuminate\Contracts\Foundation\Application;
-use App\DataTransferObjects\IdeascaleProfileData;
 use Illuminate\Contracts\Routing\ResponseFactory;
+use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Laravel\Nova\Support\Fluent;
+use Symfony\Component\HttpFoundation\Response;
 
 class IdeascaleProfilesController extends Controller
 {
@@ -23,6 +23,7 @@ class IdeascaleProfilesController extends Controller
         $ideascale = IdeascaleProfile::find($ideascaleId);
 
         if (is_null($ideascale)) {
+
             return response([
                 'errors' => 'Ideascale Profiles not found',
             ], Response::HTTP_NOT_FOUND);
@@ -45,15 +46,15 @@ class IdeascaleProfilesController extends Controller
 
         $requestValues = request(['ids', 'hashes']);
 
-        $ids =  null;
+        $ids = null;
         $hashes = null;
 
-        if (!empty($requestValues['hashes'])) {
+        if (! empty($requestValues['hashes'])) {
             $hashes = implode(',', $requestValues['hashes'] ?? []);
             $args['filter'] = "hash IN [{$hashes}]";
         }
 
-        if (!empty($requestValues['ids'])) {
+        if (! empty($requestValues['ids'])) {
             $ids = implode(',', $requestValues['ids'] ?? []);
             $args['filter'] = "id IN [{$ids}]";
         }
@@ -61,7 +62,6 @@ class IdeascaleProfilesController extends Controller
         $page = request('page') ?? 1;
         $args['offset'] = ($page - 1) * $per_page;
         $args['limit'] = $per_page;
-
 
         $profles = app(IdeascaleProfileRepository::class);
 

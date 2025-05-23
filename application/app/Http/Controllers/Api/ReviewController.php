@@ -4,17 +4,12 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Api;
 
-use App\Models\Review;
-use Illuminate\Http\Response;
-use Illuminate\Support\Fluent;
-use App\Http\Controllers\Controller;
-use App\Http\Resources\ReviewResource;
-use App\Repositories\ReviewRepository;
 use App\DataTransferObjects\ReviewData;
+use App\Http\Controllers\Controller;
+use App\Repositories\ReviewRepository;
+use Illuminate\Http\Response;
 use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Contracts\Foundation\Application;
-use Illuminate\Contracts\Routing\ResponseFactory;
-use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Support\Fluent;
 
 class ReviewController extends Controller
 {
@@ -32,15 +27,15 @@ class ReviewController extends Controller
 
         $requestValues = request(['ids', 'hashes']);
 
-        $ids =  null;
+        $ids = null;
         $hashes = null;
 
-        if (!empty($requestValues['hashes'])) {
+        if (! empty($requestValues['hashes'])) {
             $hashes = implode(',', $requestValues['hashes'] ?? []);
             $args['filter'] = "hash IN [{$hashes}]";
         }
 
-        if (!empty($requestValues['ids'])) {
+        if (! empty($requestValues['ids'])) {
             $ids = implode(',', $requestValues['ids'] ?? []);
             $args['filter'] = "id IN [{$ids}]";
         }
@@ -48,7 +43,6 @@ class ReviewController extends Controller
         $page = request('page') ?? 1;
         $args['offset'] = ($page - 1) * $per_page;
         $args['limit'] = $per_page;
-
 
         $reviews = app(ReviewRepository::class);
 

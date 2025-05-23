@@ -7,15 +7,15 @@ namespace App\Models;
 use App\Casts\HashId;
 use App\Traits\HasAuthor;
 use App\Traits\HasMetaData;
+use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\Comments\Models\Concerns\HasComments;
-use Illuminate\Database\Eloquent\Casts\Attribute;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class BookmarkCollection extends Model
 {
-    use SoftDeletes, HasMetaData, HasAuthor, HasComments;
+    use HasAuthor, HasComments, HasMetaData, SoftDeletes;
 
     protected $withCount = [
         'items',
@@ -24,7 +24,7 @@ class BookmarkCollection extends Model
         'groups',
         'reviews',
         'communities',
-        'comments'
+        'comments',
     ];
 
     protected $appends = ['types_count', 'hash'];
@@ -115,7 +115,7 @@ class BookmarkCollection extends Model
     */
     public function commentUrl(): string
     {
-        return  '';
+        return '';
     }
 
     public function casts(): array

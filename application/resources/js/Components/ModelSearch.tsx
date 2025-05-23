@@ -11,8 +11,18 @@ import Card from './Card';
 import CloseIcon from './svgs/CloseIcon';
 import SearchLensIcon from './svgs/SearchLensIcon';
 
-const modelTypes = {
-    'proposals': {
+type StatField = {
+    label: string;
+    value: string;
+};
+
+type ModelType = {
+    labelField: string;
+    statsField: StatField[];
+};
+
+const modelTypes: Record<string, ModelType> = {
+    proposals: {
         labelField: 'title',
         statsField: [
             { label: 'Status', value: 'funding_status' },
@@ -33,7 +43,7 @@ const modelTypes = {
             { label: 'Total Awarded (Usd)', value: 'amount_awarded_usd' },
         ],
     },
-    'groups': {
+    groups: {
         labelField: 'name',
         statsField: [
             { label: 'Funded Proposals', value: 'proposals_funded' },
@@ -42,11 +52,11 @@ const modelTypes = {
             { label: 'Total Awarded (Usd)', value: 'amount_awarded_usd' },
         ],
     },
-    'communities': {
+    communities: {
         labelField: 'title',
         statsField: [],
     },
-    'reviews': {
+    reviews: {
         labelField: 'proposal.title',
         statsField: [
             { label: 'Rating', value: 'rating' },
@@ -62,12 +72,7 @@ const modelTypes = {
 type ModelSearchProps = {
     className?: string;
     placeholder: string;
-    domain:
-        | 'proposals'
-        | 'reviews'
-        | 'groups'
-        | 'communities'
-        | 'ideascale-profiles';
+    domain:string;
 };
 
 export default function ModelSearch({
@@ -79,12 +84,13 @@ export default function ModelSearch({
     const { t } = useTranslation();
     const { searchTerm, setSearchTerm, options } =
         useSearchOptions<any>(domain);
-        
+
     const model = modelTypes[domain];
 
-    const { selectedItemsByType, toggleSelection, statusMessages, progress } = useBookmarkContext();
+    const { selectedItemsByType, toggleSelection, statusMessages, progress } =
+        useBookmarkContext();
 
-    const selectedHashes = selectedItemsByType[domain] || []; 
+    const selectedHashes = selectedItemsByType[domain] || [];
 
     useEscapeKey(() => setSearchTerm(''));
 
@@ -139,15 +145,8 @@ export default function ModelSearch({
                         selectedHashes,
                         t: formatStat(result, model.labelField),
                     });
-                    
-                    const isSelected = selectedHashes.includes(hash);
 
-                    const statusClasses = {
-                        saving: 'border-yellow-500 animate-pulse',
-                        removing: 'border-red-500 animate-pulse',
-                        saved: 'border-green-500',
-                        removed: 'border-gray-400',
-                    };
+                    const isSelected = selectedHashes.includes(hash);
 
                     return (
                         <Card
@@ -156,7 +155,7 @@ export default function ModelSearch({
                                 isSelected
                                     ? 'border-primary border-2'
                                     : 'border-gray-light'
-                            } ${status ? statusClasses[status] : ''}`}
+                            }`}
                         >
                             <label htmlFor={hash} className="block px-2">
                                 <div className="flex items-center gap-3">
@@ -178,7 +177,7 @@ export default function ModelSearch({
 
                                         <div className="flex flex-wrap gap-4 pt-1">
                                             {model.statsField.map(
-                                                ({ label, value }, index) => (
+                                                ({ label, value }: any, index: number) => (
                                                     <div
                                                         key={value}
                                                         className="flex items-center gap-2 text-sm"

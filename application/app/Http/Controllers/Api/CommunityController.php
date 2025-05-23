@@ -4,17 +4,14 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Api;
 
-use App\Models\Community;
-use Illuminate\Http\Response;
-use Illuminate\Support\Fluent;
+use App\DataTransferObjects\CommunityData;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\CommunityResource;
+use App\Models\Community;
 use App\Repositories\CommunityRepository;
-use App\DataTransferObjects\CommunityData;
+use Illuminate\Http\Response;
 use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Contracts\Foundation\Application;
-use Illuminate\Contracts\Routing\ResponseFactory;
-use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Support\Fluent;
 
 class CommunityController extends Controller
 {
@@ -30,6 +27,7 @@ class CommunityController extends Controller
             return new CommunityResource($community);
         }
     }
+
     public function communities(): array|Response
     {
         $per_page = request('per_page', 24);
@@ -44,15 +42,15 @@ class CommunityController extends Controller
 
         $requestValues = request(['ids', 'hashes']);
 
-        $ids =  null;
+        $ids = null;
         $hashes = null;
 
-        if (!empty($requestValues['hashes'])) {
+        if (! empty($requestValues['hashes'])) {
             $hashes = implode(',', $requestValues['hashes'] ?? []);
             $args['filter'] = "hash IN [{$hashes}]";
         }
 
-        if (!empty($requestValues['ids'])) {
+        if (! empty($requestValues['ids'])) {
             $ids = implode(',', $requestValues['ids'] ?? []);
             $args['filter'] = "id IN [{$ids}]";
         }
@@ -60,7 +58,6 @@ class CommunityController extends Controller
         $page = request('page') ?? 1;
         $args['offset'] = ($page - 1) * $per_page;
         $args['limit'] = $per_page;
-
 
         $communities = app(CommunityRepository::class);
 

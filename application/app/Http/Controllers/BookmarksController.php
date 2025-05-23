@@ -4,21 +4,18 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use App\Models\Meta;
-use Inertia\Inertia;
-use Inertia\Response;
-use App\Enums\StatusEnum;
-use App\Models\BookmarkItem;
-use Illuminate\Http\Request;
-use App\Enums\BookmarkStatus;
-use App\Enums\QueryParamsEnum;
+use App\Actions\TransformIdsToHashes;
 use App\Enums\BookmarkableType;
+use App\Enums\BookmarkStatus;
+use App\Enums\StatusEnum;
 use App\Models\BookmarkCollection;
+use App\Models\BookmarkItem;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
-use App\Actions\TransformIdsToHashes;
-use Illuminate\Http\RedirectResponse;
-use App\DataTransferObjects\BookmarkCollectionData;
+use Inertia\Inertia;
+use Inertia\Response;
 
 class BookmarksController extends Controller
 {
@@ -81,11 +78,13 @@ class BookmarksController extends Controller
             ->groupBy('model_type')
             ->mapWithKeys(function ($items, $modelType) use ($transformer, $modelMap) {
                 $label = $modelMap[$modelType] ?? null;
-                if (!$label) return [];
+                if (! $label) {
+                    return [];
+                }
 
                 $modelClass = new $modelType;
                 $modelIds = $items->pluck('model_id');
-                $hashedItems = $transformer($modelIds->map(fn($id) => ['id' => $id]), $modelClass);
+                $hashedItems = $transformer($modelIds->map(fn ($id) => ['id' => $id]), $modelClass);
 
                 return [$label => $hashedItems->pluck('hash')->values()];
             });
@@ -109,7 +108,7 @@ class BookmarksController extends Controller
         return Inertia::render('Workflows/CreateBookmark/Step4', [
             'stepDetails' => $this->getStepDetails(),
             'activeStep' => intval($request->step),
-            'bookmarkCollection' => $request->bookmarkCollection
+            'bookmarkCollection' => $request->bookmarkCollection,
         ]);
     }
 
@@ -119,7 +118,6 @@ class BookmarksController extends Controller
             'stepDetails' => [],
         ]);
     }
-
 
     public function saveList(Request $request): RedirectResponse
     {
@@ -137,12 +135,11 @@ class BookmarksController extends Controller
             'title' => $validated['title'],
             'content' => $validated['content'] ?? null,
             'color' => $validated['color'] ?? '#a23b72',
-            'allow_comments' => !!$validated['comments_enabled'] ?? false,
+            'allow_comments' => (bool) $validated['comments_enabled'] ?? false,
             'visibility' => $validated['visibility'],
             'status' => $validated['status'] ?? StatusEnum::draft()->value,
             'type' => BookmarkCollection::class,
         ]);
-
 
         return to_route('workflows.bookmarks.index', [
             'step' => 3,
@@ -150,12 +147,11 @@ class BookmarksController extends Controller
         ]);
     }
 
-
     public function addBookmarkItem(BookmarkCollection $bookmarkCollection, Request $request)
     {
         $validated = $request->validate([
             'modelType' => ['required', 'string'],
-            'hash' =>  ['required', 'string'],
+            'hash' => ['required', 'string'],
         ]);
 
         $bookmarkableType = BookmarkableType::tryFrom($validated['modelType'])->getModelClass();
@@ -201,9 +197,9 @@ class BookmarksController extends Controller
             ->where('model_type', $bookmarkableType)
             ->first();
 
-        if (!$bookmark) {
+        if (! $bookmark) {
             return back()->withErrors([
-                'message' => "Bookmark does not exist.",
+                'message' => 'Bookmark does not exist.',
             ]);
         }
 
@@ -211,7 +207,6 @@ class BookmarksController extends Controller
 
         return back()->with('success', 'Bookmark removed.');
     }
-
 
     public function saveRationales(BookmarkCollection $bookmarkCollection, Request $request): RedirectResponse
     {
@@ -227,7 +222,6 @@ class BookmarksController extends Controller
 
         return to_route('workflows.bookmarks.success');
     }
-
 
     public function getStepDetails(): Collection
     {

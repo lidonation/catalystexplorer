@@ -48,9 +48,6 @@ const BookmarkModelSearch: React.FC<BookmarkModelSearchProps> = ({
                         className=""
                         placeholder={`${type == 'reviews' ? 'Search for reviews via proposal title' : `Search for ${type} to add`}`}
                         domain={type}
-                        handleSelect={function (hash: string): void {
-                            throw new Error('Function not implemented.');
-                        }}
                     />
                 </TabsContent>
             ))}
