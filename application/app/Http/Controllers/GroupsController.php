@@ -256,7 +256,7 @@ class GroupsController extends Controller
             ? (int) $this->queryParams[ProposalSearchParams::LIMIT()->value]
             : 36;
 
-        $args['offset'] = ($page - 1) * $limit;
+        $args['offset'] = 2;
         $args['limit'] = $limit;
 
         $groups = app(GroupRepository::class);

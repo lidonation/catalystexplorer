@@ -330,6 +330,18 @@
             "verification": {
                 "title": "Catalyst Explorer Wallet Verification"
             }
+        },
+        "bookmarks": {
+            "intro": "Before you start, let’s set up your Bookmark List. A bookmark list is a personalized collection of saved items, allowing you to easily organize, access, and manage content that matters to you. Ready to begin?\n\n*In the next steps, you’ll name your list, add your list, and explain your rationale for selecting them.*",
+            "details": "Details",
+            "listDetail": "List Detail",
+            "listDetailInfo": "Give your Voting List a name and a short description. This helps others understand what your list is about",
+            "listItems": "Proposals",
+            "listItemsInfo": "Now, let’s add related items to your Bookmark List. You can search for existing proposals and select the ones that align.",
+            "rationale": "Rationale",
+            "rationaleInfo": "Why did you select these items? Providing a rationale helps others understand your choices and makes your list more credible.",
+            "bookmarkCreated": "Your Bookmark List has been created!",
+            "viewList": "View List"
         }
     },
     "error404": {
@@ -1062,7 +1074,7 @@
         "searchBar": {
             "placeholder": "Search transaction hash, epoch, block"
         },
-        "wallet" :{
+        "wallet": {
             "title": "Wallet Details",
             "wallet": "Wallet",
             "stakeKey": "Stake Key",
