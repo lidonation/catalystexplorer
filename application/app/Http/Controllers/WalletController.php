@@ -30,11 +30,15 @@ class WalletController extends Controller
     {
 
         $walletStats = $this->getWalletStats($stakeKey ?? '');
+        $transaction = Transaction::where('json_metadata->voter_delegations->[0]->catId', $catId)
+            ->first();
         $transactions = Transaction::where('stake_key', $stakeKey)
-            ->orWhere('json_metadata->stake_key', $stakeKey);
+            ->orWhere('json_metadata->stake_key', $stakeKey)
+            ->orWhere('json_metadata->voter_delegations->[0]->catId', $catId);
 
         $request->merge([
             TransactionSearchParams::STAKE_KEY()->value => $stakeKey ?? '',
+            TransactionSearchParams::CAT_ID()->value => $catId ?? '',
         ]);
 
         $this->getProps($request);
@@ -47,7 +51,7 @@ class WalletController extends Controller
             'walletTransactions' => TransactionData::collect(
                 $transactions->paginate(11, ['*'], 'p', request()->query('p', 1))
             ),
-            'stakeKey' => $stakeKey,
+            'transaction' => $transaction,
             'walletStats' => $walletStats,
         ]);
     }
@@ -59,6 +63,7 @@ class WalletController extends Controller
             TransactionSearchParams::PAGE()->value => 'int|nullable',
             TransactionSearchParams::LIMIT()->value => 'int|nullable',
             TransactionSearchParams::STAKE_KEY()->value => 'string|nullable',
+            TransactionSearchParams::CAT_ID()->value => 'string|nullable',
         ]);
     }
 
@@ -68,6 +73,8 @@ class WalletController extends Controller
 
         if (! empty($this->queryParams[TransactionSearchParams::STAKE_KEY()->value])) {
             $filters[] = "stake_address ='{$this->queryParams[TransactionSearchParams::STAKE_KEY()->value]}'";
+        } elseif (! empty($this->queryParams[TransactionSearchParams::CAT_ID()->value])) {
+            $filters[] = "caster ='{$this->queryParams[TransactionSearchParams::CAT_ID()->value]}'";
         }
 
         return $filters;
