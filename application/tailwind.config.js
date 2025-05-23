@@ -68,6 +68,7 @@ export default {
                 'accent-blue': 'var(--bg-accent-color)',
                 'dark-persist': 'var(--content-primary-color)',
                 'accent-secondary': 'var(--cx-accent-secondary)',
+                'light-blue': 'var(--cx-light-blue)',
                 error: 'var(--bg-error-primary-color)',
                 'error-light': 'var(--content-error-light-border)',
                 success: 'var(--success-gradient-color-2)',
@@ -88,6 +89,8 @@ export default {
                     'var(--cx-background-gradient-1-light)',
                 'background-button-gradient-color-2':
                     'var(--cx-background-gradient-2-light)',
+                'background-dashboard-menu': 
+                    'var(--cx-background-dashboard-menu)',    
                 // border: 'var(--cx-border-color)',
                 'border-chip': 'var(--cx-border-chip-color)',
                 'border-secondary': 'var(--cx-border-secondary-color)',
