@@ -24,7 +24,7 @@ interface ModalLayoutProps {
 
 interface InertiaModalProps {
     _inertiaui_modal: {
-        baseUrl?: string;
+       baseUrl?: string;
     }
 }
 
