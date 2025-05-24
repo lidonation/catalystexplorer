@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 // @ts-ignore
 import { HeadlessModal } from '@inertiaui/modal-react';
-import { router } from '@inertiajs/react';
+import { router, usePage } from '@inertiajs/react';
 import { X } from 'lucide-react';
 import Button from '@/Components/atoms/Button';
 
@@ -22,6 +22,12 @@ interface ModalLayoutProps {
     name?: string;
 }
 
+interface InertiaModalProps {
+    _inertiaui_modal: {
+        baseUrl?: string;
+    }
+}
+
 const ModalLayout: React.FC<ModalLayoutProps> = ({
     children,
     slideover = true,
@@ -32,13 +38,13 @@ const ModalLayout: React.FC<ModalLayoutProps> = ({
     panelClasses,
     position = 'right',
     showProgress = false,
-    navigate = true,
+    navigate = false,
     onModalClosed,
     onModalOpened,
     name,
 }) => {
     const modalRef = useRef<{ close: () => void }>(null);
-    const wasOpen = useRef(false);
+    const {_inertiaui_modal}= usePage().props as any;
 
     useEffect(() => {
         onModalOpened?.();
@@ -57,10 +63,6 @@ const ModalLayout: React.FC<ModalLayoutProps> = ({
         };
     }, [onModalOpened]);
 
-    const handleButtonClose = () => {
-        modalRef.current?.close();
-    };
-
     return (
         <HeadlessModal
             ref={modalRef}
@@ -68,10 +70,17 @@ const ModalLayout: React.FC<ModalLayoutProps> = ({
             navigate={navigate}
         >
             {({ close, isOpen, config, afterLeave }: { close: () => void; isOpen: boolean; config: any; afterLeave: () => void }) => {
-                // Helper function to handle modal closing
-                const handleClose = () => {
-                    close();
-                    afterLeave();
+
+                 const handleClose = () => {
+                    if (_inertiaui_modal?.baseUrl && navigate) {
+                        close();
+                        afterLeave();
+                        router.visit(_inertiaui_modal.baseUrl);
+                    } else {
+                        close();
+                        afterLeave();
+                    }
+                    
                     onModalClosed?.();
                 };
 
