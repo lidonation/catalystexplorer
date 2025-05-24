@@ -8,17 +8,14 @@ interface ModalNavLinkProps {
     className?: string;
     title?: string;
     ariaLabel?: string;
-    active?: boolean;
+    active?: string;
     prefetch?: boolean;
     async?: boolean;
-    preserveScroll?: boolean;
-    preserveState?: boolean;
-    only?: string[];
+    preserveScroll?: string;
+    preserveState?: string;
     data?: Record<string, any>;
     method?: 'get' | 'post' | 'put' | 'patch' | 'delete';
-    replace?: boolean;
-    onFinish?: () => void;
-    onCancel?: () => void;
+    replace?: string;
     //These will affect the Modal
     closeButton?: boolean;
     closeExplicitly?: boolean;
@@ -34,17 +31,14 @@ const ModalNavLink: React.FC<ModalNavLinkProps> = ({
     className = '',
     title,
     ariaLabel,
-    active = false,
+    active = 'false',
     prefetch = false,
     async = false,
-    preserveScroll = false,
-    preserveState = false,
-    only,
+    preserveScroll,
+    preserveState,
     data,
     method = 'get',
-    replace = false,
-    onFinish,
-    onCancel,
+    replace = 'false',
     closeButton = false,
     closeExplicitly = false,
     maxWidth = "2xl",
@@ -59,14 +53,9 @@ const ModalNavLink: React.FC<ModalNavLinkProps> = ({
         'aria-label': ariaLabel,
         'aria-current': active ? 'page' : undefined,
         prefetch,
-        preserveScroll,
-        preserveState,
-        only,
         data,
         method,
-        replace,
-        onFinish,
-        onCancel,
+        replace
     };
 
     return (
@@ -82,7 +71,6 @@ const ModalNavLink: React.FC<ModalNavLinkProps> = ({
             paddingClasses={paddingClasses}
             panelClasses={`bg-background-lighter relative mt-16 lg:my-4 min-h-screen rounded-lg ${panelClasses || ''}`}
             position={position}
-            showProgress={true}
             prefetch={'false'}
         >
             {({ loading }: { loading: boolean }) =>

@@ -1,9 +1,9 @@
-import React, { useEffect, useRef } from 'react'
-import Button from '@/Components/atoms/Button';
-import { router } from '@inertiajs/react';
+import React, { useEffect, useRef } from 'react';
 // @ts-ignore
-import { Modal } from '@inertiaui/modal-react';
+import { HeadlessModal } from '@inertiaui/modal-react';
+import { router } from '@inertiajs/react';
 import { X } from 'lucide-react';
+import Button from '@/Components/atoms/Button';
 
 interface ModalLayoutProps {
     children: React.ReactNode;
@@ -17,9 +17,9 @@ interface ModalLayoutProps {
     position?: string;
     showProgress?: boolean;
     navigate?: boolean;
-    name?: string | null;
     onModalClosed?: () => void;
     onModalOpened?: () => void;
+    name?: string;
 }
 
 const ModalLayout: React.FC<ModalLayoutProps> = ({
@@ -31,13 +31,14 @@ const ModalLayout: React.FC<ModalLayoutProps> = ({
     paddingClasses = 'p-4 sm:p-6',
     panelClasses,
     position = 'right',
-    name = null,
     showProgress = false,
     navigate = true,
     onModalClosed,
     onModalOpened,
+    name,
 }) => {
     const modalRef = useRef<{ close: () => void }>(null);
+    const wasOpen = useRef(false);
 
     useEffect(() => {
         onModalOpened?.();
@@ -60,39 +61,58 @@ const ModalLayout: React.FC<ModalLayoutProps> = ({
         modalRef.current?.close();
     };
 
-    const setupOnFinishListener = () => {
-        if (onModalClosed) {
-            const unregisterListener = router.on('finish', () => {
-                onModalClosed();
-                unregisterListener();
-            });
-        }
-    };
-
     return (
-        <Modal
+        <HeadlessModal
             ref={modalRef}
-            closeButton={closeButton}
-            paddingClasses={paddingClasses}
-            position={position}
-            showProgress={showProgress}
-            closeExplicitly={closeExplicitly}
-            navigate={navigate}
             name={name}
-            panelClasses={`bg-background-lighter  min-h-screen rounded-lg ${panelClasses}`}
-            slideover={slideover}
-            className={`bg-background-lighter relative ${className}`}
-            onClose={setupOnFinishListener}
+            navigate={navigate}
         >
-            <Button
-                onClick={handleButtonClose}
-                ariaLabel="Close"
-                className="bg-background hover:bg-background-lighter z-10 mb-4 !rounded-full p-2 shadow-md md:absolute md:-top-4 md:-left-4 md:mb-0"
-            >
-                <X className="text-content h-5 w-5" />
-            </Button>
-            <div className="h-full">{children}</div>
-        </Modal>
+            {({ close, isOpen, config, afterLeave }: { close: () => void; isOpen: boolean; config: any; afterLeave: () => void }) => {
+                // Helper function to handle modal closing
+                const handleClose = () => {
+                    close();
+                    afterLeave();
+                    onModalClosed?.();
+                };
+
+                return (
+                    <div
+                        className={`fixed inset-0 z-50 overflow-hidden ${isOpen ? 'block' : 'hidden'}`}
+                    >
+                        {/* Overlay */}
+                         <div 
+                            className="bg-dark fixed inset-0 opacity-50" 
+                            onClick={handleClose}
+                        ></div>
+
+                        {/* Modal container */}
+                        <div className={`fixed inset-y-0 ${position === 'right' ? 'right-0' : 'left-0'} max-w-full`}>
+                            <div
+                                className={`relative flex flex-col w-[90vw] h-[95vh] ${slideover ? 'transform transition ease-in-out duration-500' : ''} 
+                                ${isOpen ? 'translate-x-0' : position === 'right' ? 'translate-x-full' : '-translate-x-full'}
+                                ${paddingClasses} ${panelClasses || 'bg-background my-4 rounded-lg'} ${className}`}
+                            >
+                                {showProgress && (
+                                    <div className="absolute top-0 left-0 w-full h-1 bg-muted">
+                                        <div className="bg-primary h-full w-1/3 transition-all duration-300"></div>
+                                    </div>
+                                )}
+
+                                <Button
+                                    onClick={handleClose}
+                                    ariaLabel="Close"
+                                    className="bg-background shadow-md !rounded-full p-2 z-10 mb-4 hover:bg-background-lighter mb-0 absolute -top-4 -left-4"
+                                >
+                                    <X className="w-5 h-5 text-content" />
+                                </Button>
+
+                                <div className="overflow-y-auto h-full">{children}</div>
+                            </div>
+                        </div>
+                    </div>
+                );
+            }}
+        </HeadlessModal>
     );
 };
 
