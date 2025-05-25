@@ -42,16 +42,17 @@ const Index: React.FC<BookmarkCollectionListProps> = ({
 
                 <section className="container">
                     <SearchControls
+                        withFilters={false}
                         onFiltersToggle={setShowFilters}
                         sortOptions={[{}]}
-                        searchPlaceholder={t('searchBar.placeholder')}
+                        searchPlaceholder={t('bookmarks.searchPlaceholder')}
                     />
                 </section>
 
                 <section className="container py-8">
                     <WhenVisible
                         fallback={<BookmarkCollectionListLoader />}
-                        data="groups"
+                        data="bookmarkCollections"
                     >
                         <BookmarkCollectionList
                             bookmarkCollections={
@@ -62,7 +63,9 @@ const Index: React.FC<BookmarkCollectionListProps> = ({
                 </section>
 
                 <section className="container">
-                    {bookmarkCollections && <Paginator pagination={bookmarkCollections} />}
+                    {bookmarkCollections && (
+                        <Paginator pagination={bookmarkCollections} />
+                    )}
                 </section>
             </FiltersProvider>
         </>

@@ -5,26 +5,140 @@ declare(strict_types=1);
 namespace App\Http\Controllers;
 
 use App\Actions\TransformIdsToHashes;
+use App\DataTransferObjects\BookmarkCollectionData;
 use App\Enums\BookmarkableType;
 use App\Enums\BookmarkStatus;
+use App\Enums\ProposalSearchParams;
+use App\Enums\QueryParamsEnum;
 use App\Enums\StatusEnum;
 use App\Models\BookmarkCollection;
 use App\Models\BookmarkItem;
+use App\Repositories\BookmarkCollectionRepository;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Fluent;
 use Inertia\Inertia;
 use Inertia\Response;
+use Laravel\Scout\Builder;
 
 class BookmarksController extends Controller
 {
+    protected int $currentPage = 1;
+
+    protected array $queryParams = [];
+
+    protected int $perPage = 24;
+
+    protected ?string $sortBy = 'updated_at';
+
+    protected ?string $sortOrder = 'desc';
+
+    protected ?string $search = null;
+
+    protected array $filters = [];
+
+    protected int $limit = 24;
+
+    protected Builder $searchBuilder;
+
     /**
      * Display the bookmarks index page.
      */
     public function index(Request $request): Response
     {
-        return Inertia::render('Bookmarks/Index');
+        $this->setFilters($request);
+
+        $props = [
+            'bookmarkCollections' => $this->query(),
+            'search' => $this->search,
+            'sortBy' => $this->sortBy,
+            'sortOrder' => $this->sortOrder,
+            'sort' => "{$this->sortBy}:{$this->sortOrder}",
+            'filters' => $this->filters,
+            'queryParams' => $this->queryParams,
+        ];
+
+        return Inertia::render('Bookmarks/Index', $props);
+    }
+
+    protected function setFilters(Request $request): void
+    {
+        $this->limit = (int) $request->input(QueryParamsEnum::LIMIT(), 24);
+        $this->currentPage = (int) $request->input(QueryParamsEnum::PAGE(), 1);
+        $this->search = $request->input(QueryParamsEnum::QUERY(), null);
+
+        $this->queryParams = $request->validate([
+            ProposalSearchParams::QUERY()->value => 'string|nullable',
+            ProposalSearchParams::PAGE()->value => 'integer|nullable',
+            ProposalSearchParams::LIMIT()->value => 'integer|nullable',
+            ProposalSearchParams::SORTS()->value => 'string|nullable',
+        ]);
+
+        $this->filters = $this->queryParams;
+
+        $sort = collect(explode(':', $request->input(ProposalSearchParams::SORTS()->value, '')))->filter();
+
+        if (! $sort->isEmpty()) {
+            $this->sortBy = $sort->first();
+            $this->sortOrder = $sort->last();
+        }
+    }
+
+    public function query($returnBuilder = false, $attrs = null, $filters = [])
+    {
+        $args = [
+            // 'filter' => ,
+        ];
+
+        if ((bool) $this->sortBy && (bool) $this->sortOrder) {
+            $args['sort'] = ["$this->sortBy:$this->sortOrder"];
+        }
+
+        $page = isset($this->currentPage)
+            ? (int) $this->currentPage
+            : 1;
+
+        $limit = isset($this->limit)
+            ? (int) $this->limit
+            : 64;
+
+        $args['offset'] = ($page - 1) * $limit;
+        $args['limit'] = $limit;
+
+        $reviews = app(BookmarkCollectionRepository::class);
+
+        $builder = $reviews->search(
+            $this->search ?? '',
+            $args
+        );
+
+        if ($returnBuilder) {
+            return $builder;
+        }
+
+        $response = new Fluent($builder->raw());
+        $items = collect($response->hits);
+
+        $pagination = new LengthAwarePaginator(
+            BookmarkCollectionData::collect(
+                (new TransformIdsToHashes)(
+                    collection: $items,
+                    model: new BookmarkCollection
+                )->toArray()
+            ),
+            $response->estimatedTotalHits,
+            $limit,
+            $page,
+            [
+                'pageName' => 'p',
+                'onEachSide' => 0,
+            ]
+        );
+
+        return $pagination->toArray();
     }
 
     public function handleStep(Request $request, $step)

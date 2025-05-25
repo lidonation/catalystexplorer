@@ -22,9 +22,10 @@ const BookmarkCollectionCard = ({
 
     const user = collection?.author;
 
-    const isAuthor = auth?.user.hash == user?.hash;
+    const isAuthor = auth?.user?.hash == user?.hash;
 
     const color = `bg-[${collection.color}]`;
+
     return (
         <Card className="relative flex w-full gap-1 lg:gap-3">
             <div className="flex flex-row items-center justify-between pb-2">
