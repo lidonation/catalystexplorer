@@ -254,9 +254,12 @@ class BookmarksController extends Controller
             'comments_enabled' => 'nullable|boolean',
             'color' => 'nullable|string|max:7',
             'status' => 'nullable|string',
+            'bookmarkCollection' => 'nullable|string',
         ]);
 
-        $bookmarkCollection = BookmarkCollection::create([
+        $existingCollection = BookmarkCollection::byHash($request->bookmarkCollection);
+
+        $bookmarkCollection = BookmarkCollection::updateOrCreate(['id' => $existingCollection?->id], [
             'user_id' => $request->user()->id,
             'title' => $validated['title'],
             'content' => $validated['content'] ?? null,
@@ -266,6 +269,8 @@ class BookmarksController extends Controller
             'status' => $validated['status'] ?? StatusEnum::draft()->value,
             'type' => BookmarkCollection::class,
         ]);
+
+        $bookmarkCollection->searchable();
 
         return to_route('workflows.bookmarks.index', [
             'step' => 3,
@@ -298,6 +303,8 @@ class BookmarksController extends Controller
             'content' => null,
             'action' => null,
         ]);
+
+        $bookmarkCollection->searchable();
     }
 
     public function removeBookmarkItem(BookmarkCollection $bookmarkCollection, Request $request)
@@ -331,6 +338,8 @@ class BookmarksController extends Controller
 
         $bookmark->delete();
 
+        $bookmarkCollection->searchable();
+
         return back()->with('success', 'Bookmark removed.');
     }
 
@@ -345,6 +354,8 @@ class BookmarksController extends Controller
         if ($bookmarkCollection && $bookmarkCollection->status === BookmarkStatus::DRAFT()->value) {
             $bookmarkCollection->update(['status' => BookmarkStatus::PUBLISHED()->value]);
         }
+
+        $bookmarkCollection->searchable();
 
         return to_route('workflows.bookmarks.success');
     }

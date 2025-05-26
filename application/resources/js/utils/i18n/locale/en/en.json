@@ -1160,6 +1160,20 @@
         "listTitle": "Discover Community Lists",
         "listSubtitle": "Browse and search curated bookmark lists shared by others.",
         "myBookmarks": "My Bookmarks",
-        "searchPlaceholder":"Search for list"
+        "searchPlaceholder": "Search for list",
+        "sort": {
+            "paymentsReceivedHighToLowADA": " Payments Received(ADA): High to Low",
+            "paymentsReceivedLowToHighADA": " Payments Received(ADA): Low to High",
+            "paymentsReceivedHighToLowUSD": " Payments Received(USD): High to Low",
+            "paymentsReceivedLowToHighUSD": " Payments Received(USD): Low to High",
+            "budgetHighToLowADA": "Budget(ADA): High to Low",
+            "budgetLowToHighADA": "Budget(ADA): Low to High",
+            "budgetHighToLowUSD": "Budget(USD): High to Low",
+            "budgetLowToHighUSD": "Budget(USD): Low to High",
+            "alphabeticallyAZ": "Alphabetically: A to Z",
+            "updatedAtASC": "Recently updated",
+            "itemsCountASC": "Items added: Low To High",
+            "itemsCountDESC": "Items added: High to Low"
+        }
     }
 }

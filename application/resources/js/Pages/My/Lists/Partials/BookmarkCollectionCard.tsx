@@ -113,7 +113,7 @@ const BookmarkCollectionCard = ({
             </div>
 
             <div
-                className={`absolute bottom-0 left-0 lg:h-1.5 h-1 w-full rounded-b-lg`}
+                className={`absolute bottom-0 left-0 h-1 w-full rounded-b-lg lg:h-1.5`}
                 style={{ backgroundColor: collection.color }}
             ></div>
         </Card>

@@ -68,11 +68,12 @@ class BookmarkCollection extends Model
     {
         return [
             'title',
-            'status',
             'updated_at',
             'items_count',
-            'proposals_amount_requested_USD',
-            'proposals_amount_awarded_ADA',
+            'amount_requested_USD',
+            'amount_received_ADA',
+            'amount_requested_ADA',
+            'amount_received_USD',
         ];
     }
 
@@ -145,7 +146,7 @@ class BookmarkCollection extends Model
         );
     }
 
-    public function amountAwarded(): Attribute
+    public function amountReceived(): Attribute
     {
         return Attribute::make(
             get: function () {
@@ -153,7 +154,7 @@ class BookmarkCollection extends Model
                     ->groupBy('currency')
                     ->map(function ($group, $currency) {
                         return [
-                            "amount_awarded_{$currency}" => $group->sum(fn ($p) => intval($p->amount_awarded ?? 0)),
+                            "amount_received_{$currency}" => $group->sum(fn ($p) => intval($p->amount_received ?? 0)),
                         ];
                     })
                     ->collapse()->toArray();
@@ -182,12 +183,13 @@ class BookmarkCollection extends Model
     public function toSearchableArray()
     {
 
-        return array_merge($this->load('comments')->toArray(), $this->amount_awarded, $this->amount_requested, [
+        return array_merge($this->load('comments')->toArray(), $this->amount_received, $this->amount_requested, [
             'proposals' => $this->proposals->pluck('model')->toArray(),
             'ideascale_profiles' => $this->ideascale_profiles->pluck('model')->toArray(),
             'reviews' => $this->reviews->pluck('model')->toArray(),
             'groups' => $this->groups->pluck('model')->toArray(),
             'communities' => $this->communities->pluck('model')->toArray(),
+            'rationale' => $this->meta_info?->rationale,
         ]);
     }
 }

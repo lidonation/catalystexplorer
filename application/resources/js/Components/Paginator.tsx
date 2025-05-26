@@ -106,7 +106,7 @@ const PaginationComponent: React.FC<PaginationComponentProps<any>> = ({
                                                         className={cn(
                                                             'flex size-8 items-center justify-center rounded-full',
                                                             link.active
-                                                                ? 'bg-background-darker'
+                                                                ? 'bg-background shadow-md '
                                                                 : '',
                                                         )}
                                                         {...linkProps}

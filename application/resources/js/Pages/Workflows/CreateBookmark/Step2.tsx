@@ -79,7 +79,11 @@ const Step2: React.FC<Step2Props> = ({
     };
 
     const submitForm = () => {
-        form.post(generateLocalizedRoute('workflows.bookmarks.saveList'));
+        form.post(
+            generateLocalizedRoute('workflows.bookmarks.saveList', {
+                bookmarkCollection: bookmarkCollection?.hash,
+            }),
+        );
     };
 
     return (

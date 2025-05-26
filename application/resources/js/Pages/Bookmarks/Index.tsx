@@ -10,6 +10,7 @@ import BookmarkCollectionList from '../My/Lists/Partials/BookmarkCollectionList'
 import BookmarkCollectionListLoader from '../My/Lists/Partials/BookmarkCollectionListLoader';
 import BookmarkCollectionData = App.DataTransferObjects.BookmarkCollectionData;
 import Paginator from '@/Components/Paginator';
+import ListSortingOptions from '@/lib/ListSortOptions';
 
 interface BookmarkCollectionListProps {
     bookmarkCollections: PaginatedData<BookmarkCollectionData[]>;
@@ -44,7 +45,7 @@ const Index: React.FC<BookmarkCollectionListProps> = ({
                     <SearchControls
                         withFilters={false}
                         onFiltersToggle={setShowFilters}
-                        sortOptions={[{}]}
+                        sortOptions={ListSortingOptions()}
                         searchPlaceholder={t('bookmarks.searchPlaceholder')}
                     />
                 </section>

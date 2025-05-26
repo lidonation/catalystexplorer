@@ -11,6 +11,7 @@ import BookmarkCollectionListLoader from './Partials/BookmarkCollectionListLoade
 import BookmarkPage2 from './Partials/ListCreateFromBookmarkSave/Step2';
 import BookmarkPage3 from './Partials/ListCreateFromBookmarkSave/Step3';
 import BookmarkCollectionData = App.DataTransferObjects.BookmarkCollectionData;
+import RecordsNotFound from '@/Layouts/RecordsNotFound';
 
 interface MyListProps {
     bookmarkCollections: PaginatedData<BookmarkCollectionData[]>;
@@ -34,21 +35,18 @@ export default function MyList({ bookmarkCollections }: MyListProps) {
             <Head title="My List" />
 
             <div className="mx-auto max-w-7xl px-4 py-2 sm:px-6 lg:px-8">
-                {bookmarkCollections?.data &&
-                    bookmarkCollections?.data?.length > 0 && (
-                        <div className="mb-6 flex items-center">
-                            <div className="ml-auto">
-                                <PrimaryLink
-                                    href={useLocalizedRoute(
-                                        'workflows.bookmarks.index',
-                                        { step: 1 },
-                                    )}
-                                >
-                                    {`+ ${t('my.createList')}`}
-                                </PrimaryLink>
-                            </div>
-                        </div>
-                    )}
+                <div className="mb-6 flex items-center">
+                    <div className="ml-auto">
+                        <PrimaryLink
+                            href={useLocalizedRoute(
+                                'workflows.bookmarks.index',
+                                { step: 1 },
+                            )}
+                        >
+                            {`+ ${t('my.createList')}`}
+                        </PrimaryLink>
+                    </div>
+                </div>
 
                 {bookmarkCollections?.data &&
                 bookmarkCollections?.data?.length > 0 ? (
@@ -64,12 +62,7 @@ export default function MyList({ bookmarkCollections }: MyListProps) {
                     </WhenVisible>
                 ) : (
                     <div className="flex flex-col items-center justify-center py-20">
-                        <PrimaryLink
-                            href={useLocalizedRoute(
-                                'workflows.bookmarks.index',
-                                { step: 1 },
-                            )}
-                        />
+                        <RecordsNotFound />
                     </div>
                 )}
             </div>

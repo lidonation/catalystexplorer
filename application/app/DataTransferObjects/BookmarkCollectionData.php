@@ -81,6 +81,18 @@ final class BookmarkCollectionData extends Data
         public ?int $comments_count,
 
         #[TypeScriptOptional]
+        public ?int $amount_requested_USD,
+
+        #[TypeScriptOptional]
+        public ?int $amount_received_ADA,
+
+        #[TypeScriptOptional]
+        public ?int $amount_requested_ADA,
+
+        #[TypeScriptOptional]
+        public ?int $amount_received_USD,
+
+        #[TypeScriptOptional]
         public ?UserData $author,
     ) {}
 }
