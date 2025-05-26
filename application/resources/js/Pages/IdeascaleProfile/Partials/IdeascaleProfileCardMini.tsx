@@ -9,11 +9,11 @@ import SegmentedBar from '@/Components/SegmentedBar';
 import UserAvatar from '@/Components/UserAvatar';
 import { ListProvider } from '@/Context/ListContext';
 import BookmarkButton from '@/Pages/My/Bookmarks/Partials/BookmarkButton';
+import { Segments } from '@/types/segments';
 import { useLocalizedRoute } from '@/utils/localizedRoute';
 import { Link } from '@inertiajs/react';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Segments } from '../../../types/segments';
 import IdeascaleProfileData = App.DataTransferObjects.IdeascaleProfileData;
 
 interface IdeascaleProfileProps {

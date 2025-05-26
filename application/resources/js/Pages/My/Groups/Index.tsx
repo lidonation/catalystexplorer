@@ -1,9 +1,9 @@
 import { FiltersProvider } from '@/Context/FiltersContext';
+import RecordsNotFound from '@/Layouts/RecordsNotFound';
 import GroupCardExtendedLoader from '@/Pages/Groups/Partials/GroupCardExtendedLoader';
-import MyLayout from '@/Pages/My/MyLayout';
+import { SearchParams } from '@/types/search-params';
 import { Head, WhenVisible } from '@inertiajs/react';
 import { useTranslation } from 'react-i18next';
-import { SearchParams } from '../../../types/search-params';
 import MyGroupsList from './Partials/MyGroupsList';
 import GroupData = App.DataTransferObjects.GroupData;
 
@@ -19,18 +19,22 @@ export default function MyGroups({ groups, filters }: MyGroupsProps) {
             defaultFilters={filters ?? {}}
             routerOptions={{ only: 'groups' }}
         >
-            <MyLayout>
-                <Head title="My Groups" />
+            <Head title="My Groups" />
 
-                <div className="container mb-8">
+            <div className="container mb-8">
+                {groups && groups.length > 0 ? (
                     <WhenVisible
                         fallback={<GroupCardExtendedLoader />}
                         data="groups"
                     >
                         <MyGroupsList groups={groups || []} />
                     </WhenVisible>
-                </div>
-            </MyLayout>
+                ) : (
+                    <div className="p-8 text-center">
+                        <RecordsNotFound />
+                    </div>
+                )}
+            </div>
         </FiltersProvider>
     );
 }

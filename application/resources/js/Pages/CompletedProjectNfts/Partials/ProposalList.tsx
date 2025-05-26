@@ -1,6 +1,6 @@
 import Paragraph from '@/Components/atoms/Paragraph'; // Added import for Paragraph component
+import { PaginatedData } from '@/types/paginated-data';
 import { useTranslation } from 'react-i18next';
-import { PaginatedData } from '../../../types/paginated-data';
 import CompletedProposalCard from './CompletedProposalCard';
 import ProposalData = App.DataTransferObjects.ProposalData;
 import IdeascaleProfileData = App.DataTransferObjects.IdeascaleProfileData;

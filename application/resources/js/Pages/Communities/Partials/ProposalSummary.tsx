@@ -5,9 +5,9 @@ import Title from '@/Components/atoms/Title';
 import Value from '@/Components/atoms/Value';
 import ValueLabel from '@/Components/atoms/ValueLabel';
 import CommunityIdeascaleProfiles from '@/Pages/Communities/Partials/CommunityIdeascaleProfiles';
+import { Segments } from '@/types/segments';
 import { currency } from '@/utils/currency';
 import { useTranslation } from 'react-i18next';
-import { Segments } from '../../../types/segments';
 import CommunityData = App.DataTransferObjects.CommunityData;
 
 interface ProposalSummaryCardProps {

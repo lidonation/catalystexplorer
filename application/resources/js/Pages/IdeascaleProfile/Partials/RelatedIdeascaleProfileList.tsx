@@ -1,10 +1,10 @@
 import Paragraph from '@/Components/atoms/Paragraph';
 import RecordsNotFound from '@/Layouts/RecordsNotFound';
+import { PaginatedData } from '@/types/paginated-data';
 import { Link } from '@inertiajs/react';
 import { AnimatePresence, motion } from 'framer-motion';
 import React, { HTMLAttributes } from 'react';
 import { useTranslation } from 'react-i18next';
-import { PaginatedData } from '../../../types/paginated-data';
 import IdeascaleProfileCardMini from './IdeascaleProfileCardMini';
 import IdeascaleProfileData = App.DataTransferObjects.IdeascaleProfileData;
 

@@ -1,8 +1,8 @@
 import ProposalMiniCardLoader from '@/Pages/Proposals/Partials/ProposalMiniCardLoader';
 import RelatedProposals from '@/Pages/Proposals/Partials/RelatedProposals';
 import { ParamsEnum } from '@/enums/proposal-search-params';
+import { PaginatedData } from '@/types/paginated-data';
 import { Head, WhenVisible } from '@inertiajs/react';
-import { PaginatedData } from '../../../types/paginated-data';
 import GroupLayout from '../GroupLayout';
 import GroupData = App.DataTransferObjects.GroupData;
 import ProposalData = App.DataTransferObjects.ProposalData;

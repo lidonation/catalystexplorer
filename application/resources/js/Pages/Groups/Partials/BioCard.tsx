@@ -2,11 +2,11 @@ import Paragraph from '@/Components/atoms/Paragraph';
 import Card from '@/Components/Card';
 import FundingPercentages from '@/Components/FundingPercentages';
 import SegmentedBar from '@/Components/SegmentedBar';
+import { Segments } from '@/types/segments';
 import { currency } from '@/utils/currency';
 import { usePage } from '@inertiajs/react';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Segments } from '../../../types/segments';
 import GroupData = App.DataTransferObjects.GroupData;
 
 interface BioCardProps {

@@ -7,8 +7,8 @@ import TransactionSortOptions from '@/lib/TransactionSortOptions';
 import { Head } from '@inertiajs/react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { PaginatedData } from '../../types/paginated-data';
-import { SearchParams } from '../../types/search-params';
+import { PaginatedData } from '@/types/paginated-data';
+import { SearchParams } from '@/types/search-params';
 import { CardanoTransactionTable } from './Partials/TransactionTable';
 import TransactionData = App.DataTransferObjects.TransactionData;
 

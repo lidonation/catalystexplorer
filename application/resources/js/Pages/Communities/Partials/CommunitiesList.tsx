@@ -1,7 +1,7 @@
 import RecordsNotFound from '@/Layouts/RecordsNotFound';
+import { PaginatedData } from '@/types/paginated-data';
 import { AnimatePresence, motion } from 'framer-motion';
 import React from 'react';
-import { PaginatedData } from '../../../types/paginated-data';
 import CommunityCard from './CommunityCard';
 import CommunityData = App.DataTransferObjects.CommunityData;
 

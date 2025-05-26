@@ -3,6 +3,8 @@ import { FiltersProvider } from '@/Context/FiltersContext';
 import { ParamsEnum } from '@/enums/proposal-search-params';
 import { VoteEnum } from '@/enums/votes-enums';
 import { StepDetails } from '@/types';
+import { PaginatedData } from '@/types/paginated-data';
+import { SearchParams } from '@/types/search-params';
 import { currency } from '@/utils/currency';
 import {
     generateLocalizedRoute,
@@ -12,8 +14,6 @@ import { router, useForm } from '@inertiajs/react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { PaginatedData } from '../../../types/paginated-data';
-import { SearchParams } from '../../../types/search-params';
 import Content from '../Partials/WorkflowContent';
 import Footer from '../Partials/WorkflowFooter';
 import Nav from '../Partials/WorkflowNav';

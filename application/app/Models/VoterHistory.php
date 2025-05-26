@@ -82,6 +82,7 @@ class VoterHistory extends Model
             'snapshot.fund.hash',
             'snapshot.fund.title',
             'stake_address',
+            'caster',
             'time',
         ];
     }

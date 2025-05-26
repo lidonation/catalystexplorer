@@ -1,8 +1,8 @@
 import Title from '@/Components/atoms/Title';
 import RecordsNotFound from '@/Layouts/RecordsNotFound';
+import { PaginatedData } from '@/types/paginated-data';
 import { Head } from '@inertiajs/react';
 import { useTranslation } from 'react-i18next';
-import { PaginatedData } from '../../../types/paginated-data';
 import BlockchainData from './BlockchainData';
 import ContributorProfile from './ContributorProfile';
 import MetaData from './MetaData';

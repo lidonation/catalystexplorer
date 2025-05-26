@@ -22,7 +22,6 @@ use Illuminate\Support\Fluent;
 use Illuminate\Support\Stringable;
 use Inertia\Inertia;
 use Inertia\Response;
-use JetBrains\PhpStorm\ArrayShape;
 use Laravel\Scout\Builder;
 
 class GroupsController extends Controller
@@ -238,7 +237,7 @@ class GroupsController extends Controller
         }
     }
 
-    public function query($returnBuilder = false, $attrs = null, $filters = [])
+    public function query(): array
     {
         $args = [
             'filter' => $this->getUserFilters(),
@@ -256,7 +255,7 @@ class GroupsController extends Controller
             ? (int) $this->queryParams[ProposalSearchParams::LIMIT()->value]
             : 36;
 
-        $args['offset'] = 2;
+        $args['offset'] = $page;
         $args['limit'] = $limit;
 
         $groups = app(GroupRepository::class);
@@ -283,7 +282,6 @@ class GroupsController extends Controller
         return $pagination->onEachSide(1)->toArray();
     }
 
-    // #[ArrayShape(['filters' => 'array'])]
     protected function getUserFilters(): array
     {
         $filters = [];

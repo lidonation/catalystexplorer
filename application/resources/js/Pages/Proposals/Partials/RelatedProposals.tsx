@@ -1,9 +1,9 @@
 import Paragraph from '@/Components/atoms/Paragraph';
+import { PaginatedData } from '@/types/paginated-data';
 import { useLocalizedRoute } from '@/utils/localizedRoute';
 import { Link, WhenVisible } from '@inertiajs/react';
 import React, { HTMLAttributes } from 'react';
 import { useTranslation } from 'react-i18next';
-import { PaginatedData } from '../../../types/paginated-data';
 import ProposalCardMini from './ProposalCardMini';
 import ProposalMiniCardLoader from './ProposalMiniCardLoader';
 import ProposalData = App.DataTransferObjects.ProposalData;

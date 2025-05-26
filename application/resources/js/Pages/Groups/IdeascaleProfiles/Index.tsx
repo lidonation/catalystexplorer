@@ -1,6 +1,6 @@
 import IdeascaleProfileCardMini from '@/Pages/IdeascaleProfile/Partials/IdeascaleProfileCardMini';
+import { PaginatedData } from '@/types/paginated-data';
 import { Head, WhenVisible } from '@inertiajs/react';
-import { PaginatedData } from '../../../types/paginated-data';
 import GroupLayout from '../GroupLayout';
 import IdeascaleProfileData = App.DataTransferObjects.IdeascaleProfileData;
 import GroupData = App.DataTransferObjects.GroupData;

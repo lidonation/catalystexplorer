@@ -1,37 +1,26 @@
 import Paginator from '@/Components/Paginator';
 import PrimaryLink from '@/Components/atoms/PrimaryLink';
-import MyLayout from '@/Pages/My/MyLayout';
+import RecordsNotFound from '@/Layouts/RecordsNotFound';
+import { PaginatedData } from '@/types/paginated-data';
 import { useLocalizedRoute } from '@/utils/localizedRoute';
 import { Head, WhenVisible } from '@inertiajs/react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { PaginatedData } from '../../../types/paginated-data';
 import BookmarkCollectionList from './Partials/BookmarkCollectionList';
 import BookmarkCollectionListLoader from './Partials/BookmarkCollectionListLoader';
 import BookmarkPage2 from './Partials/ListCreateFromBookmarkSave/Step2';
 import BookmarkPage3 from './Partials/ListCreateFromBookmarkSave/Step3';
 import BookmarkCollectionData = App.DataTransferObjects.BookmarkCollectionData;
-import RecordsNotFound from '@/Layouts/RecordsNotFound';
 
 interface MyListProps {
     bookmarkCollections: PaginatedData<BookmarkCollectionData[]>;
 }
 
 export default function MyList({ bookmarkCollections }: MyListProps) {
-    const [showCreate, setShowCreate] = useState(false);
     const { t } = useTranslation();
 
-    const handleCreateClick = () => {
-        setShowCreate(true);
-    };
-
-    const pages = [
-        <BookmarkPage2 key="priority" />,
-        <BookmarkPage3 key="new-list" />,
-    ];
-
     return (
-        <MyLayout>
+        <>
             <Head title="My List" />
 
             <div className="mx-auto max-w-7xl px-4 py-2 sm:px-6 lg:px-8">
@@ -56,7 +45,7 @@ export default function MyList({ bookmarkCollections }: MyListProps) {
                     >
                         <BookmarkCollectionList
                             bookmarkCollections={
-                                bookmarkCollections?.data || []
+                                bookmarkCollections.data||[]
                             }
                         />
                     </WhenVisible>
@@ -66,11 +55,6 @@ export default function MyList({ bookmarkCollections }: MyListProps) {
                     </div>
                 )}
             </div>
-            {bookmarkCollections && bookmarkCollections.total > 0 && (
-                <section className="container mt-8 w-full">
-                    <Paginator pagination={bookmarkCollections} />
-                </section>
-            )}
-        </MyLayout>
+        </>
     );
 }

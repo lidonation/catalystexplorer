@@ -1,8 +1,8 @@
 import Paginator from '@/Components/Paginator';
 import { VoteEnum } from '@/enums/votes-enums';
 import RecordsNotFound from '@/Layouts/RecordsNotFound';
+import { PaginatedData } from '@/types/paginated-data';
 import React from 'react';
-import { PaginatedData } from '../../../types/paginated-data';
 
 interface ColumnDefinition<T> {
     key: string;

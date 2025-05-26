@@ -7,11 +7,12 @@ import TransactionSortOptions from '@/lib/TransactionSortOptions';
 import { Head } from '@inertiajs/react';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { PaginatedData } from '../../../types/paginated-data';
-import { SearchParams } from '../../../types/search-params';
-import MyLayout from '../MyLayout';
+import { PaginatedData } from '@/types/paginated-data';
+import { SearchParams } from '@/types/search-params';
 import MyTransactionTable from './Partials/MyTranscationsTable';
 import TransactionData = App.DataTransferObjects.TransactionData;
+import { FiltersProvider } from "@/Context/FiltersContext";
+
 
 interface MyTransactionProps {
     transactions: PaginatedData<TransactionData[]>;
@@ -19,19 +20,18 @@ interface MyTransactionProps {
     filters: SearchParams;
 }
 
-const MyTransaction: React.FC<MyTransactionProps> = ({ transactions }) => {
+const MyTransaction: React.FC<MyTransactionProps> = ({ transactions,filters }) => {
     const { t } = useTranslation();
     const [showFilters, setShowFilters] = useState(false);
     const hasTransactions = transactions?.data?.length > 0;
 
     return (
-        <MyLayout>
+        <FiltersProvider defaultFilters={filters}>
             <Head title="My Transactions" />
-
-            <div className="py-6">
-                <div className="max-w-10xl mx-auto sm:px-6 lg:px-8">
-                    <div className="bg-background overflow-hidden p-6 shadow-xl sm:rounded-lg">
-                        <div className="border-background-lighter mb-4 w-full border-b">
+            <div className="py-8">
+                <div className="mx-auto max-w-10xl sm:px-6 lg:px-8">
+                    <div className="bg-background overflow-hidden p-6 shadow-md sm:rounded-lg">
+                        <div className="border-b border-background-lighter w-full mb-4">
                             <Title level="4" className="mb-4 font-bold">
                                 {t('transactions.title')}
                             </Title>
@@ -67,7 +67,7 @@ const MyTransaction: React.FC<MyTransactionProps> = ({ transactions }) => {
                     </div>
                 </div>
             </div>
-        </MyLayout>
+        </FiltersProvider>
     );
 };
 

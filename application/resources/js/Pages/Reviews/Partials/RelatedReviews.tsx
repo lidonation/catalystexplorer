@@ -1,11 +1,11 @@
 import Paragraph from '@/Components/atoms/Paragraph';
 import { ReviewCard } from '@/Components/ReviewCard';
+import { PaginatedData } from '@/types/paginated-data';
 import { useLocalizedRoute } from '@/utils/localizedRoute';
 import { Link } from '@inertiajs/react';
 import React, { HTMLAttributes } from 'react';
 import { useTranslation } from 'react-i18next';
 import Masonry from 'react-masonry-css';
-import { PaginatedData } from '../../../types/paginated-data';
 
 import ReviewData = App.DataTransferObjects.ReviewData;
 

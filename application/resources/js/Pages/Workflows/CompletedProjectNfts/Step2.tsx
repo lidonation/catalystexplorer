@@ -2,6 +2,7 @@ import PrimaryLink from '@/Components/atoms/PrimaryLink';
 import ProposalList from '@/Pages/CompletedProjectNfts/Partials/ProposalList';
 import ProposalSearchBar from '@/Pages/CompletedProjectNfts/Partials/ProposalSearchBar';
 import { StepDetails } from '@/types';
+import { PaginatedData } from '@/types/paginated-data';
 import {
     generateLocalizedRoute,
     useLocalizedRoute,
@@ -10,7 +11,6 @@ import { router, usePage } from '@inertiajs/react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import React, { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { PaginatedData } from '../../../types/paginated-data';
 import Content from '../Partials/WorkflowContent';
 import Footer from '../Partials/WorkflowFooter';
 import Nav from '../Partials/WorkflowNav';

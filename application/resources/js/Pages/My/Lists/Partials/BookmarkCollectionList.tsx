@@ -11,7 +11,7 @@ interface BookmarkCollectionListProps {
 const BookmarkCollectionList: React.FC<BookmarkCollectionListProps> = ({ bookmarkCollections }) => {
     return (
         <>
-            <ul className="grid grid-cols-1 gap-4">
+            <ul className="grid w-full grid-cols-1 gap-4">
                 <AnimatePresence>
                     {bookmarkCollections?.map((bookmarkCollection, index) => (
                         <motion.li

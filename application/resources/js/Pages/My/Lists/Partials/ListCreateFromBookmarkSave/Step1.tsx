@@ -1,3 +1,4 @@
+import { TransitionListPageProps } from '@/../../types/general';
 import Checkbox from '@/Components/atoms/Checkbox';
 import Paragraph from '@/Components/atoms/Paragraph';
 import PrimaryButton from '@/Components/atoms/PrimaryButton';
@@ -6,7 +7,6 @@ import { List, Loader, PlusIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
-import { TransitionListPageProps } from '../../../../../types/general';
 
 interface BookmarkPage1Props extends TransitionListPageProps {
     bookmarkId: string;
