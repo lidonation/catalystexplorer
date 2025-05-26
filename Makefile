@@ -165,7 +165,7 @@ watch:
 test-backend:
 	docker-compose -f docker-compose.testing.yml up -d && \
     sleep 3 && \
-	docker-compose -f docker-compose.testing.yml exec -T catalystexplorer_test.com vendor/bin/pest --group=arch && \
+	docker-compose -f docker-compose.testing.yml exec -T catalystexplorer_test.com vendor/bin/pest --group=arch --parallel && \
 	sleep 3 && \
  	docker-compose -f docker-compose.testing.yml down --volumes
 
@@ -181,7 +181,7 @@ seed-index:
 
 .PHONY: create-index import-index flush-index
 
-MODELS = App\\Models\\ProjectSchedule App\\Models\\Community  App\\Models\\Proposal App\\Models\\IdeascaleProfile App\\Models\\Group App\\Models\\Review App\\Models\\MonthlyReport App\\Models\\Transaction App\\Models\\VoterHistory
+MODELS = App\\Models\\BookmarkCollection App\\Models\\ProjectSchedule App\\Models\\Community  App\\Models\\Proposal App\\Models\\IdeascaleProfile App\\Models\\Group App\\Models\\Review App\\Models\\MonthlyReport App\\Models\\Transaction App\\Models\\VoterHistory
 
 create-index:
 	@model_filter="$(filter-out $@,$(MAKECMDGOALS))"; \
@@ -231,7 +231,7 @@ flush-index:
 
 .PHONY: delete-index
 
-INDEXES = cx_proposals cx_communities cx_ideascale_profiles cx_monthly_reports cx_review cx_groups cx_transactions cx_communities cx_voter_histories
+INDEXES = cx_bookmark_collection cx_proposals cx_communities cx_ideascale_profiles cx_monthly_reports cx_review cx_groups cx_transactions cx_communities cx_voter_histories
 
 delete-index:
 	@index_filter="$(filter-out $@,$(MAKECMDGOALS))"; \

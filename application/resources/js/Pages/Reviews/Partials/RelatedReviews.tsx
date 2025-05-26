@@ -1,14 +1,13 @@
 import Paragraph from '@/Components/atoms/Paragraph';
+import { ReviewCard } from '@/Components/ReviewCard';
+import { PaginatedData } from '@/types/paginated-data';
 import { useLocalizedRoute } from '@/utils/localizedRoute';
 import { Link } from '@inertiajs/react';
 import React, { HTMLAttributes } from 'react';
 import { useTranslation } from 'react-i18next';
 import Masonry from 'react-masonry-css';
-import { PaginatedData } from '../../../../types/paginated-data';
 
 import ReviewData = App.DataTransferObjects.ReviewData;
-import { ReviewCard } from '@/Components/ReviewCard';
-import { ParamsEnum } from '@/enums/proposal-search-params';
 
 interface RelatedReviewsProps extends HTMLAttributes<HTMLDivElement> {
     reviews: PaginatedData<ReviewData[]>;
@@ -51,7 +50,8 @@ const RelatedReviews: React.FC<RelatedReviewsProps> = ({
                 {!!reviews?.data && reviews?.total > reviews?.per_page && (
                     <div className="">
                         <Link
-                            href={useLocalizedRoute('reviews.index', 
+                            href={useLocalizedRoute(
+                                'reviews.index',
                                 routeParam,
                             )}
                             className="bg-background flex min-h-54 flex-col items-center justify-center rounded-xl p-4 shadow-lg transition-transform hover:scale-95"

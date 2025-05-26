@@ -1,21 +1,24 @@
+import PrimaryLink from '@/Components/atoms/PrimaryLink';
+import { FiltersProvider } from '@/Context/FiltersContext';
+import { ParamsEnum } from '@/enums/proposal-search-params';
+import { VoteEnum } from '@/enums/votes-enums';
+import { StepDetails } from '@/types';
+import { PaginatedData } from '@/types/paginated-data';
+import { SearchParams } from '@/types/search-params';
+import { currency } from '@/utils/currency';
+import {
+    generateLocalizedRoute,
+    useLocalizedRoute,
+} from '@/utils/localizedRoute';
+import { router, useForm } from '@inertiajs/react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { router, useForm } from '@inertiajs/react';
-import { generateLocalizedRoute, useLocalizedRoute } from '@/utils/localizedRoute';
-import PrimaryLink from '@/Components/atoms/PrimaryLink';
-import WorkflowLayout from '../WorkflowLayout';
 import Content from '../Partials/WorkflowContent';
 import Footer from '../Partials/WorkflowFooter';
 import Nav from '../Partials/WorkflowNav';
-import { VoteEnum } from '@/enums/votes-enums';
-import { StepDetails } from '@/types';
-import { ParamsEnum } from '@/enums/proposal-search-params';
-import { SearchParams } from '../../../../types/search-params';
-import { FiltersProvider } from '@/Context/FiltersContext';
-import { PaginatedData } from '../../../../types/paginated-data';
-import WorkflowTable from "./WorkflowTable";
-import { currency } from '@/utils/currency';
+import WorkflowLayout from '../WorkflowLayout';
+import WorkflowTable from './WorkflowTable';
 
 interface ProposalType {
     slug: string;
@@ -36,40 +39,44 @@ interface Step2Props {
 }
 
 const Step2: React.FC<Step2Props> = ({
-                                         stepDetails,
-                                         activeStep,
-                                         selectedProposals,
-                                         votes = {},
-                                         filters
-                                     }) => {
+    stepDetails,
+    activeStep,
+    selectedProposals,
+    votes = {},
+    filters,
+}) => {
     const { t } = useTranslation();
     const localizedRoute = useLocalizedRoute;
-    const prevStep = localizedRoute('workflows.voting.index', { step: activeStep - 1 });
-    const nextStep = localizedRoute('workflows.voting.index', { step: activeStep + 1 });
+    const prevStep = localizedRoute('workflows.voting.index', {
+        step: activeStep - 1,
+    });
+    const nextStep = localizedRoute('workflows.voting.index', {
+        step: activeStep + 1,
+    });
 
     const [formErrors, setFormErrors] = useState<string[]>([]);
     const formatCurrency = (
         amount: number | string | null | undefined,
-        currencyCode: string = 'ADA'
+        currencyCode: string = 'ADA',
     ): string => {
         return currency(
             amount ? parseInt(amount.toString()) : 0,
             2,
-            currencyCode
+            currencyCode,
         ) as string;
     };
 
     const form = useForm({
-        proposals: selectedProposals.data.map(p => p.slug),
+        proposals: selectedProposals.data.map((p) => p.slug),
         votes,
-        proposalData: selectedProposals.data.map(p => ({
+        proposalData: selectedProposals.data.map((p) => ({
             slug: p.slug,
             title: p.title,
             fund: p.fund,
             requested_funds: p.requested_funds,
             vote: votes[p.slug] || null,
-            exists: true
-        }))
+            exists: true,
+        })),
     });
 
     useEffect(() => {
@@ -80,28 +87,34 @@ const Step2: React.FC<Step2Props> = ({
 
     const handleNext = () => {
         if (formErrors.length > 0) {
-            console.error("Form validation errors:", formErrors);
+            console.error('Form validation errors:', formErrors);
             return;
         }
-        form.setData('proposals', selectedProposals.data.map(p => p.slug));
+        form.setData(
+            'proposals',
+            selectedProposals.data.map((p) => p.slug),
+        );
         form.setData('votes', votes);
-        form.setData('proposalData', selectedProposals.data.map(p => ({
-            slug: p.slug,
-            title: p.title,
-            fund: p.fund,
-            requested_funds: p.requested_funds,
-            vote: votes[p.slug] || null,
-            exists: true as const,
-        })));
+        form.setData(
+            'proposalData',
+            selectedProposals.data.map((p) => ({
+                slug: p.slug,
+                title: p.title,
+                fund: p.fund,
+                requested_funds: p.requested_funds,
+                vote: votes[p.slug] || null,
+                exists: true as const,
+            })),
+        );
         form.post(generateLocalizedRoute('workflows.voting.saveDecisions'), {
             onSuccess: () => {
                 router.visit(nextStep);
             },
             onError: (errors) => {
-                console.error("Form submission errors:", errors);
+                console.error('Form submission errors:', errors);
                 const serverErrors = Object.values(errors).flat();
                 setFormErrors(serverErrors);
-            }
+            },
         });
     };
 
@@ -116,7 +129,8 @@ const Step2: React.FC<Step2Props> = ({
             }
         });
 
-        if (Object.keys(updates).length > 0 &&
+        if (
+            Object.keys(updates).length > 0 &&
             !updates[ParamsEnum.PAGE] &&
             baseFilters[ParamsEnum.PAGE]
         ) {
@@ -126,11 +140,14 @@ const Step2: React.FC<Step2Props> = ({
         return baseFilters;
     };
 
-    const handleFilterChange = (paramName: string, value: string | number | string[] | number[]) => {
+    const handleFilterChange = (
+        paramName: string,
+        value: string | number | string[] | number[],
+    ) => {
         router.get(
             window.location.pathname,
             buildUpdatedFilters({ [paramName]: value }),
-            { preserveState: true, replace: true }
+            { preserveState: true, replace: true },
         );
     };
 
@@ -138,16 +155,16 @@ const Step2: React.FC<Step2Props> = ({
         {
             key: 'index',
             header: 'No.',
-            render: (_: ProposalType, index: number) => index + 1
+            render: (_: ProposalType, index: number) => index + 1,
         },
         {
             key: 'fund.title',
             header: 'Fund',
-            render: (item: ProposalType) => item.fund?.title || '-'
+            render: (item: ProposalType) => item.fund?.title || '-',
         },
         {
             key: 'title',
-            header: 'Proposal'
+            header: 'Proposal',
         },
         {
             key: 'budget',
@@ -157,12 +174,12 @@ const Step2: React.FC<Step2Props> = ({
                 const currencyCode = 'ADA';
 
                 return formatCurrency(amountRequested, currencyCode);
-            }
+            },
         },
         {
             key: 'vote',
-            header: 'Vote'
-        }
+            header: 'Vote',
+        },
     ];
 
     return (
@@ -171,7 +188,7 @@ const Step2: React.FC<Step2Props> = ({
             routerOptions={{
                 preserveState: true,
                 preserveScroll: false,
-                replace: true
+                replace: true,
             }}
         >
             <WorkflowLayout asideInfo={stepDetails[activeStep - 1]?.info || ''}>
@@ -179,9 +196,12 @@ const Step2: React.FC<Step2Props> = ({
 
                 {/* Error handling */}
                 {formErrors.length > 0 && (
-                    <div className="max-w-3xl mx-auto w-full mb-4">
-                        <div className="bg-red-50 border border-red-200 text-red-800 px-4 py-3 rounded relative" role="alert">
-                            <ul className="list-disc list-inside text-content">
+                    <div className="mx-auto mb-4 w-full max-w-3xl">
+                        <div
+                            className="relative rounded border border-red-200 bg-red-50 px-4 py-3 text-red-800"
+                            role="alert"
+                        >
+                            <ul className="text-content list-inside list-disc">
                                 {formErrors.map((error, index) => (
                                     <li key={index}>{error}</li>
                                 ))}
@@ -199,7 +219,7 @@ const Step2: React.FC<Step2Props> = ({
                             votesMap={votes}
                             emptyState={{
                                 context: 'proposals',
-                                showIcon: true
+                                showIcon: true,
                             }}
                         />
                     </div>
@@ -220,7 +240,10 @@ const Step2: React.FC<Step2Props> = ({
                             e.preventDefault();
                             handleNext();
                         }}
-                        disabled={selectedProposals.total === 0 || formErrors.length > 0}
+                        disabled={
+                            selectedProposals.total === 0 ||
+                            formErrors.length > 0
+                        }
                     >
                         <span>{t('Next')}</span>
                         <ChevronRight className="h-4 w-4" />

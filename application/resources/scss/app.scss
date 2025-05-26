@@ -5,7 +5,7 @@
 //@use 'tailwindcss/components'; /* Reference component styles */
 @use 'tailwindcss/utilities';
 
-@config "../../tailwind.config.js";
+@config "@/tailwind.config.js";
 
 @layer utilities {
     html {
@@ -24,7 +24,6 @@
         --cx-dark: #667085;
         --cx-light: #667085;
         --cx-accent: #165a72;
-        --cx-light-blue: #EFFAFC;
 
         --cx-blue-eye-color: #b1e2f0;
 
@@ -98,7 +97,6 @@
         --cx-light: #667085;
         --cx-dark: #667085;
         --cx-accent: #8cdefa;
-        --cx-light-blue: #EFFAFC;
 
         --cx-blue-eye-color: #b1e2f0;
 
@@ -156,7 +154,6 @@
         --cx-light: #667085;
         --cx-dark: #667085;
         --cx-accent: #1f2d3d;
-        --cx-light-blue: #EFFAFC;
 
         --cx-blue-eye-color: #b1e2f0;
 
@@ -289,12 +286,15 @@
     .steps-list-wrapper {
         ol {
             list-style-type: decimal;
+
             li {
                 margin-bottom: 0.5rem;
             }
+
             +ul {
                 list-style-type: disc;
                 padding-left: 1.25rem;
+
                 li {
                     margin-bottom: 0.4rem;
                 }
@@ -313,8 +313,8 @@
         background-color: var(--cx-dark) !important;
         opacity: 0.5 !important;
     }
-    
-    .im-slideover-wrapper{
+
+    .im-slideover-wrapper {
         max-width: 90vw !important;
     }
 }
@@ -322,12 +322,14 @@
 @layer base {
     *::-webkit-scrollbar {
         width: 0.5rem;
-        height: 0.6rem;
+        height: 0rem;
+        display: none;
     }
 
     *::-webkit-scrollbar-track {
         background: var(--cx-background);
-        border-radius: 1rem;
+        border-radius: 0rem;
+        display: none;
         -webkit-border-radius: 1rem;
         -moz-border-radius: 1rem;
         -ms-border-radius: 1rem;

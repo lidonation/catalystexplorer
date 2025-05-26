@@ -210,10 +210,14 @@ class ProposalsController extends Controller
             ProposalSearchParams::IDEASCALE_PROFILES()->value => $ideascaleProfile->toArray(),
         ]);
 
-        $this->getProps($request);
+        $this->getProps(request: $request);
         $this->queryParams[ProposalSearchParams::LIMIT()->value] = 12;
 
-        $proposals = $this->query();
+        $proposals = null;
+
+        if (! empty($request[ProposalSearchParams::IDEASCALE_PROFILES()->value])) {
+            $proposals = $this->query();
+        }
 
         return Inertia::render('My/Proposals/Index', [
             'proposals' => $proposals,

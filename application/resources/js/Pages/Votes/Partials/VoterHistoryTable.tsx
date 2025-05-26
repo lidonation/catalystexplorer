@@ -9,6 +9,8 @@ import { useFilterContext } from '@/Context/FiltersContext';
 import RecordsNotFound from '@/Layouts/RecordsNotFound';
 import { VoteEnums } from '@/enums/vote-search-enums';
 import VoteSortOptions from '@/lib/VoteSortOptions';
+import { PaginatedData } from '@/types/paginated-data';
+import { SearchParams } from '@/types/search-params';
 import { useLocalizedRoute } from '@/utils/localizedRoute';
 import { Link, router } from '@inertiajs/react';
 import React, {
@@ -19,8 +21,6 @@ import React, {
     useState,
 } from 'react';
 import { useTranslation } from 'react-i18next';
-import { PaginatedData } from '../../../../types/paginated-data';
-import { SearchParams } from '../../../../types/search-params';
 import VoteFilters from './VoteFilters';
 import VoteHistoryTableLoader from './VoterHistoryTableLoader';
 import VoterHistoryData = App.DataTransferObjects.VoterHistoryData;

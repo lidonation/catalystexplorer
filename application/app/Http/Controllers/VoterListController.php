@@ -239,8 +239,8 @@ class VoterListController extends Controller
             'content' => $validated['content'] ?? null,
             'color' => $validated['color'] ?? '#2596BE',
             'allow_comments' => $validated['comments_enabled'] ?? false,
-            'visibility' => strtoupper($validated['visibility']),
-            'status' => strtoupper($validated['status'] ?? 'DRAFT'),
+            'visibility' => $validated['visibility'],
+            'status' => $validated['status'] ?? BookmarkStatus::DRAFT()->value,
             'type' => BookmarkCollection::class,
             'type_id' => $validated['fund_slug'],
         ]);

@@ -2,15 +2,15 @@ import PrimaryLink from '@/Components/atoms/PrimaryLink';
 import ProposalList from '@/Pages/CompletedProjectNfts/Partials/ProposalList';
 import ProposalSearchBar from '@/Pages/CompletedProjectNfts/Partials/ProposalSearchBar';
 import { StepDetails } from '@/types';
+import { PaginatedData } from '@/types/paginated-data';
 import {
     generateLocalizedRoute,
     useLocalizedRoute,
 } from '@/utils/localizedRoute';
 import { router, usePage } from '@inertiajs/react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import React, { memo, useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { PaginatedData } from '../../../../types/paginated-data';
 import Content from '../Partials/WorkflowContent';
 import Footer from '../Partials/WorkflowFooter';
 import Nav from '../Partials/WorkflowNav';
@@ -27,10 +27,12 @@ const Step2: React.FC<Step2Props> = ({
     stepDetails,
     activeStep,
     proposals,
-    profiles
+    profiles,
 }) => {
     const { t } = useTranslation();
-    const [selectedProposalHash, setSelectedProposalHash] = useState<string|null>(null);
+    const [selectedProposalHash, setSelectedProposalHash] = useState<
+        string | null
+    >(null);
     const [search, setSearch] = useState<string>('');
     const { locale } = usePage().props;
 
@@ -70,7 +72,7 @@ const Step2: React.FC<Step2Props> = ({
         [activeStep, profiles, locale],
     );
 
-    const profileHash : string = profiles[0] || '';
+    const profileHash: string = profiles[0] || '';
 
     return (
         <WorkflowLayout asideInfo={stepDetails[activeStep - 1].info ?? ''}>
@@ -114,6 +116,5 @@ const Step2: React.FC<Step2Props> = ({
         </WorkflowLayout>
     );
 };
-
 
 export default Step2;
