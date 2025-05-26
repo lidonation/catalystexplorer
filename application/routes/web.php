@@ -38,19 +38,19 @@ Route::localized(
     function () {
         Route::get('/', [HomeController::class, 'index'])
             ->name('home');
-            
+
         Route::prefix('/proposals')->as('proposals.')->group(function () {
             Route::get('/', [ProposalsController::class, 'index'])
                 ->name('index');
-            
+
             Route::get('/charts', [ProposalsController::class, 'charts'])
-            ->name('charts');
+                ->name('charts');
 
             Route::get('/{slug}', function ($slug) {
                 return redirect()->route('proposals.group.details', ['slug' => $slug]);
             })->name('redirect');
-            
-            Route::prefix('/{slug}')->as('group.')->group(function () {                
+
+            Route::prefix('/{slug}')->as('group.')->group(function () {
                 Route::get('/details', [ProposalsController::class, 'proposal'])
                     ->name('details');
 
@@ -61,7 +61,7 @@ Route::localized(
                     ->name('teamInformation');
             });
         });
-        
+
 
         Route::get('/proposals', [ProposalsController::class, 'index'])
             ->name('proposals.index');
@@ -188,6 +188,24 @@ Route::localized(
                         ->name('submitVotes');
                     Route::get('/success', [VotingWorkflowController::class, 'success'])
                         ->name('success');
+                });
+
+            Route::prefix('/create-bookmarks/steps')->as('bookmarks.')
+                ->middleware([WorkflowMiddleware::class])
+                ->group(function () {
+                Route::get('/success', [BookmarksController::class, 'success'])
+                    ->name('success');
+                    Route::get('/{step}', [BookmarksController::class, 'handleStep'])
+                        ->name('index');
+                    Route::post('/save-list', [BookmarksController::class, 'saveList'])
+                        ->name('saveList');
+                    Route::post('{bookmarkCollection}/add-list-item/', [BookmarksController::class, 'addBookmarkItem'])
+                        ->name('addBookmarkItem');
+                    Route::post('{bookmarkCollection}/remove-list-item/', [BookmarksController::class, 'removeBookmarkItem'])
+                        ->name('removeBookmarkItem');
+                    Route::post('{bookmarkCollection}/save-rationales', [BookmarksController::class, 'saveRationales'])
+                        ->name('saveRationales');
+                    
                 });
 
             Route::prefix('/drep-sign-up/steps')->as('drepSignUp.')
@@ -323,7 +341,7 @@ Route::localized(
                 Route::get('/', [TransactionController::class, 'index'])
                     ->name('index');
                 Route::get('/{transaction}', [TransactionController::class, 'show'])
-                    ->name('show');   
+                    ->name('show');
             });
 
             Route::prefix('/wallets')->as('wallets.')->group(function () {

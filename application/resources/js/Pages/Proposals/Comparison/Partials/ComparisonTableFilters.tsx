@@ -5,11 +5,9 @@ import { SearchSelect } from '@/Components/SearchSelect';
 import FilterLinesIcon from '@/Components/svgs/FilterLinesIcon';
 import { useProposalComparison } from '@/Context/ProposalComparisonContext';
 import { ParamsEnum } from '@/enums/proposal-search-params';
-import ProposalSortingOptions from '@/lib/ProposalSortOptions';
 import { Button } from '@headlessui/react';
 import { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-
 
 export default function ComparisonTableFilters() {
     const { t } = useTranslation();
@@ -31,7 +29,6 @@ export default function ComparisonTableFilters() {
     const handleSearch = (term: string) => {
         setSearchQuery(term);
     };
-
 
     const sortOptions = [
         {
@@ -68,9 +65,8 @@ export default function ComparisonTableFilters() {
         },
     ];
 
-
     return (
-        <div className="container mb-6">
+        <div className="mb-2">
             <section>
                 <div className="sticky top-0 z-10 container mx-auto flex w-full flex-col gap-3 px-0 py-3 backdrop-blur-md">
                     <div className="flex items-center justify-end gap-2">

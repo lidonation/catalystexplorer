@@ -74,6 +74,14 @@ class RouteServiceProvider extends ServiceProvider
                 abort(404, 'No item found for this hash!');
             }
         });
+
+        Route::bind('bookmarkCollection', function ($hashId) {
+            try {
+                return (new HashIdService(new BookmarkCollection))->decode($hashId);
+            } catch (Exception) {
+                abort(404, 'No item found for this hash!');
+            }
+        });
     }
 
     /**

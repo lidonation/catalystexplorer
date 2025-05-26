@@ -10,7 +10,9 @@ import User = App.DataTransferObjects.UserData;
 function DesktopSidebar(props: any) {
     const {t} = useTranslation();
     const {auth} = usePage().props;
+    const { url } = usePage();
     const {...rest} = props;
+    const isOnMyRoute = url.includes('/my/');
     
     const currentPath = window.location.pathname;
     
@@ -24,14 +26,14 @@ function DesktopSidebar(props: any) {
     return (
         <aside
             {...rest}
-            className="flex h-full w-full flex-col justify-between gap-8"
+            className={`flex h-full w-full flex-col ${!isOnMyRoute ? 'justify-between' : ''} gap-8`}
             aria-label={t('navigation.desktop.sidebar')}
         >
             <section className="flex h-6 shrink-0 items-center  sm:pt-8">
                 <CatalystLogo className="w-full"/>
             </section>
 
-            <section className="flex grow flex-col gap-6 overflow-y-auto ">
+            <section className="flex flex-shrink flex-col gap-6 overflow-y-auto">
                 <AppNavigation/>
             </section>
 

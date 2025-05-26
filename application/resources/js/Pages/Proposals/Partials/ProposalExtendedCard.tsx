@@ -27,10 +27,6 @@ export default function ProposalExtendedCard({
 }: any) {
     const [cardHeight, setCardHeight] = useState<number | null>(null);
     const cardRef = useRef<HTMLElement>(null);
-    const [solutionExpanded, setSolutionExpanded] = useState(false);
-    const [solutionHeight, setSolutionHeight] = useState<number | null>(null);
-    const cardContainerRef = useRef<HTMLDivElement>(null);
-    const solutionContainerRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         if (cardRef.current) {
@@ -40,28 +36,6 @@ export default function ProposalExtendedCard({
             }
         }
     }, []);
-
-    const handleSolutionExpand = (expanded: boolean, height: number) => {
-        setSolutionExpanded(expanded);
-        setSolutionHeight(height);
-        
-        setTimeout(() => {
-            if (cardContainerRef.current) {
-                if (solutionContainerRef.current) {
-                    solutionContainerRef.current.style.height = expanded ? `auto` : 'auto';
-                    solutionContainerRef.current.style.overflow = expanded ? 'visible' : 'hidden';
-                }
-                
-                cardContainerRef.current.style.transition = 'all 0.3s ease-in-out';
-                
-                if (expanded) {
-                    cardContainerRef.current.style.minHeight = `${cardHeight ? cardHeight + height/2 : 650}px`;
-                } else {
-                    cardContainerRef.current.style.minHeight = '';
-                }
-            }
-        }, 50);
-    };
     
     const wrappedHandleUserClick = useCallback(
         (user: any) => {
@@ -124,8 +98,8 @@ export default function ProposalExtendedCard({
                                 aria-labelledby="funding-heading"
                             >
                                 <div className="flex items-center flex-row justify-between my-1.5">
-                                    <Title level='4' className="font-semibold">
-                                        {t('funding')}
+                                    <Title level='5' className="text-base font-medium leading-normal">
+                                        {t('ideascaleProfiles.fundingStatus')}
                                     </Title>
 
                                     <ProposalFundingStatus
@@ -136,17 +110,11 @@ export default function ProposalExtendedCard({
                                     proposal={proposal}
                                 />
                             </section>
-                            <div 
-                                className={`relative mt-2 transition-all duration-300 ease-in-out ${solutionExpanded ? 'mb-1' : 'mb-1'}`}
-                                style={{ 
-                                    minHeight: solutionHeight ? `${solutionHeight}px` : 'auto',
-                                }}
-                            >
+                            <div className="relative flex h-auto w-full flex-col items-start overflow-visible">
                                 <ProposalSolution
                                     solution={proposal.solution}
                                     problem={proposal.problem}
                                     slug={proposal.slug}
-                                    onContentExpand={handleSolutionExpand}
                                 />
                             </div>
                             <div className="relative mt-2 border-t border-b border-gray-persist pt-2 pb-2">

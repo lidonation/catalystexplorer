@@ -27,7 +27,7 @@ export default function MyReviews({
         768: 1,
     };
     return (
-        <MyLayout>
+        <>
             <Head title="My Reviews" />
             <WhenVisible data="reviews" fallback={<div>Loading Reviews</div>}>
                 <div className="container">
@@ -54,6 +54,6 @@ export default function MyReviews({
                     )}
                 </div>
             </WhenVisible>
-        </MyLayout>
+        </>
     );
 }

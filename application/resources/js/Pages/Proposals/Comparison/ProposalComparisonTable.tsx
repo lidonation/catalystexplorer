@@ -1,5 +1,6 @@
 import Paragraph from '@/Components/atoms/Paragraph';
 import Title from '@/Components/atoms/Title';
+import { useProposalComparison } from '@/Context/ProposalComparisonContext';
 import {
     closestCenter,
     DndContext,
@@ -17,10 +18,6 @@ import {
 import { useTranslation } from 'react-i18next';
 import ComparisonTableFilters from './Partials/ComparisonTableFilters';
 import SortableProposalColumn from './SortableProposalColumn';
-import { useProposalComparison } from '@/Context/ProposalComparisonContext';
-
-
-
 
 export default function ProposalsTable() {
     const { t } = useTranslation();
@@ -99,62 +96,64 @@ export default function ProposalsTable() {
     }
 
     return (
-        <>
+        <div className="container">
             <header>
-                <div className="container">
+                <div className=" ">
                     <Title level="1">{t('proposalComparison.title')}</Title>
                 </div>
 
-                <div className="container">
+                <div className=" ">
                     <Paragraph className="text-content">
                         {t('proposalComparison.subtitle')}
                     </Paragraph>
                 </div>
             </header>
             <ComparisonTableFilters />
-            <div className="relative container mb-4 w-full">
-                <div className="bg-background flex w-full gap-1 rounded-lg shadow-lg">
-                    {/* Sticky Row Headers */}
-                    <div className="bg-background sticky left-0 z-10 flex flex-col rounded-l-lg shadow-lg">
-                        {rows.map((row) => (
-                            <div
-                                key={row.id}
-                                className={`${row.height} border-gray-light flex items-center border-r border-b px-4 text-left font-medium text-gray-500`}
-                            >
-                                {row.label}
-                            </div>
-                        ))}
-                    </div>
-
-                    {/* Scrollable Draggable Columns */}
-                    <div
-                        className="border-gray-light overflow-x-auto border-l"
-                        style={{ maxWidth: 'calc(100% - 120px)' }}
-                    >
-                        <DndContext
-                            sensors={sensors}
-                            collisionDetection={closestCenter}
-                            onDragEnd={handleDragEnd}
+            <div className="bg-background border-gray-light relative mb-4 flex w-full rounded-lg border shadow-lg">
+                {/* Sticky Row Headers */}
+                <div className="bg-background sticky left-0 z-10 flex flex-col rounded-l-lg">
+                    {rows.map((row) => (
+                        <div
+                            key={row.id}
+                            className={`${row.height} border-gray-light flex items-center border-b px-4 text-left font-medium ${row.id == 'metric' ? 'text-dark !bg-background-lighter rounded-tl-lg' : ''}`}
                         >
-                            <div className="flex min-w-max">
-                                <SortableContext
-                                    items={filteredProposals.map(
-                                        (p) => p.hash ?? '',
-                                    )}
-                                    strategy={horizontalListSortingStrategy}
-                                >
-                                    {filteredProposals.map((proposal) => (
-                                        <SortableProposalColumn
-                                            key={proposal.hash}
-                                            proposal={proposal}
-                                        />
-                                    ))}
-                                </SortableContext>
-                            </div>
-                        </DndContext>
-                    </div>
+                            {row.label}
+                        </div>
+                    ))}
+                </div>
+
+                {/* Scrollable Draggable Columns */}
+                <div
+                    className="border-gray-light overflow-x-auto border-l"
+                    style={{ maxWidth: 'calc(100% - 120px)' }}
+                >
+                    <DndContext
+                        sensors={sensors}
+                        collisionDetection={closestCenter}
+                        onDragEnd={handleDragEnd}
+                    >
+                        <div className="flex min-w-max">
+                            <SortableContext
+                                items={filteredProposals.map(
+                                    (p) => p.hash ?? '',
+                                )}
+                                strategy={horizontalListSortingStrategy}
+                            >
+                                {filteredProposals.map((proposal, index) => (
+                                    <SortableProposalColumn
+                                        key={proposal.hash}
+                                        proposal={proposal}
+                                        isLast={
+                                            index ===
+                                            filteredProposals.length - 1
+                                        }
+                                    />
+                                ))}
+                            </SortableContext>
+                        </div>
+                    </DndContext>
                 </div>
             </div>
-        </>
+        </div>
     );
 }

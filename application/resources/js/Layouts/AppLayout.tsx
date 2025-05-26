@@ -23,6 +23,7 @@ import MainLayout from './RootLayout';
 import { ModalRoot } from '@inertiaui/modal-react';
 import GraphButton from '@/Components/GraphButton';
 import ModalNavLink from '@/Components/ModalNavLink';
+import ProposalComparison from '@/Pages/Proposals/Comparison/ProposalComparison';
 
 export default function AppLayout({ children }: { children: ReactNode }) {
     const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -104,7 +105,7 @@ export default function AppLayout({ children }: { children: ReactNode }) {
                         </MetricsProvider>
                     </PlayerProvider>
                 </main>
-
+                <ProposalComparison />
                 {/* modal sidebar */}
                 <ModalSidebar
                     title={t('register')}

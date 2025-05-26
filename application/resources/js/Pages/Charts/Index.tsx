@@ -3,12 +3,9 @@ import { Head, router } from '@inertiajs/react';
 import ModalLayout from '@/Layouts/ModalLayout';
 
 const Index = () => {
-    function handleChartDetailModalClose() {
-            router.reload({ only: ['proposals'] });
-    }
 
     return (
-        <ModalLayout onModalClosed={handleChartDetailModalClose}>
+        <ModalLayout navigate={true}>
             <Head title="Charts"/>
 
             <header>
