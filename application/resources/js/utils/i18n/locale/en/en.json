@@ -398,7 +398,8 @@
         "items": "items",
         "manage": "Manage",
         "createList": "Create New List",
-        "votes": "Votes"
+        "votes": "Votes",
+        "my": "My"
     },
     "navigation": {
         "mobile": {

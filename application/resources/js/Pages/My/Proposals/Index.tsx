@@ -27,7 +27,7 @@ export default function MyProposals({ proposals, filters }: MyProposalsProps) {
 
   return (
    
-      <FiltersProvider defaultFilters={filters} routerOptions={{ only: ['proposals'] }}>
+      <FiltersProvider defaultFilters={filters ?? []} routerOptions={{ only: ['proposals'] }}>
         <Head title={t('my.proposals')}/>
 
         <div className="pb-8 pt-8">

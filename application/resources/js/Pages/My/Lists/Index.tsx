@@ -1,6 +1,5 @@
 import Paginator from '@/Components/Paginator';
 import PrimaryLink from '@/Components/atoms/PrimaryLink';
-import MyLayout from '@/Pages/My/MyLayout';
 import { useLocalizedRoute } from '@/utils/localizedRoute';
 import { Head } from '@inertiajs/react';
 import { useState } from 'react';
@@ -32,7 +31,7 @@ export default function MyList({ bookmarkCollections }: MyListProps) {
         <>
             <Head title="My List" />
 
-            <div className="mx-auto max-w-7xl px-4 py-2 sm:px-6 lg:px-8 h-screen">
+            <div className="mx-auto h-screen max-w-7xl px-4 py-2 sm:px-6 lg:px-8">
                 {bookmarkCollections?.data &&
                     bookmarkCollections?.data?.length > 0 && (
                         <div className="mb-6 flex items-center">
@@ -66,7 +65,9 @@ export default function MyList({ bookmarkCollections }: MyListProps) {
                                 'workflows.bookmarks.index',
                                 { step: 1 },
                             )}
-                        />
+                        >
+                            {`+ ${t('my.createList')}`}
+                        </PrimaryLink>
                     </div>
                 )}
             </div>

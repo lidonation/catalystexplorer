@@ -195,12 +195,13 @@ class ProposalsController extends Controller
     public function myProposals(Request $request): Response
     {
         $userId = Auth::id();
-        $ideascaleProfile = IdeascaleProfile::where('claimed_by_id', operator: $userId)->get()->map(fn ($p) => $p->hash);
+        $ideascaleProfile = IdeascaleProfile::where('claimed_by_id', $userId)->get()->map(fn ($p) => $p->hash);
 
-        if (empty($ideascaleProfile)) {
+        if ($ideascaleProfile->isEmpty()) {
             return Inertia::render('My/Proposals/Index', [
                 'proposals' => [
                     'data' => [],
+                    'filters' => $this->queryParams,
                 ],
             ]);
         }
