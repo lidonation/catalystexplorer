@@ -1171,9 +1171,11 @@
             "budgetHighToLowUSD": "Budget(USD): High to Low",
             "budgetLowToHighUSD": "Budget(USD): Low to High",
             "alphabeticallyAZ": "Alphabetically: A to Z",
-            "updatedAtASC": "Recently updated",
+            "updatedAtASC": "Last Modified",
             "itemsCountASC": "Items added: Low To High",
             "itemsCountDESC": "Items added: High to Low"
-        }
+        },
+        "comments": "Comments",
+        "lastModified": "Last Modified"
     }
 }

@@ -1,6 +1,8 @@
 import Card from '@/Components/Card';
 import UserAvatar from '@/Components/UserAvatar';
 import Button from '@/Components/atoms/Button';
+import Paragraph from '@/Components/atoms/Paragraph';
+import PrimaryButton from '@/Components/atoms/PrimaryButton';
 import Title from '@/Components/atoms/Title';
 import capitalizeFirstLetter from '@/utils/caps';
 import { useLocalizedRoute } from '@/utils/localizedRoute';
@@ -9,8 +11,6 @@ import { Link, usePage } from '@inertiajs/react';
 import { Clock, MessageCircle } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import BookmarkCollectionData = App.DataTransferObjects.BookmarkCollectionData;
-import PrimaryButton from '@/Components/atoms/PrimaryButton';
-import Paragraph from '@/Components/atoms/Paragraph';
 
 const BookmarkCollectionCard = ({
     collection,
@@ -46,40 +46,47 @@ const BookmarkCollectionCard = ({
                     </Paragraph>
                 </div>
             </div>
-            {user && (
-                <div className="">
-                    <div className="flex items-center py-2 lg:gap-6">
-                        <div className="flex items-center gap-2">
-                            <UserAvatar
-                                size="size-8"
-                                imageUrl={user.hero_img_url}
-                            />
 
-                            <span className="lg:text-md text-xs font-semibold">
-                                {user.name}
+            <div className="">
+                <div className="flex items-center py-2 lg:gap-6">
+                    <div className="flex items-center gap-2">
+                        <UserAvatar
+                            size="size-8"
+                            imageUrl={
+                                user?.hero_img_url
+                                    ? user?.hero_img_url
+                                    : undefined
+                            }
+                            name={user?.name}
+                        />
+
+                        <span className="lg:text-md text-xs font-semibold">
+                            {user?.name}
+                        </span>
+                    </div>
+
+                    {collection?.updated_at && (
+                        <div className="text-muted-foreground lg:text-md flex items-center gap-2 text-xs">
+                            <Clock className="h-5 w-5" />
+                            <span className="font-semibold">
+                                {t('bookmarks.lastModified')}:{' '}
+                            </span>
+                            <span>
+                                {formatTimestamp(collection?.updated_at)}
                             </span>
                         </div>
+                    )}
 
-                        {collection?.updated_at && (
-                            <div className="text-muted-foreground lg:text-md flex items-center gap-2 text-xs">
-                                <Clock className="h-5 w-5" />
-                                <span className="font-semibold">
-                                    Last Modified:{' '}
-                                </span>
-                                <span>
-                                    {formatTimestamp(collection?.updated_at)}
-                                </span>
-                            </div>
-                        )}
-
-                        <div className="text-muted-foreground lg:text-md flex items-center gap-2 text-xs">
-                            <MessageCircle className="h-5 w-5" />
-                            <span className="font-semibold">Comments: </span>
-                            <span>{collection.comments_count}</span>
-                        </div>
+                    <div className="text-muted-foreground lg:text-md flex items-center gap-2 text-xs">
+                        <MessageCircle className="h-5 w-5" />
+                        <span className="font-semibold">
+                            {t('bookmarks.comments')}:{' '}
+                        </span>
+                        <span>{collection.comments_count ?? 0}</span>
                     </div>
                 </div>
-            )}
+            </div>
+
             {/* <div className="py-6"> */}
             <div className="grid grid-cols-2 gap-4 md:grid-cols-6">
                 {Object.entries(collection?.types_count ?? {})?.map((item) => {
