@@ -1,10 +1,10 @@
 import RecordsNotFound from '@/Layouts/RecordsNotFound';
+import { SearchParams } from '@/types/search-params';
 import { generateTabs, ideascaleProfileTabs } from '@/utils/routeTabs';
 import { PageProps as InertiaPageProps } from '@inertiajs/core';
 import { usePage } from '@inertiajs/react';
 import { ReactNode, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { SearchParams } from '../../types/search-params';
 import IdeascaleProfileCard from './Partials/IdeascaleProfileCard';
 import IdeascaleProfileTabs from './Partials/IdeascaleProfileTab';
 import IdeascaleProfileData = App.DataTransferObjects.IdeascaleProfileData;

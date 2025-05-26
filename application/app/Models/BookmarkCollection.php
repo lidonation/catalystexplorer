@@ -47,7 +47,7 @@ class BookmarkCollection extends Model
     public static function getFilterableAttributes(): array
     {
         return [
-            'visibility'
+            'visibility',
         ];
     }
 

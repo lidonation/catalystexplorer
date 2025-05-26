@@ -5,7 +5,7 @@
 //@use 'tailwindcss/components'; /* Reference component styles */
 @use 'tailwindcss/utilities';
 
-@config "../../tailwind.config.js";
+@config "@/tailwind.config.js";
 
 @layer utilities {
     html {

@@ -1,4 +1,4 @@
-import { TransitionListPageProps } from '@/../../types/general';
+import { TransitionListPageProps } from '@/types/general';
 import Checkbox from '@/Components/atoms/Checkbox';
 import Paragraph from '@/Components/atoms/Paragraph';
 import PrimaryButton from '@/Components/atoms/PrimaryButton';

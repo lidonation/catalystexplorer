@@ -1,5 +1,5 @@
+import { PaginatedData } from '@/types/paginated-data';
 import { Head } from '@inertiajs/react';
-import { PaginatedData } from '../../types/paginated-data';
 import GroupLayout from './GroupLayout';
 import GroupData = App.DataTransferObjects.GroupData;
 import ProposalData = App.DataTransferObjects.ProposalData;

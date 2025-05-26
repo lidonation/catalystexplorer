@@ -140,7 +140,7 @@
         "searchPlaceholder": "Rechercher une proposition",
         "viewProposal": "Voir la proposition",
         "tableHeaders": {
-            "metric":"Métrique",
+            "metric": "Métrique",
             "reorder": "Réorganiser",
             "title": "Titre",
             "fund": "Fonds",
@@ -1019,7 +1019,7 @@
         }
     },
     "bookmarks": {
-        "listTitle": "Découvrir les listes de la communauté",
+        "listTitle": "Découvrir les listes communautaires",
         "listSubtitle": "Parcourez et recherchez des listes de favoris sélectionnées partagées par d'autres.",
         "myBookmarks": "Mes favoris",
         "searchPlaceholder": "Rechercher une liste",
@@ -1032,12 +1032,13 @@
             "budgetLowToHighADA": "Budget (ADA) : du plus bas au plus élevé",
             "budgetHighToLowUSD": "Budget (USD) : du plus élevé au plus bas",
             "budgetLowToHighUSD": "Budget (USD) : du plus bas au plus élevé",
-            "alphabeticallyAZ": "Alphabétiquement : A à Z",
+            "alphabeticallyAZ": "Ordre alphabétique : A à Z",
             "updatedAtASC": "Dernière modification",
-            "itemsCountASC": "Éléments ajoutés : du plus petit au plus grand",
-            "itemsCountDESC": "Éléments ajoutés : du plus grand au plus petit"
+            "itemsCountASC": "Éléments ajoutés : du plus bas au plus élevé",
+            "itemsCountDESC": "Éléments ajoutés : du plus élevé au plus bas"
         },
         "comments": "Commentaires",
-        "lastModified": "Dernière modification"
+        "lastModified": "Dernière modification",
+        "createList": "Créer votre liste"
     }
 }

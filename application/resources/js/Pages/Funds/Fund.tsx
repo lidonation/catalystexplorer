@@ -1,9 +1,9 @@
 import { FiltersProvider } from '@/Context/FiltersContext';
 import { MetricEnum } from '@/enums/metrics-enums';
 import { PageProps } from '@/types';
+import { SearchParams } from '@/types/search-params';
 import { Head, WhenVisible } from '@inertiajs/react';
 import { useTranslation } from 'react-i18next';
-import { SearchParams } from '../../types/search-params';
 import CampaignCard from '../Campaign/Partials/CampaignCard';
 import CampaignList from '../Campaign/Partials/CampaignList';
 import CampaignLoader from '../Campaign/Partials/CampaignLoader';

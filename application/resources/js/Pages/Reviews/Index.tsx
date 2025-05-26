@@ -3,11 +3,11 @@ import Title from '@/Components/atoms/Title';
 import { ReviewList } from '@/Components/ReviewList';
 import { FiltersProvider } from '@/Context/FiltersContext';
 import ReviewsSortOptions from '@/lib/ReviewsSortOptions';
+import { PaginatedData } from '@/types/paginated-data';
+import { SearchParams } from '@/types/search-params';
 import { Head } from '@inertiajs/react';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { PaginatedData } from '../../types/paginated-data';
-import { SearchParams } from '../../types/search-params';
 import ReviewsFilter from './Partials/ReviewsFilters';
 import ReviewData = App.DataTransferObjects.ReviewData;
 
