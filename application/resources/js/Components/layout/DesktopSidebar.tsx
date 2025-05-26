@@ -33,7 +33,7 @@ function DesktopSidebar(props: any) {
                 <CatalystLogo className="w-full"/>
             </section>
 
-            <section className="flex flex-shrink flex-col gap-6 overflow-y-auto">
+            <section className="flex flex-col gap-6 overflow-y-auto">
                 <AppNavigation/>
             </section>
 

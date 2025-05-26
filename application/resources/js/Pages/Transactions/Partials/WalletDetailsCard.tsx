@@ -41,7 +41,7 @@ export default function WalletDetailsCard({
 
                     <DetailRow
                         label={t('transactions.allTimeVotes')}
-                        value={`${walletStats.all_time_votes} votes`}
+                        value={`${walletStats.all_time_votes.toLocaleString()} votes`}
                         background
                     />
 
