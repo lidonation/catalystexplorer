@@ -1,4 +1,4 @@
-import { Link } from '@inertiajs/react';
+import { Link, usePage } from '@inertiajs/react';
 import { ReactNode } from 'react';
 import Paragraph from '@/Components/atoms/Paragraph';
 
@@ -24,13 +24,15 @@ export default function NavLinkItem({
     ariaLabel,
     ...rest
 }: NavLinkItemProps) {
+      const { url } = usePage();
+        const isOnMyRoute = url.includes('/my/');
     return (
         <Link
             {...rest}
             href={href}
             aria-label={ariaLabel}
             role="menuitem"
-            className={`hover:bg-background-lighter flex items-center gap-3 px-3 py-1 ${active ? 'text-primary-100' : 'text-dark'} ${className}`}
+            className={`${!isOnMyRoute ? 'hover:bg-background-lighter' : 'hover:bg-active-dashboard-menu'} flex items-center gap-3 px-3 py-1 ${active ? 'text-primary-100' : 'text-dark'} ${className}`}
         >
             {children}
             <Paragraph size="sm">
