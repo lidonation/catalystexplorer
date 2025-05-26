@@ -165,7 +165,7 @@ watch:
 test-backend:
 	docker-compose -f docker-compose.testing.yml up -d && \
     sleep 3 && \
-	docker-compose -f docker-compose.testing.yml exec -T catalystexplorer_test.com vendor/bin/pest --group=arch && \
+	docker-compose -f docker-compose.testing.yml exec -T catalystexplorer_test.com vendor/bin/pest --group=arch --parallel && \
 	sleep 3 && \
  	docker-compose -f docker-compose.testing.yml down --volumes
 

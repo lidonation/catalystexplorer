@@ -1,0 +1,59 @@
+<?php
+
+declare(strict_types=1);
+
+use App\Models\User;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use Inertia\Testing\AssertableInertia as Assert;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+
+uses(RefreshDatabase::class);
+
+
+it('renders all public pages', function (string $path, string $component) {
+    $user = User::factory()->create();
+
+    Auth::login($user->first());
+
+    $this->get($path)
+        ->assertOk()
+        ->assertInertia(fn(Assert $page) => $page->component($component));
+})->with([
+    [
+        'path' => '/en/my/dashboard',
+        'component' => 'My/Dashboard',
+    ],
+    [
+        'path' => '/en/en/my/profile',
+        'component' => 'My/Profile/Index',
+    ],
+    [
+        'path' => '/en/my/reviews',
+        'component' => 'My/Reviews/Index',
+    ],
+    [
+        'path' => '/en/en/my/proposals',
+        'component' => 'My/Proposals/Index',
+    ],
+    [
+        'path' => '/en/my/groups',
+        'component' => 'My/Groups',
+    ],
+    [
+        'path' => '/en/en/my/communities',
+        'component' => 'My/Communities/Index',
+    ],
+    [
+        'path' => '/en/en/my/lists',
+        'component' => 'My/Lists/Index',
+    ],
+    [
+        'path' => '/en/en/my/transactions',
+        'component' => 'My/Transactions/Index',
+    ],
+    [
+        'path' => '/en/en/my/votes',
+        'component' => 'My/Votes/Index',
+    ],
+]);
