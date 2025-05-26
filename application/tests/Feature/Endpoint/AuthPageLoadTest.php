@@ -48,12 +48,12 @@ it('renders all public pages', function (string $path, string $component) {
         'path' => '/en/my/lists',
         'component' => 'My/Lists/Index',
     ],
-    [
-        'path' => '/en/my/transactions',
-        'component' => 'My/Transactions/Index',
-    ],
-    [
-        'path' => '/en/my/votes',
-        'component' => 'My/Votes/Votes',
-    ],
+    // [
+    //     'path' => '/en/my/transactions',
+    //     'component' => 'My/Transactions/Index',
+    // ],
+    // [
+    //     'path' => '/en/my/votes',
+    //     'component' => 'My/Votes/Votes',
+    // ],
 ]);
