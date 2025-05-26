@@ -14,6 +14,7 @@ import {
     useLocalizedRoute,
 } from '@/utils/localizedRoute';
 import { useForm } from '@inertiajs/react';
+import { lowerCase } from 'lodash';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -50,9 +51,8 @@ const Step2: React.FC<Step2Props> = ({
     const localizedRoute = useLocalizedRoute;
 
     const param = bookmarkCollection
-        ? { step: activeStep - 1, bookmarkCollection: bookmarkCollection?.hash}
+        ? { step: activeStep - 1, bookmarkCollection: bookmarkCollection?.hash }
         : { step: activeStep - 1 };
-        
 
     const prevStep = localizedRoute('workflows.bookmarks.index', param);
 
@@ -144,19 +144,23 @@ const Step2: React.FC<Step2Props> = ({
                                 }
                                 options={[
                                     {
-                                        value: VisibilityEnum.PUBLIC,
+                                        value: lowerCase(VisibilityEnum.PUBLIC),
                                         label: t(
                                             'workflows.voterList.visibilityOptions.public',
                                         ),
                                     },
                                     {
-                                        value: VisibilityEnum.PRIVATE,
+                                        value: lowerCase(
+                                            VisibilityEnum.PRIVATE,
+                                        ),
                                         label: t(
                                             'workflows.voterList.visibilityOptions.private',
                                         ),
                                     },
                                     {
-                                        value: VisibilityEnum.DELEGATORS,
+                                        value: lowerCase(
+                                            VisibilityEnum.DELEGATORS,
+                                        ),
                                         label: t(
                                             'workflows.voterList.visibilityOptions.delegators',
                                         ),
@@ -254,13 +258,13 @@ const Step2: React.FC<Step2Props> = ({
                                 }
                                 options={[
                                     {
-                                        value: StatusEnum.PUBLISHED,
+                                        value: lowerCase(StatusEnum.PUBLISHED),
                                         label: t(
                                             'workflows.voterList.statusOptions.published',
                                         ),
                                     },
                                     {
-                                        value: StatusEnum.DRAFT,
+                                        value: lowerCase(StatusEnum.DRAFT),
                                         label: t(
                                             'workflows.voterList.statusOptions.draft',
                                         ),

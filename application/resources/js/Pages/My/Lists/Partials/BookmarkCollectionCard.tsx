@@ -1,6 +1,5 @@
 import Card from '@/Components/Card';
 import UserAvatar from '@/Components/UserAvatar';
-import Button from '@/Components/atoms/Button';
 import Paragraph from '@/Components/atoms/Paragraph';
 import PrimaryButton from '@/Components/atoms/PrimaryButton';
 import Title from '@/Components/atoms/Title';
@@ -11,6 +10,7 @@ import { Link, usePage } from '@inertiajs/react';
 import { Clock, MessageCircle } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import BookmarkCollectionData = App.DataTransferObjects.BookmarkCollectionData;
+import PrimaryLink from '@/Components/atoms/PrimaryLink';
 
 const BookmarkCollectionCard = ({
     collection,
@@ -48,7 +48,7 @@ const BookmarkCollectionCard = ({
             </div>
 
             <div className="">
-                <div className="flex items-center py-2 lg:gap-6">
+                <div className="flex items-center gap-4 py-2 lg:gap-6">
                     <div className="flex items-center gap-2">
                         <UserAvatar
                             size="size-8"
@@ -67,7 +67,7 @@ const BookmarkCollectionCard = ({
 
                     {collection?.updated_at && (
                         <div className="text-muted-foreground lg:text-md flex items-center gap-2 text-xs">
-                            <Clock className="h-5 w-5" />
+                            <Clock className="hidden h-5 w-5 lg:block" />
                             <span className="font-semibold">
                                 {t('bookmarks.lastModified')}:{' '}
                             </span>
@@ -78,7 +78,7 @@ const BookmarkCollectionCard = ({
                     )}
 
                     <div className="text-muted-foreground lg:text-md flex items-center gap-2 text-xs">
-                        <MessageCircle className="h-5 w-5" />
+                        <MessageCircle className="hidden h-5 w-5 lg:block" />
                         <span className="font-semibold">
                             {t('bookmarks.comments')}:{' '}
                         </span>
@@ -103,15 +103,14 @@ const BookmarkCollectionCard = ({
             </div>
             <div className="top-4 right-4 lg:absolute">
                 {isAuthor ? (
-                    <Link
+                    <PrimaryLink
+                        className="bg-success w-full px-4 py-1.5 font-medium text-white"
                         href={useLocalizedRoute('my.lists.show', {
                             list: collection?.hash,
                         })}
                     >
-                        <Button className="bg-success w-full px-4 py-1.5 font-medium text-white">
-                            {t('my.manage')}
-                        </Button>
-                    </Link>
+                        {t('my.manage')}
+                    </PrimaryLink>
                 ) : (
                     <PrimaryButton className="bg-success w-full px-4 hover:bg-green-600">
                         View List

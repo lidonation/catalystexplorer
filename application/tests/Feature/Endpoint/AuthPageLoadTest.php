@@ -38,7 +38,7 @@ it('renders all public pages', function (string $path, string $component) {
     ],
     [
         'path' => '/en/my/groups',
-        'component' => 'My/Groups',
+        'component' => 'My/Groups/Index',
     ],
     [
         'path' => '/en/en/my/communities',
@@ -54,6 +54,6 @@ it('renders all public pages', function (string $path, string $component) {
     ],
     [
         'path' => '/en/en/my/votes',
-        'component' => 'My/Votes/Index',
+        'component' => 'My/Votes/Votes',
     ],
 ]);
