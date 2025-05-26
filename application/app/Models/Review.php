@@ -11,7 +11,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
-use Illuminate\Support\Facades\Artisan;
 use Laravel\Scout\Searchable;
 use Staudenmeir\EloquentHasManyDeep\HasRelationships;
 
@@ -20,6 +19,8 @@ class Review extends Model
     use HasRelationships, Searchable;
 
     protected $guarded = [];
+
+    public $meiliIndexName = 'cx_reviews';
 
     public static function getFilterableAttributes(): array
     {
@@ -88,11 +89,6 @@ class Review extends Model
             'negative_rankings',
             'proposal.groups.hash',
         ];
-    }
-
-    public static function runCustomIndex(): void
-    {
-        Artisan::call('cx:create-search-index App\\\\Models\\\\Review cx_reviews');
     }
 
     public function discussion(): BelongsTo

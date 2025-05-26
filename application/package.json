@@ -49,6 +49,7 @@
     "@emurgo/cardano-serialization-lib-browser": "^14.1.1",
     "@headlessui/react": "^2.2.0",
     "@inertiaui/modal-react": "file:vendor/inertiaui/modal/react",
+    "@multiavatar/multiavatar": "^1.0.7",
     "@nivo/bar": "^0.88.0",
     "@nivo/core": "^0.88.0",
     "@nivo/line": "^0.88.0",

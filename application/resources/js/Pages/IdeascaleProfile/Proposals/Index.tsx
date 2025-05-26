@@ -1,8 +1,8 @@
 import { ParamsEnum } from '@/enums/proposal-search-params';
 import ProposalMiniCardLoader from '@/Pages/Proposals/Partials/ProposalMiniCardLoader';
 import RelatedProposals from '@/Pages/Proposals/Partials/RelatedProposals';
+import { PaginatedData } from '@/types/paginated-data';
 import { Head, WhenVisible } from '@inertiajs/react';
-import { PaginatedData } from '../../../../types/paginated-data';
 import IdeascaleProfileLayout from '../IdeascaleProfileLayout';
 import IdeascaleProfileData = App.DataTransferObjects.IdeascaleProfileData;
 import ProposalData = App.DataTransferObjects.ProposalData;

@@ -1,4 +1,5 @@
 import AmountComparisonWithBar from '@/Components/AmountComparisonWithBar';
+import Paragraph from '@/Components/atoms/Paragraph';
 import Title from '@/Components/atoms/Title';
 import SegmentedBar from '@/Components/SegmentedBar';
 import { currency } from '@/utils/currency';
@@ -6,10 +7,9 @@ import { useLocalizedRoute } from '@/utils/localizedRoute';
 import { Link } from '@inertiajs/react';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Segments } from '../../../../types/segments';
+import { Segments } from '@/types/segments';
 import FundData = App.DataTransferObjects.FundData;
 import CampaignData = App.DataTransferObjects.CampaignData;
-import Paragraph from "@/Components/atoms/Paragraph";
 
 interface CampaignCardProps {
     fund: FundData;
@@ -70,7 +70,7 @@ const CampaignCard: React.FC<CampaignCardProps> = ({
             </div>
 
             <div className="mt-4">
-                <SegmentedBar segments={segments} tooltipSegments={segments}/>
+                <SegmentedBar segments={segments} tooltipSegments={segments} />
             </div>
 
             <div className="pt-6">
@@ -113,12 +113,14 @@ const CampaignCard: React.FC<CampaignCardProps> = ({
                 </div>
 
                 <div className="mt-6">
-                    {<AmountComparisonWithBar
-                        title="Distributed vs Awarded"
-                        numerator={campaign.total_distributed ?? 0}
-                        denominator={campaign.total_awarded ?? 0}
-                        currency={campaign.currency ?? ''}
-                    />}
+                    {
+                        <AmountComparisonWithBar
+                            title="Distributed vs Awarded"
+                            numerator={campaign.total_distributed ?? 0}
+                            denominator={campaign.total_awarded ?? 0}
+                            currency={campaign.currency ?? ''}
+                        />
+                    }
                 </div>
             </div>
         </div>

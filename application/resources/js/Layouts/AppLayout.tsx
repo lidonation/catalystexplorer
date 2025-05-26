@@ -5,13 +5,11 @@ import DesktopSidebar from '@/Components/layout/DesktopSidebar';
 import Footer from '@/Components/layout/Footer';
 import MobileNavigation from '@/Components/layout/MobileNavigation';
 import ModalSidebar from '@/Components/layout/ModalSidebar';
-import PlayerBar from '@/Components/PlayerBar';
 import CloseIcon from '@/Components/svgs/CloseIcon';
 import MenuIcon from '@/Components/svgs/MenuIcon';
 import { MetricsProvider } from '@/Context/MetricsContext';
 import { PlayerProvider } from '@/Context/PlayerContext';
 import { UIProvider } from '@/Context/SharedUIContext';
-import MetricsBar from '@/Pages/Proposals/Partials/MetricsBar';
 import { Dialog } from '@headlessui/react';
 import { usePage } from '@inertiajs/react';
 import { ReactNode, useMemo, useState } from 'react';
@@ -19,11 +17,11 @@ import { useTranslation } from 'react-i18next';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import MainLayout from './RootLayout';
-// @ts-ignore
-import { ModalRoot } from '@inertiaui/modal-react';
 import GraphButton from '@/Components/GraphButton';
 import ModalNavLink from '@/Components/ModalNavLink';
 import ProposalComparison from '@/Pages/Proposals/Comparison/ProposalComparison';
+// @ts-ignore
+import { ModalRoot } from '@inertiaui/modal-react';
 
 export default function AppLayout({ children }: { children: ReactNode }) {
     const [sidebarOpen, setSidebarOpen] = useState(false);

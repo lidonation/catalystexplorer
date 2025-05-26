@@ -68,7 +68,6 @@ export default {
                 'accent-blue': 'var(--bg-accent-color)',
                 'dark-persist': 'var(--content-primary-color)',
                 'accent-secondary': 'var(--cx-accent-secondary)',
-                'light-blue': 'var(--cx-light-blue)',
                 error: 'var(--bg-error-primary-color)',
                 'error-light': 'var(--content-error-light-border)',
                 success: 'var(--success-gradient-color-2)',

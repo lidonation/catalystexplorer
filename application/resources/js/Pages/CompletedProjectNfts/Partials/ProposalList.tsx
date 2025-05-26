@@ -1,6 +1,6 @@
 import Paragraph from '@/Components/atoms/Paragraph'; // Added import for Paragraph component
+import { PaginatedData } from '@/types/paginated-data';
 import { useTranslation } from 'react-i18next';
-import { PaginatedData } from '../../../../types/paginated-data';
 import CompletedProposalCard from './CompletedProposalCard';
 import ProposalData = App.DataTransferObjects.ProposalData;
 import IdeascaleProfileData = App.DataTransferObjects.IdeascaleProfileData;
@@ -48,7 +48,7 @@ const ProposalList: React.FC<ProposalListProps> = ({
                         />
                         <label
                             htmlFor={proposal.hash as string | undefined}
-                            className={`peer-checked:border-primary peer-checked:text-primary peer-checked:border-primary ${proposal.minted_nfts_fingerprint?'cursor-not-allowed':''} inline-flex w-full items-center justify-between rounded-lg border border-gray-100 text-gray-500 peer-checked:border-2`}
+                            className={`peer-checked:border-primary peer-checked:text-primary peer-checked:border-primary ${proposal.minted_nfts_fingerprint ? 'cursor-not-allowed' : ''} inline-flex w-full items-center justify-between rounded-lg border border-gray-100 text-gray-500 peer-checked:border-2`}
                         >
                             <CompletedProposalCard
                                 proposal={proposal}

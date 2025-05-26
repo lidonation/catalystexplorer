@@ -8,8 +8,8 @@ import { Head, WhenVisible } from '@inertiajs/react';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { PaginatedData } from '../../../types/paginated-data';
-import { SearchParams } from '../../../types/search-params';
+import { PaginatedData } from '@/types/paginated-data';
+import { SearchParams } from '@/types/search-params';
 import CommunitiesList from './Partials/CommunitiesList';
 import CommunityFilters from './Partials/CommunityFilters';
 import CommunityLoader from './Partials/CommunityLoader';
@@ -84,7 +84,7 @@ const Index: React.FC<CommunitiesPageProps> = ({
                         />
                     </section>
 
-                    <section className="container flex w-full flex-col items-center mt-4 justify-center overflow-hidden duration-500 ease-in-out">
+                    <section className="container mt-4 flex w-full flex-col items-center justify-center overflow-hidden duration-500 ease-in-out">
                         <WhenVisible
                             fallback={<CommunityLoader />}
                             data="campaigns"
@@ -93,7 +93,7 @@ const Index: React.FC<CommunitiesPageProps> = ({
                         </WhenVisible>
                     </section>
                     {communities && communities.total > 0 && (
-                        <section className="container w-full py-8 mt-4">
+                        <section className="container mt-4 w-full py-8">
                             {communities && (
                                 <Paginator pagination={communities} />
                             )}

@@ -1,21 +1,23 @@
-import React from 'react';
 import { Head, WhenVisible } from '@inertiajs/react';
 import { useTranslation } from 'react-i18next';
 import IdeascaleProfileData = App.DataTransferObjects.IdeascaleProfileData;
 import CommunityData = App.DataTransferObjects.CommunityData;
 
 import RecordsNotFound from '@/Layouts/RecordsNotFound';
-import IdeascaleProfileLayout from '../IdeascaleProfileLayout';
-import CommunityLoader from '@/Pages/Communities/Partials/CommunityLoader';
-import { PaginatedData } from '../../../../types/paginated-data';
 import CommunityCard from '@/Pages/Communities/Partials/CommunityCard';
+import CommunityLoader from '@/Pages/Communities/Partials/CommunityLoader';
+import { PaginatedData } from '@/types/paginated-data';
+import IdeascaleProfileLayout from '../IdeascaleProfileLayout';
 
 interface CommunitiesPageProps {
     ideascaleProfile: IdeascaleProfileData;
     communities: PaginatedData<CommunityData[]>;
 }
 
-export default function Communities({ ideascaleProfile, communities }: CommunitiesPageProps) {
+export default function Communities({
+    ideascaleProfile,
+    communities,
+}: CommunitiesPageProps) {
     const { t } = useTranslation();
 
     return (

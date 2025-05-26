@@ -1,3 +1,4 @@
+import { TransitionListPageProps } from '@/types/general';
 import Checkbox from '@/Components/atoms/Checkbox';
 import Paragraph from '@/Components/atoms/Paragraph';
 import PrimaryButton from '@/Components/atoms/PrimaryButton';
@@ -6,7 +7,6 @@ import { List, Loader, PlusIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
-import { TransitionListPageProps } from '../../../../../../types/general';
 
 interface BookmarkPage1Props extends TransitionListPageProps {
     bookmarkId: string;
@@ -34,7 +34,7 @@ const BookmarkPage1 = ({
 
     const [isLoading, setIsLoading] = useState(false);
     const [selectedListId, setSelectedListId] = useState<string | null>(
-        associateCollectionId || null
+        associateCollectionId || null,
     );
     const [loadingListId, setLoadingListId] = useState<string | null>(null);
 
@@ -184,9 +184,13 @@ const BookmarkPage1 = ({
                                     id={list.id}
                                     name={list.id}
                                     checked={selectedListId === list.id}
-                                    onChange={() => handleCheckboxChange(list.id)}
+                                    onChange={() =>
+                                        handleCheckboxChange(list.id)
+                                    }
                                     isLoading={loadingListId === list.id}
-                                    disabled={isLoading || loadingListId !== null}
+                                    disabled={
+                                        isLoading || loadingListId !== null
+                                    }
                                     style={{
                                         pointerEvents: isLoading
                                             ? 'none'
