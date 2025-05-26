@@ -3,11 +3,12 @@ import Value from '@/Components/atoms/Value';
 import Card from '@/Components/Card';
 import Paginator from '@/Components/Paginator';
 import { FiltersProvider } from '@/Context/FiltersContext';
+import RecordsNotFound from '@/Layouts/RecordsNotFound';
 import { copyToClipboard } from '@/utils/copyClipboard';
 import { truncateMiddle } from '@/utils/truncateMiddle';
 import { Head } from '@inertiajs/react';
 import { ChevronLeft, CopyIcon } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { PaginatedData } from '../../../types/paginated-data';
 import { SearchParams } from '../../../types/search-params';
@@ -69,11 +70,19 @@ export default function Wallet({
                         <DetailRow label={t('transactions.wallet.stakeKey')}>
                             <div className="flex flex-1 items-center">
                                 <Value className="text-content mr-2 truncate font-bold">
-                                    {truncateMiddle(transaction?.json_metadata?.stake_key ?? '-')}
+                                    {truncateMiddle(
+                                        transaction?.json_metadata?.stake_key ??
+                                            '-',
+                                    )}
                                 </Value>
                                 <CopyIcon
                                     className="text-gray-persist h-4 w-4 cursor-pointer font-bold"
-                                    onClick={() => copyToClipboard(transaction?.json_metadata?.stake_key  ?? '-')}
+                                    onClick={() =>
+                                        copyToClipboard(
+                                            transaction?.json_metadata
+                                                ?.stake_key ?? '-',
+                                        )
+                                    }
                                 />
                             </div>
                         </DetailRow>
@@ -107,24 +116,30 @@ export default function Wallet({
                         </div>
                         <div className="py-4">
                             {activeTab === 'votes' ? (
-                                <>
-                                    <CatalystVotesTable
-                                        catalystVotes={catalystVotes?.data}
-                                    />
-                                    <div className="bg-background flex w-full items-center justify-center rounded-b-lg pt-2 shadow-[0_2px_4px_rgba(0,0,0,0.05)]">
-                                        <div className="mt-2">
-                                            {catalystVotes && (
-                                                <Paginator
-                                                    pagination={catalystVotes}
-                                                />
-                                            )}
+                                catalystVotes?.data?.length > 0 ? (
+                                    <>
+                                        <CatalystVotesTable
+                                            catalystVotes={catalystVotes?.data}
+                                        />
+                                        <div className="bg-background flex w-full items-center justify-center rounded-b-lg pt-2 shadow-[0_2px_4px_rgba(0,0,0,0.05)]">
+                                            <div className="mt-2">
+                                                {catalystVotes && (
+                                                    <Paginator
+                                                        pagination={
+                                                            catalystVotes
+                                                        }
+                                                    />
+                                                )}
+                                            </div>
                                         </div>
-                                    </div>
-                                </>
-                            ) : (
+                                    </>
+                                ) : (
+                                    <RecordsNotFound />
+                                )
+                            ) : walletTransactions?.data?.length > 0 ? (
                                 <>
                                     <WalletTransactionsTable
-                                        transactions={walletTransactions?.data}
+                                        transactions={walletTransactions.data}
                                     />
                                     <div className="bg-background flex w-full items-center justify-center rounded-b-lg pt-2 shadow-[0_2px_4px_rgba(0,0,0,0.05)]">
                                         <div className="mt-2">
@@ -138,6 +153,8 @@ export default function Wallet({
                                         </div>
                                     </div>
                                 </>
+                            ) : (
+                                <RecordsNotFound />
                             )}
                         </div>
                     </Card>
