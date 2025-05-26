@@ -25,7 +25,7 @@ it('renders all public pages', function (string $path, string $component) {
         'component' => 'My/Dashboard',
     ],
     [
-        'path' => '/en/en/my/profile',
+        'path' => '/en/my/profile',
         'component' => 'My/Profile/Index',
     ],
     [
@@ -33,7 +33,7 @@ it('renders all public pages', function (string $path, string $component) {
         'component' => 'My/Reviews/Index',
     ],
     [
-        'path' => '/en/en/my/proposals',
+        'path' => '/en/my/proposals',
         'component' => 'My/Proposals/Index',
     ],
     [
@@ -41,19 +41,19 @@ it('renders all public pages', function (string $path, string $component) {
         'component' => 'My/Groups/Index',
     ],
     [
-        'path' => '/en/en/my/communities',
+        'path' => '/en/my/communities',
         'component' => 'My/Communities/Index',
     ],
     [
-        'path' => '/en/en/my/lists',
+        'path' => '/en/my/lists',
         'component' => 'My/Lists/Index',
     ],
     [
-        'path' => '/en/en/my/transactions',
+        'path' => '/en/my/transactions',
         'component' => 'My/Transactions/Index',
     ],
     [
-        'path' => '/en/en/my/votes',
+        'path' => '/en/my/votes',
         'component' => 'My/Votes/Votes',
     ],
 ]);

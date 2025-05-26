@@ -141,6 +141,7 @@ pest:
      php artisan cx:create-search-index "App\Models\Transaction" && \
      php artisan cx:create-search-index "App\Models\BookmarkCollection" && \
      php artisan cx:create-search-index "App\Models\Community" && \
+     php artisan cx:create-search-index "App\Models\VoterHistory" && \
      sleep 10 && \
      php artisan cx:create-search-index "App\Models\MonthlyReport" && \
      php artisan test'
