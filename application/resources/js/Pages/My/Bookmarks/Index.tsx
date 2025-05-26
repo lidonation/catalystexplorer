@@ -101,107 +101,125 @@ const Index: React.FC<IndexProps> = ({
   };
 
   return (
-    <FiltersProvider defaultFilters={defaultFilters}>
-    <>
-      <Head title="My Bookmarks"/>
+      <FiltersProvider defaultFilters={defaultFilters}>
+          <>
+              <Head title="My Bookmarks" />
 
-      <div ref={headerRef} className="px-8 py-4">
-        <Title level='1'>{t('My Bookmarks')}</Title>
-        <Paragraph>
-          {t('bookmark')}
-        </Paragraph>
-      </div>
+              <div ref={headerRef} className="px-8 py-4">
+                  <Title level="1">{t('bookmarks.myBookmarks')}</Title>
+                  <Paragraph>{t('bookmark')}</Paragraph>
+              </div>
 
-      {!hasBookmarks ? (
-        renderEmptyState()
-      ) : (
-        <>
-          <div className="px-8 py-4 sticky top-0 z-10 mx-auto flex w-full flex-col gap-4 pb-4 pt-6 backdrop-blur-md">
-            <div className="items-center gap-2">
-              <BookmarkNavigation
-                  counts={counts}
-                  activeType={activeType}
-                  onTypeChange={scrollToSection}
-                  proposals={proposals}
-                  people={people}
-                  groups={groups}
-                  reviews={reviews}
-              />
-              <BookmarkToolbar/>
-            </div>
-          </div>
+              {!hasBookmarks ? (
+                  renderEmptyState()
+              ) : (
+                  <>
+                      <div className="sticky top-0 z-10 mx-auto flex w-full flex-col gap-4 px-8 py-4 pt-6 pb-4 backdrop-blur-md">
+                          <div className="items-center gap-2">
+                              <BookmarkNavigation
+                                  counts={counts}
+                                  activeType={activeType}
+                                  onTypeChange={scrollToSection}
+                                  proposals={proposals}
+                                  people={people}
+                                  groups={groups}
+                                  reviews={reviews}
+                              />
+                              <BookmarkToolbar />
+                          </div>
+                      </div>
 
-          <main className="flex w-full flex-col justify-center px-8 py-4 mt-6">
-            <div
-              ref={(el) => sectionsRef.current.proposals = el}
-              className="mb-12"
-            >
-              <Title level='2' className="text-2xl font-bold mb-4">{t('Proposals')}</Title>
-              <WhenVisible
-                fallback={<ProposalVerticalCardLoading />}
-                data="proposals"
-              >
-                <BookmarksList
-                  proposals={proposals}
-                  people={[]}
-                  groups={[]}
-                  reviews={[]}
-                  activeType="proposals"
-                />
-              </WhenVisible>
-            </div>
+                      <main className="mt-6 flex w-full flex-col justify-center px-8 py-4">
+                          <div
+                              ref={(el) => (sectionsRef.current.proposals = el)}
+                              className="mb-12"
+                          >
+                              <Title
+                                  level="2"
+                                  className="mb-4 text-2xl font-bold"
+                              >
+                                  {t('Proposals')}
+                              </Title>
+                              <WhenVisible
+                                  fallback={<ProposalVerticalCardLoading />}
+                                  data="proposals"
+                              >
+                                  <BookmarksList
+                                      proposals={proposals}
+                                      people={[]}
+                                      groups={[]}
+                                      reviews={[]}
+                                      activeType="proposals"
+                                  />
+                              </WhenVisible>
+                          </div>
 
-            <div
-              ref={(el) => sectionsRef.current.people = el}
-              className="mb-12"
-            >
-              <Title level='2' className="text-2xl font-bold mb-4">{t('People')}</Title>
-              <WhenVisible
-                fallback={<IdeaScaleProfileLoader />}
-                data="people"
-              >
-                <BookmarksList
-                  proposals={[]}
-                  people={people}
-                  groups={[]}
-                  reviews={[]}
-                  activeType="people"
-                />
-              </WhenVisible>
-            </div>
+                          <div
+                              ref={(el) => (sectionsRef.current.people = el)}
+                              className="mb-12"
+                          >
+                              <Title
+                                  level="2"
+                                  className="mb-4 text-2xl font-bold"
+                              >
+                                  {t('People')}
+                              </Title>
+                              <WhenVisible
+                                  fallback={<IdeaScaleProfileLoader />}
+                                  data="people"
+                              >
+                                  <BookmarksList
+                                      proposals={[]}
+                                      people={people}
+                                      groups={[]}
+                                      reviews={[]}
+                                      activeType="people"
+                                  />
+                              </WhenVisible>
+                          </div>
 
-            <div
-              ref={(el) => sectionsRef.current.groups = el}
-              className="mb-12"
-            >
-              <Title level='2' className="text-2xl font-bold mb-4">{t('Groups')}</Title>
-              <BookmarksList
-                proposals={[]}
-                people={[]}
-                groups={groups}
-                reviews={[]}
-                activeType="groups"
-              />
-            </div>
+                          <div
+                              ref={(el) => (sectionsRef.current.groups = el)}
+                              className="mb-12"
+                          >
+                              <Title
+                                  level="2"
+                                  className="mb-4 text-2xl font-bold"
+                              >
+                                  {t('Groups')}
+                              </Title>
+                              <BookmarksList
+                                  proposals={[]}
+                                  people={[]}
+                                  groups={groups}
+                                  reviews={[]}
+                                  activeType="groups"
+                              />
+                          </div>
 
-            <div
-              ref={(el) => sectionsRef.current.reviews = el}
-              className="mb-12"
-            >
-              <Title level='2' className="text-2xl font-bold mb-4">{t('Reviews')}</Title>
-              <BookmarksList
-                proposals={[]}
-                people={[]}
-                groups={[]}
-                reviews={reviews}
-                activeType="reviews"
-              />
-            </div>
-          </main>
-        </>
-      )}
-    </>
-    </FiltersProvider>
+                          <div
+                              ref={(el) => (sectionsRef.current.reviews = el)}
+                              className="mb-12"
+                          >
+                              <Title
+                                  level="2"
+                                  className="mb-4 text-2xl font-bold"
+                              >
+                                  {t('Reviews')}
+                              </Title>
+                              <BookmarksList
+                                  proposals={[]}
+                                  people={[]}
+                                  groups={[]}
+                                  reviews={reviews}
+                                  activeType="reviews"
+                              />
+                          </div>
+                      </main>
+                  </>
+              )}
+          </>
+      </FiltersProvider>
   );
 };
 

@@ -2,15 +2,13 @@ import Card from '@/Components/Card';
 import SegmentedBar from '@/Components/SegmentedBar';
 import Paragraph from '@/Components/atoms/Paragraph';
 import Title from '@/Components/atoms/Title';
+import Value from '@/Components/atoms/Value';
+import ValueLabel from '@/Components/atoms/ValueLabel';
+import CommunityIdeascaleProfiles from '@/Pages/Communities/Partials/CommunityIdeascaleProfiles';
+import { Segments } from '@/types/segments';
 import { currency } from '@/utils/currency';
-import React, { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Segments } from '../../../../types/segments';
 import CommunityData = App.DataTransferObjects.CommunityData;
-import Value from "@/Components/atoms/Value";
-import ValueLabel from "@/Components/atoms/ValueLabel";
-import CommunityIdeascaleProfiles from "@/Pages/Communities/Partials/CommunityIdeascaleProfiles";
-import KeyValue from "@/Components/atoms/KeyValue";
 
 interface ProposalSummaryCardProps {
     community: CommunityData;
@@ -21,7 +19,7 @@ interface ProposalSummaryCardProps {
 export default function ProposalSummaryCard({
     community,
     ownProposalsCount,
-    coProposalsCount
+    coProposalsCount,
 }: ProposalSummaryCardProps) {
     const { t } = useTranslation();
 
@@ -69,7 +67,7 @@ export default function ProposalSummaryCard({
                 </Title>
             </div>
             <div className="text-3">
-                <Title className="font-bold" level={"3"}>
+                <Title className="font-bold" level={'3'}>
                     {`${currency(community?.amount_awarded_ada ?? 0, 2, 'ADA')} + ${currency(community?.amount_awarded_usd ?? 0, 2, 'USD')}`}
                 </Title>
                 <Paragraph className="text-gray-persist">

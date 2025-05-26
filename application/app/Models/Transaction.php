@@ -7,7 +7,6 @@ namespace App\Models;
 use App\Interfaces\IHasMetaData;
 use App\Traits\HasMetaData;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Support\Facades\Artisan;
 use Laravel\Scout\Searchable;
 
 class Transaction extends Model implements IHasMetaData
@@ -15,6 +14,8 @@ class Transaction extends Model implements IHasMetaData
     use HasMetaData, Searchable;
 
     public $timestamps = false;
+
+    public $meiliIndexName = 'cx_transactions';
 
     protected $fillable = [
         'tx_hash',
@@ -74,14 +75,6 @@ class Transaction extends Model implements IHasMetaData
             'block',
             'json_metadata.voter_delegations.weight',
         ];
-    }
-
-    public static function runCustomIndex(): void
-    {
-        Artisan::call('cx:create-search-index', [
-            'model' => Transaction::class,
-            'name' => 'cx_transactions',
-        ]);
     }
 
     public function toSearchableArray(): array

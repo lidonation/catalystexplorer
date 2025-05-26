@@ -16,8 +16,12 @@ trait HasHashId
         );
     }
 
-    public static function byHash(string $hash): mixed
+    public static function byHash(?string $hash): mixed
     {
+        if (! $hash) {
+            return null;
+        }
+
         $modelInstance = new static;
         $id = (new HashIdService($modelInstance))->decode($hash);
 

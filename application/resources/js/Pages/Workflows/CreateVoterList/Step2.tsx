@@ -21,6 +21,7 @@ import TextInput from '@/Components/atoms/TextInput';
 import Selector from '@/Components/atoms/Selector';
 import { useTranslation } from 'react-i18next';
 import { VisibilityEnum, StatusEnum } from '@/enums/votes-enums';
+import { lowerCase } from 'lodash';
 
 interface Step2Props {
     stepDetails: StepDetails[];
@@ -212,19 +213,25 @@ const Step2: React.FC<Step2Props> = ({
                                     }
                                     options={[
                                         {
-                                            value: VisibilityEnum.PUBLIC,
+                                            value: lowerCase(
+                                                VisibilityEnum.PUBLIC,
+                                            ),
                                             label: t(
                                                 'workflows.voterList.visibilityOptions.public',
                                             ),
                                         },
                                         {
-                                            value: VisibilityEnum.PRIVATE,
+                                            value: lowerCase(
+                                                VisibilityEnum.PRIVATE,
+                                            ),
                                             label: t(
                                                 'workflows.voterList.visibilityOptions.private',
                                             ),
                                         },
                                         {
-                                            value: VisibilityEnum.DELEGATORS,
+                                            value: lowerCase(
+                                                VisibilityEnum.DELEGATORS,
+                                            ),
                                             label: t(
                                                 'workflows.voterList.visibilityOptions.delegators',
                                             ),
@@ -326,13 +333,15 @@ const Step2: React.FC<Step2Props> = ({
                                     }
                                     options={[
                                         {
-                                            value: StatusEnum.PUBLISHED,
+                                            value: lowerCase(
+                                                StatusEnum.PUBLISHED,
+                                            ),
                                             label: t(
                                                 'workflows.voterList.statusOptions.published',
                                             ),
                                         },
                                         {
-                                            value: StatusEnum.DRAFT,
+                                            value: lowerCase(StatusEnum.DRAFT),
                                             label: t(
                                                 'workflows.voterList.statusOptions.draft',
                                             ),

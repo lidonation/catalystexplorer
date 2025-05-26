@@ -1,10 +1,10 @@
 import Button from '@/Components/atoms/Button';
 import Paragraph from '@/Components/atoms/Paragraph';
 import { PageProps } from '@/types';
+import { PaginatedData } from '@/types/paginated-data';
 import { Link, router, usePage } from '@inertiajs/react';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { PaginatedData } from '../../../../types/paginated-data';
 import IdeascaleProfileData = App.DataTransferObjects.IdeascaleProfileData;
 import NMKRMetaData = App.DataTransferObjects.NMKRNftData;
 import NftData = App.DataTransferObjects.NftData;

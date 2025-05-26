@@ -5,26 +5,143 @@ declare(strict_types=1);
 namespace App\Http\Controllers;
 
 use App\Actions\TransformIdsToHashes;
+use App\DataTransferObjects\BookmarkCollectionData;
 use App\Enums\BookmarkableType;
 use App\Enums\BookmarkStatus;
+use App\Enums\BookmarkVisibility;
+use App\Enums\ProposalSearchParams;
+use App\Enums\QueryParamsEnum;
 use App\Enums\StatusEnum;
 use App\Models\BookmarkCollection;
 use App\Models\BookmarkItem;
+use App\Repositories\BookmarkCollectionRepository;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Fluent;
 use Inertia\Inertia;
 use Inertia\Response;
+use Laravel\Scout\Builder;
 
 class BookmarksController extends Controller
 {
+    protected int $currentPage = 1;
+
+    protected array $queryParams = [];
+
+    protected int $perPage = 24;
+
+    protected ?string $sortBy = 'updated_at';
+
+    protected ?string $sortOrder = 'desc';
+
+    protected ?string $search = null;
+
+    protected array $filters = [];
+
+    protected int $limit = 24;
+
+    protected Builder $searchBuilder;
+
     /**
      * Display the bookmarks index page.
      */
     public function index(Request $request): Response
     {
-        return Inertia::render('Bookmarks/Index');
+        $this->setFilters($request);
+
+        $props = [
+            'bookmarkCollections' => $this->query(),
+            'search' => $this->search,
+            'sortBy' => $this->sortBy,
+            'sortOrder' => $this->sortOrder,
+            'sort' => "{$this->sortBy}:{$this->sortOrder}",
+            'filters' => $this->filters,
+            'queryParams' => $this->queryParams,
+        ];
+
+        return Inertia::render('Bookmarks/Index', $props);
+    }
+
+    protected function setFilters(Request $request): void
+    {
+        $this->limit = (int) $request->input(QueryParamsEnum::LIMIT(), 24);
+        $this->currentPage = (int) $request->input(QueryParamsEnum::PAGE(), 1);
+        $this->search = $request->input(QueryParamsEnum::QUERY(), null);
+
+        $this->queryParams = $request->validate([
+            ProposalSearchParams::QUERY()->value => 'string|nullable',
+            ProposalSearchParams::PAGE()->value => 'integer|nullable',
+            ProposalSearchParams::LIMIT()->value => 'integer|nullable',
+            ProposalSearchParams::SORTS()->value => 'string|nullable',
+        ]);
+
+        $this->filters = $this->queryParams;
+
+        $sort = collect(explode(':', $request->input(ProposalSearchParams::SORTS()->value, '')))->filter();
+
+        if (! $sort->isEmpty()) {
+            $this->sortBy = $sort->first();
+            $this->sortOrder = $sort->last();
+        }
+    }
+
+    public function query($returnBuilder = false): array|Builder
+    {
+        $visibility = BookmarkVisibility::PUBLIC()->value;
+
+        $args = [
+            'filter' => "visibility={$visibility}",
+        ];
+
+        if ((bool) $this->sortBy && (bool) $this->sortOrder) {
+            $args['sort'] = ["$this->sortBy:$this->sortOrder"];
+        }
+
+        $page = isset($this->currentPage)
+            ? (int) $this->currentPage
+            : 1;
+
+        $limit = isset($this->limit)
+            ? (int) $this->limit
+            : 64;
+
+        $args['offset'] = ($page - 1) * $limit;
+        $args['limit'] = $limit;
+
+        $reviews = app(BookmarkCollectionRepository::class);
+
+        $builder = $reviews->search(
+            $this->search ?? '',
+            $args
+        );
+
+        if ($returnBuilder) {
+            return $builder;
+        }
+
+        $response = new Fluent($builder->raw());
+        $items = collect($response->hits);
+
+        $pagination = new LengthAwarePaginator(
+            BookmarkCollectionData::collect(
+                (new TransformIdsToHashes)(
+                    collection: $items,
+                    model: new BookmarkCollection
+                )->toArray()
+            ),
+            $response->estimatedTotalHits,
+            $limit,
+            $page,
+            [
+                'pageName' => 'p',
+                'onEachSide' => 0,
+            ]
+        );
+
+        return $pagination->toArray();
     }
 
     public function handleStep(Request $request, $step)
@@ -40,17 +157,26 @@ class BookmarksController extends Controller
 
     public function step1(Request $request): Response
     {
+
         return Inertia::render('Workflows/CreateBookmark/Step1', [
             'stepDetails' => $this->getStepDetails(),
             'activeStep' => intval($request->step),
+            'bookmarkCollection' => $request->bookmarkCollection,
         ]);
     }
 
     public function step2(Request $request): Response
     {
+        $collection = null;
+
+        if ($hash = $request->bookmarkCollection) {
+            $collection = BookmarkCollection::byHash($hash);
+        }
+
         return Inertia::render('Workflows/CreateBookmark/Step2', [
             'stepDetails' => $this->getStepDetails(),
             'activeStep' => intval($request->step),
+            'bookmarkCollection' => $collection,
         ]);
     }
 
@@ -78,6 +204,7 @@ class BookmarksController extends Controller
             ->groupBy('model_type')
             ->mapWithKeys(function ($items, $modelType) use ($transformer, $modelMap) {
                 $label = $modelMap[$modelType] ?? null;
+
                 if (! $label) {
                     return [];
                 }
@@ -105,10 +232,13 @@ class BookmarksController extends Controller
             ]);
         }
 
+        $collection = BookmarkCollection::byHash($request->bookmarkCollection);
+
         return Inertia::render('Workflows/CreateBookmark/Step4', [
             'stepDetails' => $this->getStepDetails(),
             'activeStep' => intval($request->step),
-            'bookmarkCollection' => $request->bookmarkCollection,
+            'rationale' => $collection->meta_info?->rationale,
+            'bookmarkCollection' => $collection->hash,
         ]);
     }
 
@@ -128,9 +258,12 @@ class BookmarksController extends Controller
             'comments_enabled' => 'nullable|boolean',
             'color' => 'nullable|string|max:7',
             'status' => 'nullable|string',
+            'bookmarkCollection' => 'nullable|string',
         ]);
 
-        $bookmarkCollection = BookmarkCollection::create([
+        $existingCollection = BookmarkCollection::byHash($request->bookmarkCollection);
+
+        $bookmarkCollection = BookmarkCollection::updateOrCreate(['id' => $existingCollection?->id], [
             'user_id' => $request->user()->id,
             'title' => $validated['title'],
             'content' => $validated['content'] ?? null,
@@ -140,6 +273,8 @@ class BookmarksController extends Controller
             'status' => $validated['status'] ?? StatusEnum::draft()->value,
             'type' => BookmarkCollection::class,
         ]);
+
+        $bookmarkCollection->searchable();
 
         return to_route('workflows.bookmarks.index', [
             'step' => 3,
@@ -172,6 +307,8 @@ class BookmarksController extends Controller
             'content' => null,
             'action' => null,
         ]);
+
+        $bookmarkCollection->searchable();
     }
 
     public function removeBookmarkItem(BookmarkCollection $bookmarkCollection, Request $request)
@@ -205,6 +342,8 @@ class BookmarksController extends Controller
 
         $bookmark->delete();
 
+        $bookmarkCollection->searchable();
+
         return back()->with('success', 'Bookmark removed.');
     }
 
@@ -219,6 +358,8 @@ class BookmarksController extends Controller
         if ($bookmarkCollection && $bookmarkCollection->status === BookmarkStatus::DRAFT()->value) {
             $bookmarkCollection->update(['status' => BookmarkStatus::PUBLISHED()->value]);
         }
+
+        $bookmarkCollection->searchable();
 
         return to_route('workflows.bookmarks.success');
     }

@@ -20,7 +20,7 @@ export default function WorkflowLayout({
     const [isOpen, setIsOpen] = useState(false);
 
     return (
-        <div className="splash-wrapper lg:from-background-home-gradient-color-1 lg:to-background-home-gradient-color-2 sticky z-10 flex justify-center md:rounded-tl-4xl lg:-top-64 lg:h-screen lg:bg-linear-to-r lg:px-8 lg:pb-8 -mb-4">
+        <div className="splash-wrapper lg:from-background-home-gradient-color-1 lg:to-background-home-gradient-color-2 sticky z-10 -mb-4 flex justify-center md:rounded-tl-4xl lg:-top-64 lg:h-screen lg:bg-linear-to-r lg:px-8 lg:pb-8">
             <div
                 className="flex h-full w-full flex-col justify-center lg:gap-8 lg:px-8 lg:pt-8 lg:pb-4"
                 style={{
@@ -32,14 +32,14 @@ export default function WorkflowLayout({
                 <div className="@container relative flex w-full flex-row justify-center">
                     {/* Main Content (Full Width on Small Screens) */}
 
-                    <div className="bg-background relative max-h-[80vh] w-full overflow-auto rounded-lg @lg:w-2/3 @lg:min-w-[400px] @lg:rounded-l-lg">
+                    <div className="bg-background relative max-h-[90vh] w-full overflow-auto rounded-lg lg:overflow-hidden @lg:w-2/3 @lg:min-w-[400px] @lg:rounded-l-lg">
                         {/* Toggle Button for Small Screens */}
 
                         <div className="@container relative">
                             {children}
                             <button
                                 onClick={() => setIsOpen(!isOpen)}
-                                className="bg-primary absolute top-0 right-4 text-content-light hover:bg-background-tertiary hover:text-content-secondary focus:bg-background-accent active:bg-background-tertiary top-20 right-4 z-5 rounded-full p-2 transition duration-150 ease-in-out lg:hidden"
+                                className="bg-primary text-content-light hover:bg-background-tertiary hover:text-content-secondary focus:bg-background-accent active:bg-background-tertiary absolute top-0 top-20 right-4 z-5 rounded-full p-2 transition duration-150 ease-in-out lg:hidden"
                             >
                                 <HelpCircleIcon />
                             </button>

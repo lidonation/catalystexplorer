@@ -11,7 +11,6 @@ use App\Traits\HasTaxonomies;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Log;
 use Laravel\Scout\Searchable;
 use Staudenmeir\EloquentHasManyDeep\HasManyDeep;
@@ -23,17 +22,14 @@ class Community extends Model
 
     protected $appends = ['hash'];
 
+    public $meiliIndexName = 'cx_communities';
+
     protected function casts(): array
     {
         return [
             'created_at' => 'datetime',
             'updated_at' => 'datetime',
         ];
-    }
-
-    public static function runCustomIndex(): void
-    {
-        Artisan::call('cx:create-search-index App\\\\Models\\\\Community cx_communities');
     }
 
     /**

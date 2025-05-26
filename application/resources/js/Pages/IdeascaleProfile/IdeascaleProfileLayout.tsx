@@ -1,14 +1,13 @@
-import React, {ReactNode, useEffect, useState} from 'react';
-import {usePage} from '@inertiajs/react';
-import {generateTabs, ideascaleProfileTabs} from '@/utils/routeTabs';
-import {useTranslation} from 'react-i18next';
-import IdeascaleProfileData = App.DataTransferObjects.IdeascaleProfileData;
-import {PageProps as InertiaPageProps} from '@inertiajs/core';
-import IdeascaleProfileTabs from './Partials/IdeascaleProfileTab';
-import IdeascaleProfileCard from './Partials/IdeascaleProfileCard';
 import RecordsNotFound from '@/Layouts/RecordsNotFound';
-import {SearchParams} from '../../../types/search-params';
-import {FiltersProvider} from '@/Context/FiltersContext';
+import { SearchParams } from '@/types/search-params';
+import { generateTabs, ideascaleProfileTabs } from '@/utils/routeTabs';
+import { PageProps as InertiaPageProps } from '@inertiajs/core';
+import { usePage } from '@inertiajs/react';
+import { ReactNode, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import IdeascaleProfileCard from './Partials/IdeascaleProfileCard';
+import IdeascaleProfileTabs from './Partials/IdeascaleProfileTab';
+import IdeascaleProfileData = App.DataTransferObjects.IdeascaleProfileData;
 
 interface PageProps extends InertiaPageProps {
     url: string;
@@ -19,24 +18,28 @@ interface PageProps extends InertiaPageProps {
 interface IdeascaleProfileLayoutProps {
     children: ReactNode;
     ideascaleProfile: IdeascaleProfileData;
-    filters?: SearchParams
+    filters?: SearchParams;
 }
 
-export default function IdeascaleProfileLayout({children, ideascaleProfile, filters}: IdeascaleProfileLayoutProps) {
-    const {t} = useTranslation();
-    const {url} = usePage<PageProps>().props;
+export default function IdeascaleProfileLayout({
+    children,
+    ideascaleProfile,
+    filters,
+}: IdeascaleProfileLayoutProps) {
+    const { t } = useTranslation();
+    const { url } = usePage<PageProps>().props;
     const [activeTab, setActiveTab] = useState('');
 
     const tabConfig = {
         ...ideascaleProfileTabs,
-        routePrefix: `ideascale-profiles/${ideascaleProfile.hash}`
+        routePrefix: `ideascale-profiles/${ideascaleProfile.hash}`,
     };
     const tabs = generateTabs(t, tabConfig);
 
     useEffect(() => {
         const currentPath = window.location.pathname;
 
-        const matchingTab = tabs.find(tab => {
+        const matchingTab = tabs.find((tab) => {
             const cleanCurrentPath = currentPath.replace(/\/$/, '');
             const cleanTabPath = tab.href.replace(/\/$/, '');
 
@@ -49,32 +52,29 @@ export default function IdeascaleProfileLayout({children, ideascaleProfile, filt
     }, [tabs, url]);
 
     return (
-    
-            <div className="bg-background-lighter mb-8">
-                <main className="px-8 sm:px-4 md:px-6 lg:px-8 mt-10 flex flex-col lg:flex-row gap-4 h-full">
-                    <div className="w-full  lg:w-1/3 xl:w-1/4 mx-auto lg:mx-0 lg:sticky lg:top-4 lg:self-start">
-                        {ideascaleProfile ? (
-                            <IdeascaleProfileCard ideascaleProfile={ideascaleProfile}/>
-                        ) : (
-                            <RecordsNotFound context="profiles"/>
-                        )}
-                    </div>
+        <div className="bg-background-lighter mb-8">
+            <main className="mt-10 flex h-full flex-col gap-4 px-8 sm:px-4 md:px-6 lg:flex-row lg:px-8">
+                <div className="mx-auto w-full lg:sticky lg:top-4 lg:mx-0 lg:w-1/3 lg:self-start xl:w-1/4">
+                    {ideascaleProfile ? (
+                        <IdeascaleProfileCard
+                            ideascaleProfile={ideascaleProfile}
+                        />
+                    ) : (
+                        <RecordsNotFound context="profiles" />
+                    )}
+                </div>
 
-                    <div
-                        className="flex flex-col gap-8 w-full lg:w-2/3 xl:w-3/4 shadow-xl bg-background p-4 rounded-lg min-h-full flex-1">
-                        <section
-                            className="text-content-lighter [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] overflow-x-auto">
-                            <IdeascaleProfileTabs
-                                tabs={tabs}
-                                activeTab={activeTab}
-                            />
-                        </section>
+                <div className="bg-background flex min-h-full w-full flex-1 flex-col gap-8 rounded-lg p-4 shadow-xl lg:w-2/3 xl:w-3/4">
+                    <section className="text-content-lighter overflow-x-auto [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+                        <IdeascaleProfileTabs
+                            tabs={tabs}
+                            activeTab={activeTab}
+                        />
+                    </section>
 
-                        <section>
-                            {children}
-                        </section>
-                    </div>
-                </main>
-            </div>
+                    <section>{children}</section>
+                </div>
+            </main>
+        </div>
     );
 }

@@ -1,23 +1,26 @@
+import Card from '@/Components/Card';
+import SegmentedBar from '@/Components/SegmentedBar';
+import Paragraph from '@/Components/atoms/Paragraph';
+import Title from '@/Components/atoms/Title';
+import { currency } from '@/utils/currency';
+import { useLocalizedRoute } from '@/utils/localizedRoute';
+import { Link } from '@inertiajs/react';
 import React from 'react';
-import {currency} from '@/utils/currency';
+import { useTranslation } from 'react-i18next';
+import { Segments } from '@/types/segments';
 import FundData = App.DataTransferObjects.FundData;
 import CampaignData = App.DataTransferObjects.CampaignData;
-import {useTranslation} from 'react-i18next';
-import SegmentedBar from '@/Components/SegmentedBar'
-import Title from '@/Components/atoms/Title';
-import {Segments} from '../../../../types/segments';
-import Paragraph from '@/Components/atoms/Paragraph';
-import { Link } from '@inertiajs/react';
-import { useLocalizedRoute } from '@/utils/localizedRoute';
-import Card from '@/Components/Card';
 
 interface CampaignCardMiniProps {
     fund: FundData | null;
     campaign: CampaignData;
 }
 
-const CampaignCardMini: React.FC<CampaignCardMiniProps> = ({fund, campaign}) => {
-    const {t} = useTranslation();
+const CampaignCardMini: React.FC<CampaignCardMiniProps> = ({
+    fund,
+    campaign,
+}) => {
+    const { t } = useTranslation();
 
     const heroImageUrl = campaign?.hero_img_url ?? fund?.hero_img_url;
     const segments = [
@@ -65,7 +68,7 @@ const CampaignCardMini: React.FC<CampaignCardMiniProps> = ({fund, campaign}) => 
             </div>
 
             <div className="mt-4">
-                <SegmentedBar segments={segments} tooltipSegments={segments}/>
+                <SegmentedBar segments={segments} tooltipSegments={segments} />
             </div>
 
             <div className="pt-6">
