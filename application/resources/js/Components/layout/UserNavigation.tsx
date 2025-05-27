@@ -49,7 +49,7 @@ function UserNavigation() {
         {
             href: useLocalizedRoute('my.dashboard'),
             title: t('my.dashboard'),
-            icon: <LayoutDashboardIcon className="text-dark" />,
+            icon: <BarLineIcon className="text-dark" />,
         },
         {
             href: '/knowledge-base',
@@ -127,7 +127,7 @@ function UserNavigation() {
                                     >
                                         <div className="flex items-center">
                                             <span className="mr-3">
-                                                <LayoutDashboardIcon
+                                                <BarLineIcon
                                                     className={`${isOnMyRoute ? 'text-content font-medium hover:text-gray-persist' : 'text-dark'} transition-colors duration-200`}
                                                 />
                                             </span>
