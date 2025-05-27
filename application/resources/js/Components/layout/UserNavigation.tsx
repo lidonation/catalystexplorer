@@ -4,8 +4,6 @@ import { LayoutDashboardIcon } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import NavLinkItem from '../atoms/NavLinkItem';
-import ArrowDownIcon from '../svgs/ArrowDownIcon';
-import ArrowUpIcon from '../svgs/ArrowUpIcon';
 import BarLineIcon from '../svgs/BarLineIcon';
 import FolderIcon from '../svgs/FolderIcon';
 import MailIcon from '../svgs/MailIcon';
@@ -20,7 +18,6 @@ function UserNavigation() {
     const openedAutomatically = useRef(false);
     const userToggled = useRef(false);
     const dropdownRef = useRef(null);
-    
     const stripLanguagePrefix = (path?: string) => {
         if (!path) return '';
 
@@ -52,7 +49,7 @@ function UserNavigation() {
         {
             href: useLocalizedRoute('my.dashboard'),
             title: t('my.dashboard'),
-            icon: <LayoutDashboardIcon className="text-dark" />,
+            icon: <BarLineIcon className="text-dark" />,
         },
         {
             href: '/knowledge-base',
@@ -116,52 +113,31 @@ function UserNavigation() {
 
     return (
         <nav className="" role="menu">
-            <ul className="flex flex-1 flex-col gap-1" role="menu">
+            <ul className={`flex flex-1 flex-col gap-1 ${isOnMyRoute ? 'mt-2' : 'mt-5'}`} role="menu">
                 {navItems.map(({ href, title, icon }) => {
                     const isDashboard = title === t('my.dashboard');
-                    if (isDashboard) {
+                    if (isOnMyRoute && isDashboard) {
                         return (
                             <li key={title}>
                                 <div>
                                     <div
-                                        className={`text-dark ${isOnMyRoute ? 'bg-background-dashboard-menu text-content pt-4' : ''} cursor-pointer flex items-center justify-between px-3 py-1 text-sm transition-all duration-200 ease-in-out`}
-                                        onClick={() =>
-                                            setDashboardOpen(!dashboardOpen)
-                                        }
+                                        className={`text-dark ${isOnMyRoute ? 'bg-background-dashboard-menu text-content pt-4' : ''} flex cursor-pointer items-center justify-between px-3 py-1 text-sm transition-all duration-200 ease-in-out`}
                                         role="button"
-                                        aria-expanded={dashboardOpen}
                                         aria-label={`${title} ${t('dropdown')}`}
                                     >
                                         <div className="flex items-center">
                                             <span className="mr-3">
                                                 <BarLineIcon
-                                                    className={`${isOnMyRoute ? 'text-content hover:text-gray-persist' : 'text-dark'} transition-colors duration-200`}
+                                                    className={`${isOnMyRoute ? 'text-content font-medium hover:text-gray-persist' : 'text-dark'} transition-colors duration-200`}
                                                 />
                                             </span>
                                             <span>{title}</span>
-                                        </div>
-                                        <div
-                                            className={`transform transition-transform duration-300 ease-in-out ${dashboardOpen ? 'rotate-180' : 'rotate-0'}`}
-                                        >
-                                            {dashboardOpen ? (
-                                                <ArrowUpIcon
-                                                    height={10}
-                                                    width={10}
-                                                    className={`${isOnMyRoute ? 'text-content hover:text-gray-persist' : 'text-dark'} transition-colors duration-200`}
-                                                />
-                                            ) : (
-                                                <ArrowDownIcon
-                                                    height={10}
-                                                    width={10}
-                                                    className={`${isOnMyRoute ? 'text-content hover:text-gray-persist' : 'text-dark'} transition-colors duration-200`}
-                                                />
-                                            )}
                                         </div>
                                     </div>
 
                                     <div
                                         ref={dropdownRef}
-                                        className={`overflow-hidden transition-all duration-300 ease-in-out ${
+                                        className={`w-full overflow-hidden transition-all duration-300 ease-in-out ${
                                             dashboardOpen
                                                 ? 'max-h-96 opacity-100'
                                                 : 'max-h-0 opacity-0'
@@ -172,7 +148,7 @@ function UserNavigation() {
                                         }}
                                     >
                                         <div
-                                            className={`${isOnMyRoute ? 'bg-background-dashboard-menu pb-4' : ''} menu-gap-y flex transform flex-col pl-6 transition-transform duration-300 ease-in-out ${
+                                            className={`${isOnMyRoute ? 'bg-background-dashboard-menu pb-4' : ''} menu-gap-y flex w-full transform flex-col pl-8 transition-transform duration-200 ease-in-out ${
                                                 dashboardOpen
                                                     ? 'translate-y-0'
                                                     : '-translate-y-2'
@@ -196,30 +172,36 @@ function UserNavigation() {
                                                     const isActive =
                                                         normalizedUrl ===
                                                         normalizedHref;
-                                                    const isHovered = hoveredItem === route;
-                                                    
+                                                    const isHovered =
+                                                        hoveredItem === route;
+
                                                     return (
                                                         <div
                                                             onMouseEnter={() =>
-                                                                setHoveredItem(route)
+                                                                setHoveredItem(
+                                                                    route,
+                                                                )
                                                             }
                                                             onMouseLeave={() =>
-                                                                setHoveredItem(null)
+                                                                setHoveredItem(
+                                                                    null,
+                                                                )
                                                             }
-                                                            className="flex items-center"
+                                                            className="flex w-full items-center"
                                                             key={route}
                                                         >
                                                             <NavLinkItem
                                                                 key={route}
                                                                 href={href}
-                                                                title={isHovered ? t('my.my') + ' ' + title : title}
+                                                                title={title}
                                                                 ariaLabel={
                                                                     ariaLabel
                                                                 }
                                                                 active={
                                                                     isActive
                                                                 }
-                                                                className={`${isOnMyRoute ? 'text-content hover:bg-background' : ''} ${isActive ? 'bg-active-dashboard-menu' : ''} flex items-center gap-2 transition-colors duration-200 w-full`}
+                                                                className={`${isOnMyRoute ? 'text-content hover:bg-background' : ''} ${isActive ? 'bg-background font-semibold' : ''} flex w-full items-center gap-1 transition-colors duration-200`}
+                                                                showMyPrefix={true}
                                                             >
                                                                 <span></span>
                                                             </NavLinkItem>

@@ -20,7 +20,6 @@
     "bookmark": "Your personal space for organizing and managing proposal insights. Easily access your saved proposals, review notes, and share curated lists to stay on top of key ideas and opportunities.",
     "catalystAPI": "Catalyst API",
     "ccv4Votes": "CCV4 Votes",
-    "charts": "Charts",
     "chooseMetaData": "Choose your own MetaData",
     "confirmPassword": "Confirm Password",
     "connect": "Connect",
@@ -419,6 +418,14 @@
     "breadcrumbs": {
         "home": "Home",
         "workflow": "Workflow"
+    },
+    "charts":{
+       "setMetrics": "Set Chart Metrics",
+       "selectProposals": "Which types of proposals interest you the most?",
+       "selectAllThatApply": "(Select all that apply)",
+       "submittedProposals": "Submitted Proposals",
+       "approvedProposals": "Approved Proposals",
+       "completedProposals": "Completed Proposals"
     },
     "pagination": {
         "next": "Next",
