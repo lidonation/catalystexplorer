@@ -227,7 +227,7 @@ class ProposalsController extends Controller
 
     public function charts()
     {
-        return Inertia::modal('Charts/Index', ['slideover' => true])->baseRoute('proposals.index');
+        return Inertia::modal('Charts/Index', ['slideover' => true, 'filters' => $this->queryParams])->baseRoute('proposals.index');
     }
 
     protected function getProps(Request $request): void
