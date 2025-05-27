@@ -31,7 +31,7 @@ services:
   meili:
     MEILISEARCH_KEY: 
     persistence:
-      size: 80Gi
+      size: 320Gi
       storageClass: longhorn
   redis:
     password: 
