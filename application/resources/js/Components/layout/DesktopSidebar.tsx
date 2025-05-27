@@ -33,18 +33,18 @@ function DesktopSidebar(props: any) {
                 <CatalystLogo className="w-full"/>
             </section>
 
-            <section className="flex flex-col gap-6 overflow-y-auto">
+            <section className="flex flex-col grow gap-6 overflow-y-auto">
                 <AppNavigation/>
             </section>
 
             <section className="flex flex-col gap-6">
                 <div className="px-4">
-                    <div className="border-border border-t pt-5">
+                    <div className="border-gray-persist border-t">
                         <UserNavigation/>
                     </div>
                 </div>
 
-                <div className="border-border flex flex-col gap-5 border-t pt-5">
+                <div className="border-gray-persist flex flex-col gap-5 border-t pt-5">
                     <div className="px-4">
                         <UserDetails user={auth?.user as unknown as User}/>
                     </div>
