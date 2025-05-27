@@ -113,7 +113,7 @@ function UserNavigation() {
 
     return (
         <nav className="" role="menu">
-            <ul className={`flex flex-1 flex-col gap-1 ${isOnMyRoute ? 'mt-2' : 'mt-5'}`} role="menu">
+            <ul className={`flex flex-1 flex-col gap-1`} role="menu">
                 {navItems.map(({ href, title, icon }) => {
                     const isDashboard = title === t('my.dashboard');
                     if (isOnMyRoute && isDashboard) {
