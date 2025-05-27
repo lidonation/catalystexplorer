@@ -25,7 +25,7 @@ export default function MyList({ bookmarkCollections }: MyListProps) {
 
             <div className="mx-auto max-w-7xl px-4 py-2 sm:px-6 lg:px-8">
                 <div className="mb-6 flex items-center">
-                    <div className="ml-auto">
+                    <div className="m-auto mt-8">
                         <PrimaryLink
                             href={useLocalizedRoute(
                                 'workflows.bookmarks.index',
