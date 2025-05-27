@@ -114,7 +114,7 @@ function UserNavigation() {
 
     return (
         <nav className="" role="menu">
-            <ul className="flex flex-1 flex-col gap-1 mt-2" role="menu">
+            <ul className={`flex flex-1 flex-col gap-1 ${isOnMyRoute ? 'mt-2' : 'mt-5'}`} role="menu">
                 {navItems.map(({ href, title, icon }) => {
                     const isDashboard = title === t('my.dashboard');
                     if (isOnMyRoute && isDashboard) {
@@ -129,7 +129,7 @@ function UserNavigation() {
                                         <div className="flex items-center">
                                             <span className="mr-3">
                                                 <LayoutDashboardIcon
-                                                    className={`${isOnMyRoute ? 'text-content hover:text-gray-persist' : 'text-dark'} transition-colors duration-200`}
+                                                    className={`${isOnMyRoute ? 'text-content font-medium hover:text-gray-persist' : 'text-dark'} transition-colors duration-200`}
                                                 />
                                             </span>
                                             <span>{title}</span>
