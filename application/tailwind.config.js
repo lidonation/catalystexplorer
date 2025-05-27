@@ -54,6 +54,7 @@ export default {
                 'content-light': 'var(--cx-content-light)',
                 'content-dark': 'var(--cx-content-dark)',
                 light: 'var(--cx-content)',
+                'light-blue': 'var(--cx-light-blue)',
                 'light-persist': 'var(--bg-light-persist)',
                 'light-gray-persist': 'var(--cx-content-light-gray-persist)',
                 'gray-persist': 'var(--cx-content-gray-persist)',
