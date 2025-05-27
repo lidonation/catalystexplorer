@@ -1,8 +1,8 @@
-import React from 'react';
+import Paginator from '@/Components/Paginator';
 import { VoteEnum } from '@/enums/votes-enums';
 import RecordsNotFound from '@/Layouts/RecordsNotFound';
-import Paginator from '@/Components/Paginator';
-import { PaginatedData } from '../../../../types/paginated-data';
+import { PaginatedData } from '@/types/paginated-data';
+import React from 'react';
 
 interface ColumnDefinition<T> {
     key: string;
@@ -23,7 +23,7 @@ interface WorkflowTableProps<T> {
 }
 
 const getVoteText = (voteType: VoteEnum): string => {
-    switch(voteType) {
+    switch (voteType) {
         case VoteEnum.YES:
             return 'Yes';
         case VoteEnum.NO:
@@ -36,7 +36,7 @@ const getVoteText = (voteType: VoteEnum): string => {
 };
 
 const getVoteClass = (voteType: VoteEnum): string => {
-    switch(voteType) {
+    switch (voteType) {
         case VoteEnum.YES:
             return 'bg-green-500 text-white';
         case VoteEnum.NO:
@@ -54,33 +54,41 @@ const formatHeaderText = (text: string): string => {
 };
 
 function WorkflowTable<T>({
-                              items,
-                              columns,
-                              keyExtractor,
-                              votesMap,
-                              emptyState = { context: 'records', showIcon: true }
-                          }: WorkflowTableProps<T>): React.ReactElement {
-
+    items,
+    columns,
+    keyExtractor,
+    votesMap,
+    emptyState = { context: 'records', showIcon: true },
+}: WorkflowTableProps<T>): React.ReactElement {
     const defaultVoteRender = (item: T, index: number): React.ReactNode => {
         const key = keyExtractor(item);
         if (!votesMap) return null;
         const voteType = votesMap[key];
         return voteType !== undefined ? (
-            <span className={`px-4 py-2 inline-flex text-sm font-medium rounded-md ${getVoteClass(voteType)}`}>
+            <span
+                className={`inline-flex rounded-md px-4 py-2 text-sm font-medium ${getVoteClass(voteType)}`}
+            >
                 {getVoteText(voteType)}
             </span>
         ) : null;
     };
 
-    const defaultRender = (item: T, columnKey: string, index: number): React.ReactNode => {
-        const value = columnKey.split('.').reduce((obj: any, key: string) =>
-                obj && obj[key] !== undefined ? obj[key] : undefined,
-            item
-        );
+    const defaultRender = (
+        item: T,
+        columnKey: string,
+        index: number,
+    ): React.ReactNode => {
+        const value = columnKey
+            .split('.')
+            .reduce(
+                (obj: any, key: string) =>
+                    obj && obj[key] !== undefined ? obj[key] : undefined,
+                item,
+            );
 
         if (columnKey === 'title') {
             return typeof value === 'string'
-                ? value.replace(/\b\w/g, l => l.toUpperCase())
+                ? value.replace(/\b\w/g, (l) => l.toUpperCase())
                 : (value ?? '-');
         }
 
@@ -88,51 +96,69 @@ function WorkflowTable<T>({
     };
 
     if (!items?.data || !Array.isArray(items.data) || items.data.length === 0) {
-        return (
-            <RecordsNotFound
-                showIcon={emptyState.showIcon}
-            />
-        );
+        return <RecordsNotFound showIcon={emptyState.showIcon} />;
     }
 
     return (
-        <div className="bg-background rounded-lg overflow-hidden">
+        <div className="bg-background overflow-hidden rounded-lg">
             <div className="overflow-x-auto px-4 py-4">
                 <table className="w-full border-collapse border border-gray-200">
                     <thead>
-                    <tr>
-                        {columns.map((column, index) => (
-                            <th
-                                key={index}
-                                className="px-4 py-4 text-left text-sm font-medium text-content border border-gray-100"
-                            >
-                                {formatHeaderText(column.header)}
-                            </th>
-                        ))}
-                    </tr>
+                        <tr>
+                            {columns.map((column, index) => (
+                                <th
+                                    key={index}
+                                    className="text-content border border-gray-100 px-4 py-4 text-left text-sm font-medium"
+                                >
+                                    {formatHeaderText(column.header)}
+                                </th>
+                            ))}
+                        </tr>
                     </thead>
                     <tbody>
-                    {items.data.map((item, rowIndex) => (
-                        <tr key={keyExtractor(item)}>
-                            {columns.map((column, colIndex) => {
-                                const isProposalColumn = column.key === 'title' || column.header.toLowerCase() === 'proposal';
-                                const cellClass = `px-2 py-2 border border-gray-100 text-content font-normal sm:text-base font-sans ${
-                                    isProposalColumn ? 'max-w-md overflow-hidden text-ellipsis' : ''
-                                }`;
+                        {items.data.map((item, rowIndex) => (
+                            <tr key={keyExtractor(item)}>
+                                {columns.map((column, colIndex) => {
+                                    const isProposalColumn =
+                                        column.key === 'title' ||
+                                        column.header.toLowerCase() ===
+                                            'proposal';
+                                    const cellClass = `px-2 py-2 border border-gray-100 text-content font-normal sm:text-base font-sans ${
+                                        isProposalColumn
+                                            ? 'max-w-md overflow-hidden text-ellipsis'
+                                            : ''
+                                    }`;
 
-                                return (
-                                    <td key={colIndex} className={cellClass}>
-                                        {column.key === 'index'
-                                            ? rowIndex + 1 + ((items.current_page - 1) * items.per_page)
-                                            : column.key === 'vote' && votesMap
-                                                ? (column.render || defaultVoteRender)(item, rowIndex)
-                                                : (column.render || ((item, idx) => defaultRender(item, column.key, idx)))(item, rowIndex)
-                                        }
-                                    </td>
-                                );
-                            })}
-                        </tr>
-                    ))}
+                                    return (
+                                        <td
+                                            key={colIndex}
+                                            className={cellClass}
+                                        >
+                                            {column.key === 'index'
+                                                ? rowIndex +
+                                                  1 +
+                                                  (items.current_page - 1) *
+                                                      items.per_page
+                                                : column.key === 'vote' &&
+                                                    votesMap
+                                                  ? (
+                                                        column.render ||
+                                                        defaultVoteRender
+                                                    )(item, rowIndex)
+                                                  : (
+                                                        column.render ||
+                                                        ((item, idx) =>
+                                                            defaultRender(
+                                                                item,
+                                                                column.key,
+                                                                idx,
+                                                            ))
+                                                    )(item, rowIndex)}
+                                        </td>
+                                    );
+                                })}
+                            </tr>
+                        ))}
                     </tbody>
                 </table>
             </div>
@@ -141,7 +167,7 @@ function WorkflowTable<T>({
                     pagination={items}
                     linkProps={{
                         preserveState: true,
-                        preserveScroll: true
+                        preserveScroll: true,
                     }}
                 />
             </div>

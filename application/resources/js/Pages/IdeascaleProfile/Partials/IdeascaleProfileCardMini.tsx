@@ -9,14 +9,12 @@ import SegmentedBar from '@/Components/SegmentedBar';
 import UserAvatar from '@/Components/UserAvatar';
 import { ListProvider } from '@/Context/ListContext';
 import BookmarkButton from '@/Pages/My/Bookmarks/Partials/BookmarkButton';
+import { Segments } from '@/types/segments';
 import { useLocalizedRoute } from '@/utils/localizedRoute';
 import { Link } from '@inertiajs/react';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Segments } from '../../../../types/segments';
 import IdeascaleProfileData = App.DataTransferObjects.IdeascaleProfileData;
-import KeyValue from "@/Components/atoms/KeyValue";
-import ValueLabel from "@/Components/atoms/ValueLabel";
 
 interface IdeascaleProfileProps {
     ideascaleProfile: IdeascaleProfileData;
@@ -39,7 +37,10 @@ const IdeascaleProfileCardMini: React.FC<IdeascaleProfileProps> = ({
         {
             label: 'Funded',
             color: 'bg-warning',
-            value: ((fundedProposalsCount - completedProposalsCount) / submittedProposalsCount) * 100,
+            value:
+                ((fundedProposalsCount - completedProposalsCount) /
+                    submittedProposalsCount) *
+                100,
         },
 
         {
@@ -56,7 +57,7 @@ const IdeascaleProfileCardMini: React.FC<IdeascaleProfileProps> = ({
         {
             label: 'Completed',
             color: 'bg-success',
-            value:  completedProposalsCount,
+            value: completedProposalsCount,
         },
         {
             label: 'Funded',
@@ -66,7 +67,7 @@ const IdeascaleProfileCardMini: React.FC<IdeascaleProfileProps> = ({
         {
             label: 'Submitted',
             color: 'bg-primary',
-            value: submittedProposalsCount
+            value: submittedProposalsCount,
         },
     ] as Segments[];
 
@@ -84,7 +85,7 @@ const IdeascaleProfileCardMini: React.FC<IdeascaleProfileProps> = ({
     ] as Segments[];
 
     return (
-        <Card className='relative z-10'>
+        <Card className="relative z-10">
             <div className="relative mb-2 h-full w-full">
                 <div className="mb-3 flex justify-end">
                     <ListProvider>
@@ -99,6 +100,10 @@ const IdeascaleProfileCardMini: React.FC<IdeascaleProfileProps> = ({
                 <div className="mb-3 flex items-center gap-x-2">
                     <div className="flex-shrink-0">
                         <UserAvatar
+                            name={
+                                ideascaleProfile?.name ??
+                                ideascaleProfile?.username
+                            }
                             imageUrl={ideascaleProfile?.hero_img_url}
                             size="size-12"
                         />
@@ -133,25 +138,30 @@ const IdeascaleProfileCardMini: React.FC<IdeascaleProfileProps> = ({
             </div>
 
             <div className="mt-auto flex flex-col gap-4">
-                {<div className="border-border-secondary border-t">
-                    <div className="flex w-full justify-between pt-4">
-                        <SegmentedBar
-                            segments={chartSegments}
-                            tooltipSegments={toolTipSegments}
-                        >
-                            {extraSegments.map((segment, index) => (
-                                <div key={index} className="flex items-center">
-                                    <div className="text-sm font-s">
-                                        {segment.label}:
+                {
+                    <div className="border-border-secondary border-t">
+                        <div className="flex w-full justify-between pt-4">
+                            <SegmentedBar
+                                segments={chartSegments}
+                                tooltipSegments={toolTipSegments}
+                            >
+                                {extraSegments.map((segment, index) => (
+                                    <div
+                                        key={index}
+                                        className="flex items-center"
+                                    >
+                                        <div className="font-s text-sm">
+                                            {segment.label}:
+                                        </div>
+                                        <div className="text-3 ml-1 font-bold">
+                                            {segment.value}
+                                        </div>
                                     </div>
-                                    <div className="text-3 ml-1 font-bold">
-                                        {segment.value}
-                                    </div>
-                                </div>
-                            ))}
-                        </SegmentedBar>
+                                ))}
+                            </SegmentedBar>
+                        </div>
                     </div>
-                </div>}
+                }
 
                 <div className="border-border-secondary inline-flex w-auto w-fit items-center rounded-lg border px-2.5 py-1">
                     <Paragraph size="sm" className="text-3 text-content">

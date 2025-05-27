@@ -24,7 +24,6 @@ use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
 use Laravel\Scout\Searchable;
 use Staudenmeir\EloquentHasManyDeep\HasRelationships;
@@ -65,6 +64,8 @@ class Proposal extends Model
         'hash',
         'currency',
     ];
+
+    public $meiliIndexName = 'cx_proposals';
 
     public static function getFilterableAttributes(): array
     {
@@ -173,14 +174,6 @@ class Proposal extends Model
             'sort',
             'exactness',
         ];
-    }
-
-    public static function runCustomIndex(): void
-    {
-        Artisan::call('cx:create-search-index', [
-            'model' => Proposal::class,
-            'name' => 'cx_proposals',
-        ]);
     }
 
     public function scopeFilter($query, array $filters)

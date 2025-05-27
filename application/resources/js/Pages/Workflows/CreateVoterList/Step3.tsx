@@ -12,6 +12,8 @@ import { VoteEnum } from '@/enums/votes-enums';
 import RecordsNotFound from '@/Layouts/RecordsNotFound';
 import ProposalSortingOptions from '@/lib/ProposalSortOptions';
 import { StepDetails } from '@/types';
+import { PaginatedData } from '@/types/paginated-data';
+import { SearchParams } from '@/types/search-params';
 import {
     generateLocalizedRoute,
     useLocalizedRoute,
@@ -20,8 +22,6 @@ import { router, useForm } from '@inertiajs/react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { PaginatedData } from '../../../../types/paginated-data';
-import { SearchParams } from '../../../../types/search-params';
 import Content from '../Partials/WorkflowContent';
 import Footer from '../Partials/WorkflowFooter';
 import Nav from '../Partials/WorkflowNav';

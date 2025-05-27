@@ -11,20 +11,17 @@ import ProposalSortingOptions from '@/lib/ProposalSortOptions';
 import ProposalResults from '@/Pages/Proposals/Partials/ProposalResults';
 import VerticalCardLoading from '@/Pages/Proposals/Partials/ProposalVerticalCardLoading';
 import { PageProps } from '@/types';
+import { PaginatedData } from '@/types/paginated-data';
 import { ProposalMetrics } from '@/types/proposal-metrics';
+import { SearchParams } from '@/types/search-params';
 import { Head, WhenVisible } from '@inertiajs/react';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { PaginatedData } from '../../../types/paginated-data';
-import { SearchParams } from '../../../types/search-params';
 import CardLayoutSwitcher from './Partials/CardLayoutSwitcher';
 import FundFiltersContainer from './Partials/FundFiltersContainer';
 import ProposalFilters from './Partials/ProposalFilters';
 import ProposalHorizontalCardLoading from './Partials/ProposalHorizontalCardLoading';
 import ProposalData = App.DataTransferObjects.ProposalData;
-import ProposalsTable from './Comparison/ProposalComparisonTable';
-import ModalNavLink from '@/Components/ModalNavLink';
-import ProposalComparison from './Comparison/ProposalComparison';
 // @ts-ignore
 
 interface HomePageProps extends Record<string, unknown> {
@@ -107,7 +104,6 @@ export default function Index({
                     }`}
                 >
                     <ProposalFilters />
-                    
                 </section>
 
                 <section className="container flex flex-col items-end pt-2 pb-1">
@@ -147,7 +143,6 @@ export default function Index({
                 <section className="w-full px-4 lg:container lg:px-0">
                     {proposals && <Paginator pagination={proposals} />}
                 </section>
-               
             </FiltersProvider>
         </ListProvider>
     );

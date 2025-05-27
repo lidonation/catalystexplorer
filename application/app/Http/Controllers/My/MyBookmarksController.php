@@ -447,7 +447,7 @@ class MyBookmarksController extends Controller
                 'title' => $data['title'],
                 'content' => $data['content'] ?? null,
                 'visibility' => $data['visibility'] ?? BookmarkVisibility::UNLISTED()->value,
-                'color' => $data['color'] ?? '#000000', // since not passing from quick list create, just adding a default color
+                'color' => $data['color'] ?? '#000000',
                 'status' => BookmarkStatus::DRAFT()->value,
                 'type' => BookmarkCollection::class,
                 'type_id' => null,

@@ -2,7 +2,7 @@ import api from '@/utils/axiosClient';
 import { AxiosError } from 'axios';
 import React, { createContext, useContext, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { List, ListContextState } from '../../types/general';
+import { List, ListContextState } from '../types/general';
 
 interface ListContextValue extends ListContextState {
     fetchLists: () => Promise<void>;
@@ -234,7 +234,7 @@ export function ListProvider({ children }: { children: React.ReactNode }) {
         fetchLists,
         addList: createList,
         addBookmarkToList,
-        removeBookmarkFromList
+        removeBookmarkFromList,
     };
 
     return (

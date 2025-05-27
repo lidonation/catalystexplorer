@@ -9,7 +9,7 @@ import {
     useRef,
     useState,
 } from 'react';
-import { SearchParams } from '../../types/search-params';
+import { SearchParams } from '../types/search-params';
 
 export interface FilteredItem {
     param: string;
@@ -105,10 +105,10 @@ export function FiltersProvider({
             // Create a new array to avoid mutating the previous state
             let updated = updateFilter([...prev], filter);
 
-            const shouldResetPage = 
-                filter.param !== ParamsEnum.PAGE && 
+            const shouldResetPage =
+                filter.param !== ParamsEnum.PAGE &&
                 filter.resetPageOnChange !== false;
-                
+
             if (shouldResetPage) {
                 updated = updateFilter(updated, {
                     param: ParamsEnum.PAGE,
@@ -116,7 +116,7 @@ export function FiltersProvider({
                     value: 1,
                 });
             }
-            
+
             return updated;
         });
     }, []);
@@ -155,14 +155,14 @@ export function FiltersProvider({
             const paginationFiltered =
                 changedParams.includes(ParamsEnum.PAGE) ||
                 changedParams.includes(ParamsEnum.LIMIT);
-                
+
             router.get(currentUrl, formatToParams(), {
                 preserveState: true,
                 preserveScroll: !paginationFiltered,
                 ...routerOptions,
             });
         }, 50);
-        
+
         return () => {
             if (pendingRequestRef.current) {
                 clearTimeout(pendingRequestRef.current);

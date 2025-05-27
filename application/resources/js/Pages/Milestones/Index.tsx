@@ -1,8 +1,8 @@
 import Title from '@/Components/atoms/Title';
 import { Head } from '@inertiajs/react';
 import { useTranslation } from 'react-i18next';
-import { PaginatedData } from '../../../types/paginated-data';
-import { SearchParams } from '../../../types/search-params';
+import { PaginatedData } from '../../types/paginated-data';
+import { SearchParams } from '../../types/search-params';
 import ProjectScheduleData = App.DataTransferObjects.ProjectScheduleData;
 
 interface ActiveFundsProp extends Record<string, unknown> {

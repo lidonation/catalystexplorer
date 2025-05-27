@@ -1,10 +1,10 @@
+import GroupCardExtended from '@/Pages/Groups/Partials/GroupCardExtended';
+import GroupCardLoader from '@/Pages/Groups/Partials/GroupCardMiniLoader';
 import { Head, WhenVisible } from '@inertiajs/react';
-import { PaginatedData } from '../../../../types/paginated-data';
+import { PaginatedData } from '@/types/paginated-data';
 import CommunityLayout from '../CommunityLayout';
 import CommunityData = App.DataTransferObjects.CommunityData;
 import GroupData = App.DataTransferObjects.GroupData;
-import GroupCardLoader from '@/Pages/Groups/Partials/GroupCardMiniLoader';
-import GroupCardExtended from '@/Pages/Groups/Partials/GroupCardExtended';
 
 interface DashboardPageProps {
     community: CommunityData;
@@ -13,7 +13,12 @@ interface DashboardPageProps {
     collaboratingProposals: number;
 }
 
-export default function Groups({ community, groups, ownProposals, collaboratingProposals }: DashboardPageProps) {
+export default function Groups({
+    community,
+    groups,
+    ownProposals,
+    collaboratingProposals,
+}: DashboardPageProps) {
     return (
         <CommunityLayout
             community={community}

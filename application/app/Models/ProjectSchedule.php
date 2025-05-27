@@ -7,7 +7,6 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Support\Facades\Artisan;
 use Laravel\Scout\Searchable;
 
 class ProjectSchedule extends Model
@@ -18,10 +17,7 @@ class ProjectSchedule extends Model
 
     public $table = 'proposal_milestones';
 
-    public static function runCustomIndex(): void
-    {
-        Artisan::call('cx:create-search-index App\\\\Models\\\\ProjectSchedule cx_project_schedule');
-    }
+    public $meiliIndexName = 'cx_project_schedule';
 
     public static function getFilterableAttributes(): array
     {

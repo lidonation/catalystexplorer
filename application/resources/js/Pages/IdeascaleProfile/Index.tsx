@@ -7,8 +7,8 @@ import { PageProps } from '@/types';
 import { Deferred, Head } from '@inertiajs/react';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { PaginatedData } from '../../../types/paginated-data';
-import { SearchParams } from '../../../types/search-params';
+import { PaginatedData } from '../../types/paginated-data';
+import { SearchParams } from '../../types/search-params';
 import IdeascaleProfilesList from './Partials/IdeascaleProfileList';
 import IdeaScaleProfileLoader from './Partials/IdeaScaleProfileLoader';
 import IdeascaleProfilesFilters from './Partials/IdeascaleProfilesFilters';
@@ -83,7 +83,7 @@ const Index = ({
                 </div>
 
                 {ideascaleProfiles && ideascaleProfiles.total > 0 && (
-                    <section className="w-full container">
+                    <section className="container w-full">
                         <Paginator pagination={ideascaleProfiles} />
                     </section>
                 )}

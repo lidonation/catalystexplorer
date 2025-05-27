@@ -9,7 +9,10 @@ import { useFilterContext } from '@/Context/FiltersContext';
 import RecordsNotFound from '@/Layouts/RecordsNotFound';
 import { VoteEnums } from '@/enums/vote-search-enums';
 import VoteSortOptions from '@/lib/VoteSortOptions';
-import { router } from '@inertiajs/react';
+import { PaginatedData } from '@/types/paginated-data';
+import { SearchParams } from '@/types/search-params';
+import { useLocalizedRoute } from '@/utils/localizedRoute';
+import { Link, router } from '@inertiajs/react';
 import React, {
     Dispatch,
     SetStateAction,
@@ -18,8 +21,6 @@ import React, {
     useState,
 } from 'react';
 import { useTranslation } from 'react-i18next';
-import { PaginatedData } from '../../../../types/paginated-data';
-import { SearchParams } from '../../../../types/search-params';
 import VoteFilters from './VoteFilters';
 import VoteHistoryTableLoader from './VoterHistoryTableLoader';
 import VoterHistoryData = App.DataTransferObjects.VoterHistoryData;
@@ -358,16 +359,31 @@ const VoterHistoryTable: React.FC<VoterHistoryTableProps> = ({
                                                               )}
                                                     </td>
                                                     <td className="border-dark-light text-darker w-40 border-r border-b px-4 py-4">
-                                                        {history.stake_address
-                                                            ? getValueWithTooltip(
-                                                                  index,
-                                                                  history,
-                                                                  'stake_address',
-                                                                  history.stake_address,
-                                                              )
-                                                            : t(
-                                                                  'vote.notAvailable',
-                                                              )}
+                                                        <Link
+                                                            href={useLocalizedRoute(
+                                                                'jormungandr.wallets.show',
+                                                                {
+                                                                    stakeKey:
+                                                                        history?.stake_address ??
+                                                                        '',
+                                                                    catId:
+                                                                        history?.caster ??
+                                                                        '',
+                                                                },
+                                                            )}
+                                                            className="hover:text-primary"
+                                                        >
+                                                            {history.stake_address
+                                                                ? getValueWithTooltip(
+                                                                      index,
+                                                                      history,
+                                                                      'stake_address',
+                                                                      history.stake_address,
+                                                                  )
+                                                                : t(
+                                                                      'vote.notAvailable',
+                                                                  )}
+                                                        </Link>
                                                     </td>
                                                     <td className="border-dark-light text-darker w-40 border-r border-b px-4 py-4">
                                                         {getValueWithTooltip(
@@ -381,15 +397,30 @@ const VoterHistoryTable: React.FC<VoterHistoryTableProps> = ({
                                                         )}
                                                     </td>
                                                     <td className="border-dark-light text-darker w-40 border-r border-b px-4 py-4">
-                                                        {getValueWithTooltip(
-                                                            index,
-                                                            history,
-                                                            'caster',
-                                                            safelyGetNestedValue(
+                                                        <Link
+                                                            href={useLocalizedRoute(
+                                                                'jormungandr.wallets.show',
+                                                                {
+                                                                    stakeKey:
+                                                                        history?.stake_address ??
+                                                                        '',
+                                                                    catId:
+                                                                        history?.caster ??
+                                                                        '',
+                                                                },
+                                                            )}
+                                                            className="hover:text-primary"
+                                                        >
+                                                            {getValueWithTooltip(
+                                                                index,
                                                                 history,
                                                                 'caster',
-                                                            ),
-                                                        )}
+                                                                safelyGetNestedValue(
+                                                                    history,
+                                                                    'caster',
+                                                                ),
+                                                            )}
+                                                        </Link>
                                                     </td>
                                                     <td className="border-dark-light text-content border-r border-b px-4 py-4">
                                                         <div className="flex flex-col">

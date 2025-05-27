@@ -18,7 +18,6 @@ function UserNavigation() {
     const openedAutomatically = useRef(false);
     const userToggled = useRef(false);
     const dropdownRef = useRef(null);
-
     const stripLanguagePrefix = (path?: string) => {
         if (!path) return '';
 

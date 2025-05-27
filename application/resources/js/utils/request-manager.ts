@@ -1,5 +1,5 @@
 import axios, { AxiosRequestConfig, CancelTokenSource } from 'axios';
-import ApiPaginatedData from '../../types/api-paginated-data';
+import ApiPaginatedData from '../types/api-paginated-data';
 
 class ApiRequestManager {
     currentRequest: { url: string; cancelToken: CancelTokenSource } | null = null;

@@ -4,18 +4,18 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use App\Casts\HashId;
 use App\Traits\HasAuthor;
 use App\Traits\HasMetaData;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Laravel\Scout\Searchable;
 use Spatie\Comments\Models\Concerns\HasComments;
 
 class BookmarkCollection extends Model
 {
-    use HasAuthor, HasComments, HasMetaData, SoftDeletes;
+    use HasAuthor, HasComments, HasMetaData, Searchable, SoftDeletes;
 
     protected $withCount = [
         'items',
@@ -27,14 +27,11 @@ class BookmarkCollection extends Model
         'comments',
     ];
 
+    public $meiliIndexName = 'cx_bookmark_collection';
+
     protected $appends = ['types_count', 'hash'];
 
-    // protected $fillable = [
-    //     'user_id',
-    //     'title',
-    //     'content',
-    //     'visibility',
-    // ];
+    protected $guarded = [];
 
     protected $fillable = [
         'user_id',
@@ -46,6 +43,41 @@ class BookmarkCollection extends Model
         'status',
         'type',
     ];
+
+    public static function getFilterableAttributes(): array
+    {
+        return [
+            'visibility',
+        ];
+    }
+
+    public static function getSearchableAttributes(): array
+    {
+        return [
+            'id',
+            'title',
+            'content',
+            'proposals.title',
+            'groups.title',
+            'communitites.title',
+            'ideascale_profiles.name',
+            'ideascale_profiles.username',
+            'author.name',
+        ];
+    }
+
+    public static function getSortableAttributes(): array
+    {
+        return [
+            'title',
+            'updated_at',
+            'items_count',
+            'amount_requested_USD',
+            'amount_received_ADA',
+            'amount_requested_ADA',
+            'amount_received_USD',
+        ];
+    }
 
     public function parent(): BelongsTo
     {
@@ -100,6 +132,38 @@ class BookmarkCollection extends Model
         );
     }
 
+    public function amountRequested(): Attribute
+    {
+        return Attribute::make(
+            get: function () {
+                return $this->proposals->pluck('model')
+                    ->groupBy('currency')
+                    ->map(function ($group, $currency) {
+                        return [
+                            "amount_requested_{$currency}" => $group->sum(fn ($p) => intval($p->amount_requested ?? 0)),
+                        ];
+                    })
+                    ->collapse()->toArray();
+            }
+        );
+    }
+
+    public function amountReceived(): Attribute
+    {
+        return Attribute::make(
+            get: function () {
+                return $this->proposals->pluck('model')
+                    ->groupBy('currency')
+                    ->map(function ($group, $currency) {
+                        return [
+                            "amount_received_{$currency}" => $group->sum(fn ($p) => intval($p->amount_received ?? 0)),
+                        ];
+                    })
+                    ->collapse()->toArray();
+            }
+        );
+    }
+
     /*
     * This string will be used in notifications on what a new comment
     * was made.
@@ -118,10 +182,16 @@ class BookmarkCollection extends Model
         return '';
     }
 
-    public function casts(): array
+    public function toSearchableArray()
     {
-        return [
-            // 'id' => HashId::class,
-        ];
+
+        return array_merge($this->load('comments')->toArray(), $this->amount_received, $this->amount_requested, [
+            'proposals' => $this->proposals->pluck('model')->toArray(),
+            'ideascale_profiles' => $this->ideascale_profiles->pluck('model')->toArray(),
+            'reviews' => $this->reviews->pluck('model')->toArray(),
+            'groups' => $this->groups->pluck('model')->toArray(),
+            'communities' => $this->communities->pluck('model')->toArray(),
+            'rationale' => $this->meta_info?->rationale,
+        ]);
     }
 }

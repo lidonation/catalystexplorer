@@ -8,7 +8,6 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Support\Facades\Artisan;
 use Laravel\Scout\Searchable;
 use Znck\Eloquent\Traits\BelongsToThrough;
 
@@ -31,6 +30,8 @@ class VoterHistory extends Model
     protected $appends = [
         'hash',
     ];
+
+    public $meiliIndexName = 'cx_voter_histories';
 
     /**
      * Get the sortable attributes for the model.
@@ -84,14 +85,6 @@ class VoterHistory extends Model
             'caster',
             'time',
         ];
-    }
-
-    /**
-     * Run the custom index for the model.
-     */
-    public static function runCustomIndex(): void
-    {
-        Artisan::call('cx:create-search-index App\\\\Models\\\\VoterHistory cx_voter_histories');
     }
 
     /**

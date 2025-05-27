@@ -1,26 +1,29 @@
+import {
+    generateLocalizedRoute,
+    useLocalizedRoute,
+} from '@/utils/localizedRoute';
+import { router, useForm } from '@inertiajs/react';
+import { ChevronRight } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ChevronRight } from 'lucide-react';
-import { router, useForm } from '@inertiajs/react';
-import { generateLocalizedRoute, useLocalizedRoute } from '@/utils/localizedRoute';
 
 import Paragraph from '@/Components/atoms/Paragraph';
 import PrimaryLink from '@/Components/atoms/PrimaryLink';
-import WorkflowLayout from '../WorkflowLayout';
+import Paginator from '@/Components/Paginator';
+import ProposalVotingCard from '@/Components/ProposalVotingCard';
+import { FiltersProvider } from '@/Context/FiltersContext';
+import RecordsNotFound from '@/Layouts/RecordsNotFound';
+import ProposalSearchBar from '../CreateVoterList/partials/ProposalSearchBar';
 import Content from '../Partials/WorkflowContent';
 import Footer from '../Partials/WorkflowFooter';
 import Nav from '../Partials/WorkflowNav';
-import ProposalVotingCard from '@/Components/ProposalVotingCard';
-import ProposalSearchBar from '../CreateVoterList/partials/ProposalSearchBar';
-import RecordsNotFound from '@/Layouts/RecordsNotFound';
-import Paginator from '@/Components/Paginator';
-import { FiltersProvider } from '@/Context/FiltersContext';
+import WorkflowLayout from '../WorkflowLayout';
 
+import { ParamsEnum } from '@/enums/proposal-search-params';
 import { VoteEnum } from '@/enums/votes-enums';
 import { StepDetails } from '@/types';
-import { ParamsEnum } from '@/enums/proposal-search-params';
-import { SearchParams } from '../../../../types/search-params';
-import { PaginatedData } from '../../../../types/paginated-data';
+import { PaginatedData } from '../../../types/paginated-data';
+import { SearchParams } from '../../../types/search-params';
 import ProposalData = App.DataTransferObjects.ProposalData;
 
 interface Step1Props {
@@ -33,13 +36,13 @@ interface Step1Props {
 }
 
 const Step1: React.FC<Step1Props> = ({
-                                         stepDetails,
-                                         activeStep,
-                                         proposals,
-                                         selectedProposals: initialSelectedProposals = [],
-                                         votes: initialVotes = {},
-                                         filters
-                                     }) => {
+    stepDetails,
+    activeStep,
+    proposals,
+    selectedProposals: initialSelectedProposals = [],
+    votes: initialVotes = {},
+    filters,
+}) => {
     const { t } = useTranslation();
     const localizedRoute = useLocalizedRoute;
     const nextStep = localizedRoute('workflows.voting.index', {
@@ -47,45 +50,48 @@ const Step1: React.FC<Step1Props> = ({
     });
 
     const [selectedProposals, setSelectedProposals] = useState<Set<string>>(
-        new Set(initialSelectedProposals)
+        new Set(initialSelectedProposals),
     );
-    const [votesState, setVotes] = useState<Record<string, VoteEnum>>(initialVotes);
+    const [votesState, setVotes] =
+        useState<Record<string, VoteEnum>>(initialVotes);
 
     const form = useForm({
         proposals: Array.from(selectedProposals),
         votes: votesState,
         proposalData: proposals.data
-            .filter(p => p.slug && selectedProposals.has(p.slug))
-            .map(p => ({
+            .filter((p) => p.slug && selectedProposals.has(p.slug))
+            .map((p) => ({
                 slug: p.slug || '',
                 title: p.title || '',
                 fund: {
-                    title: p.fund?.title || 'Unknown Fund'
+                    title: p.fund?.title || 'Unknown Fund',
                 },
                 requested_funds: p.amount_requested || '75K ADA',
                 vote: votesState[p.slug || ''] || null,
-                exists: true
-            }))
+                exists: true,
+            })),
     });
 
     useEffect(() => {
         form.setData('proposals', Array.from(selectedProposals));
         form.setData('votes', votesState);
-        proposalData: proposals.data.filter(p => selectedProposals.has(p.slug || ''))
+        proposalData: proposals.data.filter((p) =>
+            selectedProposals.has(p.slug || ''),
+        );
     }, [selectedProposals, votesState]);
 
     const handleSelectProposal = (proposalSlug: string) => {
         if (!proposalSlug) {
-            console.error("Attempted to select proposal with empty slug");
+            console.error('Attempted to select proposal with empty slug');
             return;
         }
-        setSelectedProposals(prevSelected => {
+        setSelectedProposals((prevSelected) => {
             const newSelected = new Set(prevSelected);
 
             if (newSelected.has(proposalSlug)) {
                 newSelected.delete(proposalSlug);
 
-                setVotes(prev => {
+                setVotes((prev) => {
                     const newVotes = { ...prev };
                     delete newVotes[proposalSlug];
                     return newVotes;
@@ -100,17 +106,20 @@ const Step1: React.FC<Step1Props> = ({
 
     const handleVote = (proposalSlug: string, vote: VoteEnum) => {
         if (!selectedProposals.has(proposalSlug)) {
-            setSelectedProposals(prev => new Set([...prev, proposalSlug]));
+            setSelectedProposals((prev) => new Set([...prev, proposalSlug]));
         }
 
-        setVotes(prev => ({
+        setVotes((prev) => ({
             ...prev,
-            [proposalSlug]: vote
+            [proposalSlug]: vote,
         }));
     };
 
     const handleSearch = (search: string) => {
-        const updatedFilters: Record<string, string | number | string[] | number[]> = {
+        const updatedFilters: Record<
+            string,
+            string | number | string[] | number[]
+        > = {
             ...filters,
         };
 
@@ -122,11 +131,10 @@ const Step1: React.FC<Step1Props> = ({
             delete updatedFilters[ParamsEnum.PAGE];
         }
 
-        router.get(
-            window.location.pathname,
-            updatedFilters,
-            { preserveState: true, replace: true }
-        );
+        router.get(window.location.pathname, updatedFilters, {
+            preserveState: true,
+            replace: true,
+        });
     };
 
     const buildUpdatedFilters = (updates: Partial<SearchParams> = {}) => {
@@ -140,7 +148,8 @@ const Step1: React.FC<Step1Props> = ({
             }
         });
 
-        if (Object.keys(updates).length > 0 &&
+        if (
+            Object.keys(updates).length > 0 &&
             !updates[ParamsEnum.PAGE] &&
             baseFilters[ParamsEnum.PAGE]
         ) {
@@ -150,11 +159,14 @@ const Step1: React.FC<Step1Props> = ({
         return baseFilters;
     };
 
-    const handleFilterChange = (paramName: string, value: string | number | string[] | number[]) => {
+    const handleFilterChange = (
+        paramName: string,
+        value: string | number | string[] | number[],
+    ) => {
         router.get(
             window.location.pathname,
             buildUpdatedFilters({ [paramName]: value }),
-            { preserveState: true, replace: true }
+            { preserveState: true, replace: true },
         );
     };
 
@@ -165,7 +177,7 @@ const Step1: React.FC<Step1Props> = ({
             },
             onError: (errors) => {
                 console.error('Form submission errors:', errors);
-            }
+            },
         });
     };
 
@@ -174,15 +186,15 @@ const Step1: React.FC<Step1Props> = ({
             defaultFilters={filters}
             routerOptions={{
                 preserveState: true,
-                replace: true
+                replace: true,
             }}
         >
             <WorkflowLayout asideInfo={stepDetails[activeStep - 1]?.info || ''}>
                 <Nav stepDetails={stepDetails} activeStep={activeStep} />
 
                 <Content>
-                    <div className="max-w-3xl mx-auto w-full">
-                        <div className="bg-background justify-center items-center top-0 z-10 mb-4 w-full px-4 pt-4">
+                    <div className="mx-auto w-full max-w-3xl">
+                        <div className="bg-background top-0 z-10 mb-4 w-full items-center justify-center px-4 pt-4">
                             <ProposalSearchBar
                                 handleSearch={handleSearch}
                                 autoFocus
@@ -190,10 +202,17 @@ const Step1: React.FC<Step1Props> = ({
                                 initialSearch={filters[ParamsEnum.QUERY] || ''}
                             />
 
-                            <div className="mt-4 flex flex-col md:flex-row md:justify-between md:items-center gap-4">
-                                <div className="flex items-center flex-wrap gap-2">
-                                    <Paragraph size="sm" className="text-gray-persist font-medium shadow px-3 py-1 rounded-md bg-background">
-                                        {t('workflows.voting.steps.votesSubmitted')} {selectedProposals.size}/{proposals.total}
+                            <div className="mt-4 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+                                <div className="flex flex-wrap items-center gap-2">
+                                    <Paragraph
+                                        size="sm"
+                                        className="text-gray-persist bg-background rounded-md px-3 py-1 font-medium shadow"
+                                    >
+                                        {t(
+                                            'workflows.voting.steps.votesSubmitted',
+                                        )}{' '}
+                                        {selectedProposals.size}/
+                                        {proposals.total}
                                     </Paragraph>
                                 </div>
                             </div>
@@ -201,35 +220,51 @@ const Step1: React.FC<Step1Props> = ({
 
                         <div className="w-full">
                             <div className="mt-4 w-full space-y-4 overflow-y-auto">
-                                {proposals?.data && proposals.data.filter(p => p.slug).length > 0 ? (
-                                    proposals.data.filter(p => p.slug).map((proposal) => (
-                                        <ProposalVotingCard
-                                            key={proposal.slug}
-                                            proposal={proposal}
-                                            isSelected={proposal.slug ? selectedProposals.has(proposal.slug) : false}
-                                            onSelect={handleSelectProposal}
-                                            onVote={handleVote}
-                                            currentVote={proposal.slug ? votesState[proposal.slug] : undefined}
-                                        />
-                                    ))
+                                {proposals?.data &&
+                                proposals.data.filter((p) => p.slug).length >
+                                    0 ? (
+                                    proposals.data
+                                        .filter((p) => p.slug)
+                                        .map((proposal) => (
+                                            <ProposalVotingCard
+                                                key={proposal.slug}
+                                                proposal={proposal}
+                                                isSelected={
+                                                    proposal.slug
+                                                        ? selectedProposals.has(
+                                                              proposal.slug,
+                                                          )
+                                                        : false
+                                                }
+                                                onSelect={handleSelectProposal}
+                                                onVote={handleVote}
+                                                currentVote={
+                                                    proposal.slug
+                                                        ? votesState[
+                                                              proposal.slug
+                                                          ]
+                                                        : undefined
+                                                }
+                                            />
+                                        ))
                                 ) : (
-                                    <RecordsNotFound
-                                        showIcon={true}
-                                    />
+                                    <RecordsNotFound showIcon={true} />
                                 )}
                             </div>
 
-                            {proposals && proposals.data && proposals.data.length > 0 && (
-                                <div className="mt-6">
-                                    <Paginator
-                                        pagination={proposals}
-                                        linkProps={{
-                                            preserveState: true,
-                                            preserveScroll: false,
-                                        }}
-                                    />
-                                </div>
-                            )}
+                            {proposals &&
+                                proposals.data &&
+                                proposals.data.length > 0 && (
+                                    <div className="mt-6">
+                                        <Paginator
+                                            pagination={proposals}
+                                            linkProps={{
+                                                preserveState: true,
+                                                preserveScroll: false,
+                                            }}
+                                        />
+                                    </div>
+                                )}
                         </div>
                     </div>
                 </Content>
