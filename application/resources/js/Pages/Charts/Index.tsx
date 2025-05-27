@@ -1,25 +1,28 @@
 import Title from '@/Components/atoms/Title';
 import { Head, router } from '@inertiajs/react';
 import ModalLayout from '@/Layouts/ModalLayout';
-import SetChartMetrics from './Partials/SetChartMetrics';
-import { FiltersProvider } from '@/Context/FiltersContext';
-import { SearchParams } from '../../../types/search-params';
 
-interface ChartsIndexProps {
-    filters: SearchParams
-}
-const Index = ({ filters }:ChartsIndexProps) => {
+const Index = () => {
 
     return (
-       <FiltersProvider defaultFilters={filters}>
-         <ModalLayout navigate={true}>
+        <ModalLayout navigate={true}>
             <Head title="Charts"/>
 
+            <header>
+                <div className='container'>
+                    <Title >Charts</Title>
+                </div>
+                <div className='container'>
+                    <p className="text-content">
+                        Search proposals and challenges by title, content, or author and co-authors
+                    </p>
+                </div>
+            </header>
+
             <div className="flex h-screen w-full flex-col items-center justify-center">
-                <SetChartMetrics/>
+                <Title level='2'>Coming Soon</Title>
             </div>
         </ModalLayout>
-       </FiltersProvider>
     );
 };
 
