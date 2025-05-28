@@ -93,6 +93,7 @@ class CompletedProjectNftsController extends Controller
 
     public function step2(Request $request): Response
     {
+        $this->getProps($request);
         $proposals = $this->getClaimedIdeascaleProfilesProposals($request);
 
         return Inertia::render('Workflows/CompletedProjectNfts/Step2', [
