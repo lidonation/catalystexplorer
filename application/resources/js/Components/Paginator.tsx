@@ -4,12 +4,12 @@ import {
     PaginationNext,
     PaginationPrevious,
 } from '@/Components/Pagination';
-import { ParamsEnum } from '@/enums/proposal-search-params';
 import { useFilterContext } from '@/Context/FiltersContext';
-import React from 'react';
-import { PaginatedData } from '../../types/paginated-data';
-import { InertiaLinkProps, Link } from '@inertiajs/react';
+import { ParamsEnum } from '@/enums/proposal-search-params';
 import { cn } from '@/lib/utils';
+import { InertiaLinkProps, Link } from '@inertiajs/react';
+import React from 'react';
+import { PaginatedData } from '../types/paginated-data';
 
 type PaginationComponentProps<T> = {
     pagination: PaginatedData<T>;
@@ -18,7 +18,7 @@ type PaginationComponentProps<T> = {
 
 const PaginationComponent: React.FC<PaginationComponentProps<any>> = ({
     pagination,
-    linkProps = {} as InertiaLinkProps
+    linkProps = {} as InertiaLinkProps,
 }) => {
     const { setFilters, getFilters } = useFilterContext();
 
@@ -38,9 +38,8 @@ const PaginationComponent: React.FC<PaginationComponentProps<any>> = ({
         next_page_url,
         from,
         to,
-        total
+        total,
     } = pagination;
-
 
     return (
         <div className="mb-8">
@@ -54,10 +53,10 @@ const PaginationComponent: React.FC<PaginationComponentProps<any>> = ({
                                 href={
                                     prev_page_url
                                         ? buildUrl(
-                                            ParamsEnum.PAGE,
-                                            current_page - 1,
-                                            'Current Page',
-                                        )
+                                              ParamsEnum.PAGE,
+                                              current_page - 1,
+                                              'Current Page',
+                                          )
                                         : ''
                                 }
                                 className={
@@ -75,9 +74,9 @@ const PaginationComponent: React.FC<PaginationComponentProps<any>> = ({
                                 {links &&
                                     links.map((link, index) =>
                                         link.label.includes('&laquo;') ||
-                                            link.label.includes(
-                                                '&raquo;',
-                                            ) ? null : (
+                                        link.label.includes(
+                                            '&raquo;',
+                                        ) ? null : (
                                             <PaginationItem
                                                 key={index}
                                                 className=""
@@ -93,12 +92,22 @@ const PaginationComponent: React.FC<PaginationComponentProps<any>> = ({
                                                         )}
                                                         onClick={(e) => {
                                                             e.preventDefault();
-                                                            setPagination(ParamsEnum.PAGE, link.label, 'Current Page');
+                                                            setPagination(
+                                                                ParamsEnum.PAGE,
+                                                                link.label,
+                                                                'Current Page',
+                                                            );
                                                         }}
-                                                        aria-current={link.active ? 'page' : undefined}
+                                                        aria-current={
+                                                            link.active
+                                                                ? 'page'
+                                                                : undefined
+                                                        }
                                                         className={cn(
                                                             'flex size-8 items-center justify-center rounded-full',
-                                                            link.active ? 'bg-background-darker' : '',
+                                                            link.active
+                                                                ? 'bg-background shadow-md '
+                                                                : '',
                                                         )}
                                                         {...linkProps}
                                                     >
@@ -125,10 +134,10 @@ const PaginationComponent: React.FC<PaginationComponentProps<any>> = ({
                                 href={
                                     next_page_url
                                         ? buildUrl(
-                                            ParamsEnum.PAGE,
-                                            current_page + 1,
-                                            'Current Page',
-                                        )
+                                              ParamsEnum.PAGE,
+                                              current_page + 1,
+                                              'Current Page',
+                                          )
                                         : ''
                                 }
                                 className={

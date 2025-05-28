@@ -2,13 +2,12 @@ import AggregatedReviewsSummary from '@/Components/AggregatedReviewsSummary';
 import { ParamsEnum } from '@/enums/proposal-search-params';
 import RecordsNotFound from '@/Layouts/RecordsNotFound';
 import RelatedReviews from '@/Pages/Reviews/Partials/RelatedReviews';
+import { PaginatedData } from '@/types/paginated-data';
 import { Head, WhenVisible } from '@inertiajs/react';
 import { useTranslation } from 'react-i18next';
-import { PaginatedData } from '../../../../types/paginated-data';
 import IdeascaleProfileLayout from '../IdeascaleProfileLayout';
 import IdeascaleProfileData = App.DataTransferObjects.IdeascaleProfileData;
 import ReviewData = App.DataTransferObjects.ReviewData;
-
 
 interface ReviewsPageProps {
     ideascaleProfile: IdeascaleProfileData;
@@ -22,7 +21,6 @@ export default function Reviews({
     aggregatedRatings,
 }: ReviewsPageProps) {
     const { t } = useTranslation();
-
 
     return (
         <IdeascaleProfileLayout ideascaleProfile={ideascaleProfile}>

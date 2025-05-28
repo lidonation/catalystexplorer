@@ -3,7 +3,7 @@ import { Head, router } from '@inertiajs/react';
 import ModalLayout from '@/Layouts/ModalLayout';
 import SetChartMetrics from './Partials/SetChartMetrics';
 import { FiltersProvider } from '@/Context/FiltersContext';
-import { SearchParams } from '../../../types/search-params';
+import { SearchParams } from '@/types/search-params';
 
 interface ChartsIndexProps {
     filters: SearchParams

@@ -2,16 +2,14 @@ import SearchControls from '@/Components/atoms/SearchControls';
 import Title from '@/Components/atoms/Title';
 import { ReviewList } from '@/Components/ReviewList';
 import { FiltersProvider } from '@/Context/FiltersContext';
+import ReviewsSortOptions from '@/lib/ReviewsSortOptions';
+import { PaginatedData } from '@/types/paginated-data';
+import { SearchParams } from '@/types/search-params';
 import { Head } from '@inertiajs/react';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { PaginatedData } from '../../../types/paginated-data';
-import { SearchParams } from '../../../types/search-params';
-import FundFiltersContainer from '../Proposals/Partials/FundFiltersContainer';
-import ProposalFilters from '../Proposals/Partials/ProposalFilters';
 import ReviewsFilter from './Partials/ReviewsFilters';
 import ReviewData = App.DataTransferObjects.ReviewData;
-import ReviewsSortOptions from '@/lib/ReviewsSortOptions';
 
 interface ReviewsPageProps extends Record<string, unknown> {
     reviews: PaginatedData<ReviewData[]>;

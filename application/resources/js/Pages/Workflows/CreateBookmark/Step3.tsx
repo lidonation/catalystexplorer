@@ -10,7 +10,6 @@ import Content from '../Partials/WorkflowContent';
 import Footer from '../Partials/WorkflowFooter';
 import Nav from '../Partials/WorkflowNav';
 import WorkflowLayout from '../WorkflowLayout';
-import ProposalData = App.DataTransferObjects.ProposalData;
 
 interface Campaign {
     id: number;
@@ -35,6 +34,7 @@ const Step3: React.FC<Step3Props> = ({
     const localizedRoute = useLocalizedRoute;
     const prevStep = localizedRoute('workflows.bookmarks.index', {
         step: activeStep - 1,
+        bookmarkCollection,
     });
 
     const nextStep = localizedRoute('workflows.bookmarks.index', {

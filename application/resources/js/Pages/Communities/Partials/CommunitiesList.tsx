@@ -1,7 +1,7 @@
 import RecordsNotFound from '@/Layouts/RecordsNotFound';
-import {AnimatePresence, motion} from 'framer-motion';
+import { PaginatedData } from '@/types/paginated-data';
+import { AnimatePresence, motion } from 'framer-motion';
 import React from 'react';
-import {PaginatedData} from '../../../../types/paginated-data';
 import CommunityCard from './CommunityCard';
 import CommunityData = App.DataTransferObjects.CommunityData;
 
@@ -9,7 +9,7 @@ interface CommunitiesProps {
     communities: PaginatedData<CommunityData[]>;
 }
 
-const CommunitiesList: React.FC<CommunitiesProps> = ({communities}) => {
+const CommunitiesList: React.FC<CommunitiesProps> = ({ communities }) => {
     return (
         <div>
             <AnimatePresence>
@@ -27,7 +27,7 @@ const CommunitiesList: React.FC<CommunitiesProps> = ({communities}) => {
                             />
                         </div>
                     ) : (
-                        <div className="grid w-full grid-cols-1  gap-4 lg:grid-cols-2 xl:grid-cols-3">
+                        <div className="grid w-full grid-cols-1 gap-4 lg:grid-cols-2 xl:grid-cols-3">
                             {communities.data &&
                                 communities.data?.map((community) => (
                                     <CommunityCard

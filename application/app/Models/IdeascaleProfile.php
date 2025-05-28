@@ -14,7 +14,6 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
 use Laravel\Scout\Searchable;
 use Laravolt\Avatar\Facade as Avatar;
@@ -60,6 +59,8 @@ class IdeascaleProfile extends Model implements HasMedia
     public array $translatable = [
         // 'bio',
     ];
+
+    public $meiliIndexName = 'cx_ideascale_profiles';
 
     public static function getSortableAttributes(): array
     {
@@ -123,11 +124,6 @@ class IdeascaleProfile extends Model implements HasMedia
             'amount_awarded_ada',
             'amount_awarded_usd',
         ];
-    }
-
-    public static function runCustomIndex(): void
-    {
-        Artisan::call('cx:create-search-index App\\\\Models\\\\IdeascaleProfile cx_ideascale_profiles');
     }
 
     public function amountRequestedAda(): Attribute

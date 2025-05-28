@@ -81,6 +81,10 @@ it('renders all public pages', function (string $path, string $component) {
         'component' => 'Reviews/Index',
     ],
     [
+        'path' => '/en/bookmarks',
+        'component' => 'Bookmarks/Index',
+    ],
+    [
         'path' => '/en/workflows/completed-projects-nfts/steps/1',
         'component' => 'Workflows/CompletedProjectNfts/Step1',
     ],

@@ -1,17 +1,13 @@
 import AggregatedReviewsSummary from '@/Components/AggregatedReviewsSummary';
-import Paragraph from '@/Components/atoms/Paragraph';
-import { ReviewCard } from '@/Components/ReviewCard';
 import { ParamsEnum } from '@/enums/proposal-search-params';
 import RecordsNotFound from '@/Layouts/RecordsNotFound';
-import { useLocalizedRoute } from '@/utils/localizedRoute';
-import { Head, Link, WhenVisible } from '@inertiajs/react';
+import RelatedReviews from '@/Pages/Reviews/Partials/RelatedReviews';
+import { PaginatedData } from '@/types/paginated-data';
+import { Head, WhenVisible } from '@inertiajs/react';
 import { useTranslation } from 'react-i18next';
-import Masonry from 'react-masonry-css';
-import { PaginatedData } from '../../../../types/paginated-data';
 import GroupLayout from '../GroupLayout';
 import ReviewData = App.DataTransferObjects.ReviewData;
 import GroupData = App.DataTransferObjects.GroupData;
-import RelatedReviews from '@/Pages/Reviews/Partials/RelatedReviews';
 
 interface ReviewPageProps {
     reviews: PaginatedData<ReviewData[]>;
@@ -49,10 +45,9 @@ export default function Reviews({
                             <RelatedReviews
                                 reviews={reviews}
                                 routeParam={{
-                                    [ParamsEnum.GROUPS]:
-                                        group.hash
-                                            ? [group.hash]
-                                            : null,
+                                    [ParamsEnum.GROUPS]: group.hash
+                                        ? [group.hash]
+                                        : null,
                                 }}
                             />
                         </div>

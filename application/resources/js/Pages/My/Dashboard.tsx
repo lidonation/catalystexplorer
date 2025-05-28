@@ -1,14 +1,9 @@
-import Title from '@/Components/atoms/Title';
-import Card from '@/Components/Card';
-import SegmentedBar from '@/Components/SegmentedBar';
 import RecordsNotFound from '@/Layouts/RecordsNotFound';
 import MyLayout from '@/Pages/My/MyLayout';
-import { currency } from '@/utils/currency';
 import { Head } from '@inertiajs/react';
 import { useTranslation } from 'react-i18next';
-import { Segments } from '../../../types/segments';
-import UserSummaryChart from './partials/UserSummaryChart';
 import UserFundSummary from './partials/UserFundSummary';
+import UserSummaryChart from './partials/UserSummaryChart';
 
 interface MyDashboardProps {
     totalsSummary: {
@@ -38,13 +33,12 @@ export default function MyDashboard({
     totalsSummary,
     graphData,
 }: MyDashboardProps) {
-
     const { t } = useTranslation();
 
     return (
         <>
             <Head title="My Dashboard" />
-            
+
             {!totalsSummary && !graphData && (
                 <div className="text-content text-center">
                     <RecordsNotFound />
@@ -53,7 +47,7 @@ export default function MyDashboard({
 
             <div className="mx-auto grid max-w-7xl grid-cols-1 gap-4 px-4 sm:px-6 lg:grid-cols-3 lg:px-8 mt-8">
                 {totalsSummary && (
-                    <UserFundSummary totalsSummary={totalsSummary}/>
+                    <UserFundSummary totalsSummary={totalsSummary} />
                 )}
                 {graphData && (
                     <>
@@ -118,7 +112,6 @@ export default function MyDashboard({
                     </>
                 )}
             </div>
-            <div className="mx-auto grid max-w-7xl grid-cols-1 gap-4 px-4 pt-8 sm:px-6 lg:grid-cols-3 lg:px-8"></div>
         </>
     );
 }

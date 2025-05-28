@@ -10,6 +10,7 @@ import TextInput from './atoms/TextInput';
 import Card from './Card';
 import CloseIcon from './svgs/CloseIcon';
 import SearchLensIcon from './svgs/SearchLensIcon';
+import { object } from 'zod';
 
 type StatField = {
     label: string;
@@ -102,8 +103,7 @@ export default function ModelSearch({
         const value = path.split('.').reduce((acc, key) => acc?.[key], obj);
         if (value == null) return '—';
         if (path?.includes('amount')) {
-            const isAda = path?.includes('ada');
-            return currency(value, 3, isAda ? 'ADA' : undefined);
+            return currency(value, 3, obj.currency);
         }
         return value;
     }
@@ -140,11 +140,6 @@ export default function ModelSearch({
             <div className="h-120 space-y-4 overflow-y-auto py-4 lg:mt-4 lg:space-y-3 lg:py-6">
                 {options?.map((result) => {
                     const hash = result.hash;
-                    console.log({
-                        hash,
-                        selectedHashes,
-                        t: formatStat(result, model.labelField),
-                    });
 
                     const isSelected = selectedHashes.includes(hash);
 
@@ -186,7 +181,7 @@ export default function ModelSearch({
                                                             {label}:
                                                         </span>
                                                         <span
-                                                            className={`font-medium ${
+                                                            className={`${
                                                                 index === 0
                                                                     ? 'text-success'
                                                                     : index ===

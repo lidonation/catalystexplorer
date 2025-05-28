@@ -2,12 +2,12 @@ import Paragraph from '@/Components/atoms/Paragraph';
 import Title from '@/Components/atoms/Title';
 import FundingPercentages from '@/Components/FundingPercentages';
 import SegmentedBar from '@/Components/SegmentedBar';
+import { Segments } from '@/types/segments';
 import { currency } from '@/utils/currency';
 import { useLocalizedRoute } from '@/utils/localizedRoute';
 import { Link } from '@inertiajs/react';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Segments } from '../../../../types/segments';
 import GroupHeroSection from './GroupHeroSection';
 import GroupData = App.DataTransferObjects.GroupData;
 
@@ -55,7 +55,6 @@ const GroupCardExtended: React.FC<GroupCardFullProps> = ({
     const allReceivedFunds = !!(
         group?.amount_distributed_ada && group?.amount_distributed_usd
     );
-    
 
     return (
         <div className="bg-background flex h-full w-full flex-col rounded-lg shadow-md">

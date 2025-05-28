@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('stake_key')->index();
             $table->text('signature');
             $table->string('signature_key');
+            $table->foreignId('user_id')->constrained('users');
             $table->string('wallet_provider')->nullable();
             $table->timestamps();
         });

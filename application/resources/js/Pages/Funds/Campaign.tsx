@@ -1,20 +1,19 @@
 import Title from '@/Components/atoms/Title';
 import Divider from '@/Components/Divider';
-import {PageProps} from '@/types';
-import {Head, WhenVisible} from '@inertiajs/react';
-import {useTranslation} from 'react-i18next';
-import {PaginatedData} from '../../../types/paginated-data';
+import Paginator from '@/Components/Paginator';
+import { FiltersProvider } from '@/Context/FiltersContext';
+import CampaignCardExtended from '@/Pages/Campaign/Partials/CampaignCardExtended';
+import ProposalMiniCardLoader from '@/Pages/Proposals/Partials/ProposalMiniCardLoader';
+import { PageProps } from '@/types';
+import { Head, WhenVisible } from '@inertiajs/react';
+import { useTranslation } from 'react-i18next';
+import { PaginatedData } from '../../types/paginated-data';
+import { SearchParams } from '../../types/search-params';
 import CampaignAccordion from '../Campaign/Partials/CampaignAccordion';
 import ProposalCardMini from '../Proposals/Partials/ProposalCardMini';
 import FundData = App.DataTransferObjects.FundData;
 import CampaignData = App.DataTransferObjects.CampaignData;
 import ProposalData = App.DataTransferObjects.ProposalData;
-import Paginator from "@/Components/Paginator";
-import {FiltersProvider} from "@/Context/FiltersContext";
-import {SearchParams} from "../../../types/search-params";
-import CampaignCardExtended from "@/Pages/Campaign/Partials/CampaignCardExtended";
-import ProposalMiniCardLoader from "@/Pages/Proposals/Partials/ProposalMiniCardLoader";
-import React from "react";
 
 interface CampaignPageProps extends Record<string, unknown> {
     fund: FundData;
@@ -23,25 +22,23 @@ interface CampaignPageProps extends Record<string, unknown> {
 }
 
 export default function Campaign({
-     fund,
-     campaign,
-     proposals,
- }: PageProps<CampaignPageProps>) {
-    const {t} = useTranslation();
+    fund,
+    campaign,
+    proposals,
+}: PageProps<CampaignPageProps>) {
+    const { t } = useTranslation();
 
     return (
         <>
-            <Head title={`Cat: ${fund.title}`}/>
+            <Head title={`Cat: ${fund.title}`} />
 
-            <div className="flex w-full flex-col gap-y-4 rounded-lg p-4 lg:gap-y-12 lg:p-8 page page-campaign">
+            <div className="page page-campaign flex w-full flex-col gap-y-4 rounded-lg p-4 lg:gap-y-12 lg:p-8">
                 <div className="relative grid grid-cols-9 gap-5">
                     <div className="col-span-9 h-auto lg:col-span-3">
                         <CampaignCardExtended
                             fund={fund}
                             campaign={campaign}
-                            className={
-                                'lg:sticky lg:top-4'
-                            }
+                            className={'lg:sticky lg:top-4'}
                         />
                     </div>
                     <div className="col-span-9 flex flex-col gap-5 lg:col-span-6">
@@ -50,13 +47,12 @@ export default function Campaign({
                                 <Title level="3" className="font-bold">
                                     {campaign.title}
                                 </Title>
-                                <button
-                                    className="bg-primary text-primary-light rounded-sm px-2 py-2 text-sm font-semibold">
+                                <button className="bg-primary text-primary-light rounded-sm px-2 py-2 text-sm font-semibold">
                                     {t('Submit a Proposal')}
                                 </button>
                             </div>
 
-                            <Divider/>
+                            <Divider />
 
                             {/* accordion */}
                             <article>
@@ -71,21 +67,19 @@ export default function Campaign({
                             data="proposals"
                             fallback={<ProposalMiniCardLoader />}
                         >
-                            <section className="bg-background bg-opacity-5 rounded-md p-4 flex flex-col gap-8">
+                            <section className="bg-background bg-opacity-5 flex flex-col gap-8 rounded-md p-4">
                                 <div>
-                                    <Title level="4">
-                                        {t('Proposals')}
-                                    </Title>
+                                    <Title level="4">{t('Proposals')}</Title>
 
-                                    <Divider/>
+                                    <Divider />
 
-                                    <ul className="grid w-full auto-rows-fr md:grid-cols-2 2xl:grid-cols-3 gap-2 mt-4">
+                                    <ul className="mt-4 grid w-full auto-rows-fr gap-2 md:grid-cols-2 2xl:grid-cols-3">
                                         {proposals?.data &&
                                             proposals?.data.map(
                                                 (proposal, index) => (
                                                     <li
                                                         key={index}
-                                                        className="h-full rounded-lg border-2 border-border-dark-on-dark"
+                                                        className="border-border-dark-on-dark h-full rounded-lg border-2"
                                                     >
                                                         <ProposalCardMini
                                                             proposal={proposal}
@@ -97,11 +91,20 @@ export default function Campaign({
                                     </ul>
                                 </div>
 
-                                <div className="w-full overflow-auto flex flex-col gap-2">
+                                <div className="flex w-full flex-col gap-2 overflow-auto">
                                     <Divider />
 
-                                    <FiltersProvider defaultFilters={{} as SearchParams}>
-                                        {proposals && <Paginator pagination={proposals} linkProps={{only: ['proposals']}}/>}
+                                    <FiltersProvider
+                                        defaultFilters={{} as SearchParams}
+                                    >
+                                        {proposals && (
+                                            <Paginator
+                                                pagination={proposals}
+                                                linkProps={{
+                                                    only: ['proposals'],
+                                                }}
+                                            />
+                                        )}
                                     </FiltersProvider>
                                 </div>
                             </section>

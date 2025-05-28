@@ -1,13 +1,13 @@
-import { useTranslation } from "react-i18next";
-import ProposalLayout from "../ProposalLayout";
-import AggregatedReviewsSummary from "@/Components/AggregatedReviewsSummary";
+import AggregatedReviewsSummary from '@/Components/AggregatedReviewsSummary';
+import { ParamsEnum } from '@/enums/proposal-search-params';
+import RecordsNotFound from '@/Layouts/RecordsNotFound';
+import RelatedReviews from '@/Pages/Reviews/Partials/RelatedReviews';
+import { Head, WhenVisible } from '@inertiajs/react';
+import { useTranslation } from 'react-i18next';
+import { PaginatedData } from '../../../types/paginated-data';
+import ProposalLayout from '../ProposalLayout';
 import ProposalData = App.DataTransferObjects.ProposalData;
 import ReviewData = App.DataTransferObjects.ReviewData;
-import { Head, WhenVisible } from "@inertiajs/react";
-import { PaginatedData } from "../../../../types/paginated-data";
-import RelatedReviews from "@/Pages/Reviews/Partials/RelatedReviews";
-import { ParamsEnum } from "@/enums/proposal-search-params";
-import RecordsNotFound from "@/Layouts/RecordsNotFound";
 
 interface CommunityReviewIndexProps {
     proposal: ProposalData;
@@ -47,10 +47,9 @@ const Index = ({
                             <RelatedReviews
                                 reviews={reviews}
                                 routeParam={{
-                                    [ParamsEnum.PROPOSALS]:
-                                        proposal.hash
-                                            ? [proposal.hash]
-                                            : null,
+                                    [ParamsEnum.PROPOSALS]: proposal.hash
+                                        ? [proposal.hash]
+                                        : null,
                                 }}
                             />
                         </div>

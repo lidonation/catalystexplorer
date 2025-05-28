@@ -1,7 +1,7 @@
 import Paginator from '@/Components/Paginator';
 import React from 'react';
 import Masonry from 'react-masonry-css';
-import { PaginatedData } from '../../types/paginated-data';
+import { PaginatedData } from '../types/paginated-data';
 import { ReviewCard } from './ReviewCard';
 import ReviewData = App.DataTransferObjects.ReviewData;
 
@@ -30,7 +30,7 @@ export const ReviewList: React.FC<ReviewListProps> = ({
                 {reviews?.data?.map((review, index) => (
                     <section
                         key={review?.hash}
-                        className="relative mb-2 "
+                        className="relative mb-2"
                         style={{ zIndex: reviews?.data?.length - index }}
                     >
                         <ReviewCard review={review} />
@@ -38,8 +38,7 @@ export const ReviewList: React.FC<ReviewListProps> = ({
                 ))}
             </Masonry>
 
-
-            <div className="mb-8 w-full ">
+            <div className="mb-8 w-full">
                 {reviews.data && <Paginator pagination={reviews} />}
             </div>
         </div>

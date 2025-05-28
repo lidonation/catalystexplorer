@@ -59,6 +59,7 @@ export default function IdeascaleProfileUsers({
                     >
                         <UserAvatar
                             size="size-8"
+                            name={user?.name}
                             imageUrl={user.hero_img_url}
                         />
                         

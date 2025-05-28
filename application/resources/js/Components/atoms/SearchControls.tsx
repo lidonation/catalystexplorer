@@ -20,11 +20,15 @@ function SearchControls({
     sortOptions,
     searchPlaceholder,
     border,
+    withFilters = true,
+    withActiveTags = true,
 }: {
     onFiltersToggle: Dispatch<SetStateAction<boolean>>;
     sortOptions: Array<any>;
     searchPlaceholder?: string;
     border?: null | string;
+    withFilters?: boolean;
+    withActiveTags?: boolean;
 }) {
     const { getFilter, setFilters, filters } = useFilterContext();
     const { t } = useTranslation();
@@ -87,19 +91,21 @@ function SearchControls({
                 />
 
                 <div className="flex gap-2 max-sm:w-full max-sm:justify-between">
-                    <Button
-                        className={`border-input bg-background flex cursor-pointer flex-row items-center gap-2 rounded-lg border px-3 py-1.5 shadow-xs ${
-                            showFilters
-                                ? 'border-accent-blue text-primary ring-offset-background ring-1'
-                                : 'hover:bg-background-lighter text-gray-500'
-                        }`}
-                        onClick={toggleFilters}
-                        ariaLabel="Show Filters"
-                    >
-                        <FilterLinesIcon className={'size-6'} />
-                        <span>{t('filters')}</span>
-                        <span>({filtersCount})</span>
-                    </Button>
+                    {withFilters && (
+                        <Button
+                            className={`border-input bg-background flex cursor-pointer flex-row items-center gap-2 rounded-lg border px-3 py-1.5 shadow-xs ${
+                                showFilters
+                                    ? 'border-accent-blue text-primary ring-offset-background ring-1'
+                                    : 'hover:bg-background-lighter text-gray-500'
+                            }`}
+                            onClick={toggleFilters}
+                            ariaLabel="Show Filters"
+                        >
+                            <FilterLinesIcon className={'size-6'} />
+                            <span>{t('filters')}</span>
+                            <span>({filtersCount})</span>
+                        </Button>
+                    )}
                     <Selector
                         isMultiselect={false}
                         selectedItems={getFilter(ParamsEnum.SORTS)}
@@ -122,13 +128,15 @@ function SearchControls({
                 </div>
             </div>
 
-            <div className="container mx-auto flex justify-start px-0">
-                <ActiveFilters
-                    sortOptions={sortOptions}
-                    filters={filters}
-                    setFilters={setFilters}
-                />
-            </div>
+            {withActiveTags && (
+                <div className="container mx-auto flex justify-start px-0">
+                    <ActiveFilters
+                        sortOptions={sortOptions}
+                        filters={filters}
+                        setFilters={setFilters}
+                    />
+                </div>
+            )}
         </div>
     );
 }

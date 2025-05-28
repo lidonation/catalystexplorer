@@ -9,7 +9,6 @@
     "authMessage": "Vous pouvez explorer les propositions, les rapports mensuels, les personnes et les groupes. Filtrez les propositions par statut de financement, budget, fonds, campagne, mots-clés, etc.",
     "bio": "Biographie",
     "blockchainData": "Blockchain Data",
-    "bookmarks": "Mes Signets",
     "bookmark": "Votre espace personnel pour organiser et gérer les idées liées aux propositions. Accédez facilement à vos propositions sauvegardées, vos notes de révision et partagez des listes sélectionnées pour rester au fait des idées et opportunités clés.",
     "catalystAPI": "API Catalyst",
     "ccv4Votes": "Votes CCV4",
@@ -141,7 +140,7 @@
         "searchPlaceholder": "Rechercher une proposition",
         "viewProposal": "Voir la proposition",
         "tableHeaders": {
-            "metric":"Métrique",
+            "metric": "Métrique",
             "reorder": "Réorganiser",
             "title": "Titre",
             "fund": "Fonds",
@@ -1018,5 +1017,28 @@
         "searchBar": {
             "placeholder": "Rechercher un hash de transaction, une époque, un bloc"
         }
+    },
+    "bookmarks": {
+        "listTitle": "Découvrir les listes communautaires",
+        "listSubtitle": "Parcourez et recherchez des listes de favoris sélectionnées partagées par d'autres.",
+        "myBookmarks": "Mes favoris",
+        "searchPlaceholder": "Rechercher une liste",
+        "sort": {
+            "paymentsReceivedHighToLowADA": "Paiements reçus (ADA) : du plus élevé au plus bas",
+            "paymentsReceivedLowToHighADA": "Paiements reçus (ADA) : du plus bas au plus élevé",
+            "paymentsReceivedHighToLowUSD": "Paiements reçus (USD) : du plus élevé au plus bas",
+            "paymentsReceivedLowToHighUSD": "Paiements reçus (USD) : du plus bas au plus élevé",
+            "budgetHighToLowADA": "Budget (ADA) : du plus élevé au plus bas",
+            "budgetLowToHighADA": "Budget (ADA) : du plus bas au plus élevé",
+            "budgetHighToLowUSD": "Budget (USD) : du plus élevé au plus bas",
+            "budgetLowToHighUSD": "Budget (USD) : du plus bas au plus élevé",
+            "alphabeticallyAZ": "Ordre alphabétique : A à Z",
+            "updatedAtASC": "Dernière modification",
+            "itemsCountASC": "Éléments ajoutés : du plus bas au plus élevé",
+            "itemsCountDESC": "Éléments ajoutés : du plus élevé au plus bas"
+        },
+        "comments": "Commentaires",
+        "lastModified": "Dernière modification",
+        "createList": "Créer votre liste"
     }
 }
