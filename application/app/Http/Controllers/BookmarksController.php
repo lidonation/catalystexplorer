@@ -4,26 +4,28 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use App\Actions\TransformIdsToHashes;
-use App\DataTransferObjects\BookmarkCollectionData;
-use App\Enums\BookmarkableType;
-use App\Enums\BookmarkStatus;
-use App\Enums\BookmarkVisibility;
-use App\Enums\ProposalSearchParams;
-use App\Enums\QueryParamsEnum;
-use App\Enums\StatusEnum;
-use App\Models\BookmarkCollection;
-use App\Models\BookmarkItem;
-use App\Repositories\BookmarkCollectionRepository;
-use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
-use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Fluent;
 use Inertia\Inertia;
+use App\Models\Group;
 use Inertia\Response;
+use App\Enums\StatusEnum;
 use Laravel\Scout\Builder;
+use Illuminate\Support\Str;
+use App\Models\BookmarkItem;
+use Illuminate\Http\Request;
+use App\Enums\BookmarkStatus;
+use App\Enums\QueryParamsEnum;
+use Illuminate\Support\Fluent;
+use App\Enums\BookmarkableType;
+use App\Enums\BookmarkVisibility;
+use App\Models\BookmarkCollection;
+use Illuminate\Support\Collection;
+use App\Enums\ProposalSearchParams;
+use Illuminate\Support\Facades\Auth;
+use App\Actions\TransformIdsToHashes;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Pagination\LengthAwarePaginator;
+use App\Repositories\BookmarkCollectionRepository;
+use App\DataTransferObjects\BookmarkCollectionData;
 
 class BookmarksController extends Controller
 {
@@ -63,6 +65,35 @@ class BookmarksController extends Controller
         ];
 
         return Inertia::render('Bookmarks/Index', $props);
+    }
+
+    public function view(BookmarkCollection $bookmarkCollection) {}
+
+
+    public function manage(BookmarkCollection $bookmarkCollection, string|null $type = 'proposals'): Response
+    {
+        $currentPage = request(ProposalSearchParams::PAGE()->value, 1);
+
+        $model_type = BookmarkableType::from(Str::kebab($type))->getModelClass();
+        
+        $data = $model_type::whereIn(
+            'id',
+            $bookmarkCollection->items
+                ->where('model_type', $model_type)
+                ->pluck('model_id')
+        )->paginate(12, ['*'], ProposalSearchParams::PAGE()->value);
+        
+        
+        $pagination = to_length_aware_paginator(
+            $model_type::toDtoPaginated($data),
+        );
+
+        return  Inertia::render('Bookmarks/Manage', [
+            "bookmarkCollection" => $bookmarkCollection,
+            "type" => $type,
+            "filters" => [ProposalSearchParams::PAGE()->value => $currentPage],
+            $type =>    $pagination
+        ]);
     }
 
     protected function setFilters(Request $request): void
@@ -144,7 +175,7 @@ class BookmarksController extends Controller
         return $pagination->toArray();
     }
 
-    public function handleStep(Request $request, $step)
+    public function handleStep(Request $request, $step): mixed
     {
         $method = "step{$step}";
 
@@ -211,7 +242,7 @@ class BookmarksController extends Controller
 
                 $modelClass = new $modelType;
                 $modelIds = $items->pluck('model_id');
-                $hashedItems = $transformer($modelIds->map(fn ($id) => ['id' => $id]), $modelClass);
+                $hashedItems = $transformer($modelIds->map(fn($id) => ['id' => $id]), $modelClass);
 
                 return [$label => $hashedItems->pluck('hash')->values()];
             });
@@ -289,7 +320,7 @@ class BookmarksController extends Controller
             'hash' => ['required', 'string'],
         ]);
 
-        $bookmarkableType = BookmarkableType::tryFrom($validated['modelType'])->getModelClass();
+        $bookmarkableType = BookmarkableType::tryFrom(Str::kebab($validated['modelType']))->getModelClass();
 
         $model = $bookmarkableType::byHash($validated['hash']);
 
@@ -309,9 +340,11 @@ class BookmarksController extends Controller
         ]);
 
         $bookmarkCollection->searchable();
+        return back()->with('success', 'Bookmark added!.');
+        
     }
 
-    public function removeBookmarkItem(BookmarkCollection $bookmarkCollection, Request $request)
+    public function removeBookmarkItem(BookmarkCollection $bookmarkCollection, Request $request): RedirectResponse
     {
         $validated = $request->validate([
             'modelType' => ['required', 'string'],

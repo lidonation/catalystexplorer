@@ -4,24 +4,25 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use App\Actions\TransformHashToIds;
-use App\Enums\CatalystCurrencySymbols;
-use App\Enums\ProposalStatus;
-use App\Traits\HasConnections;
+use App\Traits\HasDto;
 use App\Traits\HasLocations;
+use App\Enums\ProposalStatus;
+use Laravel\Scout\Searchable;
+use App\Traits\HasConnections;
+use Spatie\MediaLibrary\HasMedia;
+use App\Actions\TransformHashToIds;
+use Spatie\Image\Enums\CropPosition;
+use Laravolt\Avatar\Facade as Avatar;
+use App\Enums\CatalystCurrencySymbols;
+use Spatie\Translatable\HasTranslations;
 use Illuminate\Database\Eloquent\Builder;
+use Spatie\MediaLibrary\InteractsWithMedia;
+use Staudenmeir\EloquentHasManyDeep\HasManyDeep;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Laravel\Scout\Searchable;
-use Laravolt\Avatar\Facade as Avatar;
-use Spatie\Image\Enums\CropPosition;
-use Spatie\MediaLibrary\HasMedia;
-use Spatie\MediaLibrary\InteractsWithMedia;
-use Spatie\MediaLibrary\MediaCollections\Models\Media;
-use Spatie\Translatable\HasTranslations;
-use Staudenmeir\EloquentHasManyDeep\HasManyDeep;
 use Staudenmeir\EloquentHasManyDeep\HasRelationships;
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Group extends Model implements HasMedia
 {

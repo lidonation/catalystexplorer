@@ -310,9 +310,13 @@ Route::localized(
                 ->name('index');
         });
 
-        Route::prefix('bookmarks')->as('bookmarks.')->group(function () {
+        Route::prefix('lists')->as('lists.')->group(function () {
             Route::get('/', [BookmarksController::class, 'index'])
                 ->name('index');
+            Route::get('/{bookmarkCollection}/view', [BookmarksController::class, 'view'])
+                ->name('view');
+            Route::get('/{bookmarkCollection}/manage/{type?}', [BookmarksController::class, 'manage'])
+                ->name('manage');
         });
 
         Route::get('/charts', [ChartsController::class, 'index'])

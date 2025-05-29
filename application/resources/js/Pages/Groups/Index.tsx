@@ -14,6 +14,7 @@ import GroupCardLoader from './Partials/GroupCardMiniLoader';
 import GroupFilters from './Partials/GroupFilters';
 import GroupList from './Partials/GroupList';
 import GroupData = App.DataTransferObjects.GroupData;
+import GroupPaginatedList from './Partials/GroupPaginatedList';
 
 interface GroupsPageProps extends Record<string, unknown> {
     groups: PaginatedData<GroupData[]>;
@@ -78,18 +79,7 @@ const Index: React.FC<GroupsPageProps> = ({
                         />
                     </section>
 
-                    <section className="container py-8">
-                        <WhenVisible
-                            fallback={<GroupCardLoader />}
-                            data="groups"
-                        >
-                            <GroupList groups={groups?.data || []} />
-                        </WhenVisible>
-                    </section>
-
-                    <section className="container">
-                        {groups && <Paginator pagination={groups} />}
-                    </section>
+                    <GroupPaginatedList groups={groups}/>
                 </FiltersProvider>
             </ListProvider>
         </>

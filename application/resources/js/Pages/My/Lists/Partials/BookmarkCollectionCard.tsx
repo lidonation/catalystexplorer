@@ -105,8 +105,8 @@ const BookmarkCollectionCard = ({
                 {isAuthor ? (
                     <PrimaryLink
                         className="bg-success w-full px-4 py-1.5 font-medium text-white"
-                        href={useLocalizedRoute('my.lists.show', {
-                            list: collection?.hash,
+                        href={useLocalizedRoute('lists.manage', {
+                            bookmarkCollection: collection?.hash,
                         })}
                     >
                         {t('my.manage')}

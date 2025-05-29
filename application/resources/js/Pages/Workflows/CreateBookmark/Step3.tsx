@@ -1,6 +1,6 @@
 import PrimaryLink from '@/Components/atoms/PrimaryLink';
 import { BookmarkProvider } from '@/Context/BookmarkContext';
-import BookmarkModelSearch from '@/Pages/My/Bookmarks/Partials/BookmarkModelSearch';
+import BookmarkModelSearch from '@/Pages/Bookmarks/Partials/BookmarkModelSearch';
 import { StepDetails } from '@/types';
 import { useLocalizedRoute } from '@/utils/localizedRoute';
 import { ChevronLeft, ChevronRight } from 'lucide-react';

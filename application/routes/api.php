@@ -36,7 +36,9 @@ Route::prefix('api')->as('api.')->group(function () {
 
     Route::get('/reviewers', [ReviewerController::class, 'reviewers'])->name('reviewers');
 
-    Route::get('/reviews', [ReviewController::class, 'reviews'])->name('reviews');
+    Route::get('/reviewers', [ReviewerController::class, 'reviewers'])->name('reviewers');
+
+    Route::get('/ideascaleProfiles', [IdeascaleProfilesController::class, 'ideascaleProfiles'])->name('ideascaleProfiles');
 
     Route::get('/communities', [CommunityController::class, 'communities'])->name('communities');
     Route::get('/communities/{community:id}', [CommunitiesController::class, 'community'])->name('community');

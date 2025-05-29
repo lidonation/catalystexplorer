@@ -146,13 +146,13 @@ const GroupCard: React.FC<GroupCardProps> = ({ group }) => {
                                     </div>
                                 </section>
 
-                                {group?.bio && (
+                                {/* {group?.bio && (
                                     <div className="relative mt-4">
                                         <Paragraph className="text-gray-700">
                                             {group.bio}
                                         </Paragraph>
                                     </div>
-                                )}
+                                )} */}
                             </>
                         )}
                     </div>

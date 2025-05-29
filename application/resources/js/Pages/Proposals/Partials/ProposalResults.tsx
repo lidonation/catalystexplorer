@@ -8,9 +8,9 @@ import ProposalData = App.DataTransferObjects.ProposalData;
 interface ProposalProps {
     proposals?: ProposalData[];
     isHorizontal: boolean;
-    quickPitchView: boolean;
+    quickPitchView?: boolean;
     isMini: boolean;
-    setGlobalQuickPitchView: (value: boolean) => void;
+    setGlobalQuickPitchView?: (value: boolean) => void;
     searchTerm?: string;
 }
 

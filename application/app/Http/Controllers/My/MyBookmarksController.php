@@ -46,7 +46,7 @@ class MyBookmarksController extends Controller
 
     public function index(Request $request): InertiaResponse
     {
-        $this->authorize('viewAny', BookmarkCollection::class);
+        // $this->authorize('viewAny', BookmarkCollection::class);
 
         $bookmarkTypes = [
             Proposal::class => 'proposals',

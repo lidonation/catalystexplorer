@@ -151,7 +151,7 @@ function AppNavigation() {
             hideOnMyRoute: true,
         },
         {
-            href: useLocalizedRoute('bookmarks.index'),
+            href: useLocalizedRoute('lists.index'),
             title: t('listsAndBookmarks'),
             icon: (isActive: boolean) => (
                 <BookmarkCheckIcon

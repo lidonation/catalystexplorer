@@ -4,10 +4,11 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Traits\HasDto;
 use App\Traits\HasHashId;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model as EloquentModel;
-use Illuminate\Support\Facades\Artisan;
 
 class Model extends EloquentModel
 {
@@ -15,7 +16,7 @@ class Model extends EloquentModel
 
     protected $appends = ['hash'];
 
-    use HasFactory, HasHashId;
+    use HasFactory, HasHashId, HasDto;
 
     public static function runCustomIndex()
     {

@@ -54,7 +54,20 @@ class IdeascaleProfile extends Model implements HasMedia
         'title',
     ];
 
-    protected $appends = ['hero_img_url', 'hash'];
+    public $appends = ['hero_img_url', 'hash',];
+
+    public $withCount = [
+        'completed_proposals',
+        'funded_proposals',
+        'unfunded_proposals',
+        'in_progress_proposals',
+        'outstanding_proposals',
+        'own_proposals',
+        'collaborating_proposals',
+        'proposals',
+        'reviews',
+    ];
+
 
     public array $translatable = [
         // 'bio',
@@ -131,7 +144,7 @@ class IdeascaleProfile extends Model implements HasMedia
         return Attribute::make(
             get: function () {
                 return $this->proposals()
-                    ->whereHas('fund', fn ($q) => $q->where('currency', CatalystCurrencySymbols::ADA->name))
+                    ->whereHas('fund', fn($q) => $q->where('currency', CatalystCurrencySymbols::ADA->name))
                     ->sum('amount_requested');
             },
         );
@@ -142,7 +155,7 @@ class IdeascaleProfile extends Model implements HasMedia
         return Attribute::make(
             get: function () {
                 return $this->proposals()
-                    ->whereHas('fund', fn ($q) => $q->where('currency', CatalystCurrencySymbols::USD->name))
+                    ->whereHas('fund', fn($q) => $q->where('currency', CatalystCurrencySymbols::USD->name))
                     ->sum('amount_requested');
             },
         );
@@ -153,7 +166,7 @@ class IdeascaleProfile extends Model implements HasMedia
         return Attribute::make(
             get: function () {
                 return $this->proposals()
-                    ->whereHas('fund', fn ($q) => $q->where('currency', CatalystCurrencySymbols::ADA->name))
+                    ->whereHas('fund', fn($q) => $q->where('currency', CatalystCurrencySymbols::ADA->name))
                     ->whereNotNull('funded_at')
                     ->sum('amount_requested');
             },
@@ -165,7 +178,7 @@ class IdeascaleProfile extends Model implements HasMedia
         return Attribute::make(
             get: function () {
                 return $this->proposals()
-                    ->whereHas('fund', fn ($q) => $q->where('currency', CatalystCurrencySymbols::USD->name))
+                    ->whereHas('fund', fn($q) => $q->where('currency', CatalystCurrencySymbols::USD->name))
                     ->whereNotNull('funded_at')
                     ->sum('amount_requested');
             },
@@ -177,7 +190,7 @@ class IdeascaleProfile extends Model implements HasMedia
         return Attribute::make(
             get: function () {
                 return $this->proposals()
-                    ->whereHas('fund', fn ($q) => $q->where('currency', CatalystCurrencySymbols::ADA->name))
+                    ->whereHas('fund', fn($q) => $q->where('currency', CatalystCurrencySymbols::ADA->name))
                     ->whereNotNull('funded_at')
                     ->sum('amount_received');
             },
@@ -189,7 +202,7 @@ class IdeascaleProfile extends Model implements HasMedia
         return Attribute::make(
             get: function () {
                 return $this->proposals()
-                    ->whereHas('fund', fn ($q) => $q->where('currency', CatalystCurrencySymbols::USD->name))
+                    ->whereHas('fund', fn($q) => $q->where('currency', CatalystCurrencySymbols::USD->name))
                     ->whereNotNull('funded_at')
                     ->sum('amount_received');
             },
@@ -199,14 +212,14 @@ class IdeascaleProfile extends Model implements HasMedia
     public function gravatar(): Attribute
     {
         return Attribute::make(
-            get: fn () => Avatar::create($this->username ?? $this->name ?? 'default')->toGravatar()
+            get: fn() => Avatar::create($this->username ?? $this->name ?? 'default')->toGravatar()
         );
     }
 
     public function heroImgUrl(): Attribute
     {
         return Attribute::make(
-            get: fn () => $this->getFirstMediaUrl('profile') ?? $this->gravatar
+            get: fn() => $this->getFirstMediaUrl('profile') ?? $this->gravatar
         );
     }
 
@@ -304,7 +317,7 @@ class IdeascaleProfile extends Model implements HasMedia
                 $proposalIds = $this->proposals()->pluck('proposals.id');
 
                 if ($proposalIds->isEmpty()) {
-                    return collect(range(1, 5))->mapWithKeys(fn ($rating) => [$rating => 0])->all();
+                    return collect(range(1, 5))->mapWithKeys(fn($rating) => [$rating => 0])->all();
                 }
 
                 $ratingsQuery = DB::table('ratings')
@@ -318,7 +331,7 @@ class IdeascaleProfile extends Model implements HasMedia
                 $ratings = $ratingsQuery->pluck('count', 'rating')->toArray();
 
                 return collect(range(1, 5))
-                    ->mapWithKeys(fn ($rating) => [$rating => $ratings[$rating] ?? 0])
+                    ->mapWithKeys(fn($rating) => [$rating => $ratings[$rating] ?? 0])
                     ->all();
             }
         );
