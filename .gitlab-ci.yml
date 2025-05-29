@@ -102,6 +102,7 @@ yarn:
   artifacts:
     paths:
     - ./application/public
+    - ./application/node_modules
     expire_in: 1 days
 
 ########## Automated Testing jobs #########
@@ -197,11 +198,6 @@ playwright-e2e:
      php artisan cx:create-search-index "App\Models\MonthlyReport"'
 
     docker-compose -f docker-compose.testing.yml exec -t catalystexplorer_test.com sh -c '
-     apk add --no-cache nodejs npm && \
-     npm install -g yarn && \
-     yarn install && \
-     npx playwright install --with-deps && \
-     rm -rf ./allure-results ./allure-report 2>/dev/null || true && \
      npx playwright test || echo "Some E2E tests failed" && \
      npx allure generate ./allure-results -o ./allure-report || echo "Allure report generation failed"'
 
@@ -237,8 +233,8 @@ allure-reports:
     - public
     expire_in: 30 days
   rules:
-  - if: '$DEPLOY_WEBAPP == "true"'
-  dependencies:
+  - if: '$CI_COMMIT_BRANCH != "main" && ($DEPLOY_WEBAPP == "true")'
+  needs:
   - playwright-e2e
 
 
