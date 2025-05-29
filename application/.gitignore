@@ -26,3 +26,16 @@ frankenphp
 frankenphp-worker.php
 
 **/caddy
+
+# Playwright
+node_modules/
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+
+# Allure Reports
+/allure-results/
+/allure-report/
+/application/allure-results/
+/application/allure-report/

@@ -151,6 +151,95 @@ pest:
   - composer
   - yarn
 
+playwright-e2e:
+  stage: test
+  image: docker:24.0.7-dind-alpine3.18
+  retry: 1
+  artifacts:
+    paths:
+    - ./application/allure-report/
+    - ./application/allure-results/
+    - ./application/playwright-report/
+    - ./application/test-results/
+    expire_in: 7 days
+    reports:
+      junit: ./application/allure-results/*.xml
+    when: always
+  script:
+  - |-
+    set -xev
+    
+    if [[ -n $DOCKER_PASSWORD ]]; then
+      docker login -u="${DOCKER_USERNAME}" -p="${DOCKER_PASSWORD}"
+    fi
+
+    cp application/.env.testing application/.env
+
+    docker-compose -f docker-compose.testing.yml up -d
+
+    sleep 10
+
+    docker logs catalystexplorer_test.com
+
+    docker-compose -f docker-compose.testing.yml exec -t catalystexplorer_test.com sh -c '
+     php artisan migrate:fresh --force && \
+     php artisan optimize:clear  && \
+     sleep 10 && \
+     php artisan cx:create-search-index "App\Models\Group" && \ 
+     php artisan cx:create-search-index "App\Models\Proposal" && \
+     php artisan cx:create-search-index "App\Models\IdeascaleProfile" && \ 
+     php artisan cx:create-search-index "App\Models\Review" && \
+     php artisan cx:create-search-index "App\Models\Transaction" && \
+     php artisan cx:create-search-index "App\Models\BookmarkCollection" && \
+     php artisan cx:create-search-index "App\Models\Community" && \
+     php artisan cx:create-search-index "App\Models\VoterHistory" && \
+     sleep 10 && \
+     php artisan cx:create-search-index "App\Models\MonthlyReport"'
+
+    docker-compose -f docker-compose.testing.yml exec -t catalystexplorer_test.com sh -c '
+     apk add --no-cache nodejs npm && \
+     npm install -g yarn && \
+     yarn install && \
+     npx playwright install --with-deps && \
+     rm -rf ./allure-results ./allure-report 2>/dev/null || true && \
+     npx playwright test || echo "Some E2E tests failed" && \
+     npx allure generate ./allure-results -o ./allure-report || echo "Allure report generation failed"'
+
+    # docker cp $(docker-compose -f docker-compose.testing.yml ps -q catalystexplorer_test.com):/var/www/html/allure-report ./application/ 2>/dev/null || echo "No allure-report to copy"
+    # docker cp $(docker-compose -f docker-compose.testing.yml ps -q catalystexplorer_test.com):/var/www/html/allure-results ./application/ 2>/dev/null || echo "No allure-results to copy"
+    # docker cp $(docker-compose -f docker-compose.testing.yml ps -q catalystexplorer_test.com):/var/www/html/playwright-report ./application/ 2>/dev/null || echo "No playwright-report to copy"
+    # docker cp $(docker-compose -f docker-compose.testing.yml ps -q catalystexplorer_test.com):/var/www/html/test-results ./application/ 2>/dev/null || echo "No test-results to copy"
+
+  after_script:
+  - docker-compose -f docker-compose.testing.yml down || true
+  rules:
+  - if: '$CI_COMMIT_BRANCH != "main" && ($DEPLOY_WEBAPP == "true")'
+  dependencies:
+  - composer
+  - yarn
+
+allure-reports:
+  stage: test
+  image: alpine:latest
+  script:
+  - mkdir -p public
+  - |
+    if [ -d "./application/allure-report" ]; then
+      cp -r ./application/allure-report/* public/
+      echo "Allure report deployed to GitLab Pages"
+    else
+      echo "No allure report found to deploy"
+      mkdir -p public
+      echo "<html><body><h1>No E2E Test Reports Available</h1><p>The playwright-e2e job needs to run successfully first.</p></body></html>" > public/index.html
+    fi
+  artifacts:
+    paths:
+    - public
+    expire_in: 30 days
+  rules:
+  - if: '$DEPLOY_WEBAPP == "true"'
+  dependencies:
+  - playwright-e2e
 
 
 ########## Helper Scripts ############

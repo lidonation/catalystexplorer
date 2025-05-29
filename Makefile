@@ -12,6 +12,10 @@ init:
 	chmod +x ./scripts/remove-carp.sh
 
 	docker run --rm --interactive --tty \
+          --volume ${PWD}/application:/app \
+          composer install --ignore-platform-reqs
+
+	docker run --rm --interactive --tty \
 		--volume ${PWD}:/app \
 		--workdir /app \
 		--user root \
@@ -22,11 +26,6 @@ init:
 		--workdir /app \
 		--user root \
 		node:${nodeVersion}-alpine yarn install --ignore-engine
-
-
-	docker run --rm --interactive --tty \
-          --volume ${PWD}/application:/app \
-          composer install --ignore-platform-reqs
 
 	sudo chown -R $(id -u -n):$(id -g -n) ${PWD}/application/vendor
 	./scripts/clone-carp.sh
@@ -173,6 +172,31 @@ test-backend:
 test-arch:
 	make test-backend && \
 	make up 
+
+.PHONY: test-e2e
+test-e2e:
+	@echo "Starting End-to-End Testing Workflow..."
+	
+	@echo "Cleaning previous test results..."
+	@rm -rf ./application/allure-results ./application/allure-report 2>/dev/null || true
+	
+	@echo "Running Playwright E2E tests..."
+	@cd ./application && npx playwright test || echo "Some tests failed, but continuing to generate reports..."
+	
+	@echo "Generating test report..."
+	@cd ./application && npx allure generate ./allure-results -o ./allure-report
+	
+	@echo "Test Summary:"
+	@cd ./application && if [ -n "$$(find ./allure-results -name '*.json' 2>/dev/null)" ]; then \
+		echo "Test results generated successfully"; \
+	else \
+		echo "No test results found"; \
+	fi
+	
+	@echo "Opening test report in browser..."
+	@cd ./application && npx allure open ./allure-report
+	
+	@echo "E2E Testing workflow completed! Check the report for detailed results."
 
 
 .PHONY: seed-index
