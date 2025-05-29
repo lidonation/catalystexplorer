@@ -100,7 +100,6 @@ yarn:
   artifacts:
     paths:
       - ./application/public
-      - ./application/node_modules
     expire_in: 1 days
 
 ########## Automated Testing jobs #########
