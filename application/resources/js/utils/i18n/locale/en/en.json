@@ -422,10 +422,21 @@
     "charts":{
        "setMetrics": "Set Chart Metrics",
        "selectProposals": "Which types of proposals interest you the most?",
+       "selectChartType": "Select Chart Type (Select all that apply)",
        "selectAllThatApply": "(Select all that apply)",
        "submittedProposals": "Submitted Proposals",
        "approvedProposals": "Approved Proposals",
-       "completedProposals": "Completed Proposals"
+       "completedProposals": "Completed Proposals",
+       "next": "Next",
+       "trendChart": "trendChart",
+       "lineChart": "Line Chart",
+       "pieChart": "Pie Chart",
+       "barChart": "Bar Chart",
+       "heatMap": "Heat Map",
+       "scatterPlots": "Scatter Plots",
+       "stackedBarCharts": "Stacked Bar Charts",
+       "exploreCharts": "Explore Charts",
+       "chartOptions": "Chart Options"
     },
     "pagination": {
         "next": "Next",

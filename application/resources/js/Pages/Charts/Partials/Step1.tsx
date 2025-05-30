@@ -1,23 +1,42 @@
+import React, { useEffect } from 'react';
 import Checkbox from '@/Components/atoms/Checkbox';
 import Paragraph from '@/Components/atoms/Paragraph';
+import PrimaryButton from '@/Components/atoms/PrimaryButton';
 import { useFilterContext } from '@/Context/FiltersContext';
 import { ParamsEnum } from '@/enums/proposal-search-params';
 import { useTranslation } from 'react-i18next';
 
-export default function Step1() {
+interface Step1Props {
+    onCompletionChange?: (isComplete: boolean) => void;
+    onNext?: () => void;
+}
+
+export default function Step1({ onCompletionChange, onNext }: Step1Props) {
     const { t } = useTranslation();
     const { setFilters, getFilter } = useFilterContext();
+
+    const hasSelections = () => {
+        const fundingStatus = getFilter(ParamsEnum.FUNDING_STATUS) || [];
+        const projectStatus = getFilter(ParamsEnum.PROJECT_STATUS) || [];
+        return fundingStatus.length > 0 || projectStatus.length > 0;
+    };
+
+    const isComplete = hasSelections();
+
+    useEffect(() => {
+        onCompletionChange?.(isComplete);
+    }, [isComplete, onCompletionChange]);
 
     return (
         <div>
             <Paragraph>{t('charts.selectProposals')}</Paragraph>
-            <Paragraph>{t('charts.selectAllThatApply')}</Paragraph>
-           <div>
+            <Paragraph className='mb-4'>{t('charts.selectAllThatApply')}</Paragraph>
+           <div className='grid grid-cols-2 gap-2'>
              <div className='flex gap-2'>
                 <Checkbox
-                    value="funded"
+                    value="submitted"
                     checked={getFilter(ParamsEnum.FUNDING_STATUS)?.includes(
-                        'funded',
+                        'submitted',
                     )}
                     onChange={(e) => {
                         const current =
@@ -26,10 +45,10 @@ export default function Step1() {
                         let updated;
 
                         if (isChecked) {
-                            updated = [...current, 'funded'];
+                            updated = [...current, 'submitted'];
                         } else {
                             updated = current.filter(
-                                (item: string) => item !== 'funded',
+                                (item: string) => item !== 'submitted',
                             );
                         }
 
@@ -40,7 +59,7 @@ export default function Step1() {
                         });
                     }}
                 />
-                <label htmlFor="submitted-proposals" className="text-sm">
+                <label htmlFor="submitted-proposals" className="text-base">
                     {t('charts.submittedProposals')}
                 </label>
 
@@ -72,12 +91,13 @@ export default function Step1() {
                         });
                     }}
                 />
-                <label htmlFor="submitted-proposals" className="text-sm">
+                <label htmlFor="approved-proposals" className="text-base">
                     {t('charts.approvedProposals')}
                 </label>
-            </div><div className='flex gap-2'>
+            </div>
+            <div className='flex gap-2'>
                 <Checkbox
-                    value="funded"
+                    value="complete"
                     checked={getFilter(ParamsEnum.PROJECT_STATUS)?.includes(
                         'complete',
                     )}
@@ -98,15 +118,22 @@ export default function Step1() {
                         setFilters({
                             label: t('proposals.filters.projectStatus'),
                             value: updated,
-                            param: ParamsEnum.FUNDING_STATUS,
+                            param: ParamsEnum.PROJECT_STATUS,
                         });
                     }}
                 />
-                <label htmlFor="submitted-proposals" className="text-sm">
+                <label htmlFor="completed-proposals" className="text-base">
                     {t('charts.completedProposals')}
                 </label>
             </div>
            </div>
+           <PrimaryButton 
+               className={`w-full mt-4 ${!isComplete ? 'opacity-50 cursor-not-allowed' : ''}`}
+               disabled={!isComplete}
+               onClick={() => onNext?.()}
+           >
+               {t('charts.next')}
+           </PrimaryButton>
         </div>
     );
 }

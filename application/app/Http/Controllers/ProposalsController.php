@@ -80,7 +80,7 @@ class ProposalsController extends Controller
         return Inertia::render('Proposals/Index', [
             'proposals' => app()->environment('testing')
                 ? $proposal
-                : Inertia::optional(callback: fn () => $proposal),
+                : Inertia::optional(callback: fn() => $proposal),
             'filters' => $this->queryParams,
             'funds' => $this->fundsCount,
             'search' => $this->search,
@@ -121,7 +121,7 @@ class ProposalsController extends Controller
             $counts = $this->getCounts($ideascaleProfileIds);
 
             $data['users'] = $proposal->team ? $proposal->team->map(function ($u) {
-                $proposals = $u->proposals ? $u->proposals->map(fn ($p) => $p->toArray()) : collect([]);
+                $proposals = $u->proposals ? $u->proposals->map(fn($p) => $p->toArray()) : collect([]);
 
                 return [
                     'id' => $u->id,
@@ -131,8 +131,8 @@ class ProposalsController extends Controller
                     'name' => $u->name,
                     'bio' => $u->bio,
                     'hero_img_url' => $u->hero_img_url,
-                    'proposals_completed' => $proposals->filter(fn ($p) => $p['status'] === 'complete')->count() ?? 0,
-                    'first_timer' => ($proposals->map(fn ($p) => isset($p['fund']) ? $p['fund']['id'] : null)->unique()->count() === 1),
+                    'proposals_completed' => $proposals->filter(fn($p) => $p['status'] === 'complete')->count() ?? 0,
+                    'first_timer' => ($proposals->map(fn($p) => isset($p['fund']) ? $p['fund']['id'] : null)->unique()->count() === 1),
                 ];
             })->toArray() : [];
 
@@ -152,19 +152,19 @@ class ProposalsController extends Controller
         $props = [
             'proposal' => ProposalData::from($proposalData),
             'proposals' => Inertia::optional(
-                fn () => Cache::remember(
+                fn() => Cache::remember(
                     "proposal:{$proposalId}:proposals:page:{$currentPage}",
                     now()->addMinutes(10),
-                    fn () => to_length_aware_paginator(
+                    fn() => to_length_aware_paginator(
                         ProposalData::collect($proposal)
                     )->onEachSide(0)
                 )
             ),
             'reviews' => Inertia::optional(
-                fn () => Cache::remember(
+                fn() => Cache::remember(
                     "proposal:{$proposalId}:reviews:page:{$currentPage}",
                     now()->addMinutes(10),
-                    fn () => to_length_aware_paginator(
+                    fn() => to_length_aware_paginator(
                         ReviewData::collect(
                             $proposal->reviews()
                                 ->with(['reviewer.reputation_scores', 'proposal.fund'])
@@ -176,7 +176,7 @@ class ProposalsController extends Controller
             'aggregatedRatings' => Cache::remember(
                 "proposal:{$proposalId}:aggregated_ratings",
                 now()->addMinutes(10),
-                fn () => $proposalData['aggregated_ratings'] ?? []
+                fn() => $proposalData['aggregated_ratings'] ?? []
             ),
             'connections' => $teamConnections,
             'userCompleteProposalsCount' => $proposalData['userCompleteProposalsCount'] ?? 0,
@@ -195,7 +195,7 @@ class ProposalsController extends Controller
     public function myProposals(Request $request): Response
     {
         $userId = Auth::id();
-        $ideascaleProfile = IdeascaleProfile::where('claimed_by_id', $userId)->get()->map(fn ($p) => $p->hash);
+        $ideascaleProfile = IdeascaleProfile::where('claimed_by_id', $userId)->get()->map(fn($p) => $p->hash);
 
         if ($ideascaleProfile->isEmpty()) {
             return Inertia::render('My/Proposals/Index', [
@@ -225,8 +225,9 @@ class ProposalsController extends Controller
         ]);
     }
 
-    public function charts()
+    public function charts(Request $request)
     {
+        $this->getProps($request);
         return Inertia::modal('Charts/Index', ['slideover' => true, 'filters' => $this->queryParams])->baseRoute('proposals.index');
     }
 
@@ -255,6 +256,8 @@ class ProposalsController extends Controller
             ProposalSearchParams::COMMUNITIES()->value => 'array|nullable',
             ProposalSearchParams::IDEASCALE_PROFILES()->value => 'array|nullable',
             ProposalSearchParams::FUNDS()->value => 'array|nullable',
+            ProposalSearchParams::TREND_CHART()->value => 'string|nullable',
+            ProposalSearchParams::CHART_OPTIONS()->value => 'array|nullable',
         ]);
 
         // format sort params for meili
@@ -339,10 +342,10 @@ class ProposalsController extends Controller
         }
 
         if (isset($this->queryParams[ProposalSearchParams::OPENSOURCE_PROPOSALS()->value])) {
-            $filters[] = 'opensource = '.$this->queryParams[ProposalSearchParams::OPENSOURCE_PROPOSALS()->value];
+            $filters[] = 'opensource = ' . $this->queryParams[ProposalSearchParams::OPENSOURCE_PROPOSALS()->value];
         }
 
-        $filters[] = 'type='.($this->queryParams[ProposalSearchParams::TYPE()->value] ?? 'proposal');
+        $filters[] = 'type=' . ($this->queryParams[ProposalSearchParams::TYPE()->value] ?? 'proposal');
 
         if (isset($this->queryParams[ProposalSearchParams::QUICK_PITCHES()->value])) {
             $filters[] = 'quickpitch IS NOT NULL';
@@ -357,12 +360,12 @@ class ProposalsController extends Controller
         // filter by challenge
         if (! empty($this->queryParams[ProposalSearchParams::CAMPAIGNS()->value])) {
             $campaignHashes = ($this->queryParams[ProposalSearchParams::CAMPAIGNS()->value]);
-            $filters[] = '('.implode(' OR ', array_map(fn ($c) => "campaign.hash = {$c}", $campaignHashes)).')';
+            $filters[] = '(' . implode(' OR ', array_map(fn($c) => "campaign.hash = {$c}", $campaignHashes)) . ')';
         }
 
         if (! empty($this->queryParams[ProposalSearchParams::TAGS()->value])) {
             $tagHashes = ($this->queryParams[ProposalSearchParams::TAGS()->value]);
-            $filters[] = '('.implode(' OR ', array_map(fn ($c) => "tags.hash = {$c}", $tagHashes)).')';
+            $filters[] = '(' . implode(' OR ', array_map(fn($c) => "tags.hash = {$c}", $tagHashes)) . ')';
         }
 
         if (! empty($this->queryParams[ProposalSearchParams::IDEASCALE_PROFILES()->value])) {
@@ -386,8 +389,8 @@ class ProposalsController extends Controller
         }
 
         if (! empty($this->queryParams[ProposalSearchParams::COHORT()->value])) {
-            $cohortFilters = array_map(fn ($cohort) => "{$cohort} = 1", $this->queryParams[ProposalSearchParams::COHORT()->value]);
-            $filters[] = '('.implode(' OR ', $cohortFilters).')';
+            $cohortFilters = array_map(fn($cohort) => "{$cohort} = 1", $this->queryParams[ProposalSearchParams::COHORT()->value]);
+            $filters[] = '(' . implode(' OR ', $cohortFilters) . ')';
         }
 
         if (! empty($this->queryParams[ProposalSearchParams::FUNDS()->value])) {
@@ -519,7 +522,7 @@ class ProposalsController extends Controller
 
     public function funds(Request $request)
     {
-        $funds = Fund::when($request->search, fn ($q, $search) => $q->where('title', 'ilike', "{$search}%"))->get();
+        $funds = Fund::when($request->search, fn($q, $search) => $q->where('title', 'ilike', "{$search}%"))->get();
 
         return FundData::collect($funds);
     }
