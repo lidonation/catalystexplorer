@@ -196,13 +196,10 @@ playwright-e2e:
 
       docker-compose -f docker-compose.testing.yml exec -t catalystexplorer_test.com sh -c '
        yarn install && \
+       npx playwright install-deps && \
+       npx playwright install && \
        npx playwright test || echo "Some E2E tests failed" && \
        npx allure generate ./allure-results -o ./allure-report || echo "Allure report generation failed"'
-
-      # docker cp $(docker-compose -f docker-compose.testing.yml ps -q catalystexplorer_test.com):/var/www/html/allure-report ./application/ 2>/dev/null || echo "No allure-report to copy"
-      # docker cp $(docker-compose -f docker-compose.testing.yml ps -q catalystexplorer_test.com):/var/www/html/allure-results ./application/ 2>/dev/null || echo "No allure-results to copy"
-      # docker cp $(docker-compose -f docker-compose.testing.yml ps -q catalystexplorer_test.com):/var/www/html/playwright-report ./application/ 2>/dev/null || echo "No playwright-report to copy"
-      # docker cp $(docker-compose -f docker-compose.testing.yml ps -q catalystexplorer_test.com):/var/www/html/test-results ./application/ 2>/dev/null || echo "No test-results to copy"
 
   after_script:
     - docker-compose -f docker-compose.testing.yml down || true
@@ -212,7 +209,7 @@ playwright-e2e:
     - composer
     - yarn
 
-allure-reports:
+pages:
   stage: test
   image: alpine:latest
   script:
@@ -223,9 +220,9 @@ allure-reports:
         echo "Allure report deployed to GitLab Pages"
       else
         echo "No allure report found to deploy"
-        mkdir -p public
         echo "<html><body><h1>No E2E Test Reports Available</h1><p>The playwright-e2e job needs to run successfully first.</p></body></html>" > public/index.html
       fi
+      echo "Allure Report is available at: https://${CI_PROJECT_NAMESPACE}.gitlab.io/${CI_PROJECT_NAME}/"
   artifacts:
     paths:
       - public
