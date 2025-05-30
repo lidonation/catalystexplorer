@@ -177,6 +177,9 @@ test-arch:
 test-e2e:
 	@echo "Starting End-to-End Testing Workflow..."
 	
+	@echo "Installing Playwright browsers..."
+	@cd ./application && npx playwright install
+	
 	@echo "Cleaning previous test results..."
 	@rm -rf ./application/allure-results ./application/allure-report 2>/dev/null || true
 	
@@ -195,9 +198,6 @@ test-e2e:
 	
 	@echo "Opening test report in browser..."
 	@cd ./application && npx allure open ./allure-report
-	
-	@echo "E2E Testing workflow completed! Check the report for detailed results."
-
 
 .PHONY: seed-index
 seed-index:
