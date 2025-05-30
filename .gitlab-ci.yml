@@ -196,7 +196,6 @@ playwright-e2e:
 
       docker-compose -f docker-compose.testing.yml exec -t catalystexplorer_test.com sh -c '
        yarn install && \
-       npx playwright install-deps && \
        npx playwright install && \
        npx playwright test || echo "Some E2E tests failed" && \
        npx allure generate ./allure-results -o ./allure-report || echo "Allure report generation failed"'
