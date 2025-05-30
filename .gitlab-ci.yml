@@ -151,7 +151,7 @@ pest:
 
 playwright-e2e:
   stage: test
-  image: docker:24.0.7-dind-alpine3.18
+  image: mcr.microsoft.com/playwright:v1.52.0-noble
   retry: 1
   artifacts:
     paths:
@@ -167,10 +167,6 @@ playwright-e2e:
     - |-
       set -xev
 
-      if [[ -n $DOCKER_PASSWORD ]]; then
-        docker login -u="${DOCKER_USERNAME}" -p="${DOCKER_PASSWORD}"
-      fi
-
       cp application/.env.testing application/.env
 
       docker-compose -f docker-compose.testing.yml up -d
@@ -181,7 +177,7 @@ playwright-e2e:
 
       docker-compose -f docker-compose.testing.yml exec -t catalystexplorer_test.com sh -c '
        php artisan migrate:fresh --force && \
-       php artisan optimize:clear  && \
+       php artisan optimize:clear && \
        sleep 10 && \
        php artisan cx:create-search-index "App\Models\Group" && \ 
        php artisan cx:create-search-index "App\Models\Proposal" && \
@@ -196,7 +192,6 @@ playwright-e2e:
 
       docker-compose -f docker-compose.testing.yml exec -t catalystexplorer_test.com sh -c '
        yarn install && \
-       npx playwright install && \
        npx playwright test || echo "Some E2E tests failed" && \
        npx allure generate ./allure-results -o ./allure-report || echo "Allure report generation failed"'
 
