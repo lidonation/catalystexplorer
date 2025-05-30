@@ -37,13 +37,13 @@ export default function AllCharts({ chartData }: AllChartsProps) {
 
     const renderHeatMap = () => (
         <div>
-            <Heatmap chartData={chartData} />
+            <Heatmap chartData={chartData} title='Heatmap'/>
         </div>
     );
 
     const renderScatterPlots = () => (
         <div>
-            <ScatterPlot chartData={chartData}/>
+            <ScatterPlot chartData={chartData} title='Scatter Plot'/>
         </div>
     );
 

@@ -1,5 +1,6 @@
 import Card from '@/Components/Card';
 import Paragraph from '@/Components/atoms/Paragraph';
+import Title from '@/Components/atoms/Title';
 import { ResponsiveHeatMap } from '@nivo/heatmap';
 import React from 'react';
 
@@ -14,7 +15,6 @@ interface HeatMapProps {
 }
 
 const HeatMap: React.FC<HeatMapProps> = ({ chartData, title }) => {
-    const defaultColors = ['#4fadce', '#ee8434', '#16B364'];
     const transformedData = [
         {
             id: 'Total Proposals',
@@ -39,17 +39,46 @@ const HeatMap: React.FC<HeatMapProps> = ({ chartData, title }) => {
         },
     ];
 
+    // Custom color function that assigns colors based on series ID
+    const getColor = (cell: any) => {
+        const maxValue = Math.max(
+            ...chartData.flatMap(item => [
+                item.totalProposals,
+                item.fundedProposals,
+                item.completedProposals
+            ])
+        );
+        
+        // Handle null values
+        const value = cell.value ?? 0;
+        
+        // Calculate opacity based on value (0.5 to 1.0 range)
+        const opacity = Math.max(0.5, Math.min(1.0, value / maxValue));
+        
+        // Assign colors based on series ID
+        switch (cell.serieId) {
+            case 'Total Proposals':
+                return `rgba(79, 173, 206, ${opacity})`; // #4fadce
+            case 'Funded Proposals':
+                return `rgba(238, 132, 52, ${opacity})`; // #ee8434
+            case 'Completed Proposals':
+                return `rgba(22, 179, 100, ${opacity})`; // #16B364
+            default:
+                return `rgba(79, 173, 206, ${opacity})`;
+        }
+    };
+
     return (
-        <Card className="w-full">
+        <Card className="w-full pt-4">
             {title && (
-                <Paragraph size="lg" className="mb-4 font-semibold">
+                <Title level='4' className="mb-4 font-semibold">
                     {title}
-                </Paragraph>
+                </Title>
             )}
             <div className="h-[400px]">
                 <ResponsiveHeatMap
                     data={transformedData}
-                    margin={{ top: 60, right: 90, bottom: 60, left: 90 }}
+                    margin={{ top: 60, right: 90, bottom: 60, left: 150 }}
                     axisTop={{
                         tickSize: 5,
                         tickPadding: 5,
@@ -70,14 +99,7 @@ const HeatMap: React.FC<HeatMapProps> = ({ chartData, title }) => {
                     }}
                     animate={true}
                     motionConfig="wobbly"
-                    colors={(cell) => {
-                        const colorMap: Record<string, string> = {
-                            totalProposals: '#4fadce',
-                            fundedProposals: '#ee8434',
-                            completedProposals: '#16B364',
-                        };
-                        return colorMap[cell.serieId] || '#ccc';
-                    }}
+                    colors={getColor}
                     isInteractive={true}
                     hoverTarget="cell"
                 />
