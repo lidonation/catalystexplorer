@@ -98,7 +98,7 @@ const PieChart: React.FC<PieChartProps> = ({
                         className="text-sm"
                         style={{ color: 'var(--cx-content-gray-persist)' }}
                     >
-                        {t('fund.fundedProposals')}
+                        {t('funds.fundedProposals')}
                     </Paragraph>
                     <Paragraph className="text-lg font-semibold">
                         {shortNumber(selectedFund.fundedProposals, 2)}
@@ -109,7 +109,7 @@ const PieChart: React.FC<PieChartProps> = ({
                         className="text-sm"
                         style={{ color: 'var(--cx-content-gray-persist)' }}
                     >
-                        {t('chart.fundingRate')}
+                        {t('charts.fundingRate')}
                     </Paragraph>
                     <Paragraph className="text-lg font-semibold">
                         {selectedFund.totalProposals > 0
@@ -184,13 +184,13 @@ const PieChart: React.FC<PieChartProps> = ({
                             </div>
                             <div className="mt-1">
                                 <div className="text-sm">
-                                    Value:{' '}
+                                    {t('charts.value')}:{' '}
                                     <span className="font-semibold">
                                         {shortNumber(datum.value, 0)}
                                     </span>
                                 </div>
                                 <div className="text-sm">
-                                    Percentage:{' '}
+                                    {t('charts.percentage')}:{' '}
                                     <span className="font-semibold">
                                         {datum.data.percentage}%
                                     </span>
@@ -202,7 +202,7 @@ const PieChart: React.FC<PieChartProps> = ({
                         {
                             anchor: 'bottom',
                             direction: 'row',
-                            justify: true,
+                            justify: false,
                             translateX: 0,
                             translateY: 56,
                             itemsSpacing: 0,

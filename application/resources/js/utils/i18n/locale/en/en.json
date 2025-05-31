@@ -443,7 +443,9 @@
        "fundingRate": "Funding Rate",
        "fund": "Fund",
        "year": "Year",
-       "selectFund":"Select Fund"
+       "selectFund":"Select Fund",
+       "value": "Value", 
+       "percentage": "Percentage"
     },
     "pagination": {
         "next": "Next",
