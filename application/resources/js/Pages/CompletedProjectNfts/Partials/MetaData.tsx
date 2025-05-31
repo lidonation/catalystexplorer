@@ -23,13 +23,12 @@ const MetaData = ({ nft, isOwner }: MetaDataProps) => {
     role: ''
   });
   const [isMetadataAvailable, setIsMetadataAvailable] = useState<boolean>(true);
+  const [isUpdating, setIsUpdating] = useState<Record<string, boolean>>({});
   
-  // Route generation
-  const localizedUpdateRoute = nft?.hash
-    ? useLocalizedRoute('crud.nfts.update', { nft: nft.hash })
+  const localizedUpdateRoute = nft?.id
+    ? useLocalizedRoute('crud.nfts.update', { nft: nft.id })
     : null;
 
-  // Format numbers with k, M, etc.
   const formatNumber = (num: number): string => {
     if (num >= 1000000) {
       return (num / 1000000).toFixed(1).replace(/\.0$/, '') + 'M';
@@ -40,15 +39,39 @@ const MetaData = ({ nft, isOwner }: MetaDataProps) => {
     return num.toString();
   };
 
+  const loadStruckStates = (storageKey: string): Record<string, boolean> => {
+    try {
+      const savedStruck = localStorage.getItem(`${storageKey}_struck`);
+      if (savedStruck) {
+        const parsed = JSON.parse(savedStruck);
+
+        return parsed;
+      }
+    } catch (e) {
+      console.error('Error loading struck states from localStorage:', e);
+    }
+    return {};
+  };
+
+  const saveStruckStates = (storageKey: string, struckStates: Record<string, boolean>) => {
+    try {
+      localStorage.setItem(`${storageKey}_struck`, JSON.stringify(struckStates));
+    } catch (e) {
+      console.error('Error saving struck states to localStorage:', e);
+    }
+  };
+
   useEffect(() => {
-    if (!nft?.hash) {
+    if (!nft?.id) {
       setIsMetadataAvailable(false);
       return;
     }
     
-    const storageKey = `nft_${nft.hash}`;
+    const storageKey = `nft_${nft.id}`;
     
-    // Function to extract initial values
+    const loadedStruckFields = loadStruckStates(storageKey);
+    setStruckFields(loadedStruckFields);
+    
     const extractInitialValues = () => {
       const values: Record<string, string> = {
         campaignName: '',
@@ -74,19 +97,18 @@ const MetaData = ({ nft, isOwner }: MetaDataProps) => {
       }
       
       try {
-        // Try main metadata first
         if (nft.metadata) {
           const meta = typeof nft.metadata === 'string' 
             ? safeJsonParse(nft.metadata, {}) 
             : (nft.metadata as Record<string, unknown>);
           
-          const keyMappings: Record<string, readonly string[]> = {
-            campaignName: ['Project Catalyst Campaign Name'],
-            projectNumber: ['Funded Project Number'],
-            projectTitle: ['Project Title'],
-            yesVotes: ['yes votes'],
-            noVotes: ['no votes'],
-            role: ['role']
+          const keyMappings = {
+            campaignName: ['Project Catalyst Campaign Name', 'campaign_name', 'projectCatalystCampaignName'],
+            projectNumber: ['Funded Project Number', 'funded_project_number', 'fundedProjectNumber'],
+            projectTitle: ['Project Title', 'project_title', 'projectTitle'],
+            yesVotes: ['yes votes', 'yes_votes', 'yesVotes'],
+            noVotes: ['no votes', 'no_votes', 'noVotes'],
+            role: ['role', 'Role']
           };
           
           extractValuesFromMapping(meta, keyMappings, values);
@@ -99,18 +121,41 @@ const MetaData = ({ nft, isOwner }: MetaDataProps) => {
           const nftData = extractNftDataFromNmkr(meta);
           
           if (nftData) {
-            const keyMappings: Record<string, readonly string[]> = {
-              campaignName: ['Project Catalyst Campaign Name'],
-              projectNumber: ['Funded Project Number'],
-              projectTitle: ['Project Title'],
-              yesVotes: ['yes votes'],
-              noVotes: ['no votes'],
+            const keyMappings = {
+              campaignName: ['Project Catalyst Campaign Name', 'projectCatalystCampaignName'],
+              projectNumber: ['Funded Project Number', 'fundedProjectNumber'],
+              projectTitle: ['Project Title', 'projectTitle'],
+              yesVotes: ['yes votes', 'yesVotes'],
+              noVotes: ['no votes', 'noVotes'],
               role: ['role']
             };
             
             extractValuesFromMapping(nftData, keyMappings, values);
           }
         }
+        
+        if (nft.metas && Array.isArray(nft.metas)) {
+          nft.metas.forEach(metaItem => {
+            if (metaItem.content) {
+              try {
+                const parsed = safeJsonParse(metaItem.content, {});
+                
+                const keyMappings = {
+                  campaignName: ['Project Catalyst Campaign Name', 'campaign_name', 'projectCatalystCampaignName'],
+                  projectNumber: ['Funded Project Number', 'funded_project_number', 'fundedProjectNumber'],
+                  projectTitle: ['Project Title', 'project_title', 'projectTitle'],
+                  yesVotes: ['yes votes', 'yes_votes', 'yesVotes'],
+                  noVotes: ['no votes', 'no_votes', 'noVotes'],
+                  role: ['role', 'Role']
+                };
+                
+                extractValuesFromMapping(parsed, keyMappings, values);
+              } catch (e) {
+                // Skip invalid JSON
+              }
+            }
+          });
+        }   
       } catch (e) {
         console.error('Error extracting values from metadata:', e);
       }
@@ -118,12 +163,16 @@ const MetaData = ({ nft, isOwner }: MetaDataProps) => {
       return values;
     };
     
-    const safeJsonParse = (jsonString: string, fallback: Record<string, unknown> = {}): Record<string, unknown> => {
+     const safeJsonParse = (jsonString: string, p0: {}): Record<string, any> => {
+      if (!jsonString || typeof jsonString !== 'string') {
+        return {};
+      }
+      
       try {
         return JSON.parse(jsonString);
-      } catch (e) {
-        console.error('Error parsing JSON:', e);
-        return fallback;
+      } catch (error) {
+        console.warn('Invalid JSON, skipping:', jsonString.substring(0, 50));
+        return {};
       }
     };
     
@@ -161,16 +210,6 @@ const MetaData = ({ nft, isOwner }: MetaDataProps) => {
       return null;
     };
     
-    // Get struck states
-    try {
-      const savedStruck = localStorage.getItem(`${storageKey}_struck`);
-      if (savedStruck) {
-        setStruckFields(JSON.parse(savedStruck));
-      }
-    } catch (e) {
-      console.error('Error loading struck states from localStorage:', e);
-    }
-    
     // Extract and set values
     const values = extractInitialValues();
     setDisplayValues(values);
@@ -186,33 +225,34 @@ const MetaData = ({ nft, isOwner }: MetaDataProps) => {
     const hasData = Object.values(values).some(v => !!v);
     setIsMetadataAvailable(hasData);
     
-  }, [nft?.hash, nft?.metadata, nft?.metas]);
+  }, [nft?.id, nft?.metadata, nft?.metas]);
 
   const handleToggleStrike = (key: string) => {
-    if (!localizedUpdateRoute || !nft?.hash) {
-      console.error('Cannot toggle strike: NFT Hash is missing');
+    if (!localizedUpdateRoute || !nft?.id) {
+      console.error('Cannot toggle strike: NFT ID is missing');
+      return;
+    }
+
+    // Prevent multiple simultaneous updates
+    if (isUpdating[key]) {
       return;
     }
   
     const currentlyStruck = struckFields[key] || false;
     const value = displayValues[key] || '';
+    const storageKey = `nft_${nft.id}`;
     
-    // Update the struck state
+    // Update the struck state immediately for UI responsiveness
     const newStruckFields = {
       ...struckFields,
       [key]: !currentlyStruck
     };
     
     setStruckFields(newStruckFields);
+    setIsUpdating(prev => ({ ...prev, [key]: true }));
     
-    // Save to localStorage
-    try {
-      localStorage.setItem(`nft_${nft.hash}_struck`, JSON.stringify(newStruckFields));
-    } catch (e) {
-      console.error('Error saving struck states to localStorage:', e);
-    }
+    saveStruckStates(storageKey, newStruckFields);
     
-    // Update the backend metadata
     router.patch(
       localizedUpdateRoute, 
       {
@@ -220,29 +260,31 @@ const MetaData = ({ nft, isOwner }: MetaDataProps) => {
           key, 
           value
         },
-        remove: !currentlyStruck  // If it's not currently struck, we're striking it now
+        remove: !currentlyStruck
       },
       {
         preserveScroll: true,
         preserveState: true,
         only: ['errors'],
+        onSuccess: () => {
+          setIsUpdating(prev => ({ ...prev, [key]: false }));
+        },
         onError: (errors) => {
+          console.error('Error updating metadata:', errors);
+          setIsUpdating(prev => ({ ...prev, [key]: false }));
+          
           if (Object.keys(errors).length > 0) {
-            // Revert if there's an error
-            setStruckFields({
+            const revertedStruckFields = {
               ...struckFields,
               [key]: currentlyStruck
-            });
+            };
             
-            try {
-              localStorage.setItem(`nft_${nft.hash}_struck`, JSON.stringify({
-                ...struckFields, 
-                [key]: currentlyStruck
-              }));
-            } catch (e) {
-              console.error('Error saving struck states to localStorage:', e);
-            }
+            setStruckFields(revertedStruckFields);
+            saveStruckStates(storageKey, revertedStruckFields);
           }
+        },
+        onFinish: () => {
+          setIsUpdating(prev => ({ ...prev, [key]: false }));
         }
       }
     );
@@ -250,6 +292,7 @@ const MetaData = ({ nft, isOwner }: MetaDataProps) => {
 
   const renderEditableField = (label: string, fieldKey: string, value: string) => {
     const isNumber = fieldKey === 'yesVotes' || fieldKey === 'noVotes';
+    const isFieldUpdating = isUpdating[fieldKey];
     let displayValue = value || '-';
     
     if (isNumber && value && parseInt(value) > 0) {
@@ -272,11 +315,12 @@ const MetaData = ({ nft, isOwner }: MetaDataProps) => {
                   e.preventDefault();
                   handleToggleStrike(fieldKey);
                 }}
-                className="text-sm border-none bg-transparent p-0"
+                disabled={isFieldUpdating}
+                className={`text-sm border-none bg-transparent p-0 ${isFieldUpdating ? 'opacity-50 cursor-not-allowed' : ''}`}
                 ariaLabel={struckFields[fieldKey] ? t('restoreField') : t('removeField')}
               >
                 <span className={struckFields[fieldKey] ? 'text-success' : 'text-error'}>
-                  {struckFields[fieldKey] ? '↩' : '✕'}
+                  {isFieldUpdating ? '⟳' : (struckFields[fieldKey] ? '↩' : '✕')}
                 </span>
               </Button>
             )}
