@@ -32,7 +32,7 @@ export default function Step1({ onCompletionChange, onNext }: Step1Props) {
             <Paragraph>{t('charts.selectProposals')}</Paragraph>
             <Paragraph className='mb-4'>{t('charts.selectAllThatApply')}</Paragraph>
            <div className='grid grid-cols-2 gap-2'>
-             <div className='flex gap-2'>
+             <div className='flex gap-2 items-center justify-center'>
                 <Checkbox
                     value="submitted"
                     checked={getFilter(ParamsEnum.FUNDING_STATUS)?.includes(
@@ -64,7 +64,7 @@ export default function Step1({ onCompletionChange, onNext }: Step1Props) {
                 </label>
 
             </div>
-            <div className='flex gap-2'>
+            <div className='flex gap-2 items-center justify-center'>
                 <Checkbox
                     value="funded"
                     checked={getFilter(ParamsEnum.FUNDING_STATUS)?.includes(
@@ -95,7 +95,7 @@ export default function Step1({ onCompletionChange, onNext }: Step1Props) {
                     {t('charts.approvedProposals')}
                 </label>
             </div>
-            <div className='flex gap-2'>
+            <div className='flex gap-2 items-center justify-center'>
                 <Checkbox
                     value="complete"
                     checked={getFilter(ParamsEnum.PROJECT_STATUS)?.includes(
