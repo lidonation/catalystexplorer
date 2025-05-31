@@ -85,7 +85,7 @@ final class ProposalSearchParams extends Enum
             'TAGS' => 't',
             'TYPE' => 'pt',
             'PROJECT_LENGTH' => 'pl',
-            'TREND_CHART' =>'tch'
+            'TREND_CHART' => 'tch',
         ];
     }
 }

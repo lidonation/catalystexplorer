@@ -1,55 +1,64 @@
+import Paragraph from '@/Components/atoms/Paragraph';
+import PrimaryButton from '@/Components/atoms/PrimaryButton';
+import RadioSelector from '@/Components/atoms/RadioSelector';
 import Title from '@/Components/atoms/Title';
 import { useFilterContext } from '@/Context/FiltersContext';
 import { ParamsEnum } from '@/enums/proposal-search-params';
-import BarChart from './Barchart';
-import PieChart from './PieChart';
+import { useState } from 'react';
+import BarChart from './BarChart';
+import Heatmap from './HeatMap';
 import LineChart from './LineChart';
+import PieChart from './PieChart';
 import ScatterPlot from './ScatterPlots';
 import StackedBarChart from './StackedBarChart';
-import Heatmap from './HeatMap';
-
+import { useTranslation } from 'react-i18next';
 
 interface AllChartsProps {
     chartData: any;
+    onEditMetrics: () => void;
 }
 
-export default function AllCharts({ chartData }: AllChartsProps) {
+export default function AllCharts({
+    chartData,
+    onEditMetrics,
+}: AllChartsProps) {
     const { getFilter } = useFilterContext();
     const selectedChartOptions = getFilter(ParamsEnum.CHART_OPTIONS) || [];
-
+    const [selectedItem, setSelectedItem] = useState<string | null>(null);
+    const { t } = useTranslation();
     const renderBarChart = () => (
         <div>
-           <BarChart chartData={chartData} />
+            <BarChart chartData={chartData} />
         </div>
     );
 
     const renderPieChart = () => (
         <div>
-           <PieChart chartData={chartData}/>
+            <PieChart chartData={chartData} />
         </div>
     );
 
     const renderLineChart = () => (
         <div>
-           <LineChart chartData={chartData} />
+            <LineChart chartData={chartData} />
         </div>
     );
 
     const renderHeatMap = () => (
         <div>
-            <Heatmap chartData={chartData} title='Heatmap'/>
+            <Heatmap chartData={chartData} />
         </div>
     );
 
     const renderScatterPlots = () => (
         <div>
-            <ScatterPlot chartData={chartData} title='Scatter Plot'/>
+            <ScatterPlot chartData={chartData} />
         </div>
     );
 
     const renderStackedBarCharts = () => (
-       <div>
-           <StackedBarChart chartData={chartData} />
+        <div>
+            <StackedBarChart chartData={chartData} />
         </div>
     );
 
@@ -63,15 +72,27 @@ export default function AllCharts({ chartData }: AllChartsProps) {
     };
 
     return (
-        <div>
-            <Title level="2" className="mb-4 font-bold">
-                Explore Charts
-            </Title>
+        <div className="relative min-h-screen pb-20">
+            <div className="flex justify-between items-center">
+                <Title level="2" className="mb-4 font-bold">
+                    {t('charts.exploreCharts')}
+                </Title>
+                <div className="flex gap-2 items-center justify-center pr-8">
+                    <Paragraph>{t('charts.viewBy')}</Paragraph>
+                    <RadioSelector
+                        options={[
+                            { label: t('charts.fund'), value: 'fund' },
+                            { label: t('charts.year'), value: 'year' },
+                        ]}
+                        selectedItem={selectedItem}
+                        setSelectedItem={setSelectedItem}
+                    />
+                </div>
+            </div>
 
             {selectedChartOptions.length === 0 ? (
                 <div className="p-8 text-center text-gray-500">
-                    No chart options selected. Please go back and select chart
-                    types.
+                   <Paragraph>{t('charts.noOptions')}</Paragraph>
                 </div>
             ) : (
                 <div className="space-y-6 px-6">
@@ -86,6 +107,12 @@ export default function AllCharts({ chartData }: AllChartsProps) {
                     })}
                 </div>
             )}
+            <PrimaryButton
+                onClick={onEditMetrics}
+                className="fixed bottom-6 left-6 z-50  px-6 py-3"
+            >
+                {t('charts.editMetrics')}
+            </PrimaryButton>
         </div>
     );
 }

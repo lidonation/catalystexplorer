@@ -6,6 +6,11 @@ import { ResponsiveScatterPlot } from '@nivo/scatterplot';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 
+interface CustomScatterPlotDatum {
+    x: number;
+    y: number;
+    fund: string | number;
+}
 
 interface ScatterChartProps {
     chartData: any;
@@ -34,7 +39,7 @@ const ScatterPlot: React.FC<ScatterChartProps> = ({
                 x: labelToIndex(item.fund),
                 y: item.totalProposals,
                 fund: item.fund,
-            })),
+            })) as CustomScatterPlotDatum[],
         },
         {
             id: 'Funded Proposals',
@@ -42,7 +47,7 @@ const ScatterPlot: React.FC<ScatterChartProps> = ({
                 x: labelToIndex(item.fund),
                 y: item.fundedProposals,
                 fund: item.fund,
-            })),
+            })) as CustomScatterPlotDatum[],
         },
         {
             id: 'Completed Proposals',
@@ -50,7 +55,7 @@ const ScatterPlot: React.FC<ScatterChartProps> = ({
                 x: labelToIndex(item.fund),
                 y: item.completedProposals,
                 fund: item.fund,
-            })),
+            })) as CustomScatterPlotDatum[],
         },
     ];
 
@@ -58,25 +63,25 @@ const ScatterPlot: React.FC<ScatterChartProps> = ({
 
     return (
         <Card className="w-full">
-            {title && (
-                <div className="mb-4">
-                    <Paragraph size="lg" className="font-semibold">
-                        {title}
-                    </Paragraph>
-                </div>
-            )}
+            <Title level="4" className="mb-4 font-semibold">
+                {t('charts.scatterPlot')}
+            </Title>
             <div className="h-[400px]">
                 <ResponsiveScatterPlot
                     data={transformedData}
                     margin={{ top: 40, right: 100, bottom: 70, left: 80 }}
-                    xScale={{ type: 'linear', min: 0, max: fundLabels.length - 1 }}
+                    xScale={{
+                        type: 'linear',
+                        min: 0,
+                        max: fundLabels.length - 1,
+                    }}
                     xFormat={(x) => fundLabels[Number(x)] ?? x}
                     yScale={{ type: 'linear', min: 'auto', max: 'auto' }}
                     colors={defaultColors}
-                    blendMode="multiply"
+                    blendMode="normal"
                     nodeSize={10}
                     axisBottom={{
-                        tickValues: fundLabels.map((_:any, i: any) => i),
+                        tickValues: fundLabels.map((_: any, i: any) => i),
                         format: (v) => fundLabels[v],
                         legend: xAxisLabel || 'Fund',
                         legendPosition: 'middle',
@@ -94,17 +99,34 @@ const ScatterPlot: React.FC<ScatterChartProps> = ({
                                   : value,
                     }}
                     tooltip={({ node }) => {
+                        const nodeData = node.data as CustomScatterPlotDatum;
                         return (
                             <div className="bg-tooltip rounded-lg p-4 text-white shadow-lg">
-                                <Title level="3" className="text-lg font-semibold">
-                                    {node?.data?.fund}
+                                <Title
+                                    level="3"
+                                    className="text-lg font-semibold"
+                                >
+                                    {nodeData.fund}
                                 </Title>
                                 <Paragraph className="text-sm">
-                                    <strong>{node.serieId}</strong>: {shortNumber(node.data.y, 2)}
+                                    <strong>{node.serieId}</strong>:{' '}
+                                    {shortNumber(nodeData.y, 2)}
                                 </Paragraph>
                             </div>
                         );
                     }}
+                    legends={[
+                        {
+                            anchor: 'bottom',
+                            direction: 'row',
+                            translateY: 70,
+                            translateX: 50,
+                            itemWidth: 120,
+                            itemHeight: 16,
+                            itemsSpacing: 2,
+                            symbolShape: 'circle',
+                        },
+                    ]}
                     theme={{
                         grid: {
                             line: {
@@ -131,6 +153,11 @@ const ScatterPlot: React.FC<ScatterChartProps> = ({
                                     fill: 'var(--cx-content-gray-persist)',
                                     fontSize: 10,
                                 },
+                            },
+                        },
+                        legends: {
+                            text: {
+                                fill: 'var(--cx-content)',
                             },
                         },
                         tooltip: {

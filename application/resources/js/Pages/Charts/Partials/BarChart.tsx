@@ -1,4 +1,5 @@
 import Paragraph from '@/Components/atoms/Paragraph';
+import Title from '@/Components/atoms/Title';
 import Card from '@/Components/Card';
 import { ResponsiveBar } from '@nivo/bar';
 import React from 'react';
@@ -38,12 +39,16 @@ const BarChart: React.FC<BarChartProps> = ({ chartData }) => {
     );
 
     return (
-        <Card className='w-full'>
+        <Card className="w-full">
+            <Title level="4" className="mb-4 font-semibold">
+                {t('charts.barChart')}
+            </Title>
             <div
                 style={{ height: '400px', minHeight: '640px' }}
                 className="w-full"
             >
                 <ResponsiveBar
+                    groupMode="grouped"
                     data={chartData}
                     keys={allKeys.map((item) => item.key)}
                     indexBy="fund"
@@ -100,6 +105,12 @@ const BarChart: React.FC<BarChartProps> = ({ chartData }) => {
                                     fill={props.fill}
                                 />
                             ),
+                            // Add custom data to override default key names with labels
+                            data: allKeys.map(item => ({
+                                id: item.key,
+                                label: item.label,
+                                color: item.color
+                            })),
                             effects: [
                                 {
                                     on: 'hover',

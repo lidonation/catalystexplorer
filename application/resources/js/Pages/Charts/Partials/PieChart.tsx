@@ -3,29 +3,25 @@ import Title from '@/Components/atoms/Title';
 import Card from '@/Components/Card';
 import { shortNumber } from '@/utils/shortNumber';
 import { ResponsivePie } from '@nivo/pie';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 interface PieChartProps {
     chartData: any;
-    title?: string;
     selectedFundIndex?: number;
 }
 
 const PieChart: React.FC<PieChartProps> = ({
     chartData,
-    title,
     selectedFundIndex = 0,
 }) => {
     const { t } = useTranslation();
     const [activeFundIndex, setActiveFundIndex] = useState(selectedFundIndex);
 
-    
-    const colors = ['#16B364', '#ee8434', '#4fadce']
+    const colors = ['#16B364', '#ee8434', '#4fadce'];
 
     const selectedFund = chartData[activeFundIndex];
 
-    // Transform data for pie chart
     const pieData = [
         {
             id: 'Funded Proposals',
@@ -35,7 +31,7 @@ const PieChart: React.FC<PieChartProps> = ({
         },
         {
             id: 'Completed Proposals',
-            label: 'Completed', 
+            label: 'Completed',
             value: selectedFund.completedProposals,
             color: colors[1],
         },
@@ -45,28 +41,26 @@ const PieChart: React.FC<PieChartProps> = ({
             value: selectedFund.totalProposals - selectedFund.fundedProposals,
             color: colors[2],
         },
-    ].filter(item => item.value > 0);
+    ].filter((item) => item.value > 0);
 
     const total = selectedFund.totalProposals;
-    const pieDataWithPercentages = pieData.map(item => ({
+    const pieDataWithPercentages = pieData.map((item) => ({
         ...item,
         percentage: total > 0 ? ((item.value / total) * 100).toFixed(1) : '0',
     }));
 
     return (
         <Card className="w-full">
-            {title && (
-                <div className="mb-4">
-                    <Paragraph size="lg" className="font-semibold">
-                        {title}
-                    </Paragraph>
-                </div>
-            )}
+            <Title level="4" className="mb-4 font-semibold">
+                {t('charts.pieChart')}
+            </Title>
 
-            {/* Fund Selector */}
             <div className="mb-4">
-                <Paragraph className="mb-2 text-sm" style={{ color: 'var(--cx-content-gray-persist)' }}>
-                    Select Fund:
+                <Paragraph
+                    className="mb-2 text-sm"
+                    style={{ color: 'var(--cx-content-gray-persist)' }}
+                >
+                    {t('charts.selectFund')}
                 </Paragraph>
                 <select
                     value={activeFundIndex}
@@ -89,35 +83,43 @@ const PieChart: React.FC<PieChartProps> = ({
             {/* Fund Summary */}
             <div className="mb-4 grid grid-cols-3 gap-4">
                 <div className="text-center">
-                    <Paragraph className="text-sm" style={{ color: 'var(--cx-content-gray-persist)' }}>
-                        Total Proposals
+                    <Paragraph
+                        className="text-sm"
+                        style={{ color: 'var(--cx-content-gray-persist)' }}
+                    >
+                        {t('proposals.totalProposals')}
                     </Paragraph>
                     <Paragraph className="text-lg font-semibold">
                         {shortNumber(selectedFund.totalProposals, 2)}
                     </Paragraph>
                 </div>
                 <div className="text-center">
-                    <Paragraph className="text-sm" style={{ color: 'var(--cx-content-gray-persist)' }}>
-                        Funded Proposals
+                    <Paragraph
+                        className="text-sm"
+                        style={{ color: 'var(--cx-content-gray-persist)' }}
+                    >
+                        {t('fund.fundedProposals')}
                     </Paragraph>
                     <Paragraph className="text-lg font-semibold">
                         {shortNumber(selectedFund.fundedProposals, 2)}
                     </Paragraph>
                 </div>
                 <div className="text-center">
-                    <Paragraph className="text-sm" style={{ color: 'var(--cx-content-gray-persist)' }}>
-                        Funding Rate
+                    <Paragraph
+                        className="text-sm"
+                        style={{ color: 'var(--cx-content-gray-persist)' }}
+                    >
+                        {t('chart.fundingRate')}
                     </Paragraph>
                     <Paragraph className="text-lg font-semibold">
-                        {selectedFund.totalProposals > 0 
+                        {selectedFund.totalProposals > 0
                             ? `${((selectedFund.fundedProposals / selectedFund.totalProposals) * 100).toFixed(1)}%`
-                            : '0%'
-                        }
+                            : '0%'}
                     </Paragraph>
                 </div>
             </div>
 
-            {/* Pie Chart */}
+
             <div className="h-[400px]">
                 <ResponsivePie
                     data={pieDataWithPercentages}
@@ -165,8 +167,8 @@ const PieChart: React.FC<PieChartProps> = ({
                         <div
                             className="rounded-lg p-3"
                             style={{
-                                backgroundColor: 'var(--cx-background)',
-                                color: 'var(--cx-content)',
+                                backgroundColor: 'var(--cx-tooltip-background)',
+                                color: 'var(--cx-content-light)',
                                 border: '1px solid var(--cx-border-color)',
                                 boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
                             }}
@@ -176,14 +178,22 @@ const PieChart: React.FC<PieChartProps> = ({
                                     className="h-3 w-3 rounded-full"
                                     style={{ backgroundColor: datum.color }}
                                 />
-                                <span className="font-semibold">{datum.data.label}</span>
+                                <span className="font-semibold">
+                                    {datum.data.label}
+                                </span>
                             </div>
                             <div className="mt-1">
                                 <div className="text-sm">
-                                    Value: <span className="font-semibold">{shortNumber(datum.value, 0)}</span>
+                                    Value:{' '}
+                                    <span className="font-semibold">
+                                        {shortNumber(datum.value, 0)}
+                                    </span>
                                 </div>
                                 <div className="text-sm">
-                                    Percentage: <span className="font-semibold">{datum.data.percentage}%</span>
+                                    Percentage:{' '}
+                                    <span className="font-semibold">
+                                        {datum.data.percentage}%
+                                    </span>
                                 </div>
                             </div>
                         </div>
@@ -192,7 +202,7 @@ const PieChart: React.FC<PieChartProps> = ({
                         {
                             anchor: 'bottom',
                             direction: 'row',
-                            justify: false,
+                            justify: true,
                             translateX: 0,
                             translateY: 56,
                             itemsSpacing: 0,
@@ -216,22 +226,31 @@ const PieChart: React.FC<PieChartProps> = ({
                 />
             </div>
 
-            {/* Legend Summary */}
             <div className="mt-4 space-y-2">
                 {pieDataWithPercentages.map((item) => (
-                    <div key={item.id} className="flex items-center justify-between">
+                    <div
+                        key={item.id}
+                        className="flex items-center justify-between"
+                    >
                         <div className="flex items-center gap-2">
                             <div
                                 className="h-3 w-3 rounded-full"
                                 style={{ backgroundColor: item.color }}
                             />
-                            <Paragraph className="text-sm">{item.label}</Paragraph>
+                            <Paragraph className="text-sm">
+                                {item.label}
+                            </Paragraph>
                         </div>
                         <div className="flex items-center gap-4">
                             <Paragraph className="text-sm font-semibold">
                                 {shortNumber(item.value, 0)}
                             </Paragraph>
-                            <Paragraph className="text-sm" style={{ color: 'var(--cx-content-gray-persist)' }}>
+                            <Paragraph
+                                className="text-sm"
+                                style={{
+                                    color: 'var(--cx-content-gray-persist)',
+                                }}
+                            >
                                 {item.percentage}%
                             </Paragraph>
                         </div>

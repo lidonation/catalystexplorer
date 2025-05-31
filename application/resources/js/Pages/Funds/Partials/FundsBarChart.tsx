@@ -1,10 +1,9 @@
+import Paragraph from '@/Components/atoms/Paragraph';
 import Selector from '@/Components/atoms/Selector';
 import { currency } from '@/utils/currency';
 import { ResponsiveBar } from '@nivo/bar';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import Paragraph from '@/Components/atoms/Paragraph';
-
 
 interface FundsBarChartProps {
     funds: any;
@@ -26,7 +25,10 @@ const FundsBarChart: React.FC<FundsBarChartProps> = ({
     const { t } = useTranslation();
 
     const allKeys = [
-        { value: t('proposals.totalProposals'), label: t('proposals.totalProposals') },
+        {
+            value: t('proposals.totalProposals'),
+            label: t('proposals.totalProposals'),
+        },
         {
             value: t('funds.fundedProposals'),
             label: t('funds.fundedProposals'),
@@ -64,7 +66,10 @@ const FundsBarChart: React.FC<FundsBarChartProps> = ({
                     <h6 className="text-2 lg:title-5 font-bold">
                         {fundRounds}
                     </h6>
-                    <Paragraph size="sm" className="text-4 lg:text-3 text-content font-bold opacity-75">
+                    <Paragraph
+                        size="sm"
+                        className="text-4 lg:text-3 text-content font-bold opacity-75"
+                    >
                         {t('funds.fundRounds')}
                     </Paragraph>
                 </div>
@@ -72,7 +77,10 @@ const FundsBarChart: React.FC<FundsBarChartProps> = ({
                     <h6 className="text-2 lg:title-5 font-bold">
                         {totalProposals.toLocaleString()}
                     </h6>
-                    <Paragraph size="sm" className="text-4 lg:text-3 text-content font-bold opacity-75">
+                    <Paragraph
+                        size="sm"
+                        className="text-4 lg:text-3 text-content font-bold opacity-75"
+                    >
                         {t('proposals.totalProposals')}
                     </Paragraph>
                 </div>
@@ -81,15 +89,21 @@ const FundsBarChart: React.FC<FundsBarChartProps> = ({
                     <h6 className="text-2 lg:title-5 font-bold">
                         {fundedProposals.toLocaleString()}
                     </h6>
-                    <Paragraph size="sm" className="text-4 lg:text-3 text-content font-bold opacity-75">
+                    <Paragraph
+                        size="sm"
+                        className="text-4 lg:text-3 text-content font-bold opacity-75"
+                    >
                         {t('funds.fundedProposals')}
                     </Paragraph>
                 </div>
                 <div>
                     <h6 className="text-2 lg:title-5 font-bold">
-                        {currency(totalFundsRequested, 2, 'ADA', )}
+                        {currency(totalFundsRequested, 2, 'ADA')}
                     </h6>
-                    <Paragraph size="sm" className="text-4 lg:text-3 text-content font-bold opacity-75">
+                    <Paragraph
+                        size="sm"
+                        className="text-4 lg:text-3 text-content font-bold opacity-75"
+                    >
                         {t('funds.totalFundsAwardedAda')}
                     </Paragraph>
                 </div>
@@ -97,7 +111,10 @@ const FundsBarChart: React.FC<FundsBarChartProps> = ({
                     <h6 className="text-2 lg:title-5 font-bold">
                         {currency(totalFundsAllocated, 2, 'USD')}
                     </h6>
-                    <Paragraph size="sm" className="text-4 lg:text-3 font-bold text-content opacity-75">
+                    <Paragraph
+                        size="sm"
+                        className="text-4 lg:text-3 text-content font-bold opacity-75"
+                    >
                         {t('funds.totalFundsAwardedUsd')}
                     </Paragraph>
                 </div>
@@ -112,7 +129,10 @@ const FundsBarChart: React.FC<FundsBarChartProps> = ({
                     placeholder={t('funds.filter')}
                 />
             </div>
-            <div style={{ height: '400px', minHeight: '640px' }} className="w-full">
+            <div
+                style={{ height: '400px', minHeight: '640px' }}
+                className="w-full"
+            >
                 <ResponsiveBar
                     data={funds}
                     keys={activeKeys}
@@ -149,8 +169,7 @@ const FundsBarChart: React.FC<FundsBarChartProps> = ({
                         {
                             dataFrom: 'keys',
                             anchor: 'bottom',
-                            direction:
-                                window.innerWidth < 600 ? 'row' : 'row',
+                            direction: window.innerWidth < 600 ? 'row' : 'row',
                             justify: false,
                             translateX: window.innerWidth < 600 ? -40 : 0,
                             translateY: window.innerWidth < 600 ? 180 : 80,

@@ -68,13 +68,9 @@ const LineChart: React.FC<LineChartProps> = ({
 
     return (
         <Card className="w-full">
-            {title && (
-                <div className="mb-4">
-                    <Paragraph size="lg" className="font-semibold">
-                        {title}
-                    </Paragraph>
-                </div>
-            )}
+            <Title level="4" className="mb-4 font-semibold">
+                {t('charts.lineChart')}
+            </Title>
             <div className="h-[400px]">
                 <ResponsiveLine
                     data={transformedData}

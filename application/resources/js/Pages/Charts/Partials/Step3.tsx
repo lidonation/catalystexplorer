@@ -8,14 +8,16 @@ import { useTranslation } from 'react-i18next';
 
 interface Step3Props {
     disabled?: boolean;
-    onCompletionChange?: (isChartSelected: boolean) => void;
-    onNext?: () => void;
+    onCompletionChange: (isComplete: boolean) => void;
+    onNext: () => void;
+    onExploreCharts: () => void; // ✅ New prop
 }
 
 export default function Step3({
-    disabled = false,
+    disabled,
     onCompletionChange,
     onNext,
+    onExploreCharts,
 }: Step3Props) {
     const { t } = useTranslation();
     const { setFilters, getFilter } = useFilterContext();
@@ -30,16 +32,20 @@ export default function Step3({
         onCompletionChange?.(isChartsSelected);
     }, [isChartsSelected, onCompletionChange]);
 
+    const handleComplete = () => {
+        onCompletionChange(true);
+        onNext();
+        onExploreCharts(); // ✅ Immediately show charts
+    };
+
     const chartOptions = [
         { label: t('charts.barChart'), value: 'barChart' },
         { label: t('charts.pieChart'), value: 'pieChart' },
         { label: t('charts.lineChart'), value: 'lineChart' },
         { label: t('charts.heatMap'), value: 'heatMap' },
-        { label: t('charts.scatterPlots'), value: 'scatterPlots' },
-        { label: t('charts.stackedBarCharts'), value: 'stackedBarCharts' },
-    ];
-
-   
+        { label: t('charts.scatterPlot'), value: 'scatterPlots' },
+        { label: t('charts.stackedBarChart'), value: 'stackedBarCharts' },
+    ]
 
     return (
         <div className={disabled ? 'pointer-events-none opacity-50' : ''}>
@@ -63,7 +69,7 @@ export default function Step3({
             <PrimaryButton
                 className={`mt-4 w-full ${!isChartsSelected ? 'cursor-not-allowed opacity-50' : ''}`}
                 disabled={!isChartsSelected}
-                onClick={() => onNext?.()}
+                onClick={() => handleComplete()}
             >
                 {t('charts.exploreCharts')}
             </PrimaryButton>

@@ -1,8 +1,8 @@
 import Card from '@/Components/Card';
-import Paragraph from '@/Components/atoms/Paragraph';
 import Title from '@/Components/atoms/Title';
 import { ResponsiveHeatMap } from '@nivo/heatmap';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 
 interface HeatMapProps {
     chartData: {
@@ -11,10 +11,10 @@ interface HeatMapProps {
         fundedProposals: number;
         completedProposals: number;
     }[];
-    title?: string;
 }
 
-const HeatMap: React.FC<HeatMapProps> = ({ chartData, title }) => {
+const HeatMap: React.FC<HeatMapProps> = ({ chartData }) => {
+    const { t } = useTranslation();
     const transformedData = [
         {
             id: 'Total Proposals',
@@ -39,42 +39,56 @@ const HeatMap: React.FC<HeatMapProps> = ({ chartData, title }) => {
         },
     ];
 
-    // Custom color function that assigns colors based on series ID
     const getColor = (cell: any) => {
         const maxValue = Math.max(
-            ...chartData.flatMap(item => [
+            ...chartData.flatMap((item) => [
                 item.totalProposals,
                 item.fundedProposals,
-                item.completedProposals
-            ])
+                item.completedProposals,
+            ]),
         );
-        
-        // Handle null values
+
         const value = cell.value ?? 0;
-        
-        // Calculate opacity based on value (0.5 to 1.0 range)
+
         const opacity = Math.max(0.5, Math.min(1.0, value / maxValue));
-        
-        // Assign colors based on series ID
+
         switch (cell.serieId) {
             case 'Total Proposals':
-                return `rgba(79, 173, 206, ${opacity})`; // #4fadce
+                return `rgba(79, 173, 206, ${opacity})`; 
             case 'Funded Proposals':
-                return `rgba(238, 132, 52, ${opacity})`; // #ee8434
+                return `rgba(238, 132, 52, ${opacity})`; 
             case 'Completed Proposals':
-                return `rgba(22, 179, 100, ${opacity})`; // #16B364
+                return `rgba(22, 179, 100, ${opacity})`; 
             default:
                 return `rgba(79, 173, 206, ${opacity})`;
         }
     };
 
+    const CustomTooltip = ({ cell }: any) => (
+        <div
+            style={{
+                backgroundColor: 'var(--cx-tooltip-background)',
+                color: 'var(--cx-content-light)',
+                padding: '12px',
+                borderRadius: '8px',
+                boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+                border: '1px solid #4a5568',
+            }}
+        >
+            <div style={{ fontWeight: 'bold', marginBottom: '4px' }}>
+                {cell.serieId}
+            </div>
+            <div>
+                <strong>{cell.xKey}:</strong> {cell.value}
+            </div>
+        </div>
+    );
+
     return (
         <Card className="w-full pt-4">
-            {title && (
-                <Title level='4' className="mb-4 font-semibold">
-                    {title}
-                </Title>
-            )}
+            <Title level="4" className="mb-4 font-semibold">
+                {t('charts.heatMap')}
+            </Title>
             <div className="h-[400px]">
                 <ResponsiveHeatMap
                     data={transformedData}
@@ -93,15 +107,27 @@ const HeatMap: React.FC<HeatMapProps> = ({ chartData, title }) => {
                         legend: '',
                         legendOffset: -72,
                     }}
-                    labelTextColor={{
-                        from: 'color',
-                        modifiers: [['darker', 1.8]],
-                    }}
+                    labelTextColor="var(--cx-content)"
                     animate={true}
                     motionConfig="wobbly"
                     colors={getColor}
                     isInteractive={true}
                     hoverTarget="cell"
+                    tooltip={CustomTooltip}
+                    theme={{
+                        axis: {
+                            ticks: {
+                                text: {
+                                    fill: 'var(--cx-content-gray-persist)',
+                                },
+                            },
+                            legend: {
+                                text: {
+                                    fill: 'var(--cx-content-gray-persist)',
+                                },
+                            },
+                        },
+                    }}
                 />
             </div>
         </Card>

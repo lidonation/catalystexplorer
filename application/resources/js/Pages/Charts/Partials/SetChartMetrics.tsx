@@ -8,10 +8,12 @@ import Step3 from './Step3';
 
 interface SetChartMetricsProps {
     onMetricsSet?: (isSet: boolean) => void;
+    onExploreCharts: () => void;
 }
 
 export default function SetChartMetrics({
     onMetricsSet,
+    onExploreCharts,
 }: SetChartMetricsProps) {
     const { t } = useTranslation();
     const [step1Complete, setStep1Complete] = useState(false);
@@ -51,11 +53,7 @@ export default function SetChartMetrics({
         }
     };
 
-    useEffect(() => {
-        if (onMetricsSet) {
-            onMetricsSet(allMetricsSet);
-        }
-    }, [allMetricsSet, onMetricsSet]);
+ 
 
     return (
         <div>
@@ -85,6 +83,7 @@ export default function SetChartMetrics({
                         disabled={!step3Enabled}
                         onCompletionChange={handleStep3Completion}
                         onNext={handleStep3Next}
+                        onExploreCharts={onExploreCharts}
                     />
                 </div>
             </Card>
