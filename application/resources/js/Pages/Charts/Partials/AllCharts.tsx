@@ -91,7 +91,7 @@ export default function AllCharts({
             </div>
 
             {selectedChartOptions.length === 0 ? (
-                <div className="p-8 text-center text-gray-500">
+                <div className="p-8 text-center text-content-light">
                    <Paragraph>{t('charts.noOptions')}</Paragraph>
                 </div>
             ) : (
