@@ -14,6 +14,7 @@ use Spatie\Enum\Enum;
  * @method static self CAMPAIGNS()
  * @method static self COHORT()
  * @method static self COMMUNITIES()
+ * @method static self CHART_OPTIONS()
  * @method static self FUNDS()
  * @method static self FUNDED_PROPOSALS()
  * @method static self FUNDING_STATUS()
@@ -38,6 +39,7 @@ use Spatie\Enum\Enum;
  * @method static self REVIEWER_IDS()
  * @method static self RATINGS()
  * @method static self REPUTATION_SCORES()
+ * @method static self TREND_CHART()
  * @method static self HELPFUL()
  * @method static self QUERY()
  * @method static self QUICK_PITCHES()
@@ -58,6 +60,7 @@ final class ProposalSearchParams extends Enum
             'CAMPAIGNS' => 'cam',
             'COHORT' => 'coh',
             'COMMUNITIES' => 'com',
+            'CHART_OPTIONS' => 'co',
             'FUNDS' => 'f',
             'FUNDING_STATUS' => 'fs',
             'GROUPS' => 'g',
@@ -82,6 +85,7 @@ final class ProposalSearchParams extends Enum
             'TAGS' => 't',
             'TYPE' => 'pt',
             'PROJECT_LENGTH' => 'pl',
+            'TREND_CHART' => 'tch',
         ];
     }
 }
