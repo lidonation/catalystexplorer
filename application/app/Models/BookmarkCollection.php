@@ -185,7 +185,7 @@ class BookmarkCollection extends Model
     public function toSearchableArray()
     {
 
-        return array_merge($this->load(['comments','author'])->toArray(), $this->amount_received, $this->amount_requested, [
+        return array_merge($this->load(['comments', 'author'])->toArray(), $this->amount_received, $this->amount_requested, [
             'proposals' => $this->proposals->pluck('model')->toArray(),
             'ideascale_profiles' => $this->ideascale_profiles->pluck('model')->toArray(),
             'reviews' => $this->reviews->pluck('model')->toArray(),
