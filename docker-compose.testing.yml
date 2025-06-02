@@ -52,7 +52,7 @@ services:
         APP_SETUP: "true"
         PHP_OPCACHE_ENABLE: 0
         PHP_OPCACHE_VALIDATE_TIMESTAMPS: 1
-        PHP_MEMORY_LIMIT: 2048M
+        # PHP_MEMORY_LIMIT: 2048M
         CONTAINER_ROLE: "queue"
         DB_CONNECTION: pgsql
         POSTGRESQL_DB_SYNC_DB_HOST: postgres_dbsync
