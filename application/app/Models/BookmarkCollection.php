@@ -11,11 +11,12 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Laravel\Scout\Searchable;
-use Spatie\Comments\Models\Concerns\HasComments;
+
+// use Spatie\Comments\Models\Concerns\HasComments;
 
 class BookmarkCollection extends Model
 {
-    use HasAuthor, HasComments, HasMetaData, Searchable, SoftDeletes;
+    use HasAuthor, HasMetaData, Searchable, SoftDeletes;
 
     protected $withCount = [
         'items',
