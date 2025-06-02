@@ -99,9 +99,9 @@ export default function ModelSearch({ className, placeholder, domain }: ModelSea
     }
 
     return (
-        <div className={`relative  ${className}`}>
+        <div className={`relative ${className}`}>
             {/* Search Bar */}
-            <div className="sticky top-0  w-full">
+            <div className="sticky top-0 w-full">
                 <label className="relative flex w-full items-center gap-2">
                     <div className="absolute left-0 flex h-full w-10 items-center justify-center">
                         <SearchLensIcon width={16} className="text-dark" />
@@ -132,7 +132,7 @@ export default function ModelSearch({ className, placeholder, domain }: ModelSea
 
             {/* Results (absolute and below search) */}
             {searchTerm && options.length > 0 && (
-                <div className="bg-background z-50 right-0 left-0 mt-2 max-h-[30rem] overflow-y-auto rounded-xl  bg-white p-4 shadow-xl">
+                <div className="bg-background absolute right-0 left-0 z-30 mt-2 max-h-[30rem] overflow-y-auto rounded-xl bg-white p-4 shadow-xl">
                     {options.map((result) => {
                         const hash = result.hash;
                         const isSelected = selectedHashes.includes(hash);

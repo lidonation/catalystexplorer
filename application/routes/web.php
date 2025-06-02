@@ -193,8 +193,8 @@ Route::localized(
             Route::prefix('/create-bookmarks/steps')->as('bookmarks.')
                 ->middleware([WorkflowMiddleware::class])
                 ->group(function () {
-                Route::get('/success', [BookmarksController::class, 'success'])
-                    ->name('success');
+                    Route::get('/success', [BookmarksController::class, 'success'])
+                        ->name('success');
                     Route::get('/{step}', [BookmarksController::class, 'handleStep'])
                         ->name('index');
                     Route::post('/save-list', [BookmarksController::class, 'saveList'])
@@ -205,7 +205,6 @@ Route::localized(
                         ->name('removeBookmarkItem');
                     Route::post('{bookmarkCollection}/save-rationales', [BookmarksController::class, 'saveRationales'])
                         ->name('saveRationales');
-                    
                 });
 
             Route::prefix('/drep-sign-up/steps')->as('drepSignUp.')
@@ -316,6 +315,7 @@ Route::localized(
             Route::get('/{bookmarkCollection}/view', [BookmarksController::class, 'view'])
                 ->name('view');
             Route::get('/{bookmarkCollection}/manage/{type?}', [BookmarksController::class, 'manage'])
+                ->middleware('auth')
                 ->name('manage');
         });
 

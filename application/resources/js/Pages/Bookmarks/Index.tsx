@@ -4,6 +4,7 @@ import Title from '@/Components/atoms/Title';
 import Paginator from '@/Components/Paginator';
 import { FiltersProvider } from '@/Context/FiltersContext';
 import RecordsNotFound from '@/Layouts/RecordsNotFound';
+import ListSortingOptions from '@/lib/ListSortOptions';
 import { PaginatedData } from '@/types/paginated-data';
 import { SearchParams } from '@/types/search-params';
 import { useLocalizedRoute } from '@/utils/localizedRoute';
@@ -13,7 +14,6 @@ import { useTranslation } from 'react-i18next';
 import BookmarkCollectionList from '../My/Lists/Partials/BookmarkCollectionList';
 import BookmarkCollectionListLoader from '../My/Lists/Partials/BookmarkCollectionListLoader';
 import BookmarkCollectionData = App.DataTransferObjects.BookmarkCollectionData;
-import ListSortingOptions from '@/lib/ListSortOptions';
 
 interface BookmarkCollectionListProps {
     bookmarkCollections: PaginatedData<BookmarkCollectionData[]>;
@@ -34,24 +34,25 @@ const Index: React.FC<BookmarkCollectionListProps> = ({
             >
                 <Head title="Community Lists" />
 
-                <header className="container flex items-start">
-                    <div className="py-2">
-                        <Title level="1">{t('bookmarks.listTitle')}</Title>
+                <header className="lg:relative container mt-4 flex items-start lg:mt-6 flex-col">
+                    <div className="">
+                        <Title className="" level="1">
+                            {t('bookmarks.listTitle')}
+                        </Title>
 
                         <div className="text-content">
                             {t('bookmarks.listSubtitle')}
                         </div>
                     </div>
-                    <div className="ml-auto">
-                        <PrimaryLink className='px-3 py-3'
-                            href={useLocalizedRoute(
-                                'workflows.bookmarks.index',
-                                { step: 1 },
-                            )}
-                        >
-                            {`+ ${t('bookmarks.createList')}`}
-                        </PrimaryLink>
-                    </div>
+
+                    <PrimaryLink
+                        className="lg:text-md ml-auto lg:absolute lg:right-0 lg:right-6 mt-2 px-4 py-2 text-sm text-nowrap lg:top-0 lg:px-6"
+                        href={useLocalizedRoute('workflows.bookmarks.index', {
+                            step: 1,
+                        })}
+                    >
+                        {`+ ${t('bookmarks.createList')}`}
+                    </PrimaryLink>
                 </header>
 
                 <section className="container">

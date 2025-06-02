@@ -26,7 +26,7 @@ return [
      * You can allow guests to post comments. They will not be able to use
      * reactions.
      */
-    'allow_anonymous_comments' => false,
+    'allow_anonymous_comments' => true,
 
     /*
      * A comment transformer is a class that will transform the comment text
@@ -65,7 +65,7 @@ return [
          * The class that will comment on other things. Typically, this
          * would be a user model.
          */
-        'commentator' => null,
+        'commentator' => \App\Models\User::class,
 
         /*
          * The field to use to display the name of the commentator model.

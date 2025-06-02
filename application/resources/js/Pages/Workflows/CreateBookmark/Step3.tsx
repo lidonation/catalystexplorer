@@ -10,6 +10,8 @@ import Content from '../Partials/WorkflowContent';
 import Footer from '../Partials/WorkflowFooter';
 import Nav from '../Partials/WorkflowNav';
 import WorkflowLayout from '../WorkflowLayout';
+import BookmarkCollectionData = App.DataTransferObjects.BookmarkCollectionData;
+
 
 interface Campaign {
     id: number;
@@ -21,7 +23,7 @@ interface Step3Props {
     stepDetails: StepDetails[];
     activeStep: number;
     collectionItems?: Record<string, string[]>;
-    bookmarkCollection: string;
+    bookmarkCollection: BookmarkCollectionData;
 }
 
 const Step3: React.FC<Step3Props> = ({
@@ -34,12 +36,12 @@ const Step3: React.FC<Step3Props> = ({
     const localizedRoute = useLocalizedRoute;
     const prevStep = localizedRoute('workflows.bookmarks.index', {
         step: activeStep - 1,
-        bookmarkCollection,
+        bookmarkCollection: bookmarkCollection.hash,
     });
 
     const nextStep = localizedRoute('workflows.bookmarks.index', {
         step: activeStep + 1,
-        bookmarkCollection,
+        bookmarkCollection: bookmarkCollection.hash,
     });
 
     return (

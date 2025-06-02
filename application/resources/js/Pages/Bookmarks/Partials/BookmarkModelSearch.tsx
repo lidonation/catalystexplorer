@@ -1,6 +1,7 @@
 import ModelSearch from '@/Components/ModelSearch';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/Components/Tabs';
-import React, { ReactNode, useState } from 'react';
+import { useBookmarkContext } from '@/Context/BookmarkContext';
+import React, { ReactNode } from 'react';
 
 interface BookmarkModelSearchProps {
     children?: ReactNode;
@@ -9,7 +10,7 @@ interface BookmarkModelSearchProps {
         type: string;
     }[];
     handleTabchange?: (val: string) => void;
-    activeTab?:string;
+    activeTab?: string;
 }
 
 const defaultTypes = [
@@ -39,22 +40,33 @@ const BookmarkModelSearch: React.FC<BookmarkModelSearchProps> = ({
     children,
     modelTypes = defaultTypes,
     handleTabchange = () => {},
-    activeTab = 'proposals'
+    activeTab = 'proposals',
 }) => {
+    const { bookmarkCollection } = useBookmarkContext();
+
     return (
         <Tabs
             onValueChange={(val) => handleTabchange(val)}
             defaultValue={activeTab}
-            className="sticky top-0 right-0 left-0 h-full w-full"
+            className="sticky top-0 right-0 left-0 h-full"
         >
-            <TabsList className="no-scrollbar overflow-x-auto">
+            <TabsList className="no-scrollbar w-max max-w-full overflow-x-auto scroll-smooth whitespace-nowrap">
+                {' '}
                 {modelTypes.map(({ name, type }) => (
                     <TabsTrigger
-                        className="font-semibold hover:cursor-pointer"
+                        className="flex gap-3 font-semibold hover:cursor-pointer"
                         value={type}
                         key={type}
                     >
-                        {name}
+                        <span>{name}</span>
+                        <span
+                            className={`flex min-w-[2em] items-center justify-center rounded-full border px-2 py-0.5 text-sm transition-all ${
+                                activeTab === type &&
+                                'border-primary bg-blue-50'
+                            }`}
+                        >
+                            {bookmarkCollection?.types_count?.[type] ?? 0}
+                        </span>
                     </TabsTrigger>
                 ))}
             </TabsList>

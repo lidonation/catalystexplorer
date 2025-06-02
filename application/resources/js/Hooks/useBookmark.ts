@@ -1,6 +1,7 @@
 import axiosClient from '@/utils/axiosClient';
 import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
+import EventBus from '@/utils/eventBus';
 
 interface UseBookmarkProps {
     modelType: string;
@@ -41,10 +42,12 @@ export default function useBookmark({ modelType, itemId }: UseBookmarkProps) {
                 setIsBookmarked(response.data.isBookmarked);
                 setBookmarkId(response.data.bookmarkId);
                 setIsOpen(true);
+                EventBus.emit('listItem-added');
                 toast.success('Bookmark created successfully!', {
                     className: 'bg-gray-800 text-white',
                     toastId: 'bookmark-created',
                 });
+
             }
         } catch (error) {
             console.error('Error creating bookmark:', error);
@@ -56,7 +59,7 @@ export default function useBookmark({ modelType, itemId }: UseBookmarkProps) {
             if (bookmarkId) {
                 await axiosClient.delete(
                     route('api.bookmarks.remove', {
-                        hash: bookmarkId,
+                        bookmarkItem: bookmarkId,
                     }),
                 );
                 setIsBookmarked(false);
@@ -65,6 +68,7 @@ export default function useBookmark({ modelType, itemId }: UseBookmarkProps) {
                     className: 'bg-gray-800 text-white',
                     toastId: 'bookmark-remove-error',
                 });
+                EventBus.emit('listItem-removed');
             }
         } catch (error) {
             console.error('Error removing bookmark:', error);

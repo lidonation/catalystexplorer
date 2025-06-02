@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\GroupsController;
 use App\Http\Controllers\Api\TagController;
+use App\Http\Controllers\CommentController;
 use App\Http\Controllers\ReviewsController;
 use App\Http\Controllers\Api\GroupController;
 use App\Http\Controllers\ProposalsController;
@@ -36,7 +37,7 @@ Route::prefix('api')->as('api.')->group(function () {
 
     Route::get('/reviewers', [ReviewerController::class, 'reviewers'])->name('reviewers');
 
-    Route::get('/reviewers', [ReviewerController::class, 'reviewers'])->name('reviewers');
+    Route::get('/reviews', [ReviewerController::class, 'reviews'])->name('reviewers');
 
     Route::get('/ideascaleProfiles', [IdeascaleProfilesController::class, 'ideascaleProfiles'])->name('ideascaleProfiles');
 
@@ -51,7 +52,7 @@ Route::prefix('api')->as('api.')->group(function () {
             Route::post('/{modelType}/{hash}/{bookmarkCollection?}', [MyBookmarksController::class, 'store'])
                 ->middleware('auth')
                 ->name('store');
-            Route::delete('/{hash}', [MyBookmarksController::class, 'delete'])
+            Route::delete('/{bookmarkItem}', [MyBookmarksController::class, 'delete'])
                 ->name('remove');
             Route::get('/{modelType}/{hash}/status', [MyBookmarksController::class, 'status'])
                 ->name('status');
@@ -62,6 +63,10 @@ Route::prefix('api')->as('api.')->group(function () {
         ->group(function () {
             Route::post('/create', [MyBookmarksController::class, 'createCollection'])
                 ->name('create');
+            Route::post('{bookmarkCollection}/update', [MyBookmarksController::class, 'updateCollection'])
+                ->name('update');
+        Route::post('{bookmarkCollection}/delete', [MyBookmarksController::class, 'deleteCollection'])
+            ->name('delete');
             Route::get('/', [MyBookmarksController::class, 'retrieveCollections'])
                 ->name('retrieve');
             Route::prefix('bookmarks')->as('bookmarks.')
@@ -81,7 +86,7 @@ Route::prefix('api')->as('api.')->group(function () {
     });
 
     Route::get('/fund-titles', [ProposalsController::class, 'fundTitles'])->name('fundTitles');
-    
+
     Route::get('/funds', [ProposalsController::class, 'funds'])->name('funds');
 
 
@@ -107,18 +112,23 @@ Route::prefix('api')->as('api.')->group(function () {
             Route::prefix('budget-proposals')->as('budgetProposals.')
                 ->middleware([])
                 ->group(function () {
-                    Route::get('/', [CardanoBudgetProposalController::class, 'index'] )
+                    Route::get('/', [CardanoBudgetProposalController::class, 'index'])
                         ->name('index');
-                    Route::get('/metrics', [CardanoBudgetProposalController::class, 'metrics'] )
+                    Route::get('/metrics', [CardanoBudgetProposalController::class, 'metrics'])
                         ->name('metrics');
 
-                    Route::get('/metrics/catalyst-proposals/{username}', [CardanoBudgetProposalController::class, 'relatedCatalystProposalsCount'] )
+                    Route::get('/metrics/catalyst-proposals/{username}', [CardanoBudgetProposalController::class, 'relatedCatalystProposalsCount'])
                         ->name('metrics.catalystProposals');
 
-                    Route::get('/catalyst-proposals/{username}', [CardanoBudgetProposalController::class, 'relatedCatalystProposals'] )
+                    Route::get('/catalyst-proposals/{username}', [CardanoBudgetProposalController::class, 'relatedCatalystProposals'])
                         ->name('relatedCatalystProposals');
                 });
         });
 
-
+    Route::prefix('comments')->as('comments.')
+        ->group(function () {
+            Route::get('/', [CommentController::class, 'index'])->name('index');
+            Route::post('/', [CommentController::class, 'store'])->name('store');
+            // ->middleware('throttle:5,1');
+        });
 });

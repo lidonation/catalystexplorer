@@ -21,6 +21,7 @@ use App\Models\BookmarkCollection;
 use Illuminate\Support\Collection;
 use App\Enums\ProposalSearchParams;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 use App\Actions\TransformIdsToHashes;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -70,8 +71,12 @@ class BookmarksController extends Controller
     public function view(BookmarkCollection $bookmarkCollection) {}
 
 
-    public function manage(BookmarkCollection $bookmarkCollection, string|null $type = 'proposals'): Response
+    public function manage(BookmarkCollection $bookmarkCollection,Request $request, string|null $type = 'proposals'): Response
     {
+        if ($request->user()->cannot('update', $bookmarkCollection)) {
+            abort(403);
+        }
+
         $currentPage = request(ProposalSearchParams::PAGE()->value, 1);
 
         $model_type = BookmarkableType::from(Str::kebab($type))->getModelClass();
@@ -220,6 +225,7 @@ class BookmarksController extends Controller
         }
 
         $collection = BookmarkCollection::byHash($request->bookmarkCollection);
+        
 
         $transformer = app(TransformIdsToHashes::class);
 
@@ -228,7 +234,7 @@ class BookmarksController extends Controller
             \App\Models\Review::class => 'reviews',
             \App\Models\Group::class => 'groups',
             \App\Models\Community::class => 'communities',
-            \App\Models\IdeascaleProfile::class => 'ideascale-profiles',
+            \App\Models\IdeascaleProfile::class => 'ideascaleProfiles',
         ];
 
         $selectedItemsByType = $collection->items
@@ -250,7 +256,7 @@ class BookmarksController extends Controller
         return Inertia::render('Workflows/CreateBookmark/Step3', [
             'stepDetails' => $this->getStepDetails(),
             'activeStep' => intval($request->step),
-            'bookmarkCollection' => $request->bookmarkCollection,
+            'bookmarkCollection' => $collection,
             'collectionItems' => $selectedItemsByType,
         ]);
     }
@@ -321,7 +327,7 @@ class BookmarksController extends Controller
         ]);
 
         $bookmarkableType = BookmarkableType::tryFrom(Str::kebab($validated['modelType']))->getModelClass();
-
+        
         $model = $bookmarkableType::byHash($validated['hash']);
 
         if (empty($model)) {
@@ -340,6 +346,7 @@ class BookmarksController extends Controller
         ]);
 
         $bookmarkCollection->searchable();
+        
         return back()->with('success', 'Bookmark added!.');
         
     }

@@ -57,7 +57,7 @@ export default forwardRef(function Textarea(
                     isTooShort
                         ? 'border-red-500 focus:border-red-500 focus:ring-0'
                         : 'border-gray-light border-opacity-40 focus:border-primary focus:ring-primary'
-                } bg-background text-content rounded-md shadow-xs ${className}`}
+                } bg-background text-content rounded-md shadow-xs w-full ${className}`}
                 ref={localRef}
                 value={value}
                 onChange={handleChange}
@@ -72,13 +72,13 @@ export default forwardRef(function Textarea(
                     size="sm"
                     className={`text-[0.75rem] ${isTooShort ? 'text-red-500' : 'text-gray-persist'}`}
                 >
-                    {t('minCharTextarea')}
+                    {minLengthEnforced ?t('minCharTextarea'):''}
                 </Paragraph>
                 <Paragraph
                     size="sm"
                     className="text-gray-persist text-[0.75rem]"
                 >
-                    {value.length}/{minLengthValue}
+                    {minLengthEnforced ? `${value.length}/${minLengthValue}` : ''}
                 </Paragraph>
             </div>
         </>

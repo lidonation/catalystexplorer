@@ -135,10 +135,9 @@ class MyBookmarksController extends Controller
         }
     }
 
-    public function delete(Request $request, $id): JsonResponse
+    public function delete(BookmarkItem $bookmarkItem, Request  $request): JsonResponse
     {
         try {
-            $bookmarkItem = BookmarkItem::findOrFail($id);
 
             if ($bookmarkItem->user_id !== Auth::id()) {
                 return response::json([
@@ -146,7 +145,14 @@ class MyBookmarksController extends Controller
                 ], 401);
             }
 
+            $collection = $bookmarkItem?->collection;
+
             $bookmarkItem->delete();
+
+            if ($collection) {
+                $collection->seachable();
+            }
+
 
             return response::json([
                 'message' => 'Bookmark deleted successfully',
@@ -185,7 +191,7 @@ class MyBookmarksController extends Controller
         $bookmarkItem = BookmarkItem::where('user_id', Auth::id())
             ->where('model_id', $id)
             ->where(
-                fn ($query) => $query->where('model_type', $modelClass)
+                fn($query) => $query->where('model_type', $modelClass)
                     ->orWhere('model_type', $modelName)
             )->first();
 
@@ -243,17 +249,16 @@ class MyBookmarksController extends Controller
                 'title' => $validated['collection']['title'],
             ]);
 
-            BookmarkItem::create([
+            BookmarkItem::updateOrCreate([
                 'user_id' => Auth::id(),
                 'bookmark_collection_id' => $collection->id,
                 'model_id' => $validated['model_id'],
-                'model_type' => $modelType,
-                'title' => null,
-                'content' => null,
-                'action' => null,
-            ]);
+                'model_type' => $modelType
+            ], []);
 
             DB::commit();
+
+            $collection->searchable();
 
             return response()->json(['message' => 'Bookmark created successfully']);
         } catch (\Exception $e) {
@@ -338,6 +343,8 @@ class MyBookmarksController extends Controller
 
             DB::commit();
 
+            $collection->searchable();
+
             return response()->json([
                 'type' => 'success',
                 'message' => 'Bookmarks added to collection successfully',
@@ -363,12 +370,10 @@ class MyBookmarksController extends Controller
         try {
             DB::beginTransaction();
 
-            $decoded_collection_id = (new HashIdService(new BookmarkCollection))
-                ->decode($data['bookmark_collection_id']);
             $decoded_bookmark_ids = (new HashIdService(new BookmarkItem))
                 ->decodeArray($data['bookmark_ids']);
 
-            $collection = BookmarkCollection::findOrFail($decoded_collection_id);
+            $collection = BookmarkCollection::byHash($data['bookmark_collection_id']);
 
             if ($collection->user_id !== Auth::id()) {
                 return response()->json([
@@ -376,10 +381,8 @@ class MyBookmarksController extends Controller
                 ], SymfonyResponse::HTTP_FORBIDDEN);
             }
 
-            // $this->authorize('update', $collection);
-
             $bookmarks = BookmarkItem::whereIn('id', $decoded_bookmark_ids)
-                ->where('bookmark_collection_id', $decoded_collection_id)
+                ->where('bookmark_collection_id', $collection->id)
                 ->where('user_id', Auth::id())
                 ->get();
 
@@ -391,7 +394,7 @@ class MyBookmarksController extends Controller
 
             BookmarkItem::whereIn('id', $decoded_bookmark_ids)
                 ->where('user_id', Auth::id())
-                ->update(['bookmark_collection_id' => null]);
+                ->each(fn($b) => $b->delete());
 
             DB::commit();
 
@@ -473,6 +476,48 @@ class MyBookmarksController extends Controller
             return response()->json([
                 'type' => 'server_error',
                 'message' => 'Unable to create collection',
+                'debug' => config('app.debug') ? $e->getMessage() : null,
+            ], 500);
+        }
+    }
+
+    public function updateCollection(BookmarkCollection $bookmarkCollection,Request $request): JsonResponse
+    {
+        try {
+            $data = $request->validate([
+                'title' => ['required', 'string', 'min:5'],
+                'content' => ['nullable', 'string', 'min:10'],
+                'visibility' => ['nullable', 'string', 'in:public,unlisted,private'],
+            ]);
+
+            $bookmarkCollection->update([
+                'user_id' => Auth::id(),
+                'title' => $data['title'],
+                'content' => $data['content'] ?? null,
+                'visibility' => $data['visibility'] ?? BookmarkVisibility::UNLISTED()->value,
+                'color' => $data['color'] ?? '#000000',
+                'status' => BookmarkStatus::DRAFT()->value,
+                'type' => BookmarkCollection::class,
+            ]);
+
+            return response()->json([
+                'type' => 'success',
+                'message' => 'Collection created Updated',
+                'collection' => $bookmarkCollection,
+            ]);
+        } catch (ValidationException $e) {
+            $firstError = collect($e->errors())->first();
+            $firstErrorMessage = is_array($firstError) ? $firstError[0] : 'Please check your input';
+
+            return response()->json([
+                'type' => 'validation_error',
+                'message' => $firstErrorMessage,
+                'errors' => $e->errors(),
+            ], 422);
+        } catch (\Exception $e) {
+            return response()->json([
+                'type' => 'server_error',
+                'message' => 'Unable to update collection',
                 'debug' => config('app.debug') ? $e->getMessage() : null,
             ], 500);
         }

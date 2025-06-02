@@ -20,7 +20,7 @@ const CommunitiesList: React.FC<CommunitiesProps> = ({ communities }) => {
                     transition={{ duration: 0.4, ease: 'easeIn' }}
                 >
                     {!communities?.data?.length ? (
-                        <div className="w-full">
+                        <div className="container ">
                             <RecordsNotFound
                                 context="communities"
                                 searchTerm=""

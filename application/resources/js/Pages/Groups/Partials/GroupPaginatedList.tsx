@@ -5,13 +5,14 @@ import React from 'react';
 import GroupCardLoader from './GroupCardMiniLoader';
 import GroupList from './GroupList';
 import GroupData = App.DataTransferObjects.GroupData;
+import RecordsNotFound from '@/Layouts/RecordsNotFound';
 
 interface GroupListProps {
     groups: PaginatedData<GroupData[]>;
 }
 
 const GroupPaginatedList: React.FC<GroupListProps> = ({ groups }) => {
-    return (
+    return groups.data.length ? (
         <>
             <section className="container py-8">
                 <WhenVisible fallback={<GroupCardLoader />} data="groups">
@@ -23,6 +24,10 @@ const GroupPaginatedList: React.FC<GroupListProps> = ({ groups }) => {
                 {groups && <Paginator pagination={groups} />}
             </section>
         </>
+    ) : (
+        <section className="container">
+            <RecordsNotFound />
+        </section>
     );
 };
 

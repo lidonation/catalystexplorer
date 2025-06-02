@@ -1,240 +1,201 @@
 'use client';
 
-
+import { Button } from '@headlessui/react';
+import { useForm, usePage } from '@inertiajs/react';
+import axios from 'axios';
 import { Send } from 'lucide-react';
-import { useState } from 'react';
-import Image from './Image';
+import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import PrimaryButton from './atoms/PrimaryButton';
+import ReplyBox from './atoms/ReplyBox';
 import Textarea from './atoms/Textarea';
+import Card from './Card';
+import { formatTimeAgo } from './layout/TimeFormatter';
+import RichContent from './RichContent';
+import LoadingSpinner from './svgs/LoadingSpinner';
+import UserAvatar from './UserAvatar';
 
 interface Comment {
-    id: string;
-    author: string;
-    avatar?: string;
-    content: string;
-    timestamp: string;
-    replies?: Comment[];
+    id: number;
+    commentator_name: string;
+    text: string;
+    created_at: string;
+    parent_id: number | null;
+    nested_comments?: Comment[];
 }
 
 interface CommentsProps {
-    initialComments?: Comment[];
+    commentableType: string;
+    commentableHash: string;
 }
 
-export default function Comments({ initialComments = [] }: CommentsProps) {
-    const [comments, setComments] = useState<Comment[]>(
-        initialComments.length > 0
-            ? initialComments
-            : [
-                  {
-                      id: '1',
-                      author: 'Mr. Prestonson',
-                      content:
-                          'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
-                      timestamp: '1 Day ago',
-                      replies: [],
-                  },
-                  {
-                      id: '2',
-                      author: 'Odep',
-                      content:
-                          'Lorem ipsum dolor sit amet, consectetur adipiscing elit,',
-                      timestamp: '1 Day ago',
-                      replies: [],
-                  },
-                  {
-                      id: '3',
-                      author: 'Mr. Prestonson',
-                      content:
-                          'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
-                      timestamp: '1 Day ago',
-                      replies: [],
-                  },
-                  {
-                      id: '4',
-                      author: 'Mr. Prestonson',
-                      content:
-                          'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
-                      timestamp: '1 Day ago',
-                      replies: [],
-                  },
-              ],
-    );
+export default function Comments({
+    commentableType,
+    commentableHash,
+}: CommentsProps) {
+    const [comments, setComments] = useState<Comment[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [replyingTo, setReplyingTo] = useState<number | null>(null);
 
-    const [newComment, setNewComment] = useState('');
-    const [replyingTo, setReplyingTo] = useState<string | null>(null);
-    const [replyText, setReplyText] = useState('');
+    const form = useForm({
+        text: '',
+        parent_id: null as number | null,
+        commentable_type: commentableType,
+        commentable_id: commentableHash,
+    });
+    const { t } = useTranslation();
+    const user = usePage().props?.auth?.user;
 
-    const handleAddComment = () => {
-        if (newComment.trim()) {
-            const comment: Comment = {
-                id: Date.now().toString(),
-                author: 'You',
-                content: newComment,
-                timestamp: 'Just now',
-                replies: [],
-            };
-            setComments([...comments, comment]);
-            setNewComment('');
-        }
-    };
-
-    const handleAddReply = (commentId: string) => {
-        if (replyText.trim()) {
-            const reply: Comment = {
-                id: Date.now().toString(),
-                author: 'You',
-                content: replyText,
-                timestamp: 'Just now',
-                replies: [],
-            };
-
-            setComments(
-                comments.map((comment) => {
-                    if (comment.id === commentId) {
-                        return {
-                            ...comment,
-                            replies: [...(comment.replies || []), reply],
-                        };
-                    }
-                    return comment;
+    const fetchComments = async () => {
+        setLoading(true);
+        try {
+            const res = await axios.get(
+                route('api.comments.index', {
+                    commentable_type: commentableType,
+                    commentable_id: commentableHash,
                 }),
             );
-
-            setReplyText('');
-            setReplyingTo(null);
+            const data = res.data;
+            setComments(data);
+        } catch (err) {
+            console.error('Failed to load comments', err);
         }
+        setLoading(false);
     };
 
-    const getInitials = (name: string) => {
-        return name
-            .split(' ')
-            .map((n) => n[0])
-            .join('')
-            .toUpperCase();
+    useEffect(() => {
+        fetchComments();
+    }, [commentableType, commentableHash]);
+
+    const submitComment = () => {
+        form.post(route('api.comments.store'), {
+            preserveScroll: true,
+            onSuccess: () => {
+                form.reset('text');
+                form.setData('parent_id', null);
+                setReplyingTo(null);
+                fetchComments();
+            },
+        });
     };
 
-    const CommentItem = ({
-        comment,
-        isReply = false,
-    }: {
-        comment: Comment;
-        isReply?: boolean;
-    }) => (
-        <div className={`flex gap-3 ${isReply ? 'mt-3 ml-12' : 'mb-6'}`}>
-            <Image className="h-10 w-10 flex-shrink-0">
-                {/* <AvatarImage src={comment.avatar || '/placeholder.svg'} />
-                <AvatarFallback className="bg-gray-200 text-gray-600">
-                    {getInitials(comment.author)}
-                </AvatarFallback> */}
-            </Image>
-            <div className="min-w-0 flex-1">
-                <div className="mb-1 flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                        <span className="font-medium text-gray-900">
-                            {comment.author}
-                        </span>
-                        <span className="text-sm text-gray-500">
-                            {comment.timestamp}
-                        </span>
-                    </div>
-                    {!isReply && (
-                        <PrimaryButton
-                            className="text-bg-primary hover:bg-primary h-auto px-2 py-1"
-                            onClick={() =>
-                                setReplyingTo(
-                                    replyingTo === comment.id
-                                        ? null
-                                        : comment.id,
-                                )
-                            }
-                        >
-                            Reply
-                        </PrimaryButton>
-                    )}
-                </div>
-                <p className="text-sm leading-relaxed text-gray-700">
-                    {comment.content}
-                </p>
+    const CommentItem = ({ comment }: { comment: Comment }) => {
+        const isTopLevel = comment.parent_id === null;
+        const isReplying = replyingTo === comment.id;
 
-                {/* Replies */}
-                {comment.replies && comment.replies.length > 0 && (
-                    <div className="mt-3">
-                        {comment.replies.map((reply) => (
-                            <CommentItem
-                                key={reply.id}
-                                comment={reply}
-                                isReply={true}
+        return (
+            <div className={`flex gap-3 ${isTopLevel ? 'mb-6' : 'mt-4 ml-12'}`}>
+                <div className="flex-1">
+                    <div className="flex items-center gap-3">
+                        <div className="flex-shrink-0">
+                            <UserAvatar
+                                name={comment.commentator?.name ?? 'Anonymous'}
+                                imageUrl={
+                                    comment.commentator?.hero_img_url ?? ''
+                                }
+                                size="size-10"
                             />
-                        ))}
-                    </div>
-                )}
-
-                {/* Reply input */}
-                {replyingTo === comment.id && (
-                    <div className="mt-3 flex gap-3">
-                        <Avatar className="h-8 w-8 flex-shrink-0">
-                            <AvatarFallback className="bg-gray-200 text-xs text-gray-600">
-                                Y
-                            </AvatarFallback>
-                        </Avatar>
-                        <div className="flex flex-1 gap-2">
-                            <Textarea
-                                placeholder="Write a reply..."
-                                value={replyText}
-                                onChange={(e) => setReplyText(e.target.value)}
-                                className="min-h-[80px] resize-none border-gray-200 focus:border-blue-500 focus:ring-blue-500"
+                        </div>
+                        <div className="flex w-full flex-col gap-3">
+                            <div className="flex items-center gap-3">
+                                <span className="font-medium">
+                                    {comment.commentator?.name ?? 'Anonymous'}
+                                </span>
+                                <span className="text-dark text-sm">
+                                    {formatTimeAgo(comment.created_at)}
+                                </span>
+                                {isTopLevel && (
+                                    <Button
+                                        className="text-primary mt-1 ml-auto border-b border-dotted hover:underline"
+                                        onClick={() => {
+                                            setReplyingTo(comment.id);
+                                        }}
+                                    >
+                                        Reply
+                                    </Button>
+                                )}
+                            </div>
+                            <RichContent
+                                content={comment.text}
+                                format={'html'}
                             />
-                            <PrimaryButton
-                                onClick={() => handleAddReply(comment.id)}
-                                disabled={!replyText.trim()}
-                                className="self-end"
-                            >
-                                <Send className="h-4 w-4" />
-                            </PrimaryButton>
                         </div>
                     </div>
-                )}
+
+                    {isReplying && isTopLevel && (
+                        <ReplyBox
+                            user={user}
+                            parentId={comment.id}
+                            commentableType={commentableType}
+                            commentableHash={commentableHash}
+                            onPosted={() => {
+                                setReplyingTo(null);
+                                fetchComments();
+                            }}
+                        />
+                    )}
+
+                    {/* Only show one level of nesting */}
+                    {comment.nested_comments &&
+                        comment.nested_comments.length > 0 && (
+                            <div className="mt-2 space-y-2">
+                                {comment.nested_comments.map((child) => (
+                                    <CommentItem
+                                        key={child.id}
+                                        comment={child}
+                                    />
+                                ))}
+                            </div>
+                        )}
+                </div>
             </div>
-        </div>
-    );
+        );
+    };
 
     return (
-        <div className="mx-auto max-w-2xl bg-white p-6">
-            <h2 className="mb-6 text-xl font-semibold text-gray-900">
-                Comments
+        <Card className="bg-white p-6">
+            <h2 className="border-gray-light border-b pb-4 text-xl font-bold">
+                {t('Comments')}
             </h2>
 
-            {/* Comments list */}
-            <div className="space-y-0">
-                {comments.map((comment) => (
-                    <CommentItem key={comment.id} comment={comment} />
-                ))}
-            </div>
+            {loading ? (
+                <LoadingSpinner />
+            ) : (
+                <div className="mt-4 space-y-4">
+                    {comments.map((comment) => (
+                        <CommentItem key={comment.id} comment={comment} />
+                    ))}
+                </div>
+            )}
 
-            {/* Add new comment */}
-            <div className="mt-6 flex gap-3 border-t border-gray-100 pt-6">
-                <Image className="h-10 w-10 flex-shrink-0">
-                    {/* <AvatarFallback className="bg-gray-200 text-gray-600">
-                        Y
-                    </AvatarFallback> */}
-                </Image>
-                <div className="flex flex-1 gap-2">
+            {/* Add new top-level comment */}
+            <div className="my-4 flex gap-2">
+                <div className="flex-shrink-0">
+                    <UserAvatar
+                        name={user?.name ?? 'Anonymous'}
+                        imageUrl={user?.hero_img_url ?? ''}
+                        size="size-10"
+                    />
+                </div>
+                <div className="flex w-full flex-col">
                     <Textarea
-                        placeholder="your comment.."
-                        value={newComment}
-                        onChange={(e) => setNewComment(e.target.value)}
-                        className="min-h-[80px] resize-none border-gray-200 focus:border-blue-500 focus:ring-blue-500"
+                        placeholder="Add a comment..."
+                        value={form.data.text}
+                        onChange={(e) => form.setData('text', e.target.value)}
                     />
                     <PrimaryButton
-                        
-                        onClick={handleAddComment}
-                        disabled={!newComment.trim()}
-                        className="self-end"
+                        className="mt-2 ml-auto"
+                        onClick={submitComment}
+                        disabled={form.processing || !form.data.text.trim()}
                     >
-                        <Send className="h-4 w-4" />
+                        {form.processing ? (
+                            'Posting...'
+                        ) : (
+                            <Send className="h-4 w-4" />
+                        )}
                     </PrimaryButton>
                 </div>
             </div>
-        </div>
+        </Card>
     );
 }

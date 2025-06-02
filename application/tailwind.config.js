@@ -100,6 +100,7 @@ export default {
                 'primary-light': 'var(--cx-primary-light)',
                 'danger-light': 'var(--cx-danger-light)',
                 'danger-strong': 'var(--cx-danger-strong)',
+                'danger-mid': 'var(--cx-danger-mid)',
 
                 border: {
                     primary: 'var(--cx-primary)',
