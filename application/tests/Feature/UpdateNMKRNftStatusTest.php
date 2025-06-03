@@ -14,8 +14,12 @@ it('processes the NMKR webhook and updates the NFT status', function () {
     // Fake the queue
     Queue::fake();
 
-    // Fake logging
-    Log::shouldReceive('info')->once()->withArgs(fn($message, $context) => str_contains($message, 'NMKR-webhook Payload:'));
+    // Spy on logging (lets other methods like `channel()` work)
+    Log::spy();
+
+    Log::shouldReceive('info')
+        ->once()
+        ->withArgs(fn($message, $context) => str_contains($message, 'NMKR-webhook Payload:'));
 
     // Seed an NFT in the database
     $nft = Nft::factory()->create([
