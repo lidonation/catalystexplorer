@@ -25,7 +25,7 @@ class BookmarkCollection extends Model
         'groups',
         'reviews',
         'communities',
-        'comments',
+        // 'comments',
     ];
 
     public $meiliIndexName = 'cx_bookmark_collection';

@@ -27,7 +27,7 @@ class BookmarkCollectionFactory extends Factory
             'title' => $this->faker->sentence(),
             'content' => $this->faker->paragraphs(3, true),
             'color' => $this->faker->safeHexColor(),
-            'allow_comments' => $this->faker->randomElement(CommentsAllowance::toValues()),
+            'allow_comments' => $this->faker->boolean(),
             'visibility' => $this->faker->randomElement(['public', 'unlisted', 'private']),
             'status' => $this->faker->randomElement(['draft', 'published']),
             'type' => BookmarkCollection::class,
