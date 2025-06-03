@@ -1,141 +1,55 @@
 import Paragraph from '@/Components/atoms/Paragraph';
-import Selector from '@/Components/atoms/Selector';
-import { currency } from '@/utils/currency';
+import Title from '@/Components/atoms/Title';
+import Card from '@/Components/Card';
 import { ResponsiveBar } from '@nivo/bar';
-import React, { useState } from 'react';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
 
-interface FundsBarChartProps {
-    funds: any;
-    fundRounds: number;
-    totalProposals: number;
-    fundedProposals: number;
-    totalFundsRequested: number;
-    totalFundsAllocated: number;
+interface BarChartProps {
+    chartData: any;
 }
 
-const FundsBarChart: React.FC<FundsBarChartProps> = ({
-    funds,
-    fundRounds,
-    totalProposals,
-    fundedProposals,
-    totalFundsRequested,
-    totalFundsAllocated,
-}) => {
+const StackedBarChart: React.FC<BarChartProps> = ({ chartData }) => {
     const { t } = useTranslation();
 
     const allKeys = [
         {
-            value: t('proposals.totalProposals'),
+            key: 'totalProposals',
             label: t('proposals.totalProposals'),
+            color: '#4fadce',
         },
         {
-            value: t('funds.fundedProposals'),
+            key: 'fundedProposals',
             label: t('funds.fundedProposals'),
+            color: '#ee8434',
         },
         {
-            value: t('funds.completedProposals'),
+            key: 'completedProposals',
             label: t('funds.completedProposals'),
+            color: '#16B364',
         },
     ];
 
-    const [filters, setFilters] = useState<string[]>(
-        allKeys.map((key) => key.value),
+    const colorMap = allKeys.reduce(
+        (map, item) => {
+            map[item.key] = item.color;
+            return map;
+        },
+        {} as Record<string, string>,
     );
 
-    const handleFilterChange = (selectedItems: string[]) => {
-        setFilters(selectedItems);
-    };
-
-    const activeKeys = filters.length > 0 ? filters : [];
-
-    const colorMap = {
-        [t('proposals.totalProposals')]: '#4fadce',
-        [t('funds.fundedProposals')]: '#ee8434',
-        [t('funds.completedProposals')]: '#16B364',
-    };
-
-    const getColors = () => {
-        return filters.map((filter) => colorMap[filter]);
-    };
-
     return (
-        <div className="bg-background rounded-md p-4 shadow-xs lg:p-16">
-            <div className="grid w-full grid-cols-2 justify-between gap-4 lg:grid-cols-5">
-                <div>
-                    <h6 className="text-2 lg:title-5 font-bold">
-                        {fundRounds}
-                    </h6>
-                    <Paragraph
-                        size="sm"
-                        className="text-4 lg:text-3 text-content font-bold opacity-75"
-                    >
-                        {t('funds.fundRounds')}
-                    </Paragraph>
-                </div>
-                <div>
-                    <h6 className="text-2 lg:title-5 font-bold">
-                        {totalProposals.toLocaleString()}
-                    </h6>
-                    <Paragraph
-                        size="sm"
-                        className="text-4 lg:text-3 text-content font-bold opacity-75"
-                    >
-                        {t('proposals.totalProposals')}
-                    </Paragraph>
-                </div>
-
-                <div>
-                    <h6 className="text-2 lg:title-5 font-bold">
-                        {fundedProposals.toLocaleString()}
-                    </h6>
-                    <Paragraph
-                        size="sm"
-                        className="text-4 lg:text-3 text-content font-bold opacity-75"
-                    >
-                        {t('funds.fundedProposals')}
-                    </Paragraph>
-                </div>
-                <div>
-                    <h6 className="text-2 lg:title-5 font-bold">
-                        {currency(totalFundsRequested, 2, 'ADA')}
-                    </h6>
-                    <Paragraph
-                        size="sm"
-                        className="text-4 lg:text-3 text-content font-bold opacity-75"
-                    >
-                        {t('funds.totalFundsAwardedAda')}
-                    </Paragraph>
-                </div>
-                <div>
-                    <h6 className="text-2 lg:title-5 font-bold">
-                        {currency(totalFundsAllocated, 2, 'USD')}
-                    </h6>
-                    <Paragraph
-                        size="sm"
-                        className="text-4 lg:text-3 text-content font-bold opacity-75"
-                    >
-                        {t('funds.totalFundsAwardedUsd')}
-                    </Paragraph>
-                </div>
-            </div>
-
-            <div className="mt-4 flex justify-end px-12">
-                <Selector
-                    isMultiselect={true}
-                    options={allKeys}
-                    setSelectedItems={handleFilterChange}
-                    selectedItems={filters}
-                    placeholder={t('funds.filter')}
-                />
-            </div>
+        <Card className="w-full">
+            <Title level="4" className="mb-4 font-semibold">
+                {t('charts.stackedBarChart')}
+            </Title>
             <div
                 style={{ height: '400px', minHeight: '640px' }}
                 className="w-full"
             >
                 <ResponsiveBar
-                    data={funds}
-                    keys={activeKeys}
+                    data={chartData}
+                    keys={allKeys.map((item) => item.key)}
                     indexBy="fund"
                     margin={{
                         top: 50,
@@ -145,7 +59,7 @@ const FundsBarChart: React.FC<FundsBarChartProps> = ({
                     }}
                     padding={0.3}
                     valueScale={{ type: 'linear' }}
-                    colors={getColors()}
+                    colors={({ id }) => colorMap[id as string]}
                     axisBottom={{
                         tickSize: 5,
                         tickPadding: 5,
@@ -190,6 +104,11 @@ const FundsBarChart: React.FC<FundsBarChartProps> = ({
                                     fill={props.fill}
                                 />
                             ),
+                            data: allKeys.map(item => ({
+                                id: item.key,
+                                label: item.label,
+                                color: item.color
+                            })),
                             effects: [
                                 {
                                     on: 'hover',
@@ -238,9 +157,9 @@ const FundsBarChart: React.FC<FundsBarChartProps> = ({
                                     {indexValue}
                                 </strong>
                             </Paragraph>
-                            {activeKeys.map((key) => (
-                                <Paragraph size="sm" key={key}>
-                                    {`${key} : ${data[key] || 0}`}
+                            {allKeys.map((item) => (
+                                <Paragraph size="sm" key={item.key}>
+                                    {`${item.label} : ${data[item.key] || 0}`}
                                 </Paragraph>
                             ))}
                         </div>
@@ -248,8 +167,8 @@ const FundsBarChart: React.FC<FundsBarChartProps> = ({
                     animate={true}
                 />
             </div>
-        </div>
+        </Card>
     );
 };
 
-export default FundsBarChart;
+export default StackedBarChart;

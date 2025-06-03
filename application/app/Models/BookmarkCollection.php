@@ -11,11 +11,12 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Laravel\Scout\Searchable;
-use Spatie\Comments\Models\Concerns\HasComments;
+
+// use Spatie\Comments\Models\Concerns\HasComments;
 
 class BookmarkCollection extends Model
 {
-    use HasAuthor, HasComments, HasMetaData, Searchable, SoftDeletes;
+    use HasAuthor, HasMetaData, Searchable, SoftDeletes;
 
     protected $withCount = [
         'items',
@@ -24,7 +25,7 @@ class BookmarkCollection extends Model
         'groups',
         'reviews',
         'communities',
-        'comments',
+        // 'comments',
     ];
 
     public $meiliIndexName = 'cx_bookmark_collection';
@@ -185,7 +186,7 @@ class BookmarkCollection extends Model
     public function toSearchableArray()
     {
 
-        return array_merge($this->load(['comments','author'])->toArray(), $this->amount_received, $this->amount_requested, [
+        return array_merge($this->load(['comments', 'author'])->toArray(), $this->amount_received, $this->amount_requested, [
             'proposals' => $this->proposals->pluck('model')->toArray(),
             'ideascale_profiles' => $this->ideascale_profiles->pluck('model')->toArray(),
             'reviews' => $this->reviews->pluck('model')->toArray(),

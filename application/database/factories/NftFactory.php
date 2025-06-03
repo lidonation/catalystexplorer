@@ -2,6 +2,8 @@
 
 namespace Database\Factories;
 
+use App\Models\Meta;
+use App\Models\Nft;
 use App\Models\User;
 use App\Enums\NftStatusEnum;
 use Illuminate\Support\Str;
@@ -32,30 +34,161 @@ class NftFactory extends Factory
         ];
         $artLink = $this->faker->randomElement($links);
 
-        return [
-            'name' => $this->faker->words(1, true),
-            'user_id' => User::factory(),
-            'artist_id' => User::factory(),
-            'model_id' =>  IdeascaleProfile::factory(),
-            'model_type' => IdeascaleProfile::class,
-            'storage_link' => $artLink,
-            'preview_link' => $artLink,
-            'policy' => 'f3b85a24dbf28b5030a4b1caed7be4480df6754e3cb019a30da8d57f',
-            'price' => 0 ,
-            'description' => 'Completed Projects mint custom Completion NFTs via NMKR API & LidoNation Catalyst Explorer. Minting a completion NFT is a celebration, a ceremony, a shareable trackable community artifact. Art by Stephanie King.',
-            'rarity' => $this->faker->randomElement(['common', 'rare', 'legendary']),
-            'status' => $this->faker->randomElement(NftStatusEnum::toArray()),
-            'metadata' => [
-                "name" => "Project Catalyst Completion NFT: 55566",
-                "Fund" => "Fund". $this->faker->numberBetween(1, 2),
-                "campaign_name" => "Cardano Open: Developers",
-                "Project Title" => "CCC: Cardano Multiversity MVP",
-                "budget" => $this->faker->numberBetween(50000, 350000),
-                "Funded Project Number" => $this->faker->numberBetween(50000, 350000),
-                "yes_votes" => $this->faker->numberBetween(5000000, 35000000),
-                "no_votes" => $this->faker->numberBetween(2000000, 3000000),
-                "role" => $this->faker->randomElement(['member', 'author'])
+         return [
+            'name' => [
+                'en' => $this->faker->words(3, true),
             ],
+            'description' => [
+                'en' => $this->faker->paragraph(),
+            ],
+            'artist_id' => User::factory(),
+            'model_type' => 'App\Models\IdeascaleProfile',
+            'model_id' => 1,
+            'status' => 'draft',
+            'metadata' => [
+                'project_title' => $this->faker->words(3, true),
+                'campaign_name' => $this->faker->words(2, true),
+                'role' => 'Proposer',
+            ],
+            'policy' => $this->faker->regexify('[a-f0-9]{56}'),
+            'fingerprint' => 'asset1' . $this->faker->regexify('[a-z0-9]{38}'),
+            'preview_link' => $artLink,
+            'storage_link' => $artLink,
         ];
+    }
+
+    /**
+     * Configure the factory after model creation
+     */
+    public function configure()
+    {
+        return $this;
+    }
+
+    public function minted(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'status' => 'minted',
+            'minted_at' => $this->faker->dateTimeBetween('-1 year', 'now'),
+        ]);
+    }
+
+    public function withMetadata(string $policyId = null, string $assetName = null, array $attributes = []): static
+    {
+        return $this->state(function (array $state) use ($policyId, $assetName, $attributes) {
+            $faker = $this->faker;
+
+            $policyId = $policyId ?? $faker->regexify('[a-f0-9]{56}');
+            $assetName = $assetName ?? $faker->slug;
+
+            return [
+                'policy' => $policyId,
+                'fingerprint' => 'asset1' . $faker->regexify('[a-z0-9]{38}'),
+                'metadata' => [
+                    '721' => [
+                        $policyId => [
+                            $assetName => $attributes + [
+                                'projectTitle' => $faker->words(3, true),
+                                'projectCatalystCampaignName' => $faker->words(2, true),
+                                'role' => 'Proposer',
+                                'yesVotes' => (string) $faker->numberBetween(50, 500),
+                                'noVotes' => (string) $faker->numberBetween(10, 100),
+                            ]
+                        ],
+                        'version' => '1.0',
+                    ]
+                ],
+            ];
+        });
+    }
+
+    /**
+     * Create NFT with NMKR project UUID
+     */
+    public function withNmkrProjectUuid(string $uuid = null): static
+    {
+        return $this->afterCreating(function (Nft $nft) use ($uuid) {
+            $projectUuid = $uuid ?? $this->faker->uuid;
+            
+            Meta::factory()
+                ->withKeyContent('nmkr_project_uid', $projectUuid)
+                ->create([
+                    'model_type' => Nft::class,
+                    'model_id' => $nft->id,
+                ]);
+        });
+    }
+
+    /**
+     * Create NFT with NMKR NFT UUID
+     */
+    public function withNmkrNftUuid(string $uuid = null): static
+    {
+        return $this->afterCreating(function (Nft $nft) use ($uuid) {
+            $nftUuid = $uuid ?? $this->faker->uuid;
+            
+            Meta::factory()
+                ->withKeyContent('nmkr_nftuid', $nftUuid)
+                ->create([
+                    'model_type' => Nft::class,
+                    'model_id' => $nft->id,
+                ]);
+        });
+    }
+
+    /**
+     * Create NFT with NMKR metadata (721 standard)
+     */
+    public function withNmkrMetadata(array $metadata = []): static
+    {
+        return $this->afterCreating(function (Nft $nft) use ($metadata) {
+            Meta::factory()
+                ->nmkrMetadata($metadata)
+                ->create([
+                    'model_type' => Nft::class,
+                    'model_id' => $nft->id,
+                ]);
+        });
+    }
+
+    /**
+     * Create NFT with both NMKR UUIDs
+     */
+    public function withNmkrUuids(string $projectUuid = null, string $nftUuid = null): static
+    {
+        return $this->afterCreating(function (Nft $nft) use ($projectUuid, $nftUuid) {
+            // Create project UUID meta
+            Meta::factory()
+                ->withKeyContent('nmkr_project_uid', $projectUuid ?? $this->faker->uuid)
+                ->create([
+                    'model_type' => Nft::class,
+                    'model_id' => $nft->id,
+                ]);
+
+            // Create NFT UUID meta
+            Meta::factory()
+                ->withKeyContent('nmkr_nftuid', $nftUuid ?? $this->faker->uuid)
+                ->create([
+                    'model_type' => Nft::class,
+                    'model_id' => $nft->id,
+                ]);
+        });
+    }
+
+    /**
+     * Create NFT with custom meta data
+     */
+    public function withMeta(array $metaData): static
+    {
+        return $this->afterCreating(function (Nft $nft) use ($metaData) {
+            foreach ($metaData as $key => $content) {
+                Meta::factory()
+                    ->withKeyContent($key, $content)
+                    ->create([
+                        'model_type' => Nft::class,
+                        'model_id' => $nft->id,
+                    ]);
+            }
+        });
     }
 }
