@@ -144,7 +144,7 @@ pest:
      php artisan cx:create-search-index "App\Models\VoterHistory" && \
      sleep 10 && \
      php artisan cx:create-search-index "App\Models\MonthlyReport" && \
-     php artisan test'
+     php -d vendor/bin/pest'
   rules:
   - if: '$CI_COMMIT_BRANCH != "main" && ($DEPLOY_WEBAPP == "true")'
   dependencies:

@@ -411,7 +411,7 @@ class CompletedProjectNftsController extends Controller
 
         try {
             $nft->load('metas');
-            
+
             $key = $request->input('meta.key');
             $value = $request->input('meta.value');
             $shouldRemove = $request->boolean('remove');
@@ -427,10 +427,10 @@ class CompletedProjectNftsController extends Controller
             $metadataKey = $keyMap[$key] ?? $key;
 
             $nmkrMeta = $nft->metas->where('key', 'nmkr_metadata')->first();
-            
-            if (!$nmkrMeta) {
+
+            if (! $nmkrMeta) {
                 Log::error('UpdateMetadata NO NMKR META FOUND', [
-                    'all_metas' => $nft->metas->map(function($meta) {
+                    'all_metas' => $nft->metas->map(function ($meta) {
                         return [
                             'id' => $meta->id,
                             'key' => $meta->key,
@@ -443,7 +443,7 @@ class CompletedProjectNftsController extends Controller
             }
 
             $metadata = json_decode($nmkrMeta->content, true);
-            if (!$metadata || !isset($metadata['721'])) {
+            if (! $metadata || ! isset($metadata['721'])) {
                 throw new \Exception('Invalid metadata format');
             }
 
@@ -457,7 +457,7 @@ class CompletedProjectNftsController extends Controller
                 }
             }
 
-            if (!$policyId || !$assetName) {
+            if (! $policyId || ! $assetName) {
                 throw new \Exception('Could not find asset in metadata');
             }
 
@@ -467,16 +467,16 @@ class CompletedProjectNftsController extends Controller
                 $metadata['721'][$policyId][$assetName][$metadataKey] = (string) $value;
             }
 
-            $isProduction = $nft->status === 'minted' && 
-                        $nft->minted_at && 
-                        !str_contains($policyId, 'test');
+            $isProduction = $nft->status === 'minted' &&
+                        $nft->minted_at &&
+                        ! str_contains($policyId, 'test');
 
             if ($isProduction) {
                 $response = $nft->updateNMKRNft($metadata);
-                if (!$response->successful()) {
+                if (! $response->successful()) {
                     Log::warning('NMKR API failed, updating locally only', [
                         'nft_id' => $nft->id,
-                        'status' => $response->status()
+                        'status' => $response->status(),
                     ]);
                 }
             }
@@ -493,14 +493,14 @@ class CompletedProjectNftsController extends Controller
             ]);
 
         } catch (\Throwable $e) {
-            Log::error('Metadata update failed: ' . $e->getMessage(), [
+            Log::error('Metadata update failed: '.$e->getMessage(), [
                 'nft_id' => $nft->id,
                 'key' => $request->input('meta.key'),
                 'exception' => $e->getTraceAsString(),
             ]);
 
             return back()->withErrors([
-                'error' => 'Failed to update: ' . $e->getMessage()
+                'error' => 'Failed to update: '.$e->getMessage(),
             ]);
         }
     }
@@ -521,7 +521,7 @@ class CompletedProjectNftsController extends Controller
 
         $localKey = $localKeys[$nmkrKey] ?? $nmkrKey;
 
-        $metadata = is_string($nft->metadata) 
+        $metadata = is_string($nft->metadata)
             ? json_decode($nft->metadata, true) ?: []
             : (array) $nft->metadata;
 

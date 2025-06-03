@@ -45,7 +45,7 @@ class BookmarkCollectionRepository extends Repository
                             'amount_received_ADA',
                             'amount_requested_ADA',
                             'amount_received_USD',
-                            'author'
+                            'author',
                         ],
                         'facets' => [],
                     ],

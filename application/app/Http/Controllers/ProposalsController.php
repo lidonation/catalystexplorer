@@ -225,8 +225,10 @@ class ProposalsController extends Controller
         ]);
     }
 
-    public function charts()
+    public function charts(Request $request)
     {
+        $this->getProps($request);
+
         return Inertia::modal('Charts/Index', ['slideover' => true, 'filters' => $this->queryParams])->baseRoute('proposals.index');
     }
 
@@ -255,6 +257,8 @@ class ProposalsController extends Controller
             ProposalSearchParams::COMMUNITIES()->value => 'array|nullable',
             ProposalSearchParams::IDEASCALE_PROFILES()->value => 'array|nullable',
             ProposalSearchParams::FUNDS()->value => 'array|nullable',
+            ProposalSearchParams::TREND_CHART()->value => 'string|nullable',
+            ProposalSearchParams::CHART_OPTIONS()->value => 'array|nullable',
         ]);
 
         // format sort params for meili

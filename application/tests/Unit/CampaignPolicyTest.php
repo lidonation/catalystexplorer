@@ -27,10 +27,13 @@ class CampaignPolicyTest extends TestCase
     {
         parent::setUp();
 
-        // Create the permissions only once, using firstOrCreate to prevent duplicates
-        collect(PermissionEnum::toValues())->each(callback: function ($permission) {
+        // Create the permissions only once
+        collect(PermissionEnum::toValues())->each(function ($permission) {
             Permission::firstOrCreate(['name' => $permission]);
         });
+
+        // Clear cached permissions to avoid foreign key issues
+        app(\Spatie\Permission\PermissionRegistrar::class)->forgetCachedPermissions();
 
         // Create fresh user and campaign for each test
         $this->user = User::factory()->create();

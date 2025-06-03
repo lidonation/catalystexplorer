@@ -8966,102 +8966,6 @@
             "time": "2024-11-04T08:24:54+00:00"
         },
         {
-            "name": "spatie/laravel-comments",
-            "version": "2.2.0",
-            "source": {
-                "type": "git",
-                "url": "git@github.com:spatie/laravel-comments.git",
-                "reference": "dd7fc8497343ac83a53f84abc28df2a5ece0d5ad"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://satis.spatie.be/dist/spatie/laravel-comments/spatie-laravel-comments-dd7fc8497343ac83a53f84abc28df2a5ece0d5ad-zip-d0ede7.zip",
-                "reference": "dd7fc8497343ac83a53f84abc28df2a5ece0d5ad",
-                "shasum": "4cd2bf77b2b2d599d96ff552808013c0a3c67c0f"
-            },
-            "require": {
-                "illuminate/contracts": "^11.0|^12.0",
-                "php": "^8.2",
-                "spatie/laravel-package-tools": "^1.9.2",
-                "symfony/html-sanitizer": "^6.1"
-            },
-            "require-dev": {
-                "larastan/larastan": "^2.9.14|^3.0",
-                "nunomaduro/collision": "^6.0|^7.0|^8.0",
-                "orchestra/testbench": "^8.33.0|^9.9.0|^10.0.0",
-                "pestphp/pest": "^2.34.7|^3.7",
-                "pestphp/pest-plugin-laravel": "^2.4|^3.0",
-                "phpstan/extension-installer": "^1.4",
-                "spatie/laravel-markdown": "^2.7",
-                "spatie/laravel-ray": "^1.37",
-                "spatie/pest-plugin-snapshots": "^2.1"
-            },
-            "suggest": {
-                "spatie/laravel-markdown": "Required to convert markdown to HTML"
-            },
-            "type": "library",
-            "extra": {
-                "laravel": {
-                    "providers": [
-                        "Spatie\\Comments\\CommentsServiceProvider"
-                    ],
-                    "aliases": {
-                        "Comments": "Spatie\\Comments\\Facades\\Comments"
-                    }
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Spatie\\Comments\\": "src",
-                    "Spatie\\Comments\\Database\\Factories\\": "database/factories"
-                }
-            },
-            "autoload-dev": {
-                "psr-4": {
-                    "Spatie\\Comments\\Tests\\": "tests"
-                }
-            },
-            "scripts": {
-                "analyse": [
-                    "vendor/bin/phpstan analyse"
-                ],
-                "baseline": [
-                    "vendor/bin/phpstan --generate-baseline"
-                ],
-                "test": [
-                    "vendor/bin/pest"
-                ],
-                "test-coverage": [
-                    "vendor/bin/pest coverage"
-                ]
-            },
-            "authors": [
-                {
-                    "name": "Freek Van der Herten",
-                    "email": "freek@spatie.be",
-                    "role": "Developer"
-                }
-            ],
-            "description": "Associate comments and reactions with Eloquent models",
-            "homepage": "https://github.com/spatie/laravel-comments",
-            "keywords": [
-                "laravel",
-                "laravel-comments",
-                "spatie"
-            ],
-            "support": {
-                "source": "https://github.com/spatie/laravel-comments/tree/2.2.0",
-                "issues": "https://github.com/spatie/laravel-comments/issues"
-            },
-            "funding": [
-                {
-                    "type": "github",
-                    "url": "https://github.com/spatie"
-                }
-            ],
-            "time": "2025-02-21T14:13:10+00:00"
-        },
-        {
             "name": "spatie/laravel-data",
             "version": "4.13.2",
             "source": {
@@ -15847,12 +15751,12 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {},
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
         "php": "^8.3"
     },
-    "platform-dev": [],
+    "platform-dev": {},
     "plugin-api-version": "2.6.0"
 }

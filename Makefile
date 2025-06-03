@@ -24,9 +24,9 @@ init:
 		node:${nodeVersion}-alpine yarn install --ignore-engine
 
 
-	docker run --rm --interactive --tty \
-          --volume ${PWD}/application:/app \
-          composer install --ignore-platform-reqs
+		docker run --rm -it \
+		-v ${PWD}/application:/app \
+		composer bash -c "composer config --global github-protocols https && composer install --ignore-platform-reqs"
 
 	sudo chown -R $(id -u -n):$(id -g -n) ${PWD}/application/vendor
 	./scripts/clone-carp.sh
