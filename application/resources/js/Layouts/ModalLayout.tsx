@@ -86,7 +86,7 @@ const ModalLayout: React.FC<ModalLayoutProps> = ({
 
                 return (
                     <div
-                        className={`fixed inset-0 z-50 overflow-hidden ${isOpen ? 'block' : 'hidden'}`}
+                        className={`fixed inset-0 z-60 overflow-hidden ${isOpen ? 'block' : 'hidden'}`}
                     >
                         {/* Overlay */}
                          <div 

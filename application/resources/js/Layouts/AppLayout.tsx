@@ -41,7 +41,7 @@ export default function AppLayout({ children }: { children: ReactNode }) {
                 id="mobile-navigation"
                 open={sidebarOpen}
                 onClose={() => setSidebarOpen(false)}
-                className="relative z-30 lg:hidden"
+                className="relative z-50 lg:hidden"
                 aria-label={t('navigation.mobile.sidebar')}
             >
                 <MobileNavigation />
