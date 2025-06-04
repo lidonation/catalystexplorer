@@ -312,11 +312,11 @@ Route::localized(
         Route::prefix('lists')->as('lists.')->group(function () {
             Route::get('/', [BookmarksController::class, 'index'])
                 ->name('index');
-            Route::get('/{bookmarkCollection}/view', [BookmarksController::class, 'view'])
-                ->name('view');
             Route::get('/{bookmarkCollection}/manage/{type?}', [BookmarksController::class, 'manage'])
                 ->middleware('auth')
                 ->name('manage');
+            Route::get('/{bookmarkCollection}/{type?}', [BookmarksController::class, 'view'])
+                ->name('view');
         });
 
         Route::get('/charts', [ChartsController::class, 'index'])
@@ -393,12 +393,14 @@ Route::localized(
                 Route::get('/budget-proposals/{username}', [CardanoBudgetProposalController::class, 'loadProposalsInExplorer'])
                     ->name('budgetProposals');
             });
+        Route::get('/map', function () {
+            return Inertia::render('Map');
+        });
     }
+
 );
 
-Route::get('/map', function () {
-    return Inertia::render('Map');
-});
+
 
 require __DIR__ . '/auth.php';
 

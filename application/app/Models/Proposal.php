@@ -4,30 +4,30 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use App\Traits\HasDto;
-use App\Traits\HasAuthor;
-use App\Traits\HasMetaData;
-use App\Casts\DateFormatCast;
-use App\Traits\HasTaxonomies;
-use Laravel\Scout\Searchable;
-use App\Traits\HasConnections;
-use Illuminate\Support\Carbon;
-use App\Traits\HasTranslations;
-use App\Enums\CatalystCurrencies;
-use Illuminate\Support\Facades\DB;
 use App\Actions\TransformHashToIds;
+use App\Casts\DateFormatCast;
+use App\Enums\CatalystCurrencies;
 use App\Models\Scopes\ProposalTypeScope;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Database\Eloquent\Casts\Attribute;
-use Illuminate\Database\Eloquent\Relations\HasOne;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use App\Traits\HasAuthor;
+use App\Traits\HasConnections;
+use App\Traits\HasDto;
+use App\Traits\HasMetaData;
+use App\Traits\HasTaxonomies;
+use App\Traits\HasTranslations;
 use Illuminate\Database\Eloquent\Attributes\ScopedBy;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Staudenmeir\EloquentHasManyDeep\HasRelationships;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Concerns\HasTimestamps;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
+use Laravel\Scout\Searchable;
+use Staudenmeir\EloquentHasManyDeep\HasRelationships;
 
 #[ScopedBy(ProposalTypeScope::class)]
 class Proposal extends Model
@@ -35,14 +35,14 @@ class Proposal extends Model
     use HasAuthor,
         HasConnections,
         HasConnections,
+        HasDto,
         HasMetaData,
         HasRelationships,
         HasTaxonomies,
         HasTimestamps,
         HasTranslations,
         Searchable,
-        SoftDeletes,
-        HasDto;
+        SoftDeletes;
 
     public array $translatable = [
         'title',

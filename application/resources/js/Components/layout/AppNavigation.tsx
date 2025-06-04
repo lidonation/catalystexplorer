@@ -1,14 +1,17 @@
+import { IndexedDBService } from '@/Services/IndexDbService';
 import { useLocalizedRoute } from '@/utils/localizedRoute';
 import { usePage } from '@inertiajs/react';
 import { BookmarkCheckIcon } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import NavLinkItem from '../atoms/NavLinkItem';
+import ModalNavLink from '../ModalNavLink';
 import ArrowDownIcon from '../svgs/ArrowDownIcon';
 import ArrowUpIcon from '../svgs/ArrowUpIcon';
 import BarLineIcon from '../svgs/BarLineIcon';
 import CheckIcon from '../svgs/CheckIcon';
 import CommunitiesIcon from '../svgs/CommunitiesSvg';
+import CompareIcon from '../svgs/CompareIcon';
 import CompletedProjectNftsIcon from '../svgs/CompletedProjectNftsIcon';
 import ConnectionsIcon from '../svgs/ConnectionsIcon';
 import DrepIcon from '../svgs/DrepIcon';
@@ -17,6 +20,8 @@ import MoreIcon from '../svgs/MoreIcon';
 import NoteIcon from '../svgs/NoteIcon';
 import NumbersIcon from '../svgs/NumbersIcon';
 import PeopleIcon from '../svgs/PeopleIcon';
+import { useLiveQuery } from 'dexie-react-hooks';
+import { db } from '@/db/db';
 
 function AppNavigation() {
     const { t } = useTranslation();
@@ -191,7 +196,7 @@ function AppNavigation() {
     });
 
     return (
-        <nav className="flex flex-col justify-between h-auto" role="menu">
+        <nav className="flex h-auto flex-col justify-between" role="menu">
             <ul className="menu-gap-y flex flex-1 flex-col px-4" role="menu">
                 {filteredNavItems.map(
                     ({ href, title, icon, hasDropdown, hasIndicator }) => {
@@ -202,6 +207,7 @@ function AppNavigation() {
                         const isJormungandr = title === t('jormungandr');
                         const isNumbers = title === t('numbers');
                         const isMore = title === t('More');
+                        const isProposals = title === t('proposals.proposals');
 
                         if (hasIndicator) {
                             return (
@@ -464,6 +470,40 @@ function AppNavigation() {
                                             </div>
                                         )}
                                     </div>
+                                </li>
+                            );
+                        }
+
+                        if (isProposals) {
+                            const comparisonCount = useLiveQuery(async () => {
+                                const all =
+                                    await db.proposal_comparisons.toArray();
+                                return all.length;
+                            }, []);
+
+                            if (comparisonCount === undefined) return null;
+
+                            return (
+                                <li key={href} className="flex relative items-center">
+                                    <NavLinkItem
+                                        ariaLabel={`${title} ${t('link')}`}
+                                        href={href || '#'}
+                                        title={title}
+                                        active={isActive}
+                                        prefetch
+                                        async
+                                    >
+                                        {icon(isActive)}
+                                    </NavLinkItem>
+                                    <ModalNavLink
+                                        href="#proposal-comparison"
+                                        className="border-primary-mid absolute right-0 bg-primary-light flex min-w-[2em] items-center justify-center gap-2 rounded-full border px-2 py-0 hover:cursor-pointer"
+                                    >
+                                        <CompareIcon width={30} primary />
+                                        <span className="text-primary text-sm">
+                                            {comparisonCount}
+                                        </span>
+                                    </ModalNavLink>
                                 </li>
                             );
                         }

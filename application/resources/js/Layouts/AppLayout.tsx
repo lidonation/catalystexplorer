@@ -22,6 +22,7 @@ import ModalNavLink from '@/Components/ModalNavLink';
 import ProposalComparison from '@/Pages/Proposals/Comparison/ProposalComparison';
 // @ts-ignore
 import { ModalRoot } from '@inertiaui/modal-react';
+import MetricsBar from '@/Pages/Proposals/Partials/MetricsBar';
 
 export default function AppLayout({ children }: { children: ReactNode }) {
     const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -83,17 +84,8 @@ export default function AppLayout({ children }: { children: ReactNode }) {
                             {memoizedChildren}
                             <UIProvider>
                                 <section className="sticky inset-x-0 bottom-0 mx-auto flex items-center justify-center gap-2">
-                                    {/* <div className="">
+                                    <div className="">
                                         <MetricsBar />
-                                    </div> */}
-                                    <div className="hidden lg:block">
-                                        {/* <PlayerBar /> */}
-                                        <ModalNavLink
-                                            className="bg-bg-dark flex items-center justify-between overflow-hidden rounded-xl px-4 py-3 text-white shadow-lg"
-                                            href="#proposal-comparison"
-                                        >
-                                            Compare Proposals
-                                        </ModalNavLink>
                                     </div>
                                     <div className="hidden lg:block">
                                         <GraphButton />

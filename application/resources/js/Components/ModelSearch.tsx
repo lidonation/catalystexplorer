@@ -54,7 +54,17 @@ const modelTypes: Record<string, ModelType> = {
     },
     communities: {
         labelField: 'title',
-        statsField: [],
+        statsField: [
+            {
+                label: 'Funded Proposals',
+                value: 'funded_proposals_count',
+            },
+            {
+                label: 'Completed Proposals',
+                value: 'completed_proposals_count',
+            },
+            { label: 'IdeascaleProfiles', value: 'ideascale_profiles_count' },
+        ],
     },
     reviews: {
         labelField: 'proposal.title',
@@ -75,15 +85,20 @@ type ModelSearchProps = {
     domain: string;
 };
 
-export default function ModelSearch({ className, placeholder, domain }: ModelSearchProps) {
+export default function ModelSearch({
+    className,
+    placeholder,
+    domain,
+}: ModelSearchProps) {
     const inputRef = useRef<HTMLInputElement>(null);
     const { t } = useTranslation();
-    const { searchTerm, setSearchTerm, options } = useSearchOptions<any>(domain);
+    const { searchTerm, setSearchTerm, options } =
+        useSearchOptions<any>(domain);
     const model = modelTypes[domain];
     const { selectedItemsByType, toggleSelection } = useBookmarkContext();
     const selectedHashes = selectedItemsByType[domain] || [];
 
-    useEscapeKey(() => setSearchTerm(''));
+    useEscapeKey(() => alert('yes'));
 
     useEffect(() => {
         inputRef.current?.focus();
@@ -132,7 +147,7 @@ export default function ModelSearch({ className, placeholder, domain }: ModelSea
 
             {/* Results (absolute and below search) */}
             {searchTerm && options.length > 0 && (
-                <div className="bg-background absolute right-0 left-0 z-30 mt-2 max-h-[30rem] overflow-y-auto rounded-xl bg-white p-4 shadow-xl">
+                <div className="bg-background absolute right-0 left-0 z-30 mt-2 max-h-[30rem] overflow-y-auto rounded-xl bg-white px-2 py-4 shadow-xl">
                     {options.map((result) => {
                         const hash = result.hash;
                         const isSelected = selectedHashes.includes(hash);

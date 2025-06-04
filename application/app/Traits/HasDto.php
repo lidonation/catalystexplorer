@@ -4,9 +4,8 @@ declare(strict_types=1);
 
 namespace App\Traits;
 
-use Illuminate\Support\Collection;
 use Illuminate\Pagination\AbstractPaginator;
-
+use Illuminate\Support\Collection;
 
 trait HasDto
 {
@@ -39,6 +38,7 @@ trait HasDto
     {
         $modelClass = static::class;
         $modelName = class_basename($modelClass);
+
         return "App\\DataTransferObjects\\{$modelName}Data";
     }
 }

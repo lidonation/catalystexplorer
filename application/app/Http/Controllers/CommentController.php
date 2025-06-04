@@ -1,17 +1,18 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers;
 
+use App\DataTransferObjects\CommentData;
 use App\Models\Comment;
-use Illuminate\Support\Str;
 use Illuminate\Http\Request;
-use Laravel\Scout\Searchable;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
+use Laravel\Scout\Searchable;
 
 class CommentController extends Controller
 {
-
-
     public function index(Request $request)
     {
 
@@ -28,22 +29,24 @@ class CommentController extends Controller
             ->with(['nestedComments.commentator', 'commentator'])
             ->where([
                 'commentable_type' => $className,
-                'commentable_id' => $model->id
+                'commentable_id' => $model->id,
             ])
             ->whereNull('parent_id')
             ->get();
 
-        return $comments;
+        return CommentData::collect($comments);
     }
 
     public function store(Request $request)
     {
         $data = $request->validate([
             'text' => 'required|string',
-            'parent_id' => 'nullable|integer|exists:comments,id',
+            'parent_id' => 'nullable|string|',
             'commentable_type' => 'required|string',
             'commentable_id' => 'required|string',
         ]);
+
+        $parentId = Comment::byHash($data['parent_id'])?->id;
 
         $className = $this->getCommentableModelClass($request->commentable_type);
 
@@ -56,28 +59,39 @@ class CommentController extends Controller
         $comment = new Comment([
             'commentable_type' => $className,
             'text' => $data['text'],
-            'parent_id' => $data['parent_id'],
+            'parent_id' => $parentId,
             'commentable_id' => $model->id,
-            'original_text' =>  $data['text'],
-            'commentator_id' => auth()->user()?->id
+            'original_text' => $data['text'],
+            'commentator_id' => auth()->user()?->id,
         ]);
 
         $comment->save();
 
         if (in_array(Searchable::class, class_uses_recursive($model))) {
             try {
-                $model->searchable(); 
+                $model->searchable();
             } catch (\Throwable $e) {
-                Log::error("Failed to make model searchable: " . $e->getMessage());
+                Log::error('Failed to make model searchable: '.$e->getMessage());
             }
         }
+
+        $comments = Comment::query()
+            ->with(['nestedComments.commentator', 'commentator'])
+            ->where([
+                'commentable_type' => $className,
+                'commentable_id' => $model->id,
+            ])
+            ->whereNull('parent_id')
+            ->get();
+
+        return CommentData::collect($comments);
     }
 
-    function getCommentableModelClass(string $type): string
+    public function getCommentableModelClass(string $type): string
     {
-        $modelClass = 'App\\Models\\' . Str::studly($type);
+        $modelClass = 'App\\Models\\'.Str::studly($type);
 
-        if (!class_exists($modelClass)) {
+        if (! class_exists($modelClass)) {
             throw new \InvalidArgumentException("Model '$modelClass' does not exist.");
         }
 

@@ -24,20 +24,7 @@ const ProposalPaginatedList: React.FC<ProposalProps> = ({
     setQuickPitchView,
     isMini,
 }) => {
-    if (!proposals?.data.length) {
-        return (
-            <div className="container mb-8">
-                <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    transition={{ duration: 0.4, ease: 'easeIn' }}
-                >
-                    <RecordsNotFound context="proposals" />
-                </motion.div>
-            </div>
-        );
-    }
+
     return (
         <>
             <section className="proposals-wrapper container mt-3 w-full pb-8">
@@ -51,18 +38,31 @@ const ProposalPaginatedList: React.FC<ProposalProps> = ({
                     }
                     data="proposals"
                 >
-                    <div className="py-4">
-                        <ProposalResults
-                            proposals={proposals?.data}
-                            isHorizontal={isHorizontal}
-                            quickPitchView={quickPitchView}
-                            setGlobalQuickPitchView={setQuickPitchView}
-                            isMini={isMini}
-                        />
-                    </div>
+                    {proposals?.data.length ? (
+                        <div className="py-4">
+                            <ProposalResults
+                                proposals={proposals?.data}
+                                isHorizontal={isHorizontal}
+                                quickPitchView={quickPitchView}
+                                setGlobalQuickPitchView={setQuickPitchView}
+                                isMini={isMini}
+                            />
+                        </div>
+                    ) : (
+                        <div className="container mb-8">
+                            <motion.div
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                exit={{ opacity: 0 }}
+                                transition={{ duration: 0.4, ease: 'easeIn' }}
+                            >
+                                <RecordsNotFound context="proposals" />
+                            </motion.div>
+                        </div>
+                    )}
                 </WhenVisible>
             </section>
-            <section className="container w-full px-4 lg:px-0">
+            <section className="container">
                 {proposals && <Paginator pagination={proposals} />}
             </section>
         </>

@@ -22,13 +22,7 @@ class UserSeeder extends Seeder
     {
         $this->makeSuperAdmin();
 
-        User::factory(7)->create()->each(
-            function (User $user) {
-                if ($imageLink = $this->getRandomImageLink()) {
-                    $user->addMediaFromUrl($imageLink)->toMediaCollection('profile');
-                }
-            }
-        );
+        User::factory(1000)->create();
     }
 
     /**

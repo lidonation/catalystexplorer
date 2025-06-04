@@ -15,6 +15,7 @@
     :root {
         --cx-primary: #2596be;
         --cx-primary-light: #effafc;
+        --cx-primary-mid: #B9E6FE;
         --cx-danger-light: #DA3E521A;
         --cx-danger-strong: #ea2f2f;
         --cx-danger-mid: #DA3E52;
@@ -91,7 +92,7 @@
 
     [data-theme='dark'] {
         --cx-primary: #2596be;
-        --cx-primary-light: #75b5c1;
+        --cx-primary-light: #effafc;
         --cx-primary-light-border: #5a9aa7;
         --cx-primary-dark: #165a72;
         --cx-secondary: #000000;
@@ -148,7 +149,7 @@
 
     [data-theme='voltaire'] {
         --cx-primary: #2596be;
-        --cx-primary-light: #9cd3dc;
+        --cx-primary-light: #effafc;
         --cx-primary-light-border: #78b6c2;
         --cx-primary-dark: #165a72;
         --cx-secondary: #000000;
@@ -287,12 +288,15 @@
     .steps-list-wrapper {
         ol {
             list-style-type: decimal;
+
             li {
                 margin-bottom: 0.5rem;
             }
+
             +ul {
                 list-style-type: disc;
                 padding-left: 1.25rem;
+
                 li {
                     margin-bottom: 0.4rem;
                 }
@@ -311,7 +315,8 @@
         background-color: var(--cx-dark) !important;
         opacity: 0.5 !important;
     }
-    .im-slideover-wrapper{
+
+    .im-slideover-wrapper {
         max-width: 90vw !important;
     }
 }

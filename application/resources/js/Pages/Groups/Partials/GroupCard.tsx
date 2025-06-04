@@ -40,17 +40,17 @@ const GroupCard: React.FC<GroupCardProps> = ({ group }) => {
 
     return (
         <Card className="h-full">
-            <div className="border-gray-persist/50 text-gray-persist/50  z-20 ml-auto w-fit items-center rounded-md border-1 py-0">
+            <div className="border-gray-persist/50 text-gray-persist/50 z-20 ml-auto w-fit items-center rounded-md border-1 py-0">
                 <ListProvider>
                     <BookmarkButton
                         modelType="groups"
                         width={16}
                         height={16}
-                        itemId={group?.hash??'0'}
+                        itemId={group?.hash ?? '0'}
                     />
                 </ListProvider>
             </div>
-            <section className=" flex-grow space-y-4">
+            <section className="flex-grow space-y-4">
                 <div className="flex w-full flex-col items-center gap-4 pt-2">
                     <Image
                         size="30"
@@ -81,7 +81,9 @@ const GroupCard: React.FC<GroupCardProps> = ({ group }) => {
                                     <div>
                                         <div className="text-primary bg-eye-logo flex w-[60px] items-center justify-center rounded-md border p-1">
                                             <ValueLabel className="font-bold">
-                                                {group?.proposals_funded ?? 0}
+                                                {group?.funded_proposals_count ??
+                                                    group.proposals_funded ??
+                                                    0}
                                             </ValueLabel>
                                             <span>/</span>
                                             <ValueLabel className="text-xs">

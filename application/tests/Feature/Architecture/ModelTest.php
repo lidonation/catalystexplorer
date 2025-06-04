@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Comment;
 use App\Models\IdeascaleProfile;
 use App\Models\Model;
 use App\Models\ModelTag;
@@ -13,6 +14,7 @@ arch()
     ->ignoring([
         User::class,
         IdeascaleProfile::class,
+        Comment::class,
         ModelTag::class,
         'App\Models\Scopes',
         'App\Models\Pivot',

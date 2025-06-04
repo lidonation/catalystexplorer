@@ -98,6 +98,7 @@ export default {
                 'border-secondary': 'var(--cx-border-secondary-color)',
                 'eye-logo': 'var(--cx-blue-eye-color)',
                 'primary-light': 'var(--cx-primary-light)',
+                'primary-mid': 'var(--cx-primary-mid)',
                 'danger-light': 'var(--cx-danger-light)',
                 'danger-strong': 'var(--cx-danger-strong)',
                 'danger-mid': 'var(--cx-danger-mid)',

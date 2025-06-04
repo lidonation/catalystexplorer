@@ -10,6 +10,7 @@ import RadioGroup from '@/Components/RadioGroup';
 import { StatusEnum, VisibilityEnum } from '@/enums/votes-enums';
 import { InertiaFormProps, useForm } from '@inertiajs/react';
 import { lowerCase } from 'lodash';
+import { useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import BookmarkCollectionData = App.DataTransferObjects.BookmarkCollectionData;
 
@@ -32,7 +33,8 @@ export default function EditListForm({
     handleDelete: () => void;
 }) {
     const { t } = useTranslation();
-    
+    const colorInputRef = useRef<HTMLInputElement>(null);
+
     const form = useForm({
         title: bookmarkCollection?.title || '',
         visibility: bookmarkCollection?.visibility || VisibilityEnum.UNLISTED,
@@ -78,12 +80,12 @@ export default function EditListForm({
             </div>
 
             <div className="flex flex-col gap-4 lg:flex-row lg:items-center">
-                <div className="">
+                <div>
                     <ValueLabel className="text-content">
                         {t('workflows.voterList.visibility')}
                     </ValueLabel>
                 </div>
-                <div className="">
+                <div>
                     <RadioGroup
                         name="visibility"
                         selectedValue={form.data.visibility}
@@ -140,43 +142,28 @@ export default function EditListForm({
             </div>
 
             <div className="flex flex-col gap-4 lg:flex-row lg:items-center">
-                <div className="">
+                <div>
                     <ValueLabel className="text-content">
                         {t('workflows.voterList.chooseColor')}
                     </ValueLabel>
-
                     <Paragraph className="text-gray-persist text-xs">
                         {t('workflows.voterList.pickTheme')}
                     </Paragraph>
                 </div>
-                <div className="flex items-center">
-                    <div className="relative">
-                        <div className="border-gray-light flex w-full items-center rounded-md border px-2">
-                            <div
-                                className="mr-2 h-4 w-4 rounded-sm"
-                                style={{
-                                    backgroundColor: form.data.color,
-                                }}
-                            />
-                            <input
-                                type="text"
-                                value={form.data.color}
-                                onChange={(e) =>
-                                    form.setData('color', e.target.value)
-                                }
-                                className="bg-background text-content border-none text-sm focus:outline-none"
-                            />
-                            <input
-                                type="color"
-                                id="color-picker"
-                                value={form.data.color}
-                                onChange={(e) =>
-                                    form.setData('color', e.target.value)
-                                }
-                                className="absolute top-0 left-0 h-full w-full cursor-pointer opacity-0"
-                            />
-                        </div>
-                    </div>
+                <div className="flex items-center gap-3">
+                    <input
+                        type="color"
+                        ref={colorInputRef}
+                        value={form.data.color}
+                        onChange={(e) => form.setData('color', e.target.value)}
+                        className="h-8 w-8 cursor-pointer border-none"
+                    />
+                    <TextInput
+                        type="text"
+                        value={form.data.color}
+                        ref={colorInputRef}
+                        onChange={(e) => form.setData('color', e.target.value)}
+                    />
                 </div>
             </div>
 

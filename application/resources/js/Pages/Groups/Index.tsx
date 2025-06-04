@@ -1,4 +1,3 @@
-import Paginator from '@/Components/Paginator';
 import SearchControls from '@/Components/atoms/SearchControls';
 import Title from '@/Components/atoms/Title';
 import { FiltersProvider } from '@/Context/FiltersContext';
@@ -6,15 +5,13 @@ import { ListProvider } from '@/Context/ListContext';
 import GroupSortingOptions from '@/lib/GroupSortOptions';
 import { PaginatedData } from '@/types/paginated-data';
 import { SearchParams } from '@/types/search-params';
-import { Head, WhenVisible } from '@inertiajs/react';
+import { Head } from '@inertiajs/react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import FundFiltersContainer from '../Proposals/Partials/FundFiltersContainer';
-import GroupCardLoader from './Partials/GroupCardMiniLoader';
 import GroupFilters from './Partials/GroupFilters';
-import GroupList from './Partials/GroupList';
-import GroupData = App.DataTransferObjects.GroupData;
 import GroupPaginatedList from './Partials/GroupPaginatedList';
+import GroupData = App.DataTransferObjects.GroupData;
 
 interface GroupsPageProps extends Record<string, unknown> {
     groups: PaginatedData<GroupData[]>;
@@ -79,7 +76,7 @@ const Index: React.FC<GroupsPageProps> = ({
                         />
                     </section>
 
-                    <GroupPaginatedList groups={groups}/>
+                    <GroupPaginatedList groups={groups} />
                 </FiltersProvider>
             </ListProvider>
         </>

@@ -63,6 +63,8 @@ export default function Index({
         };
     }, [metrics]);
 
+    console.log({proposals});
+    
     return (
         <ListProvider>
             <FiltersProvider

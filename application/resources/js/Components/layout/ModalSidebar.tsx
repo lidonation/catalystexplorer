@@ -53,7 +53,7 @@ function ModalSidebar({
             aria-labelledby="modal-sidebar-title"
             aria-modal="true"
             ref={sidebarRef}
-            className={`fixed inset-0 z-40 ${isOpen ? 'block' : 'hidden'}`}
+            className={`fixed inset-0 z-60 ${isOpen ? 'block' : 'hidden'}`}
         >
             {/* Background Overlay */}
             <div
@@ -69,7 +69,7 @@ function ModalSidebar({
                 className={`bg-background fixed z-50 shadow-lg focus:outline-hidden ${
                     centered
                         ? 'top-1/2 left-1/2 h-auto w-[90%] max-w-md -translate-x-1/2 -translate-y-1/2 rounded-lg'
-                        : 'top-0 right-0 h-full lg:ml-auto '
+                        : 'top-0 right-0 h-full min-w-[24rem] lg:ml-auto'
                 }`}
                 tabIndex={0}
             >
@@ -88,7 +88,7 @@ function ModalSidebar({
                             aria-controls="sidebar-modal"
                             className={`text-4 hover:bg-dark ${
                                 !isWalletConnectorOpen ? 'hidden' : ''
-                            } items-center rounded-sm px-2 py-1 sm:block inline-flex`}
+                            } inline-flex items-center rounded-sm px-2 py-1 sm:block`}
                         >
                             <CloseIcon width={18} height={18} />
                         </Button>

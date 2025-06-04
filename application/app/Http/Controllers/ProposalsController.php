@@ -77,26 +77,27 @@ class ProposalsController extends Controller
         // dont touch for now
         $proposal = $this->query();
 
-        return Inertia::render('Proposals/Index', [
-            'proposals' => app()->environment('testing')
-                ? $proposal
-                : Inertia::optional(callback: fn () => $proposal),
-            'filters' => $this->queryParams,
-            'funds' => $this->fundsCount,
-            'search' => $this->search,
-            'sort' => "{$this->sortBy}:{$this->sortOrder}",
-            'metrics' => [
-                'submitted' => $this->submittedProposals,
-                'approved' => $this->approvedProposals,
-                'completed' => $this->completedProposals,
-                'requestedUSD' => $this->sumBudgetsUSD,
-                'requestedADA' => $this->sumBudgetsADA,
-                'awardedUSD' => $this->sumApprovedUSD,
-                'awardedADA' => $this->sumApprovedADA,
-                'distributedUSD' => $this->sumDistributedUSD,
-                'distributedADA' => $this->sumDistributedADA,
-            ],
-        ]);
+        return Inertia::render('Proposals/Index',
+            [
+                'proposals' => app()->environment('testing')
+                    ? $proposal
+                    : Inertia::optional(callback: fn () => $proposal),
+                'filters' => $this->queryParams,
+                'funds' => $this->fundsCount,
+                'search' => $this->search,
+                'sort' => "{$this->sortBy}:{$this->sortOrder}",
+                'metrics' => [
+                    'submitted' => $this->submittedProposals,
+                    'approved' => $this->approvedProposals,
+                    'completed' => $this->completedProposals,
+                    'requestedUSD' => $this->sumBudgetsUSD,
+                    'requestedADA' => $this->sumBudgetsADA,
+                    'awardedUSD' => $this->sumApprovedUSD,
+                    'awardedADA' => $this->sumApprovedADA,
+                    'distributedUSD' => $this->sumDistributedUSD,
+                    'distributedADA' => $this->sumDistributedADA,
+                ],
+            ]);
     }
 
     public function proposal(Request $request, $slug): Response

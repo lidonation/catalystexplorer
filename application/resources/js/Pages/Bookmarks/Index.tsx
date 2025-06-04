@@ -34,7 +34,7 @@ const Index: React.FC<BookmarkCollectionListProps> = ({
             >
                 <Head title="Community Lists" />
 
-                <header className="lg:relative container mt-4 flex items-start lg:mt-6 flex-col">
+                <header className="container mt-4 flex flex-col items-start lg:relative lg:mt-6">
                     <div className="">
                         <Title className="" level="1">
                             {t('bookmarks.listTitle')}
@@ -46,7 +46,7 @@ const Index: React.FC<BookmarkCollectionListProps> = ({
                     </div>
 
                     <PrimaryLink
-                        className="lg:text-md ml-auto lg:absolute lg:right-0 lg:right-6 mt-2 px-4 py-2 text-sm text-nowrap lg:top-0 lg:px-6"
+                        className="lg:text-md mt-2 ml-auto px-4 py-2 text-sm text-nowrap lg:absolute lg:top-0 lg:right-0 lg:right-6 lg:px-6"
                         href={useLocalizedRoute('workflows.bookmarks.index', {
                             step: 1,
                         })}
@@ -64,9 +64,9 @@ const Index: React.FC<BookmarkCollectionListProps> = ({
                     />
                 </section>
 
-                <section className="container py-8">
-                    {bookmarkCollections?.data &&
-                    bookmarkCollections?.data.length ? (
+                {bookmarkCollections?.data &&
+                bookmarkCollections?.data.length ? (
+                    <section className="container py-8">
                         <WhenVisible
                             fallback={<BookmarkCollectionListLoader />}
                             data="bookmarkCollections"
@@ -77,19 +77,17 @@ const Index: React.FC<BookmarkCollectionListProps> = ({
                                 }
                             />
                         </WhenVisible>
-                    ) : (
-                        <div className="p-8 text-center">
-                            <RecordsNotFound />
-                            <p>{t(`recordsNotFound.message`)}</p>
-                        </div>
-                    )}
-                </section>
 
-                <section className="container">
-                    {bookmarkCollections && (
-                        <Paginator pagination={bookmarkCollections} />
-                    )}
-                </section>
+                        <div className="lg:mt-8 mt-4">
+                            <Paginator pagination={bookmarkCollections} />
+                        </div>
+                    </section>
+                ) : (
+                    <div className="p-8 text-center">
+                        <RecordsNotFound />
+                        <p>{t(`recordsNotFound.message`)}</p>
+                    </div>
+                )}
             </FiltersProvider>
         </>
     );

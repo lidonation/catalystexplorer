@@ -37,7 +37,7 @@ Route::prefix('api')->as('api.')->group(function () {
 
     Route::get('/reviewers', [ReviewerController::class, 'reviewers'])->name('reviewers');
 
-    Route::get('/reviews', [ReviewerController::class, 'reviews'])->name('reviewers');
+    Route::get('/reviews', [ReviewController::class, 'reviews'])->name('reviews');
 
     Route::get('/ideascaleProfiles', [IdeascaleProfilesController::class, 'ideascaleProfiles'])->name('ideascaleProfiles');
 
