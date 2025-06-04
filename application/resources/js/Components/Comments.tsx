@@ -50,7 +50,7 @@ export default function Comments({
     return (
         <Card className="bg-white p-6">
             <h2 className="border-gray-light border-b pb-4 text-xl font-bold">
-                {t('Comments')}
+                {t('comments.comments')}
             </h2>
             {loading ? (
                 <LoadingSpinner />
@@ -63,7 +63,7 @@ export default function Comments({
                             commentable_type={commentableType}
                             commentable_id={commentableHash}
                             user={user}
-                            setComments={(comments)=>setComments(comments)}
+                            setComments={(comments) => setComments(comments)}
                         />
                     ))}
                 </div>

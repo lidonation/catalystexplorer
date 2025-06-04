@@ -133,18 +133,18 @@ const View = (props: BookmarkCollectionListProps) => {
 
             <header className="container mt-4 flex items-start lg:mt-6">
                 <div className="">
-                    <Title level="1">{t(bookmarkCollection.title ?? '')}</Title>
+                    <Title level="1">{bookmarkCollection.title ?? ''}</Title>
                     <p className="text-content">
-                        {t(bookmarkCollection.content ?? '')}
+                        {bookmarkCollection.content ?? ''}
                         {isAuthor && (
                             <Link
                                 href={generateLocalizedRoute('lists.manage', {
                                     bookmarkCollection: bookmarkCollection.hash,
-                                    type:'proposals'
+                                    type: 'proposals',
                                 })}
                                 className="text-primary px-4"
                             >
-                                {'Manage List'}
+                                {t('bookmarks.manage')}
                             </Link>
                         )}
                     </p>

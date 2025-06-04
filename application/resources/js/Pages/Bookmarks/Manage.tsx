@@ -167,7 +167,7 @@ const Manage = (props: BookmarkCollectionListProps) => {
 
             <header className="container mt-4 flex items-start lg:mt-6">
                 <div className="">
-                    <Title level="1">{t(bookmarkCollection.title ?? '')}</Title>
+                    <Title level="1">{bookmarkCollection.title ?? ''}</Title>
                     <p className="text-content">
                         {t(bookmarkCollection.content ?? '')}
                         <Link
@@ -177,7 +177,7 @@ const Manage = (props: BookmarkCollectionListProps) => {
                             })}
                             className="text-primary px-4"
                         >
-                            {'View as Public'}
+                            {t('bookmarks.viewPublic')}
                         </Link>
                     </p>
                 </div>
@@ -196,7 +196,7 @@ const Manage = (props: BookmarkCollectionListProps) => {
                             className="bg-primary text-content-light right-6 z-50 mt-4 mr-2 ml-auto rounded-sm px-4 py-2 hover:cursor-pointer lg:absolute lg:top-0 lg:px-6"
                             onClick={() => setActiveEditModal(true)}
                         >
-                            {`${t('List Settings')}`}
+                            {`${t('bookmarks.listSetting')}`}
                         </Button>
                         <BookmarkModelSearch
                             activeTab={activeTab}
@@ -211,7 +211,7 @@ const Manage = (props: BookmarkCollectionListProps) => {
                     defaultFilters={props.filters}
                     routerOptions={{ only: [type] }}
                 >
-                    <div className="mx-auto mt-8">{component}</div>
+                    <div className="mx-auto my-8">{component}</div>
                 </FiltersProvider>
             </BookmarkProvider>
 
@@ -228,7 +228,7 @@ const Manage = (props: BookmarkCollectionListProps) => {
 
             {/* modals */}
             <ModalSidebar
-                title={t('Edit List')}
+                title={t('bookmarks.editList')}
                 isOpen={!!activeEditModal}
                 onClose={() => setActiveEditModal(false)}
                 logo={false}
@@ -241,23 +241,15 @@ const Manage = (props: BookmarkCollectionListProps) => {
             </ModalSidebar>
 
             <ModalSidebar
-                title={t('Edit List')}
+                title={t('bookmarks.editList')}
                 isOpen={!!activeConfirm}
                 onClose={() => setActiveConfirm(false)}
                 logo={false}
                 centered
             >
                 <div className="flex flex-col gap-4 p-4 text-center">
-                    <Title level="5">
-                        {t(
-                            'Are you sure you want to delete this entire bookmark list?',
-                        )}
-                    </Title>
-                    <p>
-                        {t(
-                            'This action cannot be undone, and all bookmarks in this list will be permanently removed.',
-                        )}
-                    </p>
+                    <Title level="5">{t('bookmarks.confirmDelete')}</Title>
+                    <p>{t('bookmarks.permanentDelete')}</p>
                     <div className="flex justify-between gap-4">
                         <PrimaryButton
                             onClick={() => setActiveConfirm(false)}
@@ -269,7 +261,7 @@ const Manage = (props: BookmarkCollectionListProps) => {
                             onClick={handleDelete}
                             className="bg-danger-mid text-content-light flex-1 rounded-md py-1.5 font-semibold"
                         >
-                            {t('Delete Lists')}
+                            {t('bookmarks.deletesList')}
                         </Button>
                     </div>
                 </div>

@@ -54,7 +54,7 @@ const CommentItem = ({
                                         setIsReplying(true);
                                     }}
                                 >
-                                    {t('Reply')}
+                                    {t('comments.reply')}
                                 </Button>
                             )}
                         </div>
@@ -87,7 +87,7 @@ const CommentItem = ({
                         commentableHash={commentable_id}
                         onPosted={(comments) => {
                             console.log({ comments });
-                            
+
                             setComments(comments);
                             setIsReplying(false);
                         }}
