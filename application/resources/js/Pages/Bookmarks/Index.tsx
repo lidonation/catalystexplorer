@@ -46,7 +46,7 @@ const Index: React.FC<BookmarkCollectionListProps> = ({
                     </div>
 
                     <PrimaryLink
-                        className="lg:text-md mt-2 ml-auto px-4 py-2 text-sm text-nowrap lg:absolute lg:top-0 lg:right-0 lg:right-6 lg:px-6"
+                        className="lg:text-md mt-2 lg:mr-2 ml-auto px-4 py-2 text-sm text-nowrap lg:absolute lg:top-0 lg:right-0 lg:right-6 lg:px-6"
                         href={useLocalizedRoute('workflows.bookmarks.index', {
                             step: 1,
                         })}
@@ -78,7 +78,7 @@ const Index: React.FC<BookmarkCollectionListProps> = ({
                             />
                         </WhenVisible>
 
-                        <div className="lg:mt-8 mt-4">
+                        <div className="mt-4 lg:mt-8">
                             <Paginator pagination={bookmarkCollections} />
                         </div>
                     </section>

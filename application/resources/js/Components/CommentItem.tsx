@@ -66,16 +66,18 @@ const CommentItem = ({
                 {comment.nested_comments &&
                     comment.nested_comments.length > 0 && (
                         <div className="mt-2 space-y-2">
-                            {comment.nested_comments.map((child) => (
-                                <CommentItem
-                                    user={user}
-                                    key={child.hash}
-                                    comment={child}
-                                    commentable_type={commentable_type}
-                                    commentable_id={commentable_id}
-                                    setComments={() => setComments}
-                                />
-                            ))}
+                            {comment.nested_comments.map(
+                                (child: CommentData) => (
+                                    <CommentItem
+                                        user={user}
+                                        key={child.hash}
+                                        comment={child}
+                                        commentable_type={commentable_type}
+                                        commentable_id={commentable_id}
+                                        setComments={() => setComments}
+                                    />
+                                ),
+                            )}
                         </div>
                     )}
 
