@@ -4,21 +4,22 @@ import { useTranslation } from 'react-i18next';
 
 interface CommunityIdeascaleProfilesProps extends Record<string, unknown> {
     ideascaleProfiles: App.DataTransferObjects.IdeascaleProfileData[];
-    total: number
+    total: number;
 }
 
 export default function CommunityIdeascaleProfiles({
     ideascaleProfiles,
-    total
+    total,
 }: PageProps<CommunityIdeascaleProfilesProps>) {
     const { t } = useTranslation();
 
-    const remainingCount = total - ideascaleProfiles?.length;
+    const visibleUsers = ideascaleProfiles?.slice(0, 5);
+    const remainingCount = ideascaleProfiles?.length - visibleUsers?.length;
 
     return (
         <section className={`relative flex`} aria-labelledby="team-heading">
             <ul className="flex -space-x-2 py-1.5">
-                {ideascaleProfiles?.map((user, index) => (
+                {visibleUsers?.map((user, index) => (
                     <li key={index}>
                         <UserAvatar
                             size="size-8"

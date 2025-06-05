@@ -6,8 +6,8 @@ import {
     useRef,
     useState,
 } from 'react';
-import Paragraph from './Paragraph';
 import { useTranslation } from 'react-i18next';
+import Paragraph from './Paragraph';
 
 interface TextareaProps extends InputHTMLAttributes<HTMLTextAreaElement> {
     isFocused?: boolean;
@@ -28,7 +28,7 @@ export default forwardRef(function Textarea(
 ) {
     const localRef = useRef<HTMLTextAreaElement>(null);
     const [value, setValue] = useState(props.value as string);
-    
+
     const { t } = useTranslation();
 
     useImperativeHandle(ref, () => ({
@@ -40,6 +40,10 @@ export default forwardRef(function Textarea(
             localRef.current?.focus();
         }
     }, [isFocused]);
+
+    useEffect(() => {
+        setValue((props.value as string) ?? '');
+    }, [props.value]);
 
     const isTooShort =
         minLengthEnforced && value.length > 0 && value.length < minLengthValue;
@@ -57,7 +61,7 @@ export default forwardRef(function Textarea(
                     isTooShort
                         ? 'border-red-500 focus:border-red-500 focus:ring-0'
                         : 'border-gray-light border-opacity-40 focus:border-primary focus:ring-primary'
-                } bg-background text-content rounded-md shadow-xs ${className}`}
+                } bg-background text-content w-full rounded-md shadow-xs ${className}`}
                 ref={localRef}
                 value={value}
                 onChange={handleChange}
@@ -72,13 +76,17 @@ export default forwardRef(function Textarea(
                     size="sm"
                     className={`text-[0.75rem] ${isTooShort ? 'text-red-500' : 'text-gray-persist'}`}
                 >
-                    {t('minCharTextarea')}
+                    {minLengthEnforced
+                        ? `Minimum ${minLengthValue} characters required`
+                        : ''}
                 </Paragraph>
                 <Paragraph
                     size="sm"
                     className="text-gray-persist text-[0.75rem]"
                 >
-                    {value.length}/{minLengthValue}
+                    {minLengthEnforced
+                        ? `${value.length}/${minLengthValue}`
+                        : ''}
                 </Paragraph>
             </div>
         </>

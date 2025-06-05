@@ -86,7 +86,7 @@ const ModalLayout: React.FC<ModalLayoutProps> = ({
 
                 return (
                     <div
-                        className={`fixed inset-0 z-50 overflow-hidden ${isOpen ? 'block' : 'hidden'}`}
+                        className={`fixed inset-0 z-60 overflow-hidden ${isOpen ? 'block' : 'hidden'}`}
                     >
                         {/* Overlay */}
                          <div 
@@ -99,7 +99,7 @@ const ModalLayout: React.FC<ModalLayoutProps> = ({
                             <div
                                 className={`relative flex flex-col w-[90vw] h-[95vh] ${slideover ? 'transform transition ease-in-out duration-500' : ''} 
                                 ${isOpen ? 'translate-x-0' : position === 'right' ? 'translate-x-full' : '-translate-x-full'}
-                                ${paddingClasses} ${panelClasses || 'bg-background my-4 rounded-lg'} ${className}`}
+                                ${paddingClasses} ${panelClasses || 'bg-background-lighter my-4 rounded-lg'} ${className}`}
                             >
                                 {showProgress && (
                                     <div className="absolute top-0 left-0 w-full h-1 bg-muted">

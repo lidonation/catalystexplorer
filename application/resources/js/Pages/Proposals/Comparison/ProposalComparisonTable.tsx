@@ -124,7 +124,7 @@ export default function ProposalsTable() {
 
                 {/* Scrollable Draggable Columns */}
                 <div
-                    className="border-gray-light overflow-x-auto border-l"
+                    className="border-gray-light overflow-x-auto border-l no-scrollbar"
                     style={{ maxWidth: 'calc(100% - 120px)' }}
                 >
                     <DndContext

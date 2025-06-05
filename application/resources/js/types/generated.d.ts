@@ -34,6 +34,10 @@ groups_count?: number;
 communities_count?: number;
 reviews_count?: number;
 comments_count?: number;
+amount_requested_USD?: number;
+amount_received_ADA?: number;
+amount_requested_ADA?: number;
+amount_received_USD?: number;
 author?: App.DataTransferObjects.UserData;
 };
 export type BookmarkItemData = {
@@ -96,6 +100,16 @@ stake_address: string | null;
 voting_power: number | null;
 last_active: string | null;
 status: string | null;
+};
+export type CommentData = {
+hash: string;
+text: string;
+original_text: string | null;
+created_at: string;
+parent_id: number | null;
+updated_at: string;
+commentator: App.DataTransferObjects.UserData | null;
+nested_comments: Array<any> | null;
 };
 export type CommunityData = {
 hash: string | null;

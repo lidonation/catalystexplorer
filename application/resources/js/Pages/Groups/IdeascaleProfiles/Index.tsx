@@ -19,7 +19,7 @@ export default function IdeascaleProfiles({
             <Head title={`${group.name} - Connections`} />
 
             <WhenVisible
-                data="ideascaleProfiles"
+                data="ideascale-profiles"
                 fallback={<div>Loading Ideascale Profiles</div>}
             >
                 <div className="w-full overflow-auto">

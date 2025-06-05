@@ -167,6 +167,7 @@ const Step2: React.FC<Step2Props> = ({
                                     },
                                 ]}
                                 labelClassName="font-bold text-gray-persist ml-2"
+                                groupClassName="flex-wrap"
                             />
                         </div>
                     </div>
