@@ -9,19 +9,18 @@ import { useTranslation } from 'react-i18next';
 interface Step2Props {
     disabled?: boolean;
     onCompletionChange?: (isChartSelected: boolean) => void;
-    onNext?: () => void;
 }
 
 export default function Step2({
     disabled = false,
     onCompletionChange,
-    onNext,
 }: Step2Props) {
     const { t } = useTranslation();
     const { setFilters, getFilter } = useFilterContext();
+    
     const hasSelections = () => {
         const trendChart = getFilter(ParamsEnum.TREND_CHART) || [];
-        return trendChart;
+        return Array.isArray(trendChart) ? trendChart.length > 0 : !!trendChart;
     };
 
     const isChartSelected = hasSelections();
@@ -49,13 +48,6 @@ export default function Step2({
                     selectedItems={getFilter(ParamsEnum.TREND_CHART)}
                 />
             </div>
-            <PrimaryButton
-                className={`mt-4 w-full ${!isChartSelected ? 'cursor-not-allowed opacity-50' : ''}`}
-                disabled={!isChartSelected}
-                onClick={() => onNext?.()}
-            >
-                {t('charts.next')}
-            </PrimaryButton>
         </div>
     );
 }

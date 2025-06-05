@@ -420,8 +420,8 @@
         "workflow": "Workflow"
     },
     "charts":{
-       "setMetrics": "Set Chart Metrics",
-       "exploreCharts": "Explore Charts",
+       "setMetrics": "Select Chart Metrics",
+       "viewCharts": "View Charts",
        "selectProposals": "Which types of proposals interest you the most?",
        "selectChartType": "Select Chart Type (Select all that apply)",
        "selectAllThatApply": "(Select all that apply)",
@@ -437,7 +437,7 @@
        "scatterPlot": "Scatter Plot",
        "stackedBarChart": "Stacked Bar Chart",
        "chartOptions": "Chart Options",
-       "editMetrics": "Edit Metrics",
+       "edit": "Edit",
        "noOptions": "No chart options selected. Please go back and select chart types",
        "viewBy": "View By",
        "fundingRate": "Funding Rate",
@@ -445,7 +445,8 @@
        "year": "Year",
        "selectFund":"Select Fund",
        "value": "Value", 
-       "percentage": "Percentage"
+       "percentage": "Percentage",
+       "share": "Share"
     },
     "pagination": {
         "next": "Next",

@@ -1,7 +1,5 @@
-import Card from '@/Components/Card';
-import Title from '@/Components/atoms/Title';
 import { ResponsiveHeatMap } from '@nivo/heatmap';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 interface HeatMapProps {
@@ -15,6 +13,21 @@ interface HeatMapProps {
 
 const HeatMap: React.FC<HeatMapProps> = ({ chartData }) => {
     const { t } = useTranslation();
+    const [screenWidth, setScreenWidth] = useState(
+        typeof window !== 'undefined' ? window.innerWidth : 1200,
+    );
+
+    useEffect(() => {
+        const handleResize = () => {
+            const width = window.innerWidth;
+            setScreenWidth(width);
+        };
+
+        handleResize();
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
+
     const transformedData = [
         {
             id: 'Total Proposals',
@@ -54,15 +67,65 @@ const HeatMap: React.FC<HeatMapProps> = ({ chartData }) => {
 
         switch (cell.serieId) {
             case 'Total Proposals':
-                return `rgba(79, 173, 206, ${opacity})`; 
+                return `rgba(79, 173, 206, ${opacity})`;
             case 'Funded Proposals':
-                return `rgba(238, 132, 52, ${opacity})`; 
+                return `rgba(238, 132, 52, ${opacity})`;
             case 'Completed Proposals':
-                return `rgba(22, 179, 100, ${opacity})`; 
+                return `rgba(22, 179, 100, ${opacity})`;
             default:
                 return `rgba(79, 173, 206, ${opacity})`;
         }
     };
+
+    const getResponsiveConfig = () => {
+        const isSmall = screenWidth < 480;
+        const isMedium = screenWidth < 768;
+
+        return {
+            height: '400px',
+            minHeight: isSmall ? '400px' : '500px',
+
+            margin: {
+                top: 60,
+                right: isSmall ? 30 : isMedium ? 60 : 90,
+                bottom: isSmall ? 90 : isMedium ? 100 : 60,
+                left: isSmall ? 60 : isMedium ? 100 : 150,
+            },
+
+            tickRotation: isSmall ? 45 : isMedium ? 30 : 0,
+            legendOffset: isSmall ? 50 : isMedium ? 45 : 40,
+            leftLegendOffset: isSmall ? -35 : isMedium ? -45 : -50,
+
+            legendConfig: {
+                translateY: isSmall ? 140 : isMedium ? 120 : 80,
+                translateX: isSmall ? 10 : isMedium ? 0 : 0,
+                itemsSpacing: isSmall ? 5 : isMedium ? 8 : 10,
+                itemWidth: isSmall
+                    ? screenWidth / 3 - 20
+                    : isMedium
+                      ? 180
+                      : 200,
+                itemHeight: isSmall ? 16 : isMedium ? 18 : 20,
+                symbolSize: isSmall ? 12 : isMedium ? 16 : 20,
+                symbolSpacing: isSmall ? 8 : isMedium ? 10 : 12,
+                direction: isSmall ? 'column' : 'row',
+                symbolShape: {
+                    x: isSmall ? 0 : isMedium ? -5 : -10,
+                    y: 2,
+                    width: isSmall ? 12 : isMedium ? 20 : 30,
+                    height: isSmall ? 12 : isMedium ? 15 : 15,
+                },
+            },
+
+            fontSize: {
+                axis: isSmall ? 10 : isMedium ? 11 : 12,
+                legend: isSmall ? 12 : isMedium ? 14 : 16,
+                legendText: isSmall ? 10 : isMedium ? 12 : 14,
+            },
+        };
+    };
+
+    const config = getResponsiveConfig();
 
     const CustomTooltip = ({ cell }: any) => (
         <div
@@ -85,11 +148,11 @@ const HeatMap: React.FC<HeatMapProps> = ({ chartData }) => {
     );
 
     return (
-        <Card className="w-full pt-4">
-            <Title level="4" className="mb-4 font-semibold">
-                {t('charts.heatMap')}
-            </Title>
-            <div className="h-[400px]">
+        <div>
+            <div
+                className="min-w-[600px] sm:min-w-full"
+                style={{ height: config.height, minHeight: config.minHeight }}
+            >
                 <ResponsiveHeatMap
                     data={transformedData}
                     margin={{ top: 60, right: 90, bottom: 60, left: 150 }}
@@ -130,7 +193,7 @@ const HeatMap: React.FC<HeatMapProps> = ({ chartData }) => {
                     }}
                 />
             </div>
-        </Card>
+        </div>
     );
 };
 
