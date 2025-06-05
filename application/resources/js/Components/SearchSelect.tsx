@@ -155,7 +155,7 @@ export function SearchSelect({
                     </CommandEmpty>
                     <CommandGroup>
                         <ScrollArea
-                            className={`max-h-40 min-h-24 lg:max-h-96 ${options.length > 10 ? 'overflow-scroll' : ''}`}
+                            className={`max-h-64 min-h-24 lg:max-h-96 ${options.length > 10 ? 'overflow-scroll' : ''}`}
                         >
                             {options &&
                                 sortedOptions.map((option, index) => (
