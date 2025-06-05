@@ -14,23 +14,26 @@ import DrepSignupForm, {
     DrepSignupFormHandles,
 } from './partials/DrepSignupForm';
 import IdeascaleProfileData = App.DataTransferObjects.IdeascaleProfileData;
+import CatalystDrepData = App.DataTransferObjects.CatalystDrepData;
+
 
 interface Step1Props {
     profile: IdeascaleProfileData;
     stepDetails: StepDetails[];
     activeStep: number;
+    catalystDrep?: CatalystDrepData;
 }
 
-const Step1: React.FC<Step1Props> = ({ stepDetails, activeStep }) => {
+const Step1: React.FC<Step1Props> = ({ stepDetails, activeStep ,catalystDrep}) => {
     const [isFormValid, setIsFormValid] = useState(false);
     const formRef = useRef<DrepSignupFormHandles>(null);
 
     const form = useForm<DrepSignupFormFields>({
-        name: '',
-        email: '',
-        bio: '',
-        link: '',
-        willMaintain: false,
+        name: catalystDrep?.name ?? '',
+        email: catalystDrep?.email ?? '',
+        bio: catalystDrep?.bio ?? '',
+        link: catalystDrep?.link ?? '',
+        willMaintain:  false,
     });
 
     const submitForm = () => {
