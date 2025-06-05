@@ -6,6 +6,7 @@ namespace App\Services;
 
 use App\Models\Model;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Spatie\Comments\Models\Comment;
 use Sqids\Sqids;
 
 class HashIdService
@@ -13,7 +14,7 @@ class HashIdService
     public Sqids $hashIds;
 
     public function __construct(
-        Model|Authenticatable $model
+        Model|Authenticatable|Comment $model
     ) {
         $connections = config('hashids.connections');
         if (isset($connections[$model::class])) {

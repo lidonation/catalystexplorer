@@ -52,9 +52,11 @@ it('delete bookmark successfully', function () {
 
 it('check bookmark status successfully', function () {
     $user = User::factory()->create();
+    $proposal = Proposal::factory()->create();
+
     $bookmarkItem = BookmarkItem::factory()->create([
         'user_id' => $user->id,
-        'model_id' => 1,
+        'model_id' => $proposal->id,
         'model_type' => Proposal::class,
     ]);
 
@@ -63,7 +65,7 @@ it('check bookmark status successfully', function () {
 
     $response = $this->getJson(route('api.bookmarks.status', [
         'modelType' => 'proposals',
-        'hash' => 1,
+        'hash' => $proposal->id, 
     ]));
 
     $response->assertStatus(200)

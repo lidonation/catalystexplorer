@@ -167,7 +167,7 @@ class Community extends Model
         $this->loadCount([
             'unfunded_proposals',
             'completed_proposals',
-            'funded_proposals',
+            'funded_proposals', 'proposals', 'ideascale_profiles',
         ]);
 
         return $this->toArray();

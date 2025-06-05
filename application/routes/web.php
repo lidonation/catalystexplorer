@@ -194,8 +194,8 @@ Route::localized(
             Route::prefix('/create-bookmarks/steps')->as('bookmarks.')
                 ->middleware([WorkflowMiddleware::class])
                 ->group(function () {
-                Route::get('/success', [BookmarksController::class, 'success'])
-                    ->name('success');
+                    Route::get('/success', [BookmarksController::class, 'success'])
+                        ->name('success');
                     Route::get('/{step}', [BookmarksController::class, 'handleStep'])
                         ->name('index');
                     Route::post('/save-list', [BookmarksController::class, 'saveList'])
@@ -206,7 +206,6 @@ Route::localized(
                         ->name('removeBookmarkItem');
                     Route::post('{bookmarkCollection}/save-rationales', [BookmarksController::class, 'saveRationales'])
                         ->name('saveRationales');
-                    
                 });
 
             Route::prefix('/drep-sign-up/steps')->as('drepSignUp.')
@@ -311,9 +310,14 @@ Route::localized(
                 ->name('index');
         });
 
-        Route::prefix('bookmarks')->as('bookmarks.')->group(function () {
+        Route::prefix('lists')->as('lists.')->group(function () {
             Route::get('/', [BookmarksController::class, 'index'])
                 ->name('index');
+            Route::get('/{bookmarkCollection}/manage/{type?}', [BookmarksController::class, 'manage'])
+                ->middleware('auth')
+                ->name('manage');
+            Route::get('/{bookmarkCollection}/{type?}', [BookmarksController::class, 'view'])
+                ->name('view');
         });
 
         Route::get('/charts', [ChartsController::class, 'index'])
@@ -395,12 +399,14 @@ Route::localized(
                 Route::get('/budget-proposals/{username}', [CardanoBudgetProposalController::class, 'loadProposalsInExplorer'])
                     ->name('budgetProposals');
             });
+        Route::get('/map', function () {
+            return Inertia::render('Map');
+        });
     }
+
 );
 
-Route::get('/map', function () {
-    return Inertia::render('Map');
-});
+
 
 require __DIR__ . '/auth.php';
 

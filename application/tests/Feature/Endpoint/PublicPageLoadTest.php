@@ -81,7 +81,7 @@ it('renders all public pages', function (string $path, string $component) {
         'component' => 'Reviews/Index',
     ],
     [
-        'path' => '/en/bookmarks',
+        'path' => '/en/list',
         'component' => 'Bookmarks/Index',
     ],
     [

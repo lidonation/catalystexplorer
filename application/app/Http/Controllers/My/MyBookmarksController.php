@@ -46,7 +46,7 @@ class MyBookmarksController extends Controller
 
     public function index(Request $request): InertiaResponse
     {
-        $this->authorize('viewAny', BookmarkCollection::class);
+        // $this->authorize('viewAny', BookmarkCollection::class);
 
         $bookmarkTypes = [
             Proposal::class => 'proposals',
@@ -135,10 +135,9 @@ class MyBookmarksController extends Controller
         }
     }
 
-    public function delete(Request $request, $id): JsonResponse
+    public function delete(BookmarkItem $bookmarkItem, Request $request): JsonResponse
     {
         try {
-            $bookmarkItem = BookmarkItem::findOrFail($id);
 
             if ($bookmarkItem->user_id !== Auth::id()) {
                 return response::json([
@@ -146,7 +145,13 @@ class MyBookmarksController extends Controller
                 ], 401);
             }
 
+            $collection = $bookmarkItem?->collection;
+
             $bookmarkItem->delete();
+
+            if ($collection) {
+                $collection->seachable();
+            }
 
             return response::json([
                 'message' => 'Bookmark deleted successfully',
@@ -243,17 +248,16 @@ class MyBookmarksController extends Controller
                 'title' => $validated['collection']['title'],
             ]);
 
-            BookmarkItem::create([
+            BookmarkItem::updateOrCreate([
                 'user_id' => Auth::id(),
                 'bookmark_collection_id' => $collection->id,
                 'model_id' => $validated['model_id'],
                 'model_type' => $modelType,
-                'title' => null,
-                'content' => null,
-                'action' => null,
-            ]);
+            ], []);
 
             DB::commit();
+
+            $collection->searchable();
 
             return response()->json(['message' => 'Bookmark created successfully']);
         } catch (\Exception $e) {
@@ -338,6 +342,8 @@ class MyBookmarksController extends Controller
 
             DB::commit();
 
+            $collection->searchable();
+
             return response()->json([
                 'type' => 'success',
                 'message' => 'Bookmarks added to collection successfully',
@@ -363,12 +369,10 @@ class MyBookmarksController extends Controller
         try {
             DB::beginTransaction();
 
-            $decoded_collection_id = (new HashIdService(new BookmarkCollection))
-                ->decode($data['bookmark_collection_id']);
             $decoded_bookmark_ids = (new HashIdService(new BookmarkItem))
                 ->decodeArray($data['bookmark_ids']);
 
-            $collection = BookmarkCollection::findOrFail($decoded_collection_id);
+            $collection = BookmarkCollection::byHash($data['bookmark_collection_id']);
 
             if ($collection->user_id !== Auth::id()) {
                 return response()->json([
@@ -376,10 +380,8 @@ class MyBookmarksController extends Controller
                 ], SymfonyResponse::HTTP_FORBIDDEN);
             }
 
-            // $this->authorize('update', $collection);
-
             $bookmarks = BookmarkItem::whereIn('id', $decoded_bookmark_ids)
-                ->where('bookmark_collection_id', $decoded_collection_id)
+                ->where('bookmark_collection_id', $collection->id)
                 ->where('user_id', Auth::id())
                 ->get();
 
@@ -391,7 +393,7 @@ class MyBookmarksController extends Controller
 
             BookmarkItem::whereIn('id', $decoded_bookmark_ids)
                 ->where('user_id', Auth::id())
-                ->update(['bookmark_collection_id' => null]);
+                ->each(fn ($b) => $b->delete());
 
             DB::commit();
 
@@ -478,51 +480,80 @@ class MyBookmarksController extends Controller
         }
     }
 
-    public function deleteCollection(Request $request): JsonResponse
+    public function updateCollection(BookmarkCollection $bookmarkCollection, Request $request): mixed
     {
         $data = $request->validate([
-            'bookmark_collection_id' => ['required', 'integer', 'exists:bookmark_collections,id'],
-            'bookmark_ids' => ['required', 'array'],
-            'bookmark_ids.*' => ['required', 'integer', 'exists:bookmark_items,id'],
+            'title' => ['required', 'string', 'min:5'],
+            'content' => ['nullable', 'string', 'min:10'],
+            'visibility' => ['nullable', 'string', 'in:public,unlisted,private'],
+            'comments_enabled' => ['required'],
+            'color' => ['required', 'string'],
+            'status' => ['required', 'string'],
         ]);
 
         try {
-            DB::beginTransaction();
+            $bookmarkCollection->update([
+                'user_id' => Auth::id(),
+                'title' => $data['title'],
+                'content' => $data['content'] ?? null,
+                'visibility' => $data['visibility'] ?? BookmarkVisibility::UNLISTED()->value,
+                'color' => $data['color'] ?? '#000000',
+                'status' => $data['status'] ?? BookmarkStatus::DRAFT()->value,
+                'type' => BookmarkCollection::class,
+                'allow_comments' => $data['comments_enabled'],
+            ]);
 
-            $collection = BookmarkCollection::findOrFail($data['bookmark_collection_id']);
+            $bookmarkCollection->searchable();
 
-            if ($collection->user_id !== Auth::id()) {
-                return response()->json([
-                    'message' => 'Unauthorized',
-                ], SymfonyResponse::HTTP_FORBIDDEN);
-            }
-
-            $this->authorize('delete', $collection);
-
-            // Verify all bookmarks belong to user and collection
-            $bookmarks = BookmarkItem::whereIn('id', $data['bookmark_ids'])
-                ->where('bookmark_collection_id', $data['bookmark_collection_id'])
-                ->where('user_id', Auth::id())
-                ->get();
-
-            if ($bookmarks->count() !== count($data['bookmark_ids'])) {
-                return response()->json([
-                    'errors' => ['Invalid bookmark selection'],
-                ], SymfonyResponse::HTTP_UNPROCESSABLE_ENTITY);
-            }
-
-            $bookmarks->each->delete();
-            $collection->delete();
-
-            DB::commit();
-
-            return response()->json(['message' => 'Collection deleted successfully']);
-        } catch (\Exception $e) {
-            DB::rollBack();
+            return back()->with(
+                'message',
+                'Collection Updated',
+            );
+        } catch (ValidationException $e) {
+            $firstError = collect($e->errors())->first();
+            $firstErrorMessage = is_array($firstError) ? $firstError[0] : 'Please check your input';
 
             return response()->json([
-                'errors' => ['Failed to delete bookmarks'],
-            ], SymfonyResponse::HTTP_INTERNAL_SERVER_ERROR);
+                'type' => 'validation_error',
+                'message' => $firstErrorMessage,
+                'errors' => $e->errors(),
+            ], 422);
+        } catch (\Exception $e) {
+            return response()->json([
+                'type' => 'server_error',
+                'message' => 'Unable to update collection',
+                'debug' => config('app.debug') ? $e->getMessage() : null,
+            ], 500);
         }
+    }
+
+    public function deleteCollection(BookmarkCollection $bookmarkCollection, Request $request)
+    {
+        // try {
+
+        if ($bookmarkCollection->user_id !== Auth::id()) {
+            return back()->with(
+                'error',
+                'Unauthorized',
+            );
+        }
+
+        $bookmarks = BookmarkItem::where('bookmark_collection_id', $bookmarkCollection->id)
+            ->where('user_id', Auth::id())
+            ->get();
+
+        $bookmarks->each->delete();
+
+        $bookmarkCollection->comments->each->delete();
+
+        $bookmarkCollection->delete();
+
+        return to_route('my.lists.index');
+        // } catch (\Exception $e) {
+        //     return back()->with(
+        //         'error',
+        //         'Failed to delete bookmarks',
+        //     );
+        // }
     }
 }

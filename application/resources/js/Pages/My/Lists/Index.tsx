@@ -12,6 +12,7 @@ import BookmarkPage2 from './Partials/ListCreateFromBookmarkSave/Step2';
 import BookmarkPage3 from './Partials/ListCreateFromBookmarkSave/Step3';
 import BookmarkCollectionData = App.DataTransferObjects.BookmarkCollectionData;
 
+
 interface MyListProps {
     bookmarkCollections: PaginatedData<BookmarkCollectionData[]>;
 }

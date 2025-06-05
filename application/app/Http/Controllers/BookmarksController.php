@@ -14,6 +14,9 @@ use App\Enums\QueryParamsEnum;
 use App\Enums\StatusEnum;
 use App\Models\BookmarkCollection;
 use App\Models\BookmarkItem;
+use App\Models\Community;
+use App\Models\Group;
+use App\Models\Proposal;
 use App\Repositories\BookmarkCollectionRepository;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -21,6 +24,7 @@ use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Fluent;
+use Illuminate\Support\Str;
 use Inertia\Inertia;
 use Inertia\Response;
 use Laravel\Scout\Builder;
@@ -63,6 +67,73 @@ class BookmarksController extends Controller
         ];
 
         return Inertia::render('Bookmarks/Index', $props);
+    }
+
+    public function view(BookmarkCollection $bookmarkCollection, Request $request, ?string $type = 'proposals')
+    {
+        $currentPage = request(ProposalSearchParams::PAGE()->value, 1);
+        $model_type = BookmarkableType::from(Str::kebab($type))->getModelClass();
+
+        $data = $model_type::whereIn(
+            'id',
+            $bookmarkCollection->items
+                ->where('model_type', $model_type)
+                ->pluck('model_id')
+        )->paginate(12, ['*'], ProposalSearchParams::PAGE()->value);
+
+        $pagination = to_length_aware_paginator(
+            $model_type::toDtoPaginated($data),
+        );
+
+        return Inertia::render('Bookmarks/View', [
+            'bookmarkCollection' => $bookmarkCollection->load('author'),
+            'type' => $type,
+            'filters' => [ProposalSearchParams::PAGE()->value => $currentPage],
+            $type => $pagination,
+        ]);
+    }
+
+    public function manage(BookmarkCollection $bookmarkCollection, Request $request, ?string $type = 'proposals'): Response
+    {
+        if ($request->user()->id != $bookmarkCollection->id) {
+            Inertia::render('Error404');
+        }
+
+        $currentPage = request(ProposalSearchParams::PAGE()->value, 1);
+
+        $model_type = BookmarkableType::from(Str::kebab($type))->getModelClass();
+
+        $relationshipsMap = [
+            Proposal::class => ['users', 'fund', 'campaign'],
+            Group::class => ['ideascale_profiles'],
+            Community::class => ['ideascale_profiles'],
+        ];
+
+        $countMap = [
+            Group::class => ['reviews', 'proposals', 'funded_proposals'],
+            Community::class => ['ideascale_profiles', 'proposals'],
+        ];
+
+        $relationships = $relationshipsMap[$model_type] ?? [];
+        $counts = $countMap[$model_type] ?? [];
+
+        $data = $model_type::with($relationships)->withCount($counts)->whereIn(
+            'id',
+            $bookmarkCollection->items
+                ->where('model_type', $model_type)
+                ->pluck('model_id')
+        )->paginate(12, ['*'], ProposalSearchParams::PAGE()->value);
+
+        $pagination = to_length_aware_paginator(
+            $model_type::toDtoPaginated($data),
+        );
+
+        return Inertia::render('Bookmarks/Manage', [
+            'bookmarkCollection' => $bookmarkCollection->load('author'),
+            'type' => $type,
+            'filters' => [ProposalSearchParams::PAGE()->value => $currentPage],
+            $type => $pagination,
+        ]);
     }
 
     protected function setFilters(Request $request): void
@@ -144,7 +215,7 @@ class BookmarksController extends Controller
         return $pagination->toArray();
     }
 
-    public function handleStep(Request $request, $step)
+    public function handleStep(Request $request, $step): mixed
     {
         $method = "step{$step}";
 
@@ -197,7 +268,7 @@ class BookmarksController extends Controller
             \App\Models\Review::class => 'reviews',
             \App\Models\Group::class => 'groups',
             \App\Models\Community::class => 'communities',
-            \App\Models\IdeascaleProfile::class => 'ideascale-profiles',
+            \App\Models\IdeascaleProfile::class => 'ideascaleProfiles',
         ];
 
         $selectedItemsByType = $collection->items
@@ -219,7 +290,7 @@ class BookmarksController extends Controller
         return Inertia::render('Workflows/CreateBookmark/Step3', [
             'stepDetails' => $this->getStepDetails(),
             'activeStep' => intval($request->step),
-            'bookmarkCollection' => $request->bookmarkCollection,
+            'bookmarkCollection' => $collection,
             'collectionItems' => $selectedItemsByType,
         ]);
     }
@@ -289,7 +360,7 @@ class BookmarksController extends Controller
             'hash' => ['required', 'string'],
         ]);
 
-        $bookmarkableType = BookmarkableType::tryFrom($validated['modelType'])->getModelClass();
+        $bookmarkableType = BookmarkableType::tryFrom(Str::kebab($validated['modelType']))->getModelClass();
 
         $model = $bookmarkableType::byHash($validated['hash']);
 
@@ -309,16 +380,18 @@ class BookmarksController extends Controller
         ]);
 
         $bookmarkCollection->searchable();
+
+        return back()->with('success', 'Bookmark added!.');
     }
 
-    public function removeBookmarkItem(BookmarkCollection $bookmarkCollection, Request $request)
+    public function removeBookmarkItem(BookmarkCollection $bookmarkCollection, Request $request): RedirectResponse
     {
         $validated = $request->validate([
             'modelType' => ['required', 'string'],
             'hash' => ['required', 'string'],
         ]);
 
-        $bookmarkableType = BookmarkableType::tryFrom($validated['modelType'])->getModelClass();
+        $bookmarkableType = BookmarkableType::tryFrom(Str::kebab($validated['modelType']))->getModelClass();
 
         $model = $bookmarkableType::byHash($validated['hash']);
 

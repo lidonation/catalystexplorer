@@ -66,7 +66,7 @@ export default function ComparisonTableFilters() {
     ];
 
     return (
-        <div className="mb-2">
+        <>
             <section>
                 <div className="sticky top-0 z-10 container mx-auto flex w-full flex-col gap-3 px-0 py-3 backdrop-blur-md">
                     <div className="flex items-center justify-end gap-2">
@@ -131,78 +131,70 @@ export default function ComparisonTableFilters() {
             </section>
 
             <section
-                className={`flex w-full flex-col items-center justify-center overflow-hidden transition-[max-height] duration-500 ease-in-out ${
+                className={`mb-4 flex w-full flex-col items-center justify-center overflow-hidden rounded-xl transition-[max-height] duration-500 ease-in-out ${
                     showFilters ? 'max-h-[500px]' : 'max-h-0'
                 }`}
             >
-                <div className="bg-background w-full rounded-xl p-4 shadow-lg">
-                    <div className="bg-background w-full rounded-xl p-4">
-                        <div className="grid grid-cols-2 gap-x-4 gap-y-3 rounded-xl md:grid-cols-2 lg:grid-cols-2">
-                            <div className="col-span-1 flex flex-col gap-2 pb-4">
-                                <span>{t('reviews.filters.funds')}</span>
-                                <SearchSelect
-                                    key="funds"
-                                    domain="funds"
-                                    selected={
-                                        getFilter(ParamsEnum.FUNDS)?.value ?? []
-                                    }
-                                    onChange={(value) =>
-                                        setFilter({
-                                            param: ParamsEnum.FUNDS,
-                                            value,
-                                            label: 'Fund',
-                                        })
-                                    }
-                                    placeholder="Select"
-                                    multiple={true}
-                                    valueField="label"
-                                    labelField="title"
-                                />
-                            </div>
+                <div className="bg-background w-full p-4 shadow-lg">
+                    <div className="grid grid-cols-2 gap-x-4 gap-y-3 rounded-xl md:grid-cols-2 lg:grid-cols-2">
+                        <div className="col-span-1 flex flex-col gap-2 pb-4">
+                            <span>{t('reviews.filters.funds')}</span>
+                            <SearchSelect
+                                key="funds"
+                                domain="funds"
+                                selected={
+                                    getFilter(ParamsEnum.FUNDS)?.value ?? []
+                                }
+                                onChange={(value) =>
+                                    setFilter({
+                                        param: ParamsEnum.FUNDS,
+                                        value,
+                                        label: 'Fund',
+                                    })
+                                }
+                                placeholder="Select"
+                                multiple={true}
+                                valueField="label"
+                                labelField="title"
+                            />
+                        </div>
 
-                            <div className="col-span-1 flex flex-col gap-2 pb-4">
-                                <span>
-                                    {t('proposals.filters.projectStatus')}
-                                </span>
-                                <Selector
-                                    isMultiselect={true}
-                                    options={[
-                                        {
-                                            value: 'complete',
-                                            label: t(
-                                                'proposals.options.complete',
-                                            ),
-                                        },
-                                        {
-                                            value: 'in_progress',
-                                            label: t(
-                                                'proposals.options.inProgress',
-                                            ),
-                                        },
-                                        {
-                                            value: 'unfunded',
-                                            label: t(
-                                                'proposals.options.unfunded',
-                                            ),
-                                        },
-                                    ]}
-                                    setSelectedItems={(value) =>
-                                        setFilter({
-                                            param: ParamsEnum.PROJECT_STATUS,
-                                            value,
-                                            label: 'Status',
-                                        })
-                                    }
-                                    selectedItems={
-                                        getFilter(ParamsEnum.PROJECT_STATUS)
-                                            ?.value ?? []
-                                    }
-                                />
-                            </div>
+                        <div className="col-span-1 flex flex-col gap-2 pb-4">
+                            <span>{t('proposals.filters.projectStatus')}</span>
+                            <Selector
+                                isMultiselect={true}
+                                options={[
+                                    {
+                                        value: 'complete',
+                                        label: t('proposals.options.complete'),
+                                    },
+                                    {
+                                        value: 'in_progress',
+                                        label: t(
+                                            'proposals.options.inProgress',
+                                        ),
+                                    },
+                                    {
+                                        value: 'unfunded',
+                                        label: t('proposals.options.unfunded'),
+                                    },
+                                ]}
+                                setSelectedItems={(value) =>
+                                    setFilter({
+                                        param: ParamsEnum.PROJECT_STATUS,
+                                        value,
+                                        label: 'Status',
+                                    })
+                                }
+                                selectedItems={
+                                    getFilter(ParamsEnum.PROJECT_STATUS)
+                                        ?.value ?? []
+                                }
+                            />
                         </div>
                     </div>
                 </div>
             </section>
-        </div>
+        </>
     );
 }

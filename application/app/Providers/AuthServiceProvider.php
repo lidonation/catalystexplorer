@@ -28,13 +28,13 @@ class AuthServiceProvider extends ServiceProvider
         //
     }
 
-    protected $policies = [
-        BookmarkItem::class => BookmarkItemPolicy::class,
-        BookmarkCollection::class => BookmarkCollectionPolicy::class,
-        Link::class => LinkPolicy::class,
-        Snapshot::class => SnapshotPolicy::class,
-        VotingPower::class => VotingPower::class,
-    ];
+    // protected $policies = [
+    //     BookmarkItem::class => BookmarkItemPolicy::class,
+    //     BookmarkCollection::class => BookmarkCollectionPolicy::class,
+    //     Link::class => LinkPolicy::class,
+    //     Snapshot::class => SnapshotPolicy::class,
+    //     VotingPower::class => VotingPower::class,
+    // ];
 
     /**
      * Register any authentication / authorization services.

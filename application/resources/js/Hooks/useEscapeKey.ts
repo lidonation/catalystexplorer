@@ -9,9 +9,6 @@ export default function useEscapeKey(onEscape: () => void) {
         };
 
         window.addEventListener('keydown', handleKeyDown);
-
-        return () => {
-            window.removeEventListener('keydown', handleKeyDown);
-        };
+        return () => window.removeEventListener('keydown', handleKeyDown);
     }, [onEscape]);
 }

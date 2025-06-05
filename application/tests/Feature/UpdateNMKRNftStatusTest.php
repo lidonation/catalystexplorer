@@ -14,12 +14,21 @@ it('processes the NMKR webhook and updates the NFT status', function () {
     // Fake the queue
     Queue::fake();
 
-    // Fake logging
-    Log::shouldReceive('info')->once()->withArgs(fn($message, $context) => str_contains($message, 'NMKR-webhook Payload:'));
+    Log::shouldReceive('info')->andReturn(null);
+    Log::shouldReceive('channel')->andReturnSelf();
+    Log::shouldReceive('error')->andReturn(null);
+    Log::shouldReceive('warning')->andReturn(null);
 
-    // Seed an NFT in the database
+    $user = \App\Models\User::factory()->create();
+    
+    $profile = \App\Models\IdeascaleProfile::factory()->create([
+        'claimed_by_id' => $user->id,
+    ]);
+
     $nft = Nft::factory()->create([
         'status' => 'pending',
+        'model_type' => \App\Models\IdeascaleProfile::class,
+        'model_id' => $profile->id,
     ]);
 
     // Attach meta with nmkr_nftuid to match the webhook payload

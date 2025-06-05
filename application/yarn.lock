@@ -736,6 +736,17 @@
     "@react-spring/web" "9.4.5 || ^9.7.2"
     lodash "^4.17.21"
 
+"@nivo/arcs@0.88.0":
+  version "0.88.0"
+  resolved "https://registry.yarnpkg.com/@nivo/arcs/-/arcs-0.88.0.tgz#0004aa612fd12eee5fd415ed257812b722bf5a10"
+  integrity sha512-q7MHxT71s/KKlDDtSJS4L9+/JIa5HPZZrDr3ZFECLnvp0TC1qzyFMtVevN2CsXopSTj8poN4uFXPWxYVXOq8vg==
+  dependencies:
+    "@nivo/colors" "0.88.0"
+    "@nivo/core" "0.88.0"
+    "@react-spring/web" "9.4.5 || ^9.7.2"
+    "@types/d3-shape" "^3.1.6"
+    d3-shape "^3.2.0"
+
 "@nivo/axes@0.88.0":
   version "0.88.0"
   resolved "https://registry.npmjs.org/@nivo/axes/-/axes-0.88.0.tgz"
@@ -802,6 +813,22 @@
     lodash "^4.17.21"
     prop-types "^15.7.2"
 
+"@nivo/heatmap@^0.88.0":
+  version "0.88.0"
+  resolved "https://registry.yarnpkg.com/@nivo/heatmap/-/heatmap-0.88.0.tgz#a006146154166b1e362a87840c805d7abef89b69"
+  integrity sha512-IAGSuswYn196/JCZQWxflqWipnwBO5sxL39i3MPH7ZeW874axi5nLeKonUIr71ApX5zlYRqyBN7HYDL+yngxYg==
+  dependencies:
+    "@nivo/annotations" "0.88.0"
+    "@nivo/axes" "0.88.0"
+    "@nivo/colors" "0.88.0"
+    "@nivo/core" "0.88.0"
+    "@nivo/legends" "0.88.0"
+    "@nivo/scales" "0.88.0"
+    "@nivo/tooltip" "0.88.0"
+    "@react-spring/web" "9.4.5 || ^9.7.2"
+    "@types/d3-scale" "^4.0.8"
+    d3-scale "^4.0.2"
+
 "@nivo/legends@0.88.0":
   version "0.88.0"
   resolved "https://registry.npmjs.org/@nivo/legends/-/legends-0.88.0.tgz"
@@ -828,6 +855,19 @@
     "@react-spring/web" "9.4.5 || ^9.7.2"
     d3-shape "^3.2.0"
 
+"@nivo/pie@^0.88.0":
+  version "0.88.0"
+  resolved "https://registry.yarnpkg.com/@nivo/pie/-/pie-0.88.0.tgz#628a608d077d9cfe850ffef1b16181482479e7c7"
+  integrity sha512-BE6dFWlGne1SnaEkFHNbg0sZBiwtcIqBFwmMRJ0F11SiKOzVeJyq3KiyY1I2ySSCx5VR1V8/MNBXzXFu3vJMAQ==
+  dependencies:
+    "@nivo/arcs" "0.88.0"
+    "@nivo/colors" "0.88.0"
+    "@nivo/core" "0.88.0"
+    "@nivo/legends" "0.88.0"
+    "@nivo/tooltip" "0.88.0"
+    "@types/d3-shape" "^3.1.6"
+    d3-shape "^3.2.0"
+
 "@nivo/scales@0.88.0":
   version "0.88.0"
   resolved "https://registry.npmjs.org/@nivo/scales/-/scales-0.88.0.tgz"
@@ -839,6 +879,26 @@
     d3-scale "^4.0.2"
     d3-time "^1.0.11"
     d3-time-format "^3.0.0"
+    lodash "^4.17.21"
+
+"@nivo/scatterplot@^0.88.0":
+  version "0.88.0"
+  resolved "https://registry.yarnpkg.com/@nivo/scatterplot/-/scatterplot-0.88.0.tgz#d6572986eee49e2da942c01be37f6fe189bf6506"
+  integrity sha512-kVUnBknVnX/+kAnOVl27wSrVrDAnYt7hyttss5jydBMzGidxK7vFBwRUFl5yrPGmEwpDSO8POvXjSF4M3XHzZA==
+  dependencies:
+    "@nivo/annotations" "0.88.0"
+    "@nivo/axes" "0.88.0"
+    "@nivo/colors" "0.88.0"
+    "@nivo/core" "0.88.0"
+    "@nivo/legends" "0.88.0"
+    "@nivo/scales" "0.88.0"
+    "@nivo/tooltip" "0.88.0"
+    "@nivo/voronoi" "0.88.0"
+    "@react-spring/web" "9.4.5 || ^9.7.2"
+    "@types/d3-scale" "^4.0.8"
+    "@types/d3-shape" "^3.1.6"
+    d3-scale "^4.0.2"
+    d3-shape "^3.2.0"
     lodash "^4.17.21"
 
 "@nivo/tooltip@0.88.0":

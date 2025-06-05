@@ -1019,9 +1019,16 @@
         }
     },
     "bookmarks": {
-        "listTitle": "Découvrir les listes communautaires",
-        "listSubtitle": "Parcourez et recherchez des listes de favoris sélectionnées partagées par d'autres.",
-        "myBookmarks": "Mes favoris",
+        "permanentDelete": "Cette action est irréversible et tous les signets de cette liste seront définitivement supprimés.",
+        "confirmDelete": "Êtes-vous sûr de vouloir supprimer cette liste de signets entière ?",
+        "editList": "Modifier la liste",
+        "deletesList": "Supprimer les listes",
+        "manage": "Gérer la liste",
+        "viewPublic": "Voir en tant que public",
+        "listSetting": "Paramètres de la liste",
+        "listTitle": "Découvrir les listes de la communauté",
+        "listSubtitle": "Parcourez et recherchez des listes de signets sélectionnées partagées par d'autres.",
+        "myBookmarks": "Mes signets",
         "searchPlaceholder": "Rechercher une liste",
         "sort": {
             "paymentsReceivedHighToLowADA": "Paiements reçus (ADA) : du plus élevé au plus bas",
@@ -1032,7 +1039,7 @@
             "budgetLowToHighADA": "Budget (ADA) : du plus bas au plus élevé",
             "budgetHighToLowUSD": "Budget (USD) : du plus élevé au plus bas",
             "budgetLowToHighUSD": "Budget (USD) : du plus bas au plus élevé",
-            "alphabeticallyAZ": "Ordre alphabétique : A à Z",
+            "alphabeticallyAZ": "Alphabétiquement : A à Z",
             "updatedAtASC": "Dernière modification",
             "itemsCountASC": "Éléments ajoutés : du plus bas au plus élevé",
             "itemsCountDESC": "Éléments ajoutés : du plus élevé au plus bas"
@@ -1040,5 +1047,9 @@
         "comments": "Commentaires",
         "lastModified": "Dernière modification",
         "createList": "Créer votre liste"
+    },
+    "comments": {
+        "comments": "Commentaires",
+        "reply": "Répondre"
     }
 }

@@ -6,6 +6,7 @@ import {
     useRef,
 } from 'react';
 
+
 export default forwardRef(function TextInput(
     {
         type = 'text',
@@ -13,15 +14,15 @@ export default forwardRef(function TextInput(
         border = 'border-gray-light',
         isFocused = false,
         ...props
-    }: InputHTMLAttributes<HTMLInputElement> & { isFocused?: boolean; border?:string|null
-     },
+    }: InputHTMLAttributes<HTMLInputElement> & {
+        isFocused?: boolean;
+        border?: string | null;
+    },
     ref,
 ) {
     const localRef = useRef<HTMLInputElement>(null);
 
-    useImperativeHandle(ref, () => ({
-        focus: () => localRef.current?.focus(),
-    }));
+    useImperativeHandle(ref, () => localRef.current as HTMLInputElement);
 
     useEffect(() => {
         if (isFocused) {

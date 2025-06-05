@@ -15,6 +15,10 @@ final class CatalystDrepData extends Data
 
         public ?string $name,
 
+        public ?string $email,
+
+        public ?string $link,
+
         public ?string $bio,
 
         public ?string $motivation,

@@ -10,6 +10,7 @@ use App\Enums\CatalystCurrencies;
 use App\Models\Scopes\ProposalTypeScope;
 use App\Traits\HasAuthor;
 use App\Traits\HasConnections;
+use App\Traits\HasDto;
 use App\Traits\HasMetaData;
 use App\Traits\HasTaxonomies;
 use App\Traits\HasTranslations;
@@ -34,6 +35,7 @@ class Proposal extends Model
     use HasAuthor,
         HasConnections,
         HasConnections,
+        HasDto,
         HasMetaData,
         HasRelationships,
         HasTaxonomies,

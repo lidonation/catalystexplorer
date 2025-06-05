@@ -7,36 +7,55 @@ use App\Enums\PermissionEnum;
 use App\Enums\RoleEnum;
 use App\Models\BookmarkCollection;
 use App\Models\BookmarkItem;
+use App\Models\Proposal;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
-use function Pest\Laravel\{actingAs,delete,get,post, withSession};
+use function Pest\Laravel\{actingAs, delete, get, post, withSession};
 
 uses(RefreshDatabase::class);
 
 it('shows all bookmarks for the authenticated user', function () {
     // Create admin role
-    Role::create(['name' => RoleEnum::admin()->value, 'guard_name' => 'web']);
+    Role::create([
+        'name' => RoleEnum::admin()->value,
+        'guard_name' => 'web',
+    ]);
 
-    $user = User::factory()->create();
+    /** @var User $user */
+    $user = User::factory()->create()->first();
     $user->assignRole(RoleEnum::admin()->value);
 
-    BookmarkCollection::factory()->count(3)->create(['user_id' => $user->id]);
+    // Only create simple collections and a lightweight bookmark item per collection
+    BookmarkCollection::factory()
+        ->count(3)
+        ->create(['user_id' => $user->id])
+        ->each(function ($collection) use ($user) {
+            // Create a related Proposal
+            $proposal = Proposal::factory()->create();
+
+            BookmarkItem::factory()->create([
+            'bookmark_collection_id' => $collection->id,
+                'user_id' => $user->id,
+                'model_type' => Proposal::class,
+                'model_id' => $proposal->id,
+            ]);
+        });
 
     actingAs($user);
 
     $response = get(route('my.bookmarks.index'));
 
     $response->assertOk()
-        ->assertSee('collections');
+        ->assertSee('collections'); 
 });
 
 it('restricts viewing bookmarks to authenticated users only', function () {
     $response = get(route('my.bookmarks.index'));
-    $response->assertRedirect();
-});
 
+    $response->assertRedirect(); // Optional: check for specific login route
+    // $response->assertRedirect(route('login')); // Uncomment if your app redirects to login
+});
 
 //it('allows the user to view their own collection', function () {
 //    Role::create(['name' => RoleEnum::admin()->value, 'guard_name' => 'web']);

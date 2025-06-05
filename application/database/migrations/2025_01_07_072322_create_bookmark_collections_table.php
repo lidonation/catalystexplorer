@@ -22,7 +22,7 @@ return new class extends Migration
             $table->text('title');
             $table->text('content')->nullable();
             $table->string('color');
-            $table->string('allow_comments')->nullable();
+            $table->boolean('allow_comments')->nullable();
             $table->string('visibility')->default(BookmarkVisibility::UNLISTED()->value);
             $table->string('status')->default(BookmarkStatus::DRAFT()->value);
             $table->string('type')->default(BookmarkCollection::class);

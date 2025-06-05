@@ -34,6 +34,10 @@ groups_count?: number;
 communities_count?: number;
 reviews_count?: number;
 comments_count?: number;
+amount_requested_USD?: number;
+amount_received_ADA?: number;
+amount_requested_ADA?: number;
+amount_received_USD?: number;
 author?: App.DataTransferObjects.UserData;
 };
 export type BookmarkItemData = {
@@ -88,6 +92,8 @@ proposal_benefit?: string;
 export type CatalystDrepData = {
 hash: string | null;
 name: string | null;
+email: string | null;
+link: string | null;
 bio: string | null;
 motivation: string | null;
 qualifications: string | null;
@@ -96,6 +102,16 @@ stake_address: string | null;
 voting_power: number | null;
 last_active: string | null;
 status: string | null;
+};
+export type CommentData = {
+hash: string;
+text: string;
+original_text: string | null;
+created_at: string;
+parent_id: number | null;
+updated_at: string;
+commentator: App.DataTransferObjects.UserData | null;
+nested_comments: any | null;
 };
 export type CommunityData = {
 hash: string | null;
@@ -113,7 +129,7 @@ amount_awarded_ada?: number;
 amount_awarded_usd?: number;
 amount_distributed_ada?: number;
 amount_distributed_usd?: number;
-ideascale_profiles_count: number;
+ideascale_profiles_count: number | null;
 created_at?: string;
 updated_at?: string;
 deleted_at?: string;

@@ -23,11 +23,11 @@ const BookmarkCollectionCard = ({
     const user = collection?.author;
 
     const isAuthor = auth?.user?.hash == user?.hash;
-
-    const color = `bg-[${collection.color}]`;
-
     return (
-        <Card className="relative flex w-full gap-1 lg:gap-3">
+        <Card
+            className="relative flex w-full gap-1 lg:gap-3"
+            key={collection.hash}
+        >
             <div className="flex flex-row items-center justify-between pb-2">
                 <div className="space-y-2">
                     <div className="flex items-center gap-3">
@@ -92,7 +92,7 @@ const BookmarkCollectionCard = ({
                 {Object.entries(collection?.types_count ?? {})?.map((item) => {
                     let pluralizedModel = capitalizeFirstLetter(item[0]);
                     return (
-                        <div className="space-y-1">
+                        <div className="space-y-1" key={`${pluralizedModel}`}>
                             <p className="text-4xl font-bold">{item[1]}</p>
                             <p className="text-muted-foreground">
                                 {pluralizedModel}
@@ -105,16 +105,22 @@ const BookmarkCollectionCard = ({
                 {isAuthor ? (
                     <PrimaryLink
                         className="bg-success w-full px-4 py-1.5 font-medium text-white"
-                        href={useLocalizedRoute('my.lists.show', {
-                            list: collection?.hash,
+                        href={useLocalizedRoute('lists.manage', {
+                            bookmarkCollection: collection?.hash,
+                            type: 'proposals',
                         })}
                     >
                         {t('my.manage')}
                     </PrimaryLink>
                 ) : (
-                    <PrimaryButton className="bg-success w-full px-4 hover:bg-green-600">
-                        View List
-                    </PrimaryButton>
+                    <PrimaryLink
+                        href={useLocalizedRoute('lists.view', {
+                            bookmarkCollection: collection?.hash,
+                        })}
+                        className="bg-success w-full px-4 hover:bg-green-600"
+                    >
+                        {t('View List')}
+                    </PrimaryLink>
                 )}
             </div>
 

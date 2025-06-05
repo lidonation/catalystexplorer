@@ -78,6 +78,11 @@ return [
             'length' => 11,
             'alphabet' => 'abcdefghiklmnopqrstuvwxyz0123456789',
         ],
+        \App\Models\Comment::class => [
+            'salt' => \App\Models\Comment::class . env('APP_KEY'),
+            'length' => 11,
+            'alphabet' => 'abcdefghiklmnopqrstuvwxyz0123456789',
+        ],
         \App\Models\CatalystDrep::class => [
             'salt' => \App\Models\CatalystDrep::class . env('APP_KEY'),
             'length' => 11,

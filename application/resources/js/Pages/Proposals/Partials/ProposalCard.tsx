@@ -1,23 +1,18 @@
 import { shortNumber } from '@/utils/shortNumber';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import ProposalHorizontalCard from './ProposalHorizontalCard';
 import ProposalVerticalCard from './ProposalVerticalCard';
-import React from 'react';
 
 type ProposalCardProps = {
     proposal: App.DataTransferObjects.ProposalData;
     isHorizontal: boolean;
-    globalQuickPitchView: boolean;
+    globalQuickPitchView?: boolean;
     setGlobalQuickPitchView?: (value: boolean) => void;
 };
 
 const ProposalCard = React.memo(
-    ({
-        proposal,
-        isHorizontal,
-        globalQuickPitchView,
-    }: ProposalCardProps) => {
+    ({ proposal, isHorizontal, globalQuickPitchView }: ProposalCardProps) => {
         const { t } = useTranslation();
 
         const [userSelected, setUserSelected] =
@@ -51,7 +46,7 @@ const ProposalCard = React.memo(
         // Sync local state with global state if the proposal has a quick pitch
         useEffect(() => {
             if (hasQuickPitch) {
-                setLocalQuickPitchView(globalQuickPitchView);
+                setLocalQuickPitchView(globalQuickPitchView ?? false);
             }
         }, [globalQuickPitchView, hasQuickPitch]);
 
@@ -78,7 +73,18 @@ const ProposalCard = React.memo(
                 yesVotes,
                 abstainVotes,
             }),
-            [proposal, userSelected, noSelectedUser, handleUserClick, localQuickPitchView, isHorizontal, t, hasQuickPitch, yesVotes, abstainVotes],
+            [
+                proposal,
+                userSelected,
+                noSelectedUser,
+                handleUserClick,
+                localQuickPitchView,
+                isHorizontal,
+                t,
+                hasQuickPitch,
+                yesVotes,
+                abstainVotes,
+            ],
         );
 
         return isHorizontal ? (

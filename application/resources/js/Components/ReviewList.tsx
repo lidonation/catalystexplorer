@@ -1,4 +1,5 @@
 import Paginator from '@/Components/Paginator';
+import RecordsNotFound from '@/Layouts/RecordsNotFound';
 import React from 'react';
 import Masonry from 'react-masonry-css';
 import { PaginatedData } from '../types/paginated-data';
@@ -20,7 +21,7 @@ export const ReviewList: React.FC<ReviewListProps> = ({
         768: 1,
     };
 
-    return (
+    return reviews?.data.length ? (
         <div className={` ${className}`}>
             <Masonry
                 breakpointCols={breakpointColumnsObj}
@@ -39,8 +40,12 @@ export const ReviewList: React.FC<ReviewListProps> = ({
             </Masonry>
 
             <div className="mb-8 w-full">
-                {reviews.data && <Paginator pagination={reviews} />}
+                {reviews?.data && <Paginator pagination={reviews} />}
             </div>
+        </div>
+    ) : (
+        <div className={` ${className} container`}>
+            <RecordsNotFound />
         </div>
     );
 };

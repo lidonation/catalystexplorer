@@ -41,6 +41,7 @@ const Step4: React.FC<Step4Props> = ({
     const localizedRoute = useLocalizedRoute;
     const prevStep = localizedRoute('workflows.bookmarks.index', {
         step: activeStep - 1,
+        bookmarkCollection,
     });
 
     const { t } = useTranslation();

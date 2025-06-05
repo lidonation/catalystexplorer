@@ -36,7 +36,7 @@ class BookmarkCollectionRepository extends Repository
                             // 'reviews',
                             // 'communities',
                             // 'comments',
-                            'comments',
+                            'comments_count',
                             'types_count',
                             'items_count',
                             'rationale',
@@ -45,7 +45,7 @@ class BookmarkCollectionRepository extends Repository
                             'amount_received_ADA',
                             'amount_requested_ADA',
                             'amount_received_USD',
-                            'author'
+                            'author',
                         ],
                         'facets' => [],
                     ],

@@ -54,7 +54,19 @@ class IdeascaleProfile extends Model implements HasMedia
         'title',
     ];
 
-    protected $appends = ['hero_img_url', 'hash'];
+    public $appends = ['hero_img_url', 'hash'];
+
+    public $withCount = [
+        'completed_proposals',
+        'funded_proposals',
+        'unfunded_proposals',
+        'in_progress_proposals',
+        'outstanding_proposals',
+        'own_proposals',
+        'collaborating_proposals',
+        'proposals',
+        'reviews',
+    ];
 
     public array $translatable = [
         // 'bio',

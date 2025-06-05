@@ -12,6 +12,7 @@ import {
 } from 'react';
 import { FilteredItem } from './FiltersContext';
 import ProposalData = App.DataTransferObjects.ProposalData;
+import { db } from '@/db/db';
 
 type ProposalComparisonContextType = {
     proposals: ProposalData[];
@@ -43,8 +44,8 @@ export function ProposalComparisonProvider({
     const [filtersCount, setFiltersCount] = useState<number>(0);
 
     useEffect(() => {
-        const subscription = liveQuery(() =>
-            IndexedDBService.getAll('proposal_comparisons'),
+        const subscription = liveQuery(async () =>
+            await db.proposal_comparisons.toArray(),
         ).subscribe({
             next: (result) => {
                 setProposals(result);
@@ -109,6 +110,7 @@ export function ProposalComparisonProvider({
     const removeFilter = (param: ParamsEnum) => {
         setFilters((prev) => prev.filter((item) => item.param !== param));
     };
+    
 
     const filteredProposals = useMemo(() => {
         let filtered = [...proposals];
@@ -158,7 +160,7 @@ export function ProposalComparisonProvider({
         }
 
         return filtered;
-    }, [proposals, searchQuery, filters]);
+    }, [proposals, searchQuery, filters]);    
 
     const updateProposalOrder = async (newOrder: ProposalData[]) => {
         setProposals(newOrder);

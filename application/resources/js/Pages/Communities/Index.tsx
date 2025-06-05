@@ -1,18 +1,16 @@
-import Paginator from '@/Components/Paginator';
 import SearchControls from '@/Components/atoms/SearchControls';
 import Title from '@/Components/atoms/Title';
 import { FiltersProvider } from '@/Context/FiltersContext';
 import { ListProvider } from '@/Context/ListContext';
 import CommunitySortingOptions from '@/lib/CommunitySortOptions';
-import { Head, WhenVisible } from '@inertiajs/react';
+import { PaginatedData } from '@/types/paginated-data';
+import { SearchParams } from '@/types/search-params';
+import { Head } from '@inertiajs/react';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { PaginatedData } from '@/types/paginated-data';
-import { SearchParams } from '@/types/search-params';
-import CommunitiesList from './Partials/CommunitiesList';
+import CommunitiesPaginatedList from './Partials/CommunitiesPaginatedList';
 import CommunityFilters from './Partials/CommunityFilters';
-import CommunityLoader from './Partials/CommunityLoader';
 import CommunityData = App.DataTransferObjects.CommunityData;
 
 interface CommunitiesPageProps extends Record<string, unknown> {
@@ -54,7 +52,6 @@ const Index: React.FC<CommunitiesPageProps> = ({
             <ListProvider>
                 <FiltersProvider defaultFilters={filters}>
                     <Head title={t('communities.title')} />
-
                     <header>
                         <div className="container py-2">
                             <Title level="1">{t('communities.title')}</Title>
@@ -64,14 +61,12 @@ const Index: React.FC<CommunitiesPageProps> = ({
                             </div>
                         </div>
                     </header>
-
                     <section className="container">
                         <SearchControls
                             sortOptions={CommunitySortingOptions()}
                             onFiltersToggle={setShowFilters}
                         />
                     </section>
-
                     <section
                         className={`container flex w-full flex-col items-center justify-center overflow-hidden transition-[max-height] duration-500 ease-in-out ${
                             showFilters ? 'max-h-svh' : 'max-h-0'
@@ -83,22 +78,7 @@ const Index: React.FC<CommunitiesPageProps> = ({
                             totalAwardedUsd={filterCounts.totalAwardedUsd}
                         />
                     </section>
-
-                    <section className="container mt-4 flex w-full flex-col items-center justify-center overflow-hidden duration-500 ease-in-out">
-                        <WhenVisible
-                            fallback={<CommunityLoader />}
-                            data="campaigns"
-                        >
-                            <CommunitiesList communities={communities} />
-                        </WhenVisible>
-                    </section>
-                    {communities && communities.total > 0 && (
-                        <section className="container mt-4 w-full py-8">
-                            {communities && (
-                                <Paginator pagination={communities} />
-                            )}
-                        </section>
-                    )}
+                    <CommunitiesPaginatedList communities={communities} />
                 </FiltersProvider>
             </ListProvider>
         </>

@@ -1,4 +1,5 @@
 import api from '@/utils/axiosClient';
+import EventBus from '@/utils/eventBus';
 import { AxiosError } from 'axios';
 import React, { createContext, useContext, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -138,6 +139,8 @@ export function ListProvider({ children }: { children: React.ReactNode }) {
                           ]
                         : prev.lists,
                 }));
+                
+                EventBus.emit('listItem-added');
                 return;
             }
         } catch (error) {
@@ -173,6 +176,7 @@ export function ListProvider({ children }: { children: React.ReactNode }) {
         listId: string,
         bookmarkId: string,
     ) => {
+
         try {
             const res = await api.post(
                 route('api.collections.bookmarks.remove'),
@@ -180,7 +184,7 @@ export function ListProvider({ children }: { children: React.ReactNode }) {
                     bookmark_collection_id: listId,
                     bookmark_ids: [bookmarkId],
                 },
-            );
+            );            
 
             if (res.data?.type === 'success') {
                 setState((prev) => ({
@@ -197,7 +201,10 @@ export function ListProvider({ children }: { children: React.ReactNode }) {
                           ]
                         : prev.lists,
                 }));
+
+                EventBus.emit('listItem-removed');
                 return;
+
             }
         } catch (error) {
             console.error('Error removing bookmark from list:', error);

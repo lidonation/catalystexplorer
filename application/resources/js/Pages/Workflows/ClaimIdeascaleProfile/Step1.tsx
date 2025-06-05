@@ -79,7 +79,7 @@ const Step1: React.FC<Step1Props> = ({ profiles, stepDetails, activeStep }) => {
                     />
                 </div>
                 <div className="px-4 lg:px-8">
-                    <div className="mt-4 w-full space-y-2 overflow-y-auto">
+                    <div className="mt-4 max-h-[30rem] w-full space-y-2 overflow-y-auto">
                         {!!profiles.length &&
                             profiles.map((profile, index) => (
                                 <div key={index} className={`w-full`}>
