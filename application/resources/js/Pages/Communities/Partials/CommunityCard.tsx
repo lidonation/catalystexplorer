@@ -27,7 +27,7 @@ const CommunityCard: React.FC<CommunityCardProps> = ({
 
     return (
         <Card className="border-border-dark-on-dark flex-1 justify-between overflow-hidden border">
-            <div className="ml-auto border-gray-persist/50 text-gray-persist/50 w-fit items-center rounded-md border-1 py-0">
+            <div className="border-gray-persist/50 text-gray-persist/50 ml-auto w-fit items-center rounded-md border-1 py-0">
                 <ListProvider>
                     <BookmarkButton
                         modelType="communities"
@@ -72,7 +72,7 @@ const CommunityCard: React.FC<CommunityCardProps> = ({
 
                             <CommunityIdeascaleProfiles
                                 ideascaleProfiles={community.ideascale_profiles}
-                                total={community.ideascale_profiles_count}
+                                total={community?.ideascale_profiles_count ?? 0}
                             />
                         </div>
 
