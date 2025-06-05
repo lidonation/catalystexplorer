@@ -111,7 +111,6 @@ const Index = ({ filters }: ChartsIndexProps) => {
                 {!showCharts && (
                     <div className="flex h-screen w-full flex-col items-center justify-center">
                         <SetChartMetrics
-                            onMetricsSet={setShowCharts}
                             onExploreCharts={handleExploreCharts}
                         />
                     </div>
