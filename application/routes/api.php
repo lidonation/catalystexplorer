@@ -128,7 +128,7 @@ Route::prefix('api')->as('api.')->group(function () {
     Route::prefix('comments')->as('comments.')
         ->group(function () {
             Route::get('/', [CommentController::class, 'index'])->name('index');
-            Route::post('/', [CommentController::class, 'store'])->name('store');
-            // ->middleware('throttle:5,1');
+            Route::post('/', [CommentController::class, 'store'])->name('store')
+            ->middleware('throttle:15,1');
         });
 });
