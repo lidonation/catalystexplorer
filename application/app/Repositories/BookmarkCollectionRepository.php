@@ -36,7 +36,7 @@ class BookmarkCollectionRepository extends Repository
                             // 'reviews',
                             // 'communities',
                             // 'comments',
-                            'comments',
+                            'comments_count',
                             'types_count',
                             'items_count',
                             'rationale',

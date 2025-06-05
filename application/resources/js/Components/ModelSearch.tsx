@@ -10,7 +10,6 @@ import TextInput from './atoms/TextInput';
 import Card from './Card';
 import CloseIcon from './svgs/CloseIcon';
 import SearchLensIcon from './svgs/SearchLensIcon';
-import { object } from 'zod';
 
 type StatField = {
     label: string;
@@ -32,7 +31,7 @@ const modelTypes: Record<string, ModelType> = {
             { label: 'Campaign', value: 'campaign.label' },
         ],
     },
-    'ideascale-profiles': {
+    ideascaleProfiles: {
         labelField: 'name',
         statsField: [
             { label: 'Funded Proposals', value: 'funded_proposals_count' },
@@ -55,7 +54,17 @@ const modelTypes: Record<string, ModelType> = {
     },
     communities: {
         labelField: 'title',
-        statsField: [],
+        statsField: [
+            {
+                label: 'Funded Proposals',
+                value: 'funded_proposals_count',
+            },
+            {
+                label: 'Completed Proposals',
+                value: 'completed_proposals_count',
+            },
+            { label: 'IdeascaleProfiles', value: 'ideascale_profiles_count' },
+        ],
     },
     reviews: {
         labelField: 'proposal.title',
@@ -73,7 +82,7 @@ const modelTypes: Record<string, ModelType> = {
 type ModelSearchProps = {
     className?: string;
     placeholder: string;
-    domain:string;
+    domain: string;
 };
 
 export default function ModelSearch({
@@ -85,12 +94,8 @@ export default function ModelSearch({
     const { t } = useTranslation();
     const { searchTerm, setSearchTerm, options } =
         useSearchOptions<any>(domain);
-
     const model = modelTypes[domain];
-
-    const { selectedItemsByType, toggleSelection, statusMessages, progress } =
-        useBookmarkContext();
-
+    const { selectedItemsByType, toggleSelection } = useBookmarkContext();
     const selectedHashes = selectedItemsByType[domain] || [];
 
     useEscapeKey(() => setSearchTerm(''));
@@ -109,9 +114,9 @@ export default function ModelSearch({
     }
 
     return (
-        <div>
+        <div className={`relative ${className}`}>
             {/* Search Bar */}
-            <div className={`sticky top-0 w-full ${className}`}>
+            <div className="sticky top-0 w-full">
                 <label className="relative flex w-full items-center gap-2">
                     <div className="absolute left-0 flex h-full w-10 items-center justify-center">
                         <SearchLensIcon width={16} className="text-dark" />
@@ -134,81 +139,89 @@ export default function ModelSearch({
                         <CloseIcon width={16} />
                     </Button>
                 </label>
+
+                <p className="text-md text-dark mt-1">
+                    {`Find ${domain} you're interested in and bookmark them into custom lists for easy tracking and comparison`}
+                </p>
             </div>
 
-            {/* Results */}
-            <div className="h-120 space-y-4 overflow-y-auto py-4 lg:mt-4 lg:space-y-3 lg:py-6">
-                {options?.map((result) => {
-                    const hash = result.hash;
+            {/* Results (absolute and below search) */}
+            {searchTerm && options.length > 0 && (
+                <div className="bg-background absolute right-0 left-0 z-30 mt-2 max-h-[30rem] overflow-y-auto rounded-xl bg-white px-2 py-4 shadow-xl">
+                    {options.map((result) => {
+                        const hash = result.hash;
+                        const isSelected = selectedHashes.includes(hash);
 
-                    const isSelected = selectedHashes.includes(hash);
+                        return (
+                            <Card
+                                key={hash}
+                                className={`mb-3 w-full rounded-xl border shadow-sm transition-all ${
+                                    isSelected
+                                        ? 'border-primary border-2'
+                                        : 'border-gray-light'
+                                }`}
+                            >
+                                <label htmlFor={hash} className="block px-2">
+                                    <div className="flex items-center gap-3">
+                                        <Checkbox
+                                            id={hash}
+                                            checked={isSelected}
+                                            onChange={() =>
+                                                toggleSelection(domain, hash)
+                                            }
+                                            className="bg-background text-content-accent checked:bg-primary focus:border-primary focus:ring-primary h-4 w-4 shadow-xs"
+                                        />
+                                        <div className="space-y-1">
+                                            <h3 className="text-lg font-bold">
+                                                {formatStat(
+                                                    result,
+                                                    model.labelField,
+                                                )}
+                                            </h3>
 
-                    return (
-                        <Card
-                            key={hash}
-                            className={`w-full rounded-xl border shadow-sm transition-all ${
-                                isSelected
-                                    ? 'border-primary border-2'
-                                    : 'border-gray-light'
-                            }`}
-                        >
-                            <label htmlFor={hash} className="block px-2">
-                                <div className="flex items-center gap-3">
-                                    <Checkbox
-                                        id={hash}
-                                        checked={isSelected}
-                                        onChange={() =>
-                                            toggleSelection(domain, hash)
-                                        }
-                                        className="bg-background text-content-accent checked:bg-primary focus:border-primary focus:ring-primary h-4 w-4 shadow-xs"
-                                    />
-                                    <div className="space-y-1">
-                                        <h3 className="text-lg font-bold">
-                                            {formatStat(
-                                                result,
-                                                model.labelField,
-                                            )}
-                                        </h3>
-
-                                        <div className="flex flex-wrap gap-4 pt-1">
-                                            {model.statsField.map(
-                                                ({ label, value }: any, index: number) => (
-                                                    <div
-                                                        key={value}
-                                                        className="flex items-center gap-2 text-sm"
-                                                    >
-                                                        <span className="font-bold">
-                                                            {label}:
-                                                        </span>
-                                                        <span
-                                                            className={`${
-                                                                index === 0
-                                                                    ? 'text-success'
-                                                                    : index ===
-                                                                        1
-                                                                      ? 'text-primary'
-                                                                      : index ===
-                                                                          3
-                                                                        ? 'text-json-key'
-                                                                        : ''
-                                                            }`}
+                                            <div className="flex flex-wrap gap-4 pt-1">
+                                                {model.statsField.map(
+                                                    (
+                                                        { label, value }: any,
+                                                        index: number,
+                                                    ) => (
+                                                        <div
+                                                            key={value}
+                                                            className="flex items-center gap-2 text-sm"
                                                         >
-                                                            {formatStat(
-                                                                result,
-                                                                value,
-                                                            )}
-                                                        </span>
-                                                    </div>
-                                                ),
-                                            )}
+                                                            <span className="font-bold">
+                                                                {label}:
+                                                            </span>
+                                                            <span
+                                                                className={`${
+                                                                    index === 0
+                                                                        ? 'text-success'
+                                                                        : index ===
+                                                                            1
+                                                                          ? 'text-primary'
+                                                                          : index ===
+                                                                              3
+                                                                            ? 'text-json-key'
+                                                                            : ''
+                                                                }`}
+                                                            >
+                                                                {formatStat(
+                                                                    result,
+                                                                    value,
+                                                                )}
+                                                            </span>
+                                                        </div>
+                                                    ),
+                                                )}
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                            </label>
-                        </Card>
-                    );
-                })}
-            </div>
+                                </label>
+                            </Card>
+                        );
+                    })}
+                </div>
+            )}
         </div>
     );
 }

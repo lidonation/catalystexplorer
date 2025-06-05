@@ -1,26 +1,23 @@
 import Paragraph from '@/Components/atoms/Paragraph';
 import SearchControls from '@/Components/atoms/SearchControls';
 import Title from '@/Components/atoms/Title';
-import Paginator from '@/Components/Paginator';
 import { FiltersProvider } from '@/Context/FiltersContext';
 import { ListProvider } from '@/Context/ListContext';
 import { useMetrics } from '@/Context/MetricsContext';
 import { usePlayer } from '@/Context/PlayerContext';
 import { ParamsEnum } from '@/enums/proposal-search-params';
 import ProposalSortingOptions from '@/lib/ProposalSortOptions';
-import ProposalResults from '@/Pages/Proposals/Partials/ProposalResults';
-import VerticalCardLoading from '@/Pages/Proposals/Partials/ProposalVerticalCardLoading';
 import { PageProps } from '@/types';
 import { PaginatedData } from '@/types/paginated-data';
 import { ProposalMetrics } from '@/types/proposal-metrics';
 import { SearchParams } from '@/types/search-params';
-import { Head, WhenVisible } from '@inertiajs/react';
+import { Head } from '@inertiajs/react';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import CardLayoutSwitcher from './Partials/CardLayoutSwitcher';
 import FundFiltersContainer from './Partials/FundFiltersContainer';
 import ProposalFilters from './Partials/ProposalFilters';
-import ProposalHorizontalCardLoading from './Partials/ProposalHorizontalCardLoading';
+import ProposalPaginatedList from './Partials/ProposalPaginatedList';
 import ProposalData = App.DataTransferObjects.ProposalData;
 // @ts-ignore
 
@@ -66,6 +63,8 @@ export default function Index({
         };
     }, [metrics]);
 
+    console.log({proposals});
+    
     return (
         <ListProvider>
             <FiltersProvider
@@ -116,33 +115,13 @@ export default function Index({
                         setGlobalQuickPitchView={setQuickPitchView}
                     />
                 </section>
-
-                <section className="proposals-wrapper container mt-3 w-full pb-8">
-                    <WhenVisible
-                        fallback={
-                            isHorizontal ? (
-                                <ProposalHorizontalCardLoading />
-                            ) : (
-                                <VerticalCardLoading />
-                            )
-                        }
-                        data="proposals"
-                    >
-                        <div className="py-4">
-                            <ProposalResults
-                                proposals={proposals?.data}
-                                isHorizontal={isHorizontal}
-                                quickPitchView={quickPitchView}
-                                setGlobalQuickPitchView={setQuickPitchView}
-                                isMini={isMini}
-                            />
-                        </div>
-                    </WhenVisible>
-                </section>
-
-                <section className="w-full px-4 lg:container lg:px-0">
-                    {proposals && <Paginator pagination={proposals} />}
-                </section>
+                <ProposalPaginatedList
+                    proposals={proposals}
+                    isHorizontal={isHorizontal}
+                    isMini={isMini}
+                    quickPitchView={quickPitchView}
+                    setQuickPitchView={setQuickPitchView}
+                />
             </FiltersProvider>
         </ListProvider>
     );

@@ -19,8 +19,8 @@ const CommunitiesList: React.FC<CommunitiesProps> = ({ communities }) => {
                     exit={{ opacity: 0 }}
                     transition={{ duration: 0.4, ease: 'easeIn' }}
                 >
-                    {!communities.data?.length ? (
-                        <div className="w-full">
+                    {!communities?.data?.length ? (
+                        <div className="container ">
                             <RecordsNotFound
                                 context="communities"
                                 searchTerm=""
@@ -28,7 +28,7 @@ const CommunitiesList: React.FC<CommunitiesProps> = ({ communities }) => {
                         </div>
                     ) : (
                         <div className="grid w-full grid-cols-1 gap-4 lg:grid-cols-2 xl:grid-cols-3">
-                            {communities.data &&
+                            {communities?.data &&
                                 communities.data?.map((community) => (
                                     <CommunityCard
                                         key={community.hash}

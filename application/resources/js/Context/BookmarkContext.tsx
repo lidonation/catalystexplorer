@@ -1,7 +1,9 @@
 // SelectionContext.tsx
+import eventBus from '@/utils/eventBus';
 import { generateLocalizedRoute } from '@/utils/localizedRoute';
 import { router } from '@inertiajs/react';
 import React, { createContext, useContext, useState } from 'react';
+import BookmarkCollectionData = App.DataTransferObjects.BookmarkCollectionData;
 
 type BookmarkStatus = 'saving' | 'removing' | 'saved' | 'removed';
 
@@ -14,8 +16,7 @@ type StatusMessage = {
 type BookmarkContextType = {
     selectedItemsByType: Record<string, string[]>;
     toggleSelection: (model: string, hash: string) => void;
-    statusMessages: StatusMessage[];
-    progress: { total: number; completed: number };
+    bookmarkCollection: BookmarkCollectionData;
 };
 
 const BookmarkContext = createContext<BookmarkContextType | null>(null);
@@ -23,12 +24,9 @@ const BookmarkContext = createContext<BookmarkContextType | null>(null);
 export const BookmarkProvider: React.FC<{
     preselected?: Record<string, string[]>;
     children: React.ReactNode;
-    bookmarkCollection: string;
+    bookmarkCollection: BookmarkCollectionData;
 }> = ({ preselected = {}, children, bookmarkCollection }) => {
     const [selectedItemsByType, setSelectedItemsByType] = useState(preselected);
-    const [statusMessages, setStatusMessages] = useState<StatusMessage[]>([]);
-    const [progress, setProgress] = useState({ total: 0, completed: 0 });
-    
 
     const toggleSelection = (model: string, hash: string) => {
         const selected = selectedItemsByType[model] || [];
@@ -43,47 +41,31 @@ export const BookmarkProvider: React.FC<{
         }));
 
         const action: 'add' | 'remove' = isSelected ? 'remove' : 'add';
-        const status: BookmarkStatus = isSelected ? 'removing' : 'saving';
-        const finalStatus: BookmarkStatus = isSelected ? 'removed' : 'saved';
-
-        setStatusMessages((msgs) => [...msgs, { model, hash, type: status }]);
-        setProgress((p) => ({ total: p.total + 1, completed: p.completed }));
 
         const routeName =
             action === 'add'
                 ? 'workflows.bookmarks.addBookmarkItem'
                 : 'workflows.bookmarks.removeBookmarkItem';
 
+        console.log({
+            hash,
+            modelType: model,
+            bookmarkCollection: bookmarkCollection.hash,
+        });
+
         router.post(
             generateLocalizedRoute(routeName, {
                 hash,
                 modelType: model,
-                bookmarkCollection,
+                bookmarkCollection: bookmarkCollection.hash,
             }),
             {},
             {
                 preserveScroll: true,
                 onSuccess: () => {
-                    setStatusMessages((msgs) => [
-                        ...msgs,
-                        { model, hash, type: finalStatus },
-                    ]);
-                    setTimeout(() => {
-                        setStatusMessages((msgs) =>
-                            msgs.filter(
-                                (m) =>
-                                    m.hash !== hash ||
-                                    m.type === 'saving' ||
-                                    m.type === 'removing',
-                            ),
-                        );
-                    }, 3000);
-                },
-                onFinish: () => {
-                    setProgress((p) => ({
-                        total: p.total,
-                        completed: p.completed + 1,
-                    }));
+                    action === 'add'
+                        ? eventBus.emit('listIitem-added')
+                        : eventBus.emit('listIitem-removed');
                 },
             },
         );
@@ -94,8 +76,7 @@ export const BookmarkProvider: React.FC<{
             value={{
                 selectedItemsByType,
                 toggleSelection,
-                statusMessages,
-                progress,
+                bookmarkCollection,
             }}
         >
             {children}

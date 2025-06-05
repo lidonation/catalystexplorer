@@ -334,7 +334,7 @@
             "details": "Details",
             "listDetail": "List Detail",
             "listDetailInfo": "Give your Voting List a name and a short description. This helps others understand what your list is about",
-            "listItems": "Proposals",
+            "listItems": "List Items",
             "listItemsInfo": "Now, let’s add related items to your Bookmark List. You can search for existing proposals and select the ones that align.",
             "rationale": "Rationale",
             "rationaleInfo": "Why did you select these items? Providing a rationale helps others understand your choices and makes your list more credible.",
@@ -1186,6 +1186,14 @@
         }
     },
     "bookmarks": {
+        
+        "permanentDelete":"This action cannot be undone, and all bookmarks in this list will be permanently removed.",
+        "confirmDelete":"Are you sure you want to delete this entire bookmark list?",
+        "editList":"Edit List",
+        "deletesList":"Delete Lists",
+        "manage":"Manage List",
+        "viewPublic":"View as Public",
+        "listSetting":"'List Settings",
         "listTitle": "Discover Community Lists",
         "listSubtitle": "Browse and search curated bookmark lists shared by others.",
         "myBookmarks": "My Bookmarks",
@@ -1206,6 +1214,10 @@
         },
         "comments": "Comments",
         "lastModified": "Last Modified",
-        "createList":"Create your List"
+        "createList":"Create Your List"
+    },
+    "comments":{
+        "comments":"Comments",
+        "reply":"Reply"
     }
 }
