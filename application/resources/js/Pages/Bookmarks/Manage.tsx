@@ -13,7 +13,7 @@ import { generateLocalizedRoute } from '@/utils/localizedRoute';
 import { Head, Link, router } from '@inertiajs/react';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import CommunitiesList from '../Communities/Partials/CommunitiesList';
+import CommunitiesPaginatedList from '../Communities/Partials/CommunitiesPaginatedList';
 import GroupPaginatedList from '../Groups/Partials/GroupPaginatedList';
 import IdeascaleProfilePaginatedList from '../IdeascaleProfile/Partials/IdeascaleProfilePaginatedList';
 import ProposalPaginatedList from '../Proposals/Partials/ProposalPaginatedList';
@@ -88,7 +88,6 @@ const Manage = (props: BookmarkCollectionListProps) => {
             },
         );
     };
-    
 
     const handleDelete = () => {
         setActiveConfirm(true);
@@ -98,7 +97,8 @@ const Manage = (props: BookmarkCollectionListProps) => {
             }),
             {},
             {
-                onSuccess: () => router.get(generateLocalizedRoute('my.list.index')),
+                onSuccess: () =>
+                    router.get(generateLocalizedRoute('my.list.index')),
             },
         );
     };
@@ -114,7 +114,9 @@ const Manage = (props: BookmarkCollectionListProps) => {
                     />
                 );
             case 'communities':
-                return <CommunitiesList communities={props.communities} />;
+                return (
+                    <CommunitiesPaginatedList communities={props.communities} />
+                );
             case 'groups':
                 return <GroupPaginatedList groups={props.groups} />;
             case 'ideascaleProfiles':
@@ -158,8 +160,6 @@ const Manage = (props: BookmarkCollectionListProps) => {
                 return [{}];
         }
     };
-    
-    
 
     return (
         <div>

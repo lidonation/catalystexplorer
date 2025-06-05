@@ -58,7 +58,7 @@ final class CommunityData extends Data
         #[TypeScriptOptional]
         public ?float $amount_distributed_usd,
 
-        public int $ideascale_profiles_count,
+        public ?int $ideascale_profiles_count,
 
         #[TypeScriptOptional]
         public ?string $created_at,

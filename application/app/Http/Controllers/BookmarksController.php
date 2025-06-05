@@ -4,27 +4,30 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use App\Actions\TransformIdsToHashes;
-use App\DataTransferObjects\BookmarkCollectionData;
-use App\Enums\BookmarkableType;
-use App\Enums\BookmarkStatus;
-use App\Enums\BookmarkVisibility;
-use App\Enums\ProposalSearchParams;
-use App\Enums\QueryParamsEnum;
-use App\Enums\StatusEnum;
-use App\Models\BookmarkCollection;
-use App\Models\BookmarkItem;
-use App\Repositories\BookmarkCollectionRepository;
-use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
-use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Fluent;
-use Illuminate\Support\Str;
 use Inertia\Inertia;
+use App\Models\Group;
 use Inertia\Response;
+use App\Models\Proposal;
+use App\Enums\StatusEnum;
+use App\Models\Community;
 use Laravel\Scout\Builder;
+use Illuminate\Support\Str;
+use App\Models\BookmarkItem;
+use Illuminate\Http\Request;
+use App\Enums\BookmarkStatus;
+use App\Enums\QueryParamsEnum;
+use Illuminate\Support\Fluent;
+use App\Enums\BookmarkableType;
+use App\Enums\BookmarkVisibility;
+use App\Models\BookmarkCollection;
+use Illuminate\Support\Collection;
+use App\Enums\ProposalSearchParams;
+use Illuminate\Support\Facades\Auth;
+use App\Actions\TransformIdsToHashes;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Pagination\LengthAwarePaginator;
+use App\Repositories\BookmarkCollectionRepository;
+use App\DataTransferObjects\BookmarkCollectionData;
 
 class BookmarksController extends Controller
 {
@@ -101,12 +104,14 @@ class BookmarksController extends Controller
         $model_type = BookmarkableType::from(Str::kebab($type))->getModelClass();
 
         $relationshipsMap = [
-            \App\Models\Proposal::class => ['users', 'fund', 'campaign'],
-            \App\Models\Group::class => ['ideascale_profiles'],
+            Proposal::class => ['users', 'fund', 'campaign'],
+            Group::class => ['ideascale_profiles'],
+            Community::class => ['ideascale_profiles'],
         ];
 
         $countMap = [
-            \App\Models\Group::class => ['reviews', 'proposals', 'funded_proposals'],
+            Group::class => ['reviews', 'proposals', 'funded_proposals'],
+            Community::class => ['ideascale_profiles','proposals'],
         ];
 
         $relationships = $relationshipsMap[$model_type] ?? [];

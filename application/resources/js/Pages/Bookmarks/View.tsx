@@ -7,9 +7,8 @@ import { PaginatedData } from '@/types/paginated-data';
 import { SearchParams } from '@/types/search-params';
 import { generateLocalizedRoute } from '@/utils/localizedRoute';
 import { Head, Link, router, usePage } from '@inertiajs/react';
-import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import CommunitiesList from '../Communities/Partials/CommunitiesList';
+import CommunitiesPaginatedList from '../Communities/Partials/CommunitiesPaginatedList';
 import GroupPaginatedList from '../Groups/Partials/GroupPaginatedList';
 import IdeascaleProfilePaginatedList from '../IdeascaleProfile/Partials/IdeascaleProfilePaginatedList';
 import ProposalPaginatedList from '../Proposals/Partials/ProposalPaginatedList';
@@ -69,7 +68,6 @@ const View = (props: BookmarkCollectionListProps) => {
     const user = bookmarkCollection?.author;
 
     const isAuthor = auth?.user?.hash == user?.hash;
-    
 
     const component = (() => {
         switch (type) {
@@ -82,7 +80,9 @@ const View = (props: BookmarkCollectionListProps) => {
                     />
                 );
             case 'communities':
-                return <CommunitiesList communities={props.communities} />;
+                return (
+                    <CommunitiesPaginatedList communities={props.communities} />
+                );
             case 'groups':
                 return <GroupPaginatedList groups={props.groups} />;
             case 'ideascaleProfiles':

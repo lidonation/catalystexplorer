@@ -98,7 +98,7 @@ export default function ModelSearch({
     const { selectedItemsByType, toggleSelection } = useBookmarkContext();
     const selectedHashes = selectedItemsByType[domain] || [];
 
-    useEscapeKey(() => alert('yes'));
+    useEscapeKey(() => setSearchTerm(''));
 
     useEffect(() => {
         inputRef.current?.focus();
