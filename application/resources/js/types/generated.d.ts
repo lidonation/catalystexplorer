@@ -570,6 +570,22 @@ language: string;
 theme: string;
 viewChartBy: string;
 };
+export type VoterData = {
+id: number;
+hash?: string;
+stake_pub?: string;
+stake_key?: string;
+voting_pub?: string;
+voting_key?: string;
+cat_id?: string;
+voting_power?: number;
+votes_count?: number;
+proposals_voted_on?: number;
+created_at?: string;
+updated_at?: string;
+deleted_at?: string;
+latest_fund?: App.DataTransferObjects.FundData;
+};
 export type VoterHistoryData = {
 hash: string | null;
 stake_address?: string;
