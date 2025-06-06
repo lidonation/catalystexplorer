@@ -29,6 +29,7 @@ type SearchSelectProps = {
     domain?: string;
     valueField: string;
     labelField: string;
+    side?: 'top' | 'bottom' | 'left' | 'right';
 };
 
 export function SearchSelect({
@@ -40,6 +41,7 @@ export function SearchSelect({
     domain,
     labelField,
     valueField,
+    side = 'top'
 }: SearchSelectProps) {
     const [open, setOpen] = useState(false);
     const { searchTerm, setSearchTerm, options } =
@@ -100,7 +102,7 @@ export function SearchSelect({
     }, [open, setSearchTerm]);
 
     return (
-        <Popover open={open} onOpenChange={setOpen}>
+        <Popover open={open} onOpenChange={setOpen}>    
             <PopoverTrigger asChild>
                 <button
                     role="combobox"
@@ -122,6 +124,7 @@ export function SearchSelect({
             <PopoverContent
                 className="bg-background w-[300px] min-w-[var(--radix-popover-trigger-width)] p-0"
                 align="start"
+                side={side}
             >
                 <Command shouldFilter={false}>
                     <div

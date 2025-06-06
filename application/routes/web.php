@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\VoterController;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DrepController;
@@ -355,6 +356,11 @@ Route::localized(
 
             Route::prefix('/votes')->as('votes.')->group(function () {
                 Route::get('/', [VoterHistoriesController::class, 'index'])
+                    ->name('index');
+            });
+
+            Route::prefix('/voters')->as('voters.')->group(function () {
+                Route::get('/', [VoterController::class, 'index'])
                     ->name('index');
             });
         });

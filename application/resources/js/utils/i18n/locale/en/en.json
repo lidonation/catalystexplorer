@@ -1220,5 +1220,45 @@
     "comments":{
         "comments":"Comments",
         "reply":"Reply"
+    },
+    "voter": {
+        "catalystVoters": "Catalyst Voters",
+        "viewVoterInformation": "View voter information and participation history in Catalyst funding rounds",
+        "searchPlaceholder": "Search by voter ID, stake address, or fund",
+        "votersTable": "Voters Table",
+        "noVotersFound": "No voters found matching your search criteria",
+        "notAvailable": "N/A",
+        "active": "Active",
+        "inactive": "Inactive",
+        "search": "Search",
+        "votingPower": "Voting Power",
+        "minimumVotingPower": "Minimum Voting Power",
+        "noFundsAvailable": "No funds available",
+        "table": {
+            "voterId": "Voter ID",
+            "stakeAddress": "Stake Address",
+            "votingPower": "Voting Power",
+            "proposalsVotedOn": "Proposals Voted On",
+            "latestFund": "Latest Fund",
+            "status": "Status"
+        },
+        "filter": {
+            "oneAda": "1+ ADA",
+            "tenAda": "10+ ADA",
+            "hundredAda": "100+ ADA",
+            "thousandAda": "1,000+ ADA",
+            "tenThousandAda": "10,000+ ADA",
+            "allVotingPowers": "All Voting Powers"
+        },
+        "sort": {
+            "newestFirst": "Newest First",
+            "oldestFirst": "Oldest First",
+            "votingPowerDesc": "Voting Power: High to Low",
+            "votingPowerAsc": "Voting Power: Low to High",
+            "votesCountDesc": "Votes Count: High to Low",
+            "votesCountAsc": "Votes Count: Low to High",
+            "proposalsVotedOnDesc": "Proposals Voted On: High to Low",
+            "proposalsVotedOnAsc": "Proposals Voted On: Low to High"
+        }
     }
 }
