@@ -2,7 +2,7 @@ import { HTMLAttributes, ReactNode } from 'react';
 
 interface ParagraphProps extends HTMLAttributes<HTMLParagraphElement> {
     children: ReactNode;
-    size?: 'sm' | 'md' | 'lg';
+    size?: 'xs'|'sm' | 'md' | 'lg';
 };
 
 function Paragraph({

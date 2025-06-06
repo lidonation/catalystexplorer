@@ -5,13 +5,14 @@ import Title from '@/Components/atoms/Title';
 import { useFilterContext } from '@/Context/FiltersContext';
 import { ParamsEnum } from '@/enums/proposal-search-params';
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import BarChart from './BarChart';
+import ChartCard from './ChartCard';
 import Heatmap from './HeatMap';
 import LineChart from './LineChart';
 import PieChart from './PieChart';
 import ScatterPlot from './ScatterPlots';
 import StackedBarChart from './StackedBarChart';
-import { useTranslation } from 'react-i18next';
 
 interface AllChartsProps {
     chartData: any;
@@ -28,37 +29,49 @@ export default function AllCharts({
     const { t } = useTranslation();
     const renderBarChart = () => (
         <div>
-            <BarChart chartData={chartData} />
+            <ChartCard title={t('charts.barChart')}>
+                <BarChart chartData={chartData} />
+            </ChartCard>
         </div>
     );
 
     const renderPieChart = () => (
         <div>
-            <PieChart chartData={chartData} />
+            <ChartCard title={t('charts.pieChart')}>
+                <PieChart chartData={chartData} />
+            </ChartCard>
         </div>
     );
 
     const renderLineChart = () => (
         <div>
-            <LineChart chartData={chartData} />
+            <ChartCard title={t('charts.lineChart')}>
+                <LineChart chartData={chartData} />
+            </ChartCard>
         </div>
     );
 
     const renderHeatMap = () => (
         <div>
-            <Heatmap chartData={chartData} />
+            <ChartCard title={t('charts.heatMap')}>
+                <Heatmap chartData={chartData} />
+            </ChartCard>
         </div>
     );
 
     const renderScatterPlots = () => (
         <div>
-            <ScatterPlot chartData={chartData} />
+            <ChartCard title={t('charts.scatterPlot')}>
+                <ScatterPlot chartData={chartData} />
+            </ChartCard>
         </div>
     );
 
     const renderStackedBarCharts = () => (
         <div>
-            <StackedBarChart chartData={chartData} />
+            <ChartCard title={t('charts.stackedBarChart')}>
+                <StackedBarChart chartData={chartData} />
+            </ChartCard>
         </div>
     );
 
@@ -72,13 +85,15 @@ export default function AllCharts({
     };
 
     return (
-        <div className="relative min-h-screen pb-20">
-            <div className="flex justify-between items-center">
+        <div className="relative min-h-screen pb-20 px-6">
+            <div className="my-4 flex flex-col items-start justify-between md:flex-row md:items-center">
                 <Title level="2" className="mb-4 font-bold">
-                    {t('charts.exploreCharts')}
+                    {t('charts.viewCharts')}
                 </Title>
-                <div className="flex gap-2 items-center justify-center pr-8">
-                    <Paragraph>{t('charts.viewBy')}</Paragraph>
+                <div className="flex items-center gap-2">
+                    <Paragraph className="text-gray-persist">
+                        {t('charts.viewBy')}
+                    </Paragraph>
                     <RadioSelector
                         options={[
                             { label: t('charts.fund'), value: 'fund' },
@@ -86,16 +101,23 @@ export default function AllCharts({
                         ]}
                         selectedItem={selectedItem}
                         setSelectedItem={setSelectedItem}
+                        className='focus:border-primary focus:ring-primary'
                     />
                 </div>
             </div>
 
+            <div className="mb-4 flex md:justify-end justify-start">
+                <PrimaryButton onClick={onEditMetrics} className="px-6 py-3">
+                    {t('charts.edit')}
+                </PrimaryButton>
+            </div>
+
             {selectedChartOptions.length === 0 ? (
-                <div className="p-8 text-center text-content-light">
-                   <Paragraph>{t('charts.noOptions')}</Paragraph>
+                <div className="text-content-light p-8 text-left">
+                    <Paragraph>{t('charts.noOptions')}</Paragraph>
                 </div>
             ) : (
-                <div className="space-y-6 px-6">
+                <div className="space-y-6">
                     {selectedChartOptions.map((chartType: string) => {
                         const renderer =
                             chartRenderers[
@@ -107,12 +129,6 @@ export default function AllCharts({
                     })}
                 </div>
             )}
-            <PrimaryButton
-                onClick={onEditMetrics}
-                className="fixed bottom-6 left-6 z-50  px-6 py-3"
-            >
-                {t('charts.editMetrics')}
-            </PrimaryButton>
         </div>
     );
 }

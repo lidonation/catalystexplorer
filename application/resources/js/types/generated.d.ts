@@ -92,6 +92,8 @@ proposal_benefit?: string;
 export type CatalystDrepData = {
 hash: string | null;
 name: string | null;
+email: string | null;
+link: string | null;
 bio: string | null;
 motivation: string | null;
 qualifications: string | null;
@@ -109,7 +111,7 @@ created_at: string;
 parent_id: number | null;
 updated_at: string;
 commentator: App.DataTransferObjects.UserData | null;
-nested_comments: Array<any> | null;
+nested_comments: any | null;
 };
 export type CommunityData = {
 hash: string | null;
@@ -127,7 +129,7 @@ amount_awarded_ada?: number;
 amount_awarded_usd?: number;
 amount_distributed_ada?: number;
 amount_distributed_usd?: number;
-ideascale_profiles_count: number;
+ideascale_profiles_count: number | null;
 created_at?: string;
 updated_at?: string;
 deleted_at?: string;
@@ -567,6 +569,22 @@ export type UserSettingData = {
 language: string;
 theme: string;
 viewChartBy: string;
+};
+export type VoterData = {
+id: number;
+hash?: string;
+stake_pub?: string;
+stake_key?: string;
+voting_pub?: string;
+voting_key?: string;
+cat_id?: string;
+voting_power?: number;
+votes_count?: number;
+proposals_voted_on?: number;
+created_at?: string;
+updated_at?: string;
+deleted_at?: string;
+latest_fund?: App.DataTransferObjects.FundData;
 };
 export type VoterHistoryData = {
 hash: string | null;

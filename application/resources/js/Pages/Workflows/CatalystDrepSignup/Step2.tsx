@@ -39,6 +39,7 @@ const Step2: React.FC<Step1Props> = ({
             ? ''
             : localizedRoute('workflows.drepSignUp.index', {
                   step: activeStep - 1,
+                  catalystDrep,
               });
 
     const verifyWallet = () => {
@@ -61,9 +62,9 @@ const Step2: React.FC<Step1Props> = ({
                 <div className="mx-auto w-full max-w-3xl px-4">
                     <ConnectWalletList />
                     <div
-                        className={`bg-danger-light container mt-6 transform overflow-hidden rounded-xl py-3 text-center transition-all duration-500 ease-in-out ${
+                        className={`bg-danger-light container mt-6 transform overflow-hidden rounded-lg py-3 text-center transition-all duration-500 ease-in-out ${
                             error.length
-                                ? 'max-w-full translate-x-0 px-6'
+                                ? 'border-danger-strong max-w-full translate-x-0 border px-6'
                                 : 'max-w-0 translate-x-full px-0'
                         }`}
                     >

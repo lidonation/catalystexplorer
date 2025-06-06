@@ -1,11 +1,10 @@
 import Paragraph from '@/Components/atoms/Paragraph';
 import Title from '@/Components/atoms/Title';
-import Card from '@/Components/Card';
 import ArrowTrendingDown from '@/Components/svgs/ArrowTrendingDown';
 import ArrowTrendingUp from '@/Components/svgs/ArrowTrendingUp';
 import { shortNumber } from '@/utils/shortNumber';
 import { ResponsiveLine } from '@nivo/line';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 interface LineDataPoint {
@@ -13,30 +12,35 @@ interface LineDataPoint {
     y: number;
 }
 
-interface LineSeriesData {
-    id: string;
-    color?: string;
-    data: LineDataPoint[];
-}
-
 interface LineChartProps {
     chartData: any;
-    title?: string;
-    xAxisLabel?: string;
     yAxisLabel?: string;
 }
 
 const LineChart: React.FC<LineChartProps> = ({
     chartData,
-    title,
-    xAxisLabel,
     yAxisLabel,
 }) => {
     const { t } = useTranslation();
+    const [isMobile, setIsMobile] = useState(false);
+    const [screenWidth, setScreenWidth] = useState(
+        typeof window !== 'undefined' ? window.innerWidth : 1200,
+    );
+
+    useEffect(() => {
+        const handleResize = () => {
+            const width = window.innerWidth;
+            setScreenWidth(width);
+            setIsMobile(width < 768);
+        };
+
+        handleResize();
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
 
     const defaultColors = ['#4fadce', '#dc2626', '#ee8434'];
 
-    // Transform the data for Nivo chart format
     const transformedData = [
         {
             id: 'Total Proposals',
@@ -66,12 +70,33 @@ const LineChart: React.FC<LineChartProps> = ({
 
     const legend = yAxisLabel || 'Proposals';
 
+    const getResponsiveConfig = () => {
+        const isSmall = screenWidth < 480;
+        const isMedium = screenWidth < 768;
+
+        return {
+            height: '400px',
+            minHeight: isSmall ? '400px' : '500px',
+
+            margin: {
+                top: 50,
+                right: isSmall ? 20 : isMedium ? 30 : 50,
+                bottom: isSmall ? 160 : isMedium ? 140 : 100,
+                left: isSmall ? 40 : isMedium ? 50 : 60,
+            },
+
+            legendOffset: isSmall ? 45 : isMedium ? 40 : 36,
+        };
+    };
+
+    const config = getResponsiveConfig();
+
     return (
-        <Card className="w-full">
-            <Title level="4" className="mb-4 font-semibold">
-                {t('charts.lineChart')}
-            </Title>
-            <div className="h-[400px]">
+        <div>
+            <div
+                className="h-[400px] min-w-[600px] sm:min-w-full"
+                style={{ height: config.height, minHeight: config.minHeight }}
+            >
                 <ResponsiveLine
                     data={transformedData}
                     margin={{ top: 50, right: 50, bottom: 50, left: 70 }}
@@ -91,7 +116,7 @@ const LineChart: React.FC<LineChartProps> = ({
                         tickPadding: 5,
                         tickRotation: 0,
                         legend: 'Fund',
-                        legendOffset: 36,
+                        legendOffset: config.legendOffset,
                         legendPosition: 'middle',
                     }}
                     axisLeft={{
@@ -102,11 +127,7 @@ const LineChart: React.FC<LineChartProps> = ({
                         legendOffset: -60,
                         legendPosition: 'middle',
                         format: (value) =>
-                            value >= 1_000_000
-                                ? `${(value / 1_000_000).toFixed(1)}M`
-                                : value >= 1_000
-                                  ? `${(value / 1_000).toFixed(1)}K`
-                                  : value,
+                           shortNumber(value, 2),
                     }}
                     colors={{ datum: 'color' }}
                     lineWidth={3}
@@ -137,7 +158,7 @@ const LineChart: React.FC<LineChartProps> = ({
                             legend: {
                                 text: {
                                     fill: 'var(--cx-content-gray-persist)',
-                                    fontSize: 12,
+                                    fontSize: 16,
                                 },
                             },
                             ticks: {
@@ -157,7 +178,7 @@ const LineChart: React.FC<LineChartProps> = ({
                     }}
                     tooltipFormat={(value) => shortNumber(Number(value), 2)}
                     tooltip={({ point }) => {
-                         const currentX = point.data.x;
+                        const currentX = point.data.x;
 
                         const calculateTrend = (
                             currentY: number,
@@ -175,8 +196,6 @@ const LineChart: React.FC<LineChartProps> = ({
                                 isPositive: percentageChange >= 0,
                             };
                         };
-
-                      
 
                         const dataWithPrevious = transformedData.map(
                             (dataset) => {
@@ -205,7 +224,6 @@ const LineChart: React.FC<LineChartProps> = ({
                         return (
                             <div className="bg-tooltip relative rounded-lg p-4 text-white shadow-lg">
                                 <div className="max-w-sm">
-                                    {/* Tooltip Title (X-Axis value) */}
                                     <Title
                                         level="3"
                                         className="text-lg font-semibold"
@@ -215,7 +233,6 @@ const LineChart: React.FC<LineChartProps> = ({
 
                                     {dataWithPrevious.map((item: any) => (
                                         <div key={item.id} className="mt-2">
-                                            {/* Dataset Label and Value */}
                                             <Paragraph className="flex items-center text-sm">
                                                 <span
                                                     className="mr-1 shrink truncate"
@@ -263,14 +280,13 @@ const LineChart: React.FC<LineChartProps> = ({
                                     ))}
                                 </div>
 
-                                {/* Tooltip Arrow */}
                                 <div className="border-t-dark absolute bottom-0 left-1/2 h-0 w-0 -translate-x-1/2 translate-y-full border-t-[10px] border-r-[10px] border-l-[10px] border-r-transparent border-l-transparent"></div>
                             </div>
                         );
                     }}
                 />
             </div>
-        </Card>
+        </div>
     );
 };
 

@@ -105,7 +105,7 @@ export default function ProposalSummaryCard({
                     </ValueLabel>
                     <CommunityIdeascaleProfiles
                         ideascaleProfiles={community.ideascale_profiles}
-                        total={community.ideascale_profiles_count}
+                        total={community.ideascale_profiles_count ?? 0}
                     />
                 </div>
 

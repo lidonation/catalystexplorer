@@ -63,10 +63,12 @@ class CatalystDrepController extends Controller
 
     public function step1(Request $request): Response
     {
+        $catalystDrep = CatalystDrep::byHash($request->catalystDrep);
 
         return Inertia::render('Workflows/CatalystDrepSignup/Step1', [
             'stepDetails' => $this->getStepDetails(),
             'activeStep' => intval($request->step),
+            'catalystDrep' => $catalystDrep,
         ]);
     }
 
@@ -144,7 +146,7 @@ class CatalystDrepController extends Controller
             'name' => 'required|min:3',
             'bio' => 'min:100',
             'link' => 'url:http,https',
-            'email' => 'email|unique:catalyst_dreps',
+            'email' => 'email',
         ]);
 
         CatalystDrep::updateOrCreate(['user_id' => Auth::user()->id], $attributes);

@@ -13,8 +13,24 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('bookmark_collections', function (Blueprint $table) {
-            DB::statement('ALTER TABLE bookmark_collections ALTER COLUMN allow_comments TYPE boolean USING (allow_comments::boolean)');
-            $table->boolean('allow_comments')->nullable(false)->default(false)->change();
+            DB::table('bookmark_collections')
+                ->whereNotIn('allow_comments', ['true', 'false', '1', '0', 't', 'f'])
+                ->update(['allow_comments' => 'false']);
+        });
+
+        DB::statement("
+        ALTER TABLE bookmark_collections 
+        ALTER COLUMN allow_comments TYPE boolean 
+        USING (
+            CASE 
+                WHEN allow_comments IN ('true', '1', 't') THEN true
+                ELSE false
+            END
+        )
+    ");
+
+        Schema::table('bookmark_collections', function (Blueprint $table) {
+            $table->boolean('allow_comments')->default(false)->nullable(false)->change();
         });
     }
 

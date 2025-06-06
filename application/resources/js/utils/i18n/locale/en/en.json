@@ -184,14 +184,14 @@
             "motivationsPlaceholder": "Highlight your strengths, commitments and vision for the community",
             "objectivesPlaceholder": "Write about your values and your approach to governance...",
             "qualificationsPlaceholder": "What makes your qualified for this role in catalyst",
-            "2roundsRule": "To proceed, you need to have participated in at least 2 previous voting rounds.",
+            "2roundsRule": "To proceed, you need to have participated in at least 2 cayalyst voting rounds.",
             "signMessageInfo": "Verify wallet ownership.",
             "signMessage": "Sign so we can verify your wallet ownership.",
             "willMaintain": "I agree to store correctly this information and to maintain it",
             "createAccount": "Create Account",
             "createAccountInfo": "\n1. If you already have an account, log in with your credentials.\n2. If you’re new, sign up using your email and create a secure password.\n3. Verify your email to activate your account.",
             "connectWallet": "Connect Wallet",
-            "connectWalletInfo": "\n1. Choose a supported Cardano wallet (e.g., Yoroi, Daedalus, Eternl).\n2. Follow the prompts to connect your wallet securely.\n3. Ensure your wallet has sufficient ADA for transactions.",
+            "connectWalletInfo": "\n1. Choose a supported Cardano wallet (e.g., Yoroi, Daedalus, Eternl).\n2. Follow the prompts to connect your wallet securely.\n3. We will use the wallet to verify that you have participated in atleast 2 catalyst funding voting rounds after which you will be able to proceeed with your signup.\n4. Click 'Next' to sign the message with your wallet.",
             "signWallet": "Sign Transaction",
             "signWalletInfo": "\n1. Approve a one-time sign message action to verify your wallet ownership.\n2. This action does not transfer funds but links your wallet to your DRep account.\n3. Follow the wallet instructions to complete the signing process.",
             "success": "Success",
@@ -420,8 +420,8 @@
         "workflow": "Workflow"
     },
     "charts":{
-       "setMetrics": "Set Chart Metrics",
-       "exploreCharts": "Explore Charts",
+       "setMetrics": "Select Chart Metrics",
+       "viewCharts": "View Charts",
        "selectProposals": "Which types of proposals interest you the most?",
        "selectChartType": "Select Chart Type (Select all that apply)",
        "selectAllThatApply": "(Select all that apply)",
@@ -437,7 +437,7 @@
        "scatterPlot": "Scatter Plot",
        "stackedBarChart": "Stacked Bar Chart",
        "chartOptions": "Chart Options",
-       "editMetrics": "Edit Metrics",
+       "edit": "Edit",
        "noOptions": "No chart options selected. Please go back and select chart types",
        "viewBy": "View By",
        "fundingRate": "Funding Rate",
@@ -445,7 +445,8 @@
        "year": "Year",
        "selectFund":"Select Fund",
        "value": "Value", 
-       "percentage": "Percentage"
+       "percentage": "Percentage",
+       "share": "Share"
     },
     "pagination": {
         "next": "Next",
@@ -1219,5 +1220,45 @@
     "comments":{
         "comments":"Comments",
         "reply":"Reply"
+    },
+    "voter": {
+        "catalystVoters": "Catalyst Voters",
+        "viewVoterInformation": "View voter information and participation history in Catalyst funding rounds",
+        "searchPlaceholder": "Search by voter ID, stake address, or fund",
+        "votersTable": "Voters Table",
+        "noVotersFound": "No voters found matching your search criteria",
+        "notAvailable": "N/A",
+        "active": "Active",
+        "inactive": "Inactive",
+        "search": "Search",
+        "votingPower": "Voting Power",
+        "minimumVotingPower": "Minimum Voting Power",
+        "noFundsAvailable": "No funds available",
+        "table": {
+            "voterId": "Voter ID",
+            "stakeAddress": "Stake Address",
+            "votingPower": "Voting Power",
+            "proposalsVotedOn": "Proposals Voted On",
+            "latestFund": "Latest Fund",
+            "status": "Status"
+        },
+        "filter": {
+            "oneAda": "1+ ADA",
+            "tenAda": "10+ ADA",
+            "hundredAda": "100+ ADA",
+            "thousandAda": "1,000+ ADA",
+            "tenThousandAda": "10,000+ ADA",
+            "allVotingPowers": "All Voting Powers"
+        },
+        "sort": {
+            "newestFirst": "Newest First",
+            "oldestFirst": "Oldest First",
+            "votingPowerDesc": "Voting Power: High to Low",
+            "votingPowerAsc": "Voting Power: Low to High",
+            "votesCountDesc": "Votes Count: High to Low",
+            "votesCountAsc": "Votes Count: Low to High",
+            "proposalsVotedOnDesc": "Proposals Voted On: High to Low",
+            "proposalsVotedOnAsc": "Proposals Voted On: Low to High"
+        }
     }
 }
