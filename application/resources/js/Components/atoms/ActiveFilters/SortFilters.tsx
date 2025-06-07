@@ -39,7 +39,7 @@ const SortFilters = ({
             router.get(currentUrl, params, {
                 preserveState: true,
                 preserveScroll: true,
-                only: ['voterHistories', 'filters'],
+                only: ['voterHistories', 'voters', 'filters'],
             });
         }, 10);
     };

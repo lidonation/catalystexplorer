@@ -33,17 +33,16 @@ class CardanoBudgetProposalController extends Controller
             isset($params['sortBy']),
             fn ($q) => ($q->orderBy($this->getDbColumnName($params['sortBy']), $params['sortOrder'] ?? 'DESC'))
         )->when(
-            isset($params['category']) && is_string($params['category']),
-            fn ($q) => $q->where('budget_cat', $params['category'])
-        )->when(
-            isset($params['category']) && is_array($params['category']),
-            fn ($q) => $q->whereIn('budget_cat', $params['category'])
-        )->when(
-            isset($params['committee']) && is_string($params['committee']),
-            fn ($q) => $q->where('committee_name', $params['committee'])
-        )->when(
-            isset($params['committee']) && is_array($params['committee']),
-            fn ($q) => $q->whereIn('committee_name', $params['committee'])
+            !empty($params['category']),
+            fn ($q) => is_array($params['category'])
+                ? $q->whereIn('budget_cat', $params['category'])
+                : $q->where('budget_cat', $params['category'])
+        )
+        ->when(
+            !empty($params['committee']),
+            fn ($q) => is_array($params['committee'])
+                ? $q->whereIn('committee_name', $params['committee'])
+                : $q->where('committee_name', $params['committee'])
         );
 
         return CardanoBudgetProposalData::collect($query->paginate($params['limit'] ?? 12));
@@ -139,11 +138,21 @@ class CardanoBudgetProposalController extends Controller
             )
             ->when(
                 $request->filled('category'),
-                fn ($q) => $q->where('budget_cat', $request->input('category'))
+                fn ($q) => $q->whereIn(
+                    'budget_cat',
+                    is_array($request->input('category'))
+                        ? $request->input('category')
+                        : explode(',', $request->input('category'))
+                )
             )
             ->when(
                 $request->filled('committee'),
-                fn ($q) => $q->where('committee_name', $request->input('committee'))
+                fn ($q) => $q->whereIn(
+                    'committee_name',
+                    is_array($request->input('committee'))
+                        ? $request->input('committee')
+                        : explode(',', $request->input('committee'))
+                )
             );
 
         $whereClaus = Str::of($whereQueries->toRawSql())->after('where')->value();

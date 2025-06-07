@@ -1,9 +1,8 @@
 import Paragraph from '@/Components/atoms/Paragraph';
 import Title from '@/Components/atoms/Title';
-import Card from '@/Components/Card';
 import { shortNumber } from '@/utils/shortNumber';
 import { ResponsiveScatterPlot } from '@nivo/scatterplot';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 interface CustomScatterPlotDatum {
@@ -27,10 +26,25 @@ const ScatterPlot: React.FC<ScatterChartProps> = ({
 }) => {
     const { t } = useTranslation();
 
+    const [screenWidth, setScreenWidth] = useState(
+        typeof window !== 'undefined' ? window.innerWidth : 1200,
+    );
+
     const defaultColors = ['#4fadce', '#ee8434', '#16B364'];
 
     const fundLabels = chartData.map((item: any) => item.fund);
     const labelToIndex = (label: any) => fundLabels.indexOf(label);
+
+    useEffect(() => {
+        const handleResize = () => {
+            const width = window.innerWidth;
+            setScreenWidth(width);
+        };
+
+        handleResize();
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
 
     const transformedData = [
         {
@@ -61,15 +75,65 @@ const ScatterPlot: React.FC<ScatterChartProps> = ({
 
     const legend = yAxisLabel || 'Proposals';
 
+    const getResponsiveConfig = () => {
+        const isSmall = screenWidth < 480;
+        const isMedium = screenWidth < 768;
+
+        return {
+            height: '400px',
+            minHeight: isSmall ? '400px' : '500px',
+
+            margin: {
+                top: 50,
+                right: isSmall ? 20 : isMedium ? 30 : 50,
+                bottom: isSmall ? 160 : isMedium ? 140 : 120,
+                left: isSmall ? 50 : isMedium ? 50 : 80,
+            },
+
+            tickRotation: isSmall ? 45 : isMedium ? 30 : 0,
+            legendOffset: isSmall ? 50 : isMedium ? 45 : 40,
+            leftLegendOffset: isSmall ? -40 : isMedium ? -45 : -50,
+
+            legendConfig: {
+                translateY: isSmall ? 140 : isMedium ? 120 : 80,
+                translateX: isSmall ? 10 : isMedium ? 0 : 0,
+                itemsSpacing: isSmall ? 5 : isMedium ? 8 : 10,
+                itemWidth: isSmall
+                    ? screenWidth / 3 - 20
+                    : isMedium
+                      ? 180
+                      : 200,
+                itemHeight: isSmall ? 16 : isMedium ? 18 : 20,
+                symbolSize: isSmall ? 12 : isMedium ? 16 : 20,
+                symbolSpacing: isSmall ? 8 : isMedium ? 10 : 12,
+                direction: isSmall ? 'column' : 'row',
+                symbolShape: {
+                    x: isSmall ? 0 : isMedium ? -5 : -10,
+                    y: 2,
+                    width: isSmall ? 12 : isMedium ? 20 : 30,
+                    height: isSmall ? 12 : isMedium ? 15 : 15,
+                },
+            },
+
+            fontSize: {
+                axis: isSmall ? 10 : isMedium ? 11 : 12,
+                legend: isSmall ? 12 : isMedium ? 14 : 16,
+                legendText: isSmall ? 10 : isMedium ? 12 : 14,
+            },
+        };
+    };
+
+    const config = getResponsiveConfig();
+
     return (
-        <Card className="w-full">
-            <Title level="4" className="mb-4 font-semibold">
-                {t('charts.scatterPlot')}
-            </Title>
-            <div className="h-[400px]">
+        <div>
+            <div
+                className="min-w-[600px] sm:min-w-full"
+                style={{ height: config.height, minHeight: config.minHeight }}
+            >
                 <ResponsiveScatterPlot
                     data={transformedData}
-                    margin={{ top: 40, right: 100, bottom: 70, left: 80 }}
+                    margin={config.margin}
                     xScale={{
                         type: 'linear',
                         min: 0,
@@ -88,15 +152,15 @@ const ScatterPlot: React.FC<ScatterChartProps> = ({
                         legendOffset: 46,
                     }}
                     axisLeft={{
-                        legend: legend,
+                        tickSize: 5,
+                        tickPadding: 5,
+                        tickRotation: 0,
+                        legend: t('proposals.totalProposals'),
                         legendPosition: 'middle',
-                        legendOffset: -60,
-                        format: (value) =>
-                            value >= 1_000_000
-                                ? `${(value / 1_000_000).toFixed(1)}M`
-                                : value >= 1_000
-                                  ? `${(value / 1_000).toFixed(1)}K`
-                                  : value,
+                        legendOffset: config.leftLegendOffset,
+                        format: (value) => {
+                            shortNumber(value, 2);
+                        },
                     }}
                     tooltip={({ node }) => {
                         const nodeData = node.data as CustomScatterPlotDatum;
@@ -118,13 +182,32 @@ const ScatterPlot: React.FC<ScatterChartProps> = ({
                     legends={[
                         {
                             anchor: 'bottom',
-                            direction: 'row',
-                            translateY: 70,
-                            translateX: 50,
-                            itemWidth: 120,
-                            itemHeight: 16,
-                            itemsSpacing: 2,
-                            symbolShape: 'circle',
+                            direction: config.legendConfig.direction as
+                                | 'row'
+                                | 'column',
+                            translateY: config.legendConfig.translateY,
+                            translateX: config.legendConfig.translateX,
+                            itemsSpacing: config.legendConfig.itemsSpacing,
+                            itemWidth: config.legendConfig.itemWidth,
+                            itemHeight: config.legendConfig.itemHeight,
+                            itemDirection: 'left-to-right',
+                            symbolSize: config.legendConfig.symbolSize,
+                            symbolSpacing: config.legendConfig.symbolSpacing,
+                            symbolShape: (props) => (
+                                <rect
+                                    x={config.legendConfig.symbolShape.x}
+                                    y={config.legendConfig.symbolShape.y}
+                                    rx={6}
+                                    ry={6}
+                                    width={
+                                        config.legendConfig.symbolShape.width
+                                    }
+                                    height={
+                                        config.legendConfig.symbolShape.height
+                                    }
+                                    fill={props.fill}
+                                />
+                            ),
                         },
                     ]}
                     theme={{
@@ -145,7 +228,7 @@ const ScatterPlot: React.FC<ScatterChartProps> = ({
                             legend: {
                                 text: {
                                     fill: 'var(--cx-content-gray-persist)',
-                                    fontSize: 12,
+                                    fontSize: 16,
                                 },
                             },
                             ticks: {
@@ -158,6 +241,8 @@ const ScatterPlot: React.FC<ScatterChartProps> = ({
                         legends: {
                             text: {
                                 fill: 'var(--cx-content)',
+                                fontSize: config.fontSize.legendText,
+                                fontWeight: 'bold',
                             },
                         },
                         tooltip: {
@@ -170,7 +255,7 @@ const ScatterPlot: React.FC<ScatterChartProps> = ({
                     }}
                 />
             </div>
-        </Card>
+        </div>
     );
 };
 

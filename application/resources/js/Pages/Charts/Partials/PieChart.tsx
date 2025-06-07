@@ -1,9 +1,7 @@
 import Paragraph from '@/Components/atoms/Paragraph';
-import Title from '@/Components/atoms/Title';
-import Card from '@/Components/Card';
 import { shortNumber } from '@/utils/shortNumber';
 import { ResponsivePie } from '@nivo/pie';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 interface PieChartProps {
@@ -17,6 +15,17 @@ const PieChart: React.FC<PieChartProps> = ({
 }) => {
     const { t } = useTranslation();
     const [activeFundIndex, setActiveFundIndex] = useState(selectedFundIndex);
+    const [isMobile, setIsMobile] = useState(false);
+
+    useEffect(() => {
+        const checkMobile = () => {
+            setIsMobile(window.innerWidth < 768);
+        };
+
+        checkMobile();
+        window.addEventListener('resize', checkMobile);
+        return () => window.removeEventListener('resize', checkMobile);
+    }, []);
 
     const colors = ['#16B364', '#ee8434', '#4fadce'];
 
@@ -49,12 +58,23 @@ const PieChart: React.FC<PieChartProps> = ({
         percentage: total > 0 ? ((item.value / total) * 100).toFixed(1) : '0',
     }));
 
-    return (
-        <Card className="w-full">
-            <Title level="4" className="mb-4 font-semibold">
-                {t('charts.pieChart')}
-            </Title>
+    const chartConfig = {
+        margin: isMobile
+            ? { top: 20, right: 20, bottom: 60, left: 20 }
+            : { top: 40, right: 80, bottom: 80, left: 80 },
+        height: isMobile ? 300 : 400,
+        innerRadius: isMobile ? 0.3 : 0.5,
+        enableArcLinkLabels: !isMobile,
+        arcLabelsSkipAngle: isMobile ? 15 : 10,
+        arcLinkLabelsSkipAngle: isMobile ? 15 : 10,
+        legendTranslateY: isMobile ? 60 : 56,
+        legendDirection: isMobile ? ('column' as const) : ('row' as const),
+        legendItemWidth: isMobile ? 80 : 100,
+        legendItemHeight: isMobile ? 20 : 18,
+    };
 
+    return (
+        <div>
             <div className="mb-4">
                 <Paragraph
                     className="mb-2 text-sm"
@@ -65,7 +85,7 @@ const PieChart: React.FC<PieChartProps> = ({
                 <select
                     value={activeFundIndex}
                     onChange={(e) => setActiveFundIndex(Number(e.target.value))}
-                    className="rounded border px-3 py-2 text-sm"
+                    className="w-full rounded border px-3 py-2 text-sm md:w-auto"
                     style={{
                         backgroundColor: 'var(--cx-background)',
                         borderColor: 'var(--cx-border-color)',
@@ -80,8 +100,7 @@ const PieChart: React.FC<PieChartProps> = ({
                 </select>
             </div>
 
-            {/* Fund Summary */}
-            <div className="mb-4 grid grid-cols-3 gap-4">
+            <div className="my-4 mb-4 grid grid-cols-1 gap-3 sm:grid-cols-3 sm:gap-4">
                 <div className="text-center">
                     <Paragraph
                         className="text-sm"
@@ -119,12 +138,11 @@ const PieChart: React.FC<PieChartProps> = ({
                 </div>
             </div>
 
-
-            <div className="h-[400px]">
+            <div style={{ height: `${chartConfig.height}px` }}>
                 <ResponsivePie
                     data={pieDataWithPercentages}
-                    margin={{ top: 40, right: 80, bottom: 80, left: 80 }}
-                    innerRadius={0.5}
+                    margin={chartConfig.margin}
+                    innerRadius={chartConfig.innerRadius}
                     padAngle={2}
                     cornerRadius={3}
                     activeOuterRadiusOffset={8}
@@ -134,12 +152,12 @@ const PieChart: React.FC<PieChartProps> = ({
                         from: 'color',
                         modifiers: [['darker', 0.2]],
                     }}
-                    enableArcLinkLabels={true}
-                    arcLinkLabelsSkipAngle={10}
+                    enableArcLinkLabels={chartConfig.enableArcLinkLabels}
+                    arcLinkLabelsSkipAngle={chartConfig.arcLinkLabelsSkipAngle}
                     arcLinkLabelsTextColor="var(--cx-content)"
                     arcLinkLabelsThickness={2}
                     arcLinkLabelsColor={{ from: 'color' }}
-                    arcLabelsSkipAngle={10}
+                    arcLabelsSkipAngle={chartConfig.arcLabelsSkipAngle}
                     arcLabelsTextColor={{
                         from: 'color',
                         modifiers: [['darker', 2]],
@@ -150,13 +168,13 @@ const PieChart: React.FC<PieChartProps> = ({
                         background: 'transparent',
                         text: {
                             fill: 'var(--cx-content)',
-                            fontSize: 12,
+                            fontSize: isMobile ? 10 : 12,
                         },
                         tooltip: {
                             container: {
                                 background: 'var(--cx-background)',
                                 color: 'var(--cx-content)',
-                                fontSize: 12,
+                                fontSize: isMobile ? 11 : 12,
                                 borderRadius: '8px',
                                 border: '1px solid var(--cx-border-color)',
                                 boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
@@ -165,31 +183,32 @@ const PieChart: React.FC<PieChartProps> = ({
                     }}
                     tooltip={({ datum }) => (
                         <div
-                            className="rounded-lg p-3"
+                            className="rounded-lg p-2 sm:p-3"
                             style={{
                                 backgroundColor: 'var(--cx-tooltip-background)',
                                 color: 'var(--cx-content-light)',
                                 border: '1px solid var(--cx-border-color)',
                                 boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
+                                maxWidth: isMobile ? '200px' : 'none',
                             }}
                         >
                             <div className="flex items-center gap-2">
                                 <div
-                                    className="h-3 w-3 rounded-full"
+                                    className="h-3 w-3 flex-shrink-0 rounded-full"
                                     style={{ backgroundColor: datum.color }}
                                 />
-                                <span className="font-semibold">
+                                <span className="text-sm font-semibold">
                                     {datum.data.label}
                                 </span>
                             </div>
                             <div className="mt-1">
-                                <div className="text-sm">
+                                <div className="text-xs sm:text-sm">
                                     {t('charts.value')}:{' '}
                                     <span className="font-semibold">
                                         {shortNumber(datum.value, 0)}
                                     </span>
                                 </div>
-                                <div className="text-sm">
+                                <div className="text-xs sm:text-sm">
                                     {t('charts.percentage')}:{' '}
                                     <span className="font-semibold">
                                         {datum.data.percentage}%
@@ -201,17 +220,17 @@ const PieChart: React.FC<PieChartProps> = ({
                     legends={[
                         {
                             anchor: 'bottom',
-                            direction: 'row',
+                            direction: chartConfig.legendDirection,
                             justify: false,
                             translateX: 0,
-                            translateY: 56,
-                            itemsSpacing: 0,
-                            itemWidth: 100,
-                            itemHeight: 18,
+                            translateY: chartConfig.legendTranslateY,
+                            itemsSpacing: isMobile ? 5 : 0,
+                            itemWidth: chartConfig.legendItemWidth,
+                            itemHeight: chartConfig.legendItemHeight,
                             itemTextColor: 'var(--cx-content)',
                             itemDirection: 'left-to-right',
                             itemOpacity: 1,
-                            symbolSize: 18,
+                            symbolSize: isMobile ? 14 : 18,
                             symbolShape: 'circle',
                             effects: [
                                 {
@@ -226,23 +245,23 @@ const PieChart: React.FC<PieChartProps> = ({
                 />
             </div>
 
-            <div className="mt-4 space-y-2">
+            <div className="mt-4 flex flex-col space-y-3 md:flex-row items-center justify-center md:space-y-0 md:space-x-8">
                 {pieDataWithPercentages.map((item) => (
                     <div
                         key={item.id}
-                        className="flex items-center justify-between"
+                        className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between md:flex-col md:items-start lg:flex-row lg:items-center"
                     >
                         <div className="flex items-center gap-2">
                             <div
-                                className="h-3 w-3 rounded-full"
+                                className="h-3 w-3 flex-shrink-0 rounded-full"
                                 style={{ backgroundColor: item.color }}
                             />
                             <Paragraph className="text-sm">
                                 {item.label}
                             </Paragraph>
                         </div>
-                        <div className="flex items-center gap-4">
-                            <Paragraph className="text-sm font-semibold">
+                        <div className="flex items-center gap-4 pl-5 sm:pl-0 md:pl-0">
+                            <Paragraph className="font-semibold" size="sm">
                                 {shortNumber(item.value, 0)}
                             </Paragraph>
                             <Paragraph
@@ -257,7 +276,7 @@ const PieChart: React.FC<PieChartProps> = ({
                     </div>
                 ))}
             </div>
-        </Card>
+        </div>
     );
 };
 

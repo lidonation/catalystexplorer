@@ -86,7 +86,7 @@ export default function RadioSelector({
                                     type="radio"
                                     checked={selectedItem === option.value}
                                     onChange={() => {}}
-                                    className="accent-primary ml-2 h-4 w-4"
+                                    className="ml-2 h-4 w-4 checked:bg-primary"
                                 />
                             </div>
                         ))}
