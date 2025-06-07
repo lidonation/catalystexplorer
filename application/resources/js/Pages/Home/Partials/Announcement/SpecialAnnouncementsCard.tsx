@@ -1,38 +1,37 @@
 import Title from "@/Components/atoms/Title";
 
-interface CtaItem {
-    label: string;
-    link: string;
-    title: string;
-}
+type CtaItem =  Record<string, unknown>;
+
 const SpecialAnnouncementCard = ({ announcement }: any) => {
     return (
-        <div className="flex flex-col lg:flex-row items-center p-6 w-full">
-            <div className="flex flex-col flex-1 lg:mr-12 text-center lg:text-left">
-                <Title className="font-bold mb-4">{announcement.title}</Title>
+        <div className="flex w-full flex-col items-center p-6 lg:flex-row">
+            <div className="flex flex-1 flex-col text-center lg:mr-12 lg:text-left">
+                <Title className="mb-4 font-bold">{announcement.title}</Title>
 
                 <p className="mb-6 leading-relaxed">{announcement.content}</p>
 
-                <div className="flex flex-col lg:flex-row justify-center lg:justify-start space-y-4 lg:space-y-0 lg:space-x-4 lg:mt-8">
+                <div className="flex flex-col justify-center space-y-4 lg:mt-8 lg:flex-row lg:justify-start lg:space-y-0 lg:space-x-4">
                     {/* Handle multiple CTAs */}
-                    {Array.isArray(announcement.cta) && announcement.cta.length > 0 ? (
+                    {Array.isArray(announcement.cta) &&
+                    announcement.cta.length > 0 ? (
                         announcement.cta.map((cta: CtaItem, index: number) => (
                             <a
                                 key={index}
                                 href={cta.link}
-                                className={`flex-1 px-6 py-3 rounded-md shadow-md text-center transition-colors duration-300 ${index === 0
-                                    ? 'bg-primary hover:bg-background hover:text-primary'
-                                    : 'border border-gray-300 hover:bg-primary'
-                                    }`}
+                                className={`flex-1 rounded-md px-6 py-3 text-center shadow-md transition-colors duration-300 ${
+                                    index === 0
+                                        ? 'bg-primary hover:bg-background hover:text-primary'
+                                        : 'hover:bg-primary border border-gray-300'
+                                }`}
                             >
-                                {cta.label}
+                                {index}
                             </a>
                         ))
                     ) : (
                         // Fallback for single CTA
                         <a
                             href={announcement.cta?.link}
-                            className="flex-1 bg-primary px-6 py-3 rounded-md shadow-md text hover:bg-background hover:text-primary transition-colors duration-300"
+                            className="bg-primary text hover:bg-background hover:text-primary flex-1 rounded-md px-6 py-3 shadow-md transition-colors duration-300"
                         >
                             {announcement.cta?.label}
                         </a>
@@ -41,11 +40,11 @@ const SpecialAnnouncementCard = ({ announcement }: any) => {
             </div>
 
             {/* Image Section */}
-            <div className="shrink-0 w-full h-auto lg:w-[40%] mt-6 lg:mt-0 lg:ml-8">
+            <div className="mt-6 h-auto w-full shrink-0 lg:mt-0 lg:ml-8 lg:w-[40%]">
                 <img
                     src={announcement.hero_image_url}
                     alt={`${announcement.title} Hero Image`}
-                    className="w-full h-auto rounded-lg"
+                    className="h-auto w-full rounded-lg"
                 />
             </div>
         </div>

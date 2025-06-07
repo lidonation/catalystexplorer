@@ -218,7 +218,7 @@ const Manage = (props: BookmarkCollectionListProps) => {
             {/* comments */}
 
             {!!bookmarkCollection.allow_comments && (
-                <div className="container mb-8">
+                <div className="container my-8">
                     <Comments
                         commentableType={'BookmarkCollection'}
                         commentableHash={bookmarkCollection.hash ?? ''}
