@@ -33,7 +33,7 @@ const AnnouncementCard = ({ announcement }: AnnouncementCardProps) => {
             </div>
             <div>
                 {
-                    <div className="text-4 text-primary font-bold flex justify-evenly items-center">
+                    <div className="text-4 text-primary font-bold flex gap-6 items-center">
                         {Object.entries(announcement?.cta??{}).map((item) => {
                             const isExternal = item[1]?.startsWith('http');
                             if (isExternal) {
