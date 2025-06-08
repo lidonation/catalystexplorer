@@ -69,7 +69,7 @@ class VoterRepository extends Repository
                 }
 
                 $mergedArgs = array_merge($defaultArgs, $args);
-                
+
                 if (isset($mergedArgs['sort']) && is_array($mergedArgs['sort'])) {
                     $this->ensureSortableAttributes($index, $mergedArgs['sort']);
                 }
@@ -88,13 +88,13 @@ class VoterRepository extends Repository
 
             $requiredSortableFields = [
                 'voting_power',
-                'votes_count', 
-                'proposals_voted_on'
+                'votes_count',
+                'proposals_voted_on',
             ];
 
             foreach ($sortItems as $sortItem) {
                 foreach ($requiredSortableFields as $field) {
-                    if (strpos($sortItem, $field.':') === 0 && !in_array($field, $sortableAttributes)) {
+                    if (strpos($sortItem, $field.':') === 0 && ! in_array($field, $sortableAttributes)) {
                         $sortableAttributes[] = $field;
                         $needsUpdate = true;
                     }

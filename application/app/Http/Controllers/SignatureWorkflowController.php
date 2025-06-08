@@ -84,8 +84,8 @@ class SignatureWorkflowController extends Controller
     public function saveSignature(Request $request): RedirectResponse
     {
         $validated = $request->validate([
-            'signature' => 'required|string',
-            'signature_key' => 'required|string',
+            'signature' => 'required|string|unique',
+            'signature_key' => 'required|string|unique',
             'message' => 'required|string',
         ]);
 

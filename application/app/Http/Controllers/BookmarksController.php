@@ -423,7 +423,7 @@ class BookmarksController extends Controller
     public function saveRationales(BookmarkCollection $bookmarkCollection, Request $request): RedirectResponse
     {
         $validated = $request->validate([
-            'rationale' => 'required|string|min:200',
+            'rationale' => 'required|string|min:96',
         ]);
 
         $bookmarkCollection->saveMeta('rationale', $validated['rationale']);

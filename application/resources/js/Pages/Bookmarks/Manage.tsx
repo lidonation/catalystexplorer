@@ -98,7 +98,7 @@ const Manage = (props: BookmarkCollectionListProps) => {
             {},
             {
                 onSuccess: () =>
-                    router.get(generateLocalizedRoute('my.list.index')),
+                    router.get(generateLocalizedRoute('my.lists.index')),
             },
         );
     };
@@ -165,22 +165,11 @@ const Manage = (props: BookmarkCollectionListProps) => {
         <div>
             <Head title={t('bookmarks.listTitle')} />
 
-            <header className="container mt-4 flex items-start lg:mt-6">
-                <div className="">
-                    <Title level="1">{bookmarkCollection.title ?? ''}</Title>
-                    <p className="text-content">
-                        {t(bookmarkCollection.content ?? '')}
-                        <Link
-                            href={generateLocalizedRoute('lists.view', {
-                                bookmarkCollection: bookmarkCollection.hash,
-                                type: 'proposals',
-                            })}
-                            className="text-primary px-4"
-                        >
-                            {t('bookmarks.viewPublic')}
-                        </Link>
-                    </p>
-                </div>
+            <header className="container mt-4 flex flex-col items-start lg:mt-6">
+                <Title level="1">{bookmarkCollection.title ?? ''}</Title>
+                <p className="text-content">
+                    {t(bookmarkCollection.content ?? '')}
+                </p>
             </header>
 
             <BookmarkProvider
@@ -190,21 +179,30 @@ const Manage = (props: BookmarkCollectionListProps) => {
                 }
             >
                 {/* Sticky or fixed header with padding */}
-                <div className="w-full">
-                    <div className="container py-4 lg:relative">
-                        <Button
-                            className="bg-primary text-content-light right-6 z-50 mt-4 mr-2 ml-auto rounded-sm px-4 py-2 hover:cursor-pointer lg:absolute lg:top-0 lg:px-6"
+
+                <div className="container w-full py-4 lg:relative">
+                    <div className="top-6 right-8 z-50 mb-6 flex flex-row justify-between gap-4 lg:absolute lg:mb-0 lg:ml-auto">
+                        <button
+                            
+                            className="text-primary text-sm text-nowrap hover:cursor-pointer"
                             onClick={() => setActiveEditModal(true)}
                         >
                             {`${t('bookmarks.listSetting')}`}
-                        </Button>
-                        <BookmarkModelSearch
-                            activeTab={activeTab}
-                            handleTabchange={(e) =>
-                                setActiveTab(e as typeof type)
-                            }
-                        />
+                        </button>
+                        <Link
+                            href={generateLocalizedRoute('lists.view', {
+                                bookmarkCollection: bookmarkCollection.hash,
+                                type: 'proposals',
+                            })}
+                            className="text-primary text-sm text-nowrap"
+                        >
+                            {t('bookmarks.viewPublic')}
+                        </Link>
                     </div>
+                    <BookmarkModelSearch
+                        activeTab={activeTab}
+                        handleTabchange={(e) => setActiveTab(e as typeof type)}
+                    />
                 </div>
 
                 <FiltersProvider

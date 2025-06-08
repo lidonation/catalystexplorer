@@ -34,7 +34,7 @@ class WalletController extends Controller
             ->first();
         $transactions = Transaction::where('stake_key', $stakeKey)
             ->orWhere('json_metadata->stake_key', $stakeKey)
-            ->orWhere('json_metadata->voter_delegations->[0]->catId', $catId);
+            ->orWhere('json_metadata->voter_delegations->[0]->catId', $catId)->ddRawSql();
 
         $request->merge([
             TransactionSearchParams::STAKE_KEY()->value => $stakeKey ?? '',

@@ -1,6 +1,6 @@
-import Title from "@/Components/atoms/Title";
+import Title from '@/Components/atoms/Title';
 
-type CtaItem =  Record<string, unknown>;
+type CtaItem = Record<string, unknown>;
 
 const SpecialAnnouncementCard = ({ announcement }: any) => {
     return (
@@ -14,19 +14,23 @@ const SpecialAnnouncementCard = ({ announcement }: any) => {
                     {/* Handle multiple CTAs */}
                     {Array.isArray(announcement.cta) &&
                     announcement.cta.length > 0 ? (
-                        announcement.cta.map((cta: CtaItem, index: number) => (
-                            <a
-                                key={index}
-                                href={cta.link}
-                                className={`flex-1 rounded-md px-6 py-3 text-center shadow-md transition-colors duration-300 ${
-                                    index === 0
-                                        ? 'bg-primary hover:bg-background hover:text-primary'
-                                        : 'hover:bg-primary border border-gray-300'
-                                }`}
-                            >
-                                {index}
-                            </a>
-                        ))
+                        Object.entries(announcement?.cta ?? {}).map(
+                            (cta, index) => {
+                                return (
+                                    <a
+                                        key={cta[0]}
+                                        href={cta[1] as string}
+                                        className={`flex-1 rounded-md px-6 py-3 text-center shadow-md transition-colors duration-300 ${
+                                            index === 0
+                                                ? 'bg-primary hover:bg-background hover:text-primary'
+                                                : 'hover:bg-primary border border-gray-300'
+                                        }`}
+                                    >
+                                        {index}
+                                    </a>
+                                );
+                            },
+                        )
                     ) : (
                         // Fallback for single CTA
                         <a
