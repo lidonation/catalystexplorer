@@ -7,6 +7,7 @@ namespace App\Models;
 use App\Interfaces\IHasMetaData;
 use App\Traits\HasMetaData;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Laravel\Scout\Searchable;
 
 class Transaction extends Model implements IHasMetaData
@@ -133,9 +134,9 @@ class Transaction extends Model implements IHasMetaData
         return $this->belongsTo(Signature::class, 'stake_key', 'stake_key');
     }
 
-    public function registration()
+    public function registration(): HasOne
     {
-        return $this->belongsTo(Registration::class, 'stake_key', 'stake_key');
+        return $this->hasOne(Registration::class, 'tx', 'tx_hash');
     }
 
     public function voter()

@@ -38,6 +38,7 @@ export default function Wallet({
 }: WalletProps) {
     const { t } = useTranslation();
     const [activeTab, setActiveTab] = useState('votes');
+console.log({ walletTransactions, walletStats });
 
     return (
         <>
