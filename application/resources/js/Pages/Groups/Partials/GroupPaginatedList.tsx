@@ -24,7 +24,7 @@ const GroupPaginatedList: React.FC<GroupListProps> = ({ groups }) => {
                             </section>
                         </>
                     ) : (
-                        <section className="container">
+                        <section className="">
                             <RecordsNotFound />
                         </section>
                     )}

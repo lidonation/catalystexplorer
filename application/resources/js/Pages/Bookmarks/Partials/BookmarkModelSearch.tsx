@@ -58,7 +58,7 @@ const BookmarkModelSearch: React.FC<BookmarkModelSearchProps> = ({
             defaultValue={activeTab}
             className="sticky top-0 right-0 left-0 z-40 h-full"
         >
-            <TabsList className="no-scrollbar w-max max-w-full overflow-x-auto scroll-smooth whitespace-nowrap">
+            <TabsList className="no-scrollbar  overflow-x-auto scroll-smooth whitespace-nowrap">
                 {' '}
                 {modelTypes.map(({ name, type }) => (
                     <TabsTrigger

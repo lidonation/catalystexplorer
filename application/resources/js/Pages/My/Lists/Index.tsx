@@ -4,12 +4,9 @@ import RecordsNotFound from '@/Layouts/RecordsNotFound';
 import { PaginatedData } from '@/types/paginated-data';
 import { useLocalizedRoute } from '@/utils/localizedRoute';
 import { Head, WhenVisible } from '@inertiajs/react';
-import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import BookmarkCollectionList from './Partials/BookmarkCollectionList';
 import BookmarkCollectionListLoader from './Partials/BookmarkCollectionListLoader';
-import BookmarkPage2 from './Partials/ListCreateFromBookmarkSave/Step2';
-import BookmarkPage3 from './Partials/ListCreateFromBookmarkSave/Step3';
 import BookmarkCollectionData = App.DataTransferObjects.BookmarkCollectionData;
 
 

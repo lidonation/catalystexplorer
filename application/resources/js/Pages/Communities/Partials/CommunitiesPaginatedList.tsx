@@ -16,7 +16,7 @@ const CommunitiesPaginatedList: React.FC<CommunitiesProps> = ({
     return (
         <>
             {' '}
-            <section className="container mt-4 flex w-full flex-col items-center justify-center overflow-hidden duration-500 ease-in-out">
+            <section className="container mt-4  w-full flex-col items-center justify-center overflow-hidden duration-500 ease-in-out">
                 <WhenVisible fallback={<CommunityLoader />} data="campaigns">
                     <CommunitiesList communities={communities} />
                 </WhenVisible>

@@ -23,9 +23,9 @@ class AnnouncementFactory extends Factory
             'event_ends_at' => $this->faker->dateTimeBetween('+1 week', '+2 weeks'),
             'user_id' => User::factory(),
             'cta' => [
-                'link' => $this->faker->url,
-                'label' => $this->faker->word,
-                'title' => $this->faker->sentence,
+                $this->faker->word => $this->faker->url,
+                $this->faker->word => $this->faker->url,
+                $this->faker->word => $this->faker->url, 
             ],
         ];
     }

@@ -1,12 +1,15 @@
 import Title from '@/Components/atoms/Title';
 import Comments from '@/Components/Comments';
 import { ReviewList } from '@/Components/ReviewList';
+import UserAvatar from '@/Components/UserAvatar';
 import { BookmarkProvider } from '@/Context/BookmarkContext';
 import { FiltersProvider } from '@/Context/FiltersContext';
 import { PaginatedData } from '@/types/paginated-data';
 import { SearchParams } from '@/types/search-params';
 import { generateLocalizedRoute } from '@/utils/localizedRoute';
+import { formatTimestamp } from '@/utils/timeStamp';
 import { Head, Link, router, usePage } from '@inertiajs/react';
+import { Clock, MessageCircle } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import CommunitiesPaginatedList from '../Communities/Partials/CommunitiesPaginatedList';
 import GroupPaginatedList from '../Groups/Partials/GroupPaginatedList';
@@ -131,23 +134,51 @@ const View = (props: BookmarkCollectionListProps) => {
         <div>
             <Head title={t('bookmarks.listTitle')} />
 
-            <header className="container mt-4 flex items-start lg:mt-6">
-                <div className="">
+            <header className="container mt-4 flex flex-col items-start lg:mt-6">
+                <div className="flex flex-col">
                     <Title level="1">{bookmarkCollection.title ?? ''}</Title>
                     <p className="text-content">
                         {bookmarkCollection.content ?? ''}
-                        {isAuthor && (
-                            <Link
-                                href={generateLocalizedRoute('lists.manage', {
-                                    bookmarkCollection: bookmarkCollection.hash,
-                                    type: 'proposals',
-                                })}
-                                className="text-primary px-4"
-                            >
-                                {t('bookmarks.manage')}
-                            </Link>
-                        )}
                     </p>
+                </div>
+                <div className="flex w-full flex-row items-center gap-4 py-2 lg:gap-6">
+                    <div className="flex items-center gap-2">
+                        <UserAvatar
+                            size="size-6"
+                            imageUrl={
+                                bookmarkCollection?.author?.hero_img_url
+                                    ? bookmarkCollection.author?.hero_img_url
+                                    : undefined
+                            }
+                            name={bookmarkCollection?.author?.name}
+                        />
+
+                        <span className="lg:text-md text-xs font-semibold">
+                            {bookmarkCollection?.author?.name}
+                        </span>
+                    </div>
+
+                    {bookmarkCollection?.updated_at && (
+                        <div className="text-muted-foreground lg:text-md flex items-center gap-2 text-xs">
+                            <Clock className="hidden h-5 w-5 lg:block" />
+                            <span className="font-semibold">
+                                {t('bookmarks.lastModified')}:{' '}
+                            </span>
+                            <span>
+                                {formatTimestamp(
+                                    bookmarkCollection?.updated_at,
+                                )}
+                            </span>
+                        </div>
+                    )}
+
+                    <div className="text-muted-foreground lg:text-md flex items-center gap-2 text-xs">
+                        <MessageCircle className="hidden h-5 w-5 lg:block" />
+                        <span className="font-semibold">
+                            {t('bookmarks.comments')}:{' '}
+                        </span>
+                        <span>{bookmarkCollection?.comments_count ?? 0}</span>
+                    </div>
                 </div>
             </header>
 
@@ -158,16 +189,26 @@ const View = (props: BookmarkCollectionListProps) => {
                 }
             >
                 {/* Sticky or fixed header with padding */}
-                <div className="w-full">
-                    <div className="container pt-4 lg:relative">
-                        <BookmarkModelSearch
-                            search={false}
-                            activeTab={type}
-                            handleTabchange={(e) =>
-                                setActiveTab(e as typeof type)
-                            }
-                        />
-                    </div>
+
+                <div className="container w-full py-4 lg:relative">
+                    {isAuthor && (
+                        <div className="top-6 right-8 z-50 ml-auto flex justify-end gap-4 lg:absolute">
+                            <Link
+                                href={generateLocalizedRoute('lists.manage', {
+                                    bookmarkCollection: bookmarkCollection.hash,
+                                    type: 'proposals',
+                                })}
+                                className="text-primary  text-sm text-nowrap"
+                            >
+                                {t('bookmarks.manage')}
+                            </Link>
+                        </div>
+                    )}
+                    <BookmarkModelSearch
+                        search={false}
+                        activeTab={type}
+                        handleTabchange={(e) => setActiveTab(e as typeof type)}
+                    />
                 </div>
 
                 <FiltersProvider
