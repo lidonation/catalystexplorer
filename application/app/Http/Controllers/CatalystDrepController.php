@@ -226,9 +226,9 @@ class CatalystDrepController extends Controller
     {
 
         $attributes = $request->validate([
-            'objective' => 'required|min:200',
-            'motivation' => 'required|min:200',
-            'qualifications' => 'required|min:200',
+            'objective' => 'required|min:69',
+            'motivation' => 'required|min:69',
+            'qualifications' => 'required|min:69',
         ]);
 
         $drep = $catalystDrep->update($attributes);

@@ -30,6 +30,7 @@ class VoterController extends Controller
     protected ?string $sortOrder = 'desc';
 
     protected Builder $searchBuilder;
+
     public function index(Request $request): Response
     {
         $this->getProps($request);
@@ -45,6 +46,7 @@ class VoterController extends Controller
 
         return Inertia::render('Voters/Index', $props);
     }
+
     protected function getProps(Request $request)
     {
         $this->queryParams = $request->validate([
@@ -70,6 +72,7 @@ class VoterController extends Controller
             $this->search = $this->queryParams[VoterSearchParams::QUERY()->value];
         }
     }
+
     public function query()
     {
         $args = [
@@ -116,6 +119,7 @@ class VoterController extends Controller
 
         return $pagination->onEachSide(1)->toArray();
     }
+
     protected function getUserFilters(): array
     {
         $filters = [];
@@ -138,8 +142,8 @@ class VoterController extends Controller
         if (isset($this->queryParams[VoterSearchParams::FUND()->value])) {
             $fundHashes = $this->queryParams[VoterSearchParams::FUND()->value];
             if (is_array($fundHashes)) {
-                $fundHashes = array_map(fn($hash) => "'{$hash}'", $fundHashes);
-                $filters[] = "latest_fund.hash IN [" . implode(',', $fundHashes) . "]";
+                $fundHashes = array_map(fn ($hash) => "'{$hash}'", $fundHashes);
+                $filters[] = 'latest_fund.hash IN ['.implode(',', $fundHashes).']';
             } else {
                 $filters[] = "latest_fund.hash = '{$fundHashes}'";
             }

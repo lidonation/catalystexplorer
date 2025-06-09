@@ -1,16 +1,15 @@
 import Card from '@/Components/Card';
 import UserAvatar from '@/Components/UserAvatar';
 import Paragraph from '@/Components/atoms/Paragraph';
-import PrimaryButton from '@/Components/atoms/PrimaryButton';
+import PrimaryLink from '@/Components/atoms/PrimaryLink';
 import Title from '@/Components/atoms/Title';
 import capitalizeFirstLetter from '@/utils/caps';
 import { useLocalizedRoute } from '@/utils/localizedRoute';
 import { formatTimestamp } from '@/utils/timeStamp';
-import { Link, usePage } from '@inertiajs/react';
+import { usePage } from '@inertiajs/react';
 import { Clock, MessageCircle } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import BookmarkCollectionData = App.DataTransferObjects.BookmarkCollectionData;
-import PrimaryLink from '@/Components/atoms/PrimaryLink';
 
 const BookmarkCollectionCard = ({
     collection,
@@ -102,7 +101,7 @@ const BookmarkCollectionCard = ({
                 })}
             </div>
             <div className="top-4 right-4 lg:absolute">
-                {isAuthor ? (
+                {user?.hash && isAuthor ? (
                     <PrimaryLink
                         className="bg-success w-full px-4 py-1.5 font-medium text-white"
                         href={useLocalizedRoute('lists.manage', {

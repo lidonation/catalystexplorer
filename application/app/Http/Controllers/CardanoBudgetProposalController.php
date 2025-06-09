@@ -33,17 +33,17 @@ class CardanoBudgetProposalController extends Controller
             isset($params['sortBy']),
             fn ($q) => ($q->orderBy($this->getDbColumnName($params['sortBy']), $params['sortOrder'] ?? 'DESC'))
         )->when(
-            !empty($params['category']),
+            ! empty($params['category']),
             fn ($q) => is_array($params['category'])
                 ? $q->whereIn('budget_cat', $params['category'])
                 : $q->where('budget_cat', $params['category'])
         )
-        ->when(
-            !empty($params['committee']),
-            fn ($q) => is_array($params['committee'])
-                ? $q->whereIn('committee_name', $params['committee'])
-                : $q->where('committee_name', $params['committee'])
-        );
+            ->when(
+                ! empty($params['committee']),
+                fn ($q) => is_array($params['committee'])
+                    ? $q->whereIn('committee_name', $params['committee'])
+                    : $q->where('committee_name', $params['committee'])
+            );
 
         return CardanoBudgetProposalData::collect($query->paginate($params['limit'] ?? 12));
     }

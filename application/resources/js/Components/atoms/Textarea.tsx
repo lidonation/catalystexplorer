@@ -20,7 +20,7 @@ export default forwardRef(function Textarea(
         className = '',
         isFocused = false,
         minLengthEnforced = false,
-        minLengthValue = 200,
+        minLengthValue = 69,
         onChange,
         ...props
     }: TextareaProps,

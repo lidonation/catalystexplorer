@@ -24,7 +24,6 @@ export default function Communities({
         <IdeascaleProfileLayout ideascaleProfile={ideascaleProfile}>
             <Head title={`${ideascaleProfile.name} - Communities`} />
 
-            <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
                 <section className="container mt-4 flex w-full flex-col items-center justify-center overflow-hidden duration-500 ease-in-out">
                     <WhenVisible
                         fallback={<CommunityLoader />}
@@ -49,7 +48,7 @@ export default function Communities({
                         </>
                     </WhenVisible>
                 </section>
-            </div>
+            
         </IdeascaleProfileLayout>
     );
 }

@@ -74,7 +74,7 @@ const Step2: React.FC<Step2Props> = ({
         setIsFormValid(
             Object.keys(newErrors).length === 0 &&
                 !!form.data.title &&
-                form.data.content.length >= 200,
+                form.data.content.length >= 69,
         );
     };
 
@@ -117,7 +117,7 @@ const Step2: React.FC<Step2Props> = ({
                         <Textarea
                             id="content"
                             name="content"
-                            minLengthValue={200}
+                            minLengthValue={69}
                             minLengthEnforced
                             required
                             value={form.data.content}
