@@ -236,9 +236,6 @@ Route::localized(
                         ->name('success');
                 });
 
-            Route::get('/signature-capture/success', [SignatureWorkflowController::class, 'success'])
-                ->name('signature.success');
-
             Route::get('/login', [WorkflowController::class, 'auth'])
                 ->name('loginForm');
             Route::post('/login', [WorkflowController::class, 'login'])
