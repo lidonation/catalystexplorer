@@ -339,7 +339,9 @@
             "rationale": "Rationale",
             "rationaleInfo": "Why did you select these items? Providing a rationale helps others understand your choices and makes your list more credible.",
             "bookmarkCreated": "Your Bookmark List has been created!",
-            "viewList": "View List"
+            "viewList": "View List",
+            "placeholder": "Search proposals by title, keyword, or proposer...",
+            "text": "Find proposals you're interested in and bookmark them into custom lists for easy tracking and comparison."
         }
     },
     "error404": {
