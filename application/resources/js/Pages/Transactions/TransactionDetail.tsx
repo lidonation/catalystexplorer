@@ -1,17 +1,16 @@
-
-import { useTranslation } from "react-i18next";
+import Title from '@/Components/atoms/Title';
+import Value from '@/Components/atoms/Value';
+import { copyToClipboard } from '@/utils/copyClipboard';
+import { useLocalizedRoute } from '@/utils/localizedRoute';
+import { truncateMiddle } from '@/utils/truncateMiddle';
+import { Head, Link } from '@inertiajs/react';
+import { ChevronLeft, CopyIcon } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
+import DetailRow from './Partials/DetailRow';
+import MetadataCard from './Partials/MetadataCard';
+import TransactionDetailsCard from './Partials/TransactionDetailsCard';
+import WalletDetailsCard from './Partials/WalletDetailsCard';
 import TransactionData = App.DataTransferObjects.TransactionData;
-import { Head, Link } from "@inertiajs/react";
-import Title from "@/Components/atoms/Title";
-import { useLocalizedRoute } from "@/utils/localizedRoute";
-import { ChevronLeft, CopyIcon } from "lucide-react";
-import TransactionDetailsCard from "./Partials/TransactionDetailsCard";
-import WalletDetailsCard from "./Partials/WalletDetailsCard";
-import DetailRow from "./Partials/DetailRow";
-import Value from "@/Components/atoms/Value";
-import { truncateMiddle } from "@/utils/truncateMiddle";
-import { copyToClipboard } from "@/utils/copyClipboard";
-import MetadataCard from "./Partials/MetadataCard";
 
 interface TransactionDetailProps {
     transaction: TransactionData;
@@ -26,7 +25,7 @@ export default function TransactionDetail({
     walletStats,
 }: TransactionDetailProps) {
     const { t } = useTranslation();
- 
+
     return (
         <>
             <Head title="Transaction" />
@@ -63,17 +62,19 @@ export default function TransactionDetail({
                             <div className="flex flex-1 items-center">
                                 <Value className="text-content mr-2 truncate font-bold">
                                     {truncateMiddle(
-                                        transaction.stake_pub ?? '-',
+                                        transaction.stake_pub ?? '',
                                     )}
                                 </Value>
-                                <CopyIcon
-                                    className="text-gray-persist h-4 w-4 cursor-pointer font-bold"
-                                    onClick={() =>
-                                        copyToClipboard(
-                                            transaction.stake_pub ?? '-',
-                                        )
-                                    }
-                                />
+                                {transaction.stake_pub && (
+                                    <CopyIcon
+                                        className="text-gray-persist h-4 w-4 cursor-pointer font-bold"
+                                        onClick={() =>
+                                            copyToClipboard(
+                                                transaction.stake_pub ?? '',
+                                            )
+                                        }
+                                    />
+                                )}
                             </div>
                         </DetailRow>
 
@@ -85,18 +86,20 @@ export default function TransactionDetail({
                                 <Value className="text-content mr-2 truncate font-bold">
                                     {truncateMiddle(
                                         transaction.json_metadata
-                                            .payment_address ?? '-',
+                                            .payment_address ?? '',
                                     )}
                                 </Value>
-                                <CopyIcon
-                                    className="text-gray-persist h-4 w-4 cursor-pointer"
-                                    onClick={() =>
-                                        copyToClipboard(
-                                            transaction.json_metadata
-                                                .payment_address ?? '-',
-                                        )
-                                    }
-                                />
+                                {transaction.json_metadata.payment_address && (
+                                    <CopyIcon
+                                        className="text-gray-persist h-4 w-4 cursor-pointer"
+                                        onClick={() =>
+                                            copyToClipboard(
+                                                transaction.json_metadata
+                                                    .payment_address ?? '',
+                                            )
+                                        }
+                                    />
+                                )}
                             </div>
                         </DetailRow>
 
@@ -105,13 +108,12 @@ export default function TransactionDetail({
                             href={useLocalizedRoute(
                                 'jormungandr.wallets.show',
                                 {
-
                                     stakeKey:
                                         transaction?.json_metadata?.stake_key ??
-                                        '',
+                                        '-',
                                     catId:
                                         transaction?.json_metadata
-                                            ?.voter_delegations[0]?.catId ?? '',
+                                            ?.voter_delegations[0]?.catId ?? '-',
                                 },
                             )}
                         >

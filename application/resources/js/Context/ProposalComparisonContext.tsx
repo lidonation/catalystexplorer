@@ -1,7 +1,6 @@
 import { ParamsEnum } from '@/enums/proposal-search-params';
 import { IndexedDBService } from '@/Services/IndexDbService';
 import { arrayMove } from '@dnd-kit/sortable';
-import { liveQuery } from 'dexie';
 import {
     createContext,
     ReactNode,
@@ -12,7 +11,6 @@ import {
 } from 'react';
 import { FilteredItem } from './FiltersContext';
 import ProposalData = App.DataTransferObjects.ProposalData;
-import { db } from '@/db/db';
 
 type ProposalComparisonContextType = {
     proposals: ProposalData[];
@@ -44,20 +42,20 @@ export function ProposalComparisonProvider({
     const [filtersCount, setFiltersCount] = useState<number>(0);
 
     useEffect(() => {
-        const subscription = liveQuery(async () =>
-            await db.proposal_comparisons.toArray(),
+        const subscription = IndexedDBService.liveAll(
+            'proposal_comparisons',
         ).subscribe({
             next: (result) => {
                 setProposals(result);
             },
             error: (error) => {
-                console.error('Error in liveQuery:', error);
+                console.error('Error in IndexedDBService.liveAll:', error);
             },
         });
 
         return () => subscription.unsubscribe();
     }, []);
-
+    
     const getFilter = (param: ParamsEnum) =>
         filters.find((item) => item.param === param);
 
@@ -110,7 +108,6 @@ export function ProposalComparisonProvider({
     const removeFilter = (param: ParamsEnum) => {
         setFilters((prev) => prev.filter((item) => item.param !== param));
     };
-    
 
     const filteredProposals = useMemo(() => {
         let filtered = [...proposals];
@@ -160,7 +157,7 @@ export function ProposalComparisonProvider({
         }
 
         return filtered;
-    }, [proposals, searchQuery, filters]);    
+    }, [proposals, searchQuery, filters]);
 
     const updateProposalOrder = async (newOrder: ProposalData[]) => {
         setProposals(newOrder);

@@ -2,6 +2,8 @@ import { db } from '@/db/db';
 import { IndexableType, liveQuery, PromiseExtended, UpdateSpec } from 'dexie';
 import { DbModels } from '@/db/generated-db-schema';
 
+import { useObservable } from 'dexie-react-hooks';
+
 type TableName = keyof DbModels;
 type PrimaryKey = string;
 
@@ -40,7 +42,6 @@ export class IndexedDBService {
             return table.orderBy('order').reverse().toArray();
         }
 
-        // Fallback: return as-is
         return table.toArray();
     }
 
@@ -69,7 +70,7 @@ export class IndexedDBService {
 
         return liveQuery(() => {
             if (table.schema.idxByName['order']) {
-                return table.orderBy('order').toArray();
+                return table.orderBy('order').reverse().toArray();
             }
 
             return table.toArray();
@@ -109,4 +110,19 @@ export class IndexedDBService {
                 .toArray()
         );
     }
-}
+
+    /** Reactively query records by field value and sort by `order` if exists */
+    static liveWhereOrdered<K extends TableName, F extends keyof DbModels[K]>(
+        tableName: K,
+        field: F,
+        value: DbModels[K][F] extends IndexableType ? DbModels[K][F] : never
+    ) {
+        const table = db[tableName];
+        return liveQuery(() => {
+            const query = table.where(field as string).equals(value);
+            return table.schema.idxByName['order']
+                ? query.sortBy('order')
+                : query.toArray();
+        });
+    }
+} 

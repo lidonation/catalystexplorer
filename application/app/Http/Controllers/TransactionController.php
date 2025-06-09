@@ -315,7 +315,7 @@ class TransactionController
 
         if (! empty($this->userStakeKeys)) {
             $stakeKeysList = "'".implode("','", $this->userStakeKeys)."'";
-            $filters[] = "stake_key IN [$stakeKeysList]";
+            $filters[] = "json_metadata.stake_key IN [$stakeKeysList]";
         }
 
         return $filters;

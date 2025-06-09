@@ -129,7 +129,7 @@ class SignatureWorkflowController extends Controller
         } catch (\Exception $e) {
             return to_route('workflows.signature.index', [
                 'step' => 2,
-            ])->with('error', 'Failed to save signature: ' . $e->getMessage());
+            ])->with('error', 'Failed to save signature: '.$e->getMessage());
         }
     }
 
