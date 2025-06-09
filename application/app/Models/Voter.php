@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Laravel\Scout\Searchable;
 
 class Voter extends Model
@@ -35,7 +35,7 @@ class Voter extends Model
             'proposals_voted_on',
             'latest_fund.id',
             'latest_fund.title',
-             'latest_fund.hash',
+            'latest_fund.hash',
             'created_at',
             'updated_at',
         ];
@@ -92,8 +92,6 @@ class Voter extends Model
         return $this->hasMany(VotingPower::class, 'voter_id', 'cat_id');
     }
 
-
-
     /**
      * Get the value used to index the model.
      */
@@ -101,7 +99,6 @@ class Voter extends Model
     {
         return $this->id;
     }
-
 
     public function toSearchableArray()
     {
@@ -136,7 +133,6 @@ class Voter extends Model
             'deleted_at' => $this->deleted_at?->timestamp,
         ];
     }
-
 
     public function makeSearchableUsing(Collection $models): Collection
     {

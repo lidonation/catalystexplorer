@@ -84,8 +84,8 @@ class SignatureWorkflowController extends Controller
     public function saveSignature(Request $request): RedirectResponse
     {
         $validated = $request->validate([
-            'signature' => 'required|string',
-            'signature_key' => 'required|string',
+            'signature' => 'required|string:signatures,signature',
+            'signature_key' => 'required|string|unique:signatures,signature_key',
             'message' => 'required|string',
         ]);
 
@@ -114,21 +114,22 @@ class SignatureWorkflowController extends Controller
         }
 
         try {
-            Signature::create([
+            Signature::updateOrCreate([
                 'stake_key' => $signatureData['stake_key'],
                 'stake_address' => $signatureData['stake_address'],
                 'signature' => $signatureData['signature'],
                 'signature_key' => $signatureData['signature_key'],
+            ], [
+
                 'wallet_provider' => $signatureData['wallet_provider'],
                 'user_id' => Auth::id(),
             ]);
 
             return to_route('workflows.signature.success');
-
         } catch (\Exception $e) {
             return to_route('workflows.signature.index', [
                 'step' => 2,
-            ])->with('error', 'Failed to save signature: '.$e->getMessage());
+            ])->with('error', 'Failed to save signature: ' . $e->getMessage());
         }
     }
 

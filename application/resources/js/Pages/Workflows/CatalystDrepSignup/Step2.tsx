@@ -68,7 +68,7 @@ const Step2: React.FC<Step1Props> = ({
                                 : 'max-w-0 translate-x-full px-0'
                         }`}
                     >
-                        <p className="inline-block text-slate-500 lg:min-w-max lg:whitespace-nowrap">
+                        <p className=" text-slate-500 lg:min-w-max">
                             {t(error)}
                         </p>
                     </div>

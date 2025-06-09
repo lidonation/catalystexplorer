@@ -49,7 +49,7 @@ const ProposalPaginatedList: React.FC<ProposalProps> = ({
                             />
                         </div>
                     ) : (
-                        <div className="container mb-8">
+                        <div className=" mb-8">
                             <motion.div
                                 initial={{ opacity: 0 }}
                                 animate={{ opacity: 1 }}

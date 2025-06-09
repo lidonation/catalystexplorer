@@ -69,7 +69,7 @@ export default function EditListForm({
                 <Textarea
                     id="content"
                     name="content"
-                    minLengthValue={200}
+                    minLengthValue={69}
                     minLengthEnforced
                     required
                     value={form.data.content}

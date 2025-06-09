@@ -1,7 +1,8 @@
+import PrimaryLink from '@/Components/atoms/PrimaryLink';
 import { FiltersProvider, useFilterContext } from '@/Context/FiltersContext';
 import { VoteEnums } from '@/enums/vote-search-enums';
 import RecordsNotFound from '@/Layouts/RecordsNotFound';
-import MyLayout from '@/Pages/My/MyLayout';
+import { useLocalizedRoute } from '@/utils/localizedRoute';
 import { Head, usePage } from '@inertiajs/react';
 import React, { useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -78,34 +79,41 @@ const VotesComponent: React.FC<VoteHistoryProps> = (props) => {
     return (
         <>
             <Head title={t('votes')} />
-            <div className="mx-auto py-8">
-                <div className="text-content">
-                    {isAuthenticated ? (
-                        <div className="container flex flex-col">
-                            <div className="bg-background rounded-lg shadow-lg">
-                                {voterHistories?.data &&
-                                voterHistories.data.length > 0 ? (
-                                    <VoterHistoryTable
-                                        voterHistories={
-                                            voterHistories as PaginatedData<
-                                                VoterHistoryData[]
-                                            >
-                                        }
-                                        filters={searchParams}
-                                        unifiedSearch={true}
-                                        customTitle={t('votes')}
-                                    />
-                                ) : (
-                                    <div className="py-8 text-center">
-                                        <RecordsNotFound />
-                                    </div>
-                                )}
-                            </div>
+
+            <div className="text-content container mx-auto flex flex-col py-8">
+                <PrimaryLink
+                    className="lg:text-md mb-4 ml-auto px-4 py-2 text-sm text-nowrap"
+                    href={useLocalizedRoute('workflows.signature.index', {
+                        step: 1,
+                    })}
+                >
+                    {`+ ${t('my.connectWallet')}`}
+                </PrimaryLink>
+                {isAuthenticated ? (
+                    <div className="flex flex-col">
+                        <div className="bg-background rounded-lg shadow-lg">
+                            {voterHistories?.data &&
+                            voterHistories.data.length > 0 ? (
+                                <VoterHistoryTable
+                                    voterHistories={
+                                        voterHistories as PaginatedData<
+                                            VoterHistoryData[]
+                                        >
+                                    }
+                                    filters={searchParams}
+                                    unifiedSearch={true}
+                                    customTitle={t('votes')}
+                                />
+                            ) : (
+                                <div className="py-8 text-center">
+                                    <RecordsNotFound />
+                                </div>
+                            )}
                         </div>
-                    ) : (
-                        <RecordsNotFound />
-                    )}
-                </div>
+                    </div>
+                ) : (
+                    <RecordsNotFound />
+                )}
             </div>
         </>
     );
@@ -113,13 +121,9 @@ const VotesComponent: React.FC<VoteHistoryProps> = (props) => {
 
 const Votes: React.FC<VoteHistoryProps> = (props) => {
     return (
-      
-            <FiltersProvider
-                defaultFilters={{} as SearchParams}
-              
-            >
-                <VotesComponent {...props} />
-            </FiltersProvider>
+        <FiltersProvider defaultFilters={{} as SearchParams}>
+            <VotesComponent {...props} />
+        </FiltersProvider>
     );
 };
 

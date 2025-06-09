@@ -232,6 +232,8 @@ Route::localized(
                         ->name('signMessage');
                     Route::post('/save-signature', [SignatureWorkflowController::class, 'saveSignature'])
                         ->name('saveSignature');
+                    Route::post('/success', [SignatureWorkflowController::class, 'success'])
+                        ->name('success');
                 });
 
             Route::get('/signature-capture/success', [SignatureWorkflowController::class, 'success'])

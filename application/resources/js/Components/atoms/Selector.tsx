@@ -84,7 +84,7 @@ export default function Selector({
                         role="combobox"
                         aria-expanded={open}
                         aria-label={t('select') + ' ' + t('option')}
-                        className="border-input placeholder:text-muted-foreground ring-offset-background flex h-full w-full items-center justify-between rounded-md border bg-transparent px-3 py-2 text-sm shadow-xs disabled:cursor-not-allowed disabled:opacity-50"
+                        className="border-input placeholder:text-muted-foreground ring-offset-background flex h-full w-full items-center justify-between rounded-md border bg-transparent px-3 py-2 text-sm shadow-xs hover:cursor-pointer disabled:cursor-not-allowed disabled:opacity-50"
                     >
                         <span className="flex items-center gap-2 overflow-hidden">
                             <span className="overflow-clip text-sm text-nowrap">
@@ -128,7 +128,8 @@ export default function Selector({
                                     <Checkbox
                                         id={option.value}
                                         checked={
-                                            isMultiselect && selectedItems.length
+                                            isMultiselect &&
+                                            selectedItems.length
                                                 ? selectedItems?.includes(
                                                       option.value,
                                                   )
