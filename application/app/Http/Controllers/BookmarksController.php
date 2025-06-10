@@ -71,26 +71,63 @@ class BookmarksController extends Controller
 
     public function view(BookmarkCollection $bookmarkCollection, Request $request, ?string $type = 'proposals')
     {
-        $currentPage = request(ProposalSearchParams::PAGE()->value, 1);
+        $this->setFilters($request);
+        
         $model_type = BookmarkableType::from(Str::kebab($type))->getModelClass();
+        
+        $bookmarkItemIds = $bookmarkCollection->items
+            ->where('model_type', $model_type)
+            ->pluck('model_id')
+            ->toArray();
 
-        $data = $model_type::whereIn(
-            'id',
-            $bookmarkCollection->items
-                ->where('model_type', $model_type)
-                ->pluck('model_id')
-        )->paginate(12, ['*'], ProposalSearchParams::PAGE()->value);
+        $pagination = $this->queryModels($model_type, $bookmarkItemIds);
 
-        $pagination = to_length_aware_paginator(
-            $model_type::toDtoPaginated($data),
-        );
-
-        return Inertia::render('Bookmarks/View', [
+        $props = [
             'bookmarkCollection' => $bookmarkCollection->load('author'),
             'type' => $type,
-            'filters' => [ProposalSearchParams::PAGE()->value => $currentPage],
+            'search' => $this->search,
+            'sortBy' => $this->sortBy,
+            'sortOrder' => $this->sortOrder,
+            'sort' => "{$this->sortBy}:{$this->sortOrder}",
+            'filters' => $this->filters,
+            'queryParams' => $this->queryParams,
             $type => $pagination,
-        ]);
+        ];
+
+        return Inertia::render('Bookmarks/View', $props);
+    }
+
+    protected function queryModels(string $modelType, array $constrainToIds = []): array
+    {
+        if ($this->search) {
+            $searchBuilder = $modelType::search($this->search);
+            
+            if (!empty($constrainToIds)) {
+                $searchBuilder->whereIn('id', $constrainToIds);
+            }
+            
+            if ($this->sortBy && $this->sortOrder) {
+                $searchBuilder->orderBy($this->sortBy, $this->sortOrder);
+            }
+            
+            $data = $searchBuilder->paginate($this->perPage, ProposalSearchParams::PAGE()->value);
+        } else {
+            $query = $modelType::query();
+            
+            if (!empty($constrainToIds)) {
+                $query->whereIn('id', $constrainToIds);
+            }
+            
+            if ($this->sortBy && $this->sortOrder) {
+                $query->orderBy($this->sortBy, $this->sortOrder);
+            }
+            
+            $data = $query->paginate($this->perPage, ['*'], ProposalSearchParams::PAGE()->value);
+        }
+
+        return to_length_aware_paginator(
+            $modelType::toDtoPaginated($data),
+        )->toArray();
     }
 
     public function manage(BookmarkCollection $bookmarkCollection, Request $request, ?string $type = 'proposals'): Response

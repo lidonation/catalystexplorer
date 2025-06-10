@@ -3,7 +3,7 @@ import Comments from '@/Components/Comments';
 import { ReviewList } from '@/Components/ReviewList';
 import UserAvatar from '@/Components/UserAvatar';
 import { BookmarkProvider } from '@/Context/BookmarkContext';
-import { FiltersProvider } from '@/Context/FiltersContext';
+import { FiltersProvider, useFilterContext } from '@/Context/FiltersContext';
 import { PaginatedData } from '@/types/paginated-data';
 import { SearchParams } from '@/types/search-params';
 import { generateLocalizedRoute } from '@/utils/localizedRoute';
@@ -22,6 +22,10 @@ import ProposalData = App.DataTransferObjects.ProposalData;
 import GroupData = App.DataTransferObjects.GroupData;
 import IdeascaleProfileData = App.DataTransferObjects.IdeascaleProfileData;
 import ReviewData = App.DataTransferObjects.ReviewData;
+import SearchBar from '@/Components/SearchBar';
+import Paragraph from '@/Components/atoms/Paragraph';
+import { ParamsEnum } from '@/enums/proposal-search-params';
+import { useState } from 'react';
 
 type BookmarkCollectionListProps =
     | {
@@ -55,9 +59,39 @@ type BookmarkCollectionListProps =
           filters: SearchParams;
       };
 
-const View = (props: BookmarkCollectionListProps) => {
+const BookmarkContent = (props: BookmarkCollectionListProps) => {
     const { type, bookmarkCollection } = props;
     const { t } = useTranslation();
+    
+    const { getFilter, setFilters, filters } = useFilterContext();
+    
+    const queryParams = new URLSearchParams(window.location.search);
+    const initialSearchQuery = queryParams.get(ParamsEnum.QUERY) || '';
+    const [searchQuery, setSearchQuery] = useState(initialSearchQuery);
+
+    const handleSearch = (search: string) => {
+        setFilters({
+            param: ParamsEnum.QUERY,
+            value: search,
+            label: 'Search',
+        });
+        setSearchQuery(search);
+        const url = new URL(window.location.href);
+
+        if (search.trim() === '') {
+            url.searchParams.delete(ParamsEnum.QUERY);
+            router.get(window.location.pathname, {}, { replace: true });
+        } else {
+            setFilters({
+                param: ParamsEnum.QUERY,
+                value: search,
+                label: 'Search',
+            });
+            url.searchParams.set(ParamsEnum.QUERY, search);
+        }
+
+        window.history.replaceState(null, '', url.toString());
+    };
 
     const setActiveTab = (val: typeof type) => {
         const route = generateLocalizedRoute('lists.view', {
@@ -102,6 +136,46 @@ const View = (props: BookmarkCollectionListProps) => {
                 return null;
         }
     })();
+
+    return (
+        <>
+            <div className="container w-full py-4 lg:relative">
+                {isAuthor && (
+                    <div className="top-6 right-8 z-50 ml-auto flex justify-end gap-4 lg:absolute">
+                        <Link
+                            href={generateLocalizedRoute('lists.manage', {
+                                bookmarkCollection: bookmarkCollection.hash,
+                                type: 'proposals',
+                            })}
+                            className="text-primary  text-sm text-nowrap"
+                        >
+                            {t('bookmarks.manage')}
+                        </Link>
+                    </div>
+                )}
+                <BookmarkModelSearch
+                    search={false}
+                    activeTab={type}
+                    handleTabchange={(e) => setActiveTab(e as typeof type)}
+                />
+                <SearchBar
+                    border={'border-dark-light'}
+                    handleSearch={handleSearch}
+                    autoFocus
+                    showRingOnFocus
+                    initialSearch={searchQuery}
+                    placeholder={t('workflows.bookmarks.placeholder')}
+                />
+                <Paragraph className='mt-4'>{t('workflows.bookmarks.text')}</Paragraph>
+            </div>
+            <div className="mx-auto">{component}</div>
+        </>
+    );
+};
+
+const View = (props: BookmarkCollectionListProps) => {
+    const { type, bookmarkCollection } = props;
+    const { t } = useTranslation();
 
     const preselected = () => {
         switch (props.type) {
@@ -188,39 +262,15 @@ const View = (props: BookmarkCollectionListProps) => {
                     preselected() as unknown as Record<string, string[]>
                 }
             >
-                {/* Sticky or fixed header with padding */}
-
-                <div className="container w-full py-4 lg:relative">
-                    {isAuthor && (
-                        <div className="top-6 right-8 z-50 ml-auto flex justify-end gap-4 lg:absolute">
-                            <Link
-                                href={generateLocalizedRoute('lists.manage', {
-                                    bookmarkCollection: bookmarkCollection.hash,
-                                    type: 'proposals',
-                                })}
-                                className="text-primary  text-sm text-nowrap"
-                            >
-                                {t('bookmarks.manage')}
-                            </Link>
-                        </div>
-                    )}
-                    <BookmarkModelSearch
-                        search={false}
-                        activeTab={type}
-                        handleTabchange={(e) => setActiveTab(e as typeof type)}
-                    />
-                </div>
-
                 <FiltersProvider
                     defaultFilters={props.filters}
                     routerOptions={{ only: [type] }}
                 >
-                    <div className="mx-auto">{component}</div>
+                    <BookmarkContent {...props} />
                 </FiltersProvider>
             </BookmarkProvider>
 
             {/* comments */}
-
             {!!bookmarkCollection.allow_comments && (
                 <div className="container mb-8">
                     <Comments

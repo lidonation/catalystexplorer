@@ -155,6 +155,7 @@ class Proposal extends Model
             'feasibility_score',
             'auditability_score',
             'created_at',
+            'updated_at',
             'funded_at',
             'no_votes_count',
             'yes_votes_count',

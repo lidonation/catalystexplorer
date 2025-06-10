@@ -24,6 +24,40 @@ class Community extends Model
 
     public $meiliIndexName = 'cx_communities';
 
+    public static function getFilterableAttributes(): array
+    {
+        return [
+            'id',
+            'hash',
+            'status',
+            'user_id',
+            'slug',
+            'created_at',
+            'updated_at',
+        ];
+    }
+
+    public static function getSearchableAttributes(): array
+    {
+        return [
+            'title',
+            'content',
+            'slug',
+        ];
+    }
+
+    public static function getSortableAttributes(): array
+    {
+        return [
+            'id',
+            'title',
+            'status',
+            'slug',
+            'created_at',
+            'updated_at',
+        ];
+    }
+
     protected function casts(): array
     {
         return [
