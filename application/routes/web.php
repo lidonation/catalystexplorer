@@ -179,6 +179,8 @@ Route::localized(
             Route::prefix('/submit-votes/steps')->as('voting.')
                 ->middleware([WorkflowMiddleware::class])
                 ->group(function () {
+                    Route::get('/success', [VotingWorkflowController::class, 'success'])
+                        ->name('success');
                     Route::get('/{step}', [VotingWorkflowController::class, 'handleStep'])
                         ->name('index');
                     Route::post('/save-decisions', [VotingWorkflowController::class, 'saveVotingDecisions'])
@@ -187,8 +189,6 @@ Route::localized(
                         ->name('signBallot');
                     Route::post('/submit-votes', [VotingWorkflowController::class, 'submitVotes'])
                         ->name('submitVotes');
-                    Route::get('/success', [VotingWorkflowController::class, 'success'])
-                        ->name('success');
                 });
 
             Route::prefix('/create-bookmarks/steps')->as('bookmarks.')
@@ -226,14 +226,14 @@ Route::localized(
             Route::prefix('/signature-capture/steps')->as('signature.')
                 ->middleware([WorkflowMiddleware::class])
                 ->group(function () {
+                    Route::get('/success', [SignatureWorkflowController::class, 'success'])
+                        ->name('success');
                     Route::get('/{step}', [SignatureWorkflowController::class, 'handleStep'])
                         ->name('index');
                     Route::post('/sign-message', [SignatureWorkflowController::class, 'signMessage'])
                         ->name('signMessage');
                     Route::post('/save-signature', [SignatureWorkflowController::class, 'saveSignature'])
                         ->name('saveSignature');
-                    Route::post('/success', [SignatureWorkflowController::class, 'success'])
-                        ->name('success');
                 });
 
             Route::get('/login', [WorkflowController::class, 'auth'])

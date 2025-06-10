@@ -248,9 +248,9 @@ const View = (props: BookmarkCollectionListProps) => {
 
                     <div className="text-muted-foreground lg:text-md flex items-center gap-2 text-xs">
                         <MessageCircle className="hidden h-5 w-5 lg:block" />
-                        <span className="font-semibold">
+                        <a className="font-semibold" href={'#comment-section'}>
                             {t('bookmarks.comments')}:{' '}
-                        </span>
+                        </a>
                         <span>{bookmarkCollection?.comments_count ?? 0}</span>
                     </div>
                 </div>
@@ -272,7 +272,7 @@ const View = (props: BookmarkCollectionListProps) => {
 
             {/* comments */}
             {!!bookmarkCollection.allow_comments && (
-                <div className="container mb-8">
+                <div className="container mb-8" id="comment-section">
                     <Comments
                         commentableType={'BookmarkCollection'}
                         commentableHash={bookmarkCollection.hash ?? ''}
