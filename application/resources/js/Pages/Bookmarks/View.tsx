@@ -246,10 +246,13 @@ const View = (props: BookmarkCollectionListProps) => {
                         </div>
                     )}
 
-                    <div className="text-muted-foreground lg:text-md flex items-center gap-2 text-xs">
-                        <MessageCircle className="hidden h-5 w-5 lg:block" />
-                        <a className="font-semibold" href={'#comment-section'}>
-                            {t('bookmarks.comments')}:{' '}
+                    <div className="text-muted-foreground lg:text-md flex flex-row items-center gap-2 text-xs">
+                        <a
+                            className="text-primary flex gap-2 font-semibold"
+                            href={'#comment-section'}
+                        >
+                            <MessageCircle className="text-primary hidden h-5 w-5 lg:block" />
+                            <span>{t('bookmarks.comments')}: </span>
                         </a>
                         <span>{bookmarkCollection?.comments_count ?? 0}</span>
                     </div>
