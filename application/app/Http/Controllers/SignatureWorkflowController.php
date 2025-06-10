@@ -58,6 +58,15 @@ class SignatureWorkflowController extends Controller
         ]);
     }
 
+        public function step3(Request $request): Response
+    {
+
+        return Inertia::render('Workflows/SignatureCapture/Step3', [
+            'stepDetails' => $this->getStepDetails(),
+            'activeStep' => intval($request->step),
+        ]);
+    }
+
     public function success(Request $request): Response
     {
         return Inertia::render('Workflows/SignatureCapture/Success');
@@ -141,6 +150,9 @@ class SignatureWorkflowController extends Controller
             ],
             [
                 'title' => __('workflows.signature.steps.signHotWallet'),
+            ],
+            [
+                'title' => __('workflows.signature.steps.nameWallet'),
             ],
         ];
     }

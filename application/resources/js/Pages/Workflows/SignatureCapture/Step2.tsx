@@ -3,8 +3,8 @@ import {
     useLocalizedRoute,
 } from '@/utils/localizedRoute';
 import { router } from '@inertiajs/react';
-import { ChevronLeft, Loader2 } from 'lucide-react';
-import React, { useState } from 'react';
+import { ChevronLeft, ChevronRight, Loader2 } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import Paragraph from '@/Components/atoms/Paragraph';
@@ -82,10 +82,14 @@ const Step2: React.FC<Step2Props> = ({
     const [success, setSuccess] = useState<string | null>(
         flash?.success || null,
     );
-    const [isComplete, setIsComplete] = useState(!!signatureData?.signature);
+    const [isComplete, setIsComplete] = useState(false);
 
     const hasDuplicates = existingSignatures?.length > 1;
     const { extractSignature } = useConnectWallet();
+
+    useEffect(() => {
+        setIsComplete(!!signatureData?.signature);
+    }, [signatureData?.signature]);
 
     const handleSignature = async () => {
         setIsSigning(true);
@@ -158,50 +162,43 @@ const Step2: React.FC<Step2Props> = ({
             <Nav stepDetails={stepDetails} activeStep={activeStep} />
 
             <Content>
-                <div className="mx-auto w-full max-w-3xl">
-                    <div className="rounded-lg p-6">
+                <div className="flex items-center justify-center min-h-[60vh] pb-8">
+                    <div className="w-full max-w-3xl rounded-lg p-6">
                         <Title level="4" className="mb-6 text-center">
                             {t('workflows.signature.signWallet')}
                         </Title>
-                        <>
-                            <div className="mx-auto max-w-sm text-center">
-                                <Paragraph className="text-gray-persist mb-4">
-                                    {t('workflows.signature.signAuth')}
-                                </Paragraph>
 
-                                <PrimaryButton
-                                    className="mt-4 w-full py-3"
-                                    onClick={handleSignature}
-                                    disabled={isSigning}
-                                >
-                                    {isSigning ? (
-                                        <div className="flex items-center justify-center">
-                                            <Loader2
-                                                size={16}
-                                                className="mr-2 animate-spin"
-                                            />
-                                            {t('workflows.signature.signing')}
-                                        </div>
-                                    ) : (
-                                        t('workflows.signature.signMessage')
-                                    )}
-                                </PrimaryButton>
+                        <div className="mx-auto max-w-sm text-center">
+                            <Paragraph className="text-gray-persist mb-4">
+                                {t('workflows.signature.signAuth')}
+                            </Paragraph>
 
-                                {error && (
-                                    <div
-                                        className={`bg-danger-light container mt-6 transform overflow-hidden rounded-lg py-3 text-center transition-all duration-500 ease-in-out ${
-                                            error.length
-                                                ? 'border-danger-strong max-w-full translate-x-0 border px-6'
-                                                : 'max-w-0 translate-x-full px-0'
-                                        }`}
-                                    >
-                                        <p className=" text-slate-500  ">
-                                            {t(error)}
-                                        </p>
+                            <PrimaryButton
+                                className="mt-4 w-full py-3"
+                                onClick={handleSignature}
+                                disabled={isSigning}
+                            >
+                                {isSigning ? (
+                                    <div className="flex items-center justify-center">
+                                        <Loader2 size={16} className="mr-2 animate-spin" />
+                                        {t('workflows.signature.signing')}
                                     </div>
+                                ) : (
+                                    t('workflows.signature.signMessage')
                                 )}
-                            </div>
-                        </>
+                            </PrimaryButton>
+
+                            {error && (
+                                <div
+                                    className={`bg-danger-light container mt-6 transform overflow-hidden rounded-lg py-3 text-center transition-all duration-500 ease-in-out ${error.length
+                                            ? 'border-danger-strong max-w-full translate-x-0 border px-6'
+                                            : 'max-w-0 translate-x-full px-0'
+                                        }`}
+                                >
+                                    <p className="text-slate-500">{t(error)}</p>
+                                </div>
+                            )}
+                        </div>
                     </div>
                 </div>
             </Content>
@@ -214,6 +211,20 @@ const Step2: React.FC<Step2Props> = ({
                     <ChevronLeft className="h-4 w-4" />
                     <span>{t('Previous')}</span>
                 </PrimaryLink>
+                <PrimaryButton
+                    className="text-sm lg:px-8 lg:py-3"
+                    disabled={isComplete}
+                    onClick={() =>
+                        router.visit(
+                            generateLocalizedRoute('workflows.signature.index', {
+                                step: activeStep + 2,
+                            }),
+                        )
+                    }
+                >
+                    <span>{t('Next')}</span>
+                    <ChevronRight className="h-4 w-4" />
+                </PrimaryButton>
             </Footer>
         </WorkflowLayout>
     );

@@ -301,9 +301,14 @@
         "signature": {
             "steps": {
                 "connectWallet": "Connect Wallet",
-                "signHotWallet": "Sign Hot Wallet"
+                "signHotWallet": "Sign Hot Wallet",
+                "nameWallet": "Name Wallet"
             },
             "signWallet": "Sign wallet",
+            "nameWallet":"Name Wallet",
+            "inputWalletNamePlaceHolder":"Wallet Name",
+            "walletNameCondition":"Must be at least 6 characters.",
+            "walletNameDescription":"Give your wallet a name to be displayed in your wallet dashboard.",
             "signAuth": "By signing, you authorize this action securely with your wallet. Your private key remains Safe. Proceed if the details are correct.",
             "signMessage": "Sign",
             "signing": "Signing...",
@@ -358,7 +363,8 @@
         "titles": {
             "claim": "Claim Button",
             "claimed": "Claimed Button",
-            "share": "Share Button"
+            "share": "Share Button",
+            "createWallet":"Create Wallet"
         },
         "bookmark": "Bookmark"
     },

@@ -248,9 +248,14 @@
         "signature": {
             "steps": {
                 "connectWallet": "Connecter le Portefeuille",
-                "signHotWallet": "Signer le Portefeuille Actif"
+                "signHotWallet": "Signer le Portefeuille Actif",
+                "nameWallet": "Portefeuille de nom"
             },
             "signWallet": "Signer le portefeuille",
+            "nameWallet":"Portefeuille de nom",
+            "inputWalletNamePlaceHolder":"Nom du portefeuille",
+            "walletNameCondition":"Doit contenir au moins 6 caractères.",
+            "walletNameDescription":"Donnez à votre portefeuille un nom à afficher dans le tableau de bord de votre portefeuille.",
             "signAuth": "En signant, vous autorisez cette action en toute sécurité avec votre portefeuille. Votre clé privée reste en sécurité. Procédez si les détails sont corrects.",
             "signMessage": "Signer",
             "signing": "Signature en cours...",
@@ -330,7 +335,8 @@
         "titles": {
             "claim": "Bouton de réclamation",
             "claimed": "Bouton réclamé",
-            "share": "Bouton de partage"
+            "share": "Bouton de partage",
+            "createWallet":"Créer un portefeuille"
         },
         "bookmark": "Icône de signet"
     },
