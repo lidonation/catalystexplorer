@@ -311,7 +311,9 @@
             "rationale": "Raisonnement",
             "rationaleInfo": "Pourquoi avez-vous sélectionné ces éléments ? Fournir un raisonnement aide les autres à comprendre vos choix et rend votre liste plus crédible.",
             "bookmarkCreated": "Votre liste de favoris a été créée !",
-            "viewList": "Voir la liste"
+            "viewList": "Voir la liste",
+            "placeholder": "Rechercher des propositions par titre, mot-clé ou proposant...",
+            "text": "Find proposals you're interested in and bookmark them into custom lists for easy tracking and comparison."
         }
     },
     "error404": {

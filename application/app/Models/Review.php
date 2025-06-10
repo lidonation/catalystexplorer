@@ -79,6 +79,7 @@ class Review extends Model
             'title',
             'status',
             'created_at',
+            'updated_at',
             'reviewer.hash',
             'reviewer.avg_reputation_score',
             'rating',
