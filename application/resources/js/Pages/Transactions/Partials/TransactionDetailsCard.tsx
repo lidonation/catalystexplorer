@@ -19,6 +19,8 @@ export default function TransactionDetailsCard({ transaction }: TransactionDetai
   const delegations = Array.isArray(transaction.json_metadata?.voter_delegations) 
     ? transaction.json_metadata.voter_delegations 
     : [];
+    console.log({ transaction });
+    
 
   return (
       <div className="bg-background rounded-lg p-6">
@@ -60,14 +62,14 @@ export default function TransactionDetailsCard({ transaction }: TransactionDetai
                       </div>
                   </DetailRow>
 
-                  <DetailRow
+                 { <DetailRow
                       label={t('transactions.table.epoch')}
-                      value={transaction.epoch}
-                  />
+                      value={transaction?.epoch}
+                  />}
 
                   <DetailRow
                       label={t('transactions.votingPurpose')}
-                      value={`Catalyst Proposal #${transaction.json_metadata.voting_purpose}`}
+                      value={`Catalyst Proposal `}
                       background
                   />
               </div>
@@ -119,7 +121,7 @@ export default function TransactionDetailsCard({ transaction }: TransactionDetai
                       label={t('transactions.witness')}
                       value={transaction.witness?truncateMiddle(
                           transaction.witness,
-                      ):''}
+                      ):'-'}
                   />
 
                   <DetailRow

@@ -54,6 +54,7 @@ const MyTransaction: React.FC<MyTransactionProps> = ({
 
                         <section className="mb-4 w-full">
                             <SearchControls
+                                withFilters={false}
                                 sortOptions={TransactionSortOptions()}
                                 onFiltersToggle={setShowFilters}
                                 searchPlaceholder={t(

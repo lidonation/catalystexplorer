@@ -4,11 +4,11 @@ import SearchControls from '@/Components/atoms/SearchControls';
 import Title from '@/Components/atoms/Title';
 import { FiltersProvider } from '@/Context/FiltersContext';
 import TransactionSortOptions from '@/lib/TransactionSortOptions';
+import { PaginatedData } from '@/types/paginated-data';
+import { SearchParams } from '@/types/search-params';
 import { Head } from '@inertiajs/react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { PaginatedData } from '@/types/paginated-data';
-import { SearchParams } from '@/types/search-params';
 import { CardanoTransactionTable } from './Partials/TransactionTable';
 import TransactionData = App.DataTransferObjects.TransactionData;
 
@@ -50,6 +50,7 @@ export default function Transactions({
 
                         <section className="mb-4 w-full">
                             <SearchControls
+                                withFilters={false}
                                 sortOptions={TransactionSortOptions()}
                                 onFiltersToggle={setShowFilters}
                                 searchPlaceholder={t(

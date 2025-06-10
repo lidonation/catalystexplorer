@@ -79,7 +79,7 @@ function SearchControls({
     ).length;
 
     return (
-        <div className="sticky top-0 z-10 container mx-auto flex w-full flex-col gap-3 px-0 py-3 backdrop-blur-md">
+        <div className="sticky top-0 z-10  mx-auto flex w-full flex-col gap-3 px-0 py-3 backdrop-blur-md">
             <div className="flex flex-col items-center justify-end gap-2 lg:flex-row">
                 <SearchBar
                     border={'border-dark-light'}
