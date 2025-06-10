@@ -23,18 +23,18 @@ class IdeascaleProfileFactory extends Factory
     {
         return [
             'ideascale_id' => $this->faker->numberBetween(1, 1000),
-            'username' => $this->faker->userName(),
+            'username' => $this->faker->name(),
             'email' => $this->faker->unique()->safeEmail().$this->faker->numberBetween(1, 1000),
             'name' => $this->faker->name(),
             'bio' => $this->faker->text(200),
             'created_at' => now(),
             'updated_at' => now(),
-            'twitter' => $this->faker->userName(),
-            'linkedin' => $this->faker->userName(),
-            'discord' => $this->faker->userName(),
+            'twitter' => $this->faker->name(),
+            'linkedin' => $this->faker->name(),
+            'discord' => $this->faker->name(),
             'ideascale' => $this->faker->word(),
             'claimed_by_id' => User::factory(),
-            'telegram' => $this->faker->userName(),
+            'telegram' => $this->faker->name(),
             'title' => $this->faker->jobTitle(),
         ];
     }
