@@ -72,9 +72,9 @@ class BookmarksController extends Controller
     public function view(BookmarkCollection $bookmarkCollection, Request $request, ?string $type = 'proposals')
     {
         $this->setFilters($request);
-        
+
         $model_type = BookmarkableType::from(Str::kebab($type))->getModelClass();
-        
+
         $bookmarkItemIds = $bookmarkCollection->items
             ->where('model_type', $model_type)
             ->pluck('model_id')
@@ -101,27 +101,27 @@ class BookmarksController extends Controller
     {
         if ($this->search) {
             $searchBuilder = $modelType::search($this->search);
-            
-            if (!empty($constrainToIds)) {
+
+            if (! empty($constrainToIds)) {
                 $searchBuilder->whereIn('id', $constrainToIds);
             }
-            
+
             if ($this->sortBy && $this->sortOrder) {
                 $searchBuilder->orderBy($this->sortBy, $this->sortOrder);
             }
-            
+
             $data = $searchBuilder->paginate($this->perPage, ProposalSearchParams::PAGE()->value);
         } else {
             $query = $modelType::query();
-            
-            if (!empty($constrainToIds)) {
+
+            if (! empty($constrainToIds)) {
                 $query->whereIn('id', $constrainToIds);
             }
-            
+
             if ($this->sortBy && $this->sortOrder) {
                 $query->orderBy($this->sortBy, $this->sortOrder);
             }
-            
+
             $data = $query->paginate($this->perPage, ['*'], ProposalSearchParams::PAGE()->value);
         }
 
