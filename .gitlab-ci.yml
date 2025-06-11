@@ -118,8 +118,8 @@ pest:
   - |-
     set -xev
     
-    if [[ -n $DOCKER_PASSWORD ]]; then
-      docker login -u="${DOCKER_USERNAME}" -p="${DOCKER_PASSWORD}"
+    if [[ -n $CI_REGISTRY_USER ]]; then
+      docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_USER" "$CI_REGISTRY"
     fi
 
     cp application/.env.testing application/.env
