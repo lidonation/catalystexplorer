@@ -118,9 +118,7 @@ pest:
   - |-
     set -xev
     
-    if [[ -n $CI_REGISTRY_USER ]]; then
-      docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_USER" "$CI_REGISTRY"
-    fi
+    docker login registry.2lovelaces.io
 
     cp application/.env.testing application/.env
 
@@ -306,7 +304,7 @@ build_web:
   script:
   - |
     echo "Logging in to Docker registry..."
-    docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
+    docker login registry.2lovelaces.io
 
     docker build --network host -f ./docker/Dockerfile \
     -t "$CI_APPLICATION_REPOSITORY/web-app:$CI_APPLICATION_TAG" \
@@ -323,7 +321,7 @@ build_web_base:
   retry: 0
   script:
   - |
-    docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY" 
+    docker login registry.2lovelaces.io 
 
     echo "Building Dockerfile with tags $CI_APPLICATION_REPOSITORY/web-app-base:$WEB_BASE_IMAGE_VER and $CI_APPLICATION_REPOSITORY/web-app-base:latest ..." 
 
@@ -334,7 +332,7 @@ build_web_base:
     docker push "$CI_APPLICATION_REPOSITORY/web-app-base:$WEB_BASE_IMAGE_VER" 
     docker push "$CI_APPLICATION_REPOSITORY/web-app-base:latest"
 
-    docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
+    docker login registry.2lovelaces.io
   rules:
   - if: $WEB_BASE_IMAGE_VER
 
