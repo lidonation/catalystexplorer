@@ -427,7 +427,7 @@ postgresql:
   postgresPassword: ""
   ## @param postgresql.usePasswordFiles Set to `true` to mount PostgreSQL secret as a file instead of passing environment variable
   ##
-  usePasswordFiles: true
+  usePasswordFiles: false
   ## @param postgresql.pgHbaTrustAll Configures PostgreSQL HBA to trust every user
   ##
   pgHbaTrustAll: false
@@ -1446,35 +1446,36 @@ pgpool:
   ##   port = '5432'
   ##   ...
   ##
-#  configuration: |-
-#    listen_address = '*'
-#    num_init_children = 100
-#    max_pool = 4
-#    child_life_time = 300
-#
-#    failover_on_backend_error = on
-#
-#    sr_check_period = 10
-#    load_balance_mode = on
-#    connection_cache = on
-#
-#    backend_hostname0 = 'two-lovelaces-gitlab-db-postgresql-ha-postgresql-0.two-lovelaces-gitlab-db-postgresql-ha-postgresql-headless.gitlab-db.svc.cluster.local'
-#    backend_port0 = 5432
-#    backend_weight0 = 1
-#    backend_data_directory0 = '/opt/bitnami/pgpool/data'
-#    backend_flag0 = 'ALLOW_TO_FAILOVER'
-#
-#    backend_hostname1 = 'two-lovelaces-gitlab-db-postgresql-ha-postgresql-1.two-lovelaces-gitlab-db-postgresql-ha-postgresql-headless.gitlab-db.svc.cluster.local'
-#    backend_port1 = 5432
-#    backend_weight1 = 1
-#    backend_data_directory1 = '/opt/bitnami/pgpool/data'
-#    backend_flag1 = 'ALLOW_TO_FAILOVER'
-#
-#    backend_hostname2 = 'two-lovelaces-gitlab-db-postgresql-ha-postgresql-2.two-lovelaces-gitlab-db-postgresql-ha-postgresql-headless.gitlab-db.svc.cluster.local'
-#    backend_port2 = 5432
-#    backend_weight2 = 1
-#    backend_data_directory2 = '/opt/bitnami/pgpool/data'
-#    backend_flag2 = 'ALLOW_TO_FAILOVER'
+  configuration: |-
+    listen_address = '*'
+    num_init_children = 100
+    max_pool = 4
+    child_life_time = 300
+
+    failover_on_backend_error = on
+
+    sr_check_period = 10
+    load_balance_mode = on
+    connection_cache = on
+
+    backend_hostname0 = 'cx-web-db-postgresql-ha-postgresql-0.cx-web-db-postgresql-ha-postgresql-headless.catalystexplorer-preview.svc.cluster.local'
+    backend_port0 = 5432
+    backend_weight0 = 1
+    backend_data_directory0 = '/opt/bitnami/pgpool/data'
+    backend_flag0 = 'ALLOW_TO_FAILOVER'
+
+    backend_hostname1 = 'cx-web-db-postgresql-ha-postgresql-1.cx-web-db-postgresql-ha-postgresql-headless.catalystexplorer-preview.svc.cluster.local'
+    backend_port1 = 5432
+    backend_weight1 = 1
+    backend_data_directory1 = '/opt/bitnami/pgpool/data'
+    backend_flag1 = 'ALLOW_TO_FAILOVER'
+
+    backend_hostname2 = 'cx-web-db-postgresql-ha-postgresql-2.cx-web-db-postgresql-ha-postgresql-headless.catalystexplorer-preview.svc.cluster.local'
+    backend_port2 = 5432
+    backend_weight2 = 1
+    backend_data_directory2 = '/opt/bitnami/pgpool/data'
+    backend_flag2 = 'ALLOW_TO_FAILOVER'
+    
 
   ## @param pgpool.poolHbaConfiguration Pgpool-II client authentication configuration
   ## You can use this parameter to specify the content for pool_hba.conf
