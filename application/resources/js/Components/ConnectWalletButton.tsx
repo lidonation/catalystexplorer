@@ -22,12 +22,18 @@ const ConnectWalletButton: React.FC<ConnectWalletButtonProps> = ({
 }) => {
     const {
         connectedWalletProvider,
+        connectedWallets,
         isConnecting,
         disconnectWallet,
         openConnectWalletSlider,
     } = useConnectWallet();
 
     const { t } = useTranslation();
+    const handleDisconnectWallet = () => {
+        if (connectedWallets.length > 0) {
+            disconnectWallet(connectedWallets[0].id);
+        }
+    };
 
     return (
         <div className="mt-4 flex w-full flex-col items-center justify-center">
@@ -63,7 +69,7 @@ const ConnectWalletButton: React.FC<ConnectWalletButtonProps> = ({
 
             {connectedWalletProvider && (
                 <Button
-                    onClick={disconnectWallet}
+                    onClick={handleDisconnectWallet}
                     ariaLabel={t('wallet.status.disconnect')}
                     disabled={isConnecting !== null}
                     className="group flex flex-col items-center justify-between justify-center rounded-lg p-3"

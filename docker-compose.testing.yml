@@ -52,7 +52,7 @@ services:
         APP_SETUP: "true"
         PHP_OPCACHE_ENABLE: 0
         PHP_OPCACHE_VALIDATE_TIMESTAMPS: 1
-        TELESCOPE_ENABLED: false
+        TELESCOPE_ENABLED: "false"
         PHP_MEMORY_LIMIT: 8192M
         CONTAINER_ROLE: "queue"
         DB_CONNECTION: pgsql

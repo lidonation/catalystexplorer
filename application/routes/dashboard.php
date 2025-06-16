@@ -6,6 +6,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\GroupsController;
 use App\Http\Controllers\ReviewsController;
+use App\Http\Controllers\WalletController;
 use App\Http\Controllers\VoterHistoriesController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -62,6 +63,9 @@ Route::localized(
                 });
 
                 Route::get('/reviews', [ProfileController::class, 'myReviews'])->name('reviews');
+                Route::get('/wallets', fn () => Inertia::render('My/Wallets/Index'))->name('wallets');
+                Route::get('/wallets/{stakeKey}/lookup-json', [WalletController::class, 'lookupJson'])
+                            ->name('wallets.lookup');
             });
     }
 );
