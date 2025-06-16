@@ -1225,8 +1225,8 @@
     },
     "voter": {
         "catalystVoters": "Catalyst Voters",
-        "viewVoterInformation": "View voter information and participation history in Catalyst funding rounds",
-        "searchPlaceholder": "Search by voter ID, stake address, or fund",
+        "viewVoterInformation": "Get a transparent and data-driven view of the active community shaping the future of Cardano",
+        "searchPlaceholder": "Search stake address or voter ID",
         "votersTable": "Voters Table",
         "noVotersFound": "No voters found matching your search criteria",
         "notAvailable": "N/A",
