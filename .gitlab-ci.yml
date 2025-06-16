@@ -237,6 +237,7 @@ pest:
         --set global.postgresql.password="$DB_PASSWORD" \
         --set postgresql.postgresPassword="$POSTGRES_PASSWORD" \
         --set postgresql.repmgrPassword="$REPMGR_PASSWORD" \
+        --set postgresql.adminPassword="$adminPassword" \
         --set pgpool.customUsers.usernames="postgres;$DB_USERNAME" \
         --set pgpool.customUsers.passwords="$POSTGRES_PASSWORD;$DB_PASSWORD" \
         --set persistence.size="$DB_SIZE" \
