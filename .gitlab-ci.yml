@@ -230,7 +230,6 @@ pest:
         --wait \
         --atomic \
         --namespace="$KUBE_NAMESPACE" \
-        --namespaceOverride="$KUBE_NAMESPACE" \
         --create-namespace \
         -f ./helm/app/values.db.yaml \
         --set global.postgresql.database="$DB_DATABASE" \
@@ -240,6 +239,7 @@ pest:
         --set pgpool.customUsers.usernames="postgres;$DB_USERNAME" \
         --set pgpool.customUsers.passwords="$POSTGRES_PASSWORD;$DB_PASSWORD" \
         --set persistence.size="$DB_SIZE" \
+        --set namespaceOverride="$KUBE_NAMESPACE" \
         catalystexplorer-web-db \
         bitnami/postgresql-ha
   - auto-deploy persist_environment_url
