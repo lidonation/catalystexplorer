@@ -33,17 +33,6 @@ class BookmarkCollection extends Model
 
     protected $guarded = [];
 
-    protected $fillable = [
-        'user_id',
-        'title',
-        'content',
-        'visibility',
-        'color',
-        'allow_comments',
-        'status',
-        'type',
-    ];
-
     public static function getFilterableAttributes(): array
     {
         return [
@@ -108,6 +97,11 @@ class BookmarkCollection extends Model
             ->where('model_type', Community::class);
     }
 
+    public function fund(): BelongsTo
+    {
+        return $this->belongsTo(fund::class);
+    }
+
     public function groups(): HasMany
     {
         return $this->hasMany(BookmarkItem::class)
@@ -123,7 +117,7 @@ class BookmarkCollection extends Model
     public function typesCount(): Attribute
     {
         return Attribute::make(
-            get: fn() => (object) [
+            get: fn () => (object) [
                 'proposals' => $this->proposals_count,
                 'groups' => $this->groups_count,
                 'communities' => $this->communities_count,
@@ -141,7 +135,7 @@ class BookmarkCollection extends Model
                     ->groupBy('currency')
                     ->map(function ($group, $currency) {
                         return [
-                            "amount_requested_{$currency}" => $group->sum(fn($p) => intval($p->amount_requested ?? 0)),
+                            "amount_requested_{$currency}" => $group->sum(fn ($p) => intval($p->amount_requested ?? 0)),
                         ];
                     })
                     ->collapse()->toArray();
@@ -157,7 +151,7 @@ class BookmarkCollection extends Model
                     ->groupBy('currency')
                     ->map(function ($group, $currency) {
                         return [
-                            "amount_received_{$currency}" => $group->sum(fn($p) => intval($p->amount_received ?? 0)),
+                            "amount_received_{$currency}" => $group->sum(fn ($p) => intval($p->amount_received ?? 0)),
                         ];
                     })
                     ->collapse()->toArray();

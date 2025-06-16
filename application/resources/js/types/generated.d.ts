@@ -38,6 +38,7 @@ amount_received_ADA?: number;
 amount_requested_ADA?: number;
 amount_received_USD?: number;
 author?: App.DataTransferObjects.UserData;
+fund?: App.DataTransferObjects.FundData;
 };
 export type BookmarkItemData = {
 hash: string | null;
