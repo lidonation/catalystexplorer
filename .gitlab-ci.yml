@@ -1,6 +1,5 @@
 variables:
-  AUTO_DEPLOY_IMAGE_VERSION: "v2.104.0"
-  CI_TEMPLATE_REGISTRY_HOST: registry.gitlab.com
+  AUTO_DEPLOY_IMAGE_VERSION: "v2.130.0"
   KUBE_CONTEXT: catalystexplorer
   DOCKER_HOST: tcp://docker:2375
   DOCKER_TLS_CERTDIR: ""
@@ -124,7 +123,7 @@ pest:
     set -xev
     
     if [[ -n $DOCKER_PASSWORD ]]; then
-      docker login -u="${DOCKER_USERNAME}" -p="${DOCKER_PASSWORD}"
+      docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
     fi
 
     cp application/.env.testing application/.env
