@@ -15,7 +15,7 @@ use Spatie\Comments\Models\Concerns\HasComments;
 
 class BookmarkCollection extends Model
 {
-    use HasAuthor, HasComments, HasMetaData, Searchable,SoftDeletes;
+    use HasAuthor, HasComments, HasMetaData, Searchable, SoftDeletes;
 
     protected $withCount = [
         'items',
@@ -81,7 +81,8 @@ class BookmarkCollection extends Model
 
     public function parent(): BelongsTo
     {
-        return $this->belongsTo(BookmarkCollection::class, 'parent_id');
+        return $this->belongsTo(static::class, 'model_id')
+            ->where('model_type', static::class);
     }
 
     public function items(): HasMany
@@ -122,7 +123,7 @@ class BookmarkCollection extends Model
     public function typesCount(): Attribute
     {
         return Attribute::make(
-            get: fn () => (object) [
+            get: fn() => (object) [
                 'proposals' => $this->proposals_count,
                 'groups' => $this->groups_count,
                 'communities' => $this->communities_count,
@@ -140,7 +141,7 @@ class BookmarkCollection extends Model
                     ->groupBy('currency')
                     ->map(function ($group, $currency) {
                         return [
-                            "amount_requested_{$currency}" => $group->sum(fn ($p) => intval($p->amount_requested ?? 0)),
+                            "amount_requested_{$currency}" => $group->sum(fn($p) => intval($p->amount_requested ?? 0)),
                         ];
                     })
                     ->collapse()->toArray();
@@ -156,7 +157,7 @@ class BookmarkCollection extends Model
                     ->groupBy('currency')
                     ->map(function ($group, $currency) {
                         return [
-                            "amount_received_{$currency}" => $group->sum(fn ($p) => intval($p->amount_received ?? 0)),
+                            "amount_received_{$currency}" => $group->sum(fn($p) => intval($p->amount_received ?? 0)),
                         ];
                     })
                     ->collapse()->toArray();
