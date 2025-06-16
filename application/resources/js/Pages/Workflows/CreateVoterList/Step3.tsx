@@ -60,6 +60,7 @@ const Step3: React.FC<Step3Props> = ({
     const localizedRoute = useLocalizedRoute;
     const prevStep = localizedRoute('workflows.createVoterList.index', {
         step: activeStep - 1,
+        bk: bookmarkHash,
     });
 
     const [selectedIds, setSelectedIds] = useState<Set<string>>(
@@ -278,7 +279,7 @@ const Step3: React.FC<Step3Props> = ({
                         </div>
 
                         <div className="w-full">
-                            <div className="mt-4 w-full space-y-4 overflow-y-auto">
+                            <div className="mt-4 max-h-[30rem] w-full space-y-4 overflow-y-auto">
                                 {proposals?.data &&
                                 proposals.data.length > 0 ? (
                                     proposals.data.map((proposal) => (
