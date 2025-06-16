@@ -438,7 +438,7 @@ sem-release:
     GIT_DEPTH: 0
     GITLAB_TOKEN: ${SEMANTIC_RELEASE_GITLAB_TOKEN}
   rules:
-    - if: $CI_COMMIT_BRANCH == "main"
+    - if: '$CI_COMMIT_BRANCH == "main" && ($DEPLOY_WEBAPP == "true")'
   before_script:
     - apk add --no-cache git
     - npm install -g semantic-release @semantic-release/git @semantic-release/gitlab @semantic-release/changelog
