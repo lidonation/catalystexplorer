@@ -230,15 +230,18 @@ pest:
         --wait \
         --atomic \
         --namespace="$KUBE_NAMESPACE" \
+        --namespaceOverride="$KUBE_NAMESPACE" \
         --create-namespace \
         -f ./helm/app/values.db.yaml \
-        --set global.postgresql.auth.database="$DB_DATABASE" \
-        --set global.postgresql.auth.username="$DB_USERNAME" \
-        --set global.postgresql.auth.password="$DB_PASSWORD" \
-        --set global.postgresql.auth.postgresPassword="$POSTGRES_PASSWORD" \
-        --set primary.persistence.size="80Gi" \
+        --set global.postgresql.database="$DB_DATABASE" \
+        --set global.postgresql.username="$DB_USERNAME" \
+        --set global.postgresql.password="$DB_PASSWORD" \
+        --set postgresql.postgresPassword="$POSTGRES_PASSWORD" \
+        --set pgpool.customUsers.usernames="postgres;$DB_USERNAME" \
+        --set pgpool.customUsers.passwords="$POSTGRES_PASSWORD;$DB_PASSWORD" \
+        --set persistence.size="$DB_SIZE" \
         catalystexplorer-web-db \
-        bitnami/postgresql
+        bitnami/postgresql-ha
   - auto-deploy persist_environment_url
   environment:
     name: mainnet
