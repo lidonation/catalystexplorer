@@ -12,6 +12,8 @@ use App\Models\Transaction;
 use App\Models\Voter;
 use App\Models\VoterHistory;
 use App\Repositories\VoterHistoryRepository;
+use App\Services\WalletInfoService;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Fluent;
@@ -25,6 +27,10 @@ class WalletController extends Controller
     protected int $currentPage = 1;
 
     protected array $queryParams = [];
+
+    public function __construct(
+        private WalletInfoService $walletInfoService
+    ) {}
 
     public function show(Request $request, string $stakeKey, string $catId): Response
     {
@@ -155,5 +161,20 @@ class WalletController extends Controller
             'all_time_votes' => $allTimeVotes,
             'funds_participated' => $fundsParticipated,
         ];
+    }
+
+    public function lookupJson(string $stakeKey, WalletInfoService $walletInfoService): JsonResponse
+    {
+        \Log::info("Fetching wallet stats for: {$stakeKey}");
+        $walletDetails = $this->walletInfoService->getWalletStats($stakeKey);
+
+        \Log::info('📦 Returning walletDetails JSON response', [
+            'stakeKey' => $stakeKey,
+            'walletDetails' => $walletDetails,
+        ]);
+
+        return response()->json([
+            'walletDetails' => $walletDetails,
+        ]);
     }
 }
