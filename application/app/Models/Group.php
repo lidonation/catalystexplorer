@@ -91,6 +91,7 @@ class Group extends Model implements HasMedia
             'amount_awarded_usd',
             'amount_requested',
             'ideascale_profiles.hash',
+            'updated_at',
         ];
     }
 

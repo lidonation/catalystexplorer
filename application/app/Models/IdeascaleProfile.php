@@ -88,6 +88,7 @@ class IdeascaleProfile extends Model implements HasMedia
             'unfunded_proposals_count',
             'in_progress_proposals_count',
             'outstanding_proposals_count',
+            'updated_at',
             'own_proposals_count',
             'collaborating_proposals_count',
             'co_proposals_count',

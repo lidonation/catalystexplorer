@@ -19,7 +19,7 @@ export default function WalletDetailsCard({
     transaction,
     walletStats,
     children,
-    title
+    title,
 }: WalletDetailsCardProps) {
     return (
         <div className="bg-background rounded-lg p-6 shadow-sm">
@@ -35,7 +35,7 @@ export default function WalletDetailsCard({
                     <DetailRow
                         label={t('transactions.balance')}
                         value={adaFormat(
-                            transaction?.json_metadata.controlled_amount,
+                            transaction?.json_metadata.controlled_amount ?? '-',
                         )}
                     />
 
@@ -47,7 +47,7 @@ export default function WalletDetailsCard({
 
                     <DetailRow
                         label={t('transactions.fundsParticipated')}
-                        value={walletStats.funds_participated.length}
+                        value={walletStats.funds_participated.length ?? 0}
                         background
                     />
 
