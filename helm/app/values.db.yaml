@@ -459,7 +459,7 @@ postgresql:
   repmgrPassword: ""
   repmgrDatabase: repmgr
   repmgrUsePassfile: true
-  repmgrPassfilePath: ""
+#  repmgrPassfilePath: ""
   repmgrLogLevel: NOTICE
   repmgrConnectTimeout: 5
   repmgrReconnectAttempts: 2
