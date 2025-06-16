@@ -146,6 +146,7 @@
         "subtitle": "Easily analyze and evaluate proposals to make informed decisions on funding, impact, and strategic alignment.",
         "searchPlaceholder": "Search for proposal",
         "viewProposal": "View Proposal",
+        "selectMetric": "Select Metric",
         "tableHeaders": {
             "metric": "Metric",
             "reorder": "Reorder",
