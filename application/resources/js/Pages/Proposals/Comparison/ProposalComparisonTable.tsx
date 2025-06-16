@@ -18,13 +18,22 @@ import {
 import { useTranslation } from 'react-i18next';
 import ComparisonTableFilters from './Partials/ComparisonTableFilters';
 import SortableProposalColumn from './SortableProposalColumn';
+import { useState } from 'react';
+import RowVisibilitySelector from './Partials/RowVisibilitySelector';
+import { useKeyValueStore } from '@/Hooks/useKeyValueStore';
+import { keyValueStoreEnums } from '@/enums/key-value-store-enums';
+
 
 export default function ProposalsTable() {
     const { t } = useTranslation();
+    const METRIC_ROW_ID = 'metric';
+    const ACTION_ROW_ID = 'action';
+
+    const EXCLUDED_FROM_VISIBILITY = [METRIC_ROW_ID, ACTION_ROW_ID];
 
     const rows = [
         {
-            id: 'metric',
+            id: METRIC_ROW_ID,
             label: t('proposalComparison.tableHeaders.metric'),
             height: 'h-16',
         },
@@ -69,12 +78,23 @@ export default function ProposalsTable() {
             height: 'h-16',
         },
         {
-            id: 'action',
+            id: ACTION_ROW_ID,
             label: t('proposalComparison.tableHeaders.action'),
             height: 'h-16',
         },
     ];
 
+    const controllableRows = rows.filter(row => !EXCLUDED_FROM_VISIBILITY.includes(row.id));
+
+    const {
+        value: visibleRows,
+        setValue: setVisibleRows,
+        isLoading: isLoadingPreferences
+    } = useKeyValueStore<string[]>(
+        keyValueStoreEnums.PROPOSAL_COMPARISON_VISIBLE_ROWS,
+        controllableRows.map(row => row.id)
+    );
+    
     const { filteredProposals, reorderProposals } = useProposalComparison();
 
     const sensors = useSensors(
@@ -95,8 +115,13 @@ export default function ProposalsTable() {
         }
     }
 
+   const visibleRowsData = rows.filter(row => 
+        EXCLUDED_FROM_VISIBILITY.includes(row.id) || (visibleRows && visibleRows.includes(row.id))
+    );
+
     return (
         <div className="container">
+             <div className="flex items-center justify-between mb-4">
             <header>
                 <div className=" ">
                     <Title level="1">{t('proposalComparison.title')}</Title>
@@ -108,11 +133,20 @@ export default function ProposalsTable() {
                     </Paragraph>
                 </div>
             </header>
-            <ComparisonTableFilters />
+            
+            <RowVisibilitySelector
+                rows={controllableRows}
+                visibleRows={visibleRows || []}
+                onRowVisibilityChange={setVisibleRows}
+            />
+        </div>
+            <div>
+                <ComparisonTableFilters />
+            </div>
             <div className="bg-background border-gray-light relative mb-4 flex w-full rounded-lg border shadow-lg">
-                {/* Sticky Row Headers */}
+                 {/* Sticky Row Headers */}
                 <div className="bg-background sticky left-0 z-10 flex flex-col rounded-l-lg">
-                    {rows.map((row) => (
+                    {visibleRowsData.map((row) => (
                         <div
                             key={row.id}
                             className={`${row.height} border-gray-light flex items-center border-b px-4 text-left font-medium ${row.id == 'metric' ? 'text-dark !bg-background-lighter rounded-tl-lg' : ''}`}
@@ -139,7 +173,7 @@ export default function ProposalsTable() {
                                 )}
                                 strategy={horizontalListSortingStrategy}
                             >
-                                {filteredProposals.map((proposal, index) => (
+                                 {filteredProposals.map((proposal, index) => (
                                     <SortableProposalColumn
                                         key={proposal.hash}
                                         proposal={proposal}
@@ -147,6 +181,7 @@ export default function ProposalsTable() {
                                             index ===
                                             filteredProposals.length - 1
                                         }
+                                        visibleRows={visibleRows || []}
                                     />
                                 ))}
                             </SortableContext>

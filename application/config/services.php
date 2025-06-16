@@ -45,6 +45,8 @@ return [
 
     'govtools' => [
         'budget_proposals' => env('GOVTOOLS_BUDGET_PROPOSALS', ''),
-    ]
-
+    ],
+    'blockfrost' => [
+        'project_id' => env('BLOCKFROST_PROJECT_ID'),
+    ],
 ];
