@@ -240,7 +240,7 @@ pest:
         --set pgpool.customUsers.passwords="$POSTGRES_PASSWORD;$DB_PASSWORD" \
         --set persistence.size="$DB_SIZE" \
         --set namespaceOverride="$KUBE_NAMESPACE" \
-        catalystexplorer-web-db \
+        cx-web-db \
         bitnami/postgresql-ha
   - auto-deploy persist_environment_url
   environment:
