@@ -397,6 +397,12 @@
         "manage": "Manage",
         "createList": "Create New List",
         "votes": "Votes",
+        "balance": "Balance",
+        "wallets": "My Wallets",
+        "loadWallets": "Loading wallets...",
+        "addWallet": "+ Add Wallet",
+        "manageWallets": "View and manage all wallets connected to your Catalyst Explorer account",
+        "moreWalletsDetails": "View detailed transaction history →",
         "connectWallet":"Add Wallet",
         "my": "My"
     },
@@ -445,7 +451,7 @@
        "fund": "Fund",
        "year": "Year",
        "selectFund":"Select Fund",
-       "value": "Value", 
+       "value": "Value",
        "percentage": "Percentage",
        "share": "Share"
     },
@@ -1165,6 +1171,7 @@
             "connectedTo": "Connected to:",
             "disconnect": "Disconnect Wallet",
             "selectWallet": "Select a wallet",
+            "addAnotherWallet": "Add another wallet",
             "noWallets": {
                 "title": "No supported wallets detected",
                 "subtitle": "Please install Lace, Eternl, Flint, or another Cardano wallet"
