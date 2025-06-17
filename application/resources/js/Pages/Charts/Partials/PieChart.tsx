@@ -35,19 +35,19 @@ const PieChart: React.FC<PieChartProps> = ({
         {
             id: 'Funded Proposals',
             label: 'Funded',
-            value: selectedFund.fundedProposals,
+            value: selectedFund.fundedProposals ?? 0,
             color: colors[0],
         },
         {
             id: 'Completed Proposals',
             label: 'Completed',
-            value: selectedFund.completedProposals,
+            value: selectedFund.completedProposals ?? 0,
             color: colors[1],
         },
         {
             id: 'Submitted Proposals',
             label: 'Submitted',
-            value: selectedFund.totalProposals - selectedFund.fundedProposals,
+            value: (selectedFund.totalProposals ?? 0) - (selectedFund.fundedProposals ?? 0),
             color: colors[2],
         },
     ].filter((item) => item.value > 0);

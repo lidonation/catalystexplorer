@@ -33,21 +33,21 @@ const HeatMap: React.FC<HeatMapProps> = ({ chartData }) => {
             id: 'Total Proposals',
             data: chartData.map((item) => ({
                 x: `Fund ${item.fund}`,
-                y: item.totalProposals,
+                y: item.totalProposals ?? 0,
             })),
         },
         {
             id: 'Funded Proposals',
             data: chartData.map((item) => ({
                 x: `Fund ${item.fund}`,
-                y: item.fundedProposals,
+                y: item.fundedProposals ?? 0,
             })),
         },
         {
             id: 'Completed Proposals',
             data: chartData.map((item) => ({
                 x: `Fund ${item.fund}`,
-                y: item.completedProposals,
+                y: item.completedProposals ?? 0,
             })),
         },
     ];
