@@ -26,6 +26,6 @@ class TransactionData extends Data
         public array $inputs,
         /** @var array<TransactionOutputData> */
         public array $outputs,
-        
+
     ) {}
 }
