@@ -15,6 +15,7 @@ class TransactionData extends Data
         public string $tx_hash,
         public string $block,
         public ?string $witness,
+        public ?string $stake_key,
         public ?string $type,
         public ?int $epoch,
         public ?string $stake_pub,
