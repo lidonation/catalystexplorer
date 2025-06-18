@@ -182,8 +182,8 @@ pest:
     cp $ENV_FILE ./helm/app/app_env
     cat ./helm/app/app_env
     if [ "${CI_ENVIRONMENT_NAME}" == "mainnet" ]; then
-      export APP_REPLICAS="3"
-      export QUEUE_REPLICAS="2"
+      export APP_REPLICAS="1"
+      export QUEUE_REPLICAS="1"
     else
       export APP_REPLICAS="1"
       export QUEUE_REPLICAS="1"

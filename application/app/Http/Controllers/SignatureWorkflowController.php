@@ -115,8 +115,8 @@ class SignatureWorkflowController extends Controller
 
         $request->session()->put('signature_data', $signatureData);
 
-            return to_route('workflows.signature.index', ['step' => 2])
-                ->with('success', __('workflows.signature.success.successfullySigned'));
+        return to_route('workflows.signature.index', ['step' => 2])
+            ->with('success', __('workflows.signature.success.successfullySigned'));
     }
 
     public function saveWalletName(Request $request): RedirectResponse
@@ -128,7 +128,7 @@ class SignatureWorkflowController extends Controller
         $walletData = $request->session()->get('wallet_data', []);
         $signatureData = $request->session()->get('signature_data', []);
 
-        if (!$walletData || !$signatureData) {
+        if (! $walletData || ! $signatureData) {
             return back()->withErrors(['wallet_name' => 'Missing signature or wallet data.']);
         }
 
