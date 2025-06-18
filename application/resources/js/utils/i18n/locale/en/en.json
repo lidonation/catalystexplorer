@@ -158,7 +158,10 @@
             "yesVotes": "Yes Votes",
             "noVotes": "No Votes",
             "team": "Team",
-            "action": "Action"
+            "action": "Action",
+            "campaign": "Campaign",
+            "problem": "Problem",
+            "openSource": "Open Source"
         }
     },
     "workflows": {
