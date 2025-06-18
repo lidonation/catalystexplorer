@@ -44,7 +44,7 @@ export default function ProposalSolution({
                 className="proposal-solution bg-background"
                 ref={containerRef}
             >
-                {solution && (
+                {(solution || problem ) && (
                     <div className="solution-container">
                         <header className="solution-header mb-2 flex justify-between">
                             <Title
@@ -52,7 +52,7 @@ export default function ProposalSolution({
                                 id="solution-heading"
                                 className="mt-2 text-content text-base font-medium"
                             >
-                                {t('solution')}
+                                {solution ? t('solution') : t('problem')}
                             </Title>
                         </header>
 
@@ -71,7 +71,7 @@ export default function ProposalSolution({
                                             : '0',
                                     }}
                                 >
-                                    <Markdown>{solution}</Markdown>
+                                    <Markdown>{solution || problem}</Markdown>
                                 </div>
                             </ExpandableContent>
                         </div>
