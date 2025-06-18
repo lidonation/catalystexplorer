@@ -4,7 +4,7 @@ import ProposalsTable from './ProposalComparisonTable';
 
 export default function ProposalComparison() {
     return (
-        <ModalLayout name="proposal-comparison">
+        <ModalLayout name="proposal-comparison" zIndex='z-60'>
             <ProposalComparisonProvider>
                 <ProposalsTable />
             </ProposalComparisonProvider>

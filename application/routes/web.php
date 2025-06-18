@@ -47,6 +47,9 @@ Route::localized(
             Route::get('/charts', [ProposalsController::class, 'charts'])
                 ->name('charts');
 
+            Route::get('/csvs', fn() => Inertia::render('ComingSoon', ['context' => 'CSVs']))
+                ->name('csvs');
+
             Route::get('/{slug}', function ($slug) {
                 return redirect()->route('proposals.group.details', ['slug' => $slug]);
             })->name('redirect');
@@ -234,6 +237,8 @@ Route::localized(
                         ->name('signMessage');
                     Route::post('/save-signature', [SignatureWorkflowController::class, 'saveSignature'])
                         ->name('saveSignature');
+                    Route::post('/save-wallet-name', [SignatureWorkflowController::class, 'saveWalletName'])
+                        ->name('saveWalletName');
                 });
 
             Route::get('/login', [WorkflowController::class, 'auth'])
@@ -286,7 +291,7 @@ Route::localized(
         });
 
         Route::prefix('/milestones')->as('milestones.')->group(function () {
-            Route::get('/', [MilestoneController::class, 'index'])
+            Route::get('/', fn() => Inertia::render('ComingSoon', props: ['context' => 'Milestones Lists']))
                 ->name('index');
         });
 
@@ -301,11 +306,6 @@ Route::localized(
                 ->where('review', '[0-9]+');
 
             Route::get('/', [ReviewsController::class, 'index'])
-                ->name('index');
-        });
-
-        Route::prefix('numbers')->as('numbers.')->group(function () {
-            Route::get('/', [NumbersController::class, 'index'])
                 ->name('index');
         });
 
@@ -392,6 +392,20 @@ Route::localized(
                 ->name('index');
         });
 
+        Route::prefix('/reviewers')->as('reviewers.')->group(function () {
+            Route::get('/', fn() => Inertia::render('ComingSoon', ['context' => 'Reviewer List']))
+                ->name('index');
+            Route::get('/{reviewer}', fn() => Inertia::render('ComingSoon', ['context' => 'Reviewer Page']))
+                ->name('view');
+        });
+
+        Route::prefix('/reports')->as('reports.')->group(function () {
+            Route::get('/', fn() => Inertia::render('ComingSoon', ['context' => 'Reports List']))
+                ->name('index');
+            Route::get('/{report}', fn() => Inertia::render('ComingSoon', ['context' => 'Report Page']))
+                ->name('view');
+        });
+
         // Cardano Budget Proposals
         Route::prefix('/cardano')->as('cardano.')
             ->group(function () {
@@ -401,6 +415,18 @@ Route::localized(
         Route::get('/map', function () {
             return Inertia::render('Map');
         });
+
+        Route::prefix('numbers')->as('numbers.')
+            ->group(function () {
+                Route::get('/impact', fn() => Inertia::render(component: 'ComingSoon', props: ['context' => 'Impact Numbers']))->name('impact');
+                Route::get('/spending', fn() => Inertia::render('ComingSoon', props: ['context' => 'Spending Numbers']))->name('spending');
+                Route::get('/general', fn() => Inertia::render('ComingSoon', props: ['context' => 'General Numbers']))->name('general');
+            });
+
+        Route::prefix('ccv4')->as('ccv4.')
+            ->group(function () {
+                Route::get('/', fn() => Inertia::render(component: 'ComingSoon', props: ['context' => 'CCV4 Data']))->name('index');
+            });
     }
 
 );
