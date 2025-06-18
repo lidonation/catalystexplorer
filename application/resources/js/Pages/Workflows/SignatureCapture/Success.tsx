@@ -15,6 +15,7 @@ const Success: React.FC = () => {
     return (
         <WorkflowLayout>
             <Content>
+            <div className="flex items-center justify-center min-h-[60vh] pb-8">
                 <div className="bg-background mx-auto my-8 flex h-full w-[calc(100%-4rem)] items-center justify-center rounded-lg p-8 md:w-3/4">
                     <div className="flex h-full w-full flex-col items-center justify-center rounded p-8 md:w-3/4 md:shadow-sm">
                         <Title level="4" className="mx-4 text-center font-bold">
@@ -29,6 +30,7 @@ const Success: React.FC = () => {
                         </Paragraph>
                     </div>
                 </div>
+            </div>
             </Content>
             <Footer>
                 <PrimaryLink
