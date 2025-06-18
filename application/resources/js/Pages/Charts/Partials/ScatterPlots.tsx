@@ -9,6 +9,7 @@ interface CustomScatterPlotDatum {
     x: number;
     y: number;
     fund: string | number;
+    year?: string | number;
 }
 
 interface ScatterChartProps {
@@ -16,6 +17,7 @@ interface ScatterChartProps {
     title?: string;
     xAxisLabel?: string;
     yAxisLabel?: string;
+    viewBy?: 'fund' | 'year';
 }
 
 const ScatterPlot: React.FC<ScatterChartProps> = ({
@@ -23,6 +25,7 @@ const ScatterPlot: React.FC<ScatterChartProps> = ({
     title,
     xAxisLabel,
     yAxisLabel,
+    viewBy
 }) => {
     const { t } = useTranslation();
 
@@ -32,8 +35,8 @@ const ScatterPlot: React.FC<ScatterChartProps> = ({
 
     const defaultColors = ['#4fadce', '#ee8434', '#16B364'];
 
-    const fundLabels = chartData.map((item: any) => item.fund);
-    const labelToIndex = (label: any) => fundLabels.indexOf(label);
+    const optionLabels = chartData.map((item: any) => viewBy === 'fund' ? `Fund ${item.fund}` : item.year);
+    const labelToIndex = (label: any) => optionLabels.indexOf(label);
 
     useEffect(() => {
         const handleResize = () => {
@@ -50,25 +53,28 @@ const ScatterPlot: React.FC<ScatterChartProps> = ({
         {
             id: 'Total Proposals',
             data: chartData.map((item: any) => ({
-                x: labelToIndex(item.fund),
-                y: item.totalProposals,
+                x: viewBy === 'fund' ? labelToIndex(`Fund ${item.fund}`) : labelToIndex(item.year),
+                y: item.totalProposals ?? 0,
                 fund: item.fund,
+                year: item.year,
             })) as CustomScatterPlotDatum[],
         },
         {
             id: 'Funded Proposals',
             data: chartData.map((item: any) => ({
-                x: labelToIndex(item.fund),
-                y: item.fundedProposals,
+                x: viewBy === 'fund' ? labelToIndex(`Fund ${item.fund}`) : labelToIndex(item.year),
+                y: item.fundedProposals ?? 0,
                 fund: item.fund,
+                year: item.year,
             })) as CustomScatterPlotDatum[],
         },
         {
             id: 'Completed Proposals',
             data: chartData.map((item: any) => ({
-                x: labelToIndex(item.fund),
-                y: item.completedProposals,
+                x: viewBy === 'fund' ? labelToIndex(`Fund ${item.fund}`) : labelToIndex(item.year),
+                y: item.completedProposals ?? 0,
                 fund: item.fund,
+                year: item.year,
             })) as CustomScatterPlotDatum[],
         },
     ];
@@ -137,17 +143,17 @@ const ScatterPlot: React.FC<ScatterChartProps> = ({
                     xScale={{
                         type: 'linear',
                         min: 0,
-                        max: fundLabels.length - 1,
+                        max: optionLabels.length - 1,
                     }}
-                    xFormat={(x) => fundLabels[Number(x)] ?? x}
+                    xFormat={(x) => optionLabels[Number(x)] ?? x}
                     yScale={{ type: 'linear', min: 'auto', max: 'auto' }}
                     colors={defaultColors}
                     blendMode="normal"
                     nodeSize={10}
                     axisBottom={{
-                        tickValues: fundLabels.map((_: any, i: any) => i),
-                        format: (v) => fundLabels[v],
-                        legend: xAxisLabel || 'Fund',
+                        tickValues: optionLabels.map((_: any, i: any) => i),
+                        format: (v) => optionLabels[v],
+                        legend: xAxisLabel || viewBy === 'fund' ? t('charts.fund') : t('charts.year'),
                         legendPosition: 'middle',
                         legendOffset: 46,
                     }}
@@ -170,7 +176,9 @@ const ScatterPlot: React.FC<ScatterChartProps> = ({
                                     level="3"
                                     className="text-lg font-semibold"
                                 >
-                                    {nodeData.fund}
+                                    {viewBy === 'fund'
+                                        ? `Fund ${nodeData.fund}`
+                                        : `Year ${nodeData.year}`}
                                 </Title>
                                 <Paragraph className="text-sm">
                                     <strong>{node.serieId}</strong>:{' '}

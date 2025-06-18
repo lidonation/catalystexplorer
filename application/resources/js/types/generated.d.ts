@@ -533,6 +533,7 @@ hash: string | null;
 tx_hash: string;
 block: string;
 witness: string | null;
+stake_key: string | null;
 type: string | null;
 epoch: number | null;
 stake_pub: string | null;
