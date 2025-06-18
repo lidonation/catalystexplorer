@@ -339,7 +339,9 @@ function AppNavigation() {
                                         {numbersOpen && (
                                             <div className="bg-background rounded pl-6">
                                                 <NavLinkItem
-                                                    href="#"
+                                                    href={useLocalizedRoute(
+                                                        'numbers.impact',
+                                                    )}
                                                     title={t('Impact')}
                                                     ariaLabel={`${t('impact')} ${t('link')}`}
                                                     active={false}
@@ -348,7 +350,9 @@ function AppNavigation() {
                                                 </NavLinkItem>
 
                                                 <NavLinkItem
-                                                    href="#"
+                                                    href={useLocalizedRoute(
+                                                        'numbers.spending',
+                                                    )}
                                                     title={t('Spending')}
                                                     ariaLabel={`${t('spending')} ${t('link')}`}
                                                     active={false}
@@ -357,7 +361,9 @@ function AppNavigation() {
                                                 </NavLinkItem>
 
                                                 <NavLinkItem
-                                                    href="#"
+                                                    href={useLocalizedRoute(
+                                                        'numbers.general',
+                                                    )}
                                                     title={t('General')}
                                                     ariaLabel={`${t('general')} ${t('link')}`}
                                                     active={false}
@@ -406,7 +412,9 @@ function AppNavigation() {
                                         {moreOpen && (
                                             <div className="bg-background rounded-md pl-7">
                                                 <NavLinkItem
-                                                    href="#"
+                                                    href={route(
+                                                        'api.index',
+                                                    )}
                                                     title="API"
                                                     ariaLabel={`${t('API')} ${t('link')}`}
                                                     active={false}
@@ -426,7 +434,9 @@ function AppNavigation() {
                                                 </NavLinkItem>
 
                                                 <NavLinkItem
-                                                    href="#"
+                                                    href={useLocalizedRoute(
+                                                        'reviewers.index',
+                                                    )}
                                                     title="Reviewers"
                                                     ariaLabel={`${t('reviewers')} ${t('link')}`}
                                                     active={false}
@@ -435,7 +445,9 @@ function AppNavigation() {
                                                 </NavLinkItem>
 
                                                 <NavLinkItem
-                                                    href="#"
+                                                    href={useLocalizedRoute(
+                                                        'milestones.index',
+                                                    )}
                                                     title="Milestones"
                                                     ariaLabel={`${t('milestones')} ${t('link')}`}
                                                     active={false}
@@ -444,7 +456,9 @@ function AppNavigation() {
                                                 </NavLinkItem>
 
                                                 <NavLinkItem
-                                                    href="#"
+                                                    href={useLocalizedRoute(
+                                                        'reports.index',
+                                                    )}
                                                     title="Monthly Reports"
                                                     ariaLabel={`${t('monthlyReports')} ${t('link')}`}
                                                     active={false}
@@ -453,7 +467,9 @@ function AppNavigation() {
                                                 </NavLinkItem>
 
                                                 <NavLinkItem
-                                                    href="#"
+                                                    href={useLocalizedRoute(
+                                                        'proposals.csvs',
+                                                    )}
                                                     title="Proposal CSVs"
                                                     ariaLabel={`${t('CSVs')} ${t('link')}`}
                                                     active={false}
@@ -462,7 +478,9 @@ function AppNavigation() {
                                                 </NavLinkItem>
 
                                                 <NavLinkItem
-                                                    href="#"
+                                                    href={useLocalizedRoute(
+                                                        'ccv4.index',
+                                                    )}
                                                     title="CCV4 Votes"
                                                     ariaLabel={`${t('ccV4Votes')} ${t('link')}`}
                                                     active={false}
