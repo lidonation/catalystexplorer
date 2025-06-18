@@ -201,8 +201,8 @@ pest:
       --set services.meili.MEILISEARCH_KEY=$MEILISEARCH_KEY \
       --set services.app.environment=$APP_ENV \
       --set services.redis.password=$REDIS_PASSWORD \
-      --set services.app.replicaCount=$APP_REPLICAS \
-      --set services.queue.replicaCount=$QUEUE_REPLICAS \
+      # --set services.app.replicaCount=$APP_REPLICAS \
+      # --set services.queue.replicaCount=$QUEUE_REPLICAS \
       --set namespace=${KUBE_NAMESPACE} \
       --namespace="$KUBE_NAMESPACE" \
       --create-namespace

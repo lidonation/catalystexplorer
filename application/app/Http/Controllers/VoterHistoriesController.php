@@ -275,11 +275,10 @@ class VoterHistoriesController extends Controller
          */
         $user = Auth::user();
 
-        $userStakeKeys = [];
-        // Signature::where('user_id', $user->id)
-        //     ->pluck('stake_address')
-        //     ->filter()
-        //     ->toArray();
+        $userStakeKeys = Signature::where('user_id', $user->id)
+            ->pluck('stake_address')
+            ->filter()
+            ->toArray();
 
         $this->getProps($request);
         $this->queryParams = $request->validate([
