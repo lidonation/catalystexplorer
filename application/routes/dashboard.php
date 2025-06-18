@@ -63,9 +63,10 @@ Route::localized(
                 });
 
                 Route::get('/reviews', [ProfileController::class, 'myReviews'])->name('reviews');
-                Route::get('/wallets', fn () => Inertia::render('My/Wallets/Index'))->name('wallets');
-                Route::get('/wallets/{stakeKey}/lookup-json', [WalletController::class, 'lookupJson'])
-                            ->name('wallets.lookup');
+                Route::get('/wallets', [WalletController::class, 'index'])
+                            ->name('wallets');
+                Route::delete('/wallets/{stakeAddress}', [WalletController::class, 'destroy'])
+                        ->name('wallets.destroy');
             });
     }
 );
