@@ -12,7 +12,7 @@ export default function Footer({ children }: Props) {
     }
 
     return (
-        <footer className="bg-background sticky bottom-0 w-full pt-1">
+        <footer className="bg-background sticky bottom-0 w-full pt-1 mb-8">
             <div className="mt-4 flex w-full justify-between px-4 pb-4 lg:px-10 lg:pb-6">
                 {children}
             </div>

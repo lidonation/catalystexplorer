@@ -23,6 +23,7 @@ class Signature extends Model
         'stake_address',
         'signature_key',
         'wallet_provider',
+        'wallet_name',
         'user_id',
     ];
 

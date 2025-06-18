@@ -1,21 +1,15 @@
 import Title from '@/Components/atoms/Title';
-import Error404Icon from '@/Components/svgs/Error404Icon';
 import { useLocalizedRoute } from '@/utils/localizedRoute';
 import { Head, Link } from '@inertiajs/react';
 import { useTranslation } from 'react-i18next';
 
-export default function Error404() {
+export default function ComingSoon({context = ''}:{context:string}) {
     const { t } = useTranslation();
 
     return (
         <div className="bg-background-dark flex h-screen flex-col items-center justify-center gap-4">
-            <Head title="404 Not Found" />
-            <Title level='1'>404</Title>
-            <Error404Icon />
-            <p className="text-content mt-4 flex flex-col items-center gap-2 text-sm md:text-xl">
-                <span>{t('error404.mainText')}</span>
-                <span>{t('error404.subText')}</span>
-            </p>
+            <Head title="Comming Soon" />
+            <Title level="1">{context+' '}Comming Soon...</Title>
             <div className="flex justify-center p-4">
                 <div className="grid grid-cols-2 gap-4 md:grid-cols-3">
                     <Link
