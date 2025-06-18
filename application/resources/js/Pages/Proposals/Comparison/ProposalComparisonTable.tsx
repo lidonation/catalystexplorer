@@ -20,8 +20,9 @@ import ComparisonTableFilters from './Partials/ComparisonTableFilters';
 import SortableProposalColumn from './SortableProposalColumn';
 import { useState } from 'react';
 import RowVisibilitySelector from './Partials/RowVisibilitySelector';
-import { useKeyValueStore } from '@/Hooks/useKeyValueStore';
-import { keyValueStoreEnums } from '@/enums/key-value-store-enums';
+import { useUserSetting } from '@/Hooks/useUserSettings';
+import { userSettingEnums } from '@/enums/user-setting-enums';
+
 
 
 export default function ProposalsTable() {
@@ -42,6 +43,11 @@ export default function ProposalsTable() {
             label: t('proposalComparison.tableHeaders.title'),
             height: 'h-32',
         },
+         {
+            id: 'campaign',
+            label: t('proposalComparison.tableHeaders.campaign'),
+            height: 'h-16',
+        },
         {
             id: 'fund',
             label: t('proposalComparison.tableHeaders.fund'),
@@ -51,6 +57,10 @@ export default function ProposalsTable() {
             id: 'status',
             label: t('proposalComparison.tableHeaders.status'),
             height: 'h-16',
+        },
+        {id: 'problem',
+            label: t('proposalComparison.tableHeaders.problem'),
+            height: 'h-42',
         },
         {
             id: 'solution',
@@ -77,6 +87,11 @@ export default function ProposalsTable() {
             label: t('proposalComparison.tableHeaders.team'),
             height: 'h-16',
         },
+         {
+            id: 'opensource',
+            label: t('proposalComparison.tableHeaders.openSource'),
+            height: 'h-16',
+        },
         {
             id: ACTION_ROW_ID,
             label: t('proposalComparison.tableHeaders.action'),
@@ -86,12 +101,12 @@ export default function ProposalsTable() {
 
     const controllableRows = rows.filter(row => !EXCLUDED_FROM_VISIBILITY.includes(row.id));
 
-    const {
+     const {
         value: visibleRows,
         setValue: setVisibleRows,
         isLoading: isLoadingPreferences
-    } = useKeyValueStore<string[]>(
-        keyValueStoreEnums.PROPOSAL_COMPARISON_VISIBLE_ROWS,
+    } = useUserSetting<string[]>(
+        userSettingEnums.PROPOSAL_COMPARISON,
         controllableRows.map(row => row.id)
     );
     

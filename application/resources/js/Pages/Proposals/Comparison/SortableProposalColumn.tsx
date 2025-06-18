@@ -11,6 +11,7 @@ import ProposalFundingStatus from '../Partials/ProposalFundingStatus';
 import ColumnHeader from './Partials/ColumnHeader';
 import ProposalData = App.DataTransferObjects.ProposalData;
 import ProposalSolution from '../Partials/ProposalSolution';
+import Paragraph from '@/Components/atoms/Paragraph';
 
 export default function SortableProposalColumn({
     proposal,
@@ -46,6 +47,11 @@ export default function SortableProposalColumn({
             height: 'h-32',
         },
         {
+            id: 'campaign',
+            label: t('proposalComparison.tableHeaders.campaign'),
+            height: 'h-16',
+        },
+        {
             id: 'fund',
             label: t('proposalComparison.tableHeaders.fund'),
             height: 'h-16',
@@ -54,6 +60,11 @@ export default function SortableProposalColumn({
             id: 'status',
             label: t('proposalComparison.tableHeaders.status'),
             height: 'h-16',
+        },
+        {
+            id: 'problem',
+            label: t('proposalComparison.tableHeaders.problem'),
+            height: 'h-42',
         },
         {
             id: 'solution',
@@ -81,11 +92,20 @@ export default function SortableProposalColumn({
             height: 'h-16',
         },
         {
+            id: 'opensource',
+            label: t('proposalComparison.tableHeaders.openSource'),
+            height: 'h-16',
+        },
+        {
             id: 'action',
             label: t('proposalComparison.tableHeaders.action'),
             height: 'h-16',
         },
     ];
+
+    const getRowData = (rowId: string) => {
+        return rows.find(row => row.id === rowId);
+    };
 
     const style = {
         transform: CSS.Transform.toString(transform),
@@ -114,13 +134,13 @@ export default function SortableProposalColumn({
         >
             {/* Reorder */}
             <div
-                className={`${rows[0].height} !bg-background-lighter border-gray-light flex items-center justify-between border-r border-b p-4 ${isLast ? 'rounded-tr-lg' : ''} `}
+                className={`${getRowData('reorder')?.height} !bg-background-lighter border-gray-light flex items-center justify-between border-r border-b p-4 ${isLast ? 'rounded-tr-lg' : ''} `}
             >
                 <div className="flex cursor-move items-center gap-1">
                     <Grab className="text-dark h-4 w-4" />
-                    <span className="text-dark">
+                    <Paragraph size="sm" className="text-dark">
                         {t('proposalComparison.tableHeaders.reorder')}
-                    </span>
+                    </Paragraph>
                 </div>
                 <MinusSquareIcon
                     onClick={() => handleRemove()}
@@ -131,16 +151,27 @@ export default function SortableProposalColumn({
             {/* Title */}
             {isRowVisible('title') && (
                 <div
-                    className={`${rows[1].height} border-gray-light flex items-center border-r border-b p-4`}
+                    className={`${getRowData('title')?.height} border-gray-light flex items-center border-r border-b p-4`}
                 >
                     <ColumnHeader proposal={proposal} />
+                </div>
+            )}
+
+            {/* Campaign */}
+            {isRowVisible('campaign') && (
+                <div
+                    className={`${getRowData('campaign')?.height} border-gray-light flex items-center border-r border-b p-4`}
+                >
+                    <Paragraph size="md">
+                        {proposal?.campaign?.title || 'N/A'}
+                    </Paragraph>
                 </div>
             )}
 
             {/* Fund */}
             {isRowVisible('fund') && (
                 <div
-                    className={`${rows[2].height} border-gray-light flex items-center border-r border-b p-4`}
+                    className={`${getRowData('fund')?.height} border-gray-light flex items-center border-r border-b p-4`}
                 >
                     <span className="text-dark-persist bg-content-light rounded-md px-2 py-1 text-xs">
                         {proposal?.fund?.title}
@@ -151,19 +182,27 @@ export default function SortableProposalColumn({
             {/* Status */}
             {isRowVisible('status') && (
                 <div
-                    className={`${rows[3].height} border-gray-light flex items-center border-r border-b p-4`}
+                    className={`${getRowData('status')?.height} border-gray-light flex items-center border-r border-b p-4`}
                 >
-                    {' '}
                     <ProposalFundingStatus
                         funding_status={proposal.funding_status}
                     />
                 </div>
             )}
 
+            {/* Problem */}
+            {isRowVisible('problem') && (
+                <div
+                    className={`${getRowData('problem')?.height} border-gray-light bg-background flex items-center border-r border-b p-4`}
+                >
+                    <ProposalSolution problem={proposal.problem} />
+                </div>
+            )}
+
             {/* Solution */}
             {isRowVisible('solution') && (
                 <div
-                    className={`${rows[4].height} border-gray-light bg-background flex items-center border-r border-b p-4`}
+                    className={`${getRowData('solution')?.height} border-gray-light bg-background flex items-center border-r border-b p-4`}
                 >
                     <ProposalSolution solution={proposal.solution} />
                 </div>
@@ -172,7 +211,7 @@ export default function SortableProposalColumn({
             {/* Funding Received */}
             {isRowVisible('funding') && (
                 <div
-                    className={`${rows[5].height} border-gray-light flex flex-col border-r border-b p-4`}
+                    className={`${getRowData('funding')?.height} border-gray-light flex flex-col border-r border-b p-4`}
                 >
                     <ProposalFundingPercentages proposal={proposal} />
                 </div>
@@ -180,8 +219,8 @@ export default function SortableProposalColumn({
 
             {/* Yes Votes */}
             {isRowVisible('yes-votes') && (
-                <div
-                    className={`${rows[6].height} border-gray-light flex items-center border-r border-b p-4`}
+                   <div
+                    className={`${getRowData('yes-votes')?.height} border-gray-light flex items-center border-r border-b p-4`}
                 >
                     <div className="flex items-center gap-1">
                         <svg
@@ -211,7 +250,7 @@ export default function SortableProposalColumn({
             {/* No Votes */}
             {isRowVisible('no-votes') && (
                 <div
-                    className={`${rows[7].height} border-gray-light flex items-center border-r border-b p-4`}
+                    className={`${getRowData('no-votes')?.height} border-gray-light flex items-center border-r border-b p-4`}
                 >
                     <div className="flex items-center gap-1">
                         <svg
@@ -241,7 +280,7 @@ export default function SortableProposalColumn({
             {/* Team */}
             {isRowVisible('team') && (
                 <div
-                    className={`${rows[8].height} border-gray-light flex items-center border-r border-b p-4`}
+                    className={`${getRowData('team')?.height} border-gray-light flex items-center border-r border-b p-4`}
                 >
                     <IdeascaleProfileUsers
                         users={proposal?.users}
@@ -252,9 +291,21 @@ export default function SortableProposalColumn({
                 </div>
             )}
 
-            {/* View  Button */}
+
+            {/* Open Source */}
+            {isRowVisible('opensource') && (
+                <div
+                    className={`${getRowData('opensource')?.height} border-gray-light flex items-center border-r border-b p-4`}
+                >
+                    <span className="text-dark-persist bg-content-light rounded-md px-2 py-1 text-xs">
+                        {proposal.opensource ? 'OpenSource' : 'Non-OpenSource'}
+                    </span>
+                </div>
+            )}
+
+            {/* View Button */}
             <div
-                className={`${rows[9].height} border-gray-light flex items-center border-r border-b p-4`}
+                className={`${getRowData('action')?.height} border-gray-light flex items-center border-r border-b p-4`}
             >
                 <PrimaryLink
                     href={proposal.link ?? '#'}
