@@ -4,7 +4,7 @@ import RadioSelector from '@/Components/atoms/RadioSelector';
 import Title from '@/Components/atoms/Title';
 import { useFilterContext } from '@/Context/FiltersContext';
 import { ParamsEnum } from '@/enums/proposal-search-params';
-import { useState } from 'react';
+import { Share2Icon } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import BarChart from './BarChart';
 import ChartCard from './ChartCard';
@@ -17,20 +17,23 @@ import StackedBarChart from './StackedBarChart';
 interface AllChartsProps {
     chartData: any;
     onEditMetrics: () => void;
+    viewBy: 'fund' | 'year';
+    onViewByChange: (value: string | null) => void;
 }
 
 export default function AllCharts({
     chartData,
     onEditMetrics,
+    viewBy,
+    onViewByChange,
 }: AllChartsProps) {
     const { getFilter } = useFilterContext();
     const selectedChartOptions = getFilter(ParamsEnum.CHART_OPTIONS) || [];
-    const [selectedItem, setSelectedItem] = useState<string | null>(null);
     const { t } = useTranslation();
     const renderBarChart = () => (
         <div>
             <ChartCard title={t('charts.barChart')}>
-                <BarChart chartData={chartData} />
+                <BarChart chartData={chartData} viewBy={viewBy} />
             </ChartCard>
         </div>
     );
@@ -38,23 +41,30 @@ export default function AllCharts({
     const renderPieChart = () => (
         <div>
             <ChartCard title={t('charts.pieChart')}>
-                <PieChart chartData={chartData} />
+                <PieChart chartData={chartData} viewBy={viewBy} />
             </ChartCard>
         </div>
     );
 
     const renderLineChart = () => (
-        <div>
-            <ChartCard title={t('charts.lineChart')}>
-                <LineChart chartData={chartData} />
-            </ChartCard>
+        <div className="bg-background flex w-full flex-col rounded-lg p-4 shadow-md md:overflow-visible overflow-x-auto">
+            <div className="mb-4 flex items-center justify-between">
+                <Title level="4" className="font-semibold">
+                    {t('charts.lineChart')}
+                </Title>
+                <div className="text-primary flex items-center gap-2">
+                    <Paragraph>{t('charts.share')}</Paragraph>
+                    <Share2Icon />
+                </div>
+            </div>
+            <LineChart chartData={chartData} viewBy={viewBy} />
         </div>
     );
 
     const renderHeatMap = () => (
         <div>
             <ChartCard title={t('charts.heatMap')}>
-                <Heatmap chartData={chartData} />
+                <Heatmap chartData={chartData} viewBy={viewBy} />
             </ChartCard>
         </div>
     );
@@ -62,7 +72,7 @@ export default function AllCharts({
     const renderScatterPlots = () => (
         <div>
             <ChartCard title={t('charts.scatterPlot')}>
-                <ScatterPlot chartData={chartData} />
+                <ScatterPlot chartData={chartData} viewBy={viewBy} />
             </ChartCard>
         </div>
     );
@@ -70,7 +80,7 @@ export default function AllCharts({
     const renderStackedBarCharts = () => (
         <div>
             <ChartCard title={t('charts.stackedBarChart')}>
-                <StackedBarChart chartData={chartData} />
+                <StackedBarChart chartData={chartData} viewBy={viewBy} />
             </ChartCard>
         </div>
     );
@@ -85,7 +95,7 @@ export default function AllCharts({
     };
 
     return (
-        <div className="relative min-h-screen pb-20 px-6">
+        <div className="relative min-h-screen px-6 pb-20">
             <div className="my-4 flex flex-col items-start justify-between md:flex-row md:items-center">
                 <Title level="2" className="mb-4 font-bold">
                     {t('charts.viewCharts')}
@@ -99,14 +109,14 @@ export default function AllCharts({
                             { label: t('charts.fund'), value: 'fund' },
                             { label: t('charts.year'), value: 'year' },
                         ]}
-                        selectedItem={selectedItem}
-                        setSelectedItem={setSelectedItem}
-                        className='focus:border-primary focus:ring-primary'
+                        selectedItem={viewBy}
+                        setSelectedItem={onViewByChange}
+                        className="focus:border-primary focus:ring-primary"
                     />
                 </div>
             </div>
 
-            <div className="mb-4 flex md:justify-end justify-start">
+            <div className="mb-4 flex justify-start md:justify-end">
                 <PrimaryButton onClick={onEditMetrics} className="px-6 py-3">
                     {t('charts.edit')}
                 </PrimaryButton>

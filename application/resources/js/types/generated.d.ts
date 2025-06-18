@@ -14,17 +14,16 @@ hero_image_url: string;
 export type BookmarkCollectionData = {
 hash: string | null;
 user_id?: number;
-parent_id?: number;
 title?: string;
 content?: string;
 color?: string;
 allow_comments?: boolean;
 visibility?: string;
 status?: string;
-type?: string;
-type_id?: number;
+model_type?: string;
+model_id?: number;
 items_count?: number;
-type_type?: string;
+type?: string;
 created_at?: string;
 updated_at?: string;
 deleted_at?: string;
@@ -39,6 +38,7 @@ amount_received_ADA?: number;
 amount_requested_ADA?: number;
 amount_received_USD?: number;
 author?: App.DataTransferObjects.UserData;
+fund?: App.DataTransferObjects.FundData;
 };
 export type BookmarkItemData = {
 hash: string | null;
@@ -527,6 +527,7 @@ hash: string | null;
 tx_hash: string;
 block: string;
 witness: string | null;
+stake_key: string | null;
 type: string | null;
 epoch: number | null;
 stake_pub: string | null;
@@ -569,6 +570,7 @@ export type UserSettingData = {
 language: string;
 theme: string;
 viewChartBy: string;
+proposalComparison: Array<any>;
 };
 export type VoterData = {
 id: number;

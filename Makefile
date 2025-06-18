@@ -75,6 +75,12 @@ ts-transform:
 db-schema:
 	$(sail) node --loader ts-node/esm resources/js/scripts/generateDbSchema.ts
 
+.PHONY: db-forward-preview
+db-forward-preview:
+	kubect port-forward
+
+	
+
 .PHONY: devtools-install
 devtools-install:
 	docker run --rm --interactive --tty \

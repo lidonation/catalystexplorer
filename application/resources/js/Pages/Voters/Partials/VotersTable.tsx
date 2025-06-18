@@ -20,7 +20,7 @@ interface VotersTableProps {
 }
 
 const TableHeader: React.FC<{ label: string; isLastColumn?: boolean }> = ({ label, isLastColumn }) => (
-    <th className={`border-gray-persist/20 text-gray-persist ${isLastColumn ? 'border-dark-light' : 'bg-background-lighter border-r'} border-b px-4 py-3 text-left font-medium`}>
+    <th className={`bg-background-lighter border-dark-light text-gray-persist ${isLastColumn ? '' : 'border-r'} border-b px-4 py-3 text-left font-medium`}>
         {label}
     </th>
 );
@@ -30,7 +30,7 @@ const TableCell: React.FC<{
     className?: string;
     isLastColumn?: boolean;
 }> = ({ children, className = '', isLastColumn }) => (
-    <td className={`border-gray-persist/20 text-content ${isLastColumn ? '' : 'border-r'} border-b px-4 py-4 ${className}`}>
+    <td className={`border-dark-light text-content ${isLastColumn ? '' : 'border-r'} border-b px-4 py-4 ${className}`}>
         {children}
     </td>
 );
@@ -177,9 +177,9 @@ const VotersTable: React.FC<VotersTableProps> = ({
 
             {(!shouldShowNoRecords()) && (
                 <>
-                  <div className="overflow-x-auto">
+                  <div className="overflow-x-auto bg-background rounded-lg ">
                     <table className="w-max min-w-full">
-                        <thead className="bg-background-lighter whitespace-nowrap">
+                        <thead className="border-dark-light whitespace-nowrap">
                             <tr>
                                 <TableHeader label={t('voter.table.voterId')} />
                                 <TableHeader label={t('voter.table.stakeAddress')} />
@@ -224,7 +224,7 @@ const VotersTable: React.FC<VotersTableProps> = ({
                     {voters &&
                         voters.data &&
                         voters.data.length > 0 && (
-                            <div className="mt-4 px-4 border-dark-light rounded-b-lg">
+                            <div className="mt-4 bg-background px-4 border-dark-light rounded-b-lg">
                                 <Paginator
                                     pagination={voters}
                                     linkProps={{

@@ -1,20 +1,21 @@
-import Paragraph from '@/Components/atoms/Paragraph';
 import PrimaryButton from '@/Components/atoms/PrimaryButton';
 import PrimaryLink from '@/Components/atoms/PrimaryLink';
+import Textarea from '@/Components/atoms/Textarea';
+import ValueLabel from '@/Components/atoms/ValueLabel';
+import InputError from '@/Components/InputError';
 import { StepDetails } from '@/types';
 import {
     generateLocalizedRoute,
     useLocalizedRoute,
 } from '@/utils/localizedRoute';
 import { useForm } from '@inertiajs/react';
+import { ChevronLeft } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ChevronLeft} from 'lucide-react';
-import React, { useState, useEffect } from 'react';
 import Content from '../Partials/WorkflowContent';
 import Footer from '../Partials/WorkflowFooter';
 import Nav from '../Partials/WorkflowNav';
 import WorkflowLayout from '../WorkflowLayout';
-import ValueLabel from '@/Components/atoms/ValueLabel';
 
 interface Step4Props {
     stepDetails: StepDetails[];
@@ -27,7 +28,7 @@ const Step4: React.FC<Step4Props> = ({
     stepDetails,
     activeStep,
     rationale = '',
-    bookmarkHash
+    bookmarkHash,
 }) => {
     const form = useForm({
         rationale: rationale || '',
@@ -55,21 +56,27 @@ const Step4: React.FC<Step4Props> = ({
 
     const validateForm = () => {
         const newErrors: Record<string, string> = {};
-        
+
         if (form.data.rationale.length < 200) {
-            newErrors.rationale = t('workflows.voterList.errors.rationaleLength');
+            newErrors.rationale = t(
+                'workflows.voterList.errors.rationaleLength',
+            );
         }
-        
+
         setErrors(newErrors);
         setIsFormValid(form.data.rationale.trim().length >= 200);
     };
 
-    const handleRationaleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const handleRationaleChange = (
+        e: React.ChangeEvent<HTMLTextAreaElement>,
+    ) => {
         form.setData('rationale', e.target.value);
     };
 
     const submitForm = () => {
-        form.post(generateLocalizedRoute('workflows.createVoterList.saveRationales'));
+        form.post(
+            generateLocalizedRoute('workflows.createVoterList.saveRationales'),
+        );
     };
 
     return (
@@ -77,39 +84,33 @@ const Step4: React.FC<Step4Props> = ({
             <Nav stepDetails={stepDetails} activeStep={activeStep} />
 
             <Content>
-                <div className="flex bg-background items-center justify-center mx-auto px-4 sm:px-6">
-                    <form className="rounded-lg shadow-md w-full max-w-md p-4 sm:p-6 border border-gray-200 my-4 sm:my-6">
-                        <div
-                            onKeyDown={e => e.stopPropagation()}
-                            onClick={e => e.stopPropagation()}
-                            onFocus={e => e.stopPropagation()}
-                            className="mb-4">
-                            <ValueLabel
-                                className="mb-2 text-content"
-                            >
+                <div className="flex h-full items-center justify-center px-8 py-12">
+                    <div className="bg-background border-gray-light mx-6 w-full max-w-3xl space-y-6 rounded-lg border p-6 shadow-sm lg:p-8">
+                        <div className="mt-3 flex flex-col gap-2">
+                            <ValueLabel className="text-content">
                                 {t('workflows.voterList.rationale.label')}
                             </ValueLabel>
-                            <textarea
+                            <Textarea
+                                placeholder={t(
+                                    'workflows.voterList.rationale.placeholder',
+                                )}
                                 id="rationale"
+                                name="rationale"
+                                minLengthValue={200}
+                                minLengthEnforced
+                                required
                                 value={form.data.rationale}
-                                onChange={handleRationaleChange}
-                                className="w-full rounded-lg bg-background border border-gray-300 px-3 sm:px-4 py-2 text-sm sm:text-base focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/50 placeholder:text-sm"
-                                placeholder={t('workflows.voterList.rationale.placeholder')}
-                                rows={6}
+                                onChange={(e) =>
+                                    form.setData('rationale', e.target.value)
+                                }
+                                className="h-30 w-full rounded-lg px-4 py-2"
                             />
-                            <div className="flex justify-between items-center mt-1">
-                                <Paragraph size="sm" className="text-gray-persist text-[0.75rem]">
-                                    {t('workflows.voterList.rationale.hint')}
-                                </Paragraph>
-                                <Paragraph size="sm" className="text-gray-persist text-[0.75rem]">
-                                    {form.data.rationale.length}/200
-                                </Paragraph>
-                            </div>
+                            <InputError message={form.errors.rationale} />
                         </div>
-                    </form>
+                    </div>
                 </div>
             </Content>
-
+            
             <Footer>
                 <PrimaryLink
                     href={prevStep}

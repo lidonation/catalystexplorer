@@ -18,9 +18,6 @@ final class BookmarkCollectionData extends Data
         public ?int $user_id,
 
         #[TypeScriptOptional]
-        public ?int $parent_id,
-
-        #[TypeScriptOptional]
         public ?string $title,
 
         #[TypeScriptOptional]
@@ -39,16 +36,16 @@ final class BookmarkCollectionData extends Data
         public ?string $status,
 
         #[TypeScriptOptional]
-        public ?string $type,
+        public ?string $model_type,
 
         #[TypeScriptOptional]
-        public ?int $type_id,
+        public ?int $model_id,
 
         #[TypeScriptOptional]
         public ?int $items_count,
 
         #[TypeScriptOptional]
-        public ?string $type_type,
+        public ?string $type,
 
         #[TypeScriptOptional]
         public ?string $created_at,
@@ -94,5 +91,8 @@ final class BookmarkCollectionData extends Data
 
         #[TypeScriptOptional]
         public ?UserData $author,
+
+        #[TypeScriptOptional]
+        public ?FundData $fund,
     ) {}
 }
