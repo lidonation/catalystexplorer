@@ -20,6 +20,7 @@ interface ModalLayoutProps {
     onModalClosed?: () => void;
     onModalOpened?: () => void;
     name?: string;
+    zIndex?: string;
 }
 
 interface InertiaModalProps {
@@ -42,6 +43,7 @@ const ModalLayout: React.FC<ModalLayoutProps> = ({
     onModalClosed,
     onModalOpened,
     name,
+    zIndex
 }) => {
     const modalRef = useRef<{ close: () => void }>(null);
     const {_inertiaui_modal}= usePage().props as any;
@@ -86,7 +88,7 @@ const ModalLayout: React.FC<ModalLayoutProps> = ({
 
                 return (
                     <div
-                        className={`fixed inset-0 z-60 overflow-hidden ${isOpen ? 'block' : 'hidden'}`}
+                        className={`fixed inset-0 ${zIndex} overflow-hidden ${isOpen ? 'block' : 'hidden'}`}
                     >
                         {/* Overlay */}
                          <div 

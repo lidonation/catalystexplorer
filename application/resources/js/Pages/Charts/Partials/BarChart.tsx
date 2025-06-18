@@ -6,9 +6,10 @@ import { useTranslation } from 'react-i18next';
 
 interface BarChartProps {
     chartData: any;
+    viewBy?: 'fund' | 'year';
 }
 
-const BarChart: React.FC<BarChartProps> = ({ chartData }) => {
+const BarChart: React.FC<BarChartProps> = ({ chartData, viewBy }) => {
     const { t } = useTranslation();
     const [isMobile, setIsMobile] = useState(false);
     const [screenWidth, setScreenWidth] = useState(typeof window !== 'undefined' ? window.innerWidth : 1200);
@@ -111,7 +112,7 @@ const BarChart: React.FC<BarChartProps> = ({ chartData }) => {
                     groupMode="grouped"
                     data={chartData}
                     keys={allKeys.map((item) => item.key)}
-                    indexBy="fund"
+                    indexBy={viewBy === 'fund' ? 'fund' : 'year'}
                     margin={config.margin}
                     padding={0.3}
                     valueScale={{ type: 'linear' }}
@@ -120,7 +121,7 @@ const BarChart: React.FC<BarChartProps> = ({ chartData }) => {
                         tickSize: 5,
                         tickPadding: 5,
                         tickRotation: config.tickRotation,
-                        legend: t('funds.fund'),
+                        legend: viewBy === 'fund' ? t('funds.funds') : t('charts.year'),
                         legendPosition: 'middle',
                         legendOffset: config.legendOffset,
                         format: (value) => {

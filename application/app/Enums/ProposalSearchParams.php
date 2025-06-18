@@ -32,6 +32,7 @@ use Spatie\Enum\Enum;
  * @method static self MIN_PROJECT_LENGTH()
  * @method static self PROJECT_LENGTH()
  * @method static self OPENSOURCE_PROPOSALS()
+ * @method static self SUBMITTED_PROPOSALS()
  * @method static self PROPOSALS()
  * @method static self PAGE()
  * @method static self IDEASCALE_PROFILES()
@@ -70,6 +71,7 @@ final class ProposalSearchParams extends Enum
             'MIN_BUDGET' => 'bmin',
             'MIN_PROJECT_LENGTH' => 'lmin',
             'OPENSOURCE_PROPOSALS' => 'op',
+            'SUBMITTED_PROPOSALS' => 'sp',
             'PROPOSALS' => 'pro',
             'PAGE' => 'p',
             'IDEASCALE_PROFILES' => 'ip',
