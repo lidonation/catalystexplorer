@@ -13,7 +13,6 @@ const ConnectWalletList = () => {
         isConnecting,
         wallets,
         connectedWallet,
-        connectedWallets, // Add this to access the wallets array
         userAddress,
         error,
         CardanoWasm,
@@ -24,13 +23,6 @@ const ConnectWalletList = () => {
     const handleConnectWallet = (walletName: string) => {
         connectWallet(walletName);
     };
-
-    const handleDisconnectWallet = () => {
-        if (connectedWallets.length > 0) {
-            disconnectWallet(connectedWallets[0].id);
-        }
-    };
-
     return (
         <div className="mx-auto flex  items-center justify-center flex-col">
             <Title level="4" className="mb-6 text-center">
@@ -70,7 +62,7 @@ const ConnectWalletList = () => {
 
                     <div className="flex justify-between space-x-4">
                         <Button
-                            onClick={handleDisconnectWallet} // Use the new handler
+                            onClick={disconnectWallet}
                             ariaLabel={t('wallet.connect.disconnect')}
                             className="group border-dark hover:border-error flex items-center justify-center rounded-lg border p-3 transition-colors"
                         >
@@ -92,7 +84,7 @@ const ConnectWalletList = () => {
 
                     {wallets.length > 0 ? (
                         <div className="grid place-items-center gap-4">
-                            {wallets.map((walletName: string) => ( // Add type annotation
+                            {wallets.map((walletName) => (
                                 <Button
                                     key={walletName}
                                     onClick={() =>
