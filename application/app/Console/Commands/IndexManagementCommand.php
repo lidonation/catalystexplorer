@@ -8,8 +8,8 @@ use Illuminate\Console\Command;
 
 class IndexManagementCommand extends Command
 {
-    protected $signature = 'search:index 
-                            {action : create|import|flush|delete|seed} 
+    protected $signature = 'search:index
+                            {action : create|import|flush|delete|seed}
                             {filter? : Optional filter for model or index}';
 
     protected $description = 'Manage search indexes for scout';
@@ -29,7 +29,7 @@ class IndexManagementCommand extends Command
     ];
 
     protected $indexes = [
-        'cx_bookmark_collection',
+        'cx_bookmark_collections',
         'cx_proposals',
         'cx_communities',
         'cx_ideascale_profiles',
@@ -47,21 +47,23 @@ class IndexManagementCommand extends Command
 
         if ($action === 'seed') {
             $this->call('db:seed', ['--class' => 'SearchIndexSeeder']);
+
             return;
         }
 
         if ($action === 'delete') {
             foreach ($this->indexes as $index) {
-                if (!$filter || str_contains(strtolower($index), $filter)) {
+                if (! $filter || str_contains(strtolower($index), $filter)) {
                     $this->info("Deleting index: $index");
                     $this->call('scout:delete-index', ['name' => $index]);
                 }
             }
+
             return;
         }
 
         foreach ($this->models as $model) {
-            if (!$filter || str_contains(strtolower($model), $filter)) {
+            if (! $filter || str_contains(strtolower($model), $filter)) {
                 switch ($action) {
                     case 'create':
                         $this->call('cx:create-search-index', ['model' => $model]);
@@ -74,6 +76,7 @@ class IndexManagementCommand extends Command
                         break;
                     default:
                         $this->error("Unsupported action: $action");
+
                         return;
                 }
             }

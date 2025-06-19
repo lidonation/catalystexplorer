@@ -27,7 +27,7 @@ class BookmarkCollection extends Model
         'comments',
     ];
 
-    public $meiliIndexName = 'cx_bookmark_collection';
+    public $meiliIndexName = 'cx_bookmark_collections';
 
     protected $appends = ['types_count', 'hash'];
 
