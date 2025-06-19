@@ -171,7 +171,7 @@ class WalletController extends Controller
         try {
             $userId = auth()->id();
             $page = $request->get('page', 1);
-            $limit = $request->get('limit', 4); // 4 wallets per page
+            $limit = $request->get('limit', 4);
 
             if (! $userId) {
                 $emptyPagination = new LengthAwarePaginator(
@@ -190,10 +190,12 @@ class WalletController extends Controller
                     'connectedWallets' => $emptyPagination->toArray(),
                 ]);
             }
+
             $signatures = DB::table('signatures')
                 ->select([
                     'stake_address',
                     DB::raw('MAX(wallet_provider) as wallet_provider'),
+                    DB::raw('MAX(wallet_name) as wallet_name'),
                     DB::raw('MAX(updated_at) as last_used'),
                     DB::raw('COUNT(*) as signature_count'),
                     DB::raw('MAX(id) as id'),
@@ -222,18 +224,25 @@ class WalletController extends Controller
                     'connectedWallets' => $emptyPagination->toArray(),
                 ]);
             }
+
             $total = $signatures->count();
             $offset = ($page - 1) * $limit;
             $paginatedSignatures = $signatures->slice($offset, $limit);
+
             $walletsData = $paginatedSignatures->map(function ($item) {
                 $stats = $this->walletInfoService->getWalletStats($item->stake_address);
                 $userAddress = ! empty($stats['payment_addresses'])
                     ? $stats['payment_addresses'][0]
                     : $item->stake_address;
 
+                $displayName = $item->wallet_name
+                    ?: ($item->wallet_provider ?: 'Unknown');
+
                 return [
                     'id' => (string) $item->id,
-                    'name' => $item->wallet_provider ?: 'unknown',
+                    'name' => $displayName,
+                    'wallet_name' => $item->wallet_name,
+                    'wallet_provider' => $item->wallet_provider,
                     'networkName' => 'Cardano PreProd',
                     'stakeAddress' => $item->stake_address,
                     'userAddress' => $userAddress,
@@ -304,9 +313,6 @@ class WalletController extends Controller
                 ], 404);
             }
 
-            Log::info("✔️ Deleted {$deletedCount} signatures for user {$userId} and stake address {$stakeAddress}");
-
-            // Return a redirect instead of JSON for Inertia
             return redirect()->route('my.wallets')->with('success', 'Wallet deleted successfully');
 
         } catch (\Exception $e) {
@@ -320,11 +326,6 @@ class WalletController extends Controller
     {
         \Log::info("Fetching wallet stats for: {$stakeKey}");
         $walletDetails = $this->walletInfoService->getWalletStats($stakeKey);
-
-        \Log::info('📦 Returning walletDetails JSON response', [
-            'stakeKey' => $stakeKey,
-            'walletDetails' => $walletDetails,
-        ]);
 
         return response()->json([
             'walletDetails' => $walletDetails,
