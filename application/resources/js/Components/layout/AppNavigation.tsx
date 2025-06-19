@@ -55,12 +55,13 @@ function AppNavigation() {
                     className={isActive ? 'text-primary-100' : 'text-dark'}
                 />
             ),
+            
         },
         {
             href: useLocalizedRoute('proposals.index'),
             title: t('proposals.proposals'),
             icon: (isActive: boolean) => (
-                <NoteIcon
+                <NoteIcon width={24}
                     className={isActive ? 'text-primary-100' : 'text-dark'}
                 />
             ),
@@ -88,7 +89,7 @@ function AppNavigation() {
         {
             title: t('numbers'),
             icon: (isActive: boolean) => (
-                <NumbersIcon
+                <NumbersIcon width={20}
                     className={isActive ? 'text-primary-100' : 'text-dark'}
                 />
             ),
@@ -144,6 +145,7 @@ function AppNavigation() {
                 />
             ),
             hideOnMyRoute: true,
+            disable:true
         },
         {
             href: useLocalizedRoute('dreps.index'),
@@ -199,7 +201,7 @@ function AppNavigation() {
         <nav className="flex h-auto flex-col justify-between" role="menu">
             <ul className="menu-gap-y flex flex-1 flex-col px-4" role="menu">
                 {filteredNavItems.map(
-                    ({ href, title, icon, hasDropdown, hasIndicator }) => {
+                    ({ href, title, icon, hasDropdown, hasIndicator,disable }) => {
                         const normalizedHref = href
                             ? stripLanguagePrefix(href)
                             : '';
@@ -246,7 +248,10 @@ function AppNavigation() {
                                         >
                                             <div className="flex items-center">
                                                 <span className="mr-3">
-                                                    <BarLineIcon className="text-dark" />
+                                                    <BarLineIcon
+                                                        width={20}
+                                                        className="text-dark"
+                                                    />
                                                 </span>
                                                 <span>{title}</span>
                                             </div>
@@ -264,7 +269,7 @@ function AppNavigation() {
                                         </div>
 
                                         {jormungandrOpen && (
-                                            <div className="bg-background pl-6">
+                                            <div className="bg-background ml-10">
                                                 <NavLinkItem
                                                     href={useLocalizedRoute(
                                                         'jormungandr.transactions.index',
@@ -272,9 +277,7 @@ function AppNavigation() {
                                                     title={t('Transactions')}
                                                     ariaLabel={`${t('transactions.title')} ${t('link')}`}
                                                     active={false}
-                                                >
-                                                    <span></span>
-                                                </NavLinkItem>
+                                                ></NavLinkItem>
 
                                                 <NavLinkItem
                                                     href={useLocalizedRoute(
@@ -283,9 +286,7 @@ function AppNavigation() {
                                                     title={t('Votes')}
                                                     ariaLabel={`${t('votes')} ${t('link')}`}
                                                     active={false}
-                                                >
-                                                    <span></span>
-                                                </NavLinkItem>
+                                                ></NavLinkItem>
 
                                                 <NavLinkItem
                                                     href={useLocalizedRoute(
@@ -294,9 +295,7 @@ function AppNavigation() {
                                                     title={t('Voters')}
                                                     ariaLabel={`${t('voters')} ${t('link')}`}
                                                     active={false}
-                                                >
-                                                    <span></span>
-                                                </NavLinkItem>
+                                                ></NavLinkItem>
                                             </div>
                                         )}
                                     </div>
@@ -319,7 +318,7 @@ function AppNavigation() {
                                         >
                                             <div className="flex items-center">
                                                 <span className="mr-3">
-                                                    <NumbersIcon className="text-dark" />
+                                                    <NumbersIcon width={20} className="text-dark" />
                                                 </span>
                                                 <span>{title}</span>
                                             </div>
@@ -337,38 +336,41 @@ function AppNavigation() {
                                         </div>
 
                                         {numbersOpen && (
-                                            <div className="bg-background rounded pl-6">
+                                            <div className="bg-background  ml-10">
                                                 <NavLinkItem
                                                     href={useLocalizedRoute(
                                                         'numbers.impact',
                                                     )}
+                                                    disable={true}
                                                     title={t('Impact')}
                                                     ariaLabel={`${t('impact')} ${t('link')}`}
                                                     active={false}
                                                 >
-                                                    <span></span>
+                                                    
                                                 </NavLinkItem>
 
                                                 <NavLinkItem
                                                     href={useLocalizedRoute(
                                                         'numbers.spending',
                                                     )}
+                                                    disable={true}
                                                     title={t('Spending')}
                                                     ariaLabel={`${t('spending')} ${t('link')}`}
                                                     active={false}
                                                 >
-                                                    <span></span>
+                                                    
                                                 </NavLinkItem>
 
                                                 <NavLinkItem
                                                     href={useLocalizedRoute(
                                                         'numbers.general',
                                                     )}
+                                                    disable={true}
                                                     title={t('General')}
                                                     ariaLabel={`${t('general')} ${t('link')}`}
                                                     active={false}
                                                 >
-                                                    <span></span>
+                                                    
                                                 </NavLinkItem>
                                             </div>
                                         )}
@@ -392,7 +394,7 @@ function AppNavigation() {
                                         >
                                             <div className="flex items-center">
                                                 <span className="mr-3">
-                                                    <MoreIcon className="text-dark" />
+                                                    <MoreIcon width={20} className="text-dark" />
                                                 </span>
                                                 <span>{title}</span>
                                             </div>
@@ -410,17 +412,14 @@ function AppNavigation() {
                                         </div>
 
                                         {moreOpen && (
-                                            <div className="bg-background rounded-md pl-7">
+                                            <div className="bg-background rounded-md pl-10">
                                                 <NavLinkItem
-                                                    href={route(
-                                                        'api.index',
-                                                    )}
+                                                    href={route('api.index')}
+                                                    disable={true}
                                                     title="API"
                                                     ariaLabel={`${t('API')} ${t('link')}`}
                                                     active={false}
-                                                >
-                                                    <span></span>
-                                                </NavLinkItem>
+                                                ></NavLinkItem>
 
                                                 <NavLinkItem
                                                     href={useLocalizedRoute(
@@ -429,64 +428,48 @@ function AppNavigation() {
                                                     title="Proposal Reviews"
                                                     ariaLabel={`${t('proposalReviews')} ${t('link')}`}
                                                     active={false}
-                                                >
-                                                    <span></span>
-                                                </NavLinkItem>
+                                                ></NavLinkItem>
 
                                                 <NavLinkItem
                                                     href={useLocalizedRoute(
                                                         'reviewers.index',
                                                     )}
+                                                    disable={true}
                                                     title="Reviewers"
                                                     ariaLabel={`${t('reviewers')} ${t('link')}`}
                                                     active={false}
-                                                >
-                                                    <span></span>
-                                                </NavLinkItem>
+                                                ></NavLinkItem>
 
-                                                <NavLinkItem
-                                                    href={useLocalizedRoute(
-                                                        'milestones.index',
-                                                    )}
-                                                    title="Milestones"
-                                                    ariaLabel={`${t('milestones')} ${t('link')}`}
-                                                    active={false}
-                                                >
-                                                    <span></span>
-                                                </NavLinkItem>
 
                                                 <NavLinkItem
                                                     href={useLocalizedRoute(
                                                         'reports.index',
                                                     )}
+                                                    disable={true}
                                                     title="Monthly Reports"
                                                     ariaLabel={`${t('monthlyReports')} ${t('link')}`}
                                                     active={false}
-                                                >
-                                                    <span></span>
-                                                </NavLinkItem>
+                                                ></NavLinkItem>
 
                                                 <NavLinkItem
                                                     href={useLocalizedRoute(
                                                         'proposals.csvs',
                                                     )}
+                                                    disable={true}
                                                     title="Proposal CSVs"
                                                     ariaLabel={`${t('CSVs')} ${t('link')}`}
                                                     active={false}
-                                                >
-                                                    <span></span>
-                                                </NavLinkItem>
+                                                ></NavLinkItem>
 
                                                 <NavLinkItem
                                                     href={useLocalizedRoute(
                                                         'ccv4.index',
                                                     )}
+                                                    disable={true}
                                                     title="CCV4 Votes"
                                                     ariaLabel={`${t('ccV4Votes')} ${t('link')}`}
                                                     active={false}
-                                                >
-                                                    <span></span>
-                                                </NavLinkItem>
+                                                ></NavLinkItem>
                                             </div>
                                         )}
                                     </div>
@@ -531,6 +514,7 @@ function AppNavigation() {
                         return (
                             <li key={href}>
                                 <NavLinkItem
+                                    disable={disable}
                                     ariaLabel={`${title} ${t('link')}`}
                                     href={href || '#'}
                                     title={title}

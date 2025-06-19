@@ -11,6 +11,7 @@ export default function NumbersIcon({
     width = 24,
     height = 24,
 }: NumbersIconProps) {
+    
     const { t } = useTranslation();
     return (
         <svg 
