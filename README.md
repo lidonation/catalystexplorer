@@ -184,7 +184,7 @@ App\Models\VoterHistory
 ```
 ##### Index Names
 ```
-cx_bookmark_collection
+cx_bookmark_collections
 cx_proposals
 cx_communities
 cx_ideascale_profiles
