@@ -62,8 +62,6 @@ export default function Index({
             setMetrics(undefined);
         };
     }, [metrics]);
-
-    console.log({proposals});
     
     return (
         <ListProvider>

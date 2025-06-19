@@ -49,7 +49,7 @@ function UserNavigation() {
         {
             href: useLocalizedRoute('my.dashboard'),
             title: t('my.dashboard'),
-            icon: <BarLineIcon className="text-dark" />,
+            icon: <BarLineIcon width={20} className="text-dark" />,
         },
         {
             href: '/knowledge-base',

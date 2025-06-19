@@ -9,7 +9,7 @@ use Illuminate\Console\Command;
 class IndexManagementCommand extends Command
 {
     protected $signature = 'search:index
-                            {action : create|import|flush|delete|seed}
+                            {action : create|import|flush|delete|seed|recreate}
                             {filter? : Optional filter for model or index}';
 
     protected $description = 'Manage search indexes for scout';
@@ -26,6 +26,7 @@ class IndexManagementCommand extends Command
         'App\\Models\\MonthlyReport',
         'App\\Models\\Transaction',
         'App\\Models\\VoterHistory',
+        'App\\Models\\Voter',
     ];
 
     protected $indexes = [
@@ -38,6 +39,7 @@ class IndexManagementCommand extends Command
         'cx_groups',
         'cx_transactions',
         'cx_voter_histories',
+        'cx_voters',
     ];
 
     public function handle()
@@ -68,12 +70,24 @@ class IndexManagementCommand extends Command
                     case 'create':
                         $this->call('cx:create-search-index', ['model' => $model]);
                         break;
+
                     case 'import':
                         $this->call('scout:import', ['model' => $model]);
                         break;
+
                     case 'flush':
                         $this->call('scout:flush', ['model' => $model]);
                         break;
+
+                    case 'delete':
+                        $this->call('scout:delete-index', ['model' => $model]);
+                        break;
+
+                    case 'recreate':
+                        $this->call('scout:delete-all-indexes');
+                        $this->call('db:seed', ['--class' => 'SearchIndexSeeder']);
+                        break;
+
                     default:
                         $this->error("Unsupported action: $action");
 

@@ -125,10 +125,7 @@ class VoterHistory extends Model
     {
         return array_merge(
             $this->load(['snapshot.fund'])->toArray(),
-            [
-                'voting_power' => $this->voting_power->voting_power,
-
-            ]
+            ['voting_power' => $this->voting_power?->voting_power]
         );
     }
 
