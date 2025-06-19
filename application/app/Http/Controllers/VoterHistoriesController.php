@@ -277,7 +277,6 @@ class VoterHistoriesController extends Controller
 
         $userStakeKeys = Signature::where('user_id', $user->id)
             ->pluck('stake_address')
-            ->filter()
             ->toArray();
 
         $this->getProps($request);
@@ -302,6 +301,7 @@ class VoterHistoriesController extends Controller
 
 
         $sort = null;
+
         if ((bool) $this->sortBy && (bool) $this->sortOrder) {
             $sort = ["$this->sortBy:$this->sortOrder"];
         }
