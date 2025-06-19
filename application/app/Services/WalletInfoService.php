@@ -207,7 +207,7 @@ class WalletInfoService
                 'filter' => ["stake_address = '{$stakeAddress}'"],
                 'limit' => $limit,
                 'offset' => $offset,
-                'sort' => ['time:desc'], // Sort by vote time descending
+                'sort' => ['time:desc'],
                 'facets' => ['choice', 'snapshot.fund.title'],
             ];
 

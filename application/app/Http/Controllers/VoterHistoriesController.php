@@ -224,7 +224,7 @@ class VoterHistoriesController extends Controller
         }
 
         $fundData = Fund::all()
-            ->filter(fn($fund) => in_array($fund->hash, $fundHashes))
+            ->filter(fn ($fund) => in_array($fund->hash, $fundHashes))
             ->pluck('title')
             ->filter();
 
@@ -296,10 +296,8 @@ class VoterHistoriesController extends Controller
 
         $filters = $this->getUserFilters();
 
-
         $stakeAddresses = implode("','", $userStakeKeys);
         $filters[] = "stake_address IN ['{$stakeAddresses}']";
-
 
         $sort = null;
         if ((bool) $this->sortBy && (bool) $this->sortOrder) {
@@ -332,7 +330,7 @@ class VoterHistoriesController extends Controller
 
         $voterHistoriesArray = [];
 
-        if (!empty($userStakeKeys)) {
+        if (! empty($userStakeKeys)) {
             $builder = $voterHistories->search($searchQuery, $searchArgs);
 
             $response = new Fluent($builder->raw());

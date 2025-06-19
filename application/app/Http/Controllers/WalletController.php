@@ -190,10 +190,12 @@ class WalletController extends Controller
                     'connectedWallets' => $emptyPagination->toArray(),
                 ]);
             }
+
             $signatures = DB::table('signatures')
                 ->select([
                     'stake_address',
                     DB::raw('MAX(wallet_provider) as wallet_provider'),
+                    DB::raw('MAX(wallet_name) as wallet_name'), // Add wallet_name
                     DB::raw('MAX(updated_at) as last_used'),
                     DB::raw('COUNT(*) as signature_count'),
                     DB::raw('MAX(id) as id'),
@@ -222,18 +224,26 @@ class WalletController extends Controller
                     'connectedWallets' => $emptyPagination->toArray(),
                 ]);
             }
+
             $total = $signatures->count();
             $offset = ($page - 1) * $limit;
             $paginatedSignatures = $signatures->slice($offset, $limit);
+
             $walletsData = $paginatedSignatures->map(function ($item) {
                 $stats = $this->walletInfoService->getWalletStats($item->stake_address);
                 $userAddress = ! empty($stats['payment_addresses'])
                     ? $stats['payment_addresses'][0]
                     : $item->stake_address;
 
+                // Determine the display name with priority: wallet_name > wallet_provider > 'Unknown'
+                $displayName = $item->wallet_name
+                    ?: ($item->wallet_provider ?: 'Unknown');
+
                 return [
                     'id' => (string) $item->id,
-                    'name' => $item->wallet_provider ?: 'unknown',
+                    'name' => $displayName, // Use wallet_name if available, fallback to wallet_provider
+                    'wallet_name' => $item->wallet_name, // Include raw wallet_name
+                    'wallet_provider' => $item->wallet_provider, // Keep wallet_provider for reference
                     'networkName' => 'Cardano PreProd',
                     'stakeAddress' => $item->stake_address,
                     'userAddress' => $userAddress,
