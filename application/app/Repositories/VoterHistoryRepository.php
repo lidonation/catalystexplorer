@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Log;
 use Laravel\Scout\Builder;
 use Meilisearch\Endpoints\Indexes;
 
-class  VoterHistoryRepository extends Repository
+class VoterHistoryRepository extends Repository
 {
     public function __construct(VoterHistory $model)
     {
@@ -60,7 +60,7 @@ class  VoterHistoryRepository extends Repository
                 } elseif ($isUnifiedSearch) {
                     $defaultArgs['attributesToSearchOn'] = ['stake_address', 'fragment_id', 'caster', 'raw_fragment'];
                 }
-               
+
                 $mergedArgs = array_merge($defaultArgs, $args);
                 if (isset($mergedArgs['sort']) && is_array($mergedArgs['sort'])) {
                     foreach ($mergedArgs['sort'] as $sortItem) {
