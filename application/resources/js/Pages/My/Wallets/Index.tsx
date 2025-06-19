@@ -42,6 +42,7 @@ const WalletsComponent: React.FC<WalletsPageProps> = ({ connectedWallets, error 
   const [expandedAddresses, setExpandedAddresses] = useState<Record<string, boolean>>({})
   const [deletingWallets, setDeletingWallets] = useState<Record<string, boolean>>({})
   const { t } = useTranslation();
+  const transactionsUrl = useLocalizedRoute('my.transactions');
 
   const handleDeleteWallet = (wallet: WalletData) => {
     setDeletingWallets(prev => ({ ...prev, [wallet.stakeAddress]: true }));
@@ -261,9 +262,12 @@ const WalletsComponent: React.FC<WalletsPageProps> = ({ connectedWallets, error 
                     </div>
 
                     <div className="px-5 py-4">
-                      <Button className="text-cyan-600 hover:text-cyan-700 text-sm font-medium">
-                        {t('my.moreWalletsDetails')}
-                      </Button>
+                      <Button
+                            onClick={() => router.visit(transactionsUrl)}
+                            className="text-cyan-600 hover:text-cyan-700 text-sm font-medium"
+                          >
+                            {t('my.moreWalletsDetails')}
+                          </Button>
                     </div>
                   </Card>
                 )
