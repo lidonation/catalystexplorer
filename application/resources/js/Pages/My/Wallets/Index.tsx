@@ -1,15 +1,18 @@
-import React, { useEffect, useState } from 'react'
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import React, { useState } from 'react'
+import PrimaryLink from '@/Components/atoms/PrimaryLink';
 import { useTranslation } from 'react-i18next';
-import Paginator from '@/Components/Paginator'
-import MyLayout from '../MyLayout'
+import { router } from '@inertiajs/react';
+import { generateLocalizedRoute, useLocalizedRoute } from '@/utils/localizedRoute';
 import Card from '@/Components/Card'
-import { useConnectWallet } from '@/Context/ConnectWalletSliderContext'
 import RecordsNotFound from '@/Layouts/RecordsNotFound'
 import Button from '@/Components/atoms/Button'
 import Paragraph from '@/Components/atoms/Paragraph'
 import CopyIcon from '@/Components/svgs/CopyIcon'
 import CheckIcon from '@/Components/svgs/CheckIcon'
+import Paginator from '@/Components/Paginator'
+import { PaginatedData } from '@/types/paginated-data'
+import { SearchParams } from '@/types/search-params'
+import { FiltersProvider } from '@/Context/FiltersContext'
 
 interface WalletStats {
   all_time_votes: number;
@@ -19,77 +22,43 @@ interface WalletStats {
   status?: boolean;
 }
 
-const Wallets = () => {
-  const {
-    connectedWallets,
-    openConnectWalletSlider,
-    disconnectWallet
-  } = useConnectWallet()
+interface WalletData {
+  id: string;
+  name: string;
+  networkName: string;
+  stakeAddress: string;
+  userAddress: string;
+  paymentAddresses?: string[];
+  walletDetails: WalletStats;
+}
 
+interface WalletsPageProps {
+  connectedWallets: PaginatedData<WalletData[]>;
+  error?: string;
+}
+
+const WalletsComponent: React.FC<WalletsPageProps> = ({ connectedWallets, error }) => {
   const [copySuccesses, setCopySuccesses] = useState<Record<string, boolean>>({})
-  const [walletStats, setWalletStats] = useState<Record<string, WalletStats>>({})
-  const [isInitializing, setIsInitializing] = useState(true)
+  const [expandedAddresses, setExpandedAddresses] = useState<Record<string, boolean>>({})
+  const [deletingWallets, setDeletingWallets] = useState<Record<string, boolean>>({})
   const { t } = useTranslation();
 
-  const PAGE_SIZE = 4
+  const handleDeleteWallet = (wallet: WalletData) => {
+    setDeletingWallets(prev => ({ ...prev, [wallet.stakeAddress]: true }));
 
-  const [currentPage, setCurrentPage] = useState(1)
-  const total = connectedWallets.length
-  const last_page = Math.max(1, Math.ceil(total / PAGE_SIZE))
-  const start = (currentPage - 1) * PAGE_SIZE
-  const end = start + PAGE_SIZE
-  const paginatedWallets = connectedWallets.slice(start, end)
+    const currentLocale = window.location.pathname.split('/')[1];
+    const deleteUrl = `/${currentLocale}/my/wallets/${encodeURIComponent(wallet.stakeAddress)}`;
 
-  const pagination = {
-    data: paginatedWallets,
-    current_page: currentPage,
-    last_page,
-    per_page: PAGE_SIZE,
-    total,
-    from: total === 0 ? 0 : start + 1,
-    to: total === 0 ? 0 : Math.min(end, total),
-  }
-
-  useEffect(() => {
-    const initTimer = setTimeout(() => {
-      setIsInitializing(false)
-    }, 800)
-
-    if (connectedWallets.length > 0) {
-      connectedWallets.forEach(wallet => {
-        if (wallet.stakeAddress && !walletStats[wallet.id]) {
-          const currentLocale = window.location.pathname.split('/')[1] || 'en';
-          const lookupUrl = `/${currentLocale}/my/wallets/${wallet.stakeAddress}/lookup-json`;
-
-          fetch(lookupUrl, {
-            headers: { Accept: 'application/json' },
-          })
-            .then((res) => res.json())
-            .then((data) => {
-              setWalletStats(prev => ({
-                ...prev,
-                [wallet.id]: data.walletDetails
-              }))
-            })
-            .catch((err) => {
-              console.error(`Failed to fetch wallet data for ${wallet.name}:`, err)
-              setWalletStats(prev => ({
-                ...prev,
-                [wallet.id]: {
-                  all_time_votes: 0,
-                  stakeAddress: wallet.stakeAddress,
-                  funds_participated: [],
-                  balance: 'N/A',
-                  status: false
-                }
-              }))
-            })
-        }
-      })
-    }
-
-    return () => clearTimeout(initTimer)
-  }, [connectedWallets])
+    router.visit(deleteUrl, {
+      method: 'delete',
+      onSuccess: () => {
+      },
+      onError: (errors) => {
+        console.error('Failed to delete wallet:', errors);
+        setDeletingWallets(prev => ({ ...prev, [wallet.stakeAddress]: false }));
+      },
+    });
+  };
 
   const handleCopy = (value: string) => {
     navigator.clipboard.writeText(value).then(() => {
@@ -100,104 +69,96 @@ const Wallets = () => {
     })
   }
 
-  const handleDisconnectWallet = (walletId: string) => {
-    disconnectWallet(walletId)
-    setWalletStats(prev => {
-      const updated = { ...prev }
-      delete updated[walletId]
-      return updated
-    })
-  }
+  const toggleAddressExpansion = (walletId: string) => {
+    setExpandedAddresses(prev => ({
+      ...prev,
+      [walletId]: !prev[walletId]
+    }));
+  };
 
   const formatWalletName = (name: string) => {
     return name.charAt(0).toUpperCase() + name.slice(1);
   }
-  if (isInitializing) {
-    return (
-      <MyLayout>
-        <div className="mx-auto px-4 py-4 max-w-8xl">
-          <div className="flex justify-between items-center mb-6">
-            <div>
-              <h1 className="text-2xl font-semibold text-content">{t('my.wallets')}</h1>
-              <Paragraph className="text-sm text-slate-500">
-                {t('my.manageWallets')}
-              </Paragraph>
-            </div>
-            <Button
-              onClick={openConnectWalletSlider}
-              className="bg-cyan-600 hover:bg-cyan-700 text-white text-sm font-medium px-4 py-2 rounded-md"
-            >
-             {t('my.addWallet')}
-            </Button>
-          </div>
-          <div className="flex justify-center items-center py-12">
-            <div className="text-sm text-slate-500">{t('my.loadWallets')}</div>
-          </div>
-        </div>
-      </MyLayout>
-    )
-  }
+
+  const hasWallets = connectedWallets?.data?.length > 0;
 
   return (
-    <MyLayout>
-      <div className="mx-auto px-4 py-4 max-w-8xl">
+      <div className="mx-auto lg:px-16 px-10 py-4 max-w-8xl">
         <div className="flex justify-between items-center mb-6">
           <div>
-            <h1 className="text-2xl font-semibold text-content">{t('my.wallets')}</h1>
+            <h1 className="text-2xl font-semibold text-content">{t('my.myWallets')}</h1>
             <Paragraph className="text-sm text-slate-500">
               {t('my.manageWallets')}
             </Paragraph>
           </div>
-          <Button
-            onClick={openConnectWalletSlider}
-            className="bg-cyan-600 hover:bg-cyan-700 text-white text-sm font-medium px-4 py-2 rounded-md"
-          >
-            {t('my.addWallet')}
-          </Button>
+          <PrimaryLink
+              className="lg:text-md mb-4 ml-auto px-4 py-2 text-sm text-nowrap"
+              href={useLocalizedRoute('workflows.signature.index', {
+                  step: 1,
+              })} >
+              {`+ ${t('my.connectWallet')}`}
+          </PrimaryLink>
         </div>
 
-        {connectedWallets.length === 0 ? (
+        {error && (
+          <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
+            <p className="text-red-800">{error}</p>
+          </div>
+        )}
+
+        {!hasWallets ? (
           <div className="flex flex-col items-center justify-center py-20">
             <RecordsNotFound />
           </div>
         ) : (
           <>
             <div className="space-y-6">
-              {paginatedWallets.map((wallet) => {
-                const stats = walletStats[wallet.id]
+              {connectedWallets.data.map((wallet) => {
+                const stats = wallet.walletDetails;
+                const paymentAddresses = wallet.paymentAddresses || [];
+                const isExpanded = expandedAddresses[wallet.id];
+                const isDeleting = deletingWallets[wallet.stakeAddress] || false;
+                const MAX_VISIBLE_ADDRESSES = 2;
+                const hasMoreAddresses = paymentAddresses.length > MAX_VISIBLE_ADDRESSES;
+                const visibleAddresses = isExpanded
+                  ? paymentAddresses
+                  : paymentAddresses.slice(0, MAX_VISIBLE_ADDRESSES);
 
                 return (
                   <Card
                     key={wallet.id}
-                    className="bg-white rounded-xl shadow-[0px_3px_4px_0px_rgba(0,0,0,0.03)]"
+                    className={`bg-white rounded-xl shadow-[0px_3px_4px_0px_rgba(0,0,0,0.03)] ${
+                        isDeleting ? 'opacity-50 pointer-events-none' : ''
+                      }`}
                   >
                     <div className="flex justify-between items-center h-14 px-5 border-b border-gray-100">
                       <div className="flex items-center space-x-3">
                         <h2 className="text-base font-semibold text-slate-900 dark:text-content">
                           {formatWalletName(wallet.name)}
                         </h2>
-                        <span className="px-2 py-1 bg-blue-100 text-blue-800 text-xs font-medium rounded-full">
-                          {wallet.networkName}
-                        </span>
                       </div>
                       <Button
-                        onClick={() => handleDisconnectWallet(wallet.id)}
-                        className="bg-red-500 hover:bg-red-600 text-white text-sm font-medium px-5 py-2 rounded-md"
+                        onClick={() => handleDeleteWallet(wallet)}
+                        disabled={isDeleting}
+                        className={`text-white text-sm font-medium px-5 py-2 rounded-md ${
+                            isDeleting
+                              ? 'bg-gray-400 cursor-not-allowed'
+                              : 'bg-red-500 hover:bg-red-600'
+                          }`}
                       >
-                        <Paragraph className="text-3 text-white group-hover:text-error">
-                                                {t('wallet.connect.disconnect')}
+                        <Paragraph className="text-3 text-white">
+                          {isDeleting ? (t('my.deleteWallet') ) : t('my.deleteWallet')}
                         </Paragraph>
                       </Button>
                     </div>
-
                     <div className="divide-y divide-gray-100 px-5 text-sm">
                       <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-10 gap-y-4 py-4">
                         <WalletItem
                           label={t('my.balance')}
-                          value={stats?.balance || 'Loading...'}
+                          value={stats?.balance}
                         />
                         <WalletItem
-                        label={t('transactions.drepStatus')}>
+                        label={t('transactions.drepStatus') }>
                           <span
                             className={`px-2 py-0.5 text-xs font-medium rounded-md outline outline-1 outline-offset-[-1px] ${
                               stats?.status
@@ -205,7 +166,7 @@ const Wallets = () => {
                                 : 'bg-red-100 text-red-600 outline-red-300/50'
                             }`}
                           >
-                            {stats ? (stats.status ? 'Active' : 'Inactive') : 'Loading...'}
+                            {stats?.status ? 'Active' : 'Inactive'}
                           </span>
                         </WalletItem>
                       </div>
@@ -214,24 +175,25 @@ const Wallets = () => {
                         <WalletItem
                           label={t('transactions.allTimeVotes')}
                           badge
-                          value={stats ? `${stats.all_time_votes.toLocaleString()} votes` : 'Loading...'}
+                          value={stats ? `${stats.all_time_votes.toLocaleString()} votes` : '0 votes'}
                         />
                         <WalletItem
                           label={t('transactions.fundsParticipated')}
                           badge
-                          value={stats ? (stats.funds_participated?.length || 0).toString() : 'Loading...'}
+                          value={stats ? (stats.funds_participated?.length || 0).toString() : '0'}
                         />
                       </div>
+
                       <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-10 gap-y-4 py-4">
-                        <WalletItem label={t('transactions.table.stakeAddress')}>
+                        <WalletItem label={t('transactions.table.stakeAddress') || 'Stake Address'}>
                           <div className="flex items-center space-x-2 min-w-0">
                             <span className="font-mono text-sm text-slate-800 dark:text-content font-medium truncate">
-                              {wallet.stakeAddress || 'N/A'}
+                              {wallet.stakeAddress}
                             </span>
                             {wallet.stakeAddress && (
                               <Button
                                 onClick={() => handleCopy(wallet.stakeAddress)}
-                                className="text-content-light hover:text-content p-1 hover:bg-gray-100 rounded"
+                                className="text-content  hover:text-content p-1 hover:bg-gray-100 rounded"
                               >
                                 {copySuccesses[wallet.stakeAddress] ? (
                                   <CheckIcon className="h-4 w-4 text-green-600" />
@@ -243,71 +205,76 @@ const Wallets = () => {
                           </div>
                         </WalletItem>
 
-                        <WalletItem label={t('transactions.paymentAddress')}>
-                          <div className="flex items-center space-x-2 min-w-0">
-                            <span className="font-mono text-sm text-slate-800 dark:text-content font-medium truncate">
-                              {wallet.userAddress}
-                            </span>
-                            <Button
-                              onClick={() => handleCopy(wallet.userAddress)}
-                              className="text-content-light hover:text-content p-1 hover:bg-gray-100 rounded"
-                            >
-                              {copySuccesses[wallet.userAddress] ? (
-                                <CheckIcon className="h-4 w-4 text-green-600" />
-                              ) : (
-                                <CopyIcon className="h-4 w-4" />
-                              )}
-                            </Button>
+                        <WalletItem label={`${t('my.paymentAddresses')}${paymentAddresses.length > 1 ? `s (${paymentAddresses.length})` : ''}`}>
+                          <div className="space-y-2">
+                            {paymentAddresses.length > 0 ? (
+                              <>
+                                {visibleAddresses.map((address, index) => (
+                                  <div key={index} className="flex items-center space-x-2 min-w-0">
+                                    <span className="font-mono text-sm text-slate-800 dark:text-content font-medium truncate">
+                                      {address}
+                                    </span>
+                                    <Button
+                                      onClick={() => handleCopy(address)}
+                                      className="text-content hover:text-content p-1 hover:bg-gray-100 rounded"
+                                    >
+                                      {copySuccesses[address] ? (
+                                        <CheckIcon className="h-4 w-4 text-green-600" />
+                                      ) : (
+                                        <CopyIcon className="h-4 w-4" />
+                                      )}
+                                    </Button>
+                                  </div>
+                                ))}
+                                {hasMoreAddresses && (
+                                  <Button
+                                    onClick={() => toggleAddressExpansion(wallet.id)}
+                                    className="text-xs text-cyan-600 hover:text-cyan-700 font-medium"
+                                  >
+                                    {isExpanded
+                                      ? `Show Less`
+                                      : `Show ${paymentAddresses.length - MAX_VISIBLE_ADDRESSES} More`
+                                    }
+                                  </Button>
+                                )}
+                              </>
+                            ) : (
+                              <div className="flex items-center space-x-2 min-w-0">
+                                <span className="font-mono text-sm text-slate-800 dark:text-content font-medium truncate">
+                                  {wallet.userAddress}
+                                </span>
+                                <Button
+                                  onClick={() => handleCopy(wallet.userAddress)}
+                                  className="text-content-light hover:text-content p-1 hover:bg-gray-100 rounded"
+                                >
+                                  {copySuccesses[wallet.userAddress] ? (
+                                    <CheckIcon className="h-4 w-4 text-green-600" />
+                                  ) : (
+                                    <CopyIcon className="h-4 w-4" />
+                                  )}
+                                </Button>
+                              </div>
+                            )}
                           </div>
                         </WalletItem>
                       </div>
                     </div>
 
                     <div className="px-5 py-4">
-                      <button className="text-cyan-600 hover:text-cyan-700 text-sm font-medium">
+                      <Button className="text-cyan-600 hover:text-cyan-700 text-sm font-medium">
                         {t('my.moreWalletsDetails')}
-                      </button>
+                      </Button>
                     </div>
                   </Card>
                 )
               })}
             </div>
-              <div className="mt-8 w-full">
-                <div className="flex items-center w-full">
-                  <div className="flex-1 flex justify-start">
-                    <Button
-                      className="text-sm flex items-center gap-1"
-                      onClick={() => setCurrentPage(pagination.current_page - 1)}
-                      disabled={pagination.current_page === 1}
-                    >
-                      <ChevronLeft className="w-4 h-4" />
-                      Previous
-                    </Button>
-                  </div>
-                  <div className="flex-1 flex justify-center">
-                    <span className="text-xs">
-                      Showing {pagination.from} - {pagination.to} of <span className="font-bold">{pagination.total}</span>
-                    </span>
-                  </div>
-                  <div className="flex-1 flex justify-end">
-                    <Button
-                      className="text-sm flex items-center gap-1"
-                      onClick={() => setCurrentPage(pagination.current_page + 1)}
-                      disabled={pagination.current_page === pagination.last_page}
-                    >
-                      Next
-                      <ChevronRight className="w-4 h-4" />
-                    </Button>
-                  </div>
-                </div>
-              </div>
-
-
-
+            <div className="mt-8 w-full">
+                <Paginator pagination={connectedWallets} />
+            </div>
           </>
         )}
       </div>
-    </MyLayout>
   )
 }
 
@@ -343,5 +310,13 @@ const WalletItem = ({
     </div>
   </div>
 )
+
+const Wallets: React.FC<WalletsPageProps> = (props) => {
+  return (
+    <FiltersProvider defaultFilters={{} as SearchParams}>
+      <WalletsComponent {...props} />
+    </FiltersProvider>
+  );
+};
 
 export default Wallets

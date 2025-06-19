@@ -14,8 +14,11 @@ use App\Models\VoterHistory;
 use App\Repositories\VoterHistoryRepository;
 use App\Services\WalletInfoService;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Fluent;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -161,6 +164,156 @@ class WalletController extends Controller
             'all_time_votes' => $allTimeVotes,
             'funds_participated' => $fundsParticipated,
         ];
+    }
+
+    public function index(Request $request): Response
+    {
+        try {
+            $userId = auth()->id();
+            $page = $request->get('page', 1);
+            $limit = $request->get('limit', 4); // 4 wallets per page
+
+            if (! $userId) {
+                $emptyPagination = new LengthAwarePaginator(
+                    [],
+                    0,
+                    $limit,
+                    $page,
+                    [
+                        'pageName' => 'page',
+                        'path' => $request->url(),
+                        'query' => $request->query(),
+                    ]
+                );
+
+                return Inertia::render('My/Wallets/Index', [
+                    'connectedWallets' => $emptyPagination->toArray(),
+                ]);
+            }
+            $signatures = DB::table('signatures')
+                ->select([
+                    'stake_address',
+                    DB::raw('MAX(wallet_provider) as wallet_provider'),
+                    DB::raw('MAX(updated_at) as last_used'),
+                    DB::raw('COUNT(*) as signature_count'),
+                    DB::raw('MAX(id) as id'),
+                ])
+                ->where('user_id', $userId)
+                ->whereNotNull('stake_address')
+                ->where('stake_address', '!=', '')
+                ->groupBy('stake_address')
+                ->orderBy('last_used', 'desc')
+                ->get();
+
+            if ($signatures->isEmpty()) {
+                $emptyPagination = new LengthAwarePaginator(
+                    [],
+                    0,
+                    $limit,
+                    $page,
+                    [
+                        'pageName' => 'page',
+                        'path' => $request->url(),
+                        'query' => $request->query(),
+                    ]
+                );
+
+                return Inertia::render('My/Wallets/Index', [
+                    'connectedWallets' => $emptyPagination->toArray(),
+                ]);
+            }
+            $total = $signatures->count();
+            $offset = ($page - 1) * $limit;
+            $paginatedSignatures = $signatures->slice($offset, $limit);
+            $walletsData = $paginatedSignatures->map(function ($item) {
+                $stats = $this->walletInfoService->getWalletStats($item->stake_address);
+                $userAddress = ! empty($stats['payment_addresses'])
+                    ? $stats['payment_addresses'][0]
+                    : $item->stake_address;
+
+                return [
+                    'id' => (string) $item->id,
+                    'name' => $item->wallet_provider ?: 'unknown',
+                    'networkName' => 'Cardano PreProd',
+                    'stakeAddress' => $item->stake_address,
+                    'userAddress' => $userAddress,
+                    'paymentAddresses' => $stats['payment_addresses'] ?? [],
+                    'last_used' => $item->last_used,
+                    'signature_count' => $item->signature_count,
+                    'walletDetails' => $stats,
+                ];
+            });
+
+            $pagination = new LengthAwarePaginator(
+                $walletsData->values(),
+                $total,
+                $limit,
+                $page,
+                [
+                    'pageName' => 'page',
+                    'path' => $request->url(),
+                    'query' => $request->query(),
+                ]
+            );
+
+            return Inertia::render('My/Wallets/Index', [
+                'connectedWallets' => $pagination->toArray(),
+            ]);
+
+        } catch (\Exception $e) {
+            $emptyPagination = new LengthAwarePaginator(
+                [],
+                0,
+                4,
+                1,
+                [
+                    'pageName' => 'page',
+                    'path' => $request->url(),
+                    'query' => $request->query(),
+                ]
+            );
+
+            return Inertia::render('My/Wallets/Index', [
+                'connectedWallets' => $emptyPagination->toArray(),
+                'error' => 'Unable to load wallet data. Please try again.',
+            ]);
+        }
+    }
+
+    public function destroy(Request $request, string $stakeAddress): JsonResponse|RedirectResponse
+    {
+        try {
+            $userId = auth()->id();
+
+            if (! $userId) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Unauthorized',
+                ], 401);
+            }
+
+            $deletedCount = DB::table('signatures')
+                ->where('user_id', $userId)
+                ->where('stake_address', $stakeAddress)
+                ->delete();
+
+            if ($deletedCount === 0) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Wallet not found or already deleted',
+                ], 404);
+            }
+
+            Log::info("✔️ Deleted {$deletedCount} signatures for user {$userId} and stake address {$stakeAddress}");
+
+            // Return a redirect instead of JSON for Inertia
+            return redirect()->route('my.wallets')->with('success', 'Wallet deleted successfully');
+
+        } catch (\Exception $e) {
+            Log::error("💥 Error deleting wallet for stake address {$stakeAddress}: ".$e->getMessage());
+
+            return redirect()->route('my.wallets')->with('error', 'Failed to delete wallet');
+        }
     }
 
     public function lookupJson(string $stakeKey, WalletInfoService $walletInfoService): JsonResponse
