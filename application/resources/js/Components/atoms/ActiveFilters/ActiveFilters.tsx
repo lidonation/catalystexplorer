@@ -1,6 +1,5 @@
 import { FilteredItem, useFilterContext } from '@/Context/FiltersContext';
 import BooleanFilters from './BooleanFilters';
-import labels from './FiltersLabel';
 import IDFilters from './IDFilters';
 import RangeFilters from './RangeFilters';
 import SortFilters from './SortFilters';

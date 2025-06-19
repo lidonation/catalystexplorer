@@ -275,11 +275,9 @@ class VoterHistoriesController extends Controller
          */
         $user = Auth::user();
 
-        $userStakeKeys = [];
-        // Signature::where('user_id', $user->id)
-        //     ->pluck('stake_address')
-        //     ->filter()
-        //     ->toArray();
+        $userStakeKeys = Signature::where('user_id', $user->id)
+            ->pluck('stake_address')
+            ->toArray();
 
         $this->getProps($request);
         $this->queryParams = $request->validate([
@@ -297,12 +295,11 @@ class VoterHistoriesController extends Controller
 
         $filters = $this->getUserFilters();
 
-
         $stakeAddresses = implode("','", $userStakeKeys);
         $filters[] = "stake_address IN ['{$stakeAddresses}']";
 
-
         $sort = null;
+
         if ((bool) $this->sortBy && (bool) $this->sortOrder) {
             $sort = ["$this->sortBy:$this->sortOrder"];
         }
@@ -333,7 +330,7 @@ class VoterHistoriesController extends Controller
 
         $voterHistoriesArray = [];
 
-        if (!empty($userStakeKeys)) {
+        if (! empty($userStakeKeys)) {
             $builder = $voterHistories->search($searchQuery, $searchArgs);
 
             $response = new Fluent($builder->raw());

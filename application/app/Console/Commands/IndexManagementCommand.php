@@ -8,8 +8,8 @@ use Illuminate\Console\Command;
 
 class IndexManagementCommand extends Command
 {
-    protected $signature = 'search:index 
-                            {action : create|import|flush|delete|seed} 
+    protected $signature = 'search:index
+                            {action : create|import|flush|delete|seed|recreate}
                             {filter? : Optional filter for model or index}';
 
     protected $description = 'Manage search indexes for scout';
@@ -26,10 +26,11 @@ class IndexManagementCommand extends Command
         'App\\Models\\MonthlyReport',
         'App\\Models\\Transaction',
         'App\\Models\\VoterHistory',
+        'App\\Models\\Voter',
     ];
 
     protected $indexes = [
-        'cx_bookmark_collection',
+        'cx_bookmark_collections',
         'cx_proposals',
         'cx_communities',
         'cx_ideascale_profiles',
@@ -38,6 +39,7 @@ class IndexManagementCommand extends Command
         'cx_groups',
         'cx_transactions',
         'cx_voter_histories',
+        'cx_voters',
     ];
 
     public function handle()
@@ -47,33 +49,48 @@ class IndexManagementCommand extends Command
 
         if ($action === 'seed') {
             $this->call('db:seed', ['--class' => 'SearchIndexSeeder']);
+
             return;
         }
 
         if ($action === 'delete') {
             foreach ($this->indexes as $index) {
-                if (!$filter || str_contains(strtolower($index), $filter)) {
+                if (! $filter || str_contains(strtolower($index), $filter)) {
                     $this->info("Deleting index: $index");
                     $this->call('scout:delete-index', ['name' => $index]);
                 }
             }
+
             return;
         }
 
         foreach ($this->models as $model) {
-            if (!$filter || str_contains(strtolower($model), $filter)) {
+            if (! $filter || str_contains(strtolower($model), $filter)) {
                 switch ($action) {
                     case 'create':
                         $this->call('cx:create-search-index', ['model' => $model]);
                         break;
+
                     case 'import':
                         $this->call('scout:import', ['model' => $model]);
                         break;
+
                     case 'flush':
                         $this->call('scout:flush', ['model' => $model]);
                         break;
+
+                    case 'delete':
+                        $this->call('scout:delete-index', ['model' => $model]);
+                        break;
+
+                    case 'recreate':
+                        $this->call('scout:delete-all-indexes');
+                        $this->call('db:seed', ['--class' => 'SearchIndexSeeder']);
+                        break;
+
                     default:
                         $this->error("Unsupported action: $action");
+
                         return;
                 }
             }

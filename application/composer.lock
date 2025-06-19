@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "f1a472cd60a20eac27c7171b4594daaa",
+    "content-hash": "2ae1d3466c681d74a3e8b4ad5a4d7656",
     "packages": [
         {
             "name": "amphp/amp",
@@ -5531,105 +5531,6 @@
             "time": "2025-03-27T07:44:06+00:00"
         },
         {
-            "name": "spatie/laravel-comments",
-            "version": "2.0.0",
-            "source": {
-                "type": "git",
-                "url": "git@github.com:spatie/laravel-comments.git",
-                "reference": "e2b9ce9ece470de690b683a108917a6d17aa81ee"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://satis.spatie.be/dist/spatie/laravel-comments/spatie-laravel-comments-e2b9ce9ece470de690b683a108917a6d17aa81ee-zip-9bcbca.zip",
-                "reference": "e2b9ce9ece470de690b683a108917a6d17aa81ee",
-                "shasum": "7b055af47407bdad772330695ebb4f805f9fda8e"
-            },
-            "require": {
-                "illuminate/contracts": "^10.0|^11.0",
-                "php": "^8.2",
-                "spatie/laravel-package-tools": "^1.9.2",
-                "spatie/once": "^3.0",
-                "symfony/html-sanitizer": "^6.1"
-            },
-            "require-dev": {
-                "larastan/larastan": "^2.9",
-                "nunomaduro/collision": "^6.0|^7.0|^8.0",
-                "orchestra/testbench": "^7.0|^8.0|^9.0",
-                "pestphp/pest": "^2.34",
-                "pestphp/pest-plugin-laravel": "^2.4",
-                "phpstan/extension-installer": "^1.4",
-                "phpstan/phpstan-deprecation-rules": "^1.2",
-                "phpstan/phpstan-phpunit": "^1.4",
-                "spatie/laravel-markdown": "^2.5",
-                "spatie/laravel-ray": "^1.37",
-                "spatie/pest-plugin-snapshots": "^2.1"
-            },
-            "suggest": {
-                "spatie/laravel-markdown": "Required to convert markdown to HTML"
-            },
-            "type": "library",
-            "extra": {
-                "laravel": {
-                    "providers": [
-                        "Spatie\\Comments\\CommentsServiceProvider"
-                    ],
-                    "aliases": {
-                        "Comments": "Spatie\\Comments\\Facades\\Comments"
-                    }
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Spatie\\Comments\\": "src",
-                    "Spatie\\Comments\\Database\\Factories\\": "database/factories"
-                }
-            },
-            "autoload-dev": {
-                "psr-4": {
-                    "Spatie\\Comments\\Tests\\": "tests"
-                }
-            },
-            "scripts": {
-                "analyse": [
-                    "vendor/bin/phpstan analyse"
-                ],
-                "baseline": [
-                    "vendor/bin/phpstan --generate-baseline"
-                ],
-                "test": [
-                    "vendor/bin/pest"
-                ],
-                "test-coverage": [
-                    "vendor/bin/pest coverage"
-                ]
-            },
-            "authors": [
-                {
-                    "name": "Freek Van der Herten",
-                    "email": "freek@spatie.be",
-                    "role": "Developer"
-                }
-            ],
-            "description": "Associate comments and reactions with Eloquent models",
-            "homepage": "https://github.com/spatie/laravel-comments",
-            "keywords": [
-                "laravel",
-                "laravel-comments",
-                "spatie"
-            ],
-            "support": {
-                "source": "https://github.com/spatie/laravel-comments/tree/2.0.0",
-                "issues": "https://github.com/spatie/laravel-comments/issues"
-            },
-            "funding": [
-                {
-                    "type": "github",
-                    "url": "https://github.com/spatie"
-                }
-            ],
-            "time": "2024-09-17T09:37:40+00:00"
-        },
-        {
             "name": "maatwebsite/excel",
             "version": "3.1.64",
             "source": {
@@ -9125,6 +9026,102 @@
             "time": "2024-11-04T08:24:54+00:00"
         },
         {
+            "name": "spatie/laravel-comments",
+            "version": "2.2.0",
+            "source": {
+                "type": "git",
+                "url": "git@github.com:spatie/laravel-comments.git",
+                "reference": "dd7fc8497343ac83a53f84abc28df2a5ece0d5ad"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://satis.spatie.be/dist/spatie/laravel-comments/spatie-laravel-comments-dd7fc8497343ac83a53f84abc28df2a5ece0d5ad-zip-d0ede7.zip",
+                "reference": "dd7fc8497343ac83a53f84abc28df2a5ece0d5ad",
+                "shasum": "4cd2bf77b2b2d599d96ff552808013c0a3c67c0f"
+            },
+            "require": {
+                "illuminate/contracts": "^11.0|^12.0",
+                "php": "^8.2",
+                "spatie/laravel-package-tools": "^1.9.2",
+                "symfony/html-sanitizer": "^6.1"
+            },
+            "require-dev": {
+                "larastan/larastan": "^2.9.14|^3.0",
+                "nunomaduro/collision": "^6.0|^7.0|^8.0",
+                "orchestra/testbench": "^8.33.0|^9.9.0|^10.0.0",
+                "pestphp/pest": "^2.34.7|^3.7",
+                "pestphp/pest-plugin-laravel": "^2.4|^3.0",
+                "phpstan/extension-installer": "^1.4",
+                "spatie/laravel-markdown": "^2.7",
+                "spatie/laravel-ray": "^1.37",
+                "spatie/pest-plugin-snapshots": "^2.1"
+            },
+            "suggest": {
+                "spatie/laravel-markdown": "Required to convert markdown to HTML"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Spatie\\Comments\\CommentsServiceProvider"
+                    ],
+                    "aliases": {
+                        "Comments": "Spatie\\Comments\\Facades\\Comments"
+                    }
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Spatie\\Comments\\": "src",
+                    "Spatie\\Comments\\Database\\Factories\\": "database/factories"
+                }
+            },
+            "autoload-dev": {
+                "psr-4": {
+                    "Spatie\\Comments\\Tests\\": "tests"
+                }
+            },
+            "scripts": {
+                "analyse": [
+                    "vendor/bin/phpstan analyse"
+                ],
+                "baseline": [
+                    "vendor/bin/phpstan --generate-baseline"
+                ],
+                "test": [
+                    "vendor/bin/pest"
+                ],
+                "test-coverage": [
+                    "vendor/bin/pest coverage"
+                ]
+            },
+            "authors": [
+                {
+                    "name": "Freek Van der Herten",
+                    "email": "freek@spatie.be",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Associate comments and reactions with Eloquent models",
+            "homepage": "https://github.com/spatie/laravel-comments",
+            "keywords": [
+                "laravel",
+                "laravel-comments",
+                "spatie"
+            ],
+            "support": {
+                "source": "https://github.com/spatie/laravel-comments/tree/2.2.0",
+                "issues": "https://github.com/spatie/laravel-comments/issues"
+            },
+            "funding": [
+                {
+                    "type": "github",
+                    "url": "https://github.com/spatie"
+                }
+            ],
+            "time": "2025-02-21T14:13:10+00:00"
+        },
+        {
             "name": "spatie/laravel-data",
             "version": "4.13.2",
             "source": {
@@ -10893,16 +10890,16 @@
         },
         {
             "name": "symfony/html-sanitizer",
-            "version": "v6.4.18",
+            "version": "v6.4.21",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/html-sanitizer.git",
-                "reference": "28e9fb12a6784c64b1b5e6fc92853bb7a3c4bf05"
+                "reference": "f66d6585c6ece946239317c339f8b2860dfdf2db"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/html-sanitizer/zipball/28e9fb12a6784c64b1b5e6fc92853bb7a3c4bf05",
-                "reference": "28e9fb12a6784c64b1b5e6fc92853bb7a3c4bf05",
+                "url": "https://api.github.com/repos/symfony/html-sanitizer/zipball/f66d6585c6ece946239317c339f8b2860dfdf2db",
+                "reference": "f66d6585c6ece946239317c339f8b2860dfdf2db",
                 "shasum": ""
             },
             "require": {
@@ -10942,7 +10939,7 @@
                 "sanitizer"
             ],
             "support": {
-                "source": "https://github.com/symfony/html-sanitizer/tree/v6.4.18"
+                "source": "https://github.com/symfony/html-sanitizer/tree/v6.4.21"
             },
             "funding": [
                 {
@@ -10958,7 +10955,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2025-01-17T13:18:31+00:00"
+            "time": "2025-03-31T07:29:45+00:00"
         },
         {
             "name": "symfony/http-foundation",
@@ -13181,6 +13178,91 @@
     ],
     "packages-dev": [
         {
+            "name": "barryvdh/laravel-debugbar",
+            "version": "v3.15.4",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/barryvdh/laravel-debugbar.git",
+                "reference": "c0667ea91f7185f1e074402c5788195e96bf8106"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/barryvdh/laravel-debugbar/zipball/c0667ea91f7185f1e074402c5788195e96bf8106",
+                "reference": "c0667ea91f7185f1e074402c5788195e96bf8106",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/routing": "^9|^10|^11|^12",
+                "illuminate/session": "^9|^10|^11|^12",
+                "illuminate/support": "^9|^10|^11|^12",
+                "php": "^8.1",
+                "php-debugbar/php-debugbar": "~2.1.1",
+                "symfony/finder": "^6|^7"
+            },
+            "require-dev": {
+                "mockery/mockery": "^1.3.3",
+                "orchestra/testbench-dusk": "^7|^8|^9|^10",
+                "phpunit/phpunit": "^9.5.10|^10|^11",
+                "squizlabs/php_codesniffer": "^3.5"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "aliases": {
+                        "Debugbar": "Barryvdh\\Debugbar\\Facades\\Debugbar"
+                    },
+                    "providers": [
+                        "Barryvdh\\Debugbar\\ServiceProvider"
+                    ]
+                },
+                "branch-alias": {
+                    "dev-master": "3.15-dev"
+                }
+            },
+            "autoload": {
+                "files": [
+                    "src/helpers.php"
+                ],
+                "psr-4": {
+                    "Barryvdh\\Debugbar\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Barry vd. Heuvel",
+                    "email": "barryvdh@gmail.com"
+                }
+            ],
+            "description": "PHP Debugbar integration for Laravel",
+            "keywords": [
+                "debug",
+                "debugbar",
+                "dev",
+                "laravel",
+                "profiler",
+                "webprofiler"
+            ],
+            "support": {
+                "issues": "https://github.com/barryvdh/laravel-debugbar/issues",
+                "source": "https://github.com/barryvdh/laravel-debugbar/tree/v3.15.4"
+            },
+            "funding": [
+                {
+                    "url": "https://fruitcake.nl",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/barryvdh",
+                    "type": "github"
+                }
+            ],
+            "time": "2025-04-16T06:32:06+00:00"
+        },
+        {
             "name": "brianium/paratest",
             "version": "v7.7.0",
             "source": {
@@ -14464,6 +14546,76 @@
                 "source": "https://github.com/phar-io/version/tree/3.2.1"
             },
             "time": "2022-02-21T01:04:05+00:00"
+        },
+        {
+            "name": "php-debugbar/php-debugbar",
+            "version": "v2.1.6",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/php-debugbar/php-debugbar.git",
+                "reference": "16fa68da5617220594aa5e33fa9de415f94784a0"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/php-debugbar/php-debugbar/zipball/16fa68da5617220594aa5e33fa9de415f94784a0",
+                "reference": "16fa68da5617220594aa5e33fa9de415f94784a0",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^8",
+                "psr/log": "^1|^2|^3",
+                "symfony/var-dumper": "^4|^5|^6|^7"
+            },
+            "require-dev": {
+                "dbrekelmans/bdi": "^1",
+                "phpunit/phpunit": "^8|^9",
+                "symfony/panther": "^1|^2.1",
+                "twig/twig": "^1.38|^2.7|^3.0"
+            },
+            "suggest": {
+                "kriswallsmith/assetic": "The best way to manage assets",
+                "monolog/monolog": "Log using Monolog",
+                "predis/predis": "Redis storage"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.0-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "DebugBar\\": "src/DebugBar/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Maxime Bouroumeau-Fuseau",
+                    "email": "maxime.bouroumeau@gmail.com",
+                    "homepage": "http://maximebf.com"
+                },
+                {
+                    "name": "Barry vd. Heuvel",
+                    "email": "barryvdh@gmail.com"
+                }
+            ],
+            "description": "Debug bar in the browser for php application",
+            "homepage": "https://github.com/php-debugbar/php-debugbar",
+            "keywords": [
+                "debug",
+                "debug bar",
+                "debugbar",
+                "dev"
+            ],
+            "support": {
+                "issues": "https://github.com/php-debugbar/php-debugbar/issues",
+                "source": "https://github.com/php-debugbar/php-debugbar/tree/v2.1.6"
+            },
+            "time": "2025-02-21T17:47:03+00:00"
         },
         {
             "name": "phpunit/php-code-coverage",
