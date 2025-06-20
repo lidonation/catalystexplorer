@@ -277,7 +277,6 @@ class VoterHistoriesController extends Controller
 
         $userStakeKeys = Signature::where('user_id', $user->id)
             ->pluck('stake_address')
-            ->filter()
             ->toArray();
 
         $this->getProps($request);
@@ -296,21 +295,15 @@ class VoterHistoriesController extends Controller
 
         $filters = $this->getUserFilters();
 
-        if (empty($userStakeKeys)) {
-            $filters[] = "stake_address = 'NO_STAKE_KEYS_FOR_USER'";
-        } else {
-            if (count($userStakeKeys) === 1) {
-                $filters[] = "stake_address = '{$userStakeKeys[0]}'";
-            } else {
-                $stakeAddresses = implode("','", $userStakeKeys);
-                $filters[] = "stake_address IN ['{$stakeAddresses}']";
-            }
-        }
+        $stakeAddresses = implode("','", $userStakeKeys);
+        $filters[] = "stake_address IN ['{$stakeAddresses}']";
 
         $sort = null;
+
         if ((bool) $this->sortBy && (bool) $this->sortOrder) {
             $sort = ["$this->sortBy:$this->sortOrder"];
         }
+
         $page = isset($this->queryParams[VoteSearchParams::PAGE()->value])
             ? (int) $this->queryParams[VoteSearchParams::PAGE()->value]
             : 1;
@@ -330,25 +323,36 @@ class VoterHistoriesController extends Controller
             'facets' => ['choice', 'snapshot.fund.title'],
             'unifiedSearch' => true,
         ];
+
         if ($sort) {
             $searchArgs['sort'] = $sort;
         }
-        $builder = $voterHistories->search($searchQuery, $searchArgs);
-        $response = new Fluent($builder->raw());
-        $this->setCounts($response->facetDistribution ?? [], $response->facetStats ?? []);
-        $voterHistoryData = VoterHistoryData::collect($response->hits ?? []);
-        $pagination = new LengthAwarePaginator(
-            $voterHistoryData,
-            $response->estimatedTotalHits ?? 0,
-            $limit,
-            $page,
-            [
-                'pageName' => VoteSearchParams::PAGE()->value,
-                'path' => request()->url(),
-                'query' => request()->query(),
-            ]
-        );
-        $voterHistoriesArray = $pagination->onEachSide(1)->toArray();
+
+        $voterHistoriesArray = [];
+
+        if (! empty($userStakeKeys)) {
+            $builder = $voterHistories->search($searchQuery, $searchArgs);
+
+            $response = new Fluent($builder->raw());
+
+            $this->setCounts($response->facetDistribution ?? [], $response->facetStats ?? []);
+
+            $voterHistoryData = VoterHistoryData::collect($response->hits ?? []);
+            $pagination = new LengthAwarePaginator(
+                $voterHistoryData,
+                $response->estimatedTotalHits ?? 0,
+                $limit,
+                $page,
+                [
+                    'pageName' => VoteSearchParams::PAGE()->value,
+                    'path' => request()->url(),
+                    'query' => request()->query(),
+                ]
+            );
+
+            $voterHistoriesArray = $pagination->onEachSide(1)->toArray();
+        }
+
         $props = [
             'voterHistories' => $voterHistoriesArray,
             'search' => $searchQuery,

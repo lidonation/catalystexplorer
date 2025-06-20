@@ -57,14 +57,14 @@ const Step4: React.FC<Step4Props> = ({
     const validateForm = () => {
         const newErrors: Record<string, string> = {};
 
-        if (form.data.rationale.length < 200) {
+        if (form.data.rationale.length < 69) {
             newErrors.rationale = t(
                 'workflows.voterList.errors.rationaleLength',
             );
         }
 
         setErrors(newErrors);
-        setIsFormValid(form.data.rationale.trim().length >= 200);
+        setIsFormValid(form.data.rationale.trim().length >= 69);
     };
 
     const submitForm = () => {
@@ -92,7 +92,7 @@ const Step4: React.FC<Step4Props> = ({
                                 )}
                                 id="rationale"
                                 name="rationale"
-                                minLengthValue={200}
+                                minLengthValue={69}
                                 minLengthEnforced
                                 required
                                 value={form.data.rationale}

@@ -2,24 +2,25 @@
 set -e
 
 if [ $# -gt 0 ]; then
-    exec "$@"
+  exec "$@"
 else
   case "$CONTAINER_ROLE" in
-    queue | q)
-      php -d variables_order=EGPCS /var/www/artisan horizon
-      ;;
-    app | a)
-      if [ "$OCTANE_WATCH" = "true" ]; then
-        # Enable watch mode for Octane
-        php /var/www/artisan octane:frankenphp --workers=3 --max-requests=50 --host=0.0.0.0 --port=8000 --admin-port=2019 --caddyfile=/etc/caddy/Caddyfile --watch
-      else
-        # Run without watch mode
-        php /var/www/artisan octane:frankenphp --workers=2 --max-requests=50 --host=0.0.0.0 --port=8000 --admin-port=2019 --caddyfile=/etc/caddy/Caddyfile
-      fi
-      ;;
-    *)
-      echo 'this container has no role... it is a sitting duck doing nothing!'
-      echo 'Please set $CONTAINER_ROLE to either queue, scheduler, or app'
-      ;;
+  queue | q)
+    php -d variables_order=EGPCS /var/www/artisan horizon
+    ;;
+  app | a)
+    if [ "$OCTANE_WATCH" = "true" ]; then
+      # Enable watch mode for Octane
+      php /var/www/artisan octane:frankenphp --workers=3 --max-requests=50 --host=0.0.0.0 --port=8000 --admin-port=2019 --caddyfile=/etc/caddy/Caddyfile --watch
+    else
+      php /var/www/artisan search:index create
+      # Run without watch mode
+      php /var/www/artisan octane:frankenphp --workers=2 --max-requests=50 --host=0.0.0.0 --port=8000 --admin-port=2019 --caddyfile=/etc/caddy/Caddyfile
+    fi
+    ;;
+  *)
+    echo 'this container has no role... it is a sitting duck doing nothing!'
+    echo 'Please set $CONTAINER_ROLE to either queue, scheduler, or app'
+    ;;
   esac
 fi

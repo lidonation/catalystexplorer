@@ -1477,7 +1477,7 @@ pgpool:
 
   ## @param pgpool.poolHbaConfiguration Pgpool-II client authentication configuration
   ## You can use this parameter to specify the content for pool_hba.conf
-  ## Otherwise, a pool_hba.conf will be generated based on the environment variables
+  ## Otherwise, a pool_hba.conf will be genesrated based on the environment variables
   ## ref: https://github.com/bitnami/containers/tree/main/bitnami/postgresql-repmgr#configuration
   ## ref: https://github.com/bitnami/containers/tree/main/bitnami/postgresql-repmgr#configuration-file
   ## Example:

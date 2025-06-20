@@ -239,8 +239,6 @@ Route::localized(
                         ->name('saveSignature');
                     Route::post('/save-wallet-name', [SignatureWorkflowController::class, 'saveWalletName'])
                         ->name('saveWalletName');
-                    Route::post('/success', [SignatureWorkflowController::class, 'success'])
-                        ->name('success');
                 });
 
             Route::get('/login', [WorkflowController::class, 'auth'])

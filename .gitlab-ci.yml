@@ -182,8 +182,8 @@ pest:
     cp $ENV_FILE ./helm/app/app_env
     cat ./helm/app/app_env
     if [ "${CI_ENVIRONMENT_NAME}" == "mainnet" ]; then
-      export APP_REPLICAS="3"
-      export QUEUE_REPLICAS="2"
+      export APP_REPLICAS="1"
+      export QUEUE_REPLICAS="1"
     else
       export APP_REPLICAS="1"
       export QUEUE_REPLICAS="1"
@@ -201,8 +201,6 @@ pest:
       --set services.meili.MEILISEARCH_KEY=$MEILISEARCH_KEY \
       --set services.app.environment=$APP_ENV \
       --set services.redis.password=$REDIS_PASSWORD \
-      --set services.app.replicaCount=$APP_REPLICAS \
-      --set services.queue.replicaCount=$QUEUE_REPLICAS \
       --set namespace=${KUBE_NAMESPACE} \
       --namespace="$KUBE_NAMESPACE" \
       --create-namespace
@@ -442,6 +440,7 @@ sem-release:
     GITLAB_TOKEN: ${SEMANTIC_RELEASE_GITLAB_TOKEN}
   rules:
     - if: '$CI_COMMIT_BRANCH == "main" && ($DEPLOY_WEBAPP == "true")'
+      when: manual
   before_script:
     - apk add --no-cache git
     - npm install -g semantic-release @semantic-release/git @semantic-release/gitlab @semantic-release/changelog

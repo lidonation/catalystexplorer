@@ -135,6 +135,66 @@ export interface DbModels {
 
 ```
 
+## 🔍 Meilisearch Index Management
+
+This command helps manage your search indexes (create, import, flush, delete) and seeding logic directly from Laravel Artisan.
+
+##### Usage
+
+```bash
+# Seed the search index
+php artisan search:index seed
+
+# Create index for all models
+php artisan search:index create
+
+# Create index for models that match a keyword
+php artisan search:index create Profile
+
+# Import all models to index
+php artisan search:index import
+
+# Import specific model(s) matching a keyword
+php artisan search:index import Voter
+
+# Flush all indexes
+php artisan search:index flush
+
+# Delete all known index names
+php artisan search:index delete
+
+# Delete indexes matching keyword
+php artisan search:index delete proposal
+
+```
+##### Models supported
+```
+App\Models\Voter
+App\Models\BookmarkCollection
+App\Models\ProjectSchedule
+App\Models\Community
+App\Models\Proposal
+App\Models\IdeascaleProfile
+App\Models\Group
+App\Models\Review
+App\Models\MonthlyReport
+App\Models\Transaction
+App\Models\VoterHistory
+
+```
+##### Index Names
+```
+cx_bookmark_collections
+cx_proposals
+cx_communities
+cx_ideascale_profiles
+cx_monthly_reports
+cx_review
+cx_groups
+cx_transactions
+cx_voter_histories
+```
+
 ## Contributing
 
 We welcome contributions from the community! Please check out our [Contribution Guidelines](CONTRIBUTING.md) for more information.

@@ -250,12 +250,6 @@ groups?: any;
 claimed_by: App.DataTransferObjects.UserData | null;
 reviews: any | null;
 };
-export type KeyValueStoreData = {
-id: string;
-key: string;
-value: string;
-updated_at?: string;
-};
 export type LocationData = {
 hash: string | null;
 country: string;
@@ -576,6 +570,7 @@ export type UserSettingData = {
 language: string;
 theme: string;
 viewChartBy: string;
+proposalComparison: Array<any>;
 };
 export type VoterData = {
 id: number;

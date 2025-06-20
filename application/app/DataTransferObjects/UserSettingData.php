@@ -14,5 +14,6 @@ class UserSettingData extends Data
         public string $language,
         public string $theme,
         public string $viewChartBy,
+        public array $proposalComparison
     ) {}
 }

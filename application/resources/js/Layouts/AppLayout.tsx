@@ -87,9 +87,9 @@ export default function AppLayout({ children }: { children: ReactNode }) {
                                     <div className="">
                                         <MetricsBar />
                                     </div>
-                                    <div className="block">
+                                    {/* <div className="block">
                                         <GraphButton />
-                                    </div>
+                                    </div> */}
                                 </section>
                             </UIProvider>
                         </MetricsProvider>
