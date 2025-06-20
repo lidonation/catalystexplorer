@@ -48,5 +48,6 @@ return [
     ],
     'blockfrost' => [
         'project_id' => env('BLOCKFROST_PROJECT_ID'),
+        'base_url' => env('BLOCKFROST_BASE_URL', 'https://cardano-mainnet.blockfrost.io'),
     ],
 ];

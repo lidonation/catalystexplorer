@@ -151,17 +151,18 @@ class WalletInfoService
     private function getBlockfrostData(string $stakeAddress): array
     {
         $blockfrostKey = config('services.blockfrost.project_id');
+        $baseUrl = config('services.blockfrost.base_url');
 
         if (! $blockfrostKey) {
             throw new \Exception('Blockfrost project ID not configured');
         }
         $accountResponse = Http::withHeaders([
             'project_id' => $blockfrostKey,
-        ])->get("https://cardano-preprod.blockfrost.io/api/v0/accounts/{$stakeAddress}");
+        ])->get("{$baseUrl}/api/v0/accounts/{$stakeAddress}");
 
         $addressesResponse = Http::withHeaders([
             'project_id' => $blockfrostKey,
-        ])->get("https://cardano-preprod.blockfrost.io/api/v0/accounts/{$stakeAddress}/addresses");
+        ])->get("{$baseUrl}/api/v0/accounts/{$stakeAddress}/addresses");
 
         if ($accountResponse->status() === 404) {
             $lovelaces = 0;
