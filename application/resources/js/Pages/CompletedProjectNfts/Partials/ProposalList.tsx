@@ -29,7 +29,7 @@ const ProposalList: React.FC<ProposalListProps> = ({
     }
 
     return (
-        <div className="space-y-2 p-4 lg:mt-4 lg:space-y-3 lg:p-6">
+        <div className="max-h-[30rem] space-y-2 overflow-y-auto p-4 lg:mt-4 lg:space-y-3 lg:p-6">
             {proposals?.data &&
                 proposals?.data.map((proposal, index) => (
                     <div className="w-full" key={index}>
