@@ -61,6 +61,12 @@ final class CommunityData extends Data
         public ?int $ideascale_profiles_count,
 
         #[TypeScriptOptional]
+        public ?int $users_count,
+
+        #[TypeScriptOptional]
+        public ?bool $is_member,
+
+        #[TypeScriptOptional]
         public ?string $created_at,
 
         #[TypeScriptOptional]

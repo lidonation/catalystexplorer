@@ -76,7 +76,11 @@ const Index: React.FC<GroupsPageProps> = ({
                         />
                     </section>
 
-                    <GroupPaginatedList groups={groups} />
+                    <GroupPaginatedList 
+                        groups={groups} 
+                        cardType="full"
+                        gridCols="grid w-full grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 auto-rows-fr"
+                    />
                 </FiltersProvider>
             </ListProvider>
         </>

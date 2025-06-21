@@ -9,6 +9,7 @@ use Illuminate\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Notifications\Notifiable;
 use Laravolt\Avatar\Facade as Avatar;
 use Spatie\Image\Enums\CropPosition;
@@ -92,6 +93,11 @@ class User extends Authenticatable implements HasMedia
     public function nfts()
     {
         return $this->hasMany(Nft::class);
+    }
+
+    public function communities(): BelongsToMany
+    {
+        return $this->belongsToMany(Community::class, 'community_has_users', 'user_id', 'community_id');
     }
 
     public function signatures()
