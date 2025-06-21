@@ -5,6 +5,8 @@ import { Head, router } from '@inertiajs/react';
 import { useEffect, useState } from 'react';
 import AllCharts from './Partials/AllCharts';
 import SetChartMetrics from './Partials/SetChartMetrics';
+import { userSettingEnums } from '@/enums/user-setting-enums';
+import { useUserSetting } from '@/Hooks/useUserSettings';
 
 interface ChartsIndexProps {
     filters: SearchParams;
@@ -20,7 +22,16 @@ const Index = ({
     const [showCharts, setShowCharts] = useState<boolean>(() => {
         return localStorage.getItem('metricsSet') === 'true';
     });
-    const [viewBy, setViewBy] = useState<'fund' | 'year'>('fund');
+
+    const {
+        value: viewByPreference,
+        setValue: setViewByPreference
+    } = useUserSetting<string[]>(
+        userSettingEnums.VIEW_CHART_BY,
+        ['fund'] 
+    );
+
+    const viewBy: 'fund' | 'year' = viewByPreference?.[0] === 'year' ? 'year' : 'fund';
     const chartData = viewBy === 'fund' ? chartDataByFund : chartDataByYear;
 
     const handleExploreCharts = () => {
@@ -34,7 +45,8 @@ const Index = ({
     };
 
     const handleViewByChange = (value: string | null) => {
-        setViewBy(value as 'fund' | 'year');
+        const newValue = value as 'fund' | 'year';
+        setViewByPreference([newValue]);
     };
 
     useEffect(() => {
@@ -43,6 +55,7 @@ const Index = ({
         };
 
         router.on('navigate', handleNavigation);
+
     }, []);
 
     return (
