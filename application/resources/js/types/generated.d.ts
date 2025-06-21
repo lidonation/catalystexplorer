@@ -130,6 +130,7 @@ amount_awarded_usd?: number;
 amount_distributed_ada?: number;
 amount_distributed_usd?: number;
 ideascale_profiles_count: number | null;
+users_count: number | null;
 created_at?: string;
 updated_at?: string;
 deleted_at?: string;
