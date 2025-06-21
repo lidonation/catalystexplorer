@@ -28,12 +28,8 @@ class WalletInfoService
         try {
             return Cache::remember("wallet_stats_{$stakeAddress}", now()->addHours(2), function () use ($stakeAddress) {
 
-                Log::info("✔️ Fetching wallet data for {$stakeAddress}");
-
-                // Get Blockfrost data (balance, status, payment addresses)
                 $blockfrostData = $this->getBlockfrostData($stakeAddress);
 
-                // Get voting data using your existing MeiliSearch pattern
                 $votingData = $this->getVotingStats($stakeAddress);
 
                 $result = array_merge($blockfrostData, $votingData);
@@ -63,9 +59,9 @@ class WalletInfoService
         try {
             $args = [
                 'filter' => ["stake_address = '{$stakeAddress}'"],
-                'limit' => 10000, // Get all votes for accurate counting
+                'limit' => 10000,
                 'offset' => 0,
-                'facets' => ['choice', 'snapshot.fund.title'], // Use same facets as your controller
+                'facets' => ['choice', 'snapshot.fund.title'],
             ];
 
             $voterHistories = app(VoterHistoryRepository::class);
@@ -82,9 +78,6 @@ class WalletInfoService
             if (isset($facetDistribution['choice'])) {
                 $choiceStats = $facetDistribution['choice'];
             }
-
-            Log::info('✔️ Found funds participated: '.json_encode($fundsParticipated));
-            Log::info('✔️ Choice distribution: '.json_encode($choiceStats));
 
             return [
                 'all_time_votes' => $totalVotes,
@@ -151,17 +144,18 @@ class WalletInfoService
     private function getBlockfrostData(string $stakeAddress): array
     {
         $blockfrostKey = config('services.blockfrost.project_id');
+        $baseUrl = config('services.blockfrost.base_url');
 
         if (! $blockfrostKey) {
             throw new \Exception('Blockfrost project ID not configured');
         }
         $accountResponse = Http::withHeaders([
             'project_id' => $blockfrostKey,
-        ])->get("https://cardano-preprod.blockfrost.io/api/v0/accounts/{$stakeAddress}");
+        ])->get("{$baseUrl}/api/v0/accounts/{$stakeAddress}");
 
         $addressesResponse = Http::withHeaders([
             'project_id' => $blockfrostKey,
-        ])->get("https://cardano-preprod.blockfrost.io/api/v0/accounts/{$stakeAddress}/addresses");
+        ])->get("{$baseUrl}/api/v0/accounts/{$stakeAddress}/addresses");
 
         if ($accountResponse->status() === 404) {
             $lovelaces = 0;
