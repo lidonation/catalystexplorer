@@ -224,7 +224,7 @@ class VoterHistoriesController extends Controller
         }
 
         $fundData = Fund::all()
-            ->filter(fn($fund) => in_array($fund->hash, $fundHashes))
+            ->filter(fn ($fund) => in_array($fund->hash, $fundHashes))
             ->pluck('title')
             ->filter();
 

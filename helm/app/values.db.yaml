@@ -283,8 +283,8 @@ postgresql:
       memory: 65536Mi
       cpu: 12
     requests:
-      memory: 16384Mi
-      cpu: 900m
+      memory: 1024Mi
+      cpu: 600m
 
   ## @param postgresql.podManagementPolicy Sets the pod management policy
   ## ref: https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/#pod-management-policies

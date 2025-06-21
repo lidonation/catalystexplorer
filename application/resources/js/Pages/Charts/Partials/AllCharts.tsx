@@ -4,6 +4,7 @@ import RadioSelector from '@/Components/atoms/RadioSelector';
 import Title from '@/Components/atoms/Title';
 import { useFilterContext } from '@/Context/FiltersContext';
 import { ParamsEnum } from '@/enums/proposal-search-params';
+import RecordsNotFound from '@/Layouts/RecordsNotFound';
 import { Share2Icon } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import BarChart from './BarChart';
@@ -47,7 +48,7 @@ export default function AllCharts({
     );
 
     const renderLineChart = () => (
-        <div className="bg-background flex w-full flex-col rounded-lg p-4 shadow-md md:overflow-visible overflow-x-auto">
+        <div className="bg-background flex w-full flex-col overflow-x-auto rounded-lg p-4 shadow-md md:overflow-visible">
             <div className="mb-4 flex items-center justify-between">
                 <Title level="4" className="font-semibold">
                     {t('charts.lineChart')}
@@ -134,7 +135,20 @@ export default function AllCharts({
                                 chartType as keyof typeof chartRenderers
                             ];
                         return renderer ? (
-                            <div key={chartType}>{renderer()}</div>
+                            <div key={chartType}>
+                                {chartData.length > 0 ? (
+                                    renderer()
+                                ) : (
+                                    <div>
+                                        <Paragraph className="text-content-light mb-4" size='lg'>
+                                            {viewBy === 'fund'
+                                                ? t('charts.noFundDataAvailable')
+                                                : t('charts.noYearDataAvailable')}
+                                        </Paragraph>
+                                        <RecordsNotFound />
+                                    </div>
+                                )}
+                            </div>
                         ) : null;
                     })}
                 </div>
