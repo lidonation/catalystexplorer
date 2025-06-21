@@ -207,6 +207,7 @@ class Community extends Model
             'unfunded_proposals',
             'completed_proposals',
             'funded_proposals', 'proposals', 'ideascale_profiles',
+            'users',
         ]);
 
         return $this->toArray();

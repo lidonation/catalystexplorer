@@ -78,7 +78,11 @@ const Index: React.FC<CommunitiesPageProps> = ({
                             totalAwardedUsd={filterCounts.totalAwardedUsd}
                         />
                     </section>
-                    <CommunitiesPaginatedList communities={communities} />
+                    <CommunitiesPaginatedList 
+                        communities={communities} 
+                        cardType="full"
+                        gridCols="grid-cols-1 gap-4 lg:grid-cols-2 xl:grid-cols-3"
+                    />
                 </FiltersProvider>
             </ListProvider>
         </>

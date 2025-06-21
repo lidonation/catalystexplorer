@@ -115,10 +115,20 @@ const Manage = (props: BookmarkCollectionListProps) => {
                 );
             case 'communities':
                 return (
-                    <CommunitiesPaginatedList communities={props.communities} />
+                    <CommunitiesPaginatedList 
+                        communities={props.communities} 
+                        cardType="mini"
+                        gridCols="grid-cols-1 gap-2 lg:grid-cols-2 xl:grid-cols-4"
+                    />
                 );
             case 'groups':
-                return <GroupPaginatedList groups={props.groups} />;
+                return (
+                    <GroupPaginatedList 
+                        groups={props.groups} 
+                        cardType="mini"
+                        gridCols="grid-cols-1 gap-2 lg:grid-cols-2 xl:grid-cols-4 auto-rows-fr"
+                    />
+                );
             case 'ideascaleProfiles':
                 return (
                     <IdeascaleProfilePaginatedList

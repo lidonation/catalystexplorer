@@ -4,12 +4,19 @@ import { AnimatePresence, motion } from 'framer-motion';
 import React from 'react';
 import CommunityCard from './CommunityCard';
 import CommunityData = App.DataTransferObjects.CommunityData;
+import CommunityCardMini from './CommunityCardMini';
 
-interface CommunitiesProps {
+interface CommunitiesListProps {
     communities: PaginatedData<CommunityData[]>;
+    cardType?: 'full' | 'mini';
+    gridCols?: string;
 }
 
-const CommunitiesList: React.FC<CommunitiesProps> = ({ communities }) => {
+const CommunitiesList: React.FC<CommunitiesListProps> = ({ 
+    communities, 
+    cardType = 'mini',
+    gridCols = 'grid-cols-1 gap-4 lg:grid-cols-2 xl:grid-cols-4'
+}) => {
     return (
         <AnimatePresence>
             <motion.div
@@ -21,13 +28,20 @@ const CommunitiesList: React.FC<CommunitiesProps> = ({ communities }) => {
                 {!communities?.data?.length ? (
                     <RecordsNotFound context="communities" searchTerm="" />
                 ) : (
-                    <div className="grid w-full grid-cols-1 gap-4 lg:grid-cols-2 xl:grid-cols-3">
+                    <div className={`grid w-full ${gridCols}`}>
                         {communities?.data &&
                             communities.data?.map((community) => (
-                                <CommunityCard
-                                    key={community.hash}
-                                    community={community}
-                                />
+                                cardType === 'full' ? (
+                                    <CommunityCard
+                                        key={community.hash}
+                                        community={community}
+                                    />
+                                ) : (
+                                    <CommunityCardMini
+                                        key={community.hash}
+                                        community={community}
+                                    />
+                                )
                             ))}
                     </div>
                 )}
