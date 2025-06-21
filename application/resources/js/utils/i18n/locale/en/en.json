@@ -469,7 +469,9 @@
        "selectFund":"Select Fund",
        "value": "Value",
        "percentage": "Percentage",
-       "share": "Share"
+       "share": "Share",
+       "noFundDataAvailable": "No Fund Data Available",
+       "noYearDataAvailable": "No Year Data Available"
     },
     "pagination": {
         "next": "Next",
