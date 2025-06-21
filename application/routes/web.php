@@ -138,6 +138,10 @@ Route::localized(
 
                 Route::get('/events', [CommunitiesController::class, 'show'])
                     ->name('events');
+
+                Route::post('/join', [CommunitiesController::class, 'join'])
+                    ->middleware('auth')
+                    ->name('join');
             });
         });
 

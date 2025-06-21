@@ -17,26 +17,17 @@ interface GroupCardMiniProps {
 const GroupCardMini: React.FC<GroupCardMiniProps> = ({ group }) => {
     const { t } = useTranslation();
 
-    const [userSelected, setUserSelected] =
-        useState<App.DataTransferObjects.IdeascaleProfileData | null>(null);
-
-    const handleUserClick = useCallback(
-        (user: App.DataTransferObjects.IdeascaleProfileData) =>
-            setUserSelected(user),
-        [],
-    );
-
-    const noAwardedFunds =
-        !group?.amount_awarded_ada && !group?.amount_awarded_usd;
-    const allAwardedFunds = !!(
-        group?.amount_awarded_ada && group?.amount_awarded_usd
-    );
-
     return (
         group && (
-            <Card className="h-full flex flex-col">
+            <Card className="w-96 flex flex-col">
                 <div className="flex w-full flex-col items-center gap-4">
-                    <Image size="30" imageUrl={group?.hero_img_url} />
+                    <div className="flex w-full flex-col items-center gap-4 pt-2">
+                        <Image
+                            size="16"
+                            imageUrl={group?.hero_img_url}
+                            className="border-darker h-16 w-16 rounded-full border-3"
+                        />
+                    </div>
                     <Link
                         href={useLocalizedRoute('groups.group.proposals', {
                             group: group?.slug,
@@ -69,48 +60,6 @@ const GroupCardMini: React.FC<GroupCardMiniProps> = ({ group }) => {
                         <p className="text-3 text-gray-persist mt-2">
                             {t('groups.reviews')}
                         </p>
-                    </div>
-                </div>
-
-                <div className="flex-grow">
-                    <div
-                        className={`grid ${noAwardedFunds || allAwardedFunds ? 'grid-cols-2' : 'grid-cols-1'} mt-4 gap-4`}
-                    >
-                        {(group?.amount_awarded_ada || noAwardedFunds) && (
-                            <div>
-                                <FundingPercentages
-                                    amount={group?.amount_distributed_ada ?? 0}
-                                    total={group?.amount_awarded_ada ?? 0}
-                                    primaryBackgroundColor="bg-content-light"
-                                    secondaryBackgroundColor="bg-primary"
-                                    amount_currency="ADA"
-                                />
-                            </div>
-                        )}
-                        {(group?.amount_awarded_usd || noAwardedFunds) && (
-                            <FundingPercentages
-                                amount={group?.amount_distributed_usd ?? 0}
-                                total={group?.amount_awarded_usd ?? 0}
-                                primaryBackgroundColor="bg-content-light"
-                                secondaryBackgroundColor="bg-primary-dark"
-                                amount_currency="USD"
-                            />
-                        )}
-                    </div>
-                </div>
-
-                <div className="border-content-light mt-2 flex items-center justify-between border-t pt-3">
-                    {group?.ideascale_profiles &&
-                        group?.ideascale_profiles.length > 0 && (
-                            <IdeascaleProfileUsers
-                                users={group?.ideascale_profiles || []}
-                                onUserClick={handleUserClick}
-                                className="bg-primary text-light-persist"
-                                toolTipProps={t('groups.viewMembers')}
-                            />
-                        )}
-                    <div className="ml-auto">
-                        <GroupSocials group={group} />
                     </div>
                 </div>
             </Card>

@@ -9,16 +9,26 @@ import GroupData = App.DataTransferObjects.GroupData;
 
 interface GroupListProps {
     groups: PaginatedData<GroupData[]>;
+    cardType?: 'full' | 'mini';
+    gridCols?: string;
 }
 
-const GroupPaginatedList: React.FC<GroupListProps> = ({ groups }) => {
+const GroupPaginatedList: React.FC<GroupListProps> = ({ 
+    groups, 
+    cardType = 'mini',
+    gridCols 
+}) => {
     return (
         <>
             <section className="container py-8">
                 <WhenVisible fallback={<GroupCardLoader />} data="groups">
                     {groups?.data?.length ? (
                         <>
-                            <GroupList groups={groups?.data || []} />
+                            <GroupList 
+                                groups={groups?.data || []} 
+                                cardType={cardType}
+                                gridCols={gridCols}
+                            />
                             <section className="lg:mt-8 mt-4">
                                 <Paginator pagination={groups} />
                             </section>

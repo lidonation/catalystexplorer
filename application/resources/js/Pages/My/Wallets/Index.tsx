@@ -206,7 +206,7 @@ const WalletsComponent: React.FC<WalletsPageProps> = ({ connectedWallets, error 
                           </div>
                         </WalletItem>
 
-                        <WalletItem label={`${t('my.paymentAddresses')}${paymentAddresses.length > 1 ? `s (${paymentAddresses.length})` : ''}`}>
+                        <WalletItem label={`${t('my.paymentAddresses')}`}>
                           <div className="space-y-2">
                             {paymentAddresses.length > 0 ? (
                               <>

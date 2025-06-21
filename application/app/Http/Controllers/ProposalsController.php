@@ -241,8 +241,8 @@ class ProposalsController extends Controller
             [
                 'slideover' => true,
                 'filters' => $this->queryParams,
-                'chartDataByFund' => $chartDataByFund,
-                'chartDataByYear' => $chartDataByYear,
+                'chartDataByFund' => $chartDataByFund ?? [],
+                'chartDataByYear' => $chartDataByYear ?? [],
             ]
         )->baseRoute('proposals.index');
     }
@@ -679,9 +679,9 @@ class ProposalsController extends Controller
 
             $chartData[] = [
                 'fund' => $fundTitle,
-                'totalProposals' => $totalCount,
-                'fundedProposals' => $fundedCount,
-                'completedProposals' => $completedCount,
+                'totalProposals' => $totalCount ?? 0,
+                'fundedProposals' => $fundedCount ?? 0,
+                'completedProposals' => $completedCount ?? 0,
             ];
         }
 
@@ -723,6 +723,7 @@ class ProposalsController extends Controller
         }
 
         $chartData = [];
+        $yearCounts = [];
 
         foreach ($yearCounts as $year => $totalCount) {
             if (empty($this->queryParams[ProposalSearchParams::SUBMITTED_PROPOSALS()->value])) {
@@ -736,9 +737,9 @@ class ProposalsController extends Controller
 
             $chartData[] = [
                 'year' => $year,
-                'totalProposals' => $displayCount,
-                'fundedProposals' => $fundedCount,
-                'completedProposals' => $completedCount,
+                'totalProposals' => $displayCount ?? 0,
+                'fundedProposals' => $fundedCount ?? 0,
+                'completedProposals' => $completedCount ?? 0,
             ];
         }
 

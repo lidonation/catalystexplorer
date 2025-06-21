@@ -19,6 +19,7 @@ import IdeascaleProfileData = App.DataTransferObjects.IdeascaleProfileData;
 import GroupData = App.DataTransferObjects.GroupData;
 import Title from '@/Components/atoms/Title';
 import { ReviewCard } from '@/Components/ReviewCard';
+import CommunityCardMini from '@/Pages/Communities/Partials/CommunityCardMini';
 
 interface SearchResultsData {
     hits:
@@ -130,7 +131,7 @@ const DynamicSearchResults = ({
                 return (
                     <div className="flex flex-col gap-4">
                         <Title level='2'>{t('searchResults.tabs.groups')}</Title>
-                        <ul className="grid w-full grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4">
+                        <ul className="grid w-full grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-5">
                             {data.hits.map((group, index) =>(
                                 <li key={index}>
                                     <GroupCardMini group={group as GroupData} />
@@ -150,14 +151,23 @@ const DynamicSearchResults = ({
                 );
             case 'communities':
                 return (
-                    <div className="flex flex-col gap-4">
-                        <div>{translation('comingSoon')}</div>
+                    <div className="flex w-full flex-col gap-4">
+                        <Title>{t('Communities')}</Title>
+                        <section className="py-8">
+                            <ul className="grid w-full grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-5 items-stretch">
+                                {data.hits.map((community, index) => (
+                                    <li key={index} className="flex">
+                                        <CommunityCardMini
+                                            community={community as CommunityData}
+                                        />
+                                    </li>
+                                ))}
+                            </ul>
+                        </section>
                         <div className="flex w-full items-center justify-center">
                             <NavLink href={`/communities?q=${query}`}>
                                 <Button className="text-center">
-                                    {translation(
-                                        'searchResults.results.viewMore',
-                                    )}
+                                    {translation('searchResults.results.viewMore')}
                                 </Button>
                             </NavLink>
                         </div>
