@@ -26,7 +26,6 @@ const CommunityCardMini: React.FC<CommunityCardMiniProps> = ({
     embedded = true,
     isMember,
 }) => {
-    console.log('Community Data:', community);
     const { t } = useTranslation();
     const { props } = usePage<{ isMember?: boolean }>();
     

@@ -8,17 +8,24 @@ import CommunityData = App.DataTransferObjects.CommunityData;
 
 interface CommunitiesProps {
     communities: PaginatedData<CommunityData[]>;
+    cardType?: 'full' | 'mini';
+    gridCols?: string;
 }
 
 const CommunitiesPaginatedList: React.FC<CommunitiesProps> = ({
     communities,
+    cardType = 'mini',
+    gridCols
 }) => {
     return (
         <>
-            {' '}
-            <section className="container mt-4  w-full flex-col items-center justify-center overflow-hidden duration-500 ease-in-out">
+            <section className="container mt-4 w-full flex-col items-center justify-center overflow-hidden duration-500 ease-in-out">
                 <WhenVisible fallback={<CommunityLoader />} data="campaigns">
-                    <CommunitiesList communities={communities} />
+                    <CommunitiesList 
+                        communities={communities} 
+                        cardType={cardType}
+                        gridCols={gridCols}
+                    />
                 </WhenVisible>
             </section>
             {communities && communities.total > 0 && (
