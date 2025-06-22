@@ -711,6 +711,7 @@ class ProposalsController extends Controller
         $response = new Fluent($builder->raw());
 
         $createdDates = $response->facetDistribution['created_at'] ?? [];
+        $yearCounts = [];
 
         foreach ($createdDates as $date => $count) {
             $year = date('Y', strtotime($date));
@@ -723,7 +724,6 @@ class ProposalsController extends Controller
         }
 
         $chartData = [];
-        $yearCounts = [];
 
         foreach ($yearCounts as $year => $totalCount) {
             if (empty($this->queryParams[ProposalSearchParams::SUBMITTED_PROPOSALS()->value])) {
