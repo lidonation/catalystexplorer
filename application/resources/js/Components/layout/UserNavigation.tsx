@@ -49,7 +49,7 @@ function UserNavigation() {
         {
             href: useLocalizedRoute('my.dashboard'),
             title: t('my.dashboard'),
-            icon: <BarLineIcon className="text-dark" />,
+            icon: <BarLineIcon width={20} className="text-dark" />,
         },
         {
             href: '/knowledge-base',
@@ -108,6 +108,11 @@ function UserNavigation() {
             route: 'my.votes',
             title: t('my.votes'),
             ariaLabel: `${t('my.votes')} ${t('link')}`,
+        },
+        {
+            route: 'my.wallets',
+            title: t('my.wallets'),
+            riaLabel: `${t('my.wallets')} ${t('link')}`,
         },
     ];
 

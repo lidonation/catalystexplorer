@@ -91,6 +91,7 @@ class CommunitiesController extends Controller
                 ->load([
                     'ideascale_profiles' => fn (HasManyDeep $q) => $q->limit(5),
                     'ideascale_profiles.media',
+                    'users' => fn ($q) => $q->limit(5)->with('media'),
                 ])
                 ->loadCount([
                     'completed_proposals',
@@ -98,6 +99,7 @@ class CommunitiesController extends Controller
                     'unfunded_proposals',
                     'proposals',
                     'ideascale_profiles',
+                    'users',
                 ])
                 ->append([
                     'amount_distributed_ada',
@@ -243,6 +245,8 @@ class CommunitiesController extends Controller
                     );
                 });
             }),
+
+            'isMember' => Auth::check() ? $community->users()->where('users.id', Auth::id())->exists() : false,
         ];
 
         return match (true) {
@@ -260,10 +264,12 @@ class CommunitiesController extends Controller
         $query = Community::query()->with([
             'ideascale_profiles' => fn (HasManyDeep $q) => $q->limit(5),
             'ideascale_profiles.media',
-        ])
+            'users' => fn ($q) => $q->limit(5)->with('media'),
+            ])
             ->withCount([
                 'proposals',
                 'ideascale_profiles',
+                'users',
             ]);
 
         // set necessary counts
@@ -389,6 +395,20 @@ class CommunitiesController extends Controller
         // Get paginated results
         $results = $query->offset(($this->currentPage - 1) * $this->limit)->limit($this->limit)->get();
 
+        // Add membership information if user is authenticated
+        if (Auth::check()) {
+            $userCommunityIds = Auth::user()->communities()->pluck('communities.id')->toArray();
+            
+            $results->each(function ($community) use ($userCommunityIds) {
+                $community->is_member = in_array($community->id, $userCommunityIds);
+            });
+        } else {
+            // Set is_member to false for all communities if no user is authenticated
+            $results->each(function ($community) {
+                $community->is_member = false;
+            });
+        }
+
         // Create LengthAwarePaginator instance
         $pagination = new LengthAwarePaginator(CommunityData::collect($results), $total, $this->limit, $this->currentPage, [
             'path' => request()->url(),
@@ -442,15 +462,23 @@ class CommunitiesController extends Controller
         return $connections;
     }
 
-    public function join($communityHash)
+    public function join(Community $community)
     {
-        $community = Community::findOrFail($communityHash);
-
         $user = Auth::user();
 
-        $community->ideascale_profiles()->attach($user->id);
+        if (!$user) {
+            return redirect()->route('login')->with('error', 'You must be logged in to join a community.');
+        }
 
-        return back();
+        if ($community->users()->where('users.id', $user->id)->exists()) {
+            return back()->with('info', 'You are already a member of this community.');
+        }
+
+        $community->users()->attach($user->id);
+
+        Cache::forget("community:{$community->id}:full");
+
+        return back()->with('success', 'Successfully joined the community!');
     }
 
     public function setCounts($query)

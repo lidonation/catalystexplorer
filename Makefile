@@ -75,6 +75,12 @@ ts-transform:
 db-schema:
 	$(sail) node --loader ts-node/esm resources/js/scripts/generateDbSchema.ts
 
+.PHONY: db-forward-preview
+db-forward-preview:
+	kubect port-forward
+
+	
+
 .PHONY: devtools-install
 devtools-install:
 	docker run --rm --interactive --tty \
@@ -231,7 +237,7 @@ flush-index:
 
 .PHONY: delete-index
 
-INDEXES = cx_bookmark_collection cx_proposals cx_communities cx_ideascale_profiles cx_monthly_reports cx_review cx_groups cx_transactions cx_communities cx_voter_histories
+INDEXES = cx_bookmark_collections cx_proposals cx_communities cx_ideascale_profiles cx_monthly_reports cx_review cx_groups cx_transactions cx_communities cx_voter_histories
 
 delete-index:
 	@index_filter="$(filter-out $@,$(MAKECMDGOALS))"; \

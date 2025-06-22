@@ -116,6 +116,7 @@ class Proposal extends Model
             'completed_amount_paid_USD',
             'completed_amount_paid_ADA',
             'campaign_id',
+            'created_at',
         ];
     }
 

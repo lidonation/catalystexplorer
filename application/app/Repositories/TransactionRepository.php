@@ -36,6 +36,7 @@ class TransactionRepository extends Repository
                     'json_metadata',
                     'metadata_labels',
                     'voters_details',
+                    'stake_key',
                 ];
 
                 $args['facets'] = [

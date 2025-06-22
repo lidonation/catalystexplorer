@@ -18,6 +18,7 @@ export enum ParamsEnum {
     PROJECT_LENGTH = 'pl',
     MIN_PROJECT_LENGTH = 'lmin',
     OPENSOURCE_PROPOSALS = 'op',
+    SUBMITTED_PROPOSALS = 'sp',
     PAGE = 'p',
     PROPOSALS = 'pro',
     IDEASCALE_PROFILES = 'ip',

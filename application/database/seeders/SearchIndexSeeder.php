@@ -4,16 +4,18 @@ declare(strict_types=1);
 
 namespace Database\Seeders;
 
-use App\Models\Community;
+use App\Models\BookmarkCollection;
 use App\Models\Group;
-use App\Models\IdeascaleProfile;
-use App\Models\MonthlyReport;
-use App\Models\ProjectSchedule;
-use App\Models\Proposal;
+use App\Models\Voter;
 use App\Models\Review;
+use App\Models\Proposal;
+use App\Models\Community;
 use App\Models\Transaction;
 use App\Models\VoterHistory;
+use App\Models\MonthlyReport;
+use App\Models\ProjectSchedule;
 use Illuminate\Database\Seeder;
+use App\Models\IdeascaleProfile;
 
 class SearchIndexSeeder extends Seeder
 {
@@ -31,5 +33,7 @@ class SearchIndexSeeder extends Seeder
         Transaction::runCustomIndex();
         ProjectSchedule::runCustomIndex();
         VoterHistory::runCustomIndex();
+        Voter::runCustomIndex();
+        BookmarkCollection::runCustomIndex();
     }
 }

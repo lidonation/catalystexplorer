@@ -451,10 +451,6 @@ class MyBookmarksController extends Controller
                 'visibility' => $data['visibility'] ?? BookmarkVisibility::UNLISTED()->value,
                 'color' => $data['color'] ?? '#000000',
                 'status' => BookmarkStatus::DRAFT()->value,
-                'type' => BookmarkCollection::class,
-                'type_id' => null,
-                'type_type' => null,
-                'parent_id' => null,
             ]);
 
             return response()->json([

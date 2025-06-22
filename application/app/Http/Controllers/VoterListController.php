@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Controllers;
 
 use App\Actions\TransformIdsToHashes;
+use App\DataTransferObjects\BookmarkCollectionData;
 use App\DataTransferObjects\ProposalData;
 use App\Enums\BookmarkStatus;
 use App\Enums\ProposalSearchParams;
@@ -54,12 +55,14 @@ class VoterListController extends Controller
     {
         $funds = Fund::orderBy('created_at', 'desc')->get();
         $latestFund = $funds->first();
+        $bookmarkHash = $request->input(QueryParamsEnum::BOOKMARK_COLLECTION()->value);
 
         return Inertia::render('Workflows/CreateVoterList/Step2', [
             'stepDetails' => $this->getStepDetails(),
             'activeStep' => intval($request->step),
             'funds' => $funds,
             'latestFund' => $latestFund,
+            'voterList' => BookmarkCollectionData::from(BookmarkCollection::byHash($bookmarkHash)?->load('fund')),
         ]);
     }
 
@@ -93,7 +96,7 @@ class VoterListController extends Controller
         if ($fund) {
             $campaigns = Campaign::where('fund_id', $fund->id)->get();
             $page = $request->input(ProposalSearchParams::PAGE()->value, default: 1);
-            $limit = $request->input('limit', 3);
+            $limit = $request->input('limit', 24);
             $search = $request->input(ProposalSearchParams::QUERY()->value, '');
             $campaignHash = $request->input(ProposalSearchParams::CAMPAIGNS()->value);
             $sort = $request->input(ProposalSearchParams::SORTS()->value);
@@ -223,6 +226,7 @@ class VoterListController extends Controller
 
     public function saveListDetails(Request $request): RedirectResponse
     {
+
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'visibility' => 'required|string',
@@ -233,21 +237,40 @@ class VoterListController extends Controller
             'status' => 'nullable|string',
         ]);
 
-        $bookmarkCollection = BookmarkCollection::create([
-            'user_id' => $request->user()->id,
-            'title' => $validated['title'],
-            'content' => $validated['content'] ?? null,
-            'color' => $validated['color'] ?? '#2596BE',
-            'allow_comments' => $validated['comments_enabled'] ?? false,
-            'visibility' => $validated['visibility'],
-            'status' => $validated['status'] ?? BookmarkStatus::DRAFT()->value,
-            'type' => BookmarkCollection::class,
-            'type_id' => $validated['fund_slug'],
-        ]);
+        $bookmarkHash = $request->input(QueryParamsEnum::BOOKMARK_COLLECTION()->value);
+
+        $existingList = BookmarkCollection::byhash($bookmarkHash);
+
+        $fund = Fund::where('slug', $validated['fund_slug'])->first();
+
+        if ($existingList) {
+            $existingList->update([
+                'user_id' => $request->user()->id,
+                'title' => $validated['title'],
+                'content' => $validated['content'] ?? null,
+                'color' => $validated['color'] ?? '#2596BE',
+                'allow_comments' => $validated['comments_enabled'] ?? false,
+                'visibility' => $validated['visibility'],
+                'status' => $validated['status'] ?? BookmarkStatus::DRAFT()->value,
+                'fund_id' => $fund?->id,
+            ]);
+            $bookmarkCollection = $existingList;
+        } else {
+            $bookmarkCollection = BookmarkCollection::create([
+                'user_id' => $request->user()->id,
+                'title' => $validated['title'],
+                'content' => $validated['content'] ?? null,
+                'color' => $validated['color'] ?? '#2596BE',
+                'allow_comments' => $validated['comments_enabled'] ?? false,
+                'visibility' => $validated['visibility'],
+                'status' => $validated['status'] ?? BookmarkStatus::DRAFT()->value,
+                'fund_id' => $fund?->id,
+            ]);
+        }
 
         return to_route('workflows.createVoterList.index', [
             'step' => 3,
-            QueryParamsEnum::BOOKMARK_COLLECTION()->value => $bookmarkCollection->id,
+            QueryParamsEnum::BOOKMARK_COLLECTION()->value => $bookmarkCollection->hash,
             QueryParamsEnum::FUNDS()->value => $validated['fund_slug'],
         ]);
     }

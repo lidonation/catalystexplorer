@@ -1,34 +1,36 @@
 import Paragraph from '@/Components/atoms/Paragraph';
 import PrimaryButton from '@/Components/atoms/PrimaryButton';
 import PrimaryLink from '@/Components/atoms/PrimaryLink';
-import Title from '@/Components/atoms/Title';
+import Selector from '@/Components/atoms/Selector';
+import CustomSwitch from '@/Components/atoms/Switch';
+import Textarea from '@/Components/atoms/Textarea';
+import TextInput from '@/Components/atoms/TextInput';
+import ValueLabel from '@/Components/atoms/ValueLabel';
+import InputError from '@/Components/InputError';
+import RadioGroup from '@/Components/RadioGroup';
+import { StatusEnum, VisibilityEnum } from '@/enums/votes-enums';
 import { StepDetails } from '@/types';
 import {
     generateLocalizedRoute,
     useLocalizedRoute,
 } from '@/utils/localizedRoute';
 import { useForm } from '@inertiajs/react';
+import { lowerCase } from 'lodash';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import Content from '../Partials/WorkflowContent';
 import Footer from '../Partials/WorkflowFooter';
 import Nav from '../Partials/WorkflowNav';
 import WorkflowLayout from '../WorkflowLayout';
-import ValueLabel from '@/Components/atoms/ValueLabel';
-import RadioGroup from '@/Components/RadioGroup';
-import CustomSwitch from '@/Components/atoms/Switch';
-import TextInput from '@/Components/atoms/TextInput';
-import Selector from '@/Components/atoms/Selector';
-import { useTranslation } from 'react-i18next';
-import { VisibilityEnum, StatusEnum } from '@/enums/votes-enums';
-import { lowerCase } from 'lodash';
+import BookmarkCollectionData = App.DataTransferObjects.BookmarkCollectionData;
 
 interface Step2Props {
     stepDetails: StepDetails[];
     activeStep: number;
     funds: any;
     latestFund: any;
-    voterList: any;
+    voterList: BookmarkCollectionData;
 }
 
 const Step2: React.FC<Step2Props> = ({
@@ -36,17 +38,16 @@ const Step2: React.FC<Step2Props> = ({
     activeStep,
     latestFund,
     funds,
-    voterList
+    voterList,
 }) => {
-
     const form = useForm({
         title: voterList?.title || '',
         visibility: voterList?.visibility || VisibilityEnum.UNLISTED,
-        fund_slug: voterList?.fund_slug || latestFund?.slug,
+        fund_slug: voterList?.fund?.slug || latestFund?.slug,
         content: voterList?.content || '',
         comments_enabled: voterList?.allow_comments || false,
         color: voterList?.color || '#2596BE',
-        status: voterList?.status || StatusEnum.DRAFT
+        status: voterList?.status || StatusEnum.DRAFT,
     });
 
     const [isFormValid, setIsFormValid] = useState(false);
@@ -61,10 +62,6 @@ const Step2: React.FC<Step2Props> = ({
     const { t } = useTranslation();
 
     useEffect(() => {
-        if (!isFormTouched) {
-            setIsFormTouched(true);
-            return;
-        }
         validateForm();
     }, [form.data]);
 
@@ -79,22 +76,29 @@ const Step2: React.FC<Step2Props> = ({
             newErrors.fund_slug = t('workflows.voterList.errors.fundRequired');
         }
 
-        if (form.data.content.length < 200) {
-            newErrors.content = t('workflows.voterList.errors.descriptionLength');
+        if (form.data.content.length < 69) {
+            newErrors.content = t(
+                'workflows.voterList.errors.descriptionLength',
+            );
         }
 
         setErrors(newErrors);
 
         setIsFormValid(
             Object.keys(newErrors).length === 0 &&
-            !!form.data.title &&
-            !!form.data.fund_slug &&
-            form.data.content.length >= 200
+                !!form.data.title &&
+                !!form.data.fund_slug &&
+                form.data.content.length >= 69,
         );
     };
 
     const submitForm = () => {
-        form.post(generateLocalizedRoute('workflows.createVoterList.saveListDetails'));
+        form.post(
+            generateLocalizedRoute(
+                'workflows.createVoterList.saveListDetails',
+                voterList?.hash ? { bk: voterList?.hash } : {},
+            ),
+        );
     };
 
     return (
@@ -134,7 +138,7 @@ const Step2: React.FC<Step2Props> = ({
                             <div className="h-2"></div>
                             <TextInput
                                 id="title"
-                                className="!border-gray-persist !focus:border-gray-600 w-full rounded-sm placeholder:text-sm"
+                                className="w-full rounded-sm placeholder:text-sm"
                                 placeholder={t('workflows.voterList.title')}
                                 value={form.data.title}
                                 onChange={(e) =>
@@ -142,60 +146,26 @@ const Step2: React.FC<Step2Props> = ({
                                 }
                                 required
                             />
-                            {errors.title && (
-                                <Paragraph
-                                    size="sm"
-                                    className="text-danger-strong mt-1"
-                                >
-                                    {errors.title}
-                                </Paragraph>
-                            )}
+                            <InputError message={form.errors.title} />
                         </div>
 
-                        <div
-                            onKeyDown={(e) => e.stopPropagation()}
-                            onClick={(e) => e.stopPropagation()}
-                            onFocus={(e) => e.stopPropagation()}
-                        >
-                            <ValueLabel className="text-content mb-4">
+                        <div className="mt-3">
+                            <ValueLabel className="text-content">
                                 {t('workflows.voterList.description')}
                             </ValueLabel>
-                            <div className="h-2"></div>
-                            <textarea
+                            <Textarea
                                 id="content"
-                                rows={4}
-                                style={{ whiteSpace: 'pre-wrap' }}
-                                className="bg-background border-gray-persist focus:ring-primary w-full rounded-md border px-4 py-2 whitespace-pre-wrap placeholder:text-sm focus:ring-1 focus:outline-none"
-                                placeholder={t(
-                                    'workflows.voterList.descriptionPlaceholder',
-                                )}
+                                name="content"
+                                minLengthValue={69}
+                                minLengthEnforced
+                                required
                                 value={form.data.content}
-                                onChange={(e) => {
-                                    const valueWithWhitespace = e.target.value;
-                                    form.setData(
-                                        'content',
-                                        valueWithWhitespace,
-                                    );
-                                    console.log(
-                                        'Text with whitespace:',
-                                        valueWithWhitespace,
-                                    );
-                                }}
+                                onChange={(e) =>
+                                    form.setData('content', e.target.value)
+                                }
+                                className="h-30 w-full rounded-lg px-4 py-2"
                             />
-                            <div className="mt-1 flex items-center justify-between">
-                                <Paragraph
-                                    size="sm"
-                                    className="text-gray-persist text-[0.75rem]"
-                                >
-                                    {t('workflows.voterList.descriptionHint')}
-                                </Paragraph>
-                                <Paragraph
-                                    size="sm"
-                                    className="text-gray-persist text-[0.75rem]"
-                                >
-                                    {form.data.content.length}/200
-                                </Paragraph>
-                            </div>
+                            <InputError message={form.errors.content} />
                         </div>
 
                         <div className="grid grid-cols-12 items-center gap-4">

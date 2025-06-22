@@ -8,10 +8,11 @@ const __dirname = dirname(__filename);
 
 const typeTableMap: Record<string, string> = {
     "proposal_comparisons": 'ProposalData',
-    "user_setting": 'UserSettingData'
+    "user_setting": 'UserSettingData',
+    "key_value_store": 'KeyValueStoreData'
 };
 
-const inputFile = path.resolve(__dirname, '../../types/generated.d.ts');
+const inputFile = path.resolve(__dirname, '../../js/types/generated.d.ts');
 const outputFile = path.resolve(__dirname, '../db/generated-db-schema.ts');
 
 const file = fs.readFileSync(inputFile, 'utf-8');

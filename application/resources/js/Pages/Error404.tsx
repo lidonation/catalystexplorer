@@ -17,12 +17,12 @@ export default function Error404() {
                 <span>{t('error404.subText')}</span>
             </p>
             <div className="flex justify-center p-4">
-                <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
+                <div className="grid grid-cols-2 gap-4 md:grid-cols-3">
                     <Link
                         href={useLocalizedRoute('home')}
                         className="bg-primary text-content mt-6 rounded px-8 py-4 text-center hover:opacity-75"
                     >
-                        {t('Dashboard')}
+                        {t('Home')}
                     </Link>
                     <Link
                         href={useLocalizedRoute('proposals.index')}
@@ -36,12 +36,12 @@ export default function Error404() {
                     >
                         {t('funds.funds')}
                     </Link>
-                    <Link
+                    {/* <Link
                         href={'/'}
                         className="bg-primary text-content mt-6 rounded px-8 py-4 text-center hover:opacity-75"
                     >
                         {t('knowledgeBase')}
-                    </Link>
+                    </Link> */}
                 </div>
             </div>
         </div>

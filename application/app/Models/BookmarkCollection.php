@@ -15,7 +15,7 @@ use Spatie\Comments\Models\Concerns\HasComments;
 
 class BookmarkCollection extends Model
 {
-    use HasAuthor, HasComments, HasMetaData, Searchable,SoftDeletes;
+    use HasAuthor, HasComments, HasMetaData, Searchable, SoftDeletes;
 
     protected $withCount = [
         'items',
@@ -27,22 +27,11 @@ class BookmarkCollection extends Model
         'comments',
     ];
 
-    public $meiliIndexName = 'cx_bookmark_collection';
+    public $meiliIndexName = 'cx_bookmark_collections';
 
     protected $appends = ['types_count', 'hash'];
 
     protected $guarded = [];
-
-    protected $fillable = [
-        'user_id',
-        'title',
-        'content',
-        'visibility',
-        'color',
-        'allow_comments',
-        'status',
-        'type',
-    ];
 
     public static function getFilterableAttributes(): array
     {
@@ -81,7 +70,8 @@ class BookmarkCollection extends Model
 
     public function parent(): BelongsTo
     {
-        return $this->belongsTo(BookmarkCollection::class, 'parent_id');
+        return $this->belongsTo(static::class, 'model_id')
+            ->where('model_type', static::class);
     }
 
     public function items(): HasMany
@@ -105,6 +95,11 @@ class BookmarkCollection extends Model
     {
         return $this->hasMany(BookmarkItem::class)
             ->where('model_type', Community::class);
+    }
+
+    public function fund(): BelongsTo
+    {
+        return $this->belongsTo(fund::class);
     }
 
     public function groups(): HasMany

@@ -45,6 +45,10 @@ return [
 
     'govtools' => [
         'budget_proposals' => env('GOVTOOLS_BUDGET_PROPOSALS', ''),
-    ]
-
+    ],
+    'blockfrost' => [
+        'project_id' => env('BLOCKFROST_PROJECT_ID'),
+        'base_url' => env('BLOCKFROST_BASE_URL', 'https://cardano-preview.blockfrost.io/api/v0'),
+        'baseUrlFallback' => env('BLOCKFROST_BASE_URL_FALLBACK', 'https://cardano-preview.blockfrost.io/api/v0'),
+    ],
 ];

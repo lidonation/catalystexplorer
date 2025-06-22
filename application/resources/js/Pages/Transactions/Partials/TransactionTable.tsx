@@ -56,7 +56,7 @@ export const CardanoTransactionTable: React.FC<CardanoTransactionTableProps> = (
         <div className="flex flex-col space-y-1 items-center">
           <CopyableCell
             displayText={formatAddress(tx.tx_hash)}
-            fullText={tx.tx_hash}
+            fullText={tx?.tx_hash}
             title={t('transactions.table.copyTxHash')}
           />
           {voterRegistrationTypes.includes(tx.json_metadata?.txType) ? (
@@ -79,12 +79,11 @@ export const CardanoTransactionTable: React.FC<CardanoTransactionTableProps> = (
     {
       key: 'stakeAddress',
       header: t('transactions.table.stakeAddress'),
-      render: (tx) => {
-        const stakeAddress = getStakeAddress(tx.inputs[0]?.address || '');
+      render: (tx) => {    
         return (
           <CopyableCell
-            displayText={formatAddress(stakeAddress)}
-            fullText={stakeAddress}
+            displayText={formatAddress(tx?.stake_key??'')}
+            fullText={tx?.stake_key??''}
             title={t('transactions.table.copyStakeAddress')}
           />
         );

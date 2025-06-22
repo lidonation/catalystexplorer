@@ -25,9 +25,9 @@ return new class extends Migration
             $table->boolean('allow_comments')->nullable();
             $table->string('visibility')->default(BookmarkVisibility::UNLISTED()->value);
             $table->string('status')->default(BookmarkStatus::DRAFT()->value);
-            $table->string('type')->default(BookmarkCollection::class);
-            $table->unsignedBigInteger('type_id')->nullable();
-            $table->string('type_type')->nullable();
+            $table->string('model_type')->default(BookmarkCollection::class);
+            $table->unsignedBigInteger('model_id')->nullable();
+            $table->string('type')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

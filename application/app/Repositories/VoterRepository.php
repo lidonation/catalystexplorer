@@ -69,7 +69,6 @@ class VoterRepository extends Repository
                 }
 
                 $mergedArgs = array_merge($defaultArgs, $args);
-
                 if (isset($mergedArgs['sort']) && is_array($mergedArgs['sort'])) {
                     $this->ensureSortableAttributes($index, $mergedArgs['sort']);
                 }

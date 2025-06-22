@@ -4,22 +4,19 @@ import ArrowTrendingDown from '@/Components/svgs/ArrowTrendingDown';
 import ArrowTrendingUp from '@/Components/svgs/ArrowTrendingUp';
 import { shortNumber } from '@/utils/shortNumber';
 import { ResponsiveLine } from '@nivo/line';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-
-interface LineDataPoint {
-    x: string | number;
-    y: number;
-}
 
 interface LineChartProps {
     chartData: any;
     yAxisLabel?: string;
+    viewBy?: 'fund' | 'year';
 }
 
 const LineChart: React.FC<LineChartProps> = ({
     chartData,
     yAxisLabel,
+    viewBy,
 }) => {
     const { t } = useTranslation();
     const [isMobile, setIsMobile] = useState(false);
@@ -46,24 +43,24 @@ const LineChart: React.FC<LineChartProps> = ({
             id: 'Total Proposals',
             color: defaultColors[0],
             data: chartData.map((item: any) => ({
-                x: item.fund,
-                y: item.totalProposals,
+                x: viewBy === 'fund' ? item.fund : item.year,
+                y: item.totalProposals ?? 0, 
             })),
         },
         {
             id: 'Funded Proposals',
             color: defaultColors[1],
             data: chartData.map((item: any) => ({
-                x: item.fund,
-                y: item.fundedProposals,
+                x: viewBy === 'fund' ? item.fund : item.year,
+                y: item.fundedProposals ?? 0, 
             })),
         },
         {
             id: 'Completed Proposals',
             color: defaultColors[2],
             data: chartData.map((item: any) => ({
-                x: item.fund,
-                y: item.completedProposals,
+                x: viewBy === 'fund' ? item.fund : item.year,
+                y: item.completedProposals ?? 0,
             })),
         },
     ];
@@ -91,11 +88,26 @@ const LineChart: React.FC<LineChartProps> = ({
 
     const config = getResponsiveConfig();
 
+    const [showTooltip, setShowTooltip] = useState(false);
+    const badgeRef = useRef<HTMLDivElement>(null);
+    const [tooltipPosition, setTooltipPosition] = useState({ top: 0, left: 0 });
+
+    useEffect(() => {
+        if (showTooltip && badgeRef.current) {
+            const rect = badgeRef.current.getBoundingClientRect();
+            setTooltipPosition({
+                top: rect.top - 40,
+                left: rect.left + rect.width / 2,
+            });
+        }
+    }, [showTooltip]);
+
     return (
-        <div>
+        <div ref={badgeRef} className="relative">
             <div
                 className="h-[400px] min-w-[600px] sm:min-w-full"
                 style={{ height: config.height, minHeight: config.minHeight }}
+                ref={badgeRef}
             >
                 <ResponsiveLine
                     data={transformedData}
@@ -115,7 +127,10 @@ const LineChart: React.FC<LineChartProps> = ({
                         tickSize: 5,
                         tickPadding: 5,
                         tickRotation: 0,
-                        legend: 'Fund',
+                        legend:
+                            viewBy === 'fund'
+                                ? t('charts.fund')
+                                : t('charts.year'),
                         legendOffset: config.legendOffset,
                         legendPosition: 'middle',
                     }}
@@ -126,8 +141,7 @@ const LineChart: React.FC<LineChartProps> = ({
                         legend: legend,
                         legendOffset: -60,
                         legendPosition: 'middle',
-                        format: (value) =>
-                           shortNumber(value, 2),
+                        format: (value) => shortNumber(value, 2),
                     }}
                     colors={{ datum: 'color' }}
                     lineWidth={3}
@@ -222,7 +236,13 @@ const LineChart: React.FC<LineChartProps> = ({
                             },
                         );
                         return (
-                            <div className="bg-tooltip relative rounded-lg p-4 text-white shadow-lg">
+                            <div
+                                className="bg-tooltip rounded-lg p-4 text-white shadow-lg relative transform translate-x"
+                                style={{
+                                    top: `${tooltipPosition.top}px`,
+                                    left: `${tooltipPosition.left}px`,
+                                }}
+                            >
                                 <div className="max-w-sm">
                                     <Title
                                         level="3"
@@ -273,7 +293,7 @@ const LineChart: React.FC<LineChartProps> = ({
                                                     </span>
                                                 </span>
                                                 <span className="ml-1">
-                                                    {t('metric.vs')}
+                                                    {viewBy === 'fund'? t('metric.vs') : t('charts.vsYear')}
                                                 </span>
                                             </div>
                                         </div>

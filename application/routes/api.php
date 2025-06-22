@@ -19,8 +19,11 @@ use App\Http\Controllers\VoterHistoriesController;
 use App\Http\Controllers\CompletedProjectNftsController;
 use App\Http\Controllers\Api\IdeascaleProfilesController;
 use App\Http\Controllers\CardanoBudgetProposalController;
+use Inertia\Inertia;
 
 Route::prefix('api')->as('api.')->group(function () {
+    Route::get('/', fn() => Inertia::render(component: 'ComingSoon', props: ['context' => 'API']))->name('index');
+
     Route::get('/groups', [GroupController::class, 'groups'])->name('groups');
     Route::get('/groups/{group:id}', [GroupController::class, 'group'])->name('group');
     Route::get('/groups/{hash}/connections', [GroupController::class, 'connections'])->name('groups.connections');
@@ -65,8 +68,8 @@ Route::prefix('api')->as('api.')->group(function () {
                 ->name('create');
             Route::post('{bookmarkCollection}/update', [MyBookmarksController::class, 'updateCollection'])
                 ->name('update');
-        Route::post('{bookmarkCollection}/delete', [MyBookmarksController::class, 'deleteCollection'])
-            ->name('delete');
+            Route::post('{bookmarkCollection}/delete', [MyBookmarksController::class, 'deleteCollection'])
+                ->name('delete');
             Route::get('/', [MyBookmarksController::class, 'retrieveCollections'])
                 ->name('retrieve');
             Route::prefix('bookmarks')->as('bookmarks.')
@@ -129,6 +132,7 @@ Route::prefix('api')->as('api.')->group(function () {
         ->group(function () {
             Route::get('/', [CommentController::class, 'index'])->name('index');
             Route::post('/', [CommentController::class, 'store'])->name('store')
-            ->middleware('throttle:15,1');
+                ->middleware('throttle:15,1');
         });
+
 });

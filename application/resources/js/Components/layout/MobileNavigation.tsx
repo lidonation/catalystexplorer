@@ -32,7 +32,7 @@ function MobileNavigation() {
                         <section>
                             <AppNavigation />
                         </section>
-                        <section className="flex flex-col gap-6 px-4 pb-8">
+                        <section className="mt-4 flex flex-col gap-6 px-4 pb-8">
                             <ThemeSwitcher />
                             <UserNavigation />
                             <UserDetails user={auth?.user as unknown as User} />

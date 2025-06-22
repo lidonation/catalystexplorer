@@ -82,6 +82,11 @@ class Voter extends Model
         return $this->hasMany(Registration::class, 'stake_pub', 'stake_pub');
     }
 
+    public function transactions(): HasMany
+    {
+        return $this->hasMany(Transaction::class, 'stake_key', 'stake_pub');
+    }
+
     public function voting_histories(): HasMany
     {
         return $this->hasMany(VoterHistory::class, 'stake_address', 'stake_pub');

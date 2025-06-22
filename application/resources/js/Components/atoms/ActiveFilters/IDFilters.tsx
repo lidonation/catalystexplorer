@@ -12,6 +12,9 @@ const domainMap: Record<string, string> = {
     [ParamsEnum.PROPOSALS]: 'proposals',
     [ParamsEnum.REVIEWER_IDS]: 'reviewers',
     [ParamsEnum.FUNDS]: 'funds',
+    [ParamsEnum.CAMPAIGNS]: 'campaigns',
+    [ParamsEnum.COMMUNITIES]: 'communities',
+    [ParamsEnum.TAGS]: 'tags',
 };
 
 const getDisplayName = (option: any): string =>

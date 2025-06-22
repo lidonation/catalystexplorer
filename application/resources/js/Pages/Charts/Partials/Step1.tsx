@@ -17,7 +17,8 @@ export default function Step1({ onCompletionChange }: Step1Props) {
     const hasSelections = () => {
         const fundingStatus = getFilter(ParamsEnum.FUNDING_STATUS) || [];
         const projectStatus = getFilter(ParamsEnum.PROJECT_STATUS) || [];
-        return fundingStatus.length > 0 || projectStatus.length > 0;
+        const submittedProposals = getFilter(ParamsEnum.SUBMITTED_PROPOSALS) || [];
+        return fundingStatus.length > 0 || projectStatus.length > 0 || submittedProposals.length > 0;
     };
 
     const isComplete = hasSelections();
@@ -36,12 +37,12 @@ export default function Step1({ onCompletionChange }: Step1Props) {
                 <div className="flex items-center gap-2">
                     <Checkbox
                         value="submitted"
-                        checked={getFilter(ParamsEnum.FUNDING_STATUS)?.includes(
+                        checked={getFilter(ParamsEnum.SUBMITTED_PROPOSALS)?.includes(
                             'submitted',
                         )}
                         onChange={(e) => {
                             const current =
-                                getFilter(ParamsEnum.FUNDING_STATUS) || [];
+                                getFilter(ParamsEnum.SUBMITTED_PROPOSALS) || [];
                             const isChecked = e.target.checked;
                             let updated;
 
@@ -54,9 +55,9 @@ export default function Step1({ onCompletionChange }: Step1Props) {
                             }
 
                             setFilters({
-                                label: t('proposals.filters.fundingStatus'),
+                                label: t('charts.submittedProposals'),
                                 value: updated,
-                                param: ParamsEnum.FUNDING_STATUS,
+                                param: ParamsEnum.SUBMITTED_PROPOSALS,
                             });
                         }}
                         className="checked:bg-primary"

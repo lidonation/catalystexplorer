@@ -23,16 +23,15 @@ class BookmarkCollectionFactory extends Factory
     {
         return [
             'user_id' => User::factory(),
-            'parent_id' => null,
             'title' => $this->faker->sentence(),
             'content' => $this->faker->paragraphs(3, true),
             'color' => $this->faker->safeHexColor(),
             'allow_comments' => $this->faker->boolean(),
             'visibility' => $this->faker->randomElement(['public', 'unlisted', 'private']),
             'status' => $this->faker->randomElement(['draft', 'published']),
-            'type' => BookmarkCollection::class,
-            'type_id' => $this->faker->optional()->randomNumber(5),
-            'type_type' => $this->faker->optional()->word(),
+            'model_type' => BookmarkCollection::class,
+            'model_id' => $this->faker->optional()->randomNumber(5),
+            'type' => $this->faker->optional()->word(),
         ];
     }
 }

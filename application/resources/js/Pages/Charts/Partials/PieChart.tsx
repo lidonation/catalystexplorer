@@ -6,15 +6,17 @@ import { useTranslation } from 'react-i18next';
 
 interface PieChartProps {
     chartData: any;
-    selectedFundIndex?: number;
+    selectedOptionIndex?: number;
+    viewBy?: 'fund' | 'year';
 }
 
 const PieChart: React.FC<PieChartProps> = ({
     chartData,
-    selectedFundIndex = 0,
+    selectedOptionIndex = 0,
+    viewBy
 }) => {
     const { t } = useTranslation();
-    const [activeFundIndex, setActiveFundIndex] = useState(selectedFundIndex);
+    const [activeOptionIndex, setActiveOptionIndex] = useState(selectedOptionIndex);
     const [isMobile, setIsMobile] = useState(false);
 
     useEffect(() => {
@@ -29,30 +31,30 @@ const PieChart: React.FC<PieChartProps> = ({
 
     const colors = ['#16B364', '#ee8434', '#4fadce'];
 
-    const selectedFund = chartData[activeFundIndex];
+    const selectedOption = chartData[activeOptionIndex];
 
     const pieData = [
         {
             id: 'Funded Proposals',
             label: 'Funded',
-            value: selectedFund.fundedProposals,
+            value: selectedOption.fundedProposals ?? 0,
             color: colors[0],
         },
         {
             id: 'Completed Proposals',
             label: 'Completed',
-            value: selectedFund.completedProposals,
+            value: selectedOption.completedProposals ?? 0,
             color: colors[1],
         },
         {
             id: 'Submitted Proposals',
             label: 'Submitted',
-            value: selectedFund.totalProposals - selectedFund.fundedProposals,
+            value: (selectedOption.totalProposals ?? 0)  - (selectedOption.fundedProposals ?? 0),
             color: colors[2],
         },
     ].filter((item) => item.value > 0);
 
-    const total = selectedFund.totalProposals;
+    const total = selectedOption.totalProposals;
     const pieDataWithPercentages = pieData.map((item) => ({
         ...item,
         percentage: total > 0 ? ((item.value / total) * 100).toFixed(1) : '0',
@@ -80,11 +82,13 @@ const PieChart: React.FC<PieChartProps> = ({
                     className="mb-2 text-sm"
                     style={{ color: 'var(--cx-content-gray-persist)' }}
                 >
-                    {t('charts.selectFund')}
+                    {viewBy === 'fund'
+                        ? t('charts.selectFund')
+                        : t('charts.selectYear')}
                 </Paragraph>
                 <select
-                    value={activeFundIndex}
-                    onChange={(e) => setActiveFundIndex(Number(e.target.value))}
+                    value={activeOptionIndex}
+                    onChange={(e) => setActiveOptionIndex(Number(e.target.value))}
                     className="w-full rounded border px-3 py-2 text-sm md:w-auto"
                     style={{
                         backgroundColor: 'var(--cx-background)',
@@ -92,11 +96,17 @@ const PieChart: React.FC<PieChartProps> = ({
                         color: 'var(--cx-content)',
                     }}
                 >
-                    {chartData.map((fund: any, index: number) => (
-                        <option key={fund.fund} value={index}>
-                            {fund.fund}
-                        </option>
-                    ))}
+                    {viewBy === 'fund'
+                        ? chartData.map((option: any, index: number) => (
+                            <option key={index} value={index}>
+                                {option.fund}
+                            </option>
+                        ))
+                        : chartData.map((option: any, index: number) => (
+                            <option key={index} value={index}>
+                                {option.year}
+                            </option>
+                        ))}
                 </select>
             </div>
 
@@ -109,7 +119,7 @@ const PieChart: React.FC<PieChartProps> = ({
                         {t('proposals.totalProposals')}
                     </Paragraph>
                     <Paragraph className="text-lg font-semibold">
-                        {shortNumber(selectedFund.totalProposals, 2)}
+                        {shortNumber(selectedOption.totalProposals, 2)}
                     </Paragraph>
                 </div>
                 <div className="text-center">
@@ -120,7 +130,7 @@ const PieChart: React.FC<PieChartProps> = ({
                         {t('funds.fundedProposals')}
                     </Paragraph>
                     <Paragraph className="text-lg font-semibold">
-                        {shortNumber(selectedFund.fundedProposals, 2)}
+                        {shortNumber(selectedOption.fundedProposals, 2)}
                     </Paragraph>
                 </div>
                 <div className="text-center">
@@ -131,8 +141,8 @@ const PieChart: React.FC<PieChartProps> = ({
                         {t('charts.fundingRate')}
                     </Paragraph>
                     <Paragraph className="text-lg font-semibold">
-                        {selectedFund.totalProposals > 0
-                            ? `${((selectedFund.fundedProposals / selectedFund.totalProposals) * 100).toFixed(1)}%`
+                        {selectedOption.totalProposals > 0
+                            ? `${((selectedOption.fundedProposals / selectedOption.totalProposals) * 100).toFixed(1)}%`
                             : '0%'}
                     </Paragraph>
                 </div>

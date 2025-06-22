@@ -78,7 +78,7 @@ class ProposalRepository extends Repository
                     'campaign.proposals_count',
                     'campaign.total_awarded',
                     'campaign.total_distributed',
-                    'completed_project_nft',
+                    'created_at',
                 ];
                 $args['facets'] = [
                     'tags',
@@ -102,6 +102,7 @@ class ProposalRepository extends Repository
                     'woman_proposal',
                     'has_quick_pitch',
                     'ideafest_proposal',
+                    'created_at',
                 ];
 
                 //                if ((bool) $this->sortBy && (bool) $this->sortOrder) {

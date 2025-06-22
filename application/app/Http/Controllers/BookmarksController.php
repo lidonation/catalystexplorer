@@ -11,7 +11,6 @@ use App\Enums\BookmarkStatus;
 use App\Enums\BookmarkVisibility;
 use App\Enums\ProposalSearchParams;
 use App\Enums\QueryParamsEnum;
-use App\Enums\StatusEnum;
 use App\Models\BookmarkCollection;
 use App\Models\BookmarkItem;
 use App\Models\Community;
@@ -369,19 +368,30 @@ class BookmarksController extends Controller
             'bookmarkCollection' => 'nullable|string',
         ]);
 
-        $existingCollection = BookmarkCollection::byHash($request->bookmarkCollection);
+        $existingList = BookmarkCollection::byhash($request->bookmarkCollection);
 
-        $bookmarkCollection = BookmarkCollection::updateOrCreate(['id' => $existingCollection?->id], [
-            'user_id' => $request->user()->id,
-            'title' => $validated['title'],
-            'content' => $validated['content'] ?? null,
-            'color' => $validated['color'] ?? '#a23b72',
-            'allow_comments' => (bool) $validated['comments_enabled'] ?? false,
-            'visibility' => $validated['visibility'],
-            'status' => $validated['status'] ?? StatusEnum::draft()->value,
-            'type' => BookmarkCollection::class,
-        ]);
-
+        if ($existingList) {
+            $existingList->update([
+                'user_id' => $request->user()->id,
+                'title' => $validated['title'],
+                'content' => $validated['content'] ?? null,
+                'color' => $validated['color'] ?? '#2596BE',
+                'allow_comments' => $validated['comments_enabled'] ?? false,
+                'visibility' => $validated['visibility'],
+                'status' => $validated['status'] ?? BookmarkStatus::DRAFT()->value,
+            ]);
+            $bookmarkCollection = $existingList;
+        } else {
+            $bookmarkCollection = BookmarkCollection::create([
+                'user_id' => $request->user()->id,
+                'title' => $validated['title'],
+                'content' => $validated['content'] ?? null,
+                'color' => $validated['color'] ?? '#2596BE',
+                'allow_comments' => $validated['comments_enabled'] ?? false,
+                'visibility' => $validated['visibility'],
+                'status' => $validated['status'] ?? BookmarkStatus::DRAFT()->value,
+            ]);
+        }
         $bookmarkCollection->searchable();
 
         return to_route('workflows.bookmarks.index', [

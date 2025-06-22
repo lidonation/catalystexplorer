@@ -121,7 +121,7 @@ class TransactionController
         $user = $request->user();
 
         $this->userStakeKeys = Signature::where('user_id', $user->id)
-            ->pluck('stake_key')
+            ->pluck('stake_address')
             ->filter()
             ->toArray();
 
@@ -310,12 +310,12 @@ class TransactionController
         }
 
         if (! empty($this->queryParams[TransactionSearchParams::STAKE_KEY()->value])) {
-            $filters[] = "stake_address ='{$this->queryParams[TransactionSearchParams::STAKE_KEY()->value]}'";
+            $filters[] = "stake_key ='{$this->queryParams[TransactionSearchParams::STAKE_KEY()->value]}'";
         }
 
         if (! empty($this->userStakeKeys)) {
             $stakeKeysList = "'".implode("','", $this->userStakeKeys)."'";
-            $filters[] = "json_metadata.stake_key IN [$stakeKeysList]";
+            $filters[] = "stake_key IN [$stakeKeysList]";
         }
 
         return $filters;

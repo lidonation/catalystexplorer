@@ -33,7 +33,7 @@ export default function Transactions({
             <div className="mt-4">
                 <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
                     <Title level="2">{t('transactions.pageTitle')}</Title>
-                    <Paragraph size="sm" className="mt-2 text-gray-600">
+                    <Paragraph size="sm" className="text-gray-persist mt-2">
                         {t('transactions.pageDescription')}
                     </Paragraph>
                 </div>

@@ -23,7 +23,6 @@ const ConnectWalletList = () => {
     const handleConnectWallet = (walletName: string) => {
         connectWallet(walletName);
     };
-
     return (
         <div className="mx-auto flex  items-center justify-center flex-col">
             <Title level="4" className="mb-6 text-center">

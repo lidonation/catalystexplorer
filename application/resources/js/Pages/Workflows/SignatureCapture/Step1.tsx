@@ -63,8 +63,10 @@ const Step1: React.FC<Step1Props> = ({ stepDetails, activeStep }) => {
             <Nav stepDetails={stepDetails} activeStep={activeStep} />
 
             <Content>
-                <div className="mx-auto w-full max-w-3xl">
-                    <ConnectWalletList />
+                <div className="flex items-center justify-center min-h-[60vh] pb-8">
+                    <div className="w-full max-w-3xl">
+                        <ConnectWalletList />
+                    </div>
                 </div>
             </Content>
 

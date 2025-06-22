@@ -1,6 +1,5 @@
 variables:
-  AUTO_DEPLOY_IMAGE_VERSION: "v2.104.0"
-  CI_TEMPLATE_REGISTRY_HOST: registry.gitlab.com
+  AUTO_DEPLOY_IMAGE_VERSION: "v2.130.0"
   KUBE_CONTEXT: catalystexplorer
   DOCKER_HOST: tcp://docker:2375
   DOCKER_TLS_CERTDIR: ""
@@ -36,7 +35,12 @@ default:
     export APP_VERSION_AND_BUILD="${APP_VERSION}-${CI_PIPELINE_ID}"
     export CI_APPLICATION_REPOSITORY=$CI_REGISTRY_IMAGE
     export CI_APPLICATION_TAG=$APP_VERSION_AND_BUILD
-
+    
+    # temporary. Remove when registry issues are resolved
+    export CI_REGISTRY_USER=$REGISTRY_USER;
+    export CI_REGISTRY_PASSWORD=$REGISTRY_PASSWORD;
+    export CI_REGISTRY=$REGISTRY;
+    export CI_APPLICATION_REPOSITORY=$APPLICATION_REPOSITORY;
 
 
 cache:
@@ -119,7 +123,7 @@ pest:
     set -xev
     
     if [[ -n $DOCKER_PASSWORD ]]; then
-      docker login -u="${DOCKER_USERNAME}" -p="${DOCKER_PASSWORD}"
+      docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
     fi
 
     cp application/.env.testing application/.env
@@ -178,8 +182,8 @@ pest:
     cp $ENV_FILE ./helm/app/app_env
     cat ./helm/app/app_env
     if [ "${CI_ENVIRONMENT_NAME}" == "mainnet" ]; then
-      export APP_REPLICAS="3"
-      export QUEUE_REPLICAS="2"
+      export APP_REPLICAS="1"
+      export QUEUE_REPLICAS="1"
     else
       export APP_REPLICAS="1"
       export QUEUE_REPLICAS="1"
@@ -197,8 +201,6 @@ pest:
       --set services.meili.MEILISEARCH_KEY=$MEILISEARCH_KEY \
       --set services.app.environment=$APP_ENV \
       --set services.redis.password=$REDIS_PASSWORD \
-      --set services.app.replicaCount=$APP_REPLICAS \
-      --set services.queue.replicaCount=$QUEUE_REPLICAS \
       --set namespace=${KUBE_NAMESPACE} \
       --namespace="$KUBE_NAMESPACE" \
       --create-namespace
@@ -228,13 +230,19 @@ pest:
         --namespace="$KUBE_NAMESPACE" \
         --create-namespace \
         -f ./helm/app/values.db.yaml \
-        --set global.postgresql.auth.database="$DB_DATABASE" \
-        --set global.postgresql.auth.username="$DB_USERNAME" \
-        --set global.postgresql.auth.password="$DB_PASSWORD" \
-        --set global.postgresql.auth.postgresPassword="$POSTGRES_PASSWORD" \
-        --set primary.persistence.size="80Gi" \
-        catalystexplorer-web-db \
-        bitnami/postgresql
+        --set global.postgresql.database="$DB_DATABASE" \
+        --set global.postgresql.username="$DB_USERNAME" \
+        --set global.postgresql.password="$DB_PASSWORD" \
+        --set global.pgpool.adminPassword="$REPMGR_PASSWORD" \
+        --set postgresql.postgresPassword="$POSTGRES_PASSWORD" \
+        --set postgresql.repmgrPassword="$REPMGR_PASSWORD" \
+        --set postgresql.adminPassword="$REPMGR_PASSWORD" \
+        --set pgpool.customUsers.usernames="postgres;$DB_USERNAME" \
+        --set pgpool.customUsers.passwords="$POSTGRES_PASSWORD;$DB_PASSWORD" \
+        --set persistence.size="$DB_SIZE" \
+        --set namespaceOverride="$KUBE_NAMESPACE" \
+        cx-web-db \
+        bitnami/postgresql-ha
   - auto-deploy persist_environment_url
   environment:
     name: mainnet
@@ -431,7 +439,8 @@ sem-release:
     GIT_DEPTH: 0
     GITLAB_TOKEN: ${SEMANTIC_RELEASE_GITLAB_TOKEN}
   rules:
-    - if: $CI_COMMIT_BRANCH == "main"
+    - if: '$CI_COMMIT_BRANCH == "main" && ($DEPLOY_WEBAPP == "true")'
+      when: manual
   before_script:
     - apk add --no-cache git
     - npm install -g semantic-release @semantic-release/git @semantic-release/gitlab @semantic-release/changelog

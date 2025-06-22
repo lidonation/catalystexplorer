@@ -3,15 +3,11 @@ import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 interface HeatMapProps {
-    chartData: {
-        fund: string | number;
-        totalProposals: number;
-        fundedProposals: number;
-        completedProposals: number;
-    }[];
+    chartData: any[];
+    viewBy?: 'fund' | 'year';
 }
 
-const HeatMap: React.FC<HeatMapProps> = ({ chartData }) => {
+const HeatMap: React.FC<HeatMapProps> = ({ chartData, viewBy }) => {
     const { t } = useTranslation();
     const [screenWidth, setScreenWidth] = useState(
         typeof window !== 'undefined' ? window.innerWidth : 1200,
@@ -32,22 +28,22 @@ const HeatMap: React.FC<HeatMapProps> = ({ chartData }) => {
         {
             id: 'Total Proposals',
             data: chartData.map((item) => ({
-                x: `Fund ${item.fund}`,
-                y: item.totalProposals,
+                x: viewBy === 'fund' ? `Fund ${item.fund}` : item.year,
+                y: item.totalProposals ?? 0,
             })),
         },
         {
             id: 'Funded Proposals',
             data: chartData.map((item) => ({
-                x: `Fund ${item.fund}`,
-                y: item.fundedProposals,
+                x: viewBy === 'fund' ? `Fund ${item.fund}` : item.year,
+                y: item.fundedProposals ?? 0,
             })),
         },
         {
             id: 'Completed Proposals',
             data: chartData.map((item) => ({
-                x: `Fund ${item.fund}`,
-                y: item.completedProposals,
+                x: viewBy === 'fund' ? `Fund ${item.fund}` : item.year,
+                y: item.completedProposals ?? 0,
             })),
         },
     ];
