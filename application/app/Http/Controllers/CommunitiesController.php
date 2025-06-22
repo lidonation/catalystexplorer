@@ -265,7 +265,7 @@ class CommunitiesController extends Controller
             'ideascale_profiles' => fn (HasManyDeep $q) => $q->limit(5),
             'ideascale_profiles.media',
             'users' => fn ($q) => $q->limit(5)->with('media'),
-            ])
+        ])
             ->withCount([
                 'proposals',
                 'ideascale_profiles',
@@ -398,7 +398,7 @@ class CommunitiesController extends Controller
         // Add membership information if user is authenticated
         if (Auth::check()) {
             $userCommunityIds = Auth::user()->communities()->pluck('communities.id')->toArray();
-            
+
             $results->each(function ($community) use ($userCommunityIds) {
                 $community->is_member = in_array($community->id, $userCommunityIds);
             });
@@ -466,7 +466,7 @@ class CommunitiesController extends Controller
     {
         $user = Auth::user();
 
-        if (!$user) {
+        if (! $user) {
             return redirect()->route('login')->with('error', 'You must be logged in to join a community.');
         }
 
