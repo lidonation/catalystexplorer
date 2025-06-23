@@ -15,10 +15,10 @@ interface ChartsIndexProps {
 }
 
 const Index = ({
-    filters,
-    chartDataByFund,
-    chartDataByYear,
-}: ChartsIndexProps) => {
+                   filters,
+                   chartDataByFund,
+                   chartDataByYear,
+               }: ChartsIndexProps) => {
     const [showCharts, setShowCharts] = useState<boolean>(() => {
         return localStorage.getItem('metricsSet') === 'true';
     });
