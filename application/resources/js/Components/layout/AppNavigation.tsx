@@ -55,14 +55,14 @@ function AppNavigation() {
                     className={isActive ? 'text-primary-100' : 'text-dark'}
                 />
             ),
-            
+
         },
         {
             href: useLocalizedRoute('proposals.index'),
             title: t('proposals.proposals'),
             icon: (isActive: boolean) => (
                 <NoteIcon width={24}
-                    className={isActive ? 'text-primary-100' : 'text-dark'}
+                          className={isActive ? 'text-primary-100' : 'text-dark'}
                 />
             ),
         },
@@ -90,7 +90,7 @@ function AppNavigation() {
             title: t('numbers'),
             icon: (isActive: boolean) => (
                 <NumbersIcon width={20}
-                    className={isActive ? 'text-primary-100' : 'text-dark'}
+                             className={isActive ? 'text-primary-100' : 'text-dark'}
                 />
             ),
             hasDropdown: true,
@@ -346,7 +346,7 @@ function AppNavigation() {
                                                     ariaLabel={`${t('impact')} ${t('link')}`}
                                                     active={false}
                                                 >
-                                                    
+
                                                 </NavLinkItem>
 
                                                 <NavLinkItem
@@ -358,7 +358,7 @@ function AppNavigation() {
                                                     ariaLabel={`${t('spending')} ${t('link')}`}
                                                     active={false}
                                                 >
-                                                    
+
                                                 </NavLinkItem>
 
                                                 <NavLinkItem
@@ -370,7 +370,7 @@ function AppNavigation() {
                                                     ariaLabel={`${t('general')} ${t('link')}`}
                                                     active={false}
                                                 >
-                                                    
+
                                                 </NavLinkItem>
                                             </div>
                                         )}

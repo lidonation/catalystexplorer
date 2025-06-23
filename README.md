@@ -29,14 +29,14 @@ CatalystExplorer aims to make Project Catalyst data more accessible and actionab
 The CatalystExplorer project is currently in active development.
 
 **Badges:**
-[![Gitlab Pipeline Status](https://img.shields.io/gitlab/pipeline-status/lidonation%2Fwww.catalystexplorer.com?gitlab_url=https%3A%2F%2Fgitlab.lidonation.com%2F&branch=main)](https://gitlab.lidonation.com/lidonation/www.catalystexplorer.com/-/pipelines)
+[![Gitlab Pipeline Status](https://img.shields.io/gitlab/pipeline-status/lidonation%2Fwww.catalystexplorer.com?gitlab_url=https%3A%2F%2Fgitlab.lidonation.com%2F&branch=main)](https://gitlab.2lovelaces.io/lidonation/www.catalystexplorer.com/-/pipelines)
 ![Test Coverage](https://img.shields.io/codecov/c/github/lidonation%2Fwww.catalystexplorer.com/main)
-[![GitLab License](https://img.shields.io/gitlab/license/lidonation%2Fwww.catalystexplorer.com?gitlab_url=https%3A%2F%2Fgitlab.lidonation.com%2F&color=blue)](https://gitlab.lidonation.com/lidonation/www.catalystexplorer.com/-/blob/main/LICENSE.md?ref_type=heads)
-[![GitLab Issues](https://img.shields.io/gitlab/issues/all/lidonation%2Fwww.catalystexplorer.com?gitlab_url=https%3A%2F%2Fgitlab.lidonation.com%2F&labelColor=orange&color=green)](https://gitlab.lidonation.com/lidonation/www.catalystexplorer.com/-/issues)
+[![GitLab License](https://img.shields.io/gitlab/license/lidonation%2Fwww.catalystexplorer.com?gitlab_url=https%3A%2F%2Fgitlab.lidonation.com%2F&color=blue)](https://gitlab.2lovelaces.io/lidonation/www.catalystexplorer.com/-/blob/main/LICENSE.md?ref_type=heads)
+[![GitLab Issues](https://img.shields.io/gitlab/issues/all/lidonation%2Fwww.catalystexplorer.com?gitlab_url=https%3A%2F%2Fgitlab.lidonation.com%2F&labelColor=orange&color=green)](https://gitlab.2lovelaces.io/lidonation/www.catalystexplorer.com/-/issues)
 
 ### Get up and running
 
-1) Clone this repository: `https://gitlab.lidonation.com/lidonation/www.catalystexplorer.com.git`
+1) Clone this repository: `https://gitlab.2lovelaces.io/lidonation/www.catalystexplorer.com.git`
 2) cd into the project directory: `cd www.catalystexplorer.com`
 3) copy thr example.env to the .env file `cp application/.env.example application/.env`
 4) Run `make init` to install all frontend and backend dependencies and start the docker services.
