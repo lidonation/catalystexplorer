@@ -109,11 +109,11 @@ function UserNavigation() {
             title: t('my.votes'),
             ariaLabel: `${t('my.votes')} ${t('link')}`,
         },
-        {
-            route: 'my.wallets',
-            title: t('my.wallets'),
-            riaLabel: `${t('my.wallets')} ${t('link')}`,
-        },
+        // {
+        //     route: 'my.wallets',
+        //     title: t('my.wallets'),
+        //     riaLabel: `${t('my.wallets')} ${t('link')}`,
+        // },
     ];
 
     return (
