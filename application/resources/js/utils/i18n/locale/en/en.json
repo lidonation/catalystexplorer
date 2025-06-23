@@ -1111,7 +1111,10 @@
             "timestamp": "Timestamp",
             "choice": "Choice",
             "votingPower": "Voting Power",
-            "rawFragment": "Raw Fragment"
+            "rawFragment": "Raw Fragment",
+            "totalOutputs":"Output Amount (Lovelace)",
+            "totalInputs": "Total Inputs",
+            "weights":"Weights"
         },
         "options": {
             "newestToOldest": "Newest to Oldest",
@@ -1120,8 +1123,8 @@
             "blockDesc": "Block: High to Low",
             "epochAsc": "Epoch: Low to High",
             "epochDesc": "Epoch: High to Low",
-            "amountHighToLow": "Amount: High to Low",
-            "amountLowToHigh": "Amount: Low to High",
+            "amountHighToLow": "Output Amount: High to Low",
+            "amountLowToHigh": "Output Amount: Low to High",
             "weightHighToLow": "Weight: High to Low",
             "weightLowToHigh": "Weight: Low to High"
         },
@@ -1174,7 +1177,7 @@
             "stakeAddress": "Stake Address",
             "fragmentId": "Fragment ID",
             "caster": "Caster",
-            "timestamp": "Timestamp",
+            "timestamp": "Time",
             "choice": "Choice",
             "votingPower": "Voting Power",
             "rawFragment": "Raw Fragment"

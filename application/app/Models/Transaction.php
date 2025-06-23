@@ -74,6 +74,7 @@ class Transaction extends Model implements IHasMetaData
             'created_at',
             'block',
             'json_metadata.voter_delegations.weight',
+            'total_output',
         ];
     }
 

@@ -55,13 +55,13 @@ function AppNavigation() {
                     className={isActive ? 'text-primary-100' : 'text-dark'}
                 />
             ),
-            
         },
         {
             href: useLocalizedRoute('proposals.index'),
             title: t('proposals.proposals'),
             icon: (isActive: boolean) => (
-                <NoteIcon width={24}
+                <NoteIcon
+                    width={24}
                     className={isActive ? 'text-primary-100' : 'text-dark'}
                 />
             ),
@@ -89,7 +89,8 @@ function AppNavigation() {
         {
             title: t('numbers'),
             icon: (isActive: boolean) => (
-                <NumbersIcon width={20}
+                <NumbersIcon
+                    width={20}
                     className={isActive ? 'text-primary-100' : 'text-dark'}
                 />
             ),
@@ -115,6 +116,7 @@ function AppNavigation() {
                 />
             ),
             hideOnMyRoute: true,
+            disable: true,
         },
         {
             href: useLocalizedRoute('communities.index'),
@@ -145,7 +147,7 @@ function AppNavigation() {
                 />
             ),
             hideOnMyRoute: true,
-            disable:true
+            disable: true,
         },
         {
             href: useLocalizedRoute('dreps.index'),

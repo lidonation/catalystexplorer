@@ -425,9 +425,9 @@ const VoterHistoryTable: React.FC<VoterHistoryTableProps> = ({
                                                     <td className="border-dark-light text-content border-r border-b px-4 py-4">
                                                         <div className="flex flex-col">
                                                             <span>
-                                                                {formatTimestamp(
-                                                                    history.time,
-                                                                )}
+                                                                {
+                                                                    history.time
+                                                                }
                                                             </span>
                                                             {/* For time ago */}
                                                             {/* <span className="text-xs text-gray-persist">
