@@ -15,16 +15,21 @@ interface ChartsIndexProps {
 }
 
 const Index = ({
-    filters,
-    chartDataByFund,
-    chartDataByYear,
-}: ChartsIndexProps) => {
+                   filters,
+                   chartDataByFund,
+                   chartDataByYear,
+               }: ChartsIndexProps) => {
     const [showCharts, setShowCharts] = useState<boolean>(() => {
         return localStorage.getItem('metricsSet') === 'true';
     });
 
-    const { value: viewByPreference, setValue: setViewByPreference } =
-        useUserSetting<string[]>(userSettingEnums.VIEW_CHART_BY, ['fund']);
+    const {
+        value: viewByPreference,
+        setValue: setViewByPreference
+    } = useUserSetting<string[]>(
+        userSettingEnums.VIEW_CHART_BY,
+        ['fund']
+    );
 
     const viewBy: 'fund' | 'year' =
         viewByPreference?.[0] === 'year' ? 'year' : 'fund';
