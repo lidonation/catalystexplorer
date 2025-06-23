@@ -5,7 +5,7 @@ import { router, usePage } from '@inertiajs/react';
 import { X } from 'lucide-react';
 import Button from '@/Components/atoms/Button';
 
-interface ModalLayoutProps {
+interface RoutedModalLayoutProps {
     children: React.ReactNode;
     slideover?: boolean;
     className?: string;
@@ -29,7 +29,7 @@ interface InertiaModalProps {
     }
 }
 
-const ModalLayout: React.FC<ModalLayoutProps> = ({
+const RoutedModalLayout: React.FC<RoutedModalLayoutProps> = ({
     children,
     slideover = true,
     className = '',
@@ -82,7 +82,7 @@ const ModalLayout: React.FC<ModalLayoutProps> = ({
                         close();
                         afterLeave();
                     }
-                    
+
                     onModalClosed?.();
                 };
 
@@ -91,15 +91,15 @@ const ModalLayout: React.FC<ModalLayoutProps> = ({
                         className={`fixed inset-0 ${zIndex} overflow-hidden ${isOpen ? 'block' : 'hidden'}`}
                     >
                         {/* Overlay */}
-                         <div 
-                            className="bg-dark fixed inset-0 opacity-50" 
+                         <div
+                            className="bg-dark fixed inset-0 opacity-50"
                             onClick={handleClose}
                         ></div>
 
                         {/* Modal container */}
                         <div className={`fixed inset-y-0 ${position === 'right' ? 'right-0' : 'left-0'} max-w-full`}>
                             <div
-                                className={`relative flex flex-col w-[90vw] h-[95vh] ${slideover ? 'transform transition ease-in-out duration-500' : ''} 
+                                className={`relative flex flex-col w-[90vw] h-[95vh] ${slideover ? 'transform transition ease-in-out duration-500' : ''}
                                 ${isOpen ? 'translate-x-0' : position === 'right' ? 'translate-x-full' : '-translate-x-full'}
                                 ${paddingClasses} ${panelClasses || 'bg-background-lighter my-4 rounded-lg'} ${className}`}
                             >
@@ -127,4 +127,4 @@ const ModalLayout: React.FC<ModalLayoutProps> = ({
     );
 };
 
-export default ModalLayout;
+export default RoutedModalLayout;

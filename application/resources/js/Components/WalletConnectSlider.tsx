@@ -3,7 +3,7 @@ import { CIP30API } from '@/types/wallet';
 import { Loader2 } from 'lucide-react';
 import Button from './atoms/Button';
 import Paragraph from './atoms/Paragraph';
-import ModalSidebar from './layout/ModalSidebar';
+import Modal from './layout/Modal.tsx';
 import { useConnectWallet } from '@/Context/ConnectWalletSliderContext';
 import Image from './Image';
 import { useTranslation } from 'react-i18next';
@@ -68,7 +68,7 @@ export default function WalletSlider({
   }, [isOpen, onClose]);
 
   return (
-    <ModalSidebar
+    <Modal
       isOpen={isOpen}
       title={t('wallet.connect.title')}
       onClose={onClose}
@@ -161,6 +161,6 @@ export default function WalletSlider({
           )}
         </div>
       )}
-    </ModalSidebar>
+    </Modal>
   );
 }

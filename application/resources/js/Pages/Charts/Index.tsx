@@ -1,7 +1,7 @@
 import { FiltersProvider } from '@/Context/FiltersContext';
 import { userSettingEnums } from '@/enums/user-setting-enums';
 import { useUserSetting } from '@/Hooks/useUserSettings';
-import ModalLayout from '@/Layouts/ModalLayout';
+import RoutedModalLayout from '@/Layouts/RoutedModalLayout.tsx';
 import { SearchParams } from '@/types/search-params';
 import { Head, router } from '@inertiajs/react';
 import { useEffect, useState } from 'react';
@@ -60,7 +60,7 @@ const Index = ({
 
     return (
         <FiltersProvider defaultFilters={filters}>
-            <ModalLayout navigate={true} className="px-2 md:px-8" zIndex="z-30">
+            <RoutedModalLayout navigate={true} className="md:px-8 px-2" zIndex="z-30">
                 <Head title="Charts" />
 
                 {!showCharts && (
@@ -81,7 +81,7 @@ const Index = ({
                         />
                     </div>
                 )}
-            </ModalLayout>
+            </RoutedModalLayout>
         </FiltersProvider>
     );
 };

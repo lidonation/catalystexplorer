@@ -1,4 +1,3 @@
-import PrimaryLink from '@/Components/atoms/PrimaryLink';
 import SearchControls from '@/Components/atoms/SearchControls';
 import Title from '@/Components/atoms/Title';
 import Paginator from '@/Components/Paginator';
@@ -7,13 +6,14 @@ import RecordsNotFound from '@/Layouts/RecordsNotFound';
 import ListSortingOptions from '@/lib/ListSortOptions';
 import { PaginatedData } from '@/types/paginated-data';
 import { SearchParams } from '@/types/search-params';
-import { useLocalizedRoute } from '@/utils/localizedRoute';
 import { Head, WhenVisible } from '@inertiajs/react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import BookmarkCollectionList from '../My/Lists/Partials/BookmarkCollectionList';
 import BookmarkCollectionListLoader from '../My/Lists/Partials/BookmarkCollectionListLoader';
 import BookmarkCollectionData = App.DataTransferObjects.BookmarkCollectionData;
+import PrimaryButton from "@/Components/atoms/PrimaryButton.tsx";
+import CreateListPicker from "@/Pages/Bookmarks/Partials/CreateListPicker.tsx";
 
 interface BookmarkCollectionListProps {
     bookmarkCollections: PaginatedData<BookmarkCollectionData[]>;
@@ -25,6 +25,7 @@ const Index: React.FC<BookmarkCollectionListProps> = ({
 }) => {
     const { t } = useTranslation();
     const [showFilters, setShowFilters] = useState(false);
+    const [showListPicker, setPickingList] = useState(false);
 
     return (
         <>
@@ -34,7 +35,7 @@ const Index: React.FC<BookmarkCollectionListProps> = ({
             >
                 <Head title="Community Lists" />
 
-                <header className="container mt-4 flex flex-col items-start lg:relative lg:mt-6">
+                <header className="container mt-4 w-full flex flex-col items-start lg:items-center lg:justify-between lg:flex-row lg:mt-6">
                     <div className="">
                         <Title className="" level="1">
                             {t('bookmarks.listTitle')}
@@ -45,14 +46,9 @@ const Index: React.FC<BookmarkCollectionListProps> = ({
                         </div>
                     </div>
 
-                    <PrimaryLink
-                        className="lg:text-md mt-2 lg:mr-2 ml-auto px-4 py-2 text-sm text-nowrap lg:absolute lg:top-0 lg:right-0 lg:right-6 lg:px-6"
-                        href={useLocalizedRoute('workflows.bookmarks.index', {
-                            step: 1,
-                        })}
-                    >
-                        {`+ ${t('bookmarks.createList')}`}
-                    </PrimaryLink>
+                    <PrimaryButton className="" onClick={() => setPickingList(true)}>
+                        {`+ ${t('my.createList')}`}
+                    </PrimaryButton>
                 </header>
 
                 <section className="container">
@@ -88,6 +84,8 @@ const Index: React.FC<BookmarkCollectionListProps> = ({
                         <p>{t(`recordsNotFound.message`)}</p>
                     </div>
                 )}
+
+                <CreateListPicker showPickingList={showListPicker} setPickingList={setPickingList}></CreateListPicker>
             </FiltersProvider>
         </>
     );

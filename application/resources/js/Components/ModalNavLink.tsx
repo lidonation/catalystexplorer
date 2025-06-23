@@ -1,6 +1,6 @@
-import React, { ReactNode, useState } from 'react';
+import React, { ReactNode } from 'react';
 // @ts-ignore
-import { ModalLink } from '@inertiaui/modal-react';
+import { ModalLink, putConfig } from '@inertiaui/modal-react';
 
 interface ModalNavLinkProps {
     href: string;
