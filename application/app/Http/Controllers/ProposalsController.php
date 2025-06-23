@@ -724,7 +724,6 @@ class ProposalsController extends Controller
         }
 
         $chartData = [];
-        $yearCounts = [];
 
         foreach ($yearCounts as $year => $totalCount) {
             if (empty($this->queryParams[ProposalSearchParams::SUBMITTED_PROPOSALS()->value])) {
