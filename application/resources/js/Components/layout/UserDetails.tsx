@@ -10,7 +10,7 @@ import Paragraph from '../atoms/Paragraph';
 import LogOutIcon from '../svgs/LogOut';
 import RegisterUserIcon from '../svgs/Register';
 import UserAvatar from '../UserAvatar';
-import ModalSidebar from './ModalSidebar';
+import Modal from './Modal.tsx';
 
 interface UserDetailsProps {
     user: App.DataTransferObjects.UserData;
@@ -109,7 +109,7 @@ const UserDetails: React.FC<UserDetailsProps> = ({ user }) => {
                     </nav>
 
                     {activeModal && !isWalletConnectorOpen && (
-                        <ModalSidebar
+                        <Modal
                             title={
                                 activeModal === 'register'
                                     ? t('register')
@@ -124,7 +124,7 @@ const UserDetails: React.FC<UserDetailsProps> = ({ user }) => {
                             {activeModal === 'login' && (
                                 <LoginForm closeModal={closeModal} />
                             )}
-                        </ModalSidebar>
+                        </Modal>
                     )}
                 </>
             )}
