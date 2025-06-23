@@ -22,10 +22,10 @@ interface CommunityCardMiniProps {
 }
 
 const CommunityCardMini: React.FC<CommunityCardMiniProps> = ({
-    community,
-    embedded = true,
-    isMember,
-}) => {
+                                                                 community,
+                                                                 embedded = true,
+                                                                 isMember,
+                                                             }) => {
     const { t } = useTranslation();
     const { props } = usePage<{ isMember?: boolean }>();
 
