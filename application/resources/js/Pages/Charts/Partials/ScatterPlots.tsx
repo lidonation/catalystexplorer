@@ -35,7 +35,7 @@ const ScatterPlot: React.FC<ScatterChartProps> = ({
 
     const defaultColors = ['#4fadce', '#ee8434', '#16B364'];
 
-    const optionLabels = chartData.map((item: any) => viewBy === 'fund' ? `Fund ${item.fund}` : item.year);
+    const optionLabels = chartData.map((item: any) => viewBy === 'fund' ? item.fund : item.year);
     const labelToIndex = (label: any) => optionLabels.indexOf(label);
 
     useEffect(() => {
@@ -53,7 +53,7 @@ const ScatterPlot: React.FC<ScatterChartProps> = ({
         {
             id: 'Total Proposals',
             data: chartData.map((item: any) => ({
-                x: viewBy === 'fund' ? labelToIndex(`Fund ${item.fund}`) : labelToIndex(item.year),
+                x: viewBy === 'fund' ? labelToIndex(item.fund) : labelToIndex(item.year),
                 y: item.totalProposals ?? 0,
                 fund: item.fund,
                 year: item.year,
@@ -62,7 +62,7 @@ const ScatterPlot: React.FC<ScatterChartProps> = ({
         {
             id: 'Funded Proposals',
             data: chartData.map((item: any) => ({
-                x: viewBy === 'fund' ? labelToIndex(`Fund ${item.fund}`) : labelToIndex(item.year),
+                x: viewBy === 'fund' ? labelToIndex(item.fund) : labelToIndex(item.year),
                 y: item.fundedProposals ?? 0,
                 fund: item.fund,
                 year: item.year,
@@ -71,7 +71,7 @@ const ScatterPlot: React.FC<ScatterChartProps> = ({
         {
             id: 'Completed Proposals',
             data: chartData.map((item: any) => ({
-                x: viewBy === 'fund' ? labelToIndex(`Fund ${item.fund}`) : labelToIndex(item.year),
+                x: viewBy === 'fund' ? labelToIndex(item.fund) : labelToIndex(item.year),
                 y: item.completedProposals ?? 0,
                 fund: item.fund,
                 year: item.year,

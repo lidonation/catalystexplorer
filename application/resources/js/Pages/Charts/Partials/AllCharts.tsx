@@ -23,11 +23,11 @@ interface AllChartsProps {
 }
 
 export default function AllCharts({
-    chartData,
-    onEditMetrics,
-    viewBy,
-    onViewByChange,
-}: AllChartsProps) {
+                                      chartData,
+                                      onEditMetrics,
+                                      viewBy,
+                                      onViewByChange,
+                                  }: AllChartsProps) {
     const { getFilter } = useFilterContext();
     const selectedChartOptions = getFilter(ParamsEnum.CHART_OPTIONS) || [];
     const { t } = useTranslation();
@@ -133,7 +133,7 @@ export default function AllCharts({
                         const renderer =
                             chartRenderers[
                                 chartType as keyof typeof chartRenderers
-                            ];
+                                ];
                         return renderer ? (
                             <div key={chartType}>
                                 {chartData.length > 0 ? (
