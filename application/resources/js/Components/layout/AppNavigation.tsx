@@ -62,7 +62,7 @@ function AppNavigation() {
             title: t('proposals.proposals'),
             icon: (isActive: boolean) => (
                 <NoteIcon width={24}
-                    className={isActive ? 'text-primary-100' : 'text-dark'}
+                          className={isActive ? 'text-primary-100' : 'text-dark'}
                 />
             ),
         },
@@ -90,7 +90,7 @@ function AppNavigation() {
             title: t('numbers'),
             icon: (isActive: boolean) => (
                 <NumbersIcon width={20}
-                    className={isActive ? 'text-primary-100' : 'text-dark'}
+                             className={isActive ? 'text-primary-100' : 'text-dark'}
                 />
             ),
             hasDropdown: true,
