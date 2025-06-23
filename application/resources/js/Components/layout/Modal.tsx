@@ -7,23 +7,25 @@ import CatalystLogo from '../atoms/CatalystLogo';
 import Title from '../atoms/Title';
 import CloseIcon from '../svgs/CloseIcon';
 
-type ModalSidebarProps = {
+type ModalProps = {
     isOpen?: boolean;
     title: string;
     children: ReactNode;
     onClose: () => void;
     centered?: boolean;
     logo?: boolean;
+    contentClasses?: string;
 };
 
-function ModalSidebar({
+function Modal({
     isOpen = false,
     title,
     children,
     onClose,
     centered = false,
     logo = true,
-}: ModalSidebarProps) {
+   contentClasses = 'max-w-md'
+}: ModalProps) {
     const sidebarRef = useRef<HTMLDivElement | null>(null);
     const { t } = useTranslation();
     const { isWalletConnectorOpen } = useConnectWallet();
@@ -68,7 +70,7 @@ function ModalSidebar({
             <div
                 className={`bg-background fixed z-50 shadow-lg focus:outline-hidden ${
                     centered
-                        ? 'top-1/2 left-1/2 h-auto w-[90%] max-w-md -translate-x-1/2 -translate-y-1/2 rounded-lg'
+                        ? `top-1/2 left-1/2 h-auto w-[90%] -translate-x-1/2 -translate-y-1/2 rounded-lg ${contentClasses}`
                         : 'top-0 right-0 h-full min-w-[24rem] lg:ml-auto'
                 }`}
                 tabIndex={0}
@@ -107,4 +109,4 @@ function ModalSidebar({
         </aside>
     );
 }
-export default ModalSidebar;
+export default Modal;

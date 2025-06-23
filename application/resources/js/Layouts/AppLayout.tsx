@@ -4,7 +4,7 @@ import Breadcrumbs, { generateBreadcrumbs } from '@/Components/Breadcrumbs';
 import DesktopSidebar from '@/Components/layout/DesktopSidebar';
 import Footer from '@/Components/layout/Footer';
 import MobileNavigation from '@/Components/layout/MobileNavigation';
-import ModalSidebar from '@/Components/layout/ModalSidebar';
+import Modal from '@/Components/layout/Modal.tsx';
 import CloseIcon from '@/Components/svgs/CloseIcon';
 import MenuIcon from '@/Components/svgs/MenuIcon';
 import { MetricsProvider } from '@/Context/MetricsContext';
@@ -18,7 +18,6 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import MainLayout from './RootLayout';
 import GraphButton from '@/Components/GraphButton';
-import ModalNavLink from '@/Components/ModalNavLink';
 import ProposalComparison from '@/Pages/Proposals/Comparison/ProposalComparison';
 // @ts-ignore
 import { ModalRoot } from '@inertiaui/modal-react';
@@ -79,6 +78,7 @@ export default function AppLayout({ children }: { children: ReactNode }) {
                 {/* Main content */}
                 <main id="main-content">
                     <Breadcrumbs items={breadcrumbItems} />
+
                     <PlayerProvider>
                         <MetricsProvider>
                             {memoizedChildren}
@@ -95,15 +95,17 @@ export default function AppLayout({ children }: { children: ReactNode }) {
                         </MetricsProvider>
                     </PlayerProvider>
                 </main>
+
                 <ProposalComparison />
+
                 {/* modal sidebar */}
-                <ModalSidebar
+                <Modal
                     title={t('register')}
                     isOpen={false}
                     onClose={() => setSidebarOpen(false)}
                 >
                     <div className=""></div>
-                </ModalSidebar>
+                </Modal>
 
                 <footer className="">
                     <Footer />
@@ -124,6 +126,7 @@ export default function AppLayout({ children }: { children: ReactNode }) {
             />
 
             <ModalRoot />
+
         </MainLayout>
     );
 }
