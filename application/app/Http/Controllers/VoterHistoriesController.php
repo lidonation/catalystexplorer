@@ -224,7 +224,7 @@ class VoterHistoriesController extends Controller
         }
 
         $fundData = Fund::all()
-            ->filter(fn($fund) => in_array($fund->hash, $fundHashes))
+            ->filter(fn ($fund) => in_array($fund->hash, $fundHashes))
             ->pluck('title')
             ->filter();
 
@@ -275,17 +275,9 @@ class VoterHistoriesController extends Controller
          */
         $user = Auth::user();
 
-<<<<<<< HEAD
         $userStakeKeys = Signature::where('user_id', $user->id)
             ->pluck('stake_address')
             ->toArray();
-=======
-        $userStakeKeys = [];
-        // Signature::where('user_id', $user->id)
-        //     ->pluck('stake_address')
-        //     ->filter()
-        //     ->toArray();
->>>>>>> 913d447a (Fix/ my votes page)
 
         $this->getProps($request);
         $this->queryParams = $request->validate([
@@ -303,15 +295,8 @@ class VoterHistoriesController extends Controller
 
         $filters = $this->getUserFilters();
 
-<<<<<<< HEAD
         $stakeAddresses = implode("','", $userStakeKeys);
         $filters[] = "stake_address IN ['{$stakeAddresses}']";
-=======
-
-        $stakeAddresses = implode("','", $userStakeKeys);
-        $filters[] = "stake_address IN ['{$stakeAddresses}']";
-
->>>>>>> 913d447a (Fix/ my votes page)
 
         $sort = null;
 
@@ -345,11 +330,7 @@ class VoterHistoriesController extends Controller
 
         $voterHistoriesArray = [];
 
-<<<<<<< HEAD
         if (! empty($userStakeKeys)) {
-=======
-        if (!empty($userStakeKeys)) {
->>>>>>> 913d447a (Fix/ my votes page)
             $builder = $voterHistories->search($searchQuery, $searchArgs);
 
             $response = new Fluent($builder->raw());
