@@ -28,16 +28,16 @@ const CommunityCardMini: React.FC<CommunityCardMiniProps> = ({
 }) => {
     const { t } = useTranslation();
     const { props } = usePage<{ isMember?: boolean }>();
-    
-    const initialMemberStatus = isMember !== undefined 
-        ? isMember 
-        : (community.is_member !== undefined 
-            ? community.is_member 
+
+    const initialMemberStatus = isMember !== undefined
+        ? isMember
+        : (community.is_member !== undefined
+            ? community.is_member
             : (props.isMember || false));
-    
+
     const [joined, setJoined] = useState(initialMemberStatus);
     const [isLoading, setIsLoading] = useState(false);
-    
+
     useEffect(() => {
         if (isMember !== undefined) {
             setJoined(isMember);
@@ -47,16 +47,16 @@ const CommunityCardMini: React.FC<CommunityCardMiniProps> = ({
             setJoined(props.isMember);
         }
     }, [isMember, community.is_member, props.isMember]);
-    
+
     const joinUrl = useLocalizedRoute('communities.join', {
         community: community.slug,
     });
 
     const handleJoinCommunity = async () => {
         if (joined || isLoading) return;
-        
+
         setIsLoading(true);
-        
+
         try {
             await router.post(joinUrl, {}, {
                 preserveScroll: true,
