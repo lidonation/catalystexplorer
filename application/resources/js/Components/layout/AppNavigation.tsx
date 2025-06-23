@@ -55,7 +55,7 @@ function AppNavigation() {
                     className={isActive ? 'text-primary-100' : 'text-dark'}
                 />
             ),
-            
+
         },
         {
             href: useLocalizedRoute('proposals.index'),
@@ -346,7 +346,7 @@ function AppNavigation() {
                                                     ariaLabel={`${t('impact')} ${t('link')}`}
                                                     active={false}
                                                 >
-                                                    
+
                                                 </NavLinkItem>
 
                                                 <NavLinkItem
@@ -358,7 +358,7 @@ function AppNavigation() {
                                                     ariaLabel={`${t('spending')} ${t('link')}`}
                                                     active={false}
                                                 >
-                                                    
+
                                                 </NavLinkItem>
 
                                                 <NavLinkItem
@@ -370,7 +370,7 @@ function AppNavigation() {
                                                     ariaLabel={`${t('general')} ${t('link')}`}
                                                     active={false}
                                                 >
-                                                    
+
                                                 </NavLinkItem>
                                             </div>
                                         )}
