@@ -16,37 +16,37 @@ variables:
     description: "New tag for WEB base image,format {version}-{yyyy-mm-dd}. eg: ubuntu-22.04-2024-10-31"
 
 stages:
-- lint
-- .pre
-- test
-- build
-- preview
-- mainnet
-- release
+  - lint
+  - .pre
+  - test
+  - build
+  - preview
+  - mainnet
+  - release
 
 default:
   services:
-  - name: docker:dind
-    alias: docker
-    command: [ "--tls=false" ]
+    - name: docker:dind
+      alias: docker
+      command: [ "--tls=false" ]
   before_script:
-  - |
-    export APP_VERSION=$(awk '/version/{gsub(/("|",)/,"",$2);print $2};' application/package.json)
-    export APP_VERSION_AND_BUILD="${APP_VERSION}-${CI_PIPELINE_ID}"
-    export CI_APPLICATION_REPOSITORY=$CI_REGISTRY_IMAGE
-    export CI_APPLICATION_TAG=$APP_VERSION_AND_BUILD
-    
-    # temporary. Remove when registry issues are resolved
-    export CI_REGISTRY_USER=$REGISTRY_USER;
-    export CI_REGISTRY_PASSWORD=$REGISTRY_PASSWORD;
-    export CI_REGISTRY=$REGISTRY;
-    export CI_APPLICATION_REPOSITORY=$APPLICATION_REPOSITORY;
+    - |
+      export APP_VERSION=$(awk '/version/{gsub(/("|",)/,"",$2);print $2};' application/package.json)
+      export APP_VERSION_AND_BUILD="${APP_VERSION}-${CI_PIPELINE_ID}"
+      export CI_APPLICATION_REPOSITORY=$CI_REGISTRY_IMAGE
+      export CI_APPLICATION_TAG=$APP_VERSION_AND_BUILD
+      
+      # temporary. Remove when registry issues are resolved
+      export CI_REGISTRY_USER=$REGISTRY_USER;
+      export CI_REGISTRY_PASSWORD=$REGISTRY_PASSWORD;
+      export CI_REGISTRY=$REGISTRY;
+      export CI_APPLICATION_REPOSITORY=$APPLICATION_REPOSITORY;
 
 
 cache:
   key: ${CI_COMMIT_REF_SLUG}
   paths:
-  - ./node_modules
+    - ./node_modules
 
 ########## Lint #########
 ###################################
@@ -59,9 +59,9 @@ composer:
   services: []
   retry: 1
   rules:
-  - if: '$DEPLOY_WEBAPP == "true"'
+    - if: '$DEPLOY_WEBAPP == "true"'
   dependencies:
-  - yarn
+    - yarn
   variables:
     GIT_SUBMODULE_STRATEGY: normal
   script: |-
@@ -81,8 +81,8 @@ composer:
     fi
   artifacts:
     paths:
-    - ./application/public/docs
-    - ./application/vendor
+      - ./application/public/docs
+      - ./application/vendor
     expire_in: 2 days
 
 yarn:
@@ -91,11 +91,11 @@ yarn:
   services: []
   retry: 1
   rules:
-  - if: '$DEPLOY_WEBAPP == "true"'
+    - if: '$DEPLOY_WEBAPP == "true"'
   needs:
-  - composer
+    - composer
   before_script:
-  - apk add --update curl && rm -rf /var/cache/apk/*
+    - apk add --update curl && rm -rf /var/cache/apk/*
   script: |-
     set -vx
     export PATH=$PATH:/usr/local/bin
@@ -105,7 +105,7 @@ yarn:
     yarn run build
   artifacts:
     paths:
-    - ./application/public
+      - ./application/public
     expire_in: 1 days
 
 ########## Automated Testing jobs #########
@@ -116,44 +116,44 @@ pest:
   retry: 1
   artifacts:
     paths:
-    - ./application/vendor
+      - ./application/vendor
     expire_in: 1 days
   script:
-  - |-
-    set -xev
-    
-    if [[ -n $DOCKER_PASSWORD ]]; then
-      docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
-    fi
-
-    cp application/.env.testing application/.env
-
-    docker-compose -f docker-compose.testing.yml up -d
-
-    sleep 5
-
-    docker logs catalystexplorer_test.com
-
-    docker-compose -f docker-compose.testing.yml exec -t catalystexplorer_test.com sh -c '
-     php artisan migrate:fresh --force && \
-     php artisan optimize:clear  && \
-     sleep 10 && \
-     php artisan cx:create-search-index "App\Models\Group" && \ 
-     php artisan cx:create-search-index "App\Models\Proposal" && \
-     php artisan cx:create-search-index "App\Models\IdeascaleProfile" && \ 
-     php artisan cx:create-search-index "App\Models\Review" && \
-     php artisan cx:create-search-index "App\Models\Transaction" && \
-     php artisan cx:create-search-index "App\Models\BookmarkCollection" && \
-     php artisan cx:create-search-index "App\Models\Community" && \
-     php artisan cx:create-search-index "App\Models\VoterHistory" && \
-     sleep 10 && \
-     php artisan cx:create-search-index "App\Models\MonthlyReport" && \
-     php -d vendor/bin/pest'
+    - |-
+      set -xev
+      
+      if [[ -n $DOCKER_PASSWORD ]]; then
+        docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
+      fi
+      
+      cp application/.env.testing application/.env
+      
+      docker-compose -f docker-compose.testing.yml up -d
+      
+      sleep 5
+      
+      docker logs catalystexplorer_test.com
+      
+      docker-compose -f docker-compose.testing.yml exec -t catalystexplorer_test.com sh -c '
+       php artisan migrate:fresh --force && \
+       php artisan optimize:clear  && \
+       sleep 10 && \
+       php artisan cx:create-search-index "App\Models\Group" && \ 
+       php artisan cx:create-search-index "App\Models\Proposal" && \
+       php artisan cx:create-search-index "App\Models\IdeascaleProfile" && \ 
+       php artisan cx:create-search-index "App\Models\Review" && \
+       php artisan cx:create-search-index "App\Models\Transaction" && \
+       php artisan cx:create-search-index "App\Models\BookmarkCollection" && \
+       php artisan cx:create-search-index "App\Models\Community" && \
+       php artisan cx:create-search-index "App\Models\VoterHistory" && \
+       sleep 10 && \
+       php artisan cx:create-search-index "App\Models\MonthlyReport" && \
+       php -d vendor/bin/pest'
   rules:
-  - if: '$CI_COMMIT_BRANCH != "main" && ($DEPLOY_WEBAPP == "true")'
+    - if: '$CI_COMMIT_BRANCH != "main" && ($DEPLOY_WEBAPP == "true")'
   dependencies:
-  - composer
-  - yarn
+    - composer
+    - yarn
 
 
 
@@ -174,38 +174,38 @@ pest:
   image: "${CI_TEMPLATE_REGISTRY_HOST}/gitlab-org/cluster-integration/auto-deploy-image:${AUTO_DEPLOY_IMAGE_VERSION}"
   retry: 0
   script:
-  - auto-deploy check_kube_domain
-  - auto-deploy download_chart
-  - auto-deploy create_secret
-  - |
-    DEPLOYMENT_NAME="www-catalystexplorer.$CI_ENVIRONMENT_SLUG"  
-    cp $ENV_FILE ./helm/app/app_env
-    cat ./helm/app/app_env
-    if [ "${CI_ENVIRONMENT_NAME}" == "mainnet" ]; then
-      export APP_REPLICAS="1"
-      export QUEUE_REPLICAS="1"
-    else
-      export APP_REPLICAS="1"
-      export QUEUE_REPLICAS="1"
-    fi
+    - auto-deploy check_kube_domain
+    - auto-deploy download_chart
+    - auto-deploy create_secret
+    - |
+      DEPLOYMENT_NAME="www-catalystexplorer.$CI_ENVIRONMENT_SLUG"  
+      cp $ENV_FILE ./helm/app/app_env
+      cat ./helm/app/app_env
+      if [ "${CI_ENVIRONMENT_NAME}" == "mainnet" ]; then
+        export APP_REPLICAS="1"
+        export QUEUE_REPLICAS="1"
+      else
+        export APP_REPLICAS="1"
+        export QUEUE_REPLICAS="1"
+      fi
+      
+      helm upgrade $DEPLOYMENT_NAME ./helm/app \
+        --install \
+        -f ./helm/app/values.yaml \
+        --timeout 300s \
+        --wait \
+        --atomic \
+        --set services.app.image.repository=$CI_APPLICATION_REPOSITORY/web-app \
+        --set services.app.image.tag=$CI_APPLICATION_TAG \
+        --set services.app.POSTGRESQL_WEB_DB_HOST=$POSTGRESQL_WEB_DB_HOST \
+        --set services.meili.MEILISEARCH_KEY=$MEILISEARCH_KEY \
+        --set services.app.environment=$APP_ENV \
+        --set services.redis.password=$REDIS_PASSWORD \
+        --set namespace=${KUBE_NAMESPACE} \
+        --namespace="$KUBE_NAMESPACE" \
+        --create-namespace
 
-    helm upgrade $DEPLOYMENT_NAME ./helm/app \
-      --install \
-      -f ./helm/app/values.yaml \
-      --timeout 300s \
-      --wait \
-      --atomic \
-      --set services.app.image.repository=$CI_APPLICATION_REPOSITORY/web-app \
-      --set services.app.image.tag=$CI_APPLICATION_TAG \
-      --set services.app.POSTGRESQL_WEB_DB_HOST=$POSTGRESQL_WEB_DB_HOST \
-      --set services.meili.MEILISEARCH_KEY=$MEILISEARCH_KEY \
-      --set services.app.environment=$APP_ENV \
-      --set services.redis.password=$REDIS_PASSWORD \
-      --set namespace=${KUBE_NAMESPACE} \
-      --namespace="$KUBE_NAMESPACE" \
-      --create-namespace
-
-  - auto-deploy persist_environment_url
+    - auto-deploy persist_environment_url
   environment:
     name: mainnet
     url: https://$CI_PROJECT_PATH_SLUG.$AUTO_DEVOPS_DOMAIN
@@ -217,33 +217,33 @@ pest:
   image: "${CI_TEMPLATE_REGISTRY_HOST}/gitlab-org/cluster-integration/auto-deploy-image:${AUTO_DEPLOY_IMAGE_VERSION}"
   retry: 0
   script:
-  - auto-deploy download_chart
-  - |
-    helm repo add bitnami https://charts.bitnami.com/bitnami
-    helm repo update
-
-    echo "install db"
-    helm upgrade --install \
-        --timeout 300s \
-        --wait \
-        --atomic \
-        --namespace="$KUBE_NAMESPACE" \
-        --create-namespace \
-        -f ./helm/app/values.db.yaml \
-        --set global.postgresql.database="$DB_DATABASE" \
-        --set global.postgresql.username="$DB_USERNAME" \
-        --set global.postgresql.password="$DB_PASSWORD" \
-        --set global.pgpool.adminPassword="$REPMGR_PASSWORD" \
-        --set postgresql.postgresPassword="$POSTGRES_PASSWORD" \
-        --set postgresql.repmgrPassword="$REPMGR_PASSWORD" \
-        --set postgresql.adminPassword="$REPMGR_PASSWORD" \
-        --set pgpool.customUsers.usernames="postgres;$DB_USERNAME" \
-        --set pgpool.customUsers.passwords="$POSTGRES_PASSWORD;$DB_PASSWORD" \
-        --set persistence.size="$DB_SIZE" \
-        --set namespaceOverride="$KUBE_NAMESPACE" \
-        cx-web-db \
-        bitnami/postgresql-ha
-  - auto-deploy persist_environment_url
+    - auto-deploy download_chart
+    - |
+      helm repo add bitnami https://charts.bitnami.com/bitnami
+      helm repo update
+      
+      echo "install db"
+      helm upgrade --install \
+          --timeout 300s \
+          --wait \
+          --atomic \
+          --namespace="$KUBE_NAMESPACE" \
+          --create-namespace \
+          -f ./helm/app/values.db.yaml \
+          --set global.postgresql.database="$DB_DATABASE" \
+          --set global.postgresql.username="$DB_USERNAME" \
+          --set global.postgresql.password="$DB_PASSWORD" \
+          --set global.pgpool.adminPassword="$REPMGR_PASSWORD" \
+          --set postgresql.postgresPassword="$POSTGRES_PASSWORD" \
+          --set postgresql.repmgrPassword="$REPMGR_PASSWORD" \
+          --set postgresql.adminPassword="$REPMGR_PASSWORD" \
+          --set pgpool.customUsers.usernames="postgres;$DB_USERNAME" \
+          --set pgpool.customUsers.passwords="$POSTGRES_PASSWORD;$DB_PASSWORD" \
+          --set persistence.size="$DB_SIZE" \
+          --set namespaceOverride="$KUBE_NAMESPACE" \
+          cx-web-db \
+          bitnami/postgresql-ha
+    - auto-deploy persist_environment_url
   environment:
     name: mainnet
     url: https://$CI_PROJECT_PATH_SLUG.$AUTO_DEVOPS_DOMAIN
@@ -255,24 +255,24 @@ pest:
   image: "${CI_TEMPLATE_REGISTRY_HOST}/gitlab-org/cluster-integration/auto-deploy-image:${AUTO_DEPLOY_IMAGE_VERSION}"
   retry: 0
   script:
-  - auto-deploy download_chart
-  - |
-    helm repo add minio-operator https://operator.min.io
-    helm repo update
-
-    echo "install minio tenant"
-    helm upgrade --install \
-        --timeout 300s \
-        --wait \
-        --atomic \
-        --namespace="catalystexplorer-minio" \
-        --create-namespace \
-        -f ./helm/minio/values.yaml \
-        --set tenant.configSecret.accessKey="$MINIO_ACCESS_KEY" \
-        --set tenant.configSecret.secretKey="$MINIO_SECRET_KEY" \
-        cx-minio \
-        minio-operator/tenant
-  - auto-deploy persist_environment_url
+    - auto-deploy download_chart
+    - |
+      helm repo add minio-operator https://operator.min.io
+      helm repo update
+      
+      echo "install minio tenant"
+      helm upgrade --install \
+          --timeout 300s \
+          --wait \
+          --atomic \
+          --namespace="catalystexplorer-minio" \
+          --create-namespace \
+          -f ./helm/minio/values.yaml \
+          --set tenant.configSecret.accessKey="$MINIO_ACCESS_KEY" \
+          --set tenant.configSecret.secretKey="$MINIO_SECRET_KEY" \
+          cx-minio \
+          minio-operator/tenant
+    - auto-deploy persist_environment_url
   environment:
     name: mainnet
     url: https://$CI_PROJECT_PATH_SLUG.$AUTO_DEVOPS_DOMAIN
@@ -283,25 +283,25 @@ pest:
   image: "${CI_TEMPLATE_REGISTRY_HOST}/gitlab-org/cluster-integration/auto-deploy-image:${AUTO_DEPLOY_IMAGE_VERSION}"
   retry: 0
   script:
-  - auto-deploy download_chart
-  - |
-    helm repo add bitnami https://charts.bitnami.com/bitnami
-    helm repo update
-
-    echo "install redis"
-    helm upgrade --install \
-        --timeout 300s \
-        --wait \
-        --atomic \
-        --namespace="$KUBE_NAMESPACE" \
-        --create-namespace \
-        -f ./helm/app/values.redis.yaml \
-        --set global.redis.password="$REDIS_PASSWORD" \
-        --set auth.password="$REDIS_PASSWORD" \
-        --set master.persistence.enabled="true" \
-        redis \
-        bitnami/redis
-  - auto-deploy persist_environment_url
+    - auto-deploy download_chart
+    - |
+      helm repo add bitnami https://charts.bitnami.com/bitnami
+      helm repo update
+      
+      echo "install redis"
+      helm upgrade --install \
+          --timeout 300s \
+          --wait \
+          --atomic \
+          --namespace="$KUBE_NAMESPACE" \
+          --create-namespace \
+          -f ./helm/app/values.redis.yaml \
+          --set global.redis.password="$REDIS_PASSWORD" \
+          --set auth.password="$REDIS_PASSWORD" \
+          --set master.persistence.enabled="true" \
+          redis \
+          bitnami/redis
+    - auto-deploy persist_environment_url
   artifacts:
     paths: [ environment_url.txt ]
 
@@ -312,15 +312,15 @@ build_web:
   image: docker:24.0.2-git
   retry: 0
   script:
-  - |
-    echo "Logging in to Docker registry..."
-    docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
-
-    docker build --network host -f ./docker/Dockerfile \
-    -t "$CI_APPLICATION_REPOSITORY/web-app:$CI_APPLICATION_TAG" \
-    -t "$CI_APPLICATION_REPOSITORY/web-app:latest" . 
-    docker push "$CI_APPLICATION_REPOSITORY/web-app:$CI_APPLICATION_TAG" 
-    docker push "$CI_APPLICATION_REPOSITORY/web-app:latest"
+    - |
+      echo "Logging in to Docker registry..."
+      docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
+      
+      docker build --network host -f ./docker/Dockerfile \
+      -t "$CI_APPLICATION_REPOSITORY/web-app:$CI_APPLICATION_TAG" \
+      -t "$CI_APPLICATION_REPOSITORY/web-app:latest" . 
+      docker push "$CI_APPLICATION_REPOSITORY/web-app:$CI_APPLICATION_TAG" 
+      docker push "$CI_APPLICATION_REPOSITORY/web-app:latest"
   rules:
     - if: '$DEPLOY_WEBAPP == "true"'
       when: manual
@@ -330,21 +330,21 @@ build_web_base:
   image: docker:24.0.2-git
   retry: 0
   script:
-  - |
-    docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY" 
-
-    echo "Building Dockerfile with tags $CI_APPLICATION_REPOSITORY/web-app-base:$WEB_BASE_IMAGE_VER and $CI_APPLICATION_REPOSITORY/web-app-base:latest ..." 
-
-    docker build --network host -f ./docker/Dockerfile.base \
-    -t "$CI_APPLICATION_REPOSITORY/web-app-base:$WEB_BASE_IMAGE_VER" \
-    -t "$CI_APPLICATION_REPOSITORY/web-app-base:latest" ./docker/. 
-
-    docker push "$CI_APPLICATION_REPOSITORY/web-app-base:$WEB_BASE_IMAGE_VER" 
-    docker push "$CI_APPLICATION_REPOSITORY/web-app-base:latest"
-
-    docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
+    - |
+      docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY" 
+      
+      echo "Building Dockerfile with tags $CI_APPLICATION_REPOSITORY/web-app-base:$WEB_BASE_IMAGE_VER and $CI_APPLICATION_REPOSITORY/web-app-base:latest ..." 
+      
+      docker build --network host -f ./docker/Dockerfile.base \
+      -t "$CI_APPLICATION_REPOSITORY/web-app-base:$WEB_BASE_IMAGE_VER" \
+      -t "$CI_APPLICATION_REPOSITORY/web-app-base:latest" ./docker/. 
+      
+      docker push "$CI_APPLICATION_REPOSITORY/web-app-base:$WEB_BASE_IMAGE_VER" 
+      docker push "$CI_APPLICATION_REPOSITORY/web-app-base:latest"
+      
+      docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
   rules:
-  - if: $WEB_BASE_IMAGE_VER
+    - if: $WEB_BASE_IMAGE_VER
 
 ######## Preview Deployments #########
 ######################################
@@ -387,11 +387,11 @@ db_mainnet:
     name: mainnet
     url: https://$CI_PROJECT_PATH_SLUG.$AUTO_DEVOPS_DOMAIN
   needs:
-  - job: db_preview
-    optional: true
+    - job: db_preview
+      optional: true
   rules:
-  - if: '$CI_COMMIT_BRANCH == "main" && ($DEPLOY_INFRA == "true")'
-    when: manual
+    - if: '$CI_COMMIT_BRANCH == "main" && ($DEPLOY_INFRA == "true")'
+      when: manual
 
 s3_mainnet:
   <<: *s3_template
@@ -400,8 +400,8 @@ s3_mainnet:
     name: mainnet
     url: https://$CI_PROJECT_PATH_SLUG.$AUTO_DEVOPS_DOMAIN
   rules:
-  - if: '$CI_COMMIT_BRANCH == "main" && ($DEPLOY_INFRA == "true")'
-    when: manual
+    - if: '$CI_COMMIT_BRANCH == "main" && ($DEPLOY_INFRA == "true")'
+      when: manual
 
 redis_mainnet:
   <<: *redis_template
@@ -410,11 +410,11 @@ redis_mainnet:
     name: mainnet
     url: https://$CI_PROJECT_PATH_SLUG.$AUTO_DEVOPS_DOMAIN
   needs:
-  - job: redis_preview
-    optional: true
+    - job: redis_preview
+      optional: true
   rules:
-  - if: '$CI_COMMIT_BRANCH == "main" && ($DEPLOY_INFRA == "true")'
-    when: manual
+    - if: '$CI_COMMIT_BRANCH == "main" && ($DEPLOY_INFRA == "true")'
+      when: manual
 
 app_mainnet:
   <<: *app_template
@@ -423,10 +423,10 @@ app_mainnet:
     name: mainnet
     url: https://$CI_PROJECT_PATH_SLUG.$AUTO_DEVOPS_DOMAIN
   needs:
-  - job: app_preview
+    - job: app_preview
   rules:
-  - if: '$CI_COMMIT_BRANCH == "main" && ($DEPLOY_WEBAPP == "true")'
-    when: manual
+    - if: '$CI_COMMIT_BRANCH == "main" && ($DEPLOY_WEBAPP == "true")'
+      when: manual
 
 ######## Semantic Releases #########
 ######################################
