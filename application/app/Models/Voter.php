@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Laravel\Scout\Searchable;
@@ -105,6 +106,18 @@ class Voter extends Model
         return $this->id;
     }
 
+    public function latestVotingPower(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => $this->voting_powers()
+                ->with('snapshot.fund')
+                ->get()
+                ->filter(fn ($v) => $v->snapshot && $v->snapshot->fund)
+                ->sortByDesc(fn ($v) => $v->snapshot->fund->created_at)
+                ->first()
+        );
+    }
+
     public function toSearchableArray()
     {
         $funds = $this->voting_histories
@@ -124,7 +137,7 @@ class Voter extends Model
             'voting_key' => $this->voting_key,
             'cat_id' => $this->cat_id,
             'votes_count' => $this->voting_histories->count(),
-            'voting_power' => $this->voting_powers->sum('voting_power'),
+            'voting_power' => $this->latest_voting_power,
             'proposals_voted_on' => $this->voting_histories
                 ->pluck('proposals')
                 ->count(),
