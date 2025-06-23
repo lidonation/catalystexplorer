@@ -1,13 +1,15 @@
-import Paginator from '@/Components/Paginator';
-import PrimaryLink from '@/Components/atoms/PrimaryLink';
 import RecordsNotFound from '@/Layouts/RecordsNotFound';
 import { PaginatedData } from '@/types/paginated-data';
-import { useLocalizedRoute } from '@/utils/localizedRoute';
 import { Head, WhenVisible } from '@inertiajs/react';
 import { useTranslation } from 'react-i18next';
 import BookmarkCollectionList from './Partials/BookmarkCollectionList';
 import BookmarkCollectionListLoader from './Partials/BookmarkCollectionListLoader';
 import BookmarkCollectionData = App.DataTransferObjects.BookmarkCollectionData;
+// @ts-ignore
+import { putConfig } from '@inertiaui/modal-react';
+import PrimaryButton from "@/Components/atoms/PrimaryButton.tsx";
+import {useState} from "react";
+import CreateListPicker from "@/Pages/Bookmarks/Partials/CreateListPicker.tsx";
 
 
 interface MyListProps {
@@ -16,6 +18,12 @@ interface MyListProps {
 
 export default function MyList({ bookmarkCollections }: MyListProps) {
     const { t } = useTranslation();
+    const [showListPicker, setPickingList] = useState(false);
+
+    putConfig({
+        type: 'modal',
+        navigate: false,
+    });
 
     return (
         <>
@@ -24,14 +32,9 @@ export default function MyList({ bookmarkCollections }: MyListProps) {
             <div className="mx-auto max-w-7xl px-4 py-2 sm:px-6 lg:px-8">
                 <div className="mb-6 flex items-center">
                     <div className="m-auto mt-8">
-                        <PrimaryLink
-                            href={useLocalizedRoute(
-                                'workflows.bookmarks.index',
-                                { step: 1 },
-                            )}
-                        >
+                        <PrimaryButton className="" onClick={() => setPickingList(true)}>
                             {`+ ${t('my.createList')}`}
-                        </PrimaryLink>
+                        </PrimaryButton>
                     </div>
                 </div>
 
@@ -52,6 +55,8 @@ export default function MyList({ bookmarkCollections }: MyListProps) {
                         <RecordsNotFound />
                     </div>
                 )}
+
+                <CreateListPicker showPickingList={showListPicker} setPickingList={setPickingList}></CreateListPicker>
             </div>
         </>
     );
