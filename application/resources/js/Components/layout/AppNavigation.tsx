@@ -1,8 +1,9 @@
-import { IndexedDBService } from '@/Services/IndexDbService';
+import { db } from '@/db/db';
 import { useLocalizedRoute } from '@/utils/localizedRoute';
 import { usePage } from '@inertiajs/react';
+import { useLiveQuery } from 'dexie-react-hooks';
 import { BookmarkCheckIcon } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import NavLinkItem from '../atoms/NavLinkItem';
 import ModalNavLink from '../ModalNavLink';
@@ -20,8 +21,6 @@ import MoreIcon from '../svgs/MoreIcon';
 import NoteIcon from '../svgs/NoteIcon';
 import NumbersIcon from '../svgs/NumbersIcon';
 import PeopleIcon from '../svgs/PeopleIcon';
-import { useLiveQuery } from 'dexie-react-hooks';
-import { db } from '@/db/db';
 
 function AppNavigation() {
     const { t } = useTranslation();
@@ -55,14 +54,14 @@ function AppNavigation() {
                     className={isActive ? 'text-primary-100' : 'text-dark'}
                 />
             ),
-
         },
         {
             href: useLocalizedRoute('proposals.index'),
             title: t('proposals.proposals'),
             icon: (isActive: boolean) => (
-                <NoteIcon width={24}
-                          className={isActive ? 'text-primary-100' : 'text-dark'}
+                <NoteIcon
+                    width={24}
+                    className={isActive ? 'text-primary-100' : 'text-dark'}
                 />
             ),
         },
@@ -89,8 +88,9 @@ function AppNavigation() {
         {
             title: t('numbers'),
             icon: (isActive: boolean) => (
-                <NumbersIcon width={20}
-                             className={isActive ? 'text-primary-100' : 'text-dark'}
+                <NumbersIcon
+                    width={20}
+                    className={isActive ? 'text-primary-100' : 'text-dark'}
                 />
             ),
             hasDropdown: true,
@@ -115,6 +115,7 @@ function AppNavigation() {
                 />
             ),
             hideOnMyRoute: true,
+            disable: true,
         },
         {
             href: useLocalizedRoute('communities.index'),
@@ -145,7 +146,7 @@ function AppNavigation() {
                 />
             ),
             hideOnMyRoute: true,
-            disable:true
+            disable: true,
         },
         {
             href: useLocalizedRoute('dreps.index'),
@@ -201,7 +202,14 @@ function AppNavigation() {
         <nav className="flex h-auto flex-col justify-between" role="menu">
             <ul className="menu-gap-y flex flex-1 flex-col px-4" role="menu">
                 {filteredNavItems.map(
-                    ({ href, title, icon, hasDropdown, hasIndicator,disable }) => {
+                    ({
+                        href,
+                        title,
+                        icon,
+                        hasDropdown,
+                        hasIndicator,
+                        disable,
+                    }) => {
                         const normalizedHref = href
                             ? stripLanguagePrefix(href)
                             : '';
@@ -318,7 +326,10 @@ function AppNavigation() {
                                         >
                                             <div className="flex items-center">
                                                 <span className="mr-3">
-                                                    <NumbersIcon width={20} className="text-dark" />
+                                                    <NumbersIcon
+                                                        width={20}
+                                                        className="text-dark"
+                                                    />
                                                 </span>
                                                 <span>{title}</span>
                                             </div>
@@ -336,7 +347,7 @@ function AppNavigation() {
                                         </div>
 
                                         {numbersOpen && (
-                                            <div className="bg-background  ml-10">
+                                            <div className="bg-background ml-10">
                                                 <NavLinkItem
                                                     href={useLocalizedRoute(
                                                         'numbers.impact',
@@ -345,9 +356,7 @@ function AppNavigation() {
                                                     title={t('Impact')}
                                                     ariaLabel={`${t('impact')} ${t('link')}`}
                                                     active={false}
-                                                >
-
-                                                </NavLinkItem>
+                                                ></NavLinkItem>
 
                                                 <NavLinkItem
                                                     href={useLocalizedRoute(
@@ -357,9 +366,7 @@ function AppNavigation() {
                                                     title={t('Spending')}
                                                     ariaLabel={`${t('spending')} ${t('link')}`}
                                                     active={false}
-                                                >
-
-                                                </NavLinkItem>
+                                                ></NavLinkItem>
 
                                                 <NavLinkItem
                                                     href={useLocalizedRoute(
@@ -369,9 +376,7 @@ function AppNavigation() {
                                                     title={t('General')}
                                                     ariaLabel={`${t('general')} ${t('link')}`}
                                                     active={false}
-                                                >
-
-                                                </NavLinkItem>
+                                                ></NavLinkItem>
                                             </div>
                                         )}
                                     </div>
@@ -394,7 +399,10 @@ function AppNavigation() {
                                         >
                                             <div className="flex items-center">
                                                 <span className="mr-3">
-                                                    <MoreIcon width={20} className="text-dark" />
+                                                    <MoreIcon
+                                                        width={20}
+                                                        className="text-dark"
+                                                    />
                                                 </span>
                                                 <span>{title}</span>
                                             </div>
@@ -439,7 +447,6 @@ function AppNavigation() {
                                                     ariaLabel={`${t('reviewers')} ${t('link')}`}
                                                     active={false}
                                                 ></NavLinkItem>
-
 
                                                 <NavLinkItem
                                                     href={useLocalizedRoute(
@@ -487,7 +494,10 @@ function AppNavigation() {
                             if (comparisonCount === undefined) return null;
 
                             return (
-                                <li key={href} className="flex relative items-center">
+                                <li
+                                    key={href}
+                                    className="relative flex items-center"
+                                >
                                     <NavLinkItem
                                         ariaLabel={`${title} ${t('link')}`}
                                         href={href || '#'}
@@ -500,7 +510,7 @@ function AppNavigation() {
                                     </NavLinkItem>
                                     <ModalNavLink
                                         href="#proposal-comparison"
-                                        className="border-primary-mid absolute right-0 bg-primary-light flex min-w-[2em] items-center justify-center gap-2 rounded-full border px-2 py-0 hover:cursor-pointer"
+                                        className="border-primary-mid bg-primary-light absolute right-0 flex min-w-[2em] items-center justify-center gap-2 rounded-full border px-2 py-0 hover:cursor-pointer"
                                     >
                                         <CompareIcon width={30} primary />
                                         <span className="text-primary text-sm">

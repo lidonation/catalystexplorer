@@ -1,18 +1,18 @@
-import React, { useState } from 'react'
+import Button from '@/Components/atoms/Button';
+import Paragraph from '@/Components/atoms/Paragraph';
 import PrimaryLink from '@/Components/atoms/PrimaryLink';
-import { useTranslation } from 'react-i18next';
+import Card from '@/Components/Card';
+import Paginator from '@/Components/Paginator';
+import CheckIcon from '@/Components/svgs/CheckIcon';
+import CopyIcon from '@/Components/svgs/CopyIcon';
+import { FiltersProvider } from '@/Context/FiltersContext';
+import RecordsNotFound from '@/Layouts/RecordsNotFound';
+import { PaginatedData } from '@/types/paginated-data';
+import { SearchParams } from '@/types/search-params';
+import { useLocalizedRoute } from '@/utils/localizedRoute';
 import { router } from '@inertiajs/react';
-import { generateLocalizedRoute, useLocalizedRoute } from '@/utils/localizedRoute';
-import Card from '@/Components/Card'
-import RecordsNotFound from '@/Layouts/RecordsNotFound'
-import Button from '@/Components/atoms/Button'
-import Paragraph from '@/Components/atoms/Paragraph'
-import CopyIcon from '@/Components/svgs/CopyIcon'
-import CheckIcon from '@/Components/svgs/CheckIcon'
-import Paginator from '@/Components/Paginator'
-import { PaginatedData } from '@/types/paginated-data'
-import { SearchParams } from '@/types/search-params'
-import { FiltersProvider } from '@/Context/FiltersContext'
+import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 interface WalletStats {
     all_time_votes: number;
@@ -323,4 +323,4 @@ const Wallets: React.FC<WalletsPageProps> = (props) => {
     );
 };
 
-export default Wallets
+export default Wallets;

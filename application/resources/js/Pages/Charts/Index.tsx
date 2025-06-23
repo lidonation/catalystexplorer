@@ -1,12 +1,12 @@
 import { FiltersProvider } from '@/Context/FiltersContext';
+import { userSettingEnums } from '@/enums/user-setting-enums';
+import { useUserSetting } from '@/Hooks/useUserSettings';
 import ModalLayout from '@/Layouts/ModalLayout';
 import { SearchParams } from '@/types/search-params';
 import { Head, router } from '@inertiajs/react';
 import { useEffect, useState } from 'react';
 import AllCharts from './Partials/AllCharts';
 import SetChartMetrics from './Partials/SetChartMetrics';
-import { userSettingEnums } from '@/enums/user-setting-enums';
-import { useUserSetting } from '@/Hooks/useUserSettings';
 
 interface ChartsIndexProps {
     filters: SearchParams;
@@ -31,7 +31,8 @@ const Index = ({
         ['fund']
     );
 
-    const viewBy: 'fund' | 'year' = viewByPreference?.[0] === 'year' ? 'year' : 'fund';
+    const viewBy: 'fund' | 'year' =
+        viewByPreference?.[0] === 'year' ? 'year' : 'fund';
     const chartData = viewBy === 'fund' ? chartDataByFund : chartDataByYear;
 
     const handleExploreCharts = () => {
@@ -55,12 +56,11 @@ const Index = ({
         };
 
         router.on('navigate', handleNavigation);
-
     }, []);
 
     return (
         <FiltersProvider defaultFilters={filters}>
-            <ModalLayout navigate={true} className="md:px-8 px-2" zIndex="z-30">
+            <ModalLayout navigate={true} className="px-2 md:px-8" zIndex="z-30">
                 <Head title="Charts" />
 
                 {!showCharts && (

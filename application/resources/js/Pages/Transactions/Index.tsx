@@ -39,8 +39,7 @@ export default function Transactions({
                 </div>
             </div>
 
-            <div className="py-12">
-                <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
+                <div className="container lg:my-12 my-8">
                     <div className="bg-background overflow-hidden bg-white p-6 shadow-xl sm:rounded-lg">
                         <div className="border-background-lighter mb-4 w-full border-b">
                             <Title level="4" className="mb-4 font-bold">
@@ -71,7 +70,6 @@ export default function Transactions({
                         </div>
                     </div>
                 </div>
-            </div>
         </FiltersProvider>
     );
 }
