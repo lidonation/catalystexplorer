@@ -22,15 +22,13 @@ const Index = ({
     const [showCharts, setShowCharts] = useState<boolean>(() => {
         return localStorage.getItem('metricsSet') === 'true';
     });
-    const [viewBy, setViewBy] = useState<'fund' | 'year'>('fund');
-    const chartData = viewBy === 'fund' ? chartDataByFund : chartDataByYear;
 
     const {
         value: viewByPreference,
         setValue: setViewByPreference
     } = useUserSetting<string[]>(
         userSettingEnums.VIEW_CHART_BY,
-        ['fund'] 
+        ['fund']
     );
 
     const viewBy: 'fund' | 'year' = viewByPreference?.[0] === 'year' ? 'year' : 'fund';
@@ -47,12 +45,8 @@ const Index = ({
     };
 
     const handleViewByChange = (value: string | null) => {
-<<<<<<< HEAD
         const newValue = value as 'fund' | 'year';
         setViewByPreference([newValue]);
-=======
-        setViewBy(value as 'fund' | 'year');
->>>>>>> f6a507b3 (feat: dynamic chart ui backend)
     };
 
     useEffect(() => {
@@ -61,14 +55,9 @@ const Index = ({
         };
 
         router.on('navigate', handleNavigation);
-<<<<<<< HEAD
 
     }, []);
 
-=======
-    }, []);
-
->>>>>>> f6a507b3 (feat: dynamic chart ui backend)
     return (
         <FiltersProvider defaultFilters={filters}>
             <ModalLayout navigate={true} className="md:px-8 px-2" zIndex="z-30">
