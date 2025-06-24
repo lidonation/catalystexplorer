@@ -170,122 +170,28 @@ class WalletController extends Controller
     {
         try {
             $userId = auth()->id();
+
+            if (! $userId) {
+                return $this->emptyPagination($request);
+            }
+
             $page = $request->get('page', 1);
             $limit = $request->get('limit', 4);
 
-            if (! $userId) {
-                $emptyPagination = new LengthAwarePaginator(
-                    [],
-                    0,
-                    $limit,
-                    $page,
-                    [
-                        'pageName' => 'page',
-                        'path' => $request->url(),
-                        'query' => $request->query(),
-                    ]
-                );
+            $walletsPaginator = $this->walletInfoService->getUserWallets($userId, $page, $limit);
 
-                return Inertia::render('My/Wallets/Index', [
-                    'connectedWallets' => $emptyPagination->toArray(),
-                ]);
-            }
-
-            $signatures = DB::table('signatures')
-                ->select([
-                    'stake_address',
-                    DB::raw('MAX(wallet_provider) as wallet_provider'),
-                    DB::raw('MAX(wallet_name) as wallet_name'),
-                    DB::raw('MAX(updated_at) as last_used'),
-                    DB::raw('COUNT(*) as signature_count'),
-                    DB::raw('MAX(id) as id'),
-                ])
-                ->where('user_id', $userId)
-                ->whereNotNull('stake_address')
-                ->where('stake_address', '!=', '')
-                ->groupBy('stake_address')
-                ->orderBy('last_used', 'desc')
-                ->get();
-
-            if ($signatures->isEmpty()) {
-                $emptyPagination = new LengthAwarePaginator(
-                    [],
-                    0,
-                    $limit,
-                    $page,
-                    [
-                        'pageName' => 'page',
-                        'path' => $request->url(),
-                        'query' => $request->query(),
-                    ]
-                );
-
-                return Inertia::render('My/Wallets/Index', [
-                    'connectedWallets' => $emptyPagination->toArray(),
-                ]);
-            }
-
-            $total = $signatures->count();
-            $offset = ($page - 1) * $limit;
-            $paginatedSignatures = $signatures->slice($offset, $limit);
-
-            $walletsData = $paginatedSignatures->map(function ($item) {
-                $stats = $this->walletInfoService->getWalletStats($item->stake_address);
-                $userAddress = ! empty($stats['payment_addresses'])
-                    ? $stats['payment_addresses'][0]
-                    : $item->stake_address;
-
-                $displayName = $item->wallet_name
-                    ?: ($item->wallet_provider ?: 'Unknown');
-
-                return [
-                    'id' => (string) $item->id,
-                    'name' => $displayName,
-                    'wallet_name' => $item->wallet_name,
-                    'wallet_provider' => $item->wallet_provider,
-                    'networkName' => 'Cardano PreProd',
-                    'stakeAddress' => $item->stake_address,
-                    'userAddress' => $userAddress,
-                    'paymentAddresses' => $stats['payment_addresses'] ?? [],
-                    'last_used' => $item->last_used,
-                    'signature_count' => $item->signature_count,
-                    'walletDetails' => $stats,
-                ];
-            });
-
-            $pagination = new LengthAwarePaginator(
-                $walletsData->values(),
-                $total,
-                $limit,
-                $page,
-                [
-                    'pageName' => 'page',
-                    'path' => $request->url(),
-                    'query' => $request->query(),
-                ]
-            );
+            $walletsPaginator->withPath($request->url())
+                ->appends($request->query());
+            $walletsArray = $walletsPaginator->through(fn ($wallet) => $wallet->toArray());
 
             return Inertia::render('My/Wallets/Index', [
-                'connectedWallets' => $pagination->toArray(),
+                'connectedWallets' => $walletsPaginator,
             ]);
 
         } catch (\Exception $e) {
-            $emptyPagination = new LengthAwarePaginator(
-                [],
-                0,
-                4,
-                1,
-                [
-                    'pageName' => 'page',
-                    'path' => $request->url(),
-                    'query' => $request->query(),
-                ]
-            );
+            Log::error("Error loading wallets for user {$userId}: ".$e->getMessage());
 
-            return Inertia::render('My/Wallets/Index', [
-                'connectedWallets' => $emptyPagination->toArray(),
-                'error' => 'Unable to load wallet data. Please try again.',
-            ]);
+            return $this->emptyPagination($request, 'Unable to load wallet data. Please try again.');
         }
     }
 
@@ -322,13 +228,22 @@ class WalletController extends Controller
         }
     }
 
-    public function lookupJson(string $stakeKey, WalletInfoService $walletInfoService): JsonResponse
+    private function emptyPagination(Request $request, ?string $error = null): Response
     {
-        \Log::info("Fetching wallet stats for: {$stakeKey}");
-        $walletDetails = $this->walletInfoService->getWalletStats($stakeKey);
+        $data = [
+            'connectedWallets' => [
+                'data' => [],
+                'current_page' => 1,
+                'last_page' => 1,
+                'per_page' => $request->get('limit', 4),
+                'total' => 0,
+            ],
+        ];
 
-        return response()->json([
-            'walletDetails' => $walletDetails,
-        ]);
+        if ($error) {
+            $data['error'] = $error;
+        }
+
+        return Inertia::render('My/Wallets/Index', $data);
     }
 }

@@ -6,9 +6,12 @@ namespace App\Models;
 
 use App\Services\WalletInfoService;
 use App\Traits\HasMetaData;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Support\Facades\Cache;
 
 class Signature extends Model
 {
@@ -35,8 +38,7 @@ class Signature extends Model
      * @var array<int, string>
      */
     protected $appends = [
-        'wallet_stats',
-        'signature_count',
+        'display_name',
         'formatted_wallet_provider',
     ];
 
@@ -53,31 +55,34 @@ class Signature extends Model
         return $this->hasMany(Transaction::class, 'stake_key', 'stake_key');
     }
 
-    protected function walletStats(): Attribute
+    public function relatedSignatures(): HasMany
     {
-        return Attribute::make(
-            get: function () {
-                if (! $this->stake_address) {
-                    return [
-                        'balance' => 'N/A',
-                        'all_time_votes' => 0,
-                        'funds_participated' => [],
-                        'status' => false,
-                        'stakeAddress' => '',
-                    ];
-                }
-
-                $walletService = app(WalletInfoService::class);
-
-                return $walletService->getWalletStats($this->stake_address);
-            }
-        );
+        return $this->hasMany(self::class, 'stake_address', 'stake_address');
     }
 
-    protected function signatureCount(): Attribute
+    public function latestSignature(): HasOne
+    {
+        return $this->hasOne(self::class, 'stake_address', 'stake_address')
+            ->latest('updated_at');
+    }
+
+    public function scopeUniqueWallets(Builder $query): Builder
+    {
+        return $query->select('stake_address')
+            ->whereNotNull('stake_address')
+            ->where('stake_address', '!=', '')
+            ->distinct();
+    }
+
+    public function scopeForUser(Builder $query, int $userId): Builder
+    {
+        return $query->where('user_id', $userId);
+    }
+
+    protected function displayName(): Attribute
     {
         return Attribute::make(
-            get: fn () => static::where('stake_address', $this->stake_address)->count()
+            get: fn () => $this->wallet_name ?: ($this->wallet_provider ?: 'Unknown')
         );
     }
 
@@ -86,5 +91,80 @@ class Signature extends Model
         return Attribute::make(
             get: fn () => $this->wallet_provider ? ucfirst($this->wallet_provider) : 'Unknown'
         );
+    }
+
+    protected function signatureCount(): Attribute
+    {
+        return Attribute::make(
+            get: function () {
+                $cacheKey = "signature_count_{$this->stake_address}";
+
+                return Cache::remember($cacheKey, now()->addHours(2), function () {
+                    return self::where('stake_address', $this->stake_address)->count();
+                });
+            }
+        );
+    }
+
+    protected function lastUsed(): Attribute
+    {
+        return Attribute::make(
+            get: function () {
+                $cacheKey = "last_used_{$this->stake_address}";
+
+                return Cache::remember($cacheKey, now()->addHours(2), function () {
+                    return self::where('stake_address', $this->stake_address)
+                        ->max('updated_at');
+                });
+            }
+        );
+    }
+
+    protected function latestWalletInfo(): Attribute
+    {
+        return Attribute::make(
+            get: function () {
+                $cacheKey = "latest_wallet_info_{$this->stake_address}";
+
+                return Cache::remember($cacheKey, now()->addHours(2), function () {
+                    return self::where('stake_address', $this->stake_address)
+                        ->latest('updated_at')
+                        ->select('wallet_provider', 'wallet_name', 'updated_at')
+                        ->first();
+                });
+            }
+        );
+    }
+
+    protected function walletStats(): Attribute
+    {
+        return Attribute::make(
+            get: function () {
+                if (! $this->stake_address) {
+                    return $this->getDefaultWalletStats();
+                }
+
+                $cacheKey = "wallet_stats_{$this->stake_address}";
+
+                return Cache::remember($cacheKey, now()->addHours(2), function () {
+                    $walletService = app(WalletInfoService::class);
+
+                    return $walletService->getWalletStats($this->stake_address);
+                });
+            }
+        );
+    }
+
+    private function getDefaultWalletStats(): array
+    {
+        return [
+            'balance' => 'N/A',
+            'all_time_votes' => 0,
+            'funds_participated' => [],
+            'payment_addresses' => [],
+            'status' => false,
+            'stakeAddress' => $this->stake_address ?? '',
+            'choice_stats' => [],
+        ];
     }
 }
