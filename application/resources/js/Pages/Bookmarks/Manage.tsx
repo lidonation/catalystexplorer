@@ -2,7 +2,7 @@ import Button from '@/Components/atoms/Button';
 import PrimaryButton from '@/Components/atoms/PrimaryButton';
 import Title from '@/Components/atoms/Title';
 import Comments from '@/Components/Comments';
-import ModalSidebar from '@/Components/layout/ModalSidebar';
+import Modal from '@/Components/layout/Modal.tsx';
 import { ReviewList } from '@/Components/ReviewList';
 import { BookmarkProvider } from '@/Context/BookmarkContext';
 import { FiltersProvider } from '@/Context/FiltersContext';
@@ -115,16 +115,16 @@ const Manage = (props: BookmarkCollectionListProps) => {
                 );
             case 'communities':
                 return (
-                    <CommunitiesPaginatedList 
-                        communities={props.communities} 
+                    <CommunitiesPaginatedList
+                        communities={props.communities}
                         cardType="mini"
                         gridCols="grid-cols-1 gap-2 lg:grid-cols-2 xl:grid-cols-4"
                     />
                 );
             case 'groups':
                 return (
-                    <GroupPaginatedList 
-                        groups={props.groups} 
+                    <GroupPaginatedList
+                        groups={props.groups}
                         cardType="mini"
                         gridCols="grid-cols-1 gap-2 lg:grid-cols-2 xl:grid-cols-4 auto-rows-fr"
                     />
@@ -193,7 +193,7 @@ const Manage = (props: BookmarkCollectionListProps) => {
                 <div className="container w-full py-4 lg:relative">
                     <div className="top-6 right-8 z-50 mb-6 flex flex-row justify-between gap-4 lg:absolute lg:mb-0 lg:ml-auto">
                         <button
-                            
+
                             className="text-primary text-sm text-nowrap hover:cursor-pointer"
                             onClick={() => setActiveEditModal(true)}
                         >
@@ -235,7 +235,7 @@ const Manage = (props: BookmarkCollectionListProps) => {
             )}
 
             {/* modals */}
-            <ModalSidebar
+            <Modal
                 title={t('bookmarks.editList')}
                 isOpen={!!activeEditModal}
                 onClose={() => setActiveEditModal(false)}
@@ -246,9 +246,9 @@ const Manage = (props: BookmarkCollectionListProps) => {
                     handleSave={handleUpdate}
                     handleDelete={() => setActiveConfirm(true)}
                 />
-            </ModalSidebar>
+            </Modal>
 
-            <ModalSidebar
+            <Modal
                 title={t('bookmarks.editList')}
                 isOpen={!!activeConfirm}
                 onClose={() => setActiveConfirm(false)}
@@ -257,7 +257,9 @@ const Manage = (props: BookmarkCollectionListProps) => {
             >
                 <div className="flex flex-col gap-4 p-4 text-center">
                     <Title level="5">{t('bookmarks.confirmDelete')}</Title>
+
                     <p>{t('bookmarks.permanentDelete')}</p>
+
                     <div className="flex justify-between gap-4">
                         <PrimaryButton
                             onClick={() => setActiveConfirm(false)}
@@ -265,6 +267,7 @@ const Manage = (props: BookmarkCollectionListProps) => {
                         >
                             {t('Cancel')}
                         </PrimaryButton>
+
                         <Button
                             onClick={handleDelete}
                             className="bg-danger-mid text-content-light flex-1 rounded-md py-1.5 font-semibold"
@@ -273,7 +276,7 @@ const Manage = (props: BookmarkCollectionListProps) => {
                         </Button>
                     </div>
                 </div>
-            </ModalSidebar>
+            </Modal>
         </div>
     );
 };

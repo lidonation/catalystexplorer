@@ -30,7 +30,7 @@ function DesktopSidebar(props: any) {
                 <CatalystLogo className="w-full" />
             </section>
 
-            <section className="overflow-y-auto">
+            <section className="overflow-y-auto h-full">
                 <section
                     className={`flex flex-col gap-6 pb-5 ${!isOnMyRoute ? 'overflow-y-auto' : ''}`}
                 >

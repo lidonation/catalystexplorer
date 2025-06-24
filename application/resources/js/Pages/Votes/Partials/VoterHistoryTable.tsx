@@ -11,6 +11,7 @@ import { VoteEnums } from '@/enums/vote-search-enums';
 import VoteSortOptions from '@/lib/VoteSortOptions';
 import { PaginatedData } from '@/types/paginated-data';
 import { SearchParams } from '@/types/search-params';
+import { currency } from '@/utils/currency';
 import { useLocalizedRoute } from '@/utils/localizedRoute';
 import { Link, router } from '@inertiajs/react';
 import React, {
@@ -138,7 +139,7 @@ const VoterHistoryTable: React.FC<VoterHistoryTableProps> = ({
         }
     };
 
-    const formatVotingPower = (value: any): string => {
+    const formatVotingPower = (value: any): string | number => {
         if (value === undefined || value === null) return '₳ 0';
 
         try {
@@ -147,9 +148,7 @@ const VoterHistoryTable: React.FC<VoterHistoryTableProps> = ({
 
             const adaValue = numValue / 1000000;
 
-            const formattedValue = Math.floor(adaValue).toLocaleString();
-
-            return `₳ ${formattedValue}`;
+            return currency(adaValue ?? 0, 2, 'ADA');
         } catch (e) {
             console.error('Error formatting voting power:', e);
             return '₳ 0';
@@ -425,9 +424,7 @@ const VoterHistoryTable: React.FC<VoterHistoryTableProps> = ({
                                                     <td className="border-dark-light text-content border-r border-b px-4 py-4">
                                                         <div className="flex flex-col">
                                                             <span>
-                                                                {formatTimestamp(
-                                                                    history.time,
-                                                                )}
+                                                                {history.time}
                                                             </span>
                                                             {/* For time ago */}
                                                             {/* <span className="text-xs text-gray-persist">
@@ -453,7 +450,7 @@ const VoterHistoryTable: React.FC<VoterHistoryTableProps> = ({
                                                         <div className="flex items-center">
                                                             <span>
                                                                 {formatVotingPower(
-                                                                    history.voting_power,
+                                                                    history?.voting_power,
                                                                 )}
                                                             </span>
                                                         </div>

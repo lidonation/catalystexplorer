@@ -114,7 +114,7 @@ export default function ModelSearch({
     }
 
     return (
-        <div className={`relative ${className}`}>
+        <div className={`relative${className}`}>
             {/* Search Bar */}
             <div className="sticky top-0 w-full">
                 <label className="relative flex w-full items-center gap-2">

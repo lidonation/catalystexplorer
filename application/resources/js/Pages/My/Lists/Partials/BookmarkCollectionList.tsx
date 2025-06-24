@@ -1,4 +1,3 @@
-import GroupCard from '@/Pages/Groups/Partials/GroupCard';
 import { AnimatePresence, motion } from 'framer-motion';
 import React from 'react';
 import BookmarkCollectionData = App.DataTransferObjects.BookmarkCollectionData;
@@ -22,7 +21,7 @@ const BookmarkCollectionList: React.FC<BookmarkCollectionListProps> = ({ bookmar
                             transition={{ duration: 0.5, ease: 'easeIn' }}
                             className="h-full"
                         >
-                            <BookmarkCollectionCard 
+                            <BookmarkCollectionCard
                                 key={bookmarkCollection.hash}
                                 collection={bookmarkCollection}
                             />

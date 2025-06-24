@@ -7,7 +7,7 @@ Please read these guidelines to understand how to contribute effectively.
 ## How to Contribute
 
 ### 1. Fork the Repository
-- Start by [forking the repository](https://gitlab.lidonation.com/lidonation/www.catalystexplorer.com).
+- Start by [forking the repository](hhttps://gitlab.2lovelaces.io/lidonation/www.catalystexplorer.com).
 - Clone the forked repo to your local machine.
 
 ### 2. Create a Feature Branch
@@ -46,7 +46,7 @@ git commit -m 'chore(app): ln-2343 Updated dependencies.'
 - See the [STYLEGUIDE](./STYLEGUIDE.md) for coding styles, required, and best practices.
 
 ## Reporting Issues
-If you find bugs or have feature requests, please open an issue in the [Issues section](https://gitlab.lidonation.com/lidonation/www.catalystexplorer.com/-/issues).
+If you find bugs or have feature requests, please open an issue in the [Issues section](https://gitlab.2lovelaces.io/lidonation/www.catalystexplorer.com/-/issues).
 
 ## License
 By contributing, you agree that your contributions will be licensed under the Apache License 2.0.

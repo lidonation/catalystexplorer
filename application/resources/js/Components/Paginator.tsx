@@ -67,10 +67,10 @@ const PaginationComponent: React.FC<PaginationComponentProps<any>> = ({
                             ></PaginationPrevious>
                         </PaginationItem>
                     </div>
-                    <div className="flex flex-col items-center gap-3 md:flex-row">
+                    <div className="flex flex-col items-center gap-6 md:flex-row">
                         {/* Page Numbers */}
-                        <div className="flex flex-col justify-center gap-1">
-                            <ul className="flex list-none flex-wrap items-center gap-1 text-sm lg:flex-nowrap lg:gap-4 lg:text-base">
+                        <div className="flex flex-col justify-center lg:gap-6">
+                            <ul className="flex list-none flex-wrap items-center gap-1 text-sm lg:flex-nowrap lg:gap-8">
                                 {links &&
                                     links.map((link, index) =>
                                         link.label.includes('&laquo;') ||
@@ -106,7 +106,7 @@ const PaginationComponent: React.FC<PaginationComponentProps<any>> = ({
                                                         className={cn(
                                                             'flex size-8 items-center justify-center rounded-full',
                                                             link.active
-                                                                ? 'bg-background shadow-md '
+                                                                ? 'bg-background shadow-md'
                                                                 : '',
                                                         )}
                                                         {...linkProps}
@@ -119,7 +119,7 @@ const PaginationComponent: React.FC<PaginationComponentProps<any>> = ({
                                     )}
                             </ul>
                         </div>
-                        <div className="w-full text-center text-xs">
+                        <div className="w-full text-center text-sm">
                             <span>
                                 Showing {from} - {to} of{' '}
                                 <span className="font-bold">{total}</span>
