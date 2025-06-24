@@ -55,7 +55,7 @@ const IndexComponent: React.FC<VotersProps> = (props) => {
                     <VoterFilters />
                 </section>
 
-                <div className="mb-8 rounded-lg border border-dark-light bg-background shadow-lg">
+                <div className="mb-8 rounded-lg border border-gray-100 bg-background shadow-lg">
                     <VotersTable
                         voters={voters as PaginatedData<VoterData[]>}
                     />
