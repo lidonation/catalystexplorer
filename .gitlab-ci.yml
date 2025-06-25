@@ -182,8 +182,6 @@ pest:
 
       cp $ENV_FILE ./helm/app/app_env
 
-      cat ./helm/app/app_env
-
       if [ "${CI_ENVIRONMENT_NAME}" == "mainnet" ]; then
         export APP_REPLICAS="3"
         export QUEUE_REPLICAS="2"
@@ -204,12 +202,11 @@ pest:
         --set services.meili.MEILISEARCH_KEY=$MEILISEARCH_KEY \
         --set services.app.environment=$APP_ENV \
         --set services.redis.password=$REDIS_PASSWORD \
-        --set services.app.replicaCount=$APP_REPLICAS \ 
+        --set services.app.replicaCount=$APP_REPLICAS \
         --set services.queue.replicaCount=$QUEUE_REPLICAS \
         --set namespace=${KUBE_NAMESPACE} \
         --namespace="$KUBE_NAMESPACE" \
         --create-namespace
-
     - auto-deploy persist_environment_url
   environment:
     name: mainnet
