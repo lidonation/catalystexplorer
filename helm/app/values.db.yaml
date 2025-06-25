@@ -301,11 +301,11 @@ postgresql:
   ##
   livenessProbe:
     enabled: true
-    initialDelaySeconds: 30
-    periodSeconds: 10
+    initialDelaySeconds: 90
+    periodSeconds: 15
     timeoutSeconds: 5
     successThreshold: 1
-    failureThreshold: 6
+    failureThreshold: 8
   ## PostgreSQL container's readiness probe
   ## ref: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#container-probes
   ## @param postgresql.readinessProbe.enabled Enable readinessProbe
@@ -317,11 +317,11 @@ postgresql:
   ##
   readinessProbe:
     enabled: true
-    initialDelaySeconds: 5
-    periodSeconds: 10
+    initialDelaySeconds: 30
+    periodSeconds: 15
     timeoutSeconds: 5
     successThreshold: 1
-    failureThreshold: 6
+    failureThreshold: 8
   ## PostgreSQL container's startup probe
   ## ref: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#container-probes
   ## @param postgresql.startupProbe.enabled Enable startupProbe
@@ -332,8 +332,8 @@ postgresql:
   ## @param postgresql.startupProbe.successThreshold Success threshold for startupProbe
   ##
   startupProbe:
-    enabled: false
-    initialDelaySeconds: 5
+    enabled: true
+    initialDelaySeconds: 45
     periodSeconds: 10
     timeoutSeconds: 5
     successThreshold: 1
@@ -1244,7 +1244,7 @@ pgpool:
   ##
   livenessProbe:
     enabled: true
-    initialDelaySeconds: 30
+    initialDelaySeconds: 45
     periodSeconds: 12
     timeoutSeconds: 7
     successThreshold: 1
@@ -1260,7 +1260,7 @@ pgpool:
   ##
   readinessProbe:
     enabled: true
-    initialDelaySeconds: 5
+    initialDelaySeconds: 10
     periodSeconds: 5
     timeoutSeconds: 5
     successThreshold: 1
