@@ -48,7 +48,7 @@ const IndexComponent: React.FC<VotersProps> = (props) => {
                 />
 
                 <section
-                    className={`container overflow-hidden transition-all duration-500 ease-in-out ${
+                    className={` overflow-hidden transition-all duration-500 ease-in-out ${
                         showFilters ? 'my-4 max-h-[500px]' : 'max-h-0'
                     }`}
                 >
