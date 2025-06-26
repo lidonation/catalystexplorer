@@ -100,7 +100,6 @@ export default function ProposalVerticalCard({
                                     proposal={proposal}
                                 />
                             </section>
-                            {/*<div className="my-3 border-b"></div>*/}
                             <div className="relative mt-4 min-h-36">
                                 {quickPitchView ? (
                                     <ProposalQuickpitch
