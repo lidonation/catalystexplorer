@@ -184,7 +184,7 @@ pest:
 
       if [ "${CI_ENVIRONMENT_NAME}" == "mainnet" ]; then
         export APP_REPLICAS="3"
-        export QUEUE_REPLICAS="2"
+        export QUEUE_REPLICAS="5"
       else
         export APP_REPLICAS="1"
         export QUEUE_REPLICAS="1"
