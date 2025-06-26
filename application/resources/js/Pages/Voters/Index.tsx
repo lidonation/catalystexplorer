@@ -48,14 +48,14 @@ const IndexComponent: React.FC<VotersProps> = (props) => {
                 />
 
                 <section
-                    className={`container overflow-hidden transition-all duration-500 ease-in-out ${
+                    className={` overflow-hidden transition-all duration-500 ease-in-out ${
                         showFilters ? 'my-4 max-h-[500px]' : 'max-h-0'
                     }`}
                 >
                     <VoterFilters />
                 </section>
 
-                <div className="mb-8 rounded-lg border border-dark-light bg-background shadow-lg">
+                <div className="mb-8 rounded-lg border border-gray-100 bg-background shadow-lg">
                     <VotersTable
                         voters={voters as PaginatedData<VoterData[]>}
                     />

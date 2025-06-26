@@ -65,6 +65,8 @@ Route::localized(
                 Route::get('/reviews', [ProfileController::class, 'myReviews'])->name('reviews');
                 Route::get('/wallets', [WalletController::class, 'index'])
                             ->name('wallets');
+                Route::get('/wallets/{stakeKey}/{catId}', [WalletController::class, 'show'])
+                        ->name('wallets.show');
                 Route::delete('/wallets/{stakeAddress}', [WalletController::class, 'destroy'])
                         ->name('wallets.destroy');
             });

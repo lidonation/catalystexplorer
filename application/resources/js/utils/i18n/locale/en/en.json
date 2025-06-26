@@ -419,7 +419,7 @@
         "votes": "Votes",
         "balance": "Balance",
         "wallets": "Wallets",
-        "deletingWallet": "Deleting",
+        "deleteWallet": "Deleting",
         "paymentAddresses": "Payment Addresses",
         "myWallets": "My Wallets",
         "loadWallets": "Loading wallets...",

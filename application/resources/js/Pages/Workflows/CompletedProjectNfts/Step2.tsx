@@ -111,40 +111,41 @@ const Step2: React.FC<Step2Props> = ({
                         proposals={proposals || []}
                         profileHash={profileHash as string}
                     />
-
-                    {proposals && 
-                    proposals.data && 
-                    proposals.data.length > 0 && 
-                    proposals.total > proposals.per_page && (
-                        <div className="card-container bg-background sticky z-10 mb-4 w-full px-4 pt-4 lg:top-0 lg:px-6 lg:pt-8">
-                            <Paginator
-                                pagination={proposals}
-                                linkProps={{
-                                    preserveState: true,
-                                    preserveScroll: true,
-                                }}
-                            />
-                        </div>
-                    )}
                 </Content>
 
                 <Footer>
-                    <PrimaryLink
-                        href={prevStep}
-                        className="text-sm lg:px-8 lg:py-3"
-                        disabled={activeStep === 1}
-                    >
-                        <ChevronLeft className="h-4 w-4" />
-                        <span>{t('Previous')}</span>
-                    </PrimaryLink>
-                    <PrimaryLink
-                        href={nextStep}
-                        className="text-sm lg:px-8 lg:py-3"
-                        disabled={!selectedProposalHash}
-                    >
-                        <span>{t('Next')}</span>
-                        <ChevronRight className="h-4 w-4" />
-                    </PrimaryLink>
+                    <div className="items-center justify-between gap-4 lg:flex-row w-full">
+                        {proposals &&
+                            proposals.data &&
+                            proposals.data.length > 0 &&
+                            proposals.total > proposals.per_page && (
+                                <Paginator
+                                    pagination={proposals}
+                                    linkProps={{
+                                        preserveState: true,
+                                        preserveScroll: true,
+                                    }}
+                                />
+                        )}
+                        <div className="flex justify-between">
+                            <PrimaryLink
+                                href={prevStep}
+                                className="text-sm lg:px-8 lg:py-3"
+                                disabled={activeStep === 1}
+                            >
+                                <ChevronLeft className="h-4 w-4" />
+                                <span>{t('Previous')}</span>
+                            </PrimaryLink>
+                            <PrimaryLink
+                                href={nextStep}
+                                className="text-sm lg:px-8 lg:py-3"
+                                disabled={!selectedProposalHash}
+                            >
+                                <span>{t('Next')}</span>
+                                <ChevronRight className="h-4 w-4" />
+                            </PrimaryLink>
+                        </div>
+                    </div>
                 </Footer>
             </WorkflowLayout>
         </FiltersProvider>
