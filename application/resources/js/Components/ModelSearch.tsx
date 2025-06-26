@@ -92,8 +92,7 @@ export default function ModelSearch({
 }: ModelSearchProps) {
     const inputRef = useRef<HTMLInputElement>(null);
     const { t } = useTranslation();
-    const { searchTerm, setSearchTerm, options } =
-        useSearchOptions<any>(domain);
+    const { searchTerm, setSearchTerm, options } = useSearchOptions<any>(domain);
     const model = modelTypes[domain];
     const { selectedItemsByType, toggleSelection } = useBookmarkContext();
     const selectedHashes = selectedItemsByType[domain] || [];
@@ -111,6 +110,25 @@ export default function ModelSearch({
             return currency(value, 3, obj.currency);
         }
         return value;
+    }
+
+    function generateLink(result: any): string {
+        const id = result.id || result.hash || result.slug;
+        
+        switch (domain) {
+            case 'proposals':
+                return `/proposals/${result.slug || id}`;
+            case 'ideascaleProfiles':
+                return `/ideascale-profiles/${id}`;
+            case 'groups':
+                return `/groups/${result.slug || id}`;
+            case 'communities':
+                return `/communities/${result.slug || id}`;
+            case 'reviews':
+                return `/reviews/${id}`;
+            default:
+                return '/';
+        }
     }
 
     return (
@@ -172,12 +190,14 @@ export default function ModelSearch({
                                             className="bg-background text-content-accent checked:bg-primary focus:border-primary focus:ring-primary h-4 w-4 shadow-xs"
                                         />
                                         <div className="space-y-1">
-                                            <h3 className="text-lg font-bold">
-                                                {formatStat(
-                                                    result,
-                                                    model.labelField,
-                                                )}
-                                            </h3>
+                                            <a href={generateLink(result)} target='_blank'>
+                                                <h3 className="text-lg font-bold hover:text-primary">
+                                                    {formatStat(
+                                                        result,
+                                                        model.labelField,
+                                                    )}
+                                                </h3>
+                                            </a>
 
                                             <div className="flex flex-wrap gap-4 pt-1">
                                                 {model.statsField.map(

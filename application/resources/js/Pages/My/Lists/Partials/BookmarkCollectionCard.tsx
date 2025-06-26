@@ -102,15 +102,25 @@ const BookmarkCollectionCard = ({
             </div>
             <div className="top-4 right-4 lg:absolute">
                 {user?.hash && isAuthor ? (
-                    <PrimaryLink
-                        className="bg-success w-full px-4 py-1.5 font-medium text-white"
-                        href={useLocalizedRoute('lists.manage', {
-                            bookmarkCollection: collection?.hash,
-                            type: 'proposals',
-                        })}
-                    >
-                        {t('my.manage')}
-                    </PrimaryLink>
+                    <div className="flex flex-col gap-2 lg:flex-row lg:gap-3">
+                        <PrimaryLink
+                            className="bg-success w-full px-4 py-1.5 font-medium text-white lg:w-auto lg:whitespace-nowrap"
+                            href={useLocalizedRoute('lists.manage', {
+                                bookmarkCollection: collection?.hash,
+                                type: 'proposals',
+                            })}
+                        >
+                            {t('my.manage')}
+                        </PrimaryLink>
+                        <PrimaryLink
+                            href={useLocalizedRoute('lists.view', {
+                                bookmarkCollection: collection?.hash,
+                            })}
+                            className="bg-success w-full px-4 py-1.5 hover:bg-green-600 lg:w-auto lg:whitespace-nowrap"
+                        >
+                            {t('View List')}
+                        </PrimaryLink>
+                    </div>
                 ) : (
                     <PrimaryLink
                         href={useLocalizedRoute('lists.view', {
