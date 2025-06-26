@@ -196,7 +196,7 @@ const VoterHistoryTable: React.FC<VoterHistoryTableProps> = ({
             hoveredCell.col === col;
 
         return (
-            <div className="relative flex w-full items-center justify-between">
+            <div className="relative flex w-full items-start justify-between">
                 <div
                     className="flex-1 cursor-pointer truncate"
                     onMouseEnter={() => handleMouseEnter(rowIndex, col)}
@@ -295,9 +295,9 @@ const VoterHistoryTable: React.FC<VoterHistoryTableProps> = ({
             </section>
 
             {shouldShowNoRecords() && (
-                <div className="bg-background mb-10 flex w-full flex-col items-center justify-center rounded-lg px-4 py-8">
+                <div className="bg-background mb-10 flex w-full flex-col items-start justify-center rounded-lg px-4 py-8">
                     <RecordsNotFound />
-                    <Paragraph className="text-dark mt-4 text-center">
+                    <Paragraph className="text-dark mt-4 text-left">
                         {t('vote.noStakeAddressFound')}
                     </Paragraph>
                 </div>
@@ -305,7 +305,7 @@ const VoterHistoryTable: React.FC<VoterHistoryTableProps> = ({
 
             {(!shouldShowNoRecords() || isLoading) && (
                 <div className="container mb-4">
-                    <div className="bg-background border-dark-light w-full overflow-hidden rounded-lg border shadow-sm">
+                    <div className="bg-background border-gray-100 w-full overflow-hidden rounded-lg border shadow-sm">
                         <div className="overflow-x-auto">
                             <table className="w-max min-w-full">
                                 <thead className="bg-background-lighter whitespace-nowrap">
@@ -325,7 +325,7 @@ const VoterHistoryTable: React.FC<VoterHistoryTableProps> = ({
                                         <th className="border-dark-light text-gray-persist border-r border-b px-4 py-3 text-left font-medium">
                                             {t('vote.table.timestamp')}
                                         </th>
-                                        <th className="border-dark-light text-gray-persist border-r border-b px-4 py-3 text-center font-medium">
+                                        <th className="border-dark-light text-gray-persist border-r border-b px-4 py-3 text-left font-medium">
                                             {t('vote.table.choice')}
                                         </th>
                                         <th className="border-dark-light text-gray-persist border-r border-b px-4 py-3 text-left font-medium">
@@ -432,7 +432,7 @@ const VoterHistoryTable: React.FC<VoterHistoryTableProps> = ({
                             </span> */}
                                                         </div>
                                                     </td>
-                                                    <td className="border-dark-light text-darker border-r border-b px-4 py-4 text-center">
+                                                    <td className="border-dark-light text-darker border-r border-b px-4 py-4 text-left">
                                                         {typeof safelyGetNestedValue(
                                                             history,
                                                             'choice',
@@ -447,7 +447,7 @@ const VoterHistoryTable: React.FC<VoterHistoryTableProps> = ({
                                                               )}
                                                     </td>
                                                     <td className="border-dark-light text-content border-r border-b px-4 py-4">
-                                                        <div className="flex items-center">
+                                                        <div className="flex items-start">
                                                             <span>
                                                                 {formatVotingPower(
                                                                     history?.voting_power,

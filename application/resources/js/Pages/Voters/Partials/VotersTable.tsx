@@ -125,7 +125,7 @@ const VotersTable: React.FC<VotersTableProps> = ({
             hoveredCell.col === col;
 
         return (
-            <div className="relative flex w-full items-center justify-between">
+            <div className="relative flex w-full items-start justify-between">
                 <Link
                     href={useLocalizedRoute('jormungandr.wallets.show', {
                         stakeKey: voter?.stake_pub ?? '',
@@ -167,9 +167,9 @@ const VotersTable: React.FC<VotersTableProps> = ({
     return (
         <>
             {shouldShowNoRecords() && (
-                <div className="bg-background mb-10 flex w-full flex-col items-center justify-center rounded-lg px-4 py-8">
+                <div className="bg-background mb-10 flex w-full flex-col items-start justify-center rounded-lg px-4 py-8">
                     <RecordsNotFound />
-                    <Paragraph className="text-dark mt-4 text-center">
+                    <Paragraph className="text-dark mt-4 text-start">
                         {t('voter.noVotersFound')}
                     </Paragraph>
                 </div>
@@ -202,7 +202,7 @@ const VotersTable: React.FC<VotersTableProps> = ({
                                             {renderCellWithLink(voter, voter.stake_pub ?? null, 'stake_pub', index)}
                                         </TableCell>
                                         <TableCell>
-                                            <div className="flex items-center">
+                                            <div className="flex items-start">
                                                 <span>{formatVotingPower(voter.voting_power)}</span>
                                             </div>
                                         </TableCell>

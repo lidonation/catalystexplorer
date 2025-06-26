@@ -52,17 +52,33 @@ export const CardanoTransactionTable: React.FC<
     };
 
     const columns: ColumnConfig<TransactionData>[] = [
+      {
+        key: 'type',
+            header: t('transactions.table.type'),
+            render: (tx) => (
+              <div className="bg-background-lighter flex items-start rounded px-2 py-1">
+                            <RegisterTwo
+                                width={12}
+                                height={12}
+                                className="text-gray-persist mr-1"
+                            />
+                            <Paragraph className="text-gray-persist text-xs font-bold">
+                                {t('transactions.table.voterRegistration')}
+                            </Paragraph>
+                        </div>
+            )
+      },
         {
             key: 'hash',
             header: t('transactions.table.hash'),
             render: (tx) => (
-                <div className="flex flex-col items-center space-y-1">
+                <div className="flex flex-col items-start space-y-1">
                     <CopyableCell
                         displayText={formatAddress(tx.tx_hash)}
                         fullText={tx?.tx_hash}
                         title={t('transactions.table.copyTxHash')}
                     />
-                    {voterRegistrationTypes.includes(
+                    {/* {voterRegistrationTypes.includes(
                         tx.json_metadata?.txType,
                     ) ? (
                         <div className="bg-background-lighter flex items-center rounded px-2 py-1">
@@ -79,7 +95,7 @@ export const CardanoTransactionTable: React.FC<
                         <Paragraph size="sm">
                             {tx.json_metadata?.txType}
                         </Paragraph>
-                    )}
+                    )} */}
                 </div>
             ),
         },
@@ -88,11 +104,13 @@ export const CardanoTransactionTable: React.FC<
             header: t('transactions.table.stakeAddress'),
             render: (tx) => {
                 return (
+                  <div className="flex justify-center text-left">
                     <CopyableCell
                         displayText={formatAddress(tx?.stake_key ?? '')}
                         fullText={tx?.stake_key ?? ''}
                         title={t('transactions.table.copyStakeAddress')}
                     />
+                    </div>
                 );
             },
         },
@@ -100,7 +118,7 @@ export const CardanoTransactionTable: React.FC<
             key: 'epoch',
             header: t('transactions.table.epoch'),
             render: (tx) => (
-                <Paragraph size="sm" className="text-center">
+                <Paragraph size="sm" className="text-start">
                     {tx.epoch || '-'}
                 </Paragraph>
             ),
@@ -109,18 +127,20 @@ export const CardanoTransactionTable: React.FC<
             key: 'block',
             header: t('transactions.table.block'),
             render: (tx) => (
+              <div className="flex justify-center text-left">c
                 <CopyableCell
                     displayText={formatAddress(tx.block)}
                     fullText={tx.block}
                     title={t('transactions.table.copyBlockHash')}
                 />
+                </div>
             ),
         },
         {
             key: 'Total Outputs',
             header: t('transactions.table.totalOutputs'),
             render: (tx) => (
-                <Paragraph size="sm" className="text-center">
+                <Paragraph size="sm" className="text-start">
                     {tx?.total_output ?? 0}
                 </Paragraph>
             ),
@@ -129,7 +149,7 @@ export const CardanoTransactionTable: React.FC<
             key: 'Weights',
             header: t('transactions.table.weights'),
             render: (tx) => (
-                <Paragraph size="sm" className="text-center">
+                <Paragraph size="sm" className="text-start">
                     {tx.json_metadata?.voter_delegations?.[0]?.weight}
                 </Paragraph>
             ),
