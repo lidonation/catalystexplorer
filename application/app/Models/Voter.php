@@ -137,7 +137,7 @@ class Voter extends Model
             'voting_key' => $this->voting_key,
             'cat_id' => $this->cat_id,
             'votes_count' => $this->voting_histories->count(),
-            'voting_power' => $this->latest_voting_power,
+            'voting_power' => $this->latest_voting_power?->voting_power,
             'proposals_voted_on' => $this->voting_histories
                 ->pluck('proposals')
                 ->count(),
