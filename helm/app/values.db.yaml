@@ -1413,7 +1413,7 @@ pgpool:
   ## @param pgpool.childMaxConnections The maximum number of client connections in each child process (PGPOOL_CHILD_MAX_CONNECTIONS)
   ## ref: https://github.com/bitnami/containers/tree/main/bitnami/pgpool#configuration
   ##
-  childMaxConnections: "100"
+  childMaxConnections: "150"
   ## @param pgpool.childLifeTime The time in seconds to terminate a Pgpool-II child process if it remains idle (PGPOOL_CHILD_LIFE_TIME)
   ## ref: https://github.com/bitnami/containers/tree/main/bitnami/pgpool#configuration
   ##
