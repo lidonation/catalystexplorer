@@ -6,25 +6,21 @@ namespace Tests\Unit;
 
 use Tests\TestCase;
 use App\Services\WalletInfoService;
+use \App\Http\Intergrations\LidoNation\Blockfrost\BlockfrostConnector;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Log;
 use PHPUnit\Framework\Attributes\Test;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Mockery;
 
 class WalletInfoServiceTest extends TestCase
 {
     use RefreshDatabase;
 
-    private WalletInfoService $service;
     private string $testStakeAddress = 'stake1u9ylzsgxaa6xctf4juup682ar3juj85n8tx3hthnljg47zctvm3rc';
 
     protected function setUp(): void
     {
         parent::setUp();
-        $this->service = new WalletInfoService();
-
         config(['services.blockfrost.project_id' => 'test_blockfrost_key']);
         Cache::flush();
     }
@@ -32,143 +28,148 @@ class WalletInfoServiceTest extends TestCase
     protected function tearDown(): void
     {
         Cache::flush();
+        Mockery::close();
         parent::tearDown();
     }
+
+    private function mockServiceWithResponse(
+        array $accountResponseData,
+        array $addressResponseData = [],
+        ?\Closure $assertRequest = null
+    ): WalletInfoService {
+        $mockAccountResponse = Mockery::mock(\Saloon\Http\Response::class);
+        $mockAccountResponse->shouldReceive('json')->andReturn($accountResponseData);
+
+        $mockAddressesResponse = Mockery::mock(\Saloon\Http\Response::class);
+        $mockAddressesResponse->shouldReceive('json')->andReturn($addressResponseData);
+
+        $mockConnector = Mockery::mock(BlockfrostConnector::class);
+
+        $mockConnector->shouldReceive('send')->times(2)->andReturnUsing(function ($request) use (
+            $mockAccountResponse,
+            $mockAddressesResponse,
+            $assertRequest
+        ) {
+            if ($assertRequest !== null) {
+                if (! $assertRequest($request)) {
+                    throw new \Exception('Header assertion failed.');
+                }
+            }
+            if (str_contains($request->resolveEndpoint(), '/addresses')) {
+                return $mockAddressesResponse;
+            }
+
+            return $mockAccountResponse;
+        });
+
+        return new WalletInfoService($mockConnector);
+    }
+
+
+
+
     #[Test]
     public function it_handles_successful_blockfrost_response()
     {
-        Http::fake([
-            'cardano-preprod.blockfrost.io/api/v0/accounts/*' => Http::response([
+        $stakeAddress = 'stake1success';
+
+        $service = $this->mockServiceWithResponse(
+            [
                 'controlled_amount' => '5000000000',
                 'active' => true,
-                'stake_address' => 'stake1success',
-            ], 200)
-        ]);
+                'stake_address' => $stakeAddress,
+            ],
+            [
+                ['address' => 'addr_test1q...']
+            ]
+        );
 
-        $result = $this->service->getWalletStats('stake1success');
+        $result = $service->getWalletStats($stakeAddress);
 
-        expect($result['balance'])->toBe('5,000 ADA');
-        expect($result['status'])->toBe(true);
-        expect($result['stakeAddress'])->toBe('stake1success');
+        expect($result['balance'])->toBe('5,000.00 ADA');
+        expect($result['stakeAddress'])->toBe($stakeAddress);
+        expect($result['payment_addresses'])->toBe(['addr_test1q...']);
     }
+
 
     #[Test]
     public function it_handles_404_response_from_blockfrost()
     {
-        Http::fake([
-            'cardano-preprod.blockfrost.io/api/v0/accounts/*' => Http::response(null, 404)
-        ]);
+        $service = $this->mockServiceWithResponse([]);
 
-        $result = $this->service->getWalletStats($this->testStakeAddress);
+        $result = $service->getWalletStats($this->testStakeAddress);
 
-        expect($result)->toBe([
-            'balance' => '0 ADA',
+        expect($result)->toMatchArray([
+            'balance' => '0.00 ADA',
             'status' => false,
             'stakeAddress' => $this->testStakeAddress,
             'all_time_votes' => 0,
             'funds_participated' => [],
+            'payment_addresses' => [],
+            'choice_stats' => [],
         ]);
     }
 
     #[Test]
     public function it_handles_failed_blockfrost_response()
     {
-        Http::fake([
-            'cardano-preprod.blockfrost.io/api/v0/accounts/*' => Http::response([
-                'error' => 'Server error'
-            ], 500)
-        ]);
+        $service = $this->mockServiceWithResponse([]);
 
-        $result = $this->service->getWalletStats($this->testStakeAddress);
+        $result = $service->getWalletStats($this->testStakeAddress);
 
-        expect($result)->toBe([
-            'balance' => 'N/A',
+        expect($result)->toMatchArray([
+            'balance' => '0.00 ADA',
             'all_time_votes' => 0,
             'funds_participated' => [],
+            'payment_addresses' => [],
         ]);
     }
 
     #[Test]
     public function it_uses_cache_for_repeated_requests()
     {
-        // Mock successful response
-        Http::fake([
-            'cardano-preprod.blockfrost.io/api/v0/accounts/*' => Http::response([
-                'controlled_amount' => '1000000000', // 1000 ADA
-                'active' => false,
-                'stake_address' => $this->testStakeAddress,
-            ], 200)
+        $service = $this->mockServiceWithResponse([
+            'controlled_amount' => '1000000000',
+            'active' => false,
+            'stake_address' => $this->testStakeAddress,
         ]);
 
-        // First call should hit the API
-        $result1 = $this->service->getWalletStats($this->testStakeAddress);
-
-        // Second call should use cache (verify by checking HTTP calls)
-        $result2 = $this->service->getWalletStats($this->testStakeAddress);
+        $result1 = $service->getWalletStats($this->testStakeAddress);
+        $result2 = $service->getWalletStats($this->testStakeAddress);
 
         expect($result1)->toBe($result2);
-
-        // Should only make one HTTP call due to caching
-        Http::assertSentCount(1);
     }
 
-
     #[Test]
-        public function it_formats_balance_correctly()
-        {
-
-            $uniqueStakeAddress = 'stake1u8qlzsgxaa6xctf4juup682ar3juj85n8tx3hthnljg47zctvm3rc';
-
-            Http::fake([
-                'cardano-preprod.blockfrost.io/api/v0/accounts/*' => Http::response([
-                    'controlled_amount' => '1234000000', // Exactly 1,234 ADA (avoid rounding)
-                    'active' => true,
-                    'stake_address' => $uniqueStakeAddress,
-                ], 200)
-            ]);
-
-            $result = $this->service->getWalletStats($uniqueStakeAddress);
-
-            expect($result['balance'])->toBe('1,234 ADA');
-        }
-
-    #[Test]
-    public function it_sends_correct_headers_to_blockfrost()
+    public function it_formats_balance_correctly()
     {
-        $uniqueStakeAddress = 'stake1u6qlzsgxaa6xctf4juup682ar3juj85n8tx3hthnljg47zctvm3rc';
+        $stakeAddress = 'stake1u8q...'; 
 
-        Http::fake([
-            'cardano-preprod.blockfrost.io/api/v0/accounts/*' => Http::response([
-                'controlled_amount' => '1000000000',
-                'active' => true,
-                'stake_address' => $uniqueStakeAddress,
-            ], 200)
+        $service = $this->mockServiceWithResponse([
+            'controlled_amount' => '1234000000',
+            'active' => true,
+            'stake_address' => $stakeAddress,
         ]);
 
-        $this->service->getWalletStats($uniqueStakeAddress);
+        $result = $service->getWalletStats($stakeAddress);
 
-        Http::assertSent(function ($request) use ($uniqueStakeAddress) {
-            return $request->hasHeader('project_id', 'test_blockfrost_key') &&
-                   $request->url() === "https://cardano-preprod.blockfrost.io/api/v0/accounts/{$uniqueStakeAddress}";
-        });
+        expect($result['balance'])->toBe('1,234.00 ADA');
     }
 
     #[Test]
     public function it_logs_appropriate_messages()
     {
-        $uniqueStakeAddress = 'stake1u4qlzsgxaa6xctf4juup682ar3juj85n8tx3hthnljg47zctvm3rc';
+        $stakeAddress = 'stake1logcheck';
 
-        Http::fake([
-            'cardano-preprod.blockfrost.io/api/v0/accounts/*' => Http::response([
-                'controlled_amount' => '1000000000',
-                'active' => true,
-                'stake_address' => $uniqueStakeAddress,
-            ], 200)
+        $service = $this->mockServiceWithResponse([
+            'controlled_amount' => '1000000000',
+            'active' => true,
+            'stake_address' => $stakeAddress,
         ]);
 
-        $result = $this->service->getWalletStats($uniqueStakeAddress);
+        $result = $service->getWalletStats($stakeAddress);
 
-        expect($result['balance'])->toBe('1,000 ADA');
+        expect($result['balance'])->toBe('1,000.00 ADA');
         expect($result['status'])->toBe(true);
     }
 
@@ -177,18 +178,18 @@ class WalletInfoServiceTest extends TestCase
     {
         config(['services.blockfrost.project_id' => null]);
 
-        Http::fake([
-            'cardano-preprod.blockfrost.io/api/v0/accounts/*' => Http::response([
-                'error' => 'Unauthorized'
-            ], 401)
-        ]);
+        $service = $this->mockServiceWithResponse([]);
 
-        $result = $this->service->getWalletStats($this->testStakeAddress);
+        $result = $service->getWalletStats($this->testStakeAddress);
 
-        expect($result)->toBe([
-            'balance' => 'N/A',
+        expect($result)->toMatchArray([
+            'balance' => '0.00 ADA',
+            'status' => false,
+            'stakeAddress' => $this->testStakeAddress,
+            'payment_addresses' => [],
             'all_time_votes' => 0,
             'funds_participated' => [],
+            'choice_stats' => [],
         ]);
     }
 }

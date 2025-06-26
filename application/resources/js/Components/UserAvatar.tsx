@@ -41,12 +41,19 @@ export default function UserAvatar({
         };
     }, [imageUrl, fallbackSvg]);
 
-    return (
-        <img
-            src={avatarSrc}
-            alt={name + ' avatar'}
-            className={'rounded-full ' + size}
-            aria-label="User avatar"
-        />
+  return (
+        <div className="relative inline-block group">
+            <img
+                src={avatarSrc}
+                alt={name + ' avatar'}
+                className={'rounded-full ' + size}
+                aria-label="User avatar"
+            />
+            <div className="absolute bottom-full left-1/2 z-50 mb-2 -translate-x-1/2 transform opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none">
+                <div className="bg-white text-black text-xs px-2 py-1 rounded border-2 border-black shadow-md whitespace-nowrap">
+                    {name}
+                </div>
+            </div>
+        </div>
     );
 }
