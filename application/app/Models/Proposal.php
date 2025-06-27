@@ -117,6 +117,7 @@ class Proposal extends Model
             'completed_amount_paid_ADA',
             'campaign_id',
             'created_at',
+            'created_at_timestamp',
         ];
     }
 
@@ -505,6 +506,7 @@ class Proposal extends Model
             'project_length' => intval($this->meta_info->project_length) ?? 0,
             'vote_casts' => intval($this->meta_info->vote_casts) ?? 0,
             'connected_items' => $this->connected_items,
+            'created_at_timestamp' => $this->created_at ? Carbon::parse($this->created_at)->timestamp : null,
         ]);
     }
 

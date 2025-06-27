@@ -3,7 +3,9 @@ import PrimaryButton from '@/Components/atoms/PrimaryButton';
 import Selector from '@/Components/atoms/Selector';
 import { useFilterContext } from '@/Context/FiltersContext';
 import { ParamsEnum } from '@/enums/proposal-search-params';
-import { useEffect, useState } from 'react';
+import { userSettingEnums } from '@/enums/user-setting-enums';
+import { useUserSetting } from '@/Hooks/useUserSettings';
+import { useEffect, useMemo, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 
 interface Step3Props {
@@ -20,33 +22,74 @@ export default function Step3({
     onExploreCharts,
 }: Step3Props) {
     const { t } = useTranslation();
-    const { setFilters, getFilter } = useFilterContext();
+    const { setFilters } = useFilterContext();
+
+    const {
+        value: selectedChartTypes,
+        setValue: setSelectedChartTypes,
+    } = useUserSetting<string[]>(userSettingEnums.CHART_TYPES, []);
+
     
-    const hasSelections = () => {
-        const chartOptions = getFilter(ParamsEnum.CHART_OPTIONS) || [];
-        return Array.isArray(chartOptions) ? chartOptions.length > 0 : !!chartOptions;
-    };
+    const isChartsSelected = useMemo(() => {
+        return (selectedChartTypes?.length ?? 0) > 0;
+    }, [selectedChartTypes]);
 
-    const isChartsSelected = hasSelections();
-
+   
     useEffect(() => {
         onCompletionChange?.(isChartsSelected);
     }, [isChartsSelected, onCompletionChange]);
 
-    const handleComplete = () => {
-        onCompletionChange(true);
-        onNext();
-        onExploreCharts(); 
-    };
+    
+    useEffect(() => {
+        if (selectedChartTypes && selectedChartTypes.length > 0) {
+            setFilters({
+                label: t('charts.chartOptions'),
+                value: selectedChartTypes,
+                param: ParamsEnum.CHART_OPTIONS,
+            });
+        }
+    }, [selectedChartTypes, t, setFilters]);
 
-    const chartOptions = [
+    
+    const chartOptions = useMemo(() => [
         { label: t('charts.barChart'), value: 'barChart' },
         { label: t('charts.pieChart'), value: 'pieChart' },
         { label: t('charts.lineChart'), value: 'lineChart' },
         { label: t('charts.heatMap'), value: 'heatMap' },
         { label: t('charts.scatterPlot'), value: 'scatterPlots' },
         { label: t('charts.stackedBarChart'), value: 'stackedBarCharts' },
-    ];
+    ], [t]);
+
+    
+    const selectedItems = useMemo(() => {
+        return selectedChartTypes ?? [];
+    }, [selectedChartTypes]);
+
+  
+    const handleSelectorChange = useCallback((value: string | string[]) => {
+        const selected = Array.isArray(value) ? value : [value];
+        
+       
+        setSelectedChartTypes(selected);
+    
+        if (selected.length > 0) {
+            setFilters({
+                label: t('charts.chartOptions'),
+                value: selected,
+                param: ParamsEnum.CHART_OPTIONS,
+            });
+        }
+    }, [setSelectedChartTypes, setFilters, t]);
+
+    const handleComplete = useCallback(() => {
+        onCompletionChange(true);
+        onNext();
+        onExploreCharts();
+    }, [onCompletionChange, onNext, onExploreCharts]);
+
+    const buttonClassName = useMemo(() => {
+        return `mt-4 w-full ${!isChartsSelected ? 'cursor-not-allowed opacity-50' : ''}`;
+    }, [isChartsSelected]);
 
     return (
         <div className={disabled ? 'pointer-events-none opacity-50' : ''}>
@@ -57,18 +100,12 @@ export default function Step3({
                 <Selector
                     isMultiselect={true}
                     options={chartOptions}
-                    setSelectedItems={(value) =>
-                        setFilters({
-                            label: t('charts.chartOptions'),
-                            value,
-                            param: ParamsEnum.CHART_OPTIONS,
-                        })
-                    }
-                    selectedItems={getFilter(ParamsEnum.CHART_OPTIONS)}
+                    selectedItems={selectedItems}
+                    setSelectedItems={handleSelectorChange}
                 />
             </div>
             <PrimaryButton
-                className={`mt-4 w-full ${!isChartsSelected ? 'cursor-not-allowed opacity-50' : ''}`}
+                className={buttonClassName}
                 disabled={!isChartsSelected}
                 onClick={handleComplete}
             >
