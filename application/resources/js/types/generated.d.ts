@@ -574,6 +574,9 @@ language: string;
 theme: string;
 viewChartBy: string;
 proposalComparison: Array<any>;
+proposalType: Array<any>;
+trendChart: string;
+chartTypes: Array<any>;
 };
 export type VoterData = {
 id: number;

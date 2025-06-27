@@ -1,9 +1,10 @@
 import Paragraph from '@/Components/atoms/Paragraph';
-import PrimaryButton from '@/Components/atoms/PrimaryButton';
 import Selector from '@/Components/atoms/Selector';
 import { useFilterContext } from '@/Context/FiltersContext';
 import { ParamsEnum } from '@/enums/proposal-search-params';
-import { useEffect } from 'react';
+import { userSettingEnums } from '@/enums/user-setting-enums';
+import { useUserSetting } from '@/Hooks/useUserSettings';
+import { useEffect, useMemo, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 
 interface Step2Props {
@@ -16,18 +17,53 @@ export default function Step2({
     onCompletionChange,
 }: Step2Props) {
     const { t } = useTranslation();
-    const { setFilters, getFilter } = useFilterContext();
-    
-    const hasSelections = () => {
-        const trendChart = getFilter(ParamsEnum.TREND_CHART) || [];
-        return Array.isArray(trendChart) ? trendChart.length > 0 : !!trendChart;
-    };
+    const { setFilters } = useFilterContext();
 
-    const isChartSelected = hasSelections();
+    const {
+        value: selectedChart,
+        setValue: setSelectedChart,
+    } = useUserSetting<string>(userSettingEnums.TREND_CHART, '');
+
+    
+    const isChartSelected = useMemo(() => {
+        return !!selectedChart;
+    }, [selectedChart]);
 
     useEffect(() => {
         onCompletionChange?.(isChartSelected);
     }, [isChartSelected, onCompletionChange]);
+
+    useEffect(() => {
+        if (selectedChart) {
+            setFilters({
+                label: t('charts.trendChart'),
+                value: selectedChart,
+                param: ParamsEnum.TREND_CHART,
+            });
+        }
+    }, [selectedChart, t, setFilters]);
+
+    const chartOptions = useMemo(() => [
+        { label: 'Trend Chart', value: 'trendChart' }
+    ], []);
+
+    const selectedItems = useMemo(() => {
+        return selectedChart ? [selectedChart] : [];
+    }, [selectedChart]);
+
+    const handleSelectorChange = useCallback((value: string | string[]) => {
+        const chart = Array.isArray(value) ? value[0] : value;
+        
+        setSelectedChart(chart);
+        
+        if (chart) {
+            setFilters({
+                label: t('charts.trendChart'),
+                value: chart,
+                param: ParamsEnum.TREND_CHART,
+            });
+        }
+    }, [setSelectedChart, setFilters, t]);
 
     return (
         <div className={disabled ? 'pointer-events-none opacity-50' : ''}>
@@ -37,15 +73,9 @@ export default function Step2({
             <div>
                 <Selector
                     isMultiselect={false}
-                    options={[{ label: 'Trend Chart', value: 'trendChart' }]}
-                    setSelectedItems={(value) =>
-                        setFilters({
-                            label: t('charts.trendChart'),
-                            value,
-                            param: ParamsEnum.TREND_CHART,
-                        })
-                    }
-                    selectedItems={getFilter(ParamsEnum.TREND_CHART)}
+                    options={chartOptions}
+                    selectedItems={selectedItems}
+                    setSelectedItems={handleSelectorChange}
                 />
             </div>
         </div>
