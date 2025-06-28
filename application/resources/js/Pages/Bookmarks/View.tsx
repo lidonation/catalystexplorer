@@ -70,27 +70,28 @@ const BookmarkContent = (props: BookmarkCollectionListProps) => {
     const [searchQuery, setSearchQuery] = useState(initialSearchQuery);
 
     const handleSearch = (search: string) => {
-        setFilters({
-            param: ParamsEnum.QUERY,
-            value: search,
-            label: 'Search',
-        });
         setSearchQuery(search);
-        const url = new URL(window.location.href);
-
+        
+        const currentUrl = new URL(window.location.href);
+        const newParams = new URLSearchParams(currentUrl.search);
+        
         if (search.trim() === '') {
-            url.searchParams.delete(ParamsEnum.QUERY);
-            router.get(window.location.pathname, {}, { replace: true });
+            newParams.delete(ParamsEnum.QUERY);
         } else {
-            setFilters({
-                param: ParamsEnum.QUERY,
-                value: search,
-                label: 'Search',
-            });
-            url.searchParams.set(ParamsEnum.QUERY, search);
+            newParams.set(ParamsEnum.QUERY, search);
         }
-
-        window.history.replaceState(null, '', url.toString());
+        
+        newParams.delete('p');
+        
+        const baseUrl = currentUrl.pathname;
+        const queryString = newParams.toString();
+        const fullUrl = queryString ? `${baseUrl}?${queryString}` : baseUrl;
+        
+        router.visit(fullUrl, {
+            preserveState: false,
+            preserveScroll: false,
+            only: [type, 'bookmarkCollection'],
+        });
     };
 
     const setActiveTab = (val: typeof type) => {
@@ -98,7 +99,17 @@ const BookmarkContent = (props: BookmarkCollectionListProps) => {
             bookmarkCollection: bookmarkCollection.hash,
             type: val,
         });
-        router.visit(route);
+        
+        const currentUrl = new URL(window.location.href);
+        const searchParam = currentUrl.searchParams.get(ParamsEnum.QUERY);
+        
+        if (searchParam) {
+            const newUrl = new URL(route, window.location.origin);
+            newUrl.searchParams.set(ParamsEnum.QUERY, searchParam);
+            router.visit(newUrl.toString());
+        } else {
+            router.visit(route);
+        }
     };
     const { auth } = usePage().props;
 
@@ -167,6 +178,8 @@ const BookmarkContent = (props: BookmarkCollectionListProps) => {
                     search={false}
                     activeTab={type}
                     handleTabchange={(e) => setActiveTab(e as typeof type)}
+                    searchQuery={searchQuery}
+                    typesCounts={bookmarkCollection?.types_count}
                 />
                 <SearchBar
                     border={'border-dark-light'}
