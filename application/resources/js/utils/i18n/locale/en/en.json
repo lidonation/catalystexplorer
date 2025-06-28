@@ -458,6 +458,7 @@
        "submittedProposals": "Submitted Proposals",
        "approvedProposals": "Approved Proposals",
        "completedProposals": "Completed Proposals",
+       "unfundedProposals": "Unfunded Proposals",
        "next": "Next",
        "trendChart": "trendChart",
        "lineChart": "Line Chart",

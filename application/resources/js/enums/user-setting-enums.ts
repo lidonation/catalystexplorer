@@ -3,4 +3,7 @@ export enum userSettingEnums {
     THEME = 'theme',
     VIEW_CHART_BY = 'viewChartBy',
     PROPOSAL_COMPARISON = 'proposalComparison',
+    PROPOSAL_TYPE = 'proposalType',
+    TREND_CHART = 'trendChart',
+    CHART_TYPES = 'chartTypes',
 }

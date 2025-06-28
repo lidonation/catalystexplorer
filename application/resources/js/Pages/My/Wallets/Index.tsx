@@ -122,7 +122,6 @@ const WalletsComponent: React.FC<WalletsPageProps> = ({ connectedWallets, error 
                 const MAX_VISIBLE_ADDRESSES = 2;
                 const viewUrl = useLocalizedRoute('my.wallets.show', {
                   stakeKey: wallet.stakeAddress,
-                  catId: wallet.catId,
                 });
                 const hasMoreAddresses = paymentAddresses.length > MAX_VISIBLE_ADDRESSES;
                 const visibleAddresses = isExpanded
@@ -145,7 +144,7 @@ const WalletsComponent: React.FC<WalletsPageProps> = ({ connectedWallets, error 
                       <Button
                         onClick={() => handleDeleteWallet(wallet)}
                         disabled={isDeleting}
-                        className={`text-white text-sm font-medium px-5 py-2 rounded-md ${
+                        className={`lg:text-md mb-4 ml-auto px-4 sm:px-2 py-2 text-sm text-nowrap text-white font-medium  py-2 rounded-md ${
                             isDeleting
                               ? 'bg-gray-400 cursor-not-allowed'
                               : 'bg-red-500 hover:bg-red-600'

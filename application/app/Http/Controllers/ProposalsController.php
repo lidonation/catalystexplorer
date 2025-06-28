@@ -17,6 +17,7 @@ use App\Models\Fund;
 use App\Models\IdeascaleProfile;
 use App\Models\Proposal;
 use App\Repositories\ProposalRepository;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Auth;
@@ -26,6 +27,7 @@ use Illuminate\Support\Stringable;
 use Inertia\Inertia;
 use Inertia\Response;
 use Laravel\Scout\Builder;
+use Symfony\Component\HttpFoundation\Request as SymfonyRequest;
 
 class ProposalsController extends Controller
 {
@@ -232,7 +234,22 @@ class ProposalsController extends Controller
 
     public function charts(Request $request)
     {
-        $this->getProps($request);
+        $referer = $request->headers->get('referer');
+        $refererParams = [];
+
+        if ($referer) {
+            $parsedUrl = parse_url($referer);
+            if (isset($parsedUrl['query'])) {
+                $refererParams = SymfonyRequest::create('?'.$parsedUrl['query'])->query->all();
+            }
+        }
+
+        $allParams = array_merge($refererParams, $request->all());
+
+        $mergedRequest = $request->duplicate($allParams);
+
+        $this->getProps($mergedRequest);
+
         $chartDataByFund = $this->getDetailedCountsByFund();
         $chartDataByYear = $this->getDetailedCountsByYear();
 
@@ -244,7 +261,7 @@ class ProposalsController extends Controller
                 'chartDataByFund' => $chartDataByFund ?? [],
                 'chartDataByYear' => $chartDataByYear ?? [],
             ]
-        )->baseRoute('proposals.index');
+        )->baseRoute('proposals.index', $this->queryParams);
     }
 
     protected function getProps(Request $request): void
@@ -655,27 +672,27 @@ class ProposalsController extends Controller
 
     public function getDetailedCountsByFund()
     {
-        $limit = 0;
-
-        $args['limit'] = $limit;
+        $args = [
+            'limit' => 0,
+        ];
 
         $proposals = app(ProposalRepository::class);
 
-        $builder = $proposals->search('', $args);
+        $searchQuery = $this->queryParams[ProposalSearchParams::QUERY()->value] ?? '';
+
+        $builder = $proposals->search($searchQuery, $args);
         $response = new Fluent($builder->raw());
 
         $funds = $response->facetDistribution['fund.title'] ?? [];
         $chartData = [];
 
         foreach ($funds as $fundTitle => $totalCount) {
+            $fundedCount = $this->getFundedCountByFund($fundTitle);
+            $completedCount = $this->getCompletedCountByFund($fundTitle);
 
             if (empty($this->queryParams[ProposalSearchParams::SUBMITTED_PROPOSALS()->value])) {
                 $totalCount = 0;
             }
-
-            $fundedCount = $this->getFundedCountByFund($fundTitle);
-
-            $completedCount = $this->getCompletedCountByFund($fundTitle);
 
             $chartData[] = [
                 'fund' => $fundTitle,
@@ -685,9 +702,8 @@ class ProposalsController extends Controller
             ];
         }
 
-        // sorting chart data
+        // Sort chart data by fund number
         usort($chartData, function ($a, $b) {
-
             preg_match('/(\d+)/', $a['fund'], $matchesA);
             preg_match('/(\d+)/', $b['fund'], $matchesB);
 
@@ -702,12 +718,15 @@ class ProposalsController extends Controller
 
     public function getDetailedCountsByYear()
     {
-        $limit = 0;
-        $args['limit'] = $limit;
+        $args = [
+            'limit' => 0,
+        ];
 
         $proposals = app(ProposalRepository::class);
 
-        $builder = $proposals->search('', $args);
+        $searchQuery = $this->queryParams[ProposalSearchParams::QUERY()->value] ?? '';
+
+        $builder = $proposals->search($searchQuery, $args);
         $response = new Fluent($builder->raw());
 
         $createdDates = $response->facetDistribution['created_at'] ?? [];
@@ -723,103 +742,146 @@ class ProposalsController extends Controller
             $yearCounts[$year] += $count;
         }
 
+        ksort($yearCounts);
+
         $chartData = [];
 
         foreach ($yearCounts as $year => $totalCount) {
-            if (empty($this->queryParams[ProposalSearchParams::SUBMITTED_PROPOSALS()->value])) {
-                $displayCount = 0;
-            } else {
-                $displayCount = $totalCount;
-            }
-
             $fundedCount = $this->getFundedCountByYear($year);
             $completedCount = $this->getCompletedCountByYear($year);
 
+            if (empty($this->queryParams[ProposalSearchParams::SUBMITTED_PROPOSALS()->value])) {
+                $totalCount = 0;
+            }
+
             $chartData[] = [
                 'year' => $year,
-                'totalProposals' => $displayCount ?? 0,
+                'totalProposals' => $totalCount ?? 0,
                 'fundedProposals' => $fundedCount ?? 0,
                 'completedProposals' => $completedCount ?? 0,
             ];
         }
-
-        // Sort chart data by year
-        usort($chartData, function ($a, $b) {
-            return (int) $a['year'] <=> (int) $b['year'];
-        });
 
         return $chartData;
     }
 
     private function getFundedCountByFund($fundTitle): int
     {
-        $fundedCount = 0;
-
-        $proposals = app(ProposalRepository::class);
         $fundedFilters = array_merge([
             'fund.title = "'.$fundTitle.'"',
             '(funding_status = "funded" OR funding_status = "leftover")',
         ]);
-        $fundedArgs = ['filter' => $fundedFilters, 'limit' => 0];
-        $fundedResponse = new Fluent($proposals->search('', $fundedArgs)->raw());
-        $fundedCount = $fundedResponse->estimatedTotalHits ?? 0;
 
-        if (! empty($this->queryParams[ProposalSearchParams::FUNDING_STATUS()->value])) {
-            return $fundedCount;
+        $proposals = app(ProposalRepository::class);
+        $args = [
+            'filter' => $fundedFilters,
+            'limit' => 0,
+        ];
+
+        $response = new Fluent($proposals->search(
+            $this->queryParams[ProposalSearchParams::QUERY()->value] ?? '',
+            $args
+        )->raw());
+
+        $fundedCount = $response->estimatedTotalHits ?? 0;
+
+        if (empty($this->queryParams[ProposalSearchParams::FUNDING_STATUS()->value])) {
+            return 0;
         } else {
+            return $fundedCount;
+        }
+    }
+
+    private function getCompletedCountByFund($fundTitle): int
+    {
+        $completedFilters = array_merge([
+            'fund.title = "'.$fundTitle.'"',
+            'status = "complete"',
+        ]);
+
+        $proposals = app(ProposalRepository::class);
+        $args = [
+            'filter' => $completedFilters,
+            'limit' => 0,
+        ];
+
+        $response = new Fluent($proposals->search(
+            $this->queryParams[ProposalSearchParams::QUERY()->value] ?? '',
+            $args
+        )->raw());
+
+        $completedCount = $response->estimatedTotalHits ?? 0;
+
+        if (empty($this->queryParams[ProposalSearchParams::PROJECT_STATUS()->value])) {
+            return 0;
+        } else {
+            return $completedCount;
+        }
+    }
+
+    private function getFundedCountByYear(int $year): int
+    {
+
+        $fundedStatusFilter = 'funding_status = "'.ProposalFundingStatus::funded()->value.'"';
+        $leftoverStatusFilter = 'funding_status = "'.ProposalFundingStatus::leftover()->value.'"';
+
+        $fundingStatusFilter = "({$fundedStatusFilter} OR {$leftoverStatusFilter})";
+
+        $startTimestamp = Carbon::create($year, 1, 1)->timestamp;
+        $endTimestamp = Carbon::create($year + 1, 1, 1)->timestamp;
+
+        $yearFilter = "created_at_timestamp >= {$startTimestamp} AND created_at_timestamp < {$endTimestamp}";
+
+        $filters = array_merge([$fundingStatusFilter, $yearFilter]);
+
+        $proposals = app(ProposalRepository::class);
+        $args = [
+            'filter' => $filters,
+            'limit' => 0,
+        ];
+
+        $response = new Fluent($proposals->search(
+            $this->queryParams[ProposalSearchParams::QUERY()->value] ?? '',
+            $args
+        )->raw());
+
+        $fundedCount = $response->estimatedTotalHits ?? 0;
+
+        if (empty($this->queryParams[ProposalSearchParams::FUNDING_STATUS()->value])) {
             return 0;
         }
 
         return $fundedCount;
     }
 
-    private function getCompletedCountByFund($fundTitle): int
+    private function getCompletedCountByYear(int $year): int
     {
-        $completedCount = 0;
+
+        $completedStatusFilter = 'status = "'.ProposalStatus::complete()->value.'"';
+        $startTimestamp = Carbon::create($year, 1, 1)->timestamp;
+        $endTimestamp = Carbon::create($year + 1, 1, 1)->timestamp;
+
+        $yearFilter = "created_at_timestamp >= {$startTimestamp} AND created_at_timestamp < {$endTimestamp}";
+
+        $filters = array_merge([$completedStatusFilter, $yearFilter]);
 
         $proposals = app(ProposalRepository::class);
+        $args = [
+            'filter' => $filters,
+            'limit' => 0,
+        ];
 
-        $completedFilters = array_merge([
-            'fund.title = "'.$fundTitle.'"',
-            'status = "complete"',
-        ]);
-        $completedArgs = ['filter' => $completedFilters, 'limit' => 0];
-        $completedResponse = new Fluent($proposals->search('', $completedArgs)->raw());
-        $completedCount = $completedResponse->estimatedTotalHits ?? 0;
+        $response = new Fluent($proposals->search(
+            $this->queryParams[ProposalSearchParams::QUERY()->value] ?? '',
+            $args
+        )->raw());
 
-        if (! empty($this->queryParams[ProposalSearchParams::PROJECT_STATUS()->value])) {
-            return $completedCount;
-        } else {
+        $completedCount = $response->estimatedTotalHits ?? 0;
+
+        if (empty($this->queryParams[ProposalSearchParams::PROJECT_STATUS()->value])) {
             return 0;
         }
 
         return $completedCount;
-    }
-
-    private function getFundedCountByYear($year): int
-    {
-        $fundedCount = Proposal::whereYear('created_at', $year)
-            ->whereIn('funding_status', [ProposalFundingStatus::funded()->value, ProposalFundingStatus::leftover()->value])
-            ->count();
-
-        if (! empty($this->queryParams[ProposalSearchParams::FUNDING_STATUS()->value])) {
-            return $fundedCount;
-        } else {
-            return 0;
-        }
-    }
-
-    private function getCompletedCountByYear($year): int
-    {
-
-        $completedCount = Proposal::whereYear('created_at', $year)
-            ->where('status', ProposalStatus::complete()->value)
-            ->count();
-
-        if (! empty($this->queryParams[ProposalSearchParams::PROJECT_STATUS()->value])) {
-            return $completedCount;
-        } else {
-            return 0;
-        }
     }
 }

@@ -1,5 +1,8 @@
 import Paragraph from '@/Components/atoms/Paragraph';
+import RadioSelector from '@/Components/atoms/RadioSelector';
 import Selector from '@/Components/atoms/Selector';
+import { userSettingEnums } from '@/enums/user-setting-enums';
+import { useUserSetting } from '@/Hooks/useUserSettings';
 import { currency } from '@/utils/currency';
 import { ResponsiveBar } from '@nivo/bar';
 import React, { useState } from 'react';
@@ -12,6 +15,8 @@ interface FundsBarChartProps {
     fundedProposals: number;
     totalFundsRequested: number;
     totalFundsAllocated: number;
+      viewBy: 'fund' | 'year';
+    onViewByChange: (value: string | null) => void;
 }
 
 const FundsBarChart: React.FC<FundsBarChartProps> = ({
@@ -21,13 +26,15 @@ const FundsBarChart: React.FC<FundsBarChartProps> = ({
     fundedProposals,
     totalFundsRequested,
     totalFundsAllocated,
+    viewBy,
+    onViewByChange,
 }) => {
     const { t } = useTranslation();
 
     const allKeys = [
         {
-            value: t('proposals.totalProposals'),
-            label: t('proposals.totalProposals'),
+            value: t('charts.unfundedProposals'),
+            label: t('charts.unfundedProposals'),
         },
         {
             value: t('funds.fundedProposals'),
@@ -50,7 +57,7 @@ const FundsBarChart: React.FC<FundsBarChartProps> = ({
     const activeKeys = filters.length > 0 ? filters : [];
 
     const colorMap = {
-        [t('proposals.totalProposals')]: '#4fadce',
+        [t('charts.unfundedProposals')]: '#4fadce',
         [t('funds.fundedProposals')]: '#ee8434',
         [t('funds.completedProposals')]: '#16B364',
     };
@@ -60,7 +67,7 @@ const FundsBarChart: React.FC<FundsBarChartProps> = ({
     };
 
     return (
-        <div className="bg-background rounded-md p-4 shadow-xs lg:p-16">
+        <div className="bg-background rounded-md p-4 shadow-xs lg:p-16 overflow-x-auto">
             <div className="grid w-full grid-cols-2 justify-between gap-4 lg:grid-cols-5">
                 <div>
                     <h6 className="text-2 lg:title-5 font-bold">
@@ -120,7 +127,21 @@ const FundsBarChart: React.FC<FundsBarChartProps> = ({
                 </div>
             </div>
 
-            <div className="mt-4 flex justify-end px-12">
+            <div className="mt-6 flex md:justify-end gap-4 md:px-8">
+                <div className="flex items-center gap-2">
+                    <Paragraph className="text-gray-persist">
+                        {t('charts.viewBy')}
+                    </Paragraph>
+                    <RadioSelector
+                        options={[
+                            { label: t('charts.fund'), value: 'fund' },
+                            { label: t('charts.year'), value: 'year' },
+                        ]}
+                        selectedItem={viewBy}
+                        setSelectedItem={onViewByChange}
+                        className="focus:border-primary focus:ring-primary"
+                    />
+                </div>
                 <Selector
                     isMultiselect={true}
                     options={allKeys}
@@ -131,12 +152,12 @@ const FundsBarChart: React.FC<FundsBarChartProps> = ({
             </div>
             <div
                 style={{ height: '400px', minHeight: '640px' }}
-                className="w-full"
+                 className="min-w-[600px] sm:min-w-full"
             >
                 <ResponsiveBar
                     data={funds}
                     keys={activeKeys}
-                    indexBy="fund"
+                    indexBy= {viewBy === 'fund' ? 'fund' : 'year'}
                     margin={{
                         top: 50,
                         right: 50,
@@ -150,7 +171,7 @@ const FundsBarChart: React.FC<FundsBarChartProps> = ({
                         tickSize: 5,
                         tickPadding: 5,
                         tickRotation: window.innerWidth < 600 ? 45 : 0,
-                        legend: t('funds.fund'),
+                        legend: viewBy === 'fund' ? t('funds.fund') : t('charts.year'),
                         legendPosition: 'middle',
                         legendOffset: window.innerWidth < 600 ? 60 : 40,
                     }}
@@ -169,7 +190,7 @@ const FundsBarChart: React.FC<FundsBarChartProps> = ({
                         {
                             dataFrom: 'keys',
                             anchor: 'bottom',
-                            direction: window.innerWidth < 600 ? 'row' : 'row',
+                            direction: window.innerWidth < 600 ? 'column' : 'row',
                             justify: false,
                             translateX: window.innerWidth < 600 ? -40 : 0,
                             translateY: window.innerWidth < 600 ? 180 : 80,

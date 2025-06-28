@@ -163,6 +163,7 @@ label: string | null;
 title: string | null;
 hash: string | null;
 proposals_count?: number;
+unfunded_proposals_count?: number;
 funded_proposals_count?: number;
 completed_proposals_count?: number;
 amount_requested?: number;
@@ -574,6 +575,9 @@ language: string;
 theme: string;
 viewChartBy: string;
 proposalComparison: Array<any>;
+proposalType: Array<any>;
+trendChart: string;
+chartTypes: Array<any>;
 };
 export type VoterData = {
 id: number;
