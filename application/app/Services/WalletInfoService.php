@@ -8,7 +8,6 @@ use App\DataTransferObjects\WalletDTO;
 use App\Http\Intergrations\LidoNation\Blockfrost\BlockfrostConnector;
 use App\Http\Intergrations\LidoNation\Blockfrost\Requests\BlockfrostRequest;
 use App\Models\Signature;
-use App\Models\Transaction;
 use App\Repositories\VoterHistoryRepository;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Cache;
@@ -241,16 +240,7 @@ class WalletInfoService
             $walletStats = $signature->wallet_stats;
             $latestInfo = $signature->latest_wallet_info;
 
-            $transaction = Transaction::where('stake_key', $signature->stake_address)
-                ->orWhere('json_metadata->stake_key', $signature->stake_address)
-                ->first();
-
-            $catId = null;
-            if ($transaction && isset($transaction->json_metadata['voter_delegations'][0]['catId'])) {
-                $catId = $transaction->json_metadata['voter_delegations'][0]['catId'];
-            }
-
-            return WalletDTO::fromSignature($signature, $walletStats, $catId, $latestInfo);
+            return WalletDTO::fromSignature($signature, $walletStats, $latestInfo);
         })->values();
 
         return new LengthAwarePaginator(
