@@ -1,12 +1,14 @@
+import Title from '@/Components/atoms/Title';
+import { PageProps } from '@/types';
 import { Head, WhenVisible } from '@inertiajs/react';
 import { useTranslation } from 'react-i18next';
+import FundCardLoader from './Partials/FundCardLoader';
 import FundsBarChart from './Partials/FundsBarChart';
 import FundsBarChartLoading from './Partials/FundsBarChartLoading';
-import FundCardLoader from './Partials/FundCardLoader';
 import FundsList from './Partials/FundsList';
-import { PageProps } from '@/types';
 import FundData = App.DataTransferObjects.FundData;
-import Title from '@/Components/atoms/Title';
+import { useUserSetting } from '@/Hooks/useUserSettings';
+import { userSettingEnums } from '@/enums/user-setting-enums';
 
 interface HomePageProps extends Record<string, unknown> {
     funds: FundData[];
@@ -14,17 +16,36 @@ interface HomePageProps extends Record<string, unknown> {
 
 export default function Index({
     funds,
-    chartSummary
-}: PageProps<HomePageProps & { chartSummary: any }>) {
+    proposalsCountByYear,
+    chartSummary,
+}: PageProps<
+    HomePageProps & {
+        chartSummary: any;
+        proposalsCountByYear: Record<string, number>;
+    }
+>) {
     const { t } = useTranslation();
 
-    const chartData = funds
-    .map(fund => ({
-        fund: fund.title,
-        "Total Proposals": fund.proposals_count,
-        "Funded Proposals": fund.funded_proposals_count,
-        "Completed Proposals": fund.completed_proposals_count
-    })).reverse();
+    const chartDataByFund = funds
+        .map((fund) => ({
+            fund: fund.title,
+            'Unfunded Proposals': fund?.unfunded_proposals_count,
+            'Funded Proposals': fund.funded_proposals_count,
+            'Completed Proposals': fund.completed_proposals_count,
+        }))
+        .reverse();
+
+    const { value: viewByPreference, setValue: setViewByPreference } =
+        useUserSetting<string[]>(userSettingEnums.VIEW_CHART_BY, ['fund']);
+
+    const viewBy: 'fund' | 'year' =
+        viewByPreference?.[0] === 'year' ? 'year' : 'fund';
+    const chartData = viewBy === 'fund' ? chartDataByFund : proposalsCountByYear;
+
+     const handleViewByChange = (value: string | null) => {
+        const newValue = value as 'fund' | 'year';
+        setViewByPreference([newValue]);
+    };
 
     return (
         <>
@@ -50,8 +71,14 @@ export default function Index({
                             fundRounds={funds.length}
                             totalProposals={chartSummary.totalProposals}
                             fundedProposals={chartSummary.fundedProposals}
-                            totalFundsRequested={chartSummary.totalFundsAwardedAda}
-                            totalFundsAllocated={chartSummary.totalFundsAwardedUsd}
+                            totalFundsRequested={
+                                chartSummary.totalFundsAwardedAda
+                            }
+                            totalFundsAllocated={
+                                chartSummary.totalFundsAwardedUsd
+                            }
+                            viewBy={viewBy}
+                            onViewByChange={handleViewByChange}
                         />
                     </WhenVisible>
                 </section>

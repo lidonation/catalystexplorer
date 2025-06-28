@@ -137,6 +137,11 @@ class Fund extends Model implements HasMedia
         return $this->hasMany(Proposal::class)->where('status', ProposalStatus::complete()->value);
     }
 
+    public function unfunded_proposals(): HasMany
+    {
+        return $this->hasMany(Proposal::class)->where('status', ProposalStatus::unfunded()->value);
+    }
+
     public function campaigns(): HasMany
     {
         return $this->hasMany(Campaign::class, 'fund_id', 'id');
