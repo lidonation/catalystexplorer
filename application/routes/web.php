@@ -352,8 +352,8 @@ Route::localized(
                     ->name('show');
             });
 
-            Route::prefix('/wallets')->as('wallets.')->group(function () {
-                Route::get('/{stakeKey}/{catId}', [WalletController::class, 'show'])
+             Route::prefix('/wallets')->as('wallets.')->group(function () {
+                Route::get('/{stakeKey?}/{catId?}', [WalletController::class, 'show'])
                     ->name('show');
             });
 

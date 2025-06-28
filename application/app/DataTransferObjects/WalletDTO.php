@@ -17,11 +17,10 @@ class WalletDTO
         public readonly array $walletDetails,
         public readonly string $balance,
         public readonly int $allTimeVotes,
-        public readonly ?string $catId,
         public readonly array $fundsParticipated,
     ) {}
 
-    public static function fromSignature(object $signature, array $walletStats, ?string $catId = null, ?object $latestInfo = null): self
+    public static function fromSignature(object $signature, array $walletStats, ?object $latestInfo = null): self
     {
         $userAddress = ! empty($walletStats['payment_addresses'])
             ? $walletStats['payment_addresses'][0]
@@ -38,7 +37,6 @@ class WalletDTO
             walletDetails: $walletStats,
             balance: $walletStats['balance'] ?? 'N/A',
             allTimeVotes: $walletStats['all_time_votes'] ?? 0,
-            catId: $walletStats['catId'] ?? ' ',
             fundsParticipated: $walletStats['funds_participated'] ?? [],
         );
     }
@@ -57,7 +55,6 @@ class WalletDTO
             'balance' => $this->balance,
             'all_time_votes' => $this->allTimeVotes,
             'funds_participated' => $this->fundsParticipated,
-            'catId' => $this->catId,
         ];
     }
 }

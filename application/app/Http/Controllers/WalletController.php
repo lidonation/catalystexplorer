@@ -35,15 +35,58 @@ class WalletController extends Controller
         private WalletInfoService $walletInfoService
     ) {}
 
-    public function show(Request $request, string $stakeKey, string $catId): Response
+    public function show(Request $request, ?string $param1 = null, ?string $param2 = null): Response
     {
+        $stakeKey = null;
+        $catId = null;
+
+        foreach ([$param1, $param2] as $param) {
+            if (empty($param)) {
+                continue;
+            }
+
+            if (str_starts_with($param, 'ca1q')) {
+                $catId = $param;
+            } else {
+                $stakeKey = $param;
+            }
+        }
 
         $walletStats = $this->getWalletStats($stakeKey ?? '');
-        $transaction = Transaction::where('json_metadata->voter_delegations->[0]->catId', $catId)
-            ->first();
-        $transactions = Transaction::where('stake_key', $stakeKey)
-            ->orWhere('json_metadata->stake_key', $stakeKey)
-            ->orWhere('json_metadata->voter_delegations->[0]->catId', $catId);
+
+        $transactionQuery = Transaction::query();
+
+        if (! empty($param1)) {
+            $transactionQuery->where(function ($query) use ($param1) {
+                $query->where('json_metadata->stake_key', $param1)
+                    ->orWhere('json_metadata->voter_delegations->[0]->catId', $param1);
+            });
+        }
+
+        if (! empty($param2)) {
+            $transactionQuery->orWhere(function ($query) use ($param2) {
+                $query->where('json_metadata->stake_key', $param2)
+                    ->orWhere('json_metadata->voter_delegations->[0]->catId', $param2);
+            });
+        }
+
+        $transaction = $transactionQuery->first();
+
+        $transactionsQuery = Transaction::query();
+
+        if (! empty($param1)) {
+            $transactionsQuery->where(function ($query) use ($param1) {
+                $query->where('json_metadata->stake_key', $param1)
+                    ->orWhere('json_metadata->voter_delegations->[0]->catId', $param1);
+            });
+        }
+
+        if (! empty($param2)) {
+            $transactionsQuery->orWhere(function ($query) use ($param2) {
+                $query->where('json_metadata->stake_key', $param2)
+                    ->orWhere('json_metadata->voter_delegations->[0]->catId', $param2);
+            });
+        }
 
         $request->merge([
             TransactionSearchParams::STAKE_KEY()->value => $stakeKey ?? '',
@@ -51,14 +94,13 @@ class WalletController extends Controller
         ]);
 
         $this->getProps($request);
-
         $catalystVotes = $this->voterHistoryQuery();
 
         return Inertia::render('Wallets/Wallet', [
             'filters' => $this->queryParams,
             'catalystVotes' => $catalystVotes,
             'walletTransactions' => TransactionData::collect(
-                $transactions->paginate(11, ['*'], 'p', request()->query('p', 1))
+                $transactionsQuery->paginate(11, ['*'], 'p', request()->query('p', 1))
             ),
             'transaction' => $transaction,
             'walletStats' => $walletStats,
@@ -187,7 +229,6 @@ class WalletController extends Controller
             return Inertia::render('My/Wallets/Index', [
                 'connectedWallets' => $walletsPaginator,
             ]);
-
         } catch (\Exception $e) {
             Log::error("Error loading wallets for user {$userId}: ".$e->getMessage());
 
@@ -220,7 +261,6 @@ class WalletController extends Controller
             }
 
             return redirect()->route('my.wallets')->with('success', 'Wallet deleted successfully');
-
         } catch (\Exception $e) {
             Log::error("💥 Error deleting wallet for stake address {$stakeAddress}: ".$e->getMessage());
 

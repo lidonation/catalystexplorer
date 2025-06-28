@@ -33,6 +33,9 @@ final class FundData extends Data
         public ?int $completed_proposals_count,
 
         #[TypeScriptOptional]
+        public ?int $unfunded_proposals_count,
+
+        #[TypeScriptOptional]
         public ?int $amount_requested,
 
         #[TypeScriptOptional]
