@@ -1,27 +1,25 @@
-import React from 'react';
-import { Check } from 'lucide-react';
-import { useTranslation } from 'react-i18next';
-import ProposalData = App.DataTransferObjects.ProposalData;
-import { VoteEnum } from '@/enums/votes-enums';
+import Button from '@/Components/atoms/Button';
 import Paragraph from '@/Components/atoms/Paragraph';
 import ValueLabel from '@/Components/atoms/ValueLabel';
-import Button from '@/Components/atoms/Button';
+import { VoteEnum } from '@/enums/votes-enums';
 import { currency } from '@/utils/currency';
+import { Check } from 'lucide-react';
+import React from 'react';
+import { useTranslation } from 'react-i18next';
+import ProposalData = App.DataTransferObjects.ProposalData;
 
 interface ProposalVotingCardProps {
     proposal: ProposalData;
     isSelected: boolean;
-    onSelect: (proposalSlug: string) => void;
-    onVote?: (proposalSlug: string, vote: VoteEnum) => void;
-    currentVote?: VoteEnum;
+    onVote: (hash: string, vote: number | null) => void;
+    currentVote?: number | null;
 }
 
 const ProposalVotingCard: React.FC<ProposalVotingCardProps> = ({
     proposal,
     isSelected,
-    onSelect,
     onVote,
-    currentVote
+    currentVote,
 }) => {
     const { t } = useTranslation();
 
@@ -32,7 +30,7 @@ const ProposalVotingCard: React.FC<ProposalVotingCardProps> = ({
         currency(
             amount ? parseInt(amount.toString()) : 0,
             2,
-            currencyCode || 'USD'
+            currencyCode || 'USD',
         ) as string;
 
     const amountRequested = proposal.amount_requested
@@ -46,63 +44,81 @@ const ProposalVotingCard: React.FC<ProposalVotingCardProps> = ({
     );
 
     return (
-        <div className="flex items-center ml-4 mr-2 p-4 border border-gray-200 rounded-lg shadow-sm mb-4">
+        <div className="mr-2 mb-4 ml-4 flex items-center rounded-lg border border-gray-200 p-4 shadow-sm">
             <div
-                className={`w-4 h-4 mr-4 flex-shrink-0 rounded border flex items-center justify-center cursor-pointer ${isSelected ? 'bg-primary border-primary' : 'border-gray-300'}`}
+                className={`mr-4 flex h-4 w-4 flex-shrink-0 cursor-pointer items-center justify-center rounded border ${isSelected ? 'bg-primary border-primary' : 'border-gray-300'}`}
                 onClick={(e) => {
                     e.stopPropagation();
-                    if (typeof proposal.slug === 'string') {
-                        onSelect(proposal.slug);
+                    if (typeof proposal.hash === 'string') {
+                        onVote(proposal.hash, null);
                     }
                 }}
             >
-                {isSelected && <Check className="w-4 h-4 text-white" />}
+                {isSelected && <Check className="h-4 w-4 text-white" />}
             </div>
 
-            <div className="max-w-3xl w-full">
-                <div className="flex items-center gap-2 mb-2">
-                    <Paragraph className="font-bold text-content" size="md">{proposal.title}</Paragraph>
+            <div className="w-full max-w-3xl">
+                <div className="mb-2 flex items-center gap-2">
+                    <Paragraph className="text-content font-bold" size="md">
+                        {proposal.title}
+                    </Paragraph>
                 </div>
 
-                <div className="flex flex-wrap gap-x-6 gap-y-2 mt-4 mb-4">
+                <div className="mt-4 mb-4 flex flex-wrap gap-x-6 gap-y-2">
                     <div className="flex items-center">
-                        <ValueLabel className="font-bold text-content">{t('workflows.voterList.proposalCard.budget')}</ValueLabel>
-                        <Paragraph size="sm" className="ml-1 text-success">{formattedAmountRequested}</Paragraph>
+                        <ValueLabel className="text-content font-bold">
+                            {t('workflows.voterList.proposalCard.budget')}
+                        </ValueLabel>
+                        <Paragraph size="sm" className="text-success ml-1">
+                            {formattedAmountRequested}
+                        </Paragraph>
                     </div>
 
                     <div className="flex items-center">
-                        <ValueLabel className="font-bold text-content">{t('workflows.voterList.proposalCard.fund')}</ValueLabel>
-                        <Paragraph size="sm" className="ml-1 text-primary">{proposal?.fund?.title}</Paragraph>
+                        <ValueLabel className="text-content font-bold">
+                            {t('workflows.voterList.proposalCard.fund')}
+                        </ValueLabel>
+                        <Paragraph size="sm" className="text-primary ml-1">
+                            {proposal?.fund?.title}
+                        </Paragraph>
                     </div>
 
                     <div className="flex items-center">
-                        <ValueLabel className="font-bold text-content">{t('workflows.voterList.proposalCard.campaign')}</ValueLabel>
-                        <Paragraph size="sm" className="ml-1 text-content">{proposal?.campaign?.title}</Paragraph>
+                        <ValueLabel className="text-content font-bold">
+                            {t('workflows.voterList.proposalCard.campaign')}
+                        </ValueLabel>
+                        <Paragraph size="sm" className="text-content ml-1">
+                            {proposal?.campaign?.title}
+                        </Paragraph>
                     </div>
                 </div>
 
-                <div className="flex w-full gap-4 mt-4">
+                <div className="mt-4 flex w-full gap-4">
                     <Button
-                        className={`flex-1 ${currentVote === VoteEnum.YES ? 'bg-success text-white' : 'bg-success-light text-success'} border border-success hover:bg-success hover:text-white py-2 rounded-md font-medium transition`}
+                        className={`flex-1 ${currentVote === VoteEnum.YES ? 'bg-success text-white' : 'bg-success-light text-success'} border-success hover:bg-success rounded-md border py-2 font-medium transition hover:text-white`}
                         onClick={(e) => {
                             e.stopPropagation();
-                            if (typeof proposal.slug === 'string' && onVote) {
-                                onVote(proposal.slug, VoteEnum.YES);
+                            if (typeof proposal.hash === 'string' && onVote) {
+                                onVote(proposal.hash, VoteEnum.YES);
                             }
                         }}
-                        ariaLabel={t('workflows.voterList.proposalCard.voteYes')}
+                        ariaLabel={t(
+                            'workflows.voterList.proposalCard.voteYes',
+                        )}
                     >
                         {t('workflows.voterList.proposalCard.voteYes')}
                     </Button>
                     <Button
-                        className={`flex-1 ${currentVote === VoteEnum.ABSTAIN ? 'bg-warning text-white' : 'bg-warning-light text-warning'} border border-warning hover:bg-warning hover:text-white py-2 rounded-md font-medium transition`}
+                        className={`flex-1 ${currentVote === VoteEnum.ABSTAIN ? 'bg-warning text-white' : 'bg-warning-light text-warning'} border-warning hover:bg-warning rounded-md border py-2 font-medium transition hover:text-white`}
                         onClick={(e) => {
                             e.stopPropagation();
-                            if (typeof proposal.slug === 'string' && onVote) {
-                                onVote(proposal.slug, VoteEnum.ABSTAIN);
+                            if (typeof proposal.hash === 'string' && onVote) {
+                                onVote(proposal.hash, VoteEnum.ABSTAIN);
                             }
                         }}
-                        ariaLabel={t('workflows.voterList.proposalCard.voteAbstain')}
+                        ariaLabel={t(
+                            'workflows.voterList.proposalCard.voteAbstain',
+                        )}
                     >
                         {t('workflows.voterList.proposalCard.voteAbstain')}
                     </Button>

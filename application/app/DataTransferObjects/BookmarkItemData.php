@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\DataTransferObjects;
 
+use App\Enums\VoteEnum;
 use Spatie\LaravelData\Data;
 use Spatie\TypeScriptTransformer\Attributes\Optional as TypeScriptOptional;
 use Spatie\TypeScriptTransformer\Attributes\TypeScript;
@@ -24,6 +25,9 @@ final class BookmarkItemData extends Data
         public ?int $model_id,
 
         #[TypeScriptOptional]
+        public ProposalData|ReviewData|IdeascaleProfileData|CommunityData|GroupData $model,
+
+        #[TypeScriptOptional]
         public ?string $model_type,
 
         #[TypeScriptOptional]
@@ -34,6 +38,9 @@ final class BookmarkItemData extends Data
 
         #[TypeScriptOptional]
         public ?int $action,
+
+        #[TypeScriptOptional]
+        public ?VoteEnum $vote,
 
         #[TypeScriptOptional]
         public ?string $created_at,

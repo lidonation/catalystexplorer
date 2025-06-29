@@ -40,7 +40,7 @@ interface Step3Props {
     activeStep: number;
     proposals: PaginatedData<ProposalData[]>;
     campaigns: Campaign[];
-    selectedProposals: string[];
+    selectedProposals: { hash: string; vote: number|null }[];
     filters: SearchParams;
     bookmarkHash: string;
     fundSlug?: string;
@@ -63,21 +63,19 @@ const Step3: React.FC<Step3Props> = ({
         bk: bookmarkHash,
     });
 
-    const [selectedIds, setSelectedIds] = useState<Set<string>>(
-        new Set(selectedProposals),
-    );
-    const [votes, setVotes] = useState<Record<string, VoteEnum>>({});
+    const [selectedIds, setSelectedIds] =
+        useState<{ hash: string; vote: number | null }[]>(
+            selectedProposals,
+        );
 
     const form = useForm({
-        proposals: Array.from(selectedIds),
-        votes,
+        proposals: selectedIds,
         bookmarkHash,
     });
 
     useEffect(() => {
-        form.setData('proposals', Array.from(selectedIds));
-        form.setData('votes', votes);
-    }, [selectedIds, votes]);
+        form.setData('proposals', selectedIds);
+    }, [selectedIds]);
 
     const buildUpdatedFilters = (updates: Partial<SearchParams> = {}) => {
         const baseFilters: Record<string, any> = { ...filters };
@@ -109,35 +107,21 @@ const Step3: React.FC<Step3Props> = ({
 
         return baseFilters;
     };
-    const handleSelectProposal = (proposalSlug: string) => {
-        setSelectedIds((prevSelected) => {
-            const newSelected = new Set(prevSelected);
 
-            if (newSelected.has(proposalSlug)) {
-                newSelected.delete(proposalSlug);
+    const handleVote = (proposalHash: string, vote: number | null) => {
 
-                setVotes((prev) => {
-                    const newVotes = { ...prev };
-                    delete newVotes[proposalSlug];
-                    return newVotes;
-                });
-            } else {
-                newSelected.add(proposalSlug);
+        setSelectedIds((prev) => {
+            const existing = prev.find((item) => item.hash === proposalHash);
+
+            if (!existing) {
+                return [...prev, { hash: proposalHash, vote }];
             }
 
-            return newSelected;
+            return prev.map((item) =>
+                item.hash === proposalHash ? { ...item, vote } : item,
+            );
         });
-    };
 
-    const handleVote = (proposalSlug: string, vote: VoteEnum) => {
-        if (!selectedIds.has(proposalSlug)) {
-            setSelectedIds((prev) => new Set([...prev, proposalSlug]));
-        }
-
-        setVotes((prev) => ({
-            ...prev,
-            [proposalSlug]: vote,
-        }));
     };
 
     const handleSearch = (search: string) => {
@@ -220,7 +204,7 @@ const Step3: React.FC<Step3Props> = ({
                                         size="sm"
                                         className="text-gray-persist bg-background rounded-md px-3 py-1 font-medium shadow"
                                     >
-                                        {selectedIds.size}/{proposals.total}
+                                        {selectedIds.length}/{proposals.total}
                                     </Paragraph>
                                 </div>
 
@@ -279,47 +263,53 @@ const Step3: React.FC<Step3Props> = ({
                         </div>
 
                         <div className="w-full">
-                            <div className="mt-4 max-h-[30rem] w-full space-y-4 overflow-y-auto">
+                            <div className="mt-4 mb-4 max-h-[25rem] w-full space-y-4 overflow-y-auto">
                                 {proposals?.data &&
-                                proposals.data.length > 0 ? (
-                                    proposals.data.map((proposal) => (
-                                        <ProposalVotingCard
-                                            key={proposal.slug}
-                                            proposal={proposal}
-                                            isSelected={
-                                                proposal.slug
-                                                    ? selectedIds.has(
-                                                          proposal.slug,
-                                                      )
-                                                    : false
-                                            }
-                                            onSelect={handleSelectProposal}
-                                            onVote={handleVote}
-                                            currentVote={
-                                                proposal.slug
-                                                    ? votes[proposal.slug]
-                                                    : undefined
-                                            }
-                                        />
-                                    ))
+                                proposals.data.filter((p) => p.hash).length >
+                                    0 ? (
+                                    proposals.data
+                                        .filter((p) => p.hash)
+                                        .map((proposal) => {
+                                            let selected = selectedIds.find(
+                                                (item) =>
+                                                    item.hash == proposal.hash,
+                                            );
+
+                                            return (
+                                                <ProposalVotingCard
+                                                    key={proposal.hash}
+                                                    proposal={proposal}
+                                                    isSelected={
+                                                        !!selected &&
+                                                        (selected.vote ==
+                                                            VoteEnum.ABSTAIN ||
+                                                            selected.vote ==
+                                                                VoteEnum.YES)
+                                                    }
+                                                    onVote={(proposal, hash) =>
+                                                        handleVote(
+                                                            proposal,
+                                                            hash,
+                                                        )
+                                                    }
+                                                    currentVote={selected?.vote}
+                                                />
+                                            );
+                                        })
                                 ) : (
-                                    <RecordsNotFound
-                                        context="proposals"
-                                        searchTerm={filters[ParamsEnum.QUERY]}
-                                        showIcon={true}
-                                    />
+                                    <RecordsNotFound showIcon={true} />
                                 )}
                             </div>
 
                             {proposals &&
                                 proposals.data &&
                                 proposals.data.length > 0 && (
-                                    <div className="mt-6">
+                                    <div className="mb-8">
                                         <Paginator
                                             pagination={proposals}
                                             linkProps={{
                                                 preserveState: true,
-                                                preserveScroll: true,
+                                                preserveScroll: false,
                                             }}
                                         />
                                     </div>
@@ -338,7 +328,7 @@ const Step3: React.FC<Step3Props> = ({
                     </PrimaryLink>
                     <PrimaryButton
                         className="text-sm lg:px-8 lg:py-3"
-                        disabled={selectedIds.size === 0}
+                        disabled={!selectedIds.length}
                         onClick={submitForm}
                     >
                         <span>{t('Next')}</span>

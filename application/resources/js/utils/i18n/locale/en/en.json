@@ -232,6 +232,8 @@
             "descriptionHint": "Must be at least 100 characters.",
             "selectFund": "Select Fund",
             "visibility": "Visibility",
+            "browseProposal": "Browse Proposal",
+            "submitVote": "Submit Votes",
             "visibilityOptions": {
                 "public": "Public",
                 "private": "Private",
@@ -270,7 +272,7 @@
             },
             "success": {
                 "title": "Success!!",
-                "message": "Your Voting List has been created! Share it with others and make an impact on governance decisions."
+                "message": "Kindly note that this votes are not being submitted to the on-chain yet."
             },
             "steps": {
                 "details": "Details",
@@ -279,17 +281,10 @@
                 "proposals": "Proposals",
                 "proposalsInfo": "Now, let's add proposals to your Voting List. You can search for existing proposals and select the ones that align.",
                 "rationale": "Rationale",
-                "rationaleInfo": "Why did you select these proposals? Providing a rationale helps others understand your choices and makes your list more credible."
-            }
-        },
-        "voting": {
-            "success": {
-                "title": "Success!!",
-                "message": "You have successfully submitted your votes!!"
-            },
-            "steps": {
+                "rationaleInfo": "Why did you select these proposals? Providing a rationale helps others understand your choices and makes your list more credible.",
                 "readyToVote": "Ready to Vote!!",
                 "submitVotes": "Submit Votes",
+                "listCreated": "List Created",
                 "votesSubmitted": "Votes Submitted",
                 "submitVotesInfo": "From your list of selected proposals, please cast your votes",
                 "submitReviewedVotes": "You've reviewed your selections. Click 'Submit Votes' below to finalize your choices and complete the process.",
@@ -309,17 +304,17 @@
                 "nameWallet": "Name Wallet"
             },
             "signWallet": "Sign wallet",
-            "nameWallet":"Name Wallet",
-            "inputWalletNamePlaceHolder":"Wallet Name",
-            "walletNameCondition":"Must be at least 6 characters.",
-            "walletNameDescription":"Give your wallet a name to be displayed in your wallet dashboard.",
+            "nameWallet": "Name Wallet",
+            "inputWalletNamePlaceHolder": "Wallet Name",
+            "walletNameCondition": "Must be at least 6 characters.",
+            "walletNameDescription": "Give your wallet a name to be displayed in your wallet dashboard.",
             "signAuth": "By signing, you authorize this action securely with your wallet. Your private key remains Safe. Proceed if the details are correct.",
             "signMessage": "Sign",
             "signing": "Signing...",
             "success": {
                 "title": "Success!!",
                 "message": "Your signature was successful and securely recorded. Your transaction is now authorized and ready to proceed.",
-                "successfullySigned":"Your wallet was successfully signed."
+                "successfullySigned": "Your wallet was successfully signed."
             },
             "errors": {
                 "failedToGetSignature": "Failed to get signature from wallet",
@@ -340,6 +335,10 @@
             }
         },
         "bookmarks": {
+            "success": {
+                "title": "Success!!",
+                "message": "Your Bookmark List has been created!"
+            },
             "intro": "Before you start, let’s set up your Bookmark List. A bookmark list is a personalized collection of saved items, allowing you to easily organize, access, and manage content that matters to you. Ready to begin?\n\n*In the next steps, you’ll name your list, add your list, and explain your rationale for selecting them.*",
             "details": "Details",
             "listDetail": "List Detail",
@@ -371,7 +370,7 @@
             "claim": "Claim Button",
             "claimed": "Claimed Button",
             "share": "Share Button",
-            "createWallet":"Create Wallet"
+            "createWallet": "Create Wallet"
         },
         "bookmark": "Bookmark"
     },
@@ -419,14 +418,14 @@
         "votes": "Votes",
         "balance": "Balance",
         "wallets": "Wallets",
-        "deleteWallet": "Deleting",
+        "deletingWallet": "Deleting",
         "paymentAddresses": "Payment Addresses",
         "myWallets": "My Wallets",
         "loadWallets": "Loading wallets...",
         "deleteWallet": "Delete Wallet",
         "manageWallets": "View and manage all wallets connected to your Catalyst Explorer account",
         "moreWalletsDetails": "View wallet details...",
-        "connectWallet":"Add Wallet",
+        "connectWallet": "Add Wallet",
         "my": "My"
     },
     "navigation": {
@@ -449,37 +448,36 @@
         "home": "Home",
         "workflow": "Workflow"
     },
-    "charts":{
-       "setMetrics": "Select Chart Metrics",
-       "viewCharts": "View Charts",
-       "selectProposals": "Which types of proposals interest you the most?",
-       "selectChartType": "Select Chart Type (Select all that apply)",
-       "selectAllThatApply": "(Select all that apply)",
-       "submittedProposals": "Submitted Proposals",
-       "approvedProposals": "Approved Proposals",
-       "completedProposals": "Completed Proposals",
-       "unfundedProposals": "Unfunded Proposals",
-       "next": "Next",
-       "trendChart": "trendChart",
-       "lineChart": "Line Chart",
-       "pieChart": "Pie Chart",
-       "barChart": "Bar Chart",
-       "heatMap": "Heat Map",
-       "scatterPlot": "Scatter Plot",
-       "stackedBarChart": "Stacked Bar Chart",
-       "chartOptions": "Chart Options",
-       "edit": "Edit",
-       "noOptions": "No chart options selected. Please go back and select chart types",
-       "viewBy": "View By",
-       "fundingRate": "Funding Rate",
-       "fund": "Fund",
-       "year": "Year",
-       "selectFund":"Select Fund",
-       "value": "Value",
-       "percentage": "Percentage",
-       "share": "Share",
-       "noFundDataAvailable": "No Fund Data Available",
-       "noYearDataAvailable": "No Year Data Available"
+    "charts": {
+        "setMetrics": "Select Chart Metrics",
+        "viewCharts": "View Charts",
+        "selectProposals": "Which types of proposals interest you the most?",
+        "selectChartType": "Select Chart Type (Select all that apply)",
+        "selectAllThatApply": "(Select all that apply)",
+        "submittedProposals": "Submitted Proposals",
+        "approvedProposals": "Approved Proposals",
+        "completedProposals": "Completed Proposals",
+        "next": "Next",
+        "trendChart": "trendChart",
+        "lineChart": "Line Chart",
+        "pieChart": "Pie Chart",
+        "barChart": "Bar Chart",
+        "heatMap": "Heat Map",
+        "scatterPlot": "Scatter Plot",
+        "stackedBarChart": "Stacked Bar Chart",
+        "chartOptions": "Chart Options",
+        "edit": "Edit",
+        "noOptions": "No chart options selected. Please go back and select chart types",
+        "viewBy": "View By",
+        "fundingRate": "Funding Rate",
+        "fund": "Fund",
+        "year": "Year",
+        "selectFund": "Select Fund",
+        "value": "Value",
+        "percentage": "Percentage",
+        "share": "Share",
+        "noFundDataAvailable": "No Fund Data Available",
+        "noYearDataAvailable": "No Year Data Available"
     },
     "pagination": {
         "next": "Next",
@@ -613,6 +611,7 @@
         },
         "filters": {
             "fundingStatus": "Funding Status",
+            "approvedProposals":"Approved Proposals",
             "epoch": "Epoch",
             "opensource": "Opensource",
             "projectStatus": "Project Status",
@@ -1120,9 +1119,9 @@
             "choice": "Choice",
             "votingPower": "Voting Power",
             "rawFragment": "Raw Fragment",
-            "totalOutputs":"Output Amount (Lovelace)",
+            "totalOutputs": "Output Amount (Lovelace)",
             "totalInputs": "Total Inputs",
-            "weights":"Weights"
+            "weights": "Weights"
         },
         "options": {
             "newestToOldest": "Newest to Oldest",

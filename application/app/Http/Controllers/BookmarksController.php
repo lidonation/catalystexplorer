@@ -15,7 +15,9 @@ use App\Models\BookmarkCollection;
 use App\Models\BookmarkItem;
 use App\Models\Community;
 use App\Models\Group;
+use App\Models\IdeascaleProfile;
 use App\Models\Proposal;
+use App\Models\Review;
 use App\Repositories\BookmarkCollectionRepository;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -80,9 +82,13 @@ class BookmarksController extends Controller
             ->toArray();
 
         $pagination = $this->queryModels($model_type, $bookmarkItemIds);
+        $typesCounts = $this->getFilteredTypesCounts($bookmarkCollection);
 
         $props = [
-            'bookmarkCollection' => $bookmarkCollection->load('author'),
+            'bookmarkCollection' => array_merge(
+                $bookmarkCollection->load('author')->toArray(),
+                ['types_count' => $typesCounts]
+            ),
             'type' => $type,
             'search' => $this->search,
             'sortBy' => $this->sortBy,
@@ -94,6 +100,49 @@ class BookmarksController extends Controller
         ];
 
         return Inertia::render('Bookmarks/View', $props);
+    }
+
+    protected function getFilteredTypesCounts(BookmarkCollection $bookmarkCollection): array
+    {
+        $modelTypes = [
+            'proposals' => Proposal::class,
+            'ideascaleProfiles' => IdeascaleProfile::class,
+            'groups' => Group::class,
+            'reviews' => Review::class,
+            'communities' => Community::class,
+        ];
+
+        $typesCounts = [];
+
+        foreach ($modelTypes as $typeKey => $modelClass) {
+            $bookmarkItemIds = $bookmarkCollection->items
+                ->where('model_type', $modelClass)
+                ->pluck('model_id')
+                ->toArray();
+
+            if (empty($bookmarkItemIds)) {
+                $typesCounts[$typeKey] = 0;
+
+                continue;
+            }
+
+            if ($this->search) {
+                $searchBuilder = $modelClass::search($this->search);
+                $searchBuilder->whereIn('id', $bookmarkItemIds);
+
+                $searchResults = $searchBuilder->raw();
+                $count = $searchResults['estimatedTotalHits'] ?? 0;
+            } else {
+                $query = $modelClass::query();
+                $query->whereIn('id', $bookmarkItemIds);
+
+                $count = $query->count();
+            }
+
+            $typesCounts[$typeKey] = $count;
+        }
+
+        return $typesCounts;
     }
 
     protected function queryModels(string $modelType, array $constrainToIds = []): array

@@ -49,6 +49,13 @@ const HeatMap: React.FC<HeatMapProps> = ({ chartData, viewBy }) => {
     ];
 
     const getColor = (cell: any) => {
+        const value = cell.value ?? 0;
+        
+        // Return transparent color for zero values
+        if (value === 0) {
+            return 'transparent';
+        }
+
         const maxValue = Math.max(
             ...chartData.flatMap((item) => [
                 item.totalProposals,
@@ -56,8 +63,6 @@ const HeatMap: React.FC<HeatMapProps> = ({ chartData, viewBy }) => {
                 item.completedProposals,
             ]),
         );
-
-        const value = cell.value ?? 0;
 
         const opacity = Math.max(0.5, Math.min(1.0, value / maxValue));
 

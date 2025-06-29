@@ -9,6 +9,8 @@ use Spatie\Enum\Enum;
 /**
  * @method static self AWARDED_ADA()
  * @method static self AWARDED_USD()
+ * @method static self APPROVED_PROPOSALS()
+ * @method static self COMPLETED_PROPOSALS()
  * @method static self BUDGETS()
  * @method static self CATEGORIES()
  * @method static self CAMPAIGNS()
@@ -56,12 +58,14 @@ final class ProposalSearchParams extends Enum
         return [
             'AWARDED_ADA' => 'aa',
             'AWARDED_USD' => 'au',
+            'APPROVED_PROPOSALS' => 'ap',
             'BUDGETS' => 'b',
             'CATEGORIES' => 'cat',
             'CAMPAIGNS' => 'cam',
             'COHORT' => 'coh',
             'COMMUNITIES' => 'com',
             'CHART_OPTIONS' => 'co',
+            'COMPLETED_PROPOSALS' => 'cp',
             'FUNDS' => 'f',
             'FUNDING_STATUS' => 'fs',
             'GROUPS' => 'g',

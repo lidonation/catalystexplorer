@@ -1,11 +1,13 @@
 export enum ParamsEnum {
     AWARDED_ADA = 'aa',
     AWARDED_USD = 'au',
+    APPROVED_PROPOSALS = 'ap',
     BUDGETS = 'b',
     CATEGORIES = 'cat',
     CAMPAIGNS = 'cam',
     COHORT = 'coh',
     COMMUNITIES = 'com',
+    COMPLETED_PROPOSALS = 'cp',
     DELEGATORS = 'd',
     DREP_STATUS = 'ds',
     FUNDS = 'f',

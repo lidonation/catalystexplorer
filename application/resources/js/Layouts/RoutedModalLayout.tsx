@@ -1,5 +1,4 @@
 import React, { useEffect, useRef } from 'react';
-// @ts-ignore
 import { HeadlessModal } from '@inertiaui/modal-react';
 import { router, usePage } from '@inertiajs/react';
 import { X } from 'lucide-react';

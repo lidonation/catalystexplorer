@@ -49,9 +49,10 @@ const ScatterPlot: React.FC<ScatterChartProps> = ({
         return () => window.removeEventListener('resize', handleResize);
     }, []);
 
-    const transformedData = [
+    const allDataSeries = [
         {
             id: 'Total Proposals',
+            key: 'totalProposals',
             data: chartData.map((item: any) => ({
                 x: viewBy === 'fund' ? labelToIndex(item.fund) : labelToIndex(item.year),
                 y: item.totalProposals ?? 0,
@@ -61,6 +62,7 @@ const ScatterPlot: React.FC<ScatterChartProps> = ({
         },
         {
             id: 'Funded Proposals',
+            key: 'fundedProposals',
             data: chartData.map((item: any) => ({
                 x: viewBy === 'fund' ? labelToIndex(item.fund) : labelToIndex(item.year),
                 y: item.fundedProposals ?? 0,
@@ -70,6 +72,7 @@ const ScatterPlot: React.FC<ScatterChartProps> = ({
         },
         {
             id: 'Completed Proposals',
+            key: 'completedProposals',
             data: chartData.map((item: any) => ({
                 x: viewBy === 'fund' ? labelToIndex(item.fund) : labelToIndex(item.year),
                 y: item.completedProposals ?? 0,
@@ -78,6 +81,23 @@ const ScatterPlot: React.FC<ScatterChartProps> = ({
             })) as CustomScatterPlotDatum[],
         },
     ];
+
+    // Filter out data series that have zero values across all data points
+    const getActiveDataSeries = () => {
+        if (!chartData || chartData.length === 0) return [];
+        
+        return allDataSeries.filter(series => {
+            return chartData.some((dataPoint: any) => 
+                dataPoint[series.key] && dataPoint[series.key] > 0
+            );
+        });
+    };
+
+    const activeDataSeries = getActiveDataSeries();
+    const transformedData = activeDataSeries.map(series => ({
+        id: series.id,
+        data: series.data
+    }));
 
     const legend = yAxisLabel || 'Proposals';
 

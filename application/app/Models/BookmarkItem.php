@@ -5,12 +5,15 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Enums\VoteEnum;
+use App\Observers\BookmarkItemObserver;
 use App\Traits\HasHashId;
 use App\Traits\HasModel;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+#[ObservedBy([BookmarkItemObserver::class])]
 class BookmarkItem extends Model
 {
     use HasHashId,HasModel, SoftDeletes;

@@ -1,48 +1,43 @@
+import {
+    generateLocalizedRoute,
+    useLocalizedRoute,
+} from '@/utils/localizedRoute';
+import { router } from '@inertiajs/react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { router } from '@inertiajs/react';
-import { generateLocalizedRoute, useLocalizedRoute } from '@/utils/localizedRoute';
 
-import Paragraph from '@/Components/atoms/Paragraph';
-import Title from '@/Components/atoms/Title';
 import PrimaryLink from '@/Components/atoms/PrimaryLink';
-import WorkflowLayout from '../WorkflowLayout';
+import Title from '@/Components/atoms/Title';
+import ConnectWalletButton from '@/Components/ConnectWalletButton';
+import { useConnectWallet } from '@/Context/ConnectWalletSliderContext';
 import Content from '../Partials/WorkflowContent';
 import Footer from '../Partials/WorkflowFooter';
 import Nav from '../Partials/WorkflowNav';
-import ConnectWalletButton from '@/Components/ConnectWalletButton';
-import { useConnectWallet } from '@/Context/ConnectWalletSliderContext';
-
-import { VoteEnum } from '@/enums/votes-enums';
+import WorkflowLayout from '../WorkflowLayout';
 import { StepDetails } from '@/types';
 
-interface ProposalType {
-    slug: string;
-    title: string;
-    fund?: {
-        title: string;
-    };
-    requested_funds?: string;
-}
-
-interface Step3Props {
+interface Step7Props {
     stepDetails: StepDetails[];
     activeStep: number;
-    selectedProposals?: ProposalType[];
-    votes?: Record<string, VoteEnum>;
+    bookmarkHash: string;
 }
 
-const Step3: React.FC<Step3Props> = ({
-                                         stepDetails,
-                                         activeStep,
-                                         selectedProposals = [],
-                                         votes = {}
-                                     }) => {
+const Step7: React.FC<Step7Props> = ({
+    stepDetails,
+    activeStep,
+    bookmarkHash,
+}) => {
     const { t } = useTranslation();
     const localizedRoute = useLocalizedRoute;
-    const prevStep = localizedRoute('workflows.voting.index', { step: activeStep - 1 });
-    const nextStep = localizedRoute('workflows.voting.index', { step: activeStep + 1 });
+    const prevStep = localizedRoute('workflows.createVoterList.index', {
+        step: activeStep - 1,
+        bk: bookmarkHash,
+    });
+    const nextStep = localizedRoute('workflows.createVoterList.index', {
+        step: activeStep + 1,
+        bk: bookmarkHash,
+    });
 
     const {
         connectedWalletProvider,
@@ -52,7 +47,7 @@ const Step3: React.FC<Step3Props> = ({
         openConnectWalletSlider,
         networkName,
         networkId,
-        extractSignature
+        extractSignature,
     } = useConnectWallet();
 
     const handleSubmit = async () => {
@@ -66,9 +61,7 @@ const Step3: React.FC<Step3Props> = ({
                 voter: userAddress,
                 stakeKey: stakeKey,
                 stakeAddress: stakeAddress,
-                proposals: selectedProposals.map(p => p.slug),
-                votes: votes,
-                timestamp: new Date().toISOString()
+                timestamp: new Date().toISOString(),
             });
 
             // Extract signature using the wallet
@@ -78,24 +71,26 @@ const Step3: React.FC<Step3Props> = ({
                 console.error('Failed to get signature');
                 return;
             }
-            router.post(generateLocalizedRoute('workflows.voting.signBallot'), {
-                wallet: connectedWalletProvider?.name || '',
-                walletAddress: userAddress,
-                network: networkName,
-                networkId: networkId ? String(networkId) : null,
-                stake_key: stakeKey,
-                stake_address: stakeAddress,
-                signature: signatureResult.signature,
-                signature_key: signatureResult.key,
-                message: messageToSign
-            }, {
-                onSuccess: () => {
-                    router.visit(nextStep);
+            router.post(
+                generateLocalizedRoute('workflows.createVoterList.signBallot'),
+                {
+                    wallet: connectedWalletProvider?.name || '',
+                    walletAddress: userAddress,
+                    stake_key: stakeKey,
+                    stakeAddress: stakeAddress,
+                    signature: signatureResult.signature,
+                    signature_key: signatureResult.key,
+                    bk: bookmarkHash,
                 },
-                onError: (errors) => {
-                    console.error('Wallet connection errors:', errors);
-                }
-            });
+                {
+                    onSuccess: () => {
+                        router.visit(nextStep);
+                    },
+                    onError: (errors) => {
+                        console.error('Wallet connection errors:', errors);
+                    },
+                },
+            );
         } catch (error) {
             console.error('Error during signature process:', error);
         }
@@ -106,9 +101,14 @@ const Step3: React.FC<Step3Props> = ({
             <Nav stepDetails={stepDetails} activeStep={activeStep} />
 
             <Content>
-                <div className="max-w-3xl mx-auto w-full">
-                    <div className="p-6 rounded-lg flex flex-col items-center justify-center">
-                        <Title level="4" className="mb-8 text-content font-bold text-center">{t('Connect Wallet')}</Title>
+                <div className="mx-auto w-full max-w-3xl">
+                    <div className="flex flex-col items-center justify-center rounded-lg p-6">
+                        <Title
+                            level="4"
+                            className="text-content mb-8 text-center font-bold"
+                        >
+                            {t('Connect Wallet')}
+                        </Title>
 
                         <div className="w-full max-w-md space-y-4">
                             <ConnectWalletButton
@@ -137,7 +137,7 @@ const Step3: React.FC<Step3Props> = ({
                         if (connectedWalletProvider) {
                             handleSubmit();
                         }
-                    }}
+                }}
                 >
                     <span>{t('Next')}</span>
                     <ChevronRight className="h-4 w-4" />
@@ -147,4 +147,4 @@ const Step3: React.FC<Step3Props> = ({
     );
 };
 
-export default Step3;
+export default Step7;

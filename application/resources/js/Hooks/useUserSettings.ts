@@ -1,5 +1,7 @@
 import { db } from '@/db/db';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useState } from 'react';
+import { liveQuery } from 'dexie';
+import { useLiveQuery } from 'dexie-react-hooks';
 
 type UserSettingKey = keyof App.DataTransferObjects.UserSettingData;
 
@@ -13,37 +15,35 @@ export function useUserSetting<T = any>(
     key: UserSettingKey,
     defaultValue?: T
 ): UseUserSettingReturn<T> {
-    const [value, setValueState] = useState<T | null>(defaultValue ?? null);
     const [isLoading, setIsLoading] = useState(true);
 
-    // Load value from IndexedDB
-    const loadValue = useCallback(async () => {
-        try {
-            const userSetting = await db.user_setting.limit(1).first();
-            
-            if (userSetting && userSetting[key] !== undefined && userSetting[key] !== null) {
-                setValueState(userSetting[key] as T);
-            } else if (defaultValue !== undefined) {
-                setValueState(defaultValue);
+  
+    const userSetting = useLiveQuery(
+        async () => {
+            try {
+                const setting = await db.user_setting.limit(1).first();
+                setIsLoading(false);
+                return setting;
+            } catch (error) {
+                console.error(`Failed to load user setting:`, error);
+                setIsLoading(false);
+                return null;
             }
-        } catch (error) {
-            console.error(`Failed to load user setting for ${key}:`, error);
-            if (defaultValue !== undefined) {
-                setValueState(defaultValue);
-            }
-        } finally {
-            setIsLoading(false);
-        }
-    }, [key, defaultValue]);
+        },
+        [] 
+    );
 
-    // Save value to IndexedDB
+
+    const value = userSetting && userSetting[key] !== undefined && userSetting[key] !== null
+        ? (userSetting[key] as T)
+        : (defaultValue ?? null);
+
     const setValue = useCallback(async (newValue: T) => {
         try {
-            
-            let userSetting = await db.user_setting.limit(1).first();
-            
-            if (!userSetting) {
-                userSetting = {
+            let currentSetting = await db.user_setting.limit(1).first();
+
+            if (!currentSetting) {
+                currentSetting = {
                     language: 'en',
                     theme: null,
                     viewChartBy: null,
@@ -52,20 +52,15 @@ export function useUserSetting<T = any>(
             }
 
             const updatedSetting = {
-                ...userSetting,
+                ...currentSetting,
                 [key]: newValue,
             };
 
             await db.user_setting.put(updatedSetting);
-            setValueState(newValue);
         } catch (error) {
             console.error(`Failed to save user setting for ${key}:`, error);
         }
     }, [key]);
-
-    useEffect(() => {
-        loadValue();
-    }, [loadValue]);
 
     return {
         value,

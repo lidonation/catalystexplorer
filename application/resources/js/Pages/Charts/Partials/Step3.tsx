@@ -88,8 +88,8 @@ export default function Step3({
     }, [onCompletionChange, onNext, onExploreCharts]);
 
     const buttonClassName = useMemo(() => {
-        return `mt-4 w-full ${!isChartsSelected ? 'cursor-not-allowed opacity-50' : ''}`;
-    }, [isChartsSelected]);
+        return `mt-4 w-full ${!isChartsSelected || disabled ? 'cursor-not-allowed opacity-50' : ''}`;
+    }, [isChartsSelected, disabled]);
 
     return (
         <div className={disabled ? 'pointer-events-none opacity-50' : ''}>
