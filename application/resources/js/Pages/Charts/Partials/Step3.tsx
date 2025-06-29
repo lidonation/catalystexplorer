@@ -6,9 +6,6 @@ import { ParamsEnum } from '@/enums/proposal-search-params';
 import { userSettingEnums } from '@/enums/user-setting-enums';
 import { useUserSetting } from '@/Hooks/useUserSettings';
 import { useEffect, useMemo, useCallback } from 'react';
-import { userSettingEnums } from '@/enums/user-setting-enums';
-import { useUserSetting } from '@/Hooks/useUserSettings';
-import { useEffect, useMemo, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 
 interface Step3Props {

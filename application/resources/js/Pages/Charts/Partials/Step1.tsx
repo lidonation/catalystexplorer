@@ -5,9 +5,6 @@ import { ParamsEnum } from '@/enums/proposal-search-params';
 import { userSettingEnums } from '@/enums/user-setting-enums';
 import { useUserSetting } from '@/Hooks/useUserSettings';
 import { useEffect, useMemo } from 'react';
-import { userSettingEnums } from '@/enums/user-setting-enums';
-import { useUserSetting } from '@/Hooks/useUserSettings';
-import { useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
 interface Step1Props {
