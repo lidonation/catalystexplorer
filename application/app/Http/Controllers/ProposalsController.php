@@ -292,6 +292,8 @@ class ProposalsController extends Controller
             ProposalSearchParams::TREND_CHART()->value => 'string|nullable',
             ProposalSearchParams::CHART_OPTIONS()->value => 'array|nullable',
             ProposalSearchParams::SUBMITTED_PROPOSALS()->value => 'array|nullable',
+            ProposalSearchParams::APPROVED_PROPOSALS()->value => 'array|nullable',
+            ProposalSearchParams::COMPLETED_PROPOSALS()->value => 'array|nullable',
         ]);
 
         // format sort params for meili
@@ -673,6 +675,7 @@ class ProposalsController extends Controller
     public function getDetailedCountsByFund()
     {
         $args = [
+            'filter' => $this->getUserFilters(),
             'limit' => 0,
         ];
 
@@ -684,6 +687,7 @@ class ProposalsController extends Controller
         $response = new Fluent($builder->raw());
 
         $funds = $response->facetDistribution['fund.title'] ?? [];
+
         $chartData = [];
 
         foreach ($funds as $fundTitle => $totalCount) {
@@ -713,12 +717,15 @@ class ProposalsController extends Controller
             return $fundNumberA <=> $fundNumberB;
         });
 
+        // dd($chartData);
+
         return $chartData;
     }
 
     public function getDetailedCountsByYear()
     {
         $args = [
+            'filter' => $this->getUserFilters(),
             'limit' => 0,
         ];
 
@@ -767,7 +774,7 @@ class ProposalsController extends Controller
 
     private function getFundedCountByFund($fundTitle): int
     {
-        $fundedFilters = array_merge([
+        $fundedFilters = array_merge($this->getUserFilters(), [
             'fund.title = "'.$fundTitle.'"',
             '(funding_status = "funded" OR funding_status = "leftover")',
         ]);
@@ -785,16 +792,17 @@ class ProposalsController extends Controller
 
         $fundedCount = $response->estimatedTotalHits ?? 0;
 
-        if (empty($this->queryParams[ProposalSearchParams::FUNDING_STATUS()->value])) {
+        if (empty($this->queryParams[ProposalSearchParams::APPROVED_PROPOSALS()->value])) {
             return 0;
         } else {
             return $fundedCount;
         }
+
     }
 
     private function getCompletedCountByFund($fundTitle): int
     {
-        $completedFilters = array_merge([
+        $completedFilters = array_merge($this->getUserFilters(), [
             'fund.title = "'.$fundTitle.'"',
             'status = "complete"',
         ]);
@@ -812,7 +820,7 @@ class ProposalsController extends Controller
 
         $completedCount = $response->estimatedTotalHits ?? 0;
 
-        if (empty($this->queryParams[ProposalSearchParams::PROJECT_STATUS()->value])) {
+        if (empty($this->queryParams[ProposalSearchParams::COMPLETED_PROPOSALS()->value])) {
             return 0;
         } else {
             return $completedCount;
@@ -832,7 +840,7 @@ class ProposalsController extends Controller
 
         $yearFilter = "created_at_timestamp >= {$startTimestamp} AND created_at_timestamp < {$endTimestamp}";
 
-        $filters = array_merge([$fundingStatusFilter, $yearFilter]);
+        $filters = array_merge($this->getUserFilters(), [$fundingStatusFilter, $yearFilter]);
 
         $proposals = app(ProposalRepository::class);
         $args = [
@@ -847,7 +855,7 @@ class ProposalsController extends Controller
 
         $fundedCount = $response->estimatedTotalHits ?? 0;
 
-        if (empty($this->queryParams[ProposalSearchParams::FUNDING_STATUS()->value])) {
+        if (empty($this->queryParams[ProposalSearchParams::APPROVED_PROPOSALS()->value])) {
             return 0;
         }
 
@@ -863,7 +871,7 @@ class ProposalsController extends Controller
 
         $yearFilter = "created_at_timestamp >= {$startTimestamp} AND created_at_timestamp < {$endTimestamp}";
 
-        $filters = array_merge([$completedStatusFilter, $yearFilter]);
+        $filters = array_merge($this->getUserFilters(), [$completedStatusFilter, $yearFilter]);
 
         $proposals = app(ProposalRepository::class);
         $args = [
@@ -878,7 +886,7 @@ class ProposalsController extends Controller
 
         $completedCount = $response->estimatedTotalHits ?? 0;
 
-        if (empty($this->queryParams[ProposalSearchParams::PROJECT_STATUS()->value])) {
+        if (empty($this->queryParams[ProposalSearchParams::COMPLETED_PROPOSALS()->value])) {
             return 0;
         }
 

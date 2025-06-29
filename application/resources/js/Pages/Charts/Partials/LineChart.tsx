@@ -38,7 +38,7 @@ const LineChart: React.FC<LineChartProps> = ({
 
     const defaultColors = ['#4fadce', '#dc2626', '#ee8434'];
 
-    const transformedData = [
+    const rawTransformedData = [
         {
             id: 'Total Proposals',
             color: defaultColors[0],
@@ -64,6 +64,12 @@ const LineChart: React.FC<LineChartProps> = ({
             })),
         },
     ];
+
+    // Filter out lines where all values are 0
+    const transformedData = rawTransformedData.filter(dataset => {
+        const hasNonZeroValue = dataset.data.some((point: any) => point.y > 0);
+        return hasNonZeroValue;
+    });
 
     const legend = yAxisLabel || 'Proposals';
 
@@ -148,7 +154,7 @@ const LineChart: React.FC<LineChartProps> = ({
                     pointSize={10}
                     pointColor={{ theme: 'background' }}
                     pointBorderWidth={2}
-                    pointBorderColor={{ from: 'seriesColor' }}
+                    pointBorderColor={(point: any) => point.serieColor || point.color || defaultColors[0]}
                     pointLabelYOffset={-12}
                     enablePoints={true}
                     useMesh={true}
@@ -235,6 +241,15 @@ const LineChart: React.FC<LineChartProps> = ({
                                 };
                             },
                         );
+
+                        // Filter out data points with 0 values for tooltip
+                        const nonZeroData = dataWithPrevious.filter((item: any) => item.current?.y > 0);
+
+                        // Don't show tooltip if all values are 0
+                        if (nonZeroData.length === 0) {
+                            return null;
+                        }
+
                         return (
                             <div
                                 className="bg-tooltip rounded-lg p-4 text-white shadow-lg relative transform translate-x"
@@ -251,7 +266,7 @@ const LineChart: React.FC<LineChartProps> = ({
                                         {point.data.xFormatted}
                                     </Title>
 
-                                    {dataWithPrevious.map((item: any) => (
+                                    {nonZeroData.map((item: any) => (
                                         <div key={item.id} className="mt-2">
                                             <Paragraph className="flex items-center text-sm">
                                                 <span
