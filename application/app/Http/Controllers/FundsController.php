@@ -9,8 +9,11 @@ use App\DataTransferObjects\FundData;
 use App\DataTransferObjects\MetricData;
 use App\Enums\CampaignsSortBy;
 use App\Enums\CatalystCurrencies;
+use App\Enums\ProposalFundingStatus;
 use App\Enums\ProposalSearchParams;
+use App\Enums\ProposalStatus;
 use App\Models\Fund;
+use App\Models\Proposal;
 use App\Repositories\FundRepository;
 use App\Repositories\MetricRepository;
 use Illuminate\Http\Request;
@@ -28,15 +31,18 @@ class FundsController extends Controller
                 'proposals',
                 'funded_proposals',
                 'completed_proposals',
+                'unfunded_proposals',
             ])->get());
 
         $totalProposals = $funds->sum('proposals_count');
         $fundedProposals = $funds->sum('funded_proposals_count');
         $totalFundsAwardedADA = $funds->where('currency', CatalystCurrencies::ADA()->value)->sum('amount_awarded');
         $totalFundsAwardedUSD = $funds->where('currency', CatalystCurrencies::USD()->value)->sum('amount_awarded');
+        $proposalsCountByYear = $this->getProposalsCountByYear();
 
         return Inertia::render('Funds/Index', [
             'funds' => $funds,
+            'proposalsCountByYear' => $proposalsCountByYear,
             'chartSummary' => [
                 'totalProposals' => $totalProposals,
                 'fundedProposals' => $fundedProposals,
@@ -157,5 +163,66 @@ class FundsController extends Controller
         }
 
         return $query->get();
+    }
+
+    public function getProposalsCountByYear()
+    {
+        $yearCounts = Proposal::selectRaw('EXTRACT(YEAR FROM created_at) as year, COUNT(*) as count')
+            ->where('type', 'proposal')
+            ->whereNull('deleted_at')
+            ->whereNotNull('created_at')
+            ->groupBy('year')
+            ->orderBy('year')
+            ->pluck('count', 'year')
+            ->toArray();
+
+        $chartData = [];
+
+        foreach (array_keys($yearCounts) as $year) {
+            $year = (int) $year;
+
+            $fundedCount = $this->getFundedCountByYear($year);
+            $completedCount = $this->getCompletedCountByYear($year);
+            $unfundedCount = $this->getUnfundedCountByYear($year);
+
+            $chartData[] = [
+                'year' => (string) $year,
+                'Unfunded Proposals' => $unfundedCount ?? 0,
+                'Funded Proposals' => $fundedCount ?? 0,
+                'Completed Proposals' => $completedCount ?? 0,
+            ];
+        }
+
+        return $chartData;
+    }
+
+    private function getFundedCountByYear($year): int
+    {
+        $fundedCount = Proposal::whereYear('created_at', $year)
+            ->whereIn('funding_status', [
+                ProposalFundingStatus::funded()->value,
+                ProposalFundingStatus::leftover()->value,
+            ])
+            ->count();
+
+        return $fundedCount;
+    }
+
+    private function getCompletedCountByYear($year): int
+    {
+        $completedCount = Proposal::whereYear('created_at', $year)
+            ->where('status', ProposalStatus::complete()->value)
+            ->count();
+
+        return $completedCount;
+    }
+
+    private function getUnfundedCountByYear($year): int
+    {
+        $unfundedCount = Proposal::whereYear('created_at', $year)
+            ->where('status', ProposalStatus::unfunded()->value)
+            ->count();
+
+        return $unfundedCount;
     }
 }
