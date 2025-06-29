@@ -1,5 +1,4 @@
 import React, { ReactNode } from 'react';
-// @ts-ignore
 import { ModalLink, putConfig } from '@inertiaui/modal-react';
 
 interface ModalNavLinkProps {

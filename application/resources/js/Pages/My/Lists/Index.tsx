@@ -5,7 +5,6 @@ import { useTranslation } from 'react-i18next';
 import BookmarkCollectionList from './Partials/BookmarkCollectionList';
 import BookmarkCollectionListLoader from './Partials/BookmarkCollectionListLoader';
 import BookmarkCollectionData = App.DataTransferObjects.BookmarkCollectionData;
-// @ts-ignore
 import { putConfig } from '@inertiaui/modal-react';
 import PrimaryButton from "@/Components/atoms/PrimaryButton.tsx";
 import {useState} from "react";

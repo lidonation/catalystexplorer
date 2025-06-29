@@ -6,7 +6,6 @@ import { createRoot } from 'react-dom/client';
 import '../scss/app.scss';
 import './bootstrap';
 import './utils/i18n';
-// @ts-ignore
 import { ModalStackProvider, initFromPageProps } from '@inertiaui/modal-react';
 import AppLayout from './Layouts/AppLayout';
 
