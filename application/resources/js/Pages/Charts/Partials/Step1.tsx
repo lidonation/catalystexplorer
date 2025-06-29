@@ -27,55 +27,66 @@ export default function Step1({ onCompletionChange }: Step1Props) {
         onCompletionChange?.(isComplete);
     }, [isComplete, onCompletionChange]);
 
-    const handleSubmittedChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const isChecked = e.target.checked;
-        const current = [...(proposalTypes ?? [])];
-        
+     useEffect(() => {
+        if (proposalTypes && proposalTypes.length > 0) {
+            if (proposalTypes.includes('submitted')) {
+                setFilters({
+                    label: t('charts.submittedProposals'),
+                    value: ['submitted'],
+                    param: ParamsEnum.SUBMITTED_PROPOSALS,
+                });
+            }
+            if (proposalTypes.includes('approved')) {
+                setFilters({
+                    label: t('proposals.filters.approvedProposals'),
+                    value: ['approved'],
+                    param: ParamsEnum.APPROVED_PROPOSALS,
+                });
+            }
+            if (proposalTypes.includes('complete')) {
+                setFilters({
+                    label: t('proposals.filters.projectStatus'),
+                    value: ['complete'],
+                    param: ParamsEnum.COMPLETED_PROPOSALS,
+                });
+            }
+        }
+    }, [proposalTypes, t, setFilters]);
+
+    const handleCheckboxChange = (value: string, isChecked: boolean, filterConfig: { label: string; param: ParamsEnum }) => {
+        const current = proposalTypes ?? [];
         const updated = isChecked
-            ? [...current, 'submitted']
-            : current.filter((item) => item !== 'submitted');
+            ? current.includes(value) ? current : [...current, value]
+            : current.filter((item) => item !== value);
 
         setFilters({
-            label: t('charts.submittedProposals'),
-            value: isChecked ? ['submitted'] : [],
-            param: ParamsEnum.SUBMITTED_PROPOSALS,
+            label: filterConfig.label,
+            value: isChecked ? [value] : [],
+            param: filterConfig.param,
         });
 
         setProposalTypes(updated);
+    };
+
+    const handleSubmittedChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        handleCheckboxChange('submitted', e.target.checked, {
+            label: t('charts.submittedProposals'),
+            param: ParamsEnum.SUBMITTED_PROPOSALS,
+        });
     };
 
     const handleFundedChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const isChecked = e.target.checked;
-        const current = [...(proposalTypes ?? [])];
-        
-        const updated = isChecked
-            ? [...current, 'funded']
-            : current.filter((item) => item !== 'funded');
-
-        setFilters({
-            label: t('proposals.filters.fundingStatus'),
-            value: isChecked ? ['funded'] : [],
-            param: ParamsEnum.FUNDING_STATUS,
+        handleCheckboxChange('approved', e.target.checked, {
+            label: t('proposals.filters.approvedProposals'),
+            param: ParamsEnum.APPROVED_PROPOSALS,
         });
-
-        setProposalTypes(updated);
     };
 
     const handleCompleteChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const isChecked = e.target.checked;
-        const current = [...(proposalTypes ?? [])];
-        
-        const updated = isChecked
-            ? [...current, 'complete']
-            : current.filter((item) => item !== 'complete');
-
-        setFilters({
+        handleCheckboxChange('complete', e.target.checked, {
             label: t('proposals.filters.projectStatus'),
-            value: isChecked ? ['complete'] : [],
-            param: ParamsEnum.PROJECT_STATUS,
+            param: ParamsEnum.COMPLETED_PROPOSALS,
         });
-
-        setProposalTypes(updated);
     };
 
     return (
@@ -104,8 +115,8 @@ export default function Step1({ onCompletionChange }: Step1Props) {
                 <div className="flex items-center gap-2">
                     <Checkbox
                         id="approved-proposals"
-                        value="funded"
-                        checked={getFilter(ParamsEnum.FUNDING_STATUS)?.includes('funded') || false}
+                        value="approved"
+                        checked={getFilter(ParamsEnum.APPROVED_PROPOSALS)?.includes('approved') || false}
                         onChange={handleFundedChange}
                         className="checked:bg-primary"
                     />
@@ -121,7 +132,7 @@ export default function Step1({ onCompletionChange }: Step1Props) {
                     <Checkbox
                         id="completed-proposals"
                         value="complete"
-                        checked={getFilter(ParamsEnum.PROJECT_STATUS)?.includes('complete') || false}
+                        checked={getFilter(ParamsEnum.COMPLETED_PROPOSALS)?.includes('complete') || false}
                         onChange={handleCompleteChange}
                         className="checked:bg-primary"
                     />
