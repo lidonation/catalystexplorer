@@ -1,7 +1,7 @@
 import ModelSearch from '@/Components/ModelSearch';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/Components/Tabs';
 import { useBookmarkContext } from '@/Context/BookmarkContext';
-import React, { ReactNode, useState } from 'react';
+import React, { ReactNode, useState, useEffect } from 'react';
 
 interface BookmarkModelSearchProps {
     children?: ReactNode;
@@ -12,6 +12,8 @@ interface BookmarkModelSearchProps {
     handleTabchange?: (val: string) => void;
     activeTab?: string;
     search?: boolean;
+    searchQuery?: string;
+    typesCounts?: Record<string, number>;
 }
 
 const defaultTypes = [
@@ -43,23 +45,39 @@ const BookmarkModelSearch: React.FC<BookmarkModelSearchProps> = ({
     handleTabchange = () => {},
     activeTab = 'proposals',
     search = true,
+    searchQuery = '',
+    typesCounts = {},
 }) => {
     const { bookmarkCollection } = useBookmarkContext();
     const [currTab, setTab] = useState(activeTab);
 
-    const changeTab = (val:string) => {
+    useEffect(() => {
+        setTab(activeTab);
+    }, [activeTab]);
+
+    const changeTab = (val: string) => {
         setTab(val);
         handleTabchange(val);
-    }
+    };
+
+    const currentTypesCounts = (() => {
+        if (typesCounts && Object.keys(typesCounts).length > 0) {
+            return typesCounts;
+        }
+        if (bookmarkCollection?.types_count && Object.keys(bookmarkCollection.types_count).length > 0) {
+            return bookmarkCollection.types_count;
+        }
+        return {};
+    })();
         
     return (
         <Tabs
             onValueChange={(val) => changeTab(val)}
-            defaultValue={activeTab}
+            value={currTab}
             className="sticky top-0 right-0 left-0 z-40 h-full"
+            key={`${searchQuery}-${JSON.stringify(currentTypesCounts)}`}
         >
-            <TabsList className="no-scrollbar  overflow-x-auto scroll-smooth whitespace-nowrap">
-                {' '}
+            <TabsList className="no-scrollbar overflow-x-auto scroll-smooth whitespace-nowrap">
                 {modelTypes.map(({ name, type }) => (
                     <TabsTrigger
                         className="flex gap-3 font-semibold hover:cursor-pointer"
@@ -74,7 +92,7 @@ const BookmarkModelSearch: React.FC<BookmarkModelSearchProps> = ({
                                     : ''
                             }`}
                         >
-                            {bookmarkCollection?.types_count?.[type] ?? 0}
+                            {currentTypesCounts[type] ?? 0}
                         </span>
                     </TabsTrigger>
                 ))}
@@ -83,7 +101,7 @@ const BookmarkModelSearch: React.FC<BookmarkModelSearchProps> = ({
                 <TabsContent value={type} key={type}>
                     {search && (
                         <ModelSearch
-                            key={type}
+                            key={`${type}-${searchQuery}`}
                             className=""
                             placeholder={`${type == 'reviews' ? 'Search for reviews via proposal title' : `Search for ${type} to add`}`}
                             domain={type}
