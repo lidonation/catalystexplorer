@@ -6,6 +6,7 @@ namespace App\Models;
 
 use App\Traits\HasAuthor;
 use App\Traits\HasMetaData;
+use App\Traits\HasSignatures;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -15,7 +16,7 @@ use Spatie\Comments\Models\Concerns\HasComments;
 
 class BookmarkCollection extends Model
 {
-    use HasAuthor, HasComments, HasMetaData, Searchable, SoftDeletes;
+    use HasAuthor, HasComments, HasMetaData, HasSignatures, Searchable, SoftDeletes;
 
     protected $withCount = [
         'items',

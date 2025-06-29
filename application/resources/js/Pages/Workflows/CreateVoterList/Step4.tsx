@@ -9,7 +9,7 @@ import {
     useLocalizedRoute,
 } from '@/utils/localizedRoute';
 import { useForm } from '@inertiajs/react';
-import { ChevronLeft } from 'lucide-react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import Content from '../Partials/WorkflowContent';
@@ -32,7 +32,7 @@ const Step4: React.FC<Step4Props> = ({
 }) => {
     const form = useForm({
         rationale: rationale || '',
-        bookmarkHash: bookmarkHash,
+        bk: bookmarkHash,
     });
 
     const [isFormValid, setIsFormValid] = useState(false);
@@ -42,6 +42,7 @@ const Step4: React.FC<Step4Props> = ({
     const localizedRoute = useLocalizedRoute;
     const prevStep = localizedRoute('workflows.createVoterList.index', {
         step: activeStep - 1,
+        bk: bookmarkHash,
     });
 
     const { t } = useTranslation();
@@ -57,14 +58,14 @@ const Step4: React.FC<Step4Props> = ({
     const validateForm = () => {
         const newErrors: Record<string, string> = {};
 
-        if (form.data.rationale.length < 200) {
+        if (form.data.rationale.length < 69) {
             newErrors.rationale = t(
                 'workflows.voterList.errors.rationaleLength',
             );
         }
 
         setErrors(newErrors);
-        setIsFormValid(form.data.rationale.trim().length >= 200);
+        setIsFormValid(form.data.rationale.trim().length >= 69);
     };
 
     const handleRationaleChange = (
@@ -96,7 +97,7 @@ const Step4: React.FC<Step4Props> = ({
                                 )}
                                 id="rationale"
                                 name="rationale"
-                                minLengthValue={200}
+                                minLengthValue={69}
                                 minLengthEnforced
                                 required
                                 value={form.data.rationale}
@@ -110,7 +111,7 @@ const Step4: React.FC<Step4Props> = ({
                     </div>
                 </div>
             </Content>
-            
+
             <Footer>
                 <PrimaryLink
                     href={prevStep}
@@ -121,10 +122,11 @@ const Step4: React.FC<Step4Props> = ({
                 </PrimaryLink>
                 <PrimaryButton
                     className="text-sm lg:px-8 lg:py-3"
-                    disabled={!isFormValid}
+                    disabled={rationale?.trim()?.length < 69}
                     onClick={submitForm}
                 >
-                    <span>{t('Complete')}</span>
+                    <span>{t('Save List')}</span>
+                    <ChevronRight className="h-4 w-4" />
                 </PrimaryButton>
             </Footer>
         </WorkflowLayout>

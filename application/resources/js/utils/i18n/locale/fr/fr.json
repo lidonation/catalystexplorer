@@ -195,6 +195,8 @@
             "descriptionHint": "Doit contenir au moins 200 caractères.",
             "selectFund": "Sélectionner un Fonds",
             "visibility": "Visibilité",
+            "browseProposal": "Browse Proposal",
+            "submitVote": "Submit Votes",
             "visibilityOptions": {
                 "public": "Public",
                 "private": "Privé",
@@ -242,6 +244,7 @@
                 "proposals": "Propositions",
                 "proposalsInfo": "Ajoutons maintenant des propositions à votre Liste de Vote. Vous pouvez rechercher des propositions existantes et sélectionner celles qui correspondent.",
                 "rationale": "Raisonnement",
+                "listCreated": "Liste  été créée ",
                 "rationaleInfo": "Pourquoi avez-vous sélectionné ces propositions ? Fournir un raisonnement aide les autres à comprendre vos choix et rend votre liste plus crédible."
             }
         },
@@ -252,17 +255,17 @@
                 "nameWallet": "Portefeuille de nom"
             },
             "signWallet": "Signer le portefeuille",
-            "nameWallet":"Portefeuille de nom",
-            "inputWalletNamePlaceHolder":"Nom du portefeuille",
-            "walletNameCondition":"Doit contenir au moins 6 caractères.",
-            "walletNameDescription":"Donnez à votre portefeuille un nom à afficher dans le tableau de bord de votre portefeuille.",
+            "nameWallet": "Portefeuille de nom",
+            "inputWalletNamePlaceHolder": "Nom du portefeuille",
+            "walletNameCondition": "Doit contenir au moins 6 caractères.",
+            "walletNameDescription": "Donnez à votre portefeuille un nom à afficher dans le tableau de bord de votre portefeuille.",
             "signAuth": "En signant, vous autorisez cette action en toute sécurité avec votre portefeuille. Votre clé privée reste en sécurité. Procédez si les détails sont corrects.",
             "signMessage": "Signer",
             "signing": "Signature en cours...",
             "success": {
                 "title": "Succès !!",
                 "message": "Votre signature a été effectuée avec succès et enregistrée en toute sécurité. Votre transaction est maintenant autorisée et prête à être traitée.",
-                "successfullySigned":"Votre portefeuille a été signé avec succès."
+                "successfullySigned": "Votre portefeuille a été signé avec succès."
             },
             "errors": {
                 "failedToGetSignature": "Échec de l'obtention de la signature du portefeuille",
@@ -308,6 +311,10 @@
             "submitStatement": "Soumettre la Déclaration"
         },
         "bookmarks": {
+            "success": {
+                "title": "Succès !!",
+                "message": "Votre Liste de Vote a été créée !"
+            },
             "intro": "Avant de commencer, configurons votre liste de favoris. Une liste de favoris est une collection personnalisée d’éléments sauvegardés, vous permettant d’organiser, d’accéder et de gérer facilement le contenu qui compte pour vous. Prêt à commencer ?\n\n*Dans les prochaines étapes, vous nommerez votre liste, ajouterez vos éléments et expliquerez votre raisonnement pour les avoir sélectionnés.*",
             "details": "Détails",
             "listDetail": "Détail de la liste",
@@ -339,7 +346,7 @@
             "claim": "Bouton de réclamation",
             "claimed": "Bouton réclamé",
             "share": "Bouton de partage",
-            "createWallet":"Créer un portefeuille"
+            "createWallet": "Créer un portefeuille"
         },
         "bookmark": "Icône de signet"
     },

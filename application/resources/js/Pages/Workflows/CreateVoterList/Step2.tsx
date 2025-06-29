@@ -106,31 +106,33 @@ const Step2: React.FC<Step2Props> = ({
             <Nav stepDetails={stepDetails} activeStep={activeStep} />
 
             <Content>
-                <div className="bg-background mx-auto max-w-3xl p-6 lg:p-8">
+                <div className="bg-background mx-auto max-h-[35rem] w-full max-w-3xl space-y-4 overflow-y-auto p-6 lg:p-8">
                     <div className="space-y-6 rounded-lg border border-gray-100 p-6 shadow-sm">
-                        <div className="mb-6 flex items-center justify-end">
-                            <div className="flex items-center">
-                                <ValueLabel className="text-gray-persist mr-2 text-sm font-bold">
-                                    {t('workflows.voterList.selectFund')}
-                                </ValueLabel>
-                                <Selector
-                                    isMultiselect={false}
-                                    selectedItems={form.data.fund_slug}
-                                    setSelectedItems={(value) => {
-                                        form.setData('fund_slug', value);
-                                    }}
-                                    options={funds?.map((fund: any) => ({
-                                        label: fund.title,
-                                        value: fund.slug,
-                                    }))}
-                                    hideCheckbox={true}
-                                    placeholder={t(
-                                        'workflows.voterList.selectFund',
-                                    )}
-                                    className="w-64"
-                                />
+                        {!voterList.fund && (
+                            <div className="mb-6 flex items-center justify-end">
+                                <div className="flex items-center">
+                                    <ValueLabel className="text-gray-persist mr-2 text-sm font-bold">
+                                        {t('workflows.voterList.selectFund')}
+                                    </ValueLabel>
+                                    <Selector
+                                        isMultiselect={false}
+                                        selectedItems={form.data.fund_slug}
+                                        setSelectedItems={(value) => {
+                                            form.setData('fund_slug', value);
+                                        }}
+                                        options={funds?.map((fund: any) => ({
+                                            label: fund.title,
+                                            value: fund.slug,
+                                        }))}
+                                        hideCheckbox={true}
+                                        placeholder={t(
+                                            'workflows.voterList.selectFund',
+                                        )}
+                                        className="w-64"
+                                    />
+                                </div>
                             </div>
-                        </div>
+                        )}
                         <div>
                             <ValueLabel className="text-content">
                                 {t('workflows.voterList.title')}

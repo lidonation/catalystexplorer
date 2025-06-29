@@ -1,7 +1,7 @@
 import ModelSearch from '@/Components/ModelSearch';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/Components/Tabs';
 import { useBookmarkContext } from '@/Context/BookmarkContext';
-import React, { ReactNode, useState, useEffect } from 'react';
+import React, { ReactNode, useEffect, useState } from 'react';
 
 interface BookmarkModelSearchProps {
     children?: ReactNode;
@@ -64,38 +64,47 @@ const BookmarkModelSearch: React.FC<BookmarkModelSearchProps> = ({
         if (typesCounts && Object.keys(typesCounts).length > 0) {
             return typesCounts;
         }
-        if (bookmarkCollection?.types_count && Object.keys(bookmarkCollection.types_count).length > 0) {
+        if (
+            bookmarkCollection?.types_count &&
+            Object.keys(bookmarkCollection.types_count).length > 0
+        ) {
             return bookmarkCollection.types_count;
         }
         return {};
     })();
-        
+
     return (
         <Tabs
             onValueChange={(val) => changeTab(val)}
-            value={currTab}
+            defaultValue={currTab}
             className="sticky top-0 right-0 left-0 z-40 h-full"
             key={`${searchQuery}-${JSON.stringify(currentTypesCounts)}`}
         >
             <TabsList className="no-scrollbar overflow-x-auto scroll-smooth whitespace-nowrap">
-                {modelTypes.map(({ name, type }) => (
-                    <TabsTrigger
-                        className="flex gap-3 font-semibold hover:cursor-pointer"
-                        value={type}
-                        key={type}
-                    >
-                        <span>{name}</span>
-                        <span
-                            className={`flex min-w-[2em] items-center justify-center rounded-full border px-2 py-0.5 text-sm transition-all ${
-                                currTab === type
-                                    ? 'border-primary-mid bg-primary-light'
-                                    : ''
-                            }`}
+                {' '}
+                {modelTypes.map(({ name, type }) => {
+                    if (bookmarkCollection.fund_id && type != 'proposals') {
+                        return;
+                    }
+                    return (
+                        <TabsTrigger
+                            className="flex gap-3 font-semibold hover:cursor-pointer"
+                            value={type}
+                            key={type}
                         >
-                            {currentTypesCounts[type] ?? 0}
-                        </span>
-                    </TabsTrigger>
-                ))}
+                            <span>{name}</span>
+                            <span
+                                className={`flex min-w-[2em] items-center justify-center rounded-full border px-2 py-0.5 text-sm transition-all ${
+                                    currTab === type
+                                        ? 'border-primary-mid bg-primary-light'
+                                        : ''
+                                }`}
+                            >
+                                {currentTypesCounts[type] ?? 0}
+                            </span>
+                        </TabsTrigger>
+                    );
+                })}
             </TabsList>
             {modelTypes.map(({ type }) => (
                 <TabsContent value={type} key={type}>

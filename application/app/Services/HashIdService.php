@@ -67,4 +67,5 @@ class HashIdService
 
         return $result;
     }
+
 }

@@ -205,9 +205,9 @@ class CatalystDrepController extends Controller
         // Create or update the signature
         $signature = Signature::updateOrCreate(
             [
-                'signature' => $validated['signature'],
                 'stake_key' => $validated['stake_key'],
                 'stake_address' => $validated['stakeAddress'],
+                'user_id' => Auth::id(),
             ],
             $validated
         );

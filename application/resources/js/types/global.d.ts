@@ -16,7 +16,4 @@ declare module '@inertiajs/core' {
     interface PageProps extends InertiaPageProps, AppPageProps { }
 }
 
-declare module '@inertiaui/modal-react' {
-    interface ModalLink {}
-}
 
