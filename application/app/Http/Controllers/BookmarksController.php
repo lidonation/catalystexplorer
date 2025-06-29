@@ -15,8 +15,8 @@ use App\Models\BookmarkCollection;
 use App\Models\BookmarkItem;
 use App\Models\Community;
 use App\Models\Group;
-use App\Models\Proposal;
 use App\Models\IdeascaleProfile;
+use App\Models\Proposal;
 use App\Models\Review;
 use App\Repositories\BookmarkCollectionRepository;
 use Illuminate\Http\RedirectResponse;
@@ -101,7 +101,7 @@ class BookmarksController extends Controller
 
         return Inertia::render('Bookmarks/View', $props);
     }
-    
+
     protected function getFilteredTypesCounts(BookmarkCollection $bookmarkCollection): array
     {
         $modelTypes = [
@@ -122,19 +122,20 @@ class BookmarksController extends Controller
 
             if (empty($bookmarkItemIds)) {
                 $typesCounts[$typeKey] = 0;
+
                 continue;
             }
 
             if ($this->search) {
                 $searchBuilder = $modelClass::search($this->search);
                 $searchBuilder->whereIn('id', $bookmarkItemIds);
-                
+
                 $searchResults = $searchBuilder->raw();
                 $count = $searchResults['estimatedTotalHits'] ?? 0;
             } else {
                 $query = $modelClass::query();
                 $query->whereIn('id', $bookmarkItemIds);
-                
+
                 $count = $query->count();
             }
 
