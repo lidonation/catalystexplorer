@@ -37,13 +37,13 @@ const TransactionRow: React.FC<TransactionRowProps> = ({
   };
 
   return (
-    <tr className="border-gray-persist/30 border-b">
+    <tr className="hover:bg-background-lighter">
       {columns.map((column) => (
-        <td key={column.key} className="p-3 border-r border-gray-persist/30" style={column.width ? { width: column.width } : {}}>
+        <td key={column.key} className="border border-gray-200 px-4 py-3 " style={column.width ? { width: column.width } : {}}>
           {column.render(transaction)}
         </td>
       ))}
-      <td className="p-3">
+      <td className="border-b border-r border-gray-200 px-4 py-3">
         <Button
           onClick={handleViewDetails}
           className="bg-primary px-4 py-2 text-sm"

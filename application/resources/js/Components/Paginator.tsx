@@ -43,9 +43,8 @@ const PaginationComponent: React.FC<PaginationComponentProps<any>> = ({
 
     return (
         <div className="mb-8">
-            <div className="flex w-full flex-col gap-2">
-                <div className="flex flex-col items-center justify-between gap-4 md:flex-row">
-                    {/* Previous Button */}
+            <div className="flex w-full flex-col justify-between">
+                <div className="flex items-center justify-between w-full">
                     <div>
                         <PaginationItem className="list-none text-xs">
                             <PaginationPrevious
@@ -67,10 +66,9 @@ const PaginationComponent: React.FC<PaginationComponentProps<any>> = ({
                             ></PaginationPrevious>
                         </PaginationItem>
                     </div>
-                    <div className="flex flex-col items-center gap-6 md:flex-row">
-                        {/* Page Numbers */}
-                        <div className="flex flex-col justify-center lg:gap-6">
-                            <ul className="flex list-none flex-wrap items-center gap-1 text-sm lg:flex-nowrap lg:gap-8">
+                    <div className="flex  items-center gap-6">
+                        <div className="flex items-center gap-2">
+                            <ul className="flex list-none items-center gap-1 text-sm">
                                 {links &&
                                     links.map((link, index) =>
                                         link.label.includes('&laquo;') ||
@@ -126,7 +124,6 @@ const PaginationComponent: React.FC<PaginationComponentProps<any>> = ({
                             </span>
                         </div>
                     </div>
-                    {/* Next Button */}
                     <div>
                         <PaginationItem className="list-none text-xs">
                             <PaginationNext
