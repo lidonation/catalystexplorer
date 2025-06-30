@@ -6,22 +6,26 @@ namespace App\Http\Controllers;
 
 use App\Actions\TransformIdsToHashes;
 use App\DataTransferObjects\BookmarkCollectionData;
+use App\DataTransferObjects\BookmarkItemData;
 use App\DataTransferObjects\ProposalData;
 use App\Enums\BookmarkStatus;
 use App\Enums\ProposalSearchParams;
 use App\Enums\QueryParamsEnum;
 use App\Enums\VoteEnum;
 use App\Models\BookmarkCollection;
+use App\Models\BookmarkItem;
 use App\Models\Campaign;
 use App\Models\Fund;
 use App\Models\Meta;
 use App\Models\Proposal;
+use App\Models\Signature;
 use App\Repositories\ProposalRepository;
 use App\Services\HashIdService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Fluent;
 use Inertia\Inertia;
@@ -70,27 +74,30 @@ class VoterListController extends Controller
     {
         $fundSlug = $request->input(QueryParamsEnum::FUNDS()->value);
         $bookmarkHash = $request->input(QueryParamsEnum::BOOKMARK_COLLECTION()->value);
-        $bookmarkId = null;
+        $bookmarkCollection = null;
 
         if ($bookmarkHash) {
-            $bookmarkId = (new HashIdService(new BookmarkCollection))->decode($bookmarkHash);
+            $bookmarkCollection = BookmarkCollection::byHash($bookmarkHash);
         }
 
-        $fund = null;
-        if ($fundSlug) {
-            $fund = Fund::where('slug', $fundSlug)->first();
-        }
+        $fund = Fund::find($bookmarkCollection->fund_id);
 
         $proposals = [];
         $campaigns = [];
         $selectedProposals = [];
 
-        if ($bookmarkId) {
-            $selectedProposals = DB::table('bookmark_items')
-                ->where('bookmark_collection_id', $bookmarkId)
+        if ($bookmarkCollection) {
+            $selectedProposals = BookmarkItem::where('bookmark_collection_id', $bookmarkCollection->id)
                 ->where('user_id', $request->user()->id)
-                ->pluck('model_id')
-                ->toArray();
+                ->where('model_type', Proposal::class)->get()
+                ->flatMap(
+                    fn ($item) => [
+                        [
+                            'hash' => (new HashIdService(new Proposal))->encode($item->model_id),
+                            'vote' => $item->vote?->value,
+                        ],
+                    ]
+                )->toArray();
         }
 
         if ($fund) {
@@ -219,9 +226,140 @@ class VoterListController extends Controller
         ]);
     }
 
+    public function step5(Request $request): Response
+    {
+        $bookmarkHash = $request->input(QueryParamsEnum::BOOKMARK_COLLECTION()->value);
+
+        return Inertia::render('Workflows/CreateVoterList/Step5', [
+            'stepDetails' => [],
+            'activeStep' => intval($request->step),
+            'bookmarkHash' => $bookmarkHash,
+        ]);
+    }
+
+    public function step6(Request $request): Response
+    {
+        $bookmarkHash = $request->input(key: QueryParamsEnum::BOOKMARK_COLLECTION()->value);
+
+        $bookmarkCollection = BookmarkCollection::byHash($bookmarkHash)?->load('fund');
+
+        $page = (int) $request->input(ProposalSearchParams::PAGE()->value, 1);
+        $limit = (int) $request->input('limit', 8);
+
+        $items = $bookmarkCollection->proposals()->with('model')->paginate($limit, ['*'], 'p', $page);
+
+        $paginatedItems = to_length_aware_paginator(
+            BookmarkItemData::collect($items),
+        )->onEachSide(0);
+
+        return Inertia::render('Workflows/CreateVoterList/Step6', [
+            'stepDetails' => $this->getStepDetails(),
+            'activeStep' => intval($request->step),
+            'selectedProposals' => $paginatedItems,
+            'bookmarkCollection' => BookmarkCollectionData::from($bookmarkCollection),
+            'filters' => [
+                ProposalSearchParams::PAGE()->value => $page,
+                QueryParamsEnum::BOOKMARK_COLLECTION()->value => $bookmarkHash,
+            ],
+        ]);
+    }
+
+    public function step7(Request $request): Response
+    {
+        $bookmarkHash = $request->input(key: QueryParamsEnum::BOOKMARK_COLLECTION()->value);
+
+        return Inertia::render('Workflows/CreateVoterList/Step7', [
+            'stepDetails' => $this->getStepDetails(),
+            'activeStep' => intval($request->step),
+            'bookmarkHash' => $bookmarkHash,
+        ]);
+    }
+
+    public function step8(Request $request): Response
+    {
+        $bookmarkHash = $request->input(key: QueryParamsEnum::BOOKMARK_COLLECTION()->value);
+
+        return Inertia::render('Workflows/CreateVoterList/Step8', [
+            'stepDetails' => $this->getStepDetails(),
+            'activeStep' => intval($request->step),
+            'bookmarkHash' => $bookmarkHash,
+            // 'wallet' => $wallet,
+        ]);
+    }
+
+    public function step9(Request $request): Response
+    {
+        $bookmarkHash = $request->input(key: QueryParamsEnum::BOOKMARK_COLLECTION()->value);
+
+        $bookmarkCollection = BookmarkCollection::byHash($bookmarkHash)?->load('fund');
+
+        $page = (int) $request->input(ProposalSearchParams::PAGE()->value, 1);
+        $limit = (int) $request->input('limit', 5);
+
+        $items = $bookmarkCollection->proposals()->with('model')->paginate($limit, ['*'], 'p', $page);
+
+        $paginatedItems = to_length_aware_paginator(
+            BookmarkItemData::collect($items),
+        )->onEachSide(0);
+
+        return Inertia::render('Workflows/CreateVoterList/Step9', [
+            'stepDetails' => $this->getStepDetails(),
+            'activeStep' => intval($request->step),
+            'selectedProposals' => $paginatedItems,
+            'bookmarkCollection' => BookmarkCollectionData::from($bookmarkCollection),
+            'filters' => [
+                ProposalSearchParams::PAGE()->value => $page,
+                QueryParamsEnum::BOOKMARK_COLLECTION()->value => $bookmarkHash,
+            ],
+        ]);
+    }
+
     public function success(Request $request): Response
     {
         return Inertia::render('Workflows/CreateVoterList/Success');
+    }
+
+    public function signBallot(Request $request): RedirectResponse
+    {
+        $bookmarkHash = $request->input(key: QueryParamsEnum::BOOKMARK_COLLECTION()->value);
+
+        $list = BookmarkCollection::byHash($bookmarkHash);
+
+        $stakeAddressPattern = app()->environment('production')
+            ? '/^stake1[0-9a-z]{38,}$/'
+            : '/^stake_test1[0-9a-z]{38,}$/';
+
+        $validated = $request->validate([
+            'signature' => 'required|string',
+            'signature_key' => 'required|string',
+            'stake_key' => 'required|string',
+            'stakeAddress' => [
+                'required',
+                "regex:$stakeAddressPattern",
+            ],
+        ]);
+
+        // Create or update the signature
+        $signature = Signature::updateOrCreate(
+            [
+                'stake_key' => $validated['stake_key'],
+                'stake_address' => $validated['stakeAddress'],
+                'user_id' => Auth::id(),
+            ],
+            $validated
+        );
+
+        // Attach the signature to the list if not already attached
+        $list->modelSignatures()->firstOrCreate([
+            'model_id' => $list->id,
+            'model_type' => BookmarkCollection::class,
+            'signature_id' => $signature->id,
+        ]);
+
+        return to_route('workflows.createVoterList.index', [
+            'step' => 8,
+            QueryParamsEnum::BOOKMARK_COLLECTION()->value => $list->hash,
+        ]);
     }
 
     public function saveListDetails(Request $request): RedirectResponse
@@ -285,30 +423,28 @@ class VoterListController extends Controller
         ]);
 
         $bookmarkId = (new HashIdService(new BookmarkCollection))->decode($validated['bookmarkHash']);
-        $proposalSlugs = $validated['proposals'];
-        $proposals = Proposal::whereIn('slug', $proposalSlugs)->get();
 
-        DB::table('bookmark_items')
-            ->where('bookmark_collection_id', $bookmarkId)
-            ->where('user_id', $request->user()->id)
-            ->delete();
+        $proposals = $validated['proposals'];
 
         foreach ($proposals as $proposal) {
-            $voteValue = $validated['votes'][$proposal->slug] ?? null;
+            $voteValue = $proposal['vote'] ?? null;
 
             if ($voteValue !== null && ! in_array($voteValue, VoteEnum::values())) {
                 $voteValue = null;
             }
 
-            DB::table('bookmark_items')->insert([
+            $conditions = [
                 'bookmark_collection_id' => $bookmarkId,
-                'user_id' => $request->user()->id,
                 'model_type' => Proposal::class,
-                'model_id' => $proposal->id,
-                'vote' => $voteValue,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ]);
+                'model_id' => Proposal::byHash($proposal['hash'])->id,
+                'user_id' => $request->user()->id,
+            ];
+
+            if ($voteValue === null) {
+                BookmarkItem::where($conditions)->delete();
+            } else {
+                BookmarkItem::updateOrInsert($conditions, ['vote' => $voteValue]);
+            }
         }
 
         return to_route('workflows.createVoterList.index', [
@@ -321,10 +457,10 @@ class VoterListController extends Controller
     {
         $validated = $request->validate([
             'rationale' => 'required|string',
-            'bookmarkHash' => 'required|string',
+            QueryParamsEnum::BOOKMARK_COLLECTION()->value => 'required|string',
         ]);
 
-        $bookmarkId = (new HashIdService(new BookmarkCollection))->decode($validated['bookmarkHash']);
+        $bookmarkId = (new HashIdService(new BookmarkCollection))->decode($validated[QueryParamsEnum::BOOKMARK_COLLECTION()->value]);
 
         Meta::where('model_type', BookmarkCollection::class)
             ->where('model_id', $bookmarkId)
@@ -343,7 +479,10 @@ class VoterListController extends Controller
             $bookmark->update(['status' => BookmarkStatus::PUBLISHED()->value]);
         }
 
-        return to_route('workflows.createVoterList.success');
+        return to_route('workflows.createVoterList.index', [
+            'step' => 5,
+            QueryParamsEnum::BOOKMARK_COLLECTION()->value => $bookmark->hash,
+        ]);
     }
 
     public function getStepDetails(): Collection
@@ -363,6 +502,29 @@ class VoterListController extends Controller
             [
                 'title' => 'workflows.voterList.steps.rationale',
                 'info' => 'workflows.voterList.steps.rationaleInfo',
+            ],
+            [
+                'title' => 'workflows.voterList.steps.listCreated',
+            ],
+            [
+                'title' => 'workflows.voterList.steps.votesSummary',
+                'info' => 'workflows.voterList.steps.votesSummaryInfo',
+            ],
+            [
+                'title' => 'workflows.voterList.steps.connectWallet',
+                'info' => 'workflows.voterList.steps.connectWalletInfo',
+            ],
+            [
+                'title' => 'workflows.voterList.steps.submitVotes',
+                'info' => 'workflows.voterList.steps.submitReviewedVotesInfo',
+            ],
+            [
+                'title' => 'workflows.voterList.steps.submission',
+                'info' => 'workflows.voterList.steps.submissionInfo',
+            ],
+            [
+                'title' => 'workflows.voterList.success.title',
+                'info' => 'workflows.voterList.success.successInfo',
             ],
         ]);
     }

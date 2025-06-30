@@ -17,6 +17,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Fluent;
@@ -211,7 +212,7 @@ class WalletController extends Controller
     public function index(Request $request): Response
     {
         try {
-            $userId = auth()->id();
+            $userId = Auth::id();
 
             if (! $userId) {
                 return $this->emptyPagination($request);
@@ -239,7 +240,7 @@ class WalletController extends Controller
     public function destroy(Request $request, string $stakeAddress): JsonResponse|RedirectResponse
     {
         try {
-            $userId = auth()->id();
+            $userId = Auth::id();
 
             if (! $userId) {
                 return response()->json([

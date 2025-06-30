@@ -6,14 +6,16 @@ export default function Footer() {
     const { t } = useTranslation();
 
     return (
-        <div className="flex min-h-96 w-full flex-col justify-between gap-16 rounded-t-xl bg-linear-to-r from-[var(--cx-background-gradient-1-dark)] to-[var(--cx-background-gradient-1-dark)] pt-16 pb-12 z-10 relative">
+        <div className="relative z-10 flex min-h-96 w-full flex-col justify-between gap-16 rounded-t-xl bg-linear-to-r from-[var(--cx-background-gradient-1-dark)] to-[var(--cx-background-gradient-1-dark)] pt-16 pb-12">
             <section className="text-content-light container">
                 <div className="grid grid-cols-2 gap-8 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
                     <div className="title-gap-y flex min-w-24 flex-col">
                         <h5 className="title-6">{t('proposals.proposals')}</h5>
                         <ul className="menu-gap-y flex flex-col">
                             <li>
-                                <Paragraph>{t('proposals.allProposals')}</Paragraph>
+                                <Paragraph>
+                                    {t('proposals.allProposals')}
+                                </Paragraph>
                             </li>
                             <li>
                                 <Paragraph>{t('proposalReviews')}</Paragraph>
@@ -38,7 +40,9 @@ export default function Footer() {
                                 <Paragraph>{t('groups.groups')}</Paragraph>
                             </li>
                             <li>
-                                <Paragraph>{t('communities')}</Paragraph>
+                                <Paragraph>
+                                    {t('communities.communities')}
+                                </Paragraph>
                             </li>
                             <li>
                                 <Paragraph>{t('dReps')}</Paragraph>

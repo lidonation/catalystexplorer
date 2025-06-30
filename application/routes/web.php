@@ -170,6 +170,8 @@ Route::localized(
             Route::prefix('/create-voter-list/steps')->as('createVoterList.')
                 ->middleware([WorkflowMiddleware::class])
                 ->group(function () {
+                    Route::get('/success', [VoterListController::class, 'success'])
+                        ->name('success');
                     Route::get('/{step}', [VoterListController::class, 'handleStep'])
                         ->name('index');
                     Route::post('/save-list-details', [VoterListController::class, 'saveListDetails'])
@@ -178,25 +180,25 @@ Route::localized(
                         ->name('saveProposals');
                     Route::post('/save-rationales', [VoterListController::class, 'saveRationales'])
                         ->name('saveRationales');
-                });
-
-            Route::get('/create-voter-list/success', [VoterListController::class, 'success'])
-                ->name('createVoterList.success');
-
-            Route::prefix('/submit-votes/steps')->as('voting.')
-                ->middleware([WorkflowMiddleware::class])
-                ->group(function () {
-                    Route::get('/success', [VotingWorkflowController::class, 'success'])
-                        ->name('success');
-                    Route::get('/{step}', [VotingWorkflowController::class, 'handleStep'])
-                        ->name('index');
-                    Route::post('/save-decisions', [VotingWorkflowController::class, 'saveVotingDecisions'])
-                        ->name('saveDecisions');
-                    Route::post('/sign-ballot', [VotingWorkflowController::class, 'signBallot'])
+                    Route::post('/sign-ballot', [VoterListController::class, 'signBallot'])
                         ->name('signBallot');
-                    Route::post('/submit-votes', [VotingWorkflowController::class, 'submitVotes'])
-                        ->name('submitVotes');
                 });
+
+
+            // Route::prefix('/submit-votes/steps')->as('voting.')
+            //     ->middleware([WorkflowMiddleware::class])
+            //     ->group(function () {
+            //         Route::get('/success', [VotingWorkflowController::class, 'success'])
+            //             ->name('success');
+            //         Route::get('/{step}', [VotingWorkflowController::class, 'handleStep'])
+            //             ->name('index');
+            //         Route::post('/save-decisions', [VotingWorkflowController::class, 'saveVotingDecisions'])
+            //             ->name('saveDecisions');
+            //         Route::post('/sign-ballot', [VotingWorkflowController::class, 'signBallot'])
+            //             ->name('signBallot');
+            //         Route::post('/submit-votes', [VotingWorkflowController::class, 'submitVotes'])
+            //             ->name('submitVotes');
+            //     });
 
             Route::prefix('/create-bookmarks/steps')->as('bookmarks.')
                 ->middleware([WorkflowMiddleware::class])

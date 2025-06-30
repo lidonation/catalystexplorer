@@ -1,10 +1,12 @@
 import BookmarkOffIcon from '@/Components/svgs/BookmarkOffIcon';
 import BookmarkOnIcon from '@/Components/svgs/BookmarkOnIcon';
+import ToolTipHover from '@/Components/ToolTipHover';
 import useBookmark from '@/Hooks/useBookmark';
 import BookmarkPage1 from '@/Pages/My/Lists/Partials/ListCreateFromBookmarkSave/Step1';
 import BookmarkPage2 from '@/Pages/My/Lists/Partials/ListCreateFromBookmarkSave/Step2';
 import BookmarkPage3 from '@/Pages/My/Lists/Partials/ListCreateFromBookmarkSave/Step3';
 import TransitionMenu from '@/Pages/My/Lists/Partials/TransitionMenu';
+import { useState } from 'react';
 
 interface BookmarkButtonProps {
     modelType: string;
@@ -27,8 +29,8 @@ export default function BookmarkButton({
         isOpen,
         setIsOpen,
         bookmarkId,
-        associatedCollection
-    } = useBookmark({ modelType, itemId });   
+        associatedCollection,
+    } = useBookmark({ modelType, itemId });
     const handleOpenChange = async (open: boolean) => {
         if (open && !isBookmarked) {
             await createBookmark();
@@ -36,6 +38,7 @@ export default function BookmarkButton({
             setIsOpen(open);
         }
     };
+    const [isHovered, setIsHovered] = useState(false);
 
     const pages = [
         <BookmarkPage1
@@ -47,17 +50,28 @@ export default function BookmarkButton({
         />,
         <BookmarkPage2 key="priority" />,
         <BookmarkPage3 key="new-list" />,
-    ];    
+    ];
 
     return (
         <TransitionMenu
             trigger={
                 <button
-                    className="cursor-pointer rounded-full p-1.5"
+                    className="cursor-pointer rounded-full p-1.5 relative"
                     aria-label={`bookmark-${modelType}`}
                     onClick={toggleBookmark}
+                    onMouseEnter={() => setIsHovered(true)}
+                    onMouseLeave={() => setIsHovered(false)}
                 >
-                    {isBookmarked ? <BookmarkOnIcon width={width} height={height} /> : <BookmarkOffIcon width={width} height={height} />}
+                    {isHovered && (
+                        <div className="absolute bottom-full left-1/2 z-50 mb-2 -translate-x-1/2 transform">
+                            <ToolTipHover props={'Bookmark Item'} />
+                        </div>
+                    )}
+                    {isBookmarked ? (
+                        <BookmarkOnIcon width={width} height={height} />
+                    ) : (
+                        <BookmarkOffIcon width={width} height={height} />
+                    )}
                 </button>
             }
             pages={pages}
