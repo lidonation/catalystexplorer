@@ -119,7 +119,7 @@ function SecondarySearchControls({
                 </div>
                 <div className="xs:flex-row flex w-full flex-col gap-2 sm:w-auto sm:flex-row">
                     <Button
-                        className={`border-input bg-background flex w-full cursor-pointer flex-row items-center justify-center gap-2 rounded-lg border px-3 py-1.5 shadow-xs sm:w-auto ${
+                        className={`border-input bg-background flex w-full cursor-pointer flex-row items-center justify-center gap-2 rounded-lg border px-3 py-1.5 shadow-md sm:w-auto ${
                             showFilters
                                 ? 'border-accent-blue text-primary ring-offset-background ring-1'
                                 : 'hover:bg-background-lighter text-gray-persist'
@@ -129,7 +129,7 @@ function SecondarySearchControls({
                     >
                         <FilterLinesIcon className={'size-6'} />
                         <span>{t('filters')}</span>
-                        <span>({filtersCount})</span>
+                       {filtersCount > 0 && <span>({filtersCount})</span>}
                     </Button>
 
                     <Selector

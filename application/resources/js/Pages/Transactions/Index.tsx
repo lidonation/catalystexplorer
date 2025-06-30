@@ -40,8 +40,8 @@ export default function Transactions({
             </div>
 
                 <div className="container lg:my-12 my-8">
-                    <div className="bg-background overflow-hidden bg-white p-6 shadow-xl sm:rounded-lg">
-                        <div className="border-background-lighter mb-4 w-full border-b">
+                    <div className="bg-background border-gray-200 overflow-hidden bg-white p-6 shadow-xl sm:rounded-lg">
+                        <div className="border-gray-200 mb-4 w-full">
                             <Title level="4" className="mb-4 font-bold">
                                 {t('transactions.title')}
                             </Title>
@@ -49,7 +49,7 @@ export default function Transactions({
 
                         <section className="mb-4 w-full">
                             <SearchControls
-                                withFilters={false}
+                                withFilters={true}
                                 sortOptions={TransactionSortOptions()}
                                 onFiltersToggle={setShowFilters}
                                 searchPlaceholder={t(
@@ -58,11 +58,11 @@ export default function Transactions({
                             />
                         </section>
 
-                        <div className="border-background-lighter overflow-hidden rounded-lg border">
+                        <div className=" border-gray-200 overflow-hidden rounded-lg shadow-md">
                             <CardanoTransactionTable
                                 transactions={transactions?.data ?? []}
                             />
-                            <div className="flex w-full items-center justify-center">
+                            <div className="w-full">
                                 {transactions && (
                                     <Paginator pagination={transactions} />
                                 )}
