@@ -27,66 +27,69 @@ export default function Step1({ onCompletionChange }: Step1Props) {
         onCompletionChange?.(isComplete);
     }, [isComplete, onCompletionChange]);
 
-     useEffect(() => {
-        if (proposalTypes && proposalTypes.length > 0) {
-            if (proposalTypes.includes('submitted')) {
-                setFilters({
-                    label: t('charts.submittedProposals'),
-                    value: ['submitted'],
-                    param: ParamsEnum.SUBMITTED_PROPOSALS,
-                });
-            }
-            if (proposalTypes.includes('approved')) {
-                setFilters({
-                    label: t('proposals.filters.approvedProposals'),
-                    value: ['approved'],
-                    param: ParamsEnum.APPROVED_PROPOSALS,
-                });
-            }
-            if (proposalTypes.includes('complete')) {
-                setFilters({
-                    label: t('proposals.filters.projectStatus'),
-                    value: ['complete'],
-                    param: ParamsEnum.COMPLETED_PROPOSALS,
-                });
-            }
+    useEffect(() => {
+        if (proposalTypes?.includes('submitted')) {
+            setFilters({
+                label: t('charts.submittedProposals'),
+                value: ['submitted'],
+                param: ParamsEnum.SUBMITTED_PROPOSALS,
+            });
+        } else {
+            setFilters({
+                label: t('charts.submittedProposals'),
+                value: [],
+                param: ParamsEnum.SUBMITTED_PROPOSALS,
+            });
+        }
+
+        if (proposalTypes?.includes('approved')) {
+            setFilters({
+                label: t('proposals.filters.approvedProposals'),
+                value: ['approved'],
+                param: ParamsEnum.APPROVED_PROPOSALS,
+            });
+        } else {
+            setFilters({
+                label: t('proposals.filters.approvedProposals'),
+                value: [],
+                param: ParamsEnum.APPROVED_PROPOSALS,
+            });
+        }
+
+        if (proposalTypes?.includes('complete')) {
+            setFilters({
+                label: t('proposals.filters.projectStatus'),
+                value: ['complete'],
+                param: ParamsEnum.COMPLETED_PROPOSALS,
+            });
+        } else {
+            setFilters({
+                label: t('proposals.filters.projectStatus'),
+                value: [],
+                param: ParamsEnum.COMPLETED_PROPOSALS,
+            });
         }
     }, [proposalTypes, t, setFilters]);
 
-    const handleCheckboxChange = (value: string, isChecked: boolean, filterConfig: { label: string; param: ParamsEnum }) => {
+    const handleCheckboxChange = (value: string, isChecked: boolean) => {
         const current = proposalTypes ?? [];
         const updated = isChecked
             ? current.includes(value) ? current : [...current, value]
             : current.filter((item) => item !== value);
 
-        setFilters({
-            label: filterConfig.label,
-            value: isChecked ? [value] : [],
-            param: filterConfig.param,
-        });
-
         setProposalTypes(updated);
     };
 
     const handleSubmittedChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        handleCheckboxChange('submitted', e.target.checked, {
-            label: t('charts.submittedProposals'),
-            param: ParamsEnum.SUBMITTED_PROPOSALS,
-        });
+        handleCheckboxChange('submitted', e.target.checked);
     };
 
     const handleFundedChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        handleCheckboxChange('approved', e.target.checked, {
-            label: t('proposals.filters.approvedProposals'),
-            param: ParamsEnum.APPROVED_PROPOSALS,
-        });
+        handleCheckboxChange('approved', e.target.checked);
     };
 
     const handleCompleteChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        handleCheckboxChange('complete', e.target.checked, {
-            label: t('proposals.filters.projectStatus'),
-            param: ParamsEnum.COMPLETED_PROPOSALS,
-        });
+        handleCheckboxChange('complete', e.target.checked);
     };
 
     return (
