@@ -4,6 +4,8 @@ import { shortNumber } from '@/utils/shortNumber';
 import { ResponsiveScatterPlot } from '@nivo/scatterplot';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useFilterContext } from '@/Context/FiltersContext';
+import { ParamsEnum } from '@/enums/proposal-search-params';
 
 interface CustomScatterPlotDatum {
     x: number;
@@ -28,6 +30,7 @@ const ScatterPlot: React.FC<ScatterChartProps> = ({
     viewBy
 }) => {
     const { t } = useTranslation();
+    const { getFilter } = useFilterContext();
 
     const [screenWidth, setScreenWidth] = useState(
         typeof window !== 'undefined' ? window.innerWidth : 1200,
@@ -53,6 +56,7 @@ const ScatterPlot: React.FC<ScatterChartProps> = ({
         {
             id: 'Total Proposals',
             key: 'totalProposals',
+            param: ParamsEnum.SUBMITTED_PROPOSALS,
             data: chartData.map((item: any) => ({
                 x: viewBy === 'fund' ? labelToIndex(item.fund) : labelToIndex(item.year),
                 y: item.totalProposals ?? 0,
@@ -63,6 +67,7 @@ const ScatterPlot: React.FC<ScatterChartProps> = ({
         {
             id: 'Funded Proposals',
             key: 'fundedProposals',
+            param: ParamsEnum.APPROVED_PROPOSALS,
             data: chartData.map((item: any) => ({
                 x: viewBy === 'fund' ? labelToIndex(item.fund) : labelToIndex(item.year),
                 y: item.fundedProposals ?? 0,
@@ -73,6 +78,7 @@ const ScatterPlot: React.FC<ScatterChartProps> = ({
         {
             id: 'Completed Proposals',
             key: 'completedProposals',
+            param: ParamsEnum.COMPLETED_PROPOSALS,
             data: chartData.map((item: any) => ({
                 x: viewBy === 'fund' ? labelToIndex(item.fund) : labelToIndex(item.year),
                 y: item.completedProposals ?? 0,
@@ -82,14 +88,12 @@ const ScatterPlot: React.FC<ScatterChartProps> = ({
         },
     ];
 
-    // Filter out data series that have zero values across all data points
     const getActiveDataSeries = () => {
         if (!chartData || chartData.length === 0) return [];
         
         return allDataSeries.filter(series => {
-            return chartData.some((dataPoint: any) => 
-                dataPoint[series.key] && dataPoint[series.key] > 0
-            );
+            const filterValue = getFilter(series.param);
+            return filterValue && filterValue.length > 0;
         });
     };
 
@@ -185,11 +189,11 @@ const ScatterPlot: React.FC<ScatterChartProps> = ({
                         legendPosition: 'middle',
                         legendOffset: config.leftLegendOffset,
                         format: (value) => {
-                            shortNumber(value, 2);
+                            return shortNumber(value, 2);
                         },
                     }}
                     tooltip={({ node }) => {
-                        const nodeData = node.data as CustomScatterPlotDatum;
+                        const nodeData = node?.data as CustomScatterPlotDatum;
                         return (
                             <div className="bg-tooltip rounded-lg p-4 text-white shadow-lg">
                                 <Title
@@ -197,12 +201,12 @@ const ScatterPlot: React.FC<ScatterChartProps> = ({
                                     className="text-lg font-semibold"
                                 >
                                     {viewBy === 'fund'
-                                        ? `Fund ${nodeData.fund}`
-                                        : `Year ${nodeData.year}`}
+                                        ? `Fund ${nodeData?.fund}`
+                                        : `Year ${nodeData?.year}`}
                                 </Title>
                                 <Paragraph className="text-sm">
-                                    <strong>{node.serieId}</strong>:{' '}
-                                    {shortNumber(nodeData.y, 2)}
+                                    <strong>{node?.serieId}</strong>:{' '}
+                                    {shortNumber(nodeData?.y, 2)}
                                 </Paragraph>
                             </div>
                         );

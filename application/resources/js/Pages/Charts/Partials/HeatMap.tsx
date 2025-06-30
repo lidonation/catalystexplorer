@@ -1,3 +1,5 @@
+import { useFilterContext } from '@/Context/FiltersContext';
+import { ParamsEnum } from '@/enums/proposal-search-params';
 import { ResponsiveHeatMap } from '@nivo/heatmap';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -9,6 +11,7 @@ interface HeatMapProps {
 
 const HeatMap: React.FC<HeatMapProps> = ({ chartData, viewBy }) => {
     const { t } = useTranslation();
+    const { getFilter } = useFilterContext();
     const [screenWidth, setScreenWidth] = useState(
         typeof window !== 'undefined' ? window.innerWidth : 1200,
     );
@@ -24,58 +27,59 @@ const HeatMap: React.FC<HeatMapProps> = ({ chartData, viewBy }) => {
         return () => window.removeEventListener('resize', handleResize);
     }, []);
 
-    const transformedData = [
+    const allHeatMapKeys = [
         {
             id: 'Total Proposals',
-            data: chartData.map((item) => ({
-                x: viewBy === 'fund' ? `Fund ${item.fund}` : item.year,
-                y: item.totalProposals ?? 0,
-            })),
+            dataKey: 'totalProposals',
+            filterParam: ParamsEnum.SUBMITTED_PROPOSALS,
+            color: { r: 79, g: 173, b: 206 }, // #4fadce
         },
         {
             id: 'Funded Proposals',
-            data: chartData.map((item) => ({
-                x: viewBy === 'fund' ? `Fund ${item.fund}` : item.year,
-                y: item.fundedProposals ?? 0,
-            })),
+            dataKey: 'fundedProposals',
+            filterParam: ParamsEnum.APPROVED_PROPOSALS,
+            color: { r: 238, g: 132, b: 52 }, // #ee8434
         },
         {
             id: 'Completed Proposals',
-            data: chartData.map((item) => ({
-                x: viewBy === 'fund' ? `Fund ${item.fund}` : item.year,
-                y: item.completedProposals ?? 0,
-            })),
+            dataKey: 'completedProposals',
+            filterParam: ParamsEnum.COMPLETED_PROPOSALS,
+            color: { r: 22, g: 179, b: 100 }, // #16B364
         },
     ];
 
+    const getActiveHeatMapKeys = () => {
+        return allHeatMapKeys.filter((keyItem) => {
+            const filterValue = getFilter(keyItem.filterParam);
+            return filterValue && filterValue.length > 0;
+        });
+    };
+
+    const activeKeys = getActiveHeatMapKeys();
+
+    const transformedData = activeKeys.map((keyItem) => ({
+        id: keyItem.id,
+        data: chartData.map((item) => ({
+            x: viewBy === 'fund' ? item.fund : item.year,
+            y: item[keyItem.dataKey] ?? 0,
+        })),
+    }));
+
     const getColor = (cell: any) => {
         const value = cell.value ?? 0;
-        
-        // Return transparent color for zero values
-        if (value === 0) {
-            return 'transparent';
-        }
+
+        const activeKey = activeKeys.find(key => key.id === cell.serieId);
+       
 
         const maxValue = Math.max(
-            ...chartData.flatMap((item) => [
-                item.totalProposals,
-                item.fundedProposals,
-                item.completedProposals,
-            ]),
+            ...chartData.flatMap((item) => 
+                activeKeys.map(key => item[key.dataKey] || 0)
+            ),
         );
 
         const opacity = Math.max(0.5, Math.min(1.0, value / maxValue));
 
-        switch (cell.serieId) {
-            case 'Total Proposals':
-                return `rgba(79, 173, 206, ${opacity})`;
-            case 'Funded Proposals':
-                return `rgba(238, 132, 52, ${opacity})`;
-            case 'Completed Proposals':
-                return `rgba(22, 179, 100, ${opacity})`;
-            default:
-                return `rgba(79, 173, 206, ${opacity})`;
-        }
+        return `rgba(${activeKey?.color.r}, ${activeKey?.color.g}, ${activeKey?.color.b}, ${opacity})`;
     };
 
     const getResponsiveConfig = () => {

@@ -2,6 +2,8 @@ import Paragraph from '@/Components/atoms/Paragraph';
 import Title from '@/Components/atoms/Title';
 import ArrowTrendingDown from '@/Components/svgs/ArrowTrendingDown';
 import ArrowTrendingUp from '@/Components/svgs/ArrowTrendingUp';
+import { useFilterContext } from '@/Context/FiltersContext';
+import { ParamsEnum } from '@/enums/proposal-search-params';
 import { shortNumber } from '@/utils/shortNumber';
 import { ResponsiveLine } from '@nivo/line';
 import React, { useEffect, useRef, useState } from 'react';
@@ -19,6 +21,7 @@ const LineChart: React.FC<LineChartProps> = ({
     viewBy,
 }) => {
     const { t } = useTranslation();
+    const { getFilter } = useFilterContext();
     const [isMobile, setIsMobile] = useState(false);
     const [screenWidth, setScreenWidth] = useState(
         typeof window !== 'undefined' ? window.innerWidth : 1200,
@@ -38,22 +41,34 @@ const LineChart: React.FC<LineChartProps> = ({
 
     const defaultColors = ['#4fadce', '#dc2626', '#ee8434'];
 
+    // Check which parameters are selected
+    const isSubmittedSelected =
+        getFilter(ParamsEnum.SUBMITTED_PROPOSALS)?.includes('submitted') ||
+        false;
+    const isApprovedSelected =
+        getFilter(ParamsEnum.APPROVED_PROPOSALS)?.includes('approved') || false;
+    const isCompletedSelected =
+        getFilter(ParamsEnum.COMPLETED_PROPOSALS)?.includes('complete') ||
+        false;
+
     const rawTransformedData = [
         {
             id: 'Total Proposals',
             color: defaultColors[0],
             data: chartData.map((item: any) => ({
                 x: viewBy === 'fund' ? item.fund : item.year,
-                y: item.totalProposals ?? 0, 
+                y: item.totalProposals ?? 0,
             })),
+            shouldShow: isSubmittedSelected, // Show if submitted is selected (since submitted = total)
         },
         {
             id: 'Funded Proposals',
             color: defaultColors[1],
             data: chartData.map((item: any) => ({
                 x: viewBy === 'fund' ? item.fund : item.year,
-                y: item.fundedProposals ?? 0, 
+                y: item.fundedProposals ?? 0,
             })),
+            shouldShow: isApprovedSelected, // Show if approved is selected
         },
         {
             id: 'Completed Proposals',
@@ -62,14 +77,14 @@ const LineChart: React.FC<LineChartProps> = ({
                 x: viewBy === 'fund' ? item.fund : item.year,
                 y: item.completedProposals ?? 0,
             })),
+            shouldShow: isCompletedSelected, // Show if completed is selected
         },
     ];
 
-    // Filter out lines where all values are 0
-    const transformedData = rawTransformedData.filter(dataset => {
-        const hasNonZeroValue = dataset.data.some((point: any) => point.y > 0);
-        return hasNonZeroValue;
-    });
+    // Filter based on selected parameters instead of zero values
+    const transformedData = rawTransformedData.filter(
+        (dataset) => dataset.shouldShow,
+    );
 
     const legend = yAxisLabel || 'Proposals';
 
@@ -107,6 +122,10 @@ const LineChart: React.FC<LineChartProps> = ({
             });
         }
     }, [showTooltip]);
+
+    const hasPlottableData = transformedData.some(
+        (d) => Array.isArray(d.data) && d.data.length > 0,
+    );
 
     return (
         <div ref={badgeRef} className="relative">
@@ -154,10 +173,12 @@ const LineChart: React.FC<LineChartProps> = ({
                     pointSize={10}
                     pointColor={{ theme: 'background' }}
                     pointBorderWidth={2}
-                    pointBorderColor={(point: any) => point.serieColor || point.color || defaultColors[0]}
+                    pointBorderColor={(point: any) =>
+                        point.serieColor || point.color || defaultColors[0]
+                    }
                     pointLabelYOffset={-12}
                     enablePoints={true}
-                    useMesh={true}
+                    useMesh={hasPlottableData}
                     enableArea={false}
                     fill={[{ match: '*', id: 'gradient' }]}
                     theme={{
@@ -228,9 +249,10 @@ const LineChart: React.FC<LineChartProps> = ({
                                         ? dataset.data[currentIndex - 1]
                                         : null;
 
-                                const trend = previous
-                                    ? calculateTrend(current?.y, previous?.y)
-                                    : { value: '0', isPositive: true };
+                                const trend =
+                                    previous && current
+                                        ? calculateTrend(current.y, previous.y)
+                                        : { value: '0', isPositive: true };
 
                                 return {
                                     id: dataset.id,
@@ -242,17 +264,12 @@ const LineChart: React.FC<LineChartProps> = ({
                             },
                         );
 
-                        // Filter out data points with 0 values for tooltip
-                        const nonZeroData = dataWithPrevious.filter((item: any) => item.current?.y > 0);
-
-                        // Don't show tooltip if all values are 0
-                        if (nonZeroData.length === 0) {
-                            return null;
-                        }
+                        // Show all selected data points in tooltip, even if value is 0
+                        const selectedData = dataWithPrevious;
 
                         return (
                             <div
-                                className="bg-tooltip rounded-lg p-4 text-white shadow-lg relative transform translate-x"
+                                className="bg-tooltip translate-x relative transform rounded-lg p-4 text-white shadow-lg"
                                 style={{
                                     top: `${tooltipPosition.top}px`,
                                     left: `${tooltipPosition.left}px`,
@@ -266,7 +283,7 @@ const LineChart: React.FC<LineChartProps> = ({
                                         {point.data.xFormatted}
                                     </Title>
 
-                                    {nonZeroData.map((item: any) => (
+                                    {selectedData.map((item: any) => (
                                         <div key={item.id} className="mt-2">
                                             <Paragraph className="flex items-center text-sm">
                                                 <span
@@ -280,7 +297,7 @@ const LineChart: React.FC<LineChartProps> = ({
                                                 :
                                                 <span className="ml-1 font-bold">
                                                     {shortNumber(
-                                                        item?.current?.y,
+                                                        item?.current?.y ?? 0,
                                                         2,
                                                     )}
                                                 </span>
@@ -308,7 +325,9 @@ const LineChart: React.FC<LineChartProps> = ({
                                                     </span>
                                                 </span>
                                                 <span className="ml-1">
-                                                    {viewBy === 'fund'? t('metric.vs') : t('charts.vsYear')}
+                                                    {viewBy === 'fund'
+                                                        ? t('metric.vs')
+                                                        : t('charts.vsYear')}
                                                 </span>
                                             </div>
                                         </div>
