@@ -24,6 +24,7 @@ export default function CommunityIdeascaleProfiles({
                         <UserAvatar
                             size="size-8"
                             imageUrl={user.hero_img_url}
+                            name={user.name || user.username || 'Anonymous User'}
                         />
                     </li>
                 ))}
