@@ -1081,6 +1081,11 @@
     "transactions": {
         "allTimeVotes": "All time Votes",
         "balance": "Balance",
+        "utxos": "UTXOs",
+        "fromAddresses": "From Addresses (Inputs)",
+        "toAddresses": "To Addresses (Outputs)",
+        "totalInput": "Total Input",
+        "totalOutput": "Total Output",
         "block": "Block",
         "fundsParticipated": "Funds Participated",
         "title": "Transactions",
