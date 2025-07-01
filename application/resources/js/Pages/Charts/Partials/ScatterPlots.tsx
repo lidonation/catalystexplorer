@@ -31,14 +31,44 @@ const ScatterPlot: React.FC<ScatterChartProps> = ({
 }) => {
     const { t } = useTranslation();
     const { getFilter } = useFilterContext();
+    const [normalizedData, setNormalizedData] = useState<any[]>([]);
 
     const [screenWidth, setScreenWidth] = useState(
         typeof window !== 'undefined' ? window.innerWidth : 1200,
     );
 
-    const defaultColors = ['#4fadce', '#ee8434', '#16B364'];
+    const defaultColors = [ '#4fadce','#16B364', '#ee8434' ];
 
-    const optionLabels = chartData.map((item: any) => viewBy === 'fund' ? item.fund : item.year);
+    useEffect(() => {
+        if (!chartData || chartData.length === 0) {
+            setNormalizedData([]);
+            return;
+        }
+
+        const isSubmittedProposalsFormat = Array.isArray(chartData) && 
+            chartData.length > 0 && 
+            typeof chartData[0] === 'object' && 
+            !chartData[0].hasOwnProperty('fund') && 
+            !chartData[0].hasOwnProperty('year');
+
+        if (isSubmittedProposalsFormat) {
+            const fundKeys = Object.keys(chartData[0] || {});
+            const normalized = fundKeys.map((fundKey, index) => ({
+                fund: fundKey,
+                year: fundKey,
+                totalProposals: chartData[0]?.[fundKey] || 0
+            }));
+            setNormalizedData(normalized);
+        } else {
+            const normalized = chartData.map((item: any) => ({
+                ...item,
+                totalProposals: item.totalProposals || (item.unfundedProposals || 0) + (item.fundedProposals || 0),
+            }));
+            setNormalizedData(normalized);
+        }
+    }, [chartData]);
+
+    const optionLabels = normalizedData.map((item: any) => viewBy === 'fund' ? item.fund : item.year);
     const labelToIndex = (label: any) => optionLabels.indexOf(label);
 
     useEffect(() => {
@@ -57,7 +87,7 @@ const ScatterPlot: React.FC<ScatterChartProps> = ({
             id: 'Total Proposals',
             key: 'totalProposals',
             param: ParamsEnum.SUBMITTED_PROPOSALS,
-            data: chartData.map((item: any) => ({
+            data: normalizedData.map((item: any) => ({
                 x: viewBy === 'fund' ? labelToIndex(item.fund) : labelToIndex(item.year),
                 y: item.totalProposals ?? 0,
                 fund: item.fund,
@@ -68,7 +98,7 @@ const ScatterPlot: React.FC<ScatterChartProps> = ({
             id: 'Funded Proposals',
             key: 'fundedProposals',
             param: ParamsEnum.APPROVED_PROPOSALS,
-            data: chartData.map((item: any) => ({
+            data: normalizedData.map((item: any) => ({
                 x: viewBy === 'fund' ? labelToIndex(item.fund) : labelToIndex(item.year),
                 y: item.fundedProposals ?? 0,
                 fund: item.fund,
@@ -79,9 +109,20 @@ const ScatterPlot: React.FC<ScatterChartProps> = ({
             id: 'Completed Proposals',
             key: 'completedProposals',
             param: ParamsEnum.COMPLETED_PROPOSALS,
-            data: chartData.map((item: any) => ({
+            data: normalizedData.map((item: any) => ({
                 x: viewBy === 'fund' ? labelToIndex(item.fund) : labelToIndex(item.year),
                 y: item.completedProposals ?? 0,
+                fund: item.fund,
+                year: item.year,
+            })) as CustomScatterPlotDatum[],
+        },
+            {
+            id: 'Unfunded Proposals',
+            key: 'unfundedProposals',
+            param: ParamsEnum.UNFUNDED_PROPOSALS,
+            data: normalizedData.map((item: any) => ({
+                x: viewBy === 'fund' ? labelToIndex(item.fund) : labelToIndex(item.year),
+                y: item.unfundedProposals ?? 0,
                 fund: item.fund,
                 year: item.year,
             })) as CustomScatterPlotDatum[],
@@ -89,7 +130,7 @@ const ScatterPlot: React.FC<ScatterChartProps> = ({
     ];
 
     const getActiveDataSeries = () => {
-        if (!chartData || chartData.length === 0) return [];
+        if (!normalizedData || normalizedData.length === 0) return [];
         
         return allDataSeries.filter(series => {
             const filterValue = getFilter(series.param);
@@ -167,7 +208,7 @@ const ScatterPlot: React.FC<ScatterChartProps> = ({
                     xScale={{
                         type: 'linear',
                         min: 0,
-                        max: optionLabels.length - 1,
+                        max: Math.max(0, optionLabels.length - 1),
                     }}
                     xFormat={(x) => optionLabels[Number(x)] ?? x}
                     yScale={{ type: 'linear', min: 'auto', max: 'auto' }}
@@ -176,7 +217,7 @@ const ScatterPlot: React.FC<ScatterChartProps> = ({
                     nodeSize={10}
                     axisBottom={{
                         tickValues: optionLabels.map((_: any, i: any) => i),
-                        format: (v) => optionLabels[v],
+                        format: (v) => optionLabels[v] || v,
                         legend: xAxisLabel || viewBy === 'fund' ? t('charts.fund') : t('charts.year'),
                         legendPosition: 'middle',
                         legendOffset: 46,
@@ -201,8 +242,8 @@ const ScatterPlot: React.FC<ScatterChartProps> = ({
                                     className="text-lg font-semibold"
                                 >
                                     {viewBy === 'fund'
-                                        ? `Fund ${nodeData?.fund}`
-                                        : `Year ${nodeData?.year}`}
+                                        ? `${nodeData?.fund}`
+                                        : `${nodeData?.year}`}
                                 </Title>
                                 <Paragraph className="text-sm">
                                     <strong>{node?.serieId}</strong>:{' '}
