@@ -477,8 +477,9 @@
         "percentage": "Percentage",
         "share": "Share",
         "noFundDataAvailable": "No Fund Data Available",
-        "noYearDataAvailable": "No Year Data Available"
-        
+        "noYearDataAvailable": "No Year Data Available",
+        "unfundedProposals": "Unfunded Proposals",
+        "vsYear": "vs Previous Year"
     },
     "pagination": {
         "next": "Next",
