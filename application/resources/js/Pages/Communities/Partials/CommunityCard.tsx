@@ -5,11 +5,13 @@ import Card from '@/Components/Card';
 import Divider from '@/Components/Divider';
 import RichContent from '@/Components/RichContent';
 import CommunitiesIcon from '@/Components/svgs/CommunitiesSvg';
+import ExpandableContentAnimation from '@/Components/ExpandableContentAnimation';
+import ExpandableContent from '@/Components/ExpandableContent';
 import { ListProvider } from '@/Context/ListContext';
 import BookmarkButton from '@/Pages/My/Bookmarks/Partials/BookmarkButton';
 import { useLocalizedRoute } from '@/utils/localizedRoute';
 import { Link } from '@inertiajs/react';
-import React from 'react';
+import React,{ useRef, useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import CommunityIdeascaleProfiles from './CommunityIdeascaleProfiles';
 import CommunityData = App.DataTransferObjects.CommunityData;
@@ -24,6 +26,25 @@ const CommunityCard: React.FC<CommunityCardProps> = ({
     embedded = true,
 }) => {
     const { t } = useTranslation();
+    const [isHoveredContent, setIsHoveredContent] = useState(false);
+    const containerRef = useRef<HTMLDivElement | null>(null);
+    const [contentLineCount, setContentLineCount] = useState(0);
+
+    useEffect(() => {
+        const timer = setTimeout(() => {
+        const element = containerRef.current;
+        if (element) {
+            const style = getComputedStyle(element);
+                const lineHeight = parseFloat(style.lineHeight) || 24; // fallback to 24px
+                const height = element.scrollHeight; // Use scrollHeight instead of offsetHeight
+                const calculatedLines = Math.ceil(height / lineHeight);
+                console.log('Line calculation:', { height, lineHeight, calculatedLines }); // Debug log
+                setContentLineCount(calculatedLines);
+            }
+        }, 100);
+
+        return () => clearTimeout(timer);
+    }, [community.content]);
 
     return (
         <Card className="border-border-dark-on-dark flex-1 justify-between overflow-hidden border">
@@ -56,10 +77,44 @@ const CommunityCard: React.FC<CommunityCardProps> = ({
                             {community.title}
                         </Title>
                     </Link>
-                    <RichContent
-                        className="text-content text-4 pb-2"
-                        content={community.content}
-                    />
+                   {contentLineCount > 4 ? (
+                        <ExpandableContentAnimation
+                            lineClamp={4}
+                            contentRef={containerRef}
+                            onHoverChange={setIsHoveredContent}
+                        >
+                            <div className="relative">
+                                <ExpandableContent
+                                    expanded={isHoveredContent}
+                                    lineClamp={4}
+                                    collapsedHeight={96}
+                                >
+                                    <div
+                                        ref={containerRef}
+                                        className={`text-content text-4 pb-2 transition-all duration-200 cursor-pointer ${
+                                            isHoveredContent ? 'bg-background relative z-10 shadow-lg rounded-md px-2' : ''
+                                        }`}
+                                        style={{
+                                            paddingBottom: isHoveredContent ? '20px' : '2px',
+                                            display: '-webkit-box',
+                                            WebkitLineClamp: isHoveredContent ? 'none' : 4,
+                                            WebkitBoxOrient: 'vertical',
+                                            overflow: isHoveredContent ? 'visible' : 'hidden',
+                                        }}
+                                    >
+                                        <RichContent content={community.content} />
+                                    </div>
+                                </ExpandableContent>
+                            </div>
+                        </ExpandableContentAnimation>
+                    ) : (
+                        <div
+                            ref={containerRef}
+                            className="text-content text-4 pb-2"
+                        >
+                            <RichContent content={community.content} />
+                        </div>
+                    )}
                 </div>
             </div>
             {embedded && (
