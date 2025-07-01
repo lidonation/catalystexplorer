@@ -16,6 +16,37 @@ const HeatMap: React.FC<HeatMapProps> = ({ chartData, viewBy }) => {
         typeof window !== 'undefined' ? window.innerWidth : 1200,
     );
 
+        const [normalizedData, setNormalizedData] = useState<any[]>([]);
+        
+            useEffect(() => {
+                if (!chartData || chartData.length === 0) {
+                    setNormalizedData([]);
+                    return;
+                }
+        
+                const isSubmittedProposalsFormat = Array.isArray(chartData) && 
+                    chartData.length > 0 && 
+                    typeof chartData[0] === 'object' && 
+                    !chartData[0].hasOwnProperty('fund') && 
+                    !chartData[0].hasOwnProperty('year');
+        
+                if (isSubmittedProposalsFormat) {
+                    const fundKeys = Object.keys(chartData[0] || {});
+                    const normalized = fundKeys.map((fundKey, index) => ({
+                        fund: fundKey,
+                        year: fundKey, 
+                        totalProposals: chartData[0]?.[fundKey] || 0,
+                    }));
+                    setNormalizedData(normalized);
+                } else {
+                    const normalized = chartData.map((item: any) => ({
+                        ...item,
+                        totalProposals: item.totalProposals || (item.unfundedProposals || 0) + (item.fundedProposals || 0),
+                    }));
+                    setNormalizedData(normalized);
+                }
+            }, [chartData]);
+
     useEffect(() => {
         const handleResize = () => {
             const width = window.innerWidth;
@@ -46,6 +77,12 @@ const HeatMap: React.FC<HeatMapProps> = ({ chartData, viewBy }) => {
             filterParam: ParamsEnum.COMPLETED_PROPOSALS,
             color: { r: 22, g: 179, b: 100 }, // #16B364
         },
+        {
+            id: 'Unfunded Proposals',
+            dataKey: 'unfundedProposals',
+            filterParam: ParamsEnum.UNFUNDED_PROPOSALS,
+            color: { r: 79, g: 173, b: 206 }, // #16B364
+        },
     ];
 
     const getActiveHeatMapKeys = () => {
@@ -59,7 +96,7 @@ const HeatMap: React.FC<HeatMapProps> = ({ chartData, viewBy }) => {
 
     const transformedData = activeKeys.map((keyItem) => ({
         id: keyItem.id,
-        data: chartData.map((item) => ({
+        data: normalizedData.map((item) => ({
             x: viewBy === 'fund' ? item.fund : item.year,
             y: item[keyItem.dataKey] ?? 0,
         })),
@@ -72,7 +109,7 @@ const HeatMap: React.FC<HeatMapProps> = ({ chartData, viewBy }) => {
        
 
         const maxValue = Math.max(
-            ...chartData.flatMap((item) => 
+            ...normalizedData.flatMap((item) => 
                 activeKeys.map(key => item[key.dataKey] || 0)
             ),
         );

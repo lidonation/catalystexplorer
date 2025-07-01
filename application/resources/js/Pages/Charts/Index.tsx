@@ -3,7 +3,7 @@ import { userSettingEnums } from '@/enums/user-setting-enums';
 import { useUserSetting } from '@/Hooks/useUserSettings';
 import RoutedModalLayout from '@/Layouts/RoutedModalLayout.tsx';
 import { SearchParams } from '@/types/search-params';
-import { Head, router } from '@inertiajs/react';
+import { Head, router, usePage } from '@inertiajs/react';
 import { useEffect, useState } from 'react';
 import AllCharts from './Partials/AllCharts';
 import SetChartMetrics from './Partials/SetChartMetrics';
@@ -34,6 +34,8 @@ const Index = ({
     const viewBy: 'fund' | 'year' =
         viewByPreference?.[0] === 'year' ? 'year' : 'fund';
     const chartData = viewBy === 'fund' ? chartDataByFund : chartDataByYear;
+    const { url } = usePage();
+    const isOnChartsRoute = url.includes('/charts');
 
     const handleExploreCharts = () => {
         setShowCharts(true);
@@ -56,6 +58,11 @@ const Index = ({
         };
 
         router.on('navigate', handleNavigation);
+
+        if(!isOnChartsRoute) {
+            setShowCharts(false);
+            localStorage.removeItem('metricsSet');
+        }
     }, []);
 
     return (

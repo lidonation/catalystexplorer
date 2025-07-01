@@ -46,6 +46,7 @@ use Spatie\Enum\Enum;
  * @method static self HELPFUL()
  * @method static self QUERY()
  * @method static self QUICK_PITCHES()
+ * @method static self UNFUNDED_PROPOSALS()
  * @method static self VIEW()
  * @method static self TAGS()
  * @method static self TYPE()
@@ -86,6 +87,7 @@ final class ProposalSearchParams extends Enum
             'HELPFUL' => 'h',
             'QUERY' => 'q',
             'QUICK_PITCHES' => 'qp',
+            'UNFUNDED_PROPOSALS' => 'ufp',
             'VIEW' => 'v',
             'SORTS' => 'st',
             'TAGS' => 't',
