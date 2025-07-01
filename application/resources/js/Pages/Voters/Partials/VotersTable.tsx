@@ -20,7 +20,8 @@ interface VotersTableProps {
 }
 
 const TableHeader: React.FC<{ label: string; isLastColumn?: boolean }> = ({ label, isLastColumn }) => (
-    <th className={`bg-background-lighter border-dark-light text-gray-persist ${isLastColumn ? '' : 'border-r'} border-b px-4 py-3 text-left font-medium`}>
+    <th className={`bg-background-lighter border-gray-200
+     text-content ${isLastColumn ? '' : 'border-r'} border-b px-4 py-3 text-left font-medium`}>
         {label}
     </th>
 );
@@ -30,7 +31,7 @@ const TableCell: React.FC<{
     className?: string;
     isLastColumn?: boolean;
 }> = ({ children, className = '', isLastColumn }) => (
-    <td className={`border-dark-light text-content ${isLastColumn ? '' : 'border-r'} border-b px-4 py-4 ${className}`}>
+    <td className={`border-gray-200 text-content ${isLastColumn ? '' : 'border-r'} border-b px-4 py-4 ${className}`}>
         {children}
     </td>
 );
@@ -116,7 +117,7 @@ const VotersTable: React.FC<VotersTableProps> = ({
 
     const renderCellWithLink = (voter: VoterData, value: string | null, col: string, index: number) => {
         if (!value) {
-            return <span className="text-gray-persist">{t('voter.notAvailable')}</span>;
+            return <span className="text-content">{t('voter.notAvailable')}</span>;
         }
 
         const isHovered =
@@ -145,7 +146,7 @@ const VotersTable: React.FC<VotersTableProps> = ({
                 )}
 
                 <Button
-                    className="text-gray-persist hover:text-primary flex-shrink-0 focus:outline-none"
+                    className="text-content hover:text-primary flex-shrink-0 focus:outline-none"
                     onClick={(e) => {
                         e.stopPropagation();
                         e.preventDefault();
@@ -167,7 +168,7 @@ const VotersTable: React.FC<VotersTableProps> = ({
     return (
         <>
             {shouldShowNoRecords() && (
-                <div className="bg-background mb-10 flex w-full flex-col items-start justify-center rounded-lg px-4 py-8">
+                <div className="bg-background mb-10 flex w-full flex-col items-start justify-center rounded-lg border border-gray-200 px-4 py-8 shadow-sm">
                     <RecordsNotFound />
                     <Paragraph className="text-dark mt-4 text-start">
                         {t('voter.noVotersFound')}
@@ -176,10 +177,10 @@ const VotersTable: React.FC<VotersTableProps> = ({
             )}
 
             {(!shouldShowNoRecords()) && (
-                <>
-                  <div className="overflow-x-auto bg-background rounded-lg ">
+            <div className="mb-8 rounded-lg border-2 border-gray-200 bg-background shadow-md">
+                  <div className="overflow-x-auto">
                     <table className="w-max min-w-full">
-                        <thead className="border-dark-light whitespace-nowrap">
+                        <thead className="border-gray-200 whitespace-nowrap">
                             <tr>
                                 <TableHeader label={t('voter.table.voterId')} />
                                 <TableHeader label={t('voter.table.stakeAddress')} />
@@ -224,7 +225,7 @@ const VotersTable: React.FC<VotersTableProps> = ({
                     {voters &&
                         voters.data &&
                         voters.data.length > 0 && (
-                            <div className="mt-4 bg-background px-4 border-dark-light rounded-b-lg">
+                            <div className="border-t border-gray-200 px-4 py-4">
                                 <Paginator
                                     pagination={voters}
                                     linkProps={{
@@ -264,8 +265,8 @@ const VotersTable: React.FC<VotersTableProps> = ({
                                     }}
                                 />
                             </div>
-                        )}
-                </>
+                       )}
+                 </div>  
             )}
         </>
     );

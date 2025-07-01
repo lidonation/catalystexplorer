@@ -4,7 +4,6 @@ import RadioSelector from '@/Components/atoms/RadioSelector';
 import Title from '@/Components/atoms/Title';
 import { useFilterContext } from '@/Context/FiltersContext';
 import { ParamsEnum } from '@/enums/proposal-search-params';
-import RecordsNotFound from '@/Layouts/RecordsNotFound';
 import { Share2Icon } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import BarChart from './BarChart';
@@ -31,6 +30,14 @@ export default function AllCharts({
     const { getFilter } = useFilterContext();
     const selectedChartOptions = getFilter(ParamsEnum.CHART_OPTIONS) || [];
     const { t } = useTranslation();
+    
+    const hasSubmittedProposals = (getFilter(ParamsEnum.SUBMITTED_PROPOSALS) || []).length > 0;
+    const hasApprovedProposals = (getFilter(ParamsEnum.APPROVED_PROPOSALS) || []).length > 0;
+    const hasCompletedProposals = (getFilter(ParamsEnum.COMPLETED_PROPOSALS) || []).length > 0;
+    const hasUnfundedProposals = (getFilter(ParamsEnum.UNFUNDED_PROPOSALS) || []).length > 0;
+
+    const hasAnyProposalTypeSelected = hasSubmittedProposals || hasApprovedProposals || hasCompletedProposals || hasUnfundedProposals;
+    
     const renderBarChart = () => (
         <div>
             <ChartCard title={t('charts.barChart')}>
@@ -136,16 +143,17 @@ export default function AllCharts({
                                 ];
                         return renderer ? (
                             <div key={chartType}>
-                                {chartData.length > 0 ? (
+                                {hasAnyProposalTypeSelected ? (
                                     renderer()
                                 ) : (
                                     <div>
-                                        <Paragraph className="text-content-light mb-4" size='lg'>
-                                            {viewBy === 'fund'
-                                                ? t('charts.noFundDataAvailable')
-                                                : t('charts.noYearDataAvailable')}
-                                        </Paragraph>
-                                        <RecordsNotFound />
+                                        <ChartCard title={t(`charts.${chartType}`)}>
+                                            <div className="p-8 text-center">
+                                                <Paragraph className="text-content-light mb-4" size='lg'>
+                                                    {t('charts.selectProposalTypesFirst')}
+                                                </Paragraph>
+                                            </div>
+                                        </ChartCard>
                                     </div>
                                 )}
                             </div>

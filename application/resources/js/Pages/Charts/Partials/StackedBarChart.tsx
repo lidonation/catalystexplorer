@@ -1,4 +1,6 @@
 import Paragraph from '@/Components/atoms/Paragraph';
+import { useFilterContext } from '@/Context/FiltersContext';
+import { ParamsEnum } from '@/enums/proposal-search-params';
 import { shortNumber } from '@/utils/shortNumber';
 import { ResponsiveBar } from '@nivo/bar';
 import React, { useEffect, useState } from 'react';
@@ -11,10 +13,44 @@ interface BarChartProps {
 
 const StackedBarChart: React.FC<BarChartProps> = ({ chartData, viewBy }) => {
     const { t } = useTranslation();
+    const { getFilter } = useFilterContext();
     const [isMobile, setIsMobile] = useState(false);
     const [screenWidth, setScreenWidth] = useState(
         typeof window !== 'undefined' ? window.innerWidth : 1200,
     );
+    const [normalizedData, setNormalizedData] = useState<any[]>([]);
+
+    useEffect(() => {
+        if (!chartData || chartData.length === 0) {
+            setNormalizedData([]);
+            return;
+        }
+
+        const isSubmittedProposalsFormat =
+            Array.isArray(chartData) &&
+            chartData.length > 0 &&
+            typeof chartData[0] === 'object' &&
+            !chartData[0].hasOwnProperty('fund') &&
+            !chartData[0].hasOwnProperty('year');
+
+        if (isSubmittedProposalsFormat) {
+            const fundKeys = Object.keys(chartData[0] || {});
+            const normalized = fundKeys.map((fundKey, index) => ({
+                fund: fundKey,
+                year: fundKey,
+                totalProposals: chartData[0]?.[fundKey] || 0,
+            }));
+            setNormalizedData(normalized);
+        } else {
+            const normalized = chartData.map((item: any) => ({
+                ...item,
+                totalProposals:
+                    item.totalProposals ||
+                    (item.unfundedProposals || 0) + (item.fundedProposals || 0),
+            }));
+            setNormalizedData(normalized);
+        }
+    }, [chartData]);
 
     useEffect(() => {
         const handleResize = () => {
@@ -33,31 +69,40 @@ const StackedBarChart: React.FC<BarChartProps> = ({ chartData, viewBy }) => {
             key: 'totalProposals',
             label: t('proposals.totalProposals'),
             color: '#4fadce',
+            filterParam: ParamsEnum.SUBMITTED_PROPOSALS,
+        },
+        {
+            key: 'unfundedProposals',
+            label: t('charts.unfundedProposals'),
+            color: '#4fadce',
+            filterParam: ParamsEnum.UNFUNDED_PROPOSALS,
         },
         {
             key: 'fundedProposals',
             label: t('funds.fundedProposals'),
             color: '#ee8434',
+            filterParam: ParamsEnum.APPROVED_PROPOSALS,
         },
         {
             key: 'completedProposals',
             label: t('funds.completedProposals'),
             color: '#16B364',
+            filterParam: ParamsEnum.COMPLETED_PROPOSALS,
         },
     ];
 
-    const getKeysWithData = () => {
+    const getFilteredKeys = () => {
         if (!chartData || chartData.length === 0) return [];
 
         return allKeys.filter((keyItem) => {
-            return chartData.some(
-                (dataPoint: any) =>
-                    dataPoint[keyItem.key] && dataPoint[keyItem.key] > 0,
-            );
+            const filterValue = getFilter(keyItem.filterParam);
+            const isFilterActive = filterValue && filterValue.length > 0;
+
+            return isFilterActive;
         });
     };
 
-    const activeKeys = getKeysWithData();
+    const activeKeys = getFilteredKeys();
 
     const colorMap = allKeys.reduce(
         (map, item) => {
@@ -127,7 +172,7 @@ const StackedBarChart: React.FC<BarChartProps> = ({ chartData, viewBy }) => {
                 className="min-w-[600px] sm:min-w-full"
             >
                 <ResponsiveBar
-                    data={chartData}
+                    data={normalizedData}
                     keys={activeKeys.map((item) => item.key)}
                     indexBy={viewBy === 'fund' ? 'fund' : 'year'}
                     margin={config.margin}
@@ -255,16 +300,14 @@ const StackedBarChart: React.FC<BarChartProps> = ({ chartData, viewBy }) => {
                                     {indexValue}
                                 </strong>
                             </Paragraph>
-                            {allKeys
-                                .filter((item) => Number(data[item.key]) > 0)
-                                .map((item) => (
-                                    <Paragraph
-                                        size={isMobile ? 'xs' : 'sm'}
-                                        key={item.key}
-                                    >
-                                        {`${item.label}: ${data[item.key]}`}
-                                    </Paragraph>
-                                ))}
+                            {activeKeys.map((item) => (
+                                <Paragraph
+                                    size={isMobile ? 'xs' : 'sm'}
+                                    key={item.key}
+                                >
+                                    {`${item.label}: ${data[item.key] || 0}`}
+                                </Paragraph>
+                            ))}
                         </div>
                     )}
                     animate={true}

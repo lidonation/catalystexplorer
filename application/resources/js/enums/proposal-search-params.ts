@@ -31,6 +31,7 @@ export enum ParamsEnum {
     HELPFUL = 'h',
     QUERY = 'q',
     QUICK_PITCHES = 'qp',
+    UNFUNDED_PROPOSALS = 'ufp',
     VIEW = 'v',
     SORTS = 'st',
     TAGS = 't',

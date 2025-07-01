@@ -304,34 +304,34 @@ const VoterHistoryTable: React.FC<VoterHistoryTableProps> = ({
             )}
 
             {(!shouldShowNoRecords() || isLoading) && (
-                <div className="container mb-4">
-                    <div className="bg-background border-gray-100 w-full overflow-hidden rounded-lg border shadow-sm">
+                <div className="container mb-4 pb-4">
+                    <div className="bg-background border-gray-100 w-full overflow-hidden rounded-lg border shadow-sm ">
                         <div className="overflow-x-auto">
                             <table className="w-max min-w-full">
                                 <thead className="bg-background-lighter whitespace-nowrap">
                                     <tr>
-                                        <th className="border-dark-light text-gray-persist bg-background-lighter border-r border-b px-4 py-3 text-left font-medium">
+                                        <th className="border-gray-100 text-gray-persist bg-background-lighter border-r border-b px-4 py-3 text-left font-medium">
                                             {t('vote.table.fund')}
                                         </th>
-                                        <th className="border-dark-light text-gray-persist border-r border-b px-4 py-3 text-left font-medium">
+                                        <th className="border-gray-100 text-gray-persist border-r border-b px-4 py-3 text-left font-medium">
                                             {t('vote.table.stakeAddress')}
                                         </th>
-                                        <th className="border-dark-light text-gray-persist border-r border-b px-4 py-3 text-left font-medium">
+                                        <th className="border-gray-100 text-gray-persist border-r border-b px-4 py-3 text-left font-medium">
                                             {t('vote.table.fragmentId')}
                                         </th>
-                                        <th className="border-dark-light text-gray-persist border-r border-b px-4 py-3 text-left font-medium">
+                                        <th className="border-gray-100 text-gray-persist border-r border-b px-4 py-3 text-left font-medium">
                                             {t('vote.table.caster')}
                                         </th>
-                                        <th className="border-dark-light text-gray-persist border-r border-b px-4 py-3 text-left font-medium">
+                                        <th className="border-gray-100 text-gray-persist border-r border-b px-4 py-3 text-left font-medium">
                                             {t('vote.table.timestamp')}
                                         </th>
-                                        <th className="border-dark-light text-gray-persist border-r border-b px-4 py-3 text-left font-medium">
+                                        <th className="border-gray-100 text-gray-persist border-r border-b px-4 py-3 text-left font-medium">
                                             {t('vote.table.choice')}
                                         </th>
-                                        <th className="border-dark-light text-gray-persist border-r border-b px-4 py-3 text-left font-medium">
+                                        <th className="border-gray-100 text-gray-persist border-r border-b px-4 py-3 text-left font-medium">
                                             {t('vote.table.votingPower')}
                                         </th>
-                                        <th className="border-dark-light text-gray-persist border-b px-4 py-3 text-left font-medium">
+                                        <th className="border-gray-100 text-gray-persist border-b px-4 py-3 text-left font-medium">
                                             {t('vote.table.rawFragment')}
                                         </th>
                                     </tr>
@@ -349,7 +349,7 @@ const VoterHistoryTable: React.FC<VoterHistoryTableProps> = ({
                                                         index,
                                                     )}
                                                 >
-                                                    <td className="border-dark-light text-darker bg-background border-r border-b px-4 py-4">
+                                                    <td className="border-gray-100 text-darker font-medium bg-background border-r border-b px-4 py-4">
                                                         {history?.snapshot?.fund
                                                             ? history.snapshot
                                                                   .fund.title
@@ -357,7 +357,7 @@ const VoterHistoryTable: React.FC<VoterHistoryTableProps> = ({
                                                                   'vote.notAvailable',
                                                               )}
                                                     </td>
-                                                    <td className="border-dark-light text-darker w-40 border-r border-b px-4 py-4">
+                                                    <td className="border-gray-100 text-darker font-normal w-40 border-r border-b px-4 py-4">
                                                         <Link
                                                             href={useLocalizedRoute(
                                                                 'jormungandr.wallets.show',
@@ -384,7 +384,7 @@ const VoterHistoryTable: React.FC<VoterHistoryTableProps> = ({
                                                                   )}
                                                         </Link>
                                                     </td>
-                                                    <td className="border-dark-light text-darker w-40 border-r border-b px-4 py-4">
+                                                    <td className="border-gray-100 text-darker font-normal w-40 border-r border-b px-4 py-4">
                                                         {getValueWithTooltip(
                                                             index,
                                                             history,
@@ -395,7 +395,7 @@ const VoterHistoryTable: React.FC<VoterHistoryTableProps> = ({
                                                             ),
                                                         )}
                                                     </td>
-                                                    <td className="border-dark-light text-darker w-40 border-r border-b px-4 py-4">
+                                                    <td className="border-gray-100 text-darker font-normal w-40 border-r border-b px-4 py-4">
                                                         <Link
                                                             href={useLocalizedRoute(
                                                                 'jormungandr.wallets.show',
@@ -421,7 +421,7 @@ const VoterHistoryTable: React.FC<VoterHistoryTableProps> = ({
                                                             )}
                                                         </Link>
                                                     </td>
-                                                    <td className="border-dark-light text-content border-r border-b px-4 py-4">
+                                                    <td className="border-gray-100 text-content  font-medium border-r border-b px-4 py-4">
                                                         <div className="flex flex-col">
                                                             <span>
                                                                 {history.time}
@@ -432,7 +432,7 @@ const VoterHistoryTable: React.FC<VoterHistoryTableProps> = ({
                             </span> */}
                                                         </div>
                                                     </td>
-                                                    <td className="border-dark-light text-darker border-r border-b px-4 py-4 text-left">
+                                                    <td className="border-gray-100 text-darker font-medium border-r border-b px-4 py-4 text-left">
                                                         {typeof safelyGetNestedValue(
                                                             history,
                                                             'choice',
@@ -446,7 +446,7 @@ const VoterHistoryTable: React.FC<VoterHistoryTableProps> = ({
                                                                   'choice',
                                                               )}
                                                     </td>
-                                                    <td className="border-dark-light text-content border-r border-b px-4 py-4">
+                                                    <td className="border-gray-100 text-content border-r border-b px-4 py-4">
                                                         <div className="flex items-start">
                                                             <span>
                                                                 {formatVotingPower(
@@ -455,7 +455,7 @@ const VoterHistoryTable: React.FC<VoterHistoryTableProps> = ({
                                                             </span>
                                                         </div>
                                                     </td>
-                                                    <td className="border-dark-light text-darker w-40 border-b px-4 py-4">
+                                                    <td className="border-gray-100 text-darker font-normal w-40 border-r border-b px-4 py-4">
                                                         {getValueWithTooltip(
                                                             index,
                                                             history,
@@ -477,7 +477,7 @@ const VoterHistoryTable: React.FC<VoterHistoryTableProps> = ({
                             voterHistories &&
                             voterHistories.data &&
                             voterHistories.data.length > 0 && (
-                                <div className="bg-background border-dark-light rounded-b-lg border-t p-2">
+                                <div className="bg-background  rounded-b-lg  border-gray-200 border-t px-2">
                                     <Paginator
                                         pagination={voterHistories}
                                         linkProps={{

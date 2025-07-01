@@ -1,4 +1,6 @@
 import Paragraph from '@/Components/atoms/Paragraph';
+import { useFilterContext } from '@/Context/FiltersContext';
+import { ParamsEnum } from '@/enums/proposal-search-params';
 import { shortNumber } from '@/utils/shortNumber';
 import { ResponsivePie } from '@nivo/pie';
 import React, { useEffect, useState } from 'react';
@@ -13,11 +15,46 @@ interface PieChartProps {
 const PieChart: React.FC<PieChartProps> = ({
     chartData,
     selectedOptionIndex = 0,
-    viewBy
+    viewBy,
 }) => {
     const { t } = useTranslation();
-    const [activeOptionIndex, setActiveOptionIndex] = useState(selectedOptionIndex);
+    const { getFilter } = useFilterContext();
+    const [activeOptionIndex, setActiveOptionIndex] =
+        useState(selectedOptionIndex);
     const [isMobile, setIsMobile] = useState(false);
+    const [normalizedData, setNormalizedData] = useState<any[]>([]);
+
+    useEffect(() => {
+        if (!chartData || chartData.length === 0) {
+            setNormalizedData([]);
+            return;
+        }
+
+        const isSubmittedProposalsFormat =
+            Array.isArray(chartData) &&
+            chartData.length > 0 &&
+            typeof chartData[0] === 'object' &&
+            !chartData[0].hasOwnProperty('fund') &&
+            !chartData[0].hasOwnProperty('year');
+
+        if (isSubmittedProposalsFormat) {
+            const fundKeys = Object.keys(chartData[0] || {});
+            const normalized = fundKeys.map((fundKey, index) => ({
+                fund: fundKey,
+                year: fundKey,
+                totalProposals: chartData[0]?.[fundKey] || 0,
+            }));
+            setNormalizedData(normalized);
+        } else {
+            const normalized = chartData.map((item: any) => ({
+                ...item,
+                totalProposals:
+                    item.totalProposals ||
+                    (item.unfundedProposals || 0) + (item.fundedProposals || 0),
+            }));
+            setNormalizedData(normalized);
+        }
+    }, [chartData]);
 
     useEffect(() => {
         const checkMobile = () => {
@@ -29,33 +66,86 @@ const PieChart: React.FC<PieChartProps> = ({
         return () => window.removeEventListener('resize', checkMobile);
     }, []);
 
+    const safeActiveOptionIndex = Math.min(
+        Math.max(0, activeOptionIndex),
+        normalizedData.length - 1,
+    );
+
+    useEffect(() => {
+        if (safeActiveOptionIndex !== activeOptionIndex) {
+            setActiveOptionIndex(safeActiveOptionIndex);
+        }
+    }, [safeActiveOptionIndex, activeOptionIndex]);
+
     const colors = ['#16B364', '#ee8434', '#4fadce'];
 
-    const selectedOption = chartData[activeOptionIndex];
+    const selectedOption = normalizedData[safeActiveOptionIndex] || {};
 
-    const pieData = [
-        {
+    const isSubmittedSelected = getFilter(
+        ParamsEnum.SUBMITTED_PROPOSALS,
+    )?.includes('submitted');
+    const isApprovedSelected = getFilter(
+        ParamsEnum.APPROVED_PROPOSALS,
+    )?.includes('approved');
+    const isCompletedSelected = getFilter(
+        ParamsEnum.COMPLETED_PROPOSALS,
+    )?.includes('complete');
+    const isUnfundedSelected = getFilter(
+        ParamsEnum.UNFUNDED_PROPOSALS,
+    )?.includes('unfunded');
+
+    const pieData = [];
+
+    if (isApprovedSelected) {
+        pieData.push({
             id: 'Funded Proposals',
             label: 'Funded',
-            value: selectedOption.fundedProposals ?? 0,
+            value: selectedOption?.fundedProposals ?? 0,
             color: colors[0],
-        },
-        {
+        });
+    }
+
+    if (isCompletedSelected) {
+        pieData.push({
             id: 'Completed Proposals',
             label: 'Completed',
-            value: selectedOption.completedProposals ?? 0,
+            value: selectedOption?.completedProposals ?? 0,
             color: colors[1],
-        },
-        {
+        });
+    }
+
+    if (isUnfundedSelected) {
+        pieData.push({
+            id: 'Unfunded Proposals',
+            label: 'Unfunded',
+            value: selectedOption?.unfundedProposals ?? 0,
+            color: colors[2],
+        });
+    }
+
+    if (isSubmittedSelected) {
+        pieData.push({
             id: 'Submitted Proposals',
             label: 'Submitted',
-            value: (selectedOption.totalProposals ?? 0)  - (selectedOption.fundedProposals ?? 0),
+            value: selectedOption?.totalProposals ?? 0,
             color: colors[2],
-        },
-    ].filter((item) => item.value > 0);
+        });
+    }
 
-    const total = selectedOption.totalProposals;
-    const pieDataWithPercentages = pieData.map((item) => ({
+    const filteredPieData =
+        pieData.length > 1 ? pieData.filter((item) => item.value > 0) : pieData;
+
+    let total = 0;
+    if (isSubmittedSelected) {
+        total = selectedOption?.totalProposals ?? 0;
+    } else {
+        total =
+            (selectedOption?.completedProposals ?? 0) +
+            (selectedOption?.fundedProposals ?? 0) +
+            (selectedOption?.unfundedProposals ?? 0);
+    }
+
+    const pieDataWithPercentages = filteredPieData.map((item) => ({
         ...item,
         percentage: total > 0 ? ((item.value / total) * 100).toFixed(1) : '0',
     }));
@@ -82,13 +172,13 @@ const PieChart: React.FC<PieChartProps> = ({
                     className="mb-2 text-sm"
                     style={{ color: 'var(--cx-content-gray-persist)' }}
                 >
-                    {viewBy === 'fund'
-                        ? t('charts.selectFund')
-                        : t('charts.selectYear')}
+                    {viewBy === 'fund' ? t('charts.fund') : t('charts.year')}
                 </Paragraph>
                 <select
-                    value={activeOptionIndex}
-                    onChange={(e) => setActiveOptionIndex(Number(e.target.value))}
+                    value={safeActiveOptionIndex}
+                    onChange={(e) =>
+                        setActiveOptionIndex(Number(e.target.value))
+                    }
                     className="w-full rounded border px-3 py-2 text-sm md:w-auto"
                     style={{
                         backgroundColor: 'var(--cx-background)',
@@ -96,56 +186,71 @@ const PieChart: React.FC<PieChartProps> = ({
                         color: 'var(--cx-content)',
                     }}
                 >
-                    {viewBy === 'fund'
-                        ? chartData.map((option: any, index: number) => (
-                            <option key={index} value={index}>
-                                {option.fund}
-                            </option>
-                        ))
-                        : chartData.map((option: any, index: number) => (
-                            <option key={index} value={index}>
-                                {option.year}
-                            </option>
-                        ))}
+                    {normalizedData.length === 0 && (
+                        <option value={-1} disabled>
+                            {viewBy === 'fund'
+                                ? t('charts.fund')
+                                : t('charts.year')}
+                        </option>
+                    )}
+                    {normalizedData.map((option: any, index: number) => (
+                        <option key={index} value={index}>
+                            {viewBy === 'fund'
+                                ? (option?.fund ?? `Fund ${index + 1}`)
+                                : (option?.year ?? `Year ${index + 1}`)}
+                        </option>
+                    ))}
                 </select>
             </div>
 
             <div className="my-4 mb-4 grid grid-cols-1 gap-3 sm:grid-cols-3 sm:gap-4">
-                <div className="text-center">
-                    <Paragraph
-                        className="text-sm"
-                        style={{ color: 'var(--cx-content-gray-persist)' }}
-                    >
-                        {t('proposals.totalProposals')}
-                    </Paragraph>
-                    <Paragraph className="text-lg font-semibold">
-                        {shortNumber(selectedOption.totalProposals, 2)}
-                    </Paragraph>
-                </div>
-                <div className="text-center">
-                    <Paragraph
-                        className="text-sm"
-                        style={{ color: 'var(--cx-content-gray-persist)' }}
-                    >
-                        {t('funds.fundedProposals')}
-                    </Paragraph>
-                    <Paragraph className="text-lg font-semibold">
-                        {shortNumber(selectedOption.fundedProposals, 2)}
-                    </Paragraph>
-                </div>
-                <div className="text-center">
-                    <Paragraph
-                        className="text-sm"
-                        style={{ color: 'var(--cx-content-gray-persist)' }}
-                    >
-                        {t('charts.fundingRate')}
-                    </Paragraph>
-                    <Paragraph className="text-lg font-semibold">
-                        {selectedOption.totalProposals > 0
-                            ? `${((selectedOption.fundedProposals / selectedOption.totalProposals) * 100).toFixed(1)}%`
-                            : '0%'}
-                    </Paragraph>
-                </div>
+              
+                    <div className="text-center">
+                        <Paragraph
+                            className="text-sm"
+                            style={{ color: 'var(--cx-content-gray-persist)' }}
+                        >
+                            {t('proposals.totalProposals')}
+                        </Paragraph>
+                        <Paragraph className="text-lg font-semibold">
+                            {shortNumber(
+                                isSubmittedSelected ? selectedOption?.totalProposals  ?? 0 : total,
+                                2,
+                            )}
+                        </Paragraph>
+                    </div>
+                
+                {isApprovedSelected && (
+                    <div className="text-center">
+                        <Paragraph
+                            className="text-sm"
+                            style={{ color: 'var(--cx-content-gray-persist)' }}
+                        >
+                            {t('funds.fundedProposals')}
+                        </Paragraph>
+                        <Paragraph className="text-lg font-semibold">
+                            {shortNumber(
+                                selectedOption?.fundedProposals ?? 0,
+                                2,
+                            )}
+                        </Paragraph>
+                    </div>
+                )}
+                {(isApprovedSelected || isCompletedSelected || isUnfundedSelected) && (
+                    <div className="text-center">
+                        <Paragraph
+                            className="text-sm"
+                            style={{ color: 'var(--cx-content-gray-persist)' }}
+                        >
+                            {t('charts.fundingRate')}
+                        </Paragraph>
+                        <Paragraph className="text-lg font-semibold">
+                            {(selectedOption?.totalProposals ?? 0) > 0
+                                ? `${(((selectedOption?.fundedProposals ?? 0) / (total ?? 0)) * 100).toFixed(1)}%`
+                                : '0%'}
+                        </Paragraph>
+                    </div>
+                )}
             </div>
 
             <div style={{ height: `${chartConfig.height}px` }}>
@@ -255,7 +360,7 @@ const PieChart: React.FC<PieChartProps> = ({
                 />
             </div>
 
-            <div className="mt-4 flex flex-col space-y-3 md:flex-row items-center justify-center md:space-y-0 md:space-x-8">
+            <div className="mt-4 flex flex-col items-center justify-center space-y-3 md:flex-row md:space-y-0 md:space-x-8">
                 {pieDataWithPercentages.map((item) => (
                     <div
                         key={item.id}
@@ -272,7 +377,7 @@ const PieChart: React.FC<PieChartProps> = ({
                         </div>
                         <div className="flex items-center gap-4 pl-5 sm:pl-0 md:pl-0">
                             <Paragraph className="font-semibold" size="sm">
-                                {shortNumber(item.value, 0)}
+                                {shortNumber(item.value, 2)}
                             </Paragraph>
                             <Paragraph
                                 className="text-sm"

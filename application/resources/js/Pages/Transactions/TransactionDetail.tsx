@@ -1,5 +1,6 @@
 import Title from '@/Components/atoms/Title';
 import Value from '@/Components/atoms/Value';
+import RegistrationBadge from '@/Components/RegistrationBadge';
 import { copyToClipboard } from '@/utils/copyClipboard';
 import { useLocalizedRoute } from '@/utils/localizedRoute';
 import { truncateMiddle } from '@/utils/truncateMiddle';
@@ -9,6 +10,7 @@ import { useTranslation } from 'react-i18next';
 import DetailRow from './Partials/DetailRow';
 import MetadataCard from './Partials/MetadataCard';
 import TransactionDetailsCard from './Partials/TransactionDetailsCard';
+import UTXOsCard from './Partials/UTXOsCard';
 import WalletDetailsCard from './Partials/WalletDetailsCard';
 import TransactionData = App.DataTransferObjects.TransactionData;
 
@@ -32,9 +34,16 @@ export default function TransactionDetail({
 
             <header className="mt-10">
                 <div className="container mx-auto">
-                    <Title level="1" className="text-content text-4xl">
-                        {t('transactions.message')}
-                    </Title>
+                    <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:gap-4">
+                        <Title level="1" className="text-content lg:text-4xl  text-3xl">
+                            {t('transactions.message')}
+                        </Title>
+                        <div className="inline-block">
+                            <RegistrationBadge
+                                txType={transaction?.json_metadata?.txType}
+                            />
+                        </div>
+                    </div>
                 </div>
             </header>
 
@@ -51,6 +60,9 @@ export default function TransactionDetail({
             <div className="text-content min-h-screen">
                 <div className="container mb-8">
                     <TransactionDetailsCard transaction={transaction} />
+                </div>
+                <div className="container mb-8">
+                    <UTXOsCard transaction={transaction} />
                 </div>
 
                 <div className="container mb-8">
