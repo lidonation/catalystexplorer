@@ -52,18 +52,33 @@ const Index = ({
         setViewByPreference([newValue]);
     };
 
+    const resetChartsState = () => {
+        setShowCharts(false);
+        localStorage.removeItem('metricsSet');
+    };
+
     useEffect(() => {
         const handleNavigation = () => {
-            localStorage.removeItem('metricsSet');
+            resetChartsState();
         };
 
-        router.on('navigate', handleNavigation);
+        const handleBeforeUnload = () => {
+            resetChartsState();
+        };
+
+        const removeNavigationListener = router.on('navigate', handleNavigation);
+
+        window.addEventListener('beforeunload', handleBeforeUnload);
 
         if(!isOnChartsRoute) {
-            setShowCharts(false);
-            localStorage.removeItem('metricsSet');
+            resetChartsState();
         }
-    }, []);
+
+        return () => {
+            removeNavigationListener();
+            window.removeEventListener('beforeunload', handleBeforeUnload);
+        };
+    }, [isOnChartsRoute]);
 
     return (
         <FiltersProvider defaultFilters={filters}>
