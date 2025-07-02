@@ -69,12 +69,28 @@ export default function Step1({ onCompletionChange }: Step1Props) {
                 param: ParamsEnum.COMPLETED_PROPOSALS,
             });
         }
+
+        if (proposalTypes?.includes('unfunded')) {
+            setFilters({
+                label: t('charts.unfundedProposals'),
+                value: ['unfunded'],
+                param: ParamsEnum.UNFUNDED_PROPOSALS,
+            });
+        } else {
+            setFilters({
+                label: t('charts.unfundedProposals'),
+                value: [],
+                param: ParamsEnum.UNFUNDED_PROPOSALS,
+            });
+        }
     }, [proposalTypes, t, setFilters]);
 
     const handleCheckboxChange = (value: string, isChecked: boolean) => {
         const current = proposalTypes ?? [];
         const updated = isChecked
-            ? current.includes(value) ? current : [...current, value]
+            ? current.includes(value)
+                ? current
+                : [...current, value]
             : current.filter((item) => item !== value);
 
         setProposalTypes(updated);
@@ -92,6 +108,13 @@ export default function Step1({ onCompletionChange }: Step1Props) {
         handleCheckboxChange('complete', e.target.checked);
     };
 
+    const handleUnfundedChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        handleCheckboxChange('unfunded', e.target.checked);
+    };
+
+    const submittedDisabled = proposalTypes?.includes('approved') || proposalTypes?.includes('complete') || proposalTypes?.includes('unfunded');
+    const disabled = proposalTypes?.includes('submitted')
+
     return (
         <div>
             <Paragraph>{t('charts.selectProposals')}</Paragraph>
@@ -103,13 +126,18 @@ export default function Step1({ onCompletionChange }: Step1Props) {
                     <Checkbox
                         id="submitted-proposals"
                         value="submitted"
-                        checked={getFilter(ParamsEnum.SUBMITTED_PROPOSALS)?.includes('submitted') || false}
+                        checked={
+                            getFilter(ParamsEnum.SUBMITTED_PROPOSALS)?.includes(
+                                'submitted',
+                            ) || false
+                        }
                         onChange={handleSubmittedChange}
                         className="checked:bg-primary"
+                        disabled={submittedDisabled}
                     />
                     <label
                         htmlFor="submitted-proposals"
-                        className="text-sm md:text-base"
+                        className={`text-sm md:text-base ${submittedDisabled ? 'text-gray-persist cursor-not-allowed' : ''}`}
                     >
                         {t('charts.submittedProposals')}
                     </label>
@@ -119,13 +147,18 @@ export default function Step1({ onCompletionChange }: Step1Props) {
                     <Checkbox
                         id="approved-proposals"
                         value="approved"
-                        checked={getFilter(ParamsEnum.APPROVED_PROPOSALS)?.includes('approved') || false}
+                        checked={
+                            getFilter(ParamsEnum.APPROVED_PROPOSALS)?.includes(
+                                'approved',
+                            ) || false
+                        }
                         onChange={handleFundedChange}
                         className="checked:bg-primary"
+                        disabled={disabled}
                     />
                     <label
                         htmlFor="approved-proposals"
-                        className="text-sm md:text-base"
+                        className={`text-sm md:text-base ${disabled ? 'text-gray-persist cursor-not-allowed' : ''}`}
                     >
                         {t('charts.approvedProposals')}
                     </label>
@@ -135,15 +168,40 @@ export default function Step1({ onCompletionChange }: Step1Props) {
                     <Checkbox
                         id="completed-proposals"
                         value="complete"
-                        checked={getFilter(ParamsEnum.COMPLETED_PROPOSALS)?.includes('complete') || false}
+                        checked={
+                            getFilter(ParamsEnum.COMPLETED_PROPOSALS)?.includes(
+                                'complete',
+                            ) || false
+                        }
                         onChange={handleCompleteChange}
+                        disabled={disabled}
                         className="checked:bg-primary"
                     />
                     <label
                         htmlFor="completed-proposals"
-                        className="text-sm md:text-base"
+                         className={`text-sm md:text-base ${disabled ? 'text-gray-persist cursor-not-allowed' : ''}`}
                     >
                         {t('charts.completedProposals')}
+                    </label>
+                </div>
+                <div className="flex items-center gap-2">
+                    <Checkbox
+                        id="unfunded-proposals"
+                        value="unfunded"
+                        checked={
+                            getFilter(ParamsEnum.UNFUNDED_PROPOSALS)?.includes(
+                                'unfunded',
+                            ) || false
+                        }
+                        onChange={handleUnfundedChange}
+                        className="checked:bg-primary"
+                        disabled={disabled}
+                    />
+                    <label
+                        htmlFor="unfunded-proposals"
+                         className={`text-sm md:text-base ${disabled ? 'text-gray-persist cursor-not-allowed' : ''}`}
+                    >
+                        {t('charts.unfundedProposals')}
                     </label>
                 </div>
             </div>

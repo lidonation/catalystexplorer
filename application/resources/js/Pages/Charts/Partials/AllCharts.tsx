@@ -31,12 +31,12 @@ export default function AllCharts({
     const selectedChartOptions = getFilter(ParamsEnum.CHART_OPTIONS) || [];
     const { t } = useTranslation();
     
-    // Check if any proposal types are selected
     const hasSubmittedProposals = (getFilter(ParamsEnum.SUBMITTED_PROPOSALS) || []).length > 0;
     const hasApprovedProposals = (getFilter(ParamsEnum.APPROVED_PROPOSALS) || []).length > 0;
     const hasCompletedProposals = (getFilter(ParamsEnum.COMPLETED_PROPOSALS) || []).length > 0;
-    
-    const hasAnyProposalTypeSelected = hasSubmittedProposals || hasApprovedProposals || hasCompletedProposals;
+    const hasUnfundedProposals = (getFilter(ParamsEnum.UNFUNDED_PROPOSALS) || []).length > 0;
+
+    const hasAnyProposalTypeSelected = hasSubmittedProposals || hasApprovedProposals || hasCompletedProposals || hasUnfundedProposals;
     
     const renderBarChart = () => (
         <div>

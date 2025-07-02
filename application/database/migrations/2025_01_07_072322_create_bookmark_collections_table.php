@@ -18,7 +18,7 @@ return new class extends Migration
         Schema::create('bookmark_collections', function (Blueprint $table) {
             $table->id();
             $table->foreignIdFor(User::class);
-            $table->unsignedBigInteger('parent_id')->nullable();
+            $table->unsignedBigInteger('fund_id')->nullable();
             $table->text('title');
             $table->text('content')->nullable();
             $table->string('color');

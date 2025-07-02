@@ -245,9 +245,7 @@ class ProposalsController extends Controller
         }
 
         $allParams = array_merge($refererParams, $request->all());
-
         $mergedRequest = $request->duplicate($allParams);
-
         $this->getProps($mergedRequest);
 
         $chartDataByFund = $this->getDetailedCountsByFund();
@@ -261,7 +259,7 @@ class ProposalsController extends Controller
                 'chartDataByFund' => $chartDataByFund ?? [],
                 'chartDataByYear' => $chartDataByYear ?? [],
             ]
-        )->baseRoute('proposals.index', $this->queryParams);
+        )->baseRoute('proposals.index', $refererParams);
     }
 
     protected function getProps(Request $request): void
@@ -294,6 +292,7 @@ class ProposalsController extends Controller
             ProposalSearchParams::SUBMITTED_PROPOSALS()->value => 'array|nullable',
             ProposalSearchParams::APPROVED_PROPOSALS()->value => 'array|nullable',
             ProposalSearchParams::COMPLETED_PROPOSALS()->value => 'array|nullable',
+            ProposalSearchParams::UNFUNDED_PROPOSALS()->value => 'array|nullable',
         ]);
 
         // format sort params for meili
@@ -688,36 +687,31 @@ class ProposalsController extends Controller
 
         $funds = $response->facetDistribution['fund.title'] ?? [];
 
-        $chartData = [];
+        uksort($funds, function ($a, $b) {
+            $numA = (int) str_replace('Fund ', '', $a);
+            $numB = (int) str_replace('Fund ', '', $b);
 
-        foreach ($funds as $fundTitle => $totalCount) {
-            $fundedCount = $this->getFundedCountByFund($fundTitle);
-            $completedCount = $this->getCompletedCountByFund($fundTitle);
-
-            if (empty($this->queryParams[ProposalSearchParams::SUBMITTED_PROPOSALS()->value])) {
-                $totalCount = 0;
-            }
-
-            $chartData[] = [
-                'fund' => $fundTitle,
-                'totalProposals' => $totalCount ?? 0,
-                'fundedProposals' => $fundedCount ?? 0,
-                'completedProposals' => $completedCount ?? 0,
-            ];
-        }
-
-        // Sort chart data by fund number
-        usort($chartData, function ($a, $b) {
-            preg_match('/(\d+)/', $a['fund'], $matchesA);
-            preg_match('/(\d+)/', $b['fund'], $matchesB);
-
-            $fundNumberA = isset($matchesA[1]) ? (int) $matchesA[1] : 0;
-            $fundNumberB = isset($matchesB[1]) ? (int) $matchesB[1] : 0;
-
-            return $fundNumberA <=> $fundNumberB;
+            return $numA - $numB;
         });
 
-        // dd($chartData);
+        $chartData = [];
+
+        foreach (array_keys($funds) as $fundTitle) {
+            $fundedCount = $this->getFundedCountByFund($fundTitle);
+            $completedCount = $this->getCompletedCountByFund($fundTitle);
+            $unfundedCount = $this->getUnfundedCountByFund($fundTitle);
+
+            if (! empty($this->queryParams[ProposalSearchParams::SUBMITTED_PROPOSALS()->value])) {
+                $chartData[] = $funds;
+            } else {
+                $chartData[] = [
+                    'fund' => $fundTitle,
+                    'unfundedProposals' => $unfundedCount ?? 0,
+                    'fundedProposals' => $fundedCount ?? 0,
+                    'completedProposals' => $completedCount ?? 0,
+                ];
+            }
+        }
 
         return $chartData;
     }
@@ -753,20 +747,21 @@ class ProposalsController extends Controller
 
         $chartData = [];
 
-        foreach ($yearCounts as $year => $totalCount) {
+        foreach (array_keys($yearCounts) as $year) {
             $fundedCount = $this->getFundedCountByYear($year);
             $completedCount = $this->getCompletedCountByYear($year);
+            $unfundedCount = $this->getUnfundedCountByYear($year);
 
-            if (empty($this->queryParams[ProposalSearchParams::SUBMITTED_PROPOSALS()->value])) {
-                $totalCount = 0;
+            if (! empty($this->queryParams[ProposalSearchParams::SUBMITTED_PROPOSALS()->value])) {
+                $chartData[] = $createdDates;
+            } else {
+                $chartData[] = [
+                    'year' => $year,
+                    'unfundedProposals' => $unfundedCount ?? 0,
+                    'fundedProposals' => $fundedCount ?? 0,
+                    'completedProposals' => $completedCount ?? 0,
+                ];
             }
-
-            $chartData[] = [
-                'year' => $year,
-                'totalProposals' => $totalCount ?? 0,
-                'fundedProposals' => $fundedCount ?? 0,
-                'completedProposals' => $completedCount ?? 0,
-            ];
         }
 
         return $chartData;
@@ -776,13 +771,14 @@ class ProposalsController extends Controller
     {
         $fundedFilters = array_merge($this->getUserFilters(), [
             'fund.title = "'.$fundTitle.'"',
-            '(funding_status = "funded" OR funding_status = "leftover")',
+            '(funding_status = "'.ProposalFundingStatus::funded()->value.'" OR funding_status = "'.ProposalFundingStatus::leftover()->value.'")',
         ]);
 
         $proposals = app(ProposalRepository::class);
         $args = [
             'filter' => $fundedFilters,
             'limit' => 0,
+            'facets' => ['fund.title'],
         ];
 
         $response = new Fluent($proposals->search(
@@ -790,27 +786,27 @@ class ProposalsController extends Controller
             $args
         )->raw());
 
-        $fundedCount = $response->estimatedTotalHits ?? 0;
+        $fundedCount = $response->facetDistribution['fund.title'][$fundTitle] ?? 0;
 
         if (empty($this->queryParams[ProposalSearchParams::APPROVED_PROPOSALS()->value])) {
             return 0;
         } else {
             return $fundedCount;
         }
-
     }
 
     private function getCompletedCountByFund($fundTitle): int
     {
         $completedFilters = array_merge($this->getUserFilters(), [
             'fund.title = "'.$fundTitle.'"',
-            'status = "complete"',
+            'status = "'.ProposalStatus::complete()->value.'"',
         ]);
 
         $proposals = app(ProposalRepository::class);
         $args = [
             'filter' => $completedFilters,
             'limit' => 0,
+            'facets' => ['fund.title'],
         ];
 
         $response = new Fluent($proposals->search(
@@ -818,7 +814,7 @@ class ProposalsController extends Controller
             $args
         )->raw());
 
-        $completedCount = $response->estimatedTotalHits ?? 0;
+        $completedCount = $response->facetDistribution['fund.title'][$fundTitle] ?? 0;
 
         if (empty($this->queryParams[ProposalSearchParams::COMPLETED_PROPOSALS()->value])) {
             return 0;
@@ -827,9 +823,36 @@ class ProposalsController extends Controller
         }
     }
 
+    private function getUnfundedCountByFund($fundTitle): int
+    {
+        $unfundedFilters = array_merge($this->getUserFilters(), [
+            'fund.title = "'.$fundTitle.'"',
+            'status = "'.ProposalStatus::unfunded()->value.'"',
+        ]);
+
+        $proposals = app(ProposalRepository::class);
+        $args = [
+            'filter' => $unfundedFilters,
+            'limit' => 0,
+            'facets' => ['fund.title'],
+        ];
+
+        $response = new Fluent($proposals->search(
+            $this->queryParams[ProposalSearchParams::QUERY()->value] ?? '',
+            $args
+        )->raw());
+
+        $unfundedCount = $response->facetDistribution['fund.title'][$fundTitle] ?? 0;
+
+        if (empty($this->queryParams[ProposalSearchParams::UNFUNDED_PROPOSALS()->value])) {
+            return 0;
+        } else {
+            return $unfundedCount;
+        }
+    }
+
     private function getFundedCountByYear(int $year): int
     {
-
         $fundedStatusFilter = 'funding_status = "'.ProposalFundingStatus::funded()->value.'"';
         $leftoverStatusFilter = 'funding_status = "'.ProposalFundingStatus::leftover()->value.'"';
 
@@ -846,6 +869,7 @@ class ProposalsController extends Controller
         $args = [
             'filter' => $filters,
             'limit' => 0,
+            'facets' => ['funding_status'],
         ];
 
         $response = new Fluent($proposals->search(
@@ -853,18 +877,20 @@ class ProposalsController extends Controller
             $args
         )->raw());
 
-        $fundedCount = $response->estimatedTotalHits ?? 0;
+        $fundedCount = $response->facetDistribution['funding_status'][ProposalFundingStatus::funded()->value] ?? 0;
+        $leftoverCount = $response->facetDistribution['funding_status'][ProposalFundingStatus::leftover()->value] ?? 0;
+
+        $totalFundedCount = $fundedCount + $leftoverCount;
 
         if (empty($this->queryParams[ProposalSearchParams::APPROVED_PROPOSALS()->value])) {
             return 0;
         }
 
-        return $fundedCount;
+        return $totalFundedCount;
     }
 
     private function getCompletedCountByYear(int $year): int
     {
-
         $completedStatusFilter = 'status = "'.ProposalStatus::complete()->value.'"';
         $startTimestamp = Carbon::create($year, 1, 1)->timestamp;
         $endTimestamp = Carbon::create($year + 1, 1, 1)->timestamp;
@@ -877,6 +903,7 @@ class ProposalsController extends Controller
         $args = [
             'filter' => $filters,
             'limit' => 0,
+            'facets' => ['status'],
         ];
 
         $response = new Fluent($proposals->search(
@@ -884,12 +911,43 @@ class ProposalsController extends Controller
             $args
         )->raw());
 
-        $completedCount = $response->estimatedTotalHits ?? 0;
+        $completedCount = $response->facetDistribution['status'][ProposalStatus::complete()->value] ?? 0;
 
         if (empty($this->queryParams[ProposalSearchParams::COMPLETED_PROPOSALS()->value])) {
             return 0;
         }
 
         return $completedCount;
+    }
+
+    private function getUnfundedCountByYear(int $year): int
+    {
+        $unfundedStatusFilter = 'status = "'.ProposalStatus::unfunded()->value.'"';
+        $startTimestamp = Carbon::create($year, 1, 1)->timestamp;
+        $endTimestamp = Carbon::create($year + 1, 1, 1)->timestamp;
+
+        $yearFilter = "created_at_timestamp >= {$startTimestamp} AND created_at_timestamp < {$endTimestamp}";
+
+        $filters = array_merge($this->getUserFilters(), [$unfundedStatusFilter, $yearFilter]);
+
+        $proposals = app(ProposalRepository::class);
+        $args = [
+            'filter' => $filters,
+            'limit' => 0,
+            'facets' => ['status'],
+        ];
+
+        $response = new Fluent($proposals->search(
+            $this->queryParams[ProposalSearchParams::QUERY()->value] ?? '',
+            $args
+        )->raw());
+
+        $unfundedCount = $response->facetDistribution['status'][ProposalStatus::unfunded()->value] ?? 0;
+
+        if (empty($this->queryParams[ProposalSearchParams::COMPLETED_PROPOSALS()->value])) {
+            return 0;
+        }
+
+        return $unfundedCount;
     }
 }

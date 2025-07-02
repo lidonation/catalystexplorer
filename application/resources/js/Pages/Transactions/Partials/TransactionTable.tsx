@@ -23,6 +23,7 @@ export const CardanoTransactionTable: React.FC<
 > = ({ transactions = [] }) => {
     const { CardanoWasm } = useConnectWallet();
     const { t } = useTranslation();
+
     const voterRegistrationTypes = ['cip15', 'cip36'];
 
     const getStakeAddress = (address: string): string => {
@@ -56,13 +57,13 @@ export const CardanoTransactionTable: React.FC<
         key: 'type',
             header: t('transactions.table.type'),
             render: (tx) => (
-              <div className="bg-background-lighter flex items-start rounded px-2 py-1">
-                            <RegisterTwo
+              <div className="bg-background-lighter flex items-start rounded px-4 py-3">
+                            {/* <RegisterTwo
                                 width={12}
                                 height={12}
                                 className="text-gray-persist mr-1"
-                            />
-                            <Paragraph className="text-gray-persist text-xs font-bold">
+                            /> */}
+                            <Paragraph className="text-gray-persist text-xs font-bold whitespace-nowrap">
                                 {t('transactions.table.voterRegistration')}
                             </Paragraph>
                         </div>
@@ -104,7 +105,7 @@ export const CardanoTransactionTable: React.FC<
             header: t('transactions.table.stakeAddress'),
             render: (tx) => {
                 return (
-                  <div className="flex justify-center text-left">
+                  <div className="flex justify-start text-left">
                     <CopyableCell
                         displayText={formatAddress(tx?.stake_key ?? '')}
                         fullText={tx?.stake_key ?? ''}
@@ -118,7 +119,7 @@ export const CardanoTransactionTable: React.FC<
             key: 'epoch',
             header: t('transactions.table.epoch'),
             render: (tx) => (
-                <Paragraph size="sm" className="text-start">
+                <Paragraph size="sm" className="text-left">
                     {tx.epoch || '-'}
                 </Paragraph>
             ),
@@ -127,7 +128,7 @@ export const CardanoTransactionTable: React.FC<
             key: 'block',
             header: t('transactions.table.block'),
             render: (tx) => (
-              <div className="flex justify-center text-left">c
+              <div className="flex justify-start text-left">
                 <CopyableCell
                     displayText={formatAddress(tx.block)}
                     fullText={tx.block}
@@ -140,7 +141,7 @@ export const CardanoTransactionTable: React.FC<
             key: 'Total Outputs',
             header: t('transactions.table.totalOutputs'),
             render: (tx) => (
-                <Paragraph size="sm" className="text-start">
+                <Paragraph size="sm" className="text-left">
                     {tx?.total_output ?? 0}
                 </Paragraph>
             ),
@@ -149,7 +150,7 @@ export const CardanoTransactionTable: React.FC<
             key: 'Weights',
             header: t('transactions.table.weights'),
             render: (tx) => (
-                <Paragraph size="sm" className="text-start">
+                <Paragraph size="sm" className="text-left">
                     {tx.json_metadata?.voter_delegations?.[0]?.weight}
                 </Paragraph>
             ),
@@ -159,13 +160,13 @@ export const CardanoTransactionTable: React.FC<
     return (
         <div className="w-full overflow-x-auto rounded-t-lg shadow-[0_-1px_4px_0_rgba(0,0,0,0.05)]">
             <div className="inline-block min-w-full overflow-hidden">
-                <table className="min-w-full table-fixed">
-                    <thead className="bg-background-lighter border-gray-persist/30 border-b">
-                        <tr className="border-background-lighter border-r border-b">
+                <table className="min-w-full divide-y divide-gray-200 border border-gray-200rounded-lg overflow-hidden">
+                    <thead className="bg-background-lighter">
+                        <tr>
                             {columns.map((column) => (
                                 <th
                                     key={column.key}
-                                    className="text-gray-persist bg-background-lighter border-gray-persist/30 border-r px-4 py-3 text-left font-medium"
+                                    className="sticky top-0 border border-gray-200 px-4 py-3 text-left first:rounded-tl-lg last:rounded-tr-lg"
                                 >
                                     <Paragraph
                                         size="sm"
@@ -175,10 +176,10 @@ export const CardanoTransactionTable: React.FC<
                                     </Paragraph>
                                 </th>
                             ))}
-                            <th className="p-3">
+                            <th className="sticky top-0 border border-gray-200 px-4 py-3 text-left first:rounded-tl-lg last:rounded-tr-lg">
                                 <Paragraph
                                     size="sm"
-                                    className="text-content/60 text-left font-medium"
+                                    className="text-content/60 text-left font-medium text-nowrap"
                                 >
                                     {t('transactions.table.actions')}
                                 </Paragraph>

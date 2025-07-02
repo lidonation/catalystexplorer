@@ -16,9 +16,9 @@ export default function TabNavigation({
     tabs, 
     activeTab, 
     centerTabs = true,
-    className = "min-w-max border-b border-gray-persist",
-    tabClassName = "whitespace-nowrap text-sm md:text-base px-1 md:px-2 py-1 group flex items-center gap-1 outline-hidden transition-colors hover:text-content-dark",
-    activeTabClassName = "-mb-px border-b-2 border-b-primary text-primary",
+    className = "min-w-max border-b border-gray-100",
+    tabClassName = "whitespace-nowrap text-sm md:text-base px-1 md:px-2 py-1 group flex items-center gap-1 outline-hidden transition-colors hover:text-gray-700 font-bold text-gray-500",
+    activeTabClassName = "-mb-px border-b-4 !text-cyan-500 border-b-cyan-500",
     wrapperClassName = "mt-3 md:mt-6 text-content-lighter overflow-x-auto overflow-y-hidden pb-1 lg:overflow-x-hidden"
 }: TabNavigationProps) {
     const tabRefs = useRef<(HTMLAnchorElement | null)[]>([]);

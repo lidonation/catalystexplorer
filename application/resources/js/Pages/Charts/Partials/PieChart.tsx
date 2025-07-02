@@ -22,6 +22,39 @@ const PieChart: React.FC<PieChartProps> = ({
     const [activeOptionIndex, setActiveOptionIndex] =
         useState(selectedOptionIndex);
     const [isMobile, setIsMobile] = useState(false);
+    const [normalizedData, setNormalizedData] = useState<any[]>([]);
+
+    useEffect(() => {
+        if (!chartData || chartData.length === 0) {
+            setNormalizedData([]);
+            return;
+        }
+
+        const isSubmittedProposalsFormat =
+            Array.isArray(chartData) &&
+            chartData.length > 0 &&
+            typeof chartData[0] === 'object' &&
+            !chartData[0].hasOwnProperty('fund') &&
+            !chartData[0].hasOwnProperty('year');
+
+        if (isSubmittedProposalsFormat) {
+            const fundKeys = Object.keys(chartData[0] || {});
+            const normalized = fundKeys.map((fundKey, index) => ({
+                fund: fundKey,
+                year: fundKey,
+                totalProposals: chartData[0]?.[fundKey] || 0,
+            }));
+            setNormalizedData(normalized);
+        } else {
+            const normalized = chartData.map((item: any) => ({
+                ...item,
+                totalProposals:
+                    item.totalProposals ||
+                    (item.unfundedProposals || 0) + (item.fundedProposals || 0),
+            }));
+            setNormalizedData(normalized);
+        }
+    }, [chartData]);
 
     useEffect(() => {
         const checkMobile = () => {
@@ -35,7 +68,7 @@ const PieChart: React.FC<PieChartProps> = ({
 
     const safeActiveOptionIndex = Math.min(
         Math.max(0, activeOptionIndex),
-        chartData.length - 1,
+        normalizedData.length - 1,
     );
 
     useEffect(() => {
@@ -46,7 +79,7 @@ const PieChart: React.FC<PieChartProps> = ({
 
     const colors = ['#16B364', '#ee8434', '#4fadce'];
 
-    const selectedOption = chartData[safeActiveOptionIndex];
+    const selectedOption = normalizedData[safeActiveOptionIndex] || {};
 
     const isSubmittedSelected = getFilter(
         ParamsEnum.SUBMITTED_PROPOSALS,
@@ -57,6 +90,9 @@ const PieChart: React.FC<PieChartProps> = ({
     const isCompletedSelected = getFilter(
         ParamsEnum.COMPLETED_PROPOSALS,
     )?.includes('complete');
+    const isUnfundedSelected = getFilter(
+        ParamsEnum.UNFUNDED_PROPOSALS,
+    )?.includes('unfunded');
 
     const pieData = [];
 
@@ -78,13 +114,20 @@ const PieChart: React.FC<PieChartProps> = ({
         });
     }
 
+    if (isUnfundedSelected) {
+        pieData.push({
+            id: 'Unfunded Proposals',
+            label: 'Unfunded',
+            value: selectedOption?.unfundedProposals ?? 0,
+            color: colors[2],
+        });
+    }
+
     if (isSubmittedSelected) {
         pieData.push({
             id: 'Submitted Proposals',
             label: 'Submitted',
-            value:
-                (selectedOption?.totalProposals ?? 0) -
-                (selectedOption?.fundedProposals ?? 0),
+            value: selectedOption?.totalProposals ?? 0,
             color: colors[2],
         });
     }
@@ -92,7 +135,16 @@ const PieChart: React.FC<PieChartProps> = ({
     const filteredPieData =
         pieData.length > 1 ? pieData.filter((item) => item.value > 0) : pieData;
 
-    const total = selectedOption?.totalProposals ?? 0;
+    let total = 0;
+    if (isSubmittedSelected) {
+        total = selectedOption?.totalProposals ?? 0;
+    } else {
+        total =
+            (selectedOption?.completedProposals ?? 0) +
+            (selectedOption?.fundedProposals ?? 0) +
+            (selectedOption?.unfundedProposals ?? 0);
+    }
+
     const pieDataWithPercentages = filteredPieData.map((item) => ({
         ...item,
         percentage: total > 0 ? ((item.value / total) * 100).toFixed(1) : '0',
@@ -134,29 +186,25 @@ const PieChart: React.FC<PieChartProps> = ({
                         color: 'var(--cx-content)',
                     }}
                 >
-                    {chartData.length === 0 && (
+                    {normalizedData.length === 0 && (
                         <option value={-1} disabled>
                             {viewBy === 'fund'
                                 ? t('charts.fund')
                                 : t('charts.year')}
                         </option>
                     )}
-                    {viewBy === 'fund'
-                        ? chartData.map((option: any, index: number) => (
-                              <option key={index} value={index}>
-                                  {option?.fund ?? `Fund ${index + 1}`}
-                              </option>
-                          ))
-                        : chartData.map((option: any, index: number) => (
-                              <option key={index} value={index}>
-                                  {option?.year ?? `Year ${index + 1}`}
-                              </option>
-                          ))}
+                    {normalizedData.map((option: any, index: number) => (
+                        <option key={index} value={index}>
+                            {viewBy === 'fund'
+                                ? (option?.fund ?? `Fund ${index + 1}`)
+                                : (option?.year ?? `Year ${index + 1}`)}
+                        </option>
+                    ))}
                 </select>
             </div>
 
             <div className="my-4 mb-4 grid grid-cols-1 gap-3 sm:grid-cols-3 sm:gap-4">
-                {isSubmittedSelected && (
+              
                     <div className="text-center">
                         <Paragraph
                             className="text-sm"
@@ -166,12 +214,12 @@ const PieChart: React.FC<PieChartProps> = ({
                         </Paragraph>
                         <Paragraph className="text-lg font-semibold">
                             {shortNumber(
-                                selectedOption?.totalProposals ?? 0,
+                                isSubmittedSelected ? selectedOption?.totalProposals  ?? 0 : total,
                                 2,
                             )}
                         </Paragraph>
                     </div>
-                )}
+                
                 {isApprovedSelected && (
                     <div className="text-center">
                         <Paragraph
@@ -188,7 +236,7 @@ const PieChart: React.FC<PieChartProps> = ({
                         </Paragraph>
                     </div>
                 )}
-                {isApprovedSelected && isSubmittedSelected && (
+                {(isApprovedSelected || isCompletedSelected || isUnfundedSelected) && (
                     <div className="text-center">
                         <Paragraph
                             className="text-sm"
@@ -198,7 +246,7 @@ const PieChart: React.FC<PieChartProps> = ({
                         </Paragraph>
                         <Paragraph className="text-lg font-semibold">
                             {(selectedOption?.totalProposals ?? 0) > 0
-                                ? `${(((selectedOption?.fundedProposals ?? 0) / (selectedOption?.totalProposals ?? 0)) * 100).toFixed(1)}%`
+                                ? `${(((selectedOption?.fundedProposals ?? 0) / (total ?? 0)) * 100).toFixed(1)}%`
                                 : '0%'}
                         </Paragraph>
                     </div>
@@ -329,7 +377,7 @@ const PieChart: React.FC<PieChartProps> = ({
                         </div>
                         <div className="flex items-center gap-4 pl-5 sm:pl-0 md:pl-0">
                             <Paragraph className="font-semibold" size="sm">
-                                {shortNumber(item.value, 0)}
+                                {shortNumber(item.value, 2)}
                             </Paragraph>
                             <Paragraph
                                 className="text-sm"

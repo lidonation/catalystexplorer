@@ -27,6 +27,40 @@ const LineChart: React.FC<LineChartProps> = ({
         typeof window !== 'undefined' ? window.innerWidth : 1200,
     );
 
+    const [normalizedData, setNormalizedData] = useState<any[]>([]);
+
+    useEffect(() => {
+        if (!chartData || chartData.length === 0) {
+            setNormalizedData([]);
+            return;
+        }
+
+        const isSubmittedProposalsFormat =
+            Array.isArray(chartData) &&
+            chartData.length > 0 &&
+            typeof chartData[0] === 'object' &&
+            !chartData[0].hasOwnProperty('fund') &&
+            !chartData[0].hasOwnProperty('year');
+
+        if (isSubmittedProposalsFormat) {
+            const fundKeys = Object.keys(chartData[0] || {});
+            const normalized = fundKeys.map((fundKey, index) => ({
+                fund: fundKey,
+                year: fundKey,
+                totalProposals: chartData[0]?.[fundKey] || 0,
+            }));
+            setNormalizedData(normalized);
+        } else {
+            const normalized = chartData.map((item: any) => ({
+                ...item,
+                totalProposals:
+                    item.totalProposals ||
+                    (item.unfundedProposals || 0) + (item.fundedProposals || 0),
+            }));
+            setNormalizedData(normalized);
+        }
+    }, [chartData]);
+
     useEffect(() => {
         const handleResize = () => {
             const width = window.innerWidth;
@@ -41,7 +75,6 @@ const LineChart: React.FC<LineChartProps> = ({
 
     const defaultColors = ['#4fadce', '#dc2626', '#ee8434'];
 
-    // Check which parameters are selected
     const isSubmittedSelected =
         getFilter(ParamsEnum.SUBMITTED_PROPOSALS)?.includes('submitted') ||
         false;
@@ -50,41 +83,49 @@ const LineChart: React.FC<LineChartProps> = ({
     const isCompletedSelected =
         getFilter(ParamsEnum.COMPLETED_PROPOSALS)?.includes('complete') ||
         false;
+    const isUnfundedSelected =
+        getFilter(ParamsEnum.UNFUNDED_PROPOSALS)?.includes('unfunded') || false;
 
-    const rawTransformedData = [
+    const TransformedData = [
         {
             id: 'Total Proposals',
             color: defaultColors[0],
-            data: chartData.map((item: any) => ({
+            data: normalizedData.map((item: any) => ({
                 x: viewBy === 'fund' ? item.fund : item.year,
                 y: item.totalProposals ?? 0,
             })),
-            shouldShow: isSubmittedSelected, // Show if submitted is selected (since submitted = total)
+            shouldShow: isSubmittedSelected,
         },
         {
             id: 'Funded Proposals',
             color: defaultColors[1],
-            data: chartData.map((item: any) => ({
+            data: normalizedData.map((item: any) => ({
                 x: viewBy === 'fund' ? item.fund : item.year,
                 y: item.fundedProposals ?? 0,
             })),
-            shouldShow: isApprovedSelected, // Show if approved is selected
+            shouldShow: isApprovedSelected,
         },
         {
             id: 'Completed Proposals',
             color: defaultColors[2],
-            data: chartData.map((item: any) => ({
+            data: normalizedData.map((item: any) => ({
                 x: viewBy === 'fund' ? item.fund : item.year,
                 y: item.completedProposals ?? 0,
             })),
-            shouldShow: isCompletedSelected, // Show if completed is selected
+            shouldShow: isCompletedSelected,
+        },
+        {
+            id: 'Unfunded Proposals',
+            color: defaultColors[0],
+            data: normalizedData.map((item: any) => ({
+                x: viewBy === 'fund' ? item.fund : item.year,
+                y: item.unfundedProposals ?? 0,
+            })),
+            shouldShow: isUnfundedSelected,
         },
     ];
 
-    // Filter based on selected parameters instead of zero values
-    const transformedData = rawTransformedData.filter(
-        (dataset) => dataset.shouldShow,
-    );
+    const lineData = TransformedData.filter((dataset) => dataset.shouldShow);
 
     const legend = yAxisLabel || 'Proposals';
 
@@ -123,7 +164,7 @@ const LineChart: React.FC<LineChartProps> = ({
         }
     }, [showTooltip]);
 
-    const hasPlottableData = transformedData.some(
+    const hasPlottableData = lineData?.some(
         (d) => Array.isArray(d.data) && d.data.length > 0,
     );
 
@@ -135,7 +176,7 @@ const LineChart: React.FC<LineChartProps> = ({
                 ref={badgeRef}
             >
                 <ResponsiveLine
-                    data={transformedData}
+                    data={lineData}
                     margin={{ top: 50, right: 50, bottom: 50, left: 70 }}
                     xScale={{ type: 'point' }}
                     yScale={{
@@ -238,33 +279,30 @@ const LineChart: React.FC<LineChartProps> = ({
                             };
                         };
 
-                        const dataWithPrevious = transformedData.map(
-                            (dataset) => {
-                                const currentIndex = dataset.data.findIndex(
-                                    (d: any) => d.x == currentX,
-                                );
-                                const current = dataset.data[currentIndex];
-                                const previous =
-                                    currentIndex > 0
-                                        ? dataset.data[currentIndex - 1]
-                                        : null;
+                        const dataWithPrevious = lineData?.map((dataset) => {
+                            const currentIndex = dataset.data.findIndex(
+                                (d: any) => d.x == currentX,
+                            );
+                            const current = dataset.data[currentIndex];
+                            const previous =
+                                currentIndex > 0
+                                    ? dataset.data[currentIndex - 1]
+                                    : null;
 
-                                const trend =
-                                    previous && current
-                                        ? calculateTrend(current.y, previous.y)
-                                        : { value: '0', isPositive: true };
+                            const trend =
+                                previous && current
+                                    ? calculateTrend(current.y, previous.y)
+                                    : { value: '0', isPositive: true };
 
-                                return {
-                                    id: dataset.id,
-                                    color: dataset.color,
-                                    current,
-                                    previous,
-                                    trend,
-                                };
-                            },
-                        );
+                            return {
+                                id: dataset.id,
+                                color: dataset.color,
+                                current,
+                                previous,
+                                trend,
+                            };
+                        });
 
-                        // Show all selected data points in tooltip, even if value is 0
                         const selectedData = dataWithPrevious;
 
                         return (

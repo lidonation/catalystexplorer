@@ -27,24 +27,24 @@ const IndexComponent: React.FC<VotersProps> = (props) => {
 
     const sortOptions = VoterSortOptions();
 
-    return (
-        <>
-            <Head title={t('voter.catalystVoters')} />
+return (
+    <>
+        <Head title={t('voter.catalystVoters')} />
 
-            <div className="container mt-4 flex flex-col">
-                <div className="mt-6 mb-10">
-                    <Title level="1">{t('voter.catalystVoters')}</Title>
-                    <Paragraph
-                        children={t('voter.viewVoterInformation')}
-                        className="text-gray-persist"
-                    />
-                </div>
+        <div className="max-w-[1440px] mx-auto px-6 mt-4 flex flex-col">
+            <div className="mt-6 mb-10">
+                <Title level="1">{t('voter.catalystVoters')}</Title>
+                <Paragraph
+                    children={t('voter.viewVoterInformation')}
+                    className="text-gray-persist"
+                />
+            </div>
 
+            <div className="mb-8 rounded-lg border-2 border-gray-300 bg-background shadow-md p-6">
                 <SearchControls
                     onFiltersToggle={setShowFilters}
                     sortOptions={sortOptions}
                     searchPlaceholder={t('voter.searchPlaceholder')}
-                   
                 />
 
                 <section
@@ -55,17 +55,15 @@ const IndexComponent: React.FC<VotersProps> = (props) => {
                     <VoterFilters />
                 </section>
 
-                <div className="mb-8 rounded-lg border border-gray-100 bg-background shadow-lg">
-                    <VotersTable
-                        voters={voters as PaginatedData<VoterData[]>}
-                    />
-                </div>
-
+                <VotersTable
+                    voters={voters as PaginatedData<VoterData[]>}
+                />
             </div>
-        </>
-    );
-};
 
+        </div>
+    </>
+);
+};
 const Index: React.FC<VotersProps> = (props) => {
     return (
         <FiltersProvider
