@@ -24,7 +24,7 @@ export default function ProfileField({
   const hasValue = value !== undefined && value !== null && value !== '';
   
   return (
-    <div className="border-t border-background-lighter py-3 transition-colors duration-300 ease-in-out">
+    <div className="border-t border-gray-300 py-3 transition-colors duration-300 ease-in-out">
       <div className="flex items-center justify-between">
         <div className="flex w-full">
           <div className="text-gray-persist w-1/4">{label}</div>

@@ -22,7 +22,7 @@ export default function ProfileSection({
         </Title>
         {rightElement}
       </div>
-      <div className="border-t border-background-lighter">
+      <div className="border-t border-gray-200">
         {children}
       </div>
     </div>

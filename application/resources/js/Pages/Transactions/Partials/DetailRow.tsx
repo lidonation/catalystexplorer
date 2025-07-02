@@ -25,7 +25,7 @@ export default function DetailRow({
         value !== null && value !== undefined ? String(value) : '';
     return (
         <div
-            className={`border-background-lighter flex items-start border-b pb-4 ${className}`}
+            className={`border-gray-200 flex items-start border-b pb-4  ${className}`}
         >
             <ValueLabel className="text-gray-persist w-36">{label}</ValueLabel>
 

@@ -13,6 +13,7 @@ export default forwardRef(function TextInput(
         className = '',
         border = 'border-gray-light',
         isFocused = false,
+        disabled = false,
         ...props
     }: InputHTMLAttributes<HTMLInputElement> & {
         isFocused?: boolean;
@@ -25,16 +26,21 @@ export default forwardRef(function TextInput(
     useImperativeHandle(ref, () => localRef.current as HTMLInputElement);
 
     useEffect(() => {
-        if (isFocused) {
+        if (isFocused && !disabled) {
             localRef.current?.focus();
         }
-    }, [isFocused]);
+    }, [isFocused, disabled]);
 
     return (
         <input
             {...props}
             type={type}
-            className={`${border} border-opacity-40 bg-background text-content focus:ring-primary focus:border-primary rounded-md shadow-xs focus:outline-none ${className}`}
+            disabled={disabled}
+            className={`${border} border-opacity-40 bg-background text-content focus:ring-primary focus:border-primary rounded-md shadow-xs focus:outline-none ${
+                disabled 
+                    ? 'bg-gray-100 text-gray-400 cursor-not-allowed opacity-40 border-gray-200' 
+                    : ''
+            } ${className}`}
             ref={localRef}
             onKeyDown={(e) => {
                 if (e.key === ' ') {

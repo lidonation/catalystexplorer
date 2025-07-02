@@ -17,7 +17,7 @@ const ProfileCard: React.FC<ProfileCardProps> = React.memo(
 
         return (
             <div
-                className={`hover:bg-darker flex w-full items-center justify-between p-1 transition ${className}`}
+                className={`hover:bg-gray-200 flex w-full items-center justify-between p-1 transition ${className}`}
             >
                 <div className="flex flex-1 items-center space-x-3">
                     <div className="flex h-12 w-12 items-center justify-center overflow-hidden rounded-full bg-gradient-to-r from-gray-100 to-gray-900">

@@ -25,7 +25,7 @@ export default function WalletDetailsCard({
         <div className="bg-background rounded-lg p-6 shadow-sm">
             <Title
                 level="3"
-                className="text-content border-background-lighter border-b pb-6 font-bold"
+                className="text-content border-gray-200 border-b pb-6 font-bold"
             >
                 {title || t('transactions.walletDetails')}
             </Title>

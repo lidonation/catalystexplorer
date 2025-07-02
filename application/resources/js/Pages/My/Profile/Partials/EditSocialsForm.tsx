@@ -43,37 +43,39 @@ export default function SocialProfilesForm({
     };
 
     return (
-        <form onSubmit={submit} className="p-4">
-            <div className="mb-4">
-                <InputLabel
-                    htmlFor="linkedin"
-                    className="text-content-gray mb-2 text-sm"
-                />
-                <div className="flex items-center">
-                    <div className="mr-5 flex h-8 w-8 items-center justify-center rounded-sm">
-                        <LinkedInIcon className="text-content" />
-                    </div>
-                    <TextInput
-                        id="linkedin"
-                        type="text"
-                        name="linkedin"
-                        value={data.linkedin}
-                        onChange={(e) => setData('linkedin', e.target.value)}
-                        className={`w-full px-3 py-2 ${errors.linkedin ? 'border-error' : ''}`}
-                        placeholder="https://www.linkedin.com/company/lidonation/"
-                    />
+    <form onSubmit={submit} className="p-4">
+        <div className="mb-4">
+            <InputLabel
+                htmlFor="linkedin"
+                className="text-content-gray mb-2 text-sm"
+                value={t('linkedin')}
+            />
+            <div className="flex items-center">
+                <div className={`mr-5 flex h-8 w-8 items-center justify-center rounded-sm ${!linkedinUrl ? 'pointer-events-none opacity-40' : ''}`}>
+                     <LinkedInIcon className={`${!linkedinUrl ? 'text-gray-400' : 'text-content'}`} />
                 </div>
-                <InputError message={errors.linkedin} className="mt-2 ml-10" />
+                <TextInput
+                    id="linkedin"
+                    type="text"
+                    name="linkedin"
+                    value={data.linkedin}
+                    onChange={(e) => setData('linkedin', e.target.value)}
+                    className={`w-full px-3 py-2 ${errors.linkedin ? 'border-error' : ''}`}
+                    placeholder="https://www.linkedin.com/company/lidonation/"
+                />
             </div>
+            <InputError message={errors.linkedin} className="mt-2 ml-10" />
+        </div>
 
             <div className="mb-4">
                 <InputLabel
                     htmlFor="twitter"
                     className="text-content-gray mb-2 text-sm"
+                    value={t('twitter')}
                 />
                 <div className="flex items-center">
-                    <div className="bg-background mr-5 flex h-8 w-8 items-center justify-center rounded-sm">
-                        <XIcon className="text-content" />
+                    <div className={`bg-background mr-5 flex h-8 w-8 items-center justify-center rounded-sm ${!twitterUrl ? 'pointer-events-none opacity-40' : ''}`}>
+                        <XIcon className={`${!twitterUrl ? 'text-gray-400' : 'text-content'}`} />
                     </div>
                     <TextInput
                         id="twitter"
@@ -91,11 +93,12 @@ export default function SocialProfilesForm({
             <div className="mb-6">
                 <InputLabel
                     htmlFor="website"
-                    className="text-content-gray mb-2 text-sm"
+                     className="text-content-gray mb-2 text-sm"
+                    value={t('website')}
                 />
                 <div className="flex items-center">
-                    <div className="border-accent bg-background mr-5 flex h-8 w-8 items-center justify-center rounded-full">
-                        <WebIcon className="text-content" />
+                   <div className={`border-accent bg-background mr-5 flex h-8 w-8 items-center justify-center rounded-full ${!websiteUrl ? 'pointer-events-none opacity-40' : ''}`}>
+                        <WebIcon className={`${!websiteUrl ? 'text-gray-400' : 'text-content'}`} />
                     </div>
                     <TextInput
                         id="website"
