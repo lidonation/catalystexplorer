@@ -447,7 +447,6 @@ class VoterListController extends Controller
             }
         }
 
-
         $collection->searchable();
 
         return to_route('workflows.createVoterList.index', [
