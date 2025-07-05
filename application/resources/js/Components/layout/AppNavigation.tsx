@@ -486,9 +486,14 @@ function AppNavigation() {
 
                         if (isProposals) {
                             const comparisonCount = useLiveQuery(async () => {
-                                const all =
-                                    await db.proposal_comparisons.toArray();
-                                return all.length;
+                                const allSettings =
+                                    await db.user_setting.toArray();
+
+                                const allProposalComparisons = allSettings
+                                    .map((s) => s.proposalComparison)
+                                    .filter(Boolean);
+
+                                return allProposalComparisons[0]?.length ?? 0;
                             }, []);
 
                             if (comparisonCount === undefined) return null;

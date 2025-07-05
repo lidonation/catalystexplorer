@@ -1,6 +1,5 @@
 import { db } from '@/db/db';
 import { useCallback, useState } from 'react';
-import { liveQuery } from 'dexie';
 import { useLiveQuery } from 'dexie-react-hooks';
 
 type UserSettingKey = keyof App.DataTransferObjects.UserSettingData;
