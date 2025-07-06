@@ -24,7 +24,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        Vite::prefetch(concurrency: 5);
+        Vite::prefetch(concurrency: 10);
 
         RateLimiter::for('media-update-job', function () {
             return Limit::perMinute(1000);

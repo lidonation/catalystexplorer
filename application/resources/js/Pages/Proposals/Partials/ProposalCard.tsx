@@ -7,12 +7,13 @@ import ProposalVerticalCard from './ProposalVerticalCard';
 type ProposalCardProps = {
     proposal: App.DataTransferObjects.ProposalData;
     isHorizontal: boolean;
+    hideFooter?: boolean;
     globalQuickPitchView?: boolean;
     setGlobalQuickPitchView?: (value: boolean) => void;
 };
 
 const ProposalCard = React.memo(
-    ({ proposal, isHorizontal, globalQuickPitchView }: ProposalCardProps) => {
+    ({ proposal, isHorizontal, globalQuickPitchView, hideFooter}: ProposalCardProps) => {
         const { t } = useTranslation();
 
         const [userSelected, setUserSelected] =
@@ -72,6 +73,7 @@ const ProposalCard = React.memo(
                 hasQuickPitch,
                 yesVotes,
                 abstainVotes,
+                hideFooter
             }),
             [
                 proposal,
@@ -84,6 +86,7 @@ const ProposalCard = React.memo(
                 hasQuickPitch,
                 yesVotes,
                 abstainVotes,
+                hideFooter
             ],
         );
 
