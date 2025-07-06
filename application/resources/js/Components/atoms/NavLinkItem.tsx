@@ -43,6 +43,7 @@ export default function NavLinkItem({
                 aria-disabled={disable}
                 aria-label={ariaLabel}
                 role="menuitem"
+                prefetch={prefetch}
                 onClick={disable ? (e) => e.preventDefault() : undefined}
                 className={`flex w-full items-center gap-3 py-1 transition-opacity ${
                     !showMyPrefix
