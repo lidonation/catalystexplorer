@@ -351,6 +351,85 @@
             "viewList": "View List",
             "placeholder": "Search proposals by title, keyword, or proposer...",
             "text": "Find proposals you're interested in and bookmark them into custom lists for easy tracking and comparison."
+        },
+          "tinderProposal": {
+            "step1": {
+                "selectFund": "Select Fund",
+                "selectFundPlaceholder": "Select Fund",
+                "selectAllThatApply": "(Select all that apply)",
+                "proposalTypesQuestion": "Which types of proposals interest you the most?",
+                "proposalSizeQuestion": "What is your preferred proposal size or scope?",
+                "impactTypeQuestion": "What type of impact are you most interested in seeing?",
+                "proposalSizes": {
+                    "smallScale": "Small scale / low-budget",
+                    "midSize": "Mid-size / experimental",
+                    "largeScale": "Large scale / high-impact"
+                },
+                "impactTypes": {
+                    "localRegional": "Local / regional impact",
+                    "globalChange": "Global change",
+                    "ecosystemDevelopment": "Ecosystem development"
+                },
+                "processing": "Processing...",
+                "continue": "Continue",
+                "begin": "Begin",
+                "untitledCampaign": "Untitled Campaign",
+                "untitledFund": "Untitled Fund"
+            },
+            "step2": {
+                "title": "Title",
+                "titlePlaceholder": "Title",
+                "titleRequired": "Title is required",
+                "descriptionMinLength69": "Description must be at least 69 characters",
+                "descriptionMinLength50": "Description must be at least 50 characters",
+                "save": "Save"
+            },
+            "step3": {
+                "editSettings": "Edit Settings",
+                "noButtonText": "No",
+                "yesButtonText": "Yes",
+                "allDone": "All done!",
+                "viewedAllProposals": "You've viewed all {count} proposals",
+                "loadingProposals": "Loading proposals...",
+                "noProposalsFound": "No proposals found matching your criteria.",
+                "failedToLoadProposals": "Failed to load proposals. Please try again.",
+                "saveProgress": "Save Progress"
+            },
+            "step4": {
+                "swipeList": "Swipe List",
+                "organizeSwipesDescription": "Want to organize your swipes? Create custom lists to keep track of your picks and passes.",
+                "rightSwipes": "Right Swipes",
+                "leftSwipes": "Left Swipes",
+                "proposalsYouLiked": "Proposals you liked",
+                "proposalsYouPassed": "Proposals you passed",
+                "saves": "Saves",
+                "viewList": "View List",
+                "editList": "Edit List",
+                "editListTitle": "Edit List",
+                "delete": "Delete",
+                "viewMode": "View mode",
+                "editMode": "Edit mode",
+                "keepSwiping": "Keep Swiping",
+                "refineMyInterests": "Refine My Interests",
+                "allCollectionsDeleted": "All collections have been deleted.",
+                "noCollectionsAvailable": "No collections available.",
+                "continueSwipingMessage": "Continue swiping to create new collections.",
+                "startSwipingMessage": "Start swiping to create your first collection.",
+                "defaultTitles": {
+                    "passedProposals": "Passed Proposals",
+                    "likedProposals": "Liked Proposals"
+                },
+                "defaultDescriptions": {
+                    "passedProposals": "Collection of proposals I decided to pass on.",
+                    "likedProposals": "Collection of proposals I liked and want to support."
+                }
+            },
+            "stepDetails": {
+                "getStarted": "Get Started",
+                "createList": "Create List", 
+                "exploreIdeas": "Explore Ideas",
+                "mySwipeList": "My Swipe List"
+            }
         }
     },
     "error404": {

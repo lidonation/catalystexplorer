@@ -29,6 +29,7 @@ use App\Http\Controllers\VoterHistoriesController;
 use App\Http\Controllers\VotingWorkflowController;
 use App\Http\Controllers\IdeascaleProfilesController;
 use App\Http\Controllers\SignatureWorkflowController;
+use App\Http\Controllers\TinderProposalWorkflowController;
 use App\Http\Controllers\CompletedProjectNftsController;
 use App\Http\Controllers\CardanoBudgetProposalController;
 use App\Http\Controllers\ClaimIdeascaleProfileController;
@@ -245,6 +246,23 @@ Route::localized(
                         ->name('saveSignature');
                     Route::post('/save-wallet-name', [SignatureWorkflowController::class, 'saveWalletName'])
                         ->name('saveWalletName');
+                });
+
+            Route::prefix('/tinder-proposal/steps')->as('tinderProposal.')
+                ->middleware([WorkflowMiddleware::class])
+                ->group(function () {
+                    Route::post('/1/save', [TinderProposalWorkflowController::class, 'saveStep1'])
+                        ->name('saveStep1');
+                    Route::post('/2/save', [TinderProposalWorkflowController::class, 'saveStep2'])
+                        ->name('saveStep2');
+                    Route::post('/3/save', [TinderProposalWorkflowController::class, 'saveStep3'])
+                        ->name('saveStep3');
+                    Route::post('/4/save', [TinderProposalWorkflowController::class, 'saveStep4'])
+                        ->name('saveStep4');
+                    Route::get('/fetch-proposals', [TinderProposalWorkflowController::class, 'fetchMoreProposals'])
+                        ->name('fetchProposals');
+                    Route::get('/{step}', [TinderProposalWorkflowController::class, 'handleStep'])
+                        ->name('index');
                 });
 
             Route::get('/login', [WorkflowController::class, 'auth'])

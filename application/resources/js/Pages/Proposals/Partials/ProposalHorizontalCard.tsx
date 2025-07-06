@@ -22,6 +22,7 @@ export default function ProposalHorizontalCard({
     hasQuickPitch,
     yesVotes,
     abstainVotes,
+    hideFooter = false,
 }: any) {
     const [cardHeight, setCardHeight] = useState<number | null>(null);
     const [cardWidth, setCardWidth] = useState<number | null>(null);
@@ -147,13 +148,15 @@ export default function ProposalHorizontalCard({
                     />
                 </div>
 
-                <div className="mt-auto">
-                    <ProposalCardFooter
-                        yesVotes={`${yesVotes}`}
-                        abstainVotes={`${abstainVotes}`}
-                        t={t}
-                    />
-                </div>
+                {!hideFooter && (
+                    <div className="mt-auto">
+                        <ProposalCardFooter
+                            yesVotes={`${yesVotes}`}
+                            abstainVotes={`${abstainVotes}`}
+                            t={t}
+                        />
+                    </div>
+                )}
             </div>
         </article>
     );
