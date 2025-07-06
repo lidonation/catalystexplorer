@@ -22,6 +22,7 @@ export default function ProposalVerticalCard({
     hasQuickPitch,
     yesVotes,
     abstainVotes,
+    hideFooter = false,
 }: any) {
     const [cardHeight, setCardHeight] = useState<number | null>(null);
     const cardRef = useRef<HTMLElement>(null);
@@ -131,13 +132,17 @@ export default function ProposalVerticalCard({
                     />
                 </div>
 
-                <div className="my-4 border-b"></div>
+                {!hideFooter && (
+                    <>
+                        <div className="my-4 border-b"></div>
 
-                <ProposalCardFooter
-                    yesVotes={`${yesVotes}`}
-                    abstainVotes={`${abstainVotes}`}
-                    t={t}
-                />
+                        <ProposalCardFooter
+                            yesVotes={`${yesVotes}`}
+                            abstainVotes={`${abstainVotes}`}
+                            t={t}
+                        />
+                    </>
+                )}
             </section>
         </article>
     );

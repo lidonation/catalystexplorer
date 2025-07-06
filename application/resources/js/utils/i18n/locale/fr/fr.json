@@ -327,6 +327,85 @@
             "viewList": "Voir la liste",
             "placeholder": "Rechercher des propositions par titre, mot-clé ou proposant...",
             "text": "Find proposals you're interested in and bookmark them into custom lists for easy tracking and comparison."
+        },
+        "tinderProposal": {
+            "step1": {
+                "selectFund": "Sélectionner un Fonds",
+                "selectFundPlaceholder": "Sélectionner un Fonds",
+                "selectAllThatApply": "(Sélectionnez tout ce qui s'applique)",
+                "proposalTypesQuestion": "Quels types de propositions vous intéressent le plus ?",
+                "proposalSizeQuestion": "Quelle est votre taille ou portée de proposition préférée ?",
+                "impactTypeQuestion": "Quel type d'impact êtes-vous le plus intéressé à voir ?",
+                "proposalSizes": {
+                    "smallScale": "Petite échelle / budget faible",
+                    "midSize": "Taille moyenne / expérimental",
+                    "largeScale": "Grande échelle / impact élevé"
+                },
+                "impactTypes": {
+                    "localRegional": "Impact local / régional",
+                    "globalChange": "Changement global",
+                    "ecosystemDevelopment": "Développement de l'écosystème"
+                },
+                "processing": "Traitement en cours...",
+                "continue": "Continuer",
+                "begin": "Commencer",
+                "untitledCampaign": "Campagne sans titre",
+                "untitledFund": "Fonds sans titre"
+            },
+            "step2": {
+                "title": "Titre",
+                "titlePlaceholder": "Titre",
+                "titleRequired": "Le titre est requis",
+                "descriptionMinLength69": "La description doit contenir au moins 69 caractères",
+                "descriptionMinLength50": "La description doit contenir au moins 50 caractères",
+                "save": "Sauvegarder"
+            },
+            "step3": {
+                "editSettings": "Modifier les Paramètres",
+                "noButtonText": "Non",
+                "yesButtonText": "Oui",
+                "allDone": "Tout est fait !",
+                "viewedAllProposals": "Vous avez vu toutes les {count} propositions",
+                "loadingProposals": "Chargement des propositions...",
+                "noProposalsFound": "Aucune proposition trouvée correspondant à vos critères.",
+                "failedToLoadProposals": "Échec du chargement des propositions. Veuillez réessayer.",
+                "saveProgress": "Sauvegarder les Progrès"
+            },
+            "step4": {
+                "swipeList": "Liste de Balayage",
+                "organizeSwipesDescription": "Vous voulez organiser vos balayages ? Créez des listes personnalisées pour suivre vos sélections et rejets.",
+                "rightSwipes": "Balayages à Droite",
+                "leftSwipes": "Balayages à Gauche",
+                "proposalsYouLiked": "Propositions que vous avez aimées",
+                "proposalsYouPassed": "Propositions que vous avez passées",
+                "saves": "Sauvegardes",
+                "viewList": "Voir la Liste",
+                "editList": "Modifier la Liste",
+                "editListTitle": "Modifier la Liste",
+                "delete": "Supprimer",
+                "viewMode": "Mode visualisation",
+                "editMode": "Mode édition",
+                "keepSwiping": "Continuer à Balayer",
+                "refineMyInterests": "Affiner Mes Intérêts",
+                "allCollectionsDeleted": "Toutes les collections ont été supprimées.",
+                "noCollectionsAvailable": "Aucune collection disponible.",
+                "continueSwipingMessage": "Continuez à balayer pour créer de nouvelles collections.",
+                "startSwipingMessage": "Commencez à balayer pour créer votre première collection.",
+                "defaultTitles": {
+                    "passedProposals": "Propositions Rejetées",
+                    "likedProposals": "Propositions Aimées"
+                },
+                "defaultDescriptions": {
+                    "passedProposals": "Collection de propositions que j'ai décidé de rejeter.",
+                    "likedProposals": "Collection de propositions que j'ai aimées et que je veux soutenir."
+                }
+            },
+            "stepDetails": {
+                "getStarted": "Commencer",
+                "createList": "Créer une liste",
+                "exploreIdeas": "Explorer des idées",
+                "mySwipeList": "Ma liste de balayage"
+            }
         }
     },
     "error404": {

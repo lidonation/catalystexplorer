@@ -544,6 +544,12 @@ class MyBookmarksController extends Controller
 
         $bookmarkCollection->delete();
 
+        $noRedirect = $request->boolean('no_redirect', false);
+        
+        if ($noRedirect) {
+            return;
+        }
+
         return to_route('my.lists.index');
         // } catch (\Exception $e) {
         //     return back()->with(
