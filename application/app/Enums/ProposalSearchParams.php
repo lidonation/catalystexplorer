@@ -17,6 +17,7 @@ use Spatie\Enum\Enum;
  * @method static self COHORT()
  * @method static self COMMUNITIES()
  * @method static self CHART_OPTIONS()
+ * @method static self CHART_TYPE()
  * @method static self FUNDS()
  * @method static self FUNDED_PROPOSALS()
  * @method static self FUNDING_STATUS()
@@ -66,6 +67,7 @@ final class ProposalSearchParams extends Enum
             'COHORT' => 'coh',
             'COMMUNITIES' => 'com',
             'CHART_OPTIONS' => 'co',
+            'CHART_TYPE' => 'ct',
             'COMPLETED_PROPOSALS' => 'cp',
             'FUNDS' => 'f',
             'FUNDING_STATUS' => 'fs',
@@ -93,7 +95,6 @@ final class ProposalSearchParams extends Enum
             'TAGS' => 't',
             'TYPE' => 'pt',
             'PROJECT_LENGTH' => 'pl',
-            'TREND_CHART' => 'tch',
         ];
     }
 }

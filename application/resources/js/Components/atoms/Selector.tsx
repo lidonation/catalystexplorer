@@ -1,9 +1,9 @@
+import { Popover, PopoverContent, PopoverTrigger } from '@/Components/Popover';
 import { cn } from '@/lib/utils';
 import { ChevronDown } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import Checkbox from './Checkbox';
-import { Popover, PopoverContent, PopoverTrigger } from '@/Components/Popover';
 
 type SelectProps = {
     isMultiselect?: boolean;
@@ -12,6 +12,7 @@ type SelectProps = {
     options?: {
         label: string;
         value: string;
+        disabled?: boolean;
     }[];
     bgColor?: string;
     context?: string;
@@ -19,6 +20,7 @@ type SelectProps = {
     className?: string;
     hideCheckbox?: boolean;
     placeholder?: string;
+    disabled?: boolean;
 };
 
 export default function Selector({
@@ -29,8 +31,9 @@ export default function Selector({
     setSelectedItems,
     className,
     bgColor = 'bg-background',
-    hideCheckbox = false, 
+    hideCheckbox = false,
     placeholder = '',
+    disabled = false,
     ...props
 }: SelectProps) {
     const [open, setOpen] = useState(false);
@@ -115,33 +118,45 @@ export default function Selector({
                                 clear
                             </button>
                         </div>
-                        {options?.map((option) => (
-                            <div
-                                key={option.value}
-                                onClick={() => handleSelect(option.value)}
-                                className="bg-background! hover:bg-background-lighter! focus:bg-background-lighter aria-selected:bg-background-lighter relative flex w-full cursor-default items-center justify-between rounded-xs px-3 py-1.5 text-sm outline-hidden select-none data-disabled:pointer-events-none data-disabled:opacity-50"
-                            >
-                                <span>{option.label}</span>
+                        {options?.map((option) => {
+                            const isOptionDisabled = option?.disabled;
 
-                                {/* Conditionally render the checkbox */}
-                                {!hideCheckbox && (
-                                    <Checkbox
-                                        id={option.value}
-                                        checked={
-                                            isMultiselect &&
-                                            selectedItems.length
-                                                ? selectedItems?.includes(
-                                                      option.value,
-                                                  )
-                                                : selectedItems == option.value
-                                        }
-                                        value={option.value}
-                                        onChange={() => {}}
-                                        className="text-content-accent bg-background checked:bg-primary checked:hover:bg-primary focus:border-primary focus:ring-primary checked:focus:bg-primary ml-2 h-4 w-4 shadow-xs focus:border"
-                                    />
-                                )}
-                            </div>
-                        ))}
+                            return (
+                                <div
+                                    key={option.value}
+                                    onClick={() => {
+                                        if (!isOptionDisabled)
+                                            handleSelect(option.value);
+                                    }}
+                                    className={`bg-background! hover:bg-background-lighter! focus:bg-background-lighter aria-selected:bg-background-lighter relative flex w-full items-center justify-between rounded-xs px-3 py-1.5 text-sm outline-hidden select-none ${isOptionDisabled ? 'text-gray-persist cursor-not-allowed opacity-70' : 'cursor-default'} `}
+                                >
+                                    <span>{option.label}</span>
+
+                                    {!hideCheckbox && (
+                                        <Checkbox
+                                            id={option.value}
+                                            checked={
+                                                isMultiselect &&
+                                                selectedItems.length
+                                                    ? selectedItems?.includes(
+                                                          option.value,
+                                                      )
+                                                    : selectedItems ==
+                                                      option.value
+                                            }
+                                            value={option.value}
+                                            onChange={() => {}}
+                                            className={`text-content-accent bg-background checked:bg-primary checked:hover:bg-primary focus:border-primary focus:ring-primary checked:focus:bg-primary ml-2 h-4 w-4 shadow-xs focus:border ${
+                                                isOptionDisabled
+                                                    ? 'text-gray-persist cursor-not-allowed'
+                                                    : ''
+                                            }`}
+                                            disabled={isOptionDisabled}
+                                        />
+                                    )}
+                                </div>
+                            );
+                        })}
                     </div>
                 </PopoverContent>
             </Popover>

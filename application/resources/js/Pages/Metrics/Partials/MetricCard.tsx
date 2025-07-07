@@ -108,15 +108,17 @@ const MetricCard: React.FC<MetricCardProps> = ({ metric }) => {
                                 pointBorderWidth={2}
                                 pointBorderColor={{ from: 'serieColor' }}
                                 useMesh={true}
-                                tooltipFormat={(value) =>
-                                    shortNumber(Number(value), 2)
-                                }
                                 tooltip={({ point }) => {
-                                    const currentIndex = point.index;
+                                    const xValue = point.data.x;
+                                    const currentIndex =
+                                        lineData[0].data.findIndex(
+                                            (d: any) => d.x === xValue,
+                                        );
                                     const currentData =
                                         lineData[0].data[currentIndex];
                                     const previousData =
                                         lineData[0].data[currentIndex - 1];
+
                                     const trend = previousData
                                         ? calculateTrend(
                                               currentData.y,
