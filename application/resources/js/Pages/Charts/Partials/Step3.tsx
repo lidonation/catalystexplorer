@@ -5,7 +5,7 @@ import { useFilterContext } from '@/Context/FiltersContext';
 import { ParamsEnum } from '@/enums/proposal-search-params';
 import { userSettingEnums } from '@/enums/user-setting-enums';
 import { useUserSetting } from '@/Hooks/useUserSettings';
-import { useEffect, useMemo, useCallback } from 'react';
+import { useEffect, useMemo, useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 interface Step3Props {
@@ -27,14 +27,27 @@ export default function Step3({
     const {
         value: selectedChartTypes,
         setValue: setSelectedChartTypes,
-    } = useUserSetting<string[]>(userSettingEnums.CHART_TYPES, []);
+    } = useUserSetting<string[]>(userSettingEnums.CHART_OPTIONS, []);
 
     
     const isChartsSelected = useMemo(() => {
         return (selectedChartTypes?.length ?? 0) > 0;
     }, [selectedChartTypes]);
 
-   
+     const {
+        value: selectedChart,
+    } = useUserSetting<string>(userSettingEnums.CHART_TYPE, '');
+
+    const [trendChartDisabled, setTrendChartDisabled] = useState(false);
+
+    useEffect(()=>{
+        console.log('Selected Chart', selectedChart)
+    }, [selectedChart])
+
+   useEffect(()=>{
+     setTrendChartDisabled(false);
+   }, [selectedChart]);
+
     useEffect(() => {
         onCompletionChange?.(isChartsSelected);
     }, [isChartsSelected, onCompletionChange]);
@@ -51,14 +64,58 @@ export default function Step3({
     }, [selectedChartTypes, t, setFilters]);
 
     
-    const chartOptions = useMemo(() => [
-        { label: t('charts.barChart'), value: 'barChart' },
-        { label: t('charts.pieChart'), value: 'pieChart' },
-        { label: t('charts.lineChart'), value: 'lineChart' },
-        { label: t('charts.heatMap'), value: 'heatMap' },
-        { label: t('charts.scatterPlot'), value: 'scatterPlots' },
-        { label: t('charts.stackedBarChart'), value: 'stackedBarCharts' },
-    ], [t]);
+    const chartOptions = useMemo(() => {
+        const isDistributionChart = selectedChart === 'distributionChart';
+        const isTrendChart = selectedChart === 'trendChart';
+        
+        const allOptions = [
+            { label: t('charts.barChart'), value: 'barChart' },
+            { label: t('charts.pieChart'), value: 'pieChart' },
+            { label: t('charts.lineChart'), value: 'lineChart' },
+            { label: t('charts.heatMap'), value: 'heatMap' },
+            { label: t('charts.scatterPlot'), value: 'scatterPlots' },
+            { label: t('charts.stackedBarChart'), value: 'stackedBarCharts' },
+            { label: t('charts.funnelChart'), value: 'funnelChart' },
+        ];
+
+        return allOptions.map(option => {
+            let isDisabled = false;
+            
+            if (isDistributionChart) {
+                isDisabled = ['barChart', 'lineChart', 'pieChart', 'stackedBarCharts', 'funnelChart'].includes(option.value);
+            } else if (isTrendChart) {
+                isDisabled = ['heatMap', 'scatterPlots'].includes(option.value);
+            }
+            
+            return {
+                ...option,
+                disabled: isDisabled
+            };
+        });
+    }, [t, selectedChart]);
+
+    useEffect(() => {
+        if (selectedChart && selectedChartTypes && selectedChartTypes.length > 0) {
+            const isDistributionChart = selectedChart === 'distributionChart';
+            const isTrendChart = selectedChart === 'trendChart';
+            
+            let disabledOptions: string[] = [];
+            
+            if (isDistributionChart) {
+                disabledOptions = ['barChart', 'lineChart', 'pieChart', 'stackedBarCharts', 'funnelChart'];
+            } else if (isTrendChart) {
+                disabledOptions = ['heatMap', 'scatterPlots'];
+            }
+            
+            const filteredSelection = selectedChartTypes.filter(
+                chartType => !disabledOptions.includes(chartType)
+            );
+            
+            if (filteredSelection.length !== selectedChartTypes.length) {
+                setSelectedChartTypes(filteredSelection);
+            }
+        }
+    }, [selectedChart, selectedChartTypes, setSelectedChartTypes]);
 
     
     const selectedItems = useMemo(() => {
@@ -102,6 +159,7 @@ export default function Step3({
                     options={chartOptions}
                     selectedItems={selectedItems}
                     setSelectedItems={handleSelectorChange}
+                    disabled={trendChartDisabled}
                 />
             </div>
             <PrimaryButton

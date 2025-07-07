@@ -580,8 +580,8 @@ theme: string;
 viewChartBy: string;
 proposalComparison: Array<any>;
 proposalType: Array<any>;
-trendChart: string;
-chartTypes: Array<any>;
+chartOptions: Array<any>;
+chartType: Array<any>;
 };
 export type VoterData = {
 id: number;

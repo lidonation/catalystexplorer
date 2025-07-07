@@ -287,8 +287,7 @@ class ProposalsController extends Controller
             ProposalSearchParams::COMMUNITIES()->value => 'array|nullable',
             ProposalSearchParams::IDEASCALE_PROFILES()->value => 'array|nullable',
             ProposalSearchParams::FUNDS()->value => 'array|nullable',
-            ProposalSearchParams::TREND_CHART()->value => 'string|nullable',
-            ProposalSearchParams::CHART_OPTIONS()->value => 'array|nullable',
+            ProposalSearchParams::CHART_TYPE()->value => 'string|nullable',
             ProposalSearchParams::SUBMITTED_PROPOSALS()->value => 'array|nullable',
             ProposalSearchParams::APPROVED_PROPOSALS()->value => 'array|nullable',
             ProposalSearchParams::COMPLETED_PROPOSALS()->value => 'array|nullable',
@@ -753,7 +752,7 @@ class ProposalsController extends Controller
             $unfundedCount = $this->getUnfundedCountByYear($year);
 
             if (! empty($this->queryParams[ProposalSearchParams::SUBMITTED_PROPOSALS()->value])) {
-                $chartData[] = $createdDates;
+                $chartData[] = $yearCounts;
             } else {
                 $chartData[] = [
                     'year' => $year,

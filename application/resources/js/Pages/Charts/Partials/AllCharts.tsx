@@ -13,6 +13,7 @@ import LineChart from './LineChart';
 import PieChart from './PieChart';
 import ScatterPlot from './ScatterPlots';
 import StackedBarChart from './StackedBarChart';
+import FunnelChart from './FunnelChart';
 
 interface AllChartsProps {
     chartData: any;
@@ -93,6 +94,15 @@ export default function AllCharts({
         </div>
     );
 
+    const renderFunnelChart = () => (
+        <div>
+            <ChartCard title={t('charts.funnelChart')}>
+                <FunnelChart chartData={chartData} viewBy={viewBy} />
+            </ChartCard>
+        </div>
+    );
+
+
     const chartRenderers = {
         barChart: renderBarChart,
         pieChart: renderPieChart,
@@ -100,6 +110,7 @@ export default function AllCharts({
         heatMap: renderHeatMap,
         scatterPlots: renderScatterPlots,
         stackedBarCharts: renderStackedBarCharts,
+        funnelChart: renderFunnelChart,
     };
 
     return (
