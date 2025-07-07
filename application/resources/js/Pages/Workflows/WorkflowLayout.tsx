@@ -1,26 +1,40 @@
 import ConcentricCircles from '@/assets/images/bg-concentric-circles.png';
 import RichContent from '@/Components/RichContent';
-
+import WorkflowSlideOver from '@/Components/WorkflowSlideOver';
 import { CatalystWhiteLogo } from '@/Components/svgs/CatalystWhiteLogo';
 import HelpCircleIcon from '@/Components/svgs/HelpCircleIcon';
 import { ReactNode, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
+interface WorkflowSlideOverConfig {
+    isOpen: boolean;
+    onClose: () => void;
+    title?: string;
+    size?: 'sm' | 'md' | 'lg' | 'xl';
+    content: ReactNode;
+}
+
 interface WorkflowLayoutProps {
     children: ReactNode;
     asideInfo?: string;
+    wrapperClassName?: string;
+    contentClassName?: string;
+    slideOver?: WorkflowSlideOverConfig;
 }
 
 export default function WorkflowLayout({
     children,
     asideInfo,
+    wrapperClassName,
+    contentClassName,
+    slideOver,
 }: WorkflowLayoutProps) {
     const { t } = useTranslation();
     const isLogin = window.location.pathname.endsWith('login');
     const [isOpen, setIsOpen] = useState(false);
 
     return (
-        <div className="splash-wrapper lg:from-background-home-gradient-color-1 lg:to-background-home-gradient-color-2 sticky z-10 -mb-4 flex justify-center md:rounded-tl-4xl lg:-top-64 lg:h-screen lg:bg-linear-to-r lg:px-8 lg:pb-8">
+        <div className={`splash-wrapper relative lg:from-background-home-gradient-color-1 lg:to-background-home-gradient-color-2 sticky z-10 -mb-4 flex justify-center md:rounded-tl-4xl lg:-top-64 lg:h-screen lg:bg-linear-to-r lg:px-8 lg:pb-8 ${wrapperClassName || ''}`}>
             <div
                 className="flex h-full w-full flex-col justify-center lg:gap-8 lg:px-8 lg:pt-8 lg:pb-4"
                 style={{
@@ -32,7 +46,7 @@ export default function WorkflowLayout({
                 <div className="@container relative flex w-full flex-row justify-center">
                     {/* Main Content (Full Width on Small Screens) */}
 
-                    <div className="bg-background no-scrollbar relative max-h-[90vh] w-full overflow-auto rounded-lg lg:overflow-hidden @lg:w-2/3 @lg:min-w-[400px] @lg:rounded-l-lg">
+                    <div className={`bg-background no-scrollbar relative max-h-[90vh] w-full overflow-auto rounded-lg lg:overflow-hidden @lg:w-2/3 @lg:min-w-[400px] @lg:rounded-l-lg ${contentClassName || ''}`}>
                         {/* Toggle Button for Small Screens */}
 
                         <div className="@container relative">
@@ -88,6 +102,18 @@ export default function WorkflowLayout({
                     </div>
                 </div>
             </div>
+            
+            {/* Slide Over Content */}
+            {slideOver && (
+                <WorkflowSlideOver
+                    isOpen={slideOver.isOpen}
+                    onClose={slideOver.onClose}
+                    title={slideOver.title}
+                    size={slideOver.size}
+                >
+                    {slideOver.content}
+                </WorkflowSlideOver>
+            )}
         </div>
     );
 }

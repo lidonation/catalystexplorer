@@ -5,13 +5,13 @@ export enum VoteEnum {
 }
 
 export enum VisibilityEnum {
-    PUBLIC = 'PUBLIC',
-    PRIVATE = 'PRIVATE',
-    DELEGATORS = 'DELEGATORS',
-    UNLISTED = 'UNLISTED'
+    PUBLIC = 'public',
+    PRIVATE = 'private',
+    DELEGATORS = 'delegators',
+    UNLISTED = 'unlisted'
 }
 
 export enum StatusEnum {
-    PUBLISHED = 'PUBLISHED',
-    DRAFT = 'DRAFT'
+    PUBLISHED = 'published',
+    DRAFT = 'draft'
 }

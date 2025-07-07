@@ -285,6 +285,7 @@ function AppNavigation() {
                                                     title={t('Transactions')}
                                                     ariaLabel={`${t('transactions.title')} ${t('link')}`}
                                                     active={false}
+                                                    prefetch
                                                 ></NavLinkItem>
 
                                                 <NavLinkItem
@@ -294,6 +295,7 @@ function AppNavigation() {
                                                     title={t('Votes')}
                                                     ariaLabel={`${t('votes')} ${t('link')}`}
                                                     active={false}
+                                                    prefetch
                                                 ></NavLinkItem>
 
                                                 <NavLinkItem
@@ -303,6 +305,7 @@ function AppNavigation() {
                                                     title={t('Voters')}
                                                     ariaLabel={`${t('voters')} ${t('link')}`}
                                                     active={false}
+                                                    prefetch
                                                 ></NavLinkItem>
                                             </div>
                                         )}
@@ -427,6 +430,7 @@ function AppNavigation() {
                                                     title="API"
                                                     ariaLabel={`${t('API')} ${t('link')}`}
                                                     active={false}
+                                                    prefetch
                                                 ></NavLinkItem>
 
                                                 <NavLinkItem
@@ -446,6 +450,7 @@ function AppNavigation() {
                                                     title="Reviewers"
                                                     ariaLabel={`${t('reviewers')} ${t('link')}`}
                                                     active={false}
+                                                    prefetch
                                                 ></NavLinkItem>
 
                                                 <NavLinkItem
@@ -456,6 +461,7 @@ function AppNavigation() {
                                                     title="Monthly Reports"
                                                     ariaLabel={`${t('monthlyReports')} ${t('link')}`}
                                                     active={false}
+                                                    prefetch
                                                 ></NavLinkItem>
 
                                                 <NavLinkItem
@@ -466,6 +472,7 @@ function AppNavigation() {
                                                     title="Proposal CSVs"
                                                     ariaLabel={`${t('CSVs')} ${t('link')}`}
                                                     active={false}
+                                                    prefetch
                                                 ></NavLinkItem>
 
                                                 <NavLinkItem
@@ -486,9 +493,14 @@ function AppNavigation() {
 
                         if (isProposals) {
                             const comparisonCount = useLiveQuery(async () => {
-                                const all =
-                                    await db.proposal_comparisons.toArray();
-                                return all.length;
+                                const allSettings =
+                                    await db.user_setting.toArray();
+
+                                const allProposalComparisons = allSettings
+                                    .map((s) => s.proposalComparison)
+                                    .filter(Boolean);
+
+                                return allProposalComparisons[0]?.length ?? 0;
                             }, []);
 
                             if (comparisonCount === undefined) return null;
