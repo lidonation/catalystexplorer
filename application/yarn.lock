@@ -726,16 +726,6 @@
   resolved "https://registry.yarnpkg.com/@multiavatar/multiavatar/-/multiavatar-1.0.7.tgz#bc2b855bab728a51ee9cee2412ee9f76282b7c78"
   integrity sha512-Yg9Uw57bmlErsWL0CSv4d6D4ZqVBE00OZmYr9MRgygoXZdboNtsEI6FbBRw1AY8l88Sm1ARcyojtlm2uwUn0Zg==
 
-"@nivo/annotations@0.88.0":
-  version "0.88.0"
-  resolved "https://registry.npmjs.org/@nivo/annotations/-/annotations-0.88.0.tgz"
-  integrity sha512-NXE+1oIUn+EGWMQpnpeRMLgi2wyuzhGDoJQY4OUHissCUiNotid2oNQ/PXJwN0toiu+/j9SyhzI32xr70OPi7Q==
-  dependencies:
-    "@nivo/colors" "0.88.0"
-    "@nivo/core" "0.88.0"
-    "@react-spring/web" "9.4.5 || ^9.7.2"
-    lodash "^4.17.21"
-
 "@nivo/annotations@0.99.0":
   version "0.99.0"
   resolved "https://registry.yarnpkg.com/@nivo/annotations/-/annotations-0.99.0.tgz#ac6417022d9281b5b40b134d352c5039302aa5f6"
@@ -747,29 +737,19 @@
     "@react-spring/web" "9.4.5 || ^9.7.2 || ^10.0"
     lodash "^4.17.21"
 
-"@nivo/arcs@0.88.0":
-  version "0.88.0"
-  resolved "https://registry.yarnpkg.com/@nivo/arcs/-/arcs-0.88.0.tgz#0004aa612fd12eee5fd415ed257812b722bf5a10"
-  integrity sha512-q7MHxT71s/KKlDDtSJS4L9+/JIa5HPZZrDr3ZFECLnvp0TC1qzyFMtVevN2CsXopSTj8poN4uFXPWxYVXOq8vg==
+"@nivo/arcs@0.99.0":
+  version "0.99.0"
+  resolved "https://registry.yarnpkg.com/@nivo/arcs/-/arcs-0.99.0.tgz#bfb339f2e8ceddedc3726c16b1bd3a9fce89b396"
+  integrity sha512-UcvWLQPl+A3APk2Gm74N5xDfT+ATnVs2XkP73WxhYPWJk+dBzF00cndA5g/dptOwdFBvvo62VgcCsNiwUsjKTw==
   dependencies:
-    "@nivo/colors" "0.88.0"
-    "@nivo/core" "0.88.0"
-    "@react-spring/web" "9.4.5 || ^9.7.2"
+    "@nivo/colors" "0.99.0"
+    "@nivo/core" "0.99.0"
+    "@nivo/text" "0.99.0"
+    "@nivo/theming" "0.99.0"
+    "@react-spring/core" "9.4.5 || ^9.7.2 || ^10.0"
+    "@react-spring/web" "9.4.5 || ^9.7.2 || ^10.0"
     "@types/d3-shape" "^3.1.6"
     d3-shape "^3.2.0"
-
-"@nivo/axes@0.88.0":
-  version "0.88.0"
-  resolved "https://registry.npmjs.org/@nivo/axes/-/axes-0.88.0.tgz"
-  integrity sha512-jF7aIxzTNayV5cI1J/b9Q1FfpMBxTXGk3OwSigXMSfYWlliskDn2u0qGRLiYhuXFdQAWIp4oXsO1GcAQ0eRVdg==
-  dependencies:
-    "@nivo/core" "0.88.0"
-    "@nivo/scales" "0.88.0"
-    "@react-spring/web" "9.4.5 || ^9.7.2"
-    "@types/d3-format" "^1.4.1"
-    "@types/d3-time-format" "^2.3.1"
-    d3-format "^1.4.4"
-    d3-time-format "^3.0.0"
 
 "@nivo/axes@0.99.0":
   version "0.99.0"
@@ -786,40 +766,32 @@
     d3-format "^1.4.4"
     d3-time-format "^3.0.0"
 
-"@nivo/bar@^0.88.0":
-  version "0.88.0"
-  resolved "https://registry.npmjs.org/@nivo/bar/-/bar-0.88.0.tgz"
-  integrity sha512-wckwuHWeCikxGvvdRfGL+dVFsUD9uHk1r9s7bWUfOD+p8BWhxtYqfXpHolEfgGg3UyPaHtpGA7P4zgE5vgo7gQ==
+"@nivo/bar@0.99.0":
+  version "0.99.0"
+  resolved "https://registry.yarnpkg.com/@nivo/bar/-/bar-0.99.0.tgz#e7d3c606e44328ff7e223f2281fe7b72b2d38dc7"
+  integrity sha512-9yfMn7H6UF/TqtCwVZ/vihVAXUff9wWvSaeF2Z1DCfgr5S07qs31Qb2p0LZA+YgCWpaU7zqkeb3VZ4WCpZbrDA==
   dependencies:
-    "@nivo/annotations" "0.88.0"
-    "@nivo/axes" "0.88.0"
-    "@nivo/colors" "0.88.0"
-    "@nivo/core" "0.88.0"
-    "@nivo/legends" "0.88.0"
-    "@nivo/scales" "0.88.0"
-    "@nivo/tooltip" "0.88.0"
-    "@react-spring/web" "9.4.5 || ^9.7.2"
+    "@nivo/annotations" "0.99.0"
+    "@nivo/axes" "0.99.0"
+    "@nivo/canvas" "0.99.0"
+    "@nivo/colors" "0.99.0"
+    "@nivo/core" "0.99.0"
+    "@nivo/legends" "0.99.0"
+    "@nivo/scales" "0.99.0"
+    "@nivo/text" "0.99.0"
+    "@nivo/theming" "0.99.0"
+    "@nivo/tooltip" "0.99.0"
+    "@react-spring/web" "9.4.5 || ^9.7.2 || ^10.0"
     "@types/d3-scale" "^4.0.8"
     "@types/d3-shape" "^3.1.6"
     d3-scale "^4.0.2"
     d3-shape "^3.2.0"
     lodash "^4.17.21"
 
-"@nivo/colors@0.88.0":
-  version "0.88.0"
-  resolved "https://registry.npmjs.org/@nivo/colors/-/colors-0.88.0.tgz"
-  integrity sha512-IZ+leYIqAlo7dyLHmsQwujanfRgXyoQ5H7PU3RWLEn1PP0zxDKLgEjFEDADpDauuslh2Tx0L81GNkWR6QSP0Mw==
-  dependencies:
-    "@nivo/core" "0.88.0"
-    "@types/d3-color" "^3.0.0"
-    "@types/d3-scale" "^4.0.8"
-    "@types/d3-scale-chromatic" "^3.0.0"
-    "@types/prop-types" "^15.7.2"
-    d3-color "^3.1.0"
-    d3-scale "^4.0.2"
-    d3-scale-chromatic "^3.0.0"
-    lodash "^4.17.21"
-    prop-types "^15.7.2"
+"@nivo/canvas@0.99.0":
+  version "0.99.0"
+  resolved "https://registry.yarnpkg.com/@nivo/canvas/-/canvas-0.99.0.tgz#63174f599fe825c58608b63c6d627977dead2b91"
+  integrity sha512-UxA8zb+NPwqmNm81hoyUZSMAikgjU1ukLf4KybVNyV8ejcJM+BUFXsb8DxTcLdt4nmCFHqM56GaJQv2hnAHmzg==
 
 "@nivo/colors@0.99.0":
   version "0.99.0"
@@ -835,24 +807,6 @@
     d3-scale "^4.0.2"
     d3-scale-chromatic "^3.0.0"
     lodash "^4.17.21"
-
-"@nivo/core@0.88.0", "@nivo/core@^0.88.0":
-  version "0.88.0"
-  resolved "https://registry.npmjs.org/@nivo/core/-/core-0.88.0.tgz"
-  integrity sha512-XjUkA5MmwjLP38bdrJwn36Gj7T5SYMKD55LYQp/1nIJPdxqJ38dUfE4XyBDfIEgfP6yrHOihw3C63cUdnUBoiw==
-  dependencies:
-    "@nivo/tooltip" "0.88.0"
-    "@react-spring/web" "9.4.5 || ^9.7.2"
-    "@types/d3-shape" "^3.1.6"
-    d3-color "^3.1.0"
-    d3-format "^1.4.4"
-    d3-interpolate "^3.0.1"
-    d3-scale "^4.0.2"
-    d3-scale-chromatic "^3.0.0"
-    d3-shape "^3.2.0"
-    d3-time-format "^3.0.0"
-    lodash "^4.17.21"
-    prop-types "^15.7.2"
 
 "@nivo/core@0.99.0":
   version "0.99.0"
@@ -874,7 +828,24 @@
     react-virtualized-auto-sizer "^1.0.26"
     use-debounce "^10.0.4"
 
-"@nivo/heatmap@^0.99.0":
+"@nivo/funnel@0.99.0":
+  version "0.99.0"
+  resolved "https://registry.yarnpkg.com/@nivo/funnel/-/funnel-0.99.0.tgz#e05fe4d2ba299f9585d6dfa730346b96eb127221"
+  integrity sha512-1wiAeY/+Xl1W7Y6S2aNTatEjXXtKX2BW94+zlICML8eWxx/ke7wyiiMsiu3XtJD+tADepzx9DsZKeXUyErat+A==
+  dependencies:
+    "@nivo/annotations" "0.99.0"
+    "@nivo/colors" "0.99.0"
+    "@nivo/core" "0.99.0"
+    "@nivo/text" "0.99.0"
+    "@nivo/theming" "0.99.0"
+    "@nivo/tooltip" "0.99.0"
+    "@react-spring/web" "9.4.5 || ^9.7.2 || ^10.0"
+    "@types/d3-scale" "^4.0.8"
+    "@types/d3-shape" "^3.1.6"
+    d3-scale "^4.0.2"
+    d3-shape "^3.2.0"
+
+"@nivo/heatmap@0.99.0":
   version "0.99.0"
   resolved "https://registry.yarnpkg.com/@nivo/heatmap/-/heatmap-0.99.0.tgz#108228b220636c45dd8a8d07e909933742cae3fb"
   integrity sha512-cnd5V6XYLvHtQ8GObUyYyEgmAUa5/ERYVmNXR1znA+yzmB+tGthJsOeGar+ntCb43pIL5HbhEaD3YpsYzBxOhQ==
@@ -893,16 +864,6 @@
     "@types/d3-scale" "^4.0.8"
     d3-scale "^4.0.2"
 
-"@nivo/legends@0.88.0":
-  version "0.88.0"
-  resolved "https://registry.npmjs.org/@nivo/legends/-/legends-0.88.0.tgz"
-  integrity sha512-d4DF9pHbD8LmGJlp/Gp1cF4e8y2wfQTcw3jVhbZj9zkb7ZWB7JfeF60VHRfbXNux9bjQ9U78/SssQqueVDPEmg==
-  dependencies:
-    "@nivo/colors" "0.88.0"
-    "@nivo/core" "0.88.0"
-    "@types/d3-scale" "^4.0.8"
-    d3-scale "^4.0.2"
-
 "@nivo/legends@0.99.0":
   version "0.99.0"
   resolved "https://registry.yarnpkg.com/@nivo/legends/-/legends-0.99.0.tgz#4f1fede8c450dad942b851a9a429838e343aea1b"
@@ -915,47 +876,37 @@
     "@types/d3-scale" "^4.0.8"
     d3-scale "^4.0.2"
 
-"@nivo/line@^0.88.0":
-  version "0.88.0"
-  resolved "https://registry.npmjs.org/@nivo/line/-/line-0.88.0.tgz"
-  integrity sha512-hFTyZ3BdAZvq2HwdwMj2SJGUeodjEW+7DLtFMIIoVIxmjZlAs3z533HcJ9cJd3it928fDm8SF/rgHs0TztYf9Q==
+"@nivo/line@0.99.0":
+  version "0.99.0"
+  resolved "https://registry.yarnpkg.com/@nivo/line/-/line-0.99.0.tgz#40d5c5211316a0bcd2d43a2ead1d2ef2e996c28e"
+  integrity sha512-bAqTXSjpnpcGMs341qWFUi7hJTqQiNoSeJHsYPuPS3icuXPcp3WETQH+zRZACeEF79ZigeOWCW+dzODgne1y9w==
   dependencies:
-    "@nivo/annotations" "0.88.0"
-    "@nivo/axes" "0.88.0"
-    "@nivo/colors" "0.88.0"
-    "@nivo/core" "0.88.0"
-    "@nivo/legends" "0.88.0"
-    "@nivo/scales" "0.88.0"
-    "@nivo/tooltip" "0.88.0"
-    "@nivo/voronoi" "0.88.0"
-    "@react-spring/web" "9.4.5 || ^9.7.2"
-    d3-shape "^3.2.0"
-
-"@nivo/pie@^0.88.0":
-  version "0.88.0"
-  resolved "https://registry.yarnpkg.com/@nivo/pie/-/pie-0.88.0.tgz#628a608d077d9cfe850ffef1b16181482479e7c7"
-  integrity sha512-BE6dFWlGne1SnaEkFHNbg0sZBiwtcIqBFwmMRJ0F11SiKOzVeJyq3KiyY1I2ySSCx5VR1V8/MNBXzXFu3vJMAQ==
-  dependencies:
-    "@nivo/arcs" "0.88.0"
-    "@nivo/colors" "0.88.0"
-    "@nivo/core" "0.88.0"
-    "@nivo/legends" "0.88.0"
-    "@nivo/tooltip" "0.88.0"
+    "@nivo/annotations" "0.99.0"
+    "@nivo/axes" "0.99.0"
+    "@nivo/colors" "0.99.0"
+    "@nivo/core" "0.99.0"
+    "@nivo/legends" "0.99.0"
+    "@nivo/scales" "0.99.0"
+    "@nivo/theming" "0.99.0"
+    "@nivo/tooltip" "0.99.0"
+    "@nivo/voronoi" "0.99.0"
+    "@react-spring/web" "9.4.5 || ^9.7.2 || ^10.0"
     "@types/d3-shape" "^3.1.6"
     d3-shape "^3.2.0"
 
-"@nivo/scales@0.88.0":
-  version "0.88.0"
-  resolved "https://registry.npmjs.org/@nivo/scales/-/scales-0.88.0.tgz"
-  integrity sha512-HbpxkQp6tHCltZ1yDGeqdLcaJl5ze54NPjurfGtx/Uq+H5IQoBd4Tln49bUar5CsFAMsXw8yF1HQvASr7I1SIA==
+"@nivo/pie@0.99.0":
+  version "0.99.0"
+  resolved "https://registry.yarnpkg.com/@nivo/pie/-/pie-0.99.0.tgz#3ab9b0c92be84910d07270b8bac7bf9de121078f"
+  integrity sha512-zUbo8UdLndp2RMljrOqitAKKEnl7YypkJrOzjKLk8jQGU7qqUKtgFoJIPhiBsvNPs3xtX2KwgtS1+JKNTNns7A==
   dependencies:
-    "@types/d3-scale" "^4.0.8"
-    "@types/d3-time" "^1.1.1"
-    "@types/d3-time-format" "^3.0.0"
-    d3-scale "^4.0.2"
-    d3-time "^1.0.11"
-    d3-time-format "^3.0.0"
-    lodash "^4.17.21"
+    "@nivo/arcs" "0.99.0"
+    "@nivo/colors" "0.99.0"
+    "@nivo/core" "0.99.0"
+    "@nivo/legends" "0.99.0"
+    "@nivo/theming" "0.99.0"
+    "@nivo/tooltip" "0.99.0"
+    "@types/d3-shape" "^3.1.6"
+    d3-shape "^3.2.0"
 
 "@nivo/scales@0.99.0":
   version "0.99.0"
@@ -972,20 +923,21 @@
     d3-time-format "^3.0.0"
     lodash "^4.17.21"
 
-"@nivo/scatterplot@^0.88.0":
-  version "0.88.0"
-  resolved "https://registry.yarnpkg.com/@nivo/scatterplot/-/scatterplot-0.88.0.tgz#d6572986eee49e2da942c01be37f6fe189bf6506"
-  integrity sha512-kVUnBknVnX/+kAnOVl27wSrVrDAnYt7hyttss5jydBMzGidxK7vFBwRUFl5yrPGmEwpDSO8POvXjSF4M3XHzZA==
+"@nivo/scatterplot@0.99.0":
+  version "0.99.0"
+  resolved "https://registry.yarnpkg.com/@nivo/scatterplot/-/scatterplot-0.99.0.tgz#9ec1783508d352a197a91c6a92b4b950122fd652"
+  integrity sha512-/fc0LPw2BdPgj+4cKqXlfSsQ9Z3EU0U4UBLDQ07GJCAkqA+IrufYGVVkAKRKyrLrG3sKFGBdZDinkp3LxuiwFg==
   dependencies:
-    "@nivo/annotations" "0.88.0"
-    "@nivo/axes" "0.88.0"
-    "@nivo/colors" "0.88.0"
-    "@nivo/core" "0.88.0"
-    "@nivo/legends" "0.88.0"
-    "@nivo/scales" "0.88.0"
-    "@nivo/tooltip" "0.88.0"
-    "@nivo/voronoi" "0.88.0"
-    "@react-spring/web" "9.4.5 || ^9.7.2"
+    "@nivo/annotations" "0.99.0"
+    "@nivo/axes" "0.99.0"
+    "@nivo/colors" "0.99.0"
+    "@nivo/core" "0.99.0"
+    "@nivo/legends" "0.99.0"
+    "@nivo/scales" "0.99.0"
+    "@nivo/theming" "0.99.0"
+    "@nivo/tooltip" "0.99.0"
+    "@nivo/voronoi" "0.99.0"
+    "@react-spring/web" "9.4.5 || ^9.7.2 || ^10.0"
     "@types/d3-scale" "^4.0.8"
     "@types/d3-shape" "^3.1.6"
     d3-scale "^4.0.2"
@@ -1008,14 +960,6 @@
   dependencies:
     lodash "^4.17.21"
 
-"@nivo/tooltip@0.88.0":
-  version "0.88.0"
-  resolved "https://registry.npmjs.org/@nivo/tooltip/-/tooltip-0.88.0.tgz"
-  integrity sha512-iEjVfQA8gumAzg/yUinjTwswygCkE5Iwuo8opwnrbpNIqMrleBV+EAKIgB0PrzepIoW8CFG/SJhoiRfbU8jhOw==
-  dependencies:
-    "@nivo/core" "0.88.0"
-    "@react-spring/web" "9.4.5 || ^9.7.2"
-
 "@nivo/tooltip@0.99.0":
   version "0.99.0"
   resolved "https://registry.yarnpkg.com/@nivo/tooltip/-/tooltip-0.99.0.tgz#63a1bc3b428cb2a07a7f763ad8547e39dd4bcf13"
@@ -1025,13 +969,14 @@
     "@nivo/theming" "0.99.0"
     "@react-spring/web" "9.4.5 || ^9.7.2 || ^10.0"
 
-"@nivo/voronoi@0.88.0":
-  version "0.88.0"
-  resolved "https://registry.npmjs.org/@nivo/voronoi/-/voronoi-0.88.0.tgz"
-  integrity sha512-MyiNLvODthFoMjQ7Wjp693nogbTmVEx8Yn/7QkJhyPQbFyyA37TF/D1a/ox4h2OslXtP6K9QFN+42gB/zu7ixw==
+"@nivo/voronoi@0.99.0":
+  version "0.99.0"
+  resolved "https://registry.yarnpkg.com/@nivo/voronoi/-/voronoi-0.99.0.tgz#44030d825b39e3a83f4311570b2a78f61ab053b4"
+  integrity sha512-KfmMdidbYzhiUCki1FG4X4nHEFT4loK8G5bMBnmCl9U+S78W+gvkfrgD2Aoqp/Q9yKQvr3Y8UcZKSFZnn3HgjQ==
   dependencies:
-    "@nivo/core" "0.88.0"
-    "@nivo/tooltip" "0.88.0"
+    "@nivo/core" "0.99.0"
+    "@nivo/theming" "0.99.0"
+    "@nivo/tooltip" "0.99.0"
     "@types/d3-delaunay" "^6.0.4"
     "@types/d3-scale" "^4.0.8"
     d3-delaunay "^6.0.4"
@@ -1670,14 +1615,6 @@
     "@react-spring/shared" "~10.0.1"
     "@react-spring/types" "~10.0.1"
 
-"@react-spring/animated@~9.7.5":
-  version "9.7.5"
-  resolved "https://registry.npmjs.org/@react-spring/animated/-/animated-9.7.5.tgz"
-  integrity sha512-Tqrwz7pIlsSDITzxoLS3n/v/YCUHQdOIKtOJf4yL6kYVSDTSmVK1LI1Q3M/uu2Sx4X3pIWF3xLUhlsA6SPNTNg==
-  dependencies:
-    "@react-spring/shared" "~9.7.5"
-    "@react-spring/types" "~9.7.5"
-
 "@react-spring/core@9.4.5 || ^9.7.2 || ^10.0", "@react-spring/core@~10.0.1":
   version "10.0.1"
   resolved "https://registry.yarnpkg.com/@react-spring/core/-/core-10.0.1.tgz#35b6b8fca4bc388baed9975904b88b69c5e712d1"
@@ -1687,24 +1624,10 @@
     "@react-spring/shared" "~10.0.1"
     "@react-spring/types" "~10.0.1"
 
-"@react-spring/core@~9.7.5":
-  version "9.7.5"
-  resolved "https://registry.npmjs.org/@react-spring/core/-/core-9.7.5.tgz"
-  integrity sha512-rmEqcxRcu7dWh7MnCcMXLvrf6/SDlSokLaLTxiPlAYi11nN3B5oiCUAblO72o+9z/87j2uzxa2Inm8UbLjXA+w==
-  dependencies:
-    "@react-spring/animated" "~9.7.5"
-    "@react-spring/shared" "~9.7.5"
-    "@react-spring/types" "~9.7.5"
-
 "@react-spring/rafz@~10.0.1":
   version "10.0.1"
   resolved "https://registry.yarnpkg.com/@react-spring/rafz/-/rafz-10.0.1.tgz#ee439b428b1f94fedb9a32486ec2dd4a3b6ab0de"
   integrity sha512-UrzG/d6Is+9i0aCAjsjWRqIlFFiC4lFqFHrH63zK935z2YDU95TOFio4VKGISJ5SG0xq4ULy7c1V3KU+XvL+Yg==
-
-"@react-spring/rafz@~9.7.5":
-  version "9.7.5"
-  resolved "https://registry.npmjs.org/@react-spring/rafz/-/rafz-9.7.5.tgz"
-  integrity sha512-5ZenDQMC48wjUzPAm1EtwQ5Ot3bLIAwwqP2w2owG5KoNdNHpEJV263nGhCeKKmuA3vG2zLLOdu3or6kuDjA6Aw==
 
 "@react-spring/shared@~10.0.1":
   version "10.0.1"
@@ -1714,33 +1637,10 @@
     "@react-spring/rafz" "~10.0.1"
     "@react-spring/types" "~10.0.1"
 
-"@react-spring/shared@~9.7.5":
-  version "9.7.5"
-  resolved "https://registry.npmjs.org/@react-spring/shared/-/shared-9.7.5.tgz"
-  integrity sha512-wdtoJrhUeeyD/PP/zo+np2s1Z820Ohr/BbuVYv+3dVLW7WctoiN7std8rISoYoHpUXtbkpesSKuPIw/6U1w1Pw==
-  dependencies:
-    "@react-spring/rafz" "~9.7.5"
-    "@react-spring/types" "~9.7.5"
-
 "@react-spring/types@~10.0.1":
   version "10.0.1"
   resolved "https://registry.yarnpkg.com/@react-spring/types/-/types-10.0.1.tgz#749b5d11785555a14179c37b8f9d34c69ae5268d"
   integrity sha512-Fk1wYVAKL+ZTYK+4YFDpHf3Slsy59pfFFvnnTfRjQQFGlyIo4VejPtDs3CbDiuBjM135YztRyZjIH2VbycB+ZQ==
-
-"@react-spring/types@~9.7.5":
-  version "9.7.5"
-  resolved "https://registry.npmjs.org/@react-spring/types/-/types-9.7.5.tgz"
-  integrity sha512-HVj7LrZ4ReHWBimBvu2SKND3cDVUPWKLqRTmWe/fNY6o1owGOX0cAHbdPDTMelgBlVbrTKrre6lFkhqGZErK/g==
-
-"@react-spring/web@9.4.5 || ^9.7.2":
-  version "9.7.5"
-  resolved "https://registry.npmjs.org/@react-spring/web/-/web-9.7.5.tgz"
-  integrity sha512-lmvqGwpe+CSttsWNZVr+Dg62adtKhauGwLyGE/RRyZ8AAMLgb9x3NDMA5RMElXo+IMyTkPp7nxTB8ZQlmhb6JQ==
-  dependencies:
-    "@react-spring/animated" "~9.7.5"
-    "@react-spring/core" "~9.7.5"
-    "@react-spring/shared" "~9.7.5"
-    "@react-spring/types" "~9.7.5"
 
 "@react-spring/web@9.4.5 || ^9.7.2 || ^10.0":
   version "10.0.1"
@@ -2224,7 +2124,7 @@
   resolved "https://registry.npmjs.org/@types/pbf/-/pbf-3.0.5.tgz"
   integrity sha512-j3pOPiEcWZ34R6a6mN07mUkM4o4Lwf6hPNt8eilOeZhTFbxFXmKhvXl9Y28jotFPaI1bpPDJsbCprUoNke6OrA==
 
-"@types/prop-types@*", "@types/prop-types@^15.7.2":
+"@types/prop-types@*":
   version "15.7.14"
   resolved "https://registry.npmjs.org/@types/prop-types/-/prop-types-15.7.14.tgz"
   integrity sha512-gNMvNH49DJ7OJYv+KAKn0Xp45p8PLl6zo2YnvDIbTd4J6MER2BmWN49TG7n9LvkyihINxeKW8+3bfS2yDC9dzQ==
@@ -5708,7 +5608,7 @@ prettier@^3.3.0:
   resolved "https://registry.npmjs.org/prettier/-/prettier-3.5.2.tgz"
   integrity sha512-lc6npv5PH7hVqozBR7lkBNOGXV9vMwROAPlumdBkX0wTbbzPu/U1hk5yL8p2pt4Xoc+2mkT8t/sow2YrV/M5qg==
 
-prop-types@15, prop-types@^15.6.2, prop-types@^15.7.2, prop-types@^15.8.1:
+prop-types@15, prop-types@^15.6.2, prop-types@^15.8.1:
   version "15.8.1"
   resolved "https://registry.npmjs.org/prop-types/-/prop-types-15.8.1.tgz"
   integrity sha512-oj87CgZICdulUohogVAR7AjlC0327U4el4L6eAvOqCeudMDVU0NThNaV+b9Df4dXgSP1gXMTnPdhfe/2qDH5cg==

@@ -22,7 +22,7 @@ export default function Step2({
     const {
         value: selectedChart,
         setValue: setSelectedChart,
-    } = useUserSetting<string>(userSettingEnums.TREND_CHART, '');
+    } = useUserSetting<string>(userSettingEnums.CHART_TYPE, '');
 
     
     const isChartSelected = useMemo(() => {
@@ -44,7 +44,8 @@ export default function Step2({
     }, [selectedChart, t, setFilters]);
 
     const chartOptions = useMemo(() => [
-        { label: 'Trend Chart', value: 'trendChart' }
+        { label: 'Trend Chart', value: 'trendChart' },
+        { label: 'Distribution Chart', value: 'distributionChart' }
     ], []);
 
     const selectedItems = useMemo(() => {
@@ -60,7 +61,7 @@ export default function Step2({
             setFilters({
                 label: t('charts.trendChart'),
                 value: chart,
-                param: ParamsEnum.TREND_CHART,
+                param: ParamsEnum.CHART_TYPE,
             });
         }
     }, [setSelectedChart, setFilters, t]);

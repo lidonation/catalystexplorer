@@ -4,6 +4,6 @@ export enum userSettingEnums {
     VIEW_CHART_BY = 'viewChartBy',
     PROPOSAL_COMPARISON = 'proposalComparison',
     PROPOSAL_TYPE = 'proposalType',
-    TREND_CHART = 'trendChart',
-    CHART_TYPES = 'chartTypes',
+    CHART_OPTIONS = 'chartOptions',
+    CHART_TYPE = 'chartType',
 }
