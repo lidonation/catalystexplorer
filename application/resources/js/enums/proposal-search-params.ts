@@ -7,6 +7,7 @@ export enum ParamsEnum {
     CAMPAIGNS = 'cam',
     COHORT = 'coh',
     COMMUNITIES = 'com',
+    CHART_TYPE = 'ct',
     COMPLETED_PROPOSALS = 'cp',
     DELEGATORS = 'd',
     DREP_STATUS = 'ds',

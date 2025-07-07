@@ -258,10 +258,8 @@ const LineChart: React.FC<LineChartProps> = ({
                             },
                         },
                     }}
-                    tooltipFormat={(value) => shortNumber(Number(value), 2)}
                     tooltip={({ point }) => {
-                        const currentX = point.data.x;
-
+                        const currentX = point?.data?.x;
                         const calculateTrend = (
                             currentY: number,
                             previousY: number,

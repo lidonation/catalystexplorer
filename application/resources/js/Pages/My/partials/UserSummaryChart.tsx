@@ -159,10 +159,16 @@ export default function UserSummaryChart({
                     ]}
                     fill={[{ match: '*', id: 'gradient' }]}
                     tooltip={({ point }) => {
-                        const { serieId, index, data } = point;
+                        const { id: serieId, data } = point;
                         const currentLine = filteredData.find(
                             (line) => line.id === serieId,
                         );
+                        const xValue = data.x;
+
+                        const index =
+                            currentLine?.data.findIndex(
+                                (d) => d.x === xValue,
+                            ) ?? -1;
                         const current = currentLine?.data[index]?.y ?? 0;
                         const previous = currentLine?.data[index - 1]?.y ?? 0;
                         const trend = calculateTrend(current, previous);
