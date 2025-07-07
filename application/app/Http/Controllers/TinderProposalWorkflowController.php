@@ -6,23 +6,19 @@ namespace App\Http\Controllers;
 
 use App\Actions\TransformIdsToHashes;
 use App\DataTransferObjects\BookmarkCollectionData;
-use App\DataTransferObjects\CampaignData;
 use App\DataTransferObjects\FundData;
 use App\DataTransferObjects\ProposalData;
 use App\Enums\BookmarkStatus;
 use App\Enums\TinderWorkflowParams;
 use App\Models\BookmarkCollection;
-use App\Models\Campaign;
 use App\Models\Fund;
 use App\Models\Proposal;
 use App\Models\TinderCollection;
 use App\Repositories\ProposalRepository;
-use App\Services\HashIdService;
-use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Fluent;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -47,12 +43,12 @@ class TinderProposalWorkflowController extends Controller
             TinderWorkflowParams::TINDER_COLLECTION_HASH()->value => 'nullable|string',
             TinderWorkflowParams::LEFT_BOOKMARK_COLLECTION_HASH()->value => 'nullable|string',
             TinderWorkflowParams::RIGHT_BOOKMARK_COLLECTION_HASH()->value => 'nullable|string',
-            TinderWorkflowParams::FUNDS()->value => 'string'
+            TinderWorkflowParams::FUNDS()->value => 'string',
         ]);
 
-        $isEditMode = !empty($validated[TinderWorkflowParams::EDIT()->value]) && $validated[TinderWorkflowParams::EDIT()->value] == true;
+        $isEditMode = ! empty($validated[TinderWorkflowParams::EDIT()->value]) && $validated[TinderWorkflowParams::EDIT()->value] == true;
 
-        $shouldClearSession = !$isEditMode;
+        $shouldClearSession = ! $isEditMode;
 
         if ($shouldClearSession) {
             session()->forget([
@@ -145,15 +141,15 @@ class TinderProposalWorkflowController extends Controller
         $rightBookmarkCollection = null;
         $tinderCollection = null;
 
-        if (!empty($validated[TinderWorkflowParams::LEFT_BOOKMARK_COLLECTION_HASH()->value])) {
+        if (! empty($validated[TinderWorkflowParams::LEFT_BOOKMARK_COLLECTION_HASH()->value])) {
             $leftBookmarkCollection = BookmarkCollection::byHash($validated[TinderWorkflowParams::LEFT_BOOKMARK_COLLECTION_HASH()->value]);
         }
 
-        if (!empty($validated[TinderWorkflowParams::RIGHT_BOOKMARK_COLLECTION_HASH()->value])) {
+        if (! empty($validated[TinderWorkflowParams::RIGHT_BOOKMARK_COLLECTION_HASH()->value])) {
             $rightBookmarkCollection = BookmarkCollection::byHash($validated[TinderWorkflowParams::RIGHT_BOOKMARK_COLLECTION_HASH()->value]);
         }
 
-        if (!empty($validated[TinderWorkflowParams::TINDER_COLLECTION_HASH()->value])) {
+        if (! empty($validated[TinderWorkflowParams::TINDER_COLLECTION_HASH()->value])) {
             $tinderCollection = TinderCollection::byHash($validated[TinderWorkflowParams::TINDER_COLLECTION_HASH()->value]);
         }
 
@@ -186,16 +182,16 @@ class TinderProposalWorkflowController extends Controller
             TinderWorkflowParams::LOAD_MORE()->value => 'nullable|boolean',
         ]);
 
-        $tinderCollectionHash = !empty($validated[TinderWorkflowParams::TINDER_COLLECTION_HASH()->value]) ? $validated[TinderWorkflowParams::TINDER_COLLECTION_HASH()->value] : null;
-        $leftBookmarkCollectionHash = !empty($validated[TinderWorkflowParams::LEFT_BOOKMARK_COLLECTION_HASH()->value]) ? $validated[TinderWorkflowParams::LEFT_BOOKMARK_COLLECTION_HASH()->value] : null;
-        $rightBookmarkCollectionHash = !empty($validated[TinderWorkflowParams::RIGHT_BOOKMARK_COLLECTION_HASH()->value]) ? $validated[TinderWorkflowParams::RIGHT_BOOKMARK_COLLECTION_HASH()->value] : null;
+        $tinderCollectionHash = ! empty($validated[TinderWorkflowParams::TINDER_COLLECTION_HASH()->value]) ? $validated[TinderWorkflowParams::TINDER_COLLECTION_HASH()->value] : null;
+        $leftBookmarkCollectionHash = ! empty($validated[TinderWorkflowParams::LEFT_BOOKMARK_COLLECTION_HASH()->value]) ? $validated[TinderWorkflowParams::LEFT_BOOKMARK_COLLECTION_HASH()->value] : null;
+        $rightBookmarkCollectionHash = ! empty($validated[TinderWorkflowParams::RIGHT_BOOKMARK_COLLECTION_HASH()->value]) ? $validated[TinderWorkflowParams::RIGHT_BOOKMARK_COLLECTION_HASH()->value] : null;
 
         $savedCurrentIndex = session('tinder_proposal_current_index', 0);
         $savedTotalSeen = session('tinder_proposal_total_seen', 0);
         $savedCurrentPage = session('tinder_proposal_current_page', null);
 
         $page = 1;
-        if (!empty($validated[TinderWorkflowParams::PAGE()->value])) {
+        if (! empty($validated[TinderWorkflowParams::PAGE()->value])) {
             // Use page from URL parameter (for load more, navigation, etc.)
             $page = intval($validated[TinderWorkflowParams::PAGE()->value]);
         } elseif ($savedCurrentPage !== null) {
@@ -238,7 +234,7 @@ class TinderProposalWorkflowController extends Controller
         $proposals = null;
         $selectedFund = null;
 
-        if (!empty($preferences['selectedFund'])) {
+        if (! empty($preferences['selectedFund'])) {
             $selectedFund = Fund::byHash($preferences['selectedFund']);
 
             if ($selectedFund) {
@@ -256,8 +252,7 @@ class TinderProposalWorkflowController extends Controller
             }
         }
 
-
-        $isLoadMore = !empty($validated[TinderWorkflowParams::LOAD_MORE()->value]) && $validated[TinderWorkflowParams::LOAD_MORE()->value] == true;
+        $isLoadMore = ! empty($validated[TinderWorkflowParams::LOAD_MORE()->value]) && $validated[TinderWorkflowParams::LOAD_MORE()->value] == true;
 
         $step3Props = [
             'stepDetails' => $this->getStepDetails(),
@@ -281,13 +276,13 @@ class TinderProposalWorkflowController extends Controller
             'isLoadMore' => $isLoadMore && $proposals,
         ];
 
-        //additional data for non-load-more requests
-        if (!($isLoadMore && $proposals)) {
+        // additional data for non-load-more requests
+        if (! ($isLoadMore && $proposals)) {
             $step3Props = array_merge($step3Props, [
                 'savedCurrentIndex' => $savedCurrentIndex,
                 'savedTotalSeen' => $savedTotalSeen,
                 'startingPage' => $page,
-                'currentIndexWithinPage' => (!empty($validated[TinderWorkflowParams::PAGE()->value]) || $savedCurrentPage !== null) ? 0 : ($savedCurrentIndex > 0 ? ($savedCurrentIndex % 20) : 0),
+                'currentIndexWithinPage' => (! empty($validated[TinderWorkflowParams::PAGE()->value]) || $savedCurrentPage !== null) ? 0 : ($savedCurrentIndex > 0 ? ($savedCurrentIndex % 20) : 0),
             ]);
         }
 
@@ -302,9 +297,9 @@ class TinderProposalWorkflowController extends Controller
             TinderWorkflowParams::TINDER_COLLECTION_HASH()->value => 'nullable|string',
         ]);
 
-        $tinderCollectionHash = !empty($validated[TinderWorkflowParams::TINDER_COLLECTION_HASH()->value]) ? $validated[TinderWorkflowParams::TINDER_COLLECTION_HASH()->value] : null;
-        $leftBookmarkCollectionHash = !empty($validated[TinderWorkflowParams::LEFT_BOOKMARK_COLLECTION_HASH()->value]) ? $validated[TinderWorkflowParams::LEFT_BOOKMARK_COLLECTION_HASH()->value] : null;
-        $rightBookmarkCollectionHash = !empty($validated[TinderWorkflowParams::RIGHT_BOOKMARK_COLLECTION_HASH()->value]) ? $validated[TinderWorkflowParams::RIGHT_BOOKMARK_COLLECTION_HASH()->value] : null;
+        $tinderCollectionHash = ! empty($validated[TinderWorkflowParams::TINDER_COLLECTION_HASH()->value]) ? $validated[TinderWorkflowParams::TINDER_COLLECTION_HASH()->value] : null;
+        $leftBookmarkCollectionHash = ! empty($validated[TinderWorkflowParams::LEFT_BOOKMARK_COLLECTION_HASH()->value]) ? $validated[TinderWorkflowParams::LEFT_BOOKMARK_COLLECTION_HASH()->value] : null;
+        $rightBookmarkCollectionHash = ! empty($validated[TinderWorkflowParams::RIGHT_BOOKMARK_COLLECTION_HASH()->value]) ? $validated[TinderWorkflowParams::RIGHT_BOOKMARK_COLLECTION_HASH()->value] : null;
 
         $leftBookmarkCollection = null;
         $rightBookmarkCollection = null;
@@ -314,7 +309,7 @@ class TinderProposalWorkflowController extends Controller
         // Process both bookmark collections using a loop to avoid repetition
         $collections = [
             'left' => ['hash' => $leftBookmarkCollectionHash],
-            'right' => ['hash' => $rightBookmarkCollectionHash]
+            'right' => ['hash' => $rightBookmarkCollectionHash],
         ];
 
         foreach ($collections as $key => $collectionData) {
@@ -333,9 +328,10 @@ class TinderProposalWorkflowController extends Controller
                     if ($bookmarkItems->isNotEmpty()) {
                         $proposals = $bookmarkItems->map(function ($bookmarkItem) {
                             $proposalData = ProposalData::from($bookmarkItem->model);
+
                             return [
                                 'proposal' => $proposalData,
-                                'bookmark_item_hash' => $bookmarkItem->hash
+                                'bookmark_item_hash' => $bookmarkItem->hash,
                             ];
                         });
                     }
@@ -368,11 +364,11 @@ class TinderProposalWorkflowController extends Controller
         $validated = $request->validate([
             TinderWorkflowParams::SELECTED_FUND()->value => 'required|string',
             TinderWorkflowParams::PROPOSAL_TYPES()->value => 'array',
-            TinderWorkflowParams::PROPOSAL_TYPES()->value . '.*' => 'string',
+            TinderWorkflowParams::PROPOSAL_TYPES()->value.'.*' => 'string',
             TinderWorkflowParams::PROPOSAL_SIZES()->value => 'array',
-            TinderWorkflowParams::PROPOSAL_SIZES()->value . '.*' => 'string',
+            TinderWorkflowParams::PROPOSAL_SIZES()->value.'.*' => 'string',
             TinderWorkflowParams::IMPACT_TYPES()->value => 'array',
-            TinderWorkflowParams::IMPACT_TYPES()->value . '.*' => 'string',
+            TinderWorkflowParams::IMPACT_TYPES()->value.'.*' => 'string',
             TinderWorkflowParams::TINDER_COLLECTION_HASH()->value => 'nullable|string',
             TinderWorkflowParams::LEFT_BOOKMARK_COLLECTION_HASH()->value => 'nullable|string',
             TinderWorkflowParams::RIGHT_BOOKMARK_COLLECTION_HASH()->value => 'nullable|string',
@@ -392,7 +388,7 @@ class TinderProposalWorkflowController extends Controller
         session(['tinder_proposal_preferences' => $preferences]);
 
         // Check if we have existing collection data (indicates edit mode)
-        $existingCollectionId = !empty($validated[TinderWorkflowParams::TINDER_COLLECTION_HASH()->value]) ? $validated[TinderWorkflowParams::TINDER_COLLECTION_HASH()->value] : null;
+        $existingCollectionId = ! empty($validated[TinderWorkflowParams::TINDER_COLLECTION_HASH()->value]) ? $validated[TinderWorkflowParams::TINDER_COLLECTION_HASH()->value] : null;
 
         if ($existingCollectionId) {
             // This indicates edit mode - always go to step 2 to allow editing collection details
@@ -434,18 +430,18 @@ class TinderProposalWorkflowController extends Controller
         }
 
         $selectedFund = null;
-        if (!empty($preferences['selectedFund'])) {
+        if (! empty($preferences['selectedFund'])) {
 
             $selectedFund = Fund::byHash($preferences['selectedFund']);
         }
 
-        if (!$selectedFund) {
+        if (! $selectedFund) {
             return redirect()->route('workflows.tinderProposal.index', ['step' => 1]);
         }
 
         $existingTinderCollectionList = null;
 
-        if (!empty($validated[TinderWorkflowParams::TINDER_COLLECTION_HASH()->value])) {
+        if (! empty($validated[TinderWorkflowParams::TINDER_COLLECTION_HASH()->value])) {
             $existingTinderCollectionList = TinderCollection::byhash($validated[TinderWorkflowParams::TINDER_COLLECTION_HASH()->value]);
         }
 
@@ -462,8 +458,8 @@ class TinderProposalWorkflowController extends Controller
             $tinderCollection = TinderCollection::create($tinderCollectionData);
         }
 
-        $leftBookmarkHash = !empty($validated[TinderWorkflowParams::LEFT_BOOKMARK_COLLECTION_HASH()->value]) ? $validated[TinderWorkflowParams::LEFT_BOOKMARK_COLLECTION_HASH()->value] : null;
-        $rightBookmarkHash = !empty($validated[TinderWorkflowParams::RIGHT_BOOKMARK_COLLECTION_HASH()->value]) ? $validated[TinderWorkflowParams::RIGHT_BOOKMARK_COLLECTION_HASH()->value] : null;
+        $leftBookmarkHash = ! empty($validated[TinderWorkflowParams::LEFT_BOOKMARK_COLLECTION_HASH()->value]) ? $validated[TinderWorkflowParams::LEFT_BOOKMARK_COLLECTION_HASH()->value] : null;
+        $rightBookmarkHash = ! empty($validated[TinderWorkflowParams::RIGHT_BOOKMARK_COLLECTION_HASH()->value]) ? $validated[TinderWorkflowParams::RIGHT_BOOKMARK_COLLECTION_HASH()->value] : null;
 
         // Extract common bookmark collection data
         $bookmarkCollectionData = [
@@ -501,11 +497,11 @@ class TinderProposalWorkflowController extends Controller
         }
 
         // Create new bookmark collections if they don't exist
-        if (!$leftBookmarkCollection) {
+        if (! $leftBookmarkCollection) {
             $leftBookmarkCollection = BookmarkCollection::create($bookmarkCollectionData);
         }
 
-        if (!$rightBookmarkCollection) {
+        if (! $rightBookmarkCollection) {
             $rightBookmarkCollection = BookmarkCollection::create($bookmarkCollectionData);
         }
 
@@ -521,9 +517,9 @@ class TinderProposalWorkflowController extends Controller
     {
         $validated = $request->validate([
             TinderWorkflowParams::SWIPED_LEFT_PROPOSALS()->value => 'array',
-            TinderWorkflowParams::SWIPED_LEFT_PROPOSALS()->value . '.*' => 'string',
+            TinderWorkflowParams::SWIPED_LEFT_PROPOSALS()->value.'.*' => 'string',
             TinderWorkflowParams::SWIPED_RIGHT_PROPOSALS()->value => 'array',
-            TinderWorkflowParams::SWIPED_RIGHT_PROPOSALS()->value . '.*' => 'string',
+            TinderWorkflowParams::SWIPED_RIGHT_PROPOSALS()->value.'.*' => 'string',
             TinderWorkflowParams::RIGHT_BOOKMARK_COLLECTION_HASH()->value => 'nullable|string',
             TinderWorkflowParams::LEFT_BOOKMARK_COLLECTION_HASH()->value => 'nullable|string',
             TinderWorkflowParams::TINDER_COLLECTION_HASH()->value => 'nullable|string',
@@ -533,9 +529,9 @@ class TinderProposalWorkflowController extends Controller
         ]);
 
         $preferences = session('tinder_proposal_preferences', []);
-        $tinderCollectionHash = !empty($validated[TinderWorkflowParams::TINDER_COLLECTION_HASH()->value]) ? $validated[TinderWorkflowParams::TINDER_COLLECTION_HASH()->value] : null;
-        $leftBookmarkCollectionHash = !empty($validated[TinderWorkflowParams::LEFT_BOOKMARK_COLLECTION_HASH()->value]) ? $validated[TinderWorkflowParams::LEFT_BOOKMARK_COLLECTION_HASH()->value] : null;
-        $rightBookmarkCollectionHash = !empty($validated[TinderWorkflowParams::RIGHT_BOOKMARK_COLLECTION_HASH()->value]) ? $validated[TinderWorkflowParams::RIGHT_BOOKMARK_COLLECTION_HASH()->value] : null;
+        $tinderCollectionHash = ! empty($validated[TinderWorkflowParams::TINDER_COLLECTION_HASH()->value]) ? $validated[TinderWorkflowParams::TINDER_COLLECTION_HASH()->value] : null;
+        $leftBookmarkCollectionHash = ! empty($validated[TinderWorkflowParams::LEFT_BOOKMARK_COLLECTION_HASH()->value]) ? $validated[TinderWorkflowParams::LEFT_BOOKMARK_COLLECTION_HASH()->value] : null;
+        $rightBookmarkCollectionHash = ! empty($validated[TinderWorkflowParams::RIGHT_BOOKMARK_COLLECTION_HASH()->value]) ? $validated[TinderWorkflowParams::RIGHT_BOOKMARK_COLLECTION_HASH()->value] : null;
 
         if (isset($validated[TinderWorkflowParams::CURRENT_INDEX()->value])) {
             session(['tinder_proposal_current_index' => $validated[TinderWorkflowParams::CURRENT_INDEX()->value]]);
@@ -552,16 +548,16 @@ class TinderProposalWorkflowController extends Controller
             $tinderCollection = TinderCollection::byHash($tinderCollectionHash);
         }
 
-        if (!$tinderCollection) {
+        if (! $tinderCollection) {
             return redirect()->route('workflows.tinderProposal.index', ['step' => 2]);
         }
 
         $selectedFund = null;
-        if (!empty($preferences['selectedFund'])) {
+        if (! empty($preferences['selectedFund'])) {
             $selectedFund = Fund::byHash($preferences['selectedFund']);
         }
 
-        if (!$selectedFund) {
+        if (! $selectedFund) {
             return redirect()->route('workflows.tinderProposal.index', ['step' => 1]);
         }
 
@@ -584,8 +580,6 @@ class TinderProposalWorkflowController extends Controller
             }
         }
 
-
-
         // Create missing bookmark collections if they don't exist or were deleted
         $bookmarkCollectionData = [
             'user_id' => $request->user()->id,
@@ -600,11 +594,11 @@ class TinderProposalWorkflowController extends Controller
             'model_id' => $tinderCollection->id,
         ];
 
-        if (!$leftBookmarkCollection) {
+        if (! $leftBookmarkCollection) {
             $leftBookmarkCollection = BookmarkCollection::create($bookmarkCollectionData);
         }
 
-        if (!$rightBookmarkCollection) {
+        if (! $rightBookmarkCollection) {
             $rightBookmarkCollection = BookmarkCollection::create($bookmarkCollectionData);
         }
 
@@ -614,7 +608,7 @@ class TinderProposalWorkflowController extends Controller
 
         // Save only new left swiped proposals to the rejected bookmark collection
         $newLeftSlugs = array_diff($validated['swipedLeftProposals'] ?? [], $existingLeftSlugs);
-        if (!empty($newLeftSlugs)) {
+        if (! empty($newLeftSlugs)) {
             $leftProposals = Proposal::whereIn('slug', $newLeftSlugs)->get();
 
             foreach ($leftProposals as $proposal) {
@@ -632,7 +626,7 @@ class TinderProposalWorkflowController extends Controller
 
         // Save only new right swiped proposals to the liked bookmark collection
         $newRightSlugs = array_diff($validated['swipedRightProposals'] ?? [], $existingRightSlugs);
-        if (!empty($newRightSlugs)) {
+        if (! empty($newRightSlugs)) {
             $rightProposals = Proposal::whereIn('slug', $newRightSlugs)->get();
 
             foreach ($rightProposals as $proposal) {
@@ -669,14 +663,14 @@ class TinderProposalWorkflowController extends Controller
         $filters[] = "fund.id = {$fund->id}";
 
         $currentIndex = session('tinder_proposal_current_index', 0);
-        $isInitialLoad = $request->input(TinderWorkflowParams::LOAD_MORE()->value) !== "1";
-        $isLoadMore = $request->input(TinderWorkflowParams::LOAD_MORE()->value) === "1";
+        $isInitialLoad = $request->input(TinderWorkflowParams::LOAD_MORE()->value) !== '1';
+        $isLoadMore = $request->input(TinderWorkflowParams::LOAD_MORE()->value) === '1';
 
         // For load more, use the page from the request
         if ($isInitialLoad && $currentIndex > 0) {
             // Don't modify the page - it's already calculated in step3() method
             $actualOffset = ($page - 1) * $limit;
-        } else if ($isLoadMore) {
+        } elseif ($isLoadMore) {
             // For load more, use standard pagination
             $actualOffset = ($page - 1) * $limit;
         } else {
@@ -686,21 +680,21 @@ class TinderProposalWorkflowController extends Controller
 
         if ($isInitialLoad) {
             $existingProposalIds = $this->getExistingBookmarkedProposalIds($request);
-            if (!empty($existingProposalIds)) {
-                $excludeFilter = 'id NOT IN [' . implode(', ', $existingProposalIds) . ']';
+            if (! empty($existingProposalIds)) {
+                $excludeFilter = 'id NOT IN ['.implode(', ', $existingProposalIds).']';
                 $filters[] = $excludeFilter;
             }
         }
 
-        if (!empty($preferences[TinderWorkflowParams::PROPOSAL_TYPES()->value] ?? [])) {
+        if (! empty($preferences[TinderWorkflowParams::PROPOSAL_TYPES()->value] ?? [])) {
             $hashes = array_map(
-                fn($h) => "\"{$h}\"",
+                fn ($h) => "\"{$h}\"",
                 $preferences[TinderWorkflowParams::PROPOSAL_TYPES()->value]
             );
-            $filters[] = "campaign.hash IN [" . implode(',', $hashes) . "]";
+            $filters[] = 'campaign.hash IN ['.implode(',', $hashes).']';
         }
 
-        if (!empty($preferences[TinderWorkflowParams::PROPOSAL_SIZES()->value] ?? [])) {
+        if (! empty($preferences[TinderWorkflowParams::PROPOSAL_SIZES()->value] ?? [])) {
             $sizeFilters = [];
 
             foreach ($preferences[TinderWorkflowParams::PROPOSAL_SIZES()->value] as $size) {
@@ -719,8 +713,8 @@ class TinderProposalWorkflowController extends Controller
                 }
             }
 
-            if (!empty($sizeFilters)) {
-                $filters[] = '(' . implode(' OR ', $sizeFilters) . ')';
+            if (! empty($sizeFilters)) {
+                $filters[] = '('.implode(' OR ', $sizeFilters).')';
             }
         }
 
@@ -769,7 +763,7 @@ class TinderProposalWorkflowController extends Controller
 
         $selectedFund = Fund::byHash($preferences['selectedFund']);
 
-        if (!$selectedFund) {
+        if (! $selectedFund) {
             return response()->json(['error' => 'Fund not found'], 404);
         }
 
@@ -816,7 +810,7 @@ class TinderProposalWorkflowController extends Controller
 
         $bookmarkCollection = BookmarkCollection::byHash($validated['collectionHash']);
 
-        if (!$bookmarkCollection || $bookmarkCollection->user_id !== $request->user()->id) {
+        if (! $bookmarkCollection || $bookmarkCollection->user_id !== $request->user()->id) {
             return response()->json(['error' => 'Collection not found or unauthorized'], 404);
         }
 
@@ -839,7 +833,7 @@ class TinderProposalWorkflowController extends Controller
      */
     private function getSwipedProposalSlugs($bookmarkCollection): array
     {
-        if (!$bookmarkCollection) {
+        if (! $bookmarkCollection) {
             return [];
         }
 
@@ -877,7 +871,7 @@ class TinderProposalWorkflowController extends Controller
             }
         }
 
-        if (!empty($collectionIds)) {
+        if (! empty($collectionIds)) {
             $proposalIds = DB::table('bookmark_items')
                 ->whereIn('bookmark_collection_id', $collectionIds)
                 ->where('model_type', Proposal::class)
