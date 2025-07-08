@@ -85,7 +85,7 @@ export default function ProposalVerticalCard({
                                 t={t}
                             />
                             <section
-                                className="mt-3"
+                                className="mt-3 border-b border-gray-200 pb-2 mb-2"
                                 aria-labelledby="funding-heading"
                             >
                                 <div className="flex items-center flex-row gap-2 my-1.5">
@@ -101,7 +101,7 @@ export default function ProposalVerticalCard({
                                     proposal={proposal}
                                 />
                             </section>
-                            <div className="relative mt-4 min-h-36">
+                            <div className="relative mt-4 min-h-36 border-b border-gray-200 pb-2 mb-2">
                                 {quickPitchView ? (
                                     <ProposalQuickpitch
                                         quickpitch={proposal.quickpitch}
@@ -132,17 +132,13 @@ export default function ProposalVerticalCard({
                     />
                 </div>
 
-                {!hideFooter && (
-                    <>
-                        <div className="my-4 border-b"></div>
+                <div className="my-4 border-b border-gray-200"></div>
 
-                        <ProposalCardFooter
-                            yesVotes={`${yesVotes}`}
-                            abstainVotes={`${abstainVotes}`}
-                            t={t}
-                        />
-                    </>
-                )}
+                <ProposalCardFooter
+                    yesVotes={`${yesVotes}`}
+                    abstainVotes={`${abstainVotes}`}
+                    t={t}
+                />
             </section>
         </article>
     );

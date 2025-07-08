@@ -28,7 +28,7 @@ export default function MyList({ bookmarkCollections }: MyListProps) {
         <>
             <Head title="My List" />
 
-            <div className="mx-auto max-w-7xl px-4 py-2 sm:px-6 lg:px-8">
+            <div className="flex flex-col w-full max-w-full px-4 py-2 sm:px-6 lg:px-8">
                 <div className="mb-6 flex items-center">
                     <div className="m-auto mt-8">
                         <PrimaryButton className="" onClick={() => setPickingList(true)}>

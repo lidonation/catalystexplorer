@@ -29,16 +29,15 @@ export default function MyProposals({ proposals, filters }: MyProposalsProps) {
         >
             <Head title={t('my.proposals')} />
 
-            <div className="pt-8 pb-8">
-                <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
-                    <div className="bg-background overflow-hidden bg-white p-6 shadow-md sm:rounded-lg">
-                        <div className="border-background-lighter mb-4 w-full border-b">
-                            <Title level="4" className="mb-4 font-bold">
+            <div className="container h-full p-6">
+                    <div className="bg-background overflow-hidden bg-white p-6 shadow-md sm:rounded-lg w-full h-full flex flex-col">
+                        <div className="border-gray-200 mb-4 w-full border-b flex-shrink-0">
+                            <Title level="4" className="font-semibold">
                                 {t('my.proposals')}
                             </Title>
                         </div>
 
-                        <section className="mb-4 w-full">
+                        <section className="mb-4 w-full  flex-shrink-0">
                             <SearchControls
                                 withActiveTags={false}
                                 sortOptions={ProposalSortingOptions()}
@@ -55,7 +54,7 @@ export default function MyProposals({ proposals, filters }: MyProposalsProps) {
                             <MyProposalFilters />
                         </section>
 
-                        <div className="border-background-lighter overflow-hidden rounded-lg border">
+                        <div className="border-gray-200 overflow-hidden rounded-lg border">
                             {proposals?.data && proposals?.data?.length > 0 ? (
                                 <div>
                                     <ProposalTable
@@ -66,13 +65,12 @@ export default function MyProposals({ proposals, filters }: MyProposalsProps) {
                                     </div>
                                 </div>
                             ) : (
-                                <div className="p-8 text-center">
+                                <div className="py-8 text-center">
                                     <RecordsNotFound />
                                 </div>
                             )}
                         </div>
                     </div>
-                </div>
             </div>
         </FiltersProvider>
     );

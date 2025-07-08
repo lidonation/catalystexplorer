@@ -14,8 +14,7 @@ const MyProfile: React.FC = () => {
            <>
             <Head title="My Profile" />
 
-            <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-                 <div className='min-w-max border-b border-gray-persist mb-4'>
+            <div className="w-full">
                     <UserSection user={props?.auth?.user as User} />
                  </div>
                 <div className="text-content text-center pt-4">
@@ -28,7 +27,7 @@ const MyProfile: React.FC = () => {
                         <RecordsNotFound />
                     )}
                 </div>
-            </div>
+    
         </>
     );
 };
