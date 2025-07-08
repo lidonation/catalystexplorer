@@ -39,17 +39,17 @@ function DesktopSidebar(props: any) {
 
                 <section className="flex flex-col gap-6">
                     <div className="px-4">
-                        <div className="border-gray-persist border-t pt-5">
+                        <div className="border-gray-200 border-t-2 pt-5">
                             <UserNavigation />
                         </div>
                     </div>
-
-                    <div className="border-gray-persist flex flex-col gap-5 border-t pt-5">
-                        <div className="px-4">
+                    
+                    <div className="px-4">   
+                      <div className="border-gray-200 flex flex-col gap-5 border-t-2 pt-5">
                             <UserDetails user={auth?.user as unknown as User} />
-                        </div>
-                        <div className="bg-background-darker px-4 py-4">
+                        <div className="bg-background-darker -mx-4 py-4">
                             <ThemeSwitcher />
+                        </div>
                         </div>
                     </div>
                 </section>

@@ -42,109 +42,100 @@ const PaginationComponent: React.FC<PaginationComponentProps<any>> = ({
     } = pagination;
 
     return (
-        <div className="mb-8">
-            <div className="flex w-full flex-col justify-between">
-                <div className="flex items-center justify-between w-full">
-                    <div>
-                        <PaginationItem className="list-none text-xs">
-                            <PaginationPrevious
-                                linkProps={linkProps}
-                                href={
-                                    prev_page_url
-                                        ? buildUrl(
-                                              ParamsEnum.PAGE,
-                                              current_page - 1,
-                                              'Current Page',
-                                          )
-                                        : ''
-                                }
-                                className={
-                                    !prev_page_url
-                                        ? 'pointer-events-none opacity-50'
-                                        : ''
-                                }
-                            ></PaginationPrevious>
-                        </PaginationItem>
-                    </div>
-                    <div className="flex  items-center gap-6">
-                        <div className="flex items-center gap-2">
-                            <ul className="flex list-none items-center gap-1 text-sm">
-                                {links &&
-                                    links.map((link, index) =>
-                                        link.label.includes('&laquo;') ||
-                                        link.label.includes(
-                                            '&raquo;',
-                                        ) ? null : (
-                                            <PaginationItem
-                                                key={index}
-                                                className=""
-                                            >
-                                                {link.label === '...' ? (
-                                                    <PaginationEllipsis />
-                                                ) : (
-                                                    <Link
-                                                        href={buildUrl(
+        <div className="flex items-center justify-center py-4">
+            <div className="flex items-center justify-between w-full">
+                <div className="flex-shrink-0">
+                    <PaginationItem className="list-none">
+                        <PaginationPrevious
+                            linkProps={linkProps}
+                            href={
+                                prev_page_url
+                                    ? buildUrl(
+                                          ParamsEnum.PAGE,
+                                          current_page - 1,
+                                          'Current Page',
+                                      )
+                                    : ''
+                            }
+                            className={
+                                !prev_page_url
+                                    ? 'pointer-events-none opacity-50'
+                                    : ''
+                            }
+                        />
+                    </PaginationItem>
+                </div>
+                <div className="flex items-center gap-8">
+                    <div className="flex items-center gap-1">
+                        <ul className="flex list-none items-center gap-1">
+                            {links &&
+                                links.map((link, index) =>
+                                    link.label.includes('&laquo;') ||
+                                    link.label.includes('&raquo;') ? null : (
+                                        <PaginationItem key={index}>
+                                            {link.label === '...' ? (
+                                                <PaginationEllipsis />
+                                            ) : (
+                                                <Link
+                                                    href={buildUrl(
+                                                        ParamsEnum.PAGE,
+                                                        link.label,
+                                                        'Current Page',
+                                                    )}
+                                                    onClick={(e) => {
+                                                        e.preventDefault();
+                                                        setPagination(
                                                             ParamsEnum.PAGE,
                                                             link.label,
                                                             'Current Page',
-                                                        )}
-                                                        onClick={(e) => {
-                                                            e.preventDefault();
-                                                            setPagination(
-                                                                ParamsEnum.PAGE,
-                                                                link.label,
-                                                                'Current Page',
-                                                            );
-                                                        }}
-                                                        aria-current={
-                                                            link.active
-                                                                ? 'page'
-                                                                : undefined
-                                                        }
-                                                        className={cn(
-                                                            'flex size-8 items-center justify-center rounded-full',
-                                                            link.active
-                                                                ? 'bg-background shadow-md'
-                                                                : '',
-                                                        )}
-                                                        {...linkProps}
-                                                    >
-                                                        {link.label}
-                                                    </Link>
-                                                )}
-                                            </PaginationItem>
-                                        ),
-                                    )}
-                            </ul>
-                        </div>
-                        <div className="w-full text-center text-sm">
-                            <span>
-                                Showing {from} - {to} of{' '}
-                                <span className="font-bold">{total}</span>
-                            </span>
-                        </div>
+                                                        );
+                                                    }}
+                                                    aria-current={
+                                                        link.active
+                                                            ? 'page'
+                                                            : undefined
+                                                    }
+                                                    className={cn(
+                                                        'flex size-8 items-center justify-center rounded-full',
+                                                        link.active
+                                                            ? 'bg-gray-200'
+                                                            : '',
+                                                    )}
+                                                    {...linkProps}
+                                                >
+                                                    {link.label}
+                                                </Link>
+                                            )}
+                                        </PaginationItem>
+                                    ),
+                                )}
+                        </ul>
                     </div>
-                    <div>
-                        <PaginationItem className="list-none text-xs">
-                            <PaginationNext
-                                linkProps={linkProps}
-                                href={
-                                    next_page_url
-                                        ? buildUrl(
-                                              ParamsEnum.PAGE,
-                                              current_page + 1,
-                                              'Current Page',
-                                          )
-                                        : ''
-                                }
-                                className={
-                                    !next_page_url
-                                        ? 'pointer-events-none opacity-50'
-                                        : ''
-                                }
-                            ></PaginationNext>
-                        </PaginationItem>
+                    <div className="text-sm">
+                        Showing {from} - {to} of{' '}
+                        <span className="font-bold">{total}</span>
                     </div>
+                </div>
+                <div className="flex-shrink-0">
+                    <PaginationItem className="list-none">
+                        <PaginationNext
+                            linkProps={linkProps}
+                            href={
+                                next_page_url
+                                    ? buildUrl(
+                                          ParamsEnum.PAGE,
+                                          current_page + 1,
+                                          'Current Page',
+                                      )
+                                    : ''
+                            }
+                            className={
+                                !next_page_url
+                                    ? 'pointer-events-none opacity-50'
+                                    : ''
+                            }
+                        />
+                    </PaginationItem>
                 </div>
             </div>
         </div>

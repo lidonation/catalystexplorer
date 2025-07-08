@@ -45,7 +45,7 @@ export default function MyDashboard({
                 </div>
             )}
 
-            <div className="mx-auto grid max-w-7xl grid-cols-1 gap-4 px-4 sm:px-6 lg:grid-cols-3 lg:px-8 mt-8">
+            <div className="grid grid-cols-1 gap-4 px-4 sm:px-6 lg:grid-cols-3 lg:px-8 mb-8 mt-6">
                 {totalsSummary && (
                     <UserFundSummary totalsSummary={totalsSummary} />
                 )}
@@ -81,7 +81,7 @@ export default function MyDashboard({
                                 );
                             })()}
                         </div>
-                        <div className="h-full lg:col-span-2">
+                        <div className="h-full lg:col-span-3">
                             {(() => {
                                 const distributedData = [
                                     {

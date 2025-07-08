@@ -21,7 +21,7 @@ export default function MyGroups({ groups, filters }: MyGroupsProps) {
         >
             <Head title="My Groups" />
 
-            <div className="container mb-8">
+            <div className="container space-y-8">
                 {groups && groups.length > 0 ? (
                     <WhenVisible
                         fallback={<GroupCardExtendedLoader />}
@@ -30,7 +30,7 @@ export default function MyGroups({ groups, filters }: MyGroupsProps) {
                         <MyGroupsList groups={groups || []} />
                     </WhenVisible>
                 ) : (
-                    <div className="p-8 text-center">
+                    <div className="py-8 text-center">
                         <RecordsNotFound />
                     </div>
                 )}
