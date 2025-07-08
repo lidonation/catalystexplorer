@@ -84,7 +84,7 @@ const WalletsComponent: React.FC<WalletsPageProps> = ({ connectedWallets, error 
   const hasWallets = connectedWallets?.data?.length > 0;
 
   return (
-      <div className="mx-auto lg:px-16 px-10 py-4 max-w-8xl">
+      <div className=" w-full max-w-full px-4 py-4">
         <div className="flex justify-between items-center mb-6">
           <div>
             <h1 className="text-2xl font-semibold text-content">{t('my.myWallets')}</h1>
@@ -131,7 +131,7 @@ const WalletsComponent: React.FC<WalletsPageProps> = ({ connectedWallets, error 
                 return (
                   <Card
                     key={wallet.id}
-                    className={`bg-white rounded-xl shadow-[0px_3px_4px_0px_rgba(0,0,0,0.03)] ${
+                    className={`bg-white w-full max-w-full rounded-xl shadow-[0px_3px_4px_0px_rgba(0,0,0,0.03)] ${
                         isDeleting ? 'opacity-50 pointer-events-none' : ''
                       }`}
                   >

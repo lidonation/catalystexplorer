@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Traits\HasAuthor;
+use App\Traits\HasHashId;
 use App\Traits\HasMetaData;
 use App\Traits\HasSignatures;
 use Illuminate\Database\Eloquent\Casts\Attribute;
@@ -15,8 +16,8 @@ use Laravel\Scout\Searchable;
 use Spatie\Comments\Models\Concerns\HasComments;
 
 class BookmarkCollection extends Model
-{
-    use HasAuthor, HasComments, HasMetaData, HasSignatures, Searchable, SoftDeletes;
+{ 
+    use HasAuthor, HasComments, HasHashId, HasMetaData, HasSignatures, Searchable, SoftDeletes;
 
     protected $withCount = [
         'items',
@@ -33,6 +34,8 @@ class BookmarkCollection extends Model
     protected $appends = ['types_count', 'hash'];
 
     protected $guarded = [];
+
+    protected $hidden = ['id'];
 
     public static function getFilterableAttributes(): array
     {

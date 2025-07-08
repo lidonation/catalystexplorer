@@ -40,11 +40,11 @@ export default function UserProfile({}: UserProfileProps) {
     }, [window.location.pathname, tabs]);
  
     return (
-        <div className="min-h-screen bg-background-lighter px-2">
+        <div className="min-h-screen bg-background-lighter">
             <Head title={t('profile.title')} />
 
-            <div className="bg-background-lighter px-2">
-                <div className="px-1 sm:px-6 lg:px-2 py-8 ml-4">
+            <div className="bg-background-lighter">
+                <div className="w-full py-8 ">
                     <UserSection user={auth?.user as unknown as User} />
                     
                     <UserTab 
@@ -54,7 +54,7 @@ export default function UserProfile({}: UserProfileProps) {
                 </div>
             </div>
 
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div className="w-full py-8">
                 <div className="text-center text-content">
                     {t('comingSoon')}
                 </div>

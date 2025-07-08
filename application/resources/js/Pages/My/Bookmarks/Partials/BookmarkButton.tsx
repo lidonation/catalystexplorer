@@ -32,11 +32,11 @@ export default function BookmarkButton({
         associatedCollection,
     } = useBookmark({ modelType, itemId });
     const handleOpenChange = async (open: boolean) => {
-        if (open && !isBookmarked) {
-            await createBookmark();
-        } else {
-            setIsOpen(open);
-        }
+        // if (open && !isBookmarked) {
+        //     await createBookmark();
+        // } else {
+        //     setIsOpen(open);
+        // }
     };
     const [isHovered, setIsHovered] = useState(false);
 
