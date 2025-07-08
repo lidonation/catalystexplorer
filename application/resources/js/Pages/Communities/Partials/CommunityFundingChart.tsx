@@ -109,7 +109,7 @@ const CommunityFundingChart: React.FC<CommunityFundingChartProps> = ({
                     pointLabelYOffset={-12}
                     useMesh={true}
                     enableArea={true}
-                    areaBaselineValue="auto"
+                    areaBaselineValue={0}
                     areaOpacity={0.1}
                     fill={[{ match: '*', id: 'gradient' }]}
                     theme={{
@@ -148,9 +148,8 @@ const CommunityFundingChart: React.FC<CommunityFundingChartProps> = ({
                             },
                         },
                     }}
-                    tooltipFormat={(value) => shortNumber(Number(value), 2)}
                     tooltip={({ point }) => {
-                        const currentIndex = point.index;
+                        const xValue = point.data.x;
 
                         const calculateTrend = (
                             currentY: number,
@@ -169,13 +168,13 @@ const CommunityFundingChart: React.FC<CommunityFundingChartProps> = ({
                             };
                         };
 
-                        // Map over datasets and calculate current, previous, and trend
                         const dataWithPrevious = chartData.map((dataset) => {
+                            const currentIndex = dataset.data.findIndex(
+                                (d) => d.x === xValue,
+                            );
                             const current = dataset.data[currentIndex];
                             const previous =
-                                currentIndex > 0
-                                    ? dataset.data[currentIndex - 1]
-                                    : null;
+                                dataset.data[currentIndex - 1] ?? null;
 
                             const trend = previous
                                 ? calculateTrend(current?.y, previous?.y)
@@ -193,7 +192,6 @@ const CommunityFundingChart: React.FC<CommunityFundingChartProps> = ({
                         return (
                             <div className="bg-tooltip relative rounded-lg p-4 text-white shadow-lg">
                                 <div className="max-w-sm">
-                                    {/* Tooltip Title (X-Axis value) */}
                                     <Title
                                         level="3"
                                         className="text-lg font-semibold"
@@ -201,10 +199,8 @@ const CommunityFundingChart: React.FC<CommunityFundingChartProps> = ({
                                         {point.data.xFormatted}
                                     </Title>
 
-                                    {/* Loop through each dataset (ADA, USD, etc.) */}
                                     {dataWithPrevious.map((item) => (
                                         <div key={item.id} className="mt-2">
-                                            {/* Dataset Label and Value */}
                                             <Paragraph className="flex items-center text-sm">
                                                 <span
                                                     className="mr-1 shrink truncate"
@@ -251,8 +247,6 @@ const CommunityFundingChart: React.FC<CommunityFundingChartProps> = ({
                                         </div>
                                     ))}
                                 </div>
-
-                                {/* Tooltip Arrow */}
                                 <div className="border-t-dark absolute bottom-0 left-1/2 h-0 w-0 -translate-x-1/2 translate-y-full border-t-[10px] border-r-[10px] border-l-[10px] border-r-transparent border-l-transparent"></div>
                             </div>
                         );

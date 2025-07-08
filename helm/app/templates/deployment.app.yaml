@@ -50,7 +50,7 @@ spec:
               php artisan event:cache;
               php artisan optimize
 
-              php artisan octane:start --server=frankenphp  --port=8000 --workers=3 --max-requests=25 --host=0.0.0.0 --admin-port=2019 --log-level=DEBUG --caddyfile=/etc/caddy/Caddyfile
+              php artisan octane:start --server=frankenphp  --port=8000 --workers=5 --max-requests=50 --host=0.0.0.0 --admin-port=2019 --log-level=DEBUG --caddyfile=/etc/caddy/Caddyfile
           lifecycle:
             preStop:
               exec:

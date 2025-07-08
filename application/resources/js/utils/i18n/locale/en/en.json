@@ -544,6 +544,7 @@
         "heatMap": "Heat Map",
         "scatterPlot": "Scatter Plot",
         "stackedBarChart": "Stacked Bar Chart",
+        "funnelChart": "Funnel Chart",
         "chartOptions": "Chart Options",
         "edit": "Edit",
         "noOptions": "No chart options selected. Please go back and select chart types",
