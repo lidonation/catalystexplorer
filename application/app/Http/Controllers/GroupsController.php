@@ -255,7 +255,7 @@ class GroupsController extends Controller
             ? (int) $this->queryParams[ProposalSearchParams::LIMIT()->value]
             : 36;
 
-        $args['offset'] = $page;
+        $args['offset'] = ($page - 1) * $limit;;
         $args['limit'] = $limit;
 
         $groups = app(GroupRepository::class);
@@ -288,7 +288,7 @@ class GroupsController extends Controller
 
         if (! empty($this->queryParams[ProposalSearchParams::FUNDS()->value])) {
             $funds = implode("','", $this->queryParams[ProposalSearchParams::FUNDS()->value]);
-            $filters[] = "proposals.fund.title IN ['{$funds}']";
+            $filters[] = "proposals.fund.hash IN ['{$funds}']";
         }
 
         if (isset($this->queryParams[ProposalSearchParams::FUNDING_STATUS()->value])) {
