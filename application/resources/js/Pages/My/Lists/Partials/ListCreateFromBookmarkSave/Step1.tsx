@@ -3,7 +3,7 @@ import Checkbox from '@/Components/atoms/Checkbox';
 import Paragraph from '@/Components/atoms/Paragraph';
 import PrimaryButton from '@/Components/atoms/PrimaryButton';
 import { useList } from '@/Context/ListContext';
-import { List, Loader, PlusIcon } from 'lucide-react';
+import { List, Loader, PlusIcon, X } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
@@ -14,6 +14,7 @@ interface BookmarkPage1Props extends TransitionListPageProps {
     isBookmarked?: boolean;
     handleRemoveBookmark?: () => void;
     onNavigate?: (pageIndex: number) => void;
+    onClose?: () => void;
 }
 
 const BookmarkPage1 = ({
@@ -22,6 +23,7 @@ const BookmarkPage1 = ({
     isBookmarked,
     handleRemoveBookmark,
     associateCollectionId,
+    onClose,
 }: BookmarkPage1Props) => {
     const { t } = useTranslation();
     const {
@@ -121,13 +123,20 @@ const BookmarkPage1 = ({
 
     return (
         <div className="space-y-1">
-            <div className="bg-primary-light">
+            <div className="bg-primary-light relative">
                 <Paragraph
                     size="md"
-                    className="text-content px-3 py-2 font-bold"
+                    className="text-content px-3 py-2 font-bold pr-10"
                 >
                     {t('listQuickCreate.addBookmark')}
                 </Paragraph>
+                  <button
+                    onClick={onClose}
+                    className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full p-1 hover:bg-gray-200 transition-colors"
+                    aria-label="Close popup"
+                >
+                    <X size={16} className="text-gray-600" />
+                </button>
             </div>
             <section className="flex flex-col gap-3 px-3">
                 <div className="flex flex-col gap-1">
