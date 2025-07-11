@@ -75,6 +75,9 @@ const LineChart: React.FC<LineChartProps> = ({
 
     const defaultColors = ['#4fadce', '#dc2626', '#ee8434'];
 
+    useEffect(()=>{
+        console.log('LineChart mounted with data:', chartData);
+    })
     const isSubmittedSelected =
         getFilter(ParamsEnum.SUBMITTED_PROPOSALS)?.includes('submitted') ||
         false;
@@ -85,6 +88,10 @@ const LineChart: React.FC<LineChartProps> = ({
         false;
     const isUnfundedSelected =
         getFilter(ParamsEnum.UNFUNDED_PROPOSALS)?.includes('unfunded') || false;
+
+    const isInProgressSelected =
+        getFilter(ParamsEnum.IN_PROGRESS)?.includes('in_progress') ||
+        false;
 
     const TransformedData = [
         {
@@ -122,6 +129,15 @@ const LineChart: React.FC<LineChartProps> = ({
                 y: item.unfundedProposals ?? 0,
             })),
             shouldShow: isUnfundedSelected,
+        },
+        {
+            id: 'In Progress Proposals',
+            color: defaultColors[1],
+            data: normalizedData.map((item: any) => ({
+                x: viewBy === 'fund' ? item?.fund : item.year,
+                y: item.inProgressProposals ?? 0,
+            })),
+            shouldShow: isInProgressSelected,
         },
     ];
 

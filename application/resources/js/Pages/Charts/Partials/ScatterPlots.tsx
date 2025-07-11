@@ -127,6 +127,17 @@ const ScatterPlot: React.FC<ScatterChartProps> = ({
                 year: item.year,
             })) as CustomScatterPlotDatum[],
         },
+        {
+            id: 'In Progress Proposals',
+            key: 'inProgressProposals',
+            param: ParamsEnum.IN_PROGRESS,
+            data: normalizedData.map((item: any) => ({
+                x: viewBy === 'fund' ? labelToIndex(item.fund) : labelToIndex(item.year),
+                y: item.inProgressProposals ?? 0,
+                fund: item.fund,
+                year: item.year,
+            })) as CustomScatterPlotDatum[],
+        },
     ];
 
     const getActiveDataSeries = () => {
@@ -236,7 +247,7 @@ const ScatterPlot: React.FC<ScatterChartProps> = ({
                     tooltip={({ node }) => {
                         const nodeData = node?.data as CustomScatterPlotDatum;
                         return (
-                            <div className="bg-tooltip rounded-lg p-4 text-white shadow-lg">
+                            <div className="bg-tooltip rounded-lg p-4 text-white shadow-lg w-full">
                                 <Title
                                     level="3"
                                     className="text-lg font-semibold"

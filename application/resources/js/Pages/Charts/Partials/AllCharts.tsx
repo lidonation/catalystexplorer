@@ -1,3 +1,4 @@
+import ActiveFilters from '@/Components/atoms/ActiveFilters/ActiveFilters';
 import Paragraph from '@/Components/atoms/Paragraph';
 import PrimaryButton from '@/Components/atoms/PrimaryButton';
 import RadioSelector from '@/Components/atoms/RadioSelector';
@@ -8,12 +9,12 @@ import { Share2Icon } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import BarChart from './BarChart';
 import ChartCard from './ChartCard';
+import FunnelChart from './FunnelChart';
 import Heatmap from './HeatMap';
 import LineChart from './LineChart';
 import PieChart from './PieChart';
 import ScatterPlot from './ScatterPlots';
 import StackedBarChart from './StackedBarChart';
-import FunnelChart from './FunnelChart';
 
 interface AllChartsProps {
     chartData: any;
@@ -23,22 +24,32 @@ interface AllChartsProps {
 }
 
 export default function AllCharts({
-                                      chartData,
-                                      onEditMetrics,
-                                      viewBy,
-                                      onViewByChange,
-                                  }: AllChartsProps) {
-    const { getFilter } = useFilterContext();
+    chartData,
+    onEditMetrics,
+    viewBy,
+    onViewByChange,
+}: AllChartsProps) {
+    const { getFilter, filters, setFilters } = useFilterContext();
     const selectedChartOptions = getFilter(ParamsEnum.CHART_OPTIONS) || [];
     const { t } = useTranslation();
-    
-    const hasSubmittedProposals = (getFilter(ParamsEnum.SUBMITTED_PROPOSALS) || []).length > 0;
-    const hasApprovedProposals = (getFilter(ParamsEnum.APPROVED_PROPOSALS) || []).length > 0;
-    const hasCompletedProposals = (getFilter(ParamsEnum.COMPLETED_PROPOSALS) || []).length > 0;
-    const hasUnfundedProposals = (getFilter(ParamsEnum.UNFUNDED_PROPOSALS) || []).length > 0;
+    const hasSubmittedProposals =
+        (getFilter(ParamsEnum.SUBMITTED_PROPOSALS) || []).length > 0;
+    const hasApprovedProposals =
+        (getFilter(ParamsEnum.APPROVED_PROPOSALS) || []).length > 0;
+    const hasCompletedProposals =
+        (getFilter(ParamsEnum.COMPLETED_PROPOSALS) || []).length > 0;
+    const hasUnfundedProposals =
+        (getFilter(ParamsEnum.UNFUNDED_PROPOSALS) || []).length > 0;
+    const hasInProgressProposals =
+        (getFilter(ParamsEnum.IN_PROGRESS) || []).length > 0;
 
-    const hasAnyProposalTypeSelected = hasSubmittedProposals || hasApprovedProposals || hasCompletedProposals || hasUnfundedProposals;
-    
+    const hasAnyProposalTypeSelected =
+        hasSubmittedProposals ||
+        hasApprovedProposals ||
+        hasCompletedProposals ||
+        hasUnfundedProposals ||
+        hasInProgressProposals;
+
     const renderBarChart = () => (
         <div>
             <ChartCard title={t('charts.barChart')}>
@@ -102,7 +113,6 @@ export default function AllCharts({
         </div>
     );
 
-
     const chartRenderers = {
         barChart: renderBarChart,
         pieChart: renderPieChart,
@@ -135,10 +145,21 @@ export default function AllCharts({
                 </div>
             </div>
 
-            <div className="mb-4 flex justify-start md:justify-end">
-                <PrimaryButton onClick={onEditMetrics} className="px-6 py-3">
-                    {t('charts.edit')}
-                </PrimaryButton>
+            <div className="mb-4 flex justify-start md:justify-between">
+                <div className="container mx-auto flex justify-start px-0">
+                    <ActiveFilters
+                        filters={filters}
+                        setFilters={setFilters}
+                    />
+                </div>
+                <div>
+                    <PrimaryButton
+                        onClick={onEditMetrics}
+                        className="px-6 py-3"
+                    >
+                        {t('charts.edit')}
+                    </PrimaryButton>
+                </div>
             </div>
 
             {selectedChartOptions.length === 0 ? (
@@ -151,17 +172,24 @@ export default function AllCharts({
                         const renderer =
                             chartRenderers[
                                 chartType as keyof typeof chartRenderers
-                                ];
+                            ];
                         return renderer ? (
                             <div key={chartType}>
                                 {hasAnyProposalTypeSelected ? (
                                     renderer()
                                 ) : (
                                     <div>
-                                        <ChartCard title={t(`charts.${chartType}`)}>
+                                        <ChartCard
+                                            title={t(`charts.${chartType}`)}
+                                        >
                                             <div className="p-8 text-center">
-                                                <Paragraph className="text-content-light mb-4" size='lg'>
-                                                    {t('charts.selectProposalTypesFirst')}
+                                                <Paragraph
+                                                    className="text-content-light mb-4"
+                                                    size="lg"
+                                                >
+                                                    {t(
+                                                        'charts.selectProposalTypesFirst',
+                                                    )}
                                                 </Paragraph>
                                             </div>
                                         </ChartCard>

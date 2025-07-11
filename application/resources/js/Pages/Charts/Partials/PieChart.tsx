@@ -93,6 +93,9 @@ const PieChart: React.FC<PieChartProps> = ({
     const isUnfundedSelected = getFilter(
         ParamsEnum.UNFUNDED_PROPOSALS,
     )?.includes('unfunded');
+     const isInProgressSelected = getFilter(
+        ParamsEnum.IN_PROGRESS,
+    )?.includes('in_progress');
 
     const pieData = [];
 
@@ -110,7 +113,7 @@ const PieChart: React.FC<PieChartProps> = ({
             id: 'Completed Proposals',
             label: 'Completed',
             value: selectedOption?.completedProposals ?? 0,
-            color: colors[1],
+            color: colors[0],
         });
     }
 
@@ -131,6 +134,17 @@ const PieChart: React.FC<PieChartProps> = ({
             color: colors[2],
         });
     }
+
+    if (isInProgressSelected) {
+        pieData.push({
+            id: 'InProgress Proposals',
+            label: 'In Progress',
+            value: selectedOption?.inProgressProposals ?? 0,
+            color: colors[1],
+        });
+    }
+
+    
 
     const filteredPieData =
         pieData.length > 1 ? pieData.filter((item) => item.value > 0) : pieData;
@@ -236,7 +250,7 @@ const PieChart: React.FC<PieChartProps> = ({
                         </Paragraph>
                     </div>
                 )}
-                {(isApprovedSelected || isCompletedSelected || isUnfundedSelected) && (
+                {(isApprovedSelected || isCompletedSelected || isUnfundedSelected || isInProgressSelected) && (
                     <div className="text-center">
                         <Paragraph
                             className="text-sm"

@@ -22,6 +22,7 @@ use Spatie\Enum\Enum;
  * @method static self FUNDED_PROPOSALS()
  * @method static self FUNDING_STATUS()
  * @method static self GROUPS()
+ * @method static self IN_PROGRESS_PROPOSALS()
  * @method static self LIMIT()
  * @method static self MAX_AWARDED_ADA()
  * @method static self MAX_AWARDED_USD()
@@ -72,6 +73,7 @@ final class ProposalSearchParams extends Enum
             'FUNDS' => 'f',
             'FUNDING_STATUS' => 'fs',
             'GROUPS' => 'g',
+            'IN_PROGRESS_PROPOSALS' => 'inp',
             'LIMIT' => 'l',
             'MAX_BUDGET' => 'bmax',
             'MAX_PROJECT_LENGTH' => 'lmax',
