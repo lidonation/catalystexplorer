@@ -16,7 +16,7 @@ use Laravel\Scout\Searchable;
 use Spatie\Comments\Models\Concerns\HasComments;
 
 class BookmarkCollection extends Model
-{ 
+{
     use HasAuthor, HasComments, HasHashId, HasMetaData, HasSignatures, Searchable, SoftDeletes;
 
     protected $withCount = [
