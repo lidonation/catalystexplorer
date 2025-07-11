@@ -533,7 +533,7 @@ const Step3: React.FC<Step3Props> = ({
                                                                         <ThumbsDownIcon width={18} height={18}/>
                                                                     </div>
                                                                     <Paragraph>{t('workflows.tinderProposal.step3.noButtonText')}</Paragraph>
-                                                                    <Paragraph className="text-sm text-gray-light">({proposal?.abstain_votes_count ? shortNumber(proposal?.abstain_votes_count) : 'N/A'})</Paragraph>
+                                                                    <Paragraph className="text-sm text-gray-light">({swipedLeftProposals.length})</Paragraph>
                                                                 </div>
                                                             </Button>
 
@@ -548,7 +548,7 @@ const Step3: React.FC<Step3Props> = ({
                                                                         <ThumbsUpIcon  width={18} height={18} className="text-success"/>
                                                                     </div>
                                                                     <Paragraph>{t('workflows.tinderProposal.step3.yesButtonText')}</Paragraph>
-                                                                    <Paragraph className=" text-gray-light">({proposal.yes_votes_count? shortNumber(proposal?.yes_votes_count): 'N/A'})</Paragraph>
+                                                                    <Paragraph className=" text-gray-light">({swipedRightProposals.length})</Paragraph>
                                                                 </div>
                                                             </Button>
                                                         </div>

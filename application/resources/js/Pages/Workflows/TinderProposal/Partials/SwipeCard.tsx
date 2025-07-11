@@ -53,65 +53,65 @@ const SwipeCard: React.FC<SwipeCardProps> = ({
     const IconComponent = cardConfig.icon;
 
     return (
-        <div className="rounded-lg shadow-sm p-6 bg-background">
+        <div className="rounded-lg p-6 bg-background shadow-[0_4px_24px_0_rgba(0,0,0,0.10),0_0px_2px_0_rgba(0,0,0,0.08)]">
             <div className="flex items-center justify-between mb-2">
-                <div>
-                    <Paragraph size='md' className="font-semibold">
-                        {cardConfig.title}
-                    </Paragraph>
-                    <Paragraph size='sm' className="text-gray-persist">
-                        {cardConfig.description}
-                    </Paragraph>
+            <div>
+                <Paragraph size='md' className="font-semibold">
+                {cardConfig.title}
+                </Paragraph>
+                <Paragraph size='sm' className="text-gray-persist">
+                {cardConfig.description}
+                </Paragraph>
+            </div>
+            <div className={`flex items-center ${cardConfig.badgeStyles}`}>
+                <div className="w-6 h-6 flex items-center justify-center">
+                <IconComponent 
+                    width={12} 
+                    height={12} 
+                    className={cardConfig.iconStyles} 
+                />
                 </div>
-                <div className={`flex items-center ${cardConfig.badgeStyles}`}>
-                    <div className="w-6 h-6 flex items-center justify-center">
-                        <IconComponent 
-                            width={12} 
-                            height={12} 
-                            className={cardConfig.iconStyles} 
-                        />
-                    </div>
-                    {swipeCount} {t('workflows.tinderProposal.step4.saves')}
-                </div>
+                {swipeCount} {t('workflows.tinderProposal.step4.saves')}
+            </div>
             </div>
             <div className="flex gap-4 mt-4">
-                <Link
-                    className={cardConfig.viewListStyles}
-                    href={generateLocalizedRoute('lists.manage', {
-                        bookmarkCollection: bookmarkCollection.hash,
-                        type: 'proposals',
-                    })}
-                    onClick={(e) => {
-                        e.preventDefault();
-                        window.open(generateLocalizedRoute('lists.manage', {
-                            bookmarkCollection: bookmarkCollection.hash,
-                            type: 'proposals',
-                        }), '_blank', 'noopener,noreferrer');
-                    }}
+            <Link
+                className={cardConfig.viewListStyles}
+                href={generateLocalizedRoute('lists.manage', {
+                bookmarkCollection: bookmarkCollection.hash,
+                type: 'proposals',
+                })}
+                onClick={(e) => {
+                e.preventDefault();
+                window.open(generateLocalizedRoute('lists.manage', {
+                    bookmarkCollection: bookmarkCollection.hash,
+                    type: 'proposals',
+                }), '_blank', 'noopener,noreferrer');
+                }}
+            >
+                <Paragraph size='sm' className={cardConfig.viewListTextStyles}>
+                {t('workflows.tinderProposal.step4.viewList')}
+                </Paragraph>
+            </Link>
+            {isRightSwipe ? (
+                <PrimaryButton
+                onClick={onEditList}
+                className="flex-1 bg-primary/[20%] hover:bg-primary/[40%] font-semibold py-2 rounded transition border border-primary/[70%]"
                 >
-                    <Paragraph size='sm' className={cardConfig.viewListTextStyles}>
-                        {t('workflows.tinderProposal.step4.viewList')}
-                    </Paragraph>
-                </Link>
-                {isRightSwipe ? (
-                    <PrimaryButton
-                        onClick={onEditList}
-                        className="flex-1 bg-primary/[20%] hover:bg-primary/[40%] font-semibold py-2 rounded transition border border-primary/[70%]"
-                    >
-                        <Paragraph size='sm' className='text-primary/[80%]'>
-                            {t('workflows.tinderProposal.step4.editList')}
-                        </Paragraph>
-                    </PrimaryButton>
-                ) : (
-                    <Button
-                        onClick={onEditList}
-                        className="flex-1 bg-primary/[20%] hover:bg-primary/[40%] font-semibold py-2 rounded transition border border-primary/[70%]"
-                    >
-                        <Paragraph size='sm' className='text-primary/[80%]'>
-                            {t('workflows.tinderProposal.step4.editList')}
-                        </Paragraph>
-                    </Button>
-                )}
+                <Paragraph size='sm' className='text-primary/[80%]'>
+                    {t('workflows.tinderProposal.step4.editList')}
+                </Paragraph>
+                </PrimaryButton>
+            ) : (
+                <Button
+                onClick={onEditList}
+                className="flex-1 bg-primary/[20%] hover:bg-primary/[40%] font-semibold py-2 rounded transition border border-primary/[70%]"
+                >
+                <Paragraph size='sm' className='text-primary/[80%]'>
+                    {t('workflows.tinderProposal.step4.editList')}
+                </Paragraph>
+                </Button>
+            )}
             </div>
         </div>
     );
