@@ -31,7 +31,7 @@ export default function Transactions({
             <Head title={t('transactions.title')} />
 
             <div className="mt-4">
-                <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
+                <div className="pl-4 sm:pl-6 lg:pl-8">
                     <Title level="2">{t('transactions.pageTitle')}</Title>
                     <Paragraph size="sm" className="text-gray-persist mt-2">
                         {t('transactions.pageDescription')}
@@ -46,7 +46,7 @@ export default function Transactions({
                                 {t('transactions.title')}
                             </Title>
                         </div>
-
+                       <hr className="border-gray-200 mb-6" />
                         <section className="mb-4 w-full">
                             <SearchControls
                                 withFilters={true}

@@ -260,10 +260,11 @@ const VoterHistoryTable: React.FC<VoterHistoryTableProps> = ({
             <section className="container">
                 <Title
                     className="border-dark-light border-b pt-4 pb-4 font-bold"
-                    level="3"
+                    level="4"
                 >
                     {customTitle || t('vote.votingHistory')}
                 </Title>
+                 <div className="pt-6"></div>
                 <SecondarySearchControls
                     onFiltersToggle={toggleFilters}
                     sortOptions={sortOptionsList}
@@ -304,7 +305,7 @@ const VoterHistoryTable: React.FC<VoterHistoryTableProps> = ({
             )}
 
             {(!shouldShowNoRecords() || isLoading) && (
-                <div className="container mb-4 pb-4">
+                <div className="container mb-4 pb-4 pt-6">
                     <div className="bg-background border-gray-100 w-full overflow-hidden rounded-lg border shadow-sm ">
                         <div className="overflow-x-auto">
                             <table className="w-max min-w-full">

@@ -142,7 +142,9 @@ class GroupsController extends Controller
                 'attributesToRetrieve' => ['*'],
             ];
 
+            // $proposals = $group->proposals;
             $proposals = $group->proposals;
+            $proposals->load('fund');
 
             $ideascaleProfiles = $group->ideascale_profiles()->withCount('proposals')->get();
 
@@ -255,8 +257,9 @@ class GroupsController extends Controller
             ? (int) $this->queryParams[ProposalSearchParams::LIMIT()->value]
             : 36;
 
-        $args['offset'] = ($page - 1) * $limit;;
-        $args['limit'] = $limit;
+         $args['offset'] = ($page - 1) * $limit;
+         $args['limit'] = $limit;
+
 
         $groups = app(GroupRepository::class);
 
