@@ -81,7 +81,14 @@ const BarChart: React.FC<BarChartProps> = ({ chartData, viewBy }) => {
             color: '#16B364',
             filterParam: ParamsEnum.COMPLETED_PROPOSALS,
         },
-        {
+       
+         {
+            key: 'inProgressProposals',
+            label: t('funds.inProgressProposals'),
+            color: '#ee8434',
+            filterParam: ParamsEnum.IN_PROGRESS,
+        },
+         {
             key: 'unfundedProposals',
             label: t('charts.unfundedProposals'),
             color: '#4fadce',
