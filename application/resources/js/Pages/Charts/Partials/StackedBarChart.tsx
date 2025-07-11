@@ -83,6 +83,13 @@ const StackedBarChart: React.FC<BarChartProps> = ({ chartData, viewBy }) => {
             color: '#ee8434',
             filterParam: ParamsEnum.APPROVED_PROPOSALS,
         },
+
+        {
+            key: 'inProgressProposals',
+            label: t('funds.inProgressProposals'),
+            color: '#ee8434',
+            filterParam: ParamsEnum.IN_PROGRESS,
+        },
         {
             key: 'completedProposals',
             label: t('funds.completedProposals'),

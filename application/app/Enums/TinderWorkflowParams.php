@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Enums;
 
-use Spatie\Enum\Enum;
+use Spatie\Enum\Laravel\Enum;
 
 /**
  * @method static self STEP()

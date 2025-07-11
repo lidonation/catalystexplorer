@@ -352,7 +352,7 @@
             "placeholder": "Search proposals by title, keyword, or proposer...",
             "text": "Find proposals you're interested in and bookmark them into custom lists for easy tracking and comparison."
         },
-          "tinderProposal": {
+        "tinderProposal": {
             "step1": {
                 "selectFund": "Select Fund",
                 "selectFundPlaceholder": "Select Fund",
@@ -426,7 +426,7 @@
             },
             "stepDetails": {
                 "getStarted": "Get Started",
-                "createList": "Create List", 
+                "createList": "Create List",
                 "exploreIdeas": "Explore Ideas",
                 "mySwipeList": "My Swipe List"
             }
@@ -535,7 +535,7 @@
         "selectAllThatApply": "(Select all that apply)",
         "submittedProposals": "Submitted Proposals",
         "approvedProposals": "Approved Proposals",
-        "completedProposals": "Completed Proposals",
+        "completedProposals": "Completed",
         "next": "Next",
         "trendChart": "trendChart",
         "lineChart": "Line Chart",
@@ -559,7 +559,11 @@
         "noFundDataAvailable": "No Fund Data Available",
         "noYearDataAvailable": "No Year Data Available",
         "unfundedProposals": "Unfunded Proposals",
-        "vsYear": "vs Previous Year"
+        "fundedProposals": "Funded Proposals",
+        "inProgressProposals": "In Progress",
+        "vsYear": "vs Previous Year",
+        "filterProposal": "Filter the proposals by status to see what’s most relevant to you.",
+        "chooseChartType": "Choose how you want to view the data"
     },
     "pagination": {
         "next": "Next",
@@ -614,6 +618,7 @@
         "totalFundsAwardedAda": "Total Funds Awarded ADA",
         "totalFundsAwardedUsd": "Total Funds Awarded USD",
         "completedProposals": "Completed Proposals",
+        "inProgressProposals": "In Progress Proposals",
         "sortBy": "Sort By",
         "filter": "Filter",
         "options": {
@@ -693,7 +698,7 @@
         },
         "filters": {
             "fundingStatus": "Funding Status",
-            "approvedProposals":"Approved Proposals",
+            "approvedProposals": "Approved Proposals",
             "epoch": "Epoch",
             "opensource": "Opensource",
             "projectStatus": "Project Status",

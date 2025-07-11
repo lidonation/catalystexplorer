@@ -211,15 +211,17 @@ const Step4Content: React.FC<Step4Props> = ({
                 size: 'md',
                 content: slideOverContent
             }}
+            wrapperClassName="!h-auto"
+            contentClassName="!max-h-none"
         >
             <Nav stepDetails={stepDetails} activeStep={activeStep} />
-            <div className="flex flex-col mx-auto w-full items-center justify-center   max-h-[55vh] mt-5">
+            <div className="flex flex-col mx-auto w-full items-center justify-center mt-5">
             <div className="mx-auto w-[75%] xl:w-[50%] overflow-y-auto mx-5">
                 <Title className="text-center text-lg font-black mb-2 mt-5 text-content">{t('workflows.tinderProposal.step4.swipeList')}</Title>
                 <Paragraph size='sm' className="text-center text-md  mb-8 text-gray-persist">
                     {t('workflows.tinderProposal.step4.organizeSwipesDescription')}
                 </Paragraph>
-                <div className="space-y-5">
+                <div className="space-y-5 p-4">
                     {/* Right Swipes Card */}
                     {rightBookmarkCollection && (
                         <SwipeCard
@@ -259,10 +261,7 @@ const Step4Content: React.FC<Step4Props> = ({
                     </div>
                 )}
             </div>
-            </div>
-
-            <Footer>
-                <div className="flex flex-col items-center justify-center w-full px-5 lg:px-15 pb-4">
+             <div className="flex flex-col items-center justify-center w-[75%] px-5 lg:px-15 pb-4">
                     <PrimaryLink
                         href={keepSwipingStep}
                         className="text-sm w-[100%] lg:px-8 lg:py-3"
@@ -275,8 +274,8 @@ const Step4Content: React.FC<Step4Props> = ({
                     >
                         <Paragraph size='sm' className='text-primary'>{t('workflows.tinderProposal.step4.refineMyInterests')}</Paragraph>
                     </PrimaryLink>
-                </div>
-            </Footer>
+            </div>
+            </div>
         </WorkflowLayout>
     );
 };

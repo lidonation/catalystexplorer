@@ -1,4 +1,5 @@
 import Title from '@/Components/atoms/Title';
+import TickIcon from '@/Components/svgs/TickIcon';
 import { StepDetails } from '@/types';
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -10,13 +11,8 @@ type NavProps = {
 
 export default function Nav({ stepDetails, activeStep }: NavProps) {
     const { t } = useTranslation();
-    const [progress, setProgress] = useState(0);
-
     const stepRefs = useRef<(HTMLLIElement | null)[]>([]);
-
-    useEffect(() => {
-        setProgress((activeStep / stepDetails.length) * 100);
-    }, [activeStep, stepDetails]);
+    const [animatedSteps, setAnimatedSteps] = useState<Set<number>>(new Set());
 
     useEffect(() => {
         const activeEl = stepRefs.current[activeStep - 1];
@@ -27,6 +23,12 @@ export default function Nav({ stepDetails, activeStep }: NavProps) {
                 block: 'nearest',
             });
         }
+
+        const timer = setTimeout(() => {
+            setAnimatedSteps(prev => new Set([...prev, activeStep]));
+        }, 100);
+
+        return () => clearTimeout(timer);
     }, [activeStep]);
 
     if (!stepDetails) return null;
@@ -34,16 +36,14 @@ export default function Nav({ stepDetails, activeStep }: NavProps) {
     const hasFewSteps = stepDetails.length <= 4;
 
     const formatStepNumber = (num: number) => {
-        return num.toString().padStart(2, '0');
+        return num.toString();
     };
 
     return (
         <div className="bg-background sticky top-0 z-30">
-            <nav className="bg-background w-full rounded-tl-lg px-4 pt-2 shadow-md lg:px-8 lg:pt-4">
+            <nav className="bg-background w-full rounded-tl-lg shadow-md">
                 <ul
-                    className={`menu-gap-y no-scrollbar flex w-full overflow-x-auto pb-3 whitespace-nowrap ${
-                        hasFewSteps ? 'justify-between' : 'justify-between'
-                    }`}
+                    className={` no-scrollbar flex w-full overflow-x-auto whitespace-nowrap`}
                 >
                     {stepDetails.map((step, index) => {
                         const isFirstItem = index === 0;
@@ -57,48 +57,81 @@ export default function Nav({ stepDetails, activeStep }: NavProps) {
 
                         const flexClass =
                             !hasFewSteps && !isFirstItem && !isLastItem
-                                ? 'flex-grow flex justify-center mx-4 lg:mx-6'
+                                ? ''
                                 : '';
                         const spacingClass =
                             !hasFewSteps && !isFirstItem && !isLastItem
-                                ? 'mx-2 md:mx-4 lg:mx-6'
+                                ? ''
                                 : '';
 
-                        const stepItemClass = `flex-shrink-0 ${
-                            hasFewSteps ? 'px-4' : 'px-2'
+                        const stepItemClass = `flex-shrink-0 relative ${
+                            hasFewSteps ? 'px-0' : 'px-0'
                         } ${positionClass} ${flexClass} ${spacingClass}`;
 
+                        const getProgressWidth = () => {
+                            if (index + 1 < activeStep) {
+                                return '100%';
+                            } else if (index + 1 === activeStep && animatedSteps.has(activeStep)) {
+                                return '100%';
+                            } else {
+                               
+                                return '0%';
+                            }
+                        };
+
+                        const getProgressDelay = () => {
+                            if (index + 1 === activeStep) {
+                                return 'delay-75';
+                            }
+                            return '';
+                        };
+
                         const commonContent = (
-                            <div className="flex items-center gap-2">
-                                <div
-                                    className={`flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full font-bold lg:h-10 lg:w-10 ${
-                                        index + 1 < activeStep
-                                            ? 'bg-primary text-white'
-                                            : index + 1 === activeStep
-                                              ? 'border-primary text-primary border'
-                                              : 'text-slate border'
-                                    }`}
-                                >
-                                    <span>{formatStepNumber(index + 1)}</span>
-                                </div>
-                                <div>
-                                    <Title
-                                        level="6"
-                                        className={`font-semibold whitespace-nowrap ${
+                            <div className="relative">
+                                <div className="flex items-center gap-3 px-8 py-4">
+                                    <div
+                                        className={`flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-full font-bold ${
                                             index + 1 < activeStep
-                                                ? 'text-primary'
+                                                ? 'bg-primary text-white'
                                                 : index + 1 === activeStep
-                                                  ? 'text-primary'
-                                                  : 'text-slate'
+                                                  ? 'border-primary text-primary border'
+                                                  : 'text-slate border'
                                         }`}
                                     >
-                                        {t(step.title)}
-                                    </Title>
-                                    <span className="text-slate whitespace-nowrap">
-                                        {t(
-                                            `Step ${formatStepNumber(index + 1)}`,
+                                        {index + 1 < activeStep ? (
+                                            <TickIcon className="w-4 h-4 lg:w-5 lg:h-5" />
+                                        ) : (
+                                            <span>{formatStepNumber(index + 1).padStart(2, '0')}</span>
                                         )}
-                                    </span>
+                                    </div>
+                                    <div>
+                                        <Title
+                                            level="6"
+                                            className={`font-semibold whitespace-nowrap ${
+                                                index + 1 < activeStep
+                                                    ? 'text-primary'
+                                                    : index + 1 === activeStep
+                                                      ? 'text-primary'
+                                                      : 'text-slate'
+                                            }`}
+                                        >
+                                            {t(step.title)}
+                                        </Title>
+                                        <span className="text-slate whitespace-nowrap">
+                                            {t(
+                                                `Step ${formatStepNumber(index + 1)}`,
+                                            )}
+                                        </span>
+                                    </div>
+                                </div>
+                             
+                                <div className="absolute bottom-0 left-0 w-full h-1 bg-gray-200 overflow-hidden">
+                                    <div 
+                                        className={`h-full bg-primary transition-all duration-[1500ms] ease-out ${getProgressDelay()}`}
+                                        style={{
+                                            width: getProgressWidth(),
+                                        }}
+                                    />
                                 </div>
                             </div>
                         );
@@ -115,12 +148,6 @@ export default function Nav({ stepDetails, activeStep }: NavProps) {
                     })}
                 </ul>
             </nav>
-            <div className="relative h-1 w-full overflow-hidden rounded-md">
-                <div
-                    className="bg-primary border-primary absolute top-0 left-0 h-full border-t-3 transition-all duration-500 ease-in-out"
-                    style={{ width: `${progress}%` }}
-                ></div>
-            </div>
         </div>
     );
 }
