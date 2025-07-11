@@ -63,7 +63,7 @@ class Group extends Model implements HasMedia
             'proposals_woman',
             'proposals_impact',
             'ideascale_profiles.hash',
-            'proposals.fund.hash'
+            'proposals.fund.hash',
         ];
     }
 
@@ -107,7 +107,6 @@ class Group extends Model implements HasMedia
             'exactness',
         ];
     }
-
 
     /**
      * Scope to filter groups
