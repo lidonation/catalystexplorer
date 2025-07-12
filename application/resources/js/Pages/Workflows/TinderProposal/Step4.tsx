@@ -4,7 +4,6 @@ import Title from '@/Components/atoms/Title';
 import { ListProvider } from '@/Context/ListContext';
 import { TinderWorkflowParams } from '@/enums/tinder-workflow-params';
 import { StatusEnum, VisibilityEnum } from '@/enums/votes-enums';
-import { useWorkflowSlideOver } from '@/Hooks/useWorkflowSlideOver';
 import { generateLocalizedRoute } from '@/utils/localizedRoute';
 import { router, useForm } from '@inertiajs/react';
 import React, { useEffect, useState } from 'react';
@@ -258,7 +257,7 @@ const Step4Content: React.FC<Step4Props> = ({
         <WorkflowLayout
             asideInfo={stepDetails[activeStep - 1]?.info || ''}
             slideOver={{
-                isOpen:  true,
+                isOpen: true,
                 onClose: () => null,
                 title: t('workflows.tinderProposal.step4.editListTitle'),
                 size: 'md',
