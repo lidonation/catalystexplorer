@@ -15,6 +15,11 @@ variables:
     value: ""
     description: "New tag for WEB base image,format {version}-{yyyy-mm-dd}. eg: ubuntu-22.04-2024-10-31"
 
+  BUILD_PLAYWRIGHT_IMAGE:
+      value: "false"
+      description: "New tag for WEB base image,format {version}-{yyyy-mm-dd}. eg: ubuntu-22.04-2024-10-31"
+    
+
 stages:
   - lint
   - .pre
@@ -156,6 +161,55 @@ pest:
     - yarn
 
 
+
+playwright:
+  stage: test
+  image: $APPLICATION_REPOSITORY/playwright:latest
+  retry: 1
+  artifacts:
+    paths:
+    - ./application/vendor
+    expire_in: 1 days
+  script:
+  - |-
+    set -xev
+
+    if [[ -n $DOCKER_PASSWORD ]]; then
+      docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
+    fi
+
+    cp application/.env.testing application/.env
+
+    docker compose -f docker-compose.testing.yml up -d
+
+    sleep 5
+
+    docker logs catalystexplorer_test.com
+
+    docker compose -f docker-compose.testing.yml exec -t catalystexplorer_test.com sh -c '
+     php artisan migrate:fresh --force && \
+     php artisan optimize:clear  && \
+     sleep 10 && \
+     php artisan cx:create-search-index "App\Models\Group" && \ 
+     php artisan cx:create-search-index "App\Models\Proposal" && \
+     php artisan cx:create-search-index "App\Models\IdeascaleProfile" && \ 
+     php artisan cx:create-search-index "App\Models\Review" && \
+     php artisan cx:create-search-index "App\Models\Transaction" && \
+     php artisan cx:create-search-index "App\Models\BookmarkCollection" && \
+     php artisan cx:create-search-index "App\Models\Community" && \
+     php artisan cx:create-search-index "App\Models\VoterHistory" && \
+     sleep 10 && \
+     php artisan cx:create-search-index "App\Models\MonthlyReport"'
+
+    cd application
+    yarn install --ignore-engines
+    npx playwright test
+
+  rules:
+  - if: '$CI_COMMIT_BRANCH != "main" && ($DEPLOY_WEBAPP == "true")'
+  dependencies:
+  - composer
+  - yarn
 
 ########## Helper Scripts ############
 ######################################
@@ -347,6 +401,28 @@ build_web_base:
       docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
   rules:
     - if: $WEB_BASE_IMAGE_VER
+
+
+build_playwrite_image:
+  stage: .pre
+  image: docker:24.0.2-git
+  retry: 0
+  script:
+  - |
+    docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY" 
+
+    echo "Building Dockerfile with tags $CI_APPLICATION_REPOSITORY/playwright:$CI_APPLICATION_TAG and $CI_APPLICATION_REPOSITORY/playwright:latest ..." 
+
+    docker build --network host -f ./docker/Dockerfile.playwright \
+    -t "$CI_APPLICATION_REPOSITORY/playwright:$CI_APPLICATION_TAG" \
+    -t "$CI_APPLICATION_REPOSITORY/playwright:latest" ./docker/. 
+
+    docker push "$CI_APPLICATION_REPOSITORY/playwright:$CI_APPLICATION_TAG" 
+    docker push "$CI_APPLICATION_REPOSITORY/playwright:latest"
+
+    docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
+  rules:
+  - if: $BUILD_PLAYWRIGHT_IMAGE == 'true'
 
 ######## Preview Deployments #########
 ######################################
