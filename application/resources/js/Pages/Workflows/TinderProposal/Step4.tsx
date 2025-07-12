@@ -4,7 +4,7 @@ import Title from '@/Components/atoms/Title';
 import { ListProvider } from '@/Context/ListContext';
 import { TinderWorkflowParams } from '@/enums/tinder-workflow-params';
 import { StatusEnum, VisibilityEnum } from '@/enums/votes-enums';
-import { useWorkflowSlideOver } from '../../../Hooks/useWorkflowSlideOver.ts';
+import { useWorkflowSlideOver } from '@/Hooks/useWorkflowSlideOver';
 import { generateLocalizedRoute } from '@/utils/localizedRoute';
 import { router, useForm } from '@inertiajs/react';
 import React, { useEffect, useState } from 'react';
