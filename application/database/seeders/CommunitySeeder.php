@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Database\Seeders;
 
 use App\Models\Community;
+use App\Jobs\AttachImageJob;
 use Illuminate\Database\Seeder;
 
 class CommunitySeeder extends Seeder
@@ -14,8 +15,16 @@ class CommunitySeeder extends Seeder
      */
     public function run(): void
     {
-        Community::factory()
+        $comm = Community::factory()
             ->count(10)
             ->create();
+
+
+        $comm->each(function (Community $community) {
+
+            AttachImageJob::dispatch($community,  'hero');
+
+            AttachImageJob::dispatch($community,  'banner');
+        });
     }
 }

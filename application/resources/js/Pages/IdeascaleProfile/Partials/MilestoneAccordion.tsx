@@ -32,8 +32,10 @@ const MilestoneAccordion: React.FC<MilestoneAccordionProps> = ({
     };
 
     const activeMilestones = milestones
-        .filter((item) => item.current)
-        .sort((a, b) => a.milestone - b.milestone);
+        ? milestones
+              .filter((item) => item.current)
+              .sort((a, b) => a.milestone - b.milestone)
+        : [];
 
     function formatDate(dateString: string): string {
         const date = new Date(dateString.replace(' ', 'T'));
@@ -95,7 +97,7 @@ const MilestoneAccordion: React.FC<MilestoneAccordionProps> = ({
                     </div>
 
                     {openIndex === index && (
-                        <div className="py-4 px-0.5">
+                        <div className="px-0.5 py-4">
                             <div className="overflow-x-auto">
                                 <table className="border-background-lighter w-full table-auto border">
                                     <tbody>

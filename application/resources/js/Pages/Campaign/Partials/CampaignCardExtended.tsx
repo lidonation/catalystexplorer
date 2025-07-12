@@ -79,9 +79,9 @@ const CampaignCard: React.FC<CampaignCardProps> = ({
                         <KeyValue
                             valueKey={t('proposals.filters.budget')}
                             value={currency(
-                                campaign.amount ?? 0,
+                                campaign?.amount ?? 0,
                                 2,
-                                campaign.currency ?? '',
+                                campaign?.currency ?? fund?.currency ?? '',
                             )}
                         />
                         <KeyValue
