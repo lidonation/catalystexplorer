@@ -42,6 +42,7 @@ export default function AppLayout({ children }: { children: ReactNode }) {
                 onClose={() => setSidebarOpen(false)}
                 className="relative z-50 lg:hidden"
                 aria-label={t('navigation.mobile.sidebar')}
+                data-testid="mobile-navigation-dialog"
             >
                 <MobileNavigation />
             </Dialog>

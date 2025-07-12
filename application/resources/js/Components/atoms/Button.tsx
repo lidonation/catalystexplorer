@@ -10,6 +10,7 @@ type ButtonProps = {
     arialExpanded?: boolean;
     arialControls?: string;
     ariaPressed?: boolean;
+    dataTestId?: string;
 };
 
 const Button = forwardRef<HTMLButtonElement, ButtonProps>(({
@@ -22,6 +23,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(({
     arialExpanded,
     arialControls,
     ariaPressed,
+    dataTestId,
 }, ref) => {
     return (
         <button
@@ -34,6 +36,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(({
             aria-controls={arialControls}
             aria-pressed={ariaPressed}
             className={`rounded-sm hover:cursor-pointer ${disabled ? 'cursor-not-allowed opacity-50' : ''} ${className}`}
+            data-testid={dataTestId}
         >
             {children}
         </button>

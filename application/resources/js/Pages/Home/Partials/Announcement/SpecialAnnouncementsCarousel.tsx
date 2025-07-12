@@ -50,16 +50,18 @@ const SpecialAnnouncementCarousel = ({
     };
 
     return (
-        <div className="relative w-full overflow-hidden border-b border-t">
-            <Carousel role="region" aria-label="Announcement Carousel">
+        <div className="relative w-full overflow-hidden border-b border-t" data-testid="special-announcement-carousel">
+            <Carousel role="region" aria-label="Announcement Carousel" data-testid="special-announcement-carousel-inner">
                 <CarouselContent
                     className={`flex transition-transform duration-500 ${isTransitioning ? 'ease-in-out' : ''}`}
                     style={{ transform: `translateX(-${activeIndex * 100}%)` }}
+                    data-testid="special-announcement-carousel-content"
                 >
                     {announcements.map((announcement) => (
                         <CarouselItem
                             key={announcement.hash}
                             className="w-full shrink-0"
+                            data-testid={`special-announcement-carousel-item-${announcement.hash}`}
                         >
                             <SpecialAnnouncementCard
                                 announcement={announcement}

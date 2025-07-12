@@ -22,8 +22,9 @@ export default forwardRef(function Textarea(
         minLengthEnforced = false,
         minLengthValue = 69,
         onChange,
+        'data-testid': dataTestId,
         ...props
-    }: TextareaProps,
+    }: TextareaProps & { 'data-testid'?: string },
     ref,
 ) {
     const localRef = useRef<HTMLTextAreaElement>(null);
@@ -65,6 +66,7 @@ export default forwardRef(function Textarea(
                 ref={localRef}
                 value={value}
                 onChange={handleChange}
+                data-testid={dataTestId}
                 onKeyDown={(e) => {
                     if (e.key === ' ') {
                         e.stopPropagation();

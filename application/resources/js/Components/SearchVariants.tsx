@@ -69,8 +69,8 @@ const SearchVariants = ({
 
     return (
         <div className="text-content h-full relative">
-            <Listbox value={value} onChange={handleSelection} multiple>
-                <ListboxButton className="flex items-center justify-center gap-3 px-3 py-2 text-nowrap">
+            <Listbox value={value} onChange={handleSelection} multiple data-testid="search-variants-dropdown">
+                <ListboxButton className="flex items-center justify-center gap-3 px-3 py-2 text-nowrap" data-testid="search-variants-dropdown-button">
                     {({ open }) => (
                         <div className="flex items-center gap-3">
                             {t('searchBar.all_filters')}
@@ -82,9 +82,9 @@ const SearchVariants = ({
                         </div>
                     )}
                 </ListboxButton>
-                <ListboxOptions className="bg-background absolute left-0 z-50 mt-5 w-max rounded-lg shadow-xl">
+                <ListboxOptions className="bg-background absolute left-0 z-50 mt-5 w-max rounded-lg shadow-xl" data-testid="search-variants-dropdown-options">
                     {variants.map((variant) => (
-                        <ListboxOption key={camelCase(variant)} value={camelCase(variant)}>
+                        <ListboxOption key={camelCase(variant)} value={camelCase(variant)} data-testid={`search-variant-option-${camelCase(variant)}`}>
                             {({ selected }) => (
                                 <div className="hover:bg-background-lighter flex cursor-pointer items-center justify-between gap-2 px-3 py-2 hover:rounded-lg">
                                     <span className="capitalize">

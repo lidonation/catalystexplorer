@@ -16,25 +16,37 @@ const AnnouncementCard = ({ announcement }: AnnouncementCardProps) => {
     };
 
     return (
-        <div className="bg-background flex flex-col gap-3 rounded-xl px-3 py-4">
-            <div className="flex items-center justify-between">
+        <div
+            className="bg-background flex flex-col gap-3 rounded-xl px-3 py-4"
+            data-testid={`announcement-card-${announcement.hash}`}
+        >
+            <div
+                className="flex items-center justify-between"
+                data-testid="announcement-card-header"
+            >
                 <AnnouncementCardChip label={announcement.label as any} />
                 <AnnouncementCountdownChip
                     event_starts_at={announcement.event_starts_at!}
                     event_ends_at={announcement.event_ends_at!}
                 />
             </div>
-            <div className="text-content line-clamp-2 h-8 overflow-hidden text-base font-bold">
+            <div
+                className="text-content line-clamp-2 h-8 overflow-hidden text-base font-bold"
+                data-testid="announcement-card-title"
+            >
                 {announcement.title}
             </div>
-            <div className="text-gray-persist">
+            <div
+                className="text-gray-persist"
+                data-testid="announcement-card-content"
+            >
                 {' '}
                 {generateContentPreview(announcement.content)}
             </div>
-            <div>
+            <div data-testid="announcement-card-footer">
                 {
-                    <div className="text-4 text-primary font-bold flex gap-6 items-center">
-                        {Object.entries(announcement?.cta??{}).map((item) => {
+                    <div className="text-4 text-primary flex items-center gap-6 font-bold">
+                        {Object.entries(announcement?.cta ?? {}).map((item) => {
                             const isExternal = item[1]?.startsWith('http');
                             if (isExternal) {
                                 return (
@@ -43,6 +55,7 @@ const AnnouncementCard = ({ announcement }: AnnouncementCardProps) => {
                                         href={item[1] || '#'}
                                         title={item[0]}
                                         target="_blank"
+                                        data-testid={`announcement-card-link-${item[0]}`}
                                     >
                                         {item[0]}
                                     </a>
@@ -53,6 +66,7 @@ const AnnouncementCard = ({ announcement }: AnnouncementCardProps) => {
                                     className="capitalize"
                                     href={item[1] || '#'}
                                     title={item[0]}
+                                    data-testid={`announcement-card-link-${item[0]}`}
                                 >
                                     {item[0]}
                                 </NavLink>

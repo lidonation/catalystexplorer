@@ -48,7 +48,7 @@ export default function Index({
             <div className="relative flex w-full flex-col justify-center gap-8">
                 <CatalystIntro />
 
-                <section className="annnouncements-wrapper">
+                <section className="annnouncements-wrapper" data-testid="announcements-section">
                     <div className='container rounded-xl'>
                         <WhenVisible fallback={<div>{t("loading")}...</div>} data="announcements">
                             <AnnouncementCarousel announcements={announcements} />
@@ -56,16 +56,16 @@ export default function Index({
                     </div>
                 </section>
 
-                <section className="numbers-wrapper container">
+                <section className="numbers-wrapper container" data-testid="metrics-section">
                     <div className='flex justify-between items-center'>
-                        <div>
+                        <div data-testid="metrics-header">
                             <Title level='2'>{t("metric.numbers")}</Title>
                             <Paragraph size="sm" className="text-4 text-content-dark opacity-70">
                                 {t("metric.subtitle")}
                             </Paragraph>
                         </div>
                         <div>
-                            <SecondaryLink className="font-bold text-content-dark" href="/charts">
+                            <SecondaryLink className="font-bold text-content-dark" href="/charts" data-testid="see-more-metrics">
                                 {t("metric.seeMore")}
                             </SecondaryLink>
                         </div>
@@ -79,16 +79,16 @@ export default function Index({
                     </WhenVisible>
                 </section>
 
-                <section className="container proposals-wrapper">
+                <section className="container proposals-wrapper" data-testid="proposals-section">
                     <div className="flex items-center justify-between py-8">
-                        <div>
+                        <div data-testid="proposals-header">
                             <Title level='2'>{t("proposals.proposals")}</Title>
                             <Paragraph size="sm" className="text-4 text-content-dark opacity-70">
                                 {t("proposals.listSubtitle")}
                             </Paragraph>
                         </div>
                         <div>
-                            <SecondaryLink className="font-bold text-content-dark" href="/proposals">
+                            <SecondaryLink className="font-bold text-content-dark" href="/proposals" data-testid="see-more-proposals">
                                 {t("proposals.seeMoreProposals")}
                             </SecondaryLink>
                         </div>
@@ -104,7 +104,7 @@ export default function Index({
                     </WhenVisible>
                 </section>
 
-                <section className="special-announcements-wrapper container">
+                <section className="special-announcements-wrapper container" data-testid="special-announcements-section">
                     <WhenVisible fallback={<SpecialAnnouncementLoading />} data="specialAnnouncements">
                         {specialAnnouncements && (
                             <SpecialAnnouncementCarousel
@@ -118,13 +118,13 @@ export default function Index({
                     </WhenVisible>
                 </section>
 
-                <section className="posts-wrapper container flex flex-col gap-8 py-8">
-                    <div>
+                <section className="posts-wrapper container flex flex-col gap-8 py-8" data-testid="catalyst-posts-section">
+                    <div data-testid="catalyst-posts-header">
                         <Title level='2'>{t('posts.title')}</Title>
                         <Paragraph>{t('posts.subtitle')}</Paragraph>
                     </div>
                     <WhenVisible fallback={<PostListLoader />} data="posts">
-                        <ul className="content-gap scrollable snaps-scrollable">
+                        <ul className="content-gap scrollable snaps-scrollable" data-testid="catalyst-posts-list">
                             {posts &&
                                 posts.map((post) => (
                                     <li key={post?.id}>

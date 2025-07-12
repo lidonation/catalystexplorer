@@ -148,12 +148,14 @@ export default function ModelSearch({
                         className="bg-background text-content focus:ring-primary w-full rounded-lg pl-10 shadow-none focus:ring-2"
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
+                        data-testid="model-search-input"
                     />
 
                     <Button
                         onClick={() => setSearchTerm('')}
                         ariaLabel={t('clear')}
                         className="hover:text-primary absolute right-0 flex h-full w-10 items-center justify-center"
+                        dataTestId="model-search-clear-button"
                     >
                         <CloseIcon width={16} />
                     </Button>

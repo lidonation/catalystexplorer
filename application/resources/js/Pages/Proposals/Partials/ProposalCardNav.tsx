@@ -10,8 +10,8 @@ export default function ProposalCardNav({
     t: (key: string) => string;
 }) {
     return (
-        <nav className="border-b border-gray-200" aria-label="Project details navigation">
-            <ul className="flex justify-between">
+        <nav className="border-b border-gray-200" aria-label="Project details navigation" data-testid="proposal-card-nav">
+            <ul className="flex justify-between" data-testid="proposal-card-nav-list">
                 <li className="w-1/2">
                     <button
                         type="button"
@@ -21,6 +21,7 @@ export default function ProposalCardNav({
                                 ? 'border-primary text-primary mb-[-1px] z-10'
                                 : 'text-content border-transparent '
                         }`}
+                        data-testid="proposal-card-nav-details-button"
                     >
                         {t('details')}
                     </button>
@@ -35,6 +36,7 @@ export default function ProposalCardNav({
                                 ? 'border-primary text-primary border-b-[4px] mb-[-1px] z-10'
                                 : 'border-transparent'
                         } ${!hasQuickPitch ? 'cursor-not-allowed opacity-60' : 'text-content hover:text-primary'}`}
+                        data-testid="proposal-card-nav-quick-pitch-button"
                     >
                         <span>{t('proposals.quickPitch')}</span>
                         {!hasQuickPitch && (

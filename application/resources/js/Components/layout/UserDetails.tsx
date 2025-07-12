@@ -45,7 +45,7 @@ const UserDetails: React.FC<UserDetailsProps> = ({ user }) => {
     return (
         <>
             {user ? (
-                <div className="flex items-center justify-between">
+                <div className="flex items-center justify-between" data-testid="user-details">
                     <div className="flex gap-3">
                         <div className="bg-background-light size-9 rounded-full">
                             <UserAvatar
@@ -55,12 +55,14 @@ const UserDetails: React.FC<UserDetailsProps> = ({ user }) => {
                                         ? user?.hero_img_url
                                         : undefined
                                 }
+                                data-testid="user-avatar"
                             />
                         </div>
                         <div className="flex flex-col">
                             <Link
                                 href={generateLocalizedRoute('my.dashboard')}
                                 className="text-4 text-content font-semibold"
+                                data-testid="user-name"
                             >
                                 {user?.name}
                             </Link>
@@ -71,6 +73,7 @@ const UserDetails: React.FC<UserDetailsProps> = ({ user }) => {
                             <Link
                                 href={generateLocalizedRoute('profile.edit')}
                                 className="text-5 text-primary font-semibold"
+                                data-testid="edit-profile-link"
                             >
                                 {t('users.editProfile')}
                             </Link>
@@ -81,15 +84,17 @@ const UserDetails: React.FC<UserDetailsProps> = ({ user }) => {
                         width={20}
                         height={20}
                         onClick={() => logout()}
+                        date-testid="logout-button"
                     />
                 </div>
             ) : (
                 <>
-                    <nav className="flex flex-col justify-between">
-                        <ul className="menu-gap-y flex flex-1 flex-row">
+                    <nav className="flex flex-col justify-between" data-testid="user-sign-in-nav">
+                        <ul className="menu-gap-y flex flex-1 flex-row" data-testid="user-sign-in-list">
                             <li
                                 className="hover:bg-background-lighter flex cursor-pointer items-center gap-1 px-2 py-1"
                                 onClick={() => setActiveModal('register')}
+                                data-testid="register-link"
                             >
                                 <RegisterUserIcon className="text-dark" />
                                 <Paragraph className="text-3">
@@ -99,6 +104,7 @@ const UserDetails: React.FC<UserDetailsProps> = ({ user }) => {
                             <li
                                 className="hover:bg-background-lighter flex cursor-pointer items-center gap-1 px-2 py-1"
                                 onClick={() => setActiveModal('login')}
+                                data-testid="login-link"
                             >
                                 <LoginIcon className="text-dark" />
                                 <Paragraph className="text-3">

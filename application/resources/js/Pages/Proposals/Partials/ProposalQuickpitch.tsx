@@ -35,13 +35,13 @@ export default function ProposalQuickpitch({
     }, [quickpitch]);
 
     return (
-        <section aria-labelledby="video-heading" className="h-full">
-            <Title level='2' id="video-heading" className="sr-only">
+        <section aria-labelledby="video-heading" className="h-full" data-testid="proposal-quickpitch-section">
+            <Title level='2' id="video-heading" className="sr-only" data-testid="proposal-quickpitch-title">
                 {t('proposals.projectVideo')}
             </Title>
             <div className="relative h-full w-full overflow-hidden rounded-2xl">
                 {videoData.error ? (
-                    <div className="flex h-full items-center justify-center p-4">
+                    <div className="flex h-full items-center justify-center p-4" data-testid="proposal-quickpitch-error">
                         <div className="max-w-lg text-center">
                             <p className="mb-2">{videoData.error}</p>
                             {quickpitch && (
@@ -80,6 +80,7 @@ export default function ProposalQuickpitch({
                                 invertTime: false,
                                 tooltips: { controls: true, seek: true },
                             }}
+                            data-testid="proposal-quickpitch-player"
                         />
                     )
                 )}
