@@ -18,33 +18,33 @@ export default function ProposalCardMini({
     isHorizontal
 }: ProposalCardMiniProps) {
     const { t } = useTranslation();
-    
-    const [userSelected, setUserSelected] = 
+
+    const [userSelected, setUserSelected] =
         useState<App.DataTransferObjects.IdeascaleProfileData | null>(null);
-    
+
     const [hoveredUserName, setHoveredUserName] = useState<string | null>(null);
     const [cardHeight, setCardHeight] = useState<number | null>(null);
     const cardRef = useRef<HTMLElement>(null);
     const contentRef = useRef<HTMLElement>(null);
-    
+
     useEffect(() => {
         if (cardRef.current && !cardHeight) {
             const height = cardRef.current.offsetHeight;
             setCardHeight(height);
         }
     }, []);
-    
+
     useEffect(() => {
         const handleResize = () => {
             if (cardRef.current && !userSelected) {
                 setCardHeight(cardRef.current.offsetHeight);
             }
         };
-        
+
         window.addEventListener('resize', handleResize);
         return () => window.removeEventListener('resize', handleResize);
     }, [userSelected]);
-    
+
     const handleUserClick = useCallback(
         (user: App.DataTransferObjects.IdeascaleProfileData) => {
             if (cardRef.current && !userSelected) {
@@ -56,34 +56,36 @@ export default function ProposalCardMini({
     );
 
     const noSelectedUser = useCallback(() => setUserSelected(null), []);
-    
+
     const handleUserMouseEnter = useCallback(
         (user: App.DataTransferObjects.IdeascaleProfileData) => {
             setHoveredUserName(user.name || t('anonymous'));
         },
         [t]
     );
-    
+
     const handleUserMouseLeave = useCallback(() => {
         setHoveredUserName(null);
     }, []);
-    
+
     return (
-        <article 
+        <article
             ref={cardRef}
             className="bg-background z-0 flex h-full flex-col justify-between rounded-xl p-2 shadow-lg relative"
             style={cardHeight && userSelected ? { height: `${cardHeight}px` } : {}}
+            data-testid={`proposal-card-mini-${proposal.hash}`}
         >
             {userSelected && (
                 <button
                     onClick={noSelectedUser}
                     className="absolute right-4 top-4 z-10 rounded-full p-1 hover:bg-background hover:text-content focus:outline-none focus:ring-2 focus:ring-primary"
                     aria-label="Close profile"
+                    data-testid="proposal-card-mini-close-button"
                 >
                 </button>
             )}
-            
-            {/* The key change is here - we need to ensure the header section has position relative 
+
+            {/* The key change is here - we need to ensure the header section has position relative
                 and a higher z-index so it can overlay content on hover */}
             <section className="flex h-auto w-full flex-col items-start overflow-visible rounded-xl relative">
                 <ProposalCardHeader
@@ -93,24 +95,24 @@ export default function ProposalCardMini({
                     isHorizontal={isHorizontal}
                 />
             </section>
-            
+
             <section ref={contentRef} className="flex-grow flex flex-col">
                 {userSelected ? (
                     <>
                         <div className="invisible h-0" aria-hidden="true">
-                            <div className="mt-3" aria-labelledby="funding-heading">
+                            <div className="mt-3" aria-labelledby="funding-heading" data-testid="proposal-card-mini-funding-heading">
                                 <div className="flex items-center gap-2">
                                     <Title level='3' className="font-semibold">{t('funding')}</Title>
-                                    
+
                                     <ProposalFundingStatus
                                         funding_status={proposal.funding_status}
                                     />
                                 </div>
-                                
+
                                 <ProposalFundingPercentages proposal={proposal}/>
                             </div>
                         </div>
-                        
+
                         <div className="mt-3 flex-grow">
                             <div className="p-2">
                                 <Title level='4' className="font-medium">
@@ -123,31 +125,31 @@ export default function ProposalCardMini({
                         </div>
                     </>
                 ) : (
-                    <div className="mt-3" aria-labelledby="funding-heading">
+                    <div className="mt-3" aria-labelledby="funding-heading" data-testid="proposal-card-mini-funding-heading">
                         <div className="flex items-center gap-2">
                             <Title level='3' className="font-semibold">{t('funding')}</Title>
-                            
+
                             <ProposalFundingStatus
                                 funding_status={proposal.funding_status}
                             />
                         </div>
-                        
+
                         <ProposalFundingPercentages proposal={proposal}/>
                     </div>
                 )}
-                
+
                 <div className="border-t mt-auto border-t-dark/30">
                     {userSelected && (
                         <div className="mt-3">
                         </div>
                     )}
-                    
+
                     {hoveredUserName && (
-                        <div className="mt-2 text-sm text-gray-600">
+                        <div className="mt-2 text-sm text-gray-600" data-testid="proposal-card-mini-hovered-username">
                             {hoveredUserName}
                         </div>
                     )}
-                    
+
                     <IdeascaleProfileUsers
                         users={proposal.users}
                         onUserClick={handleUserClick}

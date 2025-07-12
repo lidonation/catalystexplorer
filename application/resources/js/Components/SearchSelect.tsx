@@ -30,6 +30,7 @@ type SearchSelectProps = {
     valueField: string;
     labelField: string;
     side?: 'top' | 'bottom' | 'left' | 'right';
+    dataTestId?: string;
 };
 
 export function SearchSelect({
@@ -42,13 +43,14 @@ export function SearchSelect({
     labelField,
     valueField,
     side = 'top',
+    dataTestId = 'search-select-container',
 }: SearchSelectProps) {
     const [open, setOpen] = useState(false);
 
     const { searchTerm, setSearchTerm, options } =
         useSearchOptions<any>(domain);
 
-    
+
     const { t } = useTranslation();
 
     const filteredOptions = options.map((option) => {
@@ -104,13 +106,14 @@ export function SearchSelect({
     }, [open, setSearchTerm]);
 
     return (
-        <Popover open={open} onOpenChange={() => setOpen(!open)}>
+        <Popover open={open} onOpenChange={() => setOpen(!open)} data-testid={dataTestId}>
             <PopoverTrigger asChild>
                 <button
                     role="combobox"
                     aria-expanded={open}
                     aria-label={t('select') + ' ' + t('option')}
                     className="border-input placeholder:text-muted-foreground ring-offset-background flex h-9 w-full items-center justify-between rounded-md border bg-transparent px-3 py-2 text-sm shadow-xs hover:cursor-pointer disabled:cursor-not-allowed disabled:opacity-50"
+                    data-testid="search-select-trigger"
                 >
                     <span className="flex items-center gap-2">
                         <span>{t('select') + ' '}</span>
@@ -127,6 +130,7 @@ export function SearchSelect({
                 className="bg-background relative z-100 w-[300px] min-w-[var(--radix-popover-trigger-width)] p-0"
                 align="start"
                 side={side}
+                data-testid="search-select-content"
             >
                 <Command shouldFilter={false}>
                     <div
@@ -141,11 +145,13 @@ export function SearchSelect({
                                 'flex h-10 w-full rounded-md bg-transparent py-3 text-sm outline-hidden disabled:cursor-not-allowed disabled:opacity-50',
                                 'border-none! ring-0! focus:border-none! focus:ring-0!',
                             )}
+                            data-testid="search-select-input"
                         />
                         <button
                             aria-label={t('clear') + ' ' + t('select')}
                             onClick={handleClear}
                             className="hover:text-primary focus:outline-hidden"
+                            data-testid="search-select-clear-button"
                         >
                             clear
                         </button>
@@ -158,6 +164,7 @@ export function SearchSelect({
                     <CommandGroup>
                         <ScrollArea
                             className={`max-h-64 min-h-24 lg:max-h-96 ${options.length > 10 ? 'overflow-scroll' : ''}`}
+                            data-testid="search-select-scroll-area"
                         >
                             {options &&
                                 sortedOptions.map((option, index) => (
@@ -168,6 +175,7 @@ export function SearchSelect({
                                             handleSelect(option.value)
                                         }
                                         className="bg-background! hover:bg-background-lighter! aria-selected:bg-background-lighter flex cursor-pointer justify-between"
+                                        data-testid={`search-select-option-${option.value}`}
                                     >
                                         {option.label}
                                         <Checkbox
@@ -182,6 +190,7 @@ export function SearchSelect({
                                             value={option.value}
                                             onChange={() => {}}
                                             className="text-content-accent bg-background checked:bg-primary checked:hover:bg-primary focus:border-primary focus:ring-primary checked:focus:bg-primary mr-2 h-4 w-4 shadow-xs focus:border"
+                                            data-testid={`search-select-checkbox-${option.value}`}
                                         />
                                     </CommandItem>
                                 ))}

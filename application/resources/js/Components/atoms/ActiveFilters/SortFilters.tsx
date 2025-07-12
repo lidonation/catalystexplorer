@@ -52,9 +52,10 @@ const SortFilters = ({
         <div
             className="bg-background mr-1 flex items-center rounded-lg border px-1 py-1"
             key={filter.label}
+            data-testid={`sort-filter-${filter.param}`}
         >
             <div className="mr-1">{sort?.label}</div>
-            <button className="ml-2" onClick={() => removeFilter()}>
+            <button className="ml-2" onClick={() => removeFilter()} data-testid={`remove-sort-filter-${filter.param}`}>
                 X{' '}
             </button>
         </div>
