@@ -15,7 +15,7 @@ function MobileNavigation() {
 
    useEffect(() => {
     const handleFinish = () => setIsOpen(false);
-    return router.on('finish', handleFinish); 
+    return router.on('finish', handleFinish);
 }, []);
 
     return (
@@ -28,6 +28,7 @@ function MobileNavigation() {
                     <aside
                         className="bg-background flex grow flex-col justify-between px-4"
                         aria-label={t('navigation.mobile.content')}
+                        data-testid="mobile-navigation-content"
                     >
                         <section>
                             <AppNavigation />

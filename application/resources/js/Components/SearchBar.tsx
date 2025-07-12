@@ -61,7 +61,7 @@ const SearchBar = forwardRef<HTMLInputElement, SearchBarProps>(
         }, [handleSearch]);
 
         return (
-            <div className="w-full rounded-md shadow-sm">
+            <div className="w-full rounded-md shadow-sm" data-testid="searchbar-container">
                 <label className="relative flex w-full items-center gap-2 pl-0">
                     <div className="absolute left-0 flex h-full w-10 items-center justify-center">
                         <SearchLensIcon width={16} className="text-content" />
@@ -81,11 +81,13 @@ const SearchBar = forwardRef<HTMLInputElement, SearchBarProps>(
                         onBlur={() => {
                             focusState?.(false);
                         }}
+                        data-testid="searchbar-input"
                     />
                     <Button
                         onClick={() => handleClear()}
                         ariaLabel={t('clear')}
                         className="hover:text-primary absolute right-0 flex h-full w-10 cursor-pointer items-center justify-center"
+                        dataTestId="searchbar-clear-button"
                     >
                         <CloseIcon width={16} />
                     </Button>

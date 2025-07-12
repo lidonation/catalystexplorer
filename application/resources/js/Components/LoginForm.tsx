@@ -25,7 +25,6 @@ interface FormErrors {
 
 export default function LoginForm({ title, postRoute }: LoginFormProps) {
     const { t } = useTranslation();
-    
 
     const { data, setData, reset, processing } = useForm({
         email: '',
@@ -70,7 +69,7 @@ export default function LoginForm({ title, postRoute }: LoginFormProps) {
 
                 <div className="py-4"></div>
 
-                <form onSubmit={submit}>
+                <form onSubmit={submit} data-testid="login-form">
                     <div className="mb-4">
                         <InputLabel htmlFor="email">
                             {t('emailAddress')}
@@ -84,6 +83,7 @@ export default function LoginForm({ title, postRoute }: LoginFormProps) {
                             required
                             autoComplete="username"
                             onChange={(e) => setData('email', e.target.value)}
+                            data-testid="login-email-input"
                         />
                         <InputError message={errors?.email} className="mt-2" />
                     </div>
@@ -103,6 +103,7 @@ export default function LoginForm({ title, postRoute }: LoginFormProps) {
                                 setData('password', e.target.value)
                             }
                             value={data.password}
+                            data-testid="login-password-input"
                         />
                         <InputError
                             message={errors?.password}
@@ -122,6 +123,7 @@ export default function LoginForm({ title, postRoute }: LoginFormProps) {
                                         e.target.checked as false,
                                     )
                                 }
+                                data-testid="login-remember-checkbox"
                             />
                             <label htmlFor="remember-me" className="text-sm">
                                 {t('rememberMe')}
@@ -130,6 +132,7 @@ export default function LoginForm({ title, postRoute }: LoginFormProps) {
                         <Link
                             href="#"
                             className="text-primary text-xs hover:underline sm:text-sm"
+                            data-testid="login-forgot-password-link"
                         >
                             {t('forgotPassword')}
                         </Link>
@@ -139,6 +142,7 @@ export default function LoginForm({ title, postRoute }: LoginFormProps) {
                         className="w-full py-3"
                         disabled={processing}
                         type="submit"
+                        data-testid="login-signin-button"
                     >
                         {t('signin')}
                     </PrimaryButton>
@@ -149,6 +153,7 @@ export default function LoginForm({ title, postRoute }: LoginFormProps) {
                     <Link
                         href="#"
                         className="text-primary font-medium hover:underline"
+                        data-testid="login-signup-link"
                     >
                         {t('signup')}
                     </Link>

@@ -68,7 +68,7 @@ export default function ProposalFundingPercentages({ proposal }: Proposal) {
 
     // Component Renderingf
     return (
-        <div>
+        <div data-testid="proposal-funding-percentages">
             {!proposal?.funded_at && (<div className="flex items-baseline justify-between gap-2 pt-2">
                 <span>Requested</span>
                 <div>
