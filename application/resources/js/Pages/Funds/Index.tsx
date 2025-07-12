@@ -51,7 +51,7 @@ export default function Index({
         <>
             <Head title="Funds" />
 
-            <header>
+            <header data-testid="funds-header">
                 <div className="container">
                     <Title>{t('funds.funds')}</Title>
                 </div>
@@ -61,7 +61,7 @@ export default function Index({
             </header>
 
             <div className="relative flex w-full flex-col justify-center gap-8">
-                <section className="container py-8">
+                <section className="container py-8" data-testid="funds-bar-chart-section">
                     <WhenVisible
                         fallback={<FundsBarChartLoading />}
                         data="funds"
@@ -82,7 +82,7 @@ export default function Index({
                         />
                     </WhenVisible>
                 </section>
-                <section className="container py-8">
+                <section className="container py-8" data-testid="funds-list-section">
                     <WhenVisible fallback={<FundCardLoader />} data="funds">
                         <FundsList funds={funds} />
                     </WhenVisible>
