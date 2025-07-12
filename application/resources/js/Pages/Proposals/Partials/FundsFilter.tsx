@@ -55,15 +55,16 @@ const FundsFilter: React.FC<FundFiltersProps> = ({
     }
 
     return (
-        <div className="w-full py-8">
+        <div className="w-full py-8" data-testid="funds-filter">
             <div className="overflow-x-auto pb-4">
-                <ul className="flex gap-4 whitespace-nowrap min-w-max" >
+                <ul className="flex gap-4 whitespace-nowrap min-w-max" data-testid="funds-filter-list">
                     {funds.map((fund) => {
                         return (
                             <li key={fund.hash}
                                 className={`flex  flex-shrink-0 cursor-pointer rounded-md border-transparent bg-background shadow-xs border-2 hover:border-primary ${selectedItems.includes(fund) ? 'border-primary' : ''}`}
                             onClick={() => handleSelect(fund.hash)}
                             aria-label={fund.hash as string}
+                            data-testid={`fund-filter-item-${fund.hash}`}
                         >
                             <div className="m-4">
                                 <Checkbox
@@ -72,13 +73,14 @@ const FundsFilter: React.FC<FundFiltersProps> = ({
                                     checked={selectedItems.includes(fund.hash)}
                                     onChange={() => {}}
                                     className="text-content-accent bg-background checked:bg-primary checked:hover:bg-primary focus:border-primary focus:ring-primary checked:focus:bg-primary mr-2 h-4 w-4 shadow-xs focus:border"
+                                    data-testid={`fund-checkbox-${fund.hash}`}
                                 />
                             </div>
                             <div className="m-4 ml-1 w-full">
-                                <div className="mb-2 font-medium">
+                                <div className="mb-2 font-medium" data-testid={`fund-label-${fund.label}`}>
                                     {fund.label}
                                 </div>
-                                <div className="flex w-full justify-between gap-4">
+                                <div className="flex w-full justify-between gap-4" data-testid={`fund-proposals-count-${fund.title}`}>
                                     <div className="text-gray-persist">
                                         {t('proposals.totalProposals')}
                                     </div>

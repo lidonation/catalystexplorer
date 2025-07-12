@@ -62,7 +62,7 @@ export default function Index({
             setMetrics(undefined);
         };
     }, [metrics]);
-    
+
     return (
         <ListProvider>
             <FiltersProvider
@@ -73,11 +73,11 @@ export default function Index({
 
                 <header>
                     <div className="container">
-                        <Title level="1">{t('proposals.proposals')}</Title>
+                        <Title level="1" data-testid="proposal-page-title">{t('proposals.proposals')}</Title>
                     </div>
 
                     <div className="container">
-                        <Paragraph className="text-content">
+                        <Paragraph className="text-content" data-testid="proposal-page-subtitle">
                             {t('proposals.pageSubtitle')}
                         </Paragraph>
                     </div>
@@ -99,6 +99,7 @@ export default function Index({
                     className={`container flex w-full flex-col items-center justify-center overflow-hidden transition-[max-height] duration-500 ease-in-out ${
                         showFilters ? 'max-h-[500px]' : 'max-h-0'
                     }`}
+                    data-testid="proposal-filters-container"
                 >
                     <ProposalFilters />
                 </section>

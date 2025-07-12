@@ -25,6 +25,7 @@ function DesktopSidebar(props: any) {
             {...rest}
             className={`flex h-full w-full flex-col ${!isOnMyRoute ? 'justify-between' : ''} gap-8`}
             aria-label={t('navigation.desktop.sidebar')}
+            data-testid="desktop-sidebar-navigation"
         >
             <section className="flex h-6 shrink-0 items-center sm:pt-8">
                 <CatalystLogo className="w-full" />
@@ -43,8 +44,8 @@ function DesktopSidebar(props: any) {
                             <UserNavigation />
                         </div>
                     </div>
-                    
-                    <div className="px-4">   
+
+                    <div className="px-4">
                       <div className="border-gray-200 flex flex-col gap-5 border-t-2 pt-5">
                             <UserDetails user={auth?.user as unknown as User} />
                         <div className="bg-background-darker -mx-4 py-4">

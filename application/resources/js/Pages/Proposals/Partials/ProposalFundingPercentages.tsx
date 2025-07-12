@@ -69,7 +69,7 @@ export default function ProposalFundingPercentages({ proposal }: Proposal) {
     // Component Renderingf
     return (
         <div data-testid="proposal-funding-percentages">
-            {!proposal?.funded_at && (<div className="flex items-baseline justify-between gap-2 pt-2">
+            {!proposal?.funded_at && (<div className="flex items-baseline justify-between gap-2 pt-2" data-testid="proposal-funding-requested">
                 <span>Requested</span>
                 <div>
                     <span className="text-md font-semibold">
@@ -80,7 +80,7 @@ export default function ProposalFundingPercentages({ proposal }: Proposal) {
                 </div>
             </div>)}
 
-            {!!proposal?.funded_at && (<div className="flex items-baseline justify-between gap-2">
+            {!!proposal?.funded_at && (<div className="flex items-baseline justify-between gap-2" data-testid="proposal-funding-received">
                 <span>Received</span>
                 <div>
                     <span className="text-md font-semibold">
@@ -91,7 +91,7 @@ export default function ProposalFundingPercentages({ proposal }: Proposal) {
                 </div>
             </div>)}
 
-            {!!proposal?.funded_at && (<div className="bg-content-light mt-2 h-3 w-full overflow-hidden rounded-full">
+            {!!proposal?.funded_at && (<div className="bg-content-light mt-2 h-3 w-full overflow-hidden rounded-full" data-testid="proposal-funding-progress-bar">
                 <div
                     className={`h-full rounded-full ${progressBarColor}`}
                     role="progressbar"
