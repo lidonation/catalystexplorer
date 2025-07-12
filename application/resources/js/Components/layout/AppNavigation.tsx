@@ -560,7 +560,7 @@ function AppNavigation() {
                                         dataTestid="proposal-comparison-link"
                                     >
                                         <CompareIcon width={20} primary />
-                                        <span className="text-primary text-sm">
+                                        <span className="text-primary text-sm" data-testid="proposal-comparison-count">
                                             {comparisonCount}
                                         </span>
                                     </ModalNavLink>

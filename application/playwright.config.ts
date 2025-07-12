@@ -9,7 +9,7 @@ export default defineConfig({
     reporter: [['html', { open: 'never' }], ['allure-playwright']],
 
     use: {
-        baseURL: process.env.PLAYWRIGHT_TEST_URL || 'http://localhost/en',
+        baseURL: 'https://preview.catalystexplorer.com/en',
         trace: 'retain-on-failure',
         screenshot: 'only-on-failure',
         video: 'retain-on-failure',
@@ -27,6 +27,6 @@ export default defineConfig({
         {
             name: 'webkit',
             use: { ...devices['Desktop Safari'] },
-        },
+        }
     ],
 });
