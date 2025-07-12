@@ -4,7 +4,7 @@ import ProposalsTable from './ProposalComparisonTable';
 
 export default function ProposalComparison() {
     return (
-        <RoutedModalLayout name="proposal-comparison" zIndex='z-60'>
+        <RoutedModalLayout name="proposal-comparison" zIndex='z-60' dataTestId='proposal-comparison-modal'>
             <ProposalComparisonProvider>
                 <ProposalsTable />
             </ProposalComparisonProvider>
