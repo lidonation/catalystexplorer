@@ -19,6 +19,7 @@ export default function ThemeSwitcher() {
         <fieldset
             className="relative flex flex-col items-center gap-2 rounded-sm"
             aria-labelledby="theme-legend"
+            data-testid="theme-switcher"
         >
             <legend
                 id="theme-legend"
@@ -30,6 +31,7 @@ export default function ThemeSwitcher() {
                 className="flex w-full justify-between gap-x-2.5"
                 role="group"
                 aria-label={t('theme.options')}
+                data-testid="theme-options"
             >
                 {(['light', 'dark', 'voltaire'] as const).map((mode) => (
                     <Button
@@ -38,6 +40,7 @@ export default function ThemeSwitcher() {
                         ariaLabel={t('theme.changeMode', { mode })}
                         aria-pressed={theme === mode}
                         className={`bg-background text-5 text-content hover:bg-background-lighter inline-flex flex-1 items-center gap-1 rounded-sm border px-1 ${theme === mode ? 'bg-background-lighter' : ''}`}
+                        data-testid={`theme-button-${mode}`}
                     >
                         <span aria-hidden={true}>{icons[mode]}</span>
                         <span>{t(`theme.${mode}`)}</span>

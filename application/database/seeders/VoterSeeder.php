@@ -15,7 +15,7 @@ class VoterSeeder extends Seeder
     public function run(): void
     {
         // create voter with registrations
-        Voter::factory(3)
+        Voter::factory(50)
             ->has(
                 Registration::factory()
                     ->count(3)

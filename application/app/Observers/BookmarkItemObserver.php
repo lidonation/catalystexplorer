@@ -18,7 +18,7 @@ class BookmarkItemObserver
         $collection = BookmarkCollection::find($item->bookmark_collection_id);
 
         if (! $collection) {
-            return false;
+            return true;
         }
 
         if ($collection->fund_id && ($item->model_type !== Proposal::class || $item->model_type == 'Proposal')) {

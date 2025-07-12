@@ -83,6 +83,12 @@ const FunnelChart: React.FC<FunnelChartProps> = ({ chartData, viewBy }) => {
             color: '#16B364',
             filterParam: ParamsEnum.COMPLETED_PROPOSALS,
         },
+         {
+            key: 'inProgressProposals',
+            label: t('funds.inProgressProposals'),
+            color: '#ee8434',
+            filterParam: ParamsEnum.IN_PROGRESS,
+        },
         {
             key: 'unfundedProposals',
             label: t('charts.unfundedProposals'),
@@ -126,6 +132,7 @@ const FunnelChart: React.FC<FunnelChartProps> = ({ chartData, viewBy }) => {
         const totalProposals = allData?.totalProposals || 0;
         const fundedProposals = allData?.fundedProposals || 0;
         const completedProposals = allData?.completedProposals || 0;
+        const inProgressProposals = allData?.inProgressProposals || 0;
         const unfundedProposals = allData?.unfundedProposals;
 
 
@@ -152,6 +159,14 @@ const FunnelChart: React.FC<FunnelChartProps> = ({ chartData, viewBy }) => {
                 id: 'fundedProposals',
                 value: fundedProposals,
                 label: t('funds.fundedProposals'),
+            });
+        }
+        
+        if (inProgressProposals > 0) {
+            funnelSteps.push({
+                id: 'inProgressProposals',
+                value: inProgressProposals,
+                label: t('funds.inProgressProposals'),
             });
         }
 
@@ -197,7 +212,6 @@ const FunnelChart: React.FC<FunnelChartProps> = ({ chartData, viewBy }) => {
         return keyItem ? keyItem.color : '#4fadce';
     };
 
-    // Don't render the chart if there's no valid data
     if (!funnelData || funnelData.length === 0) {
         return (
             <div className="flex h-64 items-center justify-center">
@@ -207,8 +221,7 @@ const FunnelChart: React.FC<FunnelChartProps> = ({ chartData, viewBy }) => {
             </div>
         );
     }
-
-    // Ensure we have at least 2 data points for a meaningful funnel
+    
     if (funnelData.length < 1) {
         return (
             <div className="flex h-64 items-center justify-center">

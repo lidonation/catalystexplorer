@@ -33,13 +33,13 @@ export default function BookmarkOnIcon({
                 strokeLinecap="round"
                 strokeLinejoin="round"
             />
-            <path
-                d="M12 13.5V10.5M12 7.5V10.5M9 10.5H12M15 10.5H12"
-                stroke="white"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-            />
+             <path
+            d="M9 9L15 15M15 9L9 15"
+            stroke="white"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+        />
         </svg>
     );
 }

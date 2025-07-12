@@ -34,11 +34,11 @@ export default function RegisterForm({ closeModal }: RegisterFormProps) {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         return emailRegex.test(email);
     };
-    
+
     const validatePasswordStrength = (password: string): boolean => {
         return password.length >= 8;
     };
-    
+
     const validateForm = (): boolean => {
         const newErrors: FormErrors = {};
         let isValid = true;
@@ -63,14 +63,14 @@ export default function RegisterForm({ closeModal }: RegisterFormProps) {
             newErrors.password_confirmation = t('validation.passwordMatch');
             isValid = false;
         }
-        
+
         setErrors(newErrors);
         return isValid;
     };
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
-        
+
         if (!validateForm()) {
             return;
         }
@@ -96,9 +96,9 @@ export default function RegisterForm({ closeModal }: RegisterFormProps) {
     };
 
     return (
-        <form onSubmit={submit} className="content-gap flex flex-col w-full p-4">
+        <form onSubmit={submit} className="content-gap flex flex-col w-full p-4" data-testid="register-form">
             <div>
-                <InputLabel htmlFor="name" value={t('name')} />
+                <InputLabel htmlFor="name" value={t('name')} data-testid="name-input-label"/>
 
                 <TextInput
                     id="name"
@@ -109,13 +109,14 @@ export default function RegisterForm({ closeModal }: RegisterFormProps) {
                     isFocused={true}
                     onChange={(e) => setData('name', e.target.value)}
                     required
+                    data-testid="name-input"
                 />
 
-                <InputError message={errors?.name} className="mt-2" />
+                <InputError message={errors?.name} className="mt-2" data-testid="name-error-text"/>
             </div>
 
             <div>
-                <InputLabel htmlFor="email" value={t('email')} />
+                <InputLabel htmlFor="email" value={t('email')} data-testid="email-input-label"/>
 
                 <TextInput
                     id="email"
@@ -126,13 +127,14 @@ export default function RegisterForm({ closeModal }: RegisterFormProps) {
                     autoComplete="username"
                     onChange={(e) => setData('email', e.target.value)}
                     required
+                    data-testid="email-input"
                 />
 
-                <InputError message={errors?.email} className="mt-2" />
+                <InputError message={errors?.email} className="mt-2" data-testid="email-error-text"/>
             </div>
 
             <div>
-                <InputLabel htmlFor="password" value={t('password')} />
+                <InputLabel htmlFor="password" value={t('password')} data-testid="password-input-label"/>
 
                 <TextInput
                     id="password"
@@ -143,17 +145,19 @@ export default function RegisterForm({ closeModal }: RegisterFormProps) {
                     autoComplete="new-password"
                     onChange={(e) => setData('password', e.target.value)}
                     required
+                    data-testid="password-input"
                 />
                 <Paragraph className="text-4 text-dark mt-1">
                     {t('registration.passwordCharacters')}
                 </Paragraph>
-                <InputError message={errors?.password} className="mt-2" />
+                <InputError message={errors?.password} className="mt-2" data-testid="password-error-text"/>
             </div>
 
             <div>
                 <InputLabel
                     htmlFor="password_confirmation"
                     value={t('confirmPassword')}
+                    data-testid="password-confirmation-input-label"
                 />
 
                 <TextInput
@@ -167,11 +171,13 @@ export default function RegisterForm({ closeModal }: RegisterFormProps) {
                         setData('password_confirmation', e.target.value)
                     }
                     required
+                    data-testid="password-confirmation-input"
                 />
 
                 <InputError
                     message={errors?.password_confirmation}
                     className="mt-2"
+                    data-testid="password-confirmation-error-text"
                 />
             </div>
 
@@ -180,17 +186,19 @@ export default function RegisterForm({ closeModal }: RegisterFormProps) {
                     className="flex h-10 w-full items-center justify-center rounded-md"
                     disabled={processing}
                     type="submit"
+                    data-testid="register-submit-button"
                 >
                     {t('getStarted')}
                 </PrimaryButton>
             </div>
 
-            <div className="flex w-full items-center justify-center">
+            <div className="flex w-full items-center justify-center" data-testid="register-already-registered">
                 <Paragraph className="mr-2">{t('registration.alreadyRegistered')}</Paragraph>
                 <Button
                     type="button"
                     onClick={handleLoginClick}
                     className="text-primary hover:text-content rounded-md font-bold focus:ring-2 focus:ring-offset-2 focus:outline-hidden"
+                    data-testid="login-button"
                 >
                     {t('login')}
                 </Button>

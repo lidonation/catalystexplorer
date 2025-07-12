@@ -11,8 +11,9 @@ type SelectProps = {
     setSelectedItems: (updatedItems: any) => void;
     options?: {
         label: string;
-        value: string;
+        value: string | string[];
         disabled?: boolean;
+        actualValues?: string[];
     }[];
     bgColor?: string;
     context?: string;
@@ -123,10 +124,21 @@ export default function Selector({
 
                             return (
                                 <div
-                                    key={option.value}
+                                    key={
+                                        Array.isArray(option.value)
+                                            ? option.value.join('-')
+                                            : option.value
+                                    }
                                     onClick={() => {
-                                        if (!isOptionDisabled)
-                                            handleSelect(option.value);
+                                        if (!isOptionDisabled) {
+                                            if (Array.isArray(option.value)) {
+                                                option.value.forEach((val) =>
+                                                    handleSelect(val),
+                                                );
+                                            } else {
+                                                handleSelect(option.value);
+                                            }
+                                        }
                                     }}
                                     className={`bg-background! hover:bg-background-lighter! focus:bg-background-lighter aria-selected:bg-background-lighter relative flex w-full items-center justify-between rounded-xs px-3 py-1.5 text-sm outline-hidden select-none ${isOptionDisabled ? 'text-gray-persist cursor-not-allowed opacity-70' : 'cursor-default'} `}
                                 >
@@ -134,7 +146,11 @@ export default function Selector({
 
                                     {!hideCheckbox && (
                                         <Checkbox
-                                            id={option.value}
+                                            id={
+                                                Array.isArray(option.value)
+                                                    ? option.value.join('-')
+                                                    : option.value
+                                            }
                                             checked={
                                                 isMultiselect &&
                                                 selectedItems.length

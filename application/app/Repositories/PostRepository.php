@@ -22,15 +22,24 @@ class PostRepository extends Repository
         try {
             $connector = app(LidoNationConnector::class);
             $postRequest = app(GetPostsRequest::class);
-            $postRequest->query()
-                ->merge($this->query);
+            $postRequest->query()->merge($this->query);
 
             return $connector->paginate($postRequest)
                 ->setPerPageLimit($perPage);
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             report($e);
-        }
 
-        return new \Illuminate\Pagination\LengthAwarePaginator([], 0, $perPage);
+            // Return an empty paginator manually
+            return new \Illuminate\Pagination\LengthAwarePaginator(
+                items: [],
+                total: 0,
+                perPage: $perPage,
+                currentPage: request('page', 1),
+                options: [
+                    'path' => request()->url(),
+                    'query' => request()->query(),
+                ]
+            );
+        }
     }
 }

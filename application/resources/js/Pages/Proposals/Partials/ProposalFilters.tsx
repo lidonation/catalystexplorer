@@ -29,22 +29,88 @@ const ProposalFilters = () => {
                                     label: t('proposals.options.notApproved'),
                                 },
                                 {
-                                    value: 'funded',
+                                    value: 'funded_with_leftover',
                                     label: t('proposals.options.funded'),
+                                    actualValues: ['funded', 'leftover'],
                                 },
                                 {
                                     value: 'fully_paid',
                                     label: t('proposals.options.fullyPaid'),
                                 },
                             ]}
-                            setSelectedItems={(value) =>
+                            setSelectedItems={(value) => {
+                                const selectorOptions = [
+                                    {
+                                        value: 'over_budget',
+                                        label: t(
+                                            'proposals.options.overBudget',
+                                        ),
+                                    },
+                                    {
+                                        value: 'not_approved',
+                                        label: t(
+                                            'proposals.options.notApproved',
+                                        ),
+                                    },
+                                    {
+                                        value: 'funded_with_leftover',
+                                        label: t('proposals.options.funded'),
+                                        actualValues: ['funded', 'leftover'],
+                                    },
+                                    {
+                                        value: 'fully_paid',
+                                        label: t('proposals.options.fullyPaid'),
+                                    },
+                                ];
+
+                                const processedValue = value
+                                    .map((item: any) => {
+                                        const option = selectorOptions.find(
+                                            (opt) => opt.value === item,
+                                        );
+                                        return option?.actualValues || item;
+                                    })
+                                    .flat();
+
                                 setFilters({
                                     label: t('proposals.filters.fundingStatus'),
-                                    value,
+                                    value: processedValue,
                                     param: ParamsEnum.FUNDING_STATUS,
-                                })
-                            }
-                            selectedItems={getFilter(ParamsEnum.FUNDING_STATUS)}
+                                });
+                            }}
+                            selectedItems={(() => {
+                                const currentFilter = getFilter(
+                                    ParamsEnum.FUNDING_STATUS,
+                                );
+                                if (!currentFilter) return [];
+
+                                const selectorOptions = [
+                                    {
+                                        value: 'over_budget',
+                                        actualValues: ['over_budget'],
+                                    },
+                                    {
+                                        value: 'not_approved',
+                                        actualValues: ['not_approved'],
+                                    },
+                                    {
+                                        value: 'funded_with_leftover',
+                                        actualValues: ['funded', 'leftover'],
+                                    },
+                                    {
+                                        value: 'fully_paid',
+                                        actualValues: ['fully_paid'],
+                                    },
+                                ];
+
+                                return selectorOptions
+                                    .filter((option) =>
+                                        option.actualValues.some((val) =>
+                                            currentFilter.includes(val),
+                                        ),
+                                    )
+                                    .map((option) => option.value);
+                            })()}
                         />
                     </div>
 

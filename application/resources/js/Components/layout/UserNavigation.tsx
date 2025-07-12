@@ -117,8 +117,8 @@ function UserNavigation() {
     ];
 
     return (
-        <nav className="" role="menu">
-            <ul className={`flex flex-1 flex-col gap-1`} role="menu">
+        <nav className="" role="menu" data-testid="user-navigation">
+            <ul className={`flex flex-1 flex-col gap-1`} role="menu" data-testid="user-navigation-list">
                 {navItems.map(({ href, title, icon }) => {
                     const isDashboard = title === t('my.dashboard');
                     if (isOnMyRoute && isDashboard) {
@@ -129,6 +129,7 @@ function UserNavigation() {
                                         className={`text-dark ${isOnMyRoute ? 'bg-background-dashboard-menu text-content pt-4' : ''} flex cursor-pointer items-center justify-between px-3 py-1 text-sm transition-all duration-200 ease-in-out`}
                                         role="button"
                                         aria-label={`${title} ${t('dropdown')}`}
+                                        data-testid="dashboard-links-dropdown-button"
                                     >
                                         <div className="flex items-center">
                                             <span className="mr-3">
@@ -207,6 +208,7 @@ function UserNavigation() {
                                                                 }
                                                                 className={`${isOnMyRoute ? 'text-content hover:bg-background' : ''} ${isActive ? 'bg-background font-semibold' : ''} flex w-full items-center gap-1 transition-colors duration-200`}
                                                                 showMyPrefix={true}
+                                                                data-testid={`nav-link-${title}`}
                                                             >
                                                                 <span></span>
                                                             </NavLinkItem>
@@ -228,6 +230,7 @@ function UserNavigation() {
                                 href={href}
                                 title={title}
                                 prefetch
+                                data-testid={`nav-link-${title}`}
                             >
                                 {icon}
                             </NavLinkItem>

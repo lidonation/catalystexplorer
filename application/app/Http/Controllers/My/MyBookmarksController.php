@@ -545,7 +545,6 @@ class MyBookmarksController extends Controller
         $bookmarkCollection->delete();
 
         $noRedirect = $request->boolean('no_redirect', false);
-
         if ($noRedirect) {
             return;
         }

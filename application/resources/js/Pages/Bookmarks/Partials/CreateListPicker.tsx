@@ -45,7 +45,7 @@ export default function CreateListPicker({showPickingList, setPickingList}: {
                             <div>
                                 <SecondaryLink
                                     href={useLocalizedRoute(
-                                        'workflows.bookmarks.index',
+                                        'workflows.tinderProposal.index',
                                         { step: 1 },
                                     )}
                                 >

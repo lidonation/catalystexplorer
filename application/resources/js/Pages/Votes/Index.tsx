@@ -212,7 +212,7 @@ const IndexComponent: React.FC<VoteHistoryProps> = (props) => {
                     <div className="bg-background mb-8 rounded-lg p-4 shadow-lg">
                         <Title
                             className="border-dark-light border-b pt-4 pb-4 font-bold"
-                            level="3"
+                            level="4"
                         >
                             {t('vote.votingHistory')}
                         </Title>
@@ -243,7 +243,7 @@ const IndexComponent: React.FC<VoteHistoryProps> = (props) => {
                     <div className="bg-background mb-8 rounded-lg p-4 shadow-lg">
                         <Title
                             className="border-dark-light border-b pt-4 pb-4 font-bold"
-                            level="3"
+                            level="4"
                         >
                             {t('vote.votingHistory')}
                         </Title>
