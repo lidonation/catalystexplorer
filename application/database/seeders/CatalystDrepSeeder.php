@@ -15,6 +15,6 @@ class CatalystDrepSeeder extends Seeder
      */
     public function run(): void
     {
-        CatalystDrep::factory()->count(10)->create();
+        CatalystDrep::factory()->count(30)->create();
     }
 }

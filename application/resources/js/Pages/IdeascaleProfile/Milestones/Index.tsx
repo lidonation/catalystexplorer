@@ -18,7 +18,7 @@ export default function Milestones({
     projectSchedules,
 }: MilestonesPageProps) {
     const { t } = useTranslation();
-
+    
     return (
         <IdeascaleProfileLayout ideascaleProfile={ideascaleProfile}>
             <Head title={`${ideascaleProfile.name} - Milestones`} />
@@ -30,21 +30,21 @@ export default function Milestones({
                         fallback={<div>Loading Connections</div>}
                     >
                         <section className="w-full py-4">
-                            {projectSchedules &&
-                            projectSchedules.data?.length > 0 ? (
+                            {projectSchedules?.data &&
+                            projectSchedules?.data?.length > 0 ? (
                                 <>
                                     <MilestoneAccordion
                                         milestones={
-                                            projectSchedules.data[1].milestones
+                                            projectSchedules.data[0]?.milestones
                                         }
                                         totalCost={
-                                            projectSchedules.data[1].budget
+                                            projectSchedules.data[0]?.budget
                                         }
                                         currency={
-                                            projectSchedules.data[1].currency
+                                            projectSchedules.data[0]?.currency
                                         }
                                         onTrack={
-                                            projectSchedules.data[1].on_track
+                                            projectSchedules.data[0]?.on_track
                                         }
                                     />
                                 </>

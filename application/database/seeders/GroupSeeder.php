@@ -5,8 +5,9 @@ declare(strict_types=1);
 namespace Database\Seeders;
 
 use App\Models\Group;
-use Database\Seeders\Traits\GetImageLink;
+use App\Jobs\AttachImageJob;
 use Illuminate\Database\Seeder;
+use Database\Seeders\Traits\GetImageLink;
 
 class GroupSeeder extends Seeder
 {
@@ -17,18 +18,13 @@ class GroupSeeder extends Seeder
      */
     public function run(): void
     {
-        $groups = Group::factory()
-            ->count(10)
-            ->create();
+        $groups = Group::factory()->count(30)->create();
 
         $groups->each(function (Group $group) {
-            if ($heroImageLink = $this->getRandomBannerImageLink()) {
-                $group->addMediaFromUrl($heroImageLink)->toMediaCollection('banner');
-            }
 
-            if ($logoImageLink = $this->getGroupInitialsLogoLink($group->name)) {
-                $group->addMediaFromUrl($logoImageLink)->toMediaCollection('hero');
-            }
+            AttachImageJob::dispatch($group,  'hero');
+
+            AttachImageJob::dispatch($group,  'banner');
         });
     }
 }

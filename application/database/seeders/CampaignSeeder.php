@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace Database\Seeders;
 
-use App\Models\Campaign;
+use App\Models\Fund;
 use App\Models\User;
-use Database\Seeders\Traits\GetImageLink;
+use App\Models\Campaign;
+use App\Jobs\AttachImageJob;
 use Illuminate\Database\Seeder;
+use Database\Seeders\Traits\GetImageLink;
 
 class CampaignSeeder extends Seeder
 {
@@ -18,15 +20,16 @@ class CampaignSeeder extends Seeder
      */
     public function run(): void
     {
-        $campaigns = Campaign::factory()
-            ->recycle(User::factory()->create())
-            ->count(10)
-            ->create();
+        $funds = Fund::all();
+
+        $campaigns = $funds->flatMap(
+            fn($fund) => Campaign::factory()->count(5)->for($fund, 'fund')->create()
+        );
 
         $campaigns->each(function (Campaign $campaign) {
-            if ($heroImageLink = $this->getRandomImageLink()) {
-                $campaign->addMediaFromUrl($heroImageLink)->toMediaCollection('hero');
-            }
+            AttachImageJob::dispatch($campaign,  'hero');
+
+            AttachImageJob::dispatch($campaign,  'banner');
         });
     }
 }
