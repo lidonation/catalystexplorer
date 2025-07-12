@@ -135,7 +135,7 @@ export default function ProposalsTable() {
     );
 
     return (
-        <div className="container">
+        <div className="container" data-testid="proposal-comparison-table">
              <div className="flex items-center justify-between mb-4">
             <header>
                 <div className=" ">
