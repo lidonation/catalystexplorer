@@ -39,7 +39,11 @@ const ChartFilter = forwardRef<
 
     return (
         <div ref={ref} className="text-content relative">
-            <Listbox value={selectedValue} onChange={(val) => toggleValue(val)}>
+            <Listbox
+                as="div"
+                value={selectedValue}
+                onChange={(val) => toggleValue(val)}
+            >
                 <ListboxButton className="border-content-light flex items-center gap-3 rounded-lg border px-3 py-1 text-nowrap lg:min-w-48">
                     {({ open }) => (
                         <div className="flex w-full items-center justify-between gap-3">
