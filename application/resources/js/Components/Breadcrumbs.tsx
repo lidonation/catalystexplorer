@@ -57,7 +57,7 @@ const Breadcrumbs = ({
         if (isHome) {
             return <HomeIcon className="text-content" />;
         }
-        
+
         return truncateMiddle(label, maxLabelLength);
     };
 
@@ -65,6 +65,7 @@ const Breadcrumbs = ({
         <nav
             aria-label="Breadcrumb"
             className="container flex items-center space-x-2 pt-5 pl-8 text-sm whitespace-nowrap overflow-x-auto"
+            data-testid="breadcrumbs"
         >
             {displayItems.map((item, index) => {
                 const isLast = index === displayItems.length - 1;
@@ -86,7 +87,7 @@ const Breadcrumbs = ({
                                 {formatLabel(item.label, isHome)}
                             </span>
                         ) : (
-                            <Link href={item.href} className={itemClassName}>
+                            <Link href={item.href} className={itemClassName} data-testid={`breadcrumb-link-${item.label}`}>
                                 {formatLabel(item.label, isHome)}
                             </Link>
                         )}

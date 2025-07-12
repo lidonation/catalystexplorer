@@ -79,7 +79,7 @@ function SearchControls({
     ).length;
 
     return (
-        <div className="sticky top-0 z-10  mx-auto flex w-full flex-col gap-3 px-0 py-3 backdrop-blur-md">
+        <div className="sticky top-0 z-10 mx-auto flex w-full flex-col gap-3 px-0 py-3 backdrop-blur-md" data-testid="search-controls-container">
             <div className="flex flex-col items-center justify-end gap-2 lg:flex-row">
                 <SearchBar
                     border={'border-gray-300'}
@@ -92,18 +92,19 @@ function SearchControls({
 
                 <div className="flex gap-2 max-sm:w-full max-sm:justify-between">
                     {withFilters && (
-        <Button
-             className={`border-input bg-background flex cursor-pointer flex-row items-center gap-2 rounded-full border px-3 py-1.5 shadow-sm transition-all duration-200 ${
-              showFilters
-            ? 'border-gray-400 bg-gray-50 text-gray-700 ring-offset-background ring-1  ring-gray-300'
-            : 'hover:bg-gray-50 hover:border-gray-300 text-gray-600 hover:shadow-md'
-          }`}
-        onClick={toggleFilters}
-        ariaLabel="Show Filters"
->
-        <FilterLinesIcon className={'size-5'} />
-         <span className="font-medium">{t('filters')}</span>
-</Button>
+                        <Button
+                            className={`border-input bg-background flex cursor-pointer flex-row items-center gap-2 rounded-full border px-3 py-1.5 shadow-sm transition-all duration-200 ${
+                                showFilters
+                                    ? 'ring-offset-background border-gray-400 bg-gray-50 text-gray-700 ring-1 ring-gray-300'
+                                    : 'text-gray-600 hover:border-gray-300 hover:bg-gray-50 hover:shadow-md'
+                            }`}
+                            onClick={toggleFilters}
+                            ariaLabel="Show Filters"
+                            data-testid="search-controls-toggle-filters"
+                        >
+                            <FilterLinesIcon className={'size-5'} />
+                            <span className="font-medium">{t('filters')}</span>
+                        </Button>
                     )}
                     <Selector
                         isMultiselect={false}
@@ -118,11 +119,12 @@ function SearchControls({
                         options={sortOptions}
                         hideCheckbox={true}
                         placeholder={t('proposals.options.sort')}
-                        className={`bg-background  ${
+                        className={`bg-background ${
                             getFilter(ParamsEnum.SORTS)
                                 ? 'bg-background-lighter text-primary'
                                 : 'hover:bg-background-lighter text-gray-500'
                         }`}
+                        data-testid="search-controls-sort-selector"
                     />
                 </div>
             </div>
