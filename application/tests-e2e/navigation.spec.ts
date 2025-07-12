@@ -143,12 +143,12 @@ test.describe('Navigation Sidebar', () => {
     /**
      * Test: Proposal comparison badge appears with numeric count
      */
-    // test('proposal comparison badge should display number', async ({ page }) => {
-    //     const badge = page.getByTestId('proposal-comparison-link');
-    //     await expect(badge).toBeVisible();
+    test('proposal comparison badge should display number', async ({ page }) => {
+        const badge = page.getByTestId('proposal-comparison-link');
+        await expect(badge).toBeVisible();
 
-    //     const countText = await badge.innerText();
+        const countText = await badge.innerText();
 
-    //     expect(Number.isNaN(Number(countText.trim()))).toBe(false);
-    // });
+        expect(Number.isNaN(Number(countText.trim()))).toBe(false);
+    });
 });

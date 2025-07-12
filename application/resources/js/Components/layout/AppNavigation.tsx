@@ -557,7 +557,7 @@ function AppNavigation() {
                                     <ModalNavLink
                                         href="#proposal-comparison"
                                         className="border-primary-mid bg-primary-light absolute right-0 flex min-w-[2em] items-center justify-center gap-2 rounded-full border px-2 py-0 hover:cursor-pointer"
-                                        data-testid="proposal-comparison-link"
+                                        dataTestid="proposal-comparison-link"
                                     >
                                         <CompareIcon width={20} primary />
                                         <span className="text-primary text-sm">
