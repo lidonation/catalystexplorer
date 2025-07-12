@@ -65,6 +65,7 @@ const PaginationPrevious = ({
     const { t } = useTranslation();
     return (
         <PaginationLink
+            data-testid="pagination-previous"
             aria-label={t('pagination.goPreviousPage')}
             className={cn('flex items-center justify-between px-3 py-2 text-sm font-medium text-gray-500 hover:bg-gray-50 hover:text-gray-700 disabled:opacity-50', className)}
             linkProps={linkProps}
@@ -85,6 +86,7 @@ const PaginationNext = ({
     const { t } = useTranslation();
     return (
         <PaginationLink
+            data-testid="pagination-next"
             aria-label={t('pagination.goNextPage')}
             className={cn('flex items-center justify-between px-3 py-2 text-sm font-medium  hover:bg-gray-50 hover:text-gray-700 disabled:opacity-50', className)}
             linkProps={linkProps}

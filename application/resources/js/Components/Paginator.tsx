@@ -102,6 +102,7 @@ const PaginationComponent: React.FC<PaginationComponentProps<any>> = ({
                                                             : '',
                                                     )}
                                                     {...linkProps}
+                                                    data-testid={`pagination-link-${link.label}`}
                                                 >
                                                     {link.label}
                                                 </Link>
@@ -111,7 +112,7 @@ const PaginationComponent: React.FC<PaginationComponentProps<any>> = ({
                                 )}
                         </ul>
                     </div>
-                    <div className="text-sm">
+                    <div className="text-sm" data-testid="pagination-info">
                         Showing {from} - {to} of{' '}
                         <span className="font-bold">{total}</span>
                     </div>

@@ -13,10 +13,10 @@ const SectionOne: React.FC<
 > = ({ submitted, approved, completed }) => {
     const { t } = useTranslation();
     return (
-        <div className="flex w-full items-center justify-between text-sm md:text-base divide-x divide-dark">
+        <div className="flex w-full items-center justify-between text-sm md:text-base divide-x divide-dark" data-testid="metrics-bar-section-one">
             {!!submitted && (
                 <div className="flex grow flex-col items-center px-2">
-                    <ValueLabel className="content-light block font-semibold">
+                    <ValueLabel className="content-light block font-semibold" data-testid="metrics-bar-submitted-label">
                         {t('submitted')}
                     </ValueLabel>
                     <span>{submitted.toLocaleString()}</span>
@@ -24,7 +24,7 @@ const SectionOne: React.FC<
             )}
             {!!approved && (
                 <div className="flex grow flex-col items-center px-2">
-                    <ValueLabel className="text-primary block font-semibold">
+                    <ValueLabel className="text-primary block font-semibold" data-testid="metrics-bar-approved-label">
                         {t('approved')}
                     </ValueLabel>
                     <span>{approved.toLocaleString()}</span>
@@ -32,7 +32,7 @@ const SectionOne: React.FC<
             )}
             {!!completed && (
                 <div className="flex grow flex-col items-center px-2">
-                    <ValueLabel className="text-success block font-semibold">
+                    <ValueLabel className="text-success block font-semibold" data-testid="metrics-bar-completed-label">
                         {t('completed')}
                     </ValueLabel>
                     <span>{completed.toLocaleString()}</span>
@@ -51,14 +51,14 @@ const SectionTwo: React.FC<
 > = ({ distributedUSD, distributedADA, awardedUSD, awardedADA, requestedUSD, requestedADA, }) => {
     const { t } = useTranslation();
     return (
-        <div className="flex w-full items-center justify-between text-sm md:text-base divide-x divide-dark">
+        <div className="flex w-full items-center justify-between text-sm md:text-base divide-x divide-dark" data-testid="metrics-bar-section-two">
             {!!distributedUSD && (
                 <div
                     className={
                         'flex grow flex-col items-center px-2'
                     }
                 >
-                    <ValueLabel className="block text-nowrap">
+                    <ValueLabel className="block text-nowrap" data-testid="metrics-bar-distributed-usd-label">
                         $ {t('distributed')}
                     </ValueLabel>
                     <span>{currency(distributedUSD)}</span>
@@ -70,7 +70,7 @@ const SectionTwo: React.FC<
                         'flex grow flex-col items-center px-2'
                     }
                 >
-                    <ValueLabel className="block text-nowrap">
+                    <ValueLabel className="block text-nowrap" data-testid="metrics-bar-distributed-ada-label">
                         ₳ {t('distributed')}
                     </ValueLabel>
                     <span>{currency(distributedADA, 2, 'ADA')}</span>
@@ -83,7 +83,7 @@ const SectionTwo: React.FC<
                         'flex grow flex-col items-center px-2'
                     }
                 >
-                    <ValueLabel className="block text-nowrap">
+                    <ValueLabel className="block text-nowrap" data-testid="metrics-bar-awarded-usd-label">
                         $ {t('awarded')}
                     </ValueLabel>
                     <div className='text-nowrap'>{currency(awardedUSD)}</div>
@@ -95,7 +95,7 @@ const SectionTwo: React.FC<
                         'flex grow flex-col items-center px-2'
                     }
                 >
-                    <ValueLabel className="block text-nowrap">
+                    <ValueLabel className="block text-nowrap" data-testid="metrics-bar-awarded-ada-label">
                         ₳ {t('awarded')}
                     </ValueLabel>
                     <div className='text-nowrap'>{currency(awardedADA, 2, 'ADA')}</div>
@@ -109,7 +109,7 @@ const SectionTwo: React.FC<
                         'flex grow flex-col items-center px-2'
                     }
                 >
-                    <ValueLabel className="block text-nowrap">
+                    <ValueLabel className="block text-nowrap" data-testid="metrics-bar-requested-usd-label">
                         $ {t('requested')}
                     </ValueLabel>
                     <span>{currency(requestedUSD)}</span>
@@ -121,7 +121,7 @@ const SectionTwo: React.FC<
                         'flex grow flex-col items-center px-2'
                     }
                 >
-                    <ValueLabel className="block text-nowrap">
+                    <ValueLabel className="block text-nowrap" data-testid="metrics-bar-requested-ada-label">
                         ₳ {t('requested')}
                     </ValueLabel>
                     <span>{currency(requestedADA, 2, 'ADA')}</span>
@@ -145,6 +145,7 @@ const MetricsBar: React.FC<ProposalMetrics | undefined> = (props) => {
                 className={`bg-bg-dark sticky divide-x divide-dark inset-x-0 bottom-0 mx-auto flex items-center justify-between overflow-hidden rounded-xl px-4 py-3 text-white shadow-lg transition-all duration-300 mb-4 ${
                     isExpanded && !isPlayerBarExpanded ? 'w-full' : 'w-auto'
                 }`}
+                data-testid="metrics-bar-container"
             >
                 <div className="flex w-full items-center justify-between">
                     <SectionOne
