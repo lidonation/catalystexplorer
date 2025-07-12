@@ -25,7 +25,7 @@ export default function ActiveFilters({
     const booleanFilters = ['op', 'h'];
 
     return (
-        <div className="flex w-full flex-wrap gap-3 text-sm transition-all duration-300">
+        <div className="flex w-full flex-wrap gap-3 text-sm transition-all duration-300" data-testid="active-filters-container">
             {filters.map((filter) => {
                 if (!filter.label) {
                     return;
