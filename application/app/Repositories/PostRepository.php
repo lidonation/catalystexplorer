@@ -37,7 +37,7 @@ class PostRepository extends Repository
         } catch (ConnectException | GuzzleRequestException | RequestException | FatalRequestException | SaloonException $e) {
             Log::error('LidoNation API failed: ' . $e->getMessage(), ['exception' => $e]);
         } catch (\Throwable $e) {
-            report($e); /
+            report($e); 
         }
 
         // Graceful fallback: return empty Laravel paginator
