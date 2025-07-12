@@ -2,8 +2,7 @@
 services:
   # app
   catalystexplorer_test.com:
-    image: registry.lidonation.com/lidonation/www.catalystexplorer.com/web-app
-    platform: '${PLATFORM:-linux/amd64}'
+    image: catalystexplorer
     container_name: catalystexplorer_test.com
     tty: true
     env_file:
@@ -11,8 +10,8 @@ services:
     extra_hosts:
         - 'host.docker.internal:host-gateway'
     ports:
-        - '8003:8000'
-        - '5178:${VITE_PORT:-5173}'
+        - '80:8000'
+        - '5173:${VITE_PORT:-5173}'
     environment:
         APP_ENV: testing
         WWWUSER: '${WWWUSER:-1000}'
@@ -29,6 +28,7 @@ services:
         POSTGRESQL_WEB_DB: explorerweb
         POSTGRESQL_WEB_USER: catalystexplorer
         POSTGRESQL_WEB_PASSWORD: ASLJ023470AlserLFH
+        REDIS_HOST: catalystexplorer_test.redis
     volumes:
         - ./application:/var/www:cached
     networks:
@@ -39,8 +39,7 @@ services:
       - catalystexplorer_test.redis
 
   catalystexplorer_test.queue:
-    image: registry.lidonation.com/lidonation/www.catalystexplorer.com/web-app
-    platform: '${PLATFORM:-linux/amd64}'
+    image: catalystexplorer
     container_name: catalystexplorer_test.queue
     depends_on:
         - catalystexplorer_test.db
@@ -69,6 +68,7 @@ services:
         POSTGRESQL_WEB_PASSWORD: ASLJ023470AlserLFH
         MEDIA_DISK: public
         TELESCOPE_USE_DARK_THEME: "true"
+        REDIS_HOST: catalystexplorer_test.redis
     build:
         context: ./docker
         args: {}
