@@ -9,7 +9,7 @@
         "target": "ESNext",
         "esModuleInterop": true,
         "forceConsistentCasingInFileNames": true,
-        "allowImportingTsExtensions":true,
+        "allowImportingTsExtensions": true,
         "skipLibCheck": true,
         "noEmit": true,
         "paths": {
@@ -30,6 +30,7 @@
         "resources/js/**/*.ts",
         "resources/js/**/*.tsx",
         "resources/js/**/*.d.ts",
-        "resources/types/*.d.ts"
-, "resources/js/scripts/generateDbSchema.ts"    ]
+        "resources/types/*.d.ts",
+        "resources/js/scripts/generateDbSchema.ts"
+    ]
 }

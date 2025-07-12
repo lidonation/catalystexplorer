@@ -50,7 +50,7 @@ const Step4Content: React.FC<Step4Props> = ({
     tinderCollectionHash,
 }) => {
     const { t } = useTranslation();
-    const { isOpen, openSlideOver, closeSlideOver } = useWorkflowSlideOver();
+    // const { isOpen, openSlideOver, closeSlideOver } = useWorkflowSlideOver();
     const [leftProposals, setLeftProposals] = useState(initialLeftProposals);
     const [rightProposals, setRightProposals] = useState(initialRightProposals);
     const [deletedCollections, setDeletedCollections] = useState<
@@ -119,7 +119,7 @@ const Step4Content: React.FC<Step4Props> = ({
             }),
             {
                 onSuccess: () => {
-                    closeSlideOver();
+                    // closeSlideOver();
                     setEditingCollection(null);
                     setIsEditingFields(false);
                 },
@@ -172,7 +172,7 @@ const Step4Content: React.FC<Step4Props> = ({
             });
         }
 
-        openSlideOver();
+        // openSlideOver();
     };
 
     const handleDeleteCollection = async () => {
@@ -200,7 +200,7 @@ const Step4Content: React.FC<Step4Props> = ({
                             new Set(prev).add(collectionToDelete),
                         );
                         // Close the slide over
-                        closeSlideOver();
+                        // closeSlideOver();
                         setIsEditingFields(false);
                     },
                     onError: (errors) => {
@@ -258,8 +258,8 @@ const Step4Content: React.FC<Step4Props> = ({
         <WorkflowLayout
             asideInfo={stepDetails[activeStep - 1]?.info || ''}
             slideOver={{
-                isOpen,
-                onClose: closeSlideOver,
+                isOpen:  true,
+                onClose: () => null,
                 title: t('workflows.tinderProposal.step4.editListTitle'),
                 size: 'md',
                 content: slideOverContent,
