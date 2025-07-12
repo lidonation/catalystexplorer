@@ -1,3 +1,4 @@
+import ValueLabel from '@/Components/atoms/ValueLabel';
 import { useMetrics } from '@/Context/MetricsContext';
 import { useUIContext } from '@/Context/SharedUIContext';
 import { ProposalMetrics } from '@/types/proposal-metrics';
@@ -5,7 +6,6 @@ import { currency } from '@/utils/currency';
 import { usePage } from '@inertiajs/react';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import ValueLabel from "@/Components/atoms/ValueLabel";
 
 // SectionOne displays the first set of data in the MetricsBar
 const SectionOne: React.FC<
@@ -13,29 +13,47 @@ const SectionOne: React.FC<
 > = ({ submitted, approved, completed }) => {
     const { t } = useTranslation();
     return (
-        <div className="flex w-full items-center justify-between text-sm md:text-base divide-x divide-dark" data-testid="metrics-bar-section-one">
+        <div
+            className="divide-dark flex w-full items-center justify-between divide-x text-sm md:text-base"
+            data-testid="metrics-bar-section-one"
+        >
             {!!submitted && (
                 <div className="flex grow flex-col items-center px-2">
-                    <ValueLabel className="content-light block font-semibold" data-testid="metrics-bar-submitted-label">
+                    <ValueLabel
+                        className="content-light block font-semibold"
+                        data-testid="metrics-bar-submitted-label"
+                    >
                         {t('submitted')}
                     </ValueLabel>
-                    <span>{submitted.toLocaleString()}</span>
+                    <span data-testid="metrics-bar-submitted-value">
+                        {submitted.toLocaleString()}
+                    </span>
                 </div>
             )}
             {!!approved && (
                 <div className="flex grow flex-col items-center px-2">
-                    <ValueLabel className="text-primary block font-semibold" data-testid="metrics-bar-approved-label">
+                    <ValueLabel
+                        className="text-primary block font-semibold"
+                        data-testid="metrics-bar-approved-label"
+                    >
                         {t('approved')}
                     </ValueLabel>
-                    <span>{approved.toLocaleString()}</span>
+                    <span data-testid="metrics-bar-approved-value">
+                        {approved.toLocaleString()}
+                    </span>
                 </div>
             )}
             {!!completed && (
                 <div className="flex grow flex-col items-center px-2">
-                    <ValueLabel className="text-success block font-semibold" data-testid="metrics-bar-completed-label">
+                    <ValueLabel
+                        className="text-success block font-semibold"
+                        data-testid="metrics-bar-completed-label"
+                    >
                         {t('completed')}
                     </ValueLabel>
-                    <span>{completed.toLocaleString()}</span>
+                    <span data-testid="metrics-bar-completed-value">
+                        {completed.toLocaleString()}
+                    </span>
                 </div>
             )}
         </div>
@@ -46,85 +64,111 @@ const SectionOne: React.FC<
 const SectionTwo: React.FC<
     Pick<
         ProposalMetrics,
-        'requestedUSD' | 'requestedADA' | 'distributedUSD' | 'distributedADA' | 'awardedUSD' | 'awardedADA'
+        | 'requestedUSD'
+        | 'requestedADA'
+        | 'distributedUSD'
+        | 'distributedADA'
+        | 'awardedUSD'
+        | 'awardedADA'
     >
-> = ({ distributedUSD, distributedADA, awardedUSD, awardedADA, requestedUSD, requestedADA, }) => {
+> = ({
+    distributedUSD,
+    distributedADA,
+    awardedUSD,
+    awardedADA,
+    requestedUSD,
+    requestedADA,
+}) => {
     const { t } = useTranslation();
     return (
-        <div className="flex w-full items-center justify-between text-sm md:text-base divide-x divide-dark" data-testid="metrics-bar-section-two">
+        <div
+            className="divide-dark flex w-full items-center justify-between divide-x text-sm md:text-base"
+            data-testid="metrics-bar-section-two"
+        >
             {!!distributedUSD && (
-                <div
-                    className={
-                        'flex grow flex-col items-center px-2'
-                    }
-                >
-                    <ValueLabel className="block text-nowrap" data-testid="metrics-bar-distributed-usd-label">
+                <div className={'flex grow flex-col items-center px-2'}>
+                    <ValueLabel
+                        className="block text-nowrap"
+                        data-testid="metrics-bar-distributed-usd-label"
+                    >
                         $ {t('distributed')}
                     </ValueLabel>
-                    <span>{currency(distributedUSD)}</span>
+                    <span data-testid="metrics-bar-distributed-usd-value">
+                        {currency(distributedUSD)}
+                    </span>
                 </div>
             )}
             {!!distributedADA && (
-                <div
-                    className={
-                        'flex grow flex-col items-center px-2'
-                    }
-                >
-                    <ValueLabel className="block text-nowrap" data-testid="metrics-bar-distributed-ada-label">
+                <div className={'flex grow flex-col items-center px-2'}>
+                    <ValueLabel
+                        className="block text-nowrap"
+                        data-testid="metrics-bar-distributed-ada-label"
+                    >
                         ₳ {t('distributed')}
                     </ValueLabel>
-                    <span>{currency(distributedADA, 2, 'ADA')}</span>
+                    <span data-testid="metrics-bar-distributed-ada-value">
+                        {currency(distributedADA, 2, 'ADA')}
+                    </span>
                 </div>
             )}
 
             {!!awardedUSD && (
-                <div
-                    className={
-                        'flex grow flex-col items-center px-2'
-                    }
-                >
-                    <ValueLabel className="block text-nowrap" data-testid="metrics-bar-awarded-usd-label">
+                <div className={'flex grow flex-col items-center px-2'}>
+                    <ValueLabel
+                        className="block text-nowrap"
+                        data-testid="metrics-bar-awarded-usd-label"
+                    >
                         $ {t('awarded')}
                     </ValueLabel>
-                    <div className='text-nowrap'>{currency(awardedUSD)}</div>
+                    <div
+                        className="text-nowrap"
+                        data-testid="metrics-bar-awarded-usd-value"
+                    >
+                        {currency(awardedUSD)}
+                    </div>
                 </div>
             )}
             {!!awardedADA && (
-                <div
-                    className={
-                        'flex grow flex-col items-center px-2'
-                    }
-                >
-                    <ValueLabel className="block text-nowrap" data-testid="metrics-bar-awarded-ada-label">
+                <div className={'flex grow flex-col items-center px-2'}>
+                    <ValueLabel
+                        className="block text-nowrap"
+                        data-testid="metrics-bar-awarded-ada-label"
+                    >
                         ₳ {t('awarded')}
                     </ValueLabel>
-                    <div className='text-nowrap'>{currency(awardedADA, 2, 'ADA')}</div>
+                    <div
+                        className="text-nowrap"
+                        data-testid="metrics-bar-awarded-ada-value"
+                    >
+                        {currency(awardedADA, 2, 'ADA')}
+                    </div>
                 </div>
             )}
 
-
             {!!requestedUSD && (
-                <div
-                    className={
-                        'flex grow flex-col items-center px-2'
-                    }
-                >
-                    <ValueLabel className="block text-nowrap" data-testid="metrics-bar-requested-usd-label">
+                <div className={'flex grow flex-col items-center px-2'}>
+                    <ValueLabel
+                        className="block text-nowrap"
+                        data-testid="metrics-bar-requested-usd-label"
+                    >
                         $ {t('requested')}
                     </ValueLabel>
-                    <span>{currency(requestedUSD)}</span>
+                    <span data-testid="metrics-bar-requested-usd-value">
+                        {currency(requestedUSD)}
+                    </span>
                 </div>
             )}
             {!!requestedADA && (
-                <div
-                    className={
-                        'flex grow flex-col items-center px-2'
-                    }
-                >
-                    <ValueLabel className="block text-nowrap" data-testid="metrics-bar-requested-ada-label">
+                <div className={'flex grow flex-col items-center px-2'}>
+                    <ValueLabel
+                        className="block text-nowrap"
+                        data-testid="metrics-bar-requested-ada-label"
+                    >
                         ₳ {t('requested')}
                     </ValueLabel>
-                    <span>{currency(requestedADA, 2, 'ADA')}</span>
+                    <span data-testid="metrics-bar-requested-ada-value">
+                        {currency(requestedADA, 2, 'ADA')}
+                    </span>
                 </div>
             )}
         </div>
@@ -136,13 +180,13 @@ const MetricsBar: React.FC<ProposalMetrics | undefined> = (props) => {
     const { isPlayerBarExpanded } = useUIContext(); // Access the context to manage player bar state
     const [isExpanded, setIsExpanded] = useState(true);
     const { metrics } = useMetrics();
-    const onProposals = (usePage().component) == 'Proposals/Index';
+    const onProposals = usePage().component == 'Proposals/Index';
 
     return (
         metrics &&
         onProposals && (
             <div
-                className={`bg-bg-dark sticky divide-x divide-dark inset-x-0 bottom-0 mx-auto flex items-center justify-between overflow-hidden rounded-xl px-4 py-3 text-white shadow-lg transition-all duration-300 mb-4 ${
+                className={`bg-bg-dark divide-dark sticky inset-x-0 bottom-0 mx-auto mb-4 flex items-center justify-between divide-x overflow-hidden rounded-xl px-4 py-3 text-white shadow-lg transition-all duration-300 ${
                     isExpanded && !isPlayerBarExpanded ? 'w-full' : 'w-auto'
                 }`}
                 data-testid="metrics-bar-container"
