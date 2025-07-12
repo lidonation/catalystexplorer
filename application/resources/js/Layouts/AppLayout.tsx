@@ -67,10 +67,10 @@ export default function AppLayout({ children }: { children: ReactNode }) {
                                     ? t('navigation.sidebar.close')
                                     : t('navigation.sidebar.open')
                             }
-                            aria-expanded={sidebarOpen}
-                            aria-controls="mobile-navigation"
+                            ariaExpanded={sidebarOpen}
+                            ariaControls="mobile-navigation"
                             className="text-4 inline-flex items-center rounded-sm px-2 py-1 hover:bg-gray-100"
-                            data-testid="mobile-navigation-toggle-button"
+                            dataTestId="mobile-navigation-toggle-button"
                         >
                             {sidebarOpen ? <CloseIcon /> : <MenuIcon />}
                         </Button>
