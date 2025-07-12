@@ -4,7 +4,6 @@ import Title from '@/Components/atoms/Title';
 import { ListProvider } from '@/Context/ListContext';
 import { TinderWorkflowParams } from '@/enums/tinder-workflow-params';
 import { StatusEnum, VisibilityEnum } from '@/enums/votes-enums';
-import { useWorkflowSlideOver } from '@/Hooks/useWorkflowSlideOver';
 import { generateLocalizedRoute } from '@/utils/localizedRoute';
 import { router, useForm } from '@inertiajs/react';
 import React, { useEffect, useState } from 'react';
@@ -15,6 +14,7 @@ import SlideOverContent from './Partials/SlideOverContent';
 import SwipeCard from './Partials/SwipeCard';
 import BookmarkCollectionData = App.DataTransferObjects.BookmarkCollectionData;
 import ProposalData = App.DataTransferObjects.ProposalData;
+import { useWorkflowSlideOver } from '@/Hooks/useWorkflowSlideOver';
 
 interface Step4Props {
     stepDetails: any[];
