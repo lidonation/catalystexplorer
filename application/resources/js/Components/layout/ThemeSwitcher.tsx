@@ -38,9 +38,9 @@ export default function ThemeSwitcher() {
                         key={mode}
                         onClick={() => setTheme(mode)}
                         ariaLabel={t('theme.changeMode', { mode })}
-                        aria-pressed={theme === mode}
+                        ariaPressed={theme === mode}
                         className={`bg-background text-5 text-content hover:bg-background-lighter inline-flex flex-1 items-center gap-1 rounded-sm border px-1 ${theme === mode ? 'bg-background-lighter' : ''}`}
-                        data-testid={`theme-button-${mode}`}
+                        dataTestId={`theme-button-${mode}`}
                     >
                         <span aria-hidden={true}>{icons[mode]}</span>
                         <span>{t(`theme.${mode}`)}</span>
