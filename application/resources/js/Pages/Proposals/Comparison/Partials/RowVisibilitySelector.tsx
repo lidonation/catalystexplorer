@@ -35,6 +35,7 @@ export default function RowVisibilitySelector({
                 setSelectedItems={onRowVisibilityChange}
                 options={rowOptions}
                 placeholder={t('proposalComparison.selectMetric')}
+                data-testid="proposal-row-visibility-selector"
             />
         </div>
     );

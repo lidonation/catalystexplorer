@@ -131,10 +131,12 @@ export default function SortableProposalColumn({
             {...attributes}
             {...listeners}
             className="bg-background flex w-80 flex-col"
+            data-testid={`sortable-proposal-column-${proposal.hash}`}
         >
             {/* Reorder */}
             <div
                 className={`${getRowData('reorder')?.height} !bg-background-lighter border-gray-light flex items-center justify-between border-r border-b p-4 ${isLast ? 'rounded-tr-lg' : ''} `}
+                data-testid="sortable-proposal-reorder-container"
             >
                 <div className="flex cursor-move items-center gap-1">
                     <Grab className="text-dark h-4 w-4" />
@@ -145,6 +147,7 @@ export default function SortableProposalColumn({
                 <MinusSquareIcon
                     onClick={() => handleRemove()}
                     className="text-dark h-4 w-4 cursor-pointer"
+                    data-testid="sortable-proposal-remove"
                 />
             </div>
 
@@ -152,6 +155,7 @@ export default function SortableProposalColumn({
             {isRowVisible('title') && (
                 <div
                     className={`${getRowData('title')?.height} border-gray-light flex items-center border-r border-b p-4`}
+                    data-testid="sortable-proposal-title"
                 >
                     <ColumnHeader proposal={proposal} />
                 </div>
@@ -161,6 +165,7 @@ export default function SortableProposalColumn({
             {isRowVisible('campaign') && (
                 <div
                     className={`${getRowData('campaign')?.height} border-gray-light flex items-center border-r border-b p-4`}
+                    data-testid="sortable-proposal-campaign"
                 >
                     <Paragraph size="md">
                         {proposal?.campaign?.title || 'N/A'}
@@ -172,6 +177,7 @@ export default function SortableProposalColumn({
             {isRowVisible('fund') && (
                 <div
                     className={`${getRowData('fund')?.height} border-gray-light flex items-center border-r border-b p-4`}
+                    data-testid="sortable-proposal-fund"
                 >
                     <span className="text-dark-persist bg-content-light rounded-md px-2 py-1 text-xs">
                         {proposal?.fund?.title}
@@ -183,6 +189,7 @@ export default function SortableProposalColumn({
             {isRowVisible('status') && (
                 <div
                     className={`${getRowData('status')?.height} border-gray-light flex items-center border-r border-b p-4`}
+                    data-testid="sortable-proposal-status"
                 >
                     <ProposalFundingStatus
                         funding_status={proposal.funding_status}
@@ -194,6 +201,7 @@ export default function SortableProposalColumn({
             {isRowVisible('problem') && (
                 <div
                     className={`${getRowData('problem')?.height} border-gray-light bg-background flex items-center border-r border-b p-4`}
+                    data-testid="sortable-proposal-problem"
                 >
                     <ProposalSolution problem={proposal.problem} />
                 </div>
@@ -203,6 +211,7 @@ export default function SortableProposalColumn({
             {isRowVisible('solution') && (
                 <div
                     className={`${getRowData('solution')?.height} border-gray-light bg-background flex items-center border-r border-b p-4`}
+                    data-testid="sortable-proposal-solution"
                 >
                     <ProposalSolution solution={proposal.solution} />
                 </div>
@@ -212,6 +221,7 @@ export default function SortableProposalColumn({
             {isRowVisible('funding') && (
                 <div
                     className={`${getRowData('funding')?.height} border-gray-light flex flex-col border-r border-b p-4`}
+                    data-testid="sortable-proposal-funding"
                 >
                     <ProposalFundingPercentages proposal={proposal} />
                 </div>
@@ -221,6 +231,7 @@ export default function SortableProposalColumn({
             {isRowVisible('yes-votes') && (
                    <div
                     className={`${getRowData('yes-votes')?.height} border-gray-light flex items-center border-r border-b p-4`}
+                    data-testid="sortable-proposal-yes-votes"
                 >
                     <div className="flex items-center gap-1">
                         <svg
@@ -251,6 +262,7 @@ export default function SortableProposalColumn({
             {isRowVisible('no-votes') && (
                 <div
                     className={`${getRowData('no-votes')?.height} border-gray-light flex items-center border-r border-b p-4`}
+                    data-testid="sortable-proposal-no-votes"
                 >
                     <div className="flex items-center gap-1">
                         <svg
@@ -281,6 +293,7 @@ export default function SortableProposalColumn({
             {isRowVisible('team') && (
                 <div
                     className={`${getRowData('team')?.height} border-gray-light flex items-center border-r border-b p-4`}
+                    data-testid="sortable-proposal-team"
                 >
                     <IdeascaleProfileUsers
                         users={proposal?.users}
@@ -296,6 +309,7 @@ export default function SortableProposalColumn({
             {isRowVisible('opensource') && (
                 <div
                     className={`${getRowData('opensource')?.height} border-gray-light flex items-center border-r border-b p-4`}
+                    data-testid="sortable-proposal-opensource"
                 >
                     <span className="text-dark-persist bg-content-light rounded-md px-2 py-1 text-xs">
                         {proposal.opensource ? 'OpenSource' : 'Non-OpenSource'}
@@ -310,6 +324,7 @@ export default function SortableProposalColumn({
                 <PrimaryLink
                     href={proposal.link ?? '#'}
                     className="h-8 w-full text-sm"
+                    data-testid="sortable-proposal-view"
                 >
                     {t('proposalComparison.viewProposal')}
                 </PrimaryLink>
