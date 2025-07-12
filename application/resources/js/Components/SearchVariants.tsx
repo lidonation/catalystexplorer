@@ -69,7 +69,7 @@ const SearchVariants = ({
 
     return (
         <div className="text-content h-full relative">
-            <Listbox value={value} onChange={handleSelection} multiple data-testid="search-variants-dropdown">
+            <Listbox as="div" value={value} onChange={handleSelection} multiple data-testid="search-variants-dropdown">
                 <ListboxButton className="flex items-center justify-center gap-3 px-3 py-2 text-nowrap" data-testid="search-variants-dropdown-button">
                     {({ open }) => (
                         <div className="flex items-center gap-3">

@@ -139,7 +139,7 @@ export function ListProvider({ children }: { children: React.ReactNode }) {
                           ]
                         : prev.lists,
                 }));
-                
+
                 EventBus.emit('listItem-added');
                 return;
             }
@@ -184,7 +184,7 @@ export function ListProvider({ children }: { children: React.ReactNode }) {
                     bookmark_collection_id: listId,
                     bookmark_ids: [bookmarkId],
                 },
-            );            
+            );
 
             if (res.data?.type === 'success') {
                 setState((prev) => ({
