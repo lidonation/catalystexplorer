@@ -3,7 +3,7 @@ import { ChevronLeft, ChevronRight, ThumbsUpIcon } from 'lucide-react';
 import React, { useEffect, useState, useRef, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { router } from '@inertiajs/react';
-
+import api from '@/utils/axiosClient';
 import Paragraph from '@/Components/atoms/Paragraph';
 import PrimaryLink from '@/Components/atoms/PrimaryLink';
 import PrimaryButton from '@/Components/atoms/PrimaryButton';
@@ -95,9 +95,10 @@ const Step3: React.FC<Step3Props> = ({
     const [hasMorePages, setHasMorePages] = useState(true);
     const [swipedLeftProposals, setSwipedLeftProposals] = useState<string[]>(Array.isArray(existingSwipedLeft) ? existingSwipedLeft : []);
     const [swipedRightProposals, setSwipedRightProposals] = useState<string[]>(Array.isArray(existingSwipedRight) ? existingSwipedRight : []);
-    
+    const [processingProposals, setProcessingProposals] = useState<Set<string>>(new Set());
+
     // Track current page - start from the calculated starting page
-    const [currentPage, setCurrentPage] = useState(startingPage); 
+    const [currentPage, setCurrentPage] = useState(startingPage);
 
     useEffect(() => {
         const safeExistingSwipedLeft = Array.isArray(existingSwipedLeft) ? existingSwipedLeft : [];
@@ -112,33 +113,33 @@ const Step3: React.FC<Step3Props> = ({
         [TinderWorkflowParams.RIGHT_BOOKMARK_COLLECTION_HASH]: rightBookmarkCollectionHash,
     });
 
-  useEffect(() => {
-    if (proposals?.data) {
-        const safeExistingSwipedLeft = Array.isArray(existingSwipedLeft) ? existingSwipedLeft : [];
-        const safeExistingSwipedRight = Array.isArray(existingSwipedRight) ? existingSwipedRight : [];
-        const allSwipedSlugs = [...safeExistingSwipedLeft, ...safeExistingSwipedRight];
+    useEffect(() => {
+        if (proposals?.data) {
+            const safeExistingSwipedLeft = Array.isArray(existingSwipedLeft) ? existingSwipedLeft : [];
+            const safeExistingSwipedRight = Array.isArray(existingSwipedRight) ? existingSwipedRight : [];
+            const allSwipedSlugs = [...safeExistingSwipedLeft, ...safeExistingSwipedRight];
 
-        if (isLoadMore) {
-            // Append new proposals to existing ones, but filter out any already swiped proposals
-            const filteredNewProposals = proposals.data.filter(proposal =>
-                !allSwipedSlugs.includes(proposal.slug)
-            );
-            setAllProposals(prev => [...prev, ...filteredNewProposals]);
-        } else {
-            // Replace with initial proposals, filtering out already swiped ones
-            const filteredProposals = proposals.data.filter(proposal =>
-                !allSwipedSlugs.includes(proposal.slug)
-            );
-            setAllProposals(filteredProposals);
-            
-            // Set the current index to the index within the current page
-            setCurrentIndex(currentIndexWithinPage);
+            if (isLoadMore) {
+                // Append new proposals to existing ones, but filter out any already swiped proposals
+                const filteredNewProposals = proposals.data.filter(proposal =>
+                    !allSwipedSlugs.includes(proposal.slug)
+                );
+                setAllProposals(prev => [...prev, ...filteredNewProposals]);
+            } else {
+                // Replace with initial proposals, filtering out already swiped ones
+                const filteredProposals = proposals.data.filter(proposal =>
+                    !allSwipedSlugs.includes(proposal.slug)
+                );
+                setAllProposals(filteredProposals);
+
+                // Set the current index to the index within the current page
+                setCurrentIndex(currentIndexWithinPage);
+            }
+
+            setHasMorePages(proposals.current_page < proposals.last_page);
+            setIsLoading(false);
         }
-
-        setHasMorePages(proposals.current_page < proposals.last_page);
-        setIsLoading(false);
-    }
-}, [proposals, isLoadMore, existingSwipedLeft, existingSwipedRight, currentIndexWithinPage]);
+    }, [proposals, isLoadMore, existingSwipedLeft, existingSwipedRight, currentIndexWithinPage]);
 
     const buildUpdatedFilters = (updates: Partial<SearchParams> = {}) => {
         const baseFilters: Record<string, any> = { ...filters };
@@ -209,16 +210,7 @@ const Step3: React.FC<Step3Props> = ({
 
         const currentProposal = allProposals[currentIndex];
         const proposalSlug = currentProposal?.slug;
-
-        if (proposalSlug) {
-            if (direction === 'left') {
-                setSwipedLeftProposals(prev => [...prev, proposalSlug]);
-            } else {
-                setSwipedRightProposals(prev => [...prev, proposalSlug]);
-            }
-        } else {
-            console.warn('No slug found for proposal:', currentProposal);
-        }
+        const proposalHash = currentProposal?.hash;
 
         setIsAnimating(true);
         setSwipeDirection(direction);
@@ -230,6 +222,49 @@ const Step3: React.FC<Step3Props> = ({
         setDragOffset({ x: 0, y: 0 });
         const offScreenX = direction === 'right' ? 600 : -600; // Increased distance for smoother exit
         setSwipeOffset({ x: offScreenX, y: 0 });
+
+        // Update local state immediately for responsive UI
+        if (proposalSlug) {
+            if (direction === 'left') {
+                setSwipedLeftProposals(prev => [...prev, proposalSlug]);
+            } else {
+                setSwipedRightProposals(prev => [...prev, proposalSlug]);
+            }
+        }
+
+        if (proposalSlug && proposalHash) {
+            if (!processingProposals.has(proposalSlug)) {
+
+                setProcessingProposals(prev => new Set(prev).add(proposalSlug));
+
+                const targetCollectionHash = direction === 'left'
+                    ? leftBookmarkCollectionHash
+                    : rightBookmarkCollectionHash;
+
+                if (targetCollectionHash) {
+                    api.post(route('en.workflows.tinderProposal.addBookmarkItem'), {
+                    proposalHash,
+                    modelType: 'proposals', 
+                    bookmarkCollection: targetCollectionHash
+            })
+                        .then(() => {
+                        })
+                        .catch((error) => {
+                            console.error('Failed to save bookmark:', error);
+                        })
+                        .finally(() => {
+                            // Clean up processing state
+                            setProcessingProposals(prev => {
+                                const newSet = new Set(prev);
+                                newSet.delete(proposalSlug);
+                                return newSet;
+                            });
+                        });
+                }
+            }
+        } else {
+            console.warn('No slug or hash found for proposal:', currentProposal);
+        }
 
         // After animation completes, advance to next card and clean up
         setTimeout(() => {
@@ -387,237 +422,222 @@ const Step3: React.FC<Step3Props> = ({
         }
     }, [preferences]);
 
-    // Function to go to Step 4 and save swiped proposals in session
     const goToStep4 = () => {
-        // Only send the newly swiped proposals (not already existing ones)
-        const newSwipedLeft = Array.isArray(swipedLeftProposals) ?
-            swipedLeftProposals.filter(slug => !existingSwipedLeft.includes(slug)) : [];
-        const newSwipedRight = Array.isArray(swipedRightProposals) ?
-            swipedRightProposals.filter(slug => !existingSwipedRight.includes(slug)) : [];
-
-        // Calculate the absolute index (across all pages)
-        const proposalsPerPage = proposals?.per_page || 20;
-        const absoluteCurrentIndex = ((currentPage - 1) * proposalsPerPage) + currentIndex;
-
-        router.post(
-            generateLocalizedRoute('workflows.tinderProposal.saveStep3'),
-            {
-                [TinderWorkflowParams.SWIPED_LEFT_PROPOSALS]: newSwipedLeft,
-                [TinderWorkflowParams.SWIPED_RIGHT_PROPOSALS]: newSwipedRight,
+        // Navigate to step 4 with collection hashes
+        router.visit(
+            generateLocalizedRoute('workflows.tinderProposal.index', {
+                [TinderWorkflowParams.STEP]: 4,
                 [TinderWorkflowParams.TINDER_COLLECTION_HASH]: collectionHash,
                 [TinderWorkflowParams.LEFT_BOOKMARK_COLLECTION_HASH]: leftBookmarkCollectionHash,
                 [TinderWorkflowParams.RIGHT_BOOKMARK_COLLECTION_HASH]: rightBookmarkCollectionHash,
-                [TinderWorkflowParams.CURRENT_INDEX]: absoluteCurrentIndex,
-                [TinderWorkflowParams.TOTAL_PROPOSALS_SEEN]: absoluteCurrentIndex + 1,
-                [TinderWorkflowParams.PAGE]: currentPage,
-            },
-            {
-                preserveState: true,
-            }
+            })
         );
     };
 
     return (
-    <FiltersProvider
+        <FiltersProvider
             defaultFilters={filters}
             routerOptions={{
                 preserveScroll: true,
             }}
         >
-        <WorkflowLayout
-            asideInfo={stepDetails[activeStep - 1]?.info || ''}
-            wrapperClassName="!h-auto"
-            contentClassName="!max-h-none"
-        >
-            <Nav stepDetails={stepDetails} activeStep={activeStep} />
+            <WorkflowLayout
+                asideInfo={stepDetails[activeStep - 1]?.info || ''}
+                wrapperClassName="!h-auto"
+                contentClassName="!max-h-none"
+            >
+                <Nav stepDetails={stepDetails} activeStep={activeStep} />
 
 
-            <div className="flex flex-col bg-background  h-200  pt-30" >
-                <div className="rounded-lg p-6 scrolling-touch">
-                    {allProposals && allProposals.length > 0 ? (
-                        <div className="space-y-4 w-full flex flex-col items-center justify-center">
-                            {/* Stack of cards */}
-                            <div className="relative w-full max-w-md ">
-                                {cardsToRender.map((proposal: any, index: number) => {
-                                    // Use the flag to determine if this is the swiped card
-                                    const isSwipedCard = proposal._isSwipedCard === true;
+                <div className="flex flex-col bg-background  h-220  pt-30" >
+                    <div className="rounded-lg p-6 scrolling-touch">
+                        {allProposals && allProposals.length > 0 ? (
+                            <div className="space-y-4 w-full flex flex-col items-center justify-center">
+                                {/* Stack of cards */}
+                                <div className="relative w-full max-w-md ">
+                                    {cardsToRender.map((proposal: any, index: number) => {
+                                        // Use the flag to determine if this is the swiped card
+                                        const isSwipedCard = proposal._isSwipedCard === true;
 
-                                    // Use the original index as a stable key to prevent rerendering
-                                    const stableKey = `${proposal.hash || proposal.id}-${proposal._originalIndex}`;
+                                        // Use the original index as a stable key to prevent rerendering
+                                        const stableKey = `${proposal.hash || proposal.id}-${proposal._originalIndex}`;
 
-                                    // Calculate stack position
-                                    let stackPosition = index;
-                                    if (isSwipedCard) {
-                                        stackPosition = -1; // Swiped card is above the stack
-                                    } else if (isAnimating && swipedCardIndex !== null) {
-                                        // During animation, normal cards should be positioned as if they're the new stack
-                                        stackPosition = index - 1;
-                                    }
+                                        // Calculate stack position
+                                        let stackPosition = index;
+                                        if (isSwipedCard) {
+                                            stackPosition = -1; // Swiped card is above the stack
+                                        } else if (isAnimating && swipedCardIndex !== null) {
+                                            // During animation, normal cards should be positioned as if they're the new stack
+                                            stackPosition = index - 1;
+                                        }
 
-                                    // Only non-swiped cards at position 0 can be interactive
-                                    const isTopCard = !isSwipedCard && stackPosition === 0 && !isAnimating;
+                                        // Only non-swiped cards at position 0 can be interactive
+                                        const isTopCard = !isSwipedCard && stackPosition === 0 && !isAnimating;
 
-                                    // Calculate visual properties based on stack position
-                                    const zIndex = isSwipedCard ? 100 : (10 - Math.max(0, stackPosition));
-                                    const scale = isSwipedCard ? 1 : (1 - (Math.max(0, stackPosition) * 0.08));
-                                    const translateY = isSwipedCard ? 0 : -(Math.max(0, stackPosition) * 60);
-                                    const baseOpacity = isSwipedCard ? 1 : (1 - (Math.max(0, stackPosition) * 0.05));
-                                    const blur = isSwipedCard ? 0 : (Math.max(0, stackPosition) * 2);
+                                        // Calculate visual properties based on stack position
+                                        const zIndex = isSwipedCard ? 100 : (10 - Math.max(0, stackPosition));
+                                        const scale = isSwipedCard ? 1 : (1 - (Math.max(0, stackPosition) * 0.08));
+                                        const translateY = isSwipedCard ? 0 : -(Math.max(0, stackPosition) * 60);
+                                        const baseOpacity = isSwipedCard ? 1 : (1 - (Math.max(0, stackPosition) * 0.05));
+                                        const blur = isSwipedCard ? 0 : (Math.max(0, stackPosition) * 2);
 
-                                    // Apply transforms - ONLY to the specific card type
-                                    let dragX = 0;
-                                    let dragY = 0;
-                                    let rotation = 0;
+                                        // Apply transforms - ONLY to the specific card type
+                                        let dragX = 0;
+                                        let dragY = 0;
+                                        let rotation = 0;
 
-                                    if (isSwipedCard && isAnimating) {
-                                        // ONLY the swiped card during animation gets swipe transform
-                                        dragX = swipeOffset.x;
-                                        dragY = swipeOffset.y * 0.1;
-                                        // Enhanced rotation with more natural feel
-                                        rotation = Math.min(Math.max(swipeOffset.x * 0.15, -30), 30);
-                                    } else if (isTopCard && isDragging && !isAnimating) {
-                                        // ONLY the top card during drag gets drag transform
-                                        dragX = dragOffset.x;
-                                        dragY = dragOffset.y * 0.1;
-                                        rotation = Math.min(Math.max(dragOffset.x * 0.1, -15), 15);
-                                    }
-                                    // All other cards: dragX = 0, dragY = 0, rotation = 0
+                                        if (isSwipedCard && isAnimating) {
+                                            // ONLY the swiped card during animation gets swipe transform
+                                            dragX = swipeOffset.x;
+                                            dragY = swipeOffset.y * 0.1;
+                                            // Enhanced rotation with more natural feel
+                                            rotation = Math.min(Math.max(swipeOffset.x * 0.15, -30), 30);
+                                        } else if (isTopCard && isDragging && !isAnimating) {
+                                            // ONLY the top card during drag gets drag transform
+                                            dragX = dragOffset.x;
+                                            dragY = dragOffset.y * 0.1;
+                                            rotation = Math.min(Math.max(dragOffset.x * 0.1, -15), 15);
+                                        }
+                                        // All other cards: dragX = 0, dragY = 0, rotation = 0
 
-                                    // Opacity calculations
-                                    let cardOpacity = baseOpacity;
-                                    if (isSwipedCard && isAnimating) {
-                                        // Smoother fade out with easing curve
-                                        const progress = Math.abs(swipeOffset.x) / 600;
-                                        cardOpacity = Math.max(0, 1 - (progress * progress)); // Quadratic easing
-                                    } else if (isTopCard && isDragging) {
-                                        cardOpacity = Math.max(0.3, 1 - Math.abs(dragOffset.x) / 300);
-                                    }
+                                        // Opacity calculations
+                                        let cardOpacity = baseOpacity;
+                                        if (isSwipedCard && isAnimating) {
+                                            // Smoother fade out with easing curve
+                                            const progress = Math.abs(swipeOffset.x) / 600;
+                                            cardOpacity = Math.max(0, 1 - (progress * progress)); // Quadratic easing
+                                        } else if (isTopCard && isDragging) {
+                                            cardOpacity = Math.max(0.3, 1 - Math.abs(dragOffset.x) / 300);
+                                        }
 
-                                    return (
-                                        <div
-                                            key={stableKey}
-                                            className={`absolute inset-0 w-full ${isTopCard ? 'cursor-grab active:cursor-grabbing' : 'pointer-events-none'
-                                                } ${
-                                                // Apply smooth transitions for swipe animation or stack positioning
-                                                isSwipedCard && isAnimating ? 'transition-all duration-300 ease-out' :
-                                                    !isSwipedCard && !isDragging ? 'transition-all duration-300 ease-out' : ''
-                                                }`}
-                                            style={{
-                                                zIndex,
-                                                transform: `translateY(${translateY + dragY}px) translateX(${dragX}px) scale(${scale}) rotate(${rotation}deg)`,
-                                                opacity: cardOpacity,
-                                                filter: `blur(${blur}px)`,
-                                            }}
-                                            onMouseDown={isTopCard && !isAnimating ? handleMouseDown : undefined}
-                                            onTouchStart={isTopCard && !isAnimating ? handleTouchStart : undefined}
-                                        >
-                                            <div className="flex flex-col w-full rounded-lg relative">
-                                                <ProposalCard
-                                                    proposal={proposal}
-                                                    isHorizontal={false}
-                                                    hideFooter={true}
-                                                />
+                                        return (
+                                            <div
+                                                key={stableKey}
+                                                className={`absolute inset-0 w-full ${isTopCard ? 'cursor-grab active:cursor-grabbing' : 'pointer-events-none'
+                                                    } ${
+                                                    // Apply smooth transitions for swipe animation or stack positioning
+                                                    isSwipedCard && isAnimating ? 'transition-all duration-300 ease-out' :
+                                                        !isSwipedCard && !isDragging ? 'transition-all duration-300 ease-out' : ''
+                                                    }`}
+                                                style={{
+                                                    zIndex,
+                                                    transform: `translateY(${translateY + dragY}px) translateX(${dragX}px) scale(${scale}) rotate(${rotation}deg)`,
+                                                    opacity: cardOpacity,
+                                                    filter: `blur(${blur}px)`,
+                                                }}
+                                                onMouseDown={isTopCard && !isAnimating ? handleMouseDown : undefined}
+                                                onTouchStart={isTopCard && !isAnimating ? handleTouchStart : undefined}
+                                            >
+                                                <div className="flex flex-col w-full rounded-lg relative">
+                                                    <ProposalCard
+                                                        proposal={proposal}
+                                                        isHorizontal={false}
+                                                        hideFooter={true}
+                                                    />
 
-                                            
-                                                {isTopCard && (
-                                                    <div className=" flex justify-center mt-4 w-[100%]">
-                                                        <div className="flex w-full">
-                                                            {/* No Button */}
-                                                            <Button
-                                                                onClick={() => handleCardSwipe('left', true)}
-                                                                disabled={!hasTopCard || isAnimating}
-                                                                className="flex-1 flex items-center bg-background justify-center py-3 px-6 rounded-bl-lg rounded-tl-lg hover:bg-error-light/[30%] active:bg-error-light/[70%] transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed border border-gray-light"
-                                                            >
-                                                                <div className="flex items-center space-x-2">
-                                                                    <div className="w-6 h-6 flex items-center justify-center">
-                                                                        <ThumbsDownIcon width={18} height={18}/>
+
+                                                    {isTopCard && (
+                                                        <div className="flex justify-center mt-4 w-full">
+                                                            <div className="flex w-full relative">
+                                                                {/* No Button */}
+                                                                <Button
+                                                                    onClick={() => handleCardSwipe('left', true)}
+                                                                    disabled={!hasTopCard || isAnimating}
+                                                                    className="flex-1 flex items-center bg-background justify-center py-3 px-6 rounded-l-lg rounded-r-none hover:bg-error-light/[30%] active:bg-error-light/[70%] transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed border border-gray-light border-r-0"
+                                                                >
+                                                                    <div className="flex items-center space-x-2">
+                                                                        <div className="w-6 h-6 flex items-center justify-center">
+                                                                            <ThumbsDownIcon width={18} height={18} />
+                                                                        </div>
+                                                                        <Paragraph>{t('workflows.tinderProposal.step3.noButtonText')}</Paragraph>
+                                                                        <Paragraph className="text-sm text-gray-light">({swipedLeftProposals.length})</Paragraph>
                                                                     </div>
-                                                                    <Paragraph>{t('workflows.tinderProposal.step3.noButtonText')}</Paragraph>
-                                                                    <Paragraph className="text-sm text-gray-light">({swipedLeftProposals.length})</Paragraph>
-                                                                </div>
-                                                            </Button>
+                                                                </Button>
 
-                                                            {/* Yes Button */}
-                                                            <Button
-                                                                onClick={() => handleCardSwipe('right', true)}
-                                                                disabled={!hasTopCard || isAnimating}
-                                                                className="flex-1 flex items-center bg-background justify-center py-3 px-6 rounded-br-lg rounded-tr-lg hover:bg-success-light active:bg-success-light transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed border border-gray-light border-l-0"
-                                                            >
-                                                                <div className="flex items-center space-x-2">
-                                                                    <div className="w-6 h-6 flex items-center justify-center">
-                                                                        <ThumbsUpIcon  width={18} height={18} className="text-success"/>
+                                                                {/* Separator Line */}
+                                                                <div className="absolute left-1/2 top-0 bottom-0 w-px bg-gray-light transform -translate-x-1/2 z-10"></div>
+
+                                                                {/* Yes Button */}
+                                                                <Button
+                                                                    onClick={() => handleCardSwipe('right', true)}
+                                                                    disabled={!hasTopCard || isAnimating}
+                                                                    className="flex-1 flex items-center bg-background justify-center py-3 px-6 rounded-r-lg rounded-l-none hover:bg-success-light active:bg-success-light transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed border border-gray-light border-l-0"
+                                                                >
+                                                                    <div className="flex items-center space-x-2">
+                                                                        <div className="w-6 h-6 flex items-center justify-center">
+                                                                            <ThumbsUpIcon width={18} height={18} className="text-success" />
+                                                                        </div>
+                                                                        <Paragraph>{t('workflows.tinderProposal.step3.yesButtonText')}</Paragraph>
+                                                                        <Paragraph className=" text-gray-light">({swipedRightProposals.length})</Paragraph>
                                                                     </div>
-                                                                    <Paragraph>{t('workflows.tinderProposal.step3.yesButtonText')}</Paragraph>
-                                                                    <Paragraph className=" text-gray-light">({swipedRightProposals.length})</Paragraph>
-                                                                </div>
-                                                            </Button>
+                                                                </Button>
+                                                            </div>
                                                         </div>
-                                                    </div>
-                                                )}
+                                                    )}
+                                                </div>
+                                            </div>
+                                        );
+                                    })}
+
+                                    {/* No more cards message */}
+                                    {currentIndex >= allProposals.length && !isLoading && (
+                                        <div className="absolute inset-0 flex items-center justify-center">
+                                            <div className="text-center p-8 bg-white rounded-lg shadow-lg">
+                                                <Paragraph className="text-lg font-semibold mb-2">
+                                                    {t('workflows.tinderProposal.step3.allDone')}
+                                                </Paragraph>
+                                                <Paragraph className="text-gray-600">
+                                                    {t('workflows.tinderProposal.step3.viewedAllProposals', { count: allProposals.length })}
+                                                </Paragraph>
                                             </div>
                                         </div>
-                                    );
-                                })}
+                                    )}
 
-                                {/* No more cards message */}
-                                {currentIndex >= allProposals.length && !isLoading && (
-                                    <div className="absolute inset-0 flex items-center justify-center">
-                                        <div className="text-center p-8 bg-white rounded-lg shadow-lg">
-                                            <Paragraph className="text-lg font-semibold mb-2">
-                                                {t('workflows.tinderProposal.step3.allDone')}
-                                            </Paragraph>
-                                            <Paragraph className="text-gray-600">
-                                                {t('workflows.tinderProposal.step3.viewedAllProposals', { count: allProposals.length })}
-                                            </Paragraph>
+                                    {/* Loading indicator */}
+                                    {isLoading && currentIndex >= allProposals.length && (
+                                        <div className="absolute bg-background inset-0 flex items-center justify-center w-full">
+                                            <div className="text-center p-8 ">
+                                                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-2"></div>
+                                            </div>
                                         </div>
-                                    </div>
-                                )}
+                                    )}
+                                </div>
 
-                                {/* Loading indicator */}
-                                {isLoading && currentIndex >= allProposals.length && (
-                                    <div className="absolute bg-background inset-0 flex items-center justify-center w-full">
-                                        <div className="text-center p-8 ">
-                                            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-2"></div>
-                                        </div>
-                                    </div>
+                            </div>
+                        ) : proposals === null ? (
+                            <div className="text-center">
+                                <Paragraph className="text-error">
+                                    {t('workflows.tinderProposal.step3.failedToLoadProposals')}
+                                </Paragraph>
+                            </div>
+                        ) : (
+                            <div className="text-center">
+                                <Paragraph>
+                                    {isLoading ? t('workflows.tinderProposal.step3.loadingProposals') : t('workflows.tinderProposal.step3.noProposalsFound')}
+                                </Paragraph>
+                                {isLoading && (
+                                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mt-4"></div>
                                 )}
                             </div>
+                        )}
+                    </div>
 
-                        </div>
-                    ) : proposals === null ? (
-                        <div className="text-center">
-                            <Paragraph className="text-error">
-                                {t('workflows.tinderProposal.step3.failedToLoadProposals')}
-                            </Paragraph>
-                        </div>
-                    ) : (
-                        <div className="text-center">
-                            <Paragraph>
-                                {isLoading ? t('workflows.tinderProposal.step3.loadingProposals') : t('workflows.tinderProposal.step3.noProposalsFound')}
-                            </Paragraph>
-                            {isLoading && (
-                                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mt-4"></div>
-                            )}
-                        </div>
-                    )}
+
                 </div>
-
-
-            </div>
-            <Footer>
-                <div className="flex flex-col space-y-4 w-full items-center justify-center">
-                    <PrimaryButton onClick={goToStep4} className="px-8 w-[75%] py-3 text-sm">
-                        {t('workflows.tinderProposal.step3.saveProgress')}
-                    </PrimaryButton>
-                    <PrimaryLink
-                        href={editSettingsStep}
-                        className="text-sm  lg:px-8 lg:py-3 w-[75%]  bg-background border border-gray-persist/[20%]"
-                    >
-                        <Paragraph className='text-content' size='sm'>{t('workflows.tinderProposal.step3.editSettings')}</Paragraph>
-                    </PrimaryLink>
-                </div>
-            </Footer>
-        </WorkflowLayout>
+                <Footer>
+                    <div className="flex flex-col space-y-4 w-full items-center justify-center">
+                        <PrimaryButton onClick={goToStep4} className="px-8 w-[75%] py-3 text-sm">
+                            {t('workflows.tinderProposal.step3.saveProgress')}
+                        </PrimaryButton>
+                        <PrimaryLink
+                            href={editSettingsStep}
+                            className="text-sm  lg:px-8 lg:py-3 w-[75%]  bg-background border border-gray-persist/[20%]"
+                        >
+                            <Paragraph className='text-content' size='sm'>{t('workflows.tinderProposal.step3.editSettings')}</Paragraph>
+                        </PrimaryLink>
+                    </div>
+                </Footer>
+            </WorkflowLayout>
         </FiltersProvider>
     );
 };
