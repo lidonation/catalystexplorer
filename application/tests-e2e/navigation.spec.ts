@@ -135,8 +135,8 @@ test.describe('Navigation Sidebar', () => {
             await expect(link).toHaveAttribute('aria-disabled', 'true');
 
             const currentURL = page.url();
-            await link.click({ force: true }); 
-            await expect(page).toHaveURL(currentURL); 
+            await link.click({ force: true });
+            await expect(page).toHaveURL(currentURL);
         }
     });
 

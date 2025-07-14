@@ -10,8 +10,8 @@ services:
     extra_hosts:
         - 'host.docker.internal:host-gateway'
     ports:
-        - '80:8000'
-        - '5173:${VITE_PORT:-5173}'
+        - '8081:8000'
+        - '5174:${VITE_PORT:-5173}'
     environment:
         APP_ENV: testing
         WWWUSER: '${WWWUSER:-1000}'
