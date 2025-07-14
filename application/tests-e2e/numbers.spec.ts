@@ -5,11 +5,9 @@ test.describe('Metrics Cards Specific Tests', () => {
         await page.goto('/');
         await page.waitForLoadState('domcontentloaded');
     });
-
     test('metrics section exists', async ({ page }) => {
         await expect(page.locator('[data-testid="metrics-section"]')).toBeVisible();
     });
-
     test('displays 5 metric cards (SVG charts)', async ({ page }) => {
         await expect(page.locator('[data-testid="metrics-section"]')).toBeVisible();
 
@@ -24,12 +22,11 @@ test.describe('Metrics Cards Specific Tests', () => {
         console.log(`Found ${cardCount} SVG metric cards`);
 
         if (cardCount === 0) {
-            console.log(' WebKit compatibility issue');
+            console.log('WebKit compatibility issue ');
         } else {
             expect(cardCount).toBe(5);
         }
     });
-
     test('metric cards are clickable charts', async ({ page }) => {
         await expect(page.locator('[data-testid="metrics-section"]')).toBeVisible();
 
@@ -37,7 +34,6 @@ test.describe('Metrics Cards Specific Tests', () => {
             const metricsSection = document.querySelector('[data-testid="metrics-section"]');
             return metricsSection && !metricsSection.textContent?.toLowerCase().includes('loading');
         }, { timeout: 20000 });
-
         const svgCards = page.locator('[data-testid="metrics-section"] svg');
         const cardCount = await svgCards.count();
 
@@ -48,7 +44,6 @@ test.describe('Metrics Cards Specific Tests', () => {
             console.log('No SVG charts found');
         }
     });
-
     test('metrics header and subtitle exist', async ({ page }) => {
         await expect(page.locator('[data-testid="metrics-section"]')).toBeVisible();
 

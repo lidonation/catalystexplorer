@@ -5,11 +5,9 @@ test.describe('Proposals Specific Tests', () => {
        await page.goto('/');
        await page.waitForLoadState('domcontentloaded');
    });
-
    test('proposals section exists', async ({ page }) => {
        await expect(page.locator('[data-testid="proposals-section"]')).toBeVisible();
    });
-
    test('displays proposals', async ({ page }) => {
        await expect(page.locator('[data-testid="proposals-section"]')).toBeVisible();
 
@@ -17,14 +15,12 @@ test.describe('Proposals Specific Tests', () => {
            const proposalsSection = document.querySelector('[data-testid="proposals-section"]');
            return proposalsSection && !proposalsSection.textContent?.toLowerCase().includes('loading');
        }, { timeout: 15000 });
-
        const proposalsWrapper = page.locator('[data-testid="proposals-section"] .proposals-wrapper');
        await expect(proposalsWrapper).toBeVisible();
 
        const proposalCount = await proposalsWrapper.locator('> div').count();
        expect(proposalCount).toBe(3);
    });
-
    test('proposals have content', async ({ page }) => {
        await expect(page.locator('[data-testid="proposals-section"]')).toBeVisible();
 
@@ -43,7 +39,6 @@ test.describe('Proposals Specific Tests', () => {
            await expect(proposalCards.nth(i)).toBeVisible();
        }
    });
-
    test('see more proposals link works', async ({ page, browserName }) => {
        await expect(page.locator('[data-testid="proposals-section"]')).toBeVisible();
 
@@ -59,7 +54,6 @@ test.describe('Proposals Specific Tests', () => {
            await expect(page).toHaveURL(/.*\/proposals/);
        }
    });
-
    test('proposals section has header', async ({ page }) => {
        await expect(page.locator('[data-testid="proposals-section"]')).toBeVisible();
 
