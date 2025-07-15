@@ -13,7 +13,7 @@ const UserQuickView: React.FC<ProposalUserQuickViewProps> = ({ user }) => {
 
         <div className="space-y-4 p-4">
             {/* Lido Profile Section */}
-            <div className="flex items-start space-x-2">
+            <div className="flex items-start space-x-2" data-testid="user-quick-view-lido">
                 <LinkIcon />
                 <div>
                     <span className="block font-medium">Lido  {t('users.profile')}</span>
@@ -22,6 +22,7 @@ const UserQuickView: React.FC<ProposalUserQuickViewProps> = ({ user }) => {
                         target="_blank"
                         rel="noopener noreferrer"
                         className="text-primary block text-sm font-bold"
+                        data-testid="user-quick-view-lido-link"
                     >
                         {t('users.viewProfile')}
                     </a>
@@ -30,11 +31,12 @@ const UserQuickView: React.FC<ProposalUserQuickViewProps> = ({ user }) => {
 
             <div className="border-b"></div>
 
-            <div className="flex items-start space-x-2">
+            <div className="flex items-start space-x-2" data-testid="user-quick-view-ideascale">
                 <img
                     src={IdeaScaleLogo}
                     alt="IdeaScale Logo"
                     className="mt-0.5 h-6 w-6 rounded-full"
+                    data-testid="user-quick-view-ideascale-logo"
                 />
                 <div>
                     <span className="block font-medium">Ideascale {t('users.profile')}</span>
@@ -43,6 +45,7 @@ const UserQuickView: React.FC<ProposalUserQuickViewProps> = ({ user }) => {
                         target="_blank"
                         rel="noopener noreferrer"
                         className="text-primary block text-sm font-bold"
+                        data-testid="user-quick-view-ideascale-link"
                     >
                         {t('users.viewIdeascale')}
                     </a>

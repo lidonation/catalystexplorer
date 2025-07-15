@@ -26,7 +26,7 @@ export default function ProposalVerticalCard({
 }: any) {
     const [cardHeight, setCardHeight] = useState<number | null>(null);
     const cardRef = useRef<HTMLElement>(null);
-    
+
     const wrappedHandleUserClick = useCallback(
         (user: any) => {
             if (cardRef.current) {
@@ -38,7 +38,7 @@ export default function ProposalVerticalCard({
         },
         [handleUserClick]
     );
-    
+
     const wrappedNoSelectedUser = useCallback(() => {
         if (noSelectedUser) {
             noSelectedUser();
@@ -46,20 +46,22 @@ export default function ProposalVerticalCard({
     }, [noSelectedUser]);
 
     return (
-        <article 
+        <article
             ref={cardRef as React.RefObject<HTMLElement>}
             className="bg-background proposal-card proposal-card-vertical flex h-full flex-col justify-between rounded-xl p-2 shadow-lg gap-3 relative"
             style={cardHeight && userSelected ? { height: `${cardHeight}px` } : {}}
+            data-testid={`vertical-proposal-card-${proposal?.hash}`}
         >
             {userSelected && (
                 <button
                     onClick={wrappedNoSelectedUser}
                     className="absolute right-4 top-4 z-10 rounded-full p-1 hover:bg-background hover:text-content focus:outline-none focus:ring-2 focus:ring-primary"
                     aria-label="Close profile"
+                    data-testid="close-profile-button"
                 >
                 </button>
             )}
-            
+
             {/* Changed overflow-hidden to overflow-visible for proper hover expansion */}
             <section className="relative flex h-auto w-full flex-col items-start overflow-visible">
                 <ProposalCardHeader
@@ -88,13 +90,14 @@ export default function ProposalVerticalCard({
                                 className="mt-3 border-b border-gray-200 pb-2 mb-2"
                                 aria-labelledby="funding-heading"
                             >
-                                <div className="flex items-center flex-row gap-2 my-1.5">
+                                <div className="flex items-center flex-row gap-2 my-1.5" data-testid="proposal-funding-status">
                                     <Title level='4' className="font-semibold">
                                         {t('funding')}
                                     </Title>
 
                                     <ProposalFundingStatus
                                         funding_status={proposal.funding_status}
+                                        data-testid="proposal-funding-status-label"
                                     />
                                 </div>
                                 <ProposalFundingPercentages
@@ -120,8 +123,9 @@ export default function ProposalVerticalCard({
                 <div
                     className={`flex items-center justify-between pt-3`}
                     aria-labelledby="team-heading"
+                    data-testid="proposal-team-section"
                 >
-                    <Title level="4" id="team-heading" className="font-medium">
+                    <Title level="4" id="team-heading" className="font-medium" deta-testid="proposal-team-title">
                         {t('teams')}
                     </Title>
                     <IdeascaleProfileUsers

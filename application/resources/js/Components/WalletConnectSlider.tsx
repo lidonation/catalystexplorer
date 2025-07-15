@@ -126,8 +126,8 @@ export default function WalletSlider({
                   key={walletName}
                   onClick={() => connectWallet(walletName)}
                   disabled={isConnecting !== null}
-                  className={`group flex items-center justify-between w-full p-3 rounded-lg hover:border-primary transition-colors shadow-[0px_4px_8px_var(--cx-background-lighter)] ${isConnecting === walletName ? 'border-primary' : ''
-                    }`}
+                  className={`group flex items-center justify-between w-full p-3 rounded-lg hover:border-primary transition-colors shadow-[0px_4px_8px_var(--cx-background-lighter)] ${isConnecting === walletName ? 'border-primary' : ''}`}
+                  dataTestId={`walletconnect-${walletName}-button`}
                 >
                   <div className="flex items-center">
                     {window.cardano?.[walletName]?.icon && (

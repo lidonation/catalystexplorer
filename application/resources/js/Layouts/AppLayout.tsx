@@ -42,6 +42,7 @@ export default function AppLayout({ children }: { children: ReactNode }) {
                 onClose={() => setSidebarOpen(false)}
                 className="relative z-50 lg:hidden"
                 aria-label={t('navigation.mobile.sidebar')}
+                data-testid="mobile-navigation-dialog"
             >
                 <MobileNavigation />
             </Dialog>
@@ -56,7 +57,7 @@ export default function AppLayout({ children }: { children: ReactNode }) {
                 className={`bg-background-lighter lg:mt-4 ${isAuthPage ? '' : 'lg:ml-72'} ${isAuthPage ? '' : 'lg:rounded-tl-4xl'}`}
             >
                 {/* Mobile header */}
-                <header className="bg-background sticky top-0 z-30 border-b border-gray-200 lg:hidden">
+                <header className="bg-background sticky top-0 z-30 border-b border-gray-200 lg:hidden" data-testid="mobile-header">
                     <div className="flex h-16 items-center justify-between">
                         <CatalystLogo className="h-8" />
                         <Button
@@ -66,9 +67,10 @@ export default function AppLayout({ children }: { children: ReactNode }) {
                                     ? t('navigation.sidebar.close')
                                     : t('navigation.sidebar.open')
                             }
-                            aria-expanded={sidebarOpen}
-                            aria-controls="mobile-navigation"
+                            ariaExpanded={sidebarOpen}
+                            ariaControls="mobile-navigation"
                             className="text-4 inline-flex items-center rounded-sm px-2 py-1 hover:bg-gray-100"
+                            dataTestId="mobile-navigation-toggle-button"
                         >
                             {sidebarOpen ? <CloseIcon /> : <MenuIcon />}
                         </Button>
@@ -76,7 +78,7 @@ export default function AppLayout({ children }: { children: ReactNode }) {
                 </header>
 
                 {/* Main content */}
-                <main id="main-content">
+                <main id="main-content" data-testid="main-content">
                     <Breadcrumbs items={breadcrumbItems} />
 
                     <PlayerProvider>

@@ -1,5 +1,5 @@
 x-logging: &default-logging
-  driver: 'json-file'
+  driver: "json-file"
   options:
     max-size: "50m"
     max-file: 6
@@ -8,7 +8,7 @@ services:
   # app
   catalystexplorer.com:
     build:
-      context: './docker'
+      context: "./docker"
       dockerfile: Dockerfile.dev
       args:
         WWWGROUP: "${WWWGROUP:-1000}"
@@ -24,20 +24,20 @@ services:
     env_file:
       - ./application/.env
     extra_hosts:
-      - 'host.docker.internal:host-gateway'
+      - "host.docker.internal:host-gateway"
     ports:
-      - '${APP_PORT:-80}:8000'
-      - '${VITE_PORT:-5173}:${VITE_PORT:-5173}'
+      - "${APP_PORT:-80}:8000"
+      - "${VITE_PORT:-5173}:${VITE_PORT:-5173}"
     environment:
       CONTAINER_ROLE: "app"
-      IGNITION_LOCAL_SITES_PATH: '${PWD}'
+      IGNITION_LOCAL_SITES_PATH: "${PWD}"
       LARAVEL_SAIL: 1
       NODE_OPTIONS: "${NODE_OPTIONS:---max-old-space-size=8096}"
-      OCTANE_WATCH: '${OCTANE_WATCH:-true}'
-      WWWGROUP: '${WWWUSER:-1000}'
-      WWWUSER: '${WWWUSER:-1000}'
-      XDEBUG_MODE: '${SAIL_XDEBUG_MODE:-off}'
-      XDEBUG_CONFIG: '${SAIL_XDEBUG_CONFIG:-client_host=host.docker.internal}'
+      OCTANE_WATCH: "${OCTANE_WATCH:-true}"
+      WWWGROUP: "${WWWUSER:-1000}"
+      WWWUSER: "${WWWUSER:-1000}"
+      XDEBUG_MODE: "${SAIL_XDEBUG_MODE:-off}"
+      XDEBUG_CONFIG: "${SAIL_XDEBUG_CONFIG:-client_host=host.docker.internal}"
       XDG_CONFIG_HOME: /var/www/caddy
       XDG_DATA_HOME: /var/www/caddy
     volumes:
@@ -54,13 +54,18 @@ services:
   catalystexplorer.cardanonode:
     container_name: catalystexplorer.cardanonode
     image: ghcr.io/intersectmbo/cardano-node:10.1.4
-    command: [
-      "run",
-      "--config", "/config/config.json",
-      "--database-path", "/data/db",
-      "--socket-path", "/ipc/node.socket",
-      "--topology", "/config/topology.json"
-    ]
+    command:
+      [
+        "run",
+        "--config",
+        "/config/config.json",
+        "--database-path",
+        "/data/db",
+        "--socket-path",
+        "/ipc/node.socket",
+        "--topology",
+        "/config/topology.json",
+      ]
     volumes:
       - ./cardanonode/config/network/${CARDANO_NETWORK:-preview}/cardano-node:/config
       - ./cardanonode/config/network/${CARDANO_NETWORK:-preview}/genesis:/genesis
@@ -70,7 +75,7 @@ services:
     environment:
       CARDANO_NODE_SOCKET_PATH: /ipc/node.socket
     healthcheck:
-      test: [ "CMD", "stat", "/ipc/node.socket" ]
+      test: ["CMD", "stat", "/ipc/node.socket"]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -90,7 +95,7 @@ services:
       - source: pgpass
         target: .pgpass
     ports:
-      - ${POSTGRES_PORT:-5434}:5434  # Expose the database on a different port
+      - ${POSTGRES_PORT:-5434}:5434 # Expose the database on a different port
     volumes:
       - carp-db-data:/var/lib/postgresql/data
     restart: on-failure
@@ -98,14 +103,12 @@ services:
       - catalystexplorer-net
       - shared-network
     healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -U carp -d carp_preview -p 5434" ]
+      test: ["CMD-SHELL", "pg_isready -U carp -d carp_preview -p 5434"]
       interval: 10s
       timeout: 5s
       retries: 5
     command: >
       postgres -c port=5434 ${POSTGRES_ARGS:--c maintenance_work_mem=1GB -c max_parallel_maintenance_workers=4}
-
-
 
   catalystexplorer.adminer:
     image: adminer:4.8.1
@@ -148,7 +151,7 @@ services:
       XDG_CONFIG_HOME: /var/www
     build:
       context: ./docker
-      args: { }
+      args: {}
       dockerfile: ./Dockerfile.dev
     volumes:
       - type: volume
@@ -167,7 +170,7 @@ services:
     container_name: catalystexplorer.db
     logging: *default-logging
     ports:
-      - '${FORWARD_DB_PORT:-5432}:5432'
+      - "${FORWARD_DB_PORT:-5432}:5432"
     environment:
       - POSTGRES_LOGGING=true
       - POSTGRES_DB=explorerweb
@@ -175,7 +178,7 @@ services:
       - POSTGRES_USER=catalystexplorer
       - POSTGRES_POSTGRES_PASSWORD=alj2340aaALJAF2341408AUUZLJK
     volumes:
-      - 'catalystexplorer-db:/var/lib/postgresql/data'
+      - "catalystexplorer-db:/var/lib/postgresql/data"
       # - './vendor/laravel/sail/database/pgsql/create-testing-database.sql:/docker-entrypoint-initdb.d/10-create-testing-database.sql'
     networks:
       - catalystexplorer-net
@@ -184,11 +187,11 @@ services:
       test:
         - CMD
         - pg_isready
-        - '-q'
-        - '-d'
-        - 'explorerweb'
-        - '-U'
-        - 'catalystexplorer'
+        - "-q"
+        - "-d"
+        - "explorerweb"
+        - "-U"
+        - "catalystexplorer"
       retries: 3
       timeout: 5s
 
@@ -198,21 +201,21 @@ services:
     container_name: catalystexplorer-search
     logging: *default-logging
     ports:
-      - '${FORWARD_MEILISEARCH_PORT:-7700}:7700'
+      - "${FORWARD_MEILISEARCH_PORT:-7700}:7700"
     environment:
-      MEILI_NO_ANALYTICS: '${MEILISEARCH_NO_ANALYTICS:-false}'
+      MEILI_NO_ANALYTICS: "${MEILISEARCH_NO_ANALYTICS:-false}"
       MEILISEARCH_KEY: v8hlDV0yMAHHlIurYupj
     volumes:
-      - 'catalystexplorer-search:/meili_data'
+      - "catalystexplorer-search:/meili_data"
     networks:
       - catalystexplorer-net
     healthcheck:
       test:
         - CMD
         - wget
-        - '--no-verbose'
-        - '--spider'
-        - 'http://127.0.0.1:7700/health'
+        - "--no-verbose"
+        - "--spider"
+        - "http://127.0.0.1:7700/health"
       retries: 3
       timeout: 5s
 
@@ -222,9 +225,9 @@ services:
     container_name: catalystexplorer.redis
     logging: *default-logging
     ports:
-      - '${FORWARD_REDIS_PORT:-6379}:6379'
+      - "${FORWARD_REDIS_PORT:-6379}:6379"
     volumes:
-      - 'catalystexplorer-redis:/data'
+      - "catalystexplorer-redis:/data"
     networks:
       - catalystexplorer-net
     healthcheck:
@@ -237,11 +240,11 @@ services:
 
   # minio
   catalystexplorer-minio:
-    image: 'minio/minio:RELEASE.2025-02-18T16-25-55Z'
+    image: "minio/minio:RELEASE.2025-02-18T16-25-55Z"
     container_name: catalystexplorer-minio
     ports:
-      - '${FORWARD_MINIO_PORT:-9001}:9001'
-      - '${FORWARD_MINIO_CONSOLE_PORT:-8900}:8900'
+      - "${FORWARD_MINIO_PORT:-9001}:9001"
+      - "${FORWARD_MINIO_CONSOLE_PORT:-8900}:8900"
     security_opt:
       - no-new-privileges:true
     environment:
@@ -249,7 +252,7 @@ services:
       MINIO_ROOT_PASSWORD: minioroot
       MINIO_DEFAULT_BUCKET: catalystexplorer.com
     volumes:
-      - 'catalystexplorer-minio:/data/minio'
+      - "catalystexplorer-minio:/data/minio"
     networks:
       - catalystexplorer-net
       - shared-network
@@ -257,9 +260,28 @@ services:
     restart: always
     logging: *default-logging
     healthcheck:
-      test: [ "CMD", "mc", "ready", "local" ]
+      test: ["CMD", "mc", "ready", "local"]
       retries: 3
       timeout: 5s
+
+  catalystexplorer.allure:
+    image: frankescobar/allure-docker-service:2.27.0
+    container_name: catalystexplorer.allure
+    ports:
+      - "5050:5050"
+    environment:
+      CHECK_RESULTS_EVERY_SECONDS: 5
+      KEEP_HISTORY: 1
+      KEEP_HISTORY_LATEST: 25
+      SECURITY_ENABLED: 0
+      MAKE_VIEWER_ENDPOINTS_PUBLIC: 1
+    volumes:
+      - "./application/allure-results:/app/allure-results"
+      - "./application/allure-reports:/app/default-reports"
+    networks:
+      - catalystexplorer-net
+    profiles:
+      - testing
 
   createbuckets:
     image: minio/mc
@@ -296,7 +318,7 @@ volumes:
   catalystexplorer-redis:
     driver: local
   test_catalystexplorer-db:
-        driver: local
+    driver: local
   node-ipc:
   node-db:
   db-data:

@@ -199,8 +199,16 @@ function AppNavigation() {
     });
 
     return (
-        <nav className="flex h-auto flex-col justify-between" role="menu">
-            <ul className="menu-gap-y flex flex-1 flex-col px-4" role="menu">
+        <nav
+            className="flex h-auto flex-col justify-between"
+            role="menu"
+            data-testid="app-navigation"
+        >
+            <ul
+                className="menu-gap-y flex flex-1 flex-col px-4"
+                role="menu"
+                data-testid="app-navigation-list"
+            >
                 {filteredNavItems.map(
                     ({
                         href,
@@ -221,7 +229,11 @@ function AppNavigation() {
 
                         if (hasIndicator) {
                             return (
-                                <li key={href} className="relative">
+                                <li
+                                    key={href}
+                                    className="relative"
+                                    data-testid={`nav-item-with-indicator-${title}`}
+                                >
                                     <div className="flex items-center justify-between">
                                         <NavLinkItem
                                             ariaLabel={`${title} ${t('link')}`}
@@ -230,6 +242,7 @@ function AppNavigation() {
                                             active={isActive}
                                             prefetch
                                             async
+                                            data-testid={`nav-link-${title}`}
                                         >
                                             {icon(isActive)}
                                         </NavLinkItem>
@@ -253,6 +266,7 @@ function AppNavigation() {
                                             role="button"
                                             aria-expanded={jormungandrOpen}
                                             aria-label={`${title} ${t('dropdown')}`}
+                                            data-testid="jormungandr-nav-items-dropdown"
                                         >
                                             <div className="flex items-center">
                                                 <span className="mr-3">
@@ -277,7 +291,10 @@ function AppNavigation() {
                                         </div>
 
                                         {jormungandrOpen && (
-                                            <div className="bg-background ml-10">
+                                            <div
+                                                className="bg-background ml-10"
+                                                data-testid="jormungandr-nav-items-dropdown-options"
+                                            >
                                                 <NavLinkItem
                                                     href={useLocalizedRoute(
                                                         'jormungandr.transactions.index',
@@ -286,6 +303,7 @@ function AppNavigation() {
                                                     ariaLabel={`${t('transactions.title')} ${t('link')}`}
                                                     active={false}
                                                     prefetch
+                                                    data-testid="jormungandr-transactions-link"
                                                 ></NavLinkItem>
 
                                                 <NavLinkItem
@@ -296,6 +314,7 @@ function AppNavigation() {
                                                     ariaLabel={`${t('votes')} ${t('link')}`}
                                                     active={false}
                                                     prefetch
+                                                    data-testid="jormungandr-votes-link"
                                                 ></NavLinkItem>
 
                                                 <NavLinkItem
@@ -306,6 +325,7 @@ function AppNavigation() {
                                                     ariaLabel={`${t('voters')} ${t('link')}`}
                                                     active={false}
                                                     prefetch
+                                                    data-testid="jormungandr-voters-link"
                                                 ></NavLinkItem>
                                             </div>
                                         )}
@@ -326,6 +346,7 @@ function AppNavigation() {
                                             role="button"
                                             aria-expanded={numbersOpen}
                                             aria-label={`${title} ${t('dropdown')}`}
+                                            data-testid="numbers-nav-items-dropdown"
                                         >
                                             <div className="flex items-center">
                                                 <span className="mr-3">
@@ -350,7 +371,10 @@ function AppNavigation() {
                                         </div>
 
                                         {numbersOpen && (
-                                            <div className="bg-background ml-10">
+                                            <div
+                                                className="bg-background ml-10"
+                                                data-testid="numbers-nav-items-dropdown-options"
+                                            >
                                                 <NavLinkItem
                                                     href={useLocalizedRoute(
                                                         'numbers.impact',
@@ -359,6 +383,7 @@ function AppNavigation() {
                                                     title={t('Impact')}
                                                     ariaLabel={`${t('impact')} ${t('link')}`}
                                                     active={false}
+                                                    data-testid="numbers-impact-link"
                                                 ></NavLinkItem>
 
                                                 <NavLinkItem
@@ -369,6 +394,7 @@ function AppNavigation() {
                                                     title={t('Spending')}
                                                     ariaLabel={`${t('spending')} ${t('link')}`}
                                                     active={false}
+                                                    data-testid="numbers-spending-link"
                                                 ></NavLinkItem>
 
                                                 <NavLinkItem
@@ -379,6 +405,7 @@ function AppNavigation() {
                                                     title={t('General')}
                                                     ariaLabel={`${t('general')} ${t('link')}`}
                                                     active={false}
+                                                    data-testid="numbers-general-link"
                                                 ></NavLinkItem>
                                             </div>
                                         )}
@@ -399,6 +426,7 @@ function AppNavigation() {
                                             role="button"
                                             aria-expanded={moreOpen}
                                             aria-label={`${title} ${t('dropdown')}`}
+                                            data-testid="more-nav-items-dropdown"
                                         >
                                             <div className="flex items-center">
                                                 <span className="mr-3">
@@ -423,7 +451,10 @@ function AppNavigation() {
                                         </div>
 
                                         {moreOpen && (
-                                            <div className="bg-background rounded-md pl-10">
+                                            <div
+                                                className="bg-background rounded-md pl-10"
+                                                data-testid="more-nav-items-dropdown-options"
+                                            >
                                                 <NavLinkItem
                                                     href={route('api.index')}
                                                     disable={true}
@@ -431,6 +462,7 @@ function AppNavigation() {
                                                     ariaLabel={`${t('API')} ${t('link')}`}
                                                     active={false}
                                                     prefetch
+                                                    data-testid="api-link"
                                                 ></NavLinkItem>
 
                                                 <NavLinkItem
@@ -440,6 +472,7 @@ function AppNavigation() {
                                                     title="Proposal Reviews"
                                                     ariaLabel={`${t('proposalReviews')} ${t('link')}`}
                                                     active={false}
+                                                    data-testid="proposal-reviews-link"
                                                 ></NavLinkItem>
 
                                                 <NavLinkItem
@@ -451,6 +484,7 @@ function AppNavigation() {
                                                     ariaLabel={`${t('reviewers')} ${t('link')}`}
                                                     active={false}
                                                     prefetch
+                                                    data-testid="reviewers-link"
                                                 ></NavLinkItem>
 
                                                 <NavLinkItem
@@ -462,6 +496,7 @@ function AppNavigation() {
                                                     ariaLabel={`${t('monthlyReports')} ${t('link')}`}
                                                     active={false}
                                                     prefetch
+                                                    data-testid="monthly-reports-link"
                                                 ></NavLinkItem>
 
                                                 <NavLinkItem
@@ -473,6 +508,7 @@ function AppNavigation() {
                                                     ariaLabel={`${t('CSVs')} ${t('link')}`}
                                                     active={false}
                                                     prefetch
+                                                    data-testid="proposal-csvs-link"
                                                 ></NavLinkItem>
 
                                                 <NavLinkItem
@@ -483,6 +519,7 @@ function AppNavigation() {
                                                     title="CCV4 Votes"
                                                     ariaLabel={`${t('ccV4Votes')} ${t('link')}`}
                                                     active={false}
+                                                    data-testid="ccv4-votes-link"
                                                 ></NavLinkItem>
                                             </div>
                                         )}
@@ -493,14 +530,10 @@ function AppNavigation() {
 
                         if (isProposals) {
                             const comparisonCount = useLiveQuery(async () => {
-                                const allSettings =
-                                    await db.user_setting.toArray();
+                                const proposals =
+                                    await db.proposal_comparisons.toArray();
 
-                                const allProposalComparisons = allSettings
-                                    .map((s) => s.proposalComparison)
-                                    .filter(Boolean);
-
-                                return allProposalComparisons[0]?.length ?? 0;
+                                return proposals?.length ?? 0;
                             }, []);
 
                             if (comparisonCount === undefined) return null;
@@ -517,15 +550,17 @@ function AppNavigation() {
                                         active={isActive}
                                         prefetch
                                         async
+                                        data-testid={`nav-link-${title}`}
                                     >
                                         {icon(isActive)}
                                     </NavLinkItem>
                                     <ModalNavLink
                                         href="#proposal-comparison"
                                         className="border-primary-mid bg-primary-light absolute right-0 flex min-w-[2em] items-center justify-center gap-2 rounded-full border px-2 py-0 hover:cursor-pointer"
+                                        dataTestid="proposal-comparison-link"
                                     >
                                         <CompareIcon width={20} primary />
-                                        <span className="text-primary text-sm">
+                                        <span className="text-primary text-sm" data-testid="proposal-comparison-count">
                                             {comparisonCount}
                                         </span>
                                     </ModalNavLink>
@@ -543,6 +578,7 @@ function AppNavigation() {
                                     active={isActive}
                                     prefetch
                                     async
+                                    data-testid={`nav-link-${title}`}
                                 >
                                     {icon(isActive)}
                                 </NavLinkItem>

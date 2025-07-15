@@ -37,7 +37,7 @@ const RangePicker = React.forwardRef<
         const currentValue = value ?? localValue??[];
 
         return (
-            <div className="flex flex-col">
+            <div className="flex flex-col" data-testid={`range-picker-container-${context}`}>
                 <span className="mb-4">{context}</span>
                 <SliderPrimitive.Root
                     ref={ref}
@@ -48,8 +48,9 @@ const RangePicker = React.forwardRef<
                     value={currentValue}
                     onValueChange={handleValueChange}
                     {...props}
+                    data-testid="range-picker-slider"
                 >
-                    <SliderPrimitive.Track className="bg-content-light relative h-2 w-full grow overflow-hidden rounded-full">
+                    <SliderPrimitive.Track className="bg-content-light relative h-2 w-full grow overflow-hidden rounded-full" data-testid="range-picker-track">
                         <SliderPrimitive.Range className="bg-primary absolute h-full" />
                     </SliderPrimitive.Track>
                     {currentValue &&
@@ -57,10 +58,11 @@ const RangePicker = React.forwardRef<
                             <SliderPrimitive.Thumb
                                 key={index}
                                 className="focus-visible:ring-ring border-primary bg-background ring-offset-background block h-5 w-5 rounded-full border-2 transition-colors focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-hidden disabled:pointer-events-none disabled:opacity-50"
+                                data-testid={`range-picker-thumb-${index}`}
                             />
                         ))}
                 </SliderPrimitive.Root>
-                <div className="mt-2 flex justify-between text-sm font-bold">
+                <div className="mt-2 flex justify-between text-sm font-bold" data-testid="range-picker-values">
                     <strong>{shortNumber(currentValue?.[0])}</strong>
                     <strong>{shortNumber(currentValue?.[1])}</strong>
                 </div>

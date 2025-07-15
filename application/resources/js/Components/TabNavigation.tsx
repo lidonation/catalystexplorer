@@ -97,6 +97,7 @@ export default function TabNavigation({
                                 preserveState
                                 className={`${tabClassName} ${isActive ? activeTabClassName : ''}`}
                             >
+                                
                                 {tab.name}
                             </Link>
                         );

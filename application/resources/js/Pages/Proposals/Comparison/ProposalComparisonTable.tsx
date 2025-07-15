@@ -109,7 +109,7 @@ export default function ProposalsTable() {
         userSettingEnums.PROPOSAL_COMPARISON,
         controllableRows.map(row => row.id)
     );
-    
+
     const { filteredProposals, reorderProposals } = useProposalComparison();
 
     const sensors = useSensors(
@@ -130,14 +130,14 @@ export default function ProposalsTable() {
         }
     }
 
-   const visibleRowsData = rows.filter(row => 
+   const visibleRowsData = rows.filter(row =>
         EXCLUDED_FROM_VISIBILITY.includes(row.id) || (visibleRows && visibleRows.includes(row.id))
     );
 
     return (
-        <div className="container">
+        <div className="container" data-testid="proposal-comparison-table">
              <div className="flex items-center justify-between mb-4">
-            <header>
+            <header data-testid="proposal-comparison-header">
                 <div className=" ">
                     <Title level="1">{t('proposalComparison.title')}</Title>
                 </div>
@@ -148,7 +148,7 @@ export default function ProposalsTable() {
                     </Paragraph>
                 </div>
             </header>
-            
+
             <RowVisibilitySelector
                 rows={controllableRows}
                 visibleRows={visibleRows || []}
@@ -165,6 +165,7 @@ export default function ProposalsTable() {
                         <div
                             key={row.id}
                             className={`${row.height} border-gray-light flex items-center border-b px-4 text-left font-medium ${row.id == 'metric' ? 'text-dark !bg-background-lighter rounded-tl-lg' : ''}`}
+                            data-testid={`proposal-comparison-row-${row.id}`}
                         >
                             {row.label}
                         </div>
@@ -175,6 +176,7 @@ export default function ProposalsTable() {
                 <div
                     className="border-gray-light overflow-x-auto border-l "
                     style={{ maxWidth: 'calc(100% - 120px)' }}
+                    data-testid="proposal-comparison-scrollable-columns"
                 >
                     <DndContext
                         sensors={sensors}
@@ -187,6 +189,7 @@ export default function ProposalsTable() {
                                     (p) => p.hash ?? '',
                                 )}
                                 strategy={horizontalListSortingStrategy}
+                                data-testid="sortable-proposal-context"
                             >
                                  {filteredProposals.map((proposal, index) => (
                                     <SortableProposalColumn

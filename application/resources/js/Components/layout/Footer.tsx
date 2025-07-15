@@ -1,108 +1,183 @@
 import catalystWhiteLogo from '@/assets/images/catalyst-explorer-all-white-logo.png';
 import { useTranslation } from 'react-i18next';
 import Paragraph from '@/Components/atoms/Paragraph'; // Added import for Paragraph component
+import { useLocalizedRoute } from '@/utils/localizedRoute';
 
 export default function Footer() {
     const { t } = useTranslation();
 
     return (
         <div className="relative z-10 flex min-h-96 w-full flex-col justify-between gap-16 rounded-t-xl bg-linear-to-r from-[var(--cx-background-gradient-1-dark)] to-[var(--cx-background-gradient-1-dark)] pt-16 pb-12">
-            <section className="text-content-light container">
+            <section className="text-content-light container" data-testid="footer-links">
                 <div className="grid grid-cols-2 gap-8 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
-                    <div className="title-gap-y flex min-w-24 flex-col">
+                    <div className="title-gap-y flex min-w-24 flex-col" data-testid="footer-proposals-links">
                         <h5 className="title-6">{t('proposals.proposals')}</h5>
                         <ul className="menu-gap-y flex flex-col">
                             <li>
                                 <Paragraph>
-                                    {t('proposals.allProposals')}
+                                    <a href={useLocalizedRoute('proposals.index')} data-testid="proposals-link">
+                                        {t('proposals.allProposals')}
+                                    </a>
                                 </Paragraph>
                             </li>
                             <li>
-                                <Paragraph>{t('proposalReviews')}</Paragraph>
+                                <Paragraph>
+                                    <a href={useLocalizedRoute('reviews.index')} data-testid="reviews-link">
+                                        {t('proposalReviews')}
+                                    </a>
+                                </Paragraph>
                             </li>
                             <li>
-                                <Paragraph>{t('monthlyReports')}</Paragraph>
+                                <Paragraph>
+                                    <a href={useLocalizedRoute('reports.index')} data-testid="reports-link">
+                                        {t('monthlyReports')}
+                                    </a>
+                                </Paragraph>
                             </li>
                             <li>
-                                <Paragraph>{t('funds.funds')}</Paragraph>
+                                <Paragraph>
+                                    <a href={useLocalizedRoute('funds.index')} data-testid="funds-link">
+                                        {t('funds.funds')}
+                                    </a>
+                                </Paragraph>
                             </li>
                         </ul>
                     </div>
-                    <div className="title-gap-y flex min-w-24 flex-col">
+                    <div className="title-gap-y flex min-w-24 flex-col" data-testid="footer-communities-links">
                         <h5 className="title-6">
                             {t('ideascaleProfiles.ideascaleProfiles')}
                         </h5>
                         <ul className="menu-gap-y flex flex-col">
                             <li>
-                                <Paragraph>{t('proposers')}</Paragraph>
-                            </li>
-                            <li>
-                                <Paragraph>{t('groups.groups')}</Paragraph>
-                            </li>
-                            <li>
                                 <Paragraph>
-                                    {t('communities.communities')}
+                                    <a href={useLocalizedRoute('ideascaleProfiles.index')} data-testid="ideascale-profiles-link">
+                                        {t('ideascaleProfiles.ideascaleProfiles')}
+                                    </a>
                                 </Paragraph>
                             </li>
                             <li>
-                                <Paragraph>{t('dReps')}</Paragraph>
+                                <Paragraph>
+                                    <a href={useLocalizedRoute('groups.index')} data-testid="groups-link">
+                                        {t('groups.groups')}
+                                    </a>
+                                </Paragraph>
+                            </li>
+                            <li>
+                                <Paragraph>
+                                    <a href={useLocalizedRoute('communities.index')} data-testid="communities-link">
+                                        {t('communities.communities')}
+                                    </a>
+                                </Paragraph>
+                            </li>
+                            <li>
+                                <Paragraph>
+                                    <a href={useLocalizedRoute('dreps.index')} data-testid="dreps-link">
+                                        {t('dReps')}
+                                    </a>
+                                </Paragraph>
                             </li>
                         </ul>
                     </div>
-                    <div className="title-gap-y flex min-w-24 flex-col">
+                    <div className="title-gap-y flex min-w-24 flex-col" data-testid="footer-data-links">
                         <h5 className="title-6">{t('data')}</h5>
                         <ul className="menu-gap-y flex flex-col">
                             <li>
-                                <Paragraph>{t('numbers')}</Paragraph>
+                                <Paragraph>
+                                    <a href={useLocalizedRoute('numbers.impact')} data-testid="impact-link">
+                                        {t('impact')}
+                                    </a>
+                                </Paragraph>
                             </li>
                             <li>
-                                <Paragraph>{t('ccv4Votes')}</Paragraph>
+                                <Paragraph>
+                                    <a href={useLocalizedRoute('numbers.spending')} data-testid="spending-link">
+                                        {t('spending')}
+                                    </a>
+                                </Paragraph>
                             </li>
                             <li>
-                                <Paragraph>{t('catalystAPI')}</Paragraph>
+                                <Paragraph>
+                                    <a href={useLocalizedRoute('numbers.general')} data-testid="general-link">
+                                        {t('general')}
+                                    </a>
+                                </Paragraph>
                             </li>
                             <li>
-                                <Paragraph>{t('proposalCSVs')}</Paragraph>
+                                <Paragraph>
+                                    <a href={useLocalizedRoute('ccv4.index')} data-testid="ccv4-link">
+                                        {t('ccv4Votes')}
+                                    </a>
+                                </Paragraph>
+                            </li>
+                            <li>
+                                <Paragraph>
+                                    <a href={route('api.index')} data-testid="catalyst-api-link">
+                                        {t('catalystAPI')}
+                                    </a>
+                                </Paragraph>
+                            </li>
+                            <li>
+                                <Paragraph>
+                                    <a href={useLocalizedRoute('proposals.csvs')} data-testid="proposal-csvs-link">
+                                        {t('proposalCSVs')}
+                                    </a>
+                                </Paragraph>
                             </li>
                         </ul>
                     </div>
-                    <div className="title-gap-y flex min-w-24 flex-col">
+                    <div className="title-gap-y flex min-w-24 flex-col" data-testid="footer-social-links">
                         <h5 className="title-6">{t('social')}</h5>
                         <ul className="menu-gap-y flex flex-col">
                             <li>
-                                <Paragraph>{t('twitter')}</Paragraph>
+                                <Paragraph>
+                                    <a href="https://x.com/LidoNation" data-testid="twitter-link">
+                                        {t('twitter')}
+                                    </a>
+                                </Paragraph>
                             </li>
                             <li>
-                                <Paragraph>{t('linkedIn')}</Paragraph>
+                                <Paragraph>
+                                    <a href="https://www.linkedin.com/company/lidonation/" data-testid="linkedin-link">
+                                        {t('linkedIn')}
+                                    </a>
+                                </Paragraph>
                             </li>
                             <li>
-                                <Paragraph>{t('facebook')}</Paragraph>
+                                <Paragraph>
+                                    <a href="https://www.facebook.com/lidonation" data-testid="facebook-link">
+                                        {t('facebook')}
+                                    </a>
+                                </Paragraph>
                             </li>
                             <li>
-                                <Paragraph>{t('github')}</Paragraph>
+                                <Paragraph>
+                                    <a href="https://github.com/lidonation/catalystexplorer" data-testid="github-link">
+                                        {t('github')}
+                                    </a>
+                                </Paragraph>
                             </li>
                         </ul>
                     </div>
-                    <div className="title-gap-y flex min-w-24 flex-col">
+                    <div className="title-gap-y flex min-w-24 flex-col" data-testid="footer-legal-links">
                         <h5 className="title-6">{t('legal')}</h5>
                         <ul className="menu-gap-y flex flex-col">
                             <li>
-                                <Paragraph>{t('terms')}</Paragraph>
+                                <Paragraph data-testid="terms-link">{t('terms')}</Paragraph>
                             </li>
                             <li>
-                                <Paragraph>{t('privacy')}</Paragraph>
+                                <Paragraph data-testid="privacy-link">{t('privacy')}</Paragraph>
                             </li>
                             <li>
-                                <Paragraph>{t('cookies')}</Paragraph>
+                                <Paragraph data-testid="cookies-link">{t('cookies')}</Paragraph>
                             </li>
                             <li>
-                                <Paragraph>{t('licenses')}</Paragraph>
+                                <Paragraph data-testid="licence-link">{t('licenses')}</Paragraph>
                             </li>
                         </ul>
                     </div>
                 </div>
             </section>
-            <section className="container">
+            <section className="container" data-testid="footer-copyright">
                 <div className="flex justify-between border-t pt-8">
                     <div className="">
                         <img
