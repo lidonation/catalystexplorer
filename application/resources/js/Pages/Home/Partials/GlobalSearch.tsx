@@ -33,8 +33,7 @@ function GlobalSearch() {
     const submit = (event: React.FormEvent) => {
         event.preventDefault();
         const filters = searchFilters
-            .filter((term) => term !== t('searchBar.variants.all'))
-            .map((term) => term.toLowerCase())
+            .filter((term) => term !== 'allGroups')
             .join(',');
 
         const queryParams: Record<string, string> = { q: searchTerm };

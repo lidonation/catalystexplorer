@@ -8,9 +8,11 @@ use App\Actions\TransformIdsToHashes;
 use App\DataTransferObjects\BookmarkCollectionData;
 use App\DataTransferObjects\FundData;
 use App\DataTransferObjects\ProposalData;
+use App\Enums\BookmarkableType;
 use App\Enums\BookmarkStatus;
 use App\Enums\TinderWorkflowParams;
 use App\Models\BookmarkCollection;
+use App\Models\BookmarkItem;
 use App\Models\Fund;
 use App\Models\Proposal;
 use App\Models\TinderCollection;
@@ -18,8 +20,10 @@ use App\Repositories\ProposalRepository;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Fluent;
+use Illuminate\Support\Str;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -922,6 +926,43 @@ class TinderProposalWorkflowController extends Controller
         }
 
         return [];
+    }
+
+    public function addBookmarkItem(Request $request)
+    {
+        $validated = $request->validate([
+            'proposalHash' => 'required|string',
+            'modelType' => 'required|string',
+            'bookmarkCollection' => 'required|string',
+        ]);
+
+        $bookmarkCollection = BookmarkCollection::byHash($validated['bookmarkCollection']);
+
+        if (!$bookmarkCollection || $bookmarkCollection->user_id !== Auth::id()) {
+            return response()->json(['error' => 'Bookmark collection not found or access denied.'], 404);
+        }
+
+        $bookmarkableType = BookmarkableType::tryFrom(Str::kebab($validated['modelType']))->getModelClass();
+        $proposal = $bookmarkableType::byHash($validated['proposalHash']);
+
+        if (!$proposal) {
+            return response()->json(['error' => "Proposal with hash {$validated['proposalHash']} not found."], 404);
+        }
+
+        BookmarkItem::updateOrCreate([
+            'user_id' => Auth::id(),
+            'bookmark_collection_id' => $bookmarkCollection->id,
+            'model_id' => $proposal->id,
+            'model_type' => $bookmarkableType,
+        ], [
+            'title' => null,
+            'content' => null,
+            'action' => null,
+        ]);
+
+        $bookmarkCollection->searchable();
+
+        return response()->json(['success' => 'Proposal added to collection successfully.']);
     }
 
     private function getStepDetails(): array

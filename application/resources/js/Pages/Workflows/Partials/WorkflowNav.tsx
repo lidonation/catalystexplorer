@@ -64,7 +64,9 @@ export default function Nav({ stepDetails, activeStep }: NavProps) {
                                 ? ''
                                 : '';
 
-                        const stepItemClass = `flex-shrink-0 relative ${
+                        const stepItemClass = `${
+                            hasFewSteps ? 'flex-1' : 'flex-shrink-0'
+                        } relative ${
                             hasFewSteps ? 'px-0' : 'px-0'
                         } ${positionClass} ${flexClass} ${spacingClass}`;
 
@@ -72,6 +74,8 @@ export default function Nav({ stepDetails, activeStep }: NavProps) {
                             if (index + 1 < activeStep) {
                                 return '100%';
                             } else if (index + 1 === activeStep && animatedSteps.has(activeStep)) {
+                                return '100%';
+                            } else if (isLastItem && activeStep >= stepDetails.length) {
                                 return '100%';
                             } else {
                                
@@ -87,8 +91,8 @@ export default function Nav({ stepDetails, activeStep }: NavProps) {
                         };
 
                         const commonContent = (
-                            <div className="relative">
-                                <div className="flex items-center gap-3 px-8 py-4">
+                            <div className="relative h-full">
+                                <div className={`flex items-center gap-3 py-4 ${hasFewSteps ? 'justify-center px-4' : 'px-8'}`}>
                                     <div
                                         className={`flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-full font-bold ${
                                             index + 1 < activeStep

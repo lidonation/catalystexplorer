@@ -7,8 +7,8 @@ type ButtonProps = {
     className?: string;
     type?: 'button' | 'submit' | 'reset';
     ariaLabel?: string;
-    arialExpanded?: boolean;
-    arialControls?: string;
+    ariaExpanded?: boolean;
+    ariaControls?: string;
     ariaPressed?: boolean;
     dataTestId?: string;
 };
@@ -20,8 +20,8 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(({
     className = '',
     type = 'button',
     ariaLabel,
-    arialExpanded,
-    arialControls,
+    ariaExpanded,
+    ariaControls,
     ariaPressed,
     dataTestId,
 }, ref) => {
@@ -32,8 +32,8 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(({
             type={type}
             disabled={disabled}
             aria-label={ariaLabel}
-            aria-expanded={arialExpanded}
-            aria-controls={arialControls}
+            aria-expanded={ariaExpanded}
+            aria-controls={ariaControls}
             aria-pressed={ariaPressed}
             className={`rounded-sm hover:cursor-pointer ${disabled ? 'cursor-not-allowed opacity-50' : ''} ${className}`}
             data-testid={dataTestId}

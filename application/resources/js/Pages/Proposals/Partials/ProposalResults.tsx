@@ -28,6 +28,7 @@ const ProposalResults: React.FC<ProposalProps> = ({
                     ? 'grid-cols-1'
                     : `${isMini ? 'grid-cols-2 md:grid-cols-3 xl:grid-cols-4' : 'grid-cols-1 md:grid-cols-2 xl:grid-cols-3'}`
             }`}
+            data-testid="proposal-results-grid"
         >
             <AnimatePresence>
                 {proposals?.length &&

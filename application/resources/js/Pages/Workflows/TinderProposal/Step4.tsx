@@ -14,6 +14,7 @@ import SlideOverContent from './Partials/SlideOverContent';
 import SwipeCard from './Partials/SwipeCard';
 import BookmarkCollectionData = App.DataTransferObjects.BookmarkCollectionData;
 import ProposalData = App.DataTransferObjects.ProposalData;
+import { useWorkflowSlideOver } from '@/hooks/useWorkflowSlideOver';
 
 interface Step4Props {
     stepDetails: any[];
@@ -49,7 +50,7 @@ const Step4Content: React.FC<Step4Props> = ({
     tinderCollectionHash,
 }) => {
     const { t } = useTranslation();
-    // const { isOpen, openSlideOver, closeSlideOver } = useWorkflowSlideOver();
+    const { isOpen, openSlideOver, closeSlideOver } = useWorkflowSlideOver();
     const [leftProposals, setLeftProposals] = useState(initialLeftProposals);
     const [rightProposals, setRightProposals] = useState(initialRightProposals);
     const [deletedCollections, setDeletedCollections] = useState<
@@ -63,12 +64,12 @@ const Step4Content: React.FC<Step4Props> = ({
     const [isEditingFields, setIsEditingFields] = useState(false);
 
     const editForm = useForm({
-        [TinderWorkflowParams.TITLE]: '',
-        [TinderWorkflowParams.CONTENT]: '',
-        [TinderWorkflowParams.VISIBILITY]: VisibilityEnum.PRIVATE,
-        [TinderWorkflowParams.COMMENTS_ENABLED]: false as boolean,
-        [TinderWorkflowParams.COLOR]: '#2596BE',
-        [TinderWorkflowParams.STATUS]: StatusEnum.DRAFT,
+        [TinderWorkflowParams.TITLE]: leftBookmarkCollection?.title || rightBookmarkCollection?.title || '',
+        [TinderWorkflowParams.CONTENT]: leftBookmarkCollection?.content || rightBookmarkCollection?.content || '',
+        [TinderWorkflowParams.VISIBILITY]: leftBookmarkCollection?.visibility || rightBookmarkCollection?.visibility || VisibilityEnum.PRIVATE,
+        [TinderWorkflowParams.COMMENTS_ENABLED]: leftBookmarkCollection?.allow_comments || rightBookmarkCollection?.allow_comments || false as boolean,
+        [TinderWorkflowParams.COLOR]: leftBookmarkCollection?.color || rightBookmarkCollection?.color || '#2596BE',
+        [TinderWorkflowParams.STATUS]: leftBookmarkCollection?.status || leftBookmarkCollection?.status || StatusEnum.DRAFT,
     });
 
     const leftSwipeCount = leftProposals.length;
@@ -102,7 +103,7 @@ const Step4Content: React.FC<Step4Props> = ({
 
     // Handle saving edit form
     const saveEditForm = () => {
-        if (!isFormValid || !editingCollection) return;
+        if (!isFormValid) return;
 
         const collection =
             editingCollection === 'left'
@@ -119,8 +120,7 @@ const Step4Content: React.FC<Step4Props> = ({
             {
                 onSuccess: () => {
                     // closeSlideOver();
-                    setEditingCollection(null);
-                    setIsEditingFields(false);
+                    //setIsEditingFields(false);
                 },
                 onError: (errors) => {
                     console.error(
@@ -171,7 +171,7 @@ const Step4Content: React.FC<Step4Props> = ({
             });
         }
 
-        // openSlideOver();
+        openSlideOver();
     };
 
     const handleDeleteCollection = async () => {
@@ -257,8 +257,8 @@ const Step4Content: React.FC<Step4Props> = ({
         <WorkflowLayout
             asideInfo={stepDetails[activeStep - 1]?.info || ''}
             slideOver={{
-                isOpen: true,
-                onClose: () => null,
+                isOpen: isOpen,
+                onClose: () => closeSlideOver(),
                 title: t('workflows.tinderProposal.step4.editListTitle'),
                 size: 'md',
                 content: slideOverContent,

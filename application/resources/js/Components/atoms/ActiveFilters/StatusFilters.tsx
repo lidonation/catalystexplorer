@@ -32,6 +32,7 @@ const StatusFilters = ({
         <div
             className="bg-background mr-1 flex items-center rounded-lg border px-1 py-1"
             key={filter.label}
+            data-testid={`status-filter-${filter.param}`}
         >
             <div className="mr-1 font-bold">{filter.label}:</div>
             <div className="mr-1 flex items-center gap-2">
@@ -41,6 +42,7 @@ const StatusFilters = ({
                         <button
                             className="ml-2"
                             onClick={() => removeFilter(value)}
+                            data-testid={`remove-status-filter-${value}`}
                         >
                             X{' '}
                         </button>{' '}

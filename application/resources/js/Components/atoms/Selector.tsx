@@ -81,7 +81,7 @@ export default function Selector({
     };
 
     return (
-        <div className={cn('h-full rounded-lg', className + bgColor)}>
+        <div className={cn('h-full rounded-lg', className + bgColor)} data-testid="selector-container">
             <Popover open={open} onOpenChange={setOpen}>
                 <PopoverTrigger asChild>
                     <button
@@ -89,8 +89,9 @@ export default function Selector({
                         aria-expanded={open}
                         aria-label={t('select') + ' ' + t('option')}
                         className="border-input placeholder:text-muted-foreground ring-offset-background flex h-full w-full items-center justify-between rounded-md border bg-transparent px-3 py-2 text-sm shadow-xs hover:cursor-pointer disabled:cursor-not-allowed disabled:opacity-50"
+                        data-testid="selector-button"
                     >
-                        <span className="flex items-center gap-2 overflow-hidden">
+                        <span className="flex items-center gap-2 overflow-hidden" data-testid="selector-selected-items">
                             <span className="overflow-clip text-sm text-nowrap">
                                 {currentOption
                                     ? currentOption.label
@@ -115,6 +116,7 @@ export default function Selector({
                                 aria-label={t('clear') + ' ' + t('select')}
                                 onClick={onClearSelection}
                                 className="hover:text-primary px-3 focus:outline-hidden"
+                                data-testid="selector-clear-button"
                             >
                                 clear
                             </button>
@@ -141,6 +143,7 @@ export default function Selector({
                                         }
                                     }}
                                     className={`bg-background! hover:bg-background-lighter! focus:bg-background-lighter aria-selected:bg-background-lighter relative flex w-full items-center justify-between rounded-xs px-3 py-1.5 text-sm outline-hidden select-none ${isOptionDisabled ? 'text-gray-persist cursor-not-allowed opacity-70' : 'cursor-default'} `}
+                                    data-testid={`selector-option-${Array.isArray(option.value) ? option.value.join('-') : option.value}`}
                                 >
                                     <span>{option.label}</span>
 
@@ -168,6 +171,7 @@ export default function Selector({
                                                     : ''
                                             }`}
                                             disabled={isOptionDisabled}
+                                            data-testid={`selector-checkbox-${Array.isArray(option.value) ? option.value.join('-') : option.value}`}
                                         />
                                     )}
                                 </div>

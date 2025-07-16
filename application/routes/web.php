@@ -259,6 +259,8 @@ Route::localized(
                         ->name('saveStep3');
                     Route::post('/4/save', [TinderProposalWorkflowController::class, 'saveStep4'])
                         ->name('saveStep4');
+                    Route::post('/add-bookmark-item', [TinderProposalWorkflowController::class, 'addBookmarkItem'])
+                        ->name('addBookmarkItem');
                     Route::get('/fetch-proposals', [TinderProposalWorkflowController::class, 'fetchMoreProposals'])
                         ->name('fetchProposals');
                     Route::get('/{step}', [TinderProposalWorkflowController::class, 'handleStep'])
