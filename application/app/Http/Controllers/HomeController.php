@@ -27,10 +27,9 @@ class HomeController extends Controller
         AnnouncementRepository $announcements
     ): Response {
 
-
         return Inertia::render('Home/Index', [
             'posts' => Inertia::optional(
-                fn() => $this->getPosts($postRepository)
+                fn () => $this->getPosts($postRepository)
             ),
             'proposals' => Inertia::optional(
                 fn () => ProposalData::collect(
@@ -76,8 +75,8 @@ class HomeController extends Controller
         ]);
     }
 
-
-    public function getPosts(PostRepository $postRepository,){
+    public function getPosts(PostRepository $postRepository)
+    {
 
         $postRepository->setQuery([
             'tags' => 'project-catalyst',
@@ -101,7 +100,6 @@ class HomeController extends Controller
                 ]
             );
         }
-
 
         return $posts;
     }

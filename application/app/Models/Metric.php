@@ -20,12 +20,12 @@ class Metric extends Model
     protected function casts(): array
     {
         return [
-            'count_by' => MetricCountBy::class . ':nullable',
+            'count_by' => MetricCountBy::class.':nullable',
             'created_at' => 'datetime:Y-m-d',
             'order' => 'integer',
-            'query' => MetricQueryTypes::class . ':nullable',
-            'status' => StatusEnum::class . ':nullable',
-            'type' => MetricTypes::class . ':nullable',
+            'query' => MetricQueryTypes::class.':nullable',
+            'status' => StatusEnum::class.':nullable',
+            'type' => MetricTypes::class.':nullable',
             'updated_at' => 'datetime:Y-m-d',
         ];
     }
@@ -66,9 +66,9 @@ class Metric extends Model
                 }
 
                 $results = $builder->select('fund_id', DB::raw("{$aggregate}({$table}.{$field}) as {$aggregate}"))
-                    ->leftJoin('funds', fn($join) => $join->on('funds.id', '=', 'proposals.fund_id'))
+                    ->leftJoin('funds', fn ($join) => $join->on('funds.id', '=', 'proposals.fund_id'))
                     ->with([
-                        'fund' => fn($q) => $q->orderBy('launched_at', 'desc'),
+                        'fund' => fn ($q) => $q->orderBy('launched_at', 'desc'),
                     ])
                     ->groupBy('fund_id', 'funds.launched_at')
                     ->orderByDesc('funds.launched_at')
@@ -92,7 +92,7 @@ class Metric extends Model
 
     public function getMultiSeriesChartData()
     {
-        if (!$this->rules || $this->rules->count() <= 1) {
+        if (! $this->rules || $this->rules->count() <= 1) {
             return [$this->chartData];
         }
 
@@ -111,20 +111,20 @@ class Metric extends Model
 
             $results = match ($countBy) {
                 'year' => $builder->select(
-                    DB::raw($this->getDateExtractionSql("{$table}.created_at", 'year') . " as year"),
+                    DB::raw($this->getDateExtractionSql("{$table}.created_at", 'year').' as year'),
                     DB::raw("{$aggregate}({$table}.{$field}) as {$aggregate}")
                 )
                     ->groupBy(DB::raw($this->getDateExtractionSql("{$table}.created_at", 'year')))
                     ->orderByDesc(DB::raw($this->getDateExtractionSql("{$table}.created_at", 'year')))
                     ->get()
-                    ->map(fn($row) => ['x' => (int) $row->year, 'y' => $row->{$aggregate}]),
+                    ->map(fn ($row) => ['x' => (int) $row->year, 'y' => $row->{$aggregate}]),
 
                 'fund', 'funds' => $builder->select(
                     'fund_id',
                     DB::raw("{$aggregate}({$table}.{$field}) as {$aggregate}")
                 )
-                    ->leftJoin('funds', fn($join) => $join->on('funds.id', '=', "{$table}.fund_id"))
-                    ->with(['fund' => fn($q) => $q->orderBy('launched_at', 'desc')])
+                    ->leftJoin('funds', fn ($join) => $join->on('funds.id', '=', "{$table}.fund_id"))
+                    ->with(['fund' => fn ($q) => $q->orderBy('launched_at', 'desc')])
                     ->groupBy('fund_id', 'funds.launched_at')
                     ->orderByDesc('funds.launched_at')
                     ->get()
@@ -142,7 +142,7 @@ class Metric extends Model
                     ->groupBy($countBy)
                     ->orderByDesc($aggregate)
                     ->get()
-                    ->map(fn($row) => ['x' => $row->{$countBy}, 'y' => $row->{$aggregate}]),
+                    ->map(fn ($row) => ['x' => $row->{$countBy}, 'y' => $row->{$aggregate}]),
             };
 
             $seriesData[] = [
@@ -154,6 +154,7 @@ class Metric extends Model
 
         return $seriesData;
     }
+
     /**
      * Generate a color for a series based on rule ID
      */
@@ -171,7 +172,7 @@ class Metric extends Model
             '#ffa39e',
             '#b7eb8f',
             '#91d5ff',
-            '#d3adf7'
+            '#d3adf7',
         ];
 
         return $colors[$ruleId % count($colors)];
@@ -206,10 +207,9 @@ class Metric extends Model
         };
     }
 
-
     public function buildMultiSeriesSearchData(array $userFilters = [], string $searchQuery = ''): array
     {
-        if (!$this->rules || $this->rules->count() <= 1) {
+        if (! $this->rules || $this->rules->count() <= 1) {
             return [$this->dynamicChartData($userFilters)];
         }
 
@@ -234,6 +234,7 @@ class Metric extends Model
                 $options['filter'] = $args['filter'];
                 $options['limit'] = $args['limit'];
                 $options['facets'] = $args['facets'];
+
                 return $meili->search($query, $options);
             })->raw();
 
@@ -316,11 +317,12 @@ class Metric extends Model
         uksort($funds, function ($a, $b) {
             $numA = (int) str_replace('Fund ', '', $a);
             $numB = (int) str_replace('Fund ', '', $b);
+
             return $numA - $numB;
         });
 
         return collect($funds)
-            ->map(fn($count, $title) => ['x' => $title, 'y' => $count])
+            ->map(fn ($count, $title) => ['x' => $title, 'y' => $count])
             ->values()
             ->toArray();
     }
@@ -331,7 +333,7 @@ class Metric extends Model
     private function processYearFacets(array $years): array
     {
         return collect($years)
-            ->map(fn($count, $year) => ['x' => (int) $year, 'y' => $count])
+            ->map(fn ($count, $year) => ['x' => (int) $year, 'y' => $count])
             ->sortKeysDesc()
             ->values()
             ->toArray();
