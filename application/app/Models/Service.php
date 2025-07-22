@@ -32,4 +32,10 @@ class Service extends Model
     {
         return $this->morphedByMany($modelClass, 'model', 'service_model');
     }
+
+    public function categories(): MorphToMany
+    {
+        return $this->morphedByMany(Category::class, 'model', 'service_model');
+    }
+
 }

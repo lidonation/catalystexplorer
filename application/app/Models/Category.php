@@ -1,0 +1,73 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Attributes\Scope;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
+use Illuminate\Support\Str;
+
+class Category extends Model
+{
+    protected $fillable = [
+        'parent_id',
+        'name',
+        'description',
+        'slug',
+        'type',
+        'level',
+        'is_active',
+    ];
+
+    protected $casts = [
+        'is_active' => 'boolean',
+        'level' => 'integer',
+    ];
+
+    // Self-referential relationships
+    public function parent(): BelongsTo
+    {
+        return $this->belongsTo(Category::class, 'parent_id');
+    }
+
+    public function children(): HasMany
+    {
+        return $this->hasMany(Category::class, 'parent_id');
+    }
+
+    public function services(): MorphToMany
+    {
+        return $this->morphToMany(Service::class, 'model', 'service_model');
+    }
+
+    // Auto-generate slug
+    protected function name(): Attribute
+    {
+        return Attribute::make(
+            set: fn (string $value) => [
+                'name' => $value,
+                'slug' => Str::slug($value),
+            ]
+        );
+    }
+
+    // Auto-set level and type on creation
+    protected static function booted()
+    {
+        static::creating(function ($category) {
+            if ($category->parent_id) {
+                $parent = static::find($category->parent_id);
+                $category->level = $parent->level + 1;
+                $category->type = 'subcategory';
+            } else {
+                $category->level = 0;
+                $category->type = 'category';
+            }
+        });
+    }
+}
