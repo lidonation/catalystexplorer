@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('bookmark_collections', function (Blueprint $table) {
-            $table->text('model_type')->change();
+            $table->text('model_type')->nullable()->change();
         });
     }
 
