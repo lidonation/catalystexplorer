@@ -131,9 +131,18 @@ const Step1: React.FC<Step1Props> = ({ stepDetails, activeStep, existingPreferen
             paramName: string,
             value: string | number | string[] | number[],
         ) => {
+            // Get current URL parameters
+            const currentParams = new URLSearchParams(window.location.search);
+            const existingParams: Record<string, any> = {};
+            
+            // Preserve existing parameters
+            currentParams.forEach((value, key) => {
+                existingParams[key] = value;
+            });
+            
             router.get(
                 window.location.pathname,
-                buildUpdatedFilters({ [paramName]: value }),
+                buildUpdatedFilters({ ...existingParams, [paramName]: value }),
                 { preserveState: true, replace: true },
             );
         };
