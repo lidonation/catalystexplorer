@@ -4,16 +4,16 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\Repositories\CommunityRepository;
+use App\Repositories\GroupRepository;
+use App\Repositories\IdeascaleProfileRepository;
+use App\Repositories\PostRepository;
+use App\Repositories\ProposalRepository;
+use App\Repositories\ReviewRepository;
+use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Inertia\Inertia;
 use Inertia\Response;
-use Illuminate\Http\Request;
-use App\Repositories\PostRepository;
-use App\Repositories\GroupRepository;
-use App\Repositories\ReviewRepository;
-use App\Repositories\ProposalRepository;
-use App\Repositories\CommunityRepository;
-use Illuminate\Pagination\LengthAwarePaginator;
-use App\Repositories\IdeascaleProfileRepository;
 
 class SearchController extends Controller
 {
@@ -95,7 +95,6 @@ class SearchController extends Controller
         return $searchData;
     }
 
-
     public function getPosts(PostRepository $postRepository, $searchTerm): array|LengthAwarePaginator
     {
 
@@ -122,7 +121,6 @@ class SearchController extends Controller
                 ]
             );
         }
-
 
         return $posts;
     }
