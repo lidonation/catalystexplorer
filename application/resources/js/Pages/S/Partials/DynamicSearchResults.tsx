@@ -129,16 +129,18 @@ const DynamicSearchResults = ({
                 );
             case 'groups':
                 return (
-                    <div className="flex flex-col gap-4">
-                        <Title level='2'>{t('searchResults.tabs.groups')}</Title>
+                    <div className="flex w-full flex-col gap-4">
+                        <Title level="2">
+                            {t('searchResults.tabs.groups')}
+                        </Title>
                         <ul className="grid w-full grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-5">
-                            {data.hits.map((group, index) =>(
+                            {data.hits.map((group, index) => (
                                 <li key={index}>
                                     <GroupCardMini group={group as GroupData} />
                                 </li>
                             ))}
                         </ul>
-                        <div className="flex items-center justify-center w-full">
+                        <div className="flex w-full items-center justify-center">
                             <NavLink href={`/groups?q=${query}`}>
                                 <Button className="text-center">
                                     {translation(

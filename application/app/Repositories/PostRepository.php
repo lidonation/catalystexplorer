@@ -7,15 +7,14 @@ namespace App\Repositories;
 use App\Http\Intergrations\LidoNation\LidoNationConnector;
 use App\Http\Intergrations\LidoNation\Requests\GetPostsRequest;
 use App\Models\Fund;
+use GuzzleHttp\Exception\ConnectException;
+use GuzzleHttp\Exception\RequestException as GuzzleRequestException;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-use Saloon\PaginationPlugin\PagedPaginator;
+use Illuminate\Support\Facades\Log;
 use Saloon\Exceptions\Request\FatalRequestException;
 use Saloon\Exceptions\Request\RequestException;
 use Saloon\Exceptions\SaloonException;
-use GuzzleHttp\Exception\ConnectException;
-use GuzzleHttp\Exception\RequestException as GuzzleRequestException;
-use Illuminate\Support\Facades\Log;
-
+use Saloon\PaginationPlugin\PagedPaginator;
 
 class PostRepository extends Repository
 {
@@ -34,10 +33,10 @@ class PostRepository extends Repository
 
             return $connector->paginate($postRequest)
                 ->setPerPageLimit($perPage);
-        } catch (ConnectException | GuzzleRequestException | RequestException | FatalRequestException | SaloonException $e) {
-            Log::error('LidoNation API failed: ' . $e->getMessage(), ['exception' => $e]);
+        } catch (ConnectException|GuzzleRequestException|RequestException|FatalRequestException|SaloonException $e) {
+            Log::error('LidoNation API failed: '.$e->getMessage(), ['exception' => $e]);
         } catch (\Throwable $e) {
-            report($e); 
+            report($e);
         }
 
         // Graceful fallback: return empty Laravel paginator
