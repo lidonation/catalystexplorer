@@ -54,7 +54,7 @@ const CampaignCard: React.FC<CampaignCardProps> = ({
         return input; // Return original if format is incorrect
     };
     return (
-        <div className={`${className}`}>
+        <div className={className} data-testid="campaign-card">
             <div className="bg-content-light h-60 overflow-hidden rounded-lg">
                 {heroImageUrl ? (
                     <img
