@@ -68,7 +68,10 @@ class SearchController extends Controller
                 'tags' => 'project-catalyst',
                 'search' => $searchTerm,
             ]);
-            $counts['articles'] = $this->getPosts($posts, $searchTerm)->count();
+
+            $posts = $this->getPosts($posts, $searchTerm);
+
+            $counts['articles'] = empty($posts) ? 0 : $posts->count();
         }
 
         return $counts;
@@ -81,7 +84,7 @@ class SearchController extends Controller
         foreach ($repositories as $key => $repository) {
             if (empty($filterList) || in_array($key, $filterList)) {
                 $searchData[$key] = Inertia::optional(
-                    fn () => $repository->search($searchTerm)->raw()
+                    fn() => $repository->search($searchTerm)->raw()
                 );
             }
         }
