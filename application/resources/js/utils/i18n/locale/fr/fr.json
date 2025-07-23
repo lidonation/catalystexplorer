@@ -365,7 +365,7 @@
                 "noButtonText": "Non",
                 "yesButtonText": "Oui",
                 "allDone": "Tout est fait !",
-                "viewedAllProposals": "Vous avez vu toutes les {count} propositions",
+                "viewedAllProposals": "Vous avez vu toutes les {{count}} propositions",
                 "loadingProposals": "Chargement des propositions...",
                 "noProposalsFound": "Aucune proposition trouvée correspondant à vos critères.",
                 "failedToLoadProposals": "Échec du chargement des propositions. Veuillez réessayer.",
