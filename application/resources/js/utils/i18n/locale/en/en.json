@@ -389,7 +389,7 @@
                 "noButtonText": "No",
                 "yesButtonText": "Yes",
                 "allDone": "All done!",
-                "viewedAllProposals": "You've viewed all {count} proposals",
+                "viewedAllProposals": "You've viewed all {{count}} proposals",
                 "loadingProposals": "Loading proposals...",
                 "noProposalsFound": "No proposals found matching your criteria.",
                 "failedToLoadProposals": "Failed to load proposals. Please try again.",
