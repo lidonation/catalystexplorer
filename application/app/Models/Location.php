@@ -38,6 +38,16 @@ class Location extends Model
         return $this->hasMany(User::class);
     }
 
+    public function services(): MorphToMany
+    {
+        return $this->morphToMany(Service::class, 'model', 'model_has_locations');
+    }
+
+    public function getDisplayNameAttribute(): string
+    {
+        return $this->city ?? 'Unknown Location';
+    }
+
     public function casts(): array
     {
         return [];

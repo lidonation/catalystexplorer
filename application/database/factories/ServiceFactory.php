@@ -15,8 +15,14 @@ class ServiceFactory extends Factory
         return [
             'title' => $this->faker->sentence(3),
             'description' => $this->faker->paragraph(),
-            'type' => $this->faker->randomElement(['offered', 'needed']),
+            'type' => $this->faker->randomElement(['offering', 'requesting']),
             'user_id' => User::factory(),
+
+            'contact_name' => $this->faker->optional(0.3)->name(),
+            'contact_email' => $this->faker->optional(0.3)->safeEmail(),
+            'contact_website' => $this->faker->optional(0.2)->url(),
+            'contact_github' => $this->faker->optional(0.2)->userName(),
+            'contact_linkedin' => $this->faker->optional(0.2)->userName(),
         ];
     }
 }
