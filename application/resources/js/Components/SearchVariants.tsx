@@ -44,6 +44,22 @@ const handleSelection = (newValue: string[]) => {
         onChange([]);
         return;
     }
+    if (value.includes(allKey) && newValue.length < value.length && newValue.includes(allKey)) {
+        console.log("Individual option deselected - removing 'All Groups'");
+        
+        const filteredValue = newValue.filter(item => item !== allKey);
+        onChange(filteredValue);
+        return;
+    }
+
+    const individualOptions = variantItems.filter(item => item.key !== allKey).map(item => item.key);
+    const selectedIndividualOptions = newValue.filter(item => item !== allKey);
+    
+    if (selectedIndividualOptions.length === individualOptions.length && !newValue.includes(allKey)) {
+        console.log("All individual options selected - adding 'All Groups'");
+        onChange([...newValue, allKey]);
+        return;
+    }
     onChange(newValue);
 };
   return (
