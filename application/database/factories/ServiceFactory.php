@@ -15,14 +15,14 @@ class ServiceFactory extends Factory
         return [
             'title' => $this->faker->sentence(3),
             'description' => $this->faker->paragraph(),
-            'type' => $this->faker->randomElement(['offering', 'requesting']),
+            'type' => $this->faker->randomElement(['offered', 'needed']),
             'user_id' => User::factory(),
 
-            'contact_name' => $this->faker->optional(0.3)->name(),
-            'contact_email' => $this->faker->optional(0.3)->safeEmail(),
-            'contact_website' => $this->faker->optional(0.2)->url(),
-            'contact_github' => $this->faker->optional(0.2)->userName(),
-            'contact_linkedin' => $this->faker->optional(0.2)->userName(),
+            'name' => $this->faker->optional(0.3)->name(),
+            'email' => $this->faker->optional(0.3)->safeEmail(),
+            'website' => $this->faker->optional(0.2)->url(),
+            'github' => $this->faker->optional(0.2)->userName(),
+            'linkedin' => $this->faker->optional(0.2)->userName(),
         ];
     }
 }
