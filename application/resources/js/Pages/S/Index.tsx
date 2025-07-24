@@ -123,7 +123,7 @@ const SearchResults = ({ counts, ...results }: SearchResultsProps) => {
 
     if (TAB_CONFIG.length === 0) {
         return (
-            <div className="container py-8">
+            <div className="w-full py-8 px-4">
                 <RecordsNotFound context="search" />
                 {/* <EmptyState query={query as string} translation={t} /> */}
             </div>
@@ -135,7 +135,7 @@ const SearchResults = ({ counts, ...results }: SearchResultsProps) => {
             <Head title="Search Results" />
             <div className="min-h-screen">
                 <div className="sticky top-0 z-50 backdrop-blur-md">
-                    <div className="container px-4 py-4">
+                    <div className="w-full px-4 py-4">
                         <div className="mb-4 flex w-full flex-col">
                             <Title level='3'>
                                 {t('searchResults.results.title', { query })}
@@ -150,11 +150,11 @@ const SearchResults = ({ counts, ...results }: SearchResultsProps) => {
                     </div>
                 </div>
 
-                <div className="container flex flex-col gap-16 scroll-smooth py-8">
+                <div className="w-full flex flex-col gap-16 scroll-smooth py-8 px-4">
                     {TAB_CONFIG.map((tab) => (
                         <section
                             key={tab.name}
-                            className="min-h-screen scroll-mt-[120px]"
+                            className="min-h-screen scroll-mt-[120px] w-full"
                             id={`section-${tab.name}`}
                         >
                             <WhenVisible
@@ -167,7 +167,7 @@ const SearchResults = ({ counts, ...results }: SearchResultsProps) => {
                                     />
                                 }
                             >
-                                <div className="flex flex-col gap-2">
+                                <div className="flex flex-col gap-2 w-full">
                                     <DynamicSearchResults
                                         name={tab.name}
                                         data={results[tab.name] as any}
