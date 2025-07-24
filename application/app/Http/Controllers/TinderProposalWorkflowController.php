@@ -938,14 +938,14 @@ class TinderProposalWorkflowController extends Controller
 
         $bookmarkCollection = BookmarkCollection::byHash($validated['bookmarkCollection']);
 
-        if (!$bookmarkCollection || $bookmarkCollection->user_id !== Auth::id()) {
+        if (! $bookmarkCollection || $bookmarkCollection->user_id !== Auth::id()) {
             return response()->json(['error' => 'Bookmark collection not found or access denied.'], 404);
         }
 
         $bookmarkableType = BookmarkableType::tryFrom(Str::kebab($validated['modelType']))->getModelClass();
         $proposal = $bookmarkableType::byHash($validated['proposalHash']);
 
-        if (!$proposal) {
+        if (! $proposal) {
             return response()->json(['error' => "Proposal with hash {$validated['proposalHash']} not found."], 404);
         }
 
