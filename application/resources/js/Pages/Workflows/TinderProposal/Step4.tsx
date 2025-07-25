@@ -1,3 +1,4 @@
+import useWorkflowSlideOver from '@/Hooks/useWorkflowSlideOver';
 import {useLaravelReactI18n} from "laravel-react-i18n";
 import Paragraph from '@/Components/atoms/Paragraph';
 import PrimaryLink from '@/Components/atoms/PrimaryLink';
@@ -14,7 +15,6 @@ import SlideOverContent from './Partials/SlideOverContent';
 import SwipeCard from './Partials/SwipeCard';
 import BookmarkCollectionData = App.DataTransferObjects.BookmarkCollectionData;
 import ProposalData = App.DataTransferObjects.ProposalData;
-import useWorkflowSlideOver from '@/Hooks/useWorkflowSlideOver';
 
 interface Step4Props {
     stepDetails: any[];

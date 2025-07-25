@@ -6,7 +6,7 @@ import BookmarkPage1 from '@/Pages/My/Lists/Partials/ListCreateFromBookmarkSave/
 import BookmarkPage2 from '@/Pages/My/Lists/Partials/ListCreateFromBookmarkSave/Step2';
 import BookmarkPage3 from '@/Pages/My/Lists/Partials/ListCreateFromBookmarkSave/Step3';
 import TransitionMenu from '@/Pages/My/Lists/Partials/TransitionMenu';
-import { useState , useRef } from 'react';
+import { useState, useRef } from 'react';
 
 interface BookmarkButtonProps {
     modelType: string;
@@ -57,7 +57,7 @@ export default function BookmarkButton({
             isBookmarked={isBookmarked}
             handleRemoveBookmark={removeBookmark}
             associateCollectionId={associatedCollection as string}
-            onClose={handleClose} 
+            onClose={handleClose}
         />,
         <BookmarkPage2 key="priority" />,
         <BookmarkPage3 key="new-list" />,

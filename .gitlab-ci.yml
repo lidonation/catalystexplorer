@@ -104,8 +104,6 @@ yarn-build:
     - apk add --update curl && rm -rf /var/cache/apk/*
   script: |-
     set -vx
-    export PATH=$PATH:/usr/local/bin
-    export NODE_OPTIONS=--max-old-space-size=8192
     cd ./application
     yarn install --ignore-engines
     yarn run build
@@ -127,8 +125,6 @@ yarn-ssr:
     - apk add --update curl && rm -rf /var/cache/apk/*
   script: |-
     set -vx
-    export PATH=$PATH:/usr/local/bin
-    export NODE_OPTIONS=--max-old-space-size=8192
     cd ./application
     yarn install --ignore-engines
     yarn run build:ssr
