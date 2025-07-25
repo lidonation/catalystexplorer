@@ -14,7 +14,7 @@ import SlideOverContent from './Partials/SlideOverContent';
 import SwipeCard from './Partials/SwipeCard';
 import BookmarkCollectionData = App.DataTransferObjects.BookmarkCollectionData;
 import ProposalData = App.DataTransferObjects.ProposalData;
-import { useWorkflowSlideOver } from '@/Hooks/useWorkflowSlideOver';
+import useWorkflowSlideOver from '@/Hooks/useWorkflowSlideOver';
 
 interface Step4Props {
     stepDetails: any[];
