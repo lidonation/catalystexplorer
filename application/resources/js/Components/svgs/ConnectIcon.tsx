@@ -1,11 +1,8 @@
-import { useTranslation } from 'react-i18next';
-
 type ConnectIconProps = {
     className?: string;
 };
 
 export default function ConnectIcon({ className }: ConnectIconProps) {
-    const { t } = useTranslation();
     return (
         <svg
             width="16"
@@ -14,7 +11,6 @@ export default function ConnectIcon({ className }: ConnectIconProps) {
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
         >
-            <title> {t('icons.title.connect')}</title>
             <path
                 d="M2.66663 7.33203C4.25792 7.33203 5.78405 7.96417 6.90927 9.08939C8.03449 10.2146 8.66663 11.7407 8.66663 13.332"
                 stroke="#99A1B7"

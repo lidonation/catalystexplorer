@@ -1,9 +1,9 @@
 import Paragraph from '@/Components/atoms/Paragraph';
 import Title from '@/Components/atoms/Title';
 import { adaFormat } from '@/utils/adaFormat';
-import { t } from 'i18next';
 import DetailRow from './DetailRow';
 import TransactionData = App.DataTransferObjects.TransactionData;
+import {useLaravelReactI18n} from "laravel-react-i18n";
 
 interface WalletDetailsCardProps {
     transaction?: TransactionData;
@@ -21,6 +21,7 @@ export default function WalletDetailsCard({
     children,
     title,
 }: WalletDetailsCardProps) {
+    const { t } = useLaravelReactI18n();
     return (
         <div className="bg-background rounded-lg p-6 shadow-sm">
             <Title

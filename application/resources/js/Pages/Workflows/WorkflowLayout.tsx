@@ -4,7 +4,7 @@ import WorkflowSlideOver from '@/Components/WorkflowSlideOver';
 import { CatalystWhiteLogo } from '@/Components/svgs/CatalystWhiteLogo';
 import HelpCircleIcon from '@/Components/svgs/HelpCircleIcon';
 import { ReactNode, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 
 interface WorkflowSlideOverConfig {
     isOpen: boolean;
@@ -29,7 +29,7 @@ export default function WorkflowLayout({
     contentClassName,
     slideOver,
 }: WorkflowLayoutProps) {
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
     const isLogin = window.location.pathname.endsWith('login');
     const [isOpen, setIsOpen] = useState(false);
 
@@ -102,7 +102,7 @@ export default function WorkflowLayout({
                     </div>
                 </div>
             </div>
-            
+
             {/* Slide Over Content */}
             {slideOver && (
                 <WorkflowSlideOver

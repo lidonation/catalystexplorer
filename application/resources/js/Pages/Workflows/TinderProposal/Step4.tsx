@@ -1,3 +1,4 @@
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import Paragraph from '@/Components/atoms/Paragraph';
 import PrimaryLink from '@/Components/atoms/PrimaryLink';
 import Title from '@/Components/atoms/Title';
@@ -7,14 +8,13 @@ import { StatusEnum, VisibilityEnum } from '@/enums/votes-enums';
 import { generateLocalizedRoute } from '@/utils/localizedRoute';
 import { router, useForm } from '@inertiajs/react';
 import React, { useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import Nav from '../Partials/WorkflowNav';
 import WorkflowLayout from '../WorkflowLayout';
 import SlideOverContent from './Partials/SlideOverContent';
 import SwipeCard from './Partials/SwipeCard';
 import BookmarkCollectionData = App.DataTransferObjects.BookmarkCollectionData;
 import ProposalData = App.DataTransferObjects.ProposalData;
-import { useWorkflowSlideOver } from '@/hooks/useWorkflowSlideOver';
+import { useWorkflowSlideOver } from '@/Hooks/useWorkflowSlideOver';
 
 interface Step4Props {
     stepDetails: any[];
@@ -49,7 +49,7 @@ const Step4Content: React.FC<Step4Props> = ({
     rightProposals: initialRightProposals,
     tinderCollectionHash,
 }) => {
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
     const { isOpen, openSlideOver, closeSlideOver } = useWorkflowSlideOver();
     const [leftProposals, setLeftProposals] = useState(initialLeftProposals);
     const [rightProposals, setRightProposals] = useState(initialRightProposals);

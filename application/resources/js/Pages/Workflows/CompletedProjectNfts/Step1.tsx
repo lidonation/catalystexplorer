@@ -6,7 +6,7 @@ import { useLocalizedRoute } from '@/utils/localizedRoute';
 import { Link } from '@inertiajs/react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import React, { useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import Content from '../Partials/WorkflowContent';
 import Footer from '../Partials/WorkflowFooter';
 import Nav from '../Partials/WorkflowNav';
@@ -20,7 +20,7 @@ interface Step1Props {
 }
 
 const Step1: React.FC<Step1Props> = ({ profiles, stepDetails, activeStep }) => {
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
     const [selectedProfiles, setSelectedProfile] = useState<string[]>([]);
 
     const handleProfileSelect = (hash: string | null) => {

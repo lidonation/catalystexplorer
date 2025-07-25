@@ -5,7 +5,7 @@ import GroupHeader from '@/assets/images/group-header.jpg';
 import { generateTabs, groupTabs } from '@/utils/routeTabs';
 import { PageProps as InertiaPageProps } from '@inertiajs/core';
 import { ReactNode, useEffect, useMemo, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import GroupSocials from './Partials/GroupSocials';
 import GroupTabs from './Partials/GroupTab';
 import GroupData = App.DataTransferObjects.GroupData;
@@ -21,7 +21,7 @@ interface GroupLayoutProps {
 }
 
 export default function GroupLayout({ children, group }: GroupLayoutProps) {
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
     const url = window.location.origin;
     const [activeTab, setActiveTab] = useState('');
 
@@ -35,7 +35,7 @@ export default function GroupLayout({ children, group }: GroupLayoutProps) {
 
     const tabs = useMemo(() => generateTabs(t, tabConfig), [t, tabConfig]);
 
-    
+
     useEffect(() => {
         const currentPath = window.location.pathname;
 

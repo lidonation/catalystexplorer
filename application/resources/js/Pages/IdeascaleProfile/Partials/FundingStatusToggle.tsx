@@ -1,4 +1,4 @@
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 
 interface FundingStatusToggleProps {
     checked: boolean;
@@ -6,7 +6,7 @@ interface FundingStatusToggleProps {
 }
 
 const FundingStatusToggle: React.FC<FundingStatusToggleProps> = ({ checked, onChange }) => {
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
 
     return (
         <div className="relative flex flex-col items-center">

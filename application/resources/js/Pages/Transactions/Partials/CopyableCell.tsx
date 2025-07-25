@@ -2,7 +2,7 @@ import React from 'react';
 import CopyIcon from '@/Components/svgs/CopyIcon';
 import Paragraph from '@/Components/atoms/Paragraph';
 import Button from '@/Components/atoms/Button';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 
 
 const copyToClipboard = (text: string) => {
@@ -22,7 +22,7 @@ interface CopyableCellProps {
 }
 
 const CopyableCell: React.FC<CopyableCellProps> = ({ displayText, fullText, title }) => {
-  const { t } = useTranslation();
+  const { t } = useLaravelReactI18n();
 
   return (
     <div className="flex items-center justify-center">

@@ -6,14 +6,14 @@ import { ParamsEnum } from '@/enums/proposal-search-params';
 import { userSettingEnums } from '@/enums/user-setting-enums';
 import { useUserSetting } from '@/Hooks/useUserSettings';
 import { useEffect, useMemo } from 'react';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 
 interface Step1Props {
     onCompletionChange?: (isComplete: boolean) => void;
 }
 
 export default function Step1({ onCompletionChange }: Step1Props) {
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
     const { setFilters, getFilter } = useFilterContext();
 
     const { value: proposalTypes, setValue: setProposalTypes } = useUserSetting<

@@ -3,14 +3,14 @@ import SearchVariants from '@/Components/SearchVariants';
 import useEnterKey from '@/Hooks/useEnterKey';
 import { router } from '@inertiajs/react';
 import { useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 
 function GlobalSearch() {
     const [searchTerm, setSearchTerm] = useState('');
     const [searchFilters, setSearchFilters] = useState<string[]>([]);
     const [isFocused, setIsFocused] = useState(false);
 
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
 
     const enterHandler = () => {
         const syntheticEvent = new Event('submit', {

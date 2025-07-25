@@ -1,5 +1,3 @@
-import { useTranslation } from 'react-i18next';
-
 type DiscordProps = {
     className?: string;
     width?: number;
@@ -11,7 +9,6 @@ export default function DiscordIcon({
     width = 24,
     height = 24,
 }: DiscordProps) {
-    const { t } = useTranslation();
     return (
         <svg
             width="25"
@@ -21,7 +18,6 @@ export default function DiscordIcon({
             xmlns="http://www.w3.org/2000/svg"
             className={`fill-current ${className}`}
         >
-            <title>{t('icons.titles.discord')}</title>
             <g clipPath="url(#clip0_7428_36757)">
                 <path
                     d="M11.1 12.7C11.1 14 9.7 15.2 8.5 14.3C7.2 13.3 7.7 11 9.3 10.9C10.3 10.9 11.1 11.8 11.1 12.7Z"

@@ -4,7 +4,7 @@ import RecordsNotFound from '@/Layouts/RecordsNotFound';
 import RelatedReviews from '@/Pages/Reviews/Partials/RelatedReviews';
 import { PaginatedData } from '@/types/paginated-data';
 import { Head, WhenVisible } from '@inertiajs/react';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import IdeascaleProfileLayout from '../IdeascaleProfileLayout';
 import IdeascaleProfileData = App.DataTransferObjects.IdeascaleProfileData;
 import ReviewData = App.DataTransferObjects.ReviewData;
@@ -20,7 +20,7 @@ export default function Reviews({
     reviews,
     aggregatedRatings,
 }: ReviewsPageProps) {
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
 
     return (
         <IdeascaleProfileLayout ideascaleProfile={ideascaleProfile}>

@@ -1,5 +1,5 @@
 import React from 'react';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import { router } from '@inertiajs/react';
 import { useLocalizedRoute } from '@/utils/localizedRoute';
 import TransactionData = App.DataTransferObjects.TransactionData;
@@ -24,7 +24,7 @@ const TransactionRow: React.FC<TransactionRowProps> = ({
   columns,
   onViewDetails,
 }) => {
-  const { t } = useTranslation();
+  const { t } = useLaravelReactI18n();
 
   const localizedRoute = useLocalizedRoute('jormungandr.transactions.show', {
       transaction: transaction?.tx_hash,

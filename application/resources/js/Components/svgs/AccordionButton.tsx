@@ -1,5 +1,3 @@
-import { useTranslation } from 'react-i18next';
-
 type AccordionButtonProps = {
     isOpen: boolean;
     className?: string;
@@ -12,7 +10,6 @@ export default function AccordionButton({
     width = 32,
     height = 32,
 }: AccordionButtonProps) {
-    const { t } = useTranslation();
     return (
         <div>
             {!isOpen ? (
@@ -29,7 +26,7 @@ export default function AccordionButton({
                         strokeWidth="2"
                         strokeLinecap="round"
                         strokeLinejoin="round"
-                    />
+                    ></path>
                 </svg>
             ) : (
                 <svg
@@ -45,7 +42,7 @@ export default function AccordionButton({
                         strokeWidth="2"
                         strokeLinecap="round"
                         strokeLinejoin="round"
-                    />
+                    ></path>
                 </svg>
             )}
         </div>

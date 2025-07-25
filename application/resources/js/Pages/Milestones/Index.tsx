@@ -1,6 +1,6 @@
 import Title from '@/Components/atoms/Title';
 import { Head } from '@inertiajs/react';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import { PaginatedData } from '../../types/paginated-data';
 import { SearchParams } from '../../types/search-params';
 import ProjectScheduleData = App.DataTransferObjects.ProjectScheduleData;
@@ -11,7 +11,7 @@ interface ActiveFundsProp extends Record<string, unknown> {
 }
 
 const Index: React.FC<ActiveFundsProp> = ({ projectSchedules, filters }) => {
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
 
     return (
         <>

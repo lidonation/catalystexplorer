@@ -5,7 +5,7 @@ import Textarea from '@/Components/atoms/Textarea';
 import { FormDataConvertible } from '@inertiajs/core';
 import { InertiaFormProps } from '@inertiajs/react';
 import { forwardRef, useEffect, useImperativeHandle } from 'react';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 
 export interface DrepSignupFormFields
     extends Record<string, FormDataConvertible> {
@@ -35,19 +35,22 @@ const handleChange = (
 
 const DrepSignupForm = forwardRef<DrepSignupFormHandles, DrepSignupFormProps>(
     ({ setIsValid, form }, ref) => {
-        const { data, setData } = form;
+        const typedForm = form as InertiaFormProps<DrepSignupFormFields>;
+        const { data } = typedForm;
+        const setData = typedForm.setData as (field: keyof DrepSignupFormFields, value: any) => void;
+        const errors = typedForm.errors as Partial<Record<keyof DrepSignupFormFields, string>>;
 
-        const { t } = useTranslation();
+        const { t } = useLaravelReactI18n();
 
         useImperativeHandle(ref, () => ({
             getFormData: form,
         }));
 
         useEffect(() => {
-            if (form.data.email.length && form.data.name.length) {
+            if (typedForm.data.email.length && typedForm.data.name.length) {
                 setIsValid(true);
             }
-        }, [form.data.email, form.data.name]);
+        }, [typedForm.data.email, typedForm.data.name]);
 
         return (
             <div className="rounded-lg p-4 lg:p-8">
@@ -61,12 +64,12 @@ const DrepSignupForm = forwardRef<DrepSignupFormHandles, DrepSignupFormProps>(
                             id="name"
                             name="name"
                             placeholder={t('name')}
-                            value={form.data.name}
+                            value={typedForm.data.name}
                             onChange={(e) => setData('name', e.target.value)}
                             className="w-full"
                             required
                         />
-                        <InputError message={form.errors.name} />
+                        <InputError message={errors.name} />
                     </div>
 
                     {/* Email */}
@@ -79,12 +82,12 @@ const DrepSignupForm = forwardRef<DrepSignupFormHandles, DrepSignupFormProps>(
                             name="email"
                             type="email"
                             placeholder={t('email')}
-                            value={form.data.email}
+                            value={typedForm.data.email}
                             onChange={(e) => setData('email', e.target.value)}
                             className="w-full"
                             required
                         />
-                        <InputError message={form.errors.email} />
+                        <InputError message={errors.email} />
                     </div>
 
                     {/* Bio */}
@@ -97,11 +100,11 @@ const DrepSignupForm = forwardRef<DrepSignupFormHandles, DrepSignupFormProps>(
                             name="bio"
                             required
                             minLengthEnforced
-                            value={form.data.bio}
+                            value={typedForm.data.bio}
                             onChange={(e) => setData('bio', e.target.value)}
                             className="h-30 w-full rounded-lg px-4 py-2"
                         />
-                        <InputError message={form.errors.bio} />
+                        <InputError message={errors.bio} />
                     </div>
 
                     {/* link */}
@@ -113,11 +116,11 @@ const DrepSignupForm = forwardRef<DrepSignupFormHandles, DrepSignupFormProps>(
                             placeholder={t('link')}
                             id="link"
                             name="link"
-                            value={form.data.link}
+                            value={typedForm.data.link}
                             onChange={(e) => setData('link', e.target.value)}
                             className="w-full"
                         />
-                        <InputError message={form.errors.ideascaleProfile} />
+                        <InputError message={errors.link} />
                     </div>
 
                     <div className="mt-3 flex items-center">
@@ -132,7 +135,7 @@ const DrepSignupForm = forwardRef<DrepSignupFormHandles, DrepSignupFormProps>(
                         />
                         <label
                             htmlFor="willMaintain"
-                            className={`text-sm ${!data.willMaintain && form.errors.willMaintain ? 'text-danger-strong' : 'text-slate'}`}
+                            className={`text-sm ${!data.willMaintain && errors.willMaintain ? 'text-danger-strong' : 'text-slate'}`}
                         >
                             {t('workflows.catalystDrepSignup.willMaintain')}
                         </label>

@@ -1,5 +1,5 @@
 import { Head, WhenVisible } from '@inertiajs/react';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import IdeascaleProfileData = App.DataTransferObjects.IdeascaleProfileData;
 import CommunityData = App.DataTransferObjects.CommunityData;
 
@@ -18,7 +18,7 @@ export default function Communities({
     ideascaleProfile,
     communities,
 }: CommunitiesPageProps) {
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
 
     return (
         <IdeascaleProfileLayout ideascaleProfile={ideascaleProfile}>
@@ -48,7 +48,7 @@ export default function Communities({
                         </>
                     </WhenVisible>
                 </section>
-            
+
         </IdeascaleProfileLayout>
     );
 }

@@ -5,7 +5,7 @@ import ToolTipHover from '@/Components/ToolTipHover';
 import { currency } from '@/utils/currency';
 import { Button } from '@headlessui/react';
 import { useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import CatalystDrepData = App.DataTransferObjects.CatalystDrepData;
 
 interface DrepTableProps {
@@ -13,7 +13,7 @@ interface DrepTableProps {
 }
 
 export default function DrepTable({ dreps }: DrepTableProps) {
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
 
     const [copySuccess, setCopySuccess] = useState<Record<number, boolean>>(
         Object.fromEntries(dreps.map((_, index) => [index, false])),

@@ -1,6 +1,6 @@
 import Title from '@/Components/atoms/Title';
 import { Head } from '@inertiajs/react';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import BookmarkCollectionData =  App.DataTransferObjects.BookmarkCollectionData;
 
 interface BookmarkCollectionProps{
@@ -8,7 +8,7 @@ interface BookmarkCollectionProps{
 }
 
 const BookmarkCollection = ({bookmarkCollection}: BookmarkCollectionProps) => {
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
 
     return (
         <>
@@ -18,7 +18,7 @@ const BookmarkCollection = ({bookmarkCollection}: BookmarkCollectionProps) => {
                 <div className='container'>
                     <Title>{bookmarkCollection?.title}</Title>
                 </div>
-               
+
             </header>
 
             <div className="flex h-screen w-full flex-col items-center justify-center">

@@ -1,7 +1,7 @@
 import { useConnectWallet } from '@/Context/ConnectWalletSliderContext';
 import useEscapeKey from '@/Hooks/useEscapeKey';
 import { ReactNode, useEffect, useRef } from 'react';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import Button from '../atoms/Button';
 import CatalystLogo from '../atoms/CatalystLogo';
 import Title from '../atoms/Title';
@@ -27,7 +27,7 @@ function Modal({
    contentClasses = 'max-w-md'
 }: ModalProps) {
     const sidebarRef = useRef<HTMLDivElement | null>(null);
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
     const { isWalletConnectorOpen } = useConnectWallet();
 
     useEscapeKey(() => onClose());

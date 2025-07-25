@@ -7,7 +7,7 @@ import { PaginatedData } from '@/types/paginated-data';
 import { SearchParams } from '@/types/search-params';
 import { Head } from '@inertiajs/react';
 import React, { useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import ReviewsFilter from './Partials/ReviewsFilters';
 import ReviewData = App.DataTransferObjects.ReviewData;
 
@@ -26,7 +26,7 @@ const Index: React.FC<ReviewsPageProps> = ({
     sort,
     search,
 }) => {
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
     const [showFilters, setShowFilters] = useState(false);
 
     return (

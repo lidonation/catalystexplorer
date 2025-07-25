@@ -1,6 +1,6 @@
 import Title from "@/Components/atoms/Title.tsx";
 import Modal from "@/Components/layout/Modal.tsx";
-import {useTranslation} from "react-i18next";
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import {Dispatch, SetStateAction} from "react";
 import PrimaryLink from "@/Components/atoms/PrimaryLink.tsx";
 import {useLocalizedRoute} from "@/utils/localizedRoute.ts";
@@ -10,7 +10,7 @@ export default function CreateListPicker({showPickingList, setPickingList}: {
     showPickingList: boolean,
     setPickingList: Dispatch<SetStateAction<boolean>>;
 }) {
-    const {t} = useTranslation();
+    const { t } = useLaravelReactI18n();
 
     return (
         <Modal

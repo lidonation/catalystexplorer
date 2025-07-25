@@ -5,14 +5,14 @@ import WebIcon from '@/Components/svgs/WebIcon';
 import XIcon from '@/Components/svgs/XIcon';
 import UserAvatar from '@/Components/UserAvatar';
 import { useLocalizedRoute } from '@/utils/localizedRoute';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 
 interface GroupSocials {
     group: App.DataTransferObjects.GroupData;
 }
 
 export default function GroupSocials({ group }: GroupSocials) {
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
 
     const socialLinks = {
         twitter: `https://x.com/${group?.twitter}`,

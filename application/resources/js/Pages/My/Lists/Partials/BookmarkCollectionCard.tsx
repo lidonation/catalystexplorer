@@ -8,7 +8,7 @@ import { useLocalizedRoute } from '@/utils/localizedRoute';
 import { formatTimestamp } from '@/utils/timeStamp';
 import { usePage } from '@inertiajs/react';
 import { Clock, MessageCircle } from 'lucide-react';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import BookmarkCollectionData = App.DataTransferObjects.BookmarkCollectionData;
 
 const BookmarkCollectionCard = ({
@@ -16,7 +16,7 @@ const BookmarkCollectionCard = ({
 }: {
     collection: BookmarkCollectionData;
 }) => {
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
     const { auth } = usePage().props;
 
     const user = collection?.author;

@@ -1,5 +1,3 @@
-import { useTranslation } from 'react-i18next';
-
 type PlayerSkipForwardProps = {
     className?: string;
     width?: number;
@@ -11,7 +9,6 @@ export default function PlayerSkipForward({
     width = 24,
     height = 24,
 }: PlayerSkipForwardProps) {
-    const { t } = useTranslation();
     return (
         <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -25,7 +22,6 @@ export default function PlayerSkipForward({
             strokeLinecap="round"
             strokeLinejoin="round"
         >
-            <title>{t('icons.titles.playerSkipForward')}</title>
             <path stroke="none" d="M0 0h24v24H0z" fill="none" />
             <path d="M4 5v14l12 -7z" />
             <line x1="20" y1="5" x2="20" y2="19" />

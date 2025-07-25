@@ -1,7 +1,7 @@
 import { generateLocalizedRoute } from '@/utils/localizedRoute';
 import { ChevronRight } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import { router, useForm } from '@inertiajs/react';
 import { TinderWorkflowParams } from '@/enums/tinder-workflow-params';
 import Paragraph from '@/Components/atoms/Paragraph';
@@ -38,7 +38,7 @@ interface Step1Props {
 }
 
 const Step1: React.FC<Step1Props> = ({ stepDetails, activeStep, existingPreferences,filters, isEditMode = false, tinderCollectionHash, leftBookmarkCollectionHash, rightBookmarkCollectionHash,latestFund, campaigns, funds }) => {
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
 
     /* const nextStep = generateLocalizedRoute('workflows.tinderProposal.index', {
         step: activeStep + 1,
@@ -107,7 +107,7 @@ const Step1: React.FC<Step1Props> = ({ stepDetails, activeStep, existingPreferen
 
     const buildUpdatedFilters = (updates: Partial<SearchParams> = {}) => {
             const baseFilters: Record<string, any> = { ...filters };
-    
+
             Object.entries(updates).forEach(([key, value]) => {
                 if (value === null || value === undefined || value === '') {
                     delete baseFilters[key];
@@ -115,7 +115,7 @@ const Step1: React.FC<Step1Props> = ({ stepDetails, activeStep, existingPreferen
                     baseFilters[key] = value;
                 }
             });
-    
+
             if (
                 Object.keys(updates).length > 0 &&
                 !updates[ParamsEnum.PAGE] &&
@@ -123,7 +123,7 @@ const Step1: React.FC<Step1Props> = ({ stepDetails, activeStep, existingPreferen
             ) {
                 baseFilters[ParamsEnum.PAGE] = 1;
             }
-    
+
             return baseFilters;
         };
 

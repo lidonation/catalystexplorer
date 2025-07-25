@@ -1,7 +1,7 @@
 import { Link } from '@inertiajs/react';
 import { ChevronRight, MoreHorizontal } from 'lucide-react';
 import React from 'react';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import HomeIcon from './svgs/HomeIcon';
 import { truncateMiddle } from '@/utils/truncateMiddle';
 
@@ -28,7 +28,7 @@ const Breadcrumbs = ({
     activeClassName = 'text-content font-medium',
     maxLabelLength = 30,
 }: BreadcrumbsProps) => {
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
     const displayItems =
         items.length > maxItems
             ? [
@@ -99,7 +99,7 @@ const Breadcrumbs = ({
 };
 
 export const generateBreadcrumbs = (currentRoute: string, locale: string) => {
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
     const routeWithoutLocale = currentRoute.replace(
         new RegExp(`^/${locale}`),
         '',
