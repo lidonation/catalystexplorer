@@ -102,36 +102,4 @@ class Service extends Model implements HasMedia
             'location' => $this->effective_location,
         ];
     }
-
-    public function toSearchableArray(): array
-    {
-        $array = [
-            'id' => $this->id,
-            'title' => $this->title,
-            'description' => $this->description,
-            'type' => $this->type->value,
-        ];
-        if ($this->relationLoaded('categories')) {
-            $array['categories'] = $this->categories->map->only(['id', 'name', 'slug']);
-            $array['category_ids'] = $this->categories->modelKeys();
-        }
-
-        if ($this->relationLoaded('locations')) {
-            $array['location'] = $this->locations->first()?->only(['city', 'region', 'country']);
-        }
-
-        $array['contact'] = $this->effective_details;
-
-        return $array;
-    }
-
-    public function searchableAs(): string
-    {
-        return 'cx_services';
-    }
-
-    public function shouldBeSearchable(): bool
-    {
-        return ! is_null($this->user_id) && ! is_null($this->title);
-    }
 }
