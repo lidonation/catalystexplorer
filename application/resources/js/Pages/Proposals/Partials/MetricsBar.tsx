@@ -1,17 +1,17 @@
-import ValueLabel from '@/Components/atoms/ValueLabel';
 import { useMetrics } from '@/Context/MetricsContext';
 import { useUIContext } from '@/Context/SharedUIContext';
 import { ProposalMetrics } from '@/types/proposal-metrics';
 import { currency } from '@/utils/currency';
 import { usePage } from '@inertiajs/react';
 import React, { useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
+import ValueLabel from "@/Components/atoms/ValueLabel";
 
 // SectionOne displays the first set of data in the MetricsBar
 const SectionOne: React.FC<
     Pick<ProposalMetrics, 'submitted' | 'approved' | 'completed'>
 > = ({ submitted, approved, completed }) => {
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
     return (
         <div
             className="divide-dark flex w-full items-center justify-between divide-x text-sm md:text-base"
@@ -79,7 +79,7 @@ const SectionTwo: React.FC<
     requestedUSD,
     requestedADA,
 }) => {
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
     return (
         <div
             className="divide-dark flex w-full items-center justify-between divide-x text-sm md:text-base"

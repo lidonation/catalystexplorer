@@ -3,7 +3,7 @@ import UserAvatar from '@/Components/UserAvatar';
 import { PageProps } from '@/types';
 import { useLocalizedRoute } from '@/utils/localizedRoute';
 import { useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 
 interface IdeascaleProfileUsers extends Record<string, unknown> {
     users: App.DataTransferObjects.IdeascaleProfileData[];
@@ -18,7 +18,7 @@ export default function IdeascaleProfileUsers({
     className,
     toolTipProps,
 }: PageProps<IdeascaleProfileUsers>) {
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
 
     // Limit the users array to the first 5
     const visibleUsers = users?.slice(0, 5);

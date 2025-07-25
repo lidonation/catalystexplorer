@@ -1,10 +1,10 @@
 import { Link, usePage } from '@inertiajs/react';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import GraphIcon from './svgs/GraphIcon';
 import { useLocalizedRoute } from '@/utils/localizedRoute';
 
 const GraphButton = () => {
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
 
     const onProposals = usePage().component == 'Proposals/Index';
 

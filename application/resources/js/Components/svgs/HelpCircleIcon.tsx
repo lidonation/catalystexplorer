@@ -1,5 +1,3 @@
-import { useTranslation } from 'react-i18next';
-
 type HelpCircleProps = {
     fill?: string;
     width?: number;
@@ -10,7 +8,6 @@ export default function HelpCircleIcon({
     width = 14,
     height = 14,
 }: HelpCircleProps) {
-    const { t } = useTranslation();
     return (
         <svg
             xmlns="http://www.w3.org/2000/svg"

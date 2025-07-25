@@ -5,7 +5,7 @@ import PrimaryButton from '@/Components/atoms/PrimaryButton';
 import { useList } from '@/Context/ListContext';
 import { List, Loader, PlusIcon, X } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import { toast } from 'react-toastify';
 
 interface BookmarkPage1Props extends TransitionListPageProps {
@@ -25,7 +25,7 @@ const BookmarkPage1 = ({
     associateCollectionId,
     onClose,
 }: BookmarkPage1Props) => {
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
     const {
         lists,
         isLoadingLists,

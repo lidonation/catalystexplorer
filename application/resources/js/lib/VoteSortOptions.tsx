@@ -1,9 +1,9 @@
-import { useTranslation } from "react-i18next";
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import { VoteEnums } from "@/enums/vote-search-enums";
 
 const VoteSortOptions = () => {
-    const { t } = useTranslation();
-    
+    const { t } = useLaravelReactI18n();
+
     return [
         {
             label: t('vote.votingPowerHighToLow'),

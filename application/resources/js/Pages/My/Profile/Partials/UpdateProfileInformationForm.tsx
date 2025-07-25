@@ -4,7 +4,7 @@ import TextInput from '@/Components/atoms/TextInput';
 import { generateLocalizedRoute } from '@/utils/localizedRoute';
 import { useForm } from '@inertiajs/react';
 import { FormEventHandler, useEffect } from 'react';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 
 interface ProfileFieldFormProps {
     fieldName: string;
@@ -27,9 +27,9 @@ export default function ProfileFieldForm({
     onClose,
     onFieldUpdated,
 }: ProfileFieldFormProps) {
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
 
-    const { data, setData, patch, processing, errors, reset } = useForm({
+    const { data, setData, patch, processing, errors, reset } = useForm<Record<string, string>>({
         [fieldName]: currentValue || '',
     });
 

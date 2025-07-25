@@ -4,14 +4,14 @@ import TextInput from '@/Components/atoms/TextInput';
 import { generateLocalizedRoute } from '@/utils/localizedRoute';
 import { useForm } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 
 interface PasswordFormProps {
     onClose: () => void;
 }
 
 export default function PasswordForm({ onClose }: PasswordFormProps) {
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
 
     const { data, setData, put, processing, errors, reset } = useForm({
         current_password: '',

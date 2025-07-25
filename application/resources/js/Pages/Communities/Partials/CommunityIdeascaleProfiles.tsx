@@ -1,6 +1,6 @@
 import UserAvatar from '@/Components/UserAvatar';
 import { PageProps } from '@/types';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 
 interface CommunityIdeascaleProfilesProps extends Record<string, unknown> {
     ideascaleProfiles: App.DataTransferObjects.IdeascaleProfileData[];
@@ -11,7 +11,7 @@ export default function CommunityIdeascaleProfiles({
     ideascaleProfiles,
     total,
 }: PageProps<CommunityIdeascaleProfilesProps>) {
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
 
     const visibleUsers = ideascaleProfiles?.slice(0, 5);
     const remainingCount = ideascaleProfiles?.length - visibleUsers?.length;

@@ -4,7 +4,7 @@ import Paragraph from '@/Components/atoms/Paragraph';
 import Title from '@/Components/atoms/Title';
 import { PaginatedData } from '@/types/paginated-data';
 import { useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import MintButton from './MintButton';
 import IdeascaleProfileData = App.DataTransferObjects.IdeascaleProfileData;
 import UserData = App.DataTransferObjects.UserData;
@@ -26,7 +26,7 @@ const MetaDataPreview = ({
     metadata,
     claimedProfile,
 }: MetaDataPreviewProps) => {
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
     const artistImageUrl = artist?.hero_img_url || '';
     const [isMetadataAvailable, setIsMetadataAvailable] =
         useState<boolean>(true);

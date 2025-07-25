@@ -4,7 +4,7 @@ import { ParamsEnum } from '@/enums/proposal-search-params';
 import { shortNumber } from '@/utils/shortNumber';
 import { ResponsiveBar } from '@nivo/bar';
 import React, { useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 
 interface BarChartProps {
     chartData: any;
@@ -12,7 +12,7 @@ interface BarChartProps {
 }
 
 const BarChart: React.FC<BarChartProps> = ({ chartData, viewBy }) => {
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
     const { getFilter } = useFilterContext();
     const [isMobile, setIsMobile] = useState(false);
     const [screenWidth, setScreenWidth] = useState(
@@ -20,24 +20,24 @@ const BarChart: React.FC<BarChartProps> = ({ chartData, viewBy }) => {
     );
 
     const [normalizedData, setNormalizedData] = useState<any[]>([]);
-    
+
         useEffect(() => {
             if (!chartData || chartData.length === 0) {
                 setNormalizedData([]);
                 return;
             }
-    
-            const isSubmittedProposalsFormat = Array.isArray(chartData) && 
-                chartData.length > 0 && 
-                typeof chartData[0] === 'object' && 
-                !chartData[0].hasOwnProperty('fund') && 
+
+            const isSubmittedProposalsFormat = Array.isArray(chartData) &&
+                chartData.length > 0 &&
+                typeof chartData[0] === 'object' &&
+                !chartData[0].hasOwnProperty('fund') &&
                 !chartData[0].hasOwnProperty('year');
-    
+
             if (isSubmittedProposalsFormat) {
                 const fundKeys = Object.keys(chartData[0] || {});
                 const normalized = fundKeys.map((fundKey, index) => ({
                     fund: fundKey,
-                    year: fundKey, 
+                    year: fundKey,
                     totalProposals: chartData[0]?.[fundKey] || 0,
                 }));
                 setNormalizedData(normalized);
@@ -81,7 +81,7 @@ const BarChart: React.FC<BarChartProps> = ({ chartData, viewBy }) => {
             color: '#16B364',
             filterParam: ParamsEnum.COMPLETED_PROPOSALS,
         },
-       
+
          {
             key: 'inProgressProposals',
             label: t('funds.inProgressProposals'),
@@ -98,11 +98,11 @@ const BarChart: React.FC<BarChartProps> = ({ chartData, viewBy }) => {
 
     const getFilteredKeys = () => {
         if (!chartData || chartData.length === 0) return [];
-        
+
         return allKeys.filter((keyItem) => {
             const filterValue = getFilter(keyItem.filterParam);
             const isFilterActive = filterValue && filterValue.length > 0;
-            
+
             return isFilterActive;
         });
     };

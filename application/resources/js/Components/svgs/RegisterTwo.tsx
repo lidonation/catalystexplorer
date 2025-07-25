@@ -1,5 +1,4 @@
 import { cn } from '@/lib/utils';
-import { useTranslation } from 'react-i18next';
 
 type RegisterTwoProps = {
     className?: string;
@@ -12,7 +11,6 @@ export default function RegisterTwo({
     width = 24,
     height = 24,
 }: RegisterTwoProps) {
-    const { t } = useTranslation();
     return (
         <svg width={width} height={height} viewBox="0 0 12 12" className={cn(className)} fill="none" xmlns="http://www.w3.org/2000/svg">
             <g clipPath="url(#clip0_10183_101879)">

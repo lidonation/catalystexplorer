@@ -2,7 +2,7 @@ import Button from '@/Components/atoms/Button';
 import GroupCardExtended from '@/Pages/Groups/Partials/GroupCardExtended';
 import { AnimatePresence, motion } from 'framer-motion';
 import React from 'react';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import GroupData = App.DataTransferObjects.GroupData;
 
 interface GroupListProps {
@@ -10,7 +10,7 @@ interface GroupListProps {
 }
 
 const GroupsList: React.FC<GroupListProps> = ({ groups }) => {
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
     return (
         <>
             <ul className="grid w-full grid-cols-1 gap-4 xl:grid-cols-2 2xl:grid-cols-3">

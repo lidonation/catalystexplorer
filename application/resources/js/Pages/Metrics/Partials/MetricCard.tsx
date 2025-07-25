@@ -5,7 +5,7 @@ import ArrowTrendingUp from '@/Components/svgs/ArrowTrendingUp';
 import { shortNumber } from '@/utils/shortNumber';
 import { ResponsiveLine } from '@nivo/line';
 import React, { useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import MetricData = App.DataTransferObjects.MetricData;
 
 interface MetricCardProps {
@@ -13,7 +13,7 @@ interface MetricCardProps {
 }
 
 const MetricCard: React.FC<MetricCardProps> = ({ metric }) => {
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
     const [isHovered, setIsHovered] = useState(false);
 
     const chartData =

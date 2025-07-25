@@ -1,7 +1,7 @@
 import PrimaryLink from '@/Components/atoms/PrimaryLink';
 import { useLocalizedRoute } from '@/utils/localizedRoute';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import SuccessComponent from '../Partials/Success';
 import Content from '../Partials/WorkflowContent';
 import Footer from '../Partials/WorkflowFooter';
@@ -32,7 +32,7 @@ export default function Success({
         catalystDrep,
     });
 
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
 
     return (
         <WorkflowLayout asideInfo={stepDetails[activeStep - 1]?.info || ''}>

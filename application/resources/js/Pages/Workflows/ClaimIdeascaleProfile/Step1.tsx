@@ -8,8 +8,8 @@ import {
     useLocalizedRoute,
 } from '@/utils/localizedRoute';
 import { router, usePage } from '@inertiajs/react';
-import { t } from 'i18next';
-import { debounce } from 'lodash';
+import {useLaravelReactI18n} from "laravel-react-i18n";
+import lodashPkg from 'lodash';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import React, { useCallback, useState } from 'react';
 import Content from '../Partials/WorkflowContent';
@@ -25,6 +25,8 @@ interface Step1Props {
 }
 
 const Step1: React.FC<Step1Props> = ({ profiles, stepDetails, activeStep }) => {
+    const { t } = useLaravelReactI18n();
+    const { debounce } = lodashPkg;
     const { auth } = usePage().props;
     const [search, setSearch] = useState<string>('');
     const { locale } = usePage().props;

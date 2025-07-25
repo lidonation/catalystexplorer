@@ -1,5 +1,5 @@
 import { SearchResultCounts } from '@/types/search';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 
 interface TabConfig {
     name: string;
@@ -19,7 +19,7 @@ const ResultTabs = ({
     activeTab,
     setActiveTab,
 }: ResultTabsProps) => {
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
 
     const handleTabClick = (tab: string) => {
         setActiveTab(tab);

@@ -2,7 +2,7 @@ import PrimaryLink from '@/Components/atoms/PrimaryLink';
 import { StepDetails } from '@/types';
 import { useLocalizedRoute } from '@/utils/localizedRoute';
 import { ChevronLeft } from 'lucide-react';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import SuccessComponent from '../Partials/Success';
 import Content from '../Partials/WorkflowContent';
 import Footer from '../Partials/WorkflowFooter';
@@ -22,7 +22,7 @@ export default function Success({
     activeStep,
     bookmarkCollection,
 }: SuccessProps) {
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
     const localizedRoute = useLocalizedRoute;
     const nextStep = localizedRoute('my.lists.index');
 

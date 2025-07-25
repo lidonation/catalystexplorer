@@ -1,11 +1,11 @@
 import React from 'react';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import { BackArrow } from '@/Components/svgs/BackArrow';
 import { VerificationBadge } from '@/Components/svgs/VerificationBadge';
 import Title from '@/Components/atoms/Title';
 
 const IdeascaleProfileSubmittedCard: React.FC = () => {
-  const { t } = useTranslation();
+  const { t } = useLaravelReactI18n();
 
   return (
     <div className="max-w-md mx-auto p-8 text-center bg-background rounded-lg shadow-lg">

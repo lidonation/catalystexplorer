@@ -1,5 +1,3 @@
-import { useTranslation } from 'react-i18next';
-
 type FileTypeIconProps = {
     className?: string;
     width?: number;
@@ -10,7 +8,6 @@ export default function FileTypeIcon({
     width = 40,
     height = 47,
 }: FileTypeIconProps) {
-    const { t } = useTranslation();
     return (
         <svg
             width={width}
@@ -20,7 +17,6 @@ export default function FileTypeIcon({
             xmlns="http://www.w3.org/2000/svg"
             className={className}
         >
-            <title> {t('icons.title.file_type')}</title>
             <g filter="url(#filter0_dd_1546_5831)">
                 <path
                     d="M4 6.5C4 4.29086 5.79086 2.5 8 2.5H24L36 14.5V38.5C36 40.7091 34.2091 42.5 32 42.5H8C5.79086 42.5 4 40.7091 4 38.5V6.5Z"

@@ -2,7 +2,7 @@ import Title from '@/Components/atoms/Title';
 import RecordsNotFound from '@/Layouts/RecordsNotFound';
 import { PaginatedData } from '@/types/paginated-data';
 import { Head } from '@inertiajs/react';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import BlockchainData from './BlockchainData';
 import ContributorProfile from './ContributorProfile';
 import MetaData from './MetaData';
@@ -35,7 +35,7 @@ const Show = ({
     claimedProfile,
     isOwner,
 }: PageProps) => {
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
 
     return (
         <div className="mx-auto">

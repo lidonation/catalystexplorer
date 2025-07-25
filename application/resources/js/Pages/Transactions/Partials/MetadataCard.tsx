@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import Title from '@/Components/atoms/Title';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import { JsonWrapper } from '../../../Components/JsonDisplay';
 import TransactionData = App.DataTransferObjects.TransactionData;
 
@@ -9,7 +9,7 @@ interface MetadataCardProps {
 }
 
 export default function MetadataCard({ transaction }: MetadataCardProps) {
-  const { t } = useTranslation();
+  const { t } = useLaravelReactI18n();
   const [showRawData, setShowRawData] = useState(false);
 
   return (
@@ -18,11 +18,11 @@ export default function MetadataCard({ transaction }: MetadataCardProps) {
         <Title className='text-content font-bold' level='3'>{t('transactions.metadata')}</Title>
         <div className="flex items-center">
           <span className="text-sm text-gray-persist mr-2">{t('transactions.rawData')}</span>
-          <div 
+          <div
             onClick={() => setShowRawData(!showRawData)}
             className={
                 `w-7 h-4 p-1 ${showRawData ? 'bg-primary' :
-                'bg-background-lighter shadow-[inset_0px_2px_5px_0px_rgba(0,0,0,0.25)] outline outline-1 outline-offset-[-1px] outline-light-persist'} rounded-[30px] inline-flex ${showRawData ? 'justify-end' : 
+                'bg-background-lighter shadow-[inset_0px_2px_5px_0px_rgba(0,0,0,0.25)] outline outline-1 outline-offset-[-1px] outline-light-persist'} rounded-[30px] inline-flex ${showRawData ? 'justify-end' :
                 'justify-start'} items-center gap-2.5 cursor-pointer transition-colors duration-300`
             }
             data-public-profile-switch={showRawData ? "on" : "off"}
@@ -34,22 +34,22 @@ export default function MetadataCard({ transaction }: MetadataCardProps) {
           </div>
         </div>
       </div>
-      
+
       {transaction.raw_metadata && !showRawData && (
         <div className="space-y-4 pt-4">
           {Object.entries(transaction.raw_metadata).map(([key, value]) => (
             <div key={key} className="flex">
               <span className="text-gray-persist w-24">{key}</span>
               <span className="text-content font-bold bg-background-lighter px-2 py-1 rounded-sm break-all">
-                {typeof value === 'object' 
-                  ? JSON.stringify(value) 
+                {typeof value === 'object'
+                  ? JSON.stringify(value)
                   : String(value)}
               </span>
             </div>
           ))}
         </div>
       )}
-      
+
       {transaction.raw_metadata && showRawData && (
         <div className="p-4 mt-4 rounded-xl bg-background-json">
           {Object.entries(transaction.raw_metadata).map(([key, value]) => (

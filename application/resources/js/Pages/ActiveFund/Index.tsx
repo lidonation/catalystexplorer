@@ -1,13 +1,13 @@
 import Title from '@/Components/atoms/Title';
 import { Head } from '@inertiajs/react';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 
 interface ActiveFundsProp extends Record<string, unknown> {
     search?: string | null;
 }
 
 const Index: React.FC<ActiveFundsProp> = ({ search }) => {
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
 
     return (
         <>

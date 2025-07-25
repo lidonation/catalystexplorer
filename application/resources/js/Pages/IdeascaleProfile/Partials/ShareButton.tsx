@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import ShareIcon from '@/Components/svgs/ShareIcon';
 import XIcon from '@/Components/svgs/XIcon';
 import LinkedInIcon from '@/Components/svgs/LinkedInIcons';
@@ -20,7 +20,7 @@ const ShareButton: React.FC<ShareButtonProps> = (props) => {
     className = ''
   } = props;
 
-  const { t } = useTranslation();
+  const { t } = useLaravelReactI18n();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const triggerRef = useRef<HTMLAnchorElement>(null);
 
@@ -95,7 +95,7 @@ const ShareButton: React.FC<ShareButtonProps> = (props) => {
           setIsDropdownOpen(true);
         }}
         className={`flex items-center justify-center border-gray-persist/50 rounded-md border-1 text-gray-persist py-1.5 px-1.5 ${className}`}
-        aria-label={t('share.open_share_options', 'Share')}
+        aria-label={t('share.open_share_options')}
       >
         <ShareIcon width={20} height={20} />
       </a>

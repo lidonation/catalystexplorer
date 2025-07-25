@@ -7,7 +7,7 @@ import React, {
     useEffect,
     useState,
 } from 'react';
-import { usePlayer } from './PlayerContext';
+// import { usePlayer } from './PlayerContext';
 
 // Define types for the context values
 interface UIContextType {
@@ -29,31 +29,31 @@ const UIContext = createContext<UIContextType>({
 
 // Provider
 export const UIProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-    const { isPlaying } = usePlayer();
-    const [isPlayerBarExpanded, setIsPlayerBarExpanded] = useState(isPlaying);
+    // const { isPlaying } = usePlayer();
+    // const [isPlayerBarExpanded, setIsPlayerBarExpanded] = useState(isPlaying);
     const [isMetricsBarExpanded, setIsMetricsBarExpanded] = useState(false);
 
-    useEffect(() => {
-        if (isMetricsBarExpanded) {
-            setIsPlayerBarExpanded(false);
-        }
-        if (isPlayerBarExpanded) {
-            setIsMetricsBarExpanded(false);
-        }
-    }, [isMetricsBarExpanded, isPlayerBarExpanded]);
+    // useEffect(() => {
+    //     if (isMetricsBarExpanded) {
+    //         setIsPlayerBarExpanded(false);
+    //     }
+    //     if (isPlayerBarExpanded) {
+    //         setIsMetricsBarExpanded(false);
+    //     }
+    // }, [isMetricsBarExpanded, isPlayerBarExpanded]);
 
-    useEffect(() => {
-        if (isPlaying) {
-            setIsPlayerBarExpanded(true);
-        }
-    }, [isPlaying]);
+    // useEffect(() => {
+    //     if (isPlaying) {
+    //         setIsPlayerBarExpanded(true);
+    //     }
+    // }, [isPlaying]);
 
     return (
         <UIContext.Provider
             value={{
-                isPlayerBarExpanded,
+                isPlayerBarExpanded: false,
                 isMetricsBarExpanded,
-                setIsPlayerBarExpanded,
+                setIsPlayerBarExpanded: () => {},
                 setIsMetricsBarExpanded,
             }}
         >

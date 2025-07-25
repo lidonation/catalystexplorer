@@ -1,5 +1,3 @@
-import { useTranslation } from 'react-i18next';
-
 type RegisterUserIconProps = {
     className?: string;
     width?: number;
@@ -13,7 +11,6 @@ export default function RegisterUserIcon({
     height = 22,
     onClick
 }: RegisterUserIconProps) {
-    const { t } = useTranslation();
     return (
         <svg
             width={width}
@@ -24,7 +21,6 @@ export default function RegisterUserIcon({
             className={className}
             onClick={onClick}
         >
-            <title>{t('icons.title.register')}</title>
             <circle
                 cx="10"
                 cy="7"

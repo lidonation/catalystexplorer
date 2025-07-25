@@ -2,10 +2,10 @@ import { RangePicker } from '@/Components/RangePicker';
 import Selector from '@/Components/atoms/Selector';
 import { useFilterContext } from '@/Context/FiltersContext'; // Import the custom hook
 import { ParamsEnum } from '@/enums/proposal-search-params';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 
 export default function DrepFilters() {
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
     const { filters, setFilters, getFilter } = useFilterContext();
 
     const votingPowerRange = [0, 10000000];

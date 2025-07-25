@@ -1,6 +1,6 @@
 import { ArrowUpRight } from '@/Components/svgs/ArrowUpRight';
 import React from 'react';
-import {useTranslation} from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 
 interface MintedNftsCardProps {
     image: string;
@@ -16,7 +16,7 @@ const MintedNftsCard: React.FC<MintedNftsCardProps> = ({
     description,
     fingerprint,
 }) => {
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
 
     return (
         <div className="group relative h-[355px] w-full max-w-[325px] cursor-pointer overflow-hidden rounded-xl shadow-md transition-all duration-300 hover:shadow-xl">

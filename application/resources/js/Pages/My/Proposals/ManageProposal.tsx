@@ -1,5 +1,5 @@
 import { Head } from '@inertiajs/react';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import RecordsNotFound from '@/Layouts/RecordsNotFound';
 
 interface ManageProposalProps {
@@ -7,8 +7,8 @@ interface ManageProposalProps {
 }
 
 export default function ManageProposal({}: ManageProposalProps) {
-    
-    const { t } = useTranslation();
+
+    const { t } = useLaravelReactI18n();
 
     return (
         <div >

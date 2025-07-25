@@ -1,6 +1,6 @@
 import RecordsNotFound from '@/Layouts/RecordsNotFound';
 import { Head, WhenVisible } from '@inertiajs/react';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import { PaginatedData } from '../../../types/paginated-data';
 import IdeascaleProfileLayout from '../IdeascaleProfileLayout';
 import MilestoneAccordion from '../Partials/MilestoneAccordion';
@@ -17,8 +17,7 @@ export default function Milestones({
     ideascaleProfile,
     projectSchedules,
 }: MilestonesPageProps) {
-    const { t } = useTranslation();
-    
+    const { t } = useLaravelReactI18n();
     return (
         <IdeascaleProfileLayout ideascaleProfile={ideascaleProfile}>
             <Head title={`${ideascaleProfile.name} - Milestones`} />

@@ -4,13 +4,13 @@ import Title from '@/Components/atoms/Title';
 import { VerificationBadge } from '@/Components/svgs/VerificationBadge';
 import { useLocalizedRoute } from '@/utils/localizedRoute';
 import React from 'react';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import Content from '../Partials/WorkflowContent';
 import Footer from '../Partials/WorkflowFooter';
 import WorkflowLayout from '../WorkflowLayout';
 
 const Success: React.FC = () => {
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
 
     return (
         <WorkflowLayout>

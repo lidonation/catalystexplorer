@@ -1,7 +1,7 @@
 import Title from '@/Components/atoms/Title';
 import { PageProps } from '@/types';
 import { Head, WhenVisible } from '@inertiajs/react';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import FundCardLoader from './Partials/FundCardLoader';
 import FundsBarChart from './Partials/FundsBarChart';
 import FundsBarChartLoading from './Partials/FundsBarChartLoading';
@@ -24,7 +24,7 @@ export default function Index({
         proposalsCountByYear: Record<string, number>;
     }
 >) {
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
 
     const chartDataByFund = funds
         .map((fund) => ({

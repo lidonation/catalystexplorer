@@ -8,6 +8,7 @@ use App\DataTransferObjects\UserData;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
 use Inertia\Middleware;
+use Tighten\Ziggy\Ziggy;
 
 class HandleInertiaRequests extends Middleware
 {
@@ -34,12 +35,16 @@ class HandleInertiaRequests extends Middleware
     public function share(Request $request): array
     {
         return [
-            ...parent::share($request),
+            //            ...parent::share($request),
             'locale' => app()->getLocale(),
             'auth' => [
                 'user' => $request->user() ? UserData::from($request->user()) : null,
                 'isDownForMaintenance' => App::isDownForMaintenance(),
                 'locale' => app()->getLocale(),
+            ],
+            'ziggy' => fn (): array => [
+                ...(new Ziggy)->toArray(),
+                'location' => $request->url(),
             ],
             'environment' => app()->environment(),
         ];

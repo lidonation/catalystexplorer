@@ -1,5 +1,3 @@
-import { useTranslation } from 'react-i18next';
-
 type BlueEyeIconProps = {
     className?: string;
     width?: number;
@@ -10,7 +8,6 @@ export default function BlueEyeIcon({
     width = 24,
     height = 24,
 }: BlueEyeIconProps) {
-    const { t } = useTranslation();
     return (
         <svg
             width={width}
@@ -20,8 +17,6 @@ export default function BlueEyeIcon({
             xmlns="http://www.w3.org/2000/svg"
             className={className}
         >
-            <title>{t('icons.titles.blue_eye')}</title>
-
             <path
                 fillRule="evenodd"
                 clipRule="evenodd"

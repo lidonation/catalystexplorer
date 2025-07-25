@@ -1,7 +1,7 @@
 import RecordsNotFound from '@/Layouts/RecordsNotFound';
 import MyLayout from '@/Pages/My/MyLayout';
 import { Head } from '@inertiajs/react';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import UserFundSummary from './partials/UserFundSummary';
 import UserSummaryChart from './partials/UserSummaryChart';
 
@@ -33,7 +33,7 @@ export default function MyDashboard({
     totalsSummary,
     graphData,
 }: MyDashboardProps) {
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
 
     return (
         <>

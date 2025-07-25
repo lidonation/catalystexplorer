@@ -4,7 +4,7 @@ import { ParamsEnum } from '@/enums/proposal-search-params';
 import ProposalCard from '@/Pages/Proposals/Partials/ProposalCard';
 import IdeascaleProfileCardMini from '@/Pages/IdeascaleProfile/Partials/IdeascaleProfileCardMini';
 import RecordsNotFound from '@/Layouts/RecordsNotFound';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 
 interface BookmarksListProps {
     proposals?: any[];
@@ -21,7 +21,7 @@ const BookmarksList: React.FC<BookmarksListProps> = ({
     reviews = [],
     activeType
 }) => {
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
     const { getFilter } = useFilterContext();
     const searchQuery = getFilter(ParamsEnum.QUERY) || '';
 

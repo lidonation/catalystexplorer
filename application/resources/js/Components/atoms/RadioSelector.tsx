@@ -1,7 +1,7 @@
 import { cn } from '@/lib/utils';
 import { ChevronDown } from 'lucide-react';
 import { useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import { Popover, PopoverContent, PopoverTrigger } from '@/Components/Popover';
 
 type RadioSelectorProps = {
@@ -27,7 +27,7 @@ export default function RadioSelector({
     placeholder = '',
 }: RadioSelectorProps) {
     const [open, setOpen] = useState(false);
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
 
     const currentOption = options?.find((option) => selectedItem === option.value);
 
