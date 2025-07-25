@@ -36,8 +36,8 @@ createServer(async (page) => {
             const ssrRoute = (name: any, params: any, absolute: any, config: any) => {
                 return route(name, params, absolute, {
                     ...(page.props as any).ziggy,
-                    location: new URL((page.props as any).ziggy?.url),
                     ...config,
+                    location: new URL((page.props as any).ziggy?.location),
                 });
             };
             return (
