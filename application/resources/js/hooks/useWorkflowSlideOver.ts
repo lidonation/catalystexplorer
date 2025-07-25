@@ -28,6 +28,4 @@ export function useWorkflowSlideOver(): UseWorkflowSlideOverReturn {
         closeSlideOver,
         toggleSlideOver,
     };
-
-    
 }

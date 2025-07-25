@@ -185,18 +185,17 @@ const Step4Content: React.FC<Step4Props> = ({
         if (!collection?.hash) return;
 
         try {
-            await router.post(
+            router.post(
                 route('api.collections.delete', {
-                    bookmarkCollection: collection.hash,
+                    bookmarkCollection: collection.hash
                 }),
                 {
-                    no_redirect: true,
+                    no_redirect: true
                 },
                 {
                     onSuccess: () => {
                         // Mark this collection as deleted
-                        setDeletedCollections((prev) =>
-                            new Set(prev).add(collectionToDelete),
+                        setDeletedCollections((prev) => new Set(prev).add(collectionToDelete)
                         );
                         // Close the slide over
                         // closeSlideOver();
@@ -204,8 +203,8 @@ const Step4Content: React.FC<Step4Props> = ({
                     },
                     onError: (errors) => {
                         console.error('Failed to delete collection:', errors);
-                    },
-                },
+                    }
+                }
             );
         } catch (error) {
             console.error('Error deleting collection:', error);
