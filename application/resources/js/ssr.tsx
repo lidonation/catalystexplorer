@@ -60,4 +60,4 @@ createServer(async (page) => {
             color: '#2596be',
         },
     }).then()
-});
+}, { cluster: true },);

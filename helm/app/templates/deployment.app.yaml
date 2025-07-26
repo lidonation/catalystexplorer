@@ -113,6 +113,75 @@ spec:
             timeoutSeconds: 15
             successThreshold: 1
             failureThreshold: 10
+        - name: ssr
+          image: "{{ .Values.services.app.image.repository }}:{{ .Values.services.app.image.tag }}"
+          imagePullPolicy: {{ .Values.services.app.image.pullPolicy }}
+          command: ["/bin/bash", "-c"]
+          args:
+            - |
+              #!/bin/bash
+              set -xe
+
+              php artisan inertia:start-ssr
+          lifecycle:
+            preStop:
+              exec:
+                command: ["/bin/sleep","5"]
+          resources:
+            limits:
+              memory: 512Mi
+              cpu: 1
+            requests:
+              cpu: 20m
+              memory: 32Mi
+          envFrom:
+            - secretRef:
+                name: "{{ $.Chart.Name }}-secrets"
+          env:
+            - name: POSTGRESQL_WEB_DB_HOST
+              value: "{{ .Values.services.app.POSTGRESQL_WEB_DB_HOST }}"
+            - name: REDIS_PASSWORD
+              value: "{{ .Values.services.redis.password }}"
+            - name: REDIS_HOST
+              value: "{{ .Values.services.redis.host }}"
+            - name: CONTAINER_ROLE
+              value: app
+            - name: PHP_MEMORY_LIMIT
+              value: 8192M
+            - name: PHP_OPCACHE_ENABLE
+              value: "1"
+            - name: PHP_DISABLED_FUNCTION
+              value: "exec, passthru, proc_open, proc_close, shell_exec, show_source, symlink, system"
+          ports:
+            - name: ssr
+              containerPort: 13714
+              protocol: TCP
+          volumeMounts:
+            - name: "{{ .Values.namespace }}-web-storage-pv"
+              mountPath: {{ .Values.services.app.persistence.mountPath }}
+              subPath: "storage"
+              readOnly: false
+            - name: "{{ .Values.namespace }}-web-storage-pv"
+              mountPath: /data
+              subPath: data
+              readOnly: false
+            - mountPath: "/etc/web-certs"
+              name: ssl-certs
+              readOnly: true
+          readinessProbe:
+            tcpSocket:
+              port: 13714
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            failureThreshold: 10
+          livenessProbe:
+            tcpSocket:
+              port: 13714
+            initialDelaySeconds: 30
+            periodSeconds: 5
+            timeoutSeconds: 15
+            successThreshold: 1
+            failureThreshold: 10
         - name: sidecar
           image: busybox:1.36
           args:
