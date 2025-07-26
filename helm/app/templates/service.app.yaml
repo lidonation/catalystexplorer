@@ -11,18 +11,6 @@ spec:
       name: app
       targetPort: app
       protocol: TCP
-  selector:
-    service: "{{ $.Chart.Name }}-app"
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: "{{ $.Chart.Name }}-ssr-service"
-  namespace: {{ .Values.namespace }}
-  labels:
-    service: "{{ $.Chart.Name }}-app"
-spec:
-  ports:
     - port: 13714
       name: ssr
       targetPort: ssr
