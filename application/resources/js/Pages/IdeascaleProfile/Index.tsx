@@ -5,7 +5,7 @@ import IdeascaleSortingOptions from '@/lib/IdeascaleSortOptions';
 import { PageProps } from '@/types';
 import { Head } from '@inertiajs/react';
 import { useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import { PaginatedData } from '../../types/paginated-data';
 import { SearchParams } from '../../types/search-params';
 import IdeascaleProfilePaginatedList from './Partials/IdeascaleProfilePaginatedList';
@@ -22,7 +22,7 @@ const Index = ({
     filters,
     ideascaleProfilesCount,
 }: PageProps<IdeascaleProfilesPageProps>) => {
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
 
     const [showFilters, setShowFilters] = useState(false);
     const profiles = ideascaleProfiles?.data ?? [];

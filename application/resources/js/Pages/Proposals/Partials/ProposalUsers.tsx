@@ -1,5 +1,5 @@
 import UserAvatar from '@/Components/UserAvatar';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import { PageProps } from '@/types';
 import Title from '@/Components/atoms/Title';
 
@@ -10,7 +10,7 @@ interface ProposalUsers extends Record<string, unknown> {
 }
 
 export default function ProposalUsers({ users,onUserClick, className }: PageProps<ProposalUsers>) {
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
 
     // Limit the users array to the first 5
     const visibleUsers = users?.slice(0, 5);

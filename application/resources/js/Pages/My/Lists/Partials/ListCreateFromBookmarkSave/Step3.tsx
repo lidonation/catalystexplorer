@@ -1,11 +1,11 @@
 import Paragraph from '@/Components/atoms/Paragraph';
 import ArrowLeftIcon from '@/Components/svgs/ArrowLeft';
 import { useList } from '@/Context/ListContext';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import { TransitionListPageProps } from '../../../../../types/general';
 
 const BookmarkPage3 = ({ onNavigate }: TransitionListPageProps) => {
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
     const { latestAddedList } = useList();
 
     if (!latestAddedList) {

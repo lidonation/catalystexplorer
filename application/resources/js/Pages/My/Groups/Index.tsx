@@ -3,7 +3,7 @@ import RecordsNotFound from '@/Layouts/RecordsNotFound';
 import GroupCardExtendedLoader from '@/Pages/Groups/Partials/GroupCardExtendedLoader';
 import { SearchParams } from '@/types/search-params';
 import { Head, WhenVisible } from '@inertiajs/react';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import MyGroupsList from './Partials/MyGroupsList';
 import GroupData = App.DataTransferObjects.GroupData;
 
@@ -13,7 +13,7 @@ interface MyGroupsProps extends Record<string, unknown> {
 }
 
 export default function MyGroups({ groups, filters }: MyGroupsProps) {
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
     return (
         <FiltersProvider
             defaultFilters={filters ?? {}}

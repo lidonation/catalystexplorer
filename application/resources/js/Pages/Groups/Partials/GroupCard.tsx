@@ -13,7 +13,7 @@ import BookmarkButton from '@/Pages/My/Bookmarks/Partials/BookmarkButton';
 import { useLocalizedRoute } from '@/utils/localizedRoute';
 import { Link } from '@inertiajs/react';
 import React, { useCallback, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import GroupSocials from './GroupSocials';
 import GroupData = App.DataTransferObjects.GroupData;
 
@@ -22,7 +22,7 @@ interface GroupCardProps {
 }
 
 const GroupCard: React.FC<GroupCardProps> = ({ group }) => {
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
     const [userSelected, setUserSelected] =
         useState<App.DataTransferObjects.IdeascaleProfileData | null>(null);
 

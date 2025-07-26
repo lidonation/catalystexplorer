@@ -6,7 +6,7 @@ import { Segments } from '@/types/segments';
 import { currency } from '@/utils/currency';
 import { usePage } from '@inertiajs/react';
 import React from 'react';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import GroupData = App.DataTransferObjects.GroupData;
 
 interface BioCardProps {
@@ -14,7 +14,7 @@ interface BioCardProps {
 }
 
 const BioCard: React.FC<BioCardProps> = ({ group }) => {
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
 
     const { locale } = usePage().props;
 

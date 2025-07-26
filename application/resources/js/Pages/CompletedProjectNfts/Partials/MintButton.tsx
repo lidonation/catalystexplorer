@@ -4,7 +4,7 @@ import { PageProps } from '@/types';
 import { PaginatedData } from '@/types/paginated-data';
 import { Link, router, usePage } from '@inertiajs/react';
 import React, { useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import IdeascaleProfileData = App.DataTransferObjects.IdeascaleProfileData;
 import NMKRMetaData = App.DataTransferObjects.NMKRNftData;
 import NftData = App.DataTransferObjects.NftData;
@@ -30,7 +30,7 @@ const MintButton: React.FC<MintButtonProps> = ({
     metadata,
     claimedProfile,
 }) => {
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
     const { auth } = usePage<PageProps>().props;
     const user = auth?.user;
 

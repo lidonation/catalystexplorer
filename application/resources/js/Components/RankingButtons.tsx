@@ -3,7 +3,7 @@ import Button from './atoms/Button';
 import Paragraph from './atoms/Paragraph';
 import ThumbsDownIcon from './svgs/ThumbsDownIcon';
 import ThumbsUpIcon from './svgs/ThumbsUpIcon';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 
 type RankingButtonsProps = {
     isLoadingPositive: boolean;
@@ -22,8 +22,8 @@ const RankingButtons: React.FC<RankingButtonsProps> = ({
     positiveRankings,
     negativeRankings,
 }) => {
-    const { t } = useTranslation();
-    
+    const { t } = useLaravelReactI18n();
+
     return (
         <div className="flex gap-2">
             <Button

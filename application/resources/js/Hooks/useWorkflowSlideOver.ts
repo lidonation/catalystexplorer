@@ -7,7 +7,7 @@ interface UseWorkflowSlideOverReturn {
     toggleSlideOver: () => void;
 }
 
-export function useWorkflowSlideOver(): UseWorkflowSlideOverReturn {
+export default function useWorkflowSlideOver(): UseWorkflowSlideOverReturn {
     const [isOpen, setIsOpen] = useState(false);
 
     const openSlideOver = useCallback(() => {
@@ -28,6 +28,4 @@ export function useWorkflowSlideOver(): UseWorkflowSlideOverReturn {
         closeSlideOver,
         toggleSlideOver,
     };
-
-    
 }

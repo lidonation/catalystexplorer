@@ -1,11 +1,8 @@
-import { useTranslation } from 'react-i18next';
-
 type LightModeIconProps = {
     className?: string;
 };
 
 export default function LightModeIcon({ className }: LightModeIconProps) {
-    const { t } = useTranslation();
     return (
         <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -17,7 +14,6 @@ export default function LightModeIcon({ className }: LightModeIconProps) {
             focusable="false"
             className={`size-4 ${className}`}
         >
-            <title> {t('icons.title.lightMode')}</title>
             <path
                 strokeLinecap="round"
                 strokeLinejoin="round"

@@ -1,5 +1,5 @@
 import LinkIcon from './svgs/LinkIcon';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import IdeaScaleLogo from '../assets/images/ideascale-logo.png';
 
 interface ProposalUserQuickViewProps {
@@ -7,7 +7,7 @@ interface ProposalUserQuickViewProps {
 }
 
 const UserQuickView: React.FC<ProposalUserQuickViewProps> = ({ user }) => {
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
 
     return (
 

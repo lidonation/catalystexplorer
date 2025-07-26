@@ -1,5 +1,3 @@
-import { useTranslation } from 'react-i18next';
-
 type ArrowTrendingUpProps = {
     className?: string;
     width?: number;
@@ -10,7 +8,6 @@ export default function ArrowTrendingUp({
     width = 24,
     height = 24,
 }: ArrowTrendingUpProps) {
-    const { t } = useTranslation();
     return (
         <svg
             width={width}
@@ -22,7 +19,6 @@ export default function ArrowTrendingUp({
             stroke="currentColor"
             className={`size-6 ${className}`}
         >
-            <title>{t('icons.titles.arrowTrendingUp')}</title>
             <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 18 9 11.25l4.306 4.306a11.95 11.95 0 0 1 5.814-5.518l2.74-1.22m0 0-5.94-2.281m5.94 2.28-2.28 5.941" />
             </svg>
     );

@@ -1,5 +1,5 @@
 import { currency } from '@/utils/currency';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import PercentageProgressBar from './PercentageProgressBar';
 import Paragraph from './atoms/Paragraph';
 
@@ -18,7 +18,7 @@ export default function FundingPercentages({
     primaryBackgroundColor,
     secondaryBackgroundColor,
 }: FundingPercentagesProps) {
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
     const calculatePercentage = (
         numerator: number,
         denominator: number,

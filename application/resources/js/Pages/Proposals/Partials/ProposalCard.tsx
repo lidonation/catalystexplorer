@@ -1,6 +1,6 @@
 import { shortNumber } from '@/utils/shortNumber';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import ProposalHorizontalCard from './ProposalHorizontalCard';
 import ProposalVerticalCard from './ProposalVerticalCard';
 
@@ -14,7 +14,7 @@ type ProposalCardProps = {
 
 const ProposalCard = React.memo(
     ({ proposal, isHorizontal, globalQuickPitchView, hideFooter}: ProposalCardProps) => {
-        const { t } = useTranslation();
+        const { t } = useLaravelReactI18n();
 
         const [userSelected, setUserSelected] =
             useState<App.DataTransferObjects.IdeascaleProfileData | null>(null);

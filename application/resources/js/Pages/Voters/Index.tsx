@@ -8,7 +8,7 @@ import { PaginatedData } from '@/types/paginated-data';
 import { SearchParams } from '@/types/search-params';
 import { Head, router } from '@inertiajs/react';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import VotersTable from './Partials/VotersTable';
 import VoterData = App.DataTransferObjects.VoterData;
 import VoterFilters from './Partials/VoterFilters';
@@ -22,7 +22,7 @@ interface VotersProps {
 
 const IndexComponent: React.FC<VotersProps> = (props) => {
     const [showFilters, setShowFilters] = useState<boolean>(false);
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
     const { voters, filters } = props;
 
     const sortOptions = VoterSortOptions();

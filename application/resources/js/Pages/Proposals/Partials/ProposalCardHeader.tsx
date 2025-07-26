@@ -6,7 +6,7 @@ import { ListProvider } from '@/Context/ListContext';
 import BookmarkButton from '@/Pages/My/Bookmarks/Partials/BookmarkButton';
 import { Link } from '@inertiajs/react';
 import { useEffect, useRef, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import CompareButton from './CompareButton';
 import ProposalStatus from './ProposalStatus';
 
@@ -38,7 +38,7 @@ export default function ProposalCardHeader({
     const contentRef = useRef<HTMLParagraphElement | null>(null);
     const [lineCount, setLineCount] = useState(0);
 
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
 
     useEffect(() => {
         const element = contentRef.current;
@@ -136,8 +136,6 @@ export default function ProposalCardHeader({
                 >
                     <a
                         href={proposal.link}
-                        target="_blank"
-                        rel="noopener noreferrer"
                         className={`hover:text-primary font-medium ${
                             isHorizontal ? 'mb-4 text-center' : ''
                         }`}

@@ -4,7 +4,7 @@ import { FiltersProvider } from '@/Context/FiltersContext';
 import { ParamsEnum } from '@/enums/proposal-search-params';
 import BookmarkNavigation from './Partials/BookmarkNavigation';
 import BookmarkToolbar from './Partials/BookmarkToolbar';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import BookmarksList from './Partials/BookmarksList';
 import ProposalVerticalCardLoading from '@/Pages/Proposals/Partials/ProposalVerticalCardLoading';
 import IdeaScaleProfileLoader from '@/Pages/IdeascaleProfile/Partials/IdeaScaleProfileLoader';
@@ -28,7 +28,7 @@ const Index: React.FC<IndexProps> = ({
   counts,
   filters = URLSearchParams
 }) => {
-  const { t } = useTranslation();
+  const { t } = useLaravelReactI18n();
   const [activeType, setActiveType] = useState<string | null>('proposals');
   const headerRef = useRef<HTMLDivElement>(null);
 

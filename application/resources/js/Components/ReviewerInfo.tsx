@@ -1,4 +1,4 @@
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import Paragraph from './atoms/Paragraph';
 import ReputationBadge from './ReputationBadge';
 import ReviewData = App.DataTransferObjects.ReviewData;
@@ -13,7 +13,7 @@ export const ReviewerInfo: React.FC<ReviewerInfoProps> = ({
     review,
     className = '',
 }) => {
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
 
     return (
         <div className={`flex items-center gap-1 ${className}`}>

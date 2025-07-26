@@ -1,5 +1,5 @@
 import Image from '@/Components/Image';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import GroupData = App.DataTransferObjects.GroupData;
 
 interface HeroSectionProps extends Record<string, unknown> {
@@ -8,7 +8,7 @@ interface HeroSectionProps extends Record<string, unknown> {
 }
 
 const GroupHeroSection: React.FC<HeroSectionProps> = ({ group, children }) => {
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
     return (
         <div className="bg-primary relative mx-auto flex h-40 w-full items-center justify-center rounded-xl">
             {children}

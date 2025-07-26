@@ -12,7 +12,7 @@ import VideoCameraIcon from '@/Components/svgs/VideoCameraIcon';
 import { usePlayer } from '@/Context/PlayerContext';
 import { useUIContext } from '@/Context/SharedUIContext';
 import { usePage } from '@inertiajs/react';
-import 'plyr-react/plyr.css';
+// import 'plyr-react/plyr.css';
 import { useEffect } from 'react';
 import PlaylistAnimation from './Playlist';
 

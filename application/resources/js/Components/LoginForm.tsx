@@ -1,14 +1,11 @@
 import Checkbox from '@/Components/atoms/Checkbox';
 import PrimaryButton from '@/Components/atoms/PrimaryButton';
-import SecondaryButton from '@/Components/atoms/SecondaryButton';
 import TextInput from '@/Components/atoms/TextInput';
 import InputError from '@/Components/InputError';
 import InputLabel from '@/Components/InputLabel';
-import ConnectWalletIcon from '@/Components/svgs/ConnectWalletIcon';
 import { Link, router, useForm } from '@inertiajs/react';
-import axios from 'axios';
 import { FormEventHandler, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import Title from './atoms/Title';
 import { generateLocalizedRoute } from '@/utils/localizedRoute';
 import ConnectWalletButton from './ConnectWalletButton';
@@ -24,7 +21,7 @@ interface FormErrors {
 }
 
 export default function LoginForm({ title, postRoute }: LoginFormProps) {
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
 
     const { data, setData, reset, processing } = useForm({
         email: '',

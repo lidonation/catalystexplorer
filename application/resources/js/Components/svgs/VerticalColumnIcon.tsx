@@ -1,5 +1,3 @@
-import { useTranslation } from 'react-i18next';
-
 type VerticalColumnIconProps = {
     className?: string;
     width?: number;
@@ -10,7 +8,6 @@ export default function VerticalColumnIcon({
     width = 28,
     height = 28,
 }: VerticalColumnIconProps) {
-    const { t } = useTranslation();
     return (
         <svg
             width={width}
@@ -22,7 +19,6 @@ export default function VerticalColumnIcon({
             stroke="currentColor"
             className={className}
         >
-            <title>{t('icons.titles.verticalColumn')}</title>
             <path
                 fillRule="evenodd"
                 clipRule="evenodd"

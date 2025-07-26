@@ -1,11 +1,11 @@
 import { RangePicker } from '@/Components/RangePicker';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import { SearchSelect } from '@/Components/SearchSelect';
 import { useFilterContext } from '@/Context/FiltersContext';
 import { ParamsEnum } from '@/enums/proposal-search-params';
 
 const ReviewsFilter = () => {
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
     const { setFilters, getFilter } = useFilterContext();
     const ratingRange = [1, 5];
     const reputationRange = [1, 100];

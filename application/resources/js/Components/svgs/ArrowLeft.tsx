@@ -1,5 +1,3 @@
-import { useTranslation } from 'react-i18next';
-
 type ArrowLeftIconProps = {
     className?: string;
     width?: number;
@@ -10,7 +8,6 @@ export default function ArrowLeftIcon({
     width = 16,
     height = 10,
 }: ArrowLeftIconProps) {
-    const { t } = useTranslation();
     return (
         <svg
             width={width}
@@ -22,8 +19,6 @@ export default function ArrowLeftIcon({
             stroke="currentColor"
             className={className}
         >
-            <title>{t('icons.titles.arrow_left')}</title>
-
             <path
                 d="M5 1L1 5L5 9"
                 stroke="currentColor"

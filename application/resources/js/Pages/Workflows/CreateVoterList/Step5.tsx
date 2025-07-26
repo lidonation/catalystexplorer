@@ -4,7 +4,7 @@ import Title from '@/Components/atoms/Title';
 import { VerificationBadge } from '@/Components/svgs/VerificationBadge';
 import { StepDetails } from '@/types';
 import { useLocalizedRoute } from '@/utils/localizedRoute';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import Content from '../Partials/WorkflowContent';
 import WorkflowLayout from '../WorkflowLayout';
 
@@ -18,7 +18,7 @@ export default function step5({
     activeStep,
     bookmarkHash,
 }: SuccessProps) {
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
     const localizedRoute = useLocalizedRoute;
     const nextStep = localizedRoute('workflows.createVoterList.index', {
         step: activeStep + 1,

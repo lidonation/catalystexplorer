@@ -1,4 +1,4 @@
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import MilestonePoasData = App.DataTransferObjects.MilestonePoasData;
 
 interface MilestoneApprovalButtonsPageProps {
@@ -8,7 +8,7 @@ interface MilestoneApprovalButtonsPageProps {
 const MilestoneApprovalButtons: React.FC<MilestoneApprovalButtonsPageProps> = ({
     poas,
 }) => {
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
 
     // Filter POAs with current: true
     const filteredPoas = poas.filter((poas) => poas.current);

@@ -7,7 +7,7 @@ import { formatTimeAgo } from './layout/TimeFormatter';
 import UserData = App.DataTransferObjects.UserData;
 import CommentData = App.DataTransferObjects.CommentData;
 
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 
 const CommentItem = ({
     comment,
@@ -26,7 +26,7 @@ const CommentItem = ({
 
     const isTopLevel = comment.parent_id === null;
 
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
 
     return (
         <div className={`flex gap-3 ${isTopLevel ? 'mb-6' : 'mt-4 ml-12'}`}>

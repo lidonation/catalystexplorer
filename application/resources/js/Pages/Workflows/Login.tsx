@@ -1,13 +1,13 @@
 import LoginForm from '@/Components/LoginForm';
 import { useLocalizedRoute } from '@/utils/localizedRoute';
 import React from 'react';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import WorkflowLayout from './WorkflowLayout';
 
 const WorkflowLogin: React.FC<{ title: string; intendedRoute: string }> = ({
     title,
 }) => {
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
 
     return (
         <WorkflowLayout asideInfo="">

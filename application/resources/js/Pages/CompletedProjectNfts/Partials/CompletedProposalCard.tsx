@@ -2,7 +2,7 @@ import Paragraph from '@/Components/atoms/Paragraph';
 import Title from '@/Components/atoms/Title';
 import { currency } from '@/utils/currency';
 import { ArrowUpRight } from 'lucide-react';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import ProposalData = App.DataTransferObjects.ProposalData;
 import NftData = App.DataTransferObjects.NftData;
 import IdeascaleProfileData = App.DataTransferObjects.IdeascaleProfileData;
@@ -16,7 +16,7 @@ export default function CompletedProposalCard({
     proposal,
     profileHash,
 }: ProposalProps) {
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
 
     return (
         <div

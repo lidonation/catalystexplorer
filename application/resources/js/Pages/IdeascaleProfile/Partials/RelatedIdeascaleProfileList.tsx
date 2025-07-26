@@ -4,7 +4,7 @@ import { PaginatedData } from '@/types/paginated-data';
 import { Link } from '@inertiajs/react';
 import { AnimatePresence, motion } from 'framer-motion';
 import React, { HTMLAttributes } from 'react';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import IdeascaleProfileCardMini from './IdeascaleProfileCardMini';
 import IdeascaleProfileData = App.DataTransferObjects.IdeascaleProfileData;
 
@@ -16,7 +16,7 @@ const RelatedIdeascaleProfilesList: React.FC<IdeascaleProfilesListProps> = ({
     ideascaleProfiles,
     ...props
 }) => {
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
 
     if (!ideascaleProfiles?.total) {
         return (

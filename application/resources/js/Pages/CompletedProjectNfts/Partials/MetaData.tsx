@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import { router } from '@inertiajs/react';
 import { useLocalizedRoute } from '@/utils/localizedRoute';
 import Button from '@/Components/atoms/Button';
@@ -12,7 +12,7 @@ interface MetaDataProps {
 }
 
 const MetaData = ({ nft, isOwner }: MetaDataProps) => {
-  const { t } = useTranslation();
+  const { t } = useLaravelReactI18n();
   const [struckFields, setStruckFields] = useState<Record<string, boolean>>({});
   const [displayValues, setDisplayValues] = useState<Record<string, string>>({
     campaignName: '',
@@ -24,7 +24,7 @@ const MetaData = ({ nft, isOwner }: MetaDataProps) => {
   });
   const [isMetadataAvailable, setIsMetadataAvailable] = useState<boolean>(true);
   const [isUpdating, setIsUpdating] = useState<Record<string, boolean>>({});
-  
+
   const localizedUpdateRoute = nft?.id
     ? useLocalizedRoute('crud.nfts.update', { nft: nft.id })
     : null;
@@ -66,12 +66,12 @@ const MetaData = ({ nft, isOwner }: MetaDataProps) => {
       setIsMetadataAvailable(false);
       return;
     }
-    
+
     const storageKey = `nft_${nft.id}`;
-    
+
     const loadedStruckFields = loadStruckStates(storageKey);
     setStruckFields(loadedStruckFields);
-    
+
     const extractInitialValues = () => {
       const values: Record<string, string> = {
         campaignName: '',
@@ -81,7 +81,7 @@ const MetaData = ({ nft, isOwner }: MetaDataProps) => {
         noVotes: '',
         role: ''
       };
-      
+
       try {
         const savedValues = localStorage.getItem(`${storageKey}_values`);
         if (savedValues) {
@@ -95,13 +95,13 @@ const MetaData = ({ nft, isOwner }: MetaDataProps) => {
       } catch (e) {
         console.error('Error loading values from localStorage:', e);
       }
-      
+
       try {
         if (nft.metadata) {
-          const meta = typeof nft.metadata === 'string' 
-            ? safeJsonParse(nft.metadata, {}) 
+          const meta = typeof nft.metadata === 'string'
+            ? safeJsonParse(nft.metadata, {})
             : (nft.metadata as Record<string, unknown>);
-          
+
           const keyMappings = {
             campaignName: ['Project Catalyst Campaign Name', 'campaign_name', 'projectCatalystCampaignName'],
             projectNumber: ['Funded Project Number', 'funded_project_number', 'fundedProjectNumber'],
@@ -110,16 +110,16 @@ const MetaData = ({ nft, isOwner }: MetaDataProps) => {
             noVotes: ['no votes', 'no_votes', 'noVotes'],
             role: ['role', 'Role']
           };
-          
+
           extractValuesFromMapping(meta, keyMappings, values);
         }
-        
+
         const nmkrMeta = nft.metas?.find(m => m.key === 'nmkr_metadata');
         if (nmkrMeta?.content) {
           const meta = safeJsonParse(nmkrMeta.content, {});
-          
+
           const nftData = extractNftDataFromNmkr(meta);
-          
+
           if (nftData) {
             const keyMappings = {
               campaignName: ['Project Catalyst Campaign Name', 'projectCatalystCampaignName'],
@@ -129,17 +129,17 @@ const MetaData = ({ nft, isOwner }: MetaDataProps) => {
               noVotes: ['no votes', 'noVotes'],
               role: ['role']
             };
-            
+
             extractValuesFromMapping(nftData, keyMappings, values);
           }
         }
-        
+
         if (nft.metas && Array.isArray(nft.metas)) {
           nft.metas.forEach(metaItem => {
             if (metaItem.content) {
               try {
                 const parsed = safeJsonParse(metaItem.content, {});
-                
+
                 const keyMappings = {
                   campaignName: ['Project Catalyst Campaign Name', 'campaign_name', 'projectCatalystCampaignName'],
                   projectNumber: ['Funded Project Number', 'funded_project_number', 'fundedProjectNumber'],
@@ -148,26 +148,26 @@ const MetaData = ({ nft, isOwner }: MetaDataProps) => {
                   noVotes: ['no votes', 'no_votes', 'noVotes'],
                   role: ['role', 'Role']
                 };
-                
+
                 extractValuesFromMapping(parsed, keyMappings, values);
               } catch (e) {
                 // Skip invalid JSON
               }
             }
           });
-        }   
+        }
       } catch (e) {
         console.error('Error extracting values from metadata:', e);
       }
-      
+
       return values;
     };
-    
+
      const safeJsonParse = (jsonString: string, p0: {}): Record<string, any> => {
       if (!jsonString || typeof jsonString !== 'string') {
         return {};
       }
-      
+
       try {
         return JSON.parse(jsonString);
       } catch (error) {
@@ -175,7 +175,7 @@ const MetaData = ({ nft, isOwner }: MetaDataProps) => {
         return {};
       }
     };
-    
+
     const extractValuesFromMapping = (
       source: Record<string, unknown>,
       mappings: Record<string, readonly string[]>,
@@ -191,40 +191,40 @@ const MetaData = ({ nft, isOwner }: MetaDataProps) => {
         }
       });
     };
-    
+
     const extractNftDataFromNmkr = (meta: Record<string, unknown>): Record<string, unknown> | null => {
       if (!meta['721']) return null;
-      
+
       const nmkrMeta = meta['721'] as Record<string, unknown>;
       const policyKeys = Object.keys(nmkrMeta).filter(k => k !== 'version');
-      
+
       for (const policy of policyKeys) {
         const policyData = nmkrMeta[policy] as Record<string, unknown>;
         const assetKeys = Object.keys(policyData).filter(k => k !== 'version');
-        
+
         if (assetKeys.length > 0) {
           return policyData[assetKeys[0]] as Record<string, unknown>;
         }
       }
-      
+
       return null;
     };
-    
+
     // Extract and set values
     const values = extractInitialValues();
     setDisplayValues(values);
-    
+
     // Save these values to localStorage as backup
     try {
       localStorage.setItem(`${storageKey}_values`, JSON.stringify(values));
     } catch (e) {
       console.error('Error saving values to localStorage:', e);
     }
-    
+
     // Check if we have enough data to show
     const hasData = Object.values(values).some(v => !!v);
     setIsMetadataAvailable(hasData);
-    
+
   }, [nft?.id, nft?.metadata, nft?.metas]);
 
   const handleToggleStrike = (key: string) => {
@@ -237,27 +237,27 @@ const MetaData = ({ nft, isOwner }: MetaDataProps) => {
     if (isUpdating[key]) {
       return;
     }
-  
+
     const currentlyStruck = struckFields[key] || false;
     const value = displayValues[key] || '';
     const storageKey = `nft_${nft.id}`;
-    
+
     // Update the struck state immediately for UI responsiveness
     const newStruckFields = {
       ...struckFields,
       [key]: !currentlyStruck
     };
-    
+
     setStruckFields(newStruckFields);
     setIsUpdating(prev => ({ ...prev, [key]: true }));
-    
+
     saveStruckStates(storageKey, newStruckFields);
-    
+
     router.patch(
-      localizedUpdateRoute, 
+      localizedUpdateRoute,
       {
-        meta: { 
-          key, 
+        meta: {
+          key,
           value
         },
         remove: !currentlyStruck
@@ -272,13 +272,13 @@ const MetaData = ({ nft, isOwner }: MetaDataProps) => {
         onError: (errors) => {
           console.error('Error updating metadata:', errors);
           setIsUpdating(prev => ({ ...prev, [key]: false }));
-          
+
           if (Object.keys(errors).length > 0) {
             const revertedStruckFields = {
               ...struckFields,
               [key]: currentlyStruck
             };
-            
+
             setStruckFields(revertedStruckFields);
             saveStruckStates(storageKey, revertedStruckFields);
           }
@@ -294,11 +294,11 @@ const MetaData = ({ nft, isOwner }: MetaDataProps) => {
     const isNumber = fieldKey === 'yesVotes' || fieldKey === 'noVotes';
     const isFieldUpdating = isUpdating[fieldKey];
     let displayValue = value || '-';
-    
+
     if (isNumber && value && parseInt(value) > 0) {
       displayValue = formatNumber(parseInt(value));
     }
-    
+
     return (
       <div className="border-b border-dark pb-4">
         <div className="grid grid-cols-[200px_1fr] items-start">
@@ -342,7 +342,7 @@ const MetaData = ({ nft, isOwner }: MetaDataProps) => {
       </div>
     );
   };
-  
+
   const renderUnavailableMessage = () => {
     return (
       <div className="flex flex-col items-center justify-center py-12">

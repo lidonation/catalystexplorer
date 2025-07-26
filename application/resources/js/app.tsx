@@ -1,13 +1,14 @@
-import '../../node_modules/plyr/dist/plyr.css';
-import { createInertiaApp } from '@inertiajs/react';
-import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
-import { StrictMode } from 'react';
-import { createRoot } from 'react-dom/client';
+// import '../../node_modules/plyr/dist/plyr.css';
+import {createInertiaApp} from '@inertiajs/react';
+import {resolvePageComponent} from 'laravel-vite-plugin/inertia-helpers';
+import {StrictMode} from 'react';
+import {hydrateRoot} from 'react-dom/client';
 import '../scss/app.scss';
 import './bootstrap';
-import './utils/i18n';
-import { ModalStackProvider, initFromPageProps } from '@inertiaui/modal-react';
+import {ModalStackProvider, initFromPageProps} from '@inertiaui/modal-react';
 import AppLayout from './Layouts/AppLayout';
+import {LaravelReactI18nProvider} from "laravel-react-i18n";
+import { RouteContext } from './Hooks/useRoute';
 
 const appName = import.meta.env.VITE_APP_NAME || 'CatalystExplorer';
 
@@ -21,24 +22,30 @@ createInertiaApp({
         page.then((module: any) => {
             module.default.layout =
                 module.default.layout ||
-                ((module: any) => <AppLayout children={module} />);
+                ((module: any) => <AppLayout children={module}/>);
         });
         return page;
     },
-    setup({ el, App, props }) {
-        const root = createRoot(el);
-
+    // @ts-ignore
+    setup({el, App, props}) {
         initFromPageProps(props);
 
-        root.render(
-            <ModalStackProvider>
-                <StrictMode>
-                    <App {...props} />
-                </StrictMode>
-            </ModalStackProvider>,
+        return hydrateRoot(el,
+            <RouteContext.Provider value={(window as any).route}>
+                <LaravelReactI18nProvider
+                    locale={'en'}
+                    fallbackLocale={'en'}
+                    files={import.meta.glob('/lang/*.json', {eager: true})}>
+                    <ModalStackProvider>
+                        <StrictMode>
+                            <App {...props} />
+                        </StrictMode>
+                    </ModalStackProvider>
+                </LaravelReactI18nProvider>
+            </RouteContext.Provider>
         );
     },
     progress: {
-        color: '#4B5563',
+        color: '#2596be',
     },
 }).then();

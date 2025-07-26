@@ -21,7 +21,7 @@ import React, {
     useRef,
     useState,
 } from 'react';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import VoteFilters from './VoteFilters';
 import VoteHistoryTableLoader from './VoterHistoryTableLoader';
 import VoterHistoryData = App.DataTransferObjects.VoterHistoryData;
@@ -42,7 +42,7 @@ const VoterHistoryTable: React.FC<VoterHistoryTableProps> = ({
     unifiedSearch = false,
     customTitle,
 }) => {
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
     const { filters, setFilters } = useFilterContext();
     const [isLoading, setIsLoading] = useState(false);
     const prevFiltersRef = useRef('');

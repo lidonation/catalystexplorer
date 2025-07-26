@@ -7,7 +7,7 @@ import ValueLabel from '@/Components/atoms/ValueLabel';
 import CommunityIdeascaleProfiles from '@/Pages/Communities/Partials/CommunityIdeascaleProfiles';
 import { Segments } from '@/types/segments';
 import { currency } from '@/utils/currency';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import CommunityData = App.DataTransferObjects.CommunityData;
 
 interface ProposalSummaryCardProps {
@@ -21,7 +21,7 @@ export default function ProposalSummaryCard({
     ownProposalsCount,
     coProposalsCount,
 }: ProposalSummaryCardProps) {
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
 
     const segments = [
         {

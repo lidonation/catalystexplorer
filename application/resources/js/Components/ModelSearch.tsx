@@ -3,7 +3,7 @@ import useEscapeKey from '@/Hooks/useEscapeKey';
 import { useSearchOptions } from '@/Hooks/useSearchOptions';
 import { currency } from '@/utils/currency';
 import { useEffect, useRef } from 'react';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import Button from './atoms/Button';
 import Checkbox from './atoms/Checkbox';
 import TextInput from './atoms/TextInput';
@@ -91,7 +91,7 @@ export default function ModelSearch({
     domain,
 }: ModelSearchProps) {
     const inputRef = useRef<HTMLInputElement>(null);
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
     const { searchTerm, setSearchTerm, options } =
         useSearchOptions<any>(domain);
     const model = modelTypes[domain];

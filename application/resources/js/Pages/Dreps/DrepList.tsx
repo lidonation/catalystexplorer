@@ -10,7 +10,7 @@ import { SearchParams } from '@/types/search-params';
 import { useLocalizedRoute } from '@/utils/localizedRoute';
 import { Head } from '@inertiajs/react';
 import { useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import DrepFilters from './Partials/DrepFilters';
 import DrepTable from './Partials/DrepTable';
 import CatalystDrepData = App.DataTransferObjects.CatalystDrepData;
@@ -22,7 +22,7 @@ interface DrepListPageProps extends Record<string, unknown> {
 
 const Index = ({ filters, catalystDreps }: DrepListPageProps) => {
     const [showFilters, setShowFilters] = useState(false);
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
 
     return (
         <>

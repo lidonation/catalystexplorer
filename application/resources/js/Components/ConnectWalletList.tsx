@@ -2,13 +2,13 @@ import Image from '@/Components/Image';
 import { useConnectWallet } from '@/Context/ConnectWalletSliderContext';
 import capitalizeFirstLetter from '@/utils/caps';
 import { Loader2 } from 'lucide-react';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import Button from './atoms/Button';
 import Paragraph from './atoms/Paragraph';
 import Title from './atoms/Title';
 
 const ConnectWalletList = () => {
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
     const {
         isConnecting,
         wallets,

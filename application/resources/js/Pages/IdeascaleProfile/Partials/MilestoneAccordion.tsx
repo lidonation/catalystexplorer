@@ -4,7 +4,7 @@ import PercentageProgressBar from '@/Components/PercentageProgressBar';
 import { shortNumber } from '@/utils/shortNumber';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 import React, { useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import MilestoneApprovalButtons from './MilestoneApprovalButtons';
 import MilestoneDateProgressBar from './MilestoneDateProgressBar';
 import MilestoneTrackButton from './MilestoneTrackButton';
@@ -23,7 +23,7 @@ const MilestoneAccordion: React.FC<MilestoneAccordionProps> = ({
     currency,
     onTrack,
 }) => {
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
     const [openIndex, setOpenIndex] = useState<number | null>(null);
 
     const currencySymbol: string = currency == 'usd' ? '$' : '₳';

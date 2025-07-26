@@ -2,7 +2,7 @@ import Paragraph from '@/Components/atoms/Paragraph';
 import CopyableCell from '@/Components/CopyableCell';
 import { currency } from '@/utils/currency';
 import React from 'react';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import CatalystVoteRow from './CatalystVotesRow';
 import VoterHistoryData = App.DataTransferObjects.VoterHistoryData;
 
@@ -20,7 +20,7 @@ interface CatalystVotesTableProps {
 export const CatalystVotesTable: React.FC<CatalystVotesTableProps> = ({
     catalystVotes = [],
 }) => {
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
 
     const formatAddress = (address: string) => {
         if (!address) return '';

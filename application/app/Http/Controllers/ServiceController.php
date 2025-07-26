@@ -14,21 +14,26 @@ use Inertia\Response;
 
 class ServiceController extends Controller
 {
-    public function index(): Response
+    public function index(Request $request): Response
     {
+        $query = Service::with(['user:id,name,email', 'categories:id,name,slug', 'locations:id,city'])
+            ->latest();
+        if ($request->has('search')) {
+            $query->where(function ($q) use ($request) {
+                $q->where('title', 'ilike', '%'.$request->search.'%')
+                    ->orWhere('description', 'ilike', '%'.$request->search.'%');
+            });
+        }
+
         return Inertia::render('Services/Index', [
-            'services' => ServiceData::collection(
-                Service::with(['user:id,name,email', 'categories:id,name,slug', 'locations:id,city'])
-                    ->latest()
-                    ->paginate(24)
-            ),
+            'services' => ServiceData::collection($query->paginate(24)),
             'viewType' => 'all',
         ]);
     }
 
     public function myServices(): Response
     {
-        return Inertia::render('Services/Index', [
+        return Inertia::render('My/Services/Index', [
             'services' => ServiceData::collection(
                 Service::with(['user:id,name,email', 'categories:id,name,slug', 'locations:id,city'])
                     ->where('user_id', auth()->id())

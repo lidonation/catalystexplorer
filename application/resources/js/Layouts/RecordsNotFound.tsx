@@ -1,5 +1,5 @@
 import RecordsNotFoundIcon from '@/Components/svgs/RecordsNotFoundIcon';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 
 type RecordsNotFoundProps = {
     context?:
@@ -21,7 +21,7 @@ export default function RecordsNotFound({
     searchTerm = '',
     showIcon = true,
 }: RecordsNotFoundProps) {
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
 
     const getMessage = () => {
         return t(`recordsNotFound.message`);
