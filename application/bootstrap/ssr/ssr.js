@@ -43284,8 +43284,7 @@ createServer(async (page) => {
         return route(name, params, absolute, {
           ...page.props.ziggy,
           ...config,
-          location: "https://lidonation.com"
-          // new URL((page.props as any).ziggy?.location),
+          location: new URL(page.props.ziggy?.location)
         });
       };
       return /* @__PURE__ */ jsx(RouteContext.Provider, { value: ssrRoute, children: /* @__PURE__ */ jsx(
