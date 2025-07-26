@@ -224,9 +224,9 @@ pest:
 #      php artisan migrate:fresh --force && \
 #      php artisan optimize:clear  && \
 #      sleep 10 && \
-#      php artisan cx:create-search-index "App\Models\Group" && \ 
+#      php artisan cx:create-search-index "App\Models\Group" && \
 #      php artisan cx:create-search-index "App\Models\Proposal" && \
-#      php artisan cx:create-search-index "App\Models\IdeascaleProfile" && \ 
+#      php artisan cx:create-search-index "App\Models\IdeascaleProfile" && \
 #      php artisan cx:create-search-index "App\Models\Review" && \
 #      php artisan cx:create-search-index "App\Models\Transaction" && \
 #      php artisan cx:create-search-index "App\Models\BookmarkCollection" && \
@@ -401,6 +401,7 @@ build_web:
   stage: build
   image: docker:24.0.2-git
   needs:
+    - composer
     - yarn-install
     - yarn-build
     - yarn-build-ssr

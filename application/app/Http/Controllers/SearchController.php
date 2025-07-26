@@ -84,7 +84,7 @@ class SearchController extends Controller
         foreach ($repositories as $key => $repository) {
             if (empty($filterList) || in_array($key, $filterList)) {
                 $searchData[$key] = Inertia::optional(
-                    fn () => $repository->search($searchTerm)->raw()
+                    fn() => $repository->search($searchTerm)->raw()
                 );
             }
         }
