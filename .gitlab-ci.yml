@@ -401,6 +401,7 @@ build_web:
   stage: build
   image: docker:24.0.2-git
   needs:
+    - composer
     - yarn-install
     - yarn-build
     - yarn-build-ssr
