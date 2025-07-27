@@ -111,7 +111,7 @@ export default function Footer() {
                             </li>
                             <li>
                                 <Paragraph>
-                                    <a href={route('api.index')} data-testid="catalyst-api-link">
+                                    <a href={useLocalizedRoute('api.index')} data-testid="catalyst-api-link">
                                         {t('catalystAPI')}
                                     </a>
                                 </Paragraph>
