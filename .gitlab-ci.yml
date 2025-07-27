@@ -435,7 +435,6 @@ build_web_base:
   rules:
     - if: $WEB_BASE_IMAGE_VER
 
-
 build_playwrite_image:
   stage: .pre
   image: docker:24.0.2-git
