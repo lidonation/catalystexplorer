@@ -14,14 +14,14 @@ spec:
 .semantic_release_base:
   stage: $[[ inputs.stage ]]
   image:
-    name: registry.gitlab.com/gitlab-com/gl-infra/common-ci-tasks-images/semantic-release:latest
+    name: registry.gitlab.com/gitlab-com/gl-infra/common-ci-tasks-images/semantic-release:sha256-da61545c6223d8b73d56fd8249529bafb3e41ed13334d5707cd1b7aa01263a16.sig
     entrypoint: [""]
   variables:
     GITLAB_URL: $CI_SERVER_URL
-  before_script:
+  script:
     - |
       echo "Note: GitLab token secret configured via $SEMANTIC_RELEASE_AUTH_SOURCE"
-
+      
       if [[ -z "${SEMANTIC_RELEASE_GITLAB_TOKEN}" && -n "${GITLAB_TOKEN}" ]]; then
         printf '\e[31;1m%s\e[0m\n' 'WARNING: GITLAB_TOKEN is deprecated -- use SEMANTIC_RELEASE_GITLAB_TOKEN instead'
       fi
@@ -32,7 +32,6 @@ spec:
     # default branch before performing the semantic release.
     # Required for delayed releases...
     - git checkout "$CI_DEFAULT_BRANCH" && git pull && git fetch --tags
-  script:
     - semantic-release
   after_script: |
     cat <<-EOD
