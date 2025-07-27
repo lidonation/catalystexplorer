@@ -92,7 +92,7 @@ class ServiceController extends Controller
             'title' => 'required|string|max:255',
             'description' => 'required|string|max:5000',
             'type' => 'required|string|in:' . implode(',', ServiceTypeEnum::toValues()),
-            'header_image' => 'nullable|image|max:5120', // Match ProfileController limit
+            'header_image' => 'nullable|image|max:5120',
             'categories' => 'required|array|min:1|max:5',
             'categories.*' => 'exists:categories,id',
             'location' => 'nullable|exists:locations,id',
@@ -238,7 +238,6 @@ class ServiceController extends Controller
             ServiceWorkflowParams::TYPE()->value => 'required|string|in:' . implode(',', \App\Enums\ServiceTypeEnum::toValues()),
             ServiceWorkflowParams::CATEGORIES()->value => 'required|array|min:1|max:5',
             ServiceWorkflowParams::CATEGORIES()->value.'.*' => 'exists:categories,slug',
-            ServiceWorkflowParams::HEADER_IMAGE()->value => 'nullable|image|max:5120', // Match ProfileController limit
             ServiceWorkflowParams::SERVICE_HASH()->value => 'nullable|string',
         ]);
 
