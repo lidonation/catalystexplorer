@@ -40,12 +40,6 @@ default:
       export APP_VERSION_AND_BUILD="${APP_VERSION}-${CI_PIPELINE_ID}"
       export CI_APPLICATION_REPOSITORY=$CI_REGISTRY_IMAGE
       export CI_APPLICATION_TAG=$APP_VERSION_AND_BUILD
-      
-      # temporary. Remove when registry issues are resolved
-      export CI_REGISTRY_USER=$REGISTRY_USER;
-      export CI_REGISTRY_PASSWORD=$REGISTRY_PASSWORD;
-      export CI_REGISTRY=$REGISTRY;
-      export CI_APPLICATION_REPOSITORY=$APPLICATION_REPOSITORY;
 
 
 cache:
@@ -557,14 +551,14 @@ sem-release:
     GITLAB_TOKEN: ${SEMANTIC_RELEASE_GITLAB_TOKEN}
   rules:
     - if: '$CI_COMMIT_BRANCH == "main" && ($DEPLOY_WEBAPP == "true")'
-      when: manual
   before_script:
+    - 'echo "GITLAB_TOKEN: $GITLAB_TOKEN"'
     - apk add --no-cache git
     - npm install -g semantic-release @semantic-release/git @semantic-release/gitlab @semantic-release/changelog
     - git config user.name "GitLab CI"
     - git config user.email "ci@gitlab.com"
-    - git remote set-url origin https://oauth2:${SEMANTIC_RELEASE_GITLAB_TOKEN}@${CI_SERVER_HOST}/${CI_PROJECT_PATH}.git
+    - git remote set-url origin https://oauth2:${GITLAB_TOKEN}@${CI_SERVER_HOST}/${CI_PROJECT_PATH}.git
     - git config credential.helper store
-    - echo "https://oauth2:${SEMANTIC_RELEASE_GITLAB_TOKEN}@${CI_SERVER_HOST}" > ~/.git-credentials
+    - echo "https://oauth2:${GITLAB_TOKEN}@${CI_SERVER_HOST}" > ~/.git-credentials
   script:
     - semantic-release
