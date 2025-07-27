@@ -544,14 +544,13 @@ sem-release:
   stage: release
   needs:
     - job: app_mainnet
-  image: node:20-alpine
+  image: node:22-alpine
   variables:
     GIT_DEPTH: 0
     GITLAB_TOKEN: ${SEMANTIC_RELEASE_GITLAB_TOKEN}
   rules:
     - if: '$CI_COMMIT_BRANCH == "main" && ($DEPLOY_WEBAPP == "true")'
   before_script:
-    - 'echo "GITLAB_TOKEN: $GITLAB_TOKEN"'
     - apk add --no-cache git
     - npm install -g semantic-release @semantic-release/git @semantic-release/gitlab @semantic-release/changelog
     - git config user.name "GitLab CI"
@@ -559,5 +558,6 @@ sem-release:
     - git remote set-url origin https://oauth2:${GITLAB_TOKEN}@${CI_SERVER_HOST}/${CI_PROJECT_PATH}.git
     - git config credential.helper store
     - echo "https://oauth2:${GITLAB_TOKEN}@${CI_SERVER_HOST}" > ~/.git-credentials
+    - echo ~/.git-credentials
   script:
     - semantic-release
