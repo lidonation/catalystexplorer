@@ -19,7 +19,7 @@ services:
       repository: registry.lidonation.com/lidonation/www.catalystexplorer.com/web-app
       tag: latest
       pullPolicy: IfNotPresent
-      pullSecret:  gitlab-registry-catalystexplorer
+      pullSecret:  gitlab-registry-catalystexplorer-www-catalystexplorer-com
     persistence:
       size: 40Gi
       storageClass: longhorn
