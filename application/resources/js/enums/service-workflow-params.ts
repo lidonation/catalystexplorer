@@ -1,0 +1,15 @@
+export enum ServiceWorkflowParams {
+    STEP = 'step',
+    SERVICE_HASH = 'serviceHash',
+    TITLE = 'title',
+    DESCRIPTION = 'description',
+    TYPE = 'type',
+    HEADER_IMAGE = 'header_image',
+    CATEGORIES = 'categories',
+    LOCATION = 'location',
+    NAME = 'name',
+    EMAIL = 'email',
+    WEBSITE = 'website',
+    GITHUB = 'github',
+    LINKEDIN = 'linkedin',
+}

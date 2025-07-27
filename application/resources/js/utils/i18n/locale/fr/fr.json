@@ -406,6 +406,44 @@
                 "exploreIdeas": "Explorer des idées",
                 "mySwipeList": "Ma liste de balayage"
             }
+        },
+        "createService": {
+            "step1": {
+                "howToContribute": "Comment aimeriez-vous contribuer ?",
+                "offerService": "Je veux offrir un service à la communauté",
+                "needService": "J'ai besoin d'un service de la communauté",
+                "offeringServiceBadge": "Offre de service",
+                "requestingServiceBadge": "Demande de service",
+                "serviceTitle": "Titre du service",
+                "imageHeader": "En-tête d'image",
+                "description": "Description",
+                "category": "Catégorie",
+                "selectCategories": "Sélectionnez les catégories...",
+                "selectedCategories": "Sélectionné : {{count}} catégories",
+                "selectedImageText": "Sélectionné : {{fileName}}"
+            },
+            "step2": {
+                "serviceCreatedSuccess": "Service créé avec succès !",
+                "name": "Nom",
+                "emailAddress": "Adresse e-mail",
+                "websiteUrl": "URL du site web",
+                "github": "Github",
+                "linkedin": "LinkedIn",
+                "location": "Emplacement",
+                "enterCity": "Entrez la ville",
+                "addNetwork": "Ajouter un réseau",
+                "saving": "Enregistrement...",
+                "contactInfoSavedSuccess": "Informations de contact enregistrées avec succès !",
+                "submitService": "Soumettre le service",
+                "validation": {
+                    "emailInvalid": "Veuillez entrer une adresse e-mail valide",
+                    "websiteInvalid": "Veuillez entrer une URL de site web valide (doit commencer par http:// ou https://)"
+                }
+            },
+             "stepDetails": {
+                "serviceDetails": "Détails du service",
+                "contactDetails": "Détails du contact"
+            }
         }
     },
     "error404": {
