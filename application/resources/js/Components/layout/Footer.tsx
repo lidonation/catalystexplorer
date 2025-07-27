@@ -2,9 +2,14 @@ import { CatalystWhiteLogo } from '@/Components/svgs/CatalystWhiteLogo.tsx';
 import Paragraph from '@/Components/atoms/Paragraph';
 import { useLocalizedRoute } from '@/utils/localizedRoute';
 import { useLaravelReactI18n } from "laravel-react-i18n";
+import {Config, useRoute} from 'ziggy-js';
+import { usePage } from '@inertiajs/react';
+
 
 export default function Footer() {
     const { t } = useLaravelReactI18n();
+    const { locale, ziggy } = usePage().props as any;
+    const route = useRoute(ziggy as Config);
 
     return (
         <div className="relative z-10 flex min-h-96 w-full flex-col justify-between gap-16 rounded-t-xl bg-linear-to-r from-[var(--cx-background-gradient-1-dark)] to-[var(--cx-background-gradient-1-dark)] pt-16 pb-12">
@@ -111,7 +116,7 @@ export default function Footer() {
                             </li>
                             <li>
                                 <Paragraph>
-                                    <a href={useLocalizedRoute('api.index')} data-testid="catalyst-api-link">
+                                    <a href={route('api.index')} data-testid="catalyst-api-link">
                                         {t('catalystAPI')}
                                     </a>
                                 </Paragraph>
