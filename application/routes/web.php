@@ -195,8 +195,6 @@ Route::localized(
                         ->name('saveStep2');
                     Route::post('/save-contact', [ServiceController::class, 'saveContactInfo'])
                         ->name('saveContactInfo');
-                    Route::get('/success', [ServiceController::class, 'success'])
-                        ->name('success');
                     Route::get('/{step}', [ServiceController::class, 'handleStep'])
                         ->name('index');
                 });
