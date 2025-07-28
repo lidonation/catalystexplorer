@@ -12,11 +12,11 @@ const UserQuickView: React.FC<ProposalUserQuickViewProps> = ({ user }) => {
     return (
 
         <div className="space-y-4 p-4">
-            {/* Lido Profile Section */}
+            {/* Profile Section */}
             <div className="flex items-start space-x-2" data-testid="user-quick-view-lido">
                 <LinkIcon />
                 <div>
-                    <span className="block font-medium">Lido  {t('users.profile')}</span>
+                    <span className="block font-medium">{user.name} {t('users.profile')}</span>
                     <a
                         href={`https://www.lidonation.com/en/project-catalyst/users/${user.username}`}
                         target="_blank"
