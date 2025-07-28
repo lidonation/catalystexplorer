@@ -6,21 +6,9 @@ import { FiltersProvider } from '@/Context/FiltersContext';
 import TransactionSortOptions from '@/lib/TransactionSortOptions';
 import { PaginatedData } from '@/types/paginated-data';
 import { SearchParams } from '@/types/search-params';
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-import { Head } from '@inertiajs/react';
-import { useState } from 'react';
-import {useLaravelReactI18n} from "laravel-react-i18n";
-=======
 import { Head, router } from '@inertiajs/react';
 import { useState, useRef, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
->>>>>>> Stashed changes
-=======
-import { Head, router } from '@inertiajs/react';
-import { useState, useRef, useEffect } from 'react';
-import { useTranslation } from 'react-i18next';
->>>>>>> Stashed changes
 import { CardanoTransactionTable } from './Partials/TransactionTable';
 import TransactionData = App.DataTransferObjects.TransactionData;
 
