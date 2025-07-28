@@ -33,6 +33,7 @@ use App\Http\Controllers\TinderProposalWorkflowController;
 use App\Http\Controllers\CompletedProjectNftsController;
 use App\Http\Controllers\CardanoBudgetProposalController;
 use App\Http\Controllers\ClaimIdeascaleProfileController;
+use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\WalletController;
 use CodeZero\LocalizedRoutes\Controllers\FallbackController;
 
@@ -183,6 +184,19 @@ Route::localized(
                         ->name('saveRationales');
                     Route::post('/sign-ballot', [VoterListController::class, 'signBallot'])
                         ->name('signBallot');
+                });
+
+            Route::prefix('/create-service/steps')->as('createService.')
+                ->middleware([WorkflowMiddleware::class])
+                ->group(function () {
+                    Route::post('/1/save', [ServiceController::class, 'saveServiceDetails'])
+                        ->name('saveServiceDetails');
+                    Route::post('/2/save', [ServiceController::class, 'saveContactAndLocation'])
+                        ->name('saveContactAndLocation');
+                    Route::post('/save-contact', [ServiceController::class, 'saveContactInfo'])
+                        ->name('saveContactInfo');
+                    Route::get('/{step}', [ServiceController::class, 'handleStep'])
+                        ->name('index');
                 });
 
 
