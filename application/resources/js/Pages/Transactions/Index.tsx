@@ -7,9 +7,15 @@ import TransactionSortOptions from '@/lib/TransactionSortOptions';
 import { PaginatedData } from '@/types/paginated-data';
 import { SearchParams } from '@/types/search-params';
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 import { Head } from '@inertiajs/react';
 import { useState } from 'react';
 import {useLaravelReactI18n} from "laravel-react-i18n";
+=======
+import { Head, router } from '@inertiajs/react';
+import { useState, useRef, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
+>>>>>>> Stashed changes
 =======
 import { Head, router } from '@inertiajs/react';
 import { useState, useRef, useEffect } from 'react';
@@ -29,7 +35,7 @@ export default function Transactions({
     metadataLabels,
     filters,
 }: Props) {
-    const { t } = useLaravelReactI18n();
+    const { t } = useTranslation();
     const [showFilters, setShowFilters] = useState(false);
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
