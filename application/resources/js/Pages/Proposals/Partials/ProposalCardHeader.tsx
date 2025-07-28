@@ -9,6 +9,7 @@ import { useEffect, useRef, useState } from 'react';
 import {useLaravelReactI18n} from "laravel-react-i18n";
 import CompareButton from './CompareButton';
 import ProposalStatus from './ProposalStatus';
+import UserAvatar from '@/Components/UserAvatar';
 
 export default function ProposalCardHeader({
     proposal,
@@ -83,11 +84,10 @@ export default function ProposalCardHeader({
                                 </svg>
                             </Button>
                             <div className="relative flex items-center space-x-4 pt-16" data-testid="user-profile">
-                                <img
-                                    src={userSelected?.hero_img_url}
-                                    alt={`${userSelected?.name}'s profile`}
-                                    className="relative inline-block h-10 w-10 rounded-full ring-2 ring-white"
-                                    data-testid="user-profile-image"
+                                <UserAvatar
+                                    name={userSelected?.name ?? userSelected?.username}
+                                    imageUrl={userSelected?.hero_img_url}
+                                    size="size-10"
                                 />
                                 <Title level="4">{userSelected?.name}</Title>
                             </div>
