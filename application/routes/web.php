@@ -189,10 +189,10 @@ Route::localized(
             Route::prefix('/create-service/steps')->as('createService.')
                 ->middleware([WorkflowMiddleware::class])
                 ->group(function () {
-                    Route::post('/1/save', [ServiceController::class, 'saveStep1'])
-                        ->name('saveStep1');
-                    Route::post('/2/save', [ServiceController::class, 'saveStep2'])
-                        ->name('saveStep2');
+                    Route::post('/1/save', [ServiceController::class, 'saveServiceDetails'])
+                        ->name('saveServiceDetails');
+                    Route::post('/2/save', [ServiceController::class, 'saveContactAndLocation'])
+                        ->name('saveContactAndLocation');
                     Route::post('/save-contact', [ServiceController::class, 'saveContactInfo'])
                         ->name('saveContactInfo');
                     Route::get('/{step}', [ServiceController::class, 'handleStep'])

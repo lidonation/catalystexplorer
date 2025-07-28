@@ -230,7 +230,7 @@ class ServiceController extends Controller
         ]);
     }
 
-    public function saveStep1(Request $request): RedirectResponse
+    public function saveServiceDetails(Request $request): RedirectResponse
     {
         $validated = $request->validate([
             ServiceWorkflowParams::TITLE()->value => 'required|string|max:255',
@@ -276,7 +276,7 @@ class ServiceController extends Controller
         ]);
     }
 
-    public function saveStep2(Request $request): RedirectResponse
+    public function saveContactAndLocation(Request $request): RedirectResponse
     {
 
         $validated = $request->validate([

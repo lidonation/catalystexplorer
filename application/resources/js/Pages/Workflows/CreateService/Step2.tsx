@@ -148,7 +148,7 @@ const Step2: React.FC<Step2Props> = ({
 
     const submitForm = () => {
         form.post(
-            generateLocalizedRoute('workflows.createService.saveStep2'),
+            generateLocalizedRoute('workflows.createService.saveContactAndLocation'),
             {
                 preserveScroll: true,
                 onSuccess: () => {
@@ -177,11 +177,11 @@ const Step2: React.FC<Step2Props> = ({
     };
 
     return (
-        <WorkflowLayout asideInfo={stepDetails[activeStep - 1].info ?? ''}>
+        <WorkflowLayout  asideInfo={stepDetails[activeStep - 1].info ?? ''}>
             <Nav stepDetails={stepDetails} activeStep={activeStep} />
 
             <Content>
-                <div className="bg-background w-full overflow-y-auto p-6 lg:p-8">
+                <div className="bg-background w-full overflow-y-auto max-h-[60vh] p-6 lg:p-8">
                     <div className="w-full mx-auto space-y-6 px-4">
                         {/* Success Message */}
                         {form.recentlySuccessful && (

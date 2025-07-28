@@ -106,7 +106,7 @@ const Step1: React.FC<Step1Props> = ({
 
     const submitForm = () => {
         form.post(
-            generateLocalizedRoute('workflows.createService.saveStep1')
+            generateLocalizedRoute('workflows.createService.saveServiceDetails')
         );
     };
 
