@@ -68,15 +68,16 @@ class User extends Authenticatable implements HasMedia
 
     public function gravatar(): Attribute
     {
+        $string = $this->name ?? $this->email;
         return Attribute::make(
-            get: fn () => Avatar::create($this->email ?? $this->name ?? 'default')->toGravatar()
+            get: fn() => "https://api.multiavatar.com/{$string}.png"
         );
     }
 
     public function heroImgUrl(): Attribute
     {
         return Attribute::make(
-            get: fn () => count($this->getMedia('profile')) ? $this->getMedia('profile')[0]->getFullUrl() : $this->gravatar
+            get: fn() => count($this->getMedia('profile')) ? $this->getMedia('profile')[0]->getFullUrl() : $this->gravatar
         );
     }
 
