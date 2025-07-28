@@ -88,7 +88,7 @@ const CategoriesSelector: React.FC<CategoriesSelectorProps> = ({
     };
 
     return (
-        <div className="relative z-10 bg-background">
+        <div className="relative z-10 bg-background" data-testid="service-categories-selector">
             <label className="block font-medium text-content st mb-2">
                 {defaultLabel}
             </label>
@@ -98,16 +98,18 @@ const CategoriesSelector: React.FC<CategoriesSelectorProps> = ({
                     type="button"
                     onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                     className="w-full min-h-[42px] px-3 py-2 border border-gray-persist/[20%] rounded-lg bg-background text-left focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
+                    dataTestId="service-categories-dropdown-trigger"
                 >
                     <div className="flex items-center justify-between">
-                        <div className="flex flex-wrap gap-1 flex-1">
+                        <div className="flex flex-wrap gap-1 flex-1" data-testid="service-categories-selected-display">
                             {selectedCategories.length === 0 ? (
-                                <Paragraph className="text-gray-persist/[0.7]">{defaultPlaceholder}</Paragraph>
+                                <Paragraph className="text-gray-persist/[0.7]" data-testid="service-categories-placeholder">{defaultPlaceholder}</Paragraph>
                             ) : (
                                 getSelectedCategoryNames().map((categoryItem) => (
                                     <div
                                         key={categoryItem.slug}
                                         className="inline-flex items-center p-2  text-xs  text-gray-persist rounded-md bg-gray-persist/[10%] "
+                                        data-testid={`service-category-selected-${categoryItem.slug}`}
                                     >
                                         {categoryItem.name}
                                     </div>
@@ -117,18 +119,19 @@ const CategoriesSelector: React.FC<CategoriesSelectorProps> = ({
                         <ChevronDown 
                             className={`h-4 w-4 text-gray-persist transition-transform ${
                                 isDropdownOpen ? 'rotate-180' : ''
-                            }`} 
-                        />
+                            }`}
+                            data-testid="service-categories-dropdown-arrow"
+                        /> 
                     </div>
                 </Button>
 
                 {/* Dropdown Content */}
                 {isDropdownOpen && (
-                    <div className="absolute z-15 w-full bottom-full mb-1 bg-background border border-gray-persist/[20%] rounded-lg shadow-xl max-h-60 overflow-y-auto">
+                    <div className="absolute z-15 w-full bottom-full mb-1 bg-background border border-gray-persist/[20%] rounded-lg shadow-xl max-h-60 overflow-y-auto" data-testid="service-categories-dropdown-content">
                         {categories.map((category) => (
-                            <div key={category.id}>
+                            <div key={category.id} data-testid={`service-category-group-${category.slug}`}>
                                 {/* Parent Category as Title (Non-selectable) */}
-                                <div className="px-3 py-2 bg-background border-b border-gray-persist/[10%]">
+                                <div className="px-3 py-2 bg-background border-b border-gray-persist/[10%]" data-testid={`service-category-parent-${category.slug}`}>
                                     <Paragraph size='xs' className="font-bold text-content">
                                         {category.name}
                                     </Paragraph>
@@ -139,12 +142,14 @@ const CategoriesSelector: React.FC<CategoriesSelectorProps> = ({
                                     <label 
                                         key={subcategory.id} 
                                         className="flex items-center px-4 py-2 hover:bg-gray-persist/[20%] cursor-pointer select-none"
+                                        data-testid={`service-category-option-${subcategory.slug}`}
                                     >
                                         <input
                                             type="checkbox"
                                             checked={selectedCategories.includes(subcategory.slug)}
                                             onChange={() => handleCategoryToggle(subcategory.slug)}
                                             className="mr-3 h-4 w-4 text-primary focus:ring-primary rounded"
+                                            data-testid={`service-category-checkbox-${subcategory.slug}`}
                                         />
                                         <Paragraph size='sm'>
                                             {subcategory.name}
@@ -157,7 +162,7 @@ const CategoriesSelector: React.FC<CategoriesSelectorProps> = ({
                 )}
             </div>
             {selectedCategories.length > 0 && (
-                <Paragraph className="text-xs text-gray-persist mt-2">
+                <Paragraph className="text-xs text-gray-persist mt-2" data-testid="service-categories-count">
                     {t('workflows.createService.step1.selectedCategories', { count: selectedCategories.length })}
                 </Paragraph>
             )}
