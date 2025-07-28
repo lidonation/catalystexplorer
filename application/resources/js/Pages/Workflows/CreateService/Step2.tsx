@@ -180,7 +180,7 @@ const Step2: React.FC<Step2Props> = ({
         <WorkflowLayout  asideInfo={stepDetails[activeStep - 1].info ?? ''}>
             <Nav stepDetails={stepDetails} activeStep={activeStep} />
 
-            <Content data-testid="service-step2-content">
+            <Content>
                 <div className="bg-background w-full overflow-y-auto max-h-[60vh] p-6 lg:p-8">
                     <div className="w-full mx-auto space-y-6 px-4">
                         {/* Success Message */}
