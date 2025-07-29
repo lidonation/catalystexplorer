@@ -4,21 +4,23 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use App\Enums\CatalystCurrencySymbols;
 use App\Enums\ProposalStatus;
-use App\Traits\HasConnections;
 use App\Traits\HasTaxonomies;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Casts\Attribute;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Support\Facades\Log;
 use Laravel\Scout\Searchable;
+use App\Traits\HasConnections;
+use Spatie\MediaLibrary\HasMedia;
+use Illuminate\Support\Facades\Log;
+use App\Enums\CatalystCurrencySymbols;
+use Illuminate\Database\Eloquent\Builder;
+use Spatie\MediaLibrary\InteractsWithMedia;
 use Staudenmeir\EloquentHasManyDeep\HasManyDeep;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Staudenmeir\EloquentHasManyDeep\HasRelationships;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
-class Community extends Model
+class Community extends Model implements HasMedia
 {
-    use HasConnections, HasRelationships, HasTaxonomies, Searchable;
+    use HasConnections, HasRelationships, HasTaxonomies, Searchable, InteractsWithMedia;
 
     protected $appends = ['hash'];
 

@@ -185,7 +185,7 @@ const Step2: React.FC<Step2Props> = ({
                     <div className="w-full mx-auto space-y-6 px-4">
                         {/* Success Message */}
                         {form.recentlySuccessful && (
-                            <div className=" p-4">
+                            <div className=" p-4" data-testid="service-contact-save-success">
                                 <div className="flex">
                                     <div className="ml-3">
                                         <Paragraph className="text-sm font-medium text-success">
@@ -197,9 +197,9 @@ const Step2: React.FC<Step2Props> = ({
                         )}
                         
                         {/* Service Information Form */}
-                        <div className="space-y-6">
+                        <div className="space-y-6" data-testid="service-contact-information-form">
                             {/* Name Field */}
-                            <div>
+                            <div data-testid="service-contact-name-field">
                                 <Paragraph size="xs" className="block font-medium mb-2">
                                     {t('workflows.createService.step2.name')}
                                     <span className="text-error">*</span>
@@ -210,13 +210,14 @@ const Step2: React.FC<Step2Props> = ({
                                     className="w-full px-3 py-2 border border-gray-persist/[20%] rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
                                     placeholder=""
                                     required
+                                    data-testid="service-contact-name-input"
                                 />
                             </div>
 
                             {/* Email and Website URL Row */}
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4" data-testid="service-contact-email-website-row">
                                 {/* Email Field */}
-                                <div>
+                                <div data-testid="service-contact-email-field">
                                     <Paragraph size='xs' className="block font-medium  mb-2">
                                         {t('workflows.createService.step2.emailAddress')}
                                         <span className="text-error">*</span>
@@ -230,14 +231,15 @@ const Step2: React.FC<Step2Props> = ({
                                         }`}
                                         placeholder=""
                                         required
+                                        data-testid="service-contact-email-input"
                                     />
                                     {validationErrors.email && (
-                                        <Paragraph className="mt-1 text-sm text-error">{validationErrors.email}</Paragraph>
+                                        <Paragraph className="mt-1 text-sm text-error" data-testid="service-contact-email-error">{validationErrors.email}</Paragraph>
                                     )}
                                 </div>
 
                                 {/* Website URL Field */}
-                                <div>
+                                <div data-testid="service-contact-website-field">
                                     <Paragraph size='xs' className="block font-medium mb-2">
                                         {t('workflows.createService.step2.websiteUrl')}
                                     </Paragraph>
@@ -249,17 +251,18 @@ const Step2: React.FC<Step2Props> = ({
                                             validationErrors.website ? 'border-error' : 'border-gray-persist/[20%]'
                                         }`}
                                         placeholder=""
+                                        data-testid="service-contact-website-input"
                                     />
                                     {validationErrors.website && (
-                                        <Paragraph className="mt-1 text-sm text-error">{validationErrors.website}</Paragraph>
+                                        <Paragraph className="mt-1 text-sm text-error" data-testid="service-contact-website-error">{validationErrors.website}</Paragraph>
                                     )}
                                 </div>
                             </div>
 
                             {/* GitHub and LinkedIn Row */}
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4" data-testid="service-contact-social-row">
                                 {/* GitHub Field */}
-                                <div>
+                                <div data-testid="service-contact-github-field">
                                     <Paragraph size='xs' className="block font-medium mb-2">
                                         {t('workflows.createService.step2.github')}
                                     </Paragraph>
@@ -268,11 +271,12 @@ const Step2: React.FC<Step2Props> = ({
                                         onChange={(e) => handleInputChange(ServiceWorkflowParams.GITHUB, e.target.value)}
                                         className="w-full px-3 py-2 border border-gray-persist/[20%] rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
                                         placeholder=""
+                                        data-testid="service-contact-github-input"
                                     />
                                 </div>
 
                                 {/* LinkedIn Field */}
-                                <div>
+                                <div data-testid="service-contact-linkedin-field">
                                     <Paragraph size='xs' className="block font-medium  mb-2">
                                         {t('workflows.createService.step2.linkedin')}
                                     </Paragraph>
@@ -281,32 +285,34 @@ const Step2: React.FC<Step2Props> = ({
                                         onChange={(e) => handleInputChange(ServiceWorkflowParams.LINKEDIN, e.target.value)}
                                         className="w-full px-3 py-2 border border-gray-persist/[20%] rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
                                         placeholder=""
+                                        data-testid="service-contact-linkedin-input"
                                     />
                                 </div>
                             </div>
 
                             {/* Add Network Button */}
-                            <div className="flex justify-end">
+                            <div className="flex justify-end" data-testid="service-contact-save-section">
                                 <div className="flex flex-col items-end">
                                     <PrimaryButton
                                         type="button"
                                         onClick={saveContactInfo}
                                         disabled={contactForm.processing}
                                         className="inline-flex items-center px-4 py-2 bg-primary hover:bg-primary/80 disabled:bg-primary/60 text-white text-sm font-medium rounded-md transition-colors disabled:cursor-not-allowed"
+                                        data-testid="service-contact-save-button"
                                     >
                                         {contactForm.processing ? t('workflows.createService.step2.saving') : t('workflows.createService.step2.addNetwork')}
                                     </PrimaryButton>
                                     
                                     {/* Display form errors if any */}
                                     {Object.keys(contactForm.errors).length > 0 && (
-                                        <div className="mt-2 text-sm text-error">
+                                        <div className="mt-2 text-sm text-error" data-testid="service-contact-save-error">
                                             {Object.values(contactForm.errors)[0]}
                                         </div>
                                     )}
                                     
                                     {/* Success message - you can add this via flash messages */}
                                     {contactForm.recentlySuccessful && (
-                                        <div className="mt-2">
+                                        <div className="mt-2" data-testid="service-contact-save-success-message">
                                             <Paragraph size="sm" className="text-success">
                                                 {t('workflows.createService.step2.contactInfoSavedSuccess')}
                                             </Paragraph>
@@ -316,7 +322,7 @@ const Step2: React.FC<Step2Props> = ({
                             </div>
 
                             {/* Location Field */}
-                            <div>
+                            <div data-testid="service-location-field">
                                 <Paragraph size="xs" className="block font-medium mb-2">
                                     {t('workflows.createService.step2.location')}
                                 </Paragraph>
@@ -325,6 +331,7 @@ const Step2: React.FC<Step2Props> = ({
                                     onChange={(e) => handleInputChange(ServiceWorkflowParams.LOCATION, e.target.value)}
                                     className="w-full px-3 py-2 border border-gray-persist/[20%] rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
                                     placeholder={t('workflows.createService.step2.enterCity')}
+                                    data-testid="service-location-input"
                                 />
                             </div>
                         </div>
@@ -333,10 +340,11 @@ const Step2: React.FC<Step2Props> = ({
                    
                 </div>
             </Content>
-             <Footer >
+             <Footer>
                 <PrimaryLink
                     href={prevStep}
                     className="inline-flex items-center px-4 py-3 mb-8 bg-primary hover:bg-primary/[0.8] text-white text-sm font-medium rounded-md transition-colors"
+                    data-testid="service-step2-previous-button"
                 >
                     <ChevronLeft className="h-4 w-4 mr-2" />
                     <span>{t('Previous')}</span>
@@ -345,6 +353,7 @@ const Step2: React.FC<Step2Props> = ({
                     className="inline-flex items-center px-4 py-3 mb-8 bg-primary hover:bg-primary/[0.8] text-white text-sm font-medium rounded-md transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                     disabled={!isFormValid || form.processing}
                     onClick={submitForm}
+                    data-testid="service-step2-submit-button"
                 >
                     <span>{t('workflows.createService.step2.submitService')}</span>
                 </PrimaryButton>
