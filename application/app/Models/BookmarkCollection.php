@@ -181,9 +181,8 @@ class BookmarkCollection extends Model
         return '';
     }
 
-    public function toSearchableArray()
+    public function toSearchableArray(): array
     {
-
         return array_merge($this->load([
             // 'comments',
             'author',

@@ -4,10 +4,9 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use App\DataTransferObjects\CategoryData;
 use App\DataTransferObjects\ServiceData;
-use App\Enums\ServiceWorkflowParams;
 use App\Enums\ServiceTypeEnum;
+use App\Enums\ServiceWorkflowParams;
 use App\Models\Category;
 use App\Models\Location;
 use App\Models\Service;
@@ -91,7 +90,7 @@ class ServiceController extends Controller
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'required|string|max:5000',
-            'type' => 'required|string|in:' . implode(',', ServiceTypeEnum::toValues()),
+            'type' => 'required|string|in:'.implode(',', ServiceTypeEnum::toValues()),
             'header_image' => 'nullable|image|max:5120',
             'categories' => 'required|array|min:1|max:5',
             'categories.*' => 'exists:categories,id',
@@ -164,7 +163,7 @@ class ServiceController extends Controller
         $existingService = null;
         $serviceData = [];
 
-        if (!empty($validated[ServiceWorkflowParams::SERVICE_HASH()->value])) {
+        if (! empty($validated[ServiceWorkflowParams::SERVICE_HASH()->value])) {
             $existingService = Service::byHash($validated[ServiceWorkflowParams::SERVICE_HASH()->value]);
             if ($existingService && $existingService->user_id === auth()->id()) {
                 $serviceData = [
@@ -197,7 +196,7 @@ class ServiceController extends Controller
         $existingService = null;
         $serviceData = [];
 
-        if (!empty($validated[ServiceWorkflowParams::SERVICE_HASH()->value])) {
+        if (! empty($validated[ServiceWorkflowParams::SERVICE_HASH()->value])) {
             $existingService = Service::byHash($validated[ServiceWorkflowParams::SERVICE_HASH()->value]);
             if ($existingService && $existingService->user_id === auth()->id()) {
                 $serviceData = [
@@ -235,7 +234,7 @@ class ServiceController extends Controller
         $validated = $request->validate([
             ServiceWorkflowParams::TITLE()->value => 'required|string|max:255',
             ServiceWorkflowParams::DESCRIPTION()->value => 'required|string|max:5000',
-            ServiceWorkflowParams::TYPE()->value => 'required|string|in:' . implode(',', \App\Enums\ServiceTypeEnum::toValues()),
+            ServiceWorkflowParams::TYPE()->value => 'required|string|in:'.implode(',', \App\Enums\ServiceTypeEnum::toValues()),
             ServiceWorkflowParams::CATEGORIES()->value => 'required|array|min:1|max:5',
             ServiceWorkflowParams::CATEGORIES()->value.'.*' => 'exists:categories,slug',
             ServiceWorkflowParams::SERVICE_HASH()->value => 'nullable|string',
@@ -243,7 +242,7 @@ class ServiceController extends Controller
 
         $existingService = null;
 
-        if (!empty($validated[ServiceWorkflowParams::SERVICE_HASH()->value])) {
+        if (! empty($validated[ServiceWorkflowParams::SERVICE_HASH()->value])) {
             $existingService = Service::byHash($validated[ServiceWorkflowParams::SERVICE_HASH()->value]);
         }
 
@@ -266,7 +265,7 @@ class ServiceController extends Controller
             $service->addMedia($request->file(ServiceWorkflowParams::HEADER_IMAGE()->value))
                 ->toMediaCollection('header');
         }
-        
+
         $categoryIds = Category::whereIn('slug', $validated[ServiceWorkflowParams::CATEGORIES()->value])->pluck('id')->toArray();
         $service->categories()->sync($categoryIds);
 
@@ -291,7 +290,7 @@ class ServiceController extends Controller
 
         $service = Service::byHash($validated[ServiceWorkflowParams::SERVICE_HASH()->value]);
 
-        if (!$service || $service->user_id !== auth()->id()) {
+        if (! $service || $service->user_id !== auth()->id()) {
             return redirect()->route('workflows.createService.index', [ServiceWorkflowParams::STEP()->value => 1])
                 ->with('error', 'Service not found or access denied.');
         }
@@ -303,9 +302,8 @@ class ServiceController extends Controller
             'github' => $validated[ServiceWorkflowParams::GITHUB()->value] ?? null,
             'linkedin' => $validated[ServiceWorkflowParams::LINKEDIN()->value] ?? null,
         ]);
-;
 
-        if (!empty($validated[ServiceWorkflowParams::LOCATION()->value])) {
+        if (! empty($validated[ServiceWorkflowParams::LOCATION()->value])) {
             $cityName = trim($validated[ServiceWorkflowParams::LOCATION()->value]);
             $location = Location::firstOrCreate(
                 ['city' => $cityName],
@@ -330,10 +328,9 @@ class ServiceController extends Controller
             ServiceWorkflowParams::LINKEDIN()->value => 'nullable|string',
         ]);
 
-       
         $service = Service::byHash($validated[ServiceWorkflowParams::SERVICE_HASH()->value]);
 
-        if (!$service || $service->user_id !== auth()->id()) {
+        if (! $service || $service->user_id !== auth()->id()) {
             return back()->withErrors(['error' => 'Service not found or access denied.']);
         }
 
@@ -352,7 +349,7 @@ class ServiceController extends Controller
     {
         return collect([
             [
-                'title' => 'workflows.createService.stepDetails.serviceDetails'
+                'title' => 'workflows.createService.stepDetails.serviceDetails',
             ],
             [
                 'title' => 'workflows.createService.stepDetails.contactDetails',

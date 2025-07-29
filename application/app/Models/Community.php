@@ -4,23 +4,23 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use App\Enums\ProposalStatus;
-use App\Traits\HasTaxonomies;
-use Laravel\Scout\Searchable;
-use App\Traits\HasConnections;
-use Spatie\MediaLibrary\HasMedia;
-use Illuminate\Support\Facades\Log;
 use App\Enums\CatalystCurrencySymbols;
+use App\Enums\ProposalStatus;
+use App\Traits\HasConnections;
+use App\Traits\HasTaxonomies;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Support\Facades\Log;
+use Laravel\Scout\Searchable;
+use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Staudenmeir\EloquentHasManyDeep\HasManyDeep;
-use Illuminate\Database\Eloquent\Casts\Attribute;
 use Staudenmeir\EloquentHasManyDeep\HasRelationships;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Community extends Model implements HasMedia
 {
-    use HasConnections, HasRelationships, HasTaxonomies, Searchable, InteractsWithMedia;
+    use HasConnections, HasRelationships, HasTaxonomies, InteractsWithMedia, Searchable;
 
     protected $appends = ['hash'];
 
@@ -197,7 +197,7 @@ class Community extends Model implements HasMedia
             ->groupBy(['groups.id', 'community_has_proposal.community_id']);
     }
 
-    public function toSearchableArray()
+    public function toSearchableArray(): array
     {
         // $this->loadMissing([
         //     'groups',
