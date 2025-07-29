@@ -115,16 +115,16 @@ const Step1: React.FC<Step1Props> = ({
             contentClassName="!max-h-none" asideInfo={stepDetails[activeStep - 1].info ?? ''}>
             <Nav stepDetails={stepDetails} activeStep={activeStep} />
 
-            <Content >
+            <Content>
                 <div className="bg-background w-full overflow-y-auto p-6 lg:p-8 overflow-x-visible ">
                     <div className="max-w-3xl mx-auto space-y-6">
                         {/* Service Type Selection */}
-                        <div>
+                        <div data-testid="service-type-selection">
                             <Paragraph size='xs' className="font-medium mb-4">
                                 {t('workflows.createService.step1.howToContribute')}
                             </Paragraph>
                             <div className="space-y-3">
-                                <div className="flex items-center cursor-pointer">
+                                <div className="flex items-center cursor-pointer" data-testid="service-type-offered">
                                     <input
                                         type="radio"
                                         name="serviceType"
@@ -132,6 +132,7 @@ const Step1: React.FC<Step1Props> = ({
                                         checked={form.data[ServiceWorkflowParams.TYPE] === 'offered'}
                                         onChange={() => handleTypeChange('offered')}
                                         className="mr-3 h-4 w-4 text-primary focus:ring-primary"
+                                        data-testid="service-type-offered-radio"
                                     />
                                     <Paragraph size='xs' className="text-gray-persist">
                                         {t('workflows.createService.step1.offerService')}
@@ -140,7 +141,7 @@ const Step1: React.FC<Step1Props> = ({
                                         {t('workflows.createService.step1.offeringServiceBadge')}
                                     </Paragraph>
                                 </div>
-                                <label className="flex items-center cursor-pointer">
+                                <label className="flex items-center cursor-pointer" data-testid="service-type-needed">
                                     <input
                                         type="radio"
                                         name="serviceType"
@@ -148,6 +149,7 @@ const Step1: React.FC<Step1Props> = ({
                                         checked={form.data[ServiceWorkflowParams.TYPE] === 'needed'}
                                         onChange={() => handleTypeChange('needed')}
                                         className="mr-3 h-4 w-4 text-primary focus:ring-primary"
+                                        data-testid="service-type-needed-radio"
                                     />
                                     <Paragraph size='xs' className="text-gray-persist">
                                         {t('workflows.createService.step1.needService')}
@@ -160,7 +162,7 @@ const Step1: React.FC<Step1Props> = ({
                         </div>
 
                         {/* Service Title */}
-                        <div>
+                        <div data-testid="service-title-field">
                             <Paragraph size='xs' className="block font-medium mb-2">
                                 {t('workflows.createService.step1.serviceTitle')}
                             </Paragraph>
@@ -170,31 +172,33 @@ const Step1: React.FC<Step1Props> = ({
                                 value={form.data[ServiceWorkflowParams.TITLE]}
                                 onChange={(e) => handleInputChange(ServiceWorkflowParams.TITLE, e.target.value)}
                                 className="w-full border border-gray-persist/[20%] rounded-lg"
+                                data-testid="service-title-input"
                             />
                         </div>
 
                         {/* Image Header */}
-                        <div>
+                        <div data-testid="service-header-image-field">
                             <Paragraph size='xs' className="block font-medium  mb-2">
                                 {t('workflows.createService.step1.imageHeader')}
                             </Paragraph>
-                            <div className="border-2  border-gray-persist/[20%] rounded-lg p-8 text-center hover:border-gray-persist transition-colors">
+                            <div className="border-2  border-gray-persist/[20%] rounded-lg p-8 text-center hover:border-gray-persist transition-colors" data-testid="service-header-image-upload-area">
                                 <input
                                     type="file"
                                     accept="image/*"
                                     onChange={handleImageUpload}
                                     className="hidden"
                                     id="imageUpload"
+                                    data-testid="service-header-image-input"
                                 />
                                 <label htmlFor="imageUpload" className="cursor-pointer">
                                     {headerImage ? (
-                                        <div>
+                                        <div data-testid="service-header-image-selected">
                                             <Paragraph className="text-sm">
                                                 {t('workflows.createService.step1.selectedImageText', { fileName: headerImage.name })}
                                             </Paragraph>
                                         </div>
                                     ) : (
-                                        <div className="flex flex-col items-center">
+                                        <div className="flex flex-col items-center" data-testid="service-header-image-placeholder">
                                             <ImageFrameIcon className='text-gray-persist/[20%]' />
                                         </div>
                                     )}
@@ -203,7 +207,7 @@ const Step1: React.FC<Step1Props> = ({
                         </div>
 
                         {/* Description */}
-                        <div>
+                        <div data-testid="service-description-field">
                             <Paragraph size='xs' className="block mb-2">
                                 {t('workflows.createService.step1.description')}
                             </Paragraph>
@@ -212,6 +216,7 @@ const Step1: React.FC<Step1Props> = ({
                                 value={form.data[ServiceWorkflowParams.DESCRIPTION]}
                                 onChange={(e) => handleInputChange(ServiceWorkflowParams.DESCRIPTION, e.target.value)}
                                 className="w-full h-32 border border-gray-persist/[20%] rounded-lg"
+                                data-testid="service-description-textarea"
                             />
                         </div>
 
@@ -224,12 +229,13 @@ const Step1: React.FC<Step1Props> = ({
                             label={t('workflows.createService.step1.category')}
                         />
                     </div>
-                    <div className='mt-8 flex justify-between'>
+                    <div className='mt-8 flex justify-between' data-testid="service-step1-navigation">
                         <PrimaryLink
                             href={prevStep}
                             className="text-sm lg:px-8 lg:py-3"
                             disabled={activeStep == 1}
                             onClick={(e) => activeStep == 1 && e.preventDefault()}
+                            data-testid="service-step1-previous-button"
                         >
                             <ChevronLeft className="h-4 w-4" />
                             <span>{t('Previous')}</span>
@@ -238,6 +244,7 @@ const Step1: React.FC<Step1Props> = ({
                             className="text-sm lg:px-8 lg:py-3"
                             disabled={!isFormValid || form.processing}
                             onClick={submitForm}
+                            data-testid="service-step1-next-button"
                         >
                             <span>{t('Next')}</span>
                             <ChevronRight className="h-4 w-4" />
