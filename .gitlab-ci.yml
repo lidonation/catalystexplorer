@@ -486,6 +486,7 @@ app_preview:
     name: preview
     url: https://$CI_PROJECT_PATH_SLUG.$AUTO_DEVOPS_DOMAIN
   rules:
+    - if: '$CI_COMMIT_BRANCH == "main" && ($DEPLOY_WEBAPP == "true")'
     - if: '$DEPLOY_WEBAPP == "true"'
       when: manual
 

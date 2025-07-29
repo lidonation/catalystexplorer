@@ -6,6 +6,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 
 class Milestone extends Model
 {
@@ -26,9 +27,9 @@ class Milestone extends Model
         return $this->belongsTo(Fund::class, 'fund_id', 'id');
     }
 
-    public function parent_milestone(): BelongsTo
+    public function project_schedule(): BelongsTo
     {
-        return $this->belongsTo(ProjectSchedule::class, 'proposal_milestone_id', 'id');
+        return $this->belongsTo(ProjectSchedule::class, 'proposal_milestone_id');
     }
 
     public function som_reviews(): HasMany
@@ -36,8 +37,13 @@ class Milestone extends Model
         return $this->hasMany(MilestoneSomReview::class, 'milestone_id', 'id');
     }
 
+    public function poa_reviews(): HasManyThrough|Milestone
+    {
+        return $this->hasManyThrough(MilestonePoasReview::class, Milestone::class, 'id', 'id');
+    }
+
     public function poas(): HasMany
     {
-        return $this->hasMany(MilestonePoas::class, 'milestone_id', 'id');
+        return $this->hasMany(MilestonePoa::class, 'milestone_id', 'id');
     }
 }

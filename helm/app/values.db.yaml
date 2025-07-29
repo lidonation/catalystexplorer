@@ -556,7 +556,7 @@ postgresql:
   ##   listen_addresses = '*'
   ##   port = '5432'
   ##   ...
-  ##
+  ##P
   configuration: ""
 
   ## @param postgresql.pgHbaConfiguration PostgreSQL client authentication configuration
@@ -585,23 +585,30 @@ postgresql:
   ##   ...
   ##
   extendedConf: |-
-    max_connections=400    
     max_locks_per_transaction = 256
-    shared_buffers = 12GB
-    effective_cache_size = 36GB
-    maintenance_work_mem = 2GB
     checkpoint_completion_target = 0.9
     checkpoint_timeout = 1h
-    synchronous_commit = off
+    synchronous_commit = on
+    max_connections = 882
+    shared_buffers = 21GB
+    effective_cache_size = 63GB
+    maintenance_work_mem = 4GB
+    checkpoint_completion_target = 0.9
     wal_buffers = 16MB
     default_statistics_target = 500
     random_page_cost = 1.1
-    effective_io_concurrency = 500
-    work_mem = 1024GB
-    min_wal_size = 1GB
-    max_wal_size = 2GB
-    max_parallel_workers_per_gather = 4
-    max_parallel_maintenance_workers = 4
+    effective_io_concurrency = 200
+    work_mem = 12315kB
+    huge_pages = try
+    min_wal_size = 4GB
+    max_wal_size = 16GB
+    max_worker_processes = 11
+    max_parallel_workers_per_gather = 6
+    max_parallel_workers = 11
+    max_parallel_maintenance_workers = 12
+    hot_standby = 'on'
+    wal_log_hints = 'on'
+    logging_collector = 'on'
 
   ## @param postgresql.extendedConfCM ConfigMap with PostgreSQL extended configuration (requires `volumePermissions.enabled` to be `true`)
   ## NOTE: This will override postgresql.extendedConf

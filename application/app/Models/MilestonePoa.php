@@ -7,7 +7,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class MilestonePoas extends Model
+class MilestonePoa extends Model
 {
     public $table = 'milestone_poas';
 

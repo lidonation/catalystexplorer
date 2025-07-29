@@ -7,7 +7,6 @@ namespace App\Nova;
 use App\Models\Category;
 use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Fields\Boolean;
-use Laravel\Nova\Fields\Field;
 use Laravel\Nova\Fields\HasMany;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Number;
@@ -17,7 +16,6 @@ use Laravel\Nova\Http\Requests\NovaRequest;
 
 class Categories extends Resource
 {
-   
     public static $model = Category::class;
 
     public static $title = 'name';
@@ -64,6 +62,4 @@ class Categories extends Resource
             HasMany::make('Subcategories', 'children', Categories::class),
         ];
     }
-
-
 }
