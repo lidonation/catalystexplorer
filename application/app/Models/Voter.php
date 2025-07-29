@@ -118,7 +118,7 @@ class Voter extends Model
         );
     }
 
-    public function toSearchableArray()
+    public function toSearchableArray(): array
     {
         $funds = $this->voting_histories
             ->pluck('snapshot.fund')

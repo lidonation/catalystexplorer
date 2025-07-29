@@ -4,29 +4,26 @@ declare(strict_types=1);
 
 namespace App\Nova;
 
-use App\Enums\StatusEnum;
-use App\Models\ProjectSchedule;
+use App\Models\Milestone;
 use App\Nova\Actions\MakeSearchable;
-use App\Nova\Actions\UpdateModelMedia;
-use Ebess\AdvancedNovaMediaLibrary\Fields\Images;
 use Laravel\Nova\Actions\Action;
 use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Fields\Boolean;
 use Laravel\Nova\Fields\Field;
 use Laravel\Nova\Fields\HasMany;
 use Laravel\Nova\Fields\ID;
-use Laravel\Nova\Fields\Select;
 use Laravel\Nova\Fields\Text;
+use Laravel\Nova\Fields\Textarea;
 use Laravel\Nova\Http\Requests\NovaRequest;
 
-class ProjectSchedules extends Resource
+class Milestones extends Resource
 {
     /**
      * The model the resource corresponds to.
      *
-     * @var class-string<ProjectSchedule>
+     * @var class-string<Milestone>
      */
-    public static $model = ProjectSchedule::class;
+    public static $model = Milestone::class;
 
     public static $group = 'Milestone';
 
@@ -63,30 +60,29 @@ class ProjectSchedules extends Resource
                 ->sortable()
                 ->required(),
 
+            Textarea::make(__('Outputs')),
+            Textarea::make(__('Success Criteria')),
+            Textarea::make(__('Evidence')),
+
             Boolean::make('completed', fn () => $this->completed),
 
-            Text::make(__('Url'), 'url')->hideFromIndex(),
+            Text::make(__('Completion Percent'), 'completion_percent', fn () => ("{$this->completion_percent}%")),
 
-            Select::make('Status', 'status')
-                ->options(StatusEnum::toArray())
-                ->default(StatusEnum::draft())
-                ->sortable(),
+            Text::make('Status', 'status')
+                ->sortable()
+                ->filterable(),
+
+            Boolean::make(__('Current'))
+                ->sortable()
+                ->filterable(),
+
+            BelongsTo::make(__('Schedule'), 'project_schedule', ProjectSchedules::class),
 
             BelongsTo::make(__('Proposal'), 'proposal', Proposals::class),
 
             BelongsTo::make(__('Fund'), 'fund', Funds::class),
 
-            HasMany::make(__('Milestones'), 'milestones', Milestones::class),
-        ];
-    }
-
-    public static function mediaFields(): array
-    {
-        return [
-            Images::make(__('Hero'), 'hero')
-                ->enableExistingMedia(),
-            Images::make(__('Banner'), 'banner')
-                ->enableExistingMedia(),
+            HasMany::make(__('Proof of Acchievements'), 'poas', MilestonePoas::class),
         ];
     }
 
@@ -98,7 +94,6 @@ class ProjectSchedules extends Resource
     public function actions(NovaRequest $request): array
     {
         return [
-            (new UpdateModelMedia),
             (new MakeSearchable),
         ];
     }
