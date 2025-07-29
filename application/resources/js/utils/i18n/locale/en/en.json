@@ -430,6 +430,44 @@
                 "exploreIdeas": "Explore Ideas",
                 "mySwipeList": "My Swipe List"
             }
+        },
+        "createService": {
+            "step1": {
+                "howToContribute": "How would you like to contribute?",
+                "offerService": "I want to offer service to the community",
+                "needService": "I need service from the community",
+                "offeringServiceBadge": "Offering Service",
+                "requestingServiceBadge": "Requesting Service",
+                "serviceTitle": "Service title",
+                "imageHeader": "Image Header",
+                "description": "Description",
+                "category": "Category",
+                "selectCategories": "Select categories...",
+                "selectedCategories": "Selected: {{count}} categories",
+                "selectedImageText": "Selected: {{fileName}}"
+            },
+            "step2": {
+                "serviceCreatedSuccess": "Service created successfully!",
+                "name": "Name",
+                "emailAddress": "Email address",
+                "websiteUrl": "Website URL",
+                "github": "Github",
+                "linkedin": "LinkedIn",
+                "location": "Location",
+                "enterCity": "Enter city",
+                "addNetwork": "Add Network",
+                "saving": "Saving...",
+                "contactInfoSavedSuccess": "Contact information saved successfully!",
+                "submitService": "Submit Service",
+                "validation": {
+                    "emailInvalid": "Please enter a valid email address",
+                    "websiteInvalid": "Please enter a valid website URL (must start with http:// or https://)"
+                }
+            },
+            "stepDetails": {
+                "serviceDetails": "Service Details",
+                "contactDetails": "Contact Details"
+            }
         }
     },
     "error404": {
