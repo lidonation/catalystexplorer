@@ -13,6 +13,8 @@
     }
 
     :root {
+        --sidebar-width: calc(var(--spacing) * 72);
+
         --cx-primary: #2596be;
         --cx-primary-light: #effafc;
         --cx-primary-mid: #B9E6FE;

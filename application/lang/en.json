@@ -312,7 +312,7 @@
     "workflows.tinderProposal.step1.selectFund": "Select Fund",
     "workflows.tinderProposal.step1.selectFundPlaceholder": "Select Fund",
     "workflows.tinderProposal.step1.selectAllThatApply": "(Select all that apply)",
-    "workflows.tinderProposal.step1.proposalTypesQuestion": "Which types of proposals interest you the most?",
+    "workflows.tinderProposal.step1.proposalTypesQuestion": "Select all the categories you are interested in.",
     "workflows.tinderProposal.step1.proposalSizeQuestion": "What is your preferred proposal size or scope?",
     "workflows.tinderProposal.step1.impactTypeQuestion": "What type of impact are you most interested in seeing?",
     "workflows.tinderProposal.step1.proposalSizes.smallScale": "Small scale / low-budget",

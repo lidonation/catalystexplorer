@@ -168,11 +168,12 @@ const Show = ({
                         <ListProvider>
                             {proposal.hash && (
                                 <>
-                                    <Paragraph>{t('buttons.bookmark')}</Paragraph>
                                     <BookmarkButton
                                         modelType="proposals"
                                         itemId={proposal.hash}
-                                    />
+                                    >
+                                        <span>{t('buttons.bookmark')}</span>
+                                    </BookmarkButton>
                                 </>
                             )}
                         </ListProvider>
