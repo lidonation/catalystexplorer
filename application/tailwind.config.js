@@ -30,6 +30,9 @@ export default {
             borderRadius: {
                 '4xl': '2.5rem',
             },
+            boxShadow: {
+                'cx-box-shadow': '0px 1px 4px 0px rgba(16,24,40,0.10)',
+            },
             colors: {
                 // background: {
                 //     default: 'var(--cx-background)',

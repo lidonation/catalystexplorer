@@ -445,6 +445,7 @@ milestones: any | null;
 export type ProposalData = {
 hash: string | null;
 campaign: App.DataTransferObjects.CampaignData | null;
+schedule: App.DataTransferObjects.ProjectScheduleData | null;
 title: string | null;
 slug: string | null;
 website?: string;

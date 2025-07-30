@@ -98,8 +98,6 @@ RUN userdel --remove --force www-data \
 RUN chown -R ${USER}:${USER} ${ROOT} /var/{log,run,www} \
     && chmod -R a+rw ${ROOT} /var/{log,run}
 
-RUN cp ${PHP_INI_DIR}/php.ini-production ${PHP_INI_DIR}/php.ini
-
 USER ${USER}
 
 ENV WITH_HORIZON=false \

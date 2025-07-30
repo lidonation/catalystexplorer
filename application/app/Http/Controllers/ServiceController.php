@@ -231,26 +231,23 @@ class ServiceController extends Controller
 
     public function saveServiceDetails(Request $request): RedirectResponse
     {
-      
-            
-            $validator = \Validator::make($request->all(), [
-                ServiceWorkflowParams::TITLE()->value => 'required|string|max:255',
-                ServiceWorkflowParams::DESCRIPTION()->value => 'required|string|max:5000',
-                ServiceWorkflowParams::TYPE()->value => 'required|string|in:'.implode(',', \App\Enums\ServiceTypeEnum::toValues()),
-                ServiceWorkflowParams::CATEGORIES()->value => 'required|array|min:1',
-                ServiceWorkflowParams::CATEGORIES()->value.'.*' => 'exists:categories,slug',
-                ServiceWorkflowParams::SERVICE_HASH()->value => 'nullable|string',
-            ]);
+
+        $validator = \Validator::make($request->all(), [
+            ServiceWorkflowParams::TITLE()->value => 'required|string|max:255',
+            ServiceWorkflowParams::DESCRIPTION()->value => 'required|string|max:5000',
+            ServiceWorkflowParams::TYPE()->value => 'required|string|in:'.implode(',', \App\Enums\ServiceTypeEnum::toValues()),
+            ServiceWorkflowParams::CATEGORIES()->value => 'required|array|min:1',
+            ServiceWorkflowParams::CATEGORIES()->value.'.*' => 'exists:categories,slug',
+            ServiceWorkflowParams::SERVICE_HASH()->value => 'nullable|string',
+        ]);
 
         if ($validator->fails()) {
             $request->session()->flash('error', $validator->errors()->toArray());
+
             return back()->withInput();
         }
 
         $validated = $validator->validated();
-
-             
-        
 
         $existingService = null;
 
@@ -301,6 +298,7 @@ class ServiceController extends Controller
 
         if ($validator->fails()) {
             $request->session()->flash('error', $validator->errors()->toArray());
+
             return back()->withInput();
         }
 
@@ -348,6 +346,7 @@ class ServiceController extends Controller
 
         if ($validator->fails()) {
             $request->session()->flash('error', $validator->errors()->toArray());
+
             return back()->withInput();
         }
 
@@ -357,6 +356,7 @@ class ServiceController extends Controller
 
         if (! $service || $service->user_id !== auth()->id()) {
             $request->session()->flash('error', ['general' => ['Service not found or access denied.']]);
+
             return back();
         }
 

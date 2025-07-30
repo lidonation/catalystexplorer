@@ -7,6 +7,7 @@ namespace App\Http\Controllers;
 use App\Actions\TransformHashToIds;
 use App\Actions\TransformIdsToHashes;
 use App\DataTransferObjects\FundData;
+use App\DataTransferObjects\ProjectScheduleData;
 use App\DataTransferObjects\ProposalData;
 use App\DataTransferObjects\ReviewData;
 use App\Enums\ProposalFundingStatus;
@@ -193,10 +194,24 @@ class ProposalsController extends Controller
 
         return match (true) {
             str_contains($request->path(), '/details') => Inertia::render('Proposals/Details/Index', $props),
+            str_contains($request->path(), '/schedule') => Inertia::render('Proposals/Schedule/Index', $props),
             str_contains($request->path(), '/community-review') => Inertia::render('Proposals/CommunityReview/Index', $props),
             str_contains($request->path(), '/team-information') => Inertia::render('Proposals/TeamInformation/Index', $props),
             default => Inertia::render('Proposals/Details/Index', $props),
         };
+    }
+
+    public function proposalSchedule(Request $request, $slug)
+    {
+        $proposal = Proposal::with(['schedule.milestones'])
+            ->where('slug', $slug)->firstOrFail();
+
+        //        dd(ProjectScheduleData::from($proposal->schedule));
+        //        dd($this->getProposalBaseData($request, $proposal));
+
+        return Inertia::render('Proposals/Schedule/Index',
+            $this->getProposalBaseData($request, $proposal),
+        );
     }
 
     public function myProposals(Request $request): Response
@@ -771,6 +786,29 @@ class ProposalsController extends Controller
         return $chartData;
     }
 
+    private function getProposalBaseData(Request $request, Proposal $proposal)
+    {
+        $this->getProps($request);
+        $cacheKey = "proposal:{$proposal->id}:base_data";
+        $proposalData = Cache::remember($cacheKey, now()->addMinutes(10), function () use ($proposal) {
+            $proposal->loadMissing(['author']);
+
+            $data = $proposal->toArray();
+
+            $data['alignment_score'] = $proposal->getDiscussionRankingScore('Impact Alignment') ?? 0;
+            $data['feasibility_score'] = $proposal->getDiscussionRankingScore('Feasibility') ?? 0;
+            $data['auditability_score'] = $proposal->getDiscussionRankingScore('Value for money') ?? 0;
+
+            return [
+                ...$data,
+            ];
+        });
+
+        return [
+            'proposal' => ProposalData::from($proposalData),
+        ];
+    }
+
     private function getFundedCountByFund($fundTitle): int
     {
         $fundedFilters = array_merge($this->getUserFilters(), [
@@ -875,8 +913,6 @@ class ProposalsController extends Controller
         )->raw());
 
         $inProgressCount = $response->facetDistribution['fund.title'][$fundTitle] ?? 0;
-
-        // dd($response->inProgressCount);
 
         if (empty($this->queryParams[ProposalSearchParams::IN_PROGRESS_PROPOSALS()->value])) {
             return 0;

@@ -72,7 +72,7 @@ const MilestoneAccordion: React.FC<MilestoneAccordionProps> = ({
             {activeMilestones.map((milestone, index) => (
                 <div
                     key={index}
-                    className="border-background-lighter w-full border-t pt-4"
+                    className="border-background-lighter w-full border-t pt-4 px-4"
                 >
                     <div className="flex w-full items-center justify-between">
                         <div className="flex w-full flex-col gap-4">
