@@ -167,7 +167,6 @@ const Step1: React.FC<Step1Props> = ({ stepDetails, activeStep, existingPreferen
                                         <Paragraph size='xs' className='text-content'>
                                             {t('workflows.tinderProposal.step1.selectFund')}
                                         </Paragraph>
-                                        <Paragraph size='sm' className="italic ">{t('workflows.tinderProposal.step1.selectAllThatApply')}</Paragraph>
                                     </div>
                                     <Selector
                                         options={fundOptions}
