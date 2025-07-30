@@ -92,7 +92,7 @@ class ServiceController extends Controller
             'description' => 'required|string|max:5000',
             'type' => 'required|string|in:'.implode(',', ServiceTypeEnum::toValues()),
             'header_image' => 'nullable|image|max:5120',
-            'categories' => 'required|array|min:1|max:5',
+            'categories' => 'required|array|min:1',
             'categories.*' => 'exists:categories,id',
             'location' => 'nullable|exists:locations,id',
             'name' => 'nullable|string|max:255',
@@ -231,14 +231,26 @@ class ServiceController extends Controller
 
     public function saveServiceDetails(Request $request): RedirectResponse
     {
-        $validated = $request->validate([
-            ServiceWorkflowParams::TITLE()->value => 'required|string|max:255',
-            ServiceWorkflowParams::DESCRIPTION()->value => 'required|string|max:5000',
-            ServiceWorkflowParams::TYPE()->value => 'required|string|in:'.implode(',', \App\Enums\ServiceTypeEnum::toValues()),
-            ServiceWorkflowParams::CATEGORIES()->value => 'required|array|min:1|max:5',
-            ServiceWorkflowParams::CATEGORIES()->value.'.*' => 'exists:categories,slug',
-            ServiceWorkflowParams::SERVICE_HASH()->value => 'nullable|string',
-        ]);
+      
+            
+            $validator = \Validator::make($request->all(), [
+                ServiceWorkflowParams::TITLE()->value => 'required|string|max:255',
+                ServiceWorkflowParams::DESCRIPTION()->value => 'required|string|max:5000',
+                ServiceWorkflowParams::TYPE()->value => 'required|string|in:'.implode(',', \App\Enums\ServiceTypeEnum::toValues()),
+                ServiceWorkflowParams::CATEGORIES()->value => 'required|array|min:1',
+                ServiceWorkflowParams::CATEGORIES()->value.'.*' => 'exists:categories,slug',
+                ServiceWorkflowParams::SERVICE_HASH()->value => 'nullable|string',
+            ]);
+
+        if ($validator->fails()) {
+            $request->session()->flash('error', $validator->errors()->toArray());
+            return back()->withInput();
+        }
+
+        $validated = $validator->validated();
+
+             
+        
 
         $existingService = null;
 
@@ -277,8 +289,7 @@ class ServiceController extends Controller
 
     public function saveContactAndLocation(Request $request): RedirectResponse
     {
-
-        $validated = $request->validate([
+        $validator = \Validator::make($request->all(), [
             ServiceWorkflowParams::SERVICE_HASH()->value => 'required|string',
             ServiceWorkflowParams::LOCATION()->value => 'nullable|string|max:255',
             ServiceWorkflowParams::NAME()->value => 'nullable|string|max:255',
@@ -287,6 +298,13 @@ class ServiceController extends Controller
             ServiceWorkflowParams::GITHUB()->value => 'nullable|string|max:255',
             ServiceWorkflowParams::LINKEDIN()->value => 'nullable|string|max:255',
         ]);
+
+        if ($validator->fails()) {
+            $request->session()->flash('error', $validator->errors()->toArray());
+            return back()->withInput();
+        }
+
+        $validated = $validator->validated();
 
         $service = Service::byHash($validated[ServiceWorkflowParams::SERVICE_HASH()->value]);
 
@@ -319,7 +337,7 @@ class ServiceController extends Controller
 
     public function saveContactInfo(Request $request): RedirectResponse
     {
-        $validated = $request->validate([
+        $validator = \Validator::make($request->all(), [
             ServiceWorkflowParams::SERVICE_HASH()->value => 'required|string',
             ServiceWorkflowParams::NAME()->value => 'nullable|string',
             ServiceWorkflowParams::EMAIL()->value => 'nullable|email',
@@ -328,10 +346,18 @@ class ServiceController extends Controller
             ServiceWorkflowParams::LINKEDIN()->value => 'nullable|string',
         ]);
 
+        if ($validator->fails()) {
+            $request->session()->flash('error', $validator->errors()->toArray());
+            return back()->withInput();
+        }
+
+        $validated = $validator->validated();
+
         $service = Service::byHash($validated[ServiceWorkflowParams::SERVICE_HASH()->value]);
 
         if (! $service || $service->user_id !== auth()->id()) {
-            return back()->withErrors(['error' => 'Service not found or access denied.']);
+            $request->session()->flash('error', ['general' => ['Service not found or access denied.']]);
+            return back();
         }
 
         $service->update([

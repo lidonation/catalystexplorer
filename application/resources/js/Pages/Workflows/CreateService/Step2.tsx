@@ -11,7 +11,7 @@ import Footer from '../Partials/WorkflowFooter';
 import Nav from '../Partials/WorkflowNav';
 import WorkflowLayout from '../WorkflowLayout';
 import { useLaravelReactI18n } from "laravel-react-i18n";
-import { useForm } from '@inertiajs/react';
+import { useForm, usePage } from '@inertiajs/react';
 import { ServiceWorkflowParams } from '@/enums/service-workflow-params';
 
 interface Step2Props {
@@ -44,6 +44,14 @@ interface Step2Props {
     };
 }
 
+interface PageProps {
+    flash: {
+        error?: Record<string, string[]>;
+        success?: string;
+    };
+    [key: string]: any;
+}
+
 const Step2: React.FC<Step2Props> = ({ 
     stepDetails, 
     activeStep, 
@@ -62,6 +70,9 @@ const Step2: React.FC<Step2Props> = ({
         [ServiceWorkflowParams.GITHUB]: serviceData?.github || defaults.contact.github || '',
         [ServiceWorkflowParams.LINKEDIN]: serviceData?.linkedin || defaults.contact.linkedin || '',
     });
+
+    const page = usePage<PageProps>();
+    const flashErrors = page.props.flash?.error || {};
 
     const [selectedCategories, setSelectedCategories] = useState<string[]>(
         serviceData?.categories?.map(String) || []
@@ -195,6 +206,7 @@ const Step2: React.FC<Step2Props> = ({
                                 </div>
                             </div>
                         )}
+
                         
                         {/* Service Information Form */}
                         <div className="space-y-6" data-testid="service-contact-information-form">
@@ -207,11 +219,20 @@ const Step2: React.FC<Step2Props> = ({
                                 <TextInput
                                     value={form.data[ServiceWorkflowParams.NAME]}
                                     onChange={(e) => handleInputChange(ServiceWorkflowParams.NAME, e.target.value)}
-                                    className="w-full px-3 py-2 border border-gray-persist/[20%] rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
+                                    className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary ${
+                                        flashErrors[ServiceWorkflowParams.NAME] ? 'border-error' : 'border-gray-persist/[50%]'
+                                    }`}
                                     placeholder=""
                                     required
                                     data-testid="service-contact-name-input"
                                 />
+                                {flashErrors[ServiceWorkflowParams.NAME] && (
+                                    <Paragraph className="mt-1 text-sm text-error" data-testid="service-contact-name-flash-error">
+                                        {Array.isArray(flashErrors[ServiceWorkflowParams.NAME]) 
+                                            ? flashErrors[ServiceWorkflowParams.NAME][0] 
+                                            : flashErrors[ServiceWorkflowParams.NAME]}
+                                    </Paragraph>
+                                )}
                             </div>
 
                             {/* Email and Website URL Row */}
@@ -227,7 +248,7 @@ const Step2: React.FC<Step2Props> = ({
                                         value={form.data[ServiceWorkflowParams.EMAIL]}
                                         onChange={(e) => handleInputChange(ServiceWorkflowParams.EMAIL, e.target.value)}
                                         className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary ${
-                                            validationErrors.email ? 'border-error' : 'border-gray-persist/[20%]'
+                                            validationErrors.email || flashErrors[ServiceWorkflowParams.EMAIL] ? 'border-error' : 'border-gray-persist/[50%]'
                                         }`}
                                         placeholder=""
                                         required
@@ -235,6 +256,13 @@ const Step2: React.FC<Step2Props> = ({
                                     />
                                     {validationErrors.email && (
                                         <Paragraph className="mt-1 text-sm text-error" data-testid="service-contact-email-error">{validationErrors.email}</Paragraph>
+                                    )}
+                                    {flashErrors[ServiceWorkflowParams.EMAIL] && (
+                                        <Paragraph className="mt-1 text-sm text-error" data-testid="service-contact-email-flash-error">
+                                            {Array.isArray(flashErrors[ServiceWorkflowParams.EMAIL]) 
+                                                ? flashErrors[ServiceWorkflowParams.EMAIL][0] 
+                                                : flashErrors[ServiceWorkflowParams.EMAIL]}
+                                        </Paragraph>
                                     )}
                                 </div>
 
@@ -248,13 +276,20 @@ const Step2: React.FC<Step2Props> = ({
                                         value={form.data[ServiceWorkflowParams.WEBSITE]}
                                         onChange={(e) => handleInputChange(ServiceWorkflowParams.WEBSITE, e.target.value)}
                                         className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary ${
-                                            validationErrors.website ? 'border-error' : 'border-gray-persist/[20%]'
+                                            validationErrors.website || flashErrors[ServiceWorkflowParams.WEBSITE] ? 'border-error' : 'border-gray-persist/[50%]'
                                         }`}
                                         placeholder=""
                                         data-testid="service-contact-website-input"
                                     />
                                     {validationErrors.website && (
                                         <Paragraph className="mt-1 text-sm text-error" data-testid="service-contact-website-error">{validationErrors.website}</Paragraph>
+                                    )}
+                                    {flashErrors[ServiceWorkflowParams.WEBSITE] && (
+                                        <Paragraph className="mt-1 text-sm text-error" data-testid="service-contact-website-flash-error">
+                                            {Array.isArray(flashErrors[ServiceWorkflowParams.WEBSITE]) 
+                                                ? flashErrors[ServiceWorkflowParams.WEBSITE][0] 
+                                                : flashErrors[ServiceWorkflowParams.WEBSITE]}
+                                        </Paragraph>
                                     )}
                                 </div>
                             </div>
@@ -269,10 +304,19 @@ const Step2: React.FC<Step2Props> = ({
                                     <TextInput
                                         value={form.data[ServiceWorkflowParams.GITHUB]}
                                         onChange={(e) => handleInputChange(ServiceWorkflowParams.GITHUB, e.target.value)}
-                                        className="w-full px-3 py-2 border border-gray-persist/[20%] rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
+                                        className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary ${
+                                            flashErrors[ServiceWorkflowParams.GITHUB] ? 'border-error' : 'border-gray-persist/[50%]'
+                                        }`}
                                         placeholder=""
                                         data-testid="service-contact-github-input"
                                     />
+                                    {flashErrors[ServiceWorkflowParams.GITHUB] && (
+                                        <Paragraph className="mt-1 text-sm text-error" data-testid="service-contact-github-flash-error">
+                                            {Array.isArray(flashErrors[ServiceWorkflowParams.GITHUB]) 
+                                                ? flashErrors[ServiceWorkflowParams.GITHUB][0] 
+                                                : flashErrors[ServiceWorkflowParams.GITHUB]}
+                                        </Paragraph>
+                                    )}
                                 </div>
 
                                 {/* LinkedIn Field */}
@@ -283,10 +327,19 @@ const Step2: React.FC<Step2Props> = ({
                                     <TextInput
                                         value={form.data[ServiceWorkflowParams.LINKEDIN]}
                                         onChange={(e) => handleInputChange(ServiceWorkflowParams.LINKEDIN, e.target.value)}
-                                        className="w-full px-3 py-2 border border-gray-persist/[20%] rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
+                                        className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary ${
+                                            flashErrors[ServiceWorkflowParams.LINKEDIN] ? 'border-error' : 'border-gray-persist/[50%]'
+                                        }`}
                                         placeholder=""
                                         data-testid="service-contact-linkedin-input"
                                     />
+                                    {flashErrors[ServiceWorkflowParams.LINKEDIN] && (
+                                        <Paragraph className="mt-1 text-sm text-error" data-testid="service-contact-linkedin-flash-error">
+                                            {Array.isArray(flashErrors[ServiceWorkflowParams.LINKEDIN]) 
+                                                ? flashErrors[ServiceWorkflowParams.LINKEDIN][0] 
+                                                : flashErrors[ServiceWorkflowParams.LINKEDIN]}
+                                        </Paragraph>
+                                    )}
                                 </div>
                             </div>
 
@@ -329,10 +382,19 @@ const Step2: React.FC<Step2Props> = ({
                                 <TextInput
                                     value={form.data[ServiceWorkflowParams.LOCATION]}
                                     onChange={(e) => handleInputChange(ServiceWorkflowParams.LOCATION, e.target.value)}
-                                    className="w-full px-3 py-2 border border-gray-persist/[20%] rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
+                                    className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary ${
+                                        flashErrors[ServiceWorkflowParams.LOCATION] ? 'border-error' : 'border-gray-persist/[50%]'
+                                    }`}
                                     placeholder={t('workflows.createService.step2.enterCity')}
                                     data-testid="service-location-input"
                                 />
+                                {flashErrors[ServiceWorkflowParams.LOCATION] && (
+                                    <Paragraph className="mt-1 text-sm text-error" data-testid="service-location-flash-error">
+                                        {Array.isArray(flashErrors[ServiceWorkflowParams.LOCATION]) 
+                                            ? flashErrors[ServiceWorkflowParams.LOCATION][0] 
+                                            : flashErrors[ServiceWorkflowParams.LOCATION]}
+                                    </Paragraph>
+                                )}
                             </div>
                         </div>
                     </div>

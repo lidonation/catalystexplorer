@@ -48,6 +48,12 @@ class HandleInertiaRequests extends Middleware
                 'url' => $request->getSchemeAndHttpHost(),
             ],
             'environment' => app()->environment(),
+            'flash' => function () use ($request) {
+                return [
+                    'success' => $request->session()->get('success'),
+                    'error' => $request->session()->get('error'),
+                ];
+            },
         ];
     }
 }
