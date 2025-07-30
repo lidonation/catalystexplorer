@@ -497,6 +497,7 @@
         "votes": "Votes",
         "balance": "Balance",
         "wallets": "Wallets",
+        "services": "Services",
         "deletingWallet": "Deleting",
         "paymentAddresses": "Payment Addresses",
         "myWallets": "My Wallets",

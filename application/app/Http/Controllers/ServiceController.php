@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\Actions\TransformIdsToHashes;
+use App\DataTransferObjects\CategoryData;
 use App\DataTransferObjects\ServiceData;
 use App\Models\Category;
 use App\Models\Location;
@@ -16,38 +18,148 @@ class ServiceController extends Controller
 {
     public function index(Request $request): Response
     {
-        $query = Service::with(['user:id,name,email', 'categories:id,name,slug', 'locations:id,city'])
-            ->latest();
-        if ($request->has('search')) {
-            $query->where(function ($q) use ($request) {
-                $q->where('title', 'ilike', '%'.$request->search.'%')
-                    ->orWhere('description', 'ilike', '%'.$request->search.'%');
-            });
-        }
+        $validated = $this->validateFilters($request);
+        $services = $this->buildQuery($validated)->paginate(12);
+
+        $transformer = app(TransformIdsToHashes::class);
 
         return Inertia::render('Services/Index', [
-            'services' => ServiceData::collection($query->paginate(24)),
-            'viewType' => 'all',
+            'services' => [
+                'data' => $transformer($services->getCollection(), new Service),
+                'current_page' => $services->currentPage(),
+                'last_page' => $services->lastPage(),
+                'per_page' => $services->perPage(),
+                'total' => $services->total(),
+                'from' => $services->firstItem(),
+                'to' => $services->lastItem(),
+                'links' => $services->linkCollection()->toArray(),
+                'prev_page_url' => $services->previousPageUrl(),
+                'next_page_url' => $services->nextPageUrl(),
+                'path' => $services->path(),
+                'first_page_url' => $services->url(1),
+                'last_page_url' => $services->url($services->lastPage()),
+            ],
+            'categories' => $this->getCategoryTree(),
+            'filters' => $this->formatFilters($validated),
         ]);
     }
 
-    public function myServices(): Response
+    public function myServices(Request $request): Response
     {
+        $validated = $this->validateFilters($request);
+        $validated['viewType'] = 'user';
+
+        $services = $this->buildQuery($validated)->paginate(12);
+
+        $transformer = app(TransformIdsToHashes::class);
+
         return Inertia::render('My/Services/Index', [
-            'services' => ServiceData::collection(
-                Service::with(['user:id,name,email', 'categories:id,name,slug', 'locations:id,city'])
-                    ->where('user_id', auth()->id())
-                    ->latest()
-                    ->paginate(24)
-            ),
-            'viewType' => 'user',
+            'services' => [
+                'data' => $transformer($services->getCollection(), new Service),
+                'current_page' => $services->currentPage(),
+                'last_page' => $services->lastPage(),
+                'per_page' => $services->perPage(),
+                'total' => $services->total(),
+                'from' => $services->firstItem(),
+                'to' => $services->lastItem(),
+                'links' => $services->linkCollection()->toArray(),
+                'prev_page_url' => $services->previousPageUrl(),
+                'next_page_url' => $services->nextPageUrl(),
+                'path' => $services->path(),
+                'first_page_url' => $services->url(1),
+                'last_page_url' => $services->url($services->lastPage()),
+            ],
+            'filters' => $this->formatFilters($validated),
         ]);
     }
 
-    public function show(Service $service): Response
+    protected function validateFilters(Request $request): array
     {
+        $validated = $request->validate([
+            'search' => 'sometimes|string|max:255',
+            'categories' => 'sometimes|string',
+            'type' => 'sometimes|in:offered,needed',
+            'sort' => 'sometimes|in:newest,oldest,title',
+            'viewType' => 'sometimes|in:all,user',
+            'page' => 'sometimes|integer|min:1',
+        ]);
+
+        if (! empty($validated['categories'])) {
+            $hashes = explode(',', $validated['categories']);
+            $validated['categories'] = array_filter(array_map(
+                fn ($hash) => Category::byHash($hash)?->id,
+                $hashes
+            ));
+        }
+
+        return $validated;
+    }
+
+    protected function buildQuery(array $filters)
+    {
+        $query = Service::query()
+            ->withStandardRelations()
+            ->forUser(($filters['viewType'] ?? 'all') === 'user' ? auth()->id() : null);
+
+        if (! empty($filters['search'])) {
+            $query->search($filters['search']);
+        }
+
+        if (! empty($filters['categories']) && ($filters['viewType'] ?? 'all') === 'all') {
+            $query->filterByCategories($filters['categories']);
+        }
+
+        if (! empty($filters['type'])) {
+            $query->where('type', $filters['type']);
+        }
+
+        if (empty($filters['search'])) {
+            match ($filters['sort'] ?? 'newest') {
+                'oldest' => $query->oldest(),
+                'title' => $query->orderBy('title'),
+                default => $query->latest()
+            };
+        }
+
+        return $query;
+    }
+
+    protected function getCategoryTree()
+    {
+        return Category::where('is_active', true)
+            ->whereNull('parent_id')
+            ->with(['children' => fn ($q) => $q->where('is_active', true)])
+            ->get()
+            ->map(fn ($category) => CategoryData::fromModel($category));
+    }
+
+    protected function formatFilters(array $filters): array
+    {
+        $formattedCategories = null;
+
+        // Only format categories for 'all' view
+        if (! empty($filters['categories']) && ($filters['viewType'] ?? 'all') === 'all') {
+            $formattedCategories = array_filter(array_map(
+                fn ($id) => Category::find($id)?->hash,
+                $filters['categories']
+            ));
+        }
+
+        return [
+            'search' => $filters['search'] ?? null,
+            'categories' => $formattedCategories,
+            'type' => $filters['type'] ?? null,
+            'sort' => $filters['sort'] ?? null,
+            'viewType' => $filters['viewType'] ?? 'all',
+        ];
+    }
+
+    public function show(string $hash): Response
+    {
+        $service = Service::byHash($hash);
+
         return Inertia::render('Services/Show', [
-            'service' => ServiceData::from($service->load([
+            'service' => ServiceData::fromModel($service->load([
                 'user:id,name,email',
                 'categories:id,name,slug',
                 'locations:id,city,region,country',
@@ -62,7 +174,8 @@ class ServiceController extends Controller
             'categories' => Category::where('is_active', true)
                 ->whereNull('parent_id')
                 ->with('children:id,name,parent_id,slug')
-                ->get(['id', 'name', 'slug']),
+                ->get(['id', 'name', 'slug'])
+                ->map(fn ($category) => CategoryData::fromModel($category)),
             'locations' => Location::select('id', 'city', 'region')
                 ->whereNotNull('city')
                 ->orderBy('city')
@@ -120,18 +233,18 @@ class ServiceController extends Controller
         }
 
         return redirect()
-            ->route('services.show', $service)
+            ->route('services.show', $service->hash)
             ->with('success', 'Service created successfully!');
     }
 
     protected function getRelatedServices(Service $service, int $limit = 4)
     {
-        return ServiceData::collection(
-            Service::with(['user:id,name', 'categories:id,name'])
-                ->where('id', '!=', $service->id)
-                ->whereHas('categories', fn ($q) => $q->whereIn('id', $service->categories->pluck('id')))
-                ->limit($limit)
-                ->get()
-        );
+        return Service::query()
+            ->with(['user:id,name', 'categories:id,name'])
+            ->where('id', '!=', $service->id)
+            ->whereHas('categories', fn ($q) => $q->whereIn('categories.id', $service->categories->pluck('id')))
+            ->limit($limit)
+            ->get()
+            ->map(fn ($relatedService) => ServiceData::fromModel($relatedService));
     }
 }

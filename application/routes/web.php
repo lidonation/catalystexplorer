@@ -35,6 +35,7 @@ use App\Http\Controllers\CardanoBudgetProposalController;
 use App\Http\Controllers\ClaimIdeascaleProfileController;
 use App\Http\Controllers\WalletController;
 use CodeZero\LocalizedRoutes\Controllers\FallbackController;
+use App\Http\Controllers\ServiceController;
 
 Route::localized(
     function () {
@@ -440,6 +441,13 @@ Route::localized(
             });
         Route::get('/map', function () {
             return Inertia::render('Map');
+        });
+
+        Route::prefix('/services')->as('services.')->group(function () {
+            Route::get('/', [ServiceController::class, 'index'])->name('index');
+            Route::get('/create', [ServiceController::class, 'create'])->name('create')->middleware('auth');
+            Route::post('/', [ServiceController::class, 'store'])->name('store')->middleware('auth');
+            Route::get('/{service}', [ServiceController::class, 'show'])->name('show');
         });
 
         Route::prefix('numbers')->as('numbers.')

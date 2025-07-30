@@ -8,6 +8,7 @@ use App\Http\Controllers\GroupsController;
 use App\Http\Controllers\ReviewsController;
 use App\Http\Controllers\WalletController;
 use App\Http\Controllers\VoterHistoriesController;
+use App\Http\Controllers\ServiceController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -65,6 +66,8 @@ Route::localized(
                 Route::get('/reviews', [ProfileController::class, 'myReviews'])->name('reviews');
                 Route::get('/wallets', [WalletController::class, 'index'])
                             ->name('wallets');
+                Route::get('/services', [ServiceController::class, 'myServices'])
+                            ->name('services');
                 Route::get('/wallets/{stakeKey}', [WalletController::class, 'show'])
                         ->name('wallets.show');
                 Route::delete('/wallets/{stakeAddress}', [WalletController::class, 'destroy'])
