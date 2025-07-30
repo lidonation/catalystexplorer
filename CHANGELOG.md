@@ -1,3 +1,10 @@
+# [1.3.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.2.0...v1.3.0) (2025-07-30)
+
+
+### Features
+
+* adding project schedule to single proposal page ([ca644f2](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/ca644f2ddfab76e48fff7977f83cdf9223d294f8))
+
 # [1.2.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.1.0...v1.2.0) (2025-07-30)
 
 
