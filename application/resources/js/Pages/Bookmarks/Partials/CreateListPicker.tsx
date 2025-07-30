@@ -5,6 +5,7 @@ import {Dispatch, SetStateAction} from "react";
 import PrimaryLink from "@/Components/atoms/PrimaryLink.tsx";
 import {useLocalizedRoute} from "@/utils/localizedRoute.ts";
 import SecondaryLink from "@/Components/SecondaryLink.tsx";
+import Paragraph from '@/Components/atoms/Paragraph.tsx';
 
 export default function CreateListPicker({showPickingList, setPickingList}: {
     showPickingList: boolean,
@@ -18,16 +19,18 @@ export default function CreateListPicker({showPickingList, setPickingList}: {
             isOpen={!!showPickingList}
             logo={false}
             centered
-            contentClasses="max-w-xl"
+            contentClasses="max-w-2xl"
             onClose={() => setPickingList(false)}
         >
-            <div className="flex flex-col gap-4 p-4 text-center">
-                <Title level="5">{t('my.createListTitle')}</Title>
+            <div className="flex flex-col gap-8 px-6 sm:px-8 py-10 sm:py-16">
+                <Title className='text-center' level="5">{t('my.createListTitle')}</Title>
 
                 <section className="grid grid-cols-2">
                     <div className="border-border-secondary col-span-2 -mb-px border p-4">
                         <div className="flex flex-col justify-between gap-3">
-                            <p>{t('my.createVotingListBlurb')}</p>
+                            <Paragraph className='p-3'>
+                                {t('my.createVotingListBlurb')}
+                            </Paragraph>
                             <PrimaryLink
                                 href={useLocalizedRoute(
                                     'workflows.createVoterList.index',
@@ -41,7 +44,9 @@ export default function CreateListPicker({showPickingList, setPickingList}: {
 
                     <div className="border-border-secondary col-span-1 -mr-px border p-4">
                         <div className="flex h-full flex-col justify-between gap-3">
-                            <p>{t('my.createTinderListBlurb')}</p>
+                            <Paragraph className='sm:p-2'>
+                                {t('my.createTinderListBlurb')}
+                            </Paragraph>
                             <div>
                                 <SecondaryLink
                                     href={useLocalizedRoute(
@@ -57,7 +62,9 @@ export default function CreateListPicker({showPickingList, setPickingList}: {
 
                     <div className="border-border-secondary col-span-1 border p-4">
                         <div className="flex h-full flex-col justify-between gap-3">
-                            <p>{t('my.createListBlurb')}</p>
+                            <Paragraph className='sm:p-2'>
+                                {t('my.createListBlurb')}
+                            </Paragraph>
                             <div>
                                 <SecondaryLink
                                     href={useLocalizedRoute(

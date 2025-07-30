@@ -288,7 +288,7 @@
     "workflows.tinderProposal.step1.selectFund": "Sélectionner un Fonds",
     "workflows.tinderProposal.step1.selectFundPlaceholder": "Sélectionner un Fonds",
     "workflows.tinderProposal.step1.selectAllThatApply": "(Sélectionnez tout ce qui s'applique)",
-    "workflows.tinderProposal.step1.proposalTypesQuestion": "Quels types de propositions vous intéressent le plus ?",
+    "workflows.tinderProposal.step1.proposalTypesQuestion": "Sélectionnez toutes les catégories qui vous intéressent.",
     "workflows.tinderProposal.step1.proposalSizeQuestion": "Quelle est votre taille ou portée de proposition préférée ?",
     "workflows.tinderProposal.step1.impactTypeQuestion": "Quel type d'impact êtes-vous le plus intéressé à voir ?",
     "workflows.tinderProposal.step1.proposalSizes.smallScale": "Petite échelle / budget faible",

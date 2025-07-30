@@ -122,15 +122,16 @@ const ProposalLayout = ({
                     <section className="text-content-lighter relative z-0 overflow-x-auto [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden flex-grow w-full mt-4 sm:mt-0">
                         <ProposalTab tabs={tabs} activeTab={activeTab} />
                     </section>
-                    <div className="px-3 bg-background rounded-lg shadow-md flex-shrink-0 flex items-center justify-center overflow-hidden self-end sm:self-auto sm:ml-2">
+                    <div className="p-2 bg-background rounded-lg shadow-md flex-shrink-0 inline-flex items-center justify-center overflow-hidden self-end sm:ml-2">
                         <ListProvider>
                             {proposal.hash && (
                                 <>
-                                    <Paragraph>{t('buttons.bookmark')}</Paragraph>
                                     <BookmarkButton
                                         modelType="proposals"
                                         itemId={proposal.hash}
-                                    />
+                                    >
+                                        <span>{t('buttons.bookmark')}</span>
+                                    </BookmarkButton>
                                 </>
                             )}
                         </ListProvider>

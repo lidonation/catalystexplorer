@@ -134,7 +134,7 @@ export default function ProposalCardHeader({
                     }`}
                     style={{ overflow: 'visible' }}
                 >
-                    <a
+                    <Link
                         href={proposal.link}
                         className={`hover:text-primary font-medium ${
                             isHorizontal ? 'mb-4 text-center' : ''
@@ -153,7 +153,7 @@ export default function ProposalCardHeader({
                                 </ExpandableContent>
                             </div>
                         ) : null}
-                    </a>
+                    </Link>
                     <div className="flex flex-row justify-end py-0.5 italic" data-testid="proposal-card-fund">
                         <span>~ {proposal.fund?.title}</span>
                     </div>
@@ -167,7 +167,7 @@ export default function ProposalCardHeader({
                             data-testid={`related-platforms-proposal-card-links-${proposal?.hash}`}
                         >
                             {proposal.ideascale_link && (
-                                <Link
+                                <a
                                     href={proposal.ideascale_link}
                                     className="text-4 text-opacity-100 flex w-full items-center justify-center"
                                     target="_blank"
@@ -175,14 +175,14 @@ export default function ProposalCardHeader({
                                     data-testid={`ideascale-link-${proposal?.hash}`}
                                 >
                                     <span>{t('proposals.ideascale')}</span>
-                                </Link>
+                                </a>
                             )}
                             {proposal.ideascale_link &&
                                 proposal.projectcatalyst_io_link && (
                                     <div className="mx-2 h-3 border-r"></div>
                                 )}
                             {proposal.projectcatalyst_io_link && (
-                                <Link
+                                <a
                                     href={proposal.projectcatalyst_io_link}
                                     className="text-4 text-opacity-100 flex w-full items-center justify-center"
                                     target="_blank"
@@ -192,7 +192,7 @@ export default function ProposalCardHeader({
                                     <span>
                                         {t('proposals.projectCatalyst')}
                                     </span>
-                                </Link>
+                                </a>
                             )}
                         </nav>
                     )}
