@@ -789,20 +789,14 @@ class ProposalsController extends Controller
     private function getProposalBaseData(Request $request, Proposal $proposal)
     {
         $this->getProps($request);
-        $cacheKey = "proposal:{$proposal->id}:base_data";
-        $proposalData = Cache::remember($cacheKey, now()->addMinutes(10), function () use ($proposal) {
-            $proposal->loadMissing(['author']);
 
-            $data = $proposal->toArray();
+        $proposal->loadMissing(['author']);
 
-            $data['alignment_score'] = $proposal->getDiscussionRankingScore('Impact Alignment') ?? 0;
-            $data['feasibility_score'] = $proposal->getDiscussionRankingScore('Feasibility') ?? 0;
-            $data['auditability_score'] = $proposal->getDiscussionRankingScore('Value for money') ?? 0;
+        $proposalData = $proposal->toArray();
 
-            return [
-                ...$data,
-            ];
-        });
+        $proposalData['alignment_score'] = $proposal->getDiscussionRankingScore('Impact Alignment') ?? 0;
+        $proposalData['feasibility_score'] = $proposal->getDiscussionRankingScore('Feasibility') ?? 0;
+        $proposalData['auditability_score'] = $proposal->getDiscussionRankingScore('Value for money') ?? 0;
 
         return [
             'proposal' => ProposalData::from($proposalData),
