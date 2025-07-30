@@ -127,7 +127,7 @@ const CategoriesSelector: React.FC<CategoriesSelectorProps> = ({
 
                 {/* Dropdown Content */}
                 {isDropdownOpen && (
-                    <div className="absolute z-15 w-full bottom-full mb-1 bg-background border border-gray-persist/[20%] rounded-lg shadow-xl max-h-60 overflow-y-auto" data-testid="service-categories-dropdown-content">
+                    <div className="absolute z-15 w-full bottom-full mb-1 bg-background border border-gray-persist/[50%] rounded-lg shadow-xl max-h-60 overflow-y-auto" data-testid="service-categories-dropdown-content">
                         {categories.map((category) => (
                             <div key={category.id} data-testid={`service-category-group-${category.slug}`}>
                                 {/* Parent Category as Title (Non-selectable) */}
@@ -140,7 +140,7 @@ const CategoriesSelector: React.FC<CategoriesSelectorProps> = ({
                                 {/* Subcategories (Selectable) */}
                                 {category.children && category.children.map((subcategory) => (
                                     <label 
-                                        key={subcategory.id} 
+                                        key={subcategory.slug}
                                         className="flex items-center px-4 py-2 hover:bg-gray-persist/[20%] cursor-pointer select-none"
                                         data-testid={`service-category-option-${subcategory.slug}`}
                                     >

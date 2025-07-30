@@ -90,6 +90,8 @@ class Proposals extends Resource
                 )
                 ->onlyOnForms(),
 
+            BelongsTo::make(__('Schedule'), 'schedule', ProjectSchedules::class),
+
             BelongsTo::make(__('Fund'), 'fund', Funds::class)
                 ->searchable()
                 ->filterable(),
