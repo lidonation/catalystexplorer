@@ -482,7 +482,7 @@ users: any | null;
 reviews: any | null;
 fund: App.DataTransferObjects.FundData | null;
 opensource: boolean | null;
-link?: string;
+link: string;
 order?: number;
 };
 export type RankingData = {
