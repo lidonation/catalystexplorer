@@ -65,8 +65,6 @@ composer:
   retry: 1
   rules:
     - if: '$DEPLOY_WEBAPP == "true"'
-  dependencies:
-    - yarn
   variables:
     GIT_SUBMODULE_STRATEGY: normal
   script: |-
@@ -97,8 +95,6 @@ yarn:
   retry: 1
   rules:
     - if: '$DEPLOY_WEBAPP == "true"'
-  needs:
-    - composer
   before_script:
     - apk add --update curl && rm -rf /var/cache/apk/*
   script: |-
@@ -111,6 +107,7 @@ yarn:
   artifacts:
     paths:
       - ./application/public
+       - ./application/node_modules 
     expire_in: 1 days
 
 ########## Automated Testing jobs #########
@@ -119,16 +116,18 @@ pest:
   stage: test
   image: docker:24.0.7-dind-alpine3.18
   retry: 1
-  artifacts:
-    paths:
-      - ./application/vendor
-    expire_in: 1 days
+  dependencies:
+    - composer
+    - yarn
+    
   script:
     - |-
       set -xev
       
       if [[ -n "$CI_REGISTRY_PASSWORD" ]]; then
-        docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
+        echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" --password-stdin "$CI_REGISTRY"
+      else
+        echo "Skipping Docker login - no registry password provided"
       fi
       
       cp application/.env.testing application/.env
@@ -153,13 +152,9 @@ pest:
        php artisan cx:create-search-index "App\Models\VoterHistory" && \
        sleep 10 && \
        php artisan cx:create-search-index "App\Models\MonthlyReport" && \
-       php -d vendor/bin/pest'
+       php artisan test'
   rules:
     - if: '$CI_COMMIT_BRANCH != "main" && ($DEPLOY_WEBAPP == "true")'
-  dependencies:
-    - composer
-    - yarn
-
 
 
 # playwright:
@@ -361,7 +356,7 @@ pest:
   artifacts:
     paths: [ environment_url.txt ]
 
-############ Build Jobs ##############
+############ Build Jobs ##############      
 ######################################
 build_web:
   stage: build
