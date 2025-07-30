@@ -1,3 +1,16 @@
+# [1.2.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.1.0...v1.2.0) (2025-07-30)
+
+
+### Bug Fixes
+
+* cleanup ui and tweak tinder workflow ui ([ef11212](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/ef11212b6e045950a06bc473520ef08a880ebd05))
+
+
+### Features
+
+* add nova resources for milestone models ([b4ba039](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/b4ba0392f47a7149ae855991418b13ba0d596d22))
+* adding project schedule to single proposal page ([6f8317e](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/6f8317ec28f29f97df684b8eefea8819fe0ce772))
+
 # [1.1.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.0.0...v1.1.0) (2025-07-29)
 
 
