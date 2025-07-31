@@ -176,7 +176,11 @@ const Manage = (props: BookmarkCollectionListProps) => {
             <Head title={t('bookmarks.listTitle')} />
 
             <header className="container mt-4 flex flex-col items-start lg:mt-6">
-                <Title level="1">{bookmarkCollection.title ?? ''}</Title>
+                <Title level="1">
+                    {bookmarkCollection.title ?? ''}
+                    {bookmarkCollection.tinder_direction === 'right' && t('rightSwipes')}
+                    {bookmarkCollection.tinder_direction === 'left' && t('leftSwipes')}
+                </Title>
                 <p className="text-content">
                     {t(bookmarkCollection.content ?? '')}
                 </p>

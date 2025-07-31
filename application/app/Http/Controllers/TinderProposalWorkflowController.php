@@ -11,6 +11,7 @@ use App\DataTransferObjects\ProposalData;
 use App\Enums\BookmarkableType;
 use App\Enums\BookmarkStatus;
 use App\Enums\TinderWorkflowParams;
+use App\Enums\VoteEnum;
 use App\Models\BookmarkCollection;
 use App\Models\BookmarkItem;
 use App\Models\Fund;
@@ -621,7 +622,7 @@ class TinderProposalWorkflowController extends Controller
                     'user_id' => $request->user()->id,
                     'model_type' => Proposal::class,
                     'model_id' => $proposal->id,
-                    'vote' => null,
+                    'vote' => VoteEnum::NO->value,
                     'created_at' => now(),
                     'updated_at' => now(),
                 ]);
@@ -639,7 +640,7 @@ class TinderProposalWorkflowController extends Controller
                     'user_id' => $request->user()->id,
                     'model_type' => Proposal::class,
                     'model_id' => $proposal->id,
-                    'vote' => null,
+                    'vote' => VoteEnum::YES->value,
                     'created_at' => now(),
                     'updated_at' => now(),
                 ]);
@@ -705,13 +706,13 @@ class TinderProposalWorkflowController extends Controller
 
                 switch ($size) {
                     case 'small-scale':
-                        $sizeFilters[] = 'amount_requested <= 25000';
+                        $sizeFilters[] = 'amount_requested <= 75000';
                         break;
                     case 'mid-size':
-                        $sizeFilters[] = 'amount_requested > 25000 AND amount_requested <= 75000';
+                        $sizeFilters[] = 'amount_requested > 75000 AND amount_requested <= 110000';
                         break;
                     case 'large-scale':
-                        $sizeFilters[] = 'amount_requested > 75000';
+                        $sizeFilters[] = 'amount_requested > 110000';
                         break;
                     default:
                 }
@@ -931,23 +932,26 @@ class TinderProposalWorkflowController extends Controller
     public function addBookmarkItem(Request $request)
     {
         $validated = $request->validate([
-            'proposalHash' => 'required|string',
+            'proposalSlug' => 'required|string',
             'modelType' => 'required|string',
             'bookmarkCollection' => 'required|string',
+            'vote' => 'nullable|integer|in:-1,0,1', // Accept VoteEnum values
         ]);
-
+       
         $bookmarkCollection = BookmarkCollection::byHash($validated['bookmarkCollection']);
 
         if (! $bookmarkCollection || $bookmarkCollection->user_id !== Auth::id()) {
+
             return response()->json(['error' => 'Bookmark collection not found or access denied.'], 404);
+        }
+    
+        $proposal = Proposal::where('slug', $validated['proposalSlug'])->first();
+
+        if (! $proposal) {
+            return response()->json(['error' => 'Proposal not found.'], 404);
         }
 
         $bookmarkableType = BookmarkableType::tryFrom(Str::kebab($validated['modelType']))->getModelClass();
-        $proposal = $bookmarkableType::byHash($validated['proposalHash']);
-
-        if (! $proposal) {
-            return response()->json(['error' => "Proposal with hash {$validated['proposalHash']} not found."], 404);
-        }
 
         BookmarkItem::updateOrCreate([
             'user_id' => Auth::id(),
@@ -958,8 +962,9 @@ class TinderProposalWorkflowController extends Controller
             'title' => null,
             'content' => null,
             'action' => null,
+            'vote' => isset($validated['vote']) ? $validated['vote'] : null,
         ]);
-
+       
         $bookmarkCollection->searchable();
 
         return response()->json(['success' => 'Proposal added to collection successfully.']);
