@@ -14,6 +14,8 @@ interface BookmarkPage1Props extends TransitionListPageProps {
     isBookmarked?: boolean;
     handleRemoveBookmark?: () => void;
     onNavigate?: (pageIndex: number) => void;
+    onClose?: () => void;
+    
 }
 
 const BookmarkPage1 = ({
@@ -54,27 +56,37 @@ const BookmarkPage1 = ({
     };
 
     const handleCheckboxChange = async (listId: string) => {
-        setIsLoading(true);
-        setLoadingListId(listId);
+    setIsLoading(true);
+    setLoadingListId(listId);
 
-        try {
-            // If selecting the already selected list, deselect it
-            if (listId === selectedListId) {
-                await removeBookmarkFromList(listId, bookmarkId);
-                setSelectedListId(null);
-            } else {
-                // Otherwise, add bookmark to the newly selected list
-                await addBookmarkToList(listId, bookmarkId);
-                setSelectedListId(listId);
-            }
-        } catch (error) {
-            console.error('Error updating list selection', error);
-            toast.error(t('listQuickCreate.errorUpdating'));
-        } finally {
-            setLoadingListId(null);
-            setIsLoading(false);
+    try {
+        // If selecting the already selected list, deselect it
+        if (listId === selectedListId) {
+            await removeBookmarkFromList(listId, bookmarkId);
+            setSelectedListId(null);
+            // Toast for removing bookmark from list
+            toast.success(t('Bookmark Removed From List'), {
+                className: 'bg-gray-800 text-white',
+                toastId: 'bookmark-removed-from-list',
+            });
+        } else {
+            // Otherwise, add bookmark to the newly selected list
+            await addBookmarkToList(listId, bookmarkId);
+            setSelectedListId(listId);
+            // Toast for adding bookmark to list
+            toast.success(t('Bookmark Added To List'), {
+                className: 'bg-gray-800 text-white',
+                toastId: 'bookmark-added-to-list',
+            });
         }
-    };
+    } catch (error) {
+        console.error('Error updating list selection', error);
+        toast.error(t('listQuickCreate.errorUpdating'));
+    } finally {
+        setLoadingListId(null);
+        setIsLoading(false);
+    }
+};
 
     const SkeletonLoader = () => (
         <div className="animate-pulse space-y-4">

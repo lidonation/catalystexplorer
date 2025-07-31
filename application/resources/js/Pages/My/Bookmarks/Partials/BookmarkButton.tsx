@@ -58,7 +58,10 @@ export default function BookmarkButton({
                 <button
                     className="cursor-pointer rounded-full p-1.5 relative"
                     aria-label={`bookmark-${modelType}`}
-                    onClick={toggleBookmark}
+                    onPointerDown={(e) => {
+                    e.stopPropagation(); // optional
+                    toggleBookmark();
+                    }}
                     onMouseEnter={() => setIsHovered(true)}
                     onMouseLeave={() => setIsHovered(false)}
                 >
