@@ -3,11 +3,10 @@ import ProposalData = App.DataTransferObjects.ProposalData;
 import { ReactNode, useCallback, useEffect, useMemo, useState } from "react";
 import { shortNumber } from "@/utils/shortNumber";
 import { generateTabs, proposalTabs } from '@/utils/routeTabs';
-import { useTranslation } from "react-i18next";
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import ProposalTab from "./Partials/ProposalTab";
 import { ListProvider } from "@/Context/ListContext";
 import BookmarkButton from "../My/Bookmarks/Partials/BookmarkButton";
-import Paragraph from "@/Components/atoms/Paragraph";
 import { ArrowUpRight } from "@/Components/svgs/ArrowUpRight";
 import Markdown from "marked-react";
 import Button from "@/Components/atoms/Button";
@@ -25,38 +24,38 @@ interface ProposalProps {
     catalystConnectionsCount?: number;
 }
 
-const Show = ({ 
-        children, 
+const Show = ({
+        children,
         proposal,
-        globalQuickPitchView, 
-        userCompleteProposalsCount, 
-        userOutstandingProposalsCount, 
-        catalystConnectionsCount 
+        globalQuickPitchView,
+        userCompleteProposalsCount,
+        userOutstandingProposalsCount,
+        catalystConnectionsCount
     }: ProposalProps) => {
-        const { t } = useTranslation();
-        
+        const { t } = useLaravelReactI18n();
+
         const [userSelected, setUserSelected] =
             useState<App.DataTransferObjects.IdeascaleProfileData | null>(null);
 
         const noSelectedUser = useCallback(() => setUserSelected(null), []);
-        
+
         const [localQuickPitchView, setLocalQuickPitchView] = useState(false);
-        
+
         const [activeTab, setActiveTab] = useState('');
-        
+
         const [isContentExpanded, setIsContentExpanded] = useState(false);
-        
+
         const hasQuickPitch = useMemo(
             () => Boolean(proposal.quickpitch),
             [proposal.quickpitch],
         );
-        
+
         const handleUserClick = useCallback(
             (user: App.DataTransferObjects.IdeascaleProfileData) =>
                 setUserSelected(user),
             [],
         );
-        
+
         const tabConfig = useMemo(
             () => ({
                 ...proposalTabs,
@@ -68,14 +67,14 @@ const Show = ({
 
         useEffect(() => {
             const currentPath = window.location.pathname;
-    
+
             const matchingTab = tabs.find((tab) => {
                 const cleanCurrentPath = currentPath.replace(/\/$/, '');
                 const cleanTabPath = tab.href.replace(/\/$/, '');
-    
+
                 return cleanCurrentPath.endsWith(cleanTabPath);
             });
-    
+
             if (matchingTab) {
                 setActiveTab(matchingTab.name);
             }
@@ -91,7 +90,7 @@ const Show = ({
             [proposal?.yes_votes_count],
         );
 
-        
+
         useEffect(() => {
             if (hasQuickPitch) {
                 setLocalQuickPitchView(globalQuickPitchView);
@@ -154,7 +153,7 @@ const Show = ({
     return (
         <div className="mt-10 flex flex-col gap-4 px-8 sm:px-4 md:px-6 lg:flex-row lg:px-8">
             <Head title={`${proposal.title} - Proposal`} />
-            
+
             <div className="mx-auto w-full md:w-3/4 lg:sticky lg:top-4 lg:mx-0 lg:w-1/3 lg:self-start xl:w-1/4 mb-4">
                 <ProposalExtendedCard {...layoutProps} />
             </div>
@@ -168,11 +167,12 @@ const Show = ({
                         <ListProvider>
                             {proposal.hash && (
                                 <>
-                                    <Paragraph>{t('buttons.bookmark')}</Paragraph>
                                     <BookmarkButton
                                         modelType="proposals"
                                         itemId={proposal.hash}
-                                    />
+                                    >
+                                        <span>{t('buttons.bookmark')}</span>
+                                    </BookmarkButton>
                                 </>
                             )}
                         </ListProvider>
@@ -181,7 +181,7 @@ const Show = ({
 
                 <section>{children}</section>
 
-                <div className="self-stretch p-4 sm:p-6 bg-background rounded-xl shadow-[0px_1px_4px_0px_rgba(16,24,40,0.10)] flex flex-col sm:flex-row justify-between items-start gap-5 sm:gap-2">
+                <div className="self-stretch p-4 sm:p-6 bg-background rounded-xl shadow-cx-box-shadow flex flex-col sm:flex-row justify-between items-start gap-5 sm:gap-2">
                     <div className="w-full sm:w-auto flex flex-wrap items-center gap-6 sm:gap-4">
                         <div className="flex-1 sm:flex-initial min-w-[30%] sm:min-w-0 flex flex-col items-start">
                             <div className="text-gray-persist text-sm">{t('proposals.outstanding')}</div>
@@ -196,7 +196,7 @@ const Show = ({
                             <div className="text-content text-base">{catalystConnectionsCount}</div>
                         </div>
                     </div>
-                    
+
                     <div className="flex items-center justify-center sm:justify-end w-full sm:w-auto">
                         <Button className="w-44 px-4 py-2.5 bg-gradient-to-t from-background-home-gradient-color-1 to-background-home-gradient-color-2 rounded-lg flex justify-center items-center gap-1.5 overflow-hidden">
                             <div className="px-0.5 flex justify-center items-center">
@@ -207,23 +207,23 @@ const Show = ({
                     </div>
                 </div>
 
-                <div className="self-stretch p-6 bg-background rounded-xl shadow-[0px_1px_4px_0px_rgba(16,24,40,0.10)] flex flex-col items-start gap-4 mt-4 mb-4 relative">
+                <div className="self-stretch p-6 bg-background rounded-xl shadow-cx-box-shadow flex flex-col items-start gap-4 mt-4 mb-4 relative">
                     <div className='w-full flex justify-end'>
-                        <Button 
-                            onClick={toggleContentExpand} 
+                        <Button
+                            onClick={toggleContentExpand}
                             className="p-2 rounded-full"
                             aria-label={isContentExpanded ? t('common.collapse') : t('common.expand')}
                         >
                             {isContentExpanded ? <MinusIcon /> : <PlusIcon />}
                         </Button>
                     </div>
-                    
+
                     <div className={`w-full overflow-hidden transition-all duration-300 ${isContentExpanded ? 'max-h-full' : 'max-h-140'}`}>
                         <Markdown>
                             {getMarkdownContent(proposal.content)}
                         </Markdown>
                     </div>
-                    
+
                     {!isContentExpanded && (
                         <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-background to-transparent pointer-events-none" />
                     )}

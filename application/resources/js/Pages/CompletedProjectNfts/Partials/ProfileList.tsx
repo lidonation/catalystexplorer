@@ -2,7 +2,7 @@ import Checkbox from '@/Components/atoms/Checkbox';
 import Paragraph from '@/Components/atoms/Paragraph';
 import RecordsNotFound from '@/Layouts/RecordsNotFound';
 import React from 'react';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import ProfileCard from './ProfileCard';
 import IdeascaleProfileData = App.DataTransferObjects.IdeascaleProfileData;
 
@@ -15,7 +15,7 @@ const ProfileList: React.FC<ProfileListProps> = ({
     profiles,
     onProfileClick,
 }) => {
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
 
     if (!Array.isArray(profiles) || profiles?.length === 0) {
         return (

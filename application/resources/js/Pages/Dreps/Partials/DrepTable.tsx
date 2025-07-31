@@ -5,7 +5,7 @@ import ToolTipHover from '@/Components/ToolTipHover';
 import { currency } from '@/utils/currency';
 import { Button } from '@headlessui/react';
 import { useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import CatalystDrepData = App.DataTransferObjects.CatalystDrepData;
 
 interface DrepTableProps {
@@ -13,7 +13,7 @@ interface DrepTableProps {
 }
 
 export default function DrepTable({ dreps }: DrepTableProps) {
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
 
     const [copySuccess, setCopySuccess] = useState<Record<number, boolean>>(
         Object.fromEntries(dreps.map((_, index) => [index, false])),
@@ -28,6 +28,9 @@ export default function DrepTable({ dreps }: DrepTableProps) {
         { label: t('dreps.drepList.status') },
         { label: t('dreps.drepList.delegate') },
     ];
+
+        const [isHovered, setIsHovered] = useState(false);
+
 
     const handleCopy = (text: string, index: number) => {
         navigator.clipboard
@@ -131,11 +134,17 @@ export default function DrepTable({ dreps }: DrepTableProps) {
                                 </div>
                             </td>
                             <td className="px-4 py-2">
-                                <div className="group relative inline-block w-full">
-                                    <ToolTipHover
-                                        props={t('Feature Unavailable')}
-                                        className="pointer-events-none absolute bottom-full left-1/2 z-10 mb-2 -translate-x-1/2 opacity-0 transition-opacity duration-200 group-hover:opacity-100"
-                                    />
+                                <div
+                                    onMouseEnter={() => setIsHovered(true)}
+                                    onMouseLeave={() => setIsHovered(false)}
+                                    className="group relative inline-block w-full"
+                                >
+                                    {/* {isHovered && (
+                                        <ToolTipHover
+                                            props={t('Feature Unavailable')}
+                                            className="pointer-events-none absolute bottom-full left-1/2 z-10 mb-2 -translate-x-1/2 opacity-0 transition-opacity duration-200 group-hover:opacity-100"
+                                        />
+                                    )} */}
                                     <PrimaryButton
                                         disabled
                                         className="bg-primary text-content-light w-full cursor-not-allowed rounded px-3 py-1 text-sm"

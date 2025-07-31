@@ -1,5 +1,3 @@
-import { useTranslation } from 'react-i18next';
-
 type FileIconProps = {
     className?: string;
     width?: number;
@@ -10,7 +8,6 @@ export default function Error404Icon({
     width = 400,
     height = 300,
 }: FileIconProps) {
-    const { t } = useTranslation();
     return (
         <svg
             width={width}

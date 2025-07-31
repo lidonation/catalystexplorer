@@ -7,7 +7,7 @@ import {
     useLocalizedRoute,
 } from '@/utils/localizedRoute';
 import { useForm } from '@inertiajs/react';
-import { t } from 'i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import React, { useRef, useState } from 'react';
 import Content from '../Partials/WorkflowContent';
@@ -24,6 +24,7 @@ interface Step1Props {
 }
 
 const Step2: React.FC<Step1Props> = ({ profile, stepDetails, activeStep }) => {
+    const { t } = useLaravelReactI18n();
     const [isFormValid, setIsFormValid] = useState(false);
     const formRef = useRef<ClaimFormHandles>(null);
 

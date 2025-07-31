@@ -12,7 +12,7 @@ import VideoCameraIcon from '@/Components/svgs/VideoCameraIcon';
 import { usePlayer } from '@/Context/PlayerContext';
 import { useUIContext } from '@/Context/SharedUIContext';
 import { usePage } from '@inertiajs/react';
-import 'plyr-react/plyr.css';
+// import 'plyr-react/plyr.css';
 import { useEffect } from 'react';
 import PlaylistAnimation from './Playlist';
 
@@ -122,6 +122,7 @@ const PlayerBar = () => {
                                     disabled={loading || !playlist}
                                     onClick={prevTrack}
                                     className="background-button-gradient-color-2 border-dark hover:bg-dark flex h-8 w-8 items-center justify-center rounded-md border sm:h-12 sm:w-12"
+                                    data-testid="playerbar-prev-button"
                                 >
                                     <PlayerSkipBack />
                                 </button>
@@ -129,6 +130,7 @@ const PlayerBar = () => {
                                     disabled={loading || !playlist}
                                     onClick={handlePlayPause}
                                     className="background-button-gradient-color-2 border-dark hover:bg-dark flex h-8 w-8 items-center justify-center rounded-md border sm:h-12 sm:w-12"
+                                    data-testid="playerbar-playpause-button"
                                 >
                                     {isPlaying ? (
                                         <PlayerPause />
@@ -140,6 +142,7 @@ const PlayerBar = () => {
                                     disabled={loading}
                                     onClick={handleStop}
                                     className="background-button-gradient-color-2 border-dark hover:bg-dark flex h-8 w-8 items-center justify-center rounded-md border sm:h-12 sm:w-12"
+                                    data-testid="playerbar-stop-button"
                                 >
                                     <PlayerStop />
                                 </button>

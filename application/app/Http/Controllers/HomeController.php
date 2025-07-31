@@ -21,18 +21,15 @@ use Inertia\Response;
 class HomeController extends Controller
 {
     public function index(
-        PostRepository $posts,
+        PostRepository $postRepository,
         ProposalRepository $proposals,
         MetricRepository $metrics,
         AnnouncementRepository $announcements
     ): Response {
-        $posts->setQuery([
-            'tags' => 'project-catalyst',
-        ]);
 
         return Inertia::render('Home/Index', [
             'posts' => Inertia::optional(
-                fn () => $posts->paginate(4)->setMaxPages(1)->collect()->all()
+                fn () => $this->getPosts($postRepository)
             ),
             'proposals' => Inertia::optional(
                 fn () => ProposalData::collect(
@@ -76,6 +73,35 @@ class HomeController extends Controller
                 )
             ),
         ]);
+    }
+
+    public function getPosts(PostRepository $postRepository)
+    {
+
+        $postRepository->setQuery([
+            'tags' => 'project-catalyst',
+        ]);
+
+        $posts = [];
+
+        try {
+            $posts = $postRepository->paginate(4)->setMaxPages(1)->collect()->all();
+        } catch (\Throwable $e) {
+            report($e);
+
+            $posts = new \Illuminate\Pagination\LengthAwarePaginator(
+                collect([]),
+                0,
+                4,
+                request('page', 1),
+                [
+                    'path' => request()->url(),
+                    'query' => request()->query(),
+                ]
+            );
+        }
+
+        return $posts;
     }
 
     private function getHomeMetrics(MetricRepository $metrics)

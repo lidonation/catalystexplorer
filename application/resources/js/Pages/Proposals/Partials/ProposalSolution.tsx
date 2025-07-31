@@ -1,7 +1,7 @@
 import Title from '@/Components/atoms/Title';
 import { PageProps } from '@/types';
 import Markdown from "marked-react";
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import ExpandableContentAnimation from '@/Components/ExpandableContentAnimation';
 import ExpandableContent from '@/Components/ExpandableContent';
 import { useRef, useState, useEffect } from 'react';
@@ -19,10 +19,10 @@ export default function ProposalSolution({
     slug,
     onContentExpand,
 }: PageProps<ProposalSolution>) {
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
     const [isHoveredSolution, setIsHoveredSolution] = useState(false);
     const containerRef = useRef<HTMLDivElement | null>(null);
-    
+
     const [solutionLineCount, setSolutionLineCount] = useState(0);
 
     useEffect(() => {
@@ -33,7 +33,7 @@ export default function ProposalSolution({
             setSolutionLineCount(Math.round(height / lineHeight));
         }
     }, [solution]);
-    
+
     return (
         <ExpandableContentAnimation
             lineClamp={3}
@@ -43,6 +43,7 @@ export default function ProposalSolution({
             <section
                 className="proposal-solution bg-background"
                 ref={containerRef}
+                data-testid="proposal-solution-section"
             >
                 {(solution || problem ) && (
                     <div className="solution-container">
@@ -51,6 +52,7 @@ export default function ProposalSolution({
                                 level="5"
                                 id="solution-heading"
                                 className="mt-2 text-content text-base font-medium"
+                                data-testid="proposal-solution-or-problem"
                             >
                                 {solution ? t('solution') : t('problem')}
                             </Title>
@@ -62,7 +64,7 @@ export default function ProposalSolution({
                                 lineClamp={3}
                                 collapsedHeight={120}
                             >
-                                <div 
+                                <div
                                     ref={containerRef}
                                     className={`${solutionLineCount > 3 ? 'cursor-pointer' : ''} ${isHoveredSolution ? 'bg-background relative z-10' : ''}`}
                                     style={{
@@ -70,6 +72,7 @@ export default function ProposalSolution({
                                             ? '20px'
                                             : '0',
                                     }}
+                                    data-testid="proposal-solution-or-problem-content"
                                 >
                                     <Markdown>{solution || problem}</Markdown>
                                 </div>

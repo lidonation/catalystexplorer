@@ -77,10 +77,11 @@ const RangeFilters = ({
         <div
             className="bg-background mr-1 flex items-center rounded-lg border px-1 py-1"
             key={filter.label}
+            data-testid={`range-filter-${filter.param}`}
         >
             <div className="mr-1">{filter.label}</div>
             <div>{`from ${shortNumber(filter.value[0])} to  ${shortNumber(filter.value[1])}`}</div>
-            <button className="ml-2" onClick={() => removeFilter()}>
+            <button className="ml-2" onClick={() => removeFilter()} data-testid={`remove-range-filter-${filter.param}`}>
                 X{' '}
             </button>
         </div>

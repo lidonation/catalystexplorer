@@ -20,6 +20,7 @@ interface RoutedModalLayoutProps {
     onModalOpened?: () => void;
     name?: string;
     zIndex?: string;
+    dataTestId?: string;
 }
 
 interface InertiaModalProps {
@@ -42,7 +43,8 @@ const RoutedModalLayout: React.FC<RoutedModalLayoutProps> = ({
     onModalClosed,
     onModalOpened,
     name,
-    zIndex
+    zIndex,
+    dataTestId
 }) => {
     const modalRef = useRef<{ close: () => void }>(null);
     const {_inertiaui_modal}= usePage().props as any;
@@ -88,6 +90,7 @@ const RoutedModalLayout: React.FC<RoutedModalLayoutProps> = ({
                 return (
                     <div
                         className={`fixed inset-0 ${zIndex} overflow-hidden ${isOpen ? 'block' : 'hidden'}`}
+                        data-testid={dataTestId}
                     >
                         {/* Overlay */}
                          <div

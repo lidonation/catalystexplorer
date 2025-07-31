@@ -5,7 +5,7 @@ import {
 } from '@/types/search';
 import { Head, WhenVisible } from '@inertiajs/react';
 import { useEffect, useRef, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import DynamicSearchResults, {
 } from './Partials/DynamicSearchResults';
 import RecordsNotFound from '@/Layouts/RecordsNotFound';
@@ -21,7 +21,7 @@ export const TAB_CONFIG: TabConfig[] = [];
 
 const SearchResults = ({ counts, ...results }: SearchResultsProps) => {
     const search = window.location.search;
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
     const params = new URLSearchParams(search);
     const query = params.get('q');
     const filters = params.get('f');
@@ -34,7 +34,7 @@ const SearchResults = ({ counts, ...results }: SearchResultsProps) => {
               .filter(
                   (filter) => counts[filter as keyof SearchResultCounts] > 0,
               )
-        : Object.keys(t('searchResults.tabs', { returnObjects: true })).filter(
+        : Object.keys(t('searchResults.tabs')).filter(
               (filter) => counts[filter as keyof SearchResultCounts] > 0,
           );
 
@@ -123,22 +123,22 @@ const SearchResults = ({ counts, ...results }: SearchResultsProps) => {
 
     if (TAB_CONFIG.length === 0) {
         return (
-            <div className="container py-8">
+            <div className="w-full py-8 px-4">
                 <RecordsNotFound context="search" />
                 {/* <EmptyState query={query as string} translation={t} /> */}
             </div>
         );
     }
-    
+
     return (
         <>
             <Head title="Search Results" />
             <div className="min-h-screen">
                 <div className="sticky top-0 z-50 backdrop-blur-md">
-                    <div className="container px-4 py-4">
+                    <div className="w-full px-4 py-4">
                         <div className="mb-4 flex w-full flex-col">
                             <Title level='3'>
-                                {t('searchResults.results.title', { query })}
+                                {t('searchResults.results.title')}
                             </Title>
                         </div>
                         <ResultTabs
@@ -150,11 +150,11 @@ const SearchResults = ({ counts, ...results }: SearchResultsProps) => {
                     </div>
                 </div>
 
-                <div className="container flex flex-col gap-16 scroll-smooth py-8">
+                <div className="w-full flex flex-col gap-16 scroll-smooth py-8 px-4">
                     {TAB_CONFIG.map((tab) => (
                         <section
                             key={tab.name}
-                            className="min-h-screen scroll-mt-[120px]"
+                            className="min-h-screen scroll-mt-[120px] w-full"
                             id={`section-${tab.name}`}
                         >
                             <WhenVisible
@@ -167,7 +167,7 @@ const SearchResults = ({ counts, ...results }: SearchResultsProps) => {
                                     />
                                 }
                             >
-                                <div className="flex flex-col gap-2">
+                                <div className="flex flex-col gap-2 w-full">
                                     <DynamicSearchResults
                                         name={tab.name}
                                         data={results[tab.name] as any}

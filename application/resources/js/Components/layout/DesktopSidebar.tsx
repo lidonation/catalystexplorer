@@ -1,5 +1,5 @@
 import { usePage } from '@inertiajs/react';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import CatalystLogo from '../atoms/CatalystLogo';
 import AppNavigation from './AppNavigation';
 import ThemeSwitcher from './ThemeSwitcher';
@@ -8,15 +8,15 @@ import UserNavigation from './UserNavigation';
 import User = App.DataTransferObjects.UserData;
 
 function DesktopSidebar(props: any) {
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
     const { auth } = usePage().props;
     const { url } = usePage();
     const { ...rest } = props;
     const isOnMyRoute = url.includes('/my/');
 
-    const currentPath = window.location.pathname;
+    const currentPath = typeof window === 'undefined' ? null : window.location.pathname;
 
-    if (currentPath.includes('login') || currentPath.includes('register')) {
+    if (currentPath?.includes('login') || currentPath?.includes('register')) {
         return null;
     }
 
@@ -25,6 +25,7 @@ function DesktopSidebar(props: any) {
             {...rest}
             className={`flex h-full w-full flex-col ${!isOnMyRoute ? 'justify-between' : ''} gap-8`}
             aria-label={t('navigation.desktop.sidebar')}
+            data-testid="desktop-sidebar-navigation"
         >
             <section className="flex h-6 shrink-0 items-center sm:pt-8">
                 <CatalystLogo className="w-full" />
@@ -43,8 +44,8 @@ function DesktopSidebar(props: any) {
                             <UserNavigation />
                         </div>
                     </div>
-                    
-                    <div className="px-4">   
+
+                    <div className="px-4">
                       <div className="border-gray-200 flex flex-col gap-5 border-t-2 pt-5">
                             <UserDetails user={auth?.user as unknown as User} />
                         <div className="bg-background-darker -mx-4 py-4">

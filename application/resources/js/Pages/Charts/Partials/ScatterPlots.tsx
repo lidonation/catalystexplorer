@@ -3,7 +3,7 @@ import Title from '@/Components/atoms/Title';
 import { shortNumber } from '@/utils/shortNumber';
 import { ResponsiveScatterPlot } from '@nivo/scatterplot';
 import React, { useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import { useFilterContext } from '@/Context/FiltersContext';
 import { ParamsEnum } from '@/enums/proposal-search-params';
 
@@ -29,7 +29,7 @@ const ScatterPlot: React.FC<ScatterChartProps> = ({
     yAxisLabel,
     viewBy
 }) => {
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
     const { getFilter } = useFilterContext();
     const [normalizedData, setNormalizedData] = useState<any[]>([]);
 
@@ -45,10 +45,10 @@ const ScatterPlot: React.FC<ScatterChartProps> = ({
             return;
         }
 
-        const isSubmittedProposalsFormat = Array.isArray(chartData) && 
-            chartData.length > 0 && 
-            typeof chartData[0] === 'object' && 
-            !chartData[0].hasOwnProperty('fund') && 
+        const isSubmittedProposalsFormat = Array.isArray(chartData) &&
+            chartData.length > 0 &&
+            typeof chartData[0] === 'object' &&
+            !chartData[0].hasOwnProperty('fund') &&
             !chartData[0].hasOwnProperty('year');
 
         if (isSubmittedProposalsFormat) {
@@ -127,11 +127,22 @@ const ScatterPlot: React.FC<ScatterChartProps> = ({
                 year: item.year,
             })) as CustomScatterPlotDatum[],
         },
+        {
+            id: 'In Progress Proposals',
+            key: 'inProgressProposals',
+            param: ParamsEnum.IN_PROGRESS,
+            data: normalizedData.map((item: any) => ({
+                x: viewBy === 'fund' ? labelToIndex(item.fund) : labelToIndex(item.year),
+                y: item.inProgressProposals ?? 0,
+                fund: item.fund,
+                year: item.year,
+            })) as CustomScatterPlotDatum[],
+        },
     ];
 
     const getActiveDataSeries = () => {
         if (!normalizedData || normalizedData.length === 0) return [];
-        
+
         return allDataSeries.filter(series => {
             const filterValue = getFilter(series.param);
             return filterValue && filterValue.length > 0;
@@ -236,7 +247,7 @@ const ScatterPlot: React.FC<ScatterChartProps> = ({
                     tooltip={({ node }) => {
                         const nodeData = node?.data as CustomScatterPlotDatum;
                         return (
-                            <div className="bg-tooltip rounded-lg p-4 text-white shadow-lg">
+                            <div className="bg-tooltip rounded-lg p-4 text-white shadow-lg w-full">
                                 <Title
                                     level="3"
                                     className="text-lg font-semibold"

@@ -46,6 +46,7 @@ const MetricCardList: React.FC<MetricProps> = ({
     return (
         <ul
             className={`grid grid-cols-1 lg:grid-cols-2 xl:${columnClass} mt-8 gap-6`}
+            data-testid="metric-card-list"
         >
             {sortedMetrics &&
                 sortedMetrics?.map((metric, index) => (

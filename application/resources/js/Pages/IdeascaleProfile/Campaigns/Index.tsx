@@ -3,7 +3,7 @@ import CampaignCardMini from '@/Pages/Campaign/Partials/CampaignCardMini';
 import CampaignList from '@/Pages/Campaign/Partials/CampaignList';
 import CampaignLoader from '@/Pages/Campaign/Partials/CampaignLoader';
 import { Head, WhenVisible } from '@inertiajs/react';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import IdeascaleProfileLayout from '../IdeascaleProfileLayout';
 import IdeascaleProfileData = App.DataTransferObjects.IdeascaleProfileData;
 import CampaignData = App.DataTransferObjects.CampaignData;
@@ -17,7 +17,7 @@ export default function Campaigns({
     ideascaleProfile,
     campaigns,
 }: CamPageProps) {
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
 
     return (
         <IdeascaleProfileLayout ideascaleProfile={ideascaleProfile}>

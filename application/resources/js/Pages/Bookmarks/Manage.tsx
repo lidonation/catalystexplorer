@@ -12,7 +12,7 @@ import EventBus from '@/utils/eventBus';
 import { generateLocalizedRoute } from '@/utils/localizedRoute';
 import { Head, Link, router } from '@inertiajs/react';
 import { useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import CommunitiesPaginatedList from '../Communities/Partials/CommunitiesPaginatedList';
 import GroupPaginatedList from '../Groups/Partials/GroupPaginatedList';
 import IdeascaleProfilePaginatedList from '../IdeascaleProfile/Partials/IdeascaleProfilePaginatedList';
@@ -60,7 +60,7 @@ type BookmarkCollectionListProps =
 
 const Manage = (props: BookmarkCollectionListProps) => {
     const { type, bookmarkCollection } = props;
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
     const [activeTab, setTab] = useState(type);
 
     const setActiveTab = (val: typeof type) => {
@@ -176,7 +176,11 @@ const Manage = (props: BookmarkCollectionListProps) => {
             <Head title={t('bookmarks.listTitle')} />
 
             <header className="container mt-4 flex flex-col items-start lg:mt-6">
-                <Title level="1">{bookmarkCollection.title ?? ''}</Title>
+                <Title level="1">
+                    {bookmarkCollection.title ?? ''}
+                    {bookmarkCollection.tinder_direction === 'right' && t('rightSwipes')}
+                    {bookmarkCollection.tinder_direction === 'left' && t('leftSwipes')}
+                </Title>
                 <p className="text-content">
                     {t(bookmarkCollection.content ?? '')}
                 </p>

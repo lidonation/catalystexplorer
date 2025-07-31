@@ -1,0 +1,32 @@
+FROM mcr.microsoft.com/playwright:v1.53.0-noble
+
+# Install Java, Docker CLI and Docker Compose plugin
+RUN apt-get update && apt-get install -y \
+    openjdk-11-jre-headless \
+    curl \
+    ca-certificates \
+    gnupg \
+    lsb-release \
+    apt-transport-https \
+    software-properties-common && \
+    ln -s /usr/lib/jvm/java-11-openjdk-* /usr/lib/jvm/java-11-openjdk && \
+    echo "JAVA_HOME=/usr/lib/jvm/java-11-openjdk" >> /etc/environment && \
+    # Add Docker's official GPG key and repo
+    curl -fsSL https://download.docker.com/linux/debian/gpg | gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg && \
+    echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] \
+    https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" \
+    > /etc/apt/sources.list.d/docker.list && \
+    apt-get update && \
+    apt-get install -y docker-ce-cli docker-compose-plugin && \
+    apt-get clean && rm -rf /var/lib/apt/lists/*
+
+ENV JAVA_HOME=/usr/lib/jvm/java-11-openjdk
+ENV PATH="${JAVA_HOME}/bin:${PATH}"
+
+WORKDIR /workspace
+
+# COPY application/package*.json ./
+
+# RUN npm install
+
+RUN npx playwright install --with-deps

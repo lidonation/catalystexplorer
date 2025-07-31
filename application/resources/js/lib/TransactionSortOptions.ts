@@ -1,11 +1,11 @@
-import { useTranslation } from "react-i18next";
+import {useLaravelReactI18n} from "laravel-react-i18n";
 
 const TransactionSortOptions = () => {
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
 
     return [
         {
-            label: t('transactions.options.newestToOldest'), 
+            label: t('transactions.options.newestToOldest'),
             value: 'created_at:desc',
         },
         {

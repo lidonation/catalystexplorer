@@ -12,8 +12,8 @@ const ProposalCardFooter: React.FC<ProposalCardFooterProps> = ({
     t,
 }) => {
     return (
-    <footer className="flex items-center justify-between rounded-lg border border-gray-200 divide-x divide-gray-300 bg-background">
-        <button className="flex w-1/2 items-center justify-center gap-1 py-2 px-4">
+    <footer className="flex items-center justify-between rounded-lg border border-gray-200 divide-x divide-gray-300 bg-background" data-testid="proposal-card-footer">
+        <button className="flex w-1/2 items-center justify-center gap-1 py-2 px-4" data-testid="proposal-card-yes-votes-button">
             <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
@@ -32,7 +32,7 @@ const ProposalCardFooter: React.FC<ProposalCardFooterProps> = ({
             </span>
         </button>
         <div className="h-full border-r"></div>
-        <button className="text-4 flex w-1/2 items-center gap-1 justify-center p-2">
+        <button className="text-4 flex w-1/2 items-center gap-1 justify-center p-2" data-testid="proposal-card-abstain-votes-button">
             <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"

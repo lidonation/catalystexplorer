@@ -2,7 +2,7 @@ import { MapPin, Mail } from 'lucide-react';
 import Title from '@/Components/atoms/Title';
 import User = App.DataTransferObjects.UserData;
 import BackgroundHeader from '@/assets/images/background-header.png';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import Image from '@/Components/Image';
 import { Link, usePage } from '@inertiajs/react';
 
@@ -11,7 +11,7 @@ interface UserSectionProps {
 }
 
 const UserSection = ({ user }: UserSectionProps) => {
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
     const { url } = usePage().props;
 
     const isDashboardPage = typeof url === 'string'

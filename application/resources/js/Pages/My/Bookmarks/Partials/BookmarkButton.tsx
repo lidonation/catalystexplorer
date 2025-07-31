@@ -6,13 +6,14 @@ import BookmarkPage1 from '@/Pages/My/Lists/Partials/ListCreateFromBookmarkSave/
 import BookmarkPage2 from '@/Pages/My/Lists/Partials/ListCreateFromBookmarkSave/Step2';
 import BookmarkPage3 from '@/Pages/My/Lists/Partials/ListCreateFromBookmarkSave/Step3';
 import TransitionMenu from '@/Pages/My/Lists/Partials/TransitionMenu';
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 
 interface BookmarkButtonProps {
     modelType: string;
     itemId: string;
     width?: number;
     height?: number;
+    children?: React.ReactNode;
 }
 
 export default function BookmarkButton({
@@ -20,6 +21,7 @@ export default function BookmarkButton({
     itemId,
     width = 24,
     height = 24,
+    children
 }: BookmarkButtonProps) {
     const {
         isBookmarked,
@@ -31,12 +33,22 @@ export default function BookmarkButton({
         bookmarkId,
         associatedCollection,
     } = useBookmark({ modelType, itemId });
+
+     const buttonRef = useRef<HTMLButtonElement>(null);
+
     const handleOpenChange = async (open: boolean) => {
+         setIsOpen(open);
         // if (open && !isBookmarked) {
         //     await createBookmark();
         // } else {
         //     setIsOpen(open);
         // }
+        if (!open && buttonRef.current) {
+            buttonRef.current.blur();
+        }
+    };
+    const handleClose = () => {
+        handleOpenChange(false);
     };
     const [isHovered, setIsHovered] = useState(false);
 
@@ -47,6 +59,7 @@ export default function BookmarkButton({
             isBookmarked={isBookmarked}
             handleRemoveBookmark={removeBookmark}
             associateCollectionId={associatedCollection as string}
+            onClose={handleClose}
         />,
         <BookmarkPage2 key="priority" />,
         <BookmarkPage3 key="new-list" />,
@@ -56,7 +69,7 @@ export default function BookmarkButton({
         <TransitionMenu
             trigger={
                 <button
-                    className="cursor-pointer rounded-full p-1.5 relative"
+                    className="cursor-pointer rounded-full px-0 py-0.5 relative inline-flex gap-1"
                     aria-label={`bookmark-${modelType}`}
                     onPointerDown={(e) => {
                     e.stopPropagation(); // optional
@@ -64,7 +77,12 @@ export default function BookmarkButton({
                     }}
                     onMouseEnter={() => setIsHovered(true)}
                     onMouseLeave={() => setIsHovered(false)}
+                    style={{
+                        outline: 'none', // Remove focus outline
+                        WebkitTapHighlightColor: 'transparent' // Remove tap highlight on mobile
+                    }}
                 >
+                    {children}
                     {isHovered && (
                         <div className="absolute bottom-full left-1/2 z-50 mb-2 -translate-x-1/2 transform">
                             <ToolTipHover props={'Bookmark Item'} />

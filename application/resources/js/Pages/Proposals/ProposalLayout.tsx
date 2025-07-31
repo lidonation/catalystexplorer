@@ -1,5 +1,5 @@
 import { ReactNode, useCallback, useEffect, useMemo, useState } from "react";
-import { useTranslation } from "react-i18next";
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import { Head } from "@inertiajs/react";
 import { shortNumber } from "@/utils/shortNumber";
 import { generateTabs, proposalTabs } from '@/utils/routeTabs';
@@ -16,33 +16,33 @@ interface ProposalLayoutProps {
     setGlobalQuickPitchView?: (value: boolean) => void;
 }
 
-const ProposalLayout = ({ 
-    children, 
+const ProposalLayout = ({
+    children,
     proposal,
     globalQuickPitchView,
 }: ProposalLayoutProps) => {
-    const { t } = useTranslation();
-    
+    const { t } = useLaravelReactI18n();
+
     const [userSelected, setUserSelected] =
         useState<App.DataTransferObjects.IdeascaleProfileData | null>(null);
 
     const noSelectedUser = useCallback(() => setUserSelected(null), []);
-    
+
     const [localQuickPitchView, setLocalQuickPitchView] = useState(false);
-    
+
     const [activeTab, setActiveTab] = useState('');
-    
+
     const hasQuickPitch = useMemo(
         () => Boolean(proposal.quickpitch),
         [proposal.quickpitch],
     );
-    
+
     const handleUserClick = useCallback(
         (user: App.DataTransferObjects.IdeascaleProfileData) =>
             setUserSelected(user),
         [],
     );
-    
+
     const tabConfig = useMemo(
         () => ({
             ...proposalTabs,
@@ -77,7 +77,7 @@ const ProposalLayout = ({
         [proposal?.yes_votes_count],
     );
 
-    
+
     useEffect(() => {
         if (hasQuickPitch) {
             setLocalQuickPitchView(globalQuickPitchView);
@@ -112,7 +112,7 @@ const ProposalLayout = ({
     return (
         <div className="mt-10 flex flex-col gap-4 px-8 sm:px-4 md:px-6 lg:flex-row lg:px-8">
             <Head title={`${proposal.title} - Proposal`} />
-            
+
             <div className="mt-7 w-full md:w-3/4 lg:sticky lg:top-4 lg:mx-0 lg:w-1/3 lg:self-start xl:w-1/4 mb-4">
                 <ProposalExtendedCard {...layoutProps} />
             </div>
@@ -122,15 +122,16 @@ const ProposalLayout = ({
                     <section className="text-content-lighter relative z-0 overflow-x-auto [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden flex-grow w-full mt-4 sm:mt-0">
                         <ProposalTab tabs={tabs} activeTab={activeTab} />
                     </section>
-                    <div className="px-3 bg-background rounded-lg shadow-md flex-shrink-0 flex items-center justify-center overflow-hidden self-end sm:self-auto sm:ml-2">
+                    <div className="p-2 bg-background rounded-lg shadow-md flex-shrink-0 inline-flex items-center justify-center overflow-hidden self-end sm:ml-2">
                         <ListProvider>
                             {proposal.hash && (
                                 <>
-                                    <Paragraph>{t('buttons.bookmark')}</Paragraph>
                                     <BookmarkButton
                                         modelType="proposals"
                                         itemId={proposal.hash}
-                                    />
+                                    >
+                                        <span>{t('buttons.bookmark')}</span>
+                                    </BookmarkButton>
                                 </>
                             )}
                         </ListProvider>

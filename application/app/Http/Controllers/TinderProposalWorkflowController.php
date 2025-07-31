@@ -8,9 +8,12 @@ use App\Actions\TransformIdsToHashes;
 use App\DataTransferObjects\BookmarkCollectionData;
 use App\DataTransferObjects\FundData;
 use App\DataTransferObjects\ProposalData;
+use App\Enums\BookmarkableType;
 use App\Enums\BookmarkStatus;
 use App\Enums\TinderWorkflowParams;
+use App\Enums\VoteEnum;
 use App\Models\BookmarkCollection;
+use App\Models\BookmarkItem;
 use App\Models\Fund;
 use App\Models\Proposal;
 use App\Models\TinderCollection;
@@ -18,8 +21,10 @@ use App\Repositories\ProposalRepository;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Fluent;
+use Illuminate\Support\Str;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -617,7 +622,7 @@ class TinderProposalWorkflowController extends Controller
                     'user_id' => $request->user()->id,
                     'model_type' => Proposal::class,
                     'model_id' => $proposal->id,
-                    'vote' => null,
+                    'vote' => VoteEnum::NO->value,
                     'created_at' => now(),
                     'updated_at' => now(),
                 ]);
@@ -635,7 +640,7 @@ class TinderProposalWorkflowController extends Controller
                     'user_id' => $request->user()->id,
                     'model_type' => Proposal::class,
                     'model_id' => $proposal->id,
-                    'vote' => null,
+                    'vote' => VoteEnum::YES->value,
                     'created_at' => now(),
                     'updated_at' => now(),
                 ]);
@@ -701,13 +706,13 @@ class TinderProposalWorkflowController extends Controller
 
                 switch ($size) {
                     case 'small-scale':
-                        $sizeFilters[] = 'amount_requested <= 25000';
+                        $sizeFilters[] = 'amount_requested <= 75000';
                         break;
                     case 'mid-size':
-                        $sizeFilters[] = 'amount_requested > 25000 AND amount_requested <= 75000';
+                        $sizeFilters[] = 'amount_requested > 75000 AND amount_requested <= 110000';
                         break;
                     case 'large-scale':
-                        $sizeFilters[] = 'amount_requested > 75000';
+                        $sizeFilters[] = 'amount_requested > 110000';
                         break;
                     default:
                 }
@@ -922,6 +927,47 @@ class TinderProposalWorkflowController extends Controller
         }
 
         return [];
+    }
+
+    public function addBookmarkItem(Request $request)
+    {
+        $validated = $request->validate([
+            'proposalSlug' => 'required|string',
+            'modelType' => 'required|string',
+            'bookmarkCollection' => 'required|string',
+            'vote' => 'nullable|integer|in:-1,0,1', // Accept VoteEnum values
+        ]);
+       
+        $bookmarkCollection = BookmarkCollection::byHash($validated['bookmarkCollection']);
+
+        if (! $bookmarkCollection || $bookmarkCollection->user_id !== Auth::id()) {
+
+            return response()->json(['error' => 'Bookmark collection not found or access denied.'], 404);
+        }
+    
+        $proposal = Proposal::where('slug', $validated['proposalSlug'])->first();
+
+        if (! $proposal) {
+            return response()->json(['error' => 'Proposal not found.'], 404);
+        }
+
+        $bookmarkableType = BookmarkableType::tryFrom(Str::kebab($validated['modelType']))->getModelClass();
+
+        BookmarkItem::updateOrCreate([
+            'user_id' => Auth::id(),
+            'bookmark_collection_id' => $bookmarkCollection->id,
+            'model_id' => $proposal->id,
+            'model_type' => $bookmarkableType,
+        ], [
+            'title' => null,
+            'content' => null,
+            'action' => null,
+            'vote' => isset($validated['vote']) ? $validated['vote'] : null,
+        ]);
+       
+        $bookmarkCollection->searchable();
+
+        return response()->json(['success' => 'Proposal added to collection successfully.']);
     }
 
     private function getStepDetails(): array

@@ -78,9 +78,9 @@ const FundsList: React.FC<FundsListProps> = ({ funds }) => {
     const fundPercentages = calculatePercentageChanges(funds);
 
     return (
-        <ul className="grid w-full auto-rows-fr gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <ul className="grid w-full auto-rows-fr gap-4 sm:grid-cols-2 lg:grid-cols-3" data-testid="funds-list">
             {sortedFunds.map((fund, index) => (
-                <li key={index} className="h-full">
+                <li key={index} className="h-full" data-testid={`fund-item-${fund.title}`}>
                     <FundCard
                         fund={fund}
                         percentageChange={

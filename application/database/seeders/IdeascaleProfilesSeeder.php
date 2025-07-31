@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace Database\Seeders;
 
-use App\Models\IdeascaleProfile;
-use Database\Seeders\Traits\GetImageLink;
+use App\Jobs\AttachImageJob;
 use Illuminate\Database\Seeder;
+use App\Models\IdeascaleProfile;
+use App\Jobs\AttachProfileImageJob;
+use Database\Seeders\Traits\GetImageLink;
 
 class IdeascaleProfilesSeeder extends Seeder
 {
@@ -17,13 +19,14 @@ class IdeascaleProfilesSeeder extends Seeder
      */
     public function run(): void
     {
-        $profiles = IdeascaleProfile::factory(10)
-            ->create();
+        collect(range(1, 1000))
+            ->chunk(100)
+            ->each(function ($chunk) {
+                $profiles = IdeascaleProfile::factory(count($chunk))->create();
 
-        $profiles->each(function (IdeascaleProfile $profile) {
-            if ($heroImageLink = $this->getRandomImageLink()) {
-                $profile->addMediaFromUrl($heroImageLink)->toMediaCollection('profile');
-            }
-        });
+                foreach ($profiles as $profile) {
+                    AttachImageJob::dispatch($profile, collectionName: 'profile');
+                }
+            });
     }
 }

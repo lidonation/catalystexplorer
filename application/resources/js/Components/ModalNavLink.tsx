@@ -22,6 +22,7 @@ interface ModalNavLinkProps {
     paddingClasses?: string;
     panelClasses?: string;
     position?: string;
+    dataTestid?:string
 }
 
 const ModalNavLink: React.FC<ModalNavLinkProps> = ({
@@ -44,6 +45,7 @@ const ModalNavLink: React.FC<ModalNavLinkProps> = ({
     paddingClasses = "p-4 sm:p-6",
     panelClasses,
     position = "right",
+    dataTestid
 }) => {
     const commonProps = {
         href,
@@ -54,7 +56,8 @@ const ModalNavLink: React.FC<ModalNavLinkProps> = ({
         prefetch,
         data,
         method,
-        replace
+        replace,
+        'data-testid': dataTestid,
     };
 
     return (

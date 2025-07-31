@@ -21,8 +21,9 @@ class SnapshotFactory extends Factory
     public function definition(): array
     {
         return [
+            'snapshot_name' => $this->faker->name(),
             'model_type' => Fund::class,
-            'model_id' => Fund::factory(),
+            'model_id' => Fund::inRandomOrder()->first()->id,
             'epoch'=> $this->faker->numberBetween(300,800),
             'snapshot_at' => now()->subWeeks($this->faker->numberBetween(1, 4)),
             'order' => $this->faker->numberBetween(1, 24),

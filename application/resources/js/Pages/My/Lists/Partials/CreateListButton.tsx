@@ -4,7 +4,7 @@ import BookmarkPage2 from '@/Pages/My/Lists/Partials/ListCreateFromBookmarkSave/
 import BookmarkPage3 from '@/Pages/My/Lists/Partials/ListCreateFromBookmarkSave/Step3';
 import TransitionMenu from '@/Pages/My/Lists/Partials/TransitionMenu';
 import { useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 
 interface CreateListButtonProps {
     variant?: 'default' | 'large';
@@ -20,7 +20,7 @@ export default function CreateListButton({
         setIsOpen(open);
     };
 
-    const {t} = useTranslation();
+    const { t } = useLaravelReactI18n();
 
     const pages = [
         <ListProvider key="provider-main">

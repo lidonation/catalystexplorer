@@ -1,13 +1,16 @@
 import Paragraph from '@/Components/atoms/Paragraph';
 import BlueEyeIcon from '@/Components/svgs/BlueEyeIcon';
 import ConcentricCircles from '@/assets/images/bg-concentric-circles.png';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import GlobalSearch from './GlobalSearch';
 
 const CatalystIntro = () => {
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
     return (
-        <div className="splash-wrapper from-background-home-gradient-color-1 to-background-home-gradient-color-2 sticky -top-64 z-10 bg-linear-to-r md:rounded-tl-4xl">
+        <div
+            className="splash-wrapper from-background-home-gradient-color-1 to-background-home-gradient-color-2 sticky -top-64 z-10 bg-linear-to-r md:rounded-tl-4xl"
+            data-testid="catalyst-intro"
+        >
             <div
                 className="flex w-full flex-col gap-8 pt-16 pb-4"
                 style={{
@@ -21,6 +24,7 @@ const CatalystIntro = () => {
                         className="text-eye-logo"
                         width={90}
                         height={50}
+                        data-testid="catalyst-intro-icon"
                     />
                     <div>
                         <Paragraph className="text-content-light text-center text-3xl">

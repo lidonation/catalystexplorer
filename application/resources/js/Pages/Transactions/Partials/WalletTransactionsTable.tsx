@@ -2,7 +2,7 @@ import Paragraph from '@/Components/atoms/Paragraph';
 import CopyableCell from '@/Components/CopyableCell';
 import RegisterTwo from '@/Components/svgs/RegisterTwo';
 import React from 'react';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import TransactionRow from './TransactionRow';
 import TransactionData = App.DataTransferObjects.TransactionData;
 
@@ -20,7 +20,7 @@ interface WalletTransactionsTableProps {
 export const WalletTransactionsTable: React.FC<
     WalletTransactionsTableProps
 > = ({ transactions = [] }) => {
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
     const voterRegistrationTypes = ['cip15', 'cip36'];
 
     const formatAddress = (address: string) => {

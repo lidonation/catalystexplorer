@@ -1,6 +1,6 @@
 import { useConnectWallet } from '@/Context/ConnectWalletSliderContext';
 import React from 'react';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import Button from './atoms/Button';
 import Paragraph from './atoms/Paragraph';
 import SecondaryButton from './atoms/SecondaryButton';
@@ -27,7 +27,7 @@ const ConnectWalletButton: React.FC<ConnectWalletButtonProps> = ({
         openConnectWalletSlider,
     } = useConnectWallet();
 
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
 
     return (
         <div className="mt-4 flex w-full flex-col items-center justify-center">
@@ -53,6 +53,7 @@ const ConnectWalletButton: React.FC<ConnectWalletButtonProps> = ({
                         onClick?.();
                     }
                 }}
+                data-testid="connect-wallet-button"
             >
                 {connectedWalletProvider
                     ? t('wallet.status.connected')
@@ -67,6 +68,7 @@ const ConnectWalletButton: React.FC<ConnectWalletButtonProps> = ({
                     ariaLabel={t('wallet.status.disconnect')}
                     disabled={isConnecting !== null}
                     className="group flex flex-col items-center justify-between justify-center rounded-lg p-3"
+                    data-testid="disconnect-wallet-button"
                 >
                     <Paragraph className="text-3 text-content group-hover:text-error">
                         {t('wallet.status.disconnect')}

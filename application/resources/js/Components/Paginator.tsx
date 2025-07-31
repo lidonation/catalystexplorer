@@ -42,7 +42,7 @@ const PaginationComponent: React.FC<PaginationComponentProps<any>> = ({
     } = pagination;
 
     return (
-        <div className="flex items-center justify-center py-4">
+        <div className="flex items-center justify-center py-4" data-testid="pagination-component">
             <div className="flex items-center justify-between w-full">
                 <div className="flex-shrink-0">
                     <PaginationItem className="list-none">
@@ -102,6 +102,7 @@ const PaginationComponent: React.FC<PaginationComponentProps<any>> = ({
                                                             : '',
                                                     )}
                                                     {...linkProps}
+                                                    data-testid={`pagination-link-${link.label}`}
                                                 >
                                                     {link.label}
                                                 </Link>
@@ -111,7 +112,7 @@ const PaginationComponent: React.FC<PaginationComponentProps<any>> = ({
                                 )}
                         </ul>
                     </div>
-                    <div className="text-sm">
+                    <div className="text-sm" data-testid="pagination-info">
                         Showing {from} - {to} of{' '}
                         <span className="font-bold">{total}</span>
                     </div>

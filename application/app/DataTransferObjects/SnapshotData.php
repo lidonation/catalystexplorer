@@ -21,7 +21,7 @@ final class SnapshotData extends Data
         public int $order,
 
         #[TypeScriptOptional]
-        public FundData $fund,
+        public ?FundData $fund,
 
     ) {}
 }

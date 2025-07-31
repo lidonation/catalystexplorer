@@ -13,6 +13,7 @@ export enum ParamsEnum {
     DREP_STATUS = 'ds',
     FUNDS = 'f',
     FUNDING_STATUS = 'fs',
+    IN_PROGRESS = 'inp',
     GROUPS = 'g',
     LIMIT = 'l',
     MAX_BUDGET = 'bmax',

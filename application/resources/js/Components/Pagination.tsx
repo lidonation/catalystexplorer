@@ -1,7 +1,7 @@
 import { ArrowLeft, ChevronRight, MoreHorizontal } from 'lucide-react';
 import * as React from 'react';
 import { cn } from '@/lib/utils';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import { InertiaLinkProps, Link } from '@inertiajs/react';
 
 // const Pagination = ({ className, ...props }: React.ComponentProps<'nav'>) => {
@@ -62,9 +62,10 @@ const PaginationPrevious = ({
     linkProps,
     ...props
 }: React.ComponentProps<typeof PaginationLink>) => {
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
     return (
         <PaginationLink
+            data-testid="pagination-previous"
             aria-label={t('pagination.goPreviousPage')}
             className={cn('flex items-center justify-between px-3 py-2 text-sm font-medium text-gray-500 hover:bg-gray-50 hover:text-gray-700 disabled:opacity-50', className)}
             linkProps={linkProps}
@@ -82,9 +83,10 @@ const PaginationNext = ({
     linkProps,
     ...props
 }: React.ComponentProps<typeof PaginationLink>) => {
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
     return (
         <PaginationLink
+            data-testid="pagination-next"
             aria-label={t('pagination.goNextPage')}
             className={cn('flex items-center justify-between px-3 py-2 text-sm font-medium  hover:bg-gray-50 hover:text-gray-700 disabled:opacity-50', className)}
             linkProps={linkProps}
@@ -101,7 +103,7 @@ const PaginationEllipsis = ({
     className,
     ...props
 }: React.ComponentProps<'span'>) => {
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
     return (
         <span
             aria-hidden

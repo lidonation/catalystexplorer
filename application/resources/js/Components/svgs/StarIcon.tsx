@@ -1,5 +1,3 @@
-import { useTranslation } from 'react-i18next';
-
 type StarIconProps = {
     className?: string;
     width?: number;
@@ -7,7 +5,6 @@ type StarIconProps = {
 };
 
 function StarIcon({ className, width = 24, height = 24 }: StarIconProps) {
-    const { t } = useTranslation();
     return (
         <svg
             width={width}

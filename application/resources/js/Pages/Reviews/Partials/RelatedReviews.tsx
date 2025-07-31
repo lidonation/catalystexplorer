@@ -4,7 +4,7 @@ import { PaginatedData } from '@/types/paginated-data';
 import { useLocalizedRoute } from '@/utils/localizedRoute';
 import { Link } from '@inertiajs/react';
 import React, { HTMLAttributes } from 'react';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import Masonry from 'react-masonry-css';
 
 import ReviewData = App.DataTransferObjects.ReviewData;
@@ -21,7 +21,7 @@ const RelatedReviews: React.FC<RelatedReviewsProps> = ({
     proposalWrapperClassName,
     ...props
 }) => {
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
 
     const breakpointColumnsObj = {
         default: 1,

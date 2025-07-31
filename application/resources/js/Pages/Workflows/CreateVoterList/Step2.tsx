@@ -15,10 +15,10 @@ import {
     useLocalizedRoute,
 } from '@/utils/localizedRoute';
 import { useForm } from '@inertiajs/react';
-import { lowerCase } from 'lodash';
+import lodashPkg from 'lodash';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import Content from '../Partials/WorkflowContent';
 import Footer from '../Partials/WorkflowFooter';
 import Nav from '../Partials/WorkflowNav';
@@ -50,6 +50,7 @@ const Step2: React.FC<Step2Props> = ({
         status: voterList?.status || StatusEnum.DRAFT,
     });
 
+    const { lowerCase } = lodashPkg;
     const [isFormValid, setIsFormValid] = useState(false);
     const [errors, setErrors] = useState<Record<string, string>>({});
     const [isFormTouched, setIsFormTouched] = useState(false);
@@ -59,7 +60,7 @@ const Step2: React.FC<Step2Props> = ({
         step: activeStep - 1,
     });
 
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
 
     useEffect(() => {
         validateForm();

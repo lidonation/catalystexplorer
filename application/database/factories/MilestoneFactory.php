@@ -3,7 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\Milestone;
-use App\Models\MilestonePoas;
+use App\Models\MilestonePoa;
 use App\Models\MilestoneSomReview;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -49,7 +49,7 @@ class MilestoneFactory extends Factory
                     'created_at' => $milestone->created_at
                 ]);
 
-            MilestonePoas::factory()
+            MilestonePoa::factory()
                 ->count($this->faker->numberBetween(2, 5))
                 ->create([
                     'milestone_id' => $milestone->id,

@@ -2,10 +2,10 @@ import Title from '@/Components/atoms/Title';
 import Error404Icon from '@/Components/svgs/Error404Icon';
 import { useLocalizedRoute } from '@/utils/localizedRoute';
 import { Head, Link } from '@inertiajs/react';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 
 export default function Error404() {
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
 
     return (
         <div className="bg-background-dark flex h-screen flex-col items-center justify-center gap-4">

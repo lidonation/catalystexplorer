@@ -1,5 +1,5 @@
 import React from 'react';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 
 interface MilestoneDateProgressBarProps {
     startDate: string; // Format: "2022-11-11 17:37:43"
@@ -10,7 +10,7 @@ const MilestoneDateProgressBar: React.FC<MilestoneDateProgressBarProps> = ({
     startDate,
     months,
 }) => {
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
 
     const start = new Date(startDate.replace(' ', 'T'));
     const end = new Date(start);

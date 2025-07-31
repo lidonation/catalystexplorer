@@ -1,5 +1,5 @@
 import { DialogPanel } from '@headlessui/react';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import AppNavigation from './AppNavigation';
 import ThemeSwitcher from './ThemeSwitcher';
 import UserDetails from './UserDetails';
@@ -9,13 +9,13 @@ import User = App.DataTransferObjects.UserData;
 import { useEffect, useState } from 'react';
 
 function MobileNavigation() {
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
     const {auth} = usePage().props;
     const [isOpen, setIsOpen] = useState(true);
 
    useEffect(() => {
     const handleFinish = () => setIsOpen(false);
-    return router.on('finish', handleFinish); 
+    return router.on('finish', handleFinish);
 }, []);
 
     return (
@@ -28,6 +28,7 @@ function MobileNavigation() {
                     <aside
                         className="bg-background flex grow flex-col justify-between px-4"
                         aria-label={t('navigation.mobile.content')}
+                        data-testid="mobile-navigation-content"
                     >
                         <section>
                             <AppNavigation />

@@ -11,5 +11,9 @@ spec:
       name: app
       targetPort: app
       protocol: TCP
+    - port: 13714
+      name: ssr
+      targetPort: ssr
+      protocol: TCP
   selector:
     service: "{{ $.Chart.Name }}-app"

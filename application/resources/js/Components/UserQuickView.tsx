@@ -1,5 +1,5 @@
 import LinkIcon from './svgs/LinkIcon';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import IdeaScaleLogo from '../assets/images/ideascale-logo.png';
 
 interface ProposalUserQuickViewProps {
@@ -7,21 +7,22 @@ interface ProposalUserQuickViewProps {
 }
 
 const UserQuickView: React.FC<ProposalUserQuickViewProps> = ({ user }) => {
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
 
     return (
 
         <div className="space-y-4 p-4">
-            {/* Lido Profile Section */}
-            <div className="flex items-start space-x-2">
+            {/* Profile Section */}
+            <div className="flex items-start space-x-2" data-testid="user-quick-view-lido">
                 <LinkIcon />
                 <div>
-                    <span className="block font-medium">Lido  {t('users.profile')}</span>
+                    <span className="block font-medium">{user.name} {t('users.profile')}</span>
                     <a
                         href={`https://www.lidonation.com/en/project-catalyst/users/${user.username}`}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="text-primary block text-sm font-bold"
+                        data-testid="user-quick-view-lido-link"
                     >
                         {t('users.viewProfile')}
                     </a>
@@ -30,11 +31,12 @@ const UserQuickView: React.FC<ProposalUserQuickViewProps> = ({ user }) => {
 
             <div className="border-b"></div>
 
-            <div className="flex items-start space-x-2">
+            <div className="flex items-start space-x-2" data-testid="user-quick-view-ideascale">
                 <img
                     src={IdeaScaleLogo}
                     alt="IdeaScale Logo"
                     className="mt-0.5 h-6 w-6 rounded-full"
+                    data-testid="user-quick-view-ideascale-logo"
                 />
                 <div>
                     <span className="block font-medium">Ideascale {t('users.profile')}</span>
@@ -43,6 +45,7 @@ const UserQuickView: React.FC<ProposalUserQuickViewProps> = ({ user }) => {
                         target="_blank"
                         rel="noopener noreferrer"
                         className="text-primary block text-sm font-bold"
+                        data-testid="user-quick-view-ideascale-link"
                     >
                         {t('users.viewIdeascale')}
                     </a>

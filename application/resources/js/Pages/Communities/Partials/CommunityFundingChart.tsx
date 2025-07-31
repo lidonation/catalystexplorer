@@ -7,7 +7,7 @@ import ArrowTrendingUp from '@/Components/svgs/ArrowTrendingUp';
 import { shortNumber } from '@/utils/shortNumber';
 import { ResponsiveLine } from '@nivo/line';
 import React, { useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 
 interface CommunityFundingChartProps {
     adaData: { x: number; y: number }[];
@@ -26,7 +26,7 @@ const CommunityFundingChart: React.FC<CommunityFundingChartProps> = ({
     chartTitle,
     legend,
 }) => {
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
 
     const data = [
         { id: 'ADA', color: '#2596be', data: adaData },
@@ -169,20 +169,20 @@ const CommunityFundingChart: React.FC<CommunityFundingChartProps> = ({
                         };
 
                         const dataWithPrevious = chartData.map((dataset) => {
-                            const currentIndex = dataset.data.findIndex(
+                            const currentIndex = dataset?.data.findIndex(
                                 (d) => d.x === xValue,
                             );
-                            const current = dataset.data[currentIndex];
+                            const current = dataset?.data[currentIndex];
                             const previous =
-                                dataset.data[currentIndex - 1] ?? null;
+                                dataset?.data[currentIndex - 1] ?? null;
 
                             const trend = previous
                                 ? calculateTrend(current?.y, previous?.y)
                                 : { value: '0', isPositive: true };
 
                             return {
-                                id: dataset.id,
-                                color: dataset.color,
+                                id: dataset?.id,
+                                color: dataset?.color,
                                 current,
                                 previous,
                                 trend,

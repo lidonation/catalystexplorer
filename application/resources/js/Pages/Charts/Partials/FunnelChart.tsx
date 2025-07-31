@@ -4,7 +4,7 @@ import { ParamsEnum } from '@/enums/proposal-search-params';
 import { shortNumber } from '@/utils/shortNumber';
 import { ResponsiveFunnel } from '@nivo/funnel';
 import React, { useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 
 interface FunnelChartProps {
     chartData: any;
@@ -12,7 +12,7 @@ interface FunnelChartProps {
 }
 
 const FunnelChart: React.FC<FunnelChartProps> = ({ chartData, viewBy }) => {
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
     const { getFilter } = useFilterContext();
     const [isMobile, setIsMobile] = useState(false);
     const [screenWidth, setScreenWidth] = useState(
@@ -83,6 +83,12 @@ const FunnelChart: React.FC<FunnelChartProps> = ({ chartData, viewBy }) => {
             color: '#16B364',
             filterParam: ParamsEnum.COMPLETED_PROPOSALS,
         },
+         {
+            key: 'inProgressProposals',
+            label: t('funds.inProgressProposals'),
+            color: '#ee8434',
+            filterParam: ParamsEnum.IN_PROGRESS,
+        },
         {
             key: 'unfundedProposals',
             label: t('charts.unfundedProposals'),
@@ -122,10 +128,11 @@ const FunnelChart: React.FC<FunnelChartProps> = ({ chartData, viewBy }) => {
             {} as Record<string, number>,
         );
 
-     
+
         const totalProposals = allData?.totalProposals || 0;
         const fundedProposals = allData?.fundedProposals || 0;
         const completedProposals = allData?.completedProposals || 0;
+        const inProgressProposals = allData?.inProgressProposals || 0;
         const unfundedProposals = allData?.unfundedProposals;
 
 
@@ -152,6 +159,14 @@ const FunnelChart: React.FC<FunnelChartProps> = ({ chartData, viewBy }) => {
                 id: 'fundedProposals',
                 value: fundedProposals,
                 label: t('funds.fundedProposals'),
+            });
+        }
+
+        if (inProgressProposals > 0) {
+            funnelSteps.push({
+                id: 'inProgressProposals',
+                value: inProgressProposals,
+                label: t('funds.inProgressProposals'),
             });
         }
 
@@ -197,7 +212,6 @@ const FunnelChart: React.FC<FunnelChartProps> = ({ chartData, viewBy }) => {
         return keyItem ? keyItem.color : '#4fadce';
     };
 
-    // Don't render the chart if there's no valid data
     if (!funnelData || funnelData.length === 0) {
         return (
             <div className="flex h-64 items-center justify-center">
@@ -208,7 +222,6 @@ const FunnelChart: React.FC<FunnelChartProps> = ({ chartData, viewBy }) => {
         );
     }
 
-    // Ensure we have at least 2 data points for a meaningful funnel
     if (funnelData.length < 1) {
         return (
             <div className="flex h-64 items-center justify-center">
@@ -266,7 +279,7 @@ const FunnelChart: React.FC<FunnelChartProps> = ({ chartData, viewBy }) => {
                         },
                     }}
                     tooltip={({ part }) => {
-                        
+
 
                         return (
                             <div
@@ -281,7 +294,7 @@ const FunnelChart: React.FC<FunnelChartProps> = ({ chartData, viewBy }) => {
                                         {shortNumber(part.data.value, 2)}
                                     </span>
                                 </Paragraph>
-                               
+
                             </div>
                         );
                     }}

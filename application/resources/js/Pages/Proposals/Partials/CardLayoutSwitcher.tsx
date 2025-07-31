@@ -60,6 +60,7 @@ export default function CardLayoutSwitcher({
                             ? 'bg-background-lighter text-primary cursor-pointer'
                             : ' text-gray-500 cursor-pointer'
                     } border-r-[2px] border-gray-300 hover:bg-background-lighter`}
+                    data-testid="card-layout-switcher-vertical-button"
                 >
                     <div className="relative flex items-center">
                         <div
@@ -116,6 +117,7 @@ export default function CardLayoutSwitcher({
                             ? 'bg-background-lighter text-primary'
                             : 'hover:bg-background-lighter text-gray-500 cursor-pointer'
                     } border-r-[2px] border-gray-300`}
+                    data-testid="card-layout-switcher-horizontal-button"
                 >
                     <ListBulletIcon />
                 </Button>
@@ -130,6 +132,7 @@ export default function CardLayoutSwitcher({
                             ? 'bg-background-lighter text-primary'
                             : 'hover:bg-background-lighter text-gray-500 cursor-pointer'
                     }`}
+                    data-testid="card-layout-switcher-quick-pitch-button"
                 >
                     <VideoCameraIcon />
                 </Button>

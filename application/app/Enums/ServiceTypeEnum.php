@@ -12,5 +12,11 @@ use Spatie\Enum\Laravel\Enum;
  */
 final class ServiceTypeEnum extends Enum
 {
-    use Traits\HasValues;
+    protected static function values(): array
+    {
+        return [
+            'offered' => 'offered',
+            'needed' => 'needed',
+        ];
+    }
 }

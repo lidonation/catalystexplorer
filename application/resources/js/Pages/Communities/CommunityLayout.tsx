@@ -5,7 +5,7 @@ import { communityTabs, generateTabs } from '@/utils/routeTabs';
 import { PageProps as InertiaPageProps } from '@inertiajs/core';
 import { usePage } from '@inertiajs/react';
 import { ReactNode, useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import CommunityCard from './Partials/CommunityCard';
 import CommunityTabs from './Partials/CommunityTab';
 import ProposalSummaryCard from './Partials/ProposalSummary';
@@ -31,7 +31,7 @@ export default function CommunityLayout({
     ownProposalsCount,
     coProposalsCount,
 }: CommunityLayoutProps) {
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
     const { url } = usePage<PageProps>().props;
     const [activeTab, setActiveTab] = useState('');
 

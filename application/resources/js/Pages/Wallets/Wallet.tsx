@@ -9,7 +9,7 @@ import { truncateMiddle } from '@/utils/truncateMiddle';
 import { Head } from '@inertiajs/react';
 import { ChevronLeft, CopyIcon } from 'lucide-react';
 import { useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import { PaginatedData } from '../../types/paginated-data';
 import { SearchParams } from '../../types/search-params';
 import CatalystVotesTable from '../Transactions/Partials/CatalystVotesTable';
@@ -36,7 +36,7 @@ export default function Wallet({
     transaction,
     filters,
 }: WalletProps) {
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
     const [activeTab, setActiveTab] = useState('votes');
 console.log({ walletTransactions, walletStats });
 

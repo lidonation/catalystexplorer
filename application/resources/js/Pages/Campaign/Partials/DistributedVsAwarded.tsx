@@ -2,7 +2,7 @@ import Title from '@/Components/atoms/Title';
 import PercentageProgressBar from '@/Components/PercentageProgressBar';
 import { shortNumber } from '@/utils/shortNumber';
 import { useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 
 interface DistributedVsAwardedPageProps extends Record<string, unknown> {
     distributed: number;
@@ -15,7 +15,7 @@ const DistributedVsAwarded: React.FC<DistributedVsAwardedPageProps> = ({
     awarded,
     currency,
 }) => {
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
 
     const [currSymbol, setCurrSymbol] = useState<string>('');
     const [percentage, setPercentage] = useState<number>(0);

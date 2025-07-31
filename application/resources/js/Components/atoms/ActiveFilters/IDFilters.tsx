@@ -87,6 +87,7 @@ const IDFilters = React.memo(
             <div
                 className="bg-background mr-1 flex items-center rounded-lg border px-1 py-1"
                 key={`${filter.label}-${filter.param}`}
+                data-testid={`id-filter-${filter.param}`}
             >
                 <div className="mr-1 font-bold">{filter.label}:</div>
                 <div className="mr-1 flex items-center gap-2">
@@ -96,6 +97,7 @@ const IDFilters = React.memo(
                             <button
                                 className="ml-2"
                                 onClick={() => removeFilter(option.hash)}
+                                data-testid={`remove-id-filter-${option.hash}`}
                             >
                                 X
                             </button>

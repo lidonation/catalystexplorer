@@ -6,7 +6,7 @@ import {
     useRef,
     useState,
 } from 'react';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import Paragraph from './Paragraph';
 
 interface TextareaProps extends InputHTMLAttributes<HTMLTextAreaElement> {
@@ -22,14 +22,15 @@ export default forwardRef(function Textarea(
         minLengthEnforced = false,
         minLengthValue = 69,
         onChange,
+        'data-testid': dataTestId,
         ...props
-    }: TextareaProps,
+    }: TextareaProps & { 'data-testid'?: string },
     ref,
 ) {
     const localRef = useRef<HTMLTextAreaElement>(null);
     const [value, setValue] = useState(props.value as string);
 
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
 
     useImperativeHandle(ref, () => ({
         focus: () => localRef.current?.focus(),
@@ -65,6 +66,7 @@ export default forwardRef(function Textarea(
                 ref={localRef}
                 value={value}
                 onChange={handleChange}
+                data-testid={dataTestId}
                 onKeyDown={(e) => {
                     if (e.key === ' ') {
                         e.stopPropagation();

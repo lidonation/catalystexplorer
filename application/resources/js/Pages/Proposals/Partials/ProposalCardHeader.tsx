@@ -6,9 +6,10 @@ import { ListProvider } from '@/Context/ListContext';
 import BookmarkButton from '@/Pages/My/Bookmarks/Partials/BookmarkButton';
 import { Link } from '@inertiajs/react';
 import { useEffect, useRef, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import CompareButton from './CompareButton';
 import ProposalStatus from './ProposalStatus';
+import UserAvatar from '@/Components/UserAvatar';
 
 export default function ProposalCardHeader({
     proposal,
@@ -38,7 +39,7 @@ export default function ProposalCardHeader({
     const contentRef = useRef<HTMLParagraphElement | null>(null);
     const [lineCount, setLineCount] = useState(0);
 
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
 
     useEffect(() => {
         const element = contentRef.current;
@@ -57,6 +58,7 @@ export default function ProposalCardHeader({
         >
             <header
                 className={`text-content-light w-full rounded-xl bg-linear-to-tr ${headerBGColor} flex shrink flex-col ${isHorizontal ? 'h-full' : ''}`}
+                data-testid={`proposal-card-header-${proposal?.hash}`}
             >
                 <div className="flex items-center justify-between px-4 py-3">
                     {userSelected ? (
@@ -64,6 +66,7 @@ export default function ProposalCardHeader({
                             <Button
                                 className="bg-background text-content hover:bg-background absolute top-4 right-4 rounded-lg p-2 transition duration-200 ease-in-out focus:outline-hidden"
                                 onClick={noSelectedUser}
+                                data-testid="close-profile-button"
                             >
                                 <svg
                                     xmlns="http://www.w3.org/2000/svg"
@@ -80,11 +83,11 @@ export default function ProposalCardHeader({
                                     />
                                 </svg>
                             </Button>
-                            <div className="relative flex items-center space-x-4 pt-16">
-                                <img
-                                    src={userSelected?.hero_img_url}
-                                    alt={`${userSelected?.name}'s profile`}
-                                    className="relative inline-block h-10 w-10 rounded-full ring-2 ring-white"
+                            <div className="relative flex items-center space-x-4 pt-16" data-testid="user-profile">
+                                <UserAvatar
+                                    name={userSelected?.name ?? userSelected?.username}
+                                    imageUrl={userSelected?.hero_img_url}
+                                    size="size-10"
                                 />
                                 <Title level="4">{userSelected?.name}</Title>
                             </div>
@@ -94,6 +97,7 @@ export default function ProposalCardHeader({
                             <ProposalStatus
                                 status={proposal.status}
                                 funding_status={proposal?.funding_status}
+                                data-testid="proposal-status"
                             />
                             <div className="flex items-center">
                                 <ListProvider>
@@ -102,6 +106,7 @@ export default function ProposalCardHeader({
                                             <BookmarkButton
                                                 modelType="proposals"
                                                 itemId={proposal.hash}
+                                                data-testid="bookmark-button"
                                             />
                                         </>
                                     )}
@@ -112,6 +117,7 @@ export default function ProposalCardHeader({
                                         hash={proposal.hash}
                                         tooltipDescription={'Compare Proposals'}
                                         data={proposal}
+                                        data-testid="compare-button"
                                     />
                                 )}
                             </div>
@@ -128,14 +134,13 @@ export default function ProposalCardHeader({
                     }`}
                     style={{ overflow: 'visible' }}
                 >
-                    <a
+                    <Link
                         href={proposal.link}
-                        target="_blank"
-                        rel="noopener noreferrer"
                         className={`hover:text-primary font-medium ${
                             isHorizontal ? 'mb-4 text-center' : ''
                         }`}
                         style={{ overflow: 'visible' }}
+                        data-testid={`single-proposal-card-link-${proposal?.hash}`}
                     >
                         {!userSelected ? (
                             <div ref={contentRef}>
@@ -144,12 +149,12 @@ export default function ProposalCardHeader({
                                     lineClamp={3}
                                     expanded={isHovered}
                                 >
-                                    <Title level="4">{proposal.title}</Title>
+                                    <Title level="4" data-testid={`proposal-card-title-${proposal?.hash}`}>{proposal.title}</Title>
                                 </ExpandableContent>
                             </div>
                         ) : null}
-                    </a>
-                    <div className="flex flex-row justify-end py-0.5 italic">
+                    </Link>
+                    <div className="flex flex-row justify-end py-0.5 italic" data-testid="proposal-card-fund">
                         <span>~ {proposal.fund?.title}</span>
                     </div>
                 </div>
@@ -159,32 +164,35 @@ export default function ProposalCardHeader({
                         <nav
                             className="text-content-light flex items-center justify-evenly rounded-b-xl bg-white/25 p-2 font-semibold"
                             aria-label="Related Platforms"
+                            data-testid={`related-platforms-proposal-card-links-${proposal?.hash}`}
                         >
                             {proposal.ideascale_link && (
-                                <Link
+                                <a
                                     href={proposal.ideascale_link}
                                     className="text-4 text-opacity-100 flex w-full items-center justify-center"
                                     target="_blank"
                                     rel="noopener noreferrer"
+                                    data-testid={`ideascale-link-${proposal?.hash}`}
                                 >
                                     <span>{t('proposals.ideascale')}</span>
-                                </Link>
+                                </a>
                             )}
                             {proposal.ideascale_link &&
                                 proposal.projectcatalyst_io_link && (
                                     <div className="mx-2 h-3 border-r"></div>
                                 )}
                             {proposal.projectcatalyst_io_link && (
-                                <Link
+                                <a
                                     href={proposal.projectcatalyst_io_link}
                                     className="text-4 text-opacity-100 flex w-full items-center justify-center"
                                     target="_blank"
                                     rel="noopener noreferrer"
+                                    data-testid={`projectcatalyst-link-${proposal?.hash}`}
                                 >
                                     <span>
                                         {t('proposals.projectCatalyst')}
                                     </span>
-                                </Link>
+                                </a>
                             )}
                         </nav>
                     )}

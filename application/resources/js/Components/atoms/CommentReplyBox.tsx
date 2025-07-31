@@ -63,11 +63,13 @@ export default function ReplyBox({
                     placeholder="Write your reply..."
                     value={text}
                     onChange={(e) => setText(e.target.value)}
+                    data-testid="replybox-textarea"
                 />
                 <PrimaryButton
                     className="mt-2 ml-auto"
                     disabled={loading || !text.trim()}
                     onClick={submit}
+                    data-testid="replybox-submit-button"
                 >
                     <Send className="h-4 w-4" />
                 </PrimaryButton>

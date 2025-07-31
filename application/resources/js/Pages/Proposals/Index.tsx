@@ -4,7 +4,7 @@ import Title from '@/Components/atoms/Title';
 import { FiltersProvider } from '@/Context/FiltersContext';
 import { ListProvider } from '@/Context/ListContext';
 import { useMetrics } from '@/Context/MetricsContext';
-import { usePlayer } from '@/Context/PlayerContext';
+// import { usePlayer } from '@/Context/PlayerContext';
 import { ParamsEnum } from '@/enums/proposal-search-params';
 import ProposalSortingOptions from '@/lib/ProposalSortOptions';
 import { PageProps } from '@/types';
@@ -13,7 +13,7 @@ import { ProposalMetrics } from '@/types/proposal-metrics';
 import { SearchParams } from '@/types/search-params';
 import { Head } from '@inertiajs/react';
 import { useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import CardLayoutSwitcher from './Partials/CardLayoutSwitcher';
 import FundFiltersContainer from './Partials/FundFiltersContainer';
 import ProposalFilters from './Partials/ProposalFilters';
@@ -34,9 +34,9 @@ export default function Index({
     filters,
     metrics,
 }: PageProps<HomePageProps>) {
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
 
-    const { createProposalPlaylist } = usePlayer();
+    // const { createProposalPlaylist } = usePlayer();
     const { setMetrics } = useMetrics();
 
     const [isHorizontal, setIsHorizontal] = useState(false);
@@ -47,11 +47,11 @@ export default function Index({
         !!parseInt(filters[ParamsEnum.QUICK_PITCHES]),
     );
 
-    useEffect(() => {
-        if (proposals && proposals.data?.length && quickPitchView) {
-            createProposalPlaylist(proposals?.data);
-        }
-    }, [proposals, quickPitchView]);
+    // useEffect(() => {
+    //     if (proposals && proposals.data?.length && quickPitchView) {
+    //         createProposalPlaylist(proposals?.data);
+    //     }
+    // }, [proposals, quickPitchView]);
 
     useEffect(() => {
         if (metrics) {
@@ -62,7 +62,7 @@ export default function Index({
             setMetrics(undefined);
         };
     }, [metrics]);
-    
+
     return (
         <ListProvider>
             <FiltersProvider
@@ -73,11 +73,11 @@ export default function Index({
 
                 <header>
                     <div className="container">
-                        <Title level="1">{t('proposals.proposals')}</Title>
+                        <Title level="1" data-testid="proposal-page-title">{t('proposals.proposals')}</Title>
                     </div>
 
                     <div className="container">
-                        <Paragraph className="text-content">
+                        <Paragraph className="text-content" data-testid="proposal-page-subtitle">
                             {t('proposals.pageSubtitle')}
                         </Paragraph>
                     </div>
@@ -99,6 +99,7 @@ export default function Index({
                     className={`container flex w-full flex-col items-center justify-center overflow-hidden transition-[max-height] duration-500 ease-in-out ${
                         showFilters ? 'max-h-[500px]' : 'max-h-0'
                     }`}
+                    data-testid="proposal-filters-container"
                 >
                     <ProposalFilters />
                 </section>
@@ -113,6 +114,7 @@ export default function Index({
                         setGlobalQuickPitchView={setQuickPitchView}
                     />
                 </section>
+
                 <ProposalPaginatedList
                     proposals={proposals}
                     isHorizontal={isHorizontal}

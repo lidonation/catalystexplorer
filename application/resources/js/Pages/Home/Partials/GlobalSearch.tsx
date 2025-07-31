@@ -3,14 +3,14 @@ import SearchVariants from '@/Components/SearchVariants';
 import useEnterKey from '@/Hooks/useEnterKey';
 import { router } from '@inertiajs/react';
 import { useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 
 function GlobalSearch() {
     const [searchTerm, setSearchTerm] = useState('');
     const [searchFilters, setSearchFilters] = useState<string[]>([]);
     const [isFocused, setIsFocused] = useState(false);
 
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
 
     const enterHandler = () => {
         const syntheticEvent = new Event('submit', {
@@ -33,8 +33,7 @@ function GlobalSearch() {
     const submit = (event: React.FormEvent) => {
         event.preventDefault();
         const filters = searchFilters
-            .filter((term) => term !== t('searchBar.variants.all'))
-            .map((term) => term.toLowerCase())
+            .filter((term) => term !== 'allGroups')
             .join(',');
 
         const queryParams: Record<string, string> = { q: searchTerm };
@@ -52,6 +51,7 @@ function GlobalSearch() {
             className={`divide-gray-light divide-border bg-background flex items-center divide-x-2 rounded-lg transition-all duration-200 ${
                 isFocused ? 'ring-primary ring-3' : ''
             }`}
+            data-testid="global-search-form"
         >
             <SearchVariants value={searchFilters} onChange={setSearchFilters} />
 

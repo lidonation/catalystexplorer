@@ -1,5 +1,3 @@
-import { useTranslation } from 'react-i18next';
-
 type VideoCameraIconProps = {
     className?: string;
     width?: number;
@@ -10,7 +8,6 @@ export default function VideoCameraIcon({
     width = 24,
     height = 24,
 }: VideoCameraIconProps) {
-    const { t } = useTranslation();
     return (
         <svg
             width={width}
@@ -22,7 +19,6 @@ export default function VideoCameraIcon({
             stroke="currentColor"
             className={className}
         >
-            <title>{t('icons.titles.videoCamera')}</title>
             <path
                 strokeLinecap="round"
                 strokeLinejoin="round"

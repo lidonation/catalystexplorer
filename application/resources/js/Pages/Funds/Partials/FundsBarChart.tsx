@@ -1,12 +1,11 @@
 import Paragraph from '@/Components/atoms/Paragraph';
 import RadioSelector from '@/Components/atoms/RadioSelector';
 import Selector from '@/Components/atoms/Selector';
-import { userSettingEnums } from '@/enums/user-setting-enums';
-import { useUserSetting } from '@/Hooks/useUserSettings';
 import { currency } from '@/utils/currency';
 import { ResponsiveBar } from '@nivo/bar';
 import React, { useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import { test } from '@playwright/test';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 
 interface FundsBarChartProps {
     funds: any;
@@ -29,7 +28,7 @@ const FundsBarChart: React.FC<FundsBarChartProps> = ({
     viewBy,
     onViewByChange,
 }) => {
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
 
     const allKeys = [
         {
@@ -67,10 +66,10 @@ const FundsBarChart: React.FC<FundsBarChartProps> = ({
     };
 
     return (
-        <div className="bg-background rounded-md p-4 shadow-xs lg:p-16 overflow-x-auto">
+        <div className="bg-background rounded-md p-4 shadow-xs lg:p-16 overflow-x-auto" data-testid="funds-bar-chart-container">
             <div className="grid w-full grid-cols-2 justify-between gap-4 lg:grid-cols-5">
                 <div>
-                    <h6 className="text-2 lg:title-5 font-bold">
+                    <h6 className="text-2 lg:title-5 font-bold" data-testid="charts-fund-rounds">
                         {fundRounds}
                     </h6>
                     <Paragraph
@@ -81,7 +80,7 @@ const FundsBarChart: React.FC<FundsBarChartProps> = ({
                     </Paragraph>
                 </div>
                 <div>
-                    <h6 className="text-2 lg:title-5 font-bold">
+                    <h6 className="text-2 lg:title-5 font-bold" data-testid="charts-total-proposals">
                         {totalProposals.toLocaleString()}
                     </h6>
                     <Paragraph
@@ -93,7 +92,7 @@ const FundsBarChart: React.FC<FundsBarChartProps> = ({
                 </div>
 
                 <div>
-                    <h6 className="text-2 lg:title-5 font-bold">
+                    <h6 className="text-2 lg:title-5 font-bold" data-testid="charts-funded-proposals">
                         {fundedProposals.toLocaleString()}
                     </h6>
                     <Paragraph
@@ -104,7 +103,7 @@ const FundsBarChart: React.FC<FundsBarChartProps> = ({
                     </Paragraph>
                 </div>
                 <div>
-                    <h6 className="text-2 lg:title-5 font-bold">
+                    <h6 className="text-2 lg:title-5 font-bold" data-testid="charts-total-funds-requested">
                         {currency(totalFundsRequested, 2, 'ADA')}
                     </h6>
                     <Paragraph
@@ -115,7 +114,7 @@ const FundsBarChart: React.FC<FundsBarChartProps> = ({
                     </Paragraph>
                 </div>
                 <div>
-                    <h6 className="text-2 lg:title-5 font-bold">
+                    <h6 className="text-2 lg:title-5 font-bold" data-testid="charts-total-funds-awarded">
                         {currency(totalFundsAllocated, 2, 'USD')}
                     </h6>
                     <Paragraph
@@ -140,6 +139,7 @@ const FundsBarChart: React.FC<FundsBarChartProps> = ({
                         selectedItem={viewBy}
                         setSelectedItem={onViewByChange}
                         className="focus:border-primary focus:ring-primary"
+                        data-testid="funds-view-by-selector"
                     />
                 </div>
                 <Selector
@@ -148,6 +148,7 @@ const FundsBarChart: React.FC<FundsBarChartProps> = ({
                     setSelectedItems={handleFilterChange}
                     selectedItems={filters}
                     placeholder={t('funds.filter')}
+                    data-testid="funds-filter-selector"
                 />
             </div>
             <div
@@ -254,7 +255,7 @@ const FundsBarChart: React.FC<FundsBarChartProps> = ({
                     }}
                     tooltip={({ indexValue, data }) => (
                         <div className="bg-tooltip text-content-light rounded-xs p-4">
-                            <Paragraph size="sm">
+                            <Paragraph size="sm" data-testid="funds-bar-chart-tooltip">
                                 <strong className="mb-1 block">
                                     {indexValue}
                                 </strong>
@@ -267,6 +268,7 @@ const FundsBarChart: React.FC<FundsBarChartProps> = ({
                         </div>
                     )}
                     animate={true}
+                    data-testid="funds-bar-chart"
                 />
             </div>
         </div>

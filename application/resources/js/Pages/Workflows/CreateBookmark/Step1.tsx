@@ -8,7 +8,7 @@ import Content from '../Partials/WorkflowContent';
 import Footer from '../Partials/WorkflowFooter';
 import Nav from '../Partials/WorkflowNav';
 import WorkflowLayout from '../WorkflowLayout';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import RichContent from '@/Components/RichContent';
 import BookmarkCollectionData = App.DataTransferObjects.BookmarkCollectionData;
 
@@ -29,7 +29,7 @@ const Step1: React.FC<Step1Props> = ({
         : { step: activeStep + 1 };
     const nextStep = generateLocalizedRoute('workflows.bookmarks.index', param);
 
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
 
     return (
         <WorkflowLayout asideInfo={stepDetails[activeStep - 1].info ?? ''}>

@@ -1,5 +1,3 @@
-import { useTranslation } from 'react-i18next';
-
 type ListBulletIconProps = {
     className?: string;
     width?: number;
@@ -10,7 +8,6 @@ export default function ListBulletIcon({
     width = 24,
     height = 24,
 }: ListBulletIconProps) {
-    const { t } = useTranslation();
     return (
         <svg
             width={width}
@@ -22,8 +19,6 @@ export default function ListBulletIcon({
             stroke="currentColor"
             className={className}
         >
-            <title>{t('icons.titles.listBullet')}</title>
-
             <path
                 strokeLinecap="round"
                 strokeLinejoin="round"

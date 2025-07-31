@@ -1,7 +1,6 @@
 import React from 'react';
-import { useTranslation } from 'react-i18next';
-import { lowerCase } from 'lodash';
-
+import {useLaravelReactI18n} from "laravel-react-i18n";
+import lodashPkg from 'lodash';
 import Paragraph from '@/Components/atoms/Paragraph';
 import TextInput from '@/Components/atoms/TextInput';
 import ValueLabel from '@/Components/atoms/ValueLabel';
@@ -13,6 +12,7 @@ import { StatusEnum, VisibilityEnum } from '@/enums/votes-enums';
 import { TinderWorkflowParams } from '@/enums/tinder-workflow-params';
 import Button from '@/Components/atoms/Button';
 import EditIcon2 from '@/Components/svgs/EditIcon2';
+import PrimaryButton from '@/Components/atoms/PrimaryButton';
 
 interface SlideOverContentProps {
     editForm: any; // Using any for now since UseFormReturnType is not available
@@ -33,7 +33,8 @@ const SlideOverContent: React.FC<SlideOverContentProps> = ({
     onSaveEditForm,
     onDeleteCollection,
 }) => {
-    const { t } = useTranslation();
+    const { lowerCase } = lodashPkg;
+    const { t } = useLaravelReactI18n();
 
     return (
         <div>
@@ -55,10 +56,10 @@ const SlideOverContent: React.FC<SlideOverContentProps> = ({
 
                 <div className="space-y-6">
                     {/* Display mode - show title and content as text */}
-                    <div 
+                    <div
                         className={`transition-all duration-300 ease-in-out ${
-                            isEditingFields 
-                                ? 'opacity-0 max-h-0 overflow-hidden' 
+                            isEditingFields
+                                ? 'opacity-0 max-h-0 overflow-hidden'
                                 : 'opacity-100 max-h-96'
                         }`}
                     >
@@ -74,10 +75,10 @@ const SlideOverContent: React.FC<SlideOverContentProps> = ({
                     </div>
 
                     {/* Edit mode - show input fields */}
-                    <div 
+                    <div
                         className={`transition-all duration-300 ease-in-out ${
-                            isEditingFields 
-                                ? 'opacity-100 max-h-96' 
+                            isEditingFields
+                                ? 'opacity-100 max-h-96'
                                 : 'opacity-0 max-h-0 overflow-hidden'
                         }`}
                     >
@@ -244,18 +245,18 @@ const SlideOverContent: React.FC<SlideOverContentProps> = ({
                     </div>
                 </div>
 
-                <div className="flex items-center justify-center w-full px-5 lg:px-15 pt-6 mt-6">
-                    <div className="flex gap-4 w-full">
-                        <Button
-                            className="text-sm lg:px-8 lg:py-3 flex-1 rounded-lg bg-primary hover:bg-primary/[70%] transition"
+                <div className="w-full pt-6 mt-6">
+                    <div className="flex gap-2 w-full">
+                        <PrimaryButton
+                            className="text-sm w-1/2 lg:py-3 rounded-lg bg-primary hover:bg-primary/[70%] transition"
                             disabled={!isFormValid}
                             onClick={onSaveEditForm}
                         >
                             <Paragraph size='sm' className='text-content-light'>{t('Save')}</Paragraph>
-                        </Button>
+                        </PrimaryButton>
                         <Button
                             onClick={onDeleteCollection}
-                            className="text-sm lg:px-8 lg:py-3 flex-1 bg-error hover:bg-error/[70%] rounded-lg transition"
+                            className="text-sm w-1/2 lg:py-3 bg-error hover:bg-error/[70%] rounded-lg transition"
                         >
                             <Paragraph size='sm' className='text-content-light'>{t('workflows.tinderProposal.step4.delete')}</Paragraph>
                         </Button>

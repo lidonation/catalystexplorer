@@ -3,7 +3,7 @@
 namespace Database\Factories;
 
 use App\Enums\MilestoneRoleEnum;
-use App\Models\MilestonePoas;
+use App\Models\MilestonePoa;
 use App\Models\Proposal;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -22,7 +22,7 @@ class MilestonePoasReviewFactory extends Factory
     {
         return [
             'id' => $this->faker->unique()->randomNumber(5, true),
-            'milestone_poas_id' => MilestonePoas::factory(),
+            'milestone_poas_id' => MilestonePoa::factory(),
             'proposal_id' => Proposal::factory(),
             'content_approved' => $this->faker->boolean,
             'content_comment' => $this->faker->sentence,

@@ -12,7 +12,7 @@ export default function PostCard({ post }: PostCardProps) {
     const originalUrl: string = heroData?.original_url;
 
     const [imgSrc, setImgSrc] = useState(thumbnail);
-    
+
     const handleImageLoad = () => {
         setImgSrc(originalUrl);
     };
@@ -22,6 +22,7 @@ export default function PostCard({ post }: PostCardProps) {
             className="flex w-full flex-col"
             role="region"
             aria-labelledby={`post-title-${post?.id}`}
+            data-testid={`post-card-${post?.id}`}
         >
             <div className="h-auto w-full">
                 <img
@@ -30,12 +31,14 @@ export default function PostCard({ post }: PostCardProps) {
                     loading="lazy"
                     alt={heroData?.name}
                     onLoad={imgSrc === thumbnail ? handleImageLoad : undefined}
+                    data-testid={`post-card-image-${post?.id}`}
                 />
             </div>
             <div className="mt-4 flex items-center">
                 <p
                     className="text-4 font-bold text-accent"
                     aria-label={`Author: ${post?.author_name}`}
+                    data-testid={`post-author-${post?.id}`}
                 >
                     {post?.author_name}
                 </p>
@@ -46,6 +49,7 @@ export default function PostCard({ post }: PostCardProps) {
                 <p
                     className="text-4 font-bold text-accent"
                     aria-label={`Published on: ${post?.published_at}`}
+                    data-testid={`post-published-at-${post?.id}`}
                 >
                     {post?.published_at}
                 </p>
@@ -56,6 +60,7 @@ export default function PostCard({ post }: PostCardProps) {
                 rel="noopener noreferrer"
                 className="group mt-2 flex w-full items-start justify-between"
                 aria-label={`Read the full post titled "${post?.title}"`}
+                data-testid={`post-link-${post?.id}`}
             >
                 <Title
                     level='3'
@@ -70,7 +75,7 @@ export default function PostCard({ post }: PostCardProps) {
                 />
             </a>
             <div className="mb-4 mt-2 w-full text-content opacity-70">
-                <p aria-label={`Subtitle: ${post?.subtitle}`}>
+                <p aria-label={`Subtitle: ${post?.subtitle}`} data-testid={`post-subtitle-${post?.id}`}>
                     {post?.subtitle}
                 </p>
             </div>

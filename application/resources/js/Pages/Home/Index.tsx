@@ -1,25 +1,25 @@
+import Paragraph from '@/Components/atoms/Paragraph';
+import Title from '@/Components/atoms/Title';
+import SecondaryLink from '@/Components/SecondaryLink';
 import CatalystIntro from '@/Pages/Home/Partials/CatalystIntro';
 import PostCard from '@/Pages/Posts/Partials/PostCard';
 import { PageProps } from '@/types';
-import { useState } from 'react';
 import { Head, WhenVisible } from '@inertiajs/react';
+import { useState } from 'react';
+import MetricCardLoading from '../Metrics/Partials/MetricCardLoading';
+import MetricCardList from '../Metrics/Partials/MetricsCardList';
 import PostListLoader from '../Posts/Partials/PostListLoader';
 import ProposalList from '../Proposals/Partials/ProposalList';
+import AnnouncementCarousel from './Partials/Announcement/AnnouncementCarousel';
+import SpecialAnnouncementLoading from './Partials/Announcement/SpecialAnnouncementLoading';
+import SpecialAnnouncementCarousel from './Partials/Announcement/SpecialAnnouncementsCarousel';
 import VerticalCardLoading from '@/Pages/Proposals/Partials/ProposalVerticalCardLoading';
-import MetricCardList from '../Metrics/Partials/MetricsCardList';
-import MetricCardLoading from '../Metrics/Partials/MetricCardLoading';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import { MetricEnum } from '@/enums/metrics-enums';
 import MetricData = App.DataTransferObjects.MetricData;
 import ProposalData = App.DataTransferObjects.ProposalData;
 import PostData = App.DataTransferObjects.PostData;
 import AnnouncementData = App.DataTransferObjects.AnnouncementData;
-import AnnouncementCarousel from './Partials/Announcement/AnnouncementCarousel';
-import SecondaryLink from '@/Components/SecondaryLink';
-import SpecialAnnouncementCarousel from './Partials/Announcement/SpecialAnnouncementsCarousel';
-import SpecialAnnouncementLoading from './Partials/Announcement/SpecialAnnouncementLoading';
-import Title from '@/Components/atoms/Title';
-import Paragraph from '@/Components/atoms/Paragraph';
 
 interface HomePageProps extends Record<string, unknown> {
     posts: PostData[];
@@ -34,9 +34,9 @@ export default function Index({
     proposals,
     metrics,
     announcements,
-    specialAnnouncements
+    specialAnnouncements,
 }: PageProps<HomePageProps>) {
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
     const [isHorizontal, setIsHorizontal] = useState(false);
     const [activeIndex, setActiveIndex] = useState(0);
     const [isTransitioning, setIsTransitioning] = useState(false);
@@ -48,48 +48,80 @@ export default function Index({
             <div className="relative flex w-full flex-col justify-center gap-8">
                 <CatalystIntro />
 
-                <section className="annnouncements-wrapper">
-                    <div className='container rounded-xl'>
-                        <WhenVisible fallback={<div>{t("loading")}...</div>} data="announcements">
-                            <AnnouncementCarousel announcements={announcements} />
+                <section
+                    className="annnouncements-wrapper"
+                    data-testid="announcements-section"
+                >
+                    <div className="container rounded-xl">
+                        <WhenVisible
+                            fallback={<div>{t('loading')}...</div>}
+                            data="announcements"
+                        >
+                            <AnnouncementCarousel
+                                announcements={announcements}
+                            />
                         </WhenVisible>
                     </div>
                 </section>
 
-                <section className="numbers-wrapper container">
-                    <div className='flex justify-between items-center'>
-                        <div>
-                            <Title level='2'>{t("metric.numbers")}</Title>
-                            <Paragraph size="sm" className="text-4 text-content-dark opacity-70">
-                                {t("metric.subtitle")}
+                <section
+                    className="numbers-wrapper container"
+                    data-testid="metrics-section"
+                >
+                    <div className="flex items-center justify-between">
+                        <div data-testid="metrics-header">
+                            <Title level="2">{t('metric.numbers')}</Title>
+                            <Paragraph
+                                size="sm"
+                                className="text-4 text-content-dark opacity-70"
+                            >
+                                {t('metric.subtitle')}
                             </Paragraph>
                         </div>
                         <div>
-                            <SecondaryLink className="font-bold text-content-dark" href="/charts">
-                                {t("metric.seeMore")}
+                            <SecondaryLink
+                                className="text-content-dark font-bold"
+                                href="/charts"
+                                data-testid="see-more-metrics"
+                            >
+                                {t('metric.seeMore')}
                             </SecondaryLink>
                         </div>
                     </div>
-                    <WhenVisible fallback={<MetricCardLoading />} data="metrics">
+                    <WhenVisible
+                        fallback={<MetricCardLoading />}
+                        data="metrics"
+                    >
                         <MetricCardList
                             metrics={metrics}
                             sortBy={MetricEnum.ORDER}
                             sortOrder={MetricEnum.DESCENDING}
-                            columns={MetricEnum.THREE_COLUMNS} />
+                            columns={MetricEnum.THREE_COLUMNS}
+                        />
                     </WhenVisible>
                 </section>
 
-                <section className="container proposals-wrapper">
+                <section
+                    className="proposals-wrapper container"
+                    data-testid="proposals-section"
+                >
                     <div className="flex items-center justify-between py-8">
-                        <div>
-                            <Title level='2'>{t("proposals.proposals")}</Title>
-                            <Paragraph size="sm" className="text-4 text-content-dark opacity-70">
-                                {t("proposals.listSubtitle")}
+                        <div data-testid="proposals-header">
+                            <Title level="2">{t('proposals.proposals')}</Title>
+                            <Paragraph
+                                size="sm"
+                                className="text-4 text-content-dark opacity-70"
+                            >
+                                {t('proposals.listSubtitle')}
                             </Paragraph>
                         </div>
                         <div>
-                            <SecondaryLink className="font-bold text-content-dark" href="/proposals">
-                                {t("proposals.seeMoreProposals")}
+                            <SecondaryLink
+                                className="text-content-dark font-bold"
+                                href="/proposals"
+                                data-testid="see-more-proposals"
+                            >
+                                {t('proposals.seeMoreProposals')}
                             </SecondaryLink>
                         </div>
                     </div>
@@ -104,8 +136,14 @@ export default function Index({
                     </WhenVisible>
                 </section>
 
-                <section className="special-announcements-wrapper container">
-                    <WhenVisible fallback={<SpecialAnnouncementLoading />} data="specialAnnouncements">
+                <section
+                    className="special-announcements-wrapper container"
+                    data-testid="special-announcements-section"
+                >
+                    <WhenVisible
+                        fallback={<SpecialAnnouncementLoading />}
+                        data="specialAnnouncements"
+                    >
                         {specialAnnouncements && (
                             <SpecialAnnouncementCarousel
                                 announcements={specialAnnouncements}
@@ -118,14 +156,21 @@ export default function Index({
                     </WhenVisible>
                 </section>
 
-                <section className="posts-wrapper container flex flex-col gap-8 py-8">
-                    <div>
-                        <Title level='2'>{t('posts.title')}</Title>
+                <section
+                    className="posts-wrapper container flex flex-col gap-8 py-8"
+                    data-testid="catalyst-posts-section"
+                >
+                    <div data-testid="catalyst-posts-header">
+                        <Title level="2">{t('posts.title')}</Title>
                         <Paragraph>{t('posts.subtitle')}</Paragraph>
                     </div>
                     <WhenVisible fallback={<PostListLoader />} data="posts">
-                        <ul className="content-gap scrollable snaps-scrollable">
+                        <ul
+                            className="content-gap scrollable snaps-scrollable"
+                            data-testid="catalyst-posts-list"
+                        >
                             {posts &&
+                                posts.length &&
                                 posts.map((post) => (
                                     <li key={post?.id}>
                                         <PostCard post={post} />

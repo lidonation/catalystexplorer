@@ -39,7 +39,7 @@ const ProposalPaginatedList: React.FC<ProposalProps> = ({
                     data="proposals"
                 >
                     {proposals?.data.length ? (
-                        <div className="py-4">
+                        <div className="py-4" data-testid="proposal-results-container">
                             <ProposalResults
                                 proposals={proposals?.data}
                                 isHorizontal={isHorizontal}
@@ -62,7 +62,7 @@ const ProposalPaginatedList: React.FC<ProposalProps> = ({
                     )}
                 </WhenVisible>
             </section>
-            <section className="container">
+            <section className="container" data-testid="proposal-paginator-container">
                 {proposals && <Paginator pagination={proposals} />}
             </section>
         </>

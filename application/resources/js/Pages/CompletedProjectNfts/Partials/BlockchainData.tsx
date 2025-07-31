@@ -1,5 +1,5 @@
 import { Copy } from 'lucide-react';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import { useState } from 'react';
 import Title from '@/Components/atoms/Title';
 import Paragraph from '@/Components/atoms/Paragraph';
@@ -14,7 +14,7 @@ interface BlockchainDataProps {
 }
 
 const BlockchainData = ({ nft, metadata }: BlockchainDataProps) => {
-  const { t } = useTranslation();
+  const { t } = useLaravelReactI18n();
   const [copied, setCopied] = useState<string | null>(null);
 
   if (!nft) {
@@ -25,7 +25,7 @@ const BlockchainData = ({ nft, metadata }: BlockchainDataProps) => {
       </div>
     );
   }
-  
+
   const copyToClipboard = (text: string, type: string) => {
     navigator.clipboard.writeText(text);
     setCopied(type);
@@ -46,9 +46,9 @@ const BlockchainData = ({ nft, metadata }: BlockchainDataProps) => {
           <span className="text-content">{t('noPreviewAvailable')}</span>
         </div>
       )}
-      
+
       <Title level='1' className="font-semibold mb-6">{t('blockchainData')}</Title>
-      
+
       <div className="space-y-6">
         <div className="grid grid-cols-[auto,24px,1fr] md:grid-cols-[160px,24px,1fr] items-start gap-x-2">
           <span className="text-sm text-dark">{t('policyID')}</span>

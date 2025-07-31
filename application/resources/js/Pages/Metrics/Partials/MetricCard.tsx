@@ -5,7 +5,7 @@ import ArrowTrendingUp from '@/Components/svgs/ArrowTrendingUp';
 import { shortNumber } from '@/utils/shortNumber';
 import { ResponsiveLine } from '@nivo/line';
 import React, { useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import MetricData = App.DataTransferObjects.MetricData;
 
 interface MetricCardProps {
@@ -13,7 +13,7 @@ interface MetricCardProps {
 }
 
 const MetricCard: React.FC<MetricCardProps> = ({ metric }) => {
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
     const [isHovered, setIsHovered] = useState(false);
 
     const chartData =
@@ -45,20 +45,21 @@ const MetricCard: React.FC<MetricCardProps> = ({ metric }) => {
     };
 
     return (
-        <div className="bg-background relative flex h-full w-full flex-col rounded-lg shadow-md">
-            <div className="bg-background absolute top-4 left-12 rounded-md px-4 py-2 shadow-md">
+        <div className="bg-background relative flex h-full w-full flex-col rounded-lg shadow-md" data-testid={`metric-card-${metric.hash}`}>
+            <div className="bg-background absolute top-4 left-12 rounded-md px-4 py-2 shadow-md" data-testid="metric-card-header">
                 <span className="text-content text-2xl font-bold">
                     {shortNumber(metric.value ?? 0, 2)}
                 </span>
                 <Title
                     level="3"
                     className="text-content-gray-persist max-w-[200px] truncate text-sm font-medium"
+                    data-testid="metric-card-title"
                 >
                     {metric.title}
                 </Title>
             </div>
 
-            <div className="mt-20 flex grow flex-col justify-between">
+            <div className="mt-20 flex grow flex-col justify-between" data-testid="metric-card-chart">
                 {lineData.length > 0 && (
                     <>
                         <div

@@ -23,7 +23,6 @@ init:
 		--user root \
 		node:${nodeVersion}-alpine yarn install --ignore-engine
 
-
 		docker run --rm -it \
 		-v ${PWD}/application:/app \
 		composer bash -c "composer config --global github-protocols https && composer install --ignore-platform-reqs"
@@ -179,6 +178,40 @@ test-backend:
 test-arch:
 	make test-backend && \
 	make up 
+
+.PHONY: test-e2e
+test-e2e:
+	@echo "Starting End-to-End Testing Workflow..."
+	@echo "Stopping Allure service if running..."
+	@docker-compose stop catalystexplorer.allure 2>/dev/null || true
+	@echo "Cleaning previous test results..."
+	@rm -rf ./application/allure-results ./application/allure-report ./application/allure-reports ./application/playwright-report 2>/dev/null || true
+	@echo "Creating fresh directories..."
+	@mkdir -p ./application/allure-results ./application/allure-reports
+	@echo "Starting Allure reporting service..."
+	@docker-compose up -d catalystexplorer.allure
+	@echo "Waiting for Allure service to be ready..."
+	@sleep 5
+	@echo "Installing Playwright browsers (if not already installed)..."
+	@cd ./application && npx playwright install --with-deps
+	@echo "Running Playwright E2E tests..."
+	@cd ./application && npx playwright test; \
+	TEST_EXIT_CODE=$?; \
+	echo "Test reports are being generated automatically by Allure service..."; \
+	echo "Access your test reports at: http://localhost:5050/allure-docker-service/projects/default/reports/latest/index.html?redirect=false";
+
+.PHONY: test-e2e-stop
+test-e2e-stop:
+	@echo "Stopping Allure reporting service..."
+	@docker-compose stop catalystexplorer.allure
+
+
+.PHONY: image-build-playwright
+image-build-playwright:
+	docker build \
+		-f docker/Dockerfile.playwright \
+		-t catalystexplorer-playwright \
+		.
 
 
 .PHONY: seed-index

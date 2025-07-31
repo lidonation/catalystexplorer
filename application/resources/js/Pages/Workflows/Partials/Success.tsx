@@ -3,7 +3,7 @@ import Paragraph from '@/Components/atoms/Paragraph';
 import Title from '@/Components/atoms/Title';
 import { VerificationBadge } from '@/Components/svgs/VerificationBadge';
 import { ReactNode } from 'react';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 
 interface SuccessComponentProps {
   titleKey: string;
@@ -12,13 +12,13 @@ interface SuccessComponentProps {
   action?: ReactNode;
 }
 
-export default function SuccessComponent({ 
-  titleKey, 
-  messageKey, 
+export default function SuccessComponent({
+  titleKey,
+  messageKey,
   badgeSize = 80,
   action
 }: SuccessComponentProps) {
-  const { t } = useTranslation();
+  const { t } = useLaravelReactI18n();
 
   return (
     <div className="splash-wrapper lg:from-background-home-gradient-color-1 lg:to-background-home-gradient-color-2 sticky z-10 flex justify-center md:rounded-tl-4xl lg:-top-64 lg:h-screen lg:bg-linear-to-r lg:px-8 lg:pb-8 -mb-4">

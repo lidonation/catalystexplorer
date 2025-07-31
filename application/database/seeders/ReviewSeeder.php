@@ -5,8 +5,11 @@ declare(strict_types=1);
 namespace Database\Seeders;
 
 use App\Models\Review;
-use App\Models\ReviewModeration;
+use App\Models\Proposal;
+use App\Models\Discussion;
 use Illuminate\Database\Seeder;
+use App\Models\ReviewModeration;
+use App\Jobs\SeedProposalReviewsJob;
 
 class ReviewSeeder extends Seeder
 {
@@ -15,16 +18,10 @@ class ReviewSeeder extends Seeder
      */
     public function run(): void
     {
-        // Create a review
-        Review::factory()->create()->each(
-            function ($review) {
-                $reviewModeration = ReviewModeration::factory()->create();
 
-                $reviewModeration->reviews()->attach($reviewModeration->reviewer_id, [
-                    'review_id' => $review->id,
-                    'reviewer_id' => $reviewModeration->reviewer_id,
-                ]);
-            }
-        );
+        Proposal::select('id')->chunk(100, function ($proposals) {
+            $proposalIds = $proposals->pluck('id')->toArray();
+            SeedProposalReviewsJob::dispatch($proposalIds);
+        });
     }
 }

@@ -4,7 +4,7 @@ import PercentageProgressBar from '@/Components/PercentageProgressBar';
 import { shortNumber } from '@/utils/shortNumber';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 import React, { useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import MilestoneApprovalButtons from './MilestoneApprovalButtons';
 import MilestoneDateProgressBar from './MilestoneDateProgressBar';
 import MilestoneTrackButton from './MilestoneTrackButton';
@@ -23,7 +23,7 @@ const MilestoneAccordion: React.FC<MilestoneAccordionProps> = ({
     currency,
     onTrack,
 }) => {
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
     const [openIndex, setOpenIndex] = useState<number | null>(null);
 
     const currencySymbol: string = currency == 'usd' ? '$' : '₳';
@@ -32,8 +32,10 @@ const MilestoneAccordion: React.FC<MilestoneAccordionProps> = ({
     };
 
     const activeMilestones = milestones
-        .filter((item) => item.current)
-        .sort((a, b) => a.milestone - b.milestone);
+        ? milestones
+              .filter((item) => item.current)
+              .sort((a, b) => a.milestone - b.milestone)
+        : [];
 
     function formatDate(dateString: string): string {
         const date = new Date(dateString.replace(' ', 'T'));
@@ -70,7 +72,7 @@ const MilestoneAccordion: React.FC<MilestoneAccordionProps> = ({
             {activeMilestones.map((milestone, index) => (
                 <div
                     key={index}
-                    className="border-background-lighter w-full border-t pt-4"
+                    className="border-background-lighter w-full border-t pt-4 px-4"
                 >
                     <div className="flex w-full items-center justify-between">
                         <div className="flex w-full flex-col gap-4">
@@ -95,7 +97,7 @@ const MilestoneAccordion: React.FC<MilestoneAccordionProps> = ({
                     </div>
 
                     {openIndex === index && (
-                        <div className="py-4 px-0.5">
+                        <div className="px-0.5 py-4">
                             <div className="overflow-x-auto">
                                 <table className="border-background-lighter w-full table-auto border">
                                     <tbody>

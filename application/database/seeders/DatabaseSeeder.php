@@ -4,9 +4,16 @@ declare(strict_types=1);
 
 namespace Database\Seeders;
 
+use App\Models\Tag;
+use App\Models\Fund;
+use App\Models\Group;
+use App\Models\Campaign;
+use App\Models\Proposal;
+use App\Models\Community;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\Artisan;
+use App\Models\IdeascaleProfile;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Artisan;
 
 class DatabaseSeeder extends Seeder
 {
@@ -19,23 +26,33 @@ class DatabaseSeeder extends Seeder
             RoleSeeder::class,
             PermissionSeeder::class,
             UserSeeder::class,
-            AnnouncementSeeder::class,
+            FundSeeder::class,
+            CampaignSeeder::class,
+            TagSeeder::class,
+            GroupSeeder::class,
+            CommunitySeeder::class,
+            IdeascaleProfilesSeeder::class,
             ProposalSeeder::class,
-            BookmarkCollectionSeeder::class,
-            BookmarkItemSeeder::class,
-            RuleSeeder::class,
-            MonthlyReportSeeder::class,
-            RegistrationSeeder::class,
-            DelegationSeeder::class,
-            ModerationSeeder::class,
-            ReviewerReputationScoreSeeder::class,
+            TransactionSeeder::class,
+            AnnouncementSeeder::class,
+            MetricSeeder::class,
             VoterSeeder::class,
             SnapshotSeeder::class,
-            TransactionSeeder::class,
-            CatalystDrepSeeder::class,
-            MetricSeeder::class,
             ProjectScheduleSeeder::class,
+            BookmarkCollectionSeeder::class,
 
+            // RuleSeeder::class,
+            // MonthlyReportSeeder::class,
+            // RegistrationSeeder::class,
+            // DelegationSeeder::class,
+            // ModerationSeeder::class,
+            // ReviewerReputationScoreSeeder::class,
+            // VoterSeeder::class,
+            // SnapshotSeeder::class,
+            // TransactionSeeder::class,
+            // CatalystDrepSeeder::class,
+            // MetricSeeder::class,
+            
         ];
 
         foreach ($seeders as $seeder) {

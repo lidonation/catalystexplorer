@@ -307,7 +307,7 @@ class Proposal extends Model
         );
     }
 
-    public function schedule(): HasOne|Proposal
+    public function schedule(): HasOne
     {
         return $this->hasOne(ProjectSchedule::class, 'proposal_id', 'id');
     }
@@ -452,6 +452,7 @@ class Proposal extends Model
             'funded' => (bool) $this->funded_at ? 1 : 0,
             'fund' => [
                 'id' => $this->fund_id,
+                'hash' => $this->fund?->hash,
                 'title' => $this->fund?->title,
                 'amount' => $this->fund?->amount ? intval($this->fund?->amount) : null,
                 'label' => $this->fund?->label,

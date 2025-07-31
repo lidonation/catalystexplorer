@@ -4,12 +4,13 @@ declare(strict_types=1);
 
 namespace Database\Seeders;
 
-use App\Enums\RoleEnum;
 use App\Models\User;
-use Database\Seeders\Traits\GetImageLink;
+use App\Enums\RoleEnum;
+use App\Jobs\AttachImageJob;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Models\Role;
+use Illuminate\Support\Facades\Hash;
+use Database\Seeders\Traits\GetImageLink;
 
 class UserSeeder extends Seeder
 {
@@ -24,9 +25,7 @@ class UserSeeder extends Seeder
 
         User::factory(7)->create()->each(
             function (User $user) {
-                if ($imageLink = $this->getRandomImageLink()) {
-                    $user->addMediaFromUrl($imageLink)->toMediaCollection('profile');
-                }
+                AttachImageJob::dispatch($user, collectionName: 'profile');
             }
         );
     }
@@ -54,8 +53,6 @@ class UserSeeder extends Seeder
             ->hasAttached(Role::where('name', RoleEnum::super_admin())->first())
             ->create();
 
-        if ($imageLink = $this->getRandomImageLink()) {
-            $superUser->addMediaFromUrl($imageLink)->toMediaCollection('profile');
-        }
+        AttachImageJob::dispatch($superUser, collectionName: 'profile');
     }
 }

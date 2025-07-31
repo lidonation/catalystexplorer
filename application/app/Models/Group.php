@@ -63,6 +63,7 @@ class Group extends Model implements HasMedia
             'proposals_woman',
             'proposals_impact',
             'ideascale_profiles.hash',
+            'proposals.fund.hash',
         ];
     }
 
@@ -92,6 +93,18 @@ class Group extends Model implements HasMedia
             'amount_requested',
             'ideascale_profiles.hash',
             'updated_at',
+        ];
+    }
+
+    public static function getRankingRules(): array
+    {
+        return [
+            'words',
+            'typo',
+            'proximity',
+            'attribute',
+            'sort',
+            'exactness',
         ];
     }
 

@@ -4,15 +4,16 @@ declare(strict_types=1);
 
 namespace Database\Factories;
 
+use App\Models\Fund;
+use App\Models\User;
+use App\Models\Campaign;
+use App\Models\Proposal;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
+use App\Enums\ProposalStatus;
 use App\Enums\CatalystCurrencies;
 use App\Enums\ProposalFundingStatus;
-use App\Enums\ProposalStatus;
-use App\Models\Campaign;
-use App\Models\Fund;
-use App\Models\Proposal;
-use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Support\Str;
 
 class ProposalFactory extends Factory
 {
@@ -43,7 +44,7 @@ class ProposalFactory extends Factory
             'campaign_id' => Campaign::inRandomOrder()->first(),
             'fund_id' => Fund::inRandomOrder()->first(),
             'title' => $this->faker->words($this->faker->numberBetween(4, 12), true),
-            'slug' => fn (array $attributes) => Str::slug($attributes['title']),
+            'slug' => fn(array $attributes) => Str::slug($attributes['title']),
             'website' => $this->faker->url(),
             'excerpt' => $this->faker->text(200),
             'amount_requested' => $this->faker->numberBetween(0, 10000000),
@@ -66,7 +67,25 @@ class ProposalFactory extends Factory
             'problem' => $this->faker->sentences(4, true),
             'solution' => $this->faker->sentences(4, true),
             'experience' => $this->faker->sentences(4, true),
-            'content' => $this->faker->paragraphs($this->faker->numberBetween(3, 15)),
+            'content' => collect(range(1, $this->faker->numberBetween(3, 10)))
+                ->map(function () {
+                    $sections = [
+                        fn() => "## {$this->faker->sentence()}",
+                        fn() => "**{$this->faker->sentence()}**",
+                        fn() => $this->faker->paragraph(),
+                        fn() => "- " . implode("\n- ", $this->faker->words($this->faker->numberBetween(3, 7))),
+                        fn() => "![{$this->faker->word()}](https://picsum.photos/seed/{$this->faker->uuid}/600/400)",
+                        fn() => "`{$this->faker->word()} = {$this->faker->randomNumber()}`",
+                        fn() => "**{$this->faker->sentence()}**",
+                        fn() => $this->faker->paragraph(),
+                        fn() => "**{$this->faker->sentence()}**",
+                        fn() => $this->faker->paragraph(),
+                    fn() => "![{$this->faker->word()}](https://picsum.photos/seed/{$this->faker->uuid}/600/400)",
+                    ];
+
+                    return Arr::random($sections)();
+                })
+                ->implode("\n\n"),
             'currency' => $this->faker->randomElement(CatalystCurrencies::toArray()),
             'opensource' => $this->faker->boolean(),
             'ranking_total' => $this->faker->numberBetween(0, 100),

@@ -33,6 +33,7 @@ use App\Http\Controllers\TinderProposalWorkflowController;
 use App\Http\Controllers\CompletedProjectNftsController;
 use App\Http\Controllers\CardanoBudgetProposalController;
 use App\Http\Controllers\ClaimIdeascaleProfileController;
+use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\WalletController;
 use CodeZero\LocalizedRoutes\Controllers\FallbackController;
 
@@ -52,12 +53,15 @@ Route::localized(
                 ->name('csvs');
 
             Route::get('/{slug}', function ($slug) {
-                return redirect()->route('proposals.group.details', ['slug' => $slug]);
+                return redirect()->route('proposals.proposal.details', ['slug' => $slug]);
             })->name('redirect');
 
-            Route::prefix('/{slug}')->as('group.')->group(function () {
+            Route::prefix('/{slug}')->as('proposal.')->group(function () {
                 Route::get('/details', [ProposalsController::class, 'proposal'])
                     ->name('details');
+
+                Route::get('/schedule', [ProposalsController::class, 'proposalSchedule'])
+                    ->name('schedule');
 
                 Route::get('/community-review', [ProposalsController::class, 'proposal'])
                     ->name('communityReview');
@@ -185,6 +189,19 @@ Route::localized(
                         ->name('signBallot');
                 });
 
+            Route::prefix('/create-service/steps')->as('createService.')
+                ->middleware([WorkflowMiddleware::class])
+                ->group(function () {
+                    Route::post('/1/save', [ServiceController::class, 'saveServiceDetails'])
+                        ->name('saveServiceDetails');
+                    Route::post('/2/save', [ServiceController::class, 'saveContactAndLocation'])
+                        ->name('saveContactAndLocation');
+                    Route::post('/save-contact', [ServiceController::class, 'saveContactInfo'])
+                        ->name('saveContactInfo');
+                    Route::get('/{step}', [ServiceController::class, 'handleStep'])
+                        ->name('index');
+                });
+
 
             // Route::prefix('/submit-votes/steps')->as('voting.')
             //     ->middleware([WorkflowMiddleware::class])
@@ -259,6 +276,8 @@ Route::localized(
                         ->name('saveStep3');
                     Route::post('/4/save', [TinderProposalWorkflowController::class, 'saveStep4'])
                         ->name('saveStep4');
+                    Route::post('/add-bookmark-item', [TinderProposalWorkflowController::class, 'addBookmarkItem'])
+                        ->name('addBookmarkItem');
                     Route::get('/fetch-proposals', [TinderProposalWorkflowController::class, 'fetchMoreProposals'])
                         ->name('fetchProposals');
                     Route::get('/{step}', [TinderProposalWorkflowController::class, 'handleStep'])

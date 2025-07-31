@@ -4,7 +4,7 @@ import Title from '@/Components/atoms/Title';
 import Check from '@/Components/svgs/Check';
 import { StepDetails } from '@/types';
 import { generateLocalizedRoute } from '@/utils/localizedRoute';
-import { t } from 'i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import React from 'react';
 import Content from '../Partials/WorkflowContent';
@@ -25,6 +25,8 @@ const Step2: React.FC<Step1Props> = ({
     activeStep,
     profile,
 }) => {
+    const { t } = useLaravelReactI18n();
+
     const prevStep =
         activeStep === 1
             ? ''

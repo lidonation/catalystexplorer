@@ -11,7 +11,7 @@ import { SearchParams } from '@/types/search-params';
 import { useLocalizedRoute } from '@/utils/localizedRoute';
 import { Head } from '@inertiajs/react';
 import React, { useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import MyTransactionTable from './Partials/MyTranscationsTable';
 import TransactionData = App.DataTransferObjects.TransactionData;
 
@@ -25,7 +25,7 @@ const MyTransaction: React.FC<MyTransactionProps> = ({
     transactions,
     filters,
 }) => {
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
     const [showFilters, setShowFilters] = useState(false);
     const hasTransactions = transactions?.data?.length > 0;
 

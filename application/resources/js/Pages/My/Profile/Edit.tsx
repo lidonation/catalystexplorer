@@ -12,7 +12,7 @@ import ProfileFieldForm from './Partials/UpdateProfileInformationForm';
 import { generateLocalizedRoute } from '@/utils/localizedRoute';
 import { router, useForm } from '@inertiajs/react';
 import { useEffect } from 'react';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import PasswordForm from './Partials/UpdatePasswordForm';
 import BaseModal from './Partials/UpdateProfilesModal';
 import ProfileField from './Partials/ProfileField';
@@ -73,7 +73,7 @@ export default function ProfileSettings({
     auth,
     user: directUser,
 }: ProfileSettingsProps) {
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
     const authUser = auth.user;
     const user = directUser || authUser;
     const socialLinks = generateSocialLinks(user);

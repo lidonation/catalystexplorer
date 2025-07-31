@@ -1,4 +1,4 @@
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 
 interface MilestoneTrackButtonProps {
     onTrack: boolean;
@@ -7,7 +7,7 @@ interface MilestoneTrackButtonProps {
 const MilestoneTrackButton: React.FC<MilestoneTrackButtonProps> = ({
     onTrack,
 }) => {
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
 
     return (
         <div className="flex flex-col items-center space-y-2">

@@ -2,7 +2,7 @@ import PrimaryButton from '@/Components/atoms/PrimaryButton';
 import { StepDetails } from '@/types';
 import { generateLocalizedRoute } from '@/utils/localizedRoute';
 import { useForm } from '@inertiajs/react';
-import { t } from 'i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import { ChevronRight } from 'lucide-react';
 import React, { useRef, useState } from 'react';
 import Content from '../Partials/WorkflowContent';
@@ -25,6 +25,7 @@ interface Step1Props {
 }
 
 const Step1: React.FC<Step1Props> = ({ stepDetails, activeStep ,catalystDrep}) => {
+    const { t } = useLaravelReactI18n();
     const [isFormValid, setIsFormValid] = useState(false);
     const formRef = useRef<DrepSignupFormHandles>(null);
 
