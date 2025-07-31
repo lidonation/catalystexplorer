@@ -1180,5 +1180,7 @@
     "voter.sort.votesCountDesc": "Votes Count: High to Low",
     "voter.sort.votesCountAsc": "Votes Count: Low to High",
     "voter.sort.proposalsVotedOnDesc": "Proposals Voted On: High to Low",
-    "voter.sort.proposalsVotedOnAsc": "Proposals Voted On: Low to High"
+    "voter.sort.proposalsVotedOnAsc": "Proposals Voted On: Low to High",
+    "rightSwipes": " - Right Swipes",
+    "leftSwipes": " - Left Swipes"
 }
