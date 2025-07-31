@@ -24073,7 +24073,7 @@ const UserTab$1 = ({ tabs, activeTab }) => {
       className: `
                                 whitespace-nowrap text-sm md:text-base px-2 md:px-3 py-2
                                 group flex items-center gap-2 outline-hidden transition-colors
-                                hover:text-content-dark 
+                                hover:text-content-dark
                                 ${activeTab === tab.name ? "-mb-px border-b-2 border-b-primary text-primary" : ""}
                             `,
       children: tab.name
@@ -29231,7 +29231,7 @@ const Index$4 = ({
       globalQuickPitchView,
       setGlobalQuickPitchView,
       children: [
-        /* @__PURE__ */ jsx("div", { className: "self-stretch p-4 sm:p-6 bg-background rounded-xl shadow-[0px_1px_4px_0px_rgba(16,24,40,0.10)] flex flex-col sm:flex-row justify-between items-start gap-5 sm:gap-2", children: /* @__PURE__ */ jsxs("div", { className: "w-120 flex justify-start items-center gap-4", children: [
+        /* @__PURE__ */ jsx("div", { className: "self-stretch p-4 sm:p-6 bg-background rounded-xl shadow-cx-box-shadow flex flex-col sm:flex-row justify-between items-start gap-5 sm:gap-2", children: /* @__PURE__ */ jsxs("div", { className: "w-120 flex justify-start items-center gap-4", children: [
           /* @__PURE__ */ jsxs("div", { className: "flex-1 inline-flex flex-col justify-start items-start gap-1", children: [
             /* @__PURE__ */ jsx("div", { className: "text-gray-persist text-sm", children: t("proposals.outstanding") }),
             /* @__PURE__ */ jsx("div", { className: "text-content text-base", children: userOutstandingProposalsCount })
@@ -30418,7 +30418,7 @@ const Show = ({
         ] }) }) })
       ] }),
       /* @__PURE__ */ jsx("section", { children }),
-      /* @__PURE__ */ jsxs("div", { className: "self-stretch p-4 sm:p-6 bg-background rounded-xl shadow-[0px_1px_4px_0px_rgba(16,24,40,0.10)] flex flex-col sm:flex-row justify-between items-start gap-5 sm:gap-2", children: [
+      /* @__PURE__ */ jsxs("div", { className: "self-stretch p-4 sm:p-6 bg-background rounded-xl shadow-cx-box-shadow flex flex-col sm:flex-row justify-between items-start gap-5 sm:gap-2", children: [
         /* @__PURE__ */ jsxs("div", { className: "w-full sm:w-auto flex flex-wrap items-center gap-6 sm:gap-4", children: [
           /* @__PURE__ */ jsxs("div", { className: "flex-1 sm:flex-initial min-w-[30%] sm:min-w-0 flex flex-col items-start", children: [
             /* @__PURE__ */ jsx("div", { className: "text-gray-persist text-sm", children: t("proposals.outstanding") }),
@@ -30438,7 +30438,7 @@ const Show = ({
           /* @__PURE__ */ jsx(ArrowUpRight, {})
         ] }) }) })
       ] }),
-      /* @__PURE__ */ jsxs("div", { className: "self-stretch p-6 bg-background rounded-xl shadow-[0px_1px_4px_0px_rgba(16,24,40,0.10)] flex flex-col items-start gap-4 mt-4 mb-4 relative", children: [
+      /* @__PURE__ */ jsxs("div", { className: "self-stretch p-6 bg-background rounded-xl shadow-cx-box-shadow flex flex-col items-start gap-4 mt-4 mb-4 relative", children: [
         /* @__PURE__ */ jsx("div", { className: "w-full flex justify-end", children: /* @__PURE__ */ jsx(
           Button,
           {

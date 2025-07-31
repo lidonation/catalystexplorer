@@ -113,7 +113,7 @@ const Step2: React.FC<Step2Props> = ({
             <Nav stepDetails={stepDetails} activeStep={activeStep} />
 
             <Content>
-                <div className="bg-background mx-auto max-w-3xl px-12 lg:px-29 border-black">
+                <div className="bg-background mx-auto max-w-3xl px-12 xl:px-20 py-4 sm:py-8 border-black">
                     <div className="space-y-6 rounded-lg border border-gray-100 p-6 shadow-sm max-h-[60vh] overflow-y-auto scrolling-touch">
                         <div>
                             <ValueLabel className="text-content">

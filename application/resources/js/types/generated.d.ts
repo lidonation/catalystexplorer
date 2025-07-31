@@ -446,6 +446,7 @@ milestones: any | null;
 export type ProposalData = {
 hash: string | null;
 campaign: App.DataTransferObjects.CampaignData | null;
+schedule: App.DataTransferObjects.ProjectScheduleData | null;
 title: string | null;
 slug: string | null;
 website?: string;
@@ -483,7 +484,7 @@ users: any | null;
 reviews: any | null;
 fund: App.DataTransferObjects.FundData | null;
 opensource: boolean | null;
-link?: string;
+link: string;
 order?: number;
 };
 export type RankingData = {

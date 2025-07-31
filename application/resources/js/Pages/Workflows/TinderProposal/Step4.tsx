@@ -267,19 +267,19 @@ const Step4Content: React.FC<Step4Props> = ({
         >
             <Nav stepDetails={stepDetails} activeStep={activeStep} />
             <div className="mx-auto mt-5 flex w-full flex-col items-center justify-center">
-                <div className="mx-5 mx-auto w-[75%] overflow-y-auto xl:w-[50%]">
+                <div className="mx-5 px-8 mx-auto w-full overflow-y-auto">
                     <Title className="text-content mt-5 mb-2 text-center text-lg font-black">
                         {t('workflows.tinderProposal.step4.swipeList')}
                     </Title>
                     <Paragraph
                         size="sm"
-                        className="text-md text-gray-persist mb-8 text-center"
+                        className="text-md text-gray-persist mb-8 text-center  px-4"
                     >
                         {t(
                             'workflows.tinderProposal.step4.organizeSwipesDescription',
                         )}
                     </Paragraph>
-                    <div className="space-y-5 p-4">
+                    <div className="space-y-5 py-4">
                         {/* Right Swipes Card */}
                         {rightBookmarkCollection && (
                             <SwipeCard

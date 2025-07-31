@@ -19,6 +19,9 @@ final class ProposalData extends Data
 
         public ?CampaignData $campaign,
 
+        #[TypeScript('projectSchedule')]
+        public ?ProjectScheduleData $schedule,
+
         public ?string $title,
 
         public ?string $slug,
@@ -128,8 +131,7 @@ final class ProposalData extends Data
 
         public ?bool $opensource,
 
-        #[TypeScriptOptional]
-        public ?string $link,
+        public string $link,
 
         #[TypeScriptOptional]
         public ?int $order,
