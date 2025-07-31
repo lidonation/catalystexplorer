@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import PrimaryLink from '@/Components/atoms/PrimaryLink';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import { router } from '@inertiajs/react';
 import { generateLocalizedRoute, useLocalizedRoute } from '@/utils/localizedRoute';
 import Card from '@/Components/Card'
@@ -42,7 +42,7 @@ const WalletsComponent: React.FC<WalletsPageProps> = ({ connectedWallets, error 
   const [copySuccesses, setCopySuccesses] = useState<Record<string, boolean>>({})
   const [expandedAddresses, setExpandedAddresses] = useState<Record<string, boolean>>({})
   const [deletingWallets, setDeletingWallets] = useState<Record<string, boolean>>({})
-  const { t } = useTranslation();
+  const { t } = useLaravelReactI18n();
 
   const handleDeleteWallet = (wallet: WalletData) => {
     setDeletingWallets(prev => ({ ...prev, [wallet.stakeAddress]: true }));

@@ -1,5 +1,5 @@
 import { Head } from '@inertiajs/react';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import CommunityLayout from '../CommunityLayout';
 import CommunityFundingChart from '../Partials/CommunityFundingChart';
 import CommunityData = App.DataTransferObjects.CommunityData;
@@ -21,7 +21,7 @@ export default function Proposals({
     ownProposals,
     collaboratingProposals,
 }: DashboardPageProps) {
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
     const awardedFilterOptions = [
         [
             {

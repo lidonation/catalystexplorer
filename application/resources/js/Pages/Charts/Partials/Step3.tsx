@@ -57,6 +57,7 @@ export default function Step3({
         const isDistributionChart = selectedChart === 'distributionChart';
         const isTrendChart = selectedChart === 'trendChart';
 
+
         const allOptions = [
             { label: t('charts.barChart'), value: 'barChart' },
             { label: t('charts.pieChart'), value: 'pieChart' },
@@ -69,6 +70,7 @@ export default function Step3({
         return allOptions.map((option) => {
             let isDisabled = false;
 
+
             if (isDistributionChart) {
                 isDisabled = [
                     'barChart',
@@ -80,6 +82,7 @@ export default function Step3({
             } else if (isTrendChart) {
                 isDisabled = ['treeMap'].includes(option.value);
             }
+
 
             return {
                 ...option,
@@ -97,7 +100,9 @@ export default function Step3({
             const isDistributionChart = selectedChart === 'distributionChart';
             const isTrendChart = selectedChart === 'trendChart';
 
+
             let disabledOptions: string[] = [];
+
 
             if (isDistributionChart) {
                 disabledOptions = [
@@ -208,3 +213,4 @@ export default function Step3({
         </div>
     );
 }
+

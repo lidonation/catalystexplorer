@@ -1,5 +1,3 @@
-import { useTranslation } from 'react-i18next';
-
 type ArrowCurvedIconProps = {
     className?: string;
     width?: number;
@@ -10,7 +8,6 @@ export default function ArrowCurvedIcon({
     width = 28,
     height = 28,
 }: ArrowCurvedIconProps) {
-    const { t } = useTranslation();
     return (
         <svg
             width="10"
@@ -20,7 +17,6 @@ export default function ArrowCurvedIcon({
             xmlns="http://www.w3.org/2000/svg"
             className={className}
         >
-             <title>{t('icons.titles.arrow_curved')}</title>
             <path
                 d="M5.66675 4.33594L3.66675 6.33594L1.66675 4.33594"
                 stroke="currentColor"

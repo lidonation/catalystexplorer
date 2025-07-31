@@ -2,7 +2,7 @@ import Title from '@/Components/atoms/Title';
 import ExpandableContent from '@/Components/ExpandableContent';
 import ExpandableContentAnimation from '@/Components/ExpandableContentAnimation';
 import { useEffect, useRef, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 
 export default function ColumnHeader({
     proposal,
@@ -27,7 +27,7 @@ export default function ColumnHeader({
     const contentRef = useRef<HTMLParagraphElement | null>(null);
     const [lineCount, setLineCount] = useState(0);
 
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
 
     useEffect(() => {
         const element = contentRef.current;

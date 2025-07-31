@@ -1,6 +1,6 @@
 import Title from "@/Components/atoms/Title";
 import Paragraph from "@/Components/atoms/Paragraph";
-import { useTranslation } from "react-i18next";
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import IdeascaleProfileData = App.DataTransferObjects.IdeascaleProfileData;
 import XIcon from "@/Components/svgs/XIcon";
 import LinkedInIcon from "@/Components/svgs/LinkedInIcons";
@@ -14,8 +14,8 @@ interface ContributorProfileProps {
 }
 
 const ContributorProfile = ({ contributorProfiles, author, isOwner }: ContributorProfileProps) => {
-  const { t } = useTranslation();
-  
+  const { t } = useLaravelReactI18n();
+
   // If no contributors provided or empty array, use a placeholder
   if (!contributorProfiles || contributorProfiles.length === 0) {
     return (
@@ -25,7 +25,7 @@ const ContributorProfile = ({ contributorProfiles, author, isOwner }: Contributo
         </div>
       </div>
     );
-  } 
+  }
 
   return (
     <div className="bg-background rounded-lg p-6">
@@ -40,7 +40,7 @@ const ContributorProfile = ({ contributorProfiles, author, isOwner }: Contributo
             <div>
               <Title level="2" className="text-content font-semibold">{author.name}</Title>
               <Paragraph className="text-dark">{author.title}</Paragraph>
-              
+
               {/* Social links */}
               <div className="flex gap-2 mt-2">
                 {author.twitter && (
@@ -48,13 +48,13 @@ const ContributorProfile = ({ contributorProfiles, author, isOwner }: Contributo
                       <XIcon/>
                   </a>
                 )}
-                
+
                 {author.discord && (
                   <a href={`https://discord.com/users/${author.discord}`} target="_blank" rel="noopener noreferrer" className="hover:opacity-80">
                       <DiscordIcon/>
                   </a>
                 )}
-                
+
                 {author.linkedin && (
                   <a href={`https://linkedin.com/in/${author.linkedin}`} target="_blank" rel="noopener noreferrer" className="hover:opacity-80">
                       <LinkedInIcon/>
@@ -83,10 +83,10 @@ const ContributorProfile = ({ contributorProfiles, author, isOwner }: Contributo
               {contributorProfiles.map((contributor, index) => {
                 // Ensure a unique key by combining id and index as fallback
                 const uniqueKey = contributor.hash ? `contributor-${contributor.hash}-${index}` : `contributor-index-${index}`;
-                
+
                 return (
-                  <div 
-                    key={uniqueKey} 
+                  <div
+                    key={uniqueKey}
                     className="text-center flex-1 min-w-[120px] max-w-[200px]"
                   >
                     <div className="flex justify-center mb-2">

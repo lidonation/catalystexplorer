@@ -4,7 +4,7 @@ import RecordsNotFound from '@/Layouts/RecordsNotFound';
 import RelatedReviews from '@/Pages/Reviews/Partials/RelatedReviews';
 import { PaginatedData } from '@/types/paginated-data';
 import { Head, WhenVisible } from '@inertiajs/react';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import GroupLayout from '../GroupLayout';
 import ReviewData = App.DataTransferObjects.ReviewData;
 import GroupData = App.DataTransferObjects.GroupData;
@@ -26,7 +26,7 @@ export default function Reviews({
         768: 1,
     };
 
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
 
     return (
         <GroupLayout group={group}>

@@ -1,7 +1,7 @@
 import { useForm, usePage } from '@inertiajs/react';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import TopLevelCommentInput from './atoms/TopLevelComment';
 import Card from './Card';
 import CommentItem from './CommentItem';
@@ -23,7 +23,7 @@ export default function Comments({
     const [loading, setLoading] = useState(true);
     const [replyingTo, setReplyingTo] = useState<number | null>(null);
 
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
     const user = usePage().props?.auth?.user;
 
     const fetchComments = async () => {

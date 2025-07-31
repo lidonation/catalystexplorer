@@ -6,9 +6,10 @@ import { ListProvider } from '@/Context/ListContext';
 import BookmarkButton from '@/Pages/My/Bookmarks/Partials/BookmarkButton';
 import { Link } from '@inertiajs/react';
 import { useEffect, useRef, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import CompareButton from './CompareButton';
 import ProposalStatus from './ProposalStatus';
+import UserAvatar from '@/Components/UserAvatar';
 
 export default function ProposalCardHeader({
     proposal,
@@ -38,7 +39,7 @@ export default function ProposalCardHeader({
     const contentRef = useRef<HTMLParagraphElement | null>(null);
     const [lineCount, setLineCount] = useState(0);
 
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
 
     useEffect(() => {
         const element = contentRef.current;
@@ -83,11 +84,10 @@ export default function ProposalCardHeader({
                                 </svg>
                             </Button>
                             <div className="relative flex items-center space-x-4 pt-16" data-testid="user-profile">
-                                <img
-                                    src={userSelected?.hero_img_url}
-                                    alt={`${userSelected?.name}'s profile`}
-                                    className="relative inline-block h-10 w-10 rounded-full ring-2 ring-white"
-                                    data-testid="user-profile-image"
+                                <UserAvatar
+                                    name={userSelected?.name ?? userSelected?.username}
+                                    imageUrl={userSelected?.hero_img_url}
+                                    size="size-10"
                                 />
                                 <Title level="4">{userSelected?.name}</Title>
                             </div>
@@ -134,10 +134,8 @@ export default function ProposalCardHeader({
                     }`}
                     style={{ overflow: 'visible' }}
                 >
-                    <a
+                    <Link
                         href={proposal.link}
-                        target="_blank"
-                        rel="noopener noreferrer"
                         className={`hover:text-primary font-medium ${
                             isHorizontal ? 'mb-4 text-center' : ''
                         }`}
@@ -155,7 +153,7 @@ export default function ProposalCardHeader({
                                 </ExpandableContent>
                             </div>
                         ) : null}
-                    </a>
+                    </Link>
                     <div className="flex flex-row justify-end py-0.5 italic" data-testid="proposal-card-fund">
                         <span>~ {proposal.fund?.title}</span>
                     </div>
@@ -169,7 +167,7 @@ export default function ProposalCardHeader({
                             data-testid={`related-platforms-proposal-card-links-${proposal?.hash}`}
                         >
                             {proposal.ideascale_link && (
-                                <Link
+                                <a
                                     href={proposal.ideascale_link}
                                     className="text-4 text-opacity-100 flex w-full items-center justify-center"
                                     target="_blank"
@@ -177,14 +175,14 @@ export default function ProposalCardHeader({
                                     data-testid={`ideascale-link-${proposal?.hash}`}
                                 >
                                     <span>{t('proposals.ideascale')}</span>
-                                </Link>
+                                </a>
                             )}
                             {proposal.ideascale_link &&
                                 proposal.projectcatalyst_io_link && (
                                     <div className="mx-2 h-3 border-r"></div>
                                 )}
                             {proposal.projectcatalyst_io_link && (
-                                <Link
+                                <a
                                     href={proposal.projectcatalyst_io_link}
                                     className="text-4 text-opacity-100 flex w-full items-center justify-center"
                                     target="_blank"
@@ -194,7 +192,7 @@ export default function ProposalCardHeader({
                                     <span>
                                         {t('proposals.projectCatalyst')}
                                     </span>
-                                </Link>
+                                </a>
                             )}
                         </nav>
                     )}

@@ -12,7 +12,7 @@ import {
     useEffect,
     useState,
 } from 'react';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import ActiveFilters from './ActiveFilters/ActiveFilters';
 
 function SearchControls({
@@ -31,7 +31,7 @@ function SearchControls({
     withActiveTags?: boolean;
 }) {
     const { getFilter, setFilters, filters } = useFilterContext();
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
 
     const queryParams = new URLSearchParams(window.location.search);
     const initialSearchQuery = queryParams.get(ParamsEnum.QUERY) || '';

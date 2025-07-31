@@ -1,5 +1,3 @@
-import { useTranslation } from 'react-i18next';
-
 type EditIconProps = {
     className?: string;
     width?: number;
@@ -11,8 +9,6 @@ export default function EditIcon({
                                      width = 24,
                                      height = 24,
                                  }: EditIconProps) {
-    const { t } = useTranslation();
-
     return (
         <svg
             width={width}
@@ -22,8 +18,6 @@ export default function EditIcon({
             xmlns="http://www.w3.org/2000/svg"
             className={className}
         >
-            <title>{t('icons.titles.edit')}</title>
-
             {/* Rounded square outline */}
             <rect
                 x="3"

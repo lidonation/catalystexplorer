@@ -1,7 +1,7 @@
 import {currencySymbol} from '@/utils/currencySymbol';
 import {shortNumber} from '@/utils/shortNumber';
 import {useEffect, useState} from 'react';
-import {useTranslation} from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import PercentageProgressBar from './PercentageProgressBar';
 import ValueLabel from "@/Components/atoms/ValueLabel";
 
@@ -22,7 +22,7 @@ const AmountComparisonWithBar: React.FC<AmountComparisonWithBarPageProps> = ({
      smallSize = false,
      onWhiteBackground = false,
  }) => {
-    const {t} = useTranslation();
+    const { t } = useLaravelReactI18n();
 
     const [percentage, setPercentage] = useState<number>(0);
 

@@ -4,8 +4,8 @@ import { currency } from '@/utils/currency';
 import { useLocalizedRoute } from '@/utils/localizedRoute';
 import { Link } from '@inertiajs/react';
 import React from 'react';
-import { useTranslation } from 'react-i18next';
 import { test } from '@playwright/test';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import FundData = App.DataTransferObjects.FundData;
 
 interface FundCardProps {
@@ -19,7 +19,7 @@ const FundCard: React.FC<FundCardProps> = ({
     percentageChange,
     projectPercentageChange,
 }) => {
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
 
     return (
         <div className="bg-background flex w-full transform flex-row items-stretch space-x-6 overflow-hidden rounded-lg p-3 shadow-md sm:p-4" data-testid={`fund-card-${fund.hash}`}>

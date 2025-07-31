@@ -6,7 +6,7 @@ import Paragraph from './atoms/Paragraph';
 import Modal from './layout/Modal.tsx';
 import { useConnectWallet } from '@/Context/ConnectWalletSliderContext';
 import Image from './Image';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 
 export default function WalletSlider({
   isOpen,
@@ -28,7 +28,7 @@ export default function WalletSlider({
     disconnectWallet,
   } = useConnectWallet();
 
-  const { t } = useTranslation();
+  const { t } = useLaravelReactI18n();
 
   useEffect(() => {
     const handleEscKey = (event: KeyboardEvent) => {

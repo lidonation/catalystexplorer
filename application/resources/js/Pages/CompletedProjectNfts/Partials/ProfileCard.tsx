@@ -2,7 +2,7 @@ import UserAvatar from '@/Components/UserAvatar';
 import Checkbox from '@/Components/atoms/Checkbox';
 import Paragraph from '@/Components/atoms/Paragraph';
 import React, { ReactNode } from 'react';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import IdeascaleProfileData = App.DataTransferObjects.IdeascaleProfileData;
 
 interface ProfileCardProps {
@@ -13,7 +13,7 @@ interface ProfileCardProps {
 
 const ProfileCard: React.FC<ProfileCardProps> = React.memo(
     ({ profile, className,children }) => {
-        const { t } = useTranslation();
+        const { t } = useLaravelReactI18n();
 
         return (
             <div

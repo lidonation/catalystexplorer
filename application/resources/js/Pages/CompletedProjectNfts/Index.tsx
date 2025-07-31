@@ -12,7 +12,7 @@ import { SearchParams } from '@/types/search-params';
 import { currency } from '@/utils/currency';
 import { useLocalizedRoute } from '@/utils/localizedRoute';
 import { Head, Link, WhenVisible } from '@inertiajs/react';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import MintedNftsCardLoader from './Partials/MintedNftsCardLoader';
 import MintedNftsList from './Partials/MintedNftsList';
 import StatisticCard from './Partials/StatisticCard';
@@ -38,7 +38,7 @@ export default function Index({
     communityMembersFunded,
     mintedNfts,
 }: PageProps<CompletedProjectNftsPageProps>) {
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
 
     const statistics = [
         {

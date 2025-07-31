@@ -1,4 +1,4 @@
-import { TFunction } from 'i18next';
+import ReplacementsInterface from "laravel-react-i18n/dist/interfaces/replacements";
 
 export interface Tab {
   name: string;
@@ -18,7 +18,7 @@ export interface TabConfig {
   }[];
 }
 
-export function generateTabs(t: TFunction, config: TabConfig): Tab[] {
+export function generateTabs(t: (key: string, replacements?: ReplacementsInterface) => string, config: TabConfig): Tab[] {
 
   return config.tabs.map(tab => {
     const routeName = `${config.routePrefix}.${tab.routeName || tab.key}`;
@@ -97,6 +97,7 @@ export const proposalTabs: TabConfig = {
   routePrefix: 'proposals/{slug}',
   tabs: [
     {key: 'details', routeName: 'details',},
+    {key: 'schedule', routeName: 'schedule',},
     {key: 'community', routeName: 'community-review',},
     {key: 'team', routeName: 'team-information',},
   ]

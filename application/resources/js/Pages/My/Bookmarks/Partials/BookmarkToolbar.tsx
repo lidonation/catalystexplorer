@@ -1,8 +1,8 @@
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import BookmarkSearchControls from './BookmarkSearchControls';
 
 const BookmarkToolbar = () => {
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
 
     return (
         <div className="flex w-full flex-col gap-4">

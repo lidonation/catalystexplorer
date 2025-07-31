@@ -6,7 +6,7 @@ import {
 } from '@/Components/atoms/Tooltip';
 import { useScreenDimension } from '@/Hooks/useScreenDimension';
 import { useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import Paragraph from '@/Components/atoms/Paragraph';
 
 interface AnnouncementCountdownChipProps {
@@ -42,7 +42,7 @@ const AnnouncementCountdownChip = ({
 }: AnnouncementCountdownChipProps) => {
     const [timeRemaining, setTimeRemaining] = useState<number>(0);
     const { isMobile } = useScreenDimension();
-    const {t} = useTranslation();
+    const { t } = useLaravelReactI18n();
 
     useEffect(() => {
         const calculateTimeRemaining = () => {

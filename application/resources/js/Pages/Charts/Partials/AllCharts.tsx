@@ -8,7 +8,7 @@ import { ParamsEnum } from '@/enums/proposal-search-params';
 import { userSettingEnums } from '@/enums/user-setting-enums';
 import { useUserSetting } from '@/Hooks/useUserSettings';
 import { Share2Icon } from 'lucide-react';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import BarChart from './BarChart';
 import ChartCard from './ChartCard';
 import { ChartLoading } from './ChartLoading';
@@ -17,6 +17,7 @@ import LineChart from './LineChart';
 import PieChart from './PieChart';
 import StackedBarChart from './StackedBarChart';
 import TreeMap from './TreeMap';
+
 
 interface AllChartsProps {
     chartData: any;

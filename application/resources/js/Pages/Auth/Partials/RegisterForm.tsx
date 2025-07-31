@@ -3,7 +3,7 @@ import InputError from '@/Components/InputError';
 import { generateLocalizedRoute } from '@/utils/localizedRoute';
 import { Link, router, useForm } from '@inertiajs/react';
 import { FormEventHandler, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import PrimaryButton from '../../../Components/atoms/PrimaryButton';
 import InputLabel from '../../../Components/InputLabel';
 import Button from '@/Components/atoms/Button';
@@ -88,7 +88,7 @@ export default function RegisterForm({ closeModal }: RegisterFormProps) {
         });
     };
 
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
 
     const handleLoginClick = () => {
         if (closeModal) closeModal();

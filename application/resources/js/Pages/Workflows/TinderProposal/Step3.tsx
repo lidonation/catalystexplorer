@@ -1,7 +1,7 @@
 import { generateLocalizedRoute, useLocalizedRoute } from '@/utils/localizedRoute';
 import { ChevronLeft, ChevronRight, ThumbsUpIcon } from 'lucide-react';
 import React, { useEffect, useState, useRef, useMemo } from 'react';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import { router } from '@inertiajs/react';
 import api from '@/utils/axiosClient';
 import Paragraph from '@/Components/atoms/Paragraph';
@@ -77,7 +77,7 @@ const Step3: React.FC<Step3Props> = ({
     startingPage = 1,
     currentIndexWithinPage = 0
 }) => {
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
     const [currentIndex, setCurrentIndex] = useState(currentIndexWithinPage);
     const [isAnimating, setIsAnimating] = useState(false);
     const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
@@ -138,6 +138,7 @@ const Step3: React.FC<Step3Props> = ({
 
             setHasMorePages(proposals.current_page < proposals.last_page);
             setIsLoading(false);
+
         }
     }, [proposals, isLoadMore, existingSwipedLeft, existingSwipedRight, currentIndexWithinPage]);
 
@@ -244,7 +245,7 @@ const Step3: React.FC<Step3Props> = ({
                 if (targetCollectionHash) {
                     api.post(route('en.workflows.tinderProposal.addBookmarkItem'), {
                     proposalHash,
-                    modelType: 'proposals', 
+                    modelType: 'proposals',
                     bookmarkCollection: targetCollectionHash
             })
                         .then(() => {
@@ -534,7 +535,6 @@ const Step3: React.FC<Step3Props> = ({
                                                         isHorizontal={false}
                                                         hideFooter={true}
                                                     />
-
 
                                                     {isTopCard && (
                                                         <div className="flex justify-center mt-4 w-full">

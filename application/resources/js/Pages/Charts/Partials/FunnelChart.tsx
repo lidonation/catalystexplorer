@@ -4,7 +4,7 @@ import { ParamsEnum } from '@/enums/proposal-search-params';
 import { shortNumber } from '@/utils/shortNumber';
 import { ResponsiveFunnel } from '@nivo/funnel';
 import React, { useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 
 interface FunnelChartProps {
     chartData: any;
@@ -12,7 +12,7 @@ interface FunnelChartProps {
 }
 
 const FunnelChart: React.FC<FunnelChartProps> = ({ chartData, viewBy }) => {
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
     const { getFilter } = useFilterContext();
     const [isMobile, setIsMobile] = useState(false);
     const [screenWidth, setScreenWidth] = useState(
@@ -145,6 +145,7 @@ const FunnelChart: React.FC<FunnelChartProps> = ({ chartData, viewBy }) => {
             });
         }
 
+
         if (inProgressProposals > 0) {
             funnelSteps.push({
                 id: 'In Progress Proposals',
@@ -208,6 +209,7 @@ const FunnelChart: React.FC<FunnelChartProps> = ({ chartData, viewBy }) => {
             </div>
         );
     }
+
 
     if (funnelData.length < 1) {
         return (

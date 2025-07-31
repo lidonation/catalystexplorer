@@ -8,14 +8,13 @@ import {
     useLocalizedRoute,
 } from '@/utils/localizedRoute';
 import { router } from '@inertiajs/react';
-import { t } from 'i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import React, { useState } from 'react';
 import Content from '../Partials/WorkflowContent';
 import Footer from '../Partials/WorkflowFooter';
 import Nav from '../Partials/WorkflowNav';
 import WorkflowLayout from '../WorkflowLayout';
-import CatalysDrepData = App.DataTransferObjects.CatalystDrepData;
 
 interface Step1Props {
     catalystDrep: string;
@@ -28,6 +27,8 @@ const Step2: React.FC<Step1Props> = ({
     activeStep,
     catalystDrep,
 }) => {
+    const { t } = useLaravelReactI18n();
+
     const localizedRoute = useLocalizedRoute;
 
     const { stakeKey, stakeAddress } = useConnectWallet();

@@ -1,6 +1,6 @@
 import Title from '@/Components/atoms/Title';
 import React from 'react';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 
 interface PageHeaderProps {
     sectionTitle: string;
@@ -8,7 +8,7 @@ interface PageHeaderProps {
 }
 
 const PageHeader: React.FC<PageHeaderProps> = ({ sectionTitle, userName }) => {
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
 
     return (
         <>

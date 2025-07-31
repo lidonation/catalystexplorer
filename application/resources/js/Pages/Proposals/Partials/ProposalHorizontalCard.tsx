@@ -8,22 +8,22 @@ import ProposalFundingPercentages from './ProposalFundingPercentages';
 import ProposalFundingStatus from './ProposalFundingStatus';
 import ProposalQuickpitch from './ProposalQuickpitch';
 import ProposalSolution from './ProposalSolution';
-import { useCallback, useState, useRef, useEffect } from 'react';
+import {useCallback, useState, useRef, useEffect} from 'react';
 
 export default function ProposalHorizontalCard({
-    proposal,
-    userSelected,
-    noSelectedUser,
-    handleUserClick,
-    quickPitchView,
-    toggleLocalQuickPitchView,
-    isHorizontal,
-    t,
-    hasQuickPitch,
-    yesVotes,
-    abstainVotes,
-    hideFooter = false,
-}: any) {
+                                                   proposal,
+                                                   userSelected,
+                                                   noSelectedUser,
+                                                   handleUserClick,
+                                                   quickPitchView,
+                                                   toggleLocalQuickPitchView,
+                                                   isHorizontal,
+                                                   t,
+                                                   hasQuickPitch,
+                                                   yesVotes,
+                                                   abstainVotes,
+                                                   hideFooter = false,
+                                               }: any) {
     const [cardHeight, setCardHeight] = useState<number | null>(null);
     const [cardWidth, setCardWidth] = useState<number | null>(null);
     const cardRef = useRef<HTMLElement>(null);
@@ -100,7 +100,7 @@ export default function ProposalHorizontalCard({
 
                 <div className="flex h-full flex-col space-y-4 md:flex-row md:space-y-0 md:space-x-6">
                     {userSelected ? (
-                        <UserQuickView user={userSelected} />
+                        <UserQuickView user={userSelected}/>
                     ) : (
                         <>
                             <section
@@ -121,10 +121,11 @@ export default function ProposalHorizontalCard({
                                 />
                             </section>
                             <div className="h-full min-h-40 w-[500px] overflow-auto">
-                                {quickPitchView ? (
-                                    <ProposalQuickpitch
-                                        quickpitch={proposal.quickpitch}
-                                    />
+                                {quickPitchView ? (<span></span>
+                                    // reenable when we can use something that supports ssr
+                                    // <ProposalQuickpitch
+                                    //     quickpitch={proposal.quickpitch}
+                                    // />
                                 ) : (
                                     <ProposalSolution
                                         solution={proposal.solution}

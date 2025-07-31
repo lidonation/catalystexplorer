@@ -258,3 +258,4 @@ const ScatterPlot: React.FC<ScatterChartProps> = ({
 };
 
 export default ScatterPlot;
+

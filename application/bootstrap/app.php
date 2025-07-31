@@ -19,6 +19,8 @@ return Application::configure(basePath: dirname(__DIR__))
             \Illuminate\Http\Middleware\AddLinkHeadersForPreloadedAssets::class,
             \CodeZero\LocalizedRoutes\Middleware\SetLocale::class,
             \App\Http\Middleware\CaptureIntendedUrl::class, 
+            \Illuminate\Session\Middleware\StartSession::class,
+            \Illuminate\View\Middleware\ShareErrorsFromSession::class
         ]);
         $middleware->trustProxies(at: '*');
     })

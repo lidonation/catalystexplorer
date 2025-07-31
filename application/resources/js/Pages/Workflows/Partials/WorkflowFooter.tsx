@@ -1,10 +1,10 @@
 import { ReactNode } from 'react';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 
 type Props = { children: ReactNode };
 
 export default function Footer({ children }: Props) {
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
     const isLogin = window.location.pathname.endsWith('login');
 
     if (isLogin) {

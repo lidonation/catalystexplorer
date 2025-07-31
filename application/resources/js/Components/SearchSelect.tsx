@@ -4,7 +4,7 @@ import { useSearchOptions } from '@/Hooks/useSearchOptions';
 import { cn } from '@/lib/utils';
 import { ChevronDown } from 'lucide-react';
 import { useCallback, useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import {
     Command,
     CommandEmpty,
@@ -50,8 +50,7 @@ export function SearchSelect({
     const { searchTerm, setSearchTerm, options } =
         useSearchOptions<any>(domain);
 
-
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
 
     const filteredOptions = options.map((option) => {
         return {

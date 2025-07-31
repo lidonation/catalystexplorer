@@ -6,7 +6,7 @@ import { currency } from '@/utils/currency';
 import { useLocalizedRoute } from '@/utils/localizedRoute';
 import { Link } from '@inertiajs/react';
 import React from 'react';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import { Segments } from '@/types/segments';
 import FundData = App.DataTransferObjects.FundData;
 import CampaignData = App.DataTransferObjects.CampaignData;
@@ -22,7 +22,7 @@ const CampaignCard: React.FC<CampaignCardProps> = ({
     campaign,
     className,
 }) => {
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
 
     const heroImageUrl = campaign?.hero_img_url ?? fund?.hero_img_url;
 
@@ -54,7 +54,7 @@ const CampaignCard: React.FC<CampaignCardProps> = ({
         return input; // Return original if format is incorrect
     };
     return (
-        <div className={`${className}`}>
+        <div className={className} data-testid="campaign-card">
             <div className="bg-content-light h-60 overflow-hidden rounded-lg">
                 {heroImageUrl ? (
                     <img

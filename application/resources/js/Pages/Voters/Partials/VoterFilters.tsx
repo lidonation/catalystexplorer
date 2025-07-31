@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { SearchSelect } from '@/Components/SearchSelect';
 import { useFilterContext } from '@/Context/FiltersContext';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import { router } from '@inertiajs/react';
 import { VoterEnums } from '@/enums/voter-search-enums';
 
 const VoterFilters = () => {
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
     const { setFilters, getFilter, filters } = useFilterContext();
     const [selectedFund, setSelectedFund] = useState<string[]>([]);
     const [selectedStatus, setSelectedStatus] = useState<string[]>([]);
@@ -20,19 +20,19 @@ const VoterFilters = () => {
 
     const parseFilterValue = (value: any): string[] => {
         if (value === null || value === undefined) return [];
-        
+
         if (typeof value === 'string') {
             if (value === '') return [];
             return value.split(',').filter(Boolean);
         }
-        
+
         if (Array.isArray(value)) {
             return value.map(String);
         }
-        
+
         return [String(value)];
     };
-    
+
     useEffect(() => {
         const fundFilter = getFilter(VoterEnums.FUND);
         const statusFilter = getFilter('status');
@@ -40,10 +40,10 @@ const VoterFilters = () => {
         const statusValues = statusFilter ? parseFilterValue(statusFilter) : [];
         setSelectedFund(fundValues);
         setSelectedStatus(statusValues);
-        
+
         setIsInitialized(true);
     }, [filters]);
-    
+
     const handleFilterUpdate = (param: string, selectedItems: string[] | string) => {
         const items = selectedItems as string[];
 
@@ -55,7 +55,7 @@ const VoterFilters = () => {
         }
 
         const labelText = param === VoterEnums.FUND ? t('funds.fund') : t('voter.table.status');
-        
+
         if (items.length === 0) {
             setFilters({
                 param: param,
@@ -83,7 +83,7 @@ const VoterFilters = () => {
                         domain="fundTitles"
                         selected={selectedFund}
                         onChange={(items) => handleFilterUpdate(VoterEnums.FUND, items)}
-                        placeholder={t('select', 'Select')}
+                        placeholder={t('select', {'Select': 'Select'})}
                         multiple={true}
                         emptyText={t('voter.noFundsAvailable')}
                         valueField={'hash'}
@@ -100,7 +100,7 @@ const VoterFilters = () => {
                         domain="static"
                         selected={selectedStatus}
                         onChange={(items) => handleFilterUpdate('status', items)}
-                        placeholder={t('select', 'Select')}
+                        placeholder={t('select', {'Select': 'Select'})}
                         multiple={true}
                         emptyText={t('voter.noStatusAvailable')}
                         valueField={'value'}

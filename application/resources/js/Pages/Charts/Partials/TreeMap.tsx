@@ -177,7 +177,7 @@ const TreeMap: React.FC<TreeMapProps> = ({ chartData, viewBy }) => {
                     motionConfig="gentle"
                     tooltip={(node) => (
                         <div
-                            className={`bg-tooltip text-content-light rounded-xs p-${isMobile ? '2' : '4'} max-w-xs border shadow-lg`}
+                            className={`bg-tooltip text-content-light rounded-xs p-${isMobile ? '2' : '4'} w-fit border shadow-lg`}
                         >
                             <Paragraph size="sm">
                                 <strong className="mb-1 block">
@@ -185,7 +185,7 @@ const TreeMap: React.FC<TreeMapProps> = ({ chartData, viewBy }) => {
                                 </strong>
                             </Paragraph>
                             <Paragraph size={isMobile ? 'xs' : 'sm'}>
-                                Count: {shortNumber(node.node.value, 2)}
+                                Count: {node.node.value}
                             </Paragraph>
                         </div>
                     )}

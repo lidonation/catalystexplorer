@@ -11,9 +11,9 @@ const ProposalContent = ({ content }: ProposalContentProps) => {
   const [expanded, setExpanded] = useState(false);
   const [hasOverflow, setHasOverflow] = useState(false);
   const contentRef = useRef<HTMLDivElement>(null);
-  
-  const MAX_HEIGHT = 430;
-  
+
+  const MAX_HEIGHT = 580;
+
   const formatHeader = (text: string) => {
     return text
       .replace(/&amp;/g, "&")
@@ -22,12 +22,12 @@ const ProposalContent = ({ content }: ProposalContentProps) => {
       .replace(/&quot;/g, '"')
       .toUpperCase();
   };
-  
+
   const parseContent = () => {
     if (!content) return [];
-    
+
     let contentText: string;
-    
+
     if (typeof content === "string") {
       try {
         contentText = content;
@@ -47,43 +47,43 @@ const ProposalContent = ({ content }: ProposalContentProps) => {
     } else {
       contentText = String(content);
     }
-    
+
     return parseProposalSections(contentText);
   };
-  
+
   const parseProposalSections = (text: string) => {
     const sectionRegex = /###\s*\\\[(.*?)\\\](.*?)(?=###\s*\\\[|$)/gs;
     const sections = [];
     let match;
-    
+
     while ((match = sectionRegex.exec(text)) !== null) {
       sections.push({
         header: match[1].trim(),
         content: match[2].trim()
       });
     }
-    
+
     if (sections.length === 0 && text.trim()) {
       sections.push({
         header: "Overview",
         content: text.trim()
       });
     }
-    
+
     return sections;
   };
-  
+
   useEffect(() => {
     if (contentRef.current) {
       setHasOverflow(contentRef.current.scrollHeight > MAX_HEIGHT);
     }
   }, [content]);
-  
+
   const sections = parseContent();
 
   return (
     <div className="bg-background rounded-xl shadow-sm overflow-hidden my-4 p-6">
-      <div 
+      <div
         ref={contentRef}
         className={`relative ${!expanded && hasOverflow ? 'overflow-hidden' : ''}`}
         style={{ maxHeight: (!expanded && hasOverflow) ? `${MAX_HEIGHT}px` : 'none' }}
@@ -93,7 +93,7 @@ const ProposalContent = ({ content }: ProposalContentProps) => {
             <h2 className="text-lg font-semibold text-content mb-4">
               {formatHeader(section.header)}
             </h2>
-            
+
             <div className="prose max-w-none">
               <ReactMarkdown
                 components={{
@@ -131,16 +131,16 @@ const ProposalContent = ({ content }: ProposalContentProps) => {
             </div>
           </div>
         ))}
-        
+
         {!expanded && hasOverflow && (
           <div className="absolute bottom-0 left-0 right-0 h-10 backdrop-blur-sm bg-gradient-to-t from-background to-transparent"></div>
         )}
       </div>
-      
+
       {hasOverflow && (
         <div className="mt-4 flex justify-center">
-          <button 
-            onClick={() => setExpanded(!expanded)} 
+          <button
+            onClick={() => setExpanded(!expanded)}
             className="flex items-center justify-center"
             aria-label={expanded ? "Show less content" : "Show more content"}
           >

@@ -1,7 +1,7 @@
 import EditIcon from '@/Components/svgs/EditIcon';
 import Paragraph from '@/Components/atoms/Paragraph';
 import { ReactNode } from 'react';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 
 interface ProfileFieldProps {
   label: string;
@@ -11,18 +11,18 @@ interface ProfileFieldProps {
   buttonText?: string;
 }
 
-export default function ProfileField({ 
-  label, 
-  value, 
-  placeholder, 
+export default function ProfileField({
+  label,
+  value,
+  placeholder,
   onEdit,
   buttonText
 }: ProfileFieldProps) {
 
-  const { t } = useTranslation();
+  const { t } = useLaravelReactI18n();
 
   const hasValue = value !== undefined && value !== null && value !== '';
-  
+
   return (
     <div className="border-t border-background-lighter py-3 transition-colors duration-300 ease-in-out">
       <div className="flex items-center justify-between">

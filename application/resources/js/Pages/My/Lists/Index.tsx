@@ -1,7 +1,7 @@
 import RecordsNotFound from '@/Layouts/RecordsNotFound';
 import { PaginatedData } from '@/types/paginated-data';
 import { Head, WhenVisible } from '@inertiajs/react';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import BookmarkCollectionList from './Partials/BookmarkCollectionList';
 import BookmarkCollectionListLoader from './Partials/BookmarkCollectionListLoader';
 import BookmarkCollectionData = App.DataTransferObjects.BookmarkCollectionData;
@@ -16,7 +16,7 @@ interface MyListProps {
 }
 
 export default function MyList({ bookmarkCollections }: MyListProps) {
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
     const [showListPicker, setPickingList] = useState(false);
 
     putConfig({

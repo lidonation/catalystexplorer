@@ -12,7 +12,7 @@ import {
     useEffect,
     useState,
 } from 'react';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import ActiveFilters from './ActiveFilters/ActiveFilters';
 
 function SecondarySearchControls({
@@ -31,7 +31,7 @@ function SecondarySearchControls({
     isUnifiedSearch?: boolean;
 }) {
     const { getFilter, setFilters, filters } = useFilterContext();
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
 
     const queryParams = new URLSearchParams(window.location.search);
     const initialSearchQuery = queryParams.get(searchParam) || '';
@@ -51,8 +51,7 @@ function SecondarySearchControls({
             param: searchParam,
             value: search,
             label: t(
-                searchLabel === 'Search' ? 'vote.search' : searchLabel,
-                searchLabel,
+                searchLabel === 'Search' ? 'vote.search' : searchLabel
             ),
         });
         setSearchQuery(search);
@@ -70,8 +69,7 @@ function SecondarySearchControls({
                 param: searchParam,
                 value: search,
                 label: t(
-                    searchLabel === 'Search' ? 'vote.search' : searchLabel,
-                    searchLabel,
+                    searchLabel === 'Search' ? 'vote.search' : searchLabel
                 ),
             });
             url.searchParams.set(searchParam, search);

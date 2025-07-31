@@ -13,7 +13,7 @@ import { Segments } from '@/types/segments';
 import { useLocalizedRoute } from '@/utils/localizedRoute';
 import { Link } from '@inertiajs/react';
 import React from 'react';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import IdeascaleProfileData = App.DataTransferObjects.IdeascaleProfileData;
 
 interface IdeascaleProfileProps {
@@ -23,7 +23,7 @@ interface IdeascaleProfileProps {
 const IdeascaleProfileCardMini: React.FC<IdeascaleProfileProps> = ({
     ideascaleProfile,
 }) => {
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
     const completedProposalsCount =
         ideascaleProfile?.completed_proposals_count ?? 0;
     const fundedProposalsCount = ideascaleProfile?.funded_proposals_count ?? 0;

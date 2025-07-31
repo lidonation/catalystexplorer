@@ -2,7 +2,7 @@ import catalystLogoDark from '@/assets/images/catalyst-logo-dark.png';
 import catalystLogoLight from '@/assets/images/catalyst-logo-light.png';
 import { useThemeContext } from '@/Context/ThemeContext';
 import { useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import { CatalystDarkLogo } from '../svgs/CatalystDarkLogo';
 import { CatalystLightLogo } from '../svgs/CatalystLightLogo';
 import { CatalystWhiteLogo } from '../svgs/CatalystWhiteLogo';
@@ -15,7 +15,7 @@ type CatalystLogoProps = {
 export default function CatalystLogo({ className, white }: CatalystLogoProps) {
     const [logoSrc, setLogoSrc] = useState(catalystLogoLight);
     const { theme } = useThemeContext();
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
 
     const updateLogoBasedOnTheme = (theme: string | null) => {
         if (theme === 'dark') {

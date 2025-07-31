@@ -1,6 +1,6 @@
 import { CatalystConnectionsEnum } from '@/enums/catalyst-connections-enums';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import ForceGraph2D from 'react-force-graph-2d';
+// import ForceGraph2D from 'react-force-graph-2d';
 import ConnectionData = App.DataTransferObjects.ConnectionData;
 
 export type Node = {
@@ -172,17 +172,17 @@ const CatalystConnectionsGraph = ({
                 }
                 radius = nodeSizes.current.get(node.id)!;
             }
-    
+
             const img = imageCache.current.get(node.photo!);
             ctx.save();
-    
+
             if (
                 node.type === CatalystConnectionsEnum.GROUP ||
                 node.type === CatalystConnectionsEnum.COMMUNITY
             ) {
                 const size = radius;
                 const angleStep = (Math.PI * 2) / 8;
-    
+
                 ctx.beginPath();
                 for (let i = 0; i < 8; i++) {
                     const angle = angleStep * i;
@@ -195,9 +195,9 @@ const CatalystConnectionsGraph = ({
                     }
                 }
                 ctx.closePath();
-    
+
                 if (img) {
-                    ctx.clip(); 
+                    ctx.clip();
                     ctx.drawImage(
                         img,
                         node.x! - radius,
@@ -210,7 +210,7 @@ const CatalystConnectionsGraph = ({
                     ctx.fillStyle = getColor(config.colors.node);
                     ctx.fill();
                 }
-    
+
                 ctx.lineWidth = 1;
                 ctx.strokeStyle = getColor(config.colors.groupNode);
                 ctx.stroke();
@@ -235,14 +235,14 @@ const CatalystConnectionsGraph = ({
                     ctx.fill();
                 }
             }
-    
+
             if (node.id === focusedNodeId) {
                 const label = node.name;
                 const fontSize = 12;
                 ctx.font = `${fontSize}px Sans-Serif`;
                 ctx.textAlign = 'center';
                 ctx.textBaseline = 'top';
-    
+
                 const textWidth = ctx.measureText(label).width;
                 const padding = 5;
                 const boxWidth = textWidth + padding * 2;
@@ -273,7 +273,7 @@ const CatalystConnectionsGraph = ({
                         if (otherNode.id === node.id) continue;
                         const otherRadius = nodeSizes.current.get(otherNode.id) || config.nodeSize.profile.min;
                         const distance = Math.sqrt(
-                            Math.pow(pos.x - otherNode.x!, 2) + 
+                            Math.pow(pos.x - otherNode.x!, 2) +
                             Math.pow(pos.y - otherNode.y!, 2)
                         );
                         if (distance < otherRadius + boxHeight) {
@@ -356,32 +356,32 @@ const CatalystConnectionsGraph = ({
 
     return (
         <div className="bg-background w-full" ref={containerRef}>
-            <ForceGraph2D
-                width={dimensions.width}
-                height={dimensions.height}
-                ref={fgRef}
-                graphData={data}
-                nodeLabel="name"
-                nodeRelSize={4}
-                onBackgroundClick={() => {
-                    /* fgRef.current.zoomToFit(100, 0); */
-                    setFocusedNodeId(null);
-                }}
-                onNodeClick={(node) => {
-                    fgRef.current.zoomToFit(400, 0);
+            {/*<ForceGraph2D*/}
+            {/*    width={dimensions.width}*/}
+            {/*    height={dimensions.height}*/}
+            {/*    ref={fgRef}*/}
+            {/*    graphData={data}*/}
+            {/*    nodeLabel="name"*/}
+            {/*    nodeRelSize={4}*/}
+            {/*    onBackgroundClick={() => {*/}
+                     /* fgRef.current.zoomToFit(100, 0); */
+            {/*        setFocusedNodeId(null);*/}
+            {/*    }}*/}
+            {/*    onNodeClick={(node) => {*/}
+            {/*        fgRef.current.zoomToFit(400, 0);*/}
 
-                    if (focusedNodeId !== node.id) {
-                        onNodeClick?.(node);
-                        handleNodeClick(node);
-                    }
-                }}
-                onNodeHover={(node) => {
-                    setHoveredNodeId(node?.id || null);
-                    onNodeHover?.(node || null);
-                }}
-                nodeCanvasObject={nodeCanvasObject}
-                linkCanvasObject={linkCanvasObject}
-            />
+            {/*        if (focusedNodeId !== node.id) {*/}
+            {/*            onNodeClick?.(node);*/}
+            {/*            handleNodeClick(node);*/}
+            {/*        }*/}
+            {/*    }}*/}
+            {/*    onNodeHover={(node) => {*/}
+            {/*        setHoveredNodeId(node?.id || null);*/}
+            {/*        onNodeHover?.(node || null);*/}
+            {/*    }}*/}
+            {/*    nodeCanvasObject={nodeCanvasObject}*/}
+            {/*    linkCanvasObject={linkCanvasObject}*/}
+            {/*/>*/}
         </div>
     );
 };

@@ -4,7 +4,7 @@ import Textarea from '@/Components/atoms/Textarea';
 import { FormDataConvertible } from '@inertiajs/core';
 import { InertiaFormProps } from '@inertiajs/react';
 import { forwardRef, useEffect, useImperativeHandle } from 'react';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 
 export interface IdeascaleProfileFormFields
     extends Record<string, FormDataConvertible> {
@@ -28,19 +28,22 @@ export interface ClaimFormHandles {
 
 const ClaimProfileForm = forwardRef<ClaimFormHandles, ClaimProfileFormProps>(
     ({ setIsValid, form }, ref) => {
-        const { data, setData, errors } = form;
+        const typedForm = form as InertiaFormProps<IdeascaleProfileFormFields>;
+        const { data } = typedForm;
+        const setData = typedForm.setData as (field: keyof IdeascaleProfileFormFields, value: any) => void;
+        const errors = typedForm.errors as Partial<Record<keyof IdeascaleProfileFormFields, string>>;
 
-        const { t } = useTranslation();
+        const { t } = useLaravelReactI18n();
 
         useImperativeHandle(ref, () => ({
             getFormData: form,
         }));
 
         useEffect(() => {
-            if (form.data.email.length && form.data.name.length) {
+            if (typedForm.data.email.length && typedForm.data.name.length) {
                 setIsValid(true);
             }
-        }, [form.data.email, form.data.name]);
+        }, [typedForm.data.email, typedForm.data.name]);
 
         return (
             <div className="rounded-lg p-4 lg:p-8">
@@ -53,7 +56,7 @@ const ClaimProfileForm = forwardRef<ClaimFormHandles, ClaimProfileFormProps>(
                         <TextInput
                             id="name"
                             name="name"
-                            value={form.data.name}
+                            value={typedForm.data.name}
                             onChange={(e) => {
                                 e.preventDefault;
                                 setData('name', e.target.value);
@@ -61,7 +64,7 @@ const ClaimProfileForm = forwardRef<ClaimFormHandles, ClaimProfileFormProps>(
                             className="border-dark w-full"
                             required
                         />
-                        <InputError message={form.errors.name} />
+                        <InputError message={errors.name} />
                     </div>
 
                     {/* Email */}
@@ -73,12 +76,12 @@ const ClaimProfileForm = forwardRef<ClaimFormHandles, ClaimProfileFormProps>(
                             id="email"
                             name="email"
                             type="email"
-                            value={form.data.email}
+                            value={typedForm.data.email}
                             onChange={(e) => setData('email', e.target.value)}
                             className="border-dark w-full"
                             required
                         />
-                        <InputError message={form.errors.email} />
+                        <InputError message={errors.email} />
                     </div>
 
                     {/* Bio */}
@@ -91,11 +94,11 @@ const ClaimProfileForm = forwardRef<ClaimFormHandles, ClaimProfileFormProps>(
                             name="bio"
                             required
                             minLengthEnforced
-                            value={form.data.bio}
+                            value={typedForm.data.bio}
                             onChange={(e) => setData('bio', e.target.value)}
                             className="h-30 w-full rounded-lg px-4 py-2"
                         />
-                        <InputError message={form.errors.bio} />
+                        <InputError message={errors.bio} />
                     </div>
 
                     {/* Social Links */}
@@ -113,14 +116,14 @@ const ClaimProfileForm = forwardRef<ClaimFormHandles, ClaimProfileFormProps>(
                             <TextInput
                                 id="ideascaleProfile"
                                 name="ideascaleProfile"
-                                value={form.data.ideascaleProfile}
+                                value={typedForm.data.ideascaleProfile}
                                 onChange={(e) =>
                                     setData('ideascaleProfile', e.target.value)
                                 }
                                 className="border-dark w-full"
                             />
                             <InputError
-                                message={form.errors.ideascaleProfile}
+                                message={errors.ideascaleProfile}
                             />
                         </div>
                         <div>
@@ -133,7 +136,7 @@ const ClaimProfileForm = forwardRef<ClaimFormHandles, ClaimProfileFormProps>(
                             <TextInput
                                 id="twitter"
                                 name="twitter"
-                                value={form.data.twitter}
+                                value={typedForm.data.twitter}
                                 onChange={(e) =>
                                     setData('twitter', e.target.value)
                                 }
@@ -150,7 +153,7 @@ const ClaimProfileForm = forwardRef<ClaimFormHandles, ClaimProfileFormProps>(
                             <TextInput
                                 id="discord"
                                 name="discord"
-                                value={form.data.discord}
+                                value={typedForm.data.discord}
                                 onChange={(e) =>
                                     setData('discord', e.target.value)
                                 }
@@ -167,7 +170,7 @@ const ClaimProfileForm = forwardRef<ClaimFormHandles, ClaimProfileFormProps>(
                             <TextInput
                                 id="linkedIn"
                                 name="linkedIn"
-                                value={form.data.linkedIn}
+                                value={typedForm.data.linkedIn}
                                 onChange={(e) =>
                                     setData('linkedIn', e.target.value)
                                 }

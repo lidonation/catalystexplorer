@@ -1,7 +1,7 @@
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import React, { useState } from 'react';
 import { router } from '@inertiajs/react';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 
 import Title from '@/Components/atoms/Title';
 import Paragraph from '@/Components/atoms/Paragraph';
@@ -20,7 +20,7 @@ interface Step3Props {
 }
 
 const Step3: React.FC<Step3Props> = ({ stepDetails, activeStep }) => {
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
     const localizedRoute = useLocalizedRoute;
 
     const prevStep = localizedRoute('workflows.signature.index', {
@@ -35,13 +35,13 @@ const Step3: React.FC<Step3Props> = ({ stepDetails, activeStep }) => {
     const [error, setError] = useState('');
 
     const handleNext = () => {
-        
+
         router.post(
             saveWalletName,
-            { 
-                wallet_name: walletName 
-            }, 
-            {   
+            {
+                wallet_name: walletName
+            },
+            {
                 onSuccess: () => {
                     router.visit(localizedRoute('workflows.signature.success'));
             },

@@ -5,7 +5,7 @@ import RecordsNotFound from '@/Layouts/RecordsNotFound';
 import RelatedReviews from '@/Pages/Reviews/Partials/RelatedReviews';
 import { PaginatedData } from '@/types/paginated-data';
 import { Head, WhenVisible } from '@inertiajs/react';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import ReviewData = App.DataTransferObjects.ReviewData;
 
 interface MyReviewsProps {
@@ -19,7 +19,7 @@ export default function MyReviews({
     aggregatedRatings,
     ideascaleProfileHashes,
 }: MyReviewsProps) {
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
     const breakpointColumnsObj = {
         default: 1,
         1100: 2,

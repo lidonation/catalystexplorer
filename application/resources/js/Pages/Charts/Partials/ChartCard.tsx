@@ -3,14 +3,14 @@ import Title from '@/Components/atoms/Title';
 import Card from '@/Components/Card';
 import { Share2Icon } from 'lucide-react';
 import React from 'react';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 
 interface ChartCardProps {
     children: React.ReactNode;
     title?: string;
 }
 export default function ChartCard({ children, title }: ChartCardProps) {
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
     return (
         <Card className="w-full overflow-x-auto">
             <div className="mb-4 flex items-center justify-between">

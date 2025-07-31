@@ -5,7 +5,7 @@ import { useUserSetting } from '@/Hooks/useUserSettings';
 import { shortNumber } from '@/utils/shortNumber';
 import { ResponsivePie } from '@nivo/pie';
 import React, { useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 
 interface PieChartProps {
     chartData: any;
@@ -18,7 +18,7 @@ const PieChart: React.FC<PieChartProps> = ({
     selectedOptionIndex = 0,
     viewBy,
 }) => {
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
     const { getFilter } = useFilterContext();
     const [activeOptionIndex, setActiveOptionIndex] =
         useState(selectedOptionIndex);

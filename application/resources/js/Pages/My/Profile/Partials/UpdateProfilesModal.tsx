@@ -1,6 +1,6 @@
 import Title from '@/Components/atoms/Title';
 import { ReactNode } from 'react';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 
 interface BaseModalProps {
     isOpen: boolean;
@@ -15,7 +15,7 @@ export default function BaseModal({
     title,
     children,
 }: BaseModalProps) {
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
 
     if (!isOpen) return null;
 

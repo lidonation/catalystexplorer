@@ -7,7 +7,7 @@ import { PaginatedData } from '@/types/paginated-data';
 import { SearchParams } from '@/types/search-params';
 import { Head } from '@inertiajs/react';
 import { useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import FundFiltersContainer from '../Proposals/Partials/FundFiltersContainer';
 import GroupFilters from './Partials/GroupFilters';
 import GroupPaginatedList from './Partials/GroupPaginatedList';
@@ -31,7 +31,7 @@ const Index: React.FC<GroupsPageProps> = ({
     funds,
 }) => {
     const [showFilters, setShowFilters] = useState(false);
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
 
     return (
         <>
@@ -76,8 +76,8 @@ const Index: React.FC<GroupsPageProps> = ({
                         />
                     </section>
 
-                    <GroupPaginatedList 
-                        groups={groups} 
+                    <GroupPaginatedList
+                        groups={groups}
                         cardType="full"
                         gridCols="grid w-full grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 auto-rows-fr"
                     />

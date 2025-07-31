@@ -2,7 +2,7 @@ import Title from '@/Components/atoms/Title';
 import TickIcon from '@/Components/svgs/TickIcon';
 import { StepDetails } from '@/types';
 import { useEffect, useRef, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 
 type NavProps = {
     stepDetails: StepDetails[];
@@ -10,7 +10,7 @@ type NavProps = {
 };
 
 export default function Nav({ stepDetails, activeStep }: NavProps) {
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
     const stepRefs = useRef<(HTMLLIElement | null)[]>([]);
     const [animatedSteps, setAnimatedSteps] = useState<Set<number>>(new Set());
 
@@ -78,7 +78,7 @@ export default function Nav({ stepDetails, activeStep }: NavProps) {
                             } else if (isLastItem && activeStep >= stepDetails.length) {
                                 return '100%';
                             } else {
-                               
+
                                 return '0%';
                             }
                         };
@@ -128,9 +128,9 @@ export default function Nav({ stepDetails, activeStep }: NavProps) {
                                         </span>
                                     </div>
                                 </div>
-                             
+
                                 <div className="absolute bottom-0 left-0 w-full h-1 bg-gray-200 overflow-hidden">
-                                    <div 
+                                    <div
                                         className={`h-full bg-primary transition-all duration-[1500ms] ease-out ${getProgressDelay()}`}
                                         style={{
                                             width: getProgressWidth(),

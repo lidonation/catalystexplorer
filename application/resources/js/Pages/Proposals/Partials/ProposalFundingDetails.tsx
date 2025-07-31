@@ -1,12 +1,12 @@
 import { currency } from '@/utils/currency';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 
 interface Proposal extends Record<string, unknown> {
     proposal: App.DataTransferObjects.ProposalData;
 }
 
 export default function ProposalFundingDetails({ proposal }: Proposal) {
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
     const calculatePercentage = (
         numerator: number,
         denominator: number,
@@ -29,7 +29,7 @@ export default function ProposalFundingDetails({ proposal }: Proposal) {
     const amountReceived = proposal.amount_received
         ? proposal.amount_received
         : 0;
-    
+
     const currencyCode = proposal.currency || 'USD';
 
     const formattedAmountRequested = formatCurrency(

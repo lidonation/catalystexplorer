@@ -4,7 +4,7 @@ import { useUserSetting } from '@/Hooks/useUserSettings';
 import { shortNumber } from '@/utils/shortNumber';
 import { ResponsiveBar } from '@nivo/bar';
 import React, { useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 
 interface BarChartProps {
     chartData: any;
@@ -12,7 +12,7 @@ interface BarChartProps {
 }
 
 const BarChart: React.FC<BarChartProps> = ({ chartData, viewBy }) => {
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
     const { value: proposalTypes } = useUserSetting<
         string[]
     >(userSettingEnums.PROPOSAL_TYPE, []);
@@ -88,6 +88,7 @@ const BarChart: React.FC<BarChartProps> = ({ chartData, viewBy }) => {
 
     const getFilteredKeys = () => {
         if (!chartData || chartData.length === 0) return [];
+
 
         return allKeys.filter((keyItem) => {
             const isActive =
@@ -314,3 +315,4 @@ const BarChart: React.FC<BarChartProps> = ({ chartData, viewBy }) => {
 };
 
 export default BarChart;
+

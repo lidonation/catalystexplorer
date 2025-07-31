@@ -1,7 +1,7 @@
 import IdeaScaleProfileLoader from '@/Pages/IdeascaleProfile/Partials/IdeaScaleProfileLoader';
 import ProposalVerticalCardLoading from '@/Pages/Proposals/Partials/ProposalVerticalCardLoading';
 import { WhenVisible } from '@inertiajs/react';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 
 interface SearchResultsLoadingProps {
     type: string;
@@ -12,7 +12,7 @@ const SearchResultsLoading = ({
     type,
     count = 1,
 }: SearchResultsLoadingProps) => {
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
     const getTranslatedType = (type: string) => {
         return t(`searchResults.tabs.${type.toLowerCase()}`);
     };

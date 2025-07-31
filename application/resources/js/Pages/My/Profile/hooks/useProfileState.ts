@@ -1,7 +1,5 @@
 import { useReducer } from 'react';
 
-
-
 export enum ModalType {
     NONE = 'NONE',
     PROFILE_FIELD = 'PROFILE_FIELD',
@@ -62,9 +60,9 @@ function profileReducer(state: ProfileState, action: ProfileAction): ProfileStat
     case 'SET_CURRENT_MODAL':
       return { ...state, currentModal: action.payload };
     case 'SET_MODAL_CONFIG':
-      return { 
-        ...state, 
-        modalConfig: { ...state.modalConfig, ...action.payload } 
+      return {
+        ...state,
+        modalConfig: { ...state.modalConfig, ...action.payload }
       };
     case 'SET_PHOTO_PREVIEW':
       return { ...state, photoPreview: action.payload };
@@ -83,7 +81,7 @@ function profileReducer(state: ProfileState, action: ProfileAction): ProfileStat
 
 export default function useProfileState() {
   const [state, dispatch] = useReducer(profileReducer, initialState);
-  
+
   return {
     state,
     setIsPublic: (value: boolean) => dispatch({ type: 'SET_PUBLIC', payload: value }),

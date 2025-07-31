@@ -1,6 +1,6 @@
 import Paragraph from '@/Components/atoms/Paragraph'; // Added import for Paragraph component
 import { PaginatedData } from '@/types/paginated-data';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import CompletedProposalCard from './CompletedProposalCard';
 import ProposalData = App.DataTransferObjects.ProposalData;
 import IdeascaleProfileData = App.DataTransferObjects.IdeascaleProfileData;
@@ -16,7 +16,7 @@ const ProposalList: React.FC<ProposalListProps> = ({
     onProposalClick,
     profileHash,
 }) => {
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
 
     if (proposals?.data && !proposals?.data.length) {
         return (

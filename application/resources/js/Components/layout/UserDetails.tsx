@@ -5,7 +5,7 @@ import RegisterForm from '@/Pages/Auth/Partials/RegisterForm';
 import { generateLocalizedRoute } from '@/utils/localizedRoute';
 import { Link, router } from '@inertiajs/react';
 import React, { useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import Paragraph from '../atoms/Paragraph';
 import LogOutIcon from '../svgs/LogOut';
 import RegisterUserIcon from '../svgs/Register';
@@ -17,7 +17,7 @@ interface UserDetailsProps {
 }
 
 const UserDetails: React.FC<UserDetailsProps> = ({ user }) => {
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
     const [activeModal, setActiveModal] = useState<'register' | 'login' | null>(
         null,
     );

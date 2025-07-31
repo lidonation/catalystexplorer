@@ -1,7 +1,7 @@
 import { ArrowLeft, ChevronRight, MoreHorizontal } from 'lucide-react';
 import * as React from 'react';
 import { cn } from '@/lib/utils';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import { InertiaLinkProps, Link } from '@inertiajs/react';
 
 // const Pagination = ({ className, ...props }: React.ComponentProps<'nav'>) => {
@@ -62,7 +62,7 @@ const PaginationPrevious = ({
     linkProps,
     ...props
 }: React.ComponentProps<typeof PaginationLink>) => {
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
     return (
         <PaginationLink
             data-testid="pagination-previous"
@@ -83,7 +83,7 @@ const PaginationNext = ({
     linkProps,
     ...props
 }: React.ComponentProps<typeof PaginationLink>) => {
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
     return (
         <PaginationLink
             data-testid="pagination-next"
@@ -103,7 +103,7 @@ const PaginationEllipsis = ({
     className,
     ...props
 }: React.ComponentProps<'span'>) => {
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
     return (
         <span
             aria-hidden

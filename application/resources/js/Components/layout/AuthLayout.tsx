@@ -10,7 +10,7 @@ import LoginImageFour from '@/assets/images/login-image-four.png';
 import LoginImageFive from '@/assets/images/login-image-five.png';
 import Image from '@/Components/Image';
 import CatalystLogo from '@/Components/atoms/CatalystLogo';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 
 interface AuthLayoutProps {
   children: ReactNode;
@@ -18,7 +18,7 @@ interface AuthLayoutProps {
 }
 
 export default function AuthLayout({ children }: AuthLayoutProps) {
-  const { t } = useTranslation();
+  const { t } = useLaravelReactI18n();
 
   return (
     <div className='flex flex-col lg:flex-row w-full items-center justify-center min-h-screen'>
@@ -29,7 +29,7 @@ export default function AuthLayout({ children }: AuthLayoutProps) {
         {children}
       </div>
 
-      <div 
+      <div
         className='w-full splash-wrapper bg-gradient-to-r from-background-home-gradient-color-1 to-background-home-gradient-color-2 hidden lg:flex lg:sticky z-10 justify-center lg:rounded-tl-4xl lg:-top-64 lg:h-screen lg:order-2'
       >
         <div
@@ -54,7 +54,7 @@ export default function AuthLayout({ children }: AuthLayoutProps) {
               <Image imageUrl={LoginImageTwo} className="w-[320.67px] h-[232px]" />
               <Image imageUrl={LoginImageThree} className="w-[461.3px] h-[464px]" />
             </div>
-            
+
             <div className="flex mt-6 gap-6">
               <Image imageUrl={LoginImageFour} className="w-[292.67px] h-[481.3px]" />
               <Image imageUrl={LoginImageFive} className="w-[543.5px] h-[361px]" />

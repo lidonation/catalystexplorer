@@ -68,7 +68,10 @@ class SearchController extends Controller
                 'tags' => 'project-catalyst',
                 'search' => $searchTerm,
             ]);
-            $counts['articles'] = $this->getPosts($posts, $searchTerm)->count();
+
+            $posts = $this->getPosts($posts, $searchTerm);
+
+            $counts['articles'] = empty($posts) ? 0 : $posts->count();
         }
 
         return $counts;

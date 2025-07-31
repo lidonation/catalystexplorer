@@ -15,7 +15,7 @@ import {
     SortableContext,
     sortableKeyboardCoordinates,
 } from '@dnd-kit/sortable';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import ComparisonTableFilters from './Partials/ComparisonTableFilters';
 import SortableProposalColumn from './SortableProposalColumn';
 import { useState } from 'react';
@@ -26,7 +26,7 @@ import { userSettingEnums } from '@/enums/user-setting-enums';
 
 
 export default function ProposalsTable() {
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
     const METRIC_ROW_ID = 'metric';
     const ACTION_ROW_ID = 'action';
 

@@ -2,7 +2,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/Components/Popover';
 import { cn } from '@/lib/utils';
 import { ChevronDown } from 'lucide-react';
 import { useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import Checkbox from './Checkbox';
 
 type SelectProps = {
@@ -39,7 +39,7 @@ export default function Selector({
 }: SelectProps) {
     const [open, setOpen] = useState(false);
 
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
 
     let currentOption = null;
 

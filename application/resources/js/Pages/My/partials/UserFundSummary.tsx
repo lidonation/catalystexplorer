@@ -3,7 +3,7 @@ import Card from '@/Components/Card';
 import SegmentedBar from '@/Components/SegmentedBar';
 import { Segments } from '@/types/segments';
 import { currency } from '@/utils/currency';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 
 interface TotalsSummaryProp {
     totalsSummary: {
@@ -19,7 +19,7 @@ interface TotalsSummaryProp {
 }
 
 export default function UserFundSummary({ totalsSummary }: TotalsSummaryProp) {
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
     const segments = [
         {
             label: t('segments.completed'),

@@ -1,7 +1,7 @@
 import Paragraph from '@/Components/atoms/Paragraph';
 import { Link, usePage } from '@inertiajs/react';
 import { ReactNode, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 
 type NavLinkItemProps = {
     active?: boolean;
@@ -17,20 +17,19 @@ type NavLinkItemProps = {
 };
 
 export default function NavLinkItem({
-    children,
-    href,
-    title,
-    className,
-    active = false,
-    prefetch = false,
-    async = false,
-    ariaLabel,
-    showMyPrefix = false,
-    disable = false,
-    ...rest
-}: NavLinkItemProps) {
-    const { url } = usePage();
-    const { t } = useTranslation();
+                                        children,
+                                        href,
+                                        title,
+                                        className,
+                                        active = false,
+                                        prefetch = false,
+                                        async = false,
+                                        ariaLabel,
+                                        showMyPrefix = false,
+                                        disable = false,
+                                        ...rest
+                                    }: NavLinkItemProps) {
+    const { t } = useLaravelReactI18n();
     const [isHovered, setIsHovered] = useState(false);
 
     return (
@@ -54,7 +53,7 @@ export default function NavLinkItem({
                 onMouseLeave={() => setIsHovered(false)}
             >
                 {children}
-                <div className="relative flex w-full items-center justify-between">
+                <span className="relative flex w-full items-center justify-between">
                     {showMyPrefix && (
                         <span
                             className={`text-content bg-background absolute right-full mx-1 py-1 pl-1 text-sm whitespace-nowrap transition-all duration-300 ease-in-out ${
@@ -66,13 +65,13 @@ export default function NavLinkItem({
                             {t('my.my')}
                         </span>
                     )}
-                    <Paragraph size="sm">{title}</Paragraph>
+                    <span className="text-sm">{title}</span>
                     {disable && (
-                        <Paragraph size="sm" className="ml-3 text-nowrap">
+                        <span className="ml-3 text-nowrap text-sm">
                             {t('Coming Soon!')}
-                        </Paragraph>
+                        </span>
                     )}
-                </div>
+                </span>
             </Link>
         </div>
     );

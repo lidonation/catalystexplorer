@@ -1,5 +1,3 @@
-import { useTranslation } from 'react-i18next';
-
 type InformationIconProps = {
     className?: string;
     width?: number;
@@ -10,7 +8,6 @@ export default function InformationIcon({
     width = 48,
     height = 48,
 }: InformationIconProps) {
-    const { t } = useTranslation();
     return (
         <svg
             width="14"

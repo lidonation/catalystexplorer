@@ -6,7 +6,7 @@ import IdeascaleProfileUsers from '@/Pages/IdeascaleProfile/Partials/IdeascalePr
 import { useLocalizedRoute } from '@/utils/localizedRoute';
 import { Link } from '@inertiajs/react';
 import React, { useCallback, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import GroupSocials from './GroupSocials';
 import GroupData = App.DataTransferObjects.GroupData;
 
@@ -15,11 +15,11 @@ interface GroupCardMiniProps {
 }
 
 const GroupCardMini: React.FC<GroupCardMiniProps> = ({ group }) => {
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
 
     return (
         group && (
-            <Card className="w-96 flex flex-col">
+            <Card className=" flex flex-col">
                 <div className="flex w-full flex-col items-center gap-4">
                     <div className="flex w-full flex-col items-center gap-4 pt-2">
                         <Image

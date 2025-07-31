@@ -1,5 +1,3 @@
-import { useTranslation } from 'react-i18next';
-
 type PlaylistIconProps = {
     className?: string;
     width?: number;
@@ -11,7 +9,6 @@ export default function PlaylistIcon({
     width = 24,
     height = 24,
 }: PlaylistIconProps) {
-    const { t } = useTranslation();
     return (
         <svg
             width={width}

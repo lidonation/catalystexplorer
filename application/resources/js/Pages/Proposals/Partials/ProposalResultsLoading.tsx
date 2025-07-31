@@ -1,4 +1,4 @@
-import {useTranslation} from "react-i18next";
+import {useLaravelReactI18n} from "laravel-react-i18n";
 
 export default function ProposalResultsLoading() {
     return (

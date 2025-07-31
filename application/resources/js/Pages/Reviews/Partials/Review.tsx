@@ -1,5 +1,5 @@
 import { Head, WhenVisible } from '@inertiajs/react';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import ReviewData = App.DataTransferObjects.ReviewData;
 import ReviewHorizontalCardLoader from './ReviewHorizontalCardLoader';
 import Title from "@/Components/atoms/Title";
@@ -9,7 +9,7 @@ interface ReviewPageProps extends Record<string, unknown> {
 }
 
 const Review: React.FC<ReviewPageProps> = ({ review }) => {
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
 
     return (
         <>

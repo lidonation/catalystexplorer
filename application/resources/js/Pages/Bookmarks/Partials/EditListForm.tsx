@@ -9,9 +9,9 @@ import InputError from '@/Components/InputError';
 import RadioGroup from '@/Components/RadioGroup';
 import { StatusEnum, VisibilityEnum } from '@/enums/votes-enums';
 import { InertiaFormProps, useForm } from '@inertiajs/react';
-import { lowerCase } from 'lodash';
+import lodashPkg from 'lodash';
 import { useRef } from 'react';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import BookmarkCollectionData = App.DataTransferObjects.BookmarkCollectionData;
 
 export type ListForm = InertiaFormProps<{
@@ -32,7 +32,8 @@ export default function EditListForm({
     handleSave: (form: ListForm) => void;
     handleDelete: () => void;
 }) {
-    const { t } = useTranslation();
+    const { lowerCase } = lodashPkg;
+    const { t } = useLaravelReactI18n();
     const colorInputRef = useRef<HTMLInputElement>(null);
 
     const form = useForm({

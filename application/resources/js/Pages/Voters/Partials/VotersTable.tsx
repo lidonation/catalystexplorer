@@ -9,7 +9,7 @@ import { PaginatedData } from '@/types/paginated-data';
 import { useLocalizedRoute } from '@/utils/localizedRoute';
 import { Link, router } from '@inertiajs/react';
 import React, { useEffect, useRef, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 
 import VoterData = App.DataTransferObjects.VoterData;
 import { VoterEnums } from '@/enums/voter-search-enums';
@@ -40,7 +40,7 @@ const VotersTable: React.FC<VotersTableProps> = ({
     voters,
     customTitle,
 }) => {
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
     const { setFilters } = useFilterContext();
     const [hoveredCell, setHoveredCell] = useState<{
         rowIndex: number;
@@ -266,7 +266,7 @@ const VotersTable: React.FC<VotersTableProps> = ({
                                 />
                             </div>
                        )}
-                 </div>  
+                 </div>
             )}
         </>
     );

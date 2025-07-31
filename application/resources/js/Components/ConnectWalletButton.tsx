@@ -1,6 +1,6 @@
 import { useConnectWallet } from '@/Context/ConnectWalletSliderContext';
 import React from 'react';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import Button from './atoms/Button';
 import Paragraph from './atoms/Paragraph';
 import SecondaryButton from './atoms/SecondaryButton';
@@ -27,7 +27,7 @@ const ConnectWalletButton: React.FC<ConnectWalletButtonProps> = ({
         openConnectWalletSlider,
     } = useConnectWallet();
 
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
 
     return (
         <div className="mt-4 flex w-full flex-col items-center justify-center">

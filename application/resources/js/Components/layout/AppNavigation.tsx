@@ -4,7 +4,7 @@ import { usePage } from '@inertiajs/react';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { BookmarkCheckIcon } from 'lucide-react';
 import { useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import NavLinkItem from '../atoms/NavLinkItem';
 import ModalNavLink from '../ModalNavLink';
 import ArrowDownIcon from '../svgs/ArrowDownIcon';
@@ -23,7 +23,7 @@ import NumbersIcon from '../svgs/NumbersIcon';
 import PeopleIcon from '../svgs/PeopleIcon';
 
 function AppNavigation() {
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
     const { url } = usePage();
     const [jormungandrOpen, setJormungandrOpen] = useState(false);
     const [numbersOpen, setNumbersOpen] = useState(false);
@@ -44,11 +44,10 @@ function AppNavigation() {
     };
 
     const normalizedUrl = stripLanguagePrefix(url);
-
     const navItems = [
         {
             href: useLocalizedRoute('home'),
-            title: t('home'),
+            title: t('Home'),
             icon: (isActive: boolean) => (
                 <HomeIcon
                     className={isActive ? 'text-primary-100' : 'text-dark'}
@@ -192,10 +191,7 @@ function AppNavigation() {
     ];
 
     const filteredNavItems = navItems.filter((item) => {
-        if (isOnMyRoute && item.hideOnMyRoute) {
-            return false;
-        }
-        return true;
+        return !(isOnMyRoute && item.hideOnMyRoute);
     });
 
     return (
@@ -236,7 +232,7 @@ function AppNavigation() {
                                 >
                                     <div className="flex items-center justify-between">
                                         <NavLinkItem
-                                            ariaLabel={`${title} ${t('link')}`}
+                                            ariaLabel={`${title} ${t('Link')}`}
                                             href={href || '#'}
                                             title={title}
                                             active={isActive}

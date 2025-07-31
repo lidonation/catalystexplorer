@@ -1,9 +1,9 @@
-import { useTranslation } from "react-i18next";
+import {useLaravelReactI18n} from "laravel-react-i18n";
 
 
 const GroupSortingOptions = () => {
 
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
     return [
         {
             label: t('groups.options.alphabetically'),

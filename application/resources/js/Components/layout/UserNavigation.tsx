@@ -2,14 +2,14 @@ import { useLocalizedRoute } from '@/utils/localizedRoute';
 import { usePage } from '@inertiajs/react';
 import { LayoutDashboardIcon } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import NavLinkItem from '../atoms/NavLinkItem';
 import BarLineIcon from '../svgs/BarLineIcon';
 import FolderIcon from '../svgs/FolderIcon';
 import MailIcon from '../svgs/MailIcon';
 
 function UserNavigation() {
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
     const { url } = usePage();
     const isOnMyRoute = url.includes('/my/');
 

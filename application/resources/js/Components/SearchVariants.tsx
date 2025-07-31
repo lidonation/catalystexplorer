@@ -5,8 +5,7 @@ import {
     ListboxOptions,
 } from '@headlessui/react';
 import ChevronDownIcon from './svgs/ChevronDownIcon';
-import { useTranslation } from 'react-i18next';
-import {camelCase} from "@/utils/camelCase";
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import Checkbox from '@/Components/atoms/Checkbox';
 
 const SearchVariants = ({
@@ -16,17 +15,17 @@ const SearchVariants = ({
     value: string[];
     onChange: (value: string[]) => void;
 }) => {
-    const { t } = useTranslation();
-   const variantItems = [
-    { key: "allGroups", label: t('searchBar.variants.all') },
-    { key: "proposals", label: t('proposals.proposals') },
-    { key: "ideascaleProfiles", label: t('ideascaleProfiles.ideascaleProfiles') },
-    { key: "groups", label: t('groups.groups') },
-    { key: "communities", label: t('communities.communities') },
-    { key: "wallets", label: t('wallets') },
-    { key: "reviews", label: t('reviews.reviews') },
-    { key: "articles", label: t('articles') },
-];
+    const { t } = useLaravelReactI18n();
+    const variantItems = [
+        { key: "allGroups", label: t('searchBar.variants.all') },
+        { key: "proposals", label: t('proposals.proposals') },
+        { key: "ideascaleProfiles", label: t('ideascaleProfiles.ideascaleProfiles') },
+        { key: "groups", label: t('groups.groups') },
+        { key: "communities", label: t('communities.communities') },
+        { key: "wallets", label: t('wallets') },
+        { key: "reviews", label: t('reviews.reviews') },
+        { key: "articles", label: t('articles') },
+    ];
 
 const allKey = "allGroups";
 const handleSelection = (newValue: string[]) => {
@@ -42,6 +41,22 @@ const handleSelection = (newValue: string[]) => {
     if (!newValue.includes(allKey) && value.includes(allKey)) {
         console.log("Toggling all OFF");
         onChange([]);
+        return;
+    }
+    if (value.includes(allKey) && newValue.length < value.length && newValue.includes(allKey)) {
+        console.log("Individual option deselected - removing 'All Groups'");
+
+        const filteredValue = newValue.filter(item => item !== allKey);
+        onChange(filteredValue);
+        return;
+    }
+
+    const individualOptions = variantItems.filter(item => item.key !== allKey).map(item => item.key);
+    const selectedIndividualOptions = newValue.filter(item => item !== allKey);
+
+    if (selectedIndividualOptions.length === individualOptions.length && !newValue.includes(allKey)) {
+        console.log("All individual options selected - adding 'All Groups'");
+        onChange([...newValue, allKey]);
         return;
     }
     onChange(newValue);

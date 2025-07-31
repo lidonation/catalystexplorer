@@ -1,7 +1,6 @@
 import React from 'react';
-import { useTranslation } from 'react-i18next';
-import { lowerCase } from 'lodash';
-
+import {useLaravelReactI18n} from "laravel-react-i18n";
+import lodashPkg from 'lodash';
 import Paragraph from '@/Components/atoms/Paragraph';
 import TextInput from '@/Components/atoms/TextInput';
 import ValueLabel from '@/Components/atoms/ValueLabel';
@@ -34,7 +33,8 @@ const SlideOverContent: React.FC<SlideOverContentProps> = ({
     onSaveEditForm,
     onDeleteCollection,
 }) => {
-    const { t } = useTranslation();
+    const { lowerCase } = lodashPkg;
+    const { t } = useLaravelReactI18n();
 
     return (
         <div>
@@ -56,10 +56,10 @@ const SlideOverContent: React.FC<SlideOverContentProps> = ({
 
                 <div className="space-y-6">
                     {/* Display mode - show title and content as text */}
-                    <div 
+                    <div
                         className={`transition-all duration-300 ease-in-out ${
-                            isEditingFields 
-                                ? 'opacity-0 max-h-0 overflow-hidden' 
+                            isEditingFields
+                                ? 'opacity-0 max-h-0 overflow-hidden'
                                 : 'opacity-100 max-h-96'
                         }`}
                     >
@@ -75,10 +75,10 @@ const SlideOverContent: React.FC<SlideOverContentProps> = ({
                     </div>
 
                     {/* Edit mode - show input fields */}
-                    <div 
+                    <div
                         className={`transition-all duration-300 ease-in-out ${
-                            isEditingFields 
-                                ? 'opacity-100 max-h-96' 
+                            isEditingFields
+                                ? 'opacity-100 max-h-96'
                                 : 'opacity-0 max-h-0 overflow-hidden'
                         }`}
                     >
