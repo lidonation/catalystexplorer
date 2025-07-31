@@ -15,6 +15,7 @@ use App\Enums\ProposalStatus;
 use App\Models\Connection;
 use App\Models\Fund;
 use App\Models\IdeascaleProfile;
+use App\Models\Metric;
 use App\Models\Proposal;
 use App\Repositories\ProposalRepository;
 use Carbon\Carbon;
@@ -26,6 +27,7 @@ use Illuminate\Support\Fluent;
 use Illuminate\Support\Stringable;
 use Inertia\Inertia;
 use Inertia\Response;
+use InertiaUI\Modal\Modal;
 use Laravel\Scout\Builder;
 use Symfony\Component\HttpFoundation\Request as SymfonyRequest;
 
@@ -232,7 +234,7 @@ class ProposalsController extends Controller
         ]);
     }
 
-    public function charts(Request $request)
+    public function charts(Request $request): Modal
     {
         $referer = $request->headers->get('referer');
         $refererParams = [];
@@ -250,6 +252,8 @@ class ProposalsController extends Controller
 
         $chartDataByFund = $this->getDetailedCountsByFund();
         $chartDataByYear = $this->getDetailedCountsByYear();
+
+        debugbar()->disable();
 
         return Inertia::modal(
             'Charts/Index',
@@ -339,6 +343,7 @@ class ProposalsController extends Controller
         );
 
         $response = new Fluent($builder->raw());
+
         $items = collect($response->hits);
 
         $this->setCounts($response->facetDistribution, $response->facetStats);
@@ -1014,5 +1019,59 @@ class ProposalsController extends Controller
         }
 
         return $inProgressCount;
+    }
+
+    public function getProposalMetrics(Request $request)
+    {
+        $referer = $request->headers->get('referer');
+        $refererParams = [];
+
+        if ($referer) {
+            $parsedUrl = parse_url($referer);
+            if (isset($parsedUrl['query'])) {
+                $refererParams = SymfonyRequest::create('?'.$parsedUrl['query'])->query->all();
+            }
+        }
+
+        $mergedRequest = $request->duplicate(
+            array_merge($request->query->all(), $refererParams),
+            $request->request->all()
+        );
+
+        $this->getProps($mergedRequest);
+
+        $proposalMetricRules = $request->input('rules', []);
+        $chartType = $request->input('chartType');
+
+        $proposalRuleTitles = array_unique($proposalMetricRules);
+        sort($proposalRuleTitles);
+
+        $metricIds = Metric::with('rules')
+            ->where('type', $chartType)
+            ->get()
+            ->filter(function ($metric) use ($proposalRuleTitles) {
+                $metricRuleTitles = $metric->rules->pluck('title')->toArray();
+
+                sort($metricRuleTitles);
+                sort($proposalRuleTitles);
+
+                return $metricRuleTitles === $proposalRuleTitles;
+            })
+            ->pluck('id')
+            ->toArray();
+
+        $metrics = Metric::whereIn('id', $metricIds)->get();
+
+        $searchQuery = $this->queryParams[ProposalSearchParams::QUERY()->value] ?? '';
+
+        $filters = $this->getUserFilters();
+
+        $multiSeriesData = [];
+
+        foreach ($metrics as $metric) {
+            $multiSeriesData[] = $metric->multiSeriesSearchData($filters, $searchQuery, $chartType);
+        }
+
+        return $multiSeriesData;
     }
 }

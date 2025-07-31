@@ -50,6 +50,8 @@ Route::prefix('api')->as('api.')->group(function () {
     Route::get('/communities/{hash}/connections', [CommunitiesController::class, 'connections'])->name('communities.connections');
     Route::post('/communities/{hash}/join', [CommunitiesController::class, 'join'])->name('community.join');
 
+    Route::get('/proposal-charts-metrics', [ProposalsController::class, 'getProposalMetrics'])->name('proposalChartsMetrics');
+
     Route::prefix('bookmark-items')->as('bookmarks.')
         ->group(function () {
             Route::post('/{modelType}/{hash}/{bookmarkCollection?}', [MyBookmarksController::class, 'store'])
@@ -92,7 +94,6 @@ Route::prefix('api')->as('api.')->group(function () {
 
     Route::get('/funds', [ProposalsController::class, 'funds'])->name('funds');
 
-
     Route::get('/helpful-total', [ReviewsController::class, 'helpfulTotal'])->name('helpfulTotal');
 
     Route::get('/fund-counts', [GroupsController::class, 'getFundsWithProposalsCount'])->name('fundCounts');
@@ -134,5 +135,5 @@ Route::prefix('api')->as('api.')->group(function () {
             Route::post('/', [CommentController::class, 'store'])->name('store')
                 ->middleware('throttle:15,1');
         });
-
+   
 });

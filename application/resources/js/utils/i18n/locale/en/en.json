@@ -535,7 +535,7 @@
         "selectAllThatApply": "(Select all that apply)",
         "submittedProposals": "Submitted Proposals",
         "approvedProposals": "Approved Proposals",
-        "completedProposals": "Completed",
+        "completedProposals": "Completed Proposals",
         "next": "Next",
         "trendChart": "trendChart",
         "lineChart": "Line Chart",
@@ -560,10 +560,11 @@
         "noYearDataAvailable": "No Year Data Available",
         "unfundedProposals": "Unfunded Proposals",
         "fundedProposals": "Funded Proposals",
-        "inProgressProposals": "In Progress",
+        "inProgressProposals": "In Progress Proposals",
         "vsYear": "vs Previous Year",
         "filterProposal": "Filter the proposals by status to see what’s most relevant to you.",
-        "chooseChartType": "Choose how you want to view the data"
+        "chooseChartType": "Choose how you want to view the data",
+        "treeMap": "Tree Map"
     },
     "pagination": {
         "next": "Next",

@@ -8,6 +8,7 @@ use App\Enums\MetricCountBy;
 use App\Enums\MetricQueryTypes;
 use App\Enums\MetricTypes;
 use App\Enums\StatusEnum;
+use App\Repositories\ProposalRepository;
 use App\Traits\HasRules;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
@@ -54,7 +55,6 @@ class Metric extends Model
     {
         return Attribute::make(
             get: function () {
-                // Fetch aggregate series
                 $modelInstance = new $this->model;
                 $table = $modelInstance->getTable();
                 $builder = call_user_func([$this->model, 'query']);
@@ -90,253 +90,296 @@ class Metric extends Model
         );
     }
 
-    public function getMultiSeriesChartData()
+    public function multiSeriesSearchData(array $userFilters, string $searchQuery, string $type)
     {
-        if (! $this->rules || $this->rules->count() <= 1) {
-            return [$this->chartData];
+
+        if (! $this->rules || $this->rules->count() < 1) {
+            return [[
+                'id' => $this->name ?? 'Metric Data',
+                'color' => $this->color ?? '#8884d8',
+                'data' => [],
+            ]];
         }
 
         $countBy = $this->count_by->value ?? 'fund';
-        $seriesData = [];
+        $proposals = app(ProposalRepository::class);
+        $baseFilter = is_string($userFilters) ? $userFilters : implode(' AND ', array_filter($userFilters));
 
-        foreach ($this->rules as $rule) {
-            $modelInstance = new $this->model;
-            $table = $modelInstance->getTable();
-            $builder = call_user_func([$this->model, 'query']);
-            $aggregate = $this->query;
-            $field = $this->field;
+        $facetKey = match ($countBy) {
+            'fund', 'funds' => 'fund.title',
+            'year' => 'created_at',
+            default => $countBy,
+        };
 
-            // Apply only this specific rule
-            $builder = $this->applyRules($builder, collect([$rule]), $table);
-
-            $results = match ($countBy) {
-                'year' => $builder->select(
-                    DB::raw($this->getDateExtractionSql("{$table}.created_at", 'year').' as year'),
-                    DB::raw("{$aggregate}({$table}.{$field}) as {$aggregate}")
-                )
-                    ->groupBy(DB::raw($this->getDateExtractionSql("{$table}.created_at", 'year')))
-                    ->orderByDesc(DB::raw($this->getDateExtractionSql("{$table}.created_at", 'year')))
-                    ->get()
-                    ->map(fn ($row) => ['x' => (int) $row->year, 'y' => $row->{$aggregate}]),
-
-                'fund', 'funds' => $builder->select(
-                    'fund_id',
-                    DB::raw("{$aggregate}({$table}.{$field}) as {$aggregate}")
-                )
-                    ->leftJoin('funds', fn ($join) => $join->on('funds.id', '=', "{$table}.fund_id"))
-                    ->with(['fund' => fn ($q) => $q->orderBy('launched_at', 'desc')])
-                    ->groupBy('fund_id', 'funds.launched_at')
-                    ->orderByDesc('funds.launched_at')
-                    ->get()
-                    ->map(function ($row) use ($aggregate) {
-                        return [
-                            'x' => $row->fund?->title ?? "Fund {$row->fund_id}",
-                            'y' => $row->{$aggregate},
-                        ];
-                    }),
-
-                default => $builder->select(
-                    $countBy,
-                    DB::raw("{$aggregate}({$table}.{$field}) as {$aggregate}")
-                )
-                    ->groupBy($countBy)
-                    ->orderByDesc($aggregate)
-                    ->get()
-                    ->map(fn ($row) => ['x' => $row->{$countBy}, 'y' => $row->{$aggregate}]),
-            };
-
-            $seriesData[] = [
-                'id' => $rule->title ?? "Rule {$rule->id}",
-                'color' => $rule->color ?? $this->generateSeriesColor($rule->id),
-                'data' => $results->values(),
-            ];
-        }
-
-        return $seriesData;
-    }
-
-    /**
-     * Generate a color for a series based on rule ID
-     */
-    private function generateSeriesColor(int $ruleId): string
-    {
-        $colors = [
-            '#8884d8',
-            '#82ca9d',
-            '#ffc658',
-            '#ff7c7c',
-            '#8dd1e1',
-            '#d084d0',
-            '#ffb347',
-            '#87d068',
-            '#ffa39e',
-            '#b7eb8f',
-            '#91d5ff',
-            '#d3adf7',
+        $searchOptions = [
+            'limit' => 0,
+            'facets' => [$facetKey],
         ];
 
-        return $colors[$ruleId % count($colors)];
-    }
-
-    /**
-     * Enhanced chartData that can handle both single and multi-series
-     */
-    public function adaptiveChartData(): array
-    {
-        // Check if we have multiple rules for multi-series
-        if ($this->rules && $this->rules->count() > 1) {
-            return $this->multiSeriesChartData();
+        if (! empty($baseFilter)) {
+            $searchOptions['filter'] = $baseFilter;
         }
 
-        // Single series - use existing logic
-        return [$this->chartData];
+        try {
+            $builder = $proposals->search($searchQuery, $searchOptions);
+            $response = new \Illuminate\Support\Fluent($builder->raw());
+            $facetData = $response->facetDistribution[$facetKey] ?? [];
+
+            if ($countBy === 'year') {
+                $yearCounts = [];
+                foreach ($facetData as $date => $count) {
+                    $year = date('Y', strtotime($date));
+                    $yearCounts[$year] = ($yearCounts[$year] ?? 0) + $count;
+                }
+                ksort($yearCounts);
+                $facetData = $yearCounts;
+            }
+
+            if (empty($facetData)) {
+                return [];
+            }
+
+            $seriesData = [];
+            foreach ($this->rules as $rule) {
+                try {
+                    if ($type === 'distribution') {
+                        $ruleChartData = $this->getDistributionData($proposals, $searchQuery, $baseFilter, $facetData, $rule, $countBy, $facetKey);
+                    } else {
+                        $ruleChartData = $this->getRegularChartData($proposals, $searchQuery, $baseFilter, $facetData, $rule, $countBy, $facetKey);
+                    }
+
+                    $seriesData[] = [
+                        'id' => $rule->title ?? "Rule {$rule->id}",
+                        'data' => array_values($ruleChartData),
+                        'count_by' => $countBy,
+                        'type' => $type,
+                    ];
+                } catch (\Exception $e) {
+
+                    $seriesData[] = [
+                        'id' => $rule->title ?? "Rule {$rule->id}",
+                        'data' => [],
+                        'count_by' => $countBy,
+                        'type' => $type,
+                    ];
+                }
+            }
+
+            return $seriesData;
+        } catch (\Exception $e) {
+            return [];
+        }
     }
 
-    /**
-     * Get the appropriate date extraction SQL for PostgreSQL
-     */
-    private function getDateExtractionSql(string $dateField, string $period): string
+    private function getDistributionData($proposals, $searchQuery, $baseFilter, $facetData, $rule, $countBy, $facetKey)
     {
-        return match ($period) {
-            'year' => "EXTRACT(YEAR FROM {$dateField})",
-            'month' => "TO_CHAR({$dateField}, 'YYYY-MM')",
-            'quarter' => "EXTRACT(YEAR FROM {$dateField}) || '-Q' || EXTRACT(QUARTER FROM {$dateField})",
-            'week' => "TO_CHAR({$dateField}, 'YYYY-WW')",
-            'day' => "DATE({$dateField})",
-            default => "EXTRACT(YEAR FROM {$dateField})",
-        };
-    }
+        $filters = [];
 
-    public function buildMultiSeriesSearchData(array $userFilters = [], string $searchQuery = ''): array
-    {
-        if (! $this->rules || $this->rules->count() <= 1) {
-            return [$this->dynamicChartData($userFilters)];
+        if (! empty($baseFilter)) {
+            $filters[] = "({$baseFilter})";
         }
 
-        $countBy = $this->count_by->value ?? 'fund';
-        $seriesData = [];
+        if ($rule->subject && $rule->operator && isset($rule->predicate)) {
+            $predicate = $rule->predicate;
 
-        foreach ($this->rules as $rule) {
-            // Convert rule to filter format
-            $ruleFilter = $this->convertRuleToMeiliFilter($rule);
+            $ruleFilter = match ($rule->operator) {
+                '=', 'equals' => is_array($predicate)
+                    ? "{$rule->subject} IN (".collect($predicate)->map(fn ($val) => '"'.addslashes($val).'"')->join(', ').')'
+                    : "{$rule->subject} = \"".addslashes($predicate).'"',
 
-            // Combine user filters with rule filter
-            $combinedFilters = array_merge($userFilters, [$ruleFilter]);
+                '!=', 'not_equals' => is_array($predicate)
+                    ? "{$rule->subject} NOT IN (".collect($predicate)->map(fn ($val) => '"'.addslashes($val).'"')->join(', ').')'
+                    : "{$rule->subject} != \"".addslashes($predicate).'"',
 
-            $args = [
-                'filter' => implode(' AND ', array_filter($combinedFilters)),
+                '>', 'greater_than' => "{$rule->subject} > \"".addslashes($predicate).'"',
+                '<', 'less_than' => "{$rule->subject} < \"".addslashes($predicate).'"',
+                '>=', 'greater_than_or_equal' => "{$rule->subject} >= \"".addslashes($predicate).'"',
+                '<=', 'less_than_or_equal' => "{$rule->subject} <= \"".addslashes($predicate).'"',
+                'IS NULL' => "{$rule->subject} IS NULL",
+                'IS NOT NULL' => "{$rule->subject} IS NOT NULL",
+
+                default => "{$rule->subject} = \"".addslashes($predicate).'"',
+            };
+
+            $filters[] = "({$ruleFilter})";
+        }
+
+        $combinedFilter = implode(' AND ', $filters);
+
+        try {
+            $searchOptions = [
                 'limit' => 0,
-                'facets' => $this->getFacetsForCountBy($countBy),
+                'facets' => [$facetKey, 'tags.title'], // Only string facet supported
             ];
 
-            // Perform MeiliSearch
-            $search = $this->model::search($searchQuery, function ($meili, $query, $options) use ($args) {
-                $options['filter'] = $args['filter'];
-                $options['limit'] = $args['limit'];
-                $options['facets'] = $args['facets'];
+            if (! empty($combinedFilter)) {
+                $searchOptions['filter'] = $combinedFilter;
+            }
 
-                return $meili->search($query, $options);
-            })->raw();
+            $builder = $proposals->search($searchQuery, $searchOptions);
+            $response = new \Illuminate\Support\Fluent($builder->raw());
 
-            // Process results based on count_by
-            $chartData = $this->processMeiliSearchResults($search, $countBy);
+            // Get facet counts for primary facet
+            $facetCounts = $response->facetDistribution[$facetKey] ?? [];
 
-            $seriesData[] = [
-                'id' => $rule->title ?? "Rule {$rule->id}",
-                'color' => $rule->color ?? $this->generateSeriesColor($rule->id),
-                'data' => $chartData,
-            ];
+            // Handle `year` aggregation if needed
+            if ($countBy === 'year') {
+                $yearCounts = [];
+                foreach ($facetCounts as $date => $cnt) {
+                    $year = date('Y', strtotime($date));
+                    $yearCounts[$year] = ($yearCounts[$year] ?? 0) + $cnt;
+                }
+                $facetCounts = $yearCounts;
+            }
+
+            // Get tag counts across entire result set
+            $tagCounts = $response->facetDistribution['tags.title'] ?? [];
+
+            $ruleChartData = [];
+            foreach (array_keys($facetData) as $facetValue) {
+                $count = $facetCounts[$facetValue] ?? 0;
+
+                // This part does not split tags per facetValue — only global tag counts
+                $tags = [];
+                foreach ($tagCounts as $tagTitle => $tagCount) {
+                    $tags[] = [
+                        'title' => $tagTitle,
+                        'tagCount' => $tagCount,
+                    ];
+                }
+
+                $ruleChartData[] = [
+                    'count_by' => $facetValue,
+                    'count' => $count,
+                    'tags' => $tags,
+                ];
+            }
+
+            return $ruleChartData;
+        } catch (\Exception $e) {
+            $ruleChartData = [];
+            foreach (array_keys($facetData) as $facetValue) {
+                $ruleChartData[] = [
+                    'count_by' => $facetValue,
+                    'count' => 0,
+                    'tags' => [],
+                ];
+            }
+
+            return $ruleChartData;
+        }
+    }
+
+    private function getRegularChartData($proposals, $searchQuery, $baseFilter, $facetData, $rule, $countBy, $facetKey)
+    {
+        $ruleFilterPart = '';
+        if ($rule->subject && $rule->operator && isset($rule->predicate)) {
+            $predicate = $rule->predicate;
+
+            $ruleFilterPart = match ($rule->operator) {
+                '=', 'equals' => is_array($predicate)
+                    ? "{$rule->subject} IN (".collect($predicate)->map(fn ($val) => '"'.addslashes($val).'"')->join(', ').')'
+                    : "{$rule->subject} = \"".addslashes($predicate).'"',
+
+                '!=', 'not_equals' => is_array($predicate)
+                    ? "{$rule->subject} NOT IN (".collect($predicate)->map(fn ($val) => '"'.addslashes($val).'"')->join(', ').')'
+                    : "{$rule->subject} != \"".addslashes($predicate).'"',
+
+                '>', 'greater_than' => "{$rule->subject} > \"".addslashes($predicate).'"',
+                '<', 'less_than' => "{$rule->subject} < \"".addslashes($predicate).'"',
+                '>=', 'greater_than_or_equal' => "{$rule->subject} >= \"".addslashes($predicate).'"',
+                '<=', 'less_than_or_equal' => "{$rule->subject} <= \"".addslashes($predicate).'"',
+
+                'IS NULL' => "{$rule->subject} IS NULL",
+                'IS NOT NULL' => "{$rule->subject} IS NOT NULL",
+
+                default => is_array($predicate)
+                    ? "{$rule->subject} IN (".collect($predicate)->map(fn ($val) => '"'.addslashes($val).'"')->join(', ').')'
+                    : "{$rule->subject} = \"".addslashes($predicate).'"',
+            };
         }
 
-        return $seriesData;
+        $baseFilterParts = [];
+        if (! empty($baseFilter)) {
+            $baseFilterParts[] = "({$baseFilter})";
+        }
+        if (! empty($ruleFilterPart)) {
+            $baseFilterParts[] = "({$ruleFilterPart})";
+        }
+
+        $combinedBaseFilter = implode(' AND ', $baseFilterParts);
+
+        try {
+            $searchOptions = [
+                'limit' => 0,
+                'facets' => [$facetKey],
+            ];
+
+            if (! empty($combinedBaseFilter)) {
+                $searchOptions['filter'] = $combinedBaseFilter;
+            }
+
+            $builder = $proposals->search($searchQuery, $searchOptions);
+            $response = new \Illuminate\Support\Fluent($builder->raw());
+            $facetCounts = $response->facetDistribution[$facetKey] ?? [];
+
+            if ($countBy === 'year') {
+                $yearCounts = [];
+                foreach ($facetCounts as $date => $cnt) {
+                    $year = date('Y', strtotime($date));
+                    $yearCounts[$year] = ($yearCounts[$year] ?? 0) + $cnt;
+                }
+                $facetCounts = $yearCounts;
+            }
+
+            $ruleChartData = [];
+            foreach (array_keys($facetData) as $facetValue) {
+                $count = $facetCounts[$facetValue] ?? 0;
+                $ruleChartData[] = [
+                    'x' => $facetValue,
+                    'y' => $count,
+                ];
+            }
+
+            usort($ruleChartData, function ($a, $b) use ($countBy) {
+                if ($countBy === 'year') {
+                    return (int) $a['x'] <=> (int) $b['x'];
+                }
+                preg_match('/\d+/', $a['x'], $aMatches);
+                preg_match('/\d+/', $b['x'], $bMatches);
+
+                return ((int) ($aMatches[0] ?? 0)) <=> ((int) ($bMatches[0] ?? 0));
+            });
+
+            return $ruleChartData;
+        } catch (\Exception $e) {
+            $ruleChartData = [];
+            foreach (array_keys($facetData) as $facetValue) {
+                $ruleChartData[] = [
+                    'x' => $facetValue,
+                    'y' => 0,
+                ];
+            }
+
+            return $ruleChartData;
+        }
     }
 
-    /**
-     * Convert rule to MeiliSearch filter format
-     */
-    private function convertRuleToMeiliFilter($rule): string
-    {
-        $field = $rule->field;
-        $operator = $rule->operator;
-        $value = $rule->value;
-
-        return match ($operator) {
-            'equals', '=' => "{$field} = {$value}",
-            'not_equals', '!=' => "{$field} != {$value}",
-            'greater_than', '>' => "{$field} > {$value}",
-            'less_than', '<' => "{$field} < {$value}",
-            'greater_than_or_equal', '>=' => "{$field} >= {$value}",
-            'less_than_or_equal', '<=' => "{$field} <= {$value}",
-            'in' => "{$field} IN [{$value}]",
-            'not_in' => "{$field} NOT IN [{$value}]",
-            'is_null' => "{$field} IS NULL",
-            'is_not_null' => "{$field} IS NOT NULL",
-            'contains' => "{$field} = \"{$value}\"",
-            'starts_with' => "{$field} = \"{$value}*\"",
-            'ends_with' => "{$field} = \"*{$value}\"",
-            default => "{$field} = {$value}",
-        };
-    }
-
-    /**
-     * Get facets array for different count_by options
-     */
-    private function getFacetsForCountBy(string $countBy): array
+    private function extractFacetValue($proposal, $countBy)
     {
         return match ($countBy) {
-            'fund', 'funds' => ['fund.title'],
-            'year' => ['created_at'], // Use created_at facet like in your controller
-            'month' => ['created_at'],
-            'quarter' => ['created_at'],
-            'status' => ['status'],
-            'type' => ['type'],
-            default => [$countBy],
+            'fund', 'funds' => $proposal['fund']['title'] ?? null,
+            'year' => isset($proposal['created_at']) ? date('Y', strtotime($proposal['created_at'])) : null,
+            default => $proposal[$countBy] ?? null,
         };
     }
 
-    /**
-     * Process MeiliSearch results into chart data format
-     */
-    private function processMeiliSearchResults(array $search, string $countBy): array
+    private function buildYearTimestampFilter(int $year): string
     {
-        $facetDistribution = $search['facetDistribution'] ?? [];
+        $startTimestamp = mktime(0, 0, 0, 1, 1, $year);
+        $endTimestamp = mktime(0, 0, 0, 1, 1, $year + 1);
 
-        return match ($countBy) {
-            'fund', 'funds' => $this->processFundFacets($facetDistribution['fund.title'] ?? []),
-            'year' => $this->processYearFacets($facetDistribution['created_at_year'] ?? []),
-            default => $this->processGenericFacets($facetDistribution[$countBy] ?? []),
-        };
-    }
-
-    /**
-     * Process fund facets with sorting (like in your controller)
-     */
-    private function processFundFacets(array $funds): array
-    {
-        // Sort funds like in your controller
-        uksort($funds, function ($a, $b) {
-            $numA = (int) str_replace('Fund ', '', $a);
-            $numB = (int) str_replace('Fund ', '', $b);
-
-            return $numA - $numB;
-        });
-
-        return collect($funds)
-            ->map(fn ($count, $title) => ['x' => $title, 'y' => $count])
-            ->values()
-            ->toArray();
-    }
-
-    /**
-     * Process year facets
-     */
-    private function processYearFacets(array $years): array
-    {
-        return collect($years)
-            ->map(fn ($count, $year) => ['x' => (int) $year, 'y' => $count])
-            ->sortKeysDesc()
-            ->values()
-            ->toArray();
+        return "created_at_timestamp >= {$startTimestamp} AND created_at_timestamp < {$endTimestamp}";
     }
 
     public function rules(): MorphMany
