@@ -961,5 +961,7 @@
     "bookmarks.lastModified": "Dernière modification",
     "bookmarks.createList": "Créer votre liste",
     "comments.comments": "Commentaires",
-    "comments.reply": "Répondre"
+    "comments.reply": "Répondre",
+    "rightSwipes": " - Balayages vers la droite",
+    "leftSwipes": " - Balayages vers la gauche"
 }
