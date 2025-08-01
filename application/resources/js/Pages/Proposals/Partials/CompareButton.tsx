@@ -10,11 +10,13 @@ type CompareButtonProps = {
     hash: string;
     tooltipDescription: string;
     data: ProposalData;
+    'data-testid'?: string;
 };
 
 const CompareButton: React.FC<CompareButtonProps> = ({
     data,
     tooltipDescription = 'Compare proposal',
+    'data-testid': dataTestId,
 }: CompareButtonProps) => {
     const [isHovered, setIsHovered] = useState(false);
 
@@ -45,6 +47,7 @@ const CompareButton: React.FC<CompareButtonProps> = ({
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
             onClick={toggleInList}
+            data-testid={dataTestId}
         >
             <CompareIcon
                 exists={alreadyExists}
