@@ -168,21 +168,21 @@ class BookmarkCollection extends Model
     {
         return Attribute::make(
             get: function () {
-    
+
                 $itemsWithVotes = $this->items()->whereNotNull('vote')->get();
-                
+
                 if ($itemsWithVotes->isEmpty()) {
                     return null;
                 }
-                
+
                 $hasLeftVotes = $itemsWithVotes->contains('vote', VoteEnum::NO->value);
                 $hasRightVotes = $itemsWithVotes->contains('vote', VoteEnum::YES->value);
-                
-                if ($hasLeftVotes && !$hasRightVotes) {
+
+                if ($hasLeftVotes && ! $hasRightVotes) {
                     return 'left';
-                } elseif ($hasRightVotes && !$hasLeftVotes) {
+                } elseif ($hasRightVotes && ! $hasLeftVotes) {
                     return 'right';
-                } 
+                }
             }
         );
     }

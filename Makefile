@@ -195,8 +195,13 @@ test-e2e:
 	@echo "Installing Playwright browsers (if not already installed)..."
 	@cd ./application && npx playwright install --with-deps
 	@echo "Running Playwright E2E tests..."
-	@cd ./application && npx playwright test; \
-	TEST_EXIT_CODE=$?; \
+	@cd ./application && \
+	if [ -n "$(FILE)" ]; then \
+		npx playwright test $(FILE); \
+	else \
+		npx playwright test; \
+	fi; \
+	TEST_EXIT_CODE=$$?; \
 	echo "Test reports are being generated automatically by Allure service..."; \
 	echo "Access your test reports at: http://localhost:5050/allure-docker-service/projects/default/reports/latest/index.html?redirect=false";
 
