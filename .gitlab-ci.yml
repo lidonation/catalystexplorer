@@ -208,9 +208,9 @@ playwright:
   - job: app_preview
   rules:
   - if: '$CI_COMMIT_BRANCH != "main" && ($DEPLOY_WEBAPP == "true")'
-  dependencies:
-  - composer
-  - yarn
+  # dependencies:
+  # - composer
+  # - yarn
 
 ########## Helper Scripts ############
 ######################################
