@@ -1,10 +1,15 @@
-import catalystWhiteLogo from '@/assets/images/catalyst-explorer-all-white-logo.png';
-import { useTranslation } from 'react-i18next';
-import Paragraph from '@/Components/atoms/Paragraph'; // Added import for Paragraph component
+import { CatalystWhiteLogo } from '@/Components/svgs/CatalystWhiteLogo.tsx';
+import Paragraph from '@/Components/atoms/Paragraph';
 import { useLocalizedRoute } from '@/utils/localizedRoute';
+import { useLaravelReactI18n } from "laravel-react-i18n";
+import {Config, useRoute} from 'ziggy-js';
+import { usePage } from '@inertiajs/react';
+
 
 export default function Footer() {
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
+    const { locale, ziggy } = usePage().props as any;
+    const route = useRoute(ziggy as Config);
 
     return (
         <div className="relative z-10 flex min-h-96 w-full flex-col justify-between gap-16 rounded-t-xl bg-linear-to-r from-[var(--cx-background-gradient-1-dark)] to-[var(--cx-background-gradient-1-dark)] pt-16 pb-12">
@@ -180,11 +185,7 @@ export default function Footer() {
             <section className="container" data-testid="footer-copyright">
                 <div className="flex justify-between border-t pt-8">
                     <div className="">
-                        <img
-                            className="h-8"
-                            src={catalystWhiteLogo}
-                            alt={t('app.appLogoAlt')}
-                        />
+                        <CatalystWhiteLogo />
                     </div>
                     <Paragraph className="text-base font-normal text-gray-300">
                         {t('copyright')}

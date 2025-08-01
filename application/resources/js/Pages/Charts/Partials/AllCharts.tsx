@@ -6,7 +6,7 @@ import Title from '@/Components/atoms/Title';
 import { useFilterContext } from '@/Context/FiltersContext';
 import { ParamsEnum } from '@/enums/proposal-search-params';
 import { Share2Icon } from 'lucide-react';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import BarChart from './BarChart';
 import ChartCard from './ChartCard';
 import FunnelChart from './FunnelChart';
@@ -31,7 +31,7 @@ export default function AllCharts({
 }: AllChartsProps) {
     const { getFilter, filters, setFilters } = useFilterContext();
     const selectedChartOptions = getFilter(ParamsEnum.CHART_OPTIONS) || [];
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
     const hasSubmittedProposals =
         (getFilter(ParamsEnum.SUBMITTED_PROPOSALS) || []).length > 0;
     const hasApprovedProposals =

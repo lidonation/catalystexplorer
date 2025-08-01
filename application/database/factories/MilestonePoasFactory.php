@@ -3,7 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\Milestone;
-use App\Models\MilestonePoas;
+use App\Models\MilestonePoa;
 use App\Models\MilestonePoasReview;
 use App\Models\MilestonePoasSignoff;
 use App\Models\Proposal;
@@ -11,7 +11,7 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\MilestonePoas>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\MilestonePoa>
  */
 class MilestonePoasFactory extends Factory
 {
@@ -34,7 +34,7 @@ class MilestonePoasFactory extends Factory
 
     public function configure(): static
     {
-        return $this->afterCreating(function (MilestonePoas $milestonePoas) {
+        return $this->afterCreating(function (MilestonePoa $milestonePoas) {
             MilestonePoasReview::factory()
                 ->count(2)
                 ->create([

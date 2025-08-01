@@ -1,7 +1,7 @@
 import { generateLocalizedRoute, useLocalizedRoute } from '@/utils/localizedRoute';
 import { ChevronLeft, ChevronRight, ThumbsUpIcon } from 'lucide-react';
 import React, { useEffect, useState, useRef, useMemo } from 'react';
-import { useTranslation } from 'react-i18next';
+import { useLaravelReactI18n } from "laravel-react-i18n";
 import { router } from '@inertiajs/react';
 import api from '@/utils/axiosClient';
 import Paragraph from '@/Components/atoms/Paragraph';
@@ -17,6 +17,7 @@ import { shortNumber } from '@/utils/shortNumber';
 import Button from '@/Components/atoms/Button';
 import ThumbsDownIcon from '@/Components/svgs/ThumbsDownIcon';
 import { TinderWorkflowParams } from '@/enums/tinder-workflow-params';
+import { VoteEnum } from '@/enums/votes-enums';
 import { FiltersProvider, useFilterContext } from '@/Context/FiltersContext';
 import { ParamsEnum } from '@/enums/proposal-search-params';
 import { SearchParams } from '@/types/search-params';
@@ -77,7 +78,7 @@ const Step3: React.FC<Step3Props> = ({
     startingPage = 1,
     currentIndexWithinPage = 0
 }) => {
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
     const [currentIndex, setCurrentIndex] = useState(currentIndexWithinPage);
     const [isAnimating, setIsAnimating] = useState(false);
     const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
@@ -96,6 +97,17 @@ const Step3: React.FC<Step3Props> = ({
     const [swipedLeftProposals, setSwipedLeftProposals] = useState<string[]>(Array.isArray(existingSwipedLeft) ? existingSwipedLeft : []);
     const [swipedRightProposals, setSwipedRightProposals] = useState<string[]>(Array.isArray(existingSwipedRight) ? existingSwipedRight : []);
     const [processingProposals, setProcessingProposals] = useState<Set<string>>(new Set());
+
+    // Queue system for API calls
+    const [apiQueue, setApiQueue] = useState<Array<{
+        id: string;
+        proposalSlug: string;
+        direction: 'left' | 'right';
+        targetCollectionHash: string;
+        voteValue: number;
+        retryCount: number;
+    }>>([]);
+    const [isProcessingQueue, setIsProcessingQueue] = useState(false);
 
     // Track current page - start from the calculated starting page
     const [currentPage, setCurrentPage] = useState(startingPage);
@@ -138,6 +150,7 @@ const Step3: React.FC<Step3Props> = ({
 
             setHasMorePages(proposals.current_page < proposals.last_page);
             setIsLoading(false);
+
         }
     }, [proposals, isLoadMore, existingSwipedLeft, existingSwipedRight, currentIndexWithinPage]);
 
@@ -203,6 +216,64 @@ const Step3: React.FC<Step3Props> = ({
         }
     }, [currentIndex, allProposals.length, hasMorePages, isLoading, currentIndexWithinPage, startingPage]);
 
+    // Process API queue
+    const processApiQueue = async () => {
+        if (isProcessingQueue || apiQueue.length === 0) return;
+
+        setIsProcessingQueue(true);
+        const currentQueue = [...apiQueue];
+        
+        for (const item of currentQueue) {
+            try {
+                await api.post(generateLocalizedRoute('workflows.tinderProposal.addBookmarkItem'), {
+                    proposalSlug: item.proposalSlug,
+                    modelType: 'proposals',
+                    bookmarkCollection: item.targetCollectionHash,
+                    vote: item.voteValue
+                });
+
+                setApiQueue(prev => prev.filter(queueItem => queueItem.id !== item.id));
+                
+                setProcessingProposals(prev => {
+                    const newSet = new Set(prev);
+                    newSet.delete(item.proposalSlug);
+                    return newSet;
+                });
+                
+            } catch (error) {
+                if (item.retryCount < 3) {
+                    setApiQueue(prev => prev.map(queueItem => 
+                        queueItem.id === item.id 
+                            ? { ...queueItem, retryCount: queueItem.retryCount + 1 }
+                            : queueItem
+                    ));
+                } else {
+                    setApiQueue(prev => prev.filter(queueItem => queueItem.id !== item.id));
+                    setProcessingProposals(prev => {
+                        const newSet = new Set(prev);
+                        newSet.delete(item.proposalSlug);
+                        return newSet;
+                    });
+                }
+            }
+            
+            // Small delay between requests to avoid overwhelming the server
+            await new Promise(resolve => setTimeout(resolve, 100));
+        }
+        
+        setIsProcessingQueue(false);
+    };
+
+    // Process queue when items are added
+    useEffect(() => {
+        if (apiQueue.length > 0 && !isProcessingQueue) {
+            const timeoutId = setTimeout(() => {
+                processApiQueue();
+            }, 500); // Small delay to batch multiple rapid swipes
+
+            return () => clearTimeout(timeoutId);
+        }
+    }, [apiQueue.length, isProcessingQueue]);
 
 
     const handleCardSwipe = (direction: 'left' | 'right', fromButton: boolean = false) => {
@@ -210,7 +281,6 @@ const Step3: React.FC<Step3Props> = ({
 
         const currentProposal = allProposals[currentIndex];
         const proposalSlug = currentProposal?.slug;
-        const proposalHash = currentProposal?.hash;
 
         setIsAnimating(true);
         setSwipeDirection(direction);
@@ -232,9 +302,8 @@ const Step3: React.FC<Step3Props> = ({
             }
         }
 
-        if (proposalSlug && proposalHash) {
+        if (proposalSlug) {
             if (!processingProposals.has(proposalSlug)) {
-
                 setProcessingProposals(prev => new Set(prev).add(proposalSlug));
 
                 const targetCollectionHash = direction === 'left'
@@ -242,28 +311,31 @@ const Step3: React.FC<Step3Props> = ({
                     : rightBookmarkCollectionHash;
 
                 if (targetCollectionHash) {
-                    api.post(route('en.workflows.tinderProposal.addBookmarkItem'), {
-                    proposalHash,
-                    modelType: 'proposals', 
-                    bookmarkCollection: targetCollectionHash
-            })
-                        .then(() => {
-                        })
-                        .catch((error) => {
-                            console.error('Failed to save bookmark:', error);
-                        })
-                        .finally(() => {
-                            // Clean up processing state
-                            setProcessingProposals(prev => {
-                                const newSet = new Set(prev);
-                                newSet.delete(proposalSlug);
-                                return newSet;
-                            });
-                        });
+                    // Determine vote value based on swipe direction
+                    const voteValue = direction === 'left' ? VoteEnum.NO : VoteEnum.YES;
+
+                    // Add to queue instead of making immediate API call
+                    const queueItem = {
+                        id: `${proposalSlug}-${Date.now()}-${Math.random()}`,
+                        proposalSlug,
+                        direction,
+                        targetCollectionHash,
+                        voteValue,
+                        retryCount: 0
+                    };
+
+                    setApiQueue(prev => [...prev, queueItem]);
+                } else {
+                    // No target collection, remove from processing
+                    setProcessingProposals(prev => {
+                        const newSet = new Set(prev);
+                        newSet.delete(proposalSlug);
+                        return newSet;
+                    });
                 }
             }
         } else {
-            console.warn('No slug or hash found for proposal:', currentProposal);
+           //
         }
 
         // After animation completes, advance to next card and clean up
@@ -450,7 +522,7 @@ const Step3: React.FC<Step3Props> = ({
 
 
                 <div className="flex flex-col bg-background  h-220  pt-30" >
-                    <div className="rounded-lg p-6 scrolling-touch">
+                    <div className="rounded-lg p-6 scrolling-touch flex-1">
                         {allProposals && allProposals.length > 0 ? (
                             <div className="space-y-4 w-full flex flex-col items-center justify-center">
                                 {/* Stack of cards */}
@@ -536,44 +608,6 @@ const Step3: React.FC<Step3Props> = ({
                                                     />
 
 
-                                                    {isTopCard && (
-                                                        <div className="flex justify-center mt-4 w-full">
-                                                            <div className="flex w-full relative">
-                                                                {/* No Button */}
-                                                                <Button
-                                                                    onClick={() => handleCardSwipe('left', true)}
-                                                                    disabled={!hasTopCard || isAnimating}
-                                                                    className="flex-1 flex items-center bg-background justify-center py-3 px-6 rounded-l-lg rounded-r-none hover:bg-error-light/[30%] active:bg-error-light/[70%] transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed border border-gray-light border-r-0"
-                                                                >
-                                                                    <div className="flex items-center space-x-2">
-                                                                        <div className="w-6 h-6 flex items-center justify-center">
-                                                                            <ThumbsDownIcon width={18} height={18} />
-                                                                        </div>
-                                                                        <Paragraph>{t('workflows.tinderProposal.step3.noButtonText')}</Paragraph>
-                                                                        <Paragraph className="text-sm text-gray-light">({swipedLeftProposals.length})</Paragraph>
-                                                                    </div>
-                                                                </Button>
-
-                                                                {/* Separator Line */}
-                                                                <div className="absolute left-1/2 top-0 bottom-0 w-px bg-gray-light transform -translate-x-1/2 z-10"></div>
-
-                                                                {/* Yes Button */}
-                                                                <Button
-                                                                    onClick={() => handleCardSwipe('right', true)}
-                                                                    disabled={!hasTopCard || isAnimating}
-                                                                    className="flex-1 flex items-center bg-background justify-center py-3 px-6 rounded-r-lg rounded-l-none hover:bg-success-light active:bg-success-light transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed border border-gray-light border-l-0"
-                                                                >
-                                                                    <div className="flex items-center space-x-2">
-                                                                        <div className="w-6 h-6 flex items-center justify-center">
-                                                                            <ThumbsUpIcon width={18} height={18} className="text-success" />
-                                                                        </div>
-                                                                        <Paragraph>{t('workflows.tinderProposal.step3.yesButtonText')}</Paragraph>
-                                                                        <Paragraph className=" text-gray-light">({swipedRightProposals.length})</Paragraph>
-                                                                    </div>
-                                                                </Button>
-                                                            </div>
-                                                        </div>
-                                                    )}
                                                 </div>
                                             </div>
                                         );
@@ -603,6 +637,8 @@ const Step3: React.FC<Step3Props> = ({
                                     )}
                                 </div>
 
+                              
+
                             </div>
                         ) : proposals === null ? (
                             <div className="text-center">
@@ -622,9 +658,51 @@ const Step3: React.FC<Step3Props> = ({
                         )}
                     </div>
 
+                    {/* Action buttons at the bottom of the container - only show if we have proposals */}
+                    {allProposals && allProposals.length > 0 && (
+                        <div className="flex justify-center w-full px-6 pb-6">
+                            <div className="flex w-full max-w-md relative">
+                                
+                                {/* No Button */}
+                                <Button
+                                    onClick={() => handleCardSwipe('left', true)}
+                                    disabled={!hasTopCard || isAnimating}
+                                    className="flex-1 flex items-center bg-background justify-center py-3 px-6 rounded-l-lg rounded-r-none hover:bg-error-light/[30%] active:bg-error-light/[70%] transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed border border-gray-light border-r-0"
+                                >
+                                    <div className="flex items-center space-x-2">
+                                        <div className="w-6 h-6 flex items-center justify-center">
+                                            <ThumbsDownIcon width={18} height={18} />
+                                        </div>
+                                        <Paragraph>{t('workflows.tinderProposal.step3.noButtonText')}</Paragraph>
+                                        <Paragraph className="text-sm text-gray-light">({swipedLeftProposals.length})</Paragraph>
+                                    </div>
+                                </Button>
+
+                                {/* Separator Line */}
+                                <div className="absolute left-1/2 top-0 bottom-0 w-px bg-gray-light transform -translate-x-1/2 z-10"></div>
+
+                                {/* Yes Button */}
+                                <Button
+                                    onClick={() => handleCardSwipe('right', true)}
+                                    disabled={!hasTopCard || isAnimating}
+                                    className="flex-1 flex items-center bg-background justify-center py-3 px-6 rounded-r-lg rounded-l-none hover:bg-success-light active:bg-success-light transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed border border-gray-light border-l-0"
+                                >
+                                    <div className="flex items-center space-x-2">
+                                        <div className="w-6 h-6 flex items-center justify-center">
+                                            <ThumbsUpIcon width={18} height={18} className="text-success" />
+                                        </div>
+                                        <Paragraph>{t('workflows.tinderProposal.step3.yesButtonText')}</Paragraph>
+                                        <Paragraph className=" text-gray-light">({swipedRightProposals.length})</Paragraph>
+                                    </div>
+                                </Button>
+                            </div>
+                        </div>
+                    )}
 
                 </div>
                 <Footer>
+                    <div className="flex flex-col justify-between items-center w-full">
+                    
                     <div className="flex flex-col space-y-4 w-full items-center justify-center">
                         <PrimaryButton onClick={goToStep4} className="px-8 w-[75%] py-3 text-sm">
                             {t('workflows.tinderProposal.step3.saveProgress')}
@@ -635,6 +713,7 @@ const Step3: React.FC<Step3Props> = ({
                         >
                             <Paragraph className='text-content' size='sm'>{t('workflows.tinderProposal.step3.editSettings')}</Paragraph>
                         </PrimaryLink>
+                    </div>
                     </div>
                 </Footer>
             </WorkflowLayout>

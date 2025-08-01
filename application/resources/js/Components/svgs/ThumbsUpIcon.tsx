@@ -1,5 +1,3 @@
-import { useTranslation } from 'react-i18next';
-
 type ThumbsUpIconProps = {
     className?: string;
     width?: number;
@@ -11,7 +9,6 @@ function ThumbsUpIcon({
     width = 16,
     height = 16,
 }: ThumbsUpIconProps) {
-    const { t } = useTranslation();
     return (
         <svg
             width={width}

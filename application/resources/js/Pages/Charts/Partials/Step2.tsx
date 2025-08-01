@@ -6,7 +6,7 @@ import { ParamsEnum } from '@/enums/proposal-search-params';
 import { userSettingEnums } from '@/enums/user-setting-enums';
 import { useUserSetting } from '@/Hooks/useUserSettings';
 import { useCallback, useEffect, useMemo } from 'react';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 
 interface Step2Props {
     disabled?: boolean;
@@ -17,7 +17,7 @@ export default function Step2({
     disabled = false,
     onCompletionChange,
 }: Step2Props) {
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
     const { setFilters } = useFilterContext();
 
     const { value: selectedChart, setValue: setSelectedChart } =

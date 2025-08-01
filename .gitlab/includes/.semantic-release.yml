@@ -14,7 +14,7 @@ spec:
 .semantic_release_base:
   stage: $[[ inputs.stage ]]
   image:
-    name: registry.gitlab.com/gitlab-com/gl-infra/common-ci-tasks-images/semantic-release:latest
+    name: registry.gitlab.com/gitlab-com/gl-infra/common-ci-tasks-images/semantic-release:sha256-da61545c6223d8b73d56fd8249529bafb3e41ed13334d5707cd1b7aa01263a16.sig
     entrypoint: [""]
   variables:
     GITLAB_URL: $CI_SERVER_URL

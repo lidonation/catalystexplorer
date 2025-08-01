@@ -8,11 +8,11 @@ import DrepsBanner from '@/assets/images/dreps-banner.jpg';
 import ProjectCatalystBackground from '@/assets/images/project-catalyst-banner.jpg';
 import { useLocalizedRoute } from '@/utils/localizedRoute';
 import { Head, Link } from '@inertiajs/react';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import FaqSection from './Partials/FaqSection';
 
 const Index = () => {
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
     return (
         <>
             <Head title="Dreps" />

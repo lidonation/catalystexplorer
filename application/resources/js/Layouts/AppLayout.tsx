@@ -8,12 +8,12 @@ import Modal from '@/Components/layout/Modal.tsx';
 import CloseIcon from '@/Components/svgs/CloseIcon';
 import MenuIcon from '@/Components/svgs/MenuIcon';
 import { MetricsProvider } from '@/Context/MetricsContext';
-import { PlayerProvider } from '@/Context/PlayerContext';
+// import { PlayerProvider } from '@/Context/PlayerContext';
 import { UIProvider } from '@/Context/SharedUIContext';
 import { Dialog } from '@headlessui/react';
 import { usePage } from '@inertiajs/react';
 import { ReactNode, useMemo, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import MainLayout from './RootLayout';
@@ -25,11 +25,11 @@ import MetricsBar from '@/Pages/Proposals/Partials/MetricsBar';
 
 export default function AppLayout({ children }: { children: ReactNode }) {
     const [sidebarOpen, setSidebarOpen] = useState(false);
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
     const { url, props } = usePage();
     const breadcrumbItems = generateBreadcrumbs(url, props['locale'] as string);
     const memoizedChildren = useMemo(() => children, [children]);
-    const savedTheme = localStorage.getItem('theme');
+    const savedTheme = typeof window === 'undefined' ? null : localStorage.getItem('theme');
 
     const isAuthPage = url.includes('login') || url.includes('register');
 
@@ -48,14 +48,13 @@ export default function AppLayout({ children }: { children: ReactNode }) {
             </Dialog>
 
             {!isAuthPage && (
-                <div className="bg-background hidden h-full lg:fixed lg:inset-y-0 lg:z-30 lg:flex lg:w-72">
+                <div className="bg-background hidden h-full lg:fixed lg:inset-y-0 lg:z-30 lg:flex lg:w-(--sidebar-width)">
                     <DesktopSidebar />
                 </div>
             )}
 
             <section
-                className={`bg-background-lighter lg:mt-4 ${isAuthPage ? '' : 'lg:ml-72'} ${isAuthPage ? '' : 'lg:rounded-tl-4xl'}`}
-            >
+                className={`bg-background-lighter lg:mt-4 ${isAuthPage ? '' : 'lg:ml-72'} ${isAuthPage ? '' : 'lg:rounded-tl-4xl'}`}>
                 {/* Mobile header */}
                 <header className="bg-background sticky top-0 z-30 border-b border-gray-200 lg:hidden" data-testid="mobile-header">
                     <div className="flex h-16 items-center justify-between">
@@ -81,7 +80,7 @@ export default function AppLayout({ children }: { children: ReactNode }) {
                 <main id="main-content" data-testid="main-content">
                     <Breadcrumbs items={breadcrumbItems} />
 
-                    <PlayerProvider>
+                    {/*<PlayerProvider>*/}
                         <MetricsProvider>
                             {memoizedChildren}
                             <UIProvider>
@@ -95,7 +94,7 @@ export default function AppLayout({ children }: { children: ReactNode }) {
                                 </section>
                             </UIProvider>
                         </MetricsProvider>
-                    </PlayerProvider>
+                    {/*</PlayerProvider>*/}
                 </main>
 
                 <ProposalComparison />
@@ -104,8 +103,7 @@ export default function AppLayout({ children }: { children: ReactNode }) {
                 <Modal
                     title={t('register')}
                     isOpen={false}
-                    onClose={() => setSidebarOpen(false)}
-                >
+                    onClose={() => setSidebarOpen(false)}>
                     <div className=""></div>
                 </Modal>
 

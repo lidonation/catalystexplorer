@@ -1,5 +1,4 @@
 import { cn } from '@/lib/utils';
-import { useTranslation } from 'react-i18next';
 
 type EditIcon2Props = {
     className?: string;
@@ -12,7 +11,6 @@ export default function EditIcon2({
     width = 20,
     height = 20,
 }: EditIcon2Props) {
-    const { t } = useTranslation();
     return (
         <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -26,7 +24,6 @@ export default function EditIcon2({
             strokeLinejoin="round"
             className={cn("transition-transform duration-200", className)}
         >
-            <title>{t('icons.title.edit')}</title>
             <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
             <path d="m18.5 2.5 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
         </svg>

@@ -5,7 +5,7 @@ import {
 import { router } from '@inertiajs/react';
 import { ChevronLeft, ChevronRight, Loader2 } from 'lucide-react';
 import React, { useState, useEffect } from 'react';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 
 import Paragraph from '@/Components/atoms/Paragraph';
 import PrimaryButton from '@/Components/atoms/PrimaryButton';
@@ -53,7 +53,7 @@ const Step2: React.FC<Step2Props> = ({
     existingSignatures,
     flash,
 }) => {
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
     const localizedRoute = useLocalizedRoute;
     const prevStep = localizedRoute('workflows.signature.index', {
         step: activeStep - 1,

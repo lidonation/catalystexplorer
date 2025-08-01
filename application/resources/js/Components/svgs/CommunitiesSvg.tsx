@@ -1,12 +1,9 @@
-import { useTranslation } from 'react-i18next';
-
 type CommunitiesIconProps = {
     className?: string;
     width?: number;
     height?: number;
 };
 export default function CommunitiesIcon({ className }: CommunitiesIconProps) {
-    const { t } = useTranslation();
     return (
         <svg
             width="100%" // Ensures responsiveness

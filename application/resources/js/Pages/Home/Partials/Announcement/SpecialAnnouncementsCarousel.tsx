@@ -53,6 +53,7 @@ const SpecialAnnouncementCarousel = ({
         <div className="relative w-full overflow-hidden border-b border-t" data-testid="special-announcement-carousel">
             <Carousel role="region" aria-label="Announcement Carousel" data-testid="special-announcement-carousel-inner">
                 <CarouselContent
+                    key={activeIndex}
                     className={`flex transition-transform duration-500 ${isTransitioning ? 'ease-in-out' : ''}`}
                     style={{ transform: `translateX(-${activeIndex * 100}%)` }}
                     data-testid="special-announcement-carousel-content"

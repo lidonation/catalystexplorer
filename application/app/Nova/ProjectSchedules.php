@@ -11,7 +11,9 @@ use App\Nova\Actions\UpdateModelMedia;
 use Ebess\AdvancedNovaMediaLibrary\Fields\Images;
 use Laravel\Nova\Actions\Action;
 use Laravel\Nova\Fields\BelongsTo;
+use Laravel\Nova\Fields\Boolean;
 use Laravel\Nova\Fields\Field;
+use Laravel\Nova\Fields\HasMany;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Select;
 use Laravel\Nova\Fields\Text;
@@ -25,6 +27,8 @@ class ProjectSchedules extends Resource
      * @var class-string<ProjectSchedule>
      */
     public static $model = ProjectSchedule::class;
+
+    public static $group = 'Milestone';
 
     /**
      * The single value that should be used to represent the resource when being displayed.
@@ -59,6 +63,8 @@ class ProjectSchedules extends Resource
                 ->sortable()
                 ->required(),
 
+            Boolean::make('completed', fn () => $this->completed),
+
             Text::make(__('Url'), 'url')->hideFromIndex(),
 
             Select::make('Status', 'status')
@@ -69,6 +75,8 @@ class ProjectSchedules extends Resource
             BelongsTo::make(__('Proposal'), 'proposal', Proposals::class),
 
             BelongsTo::make(__('Fund'), 'fund', Funds::class),
+
+            HasMany::make(__('Milestones'), 'milestones', Milestones::class),
         ];
     }
 

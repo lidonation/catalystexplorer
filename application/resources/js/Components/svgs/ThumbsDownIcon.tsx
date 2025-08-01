@@ -1,5 +1,3 @@
-import { useTranslation } from 'react-i18next';
-
 type ThumbsDownIconProps = {
     className?: string;
     width?: number;
@@ -11,7 +9,6 @@ function ThumbsDownIcon({
     width = 16,
     height = 16,
 }: ThumbsDownIconProps) {
-    const { t } = useTranslation();
     return (
         <svg
             width={width}

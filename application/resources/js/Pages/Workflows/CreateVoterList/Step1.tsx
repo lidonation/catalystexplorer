@@ -8,7 +8,7 @@ import Content from '../Partials/WorkflowContent';
 import Footer from '../Partials/WorkflowFooter';
 import Nav from '../Partials/WorkflowNav';
 import WorkflowLayout from '../WorkflowLayout';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 
 
 interface Step1Props {
@@ -21,13 +21,13 @@ const Step1: React.FC<Step1Props> = ({ stepDetails, activeStep }) => {
         step: activeStep + 1,
     });
 
-    const prevStep = activeStep === 1 
-    ? '' 
+    const prevStep = activeStep === 1
+    ? ''
     : generateLocalizedRoute('workflows.createVoterList.index', {
         step: activeStep - 1,
     });
 
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
 
     return (
         <WorkflowLayout asideInfo={stepDetails[activeStep - 1].info ?? ''}>
@@ -56,8 +56,8 @@ const Step1: React.FC<Step1Props> = ({ stepDetails, activeStep }) => {
                     <ChevronLeft className="h-4 w-4" />
                     <span>{t('Previous')}</span>
                 </PrimaryLink>
-                <PrimaryLink 
-                    href={nextStep} 
+                <PrimaryLink
+                    href={nextStep}
                     className="text-sm lg:px-8 lg:py-3"
                 >
                     <span>{t('Next')}</span>

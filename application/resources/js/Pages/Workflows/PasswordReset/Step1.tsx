@@ -11,7 +11,7 @@ import Paragraph from "@/Components/atoms/Paragraph";
 import CatalystLogo from "@/Components/atoms/CatalystLogo";
 import Title from "@/Components/atoms/Title";
 import Content from "../Partials/WorkflowContent";
-import { useTranslation } from "react-i18next";
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import CheckInbox from "@/Components/svgs/CheckInbox";
 
 interface Step1Props {
@@ -23,13 +23,13 @@ interface Step1Props {
 type Step1State = 'email-form' | 'confirmation';
 
 const Step1: React.FC<Step1Props> = ({ stepDetails, activeStep, status }) => {
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
     const [currentState, setCurrentState] = useState<Step1State>('email-form');
     const [emailSent, setEmailSent] = useState(false);
-    
+
     const forgotPasswordRoute = useLocalizedRoute('password.forgot');
     const resetEmailRoute = useLocalizedRoute('password.store');
-    
+
     const { data, setData, post, processing, errors } = useForm({
         email: '',
     });
@@ -106,16 +106,16 @@ const Step1: React.FC<Step1Props> = ({ stepDetails, activeStep, status }) => {
                             <CatalystLogo />
                         </div>
                         <Title level='4' className="text-content text-center font-inter text-base font-bold leading-6 mb-4">{t('workflows.resetPassword.checkInbox')}</Title>
-                        
+
                         <div className="mb-4 flex justify-center">
                             <CheckInbox className='w-[87px] h-[87px]'/>
                         </div>
-                        
+
                         <div className="text-4 text-dark mb-6">
                             <Paragraph>{t('workflows.resetPassword.sent')}</Paragraph>
                         </div>
-                        
-                        <PrimaryButton 
+
+                        <PrimaryButton
                             onClick={handleResendEmail}
                             disabled={processing}
                             className="w-full py-3"

@@ -10,13 +10,13 @@ class MilestonePoasReview extends Model
 {
     public $timestamps = false;
 
-    public function poas(): BelongsTo
-    {
-        return $this->belongsTo(MilestonePoas::class, 'milestone_poas_id', 'id');
-    }
-
     public function proposal(): BelongsTo
     {
         return $this->belongsTo(Proposal::class, 'proposal_id', 'id');
+    }
+
+    public function poa(): BelongsTo
+    {
+        return $this->belongsTo(MilestonePoa::class, 'milestone_poas_id', 'id');
     }
 }

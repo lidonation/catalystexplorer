@@ -8,7 +8,7 @@ import { PaginatedData } from '@/types/paginated-data';
 import { SearchParams } from '@/types/search-params';
 import { Head, WhenVisible } from '@inertiajs/react';
 import { useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import BookmarkCollectionList from '../My/Lists/Partials/BookmarkCollectionList';
 import BookmarkCollectionListLoader from '../My/Lists/Partials/BookmarkCollectionListLoader';
 import BookmarkCollectionData = App.DataTransferObjects.BookmarkCollectionData;
@@ -23,7 +23,7 @@ const Index: React.FC<BookmarkCollectionListProps> = ({
     bookmarkCollections,
     filters,
 }) => {
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
     const [showFilters, setShowFilters] = useState(false);
     const [showListPicker, setPickingList] = useState(false);
 

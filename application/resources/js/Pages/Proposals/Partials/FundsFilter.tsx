@@ -1,7 +1,7 @@
 import Checkbox from '@/Components/atoms/Checkbox';
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import FundData = App.DataTransferObjects.FundData;
 
 interface FundFiltersProps {
@@ -15,7 +15,7 @@ const FundsFilter: React.FC<FundFiltersProps> = ({
     proposalsCount,
     setSelectedItems,
 }) => {
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
     const [funds, setFunds] = useState<FundData[]>([]);
     const [isFetching, setIsFetching] = useState(false);
 

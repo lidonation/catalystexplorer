@@ -19,6 +19,11 @@ class ProjectSchedule extends Model
 
     public $meiliIndexName = 'cx_project_schedule';
 
+    protected $appends = [
+        'on_track',
+        'hash',
+    ];
+
     public static function getFilterableAttributes(): array
     {
         return [

@@ -2,7 +2,7 @@ import { generateLocalizedRoute } from '@/utils/localizedRoute';
 import { router } from '@inertiajs/react';
 import { ChevronRight } from 'lucide-react';
 import React from 'react';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 
 import PrimaryLink from '@/Components/atoms/PrimaryLink';
 import { useConnectWallet } from '@/Context/ConnectWalletSliderContext';
@@ -18,7 +18,7 @@ interface Step1Props {
 }
 
 const Step1: React.FC<Step1Props> = ({ stepDetails, activeStep }) => {
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
     const nextStep = generateLocalizedRoute('workflows.signature.index', {
         step: activeStep + 1,
     });

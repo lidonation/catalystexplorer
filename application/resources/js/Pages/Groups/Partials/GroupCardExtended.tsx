@@ -7,7 +7,7 @@ import { currency } from '@/utils/currency';
 import { useLocalizedRoute } from '@/utils/localizedRoute';
 import { Link } from '@inertiajs/react';
 import React from 'react';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import GroupHeroSection from './GroupHeroSection';
 import GroupData = App.DataTransferObjects.GroupData;
 
@@ -20,7 +20,7 @@ const GroupCardExtended: React.FC<GroupCardFullProps> = ({
     group,
     children,
 }) => {
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
 
     const completedGroupsCount = group?.proposals_completed ?? 0;
     const FundedGroupssCount = group?.proposals_funded ?? 0;

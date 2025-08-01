@@ -7,7 +7,7 @@ import XIcon from '@/Components/svgs/XIcon';
 import { generateLocalizedRoute } from '@/utils/localizedRoute';
 import { useForm } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 
 interface SocialProfilesFormProps {
     linkedinUrl?: string;
@@ -22,7 +22,7 @@ export default function SocialProfilesForm({
     websiteUrl,
     onClose,
 }: SocialProfilesFormProps) {
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
 
     const { data, setData, patch, processing, errors, reset } = useForm({
         linkedin: linkedinUrl || '',

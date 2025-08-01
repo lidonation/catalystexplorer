@@ -1,3 +1,5 @@
+import useWorkflowSlideOver from '@/Hooks/useWorkflowSlideOver';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import Paragraph from '@/Components/atoms/Paragraph';
 import PrimaryLink from '@/Components/atoms/PrimaryLink';
 import Title from '@/Components/atoms/Title';
@@ -7,14 +9,12 @@ import { StatusEnum, VisibilityEnum } from '@/enums/votes-enums';
 import { generateLocalizedRoute } from '@/utils/localizedRoute';
 import { router, useForm } from '@inertiajs/react';
 import React, { useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import Nav from '../Partials/WorkflowNav';
 import WorkflowLayout from '../WorkflowLayout';
 import SlideOverContent from './Partials/SlideOverContent';
 import SwipeCard from './Partials/SwipeCard';
 import BookmarkCollectionData = App.DataTransferObjects.BookmarkCollectionData;
 import ProposalData = App.DataTransferObjects.ProposalData;
-import { useWorkflowSlideOver } from '@/hooks/useWorkflowSlideOver';
 
 interface Step4Props {
     stepDetails: any[];
@@ -49,7 +49,7 @@ const Step4Content: React.FC<Step4Props> = ({
     rightProposals: initialRightProposals,
     tinderCollectionHash,
 }) => {
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
     const { isOpen, openSlideOver, closeSlideOver } = useWorkflowSlideOver();
     const [leftProposals, setLeftProposals] = useState(initialLeftProposals);
     const [rightProposals, setRightProposals] = useState(initialRightProposals);
@@ -185,18 +185,17 @@ const Step4Content: React.FC<Step4Props> = ({
         if (!collection?.hash) return;
 
         try {
-            await router.post(
+            router.post(
                 route('api.collections.delete', {
-                    bookmarkCollection: collection.hash,
+                    bookmarkCollection: collection.hash
                 }),
                 {
-                    no_redirect: true,
+                    no_redirect: true
                 },
                 {
                     onSuccess: () => {
                         // Mark this collection as deleted
-                        setDeletedCollections((prev) =>
-                            new Set(prev).add(collectionToDelete),
+                        setDeletedCollections((prev) => new Set(prev).add(collectionToDelete)
                         );
                         // Close the slide over
                         // closeSlideOver();
@@ -204,8 +203,8 @@ const Step4Content: React.FC<Step4Props> = ({
                     },
                     onError: (errors) => {
                         console.error('Failed to delete collection:', errors);
-                    },
-                },
+                    }
+                }
             );
         } catch (error) {
             console.error('Error deleting collection:', error);
@@ -268,19 +267,19 @@ const Step4Content: React.FC<Step4Props> = ({
         >
             <Nav stepDetails={stepDetails} activeStep={activeStep} />
             <div className="mx-auto mt-5 flex w-full flex-col items-center justify-center">
-                <div className="mx-5 mx-auto w-[75%] overflow-y-auto xl:w-[50%]">
+                <div className="mx-5 px-8 mx-auto w-full overflow-y-auto">
                     <Title className="text-content mt-5 mb-2 text-center text-lg font-black">
                         {t('workflows.tinderProposal.step4.swipeList')}
                     </Title>
                     <Paragraph
                         size="sm"
-                        className="text-md text-gray-persist mb-8 text-center"
+                        className="text-md text-gray-persist mb-8 text-center  px-4"
                     >
                         {t(
                             'workflows.tinderProposal.step4.organizeSwipesDescription',
                         )}
                     </Paragraph>
-                    <div className="space-y-5 p-4">
+                    <div className="space-y-5 py-4">
                         {/* Right Swipes Card */}
                         {rightBookmarkCollection && (
                             <SwipeCard

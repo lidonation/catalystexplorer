@@ -1,7 +1,7 @@
 import CommunitiesIcon from '@/Components/svgs/CommunitiesSvg';
 import { router, usePage } from '@inertiajs/react';
 import React, { useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import IdeascaleProfileData = App.DataTransferObjects.IdeascaleProfileData;
 import CommunityData = App.DataTransferObjects.CommunityData;
 
@@ -14,7 +14,7 @@ const JoinCommunityButton: React.FC<JoinCommunityButtonProps> = ({
     ideascale_profiles,
     community,
 }) => {
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
     const { auth } = usePage().props;
 
     const [hasJoined, setHasJoined] = useState(

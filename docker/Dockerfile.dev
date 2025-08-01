@@ -1,5 +1,5 @@
 ARG PHP_VERSION=8.4
-ARG FRANKENPHP_VERSION=1.4
+ARG FRANKENPHP_VERSION=1.9
 
 FROM dunglas/frankenphp:${FRANKENPHP_VERSION}-php${PHP_VERSION}
 
@@ -97,8 +97,6 @@ RUN userdel --remove --force www-data \
 
 RUN chown -R ${USER}:${USER} ${ROOT} /var/{log,run,www} \
     && chmod -R a+rw ${ROOT} /var/{log,run}
-
-RUN cp ${PHP_INI_DIR}/php.ini-production ${PHP_INI_DIR}/php.ini
 
 USER ${USER}
 

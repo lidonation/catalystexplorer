@@ -7,7 +7,7 @@ import ArrowTrendingUp from '@/Components/svgs/ArrowTrendingUp';
 import { shortNumber } from '@/utils/shortNumber';
 import { ResponsiveLine } from '@nivo/line';
 import { useMemo, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 
 interface UserSummaryChartProps {
     graphData?: {
@@ -30,7 +30,7 @@ export default function UserSummaryChart({
     graphData = [],
     title,
 }: UserSummaryChartProps) {
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
 
     const filters = [...graphData.map((item) => item.id)];
     const [selectedCurrencies, setSelectedCurrencies] = useState<string[]>([

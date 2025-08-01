@@ -5,7 +5,7 @@ import TextInput from '@/Components/atoms/TextInput';
 import ArrowLeftIcon from '@/Components/svgs/ArrowLeft';
 import { useList } from '@/Context/ListContext';
 import { useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import { z } from 'zod';
 import { TransitionListPageProps } from '../../../../../types/general';
 
@@ -29,7 +29,7 @@ type FormState = {
 };
 
 const BookmarkPage2 = ({ onNavigate }: TransitionListPageProps) => {
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
     const { addList, isAddingList } = useList();
     const [error, setError] = useState<Error | null>(null);
     const [formState, setFormState] = useState<FormState>({

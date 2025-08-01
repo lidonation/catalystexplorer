@@ -1,9 +1,9 @@
 import Title from '@/Components/atoms/Title';
 import { Head } from '@inertiajs/react';
-import {useTranslation} from "react-i18next";
+import {useLaravelReactI18n} from "laravel-react-i18n";
 
 const Index = () => {
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
 
     return (
         <>

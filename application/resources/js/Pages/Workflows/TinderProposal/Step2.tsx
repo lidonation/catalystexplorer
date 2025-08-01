@@ -1,12 +1,9 @@
 import { generateLocalizedRoute, useLocalizedRoute } from '@/utils/localizedRoute';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import { useForm } from '@inertiajs/react';
-import { lowerCase } from 'lodash';
-
+import lodashPkg from 'lodash';
 import PrimaryButton from '@/Components/atoms/PrimaryButton';
-import PrimaryLink from '@/Components/atoms/PrimaryLink';
 import TextInput from '@/Components/atoms/TextInput';
 import ValueLabel from '@/Components/atoms/ValueLabel';
 import Textarea from '@/Components/atoms/Textarea';
@@ -15,7 +12,6 @@ import Footer from '../Partials/WorkflowFooter';
 import Nav from '../Partials/WorkflowNav';
 import WorkflowLayout from '../WorkflowLayout';
 import InputError from '@/Components/InputError';
-import Selector from '@/Components/atoms/Selector';
 import RadioGroup from '@/Components/RadioGroup';
 import CustomSwitch from '@/Components/atoms/Switch';
 import Paragraph from '@/Components/atoms/Paragraph';
@@ -66,13 +62,14 @@ const Step2: React.FC<Step2Props> = ({
     });
 
 
+    const { lowerCase } = lodashPkg;
     const [isFormValid, setIsFormValid] = useState(false);
     const [errors, setErrors] = useState<Record<string, string>>({});
 
     const localizedRoute = useLocalizedRoute;
 
 
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
 
     useEffect(() => {
         validateForm();
@@ -116,7 +113,7 @@ const Step2: React.FC<Step2Props> = ({
             <Nav stepDetails={stepDetails} activeStep={activeStep} />
 
             <Content>
-                <div className="bg-background mx-auto max-w-3xl px-12 lg:px-29 border-black">
+                <div className="bg-background mx-auto max-w-3xl px-12 xl:px-20 py-4 sm:py-8 border-black">
                     <div className="space-y-6 rounded-lg border border-gray-100 p-6 shadow-sm max-h-[60vh] overflow-y-auto scrolling-touch">
                         <div>
                             <ValueLabel className="text-content">

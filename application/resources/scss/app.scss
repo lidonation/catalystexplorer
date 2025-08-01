@@ -1,4 +1,4 @@
-@use 'tailwindcss' as *;
+@use 'tailwindcss';
 /* Import Tailwind */
 
 //@use 'tailwindcss/base';       /* Reference base styles */
@@ -13,6 +13,8 @@
     }
 
     :root {
+        --sidebar-width: calc(var(--spacing) * 72);
+
         --cx-primary: #2596be;
         --cx-primary-light: #effafc;
         --cx-primary-mid: #B9E6FE;

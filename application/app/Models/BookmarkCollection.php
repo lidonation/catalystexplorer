@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Enums\VoteEnum;
 use App\Traits\HasAuthor;
 use App\Traits\HasHashId;
 use App\Traits\HasMetaData;
@@ -31,7 +32,7 @@ class BookmarkCollection extends Model
 
     public $meiliIndexName = 'cx_bookmark_collections';
 
-    protected $appends = ['types_count', 'hash'];
+    protected $appends = ['types_count', 'hash', 'tinder_direction'];
 
     protected $guarded = [];
 
@@ -163,6 +164,29 @@ class BookmarkCollection extends Model
         );
     }
 
+    public function tinderDirection(): Attribute
+    {
+        return Attribute::make(
+            get: function () {
+    
+                $itemsWithVotes = $this->items()->whereNotNull('vote')->get();
+                
+                if ($itemsWithVotes->isEmpty()) {
+                    return null;
+                }
+                
+                $hasLeftVotes = $itemsWithVotes->contains('vote', VoteEnum::NO->value);
+                $hasRightVotes = $itemsWithVotes->contains('vote', VoteEnum::YES->value);
+                
+                if ($hasLeftVotes && !$hasRightVotes) {
+                    return 'left';
+                } elseif ($hasRightVotes && !$hasLeftVotes) {
+                    return 'right';
+                } 
+            }
+        );
+    }
+
     /*
     * This string will be used in notifications on what a new comment
     * was made.
@@ -181,9 +205,8 @@ class BookmarkCollection extends Model
         return '';
     }
 
-    public function toSearchableArray()
+    public function toSearchableArray(): array
     {
-
         return array_merge($this->load([
             // 'comments',
             'author',
