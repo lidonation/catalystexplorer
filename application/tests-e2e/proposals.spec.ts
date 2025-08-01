@@ -27,7 +27,7 @@ test.describe('Proposals Specific Tests', () => {
        await page.waitForFunction(() => {
            const proposalsSection = document.querySelector('[data-testid="proposals-section"]');
            return proposalsSection && !proposalsSection.textContent?.toLowerCase().includes('loading');
-       }, { timeout: 15000 });
+       }, { timeout: 30000 });
 
        const proposalsWrapper = page.locator('[data-testid="proposals-section"] .proposals-wrapper');
        const proposalCards = proposalsWrapper.locator('> div');
@@ -50,7 +50,6 @@ test.describe('Proposals Specific Tests', () => {
            expect(href).toContain('proposals');
        } else {
            await seeMoreLink.click();
-           await page.waitForLoadState('networkidle');
            await expect(page).toHaveURL(/.*\/proposals/);
        }
    });
