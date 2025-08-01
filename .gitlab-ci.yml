@@ -192,7 +192,7 @@ pest:
 
 playwright:
   stage: preview
-  image: $APPLICATION_REPOSITORY/playwright:latest
+  image: $CI_APPLICATION_REPOSITORY/playwright:latest
   retry: 1
   artifacts:
     paths:
@@ -509,6 +509,7 @@ app_mainnet:
     url: https://$CI_PROJECT_PATH_SLUG.$AUTO_DEVOPS_DOMAIN
   needs:
     - job: app_preview
+    - job: playwright
   rules:
     - if: '$CI_COMMIT_BRANCH == "main" && ($DEPLOY_WEBAPP == "true")'
       when: manual
