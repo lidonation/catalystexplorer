@@ -267,7 +267,7 @@ const Step1: React.FC<Step1Props> = ({
                                                 alt="Service header" 
                                                 className="w-full h-full object-cover"
                                             />
-                                            <div className="absolute inset-0 bg-dark bg-opacity-50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                                            <div className="absolute inset-0 bg-dark bg-opacity-50 flex items-center justify-center opacity-0 group-hover:opacity-70 transition-opacity">
                                                 <Paragraph className="text-white text-sm font-medium">
                                                     {t('workflows.createService.step1.clickToReplaceImage')}
                                                 </Paragraph>
