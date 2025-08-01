@@ -19,6 +19,7 @@ const ProposalFilters = () => {
                         <span>{t('proposals.filters.fundingStatus')}</span>
                         <Selector
                             data-testid="funding-status-selector"
+                            data-testid-button="funding-status-selector-button"
                             isMultiselect={true}
                             options={[
                                 {
@@ -119,6 +120,7 @@ const ProposalFilters = () => {
                         <span>{t('proposals.filters.opensource')}</span>
                         <Selector
                             data-testid="opensource-selector"
+                            data-testid-button="opensource-selector-button"
                             isMultiselect={false}
                             options={[
                                 {
@@ -151,6 +153,7 @@ const ProposalFilters = () => {
                         <span>{t('proposals.filters.projectStatus')}</span>
                         <Selector
                             data-testid="project-status-selector"
+                            data-testid-button="project-status-selector-button"
                             isMultiselect={true}
                             options={[
                                 {
@@ -267,6 +270,7 @@ const ProposalFilters = () => {
                         <span>{t('proposals.filters.communityCohort')}</span>
                         <Selector
                             data-testid="cohort-selector"
+                            data-testid-button="cohort-selector-button"
                             isMultiselect={true}
                             options={[
                                 {

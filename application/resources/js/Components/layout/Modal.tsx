@@ -68,42 +68,45 @@ function Modal({
 
             {/* Sidebar or Centered Modal */}
             <div
-                className={`bg-background fixed z-50 shadow-lg focus:outline-hidden ${
-                    centered
-                        ? `top-1/2 left-1/2 h-auto w-[90%] -translate-x-1/2 -translate-y-1/2 rounded-lg ${contentClasses}`
-                        : 'top-0 right-0 h-full min-w-[24rem] lg:ml-auto'
+                className={`${centered
+                    ? `w-full h-full flex items-center justify-center sm:pl-(--sidebar-width)`
+                    : 'top-0 right-0 h-full min-w-[24rem] lg:ml-auto'
                 }`}
                 tabIndex={0}
             >
-                {!centered && (
-                    <header className="border-border-primary flex items-center justify-between border-b px-6 py-4">
-                        <Title
-                            id="modal-sidebar-title"
-                            className="text-2 text-content font-semibold"
-                        >
-                            {title}
-                        </Title>
-                        <Button
-                            onClick={onClose}
-                            ariaLabel={t('navigation.sidebar.close')}
-                            aria-expanded={isOpen}
-                            aria-controls="sidebar-modal"
-                            className={`text-4 hover:bg-dark ${
-                                !isWalletConnectorOpen ? 'hidden' : ''
-                            } inline-flex items-center rounded-sm px-2 py-1 sm:block`}
-                        >
-                            <CloseIcon width={18} height={18} />
-                        </Button>
-                    </header>
-                )}
-
-                <div className="flex h-full flex-col gap-6 px-6">
-                    {logo && (
-                        <div className="mt-6 hidden h-6 shrink-0 items-center justify-center sm:block lg:flex">
-                            <CatalystLogo className="object-contain" />
-                        </div>
+                <div className={`bg-background fixed z-50 shadow-lg focus:outline-hidden rounded-lg  ${contentClasses}`}>
+                    {!centered && (
+                        <header className="border-border-primary flex items-center justify-between border-b px-6 py-4">
+                            <Title
+                                id="modal-sidebar-title"
+                                className="text-2 text-content font-semibold"
+                            >
+                                {title}
+                            </Title>
+                            <Button
+                                onClick={onClose}
+                                ariaLabel={t('navigation.sidebar.close')}
+                                aria-expanded={isOpen}
+                                aria-controls="sidebar-modal"
+                                className={`text-4 hover:bg-dark ${
+                                    !isWalletConnectorOpen ? 'hidden' : ''
+                                } inline-flex items-center rounded-sm px-2 py-1 sm:block`}
+                            >
+                                <CloseIcon width={18} height={18} />
+                            </Button>
+                        </header>
                     )}
-                    <section>{children}</section>
+
+                    <div className="flex h-full flex-col gap-6 px-6">
+                        {logo && (
+                            <div className="mt-6 hidden h-6 shrink-0 items-center justify-center sm:block lg:flex">
+                                <CatalystLogo className="object-contain" />
+                            </div>
+                        )}
+                        <section>
+                            {children}
+                        </section>
+                    </div>
                 </div>
             </div>
         </aside>
