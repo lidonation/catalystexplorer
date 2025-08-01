@@ -22,6 +22,7 @@ type SelectProps = {
     hideCheckbox?: boolean;
     placeholder?: string;
     disabled?: boolean;
+    'data-testid'?: string;
 };
 
 export default function Selector({
@@ -35,6 +36,7 @@ export default function Selector({
     hideCheckbox = false,
     placeholder = '',
     disabled = false,
+    'data-testid': dataTestId = 'selector-container',
     ...props
 }: SelectProps) {
     const [open, setOpen] = useState(false);
@@ -81,7 +83,7 @@ export default function Selector({
     };
 
     return (
-        <div className={cn('h-full rounded-lg', className + bgColor)} data-testid="selector-container">
+        <div className={cn('h-full rounded-lg', className + bgColor)} data-testid={dataTestId}>
             <Popover open={open} onOpenChange={setOpen}>
                 <PopoverTrigger asChild>
                     <button
