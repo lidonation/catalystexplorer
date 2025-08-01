@@ -106,7 +106,7 @@ export default function ProposalCardHeader({
                                             <BookmarkButton
                                                 modelType="proposals"
                                                 itemId={proposal.hash}
-                                                data-testid="bookmark-button"
+                                                dataTestId="proposals-bookmark-button"
                                             />
                                         </>
                                     )}
