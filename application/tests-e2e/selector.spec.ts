@@ -4,6 +4,7 @@ interface SelectorConfig {
     name: string;
     path: string;
     selectorTestId: string;
+    buttonTestId: string;
     waitForSelector?: string;
     isMultiselect: boolean;
 }
@@ -13,6 +14,7 @@ const selectorConfigs: SelectorConfig[] = [
         name: 'Funding Status Filter',
         path: '/proposals',
         selectorTestId: 'funding-status-selector',
+        buttonTestId: 'funding-status-selector-button',
         waitForSelector: '[data-testid="proposal-page-title"]',
         isMultiselect: true
     },
@@ -20,6 +22,7 @@ const selectorConfigs: SelectorConfig[] = [
         name: 'Opensource Filter',
         path: '/proposals',
         selectorTestId: 'opensource-selector',
+        buttonTestId: 'opensource-selector-button',
         waitForSelector: '[data-testid="proposal-page-title"]',
         isMultiselect: false
     },
@@ -27,6 +30,7 @@ const selectorConfigs: SelectorConfig[] = [
         name: 'Project Status Filter',
         path: '/proposals',
         selectorTestId: 'project-status-selector',
+        buttonTestId: 'project-status-selector-button',
         waitForSelector: '[data-testid="proposal-page-title"]',
         isMultiselect: true
     },
@@ -34,6 +38,7 @@ const selectorConfigs: SelectorConfig[] = [
         name: 'Cohort Filter',
         path: '/proposals',
         selectorTestId: 'cohort-selector',
+        buttonTestId: 'cohort-selector-button',
         waitForSelector: '[data-testid="proposal-page-title"]',
         isMultiselect: true
     } */
@@ -41,7 +46,7 @@ const selectorConfigs: SelectorConfig[] = [
 
 test.describe('Selector Component Tests', () => {
     
-    selectorConfigs.forEach(({ name, path, selectorTestId, waitForSelector, isMultiselect }) => {
+    selectorConfigs.forEach(({ name, path, selectorTestId, buttonTestId, waitForSelector, isMultiselect }) => {
         test.describe(`${name} Selector`, () => {
             
             test.beforeEach(async ({ page }) => {
@@ -65,10 +70,10 @@ test.describe('Selector Component Tests', () => {
             });
 
             test('renders selector component with all elements', async ({ page }) => {
-                const selectorContainer = page.getByTestId('selector-container');
+                const selectorContainer = page.getByTestId(selectorTestId);
                 await expect(selectorContainer).toBeVisible();
 
-                const selectorButton = page.getByTestId('selector-button');
+                const selectorButton = page.getByTestId(buttonTestId);
                 await expect(selectorButton).toBeVisible();
                 
                 // Check button attributes
@@ -80,7 +85,7 @@ test.describe('Selector Component Tests', () => {
             });
 
             test('opens dropdown when clicked', async ({ page }) => {
-                const selectorButton = page.getByTestId('selector-button');
+                const selectorButton = page.getByTestId(buttonTestId);
                 
                 // Initially closed
                 await expect(selectorButton).toHaveAttribute('aria-expanded', 'false');
@@ -96,7 +101,7 @@ test.describe('Selector Component Tests', () => {
             });
 
             test('displays clear button when dropdown is open', async ({ page }) => {
-                const selectorButton = page.getByTestId('selector-button');
+                const selectorButton = page.getByTestId(buttonTestId);
                 await selectorButton.click();
                 
                 const clearButton = page.getByTestId('selector-clear-button');
@@ -105,7 +110,7 @@ test.describe('Selector Component Tests', () => {
             });
 
             test('shows options when dropdown is opened', async ({ page }) => {
-                const selectorButton = page.getByTestId('selector-button');
+                const selectorButton = page.getByTestId(buttonTestId);
                 await selectorButton.click();
                 
                 // Wait for options to appear
@@ -123,7 +128,7 @@ test.describe('Selector Component Tests', () => {
             });
 
             test('displays checkboxes for options', async ({ page }) => {
-                const selectorButton = page.getByTestId('selector-button');
+                const selectorButton = page.getByTestId(buttonTestId);
                 await selectorButton.click();
                 
                 await page.waitForSelector('[data-testid^="selector-checkbox-"]');
@@ -141,7 +146,7 @@ test.describe('Selector Component Tests', () => {
 
             if (isMultiselect) {
                 test('allows multiple selection for multiselect', async ({ page }) => {
-                    const selectorButton = page.getByTestId('selector-button');
+                    const selectorButton = page.getByTestId(buttonTestId);
                     await selectorButton.click();
                     
                     const options = page.locator('[data-testid^="selector-option-"]');
@@ -170,7 +175,7 @@ test.describe('Selector Component Tests', () => {
                 });
 
                 test('can deselect items in multiselect', async ({ page }) => {
-                    const selectorButton = page.getByTestId('selector-button');
+                    const selectorButton = page.getByTestId(buttonTestId);
                     await selectorButton.click();
                     
                     const firstOption = page.locator('[data-testid^="selector-option-"]').nth(0);
@@ -187,7 +192,7 @@ test.describe('Selector Component Tests', () => {
 
             } else {
                 test('allows only single selection for single select', async ({ page }) => {
-                    const selectorButton = page.getByTestId('selector-button');
+                    const selectorButton = page.getByTestId(buttonTestId);
                     await selectorButton.click();
                     
                     const options = page.locator('[data-testid^="selector-option-"]');
@@ -219,7 +224,7 @@ test.describe('Selector Component Tests', () => {
                 });
 
                 test('toggles selection in single select mode', async ({ page }) => {
-                    const selectorButton = page.getByTestId('selector-button');
+                    const selectorButton = page.getByTestId(buttonTestId);
                     await selectorButton.click();
                     
                     const firstOption = page.locator('[data-testid^="selector-option-"]').nth(0);
@@ -243,7 +248,7 @@ test.describe('Selector Component Tests', () => {
             }
 
             test('clear button clears all selections', async ({ page }) => {
-                const selectorButton = page.getByTestId('selector-button');
+                const selectorButton = page.getByTestId(buttonTestId);
                 await selectorButton.click();
                 
                 const firstOption = page.locator('[data-testid^="selector-option-"]').nth(0);
@@ -281,7 +286,7 @@ test.describe('Selector Component Tests', () => {
             });
 
             test('closes dropdown when clicking outside', async ({ page }) => {
-                const selectorButton = page.getByTestId('selector-button');
+                const selectorButton = page.getByTestId(buttonTestId);
                 await selectorButton.click();
                 
                 await expect(selectorButton).toHaveAttribute('aria-expanded', 'true');
@@ -293,7 +298,7 @@ test.describe('Selector Component Tests', () => {
             });
 
             test('handles disabled options correctly', async ({ page }) => {
-                const selectorButton = page.getByTestId('selector-button');
+                const selectorButton = page.getByTestId(buttonTestId);
                 await selectorButton.click();
                 
                 const options = page.locator('[data-testid^="selector-option-"]');
@@ -314,7 +319,7 @@ test.describe('Selector Component Tests', () => {
             });
 
             test('preserves state after page navigation', async ({ page }) => {
-                const selectorButton = page.getByTestId('selector-button');
+                const selectorButton = page.getByTestId(buttonTestId);
                 await selectorButton.click();
                 
                 const firstOption = page.locator('[data-testid^="selector-option-"]').nth(0);
@@ -348,7 +353,7 @@ test.describe('Selector Component Tests', () => {
             });
 
             test('keyboard navigation works correctly', async ({ page }) => {
-                const selectorButton = page.getByTestId('selector-button');
+                const selectorButton = page.getByTestId(buttonTestId);
                 
                 // Focus the button
                 await selectorButton.focus();
