@@ -237,7 +237,7 @@ const Step1: React.FC<Step1Props> = ({
                                     </Paragraph>
                                 )}
                             </Paragraph>
-                            <div className="border  border-gray-persist/[50%] rounded-lg p-8 text-center hover:border-gray-persist transition-colors" data-testid="service-header-image-upload-area">
+                            <div className="border border-gray-persist/[50%] rounded-lg overflow-hidden hover:border-gray-persist transition-colors relative h-48" data-testid="service-header-image-upload-area">
                                 <input
                                     type="file"
                                     accept="image/*"
@@ -246,32 +246,39 @@ const Step1: React.FC<Step1Props> = ({
                                     id="imageUpload"
                                     data-testid="service-header-image-input"
                                 />
-                                <label htmlFor="imageUpload" className="cursor-pointer">
+                                <label htmlFor="imageUpload" className="cursor-pointer block w-full h-full">
                                     {headerImage && headerImagePreview ? (
-                                        <div data-testid="service-header-image-selected" className="space-y-2">
+                                        <div data-testid="service-header-image-selected" className="relative w-full h-full group">
                                             <img 
                                                 src={headerImagePreview} 
                                                 alt="Selected header" 
-                                                className="w-full h-32 object-cover rounded-lg"
+                                                className="w-full h-full object-cover"
                                             />
-                                            <Paragraph className="text-sm text-gray-persist">
-                                                {t('workflows.createService.step1.selectedImageText', { fileName: headerImage.name })}
-                                            </Paragraph>
+                                            <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                                                <Paragraph className="text-white text-sm font-medium">
+                                                    {t('workflows.createService.step1.clickToReplaceImage')}
+                                                </Paragraph>
+                                            </div>
                                         </div>
                                     ) : serviceData?.[ServiceWorkflowParams.HEADER_IMAGE_URL] ? (
-                                        <div data-testid="service-header-image-existing" className="space-y-2">
+                                        <div data-testid="service-header-image-existing" className="relative w-full h-full group">
                                             <img 
                                                 src={serviceData[ServiceWorkflowParams.HEADER_IMAGE_URL]} 
                                                 alt="Service header" 
-                                                className="w-full h-32 object-cover rounded-lg"
+                                                className="w-full h-full object-cover"
                                             />
-                                            <Paragraph className="text-sm text-gray-persist">
-                                                {t('workflows.createService.step1.existingImageText')}
-                                            </Paragraph>
+                                            <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                                                <Paragraph className="text-white text-sm font-medium">
+                                                    {t('workflows.createService.step1.clickToReplaceImage')}
+                                                </Paragraph>
+                                            </div>
                                         </div>
                                     ) : (
-                                        <div className="flex flex-col items-center" data-testid="service-header-image-placeholder">
-                                            <ImageFrameIcon className='text-gray-persist/[20%]' />
+                                        <div className="flex flex-col items-center justify-center w-full h-full text-center p-8" data-testid="service-header-image-placeholder">
+                                            <ImageFrameIcon className='text-gray-persist/[20%] mb-2' />
+                                            <Paragraph className="text-gray-persist text-sm">
+                                                {t('workflows.createService.step1.clickToUploadImage')}
+                                            </Paragraph>
                                         </div>
                                     )}
                                 </label>

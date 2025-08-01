@@ -964,5 +964,7 @@
     "comments.comments": "Commentaires",
     "comments.reply": "Répondre",
     "rightSwipes": " - Balayages vers la droite",
-    "leftSwipes": " - Balayages vers la gauche"
+    "leftSwipes": " - Balayages vers la gauche",
+    "workflows.createService.step1.clickToReplaceImage": "Cliquez ici pour remplacer l'image",
+    "workflows.createService.step1.clickToUploadImage": "Cliquez ici pour télécharger une image"
 }

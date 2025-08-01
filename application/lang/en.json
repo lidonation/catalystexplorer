@@ -1183,5 +1183,7 @@
     "voter.sort.proposalsVotedOnDesc": "Proposals Voted On: High to Low",
     "voter.sort.proposalsVotedOnAsc": "Proposals Voted On: Low to High",
     "rightSwipes": " - Right Swipes",
-    "leftSwipes": " - Left Swipes"
+    "leftSwipes": " - Left Swipes",
+    "workflows.createService.step1.clickToReplaceImage": "Click here to replace image",
+    "workflows.createService.step1.clickToUploadImage": "Click here to upload image"
 }
