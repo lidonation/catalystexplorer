@@ -356,6 +356,7 @@
     "workflows.createService.step1.selectCategories": "Sélectionner les catégories...",
     "workflows.createService.step1.selectedCategories": "Sélectionné : :count catégories",
     "workflows.createService.step1.selectedImageText": "Sélectionné : :fileName",
+    "workflows.createService.step1.existingImageText": "Image actuelle - cliquez pour changer",
     "workflows.createService.step2.serviceCreatedSuccess": "Service créé avec succès !",
     "workflows.createService.step2.name": "Nom",
     "workflows.createService.step2.emailAddress": "Adresse e-mail",

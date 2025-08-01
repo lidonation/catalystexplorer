@@ -37,6 +37,7 @@ interface Step1Props {
         description?: string;
         type?: string;
         categories?: number[];
+        [ServiceWorkflowParams.HEADER_IMAGE_URL]?: string;
     };
 }
 
@@ -71,6 +72,7 @@ const Step1: React.FC<Step1Props> = ({
         serviceData?.categories?.map(String) || []
     );
     const [headerImage, setHeaderImage] = useState<File | null>(null);
+    const [headerImagePreview, setHeaderImagePreview] = useState<string | null>(null);
     const [isFormValid, setIsFormValid] = useState(false);
 
     const { t } = useLaravelReactI18n();
@@ -111,6 +113,12 @@ const Step1: React.FC<Step1Props> = ({
         if (file) {
             setHeaderImage(file);
             form.setData(ServiceWorkflowParams.HEADER_IMAGE, file);
+            
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                setHeaderImagePreview(e.target?.result as string);
+            };
+            reader.readAsDataURL(file);
         }
     };
     
@@ -239,10 +247,26 @@ const Step1: React.FC<Step1Props> = ({
                                     data-testid="service-header-image-input"
                                 />
                                 <label htmlFor="imageUpload" className="cursor-pointer">
-                                    {headerImage ? (
-                                        <div data-testid="service-header-image-selected">
-                                            <Paragraph className="text-sm">
+                                    {headerImage && headerImagePreview ? (
+                                        <div data-testid="service-header-image-selected" className="space-y-2">
+                                            <img 
+                                                src={headerImagePreview} 
+                                                alt="Selected header" 
+                                                className="w-full h-32 object-cover rounded-lg"
+                                            />
+                                            <Paragraph className="text-sm text-gray-persist">
                                                 {t('workflows.createService.step1.selectedImageText', { fileName: headerImage.name })}
+                                            </Paragraph>
+                                        </div>
+                                    ) : serviceData?.[ServiceWorkflowParams.HEADER_IMAGE_URL] ? (
+                                        <div data-testid="service-header-image-existing" className="space-y-2">
+                                            <img 
+                                                src={serviceData[ServiceWorkflowParams.HEADER_IMAGE_URL]} 
+                                                alt="Service header" 
+                                                className="w-full h-32 object-cover rounded-lg"
+                                            />
+                                            <Paragraph className="text-sm text-gray-persist">
+                                                {t('workflows.createService.step1.existingImageText')}
                                             </Paragraph>
                                         </div>
                                     ) : (
