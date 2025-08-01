@@ -206,10 +206,11 @@ playwright:
     npx playwright test
   needs:
   - job: app_preview
+  - job: composer
   rules:
   - if: '$CI_COMMIT_BRANCH != "main" && ($DEPLOY_WEBAPP == "true")'
-  # dependencies:
-  # - composer
+  dependencies:
+  - composer
   # - yarn
 
 ########## Helper Scripts ############
