@@ -130,7 +130,10 @@ const Step2: React.FC<Step2Props> = ({
         
         try {
             const urlObj = new URL(urlToValidate);
-            return urlObj.protocol === 'http:' || urlObj.protocol === 'https:';
+            // Check if it's a valid URL with http or https protocol and has a valid hostname
+            return (urlObj.protocol === 'http:' || urlObj.protocol === 'https:') && 
+                   urlObj.hostname.length > 0 &&
+                   urlObj.hostname.includes('.');
         } catch {
             return false;
         }
