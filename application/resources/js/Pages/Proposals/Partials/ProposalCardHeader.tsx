@@ -117,7 +117,7 @@ export default function ProposalCardHeader({
                                         hash={proposal.hash}
                                         tooltipDescription={'Compare Proposals'}
                                         data={proposal}
-                                        data-testid="compare-button"
+                                        data-testid={`compare-button`}
                                     />
                                 )}
                             </div>
