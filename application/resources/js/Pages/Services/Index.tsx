@@ -85,7 +85,7 @@ const ServicesComponent: React.FC<ServicesIndexProps> = ({
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 items-start">
+      <div className="grid grid-cols-1 lg:grid-cols-4 md-grid-cols-2 gap-8 items-start">
         <div className="hidden lg:block lg:col-span-1">
           <section className="sticky top-8">
             <ServiceCategories
@@ -122,20 +122,18 @@ const ServicesComponent: React.FC<ServicesIndexProps> = ({
                   <ServiceCard key={`${service.hash}-${service.id}`} service={service} />
                 ))}
               </div>
-              <div className="mt-8 w-auto">
-                <Paginator
-                  pagination={{
-                    ...services,
-                    links: services.links?.filter(link =>
-                      !['Previous', 'Next', '&laquo; Previous', 'Next &raquo;'].includes(link.label)
-                    )
-                  }}
-                  linkProps={{
-                    preserveScroll: true,
-                    preserveState: true,
-                    only: ['services', 'filters']
-                  }}
-                />
+              <div className="mt-8 w-full">
+                  <Paginator
+                    pagination={{
+                      ...services,
+                      links: services.links
+                    }}
+                    linkProps={{
+                      preserveScroll: true,
+                      preserveState: true,
+                      only: ['services', 'filters']
+                    }}
+                  />
               </div>
             </>
           ) : (

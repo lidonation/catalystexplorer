@@ -78,13 +78,11 @@ const MyServicesComponent: React.FC<MyServicesProps> = ({ services, filters }) =
             ))}
           </div>
 
-          <div className="mt-4 w-full sm:it-center sm:justify-center justify-center">
+          <div className="mt-8 w-full">
             <Paginator
               pagination={{
                 ...services,
-                links: services.links?.filter(link =>
-                  !['Previous', 'Next', '&laquo; Previous', 'Next &raquo;'].includes(link.label)
-                )
+                links: services.links
               }}
               linkProps={{
                 preserveScroll: true,
@@ -92,7 +90,7 @@ const MyServicesComponent: React.FC<MyServicesProps> = ({ services, filters }) =
                 only: ['services', 'filters']
               }}
             />
-          </div>
+        </div>
         </>
       ) : (
         <div className="flex flex-col items-center justify-center py-20">

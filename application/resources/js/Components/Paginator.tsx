@@ -42,8 +42,8 @@ const PaginationComponent: React.FC<PaginationComponentProps<any>> = ({
     } = pagination;
 
     return (
-        <div className="flex items-center justify-center py-4" data-testid="pagination-component">
-            <div className="flex items-center justify-between w-full">
+        <div className="flex items-center justify-center py-4 overflow-x-auto" data-testid="pagination-component" suppressHydrationWarning={true} key={`pagination-${current_page}-${total}`} >
+            <div className="flex items-center justify-between w-full min-w-max">
                 <div className="flex-shrink-0">
                     <PaginationItem className="list-none">
                         <PaginationPrevious
@@ -65,13 +65,15 @@ const PaginationComponent: React.FC<PaginationComponentProps<any>> = ({
                         />
                     </PaginationItem>
                 </div>
-                <div className="flex items-center gap-8">
+                <div className="flex items-center gap-2 md:gap-8">
                     <div className="flex items-center gap-1">
                         <ul className="flex list-none items-center gap-1">
                             {links &&
                                 links.map((link, index) =>
                                     link.label.includes('&laquo;') ||
-                                    link.label.includes('&raquo;') ? null : (
+                                    link.label.includes('&raquo;')  ||
+                                    link.label === 'Previous' ||
+                                            link.label === 'Next' ? null : (
                                         <PaginationItem key={index}>
                                             {link.label === '...' ? (
                                                 <PaginationEllipsis />
@@ -96,7 +98,7 @@ const PaginationComponent: React.FC<PaginationComponentProps<any>> = ({
                                                             : undefined
                                                     }
                                                     className={cn(
-                                                        'flex size-8 items-center justify-center rounded-full',
+                                                        'flex size-8 items-center justify-center rounded-full flex-shrink-0',
                                                         link.active
                                                             ? 'bg-gray-200'
                                                             : '',
@@ -112,7 +114,7 @@ const PaginationComponent: React.FC<PaginationComponentProps<any>> = ({
                                 )}
                         </ul>
                     </div>
-                    <div className="text-sm" data-testid="pagination-info">
+                    <div className="text-sm whitespace-nowrap hidden md:block" data-testid="pagination-info">
                         Showing {from} - {to} of{' '}
                         <span className="font-bold">{total}</span>
                     </div>

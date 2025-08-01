@@ -43,7 +43,7 @@ export default function ServiceCard({ service }: { service: ServiceData }) {
             {visibleCategories.map((category: {name: string}, index: number) => (
               <div
                 key={index}
-                className="border-border-secondary inline-flex items-center rounded-lg border px-2.5 py-1 flex-shrink-0 max-w-full"
+                className="bg-background-lighter border-border-secondary inline-flex items-center rounded-lg border px-2.5 py-1 flex-shrink-0 max-w-full"
                 title={category.name}
               >
                 <div className="text-slate-500 text-xs font-medium leading-3 truncate">
@@ -52,7 +52,7 @@ export default function ServiceCard({ service }: { service: ServiceData }) {
               </div>
             ))}
             {extraCategoriesCount > 0 && (
-              <div className="border-border-secondary inline-flex items-center rounded-lg border px-2.5 py-1 flex-shrink-0">
+              <div className="bg-background-lighter border-border-secondary inline-flex items-center rounded-lg border px-2.5 py-1 flex-shrink-0">
                 <div className="text-slate-500 text-xs font-medium leading-3">
                   +{extraCategoriesCount}
                 </div>
