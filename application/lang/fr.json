@@ -370,7 +370,7 @@
     "workflows.createService.step2.contactInfoSavedSuccess": "Informations de contact enregistrées avec succès !",
     "workflows.createService.step2.submitService": "Soumettre le Service",
     "workflows.createService.step2.validation.emailInvalid": "Veuillez entrer une adresse e-mail valide",
-    "workflows.createService.step2.validation.websiteInvalid": "Veuillez entrer une URL de site web valide (doit commencer par http:// ou https://)",
+    "workflows.createService.step2.validation.websiteInvalid": "Veuillez entrer une URL de site web valide",
     "workflows.createService.stepDetails.serviceDetails": "Détails du Service",
     "workflows.createService.stepDetails.contactDetails": "Détails de Contact",
     "error404.mainText": "Désolé, nous n'avons pas trouvé ce que vous cherchez",
