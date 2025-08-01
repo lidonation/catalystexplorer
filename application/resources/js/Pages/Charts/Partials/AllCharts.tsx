@@ -44,7 +44,7 @@ export default function AllCharts({
         userSettingEnums.PROPOSAL_TYPE,
         [],
     );
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
     const hasSubmittedProposals = proposalTypes?.includes('submitted');
     const hasApprovedProposals = proposalTypes?.includes('approved');
     const hasCompletedProposals = proposalTypes?.includes('complete');

@@ -89,7 +89,7 @@ const Index = ({
             <RoutedModalLayout
                 navigate={true}
                 className="px-2 md:px-8"
-                zIndex="z-30"
+                zIndex="z-100"
             >
                 <Head title="Charts" />
 

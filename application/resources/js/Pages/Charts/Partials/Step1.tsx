@@ -3,8 +3,8 @@ import Paragraph from '@/Components/atoms/Paragraph';
 import InformationIcon from '@/Components/svgs/InformationIcon';
 import { userSettingEnums } from '@/enums/user-setting-enums';
 import { useUserSetting } from '@/Hooks/useUserSettings';
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 import { useEffect, useMemo, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 
 interface Step1Props {
     onCompletionChange?: (isComplete: boolean) => void;
@@ -12,7 +12,7 @@ interface Step1Props {
 }
 
 export default function Step1({ onCompletionChange, onRulesChange }: Step1Props) {
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
     const [rules, setRules] = useState<string[]>([]);
 
     const { value: proposalTypes, setValue: setProposalTypes } = useUserSetting<

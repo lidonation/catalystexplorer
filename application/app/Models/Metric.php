@@ -209,7 +209,7 @@ class Metric extends Model
         try {
             $searchOptions = [
                 'limit' => 0,
-                'facets' => [$facetKey, 'tags.title'], // Only string facet supported
+                'facets' => [$facetKey, 'tags.title'], 
             ];
 
             if (! empty($combinedFilter)) {

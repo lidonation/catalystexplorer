@@ -4,8 +4,8 @@ import Selector from '@/Components/atoms/Selector';
 import { userSettingEnums } from '@/enums/user-setting-enums';
 import { useUserSetting } from '@/Hooks/useUserSettings';
 import axios from 'axios';
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 
 interface Step3Props {
     disabled?: boolean;
@@ -26,7 +26,7 @@ export default function Step3({
     onChartDataReceived,
     rules,
 }: Step3Props) {
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
 
     const { value: selectedChartOptions, setValue: setSelectedChartOptions } =
         useUserSetting<string[]>(userSettingEnums.CHART_OPTIONS, []);
@@ -144,6 +144,7 @@ export default function Step3({
         async (rules: Array<string>, chartType: string) => {
             const currentQueryString = window.location.search;
             const urlParams = new URLSearchParams(currentQueryString);
+
 
             onLoadingChange?.(true); 
             try {

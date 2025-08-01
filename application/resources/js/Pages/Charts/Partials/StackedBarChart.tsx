@@ -14,7 +14,7 @@ interface StackedBarChartProps {
 }
 
 const StackedBarChart: React.FC<StackedBarChartProps> = ({ chartData, viewBy }) => {
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
     const { value: proposalTypes } = useUserSetting<
             string[]
         >(userSettingEnums.PROPOSAL_TYPE, []);

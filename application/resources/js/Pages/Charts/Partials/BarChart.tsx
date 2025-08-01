@@ -174,7 +174,7 @@ const BarChart: React.FC<BarChartProps> = ({ chartData, viewBy }) => {
                     margin={config.margin}
                     padding={0.3}
                     valueScale={{ type: 'linear' }}
-                    colors={({ id }) => colorMap[id as string]}
+                    colors={({ id }: any) => colorMap[id as string]}
                     axisBottom={{
                         tickSize: 5,
                         tickPadding: 5,

@@ -5,8 +5,8 @@ import { useFilterContext } from '@/Context/FiltersContext';
 import { ParamsEnum } from '@/enums/proposal-search-params';
 import { userSettingEnums } from '@/enums/user-setting-enums';
 import { useUserSetting } from '@/Hooks/useUserSettings';
-import { useCallback, useEffect, useMemo } from 'react';
-import {useLaravelReactI18n} from "laravel-react-i18n";
+import { useLaravelReactI18n } from 'laravel-react-i18n';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
 interface Step2Props {
     disabled?: boolean;
@@ -30,14 +30,24 @@ export default function Step2({
     useEffect(() => {
         onCompletionChange?.(isChartSelected);
     }, [isChartSelected, onCompletionChange]);
+    const [mounted, setMounted] = useState(false);
 
     useEffect(() => {
+        setMounted(true);
+    }, []);
+
+    useEffect(() => {
+        if (!mounted) return;
+
         if (selectedChart) {
-            setFilters({
-                label: t('charts.trendChart'),
-                value: selectedChart,
-                param: ParamsEnum.TREND_CHART,
-            });
+            // Use setTimeout to ensure this runs after current render cycle
+            setTimeout(() => {
+                setFilters({
+                    label: t('charts.trendChart'),
+                    value: selectedChart,
+                    param: ParamsEnum.CHART_TYPE,
+                });
+            }, 0);
         }
     }, [selectedChart, t, setFilters]);
 
@@ -56,6 +66,8 @@ export default function Step2({
     const handleSelectorChange = useCallback(
         (value: string | string[]) => {
             const chart = Array.isArray(value) ? value[0] : value;
+
+             if (!mounted) return;
 
             setSelectedChart(chart);
 
@@ -78,7 +90,10 @@ export default function Step2({
                     <div className="group relative">
                         <InformationIcon className="mx-auto" />
                         <div className="bg-tooltip absolute bottom-full left-1/2 z-10 mb-2 hidden w-48 -translate-x-1/2 rounded p-2 text-white shadow-lg group-hover:block">
-                           <Paragraph> {t('charts.chooseChartType')}</Paragraph>
+                            <Paragraph>
+                                {' '}
+                                {t('charts.chooseChartType')}
+                            </Paragraph>
                         </div>
                     </div>
                 </div>

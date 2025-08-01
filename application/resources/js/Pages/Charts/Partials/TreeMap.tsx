@@ -1,10 +1,9 @@
 import Paragraph from '@/Components/atoms/Paragraph';
 import { userSettingEnums } from '@/enums/user-setting-enums';
 import { useUserSetting } from '@/Hooks/useUserSettings';
-import { shortNumber } from '@/utils/shortNumber';
 import { ResponsiveTreeMap } from '@nivo/treemap';
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 import React, { useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 
 interface TreeMapProps {
     chartData: any;
@@ -12,7 +11,7 @@ interface TreeMapProps {
 }
 
 const TreeMap: React.FC<TreeMapProps> = ({ chartData, viewBy }) => {
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
     const { value: proposalTypes } = useUserSetting<string[]>(
         userSettingEnums.PROPOSAL_TYPE,
         [],
@@ -169,13 +168,13 @@ const TreeMap: React.FC<TreeMapProps> = ({ chartData, viewBy }) => {
                         from: 'color',
                         modifiers: [['darker', 0.1]],
                     }}
-                    colors={(node) => {
+                    colors={(node: any) => {
                         return node.data.color || '#ccc';
                     }}
                     nodeOpacity={0.85}
                     animate={true}
                     motionConfig="gentle"
-                    tooltip={(node) => (
+                    tooltip={(node: any) => (
                         <div
                             className={`bg-tooltip text-content-light rounded-xs p-${isMobile ? '2' : '4'} w-fit border shadow-lg`}
                         >

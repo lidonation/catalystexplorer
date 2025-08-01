@@ -263,7 +263,7 @@ class ProposalsController extends Controller
 
         $allParams = array_merge($refererParams, $request->all());
         $mergedRequest = $request->duplicate($allParams);
-        $this->getProps($mergedRequest);
+        // $this->getProps($mergedRequest);
 
         $chartDataByFund = $this->getDetailedCountsByFund();
         $chartDataByYear = $this->getDetailedCountsByYear();
