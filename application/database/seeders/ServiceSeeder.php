@@ -16,13 +16,10 @@ class ServiceSeeder extends Seeder
      */
     public function run(): void
     {
-        // Create real categories first (if they don't exist)
         $this->createRealCategories();
 
-        // Get all subcategories for service assignment
         $allSubcategories = Category::whereNotNull('parent_id')->get();
 
-        // Create 50 services with factory
         Service::factory(50)->create()->each(function ($service) use ($allSubcategories) {
             $selectedSubcategories = $allSubcategories->random(random_int(1, 3));
 
@@ -34,7 +31,6 @@ class ServiceSeeder extends Seeder
 
     private function createRealCategories(): void
     {
-        // Skip if categories already exist
         if (Category::where('name', 'Technical Services')->exists()) {
             return;
         }

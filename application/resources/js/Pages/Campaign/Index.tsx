@@ -1,5 +1,5 @@
 import { Head } from '@inertiajs/react';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import CampaignCard from './Partials/CampaignCard';
 import FundData = App.DataTransferObjects.FundData;
 import CampaignData = App.DataTransferObjects.CampaignData
@@ -11,7 +11,7 @@ interface FundProps {
 }
 
 const Index: React.FC<FundProps> = ({ fund, campaigns }) => {
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
 
     return (
         <>

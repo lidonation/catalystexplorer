@@ -4,7 +4,7 @@ import { ParamsEnum } from '@/enums/proposal-search-params';
 import { shortNumber } from '@/utils/shortNumber';
 import { ResponsivePie } from '@nivo/pie';
 import React, { useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 
 interface PieChartProps {
     chartData: any;
@@ -17,7 +17,7 @@ const PieChart: React.FC<PieChartProps> = ({
     selectedOptionIndex = 0,
     viewBy,
 }) => {
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
     const { getFilter } = useFilterContext();
     const [activeOptionIndex, setActiveOptionIndex] =
         useState(selectedOptionIndex);
@@ -144,7 +144,7 @@ const PieChart: React.FC<PieChartProps> = ({
         });
     }
 
-    
+
 
     const filteredPieData =
         pieData.length > 1 ? pieData.filter((item) => item.value > 0) : pieData;
@@ -218,7 +218,7 @@ const PieChart: React.FC<PieChartProps> = ({
             </div>
 
             <div className="my-4 mb-4 grid grid-cols-1 gap-3 sm:grid-cols-3 sm:gap-4">
-              
+
                     <div className="text-center">
                         <Paragraph
                             className="text-sm"
@@ -233,7 +233,7 @@ const PieChart: React.FC<PieChartProps> = ({
                             )}
                         </Paragraph>
                     </div>
-                
+
                 {isApprovedSelected && (
                     <div className="text-center">
                         <Paragraph

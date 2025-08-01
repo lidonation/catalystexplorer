@@ -1,14 +1,11 @@
 import Paragraph from '@/Components/atoms/Paragraph';
 import Title from '@/Components/atoms/Title';
 import SecondaryLink from '@/Components/SecondaryLink';
-import { MetricEnum } from '@/enums/metrics-enums';
 import CatalystIntro from '@/Pages/Home/Partials/CatalystIntro';
 import PostCard from '@/Pages/Posts/Partials/PostCard';
-import VerticalCardLoading from '@/Pages/Proposals/Partials/ProposalVerticalCardLoading';
 import { PageProps } from '@/types';
 import { Head, WhenVisible } from '@inertiajs/react';
 import { useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import MetricCardLoading from '../Metrics/Partials/MetricCardLoading';
 import MetricCardList from '../Metrics/Partials/MetricsCardList';
 import PostListLoader from '../Posts/Partials/PostListLoader';
@@ -16,6 +13,9 @@ import ProposalList from '../Proposals/Partials/ProposalList';
 import AnnouncementCarousel from './Partials/Announcement/AnnouncementCarousel';
 import SpecialAnnouncementLoading from './Partials/Announcement/SpecialAnnouncementLoading';
 import SpecialAnnouncementCarousel from './Partials/Announcement/SpecialAnnouncementsCarousel';
+import VerticalCardLoading from '@/Pages/Proposals/Partials/ProposalVerticalCardLoading';
+import {useLaravelReactI18n} from "laravel-react-i18n";
+import { MetricEnum } from '@/enums/metrics-enums';
 import MetricData = App.DataTransferObjects.MetricData;
 import ProposalData = App.DataTransferObjects.ProposalData;
 import PostData = App.DataTransferObjects.PostData;
@@ -36,7 +36,7 @@ export default function Index({
     announcements,
     specialAnnouncements,
 }: PageProps<HomePageProps>) {
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
     const [isHorizontal, setIsHorizontal] = useState(false);
     const [activeIndex, setActiveIndex] = useState(0);
     const [isTransitioning, setIsTransitioning] = useState(false);

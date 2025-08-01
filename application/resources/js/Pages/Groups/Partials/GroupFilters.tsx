@@ -3,7 +3,7 @@ import { SearchSelect } from '@/Components/SearchSelect';
 import Selector from '@/Components/atoms/Selector';
 import { useFilterContext } from '@/Context/FiltersContext';
 import { ParamsEnum } from '@/enums/proposal-search-params';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 
 interface GroupFiltersProps{
     proposalsCount: number;
@@ -13,7 +13,7 @@ interface GroupFiltersProps{
 
 const GroupFilters = ({proposalsCount, totalAwardedAda, totalAwardedUsd}:GroupFiltersProps) => {
     const { setFilters, getFilter } = useFilterContext();
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
     const proposalRange = [0, proposalsCount];
     const adaRange = [0, totalAwardedAda];
     const usdRange = [0, totalAwardedUsd];

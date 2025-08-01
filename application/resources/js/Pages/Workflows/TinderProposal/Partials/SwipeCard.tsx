@@ -1,5 +1,5 @@
 import React from 'react';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import { Link } from '@inertiajs/react';
 
 import Paragraph from '@/Components/atoms/Paragraph';
@@ -25,7 +25,7 @@ const SwipeCard: React.FC<SwipeCardProps> = ({
     onEditList,
     isDeleted,
 }) => {
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
 
     if (isDeleted) {
         return null;
@@ -33,7 +33,7 @@ const SwipeCard: React.FC<SwipeCardProps> = ({
 
     const isRightSwipe = type === 'right';
     const cardConfig = {
-        title: isRightSwipe 
+        title: isRightSwipe
             ? t('workflows.tinderProposal.step4.rightSwipes')
             : t('workflows.tinderProposal.step4.leftSwipes'),
         description: isRightSwipe
@@ -65,10 +65,10 @@ const SwipeCard: React.FC<SwipeCardProps> = ({
             </div>
             <div className={`flex items-center ${cardConfig.badgeStyles}`}>
                 <div className="w-6 h-6 flex items-center justify-center">
-                <IconComponent 
-                    width={12} 
-                    height={12} 
-                    className={cardConfig.iconStyles} 
+                <IconComponent
+                    width={12}
+                    height={12}
+                    className={cardConfig.iconStyles}
                 />
                 </div>
                 {swipeCount} {t('workflows.tinderProposal.step4.saves')}

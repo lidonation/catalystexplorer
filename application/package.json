@@ -4,7 +4,8 @@
   "version": "1.0.0",
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build",
+    "build": "tsc &&  NODE_OPTIONS='--max-old-space-size=10240' vite build",
+    "build:ssr": "tsc && NODE_OPTIONS='--max-old-space-size=8192' vite build --ssr",
     "lint": "eslint resources/js --ext .js,.jsx,.ts,.tsx --ignore-path .gitignore --fix",
     "prepare": "husky",
     "commitlint": "commitlint --edit"
@@ -12,7 +13,6 @@
   "devDependencies": {
     "@commitlint/cli": "^19.6.1",
     "@commitlint/config-conventional": "^19.6.0",
-    "@cypress/vite-dev-server": "^6.0.0",
     "@inertiajs/react": "^2.0",
     "@playwright/test": "^1.53.1",
     "@tailwindcss/forms": "^0.5.3",
@@ -23,17 +23,17 @@
     "@types/react-dom": "^18.0.10",
     "@typescript-eslint/eslint-plugin": "^7.16.0",
     "@typescript-eslint/parser": "^7.16.0",
-    "@vitejs/plugin-react": "^4.3.4",
     "allure-commandline": "^2.34.0",
     "allure-playwright": "^3.3.0",
-    "axios": "^1.7.4",
+    "@vitejs/plugin-react": "^4.6.0",
+    "axios": "1.8.2",
     "eslint": "^8.57.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-prettier": "^5.1.3",
     "eslint-plugin-react": "^7.34.4",
     "eslint-plugin-react-hooks": "^4.6.2",
     "husky": "^9.1.7",
-    "laravel-vite-plugin": "^1",
+    "laravel-vite-plugin": "^2.0.0",
     "postcss": "^8.4.31",
     "prettier": "^3.3.0",
     "prettier-plugin-organize-imports": "^4.0.0",
@@ -41,10 +41,10 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "sass": "^1.80.5",
-    "tailwindcss": "^4.0.0",
+    "tailwindcss": "^4.1.11",
     "typescript": "^5.8.3",
-    "vite": "^6.0",
-    "vite-plugin-wasm": "^3.4.1"
+    "vite": "7.0.4",
+    "vite-plugin-wasm": "^3.5.0"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",
@@ -70,6 +70,7 @@
     "@radix-ui/react-tabs": "^1.1.12",
     "@radix-ui/react-tooltip": "^1.1.4",
     "@tailwindcss/postcss": "^4.0.0",
+    "@tailwindcss/typography": "^0.5.16",
     "autoprefixer": "^10.4.20",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
@@ -81,16 +82,12 @@
     "embla-carousel-react": "^8.5.1",
     "framer-motion": "^12.0.11",
     "hast-util-sanitize": "^5.0.2",
-    "i18next": "^23.16.4",
     "laravel-react-i18n": "^2.0.5",
     "lodash": "^4.17.21",
     "lucide-react": "^0.460.0",
     "mapbox-gl": "^3.9.4",
     "marked-react": "^3.0.0",
-    "plyr": "^3.7.7",
-    "plyr-react": "^5.3.0",
     "react-force-graph-2d": "^1.27.0",
-    "react-i18next": "^15.1.0",
     "react-map-gl": "^7.1.9",
     "react-markdown": "^10.1.0",
     "react-masonry-css": "^1.0.16",
@@ -112,6 +109,11 @@
   "husky": {
     "hooks": {
       "pre-commit": "npm run precommit"
+    }
+  },
+  "overrides": {
+    "laravel-react-i18n": {
+      "react": "18.2.0"
     }
   }
 }

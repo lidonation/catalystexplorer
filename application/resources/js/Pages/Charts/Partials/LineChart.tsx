@@ -7,7 +7,7 @@ import { ParamsEnum } from '@/enums/proposal-search-params';
 import { shortNumber } from '@/utils/shortNumber';
 import { ResponsiveLine } from '@nivo/line';
 import React, { useEffect, useRef, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 
 interface LineChartProps {
     chartData: any;
@@ -20,7 +20,7 @@ const LineChart: React.FC<LineChartProps> = ({
     yAxisLabel,
     viewBy,
 }) => {
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
     const { getFilter } = useFilterContext();
     const [isMobile, setIsMobile] = useState(false);
     const [screenWidth, setScreenWidth] = useState(
@@ -141,7 +141,7 @@ const LineChart: React.FC<LineChartProps> = ({
         },
     ];
 
-    const lineData = TransformedData.filter((dataset) => dataset.shouldShow);
+    const lineData = TransformedData.filter((dataset) => dataset?.shouldShow);
 
     const legend = yAxisLabel || 'Proposals';
 
@@ -294,13 +294,13 @@ const LineChart: React.FC<LineChartProps> = ({
                         };
 
                         const dataWithPrevious = lineData?.map((dataset) => {
-                            const currentIndex = dataset.data.findIndex(
+                            const currentIndex = dataset?.data.findIndex(
                                 (d: any) => d.x == currentX,
                             );
-                            const current = dataset.data[currentIndex];
+                            const current = dataset?.data[currentIndex];
                             const previous =
                                 currentIndex > 0
-                                    ? dataset.data[currentIndex - 1]
+                                    ? dataset?.data[currentIndex - 1]
                                     : null;
 
                             const trend =
@@ -309,8 +309,8 @@ const LineChart: React.FC<LineChartProps> = ({
                                     : { value: '0', isPositive: true };
 
                             return {
-                                id: dataset.id,
-                                color: dataset.color,
+                                id: dataset?.id,
+                                color: dataset?.color,
                                 current,
                                 previous,
                                 trend,

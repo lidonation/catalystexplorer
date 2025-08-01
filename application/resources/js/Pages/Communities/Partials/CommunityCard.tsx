@@ -12,7 +12,7 @@ import BookmarkButton from '@/Pages/My/Bookmarks/Partials/BookmarkButton';
 import { useLocalizedRoute } from '@/utils/localizedRoute';
 import { Link } from '@inertiajs/react';
 import React,{ useRef, useState, useEffect } from 'react';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import CommunityIdeascaleProfiles from './CommunityIdeascaleProfiles';
 import CommunityData = App.DataTransferObjects.CommunityData;
 
@@ -25,7 +25,7 @@ const CommunityCard: React.FC<CommunityCardProps> = ({
     community,
     embedded = true,
 }) => {
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
     const [isHoveredContent, setIsHoveredContent] = useState(false);
     const containerRef = useRef<HTMLDivElement | null>(null);
     const [contentLineCount, setContentLineCount] = useState(0);

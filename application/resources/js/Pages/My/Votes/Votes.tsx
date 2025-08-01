@@ -5,7 +5,7 @@ import RecordsNotFound from '@/Layouts/RecordsNotFound';
 import { useLocalizedRoute } from '@/utils/localizedRoute';
 import { Head, usePage } from '@inertiajs/react';
 import React, { useEffect, useMemo } from 'react';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import { PaginatedData } from '../../../types/paginated-data';
 import { SearchParams } from '../../../types/search-params';
 import VoterHistoryTable from '../../Votes/Partials/VoterHistoryTable';
@@ -23,7 +23,7 @@ interface VoteHistoryProps {
 
 const VotesComponent: React.FC<VoteHistoryProps> = (props) => {
     const { filters, setFilters } = useFilterContext();
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
     const { voterHistories } = props;
     const { props: pageProps } = usePage();
     const isAuthenticated = pageProps.auth?.user;

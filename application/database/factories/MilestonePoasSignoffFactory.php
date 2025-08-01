@@ -2,7 +2,7 @@
 
 namespace Database\Factories;
 
-use App\Models\MilestonePoas;
+use App\Models\MilestonePoa;
 use App\Models\Proposal;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -21,7 +21,7 @@ class MilestonePoasSignoffFactory extends Factory
     {
         return [
             'id' => $this->faker->unique()->randomNumber(5, true),
-            'milestone_poas_id' => MilestonePoas::factory(),
+            'milestone_poas_id' => MilestonePoa::factory(),
             'proposal_id' => Proposal::factory(),
             'created_at' => Carbon::now()->subDays($this->faker->numberBetween(0, 3 * 365)),
             'user_id' => (string) $this->faker->randomNumber(5, true),

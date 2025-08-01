@@ -1,13 +1,11 @@
 import Paragraph from '@/Components/atoms/Paragraph';
 import RadioSelector from '@/Components/atoms/RadioSelector';
 import Selector from '@/Components/atoms/Selector';
-import { userSettingEnums } from '@/enums/user-setting-enums';
-import { useUserSetting } from '@/Hooks/useUserSettings';
 import { currency } from '@/utils/currency';
 import { ResponsiveBar } from '@nivo/bar';
 import React, { useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import { test } from '@playwright/test';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 
 interface FundsBarChartProps {
     funds: any;
@@ -30,7 +28,7 @@ const FundsBarChart: React.FC<FundsBarChartProps> = ({
     viewBy,
     onViewByChange,
 }) => {
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
 
     const allKeys = [
         {

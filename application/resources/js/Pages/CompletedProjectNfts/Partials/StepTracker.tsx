@@ -1,6 +1,6 @@
 import TickIcon from '@/Components/svgs/TickIcon';
 import React from 'react';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 
 interface StepTrackerProps {
     totalSteps: number;
@@ -27,7 +27,7 @@ const StepTracker: React.FC<StepTrackerProps> = ({
 }) => {
     const steps = Array.from({ length: totalSteps }, (_, i) => i + 1);
 
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
 
     return (
         <div className="flex w-full items-center justify-center px-4 sm:px-6">

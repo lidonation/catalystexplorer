@@ -5,7 +5,7 @@ import { shortNumber } from '@/utils/shortNumber';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { Grab, MinusSquareIcon } from 'lucide-react';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import ProposalFundingPercentages from '../Partials/ProposalFundingPercentages';
 import ProposalFundingStatus from '../Partials/ProposalFundingStatus';
 import ColumnHeader from './Partials/ColumnHeader';
@@ -33,7 +33,7 @@ export default function SortableProposalColumn({
         id: proposal.hash ?? `${Math.random() + 'proposal'}`,
     });
 
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
 
     const rows = [
         {

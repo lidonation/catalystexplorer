@@ -46,7 +46,7 @@ const AnnouncementCard = ({ announcement }: AnnouncementCardProps) => {
             <div data-testid="announcement-card-footer">
                 {
                     <div className="text-4 text-primary flex items-center gap-6 font-bold">
-                        {Object.entries(announcement?.cta ?? {}).map((item) => {
+                        {Object.entries(announcement?.cta ?? {}).map((item, index) => {
                             const isExternal = item[1]?.startsWith('http');
                             if (isExternal) {
                                 return (
@@ -56,6 +56,7 @@ const AnnouncementCard = ({ announcement }: AnnouncementCardProps) => {
                                         title={item[0]}
                                         target="_blank"
                                         data-testid={`announcement-card-link-${item[0]}`}
+                                        key={index}
                                     >
                                         {item[0]}
                                     </a>
@@ -67,6 +68,7 @@ const AnnouncementCard = ({ announcement }: AnnouncementCardProps) => {
                                     href={item[1] || '#'}
                                     title={item[0]}
                                     data-testid={`announcement-card-link-${item[0]}`}
+                                    key={index}
                                 >
                                     {item[0]}
                                 </NavLink>

@@ -10,8 +10,8 @@ services:
     extra_hosts:
         - 'host.docker.internal:host-gateway'
     ports:
-        - '80:8000'
-        - '5173:${VITE_PORT:-5173}'
+        - '8088:8000'
+        - '5172:${VITE_PORT:-5173}'
     environment:
         APP_ENV: testing
         WWWUSER: '${WWWUSER:-1000}'
@@ -115,12 +115,12 @@ services:
 
   # meilisearch
   catalystexplorer_test-search:
-      image: getmeili/meilisearch:v1.11.3
+      image: getmeili/meilisearch:v1.16.0-rc.3
       container_name: catalystexplorer_test-search
       env_file:
         - ./application/.env.testing
       ports:
-          - '7711:7700'
+          - '7712:7700'
       environment:
           MEILI_NO_ANALYTICS: '${MEILISEARCH_NO_ANALYTICS:-false}'
           MEILISEARCH_KEY: v8hlDV0yMAHHlIurYupj
@@ -145,7 +145,7 @@ services:
       env_file:
         - ./application/.env.testing
       ports:
-          - '6378:6379'
+          - '6377:6379'
       volumes:
           - 'test_catalystexplorer-redis:/data'
       networks:

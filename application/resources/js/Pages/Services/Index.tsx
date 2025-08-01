@@ -7,10 +7,13 @@ import ServiceCard from '@/Components/ServiceCard';
 import { ServiceData, CategoryData } from '@/types';
 import Paragraph from '@/Components/atoms/Paragraph';
 import PrimaryLink from '@/Components/atoms/PrimaryLink';
-import Paginator from '@/Components/Paginator';
-import { FiltersProvider, useFilterContext } from '@/Context/FiltersContext';
+import { FiltersProvider } from '@/Context/FiltersContext';
+import { useLocalizedRoute } from '@/utils/localizedRoute';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import { PaginatedData } from '@/types/paginated-data';
 import { SearchParams } from '@/types/search-params';
+import Paginator from '@/Components/Paginator';
+import ServiceTypeFilter from './Partials/ServiceTypeFilter';
 
 const Section = ({ children, className }: { children: React.ReactNode; className?: string }) => (
   <div className={className}>{children}</div>
@@ -19,21 +22,40 @@ const Section = ({ children, className }: { children: React.ReactNode; className
 interface ServicesIndexProps {
   services: PaginatedData<ServiceData[]>;
   categories: CategoryData[];
-  filters: SearchParams;
+  filters?: SearchParams;
 }
 
-const ServicesComponent: React.FC<ServicesIndexProps> = ({ services, categories, filters }) => {
+const DEFAULT_FILTERS = {
+  search: '',
+  categories: [],
+  type: null,
+  sort: 'newest',
+  viewType: 'all'
+};
+
+const ServicesComponent: React.FC<ServicesIndexProps> = ({
+  services,
+  categories,
+  filters = DEFAULT_FILTERS
+}) => {
+    const { t } = useLaravelReactI18n();
+  const initialCategories = typeof filters.categories === 'string'
+    ? filters.categories.split(',')
+    : Array.isArray(filters.categories)
+      ? filters.categories
+      : [];
+
   const [search, setSearch] = useState(filters.search || '');
-  const [selectedCategories, setSelectedCategories] = useState<string[]>(filters.categories || []);
-  const [showFilters, setShowFilters] = useState(false);
-  const { setFilters } = useFilterContext();
+  const [selectedCategories, setSelectedCategories] = useState<string[]>(initialCategories);
+  const [showTypeFilter, setShowTypeFilter] = useState(false);
+  const [selectedType, setSelectedType] = useState<string | null>(filters?.type || null);
 
   useEffect(() => {
     const timer = setTimeout(() => {
       const params = new URLSearchParams();
       if (search) params.set('search', search);
       if (selectedCategories.length) params.set('categories', selectedCategories.join(','));
-
+      if (selectedType) params.set('type', selectedType);
       router.get(`/services?${params.toString()}`, {}, {
         preserveState: true,
         preserveScroll: true,
@@ -41,7 +63,7 @@ const ServicesComponent: React.FC<ServicesIndexProps> = ({ services, categories,
       });
     }, 300);
     return () => clearTimeout(timer);
-  }, [search, selectedCategories]);
+  }, [search, selectedCategories, selectedType, filters?.sort]);
 
   const handleCategoryToggle = (categoryHash: string) => {
     setSelectedCategories(prev =>
@@ -51,24 +73,16 @@ const ServicesComponent: React.FC<ServicesIndexProps> = ({ services, categories,
     );
   };
 
-  const hasActiveFilters = search || selectedCategories.length > 0;
   const hasServices = services?.data?.length > 0;
 
   return (
     <div className="w-full max-w-full py-4 px-8 xl:px-20">
       <div className="flex justify-between items-center mb-6">
         <div>
-          <h1 className="text-2xl font-semibold text-content">Catalyst Services</h1>
-          <Paragraph className="text-base text-slate-500">
-            A space for Catalyst-funded teams to collaborate, request help, and offer services to the ecosystem.
+          <h1 className="text-2xl font-semibold text-content">{t('services.catalystServices')}</h1>
+          <Paragraph className="text-base text-slate-500"> {t('services.catalystServicesDesc')}
           </Paragraph>
         </div>
-        <PrimaryLink
-          className="lg:text-md mb-4 ml-auto px-4 py-2 text-sm text-nowrap"
-          href="#"
-        >
-          + Add Service
-        </PrimaryLink>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 items-start">
@@ -87,17 +101,16 @@ const ServicesComponent: React.FC<ServicesIndexProps> = ({ services, categories,
             <SearchControls
               search={search}
               onSearchChange={setSearch}
-              onFiltersToggle={() => setShowFilters(!showFilters)}
-              showFilters={showFilters}
+              onFiltersToggle={() => setShowTypeFilter(!showTypeFilter)}
+              showFilters={showTypeFilter}
             />
           </Section>
 
-          {showFilters && (
-            <Section className="mb-6 lg:hidden">
-              <ServiceCategories
-                categories={categories}
-                selectedCategories={selectedCategories}
-                onCategoryToggle={handleCategoryToggle}
+          {showTypeFilter && (
+            <Section className="mb-6">
+              <ServiceTypeFilter
+                selectedType={selectedType}
+                onTypeChange={setSelectedType}
               />
             </Section>
           )}
@@ -109,14 +122,18 @@ const ServicesComponent: React.FC<ServicesIndexProps> = ({ services, categories,
                   <ServiceCard key={`${service.hash}-${service.id}`} service={service} />
                 ))}
               </div>
-
-              <div className="mt-8 w-full">
+              <div className="mt-8 w-auto">
                 <Paginator
-                  pagination={services}
+                  pagination={{
+                    ...services,
+                    links: services.links?.filter(link =>
+                      !['Previous', 'Next', '&laquo; Previous', 'Next &raquo;'].includes(link.label)
+                    )
+                  }}
                   linkProps={{
-                    preserveState: true,
                     preserveScroll: true,
-                    only: ['services']
+                    preserveState: true,
+                    only: ['services', 'filters']
                   }}
                 />
               </div>
@@ -132,11 +149,16 @@ const ServicesComponent: React.FC<ServicesIndexProps> = ({ services, categories,
   );
 };
 
-const ServicesIndex: React.FC<ServicesIndexProps> = (props) => {
+const ServicesIndex: React.FC<ServicesIndexProps> = ({ filters, ...props }) => {
   return (
-    <FiltersProvider defaultFilters={props.filters || {} as SearchParams}>
-      <ServicesComponent {...props} />
-    </FiltersProvider>
+    <div className="isolate">
+      <FiltersProvider defaultFilters={filters || DEFAULT_FILTERS}>
+        <ServicesComponent
+          {...props}
+          filters={filters || DEFAULT_FILTERS}
+        />
+      </FiltersProvider>
+    </div>
   );
 };
 

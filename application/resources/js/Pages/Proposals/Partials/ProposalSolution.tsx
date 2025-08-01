@@ -1,7 +1,7 @@
 import Title from '@/Components/atoms/Title';
 import { PageProps } from '@/types';
 import Markdown from "marked-react";
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import ExpandableContentAnimation from '@/Components/ExpandableContentAnimation';
 import ExpandableContent from '@/Components/ExpandableContent';
 import { useRef, useState, useEffect } from 'react';
@@ -19,7 +19,7 @@ export default function ProposalSolution({
     slug,
     onContentExpand,
 }: PageProps<ProposalSolution>) {
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
     const [isHoveredSolution, setIsHoveredSolution] = useState(false);
     const containerRef = useRef<HTMLDivElement | null>(null);
 

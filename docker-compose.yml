@@ -32,6 +32,7 @@ services:
       CONTAINER_ROLE: "app"
       IGNITION_LOCAL_SITES_PATH: "${PWD}"
       LARAVEL_SAIL: 1
+      PHP_OPCACHE_ENABLE: 0
       NODE_OPTIONS: "${NODE_OPTIONS:---max-old-space-size=8096}"
       OCTANE_WATCH: "${OCTANE_WATCH:-true}"
       WWWGROUP: "${WWWUSER:-1000}"
@@ -41,7 +42,7 @@ services:
       XDG_CONFIG_HOME: /var/www/caddy
       XDG_DATA_HOME: /var/www/caddy
     volumes:
-      - ./application:/var/www:cached
+      - ./application:/var/www
       - ./data/app/data:/data
     networks:
       - catalystexplorer-net
@@ -137,7 +138,7 @@ services:
       MEILISEARCH_KEY: v8hlDV0yMAHHlIurYupj
       MEILISEARCH_HOST: "http://catalystexplorer-search:7700"
       PHP_OPCACHE_ENABLE: 0
-      PHP_OPCACHE_VALIDATE_TIMESTAMPS: 1
+      PHP_OPCACHE_VALIDATE_TIMESTAMPS: 0
       PHP_MEMORY_LIMIT: 2048M
       POSTGRESQL_DB_SYNC_DB_HOST: postgres_dbsync
       POSTGRESQL_DB_SYNC_PASSWORD: v8hlDV0yMAHHlIurYupj
@@ -197,7 +198,7 @@ services:
 
   # meilisearch
   catalystexplorer-search:
-    image: getmeili/meilisearch:v1.13.3
+    image: getmeili/meilisearch:v1.16.0-rc.4
     container_name: catalystexplorer-search
     logging: *default-logging
     ports:

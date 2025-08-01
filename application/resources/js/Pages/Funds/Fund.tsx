@@ -3,7 +3,7 @@ import { MetricEnum } from '@/enums/metrics-enums';
 import { PageProps } from '@/types';
 import { SearchParams } from '@/types/search-params';
 import { Head, WhenVisible } from '@inertiajs/react';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import CampaignCard from '../Campaign/Partials/CampaignCard';
 import CampaignList from '../Campaign/Partials/CampaignList';
 import CampaignLoader from '../Campaign/Partials/CampaignLoader';
@@ -28,7 +28,7 @@ export default function Fund({
     campaigns,
     filters,
 }: PageProps<FundPageProps>) {
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
 
     return (
         <>

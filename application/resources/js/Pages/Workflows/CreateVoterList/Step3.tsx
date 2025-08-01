@@ -21,7 +21,7 @@ import {
 import { router, useForm } from '@inertiajs/react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import Content from '../Partials/WorkflowContent';
 import Footer from '../Partials/WorkflowFooter';
 import Nav from '../Partials/WorkflowNav';
@@ -56,7 +56,7 @@ const Step3: React.FC<Step3Props> = ({
     bookmarkHash,
     fundSlug,
 }) => {
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
     const localizedRoute = useLocalizedRoute;
     const prevStep = localizedRoute('workflows.createVoterList.index', {
         step: activeStep - 1,

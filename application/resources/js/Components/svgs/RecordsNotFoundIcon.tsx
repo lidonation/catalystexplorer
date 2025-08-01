@@ -1,5 +1,3 @@
-import { useTranslation } from 'react-i18next';
-
 type RecordsNotFoundIconProps = {
     className?: string;
     width?: number;
@@ -11,7 +9,6 @@ export default function RecordsNotFoundIcon({
     width = 242,
     height = 277,
 }: RecordsNotFoundIconProps) {
-    const { t } = useTranslation();
     return (
         <svg
             width={width}
@@ -21,7 +18,6 @@ export default function RecordsNotFoundIcon({
             xmlns="http://www.w3.org/2000/svg"
             className={className}
         >
-            {/* <title>{t('icons.title.recordsNotFound')}</title> */}
             <path
                 opacity="0.3"
                 d="M120.666 262.855C187.216 262.855 241.166 208.906 241.166 142.355C241.166 75.8052 187.216 21.8555 120.666 21.8555C54.1157 21.8555 0.166016 75.8052 0.166016 142.355C0.166016 208.906 54.1157 262.855 120.666 262.855Z"

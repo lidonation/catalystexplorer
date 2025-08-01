@@ -11,13 +11,12 @@ export default function ServiceCard({ service }: { service: ServiceData }) {
   const visibleCategories = service.categories?.slice(0, 2) || [];
   const extraCategoriesCount = Math.max(0, (service.categories?.length || 0) - 2);
 
-  // Function to truncate long category names
   const truncateText = (text: string, maxLength: number = 15) => {
     return text.length > maxLength ? `${text.substring(0, maxLength)}...` : text;
   };
 
   return (
-    <div className="flex-1 border-background-lighter rounded-xl shadow-xs  bg-background border-gray-200  flex-col justify-start items-start overflow-hidden">
+    <div className="flex-1  rounded-xl shadow-xs  bg-background border-gray-200  flex-col justify-start items-start overflow-hidden">
       <div className="self-stretch h-40 p-2.5 flex flex-col justify-start items-end gap-2.5">
         <div
           className={`p-2 rounded-[30px] ${statusBadgeClasses[badgeType]} inline-flex justify-center items-center`}
@@ -31,7 +30,7 @@ export default function ServiceCard({ service }: { service: ServiceData }) {
 
       <div className="self-stretch p-3.5 flex flex-col justify-start items-start gap-5">
         <div className="self-stretch bg-card flex flex-col justify-center items-start gap-3">
-          <div className="self-stretch text-slate-900 justify-start text-xl font-medium leading-normal">
+          <div className="self-stretch text-content justify-start text-xl font-medium leading-normal">
             {service.title}
           </div>
           <div className="justify-start text-slate-500 text-sm font-normal leading-none">

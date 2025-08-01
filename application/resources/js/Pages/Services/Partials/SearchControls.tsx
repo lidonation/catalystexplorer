@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { useTranslation } from 'react-i18next';
 import Button from '@/Components/atoms/Button';
 import { ServiceSearchBar } from './ServiceSearchBar';
 import FilterLinesIcon from '@/Components/svgs/FilterLinesIcon';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 
 interface SearchControlsProps {
   search: string;
@@ -17,9 +17,9 @@ export default function SearchControls({
   onSearchChange,
   onFiltersToggle,
   showFilters,
-  viewType = 'all' // Default to 'all' for backward compatibility
+  viewType = 'all'
 }: SearchControlsProps) {
-  const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
   const [searchQuery, setSearchQuery] = useState(search);
 
   const shouldShowFilters = viewType === 'all';
@@ -49,7 +49,7 @@ export default function SearchControls({
             autoFocus={false}
             showRingOnFocus={true}
             value={searchQuery}
-            placeholder={t('services.search_placeholder') || "Search services..."}
+            placeholder={"Search services"}
           />
         </div>
         {shouldShowFilters && (
@@ -61,7 +61,7 @@ export default function SearchControls({
                   : 'hover:bg-background-lighter text-gray-persist'
               }`}
               onClick={toggleFilters}
-              ariaLabel={t('filters')}
+              ariaLabel={'filters'}
             >
               <FilterLinesIcon className="size-6" />
               <span>{t('filters')}</span>

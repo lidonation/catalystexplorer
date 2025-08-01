@@ -5,7 +5,7 @@ import Paragraph from '@/Components/atoms/Paragraph';
 import { copyToClipboard } from '@/utils/copyClipboard';
 import { truncateMiddle } from '@/utils/truncateMiddle';
 import { CopyIcon } from 'lucide-react';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import { useState } from 'react';
 import TransactionData = App.DataTransferObjects.TransactionData;
 
@@ -26,7 +26,7 @@ interface CardanoUTXO {
 }
 
 export default function UTXOsCard({ transaction }: UTXOsCardProps) {
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
     const [expandedInputs, setExpandedInputs] = useState(false);
     const [expandedOutputs, setExpandedOutputs] = useState(false);
 

@@ -7,10 +7,10 @@ import { useProposalComparison } from '@/Context/ProposalComparisonContext';
 import { ParamsEnum } from '@/enums/proposal-search-params';
 import { Button } from '@headlessui/react';
 import { useCallback, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 
 export default function ComparisonTableFilters() {
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
     const {
         searchQuery,
         setSearchQuery,
@@ -157,7 +157,7 @@ export default function ComparisonTableFilters() {
                                 valueField="label"
                                 labelField="title"
                             />
-                
+
                         </div>
 
                         <div className="col-span-1 flex flex-col gap-2 pb-4">

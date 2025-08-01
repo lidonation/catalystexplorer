@@ -2,7 +2,7 @@ import TextInput from '@/Components/atoms/TextInput';
 import SearchLensIcon from '@/Components/svgs/SearchLensIcon';
 import useEscapeKey from '@/Hooks/useEscapeKey';
 import { useEffect, useRef, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 
 export interface SearchBarProps {
     autoFocus?: boolean;
@@ -23,7 +23,7 @@ const ProposalSearchBar = ({
 }: SearchBarProps) => {
     const [searchQuery, setSearchQuery] = useState(initialSearch);
     const inputRef = useRef<HTMLInputElement>(null);
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
 
     useEscapeKey(() => handleClear());
 

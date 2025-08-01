@@ -4,7 +4,7 @@ import { generateTabs, ideascaleProfileTabs } from '@/utils/routeTabs';
 import { PageProps as InertiaPageProps } from '@inertiajs/core';
 import { usePage } from '@inertiajs/react';
 import { ReactNode, useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import IdeascaleProfileCard from './Partials/IdeascaleProfileCard';
 import IdeascaleProfileTabs from './Partials/IdeascaleProfileTab';
 import IdeascaleProfileData = App.DataTransferObjects.IdeascaleProfileData;
@@ -26,7 +26,7 @@ export default function IdeascaleProfileLayout({
     ideascaleProfile,
     filters,
 }: IdeascaleProfileLayoutProps) {
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
     const { url } = usePage<PageProps>().props;
     const [activeTab, setActiveTab] = useState('');
 

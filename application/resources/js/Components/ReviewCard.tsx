@@ -6,7 +6,7 @@ import {
 } from '@/utils/localizedRoute';
 import { Link, router } from '@inertiajs/react';
 import React, { useEffect, useRef, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import Card from './Card';
 import ExpandableContent from './ExpandableContent';
 import ExpandableContentAnimation from './ExpandableContentAnimation';
@@ -28,7 +28,7 @@ export const ReviewCard: React.FC<ReviewItemProps> = ({
     const [isLoadingPositive, setIsLoadingPositive] = useState(false);
     const [isLoadingNegative, setIsLoadingNegative] = useState(false);
     const [isHovered, setIsHovered] = useState(false);
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
     const contentRef = useRef<HTMLParagraphElement | null>(null);
     const [lineCount, setLineCount] = useState(0);
 

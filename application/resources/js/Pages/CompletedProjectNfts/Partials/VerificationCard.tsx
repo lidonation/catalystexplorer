@@ -1,4 +1,4 @@
-import { useTranslation } from "react-i18next";
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import Check from "@/Components/svgs/Check";
 import Title from "@/Components/atoms/Title";
 import Paragraph from "@/Components/atoms/Paragraph"; // Added import for Paragraph component
@@ -9,8 +9,8 @@ interface VerificationCardProps {
 }
 
 const VerificationCard: React.FC<VerificationCardProps> = ({ verificationCode, onBack }) => {
-    const { t } = useTranslation();
-    
+    const { t } = useLaravelReactI18n();
+
     return (
         <>
             <button
@@ -19,7 +19,7 @@ const VerificationCard: React.FC<VerificationCardProps> = ({ verificationCode, o
             >
                 {`< ${t('profileWorkflow.back')}`}
             </button>
-            
+
             <Title level="2" className="text-lg font-semibold text-center">{t("profileWorkflow.verificationTitle")}</Title>
             <div className="flex justify-center mt-1">
                 <Check width={72} height={72} />

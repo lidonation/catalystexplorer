@@ -8,7 +8,7 @@ import InputLabel from "@/Components/InputLabel";
 import TextInput from "@/Components/atoms/TextInput";
 import InputError from "@/Components/InputError";
 import PrimaryButton from "@/Components/atoms/PrimaryButton";
-import { useTranslation } from "react-i18next";
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import { FormEventHandler, useState } from "react";
 import CatalystLogo from "@/Components/atoms/CatalystLogo";
 import Title from "@/Components/atoms/Title";
@@ -22,13 +22,13 @@ interface Step2Props {
 }
 
 const Step2: React.FC<Step2Props> = ({ stepDetails, activeStep, token, email }) => {
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
     const resetPasswordRoute = useLocalizedRoute('password.store');
-    
-    const asideInfo = stepDetails && stepDetails[activeStep - 1] 
-        ? stepDetails[activeStep - 1].info ?? '' 
+
+    const asideInfo = stepDetails && stepDetails[activeStep - 1]
+        ? stepDetails[activeStep - 1].info ?? ''
         : '';
-        
+
     const { data, setData, post, processing, errors, reset } = useForm({
         token: token,
         email: email,
@@ -61,11 +61,11 @@ const Step2: React.FC<Step2Props> = ({ stepDetails, activeStep, token, email }) 
                         <Title level='4' className='text-content text-center font-inter text-base font-bold leading-6'>
                             {t('workflows.resetPassword.reset')}
                         </Title>
-                        <Paragraph className='text-center text-dark mt-2 mb-2' children={t('workflows.resetPassword.enterNewPassword')}/>        
+                        <Paragraph className='text-center text-dark mt-2 mb-2' children={t('workflows.resetPassword.enterNewPassword')}/>
                         <div className="mt-4">
-                            <InputLabel 
-                                htmlFor="password" 
-                                value={t('workflows.resetPassword.newPassword')} 
+                            <InputLabel
+                                htmlFor="password"
+                                value={t('workflows.resetPassword.newPassword')}
                             />
                             <TextInput
                                 id="password"
@@ -79,13 +79,13 @@ const Step2: React.FC<Step2Props> = ({ stepDetails, activeStep, token, email }) 
                             />
                             <InputError message={errors.password} className="mt-2" />
                         </div>
-        
+
                         <div className="mt-4">
                             <InputLabel
                                 htmlFor="password_confirmation"
                                 value={t('workflows.resetPassword.newPassword')}
                             />
-        
+
                             <TextInput
                                 type="password"
                                 name="password_confirmation"
@@ -96,13 +96,13 @@ const Step2: React.FC<Step2Props> = ({ stepDetails, activeStep, token, email }) 
                                     setData('password_confirmation', e.target.value)
                                 }
                             />
-        
+
                             <InputError
                                 message={errors.password_confirmation}
                                 className="mt-2"
                             />
                         </div>
-        
+
                         <div className="mt-4 flex items-center justify-end">
                             <PrimaryButton className="w-full py-3" disabled={processing}>
                                {t('workflows.resetPassword.submit')}
@@ -119,7 +119,7 @@ const Step2: React.FC<Step2Props> = ({ stepDetails, activeStep, token, email }) 
                         </div>
                     </form>
                 </div>
-            </Content>            
+            </Content>
         </WorkflowLayout>
     );
 }

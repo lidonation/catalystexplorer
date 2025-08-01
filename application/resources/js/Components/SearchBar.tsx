@@ -1,7 +1,7 @@
 import TextInput from '@/Components/atoms/TextInput';
 import useEscapeKey from '@/Hooks/useEscapeKey';
 import React, { useCallback, useEffect, useRef, useState, forwardRef } from 'react';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import Button from './atoms/Button';
 import CloseIcon from './svgs/CloseIcon';
 import SearchLensIcon from './svgs/SearchLensIcon';
@@ -34,7 +34,7 @@ const SearchBar = forwardRef<HTMLInputElement, SearchBarProps>(
     ) => {
         const [searchQuery, setSearchQuery] = useState(initialSearch);
         const internalInputRef = useRef<HTMLInputElement>(null);
-        const { t } = useTranslation();
+        const { t } = useLaravelReactI18n();
         const inputRef =
             (ref as React.RefObject<HTMLInputElement>) || internalInputRef;
 

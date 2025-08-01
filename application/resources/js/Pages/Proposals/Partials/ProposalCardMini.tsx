@@ -2,7 +2,7 @@ import ProposalCardHeader from '@/Pages/Proposals/Partials/ProposalCardHeader';
 import ProposalFundingPercentages from '@/Pages/Proposals/Partials/ProposalFundingPercentages';
 import ProposalFundingStatus from '@/Pages/Proposals/Partials/ProposalFundingStatus';
 import { useCallback, useState, useRef, useEffect } from 'react';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import Paragraph from '@/Components/atoms/Paragraph';
 import Proposal = App.DataTransferObjects.ProposalData;
 import Title from '@/Components/atoms/Title';
@@ -17,7 +17,7 @@ export default function ProposalCardMini({
     proposal,
     isHorizontal
 }: ProposalCardMiniProps) {
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
 
     const [userSelected, setUserSelected] =
         useState<App.DataTransferObjects.IdeascaleProfileData | null>(null);

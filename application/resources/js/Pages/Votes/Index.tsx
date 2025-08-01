@@ -10,7 +10,7 @@ import { PaginatedData } from '@/types/paginated-data';
 import { SearchParams } from '@/types/search-params';
 import { Head, router } from '@inertiajs/react';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import VoteFilters from './Partials/VoteFilters';
 import VoterHistoryTable from './Partials/VoterHistoryTable';
 import VoteHistoryTableLoader from './Partials/VoterHistoryTableLoader';
@@ -34,7 +34,7 @@ const IndexComponent: React.FC<VoteHistoryProps> = (props) => {
     const [stakeAddressQuery, setStakeAddressQuery] = useState(
         initialStakeAddressQuery,
     );
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
     const { voterHistories } = props;
     const [hasSearchedStake, setHasSearchedStake] = useState(
         !!initialStakeAddressQuery,

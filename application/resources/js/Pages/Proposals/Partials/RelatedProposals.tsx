@@ -3,7 +3,7 @@ import { PaginatedData } from '@/types/paginated-data';
 import { useLocalizedRoute } from '@/utils/localizedRoute';
 import { Link, WhenVisible } from '@inertiajs/react';
 import React, { HTMLAttributes } from 'react';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import ProposalCardMini from './ProposalCardMini';
 import ProposalMiniCardLoader from './ProposalMiniCardLoader';
 import ProposalData = App.DataTransferObjects.ProposalData;
@@ -44,7 +44,7 @@ const RelatedProposals: React.FC<RelatedProposalsProps> = ({
     proposalWrapperClassName,
     ...props
 }) => {
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
 
     const showViewMore = proposals.total > proposals.per_page;
 

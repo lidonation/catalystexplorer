@@ -2,7 +2,7 @@ import Title from '@/Components/atoms/Title';
 import Value from '@/Components/atoms/Value';
 import { CopyIcon } from 'lucide-react';
 import TransactionData = App.DataTransferObjects.TransactionData;
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import { formatTimestamp } from '@/utils/timeStamp';
 import { getTimeSince } from '@/utils/timeSince';
 import { truncateMiddle } from '@/utils/truncateMiddle';
@@ -14,7 +14,7 @@ interface TransactionDetailsCardProps {
 }
 
 export default function TransactionDetailsCard({ transaction }: TransactionDetailsCardProps) {
-  const { t } = useTranslation();
+  const { t } = useLaravelReactI18n();
 
   const delegations = Array.isArray(transaction.json_metadata?.voter_delegations)
     ? transaction.json_metadata.voter_delegations

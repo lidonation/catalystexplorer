@@ -7,7 +7,7 @@ import {
     ListboxOptions,
 } from '@headlessui/react';
 import { Dispatch, forwardRef, SetStateAction, useEffect } from 'react';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 
 interface Option {
     label: string;
@@ -23,7 +23,7 @@ const ChartFilter = forwardRef<
         variants: Option[];
     }
 >(({ value, variants, onChange }, ref) => {
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
 
     useEffect(() => {
         if (value.length === 0 && variants.length > 0) {
@@ -34,7 +34,7 @@ const ChartFilter = forwardRef<
     const selectedValue = value[0] ?? variants[0]?.value;
 
     const toggleValue = (val: string) => {
-        onChange([val]); 
+        onChange([val]);
     };
 
     return (

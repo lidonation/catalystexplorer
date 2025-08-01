@@ -1,4 +1,4 @@
-import { useTranslation } from "react-i18next";
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import ProposalLayout from "../ProposalLayout";
 import ProposalContent from "../Partials/ProposalContent";
 
@@ -19,7 +19,7 @@ const Index = ({
     userOutstandingProposalsCount = 0,
     catalystConnectionsCount = 0
 }: IndexProps) => {
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
 
     return (
         <ProposalLayout

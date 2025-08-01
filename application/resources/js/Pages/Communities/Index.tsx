@@ -8,7 +8,7 @@ import { SearchParams } from '@/types/search-params';
 import { Head } from '@inertiajs/react';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import CommunitiesPaginatedList from './Partials/CommunitiesPaginatedList';
 import CommunityFilters from './Partials/CommunityFilters';
 import CommunityData = App.DataTransferObjects.CommunityData;
@@ -31,7 +31,7 @@ const Index: React.FC<CommunitiesPageProps> = ({
     filterCounts,
 }) => {
     const [showFilters, setShowFilters] = useState(false);
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
     const [funds, setFunds] = useState<FundsType>({});
 
     useEffect(() => {
@@ -78,8 +78,8 @@ const Index: React.FC<CommunitiesPageProps> = ({
                             totalAwardedUsd={filterCounts.totalAwardedUsd}
                         />
                     </section>
-                    <CommunitiesPaginatedList 
-                        communities={communities} 
+                    <CommunitiesPaginatedList
+                        communities={communities}
                         cardType="full"
                         gridCols="grid-cols-1 gap-4 lg:grid-cols-2 xl:grid-cols-3"
                     />

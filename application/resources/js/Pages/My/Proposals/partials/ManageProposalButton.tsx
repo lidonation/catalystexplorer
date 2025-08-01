@@ -1,7 +1,7 @@
 import React from 'react';
 import { useLocalizedRoute } from '@/utils/localizedRoute';
 import { router } from '@inertiajs/react';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import Button from '@/Components/atoms/Button';
 import ProposalData = App.DataTransferObjects.ProposalData;
 
@@ -10,7 +10,7 @@ interface ManageProposalButtonProps {
 }
 const ManageProposalButton: React.FC<ManageProposalButtonProps> = ({ proposal }) => {
 
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
 
     const localizedRoute = useLocalizedRoute('my.proposals.manage', {
         proposal: proposal?.hash,

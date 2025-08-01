@@ -1,6 +1,6 @@
 {
   "branches": ["main"],
-  "repositoryUrl": "https://gitlab.2lovelaces.io/lidonation/www.catalystexplorer.com.git",
+  "repositoryUrl": "https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com.git",
   "plugins": [
     "@semantic-release/commit-analyzer",
     "@semantic-release/release-notes-generator",
@@ -20,7 +20,7 @@
     [
       "@semantic-release/gitlab",
       {
-        "gitlabUrl": "https://gitlab.lidonation.com",
+        "gitlabUrl": "https://gitlab.2lovelaces.io",
         "gitlabApiPathPrefix": "/api/v4"
       }
     ]

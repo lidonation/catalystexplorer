@@ -8,22 +8,22 @@ import ProposalFundingStatus from './ProposalFundingStatus';
 import ProposalQuickpitch from './ProposalQuickpitch';
 import ProposalSolution from './ProposalSolution';
 import IdeascaleProfileUsers from '@/Pages/IdeascaleProfile/Partials/IdeascaleProfileUsersComponent';
-import { useCallback, useState, useRef, useEffect } from 'react';
+import {useCallback, useState, useRef, useEffect} from 'react';
 
 export default function ProposalVerticalCard({
-    proposal,
-    userSelected,
-    noSelectedUser,
-    handleUserClick,
-    quickPitchView,
-    toggleLocalQuickPitchView,
-    isHorizontal,
-    t,
-    hasQuickPitch,
-    yesVotes,
-    abstainVotes,
-    hideFooter = false,
-}: any) {
+                                                 proposal,
+                                                 userSelected,
+                                                 noSelectedUser,
+                                                 handleUserClick,
+                                                 quickPitchView,
+                                                 toggleLocalQuickPitchView,
+                                                 isHorizontal,
+                                                 t,
+                                                 hasQuickPitch,
+                                                 yesVotes,
+                                                 abstainVotes,
+                                                 hideFooter = false,
+                                             }: any) {
     const [cardHeight, setCardHeight] = useState<number | null>(null);
     const cardRef = useRef<HTMLElement>(null);
 
@@ -75,7 +75,7 @@ export default function ProposalVerticalCard({
             <section className='flex-1 flex flex-col'>
                 <div className="flex-1  px-2">
                     {userSelected ? (
-                        <UserQuickView user={userSelected} />
+                        <UserQuickView user={userSelected}/>
                     ) : (
                         <>
                             <ProposalCardNav
@@ -106,9 +106,11 @@ export default function ProposalVerticalCard({
                             </section>
                             <div className="relative mt-4 min-h-36 border-b border-gray-200 pb-2 mb-2">
                                 {quickPitchView ? (
-                                    <ProposalQuickpitch
-                                        quickpitch={proposal.quickpitch}
-                                    />
+                                    <span></span>
+                                    // reenable when we can replace support ssr.
+                                    // <ProposalQuickpitch
+                                    //     quickpitch={proposal.quickpitch}
+                                    // />
                                 ) : (
                                     <ProposalSolution
                                         solution={proposal.solution}

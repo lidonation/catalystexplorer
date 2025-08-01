@@ -2,7 +2,7 @@ import CameraIcon from '@/Components/svgs/CameraIcon';
 import { ChangeEvent } from 'react';
 import { router } from '@inertiajs/react';
 import { generateLocalizedRoute } from '@/utils/localizedRoute';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 
 interface ProfilePhotoUploaderProps {
   photoPreview: string | null;
@@ -15,16 +15,16 @@ interface ProfilePhotoUploaderProps {
 }
 
 export default function ProfilePhotoUploader({
-  photoPreview, 
-  profilePhotoUrl, 
+  photoPreview,
+  profilePhotoUrl,
   photoUploading,
   photoError,
   setPhotoPreview,
   setPhotoUploading,
   setPhotoError
 }: ProfilePhotoUploaderProps) {
-  
-  const { t } = useTranslation();
+
+  const { t } = useLaravelReactI18n();
 
   const validatePhoto = (file: File): string | null => {
     const acceptedTypes = ['image/jpeg', 'image/png', 'image/gif'];

@@ -153,6 +153,15 @@ it('renders all workflows pages', function (string $path, string $component) {
         'component' => 'Workflows/SubmitVotes/Success',
     ],
 
+    // create service
+    [
+        'path' => 'en/workflows/create-service/steps/1',
+        'component' => 'Workflows/CreateService/Step1',
+    ],
+    [
+        'path' => 'en/workflows/create-service/steps/2',
+        'component' => 'Workflows/CreateService/Step2',
+    ],
 
     
 ]);

@@ -146,11 +146,11 @@ class Service extends Model implements HasMedia
     public function scopeFilterByCategories($query, $categoryIds = null)
     {
         return $query->when($categoryIds, function ($q, $categoryIds) {
-            $ids = is_array($categoryIds) ? $categoryIds : explode(',', $categoryIds);
+            $ids = is_array($categoryIds) ? $categoryIds : (array) $categoryIds;
             $q->whereHas('categories', function ($query) use ($ids) {
                 $query->whereIn(
-                    'service_model.model_id', // Explicitly reference the pivot table column
-                    Category::whereIn('id', $ids)->pluck('id')
+                    'service_model.model_id', // Explicit pivot column
+                    $ids // Already transformed to IDs
                 );
             });
         });

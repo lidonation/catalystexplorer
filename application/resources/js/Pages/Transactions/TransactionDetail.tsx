@@ -6,7 +6,7 @@ import { useLocalizedRoute } from '@/utils/localizedRoute';
 import { truncateMiddle } from '@/utils/truncateMiddle';
 import { Head, Link } from '@inertiajs/react';
 import { ChevronLeft, CopyIcon } from 'lucide-react';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import DetailRow from './Partials/DetailRow';
 import MetadataCard from './Partials/MetadataCard';
 import TransactionDetailsCard from './Partials/TransactionDetailsCard';
@@ -26,7 +26,7 @@ export default function TransactionDetail({
     transaction,
     walletStats,
 }: TransactionDetailProps) {
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
 
     return (
         <>

@@ -4,7 +4,7 @@ import { ParamsEnum } from '@/enums/proposal-search-params';
 import { shortNumber } from '@/utils/shortNumber';
 import { ResponsiveBar } from '@nivo/bar';
 import React, { useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 
 interface BarChartProps {
     chartData: any;
@@ -12,7 +12,7 @@ interface BarChartProps {
 }
 
 const StackedBarChart: React.FC<BarChartProps> = ({ chartData, viewBy }) => {
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
     const { getFilter } = useFilterContext();
     const [isMobile, setIsMobile] = useState(false);
     const [screenWidth, setScreenWidth] = useState(

@@ -6,7 +6,7 @@ import {
     useRef,
     useState,
 } from 'react';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import Paragraph from './Paragraph';
 
 interface TextareaProps extends InputHTMLAttributes<HTMLTextAreaElement> {
@@ -30,7 +30,7 @@ export default forwardRef(function Textarea(
     const localRef = useRef<HTMLTextAreaElement>(null);
     const [value, setValue] = useState(props.value as string);
 
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
 
     useImperativeHandle(ref, () => ({
         focus: () => localRef.current?.focus(),
@@ -72,7 +72,7 @@ export default forwardRef(function Textarea(
                         e.stopPropagation();
                     }
                 }}
-            />
+            />w
             <div className="mt-1 mb-2 flex items-center justify-between">
                 <Paragraph
                     size="sm"

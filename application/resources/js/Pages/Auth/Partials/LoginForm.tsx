@@ -2,15 +2,14 @@ import Button from '@/Components/atoms/Button';
 import Checkbox from '@/Components/atoms/Checkbox';
 import Paragraph from '@/Components/atoms/Paragraph';
 import PrimaryButton from '@/Components/atoms/PrimaryButton';
-import SecondaryButton from '@/Components/atoms/SecondaryButton';
 import TextInput from '@/Components/atoms/TextInput';
 import ConnectWalletButton from '@/Components/ConnectWalletButton';
 import InputError from '@/Components/InputError';
 import InputLabel from '@/Components/InputLabel';
 import { generateLocalizedRoute } from '@/utils/localizedRoute';
-import { Link, router, useForm } from '@inertiajs/react';
+import { router, useForm } from '@inertiajs/react';
 import { FormEventHandler, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 
 interface FormErrors {
     email?: string;
@@ -80,7 +79,7 @@ export default function LoginForm({ closeModal }: LoginFormProps) {
         );
     };
 
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
 
     const handleForgotPassword = () => {
         if (closeModal) closeModal();

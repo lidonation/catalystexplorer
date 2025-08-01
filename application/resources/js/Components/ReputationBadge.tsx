@@ -1,6 +1,6 @@
 import { ReputationTier } from '@/enums/reputation-tier-enums';
 import React, { useEffect, useRef, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import Paragraph from './atoms/Paragraph';
 import ToolTipHover from './ToolTipHover';
 import ReviewData = App.DataTransferObjects.ReviewData;
@@ -15,17 +15,17 @@ export const ReputationBadge: React.FC<ReputationBadgeProps> = ({
     review,
     className = '',
 }) => {
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
     const [showTooltip, setShowTooltip] = useState(false);
     const badgeRef = useRef<HTMLDivElement>(null);
     const [tooltipPosition, setTooltipPosition] = useState({ top: 0, left: 0 });
-    
+
     useEffect(() => {
         if (showTooltip && badgeRef.current) {
             const rect = badgeRef.current.getBoundingClientRect();
             setTooltipPosition({
-                top: rect.top - 40, 
-                left: rect.left + rect.width / 2 
+                top: rect.top - 40,
+                left: rect.left + rect.width / 2
             });
         }
     }, [showTooltip]);
@@ -114,7 +114,7 @@ export const ReputationBadge: React.FC<ReputationBadgeProps> = ({
             </svg>
 
             {showTooltip && document.body && createPortal(
-                <div 
+                <div
                     className="fixed transform -translate-x-1/2 z-[1000]"
                     style={{
                         top: `${tooltipPosition.top}px`,

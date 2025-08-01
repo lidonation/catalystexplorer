@@ -1,5 +1,5 @@
 import { usePage } from '@inertiajs/react';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import CatalystLogo from '../atoms/CatalystLogo';
 import AppNavigation from './AppNavigation';
 import ThemeSwitcher from './ThemeSwitcher';
@@ -8,15 +8,15 @@ import UserNavigation from './UserNavigation';
 import User = App.DataTransferObjects.UserData;
 
 function DesktopSidebar(props: any) {
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
     const { auth } = usePage().props;
     const { url } = usePage();
     const { ...rest } = props;
     const isOnMyRoute = url.includes('/my/');
 
-    const currentPath = window.location.pathname;
+    const currentPath = typeof window === 'undefined' ? null : window.location.pathname;
 
-    if (currentPath.includes('login') || currentPath.includes('register')) {
+    if (currentPath?.includes('login') || currentPath?.includes('register')) {
         return null;
     }
 

@@ -6,7 +6,7 @@ import { ParamsEnum } from '@/enums/proposal-search-params';
 import { userSettingEnums } from '@/enums/user-setting-enums';
 import { useUserSetting } from '@/Hooks/useUserSettings';
 import { useEffect, useMemo, useCallback, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 
 interface Step3Props {
     disabled?: boolean;
@@ -21,7 +21,7 @@ export default function Step3({
     onNext,
     onExploreCharts,
 }: Step3Props) {
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
     const { setFilters } = useFilterContext();
 
     const {
@@ -29,7 +29,7 @@ export default function Step3({
         setValue: setSelectedChartTypes,
     } = useUserSetting<string[]>(userSettingEnums.CHART_OPTIONS, []);
 
-    
+
     const isChartsSelected = useMemo(() => {
         return (selectedChartTypes?.length ?? 0) > 0;
     }, [selectedChartTypes]);
@@ -52,7 +52,7 @@ export default function Step3({
         onCompletionChange?.(isChartsSelected);
     }, [isChartsSelected, onCompletionChange]);
 
-    
+
     useEffect(() => {
         if (selectedChartTypes && selectedChartTypes.length > 0) {
             setFilters({
@@ -63,11 +63,11 @@ export default function Step3({
         }
     }, [selectedChartTypes, t, setFilters]);
 
-    
+
     const chartOptions = useMemo(() => {
         const isDistributionChart = selectedChart === 'distributionChart';
         const isTrendChart = selectedChart === 'trendChart';
-        
+
         const allOptions = [
             { label: t('charts.barChart'), value: 'barChart' },
             { label: t('charts.pieChart'), value: 'pieChart' },
@@ -80,13 +80,13 @@ export default function Step3({
 
         return allOptions.map(option => {
             let isDisabled = false;
-            
+
             if (isDistributionChart) {
                 isDisabled = ['barChart', 'lineChart', 'pieChart', 'stackedBarCharts', 'funnelChart'].includes(option.value);
             } else if (isTrendChart) {
                 isDisabled = ['heatMap', 'scatterPlots'].includes(option.value);
             }
-            
+
             return {
                 ...option,
                 disabled: isDisabled
@@ -98,37 +98,37 @@ export default function Step3({
         if (selectedChart && selectedChartTypes && selectedChartTypes.length > 0) {
             const isDistributionChart = selectedChart === 'distributionChart';
             const isTrendChart = selectedChart === 'trendChart';
-            
+
             let disabledOptions: string[] = [];
-            
+
             if (isDistributionChart) {
                 disabledOptions = ['barChart', 'lineChart', 'pieChart', 'stackedBarCharts', 'funnelChart'];
             } else if (isTrendChart) {
                 disabledOptions = ['heatMap', 'scatterPlots'];
             }
-            
+
             const filteredSelection = selectedChartTypes.filter(
                 chartType => !disabledOptions.includes(chartType)
             );
-            
+
             if (filteredSelection.length !== selectedChartTypes.length) {
                 setSelectedChartTypes(filteredSelection);
             }
         }
     }, [selectedChart, selectedChartTypes, setSelectedChartTypes]);
 
-    
+
     const selectedItems = useMemo(() => {
         return selectedChartTypes ?? [];
     }, [selectedChartTypes]);
 
-  
+
     const handleSelectorChange = useCallback((value: string | string[]) => {
         const selected = Array.isArray(value) ? value : [value];
-        
-       
+
+
         setSelectedChartTypes(selected);
-    
+
         if (selected.length > 0) {
             setFilters({
                 label: t('charts.chartOptions'),

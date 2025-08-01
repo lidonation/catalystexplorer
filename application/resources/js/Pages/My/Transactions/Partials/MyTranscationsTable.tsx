@@ -3,7 +3,7 @@ import { useConnectWallet } from '@/Context/ConnectWalletSliderContext';
 import TransactionData = App.DataTransferObjects.TransactionData;
 import RegisterTwo from '@/Components/svgs/RegisterTwo';
 import Paragraph from '@/Components/atoms/Paragraph';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import MyTransactionRow from './MyTransactionRow';
 import CopyableCell from '@/Components/CopyableCell';
 
@@ -20,7 +20,7 @@ interface MyTransactionTableProps {
 
 export const MyTransactionTable: React.FC<MyTransactionTableProps> = ({ transactions = [] }) => {
   const { CardanoWasm } = useConnectWallet();
-  const { t } = useTranslation();
+  const { t } = useLaravelReactI18n();
   const voterRegistrationTypes = ['cip15', 'cip36'];
 
   const getStakeAddress = (address: string): string => {

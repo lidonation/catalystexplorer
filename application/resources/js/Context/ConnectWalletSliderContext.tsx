@@ -1,7 +1,7 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import { CIP30API } from '@/types/wallet';
 import WalletSlider from '@/Components/WalletConnectSlider';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import { usePage } from '@inertiajs/react';
 import storageService from '@/utils/storage-service';
 interface WalletContextType {
@@ -48,7 +48,7 @@ export function ConnectWalletProvider({
   const [connectedWalletProvider, setConnectedWalletProvider] = useState<any | null>(null);
   const [networkId, setNetworkId] = useState<number | null>(null);
   const [networkName, setNetworkName] = useState<string>('');
-  const { t } = useTranslation();
+  const { t } = useLaravelReactI18n();
   const { environment } = usePage().props;
 
   const deriveStakeAddress = (hexStakeAddressBytes: string, isTestnet: boolean): string => {
@@ -301,7 +301,7 @@ export function ConnectWalletProvider({
 }
 
 export function useConnectWallet() {
-  const { t } = useTranslation();
+  const { t } = useLaravelReactI18n();
   const context = useContext(WalletContext);
   if (context === undefined) {
     throw new Error(t('wallet.errors.contextError'));

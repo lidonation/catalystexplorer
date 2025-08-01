@@ -49,7 +49,7 @@ export default function ServiceCategories({
                     )}
                     <div className="flex justify-start items-center gap-3">
                       <div className="inline-flex flex-col justify-center items-start">
-                        <div className="justify-start font-medium text-gray-900/80 leading-tight">
+                        <div className="justify-start font-medium text-content-lighter leading-tight">
                           {subCategory.name}
                         </div>
                       </div>

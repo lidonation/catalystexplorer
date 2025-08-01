@@ -4,7 +4,7 @@ import ProposalCardHeader from '@/Pages/Proposals/Partials/ProposalCardHeader';
 import ProposalFundingPercentages from '@/Pages/Proposals/Partials/ProposalFundingPercentages';
 import ProposalFundingStatus from '@/Pages/Proposals/Partials/ProposalFundingStatus';
 import React, { useCallback, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import TableHeaderCell from './ProposalTableHeaderCell';
 import { useFilterContext } from '@/Context/FiltersContext';
 import { ParamsEnum } from '@/enums/proposal-search-params';
@@ -34,7 +34,7 @@ interface ProposalTableProps {
 }
 
 const ProposalTable: React.FC<ProposalTableProps> = ({ proposals }) => {
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
     const { setFilters, getFilter } = useFilterContext();
     const [selectedUserMap, setSelectedUserMap] = useState<
         Record<string, IdeascaleProfileData | null>
@@ -58,15 +58,15 @@ const ProposalTable: React.FC<ProposalTableProps> = ({ proposals }) => {
 
         if (!direction) {
             const url = new URL(window.location.href);
-        
+
             url.searchParams.delete(ParamsEnum.SORTS);
-            
+
             router.get(url.pathname + url.search, {}, {
                 preserveState: true,
                 preserveScroll: true,
                 replace: true
             });
-            
+
             setFilters({
                 param: ParamsEnum.SORTS,
                 value: null,

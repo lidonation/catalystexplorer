@@ -89,10 +89,10 @@ export default {
                     'var(--cx-background-gradient-1-light)',
                 'background-button-gradient-color-2':
                     'var(--cx-background-gradient-2-light)',
-                'background-dashboard-menu': 
-                    'var(--cx-background-dashboard-menu)',    
-                       'active-dashboard-menu': 
-                    'var(--cx-active-dashboard-menu)',  
+                'background-dashboard-menu':
+                    'var(--cx-background-dashboard-menu)',
+                'active-dashboard-menu':
+                    'var(--cx-active-dashboard-menu)',
                 // border: 'var(--cx-border-color)',
                 'border-chip': 'var(--cx-border-chip-color)',
                 'border-secondary': 'var(--cx-border-secondary-color)',

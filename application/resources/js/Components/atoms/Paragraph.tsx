@@ -11,7 +11,6 @@ function Paragraph({
     size = 'md',
     ...props
 }: ParagraphProps) {
-    
     let content;
 
     if (size === 'sm') {

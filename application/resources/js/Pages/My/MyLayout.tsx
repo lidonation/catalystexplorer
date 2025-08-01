@@ -4,7 +4,7 @@ import { SearchParams } from '@/types/search-params';
 import { generateTabs, myProfileTabs } from '@/utils/routeTabs';
 import { usePage } from '@inertiajs/react';
 import { ReactNode, useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import UserTab from '../Profile/Partials/UserTab';
 import UserSection from './Components/UserSection';
 import User = App.DataTransferObjects.UserData;
@@ -22,7 +22,7 @@ interface MyLayoutProps {
 }
 
 export default function MyLayout({ children, filters }: MyLayoutProps) {
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
     const { auth, url } = usePage().props;
     const [activeTab, setActiveTab] = useState('');
     const tabs = generateTabs(t, myProfileTabs);

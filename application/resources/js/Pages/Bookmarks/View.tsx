@@ -10,7 +10,7 @@ import { generateLocalizedRoute } from '@/utils/localizedRoute';
 import { formatTimestamp } from '@/utils/timeStamp';
 import { Head, Link, router, usePage } from '@inertiajs/react';
 import { Clock, MessageCircle } from 'lucide-react';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import CommunitiesPaginatedList from '../Communities/Partials/CommunitiesPaginatedList';
 import GroupPaginatedList from '../Groups/Partials/GroupPaginatedList';
 import IdeascaleProfilePaginatedList from '../IdeascaleProfile/Partials/IdeascaleProfilePaginatedList';
@@ -61,32 +61,32 @@ type BookmarkCollectionListProps =
 
 const BookmarkContent = (props: BookmarkCollectionListProps) => {
     const { type, bookmarkCollection } = props;
-    const { t } = useTranslation();
-    
+    const { t } = useLaravelReactI18n();
+
     const { getFilter, setFilters, filters } = useFilterContext();
-    
+
     const queryParams = new URLSearchParams(window.location.search);
     const initialSearchQuery = queryParams.get(ParamsEnum.QUERY) || '';
     const [searchQuery, setSearchQuery] = useState(initialSearchQuery);
 
     const handleSearch = (search: string) => {
         setSearchQuery(search);
-        
+
         const currentUrl = new URL(window.location.href);
         const newParams = new URLSearchParams(currentUrl.search);
-        
+
         if (search.trim() === '') {
             newParams.delete(ParamsEnum.QUERY);
         } else {
             newParams.set(ParamsEnum.QUERY, search);
         }
-        
+
         newParams.delete('p');
-        
+
         const baseUrl = currentUrl.pathname;
         const queryString = newParams.toString();
         const fullUrl = queryString ? `${baseUrl}?${queryString}` : baseUrl;
-        
+
         router.visit(fullUrl, {
             preserveState: false,
             preserveScroll: false,
@@ -99,10 +99,10 @@ const BookmarkContent = (props: BookmarkCollectionListProps) => {
             bookmarkCollection: bookmarkCollection.hash,
             type: val,
         });
-        
+
         const currentUrl = new URL(window.location.href);
         const searchParam = currentUrl.searchParams.get(ParamsEnum.QUERY);
-        
+
         if (searchParam) {
             const newUrl = new URL(route, window.location.origin);
             newUrl.searchParams.set(ParamsEnum.QUERY, searchParam);
@@ -129,16 +129,16 @@ const BookmarkContent = (props: BookmarkCollectionListProps) => {
                 );
             case 'communities':
                 return (
-                    <CommunitiesPaginatedList 
-                        communities={props.communities} 
+                    <CommunitiesPaginatedList
+                        communities={props.communities}
                         cardType="mini"
                         gridCols="grid-cols-1 gap-2 lg:grid-cols-2 xl:grid-cols-4"
                     />
                 );
             case 'groups':
                 return (
-                    <GroupPaginatedList 
-                        groups={props.groups} 
+                    <GroupPaginatedList
+                        groups={props.groups}
                         cardType="mini"
                         gridCols="grid-cols-1 gap-2 lg:grid-cols-2 xl:grid-cols-4 auto-rows-fr"
                     />
@@ -198,7 +198,7 @@ const BookmarkContent = (props: BookmarkCollectionListProps) => {
 
 const View = (props: BookmarkCollectionListProps) => {
     const { type, bookmarkCollection } = props;
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
 
     const preselected = () => {
         switch (props.type) {

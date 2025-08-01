@@ -9,7 +9,7 @@ import { PaginatedData } from '@/types/paginated-data';
 import { SearchParams } from '@/types/search-params';
 import { Head } from '@inertiajs/react';
 import { useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import MyProposalFilters from './partials/MyProposalsFilters';
 import ProposalData = App.DataTransferObjects.ProposalData;
 
@@ -19,7 +19,7 @@ interface MyProposalsProps {
 }
 
 export default function MyProposals({ proposals, filters }: MyProposalsProps) {
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
     const [showFilters, setShowFilters] = useState(false);
 
     return (

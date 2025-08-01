@@ -2,7 +2,7 @@ import { useFilterContext } from '@/Context/FiltersContext';
 import { ParamsEnum } from '@/enums/proposal-search-params';
 import { ResponsiveHeatMap } from '@nivo/heatmap';
 import React, { useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 
 interface HeatMapProps {
     chartData: any[];
@@ -10,7 +10,7 @@ interface HeatMapProps {
 }
 
 const HeatMap: React.FC<HeatMapProps> = ({ chartData, viewBy }) => {
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
     const { getFilter } = useFilterContext();
     const [screenWidth, setScreenWidth] = useState(
         typeof window !== 'undefined' ? window.innerWidth : 1200,

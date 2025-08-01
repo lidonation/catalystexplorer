@@ -8,7 +8,7 @@ import CommunitiesIcon from '@/Components/svgs/CommunitiesSvg';
 import { useLocalizedRoute } from '@/utils/localizedRoute';
 import { Link, router, usePage } from '@inertiajs/react';
 import React, { useState, useEffect } from 'react';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import CommunityData = App.DataTransferObjects.CommunityData;
 import ValueLabel from '@/Components/atoms/ValueLabel';
 import Paragraph from '@/Components/atoms/Paragraph';
@@ -26,7 +26,7 @@ const CommunityCardMini: React.FC<CommunityCardMiniProps> = ({
                                                                  embedded = true,
                                                                  isMember,
                                                              }) => {
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
     const { props } = usePage<{ isMember?: boolean }>();
 
     const initialMemberStatus = isMember !== undefined

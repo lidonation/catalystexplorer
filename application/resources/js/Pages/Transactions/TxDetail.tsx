@@ -1,6 +1,6 @@
 import Title from '@/Components/atoms/Title';
 import { Head } from '@inertiajs/react';
-import { useTranslation } from "react-i18next";
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import TransactionData = App.DataTransferObjects.TransactionData;
 
 interface TransactionDetailProps {
@@ -15,7 +15,7 @@ export default function TransactionDetail({
   primaryLabel
 }: TransactionDetailProps) {
 
-  const { t } = useTranslation();
+  const { t } = useLaravelReactI18n();
 
   return (
     <>

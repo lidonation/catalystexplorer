@@ -4,7 +4,7 @@ import Claimed from '@/Components/svgs/ClaimedIcon';
 import { useLocalizedRoute } from '@/utils/localizedRoute';
 import { usePage } from '@inertiajs/react';
 import React, { useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import { toast } from 'react-toastify';
 
 interface ClaimedButtonProps {
@@ -22,7 +22,7 @@ const ClaimedButton: React.FC<ClaimedButtonProps> = ({
     className = '',
     onClaimSuccess,
 }) => {
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [localClaimedBy, setLocalClaimedBy] = useState(claimedBy);
@@ -42,7 +42,7 @@ const ClaimedButton: React.FC<ClaimedButtonProps> = ({
 
     const handleClaim = async () => {
         if (!isAuthenticated) {
-            toast(t('claim.login_required', 'Login required'));
+            toast(t('claim.login_required'));
             return;
         }
 
@@ -74,7 +74,7 @@ const ClaimedButton: React.FC<ClaimedButtonProps> = ({
             {buttonState === 'claimed' ? (
                 <Button
                     className="claimed-button flex items-center"
-                    ariaLabel={t('claim.already_claimed', 'Already claimed')}
+                    ariaLabel={t('claim.already_claimed')}
                     disabled={true}
                 >
                     <Claimed />
@@ -96,7 +96,7 @@ const ClaimedButton: React.FC<ClaimedButtonProps> = ({
                         {isLoading ? (
                             <div className="flex items-center space-x-2">
                                 <span className="animate-pulse">
-                                    {t('claim.claiming', 'Claiming...')}
+                                    {t('claim.claiming')}
                                 </span>
                             </div>
                         ) : (

@@ -1,7 +1,7 @@
 import { generateLocalizedRoute } from '@/utils/localizedRoute';
 import { ChevronRight } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import { router, useForm } from '@inertiajs/react';
 import { TinderWorkflowParams } from '@/enums/tinder-workflow-params';
 import Paragraph from '@/Components/atoms/Paragraph';
@@ -38,7 +38,7 @@ interface Step1Props {
 }
 
 const Step1: React.FC<Step1Props> = ({ stepDetails, activeStep, existingPreferences,filters, isEditMode = false, tinderCollectionHash, leftBookmarkCollectionHash, rightBookmarkCollectionHash,latestFund, campaigns, funds }) => {
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
 
     /* const nextStep = generateLocalizedRoute('workflows.tinderProposal.index', {
         step: activeStep + 1,
@@ -107,7 +107,7 @@ const Step1: React.FC<Step1Props> = ({ stepDetails, activeStep, existingPreferen
 
     const buildUpdatedFilters = (updates: Partial<SearchParams> = {}) => {
             const baseFilters: Record<string, any> = { ...filters };
-    
+
             Object.entries(updates).forEach(([key, value]) => {
                 if (value === null || value === undefined || value === '') {
                     delete baseFilters[key];
@@ -115,7 +115,7 @@ const Step1: React.FC<Step1Props> = ({ stepDetails, activeStep, existingPreferen
                     baseFilters[key] = value;
                 }
             });
-    
+
             if (
                 Object.keys(updates).length > 0 &&
                 !updates[ParamsEnum.PAGE] &&
@@ -123,7 +123,7 @@ const Step1: React.FC<Step1Props> = ({ stepDetails, activeStep, existingPreferen
             ) {
                 baseFilters[ParamsEnum.PAGE] = 1;
             }
-    
+
             return baseFilters;
         };
 
@@ -134,12 +134,12 @@ const Step1: React.FC<Step1Props> = ({ stepDetails, activeStep, existingPreferen
             // Get current URL parameters
             const currentParams = new URLSearchParams(window.location.search);
             const existingParams: Record<string, any> = {};
-            
+
             // Preserve existing parameters
             currentParams.forEach((value, key) => {
                 existingParams[key] = value;
             });
-            
+
             router.get(
                 window.location.pathname,
                 buildUpdatedFilters({ ...existingParams, [paramName]: value }),
@@ -158,16 +158,20 @@ const Step1: React.FC<Step1Props> = ({ stepDetails, activeStep, existingPreferen
                 <Nav stepDetails={stepDetails} activeStep={activeStep} />
 
                 <Content>
-                <div className="bg-background mx-auto max-w-3xl px-12 lg:px-29 border-black">
+                <div className="bg-background mx-auto max-w-3xl px-12 xl:px-20 py-4 sm:py-8 border-black">
                         <div className="space-y-6 rounded-lg border border-gray-100 p-6 shadow-sm max-h-[60vh] overflow-y-auto scrolling-touch">
                             <div className="space-y-6">
                                 {/* Fund Selection */}
                                 <div>
                                     <div className='flex text-sm gap-2 mb-2'>
-                                        <Paragraph size='xs' className='text-content'>
-                                            {t('workflows.tinderProposal.step1.selectFund')}
+                                        <Paragraph size='xs' className='text-content flex flex-row gap-1'>
+                                            <span>
+                                                {t('workflows.tinderProposal.step1.selectFund')}
+                                            </span>
+                                            <span className="italic">
+                                                {t('workflows.tinderProposal.step1.selectAllThatApply')}
+                                            </span>
                                         </Paragraph>
-                                        <Paragraph size='sm' className="italic ">{t('workflows.tinderProposal.step1.selectAllThatApply')}</Paragraph>
                                     </div>
                                     <Selector
                                         options={fundOptions}
@@ -191,8 +195,9 @@ const Step1: React.FC<Step1Props> = ({ stepDetails, activeStep, existingPreferen
                                     <div className='flex flex-col text-sm gap-1 mb-2'>
                                         <Paragraph size='xs' className='text-content'>
                                             {t('workflows.tinderProposal.step1.proposalTypesQuestion')}
+                                            &nbsp;
+                                            <span className='italic text-xs text-content'>{t('workflows.tinderProposal.step1.selectAllThatApply')}</span>
                                         </Paragraph>
-                                        <Paragraph  size='sm' className="italic text-content">{t('workflows.tinderProposal.step1.selectAllThatApply')}</Paragraph>
                                     </div>
                                     <div className="grid grid-cols-2 gap-3">
                                         {proposalTypeOptions.map((option) => (
@@ -215,8 +220,9 @@ const Step1: React.FC<Step1Props> = ({ stepDetails, activeStep, existingPreferen
                                     <div className='flex flex-col gap-1 mb-2'>
                                         <Paragraph size='xs' className='text-content'>
                                             {t('workflows.tinderProposal.step1.proposalSizeQuestion')}
+                                            &nbsp;
+                                            <span className='italic text-xs text-content'>{t('workflows.tinderProposal.step1.selectAllThatApply')}</span>
                                         </Paragraph>
-                                        <Paragraph size='sm' className="italic text-content">{t('workflows.tinderProposal.step1.selectAllThatApply')}</Paragraph>
                                     </div>
                                     <div className="space-y-3">
                                         {proposalSizeOptions.map((option) => (
@@ -239,8 +245,9 @@ const Step1: React.FC<Step1Props> = ({ stepDetails, activeStep, existingPreferen
                                     <div className='flex flex-col gap-1 mb-2'>
                                         <Paragraph size='xs' className='text-content'>
                                             {t('workflows.tinderProposal.step1.impactTypeQuestion')}
+                                            &nbsp;
+                                            <span className='italic text-xs text-content'>{t('workflows.tinderProposal.step1.selectAllThatApply')}</span>
                                         </Paragraph>
-                                        <Paragraph size='sm' className="italic text-content">{t('workflows.tinderProposal.step1.selectAllThatApply')}</Paragraph>
                                     </div>
                                     <div className="space-y-3">
                                         {impactTypeOptions.map((option) => (
