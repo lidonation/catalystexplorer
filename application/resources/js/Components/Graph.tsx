@@ -1,8 +1,11 @@
-import { CatalystConnectionParamsEnum, CatalystConnectionsEnum } from '@/enums/catalyst-connections-enums';
+import { CatalystConnectionsEnum } from '@/enums/catalyst-connections-enums';
 import axios from 'axios';
 import { useState } from 'react';
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 import CatalystConnectionsGraph, { Node } from './CatalystConnectionsGraph';
 import ConnectionData = App.DataTransferObjects.ConnectionData;
+import Paragraph from './atoms/Paragraph';
+
 
 interface GraphProps {
     graphData: ConnectionData;
@@ -25,10 +28,16 @@ const COLORS = {
 } as const;
 
 const Graph: React.FC<GraphProps> = ({ graphData }) => {
+    const { t } = useLaravelReactI18n();
     const [selectedProfileIds] = useState<Set<string>>(new Set());
     const [selectedGroupIds] = useState<Set<string>>(new Set());
     const [selectedCommunityIds] = useState<Set<string>>(new Set());
     const [currentData, setCurrentData] = useState<ConnectionData>(graphData);
+    const [isLoading, setIsLoading] = useState<boolean>(false);
+    const [loadingNodeId, setLoadingNodeId] = useState<string | null>(null);
+    const [loadingNodeName, setLoadingNodeName] = useState<string>('');
+    const [showNoConnectionsMessage, setShowNoConnectionsMessage] = useState<boolean>(false);
+    const [noConnectionsNodeName, setNoConnectionsNodeName] = useState<string>('');
 
     const routeName = graphData.rootNodeType == CatalystConnectionsEnum.GROUP 
         ? 'api.groups.connections' 
@@ -51,33 +60,118 @@ const Graph: React.FC<GraphProps> = ({ graphData }) => {
                 targetSet = selectedProfileIds;
         }
 
-        if (targetSet.has(id) || id === currentData.rootNodeId) {
-            return; // Exit early if the ID is already selected
+        if (targetSet.has(id) || id === currentData.rootNodeId || isLoading) {
+            return;
         }
 
         try {
+            setIsLoading(true);
+            setLoadingNodeId(id);
+            setLoadingNodeName(node.name || t('graph.unknownNode'));
+            setShowNoConnectionsMessage(false);
             targetSet.add(id);
 
-            const response = await axios.get<ConnectionData>(
-                route(routeName, { hash: graphData.rootNodeHash }),
+            const nodeIdentifier = node.hash;
+            if (!nodeIdentifier) {
+                throw new Error('Node has no hash or id');
+            }
+
+            const incrementalResponse = await axios.get<ConnectionData>(
+                route(routeName.replace('.connections', '.incremental-connections'), { hash: nodeIdentifier }),
                 {
                     params: {
-                        [CatalystConnectionParamsEnum.IDEASCALEPROFILE]: Array.from(selectedProfileIds),
-                        [CatalystConnectionParamsEnum.GROUP]: Array.from(selectedGroupIds),
-                        [CatalystConnectionParamsEnum.COMMUNITY]: Array.from(selectedCommunityIds),
+                        hash: nodeIdentifier,
+                        depth: 1,
+                        exclude_existing: Array.from(new Set([
+                            ...currentData.nodes.map(n => n.id),
+                            ...Array.from(selectedProfileIds),
+                            ...Array.from(selectedGroupIds),
+                            ...Array.from(selectedCommunityIds)
+                        ]))
                     },
+                   
                 },
+            ).catch((axiosError) => {
+                console.error('Axios request failed:', axiosError);
+                throw axiosError;
+            });
+
+            if (!incrementalResponse.data || 
+                !Array.isArray(incrementalResponse.data.nodes) || 
+                !Array.isArray(incrementalResponse.data.links)) {
+                return;
+            }
+
+            const newNodes = incrementalResponse.data.nodes.filter(newNode => 
+                !currentData.nodes.some(existingNode => existingNode.id === newNode.id)
             );
 
-            console.log('node clicked');
-            setCurrentData(response.data);
-        } catch (error) {
-            console.error('Failed to update node:', error);
+            const newLinks = incrementalResponse.data.links.filter(newLink => 
+                !currentData.links.some(existingLink => 
+                    existingLink.source === newLink.source && existingLink.target === newLink.target
+                )
+            );
+
+            if (newNodes.length === 0 && newLinks.length === 0) {
+                setNoConnectionsNodeName(node.name || t('graph.unknownNode'));
+                setShowNoConnectionsMessage(true);
+                setTimeout(() => {
+                    setShowNoConnectionsMessage(false);
+                }, 3000);
+                return;
+            }
+
+            const mergedData: ConnectionData = {
+                ...currentData,
+                nodes: [...currentData.nodes, ...newNodes],
+                links: [...currentData.links, ...newLinks]
+            };
+
+            setCurrentData(mergedData);
+        } catch (error: any) {
+            targetSet.delete(id);
+    
+            if (error.response) {
+               /*  console.error('Axios error response:', {
+                    status: error.response.status,
+                    statusText: error.response.statusText,
+                    data: error.response.data,
+                    headers: error.response.headers
+                }); */
+            } else if (error.request) {
+               
+                console.error('Axios error request:', error.request);
+            } else {
+                
+               // console.error('Axios error:', error.message);
+            }
+        } finally {
+            setIsLoading(false);
+            setLoadingNodeId(null);
+            setLoadingNodeName('');
         }
     };
 
     return (
-        <div className="bg-background w-full">
+        <div className="bg-background w-full relative">
+            {isLoading && (
+                <div className="bg-background absolute top-4 right-4 z-10 bg-white/90 px-3 py-2 rounded-lg shadow-md">
+                    <div className="flex items-center space-x-2">
+                        <div className="animate-spin h-4 w-4 border-2 border-primary border-t-transparent rounded-full"></div>
+                        <Paragraph className="text-sm text-content">{t('graph.loadingConnections', { nodeName: loadingNodeName })}</Paragraph>
+                    </div>
+                </div>
+            )}
+            {showNoConnectionsMessage && (
+                <div className="absolute top-4 right-4 z-10 bg-warning/20 border border-warning px-3 py-2 rounded-lg shadow-md">
+                    <div className="flex items-center space-x-2">
+                        <svg className="h-4 w-4 text-warning/[0.5]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <Paragraph className="text-sm text-warning">{t('graph.noAdditionalConnections', { nodeName: noConnectionsNodeName })}</Paragraph>
+                    </div>
+                </div>
+            )}
             <CatalystConnectionsGraph
                 data={currentData}
                 nodeSize={NODE_SIZES}

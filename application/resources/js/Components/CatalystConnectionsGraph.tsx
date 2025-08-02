@@ -1,13 +1,18 @@
 import { CatalystConnectionsEnum } from '@/enums/catalyst-connections-enums';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-// import ForceGraph2D from 'react-force-graph-2d';
+import React, { useCallback, useEffect, useMemo, useRef, useState, Suspense } from 'react';
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 import ConnectionData = App.DataTransferObjects.ConnectionData;
+import Paragraph from './atoms/Paragraph';
+
+// Lazy load ForceGraph2D to avoid SSR issues
+const ForceGraph2D = React.lazy(() => import('react-force-graph-2d'));
 
 export type Node = {
     id: string;
     type: string;
     name: string;
     photo?: string;
+    hash?: string;
     val?: number;
     x?: number;
     y?: number;
@@ -46,6 +51,7 @@ const CatalystConnectionsGraph = ({
     onNodeHover,
     onNodeClick,
 }: GraphComponentProps) => {
+    const [isClient, setIsClient] = useState(false);
     const fgRef = useRef<any>(null);
     const imageCache = useRef<Map<string, HTMLImageElement>>(new Map());
     const [hoveredNodeId, setHoveredNodeId] = useState<string | null>(null);
@@ -55,6 +61,13 @@ const CatalystConnectionsGraph = ({
         data.rootNodeId,
     );
     const [dimensions, setDimensions] = useState({ width: 800, height: 600 });
+
+    const { t } = useLaravelReactI18n();
+
+    // Check if we're on the client side
+    useEffect(() => {
+        setIsClient(true);
+    }, []);
 
     const loadImages = useCallback(() => {
         const cache = new Map<string, HTMLImageElement>();
@@ -354,34 +367,49 @@ const CatalystConnectionsGraph = ({
         ],
     );
 
-    return (
-        <div className="bg-background w-full" ref={containerRef}>
-            {/*<ForceGraph2D*/}
-            {/*    width={dimensions.width}*/}
-            {/*    height={dimensions.height}*/}
-            {/*    ref={fgRef}*/}
-            {/*    graphData={data}*/}
-            {/*    nodeLabel="name"*/}
-            {/*    nodeRelSize={4}*/}
-            {/*    onBackgroundClick={() => {*/}
-                     /* fgRef.current.zoomToFit(100, 0); */
-            {/*        setFocusedNodeId(null);*/}
-            {/*    }}*/}
-            {/*    onNodeClick={(node) => {*/}
-            {/*        fgRef.current.zoomToFit(400, 0);*/}
+    const LoadingSpinner = () => (
+        <div className="flex items-center justify-center w-full h-96 bg-background">
+            <div className="text-center">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-2"></div>
+                <Paragraph className="text-sm text-muted-foreground">{t('graph.loadingGraph')}</Paragraph>
+            </div>
+        </div>
+    );
 
-            {/*        if (focusedNodeId !== node.id) {*/}
-            {/*            onNodeClick?.(node);*/}
-            {/*            handleNodeClick(node);*/}
-            {/*        }*/}
-            {/*    }}*/}
-            {/*    onNodeHover={(node) => {*/}
-            {/*        setHoveredNodeId(node?.id || null);*/}
-            {/*        onNodeHover?.(node || null);*/}
-            {/*    }}*/}
-            {/*    nodeCanvasObject={nodeCanvasObject}*/}
-            {/*    linkCanvasObject={linkCanvasObject}*/}
-            {/*/>*/}
+    return (
+        <div className="bg-background w-full h-120" ref={containerRef}>
+            {!isClient ? (
+                <LoadingSpinner />
+            ) : (
+                <Suspense fallback={<LoadingSpinner />}>
+                    <ForceGraph2D
+                        width={dimensions.width}
+                        height={dimensions.height}
+                        ref={fgRef}
+                        graphData={data}
+                        nodeLabel="name"
+                        nodeRelSize={4}
+                        onBackgroundClick={() => {
+                            fgRef.current.zoomToFit(100, 0);
+                            setFocusedNodeId(null);
+                        }}
+                        onNodeClick={(node) => {
+                            fgRef.current.zoomToFit(400, 0);
+
+                            if (focusedNodeId !== node.id) {
+                                onNodeClick?.(node as Node);
+                                handleNodeClick(node);
+                            }
+                        }}
+                        onNodeHover={(node) => {
+                            setHoveredNodeId(node?.id?.toString() || null);
+                            onNodeHover?.(node as Node || null);
+                        }}
+                        nodeCanvasObject={nodeCanvasObject}
+                        linkCanvasObject={linkCanvasObject}
+                    />
+                </Suspense>
+            )}
         </div>
     );
 };
