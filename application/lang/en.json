@@ -707,6 +707,7 @@
     "ideascaleProfiles.tabs.schedule": "Schedule",
     "ideascaleProfiles.tabs.reports": "Reports",
     "ideascaleProfiles.tabs.campaigns": "Campaigns",
+    "ideascaleProfiles.tabs.milestones": "Milestones",
     "milestones.milestones": "Milestones",
     "groups.groups": "Groups",
     "groups.title": "Catalyst Groups",
@@ -1182,5 +1183,7 @@
     "voter.sort.proposalsVotedOnDesc": "Proposals Voted On: High to Low",
     "voter.sort.proposalsVotedOnAsc": "Proposals Voted On: Low to High",
     "rightSwipes": " - Right Swipes",
-    "leftSwipes": " - Left Swipes"
+    "leftSwipes": " - Left Swipes",
+    "startDate": "Start Date",
+    "endDate": "End Date"
 }
