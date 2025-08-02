@@ -41,7 +41,7 @@ export default function Nav({ stepDetails, activeStep }: NavProps) {
 
     return (
         <div className="bg-background sticky top-0 z-30">
-            <nav className="bg-background w-full rounded-tl-lg shadow-md">
+            <nav className="bg-background w-full rounded-tl-lg shadow-md" data-testid="workflow-nav">
                 <ul
                     className={` no-scrollbar flex w-full overflow-x-auto whitespace-nowrap`}
                 >
@@ -101,6 +101,7 @@ export default function Nav({ stepDetails, activeStep }: NavProps) {
                                                   ? 'border-primary text-primary border'
                                                   : 'text-slate border'
                                         }`}
+                                        data-testid={`step-number-${index + 1}`}
                                     >
                                         {index + 1 < activeStep ? (
                                             <TickIcon className="w-4 h-4 lg:w-5 lg:h-5" />
