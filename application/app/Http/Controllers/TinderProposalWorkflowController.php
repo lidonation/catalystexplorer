@@ -937,14 +937,20 @@ class TinderProposalWorkflowController extends Controller
             'bookmarkCollection' => 'required|string',
             'vote' => 'nullable|integer|in:-1,0,1', // Accept VoteEnum values
         ]);
-       
+
         $bookmarkCollection = BookmarkCollection::byHash($validated['bookmarkCollection']);
 
         if (! $bookmarkCollection || $bookmarkCollection->user_id !== Auth::id()) {
 
             return response()->json(['error' => 'Bookmark collection not found or access denied.'], 404);
         }
-    
+
+        $proposal = Proposal::where('slug', $validated['proposalSlug'])->first();
+
+        if (! $proposal) {
+            return response()->json(['error' => 'Proposal not found.'], 404);
+        }
+
         $proposal = Proposal::where('slug', $validated['proposalSlug'])->first();
 
         if (! $proposal) {
@@ -964,7 +970,7 @@ class TinderProposalWorkflowController extends Controller
             'action' => null,
             'vote' => isset($validated['vote']) ? $validated['vote'] : null,
         ]);
-       
+
         $bookmarkCollection->searchable();
 
         return response()->json(['success' => 'Proposal added to collection successfully.']);

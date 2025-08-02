@@ -65,6 +65,7 @@ const PaginationComponent: React.FC<PaginationComponentProps<any>> = ({
                         />
                     </PaginationItem>
                 </div>
+
                 <div className="flex items-center gap-8">
                     <div className="flex items-center gap-1">
                         <ul className="flex list-none items-center gap-1">
@@ -117,6 +118,7 @@ const PaginationComponent: React.FC<PaginationComponentProps<any>> = ({
                         <span className="font-bold">{total}</span>
                     </div>
                 </div>
+                
                 <div className="flex-shrink-0">
                     <PaginationItem className="list-none">
                         <PaginationNext

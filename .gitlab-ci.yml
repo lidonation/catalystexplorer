@@ -190,54 +190,28 @@ pest:
 
 
 
-# playwright:
-#   stage: test
-#   image: $APPLICATION_REPOSITORY/playwright:latest
-#   retry: 1
-#   artifacts:
-#     paths:
-#     - ./application/vendor
-#     expire_in: 1 days
-#   script:
-#   - |-
-#     set -xev
-
-#     if [[ -n $DOCKER_PASSWORD ]]; then
-#       docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
-#     fi
-
-#     cp application/.env.testing application/.env
-
-#     docker compose -f docker-compose.testing.yml up -d
-
-#     sleep 5
-
-#     docker logs catalystexplorer_test.com
-
-#     docker compose -f docker-compose.testing.yml exec -t catalystexplorer_test.com sh -c '
-#      php artisan migrate:fresh --force && \
-#      php artisan optimize:clear  && \
-#      sleep 10 && \
-#      php artisan cx:create-search-index "App\Models\Group" && \
-#      php artisan cx:create-search-index "App\Models\Proposal" && \
-#      php artisan cx:create-search-index "App\Models\IdeascaleProfile" && \
-#      php artisan cx:create-search-index "App\Models\Review" && \
-#      php artisan cx:create-search-index "App\Models\Transaction" && \
-#      php artisan cx:create-search-index "App\Models\BookmarkCollection" && \
-#      php artisan cx:create-search-index "App\Models\Community" && \
-#      php artisan cx:create-search-index "App\Models\VoterHistory" && \
-#      sleep 10 && \
-#      php artisan cx:create-search-index "App\Models\MonthlyReport"'
-
-#     cd application
-#     yarn install --ignore-engines
-#     npx playwright test
-
-#   rules:
-#   - if: '$CI_COMMIT_BRANCH != "main" && ($DEPLOY_WEBAPP == "true")'
-#   dependencies:
-#   - composer
-#   - yarn
+playwright:
+  stage: preview
+  image: registry.lidonation.com/lidonation/www.catalystexplorer.com/playwright:latest
+  retry: 1
+  artifacts:
+    paths:
+    - ./application/vendor
+    expire_in: 1 days
+  script:
+  - |-
+    set -xev
+    cd application
+    yarn install --ignore-engines
+    npx playwright test
+  needs:
+  - job: app_preview
+  - job: composer
+  rules:
+  - if: '$CI_COMMIT_BRANCH != "main" && ($DEPLOY_WEBAPP == "true")'
+  dependencies:
+  - composer
+  # - yarn
 
 ########## Helper Scripts ############
 ######################################
@@ -536,6 +510,7 @@ app_mainnet:
     url: https://$CI_PROJECT_PATH_SLUG.$AUTO_DEVOPS_DOMAIN
   needs:
     - job: app_preview
+#    - job: playwright
   rules:
     - if: '$CI_COMMIT_BRANCH == "main" && ($DEPLOY_WEBAPP == "true")'
       when: manual

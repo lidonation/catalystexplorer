@@ -22,6 +22,8 @@ type SelectProps = {
     hideCheckbox?: boolean;
     placeholder?: string;
     disabled?: boolean;
+    'data-testid'?: string;
+    'data-testid-button'?: string;
 };
 
 export default function Selector({
@@ -35,6 +37,8 @@ export default function Selector({
     hideCheckbox = false,
     placeholder = '',
     disabled = false,
+    'data-testid': dataTestId = 'selector-container',
+    'data-testid-button': dataTestIdButton = 'selector-button',
     ...props
 }: SelectProps) {
     const [open, setOpen] = useState(false);
@@ -81,7 +85,7 @@ export default function Selector({
     };
 
     return (
-        <div className={cn('h-full rounded-lg', className + bgColor)} data-testid="selector-container">
+        <div className={cn('h-full rounded-lg', className + bgColor)} data-testid={dataTestId}>
             <Popover open={open} onOpenChange={setOpen}>
                 <PopoverTrigger asChild>
                     <button
@@ -89,7 +93,7 @@ export default function Selector({
                         aria-expanded={open}
                         aria-label={t('select') + ' ' + t('option')}
                         className="border-input placeholder:text-muted-foreground ring-offset-background flex h-full w-full items-center justify-between rounded-md border bg-transparent px-3 py-2 text-sm shadow-xs hover:cursor-pointer disabled:cursor-not-allowed disabled:opacity-50"
-                        data-testid="selector-button"
+                        data-testid={dataTestIdButton}
                     >
                         <span className="flex items-center gap-2 overflow-hidden" data-testid="selector-selected-items">
                             <span className="overflow-clip text-sm text-nowrap">

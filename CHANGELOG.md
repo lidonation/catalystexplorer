@@ -1,3 +1,17 @@
+## [1.3.1](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.3.0...v1.3.1) (2025-08-02)
+
+
+### Bug Fixes
+
+* **bookmark:** ln-1905 fixed the bookmark. ([6a0c449](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/6a0c449e29a7503d5dad6c1c9d6c275563f353db))
+
+# [1.3.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.2.0...v1.3.0) (2025-07-30)
+
+
+### Features
+
+* adding project schedule to single proposal page ([ca644f2](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/ca644f2ddfab76e48fff7977f83cdf9223d294f8))
+
 # [1.2.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.1.0...v1.2.0) (2025-07-30)
 
 
