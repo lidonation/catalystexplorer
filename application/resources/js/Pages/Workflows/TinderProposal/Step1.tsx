@@ -207,6 +207,7 @@ const Step1: React.FC<Step1Props> = ({ stepDetails, activeStep, existingPreferen
                                                     id={option.id}
                                                     checked={data[TinderWorkflowParams.PROPOSAL_TYPES].includes(option.id)}
                                                     onChange={() => handleCheckboxChange(option.id, data[TinderWorkflowParams.PROPOSAL_TYPES], TinderWorkflowParams.PROPOSAL_TYPES)}
+                                                    data-testid={`proposal-type-checkbox`}
                                                 />
                                                 <label htmlFor={option.id} className="text-sm text-gray-persist">
                                                     {option.label}
