@@ -600,7 +600,7 @@ const Step3: React.FC<Step3Props> = ({
                                                 onMouseDown={isTopCard && !isAnimating ? handleMouseDown : undefined}
                                                 onTouchStart={isTopCard && !isAnimating ? handleTouchStart : undefined}
                                             >
-                                                <div className="flex flex-col w-full rounded-lg relative" data-testid={`proposal-card`}>
+                                                <div className="flex flex-col w-full rounded-lg relative" data-testid={`proposals-card`}>
                                                     <ProposalCard
                                                         proposal={proposal}
                                                         isHorizontal={false}
@@ -694,7 +694,7 @@ const Step3: React.FC<Step3Props> = ({
                                             <ThumbsUpIcon width={18} height={18} className="text-success" />
                                         </div>
                                         <Paragraph>{t('workflows.tinderProposal.step3.yesButtonText')}</Paragraph>
-                                        <Paragraph className=" text-gray-light">({swipedRightProposals.length})</Paragraph>
+                                        <Paragraph className=" text-gray-light" data-testid='yes-count'>({swipedRightProposals.length})</Paragraph>
                                     </div>
                                 </Button>
                             </div>
