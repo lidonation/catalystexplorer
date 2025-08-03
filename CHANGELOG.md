@@ -1,3 +1,11 @@
+## [1.3.2](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.3.1...v1.3.2) (2025-08-03)
+
+
+### Bug Fixes
+
+* **catalyst connections:** ln-1943 fixing ssr issues and optimizing the connections ([16a1cca](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/16a1cca370bbeb0d9ec6f317f28584a754c11fe5))
+* **milesones:** ln-1948 preventing clipping and overlapping of date labels ([b245b83](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/b245b83f850da6b98f3e77cb80230226d7d17eb3))
+
 ## [1.3.1](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.3.0...v1.3.1) (2025-08-02)
 
 
