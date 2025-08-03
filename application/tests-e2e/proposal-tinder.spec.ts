@@ -2,12 +2,10 @@ import { expect, test } from '@playwright/test';
 
 test.describe('Proposal Tinder', () => {
     test.beforeEach(async ({ page }) => {
-        await page.goto('https://preview.catalystexplorer.com/en/');
+        await page.goto(
+            'https://preview.catalystexplorer.com/en/workflows/tinder-proposal/steps/1',
+        );
         await page.waitForLoadState('domcontentloaded');
-    });
-
-    test('Successful Login and Step 1 Completion', async ({ page }) => {
-        await page.goto('/workflows/tinder-proposal/steps/1');
 
         await page.fill(
             '[data-testid="login-email-input"]',
@@ -19,28 +17,23 @@ test.describe('Proposal Tinder', () => {
         );
 
         const checkbox = page.locator(
-            `[data-testid="login-remember-checkbox"]`,
+            '[data-testid="login-remember-checkbox"]',
         );
-        await expect(checkbox).toBeVisible();
+        await checkbox.check();
 
-        await checkbox.click();
-        await expect(checkbox).toBeChecked();
+        await page.locator('[data-testid="login-signin-button"]').click();
 
-        const loginButton = page.locator('[data-testid="login-signin-button"]');
+        await page.context().storageState({ path: 'storage/auth.json' });
+    });
 
-        await expect(loginButton).toBeVisible();
-
-        await loginButton.click();
-
+    test('Successful Step 1 Completion', async ({ page }) => {
         await page.goto('/workflows/tinder-proposal/steps/1', {
             waitUntil: 'domcontentloaded',
         });
 
-        await page.context().storageState({ path: 'storage/auth.json' });
-
         await page.waitForLoadState('domcontentloaded');
 
-        // await page.waitForSelector('[data-testid="workflow-nav"]');
+        await page.waitForSelector('[data-testid="workflow-nav"]');
 
         const step1Active = page.locator('[data-testid="step-number-1"]');
 
@@ -62,17 +55,17 @@ test.describe('Proposal Tinder', () => {
         await option.click();
 
         const proposalCategoryCheckbox1 = page
-            .locator(`[data-testid="proposal-category-checkbox"]`)
+            .locator(`[data-testid="proposal-type-checkbox"]`)
             .first();
 
         await expect(proposalCategoryCheckbox1).toBeVisible();
 
-         await proposalCategoryCheckbox1.click();
+        await proposalCategoryCheckbox1.click();
 
         await expect(proposalCategoryCheckbox1).toBeChecked();
 
         const proposalCategoryCheckbox2 = page
-            .locator(`[data-testid="proposal-category-checkbox"]`)
+            .locator(`[data-testid="proposal-type-checkbox"]`)
             .nth(1);
 
         await expect(proposalCategoryCheckbox2).toBeVisible();
@@ -82,7 +75,7 @@ test.describe('Proposal Tinder', () => {
         await expect(proposalCategoryCheckbox2).toBeChecked();
 
         const proposalCategoryCheckbox3 = page
-            .locator(`[data-testid="proposal-category-checkbox"]`)
+            .locator(`[data-testid="proposal-type-checkbox"]`)
             .nth(2);
 
         await expect(proposalCategoryCheckbox3).toBeVisible();
@@ -92,7 +85,7 @@ test.describe('Proposal Tinder', () => {
         await expect(proposalCategoryCheckbox3).toBeChecked();
 
         const proposalCategoryCheckbox4 = page
-            .locator(`[data-testid="proposal-category-checkbox"]`)
+            .locator(`[data-testid="proposal-type-checkbox"]`)
             .nth(3);
 
         await expect(proposalCategoryCheckbox4).toBeVisible();
@@ -100,10 +93,6 @@ test.describe('Proposal Tinder', () => {
         await proposalCategoryCheckbox4.click();
 
         await expect(proposalCategoryCheckbox4).toBeChecked();
-
-        const proposalTypeCheckbox5 = page
-            .locator(`[data-testid="proposal-size-checkbox"]`)
-            .nth(4);
 
         const proposalSizeCheckbox1 = page
             .locator(`[data-testid="proposal-size-checkbox"]`)
@@ -130,18 +119,16 @@ test.describe('Proposal Tinder', () => {
         await expect(beginButton).toBeVisible();
 
         await beginButton.click();
-    });
 
-    test('Successful Step 2 Completion', async ({ page }) => {
         await page.goto('/workflows/tinder-proposal/steps/2', {
             waitUntil: 'domcontentloaded',
         });
 
         await page.waitForLoadState('domcontentloaded');
 
-        // await page.waitForSelector('[data-testid="workflow-nav"]', {
-        //     timeout: 30000,
-        // });
+        await page.waitForSelector('[data-testid="workflow-nav"]', {
+            timeout: 30000,
+        });
 
         const step2Active = page.locator('[data-testid="step-number-2"]');
 
@@ -162,12 +149,94 @@ test.describe('Proposal Tinder', () => {
         );
         await expect(contentTextarea).toBeVisible();
 
-        await contentTextarea.fill('This is a test for the tinder proposal workflow. Writing a test to see if it works as it should.');
+        await contentTextarea.fill(
+            'This is a test for the tinder proposal workflow. Writing a test to see if it works as it should.',
+        );
 
         const visibilityRadioGroup = page.locator(
             '[data-testid="tinder-visibility-radio-group"]',
         );
-        
+
+        await expect(visibilityRadioGroup).toBeVisible();
+
+        const visibilityOptions = visibilityRadioGroup.locator(
+            'input[type="radio"]',
+        );
+        await visibilityOptions.first().check();
+
+        const commentsSwitch = page.locator(
+            '[data-testid="tinder-comments-switch"]',
+        );
+        await expect(commentsSwitch).toBeVisible();
+
+        await commentsSwitch.click();
+        await expect(commentsSwitch).toBeChecked();
+
+        const colorTextInput = page.locator('[data-testid="color-text-input"]');
+        await expect(colorTextInput).toBeVisible();
+
+        await colorTextInput.fill('#ff0000');
+
+        const colorPickerInput = page.locator(
+            '[data-testid="color-picker-input"]',
+        );
+        await expect(colorPickerInput).toBeVisible();
+
+        await colorPickerInput.click();
+
+        const statusRadioGroup = page.locator(
+            '[data-testid="tinder-status-radio-group"]',
+        );
+        await expect(statusRadioGroup).toBeVisible();
+
+        const statusOptions = statusRadioGroup.locator('input[type="radio"]');
+        await statusOptions.first().check();
+
+        const saveButton = page.locator('[data-testid="tinder-save-button"]');
+        await expect(saveButton).toBeVisible();
+
+        await saveButton.click();
+    });
+
+    test('Successful Step 2 Completion', async ({ page }) => {
+
+        await page.goto('/workflows/tinder-proposal/steps/2', {
+            waitUntil: 'domcontentloaded',
+        });
+
+        await page.waitForLoadState('domcontentloaded');
+
+        await page.waitForSelector('[data-testid="workflow-nav"]', {
+            timeout: 30000,
+        });
+
+        const step2Active = page.locator('[data-testid="step-number-2"]');
+
+        await expect(step2Active).toBeVisible();
+
+        await expect(step2Active).toHaveClass(/border-primary/);
+        await expect(step2Active).toHaveClass(/text-primary/);
+
+        const titleInput = page.locator(
+            '[data-testid="tinder-proposal-title-input"]',
+        );
+        await expect(titleInput).toBeVisible();
+
+        await titleInput.fill('Test Proposal Title');
+
+        const contentTextarea = page.locator(
+            '[data-testid="tinder-proposal-content-textarea"]',
+        );
+        await expect(contentTextarea).toBeVisible();
+
+        await contentTextarea.fill(
+            'This is a test for the tinder proposal workflow. Writing a test to see if it works as it should.',
+        );
+
+        const visibilityRadioGroup = page.locator(
+            '[data-testid="tinder-visibility-radio-group"]',
+        );
+
         await expect(visibilityRadioGroup).toBeVisible();
 
         const visibilityOptions = visibilityRadioGroup.locator(
