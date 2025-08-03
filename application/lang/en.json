@@ -1184,6 +1184,8 @@
     "voter.sort.proposalsVotedOnAsc": "Proposals Voted On: Low to High",
     "rightSwipes": " - Right Swipes",
     "leftSwipes": " - Left Swipes",
-    "startDate": "Start Date",
-    "endDate": "End Date"
+    "graph.loadingConnections": "Loading connections for :nodeName ...",
+    "graph.noAdditionalConnections": ":nodeName has no additional connections",
+    "graph.unknownNode": "Unknown",
+    "loadingGraph": "Loading graph"
 }

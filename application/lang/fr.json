@@ -964,6 +964,7 @@
     "comments.reply": "Répondre",
     "rightSwipes": " - Balayages vers la droite",
     "leftSwipes": " - Balayages vers la gauche",
-    "startDate": "Date de début",
-    "endDate": "Date de fin"
+    "graph.loadingConnections": "Chargement des connexions pour {nodeName}...",
+    "graph.noAdditionalConnections": "{nodeName} n'a pas de connexions supplémentaires",
+    "graph.unknownNode": "Inconnu"
 }

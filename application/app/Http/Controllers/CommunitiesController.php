@@ -462,6 +462,16 @@ class CommunitiesController extends Controller
         return $connections;
     }
 
+    public function incrementalConnections(Request $request): array
+    {
+        $hash = $request->get('hash');
+        $community = Community::byHash($hash);
+
+        $connections = $community->getIncrementalConnectionsData($request);
+
+        return $connections;
+    }
+
     public function join(Community $community)
     {
         $user = Auth::user();
