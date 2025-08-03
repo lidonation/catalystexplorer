@@ -129,6 +129,7 @@ const Step2: React.FC<Step2Props> = ({
                                     form.setData(TinderWorkflowParams.TITLE, e.target.value)
                                 }
                                 required
+                                data-testid="tinder-proposal-title-input"
                             />
                             <InputError message={form.errors[TinderWorkflowParams.TITLE]} />
                         </div>
@@ -148,6 +149,7 @@ const Step2: React.FC<Step2Props> = ({
                                     form.setData(TinderWorkflowParams.CONTENT, e.target.value)
                                 }
                                 className="h-30 w-full rounded-lg px-4 py-2"
+                                data-testid='tinder-proposal-content-textarea'
                             />
                             <InputError message={form.errors[TinderWorkflowParams.CONTENT]} />
                         </div>
@@ -192,6 +194,7 @@ const Step2: React.FC<Step2Props> = ({
                                         },
                                     ]}
                                     labelClassName="text-gray-persist ml-2"
+                                    data-testid='tinder-visibility-radio-group'
                                 />
                             </div>
                         </div>
@@ -214,6 +217,7 @@ const Step2: React.FC<Step2Props> = ({
                                     color="bg-primary"
                                     size="md"
                                     className="!w-auto"
+                                    data-testid='tinder-comments-switch'
                                 />
                                 <Paragraph
                                     className="text-gray-persist"
@@ -253,6 +257,7 @@ const Step2: React.FC<Step2Props> = ({
                                                 )
                                             }
                                             className="bg-background text-content border-none text-sm focus:outline-none"
+                                            data-testid="color-text-input"
                                         />
                                         <input
                                             type="color"
@@ -265,6 +270,7 @@ const Step2: React.FC<Step2Props> = ({
                                                 )
                                             }
                                             className="absolute top-0 left-0 h-full w-full cursor-pointer opacity-0"
+                                            data-testid="color-picker-input"
                                         />
                                     </div>
                                 </div>
@@ -300,6 +306,7 @@ const Step2: React.FC<Step2Props> = ({
                                             ),
                                         },
                                     ]}
+                                    data-testid="tinder-status-radio-group"
                                 />
                             </div>
                         </div>
@@ -314,6 +321,7 @@ const Step2: React.FC<Step2Props> = ({
                         className="text-sm lg:px-8 lg:py-3 w-full"
                         disabled={!isFormValid}
                         onClick={submitForm}
+                        data-testid='tinder-save-button'
                     >
                         <span>{t('workflows.tinderProposal.step2.save')}</span>
                     </PrimaryButton>

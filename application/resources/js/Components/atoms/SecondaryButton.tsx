@@ -3,6 +3,7 @@ import { ButtonHTMLAttributes, ReactNode } from 'react';
 interface SecondaryButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
     icon?: ReactNode;
     iconPosition?: 'left' | 'right';
+    'data-testid'?: string
 }
 
 export default function SecondaryButton({
@@ -12,6 +13,7 @@ export default function SecondaryButton({
     children,
     icon,
     iconPosition = 'left',
+    "data-testid": dataTestId,
     ...props
 }: SecondaryButtonProps) {
     return (
@@ -24,6 +26,7 @@ export default function SecondaryButton({
                 } ` + className
             }
             disabled={disabled}
+            data-testid={dataTestId}
         >
             {icon && iconPosition === 'left' && <span className="mr-2">{icon}</span>}
             {children}
