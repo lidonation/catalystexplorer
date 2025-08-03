@@ -27,7 +27,8 @@ Route::prefix('api')->as('api.')->group(function () {
     Route::get('/groups', [GroupController::class, 'groups'])->name('groups');
     Route::get('/groups/{group:id}', [GroupController::class, 'group'])->name('group');
     Route::get('/groups/{hash}/connections', [GroupController::class, 'connections'])->name('groups.connections');
-
+    Route::get('/groups/incremental-connections', [GroupController::class, 'incrementalConnections'])->name('groups.incremental-connections');
+    Route::get('ideascale-profiles/incremental-connections', [IdeascaleProfilesController::class, 'incrementalConnections'])->name('ideascaleProfiles.incremental-connections');
     Route::get('/choices', [VoterHistoriesController::class, 'getChoices'])->name('choices');
 
     Route::get('/campaigns', [CampaignController::class, 'campaigns'])->name('campaigns');
@@ -48,6 +49,7 @@ Route::prefix('api')->as('api.')->group(function () {
     Route::get('/communities/{community:id}', [CommunitiesController::class, 'community'])->name('community');
 
     Route::get('/communities/{hash}/connections', [CommunitiesController::class, 'connections'])->name('communities.connections');
+    Route::get('/communities/incremental-connections', [CommunitiesController::class, 'incrementalConnections'])->name('communities.incremental-connections');
     Route::post('/communities/{hash}/join', [CommunitiesController::class, 'join'])->name('community.join');
 
     Route::prefix('bookmark-items')->as('bookmarks.')
@@ -86,6 +88,7 @@ Route::prefix('api')->as('api.')->group(function () {
         Route::post('/claim-ideascale-profile/{ideascaleProfile}', [IdeascaleProfilesController::class, 'claimIdeascaleProfile'])->name('claim');
         Route::get('/{ideascaleProfile:id}', [IdeascaleProfilesController::class, 'ideascale_profile'])->name('show');
         Route::get('/{hash}/connections', [IdeascaleProfilesController::class, 'connections'])->name('connections');
+     
     });
 
     Route::get('/fund-titles', [ProposalsController::class, 'fundTitles'])->name('fundTitles');
