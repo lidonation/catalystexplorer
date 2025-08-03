@@ -162,11 +162,12 @@ test.describe('Proposal Tinder', () => {
         );
         await expect(contentTextarea).toBeVisible();
 
-        await contentTextarea.fill('This is a test proposal content.');
+        await contentTextarea.fill('This is a test for the tinder proposal workflow. Writing a test to see if it works as it should.');
 
         const visibilityRadioGroup = page.locator(
             '[data-testid="tinder-visibility-radio-group"]',
         );
+        
         await expect(visibilityRadioGroup).toBeVisible();
 
         const visibilityOptions = visibilityRadioGroup.locator(
